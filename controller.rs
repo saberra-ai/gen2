@@ -136,6 +136,27 @@ impl ControllerHandle {
     }
 }
 
+/// Unified handle that dispatches to either a local or remote controller.
+///
+/// The API layer uses this everywhere — it doesn't need to know whether
+/// inference is running locally or on a remote peer.
+#[derive(Clone)]
+pub enum InferenceHandle {
+    Local(ControllerHandle),
+    #[cfg(feature = "p2p-client")]
+    Remote(crate::p2p::client::RemoteControllerHandle),
+}
+
+impl InferenceHandle {
+    pub fn send(&self, cmd: ControllerCmd) -> Result<(), String> {
+        match self {
+            Self::Local(h) => h.send(cmd),
+            #[cfg(feature = "p2p-client")]
+            Self::Remote(h) => h.send(cmd),
+        }
+    }
+}
+
 pub fn start_controller_with_limit(max_active: usize) -> ControllerHandle {
     let (tx, rx): (Sender<ControllerCmd>, Receiver<ControllerCmd>) = channel();
     thread::spawn(move || run_loop(rx, max_active));
