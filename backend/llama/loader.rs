@@ -5,11 +5,11 @@ use crate::generation::model_runner::embedder::LlamaEmbedder;
 use crate::generation::model_runner::llama_config::ModelConfig;
 use anyhow::{Context, anyhow};
 use llama_cpp_2::llama_backend::LlamaBackend;
-use llama_cpp_2::model::{LlamaModel, params::LlamaModelParams};
+use llama_cpp_2::model::{LlamaModel, Special, params::LlamaModelParams};
 use llama_cpp_2::mtmd::{MtmdContext, MtmdContextParams, mtmd_default_marker};
 use sha2::{Digest, Sha256};
 use std::ffi::CString;
-use std::fs::File;
+use std::fs::{self, File};
 use std::io::{BufReader, Read};
 use std::path::Path;
 use std::sync::Arc;
@@ -29,17 +29,62 @@ pub(crate) fn build_bundle(
         .with_context(|| format!("failed to load model: {}", req.model_path.display()))
         .map_err(|e| ExecError::Other(e))?;
 
-    // Compute model UUID as SHA-256 of file contents
-    let model_uuid = "".to_string();
-    // sha256_file(&req.model_path)
-    // .with_context(|| "failed to hash model file")
-    // .map_err(|e| ExecError::Other(e))?;
+    // Fast model UUID from GGUF metadata + file size (microseconds, not seconds)
+    let model_uuid = {
+        let mut h = Sha256::new();
+        h.update(model.n_ctx_train().to_le_bytes());
+        h.update(model.n_layer().to_le_bytes());
+        h.update(model.n_vocab().to_le_bytes());
+        if let Ok(bos) = model.token_to_bytes(model.token_bos(), Special::Tokenize) {
+            h.update(&bos);
+        }
+        if let Ok(eos) = model.token_to_bytes(model.token_eos(), Special::Tokenize) {
+            h.update(&eos);
+        }
+        // Include file size to differentiate quants of the same architecture
+        if let Ok(md) = fs::metadata(&req.model_path) {
+            h.update(md.len().to_le_bytes());
+        }
+        format!("{:x}", h.finalize())
+    };
 
-    // Minimal meta; we can extend with tokenizer digest and rope settings later
+    // Pre-compute tokenizer digest (SHA-256 of BOS || EOS || n_vocab)
+    let tokenizer_digest = {
+        let bos = model
+            .token_to_bytes(model.token_bos(), Special::Tokenize)
+            .unwrap_or_default();
+        let eos = model
+            .token_to_bytes(model.token_eos(), Special::Tokenize)
+            .unwrap_or_default();
+        let n_vocab = model.n_vocab().to_le_bytes();
+        let mut h = Sha256::new();
+        h.update(&bos);
+        h.update(&eos);
+        h.update(&n_vocab);
+        h.finalize().into()
+    };
+
+    // Pre-compute template fingerprint (first 8 bytes of SHA-256(template_string))
+    let template_fingerprint = model
+        .chat_template(None)
+        .ok()
+        .and_then(|t| t.to_string().ok())
+        .map(|tpl| {
+            let mut h = Sha256::new();
+            h.update(tpl.as_bytes());
+            let d = h.finalize();
+            let mut fp_bytes = [0u8; 8];
+            fp_bytes.copy_from_slice(&d[..8]);
+            u64::from_le_bytes(fp_bytes)
+        })
+        .unwrap_or(0);
+
     let meta = ModelMeta {
         model_uuid,
         n_ctx: model.n_ctx_train(),
         n_layer: model.n_layer(),
+        tokenizer_digest,
+        template_fingerprint,
     };
 
     // Capabilities discovery and optional MTMD context
@@ -54,10 +99,11 @@ pub(crate) fn build_bundle(
                 "mmproj path not found; continuing without projector"
             );
         } else {
-            // Initialize MTMD context properly (not as a model)
+            // MTMD GPU follows the same policy as the main model
+            let use_gpu = req.model_params.gpu_layers.map_or(false, |n| n > 0);
             let marker = mtmd_default_marker().to_string();
             let params = MtmdContextParams {
-                use_gpu: false,
+                use_gpu,
                 print_timings: false,
                 n_threads: req.ctx_params.threads.unwrap_or(4) as i32,
                 media_marker: CString::new(marker.clone())

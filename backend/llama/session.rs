@@ -28,10 +28,8 @@ use llama_cpp_2::model::{AddBos, Special};
 use llama_cpp_2::mtmd::{MtmdBitmap, MtmdInputText, mtmd_default_marker};
 use llama_cpp_2::sampling::LlamaSampler;
 use parking_lot::{Mutex, RwLock};
-use pdf::backend::Backend;
 use rand::Rng;
 use self_cell::self_cell;
-use sha2::{Digest, Sha256};
 use std::fmt;
 use std::ops::{Deref, DerefMut};
 
@@ -82,17 +80,19 @@ pub(crate) struct DecodeState {
     pub ctx_cell: SessionCtxCell,
     pub cur_pos: i32,
     pub logits_i: i32,
+    /// Timestamp (ggml_time_us) when prefill started, for accurate TTFT.
+    pub prefill_start_us: u64,
 }
 
 impl Session {
     pub fn pause(&self) {
-        self.paused.store(true, Ordering::SeqCst);
+        self.paused.store(true, Ordering::Release);
     }
     pub fn resume(&self) {
-        self.paused.store(false, Ordering::SeqCst);
+        self.paused.store(false, Ordering::Release);
     }
     pub fn stop(&self) {
-        self.stopped.store(true, Ordering::SeqCst);
+        self.stopped.store(true, Ordering::Release);
     }
 
     pub fn pull(&self, mut gen_spec: GenSpec) -> Result<TokenPuller, ExecError> {
@@ -230,42 +230,13 @@ impl Session {
     }
 
     fn build_kv_meta(&self, bundle: &Arc<ModelBundle>) -> Result<KvMeta, ExecError> {
-        // Approximate tokenizer digest using BOS/EOS strings and vocab size
-        let bos = bundle
-            .model
-            .token_to_bytes(bundle.model.token_bos(), Special::Tokenize)
-            .map_err(|e| ExecError::Other(e.into()))?;
-        let eos = bundle
-            .model
-            .token_to_bytes(bundle.model.token_eos(), Special::Tokenize)
-            .map_err(|e| ExecError::Other(e.into()))?;
-        let n_vocab = bundle.model.n_vocab().to_le_bytes();
-        let mut h = Sha256::new();
-        h.update(&bos);
-        h.update(&eos);
-        h.update(&n_vocab);
-        let tokenizer_digest: [u8; 32] = h.finalize().into();
-
-        // Template fingerprint based on current template string
-        let tpl = bundle
-            .model
-            .chat_template(None)
-            .map_err(|e| ExecError::Other(e.into()))?
-            .to_string()
-            .map_err(|e| ExecError::Other(e.into()))?;
-        let mut h2 = Sha256::new();
-        h2.update(tpl.as_bytes());
-        let d = h2.finalize();
-        let mut fp_bytes = [0u8; 8];
-        fp_bytes.copy_from_slice(&d[..8]);
-        let template_fingerprint = u64::from_le_bytes(fp_bytes);
-
+        // Digests are pre-computed in ModelMeta at model load time (see loader.rs)
         Ok(KvMeta {
             model_uuid: bundle.meta.model_uuid.clone(),
             n_ctx: bundle.meta.n_ctx,
             n_layer: bundle.meta.n_layer,
-            tokenizer_digest,
-            template_fingerprint,
+            tokenizer_digest: bundle.meta.tokenizer_digest,
+            template_fingerprint: bundle.meta.template_fingerprint,
             created_at_us: Utc::now().timestamp_micros(),
         })
     }
@@ -273,23 +244,24 @@ impl Session {
 
 impl Session {
     fn sampler_from_settings(settings: &Settings) -> LlamaSampler {
+        // Order matches llama.cpp server: penalties → top_k → top_p → temp → dist
         let mut chain = Vec::new();
 
-        if let Some(t) = settings.sampling.temperature {
-            tracing::debug!("Sampling temperature: {}", t);
-            chain.push(LlamaSampler::temp(t));
-        }
-        if let Some(tp) = settings.sampling.top_p {
-            tracing::debug!("Sampling top_p: {}", tp);
-            chain.push(LlamaSampler::top_p(tp, 0));
+        if let Some(penalties) = Self::penalties_sampler(settings) {
+            tracing::debug!("Sampling penalties: {:?}", penalties);
+            chain.push(penalties);
         }
         if let Some(k) = settings.sampling.top_k {
             tracing::debug!("Sampling top_k: {}", k);
             chain.push(LlamaSampler::top_k(k));
         }
-        if let Some(penalties) = Self::penalties_sampler(settings) {
-            tracing::debug!("Sampling penalties: {:?}", penalties);
-            chain.push(penalties);
+        if let Some(tp) = settings.sampling.top_p {
+            tracing::debug!("Sampling top_p: {}", tp);
+            chain.push(LlamaSampler::top_p(tp, 0));
+        }
+        if let Some(t) = settings.sampling.temperature {
+            tracing::debug!("Sampling temperature: {}", t);
+            chain.push(LlamaSampler::temp(t));
         }
 
         let seed = settings
@@ -298,7 +270,6 @@ impl Session {
             .unwrap_or_else(|| rand::rng().random());
         chain.push(LlamaSampler::dist(seed));
 
-        // chain.push(LlamaSampler::greedy());
         LlamaSampler::chain_simple(chain)
     }
 
@@ -406,6 +377,12 @@ impl Session {
         if let Some(n) = settings.system.threads_batch {
             ctx_params = ctx_params.with_n_threads_batch(n as i32);
         }
+        // Flash attention: default to AUTO (let llama.cpp decide based on model)
+        if settings.system.flash_attn.unwrap_or(true) {
+            ctx_params = ctx_params.with_flash_attention_policy(
+                llama_cpp_sys_2::LLAMA_FLASH_ATTN_TYPE_AUTO,
+            );
+        }
         let mut ctx_cell = SessionCtxCell::try_new(bundle.clone(), |owner| {
             owner.model.new_context(&backend, ctx_params).map(DepCtx)
         })
@@ -492,7 +469,8 @@ impl Session {
                         state: Arc::from(Mutex::new(Some(DecodeState {
                             ctx_cell,
                             cur_pos: n_past,
-                            logits_i: -1,
+                            logits_i: (n_past - 1).max(0),
+                            prefill_start_us: llama_cpp_2::ggml_time_us() as u64,
                         }))),
                         messages: RwLock::new(messages),
                     });
@@ -502,6 +480,7 @@ impl Session {
 
         // tracing::debug!("session.prefill.start", id=%id);
         // Prefill prompt tokens
+        let prefill_start_us = llama_cpp_2::ggml_time_us() as u64;
         let mut batch = LlamaBatch::new(batch_size as usize, 1);
         let total_tokens = tokens_list.len() as i32;
         let mut cur_pos = 0_i32;
@@ -512,7 +491,7 @@ impl Session {
         });
         let mut last_batch_tokens: i32 = 0;
         while !remaining.is_empty() {
-            let chunk_size = remaining.len().min(128);
+            let chunk_size = remaining.len().min(batch_size as usize);
             let chunk: Vec<_> = remaining.drain(..chunk_size).collect();
             batch.clear();
             for (i, token) in chunk.into_iter().enumerate() {
@@ -548,6 +527,7 @@ impl Session {
                 ctx_cell,
                 cur_pos: total_tokens,
                 logits_i: (last_batch_tokens - 1),
+                prefill_start_us,
             }))),
             messages: RwLock::new(messages),
         })
@@ -596,7 +576,11 @@ impl Session {
             msgs.extend(new_messages.clone());
         }
 
-        // 2) Render just the delta turn(s) with the same template as in `new()`
+        // 2) Render the FULL conversation with the template and compute token delta.
+        //    This is correct for ALL chat templates (including those that format
+        //    differently based on message index or role transitions).
+        let all_messages = self.messages.read().clone();
+
         let chat_template_str = self
             .bundle
             .model
@@ -622,27 +606,34 @@ impl Session {
             Some(crate::generation::model_runner::types::TokenizerConfigToken::String(eos)),
         );
 
-        // IMPORTANT: apply only to the new messages (delta), NOT the whole history
-        let delta_text = tpl
-            .apply(new_messages, None, None)
+        let full_prompt = tpl
+            .apply(all_messages, None, None)
             .map_err(|e| ExecError::Other(e.into()))?;
 
-        // 3) Tokenize delta without adding BOS again
-        let mut remaining = self
+        // 3) Tokenize full prompt, then take only the delta beyond what's already in KV
+        let full_tokens = self
             .bundle
             .model
-            .str_to_token(&delta_text, AddBos::Never)
+            .str_to_token(&full_prompt, AddBos::Always)
             .map_err(|e| ExecError::Other(e.into()))?;
-
-        if remaining.is_empty() {
-            return Ok(());
-        }
 
         // 4) Prefill delta into the existing context
         let mut guard = self.state.lock();
         let st = guard
             .as_mut()
             .ok_or(ExecError::InvalidArg("session already consumed"))?;
+
+        // Token delta: slice beyond what's already in the KV cache
+        let kv_pos = st.cur_pos as usize;
+        let mut remaining: Vec<_> = if kv_pos < full_tokens.len() {
+            full_tokens[kv_pos..].to_vec()
+        } else {
+            Vec::new()
+        };
+
+        if remaining.is_empty() {
+            return Ok(());
+        }
 
         let batch_size = self.settings.system.batch_size.unwrap_or(128) as usize;
         let mut batch = LlamaBatch::new(batch_size, 1);

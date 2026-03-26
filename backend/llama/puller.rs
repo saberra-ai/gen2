@@ -58,7 +58,7 @@ impl TokenPuller {
         pre_events: VecDeque<TokenEvent>,
         initial_logits_i: i32,
     ) -> Self {
-        let batch = LlamaBatch::new(128, 1);
+        let batch = LlamaBatch::new(1, 1);
         Self {
             session_id,
             hooks,
@@ -113,7 +113,7 @@ impl TokenPuller {
         stopped: Arc<AtomicBool>,
         pre_events: VecDeque<TokenEvent>,
     ) -> Self {
-        let batch = LlamaBatch::new(128, 1);
+        let batch = LlamaBatch::new(1, 1);
         Self {
             session_id,
             hooks,
@@ -129,7 +129,8 @@ impl TokenPuller {
             paused,
             stopped,
             utf8_decoder: UTF_8.new_decoder(),
-            start_us: ggml_time_us() as u64,
+            // Use prefill start time for accurate TTFT (includes prefill, not just decode)
+            start_us: state.prefill_start_us,
             first_token_us: None,
             pre_events,
             done: false,
@@ -147,6 +148,7 @@ impl Drop for TokenPuller {
                     ctx_cell,
                     cur_pos: self.cur_pos,
                     logits_i: self.logits_i,
+                    prefill_start_us: self.start_us,
                 });
             }
         }
@@ -164,7 +166,7 @@ impl Iterator for TokenPuller {
         if let Some(ev) = self.pre_events.pop_front() {
             return Some(Ok(ev));
         }
-        if self.stopped.load(Ordering::SeqCst) {
+        if self.stopped.load(Ordering::Acquire) {
             let stats = self.stats_now();
             self.hooks.emit(HookEvent::FinalStats {
                 session_id: self.session_id,
@@ -173,7 +175,7 @@ impl Iterator for TokenPuller {
             self.done = true;
             return Some(Ok(TokenEvent::Stopped));
         }
-        if self.paused.load(Ordering::SeqCst) {
+        if self.paused.load(Ordering::Acquire) {
             return Some(Ok(TokenEvent::Paused));
         }
         if let Some(limit) = self.max_tokens {

@@ -168,6 +168,9 @@ impl Settings {
         if self.system.ctx_size.is_none() {
             self.system.ctx_size = defaults.system.ctx_size;
         }
+        if self.system.flash_attn.is_none() {
+            self.system.flash_attn = defaults.system.flash_attn;
+        }
 
         if self.prompt.system_prompt.is_none() {
             self.prompt.system_prompt = defaults.prompt.system_prompt.clone();
@@ -217,6 +220,7 @@ pub struct SystemSettings {
     pub batch_size: Option<u32>,
     pub gpu_layers: Option<u32>,
     pub ctx_size: Option<u32>,
+    pub flash_attn: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default)]
@@ -254,6 +258,7 @@ mod tests {
                 batch_size: Some(64),
                 gpu_layers: None,
                 ctx_size: Some(2048),
+                flash_attn: Some(true),
             },
             prompt: PromptSettings::default(),
             mm: MmSettings::default(),
@@ -292,6 +297,7 @@ mod tests {
                 batch_size: Some(64),
                 gpu_layers: Some(1),
                 ctx_size: Some(4096),
+                flash_attn: Some(true),
             },
             prompt: PromptSettings {
                 system_prompt: Some("Act like a helpful assistant".into()),
@@ -335,6 +341,7 @@ mod tests {
         );
         assert_eq!(overrides.mm.image_size, Some((256, 256)));
         assert_eq!(overrides.mm.audio_sample_rate, Some(44_100));
+        assert_eq!(overrides.system.flash_attn, Some(true));
     }
 
     #[test]

@@ -62,28 +62,28 @@ pub enum ControllerCmd {
     StartChat {
         chat_id: String,
         messages: Vec<Message>,
-        r#gen: GenSpec,
+        gen_spec: GenSpec,
         tx: Sender<ControllerEvent>,
     },
     /// Continue an existing chat session with newly appended messages.
     ContinueChat {
         chat_id: String,
         new_messages: Vec<Message>,
-        r#gen: GenSpec,
+        gen_spec: GenSpec,
         tx: Sender<ControllerEvent>,
     },
     /// Generate a title for a chat (ephemeral session, auto-cleaned).
     CreateTitle {
         chat_id: String,
         messages: Vec<Message>,
-        r#gen: GenSpec,
+        gen_spec: GenSpec,
         tx: Sender<ControllerEvent>,
     },
     /// Generate follow-up suggestions (ephemeral-style generation).
     CreateSuggestions {
         chat_id: String,
         messages: Vec<Message>,
-        r#gen: GenSpec,
+        gen_spec: GenSpec,
         tx: Sender<ControllerEvent>,
     },
     /// Abort and remove a chat session.
@@ -225,6 +225,7 @@ fn stop_notify_and_end(engine: &Engine, mut chat: ChatStream) {
     let sid = chat.session.id();
     let _ = chat.session.stop();
     let _ = chat.tx.send(ControllerEvent::Stopped);
+    engine.hooks().deregister(sid);
     let _ = engine.end_session(sid);
 }
 
@@ -376,6 +377,7 @@ fn dispatch_cmd(
                 for (_, chat) in chats.drain() {
                     stop_notify_and_end(engine, chat);
                 }
+                engine.hooks().clear();
             }
             let _ = resp.send(r);
             ControlFlow::Continue
@@ -417,10 +419,9 @@ fn dispatch_cmd(
         ControllerCmd::StartChat {
             chat_id,
             messages,
-            r#gen,
+            gen_spec,
             tx,
         } => {
-            let gen_spec = r#gen;
             if let Some(chat) = chats.get_mut(&chat_id) {
                 chat.last_used = Instant::now();
                 chat.tx = tx.clone();
@@ -468,13 +469,14 @@ fn dispatch_cmd(
                     }
                     Ok(session) => {
                         let sid = session.id();
-                        engine.hooks().register(Arc::new(Forwarder {
+                        engine.hooks().register_with_id(sid, Arc::new(Forwarder {
                             sid,
                             tx: tx.clone(),
                         }));
                         let pull_spec = apply_generation_defaults(engine, gen_spec);
                         match session.pull(pull_spec) {
                             Err(e) => {
+                                engine.hooks().deregister(sid);
                                 let _ = engine.end_session(sid);
                                 let _ = tx.send(ControllerEvent::Error(format!("{:?}", e)));
                             }
@@ -505,7 +507,7 @@ fn dispatch_cmd(
         ControllerCmd::ContinueChat {
             chat_id,
             new_messages,
-            r#gen,
+            gen_spec,
             tx,
         } => {
             // Resume from last point on the same Session
@@ -525,7 +527,7 @@ fn dispatch_cmd(
                     _ => {}
                 }
 
-                let pull_spec = apply_generation_defaults(engine, r#gen);
+                let pull_spec = apply_generation_defaults(engine, gen_spec);
                 match chat.session.pull(pull_spec) {
                     Ok(puller) => {
                         chat.puller = Some(puller);
@@ -547,7 +549,7 @@ fn dispatch_cmd(
         ControllerCmd::CreateSuggestions {
             chat_id,
             messages,
-            r#gen,
+            gen_spec,
             tx,
         } => {
             if let Some(chat) = chats.get_mut(&chat_id) {
@@ -566,7 +568,7 @@ fn dispatch_cmd(
                     Ok(_) => {}
                 }
 
-                let gen_spec = apply_generation_defaults(engine, r#gen);
+                let gen_spec = apply_generation_defaults(engine, gen_spec);
                 chat.tx = tx.clone();
                 match chat.session.pull(gen_spec) {
                     Ok(puller) => {
@@ -590,7 +592,7 @@ fn dispatch_cmd(
         ControllerCmd::CreateTitle {
             mut chat_id,
             messages,
-            r#gen,
+            gen_spec,
             tx,
         } => {
             // ensure uniqueness (don’t collide with live chats)
@@ -606,7 +608,7 @@ fn dispatch_cmd(
                 chat_id = base;
             }
 
-            let gen_spec = apply_generation_defaults(engine, r#gen);
+            let gen_spec = apply_generation_defaults(engine, gen_spec);
 
             match engine.start_session(SessionSpec {
                 messages,
@@ -617,8 +619,7 @@ fn dispatch_cmd(
                 }
                 Ok(session) => {
                     let sid = session.id();
-                    // Optional: if you want stats for this too
-                    engine.hooks().register(Arc::new(Forwarder {
+                    engine.hooks().register_with_id(sid, Arc::new(Forwarder {
                         sid,
                         tx: tx.clone(),
                     }));
