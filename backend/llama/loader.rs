@@ -19,6 +19,9 @@ pub(crate) fn build_bundle(
     backend: &Arc<LlamaBackend>,
     req: &LoadRequest,
 ) -> Result<ModelBundle, ExecError> {
+    // Validate model file before passing to llama-cpp (prevents C FFI hang on empty/corrupt files)
+    crate::gen2::engine::validate_model_file(&req.model_path)?;
+
     // Load primary model
     let mut model_params = LlamaModelParams::default().with_use_mlock(true);
     if let Some(gpu_layers) = req.model_params.gpu_layers {
@@ -160,6 +163,9 @@ pub(crate) fn build_embedder(
     backend: &Arc<LlamaBackend>,
     req: &EmbedLoadRequest,
 ) -> Result<LlamaEmbedder, ExecError> {
+    // Validate embedder file before passing to llama-cpp
+    crate::gen2::engine::validate_model_file(&req.model_path)?;
+
     let config = ModelConfig::default();
     LlamaEmbedder::load_from_path(backend.clone(), &req.model_path, config)
         .with_context(|| format!("failed to load embedder: {}", req.model_path.display()))

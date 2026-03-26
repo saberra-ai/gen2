@@ -18,6 +18,8 @@ pub enum ExecError {
     KvIncompatible(String),
     #[error("kv corrupt: {0}")]
     KvCorrupt(String),
+    #[error("invalid model file: {0}")]
+    InvalidModelFile(String),
     #[error("io error: {0}")]
     Io(String),
     #[error("unimplemented in milestone 0")]
