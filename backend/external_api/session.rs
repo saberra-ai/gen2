@@ -191,6 +191,10 @@ impl Session {
                             .join("")
                     }
                 },
+                MessageBody::Tool { .. } => {
+                    // Tool call messages are not sent to external API; skip
+                    continue;
+                }
             };
 
             api_msgs.push(serde_json::json!({

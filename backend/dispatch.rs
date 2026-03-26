@@ -24,6 +24,11 @@ pub enum ModelBundle {
     Mlx(Arc<super::mlx::ModelBundle>),
     #[cfg(feature = "backend-onnx")]
     Onnx(Arc<super::onnx::ModelBundle>),
+    /// ExternalApi has no local model bundle — the server manages the model.
+    /// This variant exists only so the enum is non-empty when only external-api
+    /// is compiled.
+    #[cfg(feature = "backend-external-api")]
+    ExternalApi,
 }
 
 impl std::fmt::Debug for ModelBundle {
@@ -35,6 +40,8 @@ impl std::fmt::Debug for ModelBundle {
             Self::Mlx(b) => b.fmt(f),
             #[cfg(feature = "backend-onnx")]
             Self::Onnx(b) => b.fmt(f),
+            #[cfg(feature = "backend-external-api")]
+            Self::ExternalApi => f.debug_struct("ModelBundle(ExternalApi)").finish(),
         }
     }
 }
@@ -53,6 +60,8 @@ pub enum Engine {
     Mlx(super::mlx::Engine),
     #[cfg(feature = "backend-onnx")]
     Onnx(super::onnx::Engine),
+    #[cfg(feature = "backend-external-api")]
+    ExternalApi(super::external_api::Engine),
     /// Sentinel used before the first `load_model` call when the default
     /// backend is constructed.
     Uninit,
@@ -67,18 +76,32 @@ impl std::fmt::Debug for Engine {
             Self::Mlx(e) => e.fmt(f),
             #[cfg(feature = "backend-onnx")]
             Self::Onnx(e) => e.fmt(f),
+            #[cfg(feature = "backend-external-api")]
+            Self::ExternalApi(e) => e.fmt(f),
             Self::Uninit => f.debug_struct("Engine(Uninit)").finish(),
         }
     }
 }
 
 /// Detect which backend to use from the model path:
+///  - URL (`http://` or `https://`) → ExternalApi
 ///  - `.gguf` file → LlamaCpp
 ///  - directory with `*.safetensors` → MLX (Apple only)
 ///  - `.onnx` file or dir with `model.onnx` → ONNX
 #[allow(unused_variables)]
 fn detect_backend(req: &LoadRequest) -> Result<BackendKind, ExecError> {
     let path = &req.model_path;
+
+    // URL detection — external API server
+    let path_str = path.to_str().unwrap_or("");
+    if path_str.starts_with("http://") || path_str.starts_with("https://") {
+        #[cfg(feature = "backend-external-api")]
+        return Ok(BackendKind::ExternalApi);
+        #[cfg(not(feature = "backend-external-api"))]
+        return Err(ExecError::Other(anyhow::anyhow!(
+            "External API backend not compiled"
+        )));
+    }
 
     if path.is_file() {
         if let Some(ext) = path.extension().and_then(|e| e.to_str()) {
@@ -131,6 +154,8 @@ enum BackendKind {
     LlamaCpp,
     Mlx,
     Onnx,
+    #[cfg(feature = "backend-external-api")]
+    ExternalApi,
 }
 
 impl Engine {
@@ -143,6 +168,8 @@ impl Engine {
             Self::Mlx(_) => "mlx",
             #[cfg(feature = "backend-onnx")]
             Self::Onnx(_) => "onnx",
+            #[cfg(feature = "backend-external-api")]
+            Self::ExternalApi(_) => "external-api",
             Self::Uninit => "none",
         }
     }
@@ -156,6 +183,8 @@ impl Engine {
         v.push("mlx");
         #[cfg(feature = "backend-onnx")]
         v.push("onnx");
+        #[cfg(feature = "backend-external-api")]
+        v.push("external-api");
         v
     }
 
@@ -169,6 +198,8 @@ impl Engine {
             Ok(BackendKind::LlamaCpp) => "llamacpp",
             Ok(BackendKind::Mlx) => "mlx",
             Ok(BackendKind::Onnx) => "onnx",
+            #[cfg(feature = "backend-external-api")]
+            Ok(BackendKind::ExternalApi) => "external-api",
             Err(_) => "unknown",
         }
     }
@@ -212,6 +243,8 @@ impl Engine {
             Self::Mlx(e) => e.load_model(req),
             #[cfg(feature = "backend-onnx")]
             Self::Onnx(e) => e.load_model(req),
+            #[cfg(feature = "backend-external-api")]
+            Self::ExternalApi(e) => e.load_model(req),
             Self::Uninit => Err(ExecError::Other(anyhow::anyhow!(
                 "no backend for model format"
             ))),
@@ -227,6 +260,8 @@ impl Engine {
             (Self::Mlx(_), BackendKind::Mlx) => false,
             #[cfg(feature = "backend-onnx")]
             (Self::Onnx(_), BackendKind::Onnx) => false,
+            #[cfg(feature = "backend-external-api")]
+            (Self::ExternalApi(_), BackendKind::ExternalApi) => false,
             _ => true,
         };
         if !needs_switch {
@@ -239,6 +274,8 @@ impl Engine {
             BackendKind::Mlx => Self::Mlx(super::mlx::Engine::new()),
             #[cfg(feature = "backend-onnx")]
             BackendKind::Onnx => Self::Onnx(super::onnx::Engine::new()),
+            #[cfg(feature = "backend-external-api")]
+            BackendKind::ExternalApi => Self::ExternalApi(super::external_api::Engine::new()),
             // Backend not compiled in
             #[allow(unreachable_patterns)]
             _ => Self::Uninit,
@@ -283,6 +320,10 @@ impl Engine {
             Self::Mlx(e) => e.start_session(spec).map(|s| Arc::new(Session::Mlx(s))),
             #[cfg(feature = "backend-onnx")]
             Self::Onnx(e) => e.start_session(spec).map(|s| Arc::new(Session::Onnx(s))),
+            #[cfg(feature = "backend-external-api")]
+            Self::ExternalApi(e) => e
+                .start_session(spec)
+                .map(|s| Arc::new(Session::ExternalApi(s))),
             Self::Uninit => Err(ExecError::ModelNotLoaded),
         }
     }
@@ -336,6 +377,8 @@ macro_rules! dispatch {
             Self::Mlx($e) => $call,
             #[cfg(feature = "backend-onnx")]
             Self::Onnx($e) => $call,
+            #[cfg(feature = "backend-external-api")]
+            Self::ExternalApi($e) => $call,
             Self::Uninit => $default,
         }
     };
@@ -348,6 +391,8 @@ macro_rules! dispatch {
             Self::Mlx($e) => $call,
             #[cfg(feature = "backend-onnx")]
             Self::Onnx($e) => $call,
+            #[cfg(feature = "backend-external-api")]
+            Self::ExternalApi($e) => $call,
             Self::Uninit => Err(ExecError::ModelNotLoaded),
         }
     };
@@ -362,6 +407,8 @@ macro_rules! dispatch_void {
             Self::Mlx($e) => $call,
             #[cfg(feature = "backend-onnx")]
             Self::Onnx($e) => $call,
+            #[cfg(feature = "backend-external-api")]
+            Self::ExternalApi($e) => $call,
             Self::Uninit => {}
         }
     };
@@ -380,6 +427,8 @@ pub enum Session {
     Mlx(Arc<super::mlx::Session>),
     #[cfg(feature = "backend-onnx")]
     Onnx(Arc<super::onnx::Session>),
+    #[cfg(feature = "backend-external-api")]
+    ExternalApi(Arc<super::external_api::Session>),
 }
 
 impl std::fmt::Debug for Session {
@@ -391,6 +440,8 @@ impl std::fmt::Debug for Session {
             Self::Mlx(s) => write!(f, "Session::Mlx(id={})", s.id),
             #[cfg(feature = "backend-onnx")]
             Self::Onnx(s) => write!(f, "Session::Onnx(id={})", s.id),
+            #[cfg(feature = "backend-external-api")]
+            Self::ExternalApi(s) => write!(f, "Session::ExternalApi(id={})", s.id),
         }
     }
 }
@@ -405,6 +456,8 @@ macro_rules! session_dispatch {
             Self::Mlx($s) => $call,
             #[cfg(feature = "backend-onnx")]
             Self::Onnx($s) => $call,
+            #[cfg(feature = "backend-external-api")]
+            Self::ExternalApi($s) => $call,
         }
     };
 }
@@ -434,6 +487,8 @@ impl Session {
             Self::Mlx(s) => s.pull(gen_spec).map(TokenPuller::Mlx),
             #[cfg(feature = "backend-onnx")]
             Self::Onnx(s) => s.pull(gen_spec).map(TokenPuller::Onnx),
+            #[cfg(feature = "backend-external-api")]
+            Self::ExternalApi(s) => s.pull(gen_spec).map(TokenPuller::ExternalApi),
         }
     }
 
@@ -453,6 +508,8 @@ pub enum TokenPuller {
     Mlx(super::mlx::TokenPuller),
     #[cfg(feature = "backend-onnx")]
     Onnx(super::onnx::TokenPuller),
+    #[cfg(feature = "backend-external-api")]
+    ExternalApi(super::external_api::TokenPuller),
 }
 
 impl Iterator for TokenPuller {
@@ -466,6 +523,8 @@ impl Iterator for TokenPuller {
             Self::Mlx(p) => p.next(),
             #[cfg(feature = "backend-onnx")]
             Self::Onnx(p) => p.next(),
+            #[cfg(feature = "backend-external-api")]
+            Self::ExternalApi(p) => p.next(),
         }
     }
 }

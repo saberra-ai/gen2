@@ -15,9 +15,17 @@ pub(crate) mod mlx;
 #[cfg(feature = "backend-onnx")]
 pub(crate) mod onnx;
 
+#[cfg(feature = "backend-external-api")]
+pub(crate) mod external_api;
+
 // Compile-time guard: at least one backend must be selected.
-#[cfg(not(any(feature = "backend-llamacpp", feature = "backend-mlx", feature = "backend-onnx")))]
-compile_error!("No inference backend selected. Enable at least one of: backend-llamacpp, backend-mlx, backend-onnx");
+#[cfg(not(any(
+    feature = "backend-llamacpp",
+    feature = "backend-mlx",
+    feature = "backend-onnx",
+    feature = "backend-external-api"
+)))]
+compile_error!("No inference backend selected. Enable at least one of: backend-llamacpp, backend-mlx, backend-onnx, backend-external-api");
 
 mod dispatch;
 pub use dispatch::{Engine, ModelBundle, Session, SessionId, TokenPuller};
