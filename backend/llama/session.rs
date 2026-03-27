@@ -357,7 +357,7 @@ impl Session {
             .map_err(|e| ExecError::Other(e.into()))?;
 
         // Tokenize prompt
-        let tokens_list = bundle
+        let mut tokens_list = bundle
             .model
             .str_to_token(&prompt, AddBos::Always)
             .map_err(|e| ExecError::Other(e.into()))?;
@@ -367,6 +367,33 @@ impl Session {
             .system
             .ctx_size
             .unwrap_or(bundle.meta.n_ctx.max(128));
+
+        // Context overflow: truncate old messages until conversation fits
+        let generation_reserve = 256_usize;
+        let ctx_limit = (ctx_size as usize).saturating_sub(generation_reserve);
+        if tokens_list.len() > ctx_limit && messages.len() > 2 {
+            tracing::warn!(
+                "initial context overflow: {} tokens > {} limit, truncating conversation",
+                tokens_list.len(),
+                ctx_limit
+            );
+            while tokens_list.len() > ctx_limit && messages.len() > 2 {
+                let first_is_system = messages
+                    .first()
+                    .map(|m| m.role == "system")
+                    .unwrap_or(false);
+                let remove_idx = if first_is_system { 1 } else { 0 };
+                messages.remove(remove_idx);
+
+                let truncated_prompt = chat_template
+                    .apply(messages.clone(), None, None)
+                    .map_err(|e| ExecError::Other(e.into()))?;
+                tokens_list = bundle
+                    .model
+                    .str_to_token(&truncated_prompt, AddBos::Always)
+                    .map_err(|e| ExecError::Other(e.into()))?;
+            }
+        }
         let batch_size = settings.system.batch_size.unwrap_or(128);
         let mut ctx_params = LlamaContextParams::default()
             .with_n_ctx(NonZeroU32::new(ctx_size))
@@ -617,13 +644,104 @@ impl Session {
             .str_to_token(&full_prompt, AddBos::Always)
             .map_err(|e| ExecError::Other(e.into()))?;
 
-        // 4) Prefill delta into the existing context
+        // 4) Context overflow check — if the full conversation exceeds the context
+        //    window, clear KV cache, truncate old messages, and re-encode from scratch.
+        let ctx_size = self
+            .settings
+            .system
+            .ctx_size
+            .unwrap_or(self.bundle.meta.n_ctx.max(128)) as usize;
+        let generation_reserve = 256; // tokens reserved for model output
+        let ctx_limit = ctx_size.saturating_sub(generation_reserve);
+
         let mut guard = self.state.lock();
         let st = guard
             .as_mut()
             .ok_or(ExecError::InvalidArg("session already consumed"))?;
 
-        // Token delta: slice beyond what's already in the KV cache
+        if full_tokens.len() > ctx_limit {
+            // Context overflow — reset and re-encode with truncated conversation
+            tracing::warn!(
+                "context overflow: {} tokens > {} limit, truncating conversation",
+                full_tokens.len(),
+                ctx_limit
+            );
+
+            // Clear KV cache
+            st.ctx_cell.with_dependent_mut(|_, ctx| ctx.clear_kv_cache());
+            st.cur_pos = 0;
+
+            // Drop oldest non-system messages until conversation fits
+            let mut msgs = self.messages.write();
+            while msgs.len() > 2 {
+                // Keep at least system prompt (if any) + last user message
+                let first_is_system = msgs
+                    .first()
+                    .map(|m| m.role == "system")
+                    .unwrap_or(false);
+                let remove_idx = if first_is_system { 1 } else { 0 };
+                msgs.remove(remove_idx);
+
+                // Re-render and re-tokenize to check fit
+                let check_msgs = msgs.clone();
+                drop(msgs);
+                let check_prompt = tpl
+                    .apply(check_msgs, None, None)
+                    .map_err(|e| ExecError::Other(e.into()))?;
+                let check_tokens = self
+                    .bundle
+                    .model
+                    .str_to_token(&check_prompt, AddBos::Always)
+                    .map_err(|e| ExecError::Other(e.into()))?;
+                if check_tokens.len() <= ctx_limit {
+                    // Fits — prefill the truncated conversation from scratch
+                    let remaining = check_tokens;
+                    let batch_size = self.settings.system.batch_size.unwrap_or(128) as usize;
+                    let mut batch = LlamaBatch::new(batch_size, 1);
+                    let mut to_process = remaining;
+
+                    self.hooks.emit(HookEvent::SessionPrefillStart {
+                        session_id: self.id,
+                        prompt_tokens: to_process.len(),
+                    });
+
+                    let mut last_batch_tokens: i32 = 0;
+                    while !to_process.is_empty() {
+                        let chunk_size = to_process.len().min(batch_size);
+                        let chunk: Vec<_> = to_process.drain(..chunk_size).collect();
+                        batch.clear();
+                        for (i, token) in chunk.into_iter().enumerate() {
+                            let absolute = st.cur_pos + i as i32;
+                            let is_last = (i + 1 == chunk_size) && to_process.is_empty();
+                            batch
+                                .add(token, absolute, &[0], is_last)
+                                .map_err(|_| ExecError::Other(anyhow::anyhow!("batch add error")))?;
+                        }
+                        st.ctx_cell
+                            .with_dependent_mut(|_, ctx| ctx.decode(&mut batch))
+                            .map_err(|_| ExecError::Other(anyhow::anyhow!(
+                                "decode failed after context truncation"
+                            )))?;
+                        st.cur_pos += chunk_size as i32;
+                        last_batch_tokens = batch.n_tokens();
+                    }
+                    st.logits_i = (last_batch_tokens - 1).max(0);
+
+                    self.hooks.emit(HookEvent::SessionPrefillOk {
+                        session_id: self.id,
+                        prompt_tokens: st.cur_pos as usize,
+                    });
+                    return Ok(());
+                }
+                msgs = self.messages.write();
+            }
+            return Err(ExecError::Other(anyhow::anyhow!(
+                "conversation too long even after truncation (ctx_size={})",
+                ctx_size
+            )));
+        }
+
+        // Normal path — no overflow, prefill only the delta
         let kv_pos = st.cur_pos as usize;
         let mut remaining: Vec<_> = if kv_pos < full_tokens.len() {
             full_tokens[kv_pos..].to_vec()

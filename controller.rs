@@ -438,6 +438,7 @@ fn dispatch_cmd(
                 match chat.session.append_messages(last_vec) {
                     Err(e) => {
                         let _ = tx.send(ControllerEvent::Error(format!("{:?}", e)));
+                        return ControlFlow::Continue;
                     }
                     _ => {}
                 }
@@ -526,6 +527,7 @@ fn dispatch_cmd(
                 match chat.session.append_messages(new_messages) {
                     Err(e) => {
                         let _ = tx.send(ControllerEvent::Error(format!("{:?}", e)));
+                        return ControlFlow::Continue;
                     }
                     _ => {}
                 }
