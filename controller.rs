@@ -177,6 +177,7 @@ struct ChatStream {
     finished: bool,
     ephemeral: bool,
     last_used: Instant, // ⬅ NEW: track most recent access
+    last_gen_spec: GenSpec, // stored for puller recreation on resume
 }
 
 /// Hook listener forwarding final stats for a specific session id back to the UI channel.
@@ -442,11 +443,12 @@ fn dispatch_cmd(
                 }
 
                 let pull_spec = apply_generation_defaults(engine, gen_spec.clone());
-                match chat.session.pull(pull_spec) {
+                match chat.session.pull(pull_spec.clone()) {
                     Ok(puller) => {
                         chat.puller = Some(puller);
                         chat.paused = false;
                         chat.finished = false;
+                        chat.last_gen_spec = pull_spec;
                     }
                     Err(e) => {
                         let _ = tx.send(ControllerEvent::Error(format!("{:?}", e)));
@@ -474,7 +476,7 @@ fn dispatch_cmd(
                             tx: tx.clone(),
                         }));
                         let pull_spec = apply_generation_defaults(engine, gen_spec);
-                        match session.pull(pull_spec) {
+                        match session.pull(pull_spec.clone()) {
                             Err(e) => {
                                 engine.hooks().deregister(sid);
                                 let _ = engine.end_session(sid);
@@ -491,6 +493,7 @@ fn dispatch_cmd(
                                         finished: false,
                                         ephemeral: false, // <-- key bit
                                         last_used: Instant::now(),
+                                        last_gen_spec: pull_spec,
                                     },
                                 );
                                 if let Some(evicted_chat) = evicted {
@@ -528,11 +531,12 @@ fn dispatch_cmd(
                 }
 
                 let pull_spec = apply_generation_defaults(engine, gen_spec);
-                match chat.session.pull(pull_spec) {
+                match chat.session.pull(pull_spec.clone()) {
                     Ok(puller) => {
                         chat.puller = Some(puller);
                         chat.paused = false;
                         chat.finished = false;
+                        chat.last_gen_spec = pull_spec;
                     }
                     Err(e) => {
                         let _ = tx.send(ControllerEvent::Error(format!("{:?}", e)));
@@ -570,11 +574,12 @@ fn dispatch_cmd(
 
                 let gen_spec = apply_generation_defaults(engine, gen_spec);
                 chat.tx = tx.clone();
-                match chat.session.pull(gen_spec) {
+                match chat.session.pull(gen_spec.clone()) {
                     Ok(puller) => {
                         chat.puller = Some(puller);
                         chat.paused = false;
                         chat.finished = false;
+                        chat.last_gen_spec = gen_spec;
                     }
                     Err(e) => {
                         let _ = tx.send(ControllerEvent::Error(format!("{:?}", e)));
@@ -623,7 +628,7 @@ fn dispatch_cmd(
                         sid,
                         tx: tx.clone(),
                     }));
-                    match session.pull(gen_spec) {
+                    match session.pull(gen_spec.clone()) {
                         Err(e) => {
                             let _ = tx.send(ControllerEvent::Error(format!("{:?}", e)));
                         }
@@ -639,6 +644,7 @@ fn dispatch_cmd(
                                     finished: false,
                                     ephemeral: true, // <-- key bit
                                     last_used: Instant::now(),
+                                    last_gen_spec: gen_spec,
                                 },
                             );
                         }
@@ -664,7 +670,21 @@ fn dispatch_cmd(
         ControllerCmd::ResumeChat { chat_id } => {
             if let Some(chat) = chats.get_mut(&chat_id) {
                 chat.paused = false;
-                let _ = chat.session.resume(); // or chat.puller.cancel();
+                let _ = chat.session.resume();
+                // Recreate the puller that was dropped during pause
+                if chat.puller.is_none() {
+                    match chat.session.pull(chat.last_gen_spec.clone()) {
+                        Ok(puller) => {
+                            chat.puller = Some(puller);
+                            chat.finished = false;
+                        }
+                        Err(e) => {
+                            let _ = chat.tx.send(ControllerEvent::Error(format!(
+                                "failed to resume generation: {:?}", e
+                            )));
+                        }
+                    }
+                }
             }
             ControlFlow::Continue
         }
