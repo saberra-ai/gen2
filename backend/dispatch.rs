@@ -492,7 +492,7 @@ impl Session {
         }
     }
 
-    pub fn append_messages(&self, new_messages: Vec<Message>) -> Result<(), ExecError> {
+    pub fn append_messages(&self, new_messages: Vec<Message>) -> Result<usize, ExecError> {
         session_dispatch!(self, s => s.append_messages(new_messages))
     }
 }

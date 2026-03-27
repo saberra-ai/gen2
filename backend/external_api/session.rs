@@ -140,13 +140,13 @@ impl Session {
         ))
     }
 
-    pub fn append_messages(&self, new_messages: Vec<Message>) -> Result<(), ExecError> {
+    pub fn append_messages(&self, new_messages: Vec<Message>) -> Result<usize, ExecError> {
         if new_messages.is_empty() {
-            return Ok(());
+            return Ok(0);
         }
         let mut msgs = self.messages.write();
         msgs.extend(new_messages);
-        Ok(())
+        Ok(0)
     }
 
     /// Convert internal Message types to OpenAI-compatible JSON messages.

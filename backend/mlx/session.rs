@@ -178,9 +178,9 @@ impl Session {
     }
 
     /// Append new messages and prefill the delta.
-    pub fn append_messages(&self, new_messages: Vec<Message>) -> Result<(), ExecError> {
+    pub fn append_messages(&self, new_messages: Vec<Message>) -> Result<usize, ExecError> {
         if new_messages.is_empty() {
-            return Ok(());
+            return Ok(0);
         }
 
         {
@@ -216,7 +216,7 @@ impl Session {
             .map_err(|e| ExecError::Other(e))?;
 
         if delta_tokens.is_empty() {
-            return Ok(());
+            return Ok(0);
         }
 
         let mut guard = self.state.lock();
@@ -241,7 +241,7 @@ impl Session {
             prompt_tokens: delta_tokens.len(),
         });
 
-        Ok(())
+        Ok(0)
     }
 
     fn load_chat_template_str() -> Option<String> {

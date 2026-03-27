@@ -123,6 +123,8 @@ pub enum ControllerEvent {
     Error(String),
     /// Final execution statistics for the completed generation.
     FinalStats(ExecutionStats),
+    /// Context was truncated — N old messages dropped to fit context window.
+    ContextTruncated(usize),
 }
 
 #[derive(Clone)]
@@ -440,6 +442,9 @@ fn dispatch_cmd(
                         let _ = tx.send(ControllerEvent::Error(format!("{:?}", e)));
                         return ControlFlow::Continue;
                     }
+                    Ok(dropped) if dropped > 0 => {
+                        let _ = tx.send(ControllerEvent::ContextTruncated(dropped));
+                    }
                     _ => {}
                 }
 
@@ -528,6 +533,9 @@ fn dispatch_cmd(
                     Err(e) => {
                         let _ = tx.send(ControllerEvent::Error(format!("{:?}", e)));
                         return ControlFlow::Continue;
+                    }
+                    Ok(dropped) if dropped > 0 => {
+                        let _ = tx.send(ControllerEvent::ContextTruncated(dropped));
                     }
                     _ => {}
                 }

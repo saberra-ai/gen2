@@ -592,9 +592,10 @@ impl Session {
 
 impl Session {
     /// Append new messages and prefill only the delta into the KV.
-    pub fn append_messages(&self, new_messages: Vec<Message>) -> Result<(), ExecError> {
+    /// Returns the number of old messages dropped due to context overflow (0 = no truncation).
+    pub fn append_messages(&self, new_messages: Vec<Message>) -> Result<usize, ExecError> {
         if new_messages.is_empty() {
-            return Ok(());
+            return Ok(0);
         }
 
         // 1) Extend transcript safely
@@ -673,6 +674,7 @@ impl Session {
 
             // Drop oldest non-system messages until conversation fits
             let mut msgs = self.messages.write();
+            let mut dropped = 0_usize;
             while msgs.len() > 2 {
                 // Keep at least system prompt (if any) + last user message
                 let first_is_system = msgs
@@ -681,6 +683,7 @@ impl Session {
                     .unwrap_or(false);
                 let remove_idx = if first_is_system { 1 } else { 0 };
                 msgs.remove(remove_idx);
+                dropped += 1;
 
                 // Re-render and re-tokenize to check fit
                 let check_msgs = msgs.clone();
@@ -731,7 +734,7 @@ impl Session {
                         session_id: self.id,
                         prompt_tokens: st.cur_pos as usize,
                     });
-                    return Ok(());
+                    return Ok(dropped);
                 }
                 msgs = self.messages.write();
             }
@@ -750,7 +753,7 @@ impl Session {
         };
 
         if remaining.is_empty() {
-            return Ok(());
+            return Ok(0);
         }
 
         let batch_size = self.settings.system.batch_size.unwrap_or(128) as usize;
@@ -793,6 +796,6 @@ impl Session {
             prompt_tokens: delta_len as usize,
         });
 
-        Ok(())
+        Ok(0)
     }
 }

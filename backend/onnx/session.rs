@@ -191,9 +191,9 @@ impl Session {
         })
     }
 
-    pub fn append_messages(&self, new_messages: Vec<Message>) -> Result<(), ExecError> {
+    pub fn append_messages(&self, new_messages: Vec<Message>) -> Result<usize, ExecError> {
         if new_messages.is_empty() {
-            return Ok(());
+            return Ok(0);
         }
 
         {
@@ -225,7 +225,7 @@ impl Session {
             .map_err(|e| ExecError::Other(e))?;
 
         if delta_tokens.is_empty() {
-            return Ok(());
+            return Ok(0);
         }
 
         let mut guard = self.state.lock();
@@ -273,7 +273,7 @@ impl Session {
             prompt_tokens: delta_len,
         });
 
-        Ok(())
+        Ok(0)
     }
 
     fn extract_kv_cache(
