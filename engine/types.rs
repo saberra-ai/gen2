@@ -11,6 +11,14 @@ pub struct LoadRequest {
     pub model_params: ModelParamsInput,
     pub ctx_params: CtxParamsInput,
     pub template_override: Option<ChatTemplateSpec>,
+    /// API key for external API backends. Set programmatically from the OS keychain
+    /// at load time — never deserialized from JSON, never logged.
+    #[serde(skip)]
+    pub api_key: Option<String>,
+    /// API format for external API backends: "openai" (default) or "anthropic".
+    /// Set programmatically from config, not deserialized.
+    #[serde(skip)]
+    pub api_format: Option<String>,
 }
 
 #[derive(Deserialize, Clone, Debug, Default)]

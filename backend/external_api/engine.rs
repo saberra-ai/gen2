@@ -22,6 +22,8 @@ use super::session::{Session, SessionId};
 pub struct Engine {
     server_url: RwLock<String>,
     model_id: RwLock<String>,
+    api_key: RwLock<Option<String>>,
+    api_format: RwLock<String>,
     client: reqwest::blocking::Client,
     loaded: AtomicBool,
     sessions: DashMap<SessionId, ()>,
@@ -48,6 +50,8 @@ impl Engine {
         Self {
             server_url: RwLock::new(String::new()),
             model_id: RwLock::new(String::new()),
+            api_key: RwLock::new(None),
+            api_format: RwLock::new("openai".into()),
             client: reqwest::blocking::Client::builder()
                 .timeout(std::time::Duration::from_secs(300))
                 .build()
@@ -77,9 +81,27 @@ impl Engine {
         // Parse server URL: strip trailing slash for consistency
         let base_url = url_str.trim_end_matches('/').to_string();
 
-        // Try to validate connectivity by hitting /models endpoint
+        // Apply API key and format from the load request
+        if let Some(ref key) = req.api_key {
+            *self.api_key.write() = Some(key.clone());
+        }
+        if let Some(ref fmt) = req.api_format {
+            *self.api_format.write() = fmt.clone();
+        }
+
+        let api_format = self.api_format.read().clone();
+        let api_key = self.api_key.read().clone();
+
+        // Validate connectivity (Anthropic doesn't have /models)
+        if api_format == "anthropic" {
+            tracing::info!("external_api: configured for Anthropic at {}", base_url);
+        } else {
         let models_url = format!("{}/models", base_url);
-        match self.client.get(&models_url).send() {
+        let mut check = self.client.get(&models_url);
+        if let Some(ref key) = api_key {
+            check = check.header("Authorization", format!("Bearer {}", key));
+        }
+        match check.send() {
             Ok(resp) if resp.status().is_success() => {
                 tracing::info!(
                     "external_api: connected to {} (models endpoint OK)",
@@ -101,6 +123,7 @@ impl Engine {
                 )));
             }
         }
+        } // end openai connectivity check
 
         *self.server_url.write() = base_url;
         // Default model_id — can be overridden via config
@@ -173,11 +196,15 @@ impl Engine {
         let id = self.next_session_id.fetch_add(1, Ordering::SeqCst);
         let server_url = self.server_url.read().clone();
         let model_id = self.model_id.read().clone();
+        let api_key = self.api_key.read().clone();
+        let api_format = self.api_format.read().clone();
 
         let session = Arc::new(Session::new(
             id,
             server_url,
             model_id,
+            api_key,
+            api_format,
             self.client.clone(),
             self.hooks.clone(),
             settings,
@@ -227,6 +254,8 @@ impl Engine {
         self.loaded.store(false, Ordering::SeqCst);
         *self.server_url.write() = String::new();
         *self.model_id.write() = String::new();
+        *self.api_key.write() = None;
+        *self.api_format.write() = "openai".into();
     }
 
     pub fn unload_embedder(&self) {
@@ -236,5 +265,13 @@ impl Engine {
     /// Set the model_id (called from config layer when user provides external_model_id).
     pub fn set_model_id(&self, id: String) {
         *self.model_id.write() = id;
+    }
+
+    pub fn set_api_key(&self, key: Option<String>) {
+        *self.api_key.write() = key;
+    }
+
+    pub fn set_api_format(&self, format: String) {
+        *self.api_format.write() = format;
     }
 }

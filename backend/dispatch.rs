@@ -508,7 +508,7 @@ pub enum TokenPuller {
     #[cfg(feature = "backend-onnx")]
     Onnx(super::onnx::TokenPuller),
     #[cfg(feature = "backend-external-api")]
-    ExternalApi(super::external_api::TokenPuller),
+    ExternalApi(super::external_api::RemotePuller),
 }
 
 impl Iterator for TokenPuller {

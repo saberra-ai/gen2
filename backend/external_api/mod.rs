@@ -4,10 +4,10 @@
 //! LM Studio, vLLM, etc.) via HTTP streaming SSE. Uses `reqwest::blocking`
 //! because the gen2 controller run-loop is synchronous.
 
+pub mod anthropic_puller;
 mod engine;
 mod puller;
 mod session;
 
 pub use engine::Engine;
-pub use puller::TokenPuller;
-pub use session::{Session, SessionId};
+pub use session::{RemotePuller, Session};

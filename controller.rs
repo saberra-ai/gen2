@@ -25,6 +25,8 @@ pub enum ControllerCmd {
         model_path: PathBuf,
         mmproj_path: Option<PathBuf>,
         settings: Settings,
+        api_key: Option<String>,
+        api_format: Option<String>,
         resp: Sender<Result<(), String>>,
     },
     /// Apply new sampling/system settings without reloading the model.
@@ -363,10 +365,14 @@ fn dispatch_cmd(
             model_path,
             mmproj_path,
             settings,
+            api_key,
+            api_format,
             resp,
         } => {
             let r = (|| -> Result<(), String> {
-                let load_req = build_load_request(model_path, mmproj_path, &settings);
+                let mut load_req = build_load_request(model_path, mmproj_path, &settings);
+                load_req.api_key = api_key;
+                load_req.api_format = api_format;
                 engine
                     .upload_settings(settings)
                     .map_err(|e| format!("{:?}", e))?;
