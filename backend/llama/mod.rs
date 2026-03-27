@@ -9,5 +9,5 @@ mod session;
 pub use bundle::ModelBundle;
 pub use engine::Engine;
 pub use puller::TokenPuller;
-pub use session::{Session, SessionId};
+pub use session::Session;
 pub(crate) use session::{DecodeState, SessionCtxCell};

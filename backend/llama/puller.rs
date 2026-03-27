@@ -3,7 +3,6 @@ use std::sync::atomic::{AtomicBool, Ordering};
 use encoding_rs::UTF_8;
 use llama_cpp_2::ggml_time_us;
 use llama_cpp_2::llama_batch::LlamaBatch;
-use llama_cpp_2::model::Special;
 use llama_cpp_2::sampling::LlamaSampler;
 
 use super::bundle::ModelBundle;
@@ -44,7 +43,7 @@ pub struct TokenPuller {
 }
 
 impl TokenPuller {
-    pub(crate) fn new(
+    pub(crate) fn _new(
         session_id: u64,
         hooks: Arc<HookBus>,
         bundle: Arc<ModelBundle>,
@@ -142,7 +141,7 @@ impl TokenPuller {
 impl Drop for TokenPuller {
     fn drop(&mut self) {
         if let Some(slot) = self.state_slot.upgrade() {
-            if let (Some(ctx_cell), Some(sampler)) = (self.ctx_cell.take(), self.sampler.take()) {
+            if let (Some(ctx_cell), Some(_sampler)) = (self.ctx_cell.take(), self.sampler.take()) {
                 let mut g = slot.lock();
                 *g = Some(DecodeState {
                     ctx_cell,
@@ -218,7 +217,7 @@ impl Iterator for TokenPuller {
         }
 
         // Convert token bytes to utf8 string
-        let bytes = match self.bundle.model.token_to_bytes(token, Special::Tokenize) {
+        let bytes = match self.bundle.model.token_to_piece_bytes(token, 32, true, None) {
             Ok(b) => b,
             Err(e) => return Some(Err(ExecError::Other(e.into()))),
         };

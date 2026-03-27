@@ -24,7 +24,7 @@ use llama_cpp_2::context::LlamaContext;
 use llama_cpp_2::context::params::LlamaContextParams;
 use llama_cpp_2::llama_backend::LlamaBackend;
 use llama_cpp_2::llama_batch::LlamaBatch;
-use llama_cpp_2::model::{AddBos, Special};
+use llama_cpp_2::model::AddBos;
 use llama_cpp_2::mtmd::{MtmdBitmap, MtmdInputText, mtmd_default_marker};
 use llama_cpp_2::sampling::LlamaSampler;
 use parking_lot::{Mutex, RwLock};
@@ -128,11 +128,9 @@ impl Session {
         let state = guard
             .as_ref()
             .ok_or(ExecError::InvalidArg("session already consumed"))?;
-        // SAFETY: get_state_size returns the byte count needed for the KV cache
-        // snapshot. The context is valid because we hold the mutex guard.
         let sz = state
             .ctx_cell
-            .with_dependent(|_, ctx| unsafe { ctx.get_state_size() });
+            .with_dependent(|_, ctx| ctx.get_state_size());
         if sz == 0 {
             return Err(ExecError::Other(anyhow::anyhow!("no state available")));
         }
@@ -331,6 +329,8 @@ impl Session {
         }
 
         // Build chat template
+        let mut bos_decoder = encoding_rs::UTF_8.new_decoder();
+        let mut eos_decoder = encoding_rs::UTF_8.new_decoder();
         let chat_template = ChatTemplate::new(
             bundle
                 .model
@@ -341,13 +341,13 @@ impl Session {
             Some(TokenizerConfigToken::String(
                 bundle
                     .model
-                    .token_to_str(bundle.model.token_bos(), Special::Tokenize)
+                    .token_to_piece(bundle.model.token_bos(), &mut bos_decoder, true, None)
                     .map_err(|e| ExecError::Other(e.into()))?,
             )),
             Some(TokenizerConfigToken::String(
                 bundle
                     .model
-                    .token_to_str(bundle.model.token_eos(), Special::Tokenize)
+                    .token_to_piece(bundle.model.token_eos(), &mut eos_decoder, true, None)
                     .map_err(|e| ExecError::Other(e.into()))?,
             )),
         );
@@ -483,7 +483,7 @@ impl Session {
                     });
 
                     // Build sampler
-                    let sampler = Self::sampler_from_settings(&settings);
+                    let _sampler = Self::sampler_from_settings(&settings);
 
                     return Ok(Self {
                         id,
@@ -541,7 +541,7 @@ impl Session {
         });
 
         // Build sampler
-        let sampler = Self::sampler_from_settings(&settings);
+        let _sampler = Self::sampler_from_settings(&settings);
 
         Ok(Self {
             id,
@@ -617,15 +617,17 @@ impl Session {
             .to_string()
             .map_err(|e| ExecError::Other(e.into()))?;
 
+        let mut bos_dec = encoding_rs::UTF_8.new_decoder();
         let bos = self
             .bundle
             .model
-            .token_to_str(self.bundle.model.token_bos(), Special::Tokenize)
+            .token_to_piece(self.bundle.model.token_bos(), &mut bos_dec, true, None)
             .map_err(|e| ExecError::Other(e.into()))?;
+        let mut eos_dec = encoding_rs::UTF_8.new_decoder();
         let eos = self
             .bundle
             .model
-            .token_to_str(self.bundle.model.token_eos(), Special::Tokenize)
+            .token_to_piece(self.bundle.model.token_eos(), &mut eos_dec, true, None)
             .map_err(|e| ExecError::Other(e.into()))?;
 
         let tpl = crate::generation::model_runner::chat_template::ChatTemplate::new(
@@ -766,7 +768,6 @@ impl Session {
         });
 
         let mut last_batch_tokens: i32 = 0;
-        let mut processed = 0_i32;
 
         while !remaining.is_empty() {
             let chunk_size = remaining.len().min(batch_size);
@@ -775,17 +776,16 @@ impl Session {
 
             for (i, token) in chunk.into_iter().enumerate() {
                 let absolute = st.cur_pos + i as i32;
-                let is_last = (i + 1 == chunk_size) && remaining.is_empty(); // ✅ last item of last chunk
+                let is_last = (i + 1 == chunk_size) && remaining.is_empty(); // last item of last chunk
                 batch
                     .add(token, absolute, &[0], is_last)
-                    .map_err(|e| ExecError::Other(anyhow::anyhow!("batch error")))?;
+                    .map_err(|_e| ExecError::Other(anyhow::anyhow!("batch error")))?;
             }
 
             st.ctx_cell
                 .with_dependent_mut(|_, ctx| ctx.decode(&mut batch))
-                .map_err(|e| ExecError::Other(anyhow::anyhow!("batch error")))?;
+                .map_err(|_e| ExecError::Other(anyhow::anyhow!("batch error")))?;
             st.cur_pos += chunk_size as i32;
-            processed += chunk_size as i32;
             last_batch_tokens = batch.n_tokens();
         }
 

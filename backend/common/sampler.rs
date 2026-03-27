@@ -2,6 +2,7 @@
 
 use rand::Rng;
 
+#[allow(dead_code)]
 pub struct Sampler {
     temperature: f32,
     top_p: Option<f32>,
@@ -9,6 +10,7 @@ pub struct Sampler {
     rng: rand::rngs::ThreadRng,
 }
 
+#[allow(dead_code)]
 impl Sampler {
     pub fn new(temperature: f32, top_p: Option<f32>, top_k: Option<i32>) -> Self {
         Self {

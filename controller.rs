@@ -311,7 +311,6 @@ fn run_loop(rx: Receiver<ControllerCmd>, max_active: usize) {
                     }
                     Some(Ok(TokenEvent::Paused)) => { /* handled by paused flag */ }
                     Some(Ok(TokenEvent::Special(_))) => { /* no-op for now */ }
-                    Some(Ok(_)) => { /* ignore other events */ }
                     Some(Err(e)) => {
                         let _ = chat.tx.send(ControllerEvent::Error(format!("{:?}", e)));
                         chat.finished = true;

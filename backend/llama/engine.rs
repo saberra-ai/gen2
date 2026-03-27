@@ -225,6 +225,7 @@ impl Engine {
         self.embedder.store(None);
     }
 }
+#[allow(dead_code)]
 struct SessionGuard {
     id: SessionId,
     engine: Weak<Engine>,

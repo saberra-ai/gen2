@@ -3,12 +3,14 @@
 use std::path::Path;
 use tokenizers::Tokenizer;
 
+#[allow(dead_code)]
 pub struct HfTokenizer {
     inner: Tokenizer,
     bos_id: Option<u32>,
     eos_id: Option<u32>,
 }
 
+#[allow(dead_code)]
 impl HfTokenizer {
     /// Load tokenizer from a directory containing `tokenizer.json`.
     pub fn from_dir(model_dir: &Path) -> anyhow::Result<Self> {

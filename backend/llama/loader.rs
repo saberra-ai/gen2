@@ -5,7 +5,7 @@ use crate::generation::model_runner::embedder::LlamaEmbedder;
 use crate::generation::model_runner::llama_config::ModelConfig;
 use anyhow::{Context, anyhow};
 use llama_cpp_2::llama_backend::LlamaBackend;
-use llama_cpp_2::model::{LlamaModel, Special, params::LlamaModelParams};
+use llama_cpp_2::model::{LlamaModel, params::LlamaModelParams};
 use llama_cpp_2::mtmd::{MtmdContext, MtmdContextParams, mtmd_default_marker};
 use sha2::{Digest, Sha256};
 use std::ffi::CString;
@@ -38,10 +38,10 @@ pub(crate) fn build_bundle(
         h.update(model.n_ctx_train().to_le_bytes());
         h.update(model.n_layer().to_le_bytes());
         h.update(model.n_vocab().to_le_bytes());
-        if let Ok(bos) = model.token_to_bytes(model.token_bos(), Special::Tokenize) {
+        if let Ok(bos) = model.token_to_piece_bytes(model.token_bos(), 32, true, None) {
             h.update(&bos);
         }
-        if let Ok(eos) = model.token_to_bytes(model.token_eos(), Special::Tokenize) {
+        if let Ok(eos) = model.token_to_piece_bytes(model.token_eos(), 32, true, None) {
             h.update(&eos);
         }
         // Include file size to differentiate quants of the same architecture
@@ -54,10 +54,10 @@ pub(crate) fn build_bundle(
     // Pre-compute tokenizer digest (SHA-256 of BOS || EOS || n_vocab)
     let tokenizer_digest = {
         let bos = model
-            .token_to_bytes(model.token_bos(), Special::Tokenize)
+            .token_to_piece_bytes(model.token_bos(), 32, true, None)
             .unwrap_or_default();
         let eos = model
-            .token_to_bytes(model.token_eos(), Special::Tokenize)
+            .token_to_piece_bytes(model.token_eos(), 32, true, None)
             .unwrap_or_default();
         let n_vocab = model.n_vocab().to_le_bytes();
         let mut h = Sha256::new();
@@ -143,7 +143,7 @@ pub(crate) fn build_bundle(
     })
 }
 
-fn sha256_file(path: &Path) -> anyhow::Result<String> {
+fn _sha256_file(path: &Path) -> anyhow::Result<String> {
     let file = File::open(path)?;
     let mut reader = BufReader::new(file);
     let mut hasher = Sha256::new();
@@ -184,7 +184,7 @@ mod tests {
         let mut f = NamedTempFile::new().unwrap();
         write!(f, "hello world").unwrap();
         let expected = format!("{:x}", Sha256::digest(b"hello world"));
-        let got = sha256_file(f.path()).unwrap();
+        let got = _sha256_file(f.path()).unwrap();
         assert_eq!(got, expected);
     }
 }
