@@ -8,4 +8,6 @@ pub struct SessionSpec {
     pub messages: Vec<Message>,
     pub cache: Option<crate::gen2::kv::KvLoadSpec>,
     pub overrides: Option<Settings>,
+    /// Persona to inject into the system prompt. Pinned at session start.
+    pub persona: Option<Persona>,
 }

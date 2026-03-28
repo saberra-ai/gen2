@@ -161,6 +161,7 @@ impl Engine {
             self.hooks.clone(),
             settings,
             spec.messages,
+            spec.persona.as_ref(),
         )?);
         self.sessions.insert(id, ());
         Ok(session)

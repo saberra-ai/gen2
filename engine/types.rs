@@ -53,6 +53,14 @@ impl Settings {
                 )));
             }
         }
+        if let Some(mp) = self.sampling.min_p {
+            if !(0.0..=1.0).contains(&mp) {
+                return Err(ExecError::SettingsError(format!(
+                    "min_p out of range: {}",
+                    mp
+                )));
+            }
+        }
         if let Some(k) = self.sampling.top_k {
             if k > 100_000 {
                 return Err(ExecError::SettingsError(format!("top_k too large: {}", k)));
@@ -138,6 +146,9 @@ impl Settings {
         if self.sampling.top_p.is_none() {
             self.sampling.top_p = defaults.sampling.top_p;
         }
+        if self.sampling.min_p.is_none() {
+            self.sampling.min_p = defaults.sampling.min_p;
+        }
         if self.sampling.top_k.is_none() {
             self.sampling.top_k = defaults.sampling.top_k;
         }
@@ -183,6 +194,9 @@ impl Settings {
         if self.prompt.system_prompt.is_none() {
             self.prompt.system_prompt = defaults.prompt.system_prompt.clone();
         }
+        if self.prompt.include_meta.is_none() {
+            self.prompt.include_meta = defaults.prompt.include_meta;
+        }
 
         if self.mm.image_size.is_none() {
             self.mm.image_size = defaults.mm.image_size;
@@ -207,6 +221,7 @@ impl Settings {
 pub struct SamplingSettings {
     pub temperature: Option<f32>,
     pub top_p: Option<f32>,
+    pub min_p: Option<f32>,
     pub top_k: Option<i32>,
     pub seed: Option<u32>,
     pub penalty_last_n: Option<i32>,
@@ -234,6 +249,8 @@ pub struct SystemSettings {
 #[derive(Serialize, Deserialize, Clone, Debug, Default)]
 pub struct PromptSettings {
     pub system_prompt: Option<String>,
+    /// Include device/date meta prompt in system message. Defaults to true when None.
+    pub include_meta: Option<bool>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default)]
@@ -309,6 +326,7 @@ mod tests {
             },
             prompt: PromptSettings {
                 system_prompt: Some("Act like a helpful assistant".into()),
+                include_meta: None,
             },
             mm: MmSettings {
                 image_size: Some((256, 256)),
@@ -379,6 +397,58 @@ mod tests {
         defaults.apply_to_gen_spec(&mut spec_override);
         assert_eq!(spec_override.max_tokens, Some(32));
         assert_eq!(spec_override.temperature, Some(0.9));
+    }
+
+    #[test]
+    fn settings_validate_min_p_ok() {
+        let s = Settings {
+            sampling: SamplingSettings {
+                min_p: Some(0.05),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        s.validate().unwrap();
+    }
+
+    #[test]
+    fn settings_validate_min_p_out_of_range() {
+        let s = Settings {
+            sampling: SamplingSettings {
+                min_p: Some(1.5),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(s.validate().is_err());
+    }
+
+    #[test]
+    fn settings_inherit_min_p() {
+        let defaults = Settings {
+            sampling: SamplingSettings {
+                min_p: Some(0.1),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        let mut overrides = Settings::default();
+        overrides.inherit_missing(&defaults);
+        assert_eq!(overrides.sampling.min_p, Some(0.1));
+    }
+
+    #[test]
+    fn settings_inherit_include_meta() {
+        let defaults = Settings {
+            prompt: PromptSettings {
+                include_meta: Some(false),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        let mut overrides = Settings::default();
+        overrides.inherit_missing(&defaults);
+        assert_eq!(overrides.prompt.include_meta, Some(false));
     }
 }
 

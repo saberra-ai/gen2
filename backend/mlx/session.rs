@@ -11,10 +11,10 @@ use crate::gen2::engine::{ExecError, HookBus, HookEvent, Settings};
 use crate::gen2::generation::GenSpec;
 use super::model::KvCache;
 use super::puller::TokenPuller;
-use crate::gen2::session_rt::prompt::{PromptContext, merge_prompts};
+use crate::gen2::session_rt::prompt::merge_prompts;
 use crate::generation::model_runner::chat_template::ChatTemplate;
 use crate::generation::model_runner::types::{
-    MessageBody, MessageChunk, MessageContent, TokenizerConfigToken,
+    MessageBody, MessageContent, TokenizerConfigToken,
 };
 
 use parking_lot::{Mutex, RwLock};
@@ -88,20 +88,21 @@ impl Session {
         hooks: Arc<HookBus>,
         settings: Settings,
         messages: Vec<Message>,
+        persona: Option<&crate::types::Persona>,
     ) -> Result<Self, ExecError> {
         let mut messages = messages;
 
-        // Merge system prompt
-        let prompt_ctx = PromptContext {
-            meta_prompt: String::new(),
-            persona: None,
+        let include_meta = settings.prompt.include_meta.unwrap_or(true);
+        let meta_prompt = if include_meta {
+            crate::gen2::session_rt::prompt::build_meta_prompt()
+        } else {
+            String::new()
         };
         let system_prompt = settings.prompt.system_prompt.as_deref();
-        let persona = prompt_ctx.persona.as_ref();
-        let merged_prompt = merge_prompts(&prompt_ctx.meta_prompt, system_prompt, persona);
+        let merged_prompt = merge_prompts(&meta_prompt, system_prompt, persona);
 
         let has_system = messages.iter().any(|m| m.role == "system");
-        if !has_system {
+        if !has_system && !merged_prompt.trim().is_empty() {
             messages.insert(
                 0,
                 Message {

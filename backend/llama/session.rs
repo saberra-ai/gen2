@@ -14,7 +14,7 @@ use crate::gen2::kv::{
     read_from_path, write_to_path,
 };
 use crate::gen2::session_rt::media_util::messages_have_images;
-use crate::gen2::session_rt::prompt::{PromptContext, merge_prompts};
+use crate::gen2::session_rt::prompt::merge_prompts;
 use crate::generation::model_runner::chat_template::ChatTemplate;
 use crate::generation::model_runner::types::{
     MessageBody, MessageChunk, MessageContent, TokenizerConfigToken,
@@ -63,16 +63,25 @@ impl fmt::Debug for SessionCtxCell {
     }
 }
 
-#[derive(Debug)]
 pub struct Session {
     pub id: SessionId,
     pub bundle: Arc<ModelBundle>,
     hooks: Arc<HookBus>,
     settings: Settings,
+    chat_template: ChatTemplate,
     paused: Arc<AtomicBool>,
     stopped: Arc<AtomicBool>,
     state: Arc<Mutex<Option<DecodeState>>>,
     messages: RwLock<Vec<Message>>,
+}
+
+impl fmt::Debug for Session {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        f.debug_struct("Session")
+            .field("id", &self.id)
+            .field("settings", &self.settings)
+            .finish()
+    }
 }
 
 #[derive(Debug)]
@@ -242,7 +251,7 @@ impl Session {
 
 impl Session {
     fn sampler_from_settings(settings: &Settings) -> LlamaSampler {
-        // Order matches llama.cpp server: penalties → top_k → top_p → temp → dist
+        // Order: penalties → top_k → min_p → top_p → temp → dist
         let mut chain = Vec::new();
 
         if let Some(penalties) = Self::penalties_sampler(settings) {
@@ -252,6 +261,18 @@ impl Session {
         if let Some(k) = settings.sampling.top_k {
             tracing::debug!("Sampling top_k: {}", k);
             chain.push(LlamaSampler::top_k(k));
+        }
+        // min_p: default 0.05 when neither min_p nor top_p is explicitly set
+        let min_p = settings.sampling.min_p.or_else(|| {
+            if settings.sampling.top_p.is_none() {
+                Some(0.05)
+            } else {
+                None
+            }
+        });
+        if let Some(mp) = min_p {
+            tracing::debug!("Sampling min_p: {}", mp);
+            chain.push(LlamaSampler::min_p(mp, 1));
         }
         if let Some(tp) = settings.sampling.top_p {
             tracing::debug!("Sampling top_p: {}", tp);
@@ -301,21 +322,23 @@ impl Session {
         hooks: Arc<HookBus>,
         settings: Settings,
         messages: Vec<Message>,
+        persona: Option<&crate::types::Persona>,
     ) -> Result<Self, ExecError> {
         let mut messages = messages;
 
-        let prompt_ctx = PromptContext {
-            meta_prompt: String::new(),
-            persona: None,
+        let include_meta = settings.prompt.include_meta.unwrap_or(true);
+        let meta_prompt = if include_meta {
+            crate::gen2::session_rt::prompt::build_meta_prompt()
+        } else {
+            String::new()
         };
         let system_prompt = settings.prompt.system_prompt.as_deref();
-        let persona = prompt_ctx.persona.as_ref();
 
-        let merged_prompt = merge_prompts(&prompt_ctx.meta_prompt, system_prompt, persona);
+        let merged_prompt = merge_prompts(&meta_prompt, system_prompt, persona);
 
         tracing::debug!("Session prompt messages: {:?}", messages);
         let has_system = messages.iter().any(|m| m.role == "system");
-        if !has_system {
+        if !has_system && !merged_prompt.trim().is_empty() {
             messages.insert(
                 0,
                 Message {
@@ -369,22 +392,39 @@ impl Session {
             .unwrap_or(bundle.meta.n_ctx.max(128));
 
         // Context overflow: truncate old messages until conversation fits
-        let generation_reserve = 256_usize;
-        let ctx_limit = (ctx_size as usize).saturating_sub(generation_reserve);
+        let gen_reserve = crate::gen2::session_rt::prompt::generation_reserve(
+            ctx_size as usize,
+            settings.stopping.max_tokens,
+        );
+        let ctx_limit = (ctx_size as usize).saturating_sub(gen_reserve);
         if tokens_list.len() > ctx_limit && messages.len() > 2 {
             tracing::warn!(
                 "initial context overflow: {} tokens > {} limit, truncating conversation",
                 tokens_list.len(),
                 ctx_limit
             );
-            while tokens_list.len() > ctx_limit && messages.len() > 2 {
-                let first_is_system = messages
-                    .first()
-                    .map(|m| m.role == "system")
-                    .unwrap_or(false);
-                let remove_idx = if first_is_system { 1 } else { 0 };
+            // Estimate how many messages to batch-remove based on avg tokens/msg
+            let first_is_system = messages.first().map(|m| m.role == "system").unwrap_or(false);
+            let removable = if first_is_system { messages.len() - 2 } else { messages.len() - 1 };
+            let avg_per_msg = tokens_list.len() / messages.len().max(1);
+            let excess = tokens_list.len().saturating_sub(ctx_limit);
+            let est_remove = (excess / avg_per_msg.max(1)).min(removable);
+            let remove_idx = if first_is_system { 1 } else { 0 };
+            // Batch remove estimated messages
+            for _ in 0..est_remove {
+                if messages.len() <= 2 { break; }
                 messages.remove(remove_idx);
-
+            }
+            // Re-tokenize and fine-tune with per-message loop
+            let truncated_prompt = chat_template
+                .apply(messages.clone(), None, None)
+                .map_err(|e| ExecError::Other(e.into()))?;
+            tokens_list = bundle
+                .model
+                .str_to_token(&truncated_prompt, AddBos::Always)
+                .map_err(|e| ExecError::Other(e.into()))?;
+            while tokens_list.len() > ctx_limit && messages.len() > 2 {
+                messages.remove(remove_idx);
                 let truncated_prompt = chat_template
                     .apply(messages.clone(), None, None)
                     .map_err(|e| ExecError::Other(e.into()))?;
@@ -490,6 +530,7 @@ impl Session {
                         bundle,
                         hooks,
                         settings,
+                        chat_template,
                         paused: Arc::new(AtomicBool::new(false)),
                         stopped: Arc::new(AtomicBool::new(false)),
                         // For MTMD, start sampling from last logits (-1)
@@ -548,6 +589,7 @@ impl Session {
             bundle,
             hooks,
             settings,
+            chat_template,
             paused: Arc::new(AtomicBool::new(false)),
             stopped: Arc::new(AtomicBool::new(false)),
             state: Arc::new(Mutex::new(Some(DecodeState {
@@ -604,37 +646,11 @@ impl Session {
             msgs.extend(new_messages.clone());
         }
 
-        // 2) Render the FULL conversation with the template and compute token delta.
+        // 2) Render the FULL conversation with the cached template and compute token delta.
         //    This is correct for ALL chat templates (including those that format
         //    differently based on message index or role transitions).
         let all_messages = self.messages.read().clone();
-
-        let chat_template_str = self
-            .bundle
-            .model
-            .chat_template(None)
-            .map_err(|e| ExecError::Other(e.into()))?
-            .to_string()
-            .map_err(|e| ExecError::Other(e.into()))?;
-
-        let mut bos_dec = encoding_rs::UTF_8.new_decoder();
-        let bos = self
-            .bundle
-            .model
-            .token_to_piece(self.bundle.model.token_bos(), &mut bos_dec, true, None)
-            .map_err(|e| ExecError::Other(e.into()))?;
-        let mut eos_dec = encoding_rs::UTF_8.new_decoder();
-        let eos = self
-            .bundle
-            .model
-            .token_to_piece(self.bundle.model.token_eos(), &mut eos_dec, true, None)
-            .map_err(|e| ExecError::Other(e.into()))?;
-
-        let tpl = crate::generation::model_runner::chat_template::ChatTemplate::new(
-            chat_template_str,
-            Some(crate::generation::model_runner::types::TokenizerConfigToken::String(bos)),
-            Some(crate::generation::model_runner::types::TokenizerConfigToken::String(eos)),
-        );
+        let tpl = &self.chat_template;
 
         let full_prompt = tpl
             .apply(all_messages, None, None)
@@ -654,8 +670,11 @@ impl Session {
             .system
             .ctx_size
             .unwrap_or(self.bundle.meta.n_ctx.max(128)) as usize;
-        let generation_reserve = 256; // tokens reserved for model output
-        let ctx_limit = ctx_size.saturating_sub(generation_reserve);
+        let gen_reserve = crate::gen2::session_rt::prompt::generation_reserve(
+            ctx_size,
+            self.settings.stopping.max_tokens,
+        );
+        let ctx_limit = ctx_size.saturating_sub(gen_reserve);
 
         let mut guard = self.state.lock();
         let st = guard

@@ -161,6 +161,7 @@ impl Engine {
             self.hooks.clone(),
             settings.clone(),
             spec.messages,
+            spec.persona.as_ref(),
         )?);
         if let Some(cache) = spec.cache.clone() {
             let _ = session.load_cache(cache)?; // apply cache best-effort here; strict/lenient is handled inside

@@ -8,8 +8,12 @@ pub struct PromptContext {
     pub persona: Option<Persona>,
 }
 
-pub async fn build_prompt_context(store: Option<&AppStore>) -> PromptContext {
-    // let meta_prompt = build_meta_prompt();
+pub async fn build_prompt_context(store: Option<&AppStore>, include_meta: bool) -> PromptContext {
+    let meta_prompt = if include_meta {
+        build_meta_prompt()
+    } else {
+        String::new()
+    };
     let persona = if let Some(app_store) = store {
         app_store.persona_store.get_selected_persona().await.ok().flatten()
     } else {
@@ -17,12 +21,12 @@ pub async fn build_prompt_context(store: Option<&AppStore>) -> PromptContext {
     };
 
     PromptContext {
-        meta_prompt: String::new(),
+        meta_prompt,
         persona,
     }
 }
 
-fn build_meta_prompt() -> String {
+pub fn build_meta_prompt() -> String {
     let device = env::consts::OS;
     let arch = env::consts::ARCH;
     let now = Local::now();
@@ -62,11 +66,128 @@ pub fn merge_prompts(
     if let Some(persona) = persona_opt {
         let instructions = persona.instructions.trim();
         let name = persona.name.trim();
-        sections.push(format!(
-            "# Persona\n name: {} \n instructions {}",
-            name, instructions
-        ));
+        if !instructions.is_empty() || !name.is_empty() {
+            sections.push(format!(
+                "# Persona\nName: {}\nInstructions:\n{}",
+                name, instructions
+            ));
+        }
     }
 
     sections.join("\n\n")
+}
+
+/// Compute how many tokens to reserve for generation output.
+/// Uses `max_tokens` when set, otherwise 25% of context. Clamped to [64, ctx_size/2].
+pub fn generation_reserve(ctx_size: usize, max_tokens: Option<usize>) -> usize {
+    let default = ctx_size / 4;
+    max_tokens
+        .unwrap_or(default)
+        .clamp(64, ctx_size / 2)
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn make_persona(name: &str, instructions: &str) -> Persona {
+        Persona {
+            id: String::new(),
+            name: name.to_string(),
+            instructions: instructions.to_string(),
+            is_selected: false,
+            created_at: 0,
+            updated_at: 0,
+        }
+    }
+
+    #[test]
+    fn merge_prompts_all_empty() {
+        let result = merge_prompts("", None, None);
+        assert_eq!(result.trim(), "");
+    }
+
+    #[test]
+    fn merge_prompts_meta_only() {
+        let result = merge_prompts("You are Pio", None, None);
+        assert_eq!(result, "You are Pio");
+    }
+
+    #[test]
+    fn merge_prompts_meta_and_system() {
+        let result = merge_prompts("You are Pio", Some("Be helpful"), None);
+        assert!(result.contains("You are Pio"));
+        assert!(result.contains("# User instructions\nBe helpful"));
+    }
+
+    #[test]
+    fn merge_prompts_persona_formatting() {
+        let persona = make_persona("Socrates", "Ask questions, never give answers directly.");
+        let result = merge_prompts("", None, Some(&persona));
+        assert!(result.contains("# Persona\nName: Socrates\nInstructions:\nAsk questions"));
+    }
+
+    #[test]
+    fn merge_prompts_all_three() {
+        let persona = make_persona("Teacher", "Be patient");
+        let result = merge_prompts("meta", Some("sys"), Some(&persona));
+        assert!(result.contains("meta"));
+        assert!(result.contains("# User instructions\nsys"));
+        assert!(result.contains("# Persona\nName: Teacher\nInstructions:\nBe patient"));
+    }
+
+    #[test]
+    fn merge_prompts_empty_persona_skipped() {
+        let persona = make_persona("", "");
+        let result = merge_prompts("meta", None, Some(&persona));
+        assert!(!result.contains("Persona"));
+    }
+
+    #[test]
+    fn merge_prompts_empty_system_skipped() {
+        let result = merge_prompts("meta", Some("  "), None);
+        assert!(!result.contains("User instructions"));
+    }
+
+    #[test]
+    fn generation_reserve_with_max_tokens() {
+        assert_eq!(generation_reserve(4096, Some(512)), 512);
+    }
+
+    #[test]
+    fn generation_reserve_default_25_percent() {
+        assert_eq!(generation_reserve(4096, None), 1024);
+    }
+
+    #[test]
+    fn generation_reserve_clamp_min() {
+        // max_tokens = 10, but min is 64
+        assert_eq!(generation_reserve(4096, Some(10)), 64);
+    }
+
+    #[test]
+    fn generation_reserve_clamp_max() {
+        // max_tokens = 99999, but max is ctx_size/2
+        assert_eq!(generation_reserve(4096, Some(99999)), 2048);
+    }
+
+    #[test]
+    fn generation_reserve_small_context() {
+        // 256 ctx: default would be 64, which is ctx/4
+        assert_eq!(generation_reserve(256, None), 64);
+    }
+
+    #[test]
+    fn generation_reserve_tiny_context() {
+        // 128 ctx: default 32, clamped to 64 (min)
+        assert_eq!(generation_reserve(128, None), 64);
+    }
+
+    #[test]
+    fn build_meta_prompt_contains_date_and_device() {
+        let meta = build_meta_prompt();
+        assert!(meta.contains("Pio Chat"));
+        assert!(meta.contains("Device:"));
+        assert!(meta.contains("Current date:"));
+    }
 }
