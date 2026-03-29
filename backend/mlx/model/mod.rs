@@ -19,6 +19,7 @@ use serde::Deserialize;
 pub type KvCache = Vec<Option<(mlx_rs::Array, mlx_rs::Array)>>;
 
 /// Model hyperparameters deserialized from HuggingFace `config.json`.
+/// Compatible with Llama, Qwen 3, Mistral, and other GQA architectures.
 #[derive(Debug, Clone, Deserialize)]
 pub struct ModelConfig {
     pub hidden_size: usize,
@@ -27,12 +28,24 @@ pub struct ModelConfig {
     pub num_hidden_layers: usize,
     pub num_key_value_heads: usize,
     pub vocab_size: usize,
+    #[serde(default = "default_rms_norm_eps")]
     pub rms_norm_eps: f32,
+    #[serde(default = "default_rope_theta")]
     pub rope_theta: f32,
+    #[serde(default = "default_max_position_embeddings")]
     pub max_position_embeddings: usize,
     /// Explicit head dimension override. Falls back to `hidden_size / num_attention_heads`.
     pub head_dim: Option<usize>,
+    /// Sliding window size (Qwen 3, Mistral). None = full attention.
+    pub sliding_window: Option<usize>,
+    /// Whether embeddings and lm_head share weights.
+    #[serde(default)]
+    pub tie_word_embeddings: bool,
 }
+
+fn default_rms_norm_eps() -> f32 { 1e-6 }
+fn default_rope_theta() -> f32 { 10000.0 }
+fn default_max_position_embeddings() -> usize { 32768 }
 
 impl ModelConfig {
     /// Per-head dimension, derived from `hidden_size / num_attention_heads`

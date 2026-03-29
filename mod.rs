@@ -14,7 +14,7 @@ pub mod media;
 pub mod session_rt;
 
 // Public re-exports for the primary surface
-pub use engine::{EmbedLoadRequest, Engine, ExecError, ExecutionStats, LoadRequest, Settings, validate_model_file};
+pub use engine::{EmbedLoadRequest, Engine, ExecError, ExecutionStats, LoadRequest, Settings, validate_model_file, read_gguf_architecture, validate_model_architecture};
 // Re-export message types used by SessionSpec for convenience in integration tests
 pub use crate::generation::model_runner::types::{
     Message, MessageBody, MessageChunk, MessageContent,

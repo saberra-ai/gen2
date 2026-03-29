@@ -125,8 +125,8 @@ impl Session {
             .map(|id| bundle.tokenizer.decode(&[id]).unwrap_or_default())
             .unwrap_or_default();
 
-        // Try to load chat template from tokenizer_config.json
-        let chat_template_str = Self::load_chat_template_str()
+        // Try to load chat template from tokenizer_config.json in the model dir
+        let chat_template_str = Self::load_chat_template_from_dir(&bundle.model_dir)
             .unwrap_or_else(|| Self::default_llama3_template());
 
         let chat_template = ChatTemplate::new(
@@ -197,7 +197,7 @@ impl Session {
             .map(|id| self.bundle.tokenizer.decode(&[id]).unwrap_or_default())
             .unwrap_or_default();
 
-        let chat_template_str = Self::load_chat_template_str()
+        let chat_template_str = Self::load_chat_template_from_dir(&self.bundle.model_dir)
             .unwrap_or_else(|| Self::default_llama3_template());
 
         let tpl = ChatTemplate::new(
@@ -245,9 +245,12 @@ impl Session {
         Ok(0)
     }
 
-    fn load_chat_template_str() -> Option<String> {
-        // TODO: load from tokenizer_config.json if available
-        None
+    /// Load the Jinja2 chat template from `tokenizer_config.json` in the model directory.
+    fn load_chat_template_from_dir(model_dir: &std::path::Path) -> Option<String> {
+        let config_path = model_dir.join("tokenizer_config.json");
+        let content = std::fs::read_to_string(&config_path).ok()?;
+        let parsed: serde_json::Value = serde_json::from_str(&content).ok()?;
+        parsed.get("chat_template")?.as_str().map(|s| s.to_string())
     }
 
     fn default_llama3_template() -> String {

@@ -5,6 +5,7 @@ use std::fs;
 use std::path::Path;
 
 use mlx_rs::Array;
+use mlx_rs::ops::indexing::IndexOp;
 
 use super::model::{LlamaModel, ModelConfig};
 use crate::gen2::engine::ExecError;
@@ -81,8 +82,10 @@ pub fn build_model(model_dir: &Path) -> Result<(LlamaModel, ModelConfig), ExecEr
     }
     if let Some(w) = tensors.get("lm_head.weight") {
         model.lm_head = w.clone();
+    } else if config.tie_word_embeddings {
+        model.lm_head = model.embed_tokens.clone();
     } else {
-        // Some models tie embed and lm_head
+        // Fallback: tie anyway (common default)
         model.lm_head = model.embed_tokens.clone();
     }
     if let Some(w) = tensors.get("model.norm.weight") {
@@ -109,6 +112,18 @@ pub fn build_model(model_dir: &Path) -> Result<(LlamaModel, ModelConfig), ExecEr
             }
             if let Some(w) = tensors.get(&format!("{}.mlp.up_proj.weight", prefix)) {
                 layer.ffn.up_proj = w.clone();
+            }
+            // Fused gate_up_proj fallback (some models fuse gate+up into one tensor)
+            if tensors.get(&format!("{}.mlp.gate_proj.weight", prefix)).is_none() {
+                if let Some(w) = tensors.get(&format!("{}.mlp.gate_up_proj.weight", prefix)) {
+                    // Shape: (2 * intermediate_size, hidden_size) — split into gate and up
+                    let shape = w.shape();
+                    if shape.len() == 2 {
+                        let half = shape[0] / 2;
+                        layer.ffn.gate_proj = w.index((0..half as i32, ..));
+                        layer.ffn.up_proj = w.index((half as i32..shape[0] as i32, ..));
+                    }
+                }
             }
             if let Some(w) = tensors.get(&format!("{}.mlp.down_proj.weight", prefix)) {
                 layer.ffn.down_proj = w.clone();

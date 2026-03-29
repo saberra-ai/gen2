@@ -12,6 +12,7 @@ pub struct ModelBundle {
     pub config: ModelConfig,
     pub capabilities: Capabilities,
     pub meta: ModelMeta,
+    pub model_dir: std::path::PathBuf,
 }
 
 impl std::fmt::Debug for ModelBundle {

@@ -76,6 +76,8 @@ impl Engine {
             model_uuid: String::new(),
             n_ctx: config.max_position_embeddings as u32,
             n_layer: config.num_hidden_layers as u32,
+            tokenizer_digest: [0u8; 32],
+            template_fingerprint: [0u8; 32],
         };
 
         let caps = Capabilities::TEXT;
@@ -87,6 +89,7 @@ impl Engine {
             config,
             capabilities: caps.clone(),
             meta: meta.clone(),
+            model_dir: model_dir.to_path_buf(),
         };
 
         self.sessions.clear();

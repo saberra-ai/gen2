@@ -20,6 +20,8 @@ pub enum ExecError {
     KvCorrupt(String),
     #[error("invalid model file: {0}")]
     InvalidModelFile(String),
+    #[error("unsupported model architecture: {0}")]
+    UnsupportedArchitecture(String),
     #[error("io error: {0}")]
     Io(String),
     #[error("unimplemented in milestone 0")]
