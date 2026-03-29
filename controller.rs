@@ -792,3 +792,71 @@ fn dispatch_cmd(
         }
     }
 }
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::sync::mpsc::sync_channel;
+
+    #[test]
+    fn bounded_channel_drops_on_full() {
+        let (tx, rx) = sync_channel::<ControllerEvent>(EVENT_CHANNEL_CAPACITY);
+
+        // Fill the channel to capacity.
+        for _ in 0..EVENT_CHANNEL_CAPACITY {
+            tx.try_send(ControllerEvent::Stopped).expect("channel should accept up to capacity");
+        }
+
+        // One more event should return Full (not block).
+        let result = try_emit(&tx, ControllerEvent::Stopped);
+        assert!(
+            matches!(result, EmitResult::Full),
+            "expected EmitResult::Full when channel is at capacity"
+        );
+
+        // Verify the receiver still has exactly EVENT_CHANNEL_CAPACITY events.
+        let mut count = 0;
+        while rx.try_recv().is_ok() {
+            count += 1;
+        }
+        assert_eq!(count, EVENT_CHANNEL_CAPACITY);
+    }
+
+    #[test]
+    fn try_emit_disconnected() {
+        let (tx, rx) = sync_channel::<ControllerEvent>(EVENT_CHANNEL_CAPACITY);
+
+        // Drop the receiver so the channel is disconnected.
+        drop(rx);
+
+        let result = try_emit(&tx, ControllerEvent::Stopped);
+        assert!(
+            matches!(result, EmitResult::Disconnected),
+            "expected EmitResult::Disconnected when receiver is dropped"
+        );
+    }
+
+    #[test]
+    fn try_emit_sent() {
+        let (tx, rx) = sync_channel::<ControllerEvent>(EVENT_CHANNEL_CAPACITY);
+
+        let result = try_emit(&tx, ControllerEvent::Stopped);
+        assert!(
+            matches!(result, EmitResult::Sent),
+            "expected EmitResult::Sent for a successful send"
+        );
+
+        // Verify the receiver got the event.
+        let event = rx.try_recv().expect("receiver should have one event");
+        assert!(
+            matches!(event, ControllerEvent::Stopped),
+            "expected ControllerEvent::Stopped"
+        );
+
+        // No additional events should be present.
+        assert!(
+            rx.try_recv().is_err(),
+            "receiver should be empty after consuming the single event"
+        );
+    }
+}
