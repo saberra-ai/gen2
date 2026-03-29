@@ -495,6 +495,37 @@ impl Session {
     pub fn append_messages(&self, new_messages: Vec<Message>) -> Result<usize, ExecError> {
         session_dispatch!(self, s => s.append_messages(new_messages))
     }
+
+    /// Messages dropped during initial session creation due to context overflow.
+    pub fn initial_messages_dropped(&self) -> usize {
+        match self {
+            #[cfg(feature = "backend-llamacpp")]
+            Self::LlamaCpp(s) => s.initial_messages_dropped(),
+            // Other backends don't track this yet
+            #[cfg(feature = "backend-mlx")]
+            Self::Mlx(_) => 0,
+            #[cfg(feature = "backend-onnx")]
+            Self::Onnx(_) => 0,
+            #[cfg(feature = "backend-external-api")]
+            Self::ExternalApi(_) => 0,
+        }
+    }
+
+    /// Returns true if the session's internal state was lost (e.g. due to an
+    /// FFI panic). A poisoned session cannot generate further tokens.
+    pub fn is_poisoned(&self) -> bool {
+        match self {
+            #[cfg(feature = "backend-llamacpp")]
+            Self::LlamaCpp(s) => s.is_poisoned(),
+            // Non-FFI backends don't have state ownership issues
+            #[cfg(feature = "backend-mlx")]
+            Self::Mlx(_) => false,
+            #[cfg(feature = "backend-onnx")]
+            Self::Onnx(_) => false,
+            #[cfg(feature = "backend-external-api")]
+            Self::ExternalApi(_) => false,
+        }
+    }
 }
 
 

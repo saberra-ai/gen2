@@ -1,7 +1,8 @@
 use std::collections::HashMap;
+use std::panic::{AssertUnwindSafe, catch_unwind};
 use std::path::PathBuf;
 use std::sync::Arc;
-use std::sync::mpsc::{Receiver, Sender, channel};
+use std::sync::mpsc::{Receiver, Sender, SyncSender, TrySendError, channel};
 use std::thread;
 use std::time::{Duration, Instant};
 
@@ -65,28 +66,28 @@ pub enum ControllerCmd {
         chat_id: String,
         messages: Vec<Message>,
         gen_spec: GenSpec,
-        tx: Sender<ControllerEvent>,
+        tx: SyncSender<ControllerEvent>,
     },
     /// Continue an existing chat session with newly appended messages.
     ContinueChat {
         chat_id: String,
         new_messages: Vec<Message>,
         gen_spec: GenSpec,
-        tx: Sender<ControllerEvent>,
+        tx: SyncSender<ControllerEvent>,
     },
     /// Generate a title for a chat (ephemeral session, auto-cleaned).
     CreateTitle {
         chat_id: String,
         messages: Vec<Message>,
         gen_spec: GenSpec,
-        tx: Sender<ControllerEvent>,
+        tx: SyncSender<ControllerEvent>,
     },
     /// Generate follow-up suggestions (ephemeral-style generation).
     CreateSuggestions {
         chat_id: String,
         messages: Vec<Message>,
         gen_spec: GenSpec,
-        tx: Sender<ControllerEvent>,
+        tx: SyncSender<ControllerEvent>,
     },
     /// Abort and remove a chat session.
     StopChat {
@@ -173,10 +174,15 @@ pub fn start_controller() -> ControllerHandle {
     start_controller_with_limit(default_max_active) // or e.g., 8
 }
 
+/// Capacity for bounded event channels to callers.
+/// Large enough to absorb burst without blocking the controller,
+/// small enough to bound memory if the receiver stalls.
+pub const EVENT_CHANNEL_CAPACITY: usize = 512;
+
 struct ChatStream {
     session: Arc<crate::gen2::session_rt::Session>,
     puller: Option<crate::gen2::generation::TokenPuller>,
-    tx: Sender<ControllerEvent>,
+    tx: SyncSender<ControllerEvent>,
     paused: bool,
     finished: bool,
     ephemeral: bool,
@@ -187,7 +193,7 @@ struct ChatStream {
 /// Hook listener forwarding final stats for a specific session id back to the UI channel.
 struct Forwarder {
     sid: u64,
-    tx: Sender<ControllerEvent>,
+    tx: SyncSender<ControllerEvent>,
 }
 impl std::fmt::Debug for Forwarder {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
@@ -198,8 +204,30 @@ impl HookListener for Forwarder {
     fn on_event(&self, ev: &HookEvent) {
         if let HookEvent::FinalStats { session_id, stats } = ev {
             if *session_id == self.sid {
-                let _ = self.tx.send(ControllerEvent::FinalStats(stats.clone()));
+                try_emit(&self.tx, ControllerEvent::FinalStats(stats.clone()));
             }
+        }
+    }
+}
+
+/// Result of try_emit — tells the caller whether the receiver is still alive.
+enum EmitResult {
+    Sent,
+    Full,         // channel full, event dropped (receiver alive but slow)
+    Disconnected, // receiver gone — stop wasting compute
+}
+
+/// Try to send an event on a bounded channel without blocking.
+fn try_emit(tx: &SyncSender<ControllerEvent>, event: ControllerEvent) -> EmitResult {
+    match tx.try_send(event) {
+        Ok(()) => EmitResult::Sent,
+        Err(TrySendError::Full(_)) => {
+            tracing::trace!("event channel full, dropping event");
+            EmitResult::Full
+        }
+        Err(TrySendError::Disconnected(_)) => {
+            tracing::debug!("event channel disconnected, receiver dropped");
+            EmitResult::Disconnected
         }
     }
 }
@@ -229,7 +257,7 @@ fn build_load_request(
 fn stop_notify_and_end(engine: &Engine, mut chat: ChatStream) {
     let sid = chat.session.id();
     let _ = chat.session.stop();
-    let _ = chat.tx.send(ControllerEvent::Stopped);
+    try_emit(&chat.tx, ControllerEvent::Stopped);
     engine.hooks().deregister(sid);
     let _ = engine.end_session(sid);
 }
@@ -278,8 +306,23 @@ fn run_loop(rx: Receiver<ControllerCmd>, max_active: usize) {
             }
         }
 
-        // Round-robin one step per active chat
-        let keys: Vec<String> = chats.keys().cloned().collect();
+        // Priority scheduling: primary chats tick before ephemeral.
+        // This ensures the active user chat always gets compute first;
+        // title gen and suggestions don't steal ticks from the live chat.
+        let mut keys: Vec<String> = Vec::new();
+        let mut ephemeral_start = 0usize;
+        for (id, chat) in chats.iter() {
+            if chat.paused || chat.finished || chat.puller.is_none() {
+                continue;
+            }
+            if !chat.ephemeral {
+                // Insert primary chats at the front
+                keys.insert(ephemeral_start, id.clone());
+                ephemeral_start += 1;
+            } else {
+                keys.push(id.clone());
+            }
+        }
         let mut to_remove: Vec<String> = Vec::new();
 
         for id in keys {
@@ -291,39 +334,66 @@ fn run_loop(rx: Receiver<ControllerCmd>, max_active: usize) {
                 let Some(puller) = chat.puller.as_mut() else {
                     continue;
                 };
-                match puller.next() {
-                    Some(Ok(TokenEvent::Token(tok))) => {
+                // Wrap puller.next() in catch_unwind to detect FFI panics.
+                // On panic the DecodeState is lost — session becomes poisoned.
+                let step = catch_unwind(AssertUnwindSafe(|| puller.next()));
+                // Helper: emit event and stop generation if receiver is gone.
+                let mut receiver_dead = false;
+                let mut emit = |event: ControllerEvent| {
+                    if let EmitResult::Disconnected = try_emit(&chat.tx, event) {
+                        receiver_dead = true;
+                    }
+                };
+
+                match step {
+                    Err(_panic) => {
+                        emit(ControllerEvent::Error(
+                            "inference panic: session state lost; restart chat".into(),
+                        ));
+                        chat.finished = true;
+                        chat.puller = None;
+                    }
+                    Ok(Some(Ok(TokenEvent::Token(tok)))) => {
                         if !tok.text.is_empty() {
-                            let _ = chat.tx.send(ControllerEvent::Token(tok.text));
-                            chat.last_used = Instant::now(); // keep LRU fresh while active
+                            emit(ControllerEvent::Token(tok.text));
+                            chat.last_used = Instant::now();
                         }
                     }
-                    Some(Ok(TokenEvent::Eos)) => {
-                        let _ = chat.tx.send(ControllerEvent::Eos);
+                    Ok(Some(Ok(TokenEvent::Eos))) => {
+                        emit(ControllerEvent::Eos);
                         chat.finished = true;
                         chat.puller = None;
                     }
-                    Some(Ok(TokenEvent::Stopped)) => {
-                        let _ = chat.tx.send(ControllerEvent::Stopped);
+                    Ok(Some(Ok(TokenEvent::Stopped))) => {
+                        emit(ControllerEvent::Stopped);
                         chat.finished = true;
                         chat.puller = None;
                     }
-                    Some(Ok(TokenEvent::MediaBoundary(boundary))) => {
-                        let _ = chat.tx.send(ControllerEvent::MediaBoundary(boundary));
+                    Ok(Some(Ok(TokenEvent::MediaBoundary(boundary)))) => {
+                        emit(ControllerEvent::MediaBoundary(boundary));
                     }
-                    Some(Ok(TokenEvent::Paused)) => { /* handled by paused flag */ }
-                    Some(Ok(TokenEvent::Special(_))) => { /* no-op for now */ }
-                    Some(Err(e)) => {
-                        let _ = chat.tx.send(ControllerEvent::Error(format!("{:?}", e)));
+                    Ok(Some(Ok(TokenEvent::Paused))) => { /* handled by paused flag */ }
+                    Ok(Some(Ok(TokenEvent::Special(_)))) => { /* no-op for now */ }
+                    Ok(Some(Err(e))) => {
+                        let msg = if chat.session.is_poisoned() {
+                            format!("session state lost (possible FFI crash): {:?}", e)
+                        } else {
+                            format!("{:?}", e)
+                        };
+                        emit(ControllerEvent::Error(msg));
                         chat.finished = true;
                         chat.puller = None;
                     }
-                    None => {
-                        // Iterator ended unexpectedly; treat as stopped
-                        let _ = chat.tx.send(ControllerEvent::Stopped);
+                    Ok(None) => {
+                        emit(ControllerEvent::Stopped);
                         chat.finished = true;
                         chat.puller = None;
                     }
+                }
+                // If the receiver is gone, stop wasting compute on this chat
+                if receiver_dead {
+                    chat.finished = true;
+                    chat.puller = None;
                 }
                 // NEW: schedule ephemeral cleanup after finishing
                 if chat.finished && chat.ephemeral {
@@ -391,6 +461,13 @@ fn dispatch_cmd(
             ControlFlow::Continue
         }
         ControllerCmd::ApplySettings { settings, resp } => {
+            let active = chats.values().filter(|c| !c.finished && !c.paused).count();
+            if active > 0 {
+                tracing::info!(
+                    active_chats = active,
+                    "settings updated with active chats; changes take effect on next generation"
+                );
+            }
             let res = engine
                 .upload_settings(settings)
                 .map_err(|e| format!("{:?}", e));
@@ -434,7 +511,7 @@ fn dispatch_cmd(
                 chat.last_used = Instant::now();
                 chat.tx = tx.clone();
                 if chat.puller.is_some() && !chat.finished {
-                    let _ = tx.send(ControllerEvent::Error(
+                    try_emit(&tx, ControllerEvent::Error(
                         "chat already generating; pause/stop first".into(),
                     ));
                     return ControlFlow::Continue;
@@ -444,11 +521,11 @@ fn dispatch_cmd(
 
                 match chat.session.append_messages(last_vec) {
                     Err(e) => {
-                        let _ = tx.send(ControllerEvent::Error(format!("{:?}", e)));
+                        try_emit(&tx, ControllerEvent::Error(format!("{:?}", e)));
                         return ControlFlow::Continue;
                     }
                     Ok(dropped) if dropped > 0 => {
-                        let _ = tx.send(ControllerEvent::ContextTruncated(dropped));
+                        try_emit(&tx, ControllerEvent::ContextTruncated(dropped));
                     }
                     _ => {}
                 }
@@ -462,7 +539,7 @@ fn dispatch_cmd(
                         chat.last_gen_spec = pull_spec;
                     }
                     Err(e) => {
-                        let _ = tx.send(ControllerEvent::Error(format!("{:?}", e)));
+                        try_emit(&tx, ControllerEvent::Error(format!("{:?}", e)));
                     }
                 }
                 return ControlFlow::Continue;
@@ -478,9 +555,13 @@ fn dispatch_cmd(
                     ..Default::default()
                 }) {
                     Err(e) => {
-                        let _ = tx.send(ControllerEvent::Error(format!("{:?}", e)));
+                        try_emit(&tx, ControllerEvent::Error(format!("{:?}", e)));
                     }
                     Ok(session) => {
+                        let dropped = session.initial_messages_dropped();
+                        if dropped > 0 {
+                            try_emit(&tx, ControllerEvent::ContextTruncated(dropped));
+                        }
                         let sid = session.id();
                         engine.hooks().register_with_id(sid, Arc::new(Forwarder {
                             sid,
@@ -491,7 +572,7 @@ fn dispatch_cmd(
                             Err(e) => {
                                 engine.hooks().deregister(sid);
                                 let _ = engine.end_session(sid);
-                                let _ = tx.send(ControllerEvent::Error(format!("{:?}", e)));
+                                try_emit(&tx, ControllerEvent::Error(format!("{:?}", e)));
                             }
                             Ok(puller) => {
                                 let evicted = chats.insert(
@@ -509,7 +590,7 @@ fn dispatch_cmd(
                                 );
                                 if let Some(evicted_chat) = evicted {
                                     evicted_chat.session.stop();
-                                    let _ = evicted_chat.tx.send(ControllerEvent::Stopped);
+                                    try_emit(&evicted_chat.tx, ControllerEvent::Stopped);
                                 }
                             }
                         }
@@ -528,7 +609,7 @@ fn dispatch_cmd(
             if let Some(chat) = chats.get_mut(&chat_id) {
                 chat.tx = tx.clone();
                 if chat.puller.is_some() && !chat.finished {
-                    let _ = tx.send(ControllerEvent::Error(
+                    try_emit(&tx, ControllerEvent::Error(
                         "chat already generating; pause/stop first".into(),
                     ));
                     return ControlFlow::Continue;
@@ -536,11 +617,11 @@ fn dispatch_cmd(
                 // If you add Session::append_messages(Vec<Message>), call it here with `new_messages`.
                 match chat.session.append_messages(new_messages) {
                     Err(e) => {
-                        let _ = tx.send(ControllerEvent::Error(format!("{:?}", e)));
+                        try_emit(&tx, ControllerEvent::Error(format!("{:?}", e)));
                         return ControlFlow::Continue;
                     }
                     Ok(dropped) if dropped > 0 => {
-                        let _ = tx.send(ControllerEvent::ContextTruncated(dropped));
+                        try_emit(&tx, ControllerEvent::ContextTruncated(dropped));
                     }
                     _ => {}
                 }
@@ -554,11 +635,11 @@ fn dispatch_cmd(
                         chat.last_gen_spec = pull_spec;
                     }
                     Err(e) => {
-                        let _ = tx.send(ControllerEvent::Error(format!("{:?}", e)));
+                        try_emit(&tx, ControllerEvent::Error(format!("{:?}", e)));
                     }
                 }
             } else {
-                let _ = tx.send(ControllerEvent::Error(format!(
+                try_emit(&tx, ControllerEvent::Error(format!(
                     "chat_id '{}' not found",
                     chat_id
                 )));
@@ -574,14 +655,14 @@ fn dispatch_cmd(
             if let Some(chat) = chats.get_mut(&chat_id) {
                 chat.last_used = Instant::now();
                 if chat.puller.is_some() && !chat.finished {
-                    let _ = tx.send(ControllerEvent::Error(
+                    try_emit(&tx, ControllerEvent::Error(
                         "chat already generating; pause/stop first".into(),
                     ));
                     return ControlFlow::Continue;
                 }
                 match chat.session.append_messages(messages) {
                     Err(e) => {
-                        let _ = tx.send(ControllerEvent::Error(format!("{:?}", e)));
+                        try_emit(&tx, ControllerEvent::Error(format!("{:?}", e)));
                         return ControlFlow::Continue;
                     }
                     Ok(_) => {}
@@ -597,13 +678,13 @@ fn dispatch_cmd(
                         chat.last_gen_spec = gen_spec;
                     }
                     Err(e) => {
-                        let _ = tx.send(ControllerEvent::Error(format!("{:?}", e)));
+                        try_emit(&tx, ControllerEvent::Error(format!("{:?}", e)));
                     }
                 }
                 return ControlFlow::Continue;
             }
 
-            let _ = tx.send(ControllerEvent::Error(format!(
+            try_emit(&tx, ControllerEvent::Error(format!(
                 "chat_id '{}' is not loaded",
                 chat_id
             )));
@@ -635,7 +716,7 @@ fn dispatch_cmd(
                 ..Default::default()
             }) {
                 Err(e) => {
-                    let _ = tx.send(ControllerEvent::Error(format!("{:?}", e)));
+                    try_emit(&tx, ControllerEvent::Error(format!("{:?}", e)));
                 }
                 Ok(session) => {
                     let sid = session.id();
@@ -645,7 +726,7 @@ fn dispatch_cmd(
                     }));
                     match session.pull(gen_spec.clone()) {
                         Err(e) => {
-                            let _ = tx.send(ControllerEvent::Error(format!("{:?}", e)));
+                            try_emit(&tx, ControllerEvent::Error(format!("{:?}", e)));
                         }
                         Ok(puller) => {
                             // Insert as ephemeral so it auto-cleans after EOS/Stopped
@@ -694,7 +775,7 @@ fn dispatch_cmd(
                             chat.finished = false;
                         }
                         Err(e) => {
-                            let _ = chat.tx.send(ControllerEvent::Error(format!(
+                            try_emit(&chat.tx, ControllerEvent::Error(format!(
                                 "failed to resume generation: {:?}", e
                             )));
                         }

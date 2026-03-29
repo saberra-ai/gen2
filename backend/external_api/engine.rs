@@ -54,6 +54,7 @@ impl Engine {
             api_format: RwLock::new("openai".into()),
             client: reqwest::blocking::Client::builder()
                 .timeout(std::time::Duration::from_secs(300))
+                .read_timeout(std::time::Duration::from_secs(2))
                 .build()
                 .unwrap_or_else(|_| reqwest::blocking::Client::new()),
             loaded: AtomicBool::new(false),

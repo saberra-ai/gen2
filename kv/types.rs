@@ -14,7 +14,7 @@ pub struct KvMeta {
     pub n_ctx: u32,
     pub n_layer: u32,
     pub tokenizer_digest: [u8; 32],
-    pub template_fingerprint: u64,
+    pub template_fingerprint: [u8; 32],
     pub created_at_us: i64,
 }
 

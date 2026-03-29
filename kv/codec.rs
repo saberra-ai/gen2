@@ -83,7 +83,7 @@ mod tests {
             n_ctx: 1024,
             n_layer: 12,
             tokenizer_digest: [1; 32],
-            template_fingerprint: 42,
+            template_fingerprint: [42; 32],
             created_at_us: 123,
         };
         let payload = b"hello world";
@@ -100,7 +100,7 @@ mod tests {
             n_ctx: 1,
             n_layer: 1,
             tokenizer_digest: [0; 32],
-            template_fingerprint: 0,
+            template_fingerprint: [0; 32],
             created_at_us: 0,
         };
         let payload = b"abc";
@@ -119,7 +119,7 @@ mod tests {
             n_ctx: 1,
             n_layer: 1,
             tokenizer_digest: [0; 32],
-            template_fingerprint: 0,
+            template_fingerprint: [0; 32],
             created_at_us: 0,
         };
         let blob = build_blob(meta, b"payload").unwrap();
@@ -135,7 +135,7 @@ mod tests {
             n_ctx: 2,
             n_layer: 2,
             tokenizer_digest: [1; 32],
-            template_fingerprint: 1,
+            template_fingerprint: [1; 32],
             created_at_us: 1,
         };
         let blob = build_blob(meta, b"xyz").unwrap();
@@ -153,7 +153,7 @@ mod tests {
             n_ctx: 3,
             n_layer: 3,
             tokenizer_digest: [2; 32],
-            template_fingerprint: 2,
+            template_fingerprint: [2; 32],
             created_at_us: 2,
         };
         let blob = build_blob(meta, b"ok").unwrap();

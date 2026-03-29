@@ -81,6 +81,13 @@ impl TokenPuller {
         }
     }
 
+    fn emit_final_stats(&self) {
+        self.hooks.emit(HookEvent::FinalStats {
+            session_id: self.session_id,
+            stats: self.stats_now(),
+        });
+    }
+
     fn stats_now(&self) -> ExecutionStats {
         let elapsed_us = (ggml_time_us() as u64).saturating_sub(self.start_us);
         let elapsed_s = (elapsed_us as f64) / 1_000_000.0;
@@ -166,11 +173,7 @@ impl Iterator for TokenPuller {
             return Some(Ok(ev));
         }
         if self.stopped.load(Ordering::Acquire) {
-            let stats = self.stats_now();
-            self.hooks.emit(HookEvent::FinalStats {
-                session_id: self.session_id,
-                stats,
-            });
+            self.emit_final_stats();
             self.done = true;
             return Some(Ok(TokenEvent::Stopped));
         }
@@ -179,11 +182,7 @@ impl Iterator for TokenPuller {
         }
         if let Some(limit) = self.max_tokens {
             if self.produced >= limit {
-                let stats = self.stats_now();
-                self.hooks.emit(HookEvent::FinalStats {
-                    session_id: self.session_id,
-                    stats,
-                });
+                self.emit_final_stats();
                 self.done = true;
                 return Some(Ok(TokenEvent::Eos));
             }
@@ -191,27 +190,26 @@ impl Iterator for TokenPuller {
 
         // Sample next token
         let Some(sampler) = self.sampler.as_mut() else {
+            self.emit_final_stats();
             self.done = true;
             return Some(Err(ExecError::InvalidArg("sampler already consumed")));
         };
         let Some(ctx_ref) = self.ctx_cell.as_ref() else {
+            self.emit_final_stats();
             self.done = true;
             return Some(Err(ExecError::InvalidArg("context already consumed")));
         };
         let token = ctx_ref.with_dependent(|_, ctx| sampler.sample(ctx, self.logits_i));
         // accept updates the sampler's internal state → needs &mut
         let Some(sampler) = self.sampler.as_mut() else {
+            self.emit_final_stats();
             self.done = true;
             return Some(Err(ExecError::InvalidArg("sampler already consumed")));
         };
         sampler.accept(token);
 
         if self.bundle.model.is_eog_token(token) {
-            let stats = self.stats_now();
-            self.hooks.emit(HookEvent::FinalStats {
-                session_id: self.session_id,
-                stats,
-            });
+            self.emit_final_stats();
             self.done = true;
             return Some(Ok(TokenEvent::Eos));
         }
@@ -219,7 +217,10 @@ impl Iterator for TokenPuller {
         // Convert token bytes to utf8 string
         let bytes = match self.bundle.model.token_to_piece_bytes(token, 32, true, None) {
             Ok(b) => b,
-            Err(e) => return Some(Err(ExecError::Other(e.into()))),
+            Err(e) => {
+                self.emit_final_stats();
+                return Some(Err(ExecError::Other(e.into())));
+            }
         };
         let mut out = String::with_capacity(32);
         let _ = self.utf8_decoder.decode_to_string(&bytes, &mut out, false);
@@ -227,17 +228,20 @@ impl Iterator for TokenPuller {
         // Prepare batch for next decode step
         self.batch.clear();
         if let Err(e) = self.batch.add(token, self.cur_pos, &[0], true) {
+            self.emit_final_stats();
             return Some(Err(ExecError::Other(e.into())));
         }
         self.cur_pos += 1;
 
         let Some(ctx_mut) = self.ctx_cell.as_mut() else {
+            self.emit_final_stats();
             self.done = true;
             return Some(Err(ExecError::InvalidArg("context already consumed")));
         };
         if let Err(e) = ctx_mut
             .with_dependent_mut(|_, ctx| ctx.decode(&mut self.batch))
         {
+            self.emit_final_stats();
             return Some(Err(ExecError::Other(e.into())));
         }
 

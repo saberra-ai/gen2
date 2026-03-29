@@ -5,8 +5,8 @@ pub struct ModelMeta {
     pub n_layer: u32,
     /// SHA-256 of (BOS bytes || EOS bytes || n_vocab LE bytes). Computed once at load.
     pub tokenizer_digest: [u8; 32],
-    /// First 8 bytes of SHA-256(chat_template_string) as u64 LE. Computed once at load.
-    pub template_fingerprint: u64,
+    /// Full SHA-256 of the chat template string. Computed once at load.
+    pub template_fingerprint: [u8; 32],
 }
 
 impl Default for ModelMeta {
@@ -16,7 +16,7 @@ impl Default for ModelMeta {
             n_ctx: 0,
             n_layer: 0,
             tokenizer_digest: [0u8; 32],
-            template_fingerprint: 0,
+            template_fingerprint: [0u8; 32],
         }
     }
 }

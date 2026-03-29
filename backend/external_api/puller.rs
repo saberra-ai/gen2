@@ -220,6 +220,13 @@ impl Iterator for TokenPuller {
                     continue;
                 }
                 Err(e) => {
+                    // Read timeout (from 2s read_timeout) is not fatal —
+                    // loop back to recheck stopped/paused flags.
+                    if e.kind() == std::io::ErrorKind::TimedOut
+                        || e.kind() == std::io::ErrorKind::WouldBlock
+                    {
+                        continue;
+                    }
                     self.done = true;
                     return Some(Err(ExecError::Other(anyhow::anyhow!(
                         "error reading SSE stream: {}",

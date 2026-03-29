@@ -73,6 +73,8 @@ pub struct Session {
     stopped: Arc<AtomicBool>,
     state: Arc<Mutex<Option<DecodeState>>>,
     messages: RwLock<Vec<Message>>,
+    /// Number of old messages dropped during session creation due to context overflow.
+    initial_messages_dropped: usize,
 }
 
 impl fmt::Debug for Session {
@@ -102,6 +104,23 @@ impl Session {
     }
     pub fn stop(&self) {
         self.stopped.store(true, Ordering::Release);
+    }
+
+    /// Messages dropped during initial session creation due to context overflow.
+    pub fn initial_messages_dropped(&self) -> usize {
+        self.initial_messages_dropped
+    }
+
+    /// Returns true if the session's decode state was lost (e.g. due to an FFI
+    /// panic in the puller). When poisoned the session cannot generate further
+    /// tokens and must be discarded.
+    pub fn is_poisoned(&self) -> bool {
+        // If the state slot is None, it means either a puller is active (normal)
+        // or the puller was dropped without restoring state (poisoned).
+        // We check the stopped flag as a proxy: if stopped was set, we know
+        // no puller should be outstanding.
+        let guard = self.state.lock();
+        guard.is_none() && self.stopped.load(Ordering::Acquire)
     }
 
     pub fn pull(&self, mut gen_spec: GenSpec) -> Result<TokenPuller, ExecError> {
@@ -392,6 +411,7 @@ impl Session {
             .unwrap_or(bundle.meta.n_ctx.max(128));
 
         // Context overflow: truncate old messages until conversation fits
+        let original_message_count = messages.len();
         let gen_reserve = crate::gen2::session_rt::prompt::generation_reserve(
             ctx_size as usize,
             settings.stopping.max_tokens,
@@ -541,6 +561,7 @@ impl Session {
                             prefill_start_us: llama_cpp_2::ggml_time_us() as u64,
                         }))),
                         messages: RwLock::new(messages),
+                        initial_messages_dropped: 0, // MTMD path has no truncation
                     });
                 }
             }
@@ -598,6 +619,7 @@ impl Session {
                 logits_i: (last_batch_tokens - 1),
                 prefill_start_us,
             }))),
+            initial_messages_dropped: original_message_count.saturating_sub(messages.len()),
             messages: RwLock::new(messages),
         })
     }

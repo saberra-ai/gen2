@@ -67,20 +67,17 @@ pub(crate) fn build_bundle(
         h.finalize().into()
     };
 
-    // Pre-compute template fingerprint (first 8 bytes of SHA-256(template_string))
-    let template_fingerprint = model
+    // Pre-compute template fingerprint (full SHA-256 of chat template string)
+    let template_fingerprint: [u8; 32] = model
         .chat_template(None)
         .ok()
         .and_then(|t| t.to_string().ok())
         .map(|tpl| {
             let mut h = Sha256::new();
             h.update(tpl.as_bytes());
-            let d = h.finalize();
-            let mut fp_bytes = [0u8; 8];
-            fp_bytes.copy_from_slice(&d[..8]);
-            u64::from_le_bytes(fp_bytes)
+            h.finalize().into()
         })
-        .unwrap_or(0);
+        .unwrap_or([0u8; 32]);
 
     let meta = ModelMeta {
         model_uuid,
