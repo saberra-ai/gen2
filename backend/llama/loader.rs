@@ -30,7 +30,7 @@ pub(crate) fn build_bundle(
 
     let model = LlamaModel::load_from_file(backend, &req.model_path, &model_params)
         .with_context(|| format!("failed to load model: {}", req.model_path.display()))
-        .map_err(|e| ExecError::Other(e))?;
+        .map_err(ExecError::Other)?;
 
     // Fast model UUID from GGUF metadata + file size (microseconds, not seconds)
     let model_uuid = {
@@ -63,7 +63,7 @@ pub(crate) fn build_bundle(
         let mut h = Sha256::new();
         h.update(&bos);
         h.update(&eos);
-        h.update(&n_vocab);
+        h.update(n_vocab);
         h.finalize().into()
     };
 
@@ -100,7 +100,7 @@ pub(crate) fn build_bundle(
             );
         } else {
             // MTMD GPU follows the same policy as the main model
-            let use_gpu = req.model_params.gpu_layers.map_or(false, |n| n > 0);
+            let use_gpu = req.model_params.gpu_layers.is_some_and(|n| n > 0);
             let marker = mtmd_default_marker().to_string();
             let params = MtmdContextParams {
                 use_gpu,
@@ -166,7 +166,7 @@ pub(crate) fn build_embedder(
     let config = ModelConfig::default();
     LlamaEmbedder::load_from_path(backend.clone(), &req.model_path, config)
         .with_context(|| format!("failed to load embedder: {}", req.model_path.display()))
-        .map_err(|e| ExecError::Other(e.into()))
+        .map_err(ExecError::Other)
 }
 
 #[cfg(test)]

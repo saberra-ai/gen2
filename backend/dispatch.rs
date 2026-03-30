@@ -53,6 +53,7 @@ impl std::fmt::Debug for ModelBundle {
 /// Holds one concrete backend engine internally. The controller creates one
 /// `Engine` at startup; `load_model` auto-detects the format and instantiates
 /// the right backend.
+#[allow(clippy::large_enum_variant)]
 pub enum Engine {
     #[cfg(feature = "backend-llamacpp")]
     LlamaCpp(super::llama::Engine),
@@ -103,13 +104,13 @@ fn detect_backend(req: &LoadRequest) -> Result<BackendKind, ExecError> {
         )));
     }
 
-    if path.is_file() {
-        if let Some(ext) = path.extension().and_then(|e| e.to_str()) {
-            match ext {
-                "gguf" => return Ok(BackendKind::LlamaCpp),
-                "onnx" => return Ok(BackendKind::Onnx),
-                _ => {}
-            }
+    if path.is_file()
+        && let Some(ext) = path.extension().and_then(|e| e.to_str())
+    {
+        match ext {
+            "gguf" => return Ok(BackendKind::LlamaCpp),
+            "onnx" => return Ok(BackendKind::Onnx),
+            _ => {}
         }
     }
 
@@ -121,10 +122,10 @@ fn detect_backend(req: &LoadRequest) -> Result<BackendKind, ExecError> {
         // Check for safetensors (MLX format)
         if let Ok(entries) = std::fs::read_dir(path) {
             for entry in entries.flatten() {
-                if let Some(ext) = entry.path().extension().and_then(|e| e.to_str()) {
-                    if ext == "safetensors" {
-                        return Ok(BackendKind::Mlx);
-                    }
+                if let Some(ext) = entry.path().extension().and_then(|e| e.to_str())
+                    && ext == "safetensors"
+                {
+                    return Ok(BackendKind::Mlx);
                 }
             }
         }
@@ -158,6 +159,12 @@ enum BackendKind {
     ExternalApi,
 }
 
+impl Default for Engine {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Engine {
     /// Which backend is currently active (for UI display).
     pub fn active_backend_name(&self) -> &'static str {
@@ -175,6 +182,7 @@ impl Engine {
     }
 
     /// Which backends are compiled into this binary.
+    #[allow(clippy::vec_init_then_push)]
     pub fn available_backends() -> Vec<&'static str> {
         let mut v = Vec::new();
         #[cfg(feature = "backend-llamacpp")]
@@ -208,7 +216,7 @@ impl Engine {
     pub fn new() -> Self {
         #[cfg(feature = "backend-llamacpp")]
         {
-            return Self::LlamaCpp(super::llama::Engine::new());
+            Self::LlamaCpp(super::llama::Engine::new())
         }
         #[cfg(all(not(feature = "backend-llamacpp"), feature = "backend-mlx"))]
         {
@@ -310,6 +318,7 @@ impl Engine {
         dispatch!(self, e => e.hooks(), Arc::new(HookBus::new()))
     }
 
+    #[allow(clippy::arc_with_non_send_sync)]
     pub fn start_session(&self, spec: SessionSpec) -> Result<Arc<Session>, ExecError> {
         match self {
             #[cfg(feature = "backend-llamacpp")]

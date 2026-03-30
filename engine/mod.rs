@@ -130,7 +130,7 @@ pub fn read_gguf_architecture(path: &Path) -> Option<String> {
     }
 
     let version = u32::from_le_bytes(header[4..8].try_into().ok()?);
-    if version < 2 || version > 3 {
+    if !(2..=3).contains(&version) {
         return None;
     }
 

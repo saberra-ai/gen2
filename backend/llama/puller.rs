@@ -43,6 +43,7 @@ pub struct TokenPuller {
 }
 
 impl TokenPuller {
+    #[allow(clippy::too_many_arguments)]
     pub(crate) fn _new(
         session_id: u64,
         hooks: Arc<HookBus>,
@@ -147,16 +148,16 @@ impl TokenPuller {
 
 impl Drop for TokenPuller {
     fn drop(&mut self) {
-        if let Some(slot) = self.state_slot.upgrade() {
-            if let (Some(ctx_cell), Some(_sampler)) = (self.ctx_cell.take(), self.sampler.take()) {
-                let mut g = slot.lock();
-                *g = Some(DecodeState {
-                    ctx_cell,
-                    cur_pos: self.cur_pos,
-                    logits_i: self.logits_i,
-                    prefill_start_us: self.start_us,
-                });
-            }
+        if let Some(slot) = self.state_slot.upgrade()
+            && let (Some(ctx_cell), Some(_sampler)) = (self.ctx_cell.take(), self.sampler.take())
+        {
+            let mut g = slot.lock();
+            *g = Some(DecodeState {
+                ctx_cell,
+                cur_pos: self.cur_pos,
+                logits_i: self.logits_i,
+                prefill_start_us: self.start_us,
+            });
         }
     }
 }
@@ -180,12 +181,12 @@ impl Iterator for TokenPuller {
         if self.paused.load(Ordering::Acquire) {
             return Some(Ok(TokenEvent::Paused));
         }
-        if let Some(limit) = self.max_tokens {
-            if self.produced >= limit {
-                self.emit_final_stats();
-                self.done = true;
-                return Some(Ok(TokenEvent::Eos));
-            }
+        if let Some(limit) = self.max_tokens
+            && self.produced >= limit
+        {
+            self.emit_final_stats();
+            self.done = true;
+            return Some(Ok(TokenEvent::Eos));
         }
 
         // Sample next token
@@ -248,7 +249,7 @@ impl Iterator for TokenPuller {
         }
 
         // after single-token decode, logits index for next sample is the last element in that batch (0)
-        self.logits_i = (self.batch.n_tokens() as i32) - 1;
+        self.logits_i = self.batch.n_tokens() - 1;
 
         if self.first_token_us.is_none() {
             self.first_token_us = Some((ggml_time_us() as u64).saturating_sub(self.start_us));

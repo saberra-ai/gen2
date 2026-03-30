@@ -1,8 +1,8 @@
 use crate::gen2::{Message, MessageBody, MessageChunk, MessageContent};
 pub(crate) fn messages_have_images(messages: &Vec<Message>) -> bool {
     for msg in messages {
-        match &msg.body {
-            MessageBody::Content { content } => match content {
+        if let MessageBody::Content { content } = &msg.body {
+            match content {
                 MessageContent::SingleText(_) => {}
                 MessageContent::MultipleChunks(chunks) => {
                     if chunks
@@ -12,8 +12,7 @@ pub(crate) fn messages_have_images(messages: &Vec<Message>) -> bool {
                         return true;
                     }
                 }
-            },
-            _ => {}
+            }
         }
     }
     false

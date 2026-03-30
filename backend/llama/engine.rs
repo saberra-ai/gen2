@@ -156,6 +156,7 @@ impl Engine {
             }
         }
         let id = self.next_session_id.fetch_add(1, Ordering::SeqCst);
+        #[allow(clippy::arc_with_non_send_sync)]
         let session = Arc::new(Session::new(
             id,
             bundle.clone(),
@@ -216,9 +217,7 @@ impl Engine {
             .load_full()
             .ok_or(ExecError::EmbedderNotLoaded)?;
         let slices: Vec<&str> = inputs.iter().map(|s| s.as_str()).collect();
-        embedder
-            .embed(&slices, false)
-            .map_err(|e| ExecError::Other(e.into()))
+        embedder.embed(&slices, false).map_err(ExecError::Other)
     }
 
     pub fn unload_model(&self) {
@@ -356,7 +355,7 @@ mod tests {
         let mut got_any = false;
         let mut steps = 0u32;
         let mut result = String::with_capacity(1024); // preallocate a bit
-        while let Some(ev) = puller.next() {
+        for ev in puller.by_ref() {
             steps += 1;
             match ev? {
                 TokenEvent::Token(tok) => {
@@ -446,7 +445,7 @@ mod tests {
         let mut got_any = false;
         let mut steps = 0u32;
         let mut result = String::with_capacity(1024); // preallocate a bit
-        while let Some(ev) = puller.next() {
+        for ev in puller.by_ref() {
             steps += 1;
             match ev? {
                 TokenEvent::Token(tok) => {
@@ -509,7 +508,7 @@ mod tests {
             ..Default::default()
         })?;
         let mut seen = 0usize;
-        while let Some(ev) = p.next() {
+        for ev in p.by_ref() {
             if matches!(ev?, TokenEvent::Token(_)) {
                 seen += 1;
                 if seen >= 2 {

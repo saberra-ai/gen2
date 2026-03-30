@@ -37,103 +37,103 @@ pub struct Settings {
 
 impl Settings {
     pub fn validate(&self) -> Result<(), ExecError> {
-        if let Some(t) = self.sampling.temperature {
-            if !(0.0..=2.0).contains(&t) {
-                return Err(ExecError::SettingsError(format!(
-                    "temperature out of range: {}",
-                    t
-                )));
-            }
+        if let Some(t) = self.sampling.temperature
+            && !(0.0..=2.0).contains(&t)
+        {
+            return Err(ExecError::SettingsError(format!(
+                "temperature out of range: {}",
+                t
+            )));
         }
-        if let Some(tp) = self.sampling.top_p {
-            if !(0.0..=1.0).contains(&tp) {
-                return Err(ExecError::SettingsError(format!(
-                    "top_p out of range: {}",
-                    tp
-                )));
-            }
+        if let Some(tp) = self.sampling.top_p
+            && !(0.0..=1.0).contains(&tp)
+        {
+            return Err(ExecError::SettingsError(format!(
+                "top_p out of range: {}",
+                tp
+            )));
         }
-        if let Some(mp) = self.sampling.min_p {
-            if !(0.0..=1.0).contains(&mp) {
-                return Err(ExecError::SettingsError(format!(
-                    "min_p out of range: {}",
-                    mp
-                )));
-            }
+        if let Some(mp) = self.sampling.min_p
+            && !(0.0..=1.0).contains(&mp)
+        {
+            return Err(ExecError::SettingsError(format!(
+                "min_p out of range: {}",
+                mp
+            )));
         }
-        if let Some(k) = self.sampling.top_k {
-            if k > 100_000 {
-                return Err(ExecError::SettingsError(format!("top_k too large: {}", k)));
-            }
+        if let Some(k) = self.sampling.top_k
+            && k > 100_000
+        {
+            return Err(ExecError::SettingsError(format!("top_k too large: {}", k)));
         }
-        if let Some(n) = self.sampling.penalty_last_n {
-            if n < -1 {
-                return Err(ExecError::SettingsError(format!(
-                    "penalty_last_n out of range: {}",
-                    n
-                )));
-            }
+        if let Some(n) = self.sampling.penalty_last_n
+            && n < -1
+        {
+            return Err(ExecError::SettingsError(format!(
+                "penalty_last_n out of range: {}",
+                n
+            )));
         }
-        if let Some(r) = self.sampling.penalty_repeat {
-            if r < 0.0 {
-                return Err(ExecError::SettingsError(format!(
-                    "penalty_repeat must be non-negative: {}",
-                    r
-                )));
-            }
+        if let Some(r) = self.sampling.penalty_repeat
+            && r < 0.0
+        {
+            return Err(ExecError::SettingsError(format!(
+                "penalty_repeat must be non-negative: {}",
+                r
+            )));
         }
-        if let Some(f) = self.sampling.penalty_freq {
-            if f < 0.0 {
-                return Err(ExecError::SettingsError(format!(
-                    "penalty_freq must be non-negative: {}",
-                    f
-                )));
-            }
+        if let Some(f) = self.sampling.penalty_freq
+            && f < 0.0
+        {
+            return Err(ExecError::SettingsError(format!(
+                "penalty_freq must be non-negative: {}",
+                f
+            )));
         }
-        if let Some(p) = self.sampling.penalty_present {
-            if p < 0.0 {
-                return Err(ExecError::SettingsError(format!(
-                    "penalty_present must be non-negative: {}",
-                    p
-                )));
-            }
+        if let Some(p) = self.sampling.penalty_present
+            && p < 0.0
+        {
+            return Err(ExecError::SettingsError(format!(
+                "penalty_present must be non-negative: {}",
+                p
+            )));
         }
-        if let Some(n) = self.stopping.max_tokens {
-            if n == 0 {
-                return Err(ExecError::SettingsError("max_tokens must be > 0".into()));
-            }
+        if let Some(n) = self.stopping.max_tokens
+            && n == 0
+        {
+            return Err(ExecError::SettingsError("max_tokens must be > 0".into()));
         }
-        if let Some(bs) = self.system.batch_size {
-            if bs == 0 || bs > 4096 {
-                return Err(ExecError::SettingsError(format!(
-                    "batch_size out of range: {}",
-                    bs
-                )));
-            }
+        if let Some(bs) = self.system.batch_size
+            && (bs == 0 || bs > 4096)
+        {
+            return Err(ExecError::SettingsError(format!(
+                "batch_size out of range: {}",
+                bs
+            )));
         }
-        if let Some(ctx) = self.system.ctx_size {
-            if ctx < 64 || ctx > 2_000_000 {
-                return Err(ExecError::SettingsError(format!(
-                    "ctx_size out of range: {}",
-                    ctx
-                )));
-            }
+        if let Some(ctx) = self.system.ctx_size
+            && (!(64..=2_000_000).contains(&ctx))
+        {
+            return Err(ExecError::SettingsError(format!(
+                "ctx_size out of range: {}",
+                ctx
+            )));
         }
-        if let Some(t) = self.system.threads {
-            if t == 0 || t > 1024 {
-                return Err(ExecError::SettingsError(format!(
-                    "threads out of range: {}",
-                    t
-                )));
-            }
+        if let Some(t) = self.system.threads
+            && (t == 0 || t > 1024)
+        {
+            return Err(ExecError::SettingsError(format!(
+                "threads out of range: {}",
+                t
+            )));
         }
-        if let Some(t) = self.system.threads_batch {
-            if t == 0 || t > 1024 {
-                return Err(ExecError::SettingsError(format!(
-                    "threads_batch out of range: {}",
-                    t
-                )));
-            }
+        if let Some(t) = self.system.threads_batch
+            && (t == 0 || t > 1024)
+        {
+            return Err(ExecError::SettingsError(format!(
+                "threads_batch out of range: {}",
+                t
+            )));
         }
         Ok(())
     }
@@ -814,15 +814,10 @@ pub struct CtxParamsInput {
     pub threads: Option<u32>,
 }
 
-#[derive(Deserialize, Clone, Debug)]
+#[derive(Deserialize, Clone, Debug, Default)]
 pub enum ChatTemplateSpec {
+    #[default]
     Default,
-}
-
-impl Default for ChatTemplateSpec {
-    fn default() -> Self {
-        Self::Default
-    }
 }
 
 bitflags! {

@@ -176,7 +176,7 @@ impl Session {
         let tokens_covered = (pos_max + 1).max(0) as usize;
 
         let meta = self.build_kv_meta(&self.bundle)?;
-        let blob = build_blob(meta.clone(), &buf).map_err(|e| ExecError::Other(e))?;
+        let blob = build_blob(meta.clone(), &buf).map_err(ExecError::Other)?;
 
         match dst {
             KvSaveSpec::InMemory => Ok(KvSnapshot {
@@ -332,6 +332,7 @@ impl Session {
 }
 
 impl Session {
+    #[allow(clippy::arc_with_non_send_sync)]
     pub(crate) fn new(
         id: SessionId,
         bundle: Arc<ModelBundle>,
@@ -394,7 +395,7 @@ impl Session {
 
         let prompt = chat_template
             .apply(messages.clone(), None, None)
-            .map_err(|e| ExecError::Other(e.into()))?;
+            .map_err(ExecError::Other)?;
 
         // Tokenize prompt
         let mut tokens_list = bundle
@@ -445,7 +446,7 @@ impl Session {
             // Re-tokenize and fine-tune with per-message loop
             let truncated_prompt = chat_template
                 .apply(messages.clone(), None, None)
-                .map_err(|e| ExecError::Other(e.into()))?;
+                .map_err(ExecError::Other)?;
             tokens_list = bundle
                 .model
                 .str_to_token(&truncated_prompt, AddBos::Always)
@@ -454,7 +455,7 @@ impl Session {
                 messages.remove(remove_idx);
                 let truncated_prompt = chat_template
                     .apply(messages.clone(), None, None)
-                    .map_err(|e| ExecError::Other(e.into()))?;
+                    .map_err(ExecError::Other)?;
                 tokens_list = bundle
                     .model
                     .str_to_token(&truncated_prompt, AddBos::Always)
@@ -483,8 +484,11 @@ impl Session {
 
         // Optional MTMD (images) prefill path
         {
-            if bundle.mtmd_ctx.is_some() && messages_have_images(&messages) {
-                let mtmd_ctx = bundle.mtmd_ctx.as_ref().unwrap();
+            if let Some(mtmd_ctx) = bundle
+                .mtmd_ctx
+                .as_ref()
+                .filter(|_| messages_have_images(&messages))
+            {
                 let marker = bundle
                     .mtmd_marker
                     .clone()
@@ -493,18 +497,18 @@ impl Session {
 
                 let mut img_paths: Vec<String> = Vec::new();
                 for m in &messages {
-                    if let MessageBody::Content { content } = &m.body {
-                        if let MessageContent::MultipleChunks(chunks) = content {
-                            for ch in chunks {
-                                if let MessageChunk::ImageUrl { image_url } = ch {
-                                    let u = image_url.url.clone();
-                                    let path = if let Some(rest) = u.strip_prefix("file://") {
-                                        rest.to_string()
-                                    } else {
-                                        u
-                                    };
-                                    img_paths.push(path);
-                                }
+                    if let MessageBody::Content { content } = &m.body
+                        && let MessageContent::MultipleChunks(chunks) = content
+                    {
+                        for ch in chunks {
+                            if let MessageChunk::ImageUrl { image_url } = ch {
+                                let u = image_url.url.clone();
+                                let path = if let Some(rest) = u.strip_prefix("file://") {
+                                    rest.to_string()
+                                } else {
+                                    u
+                                };
+                                img_paths.push(path);
                             }
                         }
                     }
@@ -640,18 +644,14 @@ impl Session {
         let msgs = self.messages.read();
 
         for m in msgs.iter() {
-            if let MessageBody::Content { content } = &m.body {
-                if let MessageContent::MultipleChunks(chunks) = content {
-                    for ch in chunks {
-                        if matches!(ch, MessageChunk::ImageUrl { .. }) {
-                            out.push_back(TokenEvent::MediaBoundary(MediaBoundary::BeginImage {
-                                idx,
-                            }));
-                            out.push_back(TokenEvent::MediaBoundary(MediaBoundary::EndImage {
-                                idx,
-                            }));
-                            idx += 1;
-                        }
+            if let MessageBody::Content { content } = &m.body
+                && let MessageContent::MultipleChunks(chunks) = content
+            {
+                for ch in chunks {
+                    if matches!(ch, MessageChunk::ImageUrl { .. }) {
+                        out.push_back(TokenEvent::MediaBoundary(MediaBoundary::BeginImage { idx }));
+                        out.push_back(TokenEvent::MediaBoundary(MediaBoundary::EndImage { idx }));
+                        idx += 1;
                     }
                 }
             }
@@ -682,7 +682,7 @@ impl Session {
 
         let full_prompt = tpl
             .apply(all_messages, None, None)
-            .map_err(|e| ExecError::Other(e.into()))?;
+            .map_err(ExecError::Other)?;
 
         // 3) Tokenize full prompt, then take only the delta beyond what's already in KV
         let full_tokens = self
@@ -737,7 +737,7 @@ impl Session {
                 drop(msgs);
                 let check_prompt = tpl
                     .apply(check_msgs, None, None)
-                    .map_err(|e| ExecError::Other(e.into()))?;
+                    .map_err(ExecError::Other)?;
                 let check_tokens = self
                     .bundle
                     .model

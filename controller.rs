@@ -187,10 +187,10 @@ impl std::fmt::Debug for Forwarder {
 }
 impl HookListener for Forwarder {
     fn on_event(&self, ev: &HookEvent) {
-        if let HookEvent::FinalStats { session_id, stats } = ev {
-            if *session_id == self.sid {
-                try_emit(&self.tx, ControllerEvent::FinalStats(stats.clone()));
-            }
+        if let HookEvent::FinalStats { session_id, stats } = ev
+            && *session_id == self.sid
+        {
+            try_emit(&self.tx, ControllerEvent::FinalStats(stats.clone()));
         }
     }
 }
@@ -241,7 +241,7 @@ fn build_load_request(
 
 fn stop_notify_and_end(engine: &Engine, mut chat: ChatStream) {
     let sid = chat.session.id();
-    let _ = chat.session.stop();
+    chat.session.stop();
     try_emit(&chat.tx, ControllerEvent::Stopped);
     engine.hooks().deregister(sid);
     let _ = engine.end_session(sid);
@@ -533,10 +533,10 @@ fn dispatch_cmd(
                 return ControlFlow::Continue;
             } else {
                 // chat not loaded loading new chat
-                if chats.len() >= max_active {
-                    if let Some((_k, victim)) = evict_lru(chats) {
-                        stop_notify_and_end(engine, victim);
-                    }
+                if chats.len() >= max_active
+                    && let Some((_k, victim)) = evict_lru(chats)
+                {
+                    stop_notify_and_end(engine, victim);
                 }
                 match engine.start_session(SessionSpec {
                     messages,
@@ -653,12 +653,9 @@ fn dispatch_cmd(
                     );
                     return ControlFlow::Continue;
                 }
-                match chat.session.append_messages(messages) {
-                    Err(e) => {
-                        try_emit(&tx, ControllerEvent::Error(format!("{:?}", e)));
-                        return ControlFlow::Continue;
-                    }
-                    Ok(_) => {}
+                if let Err(e) = chat.session.append_messages(messages) {
+                    try_emit(&tx, ControllerEvent::Error(format!("{:?}", e)));
+                    return ControlFlow::Continue;
                 }
 
                 let gen_spec = apply_generation_defaults(engine, gen_spec);
@@ -755,14 +752,14 @@ fn dispatch_cmd(
             if let Some(chat) = chats.get_mut(&chat_id) {
                 chat.puller = None;
                 chat.paused = true;
-                let _ = chat.session.pause(); // or chat.puller.cancel();
+                chat.session.pause(); // or chat.puller.cancel();
             }
             ControlFlow::Continue
         }
         ControllerCmd::ResumeChat { chat_id } => {
             if let Some(chat) = chats.get_mut(&chat_id) {
                 chat.paused = false;
-                let _ = chat.session.resume();
+                chat.session.resume();
                 // Recreate the puller that was dropped during pause
                 if chat.puller.is_none() {
                     match chat.session.pull(chat.last_gen_spec.clone()) {
@@ -859,5 +856,135 @@ mod tests {
             rx.try_recv().is_err(),
             "receiver should be empty after consuming the single event"
         );
+    }
+
+    #[test]
+    fn is_model_loaded_before_load() {
+        let handle = start_controller();
+        let (tx, rx) = std::sync::mpsc::channel();
+        handle
+            .send(ControllerCmd::IsModelLoaded { resp: tx })
+            .expect("send should succeed");
+        let loaded = rx.recv().expect("should receive a response");
+        assert!(!loaded, "no model should be loaded on a fresh controller");
+        let _ = handle.send(ControllerCmd::Shutdown);
+    }
+
+    #[test]
+    fn is_embedder_loaded_before_load() {
+        let handle = start_controller();
+        let (tx, rx) = std::sync::mpsc::channel();
+        handle
+            .send(ControllerCmd::IsEmbedderLoaded { resp: tx })
+            .expect("send should succeed");
+        let loaded = rx.recv().expect("should receive a response");
+        assert!(
+            !loaded,
+            "no embedder should be loaded on a fresh controller"
+        );
+        let _ = handle.send(ControllerCmd::Shutdown);
+    }
+
+    #[test]
+    fn is_chat_loaded_unknown_id() {
+        let handle = start_controller();
+        let (tx, rx) = std::sync::mpsc::channel();
+        handle
+            .send(ControllerCmd::IsChatLoaded {
+                chat_id: "nonexistent".to_string(),
+                resp: tx,
+            })
+            .expect("send should succeed");
+        let loaded = rx.recv().expect("should receive a response");
+        assert!(!loaded, "unknown chat_id should not be loaded");
+        let _ = handle.send(ControllerCmd::Shutdown);
+    }
+
+    #[test]
+    fn shutdown_then_send_fails() {
+        let handle = start_controller();
+        handle
+            .send(ControllerCmd::Shutdown)
+            .expect("shutdown send should succeed");
+        // Give the controller thread a moment to process shutdown.
+        std::thread::sleep(std::time::Duration::from_millis(50));
+        let (tx, _rx) = std::sync::mpsc::channel();
+        let result = handle.send(ControllerCmd::IsModelLoaded { resp: tx });
+        assert!(
+            result.is_err(),
+            "sending after shutdown should fail because the channel is closed"
+        );
+    }
+
+    #[test]
+    fn stop_chat_unknown_id_no_panic() {
+        let handle = start_controller();
+        // Stopping a chat that was never started should not panic or kill the controller.
+        handle
+            .send(ControllerCmd::StopChat {
+                chat_id: "unknown-chat-id".to_string(),
+            })
+            .expect("stop unknown chat should succeed");
+        // Verify the controller is still alive by querying it.
+        let (tx, rx) = std::sync::mpsc::channel();
+        handle
+            .send(ControllerCmd::IsModelLoaded { resp: tx })
+            .expect("send should succeed after StopChat on unknown id");
+        let loaded = rx.recv().expect("controller should still respond");
+        assert!(!loaded, "no model should be loaded");
+        let _ = handle.send(ControllerCmd::Shutdown);
+    }
+
+    #[test]
+    fn controller_handle_clone_works() {
+        let handle = start_controller();
+        let cloned = handle.clone();
+        let (tx, rx) = std::sync::mpsc::channel();
+        cloned
+            .send(ControllerCmd::IsModelLoaded { resp: tx })
+            .expect("send via cloned handle should succeed");
+        let loaded = rx
+            .recv()
+            .expect("should receive a response via cloned handle");
+        assert!(!loaded, "no model should be loaded");
+        let _ = handle.send(ControllerCmd::Shutdown);
+    }
+
+    #[test]
+    fn apply_settings_without_model() {
+        let handle = start_controller();
+        let (tx, rx) = std::sync::mpsc::channel();
+        handle
+            .send(ControllerCmd::ApplySettings {
+                settings: Settings::default(),
+                resp: tx,
+            })
+            .expect("send should succeed");
+        let result = rx.recv().expect("should receive a response");
+        // With no backend features, the engine is Uninit and returns Err.
+        // With a backend (e.g. backend-llamacpp), upload_settings may succeed
+        // even without a model file loaded. Either way, the controller must
+        // respond without panicking — that is the boundary guarantee.
+        #[cfg(not(any(
+            feature = "backend-llamacpp",
+            feature = "backend-mlx",
+            feature = "backend-onnx",
+            feature = "backend-external-api"
+        )))]
+        assert!(
+            result.is_err(),
+            "applying settings without any backend should return Err(ModelNotLoaded)"
+        );
+        #[cfg(any(
+            feature = "backend-llamacpp",
+            feature = "backend-mlx",
+            feature = "backend-onnx",
+            feature = "backend-external-api"
+        ))]
+        assert!(
+            result.is_ok(),
+            "applying default settings on an initialized backend should succeed"
+        );
+        let _ = handle.send(ControllerCmd::Shutdown);
     }
 }
