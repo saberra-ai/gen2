@@ -10,7 +10,10 @@ pub use crate::gen2::backend::Engine;
 pub use error::ExecError;
 pub use stats::ExecutionStats;
 pub use telemetry::{HookBus, HookEvent, HookListener};
-pub use types::{Capabilities, ChatTemplateSpec, CtxParamsInput, EmbedLoadRequest, LoadRequest, ModelParamsInput, Settings};
+pub use types::{
+    Capabilities, ChatTemplateSpec, CtxParamsInput, EmbedLoadRequest, LoadRequest,
+    ModelParamsInput, Settings,
+};
 
 use std::fs::File;
 use std::io::{Read, Seek, SeekFrom};
@@ -21,20 +24,56 @@ const GGUF_MAGIC: [u8; 4] = [0x47, 0x47, 0x55, 0x46];
 
 /// Architectures verified to work on Metal (Apple Silicon) with the current llama.cpp.
 const VERIFIED_ARCHITECTURES: &[&str] = &[
-    "llama", "qwen2", "qwen2moe", "phi2", "phi3", "starcoder2",
-    "falcon", "gptneox", "mpt", "baichuan", "stablelm", "internlm2",
-    "command-r", "deepseek2", "mistral", "minicpm", "minicpm3",
-    "gemma", "gemma2", "gpt2", "gptj", "refact", "bloom", "plamo",
-    "codeshell", "orion", "mamba", "xverse", "dbrx", "olmo", "olmo2",
-    "openelm", "arctic", "chatglm", "exaone", "granite", "granitemoe",
-    "rwkv6", "rwkv6qwen2", "qwen2vl", "cohere2", "olmoe",
-    "qwen3", "qwen3moe",
+    "llama",
+    "qwen2",
+    "qwen2moe",
+    "phi2",
+    "phi3",
+    "starcoder2",
+    "falcon",
+    "gptneox",
+    "mpt",
+    "baichuan",
+    "stablelm",
+    "internlm2",
+    "command-r",
+    "deepseek2",
+    "mistral",
+    "minicpm",
+    "minicpm3",
+    "gemma",
+    "gemma2",
+    "gpt2",
+    "gptj",
+    "refact",
+    "bloom",
+    "plamo",
+    "codeshell",
+    "orion",
+    "mamba",
+    "xverse",
+    "dbrx",
+    "olmo",
+    "olmo2",
+    "openelm",
+    "arctic",
+    "chatglm",
+    "exaone",
+    "granite",
+    "granitemoe",
+    "rwkv6",
+    "rwkv6qwen2",
+    "qwen2vl",
+    "cohere2",
+    "olmoe",
+    "qwen3",
+    "qwen3moe",
 ];
 
 /// Architectures with known Metal kernel crashes. These will be blocked.
 const KNOWN_METAL_CRASHES: &[&str] = &[
-    "gemma3",  // hybrid sliding-window + global attention — Metal kernel abort (2026-03)
-    "qwen35",  // Gated Delta Net tensor op — Metal abort, llama.cpp #20358 (2026-03)
+    "gemma3", // hybrid sliding-window + global attention — Metal kernel abort (2026-03)
+    "qwen35", // Gated Delta Net tensor op — Metal abort, llama.cpp #20358 (2026-03)
 ];
 
 /// Validate that `path` points to a non-empty file with a valid GGUF header.
@@ -43,10 +82,7 @@ const KNOWN_METAL_CRASHES: &[&str] = &[
 /// avoid hangs in the C FFI layer when the file is empty or corrupt.
 pub fn validate_model_file(path: &Path) -> Result<(), ExecError> {
     let md = path.metadata().map_err(|e| {
-        ExecError::InvalidModelFile(format!(
-            "cannot read model file '{}': {e}",
-            path.display()
-        ))
+        ExecError::InvalidModelFile(format!("cannot read model file '{}': {e}", path.display()))
     })?;
 
     if md.len() == 0 {
@@ -137,16 +173,35 @@ fn read_gguf_string(f: &mut File) -> Option<String> {
 /// Skip a GGUF value based on its type tag.
 fn skip_gguf_value(f: &mut File, vtype: u32) -> Option<()> {
     match vtype {
-        0 => { f.seek(SeekFrom::Current(1)).ok()?; }        // u8
-        1 => { f.seek(SeekFrom::Current(1)).ok()?; }        // i8
-        2 => { f.seek(SeekFrom::Current(2)).ok()?; }        // u16
-        3 => { f.seek(SeekFrom::Current(2)).ok()?; }        // i16
-        4 => { f.seek(SeekFrom::Current(4)).ok()?; }        // u32
-        5 => { f.seek(SeekFrom::Current(4)).ok()?; }        // i32
-        6 => { f.seek(SeekFrom::Current(4)).ok()?; }        // f32
-        7 => { f.seek(SeekFrom::Current(1)).ok()?; }        // bool
-        8 => { read_gguf_string(f)?; }                      // string
-        9 => {                                               // array
+        0 => {
+            f.seek(SeekFrom::Current(1)).ok()?;
+        } // u8
+        1 => {
+            f.seek(SeekFrom::Current(1)).ok()?;
+        } // i8
+        2 => {
+            f.seek(SeekFrom::Current(2)).ok()?;
+        } // u16
+        3 => {
+            f.seek(SeekFrom::Current(2)).ok()?;
+        } // i16
+        4 => {
+            f.seek(SeekFrom::Current(4)).ok()?;
+        } // u32
+        5 => {
+            f.seek(SeekFrom::Current(4)).ok()?;
+        } // i32
+        6 => {
+            f.seek(SeekFrom::Current(4)).ok()?;
+        } // f32
+        7 => {
+            f.seek(SeekFrom::Current(1)).ok()?;
+        } // bool
+        8 => {
+            read_gguf_string(f)?;
+        } // string
+        9 => {
+            // array
             let mut atype_buf = [0u8; 4];
             f.read_exact(&mut atype_buf).ok()?;
             let atype = u32::from_le_bytes(atype_buf);
@@ -157,9 +212,15 @@ fn skip_gguf_value(f: &mut File, vtype: u32) -> Option<()> {
                 skip_gguf_value(f, atype)?;
             }
         }
-        10 => { f.seek(SeekFrom::Current(8)).ok()?; }       // u64
-        11 => { f.seek(SeekFrom::Current(8)).ok()?; }       // i64
-        12 => { f.seek(SeekFrom::Current(8)).ok()?; }       // f64
+        10 => {
+            f.seek(SeekFrom::Current(8)).ok()?;
+        } // u64
+        11 => {
+            f.seek(SeekFrom::Current(8)).ok()?;
+        } // i64
+        12 => {
+            f.seek(SeekFrom::Current(8)).ok()?;
+        } // f64
         _ => return None, // unknown type
     }
     Some(())
@@ -199,7 +260,11 @@ mod tests {
     fn rejects_nonexistent_file() {
         let r = validate_model_file(Path::new("/tmp/pio_test_nonexistent.gguf"));
         assert!(r.is_err());
-        assert!(r.unwrap_err().to_string().contains("cannot read model file"));
+        assert!(
+            r.unwrap_err()
+                .to_string()
+                .contains("cannot read model file")
+        );
     }
 
     #[test]

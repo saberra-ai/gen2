@@ -4,11 +4,11 @@ use std::sync::{
     atomic::{AtomicBool, Ordering},
 };
 
-use crate::gen2::Message;
 use super::bundle::ModelBundle;
+use super::puller::TokenPuller;
+use crate::gen2::Message;
 use crate::gen2::engine::{ExecError, HookBus, HookEvent, Settings};
 use crate::gen2::generation::{GenSpec, TokenEvent};
-use super::puller::TokenPuller;
 use crate::gen2::kv::{
     KvLoadReport, KvLoadSpec, KvMeta, KvSaveSpec, KvSnapshot, build_blob, parse_blob,
     read_from_path, write_to_path,
@@ -156,9 +156,7 @@ impl Session {
         let state = guard
             .as_ref()
             .ok_or(ExecError::InvalidArg("session already consumed"))?;
-        let sz = state
-            .ctx_cell
-            .with_dependent(|_, ctx| ctx.get_state_size());
+        let sz = state.ctx_cell.with_dependent(|_, ctx| ctx.get_state_size());
         if sz == 0 {
             return Err(ExecError::Other(anyhow::anyhow!("no state available")));
         }
@@ -424,15 +422,24 @@ impl Session {
                 ctx_limit
             );
             // Estimate how many messages to batch-remove based on avg tokens/msg
-            let first_is_system = messages.first().map(|m| m.role == "system").unwrap_or(false);
-            let removable = if first_is_system { messages.len() - 2 } else { messages.len() - 1 };
+            let first_is_system = messages
+                .first()
+                .map(|m| m.role == "system")
+                .unwrap_or(false);
+            let removable = if first_is_system {
+                messages.len() - 2
+            } else {
+                messages.len() - 1
+            };
             let avg_per_msg = tokens_list.len() / messages.len().max(1);
             let excess = tokens_list.len().saturating_sub(ctx_limit);
             let est_remove = (excess / avg_per_msg.max(1)).min(removable);
             let remove_idx = if first_is_system { 1 } else { 0 };
             // Batch remove estimated messages
             for _ in 0..est_remove {
-                if messages.len() <= 2 { break; }
+                if messages.len() <= 2 {
+                    break;
+                }
                 messages.remove(remove_idx);
             }
             // Re-tokenize and fine-tune with per-message loop
@@ -466,9 +473,8 @@ impl Session {
         }
         // Flash attention: default to AUTO (let llama.cpp decide based on model)
         if settings.system.flash_attn.unwrap_or(true) {
-            ctx_params = ctx_params.with_flash_attention_policy(
-                llama_cpp_sys_2::LLAMA_FLASH_ATTN_TYPE_AUTO,
-            );
+            ctx_params =
+                ctx_params.with_flash_attention_policy(llama_cpp_sys_2::LLAMA_FLASH_ATTN_TYPE_AUTO);
         }
         let mut ctx_cell = SessionCtxCell::try_new(bundle.clone(), |owner| {
             owner.model.new_context(&backend, ctx_params).map(DepCtx)
@@ -712,7 +718,8 @@ impl Session {
             );
 
             // Clear KV cache
-            st.ctx_cell.with_dependent_mut(|_, ctx| ctx.clear_kv_cache());
+            st.ctx_cell
+                .with_dependent_mut(|_, ctx| ctx.clear_kv_cache());
             st.cur_pos = 0;
 
             // Drop oldest non-system messages until conversation fits
@@ -720,10 +727,7 @@ impl Session {
             let mut dropped = 0_usize;
             while msgs.len() > 2 {
                 // Keep at least system prompt (if any) + last user message
-                let first_is_system = msgs
-                    .first()
-                    .map(|m| m.role == "system")
-                    .unwrap_or(false);
+                let first_is_system = msgs.first().map(|m| m.role == "system").unwrap_or(false);
                 let remove_idx = if first_is_system { 1 } else { 0 };
                 msgs.remove(remove_idx);
                 dropped += 1;
@@ -759,15 +763,17 @@ impl Session {
                         for (i, token) in chunk.into_iter().enumerate() {
                             let absolute = st.cur_pos + i as i32;
                             let is_last = (i + 1 == chunk_size) && to_process.is_empty();
-                            batch
-                                .add(token, absolute, &[0], is_last)
-                                .map_err(|_| ExecError::Other(anyhow::anyhow!("batch add error")))?;
+                            batch.add(token, absolute, &[0], is_last).map_err(|_| {
+                                ExecError::Other(anyhow::anyhow!("batch add error"))
+                            })?;
                         }
                         st.ctx_cell
                             .with_dependent_mut(|_, ctx| ctx.decode(&mut batch))
-                            .map_err(|_| ExecError::Other(anyhow::anyhow!(
-                                "decode failed after context truncation"
-                            )))?;
+                            .map_err(|_| {
+                                ExecError::Other(anyhow::anyhow!(
+                                    "decode failed after context truncation"
+                                ))
+                            })?;
                         st.cur_pos += chunk_size as i32;
                         last_batch_tokens = batch.n_tokens();
                     }

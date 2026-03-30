@@ -6,10 +6,10 @@ use llama_cpp_2::llama_batch::LlamaBatch;
 use llama_cpp_2::sampling::LlamaSampler;
 
 use super::bundle::ModelBundle;
+use super::session::{DecodeState, SessionCtxCell};
 use crate::gen2::engine::ExecError;
 use crate::gen2::engine::{ExecutionStats, HookBus, HookEvent};
 use crate::gen2::generation::{GenSpec, Token, TokenEvent};
-use super::session::{DecodeState, SessionCtxCell};
 use std::collections::VecDeque;
 
 use parking_lot::Mutex;
@@ -215,7 +215,11 @@ impl Iterator for TokenPuller {
         }
 
         // Convert token bytes to utf8 string
-        let bytes = match self.bundle.model.token_to_piece_bytes(token, 32, true, None) {
+        let bytes = match self
+            .bundle
+            .model
+            .token_to_piece_bytes(token, 32, true, None)
+        {
             Ok(b) => b,
             Err(e) => {
                 self.emit_final_stats();
@@ -238,9 +242,7 @@ impl Iterator for TokenPuller {
             self.done = true;
             return Some(Err(ExecError::InvalidArg("context already consumed")));
         };
-        if let Err(e) = ctx_mut
-            .with_dependent_mut(|_, ctx| ctx.decode(&mut self.batch))
-        {
+        if let Err(e) = ctx_mut.with_dependent_mut(|_, ctx| ctx.decode(&mut self.batch)) {
             self.emit_final_stats();
             return Some(Err(ExecError::Other(e.into())));
         }

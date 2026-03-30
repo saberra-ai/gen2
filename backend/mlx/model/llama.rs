@@ -73,11 +73,8 @@ impl LlamaModel {
     /// Create a model with placeholder (zero) weights.
     /// The safetensors loader must overwrite every weight before inference.
     pub fn new(config: &ModelConfig) -> Self {
-        let embed_tokens = Array::zeros::<f32>(&[
-            config.vocab_size as i32,
-            config.hidden_size as i32,
-        ])
-        .unwrap();
+        let embed_tokens =
+            Array::zeros::<f32>(&[config.vocab_size as i32, config.hidden_size as i32]).unwrap();
 
         let layers: Vec<TransformerBlock> = (0..config.num_hidden_layers)
             .map(|_| TransformerBlock::new(config))
@@ -85,11 +82,8 @@ impl LlamaModel {
 
         let norm = RmsNorm::new(config.hidden_size, config.rms_norm_eps);
 
-        let lm_head = Array::zeros::<f32>(&[
-            config.vocab_size as i32,
-            config.hidden_size as i32,
-        ])
-        .unwrap();
+        let lm_head =
+            Array::zeros::<f32>(&[config.vocab_size as i32, config.hidden_size as i32]).unwrap();
 
         Self {
             embed_tokens,
@@ -107,12 +101,7 @@ impl LlamaModel {
     /// `rope`: precomputed rotary embeddings.
     ///
     /// Returns: (batch=1, vocab_size) logits for the final sequence position.
-    pub fn forward(
-        &self,
-        tokens: &[u32],
-        cache: &mut KvCache,
-        rope: &RotaryEmbedding,
-    ) -> Array {
+    pub fn forward(&self, tokens: &[u32], cache: &mut KvCache, rope: &RotaryEmbedding) -> Array {
         let seq_len = tokens.len();
 
         // Compute position offset from the KV cache.

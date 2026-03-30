@@ -43,22 +43,13 @@ pub enum ControllerCmd {
 
     // ── Status queries ───────────────────────────────────────────────
     /// Check whether the primary LLM is loaded and ready.
-    IsModelLoaded {
-        resp: Sender<bool>,
-    },
+    IsModelLoaded { resp: Sender<bool> },
     /// Check whether the embedding model is loaded.
-    IsEmbedderLoaded {
-        resp: Sender<bool>,
-    },
+    IsEmbedderLoaded { resp: Sender<bool> },
     /// Check whether the multimodal projector is loaded (image support).
-    IsMmprojLoaded {
-        resp: Sender<bool>,
-    },
+    IsMmprojLoaded { resp: Sender<bool> },
     /// Check whether a chat session is active for the given chat_id.
-    IsChatLoaded {
-        chat_id: String,
-        resp: Sender<bool>,
-    },
+    IsChatLoaded { chat_id: String, resp: Sender<bool> },
 
     // ── Chat operations ──────────────────────────────────────────────
     /// Start a new chat session with full message history.
@@ -90,17 +81,11 @@ pub enum ControllerCmd {
         tx: SyncSender<ControllerEvent>,
     },
     /// Abort and remove a chat session.
-    StopChat {
-        chat_id: String,
-    },
+    StopChat { chat_id: String },
     /// Pause token generation for a chat (session stays in memory).
-    PauseChat {
-        chat_id: String,
-    },
+    PauseChat { chat_id: String },
     /// Resume a paused chat session.
-    ResumeChat {
-        chat_id: String,
-    },
+    ResumeChat { chat_id: String },
 
     // ── Utility ──────────────────────────────────────────────────────
     /// Generate embedding vectors for a batch of text inputs.
@@ -186,7 +171,7 @@ struct ChatStream {
     paused: bool,
     finished: bool,
     ephemeral: bool,
-    last_used: Instant, // ⬅ NEW: track most recent access
+    last_used: Instant,     // ⬅ NEW: track most recent access
     last_gen_spec: GenSpec, // stored for puller recreation on resume
 }
 
@@ -284,7 +269,9 @@ fn run_loop(rx: Receiver<ControllerCmd>, max_active: usize) {
                 Err(_) => break, // controller dropped
                 Ok(ControllerCmd::Shutdown) => break,
                 Ok(cmd) => {
-                    if let ControlFlow::Break = dispatch_cmd(cmd, &mut engine, &mut chats, max_active) {
+                    if let ControlFlow::Break =
+                        dispatch_cmd(cmd, &mut engine, &mut chats, max_active)
+                    {
                         break;
                     }
                 }
@@ -511,9 +498,10 @@ fn dispatch_cmd(
                 chat.last_used = Instant::now();
                 chat.tx = tx.clone();
                 if chat.puller.is_some() && !chat.finished {
-                    try_emit(&tx, ControllerEvent::Error(
-                        "chat already generating; pause/stop first".into(),
-                    ));
+                    try_emit(
+                        &tx,
+                        ControllerEvent::Error("chat already generating; pause/stop first".into()),
+                    );
                     return ControlFlow::Continue;
                 }
 
@@ -563,10 +551,13 @@ fn dispatch_cmd(
                             try_emit(&tx, ControllerEvent::ContextTruncated(dropped));
                         }
                         let sid = session.id();
-                        engine.hooks().register_with_id(sid, Arc::new(Forwarder {
+                        engine.hooks().register_with_id(
                             sid,
-                            tx: tx.clone(),
-                        }));
+                            Arc::new(Forwarder {
+                                sid,
+                                tx: tx.clone(),
+                            }),
+                        );
                         let pull_spec = apply_generation_defaults(engine, gen_spec);
                         match session.pull(pull_spec.clone()) {
                             Err(e) => {
@@ -609,9 +600,10 @@ fn dispatch_cmd(
             if let Some(chat) = chats.get_mut(&chat_id) {
                 chat.tx = tx.clone();
                 if chat.puller.is_some() && !chat.finished {
-                    try_emit(&tx, ControllerEvent::Error(
-                        "chat already generating; pause/stop first".into(),
-                    ));
+                    try_emit(
+                        &tx,
+                        ControllerEvent::Error("chat already generating; pause/stop first".into()),
+                    );
                     return ControlFlow::Continue;
                 }
                 // If you add Session::append_messages(Vec<Message>), call it here with `new_messages`.
@@ -639,10 +631,10 @@ fn dispatch_cmd(
                     }
                 }
             } else {
-                try_emit(&tx, ControllerEvent::Error(format!(
-                    "chat_id '{}' not found",
-                    chat_id
-                )));
+                try_emit(
+                    &tx,
+                    ControllerEvent::Error(format!("chat_id '{}' not found", chat_id)),
+                );
             }
             ControlFlow::Continue
         }
@@ -655,9 +647,10 @@ fn dispatch_cmd(
             if let Some(chat) = chats.get_mut(&chat_id) {
                 chat.last_used = Instant::now();
                 if chat.puller.is_some() && !chat.finished {
-                    try_emit(&tx, ControllerEvent::Error(
-                        "chat already generating; pause/stop first".into(),
-                    ));
+                    try_emit(
+                        &tx,
+                        ControllerEvent::Error("chat already generating; pause/stop first".into()),
+                    );
                     return ControlFlow::Continue;
                 }
                 match chat.session.append_messages(messages) {
@@ -684,10 +677,10 @@ fn dispatch_cmd(
                 return ControlFlow::Continue;
             }
 
-            try_emit(&tx, ControllerEvent::Error(format!(
-                "chat_id '{}' is not loaded",
-                chat_id
-            )));
+            try_emit(
+                &tx,
+                ControllerEvent::Error(format!("chat_id '{}' is not loaded", chat_id)),
+            );
             ControlFlow::Continue
         }
         ControllerCmd::CreateTitle {
@@ -720,10 +713,13 @@ fn dispatch_cmd(
                 }
                 Ok(session) => {
                     let sid = session.id();
-                    engine.hooks().register_with_id(sid, Arc::new(Forwarder {
+                    engine.hooks().register_with_id(
                         sid,
-                        tx: tx.clone(),
-                    }));
+                        Arc::new(Forwarder {
+                            sid,
+                            tx: tx.clone(),
+                        }),
+                    );
                     match session.pull(gen_spec.clone()) {
                         Err(e) => {
                             try_emit(&tx, ControllerEvent::Error(format!("{:?}", e)));
@@ -775,9 +771,13 @@ fn dispatch_cmd(
                             chat.finished = false;
                         }
                         Err(e) => {
-                            try_emit(&chat.tx, ControllerEvent::Error(format!(
-                                "failed to resume generation: {:?}", e
-                            )));
+                            try_emit(
+                                &chat.tx,
+                                ControllerEvent::Error(format!(
+                                    "failed to resume generation: {:?}",
+                                    e
+                                )),
+                            );
                         }
                     }
                 }
@@ -804,7 +804,8 @@ mod tests {
 
         // Fill the channel to capacity.
         for _ in 0..EVENT_CHANNEL_CAPACITY {
-            tx.try_send(ControllerEvent::Stopped).expect("channel should accept up to capacity");
+            tx.try_send(ControllerEvent::Stopped)
+                .expect("channel should accept up to capacity");
         }
 
         // One more event should return Full (not block).

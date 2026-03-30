@@ -528,7 +528,6 @@ impl Session {
     }
 }
 
-
 // ─── TokenPuller ────────────────────────────────────────────────────────────
 
 pub enum TokenPuller {

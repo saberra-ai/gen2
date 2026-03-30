@@ -5,17 +5,15 @@ use std::sync::{
     atomic::{AtomicBool, Ordering},
 };
 
-use crate::gen2::Message;
 use super::bundle::ModelBundle;
-use crate::gen2::engine::{ExecError, HookBus, HookEvent, Settings};
-use crate::gen2::generation::GenSpec;
 use super::model::KvCache;
 use super::puller::TokenPuller;
+use crate::gen2::Message;
+use crate::gen2::engine::{ExecError, HookBus, HookEvent, Settings};
+use crate::gen2::generation::GenSpec;
 use crate::gen2::session_rt::prompt::merge_prompts;
 use crate::generation::model_runner::chat_template::ChatTemplate;
-use crate::generation::model_runner::types::{
-    MessageBody, MessageContent, TokenizerConfigToken,
-};
+use crate::generation::model_runner::types::{MessageBody, MessageContent, TokenizerConfigToken};
 
 use parking_lot::{Mutex, RwLock};
 
@@ -118,10 +116,14 @@ impl Session {
         // Build chat template from tokenizer config
         // For MLX models, we use a simpler approach: check for tokenizer_config.json
         // or use a default Llama3 template
-        let bos_str = bundle.tokenizer.bos_id()
+        let bos_str = bundle
+            .tokenizer
+            .bos_id()
             .map(|id| bundle.tokenizer.decode(&[id]).unwrap_or_default())
             .unwrap_or_default();
-        let eos_str = bundle.tokenizer.eos_id()
+        let eos_str = bundle
+            .tokenizer
+            .eos_id()
             .map(|id| bundle.tokenizer.decode(&[id]).unwrap_or_default())
             .unwrap_or_default();
 
@@ -190,10 +192,16 @@ impl Session {
         }
 
         // Tokenize just the new messages
-        let bos_str = self.bundle.tokenizer.bos_id()
+        let bos_str = self
+            .bundle
+            .tokenizer
+            .bos_id()
             .map(|id| self.bundle.tokenizer.decode(&[id]).unwrap_or_default())
             .unwrap_or_default();
-        let eos_str = self.bundle.tokenizer.eos_id()
+        let eos_str = self
+            .bundle
+            .tokenizer
+            .eos_id()
             .map(|id| self.bundle.tokenizer.decode(&[id]).unwrap_or_default())
             .unwrap_or_default();
 

@@ -5,12 +5,14 @@ use std::sync::{
     atomic::{AtomicU64, Ordering},
 };
 
-use crate::gen2::engine::telemetry::{HookBus, HookEvent};
-use crate::gen2::engine::{Capabilities, EmbedLoadRequest, ExecError, ExecutionStats, LoadRequest, Settings};
 use super::bundle::ModelBundle;
-use crate::gen2::session_rt::media_util::messages_have_images;
 use super::session::{Session, SessionId};
+use crate::gen2::engine::telemetry::{HookBus, HookEvent};
+use crate::gen2::engine::{
+    Capabilities, EmbedLoadRequest, ExecError, ExecutionStats, LoadRequest, Settings,
+};
 use crate::gen2::session_rt::SessionSpec;
+use crate::gen2::session_rt::media_util::messages_have_images;
 use crate::generation::model_runner::embedder::LlamaEmbedder;
 use llama_cpp_2::llama_backend::LlamaBackend;
 use llama_cpp_2::{LogOptions, send_logs_to_tracing};

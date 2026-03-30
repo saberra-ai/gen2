@@ -42,12 +42,9 @@ fn load_all_tensors(model_dir: &Path) -> Result<HashMap<String, Array>, ExecErro
 
     for path in &safetensor_files {
         // Use mlx_rs built-in safetensors loading which handles dtype correctly
-        let file_tensors = Array::load_safetensors(path)
-            .map_err(|e| ExecError::Other(anyhow::anyhow!(
-                "failed to load {}: {}",
-                path.display(),
-                e
-            )))?;
+        let file_tensors = Array::load_safetensors(path).map_err(|e| {
+            ExecError::Other(anyhow::anyhow!("failed to load {}: {}", path.display(), e))
+        })?;
 
         tensors.extend(file_tensors);
     }
@@ -114,7 +111,10 @@ pub fn build_model(model_dir: &Path) -> Result<(LlamaModel, ModelConfig), ExecEr
                 layer.ffn.up_proj = w.clone();
             }
             // Fused gate_up_proj fallback (some models fuse gate+up into one tensor)
-            if tensors.get(&format!("{}.mlp.gate_proj.weight", prefix)).is_none() {
+            if tensors
+                .get(&format!("{}.mlp.gate_proj.weight", prefix))
+                .is_none()
+            {
                 if let Some(w) = tensors.get(&format!("{}.mlp.gate_up_proj.weight", prefix)) {
                     // Shape: (2 * intermediate_size, hidden_size) — split into gate and up
                     let shape = w.shape();

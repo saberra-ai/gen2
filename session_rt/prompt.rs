@@ -15,7 +15,12 @@ pub async fn build_prompt_context(store: Option<&AppStore>, include_meta: bool) 
         String::new()
     };
     let persona = if let Some(app_store) = store {
-        app_store.persona_store.get_selected_persona().await.ok().flatten()
+        app_store
+            .persona_store
+            .get_selected_persona()
+            .await
+            .ok()
+            .flatten()
     } else {
         None
     };
@@ -81,9 +86,7 @@ pub fn merge_prompts(
 /// Uses `max_tokens` when set, otherwise 25% of context. Clamped to [64, ctx_size/2].
 pub fn generation_reserve(ctx_size: usize, max_tokens: Option<usize>) -> usize {
     let default = ctx_size / 4;
-    max_tokens
-        .unwrap_or(default)
-        .clamp(64, ctx_size / 2)
+    max_tokens.unwrap_or(default).clamp(64, ctx_size / 2)
 }
 
 #[cfg(test)]

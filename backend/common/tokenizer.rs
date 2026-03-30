@@ -23,30 +23,15 @@ impl HfTokenizer {
             .get_added_vocabulary()
             .get_vocab()
             .get("<|begin_of_text|>")
-            .or_else(|| {
-                inner
-                    .get_added_vocabulary()
-                    .get_vocab()
-                    .get("<s>")
-            })
+            .or_else(|| inner.get_added_vocabulary().get_vocab().get("<s>"))
             .copied();
 
         let eos_id = inner
             .get_added_vocabulary()
             .get_vocab()
             .get("<|end_of_text|>")
-            .or_else(|| {
-                inner
-                    .get_added_vocabulary()
-                    .get_vocab()
-                    .get("</s>")
-            })
-            .or_else(|| {
-                inner
-                    .get_added_vocabulary()
-                    .get_vocab()
-                    .get("<|eot_id|>")
-            })
+            .or_else(|| inner.get_added_vocabulary().get_vocab().get("</s>"))
+            .or_else(|| inner.get_added_vocabulary().get_vocab().get("<|eot_id|>"))
             .copied();
 
         Ok(Self {

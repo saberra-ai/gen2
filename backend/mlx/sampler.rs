@@ -1,7 +1,7 @@
 //! MLX sampler — thin wrapper around common sampler using mlx_rs::Array.
 
-use mlx_rs::Array;
 use crate::gen2::backend::common::sampler::Sampler as CommonSampler;
+use mlx_rs::Array;
 
 pub struct Sampler {
     inner: CommonSampler,

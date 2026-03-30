@@ -85,7 +85,9 @@ impl TokenPuller {
 
     /// Run a single-token forward pass through the ort session and return logits.
     fn forward_one_token(&mut self, token_id: u32) -> Result<Vec<f32>, ExecError> {
-        let state = self.state.as_mut()
+        let state = self
+            .state
+            .as_mut()
             .ok_or(ExecError::InvalidArg("state consumed"))?;
 
         let ids_array = Array2::from_shape_vec((1, 1), vec![token_id as i64])
@@ -111,7 +113,8 @@ impl TokenPuller {
                 .map_err(|e| ExecError::Other(anyhow::anyhow!("ort run: {}", e)))?;
 
             // Extract logits — shape (batch=1, seq_len=1, vocab_size)
-            let logits_output = outputs.get("logits")
+            let logits_output = outputs
+                .get("logits")
                 .ok_or_else(|| ExecError::Other(anyhow::anyhow!("missing logits output")))?;
             let (shape, data) = logits_output
                 .try_extract_tensor::<f32>()

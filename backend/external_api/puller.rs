@@ -199,8 +199,7 @@ impl Iterator for TokenPuller {
                     if let Some(text) = content {
                         if !text.is_empty() {
                             if self.first_token_us.is_none() {
-                                self.first_token_us =
-                                    Some(now_us().saturating_sub(self.start_us));
+                                self.first_token_us = Some(now_us().saturating_sub(self.start_us));
                             }
                             self.produced += 1;
                             self.hooks.emit(HookEvent::DecodeStep {

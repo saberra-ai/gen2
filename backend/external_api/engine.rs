@@ -11,13 +11,13 @@ use std::sync::{
     atomic::{AtomicBool, AtomicU64, Ordering},
 };
 
+use super::session::{Session, SessionId};
 use crate::gen2::bundle::ModelMeta;
 use crate::gen2::engine::telemetry::{HookBus, HookEvent};
 use crate::gen2::engine::{
     Capabilities, EmbedLoadRequest, ExecError, ExecutionStats, LoadRequest, Settings,
 };
 use crate::gen2::session_rt::SessionSpec;
-use super::session::{Session, SessionId};
 
 pub struct Engine {
     server_url: RwLock<String>,
@@ -97,33 +97,33 @@ impl Engine {
         if api_format == "anthropic" {
             tracing::info!("external_api: configured for Anthropic at {}", base_url);
         } else {
-        let models_url = format!("{}/models", base_url);
-        let mut check = self.client.get(&models_url);
-        if let Some(ref key) = api_key {
-            check = check.header("Authorization", format!("Bearer {}", key));
-        }
-        match check.send() {
-            Ok(resp) if resp.status().is_success() => {
-                tracing::info!(
-                    "external_api: connected to {} (models endpoint OK)",
-                    base_url
-                );
+            let models_url = format!("{}/models", base_url);
+            let mut check = self.client.get(&models_url);
+            if let Some(ref key) = api_key {
+                check = check.header("Authorization", format!("Bearer {}", key));
             }
-            Ok(resp) => {
-                // Some servers don't have /models but still work; warn and proceed
-                tracing::warn!(
-                    "external_api: /models returned {} — proceeding anyway",
-                    resp.status()
-                );
+            match check.send() {
+                Ok(resp) if resp.status().is_success() => {
+                    tracing::info!(
+                        "external_api: connected to {} (models endpoint OK)",
+                        base_url
+                    );
+                }
+                Ok(resp) => {
+                    // Some servers don't have /models but still work; warn and proceed
+                    tracing::warn!(
+                        "external_api: /models returned {} — proceeding anyway",
+                        resp.status()
+                    );
+                }
+                Err(e) => {
+                    return Err(ExecError::Other(anyhow::anyhow!(
+                        "cannot connect to external server at {}: {}",
+                        models_url,
+                        e
+                    )));
+                }
             }
-            Err(e) => {
-                return Err(ExecError::Other(anyhow::anyhow!(
-                    "cannot connect to external server at {}: {}",
-                    models_url,
-                    e
-                )));
-            }
-        }
         } // end openai connectivity check
 
         *self.server_url.write() = base_url;

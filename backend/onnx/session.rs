@@ -7,16 +7,14 @@ use std::sync::{
 
 use ndarray::Array2;
 
-use crate::gen2::Message;
 use super::bundle::ModelBundle;
+use super::puller::TokenPuller;
+use crate::gen2::Message;
 use crate::gen2::engine::{ExecError, HookBus, HookEvent, Settings};
 use crate::gen2::generation::GenSpec;
-use super::puller::TokenPuller;
 use crate::gen2::session_rt::prompt::merge_prompts;
 use crate::generation::model_runner::chat_template::ChatTemplate;
-use crate::generation::model_runner::types::{
-    MessageBody, MessageContent, TokenizerConfigToken,
-};
+use crate::generation::model_runner::types::{MessageBody, MessageContent, TokenizerConfigToken};
 
 use parking_lot::{Mutex, RwLock};
 
@@ -119,10 +117,14 @@ impl Session {
             );
         }
 
-        let bos_str = bundle.tokenizer.bos_id()
+        let bos_str = bundle
+            .tokenizer
+            .bos_id()
             .map(|id| bundle.tokenizer.decode(&[id]).unwrap_or_default())
             .unwrap_or_default();
-        let eos_str = bundle.tokenizer.eos_id()
+        let eos_str = bundle
+            .tokenizer
+            .eos_id()
             .map(|id| bundle.tokenizer.decode(&[id]).unwrap_or_default())
             .unwrap_or_default();
 
@@ -203,10 +205,16 @@ impl Session {
             msgs.extend(new_messages.clone());
         }
 
-        let bos_str = self.bundle.tokenizer.bos_id()
+        let bos_str = self
+            .bundle
+            .tokenizer
+            .bos_id()
             .map(|id| self.bundle.tokenizer.decode(&[id]).unwrap_or_default())
             .unwrap_or_default();
-        let eos_str = self.bundle.tokenizer.eos_id()
+        let eos_str = self
+            .bundle
+            .tokenizer
+            .eos_id()
             .map(|id| self.bundle.tokenizer.decode(&[id]).unwrap_or_default())
             .unwrap_or_default();
 
@@ -287,11 +295,13 @@ impl Session {
             let key_name = format!("present.{}.key", i);
             let val_name = format!("present.{}.value", i);
 
-            let key = outputs.get(&key_name)
+            let key = outputs
+                .get(&key_name)
                 .ok_or_else(|| ExecError::Other(anyhow::anyhow!("missing output: {}", key_name)))?
                 .try_extract_tensor::<f32>()
                 .map_err(|e| ExecError::Other(anyhow::anyhow!("extract {}: {}", key_name, e)))?;
-            let val = outputs.get(&val_name)
+            let val = outputs
+                .get(&val_name)
                 .ok_or_else(|| ExecError::Other(anyhow::anyhow!("missing output: {}", val_name)))?
                 .try_extract_tensor::<f32>()
                 .map_err(|e| ExecError::Other(anyhow::anyhow!("extract {}: {}", val_name, e)))?;
@@ -299,12 +309,12 @@ impl Session {
             let key_shape: Vec<usize> = key.0.iter().map(|&s| s as usize).collect();
             let val_shape: Vec<usize> = val.0.iter().map(|&s| s as usize).collect();
 
-            let key_arr = ndarray::ArrayD::from_shape_vec(
-                ndarray::IxDyn(&key_shape), key.1.to_vec()
-            ).map_err(|e| ExecError::Other(anyhow::anyhow!("kv reshape: {}", e)))?;
-            let val_arr = ndarray::ArrayD::from_shape_vec(
-                ndarray::IxDyn(&val_shape), val.1.to_vec()
-            ).map_err(|e| ExecError::Other(anyhow::anyhow!("kv reshape: {}", e)))?;
+            let key_arr =
+                ndarray::ArrayD::from_shape_vec(ndarray::IxDyn(&key_shape), key.1.to_vec())
+                    .map_err(|e| ExecError::Other(anyhow::anyhow!("kv reshape: {}", e)))?;
+            let val_arr =
+                ndarray::ArrayD::from_shape_vec(ndarray::IxDyn(&val_shape), val.1.to_vec())
+                    .map_err(|e| ExecError::Other(anyhow::anyhow!("kv reshape: {}", e)))?;
 
             cache.push((key_arr, val_arr));
         }

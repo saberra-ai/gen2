@@ -43,9 +43,15 @@ pub struct ModelConfig {
     pub tie_word_embeddings: bool,
 }
 
-fn default_rms_norm_eps() -> f32 { 1e-6 }
-fn default_rope_theta() -> f32 { 10000.0 }
-fn default_max_position_embeddings() -> usize { 32768 }
+fn default_rms_norm_eps() -> f32 {
+    1e-6
+}
+fn default_rope_theta() -> f32 {
+    10000.0
+}
+fn default_max_position_embeddings() -> usize {
+    32768
+}
 
 impl ModelConfig {
     /// Per-head dimension, derived from `hidden_size / num_attention_heads`

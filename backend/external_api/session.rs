@@ -8,11 +8,11 @@ use std::sync::{
 
 use parking_lot::RwLock;
 
+use super::anthropic_puller::AnthropicPuller;
+use super::puller::TokenPuller;
 use crate::gen2::engine::{ExecError, HookBus, Settings};
 use crate::gen2::generation::{GenSpec, TokenEvent};
 use crate::generation::model_runner::types::{Message, MessageBody, MessageContent};
-use super::anthropic_puller::AnthropicPuller;
-use super::puller::TokenPuller;
 
 /// Wrapper enum for remote API token pullers (OpenAI vs Anthropic format).
 pub enum RemotePuller {
@@ -61,24 +61,40 @@ impl Session {
         messages: Vec<Message>,
     ) -> Self {
         Self {
-            id, server_url, model_id, api_key, api_format,
-            client, hooks, settings,
+            id,
+            server_url,
+            model_id,
+            api_key,
+            api_format,
+            client,
+            hooks,
+            settings,
             paused: Arc::new(AtomicBool::new(false)),
             stopped: Arc::new(AtomicBool::new(false)),
             messages: RwLock::new(messages),
         }
     }
 
-    pub fn pause(&self) { self.paused.store(true, Ordering::SeqCst); }
-    pub fn resume(&self) { self.paused.store(false, Ordering::SeqCst); }
-    pub fn stop(&self) { self.stopped.store(true, Ordering::SeqCst); }
+    pub fn pause(&self) {
+        self.paused.store(true, Ordering::SeqCst);
+    }
+    pub fn resume(&self) {
+        self.paused.store(false, Ordering::SeqCst);
+    }
+    pub fn stop(&self) {
+        self.stopped.store(true, Ordering::SeqCst);
+    }
 
     pub fn pull(&self, mut gen_spec: GenSpec) -> Result<RemotePuller, ExecError> {
         if gen_spec.max_tokens.is_none() {
             gen_spec.max_tokens = self.settings.stopping.max_tokens;
         }
         let messages = self.messages.read().clone();
-        let model = if self.model_id.is_empty() { "default".to_string() } else { self.model_id.clone() };
+        let model = if self.model_id.is_empty() {
+            "default".to_string()
+        } else {
+            self.model_id.clone()
+        };
 
         let (url, body) = if self.api_format == "anthropic" {
             self.build_anthropic_request(&messages, &model, &gen_spec)
@@ -86,80 +102,153 @@ impl Session {
             self.build_openai_request(&messages, &model, &gen_spec)
         };
 
-        let mut req = self.client.post(&url)
+        let mut req = self
+            .client
+            .post(&url)
             .header("Content-Type", "application/json")
             .header("Accept", "text/event-stream");
 
         if let Some(ref key) = self.api_key {
             if self.api_format == "anthropic" {
-                req = req.header("x-api-key", key).header("anthropic-version", "2023-06-01");
+                req = req
+                    .header("x-api-key", key)
+                    .header("anthropic-version", "2023-06-01");
             } else {
                 req = req.header("Authorization", format!("Bearer {}", key));
             }
         }
 
         let response = req.json(&body).send().map_err(|e| {
-            ExecError::Other(anyhow::anyhow!("failed to connect to external server: {}", e))
+            ExecError::Other(anyhow::anyhow!(
+                "failed to connect to external server: {}",
+                e
+            ))
         })?;
 
         if !response.status().is_success() {
             let status = response.status();
             let body_text = response.text().unwrap_or_default();
-            return Err(ExecError::Other(anyhow::anyhow!("external server returned {}: {}", status, body_text)));
+            return Err(ExecError::Other(anyhow::anyhow!(
+                "external server returned {}: {}",
+                status,
+                body_text
+            )));
         }
 
         if self.api_format == "anthropic" {
             Ok(RemotePuller::Anthropic(AnthropicPuller::new(
-                self.id, self.hooks.clone(), response, gen_spec, self.paused.clone(), self.stopped.clone(),
+                self.id,
+                self.hooks.clone(),
+                response,
+                gen_spec,
+                self.paused.clone(),
+                self.stopped.clone(),
             )))
         } else {
             Ok(RemotePuller::OpenAi(TokenPuller::new(
-                self.id, self.hooks.clone(), response, gen_spec, self.paused.clone(), self.stopped.clone(),
+                self.id,
+                self.hooks.clone(),
+                response,
+                gen_spec,
+                self.paused.clone(),
+                self.stopped.clone(),
             )))
         }
     }
 
-    fn build_openai_request(&self, messages: &[Message], model: &str, gen_spec: &GenSpec) -> (String, serde_json::Value) {
+    fn build_openai_request(
+        &self,
+        messages: &[Message],
+        model: &str,
+        gen_spec: &GenSpec,
+    ) -> (String, serde_json::Value) {
         let api_messages = Self::build_api_messages(messages, &self.settings);
-        let mut body = serde_json::json!({"model": model, "messages": api_messages, "stream": true});
-        if let Some(mt) = gen_spec.max_tokens { body["max_tokens"] = serde_json::json!(mt); }
-        if let Some(t) = gen_spec.temperature.or(self.settings.sampling.temperature) { body["temperature"] = serde_json::json!(t); }
-        if let Some(tp) = self.settings.sampling.top_p { body["top_p"] = serde_json::json!(tp); }
-        if let Some(s) = gen_spec.seed.or(self.settings.sampling.seed.map(|s| s as u64)) { body["seed"] = serde_json::json!(s); }
-        if !self.settings.stopping.stopwords.is_empty() { body["stop"] = serde_json::json!(self.settings.stopping.stopwords); }
+        let mut body =
+            serde_json::json!({"model": model, "messages": api_messages, "stream": true});
+        if let Some(mt) = gen_spec.max_tokens {
+            body["max_tokens"] = serde_json::json!(mt);
+        }
+        if let Some(t) = gen_spec.temperature.or(self.settings.sampling.temperature) {
+            body["temperature"] = serde_json::json!(t);
+        }
+        if let Some(tp) = self.settings.sampling.top_p {
+            body["top_p"] = serde_json::json!(tp);
+        }
+        if let Some(s) = gen_spec
+            .seed
+            .or(self.settings.sampling.seed.map(|s| s as u64))
+        {
+            body["seed"] = serde_json::json!(s);
+        }
+        if !self.settings.stopping.stopwords.is_empty() {
+            body["stop"] = serde_json::json!(self.settings.stopping.stopwords);
+        }
         (format!("{}/chat/completions", self.server_url), body)
     }
 
-    fn build_anthropic_request(&self, messages: &[Message], model: &str, gen_spec: &GenSpec) -> (String, serde_json::Value) {
+    fn build_anthropic_request(
+        &self,
+        messages: &[Message],
+        model: &str,
+        gen_spec: &GenSpec,
+    ) -> (String, serde_json::Value) {
         let mut system_text = String::new();
         let mut api_msgs = Vec::with_capacity(messages.len());
         if let Some(ref prompt) = self.settings.prompt.system_prompt {
-            if !prompt.is_empty() { system_text = prompt.clone(); }
+            if !prompt.is_empty() {
+                system_text = prompt.clone();
+            }
         }
         for msg in messages {
             let content = match &msg.body {
                 MessageBody::Content { content } => match content {
                     MessageContent::SingleText(text) => text.clone(),
-                    MessageContent::MultipleChunks(chunks) => chunks.iter().filter_map(|c| {
-                        if let crate::generation::model_runner::types::MessageChunk::Text { text } = c { Some(text.as_str()) } else { None }
-                    }).collect::<Vec<_>>().join("")
+                    MessageContent::MultipleChunks(chunks) => chunks
+                        .iter()
+                        .filter_map(|c| {
+                            if let crate::generation::model_runner::types::MessageChunk::Text {
+                                text,
+                            } = c
+                            {
+                                Some(text.as_str())
+                            } else {
+                                None
+                            }
+                        })
+                        .collect::<Vec<_>>()
+                        .join(""),
                 },
                 MessageBody::Tool { .. } => continue,
             };
-            if msg.role == "system" { if system_text.is_empty() { system_text = content; } continue; }
+            if msg.role == "system" {
+                if system_text.is_empty() {
+                    system_text = content;
+                }
+                continue;
+            }
             api_msgs.push(serde_json::json!({"role": msg.role, "content": content}));
         }
         let max_tokens = gen_spec.max_tokens.unwrap_or(4096);
         let mut body = serde_json::json!({"model": model, "max_tokens": max_tokens, "messages": api_msgs, "stream": true});
-        if !system_text.is_empty() { body["system"] = serde_json::json!(system_text); }
-        if let Some(t) = gen_spec.temperature.or(self.settings.sampling.temperature) { body["temperature"] = serde_json::json!(t); }
-        if let Some(tp) = self.settings.sampling.top_p { body["top_p"] = serde_json::json!(tp); }
-        if !self.settings.stopping.stopwords.is_empty() { body["stop_sequences"] = serde_json::json!(self.settings.stopping.stopwords); }
+        if !system_text.is_empty() {
+            body["system"] = serde_json::json!(system_text);
+        }
+        if let Some(t) = gen_spec.temperature.or(self.settings.sampling.temperature) {
+            body["temperature"] = serde_json::json!(t);
+        }
+        if let Some(tp) = self.settings.sampling.top_p {
+            body["top_p"] = serde_json::json!(tp);
+        }
+        if !self.settings.stopping.stopwords.is_empty() {
+            body["stop_sequences"] = serde_json::json!(self.settings.stopping.stopwords);
+        }
         (format!("{}/messages", self.server_url), body)
     }
 
     pub fn append_messages(&self, new_messages: Vec<Message>) -> Result<usize, ExecError> {
-        if new_messages.is_empty() { return Ok(0); }
+        if new_messages.is_empty() {
+            return Ok(0);
+        }
         let mut msgs = self.messages.write();
         msgs.extend(new_messages);
         Ok(0)
@@ -179,11 +268,24 @@ impl Session {
             let content = match &msg.body {
                 MessageBody::Content { content } => match content {
                     MessageContent::SingleText(text) => text.clone(),
-                    MessageContent::MultipleChunks(chunks) => chunks.iter().filter_map(|c| {
-                        if let crate::generation::model_runner::types::MessageChunk::Text { text } = c { Some(text.as_str()) } else { None }
-                    }).collect::<Vec<_>>().join("")
+                    MessageContent::MultipleChunks(chunks) => chunks
+                        .iter()
+                        .filter_map(|c| {
+                            if let crate::generation::model_runner::types::MessageChunk::Text {
+                                text,
+                            } = c
+                            {
+                                Some(text.as_str())
+                            } else {
+                                None
+                            }
+                        })
+                        .collect::<Vec<_>>()
+                        .join(""),
                 },
-                MessageBody::Tool { .. } => { continue; }
+                MessageBody::Tool { .. } => {
+                    continue;
+                }
             };
             api_msgs.push(serde_json::json!({"role": msg.role, "content": content}));
         }

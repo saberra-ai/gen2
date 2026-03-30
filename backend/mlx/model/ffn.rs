@@ -16,21 +16,11 @@ pub struct FeedForward {
 
 impl FeedForward {
     pub fn new(hidden_size: usize, intermediate_size: usize) -> Self {
-        let gate_proj = Array::zeros::<f32>(&[
-            intermediate_size as i32,
-            hidden_size as i32,
-        ])
-        .unwrap();
-        let up_proj = Array::zeros::<f32>(&[
-            intermediate_size as i32,
-            hidden_size as i32,
-        ])
-        .unwrap();
-        let down_proj = Array::zeros::<f32>(&[
-            hidden_size as i32,
-            intermediate_size as i32,
-        ])
-        .unwrap();
+        let gate_proj =
+            Array::zeros::<f32>(&[intermediate_size as i32, hidden_size as i32]).unwrap();
+        let up_proj = Array::zeros::<f32>(&[intermediate_size as i32, hidden_size as i32]).unwrap();
+        let down_proj =
+            Array::zeros::<f32>(&[hidden_size as i32, intermediate_size as i32]).unwrap();
         Self {
             gate_proj,
             up_proj,

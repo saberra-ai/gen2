@@ -450,6 +450,356 @@ mod tests {
         overrides.inherit_missing(&defaults);
         assert_eq!(overrides.prompt.include_meta, Some(false));
     }
+
+    // ── [Tomas] Boundary tests for every validation rule ─────────
+
+    #[test]
+    fn validate_temperature_exact_bounds() {
+        // 0.0 is valid
+        let s = Settings {
+            sampling: SamplingSettings {
+                temperature: Some(0.0),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(s.validate().is_ok());
+        // 2.0 is valid
+        let s = Settings {
+            sampling: SamplingSettings {
+                temperature: Some(2.0),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(s.validate().is_ok());
+        // -0.01 is invalid
+        let s = Settings {
+            sampling: SamplingSettings {
+                temperature: Some(-0.01),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(s.validate().is_err());
+        // 2.01 is invalid
+        let s = Settings {
+            sampling: SamplingSettings {
+                temperature: Some(2.01),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(s.validate().is_err());
+    }
+
+    #[test]
+    fn validate_top_p_exact_bounds() {
+        let ok_low = Settings {
+            sampling: SamplingSettings {
+                top_p: Some(0.0),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(ok_low.validate().is_ok());
+        let ok_high = Settings {
+            sampling: SamplingSettings {
+                top_p: Some(1.0),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(ok_high.validate().is_ok());
+        let bad = Settings {
+            sampling: SamplingSettings {
+                top_p: Some(1.01),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(bad.validate().is_err());
+        let neg = Settings {
+            sampling: SamplingSettings {
+                top_p: Some(-0.1),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(neg.validate().is_err());
+    }
+
+    #[test]
+    fn validate_top_k_boundary() {
+        let ok = Settings {
+            sampling: SamplingSettings {
+                top_k: Some(100_000),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(ok.validate().is_ok());
+        let bad = Settings {
+            sampling: SamplingSettings {
+                top_k: Some(100_001),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(bad.validate().is_err());
+    }
+
+    #[test]
+    fn validate_max_tokens_zero_rejected() {
+        let s = Settings {
+            stopping: StoppingSettings {
+                max_tokens: Some(0),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(s.validate().is_err());
+        let ok = Settings {
+            stopping: StoppingSettings {
+                max_tokens: Some(1),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(ok.validate().is_ok());
+    }
+
+    #[test]
+    fn validate_batch_size_bounds() {
+        let zero = Settings {
+            system: SystemSettings {
+                batch_size: Some(0),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(zero.validate().is_err());
+        let ok_low = Settings {
+            system: SystemSettings {
+                batch_size: Some(1),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(ok_low.validate().is_ok());
+        let ok_high = Settings {
+            system: SystemSettings {
+                batch_size: Some(4096),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(ok_high.validate().is_ok());
+        let too_big = Settings {
+            system: SystemSettings {
+                batch_size: Some(4097),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(too_big.validate().is_err());
+    }
+
+    #[test]
+    fn validate_ctx_size_bounds() {
+        let too_small = Settings {
+            system: SystemSettings {
+                ctx_size: Some(63),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(too_small.validate().is_err());
+        let ok_min = Settings {
+            system: SystemSettings {
+                ctx_size: Some(64),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(ok_min.validate().is_ok());
+        let ok_max = Settings {
+            system: SystemSettings {
+                ctx_size: Some(2_000_000),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(ok_max.validate().is_ok());
+        let too_big = Settings {
+            system: SystemSettings {
+                ctx_size: Some(2_000_001),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(too_big.validate().is_err());
+    }
+
+    #[test]
+    fn validate_threads_bounds() {
+        let zero = Settings {
+            system: SystemSettings {
+                threads: Some(0),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(zero.validate().is_err());
+        let ok = Settings {
+            system: SystemSettings {
+                threads: Some(1),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(ok.validate().is_ok());
+        let max = Settings {
+            system: SystemSettings {
+                threads: Some(1024),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(max.validate().is_ok());
+        let over = Settings {
+            system: SystemSettings {
+                threads: Some(1025),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(over.validate().is_err());
+    }
+
+    #[test]
+    fn validate_threads_batch_bounds() {
+        let zero = Settings {
+            system: SystemSettings {
+                threads_batch: Some(0),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(zero.validate().is_err());
+        let ok = Settings {
+            system: SystemSettings {
+                threads_batch: Some(512),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(ok.validate().is_ok());
+    }
+
+    #[test]
+    fn validate_penalty_last_n_boundary() {
+        // -1 is valid (disable), -2 is not
+        let ok = Settings {
+            sampling: SamplingSettings {
+                penalty_last_n: Some(-1),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(ok.validate().is_ok());
+        let bad = Settings {
+            sampling: SamplingSettings {
+                penalty_last_n: Some(-2),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(bad.validate().is_err());
+    }
+
+    #[test]
+    fn validate_penalty_repeat_nonneg() {
+        let ok = Settings {
+            sampling: SamplingSettings {
+                penalty_repeat: Some(0.0),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(ok.validate().is_ok());
+        let bad = Settings {
+            sampling: SamplingSettings {
+                penalty_repeat: Some(-0.1),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(bad.validate().is_err());
+    }
+
+    #[test]
+    fn validate_penalty_freq_nonneg() {
+        let ok = Settings {
+            sampling: SamplingSettings {
+                penalty_freq: Some(0.0),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(ok.validate().is_ok());
+        let bad = Settings {
+            sampling: SamplingSettings {
+                penalty_freq: Some(-0.01),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(bad.validate().is_err());
+    }
+
+    #[test]
+    fn validate_penalty_present_nonneg() {
+        let ok = Settings {
+            sampling: SamplingSettings {
+                penalty_present: Some(0.0),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(ok.validate().is_ok());
+        let bad = Settings {
+            sampling: SamplingSettings {
+                penalty_present: Some(-1.0),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        assert!(bad.validate().is_err());
+    }
+
+    #[test]
+    fn validate_none_fields_always_pass() {
+        // All None = all valid (no constraints to violate)
+        let s = Settings::default();
+        assert!(s.validate().is_ok());
+    }
+
+    // ── [Tomas] Capabilities bitflags ────────────────────────────
+
+    #[test]
+    fn capabilities_compose() {
+        let caps = Capabilities::TEXT | Capabilities::IMAGES;
+        assert!(caps.contains(Capabilities::TEXT));
+        assert!(caps.contains(Capabilities::IMAGES));
+        assert!(!caps.contains(Capabilities::AUDIO));
+    }
+
+    #[test]
+    fn capabilities_default_empty() {
+        let caps = Capabilities::default();
+        assert!(caps.is_empty());
+    }
 }
 
 #[derive(Deserialize, Clone, Debug, Default)]

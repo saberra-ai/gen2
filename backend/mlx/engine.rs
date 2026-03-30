@@ -7,14 +7,16 @@ use std::sync::{
     atomic::{AtomicU64, Ordering},
 };
 
-use crate::gen2::engine::telemetry::{HookBus, HookEvent};
-use crate::gen2::engine::{Capabilities, EmbedLoadRequest, ExecError, ExecutionStats, LoadRequest, Settings};
 use super::bundle::ModelBundle;
 use super::model::RotaryEmbedding;
 use super::session::{Session, SessionId};
 use super::tokenizer::HfTokenizer;
-use crate::gen2::session_rt::SessionSpec;
 use crate::gen2::bundle::ModelMeta;
+use crate::gen2::engine::telemetry::{HookBus, HookEvent};
+use crate::gen2::engine::{
+    Capabilities, EmbedLoadRequest, ExecError, ExecutionStats, LoadRequest, Settings,
+};
+use crate::gen2::session_rt::SessionSpec;
 
 use parking_lot::RwLock;
 
@@ -69,8 +71,7 @@ impl Engine {
         let rope_theta = config.rope_theta;
         let rope = RotaryEmbedding::new(head_dim, max_seq, rope_theta);
 
-        let tokenizer = HfTokenizer::from_dir(model_dir)
-            .map_err(|e| ExecError::Other(e))?;
+        let tokenizer = HfTokenizer::from_dir(model_dir).map_err(|e| ExecError::Other(e))?;
 
         let meta = ModelMeta {
             model_uuid: String::new(),

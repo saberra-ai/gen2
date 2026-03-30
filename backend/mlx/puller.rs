@@ -150,11 +150,15 @@ impl Iterator for TokenPuller {
             // For simplicity, we'll run the model with a dummy token and fix in integration.
             // TODO: pass prefill logits through to avoid this extra forward pass
             let last_token = 0u32; // placeholder - should be last prompt token
-            self.bundle.model.forward(&[last_token], &mut state.cache, &self.bundle.rope)
+            self.bundle
+                .model
+                .forward(&[last_token], &mut state.cache, &self.bundle.rope)
         } else {
             // Forward with the token we just sampled
             let prev_token = 0u32; // will be overwritten below
-            self.bundle.model.forward(&[prev_token], &mut state.cache, &self.bundle.rope)
+            self.bundle
+                .model
+                .forward(&[prev_token], &mut state.cache, &self.bundle.rope)
         };
 
         // Sample next token from logits

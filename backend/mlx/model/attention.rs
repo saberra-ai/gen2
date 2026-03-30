@@ -19,34 +19,17 @@ pub struct Attention {
 }
 
 impl Attention {
-    pub fn new(
-        hidden_size: usize,
-        num_heads: usize,
-        num_kv_heads: usize,
-        head_dim: usize,
-    ) -> Self {
+    pub fn new(hidden_size: usize, num_heads: usize, num_kv_heads: usize, head_dim: usize) -> Self {
         // Weights are (out_features, in_features) — transposed during matmul.
         // Initialized as zeros; the safetensors loader overwrites them.
-        let q_proj = Array::zeros::<f32>(&[
-            (num_heads * head_dim) as i32,
-            hidden_size as i32,
-        ])
-        .unwrap();
-        let k_proj = Array::zeros::<f32>(&[
-            (num_kv_heads * head_dim) as i32,
-            hidden_size as i32,
-        ])
-        .unwrap();
-        let v_proj = Array::zeros::<f32>(&[
-            (num_kv_heads * head_dim) as i32,
-            hidden_size as i32,
-        ])
-        .unwrap();
-        let o_proj = Array::zeros::<f32>(&[
-            hidden_size as i32,
-            (num_heads * head_dim) as i32,
-        ])
-        .unwrap();
+        let q_proj =
+            Array::zeros::<f32>(&[(num_heads * head_dim) as i32, hidden_size as i32]).unwrap();
+        let k_proj =
+            Array::zeros::<f32>(&[(num_kv_heads * head_dim) as i32, hidden_size as i32]).unwrap();
+        let v_proj =
+            Array::zeros::<f32>(&[(num_kv_heads * head_dim) as i32, hidden_size as i32]).unwrap();
+        let o_proj =
+            Array::zeros::<f32>(&[hidden_size as i32, (num_heads * head_dim) as i32]).unwrap();
 
         Self {
             q_proj,
@@ -172,7 +155,9 @@ fn repeat_kv(x: &Array, repeats: usize) -> Array {
     // Tile along the repeat axis by concatenating copies
     let refs: Vec<&Array> = (0..repeats).map(|_| &expanded).collect();
     let tiled = mlx_rs::ops::concatenate_axis(&refs, 2).unwrap();
-    tiled.reshape(&[batch, n_kv * repeats as i32, seq_len, head_dim]).unwrap()
+    tiled
+        .reshape(&[batch, n_kv * repeats as i32, seq_len, head_dim])
+        .unwrap()
 }
 
 /// Apply an upper-triangular causal mask to attention scores.

@@ -25,7 +25,9 @@ pub(crate) mod external_api;
     feature = "backend-onnx",
     feature = "backend-external-api"
 )))]
-compile_error!("No inference backend selected. Enable at least one of: backend-llamacpp, backend-mlx, backend-onnx, backend-external-api");
+compile_error!(
+    "No inference backend selected. Enable at least one of: backend-llamacpp, backend-mlx, backend-onnx, backend-external-api"
+);
 
 mod dispatch;
 pub use dispatch::{Engine, ModelBundle, Session, SessionId, TokenPuller};

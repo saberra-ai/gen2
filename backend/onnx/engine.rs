@@ -7,13 +7,15 @@ use std::sync::{
     atomic::{AtomicU64, Ordering},
 };
 
-use crate::gen2::engine::telemetry::{HookBus, HookEvent};
-use crate::gen2::engine::{Capabilities, EmbedLoadRequest, ExecError, ExecutionStats, LoadRequest, Settings};
-use crate::gen2::backend::common::tokenizer::HfTokenizer;
 use super::bundle::ModelBundle;
 use super::session::{Session, SessionId};
-use crate::gen2::session_rt::SessionSpec;
+use crate::gen2::backend::common::tokenizer::HfTokenizer;
 use crate::gen2::bundle::ModelMeta;
+use crate::gen2::engine::telemetry::{HookBus, HookEvent};
+use crate::gen2::engine::{
+    Capabilities, EmbedLoadRequest, ExecError, ExecutionStats, LoadRequest, Settings,
+};
+use crate::gen2::session_rt::SessionSpec;
 
 use parking_lot::{Mutex, RwLock};
 
@@ -75,8 +77,7 @@ impl Engine {
         let ort_session = super::loader::build_session(&onnx_path, threads)?;
         let num_layers = super::loader::detect_num_layers(&ort_session);
 
-        let tokenizer = HfTokenizer::from_dir(model_dir)
-            .map_err(|e| ExecError::Other(e))?;
+        let tokenizer = HfTokenizer::from_dir(model_dir).map_err(|e| ExecError::Other(e))?;
 
         let meta = ModelMeta {
             model_uuid: String::new(),
