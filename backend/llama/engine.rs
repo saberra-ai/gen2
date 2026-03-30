@@ -227,6 +227,7 @@ impl Engine {
         self.embedder.store(None);
     }
 }
+// Drop guard — consumed when session lifetime is active
 #[allow(dead_code)]
 struct SessionGuard {
     id: SessionId,
@@ -392,7 +393,7 @@ mod tests {
     #[test]
     #[ignore]
     fn multimodal_image_smoke() -> Result<(), Box<dyn std::error::Error>> {
-        use crate::generation::model_runner::types::{MessageChunk, Url};
+        use crate::types::message::{MessageChunk, Url};
         let (Some(model_path), Some(mmproj_path), Some(image_path)) =
             (test_model_path(), test_mmproj_path(), test_image_path())
         else {

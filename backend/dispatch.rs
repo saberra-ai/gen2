@@ -11,7 +11,7 @@ use crate::gen2::engine::{
 };
 use crate::gen2::generation::{GenSpec, TokenEvent};
 use crate::gen2::session_rt::SessionSpec;
-use crate::generation::model_runner::types::Message;
+use crate::types::message::Message;
 
 // ─── SessionId ──────────────────────────────────────────────────────────────
 pub type SessionId = u64;
@@ -94,7 +94,7 @@ fn detect_backend(req: &LoadRequest) -> Result<BackendKind, ExecError> {
     let path = &req.model_path;
 
     // URL detection — external API server
-    let path_str = path.to_str().unwrap_or("");
+    let path_str = path.to_str().unwrap_or_default();
     if path_str.starts_with("http://") || path_str.starts_with("https://") {
         #[cfg(feature = "backend-external-api")]
         return Ok(BackendKind::ExternalApi);
@@ -241,6 +241,13 @@ impl Engine {
     /// Load a model, auto-detecting the backend from the file format.
     /// If the detected backend differs from the current one, the engine
     /// is re-initialized to the new backend first.
+    ///
+    /// # Errors
+    ///
+    /// Returns `ExecError::Other` if the model exceeds available memory.
+    /// The error message suggests trying a smaller model variant (e.g. a
+    /// more aggressive quantization). Also returns errors for corrupt or
+    /// unrecognised model files, missing backends, and FFI failures.
     pub fn load_model(&mut self, req: LoadRequest) -> Result<(), ExecError> {
         let kind = detect_backend(&req)?;
         self.ensure_backend(kind);

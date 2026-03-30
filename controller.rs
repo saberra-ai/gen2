@@ -10,7 +10,7 @@ use crate::gen2::engine::{EmbedLoadRequest, HookEvent, HookListener, LoadRequest
 use crate::gen2::generation::{GenSpec, TokenEvent};
 use crate::gen2::session_rt::SessionSpec;
 use crate::gen2::{Engine, ExecutionStats, Settings};
-use crate::generation::model_runner::types::Message;
+use crate::types::message::Message;
 
 /// Commands accepted by the inference controller thread.
 ///
@@ -164,6 +164,10 @@ pub fn start_controller() -> ControllerHandle {
 /// small enough to bound memory if the receiver stalls.
 pub const EVENT_CHANNEL_CAPACITY: usize = 512;
 
+/// Default generation timeout in seconds. If a single generation takes longer
+/// than this without completing, the controller emits an error and stops it.
+const DEFAULT_GENERATION_TIMEOUT_SECS: u64 = 120;
+
 struct ChatStream {
     session: Arc<crate::gen2::session_rt::Session>,
     puller: Option<crate::gen2::generation::TokenPuller>,
@@ -171,7 +175,8 @@ struct ChatStream {
     paused: bool,
     finished: bool,
     ephemeral: bool,
-    last_used: Instant,     // ⬅ NEW: track most recent access
+    last_used: Instant,     // ⬅ track most recent access
+    gen_started: Instant,   // when the current generation began (for timeout)
     last_gen_spec: GenSpec, // stored for puller recreation on resume
 }
 
@@ -315,6 +320,28 @@ fn run_loop(rx: Receiver<ControllerCmd>, max_active: usize) {
         for id in keys {
             if let Some(chat) = chats.get_mut(&id) {
                 if chat.paused || chat.finished {
+                    continue;
+                }
+                // ── Generation timeout ──────────────────────────────────
+                if chat.gen_started.elapsed() > Duration::from_secs(DEFAULT_GENERATION_TIMEOUT_SECS)
+                {
+                    tracing::warn!(
+                        chat_id = %id,
+                        elapsed_secs = chat.gen_started.elapsed().as_secs(),
+                        "generation timed out"
+                    );
+                    try_emit(
+                        &chat.tx,
+                        ControllerEvent::Error(format!(
+                            "generation timed out after {}s",
+                            DEFAULT_GENERATION_TIMEOUT_SECS
+                        )),
+                    );
+                    chat.finished = true;
+                    chat.puller = None;
+                    if chat.ephemeral {
+                        to_remove.push(id.clone());
+                    }
                     continue;
                 }
                 // one step
@@ -524,6 +551,7 @@ fn dispatch_cmd(
                         chat.puller = Some(puller);
                         chat.paused = false;
                         chat.finished = false;
+                        chat.gen_started = Instant::now();
                         chat.last_gen_spec = pull_spec;
                     }
                     Err(e) => {
@@ -576,6 +604,7 @@ fn dispatch_cmd(
                                         finished: false,
                                         ephemeral: false, // <-- key bit
                                         last_used: Instant::now(),
+                                        gen_started: Instant::now(),
                                         last_gen_spec: pull_spec,
                                     },
                                 );
@@ -624,6 +653,7 @@ fn dispatch_cmd(
                         chat.puller = Some(puller);
                         chat.paused = false;
                         chat.finished = false;
+                        chat.gen_started = Instant::now();
                         chat.last_gen_spec = pull_spec;
                     }
                     Err(e) => {
@@ -665,6 +695,7 @@ fn dispatch_cmd(
                         chat.puller = Some(puller);
                         chat.paused = false;
                         chat.finished = false;
+                        chat.gen_started = Instant::now();
                         chat.last_gen_spec = gen_spec;
                     }
                     Err(e) => {
@@ -733,6 +764,7 @@ fn dispatch_cmd(
                                     finished: false,
                                     ephemeral: true, // <-- key bit
                                     last_used: Instant::now(),
+                                    gen_started: Instant::now(),
                                     last_gen_spec: gen_spec,
                                 },
                             );
@@ -759,6 +791,7 @@ fn dispatch_cmd(
         ControllerCmd::ResumeChat { chat_id } => {
             if let Some(chat) = chats.get_mut(&chat_id) {
                 chat.paused = false;
+                chat.gen_started = Instant::now();
                 chat.session.resume();
                 // Recreate the puller that was dropped during pause
                 if chat.puller.is_none() {

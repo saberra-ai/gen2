@@ -21,7 +21,7 @@ pub(crate) fn messages_have_images(messages: &Vec<Message>) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::generation::model_runner::types::{MessageBody, Url};
+    use crate::types::message::{MessageBody, Url};
 
     #[test]
     fn detect_images() {

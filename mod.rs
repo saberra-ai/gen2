@@ -4,8 +4,10 @@ pub mod backend;
 pub mod bundle;
 #[allow(unused_mut)]
 pub mod controller;
+// consumed by workspace dependents (src-tauri, pio-daemon)
 #[allow(dead_code)]
 pub mod engine;
+// consumed by workspace dependents (src-tauri, pio-daemon)
 #[allow(dead_code, unused_variables)]
 pub mod generation;
 pub mod kv;
@@ -25,6 +27,4 @@ pub use engine::{
     read_gguf_architecture, validate_model_architecture, validate_model_file,
 };
 // Re-export message types used by SessionSpec for convenience in integration tests
-pub use crate::generation::model_runner::types::{
-    Message, MessageBody, MessageChunk, MessageContent,
-};
+pub use crate::types::message::{Message, MessageBody, MessageChunk, MessageContent};

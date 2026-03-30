@@ -16,9 +16,7 @@ use crate::gen2::kv::{
 use crate::gen2::session_rt::media_util::messages_have_images;
 use crate::gen2::session_rt::prompt::merge_prompts;
 use crate::generation::model_runner::chat_template::ChatTemplate;
-use crate::generation::model_runner::types::{
-    MessageBody, MessageChunk, MessageContent, TokenizerConfigToken,
-};
+use crate::types::message::{MessageBody, MessageChunk, MessageContent, TokenizerConfigToken};
 use chrono::Utc;
 use llama_cpp_2::context::LlamaContext;
 use llama_cpp_2::context::params::LlamaContextParams;
@@ -638,7 +636,7 @@ impl Session {
 impl Session {
     fn build_media_events(&self) -> std::collections::VecDeque<TokenEvent> {
         use crate::gen2::generation::MediaBoundary;
-        use crate::generation::model_runner::types::{MessageBody, MessageChunk, MessageContent};
+        use crate::types::message::{MessageBody, MessageChunk, MessageContent};
         let mut out = std::collections::VecDeque::new();
         let mut idx = 0usize;
         let msgs = self.messages.read();

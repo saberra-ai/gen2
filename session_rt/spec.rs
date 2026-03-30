@@ -1,6 +1,6 @@
 use crate::gen2::engine::Settings;
-use crate::generation::model_runner::types::Message;
 use crate::types::Persona;
+use crate::types::message::Message;
 
 #[derive(Debug, Clone, Default)]
 pub struct SessionSpec {

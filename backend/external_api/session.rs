@@ -12,7 +12,7 @@ use super::anthropic_puller::AnthropicPuller;
 use super::puller::TokenPuller;
 use crate::gen2::engine::{ExecError, HookBus, Settings};
 use crate::gen2::generation::{GenSpec, TokenEvent};
-use crate::generation::model_runner::types::{Message, MessageBody, MessageContent};
+use crate::types::message::{Message, MessageBody, MessageContent};
 
 /// Wrapper enum for remote API token pullers (OpenAI vs Anthropic format).
 pub enum RemotePuller {
@@ -206,10 +206,7 @@ impl Session {
                     MessageContent::MultipleChunks(chunks) => chunks
                         .iter()
                         .filter_map(|c| {
-                            if let crate::generation::model_runner::types::MessageChunk::Text {
-                                text,
-                            } = c
-                            {
+                            if let crate::types::message::MessageChunk::Text { text } = c {
                                 Some(text.as_str())
                             } else {
                                 None
@@ -271,10 +268,7 @@ impl Session {
                     MessageContent::MultipleChunks(chunks) => chunks
                         .iter()
                         .filter_map(|c| {
-                            if let crate::generation::model_runner::types::MessageChunk::Text {
-                                text,
-                            } = c
-                            {
+                            if let crate::types::message::MessageChunk::Text { text } = c {
                                 Some(text.as_str())
                             } else {
                                 None

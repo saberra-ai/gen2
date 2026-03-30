@@ -14,7 +14,7 @@ use crate::gen2::engine::{ExecError, HookBus, HookEvent, Settings};
 use crate::gen2::generation::GenSpec;
 use crate::gen2::session_rt::prompt::merge_prompts;
 use crate::generation::model_runner::chat_template::ChatTemplate;
-use crate::generation::model_runner::types::{MessageBody, MessageContent, TokenizerConfigToken};
+use crate::types::message::{MessageBody, MessageContent, TokenizerConfigToken};
 
 use parking_lot::{Mutex, RwLock};
 

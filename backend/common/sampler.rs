@@ -2,6 +2,7 @@
 
 use rand::Rng;
 
+// consumed by workspace dependents (src-tauri, pio-daemon)
 #[allow(dead_code)]
 pub struct Sampler {
     temperature: f32,
@@ -10,6 +11,7 @@ pub struct Sampler {
     rng: rand::rngs::ThreadRng,
 }
 
+// consumed by workspace dependents (src-tauri, pio-daemon)
 #[allow(dead_code)]
 impl Sampler {
     pub fn new(temperature: f32, top_p: Option<f32>, top_k: Option<i32>) -> Self {

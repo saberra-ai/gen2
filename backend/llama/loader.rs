@@ -15,6 +15,14 @@ use std::path::Path;
 use std::sync::Arc;
 use tracing::warn;
 
+/// Build a [`ModelBundle`] by loading the GGUF model into memory.
+///
+/// # Errors
+///
+/// Returns `ExecError::Other` if the model exceeds available memory (OOM
+/// during `LlamaModel::load_from_file`). When this happens the error
+/// message will contain the llama.cpp failure reason. Callers should
+/// suggest the user try a smaller quantization variant.
 pub(crate) fn build_bundle(
     backend: &Arc<LlamaBackend>,
     req: &LoadRequest,

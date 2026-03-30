@@ -3,6 +3,7 @@
 use std::path::Path;
 use tokenizers::Tokenizer;
 
+// consumed by workspace dependents (src-tauri, pio-daemon)
 #[allow(dead_code)]
 pub struct HfTokenizer {
     inner: Tokenizer,
@@ -10,6 +11,7 @@ pub struct HfTokenizer {
     eos_id: Option<u32>,
 }
 
+// consumed by workspace dependents (src-tauri, pio-daemon)
 #[allow(dead_code)]
 impl HfTokenizer {
     /// Load tokenizer from a directory containing `tokenizer.json`.
