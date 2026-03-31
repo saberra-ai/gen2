@@ -24,6 +24,15 @@ pub enum ExecError {
     UnsupportedArchitecture(String),
     #[error("io error: {0}")]
     Io(String),
+    /// Context window exceeded — conversation too long.
+    #[error("context overflow: {0}")]
+    ContextOverflow(String),
+    /// Chat template failed to parse.
+    #[error("template error: {0}")]
+    TemplateError(String),
+    /// FFI panic — inference session state is lost.
+    #[error("session poisoned: {0}")]
+    SessionPoisoned(String),
     #[error("unimplemented in milestone 0")]
     Unimplemented,
     #[error(transparent)]

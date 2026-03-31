@@ -4,10 +4,10 @@
 //! the right one based on model format (GGUF → llamacpp, safetensors dir → MLX,
 //! ONNX file → onnx).  MLX is only available on Apple platforms.
 
-pub(crate) mod common;
+pub mod common;
 
 #[cfg(feature = "backend-llamacpp")]
-pub(crate) mod llama;
+pub mod llama;
 
 #[cfg(feature = "backend-mlx")]
 pub(crate) mod mlx;
@@ -28,6 +28,9 @@ pub(crate) mod external_api;
 compile_error!(
     "No inference backend selected. Enable at least one of: backend-llamacpp, backend-mlx, backend-onnx, backend-external-api"
 );
+
+#[cfg(test)]
+mod test_utils;
 
 mod dispatch;
 pub use dispatch::{Engine, ModelBundle, Session, SessionId, TokenPuller};

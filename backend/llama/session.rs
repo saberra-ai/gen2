@@ -15,7 +15,7 @@ use crate::gen2::kv::{
 };
 use crate::gen2::session_rt::media_util::messages_have_images;
 use crate::gen2::session_rt::prompt::merge_prompts;
-use crate::generation::model_runner::chat_template::ChatTemplate;
+use crate::gen2::backend::common::chat_template::ChatTemplate;
 use crate::types::message::{MessageBody, MessageChunk, MessageContent, TokenizerConfigToken};
 use chrono::Utc;
 use llama_cpp_2::context::LlamaContext;

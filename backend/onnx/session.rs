@@ -13,7 +13,7 @@ use crate::gen2::Message;
 use crate::gen2::engine::{ExecError, HookBus, HookEvent, Settings};
 use crate::gen2::generation::GenSpec;
 use crate::gen2::session_rt::prompt::merge_prompts;
-use crate::generation::model_runner::chat_template::ChatTemplate;
+use crate::gen2::backend::common::chat_template::ChatTemplate;
 use crate::types::message::{MessageBody, MessageContent, TokenizerConfigToken};
 
 use parking_lot::{Mutex, RwLock};
@@ -117,21 +117,10 @@ impl Session {
             );
         }
 
-        let bos_str = bundle
-            .tokenizer
-            .bos_id()
-            .map(|id| bundle.tokenizer.decode(&[id]).unwrap_or_default())
-            .unwrap_or_default();
-        let eos_str = bundle
-            .tokenizer
-            .eos_id()
-            .map(|id| bundle.tokenizer.decode(&[id]).unwrap_or_default())
-            .unwrap_or_default();
-
         let chat_template = ChatTemplate::new(
-            Self::default_llama3_template(),
-            Some(TokenizerConfigToken::String(bos_str)),
-            Some(TokenizerConfigToken::String(eos_str)),
+            bundle.chat_template_str.clone(),
+            Some(TokenizerConfigToken::String(bundle.bos_str.clone())),
+            Some(TokenizerConfigToken::String(bundle.eos_str.clone())),
         );
 
         let prompt = chat_template
@@ -205,23 +194,10 @@ impl Session {
             msgs.extend(new_messages.clone());
         }
 
-        let bos_str = self
-            .bundle
-            .tokenizer
-            .bos_id()
-            .map(|id| self.bundle.tokenizer.decode(&[id]).unwrap_or_default())
-            .unwrap_or_default();
-        let eos_str = self
-            .bundle
-            .tokenizer
-            .eos_id()
-            .map(|id| self.bundle.tokenizer.decode(&[id]).unwrap_or_default())
-            .unwrap_or_default();
-
         let tpl = ChatTemplate::new(
-            Self::default_llama3_template(),
-            Some(TokenizerConfigToken::String(bos_str)),
-            Some(TokenizerConfigToken::String(eos_str)),
+            self.bundle.chat_template_str.clone(),
+            Some(TokenizerConfigToken::String(self.bundle.bos_str.clone())),
+            Some(TokenizerConfigToken::String(self.bundle.eos_str.clone())),
         );
 
         let delta_text = tpl
@@ -321,15 +297,4 @@ impl Session {
         Ok(cache)
     }
 
-    fn default_llama3_template() -> String {
-        r#"{% for message in messages %}{% if message.role == 'system' %}<|start_header_id|>system<|end_header_id|>
-
-{{ message.content }}<|eot_id|>{% elif message.role == 'user' %}<|start_header_id|>user<|end_header_id|>
-
-{{ message.content }}<|eot_id|>{% elif message.role == 'assistant' %}<|start_header_id|>assistant<|end_header_id|>
-
-{{ message.content }}<|eot_id|>{% endif %}{% endfor %}<|start_header_id|>assistant<|end_header_id|>
-
-"#.to_string()
-    }
 }

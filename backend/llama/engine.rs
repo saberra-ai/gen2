@@ -13,7 +13,7 @@ use crate::gen2::engine::{
 };
 use crate::gen2::session_rt::SessionSpec;
 use crate::gen2::session_rt::media_util::messages_have_images;
-use crate::generation::model_runner::embedder::LlamaEmbedder;
+use super::embedder::LlamaEmbedder;
 use llama_cpp_2::llama_backend::LlamaBackend;
 use llama_cpp_2::{LogOptions, send_logs_to_tracing};
 use once_cell::sync::OnceCell;
@@ -551,6 +551,186 @@ mod tests {
         })?;
         let report = s2.load_cache(crate::gen2::kv::KvLoadSpec::Strict(kv_path))?;
         assert!(report.loaded, "kv cache failed to load strictly");
+        Ok(())
+    }
+
+    /// Verify that generation stops at or before max_tokens.
+    #[test]
+    #[ignore]
+    fn generation_respects_max_tokens() -> Result<(), Box<dyn std::error::Error>> {
+        let Some(model_path) = test_model_path() else {
+            return Ok(());
+        };
+        let e = Engine::new();
+        let mut s = Settings::default();
+        s.system.ctx_size = Some(512);
+        s.system.batch_size = Some(16);
+        s.system.threads = Some(2);
+        s.system.threads_batch = Some(2);
+        e.upload_settings(s)?;
+        e.load_model(LoadRequest {
+            model_path,
+            ..Default::default()
+        })?;
+
+        let msgs = vec![Message {
+            name: None,
+            role: "user".into(),
+            body: MessageBody::Content {
+                content: MessageContent::SingleText("Hello".into()),
+            },
+        }];
+        let session = e.start_session(SessionSpec {
+            messages: msgs,
+            ..Default::default()
+        })?;
+        let mut puller = session.pull(GenSpec {
+            max_tokens: Some(5),
+            ..Default::default()
+        })?;
+
+        let mut token_count = 0usize;
+        for ev in puller.by_ref() {
+            match ev? {
+                TokenEvent::Token(_) => token_count += 1,
+                TokenEvent::Eos | TokenEvent::Stopped => break,
+                _ => {}
+            }
+        }
+        assert!(
+            token_count <= 5,
+            "expected at most 5 tokens, got {}",
+            token_count
+        );
+        Ok(())
+    }
+
+    /// Verify that calling stop() on the session yields TokenEvent::Stopped.
+    #[test]
+    #[ignore]
+    fn generation_stop_flag() -> Result<(), Box<dyn std::error::Error>> {
+        let Some(model_path) = test_model_path() else {
+            return Ok(());
+        };
+        let e = Engine::new();
+        let mut s = Settings::default();
+        s.system.ctx_size = Some(512);
+        s.system.batch_size = Some(16);
+        s.system.threads = Some(2);
+        s.system.threads_batch = Some(2);
+        e.upload_settings(s)?;
+        e.load_model(LoadRequest {
+            model_path,
+            ..Default::default()
+        })?;
+
+        let msgs = vec![Message {
+            name: None,
+            role: "user".into(),
+            body: MessageBody::Content {
+                content: MessageContent::SingleText("Hello".into()),
+            },
+        }];
+        let session = e.start_session(SessionSpec {
+            messages: msgs,
+            ..Default::default()
+        })?;
+        let mut puller = session.pull(GenSpec {
+            max_tokens: Some(1000),
+            ..Default::default()
+        })?;
+
+        // Consume first token then request stop
+        let mut got_first = false;
+        let mut got_stopped = false;
+        for ev in puller.by_ref() {
+            match ev? {
+                TokenEvent::Token(_) if !got_first => {
+                    got_first = true;
+                    session.stop();
+                }
+                TokenEvent::Stopped => {
+                    got_stopped = true;
+                    break;
+                }
+                TokenEvent::Eos => break,
+                _ => {}
+            }
+        }
+        assert!(got_first, "should have produced at least one token");
+        assert!(got_stopped, "should have received TokenEvent::Stopped");
+        Ok(())
+    }
+
+    /// Pulling twice from the same session should fail with "session already consumed".
+    #[test]
+    #[ignore]
+    fn session_consumed_on_pull() -> Result<(), Box<dyn std::error::Error>> {
+        let Some(model_path) = test_model_path() else {
+            return Ok(());
+        };
+        let e = Engine::new();
+        let mut s = Settings::default();
+        s.system.ctx_size = Some(512);
+        s.system.batch_size = Some(16);
+        s.system.threads = Some(2);
+        s.system.threads_batch = Some(2);
+        e.upload_settings(s)?;
+        e.load_model(LoadRequest {
+            model_path,
+            ..Default::default()
+        })?;
+
+        let msgs = vec![Message {
+            name: None,
+            role: "user".into(),
+            body: MessageBody::Content {
+                content: MessageContent::SingleText("Hello".into()),
+            },
+        }];
+        let session = e.start_session(SessionSpec {
+            messages: msgs,
+            ..Default::default()
+        })?;
+
+        // First pull should succeed
+        let _puller = session.pull(GenSpec::default())?;
+
+        // Second pull should fail — state was consumed
+        match session.pull(GenSpec::default()) {
+            Err(err) => {
+                let msg = format!("{}", err);
+                assert!(
+                    msg.contains("session already consumed"),
+                    "unexpected error: {}",
+                    msg
+                );
+            }
+            Ok(_) => panic!("expected error on second pull, but got Ok"),
+        }
+        Ok(())
+    }
+
+    /// Embedder with empty input should return Ok(vec![]).
+    #[test]
+    #[ignore]
+    fn embedder_empty_input() -> Result<(), Box<dyn std::error::Error>> {
+        let Some(model_path) = test_model_path() else {
+            return Ok(());
+        };
+        let e = Engine::new();
+        e.load_model(LoadRequest {
+            model_path: model_path.clone(),
+            ..Default::default()
+        })?;
+        // Load embedder with the same model path (may or may not support it,
+        // but the empty-input short-circuit should fire before backend errors)
+        let _ = e.load_embedder(EmbedLoadRequest {
+            model_path,
+        });
+
+        let result = e.generate_embeddings(&[])?;
+        assert!(result.is_empty(), "expected empty vec for empty input");
         Ok(())
     }
 }

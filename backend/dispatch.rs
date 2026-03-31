@@ -434,6 +434,108 @@ macro_rules! dispatch_void {
 use dispatch;
 use dispatch_void;
 
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use std::path::PathBuf;
+
+    // ── Step 3b: Engine dispatch tests ──────────────────────────────
+
+    /// Engine::new() without any backend features compiles to Uninit,
+    /// with backend-llamacpp it compiles to LlamaCpp. Either way,
+    /// is_model_loaded() must return false (no model file loaded).
+    #[test]
+    fn uninit_engine_returns_model_not_loaded() {
+        let engine = Engine::new();
+        assert!(
+            !engine.is_model_loaded(),
+            "freshly constructed engine should report no model loaded"
+        );
+    }
+
+    /// A path ending in `.gguf` should be detected as the "llamacpp" backend.
+    #[test]
+    fn format_detection_gguf() {
+        let name = Engine::detect_backend_for_path(&PathBuf::from("/tmp/model.gguf"));
+        // When backend-llamacpp is compiled, this returns "llamacpp".
+        // When it isn't compiled, the fallback logic still resolves to
+        // whatever the default compiled backend is (or "unknown").
+        #[cfg(feature = "backend-llamacpp")]
+        assert_eq!(name, "llamacpp", ".gguf should map to llamacpp backend");
+        #[cfg(not(feature = "backend-llamacpp"))]
+        {
+            // Without llamacpp, .gguf detection sees it's not a real file,
+            // so it falls through to the default compiled backend.
+            let _ = name; // just assert no panic
+        }
+    }
+
+    /// A URL starting with `http://` should be detected as "external-api".
+    #[test]
+    fn format_detection_url() {
+        let name =
+            Engine::detect_backend_for_path(&PathBuf::from("http://localhost:11434/v1"));
+        #[cfg(feature = "backend-external-api")]
+        assert_eq!(
+            name, "external-api",
+            "http:// URL should map to external-api backend"
+        );
+        #[cfg(not(feature = "backend-external-api"))]
+        {
+            // Without external-api feature, the URL path falls through to
+            // the default backend (the path is not a real file/dir so
+            // file-extension checks skip it).
+            let _ = name; // just assert no panic
+        }
+    }
+
+    /// https:// URLs should also be detected as "external-api".
+    #[test]
+    fn format_detection_https_url() {
+        let name =
+            Engine::detect_backend_for_path(&PathBuf::from("https://api.openai.com/v1"));
+        #[cfg(feature = "backend-external-api")]
+        assert_eq!(
+            name, "external-api",
+            "https:// URL should map to external-api backend"
+        );
+        #[cfg(not(feature = "backend-external-api"))]
+        {
+            let _ = name;
+        }
+    }
+
+    /// Default engine reports "none" active backend when Uninit, or a
+    /// real backend name when one is compiled.
+    #[test]
+    fn active_backend_name_on_fresh_engine() {
+        let engine = Engine::new();
+        let name = engine.active_backend_name();
+        #[cfg(feature = "backend-llamacpp")]
+        assert_eq!(name, "llamacpp");
+        #[cfg(all(not(feature = "backend-llamacpp"), feature = "backend-mlx"))]
+        assert_eq!(name, "mlx");
+        #[cfg(not(any(
+            feature = "backend-llamacpp",
+            feature = "backend-mlx",
+            feature = "backend-onnx"
+        )))]
+        assert_eq!(name, "none");
+    }
+
+    /// Capabilities and stats have sensible defaults on a fresh engine.
+    #[test]
+    fn fresh_engine_capabilities_and_stats() {
+        let engine = Engine::new();
+        // No model loaded yet — capabilities should be empty or default
+        let caps = engine.capabilities();
+        // Stats should be default zeros
+        let stats = engine.stats();
+        assert_eq!(stats.decode_tokens, 0);
+        let _ = caps; // just ensure no panic
+    }
+}
+
 // ─── Session ────────────────────────────────────────────────────────────────
 
 pub enum Session {

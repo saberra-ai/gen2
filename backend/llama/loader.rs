@@ -1,8 +1,8 @@
 use super::bundle::ModelBundle;
 use crate::gen2::bundle::ModelMeta;
 use crate::gen2::engine::{Capabilities, EmbedLoadRequest, ExecError, LoadRequest};
-use crate::generation::model_runner::embedder::LlamaEmbedder;
-use crate::generation::model_runner::llama_config::ModelConfig;
+use super::embedder::LlamaEmbedder;
+use super::llama_config::ModelConfig;
 use anyhow::{Context, anyhow};
 use llama_cpp_2::llama_backend::LlamaBackend;
 use llama_cpp_2::model::{LlamaModel, params::LlamaModelParams};

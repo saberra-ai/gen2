@@ -12,7 +12,7 @@ use crate::gen2::Message;
 use crate::gen2::engine::{ExecError, HookBus, HookEvent, Settings};
 use crate::gen2::generation::GenSpec;
 use crate::gen2::session_rt::prompt::merge_prompts;
-use crate::generation::model_runner::chat_template::ChatTemplate;
+use crate::gen2::backend::common::chat_template::ChatTemplate;
 use crate::types::message::{MessageBody, MessageContent, TokenizerConfigToken};
 
 use parking_lot::{Mutex, RwLock};
@@ -113,28 +113,11 @@ impl Session {
             );
         }
 
-        // Build chat template from tokenizer config
-        // For MLX models, we use a simpler approach: check for tokenizer_config.json
-        // or use a default Llama3 template
-        let bos_str = bundle
-            .tokenizer
-            .bos_id()
-            .map(|id| bundle.tokenizer.decode(&[id]).unwrap_or_default())
-            .unwrap_or_default();
-        let eos_str = bundle
-            .tokenizer
-            .eos_id()
-            .map(|id| bundle.tokenizer.decode(&[id]).unwrap_or_default())
-            .unwrap_or_default();
-
-        // Try to load chat template from tokenizer_config.json in the model dir
-        let chat_template_str = Self::load_chat_template_from_dir(&bundle.model_dir)
-            .unwrap_or_else(|| Self::default_llama3_template());
-
+        // Use chat template + BOS/EOS cached in bundle (loaded once at model load time)
         let chat_template = ChatTemplate::new(
-            chat_template_str,
-            Some(TokenizerConfigToken::String(bos_str)),
-            Some(TokenizerConfigToken::String(eos_str)),
+            bundle.chat_template_str.clone(),
+            Some(TokenizerConfigToken::String(bundle.bos_str.clone())),
+            Some(TokenizerConfigToken::String(bundle.eos_str.clone())),
         );
 
         let prompt = chat_template
@@ -192,26 +175,10 @@ impl Session {
         }
 
         // Tokenize just the new messages
-        let bos_str = self
-            .bundle
-            .tokenizer
-            .bos_id()
-            .map(|id| self.bundle.tokenizer.decode(&[id]).unwrap_or_default())
-            .unwrap_or_default();
-        let eos_str = self
-            .bundle
-            .tokenizer
-            .eos_id()
-            .map(|id| self.bundle.tokenizer.decode(&[id]).unwrap_or_default())
-            .unwrap_or_default();
-
-        let chat_template_str = Self::load_chat_template_from_dir(&self.bundle.model_dir)
-            .unwrap_or_else(|| Self::default_llama3_template());
-
         let tpl = ChatTemplate::new(
-            chat_template_str,
-            Some(TokenizerConfigToken::String(bos_str)),
-            Some(TokenizerConfigToken::String(eos_str)),
+            self.bundle.chat_template_str.clone(),
+            Some(TokenizerConfigToken::String(self.bundle.bos_str.clone())),
+            Some(TokenizerConfigToken::String(self.bundle.eos_str.clone())),
         );
 
         let delta_text = tpl
@@ -253,24 +220,4 @@ impl Session {
         Ok(0)
     }
 
-    /// Load the Jinja2 chat template from `tokenizer_config.json` in the model directory.
-    fn load_chat_template_from_dir(model_dir: &std::path::Path) -> Option<String> {
-        let config_path = model_dir.join("tokenizer_config.json");
-        let content = std::fs::read_to_string(&config_path).ok()?;
-        let parsed: serde_json::Value = serde_json::from_str(&content).ok()?;
-        parsed.get("chat_template")?.as_str().map(|s| s.to_string())
-    }
-
-    fn default_llama3_template() -> String {
-        // Minimal Llama3 instruct template
-        r#"{% for message in messages %}{% if message.role == 'system' %}<|start_header_id|>system<|end_header_id|>
-
-{{ message.content }}<|eot_id|>{% elif message.role == 'user' %}<|start_header_id|>user<|end_header_id|>
-
-{{ message.content }}<|eot_id|>{% elif message.role == 'assistant' %}<|start_header_id|>assistant<|end_header_id|>
-
-{{ message.content }}<|eot_id|>{% endif %}{% endfor %}<|start_header_id|>assistant<|end_header_id|>
-
-"#.to_string()
-    }
 }

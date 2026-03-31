@@ -107,8 +107,9 @@ pub enum ControllerEvent {
     Eos,
     /// Generation was stopped by user request.
     Stopped,
-    /// An error occurred during generation.
-    Error(String),
+    /// An error occurred during generation. Carries the error code for
+    /// downstream routing (auto-retry, navigate-to-settings, etc.).
+    Error { code: String, message: String },
     /// Final execution statistics for the completed generation.
     FinalStats(ExecutionStats),
     /// Context was truncated — N old messages dropped to fit context window.
@@ -332,10 +333,13 @@ fn run_loop(rx: Receiver<ControllerCmd>, max_active: usize) {
                     );
                     try_emit(
                         &chat.tx,
-                        ControllerEvent::Error(format!(
-                            "generation timed out after {}s",
-                            DEFAULT_GENERATION_TIMEOUT_SECS
-                        )),
+                        ControllerEvent::Error {
+                            code: "timeout".into(),
+                            message: format!(
+                                "generation timed out after {}s",
+                                DEFAULT_GENERATION_TIMEOUT_SECS
+                            ),
+                        },
                     );
                     chat.finished = true;
                     chat.puller = None;
@@ -361,9 +365,10 @@ fn run_loop(rx: Receiver<ControllerCmd>, max_active: usize) {
 
                 match step {
                     Err(_panic) => {
-                        emit(ControllerEvent::Error(
-                            "inference panic: session state lost; restart chat".into(),
-                        ));
+                        emit(ControllerEvent::Error {
+                            code: "session_poisoned".into(),
+                            message: "inference panic: session state lost; restart chat".into(),
+                        });
                         chat.finished = true;
                         chat.puller = None;
                     }
@@ -389,12 +394,15 @@ fn run_loop(rx: Receiver<ControllerCmd>, max_active: usize) {
                     Ok(Some(Ok(TokenEvent::Paused))) => { /* handled by paused flag */ }
                     Ok(Some(Ok(TokenEvent::Special(_)))) => { /* no-op for now */ }
                     Ok(Some(Err(e))) => {
-                        let msg = if chat.session.is_poisoned() {
-                            format!("session state lost (possible FFI crash): {:?}", e)
+                        let (code, msg) = if chat.session.is_poisoned() {
+                            ("session_poisoned", format!("session state lost (possible FFI crash): {:?}", e))
                         } else {
-                            format!("{:?}", e)
+                            ("generation_error", format!("{:?}", e))
                         };
-                        emit(ControllerEvent::Error(msg));
+                        emit(ControllerEvent::Error {
+                            code: code.into(),
+                            message: msg,
+                        });
                         chat.finished = true;
                         chat.puller = None;
                     }
@@ -527,7 +535,10 @@ fn dispatch_cmd(
                 if chat.puller.is_some() && !chat.finished {
                     try_emit(
                         &tx,
-                        ControllerEvent::Error("chat already generating; pause/stop first".into()),
+                        ControllerEvent::Error {
+                            code: "generation_error".into(),
+                            message: "chat already generating; pause/stop first".into(),
+                        },
                     );
                     return ControlFlow::Continue;
                 }
@@ -536,7 +547,10 @@ fn dispatch_cmd(
 
                 match chat.session.append_messages(last_vec) {
                     Err(e) => {
-                        try_emit(&tx, ControllerEvent::Error(format!("{:?}", e)));
+                        try_emit(&tx, ControllerEvent::Error {
+                            code: "generation_error".into(),
+                            message: format!("{:?}", e),
+                        });
                         return ControlFlow::Continue;
                     }
                     Ok(dropped) if dropped > 0 => {
@@ -555,7 +569,10 @@ fn dispatch_cmd(
                         chat.last_gen_spec = pull_spec;
                     }
                     Err(e) => {
-                        try_emit(&tx, ControllerEvent::Error(format!("{:?}", e)));
+                        try_emit(&tx, ControllerEvent::Error {
+                            code: "generation_error".into(),
+                            message: format!("{:?}", e),
+                        });
                     }
                 }
                 return ControlFlow::Continue;
@@ -571,7 +588,10 @@ fn dispatch_cmd(
                     ..Default::default()
                 }) {
                     Err(e) => {
-                        try_emit(&tx, ControllerEvent::Error(format!("{:?}", e)));
+                        try_emit(&tx, ControllerEvent::Error {
+                            code: "generation_error".into(),
+                            message: format!("{:?}", e),
+                        });
                     }
                     Ok(session) => {
                         let dropped = session.initial_messages_dropped();
@@ -591,7 +611,10 @@ fn dispatch_cmd(
                             Err(e) => {
                                 engine.hooks().deregister(sid);
                                 let _ = engine.end_session(sid);
-                                try_emit(&tx, ControllerEvent::Error(format!("{:?}", e)));
+                                try_emit(&tx, ControllerEvent::Error {
+                                    code: "generation_error".into(),
+                                    message: format!("{:?}", e),
+                                });
                             }
                             Ok(puller) => {
                                 let evicted = chats.insert(
@@ -631,14 +654,20 @@ fn dispatch_cmd(
                 if chat.puller.is_some() && !chat.finished {
                     try_emit(
                         &tx,
-                        ControllerEvent::Error("chat already generating; pause/stop first".into()),
+                        ControllerEvent::Error {
+                            code: "generation_error".into(),
+                            message: "chat already generating; pause/stop first".into(),
+                        },
                     );
                     return ControlFlow::Continue;
                 }
                 // If you add Session::append_messages(Vec<Message>), call it here with `new_messages`.
                 match chat.session.append_messages(new_messages) {
                     Err(e) => {
-                        try_emit(&tx, ControllerEvent::Error(format!("{:?}", e)));
+                        try_emit(&tx, ControllerEvent::Error {
+                            code: "generation_error".into(),
+                            message: format!("{:?}", e),
+                        });
                         return ControlFlow::Continue;
                     }
                     Ok(dropped) if dropped > 0 => {
@@ -657,13 +686,19 @@ fn dispatch_cmd(
                         chat.last_gen_spec = pull_spec;
                     }
                     Err(e) => {
-                        try_emit(&tx, ControllerEvent::Error(format!("{:?}", e)));
+                        try_emit(&tx, ControllerEvent::Error {
+                            code: "generation_error".into(),
+                            message: format!("{:?}", e),
+                        });
                     }
                 }
             } else {
                 try_emit(
                     &tx,
-                    ControllerEvent::Error(format!("chat_id '{}' not found", chat_id)),
+                    ControllerEvent::Error {
+                        code: "not_found".into(),
+                        message: format!("chat_id '{}' not found", chat_id),
+                    },
                 );
             }
             ControlFlow::Continue
@@ -679,12 +714,18 @@ fn dispatch_cmd(
                 if chat.puller.is_some() && !chat.finished {
                     try_emit(
                         &tx,
-                        ControllerEvent::Error("chat already generating; pause/stop first".into()),
+                        ControllerEvent::Error {
+                            code: "generation_error".into(),
+                            message: "chat already generating; pause/stop first".into(),
+                        },
                     );
                     return ControlFlow::Continue;
                 }
                 if let Err(e) = chat.session.append_messages(messages) {
-                    try_emit(&tx, ControllerEvent::Error(format!("{:?}", e)));
+                    try_emit(&tx, ControllerEvent::Error {
+                        code: "generation_error".into(),
+                        message: format!("{:?}", e),
+                    });
                     return ControlFlow::Continue;
                 }
 
@@ -699,7 +740,10 @@ fn dispatch_cmd(
                         chat.last_gen_spec = gen_spec;
                     }
                     Err(e) => {
-                        try_emit(&tx, ControllerEvent::Error(format!("{:?}", e)));
+                        try_emit(&tx, ControllerEvent::Error {
+                            code: "generation_error".into(),
+                            message: format!("{:?}", e),
+                        });
                     }
                 }
                 return ControlFlow::Continue;
@@ -707,7 +751,10 @@ fn dispatch_cmd(
 
             try_emit(
                 &tx,
-                ControllerEvent::Error(format!("chat_id '{}' is not loaded", chat_id)),
+                ControllerEvent::Error {
+                    code: "not_found".into(),
+                    message: format!("chat_id '{}' is not loaded", chat_id),
+                },
             );
             ControlFlow::Continue
         }
@@ -737,7 +784,10 @@ fn dispatch_cmd(
                 ..Default::default()
             }) {
                 Err(e) => {
-                    try_emit(&tx, ControllerEvent::Error(format!("{:?}", e)));
+                    try_emit(&tx, ControllerEvent::Error {
+                        code: "generation_error".into(),
+                        message: format!("{:?}", e),
+                    });
                 }
                 Ok(session) => {
                     let sid = session.id();
@@ -750,7 +800,10 @@ fn dispatch_cmd(
                     );
                     match session.pull(gen_spec.clone()) {
                         Err(e) => {
-                            try_emit(&tx, ControllerEvent::Error(format!("{:?}", e)));
+                            try_emit(&tx, ControllerEvent::Error {
+                                code: "generation_error".into(),
+                                message: format!("{:?}", e),
+                            });
                         }
                         Ok(puller) => {
                             // Insert as ephemeral so it auto-cleans after EOS/Stopped
@@ -803,10 +856,13 @@ fn dispatch_cmd(
                         Err(e) => {
                             try_emit(
                                 &chat.tx,
-                                ControllerEvent::Error(format!(
-                                    "failed to resume generation: {:?}",
-                                    e
-                                )),
+                                ControllerEvent::Error {
+                                    code: "generation_error".into(),
+                                    message: format!(
+                                        "failed to resume generation: {:?}",
+                                        e
+                                    ),
+                                },
                             );
                         }
                     }
@@ -980,6 +1036,79 @@ mod tests {
             .recv()
             .expect("should receive a response via cloned handle");
         assert!(!loaded, "no model should be loaded");
+        let _ = handle.send(ControllerCmd::Shutdown);
+    }
+
+    // ── Step 3a: Controller command dispatch tests ────────────────────
+
+    /// Create a ControllerHandle, send IsModelLoaded, assert returns false.
+    #[test]
+    fn status_queries_before_load() {
+        let handle = start_controller();
+        // IsModelLoaded
+        let (tx, rx) = std::sync::mpsc::channel();
+        handle
+            .send(ControllerCmd::IsModelLoaded { resp: tx })
+            .expect("send should succeed");
+        assert!(!rx.recv().unwrap(), "model should not be loaded on fresh controller");
+        // IsEmbedderLoaded
+        let (tx2, rx2) = std::sync::mpsc::channel();
+        handle
+            .send(ControllerCmd::IsEmbedderLoaded { resp: tx2 })
+            .expect("send should succeed");
+        assert!(!rx2.recv().unwrap(), "embedder should not be loaded on fresh controller");
+        // IsMmprojLoaded
+        let (tx3, rx3) = std::sync::mpsc::channel();
+        handle
+            .send(ControllerCmd::IsMmprojLoaded { resp: tx3 })
+            .expect("send should succeed");
+        assert!(!rx3.recv().unwrap(), "mmproj should not be loaded on fresh controller");
+        // IsChatLoaded
+        let (tx4, rx4) = std::sync::mpsc::channel();
+        handle
+            .send(ControllerCmd::IsChatLoaded {
+                chat_id: "any-id".to_string(),
+                resp: tx4,
+            })
+            .expect("send should succeed");
+        assert!(!rx4.recv().unwrap(), "no chat should be loaded on fresh controller");
+        let _ = handle.send(ControllerCmd::Shutdown);
+    }
+
+    /// Spawn controller thread, send Shutdown, verify thread exits cleanly
+    /// (subsequent sends fail because the channel is closed).
+    #[test]
+    fn shutdown_command_exits_loop() {
+        let handle = start_controller();
+        handle
+            .send(ControllerCmd::Shutdown)
+            .expect("shutdown send should succeed");
+        // Give the controller thread time to process shutdown and exit.
+        std::thread::sleep(std::time::Duration::from_millis(100));
+        // The controller thread has exited, so the receiving end of the
+        // channel is dropped. Any subsequent send should fail.
+        let (tx, _rx) = std::sync::mpsc::channel();
+        let result = handle.send(ControllerCmd::IsModelLoaded { resp: tx });
+        assert!(result.is_err(), "channel should be closed after shutdown");
+    }
+
+    /// Send StopChat for nonexistent chat_id "999" — no panic, controller
+    /// stays alive and responsive.
+    #[test]
+    fn stop_chat_without_active_chat() {
+        let handle = start_controller();
+        handle
+            .send(ControllerCmd::StopChat {
+                chat_id: "999".to_string(),
+            })
+            .expect("stop nonexistent chat should not panic");
+        // Verify controller is still alive.
+        let (tx, rx) = std::sync::mpsc::channel();
+        handle
+            .send(ControllerCmd::IsModelLoaded { resp: tx })
+            .expect("controller should still be responsive");
+        let loaded = rx.recv().expect("should receive response");
+        assert!(!loaded);
         let _ = handle.send(ControllerCmd::Shutdown);
     }
 

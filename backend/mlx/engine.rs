@@ -73,13 +73,25 @@ impl Engine {
 
         let tokenizer = HfTokenizer::from_dir(model_dir).map_err(|e| ExecError::Other(e))?;
 
-        let meta = ModelMeta {
-            model_uuid: String::new(),
-            n_ctx: config.max_position_embeddings as u32,
-            n_layer: config.num_hidden_layers as u32,
-            tokenizer_digest: [0u8; 32],
-            template_fingerprint: [0u8; 32],
-        };
+        let chat_template_str =
+            crate::gen2::backend::common::load_chat_template(model_dir)
+                .unwrap_or_else(crate::gen2::backend::common::default_llama3_template);
+        let bos_str = tokenizer
+            .bos_id()
+            .and_then(|id| tokenizer.decode(&[id]).ok())
+            .unwrap_or_default();
+        let eos_str = tokenizer
+            .eos_id()
+            .and_then(|id| tokenizer.decode(&[id]).ok())
+            .unwrap_or_default();
+
+        let meta = crate::gen2::backend::common::compute_hf_model_meta(
+            &tokenizer,
+            model_dir,
+            config.max_position_embeddings as u32,
+            config.num_hidden_layers as u32,
+            Some(&chat_template_str),
+        );
 
         let caps = Capabilities::TEXT;
 
@@ -91,6 +103,9 @@ impl Engine {
             capabilities: caps.clone(),
             meta: meta.clone(),
             model_dir: model_dir.to_path_buf(),
+            chat_template_str,
+            bos_str,
+            eos_str,
         };
 
         self.sessions.clear();
@@ -209,5 +224,58 @@ impl Engine {
 
     pub fn unload_embedder(&self) {
         // no-op for MLX
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::gen2::engine::{EmbedLoadRequest, ExecError, LoadRequest};
+
+    /// Load a real MLX safetensors model directory.
+    /// Set TEST_MLX_MODEL_DIR to a directory containing config.json + *.safetensors.
+    #[test]
+    #[ignore]
+    fn load_model_from_safetensors_dir() -> Result<(), Box<dyn std::error::Error>> {
+        let model_dir = match std::env::var("TEST_MLX_MODEL_DIR") {
+            Ok(p) => {
+                let path = std::path::PathBuf::from(p);
+                if !path.exists() {
+                    eprintln!("TEST_MLX_MODEL_DIR path does not exist, skipping");
+                    return Ok(());
+                }
+                path
+            }
+            Err(_) => {
+                eprintln!("set TEST_MLX_MODEL_DIR to run this test");
+                return Ok(());
+            }
+        };
+
+        let e = Engine::new();
+        assert!(!e.is_model_loaded());
+        e.load_model(LoadRequest {
+            model_path: model_dir,
+            ..Default::default()
+        })?;
+        assert!(e.is_model_loaded());
+        assert!(e.capabilities().contains(Capabilities::TEXT));
+        Ok(())
+    }
+
+    /// MLX does not support embedders — load_embedder should return Unimplemented.
+    #[test]
+    fn embedder_not_supported() {
+        let e = Engine::new();
+        let err = e
+            .load_embedder(EmbedLoadRequest {
+                model_path: std::path::PathBuf::from("/nonexistent"),
+            })
+            .unwrap_err();
+        assert!(
+            matches!(err, ExecError::Unimplemented),
+            "expected Unimplemented, got: {:?}",
+            err
+        );
     }
 }

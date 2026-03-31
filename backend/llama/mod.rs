@@ -1,7 +1,9 @@
 //! llama-cpp-2 inference backend.
 
 mod bundle;
+pub mod embedder;
 mod engine;
+pub mod llama_config;
 mod loader;
 mod puller;
 mod session;

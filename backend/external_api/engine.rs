@@ -54,7 +54,6 @@ impl Engine {
             api_format: RwLock::new("openai".into()),
             client: reqwest::blocking::Client::builder()
                 .timeout(std::time::Duration::from_secs(300))
-                .read_timeout(std::time::Duration::from_secs(2))
                 .build()
                 .unwrap_or_else(|_| reqwest::blocking::Client::new()),
             loaded: AtomicBool::new(false),
@@ -274,5 +273,224 @@ impl Engine {
 
     pub fn set_api_format(&self, format: String) {
         *self.api_format.write() = format;
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::gen2::generation::{GenSpec, TokenEvent};
+    use crate::gen2::session_rt::SessionSpec;
+    use crate::types::message::{Message, MessageBody, MessageContent};
+
+    fn user_message(text: &str) -> Message {
+        Message {
+            role: "user".into(),
+            body: MessageBody::Content {
+                content: MessageContent::SingleText(text.into()),
+            },
+            name: None,
+        }
+    }
+
+    // ── 1. Load model from URL (OpenAI format) ──────────────────────
+
+    #[test]
+    fn load_model_from_url() {
+        let mut server = mockito::Server::new();
+        let _mock = server
+            .mock("GET", "/v1/models")
+            .with_status(200)
+            .with_body(r#"{"data":[]}"#)
+            .create();
+
+        let engine = Engine::new();
+        let req = LoadRequest {
+            model_path: std::path::PathBuf::from(format!("{}/v1", server.url())),
+            api_key: Some("test".into()),
+            api_format: Some("openai".into()),
+            ..Default::default()
+        };
+        engine.load_model(req).expect("load_model should succeed");
+        assert!(engine.is_model_loaded());
+    }
+
+    // ── 2. Anthropic format skips /models connectivity check ────────
+
+    #[test]
+    fn load_model_anthropic_skips_models_check() {
+        // No /models mock — if it tried to hit /models, the request would fail.
+        // Anthropic format should skip that check entirely.
+        let server = mockito::Server::new();
+
+        let engine = Engine::new();
+        let req = LoadRequest {
+            model_path: std::path::PathBuf::from(format!("{}/v1", server.url())),
+            api_key: Some("test-key".into()),
+            api_format: Some("anthropic".into()),
+            ..Default::default()
+        };
+        engine
+            .load_model(req)
+            .expect("anthropic load should skip /models and succeed");
+        assert!(engine.is_model_loaded());
+    }
+
+    // ── 3. OpenAI SSE token streaming ───────────────────────────────
+
+    #[test]
+    fn openai_sse_token_streaming() {
+        let mut server = mockito::Server::new();
+
+        // Mock the /models endpoint for load_model
+        let _models_mock = server
+            .mock("GET", "/v1/models")
+            .with_status(200)
+            .with_body(r#"{"data":[]}"#)
+            .create();
+
+        // SSE body with two tokens + stop + [DONE]
+        let sse_body = "\
+data: {\"id\":\"1\",\"object\":\"chat.completion.chunk\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\"Hello\"},\"finish_reason\":null}]}\n\
+\n\
+data: {\"id\":\"1\",\"object\":\"chat.completion.chunk\",\"choices\":[{\"index\":0,\"delta\":{\"content\":\" world\"},\"finish_reason\":null}]}\n\
+\n\
+data: {\"id\":\"1\",\"object\":\"chat.completion.chunk\",\"choices\":[{\"index\":0,\"delta\":{},\"finish_reason\":\"stop\"}]}\n\
+\n\
+data: [DONE]\n\
+";
+
+        let _completions_mock = server
+            .mock("POST", "/v1/chat/completions")
+            .with_status(200)
+            .with_header("content-type", "text/event-stream")
+            .with_body(sse_body)
+            .create();
+
+        // Load model
+        let engine = Engine::new();
+        let req = LoadRequest {
+            model_path: std::path::PathBuf::from(format!("{}/v1", server.url())),
+            api_key: Some("test-key".into()),
+            api_format: Some("openai".into()),
+            ..Default::default()
+        };
+        engine.load_model(req).unwrap();
+
+        // Start session with a user message
+        let spec = SessionSpec {
+            messages: vec![user_message("Hello")],
+            ..Default::default()
+        };
+        let session = engine.start_session(spec).unwrap();
+
+        // Pull tokens
+        let puller = session.pull(GenSpec::default()).unwrap();
+        let mut tokens = Vec::new();
+        for event in puller {
+            match event.unwrap() {
+                TokenEvent::Token(tok) => tokens.push(tok.text),
+                TokenEvent::Eos => break,
+                TokenEvent::Stopped => break,
+                _ => {}
+            }
+        }
+
+        assert_eq!(tokens, vec!["Hello", " world"]);
+    }
+
+    // ── 4. Auth headers — OpenAI format ─────────────────────────────
+
+    #[test]
+    fn auth_headers_openai() {
+        let mut server = mockito::Server::new();
+
+        let _models_mock = server
+            .mock("GET", "/v1/models")
+            .with_status(200)
+            .with_body(r#"{"data":[]}"#)
+            .create();
+
+        // Verify the POST has the correct Authorization header
+        let _completions_mock = server
+            .mock("POST", "/v1/chat/completions")
+            .match_header("Authorization", "Bearer test-key")
+            .with_status(200)
+            .with_header("content-type", "text/event-stream")
+            .with_body("data: [DONE]\n\n")
+            .create();
+
+        let engine = Engine::new();
+        let req = LoadRequest {
+            model_path: std::path::PathBuf::from(format!("{}/v1", server.url())),
+            api_key: Some("test-key".into()),
+            api_format: Some("openai".into()),
+            ..Default::default()
+        };
+        engine.load_model(req).unwrap();
+
+        let spec = SessionSpec {
+            messages: vec![user_message("Hi")],
+            ..Default::default()
+        };
+        let session = engine.start_session(spec).unwrap();
+        let puller = session.pull(GenSpec::default()).unwrap();
+
+        // Consume the puller to trigger the HTTP request
+        for event in puller {
+            match event {
+                Ok(TokenEvent::Eos) | Ok(TokenEvent::Stopped) => break,
+                Ok(_) => {}
+                Err(_) => break,
+            }
+        }
+
+        // If mockito matched the header, the mock was satisfied.
+        // An unmatched mock would have returned 501.
+        _completions_mock.assert();
+    }
+
+    // ── 5. Auth headers — Anthropic format ──────────────────────────
+
+    #[test]
+    fn auth_headers_anthropic() {
+        let mut server = mockito::Server::new();
+
+        // No /models mock needed — Anthropic skips it.
+        // Verify the POST has x-api-key and anthropic-version headers.
+        let _messages_mock = server
+            .mock("POST", "/v1/messages")
+            .match_header("x-api-key", "test-key")
+            .match_header("anthropic-version", "2023-06-01")
+            .with_status(200)
+            .with_header("content-type", "text/event-stream")
+            .with_body("event: message_stop\ndata: {\"type\":\"message_stop\"}\n\n")
+            .create();
+
+        let engine = Engine::new();
+        let req = LoadRequest {
+            model_path: std::path::PathBuf::from(format!("{}/v1", server.url())),
+            api_key: Some("test-key".into()),
+            api_format: Some("anthropic".into()),
+            ..Default::default()
+        };
+        engine.load_model(req).unwrap();
+
+        let spec = SessionSpec {
+            messages: vec![user_message("Hi")],
+            ..Default::default()
+        };
+        let session = engine.start_session(spec).unwrap();
+        let puller = session.pull(GenSpec::default()).unwrap();
+
+        for event in puller {
+            match event {
+                Ok(TokenEvent::Eos) | Ok(TokenEvent::Stopped) => break,
+                Ok(_) => {}
+                Err(_) => break,
+            }
+        }
+
+        _messages_mock.assert();
     }
 }

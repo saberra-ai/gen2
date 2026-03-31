@@ -79,11 +79,25 @@ impl Engine {
 
         let tokenizer = HfTokenizer::from_dir(model_dir).map_err(|e| ExecError::Other(e))?;
 
-        let meta = ModelMeta {
-            model_uuid: String::new(),
-            n_ctx: req.ctx_params.n_ctx.unwrap_or(4096),
-            n_layer: num_layers as u32,
-        };
+        let chat_template_str =
+            crate::gen2::backend::common::load_chat_template(model_dir)
+                .unwrap_or_else(crate::gen2::backend::common::default_llama3_template);
+        let bos_str = tokenizer
+            .bos_id()
+            .and_then(|id| tokenizer.decode(&[id]).ok())
+            .unwrap_or_default();
+        let eos_str = tokenizer
+            .eos_id()
+            .and_then(|id| tokenizer.decode(&[id]).ok())
+            .unwrap_or_default();
+
+        let meta = crate::gen2::backend::common::compute_hf_model_meta(
+            &tokenizer,
+            model_dir,
+            req.ctx_params.n_ctx.unwrap_or(4096),
+            num_layers as u32,
+            Some(&chat_template_str),
+        );
 
         let caps = Capabilities::TEXT;
 
@@ -93,6 +107,10 @@ impl Engine {
             capabilities: caps.clone(),
             meta: meta.clone(),
             num_layers,
+            model_dir: model_dir.to_path_buf(),
+            chat_template_str,
+            bos_str,
+            eos_str,
         };
 
         self.sessions.clear();
@@ -210,5 +228,58 @@ impl Engine {
 
     pub fn unload_embedder(&self) {
         // no-op
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::gen2::engine::{EmbedLoadRequest, ExecError, LoadRequest};
+
+    /// Load a real ONNX model file.
+    /// Set TEST_ONNX_MODEL_PATH to a .onnx file or directory containing model.onnx + tokenizer.json.
+    #[test]
+    #[ignore]
+    fn load_model_from_onnx_file() -> Result<(), Box<dyn std::error::Error>> {
+        let model_path = match std::env::var("TEST_ONNX_MODEL_PATH") {
+            Ok(p) => {
+                let path = std::path::PathBuf::from(p);
+                if !path.exists() {
+                    eprintln!("TEST_ONNX_MODEL_PATH path does not exist, skipping");
+                    return Ok(());
+                }
+                path
+            }
+            Err(_) => {
+                eprintln!("set TEST_ONNX_MODEL_PATH to run this test");
+                return Ok(());
+            }
+        };
+
+        let e = Engine::new();
+        assert!(!e.is_model_loaded());
+        e.load_model(LoadRequest {
+            model_path,
+            ..Default::default()
+        })?;
+        assert!(e.is_model_loaded());
+        assert!(e.capabilities().contains(Capabilities::TEXT));
+        Ok(())
+    }
+
+    /// ONNX does not support embedders — load_embedder should return Unimplemented.
+    #[test]
+    fn embedder_not_supported() {
+        let e = Engine::new();
+        let err = e
+            .load_embedder(EmbedLoadRequest {
+                model_path: std::path::PathBuf::from("/nonexistent"),
+            })
+            .unwrap_err();
+        assert!(
+            matches!(err, ExecError::Unimplemented),
+            "expected Unimplemented, got: {:?}",
+            err
+        );
     }
 }
