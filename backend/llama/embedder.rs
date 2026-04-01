@@ -133,9 +133,7 @@ mod tests {
             .ok()
             .map(PathBuf::from)
         else {
-            eprintln!(
-                "skipping test: set LLAMA_EMBEDDER_MODEL to a local gguf file"
-            );
+            eprintln!("skipping test: set LLAMA_EMBEDDER_MODEL to a local gguf file");
             return;
         };
         if !model_path.exists() {

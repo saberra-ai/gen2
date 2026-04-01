@@ -6,6 +6,7 @@ use std::sync::{
 };
 
 use super::bundle::ModelBundle;
+use super::embedder::LlamaEmbedder;
 use super::session::{Session, SessionId};
 use crate::gen2::engine::telemetry::{HookBus, HookEvent};
 use crate::gen2::engine::{
@@ -13,7 +14,6 @@ use crate::gen2::engine::{
 };
 use crate::gen2::session_rt::SessionSpec;
 use crate::gen2::session_rt::media_util::messages_have_images;
-use super::embedder::LlamaEmbedder;
 use llama_cpp_2::llama_backend::LlamaBackend;
 use llama_cpp_2::{LogOptions, send_logs_to_tracing};
 use once_cell::sync::OnceCell;
@@ -725,9 +725,7 @@ mod tests {
         })?;
         // Load embedder with the same model path (may or may not support it,
         // but the empty-input short-circuit should fire before backend errors)
-        let _ = e.load_embedder(EmbedLoadRequest {
-            model_path,
-        });
+        let _ = e.load_embedder(EmbedLoadRequest { model_path });
 
         let result = e.generate_embeddings(&[])?;
         assert!(result.is_empty(), "expected empty vec for empty input");

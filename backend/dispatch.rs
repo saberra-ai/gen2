@@ -473,8 +473,7 @@ mod tests {
     /// A URL starting with `http://` should be detected as "external-api".
     #[test]
     fn format_detection_url() {
-        let name =
-            Engine::detect_backend_for_path(&PathBuf::from("http://localhost:11434/v1"));
+        let name = Engine::detect_backend_for_path(&PathBuf::from("http://localhost:11434/v1"));
         #[cfg(feature = "backend-external-api")]
         assert_eq!(
             name, "external-api",
@@ -492,8 +491,7 @@ mod tests {
     /// https:// URLs should also be detected as "external-api".
     #[test]
     fn format_detection_https_url() {
-        let name =
-            Engine::detect_backend_for_path(&PathBuf::from("https://api.openai.com/v1"));
+        let name = Engine::detect_backend_for_path(&PathBuf::from("https://api.openai.com/v1"));
         #[cfg(feature = "backend-external-api")]
         assert_eq!(
             name, "external-api",

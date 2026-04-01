@@ -44,14 +44,16 @@ mod tests {
             logprob: Some(-1.5),
         });
         let json = serde_json::to_string(&event).expect("serialize Token");
-        assert!(json.contains("\"Token\""), "JSON should contain Token variant tag");
+        assert!(
+            json.contains("\"Token\""),
+            "JSON should contain Token variant tag"
+        );
         assert!(json.contains("\"hello\""), "JSON should contain text value");
 
         // Deserialize from a static string literal (satisfies 'static lifetime).
-        let back: TokenEvent = serde_json::from_str(
-            r#"{"Token":{"id":42,"text":"hello","logprob":-1.5}}"#,
-        )
-        .expect("deserialize Token");
+        let back: TokenEvent =
+            serde_json::from_str(r#"{"Token":{"id":42,"text":"hello","logprob":-1.5}}"#)
+                .expect("deserialize Token");
         match back {
             TokenEvent::Token(t) => {
                 assert_eq!(t.id, 42);
@@ -78,8 +80,7 @@ mod tests {
         let event = TokenEvent::Stopped;
         let json = serde_json::to_string(&event).expect("serialize Stopped");
         assert!(json.contains("Stopped"));
-        let back: TokenEvent =
-            serde_json::from_str("\"Stopped\"").expect("deserialize Stopped");
+        let back: TokenEvent = serde_json::from_str("\"Stopped\"").expect("deserialize Stopped");
         assert!(matches!(back, TokenEvent::Stopped));
     }
 
@@ -89,8 +90,7 @@ mod tests {
         let event = TokenEvent::Paused;
         let json = serde_json::to_string(&event).expect("serialize Paused");
         assert!(json.contains("Paused"));
-        let back: TokenEvent =
-            serde_json::from_str("\"Paused\"").expect("deserialize Paused");
+        let back: TokenEvent = serde_json::from_str("\"Paused\"").expect("deserialize Paused");
         assert!(matches!(back, TokenEvent::Paused));
     }
 
@@ -105,8 +105,7 @@ mod tests {
             MediaBoundary::EndAudio { idx: 3 },
         ];
         for variant in variants {
-            let val =
-                serde_json::to_value(&variant).expect("serialize MediaBoundary");
+            let val = serde_json::to_value(&variant).expect("serialize MediaBoundary");
             let back: MediaBoundary =
                 serde_json::from_value(val).expect("deserialize MediaBoundary");
             match (&variant, &back) {
@@ -136,12 +135,14 @@ mod tests {
             logprob: None,
         });
         let json = serde_json::to_string(&event).expect("serialize");
-        assert!(json.contains("\"logprob\":null"), "None logprob should serialize as null");
+        assert!(
+            json.contains("\"logprob\":null"),
+            "None logprob should serialize as null"
+        );
 
-        let back: TokenEvent = serde_json::from_str(
-            r#"{"Token":{"id":0,"text":"","logprob":null}}"#,
-        )
-        .expect("deserialize");
+        let back: TokenEvent =
+            serde_json::from_str(r#"{"Token":{"id":0,"text":"","logprob":null}}"#)
+                .expect("deserialize");
         match back {
             TokenEvent::Token(t) => {
                 assert_eq!(t.id, 0);

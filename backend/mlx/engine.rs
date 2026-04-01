@@ -73,9 +73,8 @@ impl Engine {
 
         let tokenizer = HfTokenizer::from_dir(model_dir).map_err(|e| ExecError::Other(e))?;
 
-        let chat_template_str =
-            crate::gen2::backend::common::load_chat_template(model_dir)
-                .unwrap_or_else(crate::gen2::backend::common::default_llama3_template);
+        let chat_template_str = crate::gen2::backend::common::load_chat_template(model_dir)
+            .unwrap_or_else(crate::gen2::backend::common::default_llama3_template);
         let bos_str = tokenizer
             .bos_id()
             .and_then(|id| tokenizer.decode(&[id]).ok())

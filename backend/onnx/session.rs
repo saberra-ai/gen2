@@ -10,10 +10,10 @@ use ndarray::Array2;
 use super::bundle::ModelBundle;
 use super::puller::TokenPuller;
 use crate::gen2::Message;
+use crate::gen2::backend::common::chat_template::ChatTemplate;
 use crate::gen2::engine::{ExecError, HookBus, HookEvent, Settings};
 use crate::gen2::generation::GenSpec;
 use crate::gen2::session_rt::prompt::merge_prompts;
-use crate::gen2::backend::common::chat_template::ChatTemplate;
 use crate::types::message::{MessageBody, MessageContent, TokenizerConfigToken};
 
 use parking_lot::{Mutex, RwLock};
@@ -296,5 +296,4 @@ impl Session {
         }
         Ok(cache)
     }
-
 }

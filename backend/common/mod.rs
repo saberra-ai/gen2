@@ -20,10 +20,7 @@ pub(crate) fn load_chat_template(model_dir: &Path) -> Option<String> {
     let config_path = model_dir.join("tokenizer_config.json");
     let content = std::fs::read_to_string(&config_path).ok()?;
     let parsed: serde_json::Value = serde_json::from_str(&content).ok()?;
-    parsed
-        .get("chat_template")?
-        .as_str()
-        .map(|s| s.to_string())
+    parsed.get("chat_template")?.as_str().map(|s| s.to_string())
 }
 
 /// Fallback Llama 3 Instruct chat template for models without `tokenizer_config.json`.

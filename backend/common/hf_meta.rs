@@ -60,8 +60,7 @@ pub fn parse_hf_model_metadata(model_dir: &Path) -> Option<ModelMetadata> {
     let quantization = detect_quantization(model_dir);
 
     // Chat template → tool support
-    let supports_tools =
-        super::load_chat_template(model_dir).map(|tpl| tpl.contains("tools"));
+    let supports_tools = super::load_chat_template(model_dir).map(|tpl| tpl.contains("tools"));
 
     Some(ModelMetadata {
         architecture,

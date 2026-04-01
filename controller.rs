@@ -12,13 +12,62 @@ use crate::gen2::session_rt::SessionSpec;
 use crate::gen2::{Engine, ExecutionStats, Settings};
 use crate::types::message::Message;
 
+/// System-level inference tasks — ephemeral, fire-and-forget, hidden from users.
+///
+/// Each variant runs as an ephemeral session on the controller: prompt in,
+/// tokens streamed back, session auto-cleaned on completion.
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+pub enum SystemTask {
+    /// Generate a chat title from conversation history.
+    Title,
+    /// Generate follow-up suggestions for a chat.
+    Suggestions,
+    /// Generate a context-compaction summary.
+    Compact,
+}
+
+impl SystemTask {
+    /// Suffix used to namespace ephemeral session IDs.
+    fn suffix(&self) -> &'static str {
+        match self {
+            Self::Title => "title",
+            Self::Suggestions => "suggestions",
+            Self::Compact => "compact",
+        }
+    }
+
+    /// Sensible generation defaults for each task type.
+    ///
+    /// Callers can override by passing their own `GenSpec` to
+    /// `InferenceHandle::system_infer_with`.
+    pub fn default_gen_spec(&self) -> GenSpec {
+        match self {
+            Self::Title => GenSpec {
+                max_tokens: Some(50),
+                temperature: Some(0.3),
+                seed: None,
+            },
+            Self::Suggestions => GenSpec {
+                max_tokens: Some(256),
+                temperature: Some(0.7),
+                seed: None,
+            },
+            Self::Compact => GenSpec {
+                max_tokens: Some(512),
+                temperature: Some(0.3),
+                seed: None,
+            },
+        }
+    }
+}
+
 /// Commands accepted by the inference controller thread.
 ///
 /// Grouped into four categories:
 /// - **Model lifecycle** — load/reload models and apply settings
 /// - **Status queries** — synchronous checks on loaded state
 /// - **Chat operations** — start, continue, pause, stop generation
-/// - **Utility** — embeddings, shutdown
+/// - **Utility** — embeddings, system inference, shutdown
 pub enum ControllerCmd {
     // ── Model lifecycle ──────────────────────────────────────────────
     /// Load or reload the primary LLM from disk with the given settings.
@@ -66,26 +115,23 @@ pub enum ControllerCmd {
         gen_spec: GenSpec,
         tx: SyncSender<ControllerEvent>,
     },
-    /// Generate a title for a chat (ephemeral session, auto-cleaned).
-    CreateTitle {
-        chat_id: String,
-        messages: Vec<Message>,
-        gen_spec: GenSpec,
-        tx: SyncSender<ControllerEvent>,
-    },
-    /// Generate follow-up suggestions (ephemeral-style generation).
-    CreateSuggestions {
-        chat_id: String,
-        messages: Vec<Message>,
-        gen_spec: GenSpec,
-        tx: SyncSender<ControllerEvent>,
-    },
     /// Abort and remove a chat session.
     StopChat { chat_id: String },
     /// Pause token generation for a chat (session stays in memory).
     PauseChat { chat_id: String },
     /// Resume a paused chat session.
     ResumeChat { chat_id: String },
+
+    // ── System inference ─────────────────────────────────────────────
+    /// Fire-and-forget ephemeral inference for system-level decisions.
+    /// Prompt in, tokens streamed back, session auto-cleaned.
+    SystemInfer {
+        task: SystemTask,
+        chat_id: String,
+        messages: Vec<Message>,
+        gen_spec: GenSpec,
+        tx: SyncSender<ControllerEvent>,
+    },
 
     // ── Utility ──────────────────────────────────────────────────────
     /// Generate embedding vectors for a batch of text inputs.
@@ -109,11 +155,19 @@ pub enum ControllerEvent {
     Stopped,
     /// An error occurred during generation. Carries the error code for
     /// downstream routing (auto-retry, navigate-to-settings, etc.).
-    Error { code: String, message: String },
+    Error {
+        code: String,
+        message: String,
+    },
     /// Final execution statistics for the completed generation.
     FinalStats(ExecutionStats),
     /// Context was truncated — N old messages dropped to fit context window.
     ContextTruncated(usize),
+    /// Context was compacted — N old messages replaced by a summary.
+    ContextCompacted {
+        compacted: usize,
+        strategy: String,
+    },
 }
 
 #[derive(Clone)]
@@ -124,6 +178,13 @@ pub struct ControllerHandle {
 impl ControllerHandle {
     pub fn send(&self, cmd: ControllerCmd) -> Result<(), String> {
         self.tx.send(cmd).map_err(|e| e.to_string())
+    }
+
+    /// Create a `ControllerHandle` from a raw sender. Intended for testing
+    /// in downstream crates (pio-daemon SSE tests, etc.).
+    #[doc(hidden)]
+    pub fn new_for_test(tx: Sender<ControllerCmd>) -> Self {
+        Self { tx }
     }
 }
 
@@ -145,6 +206,63 @@ impl InferenceHandle {
             #[cfg(feature = "p2p-client")]
             Self::Remote(h) => h.send(cmd),
         }
+    }
+
+    /// Fire a system-level inference task using the task's default GenSpec.
+    ///
+    /// Prompt in, full text out, session auto-cleaned. This is the primary
+    /// entry point for internal LLM decision-making.
+    pub async fn system_infer(
+        &self,
+        task: SystemTask,
+        chat_id: impl Into<String>,
+        messages: Vec<Message>,
+    ) -> Result<String, crate::error::PioError> {
+        let gen_spec = task.default_gen_spec();
+        self.system_infer_with(task, chat_id, messages, gen_spec)
+            .await
+    }
+
+    /// Fire a system-level inference task with a custom GenSpec.
+    pub async fn system_infer_with(
+        &self,
+        task: SystemTask,
+        chat_id: impl Into<String>,
+        messages: Vec<Message>,
+        gen_spec: GenSpec,
+    ) -> Result<String, crate::error::PioError> {
+        use crate::error::{ErrorCode, PioError};
+
+        let (tx, rx) =
+            std::sync::mpsc::sync_channel::<ControllerEvent>(EVENT_CHANNEL_CAPACITY);
+        let cmd = ControllerCmd::SystemInfer {
+            task,
+            chat_id: chat_id.into(),
+            messages,
+            gen_spec,
+            tx,
+        };
+        self.send(cmd).map_err(PioError::generation)?;
+
+        tokio::task::spawn_blocking(move || {
+            let mut out = String::with_capacity(512);
+            while let Ok(ev) = rx.recv() {
+                match ev {
+                    ControllerEvent::Token(t) => out.push_str(&t),
+                    ControllerEvent::Eos | ControllerEvent::Stopped => break,
+                    ControllerEvent::Error { code, message } => {
+                        return Err(PioError {
+                            code: ErrorCode::from_snake_case(&code),
+                            message,
+                        });
+                    }
+                    _ => {}
+                }
+            }
+            Ok(out)
+        })
+        .await
+        .map_err(PioError::generation)?
     }
 }
 
@@ -395,7 +513,10 @@ fn run_loop(rx: Receiver<ControllerCmd>, max_active: usize) {
                     Ok(Some(Ok(TokenEvent::Special(_)))) => { /* no-op for now */ }
                     Ok(Some(Err(e))) => {
                         let (code, msg) = if chat.session.is_poisoned() {
-                            ("session_poisoned", format!("session state lost (possible FFI crash): {:?}", e))
+                            (
+                                "session_poisoned",
+                                format!("session state lost (possible FFI crash): {:?}", e),
+                            )
                         } else {
                             ("generation_error", format!("{:?}", e))
                         };
@@ -444,6 +565,85 @@ fn run_loop(rx: Receiver<ControllerCmd>, max_active: usize) {
 enum ControlFlow {
     Continue,
     Break,
+}
+
+/// Shared logic for ephemeral (auto-cleaning) sessions: title generation,
+/// compaction summaries, suggestions, etc.
+fn start_ephemeral(
+    engine: &mut Engine,
+    chats: &mut HashMap<String, ChatStream>,
+    chat_id: String,
+    suffix: &str,
+    messages: Vec<Message>,
+    gen_spec: GenSpec,
+    tx: SyncSender<ControllerEvent>,
+) {
+    // Ensure unique chat_id (don't collide with live chats).
+    let base = format!("{chat_id}::{suffix}");
+    let chat_id = if chats.contains_key(&base) {
+        use std::time::{SystemTime, UNIX_EPOCH};
+        let ts = SystemTime::now()
+            .duration_since(UNIX_EPOCH)
+            .unwrap()
+            .as_millis();
+        format!("{base}:{ts}")
+    } else {
+        base
+    };
+
+    let gen_spec = apply_generation_defaults(engine, gen_spec);
+
+    match engine.start_session(SessionSpec {
+        messages,
+        ..Default::default()
+    }) {
+        Err(e) => {
+            try_emit(
+                &tx,
+                ControllerEvent::Error {
+                    code: "generation_error".into(),
+                    message: format!("{:?}", e),
+                },
+            );
+        }
+        Ok(session) => {
+            let sid = session.id();
+            engine.hooks().register_with_id(
+                sid,
+                Arc::new(Forwarder {
+                    sid,
+                    tx: tx.clone(),
+                }),
+            );
+            match session.pull(gen_spec.clone()) {
+                Err(e) => {
+                    try_emit(
+                        &tx,
+                        ControllerEvent::Error {
+                            code: "generation_error".into(),
+                            message: format!("{:?}", e),
+                        },
+                    );
+                }
+                Ok(puller) => {
+                    let _ = chats.insert(
+                        chat_id,
+                        ChatStream {
+                            session,
+                            puller: Some(puller),
+                            tx,
+                            paused: false,
+                            finished: false,
+                            ephemeral: true,
+                            last_used: Instant::now(),
+                            gen_started: Instant::now(),
+                            last_gen_spec: gen_spec,
+                        },
+                    );
+                }
+            }
+        }
+    }
 }
 
 fn dispatch_cmd(
@@ -547,10 +747,13 @@ fn dispatch_cmd(
 
                 match chat.session.append_messages(last_vec) {
                     Err(e) => {
-                        try_emit(&tx, ControllerEvent::Error {
-                            code: "generation_error".into(),
-                            message: format!("{:?}", e),
-                        });
+                        try_emit(
+                            &tx,
+                            ControllerEvent::Error {
+                                code: "generation_error".into(),
+                                message: format!("{:?}", e),
+                            },
+                        );
                         return ControlFlow::Continue;
                     }
                     Ok(dropped) if dropped > 0 => {
@@ -569,10 +772,13 @@ fn dispatch_cmd(
                         chat.last_gen_spec = pull_spec;
                     }
                     Err(e) => {
-                        try_emit(&tx, ControllerEvent::Error {
-                            code: "generation_error".into(),
-                            message: format!("{:?}", e),
-                        });
+                        try_emit(
+                            &tx,
+                            ControllerEvent::Error {
+                                code: "generation_error".into(),
+                                message: format!("{:?}", e),
+                            },
+                        );
                     }
                 }
                 return ControlFlow::Continue;
@@ -588,10 +794,13 @@ fn dispatch_cmd(
                     ..Default::default()
                 }) {
                     Err(e) => {
-                        try_emit(&tx, ControllerEvent::Error {
-                            code: "generation_error".into(),
-                            message: format!("{:?}", e),
-                        });
+                        try_emit(
+                            &tx,
+                            ControllerEvent::Error {
+                                code: "generation_error".into(),
+                                message: format!("{:?}", e),
+                            },
+                        );
                     }
                     Ok(session) => {
                         let dropped = session.initial_messages_dropped();
@@ -611,10 +820,13 @@ fn dispatch_cmd(
                             Err(e) => {
                                 engine.hooks().deregister(sid);
                                 let _ = engine.end_session(sid);
-                                try_emit(&tx, ControllerEvent::Error {
-                                    code: "generation_error".into(),
-                                    message: format!("{:?}", e),
-                                });
+                                try_emit(
+                                    &tx,
+                                    ControllerEvent::Error {
+                                        code: "generation_error".into(),
+                                        message: format!("{:?}", e),
+                                    },
+                                );
                             }
                             Ok(puller) => {
                                 let evicted = chats.insert(
@@ -664,10 +876,13 @@ fn dispatch_cmd(
                 // If you add Session::append_messages(Vec<Message>), call it here with `new_messages`.
                 match chat.session.append_messages(new_messages) {
                     Err(e) => {
-                        try_emit(&tx, ControllerEvent::Error {
-                            code: "generation_error".into(),
-                            message: format!("{:?}", e),
-                        });
+                        try_emit(
+                            &tx,
+                            ControllerEvent::Error {
+                                code: "generation_error".into(),
+                                message: format!("{:?}", e),
+                            },
+                        );
                         return ControlFlow::Continue;
                     }
                     Ok(dropped) if dropped > 0 => {
@@ -686,10 +901,13 @@ fn dispatch_cmd(
                         chat.last_gen_spec = pull_spec;
                     }
                     Err(e) => {
-                        try_emit(&tx, ControllerEvent::Error {
-                            code: "generation_error".into(),
-                            message: format!("{:?}", e),
-                        });
+                        try_emit(
+                            &tx,
+                            ControllerEvent::Error {
+                                code: "generation_error".into(),
+                                message: format!("{:?}", e),
+                            },
+                        );
                     }
                 }
             } else {
@@ -703,128 +921,14 @@ fn dispatch_cmd(
             }
             ControlFlow::Continue
         }
-        ControllerCmd::CreateSuggestions {
+        ControllerCmd::SystemInfer {
+            task,
             chat_id,
             messages,
             gen_spec,
             tx,
         } => {
-            if let Some(chat) = chats.get_mut(&chat_id) {
-                chat.last_used = Instant::now();
-                if chat.puller.is_some() && !chat.finished {
-                    try_emit(
-                        &tx,
-                        ControllerEvent::Error {
-                            code: "generation_error".into(),
-                            message: "chat already generating; pause/stop first".into(),
-                        },
-                    );
-                    return ControlFlow::Continue;
-                }
-                if let Err(e) = chat.session.append_messages(messages) {
-                    try_emit(&tx, ControllerEvent::Error {
-                        code: "generation_error".into(),
-                        message: format!("{:?}", e),
-                    });
-                    return ControlFlow::Continue;
-                }
-
-                let gen_spec = apply_generation_defaults(engine, gen_spec);
-                chat.tx = tx.clone();
-                match chat.session.pull(gen_spec.clone()) {
-                    Ok(puller) => {
-                        chat.puller = Some(puller);
-                        chat.paused = false;
-                        chat.finished = false;
-                        chat.gen_started = Instant::now();
-                        chat.last_gen_spec = gen_spec;
-                    }
-                    Err(e) => {
-                        try_emit(&tx, ControllerEvent::Error {
-                            code: "generation_error".into(),
-                            message: format!("{:?}", e),
-                        });
-                    }
-                }
-                return ControlFlow::Continue;
-            }
-
-            try_emit(
-                &tx,
-                ControllerEvent::Error {
-                    code: "not_found".into(),
-                    message: format!("chat_id '{}' is not loaded", chat_id),
-                },
-            );
-            ControlFlow::Continue
-        }
-        ControllerCmd::CreateTitle {
-            mut chat_id,
-            messages,
-            gen_spec,
-            tx,
-        } => {
-            // ensure uniqueness (don’t collide with live chats)
-            let base = format!("{chat_id}::title");
-            if chats.contains_key(&base) {
-                use std::time::{SystemTime, UNIX_EPOCH};
-                let ts = SystemTime::now()
-                    .duration_since(UNIX_EPOCH)
-                    .unwrap()
-                    .as_millis();
-                chat_id = format!("{base}:{ts}");
-            } else {
-                chat_id = base;
-            }
-
-            let gen_spec = apply_generation_defaults(engine, gen_spec);
-
-            match engine.start_session(SessionSpec {
-                messages,
-                ..Default::default()
-            }) {
-                Err(e) => {
-                    try_emit(&tx, ControllerEvent::Error {
-                        code: "generation_error".into(),
-                        message: format!("{:?}", e),
-                    });
-                }
-                Ok(session) => {
-                    let sid = session.id();
-                    engine.hooks().register_with_id(
-                        sid,
-                        Arc::new(Forwarder {
-                            sid,
-                            tx: tx.clone(),
-                        }),
-                    );
-                    match session.pull(gen_spec.clone()) {
-                        Err(e) => {
-                            try_emit(&tx, ControllerEvent::Error {
-                                code: "generation_error".into(),
-                                message: format!("{:?}", e),
-                            });
-                        }
-                        Ok(puller) => {
-                            // Insert as ephemeral so it auto-cleans after EOS/Stopped
-                            let _ = chats.insert(
-                                chat_id,
-                                ChatStream {
-                                    session,
-                                    puller: Some(puller),
-                                    tx,
-                                    paused: false,
-                                    finished: false,
-                                    ephemeral: true, // <-- key bit
-                                    last_used: Instant::now(),
-                                    gen_started: Instant::now(),
-                                    last_gen_spec: gen_spec,
-                                },
-                            );
-                        }
-                    }
-                }
-            }
+            start_ephemeral(engine, chats, chat_id, task.suffix(), messages, gen_spec, tx);
             ControlFlow::Continue
         }
         ControllerCmd::StopChat { chat_id } => {
@@ -858,10 +962,7 @@ fn dispatch_cmd(
                                 &chat.tx,
                                 ControllerEvent::Error {
                                     code: "generation_error".into(),
-                                    message: format!(
-                                        "failed to resume generation: {:?}",
-                                        e
-                                    ),
+                                    message: format!("failed to resume generation: {:?}", e),
                                 },
                             );
                         }
@@ -1050,19 +1151,28 @@ mod tests {
         handle
             .send(ControllerCmd::IsModelLoaded { resp: tx })
             .expect("send should succeed");
-        assert!(!rx.recv().unwrap(), "model should not be loaded on fresh controller");
+        assert!(
+            !rx.recv().unwrap(),
+            "model should not be loaded on fresh controller"
+        );
         // IsEmbedderLoaded
         let (tx2, rx2) = std::sync::mpsc::channel();
         handle
             .send(ControllerCmd::IsEmbedderLoaded { resp: tx2 })
             .expect("send should succeed");
-        assert!(!rx2.recv().unwrap(), "embedder should not be loaded on fresh controller");
+        assert!(
+            !rx2.recv().unwrap(),
+            "embedder should not be loaded on fresh controller"
+        );
         // IsMmprojLoaded
         let (tx3, rx3) = std::sync::mpsc::channel();
         handle
             .send(ControllerCmd::IsMmprojLoaded { resp: tx3 })
             .expect("send should succeed");
-        assert!(!rx3.recv().unwrap(), "mmproj should not be loaded on fresh controller");
+        assert!(
+            !rx3.recv().unwrap(),
+            "mmproj should not be loaded on fresh controller"
+        );
         // IsChatLoaded
         let (tx4, rx4) = std::sync::mpsc::channel();
         handle
@@ -1071,7 +1181,10 @@ mod tests {
                 resp: tx4,
             })
             .expect("send should succeed");
-        assert!(!rx4.recv().unwrap(), "no chat should be loaded on fresh controller");
+        assert!(
+            !rx4.recv().unwrap(),
+            "no chat should be loaded on fresh controller"
+        );
         let _ = handle.send(ControllerCmd::Shutdown);
     }
 

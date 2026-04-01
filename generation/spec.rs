@@ -17,8 +17,14 @@ mod tests {
     #[test]
     fn gen_spec_defaults() {
         let spec = GenSpec::default();
-        assert!(spec.max_tokens.is_none(), "max_tokens should default to None");
-        assert!(spec.temperature.is_none(), "temperature should default to None");
+        assert!(
+            spec.max_tokens.is_none(),
+            "max_tokens should default to None"
+        );
+        assert!(
+            spec.temperature.is_none(),
+            "temperature should default to None"
+        );
         assert!(spec.seed.is_none(), "seed should default to None");
     }
 

@@ -7,6 +7,7 @@ use std::sync::{
 use super::bundle::ModelBundle;
 use super::puller::TokenPuller;
 use crate::gen2::Message;
+use crate::gen2::backend::common::chat_template::ChatTemplate;
 use crate::gen2::engine::{ExecError, HookBus, HookEvent, Settings};
 use crate::gen2::generation::{GenSpec, TokenEvent};
 use crate::gen2::kv::{
@@ -15,7 +16,6 @@ use crate::gen2::kv::{
 };
 use crate::gen2::session_rt::media_util::messages_have_images;
 use crate::gen2::session_rt::prompt::merge_prompts;
-use crate::gen2::backend::common::chat_template::ChatTemplate;
 use crate::types::message::{MessageBody, MessageChunk, MessageContent, TokenizerConfigToken};
 use chrono::Utc;
 use llama_cpp_2::context::LlamaContext;

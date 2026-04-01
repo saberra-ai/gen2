@@ -1,9 +1,9 @@
 //! Runtime model fingerprinting for HuggingFace-convention model directories.
 
+use super::tokenizer::HfTokenizer;
 use crate::gen2::bundle::ModelMeta;
 use sha2::{Digest, Sha256};
 use std::path::Path;
-use super::tokenizer::HfTokenizer;
 
 /// Compute a [`ModelMeta`] for HuggingFace-convention model directories (MLX / ONNX).
 ///
