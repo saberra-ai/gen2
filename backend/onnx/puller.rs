@@ -95,21 +95,48 @@ impl TokenPuller {
         let total_seq = state.cur_pos + 1;
         let mask_array = Array2::from_shape_vec((1, total_seq), vec![1i64; total_seq])
             .map_err(|e| ExecError::Other(anyhow::anyhow!("ndarray: {}", e)))?;
+        let pos_array = Array2::from_shape_vec((1, 1), vec![state.cur_pos as i64])
+            .map_err(|e| ExecError::Other(anyhow::anyhow!("ndarray: {}", e)))?;
 
         let ids_tensor = ort::value::Tensor::from_array(ids_array)
             .map_err(|e| ExecError::Other(anyhow::anyhow!("ort tensor: {}", e)))?;
         let mask_tensor = ort::value::Tensor::from_array(mask_array)
             .map_err(|e| ExecError::Other(anyhow::anyhow!("ort tensor: {}", e)))?;
 
-        let logits = {
+        let (logits, new_cache) = {
             let mut ort_session = self.bundle.session.lock();
 
-            // TODO: pass KV cache tensors as inputs for incremental decode
+            // Build inputs: ids + mask + optional position_ids + KV cache
+            let mut inputs: Vec<(String, ort::value::Value)> = vec![
+                ("input_ids".to_string(), ids_tensor.into()),
+                ("attention_mask".to_string(), mask_tensor.into()),
+            ];
+
+            if self.bundle.has_position_ids {
+                let pos_tensor = ort::value::Tensor::from_array(pos_array)
+                    .map_err(|e| ExecError::Other(anyhow::anyhow!("ort tensor: {}", e)))?;
+                inputs.push(("position_ids".to_string(), pos_tensor.into()));
+            }
+
+            // Pass KV cache from previous step
+            let num_kv_heads = self.bundle.num_kv_heads;
+            let head_dim = self.bundle.head_dim;
+            if num_kv_heads > 0 && head_dim > 0 {
+                for (layer, (k, v)) in state.cache.iter().enumerate() {
+                    let k_tensor = ort::value::Tensor::from_array(k.clone())
+                        .map_err(|e| ExecError::Other(anyhow::anyhow!("ort kv: {}", e)))?;
+                    let v_tensor = ort::value::Tensor::from_array(v.clone())
+                        .map_err(|e| ExecError::Other(anyhow::anyhow!("ort kv: {}", e)))?;
+                    inputs.push((format!("past_key_values.{}.key", layer), k_tensor.into()));
+                    inputs.push((format!("past_key_values.{}.value", layer), v_tensor.into()));
+                }
+            }
+
+            let input_refs: Vec<(&str, &ort::value::Value)> =
+                inputs.iter().map(|(k, v)| (k.as_str(), v)).collect();
+
             let outputs = ort_session
-                .run(ort::inputs![
-                    "input_ids" => ids_tensor,
-                    "attention_mask" => mask_tensor,
-                ])
+                .run(input_refs)
                 .map_err(|e| ExecError::Other(anyhow::anyhow!("ort run: {}", e)))?;
 
             // Extract logits — shape (batch=1, seq_len=1, vocab_size)
@@ -121,12 +148,21 @@ impl TokenPuller {
                 .map_err(|e| ExecError::Other(anyhow::anyhow!("extract logits: {}", e)))?;
 
             let vocab_size = *shape.last().unwrap_or(&0) as usize;
-            data[data.len().saturating_sub(vocab_size)..].to_vec()
+            let logits = data[data.len().saturating_sub(vocab_size)..].to_vec();
+
+            // Extract updated KV cache
+            let new_cache =
+                super::session::Session::extract_kv_cache(&outputs, self.bundle.num_layers)?;
+
+            (logits, new_cache)
         };
 
-        // Update state
-        let state = self.state.as_mut().unwrap();
-        // TODO: extract updated KV cache from present.*.key/value outputs
+        // Update state with new KV cache
+        let state = self
+            .state
+            .as_mut()
+            .expect("OnnxPuller::next called after init");
+        state.cache = new_cache;
         state.cur_pos += 1;
 
         Ok(logits)

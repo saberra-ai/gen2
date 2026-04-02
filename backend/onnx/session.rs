@@ -141,25 +141,72 @@ impl Session {
         // Build ort input tensors
         let token_ids: Vec<i64> = tokens.iter().map(|&t| t as i64).collect();
         let attention_mask: Vec<i64> = vec![1i64; total_tokens];
+        let position_ids: Vec<i64> = (0..total_tokens as i64).collect();
 
         let ids_array = Array2::from_shape_vec((1, total_tokens), token_ids)
             .map_err(|e| ExecError::Other(anyhow::anyhow!("ndarray: {}", e)))?;
         let mask_array = Array2::from_shape_vec((1, total_tokens), attention_mask)
+            .map_err(|e| ExecError::Other(anyhow::anyhow!("ndarray: {}", e)))?;
+        let pos_array = Array2::from_shape_vec((1, total_tokens), position_ids)
             .map_err(|e| ExecError::Other(anyhow::anyhow!("ndarray: {}", e)))?;
 
         let ids_tensor = ort::value::Tensor::from_array(ids_array)
             .map_err(|e| ExecError::Other(anyhow::anyhow!("ort tensor: {}", e)))?;
         let mask_tensor = ort::value::Tensor::from_array(mask_array)
             .map_err(|e| ExecError::Other(anyhow::anyhow!("ort tensor: {}", e)))?;
+        let pos_tensor = if bundle.has_position_ids {
+            Some(
+                ort::value::Tensor::from_array(pos_array)
+                    .map_err(|e| ExecError::Other(anyhow::anyhow!("ort tensor: {}", e)))?,
+            )
+        } else {
+            None
+        };
+
+        // Build empty KV cache inputs for the first run.
+        // Shape: [1, num_kv_heads, 0, head_dim] — zero-length sequence dimension.
+        let num_kv_heads = bundle.num_kv_heads;
+        let head_dim_val = bundle.head_dim;
 
         // Scope ort session usage so borrows end before moving bundle
         let cache = {
+            // Build KV cache tensors as ort Values
+            let mut kv_values: Vec<(String, ort::value::Value)> = Vec::new();
+            if num_kv_heads > 0 && head_dim_val > 0 {
+                for layer in 0..bundle.num_layers {
+                    for kind in &["key", "value"] {
+                        let empty: ndarray::ArrayD<f32> =
+                            ndarray::ArrayD::zeros(ndarray::IxDyn(&[
+                                1,
+                                num_kv_heads,
+                                0,
+                                head_dim_val,
+                            ]));
+                        let tensor = ort::value::Tensor::from_array(empty).map_err(|e| {
+                            ExecError::Other(anyhow::anyhow!("ort kv tensor: {}", e))
+                        })?;
+                        kv_values
+                            .push((format!("past_key_values.{}.{}", layer, kind), tensor.into()));
+                    }
+                }
+            }
+
+            // Assemble all inputs
+            let mut inputs: Vec<(String, ort::value::Value)> = vec![
+                ("input_ids".to_string(), ids_tensor.into()),
+                ("attention_mask".to_string(), mask_tensor.into()),
+            ];
+            if let Some(pt) = pos_tensor {
+                inputs.push(("position_ids".to_string(), pt.into()));
+            }
+            inputs.extend(kv_values);
+
+            let input_refs: Vec<(&str, &ort::value::Value)> =
+                inputs.iter().map(|(k, v)| (k.as_str(), v)).collect();
+
             let mut ort_session = bundle.session.lock();
             let outputs = ort_session
-                .run(ort::inputs![
-                    "input_ids" => ids_tensor,
-                    "attention_mask" => mask_tensor,
-                ])
+                .run(input_refs)
                 .map_err(|e| ExecError::Other(anyhow::anyhow!("ort run: {}", e)))?;
             Self::extract_kv_cache(&outputs, bundle.num_layers)?
         };
@@ -262,7 +309,7 @@ impl Session {
         Ok(0)
     }
 
-    fn extract_kv_cache(
+    pub(crate) fn extract_kv_cache(
         outputs: &ort::session::SessionOutputs<'_>,
         num_layers: usize,
     ) -> Result<KvCache, ExecError> {

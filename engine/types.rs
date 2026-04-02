@@ -5,6 +5,7 @@ use serde::{Deserialize, Serialize};
 use std::path::PathBuf;
 
 #[derive(Deserialize, Clone, Debug, Default)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct LoadRequest {
     pub model_path: PathBuf,
     pub mmproj_path: Option<PathBuf>,
@@ -22,11 +23,13 @@ pub struct LoadRequest {
 }
 
 #[derive(Deserialize, Clone, Debug, Default)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct EmbedLoadRequest {
     pub model_path: PathBuf,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct Settings {
     pub sampling: SamplingSettings,
     pub stopping: StoppingSettings,
@@ -218,6 +221,7 @@ impl Settings {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct SamplingSettings {
     pub temperature: Option<f32>,
     pub top_p: Option<f32>,
@@ -231,12 +235,14 @@ pub struct SamplingSettings {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct StoppingSettings {
     pub stopwords: Vec<String>,
     pub max_tokens: Option<usize>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct SystemSettings {
     pub threads: Option<u32>,
     pub threads_batch: Option<u32>,
@@ -247,6 +253,7 @@ pub struct SystemSettings {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct PromptSettings {
     pub system_prompt: Option<String>,
     /// Include device/date meta prompt in system message. Defaults to true when None.
@@ -254,6 +261,7 @@ pub struct PromptSettings {
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct MmSettings {
     pub image_size: Option<(u32, u32)>,
     pub audio_sample_rate: Option<u32>,
@@ -803,11 +811,13 @@ mod tests {
 }
 
 #[derive(Deserialize, Clone, Debug, Default)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct ModelParamsInput {
     pub gpu_layers: Option<u32>,
 }
 
 #[derive(Deserialize, Clone, Debug, Default)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct CtxParamsInput {
     pub n_ctx: Option<u32>,
     pub seed: Option<u64>,
@@ -815,6 +825,7 @@ pub struct CtxParamsInput {
 }
 
 #[derive(Deserialize, Clone, Debug, Default)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub enum ChatTemplateSpec {
     #[default]
     Default,

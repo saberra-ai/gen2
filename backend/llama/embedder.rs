@@ -52,7 +52,8 @@ impl LlamaEmbedder {
         let n_ctx = ctx.n_ctx() as usize;
         let n_ctx_train = self.model.n_ctx_train();
 
-        let mut batch = LlamaBatch::new(n_ctx, 1);
+        let n_seq = prompts.len().max(1) as i32;
+        let mut batch = LlamaBatch::new(n_ctx, n_seq);
         let mut max_seq_id_batch = 0;
         let mut output = Vec::with_capacity(tokens_lines_list.len());
 
@@ -72,14 +73,16 @@ impl LlamaEmbedder {
             batch.add_sequence(tokens, max_seq_id_batch, false)?;
             max_seq_id_batch += 1;
         }
-        // Handle final batch
-        batch_decode(
-            &mut ctx,
-            &mut batch,
-            max_seq_id_batch,
-            &mut output,
-            normalize,
-        )?;
+        // Handle final batch (skip if all sequences were already flushed in the loop)
+        if max_seq_id_batch > 0 {
+            batch_decode(
+                &mut ctx,
+                &mut batch,
+                max_seq_id_batch,
+                &mut output,
+                normalize,
+            )?;
+        }
 
         Ok(output)
     }

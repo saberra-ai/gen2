@@ -1,6 +1,7 @@
 use serde::{Deserialize, Serialize};
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct Token {
     pub id: u32,
     pub text: String,
@@ -8,6 +9,7 @@ pub struct Token {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub enum TokenEvent {
     Token(Token),
     Special(&'static str),
@@ -18,6 +20,7 @@ pub enum TokenEvent {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub enum MediaBoundary {
     BeginImage { idx: usize },
     EndImage { idx: usize },

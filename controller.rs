@@ -17,6 +17,7 @@ use crate::types::message::Message;
 /// Each variant runs as an ephemeral session on the controller: prompt in,
 /// tokens streamed back, session auto-cleaned on completion.
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub enum SystemTask {
     /// Generate a chat title from conversation history.
     Title,
@@ -24,6 +25,20 @@ pub enum SystemTask {
     Suggestions,
     /// Generate a context-compaction summary.
     Compact,
+    /// Grounded answer synthesis from evidence chunks.
+    Answer,
+    /// LLM-powered triple (subject, predicate, object) extraction.
+    Triples,
+    /// Entity stance extraction from text.
+    Stance,
+    /// LLM-powered named entity recognition.
+    EntityExtract,
+    /// Topic cluster labeling from conversation samples.
+    TopicLabel,
+    /// Intent classification + query rewriting.
+    QueryUnderstand,
+    /// Evidence contradiction detection.
+    Contradiction,
 }
 
 impl SystemTask {
@@ -33,6 +48,13 @@ impl SystemTask {
             Self::Title => "title",
             Self::Suggestions => "suggestions",
             Self::Compact => "compact",
+            Self::Answer => "answer",
+            Self::Triples => "triples",
+            Self::Stance => "stance",
+            Self::EntityExtract => "entities",
+            Self::TopicLabel => "topic",
+            Self::QueryUnderstand => "query",
+            Self::Contradiction => "contradiction",
         }
     }
 
@@ -55,6 +77,41 @@ impl SystemTask {
             Self::Compact => GenSpec {
                 max_tokens: Some(512),
                 temperature: Some(0.3),
+                seed: None,
+            },
+            Self::Answer => GenSpec {
+                max_tokens: Some(1024),
+                temperature: Some(0.3),
+                seed: None,
+            },
+            Self::Triples => GenSpec {
+                max_tokens: Some(1024),
+                temperature: Some(0.1),
+                seed: None,
+            },
+            Self::Stance => GenSpec {
+                max_tokens: Some(512),
+                temperature: Some(0.1),
+                seed: None,
+            },
+            Self::EntityExtract => GenSpec {
+                max_tokens: Some(512),
+                temperature: Some(0.1),
+                seed: None,
+            },
+            Self::TopicLabel => GenSpec {
+                max_tokens: Some(100),
+                temperature: Some(0.3),
+                seed: None,
+            },
+            Self::QueryUnderstand => GenSpec {
+                max_tokens: Some(256),
+                temperature: Some(0.1),
+                seed: None,
+            },
+            Self::Contradiction => GenSpec {
+                max_tokens: Some(512),
+                temperature: Some(0.2),
                 seed: None,
             },
         }
@@ -196,7 +253,7 @@ impl ControllerHandle {
 pub enum InferenceHandle {
     Local(ControllerHandle),
     #[cfg(feature = "p2p-client")]
-    Remote(crate::p2p::client::RemoteControllerHandle),
+    Remote(std::sync::Arc<crate::p2p::client::ResilientRemoteHandle>),
 }
 
 impl InferenceHandle {
@@ -205,6 +262,15 @@ impl InferenceHandle {
             Self::Local(h) => h.send(cmd),
             #[cfg(feature = "p2p-client")]
             Self::Remote(h) => h.send(cmd),
+        }
+    }
+
+    /// Current liveness state of the remote peer, or `Alive` for local.
+    #[cfg(feature = "p2p-client")]
+    pub fn liveness(&self) -> crate::p2p::heartbeat::Liveness {
+        match self {
+            Self::Local(_) => crate::p2p::heartbeat::Liveness::Alive,
+            Self::Remote(h) => h.liveness(),
         }
     }
 
@@ -233,8 +299,7 @@ impl InferenceHandle {
     ) -> Result<String, crate::error::PioError> {
         use crate::error::{ErrorCode, PioError};
 
-        let (tx, rx) =
-            std::sync::mpsc::sync_channel::<ControllerEvent>(EVENT_CHANNEL_CAPACITY);
+        let (tx, rx) = std::sync::mpsc::sync_channel::<ControllerEvent>(EVENT_CHANNEL_CAPACITY);
         let cmd = ControllerCmd::SystemInfer {
             task,
             chat_id: chat_id.into(),
@@ -584,7 +649,7 @@ fn start_ephemeral(
         use std::time::{SystemTime, UNIX_EPOCH};
         let ts = SystemTime::now()
             .duration_since(UNIX_EPOCH)
-            .unwrap()
+            .expect("system clock before UNIX epoch")
             .as_millis();
         format!("{base}:{ts}")
     } else {
@@ -928,7 +993,15 @@ fn dispatch_cmd(
             gen_spec,
             tx,
         } => {
-            start_ephemeral(engine, chats, chat_id, task.suffix(), messages, gen_spec, tx);
+            start_ephemeral(
+                engine,
+                chats,
+                chat_id,
+                task.suffix(),
+                messages,
+                gen_spec,
+                tx,
+            );
             ControlFlow::Continue
         }
         ControllerCmd::StopChat { chat_id } => {
@@ -1260,6 +1333,70 @@ mod tests {
             result.is_ok(),
             "applying default settings on an initialized backend should succeed"
         );
+        let _ = handle.send(ControllerCmd::Shutdown);
+    }
+
+    // ── Chaos: lifecycle race unit tests ─────────────────────────────
+
+    /// Pause → Stop → Resume on the same chat — the resume targets a removed
+    /// session and must not panic or corrupt controller state.
+    #[test]
+    fn pause_then_stop_then_resume_no_panic() {
+        let handle = start_controller();
+        let chat_id = "psr-unit".to_string();
+
+        let (tx, _rx) = sync_channel::<ControllerEvent>(EVENT_CHANNEL_CAPACITY);
+        handle
+            .send(ControllerCmd::StartChat {
+                chat_id: chat_id.clone(),
+                messages: vec![],
+                gen_spec: crate::gen2::generation::GenSpec::default(),
+                tx,
+            })
+            .expect("start should succeed");
+        handle
+            .send(ControllerCmd::PauseChat {
+                chat_id: chat_id.clone(),
+            })
+            .expect("pause should succeed");
+        handle
+            .send(ControllerCmd::StopChat {
+                chat_id: chat_id.clone(),
+            })
+            .expect("stop should succeed");
+        handle
+            .send(ControllerCmd::ResumeChat { chat_id })
+            .expect("resume on removed chat should not fail at send level");
+
+        std::thread::sleep(std::time::Duration::from_millis(50));
+
+        // Controller must still be responsive
+        let (tx, rx) = std::sync::mpsc::channel();
+        handle
+            .send(ControllerCmd::IsModelLoaded { resp: tx })
+            .expect("controller should still be alive");
+        let _ = rx.recv().expect("should get response");
+        let _ = handle.send(ControllerCmd::Shutdown);
+    }
+
+    /// Flood the controller with 1000 StopChat commands for random UUIDs.
+    #[test]
+    fn flood_stop_unknown_ids() {
+        let handle = start_controller();
+        for i in 0..1000 {
+            let _ = handle.send(ControllerCmd::StopChat {
+                chat_id: format!("unknown-{i}-{}", uuid::Uuid::new_v4()),
+            });
+        }
+        // Give controller time to process the flood
+        std::thread::sleep(std::time::Duration::from_millis(200));
+
+        let (tx, rx) = std::sync::mpsc::channel();
+        handle
+            .send(ControllerCmd::IsModelLoaded { resp: tx })
+            .expect("controller should survive 1000 unknown stops");
+        let loaded = rx.recv().expect("should receive response");
+        assert!(!loaded);
         let _ = handle.send(ControllerCmd::Shutdown);
     }
 }

@@ -11,6 +11,10 @@ pub struct ModelBundle {
     pub capabilities: Capabilities,
     pub meta: ModelMeta,
     pub num_layers: usize,
+    pub num_kv_heads: usize,
+    pub head_dim: usize,
+    /// Whether the model expects `position_ids` as an input.
+    pub has_position_ids: bool,
     pub model_dir: std::path::PathBuf,
     /// Jinja2 chat template, loaded once from `tokenizer_config.json` at model load time.
     pub chat_template_str: String,

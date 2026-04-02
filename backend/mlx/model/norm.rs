@@ -12,29 +12,29 @@ pub struct RmsNorm {
 
 impl RmsNorm {
     pub fn new(hidden_size: usize, eps: f32) -> Self {
-        let weight = Array::ones::<f32>(&[hidden_size as i32]).unwrap();
+        let weight = Array::ones::<f32>(&[hidden_size as i32]).expect("mlx op");
         Self { weight, eps }
     }
 
     /// x_norm = x * rsqrt(mean(x^2, axis=-1, keepdims=true) + eps) * weight
     pub fn forward(&self, x: &Array) -> Array {
         // x^2
-        let x_sq = x.multiply(x).unwrap();
+        let x_sq = x.multiply(x).expect("mlx op");
 
         // mean(x^2) along last axis, keepdims
-        let variance = x_sq.mean_axis(-1, true).unwrap();
+        let variance = x_sq.mean_axis(-1, true).expect("mlx op");
 
         // variance + eps
         let eps = Array::from_f32(self.eps);
-        let var_eps = variance.add(&eps).unwrap();
+        let var_eps = variance.add(&eps).expect("mlx op");
 
         // rsqrt(variance + eps)
-        let norm_factor = var_eps.rsqrt().unwrap();
+        let norm_factor = var_eps.rsqrt().expect("mlx op");
 
         // x * rsqrt(...)
-        let normalized = x.multiply(&norm_factor).unwrap();
+        let normalized = x.multiply(&norm_factor).expect("mlx op");
 
         // normalized * weight
-        normalized.multiply(&self.weight).unwrap()
+        normalized.multiply(&self.weight).expect("mlx op")
     }
 }

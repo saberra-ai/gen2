@@ -75,7 +75,12 @@ impl Engine {
 
         let threads = req.ctx_params.threads;
         let ort_session = super::loader::build_session(&onnx_path, threads)?;
-        let num_layers = super::loader::detect_num_layers(&ort_session);
+        let kv_shape = super::loader::detect_kv_shape(&ort_session);
+        let num_layers = kv_shape.num_layers;
+        let has_position_ids = ort_session
+            .inputs()
+            .iter()
+            .any(|i| i.name() == "position_ids");
 
         let tokenizer = HfTokenizer::from_dir(model_dir).map_err(|e| ExecError::Other(e))?;
 
@@ -106,6 +111,9 @@ impl Engine {
             capabilities: caps.clone(),
             meta: meta.clone(),
             num_layers,
+            num_kv_heads: kv_shape.num_kv_heads,
+            head_dim: kv_shape.head_dim,
+            has_position_ids,
             model_dir: model_dir.to_path_buf(),
             chat_template_str,
             bos_str,

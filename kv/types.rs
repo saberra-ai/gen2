@@ -9,6 +9,7 @@ pub struct KvSnapshot {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct KvMeta {
     pub model_uuid: String,
     pub n_ctx: u32,
@@ -31,6 +32,7 @@ pub enum KvLoadSpec {
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct KvHeader {
     pub version: u16,
     pub meta: KvMeta,

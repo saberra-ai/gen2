@@ -2,6 +2,7 @@
 
 use mlx_rs::Array;
 
+use super::quantized::Weight;
 use super::rope::RotaryEmbedding;
 
 /// Grouped Query Attention layer.
@@ -9,10 +10,10 @@ use super::rope::RotaryEmbedding;
 /// Supports the GQA pattern where `num_kv_heads < num_heads`.
 /// K and V heads are repeated to match the number of Q heads.
 pub struct Attention {
-    pub q_proj: Array,
-    pub k_proj: Array,
-    pub v_proj: Array,
-    pub o_proj: Array,
+    pub q_proj: Weight,
+    pub k_proj: Weight,
+    pub v_proj: Weight,
+    pub o_proj: Weight,
     pub num_heads: usize,
     pub num_kv_heads: usize,
     pub head_dim: usize,
@@ -22,14 +23,22 @@ impl Attention {
     pub fn new(hidden_size: usize, num_heads: usize, num_kv_heads: usize, head_dim: usize) -> Self {
         // Weights are (out_features, in_features) — transposed during matmul.
         // Initialized as zeros; the safetensors loader overwrites them.
-        let q_proj =
-            Array::zeros::<f32>(&[(num_heads * head_dim) as i32, hidden_size as i32]).unwrap();
-        let k_proj =
-            Array::zeros::<f32>(&[(num_kv_heads * head_dim) as i32, hidden_size as i32]).unwrap();
-        let v_proj =
-            Array::zeros::<f32>(&[(num_kv_heads * head_dim) as i32, hidden_size as i32]).unwrap();
-        let o_proj =
-            Array::zeros::<f32>(&[hidden_size as i32, (num_heads * head_dim) as i32]).unwrap();
+        let q_proj = Weight::plain(
+            Array::zeros::<f32>(&[(num_heads * head_dim) as i32, hidden_size as i32])
+                .expect("q_proj alloc"),
+        );
+        let k_proj = Weight::plain(
+            Array::zeros::<f32>(&[(num_kv_heads * head_dim) as i32, hidden_size as i32])
+                .expect("mlx op"),
+        );
+        let v_proj = Weight::plain(
+            Array::zeros::<f32>(&[(num_kv_heads * head_dim) as i32, hidden_size as i32])
+                .expect("mlx op"),
+        );
+        let o_proj = Weight::plain(
+            Array::zeros::<f32>(&[hidden_size as i32, (num_heads * head_dim) as i32])
+                .expect("mlx op"),
+        );
 
         Self {
             q_proj,
@@ -63,24 +72,20 @@ impl Attention {
         let nkv = self.num_kv_heads as i32;
         let hd = self.head_dim as i32;
 
-        // --- Linear projections ---
-        let q_proj_t = self.q_proj.transpose_axes(&[1, 0]).unwrap();
-        let k_proj_t = self.k_proj.transpose_axes(&[1, 0]).unwrap();
-        let v_proj_t = self.v_proj.transpose_axes(&[1, 0]).unwrap();
-
-        let q = x.matmul(&q_proj_t).unwrap();
-        let k = x.matmul(&k_proj_t).unwrap();
-        let v = x.matmul(&v_proj_t).unwrap();
+        // --- Linear projections (quantized or plain) ---
+        let q = self.q_proj.matmul_transpose(x);
+        let k = self.k_proj.matmul_transpose(x);
+        let v = self.v_proj.matmul_transpose(x);
 
         // Reshape to (batch, seq_len, num_heads, head_dim)
-        let q = q.reshape(&[batch, seq_len, nh, hd]).unwrap();
-        let k = k.reshape(&[batch, seq_len, nkv, hd]).unwrap();
-        let v = v.reshape(&[batch, seq_len, nkv, hd]).unwrap();
+        let q = q.reshape(&[batch, seq_len, nh, hd]).expect("mlx op");
+        let k = k.reshape(&[batch, seq_len, nkv, hd]).expect("mlx op");
+        let v = v.reshape(&[batch, seq_len, nkv, hd]).expect("mlx op");
 
         // Transpose to (batch, num_heads, seq_len, head_dim)
-        let q = q.transpose_axes(&[0, 2, 1, 3]).unwrap();
-        let k = k.transpose_axes(&[0, 2, 1, 3]).unwrap();
-        let v = v.transpose_axes(&[0, 2, 1, 3]).unwrap();
+        let q = q.transpose_axes(&[0, 2, 1, 3]).expect("mlx op");
+        let k = k.transpose_axes(&[0, 2, 1, 3]).expect("mlx op");
+        let v = v.transpose_axes(&[0, 2, 1, 3]).expect("mlx op");
 
         // --- RoPE ---
         let q = rope.forward(&q, offset);
@@ -99,8 +104,8 @@ impl Attention {
         // --- KV cache update ---
         let (k, v) = if let Some((prev_k, prev_v)) = cache.take() {
             // Concatenate along the sequence dimension (axis=2)
-            let k = mlx_rs::ops::concatenate_axis(&[&prev_k, &k], 2).unwrap();
-            let v = mlx_rs::ops::concatenate_axis(&[&prev_v, &v], 2).unwrap();
+            let k = mlx_rs::ops::concatenate_axis(&[&prev_k, &k], 2).expect("mlx op");
+            let v = mlx_rs::ops::concatenate_axis(&[&prev_v, &v], 2).expect("mlx op");
             (k, v)
         } else {
             (k, v)
@@ -110,9 +115,9 @@ impl Attention {
 
         // --- Scaled dot-product attention ---
         let scale = Array::from_f32(1.0 / (self.head_dim as f32).sqrt());
-        let k_t = k.transpose_axes(&[0, 1, 3, 2]).unwrap();
-        let mut scores = q.matmul(&k_t).unwrap();
-        scores = scores.multiply(&scale).unwrap();
+        let k_t = k.transpose_axes(&[0, 1, 3, 2]).expect("mlx op");
+        let mut scores = q.matmul(&k_t).expect("mlx op");
+        scores = scores.multiply(&scale).expect("mlx op");
 
         // Causal mask: prevent attending to future positions.
         // Only needed when seq_len > 1 (prefill); during generation seq_len == 1.
@@ -121,18 +126,17 @@ impl Attention {
             scores = apply_causal_mask(&scores, seq_len, kv_len);
         }
 
-        let attn_weights = mlx_rs::ops::softmax_axes(&scores, &[-1], None).unwrap();
-        let attn_out = attn_weights.matmul(&v).unwrap();
+        let attn_weights = mlx_rs::ops::softmax_axes(&scores, &[-1], None).expect("mlx op");
+        let attn_out = attn_weights.matmul(&v).expect("mlx op");
 
         // --- Merge heads ---
         // (batch, num_heads, seq_len, head_dim) → (batch, seq_len, num_heads, head_dim)
-        let attn_out = attn_out.transpose_axes(&[0, 2, 1, 3]).unwrap();
+        let attn_out = attn_out.transpose_axes(&[0, 2, 1, 3]).expect("mlx op");
         let hidden = nh * hd;
-        let attn_out = attn_out.reshape(&[batch, seq_len, hidden]).unwrap();
+        let attn_out = attn_out.reshape(&[batch, seq_len, hidden]).expect("mlx op");
 
         // Output projection
-        let o_proj_t = self.o_proj.transpose_axes(&[1, 0]).unwrap();
-        attn_out.matmul(&o_proj_t).unwrap()
+        self.o_proj.matmul_transpose(&attn_out)
     }
 }
 
@@ -151,13 +155,15 @@ fn repeat_kv(x: &Array, repeats: usize) -> Array {
     let head_dim = shape[3];
 
     // (batch, n_kv, 1, seq_len, head_dim) → broadcast → (batch, n_kv, repeats, seq_len, head_dim)
-    let expanded = x.reshape(&[batch, n_kv, 1, seq_len, head_dim]).unwrap();
+    let expanded = x
+        .reshape(&[batch, n_kv, 1, seq_len, head_dim])
+        .expect("mlx op");
     // Tile along the repeat axis by concatenating copies
     let refs: Vec<&Array> = (0..repeats).map(|_| &expanded).collect();
-    let tiled = mlx_rs::ops::concatenate_axis(&refs, 2).unwrap();
+    let tiled = mlx_rs::ops::concatenate_axis(&refs, 2).expect("mlx op");
     tiled
         .reshape(&[batch, n_kv * repeats as i32, seq_len, head_dim])
-        .unwrap()
+        .expect("mlx op")
 }
 
 /// Apply an upper-triangular causal mask to attention scores.
@@ -181,10 +187,10 @@ fn apply_causal_mask(scores: &Array, query_len: i32, kv_len: i32) -> Array {
     let ones = Array::from_f32(1.0f32);
 
     // inverted_mask: 1 where masked, 0 where allowed
-    let inv_mask = ones.subtract(&mask).unwrap();
-    let penalty = inv_mask.multiply(&neg_inf).unwrap();
+    let inv_mask = ones.subtract(&mask).expect("mlx op");
+    let penalty = inv_mask.multiply(&neg_inf).expect("mlx op");
 
     // Broadcast (query_len, kv_len) across (batch, heads, query_len, kv_len)
-    let penalty = penalty.reshape(&[1, 1, query_len, kv_len]).unwrap();
-    scores.add(&penalty).unwrap()
+    let penalty = penalty.reshape(&[1, 1, query_len, kv_len]).expect("mlx op");
+    scores.add(&penalty).expect("mlx op")
 }

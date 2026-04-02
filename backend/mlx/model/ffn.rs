@@ -2,6 +2,8 @@
 
 use mlx_rs::Array;
 
+use super::quantized::Weight;
+
 /// SwiGLU FFN: down(silu(gate(x)) * up(x))
 ///
 /// Weight shapes (out_features, in_features):
@@ -9,18 +11,22 @@ use mlx_rs::Array;
 /// - up_proj:   (intermediate_size, hidden_size)
 /// - down_proj: (hidden_size, intermediate_size)
 pub struct FeedForward {
-    pub gate_proj: Array,
-    pub up_proj: Array,
-    pub down_proj: Array,
+    pub gate_proj: Weight,
+    pub up_proj: Weight,
+    pub down_proj: Weight,
 }
 
 impl FeedForward {
     pub fn new(hidden_size: usize, intermediate_size: usize) -> Self {
-        let gate_proj =
-            Array::zeros::<f32>(&[intermediate_size as i32, hidden_size as i32]).unwrap();
-        let up_proj = Array::zeros::<f32>(&[intermediate_size as i32, hidden_size as i32]).unwrap();
-        let down_proj =
-            Array::zeros::<f32>(&[hidden_size as i32, intermediate_size as i32]).unwrap();
+        let gate_proj = Weight::plain(
+            Array::zeros::<f32>(&[intermediate_size as i32, hidden_size as i32]).expect("mlx op"),
+        );
+        let up_proj = Weight::plain(
+            Array::zeros::<f32>(&[intermediate_size as i32, hidden_size as i32]).expect("mlx op"),
+        );
+        let down_proj = Weight::plain(
+            Array::zeros::<f32>(&[hidden_size as i32, intermediate_size as i32]).expect("mlx op"),
+        );
         Self {
             gate_proj,
             up_proj,
@@ -30,25 +36,21 @@ impl FeedForward {
 
     /// `x`: (batch, seq_len, hidden_size) → same shape out.
     pub fn forward(&self, x: &Array) -> Array {
-        let gate_t = self.gate_proj.transpose_axes(&[1, 0]).unwrap();
-        let up_t = self.up_proj.transpose_axes(&[1, 0]).unwrap();
-        let down_t = self.down_proj.transpose_axes(&[1, 0]).unwrap();
-
         // gate = silu(x @ gate_proj^T)
-        let gate = x.matmul(&gate_t).unwrap();
+        let gate = self.gate_proj.matmul_transpose(x);
         let gate = silu(&gate);
 
         // up = x @ up_proj^T
-        let up = x.matmul(&up_t).unwrap();
+        let up = self.up_proj.matmul_transpose(x);
 
         // (gate * up) @ down_proj^T
-        let hidden = gate.multiply(&up).unwrap();
-        hidden.matmul(&down_t).unwrap()
+        let hidden = gate.multiply(&up).expect("mlx op");
+        self.down_proj.matmul_transpose(&hidden)
     }
 }
 
 /// SiLU activation: x * sigmoid(x)
 fn silu(x: &Array) -> Array {
-    let sig = mlx_rs::ops::sigmoid(x).unwrap();
-    x.multiply(&sig).unwrap()
+    let sig = mlx_rs::ops::sigmoid(x).expect("mlx op");
+    x.multiply(&sig).expect("mlx op")
 }

@@ -83,10 +83,16 @@ pub fn merge_prompts(
 }
 
 /// Compute how many tokens to reserve for generation output.
-/// Uses `max_tokens` when set, otherwise 25% of context. Clamped to [64, ctx_size/2].
+/// Uses `max_tokens` when set, otherwise 25% of context. Clamped to [1, ctx_size/2].
+/// For very small contexts (< 128 tokens), the minimum is lowered to avoid
+/// a `clamp` panic where min > max.
 pub fn generation_reserve(ctx_size: usize, max_tokens: Option<usize>) -> usize {
+    let half = ctx_size / 2;
+    let min_reserve = half.min(64); // never panic: min ≤ max
     let default = ctx_size / 4;
-    max_tokens.unwrap_or(default).clamp(64, ctx_size / 2)
+    max_tokens
+        .unwrap_or(default)
+        .clamp(min_reserve.max(1), half.max(1))
 }
 
 #[cfg(test)]
@@ -184,6 +190,27 @@ mod tests {
     fn generation_reserve_tiny_context() {
         // 128 ctx: default 32, clamped to 64 (min)
         assert_eq!(generation_reserve(128, None), 64);
+    }
+
+    #[test]
+    fn generation_reserve_very_tiny_context() {
+        // 64 ctx: this used to panic with clamp(64, 32) where min > max.
+        // Now: half=32, min_reserve=min(32,64)=32, default=16, 16.clamp(32,32)=32
+        assert_eq!(generation_reserve(64, None), 32);
+        assert_eq!(generation_reserve(64, Some(10)), 32);
+        assert_eq!(generation_reserve(64, Some(100)), 32);
+    }
+
+    #[test]
+    fn generation_reserve_zero_context() {
+        // Edge case: ctx_size=0 should not panic
+        assert_eq!(generation_reserve(0, None), 1);
+        assert_eq!(generation_reserve(0, Some(10)), 1);
+    }
+
+    #[test]
+    fn generation_reserve_one_context() {
+        assert_eq!(generation_reserve(1, None), 1);
     }
 
     #[test]

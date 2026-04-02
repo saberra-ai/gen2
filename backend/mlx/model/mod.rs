@@ -7,9 +7,11 @@ mod attention;
 mod ffn;
 mod llama;
 mod norm;
+pub mod quantized;
 mod rope;
 
 pub use llama::LlamaModel;
+pub use quantized::Weight;
 pub use rope::RotaryEmbedding;
 
 use serde::Deserialize;
@@ -21,6 +23,7 @@ pub type KvCache = Vec<Option<(mlx_rs::Array, mlx_rs::Array)>>;
 /// Model hyperparameters deserialized from HuggingFace `config.json`.
 /// Compatible with Llama, Qwen 3, Mistral, and other GQA architectures.
 #[derive(Debug, Clone, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct ModelConfig {
     pub hidden_size: usize,
     pub intermediate_size: usize,

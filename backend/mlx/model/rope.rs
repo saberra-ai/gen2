@@ -29,12 +29,12 @@ impl RotaryEmbedding {
         let t = Array::from_slice(&t_data, &[max_seq_len as i32]);
 
         // angles = outer(t, freqs) → (max_seq_len, half_dim)
-        let t_col = t.reshape(&[max_seq_len as i32, 1]).unwrap();
-        let f_row = freqs.reshape(&[1, half_dim as i32]).unwrap();
-        let angles = t_col.multiply(&f_row).unwrap();
+        let t_col = t.reshape(&[max_seq_len as i32, 1]).expect("mlx op");
+        let f_row = freqs.reshape(&[1, half_dim as i32]).expect("mlx op");
+        let angles = t_col.multiply(&f_row).expect("mlx op");
 
-        let cos = angles.cos().unwrap();
-        let sin = angles.sin().unwrap();
+        let cos = angles.cos().expect("mlx op");
+        let sin = angles.sin().expect("mlx op");
 
         Self { cos, sin }
     }
@@ -61,24 +61,26 @@ impl RotaryEmbedding {
         let x2 = x.index((.., .., .., half_dim_i32..));
 
         // x_rotated = concat(-x2, x1) along last dim
-        let neg_x2 = x2.negative().unwrap();
-        let x_rotated = mlx_rs::ops::concatenate_axis(&[&neg_x2, &x1], -1).unwrap();
+        let neg_x2 = x2.negative().expect("mlx op");
+        let x_rotated = mlx_rs::ops::concatenate_axis(&[&neg_x2, &x1], -1).expect("mlx op");
 
         // Broadcast cos/sin: (seq_len, half_dim) → (1, 1, seq_len, half_dim)
         let cos_broad = cos_slice
             .reshape(&[1, 1, seq_len as i32, half_dim as i32])
-            .unwrap();
+            .expect("mlx op");
         let sin_broad = sin_slice
             .reshape(&[1, 1, seq_len as i32, half_dim as i32])
-            .unwrap();
+            .expect("mlx op");
 
         // Full cos/sin by repeating for both halves: (1,1,seq,half) → (1,1,seq,dim)
-        let cos_full = mlx_rs::ops::concatenate_axis(&[&cos_broad, &cos_broad], -1).unwrap();
-        let sin_full = mlx_rs::ops::concatenate_axis(&[&sin_broad, &sin_broad], -1).unwrap();
+        let cos_full =
+            mlx_rs::ops::concatenate_axis(&[&cos_broad, &cos_broad], -1).expect("mlx op");
+        let sin_full =
+            mlx_rs::ops::concatenate_axis(&[&sin_broad, &sin_broad], -1).expect("mlx op");
 
         // result = x * cos + x_rotated * sin
-        let term_a = x.multiply(&cos_full).unwrap();
-        let term_b = x_rotated.multiply(&sin_full).unwrap();
-        term_a.add(&term_b).unwrap()
+        let term_a = x.multiply(&cos_full).expect("mlx op");
+        let term_b = x_rotated.multiply(&sin_full).expect("mlx op");
+        term_a.add(&term_b).expect("mlx op")
     }
 }
