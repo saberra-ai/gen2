@@ -14,23 +14,18 @@ use std::sync::Arc;
 pub struct LlamaEmbedder {
     backend: Arc<LlamaBackend>,
     model: LlamaModel,
-    config: ModelConfig,
 }
 
 impl LlamaEmbedder {
     pub fn load_from_path(
         backend: Arc<LlamaBackend>,
         path: impl AsRef<Path>,
-        config: ModelConfig,
+        _config: ModelConfig,
     ) -> Result<LlamaEmbedder> {
         let model_params = LlamaModelParams::default();
         let model = LlamaModel::load_from_file(&backend, path, &model_params)?;
 
-        Ok(LlamaEmbedder {
-            backend,
-            model,
-            config,
-        })
+        Ok(LlamaEmbedder { backend, model })
     }
 
     pub fn embed(&self, prompts: &[&str], normalize: bool) -> Result<Vec<Vec<f32>>> {
@@ -50,8 +45,6 @@ impl LlamaEmbedder {
             .with_context(|| "failed to tokenize prompts")?;
 
         let n_ctx = ctx.n_ctx() as usize;
-        let n_ctx_train = self.model.n_ctx_train();
-
         let n_seq = prompts.len().max(1) as i32;
         let mut batch = LlamaBatch::new(n_ctx, n_seq);
         let mut max_seq_id_batch = 0;

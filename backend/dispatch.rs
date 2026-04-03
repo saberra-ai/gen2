@@ -10,6 +10,7 @@ use crate::gen2::engine::{
     Capabilities, EmbedLoadRequest, ExecError, ExecutionStats, LoadRequest, Settings,
 };
 use crate::gen2::generation::{GenSpec, TokenEvent};
+use crate::gen2::kv::{KvLoadReport, KvLoadSpec, KvSaveSpec, KvSnapshot};
 use crate::gen2::session_rt::SessionSpec;
 use crate::types::message::Message;
 
@@ -438,6 +439,172 @@ macro_rules! dispatch_void {
 use dispatch;
 use dispatch_void;
 
+// ─── Session ────────────────────────────────────────────────────────────────
+
+pub enum Session {
+    #[cfg(feature = "backend-llamacpp")]
+    LlamaCpp(Arc<super::llama::Session>),
+    #[cfg(feature = "backend-mlx")]
+    Mlx(Arc<super::mlx::Session>),
+    #[cfg(feature = "backend-onnx")]
+    Onnx(Arc<super::onnx::Session>),
+    #[cfg(feature = "backend-external-api")]
+    ExternalApi(Arc<super::external_api::Session>),
+}
+
+impl std::fmt::Debug for Session {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            #[cfg(feature = "backend-llamacpp")]
+            Self::LlamaCpp(s) => write!(f, "Session::LlamaCpp(id={})", s.id),
+            #[cfg(feature = "backend-mlx")]
+            Self::Mlx(s) => write!(f, "Session::Mlx(id={})", s.id),
+            #[cfg(feature = "backend-onnx")]
+            Self::Onnx(s) => write!(f, "Session::Onnx(id={})", s.id),
+            #[cfg(feature = "backend-external-api")]
+            Self::ExternalApi(s) => write!(f, "Session::ExternalApi(id={})", s.id),
+        }
+    }
+}
+
+/// Dispatch on Session enum variants
+macro_rules! session_dispatch {
+    ($self:expr, $s:ident => $call:expr) => {
+        match $self {
+            #[cfg(feature = "backend-llamacpp")]
+            Self::LlamaCpp($s) => $call,
+            #[cfg(feature = "backend-mlx")]
+            Self::Mlx($s) => $call,
+            #[cfg(feature = "backend-onnx")]
+            Self::Onnx($s) => $call,
+            #[cfg(feature = "backend-external-api")]
+            Self::ExternalApi($s) => $call,
+        }
+    };
+}
+
+impl Session {
+    pub fn id(&self) -> SessionId {
+        session_dispatch!(self, s => s.id)
+    }
+
+    pub fn pause(&self) {
+        session_dispatch!(self, s => s.pause());
+    }
+
+    pub fn resume(&self) {
+        session_dispatch!(self, s => s.resume());
+    }
+
+    pub fn stop(&self) {
+        session_dispatch!(self, s => s.stop());
+    }
+
+    pub fn pull(&self, gen_spec: GenSpec) -> Result<TokenPuller, ExecError> {
+        match self {
+            #[cfg(feature = "backend-llamacpp")]
+            Self::LlamaCpp(s) => s.pull(gen_spec).map(TokenPuller::LlamaCpp),
+            #[cfg(feature = "backend-mlx")]
+            Self::Mlx(s) => s.pull(gen_spec).map(TokenPuller::Mlx),
+            #[cfg(feature = "backend-onnx")]
+            Self::Onnx(s) => s.pull(gen_spec).map(TokenPuller::Onnx),
+            #[cfg(feature = "backend-external-api")]
+            Self::ExternalApi(s) => s.pull(gen_spec).map(TokenPuller::ExternalApi),
+        }
+    }
+
+    pub fn append_messages(&self, new_messages: Vec<Message>) -> Result<usize, ExecError> {
+        session_dispatch!(self, s => s.append_messages(new_messages))
+    }
+
+    pub fn save_cache(&self, dst: KvSaveSpec) -> Result<KvSnapshot, ExecError> {
+        match self {
+            #[cfg(feature = "backend-llamacpp")]
+            Self::LlamaCpp(s) => s.save_cache(dst),
+            #[cfg(feature = "backend-mlx")]
+            Self::Mlx(_) => Err(ExecError::FeatureUnsupported("kv cache")),
+            #[cfg(feature = "backend-onnx")]
+            Self::Onnx(_) => Err(ExecError::FeatureUnsupported("kv cache")),
+            #[cfg(feature = "backend-external-api")]
+            Self::ExternalApi(_) => Err(ExecError::FeatureUnsupported("kv cache")),
+        }
+    }
+
+    pub fn load_cache(&self, src: KvLoadSpec) -> Result<KvLoadReport, ExecError> {
+        match self {
+            #[cfg(feature = "backend-llamacpp")]
+            Self::LlamaCpp(s) => s.load_cache(src),
+            #[cfg(feature = "backend-mlx")]
+            Self::Mlx(_) => Err(ExecError::FeatureUnsupported("kv cache")),
+            #[cfg(feature = "backend-onnx")]
+            Self::Onnx(_) => Err(ExecError::FeatureUnsupported("kv cache")),
+            #[cfg(feature = "backend-external-api")]
+            Self::ExternalApi(_) => Err(ExecError::FeatureUnsupported("kv cache")),
+        }
+    }
+
+    /// Messages dropped during initial session creation due to context overflow.
+    pub fn initial_messages_dropped(&self) -> usize {
+        match self {
+            #[cfg(feature = "backend-llamacpp")]
+            Self::LlamaCpp(s) => s.initial_messages_dropped(),
+            // Other backends don't track this yet
+            #[cfg(feature = "backend-mlx")]
+            Self::Mlx(_) => 0,
+            #[cfg(feature = "backend-onnx")]
+            Self::Onnx(_) => 0,
+            #[cfg(feature = "backend-external-api")]
+            Self::ExternalApi(_) => 0,
+        }
+    }
+
+    /// Returns true if the session's internal state was lost (e.g. due to an
+    /// FFI panic). A poisoned session cannot generate further tokens.
+    pub fn is_poisoned(&self) -> bool {
+        match self {
+            #[cfg(feature = "backend-llamacpp")]
+            Self::LlamaCpp(s) => s.is_poisoned(),
+            // Non-FFI backends don't have state ownership issues
+            #[cfg(feature = "backend-mlx")]
+            Self::Mlx(_) => false,
+            #[cfg(feature = "backend-onnx")]
+            Self::Onnx(_) => false,
+            #[cfg(feature = "backend-external-api")]
+            Self::ExternalApi(_) => false,
+        }
+    }
+}
+
+// ─── TokenPuller ────────────────────────────────────────────────────────────
+
+pub enum TokenPuller {
+    #[cfg(feature = "backend-llamacpp")]
+    LlamaCpp(super::llama::TokenPuller),
+    #[cfg(feature = "backend-mlx")]
+    Mlx(super::mlx::TokenPuller),
+    #[cfg(feature = "backend-onnx")]
+    Onnx(super::onnx::TokenPuller),
+    #[cfg(feature = "backend-external-api")]
+    ExternalApi(super::external_api::RemotePuller),
+}
+
+impl Iterator for TokenPuller {
+    type Item = Result<TokenEvent, ExecError>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        match self {
+            #[cfg(feature = "backend-llamacpp")]
+            Self::LlamaCpp(p) => p.next(),
+            #[cfg(feature = "backend-mlx")]
+            Self::Mlx(p) => p.next(),
+            #[cfg(feature = "backend-onnx")]
+            Self::Onnx(p) => p.next(),
+            #[cfg(feature = "backend-external-api")]
+            Self::ExternalApi(p) => p.next(),
+        }
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
@@ -535,145 +702,5 @@ mod tests {
         let stats = engine.stats();
         assert_eq!(stats.decode_tokens, 0);
         let _ = caps; // just ensure no panic
-    }
-}
-
-// ─── Session ────────────────────────────────────────────────────────────────
-
-pub enum Session {
-    #[cfg(feature = "backend-llamacpp")]
-    LlamaCpp(Arc<super::llama::Session>),
-    #[cfg(feature = "backend-mlx")]
-    Mlx(Arc<super::mlx::Session>),
-    #[cfg(feature = "backend-onnx")]
-    Onnx(Arc<super::onnx::Session>),
-    #[cfg(feature = "backend-external-api")]
-    ExternalApi(Arc<super::external_api::Session>),
-}
-
-impl std::fmt::Debug for Session {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            #[cfg(feature = "backend-llamacpp")]
-            Self::LlamaCpp(s) => write!(f, "Session::LlamaCpp(id={})", s.id),
-            #[cfg(feature = "backend-mlx")]
-            Self::Mlx(s) => write!(f, "Session::Mlx(id={})", s.id),
-            #[cfg(feature = "backend-onnx")]
-            Self::Onnx(s) => write!(f, "Session::Onnx(id={})", s.id),
-            #[cfg(feature = "backend-external-api")]
-            Self::ExternalApi(s) => write!(f, "Session::ExternalApi(id={})", s.id),
-        }
-    }
-}
-
-/// Dispatch on Session enum variants
-macro_rules! session_dispatch {
-    ($self:expr, $s:ident => $call:expr) => {
-        match $self {
-            #[cfg(feature = "backend-llamacpp")]
-            Self::LlamaCpp($s) => $call,
-            #[cfg(feature = "backend-mlx")]
-            Self::Mlx($s) => $call,
-            #[cfg(feature = "backend-onnx")]
-            Self::Onnx($s) => $call,
-            #[cfg(feature = "backend-external-api")]
-            Self::ExternalApi($s) => $call,
-        }
-    };
-}
-
-impl Session {
-    pub fn id(&self) -> SessionId {
-        session_dispatch!(self, s => s.id)
-    }
-
-    pub fn pause(&self) {
-        session_dispatch!(self, s => s.pause());
-    }
-
-    pub fn resume(&self) {
-        session_dispatch!(self, s => s.resume());
-    }
-
-    pub fn stop(&self) {
-        session_dispatch!(self, s => s.stop());
-    }
-
-    pub fn pull(&self, gen_spec: GenSpec) -> Result<TokenPuller, ExecError> {
-        match self {
-            #[cfg(feature = "backend-llamacpp")]
-            Self::LlamaCpp(s) => s.pull(gen_spec).map(TokenPuller::LlamaCpp),
-            #[cfg(feature = "backend-mlx")]
-            Self::Mlx(s) => s.pull(gen_spec).map(TokenPuller::Mlx),
-            #[cfg(feature = "backend-onnx")]
-            Self::Onnx(s) => s.pull(gen_spec).map(TokenPuller::Onnx),
-            #[cfg(feature = "backend-external-api")]
-            Self::ExternalApi(s) => s.pull(gen_spec).map(TokenPuller::ExternalApi),
-        }
-    }
-
-    pub fn append_messages(&self, new_messages: Vec<Message>) -> Result<usize, ExecError> {
-        session_dispatch!(self, s => s.append_messages(new_messages))
-    }
-
-    /// Messages dropped during initial session creation due to context overflow.
-    pub fn initial_messages_dropped(&self) -> usize {
-        match self {
-            #[cfg(feature = "backend-llamacpp")]
-            Self::LlamaCpp(s) => s.initial_messages_dropped(),
-            // Other backends don't track this yet
-            #[cfg(feature = "backend-mlx")]
-            Self::Mlx(_) => 0,
-            #[cfg(feature = "backend-onnx")]
-            Self::Onnx(_) => 0,
-            #[cfg(feature = "backend-external-api")]
-            Self::ExternalApi(_) => 0,
-        }
-    }
-
-    /// Returns true if the session's internal state was lost (e.g. due to an
-    /// FFI panic). A poisoned session cannot generate further tokens.
-    pub fn is_poisoned(&self) -> bool {
-        match self {
-            #[cfg(feature = "backend-llamacpp")]
-            Self::LlamaCpp(s) => s.is_poisoned(),
-            // Non-FFI backends don't have state ownership issues
-            #[cfg(feature = "backend-mlx")]
-            Self::Mlx(_) => false,
-            #[cfg(feature = "backend-onnx")]
-            Self::Onnx(_) => false,
-            #[cfg(feature = "backend-external-api")]
-            Self::ExternalApi(_) => false,
-        }
-    }
-}
-
-// ─── TokenPuller ────────────────────────────────────────────────────────────
-
-pub enum TokenPuller {
-    #[cfg(feature = "backend-llamacpp")]
-    LlamaCpp(super::llama::TokenPuller),
-    #[cfg(feature = "backend-mlx")]
-    Mlx(super::mlx::TokenPuller),
-    #[cfg(feature = "backend-onnx")]
-    Onnx(super::onnx::TokenPuller),
-    #[cfg(feature = "backend-external-api")]
-    ExternalApi(super::external_api::RemotePuller),
-}
-
-impl Iterator for TokenPuller {
-    type Item = Result<TokenEvent, ExecError>;
-
-    fn next(&mut self) -> Option<Self::Item> {
-        match self {
-            #[cfg(feature = "backend-llamacpp")]
-            Self::LlamaCpp(p) => p.next(),
-            #[cfg(feature = "backend-mlx")]
-            Self::Mlx(p) => p.next(),
-            #[cfg(feature = "backend-onnx")]
-            Self::Onnx(p) => p.next(),
-            #[cfg(feature = "backend-external-api")]
-            Self::ExternalApi(p) => p.next(),
-        }
     }
 }

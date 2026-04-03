@@ -227,6 +227,12 @@ impl Engine {
         self.embedder.store(None);
     }
 }
+
+impl Default for Engine {
+    fn default() -> Self {
+        Self::new()
+    }
+}
 // Drop guard — consumed when session lifetime is active
 #[allow(dead_code)]
 struct SessionGuard {

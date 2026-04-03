@@ -23,20 +23,6 @@ pub(crate) fn load_chat_template(model_dir: &Path) -> Option<String> {
     parsed.get("chat_template")?.as_str().map(|s| s.to_string())
 }
 
-/// Fallback Llama 3 Instruct chat template for models without `tokenizer_config.json`.
-pub(crate) fn default_llama3_template() -> String {
-    r#"{% for message in messages %}{% if message.role == 'system' %}<|start_header_id|>system<|end_header_id|>
-
-{{ message.content }}<|eot_id|>{% elif message.role == 'user' %}<|start_header_id|>user<|end_header_id|>
-
-{{ message.content }}<|eot_id|>{% elif message.role == 'assistant' %}<|start_header_id|>assistant<|end_header_id|>
-
-{{ message.content }}<|eot_id|>{% endif %}{% endfor %}<|start_header_id|>assistant<|end_header_id|>
-
-"#
-    .to_string()
-}
-
 #[cfg(test)]
 mod tests {
     use super::*;

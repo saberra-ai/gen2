@@ -1,5 +1,3 @@
-use llama_cpp_2::model::params::kv_overrides::ParamOverrideValue;
-use rand::{RngCore, rng};
 use std::num::NonZeroU32;
 
 #[derive(Debug, Clone)]
@@ -11,8 +9,6 @@ pub struct ModelConfig {
     pub seed: u32,
 
     pub batch_size: usize,
-
-    key_value_overrides: Vec<(String, ParamOverrideValue)>,
 
     #[cfg(any(feature = "cuda", feature = "vulkan", feature = "metal"))]
     disable_gpu: bool,
@@ -39,7 +35,6 @@ impl Default for ModelConfig {
             ctx_size: 8000,
             seed: 123,
             batch_size: 4000,
-            key_value_overrides: vec![],
             #[cfg(any(feature = "cuda", feature = "vulkan", feature = "metal"))]
             disable_gpu: false,
             gpu_layers: None,
@@ -55,38 +50,6 @@ impl Default for ModelConfig {
 }
 
 impl ModelConfig {
-    #[allow(clippy::too_many_arguments)]
-    fn new(
-        ctx_size: u32,
-        seed: Option<u32>,
-        gpu_layers: Option<u32>,
-        threads: Option<i32>,
-        threads_batch: Option<i32>,
-        temperature: f32,
-        top_p: f32,
-        top_p_keep: usize,
-        top_k: i32,
-        repeat_penalty: i32,
-    ) -> ModelConfig {
-        let seed = seed.unwrap_or(rng().next_u32());
-        ModelConfig {
-            ctx_size,
-            seed,
-            batch_size: 1024,
-            key_value_overrides: vec![],
-            #[cfg(any(feature = "cuda", feature = "vulkan", feature = "metal"))]
-            disable_gpu: false,
-            gpu_layers,
-            threads,
-            threads_batch,
-            temperature,
-            top_p,
-            top_p_keep,
-            top_k,
-            repeat_penalty,
-        }
-    }
-
     pub fn get_ctx_size(&self) -> Option<NonZeroU32> {
         NonZeroU32::new(self.ctx_size)
     }
