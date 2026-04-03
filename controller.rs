@@ -254,6 +254,8 @@ pub enum InferenceHandle {
     Local(ControllerHandle),
     #[cfg(feature = "p2p-client")]
     Remote(std::sync::Arc<crate::p2p::client::ResilientRemoteHandle>),
+    #[cfg(feature = "flock")]
+    Flock(std::sync::Arc<crate::p2p::flock::handle::FlockHandle>),
 }
 
 impl InferenceHandle {
@@ -262,6 +264,8 @@ impl InferenceHandle {
             Self::Local(h) => h.send(cmd),
             #[cfg(feature = "p2p-client")]
             Self::Remote(h) => h.send(cmd),
+            #[cfg(feature = "flock")]
+            Self::Flock(h) => h.send(cmd),
         }
     }
 
@@ -271,6 +275,8 @@ impl InferenceHandle {
         match self {
             Self::Local(_) => crate::p2p::heartbeat::Liveness::Alive,
             Self::Remote(h) => h.liveness(),
+            #[cfg(feature = "flock")]
+            Self::Flock(h) => h.liveness(),
         }
     }
 

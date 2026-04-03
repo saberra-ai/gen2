@@ -214,15 +214,10 @@ impl Engine {
 
     /// Create a new engine with the platform default backend.
     ///
-    /// On macOS/iOS with both llamacpp and MLX available, MLX is preferred
-    /// for faster model loading and lower time-to-first-token.
-    /// The `load_model` method auto-detects from file format regardless.
+    /// Defaults to llamacpp when available (GGUF is the bundled format).
+    /// `load_model` auto-detects from file format and switches backend as needed,
+    /// so the initial backend is just a starting point.
     pub fn new() -> Self {
-        // MLX first on Apple platforms (13x faster TTFT than llamacpp)
-        #[cfg(all(feature = "backend-mlx", any(target_os = "macos", target_os = "ios")))]
-        {
-            return Self::Mlx(super::mlx::Engine::new());
-        }
         #[cfg(feature = "backend-llamacpp")]
         {
             Self::LlamaCpp(super::llama::Engine::new())
