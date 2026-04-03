@@ -42,6 +42,11 @@ pub enum SystemTask {
 }
 
 impl SystemTask {
+    /// Generate a unique session ID for this task type.
+    pub fn session_id(&self) -> String {
+        format!("sabra-{}-{}", self.suffix(), uuid::Uuid::new_v4())
+    }
+
     /// Suffix used to namespace ephemeral session IDs.
     fn suffix(&self) -> &'static str {
         match self {
@@ -67,52 +72,47 @@ impl SystemTask {
             Self::Title => GenSpec {
                 max_tokens: Some(50),
                 temperature: Some(0.3),
-                seed: None,
+                ..Default::default()
             },
             Self::Suggestions => GenSpec {
                 max_tokens: Some(256),
                 temperature: Some(0.7),
-                seed: None,
+                ..Default::default()
             },
             Self::Compact => GenSpec {
                 max_tokens: Some(512),
                 temperature: Some(0.3),
-                seed: None,
+                ..Default::default()
+            },
+            Self::Stance | Self::EntityExtract => GenSpec {
+                max_tokens: Some(512),
+                temperature: Some(0.1),
+                ..Default::default()
             },
             Self::Answer => GenSpec {
                 max_tokens: Some(1024),
                 temperature: Some(0.3),
-                seed: None,
+                ..Default::default()
             },
             Self::Triples => GenSpec {
                 max_tokens: Some(1024),
                 temperature: Some(0.1),
-                seed: None,
-            },
-            Self::Stance => GenSpec {
-                max_tokens: Some(512),
-                temperature: Some(0.1),
-                seed: None,
-            },
-            Self::EntityExtract => GenSpec {
-                max_tokens: Some(512),
-                temperature: Some(0.1),
-                seed: None,
+                ..Default::default()
             },
             Self::TopicLabel => GenSpec {
                 max_tokens: Some(100),
                 temperature: Some(0.3),
-                seed: None,
+                ..Default::default()
             },
             Self::QueryUnderstand => GenSpec {
                 max_tokens: Some(256),
                 temperature: Some(0.1),
-                seed: None,
+                ..Default::default()
             },
             Self::Contradiction => GenSpec {
                 max_tokens: Some(512),
                 temperature: Some(0.2),
-                seed: None,
+                ..Default::default()
             },
         }
     }
@@ -293,6 +293,18 @@ impl InferenceHandle {
         let gen_spec = task.default_gen_spec();
         self.system_infer_with(task, chat_id, messages, gen_spec)
             .await
+    }
+
+    /// Single-prompt convenience: wraps `prompt` as a user message, generates
+    /// a unique session ID, and runs the task with default GenSpec.
+    pub async fn system_prompt(
+        &self,
+        task: SystemTask,
+        prompt: impl Into<String>,
+    ) -> Result<String, crate::error::PioError> {
+        let messages = vec![Message::user(prompt)];
+        let session_id = task.session_id();
+        self.system_infer(task, session_id, messages).await
     }
 
     /// Fire a system-level inference task with a custom GenSpec.
