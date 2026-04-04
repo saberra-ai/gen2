@@ -39,6 +39,8 @@ pub enum SystemTask {
     QueryUnderstand,
     /// Evidence contradiction detection.
     Contradiction,
+    /// Chat sidebar summary — topic extraction from recent messages.
+    Summary,
 }
 
 impl SystemTask {
@@ -60,6 +62,7 @@ impl SystemTask {
             Self::TopicLabel => "topic",
             Self::QueryUnderstand => "query",
             Self::Contradiction => "contradiction",
+            Self::Summary => "summary",
         }
     }
 
@@ -112,6 +115,11 @@ impl SystemTask {
             Self::Contradiction => GenSpec {
                 max_tokens: Some(512),
                 temperature: Some(0.2),
+                ..Default::default()
+            },
+            Self::Summary => GenSpec {
+                max_tokens: Some(120),
+                temperature: Some(0.3),
                 ..Default::default()
             },
         }
