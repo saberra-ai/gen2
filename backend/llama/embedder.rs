@@ -44,26 +44,50 @@ impl LlamaEmbedder {
             .collect::<Result<Vec<_>, _>>()
             .with_context(|| "failed to tokenize prompts")?;
 
+        // One slot per input; empty vec means no embedding (tokenless after tokenization).
+        let mut output = vec![Vec::new(); prompts.len()];
+        let pending: Vec<(usize, &Vec<_>)> = tokens_lines_list
+            .iter()
+            .enumerate()
+            .filter(|(_, t)| !t.is_empty())
+            .map(|(i, t)| (i, t))
+            .collect();
+
+        if pending.is_empty() {
+            return Ok(output);
+        }
+
         let n_ctx = ctx.n_ctx() as usize;
-        let n_seq = prompts.len().max(1) as i32;
+        let n_seq = pending.len().max(1) as i32;
         let mut batch = LlamaBatch::new(n_ctx, n_seq);
         let mut max_seq_id_batch = 0;
-        let mut output = Vec::with_capacity(tokens_lines_list.len());
+        let mut decode_results = Vec::new();
 
-        for tokens in &tokens_lines_list {
-            // Flush the batch if the next prompt would exceed our batch size
-            if (batch.n_tokens() as usize + tokens.len()) > n_ctx {
-                batch_decode(
-                    &mut ctx,
-                    &mut batch,
-                    max_seq_id_batch,
-                    &mut output,
-                    normalize,
-                )?;
-                max_seq_id_batch = 0;
+        for (_, tokens) in &pending {
+            // A single sequence must not exceed n_ctx; otherwise we would hit the flush branch
+            // with an empty batch and call decode on zero tokens (llama: n_tokens == 0).
+            let tokens_slice = if tokens.len() > n_ctx {
+                &tokens[..n_ctx]
+            } else {
+                tokens.as_slice()
+            };
+
+            // Flush the batch if the next prompt would exceed our batch size.
+            // Never decode when nothing was added yet (max_seq_id_batch == 0).
+            if (batch.n_tokens() as usize + tokens_slice.len()) > n_ctx {
+                if max_seq_id_batch > 0 {
+                    batch_decode(
+                        &mut ctx,
+                        &mut batch,
+                        max_seq_id_batch,
+                        &mut decode_results,
+                        normalize,
+                    )?;
+                    max_seq_id_batch = 0;
+                }
             }
 
-            batch.add_sequence(tokens, max_seq_id_batch, false)?;
+            batch.add_sequence(tokens_slice, max_seq_id_batch, false)?;
             max_seq_id_batch += 1;
         }
         // Handle final batch (skip if all sequences were already flushed in the loop)
@@ -72,9 +96,14 @@ impl LlamaEmbedder {
                 &mut ctx,
                 &mut batch,
                 max_seq_id_batch,
-                &mut output,
+                &mut decode_results,
                 normalize,
             )?;
+        }
+
+        debug_assert_eq!(decode_results.len(), pending.len());
+        for ((orig_idx, _), emb) in pending.iter().zip(decode_results) {
+            output[*orig_idx] = emb;
         }
 
         Ok(output)
