@@ -50,7 +50,6 @@ impl LlamaEmbedder {
             .iter()
             .enumerate()
             .filter(|(_, t)| !t.is_empty())
-            .map(|(i, t)| (i, t))
             .collect();
 
         if pending.is_empty() {
@@ -74,17 +73,15 @@ impl LlamaEmbedder {
 
             // Flush the batch if the next prompt would exceed our batch size.
             // Never decode when nothing was added yet (max_seq_id_batch == 0).
-            if (batch.n_tokens() as usize + tokens_slice.len()) > n_ctx {
-                if max_seq_id_batch > 0 {
-                    batch_decode(
-                        &mut ctx,
-                        &mut batch,
-                        max_seq_id_batch,
-                        &mut decode_results,
-                        normalize,
-                    )?;
-                    max_seq_id_batch = 0;
-                }
+            if (batch.n_tokens() as usize + tokens_slice.len()) > n_ctx && max_seq_id_batch > 0 {
+                batch_decode(
+                    &mut ctx,
+                    &mut batch,
+                    max_seq_id_batch,
+                    &mut decode_results,
+                    normalize,
+                )?;
+                max_seq_id_batch = 0;
             }
 
             batch.add_sequence(tokens_slice, max_seq_id_batch, false)?;
