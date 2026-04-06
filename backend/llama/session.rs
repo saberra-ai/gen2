@@ -708,9 +708,11 @@ impl Session {
             .ok_or(ExecError::InvalidArg("session already consumed"))?;
 
         if full_tokens.len() > ctx_limit {
-            // Context overflow — reset and re-encode with truncated conversation
+            // Context overflow — reset and re-encode with truncated conversation.
+            // Prefer Tier-1 algorithmic compaction (same as cold-start `maybe_compact`) so we
+            // preserve intent via `<compact-summary>` instead of silently dropping turns.
             tracing::warn!(
-                "context overflow: {} tokens > {} limit, truncating conversation",
+                "context overflow: {} tokens > {} limit, compacting or truncating conversation",
                 full_tokens.len(),
                 ctx_limit
             );
@@ -720,75 +722,101 @@ impl Session {
                 .with_dependent_mut(|_, ctx| ctx.clear_kv_cache());
             st.cur_pos = 0;
 
-            // Drop oldest non-system messages until conversation fits
+            let keep_recent =
+                crate::services::compaction::CompactionConfig::default().keep_recent;
+
             let mut msgs = self.messages.write();
+            let mut working = msgs.clone();
             let mut dropped = 0_usize;
-            while msgs.len() > 2 {
-                // Keep at least system prompt (if any) + last user message
-                let first_is_system = msgs.first().map(|m| m.role == "system").unwrap_or(false);
-                let remove_idx = if first_is_system { 1 } else { 0 };
-                msgs.remove(remove_idx);
-                dropped += 1;
 
-                // Re-render and re-tokenize to check fit
-                let check_msgs = msgs.clone();
-                drop(msgs);
-                let check_prompt = tpl
-                    .apply(check_msgs, None, None)
-                    .map_err(ExecError::Other)?;
-                let check_tokens = self
-                    .bundle
+            let prompt_tokens = |m: &[Message]| {
+                let p = tpl.apply(m.to_vec(), None, None).map_err(ExecError::Other)?;
+                self.bundle
                     .model
-                    .str_to_token(&check_prompt, AddBos::Always)
-                    .map_err(|e| ExecError::Other(e.into()))?;
-                if check_tokens.len() <= ctx_limit {
-                    // Fits — prefill the truncated conversation from scratch
-                    let remaining = check_tokens;
-                    let batch_size = self.settings.system.batch_size.unwrap_or(128) as usize;
-                    let mut batch = LlamaBatch::new(batch_size, 1);
-                    let mut to_process = remaining;
+                    .str_to_token(&p, AddBos::Always)
+                    .map_err(|e| ExecError::Other(e.into()))
+            };
 
-                    self.hooks.emit(HookEvent::SessionPrefillStart {
-                        session_id: self.id,
-                        prompt_tokens: to_process.len(),
-                    });
-
-                    let mut last_batch_tokens: i32 = 0;
-                    while !to_process.is_empty() {
-                        let chunk_size = to_process.len().min(batch_size);
-                        let chunk: Vec<_> = to_process.drain(..chunk_size).collect();
-                        batch.clear();
-                        for (i, token) in chunk.into_iter().enumerate() {
-                            let absolute = st.cur_pos + i as i32;
-                            let is_last = (i + 1 == chunk_size) && to_process.is_empty();
-                            batch.add(token, absolute, &[0], is_last).map_err(|_| {
-                                ExecError::Other(anyhow::anyhow!("batch add error"))
-                            })?;
-                        }
-                        st.ctx_cell
-                            .with_dependent_mut(|_, ctx| ctx.decode(&mut batch))
-                            .map_err(|_| {
-                                ExecError::Other(anyhow::anyhow!(
-                                    "decode failed after context truncation"
-                                ))
-                            })?;
-                        st.cur_pos += chunk_size as i32;
-                        last_batch_tokens = batch.n_tokens();
-                    }
-                    st.logits_i = (last_batch_tokens - 1).max(0);
-
-                    self.hooks.emit(HookEvent::SessionPrefillOk {
-                        session_id: self.id,
-                        prompt_tokens: st.cur_pos as usize,
-                    });
-                    return Ok(dropped);
+            // Phase 1: algorithmic compaction until under limit or no further compaction.
+            loop {
+                let n = prompt_tokens(&working)?.len();
+                if n <= ctx_limit {
+                    break;
                 }
-                msgs = self.messages.write();
+                let cr = crate::services::compaction::compact_algorithmic(working, keep_recent);
+                working = cr.messages;
+                if cr.compacted_count == 0 {
+                    break;
+                }
+                tracing::info!(
+                    compacted = cr.compacted_count,
+                    "warm-session context overflow: applied algorithmic compaction"
+                );
+                dropped = dropped.saturating_add(cr.compacted_count);
             }
-            return Err(ExecError::Other(anyhow::anyhow!(
-                "conversation too long even after truncation (ctx_size={})",
-                ctx_size
-            )));
+
+            // Phase 2: drop oldest non-system messages until conversation fits (fallback).
+            while working.len() > 2 {
+                let n = prompt_tokens(&working)?.len();
+                if n <= ctx_limit {
+                    break;
+                }
+                let first_is_system = working.first().map(|m| m.role == "system").unwrap_or(false);
+                let remove_idx = if first_is_system { 1 } else { 0 };
+                working.remove(remove_idx);
+                dropped += 1;
+            }
+
+            let remaining = prompt_tokens(&working)?;
+            if remaining.len() > ctx_limit {
+                return Err(ExecError::Other(anyhow::anyhow!(
+                    "conversation too long even after compaction (ctx_size={})",
+                    ctx_size
+                )));
+            }
+
+            *msgs = working;
+            drop(msgs);
+
+            // Fits — prefill the truncated conversation from scratch
+            let mut to_process = remaining;
+            let batch_size = self.settings.system.batch_size.unwrap_or(128) as usize;
+            let mut batch = LlamaBatch::new(batch_size, 1);
+
+            self.hooks.emit(HookEvent::SessionPrefillStart {
+                session_id: self.id,
+                prompt_tokens: to_process.len(),
+            });
+
+            let mut last_batch_tokens: i32 = 0;
+            while !to_process.is_empty() {
+                let chunk_size = to_process.len().min(batch_size);
+                let chunk: Vec<_> = to_process.drain(..chunk_size).collect();
+                batch.clear();
+                for (i, token) in chunk.into_iter().enumerate() {
+                    let absolute = st.cur_pos + i as i32;
+                    let is_last = (i + 1 == chunk_size) && to_process.is_empty();
+                    batch.add(token, absolute, &[0], is_last).map_err(|_| {
+                        ExecError::Other(anyhow::anyhow!("batch add error"))
+                    })?;
+                }
+                st.ctx_cell
+                    .with_dependent_mut(|_, ctx| ctx.decode(&mut batch))
+                    .map_err(|_| {
+                        ExecError::Other(anyhow::anyhow!(
+                            "decode failed after context truncation"
+                        ))
+                    })?;
+                st.cur_pos += chunk_size as i32;
+                last_batch_tokens = batch.n_tokens();
+            }
+            st.logits_i = (last_batch_tokens - 1).max(0);
+
+            self.hooks.emit(HookEvent::SessionPrefillOk {
+                session_id: self.id,
+                prompt_tokens: st.cur_pos as usize,
+            });
+            return Ok(dropped);
         }
 
         // Normal path — no overflow, prefill only the delta
