@@ -722,15 +722,16 @@ impl Session {
                 .with_dependent_mut(|_, ctx| ctx.clear_kv_cache());
             st.cur_pos = 0;
 
-            let keep_recent =
-                crate::services::compaction::CompactionConfig::default().keep_recent;
+            let keep_recent = crate::services::compaction::CompactionConfig::default().keep_recent;
 
             let mut msgs = self.messages.write();
             let mut working = msgs.clone();
             let mut dropped = 0_usize;
 
             let prompt_tokens = |m: &[Message]| {
-                let p = tpl.apply(m.to_vec(), None, None).map_err(ExecError::Other)?;
+                let p = tpl
+                    .apply(m.to_vec(), None, None)
+                    .map_err(ExecError::Other)?;
                 self.bundle
                     .model
                     .str_to_token(&p, AddBos::Always)
@@ -796,16 +797,14 @@ impl Session {
                 for (i, token) in chunk.into_iter().enumerate() {
                     let absolute = st.cur_pos + i as i32;
                     let is_last = (i + 1 == chunk_size) && to_process.is_empty();
-                    batch.add(token, absolute, &[0], is_last).map_err(|_| {
-                        ExecError::Other(anyhow::anyhow!("batch add error"))
-                    })?;
+                    batch
+                        .add(token, absolute, &[0], is_last)
+                        .map_err(|_| ExecError::Other(anyhow::anyhow!("batch add error")))?;
                 }
                 st.ctx_cell
                     .with_dependent_mut(|_, ctx| ctx.decode(&mut batch))
                     .map_err(|_| {
-                        ExecError::Other(anyhow::anyhow!(
-                            "decode failed after context truncation"
-                        ))
+                        ExecError::Other(anyhow::anyhow!("decode failed after context truncation"))
                     })?;
                 st.cur_pos += chunk_size as i32;
                 last_batch_tokens = batch.n_tokens();
