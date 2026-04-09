@@ -1,3 +1,8 @@
+mod config;
+mod scheduler;
+
+pub use config::ControllerConfig;
+
 use std::collections::HashMap;
 use std::panic::{AssertUnwindSafe, catch_unwind};
 use std::path::PathBuf;
@@ -68,61 +73,11 @@ impl SystemTask {
 
     /// Sensible generation defaults for each task type.
     ///
+    /// Delegates to [`ControllerConfig::system_task_spec`] with default config.
     /// Callers can override by passing their own `GenSpec` to
     /// `InferenceHandle::system_infer_with`.
     pub fn default_gen_spec(&self) -> GenSpec {
-        match self {
-            Self::Title => GenSpec {
-                max_tokens: Some(50),
-                temperature: Some(0.3),
-                ..Default::default()
-            },
-            Self::Suggestions => GenSpec {
-                max_tokens: Some(256),
-                temperature: Some(0.7),
-                ..Default::default()
-            },
-            Self::Compact => GenSpec {
-                max_tokens: Some(512),
-                temperature: Some(0.3),
-                ..Default::default()
-            },
-            Self::Stance | Self::EntityExtract => GenSpec {
-                max_tokens: Some(512),
-                temperature: Some(0.1),
-                ..Default::default()
-            },
-            Self::Answer => GenSpec {
-                max_tokens: Some(1024),
-                temperature: Some(0.3),
-                ..Default::default()
-            },
-            Self::Triples => GenSpec {
-                max_tokens: Some(1024),
-                temperature: Some(0.1),
-                ..Default::default()
-            },
-            Self::TopicLabel => GenSpec {
-                max_tokens: Some(100),
-                temperature: Some(0.3),
-                ..Default::default()
-            },
-            Self::QueryUnderstand => GenSpec {
-                max_tokens: Some(256),
-                temperature: Some(0.1),
-                ..Default::default()
-            },
-            Self::Contradiction => GenSpec {
-                max_tokens: Some(512),
-                temperature: Some(0.2),
-                ..Default::default()
-            },
-            Self::Summary => GenSpec {
-                max_tokens: Some(120),
-                temperature: Some(0.3),
-                ..Default::default()
-            },
-        }
+        ControllerConfig::default().system_task_spec(self)
     }
 }
 
@@ -357,26 +312,31 @@ impl InferenceHandle {
     }
 }
 
-pub fn start_controller_with_limit(max_active: usize) -> ControllerHandle {
+/// Start the inference controller with explicit configuration.
+pub fn start_controller_with_config(config: ControllerConfig) -> ControllerHandle {
+    tracing::debug!(?config, "starting inference controller");
     let (tx, rx): (Sender<ControllerCmd>, Receiver<ControllerCmd>) = channel();
-    thread::spawn(move || run_loop(rx, max_active));
+    thread::spawn(move || run_loop(rx, config));
     ControllerHandle { tx }
 }
 
-// keep the old helper as an unlimited default (or pick a sensible default)
+/// Start the inference controller with a custom max-active-chats limit.
+/// All other policy values use defaults.
+pub fn start_controller_with_limit(max_active: usize) -> ControllerHandle {
+    start_controller_with_config(ControllerConfig {
+        max_active_chats: max_active,
+        ..ControllerConfig::default()
+    })
+}
+
+/// Start the inference controller with default configuration.
 pub fn start_controller() -> ControllerHandle {
-    let default_max_active = 3;
-    start_controller_with_limit(default_max_active) // or e.g., 8
+    start_controller_with_config(ControllerConfig::default())
 }
 
 /// Capacity for bounded event channels to callers.
-/// Large enough to absorb burst without blocking the controller,
-/// small enough to bound memory if the receiver stalls.
+/// Re-exported for backward compatibility with tests and external crates.
 pub const EVENT_CHANNEL_CAPACITY: usize = 512;
-
-/// Default generation timeout in seconds. If a single generation takes longer
-/// than this without completing, the controller emits an error and stops it.
-const DEFAULT_GENERATION_TIMEOUT_SECS: u64 = 120;
 
 struct ChatStream {
     session: Arc<crate::gen2::session_rt::Session>,
@@ -462,20 +422,19 @@ fn stop_notify_and_end(engine: &Engine, mut chat: ChatStream) {
     let _ = engine.end_session(sid);
 }
 
-/// Evict the least recently used ChatStream (smallest `last_used`)
+/// Evict the least recently used ChatStream (smallest `last_used`).
+/// Delegates target selection to `scheduler::pick_eviction_target`.
 fn evict_lru(chats: &mut HashMap<String, ChatStream>) -> Option<(String, ChatStream)> {
-    chats
-        .iter()
-        .min_by_key(|(_k, c)| c.last_used) // oldest access wins
-        .map(|(k, _)| k.clone())
-        .and_then(|k| chats.remove_entry(&k))
+    scheduler::pick_eviction_target(chats).and_then(|k| chats.remove_entry(&k))
 }
 
-fn run_loop(rx: Receiver<ControllerCmd>, max_active: usize) {
+fn run_loop(rx: Receiver<ControllerCmd>, config: ControllerConfig) {
     let mut engine = Engine::new();
     let mut chats: HashMap<String, ChatStream> = HashMap::new();
-    let tick_idle = Duration::from_millis(2);
+    let tick_idle = config.tick_idle;
     let tick_busy = Duration::from_millis(0);
+    let max_active = config.max_active_chats;
+    let generation_timeout = config.generation_timeout;
 
     'outer: loop {
         // If there are no active chats, block waiting for a command.
@@ -509,22 +468,7 @@ fn run_loop(rx: Receiver<ControllerCmd>, max_active: usize) {
         }
 
         // Priority scheduling: primary chats tick before ephemeral.
-        // This ensures the active user chat always gets compute first;
-        // title gen and suggestions don't steal ticks from the live chat.
-        let mut keys: Vec<String> = Vec::new();
-        let mut ephemeral_start = 0usize;
-        for (id, chat) in chats.iter() {
-            if chat.paused || chat.finished || chat.puller.is_none() {
-                continue;
-            }
-            if !chat.ephemeral {
-                // Insert primary chats at the front
-                keys.insert(ephemeral_start, id.clone());
-                ephemeral_start += 1;
-            } else {
-                keys.push(id.clone());
-            }
-        }
+        let keys = scheduler::tick_order(&chats);
         let mut to_remove: Vec<String> = Vec::new();
 
         for id in keys {
@@ -533,8 +477,7 @@ fn run_loop(rx: Receiver<ControllerCmd>, max_active: usize) {
                     continue;
                 }
                 // ── Generation timeout ──────────────────────────────────
-                if chat.gen_started.elapsed() > Duration::from_secs(DEFAULT_GENERATION_TIMEOUT_SECS)
-                {
+                if chat.gen_started.elapsed() > generation_timeout {
                     tracing::warn!(
                         chat_id = %id,
                         elapsed_secs = chat.gen_started.elapsed().as_secs(),
@@ -546,7 +489,7 @@ fn run_loop(rx: Receiver<ControllerCmd>, max_active: usize) {
                             code: "timeout".into(),
                             message: format!(
                                 "generation timed out after {}s",
-                                DEFAULT_GENERATION_TIMEOUT_SECS
+                                generation_timeout.as_secs()
                             ),
                         },
                     );
@@ -629,8 +572,7 @@ fn run_loop(rx: Receiver<ControllerCmd>, max_active: usize) {
                     chat.finished = true;
                     chat.puller = None;
                 }
-                // NEW: schedule ephemeral cleanup after finishing
-                if chat.finished && chat.ephemeral {
+                if scheduler::should_cleanup(chat) {
                     to_remove.push(id.clone());
                 }
             }

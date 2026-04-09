@@ -361,6 +361,24 @@ impl Engine {
         dispatch!(self, e => e.capabilities(), Capabilities::empty())
     }
 
+    /// Infrastructure capability contract for the active backend.
+    ///
+    /// Unlike `capabilities()` (modality: text/images/audio), this describes
+    /// what the backend's runtime machinery supports (KV cache, poisoning, etc.).
+    pub fn backend_caps(&self) -> super::caps::BackendCaps {
+        match self {
+            #[cfg(feature = "backend-llamacpp")]
+            Self::LlamaCpp(_) => super::caps::BackendCaps::llamacpp(),
+            #[cfg(feature = "backend-mlx")]
+            Self::Mlx(_) => super::caps::BackendCaps::mlx(),
+            #[cfg(feature = "backend-onnx")]
+            Self::Onnx(_) => super::caps::BackendCaps::onnx(),
+            #[cfg(feature = "backend-external-api")]
+            Self::ExternalApi(_) => super::caps::BackendCaps::external_api(),
+            Self::Uninit => super::caps::BackendCaps::uninit(),
+        }
+    }
+
     pub fn does_model_support_images(&self) -> bool {
         dispatch!(self, e => e.does_model_support_images(), false)
     }

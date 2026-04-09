@@ -29,7 +29,9 @@ compile_error!(
     "No inference backend selected. Enable at least one of: backend-llamacpp, backend-mlx, backend-onnx, backend-external-api"
 );
 
+pub mod caps;
 mod dispatch;
+pub use caps::{BackendCaps, LatencyTier};
 pub use dispatch::{Engine, ModelBundle, Session, SessionId, TokenPuller};
 
 // Llama-specific internal types (needed by session_rt only when llamacpp is active)
