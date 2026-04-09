@@ -193,6 +193,7 @@ pub enum ControllerEvent {
 #[derive(Clone)]
 pub struct ControllerHandle {
     tx: Sender<ControllerCmd>,
+    config: ControllerConfig,
 }
 
 impl ControllerHandle {
@@ -200,13 +201,28 @@ impl ControllerHandle {
         self.tx.send(cmd).map_err(|e| e.to_string())
     }
 
+    /// The controller configuration. Use `config().event_channel_capacity`
+    /// when creating event channels to match the controller's policy.
+    pub fn config(&self) -> &ControllerConfig {
+        &self.config
+    }
+
     /// Create a `ControllerHandle` from a raw sender. Intended for testing
     /// in downstream crates (pio-daemon SSE tests, etc.).
     #[doc(hidden)]
     pub fn new_for_test(tx: Sender<ControllerCmd>) -> Self {
-        Self { tx }
+        Self {
+            tx,
+            config: ControllerConfig::default(),
+        }
     }
 }
+
+/// Lazily-initialized default config for remote/flock handles that don't
+/// carry their own config. Using `LazyLock` avoids allocation on every call.
+#[cfg(any(feature = "p2p-client", feature = "flock"))]
+static DEFAULT_CONFIG: std::sync::LazyLock<ControllerConfig> =
+    std::sync::LazyLock::new(ControllerConfig::default);
 
 /// Unified handle that dispatches to either a local or remote controller.
 ///
@@ -243,7 +259,19 @@ impl InferenceHandle {
         }
     }
 
-    /// Fire a system-level inference task using the task's default GenSpec.
+    /// The controller config driving this handle's policy decisions.
+    /// Returns default config for remote/flock handles.
+    pub fn config(&self) -> &ControllerConfig {
+        match self {
+            Self::Local(h) => h.config(),
+            #[cfg(feature = "p2p-client")]
+            Self::Remote(_) => &DEFAULT_CONFIG,
+            #[cfg(feature = "flock")]
+            Self::Flock(_) => &DEFAULT_CONFIG,
+        }
+    }
+
+    /// Fire a system-level inference task using the controller's configured GenSpec.
     ///
     /// Prompt in, full text out, session auto-cleaned. This is the primary
     /// entry point for internal LLM decision-making.
@@ -253,7 +281,7 @@ impl InferenceHandle {
         chat_id: impl Into<String>,
         messages: Vec<Message>,
     ) -> Result<String, crate::error::PioError> {
-        let gen_spec = task.default_gen_spec();
+        let gen_spec = self.config().system_task_spec(&task);
         self.system_infer_with(task, chat_id, messages, gen_spec)
             .await
     }
@@ -280,7 +308,8 @@ impl InferenceHandle {
     ) -> Result<String, crate::error::PioError> {
         use crate::error::{ErrorCode, PioError};
 
-        let (tx, rx) = std::sync::mpsc::sync_channel::<ControllerEvent>(EVENT_CHANNEL_CAPACITY);
+        let capacity = self.config().event_channel_capacity;
+        let (tx, rx) = std::sync::mpsc::sync_channel::<ControllerEvent>(capacity);
         let cmd = ControllerCmd::SystemInfer {
             task,
             chat_id: chat_id.into(),
@@ -316,8 +345,12 @@ impl InferenceHandle {
 pub fn start_controller_with_config(config: ControllerConfig) -> ControllerHandle {
     tracing::debug!(?config, "starting inference controller");
     let (tx, rx): (Sender<ControllerCmd>, Receiver<ControllerCmd>) = channel();
+    let handle_config = config.clone();
     thread::spawn(move || run_loop(rx, config));
-    ControllerHandle { tx }
+    ControllerHandle {
+        tx,
+        config: handle_config,
+    }
 }
 
 /// Start the inference controller with a custom max-active-chats limit.
@@ -334,8 +367,11 @@ pub fn start_controller() -> ControllerHandle {
     start_controller_with_config(ControllerConfig::default())
 }
 
-/// Capacity for bounded event channels to callers.
-/// Re-exported for backward compatibility with tests and external crates.
+/// Default event channel capacity — matches `ControllerConfig::default().event_channel_capacity`.
+///
+/// Kept as a constant for backward compatibility with external crates and tests
+/// that create their own channels. Prefer `handle.config().event_channel_capacity`
+/// when a `ControllerHandle` or `InferenceHandle` is available.
 pub const EVENT_CHANNEL_CAPACITY: usize = 512;
 
 struct ChatStream {
@@ -425,7 +461,8 @@ fn stop_notify_and_end(engine: &Engine, mut chat: ChatStream) {
 /// Evict the least recently used ChatStream (smallest `last_used`).
 /// Delegates target selection to `scheduler::pick_eviction_target`.
 fn evict_lru(chats: &mut HashMap<String, ChatStream>) -> Option<(String, ChatStream)> {
-    scheduler::pick_eviction_target(chats).and_then(|k| chats.remove_entry(&k))
+    let views = scheduler::views(chats);
+    scheduler::pick_eviction_target(&views).and_then(|k| chats.remove_entry(&k))
 }
 
 fn run_loop(rx: Receiver<ControllerCmd>, config: ControllerConfig) {
@@ -435,6 +472,8 @@ fn run_loop(rx: Receiver<ControllerCmd>, config: ControllerConfig) {
     let tick_busy = Duration::from_millis(0);
     let max_active = config.max_active_chats;
     let generation_timeout = config.generation_timeout;
+    // Cached backend capabilities — updated on model load.
+    let mut caps = engine.backend_caps();
 
     'outer: loop {
         // If there are no active chats, block waiting for a command.
@@ -444,7 +483,7 @@ fn run_loop(rx: Receiver<ControllerCmd>, config: ControllerConfig) {
                 Ok(ControllerCmd::Shutdown) => break,
                 Ok(cmd) => {
                     if let ControlFlow::Break =
-                        dispatch_cmd(cmd, &mut engine, &mut chats, max_active)
+                        dispatch_cmd(cmd, &mut engine, &mut chats, max_active, &mut caps)
                     {
                         break;
                     }
@@ -458,7 +497,9 @@ fn run_loop(rx: Receiver<ControllerCmd>, config: ControllerConfig) {
         match rx.recv_timeout(tick_idle) {
             Ok(ControllerCmd::Shutdown) => break 'outer,
             Ok(cmd) => {
-                if let ControlFlow::Break = dispatch_cmd(cmd, &mut engine, &mut chats, max_active) {
+                if let ControlFlow::Break =
+                    dispatch_cmd(cmd, &mut engine, &mut chats, max_active, &mut caps)
+                {
                     break 'outer;
                 }
             }
@@ -468,7 +509,8 @@ fn run_loop(rx: Receiver<ControllerCmd>, config: ControllerConfig) {
         }
 
         // Priority scheduling: primary chats tick before ephemeral.
-        let keys = scheduler::tick_order(&chats);
+        let sched_views = scheduler::views(&chats);
+        let keys = scheduler::tick_order(&sched_views);
         let mut to_remove: Vec<String> = Vec::new();
 
         for id in keys {
@@ -546,7 +588,7 @@ fn run_loop(rx: Receiver<ControllerCmd>, config: ControllerConfig) {
                     Ok(Some(Ok(TokenEvent::Paused))) => { /* handled by paused flag */ }
                     Ok(Some(Ok(TokenEvent::Special(_)))) => { /* no-op for now */ }
                     Ok(Some(Err(e))) => {
-                        let (code, msg) = if chat.session.is_poisoned() {
+                        let (code, msg) = if caps.poison_detection && chat.session.is_poisoned() {
                             (
                                 "session_poisoned",
                                 format!("session state lost (possible FFI crash): {:?}", e),
@@ -572,7 +614,7 @@ fn run_loop(rx: Receiver<ControllerCmd>, config: ControllerConfig) {
                     chat.finished = true;
                     chat.puller = None;
                 }
-                if scheduler::should_cleanup(chat) {
+                if scheduler::should_cleanup(&chat.schedule_view()) {
                     to_remove.push(id.clone());
                 }
             }
@@ -684,6 +726,7 @@ fn dispatch_cmd(
     engine: &mut Engine,
     chats: &mut HashMap<String, ChatStream>,
     max_active: usize,
+    caps: &mut crate::gen2::backend::caps::BackendCaps,
 ) -> ControlFlow {
     match cmd {
         ControllerCmd::LoadModel {
@@ -711,6 +754,8 @@ fn dispatch_cmd(
                     stop_notify_and_end(engine, chat);
                 }
                 engine.hooks().clear();
+                // Refresh cached capabilities for the newly loaded backend.
+                *caps = engine.backend_caps();
             }
             let _ = resp.send(r);
             ControlFlow::Continue
@@ -836,9 +881,11 @@ fn dispatch_cmd(
                         );
                     }
                     Ok(session) => {
-                        let dropped = session.initial_messages_dropped();
-                        if dropped > 0 {
-                            try_emit(&tx, ControllerEvent::ContextTruncated(dropped));
+                        if caps.context_truncation_tracking {
+                            let dropped = session.initial_messages_dropped();
+                            if dropped > 0 {
+                                try_emit(&tx, ControllerEvent::ContextTruncated(dropped));
+                            }
                         }
                         let sid = session.id();
                         engine.hooks().register_with_id(
