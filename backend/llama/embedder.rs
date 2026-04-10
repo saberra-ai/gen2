@@ -3,7 +3,7 @@ use anyhow::{Context, Result};
 use llama_cpp_2::context::LlamaContext;
 use llama_cpp_2::llama_batch::LlamaBatch;
 use llama_cpp_2::{
-    context::params::LlamaContextParams,
+    context::params::{LlamaContextParams, LlamaPoolingType},
     llama_backend::LlamaBackend,
     model::params::LlamaModelParams,
     model::{AddBos, LlamaModel},
@@ -29,15 +29,24 @@ impl LlamaEmbedder {
     }
 
     pub fn embed(&self, prompts: &[&str], normalize: bool) -> Result<Vec<Vec<f32>>> {
-        let ctx_params = LlamaContextParams::default()
-            .with_n_threads_batch(std::thread::available_parallelism()?.get().try_into()?)
-            .with_embeddings(true);
-
-        let mut ctx = self
-            .model
-            .new_context(&self.backend, ctx_params)
-            .with_context(|| "unable to create the llama_context")?;
-
+        // Tokenize first so we know how many sequences we actually need and
+        // can size the context to fit. Encoder-only embedding models
+        // (EmbeddingGemma, BGE, etc.) impose two hard constraints that
+        // decoder models don't:
+        //
+        //   1. `n_seq_max` must be ≥ the number of sequences packed into a
+        //      single batch. Default is 1 → `invalid seq_id[..] >= 1`
+        //      whenever we try to batch multiple prompts.
+        //
+        //   2. `n_ubatch` (micro-batch size) must be ≥ the number of tokens
+        //      decoded in a single `ctx.decode()` call. Default is 512 →
+        //      `encoder requires n_ubatch >= n_tokens` crashes whenever a
+        //      batch exceeds 512 tokens total.
+        //
+        // We solve both by processing one prompt at a time with a context
+        // sized to that specific prompt. This is slightly slower than
+        // packed batching but robust: every prompt gets its own correctly-
+        // sized context and there's no cross-prompt budget contention.
         let tokens_lines_list = prompts
             .iter()
             .map(|line| self.model.str_to_token(line, AddBos::Always))
@@ -46,61 +55,59 @@ impl LlamaEmbedder {
 
         // One slot per input; empty vec means no embedding (tokenless after tokenization).
         let mut output = vec![Vec::new(); prompts.len()];
-        let pending: Vec<(usize, &Vec<_>)> = tokens_lines_list
-            .iter()
-            .enumerate()
-            .filter(|(_, t)| !t.is_empty())
-            .collect();
 
-        if pending.is_empty() {
-            return Ok(output);
-        }
+        // Hard cap on context size — matches EmbeddingGemma 300M's native
+        // 2048 training limit and prevents allocating huge contexts for a
+        // single short query.
+        const MAX_EMBED_CTX: u32 = 2048;
+        let model_max_ctx = self.model.n_ctx_train().min(MAX_EMBED_CTX);
+        let n_threads = std::thread::available_parallelism()?.get().try_into()?;
 
-        let n_ctx = ctx.n_ctx() as usize;
-        let n_seq = pending.len().max(1) as i32;
-        let mut batch = LlamaBatch::new(n_ctx, n_seq);
-        let mut max_seq_id_batch = 0;
-        let mut decode_results = Vec::new();
+        // Create ONE context at the full supported size and reuse it for
+        // every prompt in this call. Metal kernel JIT compilation is the
+        // dominant cost (~5-10s), so creating a new context per prompt
+        // would make backfill impossibly slow. Each `batch_decode` call
+        // clears the KV cache, so sequential reuse is safe.
+        let ctx_size = model_max_ctx;
+        let n_ctx_nz =
+            std::num::NonZeroU32::new(ctx_size).with_context(|| "context size must be non-zero")?;
 
-        for (_, tokens) in &pending {
-            // A single sequence must not exceed n_ctx; otherwise we would hit the flush branch
-            // with an empty batch and call decode on zero tokens (llama: n_tokens == 0).
-            let tokens_slice = if tokens.len() > n_ctx {
-                &tokens[..n_ctx]
+        let ctx_params = LlamaContextParams::default()
+            .with_n_ctx(Some(n_ctx_nz))
+            .with_n_batch(ctx_size)
+            .with_n_ubatch(ctx_size)
+            .with_n_seq_max(1)
+            .with_n_threads_batch(n_threads)
+            .with_embeddings(true)
+            .with_pooling_type(LlamaPoolingType::Mean);
+
+        let mut ctx = self
+            .model
+            .new_context(&self.backend, ctx_params)
+            .with_context(|| "unable to create the llama_context")?;
+
+        let mut batch = LlamaBatch::new(ctx_size as usize, 1);
+
+        for (orig_idx, tokens) in tokens_lines_list.iter().enumerate() {
+            if tokens.is_empty() {
+                continue;
+            }
+
+            // Truncate to ctx_size — longer inputs would exceed n_ctx.
+            let truncated: &[_] = if tokens.len() > ctx_size as usize {
+                &tokens[..ctx_size as usize]
             } else {
                 tokens.as_slice()
             };
 
-            // Flush the batch if the next prompt would exceed our batch size.
-            // Never decode when nothing was added yet (max_seq_id_batch == 0).
-            if (batch.n_tokens() as usize + tokens_slice.len()) > n_ctx && max_seq_id_batch > 0 {
-                batch_decode(
-                    &mut ctx,
-                    &mut batch,
-                    max_seq_id_batch,
-                    &mut decode_results,
-                    normalize,
-                )?;
-                max_seq_id_batch = 0;
+            batch.clear();
+            batch.add_sequence(truncated, 0, false)?;
+
+            let mut single_out: Vec<Vec<f32>> = Vec::with_capacity(1);
+            batch_decode(&mut ctx, &mut batch, 1, &mut single_out, normalize)?;
+            if let Some(emb) = single_out.into_iter().next() {
+                output[orig_idx] = emb;
             }
-
-            batch.add_sequence(tokens_slice, max_seq_id_batch, false)?;
-            max_seq_id_batch += 1;
-        }
-        // Handle final batch (skip if all sequences were already flushed in the loop)
-        if max_seq_id_batch > 0 {
-            batch_decode(
-                &mut ctx,
-                &mut batch,
-                max_seq_id_batch,
-                &mut decode_results,
-                normalize,
-            )?;
-        }
-
-        debug_assert_eq!(decode_results.len(), pending.len());
-        for ((orig_idx, _), emb) in pending.iter().zip(decode_results) {
-            output[*orig_idx] = emb;
         }
 
         Ok(output)
