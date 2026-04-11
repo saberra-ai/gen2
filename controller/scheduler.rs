@@ -9,7 +9,7 @@ use std::time::Instant;
 
 /// Backend-independent snapshot of the fields a scheduling decision needs.
 ///
-/// Created from `ChatStream` in the controller; testable without any backend.
+/// Created from `ChatRuntime` in the controller; testable without any backend.
 #[derive(Debug)]
 pub(super) struct ScheduleView {
     pub ephemeral: bool,
@@ -19,14 +19,14 @@ pub(super) struct ScheduleView {
     pub last_used: Instant,
 }
 
-impl super::ChatStream {
+impl super::ChatRuntime {
     /// Snapshot the scheduling-relevant fields.
     pub(super) fn schedule_view(&self) -> ScheduleView {
         ScheduleView {
-            ephemeral: self.ephemeral,
-            paused: self.paused,
-            finished: self.finished,
-            has_puller: self.puller.is_some(),
+            ephemeral: self.workload.is_system_task(),
+            paused: self.state.is_paused(),
+            finished: self.state.is_terminal(),
+            has_puller: self.state.is_generating(),
             last_used: self.last_used,
         }
     }
@@ -34,7 +34,7 @@ impl super::ChatStream {
 
 /// Build a schedule-view map from the live chats. Cheap — copies a few bools
 /// and an `Instant` per chat, no Arc clones.
-pub(super) fn views(chats: &HashMap<String, super::ChatStream>) -> HashMap<String, ScheduleView> {
+pub(super) fn views(chats: &HashMap<String, super::ChatRuntime>) -> HashMap<String, ScheduleView> {
     chats
         .iter()
         .map(|(k, c)| (k.clone(), c.schedule_view()))
