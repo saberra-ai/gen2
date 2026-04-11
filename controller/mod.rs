@@ -1,5 +1,6 @@
 mod config;
 mod scheduler;
+mod state_transitions;
 
 pub use config::ControllerConfig;
 
@@ -68,6 +69,7 @@ pub(super) enum CompletionReason {
 
 /// Why a generation failed or was aborted as an error.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[allow(dead_code)]
 pub(super) enum FailureReason {
     Timeout,
     GenerationError,
@@ -76,7 +78,15 @@ pub(super) enum FailureReason {
     PullerCreateFailed,
 }
 
+/// Terminal classification for [`terminate_runtime`] / [`terminate_runtime_owned`].
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub(super) enum RuntimeOutcome {
+    Completed(CompletionReason),
+    Failed(FailureReason),
+}
+
 /// Explicit lifecycle for a single chat runtime (no implicit bool matrix).
+#[allow(clippy::large_enum_variant)]
 pub(super) enum ChatRunState {
     /// Session may exist but no generation is active (reserved for future use).
     Idle,
@@ -104,12 +114,71 @@ impl ChatRunState {
     pub(super) fn is_terminal(&self) -> bool {
         matches!(self, Self::Completed(_) | Self::Failed(_))
     }
+
+    /// `StartChat` / `ContinueChat` / `ResumeChat` may call `Session::pull` only when not mid-flight.
+    #[allow(dead_code)]
+    pub(super) fn allows_user_pull_start(&self) -> bool {
+        !self.is_generating()
+    }
+
+    /// Monotonic start instant for the active puller, if any.
+    pub(super) fn generation_started_at(&self) -> Option<Instant> {
+        match self {
+            Self::Generating { gen_started, .. } => Some(*gen_started),
+            _ => None,
+        }
+    }
 }
 
 impl WorkloadKind {
     pub(super) fn is_system_task(&self) -> bool {
         matches!(self, Self::SystemTask(_))
     }
+}
+
+fn runtime_outcome_from_state(chat: &ChatRuntime) -> RuntimeOutcome {
+    match &chat.state {
+        ChatRunState::Completed(r) => RuntimeOutcome::Completed(*r),
+        ChatRunState::Failed(f) => RuntimeOutcome::Failed(*f),
+        _ => RuntimeOutcome::Completed(CompletionReason::StoppedByUser),
+    }
+}
+
+/// End engine session bookkeeping for a session id (no `ControllerEvent`).
+fn deregister_and_end_session(engine: &Engine, sid: u64) {
+    engine.hooks().deregister(sid);
+    let _ = engine.end_session(sid);
+}
+
+/// Stop inference, notify UI, drop hooks, and end the engine session — one path.
+fn finalize_runtime_session(engine: &Engine, mut chat: ChatRuntime) {
+    let sid = chat.session.id();
+    chat.session.stop();
+    try_emit(&chat.tx, ControllerEvent::Stopped);
+    deregister_and_end_session(engine, sid);
+}
+
+/// Remove a runtime from the map (if present) and finalize its engine session once.
+fn terminate_runtime(
+    engine: &Engine,
+    chats: &mut HashMap<String, ChatRuntime>,
+    chat_id: &str,
+    outcome: RuntimeOutcome,
+) {
+    if let Some(chat) = chats.remove(chat_id) {
+        terminate_runtime_owned(engine, chat, outcome);
+    }
+}
+
+/// Finalize an owned runtime: record terminal outcome if not already terminal, then teardown.
+fn terminate_runtime_owned(engine: &Engine, mut chat: ChatRuntime, outcome: RuntimeOutcome) {
+    if !chat.state.is_terminal() {
+        chat.state = match outcome {
+            RuntimeOutcome::Completed(r) => ChatRunState::Completed(r),
+            RuntimeOutcome::Failed(f) => ChatRunState::Failed(f),
+        };
+    }
+    finalize_runtime_session(engine, chat);
 }
 
 impl SystemTask {
@@ -461,8 +530,23 @@ pub(super) struct ChatRuntime {
 impl ChatRuntime {
     /// `true` when this runtime should receive scheduler ticks.
     pub(super) fn should_tick(&self) -> bool {
-        matches!(self.state, ChatRunState::Generating { .. })
+        self.state.is_generating()
     }
+}
+
+/// Enter [`ChatRunState::Generating`] with a fresh puller (Start / Continue / Resume).
+fn attach_generating_puller(
+    chat: &mut ChatRuntime,
+    puller: crate::gen2::generation::TokenPuller,
+    pull_spec: GenSpec,
+) {
+    let last_gen_spec = pull_spec.clone();
+    chat.last_gen_spec = last_gen_spec;
+    chat.state = ChatRunState::Generating {
+        puller,
+        gen_started: Instant::now(),
+        last_gen_spec: pull_spec,
+    };
 }
 
 /// Hook listener forwarding final stats for a specific session id back to the UI channel.
@@ -529,14 +613,6 @@ fn build_load_request(
     req
 }
 
-fn stop_notify_and_end(engine: &Engine, mut chat: ChatRuntime) {
-    let sid = chat.session.id();
-    chat.session.stop();
-    try_emit(&chat.tx, ControllerEvent::Stopped);
-    engine.hooks().deregister(sid);
-    let _ = engine.end_session(sid);
-}
-
 /// Evict the least recently used runtime (smallest `last_used`).
 /// Delegates target selection to `scheduler::pick_eviction_target`.
 fn evict_lru(chats: &mut HashMap<String, ChatRuntime>) -> Option<(String, ChatRuntime)> {
@@ -598,18 +674,16 @@ fn run_loop(rx: Receiver<ControllerCmd>, config: ControllerConfig) {
                     continue;
                 }
                 // ── Generation timeout ──────────────────────────────────
-                let timed_out = if let ChatRunState::Generating { gen_started, .. } = &chat.state {
-                    gen_started.elapsed() > generation_timeout
-                } else {
-                    false
-                };
+                let timed_out = chat
+                    .state
+                    .generation_started_at()
+                    .is_some_and(|t| t.elapsed() > generation_timeout);
                 if timed_out {
-                    let elapsed_secs =
-                        if let ChatRunState::Generating { gen_started, .. } = &chat.state {
-                            gen_started.elapsed().as_secs()
-                        } else {
-                            0
-                        };
+                    let elapsed_secs = chat
+                        .state
+                        .generation_started_at()
+                        .map(|t| t.elapsed().as_secs())
+                        .unwrap_or(0);
                     tracing::warn!(
                         chat_id = %id,
                         elapsed_secs,
@@ -702,10 +776,9 @@ fn run_loop(rx: Receiver<ControllerCmd>, config: ControllerConfig) {
                         chat.state = ChatRunState::Completed(CompletionReason::StoppedByUser);
                     }
                 }
-                // If the receiver is gone, stop wasting compute on this chat
-                if receiver_dead {
-                    chat.state = ChatRunState::Completed(CompletionReason::ReceiverDropped);
-                }
+                let st = std::mem::replace(&mut chat.state, ChatRunState::Idle);
+                chat.state =
+                    state_transitions::apply_receiver_disconnect_override(receiver_dead, st);
                 if scheduler::should_cleanup(&chat.schedule_view()) {
                     to_remove.push(id.clone());
                 }
@@ -714,7 +787,8 @@ fn run_loop(rx: Receiver<ControllerCmd>, config: ControllerConfig) {
 
         for id in to_remove.drain(..) {
             if let Some(chat) = chats.remove(&id) {
-                stop_notify_and_end(&engine, chat);
+                let outcome = runtime_outcome_from_state(&chat);
+                terminate_runtime_owned(&engine, chat, outcome);
             }
         }
         // If we're still busy (have chats), yield very briefly to avoid hogging CPU.
@@ -725,7 +799,11 @@ fn run_loop(rx: Receiver<ControllerCmd>, config: ControllerConfig) {
 
     // Drain & notify any remaining chats on shutdown
     for (_id, chat) in chats.drain() {
-        stop_notify_and_end(&engine, chat);
+        terminate_runtime_owned(
+            &engine,
+            chat,
+            RuntimeOutcome::Completed(CompletionReason::ControllerShutdown),
+        );
     }
 }
 
@@ -736,6 +814,7 @@ enum ControlFlow {
 
 /// Shared logic for ephemeral (auto-cleaning) sessions: title generation,
 /// compaction summaries, suggestions, etc.
+#[allow(clippy::too_many_arguments)]
 fn start_ephemeral(
     engine: &mut Engine,
     chats: &mut HashMap<String, ChatRuntime>,
@@ -792,24 +871,20 @@ fn start_ephemeral(
                             message: format!("{:?}", e),
                         },
                     );
+                    deregister_and_end_session(engine, sid);
                 }
                 Ok(puller) => {
-                    let last_gen_spec = gen_spec.clone();
-                    let _ = chats.insert(
-                        chat_id,
-                        ChatRuntime {
-                            session,
-                            tx,
-                            workload: WorkloadKind::SystemTask(task),
-                            last_used: Instant::now(),
-                            last_gen_spec,
-                            state: ChatRunState::Generating {
-                                puller,
-                                gen_started: Instant::now(),
-                                last_gen_spec: gen_spec,
-                            },
-                        },
-                    );
+                    let pull_spec = gen_spec;
+                    let mut runtime = ChatRuntime {
+                        session,
+                        tx,
+                        workload: WorkloadKind::SystemTask(task),
+                        last_used: Instant::now(),
+                        last_gen_spec: pull_spec.clone(),
+                        state: ChatRunState::Idle,
+                    };
+                    attach_generating_puller(&mut runtime, puller, pull_spec);
+                    let _ = chats.insert(chat_id, runtime);
                 }
             }
         }
@@ -846,7 +921,11 @@ fn dispatch_cmd(
             })();
             if r.is_ok() {
                 for (_, chat) in chats.drain() {
-                    stop_notify_and_end(engine, chat);
+                    terminate_runtime_owned(
+                        engine,
+                        chat,
+                        RuntimeOutcome::Completed(CompletionReason::ModelReloaded),
+                    );
                 }
                 engine.hooks().clear();
                 // Refresh cached capabilities for the newly loaded backend.
@@ -856,10 +935,7 @@ fn dispatch_cmd(
             ControlFlow::Continue
         }
         ControllerCmd::ApplySettings { settings, resp } => {
-            let active = chats
-                .values()
-                .filter(|c| matches!(c.state, ChatRunState::Generating { .. }))
-                .count();
+            let active = chats.values().filter(|c| c.state.is_generating()).count();
             if active > 0 {
                 tracing::info!(
                     active_chats = active,
@@ -908,7 +984,7 @@ fn dispatch_cmd(
             if let Some(chat) = chats.get_mut(&chat_id) {
                 chat.last_used = Instant::now();
                 chat.tx = tx.clone();
-                if matches!(chat.state, ChatRunState::Generating { .. }) {
+                if chat.state.is_generating() {
                     try_emit(
                         &tx,
                         ControllerEvent::Error {
@@ -941,13 +1017,7 @@ fn dispatch_cmd(
                 let pull_spec = apply_generation_defaults(engine, gen_spec.clone());
                 match chat.session.pull(pull_spec.clone()) {
                     Ok(puller) => {
-                        let last_gen_spec = pull_spec.clone();
-                        chat.last_gen_spec = last_gen_spec.clone();
-                        chat.state = ChatRunState::Generating {
-                            puller,
-                            gen_started: Instant::now(),
-                            last_gen_spec: pull_spec,
-                        };
+                        attach_generating_puller(chat, puller, pull_spec);
                     }
                     Err(e) => {
                         try_emit(
@@ -965,7 +1035,11 @@ fn dispatch_cmd(
                 if chats.len() >= max_active
                     && let Some((_k, victim)) = evict_lru(chats)
                 {
-                    stop_notify_and_end(engine, victim);
+                    terminate_runtime_owned(
+                        engine,
+                        victim,
+                        RuntimeOutcome::Completed(CompletionReason::Evicted),
+                    );
                 }
                 match engine.start_session(SessionSpec {
                     messages,
@@ -998,8 +1072,7 @@ fn dispatch_cmd(
                         let pull_spec = apply_generation_defaults(engine, gen_spec);
                         match session.pull(pull_spec.clone()) {
                             Err(e) => {
-                                engine.hooks().deregister(sid);
-                                let _ = engine.end_session(sid);
+                                deregister_and_end_session(engine, sid);
                                 try_emit(
                                     &tx,
                                     ControllerEvent::Error {
@@ -1009,25 +1082,22 @@ fn dispatch_cmd(
                                 );
                             }
                             Ok(puller) => {
-                                let last_gen_spec = pull_spec.clone();
-                                let evicted = chats.insert(
-                                    chat_id,
-                                    ChatRuntime {
-                                        session,
-                                        tx,
-                                        workload: WorkloadKind::PrimaryChat,
-                                        last_used: Instant::now(),
-                                        last_gen_spec,
-                                        state: ChatRunState::Generating {
-                                            puller,
-                                            gen_started: Instant::now(),
-                                            last_gen_spec: pull_spec,
-                                        },
-                                    },
-                                );
+                                let mut runtime = ChatRuntime {
+                                    session,
+                                    tx,
+                                    workload: WorkloadKind::PrimaryChat,
+                                    last_used: Instant::now(),
+                                    last_gen_spec: pull_spec.clone(),
+                                    state: ChatRunState::Idle,
+                                };
+                                attach_generating_puller(&mut runtime, puller, pull_spec);
+                                let evicted = chats.insert(chat_id, runtime);
                                 if let Some(evicted_chat) = evicted {
-                                    evicted_chat.session.stop();
-                                    try_emit(&evicted_chat.tx, ControllerEvent::Stopped);
+                                    terminate_runtime_owned(
+                                        engine,
+                                        evicted_chat,
+                                        RuntimeOutcome::Completed(CompletionReason::Evicted),
+                                    );
                                 }
                             }
                         }
@@ -1045,7 +1115,7 @@ fn dispatch_cmd(
             // Resume from last point on the same Session
             if let Some(chat) = chats.get_mut(&chat_id) {
                 chat.tx = tx.clone();
-                if matches!(chat.state, ChatRunState::Generating { .. }) {
+                if chat.state.is_generating() {
                     try_emit(
                         &tx,
                         ControllerEvent::Error {
@@ -1076,13 +1146,7 @@ fn dispatch_cmd(
                 let pull_spec = apply_generation_defaults(engine, gen_spec);
                 match chat.session.pull(pull_spec.clone()) {
                     Ok(puller) => {
-                        let last_gen_spec = pull_spec.clone();
-                        chat.last_gen_spec = last_gen_spec.clone();
-                        chat.state = ChatRunState::Generating {
-                            puller,
-                            gen_started: Instant::now(),
-                            last_gen_spec: pull_spec,
-                        };
+                        attach_generating_puller(chat, puller, pull_spec);
                     }
                     Err(e) => {
                         try_emit(
@@ -1125,14 +1189,18 @@ fn dispatch_cmd(
             ControlFlow::Continue
         }
         ControllerCmd::StopChat { chat_id } => {
-            if let Some(chat) = chats.remove(&chat_id) {
-                stop_notify_and_end(engine, chat);
-            }
+            terminate_runtime(
+                engine,
+                chats,
+                &chat_id,
+                RuntimeOutcome::Completed(CompletionReason::StoppedByUser),
+            );
             ControlFlow::Continue
         }
         ControllerCmd::PauseChat { chat_id } => {
             if let Some(chat) = chats.get_mut(&chat_id) {
                 chat.session.pause();
+                // Only `Generating` drops the live puller; other states keep their marker unchanged.
                 chat.state = match std::mem::replace(&mut chat.state, ChatRunState::Idle) {
                     ChatRunState::Generating {
                         puller,
@@ -1152,19 +1220,14 @@ fn dispatch_cmd(
             if let Some(chat) = chats.get_mut(&chat_id) {
                 chat.session.resume();
                 // Recreate the puller whenever not actively generating (pause, completed, etc.).
-                if !matches!(chat.state, ChatRunState::Generating { .. }) {
+                if !chat.state.is_generating() {
                     let spec = match &chat.state {
                         ChatRunState::Paused { last_gen_spec } => last_gen_spec.clone(),
                         _ => chat.last_gen_spec.clone(),
                     };
-                    match chat.session.pull(spec) {
+                    match chat.session.pull(spec.clone()) {
                         Ok(puller) => {
-                            let last_gen_spec = chat.last_gen_spec.clone();
-                            chat.state = ChatRunState::Generating {
-                                puller,
-                                gen_started: Instant::now(),
-                                last_gen_spec,
-                            };
+                            attach_generating_puller(chat, puller, spec);
                         }
                         Err(e) => {
                             try_emit(
@@ -1288,6 +1351,44 @@ mod tests {
             };
             assert_eq!(inner, f);
         }
+    }
+
+    /// `terminate_runtime` on a missing id must not panic (StopChat unknown id relies on this).
+    #[test]
+    fn terminate_runtime_missing_chat_is_no_op() {
+        let engine = Engine::new();
+        let mut chats: HashMap<String, ChatRuntime> = HashMap::new();
+        terminate_runtime(
+            &engine,
+            &mut chats,
+            "does-not-exist",
+            RuntimeOutcome::Completed(CompletionReason::StoppedByUser),
+        );
+        assert!(chats.is_empty());
+    }
+
+    /// Shutdown runs `terminate_runtime_owned` for each remaining runtime — must not panic.
+    #[test]
+    fn shutdown_drains_active_chat_without_panic() {
+        let handle = start_controller();
+        let (tx, _rx) = sync_channel::<ControllerEvent>(EVENT_CHANNEL_CAPACITY);
+        handle
+            .send(ControllerCmd::StartChat {
+                chat_id: "drain-me".into(),
+                messages: vec![],
+                gen_spec: GenSpec::default(),
+                tx,
+            })
+            .expect("start chat");
+        handle.send(ControllerCmd::Shutdown).expect("shutdown");
+        std::thread::sleep(std::time::Duration::from_millis(100));
+        let (resp_tx, _resp_rx) = std::sync::mpsc::channel();
+        assert!(
+            handle
+                .send(ControllerCmd::IsModelLoaded { resp: resp_tx })
+                .is_err(),
+            "controller thread should have exited after shutdown"
+        );
     }
 
     #[test]
