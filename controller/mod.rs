@@ -235,6 +235,9 @@ pub enum InferenceHandle {
     Remote(std::sync::Arc<crate::p2p::client::ResilientRemoteHandle>),
     #[cfg(feature = "flock")]
     Flock(std::sync::Arc<crate::p2p::flock::handle::FlockHandle>),
+    /// Flock **gateway** consumer (v=2 invite lease) — not peer pool routing.
+    #[cfg(feature = "flock")]
+    RegisteredFlockGateway(std::sync::Arc<crate::p2p::flock::RegisteredFlockInferenceHandle>),
 }
 
 impl InferenceHandle {
@@ -245,6 +248,8 @@ impl InferenceHandle {
             Self::Remote(h) => h.send(cmd),
             #[cfg(feature = "flock")]
             Self::Flock(h) => h.send(cmd),
+            #[cfg(feature = "flock")]
+            Self::RegisteredFlockGateway(h) => h.send(cmd),
         }
     }
 
@@ -256,6 +261,8 @@ impl InferenceHandle {
             Self::Remote(h) => h.liveness(),
             #[cfg(feature = "flock")]
             Self::Flock(h) => h.liveness(),
+            #[cfg(feature = "flock")]
+            Self::RegisteredFlockGateway(_) => crate::p2p::heartbeat::Liveness::Alive,
         }
     }
 
@@ -268,6 +275,8 @@ impl InferenceHandle {
             Self::Remote(_) => &DEFAULT_CONFIG,
             #[cfg(feature = "flock")]
             Self::Flock(_) => &DEFAULT_CONFIG,
+            #[cfg(feature = "flock")]
+            Self::RegisteredFlockGateway(_) => &DEFAULT_CONFIG,
         }
     }
 
