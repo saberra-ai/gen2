@@ -113,6 +113,16 @@ fn handle_status_command(state: &mut ControllerState, cmd: ControllerCmd) -> Con
             let _ = resp.send(state.metrics.snapshot());
             ControlFlow::Continue
         }
+        ControllerCmd::GetControllerRuntimeSnapshot { resp } => {
+            let _ = resp.send(super::runtime_snapshot::build_runtime_snapshot(state));
+            ControlFlow::Continue
+        }
+        ControllerCmd::GetControllerObservabilitySnapshot { resp } => {
+            let _ = resp.send(super::observability_snapshot::build_observability_snapshot(
+                state,
+            ));
+            ControlFlow::Continue
+        }
         _ => unreachable!("handle_status_command: non-status cmd"),
     }
 }
@@ -443,7 +453,11 @@ pub(super) fn dispatch_cmd(cmd: ControllerCmd, state: &mut ControllerState) -> C
         | ControllerCmd::IsEmbedderLoaded { .. }
         | ControllerCmd::IsMmprojLoaded { .. }
         | ControllerCmd::IsChatLoaded { .. }
-        | ControllerCmd::GetControllerMetrics { .. } => handle_status_command(state, cmd),
+        | ControllerCmd::GetControllerMetrics { .. }
+        | ControllerCmd::GetControllerRuntimeSnapshot { .. }
+        | ControllerCmd::GetControllerObservabilitySnapshot { .. } => {
+            handle_status_command(state, cmd)
+        }
         ControllerCmd::StartChat { .. }
         | ControllerCmd::ContinueChat { .. }
         | ControllerCmd::StopChat { .. }

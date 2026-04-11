@@ -1,12 +1,18 @@
 mod commands;
 mod config;
 pub(crate) mod metrics;
+mod observability_snapshot;
+mod runtime_snapshot;
 mod scheduler;
 mod state;
 mod state_transitions;
 
 pub use config::ControllerConfig;
 pub use metrics::ControllerMetricsSnapshot;
+pub use observability_snapshot::{ControllerObservabilitySnapshot, ControllerPolicySnapshot};
+pub use runtime_snapshot::{
+    ActiveChatSnapshot, ControllerRuntimeSnapshot, RuntimeLifecycleSnapshot,
+};
 pub use state::ControllerState;
 
 use std::collections::HashMap;
@@ -54,15 +60,17 @@ pub enum SystemTask {
 }
 
 /// Primary user chat vs an internal system inference workload.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub(super) enum WorkloadKind {
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
+pub enum WorkloadKind {
     PrimaryChat,
     SystemTask(SystemTask),
 }
 
 /// Why a generation completed successfully from the controller's perspective.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub(super) enum CompletionReason {
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
+pub enum CompletionReason {
     Eos,
     StoppedByUser,
     Evicted,
@@ -72,9 +80,10 @@ pub(super) enum CompletionReason {
 }
 
 /// Why a generation failed or was aborted as an error.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 #[allow(dead_code)]
-pub(super) enum FailureReason {
+pub enum FailureReason {
     Timeout,
     GenerationError,
     SessionPoisoned,
@@ -282,6 +291,14 @@ pub enum ControllerCmd {
     GetControllerMetrics {
         resp: Sender<ControllerMetricsSnapshot>,
     },
+    /// PR7: active chat runtimes (ids, workload, lifecycle) — no payloads.
+    GetControllerRuntimeSnapshot {
+        resp: Sender<ControllerRuntimeSnapshot>,
+    },
+    /// PR8: policy caps + PR6 metrics + PR7 runtime in one consistent snapshot.
+    GetControllerObservabilitySnapshot {
+        resp: Sender<ControllerObservabilitySnapshot>,
+    },
 
     // ── Chat operations ──────────────────────────────────────────────
     /// Start a new chat session with full message history.
@@ -374,6 +391,22 @@ impl ControllerHandle {
     pub fn get_controller_metrics(&self) -> Result<ControllerMetricsSnapshot, String> {
         let (tx, rx) = channel();
         self.send(ControllerCmd::GetControllerMetrics { resp: tx })?;
+        rx.recv().map_err(|e| e.to_string())
+    }
+
+    /// Blocking read of active runtime rows (sorted `chat_id`, no message payloads).
+    pub fn get_controller_runtime_snapshot(&self) -> Result<ControllerRuntimeSnapshot, String> {
+        let (tx, rx) = channel();
+        self.send(ControllerCmd::GetControllerRuntimeSnapshot { resp: tx })?;
+        rx.recv().map_err(|e| e.to_string())
+    }
+
+    /// Blocking read of unified observability (policy + metrics + runtime).
+    pub fn get_controller_observability_snapshot(
+        &self,
+    ) -> Result<ControllerObservabilitySnapshot, String> {
+        let (tx, rx) = channel();
+        self.send(ControllerCmd::GetControllerObservabilitySnapshot { resp: tx })?;
         rx.recv().map_err(|e| e.to_string())
     }
 
@@ -526,6 +559,22 @@ impl InferenceHandle {
     pub fn get_controller_metrics(&self) -> Result<ControllerMetricsSnapshot, String> {
         let (tx, rx) = channel();
         self.send(ControllerCmd::GetControllerMetrics { resp: tx })?;
+        rx.recv().map_err(|e| e.to_string())
+    }
+
+    /// Blocking read of active inference runtimes from the active backend.
+    pub fn get_controller_runtime_snapshot(&self) -> Result<ControllerRuntimeSnapshot, String> {
+        let (tx, rx) = channel();
+        self.send(ControllerCmd::GetControllerRuntimeSnapshot { resp: tx })?;
+        rx.recv().map_err(|e| e.to_string())
+    }
+
+    /// Blocking read of unified observability from the active backend.
+    pub fn get_controller_observability_snapshot(
+        &self,
+    ) -> Result<ControllerObservabilitySnapshot, String> {
+        let (tx, rx) = channel();
+        self.send(ControllerCmd::GetControllerObservabilitySnapshot { resp: tx })?;
         rx.recv().map_err(|e| e.to_string())
     }
 }
@@ -978,10 +1027,34 @@ mod tests {
     #[test]
     fn get_controller_metrics_via_handle_returns_snapshot() {
         let handle = start_controller();
-        let snap = handle
-            .get_controller_metrics()
-            .expect("controller metrics");
+        let snap = handle.get_controller_metrics().expect("controller metrics");
         assert_eq!(snap, ControllerMetricsSnapshot::default());
+        let _ = handle.send(ControllerCmd::Shutdown);
+    }
+
+    #[test]
+    fn get_controller_runtime_snapshot_via_handle_empty() {
+        let handle = start_controller();
+        let snap = handle
+            .get_controller_runtime_snapshot()
+            .expect("runtime snapshot");
+        assert!(snap.chats.is_empty());
+        let _ = handle.send(ControllerCmd::Shutdown);
+    }
+
+    #[test]
+    fn get_controller_observability_snapshot_via_handle_matches_defaults() {
+        let handle = start_controller();
+        let snap = handle
+            .get_controller_observability_snapshot()
+            .expect("observability snapshot");
+        assert_eq!(snap.metrics, ControllerMetricsSnapshot::default());
+        assert!(snap.runtime.chats.is_empty());
+        assert_eq!(snap.policy.active_chats, 0);
+        assert_eq!(
+            snap.policy.max_active_chats,
+            ControllerConfig::default().max_active_chats
+        );
         let _ = handle.send(ControllerCmd::Shutdown);
     }
 

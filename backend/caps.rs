@@ -6,7 +6,8 @@
 ///
 /// The controller queries this at session creation and branches on the result
 /// rather than try-catching `FeatureUnsupported` in the hot loop.
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct BackendCaps {
     /// Can save/restore KV cache across sessions (fast resume).
     pub kv_cache: bool,
@@ -22,7 +23,8 @@ pub struct BackendCaps {
 
 /// Rough first-token latency tier. Not a precise measurement — a classification
 /// that lets the UI decide whether to show a "thinking…" indicator early.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub enum LatencyTier {
     /// Local inference with warm KV cache — sub-second first token.
     Fast,
