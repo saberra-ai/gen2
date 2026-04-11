@@ -1,3 +1,7 @@
+//! Gen2 inference controller (session runtimes, dispatch, delivery).
+//!
+//! Runtime contract (lifecycle, teardown, delivery, snapshots): repository file
+//! `docs/gen2-controller-runtime-contract.md`.
 mod commands;
 mod config;
 pub(crate) mod metrics;

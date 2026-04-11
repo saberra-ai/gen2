@@ -2,6 +2,8 @@
 //!
 //! **Best-effort:** token streaming (and media boundaries) may be dropped when the UI channel is full.
 //! **Must-deliver:** lifecycle and routing events use bounded spin + `try_send` before giving up.
+//!
+//! Full policy and invariants: `docs/gen2-controller-runtime-contract.md` (repository root).
 
 use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::mpsc::{SyncSender, TrySendError};
