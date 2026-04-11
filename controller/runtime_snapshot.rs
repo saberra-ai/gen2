@@ -65,6 +65,7 @@ pub(super) fn build_runtime_snapshot(state: &ControllerState) -> ControllerRunti
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::gen2::controller::{CompletionReason, SystemTask, WorkloadKind};
 
     #[test]
     fn empty_controller_runtime_snapshot_roundtrips_json() {
@@ -72,5 +73,42 @@ mod tests {
         let json = serde_json::to_string(&snap).expect("serialize");
         let back: ControllerRuntimeSnapshot = serde_json::from_str(&json).expect("deserialize");
         assert_eq!(snap, back);
+    }
+
+    #[test]
+    fn controller_runtime_snapshot_row_roundtrips_json() {
+        let snap = ControllerRuntimeSnapshot {
+            chats: vec![
+                ActiveChatSnapshot {
+                    chat_id: "b".into(),
+                    session_id: 2,
+                    workload: WorkloadKind::PrimaryChat,
+                    lifecycle: RuntimeLifecycleSnapshot::Generating { elapsed_ms: 7 },
+                },
+                ActiveChatSnapshot {
+                    chat_id: "a".into(),
+                    session_id: 1,
+                    workload: WorkloadKind::SystemTask(SystemTask::Title),
+                    lifecycle: RuntimeLifecycleSnapshot::Completed(CompletionReason::Eos),
+                },
+            ],
+        };
+        let json = serde_json::to_string(&snap).expect("serialize");
+        let back: ControllerRuntimeSnapshot = serde_json::from_str(&json).expect("deserialize");
+        assert_eq!(snap, back);
+        // Wire / TS bindings must match serde's externally-tagged enum encoding.
+        assert_eq!(
+            serde_json::to_string(&WorkloadKind::PrimaryChat).unwrap(),
+            "\"PrimaryChat\""
+        );
+        assert_eq!(
+            serde_json::to_string(&WorkloadKind::SystemTask(SystemTask::Title)).unwrap(),
+            "{\"SystemTask\":\"Title\"}"
+        );
+        assert_eq!(
+            serde_json::to_string(&RuntimeLifecycleSnapshot::Completed(CompletionReason::Eos))
+                .unwrap(),
+            "{\"Completed\":\"Eos\"}"
+        );
     }
 }
