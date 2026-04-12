@@ -105,7 +105,7 @@ fn handle_status_command(state: &mut ControllerState, cmd: ControllerCmd) -> Con
             ControlFlow::Continue
         }
         ControllerCmd::IsChatLoaded { chat_id, resp } => {
-            let loaded = state.chats.get(&chat_id).is_some();
+            let loaded = state.chats.contains_key(&chat_id);
             let _ = resp.send(loaded);
             ControlFlow::Continue
         }

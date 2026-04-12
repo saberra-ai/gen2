@@ -99,10 +99,12 @@ mod tests {
 
     #[test]
     fn policy_snapshot_reflects_config() {
-        let mut config = ControllerConfig::default();
-        config.max_active_chats = 7;
-        config.generation_timeout = Duration::from_secs(30);
-        config.tick_idle = Duration::from_millis(5);
+        let config = ControllerConfig {
+            max_active_chats: 7,
+            generation_timeout: Duration::from_secs(30),
+            tick_idle: Duration::from_millis(5),
+            ..Default::default()
+        };
         let caps = BackendCaps::llamacpp();
         let p = ControllerPolicySnapshot::from_config_counts_caps(&config, 2, caps);
         assert_eq!(p.max_active_chats, 7);
