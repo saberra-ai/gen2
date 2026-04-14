@@ -5,8 +5,11 @@ use std::sync::Arc;
 use std::sync::atomic::Ordering;
 use std::time::Duration;
 
+use crate::diagnostics::{MemoryGovernor, MemoryPolicyInput, MemorySnapshot};
 use crate::gen2::engine::EmbedLoadRequest;
 use crate::gen2::generation::TokenEvent;
+use crate::gen2::residency::{ResidentRuntime, RuntimeKind};
+use crate::gen2::residency_policy::estimate_resident_mb_for_path;
 use crate::gen2::session_rt::SessionSpec;
 
 use super::metrics::{emit_best_effort, emit_must_deliver};
@@ -33,6 +36,13 @@ fn handle_model_command(state: &mut ControllerState, cmd: ControllerCmd) -> Cont
                 let mut load_req = build_load_request(model_path, mmproj_path, &settings);
                 load_req.api_key = api_key;
                 load_req.api_format = api_format;
+                let runtime_name = load_req.model_path.display().to_string();
+                let estimated_mb = estimate_resident_mb_for_path(&load_req.model_path);
+                if state.residency_policy.llm_swap_requires_unload && state.residency.llm.is_some()
+                {
+                    state.engine.unload_model();
+                    let _ = state.residency.unload(RuntimeKind::Llm);
+                }
                 state
                     .engine
                     .upload_settings(settings)
@@ -41,6 +51,12 @@ fn handle_model_command(state: &mut ControllerState, cmd: ControllerCmd) -> Cont
                     .engine
                     .load_model(load_req)
                     .map_err(|e| format!("{:?}", e))?;
+                state.residency.replace(ResidentRuntime::new(
+                    RuntimeKind::Llm,
+                    runtime_name,
+                    estimated_mb,
+                    chrono::Utc::now().timestamp(),
+                ));
                 Ok(())
             })();
             if r.is_ok() {
@@ -78,15 +94,44 @@ fn handle_model_command(state: &mut ControllerState, cmd: ControllerCmd) -> Cont
             ControlFlow::Continue
         }
         ControllerCmd::LoadEmbedder { model_path, resp } => {
+            let estimated_mb = estimate_resident_mb_for_path(&model_path);
+            let name = model_path.display().to_string();
+            let governor = controller_memory_governor();
+            if !state
+                .residency
+                .can_admit(RuntimeKind::Embedder, estimated_mb, &governor)
+            {
+                let _ = resp.send(Err("embedder admission denied by residency policy".into()));
+                return ControlFlow::Continue;
+            }
             let res = state
                 .engine
                 .load_embedder(EmbedLoadRequest { model_path })
                 .map_err(|e| format!("{:?}", e));
+            if res.is_ok() {
+                state.residency.replace(ResidentRuntime::new(
+                    RuntimeKind::Embedder,
+                    name,
+                    estimated_mb,
+                    chrono::Utc::now().timestamp(),
+                ));
+            }
             let _ = resp.send(res);
             ControlFlow::Continue
         }
         _ => unreachable!("handle_model_command: non-model cmd"),
     }
+}
+
+fn controller_memory_governor() -> MemoryGovernor {
+    MemoryGovernor::new(MemorySnapshot::new(
+        &MemoryPolicyInput {
+            total_memory_mb: 16 * 1024,
+            available_memory_mb: 8 * 1024,
+            is_mobile: false,
+        },
+        512,
+    ))
 }
 
 fn handle_status_command(state: &mut ControllerState, cmd: ControllerCmd) -> ControlFlow {
@@ -436,6 +481,11 @@ fn handle_utility_command(state: &mut ControllerState, cmd: ControllerCmd) -> Co
                 .engine
                 .generate_embeddings(&inputs)
                 .map_err(|e| format!("{:?}", e));
+            if res.is_ok() {
+                state
+                    .residency
+                    .touch(RuntimeKind::Embedder, chrono::Utc::now().timestamp());
+            }
             let _ = resp.send(res);
             ControlFlow::Continue
         }
@@ -472,6 +522,28 @@ pub(super) fn dispatch_cmd(cmd: ControllerCmd, state: &mut ControllerState) -> C
 
 /// One scheduler pass over actively generating runtimes.
 pub(super) fn tick_active_chats(state: &mut ControllerState, tick_busy: Duration) {
+    let active_foreground = if state.chats.is_empty() {
+        None
+    } else {
+        Some(RuntimeKind::Llm)
+    };
+    let evicted_for_pressure = state
+        .residency
+        .unload_for_pressure(&controller_memory_governor(), active_foreground);
+    for runtime in evicted_for_pressure {
+        if matches!(runtime.kind, RuntimeKind::Embedder) {
+            state.engine.unload_embedder();
+        }
+    }
+    let evicted_idle = state
+        .residency
+        .evict_idle_helpers(chrono::Utc::now().timestamp(), &state.residency_policy);
+    for runtime in evicted_idle {
+        if matches!(runtime.kind, RuntimeKind::Embedder) {
+            state.engine.unload_embedder();
+        }
+    }
+
     let generation_timeout = state.generation_timeout();
     let metrics = state.metrics.clone();
     let metrics_ref = metrics.as_ref();
