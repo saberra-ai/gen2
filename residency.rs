@@ -1,7 +1,10 @@
 use crate::diagnostics::{MemoryGovernor, MemoryPressureLevel};
 use crate::gen2::ResidencyPolicy;
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+use serde::{Deserialize, Serialize};
+
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub enum RuntimeKind {
     Llm,
     Embedder,
@@ -9,7 +12,8 @@ pub enum RuntimeKind {
     Tts,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct ResidentRuntime {
     pub kind: RuntimeKind,
     pub name: String,
@@ -33,7 +37,8 @@ impl ResidentRuntime {
     }
 }
 
-#[derive(Debug, Clone, Default, PartialEq, Eq)]
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct ResidencyInventory {
     pub llm: Option<ResidentRuntime>,
     pub embedder: Option<ResidentRuntime>,

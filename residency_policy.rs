@@ -1,4 +1,4 @@
-use crate::diagnostics::MachineMemoryTier;
+use crate::diagnostics::{MachineMemoryTier, MemoryPressureLevel};
 
 /// Residency sizing helpers and context-budget policy.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -32,6 +32,30 @@ pub fn default_context_budget_for_tier(tier: MachineMemoryTier) -> ContextBudget
     ContextBudget { max_context_tokens }
 }
 
+pub fn effective_context_budget(
+    tier: MachineMemoryTier,
+    pressure: MemoryPressureLevel,
+    multimodal_active: bool,
+) -> ContextBudget {
+    let mut max_context_tokens = default_context_budget_for_tier(tier).max_context_tokens;
+
+    max_context_tokens = match pressure {
+        MemoryPressureLevel::Normal => max_context_tokens,
+        MemoryPressureLevel::Constrained => max_context_tokens.saturating_mul(3) / 4,
+        MemoryPressureLevel::Severe | MemoryPressureLevel::Emergency => {
+            max_context_tokens.saturating_mul(1) / 2
+        }
+    };
+
+    if multimodal_active {
+        max_context_tokens = max_context_tokens.saturating_mul(3) / 4;
+    }
+
+    ContextBudget {
+        max_context_tokens: max_context_tokens.max(2048),
+    }
+}
+
 /// Estimate resident memory for a local runtime path.
 ///
 /// For file-backed runtimes this uses on-disk bytes as an upper-bound proxy and
@@ -63,5 +87,35 @@ mod tests {
         let policy = ResidencyPolicy::default();
         assert!(policy.helper_idle_timeout_secs > 0);
         assert!(policy.llm_swap_requires_unload);
+    }
+
+    #[test]
+    fn effective_context_budget_shrinks_under_pressure() {
+        let normal = effective_context_budget(
+            MachineMemoryTier::DesktopMainstream,
+            MemoryPressureLevel::Normal,
+            false,
+        );
+        let severe = effective_context_budget(
+            MachineMemoryTier::DesktopMainstream,
+            MemoryPressureLevel::Severe,
+            false,
+        );
+        assert!(severe.max_context_tokens < normal.max_context_tokens);
+    }
+
+    #[test]
+    fn multimodal_context_budget_is_lower_than_text_only() {
+        let text_only = effective_context_budget(
+            MachineMemoryTier::DesktopPower,
+            MemoryPressureLevel::Normal,
+            false,
+        );
+        let multimodal = effective_context_budget(
+            MachineMemoryTier::DesktopPower,
+            MemoryPressureLevel::Normal,
+            true,
+        );
+        assert!(multimodal.max_context_tokens < text_only.max_context_tokens);
     }
 }

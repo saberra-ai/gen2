@@ -31,7 +31,8 @@ pub use engine::{
 };
 pub use residency::{ResidencyInventory, ResidentRuntime, RuntimeKind};
 pub use residency_policy::{
-    ContextBudget, ResidencyPolicy, default_context_budget_for_tier, estimate_resident_mb_for_path,
+    ContextBudget, ResidencyPolicy, default_context_budget_for_tier, effective_context_budget,
+    estimate_resident_mb_for_path,
 };
 pub use residency_stats::ResidencyStats;
 // Re-export message types used by SessionSpec for convenience in integration tests
