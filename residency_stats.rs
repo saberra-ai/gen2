@@ -1,6 +1,8 @@
 use super::residency::ResidencyInventory;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Default, Serialize, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct ResidencyStats {
     pub total_estimated_mb: u64,
     pub loaded_runtime_count: usize,

@@ -5,7 +5,7 @@ use std::sync::Arc;
 use std::sync::atomic::Ordering;
 use std::time::Duration;
 
-use crate::diagnostics::{MemoryGovernor, MemoryPolicyInput, MemorySnapshot};
+use crate::diagnostics::current_memory_governor;
 use crate::gen2::engine::EmbedLoadRequest;
 use crate::gen2::generation::TokenEvent;
 use crate::gen2::residency::{ResidentRuntime, RuntimeKind};
@@ -38,10 +38,17 @@ fn handle_model_command(state: &mut ControllerState, cmd: ControllerCmd) -> Cont
                 load_req.api_format = api_format;
                 let runtime_name = load_req.model_path.display().to_string();
                 let estimated_mb = estimate_resident_mb_for_path(&load_req.model_path);
+                let governor = current_memory_governor();
                 if state.residency_policy.llm_swap_requires_unload && state.residency.llm.is_some()
                 {
                     state.engine.unload_model();
                     let _ = state.residency.unload(RuntimeKind::Llm);
+                }
+                if !state
+                    .residency
+                    .can_admit(RuntimeKind::Llm, estimated_mb, &governor)
+                {
+                    return Err("llm admission denied by residency policy".into());
                 }
                 state
                     .engine
@@ -51,12 +58,19 @@ fn handle_model_command(state: &mut ControllerState, cmd: ControllerCmd) -> Cont
                     .engine
                     .load_model(load_req)
                     .map_err(|e| format!("{:?}", e))?;
-                state.residency.replace(ResidentRuntime::new(
-                    RuntimeKind::Llm,
-                    runtime_name,
-                    estimated_mb,
-                    chrono::Utc::now().timestamp(),
-                ));
+                let admitted = state.residency.admit(
+                    ResidentRuntime::new(
+                        RuntimeKind::Llm,
+                        runtime_name,
+                        estimated_mb,
+                        chrono::Utc::now().timestamp(),
+                    ),
+                    &governor,
+                );
+                if !admitted {
+                    state.engine.unload_model();
+                    return Err("llm residency registration denied after load".into());
+                }
                 Ok(())
             })();
             if r.is_ok() {
@@ -96,7 +110,7 @@ fn handle_model_command(state: &mut ControllerState, cmd: ControllerCmd) -> Cont
         ControllerCmd::LoadEmbedder { model_path, resp } => {
             let estimated_mb = estimate_resident_mb_for_path(&model_path);
             let name = model_path.display().to_string();
-            let governor = controller_memory_governor();
+            let governor = current_memory_governor();
             if !state
                 .residency
                 .can_admit(RuntimeKind::Embedder, estimated_mb, &governor)
@@ -109,29 +123,28 @@ fn handle_model_command(state: &mut ControllerState, cmd: ControllerCmd) -> Cont
                 .load_embedder(EmbedLoadRequest { model_path })
                 .map_err(|e| format!("{:?}", e));
             if res.is_ok() {
-                state.residency.replace(ResidentRuntime::new(
-                    RuntimeKind::Embedder,
-                    name,
-                    estimated_mb,
-                    chrono::Utc::now().timestamp(),
-                ));
+                let admitted = state.residency.admit(
+                    ResidentRuntime::new(
+                        RuntimeKind::Embedder,
+                        name,
+                        estimated_mb,
+                        chrono::Utc::now().timestamp(),
+                    ),
+                    &governor,
+                );
+                if !admitted {
+                    state.engine.unload_embedder();
+                    let _ = resp.send(Err(
+                        "embedder residency registration denied after load".into()
+                    ));
+                    return ControlFlow::Continue;
+                }
             }
             let _ = resp.send(res);
             ControlFlow::Continue
         }
         _ => unreachable!("handle_model_command: non-model cmd"),
     }
-}
-
-fn controller_memory_governor() -> MemoryGovernor {
-    MemoryGovernor::new(MemorySnapshot::new(
-        &MemoryPolicyInput {
-            total_memory_mb: 16 * 1024,
-            available_memory_mb: 8 * 1024,
-            is_mobile: false,
-        },
-        512,
-    ))
 }
 
 fn handle_status_command(state: &mut ControllerState, cmd: ControllerCmd) -> ControlFlow {
@@ -529,7 +542,7 @@ pub(super) fn tick_active_chats(state: &mut ControllerState, tick_busy: Duration
     };
     let evicted_for_pressure = state
         .residency
-        .unload_for_pressure(&controller_memory_governor(), active_foreground);
+        .unload_for_pressure(&current_memory_governor(), active_foreground);
     for runtime in evicted_for_pressure {
         if matches!(runtime.kind, RuntimeKind::Embedder) {
             state.engine.unload_embedder();

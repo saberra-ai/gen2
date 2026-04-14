@@ -6,6 +6,7 @@ use std::time::Duration;
 
 use serde::{Deserialize, Serialize};
 
+use crate::gen2::ResidencyStats;
 use crate::gen2::backend::BackendCaps;
 
 use super::config::ControllerConfig;
@@ -57,6 +58,7 @@ pub struct ControllerObservabilitySnapshot {
     pub policy: ControllerPolicySnapshot,
     pub metrics: ControllerMetricsSnapshot,
     pub runtime: ControllerRuntimeSnapshot,
+    pub residency: ResidencyStats,
 }
 
 impl Default for ControllerObservabilitySnapshot {
@@ -69,6 +71,7 @@ impl Default for ControllerObservabilitySnapshot {
             ),
             metrics: ControllerMetricsSnapshot::default(),
             runtime: ControllerRuntimeSnapshot::default(),
+            residency: ResidencyStats::default(),
         }
     }
 }
@@ -80,6 +83,7 @@ pub(super) fn build_observability_snapshot(
         policy: ControllerPolicySnapshot::from_state(state),
         metrics: state.metrics.snapshot(),
         runtime: super::runtime_snapshot::build_runtime_snapshot(state),
+        residency: ResidencyStats::from_inventory(&state.residency),
     }
 }
 
