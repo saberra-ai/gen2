@@ -101,7 +101,7 @@ impl ResidencyInventory {
     }
 
     pub fn replace(&mut self, runtime: ResidentRuntime) -> Option<ResidentRuntime> {
-        std::mem::replace(self.slot_mut(runtime.kind), Some(runtime))
+        self.slot_mut(runtime.kind).replace(runtime)
     }
 
     pub fn evict_idle_helpers(
