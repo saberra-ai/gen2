@@ -12,6 +12,24 @@ use std::path::Path;
 pub use fingerprint::compute_hf_model_meta;
 pub use hf_meta::parse_hf_model_metadata;
 
+/// Conservative fallback template for Hugging Face-style chat models when
+/// `tokenizer_config.json` does not declare one.
+pub(crate) fn default_llama3_template() -> String {
+    r#"
+{%- for message in messages -%}
+<|start_header_id|>{{ message.role }}<|end_header_id|>
+
+{{ message.content }}<|eot_id|>
+{%- endfor -%}
+{%- if add_generation_prompt -%}
+<|start_header_id|>assistant<|end_header_id|>
+
+{%- endif -%}
+"#
+    .trim()
+    .to_string()
+}
+
 /// Load the Jinja2 chat template from `tokenizer_config.json` in a model directory.
 ///
 /// Used by import-time metadata extraction, runtime fingerprinting, and
