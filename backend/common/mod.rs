@@ -14,6 +14,7 @@ pub use hf_meta::parse_hf_model_metadata;
 
 /// Conservative fallback template for Hugging Face-style chat models when
 /// `tokenizer_config.json` does not declare one.
+#[allow(dead_code)] // Wired when tokenizer metadata omits template; keep for upcoming HF path.
 pub(crate) fn default_llama3_template() -> String {
     r#"
 {%- for message in messages -%}
