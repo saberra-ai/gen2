@@ -1,3 +1,4 @@
+pub mod gguf;
 mod meta;
 
 // Backend-specific ModelBundle is re-exported from gen2::backend

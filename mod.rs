@@ -7,6 +7,7 @@ pub mod controller;
 // consumed by workspace dependents (src-tauri, pio-daemon)
 #[allow(dead_code)]
 pub mod engine;
+pub mod executor;
 // consumed by workspace dependents (src-tauri, pio-daemon)
 #[allow(dead_code, unused_variables)]
 pub mod generation;

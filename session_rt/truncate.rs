@@ -8,7 +8,7 @@
 //! - **Cold-start**: batch estimate via avg tokens/msg, then iterative per-msg
 //!   drops until fits or only 2 messages remain. System message preserved.
 //! - **Warm-start**: algorithmic compaction loop via
-//!   [`crate::services::compaction::compact_algorithmic`], then fallback
+//!   [`crate::app::chat::compaction::compact_algorithmic`], then fallback
 //!   oldest-non-system drops. KV cache reset is the caller's responsibility.
 
 use std::sync::Arc;
@@ -115,7 +115,7 @@ impl WarmStart {
     ) -> Result<TruncationOutcome, ExecError> {
         let gen_reserve = generation_reserve(ctx_size, settings.stopping.max_tokens);
         let ctx_limit = ctx_size.saturating_sub(gen_reserve);
-        let keep_recent = crate::services::compaction::CompactionConfig::default().keep_recent;
+        let keep_recent = crate::app::chat::compaction::CompactionConfig::default().keep_recent;
 
         let mut working = messages;
         let mut dropped = 0_usize;
@@ -126,7 +126,7 @@ impl WarmStart {
             if n <= ctx_limit {
                 break;
             }
-            let cr = crate::services::compaction::compact_algorithmic(working, keep_recent);
+            let cr = crate::app::chat::compaction::compact_algorithmic(working, keep_recent);
             working = cr.messages;
             if cr.compacted_count == 0 {
                 break;
