@@ -109,7 +109,9 @@ mod tests {
             tick_idle: Duration::from_millis(5),
             ..Default::default()
         };
-        let caps = BackendCaps::llamacpp();
+        // Phase 7: per-backend constructors retired; probe a real llama Engine.
+        let engine = crate::gen2::backend::llama::Engine::new();
+        let caps = BackendCaps::from_backend(&engine);
         let p = ControllerPolicySnapshot::from_config_counts_caps(&config, 2, caps);
         assert_eq!(p.max_active_chats, 7);
         assert_eq!(p.generation_timeout_ms, 30_000);

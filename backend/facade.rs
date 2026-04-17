@@ -369,19 +369,13 @@ impl Engine {
     ///
     /// Unlike `capabilities()` (modality: text/images/audio), this describes
     /// what the backend's runtime machinery supports (KV cache, poisoning, etc.).
+    ///
+    /// Phase 7: single-source-of-truth via `BackendCaps::from_backend` trait
+    /// probe; no more per-variant constructors.
     pub fn backend_caps(&self) -> super::caps::BackendCaps {
-        // Phase 4: per-variant constructors retained. Phase 7 replaces these
-        // with a trait-probe (`BackendCaps::from_backend`).
-        match self {
-            #[cfg(feature = "backend-llamacpp")]
-            Self::LlamaCpp(_) => super::caps::BackendCaps::llamacpp(),
-            #[cfg(feature = "backend-mlx")]
-            Self::Mlx(_) => super::caps::BackendCaps::mlx(),
-            #[cfg(feature = "backend-onnx")]
-            Self::Onnx(_) => super::caps::BackendCaps::onnx(),
-            #[cfg(feature = "backend-external-api")]
-            Self::ExternalApi(_) => super::caps::BackendCaps::external_api(),
-            Self::Uninit => super::caps::BackendCaps::uninit(),
+        match self.as_backend() {
+            None => super::caps::BackendCaps::uninit(),
+            Some(b) => super::caps::BackendCaps::from_backend(b),
         }
     }
 

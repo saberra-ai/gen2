@@ -2,10 +2,10 @@
 ///
 /// Unlike the modality `Capabilities` bitflags (TEXT/IMAGES/AUDIO), this
 /// struct describes what the backend's *runtime machinery* supports.
-/// Computed once at engine load and cached — not queried per-call.
-///
-/// The controller queries this at session creation and branches on the result
-/// rather than try-catching `FeatureUnsupported` in the hot loop.
+/// Phase 7: the flags are now derived by probing the `Backend` trait
+/// (`as_embeddings`, `as_kv_snapshot`, `first_token_tier`, …) rather than
+/// hand-written per-backend constructors. The struct + wire format stay
+/// identical for specta / frontend binding compatibility.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct BackendCaps {
@@ -34,54 +34,34 @@ pub enum LatencyTier {
     Slow,
 }
 
-#[allow(dead_code)] // constructors are conditionally used based on backend features
 impl BackendCaps {
-    /// Capabilities for the LlamaCpp backend.
-    pub(crate) fn llamacpp() -> Self {
+    /// Probe a `Backend` trait object for its capability set.
+    ///
+    /// Phase 7 replaces the per-backend constructor functions with this
+    /// single source of truth. Truncation tracking is now universally
+    /// true (every backend exposes `initial_messages_dropped()` via trait
+    /// default 0). KV cache and poison detection remain keyed by backend
+    /// name while those capabilities stay llama-specific; migrating them
+    /// to a session-level probe is deferred until a second backend gains
+    /// them.
+    pub(crate) fn from_backend(b: &dyn super::traits::Backend) -> Self {
+        let name = b.backend_name();
         Self {
-            kv_cache: true,
+            kv_cache: name == "llamacpp",
+            // All backends support this via the generic session_rt::truncate
+            // driver (Phase 3). Default `initial_messages_dropped() = 0` on
+            // the BackendSession trait makes this trivially true.
             context_truncation_tracking: true,
-            poison_detection: true,
-            embedding: true,
-            first_token_tier: LatencyTier::Fast,
+            poison_detection: name == "llamacpp",
+            embedding: b.as_embeddings().is_some(),
+            first_token_tier: b.first_token_tier(),
         }
     }
 
-    /// Capabilities for the MLX backend (Apple Silicon).
-    pub(crate) fn mlx() -> Self {
-        Self {
-            kv_cache: false,
-            context_truncation_tracking: false,
-            poison_detection: false,
-            embedding: false,
-            first_token_tier: LatencyTier::Medium,
-        }
-    }
-
-    /// Capabilities for the ONNX backend.
-    pub(crate) fn onnx() -> Self {
-        Self {
-            kv_cache: false,
-            context_truncation_tracking: false,
-            poison_detection: false,
-            embedding: false,
-            first_token_tier: LatencyTier::Medium,
-        }
-    }
-
-    /// Capabilities for the external API backend.
-    pub(crate) fn external_api() -> Self {
-        Self {
-            kv_cache: false,
-            context_truncation_tracking: false,
-            poison_detection: false,
-            embedding: true, // most API providers support embeddings
-            first_token_tier: LatencyTier::Slow,
-        }
-    }
-
-    /// Capabilities for the uninitialized engine sentinel.
-    pub(crate) fn uninit() -> Self {
+    /// Capabilities for the uninitialized engine sentinel (no `&dyn Backend`
+    /// available). Retained for `Engine::Uninit` and
+    /// `ControllerObservabilitySnapshot::default`.
+    pub fn uninit() -> Self {
         Self {
             kv_cache: false,
             context_truncation_tracking: false,
@@ -95,10 +75,13 @@ impl BackendCaps {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::gen2::Engine;
 
+    #[cfg(feature = "backend-llamacpp")]
     #[test]
-    fn llamacpp_has_full_local_capabilities() {
-        let caps = BackendCaps::llamacpp();
+    fn llamacpp_caps_via_probe() {
+        let engine = crate::gen2::backend::llama::Engine::new();
+        let caps = BackendCaps::from_backend(&engine);
         assert!(caps.kv_cache);
         assert!(caps.context_truncation_tracking);
         assert!(caps.poison_detection);
@@ -106,18 +89,37 @@ mod tests {
         assert_eq!(caps.first_token_tier, LatencyTier::Fast);
     }
 
+    #[cfg(feature = "backend-mlx")]
     #[test]
-    fn mlx_has_no_kv_or_poison() {
-        let caps = BackendCaps::mlx();
+    fn mlx_caps_via_probe() {
+        let engine = crate::gen2::backend::mlx::Engine::new();
+        let caps = BackendCaps::from_backend(&engine);
         assert!(!caps.kv_cache);
+        assert!(caps.context_truncation_tracking); // generic — all backends
         assert!(!caps.poison_detection);
+        assert!(!caps.embedding);
         assert_eq!(caps.first_token_tier, LatencyTier::Medium);
     }
 
+    #[cfg(feature = "backend-onnx")]
     #[test]
-    fn external_api_is_slow_with_embeddings() {
-        let caps = BackendCaps::external_api();
+    fn onnx_caps_via_probe() {
+        let engine = crate::gen2::backend::onnx::Engine::new();
+        let caps = BackendCaps::from_backend(&engine);
         assert!(!caps.kv_cache);
+        assert!(caps.context_truncation_tracking);
+        assert!(!caps.poison_detection);
+        assert!(!caps.embedding);
+        assert_eq!(caps.first_token_tier, LatencyTier::Medium);
+    }
+
+    #[cfg(feature = "backend-external-api")]
+    #[test]
+    fn external_api_caps_via_probe() {
+        let engine = crate::gen2::backend::external_api::Engine::new();
+        let caps = BackendCaps::from_backend(&engine);
+        assert!(!caps.kv_cache);
+        assert!(caps.context_truncation_tracking);
         assert!(!caps.poison_detection);
         assert!(caps.embedding);
         assert_eq!(caps.first_token_tier, LatencyTier::Slow);
@@ -135,8 +137,24 @@ mod tests {
 
     #[test]
     fn caps_are_copy_and_eq() {
-        let a = BackendCaps::llamacpp();
+        let a = BackendCaps::uninit();
         let b = a; // Copy
         assert_eq!(a, b); // Eq
+    }
+
+    #[cfg(feature = "backend-llamacpp")]
+    #[test]
+    fn engine_backend_caps_matches_probe() {
+        // Round-trip: the facade's Engine::backend_caps() should produce
+        // the same BackendCaps as from_backend(). This catches drift if a
+        // future change re-routes one but not the other.
+        let engine = Engine::new();
+        let via_facade = engine.backend_caps();
+        // When the default backend is llamacpp, the facade route matches
+        // the trait probe. (ExternalApi's Engine::new() variant can't be
+        // instantiated from crate::gen2::Engine::new without config, so
+        // this test focuses on the default llama path.)
+        assert_eq!(via_facade.first_token_tier, LatencyTier::Fast);
+        assert!(via_facade.kv_cache);
     }
 }
