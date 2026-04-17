@@ -871,3 +871,49 @@ impl Session {
         Ok(0)
     }
 }
+
+// ─── Trait impls (Phase 2) ─────────────────────────────────────────────────
+//
+// Forward to existing inherent methods; dispatch enum remains in charge.
+
+use crate::gen2::backend::traits::{BackendSession, KvSnapshot as KvSnapshotTrait, TokenPullerDyn};
+
+impl BackendSession for Session {
+    fn id(&self) -> SessionId {
+        self.id
+    }
+    fn pause(&self) {
+        Session::pause(self)
+    }
+    fn resume(&self) {
+        Session::resume(self)
+    }
+    fn stop(&self) {
+        Session::stop(self)
+    }
+    fn pull(&self, spec: GenSpec) -> Result<Box<dyn TokenPullerDyn>, ExecError> {
+        let p = Session::pull(self, spec)?;
+        Ok(Box::new(p) as Box<dyn TokenPullerDyn>)
+    }
+    fn append_messages(&self, new_messages: Vec<Message>) -> Result<usize, ExecError> {
+        Session::append_messages(self, new_messages)
+    }
+    fn as_kv_snapshot(&self) -> Option<&dyn KvSnapshotTrait> {
+        Some(self)
+    }
+    fn initial_messages_dropped(&self) -> usize {
+        self.initial_messages_dropped
+    }
+    fn is_poisoned(&self) -> bool {
+        Session::is_poisoned(self)
+    }
+}
+
+impl KvSnapshotTrait for Session {
+    fn save_cache(&self, dst: KvSaveSpec) -> Result<KvSnapshot, ExecError> {
+        Session::save_cache(self, dst)
+    }
+    fn load_cache(&self, src: KvLoadSpec) -> Result<KvLoadReport, ExecError> {
+        Session::load_cache(self, src)
+    }
+}

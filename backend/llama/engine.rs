@@ -233,6 +233,100 @@ impl Default for Engine {
         Self::new()
     }
 }
+
+// ─── Trait impls (Phase 2) ─────────────────────────────────────────────────
+//
+// Each method forwards to the existing inherent method of the same name. The
+// facade's enum dispatch remains in charge until Phase 4 flips it.
+
+use crate::gen2::backend::caps::LatencyTier;
+use crate::gen2::backend::traits::{Backend, BackendSession, Embeddings, LocalBackend, Multimodal};
+
+impl Backend for Engine {
+    fn backend_name(&self) -> &'static str {
+        "llamacpp"
+    }
+    fn load_model(&self, req: LoadRequest) -> Result<(), ExecError> {
+        Engine::load_model(self, req)
+    }
+    fn reload_model(&self) -> Result<(), ExecError> {
+        Engine::reload_model(self)
+    }
+    fn unload_model(&self) {
+        Engine::unload_model(self)
+    }
+    fn is_model_loaded(&self) -> bool {
+        Engine::is_model_loaded(self)
+    }
+    fn upload_settings(&self, settings: Settings) -> Result<(), ExecError> {
+        Engine::upload_settings(self, settings)
+    }
+    fn settings(&self) -> Arc<Settings> {
+        Engine::settings(self)
+    }
+    fn settings_version(&self) -> u64 {
+        Engine::settings_version(self)
+    }
+    fn hooks(&self) -> Arc<HookBus> {
+        Engine::hooks(self)
+    }
+    fn capabilities(&self) -> Capabilities {
+        Engine::capabilities(self)
+    }
+    fn stats(&self) -> ExecutionStats {
+        Engine::stats(self)
+    }
+    fn first_token_tier(&self) -> LatencyTier {
+        LatencyTier::Fast
+    }
+    fn start_session(&self, spec: SessionSpec) -> Result<Arc<dyn BackendSession>, ExecError> {
+        let s = Engine::start_session(self, spec)?;
+        Ok(s as Arc<dyn BackendSession>)
+    }
+    fn end_session(&self, id: SessionId) -> Result<(), ExecError> {
+        Engine::end_session(self, id)
+    }
+    fn as_embeddings(&self) -> Option<&dyn Embeddings> {
+        Some(self)
+    }
+    fn as_multimodal(&self) -> Option<&dyn Multimodal> {
+        Some(self)
+    }
+}
+
+impl LocalBackend for Engine {
+    fn n_ctx(&self) -> usize {
+        self.bundle
+            .load_full()
+            .map(|b| b.meta.n_ctx as usize)
+            .unwrap_or(0)
+    }
+}
+
+impl Embeddings for Engine {
+    fn load_embedder(&self, req: EmbedLoadRequest) -> Result<(), ExecError> {
+        Engine::load_embedder(self, req)
+    }
+    fn is_embedder_loaded(&self) -> bool {
+        Engine::is_embedder_loaded(self)
+    }
+    fn generate_embeddings(&self, inputs: &[String]) -> Result<Vec<Vec<f32>>, ExecError> {
+        Engine::generate_embeddings(self, inputs)
+    }
+    fn unload_embedder(&self) {
+        Engine::unload_embedder(self)
+    }
+}
+
+impl Multimodal for Engine {
+    fn supports_images(&self) -> bool {
+        Engine::does_model_support_images(self)
+    }
+    fn supports_audio(&self) -> bool {
+        Engine::does_model_support_audio(self)
+    }
+}
+
 // Drop guard — consumed when session lifetime is active
 #[allow(dead_code)]
 struct SessionGuard {

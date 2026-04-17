@@ -276,6 +276,81 @@ impl Engine {
     }
 }
 
+// ─── Trait impls (Phase 2) ─────────────────────────────────────────────────
+
+use crate::gen2::backend::caps::LatencyTier;
+use crate::gen2::backend::traits::{Backend, BackendSession, Embeddings, RemoteBackend};
+
+impl Backend for Engine {
+    fn backend_name(&self) -> &'static str {
+        "external_api"
+    }
+    fn load_model(&self, req: LoadRequest) -> Result<(), ExecError> {
+        Engine::load_model(self, req)
+    }
+    fn reload_model(&self) -> Result<(), ExecError> {
+        Engine::reload_model(self)
+    }
+    fn unload_model(&self) {
+        Engine::unload_model(self)
+    }
+    fn is_model_loaded(&self) -> bool {
+        Engine::is_model_loaded(self)
+    }
+    fn upload_settings(&self, settings: Settings) -> Result<(), ExecError> {
+        Engine::upload_settings(self, settings)
+    }
+    fn settings(&self) -> Arc<Settings> {
+        Engine::settings(self)
+    }
+    fn settings_version(&self) -> u64 {
+        Engine::settings_version(self)
+    }
+    fn hooks(&self) -> Arc<HookBus> {
+        Engine::hooks(self)
+    }
+    fn capabilities(&self) -> Capabilities {
+        Engine::capabilities(self)
+    }
+    fn stats(&self) -> ExecutionStats {
+        Engine::stats(self)
+    }
+    fn first_token_tier(&self) -> LatencyTier {
+        LatencyTier::Slow
+    }
+    fn start_session(&self, spec: SessionSpec) -> Result<Arc<dyn BackendSession>, ExecError> {
+        let s = Engine::start_session(self, spec)?;
+        Ok(s as Arc<dyn BackendSession>)
+    }
+    fn end_session(&self, id: SessionId) -> Result<(), ExecError> {
+        Engine::end_session(self, id)
+    }
+    fn as_embeddings(&self) -> Option<&dyn Embeddings> {
+        Some(self)
+    }
+}
+
+impl RemoteBackend for Engine {
+    fn advertised_ctx(&self) -> Option<usize> {
+        None
+    }
+}
+
+impl Embeddings for Engine {
+    fn load_embedder(&self, req: EmbedLoadRequest) -> Result<(), ExecError> {
+        Engine::load_embedder(self, req)
+    }
+    fn is_embedder_loaded(&self) -> bool {
+        Engine::is_embedder_loaded(self)
+    }
+    fn generate_embeddings(&self, inputs: &[String]) -> Result<Vec<Vec<f32>>, ExecError> {
+        Engine::generate_embeddings(self, inputs)
+    }
+    fn unload_embedder(&self) {
+        Engine::unload_embedder(self)
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;

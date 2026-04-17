@@ -268,3 +268,11 @@ impl Iterator for TokenPuller {
         })))
     }
 }
+
+// ─── Trait impls (Phase 2) ─────────────────────────────────────────────────
+
+impl crate::gen2::backend::traits::TokenPullerDyn for TokenPuller {
+    fn next_event(&mut self) -> Option<Result<TokenEvent, ExecError>> {
+        <Self as Iterator>::next(self)
+    }
+}

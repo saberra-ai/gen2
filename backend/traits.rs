@@ -27,7 +27,10 @@ use super::caps::LatencyTier;
 use super::dispatch::SessionId;
 
 /// Core contract every backend — local or remote — implements.
-pub trait Backend: std::fmt::Debug + Send + Sync {
+///
+/// Not `Send + Sync` — several backends (llama, MLX) hold non-thread-safe
+/// FFI state. Backend state is confined to the controller's `run_loop`.
+pub trait Backend: std::fmt::Debug {
     fn backend_name(&self) -> &'static str;
 
     fn load_model(&self, req: LoadRequest) -> Result<(), ExecError>;
@@ -73,7 +76,12 @@ pub trait RemoteBackend: Backend {
 
 /// One inference session. Returned as `Arc<dyn BackendSession>` so the
 /// controller can hold heterogeneous sessions in a single map.
-pub trait BackendSession: std::fmt::Debug + Send + Sync {
+///
+/// Not `Send + Sync` — the llama backend holds raw FFI pointers via
+/// [`llama_cpp_2::context::LlamaContext`]. Sessions are thread-confined to
+/// the controller's `run_loop`, which matches existing dispatch enum
+/// semantics.
+pub trait BackendSession: std::fmt::Debug {
     fn id(&self) -> SessionId;
     fn pause(&self);
     fn resume(&self);
@@ -99,7 +107,10 @@ pub trait BackendSession: std::fmt::Debug + Send + Sync {
 }
 
 /// Object-safe token-stream iterator used by the facade's `TokenPuller` wrapper.
-pub trait TokenPullerDyn: Send {
+///
+/// Not `Send` — llama puller holds raw FFI pointers; thread-confined to the
+/// controller's `run_loop`.
+pub trait TokenPullerDyn {
     fn next_event(&mut self) -> Option<Result<TokenEvent, ExecError>>;
 }
 

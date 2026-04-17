@@ -344,3 +344,30 @@ impl Session {
         Ok(cache)
     }
 }
+
+// ─── Trait impls (Phase 2) ─────────────────────────────────────────────────
+
+impl crate::gen2::backend::traits::BackendSession for Session {
+    fn id(&self) -> SessionId {
+        self.id
+    }
+    fn pause(&self) {
+        Session::pause(self)
+    }
+    fn resume(&self) {
+        Session::resume(self)
+    }
+    fn stop(&self) {
+        Session::stop(self)
+    }
+    fn pull(
+        &self,
+        spec: GenSpec,
+    ) -> Result<Box<dyn crate::gen2::backend::traits::TokenPullerDyn>, ExecError> {
+        let p = Session::pull(self, spec)?;
+        Ok(Box::new(p) as Box<dyn crate::gen2::backend::traits::TokenPullerDyn>)
+    }
+    fn append_messages(&self, new_messages: Vec<Message>) -> Result<usize, ExecError> {
+        Session::append_messages(self, new_messages)
+    }
+}

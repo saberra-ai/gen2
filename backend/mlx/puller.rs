@@ -211,3 +211,11 @@ fn now_us() -> u64 {
         .map(|d| d.as_micros() as u64)
         .unwrap_or(0)
 }
+
+impl crate::gen2::backend::traits::TokenPullerDyn for TokenPuller {
+    fn next_event(
+        &mut self,
+    ) -> Option<Result<crate::gen2::generation::TokenEvent, crate::gen2::engine::ExecError>> {
+        <Self as Iterator>::next(self)
+    }
+}
