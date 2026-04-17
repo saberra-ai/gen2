@@ -4,12 +4,17 @@
 //! `docs/gen2-controller-runtime-contract.md`.
 mod commands;
 mod config;
+mod lifecycle;
 pub(crate) mod metrics;
+mod observability;
 mod observability_snapshot;
 mod runtime_snapshot;
 mod scheduler;
 mod state;
 mod state_transitions;
+
+// Sibling modules expose pub(super) items already — callers use
+// super::lifecycle::* / super::observability::* directly.
 
 pub use config::ControllerConfig;
 pub use metrics::ControllerMetricsSnapshot;
@@ -19,17 +24,15 @@ pub use runtime_snapshot::{
 };
 pub use state::ControllerState;
 
-use std::collections::HashMap;
 use std::path::PathBuf;
 use std::sync::Arc;
 use std::sync::mpsc::{Receiver, Sender, SyncSender, channel};
 use std::thread;
 use std::time::{Duration, Instant};
 
-use crate::gen2::engine::{HookEvent, HookListener, LoadRequest};
+use crate::gen2::ExecutionStats;
+use crate::gen2::engine::Settings;
 use crate::gen2::generation::GenSpec;
-use crate::gen2::session_rt::SessionSpec;
-use crate::gen2::{Engine, ExecutionStats, Settings};
 use crate::types::message::Message;
 
 /// System-level inference tasks — ephemeral, fire-and-forget, hidden from users.
@@ -95,13 +98,6 @@ pub enum FailureReason {
     PullerCreateFailed,
 }
 
-/// Terminal classification for [`terminate_runtime`] / [`terminate_runtime_owned`].
-#[derive(Debug, Clone, Copy, PartialEq, Eq)]
-pub(super) enum RuntimeOutcome {
-    Completed(CompletionReason),
-    Failed(FailureReason),
-}
-
 /// Explicit lifecycle for a single chat runtime (no implicit bool matrix).
 #[allow(clippy::large_enum_variant)]
 pub(super) enum ChatRunState {
@@ -151,73 +147,6 @@ impl WorkloadKind {
     pub(super) fn is_system_task(&self) -> bool {
         matches!(self, Self::SystemTask(_))
     }
-}
-
-pub(super) fn runtime_outcome_from_state(chat: &ChatRuntime) -> RuntimeOutcome {
-    match &chat.state {
-        ChatRunState::Completed(r) => RuntimeOutcome::Completed(*r),
-        ChatRunState::Failed(f) => RuntimeOutcome::Failed(*f),
-        _ => RuntimeOutcome::Completed(CompletionReason::StoppedByUser),
-    }
-}
-
-/// End engine session bookkeeping for a session id (no `ControllerEvent`).
-pub(super) fn deregister_and_end_session(engine: &Engine, sid: u64) {
-    engine.hooks().deregister(sid);
-    let _ = engine.end_session(sid);
-}
-
-/// Stop inference, notify UI, drop hooks, and end the engine session — one path.
-fn finalize_runtime_session(
-    engine: &Engine,
-    mut chat: ChatRuntime,
-    metrics: &metrics::ControllerMetrics,
-) {
-    let sid = chat.session.id();
-    chat.session.stop();
-    metrics::emit_must_deliver(metrics, &chat.tx, ControllerEvent::Stopped);
-    deregister_and_end_session(engine, sid);
-}
-
-/// Remove a runtime from the map (if present) and finalize its engine session once.
-pub(super) fn terminate_runtime(
-    engine: &Engine,
-    chats: &mut HashMap<String, ChatRuntime>,
-    chat_id: &str,
-    outcome: RuntimeOutcome,
-    metrics: &metrics::ControllerMetrics,
-) {
-    if let Some(chat) = chats.remove(chat_id) {
-        terminate_runtime_owned(engine, chat, outcome, metrics);
-    }
-}
-
-/// Finalize an owned runtime: record terminal outcome if not already terminal, then teardown.
-pub(super) fn terminate_runtime_owned(
-    engine: &Engine,
-    mut chat: ChatRuntime,
-    outcome: RuntimeOutcome,
-    metrics: &metrics::ControllerMetrics,
-) {
-    if !chat.state.is_terminal() {
-        chat.state = match outcome {
-            RuntimeOutcome::Completed(r) => ChatRunState::Completed(r),
-            RuntimeOutcome::Failed(f) => ChatRunState::Failed(f),
-        };
-    }
-    use std::sync::atomic::Ordering;
-    match outcome {
-        RuntimeOutcome::Completed(CompletionReason::Evicted) => {
-            metrics.evictions.fetch_add(1, Ordering::Relaxed);
-        }
-        RuntimeOutcome::Completed(CompletionReason::ModelReloaded) => {
-            metrics
-                .model_reload_terminations
-                .fetch_add(1, Ordering::Relaxed);
-        }
-        _ => {}
-    }
-    finalize_runtime_session(engine, chat, metrics);
 }
 
 impl SystemTask {
@@ -704,82 +633,6 @@ impl ChatRuntime {
     }
 }
 
-/// Enter [`ChatRunState::Generating`] with a fresh puller (Start / Continue / Resume).
-pub(super) fn attach_generating_puller(
-    chat: &mut ChatRuntime,
-    puller: crate::gen2::generation::TokenPuller,
-    pull_spec: GenSpec,
-) {
-    let last_gen_spec = pull_spec.clone();
-    chat.last_gen_spec = last_gen_spec;
-    chat.state = ChatRunState::Generating {
-        puller,
-        gen_started: Instant::now(),
-        last_gen_spec: pull_spec,
-    };
-}
-
-/// Hook listener forwarding final stats for a specific session id back to the UI channel.
-pub(super) struct Forwarder {
-    sid: u64,
-    tx: SyncSender<ControllerEvent>,
-    metrics: Arc<metrics::ControllerMetrics>,
-}
-impl std::fmt::Debug for Forwarder {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "Forwarder")
-    }
-}
-impl HookListener for Forwarder {
-    fn on_event(&self, ev: &HookEvent) {
-        if let HookEvent::FinalStats { session_id, stats } = ev
-            && *session_id == self.sid
-        {
-            metrics::emit_must_deliver(
-                self.metrics.as_ref(),
-                &self.tx,
-                ControllerEvent::FinalStats(stats.clone()),
-            );
-        }
-    }
-}
-
-/// Result of bounded emit — tells the caller whether the receiver is still alive.
-pub(super) enum EmitResult {
-    Sent,
-    Full,         // channel full, event dropped (receiver alive but slow)
-    Disconnected, // receiver gone — stop wasting compute
-}
-
-pub(super) fn apply_generation_defaults(engine: &Engine, mut spec: GenSpec) -> GenSpec {
-    let defaults = engine.settings();
-    defaults.apply_to_gen_spec(&mut spec);
-    spec
-}
-
-pub(super) fn build_load_request(
-    model_path: PathBuf,
-    mmproj_path: Option<PathBuf>,
-    settings: &Settings,
-) -> LoadRequest {
-    let mut req = LoadRequest {
-        model_path,
-        mmproj_path,
-        ..Default::default()
-    };
-    req.ctx_params.n_ctx = settings.system.ctx_size;
-    req.ctx_params.threads = settings.system.threads;
-    req.model_params.gpu_layers = settings.system.gpu_layers;
-    req
-}
-
-/// Evict the least recently used runtime (smallest `last_used`).
-/// Delegates target selection to `scheduler::pick_eviction_target`.
-pub(super) fn evict_lru(chats: &mut HashMap<String, ChatRuntime>) -> Option<(String, ChatRuntime)> {
-    let views = scheduler::views(chats);
-    scheduler::pick_eviction_target(&views).and_then(|k| chats.remove_entry(&k))
-}
-
 fn run_loop(rx: Receiver<ControllerCmd>, config: ControllerConfig) {
     let tick_busy = Duration::from_millis(0);
     let mut state = ControllerState::new(config);
@@ -812,10 +665,10 @@ fn run_loop(rx: Receiver<ControllerCmd>, config: ControllerConfig) {
     }
 
     for (_id, chat) in state.chats.drain() {
-        terminate_runtime_owned(
+        lifecycle::terminate_runtime_owned(
             &state.engine,
             chat,
-            RuntimeOutcome::Completed(CompletionReason::ControllerShutdown),
+            lifecycle::RuntimeOutcome::Completed(CompletionReason::ControllerShutdown),
             state.metrics.as_ref(),
         );
     }
@@ -826,93 +679,13 @@ pub(super) enum ControlFlow {
     Break,
 }
 
-/// Shared logic for ephemeral (auto-cleaning) sessions: title generation,
-/// compaction summaries, suggestions, etc.
-#[allow(clippy::too_many_arguments)]
-pub(super) fn start_ephemeral(
-    engine: &mut Engine,
-    chats: &mut HashMap<String, ChatRuntime>,
-    chat_id: String,
-    task: SystemTask,
-    suffix: &str,
-    messages: Vec<Message>,
-    gen_spec: GenSpec,
-    metrics: Arc<metrics::ControllerMetrics>,
-    tx: SyncSender<ControllerEvent>,
-) {
-    // Ensure unique chat_id (don't collide with live chats).
-    let base = format!("{chat_id}::{suffix}");
-    let chat_id = if chats.contains_key(&base) {
-        use std::time::{SystemTime, UNIX_EPOCH};
-        let ts = SystemTime::now()
-            .duration_since(UNIX_EPOCH)
-            .expect("system clock before UNIX epoch")
-            .as_millis();
-        format!("{base}:{ts}")
-    } else {
-        base
-    };
-
-    let gen_spec = apply_generation_defaults(engine, gen_spec);
-
-    match engine.start_session(SessionSpec {
-        messages,
-        ..Default::default()
-    }) {
-        Err(e) => {
-            metrics::emit_must_deliver(
-                metrics.as_ref(),
-                &tx,
-                ControllerEvent::Error {
-                    code: "generation_error".into(),
-                    message: format!("{:?}", e),
-                },
-            );
-        }
-        Ok(session) => {
-            let sid = session.id();
-            engine.hooks().register_with_id(
-                sid,
-                Arc::new(Forwarder {
-                    sid,
-                    tx: tx.clone(),
-                    metrics: metrics.clone(),
-                }),
-            );
-            match session.pull(gen_spec.clone()) {
-                Err(e) => {
-                    metrics::emit_must_deliver(
-                        metrics.as_ref(),
-                        &tx,
-                        ControllerEvent::Error {
-                            code: "generation_error".into(),
-                            message: format!("{:?}", e),
-                        },
-                    );
-                    deregister_and_end_session(engine, sid);
-                }
-                Ok(puller) => {
-                    let pull_spec = gen_spec;
-                    let mut runtime = ChatRuntime {
-                        session,
-                        tx,
-                        workload: WorkloadKind::SystemTask(task),
-                        last_used: Instant::now(),
-                        last_gen_spec: pull_spec.clone(),
-                        state: ChatRunState::Idle,
-                        health: Default::default(),
-                    };
-                    attach_generating_puller(&mut runtime, puller, pull_spec);
-                    let _ = chats.insert(chat_id, runtime);
-                }
-            }
-        }
-    }
-}
-
 #[cfg(test)]
 mod tests {
+    use super::lifecycle::{RuntimeOutcome, terminate_runtime};
+    use super::observability::EmitResult;
     use super::*;
+    use crate::gen2::Engine;
+    use std::collections::HashMap;
     use std::sync::mpsc::sync_channel;
 
     #[test]

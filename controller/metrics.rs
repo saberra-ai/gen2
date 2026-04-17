@@ -10,7 +10,8 @@ use std::sync::mpsc::{SyncSender, TrySendError};
 
 use serde::{Deserialize, Serialize};
 
-use super::{ControllerEvent, EmitResult};
+use super::ControllerEvent;
+use super::observability::EmitResult;
 
 /// Monotonic counters for controller-visible backpressure and termination causes.
 #[derive(Debug, Default)]

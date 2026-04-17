@@ -12,14 +12,17 @@ use crate::gen2::residency::{ResidentRuntime, RuntimeKind};
 use crate::gen2::residency_policy::estimate_resident_mb_for_path;
 use crate::gen2::session_rt::SessionSpec;
 
+use super::lifecycle::{
+    RuntimeOutcome, apply_generation_defaults, attach_generating_puller, build_load_request,
+    deregister_and_end_session, evict_lru, runtime_outcome_from_state, start_ephemeral,
+    terminate_runtime, terminate_runtime_owned,
+};
 use super::metrics::{emit_best_effort, emit_must_deliver};
+use super::observability::{EmitResult, Forwarder};
 use super::state::ControllerState;
 use super::{
     ChatRunState, ChatRuntime, CompletionReason, ControlFlow, ControllerCmd, ControllerEvent,
-    EmitResult, FailureReason, Forwarder, RuntimeOutcome, WorkloadKind, apply_generation_defaults,
-    attach_generating_puller, build_load_request, deregister_and_end_session, evict_lru,
-    runtime_outcome_from_state, scheduler, start_ephemeral, state_transitions, terminate_runtime,
-    terminate_runtime_owned,
+    FailureReason, WorkloadKind, scheduler, state_transitions,
 };
 
 fn handle_model_command(state: &mut ControllerState, cmd: ControllerCmd) -> ControlFlow {
