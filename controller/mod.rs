@@ -454,9 +454,76 @@ impl InferenceHandle {
             #[cfg(feature = "p2p-client")]
             Self::Remote(h) => h.send(cmd),
             #[cfg(feature = "flock")]
-            Self::Flock(h) => h.send(cmd),
+            Self::Flock(h) => Self::dispatch_through_flock(h, cmd),
             #[cfg(feature = "flock")]
             Self::RegisteredFlockGateway(h) => h.send(cmd),
+        }
+    }
+
+    /// Route a `ControllerCmd` through a `FlockHandle` with failover for
+    /// streaming inference and single-shot dispatch for everything else.
+    ///
+    /// Streaming inference commands (`StartChat`, `ContinueChat`,
+    /// `SystemInfer`) carry a clone-friendly payload, so we can rebuild
+    /// them per attempt. We project them into [`crate::p2p::flock::handle::RetryableInference`]
+    /// and hand them to [`crate::p2p::flock::handle::FlockHandle::dispatch_inference_with_failover`].
+    /// If a peer's transport fails before any token flows, the dispatcher
+    /// rebuilds the cmd and retries on the next-best peer using the same
+    /// caller-owned `tx` channel — the caller sees one continuous stream.
+    ///
+    /// Non-streaming commands (model-status queries, fire-and-forget
+    /// stops, etc.) take the single-shot path: they don't carry retryable
+    /// inputs, and a failure on a status query is surfaced rather than
+    /// silently retried.
+    #[cfg(feature = "flock")]
+    fn dispatch_through_flock(
+        handle: &std::sync::Arc<crate::p2p::flock::handle::FlockHandle>,
+        cmd: ControllerCmd,
+    ) -> Result<(), String> {
+        use crate::p2p::flock::handle::{RetryableInference, RetryableInferenceKind};
+        match cmd {
+            ControllerCmd::StartChat {
+                chat_id,
+                messages,
+                gen_spec,
+                tx,
+            } => handle.dispatch_inference_with_failover(RetryableInference {
+                chat_id,
+                gen_spec,
+                kind: RetryableInferenceKind::StartChat { messages },
+                required_model: None,
+                tx,
+            }),
+            ControllerCmd::ContinueChat {
+                chat_id,
+                new_messages,
+                gen_spec,
+                tx,
+            } => handle.dispatch_inference_with_failover(RetryableInference {
+                chat_id,
+                gen_spec,
+                kind: RetryableInferenceKind::ContinueChat { new_messages },
+                required_model: None,
+                tx,
+            }),
+            ControllerCmd::SystemInfer {
+                task,
+                chat_id,
+                messages,
+                gen_spec,
+                tx,
+            } => handle.dispatch_inference_with_failover(RetryableInference {
+                chat_id,
+                gen_spec,
+                kind: RetryableInferenceKind::SystemInfer { task, messages },
+                required_model: None,
+                tx,
+            }),
+            // Everything else (status queries, stop, pause, resume, model
+            // lifecycle) goes single-shot — no clone-friendly payload, and
+            // a transient error on a status query is more useful surfaced
+            // than silently retried.
+            other => handle.send(other),
         }
     }
 
