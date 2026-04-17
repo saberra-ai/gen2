@@ -102,6 +102,15 @@ impl ControllerConfig {
                 temperature: Some(0.3),
                 ..Default::default()
             },
+            // QueryRewrite: short output (one standalone query), low temp for
+            // faithful coreference resolution, top_p=0.9 for diversity on
+            // pronoun ambiguities. Calibrated on QReCC in Phase 0 probe —
+            // 104ms/query on CPU with `resources/model.gguf`.
+            SystemTask::QueryRewrite => GenSpec {
+                max_tokens: Some(80),
+                temperature: Some(0.1),
+                ..Default::default()
+            },
         }
     }
 }
@@ -166,6 +175,10 @@ mod tests {
         let summary = config.system_task_spec(&SystemTask::Summary);
         assert_eq!(summary.max_tokens, Some(120));
         assert_eq!(summary.temperature, Some(0.3));
+
+        let rewrite = config.system_task_spec(&SystemTask::QueryRewrite);
+        assert_eq!(rewrite.max_tokens, Some(80));
+        assert_eq!(rewrite.temperature, Some(0.1));
     }
 
     /// Verify that SystemTask::default_gen_spec() delegates to config correctly.

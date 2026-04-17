@@ -64,6 +64,15 @@ pub enum SystemTask {
     Contradiction,
     /// Chat sidebar summary — topic extraction from recent messages.
     Summary,
+    /// Conversational query rewriting — resolve a follow-up question
+    /// into a standalone search query using recent conversation history.
+    ///
+    /// Separate from `QueryUnderstand`: `QueryUnderstand` extracts structured
+    /// metadata (intent, temporal, entities) from a single query. `QueryRewrite`
+    /// is coreference resolution — "what does it cost?" + history → "what does
+    /// it cost to become a physician's assistant?". Lifts QReCC retrieval
+    /// recall@10 from 0.505 (raw) toward 0.925 (gold rewrite).
+    QueryRewrite,
 }
 
 /// Primary user chat vs an internal system inference workload.
@@ -169,6 +178,7 @@ impl SystemTask {
             Self::QueryUnderstand => "query",
             Self::Contradiction => "contradiction",
             Self::Summary => "summary",
+            Self::QueryRewrite => "rewrite",
         }
     }
 
