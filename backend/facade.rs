@@ -1,10 +1,13 @@
-//! Runtime backend dispatch via enums.
+//! Backend facade — enum wrapping concrete backends that implement the
+//! `Backend` / `BackendSession` / `TokenPullerDyn` traits.
 //!
-//! Wraps each backend's Engine/Session/TokenPuller in a single enum so the
-//! controller and the rest of the app never need to know which backend is active.
+//! Public API is byte-compatible with the former `dispatch.rs`. Instance
+//! methods delegate through a single `as_backend()` upcast; `Session` and
+//! `TokenPuller` become thin structs holding trait objects.
 
 use std::sync::Arc;
 
+use super::traits::{Backend, BackendSession, TokenPullerDyn};
 use crate::gen2::engine::telemetry::HookBus;
 use crate::gen2::engine::{
     Capabilities, EmbedLoadRequest, ExecError, ExecutionStats, LoadRequest, Settings,
@@ -167,19 +170,27 @@ impl Default for Engine {
 }
 
 impl Engine {
-    /// Which backend is currently active (for UI display).
-    pub fn active_backend_name(&self) -> &'static str {
+    /// Upcast to `&dyn Backend` if a real backend is active. Returns `None`
+    /// for `Uninit`. Single source of truth for instance-method dispatch.
+    fn as_backend(&self) -> Option<&dyn Backend> {
         match self {
             #[cfg(feature = "backend-llamacpp")]
-            Self::LlamaCpp(_) => "llamacpp",
+            Self::LlamaCpp(e) => Some(e),
             #[cfg(feature = "backend-mlx")]
-            Self::Mlx(_) => "mlx",
+            Self::Mlx(e) => Some(e),
             #[cfg(feature = "backend-onnx")]
-            Self::Onnx(_) => "onnx",
+            Self::Onnx(e) => Some(e),
             #[cfg(feature = "backend-external-api")]
-            Self::ExternalApi(_) => "external-api",
-            Self::Uninit => "none",
+            Self::ExternalApi(e) => Some(e),
+            Self::Uninit => None,
         }
+    }
+
+    /// Which backend is currently active (for UI display).
+    pub fn active_backend_name(&self) -> &'static str {
+        self.as_backend()
+            .map(|b| b.backend_name())
+            .unwrap_or("none")
     }
 
     /// Which backends are compiled into this binary.
@@ -246,29 +257,12 @@ impl Engine {
     /// Load a model, auto-detecting the backend from the file format.
     /// If the detected backend differs from the current one, the engine
     /// is re-initialized to the new backend first.
-    ///
-    /// # Errors
-    ///
-    /// Returns `ExecError::Other` if the model exceeds available memory.
-    /// The error message suggests trying a smaller model variant (e.g. a
-    /// more aggressive quantization). Also returns errors for corrupt or
-    /// unrecognised model files, missing backends, and FFI failures.
     pub fn load_model(&mut self, req: LoadRequest) -> Result<(), ExecError> {
         let kind = detect_backend(&req)?;
         self.ensure_backend(kind);
-        match self {
-            #[cfg(feature = "backend-llamacpp")]
-            Self::LlamaCpp(e) => e.load_model(req),
-            #[cfg(feature = "backend-mlx")]
-            Self::Mlx(e) => e.load_model(req),
-            #[cfg(feature = "backend-onnx")]
-            Self::Onnx(e) => e.load_model(req),
-            #[cfg(feature = "backend-external-api")]
-            Self::ExternalApi(e) => e.load_model(req),
-            Self::Uninit => Err(ExecError::Other(anyhow::anyhow!(
-                "no backend for model format"
-            ))),
-        }
+        self.as_backend()
+            .ok_or_else(|| ExecError::Other(anyhow::anyhow!("no backend for model format")))?
+            .load_model(req)
     }
 
     /// Switch the engine to the requested backend kind if needed.
@@ -303,62 +297,72 @@ impl Engine {
     }
 
     pub fn reload_model(&self) -> Result<(), ExecError> {
-        dispatch!(self, e => e.reload_model())
+        self.as_backend()
+            .ok_or(ExecError::ModelNotLoaded)?
+            .reload_model()
     }
 
     pub fn load_embedder(&self, req: EmbedLoadRequest) -> Result<(), ExecError> {
-        dispatch!(self, e => e.load_embedder(req))
+        let b = self.as_backend().ok_or(ExecError::ModelNotLoaded)?;
+        b.as_embeddings()
+            .ok_or(ExecError::FeatureUnsupported("embeddings"))?
+            .load_embedder(req)
     }
 
     pub fn is_embedder_loaded(&self) -> bool {
-        dispatch!(self, e => e.is_embedder_loaded(), false)
+        self.as_backend()
+            .and_then(|b| b.as_embeddings())
+            .map(|e| e.is_embedder_loaded())
+            .unwrap_or(false)
     }
 
     pub fn upload_settings(&self, settings: Settings) -> Result<(), ExecError> {
-        dispatch!(self, e => e.upload_settings(settings))
+        self.as_backend()
+            .ok_or(ExecError::ModelNotLoaded)?
+            .upload_settings(settings)
     }
 
     pub fn settings(&self) -> Arc<Settings> {
-        dispatch!(self, e => e.settings(), Arc::new(Settings::default()))
+        self.as_backend()
+            .map(|b| b.settings())
+            .unwrap_or_else(|| Arc::new(Settings::default()))
     }
 
     pub fn settings_version(&self) -> u64 {
-        dispatch!(self, e => e.settings_version(), 0)
+        self.as_backend().map(|b| b.settings_version()).unwrap_or(0)
     }
 
     pub fn hooks(&self) -> Arc<HookBus> {
-        dispatch!(self, e => e.hooks(), Arc::new(HookBus::new()))
+        self.as_backend()
+            .map(|b| b.hooks())
+            .unwrap_or_else(|| Arc::new(HookBus::new()))
     }
 
     #[allow(clippy::arc_with_non_send_sync)]
     pub fn start_session(&self, spec: SessionSpec) -> Result<Arc<Session>, ExecError> {
-        match self {
-            #[cfg(feature = "backend-llamacpp")]
-            Self::LlamaCpp(e) => e
-                .start_session(spec)
-                .map(|s| Arc::new(Session::LlamaCpp(s))),
-            #[cfg(feature = "backend-mlx")]
-            Self::Mlx(e) => e.start_session(spec).map(|s| Arc::new(Session::Mlx(s))),
-            #[cfg(feature = "backend-onnx")]
-            Self::Onnx(e) => e.start_session(spec).map(|s| Arc::new(Session::Onnx(s))),
-            #[cfg(feature = "backend-external-api")]
-            Self::ExternalApi(e) => e
-                .start_session(spec)
-                .map(|s| Arc::new(Session::ExternalApi(s))),
-            Self::Uninit => Err(ExecError::ModelNotLoaded),
-        }
+        let inner = self
+            .as_backend()
+            .ok_or(ExecError::ModelNotLoaded)?
+            .start_session(spec)?;
+        Ok(Arc::new(Session(inner)))
     }
 
     pub fn end_session(&self, id: SessionId) -> Result<(), ExecError> {
-        dispatch!(self, e => e.end_session(id))
+        self.as_backend()
+            .ok_or(ExecError::ModelNotLoaded)?
+            .end_session(id)
     }
 
     pub fn is_model_loaded(&self) -> bool {
-        dispatch!(self, e => e.is_model_loaded(), false)
+        self.as_backend()
+            .map(|b| b.is_model_loaded())
+            .unwrap_or(false)
     }
 
     pub fn capabilities(&self) -> Capabilities {
-        dispatch!(self, e => e.capabilities(), Capabilities::empty())
+        self.as_backend()
+            .map(|b| b.capabilities())
+            .unwrap_or_else(Capabilities::empty)
     }
 
     /// Infrastructure capability contract for the active backend.
@@ -366,6 +370,8 @@ impl Engine {
     /// Unlike `capabilities()` (modality: text/images/audio), this describes
     /// what the backend's runtime machinery supports (KV cache, poisoning, etc.).
     pub fn backend_caps(&self) -> super::caps::BackendCaps {
+        // Phase 4: per-variant constructors retained. Phase 7 replaces these
+        // with a trait-probe (`BackendCaps::from_backend`).
         match self {
             #[cfg(feature = "backend-llamacpp")]
             Self::LlamaCpp(_) => super::caps::BackendCaps::llamacpp(),
@@ -380,246 +386,117 @@ impl Engine {
     }
 
     pub fn does_model_support_images(&self) -> bool {
-        dispatch!(self, e => e.does_model_support_images(), false)
+        self.as_backend()
+            .and_then(|b| b.as_multimodal())
+            .map(|m| m.supports_images())
+            .unwrap_or(false)
     }
 
     pub fn does_model_support_audio(&self) -> bool {
-        dispatch!(self, e => e.does_model_support_audio(), false)
+        self.as_backend()
+            .and_then(|b| b.as_multimodal())
+            .map(|m| m.supports_audio())
+            .unwrap_or(false)
     }
 
     pub fn stats(&self) -> ExecutionStats {
-        dispatch!(self, e => e.stats(), ExecutionStats::default())
+        self.as_backend().map(|b| b.stats()).unwrap_or_default()
     }
 
     pub fn generate_embeddings(&self, inputs: &[String]) -> Result<Vec<Vec<f32>>, ExecError> {
-        dispatch!(self, e => e.generate_embeddings(inputs))
+        let b = self.as_backend().ok_or(ExecError::ModelNotLoaded)?;
+        b.as_embeddings()
+            .ok_or(ExecError::FeatureUnsupported("embeddings"))?
+            .generate_embeddings(inputs)
     }
 
     pub fn unload_model(&self) {
-        dispatch_void!(self, e => e.unload_model());
+        if let Some(b) = self.as_backend() {
+            b.unload_model();
+        }
     }
 
     pub fn unload_embedder(&self) {
-        dispatch_void!(self, e => e.unload_embedder());
+        if let Some(e) = self.as_backend().and_then(|b| b.as_embeddings()) {
+            e.unload_embedder();
+        }
     }
 }
-
-/// Dispatch to the active backend, returning the result.
-/// For methods that return Result, the Uninit variant returns an error.
-macro_rules! dispatch {
-    // With a fallback default for non-Result returns
-    ($self:expr, $e:ident => $call:expr, $default:expr) => {
-        match $self {
-            #[cfg(feature = "backend-llamacpp")]
-            Self::LlamaCpp($e) => $call,
-            #[cfg(feature = "backend-mlx")]
-            Self::Mlx($e) => $call,
-            #[cfg(feature = "backend-onnx")]
-            Self::Onnx($e) => $call,
-            #[cfg(feature = "backend-external-api")]
-            Self::ExternalApi($e) => $call,
-            Self::Uninit => $default,
-        }
-    };
-    // For Result-returning methods (Uninit → ModelNotLoaded error)
-    ($self:expr, $e:ident => $call:expr) => {
-        match $self {
-            #[cfg(feature = "backend-llamacpp")]
-            Self::LlamaCpp($e) => $call,
-            #[cfg(feature = "backend-mlx")]
-            Self::Mlx($e) => $call,
-            #[cfg(feature = "backend-onnx")]
-            Self::Onnx($e) => $call,
-            #[cfg(feature = "backend-external-api")]
-            Self::ExternalApi($e) => $call,
-            Self::Uninit => Err(ExecError::ModelNotLoaded),
-        }
-    };
-}
-
-macro_rules! dispatch_void {
-    ($self:expr, $e:ident => $call:expr) => {
-        match $self {
-            #[cfg(feature = "backend-llamacpp")]
-            Self::LlamaCpp($e) => $call,
-            #[cfg(feature = "backend-mlx")]
-            Self::Mlx($e) => $call,
-            #[cfg(feature = "backend-onnx")]
-            Self::Onnx($e) => $call,
-            #[cfg(feature = "backend-external-api")]
-            Self::ExternalApi($e) => $call,
-            Self::Uninit => {}
-        }
-    };
-}
-
-// Make macros usable before their definition (Rust 2024 allows this)
-use dispatch;
-use dispatch_void;
 
 // ─── Session ────────────────────────────────────────────────────────────────
 
-pub enum Session {
-    #[cfg(feature = "backend-llamacpp")]
-    LlamaCpp(Arc<super::llama::Session>),
-    #[cfg(feature = "backend-mlx")]
-    Mlx(Arc<super::mlx::Session>),
-    #[cfg(feature = "backend-onnx")]
-    Onnx(Arc<super::onnx::Session>),
-    #[cfg(feature = "backend-external-api")]
-    ExternalApi(Arc<super::external_api::Session>),
-}
+/// Facade wrapper over a backend-specific session. Holds the trait object so
+/// the controller can store heterogeneous sessions in a single map.
+pub struct Session(pub(crate) Arc<dyn BackendSession>);
 
 impl std::fmt::Debug for Session {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            #[cfg(feature = "backend-llamacpp")]
-            Self::LlamaCpp(s) => write!(f, "Session::LlamaCpp(id={})", s.id),
-            #[cfg(feature = "backend-mlx")]
-            Self::Mlx(s) => write!(f, "Session::Mlx(id={})", s.id),
-            #[cfg(feature = "backend-onnx")]
-            Self::Onnx(s) => write!(f, "Session::Onnx(id={})", s.id),
-            #[cfg(feature = "backend-external-api")]
-            Self::ExternalApi(s) => write!(f, "Session::ExternalApi(id={})", s.id),
-        }
+        self.0.fmt(f)
     }
-}
-
-/// Dispatch on Session enum variants
-macro_rules! session_dispatch {
-    ($self:expr, $s:ident => $call:expr) => {
-        match $self {
-            #[cfg(feature = "backend-llamacpp")]
-            Self::LlamaCpp($s) => $call,
-            #[cfg(feature = "backend-mlx")]
-            Self::Mlx($s) => $call,
-            #[cfg(feature = "backend-onnx")]
-            Self::Onnx($s) => $call,
-            #[cfg(feature = "backend-external-api")]
-            Self::ExternalApi($s) => $call,
-        }
-    };
 }
 
 impl Session {
     pub fn id(&self) -> SessionId {
-        session_dispatch!(self, s => s.id)
+        self.0.id()
     }
 
     pub fn pause(&self) {
-        session_dispatch!(self, s => s.pause());
+        self.0.pause();
     }
 
     pub fn resume(&self) {
-        session_dispatch!(self, s => s.resume());
+        self.0.resume();
     }
 
     pub fn stop(&self) {
-        session_dispatch!(self, s => s.stop());
+        self.0.stop();
     }
 
     pub fn pull(&self, gen_spec: GenSpec) -> Result<TokenPuller, ExecError> {
-        match self {
-            #[cfg(feature = "backend-llamacpp")]
-            Self::LlamaCpp(s) => s.pull(gen_spec).map(TokenPuller::LlamaCpp),
-            #[cfg(feature = "backend-mlx")]
-            Self::Mlx(s) => s.pull(gen_spec).map(TokenPuller::Mlx),
-            #[cfg(feature = "backend-onnx")]
-            Self::Onnx(s) => s.pull(gen_spec).map(TokenPuller::Onnx),
-            #[cfg(feature = "backend-external-api")]
-            Self::ExternalApi(s) => s.pull(gen_spec).map(TokenPuller::ExternalApi),
-        }
+        Ok(TokenPuller(self.0.pull(gen_spec)?))
     }
 
     pub fn append_messages(&self, new_messages: Vec<Message>) -> Result<usize, ExecError> {
-        session_dispatch!(self, s => s.append_messages(new_messages))
+        self.0.append_messages(new_messages)
     }
 
     pub fn save_cache(&self, dst: KvSaveSpec) -> Result<KvSnapshot, ExecError> {
-        match self {
-            #[cfg(feature = "backend-llamacpp")]
-            Self::LlamaCpp(s) => s.save_cache(dst),
-            #[cfg(feature = "backend-mlx")]
-            Self::Mlx(_) => Err(ExecError::FeatureUnsupported("kv cache")),
-            #[cfg(feature = "backend-onnx")]
-            Self::Onnx(_) => Err(ExecError::FeatureUnsupported("kv cache")),
-            #[cfg(feature = "backend-external-api")]
-            Self::ExternalApi(_) => Err(ExecError::FeatureUnsupported("kv cache")),
-        }
+        self.0
+            .as_kv_snapshot()
+            .ok_or(ExecError::FeatureUnsupported("kv cache"))?
+            .save_cache(dst)
     }
 
     pub fn load_cache(&self, src: KvLoadSpec) -> Result<KvLoadReport, ExecError> {
-        match self {
-            #[cfg(feature = "backend-llamacpp")]
-            Self::LlamaCpp(s) => s.load_cache(src),
-            #[cfg(feature = "backend-mlx")]
-            Self::Mlx(_) => Err(ExecError::FeatureUnsupported("kv cache")),
-            #[cfg(feature = "backend-onnx")]
-            Self::Onnx(_) => Err(ExecError::FeatureUnsupported("kv cache")),
-            #[cfg(feature = "backend-external-api")]
-            Self::ExternalApi(_) => Err(ExecError::FeatureUnsupported("kv cache")),
-        }
+        self.0
+            .as_kv_snapshot()
+            .ok_or(ExecError::FeatureUnsupported("kv cache"))?
+            .load_cache(src)
     }
 
     /// Messages dropped during initial session creation due to context overflow.
     pub fn initial_messages_dropped(&self) -> usize {
-        match self {
-            #[cfg(feature = "backend-llamacpp")]
-            Self::LlamaCpp(s) => s.initial_messages_dropped(),
-            // Other backends don't track this yet
-            #[cfg(feature = "backend-mlx")]
-            Self::Mlx(_) => 0,
-            #[cfg(feature = "backend-onnx")]
-            Self::Onnx(_) => 0,
-            #[cfg(feature = "backend-external-api")]
-            Self::ExternalApi(_) => 0,
-        }
+        self.0.initial_messages_dropped()
     }
 
     /// Returns true if the session's internal state was lost (e.g. due to an
     /// FFI panic). A poisoned session cannot generate further tokens.
     pub fn is_poisoned(&self) -> bool {
-        match self {
-            #[cfg(feature = "backend-llamacpp")]
-            Self::LlamaCpp(s) => s.is_poisoned(),
-            // Non-FFI backends don't have state ownership issues
-            #[cfg(feature = "backend-mlx")]
-            Self::Mlx(_) => false,
-            #[cfg(feature = "backend-onnx")]
-            Self::Onnx(_) => false,
-            #[cfg(feature = "backend-external-api")]
-            Self::ExternalApi(_) => false,
-        }
+        self.0.is_poisoned()
     }
 }
 
 // ─── TokenPuller ────────────────────────────────────────────────────────────
 
-pub enum TokenPuller {
-    #[cfg(feature = "backend-llamacpp")]
-    LlamaCpp(super::llama::TokenPuller),
-    #[cfg(feature = "backend-mlx")]
-    Mlx(super::mlx::TokenPuller),
-    #[cfg(feature = "backend-onnx")]
-    Onnx(super::onnx::TokenPuller),
-    #[cfg(feature = "backend-external-api")]
-    ExternalApi(super::external_api::RemotePuller),
-}
+/// Facade wrapper over a backend-specific token puller. `Iterator::next`
+/// dispatches through the trait object.
+pub struct TokenPuller(pub(crate) Box<dyn TokenPullerDyn>);
 
 impl Iterator for TokenPuller {
     type Item = Result<TokenEvent, ExecError>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        match self {
-            #[cfg(feature = "backend-llamacpp")]
-            Self::LlamaCpp(p) => p.next(),
-            #[cfg(feature = "backend-mlx")]
-            Self::Mlx(p) => p.next(),
-            #[cfg(feature = "backend-onnx")]
-            Self::Onnx(p) => p.next(),
-            #[cfg(feature = "backend-external-api")]
-            Self::ExternalApi(p) => p.next(),
-        }
+        self.0.next_event()
     }
 }
 
@@ -628,11 +505,8 @@ mod tests {
     use super::*;
     use std::path::PathBuf;
 
-    // ── Step 3b: Engine dispatch tests ──────────────────────────────
+    // ── Engine dispatch tests ──────────────────────────────
 
-    /// Engine::new() without any backend features compiles to Uninit,
-    /// with backend-llamacpp it compiles to LlamaCpp. Either way,
-    /// is_model_loaded() must return false (no model file loaded).
     #[test]
     fn uninit_engine_returns_model_not_loaded() {
         let engine = Engine::new();
@@ -642,24 +516,17 @@ mod tests {
         );
     }
 
-    /// A path ending in `.gguf` should be detected as the "llamacpp" backend.
     #[test]
     fn format_detection_gguf() {
         let name = Engine::detect_backend_for_path(&PathBuf::from("/tmp/model.gguf"));
-        // When backend-llamacpp is compiled, this returns "llamacpp".
-        // When it isn't compiled, the fallback logic still resolves to
-        // whatever the default compiled backend is (or "unknown").
         #[cfg(feature = "backend-llamacpp")]
         assert_eq!(name, "llamacpp", ".gguf should map to llamacpp backend");
         #[cfg(not(feature = "backend-llamacpp"))]
         {
-            // Without llamacpp, .gguf detection sees it's not a real file,
-            // so it falls through to the default compiled backend.
-            let _ = name; // just assert no panic
+            let _ = name;
         }
     }
 
-    /// A URL starting with `http://` should be detected as "external-api".
     #[test]
     fn format_detection_url() {
         let name = Engine::detect_backend_for_path(&PathBuf::from("http://localhost:11434/v1"));
@@ -670,14 +537,10 @@ mod tests {
         );
         #[cfg(not(feature = "backend-external-api"))]
         {
-            // Without external-api feature, the URL path falls through to
-            // the default backend (the path is not a real file/dir so
-            // file-extension checks skip it).
-            let _ = name; // just assert no panic
+            let _ = name;
         }
     }
 
-    /// https:// URLs should also be detected as "external-api".
     #[test]
     fn format_detection_https_url() {
         let name = Engine::detect_backend_for_path(&PathBuf::from("https://api.openai.com/v1"));
@@ -692,8 +555,6 @@ mod tests {
         }
     }
 
-    /// Default engine reports "none" active backend when Uninit, or a
-    /// real backend name when one is compiled.
     #[test]
     fn active_backend_name_on_fresh_engine() {
         let engine = Engine::new();
@@ -710,15 +571,12 @@ mod tests {
         assert_eq!(name, "none");
     }
 
-    /// Capabilities and stats have sensible defaults on a fresh engine.
     #[test]
     fn fresh_engine_capabilities_and_stats() {
         let engine = Engine::new();
-        // No model loaded yet — capabilities should be empty or default
         let caps = engine.capabilities();
-        // Stats should be default zeros
         let stats = engine.stats();
         assert_eq!(stats.decode_tokens, 0);
-        let _ = caps; // just ensure no panic
+        let _ = caps;
     }
 }

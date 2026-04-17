@@ -30,11 +30,11 @@ compile_error!(
 );
 
 pub mod caps;
-mod dispatch;
+mod facade;
 pub mod health;
 pub mod traits;
 pub use caps::{BackendCaps, LatencyTier};
-pub use dispatch::{Engine, ModelBundle, Session, SessionId, TokenPuller};
+pub use facade::{Engine, ModelBundle, Session, SessionId, TokenPuller};
 pub use health::SessionHealth;
 pub use traits::KvSnapshot as KvSnapshotTrait;
 pub use traits::{

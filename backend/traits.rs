@@ -24,7 +24,7 @@ use crate::gen2::session_rt::SessionSpec;
 use crate::types::message::Message;
 
 use super::caps::LatencyTier;
-use super::dispatch::SessionId;
+use super::facade::SessionId;
 
 /// Core contract every backend — local or remote — implements.
 ///
