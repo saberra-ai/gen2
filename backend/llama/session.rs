@@ -407,56 +407,31 @@ impl Session {
             .ctx_size
             .unwrap_or(bundle.meta.n_ctx.max(128));
 
-        // Context overflow: truncate old messages until conversation fits
+        // Context overflow: truncate old messages until conversation fits.
+        // Generic driver in session_rt::truncate — Phase 3 refactor.
         let original_message_count = messages.len();
-        let gen_reserve = crate::gen2::session_rt::prompt::generation_reserve(
-            ctx_size as usize,
-            settings.stopping.max_tokens,
-        );
-        let ctx_limit = (ctx_size as usize).saturating_sub(gen_reserve);
-        if tokens_list.len() > ctx_limit && messages.len() > 2 {
-            tracing::warn!(
-                "initial context overflow: {} tokens > {} limit, truncating conversation",
-                tokens_list.len(),
-                ctx_limit
-            );
-            // Estimate how many messages to batch-remove based on avg tokens/msg
-            let first_is_system = messages
-                .first()
-                .map(|m| m.role == "system")
-                .unwrap_or(false);
-            let removable = if first_is_system {
-                messages.len() - 2
-            } else {
-                messages.len() - 1
-            };
-            let avg_per_msg = tokens_list.len() / messages.len().max(1);
-            let excess = tokens_list.len().saturating_sub(ctx_limit);
-            let est_remove = (excess / avg_per_msg.max(1)).min(removable);
-            let remove_idx = if first_is_system { 1 } else { 0 };
-            // Batch remove estimated messages
-            for _ in 0..est_remove {
-                if messages.len() <= 2 {
-                    break;
-                }
-                messages.remove(remove_idx);
-            }
-            // Re-tokenize and fine-tune with per-message loop
-            let truncated_prompt = chat_template
-                .apply(messages.clone(), None, None)
-                .map_err(ExecError::Other)?;
-            tokens_list = bundle
-                .model
-                .str_to_token(&truncated_prompt, AddBos::Always)
-                .map_err(|e| ExecError::Other(e.into()))?;
-            while tokens_list.len() > ctx_limit && messages.len() > 2 {
-                messages.remove(remove_idx);
-                let truncated_prompt = chat_template
+        {
+            let tokenizer = Arc::new(super::tokenizer_adapter::LlamaSessionTokenizer {
+                bundle: bundle.clone(),
+                chat_template: chat_template.clone(),
+            })
+                as Arc<dyn crate::gen2::backend::traits::SessionTokenizer>;
+            let outcome = crate::gen2::session_rt::ColdStart::apply(
+                tokenizer,
+                &settings,
+                ctx_size as usize,
+                messages,
+            )?;
+            messages = outcome.messages;
+            // Only re-tokenize if truncation actually dropped something; otherwise
+            // `tokens_list` from the initial tokenization above is still valid.
+            if outcome.dropped > 0 {
+                let final_prompt = chat_template
                     .apply(messages.clone(), None, None)
                     .map_err(ExecError::Other)?;
                 tokens_list = bundle
                     .model
-                    .str_to_token(&truncated_prompt, AddBos::Always)
+                    .str_to_token(&final_prompt, AddBos::Always)
                     .map_err(|e| ExecError::Other(e.into()))?;
             }
         }
@@ -722,59 +697,33 @@ impl Session {
                 .with_dependent_mut(|_, ctx| ctx.clear_kv_cache());
             st.cur_pos = 0;
 
-            let keep_recent = crate::services::compaction::CompactionConfig::default().keep_recent;
-
             let mut msgs = self.messages.write();
-            let mut working = msgs.clone();
-            let mut dropped = 0_usize;
 
-            let prompt_tokens = |m: &[Message]| {
+            // Generic driver in session_rt::truncate — Phase 3 refactor.
+            let tokenizer = Arc::new(super::tokenizer_adapter::LlamaSessionTokenizer {
+                bundle: self.bundle.clone(),
+                chat_template: tpl.clone(),
+            })
+                as Arc<dyn crate::gen2::backend::traits::SessionTokenizer>;
+            let outcome = crate::gen2::session_rt::WarmStart::apply(
+                tokenizer,
+                &self.settings,
+                ctx_size,
+                msgs.clone(),
+            )?;
+            let working = outcome.messages;
+            let dropped = outcome.dropped;
+
+            // Re-tokenize the final message list for prefill.
+            let remaining = {
                 let p = tpl
-                    .apply(m.to_vec(), None, None)
+                    .apply(working.clone(), None, None)
                     .map_err(ExecError::Other)?;
                 self.bundle
                     .model
                     .str_to_token(&p, AddBos::Always)
-                    .map_err(|e| ExecError::Other(e.into()))
+                    .map_err(|e| ExecError::Other(e.into()))?
             };
-
-            // Phase 1: algorithmic compaction until under limit or no further compaction.
-            loop {
-                let n = prompt_tokens(&working)?.len();
-                if n <= ctx_limit {
-                    break;
-                }
-                let cr = crate::services::compaction::compact_algorithmic(working, keep_recent);
-                working = cr.messages;
-                if cr.compacted_count == 0 {
-                    break;
-                }
-                tracing::info!(
-                    compacted = cr.compacted_count,
-                    "warm-session context overflow: applied algorithmic compaction"
-                );
-                dropped = dropped.saturating_add(cr.compacted_count);
-            }
-
-            // Phase 2: drop oldest non-system messages until conversation fits (fallback).
-            while working.len() > 2 {
-                let n = prompt_tokens(&working)?.len();
-                if n <= ctx_limit {
-                    break;
-                }
-                let first_is_system = working.first().map(|m| m.role == "system").unwrap_or(false);
-                let remove_idx = if first_is_system { 1 } else { 0 };
-                working.remove(remove_idx);
-                dropped += 1;
-            }
-
-            let remaining = prompt_tokens(&working)?;
-            if remaining.len() > ctx_limit {
-                return Err(ExecError::Other(anyhow::anyhow!(
-                    "conversation too long even after compaction (ctx_size={})",
-                    ctx_size
-                )));
-            }
 
             *msgs = working;
             drop(msgs);

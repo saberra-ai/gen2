@@ -1,6 +1,7 @@
 pub(crate) mod media_util;
 pub(crate) mod prompt;
 mod spec;
+pub mod truncate;
 
 // Backend-specific Session is re-exported from gen2::backend
 pub use crate::gen2::backend::{Session, SessionId};
@@ -9,3 +10,4 @@ pub use crate::gen2::backend::{Session, SessionId};
 pub(crate) use crate::gen2::backend::{DecodeState, SessionCtxCell};
 pub use prompt::{PromptContext, build_prompt_context, generation_reserve, merge_prompts};
 pub use spec::SessionSpec;
+pub use truncate::{ColdStart, TruncationOutcome, WarmStart};

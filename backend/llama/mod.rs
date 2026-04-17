@@ -7,6 +7,7 @@ pub mod llama_config;
 mod loader;
 mod puller;
 mod session;
+mod tokenizer_adapter;
 
 pub use bundle::ModelBundle;
 pub use engine::Engine;
