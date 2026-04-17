@@ -31,8 +31,16 @@ compile_error!(
 
 pub mod caps;
 mod dispatch;
+pub mod health;
+pub mod traits;
 pub use caps::{BackendCaps, LatencyTier};
 pub use dispatch::{Engine, ModelBundle, Session, SessionId, TokenPuller};
+pub use health::SessionHealth;
+pub use traits::KvSnapshot as KvSnapshotTrait;
+pub use traits::{
+    Backend, BackendSession, Embeddings, LocalBackend, Multimodal, RemoteBackend, SessionTokenizer,
+    TokenPullerDyn,
+};
 
 // Llama-specific internal types (needed by session_rt only when llamacpp is active)
 #[cfg(feature = "backend-llamacpp")]
