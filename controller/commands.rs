@@ -276,15 +276,15 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
                     );
                 }
                 Ok(session) => {
-                    if state.caps.context_truncation_tracking {
-                        let dropped = session.initial_messages_dropped();
-                        if dropped > 0 {
-                            emit_must_deliver(
-                                state.metrics.as_ref(),
-                                &tx,
-                                ControllerEvent::ContextTruncated(dropped),
-                            );
-                        }
+                    // Every backend exposes initial_messages_dropped() via trait default 0 —
+                    // no need to gate on backend-specific caps flag.
+                    let dropped = session.initial_messages_dropped();
+                    if dropped > 0 {
+                        emit_must_deliver(
+                            state.metrics.as_ref(),
+                            &tx,
+                            ControllerEvent::ContextTruncated(dropped),
+                        );
                     }
                     let sid = session.id();
                     state.engine.hooks().register_with_id(
@@ -316,6 +316,7 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
                                 last_used: std::time::Instant::now(),
                                 last_gen_spec: pull_spec.clone(),
                                 state: ChatRunState::Idle,
+                                health: Default::default(),
                             };
                             attach_generating_puller(&mut runtime, puller, pull_spec);
                             let evicted = state.chats.insert(chat_id, runtime);
@@ -629,6 +630,7 @@ pub(super) fn tick_active_chats(state: &mut ControllerState, tick_busy: Duration
 
             match step {
                 Err(_panic) => {
+                    chat.health.decode_panics = chat.health.decode_panics.saturating_add(1);
                     emit(ControllerEvent::Error {
                         code: "session_poisoned".into(),
                         message: "inference panic: session state lost; restart chat".into(),
@@ -639,6 +641,8 @@ pub(super) fn tick_active_chats(state: &mut ControllerState, tick_busy: Duration
                         .fetch_add(1, Ordering::Relaxed);
                 }
                 Ok(Some(Ok(TokenEvent::Token(tok)))) => {
+                    // Successful token — reset consecutive-error streak.
+                    chat.health.consecutive_errors = 0;
                     if !tok.text.is_empty() {
                         emit(ControllerEvent::Token(tok.text));
                         chat.last_used = std::time::Instant::now();
@@ -658,20 +662,25 @@ pub(super) fn tick_active_chats(state: &mut ControllerState, tick_busy: Duration
                 Ok(Some(Ok(TokenEvent::Paused))) => {}
                 Ok(Some(Ok(TokenEvent::Special(_)))) => {}
                 Ok(Some(Err(e))) => {
-                    let (code, msg, failure) =
-                        if state.caps.poison_detection && chat.session.is_poisoned() {
-                            (
-                                "session_poisoned",
-                                format!("session state lost (possible FFI crash): {:?}", e),
-                                FailureReason::SessionPoisoned,
-                            )
-                        } else {
-                            (
-                                "generation_error",
-                                format!("{:?}", e),
-                                FailureReason::GenerationError,
-                            )
-                        };
+                    // Update generic session health: backend poison signal +
+                    // error counter. Any backend whose is_poisoned() defaults
+                    // to false (non-llama) surfaces only the error counter.
+                    chat.health.poisoned_by_backend = chat.session.is_poisoned();
+                    chat.health.consecutive_errors =
+                        chat.health.consecutive_errors.saturating_add(1);
+                    let (code, msg, failure) = if chat.health.is_unhealthy() {
+                        (
+                            "session_poisoned",
+                            format!("session state lost: {:?}", e),
+                            FailureReason::SessionPoisoned,
+                        )
+                    } else {
+                        (
+                            "generation_error",
+                            format!("{:?}", e),
+                            FailureReason::GenerationError,
+                        )
+                    };
                     emit(ControllerEvent::Error {
                         code: code.into(),
                         message: msg,

@@ -692,6 +692,9 @@ pub(super) struct ChatRuntime {
     /// Last spec used for `Session::pull` (Resume / Continue paths).
     pub(super) last_gen_spec: GenSpec,
     pub(super) state: ChatRunState,
+    /// Generic session health — aggregates backend poison signal + decode
+    /// panics + consecutive errors. Drives `FailureReason::SessionPoisoned`.
+    pub(super) health: crate::gen2::backend::SessionHealth,
 }
 
 impl ChatRuntime {
@@ -897,6 +900,7 @@ pub(super) fn start_ephemeral(
                         last_used: Instant::now(),
                         last_gen_spec: pull_spec.clone(),
                         state: ChatRunState::Idle,
+                        health: Default::default(),
                     };
                     attach_generating_puller(&mut runtime, puller, pull_spec);
                     let _ = chats.insert(chat_id, runtime);
