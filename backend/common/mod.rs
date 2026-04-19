@@ -37,14 +37,13 @@ pub(crate) fn default_llama3_template() -> String {
 /// engine bundle construction.
 pub(crate) fn load_chat_template(model_dir: &Path) -> Option<String> {
     // Preferred: embedded in tokenizer_config.json.
-    if let Ok(content) = std::fs::read_to_string(model_dir.join("tokenizer_config.json")) {
-        if let Ok(parsed) = serde_json::from_str::<serde_json::Value>(&content) {
-            if let Some(s) = parsed.get("chat_template").and_then(|v| v.as_str()) {
-                return Some(s.to_string());
-            }
-        }
+    if let Ok(content) = std::fs::read_to_string(model_dir.join("tokenizer_config.json"))
+        && let Ok(parsed) = serde_json::from_str::<serde_json::Value>(&content)
+        && let Some(s) = parsed.get("chat_template").and_then(|v| v.as_str())
+    {
+        return Some(s.to_string());
     }
-    // Fallback: sidecar `chat_template.jinja` (Gemma 4+ ship it this way).
+    // Fallback: sidecar `chat_template.jinja` (Gemma 4+ stores it this way).
     std::fs::read_to_string(model_dir.join("chat_template.jinja")).ok()
 }
 

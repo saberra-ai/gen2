@@ -282,6 +282,10 @@ pub enum ControllerCmd {
         inputs: Vec<String>,
         resp: Sender<Result<Vec<Vec<f32>>, String>>,
     },
+    /// Pre-load weights for a model directory in a background thread so the
+    /// next `LoadModel` for the same path skips synchronous disk I/O.
+    /// Fire-and-forget — no response channel.
+    WarmModel { model_dir: PathBuf },
     /// Shut down the controller loop and clean up all sessions.
     Shutdown,
 }
@@ -351,6 +355,12 @@ impl ControllerHandle {
         let (tx, rx) = channel();
         self.send(ControllerCmd::GetControllerObservabilitySnapshot { resp: tx })?;
         rx.recv().map_err(|e| e.to_string())
+    }
+
+    /// Fire-and-forget: pre-load weights for `model_dir` in a background thread.
+    /// The next `load_model` call for the same path will skip synchronous I/O.
+    pub fn warm_model(&self, model_dir: PathBuf) {
+        let _ = self.tx.send(ControllerCmd::WarmModel { model_dir });
     }
 
     /// Create a `ControllerHandle` from a raw sender. Intended for testing
@@ -490,6 +500,17 @@ impl InferenceHandle {
             Self::Flock(_) => &DEFAULT_CONFIG,
             #[cfg(feature = "flock")]
             Self::RegisteredFlockGateway(_) => &DEFAULT_CONFIG,
+        }
+    }
+
+    /// Fire-and-forget warm model hint. No-op for non-local handles.
+    pub fn warm_model(&self, model_dir: PathBuf) {
+        match self {
+            Self::Local(h) => h.warm_model(model_dir),
+            #[cfg(feature = "p2p-client")]
+            Self::Remote(_) => {}
+            #[cfg(feature = "flock")]
+            Self::Flock(_) | Self::RegisteredFlockGateway(_) => {}
         }
     }
 

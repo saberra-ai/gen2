@@ -89,6 +89,23 @@ impl Router {
 /// single batched expert dispatch. mlx-rs 0.25 doesn't expose `gather_mm`,
 /// so we loop over the `top_k` slot dimension and do `num_experts` small
 /// matmuls per slot — still vectorized across batch/seq.
+///
+/// **TODO(grouped GEMM)**: replace the per-expert loop with a single
+/// `mlx_sys::mlx_gather_mm` call once we trust the unsafe FFI surface.
+/// The C signature is:
+/// ```c
+/// int mlx_gather_mm(
+///     mlx_array* res, const mlx_array a, const mlx_array b,
+///     const mlx_array lhs_indices /* may be null */,
+///     const mlx_array rhs_indices,                 // [B*S*top_k] expert ids
+///     bool sorted_indices, const mlx_stream s);
+/// ```
+/// Pattern: flatten tokens to `[B*S, hidden]`, expand per-token to
+/// `[B*S*top_k, hidden]` via gather, call `gather_mm` with `b =
+/// [n_experts, hidden, moe_dim]` and rhs_indices = expert ids, GELU,
+/// multiply by up branch, second `gather_mm` with down weights, scatter-add
+/// back into `[B*S, hidden]` weighted by `top_k_weights`. Expected speedup
+/// on 26B: ~4-8× over the current dense-sum loop.
 pub struct Experts {
     pub gate_proj: Weight,
     pub up_proj: Weight,
@@ -100,28 +117,16 @@ impl Experts {
     pub fn new(hidden: usize, moe_intermediate: usize, num_experts: usize) -> Self {
         Self {
             gate_proj: Weight::plain(
-                Array::zeros::<f32>(&[
-                    num_experts as i32,
-                    moe_intermediate as i32,
-                    hidden as i32,
-                ])
-                .expect("mlx op"),
+                Array::zeros::<f32>(&[num_experts as i32, moe_intermediate as i32, hidden as i32])
+                    .expect("mlx op"),
             ),
             up_proj: Weight::plain(
-                Array::zeros::<f32>(&[
-                    num_experts as i32,
-                    moe_intermediate as i32,
-                    hidden as i32,
-                ])
-                .expect("mlx op"),
+                Array::zeros::<f32>(&[num_experts as i32, moe_intermediate as i32, hidden as i32])
+                    .expect("mlx op"),
             ),
             down_proj: Weight::plain(
-                Array::zeros::<f32>(&[
-                    num_experts as i32,
-                    hidden as i32,
-                    moe_intermediate as i32,
-                ])
-                .expect("mlx op"),
+                Array::zeros::<f32>(&[num_experts as i32, hidden as i32, moe_intermediate as i32])
+                    .expect("mlx op"),
             ),
             num_experts,
         }
@@ -203,17 +208,13 @@ fn build_onehot(indices: &Array, num_experts: usize) -> Array {
     let shape = indices.shape();
     let (batch, seq, k) = (shape[0], shape[1], shape[2]);
     // Flatten to [B*S*k], scatter, reshape.
-    let flat = indices
-        .reshape(&[batch * seq * k])
-        .expect("mlx op");
+    let flat = indices.reshape(&[batch * seq * k]).expect("mlx op");
     let e = num_experts as i32;
     let arange = mlx_rs::ops::arange::<_, i32>(0i32, e, 1i32).expect("mlx op");
     // Broadcast compare: [B*S*k, 1] == [1, E] → [B*S*k, E] bool
     let flat_col = flat.reshape(&[batch * seq * k, 1]).expect("mlx op");
     let row = arange.reshape(&[1, e]).expect("mlx op");
     let eq = flat_col.eq(&row).expect("mlx op");
-    let eq_f = eq
-        .as_type::<f32>()
-        .expect("mlx op");
+    let eq_f = eq.as_type::<f32>().expect("mlx op");
     eq_f.reshape(&[batch, seq, k, e]).expect("mlx op")
 }

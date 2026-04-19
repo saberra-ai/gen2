@@ -80,6 +80,7 @@ impl TokenPuller {
             decode_tokens: self.produced as u32,
             first_token_us: self.first_token_us.unwrap_or(0),
             avg_tps,
+            ..Default::default()
         }
     }
 

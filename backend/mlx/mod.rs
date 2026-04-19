@@ -4,6 +4,7 @@ mod bundle;
 mod engine;
 mod loader;
 pub(crate) mod model;
+pub(crate) mod ngram;
 mod puller;
 mod sampler;
 mod session;

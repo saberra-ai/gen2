@@ -209,12 +209,11 @@ impl Gemma4Attention {
             (ck.clone(), cv.clone())
         } else {
             let k = self.k_proj.matmul_transpose(x);
-            // When k_eq_v, V = K (before norm). Otherwise project separately.
-            let v_raw = match &self.v_proj {
+            // 31B `attention_k_eq_v`: V is K (pre-norm) instead of a separate projection.
+            let v = match &self.v_proj {
                 Some(v_w) => v_w.matmul_transpose(x),
                 None => k.clone(),
             };
-            let v = v_raw;
 
             let k = k.reshape(&[batch, seq, nkv, hd]).expect("mlx op");
             let v = v.reshape(&[batch, seq, nkv, hd]).expect("mlx op");
@@ -361,13 +360,12 @@ pub struct Gemma4TransformerBlock {
     /// Learnable scalar multiplied at the end of each block (shape [1]).
     pub layer_scalar: Array,
 
-    // ── MoE (26B only) ─────────────────────────────────────────────────────
-    /// When `Some`, the block runs a dense MLP + sparse expert branch in
-    /// parallel and sums the outputs. `None` for E2B / E4B / 12B / 31B.
+    // ── MoE (Gemma 4 26B only) ─────────────────────────────────────────────
+    /// `Some` when `enable_moe_block=true`. Block runs dense MLP + sparse
+    /// expert branch in parallel and sums the outputs.
     pub moe: Option<Gemma4MoeBlock>,
 }
 
-/// MoE-specific sub-block — only present when `enable_moe_block=true`.
 pub struct Gemma4MoeBlock {
     pub router: super::moe::Router,
     pub experts: super::moe::Experts,
@@ -398,7 +396,7 @@ impl Gemma4TransformerBlock {
             None
         };
 
-        // Only full-attention layers use k_eq_v; sliding layers always have v_proj.
+        // 31B `attention_k_eq_v`: only full-attention layers; sliding always has v_proj.
         let use_k_eq_v = !is_sliding && config.attention_k_eq_v.unwrap_or(false);
         let num_kv_heads = if use_k_eq_v {
             config
@@ -430,7 +428,9 @@ impl Gemma4TransformerBlock {
             moe: if config.enable_moe_block.unwrap_or(false) {
                 let n_exp = config.num_experts.unwrap_or(0);
                 let top_k = config.top_k_experts.unwrap_or(2);
-                let moe_inter = config.moe_intermediate_size.unwrap_or(config.intermediate_size);
+                let moe_inter = config
+                    .moe_intermediate_size
+                    .unwrap_or(config.intermediate_size);
                 Some(Gemma4MoeBlock {
                     router: super::moe::Router::new(hidden, n_exp, top_k, eps),
                     experts: super::moe::Experts::new(hidden, moe_inter, n_exp),
@@ -459,13 +459,11 @@ impl Gemma4TransformerBlock {
         let h = self.post_attention_layernorm.forward(&h);
         let x = x.add(&h).expect("mlx op");
 
-        // Feed-forward: dense path, or dense + MoE sum if enabled.
+        // Feed-forward: dense path, plus MoE branch (summed) when enabled.
         let h = if let Some(moe) = &self.moe {
-            // Dense branch
             let h1 = self.pre_feedforward_layernorm.forward(&x);
             let h1 = self.ffn.forward(&h1);
             let h1 = moe.post_feedforward_layernorm_1.forward(&h1);
-            // MoE branch — router operates on post-attn residual (pre-norm).
             let (idx, w) = moe.router.forward(&x);
             let h2 = moe.pre_feedforward_layernorm_2.forward(&x);
             let h2 = moe.experts.forward(&h2, &idx, &w);
@@ -552,7 +550,8 @@ impl Gemma4Model {
         let max_seq = config.max_position_embeddings;
 
         // KV-sharing slot map: shared layers map to the *last* non-shared
-        // layer of the same type (mirrors `previous_kvs` in mlx-lm).
+        // layer of the same type. Mirrors `previous_kvs` construction in
+        // `Gemma4TextModel.__init__`.
         let mut cache_slot = vec![0usize; n];
         let mut last_by_type: std::collections::HashMap<&str, usize> =
             std::collections::HashMap::new();
@@ -601,12 +600,13 @@ impl Gemma4Model {
     }
 
     /// Forward pass. Returns logits for the last token: shape [1, vocab_size].
-    ///
-    /// `offset` is the absolute position of the first new token. Caller-tracked
-    /// because sliding-window cache buffers are truncated to `window_size` and
-    /// `cache[i].shape[2]` no longer reflects the true position.
-    pub fn forward(&self, tokens: &[u32], offset: usize, cache: &mut KvCache) -> Array {
+    pub fn forward(&self, tokens: &[u32], cache: &mut KvCache) -> Array {
         let seq_len = tokens.len();
+        let offset = cache
+            .first()
+            .and_then(|e| e.as_ref())
+            .map(|(k, _)| k.shape()[2] as usize)
+            .unwrap_or(0);
 
         let idx: Vec<i32> = tokens.iter().map(|&t| t as i32).collect();
         let token_indices = Array::from_slice(&idx, &[seq_len as i32]);
@@ -630,7 +630,7 @@ impl Gemma4Model {
             .reshape(&[1, seq_len as i32, n_layers, hpl])
             .expect("mlx op");
 
-        // (b) per_layer_model_projection(h) * (1/sqrt(hidden)) → reshape, then RMSNorm
+        // (b) per_layer_model_projection(h) * (1/sqrt(hidden)) → same shape, then RMSNorm
         let per_layer_proj = self.per_layer_model_projection.matmul_transpose(&x);
         let proj_scale = Array::from_f32(self.per_layer_projection_scale);
         let per_layer_proj = per_layer_proj.multiply(&proj_scale).expect("mlx op");
@@ -720,4 +720,123 @@ fn build_layer_types(config: &ModelConfig) -> Vec<String> {
             }
         })
         .collect()
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    fn base_config() -> ModelConfig {
+        ModelConfig {
+            hidden_size: 1536,
+            intermediate_size: 6144,
+            num_attention_heads: 8,
+            num_hidden_layers: 35,
+            num_key_value_heads: 1,
+            vocab_size: 262144,
+            rms_norm_eps: 1e-6,
+            rope_theta: 1_000_000.0,
+            max_position_embeddings: 131072,
+            head_dim: Some(256),
+            sliding_window: Some(512),
+            tie_word_embeddings: true,
+            model_type: Some("gemma4_text".into()),
+            global_head_dim: Some(512),
+            global_partial_rotary_factor: Some(0.25),
+            rope_local_base_freq: Some(10_000.0),
+            layer_types: None,
+            num_kv_shared_layers: Some(20),
+            hidden_size_per_layer_input: Some(256),
+            vocab_size_per_layer_input: Some(262144),
+            use_double_wide_mlp: Some(true),
+            final_logit_softcapping: Some(30.0),
+            rope_parameters: None,
+            sliding_window_pattern: Some(5),
+            attention_k_eq_v: None,
+            num_global_key_value_heads: None,
+            enable_moe_block: None,
+            num_experts: None,
+            top_k_experts: None,
+            moe_intermediate_size: None,
+        }
+    }
+
+    /// E2B-style config: no k_eq_v, no MoE. v_proj must be Some, moe must be None.
+    #[test]
+    fn e2b_config_has_v_proj_and_no_moe() {
+        let cfg = base_config();
+        let block_sliding = Gemma4TransformerBlock::new(&cfg, true);
+        let block_full = Gemma4TransformerBlock::new(&cfg, false);
+        assert!(block_sliding.attention.v_proj.is_some());
+        assert!(block_full.attention.v_proj.is_some());
+        assert!(!block_sliding.attention.use_k_eq_v);
+        assert!(!block_full.attention.use_k_eq_v);
+        assert!(block_sliding.moe.is_none());
+        assert!(block_full.moe.is_none());
+    }
+
+    /// 31B-style config (`attention_k_eq_v=true`): full-attn layers drop v_proj
+    /// and use the global kv-head count; sliding-attn layers stay normal.
+    #[test]
+    fn k_eq_v_only_affects_full_attention_layers() {
+        let mut cfg = base_config();
+        cfg.attention_k_eq_v = Some(true);
+        cfg.num_global_key_value_heads = Some(2);
+
+        let sliding = Gemma4TransformerBlock::new(&cfg, true);
+        assert!(
+            !sliding.attention.use_k_eq_v,
+            "sliding layer must NOT use k_eq_v"
+        );
+        assert!(sliding.attention.v_proj.is_some());
+        assert_eq!(sliding.attention.num_kv_heads, cfg.num_key_value_heads);
+
+        let full = Gemma4TransformerBlock::new(&cfg, false);
+        assert!(
+            full.attention.use_k_eq_v,
+            "full-attn layer must use k_eq_v when config says so"
+        );
+        assert!(
+            full.attention.v_proj.is_none(),
+            "v_proj must be None when k_eq_v is active"
+        );
+        assert_eq!(
+            full.attention.num_kv_heads,
+            cfg.num_global_key_value_heads.unwrap(),
+            "full-attn layer must adopt num_global_key_value_heads"
+        );
+    }
+
+    /// 26B-style config (`enable_moe_block=true`): every block carries an MoE
+    /// sub-block; experts are sized from `moe_intermediate_size`; routers
+    /// from `num_experts` and `top_k_experts`.
+    #[test]
+    fn moe_block_present_and_sized_from_config() {
+        let mut cfg = base_config();
+        cfg.enable_moe_block = Some(true);
+        cfg.num_experts = Some(32);
+        cfg.top_k_experts = Some(2);
+        cfg.moe_intermediate_size = Some(2048);
+
+        let block = Gemma4TransformerBlock::new(&cfg, true);
+        let moe = block.moe.as_ref().expect("moe should be present");
+        assert_eq!(moe.router.num_experts, 32);
+        assert_eq!(moe.router.top_k, 2);
+        assert_eq!(moe.experts.num_experts, 32);
+        // gate_proj shape: [num_experts, moe_intermediate, hidden].
+        let gp = moe.experts.gate_proj.to_full();
+        let shape = gp.shape();
+        assert_eq!(shape, &[32, 2048, 1536]);
+        let dp = moe.experts.down_proj.to_full();
+        assert_eq!(dp.shape(), &[32, 1536, 2048]);
+    }
+
+    /// Disabling MoE means no MoE-only norms and no router/expert tiles
+    /// allocated — important so E2B / 31B don't pay the memory cost.
+    #[test]
+    fn moe_disabled_by_default_when_flag_unset() {
+        let cfg = base_config();
+        let block = Gemma4TransformerBlock::new(&cfg, true);
+        assert!(block.moe.is_none());
+    }
 }

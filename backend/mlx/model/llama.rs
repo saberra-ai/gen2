@@ -1,6 +1,6 @@
 //! Llama3-compatible transformer model.
 
-use std::cell::OnceCell;
+use std::sync::OnceLock;
 
 use mlx_rs::Array;
 use mlx_rs::ops::indexing::IndexOp;
@@ -71,7 +71,7 @@ pub struct LlamaModel {
     /// Model configuration
     pub config: ModelConfig,
     /// Cached dequantized embedding table (avoids re-dequantizing on every token).
-    embed_cache: OnceCell<Array>,
+    embed_cache: OnceLock<Array>,
 }
 
 impl LlamaModel {
@@ -100,8 +100,34 @@ impl LlamaModel {
             norm,
             lm_head,
             config: config.clone(),
-            embed_cache: OnceCell::new(),
+            embed_cache: OnceLock::new(),
         }
+    }
+
+    /// Run a forward pass and return logits for all positions: (1, seq_len, vocab_size).
+    /// Used by the speculative decoder to verify a draft batch in one shot.
+    pub fn forward_all(
+        &self,
+        tokens: &[u32],
+        offset: usize,
+        cache: &mut KvCache,
+        rope: &RotaryEmbedding,
+    ) -> Array {
+        let seq_len = tokens.len();
+        let embed_full = self.embed_cache.get_or_init(|| self.embed_tokens.to_full());
+        let indices = Array::from_slice(
+            &tokens.iter().map(|&t| t as i32).collect::<Vec<_>>(),
+            &[seq_len as i32],
+        );
+        let x = embed_full.take_axis(&indices, 0).expect("mlx op");
+        let hidden = self.config.hidden_size as i32;
+        let mut x = x.reshape(&[1, seq_len as i32, hidden]).expect("mlx op");
+        for (i, layer) in self.layers.iter().enumerate() {
+            x = layer.forward(&x, rope, &mut cache[i], offset);
+        }
+        x = self.norm.forward(&x);
+        // All positions: (1, seq_len, vocab_size)
+        self.lm_head.matmul_transpose(&x)
     }
 
     /// Run a forward pass and return logits for the last position.
@@ -111,16 +137,16 @@ impl LlamaModel {
     /// `rope`: precomputed rotary embeddings.
     ///
     /// Returns: (batch=1, vocab_size) logits for the final sequence position.
-    pub fn forward(&self, tokens: &[u32], cache: &mut KvCache, rope: &RotaryEmbedding) -> Array {
+    pub fn forward(
+        &self,
+        tokens: &[u32],
+        offset: usize,
+        cache: &mut KvCache,
+        rope: &RotaryEmbedding,
+    ) -> Array {
         let seq_len = tokens.len();
-
-        // Compute position offset from the KV cache.
-        // If layer 0 has a cached K, the offset is its seq dimension length.
-        let offset = cache
-            .first()
-            .and_then(|entry| entry.as_ref())
-            .map(|(k, _)| k.shape()[2] as usize)
-            .unwrap_or(0);
+        // offset is the absolute sequence position (cur_pos), passed explicitly so
+        // RoPE remains correct after KV cache eviction shrinks k.shape()[2].
 
         // --- Token embedding ---
         // Dequantize embedding table once and cache (avoids 151K×4096 dequantize per token).

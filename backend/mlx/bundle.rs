@@ -21,6 +21,12 @@ pub struct ModelBundle {
     pub eos_str: String,
 }
 
+// SAFETY: All Array fields in ModelBundle are set once at model load time and
+// are read-only thereafter. The !Sync on mlx_rs::Array comes from *mut c_void
+// in the C bindings, not from actual interior mutability. Sharing &ModelBundle
+// across threads for concurrent reads (forward passes) is data-race-free.
+unsafe impl Sync for ModelBundle {}
+
 impl std::fmt::Debug for ModelBundle {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("ModelBundle(MLX)")

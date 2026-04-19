@@ -415,6 +415,14 @@ impl Engine {
             e.unload_embedder();
         }
     }
+
+    /// Pre-load weights for `model_dir` in a background thread.
+    /// No-op if the current backend doesn't support warm loading.
+    pub fn warm_model(&self, model_dir: std::path::PathBuf) {
+        if let Some(b) = self.as_backend() {
+            b.warm_model(model_dir);
+        }
+    }
 }
 
 // ─── Session ────────────────────────────────────────────────────────────────

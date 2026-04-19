@@ -65,8 +65,9 @@ fn detect_bits(weight_shape: &[i32], full_dim: usize) -> Option<i32> {
     if weight_shape.len() != 2 {
         return None;
     }
+    let out_features = weight_shape[0] as usize;
     let packed_cols = weight_shape[1] as usize;
-    if packed_cols == 0 || full_dim == 0 {
+    if out_features == 0 || packed_cols == 0 || full_dim == 0 {
         return None;
     }
     // packed_cols = full_dim * bits / 32, so bits = 32 * packed_cols / full_dim
@@ -88,14 +89,16 @@ fn detect_group_size(scales_shape: &[i32], full_dim: usize) -> i32 {
     (full_dim / num_groups) as i32
 }
 
-/// Bit widths for which MLX Metal has compiled quantized-matmul kernels.
-/// Weights with other bit widths are dequantized at load time.
-const SUPPORTED_QMM_BITS: &[i32] = &[4, 8];
-
 /// Try to build a quantized `Weight` from the tensor map.
 /// Looks for `{name}.weight`, `{name}.scales`, `{name}.biases`.
 /// Returns `None` if the weight isn't quantized.
-/// For bit widths not in `SUPPORTED_QMM_BITS`, returns a pre-dequantized plain weight.
+///
+/// All supported MLX bit widths (2/3/4/5/6/8) stay in `Weight::Quantized` form;
+/// [`Weight::matmul_transpose`] uses `quantized_matmul` and
+/// [`Weight::embedding_lookup`] gathers + dequantizes only the rows it needs at
+/// forward time. Never pre-dequantize the full table: UD / mixed-precision
+/// checkpoints have embeddings at 6-bit that would need gigabytes of Metal
+/// buffer if fully materialized.
 fn try_quantized_weight(
     tensors: &HashMap<String, Array>,
     name: &str,
@@ -108,25 +111,13 @@ fn try_quantized_weight(
     let bits = detect_bits(weight.shape(), full_dim)?;
     let group_size = detect_group_size(scales.shape(), full_dim);
 
-    if SUPPORTED_QMM_BITS.contains(&bits) {
-        Some(Weight::quantized(
-            weight.clone(),
-            scales.clone(),
-            biases.clone(),
-            group_size,
-            bits,
-        ))
-    } else {
-        // Dequantize on CPU — the Metal library in mlx-sys 0.2.0 lacks GPU
-        // kernels for this bit width (e.g. 5-bit, 6-bit).
-        let dequant = mlx_rs::with_new_default_stream(mlx_rs::Stream::cpu(), || {
-            mlx_rs::ops::dequantize(weight, scales, biases, group_size, bits)
-                .expect("cpu dequantize unsupported-bits weight")
-        });
-        // Force CPU evaluation so the data is ready before we hand it to Metal ops.
-        mlx_rs::transforms::eval([&dequant]).expect("eval unsupported-bits dequant");
-        Some(Weight::plain(dequant))
-    }
+    Some(Weight::quantized(
+        weight.clone(),
+        scales.clone(),
+        biases.clone(),
+        group_size,
+        bits,
+    ))
 }
 
 /// Load a weight: try quantized first, fall back to plain float.
@@ -275,7 +266,7 @@ pub fn build_gemma4_model(model_dir: &Path) -> Result<(Gemma4Model, ModelConfig)
     model.embed_tokens_per_layer =
         load_weight(&tensors, &format!("{pfx}.embed_tokens_per_layer"), hpl_all);
 
-    // Linear(hidden → num_layers × hpl) — feeds residual stream into per-layer inputs.
+    // Linear(hidden → num_layers × hpl) — feeds the residual stream into per-layer inputs.
     model.per_layer_model_projection = load_weight(
         &tensors,
         &format!("{pfx}.per_layer_model_projection"),
@@ -309,7 +300,7 @@ pub fn build_gemma4_model(model_dir: &Path) -> Result<(Gemma4Model, ModelConfig)
         // Attention projections
         layer.attention.q_proj = load_weight(&tensors, &format!("{lp}.self_attn.q_proj"), hidden);
         layer.attention.k_proj = load_weight(&tensors, &format!("{lp}.self_attn.k_proj"), hidden);
-        // v_proj is absent on full-attention layers when `attention_k_eq_v=true` (31B variant).
+        // 31B `attention_k_eq_v`: full-attention layers ship without v_proj.
         if layer.attention.use_k_eq_v {
             layer.attention.v_proj = None;
         } else {
@@ -364,11 +355,17 @@ pub fn build_gemma4_model(model_dir: &Path) -> Result<(Gemma4Model, ModelConfig)
             layer.layer_scalar = w.clone();
         }
 
-        // ── MoE weights (26B only) ────────────────────────────────────────
+        // ── MoE weights (Gemma 4 26B) ─────────────────────────────────────
+        // Key naming follows mlx-lm `Model.sanitize()` in gemma4.py:
+        // raw checkpoint keys are unsuffixed (`.experts.gate_up_proj`,
+        // `.experts.down_proj`) — NOT `.weight`. Quantized variants would
+        // use `.weight/.scales/.biases` triples on the same base path.
         if let Some(moe) = layer.moe.as_mut() {
-            let moe_inter = config.moe_intermediate_size.unwrap_or(config.intermediate_size);
+            let moe_inter = config
+                .moe_intermediate_size
+                .unwrap_or(config.intermediate_size);
 
-            // Router: norm + projection + per-expert scale.
+            // Router: `router.scale` (norm), `router.proj.weight`, `router.per_expert_scale`.
             if let Some(w) = tensors.get(&format!("{lp}.router.scale")) {
                 moe.router.norm.weight = w.clone();
             }
@@ -377,31 +374,36 @@ pub fn build_gemma4_model(model_dir: &Path) -> Result<(Gemma4Model, ModelConfig)
                 moe.router.per_expert_scale = w.clone();
             }
 
-            // Experts: HF checkpoints pack gate+up into one tensor (axis 1)
-            // as `experts.gate_up_proj` — shape [n_experts, 2*moe_inter, hidden].
-            // Split into gate/up if fused, else load the separate tensors directly.
-            let gate_up_key = format!("{lp}.experts.gate_up_proj.weight");
-            if tensors.contains_key(&gate_up_key) {
-                let gate_up = tensors.get(&gate_up_key).expect("just checked");
+            // Experts — try bare-key (mlx-lm sanitize match) first, then
+            // .weight (in case the checkpoint was quantized post-sanitize).
+            let bare_gate_up = format!("{lp}.experts.gate_up_proj");
+            let weight_gate_up = format!("{lp}.experts.gate_up_proj.weight");
+            let fused = tensors
+                .get(&bare_gate_up)
+                .or_else(|| tensors.get(&weight_gate_up));
+            if let Some(gate_up) = fused {
                 let shape = gate_up.shape();
                 if shape.len() == 3 && shape[1] as usize == moe_inter * 2 {
-                    let half = (moe_inter as i32);
-                    moe.experts.gate_proj =
-                        Weight::plain(gate_up.index((.., 0..half, ..)));
-                    moe.experts.up_proj =
-                        Weight::plain(gate_up.index((.., half..(2 * half), ..)));
+                    let half = moe_inter as i32;
+                    moe.experts.gate_proj = Weight::plain(gate_up.index((.., 0..half, ..)));
+                    moe.experts.up_proj = Weight::plain(gate_up.index((.., half..(2 * half), ..)));
                 }
             } else {
-                moe.experts.gate_proj = load_weight(
-                    &tensors,
-                    &format!("{lp}.experts.gate_proj"),
-                    hidden,
-                );
-                moe.experts.up_proj =
-                    load_weight(&tensors, &format!("{lp}.experts.up_proj"), hidden);
+                // Pre-split format: separate gate_proj / up_proj tensors.
+                if let Some(w) = tensors.get(&format!("{lp}.experts.gate_proj")) {
+                    moe.experts.gate_proj = Weight::plain(w.clone());
+                }
+                if let Some(w) = tensors.get(&format!("{lp}.experts.up_proj")) {
+                    moe.experts.up_proj = Weight::plain(w.clone());
+                }
             }
-            moe.experts.down_proj =
-                load_weight(&tensors, &format!("{lp}.experts.down_proj"), moe_inter);
+            if let Some(w) = tensors
+                .get(&format!("{lp}.experts.down_proj"))
+                .or_else(|| tensors.get(&format!("{lp}.experts.down_proj.weight")))
+            {
+                moe.experts.down_proj = Weight::plain(w.clone());
+            }
+            let _ = moe_inter;
 
             // Extra MoE-only norms.
             if let Some(w) = tensors.get(&format!("{lp}.pre_feedforward_layernorm_2.weight")) {

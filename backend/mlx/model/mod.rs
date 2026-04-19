@@ -45,8 +45,23 @@ impl Model {
         rope: &RotaryEmbedding,
     ) -> Array {
         match self {
-            Model::Llama(m) => m.forward(tokens, cache, rope),
-            Model::Gemma4(m) => m.forward(tokens, offset, cache),
+            Model::Llama(m) => m.forward(tokens, offset, cache, rope),
+            Model::Gemma4(m) => m.forward(tokens, cache),
+        }
+    }
+
+    /// Returns logits for every input position: `(1, seq_len, vocab_size)`.
+    /// Returns `None` for models that do not support batched speculative decoding.
+    pub fn forward_all(
+        &self,
+        tokens: &[u32],
+        offset: usize,
+        cache: &mut KvCache,
+        rope: &RotaryEmbedding,
+    ) -> Option<Array> {
+        match self {
+            Model::Llama(m) => Some(m.forward_all(tokens, offset, cache, rope)),
+            Model::Gemma4(_) => None,
         }
     }
 

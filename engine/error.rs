@@ -33,6 +33,9 @@ pub enum ExecError {
     /// FFI panic — inference session state is lost.
     #[error("session poisoned: {0}")]
     SessionPoisoned(String),
+    /// Metal / CUDA OOM — caught via catch_unwind around forward pass.
+    #[error("out of memory: {0}")]
+    OutOfMemory(String),
     #[error("unimplemented in milestone 0")]
     Unimplemented,
     #[error(transparent)]

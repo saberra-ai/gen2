@@ -72,9 +72,26 @@ impl ChatTemplate {
 
     pub(crate) fn apply(
         &self,
+        messages: Vec<Message>,
+        tools_and_prompt: Option<(Vec<Tool>, String)>,
+        enable_thinking: Option<bool>,
+    ) -> Result<String> {
+        self.apply_with_options(messages, tools_and_prompt, enable_thinking, true)
+    }
+
+    /// Like [`apply`] but exposes `add_generation_prompt`.
+    ///
+    /// Callers that need a pure prefix render (e.g. the MLX prefix cache, which
+    /// tokenizes just the system segment and expects it to be a strict prefix
+    /// of the full tokenization) must pass `false` — otherwise templates that
+    /// append a generation suffix like `<|turn>model\n` will produce a render
+    /// that is NOT a prefix of the full chat.
+    pub(crate) fn apply_with_options(
+        &self,
         mut messages: Vec<Message>,
         tools_and_prompt: Option<(Vec<Tool>, String)>,
         enable_thinking: Option<bool>,
+        add_generation_prompt: bool,
     ) -> Result<String> {
         let tools = match tools_and_prompt {
             Some((tools, tool_prompt)) => {
@@ -105,7 +122,7 @@ impl ChatTemplate {
             messages,
             bos_token: self.bos_token.as_deref(),
             eos_token: self.eos_token.as_deref(),
-            add_generation_prompt: true,
+            add_generation_prompt,
             enable_thinking,
             tools,
         })?;

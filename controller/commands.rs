@@ -506,6 +506,10 @@ fn handle_utility_command(state: &mut ControllerState, cmd: ControllerCmd) -> Co
             let _ = resp.send(res);
             ControlFlow::Continue
         }
+        ControllerCmd::WarmModel { model_dir } => {
+            state.engine.warm_model(model_dir);
+            ControlFlow::Continue
+        }
         ControllerCmd::Shutdown => ControlFlow::Break,
         _ => unreachable!("handle_utility_command: non-utility cmd"),
     }
@@ -531,9 +535,9 @@ pub(super) fn dispatch_cmd(cmd: ControllerCmd, state: &mut ControllerState) -> C
         | ControllerCmd::PauseChat { .. }
         | ControllerCmd::ResumeChat { .. } => handle_chat_command(state, cmd),
         ControllerCmd::SystemInfer { .. } => handle_system_command(state, cmd),
-        ControllerCmd::GenerateEmbeddings { .. } | ControllerCmd::Shutdown => {
-            handle_utility_command(state, cmd)
-        }
+        ControllerCmd::GenerateEmbeddings { .. }
+        | ControllerCmd::WarmModel { .. }
+        | ControllerCmd::Shutdown => handle_utility_command(state, cmd),
     }
 }
 

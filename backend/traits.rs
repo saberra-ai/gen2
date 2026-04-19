@@ -50,6 +50,11 @@ pub trait Backend: std::fmt::Debug {
     fn start_session(&self, spec: SessionSpec) -> Result<Arc<dyn BackendSession>, ExecError>;
     fn end_session(&self, id: SessionId) -> Result<(), ExecError>;
 
+    /// Pre-load weights for a model directory in a background thread so the
+    /// next `load_model` call with the same path can skip synchronous disk I/O.
+    /// Default no-op — only implemented by backends that support warm loading.
+    fn warm_model(&self, _model_dir: std::path::PathBuf) {}
+
     // Optional-capability upcasts. Default None = unsupported.
     fn as_embeddings(&self) -> Option<&dyn Embeddings> {
         None
