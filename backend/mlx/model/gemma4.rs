@@ -11,7 +11,6 @@
 //! - Learnable per-layer scalar
 //! - Final logit softcapping: tanh(x/cap)*cap
 
-use std::cell::OnceCell;
 
 use mlx_rs::Array;
 use mlx_rs::ops::indexing::IndexOp;
@@ -327,21 +326,17 @@ impl Gemma4PerLayerInput {
 
     /// Compute the per-layer embedding contribution to add to the residual stream.
     ///
-    /// `embed_i`: dequantized embedding table for this layer, shape [vocab, hidden_per_layer].
-    /// `token_indices`: integer token IDs, shape [seq_len].
-    pub fn forward(&self, x: &Array, embed_i: &Array, token_indices: &Array) -> Array {
+    /// `embed_lookup`: already-gathered per-token embedding for this layer,
+    /// shape `[batch, seq, hidden_per_layer]`. The caller (`Gemma4Model`) runs
+    /// the gather+dequantize once for all layers and slices the per-layer
+    /// chunk out for each call.
+    pub fn forward(&self, x: &Array, embed_lookup: &Array) -> Array {
         // Gate: sigmoid(Linear(x, hidden → hpl)) → [batch, seq, hpl]
         let gate = self.per_layer_input_gate.matmul_transpose(x);
         let gate = mlx_rs::ops::sigmoid(&gate).expect("mlx op");
 
-        // Embedding lookup → [seq, hpl] → reshape to [batch, seq, hpl]
-        let embed_lookup = embed_i.take_axis(token_indices, 0).expect("mlx op");
-        let seq = x.shape()[1];
-        let hpl = embed_lookup.shape()[1];
-        let embed_lookup = embed_lookup.reshape(&[1, seq, hpl]).expect("mlx op");
-
         // Gated multiply → project back → normalize
-        let gated = gate.multiply(&embed_lookup).expect("mlx op");
+        let gated = gate.multiply(embed_lookup).expect("mlx op");
         let projected = self.per_layer_projection.matmul_transpose(&gated);
         self.post_per_layer_input_norm.forward(&projected)
     }
@@ -407,8 +402,7 @@ impl Gemma4TransformerBlock {
         cache: &mut Option<(Array, Array)>,
         offset: usize,
         shared_kv: Option<&(Array, Array)>,
-        embed_i: &Array,
-        token_indices: &Array,
+        embed_lookup: &Array,
     ) -> Array {
         // Pre-norm → attention → post-attn-norm → residual
         let h = self.input_layernorm.forward(x);
@@ -423,7 +417,7 @@ impl Gemma4TransformerBlock {
         let x = x.add(&h).expect("mlx op");
 
         // Per-layer input contribution → residual
-        let pli = self.per_layer_input.forward(&x, embed_i, token_indices);
+        let pli = self.per_layer_input.forward(&x, embed_lookup);
         let x = x.add(&pli).expect("mlx op");
 
         // Layer scalar (broadcast over [batch, seq, hidden])
@@ -435,8 +429,9 @@ impl Gemma4TransformerBlock {
 
 pub struct Gemma4Model {
     pub embed_tokens: Weight,
-    /// Full per-layer embedding table. Stored as a single Weight to avoid 35×
-    /// separate loads; dequantized lazily into embed_per_layer_cache.
+    /// Full per-layer embedding table. Stored as a single (possibly quantized)
+    /// weight; rows are gathered per-token and dequantized at forward time
+    /// via `Weight::embedding_lookup` — never materialized in full.
     pub embed_tokens_per_layer: Weight,
     pub layers: Vec<Gemma4TransformerBlock>,
     pub norm: RmsNorm,
@@ -449,10 +444,6 @@ pub struct Gemma4Model {
     pub num_non_shared: usize,
     final_logit_softcapping: Option<f32>,
     hidden_per_layer_input: usize,
-    /// Dequantized main embedding table [vocab, hidden], cached after first use.
-    embed_cache: OnceCell<Array>,
-    /// Dequantized per-layer embedding table [vocab, num_layers × hpl], cached after first use.
-    embed_per_layer_cache: OnceCell<Array>,
 }
 
 impl Gemma4Model {
@@ -498,8 +489,6 @@ impl Gemma4Model {
             num_non_shared,
             final_logit_softcapping: config.final_logit_softcapping,
             hidden_per_layer_input: hpl,
-            embed_cache: OnceCell::new(),
-            embed_per_layer_cache: OnceCell::new(),
         }
     }
 
@@ -515,21 +504,23 @@ impl Gemma4Model {
         let idx: Vec<i32> = tokens.iter().map(|&t| t as i32).collect();
         let token_indices = Array::from_slice(&idx, &[seq_len as i32]);
 
-        // Main embedding lookup
-        let embed_full = self.embed_cache.get_or_init(|| self.embed_tokens.to_full());
-        let x = embed_full.take_axis(&token_indices, 0).expect("mlx op");
+        // Main embedding: gather + dequantize only the rows we need.
+        let x = self.embed_tokens.embedding_lookup(&token_indices);
         let scale = Array::from_f32(self.embed_scale);
         let x = x.multiply(&scale).expect("mlx op");
         let hidden = self.layers[0].input_layernorm.weight.shape()[0];
         let mut x = x.reshape(&[1, seq_len as i32, hidden]).expect("mlx op");
 
-        // Per-layer embedding table (dequantized once; shape [vocab, num_layers × hpl])
-        let embed_all =
-            self.embed_per_layer_cache
-                .get_or_init(|| self.embed_tokens_per_layer.to_full());
+        // Per-layer embeddings: one gather+dequantize for all layers.
+        // Output: [seq_len, num_layers × hpl] → reshape [1, seq_len, num_layers, hpl].
+        let n_layers = self.layers.len() as i32;
+        let hpl = self.hidden_per_layer_input as i32;
+        let per_layer_flat = self.embed_tokens_per_layer.embedding_lookup(&token_indices);
+        let per_layer = per_layer_flat
+            .reshape(&[1, seq_len as i32, n_layers, hpl])
+            .expect("mlx op");
 
         let n = self.num_non_shared;
-        let hpl = self.hidden_per_layer_input as i32;
 
         for (i, layer) in self.layers.iter().enumerate() {
             let rope = if layer.attention.is_sliding {
@@ -549,10 +540,12 @@ impl Gemma4Model {
                 None
             };
 
-            // Per-layer embedding slice for layer i: [vocab, hpl]
-            let lo = i as i32 * hpl;
-            let hi = lo + hpl;
-            let embed_i = embed_all.index((.., lo..hi));
+            // Per-layer embedding slice for layer i: [1, seq, hpl]
+            let li = i as i32;
+            let embed_lookup = per_layer
+                .index((.., .., li..li + 1, ..))
+                .reshape(&[1, seq_len as i32, hpl])
+                .expect("mlx op");
 
             x = layer.forward(
                 &x,
@@ -560,8 +553,7 @@ impl Gemma4Model {
                 &mut cache[cache_idx],
                 offset,
                 shared_kv.as_ref(),
-                &embed_i,
-                &token_indices,
+                &embed_lookup,
             );
         }
 

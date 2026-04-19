@@ -83,6 +83,31 @@ impl Weight {
             } => dequantize(weight, scales, biases, *group_size, *bits).expect("mlx op"),
         }
     }
+
+    /// Embedding lookup: gather rows by `indices` and dequantize only those.
+    ///
+    /// Mirrors `nn.QuantizedEmbedding` in mlx-lm — avoids materializing the
+    /// full `[vocab, dim]` table, which can be enormous for per-layer
+    /// embeddings (35 × 1536 columns on Gemma 4 E2B).
+    ///
+    /// Returns shape `[indices.shape, dim]`.
+    pub fn embedding_lookup(&self, indices: &Array) -> Array {
+        match self {
+            Self::Plain(w) => w.take_axis(indices, 0).expect("mlx op"),
+            Self::Quantized {
+                weight,
+                scales,
+                biases,
+                group_size,
+                bits,
+            } => {
+                let w_rows = weight.take_axis(indices, 0).expect("mlx op");
+                let s_rows = scales.take_axis(indices, 0).expect("mlx op");
+                let b_rows = biases.take_axis(indices, 0).expect("mlx op");
+                dequantize(&w_rows, &s_rows, &b_rows, *group_size, *bits).expect("mlx op")
+            }
+        }
+    }
 }
 
 impl Default for Weight {
