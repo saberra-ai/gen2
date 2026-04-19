@@ -255,7 +255,10 @@ pub fn build_gemma4_model(model_dir: &Path) -> Result<(Gemma4Model, ModelConfig)
         .cloned()
         .unwrap_or_else(|| raw.clone());
     let config: ModelConfig = serde_json::from_value(text_cfg_value).map_err(|e| {
-        ExecError::Other(anyhow::anyhow!("failed to parse Gemma 4 text_config: {}", e))
+        ExecError::Other(anyhow::anyhow!(
+            "failed to parse Gemma 4 text_config: {}",
+            e
+        ))
     })?;
 
     let tensors = load_all_tensors(model_dir)?;
@@ -294,15 +297,11 @@ pub fn build_gemma4_model(model_dir: &Path) -> Result<(Gemma4Model, ModelConfig)
         };
 
         // Attention projections
-        layer.attention.q_proj =
-            load_weight(&tensors, &format!("{lp}.self_attn.q_proj"), hidden);
-        layer.attention.k_proj =
-            load_weight(&tensors, &format!("{lp}.self_attn.k_proj"), hidden);
-        layer.attention.v_proj =
-            load_weight(&tensors, &format!("{lp}.self_attn.v_proj"), hidden);
+        layer.attention.q_proj = load_weight(&tensors, &format!("{lp}.self_attn.q_proj"), hidden);
+        layer.attention.k_proj = load_weight(&tensors, &format!("{lp}.self_attn.k_proj"), hidden);
+        layer.attention.v_proj = load_weight(&tensors, &format!("{lp}.self_attn.v_proj"), hidden);
         let o_in = config.num_attention_heads * head_dim;
-        layer.attention.o_proj =
-            load_weight(&tensors, &format!("{lp}.self_attn.o_proj"), o_in);
+        layer.attention.o_proj = load_weight(&tensors, &format!("{lp}.self_attn.o_proj"), o_in);
 
         // Per-head norms (plain float, loaded directly)
         if let Some(w) = tensors.get(&format!("{lp}.self_attn.q_norm.weight")) {

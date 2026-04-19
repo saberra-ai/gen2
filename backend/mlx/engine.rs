@@ -349,7 +349,10 @@ mod tests {
         };
 
         let e = Engine::new();
-        e.load_model(LoadRequest { model_path: model_dir, ..Default::default() })?;
+        e.load_model(LoadRequest {
+            model_path: model_dir,
+            ..Default::default()
+        })?;
 
         let messages = vec![Message {
             role: "user".into(),
@@ -367,7 +370,10 @@ mod tests {
             cache: None,
         })?;
 
-        let gen_spec = GenSpec { max_tokens: Some(64), ..Default::default() };
+        let gen_spec = GenSpec {
+            max_tokens: Some(64),
+            ..Default::default()
+        };
         let mut puller = session.pull(gen_spec)?;
 
         use crate::gen2::generation::TokenEvent;
@@ -380,7 +386,9 @@ mod tests {
                     n_tokens += 1;
                 }
                 Some(Ok(TokenEvent::Eos)) | Some(Ok(TokenEvent::Stopped)) => break,
-                Some(Ok(TokenEvent::Paused)) | Some(Ok(TokenEvent::Special(_))) | Some(Ok(TokenEvent::MediaBoundary(_))) => continue,
+                Some(Ok(TokenEvent::Paused))
+                | Some(Ok(TokenEvent::Special(_)))
+                | Some(Ok(TokenEvent::MediaBoundary(_))) => continue,
                 Some(Err(e)) => return Err(e.into()),
                 None => break,
             }

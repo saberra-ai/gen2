@@ -216,10 +216,10 @@ impl Session {
         });
 
         // Prefill delta into existing KV cache
-        let delta_logits = self
-            .bundle
-            .model
-            .forward(&delta_tokens, &mut st.cache, &self.bundle.rope);
+        let delta_logits =
+            self.bundle
+                .model
+                .forward(&delta_tokens, &mut st.cache, &self.bundle.rope);
         st.cur_pos += delta_tokens.len();
         st.last_token = delta_tokens.last().copied().unwrap_or(st.last_token);
         st.pending_logits = Some(delta_logits);

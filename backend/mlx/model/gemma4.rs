@@ -11,7 +11,6 @@
 //! - Learnable per-layer scalar
 //! - Final logit softcapping: tanh(x/cap)*cap
 
-
 use mlx_rs::Array;
 use mlx_rs::ops::indexing::IndexOp;
 
@@ -280,9 +279,7 @@ pub struct Gemma4Ffn {
 impl Gemma4Ffn {
     pub fn new(hidden: usize, intermediate: usize) -> Self {
         let zero = |rows: usize, cols: usize| {
-            Weight::plain(
-                Array::zeros::<f32>(&[rows as i32, cols as i32]).expect("mlx op"),
-            )
+            Weight::plain(Array::zeros::<f32>(&[rows as i32, cols as i32]).expect("mlx op"))
         };
         Self {
             gate_proj: zero(intermediate, hidden),
@@ -313,9 +310,7 @@ pub struct Gemma4PerLayerInput {
 impl Gemma4PerLayerInput {
     pub fn new(hidden: usize, hidden_per_layer: usize, eps: f32) -> Self {
         let zero = |rows: usize, cols: usize| {
-            Weight::plain(
-                Array::zeros::<f32>(&[rows as i32, cols as i32]).expect("mlx op"),
-            )
+            Weight::plain(Array::zeros::<f32>(&[rows as i32, cols as i32]).expect("mlx op"))
         };
         Self {
             per_layer_input_gate: zero(hidden_per_layer, hidden),
@@ -326,17 +321,12 @@ impl Gemma4PerLayerInput {
 
     /// Compute the per-layer embedding contribution to add to the residual stream.
     ///
-    /// `embed_lookup`: already-gathered per-token embedding for this layer,
-    /// shape `[batch, seq, hidden_per_layer]`. The caller (`Gemma4Model`) runs
-    /// the gather+dequantize once for all layers and slices the per-layer
-    /// chunk out for each call.
-    pub fn forward(&self, x: &Array, embed_lookup: &Array) -> Array {
-        // Gate: sigmoid(Linear(x, hidden → hpl)) → [batch, seq, hpl]
+    /// Matches the golden `DecoderLayer.__call__` per-layer-input block:
+    /// `gate = gelu_approx(W_gate·h) * per_layer_input; out = norm(W_proj·gate)`.
+    pub fn forward(&self, x: &Array, per_layer_input: &Array) -> Array {
         let gate = self.per_layer_input_gate.matmul_transpose(x);
-        let gate = mlx_rs::ops::sigmoid(&gate).expect("mlx op");
-
-        // Gated multiply → project back → normalize
-        let gated = gate.multiply(embed_lookup).expect("mlx op");
+        let gate = mlx_rs::nn::gelu_approximate(&gate).expect("mlx op");
+        let gated = gate.multiply(per_layer_input).expect("mlx op");
         let projected = self.per_layer_projection.matmul_transpose(&gated);
         self.post_per_layer_input_norm.forward(&projected)
     }
@@ -372,7 +362,11 @@ impl Gemma4TransformerBlock {
         let hidden = config.hidden_size;
         let hpl = config.hidden_size_per_layer_input.unwrap_or(256);
         let eps = config.rms_norm_eps;
-        let sw = if is_sliding { config.sliding_window } else { None };
+        let sw = if is_sliding {
+            config.sliding_window
+        } else {
+            None
+        };
 
         Self {
             attention: Gemma4Attention::new(
@@ -433,6 +427,11 @@ pub struct Gemma4Model {
     /// weight; rows are gathered per-token and dequantized at forward time
     /// via `Weight::embedding_lookup` — never materialized in full.
     pub embed_tokens_per_layer: Weight,
+    /// Linear(hidden → num_layers × hpl). Feeds the residual stream back into
+    /// the per-layer input before it's mixed with `embed_tokens_per_layer`.
+    pub per_layer_model_projection: Weight,
+    /// RMSNorm applied to the projected per-layer input (over hpl).
+    pub per_layer_projection_norm: RmsNorm,
     pub layers: Vec<Gemma4TransformerBlock>,
     pub norm: RmsNorm,
     /// RoPE for sliding-attention layers: full head_dim (256), theta=10000.
@@ -440,8 +439,18 @@ pub struct Gemma4Model {
     /// RoPE for full-attention layers: rope_dim only (128), theta=1 000 000.
     pub global_rope: RotaryEmbedding,
     embed_scale: f32,
+    /// sqrt(hpl) — scales the per-layer embedding lookup before mix.
+    embed_tokens_per_layer_scale: f32,
+    /// 1/sqrt(hidden) — scales the per-layer model projection before mix.
+    per_layer_projection_scale: f32,
+    /// 1/sqrt(2) — applied to the sum of projection + embedding contributions.
+    per_layer_input_scale: f32,
     /// Number of layers that own their own KV cache slot (= num_hidden_layers − num_kv_shared_layers).
     pub num_non_shared: usize,
+    /// For each layer i, the cache slot to read/write from. Non-shared layers
+    /// map to their own slot; shared layers map to the *last* non-shared layer
+    /// of the same type (sliding/full) — matches `previous_kvs` in mlx-lm.
+    pub cache_slot: Vec<usize>,
     final_logit_softcapping: Option<f32>,
     hidden_per_layer_input: usize,
 }
@@ -467,9 +476,9 @@ impl Gemma4Model {
 
         let sliding_head_dim = config.head_dim.unwrap_or(256);
         let global_head_dim = config.global_head_dim.unwrap_or(512);
-        let global_rope_dim =
-            ((global_head_dim as f32) * config.global_partial_rotary_factor.unwrap_or(0.25))
-                .round() as usize;
+        let global_rope_dim = ((global_head_dim as f32)
+            * config.global_partial_rotary_factor.unwrap_or(0.25))
+        .round() as usize;
         let local_theta = config.rope_local_base_freq.unwrap_or(10_000.0);
         let global_theta = config.rope_theta;
         let max_seq = config.max_position_embeddings;
@@ -535,7 +544,9 @@ impl Gemma4Model {
             let is_shared = i >= n;
 
             let shared_kv: Option<(Array, Array)> = if is_shared {
-                cache[cache_idx].as_ref().map(|(k, v)| (k.clone(), v.clone()))
+                cache[cache_idx]
+                    .as_ref()
+                    .map(|(k, v)| (k.clone(), v.clone()))
             } else {
                 None
             };
