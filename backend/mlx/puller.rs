@@ -139,9 +139,12 @@ impl Iterator for TokenPuller {
         let logits = if let Some(pending) = state.pending_logits.take() {
             pending
         } else {
-            self.bundle
-                .model
-                .forward(&[state.last_token], &mut state.cache, &self.bundle.rope)
+            self.bundle.model.forward(
+                &[state.last_token],
+                state.cur_pos,
+                &mut state.cache,
+                &self.bundle.rope,
+            )
         };
 
         // Sample next token from logits

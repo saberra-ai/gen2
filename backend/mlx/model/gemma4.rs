@@ -106,7 +106,9 @@ fn repeat_kv_heads(x: &Array, repeats: usize) -> Array {
 pub struct Gemma4Attention {
     pub q_proj: Weight,
     pub k_proj: Weight,
-    pub v_proj: Weight,
+    /// `None` when `attention_k_eq_v` is true and this is a full-attention layer
+    /// (large Gemma 4 variants — 31B). V is then a pre-norm clone of K.
+    pub v_proj: Option<Weight>,
     pub o_proj: Weight,
     /// Per-head Q norm (learnable scale, size = head_dim).
     pub q_norm: RmsNorm,
@@ -122,9 +124,12 @@ pub struct Gemma4Attention {
     pub rope_dim: usize,
     pub is_sliding: bool,
     pub sliding_window: Option<usize>,
+    /// When true, V is reused from K (before norm). Disables `v_proj`.
+    pub use_k_eq_v: bool,
 }
 
 impl Gemma4Attention {
+    #[allow(clippy::too_many_arguments)]
     pub fn new(
         hidden: usize,
         num_heads: usize,
@@ -134,6 +139,7 @@ impl Gemma4Attention {
         eps: f32,
         is_sliding: bool,
         sliding_window: Option<usize>,
+        use_k_eq_v: bool,
     ) -> Self {
         let q_proj = Weight::plain(
             Array::zeros::<f32>(&[(num_heads * head_dim) as i32, hidden as i32]).expect("mlx op"),
@@ -142,10 +148,14 @@ impl Gemma4Attention {
             Array::zeros::<f32>(&[(num_kv_heads * head_dim) as i32, hidden as i32])
                 .expect("mlx op"),
         );
-        let v_proj = Weight::plain(
-            Array::zeros::<f32>(&[(num_kv_heads * head_dim) as i32, hidden as i32])
-                .expect("mlx op"),
-        );
+        let v_proj = if use_k_eq_v {
+            None
+        } else {
+            Some(Weight::plain(
+                Array::zeros::<f32>(&[(num_kv_heads * head_dim) as i32, hidden as i32])
+                    .expect("mlx op"),
+            ))
+        };
         let o_proj = Weight::plain(
             Array::zeros::<f32>(&[hidden as i32, (num_heads * head_dim) as i32]).expect("mlx op"),
         );
@@ -163,6 +173,7 @@ impl Gemma4Attention {
             rope_dim,
             is_sliding,
             sliding_window,
+            use_k_eq_v,
         }
     }
 
@@ -198,7 +209,12 @@ impl Gemma4Attention {
             (ck.clone(), cv.clone())
         } else {
             let k = self.k_proj.matmul_transpose(x);
-            let v = self.v_proj.matmul_transpose(x);
+            // When k_eq_v, V = K (before norm). Otherwise project separately.
+            let v_raw = match &self.v_proj {
+                Some(v_w) => v_w.matmul_transpose(x),
+                None => k.clone(),
+            };
+            let v = v_raw;
 
             let k = k.reshape(&[batch, seq, nkv, hd]).expect("mlx op");
             let v = v.reshape(&[batch, seq, nkv, hd]).expect("mlx op");
@@ -344,6 +360,20 @@ pub struct Gemma4TransformerBlock {
     pub per_layer_input: Gemma4PerLayerInput,
     /// Learnable scalar multiplied at the end of each block (shape [1]).
     pub layer_scalar: Array,
+
+    // ── MoE (26B only) ─────────────────────────────────────────────────────
+    /// When `Some`, the block runs a dense MLP + sparse expert branch in
+    /// parallel and sums the outputs. `None` for E2B / E4B / 12B / 31B.
+    pub moe: Option<Gemma4MoeBlock>,
+}
+
+/// MoE-specific sub-block — only present when `enable_moe_block=true`.
+pub struct Gemma4MoeBlock {
+    pub router: super::moe::Router,
+    pub experts: super::moe::Experts,
+    pub pre_feedforward_layernorm_2: RmsNorm,
+    pub post_feedforward_layernorm_1: RmsNorm,
+    pub post_feedforward_layernorm_2: RmsNorm,
 }
 
 impl Gemma4TransformerBlock {
@@ -368,16 +398,27 @@ impl Gemma4TransformerBlock {
             None
         };
 
+        // Only full-attention layers use k_eq_v; sliding layers always have v_proj.
+        let use_k_eq_v = !is_sliding && config.attention_k_eq_v.unwrap_or(false);
+        let num_kv_heads = if use_k_eq_v {
+            config
+                .num_global_key_value_heads
+                .unwrap_or(config.num_key_value_heads)
+        } else {
+            config.num_key_value_heads
+        };
+
         Self {
             attention: Gemma4Attention::new(
                 hidden,
                 config.num_attention_heads,
-                config.num_key_value_heads,
+                num_kv_heads,
                 head_dim,
                 rope_dim,
                 eps,
                 is_sliding,
                 sw,
+                use_k_eq_v,
             ),
             ffn: Gemma4Ffn::new(hidden, config.intermediate_size),
             input_layernorm: RmsNorm::new(hidden, eps),
@@ -386,6 +427,20 @@ impl Gemma4TransformerBlock {
             post_feedforward_layernorm: RmsNorm::new(hidden, eps),
             per_layer_input: Gemma4PerLayerInput::new(hidden, hpl, eps),
             layer_scalar: Array::ones::<f32>(&[1]).expect("mlx op"),
+            moe: if config.enable_moe_block.unwrap_or(false) {
+                let n_exp = config.num_experts.unwrap_or(0);
+                let top_k = config.top_k_experts.unwrap_or(2);
+                let moe_inter = config.moe_intermediate_size.unwrap_or(config.intermediate_size);
+                Some(Gemma4MoeBlock {
+                    router: super::moe::Router::new(hidden, n_exp, top_k, eps),
+                    experts: super::moe::Experts::new(hidden, moe_inter, n_exp),
+                    pre_feedforward_layernorm_2: RmsNorm::new(hidden, eps),
+                    post_feedforward_layernorm_1: RmsNorm::new(hidden, eps),
+                    post_feedforward_layernorm_2: RmsNorm::new(hidden, eps),
+                })
+            } else {
+                None
+            },
         }
     }
 
@@ -404,9 +459,22 @@ impl Gemma4TransformerBlock {
         let h = self.post_attention_layernorm.forward(&h);
         let x = x.add(&h).expect("mlx op");
 
-        // Pre-ffn-norm → FFN → post-ffn-norm → residual
-        let h = self.pre_feedforward_layernorm.forward(&x);
-        let h = self.ffn.forward(&h);
+        // Feed-forward: dense path, or dense + MoE sum if enabled.
+        let h = if let Some(moe) = &self.moe {
+            // Dense branch
+            let h1 = self.pre_feedforward_layernorm.forward(&x);
+            let h1 = self.ffn.forward(&h1);
+            let h1 = moe.post_feedforward_layernorm_1.forward(&h1);
+            // MoE branch — router operates on post-attn residual (pre-norm).
+            let (idx, w) = moe.router.forward(&x);
+            let h2 = moe.pre_feedforward_layernorm_2.forward(&x);
+            let h2 = moe.experts.forward(&h2, &idx, &w);
+            let h2 = moe.post_feedforward_layernorm_2.forward(&h2);
+            h1.add(&h2).expect("mlx op")
+        } else {
+            let h = self.pre_feedforward_layernorm.forward(&x);
+            self.ffn.forward(&h)
+        };
         let h = self.post_feedforward_layernorm.forward(&h);
         let x = x.add(&h).expect("mlx op");
 
@@ -483,6 +551,29 @@ impl Gemma4Model {
         let global_theta = config.rope_theta;
         let max_seq = config.max_position_embeddings;
 
+        // KV-sharing slot map: shared layers map to the *last* non-shared
+        // layer of the same type (mirrors `previous_kvs` in mlx-lm).
+        let mut cache_slot = vec![0usize; n];
+        let mut last_by_type: std::collections::HashMap<&str, usize> =
+            std::collections::HashMap::new();
+        for i in 0..num_non_shared {
+            cache_slot[i] = i;
+            let t = if layer_types[i] == "full_attention" {
+                "full"
+            } else {
+                "sliding"
+            };
+            last_by_type.insert(t, i);
+        }
+        for i in num_non_shared..n {
+            let t = if layer_types[i] == "full_attention" {
+                "full"
+            } else {
+                "sliding"
+            };
+            cache_slot[i] = *last_by_type.get(t).unwrap_or(&0);
+        }
+
         Self {
             embed_tokens: Weight::plain(
                 Array::zeros::<f32>(&[vocab as i32, hidden as i32]).expect("mlx op"),
@@ -490,44 +581,68 @@ impl Gemma4Model {
             embed_tokens_per_layer: Weight::plain(
                 Array::zeros::<f32>(&[vocab as i32, (hpl * n) as i32]).expect("mlx op"),
             ),
+            per_layer_model_projection: Weight::plain(
+                Array::zeros::<f32>(&[(hpl * n) as i32, hidden as i32]).expect("mlx op"),
+            ),
+            per_layer_projection_norm: RmsNorm::new(hpl, eps),
             layers,
             norm: RmsNorm::new(hidden, eps),
             local_rope: RotaryEmbedding::new(sliding_head_dim, max_seq, local_theta),
             global_rope: RotaryEmbedding::new(global_rope_dim, max_seq, global_theta),
             embed_scale,
+            embed_tokens_per_layer_scale: (hpl as f32).sqrt(),
+            per_layer_projection_scale: 1.0 / (hidden as f32).sqrt(),
+            per_layer_input_scale: 1.0 / 2.0_f32.sqrt(),
             num_non_shared,
+            cache_slot,
             final_logit_softcapping: config.final_logit_softcapping,
             hidden_per_layer_input: hpl,
         }
     }
 
     /// Forward pass. Returns logits for the last token: shape [1, vocab_size].
-    pub fn forward(&self, tokens: &[u32], cache: &mut KvCache) -> Array {
+    ///
+    /// `offset` is the absolute position of the first new token. Caller-tracked
+    /// because sliding-window cache buffers are truncated to `window_size` and
+    /// `cache[i].shape[2]` no longer reflects the true position.
+    pub fn forward(&self, tokens: &[u32], offset: usize, cache: &mut KvCache) -> Array {
         let seq_len = tokens.len();
-        let offset = cache
-            .first()
-            .and_then(|e| e.as_ref())
-            .map(|(k, _)| k.shape()[2] as usize)
-            .unwrap_or(0);
 
         let idx: Vec<i32> = tokens.iter().map(|&t| t as i32).collect();
         let token_indices = Array::from_slice(&idx, &[seq_len as i32]);
 
         // Main embedding: gather + dequantize only the rows we need.
-        let x = self.embed_tokens.embedding_lookup(&token_indices);
+        let x0 = self.embed_tokens.embedding_lookup(&token_indices);
         let scale = Array::from_f32(self.embed_scale);
-        let x = x.multiply(&scale).expect("mlx op");
+        let x0 = x0.multiply(&scale).expect("mlx op");
         let hidden = self.layers[0].input_layernorm.weight.shape()[0];
-        let mut x = x.reshape(&[1, seq_len as i32, hidden]).expect("mlx op");
+        let mut x = x0.reshape(&[1, seq_len as i32, hidden]).expect("mlx op");
 
-        // Per-layer embeddings: one gather+dequantize for all layers.
-        // Output: [seq_len, num_layers × hpl] → reshape [1, seq_len, num_layers, hpl].
+        // ── Per-layer inputs (matches Gemma4TextModel._{get,project}_per_layer_inputs)
         let n_layers = self.layers.len() as i32;
         let hpl = self.hidden_per_layer_input as i32;
-        let per_layer_flat = self.embed_tokens_per_layer.embedding_lookup(&token_indices);
-        let per_layer = per_layer_flat
+
+        // (a) embed_tokens_per_layer(tokens) * sqrt(hpl) → [1, seq, n_layers, hpl]
+        let per_layer_embed = self.embed_tokens_per_layer.embedding_lookup(&token_indices);
+        let ptl_scale = Array::from_f32(self.embed_tokens_per_layer_scale);
+        let per_layer_embed = per_layer_embed.multiply(&ptl_scale).expect("mlx op");
+        let per_layer_embed = per_layer_embed
             .reshape(&[1, seq_len as i32, n_layers, hpl])
             .expect("mlx op");
+
+        // (b) per_layer_model_projection(h) * (1/sqrt(hidden)) → reshape, then RMSNorm
+        let per_layer_proj = self.per_layer_model_projection.matmul_transpose(&x);
+        let proj_scale = Array::from_f32(self.per_layer_projection_scale);
+        let per_layer_proj = per_layer_proj.multiply(&proj_scale).expect("mlx op");
+        let per_layer_proj = per_layer_proj
+            .reshape(&[1, seq_len as i32, n_layers, hpl])
+            .expect("mlx op");
+        let per_layer_proj = self.per_layer_projection_norm.forward(&per_layer_proj);
+
+        // (c) (proj + embed) * (1/sqrt(2))
+        let mixed = per_layer_proj.add(&per_layer_embed).expect("mlx op");
+        let input_scale = Array::from_f32(self.per_layer_input_scale);
+        let per_layer = mixed.multiply(&input_scale).expect("mlx op");
 
         let n = self.num_non_shared;
 
@@ -538,9 +653,7 @@ impl Gemma4Model {
                 &self.global_rope
             };
 
-            // Shared layers re-use the cache slot of their non-shared partner.
-            // The modulo handles the second cycle (layers 30–34 → same slots as 0–4).
-            let cache_idx = if i < n { i } else { (i - n) % n };
+            let cache_idx = self.cache_slot[i];
             let is_shared = i >= n;
 
             let shared_kv: Option<(Array, Array)> = if is_shared {
@@ -551,9 +664,9 @@ impl Gemma4Model {
                 None
             };
 
-            // Per-layer embedding slice for layer i: [1, seq, hpl]
+            // Per-layer input slice for layer i: [1, seq, hpl]
             let li = i as i32;
-            let embed_lookup = per_layer
+            let per_layer_i = per_layer
                 .index((.., .., li..li + 1, ..))
                 .reshape(&[1, seq_len as i32, hpl])
                 .expect("mlx op");
@@ -564,7 +677,7 @@ impl Gemma4Model {
                 &mut cache[cache_idx],
                 offset,
                 shared_kv.as_ref(),
-                &embed_lookup,
+                &per_layer_i,
             );
         }
 

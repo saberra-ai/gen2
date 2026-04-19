@@ -398,6 +398,214 @@ mod tests {
         Ok(())
     }
 
+    /// Ten-turn conversation — exercises repeated `append_messages` delta
+    /// prefills and checks that context survives many round-trips.
+    #[test]
+    #[ignore = "requires TEST_MLX_MODEL_DIR env var pointing to a local model"]
+    fn multiturn_ten_turns() -> Result<(), Box<dyn std::error::Error>> {
+        use crate::gen2::Message;
+        use crate::gen2::generation::{GenSpec, TokenEvent};
+        use crate::gen2::session_rt::SessionSpec;
+        use crate::types::message::{MessageBody, MessageContent};
+
+        let model_dir = match std::env::var("TEST_MLX_MODEL_DIR") {
+            Ok(p) => std::path::PathBuf::from(p),
+            Err(_) => {
+                eprintln!("set TEST_MLX_MODEL_DIR to run this test");
+                return Ok(());
+            }
+        };
+        if !model_dir.exists() {
+            eprintln!("TEST_MLX_MODEL_DIR does not exist, skipping");
+            return Ok(());
+        }
+
+        let e = Engine::new();
+        e.load_model(LoadRequest {
+            model_path: model_dir,
+            ..Default::default()
+        })?;
+
+        let user_msg = |t: &str| Message {
+            role: "user".into(),
+            body: MessageBody::Content {
+                content: MessageContent::SingleText(t.into()),
+            },
+            name: None,
+        };
+        let asst_msg = |t: &str| Message {
+            role: "assistant".into(),
+            body: MessageBody::Content {
+                content: MessageContent::SingleText(t.into()),
+            },
+            name: None,
+        };
+
+        // Mixed-skill conversation — memory, reasoning, creativity, callbacks.
+        let questions = [
+            "I'm planning a weekend in Lisbon. Pick one neighborhood you'd recommend \
+             and say why in 2 sentences.",
+            "Good. I have a mild fear of heights — does that change your pick?",
+            "Assume I'm going in January. What's the weather like, briefly?",
+            "Suggest one dish I should try, and where it's from in Portugal.",
+            "Turn that dish into a haiku (5-7-5).",
+            "What's the Portuguese word for the main ingredient in that dish?",
+            "Now forget Portugal for a second — if that word were a startup name, \
+             what would the product be?",
+            "Pitch it to me in one sentence, VC-style.",
+            "Roast that pitch — give me the sharpest critique in 2 sentences.",
+            "OK, looping back: which neighborhood did you recommend in turn 1, \
+             and does the startup idea fit there?",
+        ];
+
+        let session = e.start_session(SessionSpec {
+            messages: vec![user_msg(questions[0])],
+            overrides: None,
+            persona: None,
+            attachments: vec![],
+            cache: None,
+        })?;
+
+        let drain = |puller: &mut crate::gen2::backend::mlx::puller::TokenPuller| -> String {
+            let mut out = String::new();
+            loop {
+                match puller.next() {
+                    Some(Ok(TokenEvent::Token(tok))) => out.push_str(&tok.text),
+                    Some(Ok(TokenEvent::Eos)) | Some(Ok(TokenEvent::Stopped)) => break,
+                    Some(Ok(_)) => continue,
+                    Some(Err(_)) | None => break,
+                }
+            }
+            out
+        };
+
+        let total_start = std::time::Instant::now();
+        let mut last_reply = String::new();
+        for (i, q) in questions.iter().enumerate() {
+            if i > 0 {
+                // Append prior assistant turn + next user question.
+                session.append_messages(vec![asst_msg(last_reply.trim()), user_msg(q)])?;
+            }
+            let t = std::time::Instant::now();
+            let mut puller = session.pull(GenSpec {
+                max_tokens: Some(160),
+                ..Default::default()
+            })?;
+            let reply = drain(&mut puller);
+            drop(puller);
+            println!(
+                "[turn {:>2}] ({:>4}ms) Q: {}\n          A: {}",
+                i + 1,
+                t.elapsed().as_millis(),
+                q,
+                reply.trim()
+            );
+            if reply.trim().is_empty() {
+                eprintln!("turn {} was empty (continuing)", i + 1);
+            }
+            last_reply = reply;
+        }
+        println!("\ntotal: {:.1}s", total_start.elapsed().as_secs_f32());
+        Ok(())
+    }
+
+    /// Exercises `append_messages`: turn 1 answers "what is 2+2", then the
+    /// assistant reply + a follow-up user message are appended and turn 2
+    /// is generated. Verifies delta prefill over the existing KV cache.
+    #[test]
+    #[ignore = "requires TEST_MLX_MODEL_DIR env var pointing to a local model"]
+    fn multiturn_append_messages() -> Result<(), Box<dyn std::error::Error>> {
+        use crate::gen2::Message;
+        use crate::gen2::generation::{GenSpec, TokenEvent};
+        use crate::gen2::session_rt::SessionSpec;
+        use crate::types::message::{MessageBody, MessageContent};
+
+        let model_dir = match std::env::var("TEST_MLX_MODEL_DIR") {
+            Ok(p) => {
+                let path = std::path::PathBuf::from(p);
+                if !path.exists() {
+                    eprintln!("TEST_MLX_MODEL_DIR does not exist, skipping");
+                    return Ok(());
+                }
+                path
+            }
+            Err(_) => {
+                eprintln!("set TEST_MLX_MODEL_DIR to run this test");
+                return Ok(());
+            }
+        };
+
+        let e = Engine::new();
+        e.load_model(LoadRequest {
+            model_path: model_dir,
+            ..Default::default()
+        })?;
+
+        let user_msg = |t: &str| Message {
+            role: "user".into(),
+            body: MessageBody::Content {
+                content: MessageContent::SingleText(t.into()),
+            },
+            name: None,
+        };
+        let asst_msg = |t: &str| Message {
+            role: "assistant".into(),
+            body: MessageBody::Content {
+                content: MessageContent::SingleText(t.into()),
+            },
+            name: None,
+        };
+
+        let session = e.start_session(SessionSpec {
+            messages: vec![user_msg("What is 2 + 2?")],
+            overrides: None,
+            persona: None,
+            attachments: vec![],
+            cache: None,
+        })?;
+
+        let drain = |puller: &mut crate::gen2::backend::mlx::puller::TokenPuller| -> String {
+            let mut out = String::new();
+            loop {
+                match puller.next() {
+                    Some(Ok(TokenEvent::Token(tok))) => out.push_str(&tok.text),
+                    Some(Ok(TokenEvent::Eos)) | Some(Ok(TokenEvent::Stopped)) => break,
+                    Some(Ok(_)) => continue,
+                    Some(Err(_)) | None => break,
+                }
+            }
+            out
+        };
+
+        // ── Turn 1 ───────────────────────────────────────────────────────────
+        let mut p1 = session.pull(GenSpec {
+            max_tokens: Some(32),
+            ..Default::default()
+        })?;
+        let reply1 = drain(&mut p1);
+        drop(p1); // return DecodeState to the session
+        println!("[multiturn] turn1: {:?}", reply1);
+        assert!(!reply1.is_empty(), "turn 1 produced no text");
+
+        // ── Append turn-1 assistant reply + turn-2 user question ─────────────
+        session.append_messages(vec![
+            asst_msg(reply1.trim()),
+            user_msg("And what is that number times 3?"),
+        ])?;
+
+        // ── Turn 2 ───────────────────────────────────────────────────────────
+        let mut p2 = session.pull(GenSpec {
+            max_tokens: Some(32),
+            ..Default::default()
+        })?;
+        let reply2 = drain(&mut p2);
+        drop(p2);
+        println!("[multiturn] turn2: {:?}", reply2);
+        assert!(!reply2.is_empty(), "turn 2 produced no text");
+
+        Ok(())
+    }
+
     /// MLX does not support embedders — load_embedder should return Unimplemented.
     #[test]
     fn embedder_not_supported() {

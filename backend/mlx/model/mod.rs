@@ -7,6 +7,7 @@ mod attention;
 mod ffn;
 pub mod gemma4;
 mod llama;
+pub mod moe;
 mod norm;
 pub mod quantized;
 mod rope;
@@ -31,10 +32,21 @@ pub enum Model {
 
 impl Model {
     /// Forward pass. GemmaModel ignores `rope` and uses its own internal per-layer ropes.
-    pub fn forward(&self, tokens: &[u32], cache: &mut KvCache, rope: &RotaryEmbedding) -> Array {
+    ///
+    /// `offset` is the true number of positions already processed (pre-update).
+    /// For sliding-window caches this is NOT equal to `cache[i].shape[2]` —
+    /// the buffer gets truncated to `window_size` but RoPE must still use the
+    /// absolute position.
+    pub fn forward(
+        &self,
+        tokens: &[u32],
+        offset: usize,
+        cache: &mut KvCache,
+        rope: &RotaryEmbedding,
+    ) -> Array {
         match self {
             Model::Llama(m) => m.forward(tokens, cache, rope),
-            Model::Gemma4(m) => m.forward(tokens, cache),
+            Model::Gemma4(m) => m.forward(tokens, offset, cache),
         }
     }
 
@@ -99,6 +111,16 @@ pub struct ModelConfig {
     pub attention_k_eq_v: Option<bool>,
     /// Number of KV heads for global (full) attention layers.
     pub num_global_key_value_heads: Option<usize>,
+
+    // ── Gemma 4 26B MoE fields ─────────────────────────────────────────────
+    /// Whether this model uses MoE blocks alongside the dense MLP.
+    pub enable_moe_block: Option<bool>,
+    /// Number of expert MLPs (26B = 32).
+    pub num_experts: Option<usize>,
+    /// Experts selected per token (typically 2-4).
+    pub top_k_experts: Option<usize>,
+    /// Per-expert intermediate size (distinct from dense `intermediate_size`).
+    pub moe_intermediate_size: Option<usize>,
 }
 
 fn default_rms_norm_eps() -> f32 {

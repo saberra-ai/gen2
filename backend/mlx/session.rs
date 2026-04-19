@@ -130,6 +130,14 @@ impl Session {
             .apply(messages.clone(), None, None)
             .map_err(|e| ExecError::Other(e.into()))?;
 
+        if std::env::var("PIO_MLX_DEBUG_PROMPT").is_ok() {
+            eprintln!(
+                "\n── Session::new rendered prompt ({} bytes) ──\n{:?}\n──\n",
+                prompt.len(),
+                prompt
+            );
+        }
+
         // Tokenize with the HF tokenizer
         let tokens = bundle
             .tokenizer
@@ -147,8 +155,8 @@ impl Session {
         let cache_slots = bundle.model.num_non_shared_layers();
         let mut cache: KvCache = vec![None; cache_slots];
 
-        // Run prefill: forward pass with all prompt tokens
-        let prefill_logits = bundle.model.forward(&tokens, &mut cache, &bundle.rope);
+        // Run prefill: forward pass with all prompt tokens (offset 0 — empty cache)
+        let prefill_logits = bundle.model.forward(&tokens, 0, &mut cache, &bundle.rope);
         let last_prompt_token = tokens.last().copied().unwrap_or(0);
 
         hooks.emit(HookEvent::SessionPrefillOk {
@@ -195,6 +203,14 @@ impl Session {
             .apply(new_messages, None, None)
             .map_err(|e| ExecError::Other(e.into()))?;
 
+        if std::env::var("PIO_MLX_DEBUG_PROMPT").is_ok() {
+            eprintln!(
+                "\n── append_messages delta ({} bytes) ──\n{:?}\n──\n",
+                delta_text.len(),
+                delta_text
+            );
+        }
+
         let delta_tokens = self
             .bundle
             .tokenizer
@@ -215,11 +231,13 @@ impl Session {
             prompt_tokens: delta_tokens.len(),
         });
 
-        // Prefill delta into existing KV cache
-        let delta_logits =
-            self.bundle
-                .model
-                .forward(&delta_tokens, &mut st.cache, &self.bundle.rope);
+        // Prefill delta into existing KV cache at the current true position.
+        let delta_logits = self.bundle.model.forward(
+            &delta_tokens,
+            st.cur_pos,
+            &mut st.cache,
+            &self.bundle.rope,
+        );
         st.cur_pos += delta_tokens.len();
         st.last_token = delta_tokens.last().copied().unwrap_or(st.last_token);
         st.pending_logits = Some(delta_logits);

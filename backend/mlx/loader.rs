@@ -275,6 +275,16 @@ pub fn build_gemma4_model(model_dir: &Path) -> Result<(Gemma4Model, ModelConfig)
     model.embed_tokens_per_layer =
         load_weight(&tensors, &format!("{pfx}.embed_tokens_per_layer"), hpl_all);
 
+    // Linear(hidden → num_layers × hpl) — feeds residual stream into per-layer inputs.
+    model.per_layer_model_projection = load_weight(
+        &tensors,
+        &format!("{pfx}.per_layer_model_projection"),
+        hidden,
+    );
+    if let Some(w) = tensors.get(&format!("{pfx}.per_layer_projection_norm.weight")) {
+        model.per_layer_projection_norm.weight = w.clone();
+    }
+
     if let Some(w) = tensors.get(&format!("{pfx}.norm.weight")) {
         model.norm.weight = w.clone();
     }
@@ -299,7 +309,16 @@ pub fn build_gemma4_model(model_dir: &Path) -> Result<(Gemma4Model, ModelConfig)
         // Attention projections
         layer.attention.q_proj = load_weight(&tensors, &format!("{lp}.self_attn.q_proj"), hidden);
         layer.attention.k_proj = load_weight(&tensors, &format!("{lp}.self_attn.k_proj"), hidden);
-        layer.attention.v_proj = load_weight(&tensors, &format!("{lp}.self_attn.v_proj"), hidden);
+        // v_proj is absent on full-attention layers when `attention_k_eq_v=true` (31B variant).
+        if layer.attention.use_k_eq_v {
+            layer.attention.v_proj = None;
+        } else {
+            layer.attention.v_proj = Some(load_weight(
+                &tensors,
+                &format!("{lp}.self_attn.v_proj"),
+                hidden,
+            ));
+        }
         let o_in = config.num_attention_heads * head_dim;
         layer.attention.o_proj = load_weight(&tensors, &format!("{lp}.self_attn.o_proj"), o_in);
 
@@ -343,6 +362,57 @@ pub fn build_gemma4_model(model_dir: &Path) -> Result<(Gemma4Model, ModelConfig)
         // Layer scalar
         if let Some(w) = tensors.get(&format!("{lp}.layer_scalar")) {
             layer.layer_scalar = w.clone();
+        }
+
+        // ── MoE weights (26B only) ────────────────────────────────────────
+        if let Some(moe) = layer.moe.as_mut() {
+            let moe_inter = config.moe_intermediate_size.unwrap_or(config.intermediate_size);
+
+            // Router: norm + projection + per-expert scale.
+            if let Some(w) = tensors.get(&format!("{lp}.router.scale")) {
+                moe.router.norm.weight = w.clone();
+            }
+            moe.router.proj = load_weight(&tensors, &format!("{lp}.router.proj"), hidden);
+            if let Some(w) = tensors.get(&format!("{lp}.router.per_expert_scale")) {
+                moe.router.per_expert_scale = w.clone();
+            }
+
+            // Experts: HF checkpoints pack gate+up into one tensor (axis 1)
+            // as `experts.gate_up_proj` — shape [n_experts, 2*moe_inter, hidden].
+            // Split into gate/up if fused, else load the separate tensors directly.
+            let gate_up_key = format!("{lp}.experts.gate_up_proj.weight");
+            if tensors.contains_key(&gate_up_key) {
+                let gate_up = tensors.get(&gate_up_key).expect("just checked");
+                let shape = gate_up.shape();
+                if shape.len() == 3 && shape[1] as usize == moe_inter * 2 {
+                    let half = (moe_inter as i32);
+                    moe.experts.gate_proj =
+                        Weight::plain(gate_up.index((.., 0..half, ..)));
+                    moe.experts.up_proj =
+                        Weight::plain(gate_up.index((.., half..(2 * half), ..)));
+                }
+            } else {
+                moe.experts.gate_proj = load_weight(
+                    &tensors,
+                    &format!("{lp}.experts.gate_proj"),
+                    hidden,
+                );
+                moe.experts.up_proj =
+                    load_weight(&tensors, &format!("{lp}.experts.up_proj"), hidden);
+            }
+            moe.experts.down_proj =
+                load_weight(&tensors, &format!("{lp}.experts.down_proj"), moe_inter);
+
+            // Extra MoE-only norms.
+            if let Some(w) = tensors.get(&format!("{lp}.pre_feedforward_layernorm_2.weight")) {
+                moe.pre_feedforward_layernorm_2.weight = w.clone();
+            }
+            if let Some(w) = tensors.get(&format!("{lp}.post_feedforward_layernorm_1.weight")) {
+                moe.post_feedforward_layernorm_1.weight = w.clone();
+            }
+            if let Some(w) = tensors.get(&format!("{lp}.post_feedforward_layernorm_2.weight")) {
+                moe.post_feedforward_layernorm_2.weight = w.clone();
+            }
         }
 
         let _ = is_sliding; // layer type already encoded in the struct at construction
