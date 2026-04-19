@@ -11,7 +11,7 @@ use std::path::Path;
 use mlx_rs::Array;
 use mlx_rs::ops::indexing::IndexOp;
 
-use super::model::{LlamaModel, ModelConfig, Weight};
+use super::model::{Gemma4Model, LlamaModel, Model, ModelConfig, Weight};
 use crate::gen2::engine::ExecError;
 
 /// Load model config from `config.json` in the model directory.
@@ -88,9 +88,14 @@ fn detect_group_size(scales_shape: &[i32], full_dim: usize) -> i32 {
     (full_dim / num_groups) as i32
 }
 
+/// Bit widths for which MLX Metal has compiled quantized-matmul kernels.
+/// Weights with other bit widths are dequantized at load time.
+const SUPPORTED_QMM_BITS: &[i32] = &[4, 8];
+
 /// Try to build a quantized `Weight` from the tensor map.
 /// Looks for `{name}.weight`, `{name}.scales`, `{name}.biases`.
 /// Returns `None` if the weight isn't quantized.
+/// For bit widths not in `SUPPORTED_QMM_BITS`, returns a pre-dequantized plain weight.
 fn try_quantized_weight(
     tensors: &HashMap<String, Array>,
     name: &str,
@@ -103,13 +108,25 @@ fn try_quantized_weight(
     let bits = detect_bits(weight.shape(), full_dim)?;
     let group_size = detect_group_size(scales.shape(), full_dim);
 
-    Some(Weight::quantized(
-        weight.clone(),
-        scales.clone(),
-        biases.clone(),
-        group_size,
-        bits,
-    ))
+    if SUPPORTED_QMM_BITS.contains(&bits) {
+        Some(Weight::quantized(
+            weight.clone(),
+            scales.clone(),
+            biases.clone(),
+            group_size,
+            bits,
+        ))
+    } else {
+        // Dequantize on CPU — the Metal library in mlx-sys 0.2.0 lacks GPU
+        // kernels for this bit width (e.g. 5-bit, 6-bit).
+        let dequant = mlx_rs::with_new_default_stream(mlx_rs::Stream::cpu(), || {
+            mlx_rs::ops::dequantize(weight, scales, biases, group_size, bits)
+                .expect("cpu dequantize unsupported-bits weight")
+        });
+        // Force CPU evaluation so the data is ready before we hand it to Metal ops.
+        mlx_rs::transforms::eval([&dequant]).expect("eval unsupported-bits dequant");
+        Some(Weight::plain(dequant))
+    }
 }
 
 /// Load a weight: try quantized first, fall back to plain float.
@@ -214,6 +231,160 @@ pub fn build_model(model_dir: &Path) -> Result<(LlamaModel, ModelConfig), ExecEr
     );
 
     Ok((model, config))
+}
+
+/// Load raw config.json as an untyped JSON value (used for nested Gemma 4 configs).
+fn load_raw_config(model_dir: &Path) -> Result<serde_json::Value, ExecError> {
+    let path = model_dir.join("config.json");
+    let s = fs::read_to_string(&path)
+        .map_err(|e| ExecError::Io(format!("failed to read config.json: {}", e)))?;
+    serde_json::from_str(&s)
+        .map_err(|e| ExecError::Other(anyhow::anyhow!("failed to parse config.json: {}", e)))
+}
+
+/// Build a Gemma 4 model from a model directory.
+///
+/// Config is read from the top-level `text_config` sub-object when present
+/// (Gemma 4 is a multimodal model that nests the LM config there).
+/// All weights use the prefix `language_model.model.`.
+pub fn build_gemma4_model(model_dir: &Path) -> Result<(Gemma4Model, ModelConfig), ExecError> {
+    // Parse config: prefer text_config sub-object
+    let raw = load_raw_config(model_dir)?;
+    let text_cfg_value = raw
+        .get("text_config")
+        .cloned()
+        .unwrap_or_else(|| raw.clone());
+    let config: ModelConfig = serde_json::from_value(text_cfg_value).map_err(|e| {
+        ExecError::Other(anyhow::anyhow!("failed to parse Gemma 4 text_config: {}", e))
+    })?;
+
+    let tensors = load_all_tensors(model_dir)?;
+    let mut model = Gemma4Model::new(&config);
+
+    let hidden = config.hidden_size;
+    let n = config.num_hidden_layers;
+    let hpl = config.hidden_size_per_layer_input.unwrap_or(256);
+    let hpl_all = hpl * n; // full column count of embed_tokens_per_layer
+
+    // ── Global embeddings ────────────────────────────────────────────────────
+    let pfx = "language_model.model";
+    model.embed_tokens = load_weight(&tensors, &format!("{pfx}.embed_tokens"), hidden);
+    model.embed_tokens_per_layer =
+        load_weight(&tensors, &format!("{pfx}.embed_tokens_per_layer"), hpl_all);
+
+    if let Some(w) = tensors.get(&format!("{pfx}.norm.weight")) {
+        model.norm.weight = w.clone();
+    }
+
+    // ── Transformer layers ───────────────────────────────────────────────────
+    let n_non_shared = n.saturating_sub(config.num_kv_shared_layers.unwrap_or(0));
+    let double_wide = config.use_double_wide_mlp.unwrap_or(false);
+    for i in 0..n {
+        let lp = format!("{pfx}.layers.{i}");
+        let layer = &mut model.layers[i];
+        let is_sliding = layer.attention.is_sliding;
+        let head_dim = layer.attention.head_dim;
+
+        // Shared-KV layers may have a 2× wider FFN intermediate size.
+        let is_shared_kv = i >= n_non_shared;
+        let layer_intermediate = if is_shared_kv && double_wide {
+            config.intermediate_size * 2
+        } else {
+            config.intermediate_size
+        };
+
+        // Attention projections
+        layer.attention.q_proj =
+            load_weight(&tensors, &format!("{lp}.self_attn.q_proj"), hidden);
+        layer.attention.k_proj =
+            load_weight(&tensors, &format!("{lp}.self_attn.k_proj"), hidden);
+        layer.attention.v_proj =
+            load_weight(&tensors, &format!("{lp}.self_attn.v_proj"), hidden);
+        let o_in = config.num_attention_heads * head_dim;
+        layer.attention.o_proj =
+            load_weight(&tensors, &format!("{lp}.self_attn.o_proj"), o_in);
+
+        // Per-head norms (plain float, loaded directly)
+        if let Some(w) = tensors.get(&format!("{lp}.self_attn.q_norm.weight")) {
+            layer.attention.q_norm.weight = w.clone();
+        }
+        if let Some(w) = tensors.get(&format!("{lp}.self_attn.k_norm.weight")) {
+            layer.attention.k_norm.weight = w.clone();
+        }
+
+        // FFN — gate/up use hidden as full_dim; down uses layer_intermediate
+        layer.ffn.gate_proj = load_weight(&tensors, &format!("{lp}.mlp.gate_proj"), hidden);
+        layer.ffn.up_proj = load_weight(&tensors, &format!("{lp}.mlp.up_proj"), hidden);
+        layer.ffn.down_proj =
+            load_weight(&tensors, &format!("{lp}.mlp.down_proj"), layer_intermediate);
+
+        // Per-layer input system
+        layer.per_layer_input.per_layer_input_gate =
+            load_weight(&tensors, &format!("{lp}.per_layer_input_gate"), hidden);
+        layer.per_layer_input.per_layer_projection =
+            load_weight(&tensors, &format!("{lp}.per_layer_projection"), hpl);
+        if let Some(w) = tensors.get(&format!("{lp}.post_per_layer_input_norm.weight")) {
+            layer.per_layer_input.post_per_layer_input_norm.weight = w.clone();
+        }
+
+        // Layer norms (plain float)
+        if let Some(w) = tensors.get(&format!("{lp}.input_layernorm.weight")) {
+            layer.input_layernorm.weight = w.clone();
+        }
+        if let Some(w) = tensors.get(&format!("{lp}.post_attention_layernorm.weight")) {
+            layer.post_attention_layernorm.weight = w.clone();
+        }
+        if let Some(w) = tensors.get(&format!("{lp}.pre_feedforward_layernorm.weight")) {
+            layer.pre_feedforward_layernorm.weight = w.clone();
+        }
+        if let Some(w) = tensors.get(&format!("{lp}.post_feedforward_layernorm.weight")) {
+            layer.post_feedforward_layernorm.weight = w.clone();
+        }
+
+        // Layer scalar
+        if let Some(w) = tensors.get(&format!("{lp}.layer_scalar")) {
+            layer.layer_scalar = w.clone();
+        }
+
+        let _ = is_sliding; // layer type already encoded in the struct at construction
+    }
+
+    let quantized_count = tensors.keys().filter(|k| k.ends_with(".scales")).count();
+    tracing::info!(
+        "loaded {} tensors ({} quantized groups) for Gemma 4 {}-layer model",
+        tensors.len(),
+        quantized_count,
+        n
+    );
+
+    Ok((model, config))
+}
+
+/// Dispatch: detect model type from config.json and call the right builder.
+pub fn build_any_model(model_dir: &Path) -> Result<(Model, ModelConfig), ExecError> {
+    let raw = load_raw_config(model_dir)?;
+    // Gemma 4 nests model_type in text_config; fall back to root model_type
+    let model_type = raw
+        .get("text_config")
+        .and_then(|tc| tc.get("model_type"))
+        .or_else(|| raw.get("model_type"))
+        .and_then(|v| v.as_str());
+
+    let is_gemma = model_type.map_or(false, |t| t.contains("gemma"));
+
+    if is_gemma {
+        let (m, c) = build_gemma4_model(model_dir)?;
+        return Ok((Model::Gemma4(m), c));
+    }
+
+    if let Some(t) = model_type {
+        tracing::warn!(
+            "unknown model_type {:?}, defaulting to Llama — add to build_any_model() if wrong",
+            t
+        );
+    }
+    let (m, c) = build_model(model_dir)?;
+    Ok((Model::Llama(m), c))
 }
 
 #[cfg(test)]

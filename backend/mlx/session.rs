@@ -23,6 +23,12 @@ pub type SessionId = u64;
 pub(crate) struct DecodeState {
     pub cache: KvCache,
     pub cur_pos: usize,
+    /// Logits from the most recent prefill / append_messages call.
+    /// The puller consumes this on its first iteration to avoid an extra forward pass.
+    pub pending_logits: Option<mlx_rs::Array>,
+    /// The last token ID fed into the model (last prompt token after prefill,
+    /// then each sampled token). The puller updates this after every sample.
+    pub last_token: u32,
 }
 
 impl std::fmt::Debug for DecodeState {
@@ -137,11 +143,13 @@ impl Session {
             prompt_tokens: total_tokens,
         });
 
-        // Initialize KV cache (one entry per layer)
-        let mut cache: KvCache = vec![None; bundle.config.num_hidden_layers];
+        // Initialize KV cache (Gemma 4 uses num_non_shared slots; Llama uses num_hidden_layers)
+        let cache_slots = bundle.model.num_non_shared_layers();
+        let mut cache: KvCache = vec![None; cache_slots];
 
         // Run prefill: forward pass with all prompt tokens
-        let _logits = bundle.model.forward(&tokens, &mut cache, &bundle.rope);
+        let prefill_logits = bundle.model.forward(&tokens, &mut cache, &bundle.rope);
+        let last_prompt_token = tokens.last().copied().unwrap_or(0);
 
         hooks.emit(HookEvent::SessionPrefillOk {
             session_id: id,
@@ -158,6 +166,8 @@ impl Session {
             state: Arc::new(Mutex::new(Some(DecodeState {
                 cache,
                 cur_pos: total_tokens,
+                pending_logits: Some(prefill_logits),
+                last_token: last_prompt_token,
             }))),
             messages: RwLock::new(messages),
         })
@@ -206,11 +216,13 @@ impl Session {
         });
 
         // Prefill delta into existing KV cache
-        let _logits = self
+        let delta_logits = self
             .bundle
             .model
             .forward(&delta_tokens, &mut st.cache, &self.bundle.rope);
         st.cur_pos += delta_tokens.len();
+        st.last_token = delta_tokens.last().copied().unwrap_or(st.last_token);
+        st.pending_logits = Some(delta_logits);
 
         self.hooks.emit(HookEvent::SessionPrefillOk {
             session_id: self.id,

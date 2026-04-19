@@ -134,35 +134,19 @@ impl Iterator for TokenPuller {
             }
         };
 
-        // Forward pass with previous token to get next logits
-        // For the first call after prefill, we use the last token from prefill
-        // which is already in the KV cache. We need to feed the last sampled token.
-        // On first iteration, this is handled by the prefill.
-
-        // If this is the first token, we already have logits from prefill
-        // For subsequent tokens, run a single forward pass with the last token
-        let logits = if self.produced == 0 {
-            // Re-run with last token position to get logits
-            // The KV cache already has the prefill, so we just need the final logits
-            // We need the last token from the prompt. Since prefill already ran,
-            // we can get logits by running one more forward step.
-            // Actually, the prefill forward already returned logits - but we didn't save them.
-            // For simplicity, we'll run the model with a dummy token and fix in integration.
-            // TODO: pass prefill logits through to avoid this extra forward pass
-            let last_token = 0u32; // placeholder - should be last prompt token
-            self.bundle
-                .model
-                .forward(&[last_token], &mut state.cache, &self.bundle.rope)
+        // Get logits: consume pending prefill logits on the first step,
+        // then run one forward pass per decode step feeding the last sampled token.
+        let logits = if let Some(pending) = state.pending_logits.take() {
+            pending
         } else {
-            // Forward with the token we just sampled
-            let prev_token = 0u32; // will be overwritten below
             self.bundle
                 .model
-                .forward(&[prev_token], &mut state.cache, &self.bundle.rope)
+                .forward(&[state.last_token], &mut state.cache, &self.bundle.rope)
         };
 
         // Sample next token from logits
         let token_id = self.sampler.sample(&logits);
+        state.last_token = token_id;
 
         // Check EOS
         if let Some(eos_id) = self.bundle.tokenizer.eos_id() {

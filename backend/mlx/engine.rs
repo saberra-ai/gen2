@@ -64,7 +64,7 @@ impl Engine {
         // For MLX, model_path points to a directory containing config.json + *.safetensors
         let model_dir = &req.model_path;
 
-        let (model, config) = super::loader::build_model(model_dir)?;
+        let (model, config) = super::loader::build_any_model(model_dir)?;
 
         let head_dim = config.head_dim();
         let max_seq = config.max_position_embeddings;
@@ -320,6 +320,73 @@ mod tests {
         })?;
         assert!(e.is_model_loaded());
         assert!(e.capabilities().contains(Capabilities::TEXT));
+        Ok(())
+    }
+
+    /// Generate a few tokens with the loaded model and print them.
+    /// Verifies the full prefill → decode → detokenize pipeline end-to-end.
+    #[test]
+    #[ignore]
+    fn generate_tokens() -> Result<(), Box<dyn std::error::Error>> {
+        use crate::gen2::Message;
+        use crate::gen2::generation::GenSpec;
+        use crate::gen2::session_rt::SessionSpec;
+        use crate::types::message::{MessageBody, MessageContent};
+
+        let model_dir = match std::env::var("TEST_MLX_MODEL_DIR") {
+            Ok(p) => {
+                let path = std::path::PathBuf::from(p);
+                if !path.exists() {
+                    eprintln!("TEST_MLX_MODEL_DIR does not exist, skipping");
+                    return Ok(());
+                }
+                path
+            }
+            Err(_) => {
+                eprintln!("set TEST_MLX_MODEL_DIR to run this test");
+                return Ok(());
+            }
+        };
+
+        let e = Engine::new();
+        e.load_model(LoadRequest { model_path: model_dir, ..Default::default() })?;
+
+        let messages = vec![Message {
+            role: "user".into(),
+            body: MessageBody::Content {
+                content: MessageContent::SingleText("What is 2 + 2?".into()),
+            },
+            name: None,
+        }];
+
+        let session = e.start_session(SessionSpec {
+            messages,
+            overrides: None,
+            persona: None,
+            attachments: vec![],
+            cache: None,
+        })?;
+
+        let gen_spec = GenSpec { max_tokens: Some(64), ..Default::default() };
+        let mut puller = session.pull(gen_spec)?;
+
+        use crate::gen2::generation::TokenEvent;
+        print!("\n[generate_tokens] output: ");
+        let mut n_tokens = 0;
+        loop {
+            match puller.next() {
+                Some(Ok(TokenEvent::Token(tok))) => {
+                    print!("{}", tok.text);
+                    n_tokens += 1;
+                }
+                Some(Ok(TokenEvent::Eos)) | Some(Ok(TokenEvent::Stopped)) => break,
+                Some(Ok(TokenEvent::Paused)) | Some(Ok(TokenEvent::Special(_))) | Some(Ok(TokenEvent::MediaBoundary(_))) => continue,
+                Some(Err(e)) => return Err(e.into()),
+                None => break,
+            }
+        }
+        println!("\n[generate_tokens] generated {} tokens", n_tokens);
+        assert!(n_tokens > 0, "expected at least one generated token");
         Ok(())
     }
 

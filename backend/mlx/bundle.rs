@@ -1,12 +1,12 @@
 //! MLX model bundle — holds the loaded model, tokenizer, and metadata.
 
-use super::model::{LlamaModel, ModelConfig, RotaryEmbedding};
+use super::model::{Model, ModelConfig, RotaryEmbedding};
 use super::tokenizer::HfTokenizer;
 use crate::gen2::bundle::ModelMeta;
 use crate::gen2::engine::Capabilities;
 
 pub struct ModelBundle {
-    pub model: LlamaModel,
+    pub model: Model,
     pub rope: RotaryEmbedding,
     pub tokenizer: HfTokenizer,
     pub config: ModelConfig,
