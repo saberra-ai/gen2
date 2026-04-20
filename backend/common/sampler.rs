@@ -1,6 +1,13 @@
 //! Token sampling from logit slices, shared across backends.
 
+use std::collections::VecDeque;
+
 use rand::Rng;
+
+/// Window over which repetition penalty acts. Matches llama.cpp default
+/// (`--repeat-last-n 64`). Tokens emitted more than 64 steps ago no longer
+/// suppress their own re-emission.
+const REPETITION_WINDOW: usize = 64;
 
 // consumed by workspace dependents (src-tauri, pio-daemon)
 #[allow(dead_code)]
@@ -8,32 +15,87 @@ pub struct Sampler {
     temperature: f32,
     top_p: Option<f32>,
     top_k: Option<i32>,
+    /// Repetition penalty factor. `None` or `Some(1.0)` disables. Values
+    /// > 1.0 reduce the probability of recently-emitted tokens; llama.cpp
+    /// default is `1.1`, HuggingFace default is `1.0` (off).
+    repetition_penalty: Option<f32>,
+    /// Ring buffer of recently emitted token ids (bounded by
+    /// [`REPETITION_WINDOW`]). Populated by [`Sampler::observe`] from the
+    /// caller's decode loop.
+    recent: VecDeque<u32>,
     rng: rand::rngs::ThreadRng,
 }
 
 // consumed by workspace dependents (src-tauri, pio-daemon)
 #[allow(dead_code)]
 impl Sampler {
-    pub fn new(temperature: f32, top_p: Option<f32>, top_k: Option<i32>) -> Self {
+    pub fn new(
+        temperature: f32,
+        top_p: Option<f32>,
+        top_k: Option<i32>,
+        repetition_penalty: Option<f32>,
+    ) -> Self {
         Self {
             temperature,
             top_p,
             top_k,
+            repetition_penalty,
+            recent: VecDeque::with_capacity(REPETITION_WINDOW),
             rng: rand::rng(),
+        }
+    }
+
+    /// Record a token as "recently emitted" so subsequent `sample_from_logits`
+    /// calls apply the repetition penalty to it. Call once per accepted token
+    /// in the decode loop.
+    pub fn observe(&mut self, token: u32) {
+        if self.recent.len() == REPETITION_WINDOW {
+            self.recent.pop_front();
+        }
+        self.recent.push_back(token);
+    }
+
+    /// Apply repetition penalty in-place, matching the llama.cpp convention:
+    /// `logit = logit / penalty` when `logit > 0`, `logit * penalty` when
+    /// `logit < 0`. Both cases push the logit toward `-inf` when penalty > 1,
+    /// reducing the probability of re-emitting recent tokens. No-op when
+    /// penalty is `None` / `1.0` / the recent-buffer is empty.
+    fn apply_repetition_penalty(&self, logits: &mut [f32]) {
+        let penalty = match self.repetition_penalty {
+            Some(p) if p > 1.0 + f32::EPSILON => p,
+            _ => return,
+        };
+        if self.recent.is_empty() {
+            return;
+        }
+        for &tok in &self.recent {
+            let i = tok as usize;
+            if i >= logits.len() {
+                continue;
+            }
+            let v = logits[i];
+            logits[i] = if v > 0.0 { v / penalty } else { v * penalty };
         }
     }
 
     /// Sample a token ID from a logits slice of shape (vocab_size,).
     pub fn sample_from_logits(&mut self, logits: &[f32]) -> u32 {
+        // Apply repetition penalty BEFORE temperature/top-p/top-k. This
+        // mirrors llama.cpp order-of-operations and matches what the HF
+        // `RepetitionPenaltyLogitsProcessor` does (it runs in the `PRE`
+        // slot before temperature).
+        let mut penalized: Vec<f32> = logits.to_vec();
+        self.apply_repetition_penalty(&mut penalized);
+
         if self.temperature == 0.0 {
-            return Self::argmax(logits);
+            return Self::argmax(&penalized);
         }
 
         // Apply temperature
         let scaled: Vec<f32> = if self.temperature != 1.0 {
-            logits.iter().map(|&v| v / self.temperature).collect()
+            penalized.iter().map(|&v| v / self.temperature).collect()
         } else {
-            logits.to_vec()
+            penalized
         };
 
         // Softmax

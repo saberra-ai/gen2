@@ -59,7 +59,18 @@ impl TokenPuller {
         // top_p=0.9 is the standard nucleus default across Llama / Gemma / Qwen
         // reference implementations. Leaving it unset yielded repetition traps
         // on Gemma 4 31B at default temp=0.7 (see regression run logs).
-        let sampler = Sampler::new(temperature, Some(0.9), None);
+        //
+        // Repetition penalty is plumbed through (see `CommonSampler`) but
+        // left off by default: empirically, `1.1` masks — not fixes — the
+        // real issue, which is that Gemma 4's EOT (`<turn|>`) sometimes
+        // doesn't fire on long-form answers. With EOT missing, generation
+        // runs to `max_tokens`, and with rep penalty on that produces
+        // morphed-vocab garbage ("lolloped over olopped over"); without it,
+        // the model produces coherent-looking repetition loops. Both are
+        // post-answer noise a real UI truncates at the turn boundary; but
+        // tripping one visible symptom for the other isn't an improvement.
+        // Fix EOT detection first, then revisit the default.
+        let sampler = Sampler::new(temperature, Some(0.9), None, None);
 
         Self {
             session_id,
@@ -270,11 +281,19 @@ impl Iterator for TokenPuller {
                         }
                         self.produced += total;
 
-                        // Feed confirmed tokens into the n-gram predictor.
+                        // Feed confirmed tokens into the n-gram predictor AND
+                        // the sampler's repetition-penalty window. Without
+                        // the latter, speculative-accepted tokens don't
+                        // suppress their own re-emission, and the
+                        // "it's a great way to X … it's a great way to X"
+                        // loops the n-gram predictor eagerly accepts would
+                        // keep accelerating.
                         for &t in &drafts[..accepted] {
                             self.ngram.observe(t);
+                            self.sampler.observe(t);
                         }
                         self.ngram.observe(bonus);
+                        self.sampler.observe(bonus);
 
                         // Build token events (EOS check before emitting DecodeStep).
                         let stop_ids = self.bundle.tokenizer.stop_ids();
@@ -367,8 +386,10 @@ impl Iterator for TokenPuller {
         }
         self.produced += 1;
 
-        // Observe in n-gram predictor for future drafts.
+        // Observe in n-gram predictor (for future drafts) and sampler
+        // repetition-penalty window (suppresses re-emission).
         self.ngram.observe(token_id);
+        self.sampler.observe(token_id);
 
         self.hooks.emit(HookEvent::DecodeStep {
             session_id: self.session_id,

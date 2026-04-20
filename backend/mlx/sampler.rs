@@ -8,9 +8,14 @@ pub struct Sampler {
 }
 
 impl Sampler {
-    pub fn new(temperature: f32, top_p: Option<f32>, top_k: Option<i32>) -> Self {
+    pub fn new(
+        temperature: f32,
+        top_p: Option<f32>,
+        top_k: Option<i32>,
+        repetition_penalty: Option<f32>,
+    ) -> Self {
         Self {
-            inner: CommonSampler::new(temperature, top_p, top_k),
+            inner: CommonSampler::new(temperature, top_p, top_k, repetition_penalty),
         }
     }
 
@@ -18,5 +23,11 @@ impl Sampler {
     pub fn sample(&mut self, logits: &Array) -> u32 {
         let logits_slice: &[f32] = logits.as_slice::<f32>();
         self.inner.sample_from_logits(logits_slice)
+    }
+
+    /// Record an emitted token for the repetition-penalty window. Call once
+    /// per decode step after the token has been committed.
+    pub fn observe(&mut self, token: u32) {
+        self.inner.observe(token);
     }
 }
