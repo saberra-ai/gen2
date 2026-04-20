@@ -58,19 +58,18 @@ fn load_all_tensors(model_dir: &Path) -> Result<HashMap<String, Array>, ExecErro
 
 /// Detect the quantization bit-width from a weight tensor.
 ///
-/// Quantized weights are packed uint32: each uint32 holds `32/bits` values.
-/// Given a weight shape of `(out_features, packed_cols)` and the expected
-/// full dimension `full_dim`, the bits = `32 * packed_cols / full_dim`.
+/// Quantized weights are packed uint32 along the *last* axis: each uint32 holds
+/// `32/bits` values. For standard 2D weights `(out_features, packed_cols)` and
+/// for 3D expert weights `(n_experts, out_features, packed_cols)` the formula
+/// is the same: `bits = 32 * packed_cols / full_dim`. Accepts any N ≥ 2.
 fn detect_bits(weight_shape: &[i32], full_dim: usize) -> Option<i32> {
-    if weight_shape.len() != 2 {
+    if weight_shape.len() < 2 || full_dim == 0 {
         return None;
     }
-    let out_features = weight_shape[0] as usize;
-    let packed_cols = weight_shape[1] as usize;
-    if out_features == 0 || packed_cols == 0 || full_dim == 0 {
+    let packed_cols = *weight_shape.last()? as usize;
+    if packed_cols == 0 {
         return None;
     }
-    // packed_cols = full_dim * bits / 32, so bits = 32 * packed_cols / full_dim
     let bits = (32 * packed_cols) / full_dim;
     if bits == 0 || bits > 8 || (32 * packed_cols) % full_dim != 0 {
         return None;
@@ -80,12 +79,17 @@ fn detect_bits(weight_shape: &[i32], full_dim: usize) -> Option<i32> {
 
 /// Detect group_size from scales shape.
 ///
-/// scales shape: `(out_features, num_groups)` where `group_size = full_dim / num_groups`.
+/// scales shape ends with `num_groups` along the last axis:
+/// 2D: `(out_features, num_groups)`, 3D: `(n_experts, out_features, num_groups)`.
+/// `group_size = full_dim / num_groups` in either layout.
 fn detect_group_size(scales_shape: &[i32], full_dim: usize) -> i32 {
-    if scales_shape.len() != 2 || scales_shape[1] == 0 {
-        return 128; // default fallback
+    let Some(&last) = scales_shape.last() else {
+        return 128;
+    };
+    if last == 0 {
+        return 128;
     }
-    let num_groups = scales_shape[1] as usize;
+    let num_groups = last as usize;
     (full_dim / num_groups) as i32
 }
 
@@ -403,36 +407,55 @@ pub fn build_gemma4_model(model_dir: &Path) -> Result<(Gemma4Model, ModelConfig)
                 moe.router.per_expert_scale = w.clone();
             }
 
-            // Experts — try bare-key (mlx-lm sanitize match) first, then
-            // .weight (in case the checkpoint was quantized post-sanitize).
-            let bare_gate_up = format!("{lp}.experts.gate_up_proj");
-            let weight_gate_up = format!("{lp}.experts.gate_up_proj.weight");
-            let fused = tensors
-                .get(&bare_gate_up)
-                .or_else(|| tensors.get(&weight_gate_up));
-            if let Some(gate_up) = fused {
-                let shape = gate_up.shape();
-                if shape.len() == 3 && shape[1] as usize == moe_inter * 2 {
-                    let half = moe_inter as i32;
-                    moe.experts.gate_proj = Weight::plain(gate_up.index((.., 0..half, ..)));
-                    moe.experts.up_proj = Weight::plain(gate_up.index((.., half..(2 * half), ..)));
-                }
-            } else {
-                // Pre-split format: separate gate_proj / up_proj tensors.
-                if let Some(w) = tensors.get(&format!("{lp}.experts.gate_proj")) {
-                    moe.experts.gate_proj = Weight::plain(w.clone());
-                }
-                if let Some(w) = tensors.get(&format!("{lp}.experts.up_proj")) {
-                    moe.experts.up_proj = Weight::plain(w.clone());
-                }
-            }
-            if let Some(w) = tensors
-                .get(&format!("{lp}.experts.down_proj"))
-                .or_else(|| tensors.get(&format!("{lp}.experts.down_proj.weight")))
+            // Experts — three observed layouts in the wild:
+            //
+            //   (a) `experts.switch_glu.{gate,up,down}_proj` (+ `.scales` / `.biases`
+            //       when quantized). This is the actual layout in Gemma 4 26B
+            //       (`gemma-4-26b-a4b-4bit` and related MLX packs).
+            //   (b) `experts.{gate,up,down}_proj` (pre-split, unquantized).
+            //   (c) `experts.gate_up_proj` fused (unquantized).
+            //
+            // Use `load_weight` so quantized triples decode correctly for (a).
+            // Quantized experts are 3D `[n_experts, out, in_packed]` — the
+            // generalized `detect_bits` / `detect_group_size` handle that.
+            let gate_switch = format!("{lp}.experts.switch_glu.gate_proj");
+            let up_switch = format!("{lp}.experts.switch_glu.up_proj");
+            let down_switch = format!("{lp}.experts.switch_glu.down_proj");
+            if tensors.contains_key(&format!("{gate_switch}.weight"))
+                || tensors.contains_key(&gate_switch)
             {
-                moe.experts.down_proj = Weight::plain(w.clone());
+                moe.experts.gate_proj = load_weight(&tensors, &gate_switch, hidden);
+                moe.experts.up_proj = load_weight(&tensors, &up_switch, hidden);
+                moe.experts.down_proj = load_weight(&tensors, &down_switch, moe_inter);
+            } else {
+                let bare_gate_up = format!("{lp}.experts.gate_up_proj");
+                let weight_gate_up = format!("{lp}.experts.gate_up_proj.weight");
+                let fused = tensors
+                    .get(&bare_gate_up)
+                    .or_else(|| tensors.get(&weight_gate_up));
+                if let Some(gate_up) = fused {
+                    let shape = gate_up.shape();
+                    if shape.len() == 3 && shape[1] as usize == moe_inter * 2 {
+                        let half = moe_inter as i32;
+                        moe.experts.gate_proj = Weight::plain(gate_up.index((.., 0..half, ..)));
+                        moe.experts.up_proj =
+                            Weight::plain(gate_up.index((.., half..(2 * half), ..)));
+                    }
+                } else {
+                    if let Some(w) = tensors.get(&format!("{lp}.experts.gate_proj")) {
+                        moe.experts.gate_proj = Weight::plain(w.clone());
+                    }
+                    if let Some(w) = tensors.get(&format!("{lp}.experts.up_proj")) {
+                        moe.experts.up_proj = Weight::plain(w.clone());
+                    }
+                }
+                if let Some(w) = tensors
+                    .get(&format!("{lp}.experts.down_proj"))
+                    .or_else(|| tensors.get(&format!("{lp}.experts.down_proj.weight")))
+                {
+                    moe.experts.down_proj = Weight::plain(w.clone());
+                }
             }
-            let _ = moe_inter;
 
             // Extra MoE-only norms.
             if let Some(w) = tensors.get(&format!("{lp}.pre_feedforward_layernorm_2.weight")) {

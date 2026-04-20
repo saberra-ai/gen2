@@ -138,13 +138,24 @@ impl Experts {
     /// TODO(mlx-rs gather_mm): when the safe wrapper exists, replace this
     /// loop with one `switch_glu` call — should be ~4-8× faster on 26B.
     pub fn forward(&self, x: &Array, indices: &Array, weights: &Array) -> Array {
+        let shape = x.shape();
+        let (batch, seq) = (shape[0], shape[1]);
+
+        // ── Sparse fast path for single-token decode ─────────────────────────
+        // For batch=1 seq=1 (streaming generation) only `top_k` experts of
+        // `num_experts` contribute nonzero weight. Iterate only those.
+        // For 26B (num_experts=128, top_k=8) this is ~16× less matmul work
+        // than the dense-sum fallback below. Arithmetically equivalent.
+        if batch == 1 && seq == 1 {
+            return self.forward_sparse_single(x, indices, weights);
+        }
+
+        // ── Dense-sum path (prefill / batched) ───────────────────────────────
         // One-hot mask per token per expert: [B, S, num_experts]
         //
         // We build a score tensor where `score[b,s,e] = sum_k (indices[b,s,k]==e) * weights[b,s,k]`.
         // Then `output = sum_e score[b,s,e] * expert_e(x[b,s])`. Equivalent to SwitchGLU
         // but expressed as a dense sum so we only need per-expert matmul.
-        let shape = x.shape();
-        let (batch, seq) = (shape[0], shape[1]);
         let e = self.num_experts as i32;
         let k = indices.shape()[2];
 
@@ -192,6 +203,71 @@ impl Experts {
             // Scale by this expert's dense weight: [B, S, 1]
             let w_e = dense_w.index((.., .., ei..ei + 1));
             let contrib = out.multiply(&w_e).expect("mlx op");
+
+            acc = Some(match acc {
+                Some(a) => a.add(&contrib).expect("mlx op"),
+                None => contrib,
+            });
+        }
+        acc.unwrap_or_else(|| x.multiply(&Array::from_f32(0.0)).expect("mlx op"))
+    }
+
+    /// Sparse single-position forward (B=1, S=1). Iterates the `top_k`
+    /// selected experts for the single token instead of summing over every
+    /// expert. Host-sync on `indices` + `weights` is required (we need scalar
+    /// expert ids on the CPU to index into the weight tensor), but that sync
+    /// is trivially cheap for a `[1,1,k]` tensor.
+    fn forward_sparse_single(&self, x: &Array, indices: &Array, weights: &Array) -> Array {
+        let k = indices.shape()[2] as usize;
+
+        // Hoist the dequantize ops outside the loop: MLX will dedupe, but
+        // expressing it once keeps the compute graph small.
+        let full_gate = self.gate_proj.to_full(); // [E, moe, H]
+        let full_up = self.up_proj.to_full();
+        let full_down = self.down_proj.to_full(); // [E, H, moe]
+
+        // Evaluate indices + weights to host. argsort returns i32 on mlx-rs 0.25.
+        let idx_i32 = indices.as_type::<i32>().expect("mlx op");
+        let idx_flat = idx_i32.reshape(&[k as i32]).expect("mlx op");
+        let w_flat = weights.reshape(&[k as i32]).expect("mlx op");
+        let expert_ids: Vec<i32> = idx_flat.as_slice::<i32>().to_vec();
+        let w_host: Vec<f32> = w_flat.as_slice::<f32>().to_vec();
+
+        let mut acc: Option<Array> = None;
+        for i in 0..k {
+            let ei = expert_ids[i];
+            let w_i = w_host[i];
+
+            // Slice this expert's tiles. Index into the leading (expert) axis,
+            // then reshape away the size-1 axis and transpose to matmul shape.
+            let g = full_gate.index((ei..ei + 1, .., ..));
+            let u = full_up.index((ei..ei + 1, .., ..));
+            let d = full_down.index((ei..ei + 1, .., ..));
+
+            let g = g
+                .reshape(&[g.shape()[1], g.shape()[2]])
+                .expect("mlx op")
+                .transpose_axes(&[1, 0])
+                .expect("mlx op"); // [H, moe]
+            let u = u
+                .reshape(&[u.shape()[1], u.shape()[2]])
+                .expect("mlx op")
+                .transpose_axes(&[1, 0])
+                .expect("mlx op");
+            let d = d
+                .reshape(&[d.shape()[1], d.shape()[2]])
+                .expect("mlx op")
+                .transpose_axes(&[1, 0])
+                .expect("mlx op"); // [moe, H]
+
+            let gated = x.matmul(&g).expect("mlx op");
+            let gated = mlx_rs::nn::gelu_approximate(&gated).expect("mlx op");
+            let upped = x.matmul(&u).expect("mlx op");
+            let mix = gated.multiply(&upped).expect("mlx op");
+            let out = mix.matmul(&d).expect("mlx op"); // [1, 1, H]
+
+            let scale = Array::from_f32(w_i);
+            let contrib = out.multiply(&scale).expect("mlx op");
 
             acc = Some(match acc {
                 Some(a) => a.add(&contrib).expect("mlx op"),

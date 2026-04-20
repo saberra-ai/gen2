@@ -56,11 +56,10 @@ impl TokenPuller {
         stopped: Arc<AtomicBool>,
     ) -> Self {
         let temperature = gen_spec.temperature.unwrap_or(0.7);
-        let sampler = Sampler::new(
-            temperature,
-            None, // top_p from settings if needed
-            None, // top_k from settings if needed
-        );
+        // top_p=0.9 is the standard nucleus default across Llama / Gemma / Qwen
+        // reference implementations. Leaving it unset yielded repetition traps
+        // on Gemma 4 31B at default temp=0.7 (see regression run logs).
+        let sampler = Sampler::new(temperature, Some(0.9), None);
 
         Self {
             session_id,
@@ -278,14 +277,14 @@ impl Iterator for TokenPuller {
                         self.ngram.observe(bonus);
 
                         // Build token events (EOS check before emitting DecodeStep).
-                        let eos_id = self.bundle.tokenizer.eos_id();
+                        let stop_ids = self.bundle.tokenizer.stop_ids();
                         let mut events: Vec<Result<TokenEvent, ExecError>> =
                             Vec::with_capacity(total);
                         let mut hit_eos = false;
 
                         'tokens: for i in 0..=accepted {
                             let tok = if i < accepted { drafts[i] } else { bonus };
-                            if eos_id == Some(tok) {
+                            if stop_ids.contains(&tok) {
                                 events.push(Ok(TokenEvent::Eos));
                                 hit_eos = true;
                                 break 'tokens;
@@ -342,17 +341,15 @@ impl Iterator for TokenPuller {
         let token_id = self.sampler.sample(&logits);
         state.last_token = token_id;
 
-        // Check EOS.
-        if let Some(eos_id) = self.bundle.tokenizer.eos_id() {
-            if token_id == eos_id {
-                let stats = self.stats_now();
-                self.hooks.emit(HookEvent::FinalStats {
-                    session_id: self.session_id,
-                    stats,
-                });
-                self.done = true;
-                return Some(Ok(TokenEvent::Eos));
-            }
+        // Check EOS / EOT (chat models need both — Gemma 4's `<turn|>`, Llama 3's `<|eot_id|>`).
+        if self.bundle.tokenizer.stop_ids().contains(&token_id) {
+            let stats = self.stats_now();
+            self.hooks.emit(HookEvent::FinalStats {
+                session_id: self.session_id,
+                stats,
+            });
+            self.done = true;
+            return Some(Ok(TokenEvent::Eos));
         }
 
         let text = self
