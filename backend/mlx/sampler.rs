@@ -35,4 +35,20 @@ impl Sampler {
     pub fn is_in_token_loop(&self, window: usize, max_unique: usize) -> bool {
         self.inner.is_in_token_loop(window, max_unique)
     }
+
+    /// N-gram phrase-repetition detection — see [`CommonSampler::is_in_ngram_loop`].
+    pub fn is_in_ngram_loop(&self, n: usize) -> bool {
+        self.inner.is_in_ngram_loop(n)
+    }
+
+    /// Combined multi-size phrase-loop detector — see
+    /// [`CommonSampler::is_in_any_ngram_loop`].
+    pub fn is_in_any_ngram_loop(&self) -> bool {
+        self.inner.is_in_any_ngram_loop()
+    }
+
+    /// Cycle-period scanner — see [`CommonSampler::is_in_cycle`].
+    pub fn is_in_cycle(&self, max_period: usize) -> bool {
+        self.inner.is_in_cycle(max_period)
+    }
 }

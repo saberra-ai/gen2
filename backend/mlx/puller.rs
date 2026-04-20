@@ -301,6 +301,19 @@ impl Iterator for TokenPuller {
                             Vec::with_capacity(total);
                         let mut hit_eos = false;
 
+                        // Loop detectors: speculative can commit an entire
+                        // cycle's worth of tokens in one batch (the n-gram
+                        // predictor eagerly accepts the cycle), so we must
+                        // check after the batch is observed into the sampler.
+                        // Without this, 26B post-answer loops ride through
+                        // the speculative path until `max_tokens`, producing
+                        // the "What's the weather like, briefly?they're
+                        // going in January. What's the weather like, briefly?
+                        // …" failure we saw on turn 5 of the multi-turn
+                        // regression.
+                        let loop_hit = self.sampler.is_in_cycle(48)
+                            || self.sampler.is_in_token_loop(16, 2);
+
                         'tokens: for i in 0..=accepted {
                             let tok = if i < accepted { drafts[i] } else { bonus };
                             if stop_ids.contains(&tok) {
@@ -319,6 +332,10 @@ impl Iterator for TokenPuller {
                                 text,
                                 logprob: None,
                             })));
+                        }
+                        if !hit_eos && loop_hit {
+                            events.push(Ok(TokenEvent::Eos));
+                            hit_eos = true;
                         }
 
                         if hit_eos {
@@ -371,6 +388,32 @@ impl Iterator for TokenPuller {
             return Some(Ok(TokenEvent::Eos));
         }
 
+        // Observe this token BEFORE the loop-stop check so the detectors
+        // see the most recent emission. Both detectors force Eos when the
+        // model has clearly exhausted meaningful content but isn't emitting
+        // a stop token on its own. Confirmed behavior on Gemma 4 26B/31B
+        // at long context — mlx-lm reference produces the same loops, so
+        // this is a model-level quirk, not an inference bug. Ngram-cycle
+        // at 8 tokens catches verbatim phrase loops ("It's a great place
+        // to experience..." ×N); unique-token at 16/2 catches degenerate
+        // fillers ("l l l l …").
+        self.sampler.observe(token_id);
+        self.ngram.observe(token_id);
+        // `is_in_cycle(48)` catches cycles of any period 1..=48 — strictly
+        // more general than the fixed-size n-gram check (which only fires at
+        // exact 2n token cycles). Period-48 covers the long system-prompt
+        // loops we see on 26B. Token-loop detector still runs for the
+        // low-entropy filler case ("l l l l …" under degenerate sampling).
+        if self.sampler.is_in_cycle(48) || self.sampler.is_in_token_loop(16, 2) {
+            let stats = self.stats_now();
+            self.hooks.emit(HookEvent::FinalStats {
+                session_id: self.session_id,
+                stats,
+            });
+            self.done = true;
+            return Some(Ok(TokenEvent::Eos));
+        }
+
         let text = self
             .bundle
             .tokenizer
@@ -386,10 +429,9 @@ impl Iterator for TokenPuller {
         }
         self.produced += 1;
 
-        // Observe in n-gram predictor (for future drafts) and sampler
-        // repetition-penalty window (suppresses re-emission).
-        self.ngram.observe(token_id);
-        self.sampler.observe(token_id);
+        // NOTE: token was already observed into `self.ngram` / `self.sampler`
+        // above (before the loop-stop check) so both observations happen
+        // exactly once per accepted token.
 
         self.hooks.emit(HookEvent::DecodeStep {
             session_id: self.session_id,

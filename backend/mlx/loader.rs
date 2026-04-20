@@ -404,9 +404,11 @@ pub fn build_gemma4_model(model_dir: &Path) -> Result<(Gemma4Model, ModelConfig)
                 .moe_intermediate_size
                 .unwrap_or(config.intermediate_size);
 
-            // Router: `router.scale` (norm), `router.proj.weight`, `router.per_expert_scale`.
+            // Router: `router.scale` (separate scale, NOT a fused RMSNorm
+            // weight — matches mlx-vlm's `Router` which keeps scale as its
+            // own field applied AFTER RMSNormNoScale(x) * root_size).
             if let Some(w) = tensors.get(&format!("{lp}.router.scale")) {
-                moe.router.norm.weight = w.clone();
+                moe.router.scale = w.clone();
             }
             moe.router.proj = load_weight(&tensors, &format!("{lp}.router.proj"), hidden);
             if let Some(w) = tensors.get(&format!("{lp}.router.per_expert_scale")) {

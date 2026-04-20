@@ -4,10 +4,12 @@ use std::collections::VecDeque;
 
 use rand::Rng;
 
-/// Window over which repetition penalty acts. Matches llama.cpp default
-/// (`--repeat-last-n 64`). Tokens emitted more than 64 steps ago no longer
-/// suppress their own re-emission.
-const REPETITION_WINDOW: usize = 64;
+/// Window over which repetition penalty + loop detectors act. 128 lets the
+/// cycle-period detector see up through a ~60-token repeat unit (needs
+/// `2 * period` tokens buffered) — catches typical "system prompt loop"
+/// failures on Gemma 4 26B. Llama.cpp default is 64, fine for rep penalty
+/// but too tight for cycle detection.
+const REPETITION_WINDOW: usize = 128;
 
 // consumed by workspace dependents (src-tauri, pio-daemon)
 #[allow(dead_code)]
@@ -79,6 +81,79 @@ impl Sampler {
             }
         }
         true
+    }
+
+    /// Detect n-gram-level sentence repetition — the last `n` tokens exactly
+    /// equal the `n` tokens before them. Catches verbatim phrase loops like
+    /// "It's a great place to experience. It's a great place to experience."
+    /// that the raw-token loop detector misses (the phrase has plenty of
+    /// unique tokens, but the n-gram repeats). Both mlx-lm and our code
+    /// produce these on Gemma 4 26B/31B at long context when the model's
+    /// stop tokens aren't being chosen by the sampler.
+    ///
+    /// `n=8` catches short phrase cycles; longer cycles (e.g. a repeated
+    /// full sentence) need a larger `n`.
+    pub fn is_in_ngram_loop(&self, n: usize) -> bool {
+        let len = self.recent.len();
+        if len < 2 * n {
+            return false;
+        }
+        let mut iter = self.recent.iter().rev();
+        let last: Vec<u32> = iter.by_ref().take(n).copied().collect();
+        let prev: Vec<u32> = iter.take(n).copied().collect();
+        last == prev
+    }
+
+    /// Combined phrase-loop detector: fires if any of a set of common cycle
+    /// sizes exhibits an immediate repeat. Covers 4-, 8-, 16-, and 32-token
+    /// cycles — enough range to catch short stutters ("la la la") up through
+    /// "system prompt regurgitation" loops on Gemma 4 26B (~27-token unit).
+    /// Pure natural text very rarely produces a 32-token exact match.
+    pub fn is_in_any_ngram_loop(&self) -> bool {
+        for n in [4usize, 8, 16, 32] {
+            if self.is_in_ngram_loop(n) {
+                return true;
+            }
+        }
+        false
+    }
+
+    /// Cycle-period scanner. For each period `p` in `1..=max_period`, checks
+    /// whether the last `p` tokens equal the `p` tokens before them —
+    /// i.e. the emission is in a cycle of length `p`. `is_in_ngram_loop` only
+    /// fires when the cycle length is exactly the n-gram size; this runs over
+    /// every period and catches the in-between cases (e.g. the 27-token
+    /// "you are Pio Chat… Device: macos-aarch64… Current date: April 20,
+    /// 2026" loop we see on Gemma 4 26B that a period-16 or period-32 check
+    /// misses entirely).
+    ///
+    /// O(`max_period²`) per call, but max_period=48 is fine: runs once per
+    /// emitted token and the inner loop is a handful of integer compares.
+    pub fn is_in_cycle(&self, max_period: usize) -> bool {
+        let len = self.recent.len();
+        if len < 2 {
+            return false;
+        }
+        let end = len; // recent[len-1] is most-recent
+        let cap = max_period.min(len / 2);
+        // Access via VecDeque indexing (O(1) per element — VecDeque is a
+        // ring buffer). Checking from shortest period first so tight loops
+        // (single-token, alternating) return before the expensive cases.
+        for p in 1..=cap {
+            let mut all_match = true;
+            for i in 0..p {
+                let a = self.recent[end - 1 - i];
+                let b = self.recent[end - 1 - p - i];
+                if a != b {
+                    all_match = false;
+                    break;
+                }
+            }
+            if all_match {
+                return true;
+            }
+        }
+        false
     }
 
     /// Apply repetition penalty in-place, matching the llama.cpp convention:

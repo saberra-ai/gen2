@@ -12,6 +12,19 @@ use mlx_rs::ops::indexing::IndexOp;
 use super::norm::RmsNorm;
 use super::quantized::Weight;
 
+/// Normalize x by RMS without applying a learnable weight. Matches
+/// `RMSNormNoScale` in mlx-vlm's gemma4/language.py. Used by the MoE
+/// router — it applies `* scale * root_size` as separate ops AFTER this,
+/// which gives a numerically different graph than a fused
+/// `rms_norm(x, scale * root_size)` even though the math is equivalent.
+fn rms_norm_no_scale(x: &Array, eps: f32) -> Array {
+    let x_sq = x.multiply(x).expect("mlx op");
+    let var = x_sq.mean_axis(-1, true).expect("mlx op");
+    let var_eps = var.add(&Array::from_f32(eps)).expect("mlx op");
+    let norm_factor = var_eps.rsqrt().expect("mlx op");
+    x.multiply(&norm_factor).expect("mlx op")
+}
+
 // ─── Router ───────────────────────────────────────────────────────────────────
 
 /// Routes tokens to top-k experts.
@@ -22,18 +35,30 @@ use super::quantized::Weight;
 /// 3. `top_k` selection + softmax (only over the selected logits).
 /// 4. Multiply each selected weight by `per_expert_scale[idx]`.
 pub struct Router {
-    pub norm: RmsNorm,
+    /// Learnable per-hidden-feature scale vector (shape `[hidden]`). Loaded
+    /// from the `router.scale` checkpoint tensor. NOT baked into a weighted
+    /// RMSNorm — kept as a separate multiply so the op graph matches
+    /// mlx-vlm's Router exactly.
+    pub scale: Array,
     pub proj: Weight,
     pub per_expert_scale: Array,
     pub num_experts: usize,
     pub top_k: usize,
     /// Precomputed `1/√hidden`.
     root_size: f32,
+    /// RMS norm epsilon (fed into `rms_norm_no_scale`).
+    eps: f32,
+    /// Legacy `norm: RmsNorm` field kept for loader backward-compat
+    /// (takes `router.scale` into `.weight`) but unused by forward.
+    /// Slated for removal once the loader consistently writes `scale`.
+    #[allow(dead_code)]
+    pub norm: RmsNorm,
 }
 
 impl Router {
     pub fn new(hidden: usize, num_experts: usize, top_k: usize, eps: f32) -> Self {
         Self {
+            scale: Array::ones::<f32>(&[hidden as i32]).expect("mlx op"),
             norm: RmsNorm::new(hidden, eps),
             proj: Weight::plain(
                 Array::zeros::<f32>(&[num_experts as i32, hidden as i32]).expect("mlx op"),
@@ -42,38 +67,58 @@ impl Router {
             num_experts,
             top_k,
             root_size: 1.0 / (hidden as f32).sqrt(),
+            eps,
         }
     }
 
     /// Returns `(top_k_indices, top_k_weights)` each shaped `[B, S, top_k]`.
+    ///
+    /// Matches mlx-vlm's `gemma4/language.py::Router.__call__` op-for-op:
+    ///   1. `RMSNormNoScale(x)` — normalize without weight
+    ///   2. `x * root_size` — 1/√hidden
+    ///   3. `x * scale` — learnable per-feature gate
+    ///   4. `proj` → `[B, S, num_experts]` logits
+    ///   5. `softmax(scores, axis=-1)` over ALL experts
+    ///   6. `argpartition` → top-k indices (we use argsort; equivalent)
+    ///   7. gather probs at top-k indices
+    ///   8. renormalize (divide by sum) so weights over top-k sum to 1
+    ///   9. multiply by `per_expert_scale[top_k_indices]`
+    ///
+    /// Previous version fused steps 1-3 into a weighted `RmsNorm::forward(x)`
+    /// then `* root_size`. That is mathematically equivalent but produces
+    /// a different fp op graph — observed to cause a 1-token divergence
+    /// on 26B MoE greedy vs mlx-vlm at position 23 where top-1 was a
+    /// near-tie. This matches mlx-vlm's graph exactly.
     pub fn forward(&self, x: &Array) -> (Array, Array) {
-        // Python: `x = mx.fast.rms_norm(x, self.scale * self._root_size, self.eps)`.
-        // That applies weight `(scale * 1/√hidden)` during the norm. RMS norm
-        // normalizes by magnitude, so scaling the input by `1/√hidden` first
-        // would cancel out (constant factor on numerator and denominator) and
-        // leave us off by a `1/√hidden` multiplier — sharpening softmax ~53×
-        // on hidden=2816 and collapsing routing onto a single expert.
-        // Instead, apply `root_size` AFTER the norm so the output matches the
-        // reference: `(x/rms(x)) * scale * root_size`.
-        let h = self.norm.forward(x);
+        // 1-3: norm → * root_size → * scale.
+        let h = rms_norm_no_scale(x, self.eps);
         let h = h
             .multiply(&Array::from_f32(self.root_size))
             .expect("mlx op");
+        let h = h.multiply(&self.scale).expect("mlx op");
 
-        // Expert scores: [B, S, num_experts]
+        // 4: project. Shape [B, S, num_experts].
         let scores = self.proj.matmul_transpose(&h);
 
-        // Top-k selection. mlx-rs doesn't expose argpartition; use argsort
-        // on the last axis, take the last `top_k` indices. Correctness is
-        // identical; cost is O(E log E) vs O(E) per token.
+        // 5: softmax over ALL experts.
+        let router_probs =
+            mlx_rs::ops::softmax_axes(&scores, &[-1], None).expect("mlx op");
+
+        // 6: top-k indices. mlx-rs has no argpartition; argsort is
+        // equivalent for top-k selection (last k of ascending sort).
         let sorted_idx = mlx_rs::ops::argsort_axis(&scores, -1).expect("mlx op");
         let n_exp = self.num_experts as i32;
         let k = self.top_k as i32;
         let top_k_idx = sorted_idx.index((.., .., (n_exp - k)..n_exp));
 
-        // Gather the selected scores, softmax, multiply by per-expert scale.
-        let top_k_scores = scores.take_along_axis(&top_k_idx, -1).expect("mlx op");
-        let weights = mlx_rs::ops::softmax_axes(&top_k_scores, &[-1], None).expect("mlx op");
+        // 7-8: gather top-k probs, renormalize so they sum to 1 over top-k.
+        let top_k_probs = router_probs
+            .take_along_axis(&top_k_idx, -1)
+            .expect("mlx op");
+        let sum = top_k_probs.sum_axis(-1, true).expect("mlx op");
+        let weights = top_k_probs.divide(&sum).expect("mlx op");
+
+        // 9: per-expert scale multiply.
         let expert_scale = self
             .per_expert_scale
             .take_axis(&top_k_idx, 0)

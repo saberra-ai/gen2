@@ -555,6 +555,24 @@ impl Session {
     // ── helpers ───────────────────────────────────────────────────────────────
 
     /// Append new messages and prefill the delta.
+    ///
+    /// The model's previous assistant reply is already in the KV cache as the
+    /// actually-sampled tokens — which can include special tokens like
+    /// Gemma 4's `<|channel>` that get stripped when the text is decoded for
+    /// user display. Re-rendering those replies through the chat template
+    /// would produce a token stream missing those specials, corrupting any
+    /// attempt to reuse the KV cache via LCP diffing.
+    ///
+    /// Instead, we:
+    /// 1. Keep assistant messages in `self.messages` for bookkeeping only.
+    /// 2. Render ONLY the new user (+system/tool) messages through the chat
+    ///    template to produce a clean "continuation" delta.
+    /// 3. Strip the leading `<bos>` that Gemma's template unconditionally
+    ///    prepends (would otherwise inject mid-stream).
+    /// 4. Prepend `<turn|>` if the model's last sampled token wasn't an
+    ///    end-of-turn marker — needed to close the previous assistant turn
+    ///    cleanly when generation stopped via loop detector or max_tokens.
+    /// 5. Prefill the result as a delta into the existing KV cache.
     pub fn append_messages(&self, new_messages: Vec<Message>) -> Result<usize, ExecError> {
         if new_messages.is_empty() {
             return Ok(0);
@@ -565,7 +583,19 @@ impl Session {
             msgs.extend(new_messages.clone());
         }
 
-        // Tokenize just the new messages
+        // Drop assistant messages — their content is already in cache as
+        // sampled tokens. Rendering them as text would strip special tokens
+        // (like `<|channel>`) that were actually sampled, breaking the cache
+        // continuation.
+        let to_render: Vec<Message> = new_messages
+            .into_iter()
+            .filter(|m| m.role != "assistant")
+            .collect();
+
+        if to_render.is_empty() {
+            return Ok(0);
+        }
+
         let tpl = ChatTemplate::new(
             self.bundle.chat_template_str.clone(),
             Some(TokenizerConfigToken::String(self.bundle.bos_str.clone())),
@@ -573,8 +603,13 @@ impl Session {
         );
 
         let delta_text = tpl
-            .apply(new_messages, None, Some(true))
+            .apply(to_render, None, Some(true))
             .map_err(|e| ExecError::Other(e.into()))?;
+
+        // Gemma's chat template starts with `{{ bos_token }}` unconditionally.
+        // Mid-stream BOS would corrupt the attention pattern.
+        let bos = self.bundle.bos_str.as_str();
+        let delta_text = delta_text.strip_prefix(bos).unwrap_or(&delta_text);
 
         if std::env::var("PIO_MLX_DEBUG_PROMPT").is_ok() {
             eprintln!(
@@ -584,27 +619,43 @@ impl Session {
             );
         }
 
-        let delta_tokens = self
+        let mut delta_tokens = self
             .bundle
             .tokenizer
-            .encode(&delta_text, false)
-            .map_err(|e| ExecError::Other(e))?;
-
-        if delta_tokens.is_empty() {
-            return Ok(0);
-        }
+            .encode(delta_text, false)
+            .map_err(ExecError::Other)?;
 
         let mut guard = self.state.lock();
         let st = guard
             .as_mut()
             .ok_or(ExecError::InvalidArg("session already consumed"))?;
 
+        // If the previous turn ended without a natural `<turn|>` (model hit
+        // max_tokens or the loop detector truncated), prepend one so the
+        // delta opens a clean turn boundary.
+        let eot_candidates: [&str; 2] = ["<turn|>", "<end_of_turn>"];
+        let eot_id: Option<u32> = eot_candidates.iter().find_map(|name| {
+            self.bundle
+                .tokenizer
+                .encode(name, false)
+                .ok()
+                .and_then(|ids| (ids.len() == 1).then(|| ids[0]))
+        });
+        if let Some(eot) = eot_id
+            && st.last_token != eot
+        {
+            delta_tokens.insert(0, eot);
+        }
+
+        if delta_tokens.is_empty() {
+            return Ok(0);
+        }
+
         self.hooks.emit(HookEvent::SessionPrefillStart {
             session_id: self.id,
             prompt_tokens: delta_tokens.len(),
         });
 
-        // Prefill delta — guard against MLX OOM.
         let delta_pos = st.cur_pos;
         let b = &self.bundle;
         let delta_logits = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
