@@ -117,6 +117,11 @@ pub struct Experts {
     pub up_proj: Weight,
     pub down_proj: Weight,
     pub num_experts: usize,
+    /// Fused `gate_proj + up_proj` concatenated along the output axis. When
+    /// `Some`, the forward path does ONE `gather_qmm` covering both branches
+    /// and splits the result — saves one gather+matmul per MoE layer.
+    /// Populated by the loader after it has loaded both quantized halves.
+    pub gate_up_proj: Option<Weight>,
 }
 
 impl Experts {
@@ -134,6 +139,7 @@ impl Experts {
                 Array::zeros::<f32>(&[num_experts as i32, hidden as i32, moe_intermediate as i32])
                     .expect("mlx op"),
             ),
+            gate_up_proj: None,
             num_experts,
         }
     }
@@ -230,30 +236,75 @@ impl Experts {
     ) -> Option<Array> {
         use mlx_rs::ops::gather_qmm;
 
-        let (gate, up, down) = match (&self.gate_proj, &self.up_proj, &self.down_proj) {
-            (
-                Weight::Quantized {
-                    weight: gw,
-                    scales: gs,
-                    biases: gb,
-                    group_size: gg,
-                    bits: gbi,
-                },
-                Weight::Quantized {
-                    weight: uw,
-                    scales: us,
-                    biases: ub,
-                    ..
-                },
-                Weight::Quantized {
-                    weight: dw,
-                    scales: ds,
-                    biases: db,
-                    group_size: dg,
-                    bits: dbi,
-                },
-            ) => ((gw, gs, gb, *gg, *gbi), (uw, us, ub), (dw, ds, db, *dg, *dbi)),
+        // Down projection must be quantized.
+        let down = match &self.down_proj {
+            Weight::Quantized {
+                weight: w,
+                scales: s,
+                biases: b,
+                group_size: g,
+                bits: bi,
+            } => (w, s, b, *g, *bi),
             _ => return None,
+        };
+
+        // Gate and up path: prefer the fused `gate_up_proj` weight when the
+        // loader built one (halves the gate+up gather_qmm calls). Otherwise
+        // fall back to separate gate/up — both must be quantized.
+        enum GateUpPath<'a> {
+            Fused {
+                w: &'a Array,
+                s: &'a Array,
+                b: &'a Array,
+                g: i32,
+                bi: i32,
+                moe: i32,
+            },
+            Split {
+                gate: (&'a Array, &'a Array, &'a Array, i32, i32),
+                up: (&'a Array, &'a Array, &'a Array),
+            },
+        }
+        let gate_up = if let Some(Weight::Quantized {
+            weight: w,
+            scales: s,
+            biases: b,
+            group_size: g,
+            bits: bi,
+        }) = self.gate_up_proj.as_ref()
+        {
+            // Fused weight shape: [E, 2*moe, H_packed]. Derive moe from shape[1]/2.
+            let moe = w.shape()[1] / 2;
+            GateUpPath::Fused {
+                w,
+                s,
+                b,
+                g: *g,
+                bi: *bi,
+                moe,
+            }
+        } else {
+            match (&self.gate_proj, &self.up_proj) {
+                (
+                    Weight::Quantized {
+                        weight: gw,
+                        scales: gs,
+                        biases: gb,
+                        group_size: gg,
+                        bits: gbi,
+                    },
+                    Weight::Quantized {
+                        weight: uw,
+                        scales: us,
+                        biases: ub,
+                        ..
+                    },
+                ) => GateUpPath::Split {
+                    gate: (gw, gs, gb, *gg, *gbi),
+                    up: (uw, us, ub),
+                },
+                _ => return None,
+            }
         };
 
         let shape = x.shape();
@@ -287,34 +338,58 @@ impl Experts {
             .reshape(&[total])
             .expect("mlx op");
 
-        // Gate branch: gather_qmm(x, Wg, sg, bg, lhs, rhs, transpose=true)
-        // Shape trace: x=[M,1,H], W=[E,moe,H_packed], result=[total,1,moe].
-        let gate_out = gather_qmm(
-            &x_flat,
-            gate.0,
-            gate.1,
-            Some(gate.2),
-            Some(&lhs),
-            Some(&rhs),
-            Some(true),
-            Some(gate.3),
-            Some(gate.4),
-            None,
-        )
-        .expect("mlx op");
-        let up_out = gather_qmm(
-            &x_flat,
-            up.0,
-            up.1,
-            Some(up.2),
-            Some(&lhs),
-            Some(&rhs),
-            Some(true),
-            Some(gate.3),
-            Some(gate.4),
-            None,
-        )
-        .expect("mlx op");
+        // Gate + up branches. For the fused path: one gather_qmm over the
+        // concatenated [E, 2*moe, H] weight, then split the output on the
+        // last axis. For the split path: two gather_qmm calls, one each.
+        let (gate_out, up_out) = match gate_up {
+            GateUpPath::Fused { w, s, b, g, bi, moe } => {
+                let gu = gather_qmm(
+                    &x_flat,
+                    w,
+                    s,
+                    Some(b),
+                    Some(&lhs),
+                    Some(&rhs),
+                    Some(true),
+                    Some(g),
+                    Some(bi),
+                    None,
+                )
+                .expect("mlx op"); // [total, 1, 2*moe]
+                let g_part = gu.index((.., .., 0..moe));
+                let u_part = gu.index((.., .., moe..(2 * moe)));
+                (g_part, u_part)
+            }
+            GateUpPath::Split { gate, up } => {
+                let g = gather_qmm(
+                    &x_flat,
+                    gate.0,
+                    gate.1,
+                    Some(gate.2),
+                    Some(&lhs),
+                    Some(&rhs),
+                    Some(true),
+                    Some(gate.3),
+                    Some(gate.4),
+                    None,
+                )
+                .expect("mlx op");
+                let u = gather_qmm(
+                    &x_flat,
+                    up.0,
+                    up.1,
+                    Some(up.2),
+                    Some(&lhs),
+                    Some(&rhs),
+                    Some(true),
+                    Some(gate.3),
+                    Some(gate.4),
+                    None,
+                )
+                .expect("mlx op");
+                (g, u)
+            }
+        };
 
         let gated = mlx_rs::nn::gelu_approximate(&gate_out).expect("mlx op");
         let mix = gated.multiply(&up_out).expect("mlx op"); // [total, 1, moe]

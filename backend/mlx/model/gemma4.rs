@@ -252,11 +252,12 @@ impl Gemma4Attention {
             (k, v)
         };
 
-        // Attention score = Q · Kᵀ (scale = 1.0 per Gemma 4 spec)
+        // Attention score = Q · Kᵀ (scale = 1.0 per Gemma 4 spec — magnitude
+        // is controlled by q_norm/k_norm, not the usual 1/√head_dim).
         let k_t = k.transpose_axes(&[0, 1, 3, 2]).expect("mlx op");
         let mut scores = q.matmul(&k_t).expect("mlx op");
 
-        // Causal + sliding-window mask (prefill only; seq_len == 1 during decode)
+        // Causal + sliding-window mask (prefill only; seq_len == 1 during decode).
         if seq > 1 {
             let kv_len = scores.shape()[3] as usize;
             let mask = build_causal_mask(seq as usize, kv_len, self.sliding_window);

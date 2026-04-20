@@ -433,6 +433,42 @@ pub fn build_gemma4_model(model_dir: &Path) -> Result<(Gemma4Model, ModelConfig)
                 moe.experts.gate_proj = load_weight(&tensors, &gate_switch, hidden);
                 moe.experts.up_proj = load_weight(&tensors, &up_switch, hidden);
                 moe.experts.down_proj = load_weight(&tensors, &down_switch, moe_inter);
+
+                // Fuse gate + up into one quantized weight, concatenated along
+                // axis 1 (the output/moe dim). One `gather_qmm` call in the
+                // forward path then covers both projections, halving gather+
+                // matmul overhead on the MoE hot path. Requires both halves
+                // to be quantized with matching group_size/bits — which they
+                // always are in practice (shipped together from mlx-lm).
+                if let (
+                    Weight::Quantized {
+                        weight: gw,
+                        scales: gs,
+                        biases: gb,
+                        group_size: gg,
+                        bits: gbi,
+                    },
+                    Weight::Quantized {
+                        weight: uw,
+                        scales: us,
+                        biases: ub,
+                        group_size: ug,
+                        bits: ubi,
+                    },
+                ) = (&moe.experts.gate_proj, &moe.experts.up_proj)
+                    && *gg == *ug
+                    && *gbi == *ubi
+                {
+                    let w_fused =
+                        mlx_rs::ops::concatenate_axis(&[gw, uw], 1).expect("mlx op");
+                    let s_fused =
+                        mlx_rs::ops::concatenate_axis(&[gs, us], 1).expect("mlx op");
+                    let b_fused =
+                        mlx_rs::ops::concatenate_axis(&[gb, ub], 1).expect("mlx op");
+                    moe.experts.gate_up_proj = Some(Weight::quantized(
+                        w_fused, s_fused, b_fused, *gg, *gbi,
+                    ));
+                }
             } else {
                 let bare_gate_up = format!("{lp}.experts.gate_up_proj");
                 let weight_gate_up = format!("{lp}.experts.gate_up_proj.weight");
