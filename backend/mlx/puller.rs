@@ -66,25 +66,49 @@ impl TokenPuller {
         stopped: Arc<AtomicBool>,
     ) -> Self {
         let temperature = gen_spec.temperature.unwrap_or(0.7);
-        // top_p=0.9 is the standard nucleus default across Llama / Gemma / Qwen
-        // reference implementations. Leaving it unset yielded repetition traps
-        // on Gemma 4 31B at default temp=0.7 (see regression run logs).
+        // Defaults — caller can override any of these via `GenSpec`:
+        //   top_p = 0.9 (Llama/Gemma/Qwen reference default)
+        //   top_k = None
+        //   min_p = None (off; set via GenSpec)
+        //   DRY/XTC = None (off; set via GenSpec)
+        //   eot_bias = 2.0 (calibrated for Gemma 4 26B-4bit; see below)
         //
-        // Repetition penalty is plumbed through (see `CommonSampler`) but
-        // left off by default: empirically, `1.1` masks — not fixes — the
-        // real issue, which is that Gemma 4's EOT (`<turn|>`) sometimes
-        // doesn't fire on long-form answers. The EOT logit bias below is
-        // the actual fix: we verified against mlx-lm's golden reference on
-        // Gemma 4 26B-4bit that `<turn|>` ranks #2 at answer boundaries
-        // with only a ~0.6 logit gap to the winning `\n`. A +1.0 bias tips
-        // EOT tokens over the line at boundaries without affecting
-        // mid-sentence sampling (gap is several logits wide there).
-        let eot_bias: f32 = std::env::var("PIO_MLX_EOT_BIAS")
+        // `<turn|>` ranks #2 at answer boundaries with only a ~0.6 logit
+        // gap to the winning `\n` on Gemma 4 26B-4bit (verified against
+        // mlx-lm's golden reference). A +2.0 bias tips EOT over the line
+        // at boundaries without affecting mid-sentence sampling (gap is
+        // several logits wide there).
+        let env_eot_bias: Option<f32> = std::env::var("PIO_MLX_EOT_BIAS")
             .ok()
-            .and_then(|s| s.parse().ok())
-            .unwrap_or(2.0);
-        let sampler = Sampler::new(temperature, Some(0.9), None, None)
-            .with_eot_bias(bundle.tokenizer.stop_ids().to_vec(), eot_bias);
+            .and_then(|s| s.parse().ok());
+        let eot_bias = gen_spec.eot_bias.or(env_eot_bias).unwrap_or(2.0);
+
+        let dry_params = gen_spec.dry_multiplier.map(|m| {
+            use crate::gen2::backend::common::sampler::DryParams;
+            DryParams {
+                multiplier: m,
+                base: gen_spec.dry_base.unwrap_or(1.75),
+                allowed_length: gen_spec.dry_allowed_length.unwrap_or(2),
+            }
+        });
+        let xtc_params = gen_spec.xtc_probability.map(|p| {
+            use crate::gen2::backend::common::sampler::XtcParams;
+            XtcParams {
+                probability: p,
+                threshold: gen_spec.xtc_threshold.unwrap_or(0.1),
+            }
+        });
+
+        let sampler = Sampler::new(
+            temperature,
+            Some(gen_spec.top_p.unwrap_or(0.9)),
+            gen_spec.top_k,
+            None,
+        )
+        .with_eot_bias(bundle.tokenizer.stop_ids().to_vec(), eot_bias)
+        .with_min_p(gen_spec.min_p)
+        .with_dry(dry_params)
+        .with_xtc(xtc_params);
 
         Self {
             session_id,

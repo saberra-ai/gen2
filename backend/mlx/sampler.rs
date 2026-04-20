@@ -1,6 +1,8 @@
 //! MLX sampler — thin wrapper around common sampler using mlx_rs::Array.
 
-use crate::gen2::backend::common::sampler::Sampler as CommonSampler;
+use crate::gen2::backend::common::sampler::{
+    DryParams, Sampler as CommonSampler, XtcParams,
+};
 use mlx_rs::Array;
 
 pub struct Sampler {
@@ -22,6 +24,24 @@ impl Sampler {
     /// Passthrough to [`CommonSampler::with_eot_bias`].
     pub fn with_eot_bias(mut self, ids: Vec<u32>, bias: f32) -> Self {
         self.inner = self.inner.with_eot_bias(ids, bias);
+        self
+    }
+
+    /// Passthrough to [`CommonSampler::with_min_p`].
+    pub fn with_min_p(mut self, min_p: Option<f32>) -> Self {
+        self.inner = self.inner.with_min_p(min_p);
+        self
+    }
+
+    /// Passthrough to [`CommonSampler::with_dry`].
+    pub fn with_dry(mut self, params: Option<DryParams>) -> Self {
+        self.inner = self.inner.with_dry(params);
+        self
+    }
+
+    /// Passthrough to [`CommonSampler::with_xtc`].
+    pub fn with_xtc(mut self, params: Option<XtcParams>) -> Self {
+        self.inner = self.inner.with_xtc(params);
         self
     }
 
