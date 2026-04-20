@@ -101,8 +101,7 @@ impl Router {
         let scores = self.proj.matmul_transpose(&h);
 
         // 5: softmax over ALL experts.
-        let router_probs =
-            mlx_rs::ops::softmax_axes(&scores, &[-1], None).expect("mlx op");
+        let router_probs = mlx_rs::ops::softmax_axes(&scores, &[-1], None).expect("mlx op");
 
         // 6: top-k indices. mlx-rs has no argpartition; argsort is
         // equivalent for top-k selection (last k of ascending sort).

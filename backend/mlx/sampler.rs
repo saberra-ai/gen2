@@ -19,6 +19,12 @@ impl Sampler {
         }
     }
 
+    /// Passthrough to [`CommonSampler::with_eot_bias`].
+    pub fn with_eot_bias(mut self, ids: Vec<u32>, bias: f32) -> Self {
+        self.inner = self.inner.with_eot_bias(ids, bias);
+        self
+    }
+
     /// Sample a token ID from an MLX logits array of shape (vocab_size,).
     pub fn sample(&mut self, logits: &Array) -> u32 {
         let logits_slice: &[f32] = logits.as_slice::<f32>();

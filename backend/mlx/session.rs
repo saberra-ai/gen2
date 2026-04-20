@@ -611,6 +611,27 @@ impl Session {
         let bos = self.bundle.bos_str.as_str();
         let delta_text = delta_text.strip_prefix(bos).unwrap_or(&delta_text);
 
+        // Gemma 4's template also auto-inserts an empty system-turn stub
+        // (`<|turn>system\n<|think|>\n<turn|>\n`) when enable_thinking=true
+        // and no explicit system message is passed. Appearing once at
+        // session start it sets the reasoning mode; appearing again on
+        // every subsequent turn's delta confuses the model — we saw
+        // post-answer drift into `wiadomości` and eventual regurgitation
+        // on 26B turns 7-9. The real system message is already in cache
+        // from the initial prefill, so strip these stubs from deltas.
+        let empty_sys_stub_re = [
+            "<|turn>system\n<|think|>\n<turn|>\n",
+            "<|turn>system\n<turn|>\n",
+        ];
+        let mut delta_text: String = delta_text.to_string();
+        for stub in empty_sys_stub_re {
+            if delta_text.starts_with(stub) {
+                delta_text = delta_text[stub.len()..].to_string();
+                break;
+            }
+        }
+        let delta_text: &str = &delta_text;
+
         if std::env::var("PIO_MLX_DEBUG_PROMPT").is_ok() {
             eprintln!(
                 "\n── append_messages delta ({} bytes) ──\n{:?}\n──\n",

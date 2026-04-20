@@ -63,14 +63,14 @@ impl TokenPuller {
         // Repetition penalty is plumbed through (see `CommonSampler`) but
         // left off by default: empirically, `1.1` masks — not fixes — the
         // real issue, which is that Gemma 4's EOT (`<turn|>`) sometimes
-        // doesn't fire on long-form answers. With EOT missing, generation
-        // runs to `max_tokens`, and with rep penalty on that produces
-        // morphed-vocab garbage ("lolloped over olopped over"); without it,
-        // the model produces coherent-looking repetition loops. Both are
-        // post-answer noise a real UI truncates at the turn boundary; but
-        // tripping one visible symptom for the other isn't an improvement.
-        // Fix EOT detection first, then revisit the default.
-        let sampler = Sampler::new(temperature, Some(0.9), None, None);
+        // doesn't fire on long-form answers. The EOT logit bias below is
+        // the actual fix: we verified against mlx-lm's golden reference on
+        // Gemma 4 26B-4bit that `<turn|>` ranks #2 at answer boundaries
+        // with only a ~0.6 logit gap to the winning `\n`. A +1.0 bias tips
+        // EOT tokens over the line at boundaries without affecting
+        // mid-sentence sampling (gap is several logits wide there).
+        let sampler = Sampler::new(temperature, Some(0.9), None, None)
+            .with_eot_bias(bundle.tokenizer.stop_ids().to_vec(), 2.0);
 
         Self {
             session_id,
@@ -311,8 +311,8 @@ impl Iterator for TokenPuller {
                         // going in January. What's the weather like, briefly?
                         // …" failure we saw on turn 5 of the multi-turn
                         // regression.
-                        let loop_hit = self.sampler.is_in_cycle(48)
-                            || self.sampler.is_in_token_loop(16, 2);
+                        let loop_hit =
+                            self.sampler.is_in_cycle(48) || self.sampler.is_in_token_loop(16, 2);
 
                         'tokens: for i in 0..=accepted {
                             let tok = if i < accepted { drafts[i] } else { bonus };

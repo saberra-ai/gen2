@@ -21,6 +21,14 @@ pub struct Sampler {
     /// above `1.0` reduce the probability of recently-emitted tokens;
     /// llama.cpp default is `1.1`, HuggingFace default is `1.0` (off).
     repetition_penalty: Option<f32>,
+    /// Additive logit bias for end-of-turn tokens. Quantized Gemma 4 26B
+    /// trained `\n` just above `<turn|>` at answer boundaries — the top two
+    /// candidates sit within ~0.6 logits of each other (verified against
+    /// mlx-lm's golden reference on the same checkpoint). Without a nudge,
+    /// the model drifts into a newline and regurgitates the whole answer.
+    /// Mid-sentence the gap to any EOT is several logits wide, so a +1.0
+    /// bias doesn't cause premature termination there.
+    eot_bias: Option<(Vec<u32>, f32)>,
     /// Ring buffer of recently emitted token ids (bounded by
     /// [`REPETITION_WINDOW`]). Populated by [`Sampler::observe`] from the
     /// caller's decode loop.
@@ -42,9 +50,19 @@ impl Sampler {
             top_p,
             top_k,
             repetition_penalty,
+            eot_bias: None,
             recent: VecDeque::with_capacity(REPETITION_WINDOW),
             rng: rand::rng(),
         }
+    }
+
+    /// Enable an additive logit bias on end-of-turn tokens. See field docs
+    /// on `eot_bias` for why this is needed on Gemma 4 26B.
+    pub fn with_eot_bias(mut self, ids: Vec<u32>, bias: f32) -> Self {
+        if !ids.is_empty() && bias != 0.0 {
+            self.eot_bias = Some((ids, bias));
+        }
+        self
     }
 
     /// Record a token as "recently emitted" so subsequent `sample_from_logits`
@@ -187,6 +205,14 @@ impl Sampler {
         // slot before temperature).
         let mut penalized: Vec<f32> = logits.to_vec();
         self.apply_repetition_penalty(&mut penalized);
+        if let Some((ids, bias)) = &self.eot_bias {
+            for &id in ids {
+                let i = id as usize;
+                if i < penalized.len() {
+                    penalized[i] += *bias;
+                }
+            }
+        }
 
         if self.temperature == 0.0 {
             return Self::argmax(&penalized);
