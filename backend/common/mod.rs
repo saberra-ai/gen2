@@ -4,6 +4,7 @@ pub(crate) mod chat_template;
 mod fingerprint;
 mod hf_meta;
 pub mod sampler;
+pub mod stop_matcher;
 pub mod tokenizer;
 
 use std::path::Path;
