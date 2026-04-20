@@ -69,8 +69,12 @@ impl TokenPuller {
         // with only a ~0.6 logit gap to the winning `\n`. A +1.0 bias tips
         // EOT tokens over the line at boundaries without affecting
         // mid-sentence sampling (gap is several logits wide there).
+        let eot_bias: f32 = std::env::var("PIO_MLX_EOT_BIAS")
+            .ok()
+            .and_then(|s| s.parse().ok())
+            .unwrap_or(2.0);
         let sampler = Sampler::new(temperature, Some(0.9), None, None)
-            .with_eot_bias(bundle.tokenizer.stop_ids().to_vec(), 2.0);
+            .with_eot_bias(bundle.tokenizer.stop_ids().to_vec(), eot_bias);
 
         Self {
             session_id,
@@ -199,7 +203,12 @@ impl Iterator for TokenPuller {
             // overshoot max_tokens.
             let remaining = self.max_tokens.map(|m| m.saturating_sub(self.produced));
             let drafts = self.ngram.draft();
-            let k = if !drafts.is_empty() {
+            // `PIO_MLX_SPEC=0` forces pure single-token decode — useful for
+            // isolating speculative-acceptance effects when benchmarking.
+            let spec_off = std::env::var("PIO_MLX_SPEC")
+                .map(|v| v == "0" || v.eq_ignore_ascii_case("off"))
+                .unwrap_or(false);
+            let k = if !drafts.is_empty() && !spec_off {
                 let cap = remaining.map_or(DRAFT_LEN, |r| r.saturating_sub(1).min(DRAFT_LEN));
                 drafts.len().min(cap)
             } else {
