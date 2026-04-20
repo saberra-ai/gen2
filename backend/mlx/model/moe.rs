@@ -1,10 +1,10 @@
 //! Mixture-of-Experts blocks for Gemma 4 26B.
 //!
 //! Mirrors `Router` + `Experts` + `SwitchGLU` from `mlx_lm/models/gemma4_text.py`.
-//! `gather_mm` is not exposed in the safe `mlx-rs` 0.25 API, so we dispatch
-//! experts sequentially per selected slot. Performance will be below the
-//! mlx-lm reference until a batched gather-matmul lands upstream, but output
-//! is numerically equivalent.
+//! Uses `gather_qmm` (quantized batched matmul with gather) for the fused path
+//! when all three expert projections are quantized — matches mlx-lm's
+//! `SwitchGLU` performance profile. Falls back to a dense-sum loop for the
+//! float-weights case (rare, mostly diagnostic via `PIO_FORCE_DEQUANT=1`).
 
 use mlx_rs::Array;
 use mlx_rs::ops::indexing::IndexOp;
@@ -48,11 +48,17 @@ impl Router {
     /// Returns `(top_k_indices, top_k_weights)` each shaped `[B, S, top_k]`.
     pub fn forward(&self, x: &Array) -> (Array, Array) {
         // Python: `x = mx.fast.rms_norm(x, self.scale * self._root_size, self.eps)`.
-        // Our RmsNorm already multiplies by the learnable weight; we absorb
-        // `_root_size` by scaling the input before norm.
-        let scale = Array::from_f32(self.root_size);
-        let x_scaled = x.multiply(&scale).expect("mlx op");
-        let h = self.norm.forward(&x_scaled);
+        // That applies weight `(scale * 1/√hidden)` during the norm. RMS norm
+        // normalizes by magnitude, so scaling the input by `1/√hidden` first
+        // would cancel out (constant factor on numerator and denominator) and
+        // leave us off by a `1/√hidden` multiplier — sharpening softmax ~53×
+        // on hidden=2816 and collapsing routing onto a single expert.
+        // Instead, apply `root_size` AFTER the norm so the output matches the
+        // reference: `(x/rms(x)) * scale * root_size`.
+        let h = self.norm.forward(x);
+        let h = h
+            .multiply(&Array::from_f32(self.root_size))
+            .expect("mlx op");
 
         // Expert scores: [B, S, num_experts]
         let scores = self.proj.matmul_transpose(&h);
@@ -134,28 +140,19 @@ impl Experts {
 
     /// `x`: `[B, S, H]`, `indices`: `[B, S, k]`, `weights`: `[B, S, k]`.
     /// Returns `[B, S, H]`.
-    ///
-    /// TODO(mlx-rs gather_mm): when the safe wrapper exists, replace this
-    /// loop with one `switch_glu` call — should be ~4-8× faster on 26B.
     pub fn forward(&self, x: &Array, indices: &Array, weights: &Array) -> Array {
-        let shape = x.shape();
-        let (batch, seq) = (shape[0], shape[1]);
-
-        // ── Sparse fast path for single-token decode ─────────────────────────
-        // For batch=1 seq=1 (streaming generation) only `top_k` experts of
-        // `num_experts` contribute nonzero weight. Iterate only those.
-        // For 26B (num_experts=128, top_k=8) this is ~16× less matmul work
-        // than the dense-sum fallback below. Arithmetically equivalent.
-        if batch == 1 && seq == 1 {
-            return self.forward_sparse_single(x, indices, weights);
+        // Fast path: all three projections are quantized. Fuse gate/up/down
+        // into two `gather_qmm` calls — one forward pass handles all
+        // (token, expert) pairs in parallel. Mirrors mlx-lm's SwitchGLU.
+        if let Some(out) = self.forward_gather_qmm(x, indices, weights) {
+            return out;
         }
 
-        // ── Dense-sum path (prefill / batched) ───────────────────────────────
-        // One-hot mask per token per expert: [B, S, num_experts]
-        //
-        // We build a score tensor where `score[b,s,e] = sum_k (indices[b,s,k]==e) * weights[b,s,k]`.
-        // Then `output = sum_e score[b,s,e] * expert_e(x[b,s])`. Equivalent to SwitchGLU
-        // but expressed as a dense sum so we only need per-expert matmul.
+        // Fallback: dense-sum loop over all experts. Only reachable when
+        // weights are plain float (PIO_FORCE_DEQUANT=1 or non-quantized
+        // checkpoint). Kept for diagnostic parity with the reference impl.
+        let shape = x.shape();
+        let (batch, seq) = (shape[0], shape[1]);
         let e = self.num_experts as i32;
         let k = indices.shape()[2];
 
@@ -212,11 +209,148 @@ impl Experts {
         acc.unwrap_or_else(|| x.multiply(&Array::from_f32(0.0)).expect("mlx op"))
     }
 
+    /// Fused batched forward using `gather_qmm`. Returns `None` when any of
+    /// the three projections isn't quantized (fall through to dense-sum).
+    ///
+    /// Strategy: flatten tokens to `[M, 1, H]` one-row matrices, build a
+    /// `[M*top_k]` index array mapping each slot to its source token
+    /// (`lhs_indices`) and selected expert (`rhs_indices`). Two `gather_qmm`
+    /// calls fuse per-slot gate/up matmuls; one more fuses down. Slot-level
+    /// router weights are applied element-wise, then summed across `top_k`
+    /// to get the per-token contribution.
+    ///
+    /// Complexity: O(M * top_k * (H * moe + moe * H)) matmul work, matching
+    /// the Python reference. No per-expert dequantize, no dense-sum over
+    /// unselected experts.
+    fn forward_gather_qmm(
+        &self,
+        x: &Array,
+        indices: &Array,
+        weights: &Array,
+    ) -> Option<Array> {
+        use mlx_rs::ops::gather_qmm;
+
+        let (gate, up, down) = match (&self.gate_proj, &self.up_proj, &self.down_proj) {
+            (
+                Weight::Quantized {
+                    weight: gw,
+                    scales: gs,
+                    biases: gb,
+                    group_size: gg,
+                    bits: gbi,
+                },
+                Weight::Quantized {
+                    weight: uw,
+                    scales: us,
+                    biases: ub,
+                    ..
+                },
+                Weight::Quantized {
+                    weight: dw,
+                    scales: ds,
+                    biases: db,
+                    group_size: dg,
+                    bits: dbi,
+                },
+            ) => ((gw, gs, gb, *gg, *gbi), (uw, us, ub), (dw, ds, db, *dg, *dbi)),
+            _ => return None,
+        };
+
+        let shape = x.shape();
+        let batch = shape[0];
+        let seq = shape[1];
+        let hidden = shape[2];
+        let m = batch * seq;
+        let k_top = indices.shape()[2];
+        let total = m * k_top;
+
+        // x_flat: [M, 1, H] — one row per token, so gather_qmm's last-two
+        // axes form a (1×H) × (H×moe) matmul per selected slot.
+        let x_flat = x.reshape(&[m, 1, hidden]).expect("mlx op");
+
+        // lhs_indices = [0*k, 1*k, ..., (M-1)*k] flattened: each token id
+        // repeated top_k times. Build as `arange(M).reshape(M,1)` broadcast
+        // across a `[1, k_top]` ones tensor → reshape to [M*k_top].
+        let arange_m = mlx_rs::ops::arange::<_, u32>(0u32, m as u32, 1u32).expect("mlx op");
+        let col = arange_m.reshape(&[m, 1]).expect("mlx op");
+        let ones_row = Array::ones::<u32>(&[1, k_top]).expect("mlx op");
+        let lhs = col
+            .multiply(&ones_row)
+            .expect("mlx op")
+            .reshape(&[total])
+            .expect("mlx op");
+
+        // rhs_indices = flat expert ids for each slot.
+        let rhs = indices
+            .as_type::<u32>()
+            .expect("mlx op")
+            .reshape(&[total])
+            .expect("mlx op");
+
+        // Gate branch: gather_qmm(x, Wg, sg, bg, lhs, rhs, transpose=true)
+        // Shape trace: x=[M,1,H], W=[E,moe,H_packed], result=[total,1,moe].
+        let gate_out = gather_qmm(
+            &x_flat,
+            gate.0,
+            gate.1,
+            Some(gate.2),
+            Some(&lhs),
+            Some(&rhs),
+            Some(true),
+            Some(gate.3),
+            Some(gate.4),
+            None,
+        )
+        .expect("mlx op");
+        let up_out = gather_qmm(
+            &x_flat,
+            up.0,
+            up.1,
+            Some(up.2),
+            Some(&lhs),
+            Some(&rhs),
+            Some(true),
+            Some(gate.3),
+            Some(gate.4),
+            None,
+        )
+        .expect("mlx op");
+
+        let gated = mlx_rs::nn::gelu_approximate(&gate_out).expect("mlx op");
+        let mix = gated.multiply(&up_out).expect("mlx op"); // [total, 1, moe]
+
+        // Down branch: `mix` already has batch=total (one row per slot), so
+        // we pass lhs_indices=None (no gather on x side), rhs_indices=rhs
+        // (pick the matching expert's down weight for each slot).
+        let down_out = gather_qmm(
+            &mix,
+            down.0,
+            down.1,
+            Some(down.2),
+            None::<&Array>,
+            Some(&rhs),
+            Some(true),
+            Some(down.3),
+            Some(down.4),
+            None,
+        )
+        .expect("mlx op"); // [total, 1, H]
+
+        // Multiply by per-slot router weight, then reduce across top_k slots.
+        let w_flat = weights.reshape(&[total, 1, 1]).expect("mlx op");
+        let scaled = down_out.multiply(&w_flat).expect("mlx op"); // [total, 1, H]
+        let grouped = scaled.reshape(&[m, k_top, 1, hidden]).expect("mlx op");
+        let summed = grouped.sum_axis(1, false).expect("mlx op"); // [M, 1, H]
+
+        Some(summed.reshape(&[batch, seq, hidden]).expect("mlx op"))
+    }
+
     /// Sparse single-position forward (B=1, S=1). Iterates the `top_k`
     /// selected experts for the single token instead of summing over every
     /// expert. Host-sync on `indices` + `weights` is required (we need scalar
     /// expert ids on the CPU to index into the weight tensor), but that sync
     /// is trivially cheap for a `[1,1,k]` tensor.
+    #[allow(dead_code)] // superseded by forward_gather_qmm when weights are quantized
     fn forward_sparse_single(&self, x: &Array, indices: &Array, weights: &Array) -> Array {
         let k = indices.shape()[2] as usize;
 

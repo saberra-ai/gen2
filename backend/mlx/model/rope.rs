@@ -21,36 +21,50 @@ impl RotaryEmbedding {
         Self::with_freq_divisor(head_dim, head_dim, max_seq_len, theta)
     }
 
-    /// Proportional RoPE: rotates only the first `rotated_dim` elements but
-    /// computes the exponent denominator from the FULL `freq_divisor`.
-    /// Used by Gemma 4 full-attention layers (`rope_type: "proportional"`)
-    /// where `rotated_dim = full_head_dim * partial_rotary_factor`.
+    /// Proportional RoPE: rotates only the first `rotated_dim` elements of the
+    /// head but uses `freq_divisor` (= full_head_dim) as the exponent denominator
+    /// AND as the pairing stride. Used by Gemma 4 full-attention layers
+    /// (`rope_type: "proportional"`).
     ///
-    /// Mismatching the divisor turns the high-frequency channels ~30,000× too
-    /// slow (with theta=1e6, rotated_dim=64, full=256) → coherent for ~20
-    /// tokens then phase error explodes into degenerate repetition.
+    /// The non-traditional RoPE pair for dim i is (i, i + freq_divisor/2). So
+    /// rotating only the first `rotated_dim` elements means rotating pairs
+    /// `(0, freq_divisor/2), (1, freq_divisor/2 + 1), ..., (rotated_dim/2 - 1, ...)`
+    /// — NOT pairs `(0, rotated_dim/2), ..., (rotated_dim/2 - 1, rotated_dim - 1)`.
+    /// (That second, naive pairing is what we had before; it scrambles the
+    /// attention geometry and produces garbage output across all full-attn
+    /// layers.)
+    ///
+    /// Mirrors Python `ProportionalRoPE` in `mlx_lm/models/rope_utils.py`:
+    /// freqs has length `freq_divisor/2`; first `rotated_dim/2` entries are real
+    /// rotation rates, the rest are zero (identity rotation → pass-through).
     pub fn with_freq_divisor(
         rotated_dim: usize,
         freq_divisor: usize,
         max_seq_len: usize,
         theta: f32,
     ) -> Self {
-        let half_dim = rotated_dim / 2;
+        assert!(rotated_dim <= freq_divisor);
+        let half_full = freq_divisor / 2;
+        let half_rot = rotated_dim / 2;
 
-        // freqs[i] = 1.0 / theta^(2i / freq_divisor)
-        // (For standard RoPE, freq_divisor == rotated_dim.)
-        let freq_data: Vec<f32> = (0..half_dim)
-            .map(|i| 1.0 / theta.powf(2.0 * i as f32 / freq_divisor as f32))
+        // freqs[i] = 1.0 / theta^(2i / freq_divisor) for i < half_rot,
+        // else 0.0 (identity — cos(0)=1, sin(0)=0 → pass-through).
+        let freq_data: Vec<f32> = (0..half_full)
+            .map(|i| {
+                if i < half_rot {
+                    1.0 / theta.powf(2.0 * i as f32 / freq_divisor as f32)
+                } else {
+                    0.0
+                }
+            })
             .collect();
-        let freqs = Array::from_slice(&freq_data, &[half_dim as i32]);
+        let freqs = Array::from_slice(&freq_data, &[half_full as i32]);
 
-        // t = [0, 1, ..., max_seq_len-1]
         let t_data: Vec<f32> = (0..max_seq_len).map(|i| i as f32).collect();
         let t = Array::from_slice(&t_data, &[max_seq_len as i32]);
 
-        // angles = outer(t, freqs) → (max_seq_len, half_dim)
         let t_col = t.reshape(&[max_seq_len as i32, 1]).expect("mlx op");
-        let f_row = freqs.reshape(&[1, half_dim as i32]).expect("mlx op");
+        let f_row = freqs.reshape(&[1, half_full as i32]).expect("mlx op");
         let angles = t_col.multiply(&f_row).expect("mlx op");
 
         let cos = angles.cos().expect("mlx op");

@@ -46,7 +46,7 @@ impl Model {
     ) -> Array {
         match self {
             Model::Llama(m) => m.forward(tokens, offset, cache, rope),
-            Model::Gemma4(m) => m.forward(tokens, cache),
+            Model::Gemma4(m) => m.forward(tokens, offset, cache),
         }
     }
 
@@ -61,7 +61,7 @@ impl Model {
     ) -> Option<Array> {
         match self {
             Model::Llama(m) => Some(m.forward_all(tokens, offset, cache, rope)),
-            Model::Gemma4(_) => None,
+            Model::Gemma4(m) => Some(m.forward_all(tokens, offset, cache)),
         }
     }
 

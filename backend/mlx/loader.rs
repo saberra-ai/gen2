@@ -125,6 +125,12 @@ fn try_quantized_weight(
 fn load_weight(tensors: &HashMap<String, Array>, name: &str, full_dim: usize) -> Weight {
     // Check for quantized triple: name.weight + name.scales + name.biases
     if let Some(qw) = try_quantized_weight(tensors, name, full_dim) {
+        // DIAGNOSTIC: if PIO_FORCE_DEQUANT=1, dequantize immediately and store
+        // as plain float. Isolates bugs in quantized_matmul (e.g. 8-bit path)
+        // vs correctness bugs elsewhere. Revert this once diagnosis is done.
+        if std::env::var("PIO_FORCE_DEQUANT").is_ok() {
+            return Weight::plain(qw.to_full());
+        }
         return qw;
     }
     // Plain float: just name.weight

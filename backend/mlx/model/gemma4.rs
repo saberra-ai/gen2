@@ -40,23 +40,14 @@ impl RmsNormNoScale {
     }
 }
 
-// ─── Partial RoPE ─────────────────────────────────────────────────────────────
-
-/// Apply RoPE to only the first `rope_dim` elements of the last axis.
-///
-/// Input shape: [batch, heads, seq, full_head_dim]
-fn apply_partial_rope(x: &Array, rope: &RotaryEmbedding, offset: usize, rope_dim: usize) -> Array {
-    let full_dim = x.shape()[3] as usize;
-    if rope_dim >= full_dim {
-        return rope.forward(x, offset);
-    }
-    let rd = rope_dim as i32;
-    let fd = full_dim as i32;
-    let x_rope = x.index((.., .., .., 0..rd));
-    let x_pass = x.index((.., .., .., rd..fd));
-    let x_rotated = rope.forward(&x_rope, offset);
-    mlx_rs::ops::concatenate_axis(&[&x_rotated, &x_pass], 3).expect("mlx op")
-}
+// ─── Partial RoPE note ────────────────────────────────────────────────────────
+//
+// Partial rotary embedding (rotating only the first `rotated_dim` elements of
+// each head while passing the rest through) is now handled inside
+// `RotaryEmbedding::with_freq_divisor`: it builds cos/sin tables sized for the
+// full head_dim and zeroes out angles past `rotated_dim/2`, so `rope.forward`
+// can be called directly on the full-width tensor. The previous split-then-
+// concat helper rotated the wrong pairs (see rope.rs docstring).
 
 // ─── Causal + sliding-window attention mask ───────────────────────────────────
 
@@ -202,7 +193,7 @@ impl Gemma4Attention {
         let q = q.reshape(&[batch, seq, nh, hd]).expect("mlx op");
         let q = self.q_norm.forward(&q);
         let q = q.transpose_axes(&[0, 2, 1, 3]).expect("mlx op");
-        let q = apply_partial_rope(&q, rope, offset, self.rope_dim);
+        let q = rope.forward(&q, offset);
 
         // K, V: either compute fresh (non-shared) or borrow from shared partner's cache
         let (k, v) = if let Some((ck, cv)) = shared_kv {
@@ -222,7 +213,7 @@ impl Gemma4Attention {
 
             let k = k.transpose_axes(&[0, 2, 1, 3]).expect("mlx op");
             let v = v.transpose_axes(&[0, 2, 1, 3]).expect("mlx op");
-            let k = apply_partial_rope(&k, rope, offset, self.rope_dim);
+            let k = rope.forward(&k, offset);
 
             // Append to KV cache along the sequence axis
             let (k, v) = if let Some((prev_k, prev_v)) = cache.take() {
@@ -620,14 +611,29 @@ impl Gemma4Model {
         }
     }
 
-    /// Forward pass. Returns logits for the last token: shape [1, vocab_size].
-    pub fn forward(&self, tokens: &[u32], cache: &mut KvCache) -> Array {
+    /// Forward pass. Returns logits for the last token: shape [1, 1, vocab_size].
+    ///
+    /// `offset` is the **true** absolute token position of the first element
+    /// in `tokens` — caller tracks it in session state. Do NOT infer it from
+    /// `cache[0].shape[2]`: layer 0 is a sliding-attention layer whose cache
+    /// length is capped at `sliding_window`, so once the conversation passes
+    /// the window boundary the inferred offset stalls while full-attention
+    /// layers still need the true position for RoPE. That bug caused the
+    /// post-turn-4 collapse on 26B (sliding_window=512) and post-turn-8 on
+    /// 31B (sliding_window=1024).
+    pub fn forward(&self, tokens: &[u32], offset: usize, cache: &mut KvCache) -> Array {
+        let all_logits = self.forward_all(tokens, offset, cache);
+        let s = tokens.len() as i32;
+        all_logits.index((0..1, (s - 1)..s, ..))
+    }
+
+    /// Forward pass returning logits for EVERY position: shape `[1, seq_len, vocab_size]`.
+    ///
+    /// Used by speculative decoding (n-gram drafts in the puller): samples one
+    /// token per position in a single batched forward pass, so accepted drafts
+    /// amortize the decode cost.
+    pub fn forward_all(&self, tokens: &[u32], offset: usize, cache: &mut KvCache) -> Array {
         let seq_len = tokens.len();
-        let offset = cache
-            .first()
-            .and_then(|e| e.as_ref())
-            .map(|(k, _)| k.shape()[2] as usize)
-            .unwrap_or(0);
 
         let idx: Vec<i32> = tokens.iter().map(|&t| t as i32).collect();
         let token_indices = Array::from_slice(&idx, &[seq_len as i32]);
@@ -717,18 +723,14 @@ impl Gemma4Model {
         let logits = self.embed_tokens.matmul_transpose(&x);
 
         // Final logit softcapping: tanh(x / cap) * cap
-        let logits = if let Some(cap) = self.final_logit_softcapping {
+        if let Some(cap) = self.final_logit_softcapping {
             let cap_arr = Array::from_f32(cap);
             let scaled = logits.divide(&cap_arr).expect("mlx op");
             let tanhed = mlx_rs::ops::tanh(&scaled).expect("mlx op");
             tanhed.multiply(&cap_arr).expect("mlx op")
         } else {
             logits
-        };
-
-        // Return the last position's logits: [1, vocab_size]
-        let s = seq_len as i32;
-        logits.index((0..1, (s - 1)..s, ..))
+        }
     }
 }
 
