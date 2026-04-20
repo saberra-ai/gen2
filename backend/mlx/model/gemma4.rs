@@ -244,28 +244,35 @@ impl Gemma4Attention {
             (k, v)
         };
 
-        // GQA: expand KV heads to match the number of Q heads
-        let (k, v) = if self.num_kv_heads < self.num_heads {
-            let reps = self.num_heads / self.num_kv_heads;
-            (repeat_kv_heads(&k, reps), repeat_kv_heads(&v, reps))
+        // Decode fast path: seq=1 → use fused SDPA Metal kernel (no mask needed
+        // since a single query token can attend to all cached K/V positions).
+        // This path handles GQA internally so we don't pre-tile k/v.
+        // Prefill (seq>1) still uses manual Q@Kᵀ → softmax → @V with our
+        // float causal+sliding mask, since the fused kernel's mask dtype
+        // convention differs from ours and mixing them broke content when we
+        // tried previously.
+        let out = if seq == 1 {
+            mlx_rs::fast::scaled_dot_product_attention(&q, &k, &v, 1.0, None, None::<&Array>)
+                .expect("mlx op")
         } else {
-            (k, v)
-        };
+            // GQA: expand KV heads to match the number of Q heads.
+            let (k, v) = if self.num_kv_heads < self.num_heads {
+                let reps = self.num_heads / self.num_kv_heads;
+                (repeat_kv_heads(&k, reps), repeat_kv_heads(&v, reps))
+            } else {
+                (k, v)
+            };
 
-        // Attention score = Q · Kᵀ (scale = 1.0 per Gemma 4 spec — magnitude
-        // is controlled by q_norm/k_norm, not the usual 1/√head_dim).
-        let k_t = k.transpose_axes(&[0, 1, 3, 2]).expect("mlx op");
-        let mut scores = q.matmul(&k_t).expect("mlx op");
+            let k_t = k.transpose_axes(&[0, 1, 3, 2]).expect("mlx op");
+            let mut scores = q.matmul(&k_t).expect("mlx op");
 
-        // Causal + sliding-window mask (prefill only; seq_len == 1 during decode).
-        if seq > 1 {
             let kv_len = scores.shape()[3] as usize;
             let mask = build_causal_mask(seq as usize, kv_len, self.sliding_window);
             scores = scores.add(&mask).expect("mlx op");
-        }
 
-        let attn_w = mlx_rs::ops::softmax_axes(&scores, &[-1], None).expect("mlx op");
-        let out = attn_w.matmul(&v).expect("mlx op");
+            let attn_w = mlx_rs::ops::softmax_axes(&scores, &[-1], None).expect("mlx op");
+            attn_w.matmul(&v).expect("mlx op")
+        };
 
         // Merge heads: [B, H, S, D] → [B, S, H·D]
         let out = out.transpose_axes(&[0, 2, 1, 3]).expect("mlx op");
