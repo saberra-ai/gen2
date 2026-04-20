@@ -388,7 +388,10 @@ impl Gemma4TransformerBlock {
                 as usize
         };
         let hidden = config.hidden_size;
-        let hpl = config.hidden_size_per_layer_input.unwrap_or(256);
+        // PLE is opt-in. Treat None == Some(0) == "no PLE" — both pre-allocate
+        // zero-sized placeholders that the loader leaves alone for non-PLE
+        // variants (12B / 26B / 31B). E2B / E4B keep the real dim from config.
+        let hpl = config.hidden_size_per_layer_input.unwrap_or(0);
         let eps = config.rms_norm_eps;
         let sw = if is_sliding {
             config.sliding_window
@@ -451,7 +454,7 @@ impl Gemma4TransformerBlock {
         cache: &mut Option<(Array, Array)>,
         offset: usize,
         shared_kv: Option<&(Array, Array)>,
-        embed_lookup: &Array,
+        per_layer_input: Option<&Array>,
     ) -> Array {
         // Pre-norm → attention → post-attn-norm → residual
         let h = self.input_layernorm.forward(x);
@@ -476,9 +479,14 @@ impl Gemma4TransformerBlock {
         let h = self.post_feedforward_layernorm.forward(&h);
         let x = x.add(&h).expect("mlx op");
 
-        // Per-layer input contribution → residual
-        let pli = self.per_layer_input.forward(&x, embed_lookup);
-        let x = x.add(&pli).expect("mlx op");
+        // Per-layer input contribution → residual (skipped on non-PLE variants).
+        let x = match per_layer_input {
+            Some(pl) => {
+                let pli = self.per_layer_input.forward(&x, pl);
+                x.add(&pli).expect("mlx op")
+            }
+            None => x,
+        };
 
         // Layer scalar (broadcast over [batch, seq, hidden])
         x.multiply(&self.layer_scalar).expect("mlx op")
@@ -528,7 +536,10 @@ impl Gemma4Model {
         let n = config.num_hidden_layers;
         let n_shared = config.num_kv_shared_layers.unwrap_or(0);
         let num_non_shared = n.saturating_sub(n_shared);
-        let hpl = config.hidden_size_per_layer_input.unwrap_or(256);
+        // PLE is opt-in. Treat None == Some(0) == "no PLE" — both pre-allocate
+        // zero-sized placeholders that the loader leaves alone for non-PLE
+        // variants (12B / 26B / 31B). E2B / E4B keep the real dim from config.
+        let hpl = config.hidden_size_per_layer_input.unwrap_or(0);
         let eps = config.rms_norm_eps;
         let embed_scale = (hidden as f32).sqrt();
 
@@ -618,31 +629,38 @@ impl Gemma4Model {
         let hidden = self.layers[0].input_layernorm.weight.shape()[0];
         let mut x = x0.reshape(&[1, seq_len as i32, hidden]).expect("mlx op");
 
-        // ── Per-layer inputs (matches Gemma4TextModel._{get,project}_per_layer_inputs)
+        // ── Per-layer inputs (PLE — Gemma 3n / Gemma 4 E-series only) ──────
+        // Mirrors `if self.hidden_size_per_layer_input:` in the Python golden
+        // impl. 12B / 26B / 31B ship `hidden_size_per_layer_input = 0` and
+        // skip this entire pipeline (no `embed_tokens_per_layer`,
+        // `per_layer_model_projection`, etc. in their checkpoints).
         let n_layers = self.layers.len() as i32;
         let hpl = self.hidden_per_layer_input as i32;
+        let per_layer: Option<Array> = if hpl > 0 {
+            // (a) embed_tokens_per_layer(tokens) * sqrt(hpl) → [1, seq, n_layers, hpl]
+            let per_layer_embed = self.embed_tokens_per_layer.embedding_lookup(&token_indices);
+            let ptl_scale = Array::from_f32(self.embed_tokens_per_layer_scale);
+            let per_layer_embed = per_layer_embed.multiply(&ptl_scale).expect("mlx op");
+            let per_layer_embed = per_layer_embed
+                .reshape(&[1, seq_len as i32, n_layers, hpl])
+                .expect("mlx op");
 
-        // (a) embed_tokens_per_layer(tokens) * sqrt(hpl) → [1, seq, n_layers, hpl]
-        let per_layer_embed = self.embed_tokens_per_layer.embedding_lookup(&token_indices);
-        let ptl_scale = Array::from_f32(self.embed_tokens_per_layer_scale);
-        let per_layer_embed = per_layer_embed.multiply(&ptl_scale).expect("mlx op");
-        let per_layer_embed = per_layer_embed
-            .reshape(&[1, seq_len as i32, n_layers, hpl])
-            .expect("mlx op");
+            // (b) per_layer_model_projection(h) * (1/sqrt(hidden)) → reshape, then RMSNorm
+            let per_layer_proj = self.per_layer_model_projection.matmul_transpose(&x);
+            let proj_scale = Array::from_f32(self.per_layer_projection_scale);
+            let per_layer_proj = per_layer_proj.multiply(&proj_scale).expect("mlx op");
+            let per_layer_proj = per_layer_proj
+                .reshape(&[1, seq_len as i32, n_layers, hpl])
+                .expect("mlx op");
+            let per_layer_proj = self.per_layer_projection_norm.forward(&per_layer_proj);
 
-        // (b) per_layer_model_projection(h) * (1/sqrt(hidden)) → same shape, then RMSNorm
-        let per_layer_proj = self.per_layer_model_projection.matmul_transpose(&x);
-        let proj_scale = Array::from_f32(self.per_layer_projection_scale);
-        let per_layer_proj = per_layer_proj.multiply(&proj_scale).expect("mlx op");
-        let per_layer_proj = per_layer_proj
-            .reshape(&[1, seq_len as i32, n_layers, hpl])
-            .expect("mlx op");
-        let per_layer_proj = self.per_layer_projection_norm.forward(&per_layer_proj);
-
-        // (c) (proj + embed) * (1/sqrt(2))
-        let mixed = per_layer_proj.add(&per_layer_embed).expect("mlx op");
-        let input_scale = Array::from_f32(self.per_layer_input_scale);
-        let per_layer = mixed.multiply(&input_scale).expect("mlx op");
+            // (c) (proj + embed) * (1/sqrt(2))
+            let mixed = per_layer_proj.add(&per_layer_embed).expect("mlx op");
+            let input_scale = Array::from_f32(self.per_layer_input_scale);
+            Some(mixed.multiply(&input_scale).expect("mlx op"))
+        } else {
+            None
+        };
 
         let n = self.num_non_shared;
 
@@ -664,12 +682,13 @@ impl Gemma4Model {
                 None
             };
 
-            // Per-layer input slice for layer i: [1, seq, hpl]
-            let li = i as i32;
-            let per_layer_i = per_layer
-                .index((.., .., li..li + 1, ..))
-                .reshape(&[1, seq_len as i32, hpl])
-                .expect("mlx op");
+            // Per-layer input slice for layer i: [1, seq, hpl]. None when no PLE.
+            let per_layer_i = per_layer.as_ref().map(|pl| {
+                let li = i as i32;
+                pl.index((.., .., li..li + 1, ..))
+                    .reshape(&[1, seq_len as i32, hpl])
+                    .expect("mlx op")
+            });
 
             x = layer.forward(
                 &x,
@@ -677,7 +696,7 @@ impl Gemma4Model {
                 &mut cache[cache_idx],
                 offset,
                 shared_kv.as_ref(),
-                &per_layer_i,
+                per_layer_i.as_ref(),
             );
         }
 
@@ -810,6 +829,57 @@ mod tests {
     /// 26B-style config (`enable_moe_block=true`): every block carries an MoE
     /// sub-block; experts are sized from `moe_intermediate_size`; routers
     /// from `num_experts` and `top_k_experts`.
+    #[test]
+    /// Regression for the PLE-zero panic: 12B / 26B / 31B variants ship
+    /// `hidden_size_per_layer_input = 0` literally, which used to drive
+    /// `unwrap_or(256) → 0 → reshape into [.., 0]` and crash. The model
+    /// must now treat hpl=0 as "no PLE pipeline" — verified by ensuring
+    /// `Gemma4Model::new` doesn't panic and `num_non_shared` still computes.
+    #[test]
+    fn ple_zero_does_not_panic_in_constructor() {
+        let mut cfg = base_config();
+        cfg.hidden_size_per_layer_input = Some(0); // 31B / 26B / 12B variant
+        cfg.num_kv_shared_layers = Some(0); // simpler — no KV sharing
+        cfg.num_hidden_layers = 4; // small for test speed
+        // Provide explicit layer_types so build_layer_types doesn't divide-by-zero.
+        cfg.layer_types = Some(vec![
+            "sliding_attention".to_string(),
+            "sliding_attention".to_string(),
+            "sliding_attention".to_string(),
+            "full_attention".to_string(),
+        ]);
+        // Should not panic.
+        let _model = Gemma4Model::new(&cfg);
+    }
+
+    /// `hpl = None` and `hpl = Some(0)` must behave identically — both mean
+    /// "no PLE". Avoids the historical bug where unwrap_or(256) treated the
+    /// two cases differently.
+    #[test]
+    fn ple_none_and_zero_are_equivalent() {
+        let mut a = base_config();
+        a.hidden_size_per_layer_input = None;
+        a.num_kv_shared_layers = Some(0);
+        a.num_hidden_layers = 2;
+        a.layer_types = Some(vec!["full_attention".into(), "full_attention".into()]);
+
+        let mut b = base_config();
+        b.hidden_size_per_layer_input = Some(0);
+        b.num_kv_shared_layers = Some(0);
+        b.num_hidden_layers = 2;
+        b.layer_types = Some(vec!["full_attention".into(), "full_attention".into()]);
+
+        let m_a = Gemma4Model::new(&a);
+        let m_b = Gemma4Model::new(&b);
+        assert_eq!(m_a.num_non_shared, m_b.num_non_shared);
+        // Both should have the per-layer-projection-norm tensor allocated to
+        // the SAME placeholder shape — actual loading is gated separately.
+        assert_eq!(
+            m_a.per_layer_projection_norm.weight.shape(),
+            m_b.per_layer_projection_norm.weight.shape()
+        );
+    }
+
     #[test]
     fn moe_block_present_and_sized_from_config() {
         let mut cfg = base_config();

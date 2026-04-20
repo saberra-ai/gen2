@@ -397,7 +397,11 @@ impl Engine {
 
     #[cfg(test)]
     fn prefix_cache_contains(&self, key: u64) -> bool {
-        self.prefix_cache.lock().entries.iter().any(|e| e.key == key)
+        self.prefix_cache
+            .lock()
+            .entries
+            .iter()
+            .any(|e| e.key == key)
     }
 }
 
@@ -529,7 +533,10 @@ mod tests {
         // Insert a new key — the oldest (key=1, at the back) must be evicted.
         lru.insert(stub_entry(99));
         assert_eq!(lru.entries.len(), PREFIX_LRU_CAP);
-        assert!(lru.touch(99).is_some(), "newly inserted key must be present");
+        assert!(
+            lru.touch(99).is_some(),
+            "newly inserted key must be present"
+        );
         // Key 1 was LRU and should have been dropped.
         assert!(
             !lru.entries.iter().any(|e| e.key == 1),

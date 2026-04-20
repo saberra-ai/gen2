@@ -93,12 +93,9 @@ fn detect_group_size(scales_shape: &[i32], full_dim: usize) -> i32 {
 /// Looks for `{name}.weight`, `{name}.scales`, `{name}.biases`.
 /// Returns `None` if the weight isn't quantized.
 ///
-/// All supported MLX bit widths (2/3/4/5/6/8) stay in `Weight::Quantized` form;
-/// [`Weight::matmul_transpose`] uses `quantized_matmul` and
-/// [`Weight::embedding_lookup`] gathers + dequantizes only the rows it needs at
-/// forward time. Never pre-dequantize the full table: UD / mixed-precision
-/// checkpoints have embeddings at 6-bit that would need gigabytes of Metal
-/// buffer if fully materialized.
+/// All Apple-Silicon-supported bit widths (2/3/4/5/6/8) stay quantized — the
+/// forward-time `quantized_matmul` + `embedding_lookup` paths handle every
+/// width we've seen in practice.
 fn try_quantized_weight(
     tensors: &HashMap<String, Array>,
     name: &str,
@@ -257,23 +254,29 @@ pub fn build_gemma4_model(model_dir: &Path) -> Result<(Gemma4Model, ModelConfig)
 
     let hidden = config.hidden_size;
     let n = config.num_hidden_layers;
-    let hpl = config.hidden_size_per_layer_input.unwrap_or(256);
-    let hpl_all = hpl * n; // full column count of embed_tokens_per_layer
+    // PLE is Gemma 3n / Gemma 4 E-series only. 12B / 26B / 31B ship `0` here
+    // and have no `embed_tokens_per_layer` / `per_layer_model_projection`
+    // tensors in the checkpoint — skip those loads on the truthy gate.
+    let hpl_raw = config.hidden_size_per_layer_input.unwrap_or(0);
+    let has_ple = hpl_raw > 0;
+    let hpl = hpl_raw;
+    let hpl_all = hpl * n;
 
     // ── Global embeddings ────────────────────────────────────────────────────
     let pfx = "language_model.model";
     model.embed_tokens = load_weight(&tensors, &format!("{pfx}.embed_tokens"), hidden);
-    model.embed_tokens_per_layer =
-        load_weight(&tensors, &format!("{pfx}.embed_tokens_per_layer"), hpl_all);
-
-    // Linear(hidden → num_layers × hpl) — feeds the residual stream into per-layer inputs.
-    model.per_layer_model_projection = load_weight(
-        &tensors,
-        &format!("{pfx}.per_layer_model_projection"),
-        hidden,
-    );
-    if let Some(w) = tensors.get(&format!("{pfx}.per_layer_projection_norm.weight")) {
-        model.per_layer_projection_norm.weight = w.clone();
+    if has_ple {
+        model.embed_tokens_per_layer =
+            load_weight(&tensors, &format!("{pfx}.embed_tokens_per_layer"), hpl_all);
+        // Linear(hidden → num_layers × hpl) — feeds the residual stream into per-layer inputs.
+        model.per_layer_model_projection = load_weight(
+            &tensors,
+            &format!("{pfx}.per_layer_model_projection"),
+            hidden,
+        );
+        if let Some(w) = tensors.get(&format!("{pfx}.per_layer_projection_norm.weight")) {
+            model.per_layer_projection_norm.weight = w.clone();
+        }
     }
 
     if let Some(w) = tensors.get(&format!("{pfx}.norm.weight")) {
@@ -327,13 +330,15 @@ pub fn build_gemma4_model(model_dir: &Path) -> Result<(Gemma4Model, ModelConfig)
         layer.ffn.down_proj =
             load_weight(&tensors, &format!("{lp}.mlp.down_proj"), layer_intermediate);
 
-        // Per-layer input system
-        layer.per_layer_input.per_layer_input_gate =
-            load_weight(&tensors, &format!("{lp}.per_layer_input_gate"), hidden);
-        layer.per_layer_input.per_layer_projection =
-            load_weight(&tensors, &format!("{lp}.per_layer_projection"), hpl);
-        if let Some(w) = tensors.get(&format!("{lp}.post_per_layer_input_norm.weight")) {
-            layer.per_layer_input.post_per_layer_input_norm.weight = w.clone();
+        // Per-layer input system (PLE — E-series only).
+        if has_ple {
+            layer.per_layer_input.per_layer_input_gate =
+                load_weight(&tensors, &format!("{lp}.per_layer_input_gate"), hidden);
+            layer.per_layer_input.per_layer_projection =
+                load_weight(&tensors, &format!("{lp}.per_layer_projection"), hpl);
+            if let Some(w) = tensors.get(&format!("{lp}.post_per_layer_input_norm.weight")) {
+                layer.per_layer_input.post_per_layer_input_norm.weight = w.clone();
+            }
         }
 
         // Layer norms (plain float)
