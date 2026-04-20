@@ -2,6 +2,8 @@
 
 mod bundle;
 mod engine;
+#[cfg(test)]
+mod golden;
 mod loader;
 pub(crate) mod model;
 pub(crate) mod ngram;

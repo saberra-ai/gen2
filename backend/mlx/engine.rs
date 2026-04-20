@@ -391,12 +391,12 @@ impl Engine {
     }
 
     #[cfg(test)]
-    fn prefix_cache_len(&self) -> usize {
+    pub(super) fn prefix_cache_len(&self) -> usize {
         self.prefix_cache.lock().entries.len()
     }
 
     #[cfg(test)]
-    fn prefix_cache_contains(&self, key: u64) -> bool {
+    pub(super) fn prefix_cache_contains(&self, key: u64) -> bool {
         self.prefix_cache
             .lock()
             .entries

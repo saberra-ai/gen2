@@ -597,8 +597,18 @@ impl Gemma4Model {
             per_layer_projection_norm: RmsNorm::new(hpl, eps),
             layers,
             norm: RmsNorm::new(hidden, eps),
+            // Sliding-attn: standard RoPE (rotated_dim == head_dim).
             local_rope: RotaryEmbedding::new(sliding_head_dim, max_seq, local_theta),
-            global_rope: RotaryEmbedding::new(global_rope_dim, max_seq, global_theta),
+            // Full-attn: ProportionalRoPE — rotates only the first
+            // global_rope_dim elements but uses the FULL global_head_dim as
+            // the frequency divisor. This is what Gemma 4's
+            // `rope_type: "proportional"` actually does in mlx-lm.
+            global_rope: RotaryEmbedding::with_freq_divisor(
+                global_rope_dim,
+                global_head_dim,
+                max_seq,
+                global_theta,
+            ),
             embed_scale,
             embed_tokens_per_layer_scale: (hpl as f32).sqrt(),
             per_layer_projection_scale: 1.0 / (hidden as f32).sqrt(),

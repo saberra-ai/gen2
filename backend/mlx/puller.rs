@@ -115,6 +115,13 @@ impl TokenPuller {
             spec_accepted: self.spec_accepted as u32,
         }
     }
+
+    /// Test-only: read `stats_now` from outside the puller. Used by the golden
+    /// test suite to verify per-session counters after drain.
+    #[cfg(test)]
+    pub(super) fn snapshot_stats(&self) -> ExecutionStats {
+        self.stats_now()
+    }
 }
 
 impl Drop for TokenPuller {

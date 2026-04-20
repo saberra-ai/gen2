@@ -15,12 +15,32 @@ pub struct RotaryEmbedding {
 }
 
 impl RotaryEmbedding {
+    /// Standard RoPE: frequency divisor equals the rotated dim.
+    /// Used by Llama / Qwen / Mistral / Gemma 4 sliding-attn / etc.
     pub fn new(head_dim: usize, max_seq_len: usize, theta: f32) -> Self {
-        let half_dim = head_dim / 2;
+        Self::with_freq_divisor(head_dim, head_dim, max_seq_len, theta)
+    }
 
-        // freqs[i] = 1.0 / theta^(2i/dim)
+    /// Proportional RoPE: rotates only the first `rotated_dim` elements but
+    /// computes the exponent denominator from the FULL `freq_divisor`.
+    /// Used by Gemma 4 full-attention layers (`rope_type: "proportional"`)
+    /// where `rotated_dim = full_head_dim * partial_rotary_factor`.
+    ///
+    /// Mismatching the divisor turns the high-frequency channels ~30,000× too
+    /// slow (with theta=1e6, rotated_dim=64, full=256) → coherent for ~20
+    /// tokens then phase error explodes into degenerate repetition.
+    pub fn with_freq_divisor(
+        rotated_dim: usize,
+        freq_divisor: usize,
+        max_seq_len: usize,
+        theta: f32,
+    ) -> Self {
+        let half_dim = rotated_dim / 2;
+
+        // freqs[i] = 1.0 / theta^(2i / freq_divisor)
+        // (For standard RoPE, freq_divisor == rotated_dim.)
         let freq_data: Vec<f32> = (0..half_dim)
-            .map(|i| 1.0 / theta.powf(2.0 * i as f32 / head_dim as f32))
+            .map(|i| 1.0 / theta.powf(2.0 * i as f32 / freq_divisor as f32))
             .collect();
         let freqs = Array::from_slice(&freq_data, &[half_dim as i32]);
 
