@@ -30,4 +30,9 @@ impl Sampler {
     pub fn observe(&mut self, token: u32) {
         self.inner.observe(token);
     }
+
+    /// Tight post-answer loop detection — see [`CommonSampler::is_in_token_loop`].
+    pub fn is_in_token_loop(&self, window: usize, max_unique: usize) -> bool {
+        self.inner.is_in_token_loop(window, max_unique)
+    }
 }

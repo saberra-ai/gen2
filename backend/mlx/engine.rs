@@ -131,13 +131,19 @@ fn build_bundle_from_dir(model_dir: &Path) -> Result<ModelBundle, ExecError> {
 
     let chat_template_str = crate::gen2::backend::common::load_chat_template(model_dir)
         .unwrap_or_else(crate::gen2::backend::common::default_llama3_template);
+    // Decode keeping specials: we want `{{ bos_token }}` in the chat template
+    // to expand to the literal `<bos>` string. `decode(..., skip_special=true)`
+    // would silently strip it, producing a prompt without the leading BOS —
+    // which caused Gemma 4 to see a different embedding at position 0 and
+    // produce catastrophically wrong logits on step 1 ("--- own neighborhood
+    // neighborhood neighborhood …").
     let bos_str = tokenizer
         .bos_id()
-        .and_then(|id| tokenizer.decode(&[id]).ok())
+        .and_then(|id| tokenizer.decode_keep_specials(&[id]).ok())
         .unwrap_or_default();
     let eos_str = tokenizer
         .eos_id()
-        .and_then(|id| tokenizer.decode(&[id]).ok())
+        .and_then(|id| tokenizer.decode_keep_specials(&[id]).ok())
         .unwrap_or_default();
 
     let meta = crate::gen2::backend::common::compute_hf_model_meta(

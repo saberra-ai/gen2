@@ -67,12 +67,17 @@ impl HfTokenizer {
         let inner = Tokenizer::from_file(&tokenizer_path)
             .map_err(|e| anyhow::anyhow!("failed to load tokenizer: {}", e))?;
 
-        // Try to resolve BOS/EOS from added tokens
+        // Try to resolve BOS from added tokens. Gemma 4 uses `<bos>`; missing
+        // it caused the chat template to omit the leading BOS and produce
+        // a prompt whose very first embedding differed from the model's
+        // expected input. That cascaded to catastrophically wrong logits
+        // at turn 1 (e.g. "--- own neighborhood neighborhood …" on greedy).
         let bos_id = inner
             .get_added_vocabulary()
             .get_vocab()
             .get("<|begin_of_text|>")
             .or_else(|| inner.get_added_vocabulary().get_vocab().get("<s>"))
+            .or_else(|| inner.get_added_vocabulary().get_vocab().get("<bos>"))
             .copied();
 
         let added = inner.get_added_vocabulary().get_vocab();
@@ -126,6 +131,15 @@ impl HfTokenizer {
     pub fn decode(&self, ids: &[u32]) -> anyhow::Result<String> {
         self.inner
             .decode(ids, true)
+            .map_err(|e| anyhow::anyhow!("decode failed: {}", e))
+    }
+
+    /// Decode preserving special-token textual forms (e.g. `<bos>`, `<|turn>`).
+    /// Used by chat-template plumbing where `{{ bos_token }}` must expand to
+    /// the literal `<bos>` string, not get silently stripped.
+    pub fn decode_keep_specials(&self, ids: &[u32]) -> anyhow::Result<String> {
+        self.inner
+            .decode(ids, false)
             .map_err(|e| anyhow::anyhow!("decode failed: {}", e))
     }
 

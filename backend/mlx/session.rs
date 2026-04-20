@@ -331,7 +331,16 @@ impl Session {
 
         // Tokenize the full prompt (all messages).
         let full_prompt = chat_template
-            .apply(messages.clone(), None, None)
+            // `enable_thinking=Some(true)` — matches mlx-lm's default. Gemma 4's
+            // chat template branches on this: when true, it injects the
+            // `<|think|>` marker at the top of the system turn (the actual
+            // think-mode trigger) and OMITS the `<|channel>thought\n<channel|>`
+            // trailer after `<|turn>model\n`. When false/undefined, we get the
+            // trailer but no system-level think marker — which is an
+            // inconsistent state the model wasn't trained on, and it causes
+            // the "complete answer then `l l l l l`"/"lapped in jargon" loops
+            // we saw on 31B and 26B long-form responses.
+            .apply(messages.clone(), None, Some(true))
             .map_err(|e| ExecError::Other(e.into()))?;
 
         if std::env::var("PIO_MLX_DEBUG_PROMPT").is_ok() {
@@ -409,7 +418,7 @@ impl Session {
             // `add_generation_prompt: false` so the prefix is a strict prefix
             // of the full tokenization (templates like Gemma append a
             // `<|turn>model\n` suffix otherwise, breaking the prefix check).
-            match chat_template.apply_with_options(sys_messages, None, None, false) {
+            match chat_template.apply_with_options(sys_messages, None, Some(true), false) {
                 Ok(prefix_text) => {
                     match bundle.tokenizer.encode(&prefix_text, true) {
                         Ok(prefix_tokens)
@@ -564,7 +573,7 @@ impl Session {
         );
 
         let delta_text = tpl
-            .apply(new_messages, None, None)
+            .apply(new_messages, None, Some(true))
             .map_err(|e| ExecError::Other(e.into()))?;
 
         if std::env::var("PIO_MLX_DEBUG_PROMPT").is_ok() {

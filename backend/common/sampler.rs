@@ -55,6 +55,32 @@ impl Sampler {
         self.recent.push_back(token);
     }
 
+    /// Detect a tight post-answer token loop — the last `window` emitted
+    /// tokens contain at most `max_unique` distinct values. Gemma 4 26B and
+    /// 31B exhibit this after a complete answer: "...umbrellas! l l l l l l …"
+    /// or "…serviced their door. la la la la …" running to max_tokens. The
+    /// model's *content* is done; it's just not emitting EOT. Callers should
+    /// force an Eos when this returns true.
+    ///
+    /// Defaults tuned conservatively: `window=16` tokens, `max_unique=2`.
+    /// Legitimate prose won't hit this — natural text mixes 5-10+ distinct
+    /// tokens in any 16-token window — but a low-entropy filler loop will.
+    pub fn is_in_token_loop(&self, window: usize, max_unique: usize) -> bool {
+        if self.recent.len() < window {
+            return false;
+        }
+        let mut unique: Vec<u32> = Vec::with_capacity(max_unique + 1);
+        for &t in self.recent.iter().rev().take(window) {
+            if !unique.contains(&t) {
+                if unique.len() >= max_unique {
+                    return false;
+                }
+                unique.push(t);
+            }
+        }
+        true
+    }
+
     /// Apply repetition penalty in-place, matching the llama.cpp convention:
     /// `logit = logit / penalty` when `logit > 0`, `logit * penalty` when
     /// `logit < 0`. Both cases push the logit toward `-inf` when penalty > 1,
