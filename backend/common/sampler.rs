@@ -18,8 +18,8 @@ pub struct Sampler {
     top_p: Option<f32>,
     top_k: Option<i32>,
     /// Repetition penalty factor. `None` or `Some(1.0)` disables. Values
-    /// > 1.0 reduce the probability of recently-emitted tokens; llama.cpp
-    /// default is `1.1`, HuggingFace default is `1.0` (off).
+    /// above `1.0` reduce the probability of recently-emitted tokens;
+    /// llama.cpp default is `1.1`, HuggingFace default is `1.0` (off).
     repetition_penalty: Option<f32>,
     /// Ring buffer of recently emitted token ids (bounded by
     /// [`REPETITION_WINDOW`]). Populated by [`Sampler::observe`] from the

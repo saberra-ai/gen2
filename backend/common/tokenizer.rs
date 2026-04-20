@@ -99,10 +99,10 @@ impl HfTokenizer {
                 stop_ids.push(id);
             }
         }
-        if let Some(id) = eos_id {
-            if !stop_ids.contains(&id) {
-                stop_ids.push(id);
-            }
+        if let Some(id) = eos_id
+            && !stop_ids.contains(&id)
+        {
+            stop_ids.push(id);
         }
         for name in ["<turn|>", "<|eot_id|>", "<|im_end|>", "<end_of_turn>"] {
             if let Some(id) = lookup(name)
