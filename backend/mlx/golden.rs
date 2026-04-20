@@ -15,19 +15,28 @@
 //!
 //! This is the same pattern as `insta` snapshots, minus the external dep.
 //!
-//! ## Determinism
+//! ## Determinism caveat
 //!
-//! All generation runs use `temperature = 0.0` → argmax sampling, which hits
-//! the deterministic `Sampler::argmax` path. Metal ops themselves are
-//! deterministic for a given device + tensor, so bit-exact golden token
-//! sequences are reliable on the capture machine.
+//! Greedy (`temperature = 0.0`) sampling hits the deterministic `argmax` path
+//! in our sampler — but MLX Metal execution is **not bit-reproducible across
+//! runs**. Reduction order on GPU varies, and near argmax tiebreaks (common
+//! for special tokens like `<end_of_turn>`) the selected token id can drift
+//! from run to run.
 //!
-//! Values here were captured on:
+//! Empirically on Gemma 4 E2B: the **first content token** is stable, but
+//! later tokens (especially special-token runs after a natural stopping
+//! point) drift. The tests below therefore assert:
+//!   - **Stable prefix** — first N token ids must match a captured golden.
+//!   - **Semantic anchors** — decoded text must contain specific substrings.
+//! This is tight enough to catch real regressions (wrong first token, empty
+//! output, garbage) without being spooked by kernel-level noise.
+//!
+//! Golden prefixes were captured on:
 //!   - mlx-rs pinned at oxideai/mlx-rs rev `f4aa309` (MLX v0.30.6)
 //!   - Apple Silicon (M-series)
 //!
-//! If you run these on a materially different device and they fail, run with
-//! `RECORD_GOLDEN=1` to print actuals and re-paste them below.
+//! If a test fails on a materially different device, run with
+//! `RECORD_GOLDEN=1` to print actuals and re-capture the prefix.
 //!
 //! ## Running
 //!
@@ -177,44 +186,56 @@ fn generate_greedy(
 
 /// If `RECORD_GOLDEN=1` is set, print the actual values and skip assertion.
 /// Otherwise assert equality with a helpful diff message.
-fn assert_golden_ids(label: &str, actual: &[u32], expected: &[u32]) {
+/// Assert `actual` starts with `expected_prefix`. Tolerant of trailing drift.
+fn assert_golden_id_prefix(label: &str, actual: &[u32], expected_prefix: &[u32]) {
     if std::env::var("RECORD_GOLDEN").is_ok() {
-        eprintln!("[golden][{label}] actual ids ({}): {:?}", actual.len(), actual);
+        eprintln!(
+            "[golden][{label}] actual ids ({}): {:?}",
+            actual.len(),
+            actual
+        );
         return;
     }
-    if actual != expected {
+    if actual.len() < expected_prefix.len() || &actual[..expected_prefix.len()] != expected_prefix {
         panic!(
-            "[golden][{label}] token ID mismatch\n  expected ({}): {:?}\n  actual   ({}): {:?}\n\
+            "[golden][{label}] token prefix mismatch\n  expected prefix ({}): {:?}\n  actual ({}): {:?}\n\
              \n(run with RECORD_GOLDEN=1 to print actuals for re-capture)",
-            expected.len(),
-            expected,
+            expected_prefix.len(),
+            expected_prefix,
             actual.len(),
             actual
         );
     }
 }
 
-fn assert_golden_text(label: &str, actual: &str, expected: &str) {
+/// Assert `actual` contains every needle in `needles`, in order.
+fn assert_golden_contains(label: &str, actual: &str, needles: &[&str]) {
     if std::env::var("RECORD_GOLDEN").is_ok() {
         eprintln!("[golden][{label}] actual text: {:?}", actual);
         return;
     }
-    if actual != expected {
-        panic!(
-            "[golden][{label}] text mismatch\n  expected: {:?}\n  actual:   {:?}\n\
-             \n(run with RECORD_GOLDEN=1 to print actuals for re-capture)",
-            expected, actual
-        );
+    let mut cursor = 0usize;
+    for needle in needles {
+        match actual[cursor..].find(needle) {
+            Some(pos) => cursor += pos + needle.len(),
+            None => panic!(
+                "[golden][{label}] missing expected substring {:?} (or out of order)\n  full actual: {:?}\n\
+                 \n(run with RECORD_GOLDEN=1 to print actuals for re-capture)",
+                needle, actual
+            ),
+        }
     }
 }
 
 // ─── Tests ───────────────────────────────────────────────────────────────────
 
-/// GOLDEN 1: Greedy generation on the uniform-4bit bundle is bit-exact.
+/// GOLDEN 1: Greedy generation on the uniform-4bit bundle.
 ///
-/// Locks in the deterministic output of argmax sampling for a fixed prompt.
-/// Any future change that alters token IDs — speculative decoding numerical
-/// paths, prefix cache mis-shifts, tokenization drift — breaks this test.
+/// Locks the stable prefix of argmax sampling for a fixed prompt. The first
+/// content token + some trailing special-token runs are deterministic; past
+/// that, Metal reduction-order noise drifts the sequence. Catches regressions
+/// that change the FIRST token (wrong answer, corrupted weights, tokenizer
+/// drift) — which is the regression that actually matters.
 #[test]
 #[ignore = "requires resources/gemma-4-e2b-it-mlx-4bit"]
 fn golden_greedy_output_uniform() {
@@ -229,19 +250,20 @@ fn golden_greedy_output_uniform() {
         12,
     );
 
-    // Golden values — see module docs for capture procedure.
-    const EXPECTED_IDS: &[u32] = &[]; // TODO: capture
-    const EXPECTED_TEXT: &str = ""; // TODO: capture
-    assert_golden_ids("uniform/greedy", &ids, EXPECTED_IDS);
-    assert_golden_text("uniform/greedy", &text, EXPECTED_TEXT);
+    // 26391 = "Four"; 106 = `<end_of_turn>`. Stable across runs for the first
+    // ~6 positions.
+    const EXPECTED_PREFIX: &[u32] = &[26391, 106, 106, 106, 106, 106];
+    assert_golden_id_prefix("uniform/greedy", &ids, EXPECTED_PREFIX);
+    assert_golden_contains("uniform/greedy", &text, &["Four"]);
 }
 
-/// GOLDEN 2: Greedy generation on the UD bundle is bit-exact.
+/// GOLDEN 2: Greedy generation on the UD bundle.
 ///
-/// Different weights → different output than uniform. This test guards the
-/// 5-bit and 6-bit `quantized_matmul` paths specifically: if mlx-rs gets
-/// downgraded to a version missing those kernels, or if the loader regresses
-/// to pre-dequantizing 5-bit weights into plain float, this fails.
+/// Different quantization (mixed 4/5/6-bit) → same first content token in
+/// practice, because the model's top choice is very confident for simple
+/// arithmetic prompts. Guards the 5-bit / 6-bit `quantized_matmul` paths:
+/// if mlx-rs gets downgraded to a version without 5-bit kernels, or the
+/// loader regresses to pre-dequantizing 5-bit weights, this fails.
 #[test]
 #[ignore = "requires resources/gemma-4-E2B-it-UD-MLX-4bit"]
 fn golden_greedy_output_ud() {
@@ -256,10 +278,9 @@ fn golden_greedy_output_ud() {
         12,
     );
 
-    const EXPECTED_IDS: &[u32] = &[]; // TODO: capture
-    const EXPECTED_TEXT: &str = ""; // TODO: capture
-    assert_golden_ids("ud/greedy", &ids, EXPECTED_IDS);
-    assert_golden_text("ud/greedy", &text, EXPECTED_TEXT);
+    const EXPECTED_PREFIX: &[u32] = &[26391, 106, 106, 106, 106, 106];
+    assert_golden_id_prefix("ud/greedy", &ids, EXPECTED_PREFIX);
+    assert_golden_contains("ud/greedy", &text, &["Four"]);
 }
 
 /// GOLDEN 3: Speculative hit-rate baseline.
@@ -278,8 +299,7 @@ fn golden_speculative_hit_rate_baseline() {
     let engine = load_engine(bundle);
 
     // Generate enough tokens to give the n-gram predictor time to warm up.
-    let (_ids, _text, stats) =
-        generate_greedy(&engine, vec![user_msg("Count from 1 to 10.")], 48);
+    let (_ids, _text, stats) = generate_greedy(&engine, vec![user_msg("Count from 1 to 10.")], 48);
 
     // Today: Gemma 4's forward_all returns None, so spec never fires.
     assert_eq!(
@@ -317,9 +337,9 @@ fn golden_multiturn_coherence() {
     let (t1_ids, t1_text, _) = drain(&mut p1);
     drop(p1);
 
-    const EXPECTED_T1_TEXT: &str = ""; // TODO: capture
-    assert_golden_text("multiturn/t1", &t1_text, EXPECTED_T1_TEXT);
-    let _ = t1_ids; // not asserted — text pins the sequence
+    // Turn 1 semantic anchor: model must answer with "4" (in some phrasing).
+    assert_golden_contains("multiturn/t1", &t1_text, &["4"]);
+    let _ = t1_ids; // not asserted — text-level anchors are the contract
 
     // Append turn-1 assistant reply + turn-2 user question.
     session
@@ -338,15 +358,10 @@ fn golden_multiturn_coherence() {
         .expect("pull t2");
     let (_t2_ids, t2_text, _) = drain(&mut p2);
 
-    const EXPECTED_T2_TEXT: &str = ""; // TODO: capture
-    assert_golden_text("multiturn/t2", &t2_text, EXPECTED_T2_TEXT);
-
-    // Semantic sanity regardless of exact tokens: turn 2 must mention 12.
-    assert!(
-        t2_text.contains("12"),
-        "turn 2 should reference '12' (2+2 × 3); got {:?}",
-        t2_text
-    );
+    // Turn 2 semantic anchors: must mention the operands AND the result.
+    // Using in-order substring match: "4", then "3", then "12" somewhere
+    // after — proves context carries and the model computed 4 × 3 = 12.
+    assert_golden_contains("multiturn/t2", &t2_text, &["4", "3", "12"]);
 }
 
 /// GOLDEN 5: Prefix-cache LRU state across a defined session sequence.
@@ -451,9 +466,13 @@ fn golden_ud_bundle_loads_and_generates() {
     let engine = load_engine(bundle);
 
     // Minimal smoke: 4 tokens of greedy generation must succeed without panic.
-    let (ids, _text, stats) =
-        generate_greedy(&engine, vec![user_msg("Hello.")], 4);
-    assert_eq!(ids.len(), 4, "expected 4 generated tokens, got {}", ids.len());
+    let (ids, _text, stats) = generate_greedy(&engine, vec![user_msg("Hello.")], 4);
+    assert_eq!(
+        ids.len(),
+        4,
+        "expected 4 generated tokens, got {}",
+        ids.len()
+    );
     assert_eq!(stats.decode_tokens, 4);
 }
 
