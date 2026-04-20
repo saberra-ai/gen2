@@ -242,12 +242,36 @@ pub fn build_gemma4_model(model_dir: &Path) -> Result<(Gemma4Model, ModelConfig)
         .get("text_config")
         .cloned()
         .unwrap_or_else(|| raw.clone());
-    let config: ModelConfig = serde_json::from_value(text_cfg_value).map_err(|e| {
+    let mut config: ModelConfig = serde_json::from_value(text_cfg_value).map_err(|e| {
         ExecError::Other(anyhow::anyhow!(
             "failed to parse Gemma 4 text_config: {}",
             e
         ))
     })?;
+
+    // Gemma 4 ships rope config nested under `rope_parameters` instead of the
+    // flat `rope_theta` / `rope_local_base_freq` / `global_partial_rotary_factor`
+    // fields. If the flat fields are absent and the nested dict is present,
+    // pull per-layer-type values out and seed the flat fields so downstream
+    // construction (Gemma4Model::new, Gemma4TransformerBlock::new) sees them.
+    if let Some(rp) = config.rope_parameters.clone() {
+        let full = rp.get("full_attention");
+        let sliding = rp.get("sliding_attention");
+        let as_f32 = |v: Option<&serde_json::Value>| v.and_then(|x| x.as_f64()).map(|x| x as f32);
+        if let Some(t) = as_f32(full.and_then(|v| v.get("rope_theta"))) {
+            config.rope_theta = t;
+        }
+        if config.rope_local_base_freq.is_none() {
+            if let Some(t) = as_f32(sliding.and_then(|v| v.get("rope_theta"))) {
+                config.rope_local_base_freq = Some(t);
+            }
+        }
+        if config.global_partial_rotary_factor.is_none() {
+            if let Some(f) = as_f32(full.and_then(|v| v.get("partial_rotary_factor"))) {
+                config.global_partial_rotary_factor = Some(f);
+            }
+        }
+    }
 
     let tensors = load_all_tensors(model_dir)?;
     let mut model = Gemma4Model::new(&config);
