@@ -51,6 +51,31 @@ impl Sampler {
         self.inner.sample_from_logits(logits_slice)
     }
 
+    /// Sample a token with an optional grammar mask applied pre-sampling.
+    /// When `grammar` is `Some`, the logits are masked so only grammar-
+    /// valid tokens remain, and the matcher is advanced with the chosen
+    /// token. Falls back to identical behaviour as `sample()` when
+    /// `grammar` is `None`.
+    pub fn sample_with_grammar(
+        &mut self,
+        logits: &Array,
+        grammar: Option<&mut crate::gen2::backend::common::grammar::GrammarMatcher>,
+    ) -> u32 {
+        let Some(g) = grammar else {
+            return self.sample(logits);
+        };
+        let mut buf: Vec<f32> = logits.as_slice::<f32>().to_vec();
+        if let Err(e) = g.apply_mask(&mut buf) {
+            tracing::warn!(?e, "grammar mask application failed; falling back");
+            return self.sample(logits);
+        }
+        let token_id = self.inner.sample_from_logits(&buf);
+        if let Err(e) = g.observe(token_id) {
+            tracing::warn!(?e, "grammar observe failed after sample");
+        }
+        token_id
+    }
+
     /// Record an emitted token for the repetition-penalty window. Call once
     /// per decode step after the token has been committed.
     pub fn observe(&mut self, token: u32) {

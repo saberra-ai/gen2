@@ -133,6 +133,16 @@ impl Session {
         // Weak link back to this session’s state slot
         let state_slot = Arc::downgrade(&self.state);
 
+        // Build the sampler chain. When `gen_spec.grammar` is set we
+        // prepend a grammar sampler built from the same llguidance spec
+        // the MLX and ONNX backends use — `LlamaSampler::llguidance` is
+        // literally the same engine, so grammar semantics stay aligned.
+        let sampler = Self::build_sampler_with_optional_grammar(
+            &self.settings,
+            &gen_spec,
+            &self.bundle,
+        );
+
         let pre_events = self.build_media_events();
         let puller = TokenPuller::new_from_session(
             self.id,
@@ -140,13 +150,92 @@ impl Session {
             self.bundle.clone(),
             state_slot,
             state,
-            Self::sampler_from_settings(&self.settings),
+            sampler,
             gen_spec,
             self.paused.clone(),
             self.stopped.clone(),
             pre_events,
         );
         Ok(puller)
+    }
+
+    /// Build a LlamaSampler chain including an optional grammar
+    /// constraint from `gen_spec.grammar`. Uses `LlamaSampler::llguidance`
+    /// — the SAME llguidance engine the MLX / ONNX backends use — so a
+    /// grammar that works in one backend works in all of them.
+    ///
+    /// Grammar is prepended to the chain so downstream filters (top-k /
+    /// min-p / temperature / dist) only see grammar-valid candidates.
+    fn build_sampler_with_optional_grammar(
+        settings: &Settings,
+        gen_spec: &GenSpec,
+        bundle: &ModelBundle,
+    ) -> LlamaSampler {
+        use crate::gen2::backend::common::grammar::GrammarSpec;
+        let Some(spec) = gen_spec.grammar.clone() else {
+            return Self::sampler_from_settings(settings);
+        };
+        let (kind, data) = match spec {
+            GrammarSpec::JsonObject => ("json_object", "{}".to_string()),
+            GrammarSpec::JsonSchema(schema) => ("json_schema", schema.to_string()),
+            GrammarSpec::Regex(rx) => ("regex", rx),
+            GrammarSpec::Lark(lark) => ("lark", lark),
+        };
+        match LlamaSampler::llguidance(&bundle.model, kind, &data) {
+            Ok(grammar_sampler) => {
+                // Prepend grammar to the base chain. We can't simply
+                // push into the chain_simple Vec because LlamaSampler
+                // takes ownership; rebuild the chain from scratch.
+                Self::sampler_chain_with_grammar(settings, grammar_sampler)
+            }
+            Err(e) => {
+                tracing::warn!(
+                    ?e,
+                    "llama llguidance sampler build failed; falling back unconstrained"
+                );
+                Self::sampler_from_settings(settings)
+            }
+        }
+    }
+
+    /// Build the same sampler chain as `sampler_from_settings` but with
+    /// `grammar_sampler` prepended so logit masking happens BEFORE any
+    /// downstream filter runs. Required because LlamaSampler::chain_simple
+    /// takes ownership of its inputs — we can't modify an already-built
+    /// chain.
+    fn sampler_chain_with_grammar(
+        settings: &Settings,
+        grammar_sampler: LlamaSampler,
+    ) -> LlamaSampler {
+        let mut chain = vec![grammar_sampler];
+        if let Some(penalties) = Self::penalties_sampler(settings) {
+            chain.push(penalties);
+        }
+        if let Some(k) = settings.sampling.top_k {
+            chain.push(LlamaSampler::top_k(k));
+        }
+        let min_p = settings.sampling.min_p.or_else(|| {
+            if settings.sampling.top_p.is_none() {
+                Some(0.05)
+            } else {
+                None
+            }
+        });
+        if let Some(mp) = min_p {
+            chain.push(LlamaSampler::min_p(mp, 1));
+        }
+        if let Some(tp) = settings.sampling.top_p {
+            chain.push(LlamaSampler::top_p(tp, 0));
+        }
+        if let Some(t) = settings.sampling.temperature {
+            chain.push(LlamaSampler::temp(t));
+        }
+        let seed = settings
+            .sampling
+            .seed
+            .unwrap_or_else(|| rand::rng().random());
+        chain.push(LlamaSampler::dist(seed));
+        LlamaSampler::chain_simple(chain)
     }
 
     pub fn save_cache(&self, dst: KvSaveSpec) -> Result<KvSnapshot, ExecError> {

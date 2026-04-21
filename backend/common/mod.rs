@@ -2,6 +2,7 @@
 
 pub(crate) mod chat_template;
 mod fingerprint;
+pub mod grammar;
 mod hf_meta;
 pub mod output_filter;
 pub mod sampler;

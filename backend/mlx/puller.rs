@@ -11,6 +11,7 @@ use super::bundle::ModelBundle;
 use super::ngram::{DRAFT_LEN, NgramPredictor};
 use super::sampler::Sampler;
 use super::session::DecodeState;
+use crate::gen2::backend::common::grammar::GrammarMatcher;
 use crate::gen2::backend::common::output_filter::OutputFilter;
 use crate::gen2::backend::common::stop_matcher::StopMatcher;
 use crate::gen2::engine::{ExecError, ExecutionStats, HookBus, HookEvent};
@@ -46,6 +47,13 @@ pub struct TokenPuller {
     /// terminal-stop (max_tokens / loop detector / explicit stop) pushes
     /// Eos from. Same helper used by the llama and ONNX backends.
     filter: OutputFilter,
+
+    /// Optional grammar-constrained sampler. When set, every step's
+    /// logits are masked so only grammar-valid tokens remain sampleable;
+    /// the matcher is then advanced with the chosen token. Same
+    /// llguidance-backed engine the llama backend uses — grammars that
+    /// work there work here.
+    grammar: Option<GrammarMatcher>,
 
     state_slot: Weak<Mutex<Option<DecodeState>>>,
 }
@@ -107,6 +115,16 @@ impl TokenPuller {
         .with_dry(dry_params)
         .with_xtc(xtc_params);
 
+        let grammar: Option<GrammarMatcher> = gen_spec.grammar.clone().and_then(|spec| {
+            match GrammarMatcher::new(&bundle.tokenizer, spec) {
+                Ok(g) => Some(g),
+                Err(e) => {
+                    tracing::warn!("grammar build failed, continuing unconstrained: {e:?}");
+                    None
+                }
+            }
+        });
+
         Self {
             session_id,
             hooks,
@@ -125,6 +143,7 @@ impl TokenPuller {
             spec_drafted: 0,
             spec_accepted: 0,
             filter: OutputFilter::new(StopMatcher::gemma4_chat_defaults()),
+            grammar,
             state_slot,
         }
     }
@@ -254,9 +273,15 @@ impl TokenPuller {
             let drafts = self.ngram.draft();
             // `PIO_MLX_SPEC=0` forces pure single-token decode — useful for
             // isolating speculative-acceptance effects when benchmarking.
-            let spec_off = std::env::var("PIO_MLX_SPEC")
-                .map(|v| v == "0" || v.eq_ignore_ascii_case("off"))
-                .unwrap_or(false);
+            // Also auto-disabled when a grammar is active: speculative
+            // would need to apply the mask at every position in the k+1
+            // batch AND observe each accepted token in-order, which the
+            // current matcher API doesn't expose cheaply. Single-token
+            // path handles grammar correctly.
+            let spec_off = self.grammar.is_some()
+                || std::env::var("PIO_MLX_SPEC")
+                    .map(|v| v == "0" || v.eq_ignore_ascii_case("off"))
+                    .unwrap_or(false);
             let k = if !drafts.is_empty() && !spec_off {
                 let cap = remaining.map_or(DRAFT_LEN, |r| r.saturating_sub(1).min(DRAFT_LEN));
                 drafts.len().min(cap)
@@ -425,7 +450,7 @@ impl TokenPuller {
         };
 
         // ── Single-token path: sample, check EOS, emit ───────────────────────────
-        let token_id = self.sampler.sample(&logits);
+        let token_id = self.sampler.sample_with_grammar(&logits, self.grammar.as_mut());
         state.last_token = token_id;
 
         // Check EOS / EOT (chat models need both — Gemma 4's `<turn|>`, Llama 3's `<|eot_id|>`).

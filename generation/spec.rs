@@ -57,6 +57,17 @@ pub struct GenSpec {
     /// boundaries. Default (if `None`): backend-specific (2.0 on MLX).
     #[serde(default)]
     pub eot_bias: Option<f32>,
+
+    /// Grammar-constrained decoding specification. When set, every
+    /// sampling step is masked so only tokens compliant with the
+    /// grammar can be chosen. Supports JSON-schema, regex, Lark, and a
+    /// raw JSON-object shorthand — see `common/grammar.rs::GrammarSpec`.
+    /// Note: `specta` can't serialise dynamic JSON bodies, so this field
+    /// is conditionally serde-bounded and excluded from the TS bindings;
+    /// callers construct it in Rust code or via a structured builder.
+    #[serde(default, skip)]
+    #[cfg_attr(feature = "specta", specta(skip))]
+    pub grammar: Option<crate::gen2::backend::common::grammar::GrammarSpec>,
 }
 
 #[cfg(test)]
