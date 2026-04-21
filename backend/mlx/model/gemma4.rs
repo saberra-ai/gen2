@@ -740,6 +740,105 @@ impl Gemma4Model {
             logits
         }
     }
+
+    /// Forward pass that ALSO stashes the post-block hidden state for
+    /// each layer id in `aux_layer_ids`. Returns `(logits, aux_states)`
+    /// where `aux_states[k]` is `[1, seq_len, hidden_size]` — the hidden
+    /// state immediately after layer `aux_layer_ids[k]` (pre-final-norm).
+    ///
+    /// Used by EAGLE-3 speculative decoding: the draft model takes the
+    /// concatenation of these aux states as its feature input.
+    pub fn forward_all_with_aux(
+        &self,
+        tokens: &[u32],
+        offset: usize,
+        cache: &mut KvCache,
+        aux_layer_ids: &[usize],
+    ) -> (Array, Vec<Array>) {
+        let seq_len = tokens.len();
+        let idx: Vec<i32> = tokens.iter().map(|&t| t as i32).collect();
+        let token_indices = Array::from_slice(&idx, &[seq_len as i32]);
+
+        let x0 = self.embed_tokens.embedding_lookup(&token_indices);
+        let scale = Array::from_f32(self.embed_scale);
+        let x0 = x0.multiply(&scale).expect("mlx op");
+        let hidden = self.layers[0].input_layernorm.weight.shape()[0];
+        let mut x = x0.reshape(&[1, seq_len as i32, hidden]).expect("mlx op");
+
+        let n_layers = self.layers.len() as i32;
+        let hpl = self.hidden_per_layer_input as i32;
+        let per_layer: Option<Array> = if hpl > 0 {
+            let per_layer_embed = self.embed_tokens_per_layer.embedding_lookup(&token_indices);
+            let ptl_scale = Array::from_f32(self.embed_tokens_per_layer_scale);
+            let per_layer_embed = per_layer_embed.multiply(&ptl_scale).expect("mlx op");
+            let per_layer_embed = per_layer_embed
+                .reshape(&[1, seq_len as i32, n_layers, hpl])
+                .expect("mlx op");
+            let per_layer_proj = self.per_layer_model_projection.matmul_transpose(&x);
+            let proj_scale = Array::from_f32(self.per_layer_projection_scale);
+            let per_layer_proj = per_layer_proj.multiply(&proj_scale).expect("mlx op");
+            let per_layer_proj = per_layer_proj
+                .reshape(&[1, seq_len as i32, n_layers, hpl])
+                .expect("mlx op");
+            let per_layer_proj = self.per_layer_projection_norm.forward(&per_layer_proj);
+            let mixed = per_layer_proj.add(&per_layer_embed).expect("mlx op");
+            let input_scale = Array::from_f32(self.per_layer_input_scale);
+            Some(mixed.multiply(&input_scale).expect("mlx op"))
+        } else {
+            None
+        };
+
+        let n = self.num_non_shared;
+        let mut aux_states: Vec<Array> = Vec::with_capacity(aux_layer_ids.len());
+
+        for (i, layer) in self.layers.iter().enumerate() {
+            let rope = if layer.attention.is_sliding {
+                &self.local_rope
+            } else {
+                &self.global_rope
+            };
+            let cache_idx = self.cache_slot[i];
+            let is_shared = i >= n;
+            let shared_kv: Option<(Array, Array)> = if is_shared {
+                cache[cache_idx]
+                    .as_ref()
+                    .map(|(k, v)| (k.clone(), v.clone()))
+            } else {
+                None
+            };
+            let per_layer_i = per_layer.as_ref().map(|pl| {
+                let li = i as i32;
+                pl.index((.., .., li..li + 1, ..))
+                    .reshape(&[1, seq_len as i32, hpl])
+                    .expect("mlx op")
+            });
+            x = layer.forward(
+                &x,
+                rope,
+                &mut cache[cache_idx],
+                offset,
+                shared_kv.as_ref(),
+                per_layer_i.as_ref(),
+            );
+            // Stash a clone of the post-block hidden state if this is one
+            // of the configured aux layers. Clone is cheap (mlx refcount).
+            if aux_layer_ids.contains(&i) {
+                aux_states.push(x.clone());
+            }
+        }
+
+        x = self.norm.forward(&x);
+        let logits = self.embed_tokens.matmul_transpose(&x);
+        let logits = if let Some(cap) = self.final_logit_softcapping {
+            let cap_arr = Array::from_f32(cap);
+            let scaled = logits.divide(&cap_arr).expect("mlx op");
+            let tanhed = mlx_rs::ops::tanh(&scaled).expect("mlx op");
+            tanhed.multiply(&cap_arr).expect("mlx op")
+        } else {
+            logits
+        };
+        (logits, aux_states)
+    }
 }
 
 // ─── Layer type helpers ───────────────────────────────────────────────────────

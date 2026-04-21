@@ -11,7 +11,7 @@ mod llama;
 pub mod moe;
 mod norm;
 pub mod quantized;
-mod rope;
+pub(crate) mod rope;
 
 pub use gemma4::Gemma4Model;
 pub use llama::LlamaModel;
@@ -70,6 +70,31 @@ impl Model {
         match self {
             Model::Llama(m) => m.config.num_hidden_layers,
             Model::Gemma4(m) => m.num_non_shared,
+        }
+    }
+
+    /// Variant of `forward_all` that also stashes the post-block hidden
+    /// state for each layer id in `aux_layer_ids`. Returns logits plus
+    /// a `Vec<Array>` with one entry per requested layer (empty for
+    /// backends that haven't wired this up). EAGLE-3 speculative decode
+    /// uses this: the draft model consumes these aux states as its
+    /// feature input.
+    ///
+    /// Only Gemma 4 wires this currently — Llama returns `(logits, vec![])`.
+    pub fn forward_all_with_aux(
+        &self,
+        tokens: &[u32],
+        offset: usize,
+        cache: &mut KvCache,
+        rope: &RotaryEmbedding,
+        aux_layer_ids: &[usize],
+    ) -> Option<(Array, Vec<Array>)> {
+        match self {
+            Model::Llama(m) => Some((
+                m.forward_all(tokens, offset, cache, rope),
+                Vec::new(),
+            )),
+            Model::Gemma4(m) => Some(m.forward_all_with_aux(tokens, offset, cache, aux_layer_ids)),
         }
     }
 }

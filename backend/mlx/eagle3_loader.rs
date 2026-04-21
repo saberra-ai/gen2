@@ -91,6 +91,50 @@ mod tests {
     ///   --features backend-mlx --release eagle3_loader \
     ///   -- --ignored --nocapture
     /// ```
+    /// End-to-end forward-pass smoke test. Loads the real EAGLE-3
+    /// checkpoint, runs one draft step with dummy aux hidden states,
+    /// verifies the returned token id is in target vocab range. Doesn't
+    /// assert numerical correctness (that requires a real target's aux
+    /// states — handled by integration test once task #19 lands) but
+    /// proves the whole forward pipeline compiles, dispatches, and
+    /// returns a valid id without shape / dtype errors.
+    #[test]
+    #[ignore = "requires TEST_EAGLE3_DIR — runs ~1GB forward pass"]
+    fn forward_step_produces_valid_target_token() {
+        use super::super::model::rope::RotaryEmbedding;
+        use mlx_rs::Array;
+
+        let Ok(dir) = std::env::var("TEST_EAGLE3_DIR") else {
+            eprintln!("TEST_EAGLE3_DIR not set — skipping");
+            return;
+        };
+        let model = load_from_dir(&std::path::PathBuf::from(dir)).expect("load");
+        let cfg = &model.cfg.transformer_layer_config;
+        let h = cfg.hidden_size;
+        let aux_dim = model.cfg.aux_concat_dim();
+
+        // Dummy aux: [1, 1, 3*H] of small random values.
+        let data: Vec<f32> = (0..aux_dim).map(|i| (i as f32) * 1e-4).collect();
+        let aux = Array::from_slice(&data, &[1, 1, aux_dim as i32]);
+
+        let rope = RotaryEmbedding::new(cfg.head_dim, cfg.max_position_embeddings, cfg.rope_theta);
+        let last_tok: u32 = 42; // arbitrary target-vocab token
+        let (next_tok, prenorm) = model
+            .forward_step_argmax(last_tok, &aux, 0, &rope)
+            .expect("forward");
+        assert!(
+            (next_tok as usize) < cfg.vocab_size,
+            "predicted target id {next_tok} out of target vocab ({})",
+            cfg.vocab_size
+        );
+        assert_eq!(
+            prenorm.shape(),
+            &[1, 1, h as i32],
+            "prenorm hidden shape mismatch"
+        );
+        println!("eagle3 forward ok: draft predicted target token {next_tok}");
+    }
+
     #[test]
     #[ignore = "requires TEST_EAGLE3_DIR pointing at an EAGLE-3 checkpoint"]
     fn loads_and_verifies_shapes() {

@@ -130,16 +130,39 @@ impl TokenPuller {
         });
 
         // Resolve speculative mode: explicit `GenSpec.speculative` wins,
-        // else the `PIO_MLX_SPEC_MODE` env override, else default (Ngram).
+        // else the `PIO_MLX_SPEC_MODE` env override, else default (Lookahead).
         let spec_mode = gen_spec
             .speculative
+            .clone()
             .or_else(|| {
                 std::env::var("PIO_MLX_SPEC_MODE")
                     .ok()
                     .and_then(|s| SpeculativeMode::from_str_opt(&s))
             })
             .unwrap_or_default();
-        let predictor = spec_mode.build();
+        // EAGLE-3 gets backend-specific handling: load the draft model
+        // from disk and wrap in `EagleDraftPredictor` (which consumes
+        // the target's aux hidden states). Other modes use the common
+        // `build()` path.
+        let predictor: Box<dyn SpeculativePredictor> = match &spec_mode {
+            SpeculativeMode::Eagle3 { model_path } => {
+                match super::eagle3_loader::load_from_dir(std::path::Path::new(model_path)) {
+                    Ok(draft) => {
+                        tracing::info!(model_path, "EAGLE-3 draft model loaded");
+                        Box::new(super::eagle_predictor::EagleDraftPredictor::new(draft))
+                    }
+                    Err(e) => {
+                        tracing::warn!(
+                            ?e,
+                            model_path,
+                            "EAGLE-3 load failed; falling back to Lookahead"
+                        );
+                        SpeculativeMode::Lookahead.build()
+                    }
+                }
+            }
+            _ => spec_mode.clone().build(),
+        };
 
         Self {
             session_id,

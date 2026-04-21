@@ -60,6 +60,9 @@
 
 use anyhow::{Context, Result};
 use mlx_rs::Array;
+use mlx_rs::ops::indexing::IndexOp;
+
+use super::rope::RotaryEmbedding;
 
 /// EAGLE-3 draft-model configuration. Mirrors the HuggingFace
 /// `Eagle3SpeculatorConfig` shape so we can deserialize their
@@ -228,6 +231,233 @@ fn expect_shape(name: &str, arr: &Array, expected: &[i32]) -> Result<()> {
         );
     }
     Ok(())
+}
+
+impl EagleDraftModel {
+    /// Single-step greedy draft. Produces the next target-vocab token id
+    /// given the last emitted token and the target model's auxiliary
+    /// hidden states at that position.
+    ///
+    /// Ports the vLLM reference forward pass
+    /// (`vllm/model_executor/models/llama_eagle3.py`) for layer_idx=0.
+    /// All operations run on position `pos` (offset from sequence start)
+    /// for RoPE. Batch size 1, sequence length 1.
+    ///
+    /// * `last_token_id`  — target-vocab id of the last accepted token.
+    /// * `aux_hidden_states` — `[1, 1, num_aux_layers * hidden_size]`:
+    ///   concatenated hidden states from the target at the
+    ///   configured aux layers (e.g. [2, 15, 27] for Gemma 4 26B).
+    /// * `pos` — absolute position index for RoPE (target's cur_pos).
+    /// * `rope` — precomputed RoPE table (theta=10000, head_dim=256 for
+    ///   Gemma 4 26B).
+    ///
+    /// Returns `(target_token_id, draft_hidden_prenorm)`. The prenorm
+    /// state can be used to chain additional draft steps (EAGLE-3's
+    /// autoregressive K>1 path — handled by a separate iterative
+    /// wrapper; this method is the single-step primitive).
+    pub fn forward_step_argmax(
+        &self,
+        last_token_id: u32,
+        aux_hidden_states: &Array,
+        pos: usize,
+        rope: &RotaryEmbedding,
+    ) -> Result<(u32, Array)> {
+        let cfg = &self.cfg.transformer_layer_config;
+        let hidden_size = cfg.hidden_size as i32;
+        let head_dim = cfg.head_dim as i32;
+        let n_heads = cfg.num_attention_heads as i32;
+        let n_kv = cfg.num_key_value_heads as i32;
+        let eps = cfg.rms_norm_eps;
+
+        // ── 1. Embed last token → [1, 1, H] ──────────────────────────
+        // Look up the embedding row. embed_tokens is [V_target, H].
+        let ids =
+            Array::from_slice(&[last_token_id as i32], &[1, 1]);
+        let embeds = self
+            .embed_tokens
+            .index(&ids) // [1, 1, H]
+            .reshape(&[1, 1, hidden_size])
+            .context("eagle3 embed reshape")?;
+
+        // ── 2. Combine aux hidden states via fc: [1, 1, 3H] → [1, 1, H] ──
+        let hidden = matmul_transpose(aux_hidden_states, &self.fc);
+
+        // ── 3. Layer-0 forward (layer_idx == 0 path) ──────────────────
+        //   a. embeds = input_layernorm(embeds)
+        //   b. if norm_before_residual:
+        //        hidden = hidden_norm(hidden); residual = hidden
+        //      else:
+        //        residual = hidden; hidden = hidden_norm(hidden)
+        //   c. x = concat(embeds, hidden, dim=-1)  [1, 1, 2H]
+        //   d. attn_out = self_attn(x)  [1, 1, H]
+        //   e. hidden = residual + attn_out; residual = hidden
+        //      normed = post_attention_layernorm(hidden)
+        //   f. mlp_out = swiglu(normed)
+        //   g. hidden = residual + mlp_out
+        let embeds = rms_norm(&embeds, &self.input_layernorm, eps);
+        let (hidden, residual) = if self.cfg.norm_before_residual {
+            let h = rms_norm(&hidden, &self.hidden_norm, eps);
+            (h.clone(), h)
+        } else {
+            let res = hidden.clone();
+            let h = rms_norm(&hidden, &self.hidden_norm, eps);
+            (h, res)
+        };
+        let x = mlx_rs::ops::concatenate_axis(&[&embeds, &hidden], -1)
+            .context("concat embeds+hidden")?;
+
+        let attn_out = self.self_attn_forward(&x, pos, n_heads, n_kv, head_dim, rope)?;
+        let hidden = residual.add(&attn_out).context("residual add attn")?;
+        let residual = hidden.clone();
+        let normed = rms_norm(&hidden, &self.post_attention_layernorm, eps);
+        let mlp_out = self.mlp_forward(&normed);
+        let hidden = residual.add(&mlp_out).context("residual add mlp")?;
+
+        // ── 4. Final norm + lm_head → draft-vocab logits ─────────────
+        let hidden_prenorm = hidden.clone();
+        let normed = rms_norm(&hidden, &self.norm, eps);
+        let draft_logits = matmul_transpose(&normed, &self.lm_head); // [1, 1, 32000]
+
+        // ── 5. Greedy argmax over draft vocab, map to target vocab ───
+        let draft_id = mlx_rs::ops::indexing::argmax_axis(&draft_logits, -1, None)
+            .context("argmax draft logits")?; // [1, 1] i32
+        let draft_idx_i64: i64 = draft_id.item::<i32>() as i64;
+        // d2t is i64[32000]; lookup position draft_idx.
+        let target_id_i64: i64 = self
+            .d2t
+            .index(draft_idx_i64 as i32)
+            .item::<i64>();
+        let target_id = target_id_i64 as u32;
+        Ok((target_id, hidden_prenorm))
+    }
+
+    /// Self-attention forward for EAGLE-3 layer 0.
+    ///
+    /// Unlike a standard decoder layer, the input has dim `2H` (concat
+    /// of embeds + hidden), so q/k/v project from `2H → q_out` / `kv_out`.
+    /// The output is `[1, 1, H]` after o_proj.
+    ///
+    /// Single-token path (T=1): no KV cache needed since EAGLE runs
+    /// fresh per draft step. Full attention over the single query.
+    fn self_attn_forward(
+        &self,
+        x: &Array,
+        pos: usize,
+        n_heads: i32,
+        n_kv: i32,
+        head_dim: i32,
+        rope: &RotaryEmbedding,
+    ) -> Result<Array> {
+        // Projections: [1, 1, 2H] → q: [1, 1, n_heads*head_dim], k/v: [1, 1, n_kv*head_dim]
+        let q = matmul_transpose(x, &self.q_proj);
+        let k = matmul_transpose(x, &self.k_proj);
+        let v = matmul_transpose(x, &self.v_proj);
+
+        // Reshape to [1, 1, heads, head_dim] → [1, heads, 1, head_dim]
+        let q = q
+            .reshape(&[1, 1, n_heads, head_dim])
+            .context("q reshape")?
+            .transpose_axes(&[0, 2, 1, 3])
+            .context("q transpose")?;
+        let k = k
+            .reshape(&[1, 1, n_kv, head_dim])
+            .context("k reshape")?
+            .transpose_axes(&[0, 2, 1, 3])
+            .context("k transpose")?;
+        let v = v
+            .reshape(&[1, 1, n_kv, head_dim])
+            .context("v reshape")?
+            .transpose_axes(&[0, 2, 1, 3])
+            .context("v transpose")?;
+
+        // RoPE at pos (offset). Same RoPE table as the target.
+        let q = rope.forward(&q, pos);
+        let k = rope.forward(&k, pos);
+
+        // GQA: repeat KV heads to match Q heads.
+        let (k, v) = if n_kv < n_heads {
+            let repeats = (n_heads / n_kv) as usize;
+            (repeat_kv(&k, repeats)?, repeat_kv(&v, repeats)?)
+        } else {
+            (k, v)
+        };
+
+        // Scaled dot-product attention (T_kv=1, T_q=1; causal is trivial).
+        let scale = 1.0f32 / (head_dim as f32).sqrt();
+        let scores = q
+            .matmul(&k.transpose_axes(&[0, 1, 3, 2]).context("k^T")?)
+            .context("q @ k^T")?;
+        let scale_arr = Array::from_f32(scale);
+        let scores = scores.multiply(&scale_arr).context("scale scores")?;
+        let probs = mlx_rs::ops::softmax_axes(&scores, &[-1], None)
+            .context("attn softmax")?;
+        let attn = probs.matmul(&v).context("attn @ v")?;
+
+        // Transpose back: [1, heads, 1, head_dim] → [1, 1, heads*head_dim]
+        let attn = attn
+            .transpose_axes(&[0, 2, 1, 3])
+            .context("attn transpose back")?
+            .reshape(&[1, 1, n_heads * head_dim])
+            .context("attn reshape")?;
+
+        // Output projection.
+        Ok(matmul_transpose(&attn, &self.o_proj))
+    }
+
+    /// SwiGLU MLP: down(silu(gate(x)) * up(x)).
+    fn mlp_forward(&self, x: &Array) -> Array {
+        let gate = matmul_transpose(x, &self.mlp_gate_proj);
+        let sig = mlx_rs::ops::sigmoid(&gate).expect("sigmoid");
+        let gate = gate.multiply(&sig).expect("silu");
+        let up = matmul_transpose(x, &self.mlp_up_proj);
+        let hidden = gate.multiply(&up).expect("gate*up");
+        matmul_transpose(&hidden, &self.mlp_down_proj)
+    }
+}
+
+/// Plain-weight matmul with transpose, mirroring
+/// `quantized::Weight::matmul_transpose` for un-quantized tensors.
+/// `w` is stored as `(out_features, in_features)`; `x @ w.T`.
+fn matmul_transpose(x: &Array, w: &Array) -> Array {
+    // mlx-rs auto-broadcasts the leading dims; matmul handles it.
+    let dims = w.shape().len();
+    let w_t_axes: Vec<i32> = (0..dims as i32 - 2).chain([dims as i32 - 1, dims as i32 - 2]).collect();
+    let w_t = w.transpose_axes(&w_t_axes).expect("w transpose");
+    x.matmul(&w_t).expect("matmul")
+}
+
+/// Standard RMSNorm (no Gemma +1 offset) — EAGLE-3 uses plain LlamaRMSNorm.
+fn rms_norm(x: &Array, weight: &Array, eps: f32) -> Array {
+    let x_sq = x.multiply(x).expect("x*x");
+    let variance = x_sq.mean_axis(-1, true).expect("mean");
+    let eps_a = Array::from_f32(eps);
+    let var_eps = variance.add(&eps_a).expect("var+eps");
+    let norm_factor = var_eps.rsqrt().expect("rsqrt");
+    let normalized = x.multiply(&norm_factor).expect("x * norm");
+    normalized.multiply(weight).expect("norm * weight")
+}
+
+/// Repeat KV heads along axis 1 by the given factor (GQA → MHA).
+/// `kv`: `[B, n_kv, T, head_dim]` → `[B, n_kv * repeats, T, head_dim]`.
+fn repeat_kv(kv: &Array, repeats: usize) -> Result<Array> {
+    if repeats == 1 {
+        return Ok(kv.clone());
+    }
+    let shape = kv.shape();
+    let b = shape[0];
+    let n_kv = shape[1];
+    let t = shape[2];
+    let hd = shape[3];
+    // Expand: [B, n_kv, 1, T, hd] → [B, n_kv, repeats, T, hd] → [B, n_kv*repeats, T, hd]
+    let expanded = kv
+        .reshape(&[b, n_kv, 1, t, hd])
+        .context("kv reshape for repeat")?;
+    let broadcast_shape: Vec<i32> = vec![b, n_kv, repeats as i32, t, hd];
+    let broadcasted = mlx_rs::ops::broadcast_to(&expanded, &broadcast_shape)
+        .context("broadcast kv")?;
+    broadcasted
+        .reshape(&[b, n_kv * repeats as i32, t, hd])
+        .context("kv reshape after repeat")
 }
 
 #[cfg(test)]

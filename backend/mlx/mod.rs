@@ -2,6 +2,7 @@
 
 mod bundle;
 pub(crate) mod eagle3_loader;
+pub(crate) mod eagle_predictor;
 mod engine;
 #[cfg(test)]
 mod golden;

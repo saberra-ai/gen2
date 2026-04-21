@@ -34,12 +34,45 @@ use std::collections::HashMap;
 /// validated against the MLX speculative path.
 pub const DEFAULT_DRAFT_LEN: usize = 4;
 
+/// Side-channel inputs a predictor may need on top of token history —
+/// used by EAGLE-like drafters that consume the target model's
+/// intermediate hidden states.
+///
+/// Backends that run hidden-state-aware predictors construct one of
+/// these per `draft()` call and pass via
+/// [`SpeculativePredictor::draft_with_context`]. Token-only predictors
+/// (Ngram / PLD / Hybrid) ignore the context entirely via the default
+/// trait impl.
+#[derive(Debug, Clone)]
+pub struct DraftContext<'a> {
+    /// Last accepted token id (target vocab).
+    pub last_token: u32,
+    /// Target model's auxiliary hidden states, one `[1, 1, H]` array
+    /// per configured aux layer. EAGLE-3 concatenates these along the
+    /// last axis before running its single-layer transformer.
+    ///
+    /// The lifetime matches the backend's forward-pass temporary —
+    /// predictors that consume them must do so synchronously within
+    /// the call.
+    pub aux_hidden_states: &'a [mlx_rs::Array],
+    /// Absolute sequence position of `last_token` (for RoPE).
+    pub pos: usize,
+}
+
 /// Object-safe interface every speculative predictor implements.
 pub trait SpeculativePredictor: Send {
     /// Produce up to `max` candidate tokens continuing from the current
     /// context. Return empty when the predictor has no confident guess
     /// (caller falls back to single-token decode).
     fn draft(&mut self, max: usize) -> Vec<u32>;
+
+    /// Hidden-state-aware draft. Default impl delegates to `draft`,
+    /// so token-only predictors (Ngram / PLD / Hybrid / Noop) don't
+    /// need to implement this. EAGLE-3 / Medusa / EAGLE-2 overrides
+    /// to consume `ctx.aux_hidden_states`.
+    fn draft_with_context(&mut self, _ctx: &DraftContext<'_>, max: usize) -> Vec<u32> {
+        self.draft(max)
+    }
 
     /// Observe a token that was ACCEPTED by the target model. Every
     /// accepted token goes through this exactly once, in order.
@@ -51,6 +84,22 @@ pub trait SpeculativePredictor: Send {
 
     /// Name for metrics / debug output.
     fn name(&self) -> &'static str;
+
+    /// Whether this predictor consumes the draft context (aux hidden
+    /// states etc). Backends can use this to decide whether to compute
+    /// aux states on the target side — skip the work when all active
+    /// predictors are token-only. Default: false.
+    fn needs_context(&self) -> bool {
+        false
+    }
+
+    /// Target-model layer ids whose post-block hidden states the
+    /// predictor needs in `DraftContext::aux_hidden_states`. Empty for
+    /// token-only predictors (default). The backend calls this once
+    /// to know which layers to stash from the target's forward pass.
+    fn aux_layer_ids(&self) -> &[usize] {
+        &[]
+    }
 }
 
 // ─── N-gram (rolling trigram table) ────────────────────────────────────
@@ -347,13 +396,21 @@ impl SpeculativeMode {
             Self::Pld => Box::new(PromptLookupPredictor::new()),
             Self::Lookahead => Box::new(HybridPredictor::new()),
             Self::Eagle3 { model_path } => {
+                // Backends that have wired EAGLE-3 fully (via the
+                // `needs_context` path) will intercept this mode BEFORE
+                // hitting `build()` and construct a real predictor
+                // with tokenizer + target-model hooks in hand. This
+                // placeholder path is the fallback for backends that
+                // haven't wired it yet — drafts empty, falls back to
+                // single-token decode, emits a clear trace.
                 tracing::warn!(
-                    model_path,
-                    "EAGLE-3 speculator requested but draft-model forward path is not yet \
-                     wired for this backend; falling back to Lookahead. See \
-                     common/speculative.rs::SpeculativeMode::Eagle3 for integration path."
+                    model_path = %model_path,
+                    "EAGLE-3 draft loaded but backend's aux-hidden-state plumbing is not \
+                     wired — drafts will be empty (single-token fallback). See task #21."
                 );
-                Box::new(HybridPredictor::new())
+                Box::new(Eagle3PlaceholderPredictor {
+                    model_path: model_path.clone(),
+                })
             }
         }
     }
@@ -362,6 +419,25 @@ impl SpeculativeMode {
 impl Default for SpeculativeMode {
     fn default() -> Self {
         Self::Lookahead
+    }
+}
+
+/// Placeholder predictor used while an EAGLE-3 matcher isn't fully
+/// wired in the active backend. Holds the resolved `model_path` so
+/// callers can surface it in telemetry; drafts empty (falls back to
+/// single-token decode) until the backend replaces it with a real
+/// `EagleDraftPredictor` (in `mlx::eagle_predictor`).
+pub struct Eagle3PlaceholderPredictor {
+    pub model_path: String,
+}
+
+impl SpeculativePredictor for Eagle3PlaceholderPredictor {
+    fn draft(&mut self, _max: usize) -> Vec<u32> {
+        Vec::new()
+    }
+    fn observe(&mut self, _token: u32) {}
+    fn name(&self) -> &'static str {
+        "eagle3_placeholder"
     }
 }
 
