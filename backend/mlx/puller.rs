@@ -59,6 +59,17 @@ pub struct TokenPuller {
     /// work there work here.
     grammar: Option<GrammarMatcher>,
 
+    /// Target-layer ids the active predictor wants aux hidden states
+    /// from. Populated at construction from `predictor.aux_layer_ids()`;
+    /// empty for token-only predictors (Ngram / PLD / Lookahead / Off).
+    /// When non-empty, the puller routes forward calls through
+    /// `Model::forward_all_with_aux` and stashes the aux states.
+    aux_layer_ids: Vec<usize>,
+    /// Aux hidden states at the last generated position (one per layer
+    /// in `aux_layer_ids`, each [1, 1, H]). Populated by the forward
+    /// pass, consumed by the next `draft_with_context()` call.
+    pending_aux: Option<Vec<mlx_rs::Array>>,
+
     state_slot: Weak<Mutex<Option<DecodeState>>>,
 }
 
@@ -163,6 +174,7 @@ impl TokenPuller {
             }
             _ => spec_mode.clone().build(),
         };
+        let predictor_aux_layer_ids: Vec<usize> = predictor.aux_layer_ids().to_vec();
 
         Self {
             session_id,
@@ -183,6 +195,8 @@ impl TokenPuller {
             spec_accepted: 0,
             filter: OutputFilter::new(StopMatcher::gemma4_chat_defaults()),
             grammar,
+            aux_layer_ids: predictor_aux_layer_ids,
+            pending_aux: None,
             state_slot,
         }
     }
@@ -325,6 +339,20 @@ impl TokenPuller {
                 remaining.map_or(DEFAULT_DRAFT_LEN, |r| r.saturating_sub(1).min(DEFAULT_DRAFT_LEN));
             let drafts = if spec_off || draft_cap == 0 {
                 Vec::new()
+            } else if self.predictor.needs_context() {
+                // Hidden-state-aware predictor (EAGLE-3): draft only if
+                // we have aux states stashed from the prior step.
+                if let Some(aux_refs) = self.pending_aux.as_ref() {
+                    let ctx = crate::gen2::backend::common::speculative::DraftContext {
+                        last_token: state.last_token,
+                        aux_hidden_states: aux_refs,
+                        pos: state.cur_pos,
+                    };
+                    self.predictor.draft_with_context(&ctx, draft_cap)
+                } else {
+                    // First step after prefill — aux not yet stashed.
+                    Vec::new()
+                }
             } else {
                 self.predictor.draft(draft_cap)
             };
@@ -343,10 +371,26 @@ impl TokenPuller {
                 let old_cur_pos = state.cur_pos;
                 let bundle = &self.bundle;
 
+                let needs_aux = !self.aux_layer_ids.is_empty();
+                let aux_layer_ids_clone = self.aux_layer_ids.clone();
                 let spec_result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-                    bundle
-                        .model
-                        .forward_all(&input, old_cur_pos, &mut state.cache, &bundle.rope)
+                    if needs_aux {
+                        bundle
+                            .model
+                            .forward_all_with_aux(
+                                &input,
+                                old_cur_pos,
+                                &mut state.cache,
+                                &bundle.rope,
+                                &aux_layer_ids_clone,
+                            )
+                            .map(|(logits, aux)| (logits, Some(aux)))
+                    } else {
+                        bundle
+                            .model
+                            .forward_all(&input, old_cur_pos, &mut state.cache, &bundle.rope)
+                            .map(|logits| (logits, None))
+                    }
                 }));
 
                 match spec_result {
@@ -358,7 +402,7 @@ impl TokenPuller {
                     Ok(None) => {
                         // Model doesn't support batched speculative decode — fall through.
                     }
-                    Ok(Some(all_logits)) => {
+                    Ok(Some((all_logits, aux_batch))) => {
                         // Sample from every position in the batch: (1, k+1, vocab_size)
                         let mut sampled: Vec<u32> = Vec::with_capacity(k + 1);
                         for p in 0..=(k as i32) {
@@ -403,6 +447,21 @@ impl TokenPuller {
                         state.cache_len = old_cache_len + total;
                         state.last_token = bonus;
                         state.maybe_evict();
+
+                        // Stash aux hidden states at the accepted position
+                        // (= `accepted`, zero-indexed within the k+1 batch)
+                        // for the next EAGLE draft call. The "accepted"
+                        // position is where bonus was sampled; we want its
+                        // aux state so the next draft continues from
+                        // there.
+                        if let Some(aux_arr) = aux_batch.as_ref() {
+                            let idx = accepted as i32;
+                            let last_pos_aux: Vec<mlx_rs::Array> = aux_arr
+                                .iter()
+                                .map(|a| a.index((0..1, idx..idx + 1, ..)))
+                                .collect();
+                            self.pending_aux = Some(last_pos_aux);
+                        }
                         // state is not accessed below this point in this branch
 
                         if self.first_token_us.is_none() {
@@ -479,19 +538,57 @@ impl TokenPuller {
             let token = state.last_token;
             let pos = state.cur_pos;
             let bundle = &self.bundle;
+            let needs_aux = !self.aux_layer_ids.is_empty();
+            let aux_layer_ids = self.aux_layer_ids.clone();
             let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-                bundle
-                    .model
-                    .forward(&[token], pos, &mut state.cache, &bundle.rope)
+                if needs_aux {
+                    // EAGLE-3 path: get aux states at the configured
+                    // target layers along with logits.
+                    let (logits, aux) = bundle
+                        .model
+                        .forward_all_with_aux(
+                            &[token],
+                            pos,
+                            &mut state.cache,
+                            &bundle.rope,
+                            &aux_layer_ids,
+                        )
+                        .expect("forward_all_with_aux should succeed");
+                    let s = logits.shape();
+                    let seq = s[1];
+                    let last_logits = logits.index((0..1, (seq - 1)..seq, ..));
+                    (last_logits, Some(aux))
+                } else {
+                    let logits =
+                        bundle
+                            .model
+                            .forward(&[token], pos, &mut state.cache, &bundle.rope);
+                    (logits, None)
+                }
             }));
-            match result {
-                Ok(arr) => arr,
+            let (logits_arr, aux_opt) = match result {
+                Ok((l, a)) => (l, a),
                 Err(e) => {
                     self.done = true;
                     self.filter.push_err(ExecError::OutOfMemory(panic_msg(e)));
                     return;
                 }
+            };
+            // Stash last-position aux for the next draft_with_context call.
+            if let Some(aux) = aux_opt {
+                let last_pos_aux: Vec<mlx_rs::Array> = aux
+                    .iter()
+                    .map(|a| {
+                        let s = a.shape();
+                        let seq = s[1];
+                        a.index((0..1, (seq - 1)..seq, ..))
+                    })
+                    .collect();
+                self.pending_aux = Some(last_pos_aux);
             }
+            // Unwrap to Ok so the subsequent `match result` below works
+            // without restructuring the surrounding function.
+            logits_arr
         };
 
         // ── Single-token path: sample, check EOS, emit ───────────────────────────
