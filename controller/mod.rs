@@ -296,6 +296,11 @@ pub enum ControllerEvent {
     /// A newly generated token fragment.
     Token(String),
     MediaBoundary(crate::gen2::generation::MediaBoundary),
+    /// A structured tool-call extracted by the cross-backend tool-call
+    /// parser (see `gen2/backend/common/tool_calls.rs`). The payload's
+    /// `arguments` field is raw JSON text; downstream consumers validate
+    /// against their own tool schema.
+    ToolCall(crate::gen2::generation::ToolCall),
     /// End-of-sequence reached (generation complete).
     Eos,
     /// Generation was stopped by user request.

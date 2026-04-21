@@ -666,6 +666,10 @@ pub(super) fn tick_active_chats(state: &mut ControllerState, tick_busy: Duration
                 Ok(Some(Ok(TokenEvent::MediaBoundary(boundary)))) => {
                     emit(ControllerEvent::MediaBoundary(boundary));
                 }
+                Ok(Some(Ok(TokenEvent::ToolCall(tc)))) => {
+                    emit(ControllerEvent::ToolCall(tc));
+                    chat.last_used = std::time::Instant::now();
+                }
                 Ok(Some(Ok(TokenEvent::Paused))) => {}
                 Ok(Some(Ok(TokenEvent::Special(_)))) => {}
                 Ok(Some(Err(e))) => {

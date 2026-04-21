@@ -11,9 +11,10 @@ use super::bundle::ModelBundle;
 use super::ngram::{DRAFT_LEN, NgramPredictor};
 use super::sampler::Sampler;
 use super::session::DecodeState;
-use crate::gen2::backend::common::stop_matcher::{StopMatcher, StopState};
+use crate::gen2::backend::common::output_filter::OutputFilter;
+use crate::gen2::backend::common::stop_matcher::StopMatcher;
 use crate::gen2::engine::{ExecError, ExecutionStats, HookBus, HookEvent};
-use crate::gen2::generation::{GenSpec, Token, TokenEvent};
+use crate::gen2::generation::{GenSpec, TokenEvent};
 
 pub struct TokenPuller {
     session_id: u64,
@@ -24,8 +25,6 @@ pub struct TokenPuller {
     sampler: Sampler,
     /// N-gram predictor — warms up during decode; produces drafts after ~3 tokens.
     ngram: NgramPredictor,
-    /// Tokens buffered from the most recent speculative batch, drained one per call.
-    pending: VecDeque<Result<TokenEvent, ExecError>>,
 
     prompt_tokens: usize,
     produced: usize,
@@ -41,14 +40,12 @@ pub struct TokenPuller {
     /// Cumulative draft tokens accepted by the target model.
     spec_accepted: usize,
 
-    /// Multi-character stop-sequence matcher (llama.cpp-style). Catches the
-    /// "model writes `\nuser\n` in plain text" failure mode that token-level
-    /// stop ids miss under aggressive quantization.
-    stop_matcher: StopMatcher,
-    /// Tokens whose text is provisionally buffered while the stop matcher
-    /// reports a partial-suffix match; released as `Token` events once the
-    /// match resolves (Clean) or dropped / trimmed on Full.
-    held: VecDeque<(u32, String)>,
+    /// Shared cross-backend token-emit filter: runs every sampled token
+    /// through the stop-matcher with hold-queue semantics, owns the pending
+    /// event queue that the Iterator drains, and is the one place a
+    /// terminal-stop (max_tokens / loop detector / explicit stop) pushes
+    /// Eos from. Same helper used by the llama and ONNX backends.
+    filter: OutputFilter,
 
     state_slot: Weak<Mutex<Option<DecodeState>>>,
 }
@@ -118,7 +115,6 @@ impl TokenPuller {
             state: Some(state),
             sampler,
             ngram: NgramPredictor::new(),
-            pending: VecDeque::new(),
             produced: 0,
             max_tokens: gen_spec.max_tokens,
             paused,
@@ -128,110 +124,8 @@ impl TokenPuller {
             done: false,
             spec_drafted: 0,
             spec_accepted: 0,
-            stop_matcher: StopMatcher::new(StopMatcher::gemma4_chat_defaults()),
-            held: VecDeque::new(),
+            filter: OutputFilter::new(StopMatcher::gemma4_chat_defaults()),
             state_slot,
-        }
-    }
-
-    /// Resolve the held queue on a terminal stop (max_tokens, stop_id,
-    /// loop detector, explicit stop). Held tokens are held because they
-    /// were a partial-suffix match against a stop pattern; resolving on
-    /// a different terminal condition means we can't distinguish "the
-    /// model was about to complete a fake-turn pattern" from "coincidental
-    /// suffix match in legitimate content". Dropping is strictly safer
-    /// than emitting — worst case we lose a few trailing legit characters,
-    /// best case we strip exactly the garbage the partial was pointed at.
-    /// Matches llama.cpp's stream behaviour where held text is never
-    /// sent once `has_next_token` goes false.
-    fn drop_held(&mut self) {
-        self.held.clear();
-        self.stop_matcher.reset();
-    }
-
-    /// Feed a freshly-decoded token + text through the stop matcher and
-    /// classify what to do with it. Mirrors llama.cpp's server logic:
-    ///   - `Clean` → flush held queue into `pending` as Token events and
-    ///     reset the matcher; generation continues normally.
-    ///   - `Partial` → keep holding; caller should sample another token.
-    ///   - `Full` → emit the portion of held text before the stop pattern,
-    ///     drop the rest, push Eos into `pending`, mark done.
-    /// Returns `true` if there's a token ready in `pending` (or stop fired);
-    /// `false` if the caller should sample again before returning.
-    fn filter_through_stop_matcher(&mut self, token_id: u32, text: String) -> bool {
-        if self.stop_matcher.is_empty() {
-            // Fast path: no patterns configured — emit directly.
-            self.pending.push_back(Ok(TokenEvent::Token(Token {
-                id: token_id,
-                text,
-                logprob: None,
-            })));
-            return true;
-        }
-        let state = self.stop_matcher.push(&text);
-        self.held.push_back((token_id, text));
-        match state {
-            StopState::Clean => {
-                for (tid, t) in self.held.drain(..) {
-                    self.pending.push_back(Ok(TokenEvent::Token(Token {
-                        id: tid,
-                        text: t,
-                        logprob: None,
-                    })));
-                }
-                self.stop_matcher.reset();
-                true
-            }
-            StopState::Partial { .. } => {
-                // Keep buffering — caller should sample another token.
-                false
-            }
-            StopState::Full { emit_at, .. } => {
-                // Emit held tokens whose text lies entirely before
-                // `emit_at` (= pattern-start + keep_prefix). Tokens
-                // straddling the boundary are truncated at the last
-                // char-boundary that stays within the safe prefix.
-                let mut cum = 0usize;
-                let held_snapshot: Vec<(u32, String)> = self.held.drain(..).collect();
-                for (tid, t) in held_snapshot {
-                    if cum >= emit_at {
-                        break;
-                    }
-                    let remain = emit_at - cum;
-                    if t.len() <= remain {
-                        self.pending.push_back(Ok(TokenEvent::Token(Token {
-                            id: tid,
-                            text: t.clone(),
-                            logprob: None,
-                        })));
-                        cum += t.len();
-                    } else {
-                        // Token straddles the boundary — cut at a char
-                        // boundary. Moving DOWN is always safe.
-                        let mut cut = remain;
-                        while cut > 0 && !t.is_char_boundary(cut) {
-                            cut -= 1;
-                        }
-                        if cut > 0 {
-                            self.pending.push_back(Ok(TokenEvent::Token(Token {
-                                id: tid,
-                                text: t[..cut].to_string(),
-                                logprob: None,
-                            })));
-                        }
-                        break;
-                    }
-                }
-                self.pending.push_back(Ok(TokenEvent::Eos));
-                self.done = true;
-                let stats = self.stats_now();
-                self.hooks.emit(HookEvent::FinalStats {
-                    session_id: self.session_id,
-                    stats,
-                });
-                self.stop_matcher.reset();
-                true
-            }
         }
     }
 
@@ -289,69 +183,60 @@ impl Iterator for TokenPuller {
     type Item = Result<TokenEvent, ExecError>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        // Outer loop: if the stop matcher holds a token on partial suffix
-        // match we keep sampling until the partial resolves (Clean → flush
-        // held, Full → trim + Eos). Looping here lets `next()` honour the
-        // iterator contract (always return something when generation is
-        // live) without exposing Held as a special event.
         loop {
-            if let Some(ev) = self.pending.pop_front() {
+            if let Some(ev) = self.filter.pop() {
                 return Some(ev);
             }
-            if self.done {
+            if self.done || self.filter.is_done() {
                 return None;
             }
             self.step_once();
-            // If the step produced nothing (held) and we're not done, loop
-            // around and sample another token.
         }
     }
 }
 
 impl TokenPuller {
     /// Run a single decode step — drives forward pass, samples, routes
-    /// emitted tokens through the stop matcher. Pushes result events into
-    /// `self.pending` (or holds tokens in `self.held` on partial match).
-    /// Sets `self.done` on terminal conditions.
+    /// emitted tokens through `self.filter`. Sets `self.done` on terminal
+    /// conditions and pushes the appropriate terminal event into the
+    /// filter so the outer loop sees it.
     fn step_once(&mut self) {
         if self.done {
             return;
         }
         if self.stopped.load(Ordering::SeqCst) {
-            self.drop_held();
             let stats = self.stats_now();
             self.hooks.emit(HookEvent::FinalStats {
                 session_id: self.session_id,
                 stats,
             });
             self.done = true;
-            self.pending.push_back(Ok(TokenEvent::Stopped));
+            self.filter.finalize(TokenEvent::Stopped);
             return;
         }
         if self.paused.load(Ordering::SeqCst) {
-            self.pending.push_back(Ok(TokenEvent::Paused));
+            self.filter.push_event(TokenEvent::Paused);
             return;
         }
-        if let Some(limit) = self.max_tokens {
-            if self.produced >= limit {
-                self.drop_held();
-                let stats = self.stats_now();
-                self.hooks.emit(HookEvent::FinalStats {
-                    session_id: self.session_id,
-                    stats,
-                });
-                self.done = true;
-                self.pending.push_back(Ok(TokenEvent::Eos));
-                return;
-            }
+        if let Some(limit) = self.max_tokens
+            && self.produced >= limit
+        {
+            let stats = self.stats_now();
+            self.hooks.emit(HookEvent::FinalStats {
+                session_id: self.session_id,
+                stats,
+            });
+            self.done = true;
+            self.filter.finalize(TokenEvent::Eos);
+            return;
         }
 
         let state = match self.state.as_mut() {
             Some(s) => s,
             None => {
                 self.done = true;
-                self.pending
-                    .push_back(Err(ExecError::InvalidArg("state already consumed")));
+                self.filter
+                    .push_err(ExecError::InvalidArg("state already consumed"));
                 return;
             }
         };
@@ -397,8 +282,7 @@ impl TokenPuller {
                 match spec_result {
                     Err(e) => {
                         self.done = true;
-                        self.pending
-                            .push_back(Err(ExecError::OutOfMemory(panic_msg(e))));
+                        self.filter.push_err(ExecError::OutOfMemory(panic_msg(e)));
                         return;
                     }
                     Ok(None) => {
@@ -484,14 +368,13 @@ impl TokenPuller {
                         for i in 0..=accepted {
                             let tok = if i < accepted { drafts[i] } else { bonus };
                             if stop_ids.contains(&tok) {
-                                self.drop_held();
-                                self.pending.push_back(Ok(TokenEvent::Eos));
                                 let stats = self.stats_now();
                                 self.hooks.emit(HookEvent::FinalStats {
                                     session_id: self.session_id,
                                     stats,
                                 });
                                 self.done = true;
+                                self.filter.finalize(TokenEvent::Eos);
                                 return;
                             }
                             let text = self.bundle.tokenizer.decode(&[tok]).unwrap_or_default();
@@ -500,22 +383,22 @@ impl TokenPuller {
                                 token_id: tok,
                                 text_len: text.len(),
                             });
-                            // Route through stop matcher; on Full, filter
-                            // pushes Eos and sets `self.done` — break out.
-                            self.filter_through_stop_matcher(tok, text);
-                            if self.done {
+                            // Route through the shared filter — may hold,
+                            // or trigger Full stop (which marks filter done).
+                            self.filter.push_token(tok, text);
+                            if self.filter.is_done() {
+                                self.done = true;
                                 return;
                             }
                         }
                         if loop_hit {
-                            self.drop_held();
-                            self.pending.push_back(Ok(TokenEvent::Eos));
                             let stats = self.stats_now();
                             self.hooks.emit(HookEvent::FinalStats {
                                 session_id: self.session_id,
                                 stats,
                             });
                             self.done = true;
+                            self.filter.finalize(TokenEvent::Eos);
                         }
                         return;
                     }
@@ -535,8 +418,7 @@ impl TokenPuller {
                 Ok(arr) => arr,
                 Err(e) => {
                     self.done = true;
-                    self.pending
-                        .push_back(Err(ExecError::OutOfMemory(panic_msg(e))));
+                    self.filter.push_err(ExecError::OutOfMemory(panic_msg(e)));
                     return;
                 }
             }
@@ -548,28 +430,26 @@ impl TokenPuller {
 
         // Check EOS / EOT (chat models need both — Gemma 4's `<turn|>`, Llama 3's `<|eot_id|>`).
         if self.bundle.tokenizer.stop_ids().contains(&token_id) {
-            self.drop_held();
             let stats = self.stats_now();
             self.hooks.emit(HookEvent::FinalStats {
                 session_id: self.session_id,
                 stats,
             });
             self.done = true;
-            self.pending.push_back(Ok(TokenEvent::Eos));
+            self.filter.finalize(TokenEvent::Eos);
             return;
         }
 
         self.sampler.observe(token_id);
         self.ngram.observe(token_id);
         if self.sampler.is_in_cycle(48) || self.sampler.is_in_token_loop(16, 2) {
-            self.drop_held();
             let stats = self.stats_now();
             self.hooks.emit(HookEvent::FinalStats {
                 session_id: self.session_id,
                 stats,
             });
             self.done = true;
-            self.pending.push_back(Ok(TokenEvent::Eos));
+            self.filter.finalize(TokenEvent::Eos);
             return;
         }
 
@@ -594,9 +474,9 @@ impl TokenPuller {
             text_len: text.len(),
         });
 
-        // Route through stop matcher — may hold (partial suffix match) or
-        // trigger Full stop. Mutates `self.pending` / `self.held` / `self.done`.
-        self.filter_through_stop_matcher(token_id, text);
+        // Route through the shared filter — may hold (partial suffix match) or
+        // trigger Full stop (marks filter done).
+        self.filter.push_token(token_id, text);
     }
 }
 

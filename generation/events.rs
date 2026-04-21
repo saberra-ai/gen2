@@ -14,9 +14,29 @@ pub enum TokenEvent {
     Token(Token),
     Special(&'static str),
     MediaBoundary(MediaBoundary),
+    /// Structured tool-call extracted from the raw token stream by the
+    /// cross-backend tool-call parser. The exact format of `arguments`
+    /// depends on the model's tool-call protocol (OpenAI-style JSON for
+    /// Llama 3 / Gemma 4 / Qwen, Anthropic's XML for Claude). Consumers
+    /// deserialize `arguments` themselves into the expected schema.
+    ToolCall(ToolCall),
     Paused,
     Stopped,
     Eos,
+}
+
+/// Represents one invocation of a tool/function the model wants called.
+/// Emitted as a `TokenEvent::ToolCall` once the full call block is parsed.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
+pub struct ToolCall {
+    /// Optional provider-assigned id (OpenAI / Anthropic include one;
+    /// Llama 3 / Gemma 4 native tool syntax does not).
+    pub id: Option<String>,
+    /// Tool / function name the model wants called.
+    pub name: String,
+    /// Raw argument JSON string (unparsed — consumer decides the schema).
+    pub arguments: String,
 }
 
 #[derive(Debug, Clone, Serialize, Deserialize)]

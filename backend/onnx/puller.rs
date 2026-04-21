@@ -8,9 +8,11 @@ use parking_lot::Mutex;
 
 use super::bundle::ModelBundle;
 use super::session::DecodeState;
+use crate::gen2::backend::common::output_filter::OutputFilter;
 use crate::gen2::backend::common::sampler::Sampler;
+use crate::gen2::backend::common::stop_matcher::StopMatcher;
 use crate::gen2::engine::{ExecError, ExecutionStats, HookBus, HookEvent};
-use crate::gen2::generation::{GenSpec, Token, TokenEvent};
+use crate::gen2::generation::{GenSpec, TokenEvent};
 
 pub struct TokenPuller {
     session_id: u64,
@@ -30,6 +32,9 @@ pub struct TokenPuller {
     first_token_us: Option<u64>,
     done: bool,
 
+    /// Cross-backend stop-pattern filter (same helper as MLX and llama).
+    filter: OutputFilter,
+
     state_slot: Weak<Mutex<Option<DecodeState>>>,
 }
 
@@ -46,7 +51,31 @@ impl TokenPuller {
         stopped: Arc<AtomicBool>,
     ) -> Self {
         let temperature = gen_spec.temperature.unwrap_or(0.7);
-        let sampler = Sampler::new(temperature, None, None);
+        // Full CommonSampler pipeline — same knobs the MLX backend uses.
+        let dry_params = gen_spec.dry_multiplier.map(|m| {
+            use crate::gen2::backend::common::sampler::DryParams;
+            DryParams {
+                multiplier: m,
+                base: gen_spec.dry_base.unwrap_or(1.75),
+                allowed_length: gen_spec.dry_allowed_length.unwrap_or(2),
+            }
+        });
+        let xtc_params = gen_spec.xtc_probability.map(|p| {
+            use crate::gen2::backend::common::sampler::XtcParams;
+            XtcParams {
+                probability: p,
+                threshold: gen_spec.xtc_threshold.unwrap_or(0.1),
+            }
+        });
+        let sampler = Sampler::new(
+            temperature,
+            Some(gen_spec.top_p.unwrap_or(0.9)),
+            gen_spec.top_k,
+            None,
+        )
+        .with_min_p(gen_spec.min_p)
+        .with_dry(dry_params)
+        .with_xtc(xtc_params);
 
         Self {
             session_id,
@@ -63,6 +92,7 @@ impl TokenPuller {
             start_us: now_us(),
             first_token_us: None,
             done: false,
+            filter: OutputFilter::new(StopMatcher::gemma4_chat_defaults()),
             state_slot,
         }
     }
@@ -184,79 +214,84 @@ impl Iterator for TokenPuller {
     type Item = Result<TokenEvent, ExecError>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        if self.done {
-            return None;
-        }
-        if self.stopped.load(Ordering::SeqCst) {
-            let stats = self.stats_now();
-            self.hooks.emit(HookEvent::FinalStats {
+        loop {
+            if let Some(ev) = self.filter.pop() {
+                return Some(ev);
+            }
+            if self.done || self.filter.is_done() {
+                return None;
+            }
+            if self.stopped.load(Ordering::SeqCst) {
+                let stats = self.stats_now();
+                self.hooks.emit(HookEvent::FinalStats {
+                    session_id: self.session_id,
+                    stats,
+                });
+                self.done = true;
+                self.filter.finalize(TokenEvent::Stopped);
+                continue;
+            }
+            if self.paused.load(Ordering::SeqCst) {
+                return Some(Ok(TokenEvent::Paused));
+            }
+            if let Some(limit) = self.max_tokens
+                && self.produced >= limit
+            {
+                let stats = self.stats_now();
+                self.hooks.emit(HookEvent::FinalStats {
+                    session_id: self.session_id,
+                    stats,
+                });
+                self.done = true;
+                self.filter.finalize(TokenEvent::Eos);
+                continue;
+            }
+
+            let feed_token = self.last_token_id.unwrap_or(0);
+            let logits = match self.forward_one_token(feed_token) {
+                Ok(l) => l,
+                Err(e) => {
+                    self.done = true;
+                    self.filter.push_err(e);
+                    continue;
+                }
+            };
+
+            let token_id = self.sampler.sample_from_logits(&logits);
+            self.last_token_id = Some(token_id);
+
+            if let Some(eos_id) = self.bundle.tokenizer.eos_id()
+                && token_id == eos_id
+            {
+                let stats = self.stats_now();
+                self.hooks.emit(HookEvent::FinalStats {
+                    session_id: self.session_id,
+                    stats,
+                });
+                self.done = true;
+                self.filter.finalize(TokenEvent::Eos);
+                continue;
+            }
+
+            let text = self
+                .bundle
+                .tokenizer
+                .decode(&[token_id])
+                .unwrap_or_default();
+
+            if self.first_token_us.is_none() {
+                self.first_token_us = Some(now_us().saturating_sub(self.start_us));
+            }
+            self.produced += 1;
+
+            self.hooks.emit(HookEvent::DecodeStep {
                 session_id: self.session_id,
-                stats,
+                token_id,
+                text_len: text.len(),
             });
-            self.done = true;
-            return Some(Ok(TokenEvent::Stopped));
+
+            self.filter.push_token(token_id, text);
         }
-        if self.paused.load(Ordering::SeqCst) {
-            return Some(Ok(TokenEvent::Paused));
-        }
-        if let Some(limit) = self.max_tokens {
-            if self.produced >= limit {
-                let stats = self.stats_now();
-                self.hooks.emit(HookEvent::FinalStats {
-                    session_id: self.session_id,
-                    stats,
-                });
-                self.done = true;
-                return Some(Ok(TokenEvent::Eos));
-            }
-        }
-
-        let feed_token = self.last_token_id.unwrap_or(0);
-        let logits = match self.forward_one_token(feed_token) {
-            Ok(l) => l,
-            Err(e) => {
-                self.done = true;
-                return Some(Err(e));
-            }
-        };
-
-        let token_id = self.sampler.sample_from_logits(&logits);
-        self.last_token_id = Some(token_id);
-
-        if let Some(eos_id) = self.bundle.tokenizer.eos_id() {
-            if token_id == eos_id {
-                let stats = self.stats_now();
-                self.hooks.emit(HookEvent::FinalStats {
-                    session_id: self.session_id,
-                    stats,
-                });
-                self.done = true;
-                return Some(Ok(TokenEvent::Eos));
-            }
-        }
-
-        let text = self
-            .bundle
-            .tokenizer
-            .decode(&[token_id])
-            .unwrap_or_default();
-
-        if self.first_token_us.is_none() {
-            self.first_token_us = Some(now_us().saturating_sub(self.start_us));
-        }
-        self.produced += 1;
-
-        self.hooks.emit(HookEvent::DecodeStep {
-            session_id: self.session_id,
-            token_id,
-            text_len: text.len(),
-        });
-
-        Some(Ok(TokenEvent::Token(Token {
-            id: token_id,
-            text,
-            logprob: None,
-        })))
     }
 }
 

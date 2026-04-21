@@ -7,9 +7,11 @@ use llama_cpp_2::sampling::LlamaSampler;
 
 use super::bundle::ModelBundle;
 use super::session::{DecodeState, SessionCtxCell};
+use crate::gen2::backend::common::output_filter::OutputFilter;
+use crate::gen2::backend::common::stop_matcher::StopMatcher;
 use crate::gen2::engine::ExecError;
 use crate::gen2::engine::{ExecutionStats, HookBus, HookEvent};
-use crate::gen2::generation::{GenSpec, Token, TokenEvent};
+use crate::gen2::generation::{GenSpec, TokenEvent};
 use std::collections::VecDeque;
 
 use parking_lot::Mutex;
@@ -37,6 +39,11 @@ pub struct TokenPuller {
     first_token_us: Option<u64>,
     pre_events: VecDeque<TokenEvent>,
     done: bool,
+
+    /// Cross-backend stop-pattern filter. Every emitted token funnels through
+    /// here so the llama backend gets the same zero-garbage chat behaviour
+    /// as MLX (see `gen2/backend/common/output_filter.rs`).
+    filter: OutputFilter,
 
     // weak link to Session.state (Mutex<Option<DecodeState>>)
     state_slot: Weak<Mutex<Option<DecodeState>>>,
@@ -78,6 +85,7 @@ impl TokenPuller {
             first_token_us: None,
             pre_events,
             done: false,
+            filter: OutputFilter::new(StopMatcher::gemma4_chat_defaults()),
             state_slot: Default::default(),
         }
     }
@@ -147,6 +155,7 @@ impl TokenPuller {
             first_token_us: None,
             pre_events,
             done: false,
+            filter: OutputFilter::new(StopMatcher::gemma4_chat_defaults()),
             state_slot,
         }
     }
@@ -172,106 +181,120 @@ impl Iterator for TokenPuller {
     type Item = Result<TokenEvent, ExecError>;
 
     fn next(&mut self) -> Option<Self::Item> {
-        // tracing::trace!("puller.next");
-        if self.done {
-            return None;
-        }
-        if let Some(ev) = self.pre_events.pop_front() {
-            return Some(Ok(ev));
-        }
-        if self.stopped.load(Ordering::Acquire) {
-            self.emit_final_stats();
-            self.done = true;
-            return Some(Ok(TokenEvent::Stopped));
-        }
-        if self.paused.load(Ordering::Acquire) {
-            return Some(Ok(TokenEvent::Paused));
-        }
-        if let Some(limit) = self.max_tokens
-            && self.produced >= limit
-        {
-            self.emit_final_stats();
-            self.done = true;
-            return Some(Ok(TokenEvent::Eos));
-        }
-
-        // Sample next token
-        let Some(sampler) = self.sampler.as_mut() else {
-            self.emit_final_stats();
-            self.done = true;
-            return Some(Err(ExecError::InvalidArg("sampler already consumed")));
-        };
-        let Some(ctx_ref) = self.ctx_cell.as_ref() else {
-            self.emit_final_stats();
-            self.done = true;
-            return Some(Err(ExecError::InvalidArg("context already consumed")));
-        };
-        let token = ctx_ref.with_dependent(|_, ctx| sampler.sample(ctx, self.logits_i));
-        // accept updates the sampler's internal state → needs &mut
-        let Some(sampler) = self.sampler.as_mut() else {
-            self.emit_final_stats();
-            self.done = true;
-            return Some(Err(ExecError::InvalidArg("sampler already consumed")));
-        };
-        sampler.accept(token);
-
-        if self.bundle.model.is_eog_token(token) {
-            self.emit_final_stats();
-            self.done = true;
-            return Some(Ok(TokenEvent::Eos));
-        }
-
-        // Convert token bytes to utf8 string
-        let bytes = match self
-            .bundle
-            .model
-            .token_to_piece_bytes(token, 32, true, None)
-        {
-            Ok(b) => b,
-            Err(e) => {
-                self.emit_final_stats();
-                return Some(Err(ExecError::Other(e.into())));
+        // Outer loop handles stop-matcher hold-back: if a sampled token
+        // ends up held (partial-match suffix), we sample again rather
+        // than return `None` early. Same pattern as the MLX puller.
+        loop {
+            if let Some(ev) = self.filter.pop() {
+                return Some(ev);
             }
-        };
-        let mut out = String::with_capacity(32);
-        let _ = self.utf8_decoder.decode_to_string(&bytes, &mut out, false);
+            if self.done || self.filter.is_done() {
+                return None;
+            }
+            if let Some(ev) = self.pre_events.pop_front() {
+                return Some(Ok(ev));
+            }
+            if self.stopped.load(Ordering::Acquire) {
+                self.emit_final_stats();
+                self.done = true;
+                self.filter.finalize(TokenEvent::Stopped);
+                continue;
+            }
+            if self.paused.load(Ordering::Acquire) {
+                return Some(Ok(TokenEvent::Paused));
+            }
+            if let Some(limit) = self.max_tokens
+                && self.produced >= limit
+            {
+                self.emit_final_stats();
+                self.done = true;
+                self.filter.finalize(TokenEvent::Eos);
+                continue;
+            }
 
-        // Prepare batch for next decode step
-        self.batch.clear();
-        if let Err(e) = self.batch.add(token, self.cur_pos, &[0], true) {
-            self.emit_final_stats();
-            return Some(Err(ExecError::Other(e.into())));
+            // ── Sample + decode one token ──────────────────────────────
+            let Some(sampler) = self.sampler.as_mut() else {
+                self.emit_final_stats();
+                self.done = true;
+                self.filter.push_err(ExecError::InvalidArg("sampler already consumed"));
+                continue;
+            };
+            let Some(ctx_ref) = self.ctx_cell.as_ref() else {
+                self.emit_final_stats();
+                self.done = true;
+                self.filter.push_err(ExecError::InvalidArg("context already consumed"));
+                continue;
+            };
+            let token = ctx_ref.with_dependent(|_, ctx| sampler.sample(ctx, self.logits_i));
+            let Some(sampler) = self.sampler.as_mut() else {
+                self.emit_final_stats();
+                self.done = true;
+                self.filter.push_err(ExecError::InvalidArg("sampler already consumed"));
+                continue;
+            };
+            sampler.accept(token);
+
+            if self.bundle.model.is_eog_token(token) {
+                self.emit_final_stats();
+                self.done = true;
+                self.filter.finalize(TokenEvent::Eos);
+                continue;
+            }
+
+            let bytes = match self
+                .bundle
+                .model
+                .token_to_piece_bytes(token, 32, true, None)
+            {
+                Ok(b) => b,
+                Err(e) => {
+                    self.emit_final_stats();
+                    self.filter.push_err(ExecError::Other(e.into()));
+                    continue;
+                }
+            };
+            let mut out = String::with_capacity(32);
+            let _ = self.utf8_decoder.decode_to_string(&bytes, &mut out, false);
+
+            self.batch.clear();
+            if let Err(e) = self.batch.add(token, self.cur_pos, &[0], true) {
+                self.emit_final_stats();
+                self.filter.push_err(ExecError::Other(e.into()));
+                continue;
+            }
+            self.cur_pos += 1;
+
+            let Some(ctx_mut) = self.ctx_cell.as_mut() else {
+                self.emit_final_stats();
+                self.done = true;
+                self.filter.push_err(ExecError::InvalidArg("context already consumed"));
+                continue;
+            };
+            if let Err(e) = ctx_mut.with_dependent_mut(|_, ctx| ctx.decode(&mut self.batch)) {
+                self.emit_final_stats();
+                self.filter.push_err(ExecError::Other(e.into()));
+                continue;
+            }
+
+            self.logits_i = self.batch.n_tokens() - 1;
+
+            if self.first_token_us.is_none() {
+                self.first_token_us =
+                    Some((ggml_time_us() as u64).saturating_sub(self.start_us));
+            }
+            self.produced += 1;
+            self.hooks.emit(HookEvent::DecodeStep {
+                session_id: self.session_id,
+                token_id: token.0 as u32,
+                text_len: out.len(),
+            });
+
+            // Route through the shared filter. It may hold (partial
+            // match) — in that case we loop back and sample again.
+            // On Clean/Full it pushes events into the pending queue
+            // which the loop top drains.
+            self.filter.push_token(token.0 as u32, out);
         }
-        self.cur_pos += 1;
-
-        let Some(ctx_mut) = self.ctx_cell.as_mut() else {
-            self.emit_final_stats();
-            self.done = true;
-            return Some(Err(ExecError::InvalidArg("context already consumed")));
-        };
-        if let Err(e) = ctx_mut.with_dependent_mut(|_, ctx| ctx.decode(&mut self.batch)) {
-            self.emit_final_stats();
-            return Some(Err(ExecError::Other(e.into())));
-        }
-
-        // after single-token decode, logits index for next sample is the last element in that batch (0)
-        self.logits_i = self.batch.n_tokens() - 1;
-
-        if self.first_token_us.is_none() {
-            self.first_token_us = Some((ggml_time_us() as u64).saturating_sub(self.start_us));
-        }
-        self.produced += 1;
-        self.hooks.emit(HookEvent::DecodeStep {
-            session_id: self.session_id,
-            token_id: token.0 as u32,
-            text_len: out.len(),
-        });
-
-        Some(Ok(TokenEvent::Token(Token {
-            id: token.0 as u32,
-            text: out,
-            logprob: None,
-        })))
     }
 }
 

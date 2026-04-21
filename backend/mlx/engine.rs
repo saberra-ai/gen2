@@ -689,6 +689,7 @@ mod tests {
                 Some(Ok(TokenEvent::Eos)) | Some(Ok(TokenEvent::Stopped)) => break,
                 Some(Ok(TokenEvent::Paused))
                 | Some(Ok(TokenEvent::Special(_)))
+                | Some(Ok(TokenEvent::ToolCall(_)))
                 | Some(Ok(TokenEvent::MediaBoundary(_))) => continue,
                 Some(Err(e)) => return Err(e.into()),
                 None => break,
