@@ -1,6 +1,7 @@
 //! MLX inference backend for Apple Silicon (macOS/iOS).
 
 mod bundle;
+pub(crate) mod eagle3_loader;
 mod engine;
 #[cfg(test)]
 mod golden;

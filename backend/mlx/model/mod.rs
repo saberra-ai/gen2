@@ -4,6 +4,7 @@
 //! safetensors by the loader module.
 
 mod attention;
+pub mod eagle3;
 mod ffn;
 pub mod gemma4;
 mod llama;
