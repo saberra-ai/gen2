@@ -6,6 +6,7 @@ pub mod grammar;
 mod hf_meta;
 pub mod output_filter;
 pub mod sampler;
+pub mod speculative;
 pub mod stop_matcher;
 pub mod tokenizer;
 pub mod tool_calls;

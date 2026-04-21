@@ -6,7 +6,9 @@ mod engine;
 mod golden;
 mod loader;
 pub(crate) mod model;
-pub(crate) mod ngram;
+// ngram module replaced by cross-backend `common::speculative::*` —
+// see that module for the trigram impl plus PLD / Lookahead / Eagle3
+// alternatives. Kept as an alias for backward-compat in external code.
 mod puller;
 mod sampler;
 mod session;

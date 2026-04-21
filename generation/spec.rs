@@ -68,6 +68,13 @@ pub struct GenSpec {
     #[serde(default, skip)]
     #[cfg_attr(feature = "specta", specta(skip))]
     pub grammar: Option<crate::gen2::backend::common::grammar::GrammarSpec>,
+
+    /// Which speculative-decoding predictor to use for this session.
+    /// Default (`None`): backend-specific default (`Ngram` on MLX).
+    /// Set to `SpeculativeMode::Off` to disable speculative entirely,
+    /// `Pld` / `Hybrid` to experiment with alternatives.
+    #[serde(default)]
+    pub speculative: Option<crate::gen2::backend::common::speculative::SpeculativeMode>,
 }
 
 #[cfg(test)]

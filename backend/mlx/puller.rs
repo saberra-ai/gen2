@@ -8,11 +8,13 @@ use mlx_rs::ops::indexing::IndexOp;
 use parking_lot::Mutex;
 
 use super::bundle::ModelBundle;
-use super::ngram::{DRAFT_LEN, NgramPredictor};
 use super::sampler::Sampler;
 use super::session::DecodeState;
 use crate::gen2::backend::common::grammar::GrammarMatcher;
 use crate::gen2::backend::common::output_filter::OutputFilter;
+use crate::gen2::backend::common::speculative::{
+    DEFAULT_DRAFT_LEN, SpeculativeMode, SpeculativePredictor,
+};
 use crate::gen2::backend::common::stop_matcher::StopMatcher;
 use crate::gen2::engine::{ExecError, ExecutionStats, HookBus, HookEvent};
 use crate::gen2::generation::{GenSpec, TokenEvent};
@@ -24,8 +26,10 @@ pub struct TokenPuller {
 
     state: Option<DecodeState>,
     sampler: Sampler,
-    /// N-gram predictor — warms up during decode; produces drafts after ~3 tokens.
-    ngram: NgramPredictor,
+    /// Swappable speculative predictor (n-gram / PLD / Hybrid / Off).
+    /// Selected via `GenSpec.speculative` or the `PIO_MLX_SPEC_MODE` env
+    /// override — see `common/speculative.rs` for options.
+    predictor: Box<dyn SpeculativePredictor>,
 
     prompt_tokens: usize,
     produced: usize,
@@ -125,6 +129,18 @@ impl TokenPuller {
             }
         });
 
+        // Resolve speculative mode: explicit `GenSpec.speculative` wins,
+        // else the `PIO_MLX_SPEC_MODE` env override, else default (Ngram).
+        let spec_mode = gen_spec
+            .speculative
+            .or_else(|| {
+                std::env::var("PIO_MLX_SPEC_MODE")
+                    .ok()
+                    .and_then(|s| SpeculativeMode::from_str_opt(&s))
+            })
+            .unwrap_or_default();
+        let predictor = spec_mode.build();
+
         Self {
             session_id,
             hooks,
@@ -132,7 +148,7 @@ impl TokenPuller {
             prompt_tokens: state.cur_pos,
             state: Some(state),
             sampler,
-            ngram: NgramPredictor::new(),
+            predictor,
             produced: 0,
             max_tokens: gen_spec.max_tokens,
             paused,
@@ -146,6 +162,13 @@ impl TokenPuller {
             grammar,
             state_slot,
         }
+    }
+
+    /// Seed the speculative predictor with the session's prompt tokens.
+    /// Only PLD / Hybrid use this; n-gram / Off ignore it. Call once
+    /// immediately after construction when the prompt tokens are in hand.
+    pub(crate) fn seed_predictor(&mut self, prompt: &[u32]) {
+        self.predictor.seed_prompt(prompt);
     }
 
     fn stats_now(&self) -> ExecutionStats {
@@ -266,25 +289,24 @@ impl TokenPuller {
             pending
         } else {
             // ── Speculative batched decode ────────────────────────────────────────
-            // Draft up to DRAFT_LEN tokens from the n-gram predictor.  Cap by the
-            // remaining token budget (leaving room for the bonus token) so we never
-            // overshoot max_tokens.
+            // Ask the swappable predictor for a draft, cap by remaining
+            // token budget (leaving room for the bonus). `PIO_MLX_SPEC=0`
+            // forces single-token decode; grammar constraints also
+            // disable speculative (mask-per-position is non-trivial).
             let remaining = self.max_tokens.map(|m| m.saturating_sub(self.produced));
-            let drafts = self.ngram.draft();
-            // `PIO_MLX_SPEC=0` forces pure single-token decode — useful for
-            // isolating speculative-acceptance effects when benchmarking.
-            // Also auto-disabled when a grammar is active: speculative
-            // would need to apply the mask at every position in the k+1
-            // batch AND observe each accepted token in-order, which the
-            // current matcher API doesn't expose cheaply. Single-token
-            // path handles grammar correctly.
             let spec_off = self.grammar.is_some()
                 || std::env::var("PIO_MLX_SPEC")
                     .map(|v| v == "0" || v.eq_ignore_ascii_case("off"))
                     .unwrap_or(false);
+            let draft_cap =
+                remaining.map_or(DEFAULT_DRAFT_LEN, |r| r.saturating_sub(1).min(DEFAULT_DRAFT_LEN));
+            let drafts = if spec_off || draft_cap == 0 {
+                Vec::new()
+            } else {
+                self.predictor.draft(draft_cap)
+            };
             let k = if !drafts.is_empty() && !spec_off {
-                let cap = remaining.map_or(DRAFT_LEN, |r| r.saturating_sub(1).min(DRAFT_LEN));
-                drafts.len().min(cap)
+                drafts.len().min(draft_cap)
             } else {
                 0
             };
@@ -373,10 +395,10 @@ impl TokenPuller {
                         // loops the n-gram predictor eagerly accepts would
                         // keep accelerating.
                         for &t in &drafts[..accepted] {
-                            self.ngram.observe(t);
+                            self.predictor.observe(t);
                             self.sampler.observe(t);
                         }
-                        self.ngram.observe(bonus);
+                        self.predictor.observe(bonus);
                         self.sampler.observe(bonus);
 
                         // Build token events (EOS check before emitting DecodeStep).
@@ -466,7 +488,7 @@ impl TokenPuller {
         }
 
         self.sampler.observe(token_id);
-        self.ngram.observe(token_id);
+        self.predictor.observe(token_id);
         if self.sampler.is_in_cycle(48) || self.sampler.is_in_token_loop(16, 2) {
             let stats = self.stats_now();
             self.hooks.emit(HookEvent::FinalStats {
