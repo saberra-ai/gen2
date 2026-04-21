@@ -38,22 +38,18 @@ pub const DEFAULT_DRAFT_LEN: usize = 4;
 /// used by EAGLE-like drafters that consume the target model's
 /// intermediate hidden states.
 ///
-/// Backends that run hidden-state-aware predictors construct one of
-/// these per `draft()` call and pass via
-/// [`SpeculativePredictor::draft_with_context`]. Token-only predictors
-/// (Ngram / PLD / Hybrid) ignore the context entirely via the default
-/// trait impl.
+/// Feature-gated on `backend-mlx` because the `aux_hidden_states`
+/// field holds `mlx_rs::Array` — the only backend currently wiring
+/// hidden-state-aware drafters. When the llama-cpp or ONNX backends
+/// grow their own EAGLE-style support, this surface generalizes
+/// (e.g. via `dyn Any` or a backend-abstract tensor handle).
+#[cfg(feature = "backend-mlx")]
 #[derive(Debug, Clone)]
 pub struct DraftContext<'a> {
     /// Last accepted token id (target vocab).
     pub last_token: u32,
     /// Target model's auxiliary hidden states, one `[1, 1, H]` array
-    /// per configured aux layer. EAGLE-3 concatenates these along the
-    /// last axis before running its single-layer transformer.
-    ///
-    /// The lifetime matches the backend's forward-pass temporary —
-    /// predictors that consume them must do so synchronously within
-    /// the call.
+    /// per configured aux layer.
     pub aux_hidden_states: &'a [mlx_rs::Array],
     /// Absolute sequence position of `last_token` (for RoPE).
     pub pos: usize,
@@ -69,7 +65,9 @@ pub trait SpeculativePredictor: Send {
     /// Hidden-state-aware draft. Default impl delegates to `draft`,
     /// so token-only predictors (Ngram / PLD / Hybrid / Noop) don't
     /// need to implement this. EAGLE-3 / Medusa / EAGLE-2 overrides
-    /// to consume `ctx.aux_hidden_states`.
+    /// to consume `ctx.aux_hidden_states`. Feature-gated with the
+    /// `DraftContext` type — see its docstring.
+    #[cfg(feature = "backend-mlx")]
     fn draft_with_context(&mut self, _ctx: &DraftContext<'_>, max: usize) -> Vec<u32> {
         self.draft(max)
     }
