@@ -16,6 +16,14 @@ pub mod media;
 pub mod residency;
 pub mod residency_policy;
 pub mod residency_stats;
+/// Phase D week 18: inference router — local-first fleet placement.
+/// Picks where a generation actually runs given the fleet's declared
+/// capabilities. Pure function, no I/O.
+pub mod router;
+/// Phase D week 14: canonical model zoo + per-platform bundle selector.
+/// Ships Gemma-4 as the reference family; new models plug in by editing
+/// `resources/models/zoo.json`.
+pub mod zoo;
 #[allow(
     dead_code,
     unused_variables,

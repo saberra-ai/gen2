@@ -18,15 +18,26 @@ pub(crate) mod onnx;
 #[cfg(feature = "backend-external-api")]
 pub(crate) mod external_api;
 
+// Phase D week 14 — mobile + Rust-native fallback. Both are scaffolds
+// (trait impls returning Unimplemented) until the real integration ships;
+// module layout reserved so the rest of gen2 can reference them.
+#[cfg(feature = "backend-executorch")]
+pub(crate) mod executorch;
+
+#[cfg(feature = "backend-candle")]
+pub(crate) mod candle;
+
 // Compile-time guard: at least one backend must be selected.
 #[cfg(not(any(
     feature = "backend-llamacpp",
     feature = "backend-mlx",
     feature = "backend-onnx",
-    feature = "backend-external-api"
+    feature = "backend-external-api",
+    feature = "backend-executorch",
+    feature = "backend-candle"
 )))]
 compile_error!(
-    "No inference backend selected. Enable at least one of: backend-llamacpp, backend-mlx, backend-onnx, backend-external-api"
+    "No inference backend selected. Enable at least one of: backend-llamacpp, backend-mlx, backend-onnx, backend-external-api, backend-executorch, backend-candle"
 );
 
 pub mod caps;
