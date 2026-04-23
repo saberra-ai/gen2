@@ -38,12 +38,27 @@ pub enum ThinkingMode {
 
 impl ThinkingMode {
     /// Map to the chat template's `enable_thinking: Option<bool>`.
-    /// `Auto` returns `None` so the template's own default takes over.
+    ///
+    /// `Auto` maps to `Some(true)` — NOT `None`. Reason: most chat
+    /// templates (Gemma-4, Qwen3-Thinking, DeepSeek-R1) treat
+    /// `undefined` as "thinking off" and these models were trained
+    /// expecting the channel active. Passing `None` makes them emit
+    /// the opening `<think>` / `<|channel>thought` tokens but fail
+    /// to close cleanly, leaving the stream stuck before any visible
+    /// answer lands — the exact "skeleton loader never resolves"
+    /// regression we shipped for a day on Qwen3-0.6B. So the enum's
+    /// "let the template decide" semantically collapses to
+    /// "thinking on" for every model we bundle. Explicit `Off`
+    /// remains the escape hatch.
+    ///
+    /// If a future model's template is genuinely coherent with
+    /// `enable_thinking` undefined, add an `AutoTrue` variant
+    /// rather than flipping this mapping — the default must never
+    /// silently disable reasoning on a thinking-trained model.
     pub fn as_enable_thinking(self) -> Option<bool> {
         match self {
-            Self::Auto => None,
+            Self::Auto | Self::On => Some(true),
             Self::Off => Some(false),
-            Self::On => Some(true),
         }
     }
 
@@ -77,7 +92,10 @@ mod tests {
 
     #[test]
     fn as_enable_thinking_maps_correctly() {
-        assert_eq!(ThinkingMode::Auto.as_enable_thinking(), None);
+        // Auto preserves the legacy default (thinking on) to avoid
+        // regressing models trained with the reasoning channel
+        // expected. Explicit Off is the only way to disable.
+        assert_eq!(ThinkingMode::Auto.as_enable_thinking(), Some(true));
         assert_eq!(ThinkingMode::Off.as_enable_thinking(), Some(false));
         assert_eq!(ThinkingMode::On.as_enable_thinking(), Some(true));
     }
