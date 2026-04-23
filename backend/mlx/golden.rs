@@ -136,9 +136,7 @@ fn greedy_session(engine: &Engine, messages: Vec<Message>) -> std::sync::Arc<Ses
         .start_session(SessionSpec {
             messages,
             overrides: Some(overrides),
-            persona: None,
-            attachments: vec![],
-            cache: None,
+            ..Default::default()
         })
         .expect("start_session")
 }
@@ -395,9 +393,7 @@ fn golden_prefix_cache_lru_state() {
             .start_session(SessionSpec {
                 messages: vec![sys_msg(prompt), user_msg("hi")],
                 overrides: Some(overrides),
-                persona: None,
-                attachments: vec![],
-                cache: None,
+                ..Default::default()
             })
             .expect("start");
         // Drain 2 tokens so the prefill actually runs.
@@ -430,9 +426,7 @@ fn golden_prefix_cache_lru_state() {
         .start_session(SessionSpec {
             messages: vec![sys_msg(prompts[0]), user_msg("hi again")],
             overrides: Some(overrides),
-            persona: None,
-            attachments: vec![],
-            cache: None,
+            ..Default::default()
         })
         .expect("start");
     let mut p = session

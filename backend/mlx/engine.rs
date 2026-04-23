@@ -666,10 +666,7 @@ mod tests {
 
         let session = e.start_session(SessionSpec {
             messages,
-            overrides: None,
-            persona: None,
-            attachments: vec![],
-            cache: None,
+            ..Default::default()
         })?;
 
         let gen_spec = GenSpec {
@@ -763,10 +760,7 @@ mod tests {
 
         let session = e.start_session(SessionSpec {
             messages: vec![user_msg(questions[0])],
-            overrides: None,
-            persona: None,
-            attachments: vec![],
-            cache: None,
+            ..Default::default()
         })?;
 
         let drain = |puller: &mut crate::gen2::backend::mlx::puller::TokenPuller| -> String {
@@ -861,10 +855,7 @@ mod tests {
 
         let session = e.start_session(SessionSpec {
             messages: vec![user_msg("What is 2 + 2?")],
-            overrides: None,
-            persona: None,
-            attachments: vec![],
-            cache: None,
+            ..Default::default()
         })?;
 
         let drain = |puller: &mut crate::gen2::backend::mlx::puller::TokenPuller| -> String {
@@ -1010,9 +1001,7 @@ mod tests {
             let session = e.start_session(SessionSpec {
                 messages: vec![sys_msg(prompt), user_msg("hi")],
                 overrides: Some(settings),
-                persona: None,
-                attachments: vec![],
-                cache: None,
+                ..Default::default()
             })?;
             let mut p = session.pull(GenSpec {
                 max_tokens: Some(4),
@@ -1049,9 +1038,7 @@ mod tests {
         let session = e.start_session(SessionSpec {
             messages: vec![sys_msg(prompts[0]), user_msg("hi again")],
             overrides: Some(settings),
-            persona: None,
-            attachments: vec![],
-            cache: None,
+            ..Default::default()
         })?;
         let mut p = session.pull(GenSpec {
             max_tokens: Some(4),

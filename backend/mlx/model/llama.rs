@@ -23,12 +23,25 @@ pub struct TransformerBlock {
 impl TransformerBlock {
     pub fn new(config: &ModelConfig) -> Self {
         let head_dim = config.head_dim();
+        // Qwen3 applies RMSNorm to Q and K post-projection, pre-RoPE.
+        // Detected via `model_type == "qwen3"`; without it the
+        // generic attention kernel produces garbage scores and the
+        // model samples EOS on its first step. The norm weights are
+        // still zero-initialised — the safetensors loader must
+        // populate them from `self_attn.q_norm.weight` /
+        // `self_attn.k_norm.weight` before inference.
+        let qk_norm = config
+            .model_type
+            .as_deref()
+            .map_or(false, |t| t == "qwen3");
         Self {
-            attention: Attention::new(
+            attention: Attention::new_with_qk_norm(
                 config.hidden_size,
                 config.num_attention_heads,
                 config.num_key_value_heads,
                 head_dim,
+                qk_norm,
+                config.rms_norm_eps,
             ),
             ffn: FeedForward::new(config.hidden_size, config.intermediate_size),
             input_norm: RmsNorm::new(config.hidden_size, config.rms_norm_eps),

@@ -217,6 +217,21 @@ pub fn build_model(model_dir: &Path) -> Result<(LlamaModel, ModelConfig), ExecEr
             if let Some(w) = tensors.get(&format!("{}.post_attention_layernorm.weight", prefix)) {
                 layer.post_attn_norm.weight = w.clone();
             }
+            // Qwen3-family Q/K norm. Only present when the attention
+            // module was constructed with `qk_norm = true` (see
+            // `TransformerBlock::new`, which gates on
+            // `model_type == "qwen3"`). Silently skip when the model
+            // lacks these tensors so non-Qwen3 paths stay unaffected.
+            if let Some(q_norm) = layer.attention.q_norm.as_mut()
+                && let Some(w) = tensors.get(&format!("{}.self_attn.q_norm.weight", prefix))
+            {
+                q_norm.weight = w.clone();
+            }
+            if let Some(k_norm) = layer.attention.k_norm.as_mut()
+                && let Some(w) = tensors.get(&format!("{}.self_attn.k_norm.weight", prefix))
+            {
+                k_norm.weight = w.clone();
+            }
         }
     }
 
@@ -516,10 +531,26 @@ pub fn build_any_model(model_dir: &Path) -> Result<(Model, ModelConfig), ExecErr
     }
 
     if let Some(t) = model_type {
-        tracing::warn!(
-            "unknown model_type {:?}, defaulting to Llama — add to build_any_model() if wrong",
-            t
-        );
+        // Qwen3 shares the Llama layout plus extra Q/K norms; the Llama
+        // builder now handles those conditionally (see
+        // `TransformerBlock::new`). Other non-Gemma architectures fall
+        // through with a warning — behaviour may diverge from the
+        // upstream implementation until they're wired explicitly.
+        //
+        // Known gap: Qwen3 0.6B-4bit (mlx-community) still produces
+        // degenerate first-token sampling even with Q/K norm wired —
+        // see task #82 for the ongoing compat investigation. Q/K norm
+        // is a necessary but not sufficient fix.
+        if t != "qwen3" {
+            tracing::warn!(
+                "unknown model_type {:?}, defaulting to Llama — add to build_any_model() if wrong",
+                t
+            );
+        } else {
+            tracing::info!(
+                "loading model_type=qwen3 via Llama builder with Q/K norm (experimental)"
+            );
+        }
     }
     let (m, c) = build_model(model_dir)?;
     Ok((Model::Llama(m), c))

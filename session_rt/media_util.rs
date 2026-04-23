@@ -4,6 +4,10 @@ pub(crate) fn messages_have_images(messages: &Vec<Message>) -> bool {
         if let MessageBody::Content { content } = &msg.body {
             match content {
                 MessageContent::SingleText(_) => {}
+                MessageContent::StructuredAssistant { .. } => {
+                    // Structured assistant replies carry no media —
+                    // models that produce them don't emit images.
+                }
                 MessageContent::MultipleChunks(chunks) => {
                     if chunks
                         .iter()
