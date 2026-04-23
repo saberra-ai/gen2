@@ -1,7 +1,7 @@
 //! Inference router — Phase D week 18.
 //!
 //! Given a generation request ("I want to run model X with parameters Y"),
-//! pick which device in the fleet actually runs it. Local-first: if the
+//! pick which device in the flock actually runs it. Local-first: if the
 //! current device can host the requested model, it always wins (privacy +
 //! zero network latency). Otherwise we route to a paired peer with
 //! enough RAM, the model cached, and a healthy recent heartbeat.
@@ -11,12 +11,12 @@
 //! chosen device) lives in `crate::p2p`; this module only picks.
 //!
 //! **No cloud, no account.** The peer list is populated by
-//! [`crate::fleet::discovery`] (LAN mDNS) and optionally iroh's relay-
+//! [`crate::flock::discovery`] (LAN mDNS) and optionally iroh's relay-
 //! based WAN discovery. Identity + authorization is ed25519 + paired
 //! pubkeys. The router itself doesn't touch identity — it trusts the
 //! caller to only supply already-authenticated peers.
 
-use crate::fleet::discovery::PeerAdvertisement;
+use crate::flock::discovery::PeerAdvertisement;
 use crate::gen2::zoo::{ModelZoo, PlatformBundle, current_platform_id};
 
 /// What the caller wants to run. Kept tiny and allocation-free so the
@@ -43,7 +43,7 @@ pub enum RoutePriority {
 
 /// Snapshot of this device's local capability — what the router needs
 /// to decide "can I run this model right here?". Distinct from the
-/// capability advertised to peers in [`crate::fleet::discovery::CapabilitySnapshot`]
+/// capability advertised to peers in [`crate::flock::discovery::CapabilitySnapshot`]
 /// because here we also expose "models downloaded to local disk" while
 /// peer adverts only list models this device is willing to serve.
 #[derive(Debug, Clone, Default)]
@@ -69,7 +69,7 @@ pub enum RouteDecision<'peer> {
         peer: &'peer PeerAdvertisement,
         reason: &'static str,
     },
-    /// Nobody in the fleet can run this right now. Caller falls open to
+    /// Nobody in the flock can run this right now. Caller falls open to
     /// a smaller local model with a UI notice.
     Fallback { reason: &'static str },
 }
@@ -193,8 +193,8 @@ fn peer_ranks_higher(a: &PeerAdvertisement, b: &PeerAdvertisement) -> bool {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::fleet::discovery::{CapabilitySnapshot, PeerAdvertisement};
-    use crate::fleet::identity::DeviceIdentity;
+    use crate::flock::discovery::{CapabilitySnapshot, PeerAdvertisement};
+    use crate::flock::identity::DeviceIdentity;
 
     fn fake_peer(
         name: &str,

@@ -16,8 +16,8 @@ pub mod media;
 pub mod residency;
 pub mod residency_policy;
 pub mod residency_stats;
-/// Phase D week 18: inference router — local-first fleet placement.
-/// Picks where a generation actually runs given the fleet's declared
+/// Phase D week 18: inference router — local-first flock placement.
+/// Picks where a generation actually runs given the flock's declared
 /// capabilities. Pure function, no I/O.
 pub mod router;
 /// Phase D week 14: canonical model zoo + per-platform bundle selector.
