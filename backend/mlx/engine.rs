@@ -341,6 +341,7 @@ impl Engine {
             spec.persona.as_ref(),
             prefix_key,
             cached_prefix,
+            spec.thinking.as_enable_thinking(),
         )?;
 
         // Populate/replace the prefix cache if the session built a fresh one.

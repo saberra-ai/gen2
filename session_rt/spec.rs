@@ -1,4 +1,5 @@
 use crate::gen2::engine::Settings;
+use crate::gen2::generation::ThinkingMode;
 use crate::types::Persona;
 use crate::types::message::Message;
 
@@ -10,6 +11,11 @@ pub struct SessionSpec {
     pub overrides: Option<Settings>,
     /// Persona to inject into the system prompt. Pinned at session start.
     pub persona: Option<Persona>,
+    /// Reasoning-channel policy for models that expose one (Gemma-4,
+    /// DeepSeek-R1, Qwen3-Thinking, …). Default `Auto` preserves the
+    /// model's chat-template default; `On`/`Off` forces the channel
+    /// for this session.
+    pub thinking: ThinkingMode,
 }
 
 #[cfg(test)]

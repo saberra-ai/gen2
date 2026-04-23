@@ -249,6 +249,11 @@ pub enum ControllerCmd {
         chat_id: String,
         messages: Vec<Message>,
         gen_spec: GenSpec,
+        /// Reasoning-channel policy for this session. Pinned at
+        /// session start; `append_messages` (continuation) reuses
+        /// whatever mode was chosen here. `Auto` preserves the
+        /// chat-template default.
+        thinking: crate::gen2::generation::ThinkingMode,
         tx: SyncSender<ControllerEvent>,
     },
     /// Continue an existing chat session with newly appended messages.
@@ -440,6 +445,7 @@ impl InferenceHandle {
                 chat_id,
                 messages,
                 gen_spec,
+                thinking: _,
                 tx,
             } => handle.dispatch_inference_with_failover(RetryableInference {
                 chat_id,
@@ -854,6 +860,7 @@ mod tests {
                 chat_id: "drain-me".into(),
                 messages: vec![],
                 gen_spec: GenSpec::default(),
+                thinking: Default::default(),
                 tx,
             })
             .expect("start chat");
@@ -1160,6 +1167,7 @@ mod tests {
                 chat_id: chat_id.clone(),
                 messages: vec![],
                 gen_spec: crate::gen2::generation::GenSpec::default(),
+                thinking: Default::default(),
                 tx,
             })
             .expect("start should succeed");

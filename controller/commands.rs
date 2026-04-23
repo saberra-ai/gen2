@@ -194,6 +194,7 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
             chat_id,
             messages,
             gen_spec,
+            thinking,
             tx,
         } => {
             if let Some(chat) = state.chats.get_mut(&chat_id) {
@@ -266,6 +267,7 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
             }
             match state.engine.start_session(SessionSpec {
                 messages,
+                thinking,
                 ..Default::default()
             }) {
                 Err(e) => {

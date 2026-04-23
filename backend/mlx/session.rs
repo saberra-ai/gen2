@@ -229,6 +229,11 @@ pub struct Session {
     stopped: Arc<AtomicBool>,
     state: Arc<Mutex<Option<DecodeState>>>,
     messages: RwLock<Vec<Message>>,
+    /// Chat-template `enable_thinking` policy for this session.
+    /// Pinned at session start; `append_messages` reuses it so deltas
+    /// render with the same policy as the initial prompt. `None` =
+    /// template default.
+    enable_thinking: Option<bool>,
 }
 
 impl Session {
@@ -267,6 +272,10 @@ impl Session {
     }
 
     /// Public constructor — no prefix caching (used by tests).
+    ///
+    /// Defaults `enable_thinking=Some(true)` to preserve the prior
+    /// test-suite behaviour. New code should prefer `new_with_prefix`
+    /// with an explicit `ThinkingMode`.
     pub(crate) fn new(
         id: SessionId,
         bundle: Arc<ModelBundle>,
@@ -275,8 +284,17 @@ impl Session {
         messages: Vec<Message>,
         persona: Option<&crate::types::Persona>,
     ) -> Result<Self, ExecError> {
-        let (session, _) =
-            Self::new_with_prefix(id, bundle, hooks, settings, messages, persona, 0, None)?;
+        let (session, _) = Self::new_with_prefix(
+            id,
+            bundle,
+            hooks,
+            settings,
+            messages,
+            persona,
+            0,
+            None,
+            Some(true),
+        )?;
         Ok(session)
     }
 
@@ -284,6 +302,10 @@ impl Session {
     ///
     /// If `cached_prefix` is Some the first `cached_prefix.cur_pos` tokens are
     /// assumed already in the KV cache; only the delta is prefilled.
+    ///
+    /// `enable_thinking` is forwarded to the chat template — `Some(true)` /
+    /// `Some(false)` override, `None` leaves the template's own default.
+    /// See `ThinkingMode::as_enable_thinking` for the mapping.
     ///
     /// Returns `(Session, Option<PrefixCacheEntry>)`. The entry is Some when a
     /// fresh prefix was prefilled that the engine should store for later hits.
@@ -297,6 +319,7 @@ impl Session {
         persona: Option<&crate::types::Persona>,
         prefix_key: u64,
         cached_prefix: Option<DecodeState>,
+        enable_thinking: Option<bool>,
     ) -> Result<(Self, Option<PrefixCacheEntry>), ExecError> {
         let mut messages = messages;
 
@@ -330,17 +353,27 @@ impl Session {
         );
 
         // Tokenize the full prompt (all messages).
+        //
+        // Thinking mode:
+        // - `Some(true)`  → force reasoning channel on. Gemma 4's template
+        //   injects the `<|think|>` marker at the top of the system turn
+        //   (the actual think-mode trigger) and omits the
+        //   `<|channel>thought\n<channel|>` trailer after
+        //   `<|turn>model\n`. The mlx-lm default.
+        // - `Some(false)` → force reasoning channel off. Gemma 4 drops the
+        //   system `<|think|>` marker. Useful when the caller wants direct
+        //   answers and doesn't need the "long-form" integrity the
+        //   thinking channel brings (short chats, tool-calling, streaming
+        //   structured output).
+        // - `None` → template's own default. Avoid on Gemma 4 —
+        //   this yields the pathological "system has no `<|think|>` but
+        //   model turn has a `<|channel>thought` trailer" state that
+        //   drives the jargon-loop / `l l l l` regression we saw on
+        //   26B/31B long outputs. The enum's `Auto` maps here only for
+        //   models where we know the default is coherent; callers
+        //   should prefer explicit On/Off on Gemma.
         let full_prompt = chat_template
-            // `enable_thinking=Some(true)` — matches mlx-lm's default. Gemma 4's
-            // chat template branches on this: when true, it injects the
-            // `<|think|>` marker at the top of the system turn (the actual
-            // think-mode trigger) and OMITS the `<|channel>thought\n<channel|>`
-            // trailer after `<|turn>model\n`. When false/undefined, we get the
-            // trailer but no system-level think marker — which is an
-            // inconsistent state the model wasn't trained on, and it causes
-            // the "complete answer then `l l l l l`"/"lapped in jargon" loops
-            // we saw on 31B and 26B long-form responses.
-            .apply(messages.clone(), None, Some(true))
+            .apply(messages.clone(), None, enable_thinking)
             .map_err(|e| ExecError::Other(e.into()))?;
 
         if std::env::var("PIO_MLX_DEBUG_PROMPT").is_ok() {
@@ -398,6 +431,7 @@ impl Session {
                     stopped: Arc::new(AtomicBool::new(false)),
                     state: Arc::new(Mutex::new(Some(state))),
                     messages: RwLock::new(messages),
+                    enable_thinking,
                 };
                 return Ok((session, None));
             }
@@ -418,7 +452,7 @@ impl Session {
             // `add_generation_prompt: false` so the prefix is a strict prefix
             // of the full tokenization (templates like Gemma append a
             // `<|turn>model\n` suffix otherwise, breaking the prefix check).
-            match chat_template.apply_with_options(sys_messages, None, Some(true), false) {
+            match chat_template.apply_with_options(sys_messages, None, enable_thinking, false) {
                 Ok(prefix_text) => {
                     match bundle.tokenizer.encode(&prefix_text, true) {
                         Ok(prefix_tokens)
@@ -495,6 +529,7 @@ impl Session {
                                 stopped: Arc::new(AtomicBool::new(false)),
                                 state: Arc::new(Mutex::new(Some(init_state))),
                                 messages: RwLock::new(messages),
+                                enable_thinking,
                             };
                             return Ok((session, Some(entry)));
                         }
@@ -548,6 +583,7 @@ impl Session {
             stopped: Arc::new(AtomicBool::new(false)),
             state: Arc::new(Mutex::new(Some(init_state))),
             messages: RwLock::new(messages),
+            enable_thinking,
         };
         Ok((session, None))
     }
@@ -603,7 +639,7 @@ impl Session {
         );
 
         let delta_text = tpl
-            .apply(to_render, None, Some(true))
+            .apply(to_render, None, self.enable_thinking)
             .map_err(|e| ExecError::Other(e.into()))?;
 
         // Gemma's chat template starts with `{{ bos_token }}` unconditionally.
