@@ -891,9 +891,7 @@ impl Session {
             return Ok(0);
         }
 
-        let delta_prompt = tpl
-            .apply(to_render, None, None)
-            .map_err(ExecError::Other)?;
+        let delta_prompt = tpl.apply(to_render, None, None).map_err(ExecError::Other)?;
 
         // Tokenize WITHOUT the BOS token — we've already emitted BOS
         // during the initial prefill and it must not reappear mid-stream.
