@@ -335,8 +335,9 @@ impl TokenPuller {
                 || std::env::var("PIO_MLX_SPEC")
                     .map(|v| v == "0" || v.eq_ignore_ascii_case("off"))
                     .unwrap_or(false);
-            let draft_cap =
-                remaining.map_or(DEFAULT_DRAFT_LEN, |r| r.saturating_sub(1).min(DEFAULT_DRAFT_LEN));
+            let draft_cap = remaining.map_or(DEFAULT_DRAFT_LEN, |r| {
+                r.saturating_sub(1).min(DEFAULT_DRAFT_LEN)
+            });
             let drafts = if spec_off || draft_cap == 0 {
                 Vec::new()
             } else if self.predictor.needs_context() {
@@ -484,8 +485,7 @@ impl TokenPuller {
                         self.sampler.observe(bonus);
 
                         // Build token events (EOS check before emitting DecodeStep).
-                        let stop_ids: Vec<u32> =
-                            self.bundle.tokenizer.stop_ids().to_vec();
+                        let stop_ids: Vec<u32> = self.bundle.tokenizer.stop_ids().to_vec();
 
                         // Loop detectors: speculative can commit an entire
                         // cycle's worth of tokens in one batch (the n-gram
@@ -592,7 +592,9 @@ impl TokenPuller {
         };
 
         // ── Single-token path: sample, check EOS, emit ───────────────────────────
-        let token_id = self.sampler.sample_with_grammar(&logits, self.grammar.as_mut());
+        let token_id = self
+            .sampler
+            .sample_with_grammar(&logits, self.grammar.as_mut());
         state.last_token = token_id;
 
         // Check EOS / EOT (chat models need both — Gemma 4's `<turn|>`, Llama 3's `<|eot_id|>`).

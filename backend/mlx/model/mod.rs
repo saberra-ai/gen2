@@ -90,10 +90,7 @@ impl Model {
         aux_layer_ids: &[usize],
     ) -> Option<(Array, Vec<Array>)> {
         match self {
-            Model::Llama(m) => Some((
-                m.forward_all(tokens, offset, cache, rope),
-                Vec::new(),
-            )),
+            Model::Llama(m) => Some((m.forward_all(tokens, offset, cache, rope), Vec::new())),
             Model::Gemma4(m) => Some(m.forward_all_with_aux(tokens, offset, cache, aux_layer_ids)),
         }
     }

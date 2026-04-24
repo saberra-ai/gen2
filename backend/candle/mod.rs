@@ -44,9 +44,9 @@ use candle_core::{DType, Device};
 use candle_nn::VarBuilder;
 use tokenizers::Tokenizer;
 
+use crate::gen2::backend::SessionId;
 use crate::gen2::backend::caps::LatencyTier;
 use crate::gen2::backend::traits::{Backend, BackendSession, LocalBackend};
-use crate::gen2::backend::SessionId;
 use crate::gen2::engine::{
     Capabilities, ExecError, ExecutionStats, HookBus, LoadRequest, Settings,
 };
@@ -158,10 +158,7 @@ impl Backend for CandleBackend {
         let config_path = model_dir.join("config.json");
         let tokenizer_path = model_dir.join("tokenizer.json");
         let config_bytes = std::fs::read(&config_path).map_err(|e| {
-            ExecError::InvalidModelFile(format!(
-                "candle: read {}: {e}",
-                config_path.display()
-            ))
+            ExecError::InvalidModelFile(format!("candle: read {}: {e}", config_path.display()))
         })?;
         let n_ctx = Self::read_ctx_window(&config_bytes);
 
@@ -264,10 +261,7 @@ impl Backend for CandleBackend {
         LatencyTier::Slow
     }
 
-    fn start_session(
-        &self,
-        _spec: SessionSpec,
-    ) -> Result<Arc<dyn BackendSession>, ExecError> {
+    fn start_session(&self, _spec: SessionSpec) -> Result<Arc<dyn BackendSession>, ExecError> {
         // Model is loaded, but the streaming generation loop (Gemma
         // forward + LogitsProcessor + KV state + TokenEvent emission)
         // is the next 1–2 week milestone — see module doc.

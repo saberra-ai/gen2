@@ -1,8 +1,6 @@
 //! MLX sampler — thin wrapper around common sampler using mlx_rs::Array.
 
-use crate::gen2::backend::common::sampler::{
-    DryParams, Sampler as CommonSampler, XtcParams,
-};
+use crate::gen2::backend::common::sampler::{DryParams, Sampler as CommonSampler, XtcParams};
 use mlx_rs::Array;
 
 pub struct Sampler {

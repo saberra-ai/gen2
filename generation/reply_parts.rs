@@ -396,10 +396,10 @@ impl ReplyStateMachine {
     pub fn summary(&self) -> (u32, u32, u32) {
         let thinking = self
             .explicit_thinking_tokens
-            .unwrap_or_else(|| (self.reasoning.len() / 4) as u32);
+            .unwrap_or((self.reasoning.len() / 4) as u32);
         let content = self
             .explicit_content_tokens
-            .unwrap_or_else(|| (self.content.len() / 4) as u32);
+            .unwrap_or((self.content.len() / 4) as u32);
         (thinking, content, self.leaked_specials)
     }
 }
@@ -451,9 +451,7 @@ fn longer_pattern_could_extend(s: &str, matched_len: usize, patterns: &[String])
         }
         // The longer pattern must (a) share the matched prefix and
         // (b) still be a possible extension of `s` as-is.
-        if p.as_bytes().get(..matched_len) == s.as_bytes().get(..matched_len)
-            && p.starts_with(s)
-        {
+        if p.as_bytes().get(..matched_len) == s.as_bytes().get(..matched_len) && p.starts_with(s) {
             return true;
         }
     }

@@ -133,9 +133,7 @@ impl ToolCallParser {
                             self.buf.drain(..marker.len());
                             self.state = match marker {
                                 Marker::TagOpen => State::InTagBody { body_start: 0 },
-                                Marker::BracketOpen => {
-                                    State::InBracketBody { body_start: 0 }
-                                }
+                                Marker::BracketOpen => State::InBracketBody { body_start: 0 },
                             };
                             // Lock the protocol on first use in Auto mode.
                             if self.protocol == Protocol::Auto {
@@ -196,12 +194,11 @@ impl ToolCallParser {
         } else {
             None
         };
-        let bracket_at =
-            if matches!(self.protocol, Protocol::Auto | Protocol::BracketJson) {
-                self.buf.find("[TOOL_CALLS][")
-            } else {
-                None
-            };
+        let bracket_at = if matches!(self.protocol, Protocol::Auto | Protocol::BracketJson) {
+            self.buf.find("[TOOL_CALLS][")
+        } else {
+            None
+        };
         match (tag_at, bracket_at) {
             (None, None) => None,
             (Some(a), None) => Some((a, Marker::TagOpen)),
@@ -342,9 +339,7 @@ fn parse_tag_json(body: &str) -> Option<ToolCall> {
             }
         })
         .unwrap_or_else(|| "{}".to_string());
-    let id = v
-        .get("id")
-        .and_then(|i| i.as_str().map(|s| s.to_string()));
+    let id = v.get("id").and_then(|i| i.as_str().map(|s| s.to_string()));
     Some(ToolCall {
         id,
         name,
@@ -373,9 +368,7 @@ fn parse_bracket_json(body: &str) -> Vec<ToolCall> {
                     }
                 })
                 .unwrap_or_else(|| "{}".to_string());
-            let id = v
-                .get("id")
-                .and_then(|i| i.as_str().map(|s| s.to_string()));
+            let id = v.get("id").and_then(|i| i.as_str().map(|s| s.to_string()));
             Some(ToolCall {
                 id,
                 name,
@@ -426,7 +419,10 @@ mod tests {
         all.extend(p.push("l_call> bye"));
         // Expect: Text("hello "), ToolCall(foo), Text(" bye")
         assert!(matches!(&all[0], ParserOutput::Text(s) if s == "hello "));
-        let tc_idx = all.iter().position(|e| matches!(e, ParserOutput::ToolCall(_))).unwrap();
+        let tc_idx = all
+            .iter()
+            .position(|e| matches!(e, ParserOutput::ToolCall(_)))
+            .unwrap();
         match &all[tc_idx] {
             ParserOutput::ToolCall(tc) => assert_eq!(tc.name, "foo"),
             _ => unreachable!(),
@@ -436,11 +432,16 @@ mod tests {
     #[test]
     fn bracket_format_parses() {
         let mut p = ToolCallParser::new(Protocol::Auto);
-        let out = p.push(r#"go [TOOL_CALLS][{"name":"a","arguments":{}},{"name":"b","arguments":{"x":1}}] end"#);
-        let calls: Vec<&ToolCall> = out.iter().filter_map(|e| match e {
-            ParserOutput::ToolCall(tc) => Some(tc),
-            _ => None,
-        }).collect();
+        let out = p.push(
+            r#"go [TOOL_CALLS][{"name":"a","arguments":{}},{"name":"b","arguments":{"x":1}}] end"#,
+        );
+        let calls: Vec<&ToolCall> = out
+            .iter()
+            .filter_map(|e| match e {
+                ParserOutput::ToolCall(tc) => Some(tc),
+                _ => None,
+            })
+            .collect();
         assert_eq!(calls.len(), 2);
         assert_eq!(calls[0].name, "a");
         assert_eq!(calls[1].name, "b");
@@ -477,7 +478,10 @@ mod tests {
         assert_eq!(text, "hello ");
         // If we then push "l_call>...</tool_call>" it resolves.
         let out2 = p.push(r#"_call>{"name":"x","arguments":{}}</tool_call>"#);
-        assert!(out2.iter().any(|e| matches!(e, ParserOutput::ToolCall(tc) if tc.name == "x")));
+        assert!(
+            out2.iter()
+                .any(|e| matches!(e, ParserOutput::ToolCall(tc) if tc.name == "x"))
+        );
     }
 
     #[test]

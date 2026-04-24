@@ -260,12 +260,7 @@ mod tests {
     use super::*;
 
     fn mk(patterns: &[&str]) -> OutputFilter {
-        OutputFilter::new(
-            patterns
-                .iter()
-                .map(|s| StopPattern::new(*s))
-                .collect(),
-        )
+        OutputFilter::new(patterns.iter().map(|s| StopPattern::new(*s)).collect())
     }
 
     #[test]
@@ -327,7 +322,10 @@ mod tests {
         // No stop patterns, just tool-call parsing.
         let mut f = OutputFilter::new(vec![]);
         assert!(f.push_token(1, "Answer: ".into()));
-        assert!(f.push_token(2, r#"<tool_call>{"name":"x","arguments":{}}</tool_call>"#.into()));
+        assert!(f.push_token(
+            2,
+            r#"<tool_call>{"name":"x","arguments":{}}</tool_call>"#.into()
+        ));
         assert!(f.push_token(3, " done".into()));
         let mut events: Vec<TokenEvent> = Vec::new();
         while let Some(ev) = f.pop() {

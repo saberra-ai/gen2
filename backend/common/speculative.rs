@@ -341,7 +341,7 @@ impl SpeculativePredictor for HybridPredictor {
 /// passes) is scoped as separate work; EAGLE-3 (trained draft models)
 /// is integrable via the `Eagle3` variant once the draft-model forward
 /// path is wired up for a given backend.
-#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, Default, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub enum SpeculativeMode {
     /// No speculative decode — single-token path only.
@@ -356,6 +356,7 @@ pub enum SpeculativeMode {
     /// Captures both motif repetition and prompt echo; named "Lookahead"
     /// for the common speculative-decoding taxonomy though it is not
     /// the model-aware Jacobi variant from Fu et al. 2024.
+    #[default]
     Lookahead,
     /// EAGLE-3 — trained draft model for a specific target. Requires
     /// loading the draft model alongside the target (path points at an
@@ -411,12 +412,6 @@ impl SpeculativeMode {
                 })
             }
         }
-    }
-}
-
-impl Default for SpeculativeMode {
-    fn default() -> Self {
-        Self::Lookahead
     }
 }
 

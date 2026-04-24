@@ -20,10 +20,6 @@ pub mod residency_stats;
 /// Picks where a generation actually runs given the flock's declared
 /// capabilities. Pure function, no I/O.
 pub mod router;
-/// Phase D week 14: canonical model zoo + per-platform bundle selector.
-/// Ships Gemma-4 as the reference family; new models plug in by editing
-/// `resources/models/zoo.json`.
-pub mod zoo;
 #[allow(
     dead_code,
     unused_variables,
@@ -32,6 +28,10 @@ pub mod zoo;
     unused_assignments
 )]
 pub mod session_rt;
+/// Phase D week 14: canonical model zoo + per-platform bundle selector.
+/// Ships Gemma-4 as the reference family; new models plug in by editing
+/// `resources/models/zoo.json`.
+pub mod zoo;
 
 // Public re-exports for the primary surface
 pub use engine::{

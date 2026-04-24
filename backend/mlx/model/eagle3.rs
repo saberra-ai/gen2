@@ -116,8 +116,7 @@ impl Eagle3Config {
     pub fn from_path(path: &std::path::Path) -> Result<Self> {
         let s = std::fs::read_to_string(path)
             .with_context(|| format!("read eagle3 config: {}", path.display()))?;
-        let cfg: Self =
-            serde_json::from_str(&s).context("parse eagle3 config.json")?;
+        let cfg: Self = serde_json::from_str(&s).context("parse eagle3 config.json")?;
         Ok(cfg)
     }
 
@@ -191,7 +190,11 @@ impl EagleDraftModel {
         let qkv_in = 2 * h;
         let aux_in = self.cfg.aux_concat_dim();
 
-        expect_shape("embed_tokens", &self.embed_tokens, &[v_tgt as i32, h as i32])?;
+        expect_shape(
+            "embed_tokens",
+            &self.embed_tokens,
+            &[v_tgt as i32, h as i32],
+        )?;
         expect_shape("fc", &self.fc, &[h as i32, aux_in as i32])?;
         expect_shape("input_layernorm", &self.input_layernorm, &[h as i32])?;
         expect_shape("hidden_norm", &self.hidden_norm, &[h as i32])?;
@@ -204,17 +207,9 @@ impl EagleDraftModel {
         expect_shape("k_proj", &self.k_proj, &[kv_out as i32, qkv_in as i32])?;
         expect_shape("v_proj", &self.v_proj, &[kv_out as i32, qkv_in as i32])?;
         expect_shape("o_proj", &self.o_proj, &[h as i32, q_out as i32])?;
-        expect_shape(
-            "mlp_gate_proj",
-            &self.mlp_gate_proj,
-            &[ff as i32, h as i32],
-        )?;
+        expect_shape("mlp_gate_proj", &self.mlp_gate_proj, &[ff as i32, h as i32])?;
         expect_shape("mlp_up_proj", &self.mlp_up_proj, &[ff as i32, h as i32])?;
-        expect_shape(
-            "mlp_down_proj",
-            &self.mlp_down_proj,
-            &[h as i32, ff as i32],
-        )?;
+        expect_shape("mlp_down_proj", &self.mlp_down_proj, &[h as i32, ff as i32])?;
         expect_shape("norm", &self.norm, &[h as i32])?;
         expect_shape("lm_head", &self.lm_head, &[v_drf as i32, h as i32])?;
         expect_shape("d2t", &self.d2t, &[v_drf as i32])?;
@@ -226,9 +221,7 @@ impl EagleDraftModel {
 fn expect_shape(name: &str, arr: &Array, expected: &[i32]) -> Result<()> {
     let got = arr.shape();
     if got != expected {
-        anyhow::bail!(
-            "EAGLE-3 weight {name} shape mismatch: expected {expected:?}, got {got:?}"
-        );
+        anyhow::bail!("EAGLE-3 weight {name} shape mismatch: expected {expected:?}, got {got:?}");
     }
     Ok(())
 }
@@ -271,8 +264,7 @@ impl EagleDraftModel {
 
         // ── 1. Embed last token → [1, 1, H] ──────────────────────────
         // Look up the embedding row. embed_tokens is [V_target, H].
-        let ids =
-            Array::from_slice(&[last_token_id as i32], &[1, 1]);
+        let ids = Array::from_slice(&[last_token_id as i32], &[1, 1]);
         let embeds = self
             .embed_tokens
             .index(&ids) // [1, 1, H]
@@ -323,10 +315,7 @@ impl EagleDraftModel {
             .context("argmax draft logits")?; // [1, 1] i32
         let draft_idx_i64: i64 = draft_id.item::<i32>() as i64;
         // d2t is i64[32000]; lookup position draft_idx.
-        let target_id_i64: i64 = self
-            .d2t
-            .index(draft_idx_i64 as i32)
-            .item::<i64>();
+        let target_id_i64: i64 = self.d2t.index(draft_idx_i64 as i32).item::<i64>();
         let target_id = target_id_i64 as u32;
         Ok((target_id, hidden_prenorm))
     }
@@ -389,8 +378,7 @@ impl EagleDraftModel {
             .context("q @ k^T")?;
         let scale_arr = Array::from_f32(scale);
         let scores = scores.multiply(&scale_arr).context("scale scores")?;
-        let probs = mlx_rs::ops::softmax_axes(&scores, &[-1], None)
-            .context("attn softmax")?;
+        let probs = mlx_rs::ops::softmax_axes(&scores, &[-1], None).context("attn softmax")?;
         let attn = probs.matmul(&v).context("attn @ v")?;
 
         // Transpose back: [1, heads, 1, head_dim] → [1, 1, heads*head_dim]
@@ -421,7 +409,9 @@ impl EagleDraftModel {
 fn matmul_transpose(x: &Array, w: &Array) -> Array {
     // mlx-rs auto-broadcasts the leading dims; matmul handles it.
     let dims = w.shape().len();
-    let w_t_axes: Vec<i32> = (0..dims as i32 - 2).chain([dims as i32 - 1, dims as i32 - 2]).collect();
+    let w_t_axes: Vec<i32> = (0..dims as i32 - 2)
+        .chain([dims as i32 - 1, dims as i32 - 2])
+        .collect();
     let w_t = w.transpose_axes(&w_t_axes).expect("w transpose");
     x.matmul(&w_t).expect("matmul")
 }
@@ -453,8 +443,8 @@ fn repeat_kv(kv: &Array, repeats: usize) -> Result<Array> {
         .reshape(&[b, n_kv, 1, t, hd])
         .context("kv reshape for repeat")?;
     let broadcast_shape: Vec<i32> = vec![b, n_kv, repeats as i32, t, hd];
-    let broadcasted = mlx_rs::ops::broadcast_to(&expanded, &broadcast_shape)
-        .context("broadcast kv")?;
+    let broadcasted =
+        mlx_rs::ops::broadcast_to(&expanded, &broadcast_shape).context("broadcast kv")?;
     broadcasted
         .reshape(&[b, n_kv * repeats as i32, t, hd])
         .context("kv reshape after repeat")

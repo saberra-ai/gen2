@@ -216,20 +216,23 @@ impl Iterator for TokenPuller {
             let Some(sampler) = self.sampler.as_mut() else {
                 self.emit_final_stats();
                 self.done = true;
-                self.filter.push_err(ExecError::InvalidArg("sampler already consumed"));
+                self.filter
+                    .push_err(ExecError::InvalidArg("sampler already consumed"));
                 continue;
             };
             let Some(ctx_ref) = self.ctx_cell.as_ref() else {
                 self.emit_final_stats();
                 self.done = true;
-                self.filter.push_err(ExecError::InvalidArg("context already consumed"));
+                self.filter
+                    .push_err(ExecError::InvalidArg("context already consumed"));
                 continue;
             };
             let token = ctx_ref.with_dependent(|_, ctx| sampler.sample(ctx, self.logits_i));
             let Some(sampler) = self.sampler.as_mut() else {
                 self.emit_final_stats();
                 self.done = true;
-                self.filter.push_err(ExecError::InvalidArg("sampler already consumed"));
+                self.filter
+                    .push_err(ExecError::InvalidArg("sampler already consumed"));
                 continue;
             };
             sampler.accept(token);
@@ -267,7 +270,8 @@ impl Iterator for TokenPuller {
             let Some(ctx_mut) = self.ctx_cell.as_mut() else {
                 self.emit_final_stats();
                 self.done = true;
-                self.filter.push_err(ExecError::InvalidArg("context already consumed"));
+                self.filter
+                    .push_err(ExecError::InvalidArg("context already consumed"));
                 continue;
             };
             if let Err(e) = ctx_mut.with_dependent_mut(|_, ctx| ctx.decode(&mut self.batch)) {
@@ -279,8 +283,7 @@ impl Iterator for TokenPuller {
             self.logits_i = self.batch.n_tokens() - 1;
 
             if self.first_token_us.is_none() {
-                self.first_token_us =
-                    Some((ggml_time_us() as u64).saturating_sub(self.start_us));
+                self.first_token_us = Some((ggml_time_us() as u64).saturating_sub(self.start_us));
             }
             self.produced += 1;
             self.hooks.emit(HookEvent::DecodeStep {

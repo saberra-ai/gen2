@@ -137,11 +137,8 @@ impl Session {
         // prepend a grammar sampler built from the same llguidance spec
         // the MLX and ONNX backends use — `LlamaSampler::llguidance` is
         // literally the same engine, so grammar semantics stay aligned.
-        let sampler = Self::build_sampler_with_optional_grammar(
-            &self.settings,
-            &gen_spec,
-            &self.bundle,
-        );
+        let sampler =
+            Self::build_sampler_with_optional_grammar(&self.settings, &gen_spec, &self.bundle);
 
         let pre_events = self.build_media_events();
         let puller = TokenPuller::new_from_session(

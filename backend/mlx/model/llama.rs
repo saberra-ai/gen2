@@ -30,10 +30,7 @@ impl TransformerBlock {
         // still zero-initialised — the safetensors loader must
         // populate them from `self_attn.q_norm.weight` /
         // `self_attn.k_norm.weight` before inference.
-        let qk_norm = config
-            .model_type
-            .as_deref()
-            .map_or(false, |t| t == "qwen3");
+        let qk_norm = config.model_type.as_deref().map_or(false, |t| t == "qwen3");
         Self {
             attention: Attention::new_with_qk_norm(
                 config.hidden_size,

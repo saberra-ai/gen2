@@ -66,8 +66,8 @@ impl GrammarMatcher {
     pub fn new(tokenizer: &HfTokenizer, spec: GrammarSpec) -> Result<Self> {
         let tok_env = build_tok_env(tokenizer)?;
         let vocab_size = tok_env.tok_trie().vocab_size();
-        let mut factory = ParserFactory::new_simple(&tok_env)
-            .context("build llguidance ParserFactory")?;
+        let mut factory =
+            ParserFactory::new_simple(&tok_env).context("build llguidance ParserFactory")?;
         factory.quiet();
         let top = spec.into_top_level()?;
         let parser = factory
@@ -94,9 +94,9 @@ impl GrammarMatcher {
             .compute_mask()
             .context("compute grammar mask")?;
         let n = logits.len().min(self.vocab_size);
-        for i in 0..n {
+        for (i, logit) in logits.iter_mut().enumerate().take(n) {
             if !mask.is_allowed(i as u32) {
-                logits[i] = f32::NEG_INFINITY;
+                *logit = f32::NEG_INFINITY;
             }
         }
         Ok(())
@@ -138,9 +138,7 @@ fn build_tok_env(tokenizer: &HfTokenizer) -> Result<TokEnv> {
         // form (e.g. `<turn|>`). We prefix those with 0xFF so the
         // tokenizer / trie treats them as atomic special-token bytes —
         // same convention llguidance / toktrie use elsewhere.
-        let normal = tokenizer
-            .decode(&[id as u32])
-            .unwrap_or_default();
+        let normal = tokenizer.decode(&[id as u32]).unwrap_or_default();
         if !normal.is_empty() {
             words.push(normal.into_bytes());
             continue;
@@ -193,10 +191,8 @@ mod tests {
 
     #[test]
     fn lark_spec_builds() {
-        let _top = GrammarSpec::Lark(
-            r#"start: "yes" | "no""#.to_string(),
-        )
-        .into_top_level()
-        .unwrap();
+        let _top = GrammarSpec::Lark(r#"start: "yes" | "no""#.to_string())
+            .into_top_level()
+            .unwrap();
     }
 }

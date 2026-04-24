@@ -10,7 +10,7 @@ pub use events::{MediaBoundary, Token, TokenEvent, ToolCall};
 pub use reply_parts::{ChannelMarkers, ReplyParts, ReplyStateMachine, StreamEmission};
 pub use spec::GenSpec;
 pub use telemetry::{
-    CacheState, ReplyShape, Termination, TelemetryAggregator, TelemetrySnapshot, TurnTelemetry,
+    CacheState, ReplyShape, TelemetryAggregator, TelemetrySnapshot, Termination, TurnTelemetry,
     global_aggregator, ttft_bucket_upper_bounds_us,
 };
 pub use thinking::ThinkingMode;

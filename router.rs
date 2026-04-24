@@ -105,10 +105,7 @@ pub fn route<'a>(
     let local_fits = local_bundle
         .map(|b| local.ram_mb >= b.min_ram_mb)
         .unwrap_or(false);
-    let local_cached = local
-        .cached_models
-        .iter()
-        .any(|m| m == request.model_id);
+    let local_cached = local.cached_models.iter().any(|m| m == request.model_id);
 
     if local_fits && local_cached {
         return RouteDecision::Local {
@@ -166,7 +163,11 @@ fn best_remote_peer<'a>(
         }
         best = match best {
             None => Some(peer),
-            Some(cur) => Some(if peer_ranks_higher(peer, cur) { peer } else { cur }),
+            Some(cur) => Some(if peer_ranks_higher(peer, cur) {
+                peer
+            } else {
+                cur
+            }),
         };
     }
     best
@@ -196,18 +197,17 @@ mod tests {
     use crate::flock::discovery::{CapabilitySnapshot, PeerAdvertisement};
     use crate::flock::identity::DeviceIdentity;
 
-    fn fake_peer(
-        name: &str,
-        ram_mb: u32,
-        vram_mb: u32,
-        models: &[&str],
-    ) -> PeerAdvertisement {
+    fn fake_peer(name: &str, ram_mb: u32, vram_mb: u32, models: &[&str]) -> PeerAdvertisement {
         let identity = DeviceIdentity::generate();
         let cap = CapabilitySnapshot {
             cores: 8,
             ram_mb,
             vram_mb,
-            gpu: if vram_mb > 0 { "cuda".into() } else { "cpu".into() },
+            gpu: if vram_mb > 0 {
+                "cuda".into()
+            } else {
+                "cpu".into()
+            },
             models: models.iter().map(|s| s.to_string()).collect(),
             idx_fp: "deadbeef".into(),
         };
@@ -236,7 +236,10 @@ mod tests {
             &peers,
             &zoo(),
         );
-        assert!(matches!(decision, RouteDecision::Local { .. }), "local must win when cached");
+        assert!(
+            matches!(decision, RouteDecision::Local { .. }),
+            "local must win when cached"
+        );
     }
 
     #[test]
@@ -281,7 +284,10 @@ mod tests {
             &peers,
             &zoo(),
         );
-        assert!(matches!(decision, RouteDecision::Local { .. }), "urgent must force local");
+        assert!(
+            matches!(decision, RouteDecision::Local { .. }),
+            "urgent must force local"
+        );
     }
 
     #[test]
@@ -302,7 +308,10 @@ mod tests {
             &peers,
             &zoo(),
         );
-        assert!(matches!(decision, RouteDecision::Fallback { .. }), "nobody can host → fallback");
+        assert!(
+            matches!(decision, RouteDecision::Fallback { .. }),
+            "nobody can host → fallback"
+        );
     }
 
     #[test]
@@ -379,7 +388,10 @@ mod tests {
         );
         match decision {
             RouteDecision::Local { reason, .. } => {
-                assert!(reason.contains("download"), "reason should mention download: {reason}");
+                assert!(
+                    reason.contains("download"),
+                    "reason should mention download: {reason}"
+                );
             }
             other => panic!("expected local-with-download, got {other:?}"),
         }

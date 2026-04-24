@@ -106,7 +106,8 @@ impl ModelZoo {
     /// JSON is malformed at build time (CI catches this via the test
     /// below).
     pub fn bundled() -> Self {
-        serde_json::from_str(BUNDLED_ZOO_JSON).expect("bundled zoo json is malformed — CI should catch this")
+        serde_json::from_str(BUNDLED_ZOO_JSON)
+            .expect("bundled zoo json is malformed — CI should catch this")
     }
 
     /// Convenience: look up a canonical model id.
@@ -331,7 +332,10 @@ mod tests {
     fn bundled_zoo_parses() {
         let zoo = ModelZoo::bundled();
         assert!(zoo.schema_version >= 1);
-        assert!(!zoo.models.is_empty(), "bundled zoo must contain at least one model");
+        assert!(
+            !zoo.models.is_empty(),
+            "bundled zoo must contain at least one model"
+        );
     }
 
     #[test]
@@ -415,7 +419,10 @@ mod tests {
         let zoo = ModelZoo::bundled();
         // Fake a very low-RAM device: nothing should match.
         let bundle = select_for_device(&zoo, "gemma-4", 512);
-        assert!(bundle.is_none(), "512 MB device can't run any gemma-4 bundle");
+        assert!(
+            bundle.is_none(),
+            "512 MB device can't run any gemma-4 bundle"
+        );
     }
 
     #[test]
@@ -455,6 +462,9 @@ mod tests {
     #[test]
     fn detect_ram_mb_returns_nonzero() {
         let ram = detect_ram_mb();
-        assert!(ram >= 1024, "any real device should report ≥1 GB RAM, got {ram} MB");
+        assert!(
+            ram >= 1024,
+            "any real device should report ≥1 GB RAM, got {ram} MB"
+        );
     }
 }

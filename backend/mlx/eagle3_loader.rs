@@ -43,13 +43,12 @@ pub fn load(cfg: Eagle3Config, safetensors_path: &Path) -> Result<EagleDraftMode
     let tensors: HashMap<String, Array> = Array::load_safetensors(safetensors_path)
         .map_err(|e| anyhow!("load eagle3 safetensors: {}", e))?;
 
-    let take =
-        |key: &str| -> Result<Array> {
-            tensors
-                .get(key)
-                .cloned()
-                .ok_or_else(|| anyhow!("eagle3 checkpoint missing tensor: {key}"))
-        };
+    let take = |key: &str| -> Result<Array> {
+        tensors
+            .get(key)
+            .cloned()
+            .ok_or_else(|| anyhow!("eagle3 checkpoint missing tensor: {key}"))
+    };
 
     let model = EagleDraftModel {
         embed_tokens: take("embed_tokens.weight")?,
@@ -71,9 +70,7 @@ pub fn load(cfg: Eagle3Config, safetensors_path: &Path) -> Result<EagleDraftMode
         cfg,
     };
 
-    model
-        .verify_shapes()
-        .context("eagle3 shape verification")?;
+    model.verify_shapes().context("eagle3 shape verification")?;
     Ok(model)
 }
 

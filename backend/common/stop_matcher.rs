@@ -142,9 +142,7 @@ impl StopMatcher {
         }
 
         if longest_hold > 0 {
-            StopState::Partial {
-                hold: longest_hold,
-            }
+            StopState::Partial { hold: longest_hold }
         } else {
             StopState::Clean
         }
@@ -248,10 +246,8 @@ mod tests {
 
     #[test]
     fn earliest_of_multiple_matches_wins() {
-        let mut m = StopMatcher::from_strings(vec![
-            "\nassistant\n".to_string(),
-            "\nuser\n".to_string(),
-        ]);
+        let mut m =
+            StopMatcher::from_strings(vec!["\nassistant\n".to_string(), "\nuser\n".to_string()]);
         let state = m.push("hi\nuser\nand \nassistant\n");
         match state {
             StopState::Full { at, .. } => {

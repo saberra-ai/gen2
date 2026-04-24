@@ -143,7 +143,10 @@ mod tests {
             serde_json::to_string(&ThinkingMode::Auto).unwrap(),
             "\"auto\""
         );
-        assert_eq!(serde_json::to_string(&ThinkingMode::Off).unwrap(), "\"off\"");
+        assert_eq!(
+            serde_json::to_string(&ThinkingMode::Off).unwrap(),
+            "\"off\""
+        );
         assert_eq!(serde_json::to_string(&ThinkingMode::On).unwrap(), "\"on\"");
         assert_eq!(
             serde_json::from_str::<ThinkingMode>("\"off\"").unwrap(),

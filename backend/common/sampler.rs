@@ -302,7 +302,7 @@ impl Sampler {
                 continue;
             }
             let mut l = 1usize;
-            while i >= l && n >= l + 1 && self.recent[i - l] == self.recent[n - 1 - l] {
+            while i >= l && n > l && self.recent[i - l] == self.recent[n - 1 - l] {
                 l += 1;
             }
             if i + 1 >= n {
@@ -411,7 +411,10 @@ impl Sampler {
             && self.rng.random::<f32>() < xtc.probability
         {
             // `indexed` is already sorted by prob desc.
-            let above: usize = indexed.iter().take_while(|(_, p)| *p >= xtc.threshold).count();
+            let above: usize = indexed
+                .iter()
+                .take_while(|(_, p)| *p >= xtc.threshold)
+                .count();
             if above >= 2 {
                 // Keep tokens BELOW threshold (everything from `above`
                 // onwards) plus the single weakest above-threshold token

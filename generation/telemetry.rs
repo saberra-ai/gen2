@@ -185,8 +185,8 @@ impl TurnTelemetry {
 
 // ── Phase 5: aggregator ────────────────────────────────────────────────────
 
-use std::sync::atomic::{AtomicU64, Ordering};
 use std::sync::OnceLock;
+use std::sync::atomic::{AtomicU64, Ordering};
 
 /// Fixed-bucket latency histogram. Upper bounds (inclusive) in
 /// microseconds; the final bucket is the implicit "overflow" (>10s).
@@ -200,17 +200,17 @@ use std::sync::OnceLock;
 /// resolve p50, p90, p99 at the granularity that moves product
 /// decisions (sub-50ms vs. sub-500ms vs. sub-5s).
 const TTFT_BUCKET_UPPER_US: &[u64] = &[
-    1_000,       // 1ms
-    10_000,      // 10ms
-    25_000,      // 25ms
-    50_000,      // 50ms
-    100_000,     // 100ms
-    250_000,     // 250ms
-    500_000,     // 500ms
-    1_000_000,   // 1s
-    2_500_000,   // 2.5s
-    5_000_000,   // 5s
-    10_000_000,  // 10s
+    1_000,      // 1ms
+    10_000,     // 10ms
+    25_000,     // 25ms
+    50_000,     // 50ms
+    100_000,    // 100ms
+    250_000,    // 250ms
+    500_000,    // 500ms
+    1_000_000,  // 1s
+    2_500_000,  // 2.5s
+    5_000_000,  // 5s
+    10_000_000, // 10s
 ];
 // Plus one overflow bucket for samples > 10s. Total = len() + 1.
 const TTFT_BUCKET_COUNT: usize = TTFT_BUCKET_UPPER_US.len() + 1;
@@ -263,26 +263,22 @@ pub struct TelemetryAggregator {
 
 impl Default for TelemetryAggregator {
     fn default() -> Self {
-        // `AtomicU64` isn't `Copy`, so we can't use `[AtomicU64::new(0); N]`
-        // initialiser syntax. Build the array explicitly; const-size so
-        // this unrolls.
-        const ZERO: AtomicU64 = AtomicU64::new(0);
         Self {
-            turns_total: ZERO,
-            cache_hits: ZERO,
-            cache_misses: ZERO,
-            cache_near_misses: ZERO,
-            cache_native: ZERO,
-            term_eot: ZERO,
-            term_max_tokens: ZERO,
-            term_loop: ZERO,
-            term_stopped: ZERO,
-            term_error: ZERO,
-            poison_turns: ZERO,
-            first_token_us_sum: ZERO,
-            first_token_us_max: ZERO,
-            first_token_us_samples: ZERO,
-            ttft_buckets: [ZERO; TTFT_BUCKET_COUNT],
+            turns_total: AtomicU64::new(0),
+            cache_hits: AtomicU64::new(0),
+            cache_misses: AtomicU64::new(0),
+            cache_near_misses: AtomicU64::new(0),
+            cache_native: AtomicU64::new(0),
+            term_eot: AtomicU64::new(0),
+            term_max_tokens: AtomicU64::new(0),
+            term_loop: AtomicU64::new(0),
+            term_stopped: AtomicU64::new(0),
+            term_error: AtomicU64::new(0),
+            poison_turns: AtomicU64::new(0),
+            first_token_us_sum: AtomicU64::new(0),
+            first_token_us_max: AtomicU64::new(0),
+            first_token_us_samples: AtomicU64::new(0),
+            ttft_buckets: std::array::from_fn(|_| AtomicU64::new(0)),
         }
     }
 }
@@ -311,8 +307,7 @@ impl TelemetryAggregator {
         if t.first_token_us > 0 {
             self.first_token_us_sum
                 .fetch_add(t.first_token_us, Ordering::Relaxed);
-            self.first_token_us_samples
-                .fetch_add(1, Ordering::Relaxed);
+            self.first_token_us_samples.fetch_add(1, Ordering::Relaxed);
             let prev_max = self.first_token_us_max.load(Ordering::Relaxed);
             if t.first_token_us > prev_max {
                 // Relaxed CAS; losing a race with another thread here
@@ -579,7 +574,11 @@ mod tests {
 
     // ── Aggregator ──────────────────────────────────────────────────
 
-    fn sample_telemetry(term: Termination, cache: CacheState, first_token_us: u64) -> TurnTelemetry {
+    fn sample_telemetry(
+        term: Termination,
+        cache: CacheState,
+        first_token_us: u64,
+    ) -> TurnTelemetry {
         TurnTelemetry {
             session_id: "test".into(),
             turn_index: 1,
@@ -634,7 +633,11 @@ mod tests {
         let agg = TelemetryAggregator::default();
         agg.record(&sample_telemetry(Termination::Eot, CacheState::Hit, 0));
         agg.record(&sample_telemetry(Termination::Eot, CacheState::Hit, 0));
-        agg.record(&sample_telemetry(Termination::MaxTokens, CacheState::Miss, 0));
+        agg.record(&sample_telemetry(
+            Termination::MaxTokens,
+            CacheState::Miss,
+            0,
+        ));
         agg.record(&sample_telemetry(Termination::Error, CacheState::Miss, 0));
         let s = agg.snapshot();
         assert_eq!(s.term_eot, 2);
@@ -681,10 +684,18 @@ mod tests {
             agg.record(&sample_telemetry(Termination::Eot, CacheState::Hit, 75_000));
         }
         for _ in 0..9 {
-            agg.record(&sample_telemetry(Termination::Eot, CacheState::Hit, 900_000));
+            agg.record(&sample_telemetry(
+                Termination::Eot,
+                CacheState::Hit,
+                900_000,
+            ));
         }
         for _ in 0..1 {
-            agg.record(&sample_telemetry(Termination::Eot, CacheState::Hit, 4_000_000));
+            agg.record(&sample_telemetry(
+                Termination::Eot,
+                CacheState::Hit,
+                4_000_000,
+            ));
         }
         let s = agg.snapshot();
 
@@ -719,7 +730,11 @@ mod tests {
     #[test]
     fn overflow_bucket_returns_max_upper_bound() {
         let agg = TelemetryAggregator::default();
-        agg.record(&sample_telemetry(Termination::Eot, CacheState::Hit, 20_000_000));
+        agg.record(&sample_telemetry(
+            Termination::Eot,
+            CacheState::Hit,
+            20_000_000,
+        ));
         let s = agg.snapshot();
         assert_eq!(s.ttft_p50_us(), Some(u64::MAX));
     }

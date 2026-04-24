@@ -122,10 +122,7 @@ impl Backend for ExecutorchBackend {
         LatencyTier::Slow
     }
 
-    fn start_session(
-        &self,
-        _spec: SessionSpec,
-    ) -> Result<Arc<dyn BackendSession>, ExecError> {
+    fn start_session(&self, _spec: SessionSpec) -> Result<Arc<dyn BackendSession>, ExecError> {
         Err(ExecError::Unimplemented)
     }
 
