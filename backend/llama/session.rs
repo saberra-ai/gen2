@@ -725,36 +725,51 @@ impl Session {
 impl Session {
     /// Append new messages and prefill only the delta into the KV.
     /// Returns the number of old messages dropped due to context overflow (0 = no truncation).
+    ///
+    /// **KV continuation semantics**: the model's prior-turn assistant
+    /// reply is already in KV as *sampled* tokens, which may include
+    /// special tokens (`<|eot_id|>` on Llama, `<|im_end|>` on Qwen) that
+    /// the chat template wouldn't emit if we re-rendered the assistant
+    /// turn from text. So we NEVER re-tokenize the full conversation
+    /// and diff against cur_pos — the template-rendered token stream
+    /// and the sampled token stream diverge at the assistant boundary,
+    /// and the diff arithmetic breaks silently (cur_pos > full_tokens.len()
+    /// → empty delta → `prompt_tokens: 0` → immediate EOS, the exact
+    /// symptom on Llama-3.2-3B GGUF multi-turn before this fix).
+    ///
+    /// Instead we render ONLY the *new* non-assistant messages (user,
+    /// system) through the template, strip any leading BOS, prepend a
+    /// turn-boundary token if the last sampled token wasn't an EOT, and
+    /// prefill that delta. Mirrors the MLX path in `mlx/session.rs`.
     pub fn append_messages(&self, new_messages: Vec<Message>) -> Result<usize, ExecError> {
         if new_messages.is_empty() {
             return Ok(0);
         }
 
-        // 1) Extend transcript safely
+        // 1) Extend the transcript so future calls (and the compaction
+        //    path below) see the full history. Assistant messages are
+        //    kept here for bookkeeping even though they don't re-render.
         {
             let mut msgs = self.messages.write();
             msgs.extend(new_messages.clone());
         }
 
-        // 2) Render the FULL conversation with the cached template and compute token delta.
-        //    This is correct for ALL chat templates (including those that format
-        //    differently based on message index or role transitions).
-        let all_messages = self.messages.read().clone();
         let tpl = &self.chat_template;
 
+        // 2) Context overflow probe. We still need to know the FULL
+        //    token count to decide whether to compact; overflow handling
+        //    resets KV and re-prefills from scratch, so the drift between
+        //    sampled and re-rendered tokens doesn't matter there.
+        let all_messages = self.messages.read().clone();
         let full_prompt = tpl
             .apply(all_messages, None, None)
             .map_err(ExecError::Other)?;
-
-        // 3) Tokenize full prompt, then take only the delta beyond what's already in KV
         let full_tokens = self
             .bundle
             .model
             .str_to_token(&full_prompt, AddBos::Always)
             .map_err(|e| ExecError::Other(e.into()))?;
 
-        // 4) Context overflow check — if the full conversation exceeds the context
-        //    window, clear KV cache, truncate old messages, and re-encode from scratch.
         let ctx_size = self
             .settings
             .system
@@ -856,17 +871,45 @@ impl Session {
             return Ok(dropped);
         }
 
-        // Normal path — no overflow, prefill only the delta
-        let kv_pos = st.cur_pos as usize;
-        let mut remaining: Vec<_> = if kv_pos < full_tokens.len() {
-            full_tokens[kv_pos..].to_vec()
-        } else {
-            Vec::new()
-        };
+        // Normal path — render only the NEW non-assistant messages
+        // and prefill them as a delta. Dropping assistant messages is
+        // critical: their content is already in KV as sampled tokens,
+        // and re-rendering them through the template would produce a
+        // different token sequence (template strips / re-wraps text
+        // differently than sampling produced it). Ignoring that drift
+        // was the root of task #91: on Llama-3.2-3B GGUF the sampled
+        // assistant reply ends with `<|eot_id|>` (id 128009) which the
+        // template re-render does emit, but header wrapping differs,
+        // and cur_pos ended up >= full_tokens.len() → empty delta →
+        // `prompt_tokens: 0` → immediate EOS.
+        let to_render: Vec<Message> = new_messages
+            .into_iter()
+            .filter(|m| m.role != "assistant")
+            .collect();
+
+        if to_render.is_empty() {
+            // Pure assistant message append — nothing to prefill, but
+            // the transcript was already extended above so future calls
+            // see it.
+            return Ok(0);
+        }
+
+        let delta_prompt = tpl
+            .apply(to_render, None, None)
+            .map_err(ExecError::Other)?;
+
+        // Tokenize WITHOUT the BOS token — we've already emitted BOS
+        // during the initial prefill and it must not reappear mid-stream.
+        let remaining = self
+            .bundle
+            .model
+            .str_to_token(&delta_prompt, AddBos::Never)
+            .map_err(|e| ExecError::Other(e.into()))?;
 
         if remaining.is_empty() {
             return Ok(0);
         }
+        let mut remaining = remaining;
 
         let batch_size = self.settings.system.batch_size.unwrap_or(128) as usize;
         let mut batch = LlamaBatch::new(batch_size, 1);
