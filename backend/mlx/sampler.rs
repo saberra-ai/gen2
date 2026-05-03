@@ -31,6 +31,12 @@ impl Sampler {
         self
     }
 
+    /// Passthrough to [`CommonSampler::with_presence_penalty`].
+    pub fn with_presence_penalty(mut self, penalty: Option<f32>) -> Self {
+        self.inner = self.inner.with_presence_penalty(penalty);
+        self
+    }
+
     /// Passthrough to [`CommonSampler::with_dry`].
     pub fn with_dry(mut self, params: Option<DryParams>) -> Self {
         self.inner = self.inner.with_dry(params);

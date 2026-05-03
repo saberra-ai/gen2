@@ -58,6 +58,25 @@ pub struct GenSpec {
     #[serde(default)]
     pub eot_bias: Option<f32>,
 
+    /// Repetition penalty (e.g. 1.05 = mild damp on tokens already in
+    /// the recent window). `None` or `Some(1.0)` disables. Mirrors
+    /// `SamplingSettings::penalty_repeat`; per-call override of
+    /// engine-level Settings.
+    #[serde(default)]
+    pub penalty_repeat: Option<f32>,
+    /// Frequency penalty — additive damp scaled by how many times each
+    /// token has appeared. Mirrors `SamplingSettings::penalty_freq`.
+    /// `None` or `Some(0.0)` disables.
+    #[serde(default)]
+    pub penalty_freq: Option<f32>,
+    /// Presence penalty — additive damp on tokens that have appeared at
+    /// least once. Mirrors `SamplingSettings::penalty_present`. The
+    /// Qwen3.5/3.6 family explicitly recommends `1.5` here for
+    /// non-thinking general tasks (mitigates the "repeats forever"
+    /// failure mode); see ADR-0015.
+    #[serde(default)]
+    pub penalty_present: Option<f32>,
+
     /// Grammar-constrained decoding specification. When set, every
     /// sampling step is masked so only tokens compliant with the
     /// grammar can be chosen. Supports JSON-schema, regex, Lark, and a

@@ -1,5 +1,6 @@
 use crate::types::message::{
-    ChatTemplateInputs, Message, MessageBody, MessageChunk, TextMessage, TokenizerConfigToken, Tool,
+    ChatTemplateInputs, Message, MessageBody, MessageChunk, MessageContent, TextMessage,
+    TokenizerConfigToken, Tool,
 };
 use anyhow::{Error, Result};
 use chrono::Local;
@@ -79,6 +80,35 @@ impl ChatTemplate {
         self.apply_with_options(messages, tools_and_prompt, enable_thinking, true)
     }
 
+    /// Probe whether this template accepts a `system` role at message[0].
+    ///
+    /// Some upstream templates (notably Gemma 2's
+    /// `gemma-2-*-it/tokenizer_config.json`) hard-error on `system` via
+    /// `{{ raise_exception('System role not supported') }}`. Pio's
+    /// `Session::new` injects a system message by default; without this
+    /// probe + fold-into-first-user fallback, those models crash at
+    /// inference time with `syntax error: System role not supported`.
+    /// Surfaced by the 20-turn zoo matrix on gemma-2-2b.
+    pub(crate) fn supports_system_role(&self) -> bool {
+        let probe = vec![
+            Message {
+                role: "system".into(),
+                body: MessageBody::Content {
+                    content: MessageContent::SingleText("probe".into()),
+                },
+                name: None,
+            },
+            Message {
+                role: "user".into(),
+                body: MessageBody::Content {
+                    content: MessageContent::SingleText("hi".into()),
+                },
+                name: None,
+            },
+        ];
+        self.apply_with_options(probe, None, None, false).is_ok()
+    }
+
     /// Like [`apply`] but exposes `add_generation_prompt`.
     ///
     /// Callers that need a pure prefix render (e.g. the MLX prefix cache, which
@@ -150,6 +180,33 @@ impl ChatTemplate {
 mod tests {
     use super::*;
     use crate::types::message::{MessageContent, Url};
+
+    /// Tracer for `ChatTemplate::supports_system_role`. Gemma 2's
+    /// upstream template explicitly raises when given a system message
+    /// — Pio's session-start always injected one and crashed inference
+    /// with `syntax error: System role not supported`. The matrix
+    /// 20-turn run surfaced this on gemma-2-2b. Probe-rendering at
+    /// session-start lets us route around it.
+    #[test]
+    fn supports_system_role_detects_gemma2_style_rejection() {
+        // Minimal Gemma-2-style template: errors when role[0] == 'system'.
+        let tpl = r#"{%- for m in messages %}{%- if m.role == 'system' %}{{ raise_exception('System role not supported') }}{%- endif %}<turn>{{ m.role }}: {{ m.content }}</turn>{%- endfor %}"#;
+        let ct = ChatTemplate::new(tpl.to_string(), None, None);
+        assert!(
+            !ct.supports_system_role(),
+            "must detect Gemma-2-style rejection",
+        );
+    }
+
+    #[test]
+    fn supports_system_role_passes_for_lenient_template() {
+        // Llama-3-style template happily renders system role.
+        let tpl =
+            r#"{%- for m in messages %}<|h|>{{ m.role }}<|h|>{{ m.content }}<|e|>{%- endfor %}"#;
+        let ct = ChatTemplate::new(tpl.to_string(), None, None);
+        assert!(ct.supports_system_role(), "lenient template must pass");
+    }
+
     #[test]
     fn test_chat_template() {
         let template = r#"

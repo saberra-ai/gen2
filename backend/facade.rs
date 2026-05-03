@@ -423,6 +423,13 @@ impl Engine {
             b.warm_model(model_dir);
         }
     }
+
+    /// Architecture string for the currently-loaded bundle (lowercase
+    /// `general.architecture` from GGUF, or HF `model_type` for MLX /
+    /// ONNX). Returns `None` when no model is loaded.
+    pub fn bundle_architecture(&self) -> Option<String> {
+        self.as_backend().and_then(|b| b.bundle_architecture())
+    }
 }
 
 // ─── Session ────────────────────────────────────────────────────────────────

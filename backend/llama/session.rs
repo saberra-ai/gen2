@@ -148,6 +148,13 @@ impl Session {
         if gen_spec.max_tokens.is_none() {
             gen_spec.max_tokens = self.settings.stopping.max_tokens;
         }
+        // Apply per-pull GenSpec sampling overrides on top of engine
+        // Settings. Without this, the sampler chain below reads from
+        // `settings.sampling.*` directly and ignores GenSpec — which
+        // silently drops `recommended_sampling(model_id)` values that
+        // the matrix harness and any per-call temp/top_p override try
+        // to pass.
+        let effective_settings = self.settings.with_gen_spec_overrides(&gen_spec);
         let mut guard = self.state.lock();
         let state = guard
             .take()
@@ -161,7 +168,7 @@ impl Session {
         // the MLX and ONNX backends use — `LlamaSampler::llguidance` is
         // literally the same engine, so grammar semantics stay aligned.
         let sampler =
-            Self::build_sampler_with_optional_grammar(&self.settings, &gen_spec, &self.bundle);
+            Self::build_sampler_with_optional_grammar(&effective_settings, &gen_spec, &self.bundle);
 
         let pre_events = self.build_media_events();
         let puller = TokenPuller::new_from_session(
@@ -538,21 +545,14 @@ impl Session {
         let merged_prompt = merge_prompts(&meta_prompt, system_prompt, persona);
 
         tracing::debug!("Session prompt messages: {:?}", messages);
-        let has_system = messages.iter().any(|m| m.role == "system");
-        if !has_system && !merged_prompt.trim().is_empty() {
-            messages.insert(
-                0,
-                Message {
-                    role: "system".into(),
-                    body: MessageBody::Content {
-                        content: MessageContent::SingleText(merged_prompt),
-                    },
-                    name: None,
-                },
-            );
-        }
 
-        // Build chat template
+        // Build chat template FIRST so the system-injection logic below
+        // can probe whether the template accepts a `system` role at
+        // message[0]. Gemma 2's template raises an exception if it
+        // sees one — surfaced by the 20-turn zoo matrix on gemma-2-2b
+        // as `syntax error: System role not supported`. The probe lets
+        // us route around that by folding system into the first user
+        // message instead.
         let mut bos_decoder = encoding_rs::UTF_8.new_decoder();
         let mut eos_decoder = encoding_rs::UTF_8.new_decoder();
         let chat_template = ChatTemplate::new(
@@ -575,6 +575,35 @@ impl Session {
                     .map_err(|e| ExecError::Other(e.into()))?,
             )),
         );
+
+        let has_system = messages.iter().any(|m| m.role == "system");
+        if !has_system && !merged_prompt.trim().is_empty() {
+            if chat_template.supports_system_role() {
+                messages.insert(
+                    0,
+                    Message {
+                        role: "system".into(),
+                        body: MessageBody::Content {
+                            content: MessageContent::SingleText(merged_prompt),
+                        },
+                        name: None,
+                    },
+                );
+            } else if let Some(first_user_idx) = messages.iter().position(|m| m.role == "user")
+                && let MessageBody::Content {
+                    content: MessageContent::SingleText(text),
+                } = &mut messages[first_user_idx].body
+            {
+                *text = format!("{}\n\n{}", merged_prompt, text);
+                // For non-SingleText content (multimodal etc.) we leave
+                // the message alone — folding into a chunked content is
+                // an open question per modality and gets handled in the
+                // template anyway via the user-role path.
+            }
+            // else: no user message to fold into, no system support;
+            // skip injection entirely. The model will just get whatever
+            // messages it was passed.
+        }
 
         // Gemma 4 IT chat template gates the thinking block on
         // `enable_thinking`. Without it, the rendered prompt has no

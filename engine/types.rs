@@ -141,6 +141,32 @@ impl Settings {
         Ok(())
     }
 
+    /// Return a clone with per-pull `GenSpec` sampling fields overlaid:
+    /// each `Some` field on the spec wins; `None` keeps the existing
+    /// Settings value. Mirrors the `gen_spec.field.or(settings.field)`
+    /// pattern already used by the `external_api` backend, generalised
+    /// so llama / MLX `pull()` can apply per-pull sampling overrides
+    /// from `recommended_sampling(...)` (or any caller-supplied
+    /// GenSpec) without first mutating engine-level Settings.
+    ///
+    /// Why this matters: before this merge existed, the llama and MLX
+    /// samplers built their chains from `settings.sampling.*` and
+    /// silently dropped GenSpec sampling fields (only `max_tokens` and
+    /// `grammar` flowed through). The matrix harness's
+    /// `recommended_sampling`-derived GenSpec was a no-op on those
+    /// backends until this merge was wired in.
+    pub fn with_gen_spec_overrides(&self, spec: &crate::gen2::generation::GenSpec) -> Settings {
+        let mut out = self.clone();
+        out.sampling.temperature = spec.temperature.or(out.sampling.temperature);
+        out.sampling.top_p = spec.top_p.or(out.sampling.top_p);
+        out.sampling.top_k = spec.top_k.or(out.sampling.top_k);
+        out.sampling.min_p = spec.min_p.or(out.sampling.min_p);
+        out.sampling.penalty_repeat = spec.penalty_repeat.or(out.sampling.penalty_repeat);
+        out.sampling.penalty_freq = spec.penalty_freq.or(out.sampling.penalty_freq);
+        out.sampling.penalty_present = spec.penalty_present.or(out.sampling.penalty_present);
+        out
+    }
+
     /// Fill unset fields from a defaults snapshot while preserving explicit overrides.
     pub fn inherit_missing(&mut self, defaults: &Settings) {
         if self.sampling.temperature.is_none() {
@@ -271,6 +297,51 @@ pub struct MmSettings {
 mod tests {
     use super::*;
     use crate::gen2::generation::GenSpec;
+
+    /// Tracer for `Settings::with_gen_spec_overrides`: per-pull GenSpec
+    /// fields must win over engine-level Settings.sampling. Without this,
+    /// `recommended_sampling(model_id)` values plumbed through GenSpec
+    /// at `session.pull(...)` get silently ignored by the llama/MLX
+    /// samplers (they read settings.sampling.* exclusively). The matrix
+    /// harness depends on this merge actually applying.
+    #[test]
+    fn with_gen_spec_overrides_lets_genspec_win_per_field() {
+        let base = Settings {
+            sampling: SamplingSettings {
+                temperature: Some(1.0),
+                top_p: Some(0.95),
+                top_k: Some(50),
+                min_p: Some(0.0),
+                penalty_repeat: Some(1.0),
+                penalty_freq: None,
+                penalty_present: Some(2.0),
+                ..Default::default()
+            },
+            ..Default::default()
+        };
+        let spec = GenSpec {
+            temperature: Some(0.7),
+            top_p: Some(0.8),
+            top_k: Some(20),
+            min_p: Some(0.1),
+            penalty_repeat: Some(1.05),
+            penalty_freq: Some(0.5),
+            penalty_present: Some(1.5),
+            ..Default::default()
+        };
+        let merged = base.with_gen_spec_overrides(&spec);
+        assert_eq!(merged.sampling.temperature, Some(0.7), "temperature");
+        assert_eq!(merged.sampling.top_p, Some(0.8), "top_p");
+        assert_eq!(merged.sampling.top_k, Some(20), "top_k");
+        assert_eq!(merged.sampling.min_p, Some(0.1), "min_p");
+        assert_eq!(merged.sampling.penalty_repeat, Some(1.05), "penalty_repeat");
+        assert_eq!(merged.sampling.penalty_freq, Some(0.5), "penalty_freq");
+        assert_eq!(
+            merged.sampling.penalty_present,
+            Some(1.5),
+            "penalty_present"
+        );
+    }
 
     #[test]
     fn settings_validate_ok() {

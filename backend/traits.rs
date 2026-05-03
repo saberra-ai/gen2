@@ -47,6 +47,18 @@ pub trait Backend: std::fmt::Debug {
     fn stats(&self) -> ExecutionStats;
     fn first_token_tier(&self) -> LatencyTier;
 
+    /// Architecture string for the currently-loaded bundle (lowercase
+    /// `general.architecture` from GGUF, or HF `model_type` for MLX /
+    /// ONNX). Returns `None` when no model is loaded or when the
+    /// backend can't surface architecture.
+    ///
+    /// Used by the chat-event mapper to derive `ChannelMarkers` per
+    /// model family — Gemma 4's `<|channel>thought` reasoning markers
+    /// only fire when this returns `gemma4`.
+    fn bundle_architecture(&self) -> Option<String> {
+        None
+    }
+
     fn start_session(&self, spec: SessionSpec) -> Result<Arc<dyn BackendSession>, ExecError>;
     fn end_session(&self, id: SessionId) -> Result<(), ExecError>;
 

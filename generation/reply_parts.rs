@@ -102,6 +102,19 @@ impl ChannelMarkers {
             Self::none()
         }
     }
+
+    /// Best-effort marker detection from a backend's `bundle_architecture()`
+    /// (lowercased GGUF `general.architecture` or HF `model_type`). Returns
+    /// `none()` when arch is unknown — callers can fall back to model-id
+    /// hint detection if they have one. Sourced from
+    /// [`crate::gen2::backend::traits::Backend::bundle_architecture`].
+    pub fn from_architecture(arch: Option<&str>) -> Self {
+        match arch {
+            Some(a) if a.starts_with("gemma4") => Self::gemma4(),
+            Some("qwen3") | Some("qwen3moe") | Some("deepseek2") => Self::qwen3_deepseek(),
+            _ => Self::none(),
+        }
+    }
 }
 
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
@@ -360,6 +373,28 @@ impl ReplyStateMachine {
                 }
             }
         }
+    }
+
+    /// Streaming counterpart to [`Self::finish`]: drain any held-back
+    /// `pending` bytes (a partial-marker prefix that never resolved)
+    /// into a single emission for the channel that was active when
+    /// they were buffered. Use this on terminal events to flush the
+    /// tail without consuming the state machine.
+    ///
+    /// Returns an empty vec when `pending` is empty.
+    pub fn flush_pending(&mut self) -> Vec<StreamEmission> {
+        if self.pending.is_empty() {
+            return Vec::new();
+        }
+        let s = std::mem::take(&mut self.pending);
+        let emission = match self.state {
+            ChannelState::Visible => StreamEmission::Content(s),
+            ChannelState::InReasoning => StreamEmission::Reasoning(s),
+        };
+        // Mirror into the internal buffers so `finish` / `summary`
+        // remain consistent with what the streaming caller saw.
+        self.mirror_into_buffers(std::slice::from_ref(&emission));
+        vec![emission]
     }
 
     /// Consume the state machine and return the split. Any unflushed

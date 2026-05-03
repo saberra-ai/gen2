@@ -12,6 +12,14 @@ use super::{ChatRunState, CompletionReason, FailureReason, WorkloadKind};
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct ControllerRuntimeSnapshot {
     pub chats: Vec<ActiveChatSnapshot>,
+    /// Lowercase GGUF `general.architecture` (or HF `model_type`) of the
+    /// currently-loaded model, if any. Used by callers that need to
+    /// route per-architecture chat-stream behavior — e.g. the daemon's
+    /// turn streamer picks `ChannelMarkers::gemma4()` when this reads
+    /// `gemma4`, so the live wire splits visible vs reasoning content.
+    /// `None` when no model is loaded.
+    #[serde(default)]
+    pub loaded_model_architecture: Option<String>,
 }
 
 /// Observable fields for a single [`super::ChatRuntime`].
@@ -59,7 +67,11 @@ pub(super) fn build_runtime_snapshot(state: &ControllerState) -> ControllerRunti
         })
         .collect();
     chats.sort_by(|a, b| a.chat_id.cmp(&b.chat_id));
-    ControllerRuntimeSnapshot { chats }
+    let loaded_model_architecture = state.engine.bundle_architecture();
+    ControllerRuntimeSnapshot {
+        chats,
+        loaded_model_architecture,
+    }
 }
 
 #[cfg(test)]
@@ -92,6 +104,7 @@ mod tests {
                     lifecycle: RuntimeLifecycleSnapshot::Completed(CompletionReason::Eos),
                 },
             ],
+            loaded_model_architecture: Some("gemma4".into()),
         };
         let json = serde_json::to_string(&snap).expect("serialize");
         let back: ControllerRuntimeSnapshot = serde_json::from_str(&json).expect("deserialize");

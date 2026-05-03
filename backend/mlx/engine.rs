@@ -461,6 +461,11 @@ impl Backend for Engine {
     fn first_token_tier(&self) -> LatencyTier {
         LatencyTier::Medium
     }
+    fn bundle_architecture(&self) -> Option<String> {
+        self.bundle
+            .load_full()
+            .and_then(|b| b.meta.architecture.clone())
+    }
     fn start_session(&self, spec: SessionSpec) -> Result<Arc<dyn BackendSession>, ExecError> {
         let s = Engine::start_session(self, spec)?;
         Ok(s as Arc<dyn BackendSession>)

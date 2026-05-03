@@ -61,6 +61,14 @@ pub struct Sampler {
     /// above `1.0` reduce the probability of recently-emitted tokens;
     /// llama.cpp default is `1.1`, HuggingFace default is `1.0` (off).
     repetition_penalty: Option<f32>,
+    /// Presence penalty: a fixed additive damp subtracted from the logit
+    /// of every token that has appeared at least once in the recent
+    /// window. `None` or `Some(0.0)` disables. Different from
+    /// repetition_penalty (multiplicative) and frequency_penalty
+    /// (count-scaled). HF / OpenAI convention: typical values 0.0–2.0;
+    /// the Qwen3.5/3.6 family upstream README recommends `1.5` for
+    /// non-thinking general-tasks mode.
+    presence_penalty: Option<f32>,
     /// Min-p threshold (Apfelmus 2023). Remove tokens whose prob <
     /// `min_p * max_prob`. None or 0.0 disables.
     min_p: Option<f32>,
@@ -95,6 +103,7 @@ impl Sampler {
             top_p,
             top_k,
             repetition_penalty,
+            presence_penalty: None,
             min_p: None,
             dry: None,
             xtc: None,
@@ -102,6 +111,17 @@ impl Sampler {
             recent: VecDeque::with_capacity(REPETITION_WINDOW),
             rng: rand::rng(),
         }
+    }
+
+    /// Enable presence penalty — additive damp on tokens that appeared
+    /// at least once in the recent window. `None` or `0.0` disables.
+    /// See field docs for relationship to other penalty types.
+    pub fn with_presence_penalty(mut self, penalty: Option<f32>) -> Self {
+        self.presence_penalty = match penalty {
+            Some(p) if p > 0.0 => Some(p),
+            _ => None,
+        };
+        self
     }
 
     /// Enable an additive logit bias on end-of-turn tokens. See field docs
@@ -273,6 +293,34 @@ impl Sampler {
         }
     }
 
+    /// Apply presence penalty in-place. For each *unique* token id in
+    /// the recent window, subtract `presence_penalty` once from its
+    /// logit. `None` / `0.0` / empty-recent disables. The "once per
+    /// unique token" semantic is what distinguishes presence_penalty
+    /// from frequency_penalty (which would scale by occurrence count).
+    fn apply_presence_penalty(&self, logits: &mut [f32]) {
+        let penalty = match self.presence_penalty {
+            Some(p) if p > 0.0 => p,
+            _ => return,
+        };
+        if self.recent.is_empty() {
+            return;
+        }
+        // Dedup by collecting unique ids first; the recent buffer is
+        // bounded by REPETITION_WINDOW (128), so a small HashSet is fine.
+        use std::collections::HashSet;
+        let mut seen: HashSet<u32> = HashSet::with_capacity(self.recent.len());
+        for &tok in &self.recent {
+            if !seen.insert(tok) {
+                continue;
+            }
+            let i = tok as usize;
+            if i < logits.len() {
+                logits[i] -= penalty;
+            }
+        }
+    }
+
     /// Apply DRY n-gram repetition penalty in-place. For each candidate
     /// token `t`, find the longest overlap `L` where the sequence
     /// `[...recent, t]` ends with a substring that appears earlier in
@@ -332,18 +380,20 @@ impl Sampler {
     ///
     /// Pipeline (llama.cpp order of operations):
     ///   1. repetition penalty (pre-temperature)
-    ///   2. DRY n-gram penalty (pre-temperature)
-    ///   3. EOT logit bias (pre-temperature so the bias survives T>1 scaling)
-    ///   4. temperature (division)
-    ///   5. softmax
-    ///   6. top-k
-    ///   7. min-p
-    ///   8. top-p
-    ///   9. XTC
-    ///   10. sample (categorical over remaining distribution)
+    ///   2. presence penalty (pre-temperature)
+    ///   3. DRY n-gram penalty (pre-temperature)
+    ///   4. EOT logit bias (pre-temperature so the bias survives T>1 scaling)
+    ///   5. temperature (division)
+    ///   6. softmax
+    ///   7. top-k
+    ///   8. min-p
+    ///   9. top-p
+    ///   10. XTC
+    ///   11. sample (categorical over remaining distribution)
     pub fn sample_from_logits(&mut self, logits: &[f32]) -> u32 {
         let mut penalized: Vec<f32> = logits.to_vec();
         self.apply_repetition_penalty(&mut penalized);
+        self.apply_presence_penalty(&mut penalized);
         self.apply_dry_penalty(&mut penalized);
         if let Some((ids, bias)) = &self.eot_bias {
             for &id in ids {
@@ -464,6 +514,7 @@ mod tests {
         // but stops before the RNG draw so tests can assert on the set.
         let mut pen = logits.to_vec();
         s.apply_repetition_penalty(&mut pen);
+        s.apply_presence_penalty(&mut pen);
         s.apply_dry_penalty(&mut pen);
         if let Some((ids, bias)) = &s.eot_bias {
             for &id in ids {
@@ -509,6 +560,56 @@ mod tests {
             indexed.truncate(cutoff);
         }
         indexed
+    }
+
+    /// Tracer for presence_penalty: each unique token in the recent
+    /// window has a fixed `penalty` subtracted from its logit, *once*
+    /// regardless of how many times it appeared. Distinct from
+    /// `repetition_penalty` (multiplicative) and `frequency_penalty`
+    /// (additive scaled by count). The Qwen3.5/3.6 family explicitly
+    /// recommends `1.5` here for non-thinking general tasks; before
+    /// this Sampler enhancement that recommendation was silently
+    /// dropped on the MLX backend.
+    #[test]
+    fn presence_penalty_subtracts_fixed_value_once_per_unique_token() {
+        let mut s = Sampler::new(1.0, None, None, None).with_presence_penalty(Some(0.5));
+        // Observe token 7 three times — penalty should still apply once.
+        s.observe(7);
+        s.observe(7);
+        s.observe(7);
+        // Observe token 3 once.
+        s.observe(3);
+        // Token 5 unobserved.
+        let logits = vec![1.0; 10];
+        let mut pen = logits.clone();
+        s.apply_presence_penalty(&mut pen);
+        assert!(
+            (pen[7] - 0.5).abs() < f32::EPSILON,
+            "logit[7] should be 1.0 - 0.5 = 0.5, got {}",
+            pen[7],
+        );
+        assert!(
+            (pen[3] - 0.5).abs() < f32::EPSILON,
+            "logit[3] should be 1.0 - 0.5 = 0.5, got {}",
+            pen[3],
+        );
+        assert!(
+            (pen[5] - 1.0).abs() < f32::EPSILON,
+            "logit[5] (unobserved) must be unchanged, got {}",
+            pen[5],
+        );
+    }
+
+    #[test]
+    fn presence_penalty_disabled_when_none_or_zero() {
+        for penalty in [None, Some(0.0)] {
+            let mut s = Sampler::new(1.0, None, None, None).with_presence_penalty(penalty);
+            s.observe(2);
+            let logits = vec![1.0, 1.0, 1.0];
+            let mut pen = logits.clone();
+            s.apply_presence_penalty(&mut pen);
+            assert_eq!(pen, logits, "penalty={penalty:?} should be a no-op",);
+        }
     }
 
     #[test]

@@ -123,10 +123,11 @@ impl TokenPuller {
             temperature,
             Some(gen_spec.top_p.unwrap_or(0.9)),
             gen_spec.top_k,
-            None,
+            gen_spec.penalty_repeat,
         )
         .with_eot_bias(bundle.tokenizer.stop_ids().to_vec(), eot_bias)
         .with_min_p(gen_spec.min_p)
+        .with_presence_penalty(gen_spec.penalty_present)
         .with_dry(dry_params)
         .with_xtc(xtc_params);
 
