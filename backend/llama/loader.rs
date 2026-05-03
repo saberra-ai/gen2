@@ -87,12 +87,19 @@ pub(crate) fn build_bundle(
         })
         .unwrap_or([0u8; 32]);
 
+    let architecture = model
+        .meta_val_str("general.architecture")
+        .ok()
+        .map(|s| s.trim().to_lowercase())
+        .filter(|s| !s.is_empty());
+
     let meta = ModelMeta {
         model_uuid,
         n_ctx: model.n_ctx_train(),
         n_layer: model.n_layer(),
         tokenizer_digest,
         template_fingerprint,
+        architecture,
     };
 
     // Capabilities discovery and optional MTMD context

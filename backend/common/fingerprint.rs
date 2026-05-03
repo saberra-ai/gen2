@@ -16,6 +16,10 @@ use std::path::Path;
 /// model has no `tokenizer_config.json`. The caller is expected to load this
 /// once and share it with the bundle — this function does not read from disk.
 ///
+/// `architecture` is the lowercase model architecture (e.g. `"gemma3"`,
+/// `"qwen2"`). Used by the sampler to apply per-architecture fix-ups; pass
+/// `None` if unknown.
+///
 /// **Note on `tokenizer_digest`:** The Llama backend hashes raw token bytes
 /// from `token_to_piece_bytes` (the GGUF model's internal representation),
 /// while this path hashes the *decoded string* from `HfTokenizer::decode`.
@@ -28,6 +32,7 @@ pub fn compute_hf_model_meta(
     n_ctx: u32,
     n_layer: u32,
     chat_template: Option<&str>,
+    architecture: Option<String>,
 ) -> ModelMeta {
     let bos_str = tokenizer
         .bos_id()
@@ -72,6 +77,7 @@ pub fn compute_hf_model_meta(
         n_layer,
         tokenizer_digest,
         template_fingerprint,
+        architecture,
     }
 }
 
@@ -109,7 +115,7 @@ mod tests {
     fn produces_nonzero_digests() {
         let dir = TempDir::new().unwrap();
         let tokenizer = make_tokenizer(dir.path());
-        let meta = compute_hf_model_meta(&tokenizer, dir.path(), 4096, 32, Some("hello"));
+        let meta = compute_hf_model_meta(&tokenizer, dir.path(), 4096, 32, Some("hello"), None);
 
         assert_eq!(meta.n_ctx, 4096);
         assert_eq!(meta.n_layer, 32);
@@ -122,7 +128,7 @@ mod tests {
     fn zeroes_template_fingerprint_when_no_template() {
         let dir = TempDir::new().unwrap();
         let tokenizer = make_tokenizer(dir.path());
-        let meta = compute_hf_model_meta(&tokenizer, dir.path(), 2048, 16, None);
+        let meta = compute_hf_model_meta(&tokenizer, dir.path(), 2048, 16, None, None);
 
         assert_eq!(meta.template_fingerprint, [0u8; 32]);
         assert_ne!(meta.tokenizer_digest, [0u8; 32]);
@@ -132,8 +138,8 @@ mod tests {
     fn different_layers_different_uuids() {
         let dir = TempDir::new().unwrap();
         let tokenizer = make_tokenizer(dir.path());
-        let meta_a = compute_hf_model_meta(&tokenizer, dir.path(), 4096, 32, None);
-        let meta_b = compute_hf_model_meta(&tokenizer, dir.path(), 4096, 24, None);
+        let meta_a = compute_hf_model_meta(&tokenizer, dir.path(), 4096, 32, None, None);
+        let meta_b = compute_hf_model_meta(&tokenizer, dir.path(), 4096, 24, None, None);
 
         assert_ne!(meta_a.model_uuid, meta_b.model_uuid);
     }

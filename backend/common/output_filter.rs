@@ -141,7 +141,23 @@ impl OutputFilter {
                 true
             }
             StopState::Partial { .. } => false,
-            StopState::Full { emit_at, .. } => {
+            StopState::Full {
+                at,
+                pattern_len,
+                emit_at,
+            } => {
+                let buf = self.stop.buffer();
+                let around = buf
+                    .get(at.saturating_sub(20)..(at + pattern_len).min(buf.len()))
+                    .unwrap_or(buf);
+                tracing::info!(
+                    target: "pio::gen2::stop",
+                    at,
+                    pattern_len,
+                    emit_at,
+                    around = %around,
+                    "stop pattern matched (output filter Full)"
+                );
                 // Emit held text up to `emit_at` (= pattern start +
                 // keep_prefix). Straddling tokens are truncated at the
                 // last char-boundary that stays within the safe prefix.
@@ -195,14 +211,30 @@ impl OutputFilter {
     }
 
     /// Terminal stop from outside the matcher (EOG token, explicit stop
-    /// flag, max_tokens, loop detector). Drops the held queue (held
-    /// tokens were partial stop-pattern matches; resolving differently
-    /// means we can't safely emit them — usually they'd be the garbage
-    /// the partial was pointing at). Flushes the tool-call parser so any
-    /// buffered partial-tag tail is released as literal text. Pushes
-    /// `extra` as the terminal event.
+    /// flag, max_tokens, loop detector). Emits anything buffered in the
+    /// held queue as legitimate content, since the upstream signal proves
+    /// no stop pattern actually completed.
+    ///
+    /// Why emit instead of drop: held tokens are tokens whose decoded
+    /// text formed a *prefix* of some stop pattern. With aggressive
+    /// patterns like `gemma4_chat_defaults` (`.user`/`?user`/`system\n`),
+    /// any token ending in `s` or `.` becomes a 1-char partial. If the
+    /// model produces "...The capital of France is Paris." and then
+    /// emits `<turn|>` (EOG), the trailing ` is`, ` Paris`, `.` are all
+    /// held as 1-char partials of `system\n` / `.user`. Dropping those
+    /// at finalize lost three legit content tokens — empirically
+    /// reproduced on Gemma 4 IT GGUF, where the user saw "The capital
+    /// of France" with the answer literally chopped off.
+    ///
+    /// Flushes the tool-call parser so any buffered partial-tag tail
+    /// is released as literal text. Pushes `extra` as the terminal event.
     pub fn finalize(&mut self, extra: TokenEvent) {
-        self.held.clear();
+        // Drain held content into pending: the partial pattern never
+        // resolved to a Full match, so the text is legit output.
+        let held_snapshot: Vec<(u32, String)> = self.held.drain(..).collect();
+        for (tid, t) in held_snapshot {
+            self.emit_text_chunk(tid, t);
+        }
         self.stop.reset();
         if let Some(parser) = self.tool_parser.as_mut() {
             for out in parser.flush() {
@@ -307,14 +339,58 @@ mod tests {
     }
 
     #[test]
-    fn finalize_drops_held() {
+    fn finalize_emits_held_partial_match_as_content() {
+        // Regression: a token whose suffix is a prefix of a stop pattern
+        // is held until the next token resolves it. If EOG fires before
+        // resolution, the upstream signal proves no stop actually
+        // completed — the held text is legit content and must be
+        // emitted, not dropped. Empirically: Gemma 4 IT emits
+        // "...France is Paris." then `<turn|>`; the trailing ` is`,
+        // ` Paris`, `.` are 1-char partials of `system\n` / `.user`.
         let mut f = mk(&["\nuser\n"]);
-        assert!(!f.push_token(1, "\nuser".into())); // partial
+        // "\nuser" is a 5-char prefix of the 6-char pattern "\nuser\n"
+        // → held as Partial.
+        assert!(!f.push_token(1, "\nuser".into()));
         f.finalize(TokenEvent::Eos);
-        let ev = f.pop().unwrap().unwrap();
+
+        // First pop must be the held content (legit output).
+        let ev = f.pop().expect("held content").expect("ok");
+        match ev {
+            TokenEvent::Token(t) => assert_eq!(t.text, "\nuser"),
+            other => panic!("expected held Token, got {other:?}"),
+        }
+        // Then the terminal Eos.
+        let ev = f.pop().expect("eos").expect("ok");
         assert!(matches!(ev, TokenEvent::Eos));
-        // Held "\nuser" never shows up.
         assert!(f.pop().is_none());
+    }
+
+    /// Concrete repro of the Gemma 4 truncation: every token in the
+    /// closing words of "France is Paris." has a trailing char that is
+    /// a 1-char prefix of `gemma4_chat_defaults` patterns. Without
+    /// emitting on finalize, the user sees "The capital of France"
+    /// instead of "The capital of France is Paris."
+    #[test]
+    fn finalize_emits_gemma4_trailing_words_through_aggressive_partials() {
+        use super::super::stop_matcher::StopMatcher;
+        let mut f =
+            OutputFilter::with_matcher(StopMatcher::new(StopMatcher::gemma4_chat_defaults()));
+
+        // Build up "The capital of France is Paris." through tokens
+        // whose tails repeatedly hit 1-char partial matches
+        // (`s` for `system\n`, `.` for `.user`).
+        for tok in ["The", " capital", " of", " France", " is", " Paris", "."] {
+            f.push_token(0, tok.into());
+        }
+        f.finalize(TokenEvent::Eos);
+
+        let mut text = String::new();
+        while let Some(Ok(ev)) = f.pop() {
+            if let TokenEvent::Token(t) = ev {
+                text.push_str(&t.text);
+            }
+        }
+        assert_eq!(text, "The capital of France is Paris.");
     }
 
     #[test]

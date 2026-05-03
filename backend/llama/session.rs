@@ -93,6 +93,29 @@ pub(crate) struct DecodeState {
     pub prefill_start_us: u64,
 }
 
+/// Tokenize a chat-template-rendered prompt for the llama.cpp backend.
+///
+/// Always uses [`AddBos::Never`]. The chat template is constructed with
+/// `bos_token` and renders `{{ bos_token }}` as a literal `<bos>` string at
+/// the start of the prompt; with `parse_special = true` (the default in
+/// `str_to_token`), that string resolves back to the BOS token id.
+/// `AddBos::Always` would prepend a *second* BOS — llama.cpp logs
+/// `check_double_bos_eos` when this happens, and Gemma 4 IT models respond
+/// to `[BOS, BOS, ...]` by emitting their EOS (token 106 `<turn|>`) within
+/// 7-8 sampled tokens, as if the conversation were already closed.
+///
+/// All chat-prompt tokenization in this backend MUST go through this
+/// helper rather than calling `str_to_token` directly, otherwise the
+/// double-BOS bug regresses silently.
+pub(crate) fn tokenize_chat_prompt(
+    model: &llama_cpp_2::model::LlamaModel,
+    prompt: &str,
+) -> Result<Vec<llama_cpp_2::token::LlamaToken>, ExecError> {
+    model
+        .str_to_token(prompt, AddBos::Never)
+        .map_err(|e| ExecError::Other(e.into()))
+}
+
 impl Session {
     pub fn pause(&self) {
         self.paused.store(true, Ordering::Release);
@@ -170,7 +193,7 @@ impl Session {
     ) -> LlamaSampler {
         use crate::gen2::backend::common::grammar::GrammarSpec;
         let Some(spec) = gen_spec.grammar.clone() else {
-            return Self::sampler_from_settings(settings);
+            return Self::sampler_from_settings(settings, bundle);
         };
         let (kind, data) = match spec {
             GrammarSpec::JsonObject => ("json_object", "{}".to_string()),
@@ -183,14 +206,14 @@ impl Session {
                 // Prepend grammar to the base chain. We can't simply
                 // push into the chain_simple Vec because LlamaSampler
                 // takes ownership; rebuild the chain from scratch.
-                Self::sampler_chain_with_grammar(settings, grammar_sampler)
+                Self::sampler_chain_with_grammar(settings, grammar_sampler, bundle)
             }
             Err(e) => {
                 tracing::warn!(
                     ?e,
                     "llama llguidance sampler build failed; falling back unconstrained"
                 );
-                Self::sampler_from_settings(settings)
+                Self::sampler_from_settings(settings, bundle)
             }
         }
     }
@@ -203,10 +226,14 @@ impl Session {
     fn sampler_chain_with_grammar(
         settings: &Settings,
         grammar_sampler: LlamaSampler,
+        bundle: &ModelBundle,
     ) -> LlamaSampler {
         let mut chain = vec![grammar_sampler];
         if let Some(penalties) = Self::penalties_sampler(settings) {
             chain.push(penalties);
+        }
+        if let Some(bias) = Self::architecture_logit_bias(bundle) {
+            chain.push(bias);
         }
         if let Some(k) = settings.sampling.top_k {
             chain.push(LlamaSampler::top_k(k));
@@ -351,13 +378,16 @@ impl Session {
 }
 
 impl Session {
-    fn sampler_from_settings(settings: &Settings) -> LlamaSampler {
-        // Order: penalties → top_k → min_p → top_p → temp → dist
+    fn sampler_from_settings(settings: &Settings, bundle: &ModelBundle) -> LlamaSampler {
+        // Order: penalties → arch_bias → top_k → min_p → top_p → temp → dist
         let mut chain = Vec::new();
 
         if let Some(penalties) = Self::penalties_sampler(settings) {
             tracing::debug!("Sampling penalties: {:?}", penalties);
             chain.push(penalties);
+        }
+        if let Some(bias) = Self::architecture_logit_bias(bundle) {
+            chain.push(bias);
         }
         if let Some(k) = settings.sampling.top_k {
             tracing::debug!("Sampling top_k: {}", k);
@@ -391,6 +421,74 @@ impl Session {
         chain.push(LlamaSampler::dist(seed));
 
         LlamaSampler::chain_simple(chain)
+    }
+
+    /// Per-architecture logit bias to harden sampling against quantization
+    /// pathologies. Currently:
+    ///
+    /// - **Gemma 1 / 2 / 3**: suppress `<start_of_turn>`. Llama.cpp marks
+    ///   both `<start_of_turn>` and `<end_of_turn>` as EOG in the gemma
+    ///   vocab; under aggressive quants (IQ2_M, Q2_K) the model occasionally
+    ///   picks `<start_of_turn>` mid-reply, producing a sentence cut at a
+    ///   random position. Suppressing it lets the model continue until it
+    ///   either picks `<end_of_turn>` or a continuation token.
+    ///
+    /// - **Gemma 4**: no-op. Gemma 4 collapses both turn markers into a
+    ///   single `<turn|>` token (id 106) which IS the model's legitimate
+    ///   EOS. Suppressing it would break end-of-turn entirely. If your
+    ///   Gemma 4 replies are getting cut mid-sentence, that's quantization
+    ///   noise causing premature EOS sampling — the fix is a higher-
+    ///   precision quant (Q4_K_M minimum), not a sampler change. The scan
+    ///   below returns None for Gemma 4 because the vocab has no
+    ///   `<start_of_turn>` token to suppress.
+    fn architecture_logit_bias(bundle: &ModelBundle) -> Option<LlamaSampler> {
+        use llama_cpp_2::token::LlamaToken;
+        use llama_cpp_2::token::logit_bias::LlamaLogitBias;
+        let arch = bundle.meta.architecture.as_deref()?;
+        let family = crate::gen2::zoo::ModelFamily::detect(Some(arch), None);
+        if !matches!(
+            family,
+            crate::gen2::zoo::ModelFamily::Gemma2
+                | crate::gen2::zoo::ModelFamily::Gemma3
+                | crate::gen2::zoo::ModelFamily::Gemma4,
+        ) {
+            return None;
+        }
+        // The literal string `<start_of_turn>` doesn't tokenize to a single
+        // id via `str_to_token` (the Gemma SentencePiece tokenizer treats
+        // it as plain text and breaks it into 7 pieces). Instead, scan the
+        // start of the vocab — Gemma reserves `<start_of_turn>` /
+        // `<end_of_turn>` as control tokens in the first ~256 ids — and
+        // match by piece text directly.
+        let n_vocab = bundle.model.n_vocab();
+        let scan_end = 256.min(n_vocab);
+        let mut found: Option<i32> = None;
+        for id in 0..scan_end {
+            let bytes = bundle
+                .model
+                .token_to_piece_bytes(LlamaToken(id), 32, true, None)
+                .unwrap_or_default();
+            if bytes.as_slice() == b"<start_of_turn>" {
+                found = Some(id);
+                break;
+            }
+        }
+        let Some(tok_id) = found else {
+            tracing::warn!(
+                target: "pio::gen2::llama::sampler",
+                arch = %arch,
+                "could not locate <start_of_turn> in vocab[0..{scan_end}]; skipping gemma logit bias"
+            );
+            return None;
+        };
+        let biases = vec![LlamaLogitBias::new(LlamaToken(tok_id), f32::NEG_INFINITY)];
+        tracing::info!(
+            target: "pio::gen2::llama::sampler",
+            arch = %arch,
+            token_id = tok_id,
+            "gemma logit bias: suppressing <start_of_turn>"
+        );
+        Some(LlamaSampler::logit_bias(n_vocab, &biases))
     }
 
     fn penalties_sampler(settings: &Settings) -> Option<LlamaSampler> {
@@ -428,7 +526,8 @@ impl Session {
     ) -> Result<Self, ExecError> {
         let mut messages = messages;
 
-        let include_meta = settings.prompt.include_meta.unwrap_or(true);
+        let include_meta = settings.prompt.include_meta.unwrap_or(true)
+            && std::env::var("PIO_DISABLE_META_PROMPT").ok().as_deref() != Some("1");
         let meta_prompt = if include_meta {
             crate::gen2::session_rt::prompt::build_meta_prompt()
         } else {
@@ -477,15 +576,35 @@ impl Session {
             )),
         );
 
+        // Gemma 4 IT chat template gates the thinking block on
+        // `enable_thinking`. Without it, the rendered prompt has no
+        // `<|think|>\n` marker and the model — heavily trained to think
+        // first — emits `<turn|>` (token 106) inside markdown bold like
+        // `is **<EOS>` instead of completing answers. We mirror llama-cli's
+        // `--jinja` default of `enable_thinking=true` for Gemma family.
+        let enable_thinking = matches!(
+            crate::gen2::zoo::ModelFamily::detect(bundle.meta.architecture.as_deref(), None),
+            crate::gen2::zoo::ModelFamily::Gemma4,
+        );
         let prompt = chat_template
-            .apply(messages.clone(), None, None)
+            .apply(messages.clone(), None, Some(enable_thinking))
             .map_err(ExecError::Other)?;
+        tracing::info!(
+            target: "pio::gen2::llama::prompt",
+            len = prompt.len(),
+            enable_thinking,
+            prompt = %prompt,
+            "rendered chat prompt"
+        );
 
-        // Tokenize prompt
-        let mut tokens_list = bundle
-            .model
-            .str_to_token(&prompt, AddBos::Always)
-            .map_err(|e| ExecError::Other(e.into()))?;
+        let mut tokens_list = tokenize_chat_prompt(&bundle.model, &prompt)?;
+        tracing::info!(
+            target: "pio::gen2::llama::prompt",
+            n_tokens = tokens_list.len(),
+            first_8 = ?tokens_list.iter().take(8).collect::<Vec<_>>(),
+            last_8 = ?tokens_list.iter().rev().take(8).rev().collect::<Vec<_>>(),
+            "tokenized chat prompt"
+        );
 
         // Create context
         let ctx_size = settings
@@ -513,12 +632,9 @@ impl Session {
             // `tokens_list` from the initial tokenization above is still valid.
             if outcome.dropped > 0 {
                 let final_prompt = chat_template
-                    .apply(messages.clone(), None, None)
+                    .apply(messages.clone(), None, Some(enable_thinking))
                     .map_err(ExecError::Other)?;
-                tokens_list = bundle
-                    .model
-                    .str_to_token(&final_prompt, AddBos::Always)
-                    .map_err(|e| ExecError::Other(e.into()))?;
+                tokens_list = tokenize_chat_prompt(&bundle.model, &final_prompt)?;
             }
         }
         let batch_size = settings.system.batch_size.unwrap_or(128);
@@ -612,7 +728,7 @@ impl Session {
                     });
 
                     // Build sampler
-                    let _sampler = Self::sampler_from_settings(&settings);
+                    let _sampler = Self::sampler_from_settings(&settings, &bundle);
 
                     return Ok(Self {
                         id,
@@ -672,7 +788,7 @@ impl Session {
         });
 
         // Build sampler
-        let _sampler = Self::sampler_from_settings(&settings);
+        let _sampler = Self::sampler_from_settings(&settings, &bundle);
 
         Ok(Self {
             id,
@@ -761,11 +877,7 @@ impl Session {
         let full_prompt = tpl
             .apply(all_messages, None, None)
             .map_err(ExecError::Other)?;
-        let full_tokens = self
-            .bundle
-            .model
-            .str_to_token(&full_prompt, AddBos::Always)
-            .map_err(|e| ExecError::Other(e.into()))?;
+        let full_tokens = tokenize_chat_prompt(&self.bundle.model, &full_prompt)?;
 
         let ctx_size = self
             .settings
@@ -820,10 +932,7 @@ impl Session {
                 let p = tpl
                     .apply(working.clone(), None, None)
                     .map_err(ExecError::Other)?;
-                self.bundle
-                    .model
-                    .str_to_token(&p, AddBos::Always)
-                    .map_err(|e| ExecError::Other(e.into()))?
+                tokenize_chat_prompt(&self.bundle.model, &p)?
             };
 
             *msgs = working;
@@ -991,5 +1100,125 @@ impl KvSnapshotTrait for Session {
     }
     fn load_cache(&self, src: KvLoadSpec) -> Result<KvLoadReport, ExecError> {
         Session::load_cache(self, src)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use llama_cpp_2::model::params::LlamaModelParams;
+    use std::path::PathBuf;
+
+    /// Locate a Gemma-family GGUF for the test, preferring `PIO_TEST_GGUF`
+    /// then falling back to the dev model paths used during the bug
+    /// investigation. Returns `None` if no candidate exists — caller
+    /// should `eprintln!` + return early so the suite stays green
+    /// without a model bundled in CI.
+    fn find_gemma_gguf() -> Option<PathBuf> {
+        if let Ok(p) = std::env::var("PIO_TEST_GGUF") {
+            let path = PathBuf::from(p);
+            if path.exists() {
+                return Some(path);
+            }
+        }
+        for candidate in [
+            "/Users/victor/pio-test-models/gemma-4-E2B-it-Q4_K_M.gguf",
+            "/Users/victor/pio-test-models/gemma-4-E2B-it-UD-IQ2_M.gguf",
+        ] {
+            let path = PathBuf::from(candidate);
+            if path.exists() {
+                return Some(path);
+            }
+        }
+        None
+    }
+
+    /// Regression: the chat template is constructed with `bos_token`, so
+    /// `chat_template.apply()` renders a string that starts with a literal
+    /// `<bos>`. With `parse_special=true`, `str_to_token` resolves that
+    /// back to the BOS token id; combining that with `AddBos::Always`
+    /// doubles the BOS token at position 0.
+    ///
+    /// Empirically, Gemma 4 IT models respond to `[BOS, BOS, ...]` by
+    /// emitting their EOS (token 106 `<turn|>`) within 7-8 sampled tokens
+    /// — the model treats the doubled start-of-sequence as "conversation
+    /// already closed" and tries to terminate. Verified across E2B-IQ2_M,
+    /// E2B-Q4_K_M, and 31B-Q4_K_XL — all truncate identically on factual
+    /// prompts ("What is the capital of France?" → "The capital of France
+    /// is **<turn|>").
+    ///
+    /// This test asserts the rendered + tokenized prompt has exactly one
+    /// BOS at the start. Gated on a Gemma GGUF being available; skipped
+    /// otherwise so the unit suite stays green.
+    #[test]
+    fn chat_template_tokenization_does_not_double_bos() {
+        let Some(model_path) = find_gemma_gguf() else {
+            eprintln!(
+                "skipping: no Gemma GGUF found (set PIO_TEST_GGUF or place one in /Users/victor/pio-test-models/)"
+            );
+            return;
+        };
+
+        let backend = LlamaBackend::init().expect("llama backend init");
+        let params = LlamaModelParams::default();
+        let model = llama_cpp_2::model::LlamaModel::load_from_file(&backend, &model_path, &params)
+            .expect("load model");
+
+        let mut bos_dec = encoding_rs::UTF_8.new_decoder();
+        let mut eos_dec = encoding_rs::UTF_8.new_decoder();
+        let template_str = model
+            .chat_template(None)
+            .expect("chat template present")
+            .to_string()
+            .expect("chat template utf-8");
+        let bos_str = model
+            .token_to_piece(model.token_bos(), &mut bos_dec, true, None)
+            .expect("decode BOS");
+        let eos_str = model
+            .token_to_piece(model.token_eos(), &mut eos_dec, true, None)
+            .expect("decode EOS");
+
+        let chat_template = ChatTemplate::new(
+            template_str,
+            Some(TokenizerConfigToken::String(bos_str.clone())),
+            Some(TokenizerConfigToken::String(eos_str)),
+        );
+
+        // Render a single-user-message chat the same way Session::new does.
+        let user_msg = Message {
+            role: "user".into(),
+            body: MessageBody::Content {
+                content: MessageContent::SingleText("What is the capital of France?".into()),
+            },
+            name: None,
+        };
+
+        let prompt = chat_template
+            .apply(vec![user_msg], None, Some(true))
+            .expect("render chat template");
+
+        // Sanity: the template should have placed the BOS string at the
+        // very start. If this fails, the bug is in the template rather
+        // than the tokenizer call — the test below would be misleading.
+        assert!(
+            prompt.starts_with(&bos_str),
+            "chat template should render the BOS string at start; got: {:?}",
+            &prompt.chars().take(40).collect::<String>()
+        );
+
+        // The actual contract: route through the production helper and
+        // assert exactly one BOS at position 0.
+        let tokens = tokenize_chat_prompt(&model, &prompt).expect("tokenize prompt");
+
+        let bos_id = model.token_bos();
+        let leading_bos = tokens.iter().take_while(|t| **t == bos_id).count();
+
+        assert_eq!(
+            leading_bos,
+            1,
+            "rendered chat prompt was tokenized with {leading_bos} leading BOS tokens (expected 1). \
+             Token ids: {:?}",
+            &tokens.iter().take(8).collect::<Vec<_>>()
+        );
     }
 }

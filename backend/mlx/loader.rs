@@ -13,6 +13,28 @@ use mlx_rs::ops::indexing::IndexOp;
 
 use super::model::{Gemma4Model, LlamaModel, Model, ModelConfig, Weight};
 use crate::gen2::engine::ExecError;
+use crate::gen2::zoo::ModelFamily;
+
+/// Read `model_type` from a HuggingFace-convention `config.json`.
+///
+/// Mirrors the pre-load `read_gguf_architecture()` helper that GGUF uses,
+/// so MLX models surface architecture into `ModelMeta` the same way and
+/// downstream code can call `ModelFamily::detect` on a unified field.
+///
+/// Gemma 4 nests `model_type` inside `text_config`; we check there first
+/// then fall back to the root key. Returns `None` when neither is present
+/// or the file can't be parsed — callers should treat that as
+/// `ModelFamily::Unknown`.
+pub(super) fn read_hf_model_type(model_dir: &Path) -> Option<String> {
+    let config_path = model_dir.join("config.json");
+    let raw: serde_json::Value =
+        serde_json::from_str(&fs::read_to_string(&config_path).ok()?).ok()?;
+    raw.get("text_config")
+        .and_then(|tc| tc.get("model_type"))
+        .or_else(|| raw.get("model_type"))
+        .and_then(|v| v.as_str())
+        .map(|s| s.trim().to_lowercase())
+}
 
 /// Load model config from `config.json` in the model directory.
 pub fn load_config(model_dir: &Path) -> Result<ModelConfig, ExecError> {
@@ -515,40 +537,45 @@ pub fn build_gemma4_model(model_dir: &Path) -> Result<(Gemma4Model, ModelConfig)
 
 /// Dispatch: detect model type from config.json and call the right builder.
 pub fn build_any_model(model_dir: &Path) -> Result<(Model, ModelConfig), ExecError> {
-    let raw = load_raw_config(model_dir)?;
-    // Gemma 4 nests model_type in text_config; fall back to root model_type
-    let model_type = raw
-        .get("text_config")
-        .and_then(|tc| tc.get("model_type"))
-        .or_else(|| raw.get("model_type"))
-        .and_then(|v| v.as_str());
+    let model_type = read_hf_model_type(model_dir);
+    let repo_hint = model_dir.file_name().and_then(|n| n.to_str());
+    let family = ModelFamily::detect(model_type.as_deref(), repo_hint);
 
-    let is_gemma = model_type.map_or(false, |t| t.contains("gemma"));
-
-    if is_gemma {
+    if matches!(
+        family,
+        ModelFamily::Gemma2 | ModelFamily::Gemma3 | ModelFamily::Gemma4,
+    ) {
         let (m, c) = build_gemma4_model(model_dir)?;
         return Ok((Model::Gemma4(m), c));
     }
 
-    if let Some(t) = model_type {
-        // Qwen3 shares the Llama layout plus extra Q/K norms; the Llama
-        // builder now handles those conditionally (see
-        // `TransformerBlock::new`). Other non-Gemma architectures fall
-        // through with a warning — behaviour may diverge from the
-        // upstream implementation until they're wired explicitly.
-        //
-        // Known gap: Qwen3 0.6B-4bit (mlx-community) still produces
-        // degenerate first-token sampling even with Q/K norm wired —
-        // see task #82 for the ongoing compat investigation. Q/K norm
-        // is a necessary but not sufficient fix.
-        if t != "qwen3" {
+    // Qwen3 shares the Llama layout plus extra Q/K norms; the Llama
+    // builder handles those conditionally (see `TransformerBlock::new`).
+    // Other non-Gemma architectures fall through with a warning —
+    // behaviour may diverge from the upstream implementation until
+    // they're wired explicitly.
+    //
+    // Known gap: Qwen3 0.6B-4bit (mlx-community) still produces
+    // degenerate first-token sampling even with Q/K norm wired — see
+    // task #82 for the ongoing compat investigation. Q/K norm is a
+    // necessary but not sufficient fix.
+    match family {
+        ModelFamily::Qwen35 => {
+            tracing::info!("loading family=qwen3.5 via Llama builder with Q/K norm (experimental)");
+        }
+        ModelFamily::Llama3 => {}
+        ModelFamily::Unknown => {
             tracing::warn!(
                 "unknown model_type {:?}, defaulting to Llama — add to build_any_model() if wrong",
-                t
+                model_type,
             );
-        } else {
-            tracing::info!(
-                "loading model_type=qwen3 via Llama builder with Q/K norm (experimental)"
+        }
+        other => {
+            tracing::warn!(
+                "model_type {:?} maps to family {:?} which has no MLX builder; \
+                 defaulting to Llama (likely to fail or produce garbage)",
+                model_type,
+                other,
             );
         }
     }
@@ -559,6 +586,57 @@ pub fn build_any_model(model_dir: &Path) -> Result<(Model, ModelConfig), ExecErr
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn read_hf_model_type_reads_root_key() {
+        let dir = tempfile::tempdir().unwrap();
+        std::fs::write(
+            dir.path().join("config.json"),
+            r#"{"model_type":"qwen2","hidden_size":4096}"#,
+        )
+        .unwrap();
+        assert_eq!(read_hf_model_type(dir.path()), Some("qwen2".to_string()),);
+    }
+
+    #[test]
+    fn read_hf_model_type_prefers_text_config_for_gemma4() {
+        // Gemma 4 multimodal nests model_type inside text_config; the
+        // root-level model_type may be `gemma4_vision` or absent.
+        let dir = tempfile::tempdir().unwrap();
+        std::fs::write(
+            dir.path().join("config.json"),
+            r#"{"text_config":{"model_type":"gemma4"},"model_type":"gemma4_vision"}"#,
+        )
+        .unwrap();
+        assert_eq!(read_hf_model_type(dir.path()), Some("gemma4".to_string()),);
+    }
+
+    #[test]
+    fn read_hf_model_type_lowercases_and_trims() {
+        // Defensive: some upstream configs ship class names ("LlamaForCausalLM")
+        // or padding whitespace. We normalize so callers can string-match
+        // without re-doing the work.
+        let dir = tempfile::tempdir().unwrap();
+        std::fs::write(
+            dir.path().join("config.json"),
+            r#"{"model_type":"  Qwen2  "}"#,
+        )
+        .unwrap();
+        assert_eq!(read_hf_model_type(dir.path()), Some("qwen2".to_string()),);
+    }
+
+    #[test]
+    fn read_hf_model_type_returns_none_when_missing() {
+        let dir = tempfile::tempdir().unwrap();
+        std::fs::write(dir.path().join("config.json"), r#"{"hidden_size":4096}"#).unwrap();
+        assert_eq!(read_hf_model_type(dir.path()), None);
+    }
+
+    #[test]
+    fn read_hf_model_type_returns_none_on_missing_file() {
+        let dir = tempfile::tempdir().unwrap();
+        assert_eq!(read_hf_model_type(dir.path()), None);
+    }
 
     #[test]
     fn detect_bits_1bit() {

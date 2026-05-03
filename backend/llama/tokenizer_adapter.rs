@@ -8,9 +8,8 @@
 
 use std::sync::Arc;
 
-use llama_cpp_2::model::AddBos;
-
 use super::bundle::ModelBundle;
+use super::session::tokenize_chat_prompt;
 use crate::gen2::backend::common::chat_template::ChatTemplate;
 use crate::gen2::backend::traits::SessionTokenizer;
 use crate::gen2::engine::ExecError;
@@ -27,11 +26,6 @@ impl SessionTokenizer for LlamaSessionTokenizer {
             .chat_template
             .apply(messages.to_vec(), None, None)
             .map_err(ExecError::Other)?;
-        Ok(self
-            .bundle
-            .model
-            .str_to_token(&prompt, AddBos::Always)
-            .map_err(|e| ExecError::Other(e.into()))?
-            .len())
+        Ok(tokenize_chat_prompt(&self.bundle.model, &prompt)?.len())
     }
 }

@@ -12,7 +12,7 @@ pub use stats::ExecutionStats;
 pub use telemetry::{HookBus, HookEvent, HookListener};
 pub use types::{
     Capabilities, ChatTemplateSpec, CtxParamsInput, EmbedLoadRequest, LoadRequest,
-    ModelParamsInput, Settings,
+    ModelParamsInput, SamplingSettings, Settings,
 };
 
 use std::fs::File;

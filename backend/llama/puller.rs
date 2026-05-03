@@ -195,6 +195,11 @@ impl Iterator for TokenPuller {
                 return Some(Ok(ev));
             }
             if self.stopped.load(Ordering::Acquire) {
+                tracing::info!(
+                    target: "pio::gen2::llama::term",
+                    produced = self.produced,
+                    "termination: stopped flag"
+                );
                 self.emit_final_stats();
                 self.done = true;
                 self.filter.finalize(TokenEvent::Stopped);
@@ -206,6 +211,12 @@ impl Iterator for TokenPuller {
             if let Some(limit) = self.max_tokens
                 && self.produced >= limit
             {
+                tracing::info!(
+                    target: "pio::gen2::llama::term",
+                    produced = self.produced,
+                    limit,
+                    "termination: max_tokens"
+                );
                 self.emit_final_stats();
                 self.done = true;
                 self.filter.finalize(TokenEvent::Eos);
@@ -238,6 +249,12 @@ impl Iterator for TokenPuller {
             sampler.accept(token);
 
             if self.bundle.model.is_eog_token(token) {
+                tracing::info!(
+                    target: "pio::gen2::llama::term",
+                    produced = self.produced,
+                    token_id = token.0,
+                    "termination: model emitted EOG token"
+                );
                 self.emit_final_stats();
                 self.done = true;
                 self.filter.finalize(TokenEvent::Eos);

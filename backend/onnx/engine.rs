@@ -101,6 +101,7 @@ impl Engine {
             req.ctx_params.n_ctx.unwrap_or(4096),
             num_layers as u32,
             Some(&chat_template_str),
+            None,
         );
 
         let caps = Capabilities::TEXT;

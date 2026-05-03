@@ -120,6 +120,12 @@ impl std::fmt::Debug for Engine {
 ///
 /// Used by both `load_model` (cold path) and the `warm_model` background thread.
 fn build_bundle_from_dir(model_dir: &Path) -> Result<ModelBundle, ExecError> {
+    // Read `model_type` BEFORE constructing the model so it can flow into
+    // `ModelMeta.architecture` — parity with the GGUF loader, which pulls
+    // `general.architecture` via `meta_val_str`. Without this, MLX bundles
+    // had `meta.architecture == None` and downstream `ModelFamily::detect`
+    // calls fell back to `Unknown`.
+    let model_type = super::loader::read_hf_model_type(model_dir);
     let (model, config) = super::loader::build_any_model(model_dir)?;
 
     let head_dim = config.head_dim();
@@ -152,6 +158,7 @@ fn build_bundle_from_dir(model_dir: &Path) -> Result<ModelBundle, ExecError> {
         config.max_position_embeddings as u32,
         config.num_hidden_layers as u32,
         Some(&chat_template_str),
+        model_type,
     );
 
     Ok(ModelBundle {
