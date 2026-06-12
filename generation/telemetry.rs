@@ -344,7 +344,7 @@ impl TelemetryAggregator {
             term_stopped: self.term_stopped.load(Ordering::Relaxed),
             term_error: self.term_error.load(Ordering::Relaxed),
             poison_turns: self.poison_turns.load(Ordering::Relaxed),
-            first_token_us_mean: if samples > 0 { sum / samples } else { 0 },
+            first_token_us_mean: sum.checked_div(samples).unwrap_or(0),
             first_token_us_max: self.first_token_us_max.load(Ordering::Relaxed),
             first_token_us_buckets: ttft_buckets.to_vec(),
         }

@@ -464,11 +464,9 @@ mod tests {
         for ev in puller.by_ref() {
             steps += 1;
             match ev? {
-                TokenEvent::Token(tok) => {
-                    if !tok.text.is_empty() {
-                        got_any = true;
-                        result.push_str(tok.text.as_str());
-                    }
+                TokenEvent::Token(tok) if !tok.text.is_empty() => {
+                    got_any = true;
+                    result.push_str(tok.text.as_str());
                 }
                 TokenEvent::Eos | TokenEvent::Stopped => break,
                 TokenEvent::Paused => continue,
@@ -554,11 +552,9 @@ mod tests {
         for ev in puller.by_ref() {
             steps += 1;
             match ev? {
-                TokenEvent::Token(tok) => {
-                    if !tok.text.is_empty() {
-                        result.push_str(tok.text.as_str());
-                        got_any = true;
-                    }
+                TokenEvent::Token(tok) if !tok.text.is_empty() => {
+                    result.push_str(tok.text.as_str());
+                    got_any = true;
                 }
                 TokenEvent::MediaBoundary(_) => {
                     saw_media = true;

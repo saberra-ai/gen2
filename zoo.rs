@@ -1448,14 +1448,12 @@ mod tests {
                             ));
                         }
                     }
-                    "mlx" => {
-                        if bundle.file.is_some() {
-                            errs.push(format!(
-                                "{id}/{plat}: mlx bundle should have file=null \
-                                 (whole-dir snapshot), got {:?}",
-                                bundle.file,
-                            ));
-                        }
+                    "mlx" if bundle.file.is_some() => {
+                        errs.push(format!(
+                            "{id}/{plat}: mlx bundle should have file=null \
+                             (whole-dir snapshot), got {:?}",
+                            bundle.file,
+                        ));
                     }
                     _ => {} // candle/onnx/executorch out of scope
                 }
