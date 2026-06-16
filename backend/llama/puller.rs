@@ -4,9 +4,13 @@ use encoding_rs::UTF_8;
 use llama_cpp_2::ggml_time_us;
 use llama_cpp_2::llama_batch::LlamaBatch;
 use llama_cpp_2::sampling::LlamaSampler;
+use llama_cpp_2::token::LlamaToken;
+use llama_cpp_2::token::data::LlamaTokenData;
+use llama_cpp_2::token::data_array::LlamaTokenDataArray;
 
 use super::bundle::ModelBundle;
 use super::session::{DecodeState, SessionCtxCell};
+use crate::gen2::backend::common::grammar::GrammarMatcher;
 use crate::gen2::backend::common::output_filter::OutputFilter;
 use crate::gen2::backend::common::stop_matcher::StopMatcher;
 use crate::gen2::engine::ExecError;
@@ -25,6 +29,12 @@ pub struct TokenPuller {
     // OWNED decode state parts (wrapped so we can move them back on Drop)
     ctx_cell: Option<SessionCtxCell>,
     sampler: Option<LlamaSampler>,
+    /// Grammar-constrained decoding (JSON schema / regex / lark). When
+    /// `Some`, each step masks the logits via llguidance against the GGUF
+    /// vocab BEFORE the base sampler runs, then `observe`s the chosen
+    /// token. Bypasses llama.cpp's built-in `LlamaSampler::llguidance`,
+    /// whose Matcher rejected the opening token at this dep rev.
+    grammar: Option<GrammarMatcher>,
 
     batch: LlamaBatch<'static>,
     prompt_tokens: usize,
@@ -57,6 +67,7 @@ impl TokenPuller {
         bundle: Arc<ModelBundle>,
         ctx_cell: SessionCtxCell,
         sampler: LlamaSampler,
+        grammar: Option<GrammarMatcher>,
         prompt_tokens: usize,
         cur_pos: i32,
         gen_spec: GenSpec,
@@ -72,6 +83,7 @@ impl TokenPuller {
             bundle,
             ctx_cell: Some(ctx_cell),
             sampler: Some(sampler),
+            grammar,
             batch,
             prompt_tokens,
             cur_pos,
@@ -118,6 +130,57 @@ impl TokenPuller {
             spec_accepted: 0,
         }
     }
+
+    /// Sample one token from the logits at `logits_i`. With no grammar
+    /// this is the plain `LlamaSampler::sample`. With a [`GrammarMatcher`]
+    /// it masks the raw logits via llguidance (forcing schema validity),
+    /// runs the base sampler chain on the masked candidates, and advances
+    /// the matcher with the chosen token. Borrows of `sampler` / `grammar`
+    /// / `ctx_cell` are disjoint fields, released before the caller does
+    /// its own `&mut self` bookkeeping.
+    fn sample_one(&mut self) -> Result<LlamaToken, ExecError> {
+        let logits_i = self.logits_i;
+        let ctx_ref = self
+            .ctx_cell
+            .as_ref()
+            .ok_or(ExecError::InvalidArg("context already consumed"))?;
+        let sampler = self
+            .sampler
+            .as_mut()
+            .ok_or(ExecError::InvalidArg("sampler already consumed"))?;
+        match self.grammar.as_mut() {
+            Some(grammar) => {
+                // `apply_mask` uses llguidance's `compute_mask_or_eos`, so a
+                // completed grammar yields an EOS-only mask here — the base
+                // chain then samples EOS and the caller's `is_eog_token`
+                // check finalizes the stream. No special-casing needed.
+                let token = ctx_ref.with_dependent(|_, ctx| -> Result<LlamaToken, ExecError> {
+                    let mut logits = ctx.get_logits_ith(logits_i).to_vec();
+                    grammar.apply_mask(&mut logits).map_err(ExecError::Other)?;
+                    let mut data = LlamaTokenDataArray::from_iter(
+                        logits
+                            .iter()
+                            .enumerate()
+                            .map(|(id, &l)| LlamaTokenData::new(LlamaToken(id as i32), l, 0.0)),
+                        false,
+                    );
+                    // Base chain (penalties / top-k / min-p / temp / dist)
+                    // applied to grammar-valid candidates only.
+                    sampler.apply(&mut data);
+                    Ok(data
+                        .selected_token()
+                        .unwrap_or_else(|| data.sample_token_greedy()))
+                })?;
+                // Advance grammar state with the accepted token (no-op once
+                // the parser has stopped; ignore that benign error).
+                if let Err(e) = grammar.observe(token.0 as u32) {
+                    tracing::debug!(?e, "grammar observe failed (accepting/exhausted)");
+                }
+                Ok(token)
+            }
+            None => Ok(ctx_ref.with_dependent(|_, ctx| sampler.sample(ctx, logits_i))),
+        }
+    }
 }
 
 impl TokenPuller {
@@ -129,6 +192,7 @@ impl TokenPuller {
         state_slot: Weak<Mutex<Option<DecodeState>>>,
         state: DecodeState, // taken from Session
         sampler: LlamaSampler,
+        grammar: Option<GrammarMatcher>,
         gen_spec: GenSpec,
         paused: Arc<AtomicBool>,
         stopped: Arc<AtomicBool>,
@@ -141,6 +205,7 @@ impl TokenPuller {
             bundle,
             ctx_cell: Some(state.ctx_cell),
             sampler: Some(sampler),
+            grammar,
             batch,
             prompt_tokens: state.cur_pos.max(0) as usize,
             cur_pos: state.cur_pos,
@@ -224,29 +289,20 @@ impl Iterator for TokenPuller {
             }
 
             // ── Sample + decode one token ──────────────────────────────
-            let Some(sampler) = self.sampler.as_mut() else {
-                self.emit_final_stats();
-                self.done = true;
-                self.filter
-                    .push_err(ExecError::InvalidArg("sampler already consumed"));
-                continue;
+            // (grammar-aware: masks logits via llguidance when a
+            // GrammarMatcher is present — see `sample_one`).
+            let token = match self.sample_one() {
+                Ok(t) => t,
+                Err(e) => {
+                    self.emit_final_stats();
+                    self.done = true;
+                    self.filter.push_err(e);
+                    continue;
+                }
             };
-            let Some(ctx_ref) = self.ctx_cell.as_ref() else {
-                self.emit_final_stats();
-                self.done = true;
-                self.filter
-                    .push_err(ExecError::InvalidArg("context already consumed"));
-                continue;
-            };
-            let token = ctx_ref.with_dependent(|_, ctx| sampler.sample(ctx, self.logits_i));
-            let Some(sampler) = self.sampler.as_mut() else {
-                self.emit_final_stats();
-                self.done = true;
-                self.filter
-                    .push_err(ExecError::InvalidArg("sampler already consumed"));
-                continue;
-            };
-            sampler.accept(token);
+            if let Some(sampler) = self.sampler.as_mut() {
+                sampler.accept(token);
+            }
 
             if self.bundle.model.is_eog_token(token) {
                 tracing::info!(

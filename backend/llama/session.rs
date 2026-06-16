@@ -8,6 +8,7 @@ use super::bundle::ModelBundle;
 use super::puller::TokenPuller;
 use crate::gen2::Message;
 use crate::gen2::backend::common::chat_template::ChatTemplate;
+use crate::gen2::backend::common::grammar::{GrammarMatcher, GrammarVocab};
 use crate::gen2::engine::{ExecError, HookBus, HookEvent, Settings};
 use crate::gen2::generation::{GenSpec, TokenEvent};
 use crate::gen2::kv::{
@@ -22,9 +23,10 @@ use llama_cpp_2::context::LlamaContext;
 use llama_cpp_2::context::params::LlamaContextParams;
 use llama_cpp_2::llama_backend::LlamaBackend;
 use llama_cpp_2::llama_batch::LlamaBatch;
-use llama_cpp_2::model::AddBos;
+use llama_cpp_2::model::{AddBos, LlamaModel};
 use llama_cpp_2::mtmd::{MtmdBitmap, MtmdInputText, mtmd_default_marker};
 use llama_cpp_2::sampling::LlamaSampler;
+use llama_cpp_2::token::LlamaToken;
 use parking_lot::{Mutex, RwLock};
 use rand::Rng;
 use self_cell::self_cell;
@@ -91,6 +93,44 @@ pub(crate) struct DecodeState {
     pub logits_i: i32,
     /// Timestamp (ggml_time_us) when prefill started, for accurate TTFT.
     pub prefill_start_us: u64,
+}
+
+/// Build a [`GrammarVocab`] straight from the GGUF's embedded vocab so
+/// grammar-constrained decoding works without a `tokenizer.json`. Mirrors
+/// `llama_cpp_2::llguidance_sampler::build_tok_env`: a token's normal byte
+/// form, else its special form prefixed with the `0xFF` toktrie marker,
+/// else an empty entry. Walks the full vocab once per generation (acceptable
+/// for one-shot tasks like summaries; cache per-model if it ever shows up
+/// in a hot path).
+fn grammar_vocab_from_model(model: &LlamaModel) -> GrammarVocab {
+    let n_vocab = model.n_vocab();
+    let mut words: Vec<Vec<u8>> = Vec::with_capacity(n_vocab.max(0) as usize);
+    for i in 0..n_vocab {
+        let token = LlamaToken(i);
+        let normal = model
+            .token_to_piece_bytes(token, 32, false, None)
+            .unwrap_or_default();
+        if !normal.is_empty() {
+            words.push(normal);
+            continue;
+        }
+        let special = model
+            .token_to_piece_bytes(token, 32, true, None)
+            .unwrap_or_default();
+        if special.is_empty() {
+            words.push(Vec::new());
+        } else {
+            let mut marked = Vec::with_capacity(special.len() + 1);
+            marked.push(0xFF);
+            marked.extend(special);
+            words.push(marked);
+        }
+    }
+    GrammarVocab {
+        words,
+        eos: model.token_eos().0 as u32,
+        bos: Some(model.token_bos().0 as u32),
+    }
 }
 
 /// Tokenize a chat-template-rendered prompt for the llama.cpp backend.
@@ -163,12 +203,13 @@ impl Session {
         // Weak link back to this session’s state slot
         let state_slot = Arc::downgrade(&self.state);
 
-        // Build the sampler chain. When `gen_spec.grammar` is set we
-        // prepend a grammar sampler built from the same llguidance spec
-        // the MLX and ONNX backends use — `LlamaSampler::llguidance` is
-        // literally the same engine, so grammar semantics stay aligned.
-        let sampler =
-            Self::build_sampler_with_optional_grammar(&effective_settings, &gen_spec, &self.bundle);
+        // Build the base sampler chain + an optional grammar matcher. When
+        // `gen_spec.grammar` is set the matcher (the SAME llguidance engine
+        // MLX/ONNX use, fed the GGUF's embedded vocab) masks logits in the
+        // puller — bypassing llama.cpp's built-in `LlamaSampler::llguidance`,
+        // whose Matcher rejected the opening token at this dep rev.
+        let (sampler, grammar) =
+            Self::build_sampler_and_grammar(&effective_settings, &gen_spec, &self.bundle);
 
         let pre_events = self.build_media_events();
         let puller = TokenPuller::new_from_session(
@@ -178,6 +219,7 @@ impl Session {
             state_slot,
             state,
             sampler,
+            grammar,
             gen_spec,
             self.paused.clone(),
             self.stopped.clone(),
@@ -186,87 +228,59 @@ impl Session {
         Ok(puller)
     }
 
-    /// Build a LlamaSampler chain including an optional grammar
-    /// constraint from `gen_spec.grammar`. Uses `LlamaSampler::llguidance`
-    /// — the SAME llguidance engine the MLX / ONNX backends use — so a
-    /// grammar that works in one backend works in all of them.
-    ///
-    /// Grammar is prepended to the chain so downstream filters (top-k /
-    /// min-p / temperature / dist) only see grammar-valid candidates.
-    fn build_sampler_with_optional_grammar(
+    /// Build the base sampler chain plus an optional [`GrammarMatcher`]
+    /// from `gen_spec.grammar`. The matcher masks logits in the puller
+    /// (`TokenPuller::sample_one`) using the SAME llguidance engine the
+    /// MLX / ONNX backends use — fed the GGUF's embedded vocab via
+    /// [`grammar_vocab_from_model`]. This replaces llama.cpp's built-in
+    /// `LlamaSampler::llguidance`, whose runtime Matcher rejected the
+    /// opening token at the pinned dep rev and silently fell back to
+    /// unconstrained output. On matcher-build failure we generate
+    /// unconstrained (same observable behaviour as before, minus the bug).
+    fn build_sampler_and_grammar(
         settings: &Settings,
         gen_spec: &GenSpec,
         bundle: &ModelBundle,
-    ) -> LlamaSampler {
-        use crate::gen2::backend::common::grammar::GrammarSpec;
+    ) -> (LlamaSampler, Option<GrammarMatcher>) {
         let Some(spec) = gen_spec.grammar.clone() else {
-            return Self::sampler_from_settings(settings, bundle);
+            return (Self::sampler_from_settings(settings, bundle), None);
         };
-        let (kind, data) = match spec {
-            GrammarSpec::JsonObject => ("json_object", "{}".to_string()),
-            GrammarSpec::JsonSchema(schema) => ("json_schema", schema.to_string()),
-            GrammarSpec::Regex(rx) => ("regex", rx),
-            GrammarSpec::Lark(lark) => ("lark", lark),
-        };
-        match LlamaSampler::llguidance(&bundle.model, kind, &data) {
-            Ok(grammar_sampler) => {
-                // Prepend grammar to the base chain. We can't simply
-                // push into the chain_simple Vec because LlamaSampler
-                // takes ownership; rebuild the chain from scratch.
-                Self::sampler_chain_with_grammar(settings, grammar_sampler, bundle)
+        match GrammarMatcher::from_vocab(&grammar_vocab_from_model(&bundle.model), spec) {
+            Ok(matcher) => {
+                // Grammar masking forces *structural* validity but the schema
+                // still permits arbitrary inter-token whitespace, and a small
+                // model can wedge there — looping on `\n`+indent until
+                // max_tokens, producing truncated JSON. Prepend a frequency
+                // penalty (independent of user settings, which default to no
+                // penalty) so repeated whitespace gets damped and generation
+                // makes progress to the closing brace.
+                let sampler = Self::sampler_from_settings_antiloop(settings, bundle);
+                (sampler, Some(matcher))
             }
             Err(e) => {
                 tracing::warn!(
                     ?e,
-                    "llama llguidance sampler build failed; falling back unconstrained"
+                    "llama grammar matcher build failed; generating unconstrained"
                 );
-                Self::sampler_from_settings(settings, bundle)
+                (Self::sampler_from_settings(settings, bundle), None)
             }
         }
     }
 
-    /// Build the same sampler chain as `sampler_from_settings` but with
-    /// `grammar_sampler` prepended so logit masking happens BEFORE any
-    /// downstream filter runs. Required because LlamaSampler::chain_simple
-    /// takes ownership of its inputs — we can't modify an already-built
-    /// chain.
-    fn sampler_chain_with_grammar(
-        settings: &Settings,
-        grammar_sampler: LlamaSampler,
-        bundle: &ModelBundle,
-    ) -> LlamaSampler {
-        let mut chain = vec![grammar_sampler];
-        if let Some(penalties) = Self::penalties_sampler(settings) {
-            chain.push(penalties);
-        }
-        if let Some(bias) = Self::architecture_logit_bias(bundle) {
-            chain.push(bias);
-        }
-        if let Some(k) = settings.sampling.top_k {
-            chain.push(LlamaSampler::top_k(k));
-        }
-        let min_p = settings.sampling.min_p.or_else(|| {
-            if settings.sampling.top_p.is_none() {
-                Some(0.05)
-            } else {
-                None
-            }
-        });
-        if let Some(mp) = min_p {
-            chain.push(LlamaSampler::min_p(mp, 1));
-        }
-        if let Some(tp) = settings.sampling.top_p {
-            chain.push(LlamaSampler::top_p(tp, 0));
-        }
-        if let Some(t) = settings.sampling.temperature {
-            chain.push(LlamaSampler::temp(t));
-        }
-        let seed = settings
-            .sampling
-            .seed
-            .unwrap_or_else(|| rand::rng().random());
-        chain.push(LlamaSampler::dist(seed));
-        LlamaSampler::chain_simple(chain)
+    /// Like [`Self::sampler_from_settings`] but guarantees a frequency /
+    /// presence penalty is present (prepended) to break degenerate
+    /// repetition loops under grammar-constrained decoding. Only used on the
+    /// grammar path; unconstrained generation keeps the user's exact chain.
+    fn sampler_from_settings_antiloop(settings: &Settings, bundle: &ModelBundle) -> LlamaSampler {
+        // last_n=256, repeat=1.05 (mild), freq=1.0, present=0.8 — damps both
+        // whitespace runs and rambling so a small model concludes the object
+        // within budget, without distorting legitimate structural repetition
+        // (quotes / commas spread across the object).
+        let antiloop = LlamaSampler::penalties(256, 1.05, 1.0, 0.8);
+        LlamaSampler::chain_simple(vec![
+            antiloop,
+            Self::sampler_from_settings(settings, bundle),
+        ])
     }
 
     pub fn save_cache(&self, dst: KvSaveSpec) -> Result<KvSnapshot, ExecError> {

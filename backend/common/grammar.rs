@@ -39,6 +39,14 @@ pub enum GrammarSpec {
 
 impl GrammarSpec {
     fn into_top_level(self) -> Result<TopLevelGrammar> {
+        // NB: we deliberately do NOT force compact JSON via llguidance's
+        // `x-guidance: { whitespace_flexible: false }`. It works on
+        // llguidance ≥ 1.7.4 (1.7.3 errored "parser stopped in
+        // compute_mask"), but empirically it *degrades* small-model output
+        // — LFM2-1.2B produced garbage titles (`", "`) ~3/4 of the time
+        // when denied pretty-print whitespace. The whitespace-ramble loop
+        // it would prevent is instead handled at sampling time by the llama
+        // backend's anti-loop frequency penalty, which preserves quality.
         Ok(match self {
             GrammarSpec::JsonObject => {
                 TopLevelGrammar::from_json_schema(serde_json::json!({"type": "object"}))
@@ -48,6 +56,24 @@ impl GrammarSpec {
             GrammarSpec::Lark(lark) => TopLevelGrammar::from_lark(lark),
         })
     }
+}
+
+/// A backend-agnostic token vocabulary, sufficient to build an
+/// `llguidance` TokEnv without an [`HfTokenizer`]. Each `words[id]` is the
+/// raw byte form of token `id` (special/control tokens prefixed with the
+/// `0xFF` toktrie marker; empty `Vec` for unused / byte-fallback ids).
+///
+/// This is the seam that lets the **llama (GGUF) backend** drive
+/// grammar-constrained decoding: a GGUF embeds its vocab in the binary and
+/// ships no `tokenizer.json`, so it builds a `GrammarVocab` straight from
+/// `LlamaModel::token_to_piece_bytes` instead of an `HfTokenizer`.
+pub struct GrammarVocab {
+    /// token id → byte form (0xFF-prefixed for specials; empty if none).
+    pub words: Vec<Vec<u8>>,
+    /// End-of-sequence token id (drives the matcher's accepting state).
+    pub eos: u32,
+    /// Beginning-of-sequence token id, if the model has one.
+    pub bos: Option<u32>,
 }
 
 /// Per-session grammar matcher. Holds an `llguidance::Matcher` tied to
@@ -61,10 +87,19 @@ pub struct GrammarMatcher {
 
 impl GrammarMatcher {
     /// Build a matcher that constrains output to `spec` over the tokens
-    /// of `tokenizer`. Builds a toktrie from every token's byte form so
-    /// llguidance can compute exact per-token masks.
+    /// of `tokenizer`. Convenience wrapper over [`Self::from_vocab`] for
+    /// backends that have an [`HfTokenizer`] (MLX / ONNX).
     pub fn new(tokenizer: &HfTokenizer, spec: GrammarSpec) -> Result<Self> {
-        let tok_env = build_tok_env(tokenizer)?;
+        Self::from_vocab(&vocab_from_hf(tokenizer), spec)
+    }
+
+    /// Build a matcher from a raw [`GrammarVocab`]. The backend-agnostic
+    /// constructor — used directly by the llama backend (GGUF vocab) and
+    /// indirectly by [`Self::new`] (HF tokenizer). Builds a toktrie from
+    /// every token's byte form so llguidance can compute exact per-step
+    /// masks.
+    pub fn from_vocab(vocab: &GrammarVocab, spec: GrammarSpec) -> Result<Self> {
+        let tok_env = build_tok_env(vocab)?;
         let vocab_size = tok_env.tok_trie().vocab_size();
         let mut factory =
             ParserFactory::new_simple(&tok_env).context("build llguidance ParserFactory")?;
@@ -81,17 +116,21 @@ impl GrammarMatcher {
     }
 
     /// Zero out logits for tokens that would leave the grammar in an
-    /// unreachable state. Mutates `logits` in-place. The mask is
-    /// computed by llguidance against the current matcher state.
+    /// unreachable state. Mutates `logits` in-place.
     ///
     /// Note: this sets disallowed logits to `f32::NEG_INFINITY`. Soft
     /// masks (strong penalty instead of hard exclusion) are possible by
     /// calling into the matcher directly, but for the common case of
     /// "force schema compliance" hard is what callers want.
     pub fn apply_mask(&mut self, logits: &mut [f32]) -> Result<()> {
+        // `compute_mask_or_eos` (vs plain `compute_mask`) is the canonical
+        // llguidance call: when the grammar has just *completed* (parser
+        // stopped) it returns an EOS-only mask instead of erroring, so the
+        // model samples EOS and generation ends cleanly. It still errors on
+        // a genuine parser error state.
         let mask = self
             .matcher
-            .compute_mask()
+            .compute_mask_or_eos()
             .context("compute grammar mask")?;
         let n = logits.len().min(self.vocab_size);
         for (i, logit) in logits.iter_mut().enumerate().take(n) {
@@ -125,12 +164,12 @@ impl GrammarMatcher {
     }
 }
 
-/// Build an `llguidance` TokEnv from our HfTokenizer. For each token
-/// id in the vocab, decode it to bytes (preserving special tokens) and
-/// feed the byte sequence into a TokTrie. Mirrors the approach
-/// `llama_cpp_2::llguidance_sampler::build_tok_env` uses for llama.cpp
-/// so cross-backend grammar semantics stay aligned.
-fn build_tok_env(tokenizer: &HfTokenizer) -> Result<TokEnv> {
+/// Build a [`GrammarVocab`] from our HfTokenizer. For each token id,
+/// decode it to bytes (preserving special tokens with the 0xFF marker).
+/// Mirrors the GGUF path in
+/// `llama_cpp_2::llguidance_sampler::build_tok_env` so cross-backend
+/// grammar semantics stay aligned.
+fn vocab_from_hf(tokenizer: &HfTokenizer) -> GrammarVocab {
     let vocab_size = tokenizer.vocab_size();
     let mut words: Vec<Vec<u8>> = Vec::with_capacity(vocab_size);
     for id in 0..vocab_size {
@@ -155,15 +194,25 @@ fn build_tok_env(tokenizer: &HfTokenizer) -> Result<TokEnv> {
             words.push(Vec::new());
         }
     }
+    GrammarVocab {
+        words,
+        eos: tokenizer.eos_id().unwrap_or(0),
+        bos: tokenizer.bos_id(),
+    }
+}
+
+/// Build an `llguidance` TokEnv from a [`GrammarVocab`] by feeding every
+/// token's byte form into a TokTrie. Backend-agnostic.
+fn build_tok_env(vocab: &GrammarVocab) -> Result<TokEnv> {
     let info = TokRxInfo {
-        vocab_size: vocab_size as u32,
-        tok_eos: tokenizer.eos_id().unwrap_or(0),
-        tok_bos: tokenizer.bos_id(),
+        vocab_size: vocab.words.len() as u32,
+        tok_eos: vocab.eos,
+        tok_bos: vocab.bos,
         tok_pad: None,
         tok_unk: None,
         tok_end_of_turn: None,
     };
-    let trie = TokTrie::from(&info, &words);
+    let trie = TokTrie::from(&info, &vocab.words);
     let approx = ApproximateTokEnv::new(trie);
     let tok_env: TokEnv = Arc::new(approx);
     let _ = InferenceCapabilities::default(); // touch to ensure import stays

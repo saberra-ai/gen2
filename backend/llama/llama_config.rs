@@ -10,9 +10,6 @@ pub struct ModelConfig {
 
     pub batch_size: usize,
 
-    #[cfg(any(feature = "cuda", feature = "vulkan", feature = "metal"))]
-    disable_gpu: bool,
-
     /// Optional # of layers to offload to GPU
     pub gpu_layers: Option<u32>,
 
@@ -35,8 +32,6 @@ impl Default for ModelConfig {
             ctx_size: 8000,
             seed: 123,
             batch_size: 4000,
-            #[cfg(any(feature = "cuda", feature = "vulkan", feature = "metal"))]
-            disable_gpu: false,
             gpu_layers: None,
             threads: None,
             threads_batch: None,
