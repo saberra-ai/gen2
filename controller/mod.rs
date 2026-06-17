@@ -594,6 +594,59 @@ impl InferenceHandle {
         .map_err(PioError::generation)?
     }
 
+    /// Streaming variant of [`Self::system_infer`]: invokes `on_token` for each
+    /// generated token as it arrives (instead of only returning the joined
+    /// text), and still returns the full text. The satellite reference chat
+    /// slice (pio-base-app, ADR-0030) uses this to stream `ChatEvent::Delta`
+    /// without the full chat-persistence machinery in `app::chat`.
+    pub async fn system_infer_streaming<F>(
+        &self,
+        task: SystemTask,
+        chat_id: impl Into<String>,
+        messages: Vec<Message>,
+        mut on_token: F,
+    ) -> Result<String, crate::error::PioError>
+    where
+        F: FnMut(&str) + Send + 'static,
+    {
+        use crate::error::{ErrorCode, PioError};
+
+        let gen_spec = self.config().system_task_spec(&task);
+        let capacity = self.config().event_channel_capacity;
+        let (tx, rx) = std::sync::mpsc::sync_channel::<ControllerEvent>(capacity);
+        let cmd = ControllerCmd::SystemInfer {
+            task,
+            chat_id: chat_id.into(),
+            messages,
+            gen_spec,
+            tx,
+        };
+        self.send(cmd).map_err(PioError::generation)?;
+
+        tokio::task::spawn_blocking(move || {
+            let mut out = String::with_capacity(512);
+            while let Ok(ev) = rx.recv() {
+                match ev {
+                    ControllerEvent::Token(t) => {
+                        on_token(&t);
+                        out.push_str(&t);
+                    }
+                    ControllerEvent::Eos | ControllerEvent::Stopped => break,
+                    ControllerEvent::Error { code, message } => {
+                        return Err(PioError {
+                            code: ErrorCode::from_snake_case(&code),
+                            message,
+                        });
+                    }
+                    _ => {}
+                }
+            }
+            Ok(out)
+        })
+        .await
+        .map_err(PioError::generation)?
+    }
+
     /// Blocking read of delivery / termination counters from the active backend.
     ///
     /// For the local controller, mirrors [`ControllerHandle::get_controller_metrics`].
