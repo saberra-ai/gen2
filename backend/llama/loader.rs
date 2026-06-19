@@ -32,7 +32,15 @@ pub(crate) fn build_bundle(
 
     // Load primary model
     let mut model_params = LlamaModelParams::default().with_use_mlock(true);
-    if let Some(gpu_layers) = req.model_params.gpu_layers {
+    // iOS simulator: GGML's Metal backend crashes there, so pin to CPU (0 GPU
+    // layers) regardless of the configured/profile value. Real devices keep
+    // their offload setting. See hardware::is_ios_simulator.
+    let gpu_layers = if crate::hardware::is_ios_simulator() {
+        Some(0)
+    } else {
+        req.model_params.gpu_layers
+    };
+    if let Some(gpu_layers) = gpu_layers {
         model_params = model_params.with_n_gpu_layers(gpu_layers);
     }
 
