@@ -72,8 +72,10 @@ const VERIFIED_ARCHITECTURES: &[&str] = &[
 
 /// Architectures with known Metal kernel crashes. These will be blocked.
 const KNOWN_METAL_CRASHES: &[&str] = &[
-    "gemma3", // hybrid sliding-window + global attention — Metal kernel abort (2026-03)
-    "qwen35", // Gated Delta Net tensor op — Metal abort, llama.cpp #20358 (2026-03)
+    // NB: "gemma3" was removed (2026-06) after the llama-cpp-rs bump to 8625c7c —
+    // it now loads + generates on Metal (re-validated with gemma-3-1b-it). The
+    // 2026-03 abort was a stale-fork issue, not an arch limit.
+    "qwen35", // Gated Delta Net tensor op — Metal abort, llama.cpp #20358; not re-tested (no local model)
 ];
 
 /// Validate that `path` points to a non-empty file with a valid GGUF header.
@@ -309,11 +311,14 @@ mod tests {
 
     #[test]
     fn blocks_known_metal_crash_architecture() {
-        let r = validate_model_architecture("gemma3");
-        assert!(r.is_err());
+        // qwen35 stays blocked (Gated Delta Net Metal abort; not re-tested).
+        let r = validate_model_architecture("qwen35");
+        assert!(r.is_err(), "qwen35 must be blocked");
         let msg = r.unwrap_err().to_string();
         assert!(msg.contains("compatibility issues"));
         assert!(msg.contains("Qwen 2.5"));
+        // gemma3 was un-blocked after the llama.cpp bump — it must now PASS.
+        assert!(validate_model_architecture("gemma3").is_ok());
     }
 
     #[test]
@@ -332,8 +337,9 @@ mod tests {
 
     #[test]
     fn architecture_check_is_case_insensitive() {
-        assert!(validate_model_architecture("Gemma3").is_err());
-        assert!(validate_model_architecture("GEMMA3").is_err());
+        // qwen35 is still blocked (gemma3 was un-blocked after the llama.cpp bump).
+        assert!(validate_model_architecture("Qwen35").is_err());
+        assert!(validate_model_architecture("QWEN35").is_err());
         assert!(validate_model_architecture("Llama").is_ok());
         assert!(validate_model_architecture("QWEN2").is_ok());
     }

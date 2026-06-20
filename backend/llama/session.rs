@@ -742,7 +742,9 @@ impl Session {
                     // Load bitmaps
                     let mut bitmaps: Vec<MtmdBitmap> = Vec::with_capacity(img_paths.len());
                     for p in img_paths {
-                        let bmp = MtmdBitmap::from_file(mtmd_ctx, &p)
+                        // New `placeholder` arg in the bumped llama-cpp-rs:
+                        // false = decode the real media bitmap (prior behavior).
+                        let bmp = MtmdBitmap::from_file(mtmd_ctx, &p, false)
                             .map_err(|e| ExecError::Other(e.into()))?;
                         bitmaps.push(bmp);
                     }

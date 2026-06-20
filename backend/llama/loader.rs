@@ -131,6 +131,10 @@ pub(crate) fn build_bundle(
                 n_threads: req.ctx_params.threads.unwrap_or(4) as i32,
                 media_marker: CString::new(marker.clone())
                     .map_err(|e| ExecError::Other(e.into()))?,
+                // New in the bumped llama-cpp-rs: per-image token clamps.
+                // -1/-1 = no clamp (the upstream default), matching prior behavior.
+                image_min_tokens: -1,
+                image_max_tokens: -1,
             };
             let path = p
                 .to_str()
