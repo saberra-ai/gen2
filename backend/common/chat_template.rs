@@ -44,9 +44,17 @@ impl ChatTemplate {
         // which minijinja doesn't support. Use the `reverse` filter instead.
         let mutated_template = mutated_template.replace("[::-1]", "|reverse");
         // Strip `{% generation %}` / `{% endgeneration %}` blocks — these are
-        // training-only assistant masking tags and should be ignored at inference.
-        let mutated_template = mutated_template.replace("{% generation %}", "");
-        let mutated_template = mutated_template.replace("{% endgeneration %}", "");
+        // training-only assistant masking tags (HF `return_assistant_tokens_mask`)
+        // and should be ignored at inference. Templates write them with arbitrary
+        // whitespace control + spacing, e.g. LFM2.5's `{%- generation -%}`; match
+        // every variant rather than a single literal (a literal `.replace` misses
+        // the dash form and minijinja then panics on the unknown statement).
+        static GENERATION_TAG: std::sync::LazyLock<regex::Regex> = std::sync::LazyLock::new(|| {
+            regex::Regex::new(r"\{\%-?\s*(?:end)?generation\s*-?\%\}").expect("static regex")
+        });
+        let mutated_template = GENERATION_TAG
+            .replace_all(&mutated_template, "")
+            .into_owned();
 
         let template_str = mutated_template.into_boxed_str();
         env.add_function("raise_exception", raise_exception);
@@ -196,6 +204,43 @@ mod tests {
             !ct.supports_system_role(),
             "must detect Gemma-2-style rejection",
         );
+    }
+
+    /// LFM2.5's embedded template marks the assistant span with Jinja
+    /// whitespace-control tags `{%- generation -%}` / `{%- endgeneration -%}`
+    /// (HF `return_assistant_tokens_mask`). minijinja has no `generation`
+    /// statement, so an un-stripped tag panics at parse time → the model loads
+    /// "ready" but every generation returns empty. The literal-`.replace`
+    /// strip missed the dash form; this regression guards the regex strip
+    /// across all whitespace/spacing variants.
+    #[test]
+    fn strips_generation_masking_tags_all_variants() {
+        for tpl in [
+            r#"{%- for m in messages %}{%- generation -%}{{ m.content }}{%- endgeneration -%}{%- endfor %}"#,
+            r#"{% for m in messages %}{% generation %}{{ m.content }}{% endgeneration %}{% endfor %}"#,
+            r#"{%- for m in messages %}{%-generation-%}{{ m.content }}{%-endgeneration-%}{%- endfor %}"#,
+        ] {
+            // Before the fix this panics in `ChatTemplate::new` (.expect on the
+            // minijinja parse). After the fix it parses and renders the content.
+            let ct = ChatTemplate::new(tpl.to_string(), None, None);
+            let out = ct
+                .apply(
+                    vec![Message {
+                        name: None,
+                        role: "user".to_string(),
+                        body: MessageBody::Content {
+                            content: MessageContent::SingleText("hello".to_string()),
+                        },
+                    }],
+                    None,
+                    None,
+                )
+                .expect("template must render after generation-tag strip");
+            assert!(
+                out.contains("hello"),
+                "rendered content must survive: {out:?}"
+            );
+        }
     }
 
     #[test]
