@@ -647,6 +647,63 @@ impl InferenceHandle {
         .map_err(PioError::generation)?
     }
 
+    /// Streaming system inference with a caller-supplied [`GenSpec`], instead of
+    /// the task's built-in default. Same contract as [`Self::system_infer_streaming`]
+    /// (invokes `on_token` per token, returns the full text) — the only
+    /// difference is that `gen_spec` overrides the per-task sampling defaults.
+    ///
+    /// The satellite reference chat slice (pio-base-app, ADR-0030) uses this so
+    /// its Settings sheet (temperature / top-p / top-k) actually changes output:
+    /// it derives a `GenSpec` from the user's `PioConfig` rather than accepting
+    /// the fixed `SystemTask::Answer` spec.
+    pub async fn system_infer_streaming_with<F>(
+        &self,
+        task: SystemTask,
+        chat_id: impl Into<String>,
+        messages: Vec<Message>,
+        gen_spec: GenSpec,
+        mut on_token: F,
+    ) -> Result<String, crate::error::PioError>
+    where
+        F: FnMut(&str) + Send + 'static,
+    {
+        use crate::error::{ErrorCode, PioError};
+
+        let capacity = self.config().event_channel_capacity;
+        let (tx, rx) = std::sync::mpsc::sync_channel::<ControllerEvent>(capacity);
+        let cmd = ControllerCmd::SystemInfer {
+            task,
+            chat_id: chat_id.into(),
+            messages,
+            gen_spec,
+            tx,
+        };
+        self.send(cmd).map_err(PioError::generation)?;
+
+        tokio::task::spawn_blocking(move || {
+            let mut out = String::with_capacity(512);
+            while let Ok(ev) = rx.recv() {
+                match ev {
+                    ControllerEvent::Token(t) => {
+                        on_token(&t);
+                        out.push_str(&t);
+                    }
+                    ControllerEvent::Eos | ControllerEvent::Stopped => break,
+                    ControllerEvent::Error { code, message } => {
+                        return Err(PioError {
+                            code: ErrorCode::from_snake_case(&code),
+                            message,
+                        });
+                    }
+                    _ => {}
+                }
+            }
+            Ok(out)
+        })
+        .await
+        .map_err(PioError::generation)?
+    }
+
     /// Blocking read of delivery / termination counters from the active backend.
     ///
     /// For the local controller, mirrors [`ControllerHandle::get_controller_metrics`].
