@@ -510,3 +510,459 @@ fn golden_cross_bundle_agreement() {
         text_ud
     );
 }
+
+// ─── DiffusionGemma (slice 1: load + forward) ─────────────────────────────────
+
+/// 15GB MLX 4-bit DiffusionGemma 26B-A4B checkpoint (block-diffusion Gemma 4).
+/// Absolute path — not a repo-relative bundle like the Gemma 4 E2B fixtures.
+const DIFFUSION_GEMMA_DIR: &str = "/Users/victor/models/diffusiongemma-26B-A4B-it-4bit";
+
+/// SLICE 1: DiffusionGemma loads and forwards without the embedding-shape panic.
+///
+/// Loads the checkpoint, runs the encoder on a short prompt, then ONE decoder
+/// forward over a random 256-token canvas, and asserts the logits shape is
+/// `(1, canvas_length, vocab)`. Numerical parity is NOT checked here — this
+/// locks in structural correctness (it loads, maps weights, and forwards).
+#[test]
+#[ignore = "requires the 15GB DiffusionGemma checkpoint"]
+fn diffusion_gemma_loads_and_forwards() {
+    use std::path::Path;
+
+    use mlx_rs::ops::indexing::IndexOp;
+
+    use super::loader::build_diffusion_gemma_model;
+
+    let dir = Path::new(DIFFUSION_GEMMA_DIR);
+    if !dir.exists() {
+        eprintln!("skipping: {DIFFUSION_GEMMA_DIR} not present");
+        return;
+    }
+
+    let (model, _config) = build_diffusion_gemma_model(dir).expect("build diffusion_gemma model");
+
+    let vocab = model.config.vocab_size;
+    let canvas_len = model.config.canvas_length;
+
+    // Short prompt (arbitrary token ids in range).
+    let prompt: Vec<u32> = vec![2, 100, 200, 300, 400, 500, 600, 1];
+    let encoder_cache = model.encode(&prompt);
+    eprintln!(
+        "encoder ran: {} layers cached, first KV shape {:?}",
+        encoder_cache.len(),
+        encoder_cache[0].0.shape()
+    );
+
+    // Random canvas of length `canvas_length` (deterministic LCG, no deps).
+    let mut state: u64 = 0x1234_5678_9abc_def0;
+    let canvas: Vec<u32> = (0..canvas_len)
+        .map(|_| {
+            state = state
+                .wrapping_mul(6364136223846793005)
+                .wrapping_add(1442695040888963407);
+            ((state >> 33) as u32) % (vocab as u32)
+        })
+        .collect();
+
+    let logits = model.decode(&canvas, &encoder_cache, None);
+    let shape = logits.shape();
+    eprintln!("decoder logits shape: {:?}", shape);
+
+    assert_eq!(
+        shape,
+        &[1, canvas_len as i32, vocab as i32],
+        "expected logits (1, {canvas_len}, {vocab}), got {shape:?}"
+    );
+
+    // Print the first few logits as a smoke signal (forces evaluation).
+    let head = logits.index((0..1, 0..1, 0..8));
+    let head_vals: Vec<f32> = head.as_slice::<f32>().to_vec();
+    eprintln!("first 8 logits[0,0]: {:?}", head_vals);
+
+    // Softcap bound sanity: all finite and within [-cap, cap] if softcap set.
+    if let Some(cap) = model.config.final_logit_softcapping {
+        for v in &head_vals {
+            assert!(v.is_finite(), "non-finite logit: {v}");
+            assert!(v.abs() <= cap + 1e-2, "logit {v} exceeds softcap {cap}");
+        }
+    }
+}
+
+/// SLICE 2: DiffusionGemma generates coherent text via the entropy-bound
+/// denoising loop.
+///
+/// Loads the checkpoint, builds a chat-formatted prompt, runs the entropy-bound
+/// denoising generation loop (random canvas → 48 denoising steps → argmax
+/// canvas, EOS-trimmed), decodes the result, and prints it. The win condition
+/// is **coherent generated text** — if the output is garbage/repetition that
+/// signals the slice-1 forward is not numerically faithful.
+#[test]
+#[ignore = "requires the 15GB DiffusionGemma checkpoint"]
+fn diffusion_gemma_generates_text() {
+    use std::path::Path;
+
+    use super::loader::build_diffusion_gemma_model;
+    use super::model::DiffusionGenParams;
+    use crate::gen2::backend::mlx::tokenizer::HfTokenizer;
+
+    let dir = Path::new(DIFFUSION_GEMMA_DIR);
+    if !dir.exists() {
+        eprintln!("skipping: {DIFFUSION_GEMMA_DIR} not present");
+        return;
+    }
+
+    let (model, _config) = build_diffusion_gemma_model(dir).expect("build diffusion_gemma model");
+    let tok = HfTokenizer::from_dir(dir).expect("load tokenizer");
+
+    // Generation parameters from the checkpoint generation_config.
+    let raw: serde_json::Value =
+        serde_json::from_str(&std::fs::read_to_string(dir.join("config.json")).unwrap()).unwrap();
+    let params = DiffusionGenParams::from_json(&raw);
+    eprintln!("gen params: {params:?}");
+
+    // Build the chat prompt manually following the model's chat_template.jinja:
+    //   <bos><|turn>user\n{content}<turn|>\n<|turn>model\n<|channel>thought\n<channel|>
+    // (single user turn, add_generation_prompt, thinking disabled).
+    let user = "What is the capital of France? Answer in one sentence.";
+    let prompt =
+        format!("<bos><|turn>user\n{user}<turn|>\n<|turn>model\n<|channel>thought\n<channel|>");
+    // add_special = false: the literal special tokens are already in the string.
+    let prompt_ids = tok.encode(&prompt, false).expect("tokenize prompt");
+    eprintln!("prompt: {} tokens", prompt_ids.len());
+
+    let out_ids = model.diffusion_generate(&prompt_ids, &params);
+    eprintln!("generated {} token ids", out_ids.len());
+
+    let text = tok.decode(&out_ids).expect("decode output");
+    eprintln!("\n=== GENERATED TEXT ===\n{text}\n=== END ===\n");
+
+    assert!(!out_ids.is_empty(), "generation produced no tokens");
+    assert!(
+        !text.trim().is_empty(),
+        "generation decoded to empty text (ids: {out_ids:?})"
+    );
+}
+
+/// SLICE 3: DiffusionGemma chats through the SAME Engine/Session/TokenPuller
+/// path autoregressive models use.
+///
+/// `Engine::load_model` → `start_session([user(..)])` → `pull(GenSpec)` →
+/// drain `TokenEvent`s with the standard `drain()` helper. This proves the
+/// denoising loop is wired behind the normal model interface: callers pass
+/// `messages` (not raw ids), the prompt is built by Session's chat template,
+/// and the result streams out as `TokenEvent::Token` then `Eos` — exactly as
+/// for AR models. Non-streaming compute, sequential emit (`PrecomputedPuller`).
+#[test]
+#[ignore = "requires the 15GB DiffusionGemma checkpoint"]
+fn diffusion_gemma_chat_via_engine() {
+    use std::path::Path;
+
+    let dir = Path::new(DIFFUSION_GEMMA_DIR);
+    if !dir.exists() {
+        eprintln!("skipping: {DIFFUSION_GEMMA_DIR} not present");
+        return;
+    }
+
+    // Standard load path — same as every AR golden test.
+    let engine = load_engine(PathBuf::from(DIFFUSION_GEMMA_DIR));
+
+    // Standard session start: caller passes messages, NOT raw token ids.
+    let session = engine
+        .start_session(SessionSpec {
+            messages: vec![user_msg(
+                "What is the capital of France? Answer in one sentence.",
+            )],
+            ..Default::default()
+        })
+        .expect("start_session");
+
+    // Standard pull → drain. `max_tokens` caps the emitted canvas length.
+    let mut puller = session
+        .pull(GenSpec {
+            max_tokens: Some(64),
+            ..Default::default()
+        })
+        .expect("pull");
+    let (ids, text, stats) = drain(&mut puller);
+
+    eprintln!("\n=== ENGINE-PATH GENERATED TEXT ===\n{text}\n=== END ===\n");
+    eprintln!(
+        "ids ({}): {:?}\nstats: prompt={} decode={}",
+        ids.len(),
+        ids,
+        stats.prompt_tokens,
+        stats.decode_tokens
+    );
+
+    assert!(!ids.is_empty(), "engine path produced no tokens");
+    assert!(
+        text.contains("Paris"),
+        "expected the answer to mention Paris, got: {text:?}"
+    );
+}
+
+/// VALIDATION: 20-turn DiffusionGemma conversation through the native engine.
+///
+/// This is a stress / sanity pass, NOT a feature test — it produces a clear
+/// transcript and lets us read whether the generation settings (48 denoising
+/// steps, entropy_bound 0.1, t_min/t_max 0.4–0.8, canvas_length 256,
+/// max_tokens=128) make sense in practice. It exercises context-dependent
+/// turns (5/6/11/16), instruction-following (7/9/15/17), and an empty-prompt
+/// edge case (19).
+///
+/// One Session, re-rendered each turn via `append_messages` (the same
+/// multi-turn path as `golden_multiturn_coherence`). Runs ~20 min total.
+#[test]
+#[ignore = "requires the 15GB DiffusionGemma checkpoint; ~20 min"]
+fn diffusion_gemma_twenty_turn_pass() {
+    use std::path::Path;
+    use std::time::Instant;
+
+    use crate::gen2::generation::ThinkingMode;
+
+    let dir = Path::new(DIFFUSION_GEMMA_DIR);
+    if !dir.exists() {
+        eprintln!("skipping: {DIFFUSION_GEMMA_DIR} not present");
+        return;
+    }
+
+    // Load model + tokenizer ONCE.
+    let engine = load_engine(PathBuf::from(DIFFUSION_GEMMA_DIR));
+
+    // The curated 20-turn prompt list (per the validation spec).
+    let prompts: [&str; 20] = [
+        "Hi! My name is Victor and I'm building an AI app in Rust.",
+        "What's the capital of Japan?",
+        "What is 17 times 23?",
+        "List three primary colors.",
+        "What's my name?",                 // context
+        "What language am I building in?", // context
+        "Write a two-line haiku about the ocean.",
+        "Translate 'good morning' into French.",
+        "Is 91 a prime number? Answer yes or no and why.",
+        "Give me a one-sentence definition of recursion.",
+        "What did I say I'm building?", // context
+        "Suggest a name for my app.",
+        "Continue this story in one sentence: The robot opened the door and…",
+        "What's heavier, a kilogram of steel or a kilogram of feathers?",
+        "Reply with exactly the word: PONG",           // format
+        "Summarize our conversation in one sentence.", // context
+        "Count from 1 to 5.",
+        "What's the opposite of 'hot'?",
+        "", // edge: empty
+        "Goodbye — say something friendly.",
+    ];
+
+    // IMPORTANT: `ThinkingMode::default()` is `Auto`, which maps to
+    // `enable_thinking = Some(true)` (see generation/thinking.rs). With
+    // thinking ON, the DiffusionGemma chat template emits a
+    // `<|channel>thought ... <channel|>` scaffold, and the denoised canvas
+    // decodes to a bare `thought` token instead of a clean answer (observed:
+    // every turn returned just "thought"). Force thinking OFF so replies are
+    // clean prose — this is the chat default the validation spec calls for.
+    let session = engine
+        .start_session(SessionSpec {
+            messages: vec![user_msg(prompts[0])],
+            thinking: ThinkingMode::Off,
+            ..Default::default()
+        })
+        .expect("start_session");
+
+    let mut per_turn_secs: Vec<f64> = Vec::with_capacity(20);
+    let mut transcript: Vec<(usize, String, String)> = Vec::with_capacity(20);
+    let run_start = Instant::now();
+
+    for (i, &prompt) in prompts.iter().enumerate() {
+        let turn = i + 1;
+
+        // Turn 1's user message is already in the session; subsequent turns
+        // append the prior assistant reply + the new user message.
+        if i > 0 {
+            let prev_reply = transcript[i - 1].2.trim().to_string();
+            session
+                .append_messages(vec![asst_msg(&prev_reply), user_msg(prompt)])
+                .expect("append_messages");
+        }
+
+        let t0 = Instant::now();
+        let mut puller = session
+            .pull(GenSpec {
+                max_tokens: Some(128),
+                ..Default::default()
+            })
+            .expect("pull");
+        let (_ids, text, _stats) = drain(&mut puller);
+        drop(puller);
+        let secs = t0.elapsed().as_secs_f64();
+        per_turn_secs.push(secs);
+
+        eprintln!("\n--- TURN {turn} ({secs:.1}s) ---");
+        eprintln!("PROMPT: {prompt:?}");
+        eprintln!("REPLY : {text}");
+
+        transcript.push((turn, prompt.to_string(), text));
+    }
+
+    let total = run_start.elapsed().as_secs_f64();
+    let avg = total / 20.0;
+
+    // Latency drift: compare the average of the first 5 turns vs the last 5.
+    let first5: f64 = per_turn_secs[..5].iter().sum::<f64>() / 5.0;
+    let last5: f64 = per_turn_secs[15..].iter().sum::<f64>() / 5.0;
+
+    eprintln!("\n==================== SUMMARY ====================");
+    eprintln!("total wall time : {total:.1}s ({:.1} min)", total / 60.0);
+    eprintln!("avg per turn    : {avg:.1}s");
+    eprintln!("first-5 avg     : {first5:.1}s");
+    eprintln!("last-5 avg      : {last5:.1}s");
+    eprintln!(
+        "latency drift   : {:+.1}s ({:+.0}%) across context growth",
+        last5 - first5,
+        if first5 > 0.0 {
+            (last5 - first5) / first5 * 100.0
+        } else {
+            0.0
+        }
+    );
+    eprintln!("per-turn secs   : {per_turn_secs:?}");
+    eprintln!("=================================================\n");
+
+    // This is a validation pass: the deliverable is the printed transcript +
+    // timings above, read with --nocapture. The only hard assertion is that
+    // the run actually produced 20 turns and didn't silently die.
+    assert_eq!(transcript.len(), 20, "expected 20 completed turns");
+}
+
+/// A/B VARIANT: the same 20-turn DiffusionGemma validation pass as
+/// `diffusion_gemma_twenty_turn_pass`, but run at **24 denoising steps**
+/// instead of the checkpoint's default 48, to test whether we can halve the
+/// denoising work (~2x chat speedup) without losing answer quality.
+///
+/// Identical in every other respect: same model, same 20 prompts, same
+/// `ThinkingMode::Off`, same `max_tokens=128`, same multi-turn session path.
+/// The step-count override is applied test-only via the
+/// `PIO_MLX_DENOISING_STEPS` env var (read in `session.rs` where the denoising
+/// params are assembled). It does NOT change any production default — when the
+/// var is unset, generation still runs at 48 steps.
+#[test]
+#[ignore = "requires the 15GB DiffusionGemma checkpoint; ~10-15 min"]
+fn diffusion_gemma_twenty_turn_pass_24steps() {
+    use std::path::Path;
+    use std::time::Instant;
+
+    use crate::gen2::generation::ThinkingMode;
+
+    let dir = Path::new(DIFFUSION_GEMMA_DIR);
+    if !dir.exists() {
+        eprintln!("skipping: {DIFFUSION_GEMMA_DIR} not present");
+        return;
+    }
+
+    // Test-only override: run the denoising loop at 24 steps for THIS run.
+    // `session.rs` reads this when building `DiffusionGenParams`; unset = 48.
+    // SAFETY: single-threaded test (`--test-threads=1`); no other thread reads
+    // the environment concurrently.
+    unsafe {
+        std::env::set_var("PIO_MLX_DENOISING_STEPS", "24");
+    }
+
+    // Load model + tokenizer ONCE.
+    let engine = load_engine(PathBuf::from(DIFFUSION_GEMMA_DIR));
+
+    // The curated 20-turn prompt list (identical to the 48-step pass).
+    let prompts: [&str; 20] = [
+        "Hi! My name is Victor and I'm building an AI app in Rust.",
+        "What's the capital of Japan?",
+        "What is 17 times 23?",
+        "List three primary colors.",
+        "What's my name?",                 // context
+        "What language am I building in?", // context
+        "Write a two-line haiku about the ocean.",
+        "Translate 'good morning' into French.",
+        "Is 91 a prime number? Answer yes or no and why.",
+        "Give me a one-sentence definition of recursion.",
+        "What did I say I'm building?", // context
+        "Suggest a name for my app.",
+        "Continue this story in one sentence: The robot opened the door and…",
+        "What's heavier, a kilogram of steel or a kilogram of feathers?",
+        "Reply with exactly the word: PONG",           // format
+        "Summarize our conversation in one sentence.", // context
+        "Count from 1 to 5.",
+        "What's the opposite of 'hot'?",
+        "", // edge: empty
+        "Goodbye — say something friendly.",
+    ];
+
+    // Thinking OFF — same rationale as the 48-step pass (clean prose replies,
+    // no `thought` scaffold). This is the chat default the validation calls for.
+    let session = engine
+        .start_session(SessionSpec {
+            messages: vec![user_msg(prompts[0])],
+            thinking: ThinkingMode::Off,
+            ..Default::default()
+        })
+        .expect("start_session");
+
+    let mut per_turn_secs: Vec<f64> = Vec::with_capacity(20);
+    let mut transcript: Vec<(usize, String, String)> = Vec::with_capacity(20);
+    let run_start = Instant::now();
+
+    for (i, &prompt) in prompts.iter().enumerate() {
+        let turn = i + 1;
+
+        if i > 0 {
+            let prev_reply = transcript[i - 1].2.trim().to_string();
+            session
+                .append_messages(vec![asst_msg(&prev_reply), user_msg(prompt)])
+                .expect("append_messages");
+        }
+
+        let t0 = Instant::now();
+        let mut puller = session
+            .pull(GenSpec {
+                max_tokens: Some(128),
+                ..Default::default()
+            })
+            .expect("pull");
+        let (_ids, text, _stats) = drain(&mut puller);
+        drop(puller);
+        let secs = t0.elapsed().as_secs_f64();
+        per_turn_secs.push(secs);
+
+        eprintln!("\n--- TURN {turn} ({secs:.1}s) ---");
+        eprintln!("PROMPT: {prompt:?}");
+        eprintln!("REPLY : {text}");
+
+        transcript.push((turn, prompt.to_string(), text));
+    }
+
+    let total = run_start.elapsed().as_secs_f64();
+    let avg = total / 20.0;
+
+    let first5: f64 = per_turn_secs[..5].iter().sum::<f64>() / 5.0;
+    let last5: f64 = per_turn_secs[15..].iter().sum::<f64>() / 5.0;
+
+    eprintln!("\n================ SUMMARY (24 denoising steps) ================");
+    eprintln!("total wall time : {total:.1}s ({:.1} min)", total / 60.0);
+    eprintln!("avg per turn    : {avg:.1}s");
+    eprintln!("first-5 avg     : {first5:.1}s");
+    eprintln!("last-5 avg      : {last5:.1}s");
+    eprintln!(
+        "latency drift   : {:+.1}s ({:+.0}%) across context growth",
+        last5 - first5,
+        if first5 > 0.0 {
+            (last5 - first5) / first5 * 100.0
+        } else {
+            0.0
+        }
+    );
+    eprintln!("per-turn secs   : {per_turn_secs:?}");
+    eprintln!("(48-step baseline: 64.9s/turn avg)");
+    eprintln!("==============================================================\n");
+
+    // Clean up the override so it cannot leak into any other test in-process.
+    unsafe {
+        std::env::remove_var("PIO_MLX_DENOISING_STEPS");
+    }
+
+    assert_eq!(transcript.len(), 20, "expected 20 completed turns");
+}

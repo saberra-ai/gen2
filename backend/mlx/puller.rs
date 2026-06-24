@@ -17,9 +17,159 @@ use crate::gen2::backend::common::speculative::{
 };
 use crate::gen2::backend::common::stop_matcher::StopMatcher;
 use crate::gen2::engine::{ExecError, ExecutionStats, HookBus, HookEvent};
-use crate::gen2::generation::{GenSpec, TokenEvent};
+use crate::gen2::generation::{GenSpec, Token, TokenEvent};
 
-pub struct TokenPuller {
+/// Token generation puller.
+///
+/// Two shapes are interface-compatible from the caller's perspective — both
+/// yield `TokenEvent::Token{..}` one at a time, then a terminal `Eos`/`Stopped`:
+///
+/// - [`TokenPuller::Ar`] — the autoregressive path. Runs one forward pass per
+///   decode step (with speculative batching), sampling token-by-token.
+/// - [`TokenPuller::Precomputed`] — the DiffusionGemma path. Generation is
+///   *non-streaming* (a whole 256-token canvas is denoised to completion before
+///   the puller is built); the puller then emits the precomputed ids one-by-one,
+///   decoding text per token, ending with `Eos`. See [`PrecomputedPuller`].
+pub enum TokenPuller {
+    // Boxed: `ArPuller` is far larger than `PrecomputedPuller`, so an unboxed
+    // enum would size every `TokenPuller` to the AR footprint (clippy
+    // `large_enum_variant`).
+    Ar(Box<ArPuller>),
+    Precomputed(PrecomputedPuller),
+}
+
+impl TokenPuller {
+    /// Drive one event out of whichever inner puller this is. Used by the
+    /// `Iterator` impl and the `TokenPullerDyn` trait.
+    fn next_inner(&mut self) -> Option<Result<TokenEvent, ExecError>> {
+        match self {
+            TokenPuller::Ar(p) => p.next(),
+            TokenPuller::Precomputed(p) => p.next(),
+        }
+    }
+
+    /// Test-only: read execution stats. For the precomputed path this reports
+    /// the canvas/output token counts; for AR it forwards `stats_now`.
+    #[cfg(test)]
+    pub(super) fn snapshot_stats(&self) -> ExecutionStats {
+        match self {
+            TokenPuller::Ar(p) => p.stats_now(),
+            TokenPuller::Precomputed(p) => p.stats_now(),
+        }
+    }
+}
+
+impl Iterator for TokenPuller {
+    type Item = Result<TokenEvent, ExecError>;
+    fn next(&mut self) -> Option<Self::Item> {
+        self.next_inner()
+    }
+}
+
+impl crate::gen2::backend::traits::TokenPullerDyn for TokenPuller {
+    fn next_event(
+        &mut self,
+    ) -> Option<Result<crate::gen2::generation::TokenEvent, crate::gen2::engine::ExecError>> {
+        self.next_inner()
+    }
+}
+
+// ─── PrecomputedPuller ──────────────────────────────────────────────────────────
+
+/// Streams a pre-generated list of token ids one-by-one as `TokenEvent::Token`,
+/// decoding text per token, then terminates with `Eos`.
+///
+/// DiffusionGemma denoises a whole canvas at once (not token-by-token), so its
+/// generation is run to completion *before* this puller is built (see
+/// `Session::pull`). This puller exists only to expose that result through the
+/// same `TokenEvent` interface AR models use, so callers (controller, app) are
+/// unchanged. Compute is non-streaming; emission is sequential.
+pub struct PrecomputedPuller {
+    session_id: u64,
+    hooks: Arc<HookBus>,
+    bundle: Arc<ModelBundle>,
+    tokens: VecDeque<u32>,
+    prompt_tokens: usize,
+    produced: usize,
+    start_us: u64,
+    first_token_us: Option<u64>,
+    done: bool,
+}
+
+impl PrecomputedPuller {
+    pub(crate) fn new(
+        session_id: u64,
+        hooks: Arc<HookBus>,
+        bundle: Arc<ModelBundle>,
+        tokens: Vec<u32>,
+        prompt_tokens: usize,
+    ) -> Self {
+        Self {
+            session_id,
+            hooks,
+            bundle,
+            tokens: tokens.into_iter().collect(),
+            prompt_tokens,
+            produced: 0,
+            start_us: now_us(),
+            first_token_us: None,
+            done: false,
+        }
+    }
+
+    fn stats_now(&self) -> ExecutionStats {
+        let elapsed_us = now_us().saturating_sub(self.start_us);
+        let elapsed_s = (elapsed_us as f64) / 1_000_000.0;
+        let avg_tps = if elapsed_s > 0.0 {
+            (self.produced as f64 / elapsed_s) as f32
+        } else {
+            0.0
+        };
+        ExecutionStats {
+            prompt_tokens: self.prompt_tokens as u32,
+            decode_tokens: self.produced as u32,
+            first_token_us: self.first_token_us.unwrap_or(0),
+            avg_tps,
+            ..Default::default()
+        }
+    }
+
+    fn next(&mut self) -> Option<Result<TokenEvent, ExecError>> {
+        if self.done {
+            return None;
+        }
+        match self.tokens.pop_front() {
+            Some(id) => {
+                if self.first_token_us.is_none() {
+                    self.first_token_us = Some(now_us().saturating_sub(self.start_us));
+                }
+                let text = self.bundle.tokenizer.decode(&[id]).unwrap_or_default();
+                self.produced += 1;
+                self.hooks.emit(HookEvent::DecodeStep {
+                    session_id: self.session_id,
+                    token_id: id,
+                    text_len: text.len(),
+                });
+                Some(Ok(TokenEvent::Token(Token {
+                    id,
+                    text,
+                    logprob: None,
+                })))
+            }
+            None => {
+                self.done = true;
+                let stats = self.stats_now();
+                self.hooks.emit(HookEvent::FinalStats {
+                    session_id: self.session_id,
+                    stats,
+                });
+                Some(Ok(TokenEvent::Eos))
+            }
+        }
+    }
+}
+
+pub struct ArPuller {
     session_id: u64,
     hooks: Arc<HookBus>,
     bundle: Arc<ModelBundle>,
@@ -73,7 +223,7 @@ pub struct TokenPuller {
     state_slot: Weak<Mutex<Option<DecodeState>>>,
 }
 
-impl TokenPuller {
+impl ArPuller {
     #[allow(clippy::too_many_arguments)]
     pub(crate) fn new(
         session_id: u64,
@@ -240,29 +390,23 @@ impl TokenPuller {
             spec_accepted: self.spec_accepted as u32,
         }
     }
-
-    /// Test-only: read `stats_now` from outside the puller. Used by the golden
-    /// test suite to verify per-session counters after drain.
-    #[cfg(test)]
-    pub(super) fn snapshot_stats(&self) -> ExecutionStats {
-        self.stats_now()
-    }
 }
 
-impl Drop for TokenPuller {
+impl Drop for ArPuller {
     fn drop(&mut self) {
-        if let Some(slot) = self.state_slot.upgrade() {
-            if let Some(state) = self.state.take() {
-                *slot.lock() = Some(state);
-            }
+        if let Some(slot) = self.state_slot.upgrade()
+            && let Some(state) = self.state.take()
+        {
+            *slot.lock() = Some(state);
         }
     }
 }
 
-impl Iterator for TokenPuller {
-    type Item = Result<TokenEvent, ExecError>;
-
-    fn next(&mut self) -> Option<Self::Item> {
+impl ArPuller {
+    /// Pull one event, draining held filter events and stepping the decode
+    /// loop until a token / terminal event is produced. Mirrors the old
+    /// `Iterator::next` body — the enum `TokenPuller` delegates here.
+    fn next(&mut self) -> Option<Result<TokenEvent, ExecError>> {
         loop {
             if let Some(ev) = self.filter.pop() {
                 return Some(ev);
@@ -273,9 +417,7 @@ impl Iterator for TokenPuller {
             self.step_once();
         }
     }
-}
 
-impl TokenPuller {
     /// Run a single decode step — drives forward pass, samples, routes
     /// emitted tokens through `self.filter`. Sets `self.done` on terminal
     /// conditions and pushes the appropriate terminal event into the
@@ -666,12 +808,4 @@ fn now_us() -> u64 {
         .duration_since(std::time::UNIX_EPOCH)
         .map(|d| d.as_micros() as u64)
         .unwrap_or(0)
-}
-
-impl crate::gen2::backend::traits::TokenPullerDyn for TokenPuller {
-    fn next_event(
-        &mut self,
-    ) -> Option<Result<crate::gen2::generation::TokenEvent, crate::gen2::engine::ExecError>> {
-        <Self as Iterator>::next(self)
-    }
 }

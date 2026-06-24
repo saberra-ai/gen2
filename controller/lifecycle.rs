@@ -147,6 +147,7 @@ pub(super) fn start_ephemeral(
     suffix: &str,
     messages: Vec<Message>,
     gen_spec: GenSpec,
+    thinking: crate::gen2::generation::ThinkingMode,
     metrics: Arc<metrics::ControllerMetrics>,
     tx: SyncSender<ControllerEvent>,
 ) {
@@ -167,6 +168,7 @@ pub(super) fn start_ephemeral(
 
     match engine.start_session(SessionSpec {
         messages,
+        thinking,
         ..Default::default()
     }) {
         Err(e) => {

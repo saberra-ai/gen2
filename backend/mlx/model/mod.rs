@@ -4,6 +4,7 @@
 //! safetensors by the loader module.
 
 mod attention;
+pub mod diffusion_gemma;
 pub mod eagle3;
 mod ffn;
 pub mod gemma4;
@@ -13,6 +14,7 @@ mod norm;
 pub mod quantized;
 pub(crate) mod rope;
 
+pub use diffusion_gemma::{DiffusionGemmaConfig, DiffusionGemmaModel, DiffusionGenParams};
 pub use gemma4::Gemma4Model;
 pub use llama::LlamaModel;
 pub use quantized::Weight;
@@ -29,6 +31,11 @@ pub type KvCache = Vec<Option<(Array, Array)>>;
 pub enum Model {
     Llama(LlamaModel),
     Gemma4(Gemma4Model),
+    /// DiffusionGemma (block-diffusion Gemma 4). Encoder/decoder, not
+    /// autoregressive — the standard token-by-token `forward` paths do not
+    /// apply (slice 1: model is driven via its own `encode`/`decode` API).
+    /// The denoising generation loop lands in slice 2.
+    DiffusionGemma(DiffusionGemmaModel),
 }
 
 impl Model {
@@ -48,6 +55,12 @@ impl Model {
         match self {
             Model::Llama(m) => m.forward(tokens, offset, cache, rope),
             Model::Gemma4(m) => m.forward(tokens, offset, cache),
+            Model::DiffusionGemma(_) => {
+                // DiffusionGemma is encoder/decoder block-diffusion; it is not
+                // driven by the autoregressive `forward` path. Slice 2 wires
+                // the denoising loop through `encode`/`decode` directly.
+                panic!("DiffusionGemma does not support autoregressive forward; use encode/decode")
+            }
         }
     }
 
@@ -63,13 +76,22 @@ impl Model {
         match self {
             Model::Llama(m) => Some(m.forward_all(tokens, offset, cache, rope)),
             Model::Gemma4(m) => Some(m.forward_all(tokens, offset, cache)),
+            Model::DiffusionGemma(_) => None,
         }
+    }
+
+    /// True for the DiffusionGemma block-diffusion model, which is driven by
+    /// its own `encode`/`decode`/`diffusion_generate` path rather than the
+    /// autoregressive `forward` loop. Session/puller branch on this.
+    pub fn is_diffusion(&self) -> bool {
+        matches!(self, Model::DiffusionGemma(_))
     }
 
     pub fn num_non_shared_layers(&self) -> usize {
         match self {
             Model::Llama(m) => m.config.num_hidden_layers,
             Model::Gemma4(m) => m.num_non_shared,
+            Model::DiffusionGemma(m) => m.config.num_hidden_layers,
         }
     }
 
@@ -92,6 +114,7 @@ impl Model {
         match self {
             Model::Llama(m) => Some((m.forward_all(tokens, offset, cache, rope), Vec::new())),
             Model::Gemma4(m) => Some(m.forward_all_with_aux(tokens, offset, cache, aux_layer_ids)),
+            Model::DiffusionGemma(_) => None,
         }
     }
 }

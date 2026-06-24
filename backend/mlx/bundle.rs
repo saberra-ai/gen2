@@ -1,6 +1,6 @@
 //! MLX model bundle — holds the loaded model, tokenizer, and metadata.
 
-use super::model::{Model, ModelConfig, RotaryEmbedding};
+use super::model::{DiffusionGenParams, Model, ModelConfig, RotaryEmbedding};
 use super::tokenizer::HfTokenizer;
 use crate::gen2::bundle::ModelMeta;
 use crate::gen2::engine::Capabilities;
@@ -19,6 +19,10 @@ pub struct ModelBundle {
     pub bos_str: String,
     /// Decoded EOS token string, cached to avoid repeated tokenizer lookups.
     pub eos_str: String,
+    /// Denoising generation parameters for DiffusionGemma, parsed from
+    /// `config.json`'s `generation_config` at load time. `None` for
+    /// autoregressive models.
+    pub diffusion_params: Option<DiffusionGenParams>,
 }
 
 // SAFETY: All Array fields in ModelBundle are set once at model load time and

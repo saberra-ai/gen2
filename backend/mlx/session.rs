@@ -8,8 +8,8 @@ use std::sync::{
 use mlx_rs::ops::indexing::IndexOp;
 
 use super::bundle::ModelBundle;
-use super::model::{KvCache, ModelConfig};
-use super::puller::TokenPuller;
+use super::model::{KvCache, Model, ModelConfig};
+use super::puller::{ArPuller, PrecomputedPuller, TokenPuller};
 use crate::gen2::Message;
 use crate::gen2::backend::common::chat_template::ChatTemplate;
 use crate::gen2::engine::{ExecError, HookBus, HookEvent, Settings};
@@ -234,6 +234,14 @@ pub struct Session {
     /// render with the same policy as the initial prompt. `None` =
     /// template default.
     enable_thinking: Option<bool>,
+    /// For DiffusionGemma only: the tokenized prompt, held verbatim instead of
+    /// being prefilled into a KV cache (the model is encoder/decoder, not
+    /// autoregressive — there is no streaming prefill). `pull()` feeds this to
+    /// `diffusion_generate` and emits the result via a `PrecomputedPuller`.
+    /// `None` for autoregressive models. Wrapped in a `Mutex` so multi-turn
+    /// `append_messages` can re-render the whole conversation (the model has no
+    /// reusable KV state to delta-prefill into).
+    diffusion_prompt: Mutex<Option<Vec<u32>>>,
 }
 
 impl Session {
@@ -251,6 +259,70 @@ impl Session {
         if gen_spec.max_tokens.is_none() {
             gen_spec.max_tokens = self.settings.stopping.max_tokens;
         }
+
+        // ── DiffusionGemma: non-streaming denoising, sequential emit ──────────
+        // The whole 256-token canvas is denoised to completion here, then the
+        // resulting ids are streamed one-by-one (decoding text per token)
+        // through a `PrecomputedPuller`. Interface-compatible with the AR path:
+        // same `TokenEvent::Token{..}` → `Eos` sequence callers already drain.
+        let diffusion_prompt = self.diffusion_prompt.lock().clone();
+        if let Some(prompt_ids) = diffusion_prompt {
+            let Model::DiffusionGemma(model) = &self.bundle.model else {
+                return Err(ExecError::Other(anyhow::anyhow!(
+                    "session has a diffusion prompt but the model is not DiffusionGemma"
+                )));
+            };
+            let mut params = self.bundle.diffusion_params.clone().unwrap_or_default();
+            // Production knob: the user-tunable `LlmConfig.diffusion_denoising_steps`
+            // (default 24) rides in on the `GenSpec` and overrides the checkpoint's
+            // `max_denoising_steps` (48). 24 is ~2x faster with no measured chat
+            // quality loss (20-turn A/B). `None` keeps the checkpoint value.
+            if let Some(steps) = gen_spec.diffusion_denoising_steps
+                && steps > 0
+            {
+                params.max_denoising_steps = steps;
+            }
+            // Test/debug override: `PIO_MLX_DENOISING_STEPS` wins over both the
+            // config knob and the checkpoint — it lets a validation pass sweep
+            // the step count (e.g. the 24-step A/B) WITHOUT touching config or
+            // the checkpoint. Unset in normal operation. Follows the existing
+            // `PIO_MLX_*` env-override convention in this backend.
+            if let Ok(v) = std::env::var("PIO_MLX_DENOISING_STEPS")
+                && let Ok(n) = v.trim().parse::<usize>()
+                && n > 0
+            {
+                params.max_denoising_steps = n;
+            }
+            // Map GenSpec → denoising params (light touch):
+            // - temperature > 0 raises the schedule ceiling (more exploration);
+            //   temperature <= 0 / unset keeps the checkpoint's greedy schedule.
+            if let Some(t) = gen_spec.temperature
+                && t > 0.0
+            {
+                params.t_max = (params.t_max * t).clamp(params.t_min, 4.0);
+            }
+
+            let prompt_len = prompt_ids.len();
+            let out_ids = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+                model.diffusion_generate(&prompt_ids, &params)
+            }))
+            .map_err(|e| ExecError::OutOfMemory(oom_msg(e)))?;
+
+            // `max_tokens` caps the emitted canvas length.
+            let out_ids = match gen_spec.max_tokens {
+                Some(cap) if out_ids.len() > cap => out_ids[..cap].to_vec(),
+                _ => out_ids,
+            };
+
+            return Ok(TokenPuller::Precomputed(PrecomputedPuller::new(
+                self.id,
+                self.hooks.clone(),
+                self.bundle.clone(),
+                out_ids,
+                prompt_len,
+            )));
+        }
+
         let mut guard = self.state.lock();
         let state = guard
             .take()
@@ -258,7 +330,7 @@ impl Session {
 
         let state_slot = Arc::downgrade(&self.state);
 
-        let puller = TokenPuller::new(
+        let puller = TokenPuller::Ar(Box::new(ArPuller::new(
             self.id,
             self.hooks.clone(),
             self.bundle.clone(),
@@ -267,7 +339,7 @@ impl Session {
             gen_spec,
             self.paused.clone(),
             self.stopped.clone(),
-        );
+        )));
         Ok(puller)
     }
 
@@ -389,6 +461,35 @@ impl Session {
             .encode(&full_prompt, true)
             .map_err(ExecError::Other)?;
 
+        // ── DiffusionGemma: no autoregressive prefill ─────────────────────────
+        // The model is encoder/decoder block-diffusion; `forward` panics for it.
+        // Hold the tokenized prompt verbatim and let `pull()` run the denoising
+        // loop, emitting the result through a `PrecomputedPuller`. No KV cache,
+        // no prefix caching.
+        if bundle.model.is_diffusion() {
+            hooks.emit(HookEvent::SessionPrefillStart {
+                session_id: id,
+                prompt_tokens: full_tokens.len(),
+            });
+            hooks.emit(HookEvent::SessionPrefillOk {
+                session_id: id,
+                prompt_tokens: full_tokens.len(),
+            });
+            let session = Self {
+                id,
+                bundle,
+                hooks,
+                settings,
+                paused: Arc::new(AtomicBool::new(false)),
+                stopped: Arc::new(AtomicBool::new(false)),
+                state: Arc::new(Mutex::new(None)),
+                messages: RwLock::new(messages),
+                enable_thinking,
+                diffusion_prompt: Mutex::new(Some(full_tokens)),
+            };
+            return Ok((session, None));
+        }
+
         let cache_slots = bundle.model.num_non_shared_layers();
         let policy = CachePolicy::compute(&bundle.config, cache_slots);
 
@@ -432,6 +533,7 @@ impl Session {
                     state: Arc::new(Mutex::new(Some(state))),
                     messages: RwLock::new(messages),
                     enable_thinking,
+                    diffusion_prompt: Mutex::new(None),
                 };
                 return Ok((session, None));
             }
@@ -530,6 +632,7 @@ impl Session {
                                 state: Arc::new(Mutex::new(Some(init_state))),
                                 messages: RwLock::new(messages),
                                 enable_thinking,
+                                diffusion_prompt: Mutex::new(None),
                             };
                             return Ok((session, Some(entry)));
                         }
@@ -584,6 +687,7 @@ impl Session {
             state: Arc::new(Mutex::new(Some(init_state))),
             messages: RwLock::new(messages),
             enable_thinking,
+            diffusion_prompt: Mutex::new(None),
         };
         Ok((session, None))
     }
@@ -617,6 +721,30 @@ impl Session {
         {
             let mut msgs = self.messages.write();
             msgs.extend(new_messages.clone());
+        }
+
+        // ── DiffusionGemma: re-render the whole conversation ──────────────────
+        // The model is non-autoregressive — there is no KV cache to delta-prefill
+        // into, so every turn re-tokenizes the full message chain. The next
+        // `pull()` denoises a fresh canvas conditioned on the updated prompt.
+        if self.diffusion_prompt.lock().is_some() {
+            let msgs = self.messages.read().clone();
+            let tpl = ChatTemplate::new(
+                self.bundle.chat_template_str.clone(),
+                Some(TokenizerConfigToken::String(self.bundle.bos_str.clone())),
+                Some(TokenizerConfigToken::String(self.bundle.eos_str.clone())),
+            );
+            let full_prompt = tpl
+                .apply(msgs, None, self.enable_thinking)
+                .map_err(|e| ExecError::Other(e.into()))?;
+            let full_tokens = self
+                .bundle
+                .tokenizer
+                .encode(&full_prompt, true)
+                .map_err(ExecError::Other)?;
+            let n = full_tokens.len();
+            *self.diffusion_prompt.lock() = Some(full_tokens);
+            return Ok(n);
         }
 
         // Drop assistant messages — their content is already in cache as

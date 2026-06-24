@@ -7,6 +7,15 @@ pub struct GenSpec {
     pub temperature: Option<f32>,
     pub seed: Option<u64>,
 
+    /// DiffusionGemma denoising-step override for this run. When `Some(n > 0)`,
+    /// the entropy-bound denoiser runs `n` steps instead of the checkpoint's
+    /// `generation_config.max_denoising_steps`. Fewer steps trade a little
+    /// fidelity for large latency wins (24 vs 48 ≈ 2x faster, no measured chat
+    /// quality loss — see the 20-turn A/B). Ignored by autoregressive backends.
+    /// Default (`None`): use the checkpoint value.
+    #[serde(default)]
+    pub diffusion_denoising_steps: Option<usize>,
+
     /// Nucleus sampling (top-p). Tokens whose cumulative probability exceeds
     /// `top_p` are discarded. Applied after temperature + before min-p/XTC.
     /// Default (if `None`): backend-specific, typically 0.9.

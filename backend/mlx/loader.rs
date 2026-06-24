@@ -11,7 +11,9 @@ use std::path::Path;
 use mlx_rs::Array;
 use mlx_rs::ops::indexing::IndexOp;
 
-use super::model::{Gemma4Model, LlamaModel, Model, ModelConfig, Weight};
+use super::model::{
+    DiffusionGemmaConfig, DiffusionGemmaModel, Gemma4Model, LlamaModel, Model, ModelConfig, Weight,
+};
 use crate::gen2::engine::ExecError;
 use crate::gen2::zoo::ModelFamily;
 
@@ -535,10 +537,239 @@ pub fn build_gemma4_model(model_dir: &Path) -> Result<(Gemma4Model, ModelConfig)
     Ok((model, config))
 }
 
+// ─── DiffusionGemma loader ─────────────────────────────────────────────────
+
+/// Split a (possibly quantized) weight into two halves along its OUTPUT axis
+/// (axis 1 for 3D expert tiles). Used to un-fuse `experts.gate_up_proj`
+/// (`[E, 2*moe, in]`) into separate `gate`/`up` weights.
+///
+/// Quantization packs along the LAST axis (input dim), so slicing the output
+/// rows of `weight`, `scales`, and `biases` in lockstep is valid.
+fn split_fused_qweight(
+    tensors: &HashMap<String, Array>,
+    name: &str,
+    full_dim: usize,
+) -> Option<(Weight, Weight)> {
+    let weight = tensors.get(&format!("{name}.weight"))?;
+    let out = weight.shape()[1];
+    let half = out / 2;
+    let split2 = |arr: &Array| -> (Array, Array) {
+        (arr.index((.., 0..half, ..)), arr.index((.., half..out, ..)))
+    };
+
+    // Quantized path: split weight/scales/biases.
+    if let (Some(scales), Some(biases)) = (
+        tensors.get(&format!("{name}.scales")),
+        tensors.get(&format!("{name}.biases")),
+    ) {
+        let bits = detect_bits(weight.shape(), full_dim)?;
+        let group_size = detect_group_size(scales.shape(), full_dim);
+        let (gw, uw) = split2(weight);
+        let (gs, us) = split2(scales);
+        let (gb, ub) = split2(biases);
+        return Some((
+            Weight::quantized(gw, gs, gb, group_size, bits),
+            Weight::quantized(uw, us, ub, group_size, bits),
+        ));
+    }
+
+    // Plain path.
+    let (gw, uw) = split2(weight);
+    Some((Weight::plain(gw), Weight::plain(uw)))
+}
+
+/// Build a DiffusionGemma model (encoder/decoder block-diffusion Gemma 4).
+///
+/// Weight namespace is `model.decoder.*` / `model.encoder.*` (NOT plain
+/// `model.*`). Vision tower weights (`model.encoder.vision_tower.*`,
+/// `model.encoder.embed_vision.*`) are skipped — this is text-only. Encoder
+/// text weights are tied to the decoder; only the encoder per-layer scalars
+/// (`model.encoder.language_model.layers.N.layer_scalar`) are loaded.
+pub fn build_diffusion_gemma_model(
+    model_dir: &Path,
+) -> Result<(DiffusionGemmaModel, ModelConfig), ExecError> {
+    let raw = load_raw_config(model_dir)?;
+    let dg_config = DiffusionGemmaConfig::from_json(&raw).map_err(|e| {
+        ExecError::Other(anyhow::anyhow!(
+            "failed to parse diffusion_gemma config: {e}"
+        ))
+    })?;
+
+    // Build a ModelConfig too (used by the engine for context-window / meta).
+    let text_cfg_value = raw
+        .get("text_config")
+        .cloned()
+        .unwrap_or_else(|| raw.clone());
+    let model_config: ModelConfig = serde_json::from_value(text_cfg_value).map_err(|e| {
+        ExecError::Other(anyhow::anyhow!(
+            "failed to parse diffusion_gemma text_config into ModelConfig: {e}"
+        ))
+    })?;
+
+    let tensors = load_all_tensors(model_dir)?;
+    let mut model = DiffusionGemmaModel::new(dg_config.clone());
+    let hidden = dg_config.hidden_size;
+
+    // Track whether the core embedding mapped — fail clearly if not.
+    let dec = "model.decoder";
+
+    // ── Embeddings + final norm ──────────────────────────────────────────────
+    model.embed_tokens = load_weight(&tensors, &format!("{dec}.embed_tokens"), hidden);
+    if matches!(model.embed_tokens, Weight::Plain(ref a) if a.shape() == [1, 1]) {
+        return Err(ExecError::Other(anyhow::anyhow!(
+            "diffusion_gemma loader: core weight `{dec}.embed_tokens` did not map \
+             (expected quantized triple or .weight). Refusing to build a broken model."
+        )));
+    }
+    if let Some(w) = tensors.get(&format!("{dec}.norm.weight")) {
+        model.norm.weight = w.clone();
+    } else {
+        return Err(ExecError::Other(anyhow::anyhow!(
+            "diffusion_gemma loader: missing `{dec}.norm.weight`"
+        )));
+    }
+
+    // ── Self-conditioning ────────────────────────────────────────────────────
+    {
+        let sc = &mut model.self_conditioning;
+        let p = format!("{dec}.self_conditioning");
+        if let Some(w) = tensors.get(&format!("{p}.pre_norm.weight")) {
+            sc.pre_norm.weight = w.clone();
+        }
+        sc.gate_proj = load_weight(&tensors, &format!("{p}.gate_proj"), hidden);
+        sc.up_proj = load_weight(&tensors, &format!("{p}.up_proj"), hidden);
+        sc.down_proj = load_weight(
+            &tensors,
+            &format!("{p}.down_proj"),
+            dg_config.intermediate_size,
+        );
+    }
+
+    // ── Encoder per-layer scalars ────────────────────────────────────────────
+    for i in 0..dg_config.num_hidden_layers {
+        let key = format!("model.encoder.language_model.layers.{i}.layer_scalar");
+        if let Some(w) = tensors.get(&key) {
+            model.encoder_layer_scalars[i] = w.clone();
+        }
+    }
+
+    // ── Decoder layers ───────────────────────────────────────────────────────
+    let moe_inter = dg_config.moe_intermediate_size;
+    for i in 0..dg_config.num_hidden_layers {
+        let lp = format!("{dec}.layers.{i}");
+        let layer = &mut model.layers[i];
+        let head_dim = layer.self_attn.head_dim;
+        let num_heads = layer.self_attn.num_heads;
+
+        // Attention.
+        layer.self_attn.q_proj = load_weight(&tensors, &format!("{lp}.self_attn.q_proj"), hidden);
+        layer.self_attn.k_proj = load_weight(&tensors, &format!("{lp}.self_attn.k_proj"), hidden);
+        if layer.self_attn.v_proj.is_some() {
+            layer.self_attn.v_proj = Some(load_weight(
+                &tensors,
+                &format!("{lp}.self_attn.v_proj"),
+                hidden,
+            ));
+        }
+        layer.self_attn.o_proj = load_weight(
+            &tensors,
+            &format!("{lp}.self_attn.o_proj"),
+            num_heads * head_dim,
+        );
+        if let Some(w) = tensors.get(&format!("{lp}.self_attn.q_norm.weight")) {
+            layer.self_attn.q_norm.weight = w.clone();
+        }
+        if let Some(w) = tensors.get(&format!("{lp}.self_attn.k_norm.weight")) {
+            layer.self_attn.k_norm.weight = w.clone();
+        }
+
+        // Dense MLP.
+        layer.mlp.gate_proj = load_weight(&tensors, &format!("{lp}.mlp.gate_proj"), hidden);
+        layer.mlp.up_proj = load_weight(&tensors, &format!("{lp}.mlp.up_proj"), hidden);
+        layer.mlp.down_proj = load_weight(
+            &tensors,
+            &format!("{lp}.mlp.down_proj"),
+            dg_config.intermediate_size,
+        );
+
+        // MoE router.
+        if let Some(w) = tensors.get(&format!("{lp}.router.scale")) {
+            layer.moe.router.scale = w.clone();
+        }
+        layer.moe.router.proj = load_weight(&tensors, &format!("{lp}.router.proj"), hidden);
+        if let Some(w) = tensors.get(&format!("{lp}.router.per_expert_scale")) {
+            layer.moe.router.per_expert_scale = w.clone();
+        }
+
+        // MoE experts: fused `experts.gate_up_proj` (split) + `experts.down_proj`.
+        if let Some((gate, up)) =
+            split_fused_qweight(&tensors, &format!("{lp}.experts.gate_up_proj"), hidden)
+        {
+            layer.moe.experts.gate_proj = gate;
+            layer.moe.experts.up_proj = up;
+        } else {
+            return Err(ExecError::Other(anyhow::anyhow!(
+                "diffusion_gemma loader: missing/unsplittable `{lp}.experts.gate_up_proj`"
+            )));
+        }
+        layer.moe.experts.down_proj =
+            load_weight(&tensors, &format!("{lp}.experts.down_proj"), moe_inter);
+
+        // The 5 feed-forward norms + 2 attention norms + layer scalar.
+        if let Some(w) = tensors.get(&format!("{lp}.input_layernorm.weight")) {
+            layer.input_layernorm.weight = w.clone();
+        }
+        if let Some(w) = tensors.get(&format!("{lp}.post_attention_layernorm.weight")) {
+            layer.post_attention_layernorm.weight = w.clone();
+        }
+        if let Some(w) = tensors.get(&format!("{lp}.pre_feedforward_layernorm.weight")) {
+            layer.pre_feedforward_layernorm.weight = w.clone();
+        }
+        if let Some(w) = tensors.get(&format!("{lp}.post_feedforward_layernorm.weight")) {
+            layer.post_feedforward_layernorm.weight = w.clone();
+        }
+        if let Some(w) = tensors.get(&format!("{lp}.pre_feedforward_layernorm_2.weight")) {
+            layer.pre_feedforward_layernorm_2.weight = w.clone();
+        }
+        if let Some(w) = tensors.get(&format!("{lp}.post_feedforward_layernorm_1.weight")) {
+            layer.post_feedforward_layernorm_1.weight = w.clone();
+        }
+        if let Some(w) = tensors.get(&format!("{lp}.post_feedforward_layernorm_2.weight")) {
+            layer.post_feedforward_layernorm_2.weight = w.clone();
+        }
+        if let Some(w) = tensors.get(&format!("{lp}.layer_scalar")) {
+            layer.layer_scalar = w.clone();
+        }
+    }
+
+    let quantized_count = tensors.keys().filter(|k| k.ends_with(".scales")).count();
+    tracing::info!(
+        "loaded {} tensors ({} quantized groups) for DiffusionGemma {}-layer model",
+        tensors.len(),
+        quantized_count,
+        dg_config.num_hidden_layers
+    );
+
+    Ok((model, model_config))
+}
+
 /// Dispatch: detect model type from config.json and call the right builder.
 pub fn build_any_model(model_dir: &Path) -> Result<(Model, ModelConfig), ExecError> {
     let model_type = read_hf_model_type(model_dir);
     let repo_hint = model_dir.file_name().and_then(|n| n.to_str());
+
+    // DiffusionGemma (block-diffusion Gemma 4): distinct encoder/decoder
+    // architecture, NOT the autoregressive Gemma 4 path. `read_hf_model_type`
+    // surfaces the nested `text_config.model_type = "diffusion_gemma_text"`;
+    // the root model_type is `diffusion_gemma`.
+    if model_type
+        .as_deref()
+        .is_some_and(|t| t.starts_with("diffusion_gemma"))
+    {
+        let (m, c) = build_diffusion_gemma_model(model_dir)?;
+        return Ok((Model::DiffusionGemma(m), c));
+    }
+
     let family = ModelFamily::detect(model_type.as_deref(), repo_hint);
 
     if matches!(

@@ -278,6 +278,12 @@ pub enum ControllerCmd {
         chat_id: String,
         messages: Vec<Message>,
         gen_spec: GenSpec,
+        /// Reasoning-channel policy for the ephemeral session. `Auto`
+        /// (the construction default) preserves the model chat-template's
+        /// own behaviour; `Off` forces a direct answer on thinking-trained
+        /// models (e.g. DiffusionGemma's `enable_thinking=false` empty-thought
+        /// prefill) so the reply is just the answer, no scaffold.
+        thinking: crate::gen2::generation::ThinkingMode,
         tx: SyncSender<ControllerEvent>,
     },
 
@@ -471,11 +477,16 @@ impl InferenceHandle {
                 chat_id,
                 messages,
                 gen_spec,
+                thinking,
                 tx,
             } => handle.dispatch_inference_with_failover(RetryableInference {
                 chat_id,
                 gen_spec,
-                kind: RetryableInferenceKind::SystemInfer { task, messages },
+                kind: RetryableInferenceKind::SystemInfer {
+                    task,
+                    messages,
+                    thinking,
+                },
                 required_model: None,
                 tx,
             }),
@@ -569,6 +580,7 @@ impl InferenceHandle {
             chat_id: chat_id.into(),
             messages,
             gen_spec,
+            thinking: crate::gen2::generation::ThinkingMode::default(),
             tx,
         };
         self.send(cmd).map_err(PioError::generation)?;
@@ -619,6 +631,7 @@ impl InferenceHandle {
             chat_id: chat_id.into(),
             messages,
             gen_spec,
+            thinking: crate::gen2::generation::ThinkingMode::default(),
             tx,
         };
         self.send(cmd).map_err(PioError::generation)?;
@@ -662,6 +675,7 @@ impl InferenceHandle {
         chat_id: impl Into<String>,
         messages: Vec<Message>,
         gen_spec: GenSpec,
+        thinking: crate::gen2::generation::ThinkingMode,
         mut on_token: F,
     ) -> Result<String, crate::error::PioError>
     where
@@ -676,6 +690,7 @@ impl InferenceHandle {
             chat_id: chat_id.into(),
             messages,
             gen_spec,
+            thinking,
             tx,
         };
         self.send(cmd).map_err(PioError::generation)?;

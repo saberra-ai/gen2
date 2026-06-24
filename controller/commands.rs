@@ -474,6 +474,7 @@ fn handle_system_command(state: &mut ControllerState, cmd: ControllerCmd) -> Con
             chat_id,
             messages,
             gen_spec,
+            thinking,
             tx,
         } => {
             start_ephemeral(
@@ -484,6 +485,7 @@ fn handle_system_command(state: &mut ControllerState, cmd: ControllerCmd) -> Con
                 task.suffix(),
                 messages,
                 gen_spec,
+                thinking,
                 state.metrics.clone(),
                 tx,
             );

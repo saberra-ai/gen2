@@ -128,6 +128,18 @@ fn build_bundle_from_dir(model_dir: &Path) -> Result<ModelBundle, ExecError> {
     let model_type = super::loader::read_hf_model_type(model_dir);
     let (model, config) = super::loader::build_any_model(model_dir)?;
 
+    // DiffusionGemma denoising params live in `config.json`'s `generation_config`.
+    // Parse them once at load time so the session/puller can drive the denoising
+    // loop without re-reading the file. `None` for autoregressive models.
+    let diffusion_params = if model.is_diffusion() {
+        std::fs::read_to_string(model_dir.join("config.json"))
+            .ok()
+            .and_then(|s| serde_json::from_str::<serde_json::Value>(&s).ok())
+            .map(|raw| super::model::DiffusionGenParams::from_json(&raw))
+    } else {
+        None
+    };
+
     let head_dim = config.head_dim();
     let max_seq = config.max_position_embeddings;
     let rope_theta = config.rope_theta;
@@ -172,6 +184,7 @@ fn build_bundle_from_dir(model_dir: &Path) -> Result<ModelBundle, ExecError> {
         chat_template_str,
         bos_str,
         eos_str,
+        diffusion_params,
     })
 }
 
