@@ -221,6 +221,33 @@ pub struct ArPuller {
     pending_aux: Option<Vec<mlx_rs::Array>>,
 
     state_slot: Weak<Mutex<Option<DecodeState>>>,
+
+    /// Stage-B fast-path pipeline state. `Some` once the pipelined GPU-argmax
+    /// decode loop has been entered (see [`ArPuller::try_step_fast_pipeline`]);
+    /// holds the LAZY token id whose host work (EOS/decode/emit) we still owe.
+    /// The forward+argmax for the FOLLOWING token has already been built and
+    /// `async_eval`'d before we sync this one — mirroring generate_step's
+    /// double-buffer (`generate.py:457-469`). `None` ⇒ not pipelining (flag
+    /// off, non-greedy, grammar, aux, or `PIO_MLX_PIPELINE=0`).
+    fast_pipe: Option<FastPipe>,
+}
+
+/// Double-buffered lazy decode state for the Stage-B pipeline. Mirrors
+/// generate_step's `y` / `next_y` pair (`generate.py:457-469`): we hold token
+/// `y` (lazy, not yet synced) while step N+1's forward consuming `y` has
+/// already been dispatched and `async_eval`'d.
+struct FastPipe {
+    /// The lazy `[1]` int32 id of token N — the one we still owe host work for.
+    y: mlx_rs::Array,
+    /// True once step N+1's `forward(y) → logits → argmax → next_y` has been
+    /// built + `async_eval`'d. When set, `next` holds `(next_y, next_logits)`.
+    /// Only false for the very first decode token (N=0), whose N+1 hasn't been
+    /// scheduled yet at first entry.
+    has_next: bool,
+    /// `(next_y, _next_logits)` for token N+1, already dispatched on GPU. The
+    /// logits are kept only to keep the eval alive / for parity with mlx-lm's
+    /// `logprobs` (unused for greedy emit).
+    next_y: Option<mlx_rs::Array>,
 }
 
 impl ArPuller {
@@ -349,6 +376,7 @@ impl ArPuller {
             aux_layer_ids: predictor_aux_layer_ids,
             pending_aux: None,
             state_slot,
+            fast_pipe: None,
         }
     }
 
@@ -418,6 +446,291 @@ impl ArPuller {
         }
     }
 
+    /// True when this step may run the Stage-B pipelined GPU-argmax decode.
+    /// Requires the MLX fast path AND a pure greedy argmax with nothing that
+    /// depends on host-side state or per-position masking:
+    ///   - `bundle.model.is_fast()` (FAST PATH ONLY),
+    ///   - greedy argmax sampler (no penalties — see `is_greedy_argmax`),
+    ///   - no grammar (mask-per-step is CPU work),
+    ///   - no aux hidden states (EAGLE-3 needs them stashed per step),
+    ///   - `PIO_MLX_PIPELINE=1` (OPT-IN — see below).
+    ///
+    /// Speculative drafting is bypassed here: the pipeline is single-token but
+    /// samples the next token on-GPU (`mlx_rs::ops::argmax` on the CPU stream)
+    /// and, with `PIO_MLX_PIPELINE_ASYNC=1`, hides the per-token host sync
+    /// behind the next forward (mlx-lm's `generate_step` double-buffer).
+    ///
+    /// WHY OPT-IN (not default): the async double-buffer (`generate.py:457-469`)
+    /// is the real throughput win (~+20% on this machine: 24.9 → 29.9 tok/s),
+    /// but leaving the decode chain lazy across steps lets MLX fuse the
+    /// multi-step graph in a reduction order that differs from the serial
+    /// path's per-token-evaluated order. On greedy near-ties (~3 / 1000 tokens)
+    /// the winner flips, and on a multi-turn chat that single flip snowballs
+    /// (verified: the async chain stops recalling user context on turns
+    /// 5/6/11). That's a *valid* greedy trajectory — mlx-lm's own `mx.argmax`
+    /// async loop has the same property — but it is NOT byte-identical to the
+    /// frozen Stage-A goldens, so it cannot be the default. Flag OFF / default
+    /// fast path keep the unchanged serial CPU-sampling decode (Stage A), which
+    /// the goldens lock. Opt into the pipeline with `PIO_MLX_PIPELINE=1`.
+    fn fast_pipeline_eligible(&self) -> bool {
+        if !self.bundle.model.is_fast() {
+            return false;
+        }
+        if !self.sampler.is_greedy_argmax() {
+            return false;
+        }
+        if self.grammar.is_some() || !self.aux_layer_ids.is_empty() {
+            return false;
+        }
+        std::env::var("PIO_MLX_PIPELINE")
+            .map(|v| v == "1" || v.eq_ignore_ascii_case("on"))
+            .unwrap_or(false)
+    }
+
+    /// Stage-B pipelined GPU-argmax decode step (FAST PATH ONLY).
+    ///
+    /// Faithfully mirrors mlx-lm's `generate_step` loop (`generate.py:455-470`),
+    /// adapted to the puller's one-token-per-call shape via the [`FastPipe`]
+    /// double-buffer:
+    ///
+    /// generate_step does, per iteration:
+    ///   `next_y, _ = _step(y)`            # build forward(y)+argmax for N+1
+    ///   `mx.async_eval(next_y, ...)`      # dispatch it, don't sync
+    ///   `yield y.item()`                  # NOW sync token N to host + emit
+    ///   `y = next_y`
+    ///
+    /// So step N+1's forward (consuming the LAZY token y from step N) is built
+    /// and dispatched BEFORE token N is synced — the host work for N overlaps
+    /// N+1's GPU compute. `_step` itself samples on GPU (argmax) and returns a
+    /// lazy token (`generate.py:421-422`), never `as_slice`-ing the 262k vocab.
+    ///
+    /// Returns `true` once it has handled the step (emitted a token or set a
+    /// terminal). The first call bootstraps `y` from the prefill's pending
+    /// logits.
+    fn step_once_fast_pipeline(&mut self) -> bool {
+        // Bootstrap: turn the prefill (or first) pending logits into the first
+        // lazy token y (= token N=0), via GPU argmax. No host sync yet.
+        if self.fast_pipe.is_none() {
+            let state = match self.state.as_mut() {
+                Some(s) => s,
+                None => {
+                    self.done = true;
+                    self.filter
+                        .push_err(ExecError::InvalidArg("state already consumed"));
+                    return true;
+                }
+            };
+            let Some(pending) = state.pending_logits.take() else {
+                // No pending logits to seed from — let the serial path handle
+                // this (shouldn't happen on the decode entry, but stay safe).
+                return false;
+            };
+            // Greedy argmax over the last-position logits → lazy [1] int32
+            // token (CPU-stream argmax — see `Sampler::argmax_gpu`). pending is
+            // [1, 1, vocab]; argmax reduces the vocab axis.
+            let y = self.sampler.argmax_gpu(&pending);
+            mlx_rs::transforms::async_eval([&y]).ok();
+            self.fast_pipe = Some(FastPipe {
+                y,
+                has_next: false,
+                next_y: None,
+            });
+        }
+
+        // 1) Build + async_eval step N+1 BEFORE syncing token N — but only if
+        //    we have budget left for another token. This is generate_step's
+        //    `if n != max_tokens: next_y = _step(y); async_eval(next_y)`
+        //    (`generate.py:458-460`).
+        let want_next = self
+            .max_tokens
+            .map(|m| self.produced + 1 < m)
+            .unwrap_or(true);
+        let pipe_has_next = self.fast_pipe.as_ref().map(|p| p.has_next).unwrap_or(false);
+        // `built_next` ⇒ this call ran `fast_build_next`, which wrote token N to
+        // the KV cache and advanced `cur_pos`/`cache_len` by one. Needed for the
+        // EOS rollback below (the serial path never caches the EOS token).
+        let built_next = want_next && !pipe_has_next;
+        if built_next {
+            if let Err(e) = self.fast_build_next() {
+                self.done = true;
+                self.filter.push_err(e);
+                return true;
+            }
+        }
+
+        // 2) Sync token N to host (single scalar `.item()`, NOT a 262k
+        //    as_slice) and do all host work — EOS / stop / loop / decode /
+        //    emit — while N+1 is already running on GPU.
+        let token_id = {
+            let pipe = self.fast_pipe.as_ref().expect("fast_pipe set above");
+            // Single-scalar host sync — generate_step's `y.item()`
+            // (`generate.py:466`). The lazy token was async_eval'd when it was
+            // produced, so this just reads the already-computed scalar.
+            pipe.y.item::<i32>() as u32
+        };
+
+        // Record the committed token. The KV-cache offset advance for this
+        // token already happened inside `fast_build_next` (the forward that
+        // consumed `y` wrote it at `cur_pos` and bumped the offsets) — see the
+        // invariant there. So here we only set `last_token`.
+        if let Some(state) = self.state.as_mut() {
+            state.last_token = token_id;
+        }
+
+        // EOS / stop-id check.
+        if self.bundle.tokenizer.stop_ids().contains(&token_id) {
+            // The serial path never writes the EOS token to the KV cache (it
+            // returns before its `cur_pos += 1`). Our pipeline built N+1
+            // eagerly for overlap, which advanced `cur_pos`/`cache_len` for
+            // this EOS token in `fast_build_next`. Roll that one position back
+            // so the post-turn `cur_pos` (= prefix_len for next turn's
+            // delta-prefill) is byte-identical to the serial path. The phantom
+            // cache write past `cur_pos` is harmless — next turn's delta
+            // forward overwrites it from `prefix_len`.
+            if built_next {
+                if let Some(state) = self.state.as_mut() {
+                    state.cur_pos = state.cur_pos.saturating_sub(1);
+                    state.cache_len = state.cache_len.saturating_sub(1);
+                }
+            }
+            let stats = self.stats_now();
+            self.hooks.emit(HookEvent::FinalStats {
+                session_id: self.session_id,
+                stats,
+            });
+            self.done = true;
+            self.filter.finalize(TokenEvent::Eos);
+            return true;
+        }
+
+        // Loop detectors operate on the observed-token window.
+        self.sampler.observe(token_id);
+        self.predictor.observe(token_id);
+        if self.sampler.is_in_cycle(48) || self.sampler.is_in_token_loop(16, 2) {
+            // Same rollback rationale as the EOS branch: serial finalizes on a
+            // loop hit before committing this token's cache position.
+            if built_next {
+                if let Some(state) = self.state.as_mut() {
+                    state.cur_pos = state.cur_pos.saturating_sub(1);
+                    state.cache_len = state.cache_len.saturating_sub(1);
+                }
+            }
+            let stats = self.stats_now();
+            self.hooks.emit(HookEvent::FinalStats {
+                session_id: self.session_id,
+                stats,
+            });
+            self.done = true;
+            self.filter.finalize(TokenEvent::Eos);
+            return true;
+        }
+
+        let text = self
+            .bundle
+            .tokenizer
+            .decode(&[token_id])
+            .unwrap_or_default();
+
+        if self.first_token_us.is_none() {
+            self.first_token_us = Some(now_us().saturating_sub(self.start_us));
+        }
+        self.produced += 1;
+
+        self.hooks.emit(HookEvent::DecodeStep {
+            session_id: self.session_id,
+            token_id,
+            text_len: text.len(),
+        });
+
+        // 3) Swap buffers: y = next_y (generate.py:469). If there was no next
+        //    (budget exhausted), the pipeline is drained — the next call hits
+        //    the max_tokens guard in `step_once` and finalizes.
+        if let Some(pipe) = self.fast_pipe.as_mut() {
+            if let Some(next_y) = pipe.next_y.take() {
+                pipe.y = next_y;
+                pipe.has_next = false;
+            }
+        }
+
+        self.filter.push_token(token_id, text);
+        true
+    }
+
+    /// Build step N+1: run the fast forward consuming the LAZY token `y`
+    /// (embedding gather on the lazy id — never synced to host), GPU-argmax the
+    /// last-position logits into `next_y`, and `async_eval` it. Mirrors
+    /// `next_y, _ = _step(y); mx.async_eval(next_y, ...)` (`generate.py:459-460`).
+    fn fast_build_next(&mut self) -> Result<(), ExecError> {
+        let bundle = &self.bundle;
+        let (y, pos) = {
+            let pipe = self.fast_pipe.as_ref().expect("fast_pipe set");
+            let state = self.state.as_ref().expect("state present");
+            (pipe.y.clone(), state.cur_pos)
+        };
+
+        // Forward consuming the token id → last-position logits [1,1,vocab].
+        // The cache is advanced by one position inside the fast forward (step
+        // buffer write at `pos`).
+        //
+        // The pipeline (opt-in via PIO_MLX_PIPELINE=1) keeps the decode chain
+        // LAZY by default: `y` flows straight into the next forward's embedding
+        // gather, and the per-token host sync is hidden behind that forward —
+        // the mlx-lm `generate_step` double-buffer that delivers the throughput
+        // win. This intentionally accepts the near-tie trajectory shift vs the
+        // synchronous Stage-A goldens (see `fast_pipeline_eligible`).
+        //
+        // `PIO_MLX_PIPELINE_ASYNC=0` forces a per-step `.item()` sync instead:
+        // it materializes `y` to a host scalar (forcing the prior forward —
+        // incl. its KV writes — to evaluate in the serial path's canonical
+        // reduction order), yielding Stage-A-identical greedy tokens at the cost
+        // of the overlap (≈ Stage A speed). Useful for a deterministic-vs-serial
+        // A/B without flipping the whole fast flag.
+        let async_overlap = std::env::var("PIO_MLX_PIPELINE_ASYNC")
+            .map(|v| !(v == "0" || v.eq_ignore_ascii_case("off")))
+            .unwrap_or(true);
+        let y_in = if async_overlap {
+            y.clone()
+        } else {
+            let t = y.item::<i32>();
+            mlx_rs::Array::from_slice(&[t], &[1])
+        };
+        let state = self.state.as_mut().expect("state present");
+        let result = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+            bundle
+                .model
+                .forward_fast_last_logits_from_ids(&y_in, 1, pos, &mut state.cache)
+                .expect("fast path returns logits")
+        }));
+        let logits = match result {
+            Ok(l) => l,
+            Err(e) => return Err(ExecError::OutOfMemory(panic_msg(e))),
+        };
+
+        // Greedy argmax (+ eot bias) on the CPU stream → lazy next token; see
+        // `Sampler::argmax_gpu` for why the CPU-stream argmax is required for
+        // Stage-A-identical tokens. We async_eval the token + logits so the
+        // forward's cache writes are materialized and the next step's embedding
+        // gather can start while we sync this step's token to host — the
+        // pipeline overlap (`generate.py:459-460`).
+        let next_y = self.sampler.argmax_gpu(&logits);
+        mlx_rs::transforms::async_eval([&next_y, &logits]).ok();
+
+        // INVARIANT: each `fast_build_next` ran exactly one forward that wrote
+        // the token `y` at position `cur_pos`. Advance the offsets by one now —
+        // byte-identical to the serial path's `cur_pos += 1; cache_len += 1;
+        // maybe_evict()` for that token (puller serial path, ~line 774-776).
+        if let Some(state) = self.state.as_mut() {
+            state.cur_pos += 1;
+            state.cache_len += 1;
+            state.maybe_evict();
+        }
+
+        let pipe = self.fast_pipe.as_mut().expect("fast_pipe set");
+        pipe.next_y = Some(next_y);
+        pipe.has_next = true;
+        Ok(())
+    }
+
     /// Run a single decode step — drives forward pass, samples, routes
     /// emitted tokens through `self.filter`. Sets `self.done` on terminal
     /// conditions and pushes the appropriate terminal event into the
@@ -450,6 +763,15 @@ impl ArPuller {
             });
             self.done = true;
             self.filter.finalize(TokenEvent::Eos);
+            return;
+        }
+
+        // ── Stage-B fast pipeline (FAST PATH ONLY) ───────────────────────────
+        // When the MLX fast path is active AND this step is a pure greedy
+        // argmax (no grammar / penalties / aux), run the pipelined GPU-argmax
+        // + async_eval decode loop instead of the serial CPU-sampling path.
+        // Everything below this point is the unchanged default/serial path.
+        if self.fast_pipeline_eligible() && self.step_once_fast_pipeline() {
             return;
         }
 

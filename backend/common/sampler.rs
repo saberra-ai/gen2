@@ -376,6 +376,35 @@ impl Sampler {
         }
     }
 
+    /// True when this step's sampling reduces to a pure `argmax` over
+    /// `logits (+ eot_bias)` — i.e. greedy with no distribution-shaping or
+    /// history-dependent term active. This is the GPU-argmax eligibility
+    /// gate for the MLX fast path (Stage B): the only logit modification
+    /// allowed is the fixed `eot_bias` add (a constant sparse vector that
+    /// has no dependence on the `recent` window), which the GPU sampler
+    /// reproduces exactly. `temperature == 0.0` makes `sample_from_logits`
+    /// short-circuit to `argmax(penalized)` (see line ~407), but we ALSO
+    /// require all the pre-argmax penalty terms to be inactive so the GPU
+    /// path's argmax operates on the same values:
+    ///   - repetition / presence / DRY penalties off (they mutate `penalized`
+    ///     from the `recent` window),
+    ///   - top_k / top_p / min_p / XTC are bypassed at T==0 anyway, but we
+    ///     don't rely on that — they're irrelevant once we argmax.
+    pub fn is_greedy_argmax(&self) -> bool {
+        self.temperature == 0.0
+            && self.repetition_penalty.is_none()
+            && self.presence_penalty.is_none()
+            && self.dry.is_none()
+    }
+
+    /// The active end-of-turn logit bias, if any: `(token_ids, bias)`. The
+    /// GPU-argmax fast path reads this to apply the identical additive bias
+    /// the CPU `sample_from_logits` would (step 4 of the pipeline) before
+    /// taking `argmax`.
+    pub fn eot_bias(&self) -> Option<(&[u32], f32)> {
+        self.eot_bias.as_ref().map(|(ids, b)| (ids.as_slice(), *b))
+    }
+
     /// Sample a token ID from a logits slice of shape (vocab_size,).
     ///
     /// Pipeline (llama.cpp order of operations):

@@ -188,12 +188,20 @@ impl Gemma4Attention {
         let nkv = self.num_kv_heads as i32;
         let hd = self.head_dim as i32;
 
+        let prof = super::profile::enabled();
+
         // Q: project → reshape → norm → partial RoPE → transpose to [B, H, S, D]
         let q = self.q_proj.matmul_transpose(x);
         let q = q.reshape(&[batch, seq, nh, hd]).expect("mlx op");
+        if prof {
+            super::profile::prof_eval("attn.qkv_proj", &[&q]);
+        }
         let q = self.q_norm.forward(&q);
         let q = q.transpose_axes(&[0, 2, 1, 3]).expect("mlx op");
         let q = rope.forward(&q, offset);
+        if prof {
+            super::profile::prof_eval("attn.qknorm_rope", &[&q]);
+        }
 
         // K, V: either compute fresh (non-shared) or borrow from shared partner's cache
         let (k, v) = if let Some((ck, cv)) = shared_kv {
@@ -214,6 +222,9 @@ impl Gemma4Attention {
             let k = k.transpose_axes(&[0, 2, 1, 3]).expect("mlx op");
             let v = v.transpose_axes(&[0, 2, 1, 3]).expect("mlx op");
             let k = rope.forward(&k, offset);
+            if prof {
+                super::profile::prof_eval("attn.qkv_proj", &[&k, &v]);
+            }
 
             // Append to KV cache along the sequence axis
             let (k, v) = if let Some((prev_k, prev_v)) = cache.take() {
@@ -223,6 +234,9 @@ impl Gemma4Attention {
             } else {
                 (k, v)
             };
+            if prof {
+                super::profile::prof_eval("attn.kv_concat", &[&k, &v]);
+            }
 
             // Sliding-window truncation: drop oldest frames beyond the window
             let (k, v) = if let Some(w) = self.sliding_window {
@@ -273,12 +287,83 @@ impl Gemma4Attention {
             let attn_w = mlx_rs::ops::softmax_axes(&scores, &[-1], None).expect("mlx op");
             attn_w.matmul(&v).expect("mlx op")
         };
+        if prof {
+            super::profile::prof_eval("attn.sdpa", &[&out]);
+        }
 
         // Merge heads: [B, H, S, D] → [B, S, H·D]
         let out = out.transpose_axes(&[0, 2, 1, 3]).expect("mlx op");
         let out = out.reshape(&[batch, seq, nh * hd]).expect("mlx op");
 
-        self.o_proj.matmul_transpose(&out)
+        let out = self.o_proj.matmul_transpose(&out);
+        if prof {
+            super::profile::prof_eval("attn.o_proj", &[&out]);
+        }
+        out
+    }
+
+    /// Fast forward (`PIO_MLX_FAST`) — bf16 activations + fused SDPA (native
+    /// GQA, NO repeat_kv) + step-buffer KV cache. Mirrors `gemma4_text.py`
+    /// `Attention.__call__` (~line 226): q_norm/k_norm/v_norm via fast RMSNorm,
+    /// partial RoPE, `scaled_dot_product_attention(..., scale=1.0)` (:202, :262).
+    ///
+    /// `x` is expected to already be bf16. Returns bf16.
+    /// Returns `(attn_output, (k_view, v_view))` — the second element is the
+    /// filled KV view this layer produced, which the model threads to any
+    /// KV-shared partner layer (mirrors mlx-lm `intermediates`).
+    pub fn forward_fast(
+        &self,
+        x: &Array,
+        rope: &RotaryEmbedding,
+        cache: &mut Option<(Array, Array)>,
+        offset: usize,
+        shared_kv: Option<&(Array, Array)>,
+    ) -> (Array, (Array, Array)) {
+        use super::gemma4_fast::{fast_sdpa, step_buffer_update};
+        let shape = x.shape();
+        let batch = shape[0];
+        let seq = shape[1];
+        let nh = self.num_heads as i32;
+        let nkv = self.num_kv_heads as i32;
+        let hd = self.head_dim as i32;
+
+        // Q: project → reshape → q_norm (fast) → transpose → partial RoPE.
+        let q = self.q_proj.matmul_transpose(x);
+        let q = q.reshape(&[batch, seq, nh, hd]).expect("mlx op");
+        let q = self.q_norm.forward_fast(&q);
+        let q = q.transpose_axes(&[0, 2, 1, 3]).expect("mlx op");
+        let q = rope.forward_fast(&q, offset);
+
+        // K, V: fresh (non-shared) or borrowed from the shared partner's cache.
+        let (k, v) = if let Some((ck, cv)) = shared_kv {
+            (ck.clone(), cv.clone())
+        } else {
+            let k = self.k_proj.matmul_transpose(x);
+            let v = match &self.v_proj {
+                Some(v_w) => v_w.matmul_transpose(x),
+                None => k.clone(),
+            };
+            let k = k.reshape(&[batch, seq, nkv, hd]).expect("mlx op");
+            let v = v.reshape(&[batch, seq, nkv, hd]).expect("mlx op");
+            let k = self.k_norm.forward_fast(&k);
+            let v = super::norm::rms_norm_no_scale_fast(&v, self.v_norm.eps);
+            let k = k.transpose_axes(&[0, 2, 1, 3]).expect("mlx op");
+            let v = v.transpose_axes(&[0, 2, 1, 3]).expect("mlx op");
+            let k = rope.forward_fast(&k, offset);
+
+            // Step-buffer cache update + sliding-window truncation
+            // (cache.py KVCache.update_and_fetch). `offset` is the true fill
+            // before this chunk (session tracks it as cur_pos).
+            step_buffer_update(cache, &k, &v, offset, self.sliding_window)
+        };
+
+        // Fused SDPA — native GQA (no repeat_kv), scale=1.0 (Gemma 4).
+        let out = fast_sdpa(&q, &k, &v, seq as usize, self.sliding_window);
+
+        let out = out.transpose_axes(&[0, 2, 1, 3]).expect("mlx op");
+        let out = out.reshape(&[batch, seq, nh * hd]).expect("mlx op");
+        let out = self.o_proj.matmul_transpose(&out);
+        (out, (k, v))
     }
 }
 
@@ -462,14 +547,24 @@ impl Gemma4TransformerBlock {
         let x = x.add(&h).expect("mlx op");
 
         // Feed-forward: dense path, plus MoE branch (summed) when enabled.
+        let prof = super::profile::enabled();
         let h = if let Some(moe) = &self.moe {
             let h1 = self.pre_feedforward_layernorm.forward(&x);
             let h1 = self.ffn.forward(&h1);
             let h1 = moe.post_feedforward_layernorm_1.forward(&h1);
+            if prof {
+                super::profile::prof_eval("ffn.dense", &[&h1]);
+            }
             let (idx, w) = moe.router.forward(&x);
+            if prof {
+                super::profile::prof_eval("moe.router", &[&idx, &w]);
+            }
             let h2 = moe.pre_feedforward_layernorm_2.forward(&x);
             let h2 = moe.experts.forward(&h2, &idx, &w);
             let h2 = moe.post_feedforward_layernorm_2.forward(&h2);
+            if prof {
+                super::profile::prof_eval("moe.experts", &[&h2]);
+            }
             h1.add(&h2).expect("mlx op")
         } else {
             let h = self.pre_feedforward_layernorm.forward(&x);
@@ -489,6 +584,61 @@ impl Gemma4TransformerBlock {
 
         // Layer scalar (broadcast over [batch, seq, hidden])
         x.multiply(&self.layer_scalar).expect("mlx op")
+    }
+
+    /// Fast (`PIO_MLX_FAST`) block forward — same structure as `forward` but
+    /// bf16 throughout with fast RMSNorms + fused-SDPA attention. Mirrors
+    /// `DecoderLayer.__call__` (`gemma4_text.py:324`). `x` is bf16; returns bf16.
+    #[allow(clippy::too_many_arguments)]
+    pub fn forward_fast(
+        &self,
+        x: &Array,
+        rope: &RotaryEmbedding,
+        cache: &mut Option<(Array, Array)>,
+        offset: usize,
+        shared_kv: Option<&(Array, Array)>,
+        per_layer_input: Option<&Array>,
+    ) -> (Array, (Array, Array)) {
+        // Pre-norm → attention → post-attn-norm → residual
+        let h = self.input_layernorm.forward_fast(x);
+        let (h, kv_view) = self
+            .attention
+            .forward_fast(&h, rope, cache, offset, shared_kv);
+        let h = self.post_attention_layernorm.forward_fast(&h);
+        let x = x.add(&h).expect("mlx op");
+
+        // Feed-forward: dense path, plus MoE branch (summed) when enabled.
+        let h = if let Some(moe) = &self.moe {
+            let h1 = self.pre_feedforward_layernorm.forward_fast(&x);
+            let h1 = self.ffn.forward(&h1);
+            let h1 = moe.post_feedforward_layernorm_1.forward_fast(&h1);
+            let (idx, w) = moe.router.forward(&x);
+            let h2 = moe.pre_feedforward_layernorm_2.forward_fast(&x);
+            let h2 = moe.experts.forward(&h2, &idx, &w);
+            let h2 = moe.post_feedforward_layernorm_2.forward_fast(&h2);
+            h1.add(&h2).expect("mlx op")
+        } else {
+            let h = self.pre_feedforward_layernorm.forward_fast(&x);
+            self.ffn.forward(&h)
+        };
+        let h = self.post_feedforward_layernorm.forward_fast(&h);
+        // Keep the residual stream in bf16: the dense FFN / MoE experts may
+        // dequantize to f16 and promote bf16×f16 matmuls to f32 (MLX promotion).
+        // Re-cast so the next block sees bf16 (mlx-lm runs the whole trunk bf16).
+        let h = super::gemma4_fast::to_bf16(&h);
+        let x = x.add(&h).expect("mlx op");
+
+        // Per-layer input contribution (skipped on non-PLE variants — 26B).
+        let x = match per_layer_input {
+            Some(pl) => {
+                let pli = self.per_layer_input.forward(&x, pl);
+                x.add(&pli).expect("mlx op")
+            }
+            None => x,
+        };
+
+        let x = x.multiply(&self.layer_scalar).expect("mlx op");
+        (x, kv_view)
     }
 }
 
@@ -526,6 +676,23 @@ pub struct Gemma4Model {
     pub cache_slot: Vec<usize>,
     final_logit_softcapping: Option<f32>,
     hidden_per_layer_input: usize,
+    /// `PIO_MLX_FAST` flag, read **once** at construction (mirrors the
+    /// `PIO_MLX_DENOISING_STEPS` env convention in session.rs). When true,
+    /// `forward` / `forward_all` route through the bf16 + fused-SDPA +
+    /// step-buffer fast path; when false the default f32 path is byte-identical
+    /// to before. A single binary supports both, selected at runtime.
+    pub fast: bool,
+}
+
+/// Read the `PIO_MLX_FAST` runtime flag. `"1"` / `"on"` (case-insensitive)
+/// enable the fast path; unset / `"0"` / anything else keep the default path.
+pub fn fast_flag_enabled() -> bool {
+    std::env::var("PIO_MLX_FAST")
+        .map(|v| {
+            let v = v.trim().to_ascii_lowercase();
+            v == "1" || v == "on" || v == "true" || v == "yes"
+        })
+        .unwrap_or(false)
 }
 
 impl Gemma4Model {
@@ -616,6 +783,7 @@ impl Gemma4Model {
             cache_slot,
             final_logit_softcapping: config.final_logit_softcapping,
             hidden_per_layer_input: hpl,
+            fast: fast_flag_enabled(),
         }
     }
 
@@ -641,6 +809,9 @@ impl Gemma4Model {
     /// token per position in a single batched forward pass, so accepted drafts
     /// amortize the decode cost.
     pub fn forward_all(&self, tokens: &[u32], offset: usize, cache: &mut KvCache) -> Array {
+        if self.fast {
+            return self.forward_all_fast(tokens, offset, cache);
+        }
         let seq_len = tokens.len();
 
         let idx: Vec<i32> = tokens.iter().map(|&t| t as i32).collect();
@@ -652,6 +823,7 @@ impl Gemma4Model {
         let x0 = x0.multiply(&scale).expect("mlx op");
         let hidden = self.layers[0].input_layernorm.weight.shape()[0];
         let mut x = x0.reshape(&[1, seq_len as i32, hidden]).expect("mlx op");
+        super::profile::prof_eval("embedding", &[&x]);
 
         // ── Per-layer inputs (PLE — Gemma 3n / Gemma 4 E-series only) ──────
         // Mirrors `if self.hidden_size_per_layer_input:` in the Python golden
@@ -681,7 +853,9 @@ impl Gemma4Model {
             // (c) (proj + embed) * (1/sqrt(2))
             let mixed = per_layer_proj.add(&per_layer_embed).expect("mlx op");
             let input_scale = Array::from_f32(self.per_layer_input_scale);
-            Some(mixed.multiply(&input_scale).expect("mlx op"))
+            let pl = mixed.multiply(&input_scale).expect("mlx op");
+            super::profile::prof_eval("ple", &[&pl]);
+            Some(pl)
         } else {
             None
         };
@@ -726,11 +900,137 @@ impl Gemma4Model {
 
         // Final norm
         x = self.norm.forward(&x);
+        super::profile::prof_eval("final_norm", &[&x]);
 
         // LM head (weights tied to embed_tokens)
         let logits = self.embed_tokens.matmul_transpose(&x);
 
         // Final logit softcapping: tanh(x / cap) * cap
+        let out = if let Some(cap) = self.final_logit_softcapping {
+            let cap_arr = Array::from_f32(cap);
+            let scaled = logits.divide(&cap_arr).expect("mlx op");
+            let tanhed = mlx_rs::ops::tanh(&scaled).expect("mlx op");
+            tanhed.multiply(&cap_arr).expect("mlx op")
+        } else {
+            logits
+        };
+        super::profile::prof_eval("lm_head+softcap", &[&out]);
+        out
+    }
+
+    /// Fast (`PIO_MLX_FAST`) forward returning logits for every position.
+    /// Mirrors `Gemma4TextModel.__call__` + `Model.__call__`
+    /// (`gemma4_text.py:508` / `:580`) in bf16:
+    ///   - embedding × embed_scale, cast to **bf16** (`:518-519`),
+    ///   - PLE pipeline in bf16 when present (26B has none),
+    ///   - each block via `forward_fast` (fused SDPA + step buffer),
+    ///   - final RMSNorm (fast) + tied lm_head + logit softcapping (`:597`).
+    ///
+    /// The KV cache slots hold bf16 step buffers (see `gemma4_fast`). `offset`
+    /// is the true fill before this chunk — the session tracks it as `cur_pos`.
+    pub fn forward_all_fast(&self, tokens: &[u32], offset: usize, cache: &mut KvCache) -> Array {
+        let seq_len = tokens.len();
+        let idx: Vec<i32> = tokens.iter().map(|&t| t as i32).collect();
+        let token_indices = Array::from_slice(&idx, &[seq_len as i32]);
+        self.forward_all_fast_from_ids(&token_indices, seq_len, offset, cache)
+    }
+
+    /// Fast (`PIO_MLX_FAST`) forward whose input is a **lazy** `[seq]` int32
+    /// token-id `Array` rather than a host `&[u32]`. This is the Stage-B
+    /// pipelining entry: the next token sampled on-GPU (lazy) is fed straight
+    /// in here as the embedding-gather index, so the decode chain never syncs
+    /// to host between steps — mirroring mlx-lm's `model(y[None])` where `y` is
+    /// the lazy argmax token (`generate.py:459`).
+    ///
+    /// `seq_len` must equal the token array's length (caller-known; for the
+    /// per-token decode step it is `1`). Returns logits for every position,
+    /// `[1, seq_len, vocab]`, same as [`Self::forward_all_fast`].
+    pub fn forward_all_fast_from_ids(
+        &self,
+        token_indices: &Array,
+        seq_len: usize,
+        offset: usize,
+        cache: &mut KvCache,
+    ) -> Array {
+        // Embedding × sqrt(hidden), then cast to bf16 for the whole trunk.
+        let x0 = self.embed_tokens.embedding_lookup(token_indices);
+        let scale = Array::from_f32(self.embed_scale);
+        let x0 = x0.multiply(&scale).expect("mlx op");
+        let hidden = self.layers[0].input_layernorm.weight.shape()[0];
+        let x0 = x0.reshape(&[1, seq_len as i32, hidden]).expect("mlx op");
+        let mut x = super::gemma4_fast::to_bf16(&x0);
+
+        // ── Per-layer inputs (PLE — E-series only; 26B skips this) ──────
+        let n_layers = self.layers.len() as i32;
+        let hpl = self.hidden_per_layer_input as i32;
+        let per_layer: Option<Array> = if hpl > 0 {
+            let per_layer_embed = self.embed_tokens_per_layer.embedding_lookup(token_indices);
+            let ptl_scale = Array::from_f32(self.embed_tokens_per_layer_scale);
+            let per_layer_embed = per_layer_embed.multiply(&ptl_scale).expect("mlx op");
+            let per_layer_embed = super::gemma4_fast::to_bf16(&per_layer_embed);
+            let per_layer_embed = per_layer_embed
+                .reshape(&[1, seq_len as i32, n_layers, hpl])
+                .expect("mlx op");
+            let per_layer_proj = self.per_layer_model_projection.matmul_transpose(&x);
+            let proj_scale = Array::from_f32(self.per_layer_projection_scale);
+            let per_layer_proj = per_layer_proj.multiply(&proj_scale).expect("mlx op");
+            let per_layer_proj = per_layer_proj
+                .reshape(&[1, seq_len as i32, n_layers, hpl])
+                .expect("mlx op");
+            let per_layer_proj = self.per_layer_projection_norm.forward_fast(&per_layer_proj);
+            let mixed = per_layer_proj.add(&per_layer_embed).expect("mlx op");
+            let input_scale = Array::from_f32(self.per_layer_input_scale);
+            Some(super::gemma4_fast::to_bf16(
+                &mixed.multiply(&input_scale).expect("mlx op"),
+            ))
+        } else {
+            None
+        };
+
+        let n = self.num_non_shared;
+        // `intermediates[slot]` holds the (keys, values) VIEW returned by the
+        // owning non-shared layer this pass — exactly mlx-lm's `intermediates`
+        // (`gemma4_text.py:543`). KV-shared layers read THIS view, NOT the raw
+        // cache slot: the fast step-buffer slot is over-allocated with zero
+        // padding, so reading it raw would make shared layers attend over zeros
+        // (the post-turn-2 collapse). The default path stores the exact filled
+        // prefix so it can read the slot directly; the fast path must route the
+        // view through here instead.
+        let mut intermediates: Vec<Option<(Array, Array)>> = vec![None; self.layers.len()];
+        for (i, layer) in self.layers.iter().enumerate() {
+            let rope = if layer.attention.is_sliding {
+                &self.local_rope
+            } else {
+                &self.global_rope
+            };
+            let cache_idx = self.cache_slot[i];
+            let is_shared = i >= n;
+            let shared_kv: Option<(Array, Array)> = if is_shared {
+                intermediates[cache_idx].clone()
+            } else {
+                None
+            };
+            let per_layer_i = per_layer.as_ref().map(|pl| {
+                let li = i as i32;
+                pl.index((.., .., li..li + 1, ..))
+                    .reshape(&[1, seq_len as i32, hpl])
+                    .expect("mlx op")
+            });
+            let (x_next, kv_view) = layer.forward_fast(
+                &x,
+                rope,
+                &mut cache[cache_idx],
+                offset,
+                shared_kv.as_ref(),
+                per_layer_i.as_ref(),
+            );
+            x = x_next;
+            intermediates[i] = Some(kv_view);
+        }
+
+        // Final norm (fast) → tied lm_head → logit softcapping.
+        x = self.norm.forward_fast(&x);
+        let logits = self.embed_tokens.matmul_transpose(&x);
         if let Some(cap) = self.final_logit_softcapping {
             let cap_arr = Array::from_f32(cap);
             let scaled = logits.divide(&cap_arr).expect("mlx op");

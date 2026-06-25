@@ -56,6 +56,54 @@ impl RmsNorm {
             normalized.multiply(&self.weight).expect("mlx op")
         }
     }
+
+    /// Fast-path RMSNorm mirroring `mx.fast.rms_norm`: the mean-square
+    /// reduction and rsqrt are computed in **f32** (upcast) even when `x` is
+    /// bf16, then the normalized value is multiplied by the weight and returned
+    /// in the **input dtype** (bf16). This matches mlx-lm's Gemma 4 norm
+    /// behaviour (`RMSNorm` / `RMSNormNoScale` both go through
+    /// `mx.fast.rms_norm`, which upcasts the statistics).
+    ///
+    /// Only called from the `PIO_MLX_FAST` path; the default `forward` above is
+    /// untouched.
+    pub fn forward_fast(&self, x: &Array) -> Array {
+        let in_dtype = x.dtype();
+        let xf = x.as_dtype(mlx_rs::Dtype::Float32).expect("mlx op");
+        let x_sq = xf.multiply(&xf).expect("mlx op");
+        let variance = x_sq.mean_axis(-1, true).expect("mlx op");
+        let eps = Array::from_f32(self.eps);
+        let var_eps = variance.add(&eps).expect("mlx op");
+        let norm_factor = var_eps.rsqrt().expect("mlx op");
+        // normalize in f32, then cast back to the activation dtype before the
+        // (bf16) weight multiply — keeps the statistics precise while the
+        // elementwise scale stays at activation precision (mlx-lm parity).
+        let normalized = xf.multiply(&norm_factor).expect("mlx op");
+        let normalized = normalized.as_dtype(in_dtype).expect("mlx op");
+        if self.with_offset {
+            let one = Array::from_f32(1.0);
+            let scaled = self.weight.add(&one).expect("mlx op");
+            let scaled = scaled.as_dtype(in_dtype).expect("mlx op");
+            normalized.multiply(&scaled).expect("mlx op")
+        } else {
+            let w = self.weight.as_dtype(in_dtype).expect("mlx op");
+            normalized.multiply(&w).expect("mlx op")
+        }
+    }
+}
+
+/// RMSNorm without learnable scale, fast variant (bf16-aware) — mirrors
+/// `RMSNormNoScale` (`gemma4_text.py:73`) which calls `mx.fast.rms_norm(x, None,
+/// eps)`. Used for the v_norm in fast attention.
+pub fn rms_norm_no_scale_fast(x: &Array, eps: f32) -> Array {
+    let in_dtype = x.dtype();
+    let xf = x.as_dtype(mlx_rs::Dtype::Float32).expect("mlx op");
+    let x_sq = xf.multiply(&xf).expect("mlx op");
+    let variance = x_sq.mean_axis(-1, true).expect("mlx op");
+    let eps = Array::from_f32(eps);
+    let var_eps = variance.add(&eps).expect("mlx op");
+    let norm_factor = var_eps.rsqrt().expect("mlx op");
+    let normalized = xf.multiply(&norm_factor).expect("mlx op");
+    normalized.as_dtype(in_dtype).expect("mlx op")
 }
 
 #[cfg(test)]

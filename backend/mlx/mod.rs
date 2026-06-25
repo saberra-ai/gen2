@@ -11,6 +11,8 @@ pub(crate) mod model;
 // ngram module replaced by cross-backend `common::speculative::*` —
 // see that module for the trigram impl plus PLD / Lookahead / Eagle3
 // alternatives. Kept as an alias for backward-compat in external code.
+#[cfg(test)]
+mod profile_decode;
 mod puller;
 mod sampler;
 mod session;

@@ -184,17 +184,28 @@ impl DecodeState {
 
         for slot in self.cache.iter_mut() {
             if let Some(kv) = slot {
-                let seq = kv.0.shape()[2] as usize;
+                // Use the true fill (`cache_len`), not the array's seq dim. For
+                // the default path these are equal (the slot holds the filled
+                // prefix). For the `PIO_MLX_FAST` step-buffer cache the slot may
+                // be an over-allocated buffer whose `shape()[2]` is the
+                // capacity — clamping by `cache_len` keeps eviction correct for
+                // both paths without changing flag-off behaviour.
+                let cap = kv.0.shape()[2] as usize;
+                let seq = self.cache_len.min(cap);
                 if seq <= target {
                     continue;
                 }
                 let win_start = (seq - window) as i32;
+                let seq_i = seq as i32;
                 let sink_end = sink as i32;
-                // sinks: [0..sink_end], recent window: [win_start..seq]
+                // sinks: [0..sink_end], recent window: [win_start..seq]. Bound
+                // the upper end at `seq` (the true fill) rather than running to
+                // the array end — the fast step buffer has zero padding past
+                // `seq` that must not be folded into the retained window.
                 let sk = kv.0.index((.., .., 0..sink_end, ..));
                 let sv = kv.1.index((.., .., 0..sink_end, ..));
-                let wk = kv.0.index((.., .., win_start.., ..));
-                let wv = kv.1.index((.., .., win_start.., ..));
+                let wk = kv.0.index((.., .., win_start..seq_i, ..));
+                let wv = kv.1.index((.., .., win_start..seq_i, ..));
                 kv.0 = mlx_rs::ops::concatenate_axis(&[&sk, &wk], 2).expect("mlx op");
                 kv.1 = mlx_rs::ops::concatenate_axis(&[&sv, &wv], 2).expect("mlx op");
             }

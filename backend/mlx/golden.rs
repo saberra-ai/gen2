@@ -517,6 +517,12 @@ fn golden_cross_bundle_agreement() {
 /// Absolute path — not a repo-relative bundle like the Gemma 4 E2B fixtures.
 const DIFFUSION_GEMMA_DIR: &str = "/Users/victor/models/diffusiongemma-26B-A4B-it-4bit";
 
+/// ~16GB MLX 4-bit **autoregressive** Gemma 4 26B-A4B checkpoint — same
+/// backbone / quant / weight-class as `DIFFUSION_GEMMA_DIR` and ollama's
+/// `gemma4:26b-mlx`. Used to benchmark gen2's AR (KV-cached) chat path so we
+/// can isolate "diffusion is slow" from "gen2 is slow".
+const GEMMA4_AR_DIR: &str = "/Users/victor/models/gemma-4-26b-a4b-4bit";
+
 /// SLICE 1: DiffusionGemma loads and forwards without the embedding-shape panic.
 ///
 /// Loads the checkpoint, runs the encoder on a short prompt, then ONE decoder
@@ -965,4 +971,489 @@ fn diffusion_gemma_twenty_turn_pass_24steps() {
     }
 
     assert_eq!(transcript.len(), 20, "expected 20 completed turns");
+}
+
+/// BENCHMARK: 20-turn **autoregressive** Gemma 4 26B-A4B conversation through
+/// gen2's KV-cached multi-turn chat path.
+///
+/// Mirrors `diffusion_gemma_twenty_turn_pass` (same 20 prompts, same
+/// `ThinkingMode::Off`, same `max_tokens=128`, one Session carried across turns
+/// via `append_messages` + the prefix KV cache — gen2's REAL fast path), but
+/// runs the AR sibling of the DiffusionGemma weights. Goal: measure whether
+/// gen2's *engine* is competitive with ollama (`gemma4:26b-mlx`, 0.78s/turn)
+/// and quantify any gen2-AR gap, isolating it from the diffusion cost
+/// (gen2-Diffusion-24step: 33.4s/turn, 667s total).
+///
+/// Deliverable is the printed transcript + per-turn latency table + 3-way
+/// comparison, read with --nocapture. Test-only; changes no production code.
+#[test]
+#[ignore = "requires the ~16GB autoregressive Gemma-4 26B-A4B checkpoint"]
+fn gemma4_ar_twenty_turn_pass() {
+    use std::path::Path;
+    use std::time::Instant;
+
+    use crate::gen2::generation::ThinkingMode;
+
+    let dir = Path::new(GEMMA4_AR_DIR);
+    if !dir.exists() {
+        eprintln!("skipping: {GEMMA4_AR_DIR} not present");
+        return;
+    }
+
+    // Load model + tokenizer ONCE.
+    let engine = load_engine(PathBuf::from(GEMMA4_AR_DIR));
+
+    // The curated 20-turn prompt list — IDENTICAL to the diffusion passes.
+    let prompts: [&str; 20] = [
+        "Hi! My name is Victor and I'm building an AI app in Rust.",
+        "What's the capital of Japan?",
+        "What is 17 times 23?",
+        "List three primary colors.",
+        "What's my name?",                 // context
+        "What language am I building in?", // context
+        "Write a two-line haiku about the ocean.",
+        "Translate 'good morning' into French.",
+        "Is 91 a prime number? Answer yes or no and why.",
+        "Give me a one-sentence definition of recursion.",
+        "What did I say I'm building?", // context
+        "Suggest a name for my app.",
+        "Continue this story in one sentence: The robot opened the door and…",
+        "What's heavier, a kilogram of steel or a kilogram of feathers?",
+        "Reply with exactly the word: PONG",           // format
+        "Summarize our conversation in one sentence.", // context
+        "Count from 1 to 5.",
+        "What's the opposite of 'hot'?",
+        "", // edge: empty
+        "Goodbye — say something friendly.",
+    ];
+
+    // Greedy (temp=0) for reproducibility; thinking OFF for clean prose replies
+    // (mirrors the diffusion passes' chat default).
+    let mut overrides = Settings::default();
+    overrides.sampling.temperature = Some(0.0);
+    let session = engine
+        .start_session(SessionSpec {
+            messages: vec![user_msg(prompts[0])],
+            overrides: Some(overrides),
+            thinking: ThinkingMode::Off,
+            ..Default::default()
+        })
+        .expect("start_session");
+
+    // Defensive thought-scaffold stripper for display. With ThinkingMode::Off
+    // replies are already clean prose, but if a `<think>…</think>` or Gemma-4
+    // `<|channel>thought…<channel|>` scaffold ever leaks through, drop it so the
+    // transcript reads as the actual answer.
+    fn strip_scaffold(raw: &str) -> String {
+        let mut s = raw.to_string();
+        for (open, close) in [("<think>", "</think>"), ("<|channel>thought", "<channel|>")] {
+            if let Some(start) = s.find(open) {
+                if let Some(end_rel) = s[start..].find(close) {
+                    let end = start + end_rel + close.len();
+                    s.replace_range(start..end, "");
+                } else {
+                    // Unclosed opener: drop from the opener onward.
+                    s.truncate(start);
+                }
+            }
+        }
+        s.trim().to_string()
+    }
+
+    let mut per_turn_secs: Vec<f64> = Vec::with_capacity(20);
+    let mut per_turn_toks: Vec<usize> = Vec::with_capacity(20);
+    let mut transcript: Vec<(usize, String, String)> = Vec::with_capacity(20);
+    let run_start = Instant::now();
+
+    for (i, &prompt) in prompts.iter().enumerate() {
+        let turn = i + 1;
+
+        // Turn 1's user message is already in the session; subsequent turns
+        // append the prior assistant reply + the new user message (KV-cached
+        // context carry — the same multi-turn path as golden_multiturn_coherence).
+        if i > 0 {
+            let prev_reply = transcript[i - 1].2.trim().to_string();
+            session
+                .append_messages(vec![asst_msg(&prev_reply), user_msg(prompt)])
+                .expect("append_messages");
+        }
+
+        let t0 = Instant::now();
+        let mut puller = session
+            .pull(GenSpec {
+                max_tokens: Some(128),
+                temperature: Some(0.0),
+                ..Default::default()
+            })
+            .expect("pull");
+        let (ids, text, _stats) = drain(&mut puller);
+        drop(puller);
+        let secs = t0.elapsed().as_secs_f64();
+        per_turn_secs.push(secs);
+        per_turn_toks.push(ids.len());
+
+        // Strip any thought scaffold for display, then truncate to ~70 chars.
+        let clean = strip_scaffold(text.trim());
+        let display: String = clean.chars().take(70).collect();
+        let ellipsis = if clean.chars().count() > 70 {
+            "…"
+        } else {
+            ""
+        };
+        eprintln!(
+            "TURN {turn:>2}  {secs:>6.2}s  {:>4} tok  | {display}{ellipsis}",
+            ids.len()
+        );
+
+        transcript.push((turn, prompt.to_string(), clean));
+    }
+
+    let total = run_start.elapsed().as_secs_f64();
+    let avg = total / 20.0;
+    let warmup = per_turn_secs[0];
+    let steady_avg: f64 = per_turn_secs[1..].iter().sum::<f64>() / 19.0;
+    let total_toks: usize = per_turn_toks.iter().sum();
+    let gen_secs: f64 = per_turn_secs.iter().sum();
+    let tok_per_s = if gen_secs > 0.0 {
+        total_toks as f64 / gen_secs
+    } else {
+        0.0
+    };
+
+    eprintln!("\n=============== FULL TRANSCRIPT (verbatim) ===============");
+    for (turn, prompt, reply) in &transcript {
+        eprintln!("\n--- TURN {turn} ---");
+        eprintln!("PROMPT: {prompt:?}");
+        eprintln!("REPLY : {reply}");
+    }
+
+    eprintln!("\n=============== SUMMARY (gen2 AR Gemma-4 26B-A4B) ===============");
+    eprintln!("total wall time : {total:.2}s ({:.2} min)", total / 60.0);
+    eprintln!("avg per turn    : {avg:.2}s  (all 20 turns)");
+    eprintln!("turn-1 (warmup) : {warmup:.2}s");
+    eprintln!("steady avg      : {steady_avg:.2}s  (turns 2-20)");
+    eprintln!("total tokens    : {total_toks}");
+    eprintln!("overall tok/s   : {tok_per_s:.1}");
+    eprintln!("per-turn secs   : {per_turn_secs:?}");
+    eprintln!("per-turn toks   : {per_turn_toks:?}");
+    eprintln!("\n--------------- 3-WAY COMPARISON (avg/turn) ---------------");
+    eprintln!("gen2-AR (this)         : {avg:.2}s/turn ({total:.1}s total)");
+    eprintln!("ollama gemma4:26b-mlx  : 0.78s/turn (15.6s total)");
+    eprintln!("gen2-Diffusion 24-step : 33.40s/turn (667s total)");
+    eprintln!("================================================================\n");
+
+    // Benchmark pass: the deliverable is the printed transcript + timings above.
+    // The only hard assertion is that all 20 turns completed.
+    assert_eq!(transcript.len(), 20, "expected 20 completed turns");
+}
+
+/// FAST PATH (`PIO_MLX_FAST=1`) — Stage A: bf16 activations + fused SDPA +
+/// step-buffer KV cache, SERIAL decode. Runs the SAME 20-turn conversation as
+/// `gemma4_ar_twenty_turn_pass` with the fast path enabled, asserts the answers
+/// stay coherent + correct (391, Tokyo, Bonjour, 91 not prime, context on turns
+/// 5/6/11/16, PONG), prints the transcript + tok/s + speedup, and checks
+/// determinism (two fast-path runs are byte-identical).
+///
+/// The flag is read once at model construction (`Gemma4Model::fast`); the
+/// default path is untouched when it's unset.
+#[test]
+#[ignore = "requires the ~16GB autoregressive Gemma-4 26B-A4B checkpoint (PIO_MLX_FAST)"]
+fn gemma4_fast_twenty_turn_pass() {
+    use std::path::Path;
+    use std::time::Instant;
+
+    use crate::gen2::generation::ThinkingMode;
+
+    let dir = Path::new(GEMMA4_AR_DIR);
+    if !dir.exists() {
+        eprintln!("skipping: {GEMMA4_AR_DIR} not present");
+        return;
+    }
+
+    // Enable the fast path BEFORE loading (flag read at model construction).
+    // SAFETY: test is single-threaded (--test-threads=1).
+    unsafe {
+        std::env::set_var("PIO_MLX_FAST", "1");
+    }
+
+    let prompts: [&str; 20] = [
+        "Hi! My name is Victor and I'm building an AI app in Rust.",
+        "What's the capital of Japan?",
+        "What is 17 times 23?",
+        "List three primary colors.",
+        "What's my name?",                 // context
+        "What language am I building in?", // context
+        "Write a two-line haiku about the ocean.",
+        "Translate 'good morning' into French.",
+        "Is 91 a prime number? Answer yes or no and why.",
+        "Give me a one-sentence definition of recursion.",
+        "What did I say I'm building?", // context
+        "Suggest a name for my app.",
+        "Continue this story in one sentence: The robot opened the door and…",
+        "What's heavier, a kilogram of steel or a kilogram of feathers?",
+        "Reply with exactly the word: PONG",           // format
+        "Summarize our conversation in one sentence.", // context
+        "Count from 1 to 5.",
+        "What's the opposite of 'hot'?",
+        "", // edge: empty
+        "Goodbye — say something friendly.",
+    ];
+
+    // Inner closure: run the full 20-turn conversation once, return the
+    // (per-turn ids, per-turn clean text, per-turn secs, per-turn toks).
+    fn run_once(prompts: &[&str; 20]) -> (Vec<Vec<u32>>, Vec<String>, Vec<f64>, Vec<usize>, f64) {
+        let engine = load_engine(PathBuf::from(GEMMA4_AR_DIR));
+        let mut overrides = Settings::default();
+        overrides.sampling.temperature = Some(0.0);
+        let session = engine
+            .start_session(SessionSpec {
+                messages: vec![user_msg(prompts[0])],
+                overrides: Some(overrides),
+                thinking: ThinkingMode::Off,
+                ..Default::default()
+            })
+            .expect("start_session");
+
+        fn strip_scaffold(raw: &str) -> String {
+            let mut s = raw.to_string();
+            for (open, close) in [("<think>", "</think>"), ("<|channel>thought", "<channel|>")] {
+                if let Some(start) = s.find(open) {
+                    if let Some(end_rel) = s[start..].find(close) {
+                        let end = start + end_rel + close.len();
+                        s.replace_range(start..end, "");
+                    } else {
+                        s.truncate(start);
+                    }
+                }
+            }
+            s.trim().to_string()
+        }
+
+        let mut all_ids: Vec<Vec<u32>> = Vec::with_capacity(20);
+        let mut all_text: Vec<String> = Vec::with_capacity(20);
+        let mut secs: Vec<f64> = Vec::with_capacity(20);
+        let mut toks: Vec<usize> = Vec::with_capacity(20);
+        let run_start = Instant::now();
+
+        for (i, &prompt) in prompts.iter().enumerate() {
+            if i > 0 {
+                let prev_reply = all_text[i - 1].trim().to_string();
+                session
+                    .append_messages(vec![asst_msg(&prev_reply), user_msg(prompt)])
+                    .expect("append_messages");
+            }
+            let t0 = Instant::now();
+            let mut puller = session
+                .pull(GenSpec {
+                    max_tokens: Some(128),
+                    temperature: Some(0.0),
+                    ..Default::default()
+                })
+                .expect("pull");
+            let (ids, text, _stats) = drain(&mut puller);
+            drop(puller);
+            secs.push(t0.elapsed().as_secs_f64());
+            toks.push(ids.len());
+            all_ids.push(ids);
+            all_text.push(strip_scaffold(text.trim()));
+        }
+        let total = run_start.elapsed().as_secs_f64();
+        (all_ids, all_text, secs, toks, total)
+    }
+
+    // ── Run 1 (timed) ────────────────────────────────────────────────────────
+    let (ids1, text1, per_turn_secs, per_turn_toks, total) = run_once(&prompts);
+
+    for (i, (secs, toks)) in per_turn_secs.iter().zip(per_turn_toks.iter()).enumerate() {
+        let display: String = text1[i].chars().take(70).collect();
+        let ellipsis = if text1[i].chars().count() > 70 {
+            "…"
+        } else {
+            ""
+        };
+        eprintln!(
+            "TURN {:>2}  {secs:>6.2}s  {toks:>4} tok  | {display}{ellipsis}",
+            i + 1
+        );
+    }
+
+    let avg = total / 20.0;
+    let warmup = per_turn_secs[0];
+    let steady_avg: f64 = per_turn_secs[1..].iter().sum::<f64>() / 19.0;
+    let total_toks: usize = per_turn_toks.iter().sum();
+    let gen_secs: f64 = per_turn_secs.iter().sum();
+    let tok_per_s = if gen_secs > 0.0 {
+        total_toks as f64 / gen_secs
+    } else {
+        0.0
+    };
+
+    eprintln!("\n=============== FULL TRANSCRIPT (FAST PATH, verbatim) ===============");
+    for (i, prompt) in prompts.iter().enumerate() {
+        eprintln!("\n--- TURN {} ---", i + 1);
+        eprintln!("PROMPT: {prompt:?}");
+        eprintln!("REPLY : {}", text1[i]);
+    }
+
+    eprintln!("\n=============== SUMMARY (gen2 AR FAST Gemma-4 26B-A4B) ===============");
+    eprintln!("total wall time : {total:.2}s ({:.2} min)", total / 60.0);
+    eprintln!("avg per turn    : {avg:.2}s  (all 20 turns)");
+    eprintln!("turn-1 (warmup) : {warmup:.2}s");
+    eprintln!("steady avg      : {steady_avg:.2}s  (turns 2-20)");
+    eprintln!("total tokens    : {total_toks}");
+    eprintln!("overall tok/s   : {tok_per_s:.1}");
+    eprintln!("per-turn secs   : {per_turn_secs:?}");
+    eprintln!("per-turn toks   : {per_turn_toks:?}");
+    eprintln!("\n--------------- SPEEDUP (avg/turn) ---------------");
+    eprintln!("gen2-AR FAST (this)    : {avg:.2}s/turn ({total:.1}s total, {tok_per_s:.1} tok/s)");
+    eprintln!("gen2-AR DEFAULT (base) : 2.15s/turn (43.0s total, 14.9 tok/s)  [same machine]");
+    eprintln!("=====================================================================\n");
+
+    // ── Coherence / correctness assertions ──────────────────────────────────
+    let lc: Vec<String> = text1.iter().map(|t| t.to_lowercase()).collect();
+    assert!(
+        lc[1].contains("tokyo"),
+        "turn2 should say Tokyo: {:?}",
+        text1[1]
+    );
+    assert!(
+        text1[2].contains("391"),
+        "turn3 should compute 391: {:?}",
+        text1[2]
+    );
+    assert!(
+        lc[4].contains("victor"),
+        "turn5 should recall name Victor: {:?}",
+        text1[4]
+    );
+    assert!(
+        lc[5].contains("rust"),
+        "turn6 should recall Rust: {:?}",
+        text1[5]
+    );
+    assert!(
+        lc[7].contains("bonjour"),
+        "turn8 should translate to Bonjour: {:?}",
+        text1[7]
+    );
+    assert!(
+        lc[8].contains("not")
+            && (lc[8].contains("7") || lc[8].contains("13") || lc[8].contains("prime")),
+        "turn9 should say 91 is not prime (7×13): {:?}",
+        text1[8]
+    );
+    assert!(
+        lc[10].contains("rust") || lc[10].contains("app"),
+        "turn11 should recall building app/Rust: {:?}",
+        text1[10]
+    );
+    assert!(
+        text1[14].to_uppercase().contains("PONG"),
+        "turn15 should reply PONG: {:?}",
+        text1[14]
+    );
+    assert!(
+        lc[15].contains("tokyo")
+            || lc[15].contains("rust")
+            || lc[15].contains("victor")
+            || lc[15].contains("recursion"),
+        "turn16 summary should retain prior context: {:?}",
+        text1[15]
+    );
+
+    // ── Determinism: a second fast-path run must be byte-identical ──────────
+    let (ids2, _text2, _s2, _t2, _tot2) = run_once(&prompts);
+    for (i, (a, b)) in ids1.iter().zip(ids2.iter()).enumerate() {
+        assert_eq!(
+            a,
+            b,
+            "determinism: fast-path run 2 diverged at turn {} from run 1",
+            i + 1
+        );
+    }
+    eprintln!("DETERMINISM: two fast-path runs produced byte-identical token ids ✓");
+
+    unsafe {
+        std::env::remove_var("PIO_MLX_FAST");
+    }
+}
+
+/// DIAGNOSTIC (not a pass/fail gate): run the first 6 turns with the fast path
+/// OFF then ON, printing both transcripts so we can see exactly which turns the
+/// fast path diverges on vs the (known-good) default path. Helps localise a
+/// fast-path numerics/cache bug without re-running the full 20-turn gate.
+#[test]
+#[ignore = "diagnostic: requires the ~16GB Gemma-4 26B-A4B checkpoint"]
+fn gemma4_fast_vs_default_diag() {
+    use std::path::Path;
+
+    use crate::gen2::generation::ThinkingMode;
+
+    if !Path::new(GEMMA4_AR_DIR).exists() {
+        eprintln!("skipping: {GEMMA4_AR_DIR} not present");
+        return;
+    }
+
+    let prompts: [&str; 6] = [
+        "Hi! My name is Victor and I'm building an AI app in Rust.",
+        "What's the capital of Japan?",
+        "What is 17 times 23?",
+        "List three primary colors.",
+        "What's my name?",
+        "What language am I building in?",
+    ];
+
+    fn run(prompts: &[&str; 6]) -> Vec<String> {
+        let engine = load_engine(PathBuf::from(GEMMA4_AR_DIR));
+        let mut overrides = Settings::default();
+        overrides.sampling.temperature = Some(0.0);
+        let session = engine
+            .start_session(SessionSpec {
+                messages: vec![user_msg(prompts[0])],
+                overrides: Some(overrides),
+                thinking: ThinkingMode::Off,
+                ..Default::default()
+            })
+            .expect("start_session");
+        let mut out: Vec<String> = Vec::new();
+        for (i, &prompt) in prompts.iter().enumerate() {
+            if i > 0 {
+                let prev = out[i - 1].clone();
+                session
+                    .append_messages(vec![asst_msg(&prev), user_msg(prompt)])
+                    .expect("append");
+            }
+            let mut p = session
+                .pull(GenSpec {
+                    max_tokens: Some(64),
+                    temperature: Some(0.0),
+                    ..Default::default()
+                })
+                .expect("pull");
+            let (_ids, text, _s) = drain(&mut p);
+            drop(p);
+            out.push(text.trim().to_string());
+        }
+        out
+    }
+
+    unsafe {
+        std::env::remove_var("PIO_MLX_FAST");
+    }
+    let def = run(&prompts);
+    unsafe {
+        std::env::set_var("PIO_MLX_FAST", "1");
+    }
+    let fast = run(&prompts);
+    unsafe {
+        std::env::remove_var("PIO_MLX_FAST");
+    }
+
+    eprintln!("\n=============== DEFAULT vs FAST (first 6 turns) ===============");
+    for i in 0..6 {
+        eprintln!("\n--- TURN {} : {:?} ---", i + 1, prompts[i]);
+        eprintln!("DEFAULT: {}", def[i].chars().take(120).collect::<String>());
+        eprintln!("FAST   : {}", fast[i].chars().take(120).collect::<String>());
+    }
+    eprintln!("================================================================\n");
 }

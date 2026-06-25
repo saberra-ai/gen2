@@ -8,9 +8,11 @@ pub mod diffusion_gemma;
 pub mod eagle3;
 mod ffn;
 pub mod gemma4;
+mod gemma4_fast;
 mod llama;
 pub mod moe;
 mod norm;
+pub mod profile;
 pub mod quantized;
 pub(crate) mod rope;
 
@@ -21,6 +23,7 @@ pub use quantized::Weight;
 pub use rope::RotaryEmbedding;
 
 use mlx_rs::Array;
+use mlx_rs::ops::indexing::IndexOp;
 use serde::Deserialize;
 
 /// One KV-cache entry per transformer layer.
@@ -77,6 +80,43 @@ impl Model {
             Model::Llama(m) => Some(m.forward_all(tokens, offset, cache, rope)),
             Model::Gemma4(m) => Some(m.forward_all(tokens, offset, cache)),
             Model::DiffusionGemma(_) => None,
+        }
+    }
+
+    /// True when this model is running the MLX **fast path** (`PIO_MLX_FAST`).
+    /// The pipelined GPU-argmax decode loop (Stage B) only engages here; every
+    /// other model / the flag-off path returns `false` and keeps the existing
+    /// serial CPU-sampling decode untouched. Only Gemma 4 has a fast path.
+    pub fn is_fast(&self) -> bool {
+        match self {
+            Model::Gemma4(m) => m.fast,
+            _ => false,
+        }
+    }
+
+    /// Fast-path forward whose input is a **lazy** `[seq]` int32 token-id
+    /// `Array` (not a host `&[u32]`), returning the LAST-position logits
+    /// `[1, 1, vocab]`. This is the on-GPU decode step for Stage-B pipelining:
+    /// the lazy argmax token from step N feeds straight in as step N+1's
+    /// embedding-gather index, so the chain never round-trips to host —
+    /// mirroring mlx-lm's `model(y[None])` with lazy `y` (`generate.py:459`).
+    ///
+    /// Returns `None` for any model without a fast path (caller falls back to
+    /// the host-token serial path). Only valid when [`Self::is_fast`] is true.
+    pub fn forward_fast_last_logits_from_ids(
+        &self,
+        token_ids: &Array,
+        seq_len: usize,
+        offset: usize,
+        cache: &mut KvCache,
+    ) -> Option<Array> {
+        match self {
+            Model::Gemma4(m) if m.fast => {
+                let all = m.forward_all_fast_from_ids(token_ids, seq_len, offset, cache);
+                let s = seq_len as i32;
+                Some(all.index((0..1, (s - 1)..s, ..)))
+            }
+            _ => None,
         }
     }
 

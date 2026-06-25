@@ -117,4 +117,22 @@ impl RotaryEmbedding {
         let term_b = x_rotated.multiply(&sin_full).expect("mlx op");
         term_a.add(&term_b).expect("mlx op")
     }
+
+    /// Fast-path RoPE that upcasts to **f32** for the rotation math, then casts
+    /// back to the input dtype (bf16). Mirrors `mx.fast.rope`, which Gemma 4
+    /// uses (`gemma4_text.py` `self.rope(...)`): the position encoding is
+    /// computed at f32 precision even when activations are bf16. Doing the
+    /// rotation directly in bf16 (bf16 × f32 cos/sin ⇒ bf16) loses enough
+    /// positional precision to break long-range context retrieval ("what's my
+    /// name?") while leaving local computation ("17×23") intact — that was the
+    /// fast-path post-turn-2 context collapse.
+    pub fn forward_fast(&self, x: &Array, offset: usize) -> Array {
+        let in_dtype = x.dtype();
+        if in_dtype == mlx_rs::Dtype::Float32 {
+            return self.forward(x, offset);
+        }
+        let xf = x.as_dtype(mlx_rs::Dtype::Float32).expect("mlx op");
+        let out = self.forward(&xf, offset);
+        out.as_dtype(in_dtype).expect("mlx op")
+    }
 }
