@@ -425,6 +425,35 @@ impl InferenceHandle {
         }
     }
 
+    /// The compute-sovereignty provenance for work run through this handle — the
+    /// receipt sealed into the evidence chain (`compute::ComputeProvenance`).
+    ///
+    /// Honest by construction: **every** live handle variant is the user's own
+    /// hardware. `Local` is this device; `Remote`/`Flock`/`RegisteredFlockGateway`
+    /// are the user's own peers/federation — they leave *this* machine but stay on
+    /// hardware the user owns (`off_user_hardware = false`). There is no
+    /// off-your-machine *cloud* handle today (a BYO cloud model is an
+    /// `external_api` backend under a local controller, not a placement we
+    /// escalate to), so this never reports `cloud`. When such a handle lands, add
+    /// its arm here and the fail-closed policy in `compute::escalation` starts
+    /// guarding it. `sent` describes what left this machine (the goal text); it's
+    /// unused for the local arm, which sends nothing.
+    pub fn compute_provenance(&self, sent: &str) -> crate::compute::ComputeProvenance {
+        use crate::compute::ComputeProvenance;
+        let _sent = sent;
+        match self {
+            Self::Local(_) => ComputeProvenance::local("local"),
+            #[cfg(feature = "p2p-client")]
+            Self::Remote(_) => ComputeProvenance::own_device("device", _sent),
+            #[cfg(feature = "flock")]
+            Self::Flock(_) => ComputeProvenance::own_device("flock", _sent),
+            #[cfg(feature = "flock")]
+            Self::RegisteredFlockGateway(_) => {
+                ComputeProvenance::own_device("flock gateway", _sent)
+            }
+        }
+    }
+
     /// Route a `ControllerCmd` through a `FlockHandle` with failover for
     /// streaming inference and single-shot dispatch for everything else.
     ///
