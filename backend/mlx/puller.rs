@@ -230,6 +230,25 @@ pub struct ArPuller {
     /// double-buffer (`generate.py:457-469`). `None` ⇒ not pipelining (flag
     /// off, non-greedy, grammar, aux, or `PIO_MLX_PIPELINE=0`).
     fast_pipe: Option<FastPipe>,
+
+    /// DIAGNOSTIC fixed-workload gate (`PIO_MLX_FIXED_STEPS=N`, read once at
+    /// construction). When `Some(n)`, decode EXACTLY `n` forward passes for
+    /// timing, IGNORING every early-termination path (EOS / stop-id / loop
+    /// detector). Correctness is irrelevant under this gate — its only purpose
+    /// is a trustworthy ms/token denominator (`decode_tokens == n`) that is
+    /// immune to garbage-model EOS/loop stops confounding ablations. Unset in
+    /// normal operation (`None` ⇒ all stop conditions live, default behaviour
+    /// byte-identical). Honoured by BOTH the serial and the fast-pipeline path.
+    fixed_steps: Option<usize>,
+
+    /// Dedicated GPU generation stream for the Stage-B pipeline, created once
+    /// per puller (lazily on first pipeline entry). Mirrors mlx-lm's module
+    /// `generation_stream = mx.new_stream(mx.default_device())`
+    /// (`generate.py:226`): the fast-path forward's argmax runs on THIS stream
+    /// so the `forward → argmax → next forward` chain stays on a single GPU
+    /// stream with no cross-stream CPU dependency, keeping the GPU fed (the
+    /// inter-token-stall fix). `None` until the pipeline is first entered.
+    gen_stream: Option<mlx_rs::Stream>,
 }
 
 /// Double-buffered lazy decode state for the Stage-B pipeline. Mirrors
@@ -377,6 +396,49 @@ impl ArPuller {
             pending_aux: None,
             state_slot,
             fast_pipe: None,
+            fixed_steps: std::env::var("PIO_MLX_FIXED_STEPS")
+                .ok()
+                .and_then(|s| s.trim().parse::<usize>().ok())
+                .filter(|&n| n > 0),
+            gen_stream: None,
+        }
+    }
+
+    /// Lazily create + return the dedicated GPU generation stream for the
+    /// pipeline argmax. Mirrors mlx-lm's `generation_stream` (a GPU stream).
+    /// We use the **default GPU stream** (`Stream::gpu()`) so the pipeline's
+    /// argmax runs on the SAME GPU stream the fast forward already uses — the
+    /// `forward → argmax → next forward` chain stays on one GPU stream with no
+    /// cross-stream CPU dependency (the inter-token-stall fix). `PIO_MLX_GEN_STREAM=new`
+    /// instead allocates a fresh GPU stream (`mx.new_stream`) for an A/B.
+    fn gpu_gen_stream(&mut self) -> mlx_rs::Stream {
+        if self.gen_stream.is_none() {
+            let use_new = std::env::var("PIO_MLX_GEN_STREAM")
+                .map(|v| v.eq_ignore_ascii_case("new"))
+                .unwrap_or(false);
+            let s = if use_new {
+                mlx_rs::Stream::new_with_device(&mlx_rs::Device::gpu())
+            } else {
+                mlx_rs::Stream::gpu()
+            };
+            self.gen_stream = Some(s);
+        }
+        self.gen_stream.as_ref().expect("gen_stream set").clone()
+    }
+
+    /// The pipeline's greedy argmax. Defaults to the GPU generation stream (the
+    /// inter-token-stall fix — keeps the decode chain on one GPU stream). The
+    /// `PIO_MLX_ARGMAX_STREAM=cpu` A/B knob reverts to the prior CPU-stream
+    /// argmax so the stall-fix's tok/s delta can be measured in isolation.
+    fn pipeline_argmax(&mut self, logits: &mlx_rs::Array) -> mlx_rs::Array {
+        let cpu = std::env::var("PIO_MLX_ARGMAX_STREAM")
+            .map(|v| v.eq_ignore_ascii_case("cpu"))
+            .unwrap_or(false);
+        if cpu {
+            self.sampler.argmax_gpu(logits)
+        } else {
+            let stream = self.gpu_gen_stream();
+            self.sampler.argmax_gpu_on_stream(logits, &stream)
         }
     }
 
@@ -431,6 +493,31 @@ impl Drop for ArPuller {
 }
 
 impl ArPuller {
+    /// True while the diagnostic fixed-steps gate (`PIO_MLX_FIXED_STEPS=N`) is
+    /// active AND we still owe forwards (`produced < n`). When this holds,
+    /// callers suppress every early-termination branch (EOS / stop-id / loop)
+    /// so decode runs the full fixed workload for clean timing. Returns false
+    /// when the gate is unset (`None`) — normal behaviour, all stops live.
+    #[inline]
+    fn fixed_steps_active(&self) -> bool {
+        self.fixed_steps.map(|n| self.produced < n).unwrap_or(false)
+    }
+
+    /// The effective hard token budget for this step: the smaller of the user's
+    /// `max_tokens` and the diagnostic `fixed_steps` cap. Under the fixed-steps
+    /// gate this guarantees decode stops at EXACTLY `n` forwards (the gate's
+    /// whole point — a trustworthy `decode_tokens == n` denominator), even when
+    /// the caller passed a larger / no `max_tokens`.
+    #[inline]
+    fn effective_max_tokens(&self) -> Option<usize> {
+        match (self.max_tokens, self.fixed_steps) {
+            (Some(m), Some(n)) => Some(m.min(n)),
+            (Some(m), None) => Some(m),
+            (None, Some(n)) => Some(n),
+            (None, None) => None,
+        }
+    }
+
     /// Pull one event, draining held filter events and stepping the decode
     /// loop until a token / terminal event is produced. Mirrors the old
     /// `Iterator::next` body — the enum `TokenPuller` delegates here.
@@ -511,24 +598,30 @@ impl ArPuller {
         // Bootstrap: turn the prefill (or first) pending logits into the first
         // lazy token y (= token N=0), via GPU argmax. No host sync yet.
         if self.fast_pipe.is_none() {
-            let state = match self.state.as_mut() {
-                Some(s) => s,
-                None => {
-                    self.done = true;
-                    self.filter
-                        .push_err(ExecError::InvalidArg("state already consumed"));
-                    return true;
+            let pending = {
+                let state = match self.state.as_mut() {
+                    Some(s) => s,
+                    None => {
+                        self.done = true;
+                        self.filter
+                            .push_err(ExecError::InvalidArg("state already consumed"));
+                        return true;
+                    }
+                };
+                match state.pending_logits.take() {
+                    Some(p) => p,
+                    None => {
+                        // No pending logits to seed from — let the serial path
+                        // handle this (shouldn't happen on decode entry).
+                        return false;
+                    }
                 }
             };
-            let Some(pending) = state.pending_logits.take() else {
-                // No pending logits to seed from — let the serial path handle
-                // this (shouldn't happen on the decode entry, but stay safe).
-                return false;
-            };
             // Greedy argmax over the last-position logits → lazy [1] int32
-            // token (CPU-stream argmax — see `Sampler::argmax_gpu`). pending is
-            // [1, 1, vocab]; argmax reduces the vocab axis.
-            let y = self.sampler.argmax_gpu(&pending);
+            // token, on the GPU generation stream (mlx-lm runs its sampler on
+            // `generation_stream`, NOT the CPU stream — see `pipeline_argmax`).
+            // pending is [1,1,vocab]; argmax reduces the vocab axis.
+            let y = self.pipeline_argmax(&pending);
             mlx_rs::transforms::async_eval([&y]).ok();
             self.fast_pipe = Some(FastPipe {
                 y,
@@ -542,7 +635,7 @@ impl ArPuller {
         //    `if n != max_tokens: next_y = _step(y); async_eval(next_y)`
         //    (`generate.py:458-460`).
         let want_next = self
-            .max_tokens
+            .effective_max_tokens()
             .map(|m| self.produced + 1 < m)
             .unwrap_or(true);
         let pipe_has_next = self.fast_pipe.as_ref().map(|p| p.has_next).unwrap_or(false);
@@ -577,8 +670,13 @@ impl ArPuller {
             state.last_token = token_id;
         }
 
+        // DIAGNOSTIC: under the fixed-steps gate, suppress EOS / stop-id / loop
+        // termination so the pipeline decodes the full fixed workload (see the
+        // `fixed_steps` field). `effective_max_tokens` still stops us at `n`.
+        let suppress_stops = self.fixed_steps_active();
+
         // EOS / stop-id check.
-        if self.bundle.tokenizer.stop_ids().contains(&token_id) {
+        if !suppress_stops && self.bundle.tokenizer.stop_ids().contains(&token_id) {
             // The serial path never writes the EOS token to the KV cache (it
             // returns before its `cur_pos += 1`). Our pipeline built N+1
             // eagerly for overlap, which advanced `cur_pos`/`cache_len` for
@@ -606,7 +704,8 @@ impl ArPuller {
         // Loop detectors operate on the observed-token window.
         self.sampler.observe(token_id);
         self.predictor.observe(token_id);
-        if self.sampler.is_in_cycle(48) || self.sampler.is_in_token_loop(16, 2) {
+        if !suppress_stops && (self.sampler.is_in_cycle(48) || self.sampler.is_in_token_loop(16, 2))
+        {
             // Same rollback rationale as the EOS branch: serial finalizes on a
             // loop hit before committing this token's cache position.
             if built_next {
@@ -706,13 +805,16 @@ impl ArPuller {
             Err(e) => return Err(ExecError::OutOfMemory(panic_msg(e))),
         };
 
-        // Greedy argmax (+ eot bias) on the CPU stream → lazy next token; see
-        // `Sampler::argmax_gpu` for why the CPU-stream argmax is required for
-        // Stage-A-identical tokens. We async_eval the token + logits so the
-        // forward's cache writes are materialized and the next step's embedding
-        // gather can start while we sync this step's token to host — the
-        // pipeline overlap (`generate.py:459-460`).
-        let next_y = self.sampler.argmax_gpu(&logits);
+        // Greedy argmax (+ eot bias) on the GPU generation stream → lazy next
+        // token. mlx-lm runs its sampler on `generation_stream` (the SAME GPU
+        // stream as the forward), so the `forward → argmax → next forward`
+        // chain never leaves the GPU and the GPU stays fed between tokens. The
+        // prior CPU-stream argmax (`Sampler::argmax_gpu`) forced a GPU→CPU→GPU
+        // hop every token — the ~6.2ms inter-token GPU-idle stall the trace
+        // showed. We async_eval the token + logits so the forward's cache
+        // writes are materialized and the next step's embedding gather can
+        // start while we sync this step's token to host (`generate.py:459-460`).
+        let next_y = self.pipeline_argmax(&logits);
         mlx_rs::transforms::async_eval([&next_y, &logits]).ok();
 
         // INVARIANT: each `fast_build_next` ran exactly one forward that wrote
@@ -753,7 +855,7 @@ impl ArPuller {
             self.filter.push_event(TokenEvent::Paused);
             return;
         }
-        if let Some(limit) = self.max_tokens
+        if let Some(limit) = self.effective_max_tokens()
             && self.produced >= limit
         {
             let stats = self.stats_now();
@@ -775,6 +877,13 @@ impl ArPuller {
             return;
         }
 
+        // Snapshot gate-derived budget values BEFORE borrowing `state` mutably
+        // below (these read only copyable `self` fields; computing them while
+        // `state` is borrowed would be a double-borrow).
+        let eff_max_tokens = self.effective_max_tokens();
+        let suppress_stops = self.fixed_steps_active();
+        let fixed_steps_set = self.fixed_steps.is_some();
+
         let state = match self.state.as_mut() {
             Some(s) => s,
             None => {
@@ -795,8 +904,13 @@ impl ArPuller {
             // token budget (leaving room for the bonus). `PIO_MLX_SPEC=0`
             // forces single-token decode; grammar constraints also
             // disable speculative (mask-per-position is non-trivial).
-            let remaining = self.max_tokens.map(|m| m.saturating_sub(self.produced));
+            let remaining = eff_max_tokens.map(|m| m.saturating_sub(self.produced));
+            // Force single-token decode under the fixed-steps gate so #forwards
+            // == #emitted tokens exactly (speculative commits a variable batch
+            // per forward, which would make `decode_tokens` an untrustworthy
+            // ms/token denominator — the original ablation-confounding bug).
             let spec_off = self.grammar.is_some()
+                || fixed_steps_set
                 || std::env::var("PIO_MLX_SPEC")
                     .map(|v| v == "0" || v.eq_ignore_ascii_case("off"))
                     .unwrap_or(false);
@@ -1062,8 +1176,15 @@ impl ArPuller {
             .sample_with_grammar(&logits, self.grammar.as_mut());
         state.last_token = token_id;
 
+        // DIAGNOSTIC: under the fixed-steps gate, IGNORE EOS / stop-id / loop
+        // early termination — decode the full fixed workload so the ms/token
+        // denominator is exactly `n` (see `fixed_steps`). The cache write +
+        // `produced` bump below still run, so the token still counts as a
+        // forward; the outer `effective_max_tokens` guard stops us at `n`.
+        // (`suppress_stops` was snapshotted at the top of `step_once`.)
+
         // Check EOS / EOT (chat models need both — Gemma 4's `<turn|>`, Llama 3's `<|eot_id|>`).
-        if self.bundle.tokenizer.stop_ids().contains(&token_id) {
+        if !suppress_stops && self.bundle.tokenizer.stop_ids().contains(&token_id) {
             let stats = self.stats_now();
             self.hooks.emit(HookEvent::FinalStats {
                 session_id: self.session_id,
@@ -1076,7 +1197,8 @@ impl ArPuller {
 
         self.sampler.observe(token_id);
         self.predictor.observe(token_id);
-        if self.sampler.is_in_cycle(48) || self.sampler.is_in_token_loop(16, 2) {
+        if !suppress_stops && (self.sampler.is_in_cycle(48) || self.sampler.is_in_token_loop(16, 2))
+        {
             let stats = self.stats_now();
             self.hooks.emit(HookEvent::FinalStats {
                 session_id: self.session_id,

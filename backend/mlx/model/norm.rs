@@ -16,6 +16,17 @@ pub struct RmsNorm {
     pub weight: Array,
     eps: f32,
     with_offset: bool,
+    /// Cached fast-path weight: `weight` (or `1 + weight` when `with_offset`)
+    /// pre-cast to the activation dtype (bf16), built ONCE on the first
+    /// `forward_fast` call. mlx-lm stores its norm weights bf16, so its fused
+    /// `mx.fast.rms_norm` never re-casts; gen2 keeps `weight` f32 for the
+    /// byte-identical default path, so without this cache `forward_fast` would
+    /// re-cast the weight on EVERY layer of EVERY token (~150 casts/token). The
+    /// cast result is invariant (weights are immutable after load), so caching
+    /// it is numerically identical and removes the per-token cast churn.
+    /// `Mutex` keeps `RmsNorm` `Sync` (the bundle is shared `&`); it is locked
+    /// only on the first call, then the cached clone (O(1) refcount) is reused.
+    weight_fast: parking_lot::Mutex<Option<Array>>,
 }
 
 impl RmsNorm {
@@ -30,6 +41,7 @@ impl RmsNorm {
             weight,
             eps,
             with_offset,
+            weight_fast: parking_lot::Mutex::new(None),
         }
     }
 
@@ -57,53 +69,95 @@ impl RmsNorm {
         }
     }
 
-    /// Fast-path RMSNorm mirroring `mx.fast.rms_norm`: the mean-square
-    /// reduction and rsqrt are computed in **f32** (upcast) even when `x` is
-    /// bf16, then the normalized value is multiplied by the weight and returned
-    /// in the **input dtype** (bf16). This matches mlx-lm's Gemma 4 norm
-    /// behaviour (`RMSNorm` / `RMSNormNoScale` both go through
-    /// `mx.fast.rms_norm`, which upcasts the statistics).
+    /// Fast-path RMSNorm: the single **fused** `mlx_rs::fast::rms_norm` Metal
+    /// kernel (`mlx-rs/src/fast.rs:190` `rms_norm_device` → `mlx_fast_rms_norm`),
+    /// exactly mirroring mlx-lm's `nn.RMSNorm.__call__`
+    /// (`mx.fast.rms_norm(x, weight, eps)`; see `mlx/nn/layers/normalization.py`
+    /// and `mlx-rs/src/nn/normalization.rs:271`). The fused kernel upcasts the
+    /// mean-square reduction to f32 internally and returns the activation dtype
+    /// (bf16) — the same statistics-in-f32 / scale-in-bf16 contract the previous
+    /// hand-rolled chain (multiply→mean_axis→add→rsqrt→multiply→multiply)
+    /// emulated, but in ONE kernel instead of ~6 glue ops.
+    ///
+    /// Weight convention: Gemma 4's `nn.RMSNorm` applies `out = rms_norm(x) *
+    /// weight` with the trained weight loaded directly (NO "+1" — that is the
+    /// Gemma 1/2/3 quirk, gated here by `with_offset`, which Gemma 4 does not
+    /// set). When `with_offset` is set we pre-add 1 so the SAME effective weight
+    /// `(1 + weight)` reaches the fused kernel and the output is unchanged.
     ///
     /// Only called from the `PIO_MLX_FAST` path; the default `forward` above is
-    /// untouched.
+    /// untouched (byte-identical).
+    ///
+    /// DTYPE CONTRACT: `mlx_rs::fast::rms_norm` returns the **weight's** dtype,
+    /// not `x`'s (verified: f32 weight + bf16 x ⇒ f32 output). gen2 keeps norm
+    /// weights as f32 (loaded from the checkpoint without a bf16 cast), whereas
+    /// mlx-lm loads them bf16 so its fused norm returns bf16. To stay on the
+    /// bf16 trunk (and avoid silently promoting every downstream matmul to f32 —
+    /// which both corrupts long-range context and *slows* decode), we cast the
+    /// weight to `x`'s dtype before the fused call. This reproduces the previous
+    /// hand-rolled `forward_fast`, which explicitly returned `in_dtype`.
     pub fn forward_fast(&self, x: &Array) -> Array {
-        let in_dtype = x.dtype();
-        let xf = x.as_dtype(mlx_rs::Dtype::Float32).expect("mlx op");
-        let x_sq = xf.multiply(&xf).expect("mlx op");
-        let variance = x_sq.mean_axis(-1, true).expect("mlx op");
-        let eps = Array::from_f32(self.eps);
-        let var_eps = variance.add(&eps).expect("mlx op");
-        let norm_factor = var_eps.rsqrt().expect("mlx op");
-        // normalize in f32, then cast back to the activation dtype before the
-        // (bf16) weight multiply — keeps the statistics precise while the
-        // elementwise scale stays at activation precision (mlx-lm parity).
-        let normalized = xf.multiply(&norm_factor).expect("mlx op");
-        let normalized = normalized.as_dtype(in_dtype).expect("mlx op");
-        if self.with_offset {
-            let one = Array::from_f32(1.0);
-            let scaled = self.weight.add(&one).expect("mlx op");
-            let scaled = scaled.as_dtype(in_dtype).expect("mlx op");
-            normalized.multiply(&scaled).expect("mlx op")
-        } else {
-            let w = self.weight.as_dtype(in_dtype).expect("mlx op");
-            normalized.multiply(&w).expect("mlx op")
-        }
+        // Build-once cache of the activation-dtype weight (see `weight_fast`).
+        // The weight is immutable post-load, so the cast is computed exactly
+        // once; subsequent tokens reuse the cached array (O(1) refcount clone).
+        let target = x.dtype();
+        let w = {
+            let mut slot = self.weight_fast.lock();
+            // Rebuild only if empty or the activation dtype changed (it doesn't
+            // in steady state — the trunk is bf16 throughout).
+            let stale = slot.as_ref().map(|w| w.dtype() != target).unwrap_or(true);
+            if stale {
+                let base = if self.with_offset {
+                    // Gemma 1/2/3: `(1 + weight)` so the fused kernel sees the
+                    // same effective scale the manual path applied.
+                    let one = Array::from_f32(1.0);
+                    self.weight.add(&one).expect("mlx op")
+                } else {
+                    self.weight.clone()
+                };
+                *slot = Some(base.as_dtype(target).expect("mlx op"));
+            }
+            slot.as_ref().expect("weight_fast set above").clone()
+        };
+        mlx_rs::fast::rms_norm(x, &w, self.eps).expect("mlx op: fast rms_norm")
     }
 }
 
-/// RMSNorm without learnable scale, fast variant (bf16-aware) — mirrors
-/// `RMSNormNoScale` (`gemma4_text.py:73`) which calls `mx.fast.rms_norm(x, None,
-/// eps)`. Used for the v_norm in fast attention.
+/// RMSNorm without learnable scale, fast variant — mirrors `RMSNormNoScale`
+/// (`gemma4_text.py:73`) which calls `mx.fast.rms_norm(x, None, eps)`. Used for
+/// the v_norm in fast attention.
+///
+/// mlx-rs's `fast::rms_norm` (`mlx-rs/src/fast.rs:190`) requires a 1-D weight,
+/// so we pass a ones-weight sized to the last axis — multiplicatively the
+/// identity, reproducing the `weight=None` (no-scale) semantics in the single
+/// fused kernel (collapses the prior multiply→mean_axis→add→rsqrt→multiply
+/// chain). The ones array is the same dtype/precision contract: the kernel
+/// upcasts the reduction to f32 and returns the activation dtype.
 pub fn rms_norm_no_scale_fast(x: &Array, eps: f32) -> Array {
-    let in_dtype = x.dtype();
-    let xf = x.as_dtype(mlx_rs::Dtype::Float32).expect("mlx op");
-    let x_sq = xf.multiply(&xf).expect("mlx op");
-    let variance = x_sq.mean_axis(-1, true).expect("mlx op");
-    let eps = Array::from_f32(eps);
-    let var_eps = variance.add(&eps).expect("mlx op");
-    let norm_factor = var_eps.rsqrt().expect("mlx op");
-    let normalized = xf.multiply(&norm_factor).expect("mlx op");
-    normalized.as_dtype(in_dtype).expect("mlx op")
+    let last = *x.shape().last().expect("rms_norm: rank >= 1");
+    let dtype = x.dtype();
+    // The ones-weight is a pure constant (size × dtype); allocating + casting a
+    // fresh one on every v_norm call (every layer, every token) is wasted work
+    // mlx-lm doesn't do (its v_norm weight is a stored bf16 array). Cache per
+    // (size, dtype) in a thread-local — decode is single-threaded, and MLX
+    // `Array` is `!Send` so a thread-local is the natural home.
+    thread_local! {
+        static ONES: std::cell::RefCell<
+            std::collections::HashMap<(i32, mlx_rs::Dtype), Array>,
+        > = std::cell::RefCell::new(std::collections::HashMap::new());
+    }
+    let ones = ONES.with(|c| {
+        c.borrow_mut()
+            .entry((last, dtype))
+            .or_insert_with(|| {
+                Array::ones::<f32>(&[last])
+                    .expect("mlx op")
+                    .as_dtype(dtype)
+                    .expect("mlx op")
+            })
+            .clone()
+    });
+    mlx_rs::fast::rms_norm(x, &ones, eps).expect("mlx op: fast rms_norm no-scale")
 }
 
 #[cfg(test)]

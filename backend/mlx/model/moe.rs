@@ -191,13 +191,32 @@ impl Experts {
         if let Some(out) = self.forward_gather_qmm(x, indices, weights) {
             return out;
         }
+        self.forward_dense_sum(x, indices, weights)
+    }
 
-        // Fallback: dense-sum loop over all experts. Only reachable when
-        // weights are plain float (PIO_FORCE_DEQUANT=1 or non-quantized
-        // checkpoint). Kept for diagnostic parity with the reference impl.
+    /// `PIO_MLX_FAST` expert dispatch. Same math as `forward`, but mirrors
+    /// mlx-lm's `SwitchGLU.__call__` (`switch_layers.py:176-199`) exactly so
+    /// `gather_qmm` runs the (1×H)×(H×moe) matmuls as a single broadcast over
+    /// the `top_k` expert dimension instead of materializing one (1×H) row per
+    /// (token, expert) slot (the prior `[M,1,H]` + explicit `lhs_indices`
+    /// gather, which had poor GPU occupancy at M=1 decode).
+    ///
+    /// Kept separate from `forward` so the default (non-fast) path's
+    /// `forward_gather_qmm` op graph stays byte-identical.
+    pub fn forward_fast(&self, x: &Array, indices: &Array, weights: &Array) -> Array {
+        if let Some(out) = self.forward_switch_glu(x, indices, weights) {
+            return out;
+        }
+        self.forward_dense_sum(x, indices, weights)
+    }
+
+    /// Dense-sum fallback over all experts. Only reachable when weights are
+    /// plain float (PIO_FORCE_DEQUANT=1 or non-quantized checkpoint). Kept for
+    /// diagnostic parity with the reference impl. Shared by both paths since it
+    /// is never hit with a quantized checkpoint.
+    fn forward_dense_sum(&self, x: &Array, indices: &Array, weights: &Array) -> Array {
         let shape = x.shape();
         let (batch, seq) = (shape[0], shape[1]);
-        let e = self.num_experts as i32;
         let k = indices.shape()[2];
 
         // Scatter weights onto a [B, S, E] dense tensor.
@@ -386,6 +405,135 @@ impl Experts {
         let summed = grouped.sum_axis(1, false).expect("mlx op"); // [M, 1, H]
 
         Some(summed.reshape(&[batch, seq, hidden]).expect("mlx op"))
+    }
+
+    /// `PIO_MLX_FAST` fused expert dispatch — a 1:1 port of mlx-lm's
+    /// `SwitchGLU.__call__` (`mlx_lm/models/switch_layers.py:176-199`) and
+    /// `QuantizedSwitchLinear.__call__` (`switch_layers.py:75-90`). Returns
+    /// `None` when any projection isn't quantized (fall through to dense-sum).
+    ///
+    /// Key difference vs `forward_gather_qmm`: we do NOT build/pass an
+    /// `lhs_indices` gather on the x side. Instead, following mlx-lm, `x` is
+    /// shaped `[..., 1, 1, H]` via `expand_dims(x, (-2, -3))` and passed with
+    /// `rhs_indices` only; `gather_qmm` broadcasts the single x row across the
+    /// `top_k` expert axis selected by `rhs_indices`. That avoids the prior
+    /// per-(token,expert) `[1,1,H]` one-row matmul layout (poor M=1 occupancy).
+    ///
+    /// Output reduction mirrors mlx-lm: `(weights * y).sum(-2)` over the
+    /// `top_k` axis (mlx-lm's `swiglu` activation is `up * gelu(gate)`; our
+    /// `gelu_approximate` matches `nn.GELU(approx="tanh")`, the same approx
+    /// gemma4_text.py uses).
+    fn forward_switch_glu(&self, x: &Array, indices: &Array, weights: &Array) -> Option<Array> {
+        use mlx_rs::ops::gather_qmm;
+
+        let (gate, up, down) = match (&self.gate_proj, &self.up_proj, &self.down_proj) {
+            (
+                Weight::Quantized {
+                    weight: gw,
+                    scales: gs,
+                    biases: gb,
+                    group_size: gg,
+                    bits: gbi,
+                },
+                Weight::Quantized {
+                    weight: uw,
+                    scales: us,
+                    biases: ub,
+                    ..
+                },
+                Weight::Quantized {
+                    weight: dw,
+                    scales: ds,
+                    biases: db,
+                    group_size: dg,
+                    bits: dbi,
+                },
+            ) => (
+                (gw, gs, gb, *gg, *gbi),
+                (uw, us, ub),
+                (dw, ds, db, *dg, *dbi),
+            ),
+            _ => return None,
+        };
+
+        let shape = x.shape();
+        let batch = shape[0];
+        let seq = shape[1];
+        let hidden = shape[2];
+        let k_top = indices.shape()[2];
+
+        // mlx-lm: `x = mx.expand_dims(x, (-2, -3))` → x: [B, S, 1, 1, H].
+        // The last-two axes form a (1×H) matmul; `gather_qmm` broadcasts the
+        // size-1 `top_k` axis against `rhs_indices`'s `top_k` entries.
+        let x_exp = x.reshape(&[batch, seq, 1, 1, hidden]).expect("mlx op");
+
+        // rhs_indices = expert ids, shape [B, S, k] (mlx-lm passes `indices`
+        // straight through). gather_qmm gathers w's leading expert axis.
+        let rhs = indices.as_type::<u32>().expect("mlx op");
+
+        // mlx-lm sorts only when `indices.size >= 64`; at M=1 decode (k≈4)
+        // it stays unsorted, so we pass sorted_indices=false (gather_qmm's
+        // default) and no _gather_sort, matching the decode hot path exactly.
+
+        // Gate / up branch: gather_qmm(x, W, scales, biases, rhs_indices=idx,
+        // transpose=true). Result: [B, S, k, 1, moe].
+        let gate_out = gather_qmm(
+            &x_exp,
+            gate.0,
+            gate.1,
+            Some(gate.2),
+            None::<&Array>,
+            Some(&rhs),
+            Some(true),
+            Some(gate.3),
+            Some(gate.4),
+            None,
+        )
+        .expect("mlx op");
+        let up_out = gather_qmm(
+            &x_exp,
+            up.0,
+            up.1,
+            Some(up.2),
+            None::<&Array>,
+            Some(&rhs),
+            Some(true),
+            Some(gate.3),
+            Some(gate.4),
+            None,
+        )
+        .expect("mlx op");
+
+        // swiglu(gate, x) = up * gelu(gate). [B, S, k, 1, moe].
+        let gated = mlx_rs::nn::gelu_approximate(&gate_out).expect("mlx op");
+        let mix = gated.multiply(&up_out).expect("mlx op");
+
+        // Down branch: gather_qmm(mix, Wd, ..., rhs_indices=idx). [B, S, k, 1, H].
+        let down_out = gather_qmm(
+            &mix,
+            down.0,
+            down.1,
+            Some(down.2),
+            None::<&Array>,
+            Some(&rhs),
+            Some(true),
+            Some(down.3),
+            Some(down.4),
+            None,
+        )
+        .expect("mlx op");
+
+        // mlx-lm returns `x.squeeze(-2)` → [B, S, k, H]; the caller weights
+        // and sums over `top_k`. We fold that reduction in here to keep the
+        // `Experts::forward` contract ([B,S,H]): `(weights * y).sum(-2)`.
+        let y = down_out
+            .reshape(&[batch, seq, k_top, hidden])
+            .expect("mlx op");
+        let w = weights.reshape(&[batch, seq, k_top, 1]).expect("mlx op");
+        let weighted = y.multiply(&w).expect("mlx op"); // [B, S, k, H]
+        let summed = weighted.sum_axis(2, false).expect("mlx op"); // [B, S, H]
+
+        Some(summed)
     }
 
     /// Sparse single-position forward (B=1, S=1). Iterates the `top_k`

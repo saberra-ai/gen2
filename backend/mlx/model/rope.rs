@@ -12,6 +12,20 @@ pub struct RotaryEmbedding {
     cos: Array,
     /// Shape: (max_seq_len, head_dim/2)
     sin: Array,
+    /// Per-dim inverse-frequency **periods** for the fused `mlx_rs::fast::rope`
+    /// kernel (the `freqs` argument). Shape `(freq_divisor/2,)`.
+    ///
+    /// This is exactly mlx-lm's `ProportionalRoPE._freqs`
+    /// (`mlx_lm/models/rope_utils.py`): `freqs[i] = theta^(2i/freq_divisor)` for
+    /// the rotated dims (`i < rotated_dim/2`), then `+inf` for the pass-through
+    /// dims. `fast::rope` computes the rotation angle as `pos / freqs[i]`, so a
+    /// period of `theta^(2i/…)` gives the standard RoPE rate `pos·theta^(-2i/…)`
+    /// and `+inf` gives angle 0 (identity). This is the reciprocal of the rate
+    /// baked into the `cos`/`sin` tables above (rate 0 ↔ period +inf), so the
+    /// fused path is numerically identical to the manual `forward`.
+    /// `full_head_dim` is the rotation `dimensions` passed to the kernel.
+    freqs: Array,
+    full_head_dim: i32,
 }
 
 impl RotaryEmbedding {
@@ -70,7 +84,29 @@ impl RotaryEmbedding {
         let cos = angles.cos().expect("mlx op");
         let sin = angles.sin().expect("mlx op");
 
-        Self { cos, sin }
+        // Fused-kernel `freqs` (the PERIOD = reciprocal of the rate above):
+        // theta^(2i/freq_divisor) for rotated dims, +inf for pass-through dims.
+        // Mirrors `ProportionalRoPE._freqs` (rope_utils.py): the rotated entries
+        // are `base**(arange(0,rotated_dim,2)/freq_divisor)` and the tail is
+        // `mx.full((dims-rotated)/2, mx.inf)`. `fast::rope` does angle = pos /
+        // freqs ⇒ identical rotation to the manual cos/sin tables.
+        let fast_freq_data: Vec<f32> = (0..half_full)
+            .map(|i| {
+                if i < half_rot {
+                    theta.powf(2.0 * i as f32 / freq_divisor as f32)
+                } else {
+                    f32::INFINITY
+                }
+            })
+            .collect();
+        let fast_freqs = Array::from_slice(&fast_freq_data, &[half_full as i32]);
+
+        Self {
+            cos,
+            sin,
+            freqs: fast_freqs,
+            full_head_dim: freq_divisor as i32,
+        }
     }
 
     /// Apply rotary embedding to `x` at the given sequence offset.
@@ -118,21 +154,36 @@ impl RotaryEmbedding {
         term_a.add(&term_b).expect("mlx op")
     }
 
-    /// Fast-path RoPE that upcasts to **f32** for the rotation math, then casts
-    /// back to the input dtype (bf16). Mirrors `mx.fast.rope`, which Gemma 4
-    /// uses (`gemma4_text.py` `self.rope(...)`): the position encoding is
-    /// computed at f32 precision even when activations are bf16. Doing the
-    /// rotation directly in bf16 (bf16 × f32 cos/sin ⇒ bf16) loses enough
-    /// positional precision to break long-range context retrieval ("what's my
-    /// name?") while leaving local computation ("17×23") intact — that was the
-    /// fast-path post-turn-2 context collapse.
+    /// Fast-path RoPE: the single **fused** `mlx_rs::fast::rope` Metal kernel
+    /// (`mlx-rs/src/fast.rs:15` `rope_device` → `mlx_fast_rope`), replacing the
+    /// hand-rolled cos/sin slice + `concatenate([-x2, x1])` rotate-half +
+    /// multiplies of `forward` (≈8 glue ops → 1 kernel).
+    ///
+    /// This mirrors mlx-lm's `ProportionalRoPE` / `nn.RoPE`
+    /// (`rope_utils.py`, `gemma4_text.py` `self.rope(...)`):
+    /// `mx.fast.rope(x, dims, traditional=False, base=None, scale=1.0,
+    /// offset=pos, freqs=self._freqs)`.
+    /// - `traditional=false`: Gemma 4 is NeoX-style — the kernel's non-traditional
+    ///   pairing `(i, i + dims/2)` reproduces the manual `concat([-x2, x1])`
+    ///   rotate-half (verified: the manual path splits at `head_dim/2` and rotates
+    ///   the two halves, which is exactly NeoX).
+    /// - `base=None` + explicit `freqs`: lets us encode the *proportional* /
+    ///   partial-rotary case (full-attn layers rotate only the first
+    ///   `rotated_dim`, pass-through the rest via `+inf` freqs). `dimensions` is
+    ///   the FULL head_dim so the pass-through tail is covered by the kernel.
+    /// - the kernel does the angle math in f32 internally, so the bf16 precision
+    ///   contract that the previous f32-upcast `forward` enforced (needed for
+    ///   long-range context retrieval) is preserved by the fused op.
     pub fn forward_fast(&self, x: &Array, offset: usize) -> Array {
-        let in_dtype = x.dtype();
-        if in_dtype == mlx_rs::Dtype::Float32 {
-            return self.forward(x, offset);
-        }
-        let xf = x.as_dtype(mlx_rs::Dtype::Float32).expect("mlx op");
-        let out = self.forward(&xf, offset);
-        out.as_dtype(in_dtype).expect("mlx op")
+        mlx_rs::fast::rope(
+            x,
+            self.full_head_dim,
+            /* traditional */ false,
+            /* base */ None::<f32>,
+            /* scale */ 1.0,
+            offset as i32,
+            Some(&self.freqs),
+        )
+        .expect("mlx op: fast rope")
     }
 }

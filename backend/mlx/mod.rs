@@ -6,6 +6,8 @@ pub(crate) mod eagle_predictor;
 mod engine;
 #[cfg(test)]
 mod golden;
+#[cfg(test)]
+mod kv_donation_probe;
 mod loader;
 pub(crate) mod model;
 // ngram module replaced by cross-backend `common::speculative::*` —

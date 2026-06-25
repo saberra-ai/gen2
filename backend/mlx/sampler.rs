@@ -81,6 +81,44 @@ impl Sampler {
             .expect("mlx op: token int32")
     }
 
+    /// Greedy argmax for the **pipelined fast path**, run on the supplied GPU
+    /// `stream` (the same stream the forward ran on) so the decode chain
+    /// `forward → argmax → next forward` stays entirely on ONE GPU stream — no
+    /// cross-stream CPU dependency between tokens.
+    ///
+    /// This is the throughput-critical divergence from [`Self::argmax_gpu`]:
+    /// that method runs argmax on the **CPU stream** (`Stream::cpu()`) to stay
+    /// byte-identical to the serial Stage-A goldens, but doing so makes step
+    /// N+1's GPU forward wait on a CPU-stream argmax that itself waits on step
+    /// N's GPU logits — serializing GPU↔CPU every token and draining the GPU
+    /// (~6.2ms idle / token in the trace). mlx-lm runs its sampler on the SAME
+    /// `generation_stream` as the forward (`generate.py:226,424,459`), keeping
+    /// the GPU continuously fed (~0.8µs idle). We mirror that here.
+    ///
+    /// The GPU's 262k-wide argmax reduction breaks near-ties differently than
+    /// the CPU first-max (~3/1000 tokens), so this is NOT byte-identical to the
+    /// Stage-A goldens — but the pipeline is already opt-in and already a valid
+    /// (non-golden) greedy trajectory by design (see `fast_pipeline_eligible`),
+    /// exactly matching mlx-lm's own `mx.argmax` async loop.
+    ///
+    /// Returns a LAZY `[1]` int32 token id on `stream`; never synced to host.
+    pub fn argmax_gpu_on_stream(&mut self, last_logits: &Array, stream: &mlx_rs::Stream) -> Array {
+        let vocab = *last_logits.shape().last().expect("logits rank >= 1");
+        if self.gpu_eot_bias.is_none() {
+            self.gpu_eot_bias = Some(self.build_eot_bias(vocab));
+        }
+        let biased = match self.gpu_eot_bias.as_ref().and_then(|o| o.as_ref()) {
+            Some(bias) => last_logits.add(bias).expect("mlx op: eot bias add"),
+            None => last_logits.clone(),
+        };
+        let idx = mlx_rs::ops::indexing::argmax_axis_device(&biased, -1, None, stream)
+            .expect("mlx op: argmax (gpu stream)");
+        idx.reshape(&[1])
+            .expect("mlx op: token reshape")
+            .as_dtype(mlx_rs::Dtype::Int32)
+            .expect("mlx op: token int32")
+    }
+
     /// Materialize the dense `[vocab]` f32 eot-bias vector (zeros + `bias` at
     /// each id), or `None` when no eot bias is active.
     fn build_eot_bias(&self, vocab: i32) -> Option<Array> {

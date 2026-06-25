@@ -67,6 +67,17 @@ impl Weight {
         }
     }
 
+    /// Number of output rows (axis 0) of the weight WITHOUT dequantizing.
+    /// For a quantized embedding/lm_head this is the vocab size; the packed
+    /// uint32 `weight` array keeps the row count intact (only columns are
+    /// packed). Cheap — reads a shape, no Metal work.
+    pub fn rows(&self) -> i32 {
+        match self {
+            Self::Plain(w) => w.shape()[0],
+            Self::Quantized { weight, .. } => weight.shape()[0],
+        }
+    }
+
     /// Dequantize to a full float array.
     ///
     /// For plain weights: returns self.

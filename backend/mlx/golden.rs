@@ -1378,6 +1378,141 @@ fn gemma4_fast_twenty_turn_pass() {
     }
 }
 
+/// DIAGNOSTIC ABLATION (not a pass/fail gate): fixed-workload fast-path decode
+/// for clean critical-path timing. Reads `PIO_MLX_ABLATE` (set by the caller)
+/// once at model construction; correctness is intentionally irrelevant — we ONLY
+/// measure ms/token. Run once per ablation (baseline / moe / attn / lmhead) and
+/// diff the ms/token to localize each component's real (overlap-accounted) cost.
+///
+/// Workload: one warmup turn (excluded), then a single steady-state turn that
+/// generates a FIXED `STEADY_TOKENS` tokens via greedy decode. Wall-time of the
+/// steady turn / tokens = ms/token. `max_tokens` forces the exact count even when
+/// the ablated model emits garbage (no EOS reliance).
+#[test]
+#[ignore = "diagnostic: requires the ~16GB Gemma-4 26B-A4B checkpoint (PIO_MLX_FAST + PIO_MLX_ABLATE)"]
+fn gemma4_fast_ablate_decode() {
+    use std::path::Path;
+    use std::time::Instant;
+
+    use crate::gen2::generation::ThinkingMode;
+
+    if !Path::new(GEMMA4_AR_DIR).exists() {
+        eprintln!("skipping: {GEMMA4_AR_DIR} not present");
+        return;
+    }
+
+    // Fixed steady-state token budget. Large enough to dominate the per-turn
+    // prefill + dispatch overhead, small enough to keep each run a few minutes.
+    const STEADY_TOKENS: usize = 200;
+    const WARMUP_TOKENS: usize = 32;
+
+    // Fast path is the subject under test. Flag read at model construction.
+    // SAFETY: single-threaded (--test-threads=1).
+    unsafe {
+        std::env::set_var("PIO_MLX_FAST", "1");
+        // FIXED workload: decode EXACTLY `STEADY_TOKENS` forwards, ignoring
+        // EOS / loop-detector stops so EVERY ablation runs the same workload
+        // (ablated models emit garbage that would otherwise trip early stop,
+        // making ms/token incomparable). The gate value is the step COUNT (now
+        // honoured by the engine — see `ArPuller::fixed_steps`), NOT a boolean.
+        std::env::set_var("PIO_MLX_FIXED_STEPS", STEADY_TOKENS.to_string());
+        // Single-token decode (no speculative batching) so #emitted tokens ==
+        // #fast forwards — clean ms/token attribution to the fast forward.
+        std::env::set_var("PIO_MLX_SPEC", "0");
+    }
+    let ablate = std::env::var("PIO_MLX_ABLATE").unwrap_or_else(|_| "(none/baseline)".into());
+
+    let engine = load_engine(PathBuf::from(GEMMA4_AR_DIR));
+    let mut overrides = Settings::default();
+    overrides.sampling.temperature = Some(0.0);
+    let session = engine
+        .start_session(SessionSpec {
+            messages: vec![user_msg(
+                "Write a long detailed essay about the history of computing.",
+            )],
+            overrides: Some(overrides),
+            thinking: ThinkingMode::Off,
+            ..Default::default()
+        })
+        .expect("start_session");
+
+    // ── Warmup turn (excluded from timing): primes Metal kernels + KV cache ──
+    {
+        let mut p = session
+            .pull(GenSpec {
+                max_tokens: Some(WARMUP_TOKENS),
+                temperature: Some(0.0),
+                ..Default::default()
+            })
+            .expect("pull warmup");
+        let _ = drain(&mut p);
+    }
+
+    // ── Steady-state timed turn: FIXED token count, greedy ───────────────────
+    session
+        .append_messages(vec![
+            asst_msg("(warmup)"),
+            user_msg("Continue the essay with many more concrete details and examples."),
+        ])
+        .expect("append");
+
+    let t0 = Instant::now();
+    let (ids, _text, stats) = {
+        let mut p = session
+            .pull(GenSpec {
+                max_tokens: Some(STEADY_TOKENS),
+                temperature: Some(0.0),
+                ..Default::default()
+            })
+            .expect("pull steady");
+        drain(&mut p)
+    };
+    let secs = t0.elapsed().as_secs_f64();
+    // Count decode FORWARDS (stats.decode_tokens), not emitted Token EVENTS:
+    // the lmhead ablation argmaxes all-zeros → token 0, whose decoded text may
+    // be empty (no Token event), but the forward still ran. `decode_tokens` is
+    // bumped once per forward step regardless of emitted text, so it is the
+    // true denominator for ms/forward. Under PIO_MLX_FIXED_STEPS it equals
+    // STEADY_TOKENS exactly.
+    let forwards = stats.decode_tokens as usize;
+    let emitted = ids.len();
+    let ms_per_tok = if forwards > 0 {
+        secs * 1000.0 / forwards as f64
+    } else {
+        0.0
+    };
+    let tok_per_s = if secs > 0.0 {
+        forwards as f64 / secs
+    } else {
+        0.0
+    };
+
+    eprintln!("\n=============== ABLATION DECODE RESULT ===============");
+    eprintln!("PIO_MLX_ABLATE  : {ablate}");
+    eprintln!("decode forwards : {forwards} (requested {STEADY_TOKENS}, emitted {emitted})");
+    eprintln!("steady wall     : {secs:.3}s");
+    eprintln!("ms / token      : {ms_per_tok:.3}");
+    eprintln!("tok / s         : {tok_per_s:.2}");
+    eprintln!("=====================================================\n");
+
+    unsafe {
+        std::env::remove_var("PIO_MLX_FAST");
+        std::env::remove_var("PIO_MLX_FIXED_STEPS");
+        std::env::remove_var("PIO_MLX_SPEC");
+    }
+
+    assert!(forwards > 0, "steady turn produced no decode forwards");
+    // GATE TRUSTWORTHINESS (STEP 1): with `PIO_MLX_FIXED_STEPS` now honoured by
+    // the engine, the steady turn must run EXACTLY `STEADY_TOKENS` forwards —
+    // EOS / loop early-termination is suppressed. A mismatch means the gate is
+    // broken and every ms/token number below is untrustworthy (the original
+    // ablation-confounding bug).
+    assert_eq!(
+        forwards, STEADY_TOKENS,
+        "PIO_MLX_FIXED_STEPS gate broken: decoded {forwards} forwards, expected exactly {STEADY_TOKENS}"
+    );
+}
+
 /// DIAGNOSTIC (not a pass/fail gate): run the first 6 turns with the fast path
 /// OFF then ON, printing both transcripts so we can see exactly which turns the
 /// fast path diverges on vs the (known-good) default path. Helps localise a

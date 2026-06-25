@@ -179,18 +179,22 @@ pub fn step_buffer_update(
         }
     };
 
-    // Write the new chunk at [.., prev:offset, :] (cache.py:353). We use an
-    // explicit concat rebuild (head[..prev] ++ new ++ tail[offset..cap]) rather
-    // than `try_index_mut`: the latter silently produced an un-attended cache
-    // for delta prefills into a non-empty buffer (the post-turn-2 collapse),
-    // whereas the concat form is unambiguous. The over-allocation still buys us
-    // amortised growth (realloc only every KV_STEP), so this stays a step
-    // buffer, just with a safe in-place-equivalent write.
+    // Write the new chunk at [.., prev:offset, :] — mlx-lm's
+    // `self.keys[..., prev:offset, :] = keys` (cache.py:353), an in-place
+    // slice-update of ONLY the new rows. This is the per-token throughput win:
+    // the prior implementation concat-rebuilt the ENTIRE over-allocated buffer
+    // (head[..prev] ++ new ++ tail[offset..cap]) every single token, which is
+    // O(capacity) GPU work per layer per token; the slice-update touches only
+    // the `seq` new rows (`mlx_slice_update`), exactly like the golden. See
+    // `slice_assign`.
     let p = prev as i32;
     let o = need as i32;
     let _ = (n_kv, kd, vd, b);
-    buf_k = inplace_assign(&buf_k, new_k, p, o);
-    buf_v = inplace_assign(&buf_v, new_v, p, o);
+    // Move the owned buffers in (no clone) so MLX's slice-update can DONATE the
+    // source buffer — a clone here would bump the refcount and force a full
+    // copy, defeating the in-place win.
+    buf_k = slice_assign(buf_k, new_k, p, o);
+    buf_v = slice_assign(buf_v, new_v, p, o);
 
     // Filled prefix view (cache.py:355).
     let view_k = buf_k.index((.., .., 0..o, ..));
@@ -214,14 +218,28 @@ pub fn step_buffer_update(
     (view_k, view_v)
 }
 
-/// Write `new` into the over-allocated buffer at `[.., prev:offset, :]` by
-/// rebuilding `concat(buf[..prev], new, buf[offset..cap])`. This is the safe
-/// in-place-equivalent of `self.keys[..., prev:offset, :] = keys` (cache.py:353)
-/// — the filled prefix `[..offset]` is exactly the cached K/V; the `[offset..]`
-/// tail stays zero-padded capacity, sliced off by the caller before attention.
-fn inplace_assign(buf: &Array, new: &Array, prev: i32, offset: i32) -> Array {
-    let cap = buf.shape()[2];
-    let head = buf.index((.., .., 0..prev, ..));
-    let tail = buf.index((.., .., offset..cap, ..));
-    mlx_rs::ops::concatenate_axis(&[&head, new, &tail], 2).expect("mlx op")
+/// Write `new` into the over-allocated buffer at `[.., .., prev:offset, :]`
+/// via an MLX slice-update (`mlx_slice_update`) — the exact equivalent of
+/// mlx-lm's `self.keys[..., prev:offset, :] = keys` (cache.py:353). Only the
+/// `offset-prev` new rows are written; the rest of the buffer is untouched
+/// (MLX's slice-update donates the source buffer, so no full-buffer copy).
+///
+/// `new` must have shape `[b, n_kv, offset-prev, head_dim]` — the seq axis
+/// must equal the slice extent. The returned array is the updated buffer
+/// (MLX slice-update is functional but buffer-donating, so this is cheap, NOT
+/// an O(capacity) concat rebuild like the prior implementation).
+///
+/// Correctness note: the historical `try_index_mut` "un-attended cache"
+/// collapse was a *view* bug — the over-allocated tail past `offset` is zero
+/// padding and was being attended over. That is handled by the caller slicing
+/// the filled prefix `[..offset]` before attention (see `step_buffer_update`),
+/// independent of how the write itself is performed. The write being a
+/// slice-update vs a concat does not change which rows are valid.
+fn slice_assign(mut buf: Array, new: &Array, prev: i32, offset: i32) -> Array {
+    use mlx_rs::ops::indexing::TryIndexMutOp;
+    // `[.., .., prev..offset, ..]` — a pure 4-range slice (no fancy/array
+    // index), so mlx-rs routes this to `mlx_slice_update`, NOT a scatter.
+    buf.try_index_mut((.., .., prev..offset, ..), new)
+        .expect("mlx op: kv slice update");
+    buf
 }

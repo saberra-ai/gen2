@@ -598,13 +598,30 @@ impl Gemma4TransformerBlock {
         offset: usize,
         shared_kv: Option<&(Array, Array)>,
         per_layer_input: Option<&Array>,
+        ablate: Ablate,
     ) -> (Array, (Array, Array)) {
         // Pre-norm → attention → post-attn-norm → residual
-        let h = self.input_layernorm.forward_fast(x);
-        let (h, kv_view) = self
-            .attention
-            .forward_fast(&h, rope, cache, offset, shared_kv);
-        let h = self.post_attention_layernorm.forward_fast(&h);
+        // DIAGNOSTIC (PIO_MLX_ABLATE=attn): skip the attention block entirely —
+        // no input_layernorm/qkv/sdpa/o_proj/post-attn-norm — so the residual
+        // passes through unchanged (h ≡ 0). We still need a (k,v) view for any
+        // KV-shared partner layer; a cheap clone of the cache (or a tiny dummy)
+        // suffices since correctness is irrelevant under ablation.
+        let (h, kv_view) = if ablate.attn {
+            let dummy = x
+                .index((.., 0..1, ..))
+                .reshape(&[x.shape()[0], 1, 1, x.shape()[2]])
+                .expect("mlx op");
+            // h = 0 (broadcast) so `x.add(&h)` leaves x unchanged.
+            let zero = Array::from_f32(0.0).as_dtype(x.dtype()).expect("mlx op");
+            (x.multiply(&zero).expect("mlx op"), (dummy.clone(), dummy))
+        } else {
+            let h = self.input_layernorm.forward_fast(x);
+            let (h, kv_view) = self
+                .attention
+                .forward_fast(&h, rope, cache, offset, shared_kv);
+            let h = self.post_attention_layernorm.forward_fast(&h);
+            (h, kv_view)
+        };
         let x = x.add(&h).expect("mlx op");
 
         // Feed-forward: dense path, plus MoE branch (summed) when enabled.
@@ -612,10 +629,27 @@ impl Gemma4TransformerBlock {
             let h1 = self.pre_feedforward_layernorm.forward_fast(&x);
             let h1 = self.ffn.forward(&h1);
             let h1 = moe.post_feedforward_layernorm_1.forward_fast(&h1);
+            // DIAGNOSTIC (PIO_MLX_ABLATE=moe): keep the router (cheap; its
+            // output shapes are otherwise threaded), but SKIP the expert
+            // matmuls — replace the expert contribution h2 with zeros. This
+            // isolates the gather_qmm expert cost from the dense branch + norms.
+            // Router: keep the frozen `forward` math. The Stage-A fast-path
+            // goldens (gemma4_fast_twenty_turn_pass) are locked to its
+            // full-softmax-then-renormalize expert weights; swapping in the
+            // golden's argpartition + softmax-over-topk math changed the expert
+            // mix enough to break turn-5 context recall (verified: the
+            // no-regression run failed "should recall name Victor"). The
+            // router is cheap relative to the expert matmuls, so its argsort is
+            // not a meaningful throughput lever. See `Router::forward`.
             let (idx, w) = moe.router.forward(&x);
-            let h2 = moe.pre_feedforward_layernorm_2.forward_fast(&x);
-            let h2 = moe.experts.forward(&h2, &idx, &w);
-            let h2 = moe.post_feedforward_layernorm_2.forward_fast(&h2);
+            let h2 = if ablate.moe {
+                let zero = Array::from_f32(0.0).as_dtype(x.dtype()).expect("mlx op");
+                x.multiply(&zero).expect("mlx op")
+            } else {
+                let h2 = moe.pre_feedforward_layernorm_2.forward_fast(&x);
+                let h2 = moe.experts.forward_fast(&h2, &idx, &w);
+                moe.post_feedforward_layernorm_2.forward_fast(&h2)
+            };
             h1.add(&h2).expect("mlx op")
         } else {
             let h = self.pre_feedforward_layernorm.forward_fast(&x);
@@ -682,6 +716,10 @@ pub struct Gemma4Model {
     /// step-buffer fast path; when false the default f32 path is byte-identical
     /// to before. A single binary supports both, selected at runtime.
     pub fast: bool,
+    /// DIAGNOSTIC-ONLY ablation flags (`PIO_MLX_ABLATE`), read once at
+    /// construction. All-false unless the env var is set — no effect on the
+    /// default path or the un-ablated fast path.
+    pub ablate: Ablate,
 }
 
 /// Read the `PIO_MLX_FAST` runtime flag. `"1"` / `"on"` (case-insensitive)
@@ -693,6 +731,44 @@ pub fn fast_flag_enabled() -> bool {
             v == "1" || v == "on" || v == "true" || v == "yes"
         })
         .unwrap_or(false)
+}
+
+/// DIAGNOSTIC-ONLY fast-path ablation flags (`PIO_MLX_ABLATE`). Read **once** at
+/// model construction (like `PIO_MLX_FAST`). When unset, every field is false and
+/// the fast path is byte-identical to the un-ablated fast path. Each flag replaces
+/// one component of the decode critical path with a cheap timing-only stand-in so a
+/// wall-time delta vs. baseline localizes that component's real (overlap-accounted)
+/// cost. Correctness is intentionally destroyed — these branches exist only to time.
+///
+/// Accepted values (comma/`+`-separated, case-insensitive):
+///   - `moe`    → skip MoE experts (router kept; expert matmuls replaced by zeros)
+///   - `attn`   → attention block returns its input residual (no qkv/sdpa/o_proj)
+///   - `lmhead` → final lm_head projection replaced by a dummy zeros logits tensor
+///   - `moe+attn` (or both listed) → norms+rope+lmhead-only floor
+#[derive(Clone, Copy, Default, Debug)]
+pub struct Ablate {
+    pub moe: bool,
+    pub attn: bool,
+    pub lmhead: bool,
+}
+
+impl Ablate {
+    pub fn from_env() -> Self {
+        let raw = match std::env::var("PIO_MLX_ABLATE") {
+            Ok(v) => v.trim().to_ascii_lowercase(),
+            Err(_) => return Self::default(),
+        };
+        let mut a = Self::default();
+        for part in raw.split(['+', ',', ' ']).filter(|s| !s.is_empty()) {
+            match part {
+                "moe" => a.moe = true,
+                "attn" | "attention" => a.attn = true,
+                "lmhead" | "lm_head" => a.lmhead = true,
+                _ => {}
+            }
+        }
+        a
+    }
 }
 
 impl Gemma4Model {
@@ -784,6 +860,7 @@ impl Gemma4Model {
             final_logit_softcapping: config.final_logit_softcapping,
             hidden_per_layer_input: hpl,
             fast: fast_flag_enabled(),
+            ablate: Ablate::from_env(),
         }
     }
 
@@ -1023,9 +1100,24 @@ impl Gemma4Model {
                 offset,
                 shared_kv.as_ref(),
                 per_layer_i.as_ref(),
+                self.ablate,
             );
             x = x_next;
             intermediates[i] = Some(kv_view);
+        }
+
+        // DIAGNOSTIC (PIO_MLX_ABLATE=lmhead): skip the final RMSNorm + tied
+        // lm_head projection (the [hidden]×[vocab] matmul) and return a dummy
+        // zeros logits tensor of the right shape `[1, seq_len, vocab]`. The
+        // puller still argmaxes (it picks token 0 every step) so the decode loop
+        // proceeds — we only measure wall time, not output.
+        if self.ablate.lmhead {
+            // Dummy f32 logits — the real path produces f32 here (the 26B logit
+            // softcapping divides by an f32 scalar, promoting bf16→f32), and the
+            // serial sampler does `as_slice::<f32>()`. argmax of all-zeros picks
+            // token 0 every step (fine — we only time, never read output).
+            let vocab = self.embed_tokens.rows();
+            return Array::zeros::<f32>(&[1, seq_len as i32, vocab]).expect("mlx op");
         }
 
         // Final norm (fast) → tied lm_head → logit softcapping.
