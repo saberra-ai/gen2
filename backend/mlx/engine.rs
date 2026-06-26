@@ -129,6 +129,25 @@ fn build_bundle_from_dir(model_dir: &Path) -> Result<ModelBundle, ExecError> {
     let model_type = super::loader::read_hf_model_type(model_dir);
     let (model, config) = super::loader::build_any_model(model_dir)?;
 
+    // Gemma 4 in-bundle vision tower (the `-it` VLM bundles carry
+    // `vision_tower.*` / `embed_vision.*`). `None` for text-only checkpoints.
+    // When present we advertise `Capabilities::IMAGES` so the engine accepts
+    // image messages (engine.rs reject guard passes; model_supports_images true).
+    let vision = match &model {
+        super::model::Model::Gemma4(_) => super::loader::build_vision_model(model_dir)
+            .map_err(|e| {
+                tracing::warn!("vision tower present but failed to load: {e}");
+                e
+            })
+            .unwrap_or(None),
+        _ => None,
+    };
+    let capabilities = if vision.is_some() {
+        Capabilities::TEXT | Capabilities::IMAGES
+    } else {
+        Capabilities::TEXT
+    };
+
     // DiffusionGemma denoising params live in `config.json`'s `generation_config`.
     // Parse them once at load time so the session/puller can drive the denoising
     // loop without re-reading the file. `None` for autoregressive models.
@@ -179,7 +198,8 @@ fn build_bundle_from_dir(model_dir: &Path) -> Result<ModelBundle, ExecError> {
         rope,
         tokenizer,
         config,
-        capabilities: Capabilities::TEXT,
+        capabilities,
+        vision,
         meta,
         model_dir: model_dir.to_path_buf(),
         chat_template_str,
@@ -1110,6 +1130,7 @@ mod tests {
         let err = e
             .load_embedder(EmbedLoadRequest {
                 model_path: std::path::PathBuf::from("/nonexistent"),
+                kind: None,
             })
             .unwrap_err();
         assert!(

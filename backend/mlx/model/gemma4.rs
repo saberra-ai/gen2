@@ -65,7 +65,7 @@ fn build_causal_mask(query_len: usize, kv_len: usize, window: Option<usize>) -> 
         let abs_q = k - q + qi; // absolute kv position of this query
         for ki in 0..k {
             let causal_ok = ki <= abs_q;
-            let window_ok = window.map_or(true, |w| ki > abs_q - w as i32);
+            let window_ok = window.is_none_or(|w| ki > abs_q - w as i32);
             if !causal_ok || !window_ok {
                 data[(qi * k + ki) as usize] = neg_inf;
             }
@@ -906,6 +906,184 @@ impl Gemma4Model {
             fast: fast_flag_enabled(),
             ablate: Ablate::from_env(),
         }
+    }
+
+    /// Build the decoder input embeddings `[1, seq, hidden]` for `tokens`,
+    /// scattering `image_features` (`[1, n_img, hidden]`, already projected to
+    /// text hidden) into the rows where `token == image_token_id`. Mirrors
+    /// `get_input_embeddings` + `masked_scatter` (gemma4.py:85-124, :13-19):
+    /// `inputs_embeds = embed_tokens(ids) * embed_scale`, then the image rows
+    /// (in order) replace the image-token positions.
+    ///
+    /// This is the ONLY decoder change for native vision: the per-layer-input
+    /// gating still sees text-only tokens (image ids are masked out upstream by
+    /// the caller / are not PLE-relevant here), and the decoder runs unmodified
+    /// on the merged sequence.
+    pub fn build_input_embeds_with_image(
+        &self,
+        tokens: &[u32],
+        image_features: &Array,
+        image_token_id: u32,
+    ) -> Array {
+        let seq_len = tokens.len();
+        let idx: Vec<i32> = tokens.iter().map(|&t| t as i32).collect();
+        let token_indices = Array::from_slice(&idx, &[seq_len as i32]);
+
+        // text embeds × sqrt(hidden) (gemma4.py:85-86).
+        let x0 = self.embed_tokens.embedding_lookup(&token_indices);
+        let scale = Array::from_f32(self.embed_scale);
+        let x0 = x0.multiply(&scale).expect("mlx op");
+        let hidden = self.layers[0].input_layernorm.weight.shape()[0];
+        let inputs_embeds = x0.reshape(&[1, seq_len as i32, hidden]).expect("mlx op");
+
+        // image_features cast to the embeds dtype (gemma4.py:114/116).
+        let feats = image_features
+            .as_dtype(inputs_embeds.dtype())
+            .expect("mlx op")
+            .reshape(&[-1, hidden])
+            .expect("mlx op"); // [n_img, hidden]
+
+        // Scatter: for each token position, if it's an image token take the
+        // next image-feature row (in order), else keep the text embed. Mirrors
+        // masked_scatter for the contiguous image-row case (gemma4.py:13-19).
+        // We build a per-row gather: row index into `feats` via cumulative
+        // count of image tokens seen so far.
+        let mut is_img: Vec<bool> = Vec::with_capacity(seq_len);
+        let mut gather_idx: Vec<i32> = Vec::with_capacity(seq_len);
+        let mut running = 0i32;
+        let n_feat = feats.shape()[0];
+        for &t in tokens {
+            if t == image_token_id {
+                is_img.push(true);
+                gather_idx.push(running.min(n_feat - 1));
+                running += 1;
+            } else {
+                is_img.push(false);
+                gather_idx.push(0); // unused where !is_img
+            }
+        }
+        debug_assert_eq!(
+            running, n_feat,
+            "image-token count ({running}) must equal image-feature rows ({n_feat})"
+        );
+
+        // gathered[pos] = feats[gather_idx[pos]] -> [seq, hidden]
+        let gidx = Array::from_slice(&gather_idx, &[seq_len as i32]);
+        let gathered = feats
+            .take_axis(&gidx, 0)
+            .expect("mlx op")
+            .reshape(&[1, seq_len as i32, hidden])
+            .expect("mlx op");
+
+        // mask [1, seq, 1] broadcast → where(mask, gathered, text)
+        let mask_i: Vec<i32> = is_img.iter().map(|&b| b as i32).collect();
+        let mask = Array::from_slice(&mask_i, &[1, seq_len as i32, 1])
+            .as_dtype(mlx_rs::Dtype::Bool)
+            .expect("mlx op");
+        let mask = mlx_rs::ops::broadcast_to(&mask, inputs_embeds.shape()).expect("mlx op");
+        mlx_rs::ops::r#where(&mask, &gathered, &inputs_embeds).expect("mlx op")
+    }
+
+    /// Vision prefill forward: like [`Self::forward`] but with `image_features`
+    /// scattered into the image-token rows (gemma4.py:124) before the decoder
+    /// runs. Returns last-token logits `[1, 1, vocab]`.
+    ///
+    /// The per-layer-input (PLE) token lookup masks image tokens to id 0
+    /// (gemma4.py:92-103) so the per-layer embedding table only sees text; the
+    /// per-layer projection still reads the merged residual stream (matching the
+    /// reference's in-block projection over the image-position embeds).
+    ///
+    /// v1 scope: default (non-fast) path, single image, prefill only.
+    pub fn forward_with_image(
+        &self,
+        tokens: &[u32],
+        image_features: &Array,
+        image_token_id: u32,
+        offset: usize,
+        cache: &mut KvCache,
+    ) -> Array {
+        let seq_len = tokens.len();
+        let hidden = self.layers[0].input_layernorm.weight.shape()[0];
+
+        // Merged input embeddings (text × embed_scale, image rows scattered).
+        let mut x = self.build_input_embeds_with_image(tokens, image_features, image_token_id);
+
+        // PLE token lookup with image tokens masked to 0 (gemma4.py:98-100).
+        let masked_ids: Vec<i32> = tokens
+            .iter()
+            .map(|&t| if t == image_token_id { 0 } else { t as i32 })
+            .collect();
+        let masked_indices = Array::from_slice(&masked_ids, &[seq_len as i32]);
+
+        let n_layers = self.layers.len() as i32;
+        let hpl = self.hidden_per_layer_input as i32;
+        let per_layer: Option<Array> = if hpl > 0 {
+            let per_layer_embed = self
+                .embed_tokens_per_layer
+                .embedding_lookup(&masked_indices);
+            let ptl_scale = Array::from_f32(self.embed_tokens_per_layer_scale);
+            let per_layer_embed = per_layer_embed.multiply(&ptl_scale).expect("mlx op");
+            let per_layer_embed = per_layer_embed
+                .reshape(&[1, seq_len as i32, n_layers, hpl])
+                .expect("mlx op");
+            let per_layer_proj = self.per_layer_model_projection.matmul_transpose(&x);
+            let proj_scale = Array::from_f32(self.per_layer_projection_scale);
+            let per_layer_proj = per_layer_proj.multiply(&proj_scale).expect("mlx op");
+            let per_layer_proj = per_layer_proj
+                .reshape(&[1, seq_len as i32, n_layers, hpl])
+                .expect("mlx op");
+            let per_layer_proj = self.per_layer_projection_norm.forward(&per_layer_proj);
+            let mixed = per_layer_proj.add(&per_layer_embed).expect("mlx op");
+            let input_scale = Array::from_f32(self.per_layer_input_scale);
+            Some(mixed.multiply(&input_scale).expect("mlx op"))
+        } else {
+            None
+        };
+
+        let n = self.num_non_shared;
+        for (i, layer) in self.layers.iter().enumerate() {
+            let rope = if layer.attention.is_sliding {
+                &self.local_rope
+            } else {
+                &self.global_rope
+            };
+            let cache_idx = self.cache_slot[i];
+            let is_shared = i >= n;
+            let shared_kv: Option<(Array, Array)> = if is_shared {
+                cache[cache_idx]
+                    .as_ref()
+                    .map(|(k, v)| (k.clone(), v.clone()))
+            } else {
+                None
+            };
+            let per_layer_i = per_layer.as_ref().map(|pl| {
+                let li = i as i32;
+                pl.index((.., .., li..li + 1, ..))
+                    .reshape(&[1, seq_len as i32, hpl])
+                    .expect("mlx op")
+            });
+            x = layer.forward(
+                &x,
+                rope,
+                &mut cache[cache_idx],
+                offset,
+                shared_kv.as_ref(),
+                per_layer_i.as_ref(),
+            );
+        }
+
+        x = self.norm.forward(&x);
+        let logits = self.embed_tokens.matmul_transpose(&x);
+        let logits = if let Some(cap) = self.final_logit_softcapping {
+            let cap_arr = Array::from_f32(cap);
+            let scaled = logits.divide(&cap_arr).expect("mlx op");
+            let tanhed = mlx_rs::ops::tanh(&scaled).expect("mlx op");
+            tanhed.multiply(&cap_arr).expect("mlx op")
+        } else {
+            logits
+        };
+        let s = seq_len as i32;
+        logits.index((0..1, (s - 1)..s, ..))
     }
 
     /// Forward pass. Returns logits for the last token: shape [1, 1, vocab_size].

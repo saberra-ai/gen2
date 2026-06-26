@@ -99,7 +99,7 @@ fn build_fast_mask(query_len: usize, kv_len: usize, window: Option<usize>) -> Ar
         let lpos = off + qi; // position of this query within the kv buffer
         for ki in 0..k {
             let causal_ok = lpos >= ki;
-            let window_ok = window.map_or(true, |w| lpos < ki + w as i32);
+            let window_ok = window.is_none_or(|w| lpos < ki + w as i32);
             if !causal_ok || !window_ok {
                 data[(qi * k + ki) as usize] = neg_inf;
             }
@@ -235,16 +235,16 @@ pub fn step_buffer_update(
 
     // Sliding-window truncation of BOTH the stored buffer and the returned view,
     // so the next decode step's no-mask `seq == 1` shortcut remains correct.
-    if let Some(w) = window {
-        if need > w {
-            let start = (need - w) as i32;
-            let tk = view_k.index((.., .., start.., ..));
-            let tv = view_v.index((.., .., start.., ..));
-            // Store the truncated prefix as the new buffer (re-materialized; the
-            // sliding cache stays bounded at `window`, so this is cheap).
-            *slot = Some((tk.clone(), tv.clone()));
-            return (tk, tv);
-        }
+    if let Some(w) = window
+        && need > w
+    {
+        let start = (need - w) as i32;
+        let tk = view_k.index((.., .., start.., ..));
+        let tv = view_v.index((.., .., start.., ..));
+        // Store the truncated prefix as the new buffer (re-materialized; the
+        // sliding cache stays bounded at `window`, so this is cheap).
+        *slot = Some((tk.clone(), tv.clone()));
+        return (tk, tv);
     }
 
     *slot = Some((buf_k, buf_v));

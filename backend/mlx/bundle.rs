@@ -1,5 +1,6 @@
 //! MLX model bundle — holds the loaded model, tokenizer, and metadata.
 
+use super::model::vision::VisionModel;
 use super::model::{DiffusionGenParams, Model, ModelConfig, RotaryEmbedding};
 use super::tokenizer::HfTokenizer;
 use crate::gen2::bundle::ModelMeta;
@@ -11,6 +12,10 @@ pub struct ModelBundle {
     pub tokenizer: HfTokenizer,
     pub config: ModelConfig,
     pub capabilities: Capabilities,
+    /// Gemma 4 in-bundle vision tower + projector, when the checkpoint carries
+    /// `vision_tower.*` (the `-it` VLM bundles). `None` for text-only models.
+    /// Present ⟺ `capabilities` contains `IMAGES`.
+    pub vision: Option<VisionModel>,
     pub meta: ModelMeta,
     pub model_dir: std::path::PathBuf,
     /// Jinja2 chat template, loaded once from `tokenizer_config.json` at model load time.

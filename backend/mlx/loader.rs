@@ -11,6 +11,7 @@ use std::path::Path;
 use mlx_rs::Array;
 use mlx_rs::ops::indexing::IndexOp;
 
+use super::model::vision::{ClippableLinear, EmbedVision, VisionConfig, VisionModel, VisionTower};
 use super::model::{
     DiffusionGemmaConfig, DiffusionGemmaModel, Gemma4Model, LlamaModel, Model, ModelConfig, Weight,
 };
@@ -90,6 +91,12 @@ fn detect_bits(weight_shape: &[i32], full_dim: usize) -> Option<i32> {
     if weight_shape.len() < 2 || full_dim == 0 {
         return None;
     }
+    // Reject any non-positive dimension — a degenerate shape (e.g. `[0, 128]`)
+    // is not a real quantized weight. (Previously only the last dim was checked,
+    // so `[0, 128]` slipped through as `Some(1)`.)
+    if weight_shape.iter().any(|&d| d <= 0) {
+        return None;
+    }
     let packed_cols = *weight_shape.last()? as usize;
     if packed_cols == 0 {
         return None;
@@ -107,6 +114,13 @@ fn detect_bits(weight_shape: &[i32], full_dim: usize) -> Option<i32> {
 /// 2D: `(out_features, num_groups)`, 3D: `(n_experts, out_features, num_groups)`.
 /// `group_size = full_dim / num_groups` in either layout.
 fn detect_group_size(scales_shape: &[i32], full_dim: usize) -> i32 {
+    // A real scales tensor is 2D `(out, num_groups)` or 3D `(experts, out,
+    // num_groups)`; a rank-<2 shape (e.g. `[4096]`) is degenerate → fall back.
+    // (Previously a 1-element shape used its sole entry as `num_groups`, so
+    // `[4096]` with full_dim 4096 returned 1 instead of the 128 fallback.)
+    if scales_shape.len() < 2 {
+        return 128;
+    }
     let Some(&last) = scales_shape.last() else {
         return 128;
     };
@@ -535,6 +549,156 @@ pub fn build_gemma4_model(model_dir: &Path) -> Result<(Gemma4Model, ModelConfig)
     );
 
     Ok((model, config))
+}
+
+// ─── Vision tower + projector loader (Gemma 4 SigLIP2) ─────────────────────
+
+/// True iff this directory's checkpoint carries a gemma4 vision tower —
+/// `vision_tower.patch_embedder.input_proj.weight` present. This is the Stage-1
+/// arch-decision gate: gemma4 (Linear patchify) vs gemma3 (Conv2d patch embed,
+/// key `vision_tower.vision_model.embeddings.patch_embedding.*`). We only build
+/// when the gemma4 key layout is present.
+pub fn has_gemma4_vision_tower(tensors: &HashMap<String, Array>) -> bool {
+    tensors.contains_key("vision_tower.patch_embedder.input_proj.weight")
+}
+
+/// Load a `ClippableLinear` from the tensor map. The `nn.Linear` weight lives at
+/// `{base}.linear.weight` (ClippableLinear wraps an `nn.Linear` submodule), and
+/// when `use_clipping` the four scalar bounds are at
+/// `{base}.{input_min,input_max,output_min,output_max}` (vision.py:10-41).
+/// Vision-tower linears are PLAIN (unquantized) here; we still try a quantized
+/// triple first for robustness against future packs.
+fn load_clippable_linear(
+    tensors: &HashMap<String, Array>,
+    base: &str,
+    full_dim: usize,
+    use_clipping: bool,
+) -> ClippableLinear {
+    // Weight at `{base}.linear` (plain or quantized).
+    let linear_name = format!("{base}.linear");
+    let weight = load_weight(tensors, &linear_name, full_dim);
+
+    let clip = if use_clipping {
+        let get = |suffix: &str| tensors.get(&format!("{base}.{suffix}")).cloned();
+        match (
+            get("input_min"),
+            get("input_max"),
+            get("output_min"),
+            get("output_max"),
+        ) {
+            (Some(imin), Some(imax), Some(omin), Some(omax)) => Some((imin, imax, omin, omax)),
+            // Bounds missing despite use_clipping → leave as no-op (None).
+            _ => None,
+        }
+    } else {
+        None
+    };
+
+    ClippableLinear { weight, clip }
+}
+
+/// Build the Gemma 4 `VisionModel` (tower + projector) from a model dir.
+///
+/// Reads `vision_tower.*` / `embed_vision.*` from the already-loaded tensor map.
+/// Mirrors `gemma4.py:sanitize` for clip-param handling: when
+/// `use_clipped_linears=false` the clip params are skipped; here the e2b/e4b
+/// bundles set it true, so the bounds are loaded and applied.
+///
+/// Returns `Ok(None)` when the bundle has no gemma4 vision tower — the caller
+/// then loads text-only (no IMAGES capability).
+pub fn build_vision_model(model_dir: &Path) -> Result<Option<VisionModel>, ExecError> {
+    let raw = load_raw_config(model_dir)?;
+    let vcfg = VisionConfig::from_root_json(&raw);
+    let tensors = load_all_tensors(model_dir)?;
+
+    if !has_gemma4_vision_tower(&tensors) {
+        return Ok(None);
+    }
+
+    // text hidden (for the projector output dim) from text_config.
+    let text_hidden = raw
+        .get("text_config")
+        .and_then(|tc| tc.get("hidden_size"))
+        .and_then(|v| v.as_u64())
+        .map(|v| v as usize)
+        .unwrap_or(1536);
+    let image_token_id = raw
+        .get("image_token_id")
+        .and_then(|v| v.as_u64())
+        .map(|v| v as u32)
+        .unwrap_or(258880);
+
+    let mut tower = VisionTower::new(&vcfg);
+    let clip = vcfg.use_clipped_linears;
+    let h = vcfg.hidden_size;
+    let inter = vcfg.intermediate_size;
+
+    // ── Patch embedder (plain nn.Linear + position table) ──────────────────
+    if let Some(w) = tensors.get("vision_tower.patch_embedder.input_proj.weight") {
+        tower.patch_embedder.input_proj = Weight::plain(w.clone());
+    }
+    if let Some(w) = tensors.get("vision_tower.patch_embedder.position_embedding_table") {
+        tower.patch_embedder.position_embedding_table = w.clone();
+    }
+
+    // ── Encoder layers ─────────────────────────────────────────────────────
+    for (i, layer) in tower.layers.iter_mut().enumerate() {
+        let lp = format!("vision_tower.encoder.layers.{i}");
+
+        layer.self_attn.q_proj =
+            load_clippable_linear(&tensors, &format!("{lp}.self_attn.q_proj"), h, clip);
+        layer.self_attn.k_proj =
+            load_clippable_linear(&tensors, &format!("{lp}.self_attn.k_proj"), h, clip);
+        layer.self_attn.v_proj =
+            load_clippable_linear(&tensors, &format!("{lp}.self_attn.v_proj"), h, clip);
+        let o_in = vcfg.num_attention_heads * vcfg.head_dim;
+        layer.self_attn.o_proj =
+            load_clippable_linear(&tensors, &format!("{lp}.self_attn.o_proj"), o_in, clip);
+
+        if let Some(w) = tensors.get(&format!("{lp}.self_attn.q_norm.weight")) {
+            layer.self_attn.q_norm.weight = w.clone();
+        }
+        if let Some(w) = tensors.get(&format!("{lp}.self_attn.k_norm.weight")) {
+            layer.self_attn.k_norm.weight = w.clone();
+        }
+
+        layer.mlp.gate_proj =
+            load_clippable_linear(&tensors, &format!("{lp}.mlp.gate_proj"), h, clip);
+        layer.mlp.up_proj = load_clippable_linear(&tensors, &format!("{lp}.mlp.up_proj"), h, clip);
+        layer.mlp.down_proj =
+            load_clippable_linear(&tensors, &format!("{lp}.mlp.down_proj"), inter, clip);
+
+        if let Some(w) = tensors.get(&format!("{lp}.input_layernorm.weight")) {
+            layer.input_layernorm.weight = w.clone();
+        }
+        if let Some(w) = tensors.get(&format!("{lp}.post_attention_layernorm.weight")) {
+            layer.post_attention_layernorm.weight = w.clone();
+        }
+        if let Some(w) = tensors.get(&format!("{lp}.pre_feedforward_layernorm.weight")) {
+            layer.pre_feedforward_layernorm.weight = w.clone();
+        }
+        if let Some(w) = tensors.get(&format!("{lp}.post_feedforward_layernorm.weight")) {
+            layer.post_feedforward_layernorm.weight = w.clone();
+        }
+    }
+
+    // ── Projector (embed_vision) — quantized 4-bit in e2b/e4b ──────────────
+    let mut projector = EmbedVision::new(&vcfg, text_hidden);
+    projector.embedding_projection = load_weight(&tensors, "embed_vision.embedding_projection", h);
+
+    tracing::info!(
+        "loaded Gemma 4 vision tower: {} encoder layers, hidden={}, clip={}, projector->{}",
+        vcfg.num_hidden_layers,
+        h,
+        clip,
+        text_hidden
+    );
+
+    Ok(Some(VisionModel {
+        tower,
+        projector,
+        image_token_id,
+    }))
 }
 
 // ─── DiffusionGemma loader ─────────────────────────────────────────────────

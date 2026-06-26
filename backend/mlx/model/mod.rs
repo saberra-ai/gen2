@@ -15,6 +15,8 @@ mod norm;
 pub mod profile;
 pub mod quantized;
 pub(crate) mod rope;
+pub mod vision;
+pub mod vision_preprocess;
 
 pub use diffusion_gemma::{DiffusionGemmaConfig, DiffusionGemmaModel, DiffusionGenParams};
 pub use gemma4::Gemma4Model;
@@ -64,6 +66,26 @@ impl Model {
                 // the denoising loop through `encode`/`decode` directly.
                 panic!("DiffusionGemma does not support autoregressive forward; use encode/decode")
             }
+        }
+    }
+
+    /// Vision prefill forward: scatter projected `image_features` into the
+    /// image-token rows, then run the decoder. Returns last-token logits
+    /// `[1, 1, vocab]`. Only Gemma 4 supports this; other models panic (the
+    /// caller gates on `bundle.vision.is_some()`, which is Gemma-4-only).
+    pub fn forward_with_image(
+        &self,
+        tokens: &[u32],
+        image_features: &Array,
+        image_token_id: u32,
+        offset: usize,
+        cache: &mut KvCache,
+    ) -> Array {
+        match self {
+            Model::Gemma4(m) => {
+                m.forward_with_image(tokens, image_features, image_token_id, offset, cache)
+            }
+            _ => panic!("forward_with_image is only implemented for Gemma 4 (vision bundles)"),
         }
     }
 

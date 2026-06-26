@@ -15,7 +15,7 @@ use crate::gen2::backend::common::chat_template::ChatTemplate;
 use crate::gen2::engine::{ExecError, HookBus, HookEvent, Settings};
 use crate::gen2::generation::GenSpec;
 use crate::gen2::session_rt::prompt::merge_prompts;
-use crate::types::message::{MessageBody, MessageContent, TokenizerConfigToken};
+use crate::types::message::{MessageBody, MessageChunk, MessageContent, TokenizerConfigToken};
 
 use std::collections::hash_map::DefaultHasher;
 use std::hash::{Hash, Hasher};
@@ -457,7 +457,7 @@ impl Session {
         //   should prefer explicit On/Off on Gemma.
         let full_prompt = chat_template
             .apply(messages.clone(), None, enable_thinking)
-            .map_err(|e| ExecError::Other(e.into()))?;
+            .map_err(ExecError::Other)?;
 
         if std::env::var("PIO_MLX_DEBUG_PROMPT").is_ok() {
             eprintln!(
@@ -471,6 +471,30 @@ impl Session {
             .tokenizer
             .encode(&full_prompt, true)
             .map_err(ExecError::Other)?;
+
+        // ── Native vision (Gemma 4 VLM) prefill ───────────────────────────────
+        // When the bundle carries a vision tower AND the messages contain
+        // images, extract the image(s), preprocess → pixel tensor → vision tower
+        // → projector, and run a single-phase prefill that scatters the image
+        // features into the image-token rows (forward_with_image). Image prompts
+        // are unique, so we bypass the prefix cache. v1: one image, prefill only.
+        if bundle.vision.is_some() {
+            let img_paths = extract_image_paths(&messages);
+            if !img_paths.is_empty() {
+                let cache_slots = cache_slots_for(&bundle);
+                return Self::prefill_with_images(
+                    id,
+                    bundle,
+                    hooks,
+                    settings,
+                    messages,
+                    enable_thinking,
+                    &full_tokens,
+                    &img_paths,
+                    cache_slots,
+                );
+            }
+        }
 
         // ── DiffusionGemma: no autoregressive prefill ─────────────────────────
         // The model is encoder/decoder block-diffusion; `forward` panics for it.
@@ -703,6 +727,101 @@ impl Session {
         Ok((session, None))
     }
 
+    /// Single-phase prefill for an image prompt: preprocess each image, run the
+    /// vision tower + projector to get `[1, n_soft, text_hidden]` features per
+    /// image (concatenated in prompt order), then `forward_with_image` scatters
+    /// them into the `image_token_id` rows. Bypasses the prefix cache.
+    #[allow(clippy::too_many_arguments)]
+    fn prefill_with_images(
+        id: SessionId,
+        bundle: Arc<ModelBundle>,
+        hooks: Arc<HookBus>,
+        settings: Settings,
+        messages: Vec<Message>,
+        enable_thinking: Option<bool>,
+        full_tokens: &[u32],
+        img_paths: &[String],
+        cache_slots: usize,
+    ) -> Result<(Self, Option<PrefixCacheEntry>), ExecError> {
+        use super::model::vision_preprocess::Gemma4ImageProcessor;
+
+        let vision = bundle
+            .vision
+            .as_ref()
+            .expect("prefill_with_images called without a vision tower");
+        let total_tokens = full_tokens.len();
+        hooks.emit(HookEvent::SessionPrefillStart {
+            session_id: id,
+            prompt_tokens: total_tokens,
+        });
+
+        // Preprocess + encode each image; concat the projected features in
+        // prompt order so they map 1:1 to the image-token runs.
+        let proc = Gemma4ImageProcessor::default();
+        let mut feats: Vec<mlx_rs::Array> = Vec::with_capacity(img_paths.len());
+        for p in img_paths {
+            let img = image::ImageReader::open(p)
+                .map_err(|e| ExecError::Io(format!("open image {p}: {e}")))?
+                .with_guessed_format()
+                .map_err(|e| ExecError::Io(format!("guess image format {p}: {e}")))?
+                .decode()
+                .map_err(|e| ExecError::Other(anyhow::anyhow!("decode image {p}: {e}")))?;
+            let pixels = proc.preprocess(&img);
+            feats.push(vision.encode_image(&pixels));
+        }
+        let image_features = if feats.len() == 1 {
+            feats.into_iter().next().expect("len==1")
+        } else {
+            let refs: Vec<&mlx_rs::Array> = feats.iter().collect();
+            mlx_rs::ops::concatenate_axis(&refs, 1)
+                .map_err(|e| ExecError::Other(anyhow::anyhow!("concat image features: {e}")))?
+        };
+
+        let image_token_id = vision.image_token_id;
+        let cache_slots_n = cache_slots;
+        let policy = CachePolicy::compute(&bundle.config, cache_slots_n);
+
+        let mut cache: KvCache = vec![None; cache_slots_n];
+        let b = &bundle;
+        let ft = full_tokens.to_vec();
+        let prefill_logits = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+            b.model
+                .forward_with_image(&ft, &image_features, image_token_id, 0, &mut cache)
+        }))
+        .map_err(|e| ExecError::OutOfMemory(oom_msg(e)))?;
+
+        let last_prompt_token = full_tokens.last().copied().unwrap_or(0);
+        hooks.emit(HookEvent::SessionPrefillOk {
+            session_id: id,
+            prompt_tokens: total_tokens,
+        });
+
+        let mut init_state = DecodeState {
+            cache,
+            cur_pos: total_tokens,
+            cache_len: total_tokens,
+            policy,
+            pending_logits: Some(prefill_logits),
+            last_token: last_prompt_token,
+            evictions: 0,
+        };
+        init_state.maybe_evict();
+
+        let session = Self {
+            id,
+            bundle,
+            hooks,
+            settings,
+            paused: Arc::new(AtomicBool::new(false)),
+            stopped: Arc::new(AtomicBool::new(false)),
+            state: Arc::new(Mutex::new(Some(init_state))),
+            messages: RwLock::new(messages),
+            enable_thinking,
+            diffusion_prompt: Mutex::new(None),
+        };
+        Ok((session, None))
+    }
+
     // ── helpers ───────────────────────────────────────────────────────────────
 
     /// Append new messages and prefill the delta.
@@ -747,7 +866,7 @@ impl Session {
             );
             let full_prompt = tpl
                 .apply(msgs, None, self.enable_thinking)
-                .map_err(|e| ExecError::Other(e.into()))?;
+                .map_err(ExecError::Other)?;
             let full_tokens = self
                 .bundle
                 .tokenizer
@@ -779,7 +898,7 @@ impl Session {
 
         let delta_text = tpl
             .apply(to_render, None, self.enable_thinking)
-            .map_err(|e| ExecError::Other(e.into()))?;
+            .map_err(ExecError::Other)?;
 
         // Gemma's chat template starts with `{{ bos_token }}` unconditionally.
         // Mid-stream BOS would corrupt the attention pattern.
@@ -885,6 +1004,32 @@ fn oom_msg(e: Box<dyn std::any::Any + Send>) -> String {
     } else {
         "MLX forward pass panicked (likely OOM)".to_string()
     }
+}
+
+/// Extract `file://`-stripped image paths from the message stream, in order.
+/// Mirrors the llama backend's gather (`llama/session.rs`): walk
+/// `MessageContent::MultipleChunks` → `MessageChunk::ImageUrl`, strip `file://`.
+fn extract_image_paths(messages: &[Message]) -> Vec<String> {
+    let mut out = Vec::new();
+    for m in messages {
+        if let MessageBody::Content { content } = &m.body
+            && let MessageContent::MultipleChunks(chunks) = content
+        {
+            for ch in chunks {
+                if let MessageChunk::ImageUrl { image_url } = ch {
+                    let u = image_url.url.clone();
+                    let path = u.strip_prefix("file://").map(str::to_string).unwrap_or(u);
+                    out.push(path);
+                }
+            }
+        }
+    }
+    out
+}
+
+/// Number of KV-cache slots the model needs (= non-shared layer count).
+fn cache_slots_for(bundle: &ModelBundle) -> usize {
+    bundle.model.num_non_shared_layers()
 }
 
 impl crate::gen2::backend::traits::BackendSession for Session {

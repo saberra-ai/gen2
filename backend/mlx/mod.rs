@@ -19,6 +19,8 @@ mod puller;
 mod sampler;
 mod session;
 mod tokenizer;
+#[cfg(test)]
+mod vision_parity;
 
 pub use bundle::ModelBundle;
 pub use engine::Engine;

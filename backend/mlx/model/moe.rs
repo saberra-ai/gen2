@@ -20,7 +20,7 @@ use super::quantized::Weight;
 fn rms_norm_no_scale(x: &Array, eps: f32) -> Array {
     let x_sq = x.multiply(x).expect("mlx op");
     let var = x_sq.mean_axis(-1, true).expect("mlx op");
-    let var_eps = var.add(&Array::from_f32(eps)).expect("mlx op");
+    let var_eps = var.add(Array::from_f32(eps)).expect("mlx op");
     let norm_factor = var_eps.rsqrt().expect("mlx op");
     x.multiply(&norm_factor).expect("mlx op")
 }
@@ -99,9 +99,7 @@ impl Router {
     pub fn forward(&self, x: &Array) -> (Array, Array) {
         // 1-3: norm → * root_size → * scale.
         let h = rms_norm_no_scale(x, self.eps);
-        let h = h
-            .multiply(&Array::from_f32(self.root_size))
-            .expect("mlx op");
+        let h = h.multiply(Array::from_f32(self.root_size)).expect("mlx op");
         let h = h.multiply(&self.scale).expect("mlx op");
         self.select(x, &h)
     }
@@ -131,7 +129,7 @@ impl Router {
             if stale {
                 let fused = self
                     .scale
-                    .multiply(&Array::from_f32(self.root_size))
+                    .multiply(Array::from_f32(self.root_size))
                     .expect("mlx op")
                     .as_dtype(target)
                     .expect("mlx op");
@@ -318,7 +316,7 @@ impl Experts {
                 None => contrib,
             });
         }
-        acc.unwrap_or_else(|| x.multiply(&Array::from_f32(0.0)).expect("mlx op"))
+        acc.unwrap_or_else(|| x.multiply(Array::from_f32(0.0)).expect("mlx op"))
     }
 
     /// Fused batched forward using `gather_qmm`. Returns `None` when any of
@@ -651,7 +649,7 @@ impl Experts {
                 None => contrib,
             });
         }
-        acc.unwrap_or_else(|| x.multiply(&Array::from_f32(0.0)).expect("mlx op"))
+        acc.unwrap_or_else(|| x.multiply(Array::from_f32(0.0)).expect("mlx op"))
     }
 }
 

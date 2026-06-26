@@ -643,12 +643,10 @@ impl ArPuller {
         // the KV cache and advanced `cur_pos`/`cache_len` by one. Needed for the
         // EOS rollback below (the serial path never caches the EOS token).
         let built_next = want_next && !pipe_has_next;
-        if built_next {
-            if let Err(e) = self.fast_build_next() {
-                self.done = true;
-                self.filter.push_err(e);
-                return true;
-            }
+        if built_next && let Err(e) = self.fast_build_next() {
+            self.done = true;
+            self.filter.push_err(e);
+            return true;
         }
 
         // 2) Sync token N to host (single scalar `.item()`, NOT a 262k
@@ -685,11 +683,9 @@ impl ArPuller {
             // delta-prefill) is byte-identical to the serial path. The phantom
             // cache write past `cur_pos` is harmless — next turn's delta
             // forward overwrites it from `prefix_len`.
-            if built_next {
-                if let Some(state) = self.state.as_mut() {
-                    state.cur_pos = state.cur_pos.saturating_sub(1);
-                    state.cache_len = state.cache_len.saturating_sub(1);
-                }
+            if built_next && let Some(state) = self.state.as_mut() {
+                state.cur_pos = state.cur_pos.saturating_sub(1);
+                state.cache_len = state.cache_len.saturating_sub(1);
             }
             let stats = self.stats_now();
             self.hooks.emit(HookEvent::FinalStats {
@@ -708,11 +704,9 @@ impl ArPuller {
         {
             // Same rollback rationale as the EOS branch: serial finalizes on a
             // loop hit before committing this token's cache position.
-            if built_next {
-                if let Some(state) = self.state.as_mut() {
-                    state.cur_pos = state.cur_pos.saturating_sub(1);
-                    state.cache_len = state.cache_len.saturating_sub(1);
-                }
+            if built_next && let Some(state) = self.state.as_mut() {
+                state.cur_pos = state.cur_pos.saturating_sub(1);
+                state.cache_len = state.cache_len.saturating_sub(1);
             }
             let stats = self.stats_now();
             self.hooks.emit(HookEvent::FinalStats {
@@ -744,11 +738,11 @@ impl ArPuller {
         // 3) Swap buffers: y = next_y (generate.py:469). If there was no next
         //    (budget exhausted), the pipeline is drained — the next call hits
         //    the max_tokens guard in `step_once` and finalizes.
-        if let Some(pipe) = self.fast_pipe.as_mut() {
-            if let Some(next_y) = pipe.next_y.take() {
-                pipe.y = next_y;
-                pipe.has_next = false;
-            }
+        if let Some(pipe) = self.fast_pipe.as_mut()
+            && let Some(next_y) = pipe.next_y.take()
+        {
+            pipe.y = next_y;
+            pipe.has_next = false;
         }
 
         self.filter.push_token(token_id, text);
@@ -1012,11 +1006,11 @@ impl ArPuller {
                         if accepted < k {
                             let keep = (old_cache_len + total) as i32;
                             for slot in state.cache.iter_mut() {
-                                if let Some(kv) = slot {
-                                    if kv.0.shape()[2] as usize > old_cache_len + total {
-                                        kv.0 = kv.0.index((.., .., 0..keep, ..));
-                                        kv.1 = kv.1.index((.., .., 0..keep, ..));
-                                    }
+                                if let Some(kv) = slot
+                                    && kv.0.shape()[2] as usize > old_cache_len + total
+                                {
+                                    kv.0 = kv.0.index((.., .., 0..keep, ..));
+                                    kv.1 = kv.1.index((.., .., 0..keep, ..));
                                 }
                             }
                         }

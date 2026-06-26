@@ -30,7 +30,6 @@
 //! Numerical parity is a later slice; the denoising generation loop is slice 2.
 
 use mlx_rs::Array;
-use mlx_rs::ops::indexing::IndexOp;
 
 use super::moe::{Experts, Router};
 use super::norm::RmsNorm;
@@ -171,7 +170,7 @@ impl RmsNormNoScale {
     fn forward(&self, x: &Array) -> Array {
         let x_sq = x.multiply(x).expect("mlx op");
         let var = x_sq.mean_axis(-1, true).expect("mlx op");
-        let var_eps = var.add(&Array::from_f32(self.eps)).expect("mlx op");
+        let var_eps = var.add(Array::from_f32(self.eps)).expect("mlx op");
         let norm_factor = var_eps.rsqrt().expect("mlx op");
         x.multiply(&norm_factor).expect("mlx op")
     }
@@ -639,7 +638,7 @@ impl DiffusionGemmaModel {
                 let probs = mlx_rs::ops::softmax_axes(logits, &[-1], None).expect("mlx op");
                 let table = self.embed_tokens.to_full(); // [vocab, hidden]
                 let soft = probs.matmul(&table).expect("mlx op");
-                soft.multiply(&Array::from_f32(self.embed_scale))
+                soft.multiply(Array::from_f32(self.embed_scale))
                     .expect("mlx op")
             }
         };
@@ -835,7 +834,7 @@ impl DiffusionGemmaModel {
             // Linear temperature schedule, applied to logits.
             let t =
                 params.t_min + (params.t_max - params.t_min) * (cur_step as f32 / max_steps as f32);
-            let processed = logits2d.divide(&Array::from_f32(t)).expect("mlx op");
+            let processed = logits2d.divide(Array::from_f32(t)).expect("mlx op");
 
             // argmax over vocab → [canvas_len]. argmax returns Int64; cast to
             // Int32 so it matches the random canvas dtype (for `where`) and the
@@ -921,7 +920,7 @@ fn build_causal_mask(query_len: usize, kv_len: usize, window: Option<usize>) -> 
         let abs_q = k - q + qi;
         for ki in 0..k {
             let causal_ok = ki <= abs_q;
-            let window_ok = window.map_or(true, |w| ki > abs_q - w as i32);
+            let window_ok = window.is_none_or(|w| ki > abs_q - w as i32);
             if !causal_ok || !window_ok {
                 data[(qi * k + ki) as usize] = neg_inf;
             }
