@@ -18,6 +18,7 @@ use crate::gen2::engine::{
     Capabilities, EmbedLoadRequest, ExecError, ExecutionStats, LoadRequest, Settings,
 };
 use crate::gen2::session_rt::SessionSpec;
+use crate::gen2::session_rt::media_util::messages_have_images;
 
 use parking_lot::RwLock;
 
@@ -334,6 +335,21 @@ impl Engine {
         } else {
             (*base_settings).clone()
         };
+
+        // Mirror the llama backend's multimodal contract (llama/engine.rs): a
+        // non-vision model must reject image inputs loudly rather than silently
+        // flatten them to `![](url)` markdown and feed them to a text-only model.
+        // The UI gates the attach affordance on `model_supports_images()`, but a
+        // capability flip (image attached on a vision model, then switched to an
+        // MLX model) or a programmatic/agentic caller can bypass that gate — so
+        // fail closed here. MLX is text-only today, so this always trips when an
+        // image is present, but the capability check keeps it correct if an MLX
+        // VLM ever sets `Capabilities::IMAGES`.
+        if messages_have_images(&spec.messages)
+            && !bundle.capabilities.contains(Capabilities::IMAGES)
+        {
+            return Err(ExecError::FeatureUnsupported("images"));
+        }
 
         // Build a cache key from the model + system prompt + persona.
         // This is the "fixed prefix" shared across all sessions with the same config.
