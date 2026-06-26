@@ -606,11 +606,14 @@ fn stage7_real_path_caption() {
     use crate::gen2::session_rt::SessionSpec;
 
     let Some(bundle) = bundle_or_skip() else {
+        // ADR-0036 marker: model absent — SKIP (not FAIL).
+        println!("CAPTEST mlx-vision SKIP vision bundle absent ({VISION_BUNDLE})");
         return;
     };
     let img_path = PathBuf::from(TEST_IMAGE_REL);
     if !img_path.exists() {
         eprintln!("[vision_parity] stage7 skip — image missing");
+        println!("CAPTEST mlx-vision SKIP fixture absent ({TEST_IMAGE_REL})");
         return;
     }
     let img_abs = std::fs::canonicalize(&img_path).expect("canonicalize cat.png");
@@ -672,4 +675,13 @@ fn stage7_real_path_caption() {
         lc.contains("cat") || lc.contains("kitten") || lc.contains("feline"),
         "Stage 7 real-path caption must mention a cat, got: {text:?}"
     );
+
+    // SSS+: inspectable artifact under target/captest/ (CWD = pio-core/).
+    let caption = text.trim().to_string();
+    let arti_dir = PathBuf::from("../target/captest");
+    let _ = std::fs::create_dir_all(&arti_dir);
+    let _ = std::fs::write(arti_dir.join("mlx-vision.caption.txt"), &caption);
+
+    // ADR-0036 marker: ran for real with an objective metric (caption mentions a cat).
+    println!("CAPTEST mlx-vision RUN caption={caption:?}");
 }

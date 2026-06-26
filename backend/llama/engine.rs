@@ -852,6 +852,130 @@ mod tests {
         Ok(())
     }
 
+    // ─── ADR-0036 capability smoke: vlm-llama ────────────────────────────────
+
+    /// PERMANENT capability-smoke for the `vlm-llama` capability (ADR-0036).
+    ///
+    /// Drives the llama VLM path (model GGUF + matching `mmproj`) on the
+    /// committed fixture `tools/vlm_parity/cat.png` with a fixed prompt, then
+    /// asserts the caption objectively contains "cat" (SSS) and writes the
+    /// caption to `target/captest/` (SSS+). Prints exactly one marker line:
+    ///   - present: `CAPTEST vlm-llama RUN caption=…`
+    ///   - absent:  `CAPTEST vlm-llama SKIP <reason>` (then returns — no fail)
+    ///
+    /// `#[ignore]` keeps it out of the default `cargo test`; the runner
+    /// (`scripts/verify-capabilities.sh`) invokes it with `--include-ignored`
+    /// and the model present.
+    #[test]
+    #[ignore]
+    fn captest_vlm_caption() -> Result<(), Box<dyn std::error::Error>> {
+        use crate::types::message::{MessageChunk, Url};
+
+        // Fixed model location (ADR-0036 runner probe): the VLM GGUF + mmproj
+        // live under ~/models/qwen3-vl-4b-gguf/.
+        let model_dir = dirs::home_dir()
+            .map(|h| h.join("models/qwen3-vl-4b-gguf"))
+            .unwrap_or_default();
+        let model_path = model_dir.join("Qwen3VL-4B-Instruct-Q4_K_M.gguf");
+        let mmproj_path = model_dir.join("mmproj-Qwen3VL-4B-Instruct-F16.gguf");
+        // Committed reproducible fixture (CWD = crate dir `pio-core/`).
+        let image_path = PathBuf::from("../tools/vlm_parity/cat.png");
+
+        if !model_path.exists() || !mmproj_path.exists() {
+            println!(
+                "CAPTEST vlm-llama SKIP model absent at {}",
+                model_dir.display()
+            );
+            return Ok(());
+        }
+        if !image_path.exists() {
+            println!(
+                "CAPTEST vlm-llama SKIP fixture absent: {}",
+                image_path.display()
+            );
+            return Ok(());
+        }
+        let image_abs = std::fs::canonicalize(&image_path)?;
+
+        let e = Engine::new();
+        let mut s = Settings::default();
+        s.system.ctx_size = Some(2048);
+        s.system.batch_size = Some(512);
+        s.sampling.temperature = Some(0.0);
+        e.upload_settings(s)?;
+        e.load_model(LoadRequest {
+            model_path,
+            mmproj_path: Some(mmproj_path),
+            ..Default::default()
+        })?;
+        // IMAGES capability is set only when the mmproj validates against the
+        // model at load — proving the projector is wired, not stubbed.
+        assert!(
+            e.does_model_support_images(),
+            "vlm-llama: bundle must advertise IMAGES (mmproj wired)"
+        );
+
+        let msgs = vec![Message {
+            name: None,
+            role: "user".into(),
+            body: MessageBody::Content {
+                content: MessageContent::MultipleChunks(vec![
+                    MessageChunk::Text {
+                        text: "Describe this image in one short sentence.".into(),
+                    },
+                    MessageChunk::ImageUrl {
+                        image_url: Url {
+                            url: format!("file://{}", image_abs.display()),
+                        },
+                    },
+                ]),
+            },
+        }];
+
+        let session = e.start_session(SessionSpec {
+            messages: msgs,
+            ..Default::default()
+        })?;
+        let mut puller = session.pull(GenSpec {
+            max_tokens: Some(64),
+            temperature: Some(0.0),
+            ..Default::default()
+        })?;
+
+        let mut caption = String::new();
+        let mut steps = 0u32;
+        for ev in puller.by_ref() {
+            steps += 1;
+            match ev? {
+                TokenEvent::Token(tok) if !tok.text.is_empty() => {
+                    caption.push_str(tok.text.as_str());
+                }
+                TokenEvent::Eos | TokenEvent::Stopped => break,
+                TokenEvent::Paused => continue,
+                _ => {}
+            }
+            if steps > 256 {
+                break;
+            }
+        }
+        let caption = caption.trim().to_string();
+
+        // SSS+: inspectable artifact under target/captest/ (CWD = pio-core/).
+        let arti_dir = PathBuf::from("../target/captest");
+        let _ = std::fs::create_dir_all(&arti_dir);
+        let _ = std::fs::write(arti_dir.join("vlm-llama.caption.txt"), &caption);
+
+        // SSS: objective metric — the caption must mention a cat.
+        let lc = caption.to_lowercase();
+        assert!(
+            lc.contains("cat") || lc.contains("kitten") || lc.contains("feline"),
+            "vlm-llama: caption must mention a cat, got: {caption:?}"
+        );
+
+        println!("CAPTEST vlm-llama RUN caption={caption:?}");
+        Ok(())
+    }
+
     /// Embedder with empty input should return Ok(vec![]).
     #[test]
     #[ignore]

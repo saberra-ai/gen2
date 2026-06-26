@@ -510,4 +510,96 @@ mod tests {
             "related sentences must score higher: related={related} unrelated={unrelated}"
         );
     }
+
+    // ─── ADR-0036 capability smoke: embed-qwen3 ──────────────────────────────
+
+    /// PERMANENT capability-smoke for the `embed-qwen3` capability (ADR-0036).
+    ///
+    /// Loads the real Qwen3-Embedding GGUF at the fixed runner path
+    /// (`~/models/Qwen3-Embedding-0.6B-Q8_0.gguf`), embeds three fixed inputs,
+    /// and asserts two objective metrics (SSS): (1) `dim == 768` (MRL-truncated
+    /// — drop-in for the 768-d store); (2) `cos(cat, kitten) > cos(cat, market)`
+    /// (relatedness ordering). Writes the metrics to `target/captest/` (SSS+)
+    /// and prints exactly one marker line:
+    ///
+    /// - present: `CAPTEST embed-qwen3 RUN dim=768 cos_rel=… cos_unrel=…`
+    /// - absent:  `CAPTEST embed-qwen3 SKIP <reason>` (then returns).
+    ///
+    /// `#[ignore]` keeps it out of the default `cargo test`; the runner invokes
+    /// it with `--include-ignored` and the model present.
+    #[test]
+    #[ignore]
+    fn captest_qwen3_embedding() {
+        // Fixed model location (ADR-0036 runner probe).
+        let model_path = dirs::home_dir()
+            .map(|h| h.join("models/Qwen3-Embedding-0.6B-Q8_0.gguf"))
+            .unwrap_or_default();
+        if !model_path.exists() {
+            println!(
+                "CAPTEST embed-qwen3 SKIP model absent at {}",
+                model_path.display()
+            );
+            return;
+        }
+
+        let backend = match LlamaBackend::init() {
+            Ok(b) => b,
+            Err(err) => {
+                println!("CAPTEST embed-qwen3 SKIP backend init failed: {err:?}");
+                return;
+            }
+        };
+
+        // Force Qwen3 explicitly (last-token pooling + <|endoftext|> suffix +
+        // 768-d MRL) — don't rely on filename sniffing for the captest.
+        let embedder = LlamaEmbedder::load_from_path_with_kind(
+            Arc::new(backend),
+            &model_path,
+            ModelConfig::default(),
+            EmbedderKind::Qwen3,
+        )
+        .expect("embed-qwen3: load Qwen3-Embedding GGUF");
+
+        // Fixed, reproducible inputs.
+        let sentences = ["a cat sleeping", "a kitten napping", "stock market crash"];
+        let embs = embedder
+            .embed(&sentences, false)
+            .expect("embed-qwen3: embed inputs");
+        assert_eq!(embs.len(), 3);
+
+        // SSS metric 1: MRL truncation produced the store's 768-d shape.
+        let dim = embs[0].len();
+        for e in &embs {
+            assert_eq!(
+                e.len(),
+                768,
+                "embed-qwen3: must MRL-truncate to 768 for the store"
+            );
+        }
+
+        let cos = |a: &[f32], b: &[f32]| -> f32 {
+            let dot: f32 = a.iter().zip(b).map(|(x, y)| x * y).sum();
+            let na: f32 = a.iter().map(|x| x * x).sum::<f32>().sqrt();
+            let nb: f32 = b.iter().map(|x| x * x).sum::<f32>().sqrt();
+            dot / (na * nb)
+        };
+        let cos_rel = cos(&embs[0], &embs[1]); // cat vs kitten (related)
+        let cos_unrel = cos(&embs[0], &embs[2]); // cat vs market (unrelated)
+
+        // SSS+: inspectable artifact under target/captest/ (CWD = pio-core/).
+        let arti_dir = PathBuf::from("../target/captest");
+        let _ = std::fs::create_dir_all(&arti_dir);
+        let _ = std::fs::write(
+            arti_dir.join("embed-qwen3.metrics.txt"),
+            format!("dim={dim}\ncos_rel={cos_rel:.4}\ncos_unrel={cos_unrel:.4}\n"),
+        );
+
+        // SSS metric 2: related sentences must score higher than unrelated.
+        assert!(
+            cos_rel > cos_unrel,
+            "embed-qwen3: related must score higher: rel={cos_rel} unrel={cos_unrel}"
+        );
+
+        println!("CAPTEST embed-qwen3 RUN dim={dim} cos_rel={cos_rel:.4} cos_unrel={cos_unrel:.4}");
+    }
 }

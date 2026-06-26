@@ -90,6 +90,7 @@ pub(super) fn build_observability_snapshot(
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[cfg(feature = "backend-llamacpp")]
     use crate::gen2::controller::ControllerConfig;
 
     #[test]
@@ -101,6 +102,11 @@ mod tests {
         assert_eq!(snap, back);
     }
 
+    // Probes a real llama Engine, so it only compiles when the llamacpp
+    // backend is in the build (e.g. the ADR-0036 runner's `backend-mlx`-only
+    // surface excludes it). Without this gate the lib-test build breaks with
+    // E0433 `cannot find llama in backend`.
+    #[cfg(feature = "backend-llamacpp")]
     #[test]
     fn policy_snapshot_reflects_config() {
         let config = ControllerConfig {
