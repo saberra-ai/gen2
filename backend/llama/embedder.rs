@@ -600,6 +600,8 @@ mod tests {
             "embed-qwen3: related must score higher: rel={cos_rel} unrel={cos_unrel}"
         );
 
-        println!("\nCAPTEST embed-qwen3 RUN dim={dim} cos_rel={cos_rel:.4} cos_unrel={cos_unrel:.4}");
+        println!(
+            "\nCAPTEST embed-qwen3 RUN dim={dim} cos_rel={cos_rel:.4} cos_unrel={cos_unrel:.4}"
+        );
     }
 }
