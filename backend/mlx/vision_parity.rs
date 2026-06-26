@@ -607,13 +607,13 @@ fn stage7_real_path_caption() {
 
     let Some(bundle) = bundle_or_skip() else {
         // ADR-0036 marker: model absent — SKIP (not FAIL).
-        println!("CAPTEST mlx-vision SKIP vision bundle absent ({VISION_BUNDLE})");
+        println!("\nCAPTEST mlx-vision SKIP vision bundle absent ({VISION_BUNDLE})");
         return;
     };
     let img_path = PathBuf::from(TEST_IMAGE_REL);
     if !img_path.exists() {
         eprintln!("[vision_parity] stage7 skip — image missing");
-        println!("CAPTEST mlx-vision SKIP fixture absent ({TEST_IMAGE_REL})");
+        println!("\nCAPTEST mlx-vision SKIP fixture absent ({TEST_IMAGE_REL})");
         return;
     }
     let img_abs = std::fs::canonicalize(&img_path).expect("canonicalize cat.png");
@@ -683,5 +683,5 @@ fn stage7_real_path_caption() {
     let _ = std::fs::write(arti_dir.join("mlx-vision.caption.txt"), &caption);
 
     // ADR-0036 marker: ran for real with an objective metric (caption mentions a cat).
-    println!("CAPTEST mlx-vision RUN caption={caption:?}");
+    println!("\nCAPTEST mlx-vision RUN caption={caption:?}");
 }

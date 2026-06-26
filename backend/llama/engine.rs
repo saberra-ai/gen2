@@ -972,7 +972,7 @@ mod tests {
             "vlm-llama: caption must mention a cat, got: {caption:?}"
         );
 
-        println!("CAPTEST vlm-llama RUN caption={caption:?}");
+        println!("\nCAPTEST vlm-llama RUN caption={caption:?}");
         Ok(())
     }
 

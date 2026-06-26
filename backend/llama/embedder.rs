@@ -545,7 +545,7 @@ mod tests {
         let backend = match LlamaBackend::init() {
             Ok(b) => b,
             Err(err) => {
-                println!("CAPTEST embed-qwen3 SKIP backend init failed: {err:?}");
+                println!("\nCAPTEST embed-qwen3 SKIP backend init failed: {err:?}");
                 return;
             }
         };
@@ -600,6 +600,6 @@ mod tests {
             "embed-qwen3: related must score higher: rel={cos_rel} unrel={cos_unrel}"
         );
 
-        println!("CAPTEST embed-qwen3 RUN dim={dim} cos_rel={cos_rel:.4} cos_unrel={cos_unrel:.4}");
+        println!("\nCAPTEST embed-qwen3 RUN dim={dim} cos_rel={cos_rel:.4} cos_unrel={cos_unrel:.4}");
     }
 }

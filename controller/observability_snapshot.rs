@@ -103,9 +103,9 @@ mod tests {
     }
 
     // Probes a real llama Engine, so it only compiles when the llamacpp
-    // backend is in the build (e.g. the ADR-0036 runner's `backend-mlx`-only
-    // surface excludes it). Without this gate the lib-test build breaks with
-    // E0433 `cannot find llama in backend`.
+    // backend is in the build (e.g. the ADR-0036 runner's `backend-mlx`-only or
+    // `--features vision`/`backend-onnx`-only surfaces exclude it). Without this
+    // gate the lib-test build breaks with E0433 `cannot find llama in backend`.
     #[cfg(feature = "backend-llamacpp")]
     #[test]
     fn policy_snapshot_reflects_config() {

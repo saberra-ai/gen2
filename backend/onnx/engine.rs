@@ -348,6 +348,7 @@ mod tests {
         let err = e
             .load_embedder(EmbedLoadRequest {
                 model_path: std::path::PathBuf::from("/nonexistent"),
+                ..Default::default()
             })
             .unwrap_err();
         assert!(
