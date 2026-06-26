@@ -394,6 +394,22 @@ impl Gemma4Ffn {
         let gated = gate.multiply(&up).expect("mlx op");
         self.down_proj.matmul_transpose(&gated)
     }
+
+    /// Fast-path GEGLU FFN. Identical math to [`Self::forward`] but uses the
+    /// dtype-preserving `gelu_approx_fast`: `mlx_rs::nn::gelu_approximate` builds
+    /// its constants as strong-typed f32 arrays, so `bf16 gate × f32 const`
+    /// promotes the whole activation to f32 — which then leaks out of the dense
+    /// MoE branch (`h1`), forcing the post-FFN norm/residual to run in f32 and a
+    /// standalone per-layer bf16 recast (a fusion-breaking command buffer).
+    /// `gelu_approx_fast` keeps the activation dtype (mirroring mlx-lm's
+    /// weak-typed `nn.gelu_approx`), so the whole FFN stays bf16 and fuses.
+    pub fn forward_fast(&self, x: &Array) -> Array {
+        let gate = self.gate_proj.matmul_transpose(x);
+        let gate = super::gemma4_fast::gelu_approx_fast(&gate);
+        let up = self.up_proj.matmul_transpose(x);
+        let gated = gate.multiply(&up).expect("mlx op");
+        self.down_proj.matmul_transpose(&gated)
+    }
 }
 
 // ─── Per-layer input embedding system ────────────────────────────────────────
@@ -627,7 +643,7 @@ impl Gemma4TransformerBlock {
         // Feed-forward: dense path, plus MoE branch (summed) when enabled.
         let h = if let Some(moe) = &self.moe {
             let h1 = self.pre_feedforward_layernorm.forward_fast(&x);
-            let h1 = self.ffn.forward(&h1);
+            let h1 = self.ffn.forward_fast(&h1);
             let h1 = moe.post_feedforward_layernorm_1.forward_fast(&h1);
             // DIAGNOSTIC (PIO_MLX_ABLATE=moe): keep the router (cheap; its
             // output shapes are otherwise threaded), but SKIP the expert
@@ -641,7 +657,27 @@ impl Gemma4TransformerBlock {
             // no-regression run failed "should recall name Victor"). The
             // router is cheap relative to the expert matmuls, so its argsort is
             // not a meaningful throughput lever. See `Router::forward`.
-            let (idx, w) = moe.router.forward(&x);
+            // DIAGNOSTIC (PIO_MLX_ABLATE=router): skip the router's
+            // rms_norm/proj/softmax/argsort and feed the experts a fixed
+            // [B,S,top_k] index (experts 0..top_k) + uniform weights. Isolates
+            // the router's per-layer cost from the expert gather_qmm.
+            let (idx, w) = if ablate.router {
+                let bsz = x.shape()[0];
+                let s = x.shape()[1];
+                let k = moe.router.top_k as i32;
+                let idx_row = mlx_rs::ops::arange::<_, i32>(0i32, k, 1i32)
+                    .expect("mlx op")
+                    .reshape(&[1, 1, k])
+                    .expect("mlx op");
+                let idx = mlx_rs::ops::broadcast_to(&idx_row, &[bsz, s, k]).expect("mlx op");
+                let w_scalar = Array::from_f32(1.0 / k as f32)
+                    .as_dtype(x.dtype())
+                    .expect("mlx op");
+                let w = mlx_rs::ops::broadcast_to(&w_scalar, &[bsz, s, k]).expect("mlx op");
+                (idx, w)
+            } else {
+                moe.router.forward_fast(&x)
+            };
             let h2 = if ablate.moe {
                 let zero = Array::from_f32(0.0).as_dtype(x.dtype()).expect("mlx op");
                 x.multiply(&zero).expect("mlx op")
@@ -653,13 +689,16 @@ impl Gemma4TransformerBlock {
             h1.add(&h2).expect("mlx op")
         } else {
             let h = self.pre_feedforward_layernorm.forward_fast(&x);
-            self.ffn.forward(&h)
+            self.ffn.forward_fast(&h)
         };
         let h = self.post_feedforward_layernorm.forward_fast(&h);
-        // Keep the residual stream in bf16: the dense FFN / MoE experts may
-        // dequantize to f16 and promote bf16×f16 matmuls to f32 (MLX promotion).
-        // Re-cast so the next block sees bf16 (mlx-lm runs the whole trunk bf16).
-        let h = super::gemma4_fast::to_bf16(&h);
+        // The residual trunk stays bf16 end-to-end: the dense FFN (`h1`) and the
+        // MoE experts (`h2`) both use `gelu_approx_fast` (dtype-preserving), so
+        // nothing here promotes to f32 — mirroring mlx-lm's all-bf16 trunk. The
+        // prior per-layer `to_bf16(&h)` recast existed only to undo the f32 that
+        // `mlx_rs::nn::gelu_approximate`'s strong-typed f32 constants leaked; with
+        // the fused-friendly fast GELU it is unnecessary and was removed (it was a
+        // standalone fusion-breaking command buffer every layer).
         let x = x.add(&h).expect("mlx op");
 
         // Per-layer input contribution (skipped on non-PLE variants — 26B).
@@ -750,6 +789,10 @@ pub struct Ablate {
     pub moe: bool,
     pub attn: bool,
     pub lmhead: bool,
+    /// Skip ONLY the router (top-k selection), feeding the experts a fixed
+    /// dummy index/weight tensor. Diagnostic: `baseline - router_ablated`
+    /// isolates the router's per-layer cost from the expert gather_qmm.
+    pub router: bool,
 }
 
 impl Ablate {
@@ -764,6 +807,7 @@ impl Ablate {
                 "moe" => a.moe = true,
                 "attn" | "attention" => a.attn = true,
                 "lmhead" | "lm_head" => a.lmhead = true,
+                "router" => a.router = true,
                 _ => {}
             }
         }
@@ -1124,6 +1168,18 @@ impl Gemma4Model {
         x = self.norm.forward_fast(&x);
         let logits = self.embed_tokens.matmul_transpose(&x);
         if let Some(cap) = self.final_logit_softcapping {
+            // NOTE: the softcap (and thus the [1,1,262144] logits) is kept in
+            // **f32** here, NOT bf16. mlx-lm runs softcap in bf16 (its `softcap`
+            // is a python float that adopts the bf16 array dtype), so casting
+            // `cap` to the logits dtype would mirror the golden and halve the
+            // epilogue bandwidth — BUT it was measured to give ZERO tok/s gain
+            // (the lm_head is dominated by the 262k-wide quantized matmul, not
+            // the softcap/tanh) while breaking the SERIAL sampler path, which
+            // does `as_slice::<f32>()` on these logits (DtypeMismatch panic).
+            // The pipeline argmax is on-GPU and dtype-agnostic, but the serial
+            // path (PIO_MLX_PIPELINE unset) is the default and must stay f32.
+            // Left in f32 deliberately; revisit only if the serial sampler is
+            // made bf16-aware AND a downstream op makes the epilogue dtype matter.
             let cap_arr = Array::from_f32(cap);
             let scaled = logits.divide(&cap_arr).expect("mlx op");
             let tanhed = mlx_rs::ops::tanh(&scaled).expect("mlx op");

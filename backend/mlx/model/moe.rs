@@ -53,6 +53,12 @@ pub struct Router {
     /// Slated for removal once the loader consistently writes `scale`.
     #[allow(dead_code)]
     pub norm: RmsNorm,
+    /// Fast-path cache of `(scale * root_size)` pre-cast to the activation
+    /// dtype (bf16), built once on the first `forward_fast` call — the fused
+    /// `mx.fast.rms_norm` weight (mirrors the golden's `scale * self._root_size`
+    /// at `gemma4_text.py:130`). Immutable post-load, so caching is numerically
+    /// identical and removes the per-token f32 promotion + glue ops.
+    scale_root_fast: parking_lot::Mutex<Option<Array>>,
 }
 
 impl Router {
@@ -68,6 +74,7 @@ impl Router {
             top_k,
             root_size: 1.0 / (hidden as f32).sqrt(),
             eps,
+            scale_root_fast: parking_lot::Mutex::new(None),
         }
     }
 
@@ -96,9 +103,51 @@ impl Router {
             .multiply(&Array::from_f32(self.root_size))
             .expect("mlx op");
         let h = h.multiply(&self.scale).expect("mlx op");
+        self.select(x, &h)
+    }
 
+    /// `PIO_MLX_FAST` router — mirrors the golden's norm exactly
+    /// (`gemma4_text.py:130`): `mx.fast.rms_norm(x, scale * root_size, eps)`,
+    /// ONE fused bf16 kernel, instead of the default path's hand-rolled
+    /// f32 chain (`rms_norm_no_scale` → `* root_size` (f32 array) → `* scale`),
+    /// which promotes the whole `[B,S,hidden]` router input to **f32** (a bf16
+    /// array × an `Array::from_f32` scalar promotes), then runs a 5-op glue
+    /// reduction every layer every token. The fused kernel keeps the trunk in
+    /// bf16 (the golden's weight `scale * root_size` is bf16) and collapses the
+    /// reduction into the single `mx.fast.rms_norm` Metal kernel. The expert
+    /// SELECTION math below (`select`) is intentionally left as the frozen
+    /// softmax-over-all + renormalize variant — swapping it for the golden's
+    /// softmax-over-top-k broke turn-5 context recall (see `select`), and it is
+    /// the *selection* that must stay frozen, not the norm dtype/fusion.
+    ///
+    /// Cast `scale * root_size` to the activation dtype so the fused kernel
+    /// returns bf16 (mlx-rs `fast::rms_norm` returns the WEIGHT's dtype). The
+    /// weight is cached on first call (immutable post-load).
+    pub fn forward_fast(&self, x: &Array) -> (Array, Array) {
+        let target = x.dtype();
+        let w = {
+            let mut slot = self.scale_root_fast.lock();
+            let stale = slot.as_ref().map(|w| w.dtype() != target).unwrap_or(true);
+            if stale {
+                let fused = self
+                    .scale
+                    .multiply(&Array::from_f32(self.root_size))
+                    .expect("mlx op")
+                    .as_dtype(target)
+                    .expect("mlx op");
+                *slot = Some(fused);
+            }
+            slot.as_ref().expect("scale_root_fast set above").clone()
+        };
+        let h = mlx_rs::fast::rms_norm(x, &w, self.eps).expect("mlx op: fast rms_norm router");
+        self.select(x, &h)
+    }
+
+    /// Shared expert-selection tail (steps 4-9). `h` is the normed+scaled
+    /// router input; `x` is unused beyond shape but kept for signature parity.
+    fn select(&self, _x: &Array, h: &Array) -> (Array, Array) {
         // 4: project. Shape [B, S, num_experts].
-        let scores = self.proj.matmul_transpose(&h);
+        let scores = self.proj.matmul_transpose(h);
 
         // 5: softmax over ALL experts.
         let router_probs = mlx_rs::ops::softmax_axes(&scores, &[-1], None).expect("mlx op");
@@ -505,7 +554,10 @@ impl Experts {
         .expect("mlx op");
 
         // swiglu(gate, x) = up * gelu(gate). [B, S, k, 1, moe].
-        let gated = mlx_rs::nn::gelu_approximate(&gate_out).expect("mlx op");
+        // Dtype-preserving GELU (see `gemma4_fast::gelu_approx_fast`): the
+        // mlx-rs `gelu_approximate` promotes bf16 → f32, which would leak f32
+        // into `h2` and force the per-layer recast. Keep it bf16.
+        let gated = super::gemma4_fast::gelu_approx_fast(&gate_out);
         let mix = gated.multiply(&up_out).expect("mlx op");
 
         // Down branch: gather_qmm(mix, Wd, ..., rhs_indices=idx). [B, S, k, 1, H].

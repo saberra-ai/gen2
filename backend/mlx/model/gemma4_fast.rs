@@ -42,6 +42,39 @@ pub fn to_bf16(x: &Array) -> Array {
     x.as_dtype(Dtype::Bfloat16).expect("mlx op: bf16 cast")
 }
 
+/// Dtype-preserving tanh GELU approximation, mirroring mlx-lm's
+/// `nn.gelu_approx` (`mlx/nn/layers/activations.py:182`):
+///   `0.5 * x * (1 + tanh(sqrt(2/pi) * (x + 0.044715 * x^3)))`
+///
+/// WHY THIS EXISTS: `mlx_rs::nn::gelu_approximate` builds its constants with the
+/// `array!` macro, which yields **strong f32** scalars; `bf16 x × f32 const`
+/// then promotes the entire activation to f32 (MLX type-promotion). In the
+/// Gemma-4 MoE block this f32 leaks out of BOTH the dense FFN (`h1`) and the
+/// expert SwitchGLU (`h2`), forcing the post-FFN RMSNorm + residual add to run
+/// in f32 and requiring a standalone `to_bf16` recast every layer (a per-layer
+/// fusion-breaking command buffer). mlx-lm avoids this because Python float
+/// literals are **weak-typed** and adopt the bf16 operand dtype, so its
+/// `@mx.compile geglu` stays bf16 end-to-end.
+///
+/// The activation math runs in **f32** internally (the GELU polynomial + tanh
+/// are precision-sensitive — a fully-bf16 chain that rounds after every
+/// elementwise step accumulates enough error to flip near-tie decode tokens,
+/// observed as a turn-2 coherence break), then the result is cast back to the
+/// input dtype (**bf16**). This mirrors mlx-lm's `@mx.compile`d `geglu`, whose
+/// fused kernel evaluates in f32 ALU and stores bf16 — so the downstream FFN
+/// (`* up`, down-proj, post-FFN norm, residual add) all stay bf16 and fuse,
+/// keeping the trunk single-dtype with no per-layer recast, while the token
+/// stream matches the f32-accurate golden.
+pub fn gelu_approx_fast(x: &Array) -> Array {
+    let out_dt = x.dtype();
+    // Upcast to f32 for the precision-sensitive polynomial + tanh, then the
+    // strong-typed f32 constants in `gelu_approximate` are a no-op promotion.
+    let xf = x.as_dtype(Dtype::Float32).expect("mlx op: gelu upcast");
+    let g = mlx_rs::nn::gelu_approximate(&xf).expect("mlx op: gelu");
+    // Store back in the activation dtype so the rest of the FFN stays bf16.
+    g.as_dtype(out_dt).expect("mlx op: gelu downcast")
+}
+
 /// Build a Gemma-4 attention additive mask of shape `[1, 1, query_len, kv_len]`
 /// for the **fast prefill** path (seq > 1), mirroring `create_causal_mask`
 /// (`mlx_lm/models/base.py`): `linds >= rinds` (causal), optionally
