@@ -584,3 +584,92 @@ fn stage6_end_to_end_caption() {
         "Stage 6 end-to-end caption must mention a cat, got: {caption:?}"
     );
 }
+
+// ─── Stage 7: end-to-end caption through the REAL chat path ──────────────────
+
+/// Stage 7: the last mile — a caption produced through the **normal**
+/// `Engine::start_session` / chat-template path (NOT a hand-built 266-token
+/// prompt like Stage 6). This is the test the task targets: it exercises the
+/// image-token *expansion* wired into `Session::new_with_prefix` — the chat
+/// template flattens the image chunk to markdown `![](url)`, and the new
+/// expansion must turn that into `<boi> + image_token×n_soft + <eoi>` so
+/// `full_tokens` carries exactly the right number of `image_token_id` rows for
+/// the scatter. Greedy-decodes and asserts the caption mentions a cat.
+///
+/// Skips cleanly when the bundle or the committed `cat.png` is absent.
+#[test]
+fn stage7_real_path_caption() {
+    use crate::gen2::Message;
+    use crate::gen2::backend::mlx::Engine;
+    use crate::gen2::engine::{Capabilities, LoadRequest, Settings};
+    use crate::gen2::generation::{GenSpec, ThinkingMode, TokenEvent};
+    use crate::gen2::session_rt::SessionSpec;
+
+    let Some(bundle) = bundle_or_skip() else {
+        return;
+    };
+    let img_path = PathBuf::from(TEST_IMAGE_REL);
+    if !img_path.exists() {
+        eprintln!("[vision_parity] stage7 skip — image missing");
+        return;
+    }
+    let img_abs = std::fs::canonicalize(&img_path).expect("canonicalize cat.png");
+
+    let engine = Engine::new();
+    engine
+        .load_model(LoadRequest {
+            model_path: bundle,
+            ..Default::default()
+        })
+        .expect("load_model");
+    assert!(
+        engine.capabilities().contains(Capabilities::IMAGES),
+        "Stage 7: gemma4 vision bundle must advertise Capabilities::IMAGES"
+    );
+
+    // The REAL path: a user message with an attached image, started through
+    // `start_session`. The chat template renders it to markdown; the new
+    // expansion converts that into the image-token run before tokenizing.
+    let mut overrides = Settings::default();
+    overrides.sampling.temperature = Some(0.0);
+    let msg = Message::user_with_images(
+        "Describe this image in one short sentence.",
+        [format!("file://{}", img_abs.display())],
+    );
+    let session = engine
+        .start_session(SessionSpec {
+            messages: vec![msg],
+            overrides: Some(overrides),
+            // Direct answer, no reasoning channel — the caption is the first
+            // thing the model emits, so a short token budget captures it.
+            thinking: ThinkingMode::Off,
+            ..Default::default()
+        })
+        .expect("start_session (real vision path)");
+
+    let mut puller = session
+        .pull(GenSpec {
+            max_tokens: Some(32),
+            temperature: Some(0.0),
+            ..Default::default()
+        })
+        .expect("pull");
+
+    let mut text = String::new();
+    loop {
+        match puller.next() {
+            Some(Ok(TokenEvent::Token(tok))) => text.push_str(&tok.text),
+            Some(Ok(TokenEvent::Eos)) | Some(Ok(TokenEvent::Stopped)) => break,
+            Some(Ok(_)) => continue,
+            Some(Err(e)) => panic!("Stage 7 token error: {e:?}"),
+            None => break,
+        }
+    }
+    eprintln!("[vision_parity] stage7 REAL-PATH CAPTION: {text:?}");
+
+    let lc = text.to_lowercase();
+    assert!(
+        lc.contains("cat") || lc.contains("kitten") || lc.contains("feline"),
+        "Stage 7 real-path caption must mention a cat, got: {text:?}"
+    );
+}

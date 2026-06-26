@@ -78,8 +78,10 @@ pub struct Eagle3Config {
     #[serde(default)]
     pub norm_before_residual: bool,
     /// Apply a pre-fc RMSNorm (present in gpt-oss drafts, absent in
-    /// Gemma 4 / Llama 3 drafts). Default false.
+    /// Gemma 4 / Llama 3 drafts). Default false. Parsed from config for
+    /// completeness; the current draft forward path doesn't gate on it yet.
     #[serde(default)]
+    #[allow(dead_code)]
     pub norm_before_fc: bool,
     /// Target-layer ids whose hidden states feed the fc projection.
     /// `None` means "use all target layers concatenated" (fallback only;

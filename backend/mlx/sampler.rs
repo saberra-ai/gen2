@@ -208,12 +208,17 @@ impl Sampler {
     }
 
     /// N-gram phrase-repetition detection — see [`CommonSampler::is_in_ngram_loop`].
+    /// Part of the loop-detector surface; not wired into the current decode
+    /// path (which uses `is_in_cycle` + `is_in_token_loop`).
+    #[allow(dead_code)]
     pub fn is_in_ngram_loop(&self, n: usize) -> bool {
         self.inner.is_in_ngram_loop(n)
     }
 
     /// Combined multi-size phrase-loop detector — see
-    /// [`CommonSampler::is_in_any_ngram_loop`].
+    /// [`CommonSampler::is_in_any_ngram_loop`]. Part of the loop-detector
+    /// surface; not wired into the current decode path.
+    #[allow(dead_code)]
     pub fn is_in_any_ngram_loop(&self) -> bool {
         self.inner.is_in_any_ngram_loop()
     }

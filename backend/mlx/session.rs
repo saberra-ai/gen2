@@ -133,7 +133,7 @@ fn total_ram_bytes() -> u64 {
         let mut size = std::mem::size_of::<u64>();
         unsafe {
             libc::sysctlbyname(
-                b"hw.memsize\0".as_ptr() as *const libc::c_char,
+                c"hw.memsize".as_ptr(),
                 &mut mem as *mut u64 as *mut libc::c_void,
                 &mut size as *mut usize,
                 std::ptr::null_mut(),
@@ -182,33 +182,31 @@ impl DecodeState {
         let sink = SINK_TOKENS.min(target);
         let window = target - sink;
 
-        for slot in self.cache.iter_mut() {
-            if let Some(kv) = slot {
-                // Use the true fill (`cache_len`), not the array's seq dim. For
-                // the default path these are equal (the slot holds the filled
-                // prefix). For the `PIO_MLX_FAST` step-buffer cache the slot may
-                // be an over-allocated buffer whose `shape()[2]` is the
-                // capacity — clamping by `cache_len` keeps eviction correct for
-                // both paths without changing flag-off behaviour.
-                let cap = kv.0.shape()[2] as usize;
-                let seq = self.cache_len.min(cap);
-                if seq <= target {
-                    continue;
-                }
-                let win_start = (seq - window) as i32;
-                let seq_i = seq as i32;
-                let sink_end = sink as i32;
-                // sinks: [0..sink_end], recent window: [win_start..seq]. Bound
-                // the upper end at `seq` (the true fill) rather than running to
-                // the array end — the fast step buffer has zero padding past
-                // `seq` that must not be folded into the retained window.
-                let sk = kv.0.index((.., .., 0..sink_end, ..));
-                let sv = kv.1.index((.., .., 0..sink_end, ..));
-                let wk = kv.0.index((.., .., win_start..seq_i, ..));
-                let wv = kv.1.index((.., .., win_start..seq_i, ..));
-                kv.0 = mlx_rs::ops::concatenate_axis(&[&sk, &wk], 2).expect("mlx op");
-                kv.1 = mlx_rs::ops::concatenate_axis(&[&sv, &wv], 2).expect("mlx op");
+        for kv in self.cache.iter_mut().flatten() {
+            // Use the true fill (`cache_len`), not the array's seq dim. For
+            // the default path these are equal (the slot holds the filled
+            // prefix). For the `PIO_MLX_FAST` step-buffer cache the slot may
+            // be an over-allocated buffer whose `shape()[2]` is the
+            // capacity — clamping by `cache_len` keeps eviction correct for
+            // both paths without changing flag-off behaviour.
+            let cap = kv.0.shape()[2] as usize;
+            let seq = self.cache_len.min(cap);
+            if seq <= target {
+                continue;
             }
+            let win_start = (seq - window) as i32;
+            let seq_i = seq as i32;
+            let sink_end = sink as i32;
+            // sinks: [0..sink_end], recent window: [win_start..seq]. Bound
+            // the upper end at `seq` (the true fill) rather than running to
+            // the array end — the fast step buffer has zero padding past
+            // `seq` that must not be folded into the retained window.
+            let sk = kv.0.index((.., .., 0..sink_end, ..));
+            let sv = kv.1.index((.., .., 0..sink_end, ..));
+            let wk = kv.0.index((.., .., win_start..seq_i, ..));
+            let wv = kv.1.index((.., .., win_start..seq_i, ..));
+            kv.0 = mlx_rs::ops::concatenate_axis(&[&sk, &wk], 2).expect("mlx op");
+            kv.1 = mlx_rs::ops::concatenate_axis(&[&sv, &wv], 2).expect("mlx op");
         }
         tracing::debug!(
             cur_pos = self.cur_pos,
@@ -359,6 +357,7 @@ impl Session {
     /// Defaults `enable_thinking=Some(true)` to preserve the prior
     /// test-suite behaviour. New code should prefer `new_with_prefix`
     /// with an explicit `ThinkingMode`.
+    #[allow(dead_code)]
     pub(crate) fn new(
         id: SessionId,
         bundle: Arc<ModelBundle>,
@@ -467,21 +466,63 @@ impl Session {
             );
         }
 
-        let full_tokens = bundle
-            .tokenizer
-            .encode(&full_prompt, true)
-            .map_err(ExecError::Other)?;
-
         // ── Native vision (Gemma 4 VLM) prefill ───────────────────────────────
         // When the bundle carries a vision tower AND the messages contain
-        // images, extract the image(s), preprocess → pixel tensor → vision tower
-        // → projector, and run a single-phase prefill that scatters the image
-        // features into the image-token rows (forward_with_image). Image prompts
-        // are unique, so we bypass the prefix cache. v1: one image, prefill only.
-        if bundle.vision.is_some() {
-            let img_paths = extract_image_paths(&messages);
-            if !img_paths.is_empty() {
+        // images, we must (a) preprocess each image to a pixel tensor and its
+        // per-image soft-token count, and (b) **expand** each image placeholder
+        // in the rendered prompt into `<boi> + image_token×n_soft + <eoi>`
+        // BEFORE tokenizing — mirroring `processing_gemma4.py:500-513`. Pio's
+        // chat template flattens the image chunk to markdown `![](url)` (via
+        // `as_visible_text`), so without this expansion `full_tokens` carries
+        // ZERO `image_token_id` rows and the scatter has no target. The number
+        // of `image_token` rows per image MUST equal that image's pooled
+        // vision-feature row count (the scatter-count invariant that
+        // `forward_with_image` asserts) — both are derived from the SAME
+        // preprocessing here so they agree per-image. Image prompts are unique,
+        // so we bypass the prefix cache. v1: one image, prefill only.
+        if let Some(vision) = bundle.vision.as_ref() {
+            let image_urls = extract_image_urls(&messages);
+            if !image_urls.is_empty() {
                 let cache_slots = cache_slots_for(&bundle);
+                // Preprocess each image once: pixels (for the tower) + n_soft
+                // (for the prompt expansion). Both come from the same processor
+                // so the expansion count == the pooled row count per image.
+                let proc = super::model::vision_preprocess::Gemma4ImageProcessor::default();
+                let mut pixels: Vec<mlx_rs::Array> = Vec::with_capacity(image_urls.len());
+                let mut expansions: Vec<(String, String)> = Vec::with_capacity(image_urls.len());
+                for url in &image_urls {
+                    let path = url.strip_prefix("file://").unwrap_or(url);
+                    let img = image::ImageReader::open(path)
+                        .map_err(|e| ExecError::Io(format!("open image {path}: {e}")))?
+                        .with_guessed_format()
+                        .map_err(|e| ExecError::Io(format!("guess image format {path}: {e}")))?
+                        .decode()
+                        .map_err(|e| {
+                            ExecError::Other(anyhow::anyhow!("decode image {path}: {e}"))
+                        })?;
+                    let n_soft = proc.num_soft_tokens(img.width(), img.height());
+                    pixels.push(proc.preprocess(&img));
+                    // The markdown `as_visible_text` emits for this chunk → its
+                    // expansion. Original (un-stripped) URL, matching the prompt.
+                    expansions.push((
+                        format!("![]({url})"),
+                        vision.image_placeholder_expansion(n_soft),
+                    ));
+                }
+
+                // Replace each image's markdown placeholder, in prompt order, by
+                // its expansion. `replacen(.., 1)` consumes one occurrence at a
+                // time so repeated identical URLs map to distinct images.
+                let mut expanded_prompt = full_prompt.clone();
+                for (marker, expansion) in &expansions {
+                    expanded_prompt = expanded_prompt.replacen(marker, expansion, 1);
+                }
+
+                let full_tokens = bundle
+                    .tokenizer
+                    .encode(&expanded_prompt, true)
+                    .map_err(ExecError::Other)?;
+
                 return Self::prefill_with_images(
                     id,
                     bundle,
@@ -490,11 +531,16 @@ impl Session {
                     messages,
                     enable_thinking,
                     &full_tokens,
-                    &img_paths,
+                    pixels,
                     cache_slots,
                 );
             }
         }
+
+        let full_tokens = bundle
+            .tokenizer
+            .encode(&full_prompt, true)
+            .map_err(ExecError::Other)?;
 
         // ── DiffusionGemma: no autoregressive prefill ─────────────────────────
         // The model is encoder/decoder block-diffusion; `forward` panics for it.
@@ -727,10 +773,16 @@ impl Session {
         Ok((session, None))
     }
 
-    /// Single-phase prefill for an image prompt: preprocess each image, run the
-    /// vision tower + projector to get `[1, n_soft, text_hidden]` features per
-    /// image (concatenated in prompt order), then `forward_with_image` scatters
-    /// them into the `image_token_id` rows. Bypasses the prefix cache.
+    /// Single-phase prefill for an image prompt: encode each pre-processed image
+    /// through the vision tower + projector to get `[1, n_soft, text_hidden]`
+    /// features per image (concatenated in prompt order), then
+    /// `forward_with_image` scatters them into the `image_token_id` rows.
+    /// Bypasses the prefix cache.
+    ///
+    /// `pixels` are the per-image `[1,3,H,W]` tensors produced by the SAME
+    /// `Gemma4ImageProcessor` that derived the `n_soft` counts used to expand
+    /// `full_tokens`'s image placeholders — so the projected feature rows equal
+    /// the `image_token_id` count (the invariant `forward_with_image` asserts).
     #[allow(clippy::too_many_arguments)]
     fn prefill_with_images(
         id: SessionId,
@@ -740,11 +792,9 @@ impl Session {
         messages: Vec<Message>,
         enable_thinking: Option<bool>,
         full_tokens: &[u32],
-        img_paths: &[String],
+        pixels: Vec<mlx_rs::Array>,
         cache_slots: usize,
     ) -> Result<(Self, Option<PrefixCacheEntry>), ExecError> {
-        use super::model::vision_preprocess::Gemma4ImageProcessor;
-
         let vision = bundle
             .vision
             .as_ref()
@@ -755,19 +805,11 @@ impl Session {
             prompt_tokens: total_tokens,
         });
 
-        // Preprocess + encode each image; concat the projected features in
-        // prompt order so they map 1:1 to the image-token runs.
-        let proc = Gemma4ImageProcessor::default();
-        let mut feats: Vec<mlx_rs::Array> = Vec::with_capacity(img_paths.len());
-        for p in img_paths {
-            let img = image::ImageReader::open(p)
-                .map_err(|e| ExecError::Io(format!("open image {p}: {e}")))?
-                .with_guessed_format()
-                .map_err(|e| ExecError::Io(format!("guess image format {p}: {e}")))?
-                .decode()
-                .map_err(|e| ExecError::Other(anyhow::anyhow!("decode image {p}: {e}")))?;
-            let pixels = proc.preprocess(&img);
-            feats.push(vision.encode_image(&pixels));
+        // Encode each image; concat the projected features in prompt order so
+        // they map 1:1 to the image-token runs.
+        let mut feats: Vec<mlx_rs::Array> = Vec::with_capacity(pixels.len());
+        for px in &pixels {
+            feats.push(vision.encode_image(px));
         }
         let image_features = if feats.len() == 1 {
             feats.into_iter().next().expect("len==1")
@@ -777,7 +819,19 @@ impl Session {
                 .map_err(|e| ExecError::Other(anyhow::anyhow!("concat image features: {e}")))?
         };
 
+        // Invariant: the `image_token_id` placeholders in the prompt must equal
+        // the pooled vision-feature rows (the scatter has one target row each).
+        // Both were derived from the same preprocessing, so a mismatch is a bug.
         let image_token_id = vision.image_token_id;
+        let n_img_tokens = full_tokens.iter().filter(|&&t| t == image_token_id).count();
+        let n_feat_rows = image_features.shape()[1] as usize;
+        if n_img_tokens != n_feat_rows {
+            return Err(ExecError::Other(anyhow::anyhow!(
+                "vision prompt/feature mismatch: {n_img_tokens} image_token_id rows in \
+                 the prompt vs {n_feat_rows} pooled vision rows — the expansion count \
+                 and the tower's pooled-row count diverged"
+            )));
+        }
         let cache_slots_n = cache_slots;
         let policy = CachePolicy::compute(&bundle.config, cache_slots_n);
 
@@ -1006,10 +1060,13 @@ fn oom_msg(e: Box<dyn std::any::Any + Send>) -> String {
     }
 }
 
-/// Extract `file://`-stripped image paths from the message stream, in order.
-/// Mirrors the llama backend's gather (`llama/session.rs`): walk
-/// `MessageContent::MultipleChunks` → `MessageChunk::ImageUrl`, strip `file://`.
-fn extract_image_paths(messages: &[Message]) -> Vec<String> {
+/// Extract image **URLs** from the message stream, in order, preserving the
+/// original (un-stripped) URL. The URL is what `as_visible_text` renders into
+/// the prompt as `![](url)` (types/message.rs), so the caller can match the
+/// markdown placeholder to expand it; the `file://` prefix is stripped only at
+/// decode time. Mirrors the llama backend's gather (`llama/session.rs`): walk
+/// `MessageContent::MultipleChunks` → `MessageChunk::ImageUrl`.
+fn extract_image_urls(messages: &[Message]) -> Vec<String> {
     let mut out = Vec::new();
     for m in messages {
         if let MessageBody::Content { content } = &m.body
@@ -1017,9 +1074,7 @@ fn extract_image_paths(messages: &[Message]) -> Vec<String> {
         {
             for ch in chunks {
                 if let MessageChunk::ImageUrl { image_url } = ch {
-                    let u = image_url.url.clone();
-                    let path = u.strip_prefix("file://").map(str::to_string).unwrap_or(u);
-                    out.push(path);
+                    out.push(image_url.url.clone());
                 }
             }
         }

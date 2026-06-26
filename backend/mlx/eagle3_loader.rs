@@ -1,7 +1,7 @@
 //! Loader for EAGLE-3 draft-model checkpoints.
 //!
 //! Reads a HuggingFace-style EAGLE-3 bundle (single `model.safetensors`
-//! + `config.json`) from a directory and produces an `EagleDraftModel`
+//! plus `config.json`) from a directory and produces an `EagleDraftModel`
 //! with all weights verified against the config shapes. Used by the
 //! MLX backend when `GenSpec::speculative = SpeculativeMode::Eagle3 { ... }`.
 //!

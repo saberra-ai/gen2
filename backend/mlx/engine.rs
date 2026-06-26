@@ -233,18 +233,18 @@ impl Engine {
     /// No-op if the path is already loaded or already warming.
     pub fn warm_model(&self, model_dir: PathBuf) {
         // Already loaded with this path — nothing to warm.
-        if let Some(b) = self.bundle.load_full() {
-            if b.model_dir == model_dir {
-                return;
-            }
+        if let Some(b) = self.bundle.load_full()
+            && b.model_dir == model_dir
+        {
+            return;
         }
         // Warm slot already holds this path or is loading it.
         {
             let slot = self.warm_slot.read();
-            if let Some(s) = slot.as_ref() {
-                if s.model_dir == model_dir {
-                    return;
-                }
+            if let Some(s) = slot.as_ref()
+                && s.model_dir == model_dir
+            {
+                return;
             }
         }
 

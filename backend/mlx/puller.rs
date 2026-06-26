@@ -445,6 +445,9 @@ impl ArPuller {
     /// Seed the speculative predictor with the session's prompt tokens.
     /// Only PLD / Hybrid use this; n-gram / Off ignore it. Call once
     /// immediately after construction when the prompt tokens are in hand.
+    /// Retained for the PLD seeding path; not invoked on the default decode
+    /// route yet.
+    #[allow(dead_code)]
     pub(crate) fn seed_predictor(&mut self, prompt: &[u32]) {
         self.predictor.seed_prompt(prompt);
     }
@@ -1067,6 +1070,10 @@ impl ArPuller {
                         let loop_hit =
                             self.sampler.is_in_cycle(48) || self.sampler.is_in_token_loop(16, 2);
 
+                        // `i` indexes `drafts` for accepted positions AND selects
+                        // the `bonus` token at `i == accepted`, so a plain
+                        // iterator over `drafts` can't express the bonus tail.
+                        #[allow(clippy::needless_range_loop)]
                         for i in 0..=accepted {
                             let tok = if i < accepted { drafts[i] } else { bonus };
                             if stop_ids.contains(&tok) {

@@ -102,7 +102,7 @@ fn detect_bits(weight_shape: &[i32], full_dim: usize) -> Option<i32> {
         return None;
     }
     let bits = (32 * packed_cols) / full_dim;
-    if bits == 0 || bits > 8 || (32 * packed_cols) % full_dim != 0 {
+    if bits == 0 || bits > 8 || !(32 * packed_cols).is_multiple_of(full_dim) {
         return None;
     }
     Some(bits as i32)
@@ -233,7 +233,7 @@ pub fn build_model(model_dir: &Path) -> Result<(LlamaModel, ModelConfig), ExecEr
             layer.ffn.down_proj = load_weight(&tensors, &down_key, config.intermediate_size);
 
             // Fused gate_up_proj fallback (some models fuse gate+up into one tensor)
-            if tensors.get(&format!("{}.weight", gate_key)).is_none()
+            if !tensors.contains_key(&format!("{}.weight", gate_key))
                 && try_quantized_weight(&tensors, &gate_key, hidden).is_none()
             {
                 let fused_key = format!("{}.mlp.gate_up_proj", prefix);
@@ -324,15 +324,15 @@ pub fn build_gemma4_model(model_dir: &Path) -> Result<(Gemma4Model, ModelConfig)
         if let Some(t) = as_f32(full.and_then(|v| v.get("rope_theta"))) {
             config.rope_theta = t;
         }
-        if config.rope_local_base_freq.is_none() {
-            if let Some(t) = as_f32(sliding.and_then(|v| v.get("rope_theta"))) {
-                config.rope_local_base_freq = Some(t);
-            }
+        if config.rope_local_base_freq.is_none()
+            && let Some(t) = as_f32(sliding.and_then(|v| v.get("rope_theta")))
+        {
+            config.rope_local_base_freq = Some(t);
         }
-        if config.global_partial_rotary_factor.is_none() {
-            if let Some(f) = as_f32(full.and_then(|v| v.get("partial_rotary_factor"))) {
-                config.global_partial_rotary_factor = Some(f);
-            }
+        if config.global_partial_rotary_factor.is_none()
+            && let Some(f) = as_f32(full.and_then(|v| v.get("partial_rotary_factor")))
+        {
+            config.global_partial_rotary_factor = Some(f);
         }
     }
 
@@ -628,6 +628,27 @@ pub fn build_vision_model(model_dir: &Path) -> Result<Option<VisionModel>, ExecE
         .map(|v| v as u32)
         .unwrap_or(258880);
 
+    // Image-placeholder markers for the prompt expansion (§E). The HF/mlx-vlm
+    // processor reads these from the tokenizer (`processing_gemma4.py:402-405`);
+    // we read them from `tokenizer_config.json`. For the gemma-4 bundles:
+    // boi=`<|image>`, image=`<|image|>` (== image_token_id 258880),
+    // eoi=`<image|>`. Defaults match those so a missing key still works.
+    let tok_cfg: Option<serde_json::Value> =
+        fs::read_to_string(model_dir.join("tokenizer_config.json"))
+            .ok()
+            .and_then(|s| serde_json::from_str(&s).ok());
+    let tok_str = |key: &str, default: &str| -> String {
+        tok_cfg
+            .as_ref()
+            .and_then(|c| c.get(key))
+            .and_then(|v| v.as_str())
+            .map(str::to_string)
+            .unwrap_or_else(|| default.to_string())
+    };
+    let boi_token = tok_str("boi_token", "<|image>");
+    let image_token = tok_str("image_token", "<|image|>");
+    let eoi_token = tok_str("eoi_token", "<image|>");
+
     let mut tower = VisionTower::new(&vcfg);
     let clip = vcfg.use_clipped_linears;
     let h = vcfg.hidden_size;
@@ -698,6 +719,9 @@ pub fn build_vision_model(model_dir: &Path) -> Result<Option<VisionModel>, ExecE
         tower,
         projector,
         image_token_id,
+        boi_token,
+        image_token,
+        eoi_token,
     }))
 }
 

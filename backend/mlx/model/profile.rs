@@ -20,6 +20,11 @@
 //! Nothing here changes compute logic — it only forces evaluation earlier than
 //! it would otherwise happen and records timings.
 
+// Diagnostic surface: `set_override`/`reset`/`snapshot` are driven from
+// profiling sessions and tests, not the default decode path, so they read as
+// dead in a normal build.
+#![allow(dead_code)]
+
 use std::cell::RefCell;
 use std::collections::HashMap;
 use std::sync::OnceLock;

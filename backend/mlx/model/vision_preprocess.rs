@@ -211,6 +211,23 @@ impl Gemma4ImageProcessor {
         (target_w.max(sm) as u32, target_h.max(sm) as u32)
     }
 
+    /// Number of vision **soft tokens** this image pools down to — the
+    /// per-image count that must equal BOTH the pooled vision-feature rows AND
+    /// the number of `image_token_id` placeholders expanded into the prompt
+    /// (the scatter-count invariant `forward_with_image` asserts). Mirrors the
+    /// processor's `num_soft_tokens_per_image` (processing_gemma4.py:196-198):
+    /// `num_patches = (H/patch)*(W/patch); num_soft = num_patches / kernel²`,
+    /// computed from the post-resize target size so it agrees exactly with what
+    /// the tower's pooler trims to (`VisionTower::forward_parts` n_valid) without
+    /// running the tower.
+    pub fn num_soft_tokens(&self, width: u32, height: u32) -> usize {
+        let (tw, th) = self.target_size(width, height);
+        let patch = self.patch_size as usize;
+        let kernel = self.pooling_kernel_size as usize;
+        let num_patches = (th as usize / patch) * (tw as usize / patch);
+        num_patches / (kernel * kernel)
+    }
+
     /// Full preprocess of ONE image → `[1, 3, H, W]` f32 `pixel_values`.
     pub fn preprocess(&self, img: &DynamicImage) -> Array {
         // 1. RGB convert.

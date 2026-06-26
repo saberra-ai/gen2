@@ -24,5 +24,10 @@ mod vision_parity;
 
 pub use bundle::ModelBundle;
 pub use engine::Engine;
+// Re-exported for the in-crate test modules (`golden.rs`, `vision_parity.rs`),
+// which drive sessions/pullers directly. Gated so the non-test build (where no
+// caller references them) stays warning-free.
+#[cfg(test)]
 pub use puller::TokenPuller;
-pub use session::{Session, SessionId};
+#[cfg(test)]
+pub use session::Session;

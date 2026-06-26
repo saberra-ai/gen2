@@ -866,6 +866,15 @@ pub struct VisionModel {
     /// `image_token_id` (config.py:130) — the decoder row id replaced by image
     /// features at merge time.
     pub image_token_id: u32,
+    /// `<boi>` begin-of-image marker string (tokenizer_config `boi_token`,
+    /// `<|image>` for the gemma-4 bundles). Opens the soft-token run.
+    pub boi_token: String,
+    /// `image_token` placeholder string (tokenizer_config `image_token`,
+    /// `<|image|>` == `image_token_id`). Repeated `n_soft` times per image.
+    pub image_token: String,
+    /// `<eoi>` end-of-image marker string (tokenizer_config `eoi_token`,
+    /// `<image|>`). Closes the soft-token run.
+    pub eoi_token: String,
 }
 
 impl VisionModel {
@@ -874,5 +883,24 @@ impl VisionModel {
     pub fn encode_image(&self, pixel_values: &Array) -> Array {
         let feats = self.tower.forward(pixel_values);
         self.projector.forward(&feats)
+    }
+
+    /// The Gemma-4 image-placeholder expansion for one image:
+    /// `<boi>` + `image_token` × `n_soft` + `<eoi>`. This is the exact string
+    /// the HF/mlx-vlm processor substitutes for each image placeholder
+    /// (`processing_gemma4.py:504-507`), where `n_soft` is the per-image soft
+    /// token count (`Gemma4ImageProcessor::num_soft_tokens`). Tokenizing it
+    /// yields exactly `n_soft` `image_token_id` rows — the scatter targets that
+    /// `forward_with_image` fills with the pooled vision features.
+    pub fn image_placeholder_expansion(&self, n_soft: usize) -> String {
+        let mut s = String::with_capacity(
+            self.boi_token.len() + self.image_token.len() * n_soft + self.eoi_token.len(),
+        );
+        s.push_str(&self.boi_token);
+        for _ in 0..n_soft {
+            s.push_str(&self.image_token);
+        }
+        s.push_str(&self.eoi_token);
+        s
     }
 }

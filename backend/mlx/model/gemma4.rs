@@ -1003,7 +1003,7 @@ impl Gemma4Model {
         cache: &mut KvCache,
     ) -> Array {
         let seq_len = tokens.len();
-        let hidden = self.layers[0].input_layernorm.weight.shape()[0];
+        let _hidden = self.layers[0].input_layernorm.weight.shape()[0];
 
         // Merged input embeddings (text × embed_scale, image rows scattered).
         let mut x = self.build_input_embeds_with_image(tokens, image_features, image_token_id);
@@ -1571,10 +1571,6 @@ mod tests {
         );
     }
 
-    /// 26B-style config (`enable_moe_block=true`): every block carries an MoE
-    /// sub-block; experts are sized from `moe_intermediate_size`; routers
-    /// from `num_experts` and `top_k_experts`.
-    #[test]
     /// Regression for the PLE-zero panic: 12B / 26B / 31B variants ship
     /// `hidden_size_per_layer_input = 0` literally, which used to drive
     /// `unwrap_or(256) → 0 → reshape into [.., 0]` and crash. The model
