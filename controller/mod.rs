@@ -218,6 +218,10 @@ pub enum ControllerCmd {
     /// Load or reload the embedding model.
     LoadEmbedder {
         model_path: PathBuf,
+        /// Optional explicit embedder family override (e.g. `"qwen3"`). `None`
+        /// → detect from the filename (defaults to EmbeddingGemma). Keeps the
+        /// default path unchanged; lets opt-in callers force Qwen3-Embedding.
+        kind: Option<String>,
         resp: Sender<Result<(), String>>,
     },
 

@@ -26,6 +26,11 @@ pub struct LoadRequest {
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct EmbedLoadRequest {
     pub model_path: PathBuf,
+    /// Optional explicit embedder family override (e.g. `"qwen3"`). When set,
+    /// it wins over filename-based detection. `None`/empty → detect from the
+    /// path, defaulting to EmbeddingGemma — so the default path is unaffected.
+    #[serde(default)]
+    pub kind: Option<String>,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default)]

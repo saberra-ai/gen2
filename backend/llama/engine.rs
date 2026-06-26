@@ -866,7 +866,10 @@ mod tests {
         })?;
         // Load embedder with the same model path (may or may not support it,
         // but the empty-input short-circuit should fire before backend errors)
-        let _ = e.load_embedder(EmbedLoadRequest { model_path });
+        let _ = e.load_embedder(EmbedLoadRequest {
+            model_path,
+            kind: None,
+        });
 
         let result = e.generate_embeddings(&[])?;
         assert!(result.is_empty(), "expected empty vec for empty input");

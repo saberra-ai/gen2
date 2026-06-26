@@ -191,7 +191,19 @@ pub(crate) fn build_embedder(
     crate::gen2::engine::validate_model_file(&req.model_path)?;
 
     let config = ModelConfig::default();
-    LlamaEmbedder::load_from_path(backend.clone(), &req.model_path, config)
+    // Resolve the embedder family: an explicit `kind` override wins, otherwise
+    // detect from the filename. Both default to EmbeddingGemma, so the default
+    // path is byte-for-byte unchanged.
+    let kind = match req.kind.as_deref() {
+        Some(s) if !s.trim().is_empty() => super::embedder::EmbedderKind::from_config_str(s),
+        _ => super::embedder::EmbedderKind::from_path(&req.model_path),
+    };
+    tracing::info!(
+        embedder_kind = ?kind,
+        path = %req.model_path.display(),
+        "loading embedder"
+    );
+    LlamaEmbedder::load_from_path_with_kind(backend.clone(), &req.model_path, config, kind)
         .with_context(|| format!("failed to load embedder: {}", req.model_path.display()))
         .map_err(ExecError::Other)
 }

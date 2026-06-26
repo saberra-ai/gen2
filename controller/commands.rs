@@ -110,7 +110,11 @@ fn handle_model_command(state: &mut ControllerState, cmd: ControllerCmd) -> Cont
             let _ = resp.send(res);
             ControlFlow::Continue
         }
-        ControllerCmd::LoadEmbedder { model_path, resp } => {
+        ControllerCmd::LoadEmbedder {
+            model_path,
+            kind,
+            resp,
+        } => {
             let estimated_mb = estimate_resident_mb_for_path(&model_path);
             let name = model_path.display().to_string();
             let governor = current_memory_governor();
@@ -123,7 +127,7 @@ fn handle_model_command(state: &mut ControllerState, cmd: ControllerCmd) -> Cont
             }
             let res = state
                 .engine
-                .load_embedder(EmbedLoadRequest { model_path })
+                .load_embedder(EmbedLoadRequest { model_path, kind })
                 .map_err(|e| format!("{:?}", e));
             if res.is_ok() {
                 let admitted = state.residency.admit(
