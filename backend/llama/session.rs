@@ -783,11 +783,17 @@ impl Session {
                         chat_template,
                         paused: Arc::new(AtomicBool::new(false)),
                         stopped: Arc::new(AtomicBool::new(false)),
-                        // For MTMD, start sampling from last logits (-1)
+                        // For MTMD, `eval_chunks(.., logits_last = true)` computes
+                        // logits only for the final token, so the first sample must
+                        // read the *last* logits via index -1 — not an absolute
+                        // position. (`n_past - 1` points at a token whose logits
+                        // were never materialized, which aborts the C sampler with
+                        // `GGML_ASSERT(logits != nullptr)`.) This mirrors the
+                        // upstream llama-cpp-2 mtmd example: `sampler.sample(ctx, -1)`.
                         state: Arc::from(Mutex::new(Some(DecodeState {
                             ctx_cell,
                             cur_pos: n_past,
-                            logits_i: (n_past - 1).max(0),
+                            logits_i: -1,
                             prefill_start_us: llama_cpp_2::ggml_time_us() as u64,
                         }))),
                         messages: RwLock::new(messages),

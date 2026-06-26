@@ -400,9 +400,10 @@ mod tests {
 
     // Helper: read model path from TEST_MODEL_PATH; return None if not set.
     fn test_model_path() -> Option<PathBuf> {
-        // std::env::var("TEST_MODEL_PATH").ok().map(Into::into)
-        // Some("C:/Users/vlope/Downloads/gemma-3-4b-it-qat-Q4_K_S.gguf".into())
-        Some("/Users/victorlopez/Downloads/gemma-3-4b-it-qat-Q4_K_M.gguf".into())
+        // Set PIO_TEST_MODEL to a local GGUF to run the ignored smoke tests.
+        // For the multimodal test, point it at a VLM text backbone, e.g.
+        // Qwen3-VL-4B-Instruct-Q4_K_M.gguf.
+        std::env::var("PIO_TEST_MODEL").ok().map(Into::into)
     }
 
     // Ignored by default: requires a local GGUF model.
@@ -481,15 +482,36 @@ mod tests {
     }
 
     fn test_mmproj_path() -> Option<PathBuf> {
-        // std::env::var("TEST_MMPROJ_PATH").ok().map(Into::into)
-        // Some("C:/Users/vlope/Downloads/mmproj-F16.gguf".into())
-        Some("/Users/victorlopez/Downloads/mmproj-F16.gguf".into())
+        // Set PIO_TEST_MMPROJ to the matching mmproj GGUF for the VLM, e.g.
+        // mmproj-Qwen3VL-4B-Instruct-F16.gguf.
+        std::env::var("PIO_TEST_MMPROJ").ok().map(Into::into)
     }
 
-    fn test_image_path() -> Option<PathBuf> {
-        // std::env::var("TEST_IMAGE_PATH").ok().map(Into::into)
-        // Some("C:/Users/vlope/Downloads/cat.jfif".into())
-        Some("/Users/victorlopez/Downloads/profile.jpg".into())
+    /// Resolve the test image. Prefer an explicit `PIO_TEST_IMAGE`; otherwise
+    /// synthesize a deterministic fixture (a solid blue disc on white) so the
+    /// multimodal smoke test is self-contained — no committed binary, no
+    /// external asset. Returns the path plus a guard that keeps the tempdir
+    /// alive for the duration of the test.
+    fn test_image_path() -> Option<(PathBuf, Option<tempfile::TempDir>)> {
+        if let Ok(p) = std::env::var("PIO_TEST_IMAGE") {
+            return Some((p.into(), None));
+        }
+        let dir = tempfile::tempdir().ok()?;
+        let path = dir.path().join("blue_circle.png");
+        let (w, h) = (256u32, 256u32);
+        let (cx, cy, r) = (w as f32 / 2.0, h as f32 / 2.0, 90.0_f32);
+        let mut img = image::RgbImage::from_pixel(w, h, image::Rgb([255, 255, 255]));
+        for y in 0..h {
+            for x in 0..w {
+                let dx = x as f32 - cx;
+                let dy = y as f32 - cy;
+                if dx * dx + dy * dy <= r * r {
+                    img.put_pixel(x, y, image::Rgb([20, 60, 220]));
+                }
+            }
+        }
+        img.save(&path).ok()?;
+        Some((path, Some(dir)))
     }
 
     /// Minimal MTMD smoke test: load mmproj, run one image+text turn.
@@ -497,11 +519,11 @@ mod tests {
     #[ignore]
     fn multimodal_image_smoke() -> Result<(), Box<dyn std::error::Error>> {
         use crate::types::message::{MessageChunk, Url};
-        let (Some(model_path), Some(mmproj_path), Some(image_path)) =
+        let (Some(model_path), Some(mmproj_path), Some((image_path, _img_guard))) =
             (test_model_path(), test_mmproj_path(), test_image_path())
         else {
             eprintln!(
-                "set TEST_MODEL_PATH, TEST_MMPROJ_PATH, and TEST_IMAGE_PATH to run this test"
+                "set PIO_TEST_MODEL and PIO_TEST_MMPROJ (and optionally PIO_TEST_IMAGE) to run this test"
             );
             return Ok(());
         };
@@ -518,7 +540,14 @@ mod tests {
             mmproj_path: Some(mmproj_path),
             ..Default::default()
         })?;
+        // IMAGES capability is set only when the mmproj validates against the
+        // model at load time — proving the projector is wired, not stubbed.
         assert!(e.does_model_support_images());
+
+        // Only enforce the keyword assertion against the deterministic
+        // built-in fixture (a blue disc on white); an external PIO_TEST_IMAGE
+        // could depict anything.
+        let using_builtin_fixture = std::env::var("PIO_TEST_IMAGE").is_err();
 
         let img_url = format!("file://{}", image_path.display());
         let msgs = vec![Message {
@@ -527,7 +556,7 @@ mod tests {
             body: MessageBody::Content {
                 content: MessageContent::MultipleChunks(vec![
                     MessageChunk::Text {
-                        text: "Describe this photo please, write as if you're a weeb:".into(),
+                        text: "What shape and what color is in this image? Answer in one short sentence.".into(),
                     },
                     MessageChunk::ImageUrl {
                         image_url: Url { url: img_url },
@@ -567,9 +596,20 @@ mod tests {
                 break;
             }
         }
-        println!("{}", result);
+        println!("VLM answer: {}", result);
         assert!(saw_media, "no media boundary observed");
         assert!(got_any, "no tokens produced");
+        if using_builtin_fixture {
+            let lc = result.to_lowercase();
+            assert!(
+                lc.contains("blue"),
+                "expected the model to mention the blue color of the fixture; got: {result}"
+            );
+            assert!(
+                lc.contains("circle") || lc.contains("round") || lc.contains("disc"),
+                "expected the model to mention the round shape of the fixture; got: {result}"
+            );
+        }
         Ok(())
     }
     #[test]
