@@ -1665,4 +1665,155 @@ mod tests {
         let block = Gemma4TransformerBlock::new(&cfg, true);
         assert!(block.moe.is_none());
     }
+
+    // ── Sliding-window mask alignment invariant ───────────────────────────────
+    //
+    // `build_causal_mask` derives each query's absolute position from SHAPES
+    // (`abs_q = kv_len - query_len + qi`), NOT from the true RoPE `offset`. The
+    // claim (gemma4.rs:241-272 + the multi-image fix in 17c3a013) is that this
+    // stays correct even after a prior sliding-window truncation, because the
+    // stored cache is always the contiguous last-`w` temporal suffix, so the
+    // map `true_pos(ki) = (cur_pos - L) + ki` is uniform-affine in `ki` and the
+    // truncation offset cancels identically in BOTH the causal and the window
+    // inequalities. These tests pin that invariant against the authoritative
+    // mlx-lm window semantics (each query attends keys in `(pos - w, pos]`,
+    // intersected with the physically-retained frames) so the "delta after
+    // truncation both exceeds and crosses the window" sharp edge flagged in
+    // 17c3a013 can't silently regress.
+
+    /// Read `build_causal_mask`'s `[1,1,q,k]` additive bias back to host and
+    /// return, per query row, the allowed key COLUMN indices (where the bias is
+    /// 0.0 rather than -inf).
+    fn allowed_cols(query_len: usize, kv_len: usize, window: Option<usize>) -> Vec<Vec<usize>> {
+        let m = build_causal_mask(query_len, kv_len, window);
+        let data = m.as_slice::<f32>(); // [q*k], row-major
+        (0..query_len)
+            .map(|qi| {
+                (0..kv_len)
+                    .filter(|&ki| data[qi * kv_len + ki] == 0.0)
+                    .collect()
+            })
+            .collect()
+    }
+
+    /// Reference oracle: the true key positions a query at absolute position
+    /// `q_abs` may attend under mlx-lm's sliding window — the half-open
+    /// `(q_abs - w, q_abs]` — intersected with the positions physically present
+    /// in the K/V buffer. Mirrors `create_causal_mask` (`base.py:24`)
+    /// `linds >= rinds` & `linds < rinds + window_size`, restricted to the
+    /// retained suffix that `RotatingKVCache` keeps.
+    fn ref_window(q_abs: usize, w: usize, present: &[usize]) -> Vec<usize> {
+        let lo = q_abs.saturating_sub(w - 1); // (q_abs - w, q_abs] lower bound
+        present
+            .iter()
+            .copied()
+            .filter(|&p| p >= lo && p <= q_abs)
+            .collect()
+    }
+
+    /// THE flagged adversarial case: after a fresh prefill crosses the window
+    /// and the stored cache is truncated to the last `w` frames, a single delta
+    /// chunk both EXCEEDS and CROSSES the window. Assert every mask row attends
+    /// EXACTLY its reference sliding window (mapped through the truncated
+    /// buffer's true positions) — no row misaligns, no row is all-(-inf).
+    #[test]
+    fn sliding_mask_aligned_after_truncation_for_large_delta() {
+        let w = 512usize;
+
+        // Step 1 — fresh prefill of 600 @ offset 0. Attention uses the FULL
+        // chunk; the stored cache is then truncated to the last `w` frames =
+        // true positions [88, 599].
+        let prefill = 600usize;
+        let stored_start = prefill - w; // 88
+        let stored_len = w; // 512 frames: positions stored_start..prefill
+
+        // Step 2 — delta chunk of `delta` tokens @ offset `prefill`. The K/V
+        // buffer fed to attention is [stored(512) ++ delta], so
+        //   kv_len = stored_len + delta,  true_pos(ki) = stored_start + ki.
+        for &delta in &[1usize, 50, 300, 511, 512, 513, 600, 1000] {
+            let kv_len = stored_len + delta;
+            // Physical true positions present in the buffer, in column order.
+            let present: Vec<usize> = (0..kv_len).map(|ki| stored_start + ki).collect();
+            let got = allowed_cols(delta, kv_len, Some(w));
+
+            for (qi, row) in got.iter().enumerate() {
+                let q_abs = prefill + qi; // true absolute position of this query
+                let got_true: Vec<usize> = row.iter().map(|&ki| stored_start + ki).collect();
+                let want = ref_window(q_abs, w, &present);
+                assert_eq!(
+                    got_true, want,
+                    "delta={delta} row qi={qi} (q_abs={q_abs}): mask attends wrong \
+                     true key positions after truncation"
+                );
+                assert!(
+                    !row.is_empty(),
+                    "delta={delta} row qi={qi} (q_abs={q_abs}): all-(-inf) mask row \
+                     → softmax NaN"
+                );
+            }
+        }
+    }
+
+    /// Exhaustive small-scale scan: for every (contiguous-suffix length,
+    /// delta) combination on a tiny window, the shape-derived mask must equal
+    /// the reference window mapped through the truncated suffix. This brute-
+    /// forces the algebraic invariant (uniform-affine `true_pos(ki)`), so it
+    /// can't silently break for any chunk size at any conversation position.
+    #[test]
+    fn sliding_mask_matches_reference_for_all_suffix_and_delta() {
+        let w = 8usize;
+        for cur_pos in 0..=40usize {
+            let stored_len = cur_pos.min(w); // contiguous last-w suffix length
+            let stored_start = cur_pos - stored_len;
+            for delta in 2..=20usize {
+                // delta==1 is the decode no-mask path, asserted separately.
+                let kv_len = stored_len + delta;
+                let present: Vec<usize> = (0..kv_len).map(|ki| stored_start + ki).collect();
+                let got = allowed_cols(delta, kv_len, Some(w));
+                for (qi, row) in got.iter().enumerate() {
+                    let q_abs = cur_pos + qi;
+                    let got_true: Vec<usize> = row.iter().map(|&ki| stored_start + ki).collect();
+                    let want = ref_window(q_abs, w, &present);
+                    assert_eq!(
+                        got_true, want,
+                        "cur_pos={cur_pos} stored_len={stored_len} delta={delta} qi={qi}: \
+                         mask diverges from reference sliding window"
+                    );
+                    assert!(
+                        !row.is_empty(),
+                        "cur_pos={cur_pos} delta={delta} qi={qi}: all-(-inf) row"
+                    );
+                }
+            }
+        }
+    }
+
+    /// Decode (seq==1) invariant: the model truncates the cache to the last `w`
+    /// frames BEFORE attention and runs maskless SDPA (seq==1). The single query
+    /// then attends exactly the retained suffix, which must equal its true
+    /// window `(cur_pos - w, cur_pos]`. We verify the shape arithmetic the
+    /// truncation relies on: after appending one token at `cur_pos` and slicing
+    /// to the last `w`, the retained positions are precisely the window — the
+    /// concat-then-trim order can only ever drop the single oldest out-of-window
+    /// frame, never an in-window one.
+    #[test]
+    fn decode_truncation_keeps_exactly_the_window() {
+        let w = 512usize;
+        for cur_pos in [0usize, 1, 511, 512, 513, 600, 1024, 5000] {
+            let pre_len = cur_pos.min(w);
+            let buf_len = pre_len + 1; // after appending the decode token
+            let kept = buf_len.min(w);
+            let buf_start = (cur_pos - pre_len) + (buf_len - kept); // start after trunc
+            let retained: Vec<usize> = (0..kept).map(|i| buf_start + i).collect();
+
+            // Reference window over the widest set we ever held this step.
+            let widest: Vec<usize> = (0..buf_len).map(|i| (cur_pos - pre_len) + i).collect();
+            let want = ref_window(cur_pos, w, &widest);
+            assert_eq!(
+                retained, want,
+                "cur_pos={cur_pos}: decode-time truncation must retain exactly the \
+                 true sliding window"
+            );
+        }
+    }
 }
