@@ -238,8 +238,21 @@ impl Gemma4Attention {
                 super::profile::prof_eval("attn.kv_concat", &[&k, &v]);
             }
 
-            // Sliding-window truncation: drop oldest frames beyond the window
-            let (k, v) = if let Some(w) = self.sliding_window {
+            // Sliding-window cache truncation: drop oldest frames beyond the
+            // window for the *stored* cache (memory bound + the state future
+            // decode steps read). IMPORTANT: this truncation must NOT be applied
+            // to the K/V used for THIS chunk's attention when prefilling
+            // (seq > 1). A prefilled chunk that crosses the window boundary
+            // (e.g. a multi-image prompt of 535 tokens with window 512) contains
+            // early query rows whose own sliding window includes keys that the
+            // store-side truncation drops. Feeding the truncated K/V into the
+            // seq>1 manual attention would leave those early query rows with NO
+            // valid keys → an all-(-inf) mask row → softmax NaN (the exact
+            // failure mlx-vlm's vision mask guards against with -1e4). Keeping
+            // the FULL K/V for the matmul lets `build_causal_mask` apply each
+            // query's own window correctly. For seq == 1 (decode) the cache is
+            // already ≤ w, so full == stored and behaviour is unchanged.
+            let (k_store, v_store) = if let Some(w) = self.sliding_window {
                 let kv_len = k.shape()[2] as usize;
                 if kv_len > w {
                     let start = (kv_len - w) as i32;
@@ -248,14 +261,16 @@ impl Gemma4Attention {
                     let v = v.index((.., .., start..end, ..));
                     (k, v)
                 } else {
-                    (k, v)
+                    (k.clone(), v.clone())
                 }
             } else {
-                (k, v)
+                (k.clone(), v.clone())
             };
 
-            *cache = Some((k.clone(), v.clone()));
-            (k, v)
+            *cache = Some((k_store.clone(), v_store.clone()));
+            // Decode (seq==1) reads the truncated cache; prefill (seq>1) attends
+            // over the FULL chunk so per-query windows stay correct.
+            if seq == 1 { (k_store, v_store) } else { (k, v) }
         };
 
         // Decode fast path: seq=1 → use fused SDPA Metal kernel (no mask needed

@@ -1,8 +1,9 @@
 //! Numeric-parity tests for the gen2 MLX **native vision** (Gemma 4 SigLIP2)
-//! port. Mirrors the decode port's methodology (`golden.rs`): the Python dumper
-//! `tools/vlm_parity/dump_gemma4_vision.py` instruments mlx-vlm's
-//! `models/gemma4/{vision,gemma4}.py` and saves the intermediate tensors as
-//! safetensors under `tools/vlm_parity/golden/`. Each stage here loads the
+//! port. Mirrors the decode port's methodology (`golden.rs`): the Python dumpers
+//! `tools/vlm_parity/dump_gemma4_vision.py` (single image, Stages 0-7) and
+//! `tools/vlm_parity/dump_gemma4_vision_multi.py` (two images, Stage 8) instrument
+//! mlx-vlm's `models/gemma4/{vision,gemma4}.py` and save the intermediate tensors
+//! as safetensors under `tools/vlm_parity/golden/`. Each stage here loads the
 //! matching **reference input** tensor, runs the Pio component on it (isolating
 //! the stage from upstream error), and asserts elementwise `max|Δ| < tol`.
 //!
@@ -684,4 +685,250 @@ fn stage7_real_path_caption() {
 
     // ADR-0036 marker: ran for real with an objective metric (caption mentions a cat).
     println!("\nCAPTEST mlx-vision RUN caption={caption:?}");
+}
+
+// ─── Stage 8: MULTI-IMAGE merge parity ───────────────────────────────────────
+
+/// The second committed parity image (a dog, distinct subject from cat.png) —
+/// committed alongside cat.png; same one the multi-image dumper used.
+const TEST_IMAGE2_REL: &str = "../tools/vlm_parity/dog.png";
+
+/// Stage 8: the TWO-image merge — the coded-but-previously-unvalidated
+/// multi-image follow-up. Asserts that Pio's multi-image path
+/// (per-image `encode_image` → concat in prompt order → scatter into the
+/// image-token rows in order) matches the mlx-vlm reference for N=2 images of
+/// DIFFERENT sizes (cat.png 266 soft tokens + dog.png 252 soft tokens = 518).
+///
+/// Two checks, mirroring the reference's two-step semantics
+/// (`VisionModel.__call__` vision.py:441-538 + `masked_scatter` gemma4.py:13-19):
+///
+///   (a) **Per-image encode + concat** — feed each REFERENCE per-image
+///       `pixel_values` through Pio's `encode_image` (tower + projector) and
+///       concatenate the projected features in prompt order; assert this equals
+///       the reference `image_features_multi` (the concatenated soft tokens of
+///       both images). This is the multi-image generalization of Stages 3-4.
+///
+///   (b) **Multi-image scatter** — feed the reference `input_ids_multi` +
+///       `image_features_multi` into `build_input_embeds_with_image` and assert
+///       the merged sequence matches `merged_inputs_embeds_multi`. This is the
+///       multi-image generalization of Stage 5: the per-image runs must scatter
+///       into their image-token positions in order.
+///
+/// Plus the row-count invariant (Risk #5, generalized):
+/// `sum(Nᵢ) == total image_token rows == concatenated feature rows`.
+///
+/// Both `image_features_multi` and `pixel_values_multi_{0,1}` are fed from the
+/// reference (preprocessing error isolated out), gated on RELATIVE error at the
+/// bf16/4-bit floor — same metric and thresholds as Stages 3-5.
+#[test]
+fn stage8_multi_image_merge_parity() {
+    use super::loader::{build_gemma4_model, build_vision_model};
+
+    let Some(bundle) = bundle_or_skip() else {
+        return;
+    };
+    let Some(input_ids) = load_golden("input_ids_multi") else {
+        return;
+    };
+    let ref_feats = load_golden("image_features_multi").expect("image_features_multi golden");
+    let ref_merged =
+        load_golden("merged_inputs_embeds_multi").expect("merged_inputs_embeds_multi golden");
+    let px0 = load_golden("pixel_values_multi_0").expect("pixel_values_multi_0 golden");
+    let px1 = load_golden("pixel_values_multi_1").expect("pixel_values_multi_1 golden");
+
+    // Host token ids.
+    let ids_i32 = input_ids
+        .as_dtype(mlx_rs::Dtype::Int32)
+        .expect("cast")
+        .as_slice::<i32>()
+        .to_vec();
+    let tokens: Vec<u32> = ids_i32.iter().map(|&t| t as u32).collect();
+
+    // ── Row-count invariant (generalized Risk #5): the two image runs in the
+    // prompt must sum to the concatenated feature rows. ──────────────────────
+    let n_img = tokens.iter().filter(|&&t| t == 258880).count();
+    let n_feat = ref_feats.shape()[1] as usize;
+    assert_eq!(
+        n_img, n_feat,
+        "Risk #5 (multi): sum of image_token rows ({n_img}) must equal concatenated \
+         feature rows ({n_feat}) — per-image counts + concat order must agree"
+    );
+
+    let vm = build_vision_model(&bundle)
+        .expect("build_vision_model")
+        .expect("gemma4 vision tower");
+
+    // ── (a) Per-image encode + concat in prompt order (cat first, then dog) ──
+    // Mirrors prefill_with_images: encode each image separately, concat along
+    // the token axis. Feed the REFERENCE pixels (Stage-2 error isolated out).
+    let f0 = vm.encode_image(&px0);
+    let f1 = vm.encode_image(&px1);
+    let pio_feats =
+        mlx_rs::ops::concatenate_axis(&[&f0, &f1], 1).expect("concat per-image features");
+    assert_eq!(
+        pio_feats.shape(),
+        ref_feats.shape(),
+        "concatenated multi-image features shape ([1, sum(Nᵢ), text_hidden])"
+    );
+    let (feat_max_rel, feat_mean_rel) = rel_diff(&pio_feats, &ref_feats);
+    eprintln!(
+        "[vision_parity] stage8 per-image-concat rel(max={:.3}% mean={:.3}%)  \
+         shape {:?}  rows=({}+{})",
+        feat_max_rel * 100.0,
+        feat_mean_rel * 100.0,
+        pio_feats.shape(),
+        f0.shape()[1],
+        f1.shape()[1],
+    );
+    assert!(
+        feat_max_rel < 0.08 && feat_mean_rel < 0.03,
+        "Stage 8 PER-IMAGE-CONCAT parity FAILED: rel max={:.3}% mean={:.3}%. The \
+         per-image encode + concat-in-order diverged from the reference. Report the numbers.",
+        feat_max_rel * 100.0,
+        feat_mean_rel * 100.0
+    );
+
+    // ── (b) Multi-image scatter into the decoder input embeddings ────────────
+    // Feed the reference concatenated features so this isolates the SCATTER
+    // (the merge logic) from the tower. The per-image runs must land at their
+    // image-token positions in order.
+    let (model, _cfg) = build_gemma4_model(&bundle).expect("build_gemma4_model");
+    let merged = model.build_input_embeds_with_image(&tokens, &ref_feats, 258880);
+    assert_eq!(
+        merged.shape(),
+        ref_merged.shape(),
+        "merged multi-image inputs_embeds shape (seq == input_ids_multi len)"
+    );
+    let (merge_max_rel, merge_mean_rel) = rel_diff(&merged, &ref_merged);
+    eprintln!(
+        "[vision_parity] stage8 multi-merge rel(max={:.3}% mean={:.3}%)  \
+         shape {:?}  image_rows={}",
+        merge_max_rel * 100.0,
+        merge_mean_rel * 100.0,
+        merged.shape(),
+        n_img
+    );
+    assert!(
+        merge_max_rel < 0.08 && merge_mean_rel < 0.03,
+        "Stage 8 MULTI-MERGE parity FAILED: rel max={:.3}% mean={:.3}%. Check that the \
+         two image runs scatter into their image-token positions IN ORDER (gemma4.py \
+         masked_scatter writes features in flatten order). Report the numbers.",
+        merge_max_rel * 100.0,
+        merge_mean_rel * 100.0
+    );
+}
+
+// ─── captest: end-to-end MULTI-IMAGE caption through the REAL chat path ───────
+
+/// captest `mlx-vision-multi` (ADR-0036): the multi-image last mile — two images
+/// attached to one user message, driven through the NORMAL
+/// `Engine::start_session` / chat-template path, must produce a coherent caption
+/// mentioning BOTH subjects (a cat and a dog).
+///
+/// This exercises the full multi-image wiring end-to-end:
+///   - `extract_image_urls` gathers both `file://` URLs in order,
+///   - `new_with_prefix` expands EACH markdown placeholder into its own
+///     `<boi> + image_token×Nᵢ + <eoi>` run (per-image `num_soft_tokens`),
+///   - `prefill_with_images` encodes each image and concatenates the features in
+///     prompt order, asserting `sum(Nᵢ) == image_token rows` before the scatter.
+///
+/// `#[ignore]` (like the model captests): default `cargo test` skips it; the
+/// capability runner invokes it (`--include-ignored`) only when the bundle +
+/// both fixtures are present, else SKIPs cleanly. Prints the ADR-0036 marker.
+#[test]
+#[ignore = "captest: needs the gemma-4-e2b-it-4bit bundle + cat.png/dog.png fixtures"]
+fn captest_mlx_vision_multi() {
+    use crate::gen2::Message;
+    use crate::gen2::backend::mlx::Engine;
+    use crate::gen2::engine::{Capabilities, LoadRequest, Settings};
+    use crate::gen2::generation::{GenSpec, ThinkingMode, TokenEvent};
+    use crate::gen2::session_rt::SessionSpec;
+
+    let Some(bundle) = bundle_or_skip() else {
+        // ADR-0036 marker: model absent — SKIP (not FAIL).
+        println!("\nCAPTEST mlx-vision-multi SKIP vision bundle absent ({VISION_BUNDLE})");
+        return;
+    };
+    let cat = PathBuf::from(TEST_IMAGE_REL);
+    let dog = PathBuf::from(TEST_IMAGE2_REL);
+    if !cat.exists() || !dog.exists() {
+        println!(
+            "\nCAPTEST mlx-vision-multi SKIP fixture absent ({TEST_IMAGE_REL} / {TEST_IMAGE2_REL})"
+        );
+        return;
+    }
+    let cat_abs = std::fs::canonicalize(&cat).expect("canonicalize cat.png");
+    let dog_abs = std::fs::canonicalize(&dog).expect("canonicalize dog.png");
+
+    let engine = Engine::new();
+    engine
+        .load_model(LoadRequest {
+            model_path: bundle,
+            ..Default::default()
+        })
+        .expect("load_model");
+    assert!(
+        engine.capabilities().contains(Capabilities::IMAGES),
+        "captest mlx-vision-multi: gemma4 vision bundle must advertise Capabilities::IMAGES"
+    );
+
+    // The REAL path: ONE user message carrying TWO attached images, started
+    // through `start_session`. The chat template renders both to markdown; the
+    // expansion converts each into its own image-token run before tokenizing.
+    let mut overrides = Settings::default();
+    overrides.sampling.temperature = Some(0.0);
+    let msg = Message::user_with_images(
+        "These are two separate photos. In one short sentence, name the main \
+         animal in each photo.",
+        [
+            format!("file://{}", cat_abs.display()),
+            format!("file://{}", dog_abs.display()),
+        ],
+    );
+    let session = engine
+        .start_session(SessionSpec {
+            messages: vec![msg],
+            overrides: Some(overrides),
+            thinking: ThinkingMode::Off,
+            ..Default::default()
+        })
+        .expect("start_session (real multi-image vision path)");
+
+    let mut puller = session
+        .pull(GenSpec {
+            max_tokens: Some(48),
+            temperature: Some(0.0),
+            ..Default::default()
+        })
+        .expect("pull");
+
+    let mut text = String::new();
+    loop {
+        match puller.next() {
+            Some(Ok(TokenEvent::Token(tok))) => text.push_str(&tok.text),
+            Some(Ok(TokenEvent::Eos)) | Some(Ok(TokenEvent::Stopped)) => break,
+            Some(Ok(_)) => continue,
+            Some(Err(e)) => panic!("captest mlx-vision-multi token error: {e:?}"),
+            None => break,
+        }
+    }
+    eprintln!("[vision_parity] captest mlx-vision-multi CAPTION: {text:?}");
+
+    let lc = text.to_lowercase();
+    let has_cat = lc.contains("cat") || lc.contains("kitten") || lc.contains("feline");
+    let has_dog = lc.contains("dog") || lc.contains("puppy") || lc.contains("canine");
+    assert!(
+        has_cat && has_dog,
+        "captest mlx-vision-multi: caption must mention BOTH a cat and a dog \
+         (cat={has_cat}, dog={has_dog}), got: {text:?}"
+    );
+
+    // SSS+: inspectable artifact under target/captest/ (CWD = pio-core/).
+    let caption = text.trim().to_string();
+    let arti_dir = PathBuf::from("../target/captest");
+    let _ = std::fs::create_dir_all(&arti_dir);
+    let _ = std::fs::write(arti_dir.join("mlx-vision-multi.caption.txt"), &caption);
+
+    // ADR-0036 marker: ran for real with an objective metric (mentions both subjects).
+    println!("\nCAPTEST mlx-vision-multi RUN caption={caption:?}");
 }
