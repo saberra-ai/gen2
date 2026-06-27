@@ -742,6 +742,11 @@ impl Session {
                     // Load bitmaps
                     let mut bitmaps: Vec<MtmdBitmap> = Vec::with_capacity(img_paths.len());
                     for p in img_paths {
+                        // Harden the untrusted path BEFORE the native C++ decoder
+                        // (llama.cpp's stb_image, which Pio can't cap directly):
+                        // reject a missing/unreadable path, a directory, or an
+                        // over-cap decompression bomb up front, gracefully.
+                        let p = crate::gen2::session_rt::media_util::validate_image_path(&p)?;
                         // New `placeholder` arg in the bumped llama-cpp-rs:
                         // false = decode the real media bitmap (prior behavior).
                         let bmp = MtmdBitmap::from_file(mtmd_ctx, &p, false)

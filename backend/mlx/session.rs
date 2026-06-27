@@ -491,15 +491,9 @@ impl Session {
                 let mut pixels: Vec<mlx_rs::Array> = Vec::with_capacity(image_urls.len());
                 let mut expansions: Vec<(String, String)> = Vec::with_capacity(image_urls.len());
                 for url in &image_urls {
-                    let path = url.strip_prefix("file://").unwrap_or(url);
-                    let img = image::ImageReader::open(path)
-                        .map_err(|e| ExecError::Io(format!("open image {path}: {e}")))?
-                        .with_guessed_format()
-                        .map_err(|e| ExecError::Io(format!("guess image format {path}: {e}")))?
-                        .decode()
-                        .map_err(|e| {
-                            ExecError::Other(anyhow::anyhow!("decode image {path}: {e}"))
-                        })?;
+                    // Hardened, panic-free decode with dimension/pixel caps —
+                    // the single trust boundary for user-supplied image bytes.
+                    let img = super::model::vision_preprocess::load_attached_image(url)?;
                     let n_soft = proc.num_soft_tokens(img.width(), img.height());
                     pixels.push(proc.preprocess(&img));
                     // The markdown `as_visible_text` emits for this chunk → its
