@@ -214,6 +214,10 @@ impl Session {
                         })
                         .collect::<Vec<_>>()
                         .join(""),
+                    // Only the visible `content` flows to the API (matches the
+                    // chat template's strip-thinking on prior turns; see the
+                    // variant docs on `MessageContent::StructuredAssistant`).
+                    MessageContent::StructuredAssistant { content, .. } => content.clone(),
                 },
                 MessageBody::Tool { .. } => continue,
             };
@@ -276,6 +280,10 @@ impl Session {
                         })
                         .collect::<Vec<_>>()
                         .join(""),
+                    // Only the visible `content` flows to the API (matches the
+                    // chat template's strip-thinking on prior turns; see the
+                    // variant docs on `MessageContent::StructuredAssistant`).
+                    MessageContent::StructuredAssistant { content, .. } => content.clone(),
                 },
                 MessageBody::Tool { .. } => {
                     continue;
