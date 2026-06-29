@@ -126,8 +126,12 @@ impl Engine {
         } // end openai connectivity check
 
         *self.server_url.write() = base_url;
-        // Default model_id — can be overridden via config
-        *self.model_id.write() = String::new();
+        // Default model_id — overridden by config's external_model_id (the Tauri
+        // settings layer calls set_model_id). In daemon/headless mode that wiring
+        // isn't present, so honor a PIO_EXTERNAL_MODEL_ID env fallback too —
+        // otherwise an empty model_id sends "default" upstream (session.rs), which
+        // model-specific servers like ollama reject as not-found.
+        *self.model_id.write() = std::env::var("PIO_EXTERNAL_MODEL_ID").unwrap_or_default();
         self.loaded.store(true, Ordering::SeqCst);
         self.sessions.clear();
         *self.last_load.write() = Some(req);
