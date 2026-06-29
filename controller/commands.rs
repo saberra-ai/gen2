@@ -9,7 +9,9 @@ use crate::diagnostics::current_memory_governor;
 use crate::gen2::engine::EmbedLoadRequest;
 use crate::gen2::generation::TokenEvent;
 use crate::gen2::residency::{ResidentRuntime, RuntimeKind};
-use crate::gen2::residency_policy::estimate_resident_mb_for_path;
+use crate::gen2::residency_policy::{
+    estimate_resident_mb_for_path, estimate_resident_mb_for_path_offloaded,
+};
 use crate::gen2::session_rt::SessionSpec;
 
 use super::lifecycle::{
@@ -40,7 +42,12 @@ fn handle_model_command(state: &mut ControllerState, cmd: ControllerCmd) -> Cont
                 load_req.api_key = api_key;
                 load_req.api_format = api_format;
                 let runtime_name = load_req.model_path.display().to_string();
-                let estimated_mb = estimate_resident_mb_for_path(&load_req.model_path);
+                // Offloaded weights live in VRAM, not host RAM — don't deny a
+                // GPU-bound model on a RAM-tight host (residency_policy.rs).
+                let estimated_mb = estimate_resident_mb_for_path_offloaded(
+                    &load_req.model_path,
+                    load_req.model_params.gpu_layers,
+                );
                 let governor = current_memory_governor();
                 if state.residency_policy.llm_swap_requires_unload && state.residency.llm.is_some()
                 {
