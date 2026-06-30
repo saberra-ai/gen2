@@ -37,10 +37,17 @@ fn handle_model_command(state: &mut ControllerState, cmd: ControllerCmd) -> Cont
             api_format,
             resp,
         } => {
+            // Capture the loaded LLM's whole-model byte size on success so the
+            // flock fit gate can source a real footprint (Part A of VRAM-aware
+            // routing). Computed from the same path the engine stats at load
+            // (`metadata().len()` in `engine::validate_model_file`); replaced on
+            // every successful reload, cleared on failure.
+            let mut loaded_file_bytes: Option<u64> = None;
             let r = (|| -> Result<(), String> {
                 let mut load_req = build_load_request(model_path, mmproj_path, &settings);
                 load_req.api_key = api_key;
                 load_req.api_format = api_format;
+                loaded_file_bytes = ControllerState::model_file_bytes_of(&load_req.model_path);
                 let runtime_name = load_req.model_path.display().to_string();
                 // Offloaded weights live in VRAM, not host RAM — don't deny a
                 // GPU-bound model on a RAM-tight host (residency_policy.rs).
@@ -94,6 +101,9 @@ fn handle_model_command(state: &mut ControllerState, cmd: ControllerCmd) -> Cont
                 }
                 state.engine.hooks().clear();
                 state.caps = state.engine.backend_caps();
+                // Record the freshly-loaded model's file size (replaces any
+                // prior model's size on reload).
+                state.loaded_model_file_bytes = loaded_file_bytes;
             }
             let _ = resp.send(r);
             ControlFlow::Continue

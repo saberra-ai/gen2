@@ -20,6 +20,16 @@ pub struct ControllerRuntimeSnapshot {
     /// `None` when no model is loaded.
     #[serde(default)]
     pub loaded_model_architecture: Option<String>,
+    /// Whole-model on-disk byte size of the currently-loaded primary LLM,
+    /// captured at `LoadModel` time from `metadata().len()`. Sources the
+    /// flock VRAM/RAM fit gate (Part A of VRAM-aware routing) via
+    /// `FlockHandle::resolve_route_model_size` — a peer can advertise the
+    /// real footprint of what it has loaded so a request that names that
+    /// model is gated against peers that can't hold it. `None` when no model
+    /// is loaded, or when the model is a directory bundle (MLX/ONNX) whose
+    /// size isn't a single `metadata().len()`.
+    #[serde(default)]
+    pub loaded_model_file_bytes: Option<u64>,
 }
 
 /// Observable fields for a single [`super::ChatRuntime`].
@@ -71,6 +81,7 @@ pub(super) fn build_runtime_snapshot(state: &ControllerState) -> ControllerRunti
     ControllerRuntimeSnapshot {
         chats,
         loaded_model_architecture,
+        loaded_model_file_bytes: state.loaded_model_file_bytes,
     }
 }
 
@@ -105,6 +116,7 @@ mod tests {
                 },
             ],
             loaded_model_architecture: Some("gemma4".into()),
+            loaded_model_file_bytes: Some(8 << 30),
         };
         let json = serde_json::to_string(&snap).expect("serialize");
         let back: ControllerRuntimeSnapshot = serde_json::from_str(&json).expect("deserialize");

@@ -18,6 +18,14 @@ pub struct ControllerState {
     pub(super) caps: crate::gen2::backend::caps::BackendCaps,
     pub(super) config: ControllerConfig,
     pub(super) metrics: Arc<ControllerMetrics>,
+    /// Whole-model on-disk byte size of the currently-loaded primary LLM,
+    /// captured from `metadata().len()` at `LoadModel` time. Feeds the
+    /// flock fit gate via `RuntimeSnapshot::loaded_model_file_bytes` so a
+    /// peer can advertise the real footprint of what it has loaded.
+    /// `None` when no model is loaded, or when the model path is a directory
+    /// bundle (MLX/ONNX) whose file size isn't a single `metadata().len()`
+    /// — honest `None` over a fabricated number (ADR doctrine).
+    pub(super) loaded_model_file_bytes: Option<u64>,
 }
 
 impl ControllerState {
@@ -32,7 +40,21 @@ impl ControllerState {
             caps,
             config,
             metrics: Arc::new(ControllerMetrics::default()),
+            loaded_model_file_bytes: None,
         }
+    }
+
+    /// On-disk byte size of `path` for a regular file, or `None` for a
+    /// directory bundle (MLX safetensors / ONNX dir) or an unreadable path.
+    /// Mirrors the `metadata()` read the engine already does at load
+    /// (`gen2::engine::validate_model_file`); we keep only the file case so
+    /// the number is real, never a partial directory total.
+    pub(super) fn model_file_bytes_of(path: &std::path::Path) -> Option<u64> {
+        let md = std::fs::metadata(path).ok()?;
+        if md.is_dir() {
+            return None;
+        }
+        Some(md.len())
     }
 
     pub(super) fn max_active_chats(&self) -> usize {

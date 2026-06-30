@@ -368,6 +368,36 @@ impl ControllerHandle {
         rx.recv().map_err(|e| e.to_string())
     }
 
+    /// Whole-model on-disk byte size of the currently-loaded primary LLM, or
+    /// `None` when no model is loaded (or the model is a directory bundle).
+    ///
+    /// Issues the runtime-snapshot command and waits **with a short timeout**
+    /// for the reply — one in-process round-trip to the controller thread.
+    /// Sources the flock VRAM/RAM fit gate from the local device's loaded
+    /// model (Part A of VRAM-aware routing); see
+    /// `FlockHandle::resolve_route_model_size`.
+    ///
+    /// The timeout (not the unbounded `get_controller_runtime_snapshot`) is
+    /// deliberate: this runs on the flock dispatch hot path, where a wedged or
+    /// not-yet-servicing controller thread must NOT be able to block the
+    /// dispatcher indefinitely. The reply is a tiny struct the controller can
+    /// build without I/O (the size was stat'd once at `LoadModel`), so the real
+    /// round-trip is sub-millisecond; the budget is generous. On send error,
+    /// timeout, or disconnect we return `None` — honest "size unknown" →
+    /// the fit gate degrades to legacy capability-only routing rather than
+    /// stalling or surfacing a transport error.
+    pub fn loaded_model_file_bytes(&self) -> Option<u64> {
+        /// Hot-path budget for the controller round-trip. Sub-ms in practice;
+        /// this bounds worst-case dispatch latency if the controller is wedged.
+        const QUERY_TIMEOUT: Duration = Duration::from_millis(250);
+        let (tx, rx) = channel();
+        self.send(ControllerCmd::GetControllerRuntimeSnapshot { resp: tx })
+            .ok()?;
+        rx.recv_timeout(QUERY_TIMEOUT)
+            .ok()
+            .and_then(|snap| snap.loaded_model_file_bytes)
+    }
+
     /// Blocking read of unified observability (policy + metrics + runtime).
     pub fn get_controller_observability_snapshot(
         &self,
@@ -491,6 +521,13 @@ impl InferenceHandle {
                 gen_spec,
                 kind: RetryableInferenceKind::StartChat { messages },
                 required_model: None,
+                // `ControllerCmd::StartChat` carries no model id/size — the model
+                // is "whatever the local controller loaded". Sourcing the precise
+                // per-model byte size here needs the store plumbed through
+                // `ControllerCmd` (the documented follow-on in
+                // `FlockHandle::resolve_route_model_size`). `None` ⇒ legacy
+                // capability-only routing until then.
+                model_size_bytes: None,
                 tx,
             }),
             ControllerCmd::ContinueChat {
@@ -503,6 +540,9 @@ impl InferenceHandle {
                 gen_spec,
                 kind: RetryableInferenceKind::ContinueChat { new_messages },
                 required_model: None,
+                // See StartChat above — model id/size not on the cmd; None until
+                // the store size is plumbed through ControllerCmd.
+                model_size_bytes: None,
                 tx,
             }),
             ControllerCmd::SystemInfer {
@@ -521,6 +561,9 @@ impl InferenceHandle {
                     thinking,
                 },
                 required_model: None,
+                // See StartChat above — model id/size not on the cmd; None until
+                // the store size is plumbed through ControllerCmd.
+                model_size_bytes: None,
                 tx,
             }),
             // Everything else (status queries, stop, pause, resume, model
