@@ -219,6 +219,8 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
             // The model id is a routing-only fence consumed upstream at the
             // flock dispatch seam; the controller serves with its loaded model.
             model_id: _,
+            // Routing-only fit-gate size consumed at the flock seam.
+            model_size_bytes: _,
             tx,
         } => {
             if let Some(chat) = state.chats.get_mut(&chat_id) {
@@ -369,6 +371,8 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
             gen_spec,
             // Routing-only fence consumed at the flock seam (see StartChat).
             model_id: _,
+            // Routing-only fit-gate size consumed at the flock seam.
+            model_size_bytes: _,
             tx,
         } => {
             if let Some(chat) = state.chats.get_mut(&chat_id) {
@@ -503,6 +507,8 @@ fn handle_system_command(state: &mut ControllerState, cmd: ControllerCmd) -> Con
             thinking,
             // Routing-only fence consumed at the flock seam (see StartChat).
             model_id: _,
+            // Routing-only fit-gate size consumed at the flock seam.
+            model_size_bytes: _,
             tx,
         } => {
             start_ephemeral(

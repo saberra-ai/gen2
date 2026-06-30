@@ -265,6 +265,17 @@ pub enum ControllerCmd {
         /// legacy capability-only routing. See
         /// [`crate::model_footprint::resolve_model_footprint_bytes`].
         model_id: Option<String>,
+        /// Whole-model on-disk byte footprint for this request, resolved by the
+        /// send site (which can reach a [`crate::store::models::ModelStore`])
+        /// via [`crate::model_footprint::resolve_model_footprint_bytes`]. This
+        /// is the precise size for the flock fit gate across **all** model kinds
+        /// — catalog GGUF, local file, and directory bundle (MLX/ONNX), whose
+        /// summed size only the store-bearing resolver can produce. Threaded
+        /// into the flock router as the caller-supplied `model_size_bytes`,
+        /// which [`crate::p2p::flock::handle::FlockHandle::resolve_route_model_size`]
+        /// prefers over its sync catalog/local-loaded fallbacks. `None` ⇒ the
+        /// seam falls back to catalog-by-id or the local-loaded footprint.
+        model_size_bytes: Option<u64>,
         tx: SyncSender<ControllerEvent>,
     },
     /// Continue an existing chat session with newly appended messages.
@@ -275,6 +286,9 @@ pub enum ControllerCmd {
         /// Canonical model id for flock routing (see
         /// [`ControllerCmd::StartChat::model_id`]).
         model_id: Option<String>,
+        /// Store-resolved whole-model footprint (see
+        /// [`ControllerCmd::StartChat::model_size_bytes`]).
+        model_size_bytes: Option<u64>,
         tx: SyncSender<ControllerEvent>,
     },
     /// Abort and remove a chat session.
@@ -303,6 +317,10 @@ pub enum ControllerCmd {
         /// callers pass `None` (they ride whatever model the controller has
         /// loaded); the production chat path threads the selected model id.
         model_id: Option<String>,
+        /// Store-resolved whole-model footprint (see
+        /// [`ControllerCmd::StartChat::model_size_bytes`]). Internal
+        /// system-inference callers pass `None` (they ride the loaded model).
+        model_size_bytes: Option<u64>,
         tx: SyncSender<ControllerEvent>,
     },
 
@@ -523,69 +541,14 @@ impl InferenceHandle {
         handle: &std::sync::Arc<crate::p2p::flock::handle::FlockHandle>,
         cmd: ControllerCmd,
     ) -> Result<(), String> {
-        use crate::p2p::flock::handle::{RetryableInference, RetryableInferenceKind};
-        match cmd {
-            ControllerCmd::StartChat {
-                chat_id,
-                messages,
-                gen_spec,
-                thinking: _,
-                model_id,
-                tx,
-            } => handle.dispatch_inference_with_failover(RetryableInference {
-                chat_id,
-                gen_spec,
-                kind: RetryableInferenceKind::StartChat { messages },
-                // Thread the model id through to the router: peers whose
-                // `models_resident` / `loaded_model` contains it are preferred
-                // (warm). The fit-gate footprint is resolved by id from the
-                // catalog at the seam (`resolve_route_model_size`), or supplied
-                // precisely by the caller (`model_size_bytes`).
-                required_model: model_id,
-                // Caller may have resolved a precise size already; otherwise the
-                // seam resolves it by id (catalog) or from the local load.
-                model_size_bytes: None,
-                tx,
-            }),
-            ControllerCmd::ContinueChat {
-                chat_id,
-                new_messages,
-                gen_spec,
-                model_id,
-                tx,
-            } => handle.dispatch_inference_with_failover(RetryableInference {
-                chat_id,
-                gen_spec,
-                kind: RetryableInferenceKind::ContinueChat { new_messages },
-                required_model: model_id,
-                model_size_bytes: None,
-                tx,
-            }),
-            ControllerCmd::SystemInfer {
-                task,
-                chat_id,
-                messages,
-                gen_spec,
-                thinking,
-                model_id,
-                tx,
-            } => handle.dispatch_inference_with_failover(RetryableInference {
-                chat_id,
-                gen_spec,
-                kind: RetryableInferenceKind::SystemInfer {
-                    task,
-                    messages,
-                    thinking,
-                },
-                required_model: model_id,
-                model_size_bytes: None,
-                tx,
-            }),
+        match project_streaming_inference(cmd) {
+            // Streaming inference: failover dispatch with the projected payload.
+            Ok(retryable) => handle.dispatch_inference_with_failover(retryable),
             // Everything else (status queries, stop, pause, resume, model
             // lifecycle) goes single-shot — no clone-friendly payload, and
             // a transient error on a status query is more useful surfaced
             // than silently retried.
-            other => handle.send(other),
+            Err(other) => handle.send(other),
         }
     }
 
@@ -676,6 +639,7 @@ impl InferenceHandle {
             // loaded; no per-request model fence (flock routing falls back to
             // the local-loaded footprint).
             model_id: None,
+            model_size_bytes: None,
             tx,
         };
         self.send(cmd).map_err(PioError::generation)?;
@@ -729,6 +693,7 @@ impl InferenceHandle {
             thinking: crate::gen2::generation::ThinkingMode::default(),
             // Internal system inference — no per-request model fence.
             model_id: None,
+            model_size_bytes: None,
             tx,
         };
         self.send(cmd).map_err(PioError::generation)?;
@@ -790,6 +755,7 @@ impl InferenceHandle {
             thinking,
             // Internal system inference — no per-request model fence.
             model_id: None,
+            model_size_bytes: None,
             tx,
         };
         self.send(cmd).map_err(PioError::generation)?;
@@ -945,6 +911,85 @@ pub(super) enum ControlFlow {
     Break,
 }
 
+/// Project a streaming inference [`ControllerCmd`] (`StartChat` / `ContinueChat`
+/// / `SystemInfer`) into a clone-friendly [`crate::p2p::flock::handle::RetryableInference`]
+/// for cross-peer failover dispatch. Non-streaming commands are returned
+/// unchanged via `Err` so the caller can take the single-shot path.
+///
+/// This is the flock dispatch **seam**: it carries the cmd's `model_id` →
+/// `required_model` (peer match) and — the gap this closes — its store-resolved
+/// `model_size_bytes` straight through to [`crate::p2p::flock::handle::RetryableInference::model_size_bytes`],
+/// which [`crate::p2p::flock::handle::FlockHandle::resolve_route_model_size`]
+/// prefers over its sync catalog/local-loaded fallbacks. Extracted as a free
+/// function so the projection (especially the size carry-through) is unit-testable
+/// without standing up a live failover dispatcher.
+// The `Err` arm carries the original `ControllerCmd` back to the single-shot
+// path by value — deliberately, to avoid a heap allocation on every
+// non-streaming dispatch (status queries, stop/pause) on the hot dispatch path.
+// The cmd is a transient stack value, not stored, so its size is harmless here.
+#[cfg(feature = "flock")]
+#[allow(clippy::result_large_err)]
+pub(crate) fn project_streaming_inference(
+    cmd: ControllerCmd,
+) -> Result<crate::p2p::flock::handle::RetryableInference, ControllerCmd> {
+    use crate::p2p::flock::handle::{RetryableInference, RetryableInferenceKind};
+    match cmd {
+        ControllerCmd::StartChat {
+            chat_id,
+            messages,
+            gen_spec,
+            thinking: _,
+            model_id,
+            model_size_bytes,
+            tx,
+        } => Ok(RetryableInference {
+            chat_id,
+            gen_spec,
+            kind: RetryableInferenceKind::StartChat { messages },
+            required_model: model_id,
+            model_size_bytes,
+            tx,
+        }),
+        ControllerCmd::ContinueChat {
+            chat_id,
+            new_messages,
+            gen_spec,
+            model_id,
+            model_size_bytes,
+            tx,
+        } => Ok(RetryableInference {
+            chat_id,
+            gen_spec,
+            kind: RetryableInferenceKind::ContinueChat { new_messages },
+            required_model: model_id,
+            model_size_bytes,
+            tx,
+        }),
+        ControllerCmd::SystemInfer {
+            task,
+            chat_id,
+            messages,
+            gen_spec,
+            thinking,
+            model_id,
+            model_size_bytes,
+            tx,
+        } => Ok(RetryableInference {
+            chat_id,
+            gen_spec,
+            kind: RetryableInferenceKind::SystemInfer {
+                task,
+                messages,
+                thinking,
+            },
+            required_model: model_id,
+            model_size_bytes,
+            tx,
+        }),
+        other => Err(other),
+    }
+}
+
 #[cfg(test)]
 mod tests {
     use super::lifecycle::{RuntimeOutcome, terminate_runtime};
@@ -1086,6 +1131,7 @@ mod tests {
                 gen_spec: GenSpec::default(),
                 thinking: Default::default(),
                 model_id: None,
+                model_size_bytes: None,
                 tx,
             })
             .expect("start chat");
@@ -1394,6 +1440,7 @@ mod tests {
                 gen_spec: crate::gen2::generation::GenSpec::default(),
                 thinking: Default::default(),
                 model_id: None,
+                model_size_bytes: None,
                 tx,
             })
             .expect("start should succeed");
@@ -1420,6 +1467,61 @@ mod tests {
             .expect("controller should still be alive");
         let _ = rx.recv().expect("should get response");
         let _ = handle.send(ControllerCmd::Shutdown);
+    }
+
+    /// Seam: the flock dispatch projection must carry the cmd's
+    /// `model_size_bytes` (the store-resolved dir-bundle footprint on the
+    /// production path) into `RetryableInference.model_size_bytes` — NOT
+    /// hardcoded `None`. Then `resolve_route_model_size` (caller-supplied first)
+    /// picks it up so a dir-bundle model gates the fit feasibility check.
+    #[cfg(feature = "flock")]
+    #[test]
+    fn project_streaming_inference_carries_model_size_bytes() {
+        let (tx, _rx) = sync_channel::<ControllerEvent>(EVENT_CHANNEL_CAPACITY);
+        // A non-curated dir-bundle size the catalog could never supply.
+        let dir_bundle_size = 6_208u64;
+        let cmd = ControllerCmd::StartChat {
+            chat_id: "seam".into(),
+            messages: vec![],
+            gen_spec: GenSpec::default(),
+            thinking: Default::default(),
+            model_id: Some("mlx-bundle-uuid".into()),
+            model_size_bytes: Some(dir_bundle_size),
+            tx,
+        };
+        let retryable = super::project_streaming_inference(cmd)
+            .unwrap_or_else(|_| panic!("StartChat must project to a RetryableInference"));
+        assert_eq!(
+            retryable.model_size_bytes,
+            Some(dir_bundle_size),
+            "the dispatch seam must feed cmd.model_size_bytes into RetryableInference, not None"
+        );
+        assert_eq!(retryable.required_model.as_deref(), Some("mlx-bundle-uuid"));
+
+        // And the resolver prefers that caller-supplied size — the fit gate bites.
+        let handle = crate::p2p::flock::handle::FlockHandle::new(
+            uuid::Uuid::new_v4(),
+            std::sync::Arc::new(crate::p2p::flock::registry::FlockRegistry::new()),
+            None,
+        );
+        assert_eq!(
+            handle.resolve_route_model_size_for_test(&retryable),
+            Some(dir_bundle_size),
+            "resolve_route_model_size must surface the caller-supplied dir-bundle size"
+        );
+    }
+
+    /// A non-streaming cmd is returned unchanged (single-shot path), so the
+    /// projection never mis-routes a status query into failover.
+    #[cfg(feature = "flock")]
+    #[test]
+    fn project_streaming_inference_passes_through_non_streaming() {
+        let (resp, _rx) = std::sync::mpsc::channel();
+        let cmd = ControllerCmd::IsModelLoaded { resp };
+        assert!(
+            super::project_streaming_inference(cmd).is_err(),
+            "a status query must fall through to single-shot, not failover dispatch"
+        );
     }
 
     /// Flood the controller with 1000 StopChat commands for random UUIDs.
