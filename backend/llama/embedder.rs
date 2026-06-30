@@ -85,6 +85,19 @@ impl EmbedderKind {
         }
     }
 
+    /// Stable identity string for this embedder family — written to the
+    /// embeddings store's meta so a change of family (even at the same stored
+    /// dimension) is detected and the stale vectors are purged before any new
+    /// one is written. MUST be stable across releases and DISTINCT per family
+    /// (a clash would silently mix incompatible vector spaces). Add a new arm
+    /// for every new family; never reuse a string.
+    pub fn as_str(self) -> &'static str {
+        match self {
+            EmbedderKind::Gemma => "gemma",
+            EmbedderKind::Qwen3 => "qwen3",
+        }
+    }
+
     /// Literal suffix appended to every input before tokenization.
     fn input_suffix(self) -> &'static str {
         match self {
