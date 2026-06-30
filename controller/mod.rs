@@ -258,6 +258,13 @@ pub enum ControllerCmd {
         /// whatever mode was chosen here. `Auto` preserves the
         /// chat-template default.
         thinking: crate::gen2::generation::ThinkingMode,
+        /// Canonical id of the model this request targets (the locally
+        /// selected/loaded model). Threaded into the flock router as
+        /// `required_model` (peer match) and used to resolve the model's
+        /// footprint by id from the catalog for the fit gate. `None` ⇒
+        /// legacy capability-only routing. See
+        /// [`crate::model_footprint::resolve_model_footprint_bytes`].
+        model_id: Option<String>,
         tx: SyncSender<ControllerEvent>,
     },
     /// Continue an existing chat session with newly appended messages.
@@ -265,6 +272,9 @@ pub enum ControllerCmd {
         chat_id: String,
         new_messages: Vec<Message>,
         gen_spec: GenSpec,
+        /// Canonical model id for flock routing (see
+        /// [`ControllerCmd::StartChat::model_id`]).
+        model_id: Option<String>,
         tx: SyncSender<ControllerEvent>,
     },
     /// Abort and remove a chat session.
@@ -288,6 +298,11 @@ pub enum ControllerCmd {
         /// models (e.g. DiffusionGemma's `enable_thinking=false` empty-thought
         /// prefill) so the reply is just the answer, no scaffold.
         thinking: crate::gen2::generation::ThinkingMode,
+        /// Canonical model id for flock routing (see
+        /// [`ControllerCmd::StartChat::model_id`]). Internal system-inference
+        /// callers pass `None` (they ride whatever model the controller has
+        /// loaded); the production chat path threads the selected model id.
+        model_id: Option<String>,
         tx: SyncSender<ControllerEvent>,
     },
 
@@ -515,18 +530,20 @@ impl InferenceHandle {
                 messages,
                 gen_spec,
                 thinking: _,
+                model_id,
                 tx,
             } => handle.dispatch_inference_with_failover(RetryableInference {
                 chat_id,
                 gen_spec,
                 kind: RetryableInferenceKind::StartChat { messages },
-                required_model: None,
-                // `ControllerCmd::StartChat` carries no model id/size — the model
-                // is "whatever the local controller loaded". Sourcing the precise
-                // per-model byte size here needs the store plumbed through
-                // `ControllerCmd` (the documented follow-on in
-                // `FlockHandle::resolve_route_model_size`). `None` ⇒ legacy
-                // capability-only routing until then.
+                // Thread the model id through to the router: peers whose
+                // `models_resident` / `loaded_model` contains it are preferred
+                // (warm). The fit-gate footprint is resolved by id from the
+                // catalog at the seam (`resolve_route_model_size`), or supplied
+                // precisely by the caller (`model_size_bytes`).
+                required_model: model_id,
+                // Caller may have resolved a precise size already; otherwise the
+                // seam resolves it by id (catalog) or from the local load.
                 model_size_bytes: None,
                 tx,
             }),
@@ -534,14 +551,13 @@ impl InferenceHandle {
                 chat_id,
                 new_messages,
                 gen_spec,
+                model_id,
                 tx,
             } => handle.dispatch_inference_with_failover(RetryableInference {
                 chat_id,
                 gen_spec,
                 kind: RetryableInferenceKind::ContinueChat { new_messages },
-                required_model: None,
-                // See StartChat above — model id/size not on the cmd; None until
-                // the store size is plumbed through ControllerCmd.
+                required_model: model_id,
                 model_size_bytes: None,
                 tx,
             }),
@@ -551,6 +567,7 @@ impl InferenceHandle {
                 messages,
                 gen_spec,
                 thinking,
+                model_id,
                 tx,
             } => handle.dispatch_inference_with_failover(RetryableInference {
                 chat_id,
@@ -560,9 +577,7 @@ impl InferenceHandle {
                     messages,
                     thinking,
                 },
-                required_model: None,
-                // See StartChat above — model id/size not on the cmd; None until
-                // the store size is plumbed through ControllerCmd.
+                required_model: model_id,
                 model_size_bytes: None,
                 tx,
             }),
@@ -657,6 +672,10 @@ impl InferenceHandle {
             messages,
             gen_spec,
             thinking: crate::gen2::generation::ThinkingMode::default(),
+            // Internal system inference rides whatever model the controller has
+            // loaded; no per-request model fence (flock routing falls back to
+            // the local-loaded footprint).
+            model_id: None,
             tx,
         };
         self.send(cmd).map_err(PioError::generation)?;
@@ -708,6 +727,8 @@ impl InferenceHandle {
             messages,
             gen_spec,
             thinking: crate::gen2::generation::ThinkingMode::default(),
+            // Internal system inference — no per-request model fence.
+            model_id: None,
             tx,
         };
         self.send(cmd).map_err(PioError::generation)?;
@@ -767,6 +788,8 @@ impl InferenceHandle {
             messages,
             gen_spec,
             thinking,
+            // Internal system inference — no per-request model fence.
+            model_id: None,
             tx,
         };
         self.send(cmd).map_err(PioError::generation)?;
@@ -1062,6 +1085,7 @@ mod tests {
                 messages: vec![],
                 gen_spec: GenSpec::default(),
                 thinking: Default::default(),
+                model_id: None,
                 tx,
             })
             .expect("start chat");
@@ -1369,6 +1393,7 @@ mod tests {
                 messages: vec![],
                 gen_spec: crate::gen2::generation::GenSpec::default(),
                 thinking: Default::default(),
+                model_id: None,
                 tx,
             })
             .expect("start should succeed");
