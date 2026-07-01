@@ -620,15 +620,16 @@ impl Session {
         }
 
         // Gemma 4 IT chat template gates the thinking block on
-        // `enable_thinking`. Without it, the rendered prompt has no
-        // `<|think|>\n` marker and the model — heavily trained to think
-        // first — emits `<turn|>` (token 106) inside markdown bold like
-        // `is **<EOS>` instead of completing answers. We mirror llama-cli's
-        // `--jinja` default of `enable_thinking=true` for Gemma family.
-        let enable_thinking = matches!(
-            crate::gen2::zoo::ModelFamily::detect(bundle.meta.architecture.as_deref(), None),
-            crate::gen2::zoo::ModelFamily::Gemma4,
-        );
+        // `enable_thinking` (see `ModelFamily::default_enable_thinking`,
+        // the single owner of this family-level template flag). Without
+        // it, the rendered prompt has no `<|think|>\n` marker and the
+        // model — heavily trained to think first — emits `<turn|>`
+        // (token 106) inside markdown bold like `is **<EOS>` instead of
+        // completing answers. We mirror llama-cli's `--jinja` default of
+        // `enable_thinking=true` for the Gemma family.
+        let enable_thinking =
+            crate::gen2::zoo::ModelFamily::detect(bundle.meta.architecture.as_deref(), None)
+                .default_enable_thinking();
         let prompt = chat_template
             .apply(messages.clone(), None, Some(enable_thinking))
             .map_err(ExecError::Other)?;

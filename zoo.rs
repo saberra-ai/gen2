@@ -833,6 +833,52 @@ impl ModelFamily {
         }
     }
 
+    /// Whether a backend that renders this family's chat template should
+    /// pass `enable_thinking=true` when it has *no* runtime thinking
+    /// toggle to consult (the llama-cpp prompt path). This is a
+    /// chat-template rendering concern, distinct from the UI-facing
+    /// [`FamilyDefaults::thinking`] default:
+    ///
+    /// Gemma 4's IT template gates its `<|think|>` trigger tokens on
+    /// `enable_thinking`; without it the rendered prompt omits the
+    /// `<|think|>\n` marker and the think-trained model emits `<turn|>`
+    /// (EOS, token 106) inside markdown instead of answering. We mirror
+    /// llama-cli's `--jinja` behavior of defaulting `enable_thinking=true`
+    /// for the Gemma family. Every other family renders correctly without
+    /// the flag, so they default `false`.
+    pub fn default_enable_thinking(self) -> bool {
+        matches!(self, Self::Gemma4)
+    }
+
+    /// Streaming reasoning-channel markers for this family — the
+    /// open/close string pairs [`crate::gen2::generation::ReplyStateMachine`]
+    /// scans for to split visible content from the reasoning channel.
+    ///
+    /// This is the single owner of "which channel markers does family X
+    /// use". [`crate::gen2::generation::ChannelMarkers::gemma4`] /
+    /// [`qwen3_deepseek`](crate::gen2::generation::ChannelMarkers::qwen3_deepseek)
+    /// and [`ChannelMarkers::from_architecture`](crate::gen2::generation::ChannelMarkers::from_architecture)
+    /// read from here so the marker set can't drift from the family's
+    /// `template_kind` / `thinking` defaults above.
+    ///
+    /// Only the reasoning-channel families return non-empty markers:
+    /// - Gemma 4 emits `<|channel>thought…<channel|>` when its `<|think|>`
+    ///   control tokens fire.
+    /// - Qwen3.5/3.6 and DeepSeek-R1 both use the `<think>…</think>` text
+    ///   form (R1 distills inherit their base's `<think>` tags).
+    ///
+    /// Every other family (including DeepSeek-Coder-V2, which is *not* a
+    /// reasoning model) has no channel and returns
+    /// [`ChannelMarkers::none`](crate::gen2::generation::ChannelMarkers::none).
+    pub fn channel_markers(self) -> crate::gen2::generation::ChannelMarkers {
+        use crate::gen2::generation::ChannelMarkers;
+        match self {
+            Self::Gemma4 => ChannelMarkers::gemma4(),
+            Self::Qwen35 | Self::DeepSeekR1 => ChannelMarkers::qwen3_deepseek(),
+            _ => ChannelMarkers::none(),
+        }
+    }
+
     /// Stable string id, suitable for logs / metrics / `zoo.json`'s
     /// `family` field.
     pub fn as_str(self) -> &'static str {
@@ -1520,6 +1566,62 @@ mod tests {
             let s = f.as_str();
             assert!(!s.is_empty());
             assert!(!s.contains(' '));
+        }
+    }
+
+    // ── Single-owner: all three family readers agree ─────────────────
+
+    /// The drift this consolidation prevents: `ModelFamily` is now the
+    /// single owner of `{ template_kind, thinking_default, channel_markers,
+    /// default_enable_thinking }`, so the streaming marker reader
+    /// (`ChannelMarkers::from_architecture`), the chat-template reader
+    /// (`ModelFamily::default_enable_thinking`, consumed by the llama-cpp
+    /// prompt path), and the zoo `defaults()` reader can't disagree about
+    /// what a reasoning family does.
+    ///
+    /// Gemma 4 (control-token channel) and Qwen3.5 (`<think>` tag channel)
+    /// are the two reasoning families keyed off the arch string alone;
+    /// asserting both catches a per-family marker/template divergence.
+    #[test]
+    fn all_family_readers_agree_for_gemma4_and_qwen35() {
+        use crate::gen2::generation::ChannelMarkers;
+
+        // Gemma 4: reasoning family with control-token markers, its own
+        // Gemma4 template, and the enable_thinking template flag set.
+        let g = ModelFamily::Gemma4;
+        assert_eq!(g.channel_markers(), ChannelMarkers::gemma4());
+        assert_eq!(g.defaults().template_kind, TemplateKind::Gemma4);
+        assert!(g.default_enable_thinking());
+        // The streaming reader keyed off the raw arch tag must resolve to
+        // the SAME markers the family owns — no independent re-derivation.
+        assert_eq!(
+            ChannelMarkers::from_architecture(Some("gemma4")),
+            g.channel_markers(),
+        );
+
+        // Qwen3.5: reasoning family with `<think>` markers, the Qwen3
+        // template, and no Gemma-style enable_thinking flag.
+        let q = ModelFamily::Qwen35;
+        assert_eq!(q.channel_markers(), ChannelMarkers::qwen3_deepseek());
+        assert_eq!(q.defaults().template_kind, TemplateKind::Qwen3);
+        assert!(!q.default_enable_thinking());
+        for arch in ["qwen3", "qwen3moe"] {
+            assert_eq!(
+                ChannelMarkers::from_architecture(Some(arch)),
+                q.channel_markers(),
+                "arch `{arch}` must resolve to the Qwen3.5-owned markers",
+            );
+        }
+
+        // Non-reasoning families own empty markers and don't set the
+        // Gemma template flag — the reader must stay silent for them.
+        for f in [
+            ModelFamily::Llama3,
+            ModelFamily::Gemma2,
+            ModelFamily::MistralSmall3,
+        ] {
+            assert_eq!(f.channel_markers(), ChannelMarkers::none());
+            assert!(!f.default_enable_thinking());
         }
     }
 }

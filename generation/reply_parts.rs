@@ -71,7 +71,9 @@ impl ChannelMarkers {
 
     /// Gemma-4 markers. The chat template emits
     /// `<|channel>thought\n{reasoning}\n<channel|>` when
-    /// `enable_thinking=true`.
+    /// `enable_thinking=true`. Definition site for Gemma 4's marker
+    /// literals; [`crate::gen2::zoo::ModelFamily::channel_markers`] maps
+    /// the family to this constructor so the two can't drift.
     pub fn gemma4() -> Self {
         Self {
             open: vec!["<|channel>thought\n".into(), "<|channel>thought".into()],
@@ -80,7 +82,9 @@ impl ChannelMarkers {
     }
 
     /// Qwen3-Thinking / DeepSeek-R1 markers — both families use the
-    /// same `<think>` / `</think>` text form.
+    /// same `<think>` / `</think>` text form. Definition site for these
+    /// marker literals; [`crate::gen2::zoo::ModelFamily::channel_markers`]
+    /// maps the Qwen3.5 and DeepSeek-R1 families to this constructor.
     pub fn qwen3_deepseek() -> Self {
         Self {
             open: vec!["<think>".into()],
@@ -108,10 +112,22 @@ impl ChannelMarkers {
     /// `none()` when arch is unknown — callers can fall back to model-id
     /// hint detection if they have one. Sourced from
     /// [`crate::gen2::backend::traits::Backend::bundle_architecture`].
+    ///
+    /// The marker *values* are owned by
+    /// [`crate::gen2::zoo::ModelFamily::channel_markers`] — this reader
+    /// only maps the raw arch tag onto the family whose markers it
+    /// returns, so it can't disagree with the family's `template_kind` /
+    /// `thinking` defaults. The arch tags handled here are the subset
+    /// that reaches a reasoning family from the arch string *alone* (no
+    /// repo hint): `gemma4*` → Gemma 4, and the `<think>`-tag arches
+    /// (`qwen3`, `qwen3moe`, `deepseek2`) → the Qwen3/DeepSeek marker set.
     pub fn from_architecture(arch: Option<&str>) -> Self {
+        use crate::gen2::zoo::ModelFamily;
         match arch {
-            Some(a) if a.starts_with("gemma4") => Self::gemma4(),
-            Some("qwen3") | Some("qwen3moe") | Some("deepseek2") => Self::qwen3_deepseek(),
+            Some(a) if a.starts_with("gemma4") => ModelFamily::Gemma4.channel_markers(),
+            Some("qwen3") | Some("qwen3moe") | Some("deepseek2") => {
+                ModelFamily::Qwen35.channel_markers()
+            }
             _ => Self::none(),
         }
     }
