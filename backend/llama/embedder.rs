@@ -98,6 +98,32 @@ impl EmbedderKind {
         }
     }
 
+    /// Human-facing label for the opt-in "retrieval quality" surface.
+    pub fn label(self) -> &'static str {
+        match self {
+            EmbedderKind::Gemma => "EmbeddingGemma-300M",
+            EmbedderKind::Qwen3 => "Qwen3-Embedding-0.6B",
+        }
+    }
+
+    /// The **best-quality** embedder this machine should use, for the opt-in
+    /// "best for this Mac" upgrade (the default stays [`EmbedderKind::Gemma`]
+    /// for everyone; switching is user-driven because it costs a re-embed).
+    ///
+    /// A capable machine (≥16 GB RAM) gets **Qwen3-Embedding-0.6B** — higher MTEB
+    /// (≈70.7 vs EmbeddingGemma's ≈69.7, MTEB v2 leaderboard) + 32K context, and
+    /// the ~600 MB model is trivial alongside the chat model there. Smaller /
+    /// mobile machines stay on EmbeddingGemma (mobile-QAT, ~300 MB, best
+    /// quality-per-byte). Selection only — applying it goes through the guarded
+    /// `validate_and_load_embedder` + re-embed path.
+    pub fn recommend(hardware: &crate::hardware::HardwareProfile) -> EmbedderKind {
+        if hardware.total_ram_gb() >= 16 {
+            EmbedderKind::Qwen3
+        } else {
+            EmbedderKind::Gemma
+        }
+    }
+
     /// Literal suffix appended to every input before tokenization.
     fn input_suffix(self) -> &'static str {
         match self {
@@ -321,6 +347,27 @@ fn normalize_vec(input: &[f32]) -> Vec<f32> {
 mod tests {
     use super::*;
     use std::path::PathBuf;
+
+    /// By-machine embedder pick: a capable machine (≥16 GB) gets the
+    /// higher-MTEB Qwen3-Embedding; a smaller/mobile one stays on the default
+    /// EmbeddingGemma. Selection only — the opt-in apply path is guarded.
+    #[test]
+    fn recommend_picks_qwen3_on_capable_machines_else_gemma() {
+        use crate::hardware::{GpuBackend, HardwareProfile};
+        let hw = |gb: u64| HardwareProfile {
+            total_ram_bytes: gb * 1024 * 1024 * 1024,
+            cpu_cores: 8,
+            gpu_backend: GpuBackend::Metal,
+            vram_bytes: 0,
+        };
+        assert_eq!(EmbedderKind::recommend(&hw(32)), EmbedderKind::Qwen3);
+        assert_eq!(EmbedderKind::recommend(&hw(16)), EmbedderKind::Qwen3);
+        assert_eq!(EmbedderKind::recommend(&hw(8)), EmbedderKind::Gemma);
+        // The default stays Gemma (never auto-upgraded).
+        assert_eq!(EmbedderKind::default(), EmbedderKind::Gemma);
+        assert_ne!(EmbedderKind::Qwen3.label(), EmbedderKind::Gemma.label());
+    }
+
     #[test]
     #[ignore]
     fn test_embedder_generation() {
