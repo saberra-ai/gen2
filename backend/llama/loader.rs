@@ -30,7 +30,22 @@ pub(crate) fn build_bundle(
     // Validate model file before passing to llama-cpp (prevents C FFI hang on empty/corrupt files)
     crate::gen2::engine::validate_model_file(&req.model_path)?;
 
-    // Load primary model
+    // iOS-only: budget the load against the process's jetsam memory limit and
+    // enforce the device floor (A14 / iPhone 12) + model ceiling (~4B / Q4_K_M)
+    // BEFORE committing to the C++ load. Returns a typed ExecError (never a
+    // panic) so the shell can surface "device too small / model too large".
+    // Desktop/flagship never compiles or runs this — behavior is unchanged.
+    #[cfg(target_os = "ios")]
+    super::ios_memory::preflight_ios(&req.model_path)?;
+
+    // Load primary model.
+    //
+    // `use_mlock` pins the model's pages resident so the OS can't evict the
+    // weights under memory pressure. On iOS this is what keeps the weights the
+    // increased-memory-limit entitlement bought from being paged out (which
+    // would otherwise cause thrash or a jetsam kill mid-generation); it is set
+    // unconditionally here and was already the desktop default, so desktop
+    // behavior is unchanged.
     let mut model_params = LlamaModelParams::default().with_use_mlock(true);
     // iOS simulator: GGML's Metal backend crashes there, so pin to CPU (0 GPU
     // layers) regardless of the configured/profile value. Real devices keep

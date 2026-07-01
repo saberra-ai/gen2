@@ -168,6 +168,50 @@ pub fn read_gguf_architecture(path: &Path) -> Option<String> {
     None
 }
 
+/// Read `general.file_type` (the quant enum) from a GGUF header without
+/// loading the model.
+///
+/// `general.file_type` is a `u32` in GGUF metadata whose value is the
+/// `llama_ftype` enum (e.g. 15 = `MOSTLY_Q4_K_M`). Used by the iOS
+/// memory-budget preflight to enforce the on-device quant ceiling. Returns
+/// `None` if the key isn't present or the file can't be parsed.
+pub fn read_gguf_file_type(path: &Path) -> Option<u32> {
+    let mut f = File::open(path).ok()?;
+
+    // Header: magic(4) + version(4) + tensor_count(8) + kv_count(8) = 24 bytes
+    let mut header = [0u8; 24];
+    f.read_exact(&mut header).ok()?;
+
+    if header[0..4] != GGUF_MAGIC {
+        return None;
+    }
+
+    let version = u32::from_le_bytes(header[4..8].try_into().ok()?);
+    if !(2..=3).contains(&version) {
+        return None;
+    }
+
+    let kv_count = u64::from_le_bytes(header[16..24].try_into().ok()?) as usize;
+
+    for _ in 0..kv_count {
+        let key = read_gguf_string(&mut f)?;
+        let mut vtype_buf = [0u8; 4];
+        f.read_exact(&mut vtype_buf).ok()?;
+        let vtype = u32::from_le_bytes(vtype_buf);
+
+        // Type 4 = GGUF_TYPE_UINT32.
+        if key == "general.file_type" && vtype == 4 {
+            let mut val = [0u8; 4];
+            f.read_exact(&mut val).ok()?;
+            return Some(u32::from_le_bytes(val));
+        } else {
+            skip_gguf_value(&mut f, vtype)?;
+        }
+    }
+
+    None
+}
+
 /// Read a GGUF string: u64 length + UTF-8 bytes.
 fn read_gguf_string(f: &mut File) -> Option<String> {
     let mut len_buf = [0u8; 8];
