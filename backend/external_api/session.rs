@@ -49,6 +49,9 @@ pub struct Session {
 }
 
 impl Session {
+    // The session identity is intrinsically many independent fields (id, url,
+    // model, keys, timeouts); bundling them would obscure, not clarify.
+    #[allow(clippy::too_many_arguments)]
     pub(crate) fn new(
         id: SessionId,
         server_url: String,
@@ -194,10 +197,10 @@ impl Session {
     ) -> (String, serde_json::Value) {
         let mut system_text = String::new();
         let mut api_msgs = Vec::with_capacity(messages.len());
-        if let Some(ref prompt) = self.settings.prompt.system_prompt {
-            if !prompt.is_empty() {
-                system_text = prompt.clone();
-            }
+        if let Some(ref prompt) = self.settings.prompt.system_prompt
+            && !prompt.is_empty()
+        {
+            system_text = prompt.clone();
         }
         for msg in messages {
             let content = match &msg.body {
@@ -258,12 +261,11 @@ impl Session {
     fn build_api_messages(messages: &[Message], settings: &Settings) -> Vec<serde_json::Value> {
         let mut api_msgs = Vec::with_capacity(messages.len() + 1);
         let has_system = messages.iter().any(|m| m.role == "system");
-        if !has_system {
-            if let Some(ref prompt) = settings.prompt.system_prompt {
-                if !prompt.is_empty() {
-                    api_msgs.push(serde_json::json!({"role": "system", "content": prompt}));
-                }
-            }
+        if !has_system
+            && let Some(ref prompt) = settings.prompt.system_prompt
+            && !prompt.is_empty()
+        {
+            api_msgs.push(serde_json::json!({"role": "system", "content": prompt}));
         }
         for msg in messages {
             let content = match &msg.body {

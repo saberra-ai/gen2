@@ -1,3 +1,8 @@
+// The Jinja chat-template engine is constructed by backend loaders compiled out
+// of the default feature surface the pre-commit clippy runs, so its items read
+// as dead there while being live (22+ refs) under those backends.
+#![allow(dead_code)]
+
 use crate::types::message::{
     ChatTemplateInputs, Message, MessageBody, MessageChunk, MessageContent, TextMessage,
     TokenizerConfigToken, Tool,

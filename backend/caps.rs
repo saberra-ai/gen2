@@ -75,6 +75,8 @@ impl BackendCaps {
 #[cfg(test)]
 mod tests {
     use super::*;
+    // Used by tests exercised only under other backend features.
+    #[allow(unused_imports)]
     use crate::gen2::Engine;
 
     #[cfg(feature = "backend-llamacpp")]

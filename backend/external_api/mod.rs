@@ -10,4 +10,6 @@ mod puller;
 mod session;
 
 pub use engine::Engine;
+// Re-exported for other backend feature configs; default surface uses neither.
+#[allow(unused_imports)]
 pub use session::{RemotePuller, Session};

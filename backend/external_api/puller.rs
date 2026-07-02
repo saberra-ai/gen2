@@ -97,10 +97,10 @@ impl Iterator for TokenPuller {
         }
 
         // Check token limit
-        if let Some(limit) = self.max_tokens {
-            if self.produced >= limit {
-                return self.finish(TokenEvent::Eos);
-            }
+        if let Some(limit) = self.max_tokens
+            && self.produced >= limit
+        {
+            return self.finish(TokenEvent::Eos);
         }
 
         // Read SSE lines until we get a data payload or EOF
@@ -130,8 +130,8 @@ impl Iterator for TokenPuller {
                     }
 
                     // Extract the data payload
-                    let data = if line.starts_with("data: ") {
-                        &line[6..]
+                    let data = if let Some(rest) = line.strip_prefix("data: ") {
+                        rest
                     } else {
                         &line[5..]
                     };
@@ -167,38 +167,9 @@ impl Iterator for TokenPuller {
 
                     if let Some("stop" | "length") = finish_reason {
                         // If there's also content in this chunk, yield it first
-                        if let Some(text) = content {
-                            if !text.is_empty() {
-                                if self.first_token_us.is_none() {
-                                    self.first_token_us =
-                                        Some(now_us().saturating_sub(self.start_us));
-                                }
-                                self.produced += 1;
-                                self.hooks.emit(HookEvent::DecodeStep {
-                                    session_id: self.session_id,
-                                    token_id: 0,
-                                    text_len: text.len(),
-                                });
-                                // We'll get Eos on the next call
-                                self.done = true;
-                                let stats = self.stats_now();
-                                self.hooks.emit(HookEvent::FinalStats {
-                                    session_id: self.session_id,
-                                    stats,
-                                });
-                                return Some(Ok(TokenEvent::Token(Token {
-                                    id: 0,
-                                    text: text.to_string(),
-                                    logprob: None,
-                                })));
-                            }
-                        }
-                        return self.finish(TokenEvent::Eos);
-                    }
-
-                    // Yield token if we got content
-                    if let Some(text) = content {
-                        if !text.is_empty() {
+                        if let Some(text) = content
+                            && !text.is_empty()
+                        {
                             if self.first_token_us.is_none() {
                                 self.first_token_us = Some(now_us().saturating_sub(self.start_us));
                             }
@@ -208,12 +179,40 @@ impl Iterator for TokenPuller {
                                 token_id: 0,
                                 text_len: text.len(),
                             });
+                            // We'll get Eos on the next call
+                            self.done = true;
+                            let stats = self.stats_now();
+                            self.hooks.emit(HookEvent::FinalStats {
+                                session_id: self.session_id,
+                                stats,
+                            });
                             return Some(Ok(TokenEvent::Token(Token {
                                 id: 0,
                                 text: text.to_string(),
                                 logprob: None,
                             })));
                         }
+                        return self.finish(TokenEvent::Eos);
+                    }
+
+                    // Yield token if we got content
+                    if let Some(text) = content
+                        && !text.is_empty()
+                    {
+                        if self.first_token_us.is_none() {
+                            self.first_token_us = Some(now_us().saturating_sub(self.start_us));
+                        }
+                        self.produced += 1;
+                        self.hooks.emit(HookEvent::DecodeStep {
+                            session_id: self.session_id,
+                            token_id: 0,
+                            text_len: text.len(),
+                        });
+                        return Some(Ok(TokenEvent::Token(Token {
+                            id: 0,
+                            text: text.to_string(),
+                            logprob: None,
+                        })));
                     }
 
                     // Empty content chunk (e.g. role-only delta) — continue reading

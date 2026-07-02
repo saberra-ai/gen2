@@ -95,10 +95,10 @@ impl Iterator for AnthropicPuller {
         if self.paused.load(Ordering::Acquire) {
             return Some(Ok(TokenEvent::Paused));
         }
-        if let Some(limit) = self.max_tokens {
-            if self.produced >= limit {
-                return self.finish(TokenEvent::Eos);
-            }
+        if let Some(limit) = self.max_tokens
+            && self.produced >= limit
+        {
+            return self.finish(TokenEvent::Eos);
         }
 
         loop {
@@ -128,8 +128,8 @@ impl Iterator for AnthropicPuller {
                         continue;
                     }
 
-                    let data = if line.starts_with("data: ") {
-                        &line[6..]
+                    let data = if let Some(rest) = line.strip_prefix("data: ") {
+                        rest
                     } else {
                         &line[5..]
                     };
@@ -153,24 +153,24 @@ impl Iterator for AnthropicPuller {
                                 .get("delta")
                                 .and_then(|d| d.get("text"))
                                 .and_then(|t| t.as_str());
-                            if let Some(text) = text {
-                                if !text.is_empty() {
-                                    if self.first_token_us.is_none() {
-                                        self.first_token_us =
-                                            Some(now_us().saturating_sub(self.start_us));
-                                    }
-                                    self.produced += 1;
-                                    self.hooks.emit(HookEvent::DecodeStep {
-                                        session_id: self.session_id,
-                                        token_id: 0,
-                                        text_len: text.len(),
-                                    });
-                                    return Some(Ok(TokenEvent::Token(Token {
-                                        id: 0,
-                                        text: text.to_string(),
-                                        logprob: None,
-                                    })));
+                            if let Some(text) = text
+                                && !text.is_empty()
+                            {
+                                if self.first_token_us.is_none() {
+                                    self.first_token_us =
+                                        Some(now_us().saturating_sub(self.start_us));
                                 }
+                                self.produced += 1;
+                                self.hooks.emit(HookEvent::DecodeStep {
+                                    session_id: self.session_id,
+                                    token_id: 0,
+                                    text_len: text.len(),
+                                });
+                                return Some(Ok(TokenEvent::Token(Token {
+                                    id: 0,
+                                    text: text.to_string(),
+                                    logprob: None,
+                                })));
                             }
                         }
                         Some("message_delta") => {

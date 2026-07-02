@@ -1,3 +1,8 @@
+// The KV-cache blob codec is exercised by persistence paths compiled out of the
+// default feature surface the pre-commit clippy runs (7–32 refs elsewhere), so
+// its items read as dead there while being live under those features.
+#![allow(dead_code)]
+
 use std::fs;
 use std::io::{Read, Write};
 use std::path::Path;
