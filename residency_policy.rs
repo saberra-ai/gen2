@@ -124,7 +124,7 @@ pub(crate) fn resident_mb_from_file_mb(
     // Same layer-count proxy as the auto-tune path (service_impl.rs:457).
     let est_layers = ((file_mb / 100) as u32).clamp(12, 80) as u64;
     let offloaded = match gpu_layers {
-        None => est_layers,                  // auto = offload all layers to VRAM
+        None => est_layers, // auto = offload all layers to VRAM
         Some(n) => (n as u64).min(est_layers),
     };
     if offloaded == 0 {
@@ -169,7 +169,10 @@ mod tests {
     fn cpu_backend_is_full_file_size_regardless_of_layers() {
         // No GPU → every weight resident, even with auto/explicit "offload" asked.
         assert_eq!(resident_mb_from_file_mb(2000, GpuBackend::Cpu, None), 2000);
-        assert_eq!(resident_mb_from_file_mb(2000, GpuBackend::Cpu, Some(999)), 2000);
+        assert_eq!(
+            resident_mb_from_file_mb(2000, GpuBackend::Cpu, Some(999)),
+            2000
+        );
         assert!(resident_mb_from_file_mb(2000, GpuBackend::Cpu, None) > TIGHT_BUDGET_MB);
     }
 
@@ -184,7 +187,10 @@ mod tests {
             "auto offload on a GPU host should fit a tight budget, got {cuda_auto}MB"
         );
         assert!(cuda_auto < resident_mb_from_file_mb(2000, GpuBackend::Cpu, None));
-        assert!(cuda_auto >= 256, "must stay above MIN floor, got {cuda_auto}");
+        assert!(
+            cuda_auto >= 256,
+            "must stay above MIN floor, got {cuda_auto}"
+        );
         // Explicit "all layers" lands at the same place.
         assert_eq!(
             cuda_auto,
@@ -195,7 +201,10 @@ mod tests {
     #[test]
     fn gpu_explicit_zero_layers_is_full_file() {
         // A GPU is present but the user forced CPU-only (gpu_layers = 0): respect it.
-        assert_eq!(resident_mb_from_file_mb(2000, GpuBackend::Cuda, Some(0)), 2000);
+        assert_eq!(
+            resident_mb_from_file_mb(2000, GpuBackend::Cuda, Some(0)),
+            2000
+        );
     }
 
     #[test]
@@ -205,7 +214,10 @@ mod tests {
         let half = resident_mb_from_file_mb(2000, GpuBackend::Cuda, Some(10));
         let cpu = resident_mb_from_file_mb(2000, GpuBackend::Cpu, None);
         let full = resident_mb_from_file_mb(2000, GpuBackend::Cuda, None);
-        assert!(half > full && half < cpu, "partial={half} full={full} cpu={cpu}");
+        assert!(
+            half > full && half < cpu,
+            "partial={half} full={full} cpu={cpu}"
+        );
     }
 
     #[test]
