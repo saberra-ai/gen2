@@ -73,6 +73,15 @@ pub enum SystemTask {
     /// it cost to become a physician's assistant?". Lifts QReCC retrieval
     /// recall@10 from 0.505 (raw) toward 0.925 (gold rewrite).
     QueryRewrite,
+    /// Contextual chunk prefix generation (Anthropic contextual retrieval).
+    ///
+    /// Given (whole document, chunk), produce a 50–100 token situating
+    /// context that is prepended to the chunk before BOTH embedding and
+    /// BM25 indexing. Reference:
+    /// <https://www.anthropic.com/engineering/contextual-retrieval>
+    /// (−49% retrieval failures with embeddings+BM25, −67% with reranking).
+    /// See `crate::sabra::contextual_prefix`.
+    ContextualPrefix,
 }
 
 /// Primary user chat vs an internal system inference workload.
@@ -179,6 +188,7 @@ impl SystemTask {
             Self::Contradiction => "contradiction",
             Self::Summary => "summary",
             Self::QueryRewrite => "rewrite",
+            Self::ContextualPrefix => "ctxprefix",
         }
     }
 

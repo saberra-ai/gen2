@@ -111,6 +111,16 @@ impl ControllerConfig {
                 temperature: Some(0.1),
                 ..Default::default()
             },
+            // ContextualPrefix: Anthropic contextual retrieval asks for a
+            // "short succinct context", usually 50–100 tokens — 120 caps the
+            // tail without truncating a well-formed prefix. Low temp: the
+            // prefix must be faithful to the document, not creative.
+            // https://www.anthropic.com/engineering/contextual-retrieval
+            SystemTask::ContextualPrefix => GenSpec {
+                max_tokens: Some(120),
+                temperature: Some(0.1),
+                ..Default::default()
+            },
         }
     }
 }
@@ -179,6 +189,10 @@ mod tests {
         let rewrite = config.system_task_spec(&SystemTask::QueryRewrite);
         assert_eq!(rewrite.max_tokens, Some(80));
         assert_eq!(rewrite.temperature, Some(0.1));
+
+        let ctx_prefix = config.system_task_spec(&SystemTask::ContextualPrefix);
+        assert_eq!(ctx_prefix.max_tokens, Some(120));
+        assert_eq!(ctx_prefix.temperature, Some(0.1));
     }
 
     /// Verify that SystemTask::default_gen_spec() delegates to config correctly.
