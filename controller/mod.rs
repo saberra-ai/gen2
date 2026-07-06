@@ -1406,29 +1406,31 @@ mod tests {
             })
             .expect("send should succeed");
         let result = rx.recv().expect("should receive a response");
-        // With no backend features, the engine is Uninit and returns Err.
-        // With a backend (e.g. backend-llamacpp), upload_settings may succeed
-        // even without a model file loaded. Either way, the controller must
-        // respond without panicking — that is the boundary guarantee.
+        // Cold start: `backend::facade::Engine::new` eagerly instantiates a
+        // backend ONLY for llamacpp/mlx/onnx — for those, `as_backend()` is
+        // Some and `upload_settings` succeeds even with no model file loaded.
+        // `backend-external-api` (and the no-backend build) start `Uninit` and
+        // instantiate lazily on `load_model`, so `upload_settings` short-circuits
+        // to `Err(ModelNotLoaded)` in the facade. Either way the controller must
+        // respond without panicking — that is the boundary guarantee. Keep this
+        // cfg split in lockstep with `Engine::new`'s feature cascade.
         #[cfg(not(any(
             feature = "backend-llamacpp",
             feature = "backend-mlx",
-            feature = "backend-onnx",
-            feature = "backend-external-api"
+            feature = "backend-onnx"
         )))]
         assert!(
             result.is_err(),
-            "applying settings without any backend should return Err(ModelNotLoaded)"
+            "applying settings with no eagerly-initialized backend should return Err(ModelNotLoaded)"
         );
         #[cfg(any(
             feature = "backend-llamacpp",
             feature = "backend-mlx",
-            feature = "backend-onnx",
-            feature = "backend-external-api"
+            feature = "backend-onnx"
         ))]
         assert!(
             result.is_ok(),
-            "applying default settings on an initialized backend should succeed"
+            "applying default settings on an eagerly-initialized backend should succeed"
         );
         let _ = handle.send(ControllerCmd::Shutdown);
     }
