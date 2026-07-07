@@ -12,6 +12,18 @@ pub mod llama;
 #[cfg(feature = "backend-mlx")]
 pub(crate) mod mlx;
 
+// mlxcel — fast MLX inference embedded via mlxcel-core (docs/plans/mlxcel-embedding-roadmap.md).
+// backend-mlx (mlx-rs) and backend-mlxcel (mlxcel-core's cxx MLX C++) BOTH link MLX C++, so
+// enabling both duplicates the MLX symbol surface → mutually exclusive (guard below).
+#[cfg(feature = "backend-mlxcel")]
+pub(crate) mod mlxcel;
+
+#[cfg(all(feature = "backend-mlx", feature = "backend-mlxcel"))]
+compile_error!(
+    "backend-mlx and backend-mlxcel both link MLX C++ and cannot be enabled together; \
+     enable exactly one (backend-mlxcel replaces backend-mlx on the macOS/daemon path)."
+);
+
 #[cfg(feature = "backend-onnx")]
 pub(crate) mod onnx;
 
@@ -31,13 +43,14 @@ pub(crate) mod candle;
 #[cfg(not(any(
     feature = "backend-llamacpp",
     feature = "backend-mlx",
+    feature = "backend-mlxcel",
     feature = "backend-onnx",
     feature = "backend-external-api",
     feature = "backend-executorch",
     feature = "backend-candle"
 )))]
 compile_error!(
-    "No inference backend selected. Enable at least one of: backend-llamacpp, backend-mlx, backend-onnx, backend-external-api, backend-executorch, backend-candle"
+    "No inference backend selected. Enable at least one of: backend-llamacpp, backend-mlx, backend-mlxcel, backend-onnx, backend-external-api, backend-executorch, backend-candle"
 );
 
 pub mod caps;
