@@ -51,3 +51,7 @@ mod worker;
 // by facade routing in a later slice (S6); unused in a plain non-test lib build.
 #[allow(unused_imports)]
 pub(crate) use engine::MlxcelEngine;
+// PROFILE-ONLY (S5): the decode-profile captest selects the A/B/C on_token mode.
+// Test-only — the profile machinery is `#[cfg(test)]` and never in a prod build.
+#[cfg(test)]
+pub(crate) use worker::{ProfileMode, ProfileRun};

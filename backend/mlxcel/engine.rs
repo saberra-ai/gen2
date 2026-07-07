@@ -63,6 +63,22 @@ impl MlxcelEngine {
             hooks: Arc::new(HookBus::default()),
         }
     }
+
+    /// PROFILE-ONLY (S5 perf verify): run one greedy `generate_streaming` pass in
+    /// the given `on_token` mode and return the timing. Drives the worker's
+    /// [`profile_blocking`](super::worker::ModelWorker::profile_blocking); the
+    /// model must already be loaded. Used exclusively by the decode-profile
+    /// captest — not on any user path.
+    #[cfg(test)]
+    pub(crate) fn profile(
+        &self,
+        prompt: &str,
+        max_tokens: usize,
+        mode: super::worker::ProfileMode,
+    ) -> Result<super::worker::ProfileRun, ExecError> {
+        self.worker
+            .profile_blocking(prompt.to_string(), max_tokens, mode)
+    }
 }
 
 impl Backend for MlxcelEngine {
