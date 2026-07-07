@@ -799,7 +799,7 @@ impl ArPuller {
         }));
         let logits = match result {
             Ok(l) => l,
-            Err(e) => return Err(ExecError::OutOfMemory(panic_msg(e))),
+            Err(e) => return Err(super::classify_forward_panic(e)),
         };
 
         // Greedy argmax (+ eot bias) on the GPU generation stream → lazy next
@@ -973,7 +973,7 @@ impl ArPuller {
                 match spec_result {
                     Err(e) => {
                         self.done = true;
-                        self.filter.push_err(ExecError::OutOfMemory(panic_msg(e)));
+                        self.filter.push_err(super::classify_forward_panic(e));
                         return;
                     }
                     Ok(None) => {
@@ -1150,7 +1150,7 @@ impl ArPuller {
                 Ok((l, a)) => (l, a),
                 Err(e) => {
                     self.done = true;
-                    self.filter.push_err(ExecError::OutOfMemory(panic_msg(e)));
+                    self.filter.push_err(super::classify_forward_panic(e));
                     return;
                 }
             };
@@ -1234,17 +1234,6 @@ impl ArPuller {
         // Route through the shared filter — may hold (partial suffix match) or
         // trigger Full stop (marks filter done).
         self.filter.push_token(token_id, text);
-    }
-}
-
-/// Extract a human-readable message from a caught panic payload.
-fn panic_msg(e: Box<dyn std::any::Any + Send>) -> String {
-    if let Some(s) = e.downcast_ref::<&str>() {
-        s.to_string()
-    } else if let Some(s) = e.downcast_ref::<String>() {
-        s.clone()
-    } else {
-        "MLX forward pass panicked (likely OOM)".to_string()
     }
 }
 

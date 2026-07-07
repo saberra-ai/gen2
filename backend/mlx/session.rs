@@ -315,7 +315,7 @@ impl Session {
             let out_ids = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
                 model.diffusion_generate(&prompt_ids, &params)
             }))
-            .map_err(|e| ExecError::OutOfMemory(oom_msg(e)))?;
+            .map_err(super::classify_forward_panic)?;
 
             // `max_tokens` caps the emitted canvas length.
             let out_ids = match gen_spec.max_tokens {
@@ -583,7 +583,7 @@ impl Session {
                 let delta_logits = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
                     b.model.forward(delta, delta_pos, &mut state.cache, &b.rope)
                 }))
-                .map_err(|e| ExecError::OutOfMemory(oom_msg(e)))?;
+                .map_err(super::classify_forward_panic)?;
 
                 let last_token = delta.last().copied().unwrap_or(state.last_token);
                 state.cur_pos = total;
@@ -644,7 +644,7 @@ impl Session {
                                     b.model
                                         .forward(&prefix_tokens, 0, &mut prefix_cache, &b.rope)
                                 }))
-                                .map_err(|e| ExecError::OutOfMemory(oom_msg(e)))?;
+                                .map_err(super::classify_forward_panic)?;
                             let prefix_len = prefix_tokens.len();
                             let _ = prefix_logits; // not used — we'll run the delta next
 
@@ -674,7 +674,7 @@ impl Session {
                                     b.model
                                         .forward(delta, prefix_len, &mut prefix_cache, &b.rope)
                                 }))
-                                .map_err(|e| ExecError::OutOfMemory(oom_msg(e)))?;
+                                .map_err(super::classify_forward_panic)?;
 
                             let last_token = full_tokens.last().copied().unwrap_or(0);
                             let total = full_tokens.len();
@@ -733,7 +733,7 @@ impl Session {
         let prefill_logits = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
             b.model.forward(&full_tokens, 0, &mut cache, &b.rope)
         }))
-        .map_err(|e| ExecError::OutOfMemory(oom_msg(e)))?;
+        .map_err(super::classify_forward_panic)?;
 
         let last_prompt_token = full_tokens.last().copied().unwrap_or(0);
         hooks.emit(HookEvent::SessionPrefillOk {
@@ -836,7 +836,7 @@ impl Session {
             b.model
                 .forward_with_image(&ft, &image_features, image_token_id, 0, &mut cache)
         }))
-        .map_err(|e| ExecError::OutOfMemory(oom_msg(e)))?;
+        .map_err(super::classify_forward_panic)?;
 
         let last_prompt_token = full_tokens.last().copied().unwrap_or(0);
         hooks.emit(HookEvent::SessionPrefillOk {
@@ -1025,7 +1025,7 @@ impl Session {
             b.model
                 .forward(&delta_tokens, delta_pos, &mut st.cache, &b.rope)
         }))
-        .map_err(|e| ExecError::OutOfMemory(oom_msg(e)))?;
+        .map_err(super::classify_forward_panic)?;
         st.cur_pos += delta_tokens.len();
         st.cache_len += delta_tokens.len();
         st.last_token = delta_tokens.last().copied().unwrap_or(st.last_token);
@@ -1042,17 +1042,6 @@ impl Session {
 }
 
 // ─── Trait impls (Phase 2) ─────────────────────────────────────────────────
-
-/// Extract a readable message from a caught panic payload (OOM or other MLX panic).
-fn oom_msg(e: Box<dyn std::any::Any + Send>) -> String {
-    if let Some(s) = e.downcast_ref::<&str>() {
-        s.to_string()
-    } else if let Some(s) = e.downcast_ref::<String>() {
-        s.clone()
-    } else {
-        "MLX forward pass panicked (likely OOM)".to_string()
-    }
-}
 
 /// Extract image **URLs** from the message stream, in order, preserving the
 /// original (un-stripped) URL. The URL is what `as_visible_text` renders into
