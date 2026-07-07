@@ -28,6 +28,8 @@ use mlxcel::tokenizer::MlxcelTokenizer;
 use mlxcel::{LoadedModel, MlxInferenceSession, SamplingConfig};
 use mlxcel_core::generate::LanguageModel;
 
+use crate::gen2::backend::common::grammar::GrammarSpec;
+use crate::gen2::backend::common::tokenizer::HfTokenizer;
 use crate::gen2::engine::ExecError;
 
 /// One decoded token pushed from the worker's `on_token` callback to a puller.
@@ -43,6 +45,11 @@ pub(crate) struct GenRequest {
     pub prompt: String,
     pub max_tokens: usize,
     pub sampling: SamplingConfig,
+    /// Grammar to constrain output to, if any. `Some(_)` diverts this
+    /// generation off the fast `generate_streaming` path onto the manual
+    /// masked decode loop ([`super::grammar::run_grammar_generation`]) — see
+    /// the module docs for why the fast path can't carry a per-step mask.
+    pub grammar: Option<GrammarSpec>,
     /// Set by the session's `stop()` to halt mlxcel's decode loop mid-stream.
     pub stop: Arc<AtomicBool>,
     /// Bounded channel the worker pushes decoded tokens onto; the puller drains
@@ -66,8 +73,11 @@ enum Command {
     },
     /// Drop the loaded model (free MLX memory).
     Unload { reply: Sender<()> },
-    /// Run one streaming generation on the loaded model.
-    Generate(GenRequest),
+    /// Run one streaming generation on the loaded model. Boxed because
+    /// `GenRequest` (which carries the prompt string, a `SamplingConfig`, and an
+    /// optional `GrammarSpec` holding a JSON-schema `Value`) is far larger than
+    /// the other variants — boxing keeps `Command` small on the channel.
+    Generate(Box<GenRequest>),
     /// Terminate the worker loop.
     Shutdown,
 }
@@ -131,11 +141,13 @@ impl ModelWorker {
 
     /// Enqueue a generation and block for the "started" reply (prompt token
     /// count). Tokens continue to stream asynchronously over `req.tokens_tx`.
+    #[allow(clippy::too_many_arguments)]
     pub(crate) fn start_generation_blocking(
         &self,
         prompt: String,
         max_tokens: usize,
         sampling: SamplingConfig,
+        grammar: Option<GrammarSpec>,
         stop: Arc<AtomicBool>,
         tokens_tx: SyncSender<DecodedToken>,
     ) -> Result<usize, ExecError> {
@@ -144,12 +156,13 @@ impl ModelWorker {
             prompt,
             max_tokens,
             sampling,
+            grammar,
             stop,
             tokens_tx,
             started_tx,
         };
         self.tx
-            .send(Command::Generate(req))
+            .send(Command::Generate(Box::new(req)))
             .map_err(|_| worker_gone())?;
         started_rx.recv().map_err(|_| worker_gone())?
     }
@@ -201,7 +214,7 @@ fn worker_loop(rx: Receiver<Command>) {
                 let _ = reply.send(());
             }
             Command::Generate(req) => {
-                run_generation(loaded.as_ref(), req);
+                run_generation(loaded.as_ref(), *req);
             }
             Command::Shutdown => break,
         }
@@ -216,6 +229,13 @@ struct LoadedState {
     /// EOS ids read from the model dir, merged into every SamplingConfig so the
     /// stream terminates cleanly (mirrors bench_decode.rs::sampling_config).
     eos_token_ids: Vec<i32>,
+    /// pio-core's own tokenizer for this model dir, used ONLY to drive the
+    /// grammar matcher on the manual masked-decode path. `None` when the model
+    /// dir ships no readable `tokenizer.json` — grammar generations then fail
+    /// loud with a clear error rather than silently falling back to unmasked
+    /// output. Loading it is cheap (parse `tokenizer.json`) so we do it at
+    /// model-load time; text-only generations simply never touch it.
+    hf_tok: Option<HfTokenizer>,
 }
 
 fn load_on_worker(model_dir: &Path) -> Result<LoadedState, ExecError> {
@@ -228,6 +248,20 @@ fn load_on_worker(model_dir: &Path) -> Result<LoadedState, ExecError> {
     let architecture = read_architecture(model_dir);
     let eos_token_ids = mlxcel::read_eos_token_ids(model_dir);
 
+    // pio-core's own tokenizer for the grammar path. Non-fatal if absent: a
+    // model with no `tokenizer.json` simply can't do grammar-constrained
+    // decode, and that's surfaced (fail-loud) at the point of use.
+    let hf_tok = match HfTokenizer::from_dir(model_dir) {
+        Ok(t) => Some(t),
+        Err(e) => {
+            tracing::warn!(
+                "mlxcel: pio-core tokenizer unavailable ({e}); grammar-constrained \
+                 decode will error for this model"
+            );
+            None
+        }
+    };
+
     Ok(LoadedState {
         model,
         tokenizer,
@@ -237,6 +271,7 @@ fn load_on_worker(model_dir: &Path) -> Result<LoadedState, ExecError> {
             architecture,
         },
         eos_token_ids,
+        hf_tok,
     })
 }
 
@@ -260,6 +295,7 @@ fn run_generation(loaded: Option<&LoadedState>, req: GenRequest) {
         prompt,
         max_tokens,
         mut sampling,
+        grammar,
         stop,
         tokens_tx,
         started_tx,
@@ -293,6 +329,42 @@ fn run_generation(loaded: Option<&LoadedState>, req: GenRequest) {
     // end-of-turn (mirrors bench_decode.rs::sampling_config → stop_token_ids).
     if sampling.stop_token_ids.is_empty() {
         sampling.stop_token_ids = state.eos_token_ids.clone();
+    }
+
+    // GRAMMAR PATH (S4) — a grammar spec diverts off the fast path onto the
+    // manual masked decode loop. Validate the pio-core tokenizer up front so a
+    // missing one fails loud into `started_tx` (never a silent unmasked stream).
+    if let Some(spec) = grammar {
+        let Some(hf_tok) = state.hf_tok.as_ref() else {
+            let _ = started_tx.send(Err(ExecError::Other(anyhow::anyhow!(
+                "grammar-constrained decode requires a tokenizer.json in the model \
+                 dir; this model shipped none"
+            ))));
+            return;
+        };
+        // Signal "started"; from here, grammar-masked tokens stream.
+        if started_tx.send(Ok(prompt_len)).is_err() {
+            return;
+        }
+        let res = super::grammar::run_grammar_generation(
+            &state.model,
+            &state.tokenizer,
+            hf_tok,
+            spec,
+            &prompt_ids_i32,
+            max_tokens,
+            &state.eos_token_ids,
+            &stop,
+            &tokens_tx,
+        );
+        if let Err(e) = res {
+            // A grammar failure (stuck matcher, parser error) after the stream
+            // started can't be reported via `started_tx` (already consumed); log
+            // it. The dropped `tokens_tx` still closes the stream cleanly, and
+            // the emitted-so-far text is what the puller saw.
+            tracing::error!("mlxcel grammar generation failed: {e}");
+        }
+        return;
     }
 
     // Signal "started" with the prompt-token count. From here, tokens stream.

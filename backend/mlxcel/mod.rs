@@ -26,15 +26,28 @@
 //! callback (which runs on the worker, where the tokenizer lives) decodes
 //! id→text and pushes it down a channel the puller drains.
 //!
-//! ## Tracer-bullet scope (S2)
-//! Greedy text stream only. Stubbed: embeddings / multimodal / KV-snapshot →
-//! `None`; grammar (S4), speculative decode, and logprobs deferred; the prompt
-//! is built simply from `SessionSpec.messages` (full chat-template is a later
-//! slice); `stats()` → `ExecutionStats::default()`.
+//! ## Grammar-constrained decode (the S4 divergence)
+//! When `GenSpec.grammar` is set, generation CANNOT ride `generate_streaming`:
+//! that fast path exposes no per-step logit hook and pipelines the next sample
+//! ahead of the token callback, so a grammar mask can't be applied between
+//! steps. Grammar generations take a **manual masked decode loop**
+//! ([`grammar::run_grammar_generation`]) that mirrors mlxcel's own on-device
+//! structured mask (`server/structured.rs::apply_structured_mask_to_logits`)
+//! while driving pio-core's canonical [`GrammarMatcher`](crate::gen2::backend::common::grammar::GrammarMatcher).
+//! Greedy/text generations keep the fast path unchanged.
+//!
+//! ## Tracer-bullet scope (S2, still deferred)
+//! Stubbed: embeddings / multimodal / KV-snapshot → `None`; speculative decode
+//! and logprobs deferred; the prompt is built simply from `SessionSpec.messages`
+//! (full chat-template is a later slice); `stats()` → `ExecutionStats::default()`.
 
 mod engine;
+mod grammar;
 mod puller;
 mod session;
 mod worker;
 
+// Consumed by the `#[cfg(test)]` captests (drive `MlxcelEngine` directly) and
+// by facade routing in a later slice (S6); unused in a plain non-test lib build.
+#[allow(unused_imports)]
 pub(crate) use engine::MlxcelEngine;

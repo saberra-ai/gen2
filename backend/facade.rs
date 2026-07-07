@@ -33,6 +33,14 @@ pub enum ModelBundle {
     /// is compiled.
     #[cfg(feature = "backend-external-api")]
     ExternalApi,
+    /// mlxcel has no facade-level model bundle — the mlxcel worker thread owns
+    /// the `!Send` MLX model directly (see `backend::mlxcel::worker`). This
+    /// sentinel exists only so the enum is non-empty when `backend-mlxcel` is
+    /// the only backend compiled (mirrors `ExternalApi`). Facade routing to
+    /// mlxcel is a later slice (roadmap S6); today the captests drive
+    /// `MlxcelEngine` directly.
+    #[cfg(feature = "backend-mlxcel")]
+    Mlxcel,
 }
 
 impl std::fmt::Debug for ModelBundle {
@@ -46,6 +54,8 @@ impl std::fmt::Debug for ModelBundle {
             Self::Onnx(b) => b.fmt(f),
             #[cfg(feature = "backend-external-api")]
             Self::ExternalApi => f.debug_struct("ModelBundle(ExternalApi)").finish(),
+            #[cfg(feature = "backend-mlxcel")]
+            Self::Mlxcel => f.debug_struct("ModelBundle(Mlxcel)").finish(),
         }
     }
 }
@@ -194,7 +204,7 @@ impl Engine {
     }
 
     /// Which backends are compiled into this binary.
-    #[allow(clippy::vec_init_then_push)]
+    #[allow(clippy::vec_init_then_push, unused_mut)]
     pub fn available_backends() -> Vec<&'static str> {
         let mut v = Vec::new();
         #[cfg(feature = "backend-llamacpp")]
@@ -205,6 +215,8 @@ impl Engine {
         v.push("onnx");
         #[cfg(feature = "backend-external-api")]
         v.push("external-api");
+        #[cfg(feature = "backend-mlxcel")]
+        v.push("mlxcel");
         v
     }
 

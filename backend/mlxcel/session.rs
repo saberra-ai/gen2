@@ -1,7 +1,8 @@
 //! [`BackendSession`] for the mlxcel backend.
 //!
 //! A session pins the prompt (built from `SessionSpec.messages`) and a `stop`
-//! flag. `pull()` builds the greedy `SamplingConfig`, opens a bounded token
+//! flag. `pull()` maps `GenSpec`+`Settings` into a full `SamplingConfig` (see
+//! [`build_sampling_config`]), opens a bounded token
 //! channel, hands a [`GenRequest`](super::worker::GenRequest) to the worker, and
 //! returns a [`MlxcelTokenPuller`](super::puller::MlxcelTokenPuller) that drains
 //! it. The heavy MLX work runs on the worker thread; the session/puller only
@@ -133,24 +134,25 @@ impl crate::gen2::backend::traits::BackendSession for MlxcelSession {
             .or(self.settings.stopping.max_tokens)
             .unwrap_or(512);
 
-        // Tracer-bullet: greedy unless a temperature was explicitly requested.
-        // (Full sampling-config plumbing — top_p/min_p/penalties — is a later
-        // slice; S2 proves the FAST greedy stream.)
-        let mut sampling = match spec.temperature {
-            Some(t) if t > 0.0 => SamplingConfig::with_temperature(t),
-            _ => SamplingConfig::greedy(),
-        };
-        if let Some(seed) = spec.seed {
-            sampling.seed = Some(seed);
-        }
+        // S4b: full GenSpec + Settings → SamplingConfig (temp/top_p/top_k/min_p/
+        // seed/penalties/DRY all propagate). Applies on the FAST text path; the
+        // grammar path is greedy-argmax by design (deterministic tool calls) so
+        // these params intentionally don't apply there.
+        let sampling = build_sampling_config(&spec, &self.settings);
 
         let prompt = self.build_prompt();
+
+        // Grammar-constrained decode (S4): when set, the worker diverts off the
+        // fast `generate_streaming` path onto the manual masked loop. `None`
+        // (the common case) keeps the fast path.
+        let grammar = spec.grammar.clone();
 
         let (tokens_tx, tokens_rx) = sync_channel(TOKEN_CHANNEL_CAP);
         let _prompt_len = self.worker.start_generation_blocking(
             prompt,
             max_tokens,
             sampling,
+            grammar,
             self.stopped.clone(),
             tokens_tx,
         )?;
@@ -163,5 +165,125 @@ impl crate::gen2::backend::traits::BackendSession for MlxcelSession {
         let mut msgs = self.messages.write();
         msgs.extend(new_messages);
         Ok(0)
+    }
+}
+
+/// Map gen2's per-generation [`GenSpec`] over the backend-level [`Settings`]
+/// sampling defaults into mlxcel's [`SamplingConfig`].
+///
+/// Precedence: a `GenSpec` field wins when `Some`; else the `Settings.sampling`
+/// default; else mlxcel's own default (greedy-safe: temp `0.0` → argmax).
+///
+/// mlxcel supports every knob gen2 exposes **except** `xtc_probability`/
+/// `xtc_threshold` (no mlxcel field) and `eot_bias` (needs the worker's EOS
+/// id) — those are dropped with a loud `warn!` rather than silently, so the gap
+/// is honest (doctrine: no silent skip). The agent's anti-loop **DRY** damping
+/// and temperature-sampling therefore survive on the fast text path.
+fn build_sampling_config(spec: &GenSpec, settings: &Settings) -> SamplingConfig {
+    let s = &settings.sampling;
+    let mut c = SamplingConfig {
+        // Scalar sampling — GenSpec overrides the Settings default, else mlxcel's
+        // greedy-safe fallbacks (temp 0.0, top_k 0/off, top_p 1.0/off, min_p 0.0).
+        temperature: spec.temperature.or(s.temperature).unwrap_or(0.0),
+        top_k: spec.top_k.or(s.top_k).unwrap_or(0),
+        top_p: spec.top_p.or(s.top_p).unwrap_or(1.0),
+        min_p: spec.min_p.or(s.min_p).unwrap_or(0.0),
+        seed: spec.seed.or_else(|| s.seed.map(u64::from)),
+        // History penalties — gen2 carries these on Settings (not GenSpec).
+        repetition_penalty: s.penalty_repeat.unwrap_or(1.0),
+        frequency_penalty: s.penalty_freq.unwrap_or(0.0),
+        presence_penalty: s.penalty_present.unwrap_or(0.0),
+        ..SamplingConfig::default()
+    };
+
+    // DRY anti-loop damping — GenSpec (CoreAgentInference sets these to stop a
+    // small model repeat-looping). Keep mlxcel's default base/allowed_length
+    // (1.75 / 2) unless overridden.
+    if let Some(m) = spec.dry_multiplier {
+        c.dry_multiplier = m;
+    }
+    if let Some(b) = spec.dry_base {
+        c.dry_base = b;
+    }
+    if let Some(n) = spec.dry_allowed_length {
+        c.dry_allowed_length = n;
+    }
+    if let Some(last_n) = s.penalty_last_n {
+        c.dry_penalty_last_n = last_n.max(0) as usize;
+    }
+
+    // Honest gaps: mlxcel has no XTC field and eot_bias needs the worker EOS id.
+    // Warn loudly if a caller actually requested them (never a silent drop).
+    if spec.xtc_probability.is_some_and(|p| p > 0.0) || spec.xtc_threshold.is_some() {
+        tracing::warn!(
+            "mlxcel backend: XTC sampling (xtc_probability/xtc_threshold) is unsupported \
+             and will be ignored"
+        );
+    }
+    if spec.eot_bias.is_some_and(|b| b != 0.0) {
+        tracing::warn!("mlxcel backend: eot_bias is unsupported and will be ignored");
+    }
+
+    c
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use crate::gen2::engine::SamplingSettings;
+
+    /// S4b: GenSpec overrides land in the right SamplingConfig fields, and
+    /// DRY/temperature (what the agent relies on) survive the mapping.
+    #[test]
+    fn genspec_overrides_propagate() {
+        let mut settings = Settings::default();
+        settings.sampling.penalty_repeat = Some(1.3); // Settings-only knob
+        let spec = GenSpec {
+            temperature: Some(0.3),
+            top_p: Some(0.9),
+            top_k: Some(40),
+            min_p: Some(0.05),
+            seed: Some(1234),
+            dry_multiplier: Some(0.8),
+            dry_base: Some(1.75),
+            dry_allowed_length: Some(3),
+            ..GenSpec::default()
+        };
+        let c = build_sampling_config(&spec, &settings);
+        assert_eq!(c.temperature, 0.3, "temperature must propagate");
+        assert_eq!(c.top_p, 0.9);
+        assert_eq!(c.top_k, 40);
+        assert_eq!(c.min_p, 0.05);
+        assert_eq!(c.seed, Some(1234));
+        assert_eq!(c.repetition_penalty, 1.3, "Settings penalty must propagate");
+        assert_eq!(c.dry_multiplier, 0.8, "agent DRY damping must survive");
+        assert_eq!(c.dry_allowed_length, 3);
+    }
+
+    /// Settings.sampling supplies the default; GenSpec `None` doesn't clobber it.
+    #[test]
+    fn settings_defaults_apply_when_genspec_unset() {
+        let settings = Settings {
+            sampling: SamplingSettings {
+                temperature: Some(0.7),
+                top_p: Some(0.95),
+                ..SamplingSettings::default()
+            },
+            ..Settings::default()
+        };
+        let c = build_sampling_config(&GenSpec::default(), &settings);
+        assert_eq!(c.temperature, 0.7);
+        assert_eq!(c.top_p, 0.95);
+    }
+
+    /// Nothing set anywhere → greedy-safe (temp 0.0 → mlxcel argmax path).
+    #[test]
+    fn empty_is_greedy_safe() {
+        let c = build_sampling_config(&GenSpec::default(), &Settings::default());
+        assert_eq!(c.temperature, 0.0);
+        assert_eq!(c.top_p, 1.0);
+        assert_eq!(c.min_p, 0.0);
+        assert_eq!(c.repetition_penalty, 1.0);
+        assert_eq!(c.dry_multiplier, 0.0, "no DRY unless requested");
     }
 }
