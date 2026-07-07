@@ -126,6 +126,19 @@ pub(crate) struct LoadInfo {
     pub num_layers: usize,
     pub n_ctx: usize,
     pub architecture: Option<String>,
+    /// Raw Jinja chat template (`tokenizer_config.json` `chat_template` or the
+    /// `chat_template.jinja` sidecar). `None` when the model ships neither —
+    /// `build_prompt` then falls back to the naive role-tagged concat with a
+    /// loud warn. Mirrors `mlx::engine::build_bundle_from_dir`
+    /// (`pio-core/src/gen2/backend/mlx/engine.rs:170`).
+    pub chat_template: Option<String>,
+    /// BOS string, decoded from the bos id KEEPING specials so `{{ bos_token }}`
+    /// expands to the literal `<bos>`/`<s>`. Mirrors
+    /// `pio-core/src/gen2/backend/mlx/engine.rs:178-181`.
+    pub bos_str: Option<String>,
+    /// EOS string, decoded from the eos id keeping specials. Mirrors
+    /// `pio-core/src/gen2/backend/mlx/engine.rs:182-185`.
+    pub eos_str: Option<String>,
 }
 
 /// SAFETY: see the module-level soundness note. `Command` moves to the single
@@ -331,6 +344,29 @@ fn load_on_worker(model_dir: &Path) -> Result<LoadedState, ExecError> {
         }
     };
 
+    // Load the model's REAL Jinja chat template + derive bos/eos strings the
+    // same way the mlx backend does (`build_bundle_from_dir`,
+    // `pio-core/src/gen2/backend/mlx/engine.rs:170-185`). Decode the bos/eos ids
+    // KEEPING specials so `{{ bos_token }}` in the template expands to the
+    // literal `<bos>` — `skip_special=true` would strip it and Gemma 4 would see
+    // a different position-0 embedding, producing catastrophic step-1 logits
+    // (the documented mlx failure mode). The pio-core `HfTokenizer` (`hf_tok`)
+    // supplies bos_id/eos_id/decode_keep_specials; when it's absent we simply
+    // can't derive the strings — the template still renders, minus BOS expansion.
+    let chat_template = crate::gen2::backend::common::load_chat_template(model_dir);
+    let (bos_str, eos_str) = match hf_tok.as_ref() {
+        Some(tok) => {
+            let bos = tok
+                .bos_id()
+                .and_then(|id| tok.decode_keep_specials(&[id]).ok());
+            let eos = tok
+                .eos_id()
+                .and_then(|id| tok.decode_keep_specials(&[id]).ok());
+            (bos, eos)
+        }
+        None => (None, None),
+    };
+
     Ok(LoadedState {
         model,
         tokenizer,
@@ -338,6 +374,9 @@ fn load_on_worker(model_dir: &Path) -> Result<LoadedState, ExecError> {
             num_layers,
             n_ctx,
             architecture,
+            chat_template,
+            bos_str,
+            eos_str,
         },
         eos_token_ids,
         hf_tok,

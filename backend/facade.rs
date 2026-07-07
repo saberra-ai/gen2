@@ -36,9 +36,9 @@ pub enum ModelBundle {
     /// mlxcel has no facade-level model bundle — the mlxcel worker thread owns
     /// the `!Send` MLX model directly (see `backend::mlxcel::worker`). This
     /// sentinel exists only so the enum is non-empty when `backend-mlxcel` is
-    /// the only backend compiled (mirrors `ExternalApi`). Facade routing to
-    /// mlxcel is a later slice (roadmap S6); today the captests drive
-    /// `MlxcelEngine` directly.
+    /// the only backend compiled (mirrors `ExternalApi`). Facade *routing* is
+    /// wired via `Engine::Mlxcel` (S6) — safetensors dirs detect as
+    /// `BackendKind::Mlx` and construct `MlxcelEngine` when this feature is on.
     #[cfg(feature = "backend-mlxcel")]
     Mlxcel,
 }
@@ -73,6 +73,11 @@ pub enum Engine {
     LlamaCpp(super::llama::Engine),
     #[cfg(feature = "backend-mlx")]
     Mlx(super::mlx::Engine),
+    /// mlxcel — the fast embedded MLX backend (replaces mlx-rs on the macOS/
+    /// daemon path; mutually exclusive with `backend-mlx`). Routed for the same
+    /// safetensors-dir models `BackendKind::Mlx` detects.
+    #[cfg(feature = "backend-mlxcel")]
+    Mlxcel(super::mlxcel::MlxcelEngine),
     #[cfg(feature = "backend-onnx")]
     Onnx(super::onnx::Engine),
     #[cfg(feature = "backend-external-api")]
@@ -89,6 +94,8 @@ impl std::fmt::Debug for Engine {
             Self::LlamaCpp(e) => e.fmt(f),
             #[cfg(feature = "backend-mlx")]
             Self::Mlx(e) => e.fmt(f),
+            #[cfg(feature = "backend-mlxcel")]
+            Self::Mlxcel(e) => e.fmt(f),
             #[cfg(feature = "backend-onnx")]
             Self::Onnx(e) => e.fmt(f),
             #[cfg(feature = "backend-external-api")]
@@ -150,15 +157,20 @@ fn detect_backend(req: &LoadRequest) -> Result<BackendKind, ExecError> {
     return Ok(BackendKind::LlamaCpp);
     #[cfg(all(not(feature = "backend-llamacpp"), feature = "backend-mlx"))]
     return Ok(BackendKind::Mlx);
+    // mlxcel is the MLX backend when compiled in place of mlx-rs — same kind.
+    #[cfg(all(not(feature = "backend-llamacpp"), feature = "backend-mlxcel"))]
+    return Ok(BackendKind::Mlx);
     #[cfg(all(
         not(feature = "backend-llamacpp"),
         not(feature = "backend-mlx"),
+        not(feature = "backend-mlxcel"),
         feature = "backend-onnx"
     ))]
     return Ok(BackendKind::Onnx);
     #[cfg(not(any(
         feature = "backend-llamacpp",
         feature = "backend-mlx",
+        feature = "backend-mlxcel",
         feature = "backend-onnx"
     )))]
     Err(ExecError::Other(anyhow::anyhow!("no backend compiled")))
@@ -188,6 +200,8 @@ impl Engine {
             Self::LlamaCpp(e) => Some(e),
             #[cfg(feature = "backend-mlx")]
             Self::Mlx(e) => Some(e),
+            #[cfg(feature = "backend-mlxcel")]
+            Self::Mlxcel(e) => Some(e),
             #[cfg(feature = "backend-onnx")]
             Self::Onnx(e) => Some(e),
             #[cfg(feature = "backend-external-api")]
@@ -228,6 +242,9 @@ impl Engine {
         };
         match detect_backend(&req) {
             Ok(BackendKind::LlamaCpp) => "llamacpp",
+            // mlxcel replaces mlx-rs as the MLX backend when compiled; report the
+            // active one so UI/telemetry names match `active_backend_name()`.
+            Ok(BackendKind::Mlx) if cfg!(feature = "backend-mlxcel") => "mlxcel",
             Ok(BackendKind::Mlx) => "mlx",
             Ok(BackendKind::Onnx) => "onnx",
             #[cfg(feature = "backend-external-api")]
@@ -250,9 +267,16 @@ impl Engine {
         {
             return Self::Mlx(super::mlx::Engine::new());
         }
+        #[cfg(all(not(feature = "backend-llamacpp"), feature = "backend-mlxcel"))]
+        {
+            // Tail expr (not `return`): this block is the function's tail whenever
+            // it's active (llamacpp absent ⇒ the blocks after it are cfg'd out).
+            Self::Mlxcel(super::mlxcel::MlxcelEngine::new())
+        }
         #[cfg(all(
             not(feature = "backend-llamacpp"),
             not(feature = "backend-mlx"),
+            not(feature = "backend-mlxcel"),
             feature = "backend-onnx"
         ))]
         {
@@ -261,6 +285,7 @@ impl Engine {
         #[cfg(not(any(
             feature = "backend-llamacpp",
             feature = "backend-mlx",
+            feature = "backend-mlxcel",
             feature = "backend-onnx"
         )))]
         Self::Uninit
@@ -284,6 +309,8 @@ impl Engine {
             (Self::LlamaCpp(_), BackendKind::LlamaCpp) => false,
             #[cfg(feature = "backend-mlx")]
             (Self::Mlx(_), BackendKind::Mlx) => false,
+            #[cfg(feature = "backend-mlxcel")]
+            (Self::Mlxcel(_), BackendKind::Mlx) => false,
             #[cfg(feature = "backend-onnx")]
             (Self::Onnx(_), BackendKind::Onnx) => false,
             #[cfg(feature = "backend-external-api")]
@@ -298,6 +325,8 @@ impl Engine {
             BackendKind::LlamaCpp => Self::LlamaCpp(super::llama::Engine::new()),
             #[cfg(feature = "backend-mlx")]
             BackendKind::Mlx => Self::Mlx(super::mlx::Engine::new()),
+            #[cfg(feature = "backend-mlxcel")]
+            BackendKind::Mlx => Self::Mlxcel(super::mlxcel::MlxcelEngine::new()),
             #[cfg(feature = "backend-onnx")]
             BackendKind::Onnx => Self::Onnx(super::onnx::Engine::new()),
             #[cfg(feature = "backend-external-api")]
@@ -584,9 +613,12 @@ mod tests {
         assert_eq!(name, "llamacpp");
         #[cfg(all(not(feature = "backend-llamacpp"), feature = "backend-mlx"))]
         assert_eq!(name, "mlx");
+        #[cfg(all(not(feature = "backend-llamacpp"), feature = "backend-mlxcel"))]
+        assert_eq!(name, "mlxcel");
         #[cfg(not(any(
             feature = "backend-llamacpp",
             feature = "backend-mlx",
+            feature = "backend-mlxcel",
             feature = "backend-onnx"
         )))]
         assert_eq!(name, "none");

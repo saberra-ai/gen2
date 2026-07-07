@@ -23,7 +23,10 @@ use crate::gen2::session_rt::media_util::messages_have_images;
 use super::session::MlxcelSession;
 use super::worker::{LoadInfo, ModelWorker};
 
-pub(crate) struct MlxcelEngine {
+// `pub` (capped to crate by the `pub(crate) mod mlxcel`) so it can back the
+// `pub Engine::Mlxcel` facade variant without a `private_interfaces` warning —
+// mirrors `mlx::Engine` / `llama::Engine`.
+pub struct MlxcelEngine {
     /// The dedicated MLX worker thread (owns the `!Send` model + tokenizer).
     worker: Arc<ModelWorker>,
     /// Facts about the currently-loaded model; `None` until `load_model`.
@@ -191,8 +194,34 @@ impl Backend for MlxcelEngine {
             (*base).clone()
         };
 
+        // Thread the loaded model's REAL chat template + bos/eos into the
+        // session so `build_prompt` renders the model's actual template
+        // (gemma `<start_of_turn>` etc.), not the naive role-tagged concat.
+        // Mirrors how `mlx::Engine::start_session` hands the bundle (which
+        // carries `chat_template_str`/`bos_str`/`eos_str`) to `mlx::Session`.
+        let (chat_template, bos_str, eos_str) = {
+            let guard = self.loaded.read();
+            match guard.as_ref() {
+                Some(info) => (
+                    info.chat_template.clone(),
+                    info.bos_str.clone(),
+                    info.eos_str.clone(),
+                ),
+                // `is_model_loaded()` above guarantees Some; defensive fallback.
+                None => (None, None, None),
+            }
+        };
+
         let id = self.next_session_id.fetch_add(1, Ordering::SeqCst);
-        let session = MlxcelSession::new(id, self.worker.clone(), settings, spec.messages);
+        let session = MlxcelSession::new(
+            id,
+            self.worker.clone(),
+            settings,
+            spec.messages,
+            chat_template,
+            bos_str,
+            eos_str,
+        );
         Ok(Arc::new(session) as Arc<dyn BackendSession>)
     }
 

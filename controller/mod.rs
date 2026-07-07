@@ -238,6 +238,12 @@ pub enum ControllerCmd {
     // ── Status queries ───────────────────────────────────────────────
     /// Check whether the primary LLM is loaded and ready.
     IsModelLoaded { resp: Sender<bool> },
+    /// Which backend is currently active in the controller's engine (the facade
+    /// `active_backend_name()` — e.g. `"llamacpp"`, `"mlx"`, `"mlxcel"`). Proves
+    /// routing end-to-end: after `LoadModel` a caller can assert the model
+    /// actually landed on the intended backend, not a fallback (S6 mlxcel
+    /// go/no-go). Returns `"none"` when no model is loaded.
+    GetActiveBackendName { resp: Sender<&'static str> },
     /// Check whether the embedding model is loaded.
     IsEmbedderLoaded { resp: Sender<bool> },
     /// Check whether the multimodal projector is loaded (image support).

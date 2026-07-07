@@ -14,12 +14,25 @@ use std::sync::mpsc::sync_channel;
 
 use mlxcel::SamplingConfig;
 
+use crate::gen2::backend::common::chat_template::ChatTemplate;
 use crate::gen2::engine::{ExecError, Settings};
 use crate::gen2::generation::GenSpec;
-use crate::types::message::Message;
+use crate::types::message::{Message, MessageBody, MessageContent, TokenizerConfigToken};
 
 use super::puller::MlxcelTokenPuller;
 use super::worker::ModelWorker;
+
+/// Chat-template `enable_thinking` policy for mlxcel sessions.
+///
+/// Mirrors mlx's default (`mlx::Session::new`,
+/// `pio-core/src/gen2/backend/mlx/session.rs:378` passes `Some(true)`). We force
+/// `Some(true)` rather than `None`: Gemma 4's template is sensitive to this — the
+/// `None` (template-default) path yields the pathological "system has no
+/// `<|think|>` but the model turn has a `<|channel>thought` trailer" state that
+/// drives the jargon-loop / `l l l l` degeneration mlx documents at
+/// `pio-core/src/gen2/backend/mlx/session.rs:450-456`. Explicit `Some(true)` is
+/// the mlx-lm default and the coherent choice for gemma-4-coder.
+const ENABLE_THINKING: Option<bool> = Some(true);
 
 /// Bounded capacity for the worker→puller token channel. Small: it applies
 /// backpressure to the decode loop if the consumer stalls, bounding memory. The
@@ -33,6 +46,19 @@ pub(crate) struct MlxcelSession {
     /// Conversation so far. `pull()` renders it into the prompt; `append_messages`
     /// extends it between turns.
     messages: parking_lot::RwLock<Vec<Message>>,
+    /// The model's REAL Jinja chat template, built ONCE at session construction.
+    ///
+    /// LEAK GUARD: `ChatTemplate::new` leaks the parsed template + environment
+    /// via `Box::leak` (`pio-core/src/gen2/backend/common/chat_template.rs:70-72`).
+    /// `build_prompt` runs per-`pull()` in the agent loop (many calls per
+    /// session); building a fresh `ChatTemplate` each call would leak unbounded
+    /// for the process lifetime. So we build it ONCE here and reuse it —
+    /// `ChatTemplate` is `Send + Sync` (only a `Template<'static,'static>` +
+    /// `Option<String>` + `bool`), so it lives directly inside the
+    /// `Arc<dyn BackendSession>` shared across threads. `None` when the model
+    /// shipped no chat template — `build_prompt` then falls back to the naive
+    /// concat with a loud warn.
+    chat_template: Option<ChatTemplate>,
     /// Set by `stop()`; the worker's `on_token` callback checks it to halt the
     /// decode loop mid-stream. Recreated per `pull()`.
     stopped: Arc<AtomicBool>,
@@ -53,55 +79,132 @@ impl MlxcelSession {
         worker: Arc<ModelWorker>,
         settings: Settings,
         messages: Vec<Message>,
+        chat_template: Option<String>,
+        bos_str: Option<String>,
+        eos_str: Option<String>,
     ) -> Self {
+        // LEAK GUARD: build the ChatTemplate ONCE here (it leaks internally via
+        // `Box::leak`), never per-`pull()`. See the `chat_template` field doc.
+        // Mirrors mlx's construction (`pio-core/src/gen2/backend/mlx/session.rs:431`).
+        let chat_template = chat_template.map(|tpl| {
+            ChatTemplate::new(
+                tpl,
+                bos_str.map(TokenizerConfigToken::String),
+                eos_str.map(TokenizerConfigToken::String),
+            )
+        });
+
         Self {
             id,
             worker,
             settings,
             messages: parking_lot::RwLock::new(messages),
+            chat_template,
             stopped: Arc::new(AtomicBool::new(false)),
             paused: Arc::new(AtomicBool::new(false)),
         }
     }
 
-    /// Build the greedy prompt string from the conversation.
+    /// Build the prompt string from the conversation.
     ///
-    /// Tracer-bullet (S2): a simple role-tagged join, NOT the model's real chat
-    /// template. Full Jinja chat-template rendering is a later slice; this is
-    /// enough to drive a real greedy stream for the capability proof.
+    /// S6b: when the model ships a real chat template, render THROUGH it
+    /// (gemma `<start_of_turn>` etc.) via [`render_with_template`] — mirroring
+    /// `mlx::Session` (`pio-core/src/gen2/backend/mlx/session.rs:457-459`:
+    /// `chat_template.apply(messages, None, enable_thinking)`). When no template
+    /// is present we fall back to the naive role-tagged concat, but LOUDLY —
+    /// never a silent quality regression.
     fn build_prompt(&self) -> String {
         let msgs = self.messages.read();
-        let mut out = String::new();
-        if let Some(sys) = self.settings.prompt.system_prompt.as_deref()
-            && !sys.trim().is_empty()
-        {
-            out.push_str("System: ");
-            out.push_str(sys.trim());
-            out.push_str("\n\n");
+        let system_prompt = self
+            .settings
+            .prompt
+            .system_prompt
+            .as_deref()
+            .filter(|s| !s.trim().is_empty());
+
+        match self.chat_template.as_ref() {
+            Some(tpl) => render_with_template(tpl, &msgs, system_prompt, ENABLE_THINKING),
+            None => {
+                tracing::warn!(
+                    "mlxcel: model has no chat_template; naive prompt — quality degraded"
+                );
+                render_naive(&msgs, system_prompt)
+            }
         }
-        for m in msgs.iter() {
-            let text = match &m.body {
-                crate::types::message::MessageBody::Content { content } => {
-                    content.as_visible_text()
-                }
-                // Tool-call messages have no visible text in this tracer-bullet
-                // prompt (structured tool syntax is a later slice).
-                crate::types::message::MessageBody::Tool { .. } => String::new(),
-            };
-            let role = match m.role.as_str() {
-                "assistant" => "Assistant",
-                "system" => "System",
-                _ => "User",
-            };
-            out.push_str(role);
-            out.push_str(": ");
-            out.push_str(&text);
-            out.push('\n');
-        }
-        // Prime the model to continue as the assistant.
-        out.push_str("Assistant: ");
-        out
     }
+}
+
+/// Render the conversation through the model's REAL chat template.
+///
+/// Mirrors `mlx::Session` (`pio-core/src/gen2/backend/mlx/session.rs:431-459`):
+/// prepends a system-role message (preserving the old `build_prompt`'s
+/// system-prompt injection — mlx does the same at
+/// `pio-core/src/gen2/backend/mlx/session.rs:418-428`), then calls
+/// `ChatTemplate::apply(messages, None, enable_thinking)`. The template appends
+/// its own generation prompt (e.g. gemma's `<start_of_turn>model`), so unlike
+/// the naive path we must NOT prime an "Assistant:" tail ourselves.
+///
+/// On render failure (a malformed template) we fall back to the naive concat
+/// with a loud warn rather than returning an empty/garbage prompt — fail-loud,
+/// never silent.
+fn render_with_template(
+    tpl: &ChatTemplate,
+    msgs: &[Message],
+    system_prompt: Option<&str>,
+    enable_thinking: Option<bool>,
+) -> String {
+    let mut messages: Vec<Message> = Vec::with_capacity(msgs.len() + 1);
+    if let Some(sys) = system_prompt {
+        messages.push(Message {
+            role: "system".into(),
+            body: MessageBody::Content {
+                content: MessageContent::SingleText(sys.trim().to_string()),
+            },
+            name: None,
+        });
+    }
+    messages.extend(msgs.iter().cloned());
+
+    match tpl.apply(messages, None, enable_thinking) {
+        Ok(prompt) => prompt,
+        Err(e) => {
+            tracing::warn!(
+                "mlxcel: chat_template render failed ({e}); falling back to naive prompt — \
+                 quality degraded"
+            );
+            render_naive(msgs, system_prompt)
+        }
+    }
+}
+
+/// Naive role-tagged concat — the legacy S2 tracer-bullet path. Retained ONLY
+/// for the (rare) no-template fallback. NOT the model's real chat template.
+fn render_naive(msgs: &[Message], system_prompt: Option<&str>) -> String {
+    let mut out = String::new();
+    if let Some(sys) = system_prompt {
+        out.push_str("System: ");
+        out.push_str(sys.trim());
+        out.push_str("\n\n");
+    }
+    for m in msgs.iter() {
+        let text = match &m.body {
+            MessageBody::Content { content } => content.as_visible_text(),
+            // Tool-call messages have no visible text in this fallback path.
+            MessageBody::Tool { .. } => String::new(),
+        };
+        let role = match m.role.as_str() {
+            "assistant" => "Assistant",
+            "system" => "System",
+            _ => "User",
+        };
+        out.push_str(role);
+        out.push_str(": ");
+        out.push_str(&text);
+        out.push('\n');
+    }
+    // Prime the model to continue as the assistant.
+    out.push_str("Assistant: ");
+    out
 }
 
 impl crate::gen2::backend::traits::BackendSession for MlxcelSession {
@@ -231,6 +334,106 @@ fn build_sampling_config(spec: &GenSpec, settings: &Settings) -> SamplingConfig 
 mod tests {
     use super::*;
     use crate::gen2::engine::SamplingSettings;
+
+    fn user_msg(text: &str) -> Message {
+        Message {
+            role: "user".into(),
+            body: MessageBody::Content {
+                content: MessageContent::SingleText(text.into()),
+            },
+            name: None,
+        }
+    }
+
+    fn assistant_msg(text: &str) -> Message {
+        Message {
+            role: "assistant".into(),
+            body: MessageBody::Content {
+                content: MessageContent::SingleText(text.into()),
+            },
+            name: None,
+        }
+    }
+
+    /// A minimal but representative gemma-style chat template: emits the real
+    /// `<start_of_turn>{role}` markers and a trailing generation prompt. This is
+    /// the shape of the template that gemma-4-coder ships (the exact template
+    /// the go/no-go model uses through backend-mlx).
+    const GEMMA_TEMPLATE: &str = r#"{{ bos_token }}{% for m in messages %}<start_of_turn>{{ m.role }}
+{{ m.content }}<end_of_turn>
+{% endfor %}{% if add_generation_prompt %}<start_of_turn>model
+{% endif %}"#;
+
+    /// S6b core: rendering through the REAL gemma template produces the model's
+    /// actual turn markers (`<start_of_turn>user`) and NOT the naive
+    /// `\nUser: ` / `\nAssistant: ` concat. This is the whole bug fix — the old
+    /// `build_prompt` handed the model a malformed prompt.
+    #[test]
+    fn render_uses_real_template_not_naive_concat() {
+        let tpl = ChatTemplate::new(
+            GEMMA_TEMPLATE.to_string(),
+            Some(TokenizerConfigToken::String("<bos>".into())),
+            Some(TokenizerConfigToken::String("<eos>".into())),
+        );
+        let msgs = vec![user_msg("rename foo to bar"), assistant_msg("ok, doing it")];
+        let out = render_with_template(&tpl, &msgs, Some("You are a coder."), ENABLE_THINKING);
+
+        // Real template markers must be present.
+        assert!(
+            out.contains("<start_of_turn>user"),
+            "must render the real gemma turn marker, got: {out:?}"
+        );
+        assert!(
+            out.contains("<start_of_turn>system"),
+            "system prompt must be injected as a system-role turn, got: {out:?}"
+        );
+        assert!(
+            out.contains("You are a coder."),
+            "system prompt text must survive, got: {out:?}"
+        );
+        assert!(
+            out.contains("rename foo to bar"),
+            "user content must survive, got: {out:?}"
+        );
+        // BOS must expand (decode-keep-specials contract).
+        assert!(
+            out.starts_with("<bos>"),
+            "bos_token must expand, got: {out:?}"
+        );
+
+        // The naive markers must be GONE — this is the regression guard.
+        assert!(
+            !out.contains("\nUser: "),
+            "naive `User: ` marker must NOT appear, got: {out:?}"
+        );
+        assert!(
+            !out.contains("\nAssistant: "),
+            "naive `Assistant: ` marker must NOT appear, got: {out:?}"
+        );
+    }
+
+    /// The no-template fallback still produces the naive concat (so a model with
+    /// no chat_template is not left prompt-less). The loud warn is emitted at the
+    /// call site in `build_prompt`.
+    #[test]
+    fn naive_fallback_when_no_template() {
+        let msgs = vec![user_msg("hello")];
+        let out = render_naive(&msgs, Some("sys"));
+        assert!(out.contains("\nUser: hello") || out.contains("User: hello"));
+        assert!(out.ends_with("Assistant: "));
+        assert!(out.starts_with("System: sys"));
+    }
+
+    /// LEAK GUARD compile-time proof: `ChatTemplate` is `Send + Sync`, so the
+    /// session can hold ONE prebuilt template directly inside the shared
+    /// `Arc<dyn BackendSession>` and reuse it across `pull()` calls — never
+    /// rebuilding (and re-leaking) per generation.
+    #[test]
+    fn chat_template_is_send_sync() {
+        fn assert_send_sync<T: Send + Sync>() {}
+        assert_send_sync::<ChatTemplate>();
+        assert_send_sync::<MlxcelSession>();
+    }
 
     /// S4b: GenSpec overrides land in the right SamplingConfig fields, and
     /// DRY/temperature (what the agent relies on) survive the mapping.
