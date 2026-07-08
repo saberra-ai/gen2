@@ -28,7 +28,7 @@ use llama_cpp_2::mtmd::{MtmdBitmap, MtmdInputText, mtmd_default_marker};
 use llama_cpp_2::sampling::LlamaSampler;
 use llama_cpp_2::token::LlamaToken;
 use parking_lot::{Mutex, RwLock};
-use rand::Rng;
+use rand::RngExt;
 use self_cell::self_cell;
 use std::fmt;
 use std::ops::{Deref, DerefMut};
