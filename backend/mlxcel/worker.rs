@@ -254,9 +254,60 @@ fn worker_gone() -> ExecError {
     ExecError::Other(anyhow::anyhow!("mlxcel worker thread is gone"))
 }
 
+/// The env var a host sets to the absolute path of a bundled `mlx.metallib`.
+/// A packaged macOS `.app` resolves its Tauri resource path and exports this
+/// before the gen2 controller (and hence this worker thread) starts. Unset in
+/// dev and daemon-from-source, where MLX's compile-time `METAL_PATH` still
+/// resolves to the build dir.
+pub(crate) const METALLIB_ENV: &str = "PIO_MLX_METALLIB";
+
+/// Point MLX at a host-bundled `mlx.metallib` if `PIO_MLX_METALLIB` names an
+/// existing file. Calls the cxx binding
+/// [`set_metallib_path`](mlxcel_core::set_metallib_path) (MLX's only runtime
+/// override — checked first in its device library loader, no env-var
+/// equivalent inside MLX). Must run before the first MLX op. Unset or
+/// missing → no-op, so MLX falls back to its baked `METAL_PATH` (dev) or a
+/// colocated search. Apple-only: MLX Metal only exists there.
+#[cfg(target_vendor = "apple")]
+fn apply_bundled_metallib() {
+    let Some(raw) = std::env::var_os(METALLIB_ENV) else {
+        return;
+    };
+    if raw.is_empty() {
+        return;
+    }
+    let path = std::path::PathBuf::from(&raw);
+    if path.is_file() {
+        let path_str = path.to_string_lossy();
+        mlxcel_core::set_metallib_path(&path_str);
+        tracing::info!(
+            path = %path_str,
+            "mlxcel: applied bundled MLX metallib override ({METALLIB_ENV})"
+        );
+    } else {
+        tracing::warn!(
+            path = ?raw,
+            "mlxcel: {METALLIB_ENV} set but is not an existing file — ignoring; \
+             MLX will fall back to its baked METAL_PATH / colocated search"
+        );
+    }
+}
+
+/// Non-Apple builds have no MLX Metal backend; nothing to override.
+#[cfg(not(target_vendor = "apple"))]
+fn apply_bundled_metallib() {}
+
 /// The worker thread body. Owns the `!Send` model + tokenizer; nothing MLX ever
 /// leaves this stack frame.
 fn worker_loop(rx: Receiver<Command>) {
+    // ORDERING SEAM: if a host (a packaged macOS `.app`) bundled `mlx.metallib`
+    // and pointed us at it, override MLX's metallib search path BEFORE any MLX
+    // op runs — including `initialize_runtime` below. This is the ONLY runtime
+    // hook (there is no env var inside MLX itself); a packaged app has no
+    // compile-time `METAL_PATH` (that was the build dir). Must precede runtime
+    // init. Dev / daemon-from-source leave it unset → MLX uses its baked path.
+    apply_bundled_metallib();
+
     // Initialize the MLX runtime exactly once on this thread, matching mlxcel's
     // production binaries (bench_decode.rs / serve). `apply_metal_ops_per_buffer_default`
     // sets the hardware-gated MLX_MAX_OPS_PER_BUFFER; `initialize_runtime` resolves
