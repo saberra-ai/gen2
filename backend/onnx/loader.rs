@@ -75,8 +75,3 @@ pub fn detect_kv_shape(session: &Session) -> KvShape {
         head_dim,
     }
 }
-
-/// Detect the number of transformer layers (backwards compat wrapper).
-pub fn detect_num_layers(session: &Session) -> usize {
-    detect_kv_shape(session).num_layers
-}

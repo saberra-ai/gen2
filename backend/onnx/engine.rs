@@ -10,7 +10,6 @@ use std::sync::{
 use super::bundle::ModelBundle;
 use super::session::{Session, SessionId};
 use crate::gen2::backend::common::tokenizer::HfTokenizer;
-use crate::gen2::bundle::ModelMeta;
 use crate::gen2::engine::telemetry::{HookBus, HookEvent};
 use crate::gen2::engine::{
     Capabilities, EmbedLoadRequest, ExecError, ExecutionStats, LoadRequest, Settings,
