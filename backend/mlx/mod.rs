@@ -76,6 +76,14 @@ pub(crate) fn classify_forward_panic(e: Box<dyn std::any::Any + Send>) -> ExecEr
     }
 }
 
+// Re-exported for the in-crate test modules (`golden.rs`, `vision_parity.rs`),
+// which drive sessions/pullers directly. Gated so the non-test build (where no
+// caller references them) stays warning-free.
+#[cfg(test)]
+pub use puller::TokenPuller;
+#[cfg(test)]
+pub use session::Session;
+
 #[cfg(test)]
 mod panic_classify_tests {
     use super::*;
@@ -129,10 +137,3 @@ mod panic_classify_tests {
         ));
     }
 }
-// Re-exported for the in-crate test modules (`golden.rs`, `vision_parity.rs`),
-// which drive sessions/pullers directly. Gated so the non-test build (where no
-// caller references them) stays warning-free.
-#[cfg(test)]
-pub use puller::TokenPuller;
-#[cfg(test)]
-pub use session::Session;
