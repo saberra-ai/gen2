@@ -2,7 +2,7 @@
 
 use std::collections::VecDeque;
 
-use rand::Rng;
+use rand::RngExt;
 
 /// Window over which repetition penalty + loop detectors act. 128 lets the
 /// cycle-period detector see up through a ~60-token repeat unit (needs

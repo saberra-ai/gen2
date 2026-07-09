@@ -79,7 +79,7 @@ pub(crate) fn build_bundle(
         if let Ok(md) = fs::metadata(&req.model_path) {
             h.update(md.len().to_le_bytes());
         }
-        format!("{:x}", h.finalize())
+        hex::encode(h.finalize())
     };
 
     // Pre-compute tokenizer digest (SHA-256 of BOS || EOS || n_vocab)
@@ -195,7 +195,7 @@ fn _sha256_file(path: &Path) -> anyhow::Result<String> {
         hasher.update(&buf[..n]);
     }
     let result = hasher.finalize();
-    Ok(format!("{:x}", result))
+    Ok(hex::encode(result))
 }
 
 pub(crate) fn build_embedder(
@@ -234,7 +234,7 @@ mod tests {
     fn hashes_match() {
         let mut f = NamedTempFile::new().unwrap();
         write!(f, "hello world").unwrap();
-        let expected = format!("{:x}", Sha256::digest(b"hello world"));
+        let expected = hex::encode(Sha256::digest(b"hello world"));
         let got = _sha256_file(f.path()).unwrap();
         assert_eq!(got, expected);
     }

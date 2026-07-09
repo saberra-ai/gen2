@@ -93,7 +93,7 @@ pub(crate) fn max_abs_diff(a: &Array, b: &Array) -> f32 {
 pub(crate) fn rel_diff(pio: &Array, reference: &Array) -> (f32, f32) {
     let p = pio.as_dtype(mlx_rs::Dtype::Float32).expect("cast");
     let r = reference.as_dtype(mlx_rs::Dtype::Float32).expect("cast");
-    let d = mlx_rs::ops::abs(&p.subtract(&r).expect("sub")).expect("abs");
+    let d = mlx_rs::ops::abs(p.subtract(&r).expect("sub")).expect("abs");
     let ar = mlx_rs::ops::abs(&r).expect("abs");
     let max_d = d.max(None).expect("m").item::<f32>();
     let mean_d = d.mean(None).expect("m").item::<f32>();
@@ -555,11 +555,13 @@ fn stage6_end_to_end_caption() {
     let tok = crate::gen2::backend::mlx::tokenizer::HfTokenizer::from_dir(&bundle).expect("tok");
 
     // Prefill with the image, then greedy-decode up to 24 tokens.
-    let mut cache: super::model::KvCache = vec![None; model.num_non_shared as usize];
+    let mut cache: super::model::KvCache = vec![None; model.num_non_shared];
     let mut logits = model.forward_with_image(&tokens, &image_features, 258880, 0, &mut cache);
     let mut out_ids: Vec<u32> = Vec::new();
     let mut pos = tokens.len();
     let eos = tok.eos_id();
+    #[allow(clippy::explicit_counter_loop)]
+    // pos also advances the KV cache offset, not just the loop
     for _ in 0..24 {
         // argmax of last-position logits (greedy).
         let v: Vec<f32> = logits.index((0, 0, ..)).as_slice::<f32>().to_vec();

@@ -68,7 +68,7 @@ pub fn compute_hf_model_meta(
         h.update(bos_str.as_bytes());
         h.update(eos_str.as_bytes());
         h.update(model_dir_weight_size(model_dir).to_le_bytes());
-        format!("{:x}", h.finalize())
+        hex::encode(h.finalize())
     };
 
     ModelMeta {

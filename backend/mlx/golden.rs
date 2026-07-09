@@ -28,6 +28,7 @@
 //! point) drift. The tests below therefore assert:
 //!   - **Stable prefix** — first N token ids must match a captured golden.
 //!   - **Semantic anchors** — decoded text must contain specific substrings.
+//!
 //! This is tight enough to catch real regressions (wrong first token, empty
 //! output, garbage) without being spooked by kernel-level noise.
 //!
@@ -1201,6 +1202,7 @@ fn gemma4_fast_twenty_turn_pass() {
 
     // Inner closure: run the full 20-turn conversation once, return the
     // (per-turn ids, per-turn clean text, per-turn secs, per-turn toks).
+    #[allow(clippy::type_complexity)] // one-off test harness return bundle
     fn run_once(prompts: &[&str; 20]) -> (Vec<Vec<u32>>, Vec<String>, Vec<f64>, Vec<usize>, f64) {
         let engine = load_engine(PathBuf::from(GEMMA4_AR_DIR));
         let mut overrides = Settings::default();

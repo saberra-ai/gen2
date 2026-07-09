@@ -67,14 +67,27 @@ fn handle_model_command(state: &mut ControllerState, cmd: ControllerCmd) -> Cont
                 {
                     return Err("llm admission denied by residency policy".into());
                 }
-                state
-                    .engine
-                    .upload_settings(settings)
-                    .map_err(|e| format!("{:?}", e))?;
+                // Lazily-created backends (external-api, or a no-eager-init
+                // build) have no backend to accept settings before the first
+                // load — `upload_settings` returns ModelNotLoaded. Defer and
+                // re-apply after `load_model` instantiates the backend, so
+                // the caller's full settings (sampling etc. — the LoadRequest
+                // only carries ctx/threads/gpu_layers) are never dropped.
+                let deferred_settings = match state.engine.upload_settings(settings.clone()) {
+                    Ok(()) => None,
+                    Err(crate::gen2::engine::ExecError::ModelNotLoaded) => Some(settings),
+                    Err(e) => return Err(format!("{:?}", e)),
+                };
                 state
                     .engine
                     .load_model(load_req)
                     .map_err(|e| format!("{:?}", e))?;
+                if let Some(settings) = deferred_settings {
+                    state
+                        .engine
+                        .upload_settings(settings)
+                        .map_err(|e| format!("{:?}", e))?;
+                }
                 let admitted = state.residency.admit(
                     ResidentRuntime::new(
                         RuntimeKind::Llm,
@@ -175,6 +188,10 @@ fn handle_status_command(state: &mut ControllerState, cmd: ControllerCmd) -> Con
     match cmd {
         ControllerCmd::IsModelLoaded { resp } => {
             let _ = resp.send(state.engine.is_model_loaded());
+            ControlFlow::Continue
+        }
+        ControllerCmd::GetActiveBackendName { resp } => {
+            let _ = resp.send(state.engine.active_backend_name());
             ControlFlow::Continue
         }
         ControllerCmd::IsEmbedderLoaded { resp } => {
@@ -559,6 +576,7 @@ pub(super) fn dispatch_cmd(cmd: ControllerCmd, state: &mut ControllerState) -> C
         | ControllerCmd::ApplySettings { .. }
         | ControllerCmd::LoadEmbedder { .. } => handle_model_command(state, cmd),
         ControllerCmd::IsModelLoaded { .. }
+        | ControllerCmd::GetActiveBackendName { .. }
         | ControllerCmd::IsEmbedderLoaded { .. }
         | ControllerCmd::IsMmprojLoaded { .. }
         | ControllerCmd::IsChatLoaded { .. }
