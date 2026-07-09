@@ -1,14 +1,16 @@
 //! Engine: long-lived orchestrator.
 
 mod error;
-mod stats;
 pub(crate) mod telemetry;
 mod types;
 
 // Backend-specific Engine is re-exported from gen2::backend
 pub use crate::gen2::backend::Engine;
 pub use error::ExecError;
-pub use stats::ExecutionStats;
+// ExecutionStats is a leaf domain type (persisted on `types::Message`), so it
+// lives in `types/` — the shared type module must never import from gen2.
+// Re-exported here so `gen2::engine::ExecutionStats` callers are unchanged.
+pub use crate::types::ExecutionStats;
 pub use telemetry::{HookBus, HookEvent, HookListener};
 pub use types::{
     Capabilities, ChatTemplateSpec, CtxParamsInput, EmbedLoadRequest, LoadRequest,
