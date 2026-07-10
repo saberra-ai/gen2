@@ -250,10 +250,13 @@ impl Session {
                 // Grammar masking forces *structural* validity but the schema
                 // still permits arbitrary inter-token whitespace, and a small
                 // model can wedge there — looping on `\n`+indent until
-                // max_tokens, producing truncated JSON. Prepend a frequency
-                // penalty (independent of user settings, which default to no
-                // penalty) so repeated whitespace gets damped and generation
-                // makes progress to the closing brace.
+                // max_tokens, producing truncated JSON. Prepend a mild
+                // repeat/presence penalty (independent of user settings, which
+                // default to no penalty) so repeated whitespace gets damped and
+                // generation makes progress to the closing brace. NO frequency
+                // penalty here: grammar-constrained JSON legitimately repeats
+                // content ids and a count-proportional penalty poisons them
+                // (see GRAMMAR_ANTILOOP_PENALTIES).
                 let sampler = Self::sampler_from_settings_antiloop(settings, bundle);
                 (sampler, Some(matcher))
             }
@@ -267,16 +270,32 @@ impl Session {
         }
     }
 
-    /// Like [`Self::sampler_from_settings`] but guarantees a frequency /
+    /// Grammar-path antiloop penalty parameters:
+    /// `(last_n, repeat, freq, present)` for [`LlamaSampler::penalties`].
+    ///
+    /// CONSTRAINT — `freq` MUST stay 0.0 on the grammar path.
+    /// Grammar-constrained JSON legitimately repeats content ids (e.g.
+    /// `"collection":"people"` once per op in a semantic-ops array); a
+    /// frequency penalty grows with every occurrence and by ~op 4 buries the
+    /// true id's logits, so the model escapes to `""` — observed as
+    /// start-strong-decay-to-empty at both 1.2B and 8B, with the
+    /// antiloop-free MLX path proving the counterfactual (R09 §5.2).
+    /// The mild repeat + one-shot presence penalty keep the original
+    /// whitespace-run/rambling protection without count-proportional
+    /// distortion; schemas additionally ship
+    /// `"x-guidance": {"whitespace_flexible": false}`, which removed the
+    /// original wedge motivation for the strong frequency component.
+    const GRAMMAR_ANTILOOP_PENALTIES: (i32, f32, f32, f32) = (256, 1.05, 0.0, 0.8);
+
+    /// Like [`Self::sampler_from_settings`] but guarantees a repeat /
     /// presence penalty is present (prepended) to break degenerate
     /// repetition loops under grammar-constrained decoding. Only used on the
     /// grammar path; unconstrained generation keeps the user's exact chain.
+    /// Parameters (and the no-frequency-penalty constraint) live in
+    /// [`Self::GRAMMAR_ANTILOOP_PENALTIES`].
     fn sampler_from_settings_antiloop(settings: &Settings, bundle: &ModelBundle) -> LlamaSampler {
-        // last_n=256, repeat=1.05 (mild), freq=1.0, present=0.8 — damps both
-        // whitespace runs and rambling so a small model concludes the object
-        // within budget, without distorting legitimate structural repetition
-        // (quotes / commas spread across the object).
-        let antiloop = LlamaSampler::penalties(256, 1.05, 1.0, 0.8);
+        let (last_n, repeat, freq, present) = Self::GRAMMAR_ANTILOOP_PENALTIES;
+        let antiloop = LlamaSampler::penalties(last_n, repeat, freq, present);
         LlamaSampler::chain_simple(vec![
             antiloop,
             Self::sampler_from_settings(settings, bundle),
@@ -1165,6 +1184,28 @@ mod tests {
     use super::*;
     use llama_cpp_2::model::params::LlamaModelParams;
     use std::path::PathBuf;
+
+    /// Regression pin for R09 §5.2: the grammar-path antiloop sampler must
+    /// NOT apply a frequency penalty. Grammar-constrained JSON legitimately
+    /// repeats content ids (`"collection":"people"` per op); a
+    /// count-proportional penalty buries the true id by ~op 4 and the model
+    /// escapes to `""`. A built `LlamaSampler` chain is an opaque FFI
+    /// handle, so the observable seam is the parameter tuple the chain is
+    /// constructed from — this pins it (the real end-to-end proof is a live
+    /// 8B creation through the grammar path, ticket 03's exit criterion).
+    #[test]
+    fn grammar_antiloop_penalties_omit_frequency_component() {
+        let (last_n, repeat, freq, present) = Session::GRAMMAR_ANTILOOP_PENALTIES;
+        assert_eq!(
+            freq, 0.0,
+            "frequency penalty poisons repeated content ids in grammar-constrained JSON (R09 §5.2)"
+        );
+        // The rest of the antiloop protection stays: mild repeat + one-shot
+        // presence penalty over a bounded window.
+        assert_eq!(last_n, 256);
+        assert!(repeat > 1.0);
+        assert!(present > 0.0);
+    }
 
     /// Locate a Gemma-family GGUF for the test, preferring `PIO_TEST_GGUF`
     /// then falling back to the dev model paths used during the bug
