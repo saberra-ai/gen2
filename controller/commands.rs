@@ -27,6 +27,152 @@ use super::{
     FailureReason, WorkloadKind, scheduler, state_transitions,
 };
 
+/// One rung of the model-load fallback ladder.
+struct LoadRung {
+    label: &'static str,
+    drop_mmproj: bool,
+    cpu_only: bool,
+}
+
+impl LoadRung {
+    fn apply(&self, settings: &crate::gen2::engine::Settings) -> crate::gen2::engine::Settings {
+        let mut s = settings.clone();
+        if self.cpu_only {
+            s.system.gpu_layers = Some(0);
+        }
+        s
+    }
+}
+
+/// The ladder for a load request: as-requested, then (when a projector is
+/// present) without the mmproj, then CPU-only weights (both degradations
+/// combined on the last rung — each rung is strictly safer than the one
+/// before). CPU-only is skipped when the caller already requested it.
+fn load_fallback_rungs(
+    settings: &crate::gen2::engine::Settings,
+    has_mmproj: bool,
+) -> Vec<LoadRung> {
+    let mut rungs = vec![LoadRung {
+        label: "requested",
+        drop_mmproj: false,
+        cpu_only: false,
+    }];
+    if has_mmproj {
+        rungs.push(LoadRung {
+            label: "no-mmproj",
+            drop_mmproj: true,
+            cpu_only: false,
+        });
+    }
+    if settings.system.gpu_layers != Some(0) {
+        rungs.push(LoadRung {
+            label: "cpu-only",
+            drop_mmproj: has_mmproj,
+            cpu_only: true,
+        });
+    }
+    rungs
+}
+
+struct LoadAttemptError {
+    message: String,
+    /// Fatal errors abort the ladder: retrying a corrupt file, unsupported
+    /// architecture, or a host-level admission denial with a safer config
+    /// cannot succeed and just burns a full model load.
+    fatal: bool,
+}
+
+fn load_error_is_fatal(e: &crate::gen2::engine::ExecError) -> bool {
+    use crate::gen2::engine::ExecError as E;
+    matches!(
+        e,
+        E::InvalidModelFile(_)
+            | E::UnsupportedArchitecture(_)
+            | E::SettingsError(_)
+            | E::InvalidArg(_)
+            | E::FeatureUnsupported(_)
+            | E::ModelNotLoaded
+    )
+}
+
+/// One load attempt with a concrete config — the pre-ladder body of
+/// `ControllerCmd::LoadModel`, unchanged in behavior: residency estimate →
+/// admission → settings upload (deferred for lazily-created backends) →
+/// engine load → residency registration.
+#[allow(clippy::too_many_arguments)]
+fn attempt_load(
+    state: &mut ControllerState,
+    model_path: std::path::PathBuf,
+    mmproj_path: Option<std::path::PathBuf>,
+    settings: crate::gen2::engine::Settings,
+    api_key: Option<String>,
+    api_format: Option<String>,
+    loaded_file_bytes: &mut Option<u64>,
+) -> Result<(), LoadAttemptError> {
+    let fatal_str = |message: String| LoadAttemptError {
+        message,
+        fatal: true,
+    };
+    let from_exec = |e: crate::gen2::engine::ExecError| LoadAttemptError {
+        message: format!("{e:?}"),
+        fatal: load_error_is_fatal(&e),
+    };
+
+    let mut load_req = build_load_request(model_path, mmproj_path, &settings);
+    load_req.api_key = api_key;
+    load_req.api_format = api_format;
+    *loaded_file_bytes = ControllerState::model_file_bytes_of(&load_req.model_path);
+    let runtime_name = load_req.model_path.display().to_string();
+    // Offloaded weights live in VRAM, not host RAM — don't deny a
+    // GPU-bound model on a RAM-tight host (residency_policy.rs).
+    let estimated_mb = estimate_resident_mb_for_path_offloaded(
+        &load_req.model_path,
+        load_req.model_params.gpu_layers,
+    );
+    let governor = current_memory_governor();
+    if state.residency_policy.llm_swap_requires_unload && state.residency.llm.is_some() {
+        state.engine.unload_model();
+        let _ = state.residency.unload(RuntimeKind::Llm);
+    }
+    if !state
+        .residency
+        .can_admit(RuntimeKind::Llm, estimated_mb, &governor)
+    {
+        return Err(fatal_str("llm admission denied by residency policy".into()));
+    }
+    // Lazily-created backends (external-api, or a no-eager-init
+    // build) have no backend to accept settings before the first
+    // load — `upload_settings` returns ModelNotLoaded. Defer and
+    // re-apply after `load_model` instantiates the backend, so
+    // the caller's full settings (sampling etc. — the LoadRequest
+    // only carries ctx/threads/gpu_layers) are never dropped.
+    let deferred_settings = match state.engine.upload_settings(settings.clone()) {
+        Ok(()) => None,
+        Err(crate::gen2::engine::ExecError::ModelNotLoaded) => Some(settings),
+        Err(e) => return Err(from_exec(e)),
+    };
+    state.engine.load_model(load_req).map_err(from_exec)?;
+    if let Some(settings) = deferred_settings {
+        state.engine.upload_settings(settings).map_err(from_exec)?;
+    }
+    let admitted = state.residency.admit(
+        ResidentRuntime::new(
+            RuntimeKind::Llm,
+            runtime_name,
+            estimated_mb,
+            chrono::Utc::now().timestamp(),
+        ),
+        &governor,
+    );
+    if !admitted {
+        state.engine.unload_model();
+        return Err(fatal_str(
+            "llm residency registration denied after load".into(),
+        ));
+    }
+    Ok(())
+}
+
 fn handle_model_command(state: &mut ControllerState, cmd: ControllerCmd) -> ControlFlow {
     match cmd {
         ControllerCmd::LoadModel {
@@ -43,66 +189,68 @@ fn handle_model_command(state: &mut ControllerState, cmd: ControllerCmd) -> Cont
             // (`metadata().len()` in `engine::validate_model_file`); replaced on
             // every successful reload, cleared on failure.
             let mut loaded_file_bytes: Option<u64> = None;
-            let r = (|| -> Result<(), String> {
-                let mut load_req = build_load_request(model_path, mmproj_path, &settings);
-                load_req.api_key = api_key;
-                load_req.api_format = api_format;
-                loaded_file_bytes = ControllerState::model_file_bytes_of(&load_req.model_path);
-                let runtime_name = load_req.model_path.display().to_string();
-                // Offloaded weights live in VRAM, not host RAM — don't deny a
-                // GPU-bound model on a RAM-tight host (residency_policy.rs).
-                let estimated_mb = estimate_resident_mb_for_path_offloaded(
-                    &load_req.model_path,
-                    load_req.model_params.gpu_layers,
-                );
-                let governor = current_memory_governor();
-                if state.residency_policy.llm_swap_requires_unload && state.residency.llm.is_some()
-                {
-                    state.engine.unload_model();
-                    let _ = state.residency.unload(RuntimeKind::Llm);
-                }
-                if !state
-                    .residency
-                    .can_admit(RuntimeKind::Llm, estimated_mb, &governor)
-                {
-                    return Err("llm admission denied by residency policy".into());
-                }
-                // Lazily-created backends (external-api, or a no-eager-init
-                // build) have no backend to accept settings before the first
-                // load — `upload_settings` returns ModelNotLoaded. Defer and
-                // re-apply after `load_model` instantiates the backend, so
-                // the caller's full settings (sampling etc. — the LoadRequest
-                // only carries ctx/threads/gpu_layers) are never dropped.
-                let deferred_settings = match state.engine.upload_settings(settings.clone()) {
-                    Ok(()) => None,
-                    Err(crate::gen2::engine::ExecError::ModelNotLoaded) => Some(settings),
-                    Err(e) => return Err(format!("{:?}", e)),
+            // Fallback ladder: retry a failed load with progressively safer
+            // configs before surfacing an error. Rung 1 drops the mmproj (a
+            // broken vision projector shouldn't brick text chat); rung 2 moves
+            // weights to CPU (rescues VRAM/Metal buffer-alloc failures).
+            // Fatal classes (corrupt file, unsupported arch, bad settings,
+            // admission denials) never retry — see `load_error_is_fatal`.
+            let rungs = load_fallback_rungs(&settings, mmproj_path.is_some());
+            let mut rung_history: Vec<String> = Vec::new();
+            let mut r: Result<(), String> = Err("load ladder never ran".into());
+            for (rung_idx, rung) in rungs.iter().enumerate() {
+                let attempt_settings = rung.apply(&settings);
+                let attempt_mmproj = if rung.drop_mmproj {
+                    None
+                } else {
+                    mmproj_path.clone()
                 };
-                state
-                    .engine
-                    .load_model(load_req)
-                    .map_err(|e| format!("{:?}", e))?;
-                if let Some(settings) = deferred_settings {
-                    state
-                        .engine
-                        .upload_settings(settings)
-                        .map_err(|e| format!("{:?}", e))?;
-                }
-                let admitted = state.residency.admit(
-                    ResidentRuntime::new(
-                        RuntimeKind::Llm,
-                        runtime_name,
-                        estimated_mb,
-                        chrono::Utc::now().timestamp(),
-                    ),
-                    &governor,
+                let attempt = attempt_load(
+                    state,
+                    model_path.clone(),
+                    attempt_mmproj,
+                    attempt_settings,
+                    api_key.clone(),
+                    api_format.clone(),
+                    &mut loaded_file_bytes,
                 );
-                if !admitted {
-                    state.engine.unload_model();
-                    return Err("llm residency registration denied after load".into());
+                match attempt {
+                    Ok(()) => {
+                        if rung_idx > 0 {
+                            tracing::warn!(
+                                target: "pio::gen2::load_ladder",
+                                rung = rung.label,
+                                history = ?rung_history,
+                                "model load rescued by fallback rung"
+                            );
+                        }
+                        r = Ok(());
+                        break;
+                    }
+                    Err(LoadAttemptError { message, fatal }) => {
+                        rung_history.push(format!("{}: {}", rung.label, message));
+                        tracing::warn!(
+                            target: "pio::gen2::load_ladder",
+                            rung = rung.label,
+                            fatal,
+                            error = %message,
+                            "model load attempt failed"
+                        );
+                        r = Err(if rung_history.len() > 1 || rung_idx + 1 == rungs.len() {
+                            format!(
+                                "model load failed after {} attempt(s): [{}]",
+                                rung_history.len(),
+                                rung_history.join(" | ")
+                            )
+                        } else {
+                            message
+                        });
+                        if fatal {
+                            break;
+                        }
+                    }
                 }
-                Ok(())
-            })();
+            }
             if r.is_ok() {
                 for (_, chat) in state.chats.drain() {
                     terminate_runtime_owned(
@@ -781,5 +929,74 @@ pub(super) fn tick_active_chats(state: &mut ControllerState, tick_busy: Duration
 
     if !state.chats.is_empty() {
         std::thread::sleep(tick_busy);
+    }
+}
+
+#[cfg(test)]
+mod ladder_tests {
+    use super::*;
+    use crate::gen2::engine::{ExecError, Settings};
+
+    #[test]
+    fn rungs_full_ladder_with_mmproj_and_gpu() {
+        let rungs = load_fallback_rungs(&Settings::default(), true);
+        let labels: Vec<_> = rungs.iter().map(|r| r.label).collect();
+        assert_eq!(labels, vec!["requested", "no-mmproj", "cpu-only"]);
+        // Last rung is strictly safest: both degradations.
+        assert!(rungs[2].drop_mmproj && rungs[2].cpu_only);
+    }
+
+    #[test]
+    fn rungs_no_mmproj_skips_projector_rung() {
+        let rungs = load_fallback_rungs(&Settings::default(), false);
+        let labels: Vec<_> = rungs.iter().map(|r| r.label).collect();
+        assert_eq!(labels, vec!["requested", "cpu-only"]);
+    }
+
+    #[test]
+    fn rungs_cpu_request_has_no_cpu_rung() {
+        let mut s = Settings::default();
+        s.system.gpu_layers = Some(0);
+        let rungs = load_fallback_rungs(&s, false);
+        let labels: Vec<_> = rungs.iter().map(|r| r.label).collect();
+        assert_eq!(labels, vec!["requested"]);
+    }
+
+    #[test]
+    fn cpu_rung_zeroes_gpu_layers_only() {
+        let mut s = Settings::default();
+        s.system.gpu_layers = Some(99);
+        s.system.ctx_size = Some(4096);
+        let rung = LoadRung {
+            label: "cpu-only",
+            drop_mmproj: false,
+            cpu_only: true,
+        };
+        let out = rung.apply(&s);
+        assert_eq!(out.system.gpu_layers, Some(0));
+        assert_eq!(out.system.ctx_size, Some(4096), "other settings untouched");
+    }
+
+    #[test]
+    fn fatal_classes_never_retry() {
+        for e in [
+            ExecError::InvalidModelFile("bad magic".into()),
+            ExecError::UnsupportedArchitecture("qwen35".into()),
+            ExecError::SettingsError("nope".into()),
+            ExecError::ModelNotLoaded,
+        ] {
+            assert!(load_error_is_fatal(&e), "{e:?} must be fatal");
+        }
+    }
+
+    #[test]
+    fn oom_class_retries() {
+        for e in [
+            ExecError::OutOfMemory("metal buffer".into()),
+            ExecError::Io("mmap failed".into()),
+            ExecError::MmprojIncompatible("clip mismatch"),
+        ] {
+            assert!(!load_error_is_fatal(&e), "{e:?} must be retryable");
+        }
     }
 }
