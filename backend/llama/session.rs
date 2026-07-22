@@ -75,6 +75,9 @@ pub struct Session {
     messages: RwLock<Vec<Message>>,
     /// Number of old messages dropped during session creation due to context overflow.
     initial_messages_dropped: usize,
+    /// Context window this session's llama context was created with —
+    /// after the fit clamp, so callers can observe what actually loaded.
+    ctx_size: u32,
 }
 
 impl fmt::Debug for Session {
@@ -669,11 +672,40 @@ impl Session {
             "tokenized chat prompt"
         );
 
-        // Create context
-        let ctx_size = settings
-            .system
-            .ctx_size
-            .unwrap_or(bundle.meta.n_ctx.max(128));
+        // Create context. An explicit user setting wins; otherwise clamp
+        // the model's training context to what actually fits this host —
+        // n_ctx_train can be 262144, whose KV cache alone would blow the
+        // inference budget the fit/residency layers were built around.
+        let ctx_size = settings.system.ctx_size.unwrap_or_else(|| {
+            use crate::gen2::bundle::gguf::{fit_context, kv_bytes_per_token};
+            let hw = crate::hardware::HardwareProfile::cached();
+            let n_head = bundle.model.n_head().max(1) as u64;
+            let head_dim = (bundle.model.n_embd().max(1) as u64) / n_head;
+            let kv = kv_bytes_per_token(
+                bundle.model.n_layer() as u64,
+                bundle.model.n_head_kv().max(1) as u64,
+                head_dim.max(1),
+            );
+            let fitted = fit_context(
+                hw.inference_budget_bytes(),
+                bundle.model.size(),
+                kv,
+                bundle.meta.n_ctx.max(128),
+                Some(hw.tier_context_cap()),
+            );
+            if fitted < bundle.meta.n_ctx {
+                tracing::info!(
+                    target: "pio::gen2::llama::ctx_fit",
+                    n_ctx_train = bundle.meta.n_ctx,
+                    fitted,
+                    kv_bytes_per_token = kv,
+                    model_bytes = bundle.model.size(),
+                    budget_bytes = hw.inference_budget_bytes(),
+                    "clamped default context to fit host memory"
+                );
+            }
+            fitted.max(128)
+        });
 
         // Context overflow: truncate old messages until conversation fits.
         // Generic driver in session_rt::truncate — Phase 3 refactor.
@@ -823,6 +855,7 @@ impl Session {
                         }))),
                         messages: RwLock::new(messages),
                         initial_messages_dropped: 0, // MTMD path has no truncation
+                        ctx_size,
                     });
                 }
             }
@@ -882,6 +915,7 @@ impl Session {
             }))),
             initial_messages_dropped: original_message_count.saturating_sub(messages.len()),
             messages: RwLock::new(messages),
+            ctx_size,
         })
     }
 }
@@ -1164,6 +1198,10 @@ impl BackendSession for Session {
     }
     fn initial_messages_dropped(&self) -> usize {
         self.initial_messages_dropped
+    }
+
+    fn ctx_size(&self) -> u32 {
+        self.ctx_size
     }
     fn is_poisoned(&self) -> bool {
         Session::is_poisoned(self)

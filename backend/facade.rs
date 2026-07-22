@@ -506,6 +506,12 @@ impl Session {
         Ok(TokenPuller(self.0.pull(gen_spec)?))
     }
 
+    /// Context window the session was created with (after the fit
+    /// clamp); `0` when the backend doesn't preallocate one.
+    pub fn ctx_size(&self) -> u32 {
+        self.0.ctx_size()
+    }
+
     pub fn append_messages(&self, new_messages: Vec<Message>) -> Result<usize, ExecError> {
         self.0.append_messages(new_messages)
     }

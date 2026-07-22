@@ -473,6 +473,40 @@ pub fn estimate_parameter_count(meta: &GgufMetadata, file_size: Option<u64>) -> 
     None
 }
 
+/// KV-cache bytes per token of context: K+V, fp16, per layer per KV head.
+///
+/// Single definition site for the formula `estimate_ram_bytes`,
+/// `auto_tune_ctx`, and the load-time context clamp all share.
+pub fn kv_bytes_per_token(n_layer: u64, n_head_kv: u64, head_dim: u64) -> u64 {
+    (2 * n_layer * n_head_kv * head_dim * 2).max(1)
+}
+
+/// Largest context that fits the memory budget once model weights and
+/// runtime overhead are paid, capped by the model's training context and
+/// an optional tier cap. Closed form — KV cost is linear in context.
+///
+/// Floors at 2048: below that a model is effectively unusable, and
+/// whether it should load at all is residency admission's decision, not
+/// context sizing's.
+pub fn fit_context(
+    budget_bytes: u64,
+    model_resident_bytes: u64,
+    kv_per_token: u64,
+    train_ctx: u32,
+    tier_cap: Option<u32>,
+) -> u32 {
+    const OVERHEAD: u64 = 500 * 1024 * 1024; // matches estimate_ram_bytes
+    const FLOOR: u32 = 2048;
+    let remaining = budget_bytes
+        .saturating_sub(model_resident_bytes)
+        .saturating_sub(OVERHEAD);
+    let max_tokens = (remaining / kv_per_token.max(1)).min(u64::from(u32::MAX)) as u32;
+    // Round down to a 1K boundary so llama.cpp gets a tidy context.
+    let fitted = ((max_tokens / 1024) * 1024).max(FLOOR);
+    let capped = tier_cap.map_or(fitted, |cap| fitted.min(cap.max(FLOOR)));
+    capped.min(train_ctx.max(FLOOR))
+}
+
 /// Estimate RAM usage in bytes to run a model at the given context size.
 ///
 /// Uses architecture details (layer count, KV heads, embedding dim) to
@@ -490,8 +524,7 @@ pub fn estimate_ram_bytes(metadata: &ModelMetadata, file_size: u64, context_size
     ) && n_head > 0
     {
         let head_dim = d / n_head;
-        // KV cache: 2 (K+V) * layers * kv_heads * head_dim * context * 2 bytes (fp16)
-        let kv_cache = 2 * n_layer * n_kv * head_dim * (context_size as u64) * 2;
+        let kv_cache = kv_bytes_per_token(n_layer, n_kv, head_dim) * (context_size as u64);
         return file_size + kv_cache + OVERHEAD;
     }
 
@@ -925,5 +958,80 @@ mod tests {
         assert!(result.is_ok());
         let meta = result.unwrap();
         assert_eq!(meta.file_type, Some(15));
+    }
+
+    // ── fit_context: load-time context clamp ───────────────────────
+
+    const GIB: u64 = 1024 * 1024 * 1024;
+
+    /// Llama-3.1-8B-ish dims: 32 layers, 8 KV heads, head_dim 128.
+    fn llama8b_kv() -> u64 {
+        kv_bytes_per_token(32, 8, 128)
+    }
+
+    #[test]
+    fn fit_context_clamps_huge_train_ctx() {
+        // 16 GiB budget, 5 GiB weights: 131072-token KV (~16 GiB at these
+        // dims) cannot fit — the clamp must land well below train ctx.
+        let fitted = fit_context(16 * GIB, 5 * GIB, llama8b_kv(), 131_072, None);
+        assert!(fitted < 131_072, "must clamp, got {fitted}");
+        assert!(fitted >= 2048, "floor holds, got {fitted}");
+        // And the fitted KV actually fits the remaining budget.
+        let kv_total = llama8b_kv() * fitted as u64;
+        assert!(kv_total <= 16 * GIB - 5 * GIB, "fitted KV overflows budget");
+    }
+
+    #[test]
+    fn fit_context_respects_train_ctx_when_room() {
+        // Tiny model, huge budget: train ctx is the binding constraint.
+        let fitted = fit_context(64 * GIB, GIB, kv_bytes_per_token(16, 2, 64), 8_192, None);
+        assert_eq!(fitted, 8_192);
+    }
+
+    #[test]
+    fn fit_context_tier_cap_binds() {
+        let fitted = fit_context(
+            64 * GIB,
+            GIB,
+            kv_bytes_per_token(16, 2, 64),
+            131_072,
+            Some(16_384),
+        );
+        assert_eq!(fitted, 16_384);
+    }
+
+    #[test]
+    fn fit_context_floors_at_2048_when_budget_exhausted() {
+        // Weights alone exceed budget: context sizing still returns the
+        // floor — refusing the load is residency admission's decision.
+        let fitted = fit_context(8 * GIB, 12 * GIB, llama8b_kv(), 131_072, None);
+        assert_eq!(fitted, 2048);
+    }
+
+    #[test]
+    fn fit_context_rounds_to_1k() {
+        let fitted = fit_context(10 * GIB, 5 * GIB, llama8b_kv(), 131_072, None);
+        assert_eq!(fitted % 1024, 0, "context should land on a 1K boundary");
+    }
+
+    #[test]
+    fn estimate_and_fit_share_the_formula() {
+        // estimate_ram_bytes at the fitted context must sit within budget
+        // (they share kv_bytes_per_token, so this pins the coupling).
+        let budget = 24 * GIB;
+        let file = 6 * GIB;
+        let fitted = fit_context(budget, file, llama8b_kv(), 131_072, None);
+        let meta = crate::types::ModelMetadata {
+            block_count: Some(32),
+            head_count_kv: Some(8),
+            head_count: Some(32),
+            embedding_length: Some(4096),
+            ..Default::default()
+        };
+        let est = estimate_ram_bytes(&meta, file, fitted);
+        assert!(
+            est <= budget,
+            "estimate {est} exceeds budget {budget} at fitted ctx {fitted}"
+        );
     }
 }

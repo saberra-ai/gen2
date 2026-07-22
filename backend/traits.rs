@@ -121,6 +121,12 @@ pub trait BackendSession: std::fmt::Debug {
     fn is_poisoned(&self) -> bool {
         false
     }
+    /// Context window the session was actually created with (after any
+    /// fit clamp). `0` = the backend doesn't preallocate a fixed context
+    /// (MLX grows KV lazily).
+    fn ctx_size(&self) -> u32 {
+        0
+    }
 }
 
 /// Object-safe token-stream iterator used by the facade's `TokenPuller` wrapper.
