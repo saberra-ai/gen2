@@ -26,6 +26,13 @@ pub struct ControllerState {
     /// bundle (MLX/ONNX) whose file size isn't a single `metadata().len()`
     /// — honest `None` over a fabricated number (ADR doctrine).
     pub(super) loaded_model_file_bytes: Option<u64>,
+    /// Unix seconds of the last observed LLM activity (a chat generating
+    /// or a session starting). Drives keepwarm idle-unload — the
+    /// residency slot's `last_used` reflects load time, not chat time.
+    pub(super) last_llm_activity_unix: i64,
+    /// Residency identity (name, estimated MB) of an LLM that keepwarm
+    /// idle-unloaded, so wake-on-demand can re-admit the same runtime.
+    pub(super) idle_unloaded_llm: Option<(String, u64)>,
 }
 
 impl ControllerState {
@@ -41,6 +48,8 @@ impl ControllerState {
             config,
             metrics: Arc::new(ControllerMetrics::default()),
             loaded_model_file_bytes: None,
+            last_llm_activity_unix: chrono::Utc::now().timestamp(),
+            idle_unloaded_llm: None,
         }
     }
 

@@ -90,6 +90,8 @@ mod tests {
             tokenizer_digest: [1; 32],
             template_fingerprint: [42; 32],
             created_at_us: 123,
+            kv_token_count: 0,
+            transcript_sha256: [0u8; 32],
         };
         let payload = b"hello world";
         let blob = build_blob(meta.clone(), payload).unwrap();
@@ -107,6 +109,8 @@ mod tests {
             tokenizer_digest: [0; 32],
             template_fingerprint: [0; 32],
             created_at_us: 0,
+            kv_token_count: 0,
+            transcript_sha256: [0u8; 32],
         };
         let payload = b"abc";
         let blob = build_blob(meta, payload).unwrap();
@@ -126,6 +130,8 @@ mod tests {
             tokenizer_digest: [0; 32],
             template_fingerprint: [0; 32],
             created_at_us: 0,
+            kv_token_count: 0,
+            transcript_sha256: [0u8; 32],
         };
         let blob = build_blob(meta, b"payload").unwrap();
         let mut bad = blob.to_vec();
@@ -142,6 +148,8 @@ mod tests {
             tokenizer_digest: [1; 32],
             template_fingerprint: [1; 32],
             created_at_us: 1,
+            kv_token_count: 0,
+            transcript_sha256: [0u8; 32],
         };
         let blob = build_blob(meta, b"xyz").unwrap();
         let mut truncated = blob.to_vec();
@@ -160,6 +168,8 @@ mod tests {
             tokenizer_digest: [2; 32],
             template_fingerprint: [2; 32],
             created_at_us: 2,
+            kv_token_count: 0,
+            transcript_sha256: [0u8; 32],
         };
         let blob = build_blob(meta, b"ok").unwrap();
         let mut tampered = blob.to_vec();

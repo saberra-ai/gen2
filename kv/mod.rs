@@ -1,4 +1,5 @@
 mod codec;
+pub mod store;
 mod types;
 
 // Consumed by the llama backend (gen2/backend/llama/session.rs); that consumer

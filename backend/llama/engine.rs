@@ -157,6 +157,9 @@ impl Engine {
         }
         let id = self.next_session_id.fetch_add(1, Ordering::SeqCst);
         #[allow(clippy::arc_with_non_send_sync)]
+        // Keepwarm: the cache spec rides into Session::new so a valid
+        // blob SKIPS prefill entirely (the old post-creation load paid
+        // full prefill and then overwrote it — the whole point missed).
         let session = Arc::new(Session::new(
             id,
             bundle.clone(),
@@ -165,10 +168,8 @@ impl Engine {
             settings.clone(),
             spec.messages,
             spec.persona.as_ref(),
+            spec.cache.clone(),
         )?);
-        if let Some(cache) = spec.cache.clone() {
-            let _ = session.load_cache(cache)?; // apply cache best-effort here; strict/lenient is handled inside
-        }
         self.sessions.insert(id, ());
         Ok(session)
     }

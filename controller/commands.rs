@@ -173,6 +173,127 @@ fn attempt_load(
     Ok(())
 }
 
+/// Keepwarm: persist every quiesced chat's KV to the store. Generating
+/// chats are skipped — mid-decode the transcript lacks the partial
+/// reply, so a restore would diverge. Budget enforced after.
+fn save_all_chat_kv(state: &ControllerState) {
+    use crate::gen2::kv::store;
+    if !store::keepwarm_enabled() || state.chats.is_empty() {
+        return;
+    }
+    let dir = store::kv_dir();
+    if std::fs::create_dir_all(&dir).is_err() {
+        return;
+    }
+    for (chat_id, chat) in state.chats.iter() {
+        if matches!(chat.state, ChatRunState::Generating { .. }) {
+            continue;
+        }
+        let path = store::path_for_chat(&dir, chat_id);
+        match chat
+            .session
+            .save_cache(crate::gen2::kv::KvSaveSpec::ToPath(path.clone()))
+        {
+            Ok(snap) => tracing::info!(
+                target: "pio::gen2::kv::keepwarm",
+                chat_id = %chat_id,
+                tokens = snap.tokens_covered,
+                path = %path.display(),
+                "saved chat KV for keepwarm"
+            ),
+            Err(e) => tracing::warn!(
+                target: "pio::gen2::kv::keepwarm",
+                chat_id = %chat_id,
+                error = ?e,
+                "failed to save chat KV"
+            ),
+        }
+    }
+    store::enforce_budget(&dir);
+}
+
+/// Keepwarm idle-unload: when enabled (`PIO_LLM_IDLE_UNLOAD_SECS`), a
+/// quiesced LLM past the idle budget saves its chats' KV and unloads —
+/// freeing the memory while the saved state makes the next request a
+/// sub-second resume instead of a cold prefill.
+pub(super) fn maybe_idle_unload_llm(state: &mut ControllerState) {
+    use crate::gen2::kv::store;
+    if !store::keepwarm_enabled() || state.residency.llm.is_none() {
+        return;
+    }
+    let Some(timeout) = std::env::var("PIO_LLM_IDLE_UNLOAD_SECS")
+        .ok()
+        .and_then(|v| v.parse::<i64>().ok())
+        .filter(|t| *t > 0)
+    else {
+        return;
+    };
+    let now = chrono::Utc::now().timestamp();
+    let any_active = state
+        .chats
+        .values()
+        .any(|c| matches!(c.state, ChatRunState::Generating { .. }));
+    if any_active {
+        state.last_llm_activity_unix = now;
+        return;
+    }
+    if now - state.last_llm_activity_unix < timeout {
+        return;
+    }
+    tracing::info!(
+        target: "pio::gen2::kv::keepwarm",
+        idle_secs = now - state.last_llm_activity_unix,
+        "idle-unloading LLM (keepwarm)"
+    );
+    save_all_chat_kv(state);
+    for (_, chat) in state.chats.drain() {
+        terminate_runtime_owned(
+            &state.engine,
+            chat,
+            RuntimeOutcome::Completed(CompletionReason::Evicted),
+            state.metrics.as_ref(),
+        );
+    }
+    state.engine.unload_model();
+    if let Some(rt) = state.residency.unload(RuntimeKind::Llm) {
+        state.idle_unloaded_llm = Some((rt.name, rt.estimated_resident_mb));
+    }
+    state.loaded_model_file_bytes = None;
+}
+
+/// Keepwarm wake: an idle-unloaded model reloads on demand when a chat
+/// arrives. The backend retains its last LoadRequest across unload, and
+/// the saved residency identity re-admits the same runtime.
+fn maybe_wake_llm(state: &mut ControllerState) {
+    if state.engine.is_model_loaded() {
+        return;
+    }
+    let Some((name, mb)) = state.idle_unloaded_llm.clone() else {
+        return;
+    };
+    match state.engine.reload_model() {
+        Ok(()) => {
+            let governor = current_memory_governor();
+            let now = chrono::Utc::now().timestamp();
+            state.residency.admit(
+                ResidentRuntime::new(RuntimeKind::Llm, name, mb, now),
+                &governor,
+            );
+            state.idle_unloaded_llm = None;
+            state.last_llm_activity_unix = now;
+            tracing::info!(
+                target: "pio::gen2::kv::keepwarm",
+                "woke idle-unloaded LLM on demand"
+            );
+        }
+        Err(e) => tracing::warn!(
+            target: "pio::gen2::kv::keepwarm",
+            error = ?e,
+            "failed to wake idle-unloaded LLM"
+        ),
+    }
+}
+
 fn handle_model_command(state: &mut ControllerState, cmd: ControllerCmd) -> ControlFlow {
     match cmd {
         ControllerCmd::LoadModel {
@@ -189,6 +310,10 @@ fn handle_model_command(state: &mut ControllerState, cmd: ControllerCmd) -> Cont
             // (`metadata().len()` in `engine::validate_model_file`); replaced on
             // every successful reload, cleared on failure.
             let mut loaded_file_bytes: Option<u64> = None;
+            // Keepwarm: the incoming load will unload the current model
+            // (swap policy) — persist quiesced chats' KV first so their
+            // conversations resume warm if this model comes back.
+            save_all_chat_kv(state);
             // Fallback ladder: retry a failed load with progressively safer
             // configs before surfacing an error. Rung 1 drops the mmproj (a
             // broken vision projector shouldn't brick text chat); rung 2 moves
@@ -456,9 +581,30 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
                     state.metrics.as_ref(),
                 );
             }
+            // Keepwarm: wake an idle-unloaded model, then a saved KV blob
+            // for this chat resumes without re-prefilling the whole
+            // history. Lenient — any identity or transcript mismatch
+            // falls back to the cold path inside the backend.
+            maybe_wake_llm(state);
+            let cache = if crate::gen2::kv::store::keepwarm_enabled() {
+                let dir = crate::gen2::kv::store::kv_dir();
+                let cand = crate::gen2::kv::store::candidate_for_chat(&dir, &chat_id);
+                if cand.is_none() {
+                    tracing::info!(
+                        target: "pio::gen2::kv::keepwarm",
+                        chat_id = %chat_id,
+                        "no KV candidate for chat — cold start"
+                    );
+                }
+                cand.map(crate::gen2::kv::KvLoadSpec::Lenient)
+            } else {
+                None
+            };
+            state.last_llm_activity_unix = chrono::Utc::now().timestamp();
             match state.engine.start_session(SessionSpec {
                 messages,
                 thinking,
+                cache,
                 ..Default::default()
             }) {
                 Err(e) => {
@@ -763,6 +909,7 @@ pub(super) fn tick_active_chats(state: &mut ControllerState, tick_busy: Duration
     let evicted_idle = state
         .residency
         .evict_idle_helpers(chrono::Utc::now().timestamp(), &state.residency_policy);
+    maybe_idle_unload_llm(state);
     for runtime in evicted_idle {
         if matches!(runtime.kind, RuntimeKind::Embedder) {
             state.engine.unload_embedder();

@@ -17,6 +17,18 @@ pub struct KvMeta {
     pub tokenizer_digest: [u8; 32],
     pub template_fingerprint: [u8; 32],
     pub created_at_us: i64,
+    /// Number of tokens the saved KV actually covers (the session's
+    /// decode position at save time). `0` on pre-keepwarm blobs — those
+    /// can't take the prefill-skipping restore path.
+    #[serde(default)]
+    pub kv_token_count: u64,
+    /// Hash of the session transcript the KV covers (roles + bodies,
+    /// after meta/persona injection). Restore requires an exact match on
+    /// the new session's transcript prefix — the KV holds SAMPLED
+    /// assistant tokens that a re-render can't reproduce (task #91
+    /// drift), so state is resumed exactly or not at all.
+    #[serde(default)]
+    pub transcript_sha256: [u8; 32],
 }
 
 #[derive(Debug, Clone)]

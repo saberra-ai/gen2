@@ -31,6 +31,11 @@ use parking_lot::{Mutex, RwLock};
 use rand::RngExt;
 use self_cell::self_cell;
 use std::fmt;
+
+/// Fallback prefill batch size when settings carry none. Normal app paths
+/// fill `batch_size` from the device profile (`default_batch_size()`); this
+/// only fires for bare-Settings callers (tests, embedded users).
+const DEFAULT_BATCH_SIZE: u32 = 512;
 use std::ops::{Deref, DerefMut};
 
 pub type SessionId = u64;
@@ -329,7 +334,9 @@ impl Session {
             .with_dependent(|_, ctx| ctx.kv_cache_seq_pos_max(0));
         let tokens_covered = (pos_max + 1).max(0) as usize;
 
-        let meta = self.build_kv_meta(&self.bundle)?;
+        let mut meta = self.build_kv_meta(&self.bundle)?;
+        meta.kv_token_count = state.cur_pos.max(0) as u64;
+        meta.transcript_sha256 = transcript_sha256(&self.messages.read());
         let blob = build_blob(meta.clone(), &buf).map_err(ExecError::Other)?;
 
         match dst {
@@ -416,8 +423,31 @@ impl Session {
             tokenizer_digest: bundle.meta.tokenizer_digest,
             template_fingerprint: bundle.meta.template_fingerprint,
             created_at_us: Utc::now().timestamp_micros(),
+            kv_token_count: 0,
+            transcript_sha256: [0u8; 32],
         })
     }
+}
+
+/// Hash of a transcript (roles + bodies + names) for keepwarm identity.
+/// Computed AFTER meta/persona injection so save and restore hash the
+/// same effective message list.
+pub(crate) fn transcript_sha256(messages: &[Message]) -> [u8; 32] {
+    use sha2::{Digest, Sha256};
+    let mut h = Sha256::new();
+    for m in messages {
+        h.update(m.role.as_bytes());
+        h.update([0u8]);
+        if let Ok(body) = serde_json::to_vec(&m.body) {
+            h.update(&body);
+        }
+        h.update([0u8]);
+        if let Some(name) = &m.name {
+            h.update(name.as_bytes());
+        }
+        h.update([0xFFu8]);
+    }
+    h.finalize().into()
 }
 
 impl Session {
@@ -557,7 +587,232 @@ impl Session {
 }
 
 impl Session {
-    #[allow(clippy::arc_with_non_send_sync)]
+    /// Keepwarm restore: rebuild a session from a saved KV blob, skipping
+    /// the prefill of everything the blob covers. Returns `Ok(None)` on a
+    /// lenient miss (caller falls through to the cold path); `Err` only
+    /// for strict-mode mismatches or real failures after commit.
+    ///
+    /// Semantics are exact-state resumption: the blob's transcript hash
+    /// must equal the new transcript minus its final (delta) message.
+    /// There is no token-prefix LCP on purpose — KV holds SAMPLED
+    /// assistant tokens that a re-render can't reproduce (task #91), so
+    /// partial matches against a fresh render would lie about KV contents.
+    #[allow(clippy::too_many_arguments, clippy::arc_with_non_send_sync)]
+    fn try_restore(
+        id: SessionId,
+        bundle: &Arc<ModelBundle>,
+        backend: &Arc<LlamaBackend>,
+        hooks: &Arc<HookBus>,
+        settings: &Settings,
+        chat_template: &ChatTemplate,
+        messages: &[Message],
+        spec: &KvLoadSpec,
+    ) -> Result<Option<Self>, ExecError> {
+        let (path, strict) = match spec {
+            KvLoadSpec::Strict(p) => (p, true),
+            KvLoadSpec::Lenient(p) => (p, false),
+        };
+        macro_rules! miss {
+            ($reason:expr) => {{
+                let reason: String = $reason;
+                if strict {
+                    return Err(ExecError::KvIncompatible(reason));
+                }
+                tracing::info!(target: "pio::gen2::kv::keepwarm", %reason, "restore miss — cold path");
+                return Ok(None);
+            }};
+        }
+
+        let blob = match read_from_path(path) {
+            Ok(b) => b,
+            Err(e) => miss!(format!("kv blob unreadable: {e}")),
+        };
+        let (hdr, payload) = match parse_blob(&blob) {
+            Ok(v) => v,
+            Err(e) => miss!(format!("kv blob corrupt: {e}")),
+        };
+        let cur = &bundle.meta;
+        if hdr.meta.model_uuid != cur.model_uuid
+            || hdr.meta.n_ctx != cur.n_ctx
+            || hdr.meta.n_layer != cur.n_layer
+            || hdr.meta.tokenizer_digest != cur.tokenizer_digest
+            || hdr.meta.template_fingerprint != cur.template_fingerprint
+        {
+            miss!("model identity mismatch".to_string());
+        }
+        if hdr.meta.kv_token_count == 0 {
+            miss!("pre-keepwarm blob (no token count)".to_string());
+        }
+        if messages.len() < 2 {
+            miss!("transcript too short for resume".to_string());
+        }
+        // Two valid split points: the blob was saved either after the
+        // reply was appended to the transcript (delta = [user]) or right
+        // after generation, before the continuation append (delta =
+        // [assistant, user]) — the sampled assistant tokens are already
+        // IN the KV, and assistant turns never re-render (same invariant
+        // as the live append path).
+        let mut split = None;
+        for k in [messages.len() - 1, messages.len().saturating_sub(2)] {
+            if k == 0 {
+                continue;
+            }
+            if k == messages.len().saturating_sub(2) && messages[k].role != "assistant" {
+                continue;
+            }
+            if transcript_sha256(&messages[..k]) == hdr.meta.transcript_sha256 {
+                split = Some(k);
+                break;
+            }
+        }
+        let Some(k) = split else {
+            miss!("transcript divergence".to_string());
+        };
+        let delta = &messages[k..];
+        // Delta renders like the warm append path: assistant turns are
+        // already in KV as sampled tokens and never re-render.
+        let delta_msgs: Vec<Message> = delta
+            .iter()
+            .filter(|m| m.role != "assistant")
+            .cloned()
+            .collect();
+        if delta_msgs.is_empty() {
+            miss!("empty delta after restore".to_string());
+        }
+        let delta_prompt = chat_template
+            .apply(delta_msgs, None, None)
+            .map_err(ExecError::Other)?;
+        let delta_tokens = bundle
+            .model
+            .str_to_token(&delta_prompt, AddBos::Never)
+            .map_err(|e| ExecError::Other(e.into()))?;
+        if delta_tokens.is_empty() {
+            miss!("delta rendered to zero tokens".to_string());
+        }
+
+        // Context setup mirrors the cold path (incl. the fit clamp).
+        let ctx_size = settings.system.ctx_size.unwrap_or_else(|| {
+            use crate::gen2::bundle::gguf::{fit_context, kv_bytes_per_token};
+            let hw = crate::hardware::HardwareProfile::cached();
+            let n_head = bundle.model.n_head().max(1) as u64;
+            let head_dim = (bundle.model.n_embd().max(1) as u64) / n_head;
+            let kv = kv_bytes_per_token(
+                bundle.model.n_layer() as u64,
+                bundle.model.n_head_kv().max(1) as u64,
+                head_dim.max(1),
+            );
+            fit_context(
+                hw.inference_budget_bytes(),
+                bundle.model.size(),
+                kv,
+                bundle.meta.n_ctx.max(128),
+                Some(hw.tier_context_cap()),
+            )
+            .max(128)
+        });
+        let restored_n = hdr.meta.kv_token_count as usize;
+        if restored_n + delta_tokens.len() + 64 >= ctx_size as usize {
+            miss!(format!(
+                "restored state ({restored_n} tokens) + delta ({}) won't fit ctx {ctx_size}",
+                delta_tokens.len()
+            ));
+        }
+
+        let batch_size = settings.system.batch_size.unwrap_or(DEFAULT_BATCH_SIZE);
+        // n_ubatch must track n_batch: llama.cpp caps physical prefill
+        // micro-batches at n_ubatch (default 512), so raising n_batch alone
+        // does nothing above 512.
+        let mut ctx_params = LlamaContextParams::default()
+            .with_n_ctx(NonZeroU32::new(ctx_size))
+            .with_n_batch(batch_size)
+            .with_n_ubatch(batch_size);
+        if let Some(n) = settings.system.threads {
+            ctx_params = ctx_params.with_n_threads(n as i32);
+        }
+        if let Some(n) = settings.system.threads_batch {
+            ctx_params = ctx_params.with_n_threads_batch(n as i32);
+        }
+        if settings.system.flash_attn.unwrap_or(true) {
+            ctx_params =
+                ctx_params.with_flash_attention_policy(llama_cpp_sys_2::LLAMA_FLASH_ATTN_TYPE_AUTO);
+        }
+        let mut ctx_cell = SessionCtxCell::try_new(bundle.clone(), |owner| {
+            owner.model.new_context(backend, ctx_params).map(DepCtx)
+        })
+        .map_err(|e| ExecError::Other(e.into()))?;
+
+        // SAFETY: payload came from copy_state_data on a context validated
+        // compatible by the identity checks above.
+        ctx_cell.with_dependent_mut(|_, ctx| unsafe { ctx.set_state_data(payload) });
+        let pos_max = ctx_cell.with_dependent(|_, ctx| ctx.kv_cache_seq_pos_max(0));
+        if ((pos_max + 1).max(0) as usize) < restored_n {
+            miss!(format!(
+                "restored KV covers {} tokens, header claims {restored_n}",
+                (pos_max + 1).max(0)
+            ));
+        }
+
+        // Prefill only the delta, starting at the restored position.
+        let prefill_start_us = llama_cpp_2::ggml_time_us() as u64;
+        hooks.emit(HookEvent::SessionPrefillStart {
+            session_id: id,
+            prompt_tokens: delta_tokens.len(),
+        });
+        let mut batch = LlamaBatch::new(batch_size as usize, 1);
+        let mut cur_pos = restored_n as i32;
+        let mut remaining = delta_tokens;
+        let total_delta = remaining.len();
+        let mut done = 0usize;
+        let mut last_batch_tokens: i32 = 0;
+        while !remaining.is_empty() {
+            let chunk_size = remaining.len().min(batch_size as usize);
+            let chunk: Vec<_> = remaining.drain(..chunk_size).collect();
+            batch.clear();
+            for (i, token) in chunk.into_iter().enumerate() {
+                let is_last = done + i + 1 == total_delta;
+                batch
+                    .add(token, cur_pos + i as i32, &[0], is_last)
+                    .map_err(|e| ExecError::Other(e.into()))?;
+            }
+            ctx_cell
+                .with_dependent_mut(|_, ctx| ctx.decode(&mut batch))
+                .map_err(|e| ExecError::Other(e.into()))?;
+            cur_pos += chunk_size as i32;
+            done += chunk_size;
+            last_batch_tokens = batch.n_tokens();
+        }
+        hooks.emit(HookEvent::SessionPrefillOk {
+            session_id: id,
+            prompt_tokens: total_delta,
+        });
+        tracing::info!(
+            target: "pio::gen2::kv::keepwarm",
+            restored_tokens = restored_n,
+            delta_tokens = total_delta,
+            "session restored from saved KV — prefill skipped"
+        );
+
+        Ok(Some(Self {
+            id,
+            bundle: bundle.clone(),
+            hooks: hooks.clone(),
+            settings: settings.clone(),
+            chat_template: chat_template.clone(),
+            paused: Arc::new(AtomicBool::new(false)),
+            stopped: Arc::new(AtomicBool::new(false)),
+            state: Arc::new(Mutex::new(Some(DecodeState {
+                ctx_cell,
+                cur_pos,
+                logits_i: (last_batch_tokens - 1).max(0),
+                prefill_start_us,
+            }))),
+            messages: RwLock::new(messages.to_vec()),
+            initial_messages_dropped: 0,
+            ctx_size,
+        }))
+    }
+
+    #[allow(clippy::too_many_arguments, clippy::arc_with_non_send_sync)]
     pub(crate) fn new(
         id: SessionId,
         bundle: Arc<ModelBundle>,
@@ -566,6 +821,7 @@ impl Session {
         settings: Settings,
         messages: Vec<Message>,
         persona: Option<&crate::types::Persona>,
+        cache: Option<KvLoadSpec>,
     ) -> Result<Self, ExecError> {
         let mut messages = messages;
 
@@ -639,6 +895,27 @@ impl Session {
             // else: no user message to fold into, no system support;
             // skip injection entirely. The model will just get whatever
             // messages it was passed.
+        }
+
+        // ── Keepwarm: exact-state resume attempt before any prefill.
+        // Image sessions take the MTMD branch below and are excluded.
+        if let Some(spec) = &cache
+            && !messages_have_images(&messages)
+        {
+            match Self::try_restore(
+                id,
+                &bundle,
+                &backend,
+                &hooks,
+                &settings,
+                &chat_template,
+                &messages,
+                spec,
+            ) {
+                Ok(Some(session)) => return Ok(session),
+                Ok(None) => {} // lenient miss — fall through to cold path
+                Err(e) => return Err(e),
+            }
         }
 
         // Gemma 4 IT chat template gates the thinking block on
@@ -732,10 +1009,12 @@ impl Session {
                 tokens_list = tokenize_chat_prompt(&bundle.model, &final_prompt)?;
             }
         }
-        let batch_size = settings.system.batch_size.unwrap_or(128);
+        let batch_size = settings.system.batch_size.unwrap_or(DEFAULT_BATCH_SIZE);
+        // n_ubatch must track n_batch (see the restore path above).
         let mut ctx_params = LlamaContextParams::default()
             .with_n_ctx(NonZeroU32::new(ctx_size))
-            .with_n_batch(batch_size);
+            .with_n_batch(batch_size)
+            .with_n_ubatch(batch_size);
         if let Some(n) = settings.system.threads {
             ctx_params = ctx_params.with_n_threads(n as i32);
         }
@@ -1050,7 +1329,11 @@ impl Session {
 
             // Fits — prefill the truncated conversation from scratch
             let mut to_process = remaining;
-            let batch_size = self.settings.system.batch_size.unwrap_or(128) as usize;
+            let batch_size = self
+                .settings
+                .system
+                .batch_size
+                .unwrap_or(DEFAULT_BATCH_SIZE) as usize;
             let mut batch = LlamaBatch::new(batch_size, 1);
 
             self.hooks.emit(HookEvent::SessionPrefillStart {
@@ -1125,7 +1408,11 @@ impl Session {
         }
         let mut remaining = remaining;
 
-        let batch_size = self.settings.system.batch_size.unwrap_or(128) as usize;
+        let batch_size = self
+            .settings
+            .system
+            .batch_size
+            .unwrap_or(DEFAULT_BATCH_SIZE) as usize;
         let mut batch = LlamaBatch::new(batch_size, 1);
 
         let delta_len = remaining.len() as i32;
