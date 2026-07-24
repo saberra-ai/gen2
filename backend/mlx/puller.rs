@@ -472,6 +472,7 @@ impl ArPuller {
             })
             .unwrap_or_default();
         ExecutionStats {
+            reasoning_ms: None,
             prompt_tokens: self.prompt_tokens as u32,
             decode_tokens: self.produced as u32,
             first_token_us: self.first_token_us.unwrap_or(0),
