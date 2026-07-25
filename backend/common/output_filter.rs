@@ -69,6 +69,15 @@ impl OutputFilter {
         self
     }
 
+    /// Arm the parser's enabled-tool name gate (see
+    /// `ToolCallParser::with_enabled_tools`). No-op when tool-call
+    /// parsing is disabled.
+    pub fn set_enabled_tools(&mut self, tools: std::collections::HashSet<String>) {
+        if let Some(p) = self.tool_parser.take() {
+            self.tool_parser = Some(p.with_enabled_tools(tools));
+        }
+    }
+
     /// Emit a plain text chunk as a Token event, splitting tool-call
     /// markers into structured `TokenEvent::ToolCall` events where the
     /// tool-call parser recognises them.

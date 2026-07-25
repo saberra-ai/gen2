@@ -169,6 +169,7 @@ impl Engine {
             spec.messages,
             spec.persona.as_ref(),
             spec.cache.clone(),
+            spec.tools.clone(),
         )?);
         self.sessions.insert(id, ());
         Ok(session)

@@ -511,6 +511,7 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
             model_id: _,
             // Routing-only fit-gate size consumed at the flock seam.
             model_size_bytes: _,
+            tools,
             tx,
         } => {
             if let Some(chat) = state.chats.get_mut(&chat_id) {
@@ -605,6 +606,7 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
                 messages,
                 thinking,
                 cache,
+                tools,
                 ..Default::default()
             }) {
                 Err(e) => {

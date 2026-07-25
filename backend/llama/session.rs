@@ -83,6 +83,9 @@ pub struct Session {
     /// Context window this session's llama context was created with —
     /// after the fit clamp, so callers can observe what actually loaded.
     ctx_size: u32,
+    /// Tool names enabled for this session — arms the output parser's
+    /// name-gate on every pull (rehearsal text stays text).
+    enabled_tool_names: Option<std::collections::HashSet<String>>,
 }
 
 impl fmt::Debug for Session {
@@ -220,7 +223,7 @@ impl Session {
             Self::build_sampler_and_grammar(&effective_settings, &gen_spec, &self.bundle);
 
         let pre_events = self.build_media_events();
-        let puller = TokenPuller::new_from_session(
+        let mut puller = TokenPuller::new_from_session(
             self.id,
             self.hooks.clone(),
             self.bundle.clone(),
@@ -233,6 +236,9 @@ impl Session {
             self.stopped.clone(),
             pre_events,
         );
+        if let Some(tools) = &self.enabled_tool_names {
+            puller.arm_enabled_tools(tools.clone());
+        }
         Ok(puller)
     }
 
@@ -599,6 +605,7 @@ impl Session {
     /// partial matches against a fresh render would lie about KV contents.
     #[allow(clippy::too_many_arguments, clippy::arc_with_non_send_sync)]
     fn try_restore(
+        enabled_tool_names: &Option<std::collections::HashSet<String>>,
         id: SessionId,
         bundle: &Arc<ModelBundle>,
         backend: &Arc<LlamaBackend>,
@@ -809,6 +816,7 @@ impl Session {
             messages: RwLock::new(messages.to_vec()),
             initial_messages_dropped: 0,
             ctx_size,
+            enabled_tool_names: enabled_tool_names.clone(),
         }))
     }
 
@@ -822,7 +830,11 @@ impl Session {
         messages: Vec<Message>,
         persona: Option<&crate::types::Persona>,
         cache: Option<KvLoadSpec>,
+        tools: Option<(Vec<crate::types::message::Tool>, String)>,
     ) -> Result<Self, ExecError> {
+        let enabled_tool_names: Option<std::collections::HashSet<String>> = tools
+            .as_ref()
+            .map(|(ts, _)| ts.iter().map(|t| t.function.name.clone()).collect());
         let mut messages = messages;
 
         let include_meta = settings.prompt.include_meta.unwrap_or(true)
@@ -903,6 +915,7 @@ impl Session {
             && !messages_have_images(&messages)
         {
             match Self::try_restore(
+                &enabled_tool_names,
                 id,
                 &bundle,
                 &backend,
@@ -930,7 +943,7 @@ impl Session {
             crate::gen2::zoo::ModelFamily::detect(bundle.meta.architecture.as_deref(), None)
                 .default_enable_thinking();
         let prompt = chat_template
-            .apply(messages.clone(), None, Some(enable_thinking))
+            .apply(messages.clone(), tools.clone(), Some(enable_thinking))
             .map_err(ExecError::Other)?;
         tracing::info!(
             target: "pio::gen2::llama::prompt",
@@ -1004,7 +1017,7 @@ impl Session {
             // `tokens_list` from the initial tokenization above is still valid.
             if outcome.dropped > 0 {
                 let final_prompt = chat_template
-                    .apply(messages.clone(), None, Some(enable_thinking))
+                    .apply(messages.clone(), tools.clone(), Some(enable_thinking))
                     .map_err(ExecError::Other)?;
                 tokens_list = tokenize_chat_prompt(&bundle.model, &final_prompt)?;
             }
@@ -1135,6 +1148,7 @@ impl Session {
                         messages: RwLock::new(messages),
                         initial_messages_dropped: 0, // MTMD path has no truncation
                         ctx_size,
+                        enabled_tool_names,
                     });
                 }
             }
@@ -1195,6 +1209,7 @@ impl Session {
             initial_messages_dropped: original_message_count.saturating_sub(messages.len()),
             messages: RwLock::new(messages),
             ctx_size,
+            enabled_tool_names,
         })
     }
 }

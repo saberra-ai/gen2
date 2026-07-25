@@ -292,6 +292,9 @@ pub enum ControllerCmd {
         /// prefers over its sync catalog/local-loaded fallbacks. `None` ⇒ the
         /// seam falls back to catalog-by-id or the local-loaded footprint.
         model_size_bytes: Option<u64>,
+        /// Tools for template rendering + the parser's name gate.
+        /// `(tools, tool_prompt)`; `None` = no tool calling.
+        tools: Option<(Vec<crate::types::message::Tool>, String)>,
         tx: SyncSender<ControllerEvent>,
     },
     /// Continue an existing chat session with newly appended messages.
@@ -957,6 +960,7 @@ pub(crate) fn project_streaming_inference(
             thinking: _,
             model_id,
             model_size_bytes,
+            tools: None,
             tx,
         } => Ok(RetryableInference {
             chat_id,
@@ -1148,6 +1152,7 @@ mod tests {
                 thinking: Default::default(),
                 model_id: None,
                 model_size_bytes: None,
+                tools: None,
                 tx,
             })
             .expect("start chat");
@@ -1459,6 +1464,7 @@ mod tests {
                 thinking: Default::default(),
                 model_id: None,
                 model_size_bytes: None,
+                tools: None,
                 tx,
             })
             .expect("start should succeed");
@@ -1505,6 +1511,7 @@ mod tests {
             thinking: Default::default(),
             model_id: Some("mlx-bundle-uuid".into()),
             model_size_bytes: Some(dir_bundle_size),
+            tools: None,
             tx,
         };
         let retryable = super::project_streaming_inference(cmd)

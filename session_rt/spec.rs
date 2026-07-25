@@ -16,6 +16,13 @@ pub struct SessionSpec {
     /// model's chat-template default; `On`/`Off` forces the channel
     /// for this session.
     pub thinking: ThinkingMode,
+    /// Tools rendered into the chat template at the initial full render
+    /// (native `tools` template var, or the append-to-last-message
+    /// fallback — see `ChatTemplate::apply_with_options`). The tool
+    /// NAMES also arm the output parser's enabled-tool gate, so
+    /// `name[ARGS]`-style rehearsal outside a call block stays text.
+    /// `(tools, tool_prompt)`; `None` = no tool calling this session.
+    pub tools: Option<(Vec<crate::types::message::Tool>, String)>,
 }
 
 #[cfg(test)]

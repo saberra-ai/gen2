@@ -102,6 +102,11 @@ impl TokenPuller {
         }
     }
 
+    /// Arm the output parser's enabled-tool gate for this pull.
+    pub(crate) fn arm_enabled_tools(&mut self, tools: std::collections::HashSet<String>) {
+        self.filter.set_enabled_tools(tools);
+    }
+
     fn emit_final_stats(&self) {
         self.hooks.emit(HookEvent::FinalStats {
             session_id: self.session_id,
