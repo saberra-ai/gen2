@@ -111,18 +111,56 @@ enum Trigger {
     ThinkOpen(ThinkKind),
 }
 
+/// How a completed call was decoded — the honest healing-telemetry
+/// label (unsloth-adoption 12). `CleanJson` = the protocol's normal
+/// decoder accepted the body without repair. The other variants are the
+/// repair-ish paths worth watching per model in the field.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum CallDialect {
+    CleanJson,
+    /// Gemma 4 `call:name{key:value}` decode (quote-token + bare-key
+    /// normalisation is this dialect's normal shape — counted separately
+    /// so a NON-gemma arch emitting it is visible).
+    GemmaDialect,
+    /// `[{...}{...}]` multi-call array decoded comma-tolerantly where a
+    /// strict parse failed.
+    CommalessArray,
+}
+
+/// Per-parser running outcome counts. Read at end of generation and
+/// surfaced through gen2 telemetry (`HookEvent::ToolCallOutcomes`).
+#[derive(Debug, Default, Clone, PartialEq, Eq)]
+pub struct ToolCallTally {
+    pub clean: u32,
+    pub gemma_dialect: u32,
+    pub commaless_array: u32,
+    /// Call markup that matched a trigger but failed decode and was
+    /// released as text — the honest-failure channel.
+    pub fell_through: u32,
+}
+
+impl ToolCallTally {
+    pub fn is_empty(&self) -> bool {
+        *self == Self::default()
+    }
+}
+
 enum Resolution {
     /// Trigger present but the call may still be completing — release
     /// text before `hold_from` and wait for more chunks.
     NeedMore { hold_from: usize },
     /// Not a call after all — release `buf[..emit_end]` as plain text
     /// and rescan from there. `emit_end` is always > 0 (progress).
-    NotACall { emit_end: usize },
+    /// `malformed` marks bodies that matched a call trigger but failed
+    /// decode (counted as fall-through), vs. text that merely resembled
+    /// a trigger (not counted).
+    NotACall { emit_end: usize, malformed: bool },
     /// Parsed one or more calls: release `buf[..text_end]` as text,
     /// discard `text_end..consumed_end` (the markup), emit the calls.
     Complete {
         text_end: usize,
         consumed_end: usize,
+        dialect: CallDialect,
         calls: Vec<ToolCall>,
     },
     /// A reasoning block opened at the marker ending at `marker_end`.
@@ -142,6 +180,7 @@ pub struct ToolCallParser {
     /// `foo[ARGS]{..}` for an unknown `foo` stays text). `None` disables
     /// the rehearsal form entirely.
     enabled_tools: Option<HashSet<String>>,
+    tally: ToolCallTally,
     /// Set during `flush()`: bodies that balanced but never saw their
     /// close tag resolve as calls instead of waiting forever.
     at_eos: bool,
@@ -160,11 +199,17 @@ impl ToolCallParser {
             buf: String::new(),
             in_think: None,
             enabled_tools: None,
+            tally: ToolCallTally::default(),
             at_eos: false,
         }
     }
 
     /// Enable the name-gated rehearsal form for this set of tool names.
+    /// Running outcome counts for this parser (healing telemetry).
+    pub fn tally(&self) -> &ToolCallTally {
+        &self.tally
+    }
+
     pub fn with_enabled_tools(mut self, tools: HashSet<String>) -> Self {
         self.enabled_tools = Some(tools);
         self
@@ -257,17 +302,35 @@ impl ToolCallParser {
                     }
                     return;
                 }
-                Resolution::NotACall { emit_end } => {
+                Resolution::NotACall {
+                    emit_end,
+                    malformed,
+                } => {
                     debug_assert!(emit_end > 0, "NotACall must make progress");
+                    if malformed {
+                        self.tally.fell_through += 1;
+                        tracing::info!(
+                            target: "pio::gen2::tool_healing",
+                            snippet = %self.buf[..emit_end.min(self.buf.len()).min(120)].escape_debug(),
+                            "tool-call markup fell through as text"
+                        );
+                    }
                     let released: String = self.buf.drain(..emit_end).collect();
                     out.push(ParserOutput::Text(released));
                     continue;
                 }
                 Resolution::Complete {
+                    dialect,
                     text_end,
                     consumed_end,
                     calls,
                 } => {
+                    let n = calls.len() as u32;
+                    match dialect {
+                        CallDialect::CleanJson => self.tally.clean += n,
+                        CallDialect::GemmaDialect => self.tally.gemma_dialect += n,
+                        CallDialect::CommalessArray => self.tally.commaless_array += n,
+                    }
                     if text_end > 0 {
                         let released: String = self.buf.drain(..text_end).collect();
                         out.push(ParserOutput::Text(released));
@@ -375,6 +438,7 @@ impl ToolCallParser {
         let consumed_end = body_start + rel_close + TAG_CLOSE.len();
         if let Some(tc) = parse_tag_json(body) {
             return Resolution::Complete {
+                dialect: CallDialect::CleanJson,
                 text_end: at,
                 consumed_end,
                 calls: vec![tc],
@@ -385,6 +449,7 @@ impl ToolCallParser {
             && let Some(tc) = parse_wrapped_func(body)
         {
             return Resolution::Complete {
+                dialect: CallDialect::CleanJson,
                 text_end: at,
                 consumed_end,
                 calls: vec![tc],
@@ -394,6 +459,7 @@ impl ToolCallParser {
         // silently lost.
         Resolution::NotACall {
             emit_end: consumed_end,
+            malformed: true,
         }
     }
 
@@ -413,15 +479,27 @@ impl ToolCallParser {
                 return Resolution::NeedMore { hold_from: at };
             };
             let items = healing::decode_array_items(&self.buf[body_at + 1..close]);
+            // Strict-parse probe: if serde accepts the whole array the
+            // comma-tolerant decode did no repair work.
+            let strict_ok =
+                serde_json::from_str::<Vec<serde_json::Value>>(&self.buf[body_at..=close]).is_ok();
             let calls: Vec<ToolCall> = items.iter().filter_map(call_from_value).collect();
             let after = match self.consume_bracket_closer(close + 1) {
                 Ok(end) => end,
                 Err(()) => return Resolution::NeedMore { hold_from: at },
             };
             if calls.is_empty() {
-                return Resolution::NotACall { emit_end: after };
+                return Resolution::NotACall {
+                    emit_end: after,
+                    malformed: true,
+                };
             }
             return Resolution::Complete {
+                dialect: if strict_ok {
+                    CallDialect::CleanJson
+                } else {
+                    CallDialect::CommalessArray
+                },
                 text_end: at,
                 consumed_end: after,
                 calls,
@@ -433,6 +511,7 @@ impl ToolCallParser {
             // Not a call shape — release the tag and move on.
             return Resolution::NotACall {
                 emit_end: after_tag,
+                malformed: false,
             };
         }
         if name_end == self.buf.len() {
@@ -451,6 +530,7 @@ impl ToolCallParser {
                 } else {
                     Resolution::NotACall {
                         emit_end: after_tag,
+                        malformed: false,
                     }
                 };
             }
@@ -476,11 +556,13 @@ impl ToolCallParser {
                 let Ok(args) = serde_json::from_str::<serde_json::Value>(body) else {
                     return Resolution::NotACall {
                         emit_end: brace_end + 1,
+                        malformed: true,
                     };
                 };
                 if !args.is_object() {
                     return Resolution::NotACall {
                         emit_end: brace_end + 1,
+                        malformed: true,
                     };
                 }
                 let after = match self.consume_bracket_closer(brace_end + 1) {
@@ -488,6 +570,7 @@ impl ToolCallParser {
                     Err(()) => return Resolution::NeedMore { hold_from: at },
                 };
                 Resolution::Complete {
+                    dialect: CallDialect::CleanJson,
                     text_end: at,
                     consumed_end: after,
                     calls: vec![ToolCall {
@@ -499,6 +582,7 @@ impl ToolCallParser {
             }
             Some(_) => Resolution::NotACall {
                 emit_end: after_tag,
+                malformed: false,
             },
         }
     }
@@ -532,6 +616,7 @@ impl ToolCallParser {
         let need_more = Resolution::NeedMore { hold_from: at };
         let not_a_call = Resolution::NotACall {
             emit_end: after_tag,
+            malformed: false,
         };
         if !self.buf[cursor..].starts_with("call") {
             let seen = &self.buf[cursor..];
@@ -590,9 +675,11 @@ impl ToolCallParser {
         else {
             return Resolution::NotACall {
                 emit_end: consumed_end,
+                malformed: true,
             };
         };
         Resolution::Complete {
+            dialect: CallDialect::GemmaDialect,
             text_end: at,
             consumed_end,
             calls: vec![ToolCall {
@@ -613,6 +700,7 @@ impl ToolCallParser {
             Some(_) => {
                 return Resolution::NotACall {
                     emit_end: name_start,
+                    malformed: false,
                 };
             }
         }
@@ -625,6 +713,7 @@ impl ToolCallParser {
         let name = self.buf[name_start..name_end].to_string();
         match parse_parameters(body) {
             Some(args) => Resolution::Complete {
+                dialect: CallDialect::CleanJson,
                 text_end: at,
                 consumed_end,
                 calls: vec![ToolCall {
@@ -635,6 +724,7 @@ impl ToolCallParser {
             },
             None => Resolution::NotACall {
                 emit_end: consumed_end,
+                malformed: false,
             },
         }
     }
@@ -659,6 +749,7 @@ impl ToolCallParser {
         if name.is_empty() || preceded_by_call_id || !enabled {
             return Resolution::NotACall {
                 emit_end: args_tag_end,
+                malformed: false,
             };
         }
         let rest = &self.buf[args_tag_end..];
@@ -678,6 +769,7 @@ impl ToolCallParser {
                 let body = &self.buf[brace_at..=brace_end];
                 match serde_json::from_str::<serde_json::Value>(body) {
                     Ok(args) if args.is_object() => Resolution::Complete {
+                        dialect: CallDialect::CleanJson,
                         text_end: name_start,
                         consumed_end: brace_end + 1,
                         calls: vec![ToolCall {
@@ -688,11 +780,13 @@ impl ToolCallParser {
                     },
                     _ => Resolution::NotACall {
                         emit_end: brace_end + 1,
+                        malformed: false,
                     },
                 }
             }
             Some(_) => Resolution::NotACall {
                 emit_end: args_tag_end,
+                malformed: false,
             },
         }
     }

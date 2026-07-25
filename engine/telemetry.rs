@@ -33,6 +33,14 @@ pub enum HookEvent {
         session_id: u64,
         stats: ExecutionStats,
     },
+    /// Tool-call parse outcomes for one generation (unsloth-adoption 12):
+    /// clean vs dialect-decoded vs fell-through-as-text counts from the
+    /// output parser. Emitted alongside `FinalStats` when any tool-call
+    /// markup was seen. Listeners join model arch from `EngineLoadOk`.
+    ToolCallOutcomes {
+        session_id: u64,
+        tally: crate::gen2::backend::common::tool_calls::ToolCallTally,
+    },
 }
 
 pub trait HookListener: Debug + Send + Sync {

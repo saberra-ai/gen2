@@ -467,3 +467,58 @@ fn multibyte_utf8_across_chunks_survives() {
     assert_eq!(cs.len(), 1);
     assert!(cs[0].arguments.contains("🪺"));
 }
+
+// ── Healing telemetry tally (unsloth-adoption 12) ─────────────────────
+
+#[test]
+fn tally_labels_clean_gemma_and_commaless() {
+    // Clean JSON protocol call.
+    let mut p = ToolCallParser::new(Protocol::Auto);
+    let mut out = p.push("<tool_call>{\"name\":\"f\",\"arguments\":{\"a\":1}}</tool_call>");
+    out.extend(p.flush());
+    assert_eq!(calls(&out).len(), 1);
+    let t = p.tally();
+    assert_eq!((t.clean, t.gemma_dialect, t.fell_through), (1, 0, 0));
+
+    // Gemma dialect decode counts separately.
+    let mut p = ToolCallParser::new(Protocol::Auto);
+    let mut out = p.push("<|tool_call>call:get_weather{city:Lisbon}<tool_call|>");
+    out.extend(p.flush());
+    assert_eq!(calls(&out).len(), 1);
+    let t = p.tally();
+    assert_eq!((t.clean, t.gemma_dialect), (0, 1));
+
+    // Comma-less multi-call array = repaired; strict array = clean.
+    let mut p = ToolCallParser::new(Protocol::Auto);
+    let mut out =
+        p.push("[TOOL_CALLS][{\"name\":\"a\",\"arguments\":{}}{\"name\":\"b\",\"arguments\":{}}]");
+    out.extend(p.flush());
+    assert_eq!(calls(&out).len(), 2);
+    assert_eq!(p.tally().commaless_array, 2);
+    assert_eq!(p.tally().clean, 0);
+
+    let mut p = ToolCallParser::new(Protocol::Auto);
+    let mut out =
+        p.push("[TOOL_CALLS][{\"name\":\"a\",\"arguments\":{}},{\"name\":\"b\",\"arguments\":{}}]");
+    out.extend(p.flush());
+    assert_eq!(calls(&out).len(), 2);
+    assert_eq!(p.tally().clean, 2);
+    assert_eq!(p.tally().commaless_array, 0);
+}
+
+#[test]
+fn tally_counts_malformed_fallthrough_not_prose() {
+    // Malformed body after a real call trigger -> fell_through.
+    let mut p = ToolCallParser::new(Protocol::Auto);
+    let mut out = p.push("<tool_call>{utterly broken###}</tool_call>");
+    out.extend(p.flush());
+    assert!(calls(&out).is_empty());
+    assert_eq!(p.tally().fell_through, 1);
+
+    // Prose that merely resembles a trigger is NOT a fall-through.
+    let mut p = ToolCallParser::new(Protocol::Auto);
+    let mut out = p.push("I could call:maybe later, just prose.");
+    out.extend(p.flush());
+    assert!(calls(&out).is_empty());
+    assert_eq!(p.tally().fell_through, 0, "prose must not count as failure");
+}

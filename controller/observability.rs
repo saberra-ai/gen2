@@ -31,6 +31,23 @@ impl HookListener for Forwarder {
                 ControllerEvent::FinalStats(stats.clone()),
             );
         }
+        // Healing telemetry (unsloth-adoption 12): per-generation
+        // tool-call outcome counts, INFO-logged so field logs show a
+        // model whose calls keep falling through before users report
+        // "the tool did nothing". Arch rides the surrounding load spans.
+        if let HookEvent::ToolCallOutcomes { session_id, tally } = ev
+            && *session_id == self.sid
+        {
+            tracing::info!(
+                target: "pio::gen2::tool_healing",
+                session_id,
+                clean = tally.clean,
+                gemma_dialect = tally.gemma_dialect,
+                commaless_array = tally.commaless_array,
+                fell_through = tally.fell_through,
+                "tool-call outcomes for generation"
+            );
+        }
     }
 }
 

@@ -112,6 +112,14 @@ impl TokenPuller {
             session_id: self.session_id,
             stats: self.stats_now(),
         });
+        if let Some(tally) = self.filter.tool_call_tally()
+            && !tally.is_empty()
+        {
+            self.hooks.emit(HookEvent::ToolCallOutcomes {
+                session_id: self.session_id,
+                tally,
+            });
+        }
     }
 
     fn stats_now(&self) -> ExecutionStats {

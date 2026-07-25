@@ -69,6 +69,12 @@ impl OutputFilter {
         self
     }
 
+    /// Healing-telemetry tally from the tool-call parser; `None` when
+    /// tool parsing is disabled.
+    pub fn tool_call_tally(&self) -> Option<super::tool_calls::ToolCallTally> {
+        self.tool_parser.as_ref().map(|p| p.tally().clone())
+    }
+
     /// Arm the parser's enabled-tool name gate (see
     /// `ToolCallParser::with_enabled_tools`). No-op when tool-call
     /// parsing is disabled.
