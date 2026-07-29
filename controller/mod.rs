@@ -340,6 +340,7 @@ pub enum ControllerCmd {
         /// [`ControllerCmd::StartChat::model_size_bytes`]). Internal
         /// system-inference callers pass `None` (they ride the loaded model).
         model_size_bytes: Option<u64>,
+        required_node: Option<String>,
         tx: SyncSender<ControllerEvent>,
     },
 
@@ -644,7 +645,7 @@ impl InferenceHandle {
         messages: Vec<Message>,
         gen_spec: GenSpec,
     ) -> Result<String, crate::error::PioError> {
-        self.system_infer_with_route(task, chat_id, messages, gen_spec, None, None)
+        self.system_infer_with_route(task, chat_id, messages, gen_spec, None, None, None)
             .await
     }
 
@@ -659,6 +660,7 @@ impl InferenceHandle {
         gen_spec: GenSpec,
         model_id: Option<String>,
         model_size_bytes: Option<u64>,
+        required_node: Option<String>,
     ) -> Result<String, crate::error::PioError> {
         use crate::error::{ErrorCode, PioError};
 
@@ -672,6 +674,7 @@ impl InferenceHandle {
             thinking: crate::gen2::generation::ThinkingMode::default(),
             model_id,
             model_size_bytes,
+            required_node,
             tx,
         };
         self.send(cmd).map_err(PioError::generation)?;
@@ -726,6 +729,7 @@ impl InferenceHandle {
             // Internal system inference — no per-request model fence.
             model_id: None,
             model_size_bytes: None,
+            required_node: None,
             tx,
         };
         self.send(cmd).map_err(PioError::generation)?;
@@ -788,6 +792,7 @@ impl InferenceHandle {
             // Internal system inference — no per-request model fence.
             model_id: None,
             model_size_bytes: None,
+            required_node: None,
             tx,
         };
         self.send(cmd).map_err(PioError::generation)?;
@@ -980,6 +985,7 @@ pub(crate) fn project_streaming_inference(
             gen_spec,
             kind: RetryableInferenceKind::StartChat { messages },
             required_model: model_id,
+            required_node: None,
             model_size_bytes,
             tx,
         }),
@@ -995,6 +1001,7 @@ pub(crate) fn project_streaming_inference(
             gen_spec,
             kind: RetryableInferenceKind::ContinueChat { new_messages },
             required_model: model_id,
+            required_node: None,
             model_size_bytes,
             tx,
         }),
@@ -1006,6 +1013,7 @@ pub(crate) fn project_streaming_inference(
             thinking,
             model_id,
             model_size_bytes,
+            required_node,
             tx,
         } => Ok(RetryableInference {
             chat_id,
@@ -1016,6 +1024,7 @@ pub(crate) fn project_streaming_inference(
                 thinking,
             },
             required_model: model_id,
+            required_node,
             model_size_bytes,
             tx,
         }),

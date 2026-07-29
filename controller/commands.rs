@@ -822,6 +822,7 @@ fn handle_system_command(state: &mut ControllerState, cmd: ControllerCmd) -> Con
             model_id: _,
             // Routing-only fit-gate size consumed at the flock seam.
             model_size_bytes: _,
+            required_node: _,
             tx,
         } => {
             start_ephemeral(
