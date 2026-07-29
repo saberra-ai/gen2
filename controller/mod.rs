@@ -644,6 +644,22 @@ impl InferenceHandle {
         messages: Vec<Message>,
         gen_spec: GenSpec,
     ) -> Result<String, crate::error::PioError> {
+        self.system_infer_with_route(task, chat_id, messages, gen_spec, None, None)
+            .await
+    }
+
+    /// As [`Self::system_infer_with`], but carries a concrete model fence into
+    /// the Flock dispatcher. This never loads or transfers model files: it
+    /// only lets the target select an already-authorized, exact-model route.
+    pub async fn system_infer_with_route(
+        &self,
+        task: SystemTask,
+        chat_id: impl Into<String>,
+        messages: Vec<Message>,
+        gen_spec: GenSpec,
+        model_id: Option<String>,
+        model_size_bytes: Option<u64>,
+    ) -> Result<String, crate::error::PioError> {
         use crate::error::{ErrorCode, PioError};
 
         let capacity = self.config().event_channel_capacity;
@@ -654,11 +670,8 @@ impl InferenceHandle {
             messages,
             gen_spec,
             thinking: crate::gen2::generation::ThinkingMode::default(),
-            // Internal system inference rides whatever model the controller has
-            // loaded; no per-request model fence (flock routing falls back to
-            // the local-loaded footprint).
-            model_id: None,
-            model_size_bytes: None,
+            model_id,
+            model_size_bytes,
             tx,
         };
         self.send(cmd).map_err(PioError::generation)?;
