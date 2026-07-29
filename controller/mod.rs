@@ -652,6 +652,7 @@ impl InferenceHandle {
     /// As [`Self::system_infer_with`], but carries a concrete model fence into
     /// the Flock dispatcher. This never loads or transfers model files: it
     /// only lets the target select an already-authorized, exact-model route.
+    #[allow(clippy::too_many_arguments)]
     pub async fn system_infer_with_route(
         &self,
         task: SystemTask,
