@@ -88,6 +88,9 @@ written against `pio-core`'s `p2p`/`flock` types:
 - `controller/mod.rs`: the three enum arms and their dispatch/failover paths.
 - `controller/mod.rs`: `project_streaming_inference`, which projects a
   `ControllerCmd` into a `RetryableInference`.
+- `controller/mod.rs`: `InferenceHandle::liveness`, which returns
+  `p2p::heartbeat::Liveness`. The only *public method* on the seam, so a host
+  calling it today needs an equivalent on whatever trait replaces it.
 
 All of it is behind `#[cfg(feature = "p2p-client")]` / `#[cfg(feature = "flock")]`,
 so it compiles out here and the local path is complete without it. The features
