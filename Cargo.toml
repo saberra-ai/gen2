@@ -1,0 +1,163 @@
+[package]
+name = "pio-gen2"
+version = "0.1.0"
+description = "gen2 — pluggable-backend local inference engine (llama.cpp / MLX / ONNX / Candle / ExecuTorch / external API)"
+authors = ["Victor Lopez"]
+edition = "2024"
+license = "MIT"
+repository = "https://github.com/saberra-ai/gen2"
+
+[lib]
+name = "pio_gen2"
+path = "src/lib.rs"
+
+[dependencies]
+
+# ── Inference backends (all optional; pick at least one) ────────────────────
+llama-cpp-2 = { git = "https://github.com/utilityai/llama-cpp-rs", rev = "43733d1de03e8a7d582f5732e9836f2387997c4d", features = ["mtmd", "llguidance"], optional = true }
+llama-cpp-sys-2 = { git = "https://github.com/utilityai/llama-cpp-rs", rev = "43733d1de03e8a7d582f5732e9836f2387997c4d", optional = true }
+
+# Rust-native fallback backend.
+candle-core = { version = "0.11", optional = true }
+candle-nn = { version = "0.11", optional = true }
+candle-transformers = { version = "0.11", optional = true }
+
+# HTTP client for the external-api backend (OpenAI / Anthropic wire formats).
+reqwest = { version = "0.13", features = ["json", "blocking", "query", "form", "stream"], optional = true }
+
+# ── Tokenization / templating / constrained decoding ────────────────────────
+tokenizers = { version = "0.23", default-features = false, features = ["onig"] }
+minijinja = "2.12.0"
+minijinja-contrib = { version = "2.9.0", features = ["rand", "pycompat"] }
+# Grammar-constrained decoding, used across ALL backends (MLX / llama / ONNX)
+# for JSON-schema / Lark / regex / GBNF output shaping. Same crate
+# llama_cpp_2's `llguidance_sampler` uses — keeps backend semantics aligned
+# (a grammar that works in llama mode also works in MLX mode).
+llguidance = "1.7"
+toktrie = "1.7"
+
+# ── Async / concurrency ─────────────────────────────────────────────────────
+tokio = { version = "1.44.2", features = ["full"] }
+parking_lot = "0.12.4"
+once_cell = "1.21.3"
+dashmap = "6.1.0"
+arc-swap = "1.7.1"
+self_cell = "1.0"
+
+# ── Serialization / encoding ────────────────────────────────────────────────
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+byteorder = "1.5"
+bytes = "1.10.1"
+encoding_rs = "0.8.35"
+sha2 = "0.11"
+hex = "0.4"
+bitflags = "2.9.3"
+half = { version = "2", features = ["num-traits"] }
+
+# ── Misc ────────────────────────────────────────────────────────────────────
+anyhow = "1.0.98"
+futures = "0.3.31"
+thiserror = "2.0.12"
+tracing = "0.1"
+# `hardware.rs` logs through the `log` facade; tracing captures it via its
+# log-compat layer in a host that installs one.
+log = "0.4"
+chrono = { version = "0.4.41", features = ["serde"] }
+uuid = { version = "1.16.0", features = ["serde", "v4", "v5"] }
+rand = "0.10"
+regex = "1.11.1"
+dirs = "6"
+url = "2.5.4"
+sysinfo = "0.37"
+libc = "0.2"
+tempfile = "3.19.1"
+
+# Type-safe Tauri bindings for host apps that export these types over IPC.
+specta = { version = "=2.0.0-rc.24", features = ["derive", "serde_json", "chrono", "uuid", "url", "indexmap"], optional = true }
+
+# ONNX Runtime — only pulled in by `backend-onnx`. Split by target the same way
+# pio-core did: Windows loads onnxruntime.dll at runtime, everything else takes
+# ort's downloaded binaries plus CoreML on macOS. `api-24` on Windows keeps the
+# OrtApi binding in lockstep with ort's `load-dynamic` VitisAI call sites.
+ndarray = { version = "0.17", optional = true }
+
+# Image decode. Not backend-gated: the session runtime bounds decode limits for
+# every multimodal path, not just MLX.
+image = "0.25.6"
+
+[target.'cfg(target_os = "windows")'.dependencies]
+ort = { version = "=2.0.0-rc.12", default-features = false, features = ["std", "ndarray", "tracing", "tls-native", "copy-dylibs", "load-dynamic", "api-24", "half"], optional = true }
+windows-sys = { version = "0.61", features = ["Win32_System_Console", "Win32_Foundation", "Win32_System_SystemInformation", "Win32_System_ProcessStatus", "Win32_System_Threading"] }
+
+[target.'cfg(not(target_os = "windows"))'.dependencies]
+ort = { version = "=2.0.0-rc.12", default-features = true, features = ["coreml", "half"], optional = true }
+
+[target.'cfg(any(target_os = "macos", target_os = "ios"))'.dependencies]
+# Forked from oxideai/mlx-rs at f4aa309c (MLX v0.30.6); adds iOS cross-compile
+# support plus macOS 26 / Metal 4 support (mlx-c 0.6.0 / MLX v0.31.2 +
+# CMAKE_OSX_DEPLOYMENT_TARGET=26.0). fac86ba0 also exports
+# MACOSX_DEPLOYMENT_TARGET=26.0 so the metallib LINK step keeps the Metal 4
+# (AIR 2.8) kernels — without it air-lld drops all kernels → empty metallib →
+# runtime "Unable to load kernel". See saberra-ai/mlx-rs@fac86ba0.
+mlx-rs = { git = "https://github.com/saberra-ai/mlx-rs", rev = "fac86ba092ba457d055f8d96d8a7a86dc8dee343", optional = true }
+safetensors = { version = "0.8", optional = true }
+# mlxcel-core — fast MLX inference (Rust + MLX C++ via cxx), Apache-2. Embedded
+# as `backend-mlxcel`, REPLACING mlx-rs on the Mac path (both link MLX C++, so
+# they are MUTUALLY EXCLUSIVE — see the compile_error guard in lib.rs).
+mlxcel-core = { git = "https://github.com/saberra-ai/mlxcel", rev = "21306cf116ed3188a156105736cc8ee6073d0e8b", optional = true, default-features = false }
+# mlxcel (top-level crate) — the model loader + tokenizer live HERE, not in
+# mlxcel-core: `mlxcel::load_model` → `(LoadedModel, MlxcelTokenizer)`, and
+# `LoadedModel` is the concrete `LanguageModel` impl the FAST-path
+# `MlxInferenceSession::generate_streaming` drives. Same rev-pin as
+# mlxcel-core so both resolve to a single MLX C++ build.
+mlxcel = { git = "https://github.com/saberra-ai/mlxcel", rev = "21306cf116ed3188a156105736cc8ee6073d0e8b", optional = true, default-features = false }
+
+[dev-dependencies]
+tempfile = "3.19.1"
+mockito = "1"
+
+[features]
+# The zero-dependency external-api backend is the default: it needs no C
+# toolchain, so `cargo build`/`cargo test` work out of the box. Real
+# local-inference backends are opt-in.
+default = ["backend-external-api"]
+
+backend-llamacpp = ["dep:llama-cpp-2", "dep:llama-cpp-sys-2"]
+backend-mlx = ["dep:mlx-rs", "dep:safetensors"]
+# MUTUALLY EXCLUSIVE with backend-mlx: both link MLX C++. Build the Mac fast
+# path with `--no-default-features --features backend-mlxcel`.
+backend-mlxcel = ["dep:mlxcel-core", "mlxcel-core/metal", "dep:mlxcel", "mlxcel/metal", "dep:safetensors"]
+backend-onnx = ["dep:ort", "dep:ndarray"]
+backend-candle = ["dep:candle-core", "dep:candle-nn", "dep:candle-transformers"]
+# Mobile scaffold — compiles stubs that return Unimplemented.
+backend-executorch = []
+backend-external-api = ["dep:reqwest"]
+
+# GPU acceleration, forwarded to llama.cpp.
+cuda = ["backend-llamacpp", "llama-cpp-2/cuda"]
+metal = ["backend-llamacpp", "llama-cpp-2/metal"]
+vulkan = ["backend-llamacpp", "llama-cpp-2/vulkan"]
+native = ["backend-llamacpp"]
+
+# Conditional `specta::Type` derives on the serializable surface, for host apps
+# that export these types to TypeScript over Tauri IPC.
+specta = ["dep:specta"]
+
+# ── Host bridge (NOT standalone-buildable) ──────────────────────────────────
+# The controller can dispatch a generation to another device instead of running
+# it locally. That path is still written against pio-core's `p2p`/`flock`
+# modules, so these features only build inside a host that supplies them.
+# Turning either on in a standalone build fails to compile, by design — the
+# trait-based inversion is the remaining extraction step. See
+# docs/EXTRACTION.md.
+p2p-client = []
+flock = ["p2p-client"]
+
+# ── Platform bundles ────────────────────────────────────────────────────────
+# 2026-05-08: `backend-mlx` is deliberately absent from `apple`/`ios` — mlx-sys'
+# CMake build fails under Xcode 26.4 / clang 21. Re-enable on toolchain fix.
+apple = ["backend-llamacpp", "metal"]
+ios = ["backend-llamacpp", "metal"]
+android = ["backend-llamacpp", "vulkan"]
+desktop-all = ["backend-llamacpp", "backend-onnx", "backend-external-api"]

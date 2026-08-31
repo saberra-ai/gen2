@@ -1,104 +1,90 @@
-gen2 runtime — Engine, Session, KV, Telemetry, and Pull-based Generation
+# pio-gen2
 
-Summary of Work Done
-- Milestone 0: Scaffolding and API shells
-  - Created Engine/Session/KV/Generation modules with compiling stubs.
-  - Added basic types: LoadRequest, Settings, Capabilities, GenSpec, TokenEvent.
-- Milestone 1: Model loading and capability discovery
-  - Engine::load_model/reload_model using llama-cpp-2.
-  - ModelBundle with meta (uuid, n_ctx, n_layer). Deterministic capability flags.
-- Milestone 2: Settings ingestion and validation
-  - Settings::validate with range checks; Engine keeps a version counter.
-- Milestone 3: Sessions and pull-based generation (text)
-  - Session builds context, pre-fills prompt via ChatTemplate, and returns an Iterator TokenPuller.
-  - Cooperative controls: pause/resume/stop → TokenEvent::Paused/Stopped.
-- Milestone 4: KV cache save/load
-  - Versioned header with checksum and compatibility metadata.
-  - Strict/Lenient load policies; actionable errors.
-- Milestone 6 (observability):
-  - Tracing spans and hook bus (HookBus + HookEvent) for load/prefill/decode/final stats.
-- Milestone 5 groundwork (multimodal, Option B):
-  - Structured media signaling: TokenEvent::MediaBoundary under feature "mm".
-  - Capability guard for images; media detection in messages.
+A local-first inference engine with pluggable backends. Load a model, start a
+session, pull tokens — the same API whether the weights are running through
+llama.cpp, MLX, ONNX Runtime, Candle, ExecuTorch, or a remote OpenAI/Anthropic-
+compatible endpoint.
 
-What’s Left To Be Done (M5 focus)
-- MediaEncoder (feature "mm") using llama-cpp-2 MTMD:
-  - Resolve image bytes (file://), encode with MTMD, and produce media tokens with dimension checks.
-  - Validate mmproj at load with a tiny encode; set IMAGES only if verified.
-- Template-aware media insertion (Option B):
-  - Extend ChatTemplate inputs to carry media markers/slots.
-  - Insert media token sequences at template-anchored positions during prefill and emit MediaBoundary precisely.
-- Integration tests (ignored):
-  - Gated by PIO_TEST_MODEL + PIO_TEST_MMPROJ to verify image+text flows end-to-end.
+Extracted from [pio-app](https://github.com/saberra-ai/pio-app)'s `pio-core`
+crate, with history. See [`docs/EXTRACTION.md`](docs/EXTRACTION.md) for what
+moved and what a host app still supplies.
 
-What Can Be Improved Next
-- Tokenizer/template compatibility:
-  - Replace heuristic tokenizer_digest/template_fingerprint with library-provided digests when available.
-- Engine/session ergonomics:
-  - Add seeds at engine/session/gen scopes; reflect in stats.
-  - Tighten default ctx/batch sizing per model metadata.
-- Testing:
-  - Add trait abstractions to mock llama types in unit tests.
-  - Add more property tests (e.g., Settings::validate).
-- CLI:
-  - Minimal llmctl demo commands for load/caps/chat/cache.
+## Quick start
 
-How To Use
-- Load a model, start a session, pull tokens
+```rust
+use pio_gen2::engine::{Engine, LoadRequest};
+use pio_gen2::generation::GenSpec;
+use pio_gen2::session_rt::SessionSpec;
+use pio_gen2::{Message, MessageBody, MessageContent};
 
-  use pio_lib::gen2::engine::{Engine, LoadRequest};
-  use pio_lib::gen2::session_rt::SessionSpec;
-  use pio_lib::gen2::generation::GenSpec;
-  use pio_lib::gen2::{Message, MessageBody, MessageContent};
+let engine = Engine::new();
+engine.load_model(LoadRequest {
+    model_path: "/path/model.gguf".into(),
+    ..Default::default()
+})?;
 
-  let engine = Engine::new();
-  engine.load_model(LoadRequest { model_path: "/path/model.gguf".into(), ..Default::default() })?;
-  let msgs = vec![
-    Message { name: None, role: "user".into(), body: MessageBody::Content { content: MessageContent::SingleText("Hello".into()) }},
-  ];
-  let s = engine.start_session(SessionSpec { messages: msgs, ..Default::default() })?;
-  let mut puller = s.pull(GenSpec { max_tokens: Some(32), ..Default::default() })?;
-  while let Some(ev) = puller.next() {
-    // match ev: Token(text), Paused, Stopped, Eos, and under feature "mm": MediaBoundary
-  }
+let messages = vec![Message {
+    name: None,
+    role: "user".into(),
+    body: MessageBody::Content {
+        content: MessageContent::SingleText("Hello".into()),
+    },
+}];
 
-- Pause/stop controls
-  - Call `s.pause()`, `s.resume()`, and `s.stop()`.
-  - TokenPuller yields `Paused` and `Stopped` events.
+let session = engine.start_session(SessionSpec { messages, ..Default::default() })?;
+let mut puller = session.pull(GenSpec { max_tokens: Some(32), ..Default::default() })?;
+while let Some(event) = puller.next() {
+    // Token(text) | Paused | Stopped | Eos
+}
+```
 
-- KV cache
-  - Save after prefill:
+`session.pause()` / `resume()` / `stop()` drive generation cooperatively; the
+puller yields `Paused` and `Stopped` in response.
 
-    let snap = s.save_cache(pio_lib::gen2::kv::KvSaveSpec::ToPath("my.kv".into()))?;
+## Backends
 
-  - Load on new session (strict or lenient):
+Pick at least one — a build with none fails to compile, by design.
 
-    let s2 = engine.start_session(SessionSpec {
-      messages: msgs2,
-      cache: Some(pio_lib::gen2::kv::KvLoadSpec::Strict("my.kv".into())),
-      ..Default::default()
-    })?;
+| Feature | Backend | Notes |
+| --- | --- | --- |
+| `backend-external-api` | OpenAI / Anthropic wire formats | **Default.** No C toolchain needed. |
+| `backend-llamacpp` | llama.cpp (GGUF) | Add `metal`, `cuda`, or `vulkan` for GPU. |
+| `backend-mlx` | MLX (Apple Silicon) | Mutually exclusive with `backend-mlxcel`. |
+| `backend-mlxcel` | mlxcel (faster MLX decode) | Mac fast path. |
+| `backend-onnx` | ONNX Runtime | |
+| `backend-candle` | Candle (pure Rust) | |
+| `backend-executorch` | ExecuTorch (mobile) | Scaffold; returns `Unimplemented`. |
 
-- Telemetry hooks
-  - Register listeners to observe events:
+```bash
+cargo test                                                  # default, no C toolchain
+cargo check --no-default-features --features backend-llamacpp
+cargo check --no-default-features --features backend-mlxcel # Mac fast path
+```
 
-    let hooks = engine.hooks();
-    hooks.register(Arc::new(MyListener)); // implements HookListener
+## What's in here
 
-  - Events: EngineLoadStart/Ok, SessionPrefillStart/Ok, DecodeStep, FinalStats.
+- **`engine/`** — load models, validate architectures, report stats.
+- **`session_rt/`** — sessions, prompt assembly, context truncation + compaction.
+- **`generation/`** — `GenSpec`, token events, reply/thinking parsing.
+- **`backend/`** — the pluggable backends behind one trait set, plus shared
+  chat-templating, tokenization, sampling, grammar-constrained decoding, and
+  stop-sequence matching.
+- **`kv/`** — versioned KV-cache save/load with checksums and strict/lenient
+  compatibility policies.
+- **`controller/`** — lifecycle, scheduling, metrics, observability.
+- **`residency*`, `memory/`, `hardware.rs`** — how much of the machine a
+  resident model may take, and what the machine actually is.
+- **`zoo.rs`** — the canonical model zoo and per-platform bundle selector,
+  editable at `resources/models/zoo.json`.
+- **`router.rs`** — pure placement: given a request, local capability, and a
+  peer list, pick which device runs it. Local-first.
 
-- Integration tests
-  - Provide a small GGUF and run ignored tests:
+## Constrained decoding
 
-    PIO_TEST_MODEL=/path/to/model.gguf cargo test --manifest-path src-tauri/Cargo.toml -- --ignored --nocapture
+All backends share one grammar stack (`llguidance` + `toktrie`), so a JSON
+schema, Lark grammar, regex, or GBNF that shapes output under llama.cpp shapes
+it identically under MLX.
 
-- Multimodal (feature "mm")
-  - Compilation: enable feature `mm` to include media types and guards.
-  - Current behavior: Session emits MediaBoundary events for images found in messages; template keeps media text anchors.
-  - MTMD-based token injection is marked TODO and will be added next.
+## License
 
-Build Notes
-- Tauri’s build script validates resources; when running tests or cargo check in CI/dev, use a minimal TAURI_CONFIG via env if needed.
-- Features:
-  - Default: text-only path.
-  - mm: enables media signaling and guards; encoder/token injection will live behind this flag.
+MIT

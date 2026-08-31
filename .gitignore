@@ -1,0 +1,10 @@
+/target
+**/*.rs.bk
+*.pdb
+
+# Model weights and KV snapshots are large and machine-local.
+*.gguf
+*.safetensors
+*.kv
+
+.DS_Store
