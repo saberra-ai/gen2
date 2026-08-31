@@ -13,11 +13,11 @@ moved and what a host app still supplies.
 
 ```rust
 use pio_gen2::engine::{Engine, LoadRequest};
-use pio_gen2::generation::GenSpec;
+use pio_gen2::generation::{GenSpec, TokenEvent};
 use pio_gen2::session_rt::SessionSpec;
 use pio_gen2::{Message, MessageBody, MessageContent};
 
-let engine = Engine::new();
+let mut engine = Engine::new();
 engine.load_model(LoadRequest {
     model_path: "/path/model.gguf".into(),
     ..Default::default()
@@ -32,9 +32,16 @@ let messages = vec![Message {
 }];
 
 let session = engine.start_session(SessionSpec { messages, ..Default::default() })?;
-let mut puller = session.pull(GenSpec { max_tokens: Some(32), ..Default::default() })?;
-while let Some(event) = puller.next() {
-    // Token(text) | Paused | Stopped | Eos
+let puller = session.pull(GenSpec { max_tokens: Some(32), ..Default::default() })?;
+
+// Each step is a `Result` — a decode failure surfaces here rather than
+// silently ending the stream.
+for event in puller {
+    match event? {
+        TokenEvent::Token(t) => print!("{}", t.text),
+        TokenEvent::Eos | TokenEvent::Stopped => break,
+        _ => {}
+    }
 }
 ```
 
@@ -60,6 +67,19 @@ cargo test                                                  # default, no C tool
 cargo check --no-default-features --features backend-llamacpp
 cargo check --no-default-features --features backend-mlxcel # Mac fast path
 ```
+
+### Live inference
+
+Unit tests never load a model. To prove the engine actually generates, point
+`PIO_TEST_MODEL` at a small instruct GGUF:
+
+```bash
+PIO_TEST_MODEL=/path/SmolLM2-360M-Instruct-Q4_K_M.gguf \
+  cargo test --test live_inference --no-default-features --features metal -- --nocapture
+```
+
+These skip without the env var, but never pass by skipping: once it's set, a
+model that won't load or won't decode is a hard failure.
 
 ## What's in here
 

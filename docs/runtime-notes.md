@@ -46,10 +46,10 @@ What Can Be Improved Next
 How To Use
 - Load a model, start a session, pull tokens
 
-  use pio_lib::gen2::engine::{Engine, LoadRequest};
-  use pio_lib::gen2::session_rt::SessionSpec;
-  use pio_lib::gen2::generation::GenSpec;
-  use pio_lib::gen2::{Message, MessageBody, MessageContent};
+  use pio_gen2::engine::{Engine, LoadRequest};
+  use pio_gen2::session_rt::SessionSpec;
+  use pio_gen2::generation::GenSpec;
+  use pio_gen2::{Message, MessageBody, MessageContent};
 
   let engine = Engine::new();
   engine.load_model(LoadRequest { model_path: "/path/model.gguf".into(), ..Default::default() })?;
@@ -69,13 +69,13 @@ How To Use
 - KV cache
   - Save after prefill:
 
-    let snap = s.save_cache(pio_lib::gen2::kv::KvSaveSpec::ToPath("my.kv".into()))?;
+    let snap = s.save_cache(pio_gen2::kv::KvSaveSpec::ToPath("my.kv".into()))?;
 
   - Load on new session (strict or lenient):
 
     let s2 = engine.start_session(SessionSpec {
       messages: msgs2,
-      cache: Some(pio_lib::gen2::kv::KvLoadSpec::Strict("my.kv".into())),
+      cache: Some(pio_gen2::kv::KvLoadSpec::Strict("my.kv".into())),
       ..Default::default()
     })?;
 
@@ -90,7 +90,7 @@ How To Use
 - Integration tests
   - Provide a small GGUF and run ignored tests:
 
-    PIO_TEST_MODEL=/path/to/model.gguf cargo test --manifest-path src-tauri/Cargo.toml -- --ignored --nocapture
+    PIO_TEST_MODEL=/path/to/model.gguf cargo test -- --ignored --nocapture
 
 - Multimodal (feature "mm")
   - Compilation: enable feature `mm` to include media types and guards.

@@ -36,7 +36,7 @@ pub enum MemoryPressureLevel {
 /// Uses integer arithmetic throughout to avoid floating-point on hot paths.
 ///
 /// ```
-/// # use pio_core::diagnostics::{MemoryBudgets, MemoryPressureLevel, classify_pressure};
+/// # use pio_gen2::memory::{MemoryBudgets, MemoryPressureLevel, classify_pressure};
 /// # let budgets = MemoryBudgets {
 /// #     process_soft_limit_mb: 3072,
 /// #     process_hard_limit_mb: 4096,

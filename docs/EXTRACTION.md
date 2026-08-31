@@ -12,10 +12,16 @@ Extracted 2026-08-31 from pio-app `5367cf0f`.
 
 ## Status
 
-- `cargo test` — **511 passing** on the default feature set.
+- `cargo test` — **511 unit tests + doc tests passing** on the default feature set.
+- **Live inference verified.** `tests/live_inference.rs` drives a real
+  SmolLM2-360M-Instruct GGUF through the real llama.cpp backend under `metal`:
+  it generates real text (`"Reply with exactly one word: hello"` → `"Hello"`,
+  terminating on `Eos`), reproduces exactly across two sessions at temperature 0
+  with a fixed seed, and honours `max_tokens`. This is the test that separates
+  "the extraction compiles" from "the engine still works".
 - `cargo check --no-default-features --features backend-llamacpp` — **clean**.
 - `cargo clippy --all-targets` — **clean**.
-- MLX / mlxcel / ONNX / Candle feature sets — **not yet built here.** They were
+- MLX / mlxcel / ONNX / Candle feature sets — **not built or run here.** They were
   building in pio-app immediately before the split and their dependency pins
   came across unchanged, but that is inference, not verification.
 - **pio-app has not been switched over.** It still builds its own in-tree copy
