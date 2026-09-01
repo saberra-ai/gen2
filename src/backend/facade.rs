@@ -75,6 +75,11 @@ pub enum Engine {
     Onnx(super::onnx::Engine),
     #[cfg(feature = "backend-external-api")]
     ExternalApi(super::external_api::Engine),
+    /// A scripted backend, for tests that need the runtime to misbehave on
+    /// demand. Sticky: `ensure_backend` never switches away from it, so a
+    /// `LoadModel` for any path still lands on the script.
+    #[cfg(test)]
+    Fake(crate::test_support::FakeBackend),
     /// Sentinel used before the first `load_model` call when the default
     /// backend is constructed.
     Uninit,
@@ -93,6 +98,8 @@ impl std::fmt::Debug for Engine {
             Self::Onnx(e) => e.fmt(f),
             #[cfg(feature = "backend-external-api")]
             Self::ExternalApi(e) => e.fmt(f),
+            #[cfg(test)]
+            Self::Fake(e) => e.fmt(f),
             Self::Uninit => f.debug_struct("Engine(Uninit)").finish(),
         }
     }
@@ -199,6 +206,8 @@ impl Engine {
             Self::Onnx(e) => Some(e),
             #[cfg(feature = "backend-external-api")]
             Self::ExternalApi(e) => Some(e),
+            #[cfg(test)]
+            Self::Fake(e) => Some(e),
             Self::Uninit => None,
         }
     }
@@ -288,6 +297,13 @@ impl Engine {
     /// If the detected backend differs from the current one, the engine
     /// is re-initialized to the new backend first.
     pub fn load_model(&mut self, req: LoadRequest) -> Result<(), ExecError> {
+        // A scripted backend answers for every path, so format detection —
+        // which reads the filesystem — must not run and must not veto a path
+        // that was never meant to exist.
+        #[cfg(test)]
+        if let Self::Fake(fake) = self {
+            return fake.load_model(req);
+        }
         let kind = detect_backend(&req)?;
         self.ensure_backend(kind);
         self.as_backend()
@@ -298,6 +314,11 @@ impl Engine {
     /// Switch the engine to the requested backend kind if needed.
     fn ensure_backend(&mut self, kind: BackendKind) {
         let needs_switch = match (&self, kind) {
+            // A scripted backend answers for every path. Switching away from
+            // it on the first `LoadModel` would quietly replace the fake with
+            // a real backend and make the test meaningless.
+            #[cfg(test)]
+            (Self::Fake(_), _) => false,
             #[cfg(feature = "backend-llamacpp")]
             (Self::LlamaCpp(_), BackendKind::LlamaCpp) => false,
             #[cfg(feature = "backend-mlx")]

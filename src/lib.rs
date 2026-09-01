@@ -104,6 +104,7 @@ pub(crate) mod residency_stats;
 /// I/O; the controller consults it during dispatch.
 #[allow(dead_code, unused_imports)]
 pub(crate) mod router;
+
 #[allow(
     dead_code,
     unused_variables,
@@ -115,6 +116,11 @@ pub(crate) mod session_rt;
 /// Panic-safe background task spawning used by the executor loop.
 #[allow(dead_code, unused_imports)]
 pub(crate) mod task_util;
+/// Scripted backends and other test-only machinery. Never compiled into a
+/// release build.
+#[cfg(test)]
+#[allow(dead_code)]
+pub(crate) mod test_support;
 /// Wire types shared by every backend: messages in, execution stats out, and
 /// the model/persona records a session is started from.
 #[allow(dead_code, unused_imports)]

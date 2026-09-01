@@ -37,8 +37,15 @@ pub struct ControllerState {
 }
 
 impl ControllerState {
+    #[allow(dead_code)]
     pub(crate) fn new(config: ControllerConfig) -> Self {
-        let mut engine = Engine::new();
+        Self::with_engine(Engine::new(), config)
+    }
+
+    /// As [`Self::new`], but over an engine the caller built.
+    ///
+    /// The seam tests use to run the controller against a scripted backend.
+    pub(crate) fn with_engine(mut engine: Engine, config: ControllerConfig) -> Self {
         let caps = engine.backend_caps();
         Self {
             engine,

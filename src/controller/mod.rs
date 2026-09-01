@@ -870,6 +870,30 @@ pub fn start_controller() -> ControllerHandle {
     start_controller_with_config(ControllerConfig::default())
 }
 
+/// Start a controller over an engine the caller builds.
+///
+/// `build` runs on the controller's own thread, because [`Backend`] is not
+/// `Send` — backends hold non-thread-safe FFI state, which is exactly why the
+/// loop owns one and nobody else touches it. A test that wants to inspect the
+/// backend keeps a handle to the `Send + Sync` half (see
+/// [`Script`](crate::test_support::Script)) rather than to the backend itself.
+#[cfg(test)]
+pub(crate) fn start_controller_with_engine(
+    config: ControllerConfig,
+    build: Box<dyn FnOnce() -> crate::backend::Engine + Send>,
+) -> (ControllerHandle, thread::JoinHandle<()>) {
+    let (tx, rx): (Sender<ControllerCmd>, Receiver<ControllerCmd>) = channel();
+    let handle_config = config.clone();
+    let join = thread::spawn(move || run_loop_with_engine(rx, config, build()));
+    (
+        ControllerHandle {
+            tx,
+            config: handle_config,
+        },
+        join,
+    )
+}
+
 /// Default event channel capacity — matches `ControllerConfig::default().event_channel_capacity`.
 ///
 /// Kept as a constant for backward compatibility with external crates and tests
@@ -899,8 +923,16 @@ impl ChatRuntime {
 }
 
 fn run_loop(rx: Receiver<ControllerCmd>, config: ControllerConfig) {
+    run_loop_with_engine(rx, config, crate::backend::Engine::new())
+}
+
+fn run_loop_with_engine(
+    rx: Receiver<ControllerCmd>,
+    config: ControllerConfig,
+    engine: crate::backend::Engine,
+) {
     let tick_busy = Duration::from_millis(0);
-    let mut state = ControllerState::new(config);
+    let mut state = ControllerState::with_engine(engine, config);
 
     'outer: loop {
         if state.chats.is_empty() {
@@ -938,6 +970,10 @@ fn run_loop(rx: Receiver<ControllerCmd>, config: ControllerConfig) {
         );
     }
 }
+
+#[cfg(test)]
+#[path = "tests/mod.rs"]
+mod tests_by_invariant;
 
 pub(super) enum ControlFlow {
     Continue,
