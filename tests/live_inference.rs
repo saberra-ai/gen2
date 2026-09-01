@@ -124,6 +124,54 @@ fn greedy_decoding_is_reproducible() {
     );
 }
 
+/// A seed pins sampling *without* pinning it to the single greedy answer.
+///
+/// `greedy()` forces temperature zero, so it proves nothing about the seed —
+/// argmax is deterministic whatever the RNG does. This is the test that
+/// actually exercises `.seed()`, and it failed before the seed reached the
+/// sampler at all: five runs at one seed gave five different answers, because
+/// `Settings::with_gen_spec_overrides` merged every sampling field except that
+/// one.
+#[test]
+fn a_seed_makes_sampled_output_reproducible() {
+    let Some(model) = test_model() else {
+        eprintln!("SKIP: set PIO_TEST_MODEL to run live inference");
+        return;
+    };
+
+    let engine = Engine::load(model).expect("real GGUF should load");
+    let prompt = "Invent a two-word name for a coffee shop.";
+    let sample = |seed: u64| {
+        engine
+            .infer(prompt)
+            .max_tokens(12)
+            .temperature(0.9)
+            .seed(seed)
+            .text()
+            .expect("generation should succeed")
+    };
+
+    let first = sample(42);
+    assert!(!first.trim().is_empty(), "seeded generation was empty");
+    for run in 1..4 {
+        assert_eq!(
+            sample(42),
+            first,
+            "run {run} at seed 42 differed from the first — a seed that does \
+             not pin sampling is a reproducibility knob that does nothing"
+        );
+    }
+
+    // And it must still be a seed rather than a constant: different seeds have
+    // to be able to produce different text, or the fix would be indistinguishable
+    // from having silently forced greedy decoding.
+    let others: std::collections::HashSet<String> = (1..6u64).map(|s| sample(s * 7717)).collect();
+    assert!(
+        others.len() > 1,
+        "every seed produced the same text, so sampling is not seeded but fixed"
+    );
+}
+
 /// `max_tokens` is honoured, so a caller can bound a generation. A budget that
 /// is ignored is how a runaway decode loop reaches production.
 #[test]

@@ -169,6 +169,16 @@ impl Settings {
         out.sampling.penalty_repeat = spec.penalty_repeat.or(out.sampling.penalty_repeat);
         out.sampling.penalty_freq = spec.penalty_freq.or(out.sampling.penalty_freq);
         out.sampling.penalty_present = spec.penalty_present.or(out.sampling.penalty_present);
+        // Seed belongs here for the same reason as the rest: without it the
+        // sampler falls back to a fresh random one per session, so `.seed(42)`
+        // was accepted, documented, and had no effect — five runs at one seed
+        // gave five different answers. `.greedy()` hid it, because temperature
+        // zero is deterministic whatever the seed is.
+        // Narrowed, because a backend's seed space is 32 bits while `GenSpec`
+        // takes a `u64`. Deterministic either way — two seeds that differ only
+        // above bit 32 land on the same stream, which is a far smaller
+        // surprise than a seed that does nothing.
+        out.sampling.seed = spec.seed.map(|s| s as u32).or(out.sampling.seed);
         out
     }
 
@@ -300,6 +310,59 @@ pub struct MmSettings {
 
 #[cfg(test)]
 mod tests {
+    /// Every sampling field a caller can set on a request has to survive the
+    /// merge, because the backends build their sampler chain from `Settings`
+    /// and never look at the `GenSpec`.
+    ///
+    /// Seed is the one that was missing. It was accepted by `.seed()` on four
+    /// builders, documented, and dropped here — so the sampler fell back to a
+    /// fresh random seed per session and five runs at one seed gave five
+    /// different answers. `.greedy()` masked it, since temperature zero is
+    /// deterministic whatever the seed.
+    #[test]
+    fn every_sampling_field_a_request_sets_survives_the_merge() {
+        let spec = GenSpec {
+            temperature: Some(0.3),
+            top_p: Some(0.9),
+            top_k: Some(40),
+            min_p: Some(0.05),
+            seed: Some(42),
+            penalty_repeat: Some(1.1),
+            penalty_freq: Some(0.5),
+            penalty_present: Some(0.4),
+            ..Default::default()
+        };
+
+        let merged = Settings::default().with_gen_spec_overrides(&spec);
+
+        assert_eq!(merged.sampling.temperature, Some(0.3));
+        assert_eq!(merged.sampling.top_p, Some(0.9));
+        assert_eq!(merged.sampling.top_k, Some(40));
+        assert_eq!(merged.sampling.min_p, Some(0.05));
+        assert_eq!(
+            merged.sampling.seed,
+            Some(42),
+            "a seed the caller set must reach the sampler, or reproducibility \
+             is a knob that does nothing"
+        );
+        assert_eq!(merged.sampling.penalty_repeat, Some(1.1));
+        assert_eq!(merged.sampling.penalty_freq, Some(0.5));
+        assert_eq!(merged.sampling.penalty_present, Some(0.4));
+    }
+
+    /// A request that says nothing leaves the engine's own settings alone.
+    #[test]
+    fn an_empty_request_overrides_nothing() {
+        let mut base = Settings::default();
+        base.sampling.temperature = Some(0.7);
+        base.sampling.seed = Some(7);
+
+        let merged = base.with_gen_spec_overrides(&GenSpec::default());
+
+        assert_eq!(merged.sampling.temperature, Some(0.7));
+        assert_eq!(merged.sampling.seed, Some(7));
+    }
+
     use super::*;
     use crate::generation::GenSpec;
 
