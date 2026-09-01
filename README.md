@@ -1,8 +1,8 @@
 # gen2
 
-A local-first inference engine with pluggable backends — llama.cpp, MLX, ONNX
-Runtime, Candle, ExecuTorch, or an OpenAI/Anthropic-compatible endpoint, behind
-one API.
+A local-first inference engine with pluggable backends. One API over
+llama.cpp, MLX, ONNX Runtime, Candle, ExecuTorch, or an OpenAI-compatible
+endpoint.
 
 ```toml
 gen2 = { git = "https://github.com/saberra-ai/gen2" }
@@ -62,7 +62,7 @@ engine.chat(&mut session)
     .send_streaming(|token| print!("{token}"))?;
 ```
 
-Off-thread — the session comes back on `Done`:
+Off-thread. The session comes back on `Done`:
 
 ```rust
 use std::sync::Arc;
@@ -117,8 +117,8 @@ let done = engine.agent(&mut session)
 println!("{} after {} tool rounds", done.text, done.tool_rounds);
 ```
 
-The schema comes from `WeatherArgs`, so what the model sees and what the handler
-reads can't drift.
+`WeatherArgs` generates the schema, so renaming a field changes what the model
+sees and what the handler reads together.
 
 A typed final answer:
 
@@ -185,7 +185,7 @@ engine.agent(&mut session)
 let filesystem = ToolSet::new().add(read_file).add(write_file).add(list_dir);
 engine.agent(&mut session).add_tools(filesystem);
 
-// Scheduling: independent calls in one turn run concurrently.
+// Independent calls in one turn run concurrently.
 FunctionTool::new(..).with_policy(ExecutionPolicy::exclusive())   // a shared write
 FunctionTool::new(..).with_policy(ExecutionPolicy::gpu_bound())   // contends with the model
 
@@ -194,12 +194,13 @@ let researcher = AgentTool::new("researcher", "Investigates a question", engine.
     .tools(research_tools)
     .max_steps(5);
 
-// Instructions loaded on demand — descriptions in the prompt, bodies when asked for.
+// Instructions loaded on demand. Descriptions sit in the prompt, bodies arrive
+// when the model asks for them.
 let skills = SkillLibrary::new([
     Skill::new("migrations", "when writing a database migration", MIGRATION_GUIDE),
 ]);
 
-// An MCP server's whole surface.
+// Every tool an MCP server offers.
 let mcp = McpToolSet::connect("mcp-server-git", ["--repo", "."]).await?;
 engine.agent(&mut session).defer_tools(mcp).tool_search(ToolSearch::Hybrid);
 ```
@@ -210,7 +211,7 @@ engine.agent(&mut session).defer_tools(mcp).tool_search(ToolSearch::Hybrid);
 session.messages();            // the transcript, yours to render or persist
 session.latest_text();
 session.shed();                // messages no longer in the model's context
-session.fork();                // branch: same history, independent from here
+session.fork();                // branch. Same history, independent from here
 session.edit(|m| m.truncate(4));
 
 let json = serde_json::to_string(&session)?;   // Serialize / Deserialize
@@ -274,36 +275,39 @@ while let Some(update) = run.next().await { /* … */ }
 
 ## Things that will otherwise cost you an afternoon
 
-- **`.greedy()` is not the default.** An unconfigured turn samples with a random
-  seed, so the same prompt gives different text each run.
-- **Deferred tool specs never enter the prompt prefix.** They arrive in the
-  conversation when search finds them, which is what keeps the warm KV cache
-  intact.
+- **`.greedy()` is not the default.** An unconfigured turn leaves `temperature`
+  and `seed` unset, which means backend-default sampling with a random seed. The
+  same prompt gives different text each run.
+- **Deferred tool specs never enter the prompt prefix.** Search puts them in the
+  conversation instead, so the warm KV cache survives.
 - **Changing the tool set between runs reopens the conversation.** Tool
-  definitions live in the prefix; changing them costs one re-prefill. Silently
-  ignoring them was the alternative.
-- **Swapping a model invalidates every session's prefill.** Handled
-  automatically; `engine.model_generation()` is the signal.
-- **A load that fails part-way leaves no model.** The path is checked first, so
-  a typo is refused cleanly, but an out-of-memory mid-load can't be undone.
-- **Just drop the `Engine` when you're done.** The loop holds the backend on its
-  own thread; exiting while it's live aborts inside ggml's destructors. `Drop`
-  handles it.
-- **A cancelled turn is `Done`, not `Failed`.** The partial reply is real.
+  definitions live in the prefix, so a change costs one re-prefill. The
+  alternative was ignoring the new tools without telling you.
+- **Swapping a model invalidates every session's prefill.** Sessions notice and
+  reopen on their own. `engine.model_generation()` is the same signal if you
+  want to show it.
+- **A load that fails part-way leaves no model.** `load_model` checks the path
+  first, so a typo is refused before anything unloads. An out-of-memory mid-load
+  cannot be undone.
+- **Just drop the `Engine` when you're done.** The controller loop holds the
+  backend on its own thread, and exiting while it runs aborts inside ggml's
+  destructors. `Drop` stops and joins it for you.
+- **A cancelled turn is `Done`, not `Failed`.** `completion.text` holds what was
+  generated before the stop, and it is already in the session.
 
 ## Backends
 
-Pick at least one — a build with none fails to compile.
+Pick at least one. A build with none fails to compile.
 
 | Feature | Backend |
 | --- | --- |
-| `backend-external-api` | OpenAI / Anthropic wire formats. **Default**, no C toolchain. |
+| `backend-external-api` | OpenAI / Anthropic wire formats. Default. Needs no C toolchain. |
 | `backend-llamacpp` | llama.cpp (GGUF). Add `metal`, `cuda`, or `vulkan`. |
 | `backend-mlx` | MLX (Apple Silicon). Mutually exclusive with `backend-mlxcel`. |
-| `backend-mlxcel` | mlxcel — the Mac fast path. |
+| `backend-mlxcel` | mlxcel, the Mac fast path. |
 | `backend-onnx` | ONNX Runtime |
 | `backend-candle` | Candle (pure Rust) |
-| `backend-executorch` | ExecuTorch (mobile). Scaffold. |
+| `backend-executorch` | ExecuTorch (mobile). Stub, returns Unimplemented. |
 | `tokio` | Async API. Off by default. |
 
 ```sh
@@ -331,7 +335,8 @@ PIO_TEST_EMBEDDER=/path/embedding-model.gguf \
   cargo test --test live_inference --no-default-features --features metal
 ```
 
-They skip without the env vars, but never pass by skipping.
+Without the env vars they skip. With them set, a model that will not load or
+will not decode fails the test.
 
 ## License
 
