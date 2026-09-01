@@ -88,6 +88,18 @@ let json = classifier.infer("Classify: '…'").text()?;      // always the right
 A turn can still override it, or drop it with `.unconstrained()` — loading
 weights is the expensive part, so one engine should serve several shapes.
 
+### Embeddings
+
+An embedder loads independently of the chat model — an engine can hold both, or
+only one:
+
+```rust
+let engine = Engine::builder().embedder("/models/embedding-model.gguf").build()?;
+
+let vectors = engine.embed(&corpus)?;          // one per input, in order
+let query   = engine.embed_one("a question")?; // single
+```
+
 ### Remote endpoints
 
 Same API, different weights. The URL selects the backend:
@@ -123,11 +135,13 @@ cargo run --example minimal    --no-default-features --features metal -- /path/m
 cargo run --example basic      --no-default-features --features metal -- /path/model.gguf
 cargo run --example structured --no-default-features --features metal -- /path/model.gguf
 cargo run --example chat_app   --no-default-features --features metal -- /path/model.gguf
+cargo run --example embeddings --no-default-features --features metal -- /path/embedding-model.gguf
 ```
 
 - `minimal` — the smallest useful program: make a chat, stream the reply.
 - `basic` — ask / stream / converse, and the four ways to consume a generation.
 - `structured` — grammar-constrained output (JSON schema, bare JSON, regex).
+- `embeddings` — embedder-only engine, batch and single, cosine similarity.
 - `chat_app` — the shape of a real app: `Arc<Engine>` shared across threads,
   generation on a worker, cancellation, and concurrent conversations.
 
@@ -141,8 +155,9 @@ PIO_TEST_MODEL=/path/SmolLM2-360M-Instruct-Q4_K_M.gguf \
   cargo test --test live_inference --no-default-features --features metal -- --nocapture
 ```
 
-These skip without the env var, but never pass by skipping: once it's set, a
-model that won't load or won't decode is a hard failure.
+`PIO_TEST_EMBEDDER` additionally runs the embedding test. These skip without the
+env vars, but never pass by skipping: once set, a model that won't load or won't
+decode is a hard failure.
 
 ## What's in here
 

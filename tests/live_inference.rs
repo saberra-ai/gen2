@@ -262,3 +262,64 @@ fn engine_shuts_down_cleanly_on_drop() {
     let engine = Engine::load(model).expect("a second engine should load after the first dropped");
     engine.shutdown().expect("explicit shutdown should succeed");
 }
+
+/// Embedding is a separate capability: an engine can hold only an embedder,
+/// and the vectors it returns have to be semantically meaningful, not just
+/// well-shaped.
+///
+/// Set `PIO_TEST_EMBEDDER` to a GGUF embedding model.
+#[test]
+fn embeds_text_into_comparable_vectors() {
+    let Ok(raw) = std::env::var("PIO_TEST_EMBEDDER") else {
+        eprintln!("SKIP: set PIO_TEST_EMBEDDER to run embedding");
+        return;
+    };
+    let path = PathBuf::from(raw);
+    assert!(path.exists(), "PIO_TEST_EMBEDDER does not exist");
+
+    // No chat model — embedding must not depend on one.
+    let engine = Engine::builder()
+        .embedder(&path)
+        .build()
+        .expect("an embedder-only engine should build");
+    assert!(engine.is_embedder_loaded());
+
+    let corpus = [
+        "The cat sat on the mat.".to_string(),
+        "A feline rested on the rug.".to_string(),
+        "Rust has a borrow checker.".to_string(),
+    ];
+    let vectors = engine.embed(&corpus).expect("embedding should succeed");
+
+    assert_eq!(vectors.len(), 3, "one vector per input, in order");
+    let dims = vectors[0].len();
+    assert!(dims > 0, "vectors must not be empty");
+    assert!(
+        vectors.iter().all(|v| v.len() == dims),
+        "every vector shares the model's dimensionality"
+    );
+    assert!(
+        vectors.iter().flatten().any(|x| *x != 0.0),
+        "an all-zero embedding means the model never ran"
+    );
+
+    // The real assertion: paraphrases must be closer than unrelated text. A
+    // well-shaped vector that encodes nothing would pass every check above.
+    let cos = |a: &[f32], b: &[f32]| {
+        let dot: f32 = a.iter().zip(b).map(|(x, y)| x * y).sum();
+        let na: f32 = a.iter().map(|x| x * x).sum::<f32>().sqrt();
+        let nb: f32 = b.iter().map(|x| x * x).sum::<f32>().sqrt();
+        dot / (na * nb)
+    };
+    let paraphrase = cos(&vectors[0], &vectors[1]);
+    let unrelated = cos(&vectors[0], &vectors[2]);
+    eprintln!("--- paraphrase {paraphrase:.3} vs unrelated {unrelated:.3}");
+    assert!(
+        paraphrase > unrelated,
+        "paraphrase ({paraphrase:.3}) should score above unrelated ({unrelated:.3})"
+    );
+
+    // Single-input convenience returns one vector of the same width.
+    let one = engine.embed_one("Where did the cat sit?").unwrap();
+    assert_eq!(one.len(), dims);
+}

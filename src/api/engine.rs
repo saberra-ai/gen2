@@ -90,7 +90,48 @@ impl Engine {
             .map_err(Error::Load)
     }
 
+    /// Load an embedding model, replacing any already loaded.
+    ///
+    /// Independent of the chat model: an engine can hold both, or only one.
+    /// `kind` forces an embedder family (`"qwen3"`); `None` detects it from the
+    /// filename.
+    pub fn load_embedder(&self, path: impl AsRef<Path>, kind: Option<String>) -> Result<()> {
+        let (resp, rx) = channel();
+        self.send(ControllerCmd::LoadEmbedder {
+            model_path: path.as_ref().to_path_buf(),
+            kind,
+            resp,
+        })?;
+        rx.recv()
+            .map_err(|_| Error::ControllerGone)?
+            .map_err(Error::Load)
+    }
+
+    /// Whether an embedding model is loaded.
+    pub fn is_embedder_loaded(&self) -> bool {
+        let (resp, rx) = channel();
+        if self.send(ControllerCmd::IsEmbedderLoaded { resp }).is_err() {
+            return false;
+        }
+        rx.recv().unwrap_or(false)
+    }
+
+    /// Embed one string.
+    ///
+    /// Prefer [`Engine::embed`] for several at once — batching is what makes
+    /// embedding a corpus fast.
+    pub fn embed_one(&self, input: impl Into<String>) -> Result<Vec<f32>> {
+        let mut out = self.embed(&[input.into()])?;
+        out.pop().ok_or_else(|| Error::Generation {
+            code: "embedding_failed".into(),
+            message: "embedder returned no vectors".into(),
+        })
+    }
+
     /// Embed one or more strings with the loaded embedder.
+    ///
+    /// Returns one vector per input, in order. Load an embedder first, with
+    /// [`EngineBuilder::embedder`] or [`Engine::load_embedder`].
     pub fn embed(&self, inputs: &[String]) -> Result<Vec<Vec<f32>>> {
         let (resp, rx) = channel();
         self.send(ControllerCmd::GenerateEmbeddings {
@@ -239,6 +280,8 @@ pub struct EngineBuilder {
     config: Option<ControllerConfig>,
     api_key: Option<String>,
     api_format: Option<String>,
+    embedder_path: Option<PathBuf>,
+    embedder_kind: Option<String>,
     defaults: GenSpec,
 }
 
@@ -293,6 +336,22 @@ impl EngineBuilder {
         self
     }
 
+    /// Load an embedding model alongside (or instead of) the chat model.
+    ///
+    /// An engine with only an embedder is valid — [`Engine::embed`] works and
+    /// generation returns [`Error::ModelNotLoaded`].
+    pub fn embedder(mut self, path: impl AsRef<Path>) -> Self {
+        self.embedder_path = Some(path.as_ref().to_path_buf());
+        self
+    }
+
+    /// Force an embedder family (`"qwen3"`) instead of detecting it from the
+    /// filename.
+    pub fn embedder_kind(mut self, kind: impl Into<String>) -> Self {
+        self.embedder_kind = Some(kind.into());
+        self
+    }
+
     /// Cap tokens for every turn unless it overrides this.
     pub fn max_tokens(mut self, n: usize) -> Self {
         self.defaults.max_tokens = Some(n);
@@ -337,9 +396,13 @@ impl EngineBuilder {
     /// Returns once the weights are resident and the engine is ready to
     /// generate — no separate "is it loaded yet" step.
     pub fn build(self) -> Result<Engine> {
-        let model_path = self.model_path.ok_or_else(|| {
-            Error::Load("no model given — call .model(path), .openai(..), or .anthropic(..)".into())
-        })?;
+        if self.model_path.is_none() && self.embedder_path.is_none() {
+            return Err(Error::Load(
+                "nothing to load — call .model(path), .embedder(path), .openai(..), \
+                 or .anthropic(..)"
+                    .into(),
+            ));
+        }
 
         let (handle, join) = start_controller_joinable(self.config.unwrap_or_default());
         let engine = Engine {
@@ -349,21 +412,26 @@ impl EngineBuilder {
             defaults: self.defaults,
         };
 
-        let (resp, rx) = channel();
-        engine.send(ControllerCmd::LoadModel {
-            model_path,
-            mmproj_path: self.mmproj_path,
-            settings: self.settings.unwrap_or_default(),
-            api_key: self.api_key,
-            api_format: self.api_format,
-            resp,
-        })?;
+        // On any failure below, `engine` drops here — which stops and joins the
+        // loop we just started, so a failed load leaks no thread.
+        if let Some(model_path) = self.model_path {
+            let (resp, rx) = channel();
+            engine.send(ControllerCmd::LoadModel {
+                model_path,
+                mmproj_path: self.mmproj_path,
+                settings: self.settings.unwrap_or_default(),
+                api_key: self.api_key,
+                api_format: self.api_format,
+                resp,
+            })?;
+            rx.recv()
+                .map_err(|_| Error::ControllerGone)?
+                .map_err(Error::Load)?;
+        }
 
-        // On failure `engine` drops here, which stops and joins the loop we
-        // just started — no leaked thread behind a failed load.
-        rx.recv()
-            .map_err(|_| Error::ControllerGone)?
-            .map_err(Error::Load)?;
+        if let Some(embedder_path) = self.embedder_path {
+            engine.load_embedder(embedder_path, self.embedder_kind)?;
+        }
 
         Ok(engine)
     }
