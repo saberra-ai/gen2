@@ -28,19 +28,15 @@ pub enum ModelBundle {
     Mlx(Arc<super::mlx::ModelBundle>),
     #[cfg(feature = "backend-onnx")]
     Onnx(Arc<super::onnx::ModelBundle>),
-    /// ExternalApi has no local model bundle — the server manages the model.
-    /// This variant exists only so the enum is non-empty when only external-api
-    /// is compiled.
-    #[cfg(feature = "backend-external-api")]
-    ExternalApi,
-    /// mlxcel has no facade-level model bundle — the mlxcel worker thread owns
-    /// the `!Send` MLX model directly (see `backend::mlxcel::worker`). This
-    /// sentinel exists only so the enum is non-empty when `backend-mlxcel` is
-    /// the only backend compiled (mirrors `ExternalApi`). Facade *routing* is
-    /// wired via `Engine::Mlxcel` (S6) — safetensors dirs detect as
-    /// `BackendKind::Mlx` and construct `MlxcelEngine` when this feature is on.
-    #[cfg(feature = "backend-mlxcel")]
-    Mlxcel,
+    /// No bundle at this layer.
+    ///
+    /// Some backends keep the model somewhere the facade cannot hold it: the
+    /// external-api server owns it remotely, the mlxcel worker thread owns a
+    /// `!Send` model directly (`backend::mlxcel::worker`), and executorch and
+    /// candle have no bundle type yet. Unconditional, so the enum stays
+    /// inhabited no matter which single backend is compiled — without it, a
+    /// build of executorch or candle alone fails to compile on this `match`.
+    None,
 }
 
 impl std::fmt::Debug for ModelBundle {
@@ -52,10 +48,7 @@ impl std::fmt::Debug for ModelBundle {
             Self::Mlx(b) => b.fmt(f),
             #[cfg(feature = "backend-onnx")]
             Self::Onnx(b) => b.fmt(f),
-            #[cfg(feature = "backend-external-api")]
-            Self::ExternalApi => f.debug_struct("ModelBundle(ExternalApi)").finish(),
-            #[cfg(feature = "backend-mlxcel")]
-            Self::Mlxcel => f.debug_struct("ModelBundle(Mlxcel)").finish(),
+            Self::None => f.write_str("ModelBundle(none)"),
         }
     }
 }
@@ -621,6 +614,13 @@ mod tests {
         assert_eq!(name, "mlx");
         #[cfg(all(not(feature = "backend-llamacpp"), feature = "backend-mlxcel"))]
         assert_eq!(name, "mlxcel");
+        #[cfg(all(
+            not(feature = "backend-llamacpp"),
+            not(feature = "backend-mlx"),
+            not(feature = "backend-mlxcel"),
+            feature = "backend-onnx"
+        ))]
+        assert_eq!(name, "onnx");
         #[cfg(not(any(
             feature = "backend-llamacpp",
             feature = "backend-mlx",

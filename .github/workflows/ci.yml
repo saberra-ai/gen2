@@ -1,0 +1,82 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+env:
+  CARGO_TERM_COLOR: always
+
+jobs:
+  # The default build: external-api backend, no C toolchain, everything the
+  # unit and doc tests cover.
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: rustfmt, clippy
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo fmt --check
+      - run: cargo clippy --all-targets -- -D warnings
+      - run: cargo test
+      - run: cargo doc --no-deps
+        env:
+          RUSTDOCFLAGS: -D warnings
+
+  # The async API, which is a separate compilation of the same crate.
+  tokio:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo clippy --all-targets --features tokio -- -D warnings
+      - run: cargo test --features tokio
+
+  # Every backend the README lists, built the way the README says to build it.
+  # A backend that only compiles alongside another one is not a backend.
+  backends:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest, features: backend-external-api }
+          - { os: ubuntu-latest, features: backend-executorch }
+          - { os: ubuntu-latest, features: backend-candle }
+          - { os: ubuntu-latest, features: backend-onnx }
+          - { os: ubuntu-latest, features: backend-llamacpp }
+          - { os: macos-latest, features: metal }
+          - { os: macos-latest, features: "metal,tokio" }
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Install the C toolchain llama.cpp needs
+        if: contains(matrix.features, 'llamacpp') || contains(matrix.features, 'metal')
+        run: |
+          if [ "$RUNNER_OS" = "Linux" ]; then
+            sudo apt-get update && sudo apt-get install -y cmake libclang-dev
+          else
+            brew install cmake
+          fi
+      - run: cargo clippy --all-targets --no-default-features --features ${{ matrix.features }} -- -D warnings
+
+  # A build with no backend must fail, loudly, at compile time. If this job
+  # ever passes, the guard that produces that error has gone missing.
+  no-backend-is-a-compile-error:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: |
+          if cargo check --no-default-features 2>/dev/null; then
+            echo "::error::a build with no backend feature compiled; the guard is gone"
+            exit 1
+          fi

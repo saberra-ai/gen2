@@ -217,6 +217,9 @@ session.edit(|m| m.truncate(4));
 let json = serde_json::to_string(&session)?;   // Serialize / Deserialize
 ```
 
+Not `Clone`: two copies would share one cached prefill and overwrite each
+other. `fork()` is the independent copy.
+
 ## Engine
 
 ```rust
@@ -241,6 +244,25 @@ engine.embed(&corpus)?;             // one vector per input
 engine.embed_one("a query")?;
 
 engine.stop(id)?;  engine.pause(id)?;  engine.resume(id)?;
+```
+
+## Somewhere else
+
+The controller can live in another process or on another machine. Implement
+the transport, and everything above it is unchanged:
+
+```rust
+use gen2::{ControllerCmd, InferenceHandle, Placement, RemoteDispatch};
+
+struct OverTheWire { /* your socket, your peer, your queue */ }
+
+impl RemoteDispatch for OverTheWire {
+    fn send(&self, cmd: ControllerCmd) -> Result<(), String> { self.dispatch(cmd) }
+    fn label(&self) -> &str { "workshop-mac" }
+}
+
+let handle = InferenceHandle::remote(OverTheWire::connect()?);
+assert_eq!(handle.placement(), Placement::Remote("workshop-mac"));
 ```
 
 ## Will it fit?
@@ -292,6 +314,10 @@ while let Some(update) = run.next().await { /* … */ }
 - **Just drop the `Engine` when you're done.** The controller loop holds the
   backend on its own thread, and exiting while it runs aborts inside ggml's
   destructors. `Drop` stops and joins it for you.
+- **A background task you define gets no tuning.** `SystemTask::Title` and its
+  named siblings carry sampling defaults; `SystemTask::custom("triples")` gets
+  a plain spec, because nothing here knows what your task is. Pass your own to
+  `system_infer_with`.
 - **A cancelled turn is `Done`, not `Failed`.** `completion.text` holds what was
   generated before the stop, and it is already in the session.
 
@@ -332,11 +358,13 @@ Unit tests never load a model. These do:
 PIO_TEST_MODEL=/path/model.gguf \
 PIO_TEST_TOOL_MODEL=/path/tool-capable.gguf \
 PIO_TEST_EMBEDDER=/path/embedding-model.gguf \
-  cargo test --test live_inference --no-default-features --features metal
+  cargo test --test live_inference --no-default-features --features metal \
+  -- --test-threads=1
 ```
 
 Without the env vars they skip. With them set, a model that will not load or
-will not decode fails the test.
+will not decode fails the test. Serially, because otherwise the tests compete
+for residency admission and each other's failures look like yours.
 
 ## License
 

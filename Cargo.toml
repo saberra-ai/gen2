@@ -153,25 +153,19 @@ metal = ["backend-llamacpp", "llama-cpp-2/metal"]
 vulkan = ["backend-llamacpp", "llama-cpp-2/vulkan"]
 native = ["backend-llamacpp"]
 
-# Async API: `Stream` of updates, and `.send_async()` / `.spawn_async()`. The
-# controller stays synchronous — decoding is a blocking native call, so this
-# runs it on `spawn_blocking` rather than pretending otherwise. Off by default
-# so sync consumers need no runtime.
+# The async API: `Stream` of updates, plus `.send_async()` / `.spawn_async()`.
+# The controller stays synchronous, because decoding is a blocking native call,
+# so this runs it on `spawn_blocking` rather than pretending otherwise.
+#
+# This gates the API, not the dependency. Tokio is unconditional: the tool
+# executor and the sync-to-async bridge both need a runtime, and the crate
+# starts its own when the caller has none. A sync consumer writes no async code
+# and manages no runtime, but does compile tokio.
 tokio = []
 
 # Conditional `specta::Type` derives on the serializable surface, for host apps
 # that export these types to TypeScript over Tauri IPC.
 specta = ["dep:specta"]
-
-# ── Host bridge (NOT standalone-buildable) ──────────────────────────────────
-# The controller can dispatch a generation to another device instead of running
-# it locally. That path is still written against pio-core's `p2p`/`flock`
-# modules, so these features only build inside a host that supplies them.
-# Turning either on in a standalone build fails to compile, by design — the
-# trait-based inversion is the remaining extraction step. See
-# docs/EXTRACTION.md.
-p2p-client = []
-flock = ["p2p-client"]
 
 # ── Platform bundles ────────────────────────────────────────────────────────
 # 2026-05-08: `backend-mlx` is deliberately absent from `apple`/`ios` — mlx-sys'
