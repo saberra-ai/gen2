@@ -133,6 +133,12 @@ mockito = "1"
 # reply-part scanner): generate + shrink, rather than hand-fed cases only.
 proptest = "1"
 
+# Hot-path timings, run by hand rather than gated in CI. `harness = false`
+# because this is a plain `main`, not a libtest target.
+[[bench]]
+name = "hot_paths"
+harness = false
+
 [features]
 # The zero-dependency external-api backend is the default: it needs no C
 # toolchain, so `cargo build`/`cargo test` work out of the box. Real

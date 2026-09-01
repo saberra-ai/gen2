@@ -162,8 +162,7 @@ Benchmarks tracked over time, never a PR gate.
 5. ~~Backend conformance suite~~ — done. Splitting the live tests per
    backend is what remains, and it is blocked on having models for the
    other backends rather than on the suite
-6. Property, soak, and performance work — session and fit properties
-   done, soak done; benchmarks outstanding
+6. ~~Property, soak, and performance work~~ — done
 
 ## Where it got to
 
@@ -203,7 +202,6 @@ Nine bugs, found by the tests rather than by reading:
   `PIO_TEST_MLX_MODEL`, `PIO_TEST_ONNX_MODEL` or `PIO_TEST_CANDLE_MODEL`
   at a model and the generating half runs.
 - No sanitizer run.
-- No benchmarks, so a performance regression is invisible.
 - The KV store's writes are not atomic. Digests turn a torn write into a
   cache miss rather than corruption, but a crash mid-write leaves a dead
   file until the budget sweep reclaims it.
