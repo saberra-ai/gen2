@@ -88,6 +88,33 @@ let json = classifier.infer("Classify: '…'").text()?;      // always the right
 A turn can still override it, or drop it with `.unconstrained()` — loading
 weights is the expensive part, so one engine should serve several shapes.
 
+### Async
+
+Behind the `tokio` feature. The controller stays synchronous — decoding is a
+blocking native call — so this runs it on `spawn_blocking` and hands you a
+`Stream`, instead of every async caller writing that bridge themselves:
+
+```rust
+// Await a whole turn.
+let (completion, session) = engine.chat_owned(session)
+    .user("Name two colours.")
+    .send_async()
+    .await?;
+
+// Or stream it.
+let mut turn = engine.chat_owned(session).user("Now one more.").spawn_async();
+while let Some(update) = turn.next().await {
+    match update {
+        Update::Delta(t) => print!("{t}"),
+        Update::Done { session, .. } => keep(session),
+        _ => {}
+    }
+}
+```
+
+`turn.canceller()` works from another task. Off by default, so sync consumers
+need no runtime.
+
 ### Will it fit?
 
 Reads the model's header and measures the machine, before loading anything:
@@ -165,11 +192,13 @@ cargo run --example structured --no-default-features --features metal -- /path/m
 cargo run --example chat_app   --no-default-features --features metal -- /path/model.gguf
 cargo run --example embeddings --no-default-features --features metal -- /path/embedding-model.gguf
 cargo run --example fit        --no-default-features --features metal -- /path/model.gguf
+cargo run --example async_chat --no-default-features --features metal,tokio -- /path/model.gguf
 ```
 
 - `minimal` — the smallest useful program: make a chat, stream the reply.
 - `basic` — ask / stream / converse, and the four ways to consume a generation.
 - `structured` — grammar-constrained output (JSON schema, bare JSON, regex).
+- `async_chat` — the `tokio` feature: await a turn, stream one, cancel from a task.
 - `fit` — inspect a model and ask whether this machine can run it.
 - `embeddings` — embedder-only engine, batch and single, cosine similarity.
 - `chat_app` — the shape of a real app: `Arc<Engine>` shared across threads,

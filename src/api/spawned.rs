@@ -139,6 +139,45 @@ impl OwnedChat {
         self
     }
 
+    /// The engine this turn runs on.
+    #[cfg(feature = "tokio")]
+    pub(crate) fn engine_handle(&self) -> Arc<Engine> {
+        Arc::clone(&self.engine)
+    }
+
+    /// The conversation this turn belongs to.
+    #[cfg(feature = "tokio")]
+    pub(crate) fn session_id(&self) -> &str {
+        self.session.id()
+    }
+
+    /// Run the turn to completion on the calling thread.
+    ///
+    /// Returns the session either way — a failed turn's transcript is still
+    /// the caller's, and still holds the messages they added.
+    pub(crate) fn run_blocking(
+        self,
+        on_token: impl FnMut(&str),
+    ) -> std::result::Result<(Completion, Session), (Error, Session)> {
+        let Self {
+            engine,
+            mut session,
+            spec,
+            thinking,
+            tools,
+        } = self;
+
+        let mut chat = engine.chat(&mut session).gen_spec(spec).thinking(thinking);
+        if let Some((tools, prompt)) = tools {
+            chat = chat.tools(tools, prompt);
+        }
+
+        match chat.send_streaming(on_token) {
+            Ok(completion) => Ok((completion, session)),
+            Err(error) => Err((error, session)),
+        }
+    }
+
     /// Run the turn on a worker thread, streaming [`Update`]s back.
     ///
     /// This is the shape a UI needs: the caller never blocks, deltas arrive as
@@ -169,32 +208,19 @@ impl OwnedChat {
         let session_id = self.session.id().to_string();
 
         let join = std::thread::spawn(move || {
-            let OwnedChat {
-                engine,
-                mut session,
-                spec,
-                thinking,
-                tools,
-            } = self;
-
             let deltas = tx.clone();
-            let mut chat = engine.chat(&mut session).gen_spec(spec).thinking(thinking);
-            if let Some((tools, prompt)) = tools {
-                chat = chat.tools(tools, prompt);
-            }
-
             // A send failure means the receiver went away. Keep draining so the
             // engine's session still ends cleanly.
-            let result = chat.send_streaming(|fragment| {
+            let result = self.run_blocking(|fragment| {
                 let _ = deltas.send(Update::Delta(fragment.to_string()));
             });
 
             let _ = match result {
-                Ok(completion) => tx.send(Update::Done {
+                Ok((completion, session)) => tx.send(Update::Done {
                     completion,
                     session,
                 }),
-                Err(error) => tx.send(Update::Failed { error, session }),
+                Err((error, session)) => tx.send(Update::Failed { error, session }),
             };
         });
 
@@ -287,6 +313,11 @@ pub struct Canceller {
 }
 
 impl Canceller {
+    #[cfg(feature = "tokio")]
+    pub(crate) fn new(engine: Arc<Engine>, session_id: String) -> Self {
+        Self { engine, session_id }
+    }
+
     /// Stop the turn.
     pub fn cancel(&self) -> Result<()> {
         self.engine.stop(self.session_id.clone())

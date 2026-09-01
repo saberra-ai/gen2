@@ -25,6 +25,8 @@
 //! change without breaking callers. [`Engine::controller`] is the escape hatch
 //! for what this doesn't cover.
 
+#[cfg(feature = "tokio")]
+mod asynchronous;
 mod chat;
 mod engine;
 mod error;
@@ -34,6 +36,8 @@ mod session;
 mod spawned;
 mod stream;
 
+#[cfg(feature = "tokio")]
+pub use asynchronous::AsyncTurn;
 pub use chat::Chat;
 pub use engine::{Engine, EngineBuilder};
 pub use error::{Error, Result};

@@ -113,6 +113,11 @@ mlxcel-core = { git = "https://github.com/saberra-ai/mlxcel", rev = "21306cf116e
 # mlxcel-core so both resolve to a single MLX C++ build.
 mlxcel = { git = "https://github.com/saberra-ai/mlxcel", rev = "21306cf116ed3188a156105736cc8ee6073d0e8b", optional = true, default-features = false }
 
+# Only buildable with the async API compiled in.
+[[example]]
+name = "async_chat"
+required-features = ["tokio"]
+
 [dev-dependencies]
 tempfile = "3.19.1"
 mockito = "1"
@@ -139,6 +144,12 @@ cuda = ["backend-llamacpp", "llama-cpp-2/cuda"]
 metal = ["backend-llamacpp", "llama-cpp-2/metal"]
 vulkan = ["backend-llamacpp", "llama-cpp-2/vulkan"]
 native = ["backend-llamacpp"]
+
+# Async API: `Stream` of updates, and `.send_async()` / `.spawn_async()`. The
+# controller stays synchronous — decoding is a blocking native call, so this
+# runs it on `spawn_blocking` rather than pretending otherwise. Off by default
+# so sync consumers need no runtime.
+tokio = []
 
 # Conditional `specta::Type` derives on the serializable surface, for host apps
 # that export these types to TypeScript over Tauri IPC.
