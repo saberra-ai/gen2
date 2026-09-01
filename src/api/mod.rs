@@ -67,3 +67,11 @@ mod session_props;
 /// Agent-loop contracts, on scripted model behaviour.
 #[cfg(test)]
 mod agent_contract_tests;
+
+/// The off-thread API, on scripted model behaviour.
+#[cfg(test)]
+mod spawned_tests;
+
+/// Tool bundles, reusable agent configurations, and sub-agents.
+#[cfg(test)]
+mod composition_tests;
