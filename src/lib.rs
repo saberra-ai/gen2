@@ -5,61 +5,32 @@
 //! hardware and memory facts it sizes itself against, and the backends it
 //! dispatches to. It depends on no host application.
 //!
-//! # The public API is the controller
+//! # The API
 //!
-//! [`controller`] is the only module another crate can reach. You start a
-//! controller, send it [`ControllerCmd`]s, and read [`ControllerEvent`]s back:
+//! [`Engine`] loads a model; [`Session`] holds a conversation you own. Three
+//! ways to call:
+//!
+//! - [`Engine::infer`] for one prompt with nothing kept.
+//! - [`Engine::chat`] for a turn in a conversation.
+//! - [`Engine::agent`] for a task carried out with your tools.
 //!
 //! ```no_run
-//! use std::sync::mpsc::sync_channel;
-//! use gen2::{ControllerCmd, ControllerEvent, GenSpec, Message, Settings};
-//! use gen2::controller::start_controller;
+//! use gen2::{Engine, Session};
 //!
-//! let handle = start_controller();
+//! let engine = Engine::load("/models/model.gguf")?;
 //!
-//! let (resp_tx, resp_rx) = std::sync::mpsc::channel();
-//! handle.send(ControllerCmd::LoadModel {
-//!     model_path: "/path/model.gguf".into(),
-//!     mmproj_path: None,
-//!     settings: Settings::default(),
-//!     api_key: None,
-//!     api_format: None,
-//!     resp: resp_tx,
-//! })?;
-//! resp_rx.recv()??;
+//! let title = engine.infer("Title this in three words.").max_tokens(16).text()?;
 //!
-//! let (tx, rx) = sync_channel(64);
-//! handle.send(ControllerCmd::StartChat {
-//!     chat_id: "chat-1".into(),
-//!     messages: vec![Message::user("Hello")],
-//!     gen_spec: GenSpec { max_tokens: Some(32), ..Default::default() },
-//!     thinking: Default::default(),
-//!     model_id: None,
-//!     model_size_bytes: None,
-//!     tools: None,
-//!     tx,
-//! })?;
-//!
-//! for event in rx {
-//!     match event {
-//!         ControllerEvent::Token(t) => print!("{t}"),
-//!         ControllerEvent::Eos | ControllerEvent::Stopped => break,
-//!         _ => {}
-//!     }
-//! }
-//! # Ok::<(), Box<dyn std::error::Error>>(())
+//! let mut session = Session::new();
+//! engine.chat(&mut session).user("Explain entropy.").send()?;
+//! engine.chat(&mut session).user("Simpler?").send()?;
+//! # Ok::<(), gen2::Error>(())
 //! ```
 //!
-//! For prompt-in/text-out without driving the command channel yourself, use
-//! the `system_infer` family on [`InferenceHandle`].
-//!
-//! Everything the engine does *underneath* that — backend dispatch, session
-//! runtime, KV cache, the model zoo, placement routing, residency policy — is
-//! internal. Those modules are `pub(crate)`: they are implementation, and
-//! keeping them so is what lets them change without breaking consumers.
-//!
-//! The types re-exported below are public only because they appear in the
-//! controller's own signatures; you cannot call the API without naming them.
+//! [`controller`] is the layer underneath, reachable through
+//! [`Engine::controller`] for anything the facade does not cover. Everything
+//! else — backend dispatch, session runtime, KV cache, the model zoo, placement
+//! routing, residency policy — is internal and free to change.
 //!
 //! See `docs/EXTRACTION.md` for what moved out of `pio-core`, what was
 //! inverted, and the one seam (remote/flock dispatch) a host still supplies.
@@ -122,9 +93,6 @@ pub(crate) mod media;
 /// decide whether another runtime may go resident.
 #[allow(dead_code, unused_imports)]
 pub(crate) mod memory;
-/// Where a generation ran — the compute-provenance receipt the engine emits.
-#[allow(dead_code, unused_imports)]
-pub(crate) mod provenance;
 #[allow(dead_code, unused_imports)]
 pub(crate) mod residency;
 #[allow(dead_code, unused_imports)]
@@ -183,7 +151,7 @@ pub use api::{AgentTool, Risk, SEARCH_TOOL, Skill, SkillLibrary, Steering, Strug
 pub use controller::{
     ControllerCmd, ControllerConfig, ControllerEvent, ControllerHandle, ControllerMetricsSnapshot,
     ControllerObservabilitySnapshot, ControllerPolicySnapshot, ControllerRuntimeSnapshot,
-    ControllerState, InferenceHandle, SystemTask,
+    ControllerState, InferenceHandle, Placement, RemoteDispatch, SystemTask,
 };
 
 /// What a generation is asked to do, and how it may think.
@@ -202,9 +170,6 @@ pub use engine::{
     ExecError, MmSettings, PromptSettings, SamplingSettings, Settings, StoppingSettings,
     SystemSettings,
 };
-
-/// The receipt describing where a generation ran.
-pub use provenance::ComputeProvenance;
 
 /// What machine this is — memory, cores, GPU — as read by
 /// [`HardwareProfile::detect`]. The input to a fit check.

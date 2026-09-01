@@ -35,58 +35,49 @@ use crate::engine::Settings;
 use crate::generation::GenSpec;
 use crate::types::message::Message;
 
-/// System-level inference tasks — ephemeral, fire-and-forget, hidden from users.
+/// A background inference workload: ephemeral, fire-and-forget, hidden from
+/// the user.
 ///
-/// Each variant runs as an ephemeral session on the controller: prompt in,
-/// tokens streamed back, session auto-cleaned on completion.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+/// Each runs as its own short-lived session on the controller. Prompt in,
+/// tokens back, session cleaned up on completion.
+///
+/// The named variants are the ones any assistant has. Everything domain
+/// specific is [`SystemTask::Custom`] — the label namespaces the ephemeral
+/// session id and shows up in observability, and nothing here reads meaning
+/// into it. Pair a custom task with the sampling it wants through
+/// [`InferenceHandle::system_infer_with`]; its
+/// [`default_gen_spec`](SystemTask::default_gen_spec) is deliberately plain.
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 #[non_exhaustive]
 pub enum SystemTask {
-    /// Generate a chat title from conversation history.
+    /// Name a conversation from its history.
     Title,
-    /// Generate follow-up suggestions for a chat.
+    /// Propose follow-up prompts.
     Suggestions,
-    /// Generate a context-compaction summary.
+    /// Summarise a conversation down to fit the window again.
     Compact,
-    /// Grounded answer synthesis from evidence chunks.
-    Answer,
-    /// LLM-powered triple (subject, predicate, object) extraction.
-    Triples,
-    /// Entity stance extraction from text.
-    Stance,
-    /// LLM-powered named entity recognition.
-    EntityExtract,
-    /// Topic cluster labeling from conversation samples.
-    TopicLabel,
-    /// Intent classification + query rewriting.
-    QueryUnderstand,
-    /// Evidence contradiction detection.
-    Contradiction,
-    /// Chat sidebar summary — topic extraction from recent messages.
+    /// Short topic line for a conversation list.
     Summary,
-    /// Conversational query rewriting — resolve a follow-up question
-    /// into a standalone search query using recent conversation history.
+    /// Anything else the host runs in the background.
+    Custom(std::borrow::Cow<'static, str>),
+}
+
+impl SystemTask {
+    /// A host-defined background task, labelled for session ids and traces.
     ///
-    /// Separate from `QueryUnderstand`: `QueryUnderstand` extracts structured
-    /// metadata (intent, temporal, entities) from a single query. `QueryRewrite`
-    /// is coreference resolution — "what does it cost?" + history → "what does
-    /// it cost to become a physician's assistant?". Lifts QReCC retrieval
-    /// recall@10 from 0.505 (raw) toward 0.925 (gold rewrite).
-    QueryRewrite,
-    /// Contextual chunk prefix generation (Anthropic contextual retrieval).
-    ///
-    /// Given (whole document, chunk), produce a 50–100 token situating
-    /// context that is prepended to the chunk before BOTH embedding and
-    /// BM25 indexing. Reference:
-    /// <https://www.anthropic.com/engineering/contextual-retrieval>
-    /// (−49% retrieval failures with embeddings+BM25, −67% with reranking).
-    /// See `crate::sabra::contextual_prefix`.
-    ContextualPrefix,
+    /// ```
+    /// # use gen2::SystemTask;
+    /// let task = SystemTask::custom("triples");
+    /// assert!(task.session_id().starts_with("triples-"));
+    /// ```
+    pub fn custom(label: impl Into<std::borrow::Cow<'static, str>>) -> Self {
+        Self::Custom(label.into())
+    }
 }
 
 /// Primary user chat vs an internal system inference workload.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 #[non_exhaustive]
 pub enum WorkloadKind {
@@ -172,27 +163,19 @@ impl WorkloadKind {
 }
 
 impl SystemTask {
-    /// Generate a unique session ID for this task type.
+    /// A fresh session id for one run of this task.
     pub fn session_id(&self) -> String {
-        format!("sabra-{}-{}", self.suffix(), uuid::Uuid::new_v4())
+        format!("{}-{}", self.label(), uuid::Uuid::new_v4())
     }
 
-    /// Suffix used to namespace ephemeral session IDs.
-    fn suffix(&self) -> &'static str {
+    /// What this task calls itself, in session ids and traces.
+    pub fn label(&self) -> &str {
         match self {
             Self::Title => "title",
             Self::Suggestions => "suggestions",
             Self::Compact => "compact",
-            Self::Answer => "answer",
-            Self::Triples => "triples",
-            Self::Stance => "stance",
-            Self::EntityExtract => "entities",
-            Self::TopicLabel => "topic",
-            Self::QueryUnderstand => "query",
-            Self::Contradiction => "contradiction",
             Self::Summary => "summary",
-            Self::QueryRewrite => "rewrite",
-            Self::ContextualPrefix => "ctxprefix",
+            Self::Custom(label) => label,
         }
     }
 
@@ -288,7 +271,7 @@ pub enum ControllerCmd {
         /// chat-template default.
         thinking: crate::generation::ThinkingMode,
         /// Canonical id of the model this request targets (the locally
-        /// selected/loaded model). Threaded into the flock router as
+        /// selected/loaded model). Threaded into the host's router as
         /// `required_model` (peer match) and used to resolve the model's
         /// footprint by id from the catalog for the fit gate. `None` ⇒
         /// legacy capability-only routing. See
@@ -297,11 +280,11 @@ pub enum ControllerCmd {
         /// Whole-model on-disk byte footprint for this request, resolved by the
         /// send site (which can reach a model catalog)
         /// via the host's model-footprint resolver. This
-        /// is the precise size for the flock fit gate across **all** model kinds
+        /// is the precise size for the fit gate across **all** model kinds
         /// — catalog GGUF, local file, and directory bundle (MLX/ONNX), whose
         /// summed size only the store-bearing resolver can produce. Threaded
-        /// into the flock router as the caller-supplied `model_size_bytes`,
-        /// which `FlockHandle::resolve_route_model_size` on the host side
+        /// through to the host's router as the caller-supplied `model_size_bytes`,
+        /// which the host's dispatcher
         /// prefers over its sync catalog/local-loaded fallbacks. `None` ⇒ the
         /// seam falls back to catalog-by-id or the local-loaded footprint.
         model_size_bytes: Option<u64>,
@@ -315,7 +298,7 @@ pub enum ControllerCmd {
         chat_id: String,
         new_messages: Vec<Message>,
         gen_spec: GenSpec,
-        /// Canonical model id for flock routing (see
+        /// Canonical model id for remote routing (see
         /// [`ControllerCmd::StartChat::model_id`]).
         model_id: Option<String>,
         /// Store-resolved whole-model footprint (see
@@ -344,7 +327,7 @@ pub enum ControllerCmd {
         /// models (e.g. DiffusionGemma's `enable_thinking=false` empty-thought
         /// prefill) so the reply is just the answer, no scaffold.
         thinking: crate::generation::ThinkingMode,
-        /// Canonical model id for flock routing (see
+        /// Canonical model id for remote routing (see
         /// [`ControllerCmd::StartChat::model_id`]). Internal system-inference
         /// callers pass `None` (they ride whatever model the controller has
         /// loaded); the production chat path threads the selected model id.
@@ -440,12 +423,12 @@ impl ControllerHandle {
     ///
     /// Issues the runtime-snapshot command and waits **with a short timeout**
     /// for the reply — one in-process round-trip to the controller thread.
-    /// Sources the flock VRAM/RAM fit gate from the local device's loaded
+    /// Sources the VRAM/RAM fit gate from the local device's loaded
     /// model (Part A of VRAM-aware routing); see
-    /// `FlockHandle::resolve_route_model_size`.
+    /// the host's route resolver.
     ///
     /// The timeout (not the unbounded `get_controller_runtime_snapshot`) is
-    /// deliberate: this runs on the flock dispatch hot path, where a wedged or
+    /// deliberate: this runs on the dispatch hot path, where a wedged or
     /// not-yet-servicing controller thread must NOT be able to block the
     /// dispatcher indefinitely. The reply is a tiny struct the controller can
     /// build without I/O (the size was stat'd once at `LoadModel`), so the real
@@ -481,7 +464,7 @@ impl ControllerHandle {
     }
 
     /// Create a `ControllerHandle` from a raw sender. Intended for testing
-    /// in downstream crates (pio-daemon SSE tests, etc.).
+    /// in downstream crates.
     #[doc(hidden)]
     pub fn new_for_test(tx: Sender<ControllerCmd>) -> Self {
         Self {
@@ -491,136 +474,127 @@ impl ControllerHandle {
     }
 }
 
-/// Lazily-initialized default config for remote/flock handles that don't
-/// carry their own config. Using `LazyLock` avoids allocation on every call.
-#[cfg(any(feature = "p2p-client", feature = "flock"))]
-static DEFAULT_CONFIG: std::sync::LazyLock<ControllerConfig> =
+/// A controller running somewhere other than this process.
+///
+/// gen2 dispatches [`ControllerCmd`]s and reads [`ControllerEvent`]s back. It
+/// has no opinion about where that happens: another machine on the LAN, a
+/// worker process, a socket, a test double. Implement this over your transport
+/// and wrap it with [`InferenceHandle::remote`], and everything built on
+/// `InferenceHandle` works unchanged.
+///
+/// Events come back the way they do locally, over the `tx` channel inside the
+/// command you were handed. `send` returns as soon as the command is on its
+/// way; a failure to *deliver* is the error, and a failure during generation
+/// arrives as [`ControllerEvent::Error`].
+pub trait RemoteDispatch: Send + Sync + 'static {
+    /// Deliver one command. The `Err` describes why it could not be sent.
+    fn send(&self, cmd: ControllerCmd) -> Result<(), String>;
+
+    /// What this dispatch calls itself, for traces and
+    /// [`InferenceHandle::placement`]. Defaults to `"remote"`.
+    fn label(&self) -> &str {
+        "remote"
+    }
+
+    /// Policy this dispatch runs under. Defaults to
+    /// [`ControllerConfig::default`], which is what a caller who has no
+    /// particular opinion should leave it as.
+    fn config(&self) -> &ControllerConfig {
+        &DEFAULT_REMOTE_CONFIG
+    }
+
+    /// Hint that a model is about to be needed. Fire-and-forget; the default
+    /// ignores it.
+    fn warm_model(&self, model_dir: PathBuf) {
+        let _ = model_dir;
+    }
+}
+
+/// Default policy for a [`RemoteDispatch`] that does not supply its own.
+static DEFAULT_REMOTE_CONFIG: std::sync::LazyLock<ControllerConfig> =
     std::sync::LazyLock::new(ControllerConfig::default);
 
-/// Unified handle that dispatches to either a local or remote controller.
+/// Where the work sent through an [`InferenceHandle`] actually runs.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum Placement<'a> {
+    /// This process, on this machine.
+    Local,
+    /// Behind a [`RemoteDispatch`], which calls itself this.
+    Remote(&'a str),
+}
+
+/// A controller to talk to, local or not.
 ///
-/// The API layer uses this everywhere — it doesn't need to know whether
-/// inference is running locally or on a remote peer.
+/// Everything above this layer takes an `InferenceHandle` and stops caring
+/// where inference runs.
+///
+/// ```
+/// # use gen2::{ControllerCmd, InferenceHandle, Placement, RemoteDispatch};
+/// struct OverTheWire;
+/// impl RemoteDispatch for OverTheWire {
+///     fn send(&self, _cmd: ControllerCmd) -> Result<(), String> { Ok(()) }
+///     fn label(&self) -> &str { "workshop-mac" }
+/// }
+///
+/// let handle = InferenceHandle::remote(OverTheWire);
+/// assert_eq!(handle.placement(), Placement::Remote("workshop-mac"));
+/// ```
 #[derive(Clone)]
 pub enum InferenceHandle {
+    /// A controller loop on this machine.
     Local(ControllerHandle),
-    #[cfg(feature = "p2p-client")]
-    Remote(std::sync::Arc<crate::p2p::client::ResilientRemoteHandle>),
-    #[cfg(feature = "flock")]
-    Flock(std::sync::Arc<crate::p2p::flock::handle::FlockHandle>),
-    /// Flock **gateway** consumer (v=2 invite lease) — not peer pool routing.
-    #[cfg(feature = "flock")]
-    RegisteredFlockGateway(std::sync::Arc<crate::p2p::flock::RegisteredFlockInferenceHandle>),
+    /// A controller reached through a host-supplied transport.
+    Remote(std::sync::Arc<dyn RemoteDispatch>),
+}
+
+impl std::fmt::Debug for InferenceHandle {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_tuple("InferenceHandle")
+            .field(&self.placement())
+            .finish()
+    }
 }
 
 impl InferenceHandle {
+    /// Wrap a host transport as a handle.
+    pub fn remote(dispatch: impl RemoteDispatch) -> Self {
+        Self::Remote(std::sync::Arc::new(dispatch))
+    }
+
+    /// Send one command to whichever controller this handle points at.
     pub fn send(&self, cmd: ControllerCmd) -> Result<(), String> {
         match self {
             Self::Local(h) => h.send(cmd),
-            #[cfg(feature = "p2p-client")]
             Self::Remote(h) => h.send(cmd),
-            #[cfg(feature = "flock")]
-            Self::Flock(h) => Self::dispatch_through_flock(h, cmd),
-            #[cfg(feature = "flock")]
-            Self::RegisteredFlockGateway(h) => h.send(cmd),
         }
     }
 
-    /// The compute-sovereignty provenance for work run through this handle — the
-    /// receipt sealed into the evidence chain (`compute::ComputeProvenance`).
+    /// Where work sent through this handle runs.
     ///
-    /// Honest by construction: **every** live handle variant is the user's own
-    /// hardware. `Local` is this device; `Remote`/`Flock`/`RegisteredFlockGateway`
-    /// are the user's own peers/federation — they leave *this* machine but stay on
-    /// hardware the user owns (`off_user_hardware = false`). There is no
-    /// off-your-machine *cloud* handle today (a BYO cloud model is an
-    /// `external_api` backend under a local controller, not a placement we
-    /// escalate to), so this never reports `cloud`. When such a handle lands, add
-    /// its arm here and the fail-closed policy in `compute::escalation` starts
-    /// guarding it. `sent` describes what left this machine (the goal text); it's
-    /// unused for the local arm, which sends nothing.
-    pub fn compute_provenance(&self, sent: &str) -> crate::provenance::ComputeProvenance {
-        use crate::provenance::ComputeProvenance;
-        let _sent = sent;
+    /// A host that reports provenance to its user reads this. gen2 states the
+    /// fact and stops there: what a given remote *means* — another of your
+    /// machines, a rented box, someone else's cloud — is the host's to know and
+    /// the host's to say.
+    pub fn placement(&self) -> Placement<'_> {
         match self {
-            Self::Local(_) => ComputeProvenance::local("local"),
-            #[cfg(feature = "p2p-client")]
-            Self::Remote(_) => ComputeProvenance::own_device("device", _sent),
-            #[cfg(feature = "flock")]
-            Self::Flock(_) => ComputeProvenance::own_device("flock", _sent),
-            #[cfg(feature = "flock")]
-            Self::RegisteredFlockGateway(_) => {
-                ComputeProvenance::own_device("flock gateway", _sent)
-            }
+            Self::Local(_) => Placement::Local,
+            Self::Remote(h) => Placement::Remote(h.label()),
         }
     }
 
-    /// Route a `ControllerCmd` through a `FlockHandle` with failover for
-    /// streaming inference and single-shot dispatch for everything else.
-    ///
-    /// Streaming inference commands (`StartChat`, `ContinueChat`,
-    /// `SystemInfer`) carry a clone-friendly payload, so we can rebuild
-    /// them per attempt. We project them into [`crate::p2p::flock::handle::RetryableInference`]
-    /// and hand them to [`crate::p2p::flock::handle::FlockHandle::dispatch_inference_with_failover`].
-    /// If a peer's transport fails before any token flows, the dispatcher
-    /// rebuilds the cmd and retries on the next-best peer using the same
-    /// caller-owned `tx` channel — the caller sees one continuous stream.
-    ///
-    /// Non-streaming commands (model-status queries, fire-and-forget
-    /// stops, etc.) take the single-shot path: they don't carry retryable
-    /// inputs, and a failure on a status query is surfaced rather than
-    /// silently retried.
-    #[cfg(feature = "flock")]
-    fn dispatch_through_flock(
-        handle: &std::sync::Arc<crate::p2p::flock::handle::FlockHandle>,
-        cmd: ControllerCmd,
-    ) -> Result<(), String> {
-        match project_streaming_inference(cmd) {
-            // Streaming inference: failover dispatch with the projected payload.
-            Ok(retryable) => handle.dispatch_inference_with_failover(retryable),
-            // Everything else (status queries, stop, pause, resume, model
-            // lifecycle) goes single-shot — no clone-friendly payload, and
-            // a transient error on a status query is more useful surfaced
-            // than silently retried.
-            Err(other) => handle.send(other),
-        }
-    }
-
-    /// Current liveness state of the remote peer, or `Alive` for local.
-    #[cfg(feature = "p2p-client")]
-    pub fn liveness(&self) -> crate::p2p::heartbeat::Liveness {
-        match self {
-            Self::Local(_) => crate::p2p::heartbeat::Liveness::Alive,
-            Self::Remote(h) => h.liveness(),
-            #[cfg(feature = "flock")]
-            Self::Flock(h) => h.liveness(),
-            #[cfg(feature = "flock")]
-            Self::RegisteredFlockGateway(_) => crate::p2p::heartbeat::Liveness::Alive,
-        }
-    }
-
-    /// The controller config driving this handle's policy decisions.
-    /// Returns default config for remote/flock handles.
+    /// The policy this handle's controller runs under.
     pub fn config(&self) -> &ControllerConfig {
         match self {
             Self::Local(h) => h.config(),
-            #[cfg(feature = "p2p-client")]
-            Self::Remote(_) => &DEFAULT_CONFIG,
-            #[cfg(feature = "flock")]
-            Self::Flock(_) => &DEFAULT_CONFIG,
-            #[cfg(feature = "flock")]
-            Self::RegisteredFlockGateway(_) => &DEFAULT_CONFIG,
+            Self::Remote(h) => h.config(),
         }
     }
 
-    /// Fire-and-forget warm model hint. No-op for non-local handles.
+    /// Fire-and-forget hint that a model is about to be needed.
     pub fn warm_model(&self, model_dir: PathBuf) {
         match self {
             Self::Local(h) => h.warm_model(model_dir),
-            #[cfg(feature = "p2p-client")]
-            Self::Remote(_) => {}
-            #[cfg(feature = "flock")]
-            Self::Flock(_) | Self::RegisteredFlockGateway(_) => {}
+            Self::Remote(h) => h.warm_model(model_dir),
         }
     }
 
@@ -663,9 +637,11 @@ impl InferenceHandle {
             .await
     }
 
-    /// As [`Self::system_infer_with`], but carries a concrete model fence into
-    /// the Flock dispatcher. This never loads or transfers model files: it
-    /// only lets the target select an already-authorized, exact-model route.
+    /// As [`Self::system_infer_with`], but carries routing hints for a
+    /// [`RemoteDispatch`]: which model the target must already have, how big it
+    /// is, and which node to insist on. Never loads or transfers model files —
+    /// it only lets the target pick an exact-model route it already has. The
+    /// local arm ignores all three.
     #[allow(clippy::too_many_arguments)]
     pub async fn system_infer_with_route(
         &self,
@@ -715,9 +691,8 @@ impl InferenceHandle {
 
     /// Streaming variant of [`Self::system_infer`]: invokes `on_token` for each
     /// generated token as it arrives (instead of only returning the joined
-    /// text), and still returns the full text. The satellite reference chat
-    /// slice (pio-base-app, ADR-0030) uses this to stream `ChatEvent::Delta`
-    /// without the full chat-persistence machinery in `app::chat`.
+    /// text), and still returns the full text. Use it to show a background
+    /// task's output as it lands rather than after it finishes.
     pub async fn system_infer_streaming<F>(
         &self,
         task: SystemTask,
@@ -769,15 +744,11 @@ impl InferenceHandle {
         .map_err(|e| ExecError::Generation(e.to_string()))?
     }
 
-    /// Streaming system inference with a caller-supplied [`GenSpec`], instead of
-    /// the task's built-in default. Same contract as [`Self::system_infer_streaming`]
-    /// (invokes `on_token` per token, returns the full text) — the only
-    /// difference is that `gen_spec` overrides the per-task sampling defaults.
-    ///
-    /// The satellite reference chat slice (pio-base-app, ADR-0030) uses this so
-    /// its Settings sheet (temperature / top-p / top-k) actually changes output:
-    /// it derives a `GenSpec` from the user's `PioConfig` rather than accepting
-    /// the fixed `SystemTask::Answer` spec.
+    /// Streaming system inference with a caller-supplied [`GenSpec`], instead
+    /// of the task's default. Same contract as
+    /// [`Self::system_infer_streaming`] — the difference is that `gen_spec`
+    /// overrides the per-task sampling defaults, which is what a host with its
+    /// own settings surface needs so those settings actually change output.
     pub async fn system_infer_streaming_with<F>(
         &self,
         task: SystemTask,
@@ -833,7 +804,7 @@ impl InferenceHandle {
     /// Blocking read of delivery / termination counters from the active backend.
     ///
     /// For the local controller, mirrors [`ControllerHandle::get_controller_metrics`].
-    /// For remote or flock routes, forwards the same wire query the server handles for status.
+    /// For a remote route, forwards the same query the dispatch answers for status.
     pub fn get_controller_metrics(&self) -> Result<ControllerMetricsSnapshot, String> {
         let (tx, rx) = channel();
         self.send(ControllerCmd::GetControllerMetrics { resp: tx })?;
@@ -971,90 +942,6 @@ fn run_loop(rx: Receiver<ControllerCmd>, config: ControllerConfig) {
 pub(super) enum ControlFlow {
     Continue,
     Break,
-}
-
-/// Project a streaming inference [`ControllerCmd`] (`StartChat` / `ContinueChat`
-/// / `SystemInfer`) into a clone-friendly [`crate::p2p::flock::handle::RetryableInference`]
-/// for cross-peer failover dispatch. Non-streaming commands are returned
-/// unchanged via `Err` so the caller can take the single-shot path.
-///
-/// This is the flock dispatch **seam**: it carries the cmd's `model_id` →
-/// `required_model` (peer match) and — the gap this closes — its store-resolved
-/// `model_size_bytes` straight through to [`crate::p2p::flock::handle::RetryableInference::model_size_bytes`],
-/// which `FlockHandle::resolve_route_model_size` on the host side
-/// prefers over its sync catalog/local-loaded fallbacks. Extracted as a free
-/// function so the projection (especially the size carry-through) is unit-testable
-/// without standing up a live failover dispatcher.
-// The `Err` arm carries the original `ControllerCmd` back to the single-shot
-// path by value — deliberately, to avoid a heap allocation on every
-// non-streaming dispatch (status queries, stop/pause) on the hot dispatch path.
-// The cmd is a transient stack value, not stored, so its size is harmless here.
-#[cfg(feature = "flock")]
-#[allow(clippy::result_large_err)]
-pub(crate) fn project_streaming_inference(
-    cmd: ControllerCmd,
-) -> Result<crate::p2p::flock::handle::RetryableInference, ControllerCmd> {
-    use crate::p2p::flock::handle::{RetryableInference, RetryableInferenceKind};
-    match cmd {
-        ControllerCmd::StartChat {
-            chat_id,
-            messages,
-            gen_spec,
-            thinking: _,
-            model_id,
-            model_size_bytes,
-            tools: None,
-            tx,
-        } => Ok(RetryableInference {
-            chat_id,
-            gen_spec,
-            kind: RetryableInferenceKind::StartChat { messages },
-            required_model: model_id,
-            required_node: None,
-            model_size_bytes,
-            tx,
-        }),
-        ControllerCmd::ContinueChat {
-            chat_id,
-            new_messages,
-            gen_spec,
-            model_id,
-            model_size_bytes,
-            tx,
-        } => Ok(RetryableInference {
-            chat_id,
-            gen_spec,
-            kind: RetryableInferenceKind::ContinueChat { new_messages },
-            required_model: model_id,
-            required_node: None,
-            model_size_bytes,
-            tx,
-        }),
-        ControllerCmd::SystemInfer {
-            task,
-            chat_id,
-            messages,
-            gen_spec,
-            thinking,
-            model_id,
-            model_size_bytes,
-            required_node,
-            tx,
-        } => Ok(RetryableInference {
-            chat_id,
-            gen_spec,
-            kind: RetryableInferenceKind::SystemInfer {
-                task,
-                messages,
-                thinking,
-            },
-            required_model: model_id,
-            required_node,
-            model_size_bytes,
-            tx,
-        }),
-        other => Err(other),
-    }
 }
 
 #[cfg(test)]
@@ -1540,59 +1427,64 @@ mod tests {
         let _ = handle.send(ControllerCmd::Shutdown);
     }
 
-    /// Seam: the flock dispatch projection must carry the cmd's
-    /// `model_size_bytes` (the store-resolved dir-bundle footprint on the
-    /// production path) into `RetryableInference.model_size_bytes` — NOT
-    /// hardcoded `None`. Then `resolve_route_model_size` (caller-supplied first)
-    /// picks it up so a dir-bundle model gates the fit feasibility check.
-    #[cfg(feature = "flock")]
+    /// The remote seam is generic: a host transport that knows nothing about
+    /// gen2's internals is a first-class handle.
     #[test]
-    fn project_streaming_inference_carries_model_size_bytes() {
-        let (tx, _rx) = sync_channel::<ControllerEvent>(EVENT_CHANNEL_CAPACITY);
-        // A non-curated dir-bundle size the catalog could never supply.
-        let dir_bundle_size = 6_208u64;
-        let cmd = ControllerCmd::StartChat {
-            chat_id: "seam".into(),
-            messages: vec![],
-            gen_spec: GenSpec::default(),
-            thinking: Default::default(),
-            model_id: Some("mlx-bundle-uuid".into()),
-            model_size_bytes: Some(dir_bundle_size),
-            tools: None,
-            tx,
-        };
-        let retryable = super::project_streaming_inference(cmd)
-            .unwrap_or_else(|_| panic!("StartChat must project to a RetryableInference"));
-        assert_eq!(
-            retryable.model_size_bytes,
-            Some(dir_bundle_size),
-            "the dispatch seam must feed cmd.model_size_bytes into RetryableInference, not None"
-        );
-        assert_eq!(retryable.required_model.as_deref(), Some("mlx-bundle-uuid"));
+    fn a_host_transport_is_a_first_class_handle() {
+        use std::sync::atomic::{AtomicUsize, Ordering};
 
-        // And the resolver prefers that caller-supplied size — the fit gate bites.
-        let handle = crate::p2p::flock::handle::FlockHandle::new(
-            uuid::Uuid::new_v4(),
-            std::sync::Arc::new(crate::p2p::flock::registry::FlockRegistry::new()),
-            None,
-        );
+        struct Counting(AtomicUsize);
+        impl RemoteDispatch for Counting {
+            fn send(&self, _cmd: ControllerCmd) -> Result<(), String> {
+                self.0.fetch_add(1, Ordering::Relaxed);
+                Ok(())
+            }
+            fn label(&self) -> &str {
+                "workshop-mac"
+            }
+        }
+
+        let dispatch = std::sync::Arc::new(Counting(AtomicUsize::new(0)));
+        let handle = InferenceHandle::Remote(dispatch.clone());
+
+        assert_eq!(handle.placement(), Placement::Remote("workshop-mac"));
+        // A transport with no opinion inherits the default policy rather than
+        // being handed the local controller's.
         assert_eq!(
-            handle.resolve_route_model_size_for_test(&retryable),
-            Some(dir_bundle_size),
-            "resolve_route_model_size must surface the caller-supplied dir-bundle size"
+            handle.config().event_channel_capacity,
+            ControllerConfig::default().event_channel_capacity
+        );
+
+        let (resp, _rx) = std::sync::mpsc::channel();
+        handle.send(ControllerCmd::IsModelLoaded { resp }).unwrap();
+        handle.warm_model(PathBuf::from("/models/whatever"));
+        assert_eq!(
+            dispatch.0.load(Ordering::Relaxed),
+            1,
+            "warm_model defaults to a no-op"
         );
     }
 
-    /// A non-streaming cmd is returned unchanged (single-shot path), so the
-    /// projection never mis-routes a status query into failover.
-    #[cfg(feature = "flock")]
+    /// A local handle says so, and says nothing about hardware ownership —
+    /// that reading belongs to the host.
     #[test]
-    fn project_streaming_inference_passes_through_non_streaming() {
-        let (resp, _rx) = std::sync::mpsc::channel();
-        let cmd = ControllerCmd::IsModelLoaded { resp };
-        assert!(
-            super::project_streaming_inference(cmd).is_err(),
-            "a status query must fall through to single-shot, not failover dispatch"
+    fn a_local_handle_reports_local_placement() {
+        let handle = InferenceHandle::Local(start_controller());
+        assert_eq!(handle.placement(), Placement::Local);
+        let _ = handle.send(ControllerCmd::Shutdown);
+    }
+
+    /// A custom task carries its own label into the session id, and gets plain
+    /// sampling rather than something tuned for a task gen2 cannot see.
+    #[test]
+    fn a_custom_system_task_is_labelled_but_untuned() {
+        let task = SystemTask::custom("triples");
+        assert_eq!(task.label(), "triples");
+        assert!(task.session_id().starts_with("triples-"));
+        assert_ne!(
+            task.default_gen_spec().max_tokens,
+            SystemTask::Title.default_gen_spec().max_tokens,
+            "a named task keeps its tuning; a custom one must not inherit it"
         );
     }
 

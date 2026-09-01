@@ -72,7 +72,7 @@ pub(super) fn build_runtime_snapshot(state: &ControllerState) -> ControllerRunti
         .map(|(chat_id, chat)| ActiveChatSnapshot {
             chat_id: chat_id.clone(),
             session_id: chat.session.id(),
-            workload: chat.workload,
+            workload: chat.workload.clone(),
             lifecycle: lifecycle_from_state(&chat.state),
         })
         .collect();

@@ -231,7 +231,7 @@ mod tests {
 
     #[test]
     fn metal_auto_offload_matches_cuda() {
-        // Mac (Metal) auto-offload behaves like CUDA — the flock's other GPU host.
+        // Mac (Metal) auto-offload behaves like CUDA — the other GPU host.
         assert_eq!(
             resident_mb_from_file_mb(2000, GpuBackend::Metal, None),
             resident_mb_from_file_mb(2000, GpuBackend::Cuda, None),

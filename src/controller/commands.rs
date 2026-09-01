@@ -192,14 +192,14 @@ fn save_all_chat_kv(state: &ControllerState) {
             .save_cache(crate::kv::KvSaveSpec::ToPath(path.clone()))
         {
             Ok(snap) => tracing::info!(
-                target: "pio::gen2::kv::keepwarm",
+                target: "gen2::kv::keepwarm",
                 chat_id = %chat_id,
                 tokens = snap.tokens_covered,
                 path = %path.display(),
                 "saved chat KV for keepwarm"
             ),
             Err(e) => tracing::warn!(
-                target: "pio::gen2::kv::keepwarm",
+                target: "gen2::kv::keepwarm",
                 chat_id = %chat_id,
                 error = ?e,
                 "failed to save chat KV"
@@ -238,7 +238,7 @@ pub(super) fn maybe_idle_unload_llm(state: &mut ControllerState) {
         return;
     }
     tracing::info!(
-        target: "pio::gen2::kv::keepwarm",
+        target: "gen2::kv::keepwarm",
         idle_secs = now - state.last_llm_activity_unix,
         "idle-unloading LLM (keepwarm)"
     );
@@ -279,12 +279,12 @@ fn maybe_wake_llm(state: &mut ControllerState) {
             state.idle_unloaded_llm = None;
             state.last_llm_activity_unix = now;
             tracing::info!(
-                target: "pio::gen2::kv::keepwarm",
+                target: "gen2::kv::keepwarm",
                 "woke idle-unloaded LLM on demand"
             );
         }
         Err(e) => tracing::warn!(
-            target: "pio::gen2::kv::keepwarm",
+            target: "gen2::kv::keepwarm",
             error = ?e,
             "failed to wake idle-unloaded LLM"
         ),
@@ -302,7 +302,7 @@ fn handle_model_command(state: &mut ControllerState, cmd: ControllerCmd) -> Cont
             resp,
         } => {
             // Capture the loaded LLM's whole-model byte size on success so the
-            // flock fit gate can source a real footprint (Part A of VRAM-aware
+            // remote fit gate can source a real footprint (Part A of VRAM-aware
             // routing). Computed from the same path the engine stats at load
             // (`metadata().len()` in `engine::validate_model_file`); replaced on
             // every successful reload, cleared on failure.
@@ -340,7 +340,7 @@ fn handle_model_command(state: &mut ControllerState, cmd: ControllerCmd) -> Cont
                     Ok(()) => {
                         if rung_idx > 0 {
                             tracing::warn!(
-                                target: "pio::gen2::load_ladder",
+                                target: "gen2::load_ladder",
                                 rung = rung.label,
                                 history = ?rung_history,
                                 "model load rescued by fallback rung"
@@ -352,7 +352,7 @@ fn handle_model_command(state: &mut ControllerState, cmd: ControllerCmd) -> Cont
                     Err(LoadAttemptError { message, fatal }) => {
                         rung_history.push(format!("{}: {}", rung.label, message));
                         tracing::warn!(
-                            target: "pio::gen2::load_ladder",
+                            target: "gen2::load_ladder",
                             rung = rung.label,
                             fatal,
                             error = %message,
@@ -517,9 +517,9 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
             gen_spec,
             thinking,
             // The model id is a routing-only fence consumed upstream at the
-            // flock dispatch seam; the controller serves with its loaded model.
+            // remote dispatch seam; the controller serves with its loaded model.
             model_id: _,
-            // Routing-only fit-gate size consumed at the flock seam.
+            // Routing-only fit-gate size consumed at the remote seam.
             model_size_bytes: _,
             tools,
             tx,
@@ -602,7 +602,7 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
                 let cand = crate::kv::store::candidate_for_chat(&dir, &chat_id);
                 if cand.is_none() {
                     tracing::info!(
-                        target: "pio::gen2::kv::keepwarm",
+                        target: "gen2::kv::keepwarm",
                         chat_id = %chat_id,
                         "no KV candidate for chat — cold start"
                     );
@@ -692,9 +692,9 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
             chat_id,
             new_messages,
             gen_spec,
-            // Routing-only fence consumed at the flock seam (see StartChat).
+            // Routing hints for a remote dispatch; the local loop already
+            // knows which model it has (see StartChat).
             model_id: _,
-            // Routing-only fit-gate size consumed at the flock seam.
             model_size_bytes: _,
             tx,
         } => {
@@ -828,19 +828,20 @@ fn handle_system_command(state: &mut ControllerState, cmd: ControllerCmd) -> Con
             messages,
             gen_spec,
             thinking,
-            // Routing-only fence consumed at the flock seam (see StartChat).
+            // Routing hints for a remote dispatch; the local loop already
+            // knows which model it has (see StartChat).
             model_id: _,
-            // Routing-only fit-gate size consumed at the flock seam.
             model_size_bytes: _,
             required_node: _,
             tx,
         } => {
+            let label = task.label().to_string();
             start_ephemeral(
                 &mut state.engine,
                 &mut state.chats,
                 chat_id,
                 task,
-                task.suffix(),
+                &label,
                 messages,
                 gen_spec,
                 thinking,

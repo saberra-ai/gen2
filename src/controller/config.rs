@@ -42,10 +42,15 @@ impl Default for ControllerConfig {
 }
 
 impl ControllerConfig {
-    /// Returns the default GenSpec for a system task.
+    /// Sampling defaults for a background task.
     ///
-    /// Uses exhaustive match so adding a new `SystemTask` variant
-    /// produces a compile error until defaults are defined.
+    /// The named tasks get specs tuned for what they are: a title is short and
+    /// nearly deterministic, suggestions want some spread, a compaction
+    /// summary has to stay faithful across a lot of tokens.
+    ///
+    /// [`SystemTask::Custom`] gets nothing tuned, because nothing here knows
+    /// what it is. Pass your own spec to
+    /// [`InferenceHandle::system_infer_with`](crate::InferenceHandle::system_infer_with).
     pub fn system_task_spec(&self, task: &SystemTask) -> GenSpec {
         match task {
             SystemTask::Title => GenSpec {
@@ -58,43 +63,12 @@ impl ControllerConfig {
                 temperature: Some(0.7),
                 ..Default::default()
             },
-            // Compact: summarization is quality-sensitive. These defaults were tuned
-            // for coherent multi-turn summaries. Lower temp = more faithful, higher
-            // tokens = less truncation. Change with benchmarks, not intuition.
+            // Compaction is quality-sensitive. Lower temperature keeps the
+            // summary faithful, the larger budget keeps it from truncating
+            // mid-thought. Change these with benchmarks, not intuition.
             SystemTask::Compact => GenSpec {
                 max_tokens: Some(512),
                 temperature: Some(0.3),
-                ..Default::default()
-            },
-            // Stance & EntityExtract: low temp for structured extraction accuracy.
-            SystemTask::Stance | SystemTask::EntityExtract => GenSpec {
-                max_tokens: Some(512),
-                temperature: Some(0.1),
-                ..Default::default()
-            },
-            SystemTask::Answer => GenSpec {
-                max_tokens: Some(1024),
-                temperature: Some(0.3),
-                ..Default::default()
-            },
-            SystemTask::Triples => GenSpec {
-                max_tokens: Some(1024),
-                temperature: Some(0.1),
-                ..Default::default()
-            },
-            SystemTask::TopicLabel => GenSpec {
-                max_tokens: Some(100),
-                temperature: Some(0.3),
-                ..Default::default()
-            },
-            SystemTask::QueryUnderstand => GenSpec {
-                max_tokens: Some(256),
-                temperature: Some(0.1),
-                ..Default::default()
-            },
-            SystemTask::Contradiction => GenSpec {
-                max_tokens: Some(512),
-                temperature: Some(0.2),
                 ..Default::default()
             },
             SystemTask::Summary => GenSpec {
@@ -102,23 +76,9 @@ impl ControllerConfig {
                 temperature: Some(0.3),
                 ..Default::default()
             },
-            // QueryRewrite: short output (one standalone query), low temp for
-            // faithful coreference resolution, top_p=0.9 for diversity on
-            // pronoun ambiguities. Calibrated on QReCC in Phase 0 probe —
-            // 104ms/query on CPU with `resources/model.gguf`.
-            SystemTask::QueryRewrite => GenSpec {
-                max_tokens: Some(80),
-                temperature: Some(0.1),
-                ..Default::default()
-            },
-            // ContextualPrefix: Anthropic contextual retrieval asks for a
-            // "short succinct context", usually 50–100 tokens — 120 caps the
-            // tail without truncating a well-formed prefix. Low temp: the
-            // prefix must be faithful to the document, not creative.
-            // https://www.anthropic.com/engineering/contextual-retrieval
-            SystemTask::ContextualPrefix => GenSpec {
-                max_tokens: Some(120),
-                temperature: Some(0.1),
+            SystemTask::Custom(_) => GenSpec {
+                max_tokens: Some(512),
+                temperature: Some(0.3),
                 ..Default::default()
             },
         }
@@ -139,7 +99,7 @@ mod tests {
     }
 
     #[test]
-    fn system_task_specs_match_original_values() {
+    fn named_tasks_keep_their_tuning() {
         let config = ControllerConfig::default();
 
         let title = config.system_task_spec(&SystemTask::Title);
@@ -154,59 +114,38 @@ mod tests {
         assert_eq!(compact.max_tokens, Some(512));
         assert_eq!(compact.temperature, Some(0.3));
 
-        let stance = config.system_task_spec(&SystemTask::Stance);
-        assert_eq!(stance.max_tokens, Some(512));
-        assert_eq!(stance.temperature, Some(0.1));
-
-        let entity = config.system_task_spec(&SystemTask::EntityExtract);
-        assert_eq!(entity.max_tokens, Some(512));
-        assert_eq!(entity.temperature, Some(0.1));
-
-        let answer = config.system_task_spec(&SystemTask::Answer);
-        assert_eq!(answer.max_tokens, Some(1024));
-        assert_eq!(answer.temperature, Some(0.3));
-
-        let triples = config.system_task_spec(&SystemTask::Triples);
-        assert_eq!(triples.max_tokens, Some(1024));
-        assert_eq!(triples.temperature, Some(0.1));
-
-        let topic = config.system_task_spec(&SystemTask::TopicLabel);
-        assert_eq!(topic.max_tokens, Some(100));
-        assert_eq!(topic.temperature, Some(0.3));
-
-        let query = config.system_task_spec(&SystemTask::QueryUnderstand);
-        assert_eq!(query.max_tokens, Some(256));
-        assert_eq!(query.temperature, Some(0.1));
-
-        let contradiction = config.system_task_spec(&SystemTask::Contradiction);
-        assert_eq!(contradiction.max_tokens, Some(512));
-        assert_eq!(contradiction.temperature, Some(0.2));
-
         let summary = config.system_task_spec(&SystemTask::Summary);
         assert_eq!(summary.max_tokens, Some(120));
         assert_eq!(summary.temperature, Some(0.3));
-
-        let rewrite = config.system_task_spec(&SystemTask::QueryRewrite);
-        assert_eq!(rewrite.max_tokens, Some(80));
-        assert_eq!(rewrite.temperature, Some(0.1));
-
-        let ctx_prefix = config.system_task_spec(&SystemTask::ContextualPrefix);
-        assert_eq!(ctx_prefix.max_tokens, Some(120));
-        assert_eq!(ctx_prefix.temperature, Some(0.1));
     }
 
-    /// Verify that SystemTask::default_gen_spec() delegates to config correctly.
+    /// A custom task is the host's, so its spec is deliberately generic. If
+    /// this ever starts matching a named task's tuning, the enum has grown a
+    /// domain opinion it has no way to justify.
+    #[test]
+    fn a_custom_task_gets_nothing_tuned() {
+        let config = ControllerConfig::default();
+        let a = config.system_task_spec(&SystemTask::custom("triples"));
+        let b = config.system_task_spec(&SystemTask::custom("contextual-prefix"));
+        assert_eq!(a.max_tokens, b.max_tokens);
+        assert_eq!(a.temperature, b.temperature);
+        assert_ne!(
+            a.max_tokens,
+            config.system_task_spec(&SystemTask::Title).max_tokens
+        );
+    }
+
+    /// `default_gen_spec` is a thin delegate to the default config.
     #[test]
     fn default_gen_spec_delegates_to_config() {
         let config = ControllerConfig::default();
-        // Spot-check a few variants
         assert_eq!(
             SystemTask::Title.default_gen_spec().max_tokens,
             config.system_task_spec(&SystemTask::Title).max_tokens
         );
         assert_eq!(
-            SystemTask::Answer.default_gen_spec().temperature,
-            config.system_task_spec(&SystemTask::Answer).temperature
+            SystemTask::Compact.default_gen_spec().temperature,
+            config.system_task_spec(&SystemTask::Compact).temperature
         );
     }
 

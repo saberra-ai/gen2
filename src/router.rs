@@ -1,30 +1,25 @@
-//! Inference router — Phase D week 18.
+//! Inference router: given a request ("run model X with parameters Y"), pick
+//! which device runs it.
 //!
-//! Given a generation request ("I want to run model X with parameters Y"),
-//! pick which device in the flock actually runs it. Local-first: if the
-//! current device can host the requested model, it always wins (privacy +
-//! zero network latency). Otherwise we route to a paired peer with
-//! enough RAM, the model cached, and a healthy recent heartbeat.
+//! Local-first. If this device can host the requested model it always wins, on
+//! privacy and on latency. Otherwise the pick goes to a paired peer with enough
+//! memory, the model already cached, and a healthy recent heartbeat.
 //!
-//! The router is a pure function over `(request, local capability, peer
-//! list)` — no async, no I/O. Transport (streaming tokens back from the
-//! chosen device) lives in `crate::p2p`; this module only picks.
-//!
-//! **No cloud, no account.** The peer list is populated by
-//! [`crate::flock::discovery`] (LAN mDNS) and optionally iroh's relay-
-//! based WAN discovery. Identity + authorization is ed25519 + paired
-//! pubkeys. The router itself doesn't touch identity — it trusts the
-//! caller to only supply already-authenticated peers.
+//! A pure function over `(request, local capability, peer list)` — no async, no
+//! I/O. Transport is the host's, behind
+//! [`RemoteDispatch`](crate::RemoteDispatch); this module only picks. So is
+//! discovery: the peer list arrives already populated and already
+//! authenticated, and the router reads it without ever touching identity.
 
 use crate::zoo::{ModelZoo, PlatformBundle, current_platform_id};
 
 /// What a peer device advertises about itself: who it is, what hardware it
 /// has, and which models it already holds. This is the router's whole view of
-/// the flock — it never touches transport or identity, and trusts the caller
+/// the fleet — it never touches transport or identity, and trusts the caller
 /// to supply only already-authenticated peers.
 ///
-/// Field-for-field the record a host's discovery layer broadcasts (pio-core's
-/// `flock::discovery`), so a host converts by moving fields across rather than
+/// Field-for-field the record a host's discovery layer broadcasts, so a host
+/// converts by moving fields across rather than
 /// reshaping. It lives here because placement is what it exists to inform.
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct PeerAdvertisement {
@@ -73,7 +68,7 @@ pub enum RoutePriority {
 
 /// Snapshot of this device's local capability — what the router needs
 /// to decide "can I run this model right here?". Distinct from the
-/// capability advertised to peers in [`crate::flock::discovery::CapabilitySnapshot`]
+/// capability advertised to peers by the host's discovery layer
 /// because here we also expose "models downloaded to local disk" while
 /// peer adverts only list models this device is willing to serve.
 #[derive(Debug, Clone, Default)]
@@ -93,13 +88,13 @@ pub enum RouteDecision<'peer> {
         reason: &'static str,
     },
     /// Route to a remote peer. `peer` is a borrowed slot out of the
-    /// caller's peer list — the caller then opens (or reuses) a p2p
+    /// caller's peer list — the caller then opens (or reuses) a
     /// session with that peer's pubkey and streams the request over.
     Remote {
         peer: &'peer PeerAdvertisement,
         reason: &'static str,
     },
-    /// Nobody in the flock can run this right now. Caller falls open to
+    /// Nobody in the fleet can run this right now. Caller falls open to
     /// a smaller local model with a UI notice.
     Fallback { reason: &'static str },
 }
@@ -229,7 +224,7 @@ mod tests {
         PeerAdvertisement {
             // Distinct per peer: `peer_ranks_higher` breaks exact hardware ties
             // on `did`, so sharing one would make ranking order arbitrary.
-            did: format!("did:pio:{name}"),
+            did: format!("did:example:{name}"),
             pubkey: "test-pubkey".into(),
             name: name.into(),
             platform: current_platform_id().to_string(),
