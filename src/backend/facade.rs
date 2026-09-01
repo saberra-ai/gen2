@@ -282,7 +282,7 @@ impl Engine {
             feature = "backend-onnx"
         ))]
         {
-            return Self::Onnx(super::onnx::Engine::new());
+            Self::Onnx(super::onnx::Engine::new())
         }
         #[cfg(not(any(
             feature = "backend-llamacpp",

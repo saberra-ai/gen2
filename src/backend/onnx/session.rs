@@ -125,12 +125,12 @@ impl Session {
 
         let prompt = chat_template
             .apply(messages.clone(), None, None)
-            .map_err(|e| ExecError::Other(e.into()))?;
+            .map_err(ExecError::Other)?;
 
         let tokens = bundle
             .tokenizer
             .encode(&prompt, true)
-            .map_err(|e| ExecError::Other(e))?;
+            .map_err(ExecError::Other)?;
 
         let total_tokens = tokens.len();
         hooks.emit(HookEvent::SessionPrefillStart {
@@ -249,13 +249,13 @@ impl Session {
 
         let delta_text = tpl
             .apply(new_messages, None, None)
-            .map_err(|e| ExecError::Other(e.into()))?;
+            .map_err(ExecError::Other)?;
 
         let delta_tokens = self
             .bundle
             .tokenizer
             .encode(&delta_text, false)
-            .map_err(|e| ExecError::Other(e))?;
+            .map_err(ExecError::Other)?;
 
         if delta_tokens.is_empty() {
             return Ok(0);

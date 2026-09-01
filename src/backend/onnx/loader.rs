@@ -44,15 +44,15 @@ pub fn detect_kv_shape(session: &Session) -> KvShape {
 
     for input in session.inputs().iter() {
         let name = input.name();
-        if let Some(rest) = name.strip_prefix("past_key_values.") {
-            if let Some(num_str) = rest.strip_suffix(".key") {
-                if let Ok(n) = num_str.parse::<usize>() {
+        if let Some(rest) = name.strip_prefix("past_key_values.")
+            && let Some(num_str) = rest.strip_suffix(".key")
+                && let Ok(n) = num_str.parse::<usize>() {
                     max_layer = Some(max_layer.map_or(n, |m: usize| m.max(n)));
 
                     // Extract static dims from shape: [batch, num_kv_heads, seq, head_dim]
-                    if num_kv_heads == 0 {
-                        if let ValueType::Tensor { shape, .. } = input.dtype() {
-                            if shape.len() >= 4 {
+                    if num_kv_heads == 0
+                        && let ValueType::Tensor { shape, .. } = input.dtype()
+                            && shape.len() >= 4 {
                                 let heads = shape[1];
                                 let dim = shape[3];
                                 if heads > 0 {
@@ -62,11 +62,7 @@ pub fn detect_kv_shape(session: &Session) -> KvShape {
                                     head_dim = dim as usize;
                                 }
                             }
-                        }
-                    }
                 }
-            }
-        }
     }
 
     KvShape {

@@ -81,7 +81,7 @@ impl Engine {
             .iter()
             .any(|i| i.name() == "position_ids");
 
-        let tokenizer = HfTokenizer::from_dir(model_dir).map_err(|e| ExecError::Other(e))?;
+        let tokenizer = HfTokenizer::from_dir(model_dir).map_err(ExecError::Other)?;
 
         let chat_template_str = crate::backend::common::load_chat_template(model_dir)
             .unwrap_or_else(crate::backend::common::default_llama3_template);

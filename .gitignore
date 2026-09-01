@@ -16,6 +16,12 @@ debug
 *.safetensors
 *.kv
 
+# Except the hostile-input fixtures, which are the point: they are tiny,
+# hand-built, and two tests read them from disk. Excluded by the rule above,
+# they vanished from the commit and the tests passed locally while failing in
+# CI on a file that was never pushed.
+!tests/fixtures/**/*.gguf
+
 # RustRover / JetBrains. The maintained template lives at
 # https://github.com/github/gitignore/blob/main/Global/JetBrains.gitignore
 #.idea/

@@ -1639,7 +1639,7 @@ mod tests {
         assert!(
             prompt.starts_with(&bos_str),
             "chat template should render the BOS string at start; got: {:?}",
-            &prompt.chars().take(40).collect::<String>()
+            prompt.chars().take(40).collect::<String>()
         );
 
         // The actual contract: route through the production helper and
@@ -1654,7 +1654,7 @@ mod tests {
             1,
             "rendered chat prompt was tokenized with {leading_bos} leading BOS tokens (expected 1). \
              Token ids: {:?}",
-            &tokens.iter().take(8).collect::<Vec<_>>()
+            tokens.iter().take(8).collect::<Vec<_>>()
         );
     }
 }
