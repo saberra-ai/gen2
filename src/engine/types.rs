@@ -908,7 +908,11 @@ pub enum ChatTemplateSpec {
 }
 
 bitflags! {
-    #[derive(Default, Clone, Debug)]
+    // `Copy` and `PartialEq` because this is public API: `Engine::capabilities`
+    // hands it to a caller, and a caller's first instinct is to compare it or
+    // pass it on. Without them, reading a capability set forced a clone and
+    // comparing one was impossible.
+    #[derive(Default, Clone, Copy, PartialEq, Eq, Debug)]
     pub struct Capabilities: u32 {
         const TEXT   = 0b0001;
         const IMAGES = 0b0010;

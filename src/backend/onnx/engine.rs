@@ -108,7 +108,7 @@ impl Engine {
         let bundle = ModelBundle {
             session: Mutex::new(ort_session),
             tokenizer,
-            capabilities: caps.clone(),
+            capabilities: caps,
             meta: meta.clone(),
             num_layers,
             num_kv_heads: kv_shape.num_kv_heads,
@@ -209,7 +209,7 @@ impl Engine {
         self.bundle
             .load_full()
             .as_deref()
-            .map(|b| b.capabilities.clone())
+            .map(|b| b.capabilities)
             .unwrap_or_else(Capabilities::empty)
     }
 

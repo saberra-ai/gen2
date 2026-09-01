@@ -404,7 +404,7 @@ impl Backend for FakeBackend {
     }
 
     fn capabilities(&self) -> Capabilities {
-        self.script.inner.lock().unwrap().capabilities.clone()
+        self.script.inner.lock().unwrap().capabilities
     }
 
     fn stats(&self) -> ExecutionStats {

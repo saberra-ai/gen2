@@ -84,7 +84,7 @@ impl Engine {
         let backend = get_backend()?;
 
         let bundle = super::loader::build_bundle(&backend, &req)?;
-        let caps = bundle.capabilities.clone();
+        let caps = bundle.capabilities;
         let meta = bundle.meta.clone();
         // Drop session registry so callers can't keep using stale sessions after a reload.
         self.sessions.clear();
@@ -195,7 +195,7 @@ impl Engine {
         self.bundle
             .load_full()
             .as_deref()
-            .map(|b| b.capabilities.clone())
+            .map(|b| b.capabilities)
             .unwrap_or_else(Capabilities::empty)
     }
     pub fn does_model_support_images(&self) -> bool {

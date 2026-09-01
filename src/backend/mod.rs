@@ -53,6 +53,11 @@ compile_error!(
     "No inference backend selected. Enable at least one of: backend-llamacpp, backend-mlx, backend-mlxcel, backend-onnx, backend-external-api, backend-executorch, backend-candle"
 );
 
+/// One contract every compiled backend must satisfy. See the module docs for
+/// which half needs a real model and which does not.
+#[cfg(test)]
+mod conformance;
+
 pub mod caps;
 mod facade;
 pub mod health;

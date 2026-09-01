@@ -287,7 +287,11 @@ use crate::backend::traits::{Backend, BackendSession, Embeddings, RemoteBackend}
 
 impl Backend for Engine {
     fn backend_name(&self) -> &'static str {
-        "external_api"
+        // Hyphenated, matching `Engine::available_backends` and
+        // `detect_backend_for_path`. It was the only backend whose reported
+        // name differed from the one those two use, so a host comparing what
+        // it detected against what became active never matched.
+        "external-api"
     }
     fn load_model(&self, req: LoadRequest) -> Result<(), ExecError> {
         Engine::load_model(self, req)

@@ -425,7 +425,7 @@ impl Engine {
         self.bundle
             .load_full()
             .as_deref()
-            .map(|b| b.capabilities.clone())
+            .map(|b| b.capabilities)
             .unwrap_or_else(Capabilities::empty)
     }
 
