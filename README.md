@@ -1,8 +1,8 @@
 # gen2
 
 An embeddable AI runtime for Rust. Models, sessions, tools, agents and local
-inference behind one stateful API — over llama.cpp, MLX, ONNX Runtime, Candle,
-ExecuTorch, or an OpenAI-compatible endpoint.
+inference behind one stateful API — over llama.cpp, mistral.rs, MLX, ONNX
+Runtime, Candle, ExecuTorch, or an OpenAI-compatible endpoint.
 
 ```toml
 [dependencies]
@@ -532,13 +532,13 @@ Pick at least one. A build with none fails to compile.
 | `backend-mlx` | MLX (Apple Silicon). Needs the Metal Toolchain component. Mutually exclusive with `backend-mlxcel`. |
 | `backend-mlxcel` | mlxcel, the Mac fast path. |
 | `backend-onnx` | ONNX Runtime |
-| `backend-mistralrs` | mistral.rs. GGUF, safetensors, UQFF and HF repos in one backend. Claims only formats no other compiled backend takes. |
+| `backend-mistralrs` | mistral.rs. GGUF, safetensors and UQFF in one backend. Claims only formats no other compiled backend takes. No per-request seed: `.seed()` under sampling is refused rather than ignored. |
 | `backend-candle` | Candle (pure Rust) |
 | `backend-executorch` | ExecuTorch (mobile). Stub, returns Unimplemented. |
 | `tokio` | Async API. Off by default. |
 
-Only llama.cpp and MLX have been shown to generate a token; the rest compile
-and satisfy the parts of the backend contract that need no weights.
+llama.cpp, mistral.rs and MLX have been shown to generate a token; the rest
+compile and satisfy the parts of the backend contract that need no weights.
 Adding a backend never moves an existing one's models: `backend-mistralrs`
 takes GGUF only where llama.cpp is absent, and safetensors only where MLX is. The
 conformance suite says which on every run, and fails if that list goes stale.

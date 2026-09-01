@@ -84,6 +84,15 @@ impl BackendSession for MistralRsSession {
         self.stopped.store(false, Ordering::Release);
         self.paused.store(false, Ordering::Release);
 
+        // Refuse a seed this backend cannot honour, rather than generating
+        // unreproducibly and letting the caller believe otherwise.
+        if convert::unsupported_seed(&self.settings, &spec) {
+            return Err(ExecError::FeatureUnsupported(
+                "seed: mistral.rs exposes no per-request seed; use greedy() for \
+                 deterministic output, or a backend that does",
+            ));
+        }
+
         let mut request = RequestBuilder::new();
         request = convert::messages_into(request, &self.messages.read());
         if !self.tools.is_empty() {

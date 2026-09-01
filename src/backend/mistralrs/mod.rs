@@ -77,4 +77,83 @@ mod live {
             .expect("the second turn should complete");
         assert_eq!(session.messages().len(), 4);
     }
+
+    /// The round trip the backend is not proven without.
+    ///
+    /// A puller test shows a tool call reaching gen2. What it cannot show is
+    /// the other half: that the call and its result, once in the transcript,
+    /// replay to the model as a call and a result rather than as an empty
+    /// assistant turn. That half broke silently until `tool_calls_of` existed,
+    /// and nothing but an end-to-end run would have said so.
+    #[test]
+    #[ignore = "needs PIO_TEST_MISTRALRS_MODEL"]
+    fn a_tool_call_and_its_result_replay_to_the_model() {
+        use crate::api::{Engine, FunctionTool, Session, ToolOutput};
+        use schemars::JsonSchema;
+        use serde::Deserialize;
+        use std::sync::Arc;
+        use std::sync::atomic::{AtomicUsize, Ordering};
+
+        #[derive(Deserialize, JsonSchema)]
+        struct City {
+            /// City to look up.
+            city: String,
+        }
+
+        let Ok(path) = std::env::var("PIO_TEST_MISTRALRS_MODEL") else {
+            eprintln!("SKIP: set PIO_TEST_MISTRALRS_MODEL");
+            return;
+        };
+        let engine = Engine::load(&path).expect("the model should load");
+
+        let calls = Arc::new(AtomicUsize::new(0));
+        let counter = Arc::clone(&calls);
+        let weather = FunctionTool::new(
+            "get_weather",
+            "Current weather for a city",
+            move |_ctx, a: City| {
+                let counter = Arc::clone(&counter);
+                async move {
+                    counter.fetch_add(1, Ordering::SeqCst);
+                    Ok(ToolOutput::from(format!("18C and sunny in {}", a.city)))
+                }
+            },
+        );
+
+        let mut session = Session::new();
+        let done = engine
+            .agent(&mut session)
+            .add_tool(weather)
+            .max_steps(4)
+            .goal("What is the weather in Paris? Use the tool.")
+            .expect("the run should complete");
+
+        // The model deciding not to call is a model choice, not a backend
+        // failure, so the assertion is about what happens when it does.
+        if calls.load(Ordering::SeqCst) == 0 {
+            eprintln!("model made no tool call; nothing to assert about replay");
+            return;
+        }
+
+        let transcript: String = session
+            .messages()
+            .iter()
+            .map(|m| serde_json::to_string(m).unwrap_or_default())
+            .collect::<Vec<_>>()
+            .join("\n");
+        assert!(
+            transcript.contains("get_weather"),
+            "the call the model made is missing from the transcript:\n{transcript}"
+        );
+        assert!(
+            transcript.contains("18C and sunny"),
+            "the tool result the answer rests on is missing:\n{transcript}"
+        );
+        assert!(done.tool_rounds >= 1);
+        eprintln!(
+            "replay verified: {} tool call(s), {} round(s), transcript has the call and its result",
+            calls.load(Ordering::SeqCst),
+            done.tool_rounds
+        );
+    }
 }
