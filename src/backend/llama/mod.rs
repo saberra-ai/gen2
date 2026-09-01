@@ -2,7 +2,7 @@
 
 mod bundle;
 pub mod embedder;
-mod engine;
+pub(crate) mod engine;
 /// iOS runtime memory-budgeting (jetsam-aware load preflight).
 ///
 /// The module compiles on every platform so its PURE helpers (headroom math,

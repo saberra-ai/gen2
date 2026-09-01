@@ -1595,7 +1595,11 @@ mod tests {
             return;
         };
 
-        let backend = LlamaBackend::init().expect("llama backend init");
+        // Not `LlamaBackend::init()`: it may only succeed once per process,
+        // and any test that ran first has already claimed it. This test failed
+        // for exactly that reason in every configuration that compiles the
+        // llama backend and runs the unit suite — which nothing did.
+        let backend = crate::backend::llama::engine::get_backend().expect("llama backend");
         let params = LlamaModelParams::default();
         let model = llama_cpp_2::model::LlamaModel::load_from_file(&backend, &model_path, &params)
             .expect("load model");

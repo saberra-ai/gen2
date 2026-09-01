@@ -21,7 +21,13 @@ use parking_lot::RwLock;
 
 static BACKEND: OnceCell<Arc<LlamaBackend>> = OnceCell::new();
 
-fn get_backend() -> Result<Arc<LlamaBackend>, ExecError> {
+/// The process's one llama backend.
+///
+/// `LlamaBackend::init` may be called once per process and errors with
+/// `BackendAlreadyInitialized` after that, so everything that needs one has to
+/// come through here — tests included, since they share a process with
+/// whatever ran before them.
+pub(crate) fn get_backend() -> Result<Arc<LlamaBackend>, ExecError> {
     BACKEND
         .get_or_try_init(|| {
             let inner = LlamaBackend::init().map_err(|e| ExecError::Other(e.into()))?;
