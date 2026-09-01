@@ -12,9 +12,11 @@ use crate::controller::{
 };
 use crate::engine::Settings;
 use crate::generation::GenSpec;
+use crate::hardware::HardwareProfile;
 
 use super::chat::Chat;
 use super::error::{Error, Result};
+use super::fit::ModelInfo;
 use super::inference::Inference;
 use super::session::Session;
 use super::spawned::OwnedChat;
@@ -282,7 +284,20 @@ pub struct EngineBuilder {
     api_format: Option<String>,
     embedder_path: Option<PathBuf>,
     embedder_kind: Option<String>,
+    context: ContextChoice,
     defaults: GenSpec,
+}
+
+/// How the context window is decided.
+#[derive(Debug, Default, Clone, Copy, PartialEq, Eq)]
+enum ContextChoice {
+    /// Whatever the backend picks. No fit check.
+    #[default]
+    Backend,
+    /// This exact size; fail if it doesn't fit.
+    Exact(u32),
+    /// The largest the machine can give.
+    Auto,
 }
 
 impl EngineBuilder {
@@ -333,6 +348,27 @@ impl EngineBuilder {
         self.model_path = Some(PathBuf::from(base_url.into()));
         self.api_key = Some(api_key.into());
         self.api_format = Some("anthropic".into());
+        self
+    }
+
+    /// Size the context window to the machine.
+    ///
+    /// Reads the model's header, measures the hardware, and picks the largest
+    /// context that fits. Beats guessing: too small wastes the model, too large
+    /// fails at load time or thrashes.
+    ///
+    /// GGUF only — other formats keep the backend's default.
+    pub fn auto_context(mut self) -> Self {
+        self.context = ContextChoice::Auto;
+        self
+    }
+
+    /// Use exactly this context window.
+    ///
+    /// [`build`](Self::build) fails with [`Error::WontFit`] if the machine
+    /// can't supply it, rather than discovering it during load.
+    pub fn context(mut self, tokens: u32) -> Self {
+        self.context = ContextChoice::Exact(tokens);
         self
     }
 
@@ -404,6 +440,25 @@ impl EngineBuilder {
             ));
         }
 
+        // Preflight the fit before starting anything, so a model that cannot
+        // run fails with a verdict instead of a load error.
+        let mut settings = self.settings.unwrap_or_default();
+        if self.context != ContextChoice::Backend
+            && let Some(path) = self.model_path.as_deref()
+            && let Ok(info) = ModelInfo::read(path)
+        {
+            let hw = HardwareProfile::detect();
+            let wanted = match self.context {
+                ContextChoice::Exact(n) => Some(n),
+                _ => None,
+            };
+            let fit = info.fits(&hw, wanted);
+            if !fit.ok() {
+                return Err(Error::WontFit(Box::new(fit)));
+            }
+            settings.system.ctx_size = Some(fit.context);
+        }
+
         let (handle, join) = start_controller_joinable(self.config.unwrap_or_default());
         let engine = Engine {
             handle,
@@ -419,7 +474,7 @@ impl EngineBuilder {
             engine.send(ControllerCmd::LoadModel {
                 model_path,
                 mmproj_path: self.mmproj_path,
-                settings: self.settings.unwrap_or_default(),
+                settings,
                 api_key: self.api_key,
                 api_format: self.api_format,
                 resp,

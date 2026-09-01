@@ -160,8 +160,8 @@ pub(crate) mod zoo;
 
 /// The primary API — see [`api`].
 pub use api::{
-    Canceller, Chat, Completion, Engine, EngineBuilder, Error, Event, Finish, Inference, OwnedChat,
-    Result, Session, TokenStream, Tokens, Turn, Update,
+    Canceller, Chat, Completion, Engine, EngineBuilder, Error, Event, Finish, Fit, FitVerdict,
+    Inference, ModelInfo, OwnedChat, Result, Session, TokenStream, Tokens, Turn, Update,
 };
 
 /// Commands, events, and handles — see [`controller`].
@@ -190,6 +190,12 @@ pub use engine::{
 
 /// The receipt describing where a generation ran.
 pub use provenance::ComputeProvenance;
+
+/// What machine this is — memory, cores, GPU — as read by
+/// [`HardwareProfile::detect`]. The input to a fit check.
+pub use hardware::{GpuBackend, HardwareProfile};
+/// A model's own header metadata, reachable from [`ModelInfo`].
+pub use types::model::{Model, ModelConfig, ModelMetadata};
 
 // ── Transitively reachable types ────────────────────────────────────────────
 // Not part of the controller's own signatures, but reachable *through* them —

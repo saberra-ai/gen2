@@ -24,7 +24,7 @@ pub struct HardwareProfile {
     /// `0` means "no measured VRAM" — the conventional value for Apple-Silicon
     /// unified memory (no separate pool, budget rides on `total_ram_bytes`),
     /// CPU-only machines, and backends we can't probe (Vulkan; see
-    /// [`detect_vram_bytes`]). Consumers must treat `0` as "unknown / use RAM",
+    /// `detect_vram_bytes`). Consumers must treat `0` as "unknown / use RAM",
     /// never as "0 bytes of GPU".
     #[serde(default)]
     pub vram_bytes: u64,

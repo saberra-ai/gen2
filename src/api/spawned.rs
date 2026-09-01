@@ -67,6 +67,17 @@ impl OwnedChat {
         self
     }
 
+    /// Append a user message carrying images. See
+    /// [`Chat::user_with_images`](super::Chat::user_with_images).
+    pub fn user_with_images<I, P>(mut self, text: impl Into<String>, images: I) -> Self
+    where
+        I: IntoIterator<Item = P>,
+        P: AsRef<str>,
+    {
+        self.session.push_user_with_images(text, images);
+        self
+    }
+
     /// Append a system message.
     pub fn system(mut self, text: impl Into<String>) -> Self {
         self.session.push(Message::system(text));

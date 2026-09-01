@@ -96,6 +96,27 @@ impl Session {
         self.push(Message::user(text));
     }
 
+    /// Append a user message carrying images.
+    ///
+    /// Paths become `file://` URLs; already-formed `http(s)://` or `file://`
+    /// URLs pass through. With no images this is exactly [`Session::push_user`],
+    /// so a caller can pass an empty slice unconditionally.
+    ///
+    /// The model must be multimodal and loaded with a projector — see
+    /// [`EngineBuilder::mmproj`](super::EngineBuilder::mmproj).
+    pub fn push_user_with_images<I, P>(&mut self, text: impl Into<String>, images: I)
+    where
+        I: IntoIterator<Item = P>,
+        P: AsRef<str>,
+    {
+        self.push(Message::user_with_images(
+            text,
+            images
+                .into_iter()
+                .map(|p| crate::types::message::to_file_url(p.as_ref())),
+        ));
+    }
+
     /// How many messages the conversation holds.
     pub fn len(&self) -> usize {
         self.messages.len()
@@ -209,6 +230,61 @@ mod tests {
         s.edit(|m| m.clear());
         assert!(!s.opened);
         assert_eq!(s.pending(1).len(), 0);
+    }
+
+    #[test]
+    fn images_become_chunks_on_a_user_message() {
+        use crate::types::message::{MessageBody, MessageChunk, MessageContent};
+        let mut s = Session::new();
+        s.push_user_with_images("what is this?", ["/tmp/a.png"]);
+
+        let MessageBody::Content {
+            content: MessageContent::MultipleChunks(chunks),
+        } = &s.latest().unwrap().body
+        else {
+            panic!("expected a multi-chunk message");
+        };
+        assert_eq!(chunks.len(), 2, "text plus one image");
+        assert!(matches!(chunks[0], MessageChunk::Text { .. }));
+        match &chunks[1] {
+            // A bare path has to become a file:// URL — the backends resolve
+            // URLs, not paths.
+            MessageChunk::ImageUrl { image_url } => {
+                assert!(
+                    image_url.url.starts_with("file://"),
+                    "got {}",
+                    image_url.url
+                );
+            }
+            other => panic!("expected an image chunk, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn an_http_image_url_is_left_alone() {
+        use crate::types::message::{MessageBody, MessageChunk, MessageContent};
+        let mut s = Session::new();
+        s.push_user_with_images("look", ["https://example.com/a.png"]);
+        let MessageBody::Content {
+            content: MessageContent::MultipleChunks(chunks),
+        } = &s.latest().unwrap().body
+        else {
+            panic!("expected chunks");
+        };
+        match &chunks[1] {
+            MessageChunk::ImageUrl { image_url } => {
+                assert_eq!(image_url.url, "https://example.com/a.png");
+            }
+            other => panic!("expected an image chunk, got {other:?}"),
+        }
+    }
+
+    #[test]
+    fn no_images_is_a_plain_user_message() {
+        // Lets a caller pass its image list unconditionally.
+        let mut s = Session::new();
+        s.push_user_with_images("hello", Vec::<String>::new());
+        assert_eq!(s.latest_text().as_deref(), Some("hello"));
     }
 
     #[test]

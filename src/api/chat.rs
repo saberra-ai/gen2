@@ -56,6 +56,30 @@ impl<'a> Chat<'a> {
         self.message(Message::user(text))
     }
 
+    /// Append a user message carrying images.
+    ///
+    /// Paths become `file://` URLs; existing URLs pass through. Needs a
+    /// multimodal model loaded with a projector — see
+    /// [`EngineBuilder::mmproj`](super::EngineBuilder::mmproj).
+    ///
+    /// ```no_run
+    /// # use pio_gen2::{Engine, Session};
+    /// # let engine = Engine::load("m.gguf")?;
+    /// # let mut session = Session::new();
+    /// engine.chat(&mut session)
+    ///     .user_with_images("What is in this picture?", ["/tmp/photo.png"])
+    ///     .send()?;
+    /// # Ok::<(), pio_gen2::Error>(())
+    /// ```
+    pub fn user_with_images<I, P>(self, text: impl Into<String>, images: I) -> Self
+    where
+        I: IntoIterator<Item = P>,
+        P: AsRef<str>,
+    {
+        self.session.push_user_with_images(text, images);
+        self
+    }
+
     /// Append a system message to the conversation.
     pub fn system(self, text: impl Into<String>) -> Self {
         self.message(Message::system(text))

@@ -28,6 +28,7 @@
 mod chat;
 mod engine;
 mod error;
+pub(crate) mod fit;
 mod inference;
 mod session;
 mod spawned;
@@ -36,6 +37,7 @@ mod stream;
 pub use chat::Chat;
 pub use engine::{Engine, EngineBuilder};
 pub use error::{Error, Result};
+pub use fit::{Fit, FitVerdict, ModelInfo};
 pub use inference::Inference;
 pub use session::Session;
 pub use spawned::{Canceller, OwnedChat, Turn, Update};

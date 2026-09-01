@@ -88,6 +88,34 @@ let json = classifier.infer("Classify: '…'").text()?;      // always the right
 A turn can still override it, or drop it with `.unconstrained()` — loading
 weights is the expensive part, so one engine should serve several shapes.
 
+### Will it fit?
+
+Reads the model's header and measures the machine, before loading anything:
+
+```rust
+let info = ModelInfo::read("/models/model.gguf")?;   // header only, no weights
+let hw   = HardwareProfile::detect();
+
+info.max_context(&hw);          // largest context this machine can give
+info.fits(&hw, Some(8192));     // Fits / ContextTooLarge / TooLarge
+```
+
+Or let the builder size it, and fail with a verdict rather than a load error:
+
+```rust
+let engine = Engine::builder().model(path).auto_context().build()?;
+
+match Engine::builder().model(path).context(1_000_000).build() {
+    Err(e) => if let Some(fit) = e.fit() {
+        println!("{fit}");                  // why, in bytes
+        println!("{} would work", fit.max_context);
+    },
+    Ok(engine) => { /* … */ }
+}
+```
+
+GGUF only — other formats keep the backend's default context.
+
 ### Embeddings
 
 An embedder loads independently of the chat model — an engine can hold both, or
@@ -136,11 +164,13 @@ cargo run --example basic      --no-default-features --features metal -- /path/m
 cargo run --example structured --no-default-features --features metal -- /path/model.gguf
 cargo run --example chat_app   --no-default-features --features metal -- /path/model.gguf
 cargo run --example embeddings --no-default-features --features metal -- /path/embedding-model.gguf
+cargo run --example fit        --no-default-features --features metal -- /path/model.gguf
 ```
 
 - `minimal` — the smallest useful program: make a chat, stream the reply.
 - `basic` — ask / stream / converse, and the four ways to consume a generation.
 - `structured` — grammar-constrained output (JSON schema, bare JSON, regex).
+- `fit` — inspect a model and ask whether this machine can run it.
 - `embeddings` — embedder-only engine, batch and single, cosine similarity.
 - `chat_app` — the shape of a real app: `Arc<Engine>` shared across threads,
   generation on a worker, cancellation, and concurrent conversations.

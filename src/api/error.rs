@@ -26,6 +26,14 @@ pub enum Error {
     #[error("generation failed [{code}]: {message}")]
     Generation { code: String, message: String },
 
+    /// The model will not run on this machine at the requested context.
+    ///
+    /// Carries the whole verdict — what was needed, what was available, and
+    /// the largest context that would have worked — so a caller can retry
+    /// smaller or tell the user precisely what is wrong.
+    #[error("{0}")]
+    WontFit(Box<crate::api::fit::Fit>),
+
     /// An engine-internal error surfaced verbatim.
     #[error(transparent)]
     Exec(#[from] crate::engine::ExecError),
@@ -38,6 +46,20 @@ impl Error {
     pub fn code(&self) -> Option<&str> {
         match self {
             Self::Generation { code, .. } => Some(code),
+            Self::WontFit(_) => Some("wont_fit"),
+            _ => None,
+        }
+    }
+
+    /// The fit verdict, when this failure was a sizing one.
+    ///
+    /// `Some` means the model didn't fit — read [`Fit::max_context`] for a
+    /// context that would have.
+    ///
+    /// [`Fit::max_context`]: crate::Fit::max_context
+    pub fn fit(&self) -> Option<&crate::api::fit::Fit> {
+        match self {
+            Self::WontFit(fit) => Some(fit),
             _ => None,
         }
     }
