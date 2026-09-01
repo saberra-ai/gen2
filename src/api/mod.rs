@@ -59,3 +59,7 @@ pub use tools::{
     AgentTool, ExecutionPolicy, FunctionTool, IntoTool, Skill, SkillLibrary, Tool, ToolConfigError,
     ToolContext, ToolError, ToolLoading, ToolOutput, ToolRegistry, ToolSearch, ToolSet, ToolSpec,
 };
+
+/// Session invariants under generated operation sequences.
+#[cfg(test)]
+mod session_props;
