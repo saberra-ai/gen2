@@ -387,11 +387,20 @@ impl<'a> Agent<'a> {
                 turn.tool_calls.iter().map(as_wire_call).collect(),
             ));
 
-            for call in &turn.tool_calls {
+            // Batch consecutive parallel-safe calls and run them together;
+            // anything exclusive runs alone. Results are appended in call
+            // order regardless of completion order, so the transcript reads
+            // the way the model wrote it.
+            let mut batch: Vec<(usize, &crate::generation::ToolCall, Value)> = Vec::new();
+            let mut results: Vec<(usize, std::result::Result<ToolOutput, ToolError>)> = Vec::new();
+            let mut interrupted = false;
+
+            for (i, call) in turn.tool_calls.iter().enumerate() {
                 // An interruption means the remaining calls were planned
                 // against a task that no longer stands. The ones already run
                 // this round stay in the transcript.
                 if steering.wants_interrupt() {
+                    interrupted = true;
                     break;
                 }
 
@@ -413,30 +422,61 @@ impl<'a> Agent<'a> {
                     return Ok(totals);
                 }
 
-                observe(AgentStep::Calling {
-                    step,
-                    tool: &call.name,
-                    args: &args,
-                });
+                // Search mutates the registry (hydration), so it can never
+                // share a batch with calls that read it.
+                let solo = call.name == SEARCH_TOOL
+                    || registry
+                        .get(&call.name)
+                        .is_none_or(|t| !t.execution_policy().parallel_safe);
 
-                let began = Instant::now();
-                // Search is handled here rather than in `dispatch` because it
-                // mutates the registry (hydration) while dispatch only reads
-                // it — one borrow each, taken at different times.
-                let outcome = if call.name == SEARCH_TOOL {
-                    run_search(&mut registry, &args)
+                if solo {
+                    run_batch(
+                        &registry,
+                        &ctx,
+                        std::mem::take(&mut batch),
+                        approval,
+                        on_approval.as_mut(),
+                        &mut observe,
+                        step,
+                        &mut results,
+                    );
+                    let began = Instant::now();
+                    observe(AgentStep::Calling {
+                        step,
+                        tool: &call.name,
+                        args: &args,
+                    });
+                    let outcome = if call.name == SEARCH_TOOL {
+                        run_search(&mut registry, &args)
+                    } else {
+                        dispatch(&registry, &ctx, call, &args, approval, on_approval.as_mut())
+                    };
+                    observe(AgentStep::Called {
+                        step,
+                        tool: &call.name,
+                        result: &outcome,
+                        took: began.elapsed(),
+                    });
+                    results.push((i, outcome));
                 } else {
-                    dispatch(&registry, &ctx, call, &args, approval, on_approval.as_mut())
-                };
-                let took = began.elapsed();
+                    batch.push((i, call, args));
+                }
+            }
 
-                observe(AgentStep::Called {
-                    step,
-                    tool: &call.name,
-                    result: &outcome,
-                    took,
-                });
+            run_batch(
+                &registry,
+                &ctx,
+                std::mem::take(&mut batch),
+                approval,
+                on_approval.as_mut(),
+                &mut observe,
+                step,
+                &mut results,
+            );
 
+            results.sort_by_key(|(i, _)| *i);
+            for (i, outcome) in results {
+                let name = &turn.tool_calls[i].name;
                 match outcome {
                     Ok(out) => {
                         session.push(Message::tool_result(out.to_model_text()));
@@ -452,11 +492,13 @@ impl<'a> Agent<'a> {
                         totals.finish = Finish::Stopped;
                         return Err(Error::Generation {
                             code: "tool_failed".into(),
-                            message: e.to_string(),
+                            message: format!("{name}: {e}"),
                         });
                     }
                 }
             }
+
+            let _ = interrupted;
         }
 
         totals.finish = Finish::OutOfBudget(Budget::Steps);
@@ -485,6 +527,97 @@ pub enum AgentStep<'a> {
         result: &'a std::result::Result<ToolOutput, ToolError>,
         took: Duration,
     },
+}
+
+/// Run a batch of parallel-safe calls concurrently, preserving call order in
+/// the results.
+///
+/// Sequential dispatch is correct but wasteful: three independent reads in one
+/// turn are three round trips of latency for no reason. Anything a tool
+/// declared unsafe to parallelise never reaches here.
+#[allow(clippy::too_many_arguments)]
+fn run_batch(
+    registry: &ToolRegistry,
+    ctx: &ToolContext,
+    batch: Vec<(usize, &crate::generation::ToolCall, Value)>,
+    approval: ApprovalMode,
+    mut on_approval: Option<&mut ApprovalFn>,
+    observe: &mut impl FnMut(AgentStep<'_>),
+    step: usize,
+    out: &mut Vec<(usize, std::result::Result<ToolOutput, ToolError>)>,
+) {
+    if batch.is_empty() {
+        return;
+    }
+
+    // Approval is a synchronous callback, so it is resolved before anything is
+    // dispatched — a human cannot answer three prompts concurrently anyway.
+    let mut approved = Vec::new();
+    for (i, call, args) in batch {
+        observe(AgentStep::Calling {
+            step,
+            tool: &call.name,
+            args: &args,
+        });
+        let denial = registry.get(&call.name).and_then(|tool| {
+            if approval == ApprovalMode::AskOnRisky
+                && let Some(f) = on_approval.as_deref_mut()
+                && let Decision::Deny(why) = f(&call.name, &args, tool.spec())
+            {
+                Some(why)
+            } else {
+                None
+            }
+        });
+        match denial {
+            Some(why) => out.push((i, Err(ToolError::Denied(why)))),
+            None => approved.push((i, call, args)),
+        }
+    }
+
+    if approved.is_empty() {
+        return;
+    }
+
+    let started = Instant::now();
+    let futures: Vec<_> = approved
+        .iter()
+        .map(|(i, call, args)| {
+            let name = call.name.clone();
+            let tool = registry.get(&call.name).cloned();
+            let ctx = ctx.clone().with_call_id(call.id.clone());
+            let args = args.clone();
+            let idx = *i;
+            async move {
+                let result = match tool {
+                    Some(t) => t.call(&ctx, args).await,
+                    None => Err(ToolError::InvalidArguments(format!(
+                        "no tool named '{name}'"
+                    ))),
+                };
+                (idx, result)
+            }
+        })
+        .collect();
+
+    let finished =
+        crate::task_util::block_on(async move { futures::future::join_all(futures).await });
+    let took = started.elapsed();
+
+    for (i, result) in finished {
+        let name = approved
+            .iter()
+            .find(|(j, _, _)| *j == i)
+            .map(|(_, c, _)| c.name.as_str())
+            .unwrap_or("");
+        observe(AgentStep::Called {
+            step,
+            tool: name,
+            result: &result,
+            took,
+        });
+        out.push((i, result));
+    }
 }
 
 /// Resolve, gate, and run one call.

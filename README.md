@@ -128,6 +128,16 @@ failure a step count never sees.
 Tools declare `Risk::Risky`; `ApprovalMode::AskOnRisky` routes those through
 `on_approval`.
 
+**Scheduling** honours each tool's `ExecutionPolicy`. Independent calls in one
+turn run concurrently; anything declaring itself unsafe to parallelise runs
+alone. Results are appended in call order regardless of completion order, so the
+transcript reads the way the model wrote it.
+
+```rust
+FunctionTool::new(..).with_policy(ExecutionPolicy::exclusive())   // a shared write
+FunctionTool::new(..).with_policy(ExecutionPolicy::gpu_bound())   // contends with the model
+```
+
 ### Sub-agents, skills, MCP
 
 A sub-agent is not a new concept — it's a `Tool` that happens to run a nested

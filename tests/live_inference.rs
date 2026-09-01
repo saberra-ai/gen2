@@ -603,3 +603,77 @@ struct ResizeArgs {
     /// Target width in pixels.
     width: u32,
 }
+
+/// Independent tool calls in one turn run concurrently.
+///
+/// Measured by peak overlap rather than wall-clock: total elapsed includes
+/// generation, which swamps the tool time and would make the assertion
+/// meaningless. Each tool raises a counter on entry and lowers it on exit, so a
+/// peak above one is direct evidence two ran at the same time — the property
+/// `ExecutionPolicy::parallel_safe` is supposed to buy.
+#[test]
+fn parallel_safe_tools_in_one_turn_run_concurrently() {
+    use std::sync::Arc;
+    use std::sync::atomic::{AtomicUsize, Ordering};
+
+    let Some(model) = tool_model() else {
+        eprintln!("SKIP: set PIO_TEST_TOOL_MODEL to run the agent");
+        return;
+    };
+
+    let engine = Engine::load(model).expect("tool model should load");
+    let mut session = Session::new();
+    let live = Arc::new(AtomicUsize::new(0));
+    let peak = Arc::new(AtomicUsize::new(0));
+    let total = Arc::new(AtomicUsize::new(0));
+
+    let slow = |name: &'static str,
+                live: Arc<AtomicUsize>,
+                peak: Arc<AtomicUsize>,
+                total: Arc<AtomicUsize>| {
+        pio_gen2::FunctionTool::new(
+            name,
+            format!("Check the {name} system"),
+            move |_c, _a: NoArgs| {
+                let (live, peak, total) =
+                    (Arc::clone(&live), Arc::clone(&peak), Arc::clone(&total));
+                async move {
+                    let now = live.fetch_add(1, Ordering::SeqCst) + 1;
+                    peak.fetch_max(now, Ordering::SeqCst);
+                    tokio::time::sleep(std::time::Duration::from_millis(300)).await;
+                    live.fetch_sub(1, Ordering::SeqCst);
+                    total.fetch_add(1, Ordering::SeqCst);
+                    Ok(pio_gen2::ToolOutput::from("ok"))
+                }
+            },
+        )
+    };
+
+    let _ = engine
+        .agent(&mut session)
+        .add_tool(slow("alpha", live.clone(), peak.clone(), total.clone()))
+        .add_tool(slow("beta", live.clone(), peak.clone(), total.clone()))
+        .add_tool(slow("gamma", live.clone(), peak.clone(), total.clone()))
+        .max_steps(3)
+        .goal("Check alpha, beta and gamma. Call all three tools at once.")
+        .expect("the agent should complete");
+
+    let (ran, overlap) = (total.load(Ordering::SeqCst), peak.load(Ordering::SeqCst));
+    eprintln!("--- {ran} tool runs, peak overlap {overlap}");
+
+    assert!(
+        ran > 0,
+        "the model called no tools, so nothing was exercised"
+    );
+    if ran >= 2 {
+        assert!(
+            overlap > 1,
+            "{ran} tools ran but never overlapped — dispatch is sequential"
+        );
+    } else {
+        eprintln!("(model issued one call at a time; concurrency not exercised)");
+    }
+}
+
+#[derive(serde::Deserialize, pio_gen2::schemars::JsonSchema)]
+struct NoArgs {}
