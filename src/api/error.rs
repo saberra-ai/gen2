@@ -34,6 +34,15 @@ pub enum Error {
     #[error("{0}")]
     WontFit(Box<crate::api::fit::Fit>),
 
+    /// The agent's tools are misconfigured — a duplicate name, a missing
+    /// description, or tools deferred with no way to find them.
+    ///
+    /// Distinct from [`Error::Load`], which is about the model: reporting a
+    /// tool misconfiguration as "failed to load model" sends the reader to the
+    /// wrong place entirely.
+    #[error("tool configuration: {0}")]
+    Tools(#[from] crate::api::tools::ToolConfigError),
+
     /// An engine-internal error surfaced verbatim.
     #[error(transparent)]
     Exec(#[from] crate::engine::ExecError),
@@ -47,6 +56,7 @@ impl Error {
         match self {
             Self::Generation { code, .. } => Some(code),
             Self::WontFit(_) => Some("wont_fit"),
+            Self::Tools(_) => Some("tool_config"),
             _ => None,
         }
     }

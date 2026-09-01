@@ -17,8 +17,8 @@ use super::error::{Error, Result};
 use super::session::Session;
 use super::stream::{Budget, Completion, Finish, Struggle};
 use super::tools::{
-    IntoTool, Tool, ToolConfigError, ToolContext, ToolError, ToolLoading, ToolOutput, ToolRegistry,
-    ToolSearch, ToolSpec,
+    IntoTool, Tool, ToolContext, ToolError, ToolLoading, ToolOutput, ToolRegistry, ToolSearch,
+    ToolSpec,
 };
 use crate::types::message::{FunctionDefinition, Message, ToolCall, ToolSpec as WireToolSpec};
 
@@ -94,6 +94,10 @@ impl Default for Budgets {
 #[derive(Clone, Default)]
 pub struct Steering {
     queue: Arc<Mutex<VecDeque<Steer>>>,
+    /// Set on a spawned run, where there is an owned engine to ask. Without it
+    /// an interruption still lands, just at the next step boundary rather than
+    /// mid-generation.
+    stop: Option<(Arc<Engine>, String)>,
 }
 
 #[derive(Debug, Clone)]
@@ -109,19 +113,29 @@ impl Steering {
         self.push(message.into(), false);
     }
 
-    /// Change the task at the earliest safe point.
+    /// Change the task now.
     ///
-    /// Stronger than [`Steering::follow_up`]: the agent abandons the rest of
-    /// the tool calls in the current round and delivers this before generating
-    /// again. A tool already executing still completes — stopping mid-call
+    /// On a spawned run this cuts the generation short: the partial reply is
+    /// kept in the transcript, the rest of the round's planned tool calls are
+    /// abandoned, and the message is delivered before the model writes again.
+    /// On a borrowed [`Agent`] there is no engine handle to ask, so it lands at
+    /// the next step boundary instead.
+    ///
+    /// A tool already executing still completes either way — stopping mid-call
     /// would leave a side effect with nothing in the transcript to show it
     /// happened.
-    ///
-    /// It does not cut a generation short. That needs
-    /// [`Engine::stop`](crate::Engine::stop), which needs an owned engine
-    /// handle; from here the message lands at the next boundary.
     pub fn interrupt(&self, message: impl Into<String>) {
         self.push(message.into(), true);
+        // Cutting the generation is what makes this different from a follow-up.
+        if let Some((engine, session_id)) = &self.stop {
+            let _ = engine.stop(session_id.clone());
+        }
+    }
+
+    /// Attach the engine this steers, so interruptions can stop a generation.
+    pub(crate) fn with_engine(mut self, engine: Arc<Engine>, session_id: String) -> Self {
+        self.stop = Some((engine, session_id));
+        self
     }
 
     /// Whether anything is waiting.
@@ -133,6 +147,11 @@ impl Steering {
         if let Ok(mut q) = self.queue.lock() {
             q.push_back(Steer { message, interrupt });
         }
+    }
+
+    /// Whether this handle can stop a generation, or only queue.
+    pub fn can_interrupt_generation(&self) -> bool {
+        self.stop.is_some()
     }
 
     pub(crate) fn drain(&self) -> Vec<Steer> {
@@ -189,6 +208,24 @@ impl<'a> Agent<'a> {
                 .into(),
             steering: Steering::default(),
         }
+    }
+
+    /// As [`Agent::new`], with a steering handle supplied by the caller — the
+    /// spawned path builds one that can reach the engine.
+    pub(crate) fn new_steered(
+        engine: &'a Engine,
+        session: &'a mut Session,
+        steering: Steering,
+    ) -> Self {
+        let mut agent = Self::new(engine, session);
+        agent.steering = steering;
+        agent
+    }
+
+    /// Install an already-boxed approval callback.
+    pub(crate) fn with_approval_fn(mut self, f: ApprovalFn) -> Self {
+        self.on_approval = Some(f);
+        self
     }
 
     /// A handle for injecting messages while this agent runs.
@@ -285,12 +322,12 @@ impl<'a> Agent<'a> {
 
     /// Add the goal and run to completion.
     pub fn goal(self, text: impl Into<String>) -> Result<Completion> {
-        self.run_with(Some(text.into()), |_| {})
+        self.run_with(Some(text.into()), |_| {}, |_| {})
     }
 
     /// Run against whatever is already in the session.
     pub fn run(self) -> Result<Completion> {
-        self.run_with(None, |_| {})
+        self.run_with(None, |_| {}, |_| {})
     }
 
     /// Run, reporting each step to `observe`.
@@ -299,16 +336,26 @@ impl<'a> Agent<'a> {
         goal: Option<String>,
         observe: impl FnMut(AgentStep<'_>),
     ) -> Result<Completion> {
-        self.run_with(goal, observe)
+        self.run_with(goal, |_| {}, observe)
     }
 
-    fn run_with(
+    /// Run, reporting generated text to `on_delta` and steps to `observe`.
+    pub fn run_streaming_text(
+        self,
+        goal: Option<String>,
+        on_delta: impl FnMut(&str),
+        observe: impl FnMut(AgentStep<'_>),
+    ) -> Result<Completion> {
+        self.run_with(goal, on_delta, observe)
+    }
+
+    pub(crate) fn run_with(
         mut self,
         goal: Option<String>,
+        mut on_delta: impl FnMut(&str),
         mut observe: impl FnMut(AgentStep<'_>),
     ) -> Result<Completion> {
-        let mut registry = ToolRegistry::build(std::mem::take(&mut self.entries), self.search)
-            .map_err(Error::from)?;
+        let mut registry = ToolRegistry::build(std::mem::take(&mut self.entries), self.search)?;
 
         if let Some(text) = goal {
             self.session.push_user(text);
@@ -346,15 +393,18 @@ impl<'a> Agent<'a> {
                 session.push_user(steer.message);
             }
 
-            let specs = wire_specs(&registry);
             // `stream` rather than `send`: the agent owns its transcript, and
             // `send` would append the assistant text itself — producing a
             // duplicate assistant turn on every round that also calls a tool.
-            let turn = engine
-                .chat(session)
-                .tools(specs, tool_prompt.clone())
-                .stream()?
-                .complete()?;
+            let mut chat = engine.chat(session);
+            // An empty tool list is not the same as no tools: it renders an
+            // empty `tools` array into the chat template, which some templates
+            // handle badly enough to crash the backend.
+            let specs = wire_specs(&registry);
+            if !specs.is_empty() {
+                chat = chat.tools(specs, tool_prompt.clone());
+            }
+            let turn = chat.stream()?.complete_streaming(&mut on_delta)?;
 
             totals.text = turn.text.clone();
             totals.dropped += turn.dropped;
@@ -735,12 +785,6 @@ fn as_wire_call(call: &crate::generation::ToolCall) -> ToolCall {
             arguments: serde_json::from_str(&call.arguments)
                 .unwrap_or_else(|_| Value::String(call.arguments.clone())),
         },
-    }
-}
-
-impl From<ToolConfigError> for Error {
-    fn from(e: ToolConfigError) -> Self {
-        Error::Load(e.to_string())
     }
 }
 

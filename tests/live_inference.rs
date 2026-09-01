@@ -677,3 +677,89 @@ fn parallel_safe_tools_in_one_turn_run_concurrently() {
 
 #[derive(serde::Deserialize, pio_gen2::schemars::JsonSchema)]
 struct NoArgs {}
+
+/// A spawned agent streams updates and can be steered mid-run.
+#[test]
+fn a_spawned_agent_interrupt_cuts_the_generation_short() {
+    use std::sync::Arc;
+
+    let Some(model) = test_model() else {
+        eprintln!("SKIP: set PIO_TEST_MODEL to run live inference");
+        return;
+    };
+
+    let engine = Arc::new(Engine::load(model).expect("model should load"));
+    let prompt = "Write an extremely long, detailed essay about the history of rust.";
+
+    // Baseline: how much it writes when left alone.
+    let mut baseline = 0usize;
+    for update in engine
+        .agent_owned(Session::new())
+        .goal(prompt)
+        .max_steps(1)
+        .spawn()
+    {
+        if let pio_gen2::Update::Delta(t) = update {
+            baseline += t.len();
+        }
+    }
+
+    let run = engine
+        .agent_owned(Session::new())
+        .goal(prompt)
+        .max_steps(1)
+        .spawn();
+
+    let steering = run.steering();
+    assert!(
+        steering.can_interrupt_generation(),
+        "a spawned run owns an engine, so it must be able to stop one"
+    );
+
+    std::thread::spawn(move || {
+        std::thread::sleep(std::time::Duration::from_millis(250));
+        steering.interrupt("stop, just say OK");
+    });
+
+    let mut chars = 0usize;
+    let mut saw_done = false;
+    for update in run {
+        match update {
+            pio_gen2::Update::Delta(t) => chars += t.len(),
+            pio_gen2::Update::Done { .. } => saw_done = true,
+            pio_gen2::Update::Failed { error, .. } => panic!("run failed: {error}"),
+            _ => {}
+        }
+    }
+
+    eprintln!("--- baseline {baseline} chars, interrupted {chars} chars");
+    assert!(saw_done, "an interrupted run still ends with Done");
+    assert!(baseline > 0, "nothing to compare against");
+    // The point of an owned run: the generation is cut, not merely queued
+    // behind a step boundary that never arrives in a single-step run.
+    assert!(
+        chars < baseline,
+        "interrupt produced {chars} chars vs {baseline} uninterrupted — \
+         the generation was not cut short"
+    );
+}
+
+/// The borrowed agent cannot stop a generation; it says so rather than
+/// pretending.
+#[test]
+fn a_borrowed_agent_cannot_cut_a_generation_short() {
+    let mut session = Session::new();
+    // No engine needed: this is a property of how the handle was built.
+    let engine = match test_model() {
+        Some(m) => Engine::load(m).expect("model should load"),
+        None => {
+            eprintln!("SKIP: set PIO_TEST_MODEL");
+            return;
+        }
+    };
+    let agent = engine.agent(&mut session);
+    assert!(
+        !agent.steering().can_interrupt_generation(),
+        "a borrowed agent has no owned engine, and must not claim otherwise"
+    );
+}

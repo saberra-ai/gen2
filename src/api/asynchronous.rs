@@ -19,6 +19,8 @@ use std::task::{Context, Poll};
 use futures::Stream;
 use tokio::sync::mpsc::{UnboundedReceiver, unbounded_channel};
 
+use super::agent::Steering;
+use super::agent_spawned::OwnedAgent;
 use super::engine::Engine;
 use super::error::{Error, Result};
 use super::session::Session;
@@ -109,6 +111,104 @@ impl OwnedChat {
                 message: "the generation task panicked".into(),
             })?
             .map_err(|(error, _session)| error)
+    }
+}
+
+impl OwnedAgent {
+    /// Run the agent on a blocking worker, streaming [`Update`]s back.
+    ///
+    /// The async counterpart of [`OwnedAgent::spawn`]. Steering — including
+    /// cutting a generation short — works the same, since the run owns an
+    /// engine either way.
+    ///
+    /// ```no_run
+    /// # use std::sync::Arc;
+    /// # use futures::StreamExt;
+    /// # use pio_gen2::{Engine, Session, Update};
+    /// # async fn demo() -> Result<(), pio_gen2::Error> {
+    /// # let engine = Arc::new(Engine::load("m.gguf")?);
+    /// let mut run = engine.agent_owned(Session::new())
+    ///     .goal("Summarise the repository")
+    ///     .spawn_async();
+    ///
+    /// let steering = run.steering();
+    /// while let Some(update) = run.next().await {
+    ///     if let Update::Delta(t) = update { print!("{t}"); }
+    /// }
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub fn spawn_async(self) -> AsyncAgentRun {
+        let (tx, rx) = unbounded_channel();
+
+        // The synchronous run goes on a blocking worker; forwarding its updates
+        // over a Tokio channel is the whole bridge.
+        let run = self.spawn();
+        let steering = run.steering();
+        let session_id = run.session_id().to_string();
+
+        let join = tokio::task::spawn_blocking(move || {
+            for update in run {
+                if tx.send(update).is_err() {
+                    // Receiver gone. Keep draining so the worker still finishes
+                    // and the engine's session ends cleanly.
+                    continue;
+                }
+            }
+        });
+
+        AsyncAgentRun {
+            rx,
+            steering,
+            session_id,
+            join: Some(join),
+        }
+    }
+}
+
+/// An agent running on a blocking worker, yielding [`Update`]s as a [`Stream`].
+pub struct AsyncAgentRun {
+    rx: UnboundedReceiver<Update>,
+    steering: Steering,
+    session_id: String,
+    join: Option<tokio::task::JoinHandle<()>>,
+}
+
+impl AsyncAgentRun {
+    /// A handle for injecting messages while this runs.
+    pub fn steering(&self) -> Steering {
+        self.steering.clone()
+    }
+
+    /// The conversation this run belongs to.
+    pub fn session_id(&self) -> &str {
+        &self.session_id
+    }
+}
+
+impl Stream for AsyncAgentRun {
+    type Item = Update;
+
+    fn poll_next(mut self: Pin<&mut Self>, cx: &mut Context<'_>) -> Poll<Option<Update>> {
+        self.rx.poll_recv(cx)
+    }
+}
+
+impl Drop for AsyncAgentRun {
+    fn drop(&mut self) {
+        // Abort rather than join: a drop can happen inside async context, where
+        // blocking is forbidden. The worker finishes on its own.
+        if let Some(join) = self.join.take() {
+            join.abort();
+        }
+    }
+}
+
+impl std::fmt::Debug for AsyncAgentRun {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("AsyncAgentRun")
+            .field("session_id", &self.session_id)
+            .finish_non_exhaustive()
     }
 }
 

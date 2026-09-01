@@ -15,6 +15,7 @@ use crate::generation::GenSpec;
 use crate::hardware::HardwareProfile;
 
 use super::agent::Agent;
+use super::agent_spawned::OwnedAgent;
 use super::chat::Chat;
 use super::error::{Error, Result};
 use super::fit::ModelInfo;
@@ -75,6 +76,15 @@ impl Engine {
     /// routes failures. You register tools, not a `match`.
     pub fn agent<'a>(&'a self, session: &'a mut Session) -> Agent<'a> {
         Agent::new(self, session)
+    }
+
+    /// An agent that runs off the calling thread.
+    ///
+    /// The shape a UI needs: `spawn()` returns immediately, updates stream
+    /// back, and the steering handle can cut a generation short — which the
+    /// borrowed [`Engine::agent`] cannot, having no owned engine to ask.
+    pub fn agent_owned(self: &Arc<Self>, session: Session) -> OwnedAgent {
+        OwnedAgent::new(Arc::clone(self), session)
     }
 
     /// Run one prompt against a throwaway conversation.

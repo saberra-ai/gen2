@@ -5,45 +5,71 @@ turn, stream tokens back — the same API whether the weights are running throug
 llama.cpp, MLX, ONNX Runtime, Candle, ExecuTorch, or a remote OpenAI/Anthropic-
 compatible endpoint.
 
-**The public API is the controller.** You send it commands and read events;
-everything underneath — backend dispatch, session runtime, KV cache, the model
+**The public API is `Engine`, `Session`, and the three call modes below.**
+Everything underneath — backend dispatch, session runtime, KV cache, the model
 zoo, placement routing, residency policy — is internal, so it can change without
-breaking you.
+breaking you. `engine.controller()` is the escape hatch.
 
 Extracted from [pio-app](https://github.com/saberra-ai/pio-app)'s `pio-core`
 crate, with history. See [`docs/EXTRACTION.md`](docs/EXTRACTION.md) for what
 moved and what a host app still supplies.
 
-## Quick start
+## Three ways to call a model
+
+Pick by what you need to keep.
+
+| | You get | Nothing kept | Conversation kept | Tools |
+|---|---|---|---|---|
+| `infer` | a string | ✓ | | |
+| `chat` | a turn in a conversation | | ✓ | you dispatch |
+| `agent` | a task carried out | | ✓ | it dispatches |
+
+### `infer` — one prompt, nothing kept
+
+For a classification, a title, an extraction. There's no session to read back.
+
+```rust
+use pio_gen2::Engine;
+
+let engine = Engine::load("/models/model.gguf")?;
+
+let title = engine.infer("Title this in three words: …").max_tokens(16).text()?;
+```
+
+Constrain the shape when you need to parse the answer:
+
+```rust
+use pio_gen2::GrammarSpec;
+
+let json = engine.infer("Classify the sentiment of: '…'")
+    .grammar(GrammarSpec::JsonSchema(schema))
+    .greedy()
+    .text()?;
+let parsed: Sentiment = serde_json::from_str(&json)?;   // sound, not hopeful
+```
+
+### `chat` — a conversation you own
+
+The reply is appended to a `Session` you hold, so the transcript is yours to
+render, persist, or edit.
 
 ```rust
 use pio_gen2::{Engine, Session};
 
 let engine = Engine::load("/models/model.gguf")?;
+let mut session = Session::new().with_system("Be terse.");
 
-// A conversation you own. The reply is appended to it.
-let mut session = Session::new();
-engine.chat(&mut session).user("Explain entropy in one sentence.").send()?;
+engine.chat(&mut session).user("Name two colours.").send()?;
 println!("{}", session.latest_text().unwrap_or_default());
 
 // A follow-up. The history is already in the session, so nothing is resent
 // and the engine's warm KV cache is reused.
-engine.chat(&mut session).user("Simpler?").send()?;
+engine.chat(&mut session).user("Now one more.").send()?;
 
-// The transcript is yours — render it, persist it, edit it.
-for message in session.messages() { /* … */ }
+for message in session.messages() { /* render */ }
 ```
 
-A long conversation outgrows the context window. The engine sheds its oldest
-messages to make room and carries on; the session keeps everything. So the
-transcript you hold can be a superset of what the model still sees:
-
-```rust
-session.shed()               // messages no longer in the model's view
-session.fully_in_context()   // false once anything has been shed
-```
-
-Streaming, when you want tokens as they arrive:
+Streaming, for a UI on a blocking thread:
 
 ```rust
 engine.chat(&mut session)
@@ -52,42 +78,33 @@ engine.chat(&mut session)
     .send_streaming(|token| print!("{token}"))?;
 ```
 
-One-offs with nothing to keep — a classification, a title:
+Off-thread, so the caller never blocks. The session comes back on `Done`:
 
 ```rust
-let title = engine.infer("Title this in three words.").max_tokens(16).text()?;
-```
+use std::sync::Arc;
+use pio_gen2::Update;
 
-Off the calling thread, for a UI. The session comes back on `Done`:
-
-```rust
+let engine = Arc::new(engine);
 let turn = engine.chat_owned(session).user("Hello").spawn();
 
 for update in turn {
     match update {
         Update::Delta(t) => print!("{t}"),
-        Update::Done { session, .. } => save(session),
+        Update::Done { session, .. } => keep(session),
         Update::Failed { error, .. } => show(error),
         _ => {}
     }
 }
 ```
 
-Shutdown is automatic: dropping the `Engine` stops the controller and waits for
-the backend to be released. `engine.shutdown()?` instead if you want teardown
-failures to surface.
+If you want the tool calls but want to run them yourself, `chat` gives you
+`.tools(...)` plus `.on_tool(handler)` and a `.tool_depth(7)` bound.
 
-### Reproducibility
+### `agent` — a task carried out
 
-`.greedy()` pins temperature 0 and a fixed seed. It is **not** the default — an
-unconfigured turn samples with a random seed. Set it per turn, or once for the
-whole engine with `Engine::builder().greedy()`.
-
-### Agents
-
-An agent owns dispatch. You register tools; it resolves what the model named,
-validates the arguments against that tool's schema, runs it, and routes the
-failure by whether the model can fix it.
+You register tools; the agent resolves what the model named, validates the
+arguments against that tool's schema, runs it, and decides whether a failure is
+worth handing back.
 
 ```rust
 use pio_gen2::{Engine, FunctionTool, Session, ToolOutput, ToolSearch};
@@ -99,25 +116,62 @@ struct WeatherArgs {
     city: String,
 }
 
-let weather = FunctionTool::new("get_weather", "Current weather for a city",
-    |_ctx, a: WeatherArgs| async move { Ok(ToolOutput::from(fetch(&a.city))) });
+let weather = FunctionTool::new(
+    "get_weather",
+    "Current weather for a city",
+    |_ctx, a: WeatherArgs| async move { Ok(ToolOutput::from(fetch(&a.city))) },
+);
 
 let done = engine.agent(&mut session)
     .add_tool(weather)
-    .defer_tools(mcp_tools)          // absent from the prompt until searched for
+    .defer_tools(mcp_tools)              // 40 tools, none in the prompt
     .tool_search(ToolSearch::Hybrid)
     .max_steps(12)
     .goal("What is the weather in Paris?")?;
+
+println!("{} after {} tool rounds", done.text, done.tool_rounds);
 ```
 
 The schema comes from `WeatherArgs`, so what the model sees and what the handler
 reads cannot drift.
 
+Off-thread, with steering — this is the form a UI wants:
+
+```rust
+let run = engine.agent_owned(session)
+    .add_tool(weather)
+    .goal("Summarise the repository")
+    .spawn();
+
+let steering = run.steering();       // move this to wherever the user is
+// steering.follow_up("also check the tests");
+// steering.interrupt("stop, just summarise the README");
+
+for update in run {
+    match update {
+        Update::Delta(t) => print!("{t}"),
+        Update::ToolCall { tool, args, .. } => status(format!("{tool} {args}")),
+        Update::Done { completion, session } => finish(completion, session),
+        _ => {}
+    }
+}
+```
+
+`interrupt` on an owned run cuts the generation short — measured at 223 chars
+against 3840 uninterrupted. On a borrowed `agent(&mut session)` there is no
+engine handle to ask, so it lands at the next step boundary instead;
+`steering.can_interrupt_generation()` tells you which you have.
+
+Under the `tokio` feature, `spawn_async()` gives the same thing as a `Stream`,
+and `send_async().await` awaits a whole turn.
+
+### How an agent stops, and what it may run
+
 **Deferred tools** stay out of the prompt entirely. When the model calls
 `search_tools`, matches are appended to the *conversation* — never the prefix —
 so the warm KV cache survives. Search is hybrid by default: BM25 over names,
 descriptions and argument names catches exact terminology, embeddings catch
-intent, and RRF fuses them.
+intent, and RRF fuses them on rank.
 
 **Stopping** is a first-class answer, not a timeout. `Finish::OutOfBudget(Budget::Steps
 | Tokens | Deadline)` says which limit; `Finish::GaveUp(Struggle::RepeatingCall
@@ -126,12 +180,12 @@ failure a step count never sees.
 
 **Approval** is off by default, because a gate nobody reads is worse than none.
 Tools declare `Risk::Risky`; `ApprovalMode::AskOnRisky` routes those through
-`on_approval`.
+`on_approval`, synchronously, because you cannot approve something by observing
+a stream.
 
 **Scheduling** honours each tool's `ExecutionPolicy`. Independent calls in one
 turn run concurrently; anything declaring itself unsafe to parallelise runs
-alone. Results are appended in call order regardless of completion order, so the
-transcript reads the way the model wrote it.
+alone. Results are appended in call order regardless of completion order.
 
 ```rust
 FunctionTool::new(..).with_policy(ExecutionPolicy::exclusive())   // a shared write
@@ -180,29 +234,6 @@ two directions run without overwriting each other's cached prefill. `Session` is
 `Serialize`/`Deserialize`, with the engine-state fields deliberately skipped: a
 restored session must never claim a prefill the engine doesn't hold.
 
-### Tool calling
-
-Without a handler, a tool call is an `Event` for you to act on. With one, the
-turn becomes a loop — generate, dispatch, feed results back, generate again:
-
-```rust
-let done = engine.chat(&mut session)
-    .user("What is the weather in Paris?")
-    .tools(vec![weather_tool()], "Call a tool when you need data.")
-    .on_tool(|call| match call.name.as_str() {
-        "get_weather" => fetch_weather(&call.arguments),
-        other => format!("no such tool: {other}"),
-    })
-    .send()?;
-
-done.tool_rounds       // how many rounds ran
-```
-
-`.tool_depth(n)` caps the rounds, defaulting to **7**. Reaching it ends the turn
-with `Finish::ToolDepthReached` rather than looping forever — which is what
-stops a model stuck re-calling the same tool. Both halves land in the session:
-the assistant turn that asked, and the results that came back.
-
 ### Constrained output
 
 `.grammar(...)` shapes decoding with a JSON schema, regex, Lark grammar, or
@@ -221,28 +252,15 @@ weights is the expensive part, so one engine should serve several shapes.
 
 Behind the `tokio` feature. The controller stays synchronous — decoding is a
 blocking native call — so this runs it on `spawn_blocking` and hands you a
-`Stream`, instead of every async caller writing that bridge themselves:
+`Stream`, instead of every async caller writing that bridge themselves.
 
 ```rust
-// Await a whole turn.
-let (completion, session) = engine.chat_owned(session)
-    .user("Name two colours.")
-    .send_async()
-    .await?;
-
-// Or stream it.
-let mut turn = engine.chat_owned(session).user("Now one more.").spawn_async();
-while let Some(update) = turn.next().await {
-    match update {
-        Update::Delta(t) => print!("{t}"),
-        Update::Done { session, .. } => keep(session),
-        _ => {}
-    }
-}
+let (completion, session) = engine.chat_owned(session).user("…").send_async().await?;
+let mut run = engine.agent_owned(session).goal("…").spawn_async();
+while let Some(update) = run.next().await { /* … */ }
 ```
 
-`turn.canceller()` works from another task. Off by default, so sync consumers
-need no runtime.
+Off by default, so sync consumers need no runtime.
 
 ### Will it fit?
 
@@ -330,7 +348,7 @@ cargo run --example async_chat --no-default-features --features metal,tokio -- /
 - `basic` — ask / stream / converse, and the four ways to consume a generation.
 - `structured` — grammar-constrained output (JSON schema, bare JSON, regex).
 - `agent` — registered tools, owned dispatch, and a deferred tool found by search.
-- `tools` — the lower-level `chat().on_tool()` loop.
+- `tools` — the lower-level `chat().on_tool()` loop, where you dispatch.
 - `async_chat` — the `tokio` feature: await a turn, stream one, cancel from a task.
 - `fit` — inspect a model and ask whether this machine can run it.
 - `embeddings` — embedder-only engine, batch and single, cosine similarity.
@@ -387,12 +405,6 @@ Internal (`pub(crate)`), driven by the controller:
 The crate warns on `unnameable_types`, so a type that becomes reachable through
 the public API without being nameable fails the build rather than silently
 becoming a hole.
-
-## Constrained decoding
-
-All backends share one grammar stack (`llguidance` + `toktrie`), so a JSON
-schema, Lark grammar, regex, or GBNF that shapes output under llama.cpp shapes
-it identically under MLX.
 
 ## License
 

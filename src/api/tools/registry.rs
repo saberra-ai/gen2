@@ -22,9 +22,6 @@ pub enum ToolConfigError {
     /// when to reach for it.
     #[error("tool '{0}' has no description")]
     MissingDescription(String),
-    /// Nothing is registered.
-    #[error("no tools registered")]
-    Empty,
 }
 
 /// The tools an agent can reach, and their loading state.
@@ -54,10 +51,9 @@ impl ToolRegistry {
         entries: Vec<(Arc<dyn Tool>, ToolLoading)>,
         search: Option<ToolSearch>,
     ) -> Result<Self, ToolConfigError> {
-        if entries.is_empty() {
-            return Err(ToolConfigError::Empty);
-        }
-
+        // An empty registry is legal: an agent with no tools is a plain
+        // reasoning loop, and rejecting it would make the tool-less case an
+        // error rather than the simplest one.
         let mut tools = HashMap::new();
         let (mut resident, mut deferred) = (Vec::new(), Vec::new());
 
@@ -279,6 +275,14 @@ mod tests {
         let err = ToolRegistry::build(vec![(tool("a", "does a"), ToolLoading::Deferred)], None)
             .unwrap_err();
         assert_eq!(err, ToolConfigError::DeferredToolsWithoutSearch(1));
+    }
+
+    #[test]
+    fn an_agent_with_no_tools_is_legal() {
+        // The tool-less case is a plain reasoning loop, not a misconfiguration.
+        let r = ToolRegistry::build(Vec::new(), None).expect("no tools is valid");
+        assert!(r.visible_specs().is_empty());
+        assert!(r.deferred_names().is_empty());
     }
 
     #[test]
