@@ -106,12 +106,27 @@ impl ModelInfo {
         }
     }
 
-    /// The largest context this machine can give the model.
+    /// The largest context this machine can give the model, for one
+    /// conversation at a time.
     pub fn max_context(&self, hw: &HardwareProfile) -> u32 {
+        self.max_context_for(hw, 1)
+    }
+
+    /// The largest context this machine can give the model when `concurrent`
+    /// conversations are resident at once.
+    ///
+    /// Weights are loaded once and shared, but every live conversation carries
+    /// its own KV cache, so it is the per-token cost that multiplies. Sizing
+    /// against a single conversation and then keeping several — which is what
+    /// the controller does by default — is how a window that fit becomes one
+    /// that does not, and llama.cpp reports that as a bare `Decode Error -3`
+    /// rather than as running out of room.
+    pub fn max_context_for(&self, hw: &HardwareProfile, concurrent: usize) -> u32 {
+        let concurrent = concurrent.max(1) as u64;
         fit_context(
             budget_bytes(hw),
             self.file_bytes,
-            self.kv_per_token(),
+            self.kv_per_token().saturating_mul(concurrent),
             self.train_context.unwrap_or(4096),
             None,
         )

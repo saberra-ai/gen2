@@ -612,6 +612,7 @@ impl EngineBuilder {
 
         // Preflight the fit before starting anything, so a model that cannot
         // run fails with a verdict instead of a load error.
+        let config = self.config.unwrap_or_default();
         let mut settings = self.settings.unwrap_or_default();
         if self.context != ContextChoice::Backend
             && let Some(path) = self.model_path.as_deref()
@@ -620,7 +621,11 @@ impl EngineBuilder {
             let hw = HardwareProfile::detect();
             let wanted = match self.context {
                 ContextChoice::Exact(n) => Some(n),
-                _ => None,
+                // Sized for as many conversations as the controller will keep
+                // resident, not for one. Every live conversation holds its own
+                // KV cache, so a window picked for a single chat is exceeded
+                // as soon as a second one opens.
+                _ => Some(info.max_context_for(&hw, config.max_active_chats)),
             };
             let fit = info.fits(&hw, wanted);
             if !fit.ok() {
@@ -629,7 +634,7 @@ impl EngineBuilder {
             settings.system.ctx_size = Some(fit.context);
         }
 
-        let (handle, join) = start_controller_joinable(self.config.unwrap_or_default());
+        let (handle, join) = start_controller_joinable(config);
         let engine = Engine {
             handle,
             join: Some(join),

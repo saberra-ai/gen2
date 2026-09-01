@@ -469,3 +469,70 @@ fn a_header_without_dimensions_still_prices_context() {
         "a larger context must cost more even when the cost had to be assumed",
     );
 }
+
+#[test]
+fn sizing_for_more_conversations_gives_each_a_smaller_window() {
+    // Weights are shared between contexts; KV is not. A window picked for one
+    // conversation is exceeded the moment a second opens, and llama.cpp
+    // reports that as a bare `Decode Error -3` rather than as running out of
+    // room — so the arithmetic has to happen here, before the load.
+    let dir = tempfile::tempdir().unwrap();
+    let info = model(dir.path(), 2_048);
+    let hw = machine(64);
+
+    let alone = info.max_context_for(&hw, 1);
+    assert_eq!(
+        alone,
+        info.max_context(&hw),
+        "one is what max_context means"
+    );
+
+    let mut previous = alone;
+    for concurrent in [2usize, 3, 4, 8] {
+        let shared = info.max_context_for(&hw, concurrent);
+        assert!(
+            shared <= previous,
+            "{concurrent} conversations were offered {shared} tokens each, more \
+             than the {previous} offered to fewer",
+        );
+        previous = shared;
+    }
+}
+
+#[test]
+fn a_window_sized_for_several_conversations_fits_all_of_them() {
+    // The property the sizing exists for: whatever it hands back must still
+    // fit once every resident conversation is holding one.
+    let dir = tempfile::tempdir().unwrap();
+    for &size in SIZE_LADDER_MIB {
+        let info = model(dir.path(), size);
+        for &ram in RAM_LADDER {
+            let hw = machine(ram);
+            for concurrent in [1usize, 3, 8] {
+                let ctx = info.max_context_for(&hw, concurrent);
+                if info.fits(&hw, Some(ctx)).verdict != FitVerdict::Fits {
+                    continue; // the model does not fit at all on this machine
+                }
+                if ctx == CONTEXT_FLOOR {
+                    // `fit_context` floors rather than reporting a window too
+                    // small to be worth loading, so the floor is not a promise
+                    // that anything fits — see the floor test above.
+                    continue;
+                }
+                // Weights and the fixed runtime overhead are paid once for the
+                // process; only the KV cache is per conversation. `at_zero` is
+                // everything that does not scale, so the difference from it is
+                // exactly what each extra conversation adds.
+                let at_zero = info.memory_needed(0);
+                let per_conversation = info.memory_needed(ctx).saturating_sub(at_zero);
+                let all =
+                    at_zero.saturating_add(per_conversation.saturating_mul(concurrent as u64));
+                assert!(
+                    all <= info.fits(&hw, Some(ctx)).available_bytes,
+                    "{size} MiB model on {ram} GiB offered {ctx} tokens to each of \
+                     {concurrent} conversations, which together need more than the budget",
+                );
+            }
+        }
+    }
+}
