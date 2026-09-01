@@ -20,6 +20,7 @@ use super::tools::{
     IntoTool, Tool, ToolContext, ToolError, ToolLoading, ToolOutput, ToolRegistry, ToolSearch,
     ToolSpec,
 };
+use crate::generation::GenSpec;
 use crate::types::message::{FunctionDefinition, Message, ToolCall, ToolSpec as WireToolSpec};
 
 /// How many rounds an agent may run by default.
@@ -191,6 +192,7 @@ pub struct Agent<'a> {
     on_approval: Option<ApprovalFn>,
     tool_prompt: String,
     steering: Steering,
+    spec: GenSpec,
 }
 
 impl<'a> Agent<'a> {
@@ -207,6 +209,7 @@ impl<'a> Agent<'a> {
                           Answer directly when you don't."
                 .into(),
             steering: Steering::default(),
+            spec: engine.default_gen_spec(),
         }
     }
 
@@ -234,6 +237,12 @@ impl<'a> Agent<'a> {
     /// user's attention.
     pub fn steering(&self) -> Steering {
         self.steering.clone()
+    }
+
+    /// Install an already-built set of registrations.
+    pub(crate) fn with_entries(mut self, entries: Vec<(Arc<dyn Tool>, ToolLoading)>) -> Self {
+        self.entries = entries;
+        self
     }
 
     /// Register a tool the model can see from the first turn.
@@ -275,6 +284,34 @@ impl<'a> Agent<'a> {
     /// How deferred tools are found. Required if anything is deferred.
     pub fn tool_search(mut self, search: ToolSearch) -> Self {
         self.search = Some(search);
+        self
+    }
+
+    /// Sampling temperature for every turn of this run.
+    pub fn temperature(mut self, t: f32) -> Self {
+        self.spec.temperature = Some(t);
+        self
+    }
+
+    /// Seed the sampler.
+    pub fn seed(mut self, seed: u64) -> Self {
+        self.spec.seed = Some(seed);
+        self
+    }
+
+    /// Decode deterministically: temperature 0 with a fixed seed.
+    ///
+    /// An agent's choices are as worth reproducing as its prose — more so,
+    /// since which tool it reached for is the part you debug.
+    pub fn greedy(mut self) -> Self {
+        self.spec.temperature = Some(0.0);
+        self.spec.seed = Some(self.spec.seed.unwrap_or(0));
+        self
+    }
+
+    /// Use a fully-built [`GenSpec`] for every turn.
+    pub fn gen_spec(mut self, spec: GenSpec) -> Self {
+        self.spec = spec;
         self
     }
 
@@ -357,6 +394,12 @@ impl<'a> Agent<'a> {
     ) -> Result<Completion> {
         let mut registry = ToolRegistry::build(std::mem::take(&mut self.entries), self.search)?;
 
+        // Tool definitions only reach the model when a conversation opens, so a
+        // run registering a different set than the session was opened with must
+        // reopen it — otherwise its tools are silently ignored and the model
+        // keeps calling the old ones.
+        self.session.note_tools(registry.fingerprint());
+
         if let Some(text) = goal {
             self.session.push_user(text);
         }
@@ -367,6 +410,7 @@ impl<'a> Agent<'a> {
         let mut on_approval = self.on_approval.take();
         let tool_prompt = self.tool_prompt.clone();
         let steering = self.steering.clone();
+        let spec = self.spec.clone();
         let session: &mut Session = self.session;
 
         let started = Instant::now();
@@ -396,7 +440,7 @@ impl<'a> Agent<'a> {
             // `stream` rather than `send`: the agent owns its transcript, and
             // `send` would append the assistant text itself — producing a
             // duplicate assistant turn on every round that also calls a tool.
-            let mut chat = engine.chat(session);
+            let mut chat = engine.chat(session).gen_spec(spec.clone());
             // An empty tool list is not the same as no tools: it renders an
             // empty `tools` array into the chat template, which some templates
             // handle badly enough to crash the backend.

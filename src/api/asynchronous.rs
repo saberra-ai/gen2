@@ -86,6 +86,7 @@ impl OwnedChat {
     ///
     /// The async counterpart of [`Chat::send`](super::Chat::send). Use
     /// [`OwnedChat::spawn_async`] when you want the fragments as they arrive.
+    #[allow(clippy::result_large_err)]
     pub async fn send_async(self) -> Result<(Completion, Session)> {
         tokio::task::spawn_blocking(move || self.run_blocking(|_| {}))
             .await
@@ -100,6 +101,7 @@ impl OwnedChat {
     ///
     /// `on_token` runs on a blocking worker, so it must be `Send`. Keep it
     /// short — anything slow belongs behind a channel.
+    #[allow(clippy::result_large_err)]
     pub async fn send_streaming_async(
         self,
         on_token: impl FnMut(&str) + Send + 'static,

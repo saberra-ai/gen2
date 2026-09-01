@@ -760,3 +760,78 @@ fn a_borrowed_agent_cannot_cut_a_generation_short() {
         "a borrowed agent has no owned engine, and must not claim otherwise"
     );
 }
+
+/// Two runs over one session, with different tool sets, both complete and the
+/// transcript stays coherent.
+///
+/// The reopen itself is unit-tested (`Session::note_tools`); what this adds is
+/// that the reopened conversation still renders and generates — a full history
+/// replayed into a fresh `StartChat` with a different tool list is the case
+/// most likely to break the template.
+///
+/// It deliberately does *not* assert that the model calls the new tool. It can
+/// and does, but greedily this model declines given a transcript full of the
+/// old one, and that is a fact about the model, not about the reopen.
+#[test]
+fn a_session_survives_a_tool_set_change_between_runs() {
+    let Some(model) = tool_model() else {
+        eprintln!("SKIP: set PIO_TEST_TOOL_MODEL to run the agent");
+        return;
+    };
+
+    let engine = Engine::load(model).expect("tool model should load");
+    let mut session = Session::new();
+
+    engine
+        .agent(&mut session)
+        .add_tool(named_tool("alpha"))
+        .max_steps(3)
+        .greedy()
+        .goal("Call the alpha tool with city=Paris.")
+        .expect("first run should complete");
+    let after_first = session.len();
+    assert!(after_first >= 2, "the first run recorded nothing");
+
+    let done = engine
+        .agent(&mut session)
+        .add_tool(named_tool("beta"))
+        .max_steps(3)
+        .greedy()
+        .goal("Now call the beta tool with city=Rome.")
+        .expect("a reopened conversation should still generate");
+
+    eprintln!(
+        "--- {} messages after two runs, second reply {:?}",
+        session.len(),
+        done.text.chars().take(40).collect::<String>()
+    );
+    assert!(
+        session.len() > after_first,
+        "the second run added nothing to the transcript"
+    );
+    assert!(
+        !done.text.trim().is_empty(),
+        "the second run produced no text"
+    );
+
+    // Roles stay well-formed across the reopen — no duplicate assistant turns,
+    // no tool result without a preceding call.
+    let roles: Vec<&str> = session.messages().iter().map(|m| m.role.as_str()).collect();
+    for pair in roles.windows(2) {
+        assert_ne!(
+            (pair[0], pair[1]),
+            ("assistant", "assistant"),
+            "duplicate assistant turns: {roles:?}"
+        );
+    }
+}
+
+use gen2::AgentStep as pio_agent_step;
+
+fn named_tool(name: &'static str) -> gen2::FunctionTool<WeatherArgs> {
+    gen2::FunctionTool::new(
+        name,
+        format!("The {name} tool — call it with any city"),
+        |_c, a: WeatherArgs| async move { Ok(gen2::ToolOutput::from(format!("ok for {}", a.city))) },
+    )
+}

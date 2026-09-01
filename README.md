@@ -165,6 +165,50 @@ engine handle to ask, so it lands at the next step boundary instead;
 Under the `tokio` feature, `spawn_async()` gives the same thing as a `Stream`,
 and `send_async().await` awaits a whole turn.
 
+### Continuing a run
+
+Runs share a `Session`, so the second one sees the first:
+
+```rust
+let mut session = Session::new();
+engine.agent(&mut session).add_tool(weather).goal("Weather in Paris?")?;
+engine.agent(&mut session).add_tool(weather).goal("Which city did I ask about?")?;
+// → "Paris"
+```
+
+Registering the tools each time is backwards — the tool set is the stable part
+and the conversation is what changes — so `AgentConfig` holds it:
+
+```rust
+let researcher = AgentConfig::new()
+    .add_tool(weather)
+    .defer_tools(mcp)
+    .tool_search(ToolSearch::Hybrid)
+    .max_steps(8);
+
+researcher.agent(&engine, &mut session).goal("Weather in Paris?")?;
+researcher.agent(&engine, &mut session).goal("And which city was that?")?;
+```
+
+It's cheap to clone (tools sit behind `Arc`) and `agent_owned` gives the spawned
+form. The approval callback isn't part of a config — it's a `FnMut` that usually
+closes over a UI — so set it per run.
+
+**What sharing a session means, precisely:**
+
+- **History accumulates**, and the model uses it. Nothing is resent, and the
+  warm KV cache is reused.
+- **Budgets are per run.** `max_steps(8)` is eight steps for *this* task, not
+  eight across the conversation. Repeat detection resets too.
+- **Changing the tool set reopens the conversation.** Tool definitions live in
+  the prompt prefix and are only sent when a conversation opens, so a run
+  registering a different set used to be *silently ignored* — the model kept
+  seeing the old tools. It now costs one re-prefill instead, on the same
+  principle as `Session::edit`: change what lives in the prefix, and the prefix
+  is rebuilt.
+- **`session.shed()` keeps accumulating**, so context loss stays visible across
+  runs.
+
 ### How an agent stops, and what it may run
 
 **Deferred tools** stay out of the prompt entirely. When the model calls

@@ -171,6 +171,10 @@ impl OwnedChat {
     ///
     /// Returns the session either way — a failed turn's transcript is still
     /// the caller's, and still holds the messages they added.
+    // The `Err` arm carries a whole Session, which clippy flags as large. That
+    // is the point: losing the transcript on failure would be worse than the
+    // move, and boxing it buys an allocation on a path nobody profiles.
+    #[allow(clippy::result_large_err)]
     pub(crate) fn run_blocking(
         self,
         on_token: impl FnMut(&str),

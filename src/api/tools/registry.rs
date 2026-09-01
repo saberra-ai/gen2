@@ -204,6 +204,25 @@ impl ToolRegistry {
         }
     }
 
+    /// A stable fingerprint of the registered tool set.
+    ///
+    /// Over what is *registered*, not what is currently visible: hydration is
+    /// designed to leave the prompt prefix alone, so a tool becoming visible
+    /// mid-run must not read as a changed set and trigger a re-prefill.
+    pub fn fingerprint(&self) -> u64 {
+        use std::hash::{Hash, Hasher};
+        let mut names: Vec<&String> = self.tools.keys().collect();
+        names.sort();
+        let mut h = std::collections::hash_map::DefaultHasher::new();
+        for name in names {
+            name.hash(&mut h);
+            if let Some(t) = self.tools.get(name) {
+                t.spec().input_schema.to_string().hash(&mut h);
+            }
+        }
+        h.finish()
+    }
+
     /// Deferred tools hydrated so far, in the order they were found.
     pub fn hydrated_names(&self) -> &[String] {
         &self.hydrated
@@ -349,6 +368,54 @@ mod tests {
         .unwrap();
         // Losing recall is acceptable; losing search entirely is not.
         assert_eq!(r.search("kubectl", 2, None)[0].name, "kubectl_apply");
+    }
+
+    #[test]
+    fn the_fingerprint_tracks_registration_not_visibility() {
+        // Hydration deliberately avoids touching the prompt prefix, so a tool
+        // becoming visible must not look like a changed tool set.
+        let mut r = registry();
+        let before = r.fingerprint();
+        r.mark_hydrated("github_create_pull_request");
+        assert_eq!(r.fingerprint(), before, "hydration is not a set change");
+    }
+
+    #[test]
+    fn different_tool_sets_fingerprint_differently() {
+        let a = registry().fingerprint();
+        let b = ToolRegistry::build(
+            vec![(
+                tool("read_file", "Read a file from disk"),
+                ToolLoading::Resident,
+            )],
+            None,
+        )
+        .unwrap()
+        .fingerprint();
+        assert_ne!(a, b);
+    }
+
+    #[test]
+    fn the_fingerprint_ignores_registration_order() {
+        let one = ToolRegistry::build(
+            vec![
+                (tool("a", "does a"), ToolLoading::Resident),
+                (tool("b", "does b"), ToolLoading::Resident),
+            ],
+            None,
+        )
+        .unwrap()
+        .fingerprint();
+        let two = ToolRegistry::build(
+            vec![
+                (tool("b", "does b"), ToolLoading::Resident),
+                (tool("a", "does a"), ToolLoading::Resident),
+            ],
+            None,
+        )
+        .unwrap()
+        .fingerprint();
+        assert_eq!(one, two, "the same tools registered in either order match");
     }
 
     #[test]

@@ -39,6 +39,7 @@ pub struct OwnedAgent {
     approval: ApprovalMode,
     on_approval: Option<ApprovalFn>,
     goal: Option<String>,
+    greedy: bool,
 }
 
 impl OwnedAgent {
@@ -55,6 +56,7 @@ impl OwnedAgent {
             approval: ApprovalMode::Auto,
             on_approval: None,
             goal: None,
+            greedy: false,
         }
     }
 
@@ -87,6 +89,12 @@ impl OwnedAgent {
     /// How deferred tools are found.
     pub fn tool_search(mut self, search: ToolSearch) -> Self {
         self.search = Some(search);
+        self
+    }
+
+    /// Decode deterministically: temperature 0 with a fixed seed.
+    pub fn greedy(mut self) -> Self {
+        self.greedy = true;
         self
     }
 
@@ -173,6 +181,7 @@ impl OwnedAgent {
                 approval,
                 on_approval,
                 goal,
+                greedy,
             } = self;
 
             let mut agent = Agent::new_steered(&engine, &mut session, steer_for_loop)
@@ -193,6 +202,9 @@ impl OwnedAgent {
             }
             if let Some(f) = on_approval {
                 agent = agent.with_approval_fn(f);
+            }
+            if greedy {
+                agent = agent.greedy();
             }
 
             let deltas = tx.clone();

@@ -60,6 +60,15 @@ pub struct Session {
     /// starts with all of it in view again.
     #[serde(skip)]
     pub(crate) shed: usize,
+    /// Fingerprint of the tool set this conversation was opened with.
+    ///
+    /// Tool definitions are rendered into the prompt prefix and only sent when
+    /// a conversation is opened, so a later run registering a different set
+    /// would otherwise be silently ignored — the model would keep seeing the
+    /// original tools. Recording the set lets a change reopen the conversation
+    /// instead.
+    #[serde(skip)]
+    pub(crate) tools_fingerprint: Option<u64>,
 }
 
 impl Session {
@@ -70,6 +79,7 @@ impl Session {
             messages: Vec::new(),
             opened: false,
             shed: 0,
+            tools_fingerprint: None,
         }
     }
 
@@ -98,6 +108,7 @@ impl Session {
             messages: self.messages.clone(),
             opened: false,
             shed: 0,
+            tools_fingerprint: None,
         }
     }
 
@@ -154,6 +165,29 @@ impl Session {
         self.shed = self.shed.saturating_add(n);
     }
 
+    /// Declare the tool set a run is about to use.
+    ///
+    /// A set different from the one this conversation was opened with reopens
+    /// it, so the new definitions actually reach the model. Costs one
+    /// re-prefill; the alternative is a run whose tools are silently ignored.
+    ///
+    /// Returns whether the conversation was reopened.
+    pub(crate) fn note_tools(&mut self, fingerprint: u64) -> bool {
+        match self.tools_fingerprint {
+            Some(current) if current == fingerprint => false,
+            None if !self.opened => {
+                // First use: nothing to invalidate.
+                self.tools_fingerprint = Some(fingerprint);
+                false
+            }
+            _ => {
+                self.tools_fingerprint = Some(fingerprint);
+                self.opened = false;
+                true
+            }
+        }
+    }
+
     /// Append a message.
     pub fn push(&mut self, message: Message) {
         self.messages.push(message);
@@ -203,6 +237,7 @@ impl Session {
         self.messages.clear();
         self.opened = false;
         self.shed = 0;
+        self.tools_fingerprint = None;
     }
 
     /// Edit the transcript in place — trim it, delete a message, rewrite one.
@@ -354,6 +389,27 @@ mod tests {
         let mut s = Session::new();
         s.push_user_with_images("hello", Vec::<String>::new());
         assert_eq!(s.latest_text().as_deref(), Some("hello"));
+    }
+
+    #[test]
+    fn the_same_tool_set_does_not_reopen_a_conversation() {
+        let mut s = Session::new();
+        assert!(!s.note_tools(7), "first use has nothing to invalidate");
+        s.opened = true;
+        assert!(!s.note_tools(7), "an unchanged set keeps the warm prefill");
+        assert!(s.opened);
+    }
+
+    #[test]
+    fn a_changed_tool_set_reopens_the_conversation() {
+        // Tool definitions live in the prompt prefix and are only sent when a
+        // conversation opens. Without this, a run registering different tools
+        // is silently ignored and the model keeps seeing the old set.
+        let mut s = Session::new();
+        s.note_tools(7);
+        s.opened = true;
+        assert!(s.note_tools(9), "a different set must reopen");
+        assert!(!s.opened, "so the new definitions actually get sent");
     }
 
     #[test]

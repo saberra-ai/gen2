@@ -171,7 +171,7 @@ pub use api::{AsyncAgentRun, AsyncTurn};
 pub use schemars;
 
 pub use api::{
-    Agent, AgentRun, AgentStep, ApprovalMode, Budget, Canceller, Chat, Completion,
+    Agent, AgentConfig, AgentRun, AgentStep, ApprovalMode, Budget, Canceller, Chat, Completion,
     DEFAULT_MAX_STEPS, DEFAULT_TOOL_DEPTH, Decision, Engine, EngineBuilder, Error, Event,
     ExecutionPolicy, Finish, Fit, FitVerdict, FunctionTool, Inference, IntoTool, ModelInfo,
     OwnedChat, Result, Session, TokenStream, Tokens, Tool, ToolConfigError, ToolContext, ToolError,

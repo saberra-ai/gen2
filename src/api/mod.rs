@@ -26,6 +26,7 @@
 //! for what this doesn't cover.
 
 mod agent;
+mod agent_config;
 mod agent_spawned;
 #[cfg(feature = "tokio")]
 mod asynchronous;
@@ -42,6 +43,7 @@ pub mod tools;
 pub use agent::{
     Agent, AgentStep, ApprovalMode, DEFAULT_MAX_STEPS, Decision, Risk, SEARCH_TOOL, Steering,
 };
+pub use agent_config::AgentConfig;
 pub use agent_spawned::{AgentRun, OwnedAgent};
 #[cfg(feature = "tokio")]
 pub use asynchronous::{AsyncAgentRun, AsyncTurn};
