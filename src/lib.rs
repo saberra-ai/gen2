@@ -194,6 +194,14 @@ pub use types::model::{Model, ModelConfig, ModelMetadata};
 pub use backend::caps::{BackendCaps, LatencyTier};
 /// Output shaping on [`GenSpec::grammar`]: JSON schema, regex, Lark, or GBNF.
 pub use backend::common::grammar::GrammarSpec;
+/// What a predictor is given to draft from.
+///
+/// Exported because [`SpeculativePredictor::draft_with_context`] takes one: it
+/// was reachable but unnameable, so the trait could not actually be
+/// implemented outside this crate. Only exists on the MLX backend, which is
+/// the only one that surfaces the target's hidden states.
+#[cfg(feature = "backend-mlx")]
+pub use backend::common::speculative::DraftContext;
 /// Speculative-decoding policy reachable from the sampling settings.
 pub use backend::common::speculative::{SpeculativeMode, SpeculativePredictor};
 

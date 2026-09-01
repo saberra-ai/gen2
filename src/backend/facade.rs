@@ -267,7 +267,10 @@ impl Engine {
         }
         #[cfg(all(not(feature = "backend-llamacpp"), feature = "backend-mlx"))]
         {
-            return Self::Mlx(super::mlx::Engine::new());
+            // Tail expr, as in the mlxcel arm below: with llamacpp absent and
+            // mlx present, every block after this one is cfg'd out, so this is
+            // the function's tail.
+            Self::Mlx(super::mlx::Engine::new())
         }
         #[cfg(all(not(feature = "backend-llamacpp"), feature = "backend-mlxcel"))]
         {

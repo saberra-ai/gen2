@@ -177,8 +177,13 @@ tokio = []
 specta = ["dep:specta"]
 
 # ── Platform bundles ────────────────────────────────────────────────────────
-# 2026-05-08: `backend-mlx` is deliberately absent from `apple`/`ios` — mlx-sys'
-# CMake build fails under Xcode 26.4 / clang 21. Re-enable on toolchain fix.
+# `backend-mlx` is deliberately absent from `apple`/`ios`, but no longer
+# because it cannot build: as of 2026-09-01 it compiles and generates on
+# macOS 26.3 once the Metal Toolchain component is installed
+# (`xcodebuild -downloadComponent MetalToolchain`), and the conformance suite
+# records that. It stays out of these bundles because adding it would change
+# what every host on the Apple path links, which is a decision for whoever
+# owns that path rather than a consequence of the build being fixed.
 apple = ["backend-llamacpp", "metal"]
 ios = ["backend-llamacpp", "metal"]
 android = ["backend-llamacpp", "vulkan"]

@@ -32,9 +32,22 @@ use crate::session_rt::SessionSpec;
 /// Backends whose token generation has never been exercised by any test.
 ///
 /// Not a to-do list: a statement of what is known, checked against what is
-/// compiled. A backend earns removal from here by having a live test that
-/// actually decodes with it — see `tests/live_inference.rs` for the shape.
-pub(crate) const NEVER_PRODUCED_A_TOKEN: &[&str] = &["mlx", "mlxcel", "onnx", "candle"];
+/// compiled. A backend earns removal from here the only way that means
+/// anything — by running [`contract_with_a_model`] against a real model and
+/// decoding a non-zero number of tokens, which that function asserts and
+/// prints.
+///
+/// Verified so far, and how:
+///
+/// - `llamacpp` — `PIO_TEST_MODEL` pointed at a GGUF, plus the whole of
+///   `tests/live_inference.rs`.
+/// - `mlx` — `PIO_TEST_MLX_MODEL` pointed at an MLX safetensors bundle
+///   (`llama-3.2-3b-4bit`), on macOS 26.3 with the Metal Toolchain installed.
+///   Decoded to its 16-token cap.
+///
+/// The others need a model this repository does not carry. Point the variable
+/// in [`model_env`] at one and the generating half runs.
+pub(crate) const NEVER_PRODUCED_A_TOKEN: &[&str] = &["mlxcel", "onnx", "candle"];
 
 /// The environment variable naming a model this backend can load, if the
 /// caller has one.
@@ -330,12 +343,19 @@ pub(crate) fn contract_with_a_model(backend: &dyn Backend, model_path: &str) -> 
     true
 }
 
-/// Pull a generation to its end and assert the one thing every backend owes:
-/// exactly one terminal event, and nothing after it.
+/// Pull a generation to its end and assert what every backend owes: at least
+/// one token, exactly one terminal event, and nothing after it.
 ///
-/// The same rule [`assert_valid_trace`](crate::test_support::assert_valid_trace)
-/// enforces one layer up. Checked here too, because this is where a backend
-/// could break it.
+/// The terminal rule is the same one
+/// [`assert_valid_trace`](crate::test_support::assert_valid_trace) enforces a
+/// layer up, checked here too because this is where a backend could break it.
+///
+/// The token rule is what makes this evidence rather than a formality. A
+/// backend can reach a terminal event without ever decoding — by refusing, by
+/// stopping immediately, by returning an empty stream — and a contract that
+/// accepted that would let a backend be marked verified without having
+/// generated anything, which is the exact claim
+/// [`NEVER_PRODUCED_A_TOKEN`] exists to keep honest.
 fn assert_terminates_exactly_once(name: &str, session: &Arc<dyn crate::backend::BackendSession>) {
     use crate::generation::{GenSpec, TokenEvent};
 
@@ -344,9 +364,9 @@ fn assert_terminates_exactly_once(name: &str, session: &Arc<dyn crate::backend::
         ..Default::default()
     }) {
         Ok(p) => p,
-        Err(ExecError::FeatureUnsupported(_)) => return,
         Err(e) => panic!("{name}: pull failed on a loaded model: {e:?}"),
     };
+    let mut tokens = 0usize;
 
     let mut terminals = 0;
     let mut after_terminal = 0;
@@ -360,6 +380,9 @@ fn assert_terminates_exactly_once(name: &str, session: &Arc<dyn crate::backend::
                 break;
             }
             Some(Ok(event)) => {
+                if matches!(event, TokenEvent::Token(_)) {
+                    tokens += 1;
+                }
                 let terminal = matches!(event, TokenEvent::Eos | TokenEvent::Stopped);
                 if terminals > 0 {
                     after_terminal += 1;
@@ -379,6 +402,15 @@ fn assert_terminates_exactly_once(name: &str, session: &Arc<dyn crate::backend::
         after_terminal, 0,
         "{name}: emitted {after_terminal} events after the generation ended"
     );
+    assert!(
+        tokens > 0,
+        "{name}: reached the end of a generation without decoding a single \
+         token. Ending cleanly is not the same as working, and this is the \
+         assertion that separates the two."
+    );
+    // Visible under `--nocapture`, so a run that claims a backend generates
+    // shows the number it is claiming rather than asking to be believed.
+    eprintln!("conformance: {name} decoded {tokens} tokens");
 }
 
 // ── One invocation per compiled backend ─────────────────────────────────────

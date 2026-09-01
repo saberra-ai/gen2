@@ -331,7 +331,7 @@ Pick at least one. A build with none fails to compile.
 | --- | --- |
 | `backend-external-api` | OpenAI / Anthropic wire formats. Default. Needs no C toolchain. |
 | `backend-llamacpp` | llama.cpp (GGUF). Add `metal`, `cuda`, or `vulkan`. |
-| `backend-mlx` | MLX (Apple Silicon). Mutually exclusive with `backend-mlxcel`. |
+| `backend-mlx` | MLX (Apple Silicon). Needs the Metal Toolchain component. Mutually exclusive with `backend-mlxcel`. |
 | `backend-mlxcel` | mlxcel, the Mac fast path. |
 | `backend-onnx` | ONNX Runtime |
 | `backend-candle` | Candle (pure Rust) |

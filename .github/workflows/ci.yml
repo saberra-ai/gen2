@@ -59,12 +59,16 @@ jobs:
           - { os: ubuntu-latest, features: backend-llamacpp }
           - { os: macos-latest, features: metal }
           - { os: macos-latest, features: "metal,tokio" }
+          # MLX builds and generates locally on macOS 26.3 with the Metal
+          # Toolchain installed. Whether a stock runner has that component is
+          # the open question this job answers.
+          - { os: macos-latest, features: backend-mlx }
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
       - name: Install the C toolchain llama.cpp needs
-        if: contains(matrix.features, 'llamacpp') || contains(matrix.features, 'metal')
+        if: contains(matrix.features, 'llamacpp') || contains(matrix.features, 'metal') || contains(matrix.features, 'mlx')
         run: |
           if [ "$RUNNER_OS" = "Linux" ]; then
             sudo apt-get update && sudo apt-get install -y cmake libclang-dev

@@ -194,13 +194,17 @@ Nine bugs, found by the tests rather than by reading:
 
 ## Still not proven
 
-- MLX, mlxcel, ONNX and Candle satisfy the half of the conformance
-  contract that needs no weights, and none of the four has been shown to
+- mlxcel, ONNX and Candle satisfy the half of the conformance contract
+  that needs no weights, and none of the three has been shown to
   generate a single token. The suite says so out loud on every run
   rather than skipping quietly, and `unverified_backends` fails if that
-  list goes stale, but saying so is not the same as closing it. Point
-  `PIO_TEST_MLX_MODEL`, `PIO_TEST_ONNX_MODEL` or `PIO_TEST_CANDLE_MODEL`
+  list goes stale. Point `PIO_TEST_ONNX_MODEL` or `PIO_TEST_CANDLE_MODEL`
   at a model and the generating half runs.
+- MLX is verified as of 2026-09-01: it builds on macOS 26.3 with the
+  Metal Toolchain installed, and decodes to its cap against an MLX
+  safetensors bundle. The note in Cargo.toml claiming its build was
+  broken was stale by four months, which nothing would have caught,
+  because nothing tried.
 - No sanitizer run.
 - The KV store's writes are not atomic. Digests turn a torn write into a
   cache miss rather than corruption, but a crash mid-write leaves a dead
