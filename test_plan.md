@@ -152,9 +152,52 @@ Benchmarks tracked over time, never a PR gate.
 
 ## Build order
 
-1. FakeBackend and the controller state machine
-2. Hermetic OpenAI / Anthropic protocol suite
-3. Feature matrix in CI
-4. Fuzz GGUF, SSE, reply parts, KV
-5. Split live tests per backend, add conformance
-6. Property, soak, and performance work
+1. ~~FakeBackend and the controller state machine~~ — done
+2. ~~Hermetic OpenAI / Anthropic protocol suite~~ — done
+3. ~~Feature matrix in CI~~ — done
+4. ~~Fuzz GGUF, reply parts, KV~~ — done (SSE covered by hermetic
+   fixtures rather than a fuzz target; the parser is `pub(crate)`, and
+   widening the public API to reach it is a design decision, not a
+   test's to force)
+5. Split live tests per backend, add conformance — outstanding
+6. Property, soak, and performance work — session and fit properties
+   done; soak and benchmarks outstanding
+
+## Where it got to
+
+857 unit tests and 41 integration tests, green, clippy and rustdoc
+clean, and the whole non-live suite runs in about two seconds.
+
+Nine bugs, found by the tests rather than by reading:
+
+- A hostile GGUF file could abort the host process two ways — an
+  unbounded allocation from an attacker-declared string length, and
+  unbounded recursion on nested arrays. Both reachable from the public
+  `ModelInfo::read`, and neither catchable by a `Result`.
+- A completed answer from an external provider was reported to the
+  caller as cancelled by the user, on the chunk shape llama.cpp's
+  server, vLLM and Together all produce.
+- `ApprovalMode::AskOnRisky` asked about every tool, because no tool
+  could declare `Risk` despite it being exported and documented.
+- `auto_tune_ctx` under-charged KV fourfold on a header without
+  architecture metadata, handing back a context that OOMs at load.
+- `fits` pointed callers at a smaller context that was also refused.
+- A header without layer counts priced context at nothing, so a
+  four-million-token window fit on any machine.
+- Header-derived dimensions overflowed, wrapping in release into an
+  estimate that passes an admission check it should fail.
+- A truncated GGUF parsed as valid.
+- The KV blob header sat outside its own integrity check.
+- Tool-search ties broke on registration order, so adding one tool
+  could push another out of reach.
+
+## Still not proven
+
+- MLX, mlxcel, ONNX and Candle compile and are held to the conformance
+  suite's shape, but none has been shown to actually generate a token.
+- No sanitizer run.
+- The KV store's writes are not atomic. Digests turn a torn write into a
+  cache miss rather than corruption, but a crash mid-write leaves a dead
+  file until the budget sweep reclaims it.
+- The eviction chaos test needs macOS file flags, so its invariant is
+  unguarded on Linux CI.

@@ -4,6 +4,9 @@ on:
   push:
     branches: [main]
   pull_request:
+  schedule:
+    # Weekly, for the jobs too slow to gate a PR on.
+    - cron: "0 4 * * 1"
 
 env:
   CARGO_TERM_COLOR: always
@@ -80,3 +83,36 @@ jobs:
             echo "::error::a build with no backend feature compiled; the guard is gone"
             exit 1
           fi
+
+  # The fuzz targets live in their own workspace on a nightly toolchain, so
+  # nothing in the ordinary build would notice them breaking. Building them is
+  # enough to catch that; running them is a nightly job's business, not a PR's.
+  fuzz-targets-still-build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@nightly
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo install cargo-fuzz --locked
+      - run: cargo fuzz build gguf
+        working-directory: fuzz
+
+  # Coverage-guided fuzzing, on a schedule rather than per-PR: a PR should not
+  # wait on it, and a corpus is worth more when it accumulates.
+  fuzz:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@nightly
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo install cargo-fuzz --locked
+      - name: Fuzz the GGUF parser
+        run: cargo fuzz run gguf -- -max_total_time=900
+        working-directory: fuzz
+      - name: Keep any crash for triage
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: fuzz-artifacts
+          path: fuzz/artifacts/
