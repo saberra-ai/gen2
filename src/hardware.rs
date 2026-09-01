@@ -290,9 +290,14 @@ pub fn recommend_model(hw: &HardwareProfile) -> ModelRecommendation {
 /// context window for the current hardware. Used for user-imported models
 /// where we don't have a catalog entry.
 pub fn auto_tune_ctx(hw: &HardwareProfile, model_file_size: u64, n_layer: u32) -> u32 {
-    // Conservative dims when architecture metadata is unavailable: 2 KV
-    // heads and 128 head dim (common for GQA models).
-    auto_tune_ctx_with_dims(hw, model_file_size, n_layer, 2, 128)
+    // Dims to assume when the header doesn't say. Conservative here means
+    // guessing an *expensive* KV cache, not a cheap one: over-estimating the
+    // per-token cost only costs the user context they could have had, while
+    // under-estimating it hands back a context that won't fit and OOMs at
+    // load. 8 KV heads × 128 head dim is the modern GQA norm (Llama 3.x,
+    // Qwen 2.5/3.x, Mistral); the earlier guess of 2 KV heads under-charged
+    // those models 4x.
+    auto_tune_ctx_with_dims(hw, model_file_size, n_layer, 8, 128)
 }
 
 /// Like [`auto_tune_ctx`] but with real architecture dims (from parsed
@@ -748,11 +753,16 @@ pub fn parse_nvidia_smi_total_mib(out: &str) -> Option<u64> {
 mod tests {
     use super::*;
 
+    /// The only test in this crate that asks the running machine anything.
+    /// It checks that probing works at all — every other expectation about
+    /// sizing is asserted against constructed profiles below, so the suite
+    /// says the same thing on a 4 GB CI runner and a 128 GB workstation.
     #[test]
-    fn detect_returns_nonzero_ram() {
+    fn probing_the_running_machine_reports_positive_ram_and_cores() {
         let hw = HardwareProfile::detect();
         assert!(hw.total_ram_bytes > 0, "RAM detection failed");
         assert!(hw.cpu_cores > 0, "CPU core detection failed");
+        let _ = hw.vram_bytes; // present, and 0 when unprobeable
     }
 
     // ── VRAM detection: nvidia-smi output parsing ────────────────
@@ -920,14 +930,6 @@ mod tests {
         assert_eq!(detect_vram_bytes(&GpuBackend::Metal), 0);
         // Vulkan: documented honest 0 (probe deferred).
         assert_eq!(detect_vram_bytes(&GpuBackend::Vulkan), 0);
-    }
-
-    #[test]
-    fn detect_returns_vram_field() {
-        // On a Mac (Metal/CPU), vram_bytes is 0 by convention; the field exists.
-        let hw = HardwareProfile::detect();
-        // Never panics; on this host (no CUDA feature) VRAM is 0.
-        let _ = hw.vram_bytes;
     }
 
     #[test]
@@ -1249,5 +1251,290 @@ mod tests {
         assert_eq!(s.sampling.temperature, Some(0.7));
         assert_eq!(s.sampling.top_p, Some(0.9));
         assert_eq!(s.sampling.top_k, Some(40));
+    }
+
+    // ── Monotonicity over synthetic profiles ─────────────────────────
+    //
+    // Point assertions above pin what a specific machine gets today.
+    // These pin how the answers must *move* when one input moves, which
+    // is the part a caller reasons about ("more RAM can only help") and
+    // the part a refactor of the sizing arithmetic can silently break.
+
+    const GIB: u64 = 1024 * 1024 * 1024;
+
+    /// Spans every band boundary in `tier_context_cap`, `platform_defaults`
+    /// and `recommend_model`, plus the degenerate ends.
+    const RAM_LADDER_GIB: &[u64] = &[0, 1, 2, 3, 4, 6, 7, 8, 12, 15, 16, 24, 31, 32, 48, 64, 128];
+
+    fn profile(ram_gib: u64, cores: usize, gpu: GpuBackend) -> HardwareProfile {
+        HardwareProfile {
+            total_ram_bytes: ram_gib * GIB,
+            cpu_cores: cores,
+            gpu_backend: gpu,
+            vram_bytes: 0,
+        }
+    }
+
+    #[test]
+    fn more_ram_never_shrinks_the_inference_budget() {
+        let mut previous = 0;
+        for &gib in RAM_LADDER_GIB {
+            let budget = profile(gib, 8, GpuBackend::Metal).inference_budget_bytes();
+            assert!(
+                budget >= previous,
+                "{gib} GiB machine budgeted {budget} bytes, below the {previous} a smaller \
+                 machine got — the OS reserve is a fixed subtraction, not a growing one",
+            );
+            assert!(
+                budget <= gib * GIB,
+                "{gib} GiB machine budgeted {budget} bytes for inference, more than it has",
+            );
+            previous = budget;
+        }
+    }
+
+    #[test]
+    fn more_ram_never_lowers_the_tier_context_cap() {
+        let mut previous = 0;
+        for &gib in RAM_LADDER_GIB {
+            let cap = profile(gib, 8, GpuBackend::Metal).tier_context_cap();
+            assert!(
+                cap >= previous,
+                "{gib} GiB capped context at {cap}, below the {previous} a smaller machine \
+                 allowed — the tier ladder must not invert",
+            );
+            previous = cap;
+        }
+    }
+
+    #[test]
+    fn more_ram_never_shrinks_the_recommended_context() {
+        for gpu in [GpuBackend::Metal, GpuBackend::Cuda, GpuBackend::Cpu] {
+            let mut previous = 0;
+            for &gib in RAM_LADDER_GIB {
+                let rec = recommend_model(&profile(gib, 8, gpu.clone()));
+                assert!(
+                    rec.ctx_size >= previous,
+                    "on {gpu:?}, a {gib} GiB machine was recommended {} context, below the \
+                     {previous} a smaller machine got — context-first sizing must not invert",
+                    rec.ctx_size,
+                );
+                previous = rec.ctx_size;
+            }
+        }
+    }
+
+    #[test]
+    fn a_recommendation_that_is_not_the_fallback_stays_inside_the_budget() {
+        for &gib in RAM_LADDER_GIB {
+            let hw = profile(gib, 8, GpuBackend::Metal);
+            let budget_mb = (hw.inference_budget_bytes() / (1024 * 1024)) as u32;
+            let rec = recommend_model(&hw);
+            // The last-resort fallback deliberately over-commits: a machine
+            // with no budget at all still gets something loadable to try.
+            if rec.ctx_size == 2_048 && rec.estimated_ram_mb > budget_mb {
+                continue;
+            }
+            assert!(
+                rec.estimated_ram_mb <= budget_mb,
+                "{gib} GiB machine was recommended a {} MB model+KV against a {budget_mb} MB \
+                 budget — a recommendation that doesn't fit is worse than none",
+                rec.estimated_ram_mb,
+            );
+        }
+    }
+
+    #[test]
+    fn the_same_profile_always_yields_the_same_recommendation() {
+        for &gib in RAM_LADDER_GIB {
+            let hw = profile(gib, 10, GpuBackend::Metal);
+            let first = serde_json::to_string(&recommend_model(&hw)).unwrap();
+            for _ in 0..3 {
+                assert_eq!(
+                    first,
+                    serde_json::to_string(&recommend_model(&hw)).unwrap(),
+                    "recommendation for a {gib} GiB machine changed between calls — model \
+                     choice must be a function of the profile alone",
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn more_ram_never_shrinks_the_auto_tuned_context() {
+        for &(file_size, layers) in &[
+            (500_000_000u64, 28u32),
+            (2_000_000_000, 36),
+            (7_000_000_000, 32),
+        ] {
+            let mut previous = 0;
+            for &gib in RAM_LADDER_GIB {
+                let ctx = auto_tune_ctx(&profile(gib, 8, GpuBackend::Metal), file_size, layers);
+                assert!(
+                    ctx >= previous,
+                    "a {file_size}-byte / {layers}-layer model got {ctx} context on {gib} GiB, \
+                     below the {previous} it got on less memory",
+                );
+                previous = ctx;
+            }
+        }
+    }
+
+    #[test]
+    fn a_larger_model_never_gets_a_larger_auto_tuned_context() {
+        let hw = profile(32, 8, GpuBackend::Metal);
+        let mut previous = u32::MAX;
+        for file_size in [
+            100_000_000u64,
+            500_000_000,
+            1_000_000_000,
+            4_000_000_000,
+            8_000_000_000,
+            30_000_000_000,
+        ] {
+            let ctx = auto_tune_ctx(&hw, file_size, 32);
+            assert!(
+                ctx <= previous,
+                "a {file_size}-byte model got {ctx} context, more than the {previous} a smaller \
+                 model got on the same machine — weights and KV cache share one budget",
+            );
+            previous = ctx;
+        }
+    }
+
+    #[test]
+    fn more_layers_never_get_a_larger_auto_tuned_context() {
+        let hw = profile(16, 8, GpuBackend::Metal);
+        let mut previous = u32::MAX;
+        for layers in [0u32, 1, 8, 28, 32, 36, 80, 200] {
+            let ctx = auto_tune_ctx(&hw, 1_000_000_000, layers);
+            assert!(
+                ctx <= previous,
+                "a {layers}-layer model got {ctx} context, more than the {previous} a shallower \
+                 model got — every layer adds its own KV cache",
+            );
+            previous = ctx;
+        }
+    }
+
+    #[test]
+    fn auto_tuning_without_architecture_dims_charges_at_least_as_much_as_a_gqa_model() {
+        // The dims `auto_tune_ctx` assumes when the header is silent must
+        // not be cheaper than what a mainstream model actually costs — a
+        // guess that under-charges hands back a context that OOMs at load.
+        // 8 KV heads x 128 head dim is the Llama-3.x / Qwen GQA shape.
+        let hw = profile(16, 8, GpuBackend::Metal);
+        for layers in [16u32, 28, 32, 36, 48] {
+            let guessed = auto_tune_ctx(&hw, 2_000_000_000, layers);
+            let measured = auto_tune_ctx_with_dims(&hw, 2_000_000_000, layers, 8, 128);
+            assert!(
+                guessed <= measured,
+                "with no dims a {layers}-layer model was offered {guessed} context but only \
+                 {measured} once its real GQA dims were known — the unknown-metadata guess must \
+                 err towards refusing context, not towards granting it",
+            );
+        }
+    }
+
+    #[test]
+    fn every_auto_tuned_context_is_one_of_the_offered_tiers() {
+        let hw = profile(64, 8, GpuBackend::Metal);
+        for file_size in [0u64, 1, 500_000_000, 4_000_000_000, u64::MAX / 2] {
+            for layers in [0u32, 32, 200] {
+                let ctx = auto_tune_ctx(&hw, file_size, layers);
+                assert!(
+                    ctx >= 2_048 && (CTX_TIERS.contains(&ctx) || ctx == 2_048),
+                    "auto-tune returned {ctx}, which is not a tier llama.cpp is configured \
+                     with (file={file_size}, layers={layers})",
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn more_ram_never_shrinks_the_platform_default_context_or_batch() {
+        let mut previous_ctx = 0;
+        let mut previous_batch = 0;
+        for &gib in RAM_LADDER_GIB {
+            let s = platform_defaults(&profile(gib, 8, GpuBackend::Metal));
+            let ctx = s.system.ctx_size.expect("defaults always pin a context");
+            let batch = s
+                .system
+                .batch_size
+                .expect("defaults always pin a batch size");
+            assert!(
+                ctx >= previous_ctx && batch >= previous_batch,
+                "{gib} GiB defaulted to ctx={ctx}/batch={batch}, below the \
+                 ctx={previous_ctx}/batch={previous_batch} a smaller machine got",
+            );
+            previous_ctx = ctx;
+            previous_batch = batch;
+        }
+    }
+
+    #[test]
+    fn more_cores_never_lower_the_default_thread_count() {
+        let mut previous = 0;
+        for cores in [1usize, 2, 4, 8, 10, 16, 24, 64, 256] {
+            let threads = platform_defaults(&profile(16, cores, GpuBackend::Metal))
+                .system
+                .threads
+                .expect("defaults always pin a thread count");
+            assert!(
+                threads >= previous,
+                "{cores} cores defaulted to {threads} threads, fewer than the {previous} a \
+                 smaller machine got",
+            );
+            assert!(threads >= 1, "a thread count of 0 would refuse to decode");
+            previous = threads;
+        }
+    }
+
+    #[test]
+    fn a_machine_with_no_budget_at_all_still_gets_something_loadable() {
+        // saturating_sub means every machine under the OS reserve reports a
+        // zero budget; none of them may produce a recommendation the loader
+        // can't act on (empty repo id, zero context, zero threads).
+        for &gib in &[0u64, 1, 2, 3, 4] {
+            for gpu in [GpuBackend::Metal, GpuBackend::Cpu] {
+                let rec = recommend_model(&profile(gib, 1, gpu.clone()));
+                assert!(!rec.model_id.is_empty(), "{gib} GiB / {gpu:?}: no model id");
+                assert!(!rec.filename.is_empty(), "{gib} GiB / {gpu:?}: no filename");
+                assert!(
+                    rec.ctx_size >= 2_048,
+                    "{gib} GiB / {gpu:?}: unusable context"
+                );
+                assert!(rec.threads >= 1, "{gib} GiB / {gpu:?}: zero threads");
+                assert!(rec.batch_size >= 1, "{gib} GiB / {gpu:?}: zero batch");
+            }
+        }
+    }
+
+    #[test]
+    fn the_catalog_is_ordered_smallest_first_so_context_first_search_holds() {
+        // `recommend_model` walks MODELS in reverse expecting "largest last".
+        // If an entry is inserted out of order the search silently returns a
+        // smaller model than the machine could run.
+        let mut previous = 0;
+        for spec in MODELS {
+            assert!(
+                spec.size_mb >= previous,
+                "catalog entry `{}` ({} MB) is smaller than the entry before it ({previous} MB) \
+                 — recommend_model's reverse walk assumes ascending size",
+                spec.label,
+                spec.size_mb,
+            );
+            assert!(
+                spec.kv_per_token > 0,
+                "`{}` has a free KV cache",
+                spec.label
+            );
+            assert!(
+                spec.ctx_train >= 2_048,
+                "`{}` trains below the minimum usable context",
+                spec.label,
+            );
+            previous = spec.size_mb;
+        }
     }
 }

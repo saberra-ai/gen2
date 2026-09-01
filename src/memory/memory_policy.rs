@@ -415,4 +415,152 @@ mod tests {
         assert!(b.kg_derived_state_mb >= 1);
         assert!(b.inference_resident_mb >= 1);
     }
+
+    // ── Monotonicity ──────────────────────────────────────────────────────
+
+    /// Spans every tier boundary in `detect_machine_tier` plus the values
+    /// either side of them, where an off-by-one would hide.
+    const TOTAL_LADDER_MB: &[u64] = &[
+        0, 1, 2048, 4096, 8191, 8192, 8193, 12288, 16383, 16384, 16385, 24576, 32767, 32768, 32769,
+        65536, 262_144,
+    ];
+
+    #[test]
+    fn more_total_memory_never_lowers_the_tier() {
+        let mut previous = MachineMemoryTier::MobileConstrained;
+        for &total in TOTAL_LADDER_MB {
+            let tier = detect_machine_tier(&input(total, total));
+            assert!(
+                tier >= previous,
+                "{total} MiB classified as {tier:?}, below the {previous:?} a smaller machine \
+                 got — the tier ladder drives every downstream budget",
+            );
+            previous = tier;
+        }
+    }
+
+    #[test]
+    fn a_mobile_host_is_mobile_constrained_however_much_ram_it_reports() {
+        // Mobile is a platform fact, not a memory band: a 64 GiB tablet still
+        // runs under an OS that reclaims aggressively.
+        for &total in TOTAL_LADDER_MB {
+            assert_eq!(
+                detect_machine_tier(&mobile_input(total, total)),
+                MachineMemoryTier::MobileConstrained,
+                "a mobile host reporting {total} MiB escaped MobileConstrained",
+            );
+        }
+    }
+
+    #[test]
+    fn more_available_memory_never_lowers_any_effective_budget() {
+        for &total in TOTAL_LADDER_MB {
+            for is_mobile in [false, true] {
+                let mut previous: Option<MemoryBudgets> = None;
+                // Skips 0, which is the documented degenerate case: it returns
+                // the unclamped base budgets and leaves the verdict to the
+                // governor's Emergency classification.
+                for &avail in &[1u64, 200, 512, 1024, 4096, 16_384, 65_536, 262_144] {
+                    let b = effective_budgets(&MemoryPolicyInput {
+                        total_memory_mb: total,
+                        available_memory_mb: avail,
+                        is_mobile,
+                    });
+                    if let Some(p) = &previous {
+                        for (name, now, before) in [
+                            (
+                                "process_soft_limit_mb",
+                                b.process_soft_limit_mb,
+                                p.process_soft_limit_mb,
+                            ),
+                            (
+                                "process_hard_limit_mb",
+                                b.process_hard_limit_mb,
+                                p.process_hard_limit_mb,
+                            ),
+                            (
+                                "search_working_set_mb",
+                                b.search_working_set_mb,
+                                p.search_working_set_mb,
+                            ),
+                            (
+                                "kg_derived_state_mb",
+                                b.kg_derived_state_mb,
+                                p.kg_derived_state_mb,
+                            ),
+                            (
+                                "ingestion_peak_mb",
+                                b.ingestion_peak_mb,
+                                p.ingestion_peak_mb,
+                            ),
+                            (
+                                "inference_resident_mb",
+                                b.inference_resident_mb,
+                                p.inference_resident_mb,
+                            ),
+                            (
+                                "multimodal_peak_mb",
+                                b.multimodal_peak_mb,
+                                p.multimodal_peak_mb,
+                            ),
+                        ] {
+                            assert!(
+                                now >= before,
+                                "{name} fell from {before} to {now} when free memory rose to \
+                                 {avail} MiB (total={total}, mobile={is_mobile}) — freeing RAM \
+                                 must never shrink a budget",
+                            );
+                        }
+                    }
+                    previous = Some(b);
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn no_effective_budget_ever_exceeds_its_tier_base() {
+        // The clamp is one-directional: available memory can only take budget
+        // away. A scale factor that ever exceeded 1 would hand a subsystem
+        // more than its tier was sized for.
+        for &total in TOTAL_LADDER_MB {
+            for &avail in &[1u64, 1024, 8192, 65_536, 1_048_576] {
+                let i = input(total, avail);
+                let base = base_budgets_for_tier(detect_machine_tier(&i));
+                let b = effective_budgets(&i);
+                assert!(b.process_soft_limit_mb <= base.process_soft_limit_mb);
+                assert!(b.search_working_set_mb <= base.search_working_set_mb);
+                assert!(b.kg_derived_state_mb <= base.kg_derived_state_mb);
+                assert!(b.ingestion_peak_mb <= base.ingestion_peak_mb);
+                assert!(
+                    b.inference_resident_mb <= base.inference_resident_mb,
+                    "inference budget {} exceeded the tier base {} (total={total}, avail={avail})",
+                    b.inference_resident_mb,
+                    base.inference_resident_mb,
+                );
+                assert!(b.multimodal_peak_mb <= base.multimodal_peak_mb);
+                assert!(
+                    b.process_hard_limit_mb >= b.process_soft_limit_mb,
+                    "hard {} < soft {} (total={total}, avail={avail})",
+                    b.process_hard_limit_mb,
+                    b.process_soft_limit_mb,
+                );
+            }
+        }
+    }
+
+    #[test]
+    fn the_same_input_always_derives_the_same_budgets() {
+        for &total in TOTAL_LADDER_MB {
+            let i = input(total, total / 2);
+            let first = serde_json::to_string(&effective_budgets(&i)).unwrap();
+            for _ in 0..3 {
+                assert_eq!(
+                    first,
+                    serde_json::to_string(&effective_budgets(&i)).unwrap(),
+                    "budgets for a {total} MiB machine changed between calls",
+                );
+            }
+        }
+    }
 }

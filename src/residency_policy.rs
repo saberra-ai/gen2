@@ -253,6 +253,123 @@ mod tests {
         assert!(severe.max_context_tokens < normal.max_context_tokens);
     }
 
+    // ── Monotonicity ────────────────────────────────────────────────────────
+
+    #[test]
+    fn a_larger_model_file_never_needs_less_resident_memory() {
+        // Holds for every offload setting, including the layer-count proxy's
+        // clamp boundaries at 1200 MB (12 layers) and 8000 MB (80 layers),
+        // where a naive `file_mb * resident/est` could step backwards.
+        for backend in [GpuBackend::Cpu, GpuBackend::Metal, GpuBackend::Cuda] {
+            for layers in [None, Some(0), Some(1), Some(10), Some(40), Some(999)] {
+                let mut previous = 0;
+                for file_mb in [
+                    0u64, 1, 100, 500, 1_100, 1_199, 1_200, 1_201, 2_000, 4_000, 7_900, 8_000,
+                    8_100, 20_000, 60_000,
+                ] {
+                    let resident = resident_mb_from_file_mb(file_mb, backend.clone(), layers);
+                    assert!(
+                        resident >= previous,
+                        "a {file_mb} MB file estimated {resident} MB resident on {backend:?} \
+                         with gpu_layers={layers:?}, below the {previous} MB a smaller file \
+                         needed — admission would let a bigger model in where a smaller one \
+                         was denied",
+                    );
+                    previous = resident;
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn offloading_more_layers_never_raises_the_host_resident_estimate() {
+        // Within the offloading regime only. `Some(0)` is a different model —
+        // "run on the CPU" — priced without the GPU host overhead, so it is
+        // not the zero end of this ladder; see the test below.
+        for backend in [GpuBackend::Metal, GpuBackend::Cuda] {
+            for file_mb in [500u64, 2_000, 8_000, 20_000] {
+                let mut previous = u64::MAX;
+                for layers in [Some(1), Some(4), Some(12), Some(40), Some(999), None] {
+                    let resident = resident_mb_from_file_mb(file_mb, backend.clone(), layers);
+                    assert!(
+                        resident <= previous,
+                        "a {file_mb} MB file on {backend:?} needed {resident} MB of host RAM \
+                         with gpu_layers={layers:?}, more than the {previous} MB it needed with \
+                         fewer layers offloaded — weights move to VRAM, they don't duplicate",
+                    );
+                    previous = resident;
+                }
+            }
+        }
+    }
+
+    #[test]
+    fn the_cpu_only_estimate_omits_the_host_overhead_the_offload_estimate_charges() {
+        // Not a monotonicity break so much as two different price lists: the
+        // CPU-only branch charges weights alone (line 121/132), while any
+        // offload adds GPU_HOST_OVERHEAD_MB for KV + compute scratch + the
+        // CPU-mapped metadata buffer. Those costs exist on a CPU-only load
+        // too, so the CPU estimate is the *less* conservative of the two, and
+        // for a small model, offloading a single layer can raise the estimate
+        // rather than lower it. Pinned because admission reads these numbers:
+        // if the CPU branch ever starts charging overhead, this is the test
+        // that says the relationship changed on purpose.
+        let cpu_only = resident_mb_from_file_mb(500, GpuBackend::Metal, Some(0));
+        let one_layer_offloaded = resident_mb_from_file_mb(500, GpuBackend::Metal, Some(1));
+        assert_eq!(cpu_only, 500, "CPU-only is priced at the weights alone");
+        assert!(
+            one_layer_offloaded > cpu_only,
+            "expected the offload branch's fixed host overhead to dominate for a small model",
+        );
+    }
+
+    #[test]
+    fn a_missing_file_is_estimated_at_the_floor_rather_than_free() {
+        // `file_mb_of` reports 0 for a path it can't stat. That must not read
+        // as "this model costs nothing" and wave the load through admission.
+        let absent = std::path::Path::new("/nonexistent/model-that-was-never-downloaded.gguf");
+        assert!(
+            estimate_resident_mb_for_path(absent) >= 256,
+            "an unreadable model file must still be charged the minimum estimate",
+        );
+    }
+
+    #[test]
+    fn worse_pressure_never_raises_the_context_budget() {
+        use MachineMemoryTier::*;
+        for tier in [
+            MobileConstrained,
+            DesktopConstrained,
+            DesktopMainstream,
+            DesktopPower,
+            Workstation,
+        ] {
+            for multimodal in [false, true] {
+                let mut previous = u32::MAX;
+                for pressure in [
+                    MemoryPressureLevel::Normal,
+                    MemoryPressureLevel::Constrained,
+                    MemoryPressureLevel::Severe,
+                    MemoryPressureLevel::Emergency,
+                ] {
+                    let budget =
+                        effective_context_budget(tier, pressure, multimodal).max_context_tokens;
+                    assert!(
+                        budget <= previous,
+                        "{tier:?} under {pressure:?} (multimodal={multimodal}) allowed {budget} \
+                         tokens, more than the {previous} it allowed under lighter pressure",
+                    );
+                    assert!(
+                        budget >= 2_048,
+                        "{tier:?} under {pressure:?} shrank the context to {budget}, below the \
+                         floor a session needs to be usable at all",
+                    );
+                    previous = budget;
+                }
+            }
+        }
+    }
+
     #[test]
     fn multimodal_context_budget_is_lower_than_text_only() {
         let text_only = effective_context_budget(

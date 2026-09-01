@@ -70,11 +70,22 @@ impl ModelInfo {
 
     /// Bytes of memory needed to run at `context`.
     pub fn memory_needed(&self, context: u32) -> u64 {
-        estimate_ram_bytes(&self.metadata, self.file_bytes, context)
+        let base = estimate_ram_bytes(&self.metadata, self.file_bytes, context);
+        match self.kv_cost() {
+            // The estimator already charged context against real dimensions.
+            KvCost::Measured(_) => base,
+            // It could not, and fell back to a flat multiple of the file size
+            // that does not move with `context` at all. Left alone, asking
+            // whether a 4M-token window fits would answer yes. Charge the
+            // assumed cost on top so the answer moves in the right direction.
+            KvCost::Assumed(per_token) => {
+                base.saturating_add(per_token.saturating_mul(u64::from(context)))
+            }
+        }
     }
 
     /// Memory cost of one token of context.
-    fn kv_per_token(&self) -> u64 {
+    fn kv_cost(&self) -> KvCost {
         match (
             self.metadata.block_count,
             self.metadata.head_count_kv,
@@ -82,12 +93,16 @@ impl ModelInfo {
             self.metadata.head_count,
         ) {
             (Some(layers), Some(kv_heads), Some(width), Some(heads)) if heads > 0 => {
-                kv_bytes_per_token(layers, kv_heads, width / heads)
+                KvCost::Measured(kv_bytes_per_token(layers, kv_heads, width / heads))
             }
-            // No architecture detail: assume a token is free, so context sizing
-            // falls back to the training context rather than pretending to a
-            // precision the header doesn't support.
-            _ => 1,
+            _ => KvCost::Assumed(ASSUMED_KV_BYTES_PER_TOKEN),
+        }
+    }
+
+    /// Memory cost of one token of context, however it was arrived at.
+    fn kv_per_token(&self) -> u64 {
+        match self.kv_cost() {
+            KvCost::Measured(bytes) | KvCost::Assumed(bytes) => bytes,
         }
     }
 
@@ -117,6 +132,13 @@ impl ModelInfo {
             FitVerdict::TooLarge
         } else if needed <= budget {
             FitVerdict::Fits
+        } else if self.memory_needed(max_context) > budget {
+            // `max_context` floors at 2048 rather than reporting a context too
+            // small to be worth loading, so it is not always a context that
+            // fits. Saying `ContextTooLarge` here would point the caller at a
+            // smaller window that is also refused, and the message would
+            // promise that window works. Nothing works.
+            FitVerdict::TooLarge
         } else {
             FitVerdict::ContextTooLarge
         };
@@ -131,6 +153,28 @@ impl ModelInfo {
         }
     }
 }
+
+/// What a token of context costs, and whether the header actually said.
+///
+/// The distinction is the point: an assumed cost is still charged, but the
+/// caller-facing estimate must not be built as though it were measured.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+enum KvCost {
+    /// Derived from the header's own layer count, KV heads and head width.
+    Measured(u64),
+    /// The header did not say, so [`ASSUMED_KV_BYTES_PER_TOKEN`] was charged.
+    Assumed(u64),
+}
+
+/// Per-token KV cost to assume when the header gives no architecture detail.
+///
+/// 32 layers, 8 KV heads, 128-wide heads: the modern GQA norm (Llama 3.x,
+/// Qwen 2.5/3.x, Mistral). Erring high is the safe direction — over-charging
+/// costs a user context they could have had, while under-charging hands back a
+/// window that OOMs at load. The previous behaviour was to charge one byte per
+/// token, which made context effectively free and reported that a four-million
+/// token window fits on any machine.
+const ASSUMED_KV_BYTES_PER_TOKEN: u64 = 2 * 32 * 8 * 128 * 2;
 
 /// How much memory the engine may use.
 ///

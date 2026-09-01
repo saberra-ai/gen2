@@ -1538,6 +1538,450 @@ mod tests {
         }
     }
 
+    // ── zoo.json as executable configuration ─────────────────────────
+    //
+    // The manifest is compiled in and drives which artifact every device
+    // downloads and which backend loads it, so a typo is a shipped bug,
+    // not a bad config file the user can edit. These checks are the
+    // compiler zoo.json doesn't get: they run over the raw text as well
+    // as the parsed struct, because serde's `HashMap` silently swallows
+    // the two failure modes that survive parsing — a duplicate key and
+    // a misspelled field.
+
+    /// Backend ids this module knows how to route — the same set
+    /// `select_for_device`'s `os_compatible` switch matches on. A bundle
+    /// naming anything else falls into that switch's `_ => true` arm and
+    /// is offered to a device that can never load it.
+    const KNOWN_BACKENDS: &[&str] = &["mlx", "llamacpp", "candle", "onnx", "executorch"];
+
+    /// Backends whose `start_session` still returns `Unimplemented`
+    /// (`src/backend/candle/mod.rs`, `src/backend/executorch/mod.rs`), and
+    /// which no platform feature bundle in Cargo.toml enables. Routing a
+    /// device here gets it a download and then a failed generate.
+    const BACKENDS_THAT_CANNOT_GENERATE_YET: &[&str] = &["candle", "executorch"];
+
+    /// Platform ids `current_platform_id` can return.
+    const KNOWN_PLATFORMS: &[&str] = &[
+        "macos_arm64",
+        "macos_x86",
+        "ios",
+        "android",
+        "linux_cuda",
+        "linux_cpu",
+        "windows",
+    ];
+
+    /// Which backends each platform can actually load, from the crate's own
+    /// feature layout. MLX links Apple's Metal framework and is built only
+    /// for `apple`/`ios` targets — and only on Apple Silicon, so an Intel
+    /// Mac entry is a mis-route even though the OS matches. ExecuTorch is
+    /// the mobile scaffold. Everything else is portable C/Rust.
+    fn backends_supported_on(platform: &str) -> &'static [&'static str] {
+        match platform {
+            "macos_arm64" => &["mlx", "llamacpp", "candle", "onnx"],
+            "macos_x86" => &["llamacpp", "candle", "onnx"],
+            "ios" => &["mlx", "llamacpp", "executorch"],
+            "android" => &["llamacpp", "onnx", "executorch"],
+            "linux_cuda" | "linux_cpu" | "windows" => &["llamacpp", "candle", "onnx"],
+            _ => &[],
+        }
+    }
+
+    /// Every key the loader reads out of a bundle. Anything else is a typo
+    /// serde would drop on the floor — including a misspelled `min_ram_mb`,
+    /// which would silently fall back to the 4096 default.
+    const BUNDLE_KEYS: &[&str] = &["backend", "source", "file", "min_ram_mb", "sha256"];
+    const ENTRY_KEYS: &[&str] = &["display_name", "family", "default_quant", "platforms"];
+    const ROOT_KEYS: &[&str] = &["schema_version", "models"];
+
+    /// Duplicate object keys in `value`, at `path`, reported depth-first.
+    ///
+    /// `serde_json::Value` is a map, so a duplicate is already gone by the
+    /// time it parses — the second wins and the first vanishes without a
+    /// diagnostic. Re-scanning the raw text is the only way to see it.
+    fn duplicate_keys(raw: &str) -> Vec<String> {
+        // Re-parse preserving order, then compare each object's key count
+        // against the de-duplicated map serde produced.
+        fn walk(
+            de: &mut serde_json::Deserializer<serde_json::de::StrRead<'_>>,
+        ) -> Result<Vec<String>, serde_json::Error> {
+            use serde::de::Deserialize;
+            let ordered = OrderedJson::deserialize(de)?;
+            Ok(ordered.duplicates("$"))
+        }
+        let mut de = serde_json::Deserializer::from_str(raw);
+        walk(&mut de).expect("bundled zoo json must parse")
+    }
+
+    /// A JSON tree that keeps every key an object declared, duplicates and
+    /// all, so they can be counted.
+    enum OrderedJson {
+        Object(Vec<(String, OrderedJson)>),
+        Other,
+    }
+
+    impl<'de> serde::Deserialize<'de> for OrderedJson {
+        fn deserialize<D: serde::Deserializer<'de>>(d: D) -> Result<Self, D::Error> {
+            struct V;
+            impl<'de> serde::de::Visitor<'de> for V {
+                type Value = OrderedJson;
+                fn expecting(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+                    f.write_str("any JSON value")
+                }
+                fn visit_map<A: serde::de::MapAccess<'de>>(
+                    self,
+                    mut map: A,
+                ) -> Result<OrderedJson, A::Error> {
+                    let mut entries = Vec::new();
+                    while let Some((k, v)) = map.next_entry::<String, OrderedJson>()? {
+                        entries.push((k, v));
+                    }
+                    Ok(OrderedJson::Object(entries))
+                }
+                fn visit_seq<A: serde::de::SeqAccess<'de>>(
+                    self,
+                    mut seq: A,
+                ) -> Result<OrderedJson, A::Error> {
+                    while seq.next_element::<OrderedJson>()?.is_some() {}
+                    Ok(OrderedJson::Other)
+                }
+                fn visit_unit<E>(self) -> Result<OrderedJson, E> {
+                    Ok(OrderedJson::Other)
+                }
+                fn visit_none<E>(self) -> Result<OrderedJson, E> {
+                    Ok(OrderedJson::Other)
+                }
+                fn visit_bool<E>(self, _: bool) -> Result<OrderedJson, E> {
+                    Ok(OrderedJson::Other)
+                }
+                fn visit_i64<E>(self, _: i64) -> Result<OrderedJson, E> {
+                    Ok(OrderedJson::Other)
+                }
+                fn visit_u64<E>(self, _: u64) -> Result<OrderedJson, E> {
+                    Ok(OrderedJson::Other)
+                }
+                fn visit_f64<E>(self, _: f64) -> Result<OrderedJson, E> {
+                    Ok(OrderedJson::Other)
+                }
+                fn visit_str<E>(self, _: &str) -> Result<OrderedJson, E> {
+                    Ok(OrderedJson::Other)
+                }
+            }
+            d.deserialize_any(V)
+        }
+    }
+
+    impl OrderedJson {
+        fn duplicates(&self, path: &str) -> Vec<String> {
+            let OrderedJson::Object(entries) = self else {
+                return Vec::new();
+            };
+            let mut seen: std::collections::HashSet<&str> = std::collections::HashSet::new();
+            let mut out = Vec::new();
+            for (key, value) in entries {
+                if !seen.insert(key.as_str()) {
+                    out.push(format!("{path}.{key}"));
+                }
+                out.extend(value.duplicates(&format!("{path}.{key}")));
+            }
+            out
+        }
+    }
+
+    #[test]
+    fn no_key_in_the_zoo_manifest_is_declared_twice() {
+        // A repeated model id or platform key parses cleanly and the last
+        // one silently wins, so the entry someone thought they added is
+        // simply absent at runtime.
+        let dupes = duplicate_keys(BUNDLED_ZOO_JSON);
+        assert!(
+            dupes.is_empty(),
+            "zoo.json declares these keys more than once (the later one silently wins): {dupes:?}",
+        );
+    }
+
+    #[test]
+    fn the_duplicate_key_scan_catches_a_repeat_serde_would_swallow() {
+        // Teeth for the test above: serde keeps the *second* `min_ram_mb`
+        // and reports nothing, so without this scan the manifest could ship
+        // a value nobody reviewed.
+        let doubled = r#"{
+            "schema_version": 1,
+            "models": {
+                "a": {"display_name": "A", "family": "llama3", "platforms": {
+                    "ios": {"backend": "llamacpp", "source": "o/r", "min_ram_mb": 2048,
+                            "min_ram_mb": 99999}
+                }},
+                "a": {"display_name": "A again", "family": "llama3", "platforms": {}}
+            }
+        }"#;
+        let dupes = duplicate_keys(doubled);
+        assert!(
+            dupes.iter().any(|d| d.ends_with(".min_ram_mb")),
+            "a repeated bundle field must be reported, got {dupes:?}",
+        );
+        assert!(
+            dupes.iter().any(|d| d.ends_with(".a")),
+            "a repeated model id must be reported, got {dupes:?}",
+        );
+    }
+
+    #[test]
+    fn every_zoo_field_is_one_the_loader_reads() {
+        // serde drops unknown fields without complaint, so `min_ram` or
+        // `filename` would parse and then quietly take the default —
+        // shipping a bundle sized for the wrong device.
+        let errs = field_problems(BUNDLED_ZOO_JSON);
+        assert!(
+            errs.is_empty(),
+            "zoo.json field validation failed:\n  - {}",
+            errs.join("\n  - ")
+        );
+    }
+
+    #[test]
+    fn the_field_scan_catches_a_misspelling_serde_would_default_away() {
+        let typo = r#"{
+            "schema_version": 1,
+            "models": {
+                "a": {"display_name": "A", "family": "llama3", "platforms": {
+                    "ios": {"backend": "llamacpp", "source": "o/r", "min_ram": 2048,
+                            "sha256": "not-a-digest"}
+                }}
+            }
+        }"#;
+        let errs = field_problems(typo);
+        assert!(
+            errs.iter().any(|e| e.contains("min_ram")),
+            "a misspelled field must be reported, got {errs:?}",
+        );
+        assert!(
+            errs.iter().any(|e| e.contains("sha256")),
+            "a malformed checksum must be reported, got {errs:?}",
+        );
+    }
+
+    fn field_problems(raw: &str) -> Vec<String> {
+        let root: serde_json::Value = serde_json::from_str(raw).expect("zoo json parses");
+        let mut errs = Vec::new();
+
+        for key in root.as_object().expect("zoo root is an object").keys() {
+            if !ROOT_KEYS.contains(&key.as_str()) {
+                errs.push(format!("$.{key} is not a field the loader reads"));
+            }
+        }
+        let models = root["models"].as_object().expect("models is an object");
+        for (id, entry) in models {
+            for key in entry.as_object().expect("entry is an object").keys() {
+                if !ENTRY_KEYS.contains(&key.as_str()) {
+                    errs.push(format!("{id}.{key} is not a field the loader reads"));
+                }
+            }
+            let platforms = entry["platforms"]
+                .as_object()
+                .unwrap_or_else(|| panic!("{id}.platforms is an object"));
+            for (plat, bundle) in platforms {
+                for key in bundle.as_object().expect("bundle is an object").keys() {
+                    if !BUNDLE_KEYS.contains(&key.as_str()) {
+                        errs.push(format!("{id}/{plat}.{key} is not a field the loader reads"));
+                    }
+                }
+                // Checksums are optional, but a malformed one is worse than
+                // none: it fails verification after a multi-GB download.
+                if let Some(sum) = bundle.get("sha256").and_then(|v| v.as_str())
+                    && (sum.len() != 64 || !sum.bytes().all(|b| b.is_ascii_hexdigit()))
+                {
+                    errs.push(format!(
+                        "{id}/{plat}.sha256 `{sum}` is not a 64-char hex digest"
+                    ));
+                }
+            }
+        }
+        errs
+    }
+
+    #[test]
+    fn every_zoo_bundle_names_a_backend_platform_and_source_the_loader_can_act_on() {
+        let errs = bundle_problems(&ModelZoo::bundled());
+        assert!(
+            errs.is_empty(),
+            "zoo.json validation failed:\n  - {}",
+            errs.join("\n  - ")
+        );
+    }
+
+    #[test]
+    fn the_bundle_scan_catches_the_routing_mistakes_that_only_fail_on_the_device() {
+        // Each of these parses fine and only fails once a real device tries
+        // to load it — an MLX bundle on Intel Mac has no Metal build, a
+        // platform key nothing returns is unreachable, and min_ram_mb: 0
+        // admits a 27B model onto a phone.
+        let broken = r#"{
+            "schema_version": 1,
+            "models": {
+                "bad": {"display_name": "", "family": "llama3", "platforms": {
+                    "macos_x86": {"backend": "mlx", "source": "o/r", "min_ram_mb": 8192},
+                    "linux_arm64": {"backend": "llamacpp", "source": "o/r", "min_ram_mb": 8192},
+                    "windows": {"backend": "tensorrt", "source": "o/r", "min_ram_mb": 8192},
+                    "android": {"backend": "llamacpp", "source": "o/r", "min_ram_mb": 0},
+                    "ios": {"backend": "llamacpp", "source": "not a repo id", "min_ram_mb": 4096}
+                }},
+                "empty": {"display_name": "E", "family": "llama3", "platforms": {}}
+            }
+        }"#;
+        let zoo: ModelZoo = serde_json::from_str(broken).expect("fixture parses");
+        let errs = bundle_problems(&zoo);
+        for expected in [
+            "cannot be built for this platform",
+            "unreachable",
+            "not one the loader can instantiate",
+            "min_ram_mb of 0",
+            "neither a URL nor a HuggingFace",
+            "empty display_name",
+            "no platform bundles",
+        ] {
+            assert!(
+                errs.iter().any(|e| e.contains(expected)),
+                "expected a `{expected}` complaint, got {errs:?}",
+            );
+        }
+    }
+
+    fn bundle_problems(zoo: &ModelZoo) -> Vec<String> {
+        let mut errs: Vec<String> = Vec::new();
+
+        for (id, entry) in &zoo.models {
+            if id.trim().is_empty() || id.contains(char::is_whitespace) {
+                errs.push(format!("`{id}` is not usable as a canonical model id"));
+            }
+            if entry.display_name.trim().is_empty() {
+                errs.push(format!(
+                    "{id}: empty display_name — the picker would show a blank row"
+                ));
+            }
+            if entry.platforms.is_empty() {
+                errs.push(format!(
+                    "{id}: no platform bundles, so it can never be selected"
+                ));
+            }
+
+            for (plat, bundle) in &entry.platforms {
+                if !KNOWN_PLATFORMS.contains(&plat.as_str()) {
+                    errs.push(format!(
+                        "{id}/{plat}: no `current_platform_id()` ever returns this key, so the \
+                         bundle is unreachable",
+                    ));
+                }
+                if !KNOWN_BACKENDS.contains(&bundle.backend.as_str()) {
+                    errs.push(format!(
+                        "{id}/{plat}: backend `{}` is not one the loader can instantiate",
+                        bundle.backend,
+                    ));
+                } else if !backends_supported_on(plat).contains(&bundle.backend.as_str()) {
+                    errs.push(format!(
+                        "{id}/{plat}: backend `{}` cannot be built for this platform — the \
+                         download would succeed and the load would fail",
+                        bundle.backend,
+                    ));
+                }
+                if bundle.min_ram_mb == 0 {
+                    errs.push(format!(
+                        "{id}/{plat}: min_ram_mb of 0 admits the bundle on any device",
+                    ));
+                }
+                if bundle.file.as_deref().is_some_and(|f| f.trim().is_empty()) {
+                    errs.push(format!(
+                        "{id}/{plat}: empty `file` — use null for a whole-repo snapshot",
+                    ));
+                }
+                errs.extend(
+                    source_problem(&bundle.source).map(|why| format!("{id}/{plat}: {why}")),
+                );
+            }
+        }
+
+        errs
+    }
+
+    /// A `source` is either an absolute URL or a HuggingFace `owner/repo`
+    /// id; the downloader resolves it one of those two ways and has no
+    /// third branch to fall into.
+    fn source_problem(source: &str) -> Option<String> {
+        if source.trim() != source || source.is_empty() {
+            return Some(format!(
+                "source `{source}` is empty or padded with whitespace"
+            ));
+        }
+        if source.contains("://") {
+            return match url::Url::parse(source) {
+                Ok(url) if url.has_host() => None,
+                Ok(_) => Some(format!("source `{source}` parses but names no host")),
+                Err(e) => Some(format!("source `{source}` is not a URL: {e}")),
+            };
+        }
+        let segments: Vec<&str> = source.split('/').collect();
+        if segments.len() != 2 || segments.iter().any(|s| s.is_empty()) {
+            return Some(format!(
+                "source `{source}` is neither a URL nor a HuggingFace `owner/repo` id",
+            ));
+        }
+        if source.contains(char::is_whitespace) {
+            return Some(format!("source `{source}` contains whitespace"));
+        }
+        None
+    }
+
+    #[test]
+    fn a_backend_that_cannot_generate_yet_is_confined_to_the_routes_that_already_use_it() {
+        // `gemma-4/linux_cpu` is the one route pointing at a scaffold
+        // backend. It is a real gap — a Linux CPU box selecting gemma-4
+        // downloads safetensors and then gets `Unimplemented` from
+        // `start_session`, and no feature bundle in Cargo.toml even
+        // compiles `backend-candle` in — but it predates this test and
+        // fixing it is a routing decision, not a test fix. What this
+        // guards is that the gap does not spread to new entries.
+        let zoo = ModelZoo::bundled();
+        let mut routes: Vec<String> = zoo
+            .models
+            .iter()
+            .flat_map(|(id, entry)| {
+                entry
+                    .platforms
+                    .iter()
+                    .filter(|(_, bundle)| {
+                        BACKENDS_THAT_CANNOT_GENERATE_YET.contains(&bundle.backend.as_str())
+                    })
+                    .map(move |(plat, bundle)| format!("{id}/{plat} -> {}", bundle.backend))
+            })
+            .collect();
+        routes.sort();
+        assert_eq!(
+            routes,
+            vec!["gemma-4/linux_cpu -> candle".to_string()],
+            "a bundle was routed to a backend that cannot generate yet; either finish that \
+             backend or point the platform at llamacpp",
+        );
+    }
+
+    #[test]
+    fn every_zoo_entry_is_selectable_by_some_device() {
+        // An entry whose cheapest bundle asks for more RAM than any device
+        // in the fleet has is dead weight in the picker.
+        let zoo = ModelZoo::bundled();
+        for (id, entry) in &zoo.models {
+            let cheapest = entry
+                .platforms
+                .values()
+                .map(|b| b.min_ram_mb)
+                .min()
+                .unwrap_or(u32::MAX);
+            assert!(
+                cheapest <= 512 * 1024,
+                "{id} needs at least {cheapest} MB on every platform — no device can select it",
+            );
+        }
+    }
+
     #[test]
     fn family_str_is_round_trippable_label() {
         // Every variant produces a non-empty stable id usable in logs.
