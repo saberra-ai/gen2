@@ -59,10 +59,6 @@ jobs:
           - { os: ubuntu-latest, features: backend-llamacpp }
           - { os: macos-latest, features: metal }
           - { os: macos-latest, features: "metal,tokio" }
-          # MLX builds and generates locally on macOS 26.3 with the Metal
-          # Toolchain installed. Whether a stock runner has that component is
-          # the open question this job answers.
-          - { os: macos-latest, features: backend-mlx }
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
@@ -108,6 +104,21 @@ jobs:
       - run: cargo install cargo-fuzz --locked
       - run: cargo fuzz build gguf
         working-directory: fuzz
+
+  # MLX builds and generates locally on macOS 26.3 with the Metal Toolchain
+  # installed; whether a stock runner has that component is still open. On the
+  # weekly schedule rather than per-PR because it is the most expensive job in
+  # the file — a macOS runner billed at ten times Linux, running a long native
+  # MLX build — and the answer does not change between commits.
+  mlx-builds-on-a-clean-machine:
+    if: github.event_name == 'schedule'
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - run: brew install cmake
+      - run: cargo clippy --all-targets --no-default-features --features backend-mlx -- -D warnings
 
   # Coverage-guided fuzzing, on a schedule rather than per-PR: a PR should not
   # wait on it, and a corpus is worth more when it accumulates.
