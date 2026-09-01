@@ -98,6 +98,16 @@ cargo check --no-default-features --features backend-llamacpp
 cargo check --no-default-features --features backend-mlxcel # Mac fast path
 ```
 
+### Examples
+
+```sh
+cargo run --example basic      --no-default-features --features metal -- /path/model.gguf
+cargo run --example structured --no-default-features --features metal -- /path/model.gguf
+```
+
+`basic` covers ask / stream / converse; `structured` covers grammar-constrained
+output.
+
 ### Live inference
 
 Unit tests never load a model. To prove the engine actually generates, point
