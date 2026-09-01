@@ -10,7 +10,7 @@ use crate::backend::common::grammar::GrammarSpec;
 use crate::controller::{
     ControllerCmd, ControllerConfig, ControllerHandle, start_controller_joinable,
 };
-use crate::engine::{Capabilities, Settings};
+use crate::engine::{Capabilities, LoadOutcome, Settings};
 use crate::generation::GenSpec;
 use crate::hardware::HardwareProfile;
 
@@ -139,7 +139,14 @@ impl Engine {
     /// checked first, which catches a missing or non-model file cleanly, but a
     /// failure during load — out of memory, corrupt weights — cannot be undone.
     /// Check [`Engine::is_model_loaded`] after a failure you did not expect.
-    pub fn load_model(&self, path: impl AsRef<Path>) -> Result<()> {
+    /// Returns what the load actually did.
+    ///
+    /// A failing load is retried with progressively safer configurations —
+    /// without the vision projector, then on the CPU — so success alone does
+    /// not mean the model is running the way it was asked for. Check
+    /// [`LoadOutcome::as_requested`] when that matters, or ignore it when
+    /// "running somehow" is the goal.
+    pub fn load_model(&self, path: impl AsRef<Path>) -> Result<LoadOutcome> {
         self.load_model_with(path, None, Settings::default())
     }
 
@@ -149,7 +156,7 @@ impl Engine {
         path: impl AsRef<Path>,
         mmproj: Option<&Path>,
         settings: Settings,
-    ) -> Result<()> {
+    ) -> Result<LoadOutcome> {
         let path = path.as_ref();
 
         // Check the file before asking the controller to load it. A load that
@@ -174,7 +181,8 @@ impl Engine {
             api_format: None,
             resp,
         })?;
-        rx.recv()
+        let outcome = rx
+            .recv()
             .map_err(|_| Error::ControllerGone)?
             .map_err(Error::Load)?;
 
@@ -188,7 +196,7 @@ impl Engine {
         if let Ok(mut m) = self.sent_through.lock() {
             m.clear();
         }
-        Ok(())
+        Ok(outcome)
     }
 
     /// What the loaded model can accept.

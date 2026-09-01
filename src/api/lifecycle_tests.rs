@@ -175,3 +175,57 @@ fn changing_the_tool_set_between_turns_reaches_the_model() {
         "the second run's tools never reached the backend; it saw {sets:?}"
     );
 }
+
+#[test]
+fn a_turn_the_engine_never_accepted_is_not_recorded_as_delivered() {
+    // The facade used to mark a conversation open and its messages delivered
+    // the instant the command went on the channel — before starting the
+    // session, appending, or opening the puller, any of which can fail. A
+    // retry then sent only what came *after* messages the backend never took.
+    let engine = Engine::scripted(
+        Script::new().failing_start_session(|| crate::engine::ExecError::ModelNotLoaded),
+    );
+    let script = engine.script().clone();
+    let mut session = Session::new();
+
+    let outcome = engine.chat(&mut session).user("first attempt").send();
+    assert!(outcome.is_err(), "the turn should have failed");
+    assert!(
+        !session.opened,
+        "a conversation the engine never accepted must not be marked open"
+    );
+
+    // The retry has to carry the message the first attempt never delivered.
+    let seen_before = script.seen().len();
+    let _ = engine.chat(&mut session).user("second attempt").send();
+    let delivered: Vec<String> = script.seen().into_iter().skip(seen_before).collect();
+    assert!(
+        delivered.iter().any(|m| m == "first attempt"),
+        "the retry skipped a message the backend never accepted; it sent {delivered:?}"
+    );
+}
+
+#[test]
+fn an_accepted_turn_is_recorded_so_the_next_one_sends_only_what_is_new() {
+    // The other half: acknowledgement has to actually record delivery, or
+    // every turn would resend the whole conversation.
+    let engine = Engine::scripted(Script::new().say(["ok"]));
+    let script = engine.script().clone();
+    let mut session = Session::new();
+
+    engine.chat(&mut session).user("first").send().unwrap();
+    assert!(session.opened, "an accepted turn opens the conversation");
+
+    let seen_before = script.seen().len();
+    engine.chat(&mut session).user("second").send().unwrap();
+    let delivered: Vec<String> = script.seen().into_iter().skip(seen_before).collect();
+
+    assert!(
+        !delivered.iter().any(|m| m == "first"),
+        "a warm conversation resent history the engine already had: {delivered:?}"
+    );
+    assert!(
+        delivered.iter().any(|m| m == "second"),
+        "the new message never reached the backend: {delivered:?}"
+    );
+}

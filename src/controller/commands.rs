@@ -350,6 +350,7 @@ fn handle_model_command(state: &mut ControllerState, cmd: ControllerCmd) -> Cont
             // admission denials) never retry — see `load_error_is_fatal`.
             let rungs = load_fallback_rungs(&settings, mmproj_path.is_some());
             let mut rung_history: Vec<String> = Vec::new();
+            let mut succeeded_as: Option<crate::engine::LoadOutcome> = None;
             let mut r: Result<(), String> = Err("load ladder never ran".into());
             for (rung_idx, rung) in rungs.iter().enumerate() {
                 let attempt_settings = rung.apply(&settings);
@@ -369,6 +370,16 @@ fn handle_model_command(state: &mut ControllerState, cmd: ControllerCmd) -> Cont
                 );
                 match attempt {
                     Ok(()) => {
+                        let mut outcome = crate::engine::LoadOutcome::default();
+                        if rung.drop_mmproj {
+                            outcome
+                                .degraded
+                                .push(crate::engine::Degraded::VisionProjector);
+                        }
+                        if rung.cpu_only {
+                            outcome.degraded.push(crate::engine::Degraded::GpuOffload);
+                        }
+                        succeeded_as = Some(outcome);
                         if rung_idx > 0 {
                             tracing::warn!(
                                 target: "gen2::load_ladder",
@@ -419,7 +430,11 @@ fn handle_model_command(state: &mut ControllerState, cmd: ControllerCmd) -> Cont
                 // prior model's size on reload).
                 state.loaded_model_file_bytes = loaded_file_bytes;
             }
-            let _ = resp.send(r);
+            // Report what the load actually did. A ladder that rescues a
+            // failing load is the right instinct, and `Ok(())` alone cannot
+            // say whether the caller got the projector and the offload it
+            // asked for.
+            let _ = resp.send(r.map(|()| succeeded_as.unwrap_or_default()));
             ControlFlow::Continue
         }
         ControllerCmd::ApplySettings { settings, resp } => {
@@ -620,6 +635,10 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
                 None
             };
             state.last_llm_activity_unix = chrono::Utc::now().timestamp();
+            // How much of the caller's conversation this runtime will hold, so
+            // the acknowledgement can correct a stale delivered-count rather
+            // than leaving the next turn to send a suffix the backend lacks.
+            let delivered_count = messages.len();
             match state.engine.start_session(SessionSpec {
                 messages,
                 thinking,
@@ -681,6 +700,15 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
                                 health: Default::default(),
                             };
                             attach_generating_puller(&mut runtime, puller, pull_spec);
+                            // Everything that could fail has succeeded, so the
+                            // caller may now record what the engine holds.
+                            emit_must_deliver(
+                                state.metrics.as_ref(),
+                                &runtime.tx,
+                                ControllerEvent::Accepted {
+                                    delivered: delivered_count,
+                                },
+                            );
                             let evicted = state.chats.insert(chat_id, runtime);
                             if let Some(evicted_chat) = evicted {
                                 terminate_runtime_owned(
@@ -721,6 +749,7 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
                     );
                     return ControlFlow::Continue;
                 }
+                let appended = new_messages.len();
                 match chat.session.append_messages(new_messages) {
                     Err(e) => {
                         emit_must_deliver(
@@ -747,6 +776,16 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
                 match chat.session.pull(pull_spec.clone()) {
                     Ok(puller) => {
                         attach_generating_puller(chat, puller, pull_spec);
+                        emit_must_deliver(
+                            state.metrics.as_ref(),
+                            &chat.tx,
+                            ControllerEvent::Accepted {
+                                // A continuation adds to what the runtime
+                                // already had; the facade tracks the total, so
+                                // it adds this to its own count.
+                                delivered: appended,
+                            },
+                        );
                     }
                     Err(e) => {
                         emit_must_deliver(

@@ -282,6 +282,54 @@ pub struct StoppingSettings {
     pub max_tokens: Option<usize>,
 }
 
+/// What a load gave up in order to succeed.
+///
+/// The loader retries a failing load with progressively safer configurations,
+/// which is the right operational instinct and the wrong thing to report as a
+/// plain success: a caller can ask for a vision projector on the GPU, be told
+/// `Ok`, and be running text-only on the CPU.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
+#[non_exhaustive]
+pub enum Degraded {
+    /// The vision projector was dropped, so the model is text-only.
+    VisionProjector,
+    /// Weights were moved to the CPU, so nothing is offloaded to the GPU.
+    GpuOffload,
+}
+
+/// How a load actually turned out.
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
+#[non_exhaustive]
+pub struct LoadOutcome {
+    /// Empty when the load ran exactly as asked.
+    pub degraded: Vec<Degraded>,
+}
+
+impl LoadOutcome {
+    /// Whether the model is running as requested.
+    pub fn as_requested(&self) -> bool {
+        self.degraded.is_empty()
+    }
+
+    /// A one-line description of what was given up, for a log or a UI.
+    pub fn summary(&self) -> Option<String> {
+        if self.degraded.is_empty() {
+            return None;
+        }
+        let parts: Vec<&str> = self
+            .degraded
+            .iter()
+            .map(|d| match d {
+                Degraded::VisionProjector => "the vision projector was dropped",
+                Degraded::GpuOffload => "weights were moved to the CPU",
+            })
+            .collect();
+        Some(format!("loaded, but {}", parts.join(" and ")))
+    }
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, Default)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct SystemSettings {

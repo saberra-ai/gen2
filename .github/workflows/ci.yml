@@ -82,6 +82,31 @@ jobs:
       # default feature set.
       - run: cargo test --no-default-features --features ${{ matrix.features }}
 
+  # Whether this could be published at all.
+  #
+  # crates.io does not accept a package whose dependencies resolve only to git
+  # repositories, and three of ours currently do. Better to have that as a
+  # standing red line here than to discover it during a release — the check is
+  # cheap and the answer only changes when the manifest does.
+  publishable:
+    runs-on: ubuntu-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Install the C toolchain llama.cpp needs
+        run: sudo apt-get update && sudo apt-get install -y cmake libclang-dev
+      - name: cargo publish --dry-run
+        run: |
+          if cargo publish --dry-run --allow-dirty 2>&1 | tee /tmp/publish.log; then
+            echo "publishable"
+          else
+            echo "::warning::not publishable to crates.io yet — see the log"
+            grep -iE "git|registry|version" /tmp/publish.log | head -20 || true
+            exit 1
+          fi
+
   # A build with no backend must fail, loudly, at compile time. If this job
   # ever passes, the guard that produces that error has gone missing.
   no-backend-is-a-compile-error:

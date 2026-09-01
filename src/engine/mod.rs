@@ -13,8 +13,9 @@ pub use error::ExecError;
 pub use crate::types::ExecutionStats;
 pub use telemetry::{HookBus, HookEvent, HookListener};
 pub use types::{
-    Capabilities, ChatTemplateSpec, CtxParamsInput, EmbedLoadRequest, LoadRequest, MmSettings,
-    ModelParamsInput, PromptSettings, SamplingSettings, Settings, StoppingSettings, SystemSettings,
+    Capabilities, ChatTemplateSpec, CtxParamsInput, Degraded, EmbedLoadRequest, LoadOutcome,
+    LoadRequest, MmSettings, ModelParamsInput, PromptSettings, SamplingSettings, Settings,
+    StoppingSettings, SystemSettings,
 };
 
 use std::fs::File;

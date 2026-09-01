@@ -269,8 +269,10 @@ impl<'a> Chat<'a> {
     pub fn send_streaming(mut self, mut on_token: impl FnMut(&str)) -> Result<Completion> {
         let Some(mut handler) = self.handler.take() else {
             // No handler: one turn, and tool calls are the caller's to act on.
-            let (stream, session) = self.begin()?;
-            let done = stream.complete_streaming(on_token)?;
+            let engine = self.engine;
+            let (mut stream, session) = self.begin()?;
+            let done = stream.drain_streaming(on_token)?;
+            settle(engine, session, &stream);
             session.note_shed(done.dropped + done.compacted);
             session.push(Message::assistant_structured(done.text.clone(), None));
             return Ok(done);
@@ -298,8 +300,9 @@ impl<'a> Chat<'a> {
                 tool_depth: depth_limit,
             };
 
-            let (stream, session_back) = turn.begin()?;
-            let mut done = stream.complete_streaming(&mut on_token)?;
+            let (mut stream, session_back) = turn.begin()?;
+            let mut done = stream.drain_streaming(&mut on_token)?;
+            settle(engine, session_back, &stream);
             done.tool_rounds = rounds;
             session_back.note_shed(done.dropped + done.compacted);
 
@@ -341,6 +344,11 @@ impl<'a> Chat<'a> {
     /// events, so only you know what the final text was. Push it yourself with
     /// [`Session::push`], or use [`Chat::send_streaming`], which does.
     pub fn stream(self) -> Result<TokenStream> {
+        // The caller takes the stream, so nothing here can observe the
+        // engine's acknowledgement. The conversation therefore stays closed
+        // and the next turn rebuilds from the transcript: one extra prefill,
+        // and no chance of sending a suffix of a conversation the backend does
+        // not have.
         Ok(self.begin()?.0)
     }
 
@@ -407,10 +415,38 @@ impl<'a> Chat<'a> {
         };
 
         engine.send(cmd)?;
-        engine.mark_sent(session.id(), sent);
-        session.opened = true;
+        // Deliberately not recording delivery here. `send` only puts the
+        // command on the controller's channel; starting the session,
+        // appending, and opening the puller can all still fail. Marking the
+        // conversation open and its messages delivered before any of that
+        // succeeded meant a retry sent only what came *after* messages the
+        // backend never took.
+        //
+        // The engine acknowledges instead, and [`Chat::settle`] records it.
+        // A turn nobody reads far enough to see acknowledged simply stays
+        // closed, and the next one rebuilds — slower, never wrong.
+        let _ = sent;
         Ok((TokenStream::new(rx), session))
     }
+}
+
+/// Record what the engine acknowledged holding.
+///
+/// Called once a turn's stream has been read far enough to know. Until then
+/// the conversation stays closed, so the next turn rebuilds from the
+/// authoritative transcript rather than sending a suffix of a conversation the
+/// backend may not have.
+fn settle(engine: &Engine, session: &mut Session, stream: &TokenStream) {
+    let Some(delivered) = stream.accepted() else {
+        return;
+    };
+    let already = if session.opened {
+        engine.sent_through(session.id())
+    } else {
+        0
+    };
+    engine.mark_sent(session.id(), already + delivered);
+    session.opened = true;
 }
 
 /// Whether any message carries an image.

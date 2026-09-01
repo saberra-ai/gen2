@@ -411,7 +411,12 @@ let engine = Engine::builder()
     .greedy()                       // defaults every turn starts from
     .build()?;
 
-engine.load_model("/models/other.gguf")?;   // swap on a live engine
+// Swapping on a live engine. A load that cannot run as asked is retried
+// without the vision projector, then on the CPU, so check what you got.
+let outcome = engine.load_model("/models/other.gguf")?;
+if !outcome.as_requested() {
+    println!("{}", outcome.summary().unwrap_or_default());
+}
 engine.reload_model()?;
 
 engine.capabilities();              // TEXT | IMAGES | AUDIO
@@ -534,6 +539,10 @@ Pick at least one. A build with none fails to compile.
 Only llama.cpp and MLX have been shown to generate a token; the rest compile
 and satisfy the parts of the backend contract that need no weights. The
 conformance suite says which on every run, and fails if that list goes stale.
+
+Not yet publishable to crates.io: three dependencies resolve only to git
+repositories, which the registry does not accept. CI checks this so a release
+cannot be surprised by it.
 
 ```sh
 cargo test

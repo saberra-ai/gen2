@@ -73,6 +73,7 @@ impl Harness {
             .map_err(|e| e.to_string())?;
         rx.recv_timeout(PATIENCE)
             .map_err(|e| e.to_string())?
+            .map(|_outcome| ())
             .map_err(|e| e.to_string())
     }
 
@@ -209,9 +210,13 @@ impl Events {
     /// The synchronisation point for anything that has to happen *during* a
     /// generation: a stop between two tokens, a pause, a model reload.
     pub fn wait_for_first_token(&self) -> String {
-        match self.next() {
-            ControllerEvent::Token(t) => t,
-            other => panic!("expected a token first, got {other:?}"),
+        loop {
+            match self.next() {
+                ControllerEvent::Token(t) => return t,
+                // Bookkeeping, and it precedes the first token by design.
+                ControllerEvent::Accepted { .. } => continue,
+                other => panic!("expected a token first, got {other:?}"),
+            }
         }
     }
 }
@@ -271,6 +276,27 @@ pub fn assert_valid_trace(events: &[ControllerEvent]) {
             "nothing but FinalStats may follow the terminal event, \
              but {event:?} arrived at {i} after {:?} at {terminal}",
             events[terminal]
+        );
+    }
+
+    // A turn is acknowledged at most once, and before anything it produced —
+    // a caller recording delivery off the back of it must not be told twice,
+    // or told after the tokens it was supposed to gate.
+    let accepted: Vec<usize> = events
+        .iter()
+        .enumerate()
+        .filter(|(_, e)| matches!(e, ControllerEvent::Accepted { .. }))
+        .map(|(i, _)| i)
+        .collect();
+    assert!(
+        accepted.len() <= 1,
+        "a turn was acknowledged {} times: {events:?}",
+        accepted.len()
+    );
+    if let Some(&at) = accepted.first() {
+        assert!(
+            at < terminal,
+            "the acknowledgement at {at} came after the turn ended at {terminal}"
         );
     }
 

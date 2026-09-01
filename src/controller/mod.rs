@@ -206,7 +206,12 @@ pub enum ControllerCmd {
         settings: Settings,
         api_key: Option<String>,
         api_format: Option<String>,
-        resp: Sender<Result<(), String>>,
+        /// What the load actually did, not merely whether it worked.
+        ///
+        /// The loader retries with safer configurations rather than failing
+        /// outright, so `Ok` on its own cannot say whether the caller got the
+        /// vision projector and the GPU offload it asked for.
+        resp: Sender<Result<crate::engine::LoadOutcome, String>>,
     },
     /// Apply new sampling/system settings without reloading the model.
     ApplySettings {
@@ -392,6 +397,21 @@ pub enum ControllerEvent {
     ContextCompacted {
         compacted: usize,
         strategy: String,
+    },
+    /// The turn was accepted: a runtime exists and holds these messages.
+    ///
+    /// Sent once, before any token, and only after the work that could still
+    /// fail has succeeded — starting a session, appending, opening the puller.
+    /// Until this arrives the caller has no grounds to believe the engine
+    /// received anything, which is why the facade waits for it before
+    /// recording that a conversation is open and how much of it was delivered.
+    ///
+    /// `delivered` is how many of the caller's messages the runtime now holds,
+    /// so a rebuild after an eviction can correct a stale count rather than
+    /// leaving the next turn to send a suffix of a conversation the backend
+    /// does not have.
+    Accepted {
+        delivered: usize,
     },
 }
 

@@ -94,6 +94,13 @@ pub struct TokenStream {
     rx: Receiver<ControllerEvent>,
     finish: Option<Finish>,
     done: bool,
+    /// How many messages the engine acknowledged holding, if it has.
+    ///
+    /// `None` means the turn was never accepted — the send failed, the
+    /// runtime could not start, or nobody read far enough to find out. A
+    /// caller that recorded delivery before knowing this would, on a retry,
+    /// send only what came after messages the backend never took.
+    accepted: Option<usize>,
 }
 
 impl TokenStream {
@@ -102,6 +109,7 @@ impl TokenStream {
             rx,
             finish: None,
             done: false,
+            accepted: None,
         }
     }
 
@@ -109,6 +117,14 @@ impl TokenStream {
     /// if it failed.
     pub fn finish(&self) -> Option<Finish> {
         self.finish.clone()
+    }
+
+    /// How many messages the engine confirmed it holds, if it confirmed any.
+    ///
+    /// The engine sends this once the work that could still fail has
+    /// succeeded. Until then nothing about this turn is known to have landed.
+    pub(crate) fn accepted(&self) -> Option<usize> {
+        self.accepted
     }
 
     /// Run to completion, concatenating every text fragment.
@@ -139,6 +155,31 @@ impl TokenStream {
     /// every caller would otherwise write by hand.
     pub fn complete(self) -> Result<Completion> {
         self.complete_streaming(|_| {})
+    }
+
+    /// As [`Self::complete_streaming`], but keeping the stream so its
+    /// acknowledgement can be read afterwards.
+    ///
+    /// A turn is only known to have landed once the engine says so, and that
+    /// arrives on this channel — so whatever records delivery has to outlive
+    /// the drain.
+    pub(crate) fn drain_streaming(&mut self, mut on_token: impl FnMut(&str)) -> Result<Completion> {
+        let mut done = Completion::default();
+        for event in &mut *self {
+            match event? {
+                Event::Token(t) => {
+                    on_token(&t);
+                    done.text.push_str(&t);
+                }
+                Event::ToolCall(c) => done.tool_calls.push(c),
+                Event::Stats(s) => done.stats = Some(s),
+                Event::ContextTruncated { dropped } => done.dropped += dropped,
+                Event::ContextCompacted { compacted, .. } => done.compacted += compacted,
+                Event::MediaBoundary(_) => {}
+            }
+        }
+        done.finish = self.finish().unwrap_or_default();
+        Ok(done)
     }
 
     /// [`Self::complete`], with `on_token` called for each fragment as it
@@ -266,6 +307,13 @@ impl Iterator for TokenStream {
             };
         };
 
+        // Bookkeeping rather than something the caller asked for: record it
+        // and read on, so an acknowledgement never interrupts a token stream.
+        if let ControllerEvent::Accepted { delivered } = event {
+            self.accepted = Some(self.accepted.unwrap_or(0) + delivered);
+            return self.next();
+        }
+
         Some(Ok(match event {
             ControllerEvent::Token(t) => Event::Token(t),
             ControllerEvent::ToolCall(c) => Event::ToolCall(c),
@@ -293,6 +341,8 @@ impl Iterator for TokenStream {
                 self.done = true;
                 return None;
             }
+            // Handled above, before this match.
+            ControllerEvent::Accepted { .. } => unreachable!(),
         }))
     }
 }
