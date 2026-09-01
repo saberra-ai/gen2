@@ -7,7 +7,7 @@ use crate::generation::{GenSpec, ThinkingMode};
 use crate::types::message::{FunctionDefinition, Message, ToolCall as MessageToolCall, ToolSpec};
 
 use super::engine::{Engine, event_channel};
-use super::error::Result;
+use super::error::{Error, Result};
 use super::session::Session;
 use super::stream::{Completion, Finish, TokenStream, Tokens};
 
@@ -32,6 +32,9 @@ use super::stream::{Completion, Finish, TokenStream, Tokens};
 pub struct Chat<'a> {
     engine: &'a Engine,
     session: &'a mut Session,
+    /// How long the transcript was before this turn added anything, so a turn
+    /// refused before it runs can leave the conversation as it found it.
+    mark: usize,
     spec: GenSpec,
     thinking: ThinkingMode,
     tools: Option<(Vec<ToolSpec>, String)>,
@@ -54,6 +57,7 @@ impl<'a> Chat<'a> {
             // Starts from the engine's configured defaults, so anything set at
             // build time applies unless this turn overrides it.
             spec: engine.default_gen_spec(),
+            mark: session.len(),
             engine,
             session,
             thinking: ThinkingMode::default(),
@@ -282,6 +286,7 @@ impl<'a> Chat<'a> {
 
         loop {
             let turn = Chat {
+                mark: session.len(),
                 engine,
                 session,
                 spec: spec.clone(),
@@ -354,6 +359,18 @@ impl<'a> Chat<'a> {
         // has been swapped since this conversation was opened, the engine's
         // cache is for weights that are gone, so the conversation reopens.
         session.note_model(engine.model_generation());
+
+        // Checked before anything is sent, so a text-only model given an image
+        // fails with the conversation untouched — the caller can drop the
+        // attachment or swap the model and try again.
+        if has_images(session.messages()) && !engine.supports_images() {
+            // Leave the conversation as this turn found it. The builder appends
+            // as it is configured, so without this the rejected message would
+            // stay and every later turn would hit the same wall.
+            session.rollback_to(self.mark);
+            return Err(Error::Unsupported("images".into()));
+        }
+
         let (tx, rx) = event_channel(engine.event_channel_capacity());
 
         // A conversation the engine already holds gets only what's new; one it
@@ -389,6 +406,22 @@ impl<'a> Chat<'a> {
         session.opened = true;
         Ok((TokenStream::new(rx), session))
     }
+}
+
+/// Whether any message carries an image.
+///
+/// Scans the whole transcript, not just this turn: a conversation that picked
+/// up an image earlier still needs a multimodal model to replay it.
+pub(crate) fn has_images(messages: &[Message]) -> bool {
+    use crate::types::message::{MessageBody, MessageChunk, MessageContent};
+    messages.iter().any(|m| match &m.body {
+        MessageBody::Content {
+            content: MessageContent::MultipleChunks(chunks),
+        } => chunks
+            .iter()
+            .any(|c| matches!(c, MessageChunk::ImageUrl { .. })),
+        _ => false,
+    })
 }
 
 /// Translate a streamed tool call into the form a message stores.

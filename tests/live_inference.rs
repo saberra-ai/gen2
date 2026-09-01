@@ -944,3 +944,103 @@ fn a_swap_refused_up_front_does_not_disturb_the_loaded_model() {
             .is_empty()
     );
 }
+
+/// An agent can be asked for a structured final answer.
+///
+/// The grammar applies to one extra turn after the work is done, not to the
+/// whole run — constraining every turn would forbid the tool-call syntax the
+/// model needs to get anywhere. So this checks both halves: the tool still ran,
+/// and the answer still parses.
+#[test]
+fn an_agent_can_return_a_structured_answer() {
+    let Some(model) = tool_model() else {
+        eprintln!("SKIP: set PIO_TEST_TOOL_MODEL to run the agent");
+        return;
+    };
+
+    let engine = Engine::load(model).expect("tool model should load");
+    let mut session = Session::new();
+    let mut called = Vec::new();
+
+    let schema = serde_json::json!({
+        "type": "object",
+        "properties": {
+            "city": { "type": "string" },
+            "temperature_c": { "type": "number" }
+        },
+        "required": ["city", "temperature_c"]
+    });
+
+    let done = engine
+        .agent(&mut session)
+        .add_tool(weather_agent_tool())
+        .max_steps(4)
+        .greedy()
+        .answer_as(
+            gen2::GrammarSpec::JsonSchema(schema),
+            "Give the final answer as JSON with keys city and temperature_c.",
+        )
+        .run_streaming(
+            Some("What is the weather in Paris? Use the tool.".into()),
+            |s| {
+                if let pio_agent_step::Calling { tool, .. } = s {
+                    called.push(tool.to_string());
+                }
+            },
+        )
+        .expect("the agent should complete");
+
+    eprintln!("--- called {called:?} · answer {:?}", done.text);
+    assert_eq!(called, ["get_weather"], "the tool still ran unconstrained");
+
+    // The grammar made this sound rather than hopeful.
+    let parsed: serde_json::Value =
+        serde_json::from_str(&done.text).expect("the shaped answer must parse as JSON");
+    assert!(parsed.get("city").is_some(), "got {parsed}");
+    assert!(parsed.get("temperature_c").is_some(), "got {parsed}");
+}
+
+/// Sending images to a text-only model fails before anything is generated.
+#[test]
+fn images_on_a_text_only_model_are_refused_not_attempted() {
+    let Some(model) = test_model() else {
+        eprintln!("SKIP: set PIO_TEST_MODEL");
+        return;
+    };
+
+    let engine = Engine::load(model).expect("model should load");
+    // SmolLM2 is text-only; this is the precondition the guard exists for.
+    if engine.supports_images() {
+        eprintln!("SKIP: PIO_TEST_MODEL is multimodal");
+        return;
+    }
+
+    let mut session = Session::new();
+    let err = engine
+        .chat(&mut session)
+        .user_with_images("What is this?", ["/tmp/a.png"])
+        .send()
+        .expect_err("a text-only model must refuse images");
+
+    eprintln!("--- refused: {err}");
+    assert_eq!(
+        err.code(),
+        Some("unsupported"),
+        "routable, not a backend crash"
+    );
+
+    // Recoverable: nothing was generated, so dropping the image and retrying
+    // works on the same session.
+    assert!(
+        !engine
+            .chat(&mut session)
+            .user("Never mind — just say hello.")
+            .max_tokens(16)
+            .greedy()
+            .send()
+            .expect("the same session should still work")
+            .text
+            .trim()
+            .is_empty()
+    );
+}

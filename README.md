@@ -217,6 +217,21 @@ so the warm KV cache survives. Search is hybrid by default: BM25 over names,
 descriptions and argument names catches exact terminology, embeddings catch
 intent, and RRF fuses them on rank.
 
+**Structured answers.** `answer_as(grammar, instruction)` shapes the final
+reply. It applies to one extra turn *after* the work is done, not to the whole
+run — constraining every turn would forbid the tool-call syntax the model needs
+to get anywhere:
+
+```rust
+let done = engine.agent(&mut session)
+    .add_tool(weather)
+    .answer_as(GrammarSpec::JsonSchema(schema), "Answer as JSON with city and temperature_c.")
+    .goal("What is the weather in Paris?")?;
+let report: Report = serde_json::from_str(&done.text)?;   // sound, not hopeful
+```
+
+`.images([path])` attaches images to the goal, on a multimodal model.
+
 **Stopping** is a first-class answer, not a timeout. `Finish::OutOfBudget(Budget::Steps
 | Tokens | Deadline)` says which limit; `Finish::GaveUp(Struggle::RepeatingCall
 { .. })` catches a model calling the same tool with the same arguments — the
@@ -334,6 +349,19 @@ match Engine::builder().model(path).context(1_000_000).build() {
 
 GGUF only — other formats keep the backend's default context.
 
+### Asking what the model can do
+
+```rust
+engine.capabilities();        // TEXT | IMAGES | AUDIO
+engine.supports_images();
+engine.supports_audio();
+```
+
+You rarely need to. Sending images to a text-only model is checked *before
+anything is generated* and comes back as `Error::Unsupported` with code
+`"unsupported"` — and the turn is rolled back, so the conversation is left as it
+was found and dropping the attachment is enough to carry on.
+
 ### Swapping models
 
 The model can change on a live engine. Sessions, tools and settings survive it:
@@ -343,6 +371,7 @@ let engine = Engine::load("/models/small.gguf")?;
 engine.chat(&mut session).user("Hello").send()?;
 
 engine.load_model("/models/large.gguf")?;      // engine stays up
+// also: engine.reload_model()?  ·  engine.unload_model()?
 engine.chat(&mut session).user("Continue").send()?;   // same conversation
 ```
 

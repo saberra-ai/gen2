@@ -460,6 +460,19 @@ fn handle_status_command(state: &mut ControllerState, cmd: ControllerCmd) -> Con
             let _ = resp.send(state.engine.is_model_loaded());
             ControlFlow::Continue
         }
+        ControllerCmd::GetCapabilities { resp } => {
+            let _ = resp.send(state.engine.capabilities());
+            ControlFlow::Continue
+        }
+        ControllerCmd::UnloadModel { resp } => {
+            state.engine.unload_model();
+            let _ = resp.send(());
+            ControlFlow::Continue
+        }
+        ControllerCmd::ReloadModel { resp } => {
+            let _ = resp.send(state.engine.reload_model().map_err(|e| e.to_string()));
+            ControlFlow::Continue
+        }
         ControllerCmd::GetActiveBackendName { resp } => {
             let _ = resp.send(state.engine.active_backend_name());
             ControlFlow::Continue
@@ -870,6 +883,9 @@ pub(super) fn dispatch_cmd(cmd: ControllerCmd, state: &mut ControllerState) -> C
         | ControllerCmd::ApplySettings { .. }
         | ControllerCmd::LoadEmbedder { .. } => handle_model_command(state, cmd),
         ControllerCmd::IsModelLoaded { .. }
+        | ControllerCmd::GetCapabilities { .. }
+        | ControllerCmd::UnloadModel { .. }
+        | ControllerCmd::ReloadModel { .. }
         | ControllerCmd::GetActiveBackendName { .. }
         | ControllerCmd::IsEmbedderLoaded { .. }
         | ControllerCmd::IsMmprojLoaded { .. }

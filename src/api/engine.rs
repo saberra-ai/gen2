@@ -10,7 +10,7 @@ use crate::backend::common::grammar::GrammarSpec;
 use crate::controller::{
     ControllerCmd, ControllerConfig, ControllerHandle, start_controller_joinable,
 };
-use crate::engine::Settings;
+use crate::engine::{Capabilities, Settings};
 use crate::generation::GenSpec;
 use crate::hardware::HardwareProfile;
 
@@ -181,6 +181,64 @@ impl Engine {
             .fetch_add(1, std::sync::atomic::Ordering::SeqCst);
         // Per-session message counts describe a conversation the new model has
         // never seen.
+        if let Ok(mut m) = self.sent_through.lock() {
+            m.clear();
+        }
+        Ok(())
+    }
+
+    /// What the loaded model can accept.
+    ///
+    /// Empty when nothing is loaded. Ask before sending images rather than
+    /// discovering it at generation time — though the turn builders check this
+    /// themselves, so a mistake surfaces as [`Error::Unsupported`] rather than
+    /// a backend failure.
+    pub fn capabilities(&self) -> Capabilities {
+        let (resp, rx) = channel();
+        if self.send(ControllerCmd::GetCapabilities { resp }).is_err() {
+            return Capabilities::empty();
+        }
+        rx.recv().unwrap_or_else(|_| Capabilities::empty())
+    }
+
+    /// Whether the loaded model accepts images.
+    pub fn supports_images(&self) -> bool {
+        self.capabilities().contains(Capabilities::IMAGES)
+    }
+
+    /// Whether the loaded model accepts audio.
+    pub fn supports_audio(&self) -> bool {
+        self.capabilities().contains(Capabilities::AUDIO)
+    }
+
+    /// Drop the loaded model, freeing its memory. The engine stays up.
+    ///
+    /// Live sessions reopen on their next turn, as they do after a swap — a
+    /// cached prefill cannot outlive the weights that produced it.
+    pub fn unload_model(&self) -> Result<()> {
+        let (resp, rx) = channel();
+        self.send(ControllerCmd::UnloadModel { resp })?;
+        rx.recv().map_err(|_| Error::ControllerGone)?;
+        self.generation
+            .fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+        if let Ok(mut m) = self.sent_through.lock() {
+            m.clear();
+        }
+        Ok(())
+    }
+
+    /// Re-read the current model from disk.
+    ///
+    /// For picking up a file that changed underneath you. Same invalidation as
+    /// a swap: the weights are new even if the path isn't.
+    pub fn reload_model(&self) -> Result<()> {
+        let (resp, rx) = channel();
+        self.send(ControllerCmd::ReloadModel { resp })?;
+        rx.recv()
+            .map_err(|_| Error::ControllerGone)?
+            .map_err(Error::Load)?;
+        self.generation
+            .fetch_add(1, std::sync::atomic::Ordering::SeqCst);
         if let Ok(mut m) = self.sent_through.lock() {
             m.clear();
         }

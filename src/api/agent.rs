@@ -20,6 +20,7 @@ use super::tools::{
     IntoTool, Tool, ToolContext, ToolError, ToolLoading, ToolOutput, ToolRegistry, ToolSearch,
     ToolSpec,
 };
+use crate::backend::common::grammar::GrammarSpec;
 use crate::generation::GenSpec;
 use crate::types::message::{FunctionDefinition, Message, ToolCall, ToolSpec as WireToolSpec};
 
@@ -193,6 +194,8 @@ pub struct Agent<'a> {
     tool_prompt: String,
     steering: Steering,
     spec: GenSpec,
+    images: Vec<String>,
+    answer_as: Option<(GrammarSpec, String)>,
 }
 
 impl<'a> Agent<'a> {
@@ -210,6 +213,8 @@ impl<'a> Agent<'a> {
                 .into(),
             steering: Steering::default(),
             spec: engine.default_gen_spec(),
+            images: Vec::new(),
+            answer_as: None,
         }
     }
 
@@ -284,6 +289,36 @@ impl<'a> Agent<'a> {
     /// How deferred tools are found. Required if anything is deferred.
     pub fn tool_search(mut self, search: ToolSearch) -> Self {
         self.search = Some(search);
+        self
+    }
+
+    /// Attach images to the goal.
+    ///
+    /// Paths become `file://` URLs; existing URLs pass through. Needs a
+    /// multimodal model loaded with a projector — a text-only one is rejected
+    /// before anything is generated.
+    pub fn images<I, P>(mut self, images: I) -> Self
+    where
+        I: IntoIterator<Item = P>,
+        P: AsRef<str>,
+    {
+        self.images
+            .extend(images.into_iter().map(|p| p.as_ref().to_string()));
+        self
+    }
+
+    /// Require the final answer to match a grammar.
+    ///
+    /// Applied to one extra turn *after* the agent has finished its work, not
+    /// to the whole run: constraining every turn would forbid the tool-call
+    /// syntax the model needs to do anything. So the agent reasons and calls
+    /// tools freely, and is then asked once more for the answer in the
+    /// required shape.
+    ///
+    /// `instruction` is what to ask for; it reaches the model as a final user
+    /// message.
+    pub fn answer_as(mut self, grammar: GrammarSpec, instruction: impl Into<String>) -> Self {
+        self.answer_as = Some((grammar, instruction.into()));
         self
     }
 
@@ -400,8 +435,13 @@ impl<'a> Agent<'a> {
         // keeps calling the old ones.
         self.session.note_tools(registry.fingerprint());
 
+        let images = std::mem::take(&mut self.images);
         if let Some(text) = goal {
-            self.session.push_user(text);
+            if images.is_empty() {
+                self.session.push_user(text);
+            } else {
+                self.session.push_user_with_images(text, images);
+            }
         }
 
         let engine = self.engine;
@@ -411,6 +451,7 @@ impl<'a> Agent<'a> {
         let tool_prompt = self.tool_prompt.clone();
         let steering = self.steering.clone();
         let spec = self.spec.clone();
+        let answer_as = self.answer_as.clone();
         let session: &mut Session = self.session;
 
         let started = Instant::now();
@@ -471,7 +512,21 @@ impl<'a> Agent<'a> {
             if turn.tool_calls.is_empty() {
                 // The model answered; record it and stop.
                 session.push(Message::assistant_structured(turn.text.clone(), None));
-                totals.finish = turn.finish;
+                totals.finish = turn.finish.clone();
+
+                // The work is done, so now shape the answer. One extra turn
+                // rather than a grammar over the whole run, which would have
+                // forbidden the tool-call syntax the model needed to get here.
+                if let Some((grammar, instruction)) = &answer_as {
+                    session.push_user(instruction.clone());
+                    let shaped = engine
+                        .chat(session)
+                        .gen_spec(spec.clone())
+                        .grammar(grammar.clone())
+                        .send_streaming(&mut on_delta)?;
+                    totals.text = shaped.text;
+                    totals.finish = shaped.finish;
+                }
                 return Ok(totals);
             }
 

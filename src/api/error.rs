@@ -34,6 +34,15 @@ pub enum Error {
     #[error("{0}")]
     WontFit(Box<crate::api::fit::Fit>),
 
+    /// The loaded model cannot do what was asked — images sent to a text-only
+    /// model, say.
+    ///
+    /// Recoverable by construction: it is raised before anything is generated,
+    /// so the conversation is untouched and a caller can drop the attachment,
+    /// swap the model, or tell the user.
+    #[error("the loaded model does not support {0}")]
+    Unsupported(String),
+
     /// The agent's tools are misconfigured — a duplicate name, a missing
     /// description, or tools deferred with no way to find them.
     ///
@@ -57,6 +66,7 @@ impl Error {
             Self::Generation { code, .. } => Some(code),
             Self::WontFit(_) => Some("wont_fit"),
             Self::Tools(_) => Some("tool_config"),
+            Self::Unsupported(_) => Some("unsupported"),
             _ => None,
         }
     }

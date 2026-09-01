@@ -243,6 +243,14 @@ pub enum ControllerCmd {
     // ── Status queries ───────────────────────────────────────────────
     /// Check whether the primary LLM is loaded and ready.
     IsModelLoaded { resp: Sender<bool> },
+    /// What the loaded model can accept — text, images, audio.
+    GetCapabilities {
+        resp: Sender<crate::engine::Capabilities>,
+    },
+    /// Drop the loaded model, freeing its memory. The engine stays up.
+    UnloadModel { resp: Sender<()> },
+    /// Re-read the current model from disk.
+    ReloadModel { resp: Sender<Result<(), String>> },
     /// Which backend is currently active in the controller's engine (the facade
     /// `active_backend_name()` — e.g. `"llamacpp"`, `"mlx"`, `"mlxcel"`). Proves
     /// routing end-to-end: after `LoadModel` a caller can assert the model

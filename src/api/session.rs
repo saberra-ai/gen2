@@ -169,6 +169,15 @@ impl Session {
         self.shed == 0
     }
 
+    /// Undo messages added since the conversation had `len` of them.
+    ///
+    /// For a turn rejected before anything was sent: the builder appends as it
+    /// is configured, so a turn that never runs would otherwise leave its
+    /// messages behind and the next turn would inherit them.
+    pub(crate) fn rollback_to(&mut self, len: usize) {
+        self.messages.truncate(len);
+    }
+
     /// Record that the engine shed `n` messages this turn.
     pub(crate) fn note_shed(&mut self, n: usize) {
         self.shed = self.shed.saturating_add(n);
