@@ -1,3 +1,9 @@
+//! The README, compiled.
+//!
+//! Every Rust block in it is a doc test, so an example cannot drift from the
+//! API without the build saying so. That is the whole point of including it
+//! here rather than letting the two live separate lives.
+#![doc = include_str!("../README.md")]
 //! gen2: next-generation inference engine with pluggable backends.
 //!
 //! Extracted from `pio-core` into a standalone crate. Everything the engine
@@ -152,6 +158,8 @@ pub use api::{
     ToolLoading, ToolOutput, ToolRegistry, ToolSearch, ToolSet, Turn, Update,
 };
 pub use api::{AgentTool, Risk, SEARCH_TOOL, Skill, SkillLibrary, Steering, Struggle};
+/// Tools served by an MCP server, alongside the tool types they sit with.
+pub use mcp::{McpClient, McpError, McpTool, McpToolSet};
 
 /// Commands, events, and handles — see [`controller`].
 pub use controller::{

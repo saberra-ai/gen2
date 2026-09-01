@@ -129,6 +129,18 @@ pub enum MessageContent {
 }
 
 impl Message {
+    /// The message's visible text, with reasoning and tool payloads left out.
+    ///
+    /// What a transcript renders. Every other way to reach this went through
+    /// `MessageBody`, so the most ordinary thing a consumer does — walk
+    /// `session.messages()` and print them — had no accessor for it.
+    pub fn text(&self) -> String {
+        match &self.body {
+            MessageBody::Content { content } => content.as_visible_text(),
+            MessageBody::Tool { .. } => String::new(),
+        }
+    }
+
     /// Convenience constructor for a single-text user message.
     pub fn user(text: impl Into<String>) -> Self {
         Self {

@@ -140,10 +140,20 @@ name = "hot_paths"
 harness = false
 
 [features]
-# The zero-dependency external-api backend is the default: it needs no C
-# toolchain, so `cargo build`/`cargo test` work out of the box. Real
-# local-inference backends are opt-in.
-default = ["backend-external-api"]
+# llama.cpp is the default because GGUF is what most people point this crate
+# at first, and a default that cannot open a `.gguf` fails at
+# `Engine::load` — the first line a new consumer writes — with an error about
+# the file rather than about the build.
+#
+# The cost is honest: this pulls a C++ toolchain and compiles llama.cpp, so a
+# first build is minutes rather than seconds. Anyone who does not want that
+# opts out and names what they do want:
+#
+#     gen2 = { version = "0.1", default-features = false, features = ["backend-external-api"] }
+#
+# On Apple silicon add `metal`; on NVIDIA add `cuda`. Without one of those,
+# llama.cpp runs on the CPU.
+default = ["backend-llamacpp"]
 
 backend-llamacpp = ["dep:llama-cpp-2", "dep:llama-cpp-sys-2"]
 backend-mlx = ["dep:mlx-rs", "dep:safetensors"]

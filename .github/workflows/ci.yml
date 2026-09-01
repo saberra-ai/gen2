@@ -12,8 +12,8 @@ env:
   CARGO_TERM_COLOR: always
 
 jobs:
-  # The default build: external-api backend, no C toolchain, everything the
-  # unit and doc tests cover.
+  # The default build, which is what a consumer gets from `cargo add gen2`:
+  # llama.cpp, and so a C toolchain.
   test:
     runs-on: ubuntu-latest
     steps:
@@ -22,6 +22,8 @@ jobs:
         with:
           components: rustfmt, clippy
       - uses: Swatinem/rust-cache@v2
+      - name: Install the C toolchain llama.cpp needs
+        run: sudo apt-get update && sudo apt-get install -y cmake libclang-dev
       # Every file, not just the ones the default features reach: `cargo fmt`
       # follows the module tree, so a module behind an inactive `#[cfg]` is
       # skipped locally and only shows up here.
@@ -32,7 +34,9 @@ jobs:
         env:
           RUSTDOCFLAGS: -D warnings
 
-  # The async API, which is a separate compilation of the same crate.
+  # The async API, which is a separate compilation of the same crate. Runs on
+  # the external-api backend rather than the default: what it exercises is the
+  # `Stream` layer, and paying a llama.cpp build for that buys nothing.
   tokio:
     runs-on: ubuntu-latest
     steps:
@@ -41,8 +45,8 @@ jobs:
         with:
           components: clippy
       - uses: Swatinem/rust-cache@v2
-      - run: cargo clippy --all-targets --features tokio -- -D warnings
-      - run: cargo test --features tokio
+      - run: cargo clippy --all-targets --no-default-features --features backend-external-api,tokio -- -D warnings
+      - run: cargo test --no-default-features --features backend-external-api,tokio
 
   # Every backend the README lists, built the way the README says to build it.
   # A backend that only compiles alongside another one is not a backend.
@@ -76,7 +80,7 @@ jobs:
       # is a test nothing runs otherwise, and one of them had been failing
       # unnoticed because every command that would have caught it used the
       # default feature set.
-      - run: cargo test --lib --no-default-features --features ${{ matrix.features }}
+      - run: cargo test --no-default-features --features ${{ matrix.features }}
 
   # A build with no backend must fail, loudly, at compile time. If this job
   # ever passes, the guard that produces that error has gone missing.

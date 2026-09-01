@@ -1,12 +1,29 @@
 # gen2
 
-A local-first inference engine with pluggable backends. One API over
-llama.cpp, MLX, ONNX Runtime, Candle, ExecuTorch, or an OpenAI-compatible
-endpoint.
+An embeddable AI runtime for Rust. Models, sessions, tools, agents and local
+inference behind one stateful API — over llama.cpp, MLX, ONNX Runtime, Candle,
+ExecuTorch, or an OpenAI-compatible endpoint.
 
 ```toml
+[dependencies]
 gen2 = { git = "https://github.com/saberra-ai/gen2" }
+
+# Only if you build tools with typed arguments. The derives expand to paths in
+# your own crate, so re-exporting them from gen2 is not enough.
+schemars = "1"
+serde = { version = "1", features = ["derive"] }
 ```
+
+Defaults to llama.cpp, so a `.gguf` works out of the box and the first build
+compiles a C++ toolchain. On Apple silicon add `metal`; on NVIDIA add `cuda`.
+To skip all that and talk to a hosted endpoint instead:
+
+```toml
+gen2 = { git = "…", default-features = false, features = ["backend-external-api"] }
+```
+
+Every example below is compiled by `cargo test --doc`, so none of them can
+drift from the API.
 
 ---
 
@@ -20,30 +37,43 @@ gen2 = { git = "https://github.com/saberra-ai/gen2" }
 
 ### infer
 
-```rust
+```rust,no_run
 use gen2::Engine;
-
+# fn main() -> Result<(), gen2::Error> {
 let engine = Engine::load("/models/model.gguf")?;
 let title = engine.infer("Title this in three words: …").max_tokens(16).text()?;
+# println!("{title}");
+# Ok(())
+# }
 ```
 
 Shaped output, enforced during decoding:
 
-```rust
-use gen2::GrammarSpec;
+```rust,no_run
+use gen2::{Engine, GrammarSpec};
+# fn main() -> Result<(), gen2::Error> {
+# let engine = Engine::load("/models/model.gguf")?;
+let schema = serde_json::json!({
+    "type": "object",
+    "properties": { "sentiment": { "type": "string", "enum": ["positive", "negative"] } },
+    "required": ["sentiment"]
+});
 
 let raw = engine.infer("Classify the sentiment of: '…'")
     .grammar(GrammarSpec::JsonSchema(schema))
     .greedy()
     .text()?;
-let parsed: Sentiment = serde_json::from_str(&raw)?;
+# let _ = raw;
+# Ok(())
+# }
 ```
 
 ### chat
 
-```rust
+```rust,no_run
 use gen2::{Engine, Session};
-
+# fn main() -> Result<(), gen2::Error> {
+# let engine = Engine::load("/models/model.gguf")?;
 let mut session = Session::new().with_system("Be terse.");
 
 engine.chat(&mut session).user("Name two colours.").send()?;
@@ -51,49 +81,67 @@ println!("{}", session.latest_text().unwrap_or_default());
 
 engine.chat(&mut session).user("Now one more.").send()?;   // history is already there
 
-for message in session.messages() { /* render */ }
+for message in session.messages() {
+    println!("{}: {}", message.role, message.text());
+}
+# Ok(())
+# }
 ```
 
 Streaming:
 
-```rust
+```rust,no_run
+# use gen2::{Engine, Session};
+# fn main() -> Result<(), gen2::Error> {
+# let engine = Engine::load("/models/model.gguf")?;
+# let mut session = Session::new();
 engine.chat(&mut session)
     .user("Write a haiku about Rust.")
     .send_streaming(|token| print!("{token}"))?;
+# Ok(())
+# }
 ```
 
 Off-thread. The session comes back on `Done`:
 
-```rust
+```rust,no_run
 use std::sync::Arc;
-use gen2::Update;
-
-let engine = Arc::new(engine);
-let turn = engine.chat_owned(session).user("Hello").spawn();
+use gen2::{Engine, Session, Update};
+# fn main() -> Result<(), gen2::Error> {
+let engine = Arc::new(Engine::load("/models/model.gguf")?);
+let turn = engine.chat_owned(Session::new()).user("Hello").spawn();
 
 for update in turn {
     match update {
         Update::Delta(t) => print!("{t}"),
-        Update::Done { session, .. } => keep(session),
-        Update::Failed { error, .. } => show(error),
+        Update::Done { session, .. } => drop(session),
+        Update::Failed { error, .. } => eprintln!("{error}"),
         _ => {}
     }
 }
+# Ok(())
+# }
 ```
 
 Images:
 
-```rust
+```rust,no_run
+# use gen2::{Engine, Session};
+# fn main() -> Result<(), gen2::Error> {
+# let engine = Engine::load("/models/model.gguf")?;
+# let mut session = Session::new();
 engine.chat(&mut session)
     .user_with_images("What is in this picture?", ["/tmp/photo.png"])
     .send()?;
+# Ok(())
+# }
 ```
 
 ### agent
 
-```rust
-use gen2::{FunctionTool, ToolOutput, ToolSearch};
-use gen2::schemars::JsonSchema;
+```rust,no_run
+use gen2::{Engine, FunctionTool, Session, ToolOutput};
+use schemars::JsonSchema;
 
 #[derive(serde::Deserialize, JsonSchema)]
 struct WeatherArgs {
@@ -101,6 +149,10 @@ struct WeatherArgs {
     city: String,
 }
 
+# fn fetch(city: &str) -> String { format!("18C in {city}") }
+# fn main() -> Result<(), gen2::Error> {
+# let engine = Engine::load("/models/model.gguf")?;
+# let mut session = Session::new();
 let weather = FunctionTool::new(
     "get_weather",
     "Current weather for a city",
@@ -109,64 +161,118 @@ let weather = FunctionTool::new(
 
 let done = engine.agent(&mut session)
     .add_tool(weather)
-    .defer_tools(mcp_tools)              // absent from the prompt until searched for
-    .tool_search(ToolSearch::Hybrid)
     .max_steps(12)
     .goal("What is the weather in Paris?")?;
 
 println!("{} after {} tool rounds", done.text, done.tool_rounds);
+# Ok(())
+# }
 ```
 
 `WeatherArgs` generates the schema, so renaming a field changes what the model
 sees and what the handler reads together.
 
+Tools the model has to go looking for, so a large catalogue costs no prompt:
+
+```rust,no_run
+# use gen2::{Engine, FunctionTool, Session, ToolOutput, ToolSearch};
+# use schemars::JsonSchema;
+# #[derive(serde::Deserialize, JsonSchema)]
+# struct NoArgs {}
+# fn tool(n: &'static str) -> FunctionTool<NoArgs> {
+#     FunctionTool::new(n, "does something", |_c, _a: NoArgs| async move { Ok(ToolOutput::from("ok")) })
+# }
+# fn main() -> Result<(), gen2::Error> {
+# let engine = Engine::load("/models/model.gguf")?;
+# let mut session = Session::new();
+engine.agent(&mut session)
+    .add_tool(tool("read_file"))
+    .defer_tools([tool("kubectl_apply"), tool("resize_image")])
+    .tool_search(ToolSearch::Hybrid)
+    .goal("Apply the deployment manifest")?;
+# Ok(())
+# }
+```
+
 A typed final answer:
 
-```rust
+```rust,no_run
+# use gen2::{Engine, GrammarSpec, Session};
+# fn main() -> Result<(), gen2::Error> {
+# let engine = Engine::load("/models/model.gguf")?;
+# let mut session = Session::new();
+# let schema = serde_json::json!({"type": "object"});
 let done = engine.agent(&mut session)
-    .add_tool(weather)
     .answer_as(GrammarSpec::JsonSchema(schema), "Answer as JSON with city and temperature_c.")
     .goal("What is the weather in Paris?")?;
 
-let report: Report = serde_json::from_str(&done.text)?;
+let report: serde_json::Value = serde_json::from_str(&done.text).unwrap();
+# let _ = report;
+# Ok(())
+# }
 ```
 
 Off-thread, with steering:
 
-```rust
-let run = engine.agent_owned(session).add_tool(weather).goal("Summarise the repo").spawn();
+```rust,no_run
+# use std::sync::Arc;
+# use gen2::{Engine, Session, Update};
+# fn main() -> Result<(), gen2::Error> {
+# let engine = Arc::new(Engine::load("/models/model.gguf")?);
+let run = engine.agent_owned(Session::new()).goal("Summarise the repo").spawn();
 
 let steering = run.steering();
-// steering.follow_up("also check the tests");
+steering.follow_up("also check the tests");
 // steering.interrupt("stop, just the README");
 
 for update in run {
     match update {
         Update::Delta(t) => print!("{t}"),
-        Update::ToolCall { tool, args, .. } => status(tool, args),
-        Update::Done { completion, session } => finish(completion, session),
+        Update::ToolCall { tool, args, .. } => println!("calling {tool} with {args}"),
+        Update::Done { completion, .. } => println!("{}", completion.text),
         _ => {}
     }
 }
+# Ok(())
+# }
 ```
 
 Reusable across runs:
 
-```rust
+```rust,no_run
 use gen2::AgentConfig;
-
+# use gen2::{Engine, FunctionTool, Session, ToolOutput};
+# use schemars::JsonSchema;
+# #[derive(serde::Deserialize, JsonSchema)]
+# struct NoArgs {}
+# fn main() -> Result<(), gen2::Error> {
+# let engine = Engine::load("/models/model.gguf")?;
+# let mut session = Session::new();
+# let weather = FunctionTool::new("w", "weather", |_c, _a: NoArgs| async move { Ok(ToolOutput::from("ok")) });
 let researcher = AgentConfig::new().add_tool(weather).max_steps(8);
 
 researcher.agent(&engine, &mut session).goal("Weather in Paris?")?;
 researcher.agent(&engine, &mut session).goal("And which city was that?")?;
+# Ok(())
+# }
 ```
 
 Approval, off by default:
 
-```rust
+```rust,no_run
 use gen2::{ApprovalMode, Decision};
-
-let delete_file = FunctionTool::new("delete_file", "Delete a file", handler).risky();
+# use gen2::{Engine, FunctionTool, Session, ToolOutput};
+# use schemars::JsonSchema;
+# #[derive(serde::Deserialize, JsonSchema)]
+# struct Path { path: String }
+# fn confirm(_n: &str, _a: &serde_json::Value) -> bool { false }
+# fn main() -> Result<(), gen2::Error> {
+# let engine = Engine::load("/models/model.gguf")?;
+# let mut session = Session::new();
+let delete_file = FunctionTool::new("delete_file", "Delete a file", |_c, a: Path| async move {
+    Ok(ToolOutput::from(format!("deleted {}", a.path)))
+})
+.risky();
 
 engine.agent(&mut session)
     .add_tool(delete_file)
@@ -176,47 +282,119 @@ engine.agent(&mut session)
         false => Decision::Deny("user declined".into()),
     })
     .goal("Clean up the temp directory")?;
+# Ok(())
+# }
 ```
 
 ---
 
 ## Tools
 
+Bundle and reuse:
+
+```rust,no_run
+use gen2::ToolSet;
+# use gen2::{Engine, FunctionTool, Session, ToolOutput};
+# use schemars::JsonSchema;
+# #[derive(serde::Deserialize, JsonSchema)]
+# struct NoArgs {}
+# fn tool(n: &'static str) -> FunctionTool<NoArgs> {
+#     FunctionTool::new(n, "does something", |_c, _a: NoArgs| async move { Ok(ToolOutput::from("ok")) })
+# }
+# fn main() -> Result<(), gen2::Error> {
+# let engine = Engine::load("/models/model.gguf")?;
+# let mut session = Session::new();
+let filesystem = ToolSet::new()
+    .add(tool("read_file"))
+    .add(tool("write_file"))
+    .add(tool("list_dir"));
+
+engine.agent(&mut session).add_tools(filesystem).goal("Read the manifest")?;
+# Ok(())
+# }
+```
+
+Independent calls in one turn run concurrently, unless a tool says otherwise:
+
 ```rust
-// Bundle and reuse.
-let filesystem = ToolSet::new().add(read_file).add(write_file).add(list_dir);
-engine.agent(&mut session).add_tools(filesystem);
+use gen2::{ExecutionPolicy, FunctionTool, ToolOutput};
+# use schemars::JsonSchema;
+# #[derive(serde::Deserialize, JsonSchema)]
+# struct NoArgs {}
+let shared_write = FunctionTool::new("commit", "Commit staged changes", |_c, _a: NoArgs| async move {
+    Ok(ToolOutput::from("committed"))
+})
+.with_policy(ExecutionPolicy::exclusive());
+```
 
-// Independent calls in one turn run concurrently.
-FunctionTool::new(..).with_policy(ExecutionPolicy::exclusive())   // a shared write
-FunctionTool::new(..).with_policy(ExecutionPolicy::gpu_bound())   // contends with the model
+A whole agent as one tool, with its own narrower set:
 
-// A whole agent as one tool.
+```rust,no_run
+use gen2::AgentTool;
+# use std::sync::Arc;
+# use gen2::{Engine, FunctionTool, ToolOutput};
+# use schemars::JsonSchema;
+# #[derive(serde::Deserialize, JsonSchema)]
+# struct NoArgs {}
+# fn main() -> Result<(), gen2::Error> {
+# let engine = Arc::new(Engine::load("/models/model.gguf")?);
+# let search = FunctionTool::new("search", "searches", |_c, _a: NoArgs| async move { Ok(ToolOutput::from("ok")) });
 let researcher = AgentTool::new("researcher", "Investigates a question", engine.clone())
-    .tools(research_tools)
+    .tools([search])
     .max_steps(5);
+# let _ = researcher;
+# Ok(())
+# }
+```
 
-// Instructions loaded on demand. Descriptions sit in the prompt, bodies arrive
-// when the model asks for them.
+Instructions loaded on demand — descriptions sit in the prompt, bodies arrive
+when the model asks for them:
+
+```rust
+use gen2::{Skill, SkillLibrary};
+
 let skills = SkillLibrary::new([
-    Skill::new("migrations", "when writing a database migration", MIGRATION_GUIDE),
+    Skill::new("migrations", "when writing a database migration", "Always add a down migration…"),
 ]);
+# let _ = skills;
+```
 
-// Every tool an MCP server offers.
+Every tool an MCP server offers:
+
+```rust,no_run
+# use gen2::{Engine, Session, ToolSearch};
+use gen2::McpToolSet;
+# async fn demo() -> Result<(), Box<dyn std::error::Error>> {
+# let engine = Engine::load("/models/model.gguf")?;
+# let mut session = Session::new();
 let mcp = McpToolSet::connect("mcp-server-git", ["--repo", "."]).await?;
-engine.agent(&mut session).defer_tools(mcp).tool_search(ToolSearch::Hybrid);
+
+engine.agent(&mut session)
+    .defer_tools(mcp)
+    .tool_search(ToolSearch::Hybrid)
+    .goal("What changed in the last commit?")?;
+# Ok(())
+# }
 ```
 
 ## Sessions
 
 ```rust
+use gen2::Session;
+# fn main() -> Result<(), Box<dyn std::error::Error>> {
+let mut session = Session::new();
+session.push_user("hello");
+
 session.messages();            // the transcript, yours to render or persist
 session.latest_text();
 session.shed();                // messages no longer in the model's context
-session.fork();                // branch. Same history, independent from here
-session.edit(|m| m.truncate(4));
+session.edit(|m| m.truncate(1));
 
+let branch = session.fork();   // same history, independent from here
 let json = serde_json::to_string(&session)?;   // Serialize / Deserialize
+# let _ = (branch, json);
+# Ok(())
+# }
 ```
 
 Not `Clone`: two copies would share one cached prefill and overwrite each
@@ -224,28 +402,37 @@ other. `fork()` is the independent copy.
 
 ## Engine
 
-```rust
-Engine::builder()
-    .model(path)                    // GGUF file, or an MLX / ONNX directory
-    .mmproj(path)                   // vision projector
-    .embedder(path)                 // alongside, or instead of, a chat model
-    .openai("https://api.openai.com/v1", key)
+```rust,no_run
+use gen2::Engine;
+# fn main() -> Result<(), gen2::Error> {
+let engine = Engine::builder()
+    .model("/models/model.gguf")    // GGUF file, or an MLX / ONNX directory
     .auto_context()                 // size the window to the machine
     .greedy()                       // defaults every turn starts from
-    .grammar(schema)
     .build()?;
 
-engine.load_model(path)?;           // swap on a live engine
+engine.load_model("/models/other.gguf")?;   // swap on a live engine
 engine.reload_model()?;
-engine.unload_model()?;
 
 engine.capabilities();              // TEXT | IMAGES | AUDIO
 engine.supports_images();
 
-engine.embed(&corpus)?;             // one vector per input
 engine.embed_one("a query")?;
+# Ok(())
+# }
+```
 
-engine.stop(id)?;  engine.pause(id)?;  engine.resume(id)?;
+An endpoint instead of a local model:
+
+```rust,no_run
+# use gen2::Engine;
+# fn main() -> Result<(), gen2::Error> {
+let engine = Engine::builder()
+    .openai("https://api.openai.com/v1", std::env::var("OPENAI_API_KEY").unwrap_or_default())
+    .build()?;
+# let _ = engine;
+# Ok(())
+# }
 ```
 
 ## Somewhere else
@@ -256,39 +443,41 @@ the transport, and everything above it is unchanged:
 ```rust
 use gen2::{ControllerCmd, InferenceHandle, Placement, RemoteDispatch};
 
-struct OverTheWire { /* your socket, your peer, your queue */ }
+struct OverTheWire; // your socket, your peer, your queue
 
 impl RemoteDispatch for OverTheWire {
-    fn send(&self, cmd: ControllerCmd) -> Result<(), String> { self.dispatch(cmd) }
+    fn send(&self, _cmd: ControllerCmd) -> Result<(), String> { Ok(()) }
     fn label(&self) -> &str { "workshop-mac" }
 }
 
-let handle = InferenceHandle::remote(OverTheWire::connect()?);
+let handle = InferenceHandle::remote(OverTheWire);
 assert_eq!(handle.placement(), Placement::Remote("workshop-mac"));
 ```
 
 ## Will it fit?
 
-```rust
-use gen2::{HardwareProfile, ModelInfo};
-
+```rust,no_run
+use gen2::{Engine, HardwareProfile, ModelInfo};
+# fn main() -> Result<(), gen2::Error> {
 let info = ModelInfo::read("/models/model.gguf")?;   // header only, no weights
-let hw   = HardwareProfile::detect();
+let hw = HardwareProfile::detect();
 
 info.max_context(&hw);
 info.fits(&hw, Some(8192));         // Fits | ContextTooLarge | TooLarge
 
-match Engine::builder().model(path).context(1_000_000).build() {
+match Engine::builder().model("/models/model.gguf").context(1_000_000).build() {
     Err(e) => if let Some(fit) = e.fit() { println!("{fit}") },
-    Ok(engine) => { /* … */ }
+    Ok(engine) => drop(engine),
 }
+# Ok(())
+# }
 ```
 
 ## Async
 
 Behind the `tokio` feature:
 
-```rust
+```rust,ignore
 let (completion, session) = engine.chat_owned(session).user("…").send_async().await?;
 
 let mut run = engine.agent_owned(session).goal("…").spawn_async();
@@ -302,6 +491,10 @@ while let Some(update) = run.next().await { /* … */ }
 - **`.greedy()` is not the default.** An unconfigured turn leaves `temperature`
   and `seed` unset, which means backend-default sampling with a random seed. The
   same prompt gives different text each run.
+- **A reasoning model's `<think>` block is yours to strip.** Qwen3, DeepSeek-R1
+  and Gemma 4 with thinking on emit their working into the reply, and it lands
+  in `latest_text()` and in the stored transcript. Filter it before you render,
+  and before it costs you context on the next turn.
 - **Deferred tool specs never enter the prompt prefix.** Search puts them in the
   conversation instead, so the warm KV cache survives.
 - **Changing the tool set between runs reopens the conversation.** Tool
@@ -329,8 +522,8 @@ Pick at least one. A build with none fails to compile.
 
 | Feature | Backend |
 | --- | --- |
-| `backend-external-api` | OpenAI / Anthropic wire formats. Default. Needs no C toolchain. |
-| `backend-llamacpp` | llama.cpp (GGUF). Add `metal`, `cuda`, or `vulkan`. |
+| `backend-llamacpp` | llama.cpp (GGUF). **Default.** Add `metal`, `cuda`, or `vulkan`. |
+| `backend-external-api` | OpenAI / Anthropic wire formats. Needs no C toolchain. |
 | `backend-mlx` | MLX (Apple Silicon). Needs the Metal Toolchain component. Mutually exclusive with `backend-mlxcel`. |
 | `backend-mlxcel` | mlxcel, the Mac fast path. |
 | `backend-onnx` | ONNX Runtime |
@@ -338,19 +531,23 @@ Pick at least one. A build with none fails to compile.
 | `backend-executorch` | ExecuTorch (mobile). Stub, returns Unimplemented. |
 | `tokio` | Async API. Off by default. |
 
+Only llama.cpp and MLX have been shown to generate a token; the rest compile
+and satisfy the parts of the backend contract that need no weights. The
+conformance suite says which on every run, and fails if that list goes stale.
+
 ```sh
 cargo test
-cargo check --no-default-features --features backend-llamacpp
+cargo check --no-default-features --features backend-external-api
 ```
 
 ## Examples
 
 ```sh
-cargo run --example minimal --no-default-features --features metal -- /path/model.gguf
+cargo run --example minimal --features metal -- /path/model.gguf
 ```
 
 `minimal` · `basic` · `agent` · `tools` · `structured` · `chat_app` ·
-`embeddings` · `fit` · `async_chat` (needs `metal,tokio`)
+`embeddings` · `fit` · `async_chat` (needs `tokio`)
 
 ## Live tests
 
@@ -360,8 +557,7 @@ Unit tests never load a model. These do:
 PIO_TEST_MODEL=/path/model.gguf \
 PIO_TEST_TOOL_MODEL=/path/tool-capable.gguf \
 PIO_TEST_EMBEDDER=/path/embedding-model.gguf \
-  cargo test --test live_inference --no-default-features --features metal \
-  -- --test-threads=1
+  cargo test --test live_inference --features metal -- --test-threads=1
 ```
 
 Without the env vars they skip. With them set, a model that will not load or
