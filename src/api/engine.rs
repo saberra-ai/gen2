@@ -483,10 +483,10 @@ mod tests {
     }
 
     #[test]
-    fn building_without_a_model_is_an_error_not_a_panic() {
+    fn building_with_nothing_to_load_is_an_error_not_a_panic() {
         let err = Engine::builder().build().unwrap_err();
         assert!(
-            err.to_string().contains("no model given"),
+            err.to_string().contains("nothing to load"),
             "error should say what is missing, got: {err}"
         );
     }
