@@ -2,8 +2,8 @@
 
 use std::collections::HashSet;
 use std::path::{Path, PathBuf};
-use std::sync::Mutex;
 use std::sync::mpsc::{channel, sync_channel};
+use std::sync::{Arc, Mutex};
 use std::thread::JoinHandle;
 
 use crate::controller::{
@@ -48,15 +48,31 @@ impl Engine {
     ///
     /// Reusing a `chat_id` continues that conversation, keeping its warm KV
     /// cache instead of re-reading the history from scratch.
-    pub fn chat(&self, chat_id: impl Into<String>) -> Chat<'_> {
+    pub fn chat(&self, chat_id: impl Into<String>) -> Chat<&Engine> {
         Chat::new(self, chat_id.into())
     }
 
     /// Start a one-shot turn: a fresh conversation with a single user message.
-    pub fn prompt(&self, text: impl Into<String>) -> Chat<'_> {
+    pub fn prompt(&self, text: impl Into<String>) -> Chat<&Engine> {
         Chat::new(self, format!("oneshot-{}", uuid::Uuid::new_v4()))
             .user(text)
             .fresh()
+    }
+
+    /// As [`Engine::chat`], but the turn owns its engine reference so it can be
+    /// [`spawn`](Chat::spawn)ed onto a worker thread.
+    pub fn chat_owned(self: &Arc<Self>, chat_id: impl Into<String>) -> Chat<Arc<Engine>> {
+        Chat::new(Arc::clone(self), chat_id.into())
+    }
+
+    /// As [`Engine::prompt`], but spawnable. See [`Engine::chat_owned`].
+    pub fn prompt_owned(self: &Arc<Self>, text: impl Into<String>) -> Chat<Arc<Engine>> {
+        Chat::new(
+            Arc::clone(self),
+            format!("oneshot-{}", uuid::Uuid::new_v4()),
+        )
+        .user(text)
+        .fresh()
     }
 
     /// Replace the sampling and prompt settings for subsequent turns.

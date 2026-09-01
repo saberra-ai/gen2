@@ -5,6 +5,8 @@ use crate::controller::ControllerCmd;
 use crate::generation::{GenSpec, ThinkingMode};
 use crate::types::message::{Message, Tool};
 
+use std::borrow::Borrow;
+
 use super::engine::{Engine, event_channel};
 use super::error::Result;
 use super::stream::{Completion, TokenStream, Tokens};
@@ -23,9 +25,9 @@ use super::stream::{Completion, TokenStream, Tokens};
 ///     .text()?;
 /// # Ok::<(), pio_gen2::Error>(())
 /// ```
-#[must_use = "a Chat does nothing until .stream(), .text(), or .send() is called"]
-pub struct Chat<'e> {
-    engine: &'e Engine,
+#[must_use = "a Chat does nothing until .text(), .complete(), .stream(), or .spawn() is called"]
+pub struct Chat<E: Borrow<Engine>> {
+    engine: E,
     chat_id: String,
     messages: Vec<Message>,
     spec: GenSpec,
@@ -34,8 +36,8 @@ pub struct Chat<'e> {
     fresh: bool,
 }
 
-impl<'e> Chat<'e> {
-    pub(crate) fn new(engine: &'e Engine, chat_id: String) -> Self {
+impl<E: Borrow<Engine>> Chat<E> {
+    pub(crate) fn new(engine: E, chat_id: String) -> Self {
         Self {
             engine,
             chat_id,
@@ -45,6 +47,16 @@ impl<'e> Chat<'e> {
             tools: None,
             fresh: false,
         }
+    }
+
+    /// The engine this turn runs on.
+    pub(crate) fn engine_handle(&self) -> &E {
+        &self.engine
+    }
+
+    /// The conversation this turn belongs to.
+    pub(crate) fn chat_id(&self) -> &str {
+        &self.chat_id
     }
 
     /// Start this turn from scratch, ignoring any history under this chat id.
@@ -168,8 +180,9 @@ impl<'e> Chat<'e> {
     /// turns continue it, reusing its warm KV cache rather than re-reading the
     /// history. [`Chat::fresh`] forces a restart.
     pub fn stream(self) -> Result<TokenStream> {
-        let (tx, rx) = event_channel(self.engine.event_channel_capacity());
-        let start = self.fresh || self.engine.claim_new_chat(&self.chat_id);
+        let engine = self.engine.borrow();
+        let (tx, rx) = event_channel(engine.event_channel_capacity());
+        let start = self.fresh || engine.claim_new_chat(&self.chat_id);
 
         let cmd = if start {
             ControllerCmd::StartChat {
@@ -193,7 +206,7 @@ impl<'e> Chat<'e> {
             }
         };
 
-        self.engine.send(cmd)?;
+        engine.send(cmd)?;
         Ok(TokenStream::new(rx))
     }
 
@@ -224,7 +237,7 @@ impl<'e> Chat<'e> {
     }
 }
 
-impl std::fmt::Debug for Chat<'_> {
+impl<E: Borrow<Engine>> std::fmt::Debug for Chat<E> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("Chat")
             .field("chat_id", &self.chat_id)

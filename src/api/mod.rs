@@ -20,9 +20,11 @@
 mod chat;
 mod engine;
 mod error;
+mod spawned;
 mod stream;
 
 pub use chat::Chat;
 pub use engine::{Engine, EngineBuilder};
 pub use error::{Error, Result};
+pub use spawned::{Canceller, Turn, Update};
 pub use stream::{Completion, Event, Finish, TokenStream, Tokens};
