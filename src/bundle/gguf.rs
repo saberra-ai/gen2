@@ -47,6 +47,19 @@ const GGUF_TYPE_UINT64: u32 = 10;
 const GGUF_TYPE_INT64: u32 = 11;
 const GGUF_TYPE_FLOAT64: u32 = 12;
 
+/// Ceiling on any single length-prefixed GGUF string. Every string in the
+/// file declares its length *before* its bytes exist, so the declaration is
+/// attacker-controlled and must be bounded before it reaches an allocator —
+/// an unbounded `vec![0u8; len]` aborts the process, which no `Result` can
+/// catch. The largest real field is `tokenizer.chat_template` (~100 KB).
+const MAX_STRING_BYTES: u64 = 64 * 1024 * 1024;
+
+/// Ceiling on GGUF array nesting. The format lets arrays hold arrays with no
+/// self-imposed limit and `skip_array` recurses, so ~12 bytes of input buy
+/// one stack frame; without this bound a small file overflows the stack,
+/// which aborts the process rather than returning an error.
+const MAX_ARRAY_DEPTH: u32 = 64;
+
 // ── GGUF metadata struct ───────────────────────────────────────────────────
 
 /// Raw metadata fields extracted from a GGUF file header.
@@ -76,15 +89,43 @@ pub struct GgufMetadata {
 
 fn read_len_prefixed_string<R: Read>(reader: &mut R) -> io::Result<String> {
     let len = reader.read_u64::<LittleEndian>()?;
-    let mut buf = vec![0u8; len as usize];
-    reader.read_exact(&mut buf)?;
+    if len > MAX_STRING_BYTES {
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidData,
+            format!("GGUF string declares {len} bytes, over the {MAX_STRING_BYTES}-byte limit"),
+        ));
+    }
+    // Grow from what is actually read, never from the declared length: the
+    // file may be far shorter than it claims, and `Take::read_to_end`
+    // reserves against bytes delivered rather than bytes promised.
+    let mut buf = Vec::new();
+    let read = reader.take(len).read_to_end(&mut buf)?;
+    if read as u64 != len {
+        return Err(io::Error::new(
+            io::ErrorKind::UnexpectedEof,
+            "GGUF string is truncated",
+        ));
+    }
     Ok(String::from_utf8_lossy(&buf).into_owned())
+}
+
+/// Discard exactly `len` bytes. `io::copy` reports a short copy as success,
+/// so a truncated tail would otherwise skip "successfully" and let a
+/// truncated file parse as a valid one.
+fn skip_exact<R: Read>(reader: &mut R, len: u64) -> io::Result<()> {
+    let skipped = io::copy(&mut reader.take(len), &mut io::sink())?;
+    if skipped != len {
+        return Err(io::Error::new(
+            io::ErrorKind::UnexpectedEof,
+            "GGUF value is truncated",
+        ));
+    }
+    Ok(())
 }
 
 fn skip_len_prefixed_string<R: Read>(reader: &mut R) -> io::Result<()> {
     let len = reader.read_u64::<LittleEndian>()?;
-    io::copy(&mut reader.take(len), &mut io::sink())?;
-    Ok(())
+    skip_exact(reader, len)
 }
 
 fn primitive_byte_size(value_type: u32) -> Option<u64> {
@@ -97,7 +138,13 @@ fn primitive_byte_size(value_type: u32) -> Option<u64> {
     }
 }
 
-fn skip_array<R: Read>(reader: &mut R, element_type: u32, len: u64) -> io::Result<()> {
+fn skip_array<R: Read>(reader: &mut R, element_type: u32, len: u64, depth: u32) -> io::Result<()> {
+    if depth > MAX_ARRAY_DEPTH {
+        return Err(io::Error::new(
+            io::ErrorKind::InvalidData,
+            format!("GGUF array nesting deeper than {MAX_ARRAY_DEPTH}"),
+        ));
+    }
     match element_type {
         GGUF_TYPE_STRING => {
             for _ in 0..len {
@@ -108,7 +155,7 @@ fn skip_array<R: Read>(reader: &mut R, element_type: u32, len: u64) -> io::Resul
             for _ in 0..len {
                 let nested_type = reader.read_u32::<LittleEndian>()?;
                 let nested_len = reader.read_u64::<LittleEndian>()?;
-                skip_array(reader, nested_type, nested_len)?;
+                skip_array(reader, nested_type, nested_len, depth + 1)?;
             }
         }
         ty => {
@@ -116,7 +163,7 @@ fn skip_array<R: Read>(reader: &mut R, element_type: u32, len: u64) -> io::Resul
                 let bytes = size
                     .checked_mul(len)
                     .ok_or_else(|| io::Error::new(io::ErrorKind::InvalidData, "array too large"))?;
-                io::copy(&mut reader.take(bytes), &mut io::sink())?;
+                skip_exact(reader, bytes)?;
             } else {
                 return Err(io::Error::new(
                     io::ErrorKind::InvalidData,
@@ -129,17 +176,20 @@ fn skip_array<R: Read>(reader: &mut R, element_type: u32, len: u64) -> io::Resul
 }
 
 fn skip_value<R: Read>(reader: &mut R, value_type: u32) -> io::Result<()> {
+    skip_value_at_depth(reader, value_type, 0)
+}
+
+fn skip_value_at_depth<R: Read>(reader: &mut R, value_type: u32, depth: u32) -> io::Result<()> {
     match value_type {
         GGUF_TYPE_STRING => skip_len_prefixed_string(reader),
         GGUF_TYPE_ARRAY => {
             let element_type = reader.read_u32::<LittleEndian>()?;
             let len = reader.read_u64::<LittleEndian>()?;
-            skip_array(reader, element_type, len)
+            skip_array(reader, element_type, len, depth)
         }
         ty => {
             if let Some(size) = primitive_byte_size(ty) {
-                io::copy(&mut reader.take(size), &mut io::sink())?;
-                Ok(())
+                skip_exact(reader, size)
             } else {
                 Err(io::Error::new(
                     io::ErrorKind::InvalidData,
@@ -450,17 +500,29 @@ pub fn estimate_parameter_count(meta: &GgufMetadata, file_size: Option<u64>) -> 
     if let (Some(d), Some(n_layer)) = (meta.embedding_length, meta.block_count) {
         let d_ff = meta.feed_forward_length.unwrap_or((d as f64 * 2.67) as u64);
         let vocab = meta.vocab_size.unwrap_or(32000);
-
-        // Attention: Q,K,V,O projections per layer
-        let attention_params = n_layer * 4 * d * d;
-        // FFN: SwiGLU (gate + up + down) per layer
-        let ffn_params_per_expert = n_layer * 3 * d * d_ff;
-        // MoE: multiply FFN by expert count (each expert has its own FFN)
+        // MoE: each expert has its own FFN.
         let n_experts = meta.expert_count.unwrap_or(1);
-        let ffn_params = ffn_params_per_expert * n_experts;
-        let embed_params = vocab * d;
 
-        return Some(attention_params + ffn_params + embed_params);
+        // These dimensions come straight out of an untrusted header, and
+        // their product overflows u64 for absurd values — which panics in a
+        // debug build and wraps to a nonsense count in a release one.
+        // Overflow means "not a real model's dimensions", so fall through
+        // to the file-size estimate rather than reporting a wrapped number.
+        let arch_params = (|| {
+            // Attention: Q,K,V,O projections per layer.
+            let attention = n_layer.checked_mul(4)?.checked_mul(d)?.checked_mul(d)?;
+            // FFN: SwiGLU (gate + up + down) per layer, per expert.
+            let ffn = n_layer
+                .checked_mul(3)?
+                .checked_mul(d)?
+                .checked_mul(d_ff)?
+                .checked_mul(n_experts)?;
+            let embed = vocab.checked_mul(d)?;
+            attention.checked_add(ffn)?.checked_add(embed)
+        })();
+        if let Some(total) = arch_params {
+            return Some(total);
+        }
     }
 
     // Fallback: estimate from file size and quantization
@@ -479,8 +541,16 @@ pub fn estimate_parameter_count(meta: &GgufMetadata, file_size: Option<u64>) -> 
 ///
 /// Single definition site for the formula `estimate_ram_bytes`,
 /// `auto_tune_ctx`, and the load-time context clamp all share.
+///
+/// Saturates rather than overflows: the three dimensions come from an
+/// untrusted header, and a saturated cost makes every downstream fit
+/// decision refuse, which is the right answer for absurd dimensions.
 pub fn kv_bytes_per_token(n_layer: u64, n_head_kv: u64, head_dim: u64) -> u64 {
-    (2 * n_layer * n_head_kv * head_dim * 2).max(1)
+    2u64.saturating_mul(n_layer)
+        .saturating_mul(n_head_kv)
+        .saturating_mul(head_dim)
+        .saturating_mul(2)
+        .max(1)
 }
 
 /// Largest context that fits the memory budget once model weights and
@@ -526,12 +596,14 @@ pub fn estimate_ram_bytes(metadata: &ModelMetadata, file_size: u64, context_size
     ) && n_head > 0
     {
         let head_dim = d / n_head;
-        let kv_cache = kv_bytes_per_token(n_layer, n_kv, head_dim) * (context_size as u64);
-        return file_size + kv_cache + OVERHEAD;
+        // Saturating throughout: every input here is header-derived.
+        let kv_cache =
+            kv_bytes_per_token(n_layer, n_kv, head_dim).saturating_mul(context_size as u64);
+        return file_size.saturating_add(kv_cache).saturating_add(OVERHEAD);
     }
 
     // Fallback: 1.2x file size + overhead
-    ((file_size as f64 * 1.2) as u64) + OVERHEAD
+    ((file_size as f64 * 1.2) as u64).saturating_add(OVERHEAD)
 }
 
 /// Build a [`ModelMetadata`] from raw GGUF header fields.
@@ -1035,5 +1107,780 @@ mod tests {
             est <= budget,
             "estimate {est} exceeds budget {budget} at fitted ctx {fitted}"
         );
+    }
+
+    // ── Adversarial GGUF header fixtures ───────────────────────────────
+    //
+    // Every fixture is built byte-by-byte here rather than checked in as a
+    // binary, so the exact bytes under test are readable and diffable. The
+    // contract these pin: `parse_gguf_metadata` on ARBITRARY bytes returns
+    // `Ok` or `Err`, and never panics, aborts, hangs, or allocates against
+    // an attacker-declared length.
+
+    /// Incremental builder for GGUF byte fixtures.
+    #[derive(Default)]
+    struct GgufBuilder {
+        bytes: Vec<u8>,
+    }
+
+    impl GgufBuilder {
+        /// `magic` + `version` + `tensor_count` + `kv_count`, in the
+        /// 64-bit-count layout this parser defines for every version.
+        fn header(version: u32, tensor_count: u64, kv_count: u64) -> Self {
+            let mut b = Self::default();
+            b.bytes.extend_from_slice(b"GGUF");
+            b.bytes.extend_from_slice(&version.to_le_bytes());
+            b.bytes.extend_from_slice(&tensor_count.to_le_bytes());
+            b.bytes.extend_from_slice(&kv_count.to_le_bytes());
+            b
+        }
+
+        fn u32(mut self, v: u32) -> Self {
+            self.bytes.extend_from_slice(&v.to_le_bytes());
+            self
+        }
+
+        fn u64(mut self, v: u64) -> Self {
+            self.bytes.extend_from_slice(&v.to_le_bytes());
+            self
+        }
+
+        fn raw(mut self, v: &[u8]) -> Self {
+            self.bytes.extend_from_slice(v);
+            self
+        }
+
+        /// A length-prefixed string whose declared length matches its bytes.
+        fn string(self, s: &[u8]) -> Self {
+            self.u64(s.len() as u64).raw(s)
+        }
+
+        /// A length-prefixed string that LIES about its length.
+        fn string_declaring(self, declared: u64, actual: &[u8]) -> Self {
+            self.u64(declared).raw(actual)
+        }
+
+        fn key(self, k: &str) -> Self {
+            self.string(k.as_bytes())
+        }
+
+        fn parse(self) -> Result<GgufMetadata, ExecError> {
+            let dir = tempfile::tempdir().unwrap();
+            let path = dir.path().join("fixture.gguf");
+            fs::write(&path, &self.bytes).unwrap();
+            parse_gguf_metadata(&path)
+        }
+    }
+
+    /// One `general.architecture = "llama"` KV pair, appended to a builder.
+    fn with_arch(b: GgufBuilder) -> GgufBuilder {
+        b.key("general.architecture")
+            .u32(GGUF_TYPE_STRING)
+            .string(b"llama")
+    }
+
+    // ── version gate ───────────────────────────────────────────────────
+
+    #[test]
+    fn versions_one_through_three_are_accepted() {
+        for version in 1..=3u32 {
+            let meta = with_arch(GgufBuilder::header(version, 0, 1))
+                .parse()
+                .unwrap_or_else(|e| panic!("v{version} header rejected: {e}"));
+            assert_eq!(
+                meta.architecture.as_deref(),
+                Some("llama"),
+                "v{version} lost its architecture"
+            );
+        }
+    }
+
+    #[test]
+    fn version_zero_and_versions_past_three_are_refused() {
+        for version in [0u32, 4, 100, u32::MAX] {
+            let err = GgufBuilder::header(version, 0, 0)
+                .parse()
+                .expect_err("unsupported version must be refused");
+            assert!(
+                err.to_string().contains("unsupported GGUF version"),
+                "v{version} gave the wrong error: {err}"
+            );
+        }
+    }
+
+    #[test]
+    fn the_wrong_magic_is_refused_before_anything_else_is_read() {
+        // Same bytes as a valid v3 header apart from the first four.
+        let err = GgufBuilder::default()
+            .raw(b"GGUE")
+            .u32(3)
+            .u64(0)
+            .u64(0)
+            .parse()
+            .expect_err("non-GGUF magic must be refused");
+        assert!(err.to_string().contains("not in GGUF format"), "{err}");
+    }
+
+    #[test]
+    fn an_empty_file_is_refused_not_read_past_its_end() {
+        assert!(GgufBuilder::default().parse().is_err());
+    }
+
+    #[test]
+    fn a_header_truncated_at_every_prefix_length_is_refused() {
+        // The full 24-byte header of a valid, empty v3 file. Every strict
+        // prefix of it must be an error, never a partial-read success.
+        let full = with_arch(GgufBuilder::header(3, 0, 1)).bytes;
+        for cut in 0..full.len() {
+            let result = GgufBuilder::default().raw(&full[..cut]).parse();
+            assert!(
+                result.is_err(),
+                "prefix of length {cut} parsed as valid: {result:?}"
+            );
+        }
+        // ...and the untruncated fixture is the one that parses.
+        assert!(GgufBuilder::default().raw(&full).parse().is_ok());
+    }
+
+    // ── allocation bombs ───────────────────────────────────────────────
+
+    #[test]
+    fn an_enormous_declared_string_length_is_refused_not_allocated() {
+        // A 28-byte file that claims a 140-terabyte key. Before the length
+        // bound this reached `vec![0u8; len]` and aborted the process with
+        // SIGABRT ("memory allocation of 140737488355327 bytes failed") —
+        // an abort no caller can catch.
+        let err = GgufBuilder::header(3, 0, 1)
+            .u64(0x0000_7FFF_FFFF_FFFF)
+            .parse()
+            .expect_err("an absurd string length must be refused");
+        assert!(err.to_string().contains("over the"), "{err}");
+    }
+
+    #[test]
+    fn a_string_length_of_u64_max_is_refused_not_allocated() {
+        let err = GgufBuilder::header(3, 0, 1)
+            .u64(u64::MAX)
+            .parse()
+            .expect_err("u64::MAX string length must be refused");
+        assert!(err.to_string().contains("over the"), "{err}");
+    }
+
+    #[test]
+    fn a_value_string_just_over_the_limit_is_refused_and_just_under_is_read() {
+        // Pins the `<` vs `<=` edge of the string bound without writing
+        // 64 MiB to disk: only the over-limit side is exercised as a
+        // declaration, the under-limit side as a real short string.
+        let over = GgufBuilder::header(3, 0, 1)
+            .key("general.name")
+            .u32(GGUF_TYPE_STRING)
+            .u64(MAX_STRING_BYTES + 1)
+            .parse();
+        assert!(over.is_err(), "MAX+1 must be refused");
+
+        let under = GgufBuilder::header(3, 0, 1)
+            .key("general.name")
+            .u32(GGUF_TYPE_STRING)
+            .string(b"ok")
+            .parse()
+            .unwrap();
+        assert_eq!(under.name.as_deref(), Some("ok"));
+    }
+
+    #[test]
+    fn an_enormous_declared_array_length_is_refused_not_allocated() {
+        // `[u32; u64::MAX]` — the byte count overflows u64 and must be
+        // caught, and even a non-overflowing count must not be trusted
+        // past the end of the file.
+        let overflowing = GgufBuilder::header(3, 0, 1)
+            .key("unknown.array")
+            .u32(GGUF_TYPE_ARRAY)
+            .u32(GGUF_TYPE_UINT32)
+            .u64(u64::MAX)
+            .parse();
+        assert!(
+            overflowing.is_err(),
+            "overflowing array size must be refused"
+        );
+
+        let past_eof = GgufBuilder::header(3, 0, 1)
+            .key("unknown.array")
+            .u32(GGUF_TYPE_ARRAY)
+            .u32(GGUF_TYPE_UINT8)
+            .u64(1_000_000_000)
+            .raw(b"three")
+            .parse();
+        assert!(past_eof.is_err(), "array running past EOF must be refused");
+    }
+
+    #[test]
+    fn an_enormous_kv_count_terminates_at_end_of_file() {
+        // kv_count is a u64 the file chooses; the loop must be bounded by
+        // the bytes actually present, not by the declared count.
+        let err = GgufBuilder::header(3, 0, u64::MAX)
+            .parse()
+            .expect_err("a kv_count with no KV pairs behind it must error");
+        assert!(!err.to_string().is_empty());
+    }
+
+    // ── nesting ────────────────────────────────────────────────────────
+
+    #[test]
+    fn a_modestly_nested_array_is_skipped_and_the_next_key_still_parses() {
+        // `[[[u8; 0]]]` followed by a real key: nesting inside the bound
+        // is skipped exactly, leaving the reader on the next KV pair.
+        let meta = GgufBuilder::header(3, 0, 2)
+            .key("unknown.nested")
+            .u32(GGUF_TYPE_ARRAY)
+            .u32(GGUF_TYPE_ARRAY)
+            .u64(1)
+            .u32(GGUF_TYPE_ARRAY)
+            .u64(1)
+            .u32(GGUF_TYPE_UINT8)
+            .u64(0)
+            .key("general.name")
+            .u32(GGUF_TYPE_STRING)
+            .string(b"after-nesting")
+            .parse()
+            .unwrap();
+        assert_eq!(meta.name.as_deref(), Some("after-nesting"));
+    }
+
+    #[test]
+    fn array_nesting_past_the_depth_limit_is_refused_not_recursed() {
+        // 12 bytes of input buy one stack frame, so an unbounded
+        // `skip_array` overflowed the stack (SIGABRT: "has overflowed its
+        // stack") on a ~2 MB file. Build a fixture past the bound and
+        // assert it is refused with an error instead.
+        let mut b = GgufBuilder::header(3, 0, 1)
+            .key("unknown.deep")
+            .u32(GGUF_TYPE_ARRAY);
+        for _ in 0..(MAX_ARRAY_DEPTH as usize + 8) {
+            b = b.u32(GGUF_TYPE_ARRAY).u64(1);
+        }
+        b = b.u32(GGUF_TYPE_UINT8).u64(0);
+        let err = b.parse().expect_err("over-deep nesting must be refused");
+        assert!(err.to_string().contains("nesting deeper than"), "{err}");
+    }
+
+    #[test]
+    fn a_deeply_nested_array_fixture_from_disk_is_refused() {
+        // The stack-overflow repro at the scale that actually crashed:
+        // 200_000 nesting levels, ~2.4 MB. Kept as a checked-in fixture so
+        // the crash is reproducible without regenerating it.
+        let path = Path::new(env!("CARGO_MANIFEST_DIR"))
+            .join("tests/fixtures/gguf/deeply_nested_arrays.gguf");
+        let err = parse_gguf_metadata(&path).expect_err("deep nesting must be refused");
+        assert!(err.to_string().contains("nesting deeper than"), "{err}");
+    }
+
+    // ── value types ────────────────────────────────────────────────────
+
+    #[test]
+    fn an_unknown_primitive_value_type_is_refused() {
+        // 13 and up are unassigned; the parser cannot know a value's width
+        // so it must stop rather than resynchronise on garbage.
+        for ty in [13u32, 255, u32::MAX] {
+            let err = GgufBuilder::header(3, 0, 1)
+                .key("unknown.key")
+                .u32(ty)
+                .u64(0)
+                .parse()
+                .expect_err("unknown value type must be refused");
+            assert!(
+                err.to_string().contains("unsupported GGUF value type"),
+                "type {ty} gave: {err}"
+            );
+        }
+    }
+
+    #[test]
+    fn an_unknown_array_element_type_is_refused() {
+        let err = GgufBuilder::header(3, 0, 1)
+            .key("unknown.key")
+            .u32(GGUF_TYPE_ARRAY)
+            .u32(99)
+            .u64(4)
+            .parse()
+            .expect_err("unknown array element type must be refused");
+        assert!(
+            err.to_string()
+                .contains("unsupported GGUF array element type"),
+            "{err}"
+        );
+    }
+
+    #[test]
+    fn every_declared_primitive_type_is_skippable_as_an_unknown_key() {
+        // Any type the format defines must be skippable by width alone,
+        // so an unknown key never desynchronises the KV walk.
+        for ty in [
+            GGUF_TYPE_UINT8,
+            GGUF_TYPE_INT8,
+            GGUF_TYPE_UINT16,
+            GGUF_TYPE_INT16,
+            GGUF_TYPE_UINT32,
+            GGUF_TYPE_INT32,
+            GGUF_TYPE_FLOAT32,
+            GGUF_TYPE_BOOL,
+            GGUF_TYPE_UINT64,
+            GGUF_TYPE_INT64,
+            GGUF_TYPE_FLOAT64,
+        ] {
+            let width = primitive_byte_size(ty).unwrap() as usize;
+            let meta = GgufBuilder::header(3, 0, 2)
+                .key("some.unknown.key")
+                .u32(ty)
+                .raw(&vec![0u8; width])
+                .key("general.name")
+                .u32(GGUF_TYPE_STRING)
+                .string(b"survivor")
+                .parse()
+                .unwrap_or_else(|e| panic!("type {ty} broke the KV walk: {e}"));
+            assert_eq!(meta.name.as_deref(), Some("survivor"), "type {ty}");
+        }
+    }
+
+    #[test]
+    fn negative_signed_metadata_is_dropped_rather_than_wrapped_to_a_huge_u64() {
+        // `-1` as a u64 is 18446744073709551615, which would flow into RAM
+        // and parameter estimates. Every signed width must decline instead.
+        for (ty, bytes) in [
+            (GGUF_TYPE_INT8, (-1i8).to_le_bytes().to_vec()),
+            (GGUF_TYPE_INT16, (-1i16).to_le_bytes().to_vec()),
+            (GGUF_TYPE_INT32, (-1i32).to_le_bytes().to_vec()),
+            (GGUF_TYPE_INT64, (-1i64).to_le_bytes().to_vec()),
+        ] {
+            let meta = GgufBuilder::header(3, 0, 1)
+                .key("llama.block_count")
+                .u32(ty)
+                .raw(&bytes)
+                .parse()
+                .unwrap();
+            assert_eq!(meta.block_count, None, "negative type {ty} leaked through");
+        }
+    }
+
+    #[test]
+    fn a_positive_signed_value_is_still_read() {
+        // The guard above must reject only the negative half.
+        let meta = GgufBuilder::header(3, 0, 1)
+            .key("llama.block_count")
+            .u32(GGUF_TYPE_INT32)
+            .raw(&32i32.to_le_bytes())
+            .parse()
+            .unwrap();
+        assert_eq!(meta.block_count, Some(32));
+    }
+
+    #[test]
+    fn a_typed_field_carrying_the_wrong_type_is_skipped_not_misread() {
+        // `general.name` declared as a u32: the value is skipped by width
+        // and `name` stays unset, rather than four bytes being read as text.
+        let meta = GgufBuilder::header(3, 0, 2)
+            .key("general.name")
+            .u32(GGUF_TYPE_UINT32)
+            .u32(7)
+            .key("general.architecture")
+            .u32(GGUF_TYPE_STRING)
+            .string(b"llama")
+            .parse()
+            .unwrap();
+        assert_eq!(meta.name, None);
+        assert_eq!(meta.architecture.as_deref(), Some("llama"));
+    }
+
+    // ── truncation ─────────────────────────────────────────────────────
+
+    #[test]
+    fn a_string_declaring_more_bytes_than_it_carries_is_refused() {
+        let err = GgufBuilder::header(3, 0, 1)
+            .key("general.name")
+            .u32(GGUF_TYPE_STRING)
+            .string_declaring(1000, b"only-a-few")
+            .parse()
+            .expect_err("a truncated string must be refused");
+        assert!(err.to_string().contains("truncated"), "{err}");
+    }
+
+    #[test]
+    fn a_truncated_trailing_value_does_not_parse_as_a_complete_file() {
+        // The last KV pair is the dangerous one: a short skip that reports
+        // success ends the loop and returns `Ok` on a truncated file.
+        // Pinned for a skipped string, a skipped primitive, and an array.
+        let short_string = GgufBuilder::header(3, 0, 1)
+            .key("unknown.key")
+            .u32(GGUF_TYPE_STRING)
+            .string_declaring(1000, b"only-a-few")
+            .parse();
+        assert!(short_string.is_err(), "{short_string:?}");
+
+        let short_primitive = GgufBuilder::header(3, 0, 1)
+            .key("unknown.key")
+            .u32(GGUF_TYPE_UINT64)
+            .raw(b"abc")
+            .parse();
+        assert!(short_primitive.is_err(), "{short_primitive:?}");
+
+        let short_array = GgufBuilder::header(3, 0, 1)
+            .key("unknown.key")
+            .u32(GGUF_TYPE_ARRAY)
+            .u32(GGUF_TYPE_UINT32)
+            .u64(100)
+            .raw(b"abcd")
+            .parse();
+        assert!(short_array.is_err(), "{short_array:?}");
+    }
+
+    #[test]
+    fn a_v1_file_with_the_historical_32_bit_counts_is_refused_not_misread() {
+        // GGUF v1 wrote `tensor_count`/`kv_count` as u32; this parser reads
+        // u64 for every version. Such a file is not silently reinterpreted
+        // into unbounded work — the misaligned read lands on an absurd
+        // string length and is refused by the length bound.
+        let result = GgufBuilder::default()
+            .raw(b"GGUF")
+            .u32(1)
+            .u32(0) // 32-bit tensor_count
+            .u32(1) // 32-bit kv_count
+            .key("general.name")
+            .u32(GGUF_TYPE_STRING)
+            .string(b"legacy")
+            .parse();
+        assert!(result.is_err(), "expected refusal, got {result:?}");
+    }
+
+    // ── key handling ───────────────────────────────────────────────────
+
+    #[test]
+    fn a_duplicate_metadata_key_takes_the_last_value_seen() {
+        let meta = GgufBuilder::header(3, 0, 3)
+            .key("general.name")
+            .u32(GGUF_TYPE_STRING)
+            .string(b"first")
+            .key("general.name")
+            .u32(GGUF_TYPE_STRING)
+            .string(b"second")
+            .key("general.name")
+            .u32(GGUF_TYPE_STRING)
+            .string(b"third")
+            .parse()
+            .unwrap();
+        assert_eq!(meta.name.as_deref(), Some("third"));
+    }
+
+    #[test]
+    fn unknown_keys_are_skipped_without_disturbing_known_ones() {
+        let meta = GgufBuilder::header(3, 0, 4)
+            .key("some.vendor.extension")
+            .u32(GGUF_TYPE_FLOAT64)
+            .raw(&1.5f64.to_le_bytes())
+            .key("general.name")
+            .u32(GGUF_TYPE_STRING)
+            .string(b"Real Model")
+            .key("another.unknown")
+            .u32(GGUF_TYPE_ARRAY)
+            .u32(GGUF_TYPE_STRING)
+            .u64(2)
+            .string(b"a")
+            .string(b"b")
+            .key("llama.context_length")
+            .u32(GGUF_TYPE_UINT32)
+            .u32(8192)
+            .parse()
+            .unwrap();
+        assert_eq!(meta.name.as_deref(), Some("Real Model"));
+        assert_eq!(meta.context_length, Some(8192));
+    }
+
+    #[test]
+    fn an_empty_key_is_treated_as_an_unknown_key_not_an_error() {
+        let meta = GgufBuilder::header(3, 0, 2)
+            .key("")
+            .u32(GGUF_TYPE_UINT32)
+            .u32(1)
+            .key("general.name")
+            .u32(GGUF_TYPE_STRING)
+            .string(b"named")
+            .parse()
+            .unwrap();
+        assert_eq!(meta.name.as_deref(), Some("named"));
+    }
+
+    #[test]
+    fn head_count_kv_is_matched_before_the_shorter_head_count_suffix() {
+        // `.attention.head_count_kv` also ends with nothing that
+        // `.attention.head_count` matches, but the ordering is load-bearing:
+        // a reordered match arm would put the KV head count in `head_count`.
+        let meta = GgufBuilder::header(3, 0, 2)
+            .key("llama.attention.head_count_kv")
+            .u32(GGUF_TYPE_UINT32)
+            .u32(8)
+            .key("llama.attention.head_count")
+            .u32(GGUF_TYPE_UINT32)
+            .u32(32)
+            .parse()
+            .unwrap();
+        assert_eq!(meta.head_count_kv, Some(8));
+        assert_eq!(meta.head_count, Some(32));
+    }
+
+    #[test]
+    fn invalid_utf8_in_a_string_value_is_replaced_not_rejected() {
+        // Model names come from the file; lossy decoding keeps a otherwise
+        // usable header readable instead of failing the whole parse.
+        let meta = GgufBuilder::header(3, 0, 1)
+            .key("general.name")
+            .u32(GGUF_TYPE_STRING)
+            .string(&[0x41, 0xFF, 0xFE, 0x42])
+            .parse()
+            .unwrap();
+        let name = meta.name.unwrap();
+        assert!(name.starts_with('A') && name.ends_with('B'), "{name:?}");
+    }
+
+    // ── downstream estimators on hostile dimensions ────────────────────
+
+    #[test]
+    fn each_factor_of_the_parameter_estimate_is_individually_guarded() {
+        // One case per multiplication in the estimate. Each is sized so
+        // that its own factor overflows while every other one stays small
+        // AND the wrapped product lands *benign* (zero), so the final
+        // `checked_add` cannot mask it. Without that sizing a wrapped
+        // intermediate is merely huge, the sum overflows, and the case
+        // passes on the strength of a different guard than the one it
+        // claims to test.
+        let cases: [(&str, GgufMetadata); 5] = [
+            (
+                "attention: n_layer * 4 * d * d",
+                GgufMetadata {
+                    block_count: Some(2),
+                    embedding_length: Some(1 << 32),
+                    feed_forward_length: Some(1),
+                    vocab_size: Some(1),
+                    ..Default::default()
+                },
+            ),
+            (
+                "ffn: n_layer * 3 * d * d_ff",
+                GgufMetadata {
+                    block_count: Some(1),
+                    embedding_length: Some(2),
+                    feed_forward_length: Some(1 << 63),
+                    vocab_size: Some(1),
+                    ..Default::default()
+                },
+            ),
+            (
+                "moe: ffn * n_experts",
+                GgufMetadata {
+                    block_count: Some(1),
+                    embedding_length: Some(2),
+                    feed_forward_length: Some(1 << 61),
+                    vocab_size: Some(1),
+                    expert_count: Some(4),
+                    ..Default::default()
+                },
+            ),
+            (
+                "embedding: vocab * d",
+                GgufMetadata {
+                    block_count: Some(1),
+                    embedding_length: Some(1 << 30),
+                    feed_forward_length: Some(1),
+                    vocab_size: Some(1 << 34),
+                    ..Default::default()
+                },
+            ),
+            (
+                "the sum of the three terms",
+                GgufMetadata {
+                    block_count: Some(2),
+                    embedding_length: Some(1 << 30),
+                    feed_forward_length: Some(1),
+                    vocab_size: Some(1 << 33),
+                    ..Default::default()
+                },
+            ),
+        ];
+        for (which, meta) in cases {
+            assert_eq!(
+                estimate_parameter_count(&meta, None),
+                None,
+                "{which} did not decline on overflow"
+            );
+        }
+    }
+
+    #[test]
+    fn a_plausible_header_still_gets_an_architecture_estimate() {
+        // The overflow guard must decline only on overflow. Without this,
+        // a guard that always declines would pass every test above.
+        let meta = GgufMetadata {
+            block_count: Some(32),
+            embedding_length: Some(4096),
+            feed_forward_length: Some(11008),
+            vocab_size: Some(32000),
+            ..Default::default()
+        };
+        let count = estimate_parameter_count(&meta, None).expect("a real header must estimate");
+        assert!((5..10).contains(&(count / 1_000_000_000)), "got {count}");
+    }
+
+    #[test]
+    fn parameter_estimation_on_absurd_dimensions_does_not_overflow() {
+        // Before the checked arithmetic this panicked with "attempt to
+        // multiply with overflow" in a debug build and wrapped silently in
+        // a release one, straight off `ModelInfo::read` of a hostile file.
+        let meta = GgufMetadata {
+            embedding_length: Some(u64::MAX / 2),
+            block_count: Some(u64::MAX / 2),
+            feed_forward_length: Some(u64::MAX),
+            vocab_size: Some(u64::MAX),
+            expert_count: Some(u64::MAX),
+            ..Default::default()
+        };
+        // No architecture estimate is possible, and with no file size there
+        // is no fallback either — so the honest answer is "unknown".
+        assert_eq!(estimate_parameter_count(&meta, None), None);
+        // With a file size, the fallback still answers.
+        let with_size = GgufMetadata {
+            file_type: Some(15),
+            ..meta
+        };
+        assert!(estimate_parameter_count(&with_size, Some(4 << 30)).is_some());
+    }
+
+    #[test]
+    fn kv_cost_saturates_instead_of_overflowing_on_absurd_dimensions() {
+        assert_eq!(kv_bytes_per_token(u64::MAX, u64::MAX, u64::MAX), u64::MAX);
+        // ...and a saturated cost makes context sizing fall to its floor
+        // rather than producing a nonsense context.
+        assert_eq!(fit_context(64 * GIB, 0, u64::MAX, 131_072, None), 2048);
+    }
+
+    #[test]
+    fn ram_estimation_on_absurd_dimensions_saturates_instead_of_overflowing() {
+        // Same path as above, reached through `ModelInfo::memory_needed`.
+        let metadata = ModelMetadata {
+            block_count: Some(u64::MAX),
+            head_count: Some(1),
+            head_count_kv: Some(u64::MAX),
+            embedding_length: Some(u64::MAX),
+            ..Default::default()
+        };
+        assert_eq!(
+            estimate_ram_bytes(&metadata, u64::MAX, u32::MAX),
+            u64::MAX,
+            "a saturated estimate must exceed every budget, not wrap under one"
+        );
+        // The fallback arm too.
+        assert_eq!(
+            estimate_ram_bytes(&ModelMetadata::default(), u64::MAX, 4096),
+            u64::MAX
+        );
+    }
+
+    #[test]
+    fn a_zero_head_count_does_not_divide_by_zero() {
+        let metadata = ModelMetadata {
+            block_count: Some(32),
+            head_count: Some(0),
+            head_count_kv: Some(8),
+            embedding_length: Some(4096),
+            ..Default::default()
+        };
+        let ram = estimate_ram_bytes(&metadata, 1 << 30, 4096);
+        assert!(ram > 1 << 30);
+    }
+
+    #[test]
+    fn a_hostile_header_survives_the_whole_read_estimate_pipeline() {
+        // End-to-end over the path `gen2::ModelInfo::read` walks: parse the
+        // header, build metadata, then estimate params and RAM from it.
+        // Absurd-but-well-formed dimensions must not panic anywhere.
+        let meta = GgufBuilder::header(3, 0, 5)
+            .key("general.architecture")
+            .u32(GGUF_TYPE_STRING)
+            .string(b"llama")
+            .key("llama.block_count")
+            .u32(GGUF_TYPE_UINT64)
+            .u64(u64::MAX)
+            .key("llama.embedding_length")
+            .u32(GGUF_TYPE_UINT64)
+            .u64(u64::MAX)
+            .key("llama.attention.head_count")
+            .u32(GGUF_TYPE_UINT64)
+            .u64(1)
+            .key("llama.attention.head_count_kv")
+            .u32(GGUF_TYPE_UINT64)
+            .u64(u64::MAX)
+            .parse()
+            .unwrap();
+        let model = build_model_metadata(&meta, Some(u64::MAX)).unwrap();
+        let _ = estimate_parameter_count(&meta, Some(u64::MAX));
+        let _ = estimate_ram_bytes(&model, u64::MAX, u32::MAX);
+        let _ = fit_context(
+            u64::MAX,
+            u64::MAX,
+            kv_bytes_per_token(u64::MAX, u64::MAX, u64::MAX),
+            u32::MAX,
+            Some(u32::MAX),
+        );
+    }
+
+    // ── the fuzz invariant, as a deterministic test ────────────────────
+
+    #[test]
+    fn arbitrary_bytes_behind_a_valid_magic_never_panic() {
+        // The same invariant `fuzz_targets/gguf.rs` asserts, run over a
+        // deterministic corpus so it holds in ordinary CI too: any result
+        // is acceptable, a panic or abort is not.
+        let mut rng_state = 0x2545_F491_4F6C_DD1Du64;
+        let mut next = move || {
+            rng_state ^= rng_state << 13;
+            rng_state ^= rng_state >> 7;
+            rng_state ^= rng_state << 17;
+            rng_state
+        };
+        for case in 0..2000 {
+            let len = (next() % 96) as usize;
+            let mut bytes = b"GGUF".to_vec();
+            bytes.extend_from_slice(&((next() % 5) as u32).to_le_bytes());
+            for _ in 0..len {
+                bytes.push((next() & 0xFF) as u8);
+            }
+            let dir = tempfile::tempdir().unwrap();
+            let path = dir.path().join("fuzz.gguf");
+            fs::write(&path, &bytes).unwrap();
+            let result = parse_gguf_metadata(&path);
+            if let Ok(meta) = result {
+                // Whatever comes back must survive the estimators too.
+                let _ = estimate_parameter_count(&meta, Some(bytes.len() as u64));
+                if let Some(model) = build_model_metadata(&meta, Some(bytes.len() as u64)) {
+                    let _ = estimate_ram_bytes(&model, bytes.len() as u64, 4096);
+                }
+            }
+            let _ = case;
+        }
+    }
+
+    #[test]
+    fn every_checked_in_fuzz_seed_parses_or_is_refused_without_crashing() {
+        // Guards the seed corpus against rot: a seed that stops being a
+        // GGUF-shaped input stops steering the fuzzer, silently.
+        let dir = Path::new(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/gguf/corpus");
+        let mut seen = 0;
+        for entry in fs::read_dir(&dir).unwrap().flatten() {
+            let path = entry.path();
+            if path.extension().and_then(|e| e.to_str()) != Some("gguf") {
+                continue;
+            }
+            seen += 1;
+            let bytes = fs::read(&path).unwrap();
+            assert_eq!(&bytes[..4], b"GGUF", "{path:?} lost its magic");
+            let _ = parse_gguf_metadata(&path);
+        }
+        assert!(seen >= 9, "expected the full seed corpus, found {seen}");
     }
 }

@@ -21,3 +21,10 @@ debug
 #.idea/
 
 .DS_Store
+
+# cargo-fuzz build output and the corpus it grows. The seed corpus that
+# steers it is checked in under tests/fixtures/gguf/corpus; what libFuzzer
+# accumulates from there is machine-local and large.
+/fuzz/target
+/fuzz/corpus
+/fuzz/artifacts

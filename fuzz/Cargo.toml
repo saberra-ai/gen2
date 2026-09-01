@@ -1,0 +1,51 @@
+# Its own workspace: `cargo build` / `cargo test` at the repo root must not
+# see this crate, because it only builds under a nightly toolchain with
+# `-Z sanitizer` and libFuzzer's runtime.
+[workspace]
+members = ["."]
+
+[package]
+name = "gen2-fuzz"
+version = "0.0.0"
+publish = false
+edition = "2024"
+
+[package.metadata]
+cargo-fuzz = true
+
+[dependencies]
+libfuzzer-sys = "0.4"
+arbitrary = { version = "1", features = ["derive"] }
+
+[dependencies.gen2]
+path = ".."
+
+[[bin]]
+name = "gguf"
+path = "fuzz_targets/gguf.rs"
+test = false
+doc = false
+bench = false
+
+# The reply-parts target is written and ready (`fuzz_targets/reply_parts.rs`)
+# but NOT wired up: `ChannelMarkers` / `ReplyStateMachine` / `StreamEmission`
+# are `pub(crate)`, so an external crate cannot reach them, and widening the
+# library's public API for the benefit of a fuzz harness is the crate owner's
+# call, not a test's. See fuzz/README.md — enabling it is one re-export line
+# plus uncommenting this block. In the meantime that surface is covered by
+# `proptest` inside `src/generation/reply_parts.rs`, which also runs in CI.
+#
+# [[bin]]
+# name = "reply_parts"
+# path = "fuzz_targets/reply_parts.rs"
+# test = false
+# doc = false
+# bench = false
+
+# `cargo fuzz` builds with debug assertions and overflow checks on, which is
+# the point: an arithmetic overflow on header-derived dimensions is a finding,
+# not a wrap.
+[profile.release]
+debug = 1
+debug-assertions = true
+overflow-checks = true

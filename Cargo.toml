@@ -129,6 +129,9 @@ required-features = ["tokio"]
 serde_json = "1"
 tempfile = "3.19.1"
 mockito = "1"
+# Property-based tests over the untrusted-input decoders (KV blob codec,
+# reply-part scanner): generate + shrink, rather than hand-fed cases only.
+proptest = "1"
 
 [features]
 # The zero-dependency external-api backend is the default: it needs no C
