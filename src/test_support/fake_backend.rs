@@ -179,6 +179,14 @@ pub type CallLog = Vec<String>;
 #[derive(Default)]
 struct Inner {
     calls: CallLog,
+    /// Every message the backend was handed, in order, across every session.
+    ///
+    /// What the model actually saw. The call log says a session started; this
+    /// says what was in it, which is the only way to catch a transcript the
+    /// caller edited that never reached the backend.
+    seen: Vec<String>,
+    /// Tool names the backend was given at each `start_session`.
+    tools_seen: Vec<Vec<String>>,
     /// The program every pull runs, when no per-turn script was given.
     program: Vec<Step>,
     /// One program per turn, consumed in order. Takes precedence over
@@ -298,6 +306,16 @@ impl Script {
         self.inner.lock().unwrap().calls.clone()
     }
 
+    /// Every message the backend was handed, across every session it started.
+    pub fn seen(&self) -> Vec<String> {
+        self.inner.lock().unwrap().seen.clone()
+    }
+
+    /// The tool names supplied at each `start_session`, newest last.
+    pub fn tools_seen(&self) -> Vec<Vec<String>> {
+        self.inner.lock().unwrap().tools_seen.clone()
+    }
+
     /// How many times the backend was asked to do this.
     pub fn count(&self, call: &str) -> usize {
         self.inner
@@ -415,8 +433,20 @@ impl Backend for FakeBackend {
         crate::backend::caps::LatencyTier::Fast
     }
 
-    fn start_session(&self, _spec: SessionSpec) -> Result<Arc<dyn BackendSession>, ExecError> {
+    fn start_session(&self, spec: SessionSpec) -> Result<Arc<dyn BackendSession>, ExecError> {
         self.script.record("start_session");
+        {
+            let mut inner = self.script.inner.lock().unwrap();
+            for m in &spec.messages {
+                inner.seen.push(m.text());
+            }
+            inner.tools_seen.push(
+                spec.tools
+                    .as_ref()
+                    .map(|(specs, _)| specs.iter().map(|t| t.function.name.clone()).collect())
+                    .unwrap_or_default(),
+            );
+        }
         if let Some(fail) = self
             .script
             .inner
@@ -573,6 +603,12 @@ impl BackendSession for FakeSession {
 
     fn append_messages(&self, new_messages: Vec<Message>) -> Result<usize, ExecError> {
         self.script.record("append_messages");
+        {
+            let mut inner = self.script.inner.lock().unwrap();
+            for m in &new_messages {
+                inner.seen.push(m.text());
+            }
+        }
         Ok(new_messages.len())
     }
 

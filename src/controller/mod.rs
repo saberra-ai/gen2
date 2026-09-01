@@ -297,6 +297,14 @@ pub enum ControllerCmd {
     ContinueChat {
         chat_id: String,
         new_messages: Vec<Message>,
+        /// The whole conversation, used only if the runtime is gone.
+        ///
+        /// Residency is a cache: a conversation can be evicted for capacity or
+        /// unloaded when idle, and neither is the caller's fault or the
+        /// caller's business. Without this the controller could only answer
+        /// `not_found`, so opening a fourth chat broke the first. With it, a
+        /// miss costs a re-prefill and nothing else.
+        transcript: Vec<Message>,
         gen_spec: GenSpec,
         /// Canonical model id for remote routing (see
         /// [`ControllerCmd::StartChat::model_id`]).

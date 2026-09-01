@@ -233,7 +233,24 @@ impl Engine {
         v.push("external-api");
         #[cfg(feature = "backend-mlxcel")]
         v.push("mlxcel");
+        #[cfg(feature = "backend-candle")]
+        v.push("candle");
+        #[cfg(feature = "backend-executorch")]
+        v.push("executorch");
         v
+    }
+
+    /// Whether a zoo bundle naming this backend could actually be served.
+    ///
+    /// `mlxcel` replaces `mlx-rs` on the Mac path and serves the same
+    /// safetensors bundles, so a zoo entry asking for `"mlx"` is satisfied by
+    /// either. Everything else is a straight name match.
+    pub fn backend_is_compiled(name: &str) -> bool {
+        let compiled = Self::available_backends();
+        match name {
+            "mlx" => compiled.contains(&"mlx") || compiled.contains(&"mlxcel"),
+            other => compiled.contains(&other),
+        }
     }
 
     /// Detect which backend a model path would use, without loading.

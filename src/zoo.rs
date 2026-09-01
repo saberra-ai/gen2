@@ -276,9 +276,18 @@ pub fn select_for_device<'a>(
     let entry = zoo.get(model_id)?;
     let platform = current_platform_id();
 
+    // A bundle naming a backend this binary was not built with cannot be
+    // served, however well it fits. The zoo describes what exists in the
+    // world; the feature set decides what this build can do, and the iOS
+    // bundle for Gemma 4 names MLX while the `ios` feature deliberately
+    // compiles only llama.cpp. Selecting it handed the caller a download it
+    // could never load.
+    let usable = |b: &PlatformBundle| crate::backend::Engine::backend_is_compiled(&b.backend);
+
     // Primary: the bundle declared for this exact platform id.
     if let Some(primary) = entry.platforms.get(platform)
         && available_ram_mb >= primary.min_ram_mb
+        && usable(primary)
     {
         return Some(primary);
     }
@@ -286,6 +295,9 @@ pub fn select_for_device<'a>(
     // Fallback: any bundle in this entry whose RAM budget fits. Prefer
     // backends likely to run on the current OS.
     let os_compatible = |b: &PlatformBundle| -> bool {
+        if !usable(b) {
+            return false;
+        }
         match b.backend.as_str() {
             "mlx" => cfg!(target_os = "macos") || cfg!(target_os = "ios"),
             "llamacpp" | "candle" | "onnx" => true,
@@ -1004,9 +1016,32 @@ mod tests {
     #[test]
     fn select_for_device_returns_bundle_with_enough_ram() {
         let zoo = ModelZoo::bundled();
-        let bundle = select_for_device(&zoo, "gemma-4", 32 * 1024)
-            .expect("32 GB device has more than enough for gemma-4");
-        assert!(bundle.min_ram_mb <= 32 * 1024);
+        let selected = select_for_device(&zoo, "gemma-4", 32 * 1024);
+
+        // Memory is necessary but not sufficient. A bundle can only be served
+        // if this build compiled the backend it names, so whether anything is
+        // selectable depends on the feature set — an external-api-only build
+        // can serve none of gemma-4's, and an ONNX-only one can serve none
+        // either, because gemma-4 has no ONNX bundle.
+        let entry = zoo.get("gemma-4").expect("gemma-4 is bundled");
+        let anything_servable = entry.platforms.values().any(|b| {
+            b.min_ram_mb <= 32 * 1024 && crate::backend::Engine::backend_is_compiled(&b.backend)
+        });
+
+        match selected {
+            Some(bundle) => {
+                assert!(bundle.min_ram_mb <= 32 * 1024);
+                assert!(
+                    crate::backend::Engine::backend_is_compiled(&bundle.backend),
+                    "selected {:?}, which this build cannot run",
+                    bundle.backend
+                );
+            }
+            None => assert!(
+                !anything_servable,
+                "gemma-4 has a bundle this build could run at 32 GB, but nothing was selected"
+            ),
+        }
     }
 
     #[test]
@@ -2062,6 +2097,29 @@ mod tests {
         ] {
             assert_eq!(f.channel_markers(), ChannelMarkers::none());
             assert!(!f.default_enable_thinking());
+        }
+    }
+
+    #[test]
+    fn selection_never_returns_a_backend_this_build_lacks() {
+        // The zoo describes what exists in the world; the feature set decides
+        // what this binary can do. Handing back a bundle for an uncompiled
+        // backend means a download the caller can never load — and the iOS
+        // bundle for Gemma 4 names MLX while the `ios` feature deliberately
+        // compiles only llama.cpp.
+        let zoo = ModelZoo::bundled();
+        for id in zoo.models.keys() {
+            for ram in [4096u32, 8192, 16384, 65536] {
+                if let Some(bundle) = select_for_device(&zoo, id, ram) {
+                    assert!(
+                        crate::backend::Engine::backend_is_compiled(&bundle.backend),
+                        "{id} at {ram} MB selected backend {:?}, which this build \
+                         does not have; available: {:?}",
+                        bundle.backend,
+                        crate::backend::Engine::available_backends(),
+                    );
+                }
+            }
         }
     }
 }

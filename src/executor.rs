@@ -252,21 +252,42 @@ impl<T: Send + 'static> StreamingToolExecutor<T> {
 
 // ── Executor loop ───────────────────────────────────────────────────────
 
+/// One position in the ordered result buffer.
+///
+/// Three states, not two. `Option` conflated "has not finished yet" with
+/// "finished without a result", and the flush stops at the first slot it
+/// cannot deliver — so one cancelled operation stalled the cursor forever and
+/// every later result that had already completed was never delivered.
+enum Slot<T> {
+    /// Still running, or not yet started. The flush must stop here.
+    Pending,
+    /// Cancelled, or completed with nothing to deliver. The flush steps over
+    /// it: order is preserved by skipping the position, not by waiting on it.
+    Skipped,
+    Ready(T),
+}
+
 /// Flush sequential results from `buffer[cursor..]` into `result_tx`.
 /// Returns `false` if the result channel is closed (receiver dropped).
 fn flush_buffer<T>(
-    buffer: &mut [Option<T>],
+    buffer: &mut [Slot<T>],
     cursor: &mut usize,
     result_tx: &mpsc::UnboundedSender<T>,
 ) -> bool {
     while *cursor < buffer.len() {
-        if let Some(val) = buffer[*cursor].take() {
-            if result_tx.send(val).is_err() {
-                return false;
+        match std::mem::replace(&mut buffer[*cursor], Slot::Pending) {
+            Slot::Ready(val) => {
+                if result_tx.send(val).is_err() {
+                    return false;
+                }
+                *cursor += 1;
             }
-            *cursor += 1;
-        } else {
-            break; // gap — wait for this seq to complete
+            Slot::Skipped => *cursor += 1,
+            Slot::Pending => {
+                // Put it back and wait; this sequence has not resolved yet.
+                buffer[*cursor] = Slot::Pending;
+                break;
+            }
         }
     }
     true
@@ -335,7 +356,7 @@ async fn run_executor_loop<T: Send + 'static>(
     // Spawned tasks send (seq, Some(output)) on success or (seq, None) on cancel.
     let (done_tx, mut done_rx) = mpsc::unbounded_channel::<(usize, Option<T>)>();
 
-    let mut buffer: Vec<Option<T>> = Vec::new();
+    let mut buffer: Vec<Slot<T>> = Vec::new();
     let mut cursor: usize = 0;
     let mut in_flight: usize = 0;
 
@@ -345,9 +366,13 @@ async fn run_executor_loop<T: Send + 'static>(
 
             Some((seq, result)) = done_rx.recv() => {
                 in_flight -= 1;
-                if let Some(output) = result {
-                    buffer[seq] = Some(output);
-                }
+                buffer[seq] = match result {
+                    Some(output) => Slot::Ready(output),
+                    // Cancelled, or produced nothing. Marked resolved rather
+                    // than left pending, so it does not hold back the results
+                    // behind it.
+                    None => Slot::Skipped,
+                };
                 if !flush_buffer(&mut buffer, &mut cursor, &result_tx) {
                     return; // receiver dropped
                 }
@@ -359,7 +384,7 @@ async fn run_executor_loop<T: Send + 'static>(
 
                 // Reserve slot in buffer.
                 while buffer.len() <= envelope.seq {
-                    buffer.push(None);
+                    buffer.push(Slot::Pending);
                 }
 
                 match envelope.op.guard {
@@ -380,18 +405,31 @@ async fn run_executor_loop<T: Send + 'static>(
                         while in_flight > 0 {
                             if let Some((seq, result)) = done_rx.recv().await {
                                 in_flight -= 1;
-                                if let Some(output) = result {
-                                    buffer[seq] = Some(output);
-                                }
+                                buffer[seq] = match result {
+                                    Some(output) => Slot::Ready(output),
+                                    None => Slot::Skipped,
+                                };
                                 flush_buffer(&mut buffer, &mut cursor, &result_tx);
                             } else {
                                 break; // all senders dropped
                             }
                         }
 
+                        // Cancellation can arrive while the drain above was
+                        // waiting, so it is rechecked here rather than only at
+                        // the top of the loop — otherwise an exclusive
+                        // operation runs after the run was called off.
+                        if cancelled.load(Ordering::Acquire) {
+                            buffer[envelope.seq] = Slot::Skipped;
+                            if !flush_buffer(&mut buffer, &mut cursor, &result_tx) {
+                                return;
+                            }
+                            break;
+                        }
+
                         // Run exclusive operation inline on this task.
                         let output = (envelope.op.factory)().await;
-                        buffer[envelope.seq] = Some(output);
+                        buffer[envelope.seq] = Slot::Ready(output);
                         if !flush_buffer(&mut buffer, &mut cursor, &result_tx) {
                             return;
                         }
@@ -406,9 +444,10 @@ async fn run_executor_loop<T: Send + 'static>(
     while in_flight > 0 {
         if let Some((seq, result)) = done_rx.recv().await {
             in_flight -= 1;
-            if let Some(output) = result {
-                buffer[seq] = Some(output);
-            }
+            buffer[seq] = match result {
+                Some(output) => Slot::Ready(output),
+                None => Slot::Skipped,
+            };
             flush_buffer(&mut buffer, &mut cursor, &result_tx);
         } else {
             break; // all senders dropped (cancelled tasks exited)
@@ -801,5 +840,79 @@ mod tests {
 
         let results = collect_all(&executor).await;
         assert_eq!(results, vec!["exclusive", "gpu"]);
+    }
+
+    /// A resolved-but-empty slot must not withhold the results behind it.
+    ///
+    /// The buffer used to be `Option`, where `None` meant both "not finished"
+    /// and "finished with nothing", and the flush stopped at the first slot it
+    /// could not deliver. A slot that would never fill therefore stalled the
+    /// cursor permanently and discarded every later result.
+    ///
+    /// Tested against `flush_buffer` directly, and deliberately so: today's
+    /// single cancellation flag means everything after a cancelled operation
+    /// is cancelled too, so a `Ready` behind a `Skipped` cannot currently be
+    /// produced through `submit`. The ambiguity was still real — the buffer
+    /// admitted a state it handled wrongly — and per-operation cancellation,
+    /// or a factory that declines, would reach it. This pins the contract now
+    /// rather than after something else makes it reachable.
+    #[test]
+    fn a_skipped_slot_does_not_withhold_the_results_behind_it() {
+        let (tx, mut rx) = mpsc::unbounded_channel();
+        let mut buffer = vec![
+            Slot::Ready(10u32),
+            Slot::Skipped,
+            Slot::Ready(30),
+            Slot::Pending,
+            Slot::Ready(50),
+        ];
+        let mut cursor = 0;
+
+        assert!(flush_buffer(&mut buffer, &mut cursor, &tx));
+
+        let mut delivered = Vec::new();
+        while let Ok(v) = rx.try_recv() {
+            delivered.push(v);
+        }
+        assert_eq!(
+            delivered,
+            vec![10, 30],
+            "the flush must step over the skipped slot and stop at the pending one"
+        );
+        assert_eq!(cursor, 3, "the cursor should rest on the pending slot");
+    }
+
+    /// Cancelling while an exclusive operation waits for the queue to drain
+    /// must stop it, not merely stop the ones after it.
+    #[tokio::test]
+    async fn cancelling_during_a_drain_stops_the_exclusive_operation() {
+        let executor = StreamingToolExecutor::<u32>::new(4);
+        let ran = Arc::new(AtomicU32::new(0));
+
+        // Something slow in flight, so the exclusive submission below has to
+        // wait for it.
+        executor.submit_fn(ConcurrencyGuard::Safe, || async {
+            tokio::time::sleep(Duration::from_millis(120)).await;
+            0
+        });
+        let counter = ran.clone();
+        executor.submit_fn(ConcurrencyGuard::Exclusive, move || {
+            let counter = counter.clone();
+            async move {
+                counter.fetch_add(1, Ordering::SeqCst);
+                1
+            }
+        });
+
+        tokio::time::sleep(Duration::from_millis(20)).await;
+        executor.cancel();
+        while executor.next_result().await.is_some() {}
+
+        assert_eq!(
+            ran.load(Ordering::SeqCst),
+            0,
+            "the exclusive operation ran even though the run was cancelled \
+             while it was waiting for the queue to drain"
+        );
     }
 }

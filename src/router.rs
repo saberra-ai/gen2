@@ -147,7 +147,7 @@ pub fn route<'a>(
     }
 
     // 2. Remote by capability
-    if let Some(peer) = best_remote_peer(request, peers) {
+    if let Some(peer) = best_remote_peer(request, peers, zoo) {
         return RouteDecision::Remote {
             peer,
             reason: "remote peer has model + capacity",
@@ -180,10 +180,11 @@ fn local_bundle_for<'z>(model_id: &str, zoo: &'z ModelZoo) -> Option<&'z Platfor
 fn best_remote_peer<'a>(
     request: &RouteRequest<'_>,
     peers: &'a [PeerAdvertisement],
+    zoo: &ModelZoo,
 ) -> Option<&'a PeerAdvertisement> {
     let mut best: Option<&'a PeerAdvertisement> = None;
     for peer in peers {
-        if !peer_can_host(peer, request.model_id) {
+        if !peer_can_host(peer, request.model_id, zoo) {
             continue;
         }
         best = match best {
@@ -198,8 +199,30 @@ fn best_remote_peer<'a>(
     best
 }
 
-fn peer_can_host(peer: &PeerAdvertisement, model_id: &str) -> bool {
-    peer.models.iter().any(|m| m == model_id)
+/// Whether a peer could actually run this model, not merely whether it has
+/// the file.
+///
+/// Holding a cached artifact and being able to host it are different facts.
+/// This used to check only the former, so a 4 GB peer advertising a cached
+/// 30 GB model qualified — and since memory was consulted afterwards, only to
+/// rank candidates that had already passed, it could then win outright if it
+/// was the only one. The memory test is the same one the local path applies to
+/// itself, against the bundle for the peer's own platform.
+fn peer_can_host(peer: &PeerAdvertisement, model_id: &str, zoo: &ModelZoo) -> bool {
+    if !peer.models.iter().any(|m| m == model_id) {
+        return false;
+    }
+    let Some(entry) = zoo.get(model_id) else {
+        // A model the zoo does not describe cannot be sized, and guessing in
+        // the optimistic direction is how a request lands on a peer that
+        // cannot serve it.
+        return false;
+    };
+    let Some(bundle) = entry.platforms.get(peer.platform.as_str()) else {
+        // The peer runs a platform this model has no build for.
+        return false;
+    };
+    peer.ram_mb >= bundle.min_ram_mb
 }
 
 /// Capacity heuristic. Higher VRAM wins first (GPU inference is faster
@@ -474,5 +497,73 @@ mod tests {
             &zoo(),
         );
         assert!(matches!(decision, RouteDecision::Fallback { .. }));
+    }
+
+    #[test]
+    fn a_peer_without_the_memory_for_a_model_is_not_a_candidate() {
+        // Holding the file and being able to run it are different facts.
+        // Memory was only consulted to rank peers that had already passed, so
+        // a peer too small for the model could win by being the only one.
+        let local = LocalCapability {
+            ram_mb: 1024,
+            vram_mb: 0,
+            cached_models: vec![],
+        };
+        let tiny = fake_peer("Pi", 1024, 0, &["gemma-4"]);
+        let required = zoo()
+            .get("gemma-4")
+            .and_then(|e| e.platforms.get(current_platform_id()))
+            .map(|b| b.min_ram_mb)
+            .expect("gemma-4 is bundled for this platform");
+        assert!(
+            tiny.ram_mb < required,
+            "the fixture must actually be too small: {} < {required}",
+            tiny.ram_mb
+        );
+
+        let peers = [tiny];
+        let decision = route(
+            &RouteRequest {
+                model_id: "gemma-4",
+                priority: RoutePriority::Normal,
+                max_tokens: None,
+            },
+            &local,
+            &peers,
+            &zoo(),
+        );
+        assert!(
+            matches!(decision, RouteDecision::Fallback { .. }),
+            "a peer that cannot host the model must not be routed to, got {decision:?}"
+        );
+    }
+
+    #[test]
+    fn a_peer_on_another_platform_is_not_a_candidate() {
+        // A cached artifact for one platform says nothing about whether this
+        // peer can run it.
+        let local = LocalCapability {
+            ram_mb: 1024,
+            vram_mb: 0,
+            cached_models: vec![],
+        };
+        let mut alien = fake_peer("Elsewhere", 256 * 1024, 64 * 1024, &["gemma-4"]);
+        alien.platform = "a-platform-that-does-not-exist".into();
+
+        let peers = [alien];
+        let decision = route(
+            &RouteRequest {
+                model_id: "gemma-4",
+                priority: RoutePriority::Normal,
+                max_tokens: None,
+            },
+            &local,
+            &peers,
+            &zoo(),
+        );
+        assert!(
+            matches!(decision, RouteDecision::Fallback { .. }),
+            "a peer with no build of this model for its platform must not win, got {decision:?}"
+        );
     }
 }

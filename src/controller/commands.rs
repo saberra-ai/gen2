@@ -556,9 +556,8 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
             tx,
         } => {
             if let Some(chat) = state.chats.get_mut(&chat_id) {
-                chat.last_used = std::time::Instant::now();
-                chat.tx = tx.clone();
                 if chat.state.is_generating() {
+                    chat.tx = tx.clone();
                     emit_must_deliver(
                         state.metrics.as_ref(),
                         &tx,
@@ -570,47 +569,25 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
                     return ControlFlow::Continue;
                 }
 
-                let last_vec: Vec<_> = messages.last().into_iter().cloned().collect();
-
-                match chat.session.append_messages(last_vec) {
-                    Err(e) => {
-                        emit_must_deliver(
-                            state.metrics.as_ref(),
-                            &tx,
-                            ControllerEvent::Error {
-                                code: "generation_error".into(),
-                                message: format!("{:?}", e),
-                            },
-                        );
-                        return ControlFlow::Continue;
-                    }
-                    Ok(dropped) if dropped > 0 => {
-                        emit_must_deliver(
-                            state.metrics.as_ref(),
-                            &tx,
-                            ControllerEvent::ContextTruncated(dropped),
-                        );
-                    }
-                    _ => {}
+                // `StartChat` means "this is the conversation", not "add to
+                // whatever you have". The caller only sends it when its own
+                // state says the conversation must be built afresh — after an
+                // edit, a clear, a model swap, or a tool-set change — and the
+                // messages it carries are the authoritative transcript.
+                //
+                // Appending the last of them to a runtime that still holds the
+                // old history, which is what this used to do, leaves the model
+                // working from messages the caller deleted, and silently drops
+                // the tools and thinking mode the new prefix was supposed to
+                // carry. Retire the runtime and build it again below.
+                if let Some(stale) = state.chats.remove(&chat_id) {
+                    terminate_runtime_owned(
+                        &state.engine,
+                        stale,
+                        RuntimeOutcome::Completed(CompletionReason::Evicted),
+                        state.metrics.as_ref(),
+                    );
                 }
-
-                let pull_spec = apply_generation_defaults(&state.engine, gen_spec.clone());
-                match chat.session.pull(pull_spec.clone()) {
-                    Ok(puller) => {
-                        attach_generating_puller(chat, puller, pull_spec);
-                    }
-                    Err(e) => {
-                        emit_must_deliver(
-                            state.metrics.as_ref(),
-                            &tx,
-                            ControllerEvent::Error {
-                                code: "generation_error".into(),
-                                message: format!("{:?}", e),
-                            },
-                        );
-                    }
-                }
-                return ControlFlow::Continue;
             }
             let max_active = state.max_active_chats();
             if state.chats.len() >= max_active
@@ -722,11 +699,13 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
         ControllerCmd::ContinueChat {
             chat_id,
             new_messages,
+            transcript,
             gen_spec,
-            // Routing hints for a remote dispatch; the local loop already
-            // knows which model it has (see StartChat).
-            model_id: _,
-            model_size_bytes: _,
+            // Routing hints for a remote dispatch. The local loop already
+            // knows which model it has, but they are carried through when a
+            // missing runtime forces a rebuild below.
+            model_id,
+            model_size_bytes,
             tx,
         } => {
             if let Some(chat) = state.chats.get_mut(&chat_id) {
@@ -781,13 +760,30 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
                     }
                 }
             } else {
-                emit_must_deliver(
-                    state.metrics.as_ref(),
-                    &tx,
-                    ControllerEvent::Error {
-                        code: "not_found".into(),
-                        message: format!("chat_id '{}' not found", chat_id),
+                // The runtime is gone — evicted for capacity, unloaded when
+                // idle, or lost to a reload. None of that is the caller's
+                // doing, and a conversation it still holds must not stop
+                // working because of it. Rebuild from the transcript it sent
+                // and carry on; the cost is one prefill.
+                let mut full = transcript;
+                full.extend(new_messages);
+                tracing::debug!(
+                    chat_id = %chat_id,
+                    messages = full.len(),
+                    "continue found no runtime — rebuilding from the caller's transcript"
+                );
+                return dispatch_cmd(
+                    ControllerCmd::StartChat {
+                        chat_id,
+                        messages: full,
+                        gen_spec,
+                        thinking: crate::generation::ThinkingMode::default(),
+                        model_id,
+                        model_size_bytes,
+                        tools: None,
+                        tx,
                     },
+                    state,
                 );
             }
             ControlFlow::Continue

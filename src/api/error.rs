@@ -86,12 +86,28 @@ impl Error {
 
     /// Whether retrying the same request could plausibly succeed.
     ///
-    /// A missing model or a dead controller will not fix itself; a generation
-    /// failure may be transient.
+    /// A missing model or a dead controller will not fix itself. Most
+    /// generation failures may be transient — but not all of them, and the
+    /// exception matters: the controller distinguishes a poisoned session,
+    /// whose backend state is gone, from an ordinary failure, precisely so a
+    /// caller does not retry into it. Answering `true` for everything shaped
+    /// like a `Generation` threw that distinction away at the API boundary.
     pub fn is_retryable(&self) -> bool {
-        matches!(self, Self::Generation { .. })
+        match self {
+            Self::Generation { code, .. } => !NOT_WORTH_RETRYING.contains(&code.as_str()),
+            _ => false,
+        }
     }
 }
+
+/// Generation failure codes a retry cannot fix.
+///
+/// `session_poisoned` means the backend lost the session's state, so the same
+/// request against the same conversation fails the same way — the caller has
+/// to start the conversation over. The controller goes out of its way to
+/// distinguish it from an ordinary failure, and this is where that
+/// distinction has to survive.
+const NOT_WORTH_RETRYING: &[&str] = &["session_poisoned"];
 
 /// Shorthand for the crate's public results.
 pub type Result<T> = std::result::Result<T, Error>;
@@ -121,5 +137,33 @@ mod tests {
     fn exec_errors_convert_without_losing_their_message() {
         let e: Error = crate::engine::ExecError::ContextOverflow("4096 exceeded".into()).into();
         assert!(e.to_string().contains("4096 exceeded"));
+    }
+
+    #[test]
+    fn a_poisoned_session_is_not_retryable() {
+        // The controller separates this from `generation_error` so a caller
+        // does not retry into a session whose state is gone. Answering `true`
+        // for anything shaped like a `Generation` threw that away at the API
+        // boundary.
+        let poisoned = Error::Generation {
+            code: "session_poisoned".into(),
+            message: "session state lost".into(),
+        };
+        assert!(!poisoned.is_retryable());
+
+        let transient = Error::Generation {
+            code: "generation_error".into(),
+            message: "the GPU hiccuped".into(),
+        };
+        assert!(
+            transient.is_retryable(),
+            "an ordinary generation failure may well succeed on a second try"
+        );
+    }
+
+    #[test]
+    fn nothing_outside_a_generation_failure_is_retryable() {
+        assert!(!Error::ControllerGone.is_retryable());
+        assert!(!Error::Load("no such file".into()).is_retryable());
     }
 }

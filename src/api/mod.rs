@@ -79,3 +79,7 @@ mod composition_tests;
 /// `infer` and `chat`, the two entry points most callers reach for first.
 #[cfg(test)]
 mod entrypoint_tests;
+
+/// What the model was actually shown, across the whole stack.
+#[cfg(test)]
+mod lifecycle_tests;

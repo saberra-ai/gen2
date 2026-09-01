@@ -394,6 +394,11 @@ impl<'a> Chat<'a> {
             ControllerCmd::ContinueChat {
                 chat_id: session.id().to_string(),
                 new_messages: messages,
+                // Carried so a conversation the controller has evicted can be
+                // rebuilt instead of refused. `opened` is this layer's belief
+                // about a cache it does not own, and eviction happens without
+                // telling it.
+                transcript: session.messages().to_vec(),
                 gen_spec: self.spec,
                 model_id: None,
                 model_size_bytes: None,

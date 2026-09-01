@@ -50,6 +50,10 @@ pub struct Engine {
     /// swap has to invalidate every live session. Sessions record the
     /// generation they were opened against and reopen when it moves.
     generation: std::sync::atomic::AtomicU64,
+    /// The script behind a scripted engine, for tests that assert on what the
+    /// backend was shown rather than on what the facade believes.
+    #[cfg(test)]
+    script: Option<crate::test_support::Script>,
 }
 
 impl Engine {
@@ -641,6 +645,8 @@ impl EngineBuilder {
             sent_through: Mutex::new(HashMap::new()),
             defaults: self.defaults,
             generation: std::sync::atomic::AtomicU64::new(0),
+            #[cfg(test)]
+            script: None,
         };
 
         // On any failure below, `engine` drops here — which stops and joins the
@@ -678,16 +684,25 @@ impl Engine {
     /// steering, scheduling) are tested against a script instead, and the live
     /// tests prove a real backend implements the same contract.
     pub(crate) fn scripted(script: crate::test_support::Script) -> Self {
-        let (handle, join) = crate::controller::start_controller_with_engine(
-            ControllerConfig::default(),
-            script.into_engine_factory(),
-        );
+        Self::scripted_with_config(script, ControllerConfig::default())
+    }
+
+    /// As [`Self::scripted`], with controller policy the test chooses — the
+    /// way to make eviction happen without opening dozens of conversations.
+    pub(crate) fn scripted_with_config(
+        script: crate::test_support::Script,
+        config: ControllerConfig,
+    ) -> Self {
+        let kept = script.clone();
+        let (handle, join) =
+            crate::controller::start_controller_with_engine(config, script.into_engine_factory());
         let engine = Engine {
             handle,
             join: Some(join),
             sent_through: Mutex::new(HashMap::new()),
             defaults: GenSpec::default(),
             generation: std::sync::atomic::AtomicU64::new(0),
+            script: Some(kept),
         };
         let (resp, rx) = channel();
         engine
@@ -704,6 +719,13 @@ impl Engine {
             .expect("the scripted controller should answer")
             .expect("the scripted backend should load");
         engine
+    }
+
+    /// The script driving this engine's backend.
+    pub(crate) fn script(&self) -> &crate::test_support::Script {
+        self.script
+            .as_ref()
+            .expect("only a scripted engine has one")
     }
 }
 
