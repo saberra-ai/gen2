@@ -297,4 +297,163 @@ mod tests {
             .into_top_level()
             .unwrap();
     }
+
+    #[test]
+    fn a_schema_spec_builds() {
+        let _top = GrammarSpec::JsonSchema(serde_json::json!({
+            "type": "object",
+            "properties": {"city": {"type": "string"}},
+            "required": ["city"]
+        }))
+        .into_top_level()
+        .unwrap();
+    }
+
+    #[test]
+    fn a_grammar_that_cannot_be_parsed_is_refused_rather_than_ignored() {
+        // Silently dropping an unparseable grammar would give a caller who
+        // asked for constrained output unconstrained output, which is the one
+        // outcome worse than an error.
+        //
+        // `into_top_level` does not validate — it wraps the text and hands it
+        // on — so the refusal lands where the matcher is built. That is still
+        // before a single token is generated, which is what matters.
+        let vocab = byte_vocab();
+        assert!(
+            GrammarMatcher::from_vocab(&vocab, GrammarSpec::Lark("start: ((((".into())).is_err(),
+            "a malformed Lark grammar must be refused before generation starts"
+        );
+        assert!(
+            GrammarMatcher::from_vocab(&vocab, GrammarSpec::Regex("[unclosed".into())).is_err(),
+            "a malformed regex must be refused before generation starts"
+        );
+    }
+
+    /// A toy vocabulary: one token per printable byte, plus an EOS.
+    ///
+    /// Enough to drive a real `llguidance` matcher without a model. Token ids
+    /// are the byte values themselves, so a test can name the token it means.
+    fn byte_vocab() -> GrammarVocab {
+        let mut words: Vec<Vec<u8>> = (0u8..=127).map(|b| vec![b]).collect();
+        // 128: the EOS token, which has no byte form.
+        words.push(Vec::new());
+        GrammarVocab {
+            words,
+            eos: 128,
+            bos: None,
+        }
+    }
+
+    fn token(c: char) -> usize {
+        c as usize
+    }
+
+    #[test]
+    fn a_regex_grammar_masks_the_tokens_it_forbids() {
+        // The assertion the whole feature rests on: a caller who asked for
+        // digits must not be able to sample a letter. Nothing else in this
+        // crate checks that constrained decoding constrains anything.
+        let vocab = byte_vocab();
+        let mut matcher = GrammarMatcher::from_vocab(&vocab, GrammarSpec::Regex("[0-9]+".into()))
+            .expect("a digit regex should compile");
+
+        let mut logits = vec![0.0f32; vocab.words.len()];
+        matcher
+            .apply_mask(&mut logits)
+            .expect("mask should compute");
+
+        assert!(
+            logits[token('7')].is_finite(),
+            "a digit must remain samplable under [0-9]+"
+        );
+        assert_eq!(
+            logits[token('q')],
+            f32::NEG_INFINITY,
+            "a letter must be masked out under [0-9]+"
+        );
+    }
+
+    #[test]
+    fn observing_a_token_advances_the_grammar() {
+        let vocab = byte_vocab();
+        let mut matcher = GrammarMatcher::from_vocab(&vocab, GrammarSpec::Regex("ab".into()))
+            .expect("a literal regex should compile");
+
+        let mut logits = vec![0.0f32; vocab.words.len()];
+        matcher.apply_mask(&mut logits).unwrap();
+        assert!(logits[token('a')].is_finite(), "'a' must open the match");
+        assert_eq!(
+            logits[token('b')],
+            f32::NEG_INFINITY,
+            "'b' cannot come first in \"ab\""
+        );
+
+        matcher.observe(token('a') as u32).expect("consume 'a'");
+
+        let mut logits = vec![0.0f32; vocab.words.len()];
+        matcher.apply_mask(&mut logits).unwrap();
+        assert!(
+            logits[token('b')].is_finite(),
+            "after 'a', 'b' is what the grammar now requires"
+        );
+        assert_eq!(
+            logits[token('a')],
+            f32::NEG_INFINITY,
+            "and 'a' is no longer allowed"
+        );
+    }
+
+    #[test]
+    fn a_completed_grammar_reports_that_it_is_accepting() {
+        // What lets a caller stop early: the grammar is satisfied, whatever
+        // the model would say next.
+        let vocab = byte_vocab();
+        let mut matcher =
+            GrammarMatcher::from_vocab(&vocab, GrammarSpec::Regex("ab".into())).expect("compile");
+
+        assert!(
+            !matcher.is_accepting(),
+            "nothing has been generated, so the grammar is not satisfied"
+        );
+        matcher.observe(token('a') as u32).unwrap();
+        assert!(!matcher.is_accepting(), "half of \"ab\" is not \"ab\"");
+        matcher.observe(token('b') as u32).unwrap();
+        assert!(
+            matcher.is_accepting(),
+            "the grammar is satisfied and the caller may stop"
+        );
+    }
+
+    #[test]
+    fn a_json_object_grammar_opens_with_a_brace_and_nothing_else() {
+        let vocab = byte_vocab();
+        let mut matcher = GrammarMatcher::from_vocab(&vocab, GrammarSpec::JsonObject)
+            .expect("the JSON-object shorthand should compile");
+
+        let mut logits = vec![0.0f32; vocab.words.len()];
+        matcher.apply_mask(&mut logits).unwrap();
+
+        assert!(
+            logits[token('{')].is_finite(),
+            "a JSON object has to start somewhere"
+        );
+        assert_eq!(
+            logits[token('q')],
+            f32::NEG_INFINITY,
+            "a bare letter cannot open a JSON object"
+        );
+    }
+
+    #[test]
+    fn a_mask_is_applied_to_short_logit_slices_without_panicking() {
+        // A backend whose logit buffer is narrower than the vocabulary is a
+        // caller bug, but it must not be an out-of-bounds write.
+        let vocab = byte_vocab();
+        let mut matcher =
+            GrammarMatcher::from_vocab(&vocab, GrammarSpec::Regex("[0-9]+".into())).unwrap();
+        let mut short = vec![0.0f32; 8];
+        matcher
+            .apply_mask(&mut short)
+            .expect("a short slice is clamped, not rejected");
+    }
 }
