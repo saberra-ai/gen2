@@ -171,6 +171,32 @@ impl Events {
         }
     }
 
+    /// Everything up to and including the terminal event, and no further.
+    ///
+    /// [`Self::collect`] pays [`GRACE`] per call to catch events that should
+    /// not have been sent. That is the right trade for a test asserting the
+    /// contract once, and the wrong one for a loop running a thousand
+    /// generations — there it is the entire runtime. Use this where the
+    /// per-iteration assertion is about residency rather than event ordering.
+    pub fn collect_to_end(self) -> Vec<ControllerEvent> {
+        let mut events = Vec::new();
+        loop {
+            match self.rx.recv_timeout(PATIENCE) {
+                Ok(event) => {
+                    let done = is_terminal(&event);
+                    events.push(event);
+                    if done {
+                        return events;
+                    }
+                }
+                Err(RecvTimeoutError::Disconnected) => return events,
+                Err(RecvTimeoutError::Timeout) => {
+                    panic!("the generation never ended; got {events:?}")
+                }
+            }
+        }
+    }
+
     /// The next event, or a failed test.
     pub fn next(&self) -> ControllerEvent {
         self.rx

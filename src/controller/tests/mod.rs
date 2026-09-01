@@ -3,3 +3,4 @@
 //! Split by invariant rather than by method — see `lifecycle` for why.
 
 mod lifecycle;
+mod soak;

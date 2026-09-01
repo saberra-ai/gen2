@@ -161,7 +161,7 @@ Benchmarks tracked over time, never a PR gate.
    test's to force)
 5. Split live tests per backend, add conformance — outstanding
 6. Property, soak, and performance work — session and fit properties
-   done; soak and benchmarks outstanding
+   done, soak done; benchmarks outstanding
 
 ## Where it got to
 
@@ -198,6 +198,7 @@ Nine bugs, found by the tests rather than by reading:
   single token. The crate's headline claim — one API over many backends
   — is verified for two of them.
 - No sanitizer run.
+- No benchmarks, so a performance regression is invisible.
 - The KV store's writes are not atomic. Digests turn a torn write into a
   cache miss rather than corruption, but a crash mid-write leaves a dead
   file until the budget sweep reclaims it.
