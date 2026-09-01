@@ -128,6 +128,48 @@ failure a step count never sees.
 Tools declare `Risk::Risky`; `ApprovalMode::AskOnRisky` routes those through
 `on_approval`.
 
+### Sub-agents, skills, MCP
+
+A sub-agent is not a new concept — it's a `Tool` that happens to run a nested
+loop, so the parent sees one call and one result instead of a context full of
+intermediate reading:
+
+```rust
+let researcher = AgentTool::new("researcher", "Investigates a question", engine.clone())
+    .tools(research_tools)
+    .max_steps(5);
+```
+
+Skills are the same trade as deferred tools, applied to prose — descriptions
+stay in the prompt, bodies load on demand:
+
+```rust
+let skills = SkillLibrary::new([
+    Skill::new("migrations", "when writing a database migration", MIGRATION_GUIDE),
+]);
+engine.agent(&mut session).add_tool(skills).goal("…")?;
+```
+
+An MCP server's whole surface registers as an iterator:
+
+```rust
+let mcp = McpToolSet::connect("mcp-server-git", ["--repo", "."]).await?;
+engine.agent(&mut session).defer_tools(mcp).tool_search(ToolSearch::Hybrid);
+```
+
+### Steering and forking
+
+`agent.steering()` hands out a movable handle — the thread driving the agent is
+busy, so mid-run input has to come from elsewhere. `follow_up` adds to the task;
+`interrupt` also abandons the rest of the current round's tool calls. Both land
+at a step boundary, never mid-call: a tool already running has side effects that
+must be recorded.
+
+`session.fork()` branches a conversation — same history, new engine identity, so
+two directions run without overwriting each other's cached prefill. `Session` is
+`Serialize`/`Deserialize`, with the engine-state fields deliberately skipped: a
+restored session must never claim a prefill the engine doesn't hold.
+
 ### Tool calling
 
 Without a handler, a tool call is an `Event` for you to act on. With one, the

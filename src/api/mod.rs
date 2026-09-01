@@ -38,7 +38,9 @@ mod spawned;
 mod stream;
 pub mod tools;
 
-pub use agent::{Agent, AgentStep, ApprovalMode, DEFAULT_MAX_STEPS, Decision, Risk, SEARCH_TOOL};
+pub use agent::{
+    Agent, AgentStep, ApprovalMode, DEFAULT_MAX_STEPS, Decision, Risk, SEARCH_TOOL, Steering,
+};
 #[cfg(feature = "tokio")]
 pub use asynchronous::AsyncTurn;
 pub use chat::{Chat, DEFAULT_TOOL_DEPTH};
@@ -50,6 +52,6 @@ pub use session::Session;
 pub use spawned::{Canceller, OwnedChat, Turn, Update};
 pub use stream::{Budget, Completion, Event, Finish, Struggle, TokenStream, Tokens};
 pub use tools::{
-    ExecutionPolicy, FunctionTool, IntoTool, Tool, ToolConfigError, ToolContext, ToolError,
-    ToolLoading, ToolOutput, ToolRegistry, ToolSearch, ToolSet, ToolSpec,
+    AgentTool, ExecutionPolicy, FunctionTool, IntoTool, Skill, SkillLibrary, Tool, ToolConfigError,
+    ToolContext, ToolError, ToolLoading, ToolOutput, ToolRegistry, ToolSearch, ToolSet, ToolSpec,
 };

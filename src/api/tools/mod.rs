@@ -4,20 +4,24 @@
 //! that tells the model it exists. Backends render specs differently, tools run
 //! the same everywhere.
 
+mod agent_tool;
 mod function;
 mod registry;
 mod search;
 mod set;
+mod skill;
 mod spec;
 
 use std::sync::Arc;
 
 use async_trait::async_trait;
 
+pub use agent_tool::AgentTool;
 pub use function::FunctionTool;
 pub use registry::{ToolConfigError, ToolRegistry};
 pub use search::ToolSearch;
 pub use set::{IntoTool, ToolSet};
+pub use skill::{Skill, SkillLibrary};
 pub use spec::{ToolLoading, ToolSpec};
 
 /// Anything the model can call.

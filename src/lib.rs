@@ -113,8 +113,11 @@ pub(crate) mod generation;
 pub(crate) mod hardware;
 #[allow(dead_code, unused_imports)]
 pub(crate) mod kv;
+/// MCP client — register an external server's tools as this crate's tools.
+pub mod mcp;
 #[allow(dead_code, unused_imports)]
 pub(crate) mod media;
+
 /// Memory governance — machine tier, pressure level, and the budgets that
 /// decide whether another runtime may go resident.
 #[allow(dead_code, unused_imports)]
@@ -174,7 +177,7 @@ pub use api::{
     TokenStream, Tokens, Tool, ToolConfigError, ToolContext, ToolError, ToolLoading, ToolOutput,
     ToolRegistry, ToolSearch, ToolSet, Turn, Update,
 };
-pub use api::{Risk, SEARCH_TOOL, Struggle};
+pub use api::{AgentTool, Risk, SEARCH_TOOL, Skill, SkillLibrary, Steering, Struggle};
 
 /// Commands, events, and handles — see [`controller`].
 pub use controller::{

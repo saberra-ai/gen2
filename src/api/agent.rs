@@ -7,7 +7,7 @@
 //! caller supplies tools, not a `match`.
 
 use std::collections::VecDeque;
-use std::sync::Arc;
+use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
 
 use serde_json::Value;
@@ -85,6 +85,81 @@ impl Default for Budgets {
     }
 }
 
+/// Injects messages into a run that is already going.
+///
+/// Cheap to clone and safe to move to another thread — which is the point,
+/// since the thread driving the agent is busy. Two shapes, because they answer
+/// different questions: a follow-up adds to the task, an interruption changes
+/// it.
+#[derive(Clone, Default)]
+pub struct Steering {
+    queue: Arc<Mutex<VecDeque<Steer>>>,
+}
+
+#[derive(Debug, Clone)]
+pub(crate) struct Steer {
+    pub(crate) message: String,
+    pub(crate) interrupt: bool,
+}
+
+impl Steering {
+    /// Add to the task. Delivered at the next step boundary, so the current
+    /// generation and any tool already running finish first.
+    pub fn follow_up(&self, message: impl Into<String>) {
+        self.push(message.into(), false);
+    }
+
+    /// Change the task at the earliest safe point.
+    ///
+    /// Stronger than [`Steering::follow_up`]: the agent abandons the rest of
+    /// the tool calls in the current round and delivers this before generating
+    /// again. A tool already executing still completes — stopping mid-call
+    /// would leave a side effect with nothing in the transcript to show it
+    /// happened.
+    ///
+    /// It does not cut a generation short. That needs
+    /// [`Engine::stop`](crate::Engine::stop), which needs an owned engine
+    /// handle; from here the message lands at the next boundary.
+    pub fn interrupt(&self, message: impl Into<String>) {
+        self.push(message.into(), true);
+    }
+
+    /// Whether anything is waiting.
+    pub fn is_pending(&self) -> bool {
+        self.queue.lock().map(|q| !q.is_empty()).unwrap_or(false)
+    }
+
+    fn push(&self, message: String, interrupt: bool) {
+        if let Ok(mut q) = self.queue.lock() {
+            q.push_back(Steer { message, interrupt });
+        }
+    }
+
+    pub(crate) fn drain(&self) -> Vec<Steer> {
+        self.queue
+            .lock()
+            .map(|mut q| q.drain(..).collect())
+            .unwrap_or_default()
+    }
+
+    /// Whether an interruption is waiting, so the loop can stop the current
+    /// generation rather than let it run to completion.
+    pub(crate) fn wants_interrupt(&self) -> bool {
+        self.queue
+            .lock()
+            .map(|q| q.iter().any(|s| s.interrupt))
+            .unwrap_or(false)
+    }
+}
+
+impl std::fmt::Debug for Steering {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        f.debug_struct("Steering")
+            .field("pending", &self.is_pending())
+            .finish()
+    }
+}
+
 /// Builds an agent run.
 #[must_use = "an Agent does nothing until .run() is called"]
 pub struct Agent<'a> {
@@ -96,6 +171,7 @@ pub struct Agent<'a> {
     approval: ApprovalMode,
     on_approval: Option<ApprovalFn>,
     tool_prompt: String,
+    steering: Steering,
 }
 
 impl<'a> Agent<'a> {
@@ -111,7 +187,16 @@ impl<'a> Agent<'a> {
             tool_prompt: "Call a tool when you need information or an action. \
                           Answer directly when you don't."
                 .into(),
+            steering: Steering::default(),
         }
+    }
+
+    /// A handle for injecting messages while this agent runs.
+    ///
+    /// Take it before starting the run and move it to whichever thread has the
+    /// user's attention.
+    pub fn steering(&self) -> Steering {
+        self.steering.clone()
     }
 
     /// Register a tool the model can see from the first turn.
@@ -234,6 +319,7 @@ impl<'a> Agent<'a> {
         let approval = self.approval;
         let mut on_approval = self.on_approval.take();
         let tool_prompt = self.tool_prompt.clone();
+        let steering = self.steering.clone();
         let session: &mut Session = self.session;
 
         let started = Instant::now();
@@ -251,6 +337,13 @@ impl<'a> Agent<'a> {
             {
                 totals.finish = Finish::OutOfBudget(Budget::Deadline);
                 return Ok(totals);
+            }
+
+            // Steer at the boundary, never mid-call: a tool already running has
+            // side effects that must be recorded, and a half-applied change of
+            // task is worse than a slightly late one.
+            for steer in steering.drain() {
+                session.push_user(steer.message);
             }
 
             let specs = wire_specs(&registry);
@@ -295,6 +388,13 @@ impl<'a> Agent<'a> {
             ));
 
             for call in &turn.tool_calls {
+                // An interruption means the remaining calls were planned
+                // against a task that no longer stands. The ones already run
+                // this round stay in the transcript.
+                if steering.wants_interrupt() {
+                    break;
+                }
+
                 let args: Value = serde_json::from_str(&call.arguments)
                     .unwrap_or_else(|_| Value::String(call.arguments.clone()));
 
@@ -508,5 +608,76 @@ fn as_wire_call(call: &crate::generation::ToolCall) -> ToolCall {
 impl From<ToolConfigError> for Error {
     fn from(e: ToolConfigError) -> Self {
         Error::Load(e.to_string())
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn steering_queues_in_the_order_it_was_given() {
+        let s = Steering::default();
+        assert!(!s.is_pending());
+        s.follow_up("also check the logs");
+        s.interrupt("actually, use staging");
+        assert!(s.is_pending());
+
+        let drained = s.drain();
+        assert_eq!(drained.len(), 2);
+        assert_eq!(drained[0].message, "also check the logs");
+        assert!(!drained[0].interrupt);
+        assert!(drained[1].interrupt);
+        assert!(!s.is_pending(), "draining empties the queue");
+    }
+
+    #[test]
+    fn an_interrupt_is_visible_before_it_is_drained() {
+        // The loop checks this to decide whether to cut the current generation
+        // short, which it must do without consuming the message.
+        let s = Steering::default();
+        s.follow_up("later");
+        assert!(!s.wants_interrupt());
+        s.interrupt("now");
+        assert!(s.wants_interrupt());
+        assert!(s.is_pending(), "checking must not consume");
+    }
+
+    #[test]
+    fn a_steering_handle_shares_the_queue_with_its_clone() {
+        // The whole point: the handle goes to another thread while the agent
+        // runs here.
+        let a = Steering::default();
+        let b = a.clone();
+        b.follow_up("from elsewhere");
+        assert!(a.is_pending());
+        assert_eq!(a.drain()[0].message, "from elsewhere");
+    }
+
+    #[test]
+    fn a_follow_up_does_not_read_as_an_interruption() {
+        // Only an interruption abandons the rest of a round's tool calls, so
+        // the two must stay distinguishable in the queue.
+        let s = Steering::default();
+        s.follow_up("and also this");
+        assert!(!s.wants_interrupt());
+        assert!(!s.drain()[0].interrupt);
+    }
+
+    #[test]
+    fn default_budgets_are_bounded() {
+        // An agent with no configured limit must still stop.
+        let b = Budgets::default();
+        assert_eq!(b.max_steps, DEFAULT_MAX_STEPS);
+        assert!(
+            b.max_steps > 0,
+            "an unbounded default would never terminate"
+        );
+    }
+
+    #[test]
+    fn approval_is_off_unless_asked_for() {
+        assert_eq!(ApprovalMode::default(), ApprovalMode::Auto);
+        assert_eq!(Risk::default(), Risk::Safe);
     }
 }

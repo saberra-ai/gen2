@@ -41,15 +41,24 @@ use crate::types::message::Message;
 /// engine.chat(&mut session).user("Now one more.").send()?;
 /// # Ok::<(), pio_gen2::Error>(())
 /// ```
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct Session {
     id: String,
     messages: Vec<Message>,
     /// Whether the engine has opened this conversation yet. Lives here rather
     /// than in the engine so it's dropped with the session.
+    ///
+    /// Deliberately not serialized. It describes *this process's* engine state,
+    /// and a restored session that claimed the engine held its prefill would
+    /// continue against a cache that does not exist.
+    #[serde(skip)]
     pub(crate) opened: bool,
     /// Messages the engine has shed from its working set to fit the context
     /// window, across the whole conversation.
+    ///
+    /// Also not serialized: a restored session is resent whole, so the model
+    /// starts with all of it in view again.
+    #[serde(skip)]
     pub(crate) shed: usize,
 }
 
@@ -72,6 +81,23 @@ impl Session {
         Self {
             messages: messages.into_iter().collect(),
             ..Self::new()
+        }
+    }
+
+    /// Branch this conversation.
+    ///
+    /// The fork carries the same messages and a *new* engine identity, so the
+    /// two run independently — retry from a point, or compare two directions
+    /// without either overwriting the other's cached prefill.
+    ///
+    /// The fork starts unopened: the engine has nothing cached for it, so its
+    /// first turn resends the history once and is warm from then on.
+    pub fn fork(&self) -> Self {
+        Self {
+            id: format!("session-{}", uuid::Uuid::new_v4()),
+            messages: self.messages.clone(),
+            opened: false,
+            shed: 0,
         }
     }
 
@@ -328,6 +354,55 @@ mod tests {
         let mut s = Session::new();
         s.push_user_with_images("hello", Vec::<String>::new());
         assert_eq!(s.latest_text().as_deref(), Some("hello"));
+    }
+
+    #[test]
+    fn a_fork_shares_the_history_but_not_the_identity() {
+        let mut a = Session::new().with_system("sys");
+        a.push_user("hello");
+        a.opened = true;
+        a.note_shed(2);
+
+        let b = a.fork();
+        assert_eq!(b.messages().len(), a.messages().len());
+        assert_ne!(
+            b.id(),
+            a.id(),
+            "a fork must not share the engine's cache key"
+        );
+        assert!(!b.opened, "the engine has nothing cached for a fork");
+        assert_eq!(b.shed(), 0, "a fork is resent whole, so nothing is missing");
+    }
+
+    #[test]
+    fn the_two_branches_of_a_fork_diverge_independently() {
+        let mut a = Session::new();
+        a.push_user("shared");
+        let mut b = a.fork();
+        a.push_user("only in a");
+        b.push_user("only in b");
+
+        assert_eq!(a.len(), 2);
+        assert_eq!(b.len(), 2);
+        assert_eq!(a.latest_text().as_deref(), Some("only in a"));
+        assert_eq!(b.latest_text().as_deref(), Some("only in b"));
+    }
+
+    #[test]
+    fn a_restored_session_never_claims_engine_state_it_lacks() {
+        // The whole risk of persistence: `opened` says the engine holds a
+        // prefill for this conversation. After a restart it holds nothing.
+        let mut a = Session::new();
+        a.push_user("hello");
+        a.opened = true;
+        a.note_shed(3);
+
+        let json = serde_json::to_string(&a).unwrap();
+        let restored: Session = serde_json::from_str(&json).unwrap();
+
+        assert_eq!(restored.messages().len(), 1, "the transcript survives");
+        assert!(!restored.opened, "but the engine's cache does not");
+        assert_eq!(restored.shed(), 0);
     }
 
     #[test]
