@@ -46,23 +46,25 @@ pub fn detect_kv_shape(session: &Session) -> KvShape {
         let name = input.name();
         if let Some(rest) = name.strip_prefix("past_key_values.")
             && let Some(num_str) = rest.strip_suffix(".key")
-                && let Ok(n) = num_str.parse::<usize>() {
-                    max_layer = Some(max_layer.map_or(n, |m: usize| m.max(n)));
+            && let Ok(n) = num_str.parse::<usize>()
+        {
+            max_layer = Some(max_layer.map_or(n, |m: usize| m.max(n)));
 
-                    // Extract static dims from shape: [batch, num_kv_heads, seq, head_dim]
-                    if num_kv_heads == 0
-                        && let ValueType::Tensor { shape, .. } = input.dtype()
-                            && shape.len() >= 4 {
-                                let heads = shape[1];
-                                let dim = shape[3];
-                                if heads > 0 {
-                                    num_kv_heads = heads as usize;
-                                }
-                                if dim > 0 {
-                                    head_dim = dim as usize;
-                                }
-                            }
+            // Extract static dims from shape: [batch, num_kv_heads, seq, head_dim]
+            if num_kv_heads == 0
+                && let ValueType::Tensor { shape, .. } = input.dtype()
+                && shape.len() >= 4
+            {
+                let heads = shape[1];
+                let dim = shape[3];
+                if heads > 0 {
+                    num_kv_heads = heads as usize;
                 }
+                if dim > 0 {
+                    head_dim = dim as usize;
+                }
+            }
+        }
     }
 
     KvShape {

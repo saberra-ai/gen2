@@ -22,7 +22,10 @@ jobs:
         with:
           components: rustfmt, clippy
       - uses: Swatinem/rust-cache@v2
-      - run: cargo fmt --check
+      # Every file, not just the ones the default features reach: `cargo fmt`
+      # follows the module tree, so a module behind an inactive `#[cfg]` is
+      # skipped locally and only shows up here.
+      - run: find src -name '*.rs' -print0 | xargs -0 rustfmt --edition 2024 --check
       - run: cargo clippy --all-targets -- -D warnings
       - run: cargo test
       - run: cargo doc --no-deps

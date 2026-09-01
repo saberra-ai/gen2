@@ -203,9 +203,10 @@ impl TokenPuller {
 impl Drop for TokenPuller {
     fn drop(&mut self) {
         if let Some(slot) = self.state_slot.upgrade()
-            && let Some(state) = self.state.take() {
-                *slot.lock() = Some(state);
-            }
+            && let Some(state) = self.state.take()
+        {
+            *slot.lock() = Some(state);
+        }
     }
 }
 
