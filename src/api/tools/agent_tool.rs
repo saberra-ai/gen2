@@ -27,10 +27,10 @@ struct Task {
 ///
 /// ```no_run
 /// # use std::sync::Arc;
-/// # use pio_gen2::{AgentTool, Engine, Session};
+/// # use gen2::{AgentTool, Engine, Session};
 /// # let engine = Arc::new(Engine::load("m.gguf")?);
 /// # let mut session = Session::new();
-/// # let research_tools: Vec<Arc<dyn pio_gen2::Tool>> = vec![];
+/// # let research_tools: Vec<Arc<dyn gen2::Tool>> = vec![];
 /// let researcher = AgentTool::new(
 ///     "researcher",
 ///     "Investigates a question and reports back a short answer",
@@ -40,7 +40,7 @@ struct Task {
 /// .max_steps(5);
 ///
 /// engine.agent(&mut session).add_tool(researcher).goal("…")?;
-/// # Ok::<(), pio_gen2::Error>(())
+/// # Ok::<(), gen2::Error>(())
 /// ```
 pub struct AgentTool {
     spec: ToolSpec,

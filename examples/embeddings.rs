@@ -4,7 +4,7 @@
 //! cargo run --example embeddings --no-default-features --features metal -- /path/embedding-model.gguf
 //! ```
 
-use pio_gen2::Engine;
+use gen2::Engine;
 
 /// Cosine similarity — the usual way to compare two embeddings.
 fn cosine(a: &[f32], b: &[f32]) -> f32 {

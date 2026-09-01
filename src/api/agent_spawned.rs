@@ -133,7 +133,7 @@ impl OwnedAgent {
     ///
     /// ```no_run
     /// # use std::sync::Arc;
-    /// # use pio_gen2::{Engine, Session, Update};
+    /// # use gen2::{Engine, Session, Update};
     /// # let engine = Arc::new(Engine::load("m.gguf")?);
     /// let run = engine.agent_owned(Session::new())
     ///     .goal("Summarise the repository")
@@ -149,7 +149,7 @@ impl OwnedAgent {
     ///         _ => {}
     ///     }
     /// }
-    /// # Ok::<(), pio_gen2::Error>(())
+    /// # Ok::<(), gen2::Error>(())
     /// ```
     pub fn spawn(self) -> AgentRun {
         let (tx, rx) = channel();

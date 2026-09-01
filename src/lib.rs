@@ -12,8 +12,8 @@
 //!
 //! ```no_run
 //! use std::sync::mpsc::sync_channel;
-//! use pio_gen2::{ControllerCmd, ControllerEvent, GenSpec, Message, Settings};
-//! use pio_gen2::controller::start_controller;
+//! use gen2::{ControllerCmd, ControllerEvent, GenSpec, Message, Settings};
+//! use gen2::controller::start_controller;
 //!
 //! let handle = start_controller();
 //!
@@ -166,7 +166,7 @@ pub(crate) mod zoo;
 pub use api::{AsyncAgentRun, AsyncTurn};
 /// Deriving a tool's argument schema needs the same `schemars` this crate
 /// compiled against — a different version produces a `JsonSchema` impl that
-/// won't satisfy [`FunctionTool`]'s bound. Use `pio_gen2::schemars` rather than
+/// won't satisfy [`FunctionTool`]'s bound. Use `gen2::schemars` rather than
 /// adding your own dependency.
 pub use schemars;
 

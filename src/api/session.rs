@@ -30,7 +30,7 @@ use crate::types::message::Message;
 /// `dropped` and `compacted`.
 ///
 /// ```no_run
-/// # use pio_gen2::{Engine, Session};
+/// # use gen2::{Engine, Session};
 /// # let engine = Engine::load("m.gguf")?;
 /// let mut session = Session::new().with_system("You are terse.");
 ///
@@ -39,7 +39,7 @@ use crate::types::message::Message;
 ///
 /// // A follow-up. The history is already here; you don't resend it.
 /// engine.chat(&mut session).user("Now one more.").send()?;
-/// # Ok::<(), pio_gen2::Error>(())
+/// # Ok::<(), gen2::Error>(())
 /// ```
 #[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
 pub struct Session {

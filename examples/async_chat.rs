@@ -7,7 +7,7 @@
 use std::sync::Arc;
 
 use futures::StreamExt;
-use pio_gen2::{Engine, Session, Update};
+use gen2::{Engine, Session, Update};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {

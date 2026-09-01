@@ -33,7 +33,7 @@ impl IntoTool for Arc<dyn Tool> {
 /// property of the agent, not of the tool.
 ///
 /// ```no_run
-/// # use pio_gen2::{FunctionTool, ToolSet};
+/// # use gen2::{FunctionTool, ToolSet};
 /// # fn t(n: &str) -> FunctionTool<()> { unimplemented!() }
 /// let filesystem = ToolSet::new()
 ///     .add(t("read_file"))

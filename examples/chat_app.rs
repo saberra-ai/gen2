@@ -15,7 +15,7 @@ use std::sync::Arc;
 use std::thread;
 use std::time::Duration;
 
-use pio_gen2::{Engine, Error, Session, Update};
+use gen2::{Engine, Error, Session, Update};
 
 /// Turn an error into something worth putting on screen.
 ///

@@ -6,7 +6,7 @@
 
 use std::io::Write;
 
-use pio_gen2::{Engine, Session};
+use gen2::{Engine, Session};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let model = std::env::args().nth(1).ok_or("usage: basic <model.gguf>")?;

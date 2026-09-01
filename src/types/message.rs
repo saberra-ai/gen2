@@ -108,7 +108,7 @@ pub enum MessageContent {
     MultipleChunks(Vec<MessageChunk>),
     /// Structured assistant reply with the reasoning channel split out
     /// from the visible content. Produced by Phase 2a's state machine
-    /// (see `pio_gen2::generation::ReplyStateMachine`) and by
+    /// (see `gen2::generation::ReplyStateMachine`) and by
     /// OAI-compat clients that POST back a prior turn with separate
     /// `content` and `reasoning_content` fields.
     ///

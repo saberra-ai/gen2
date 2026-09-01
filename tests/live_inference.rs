@@ -23,7 +23,7 @@
 
 use std::path::PathBuf;
 
-use pio_gen2::{Engine, Event, Finish, Session};
+use gen2::{Engine, Event, Finish, Session};
 
 fn test_model() -> Option<PathBuf> {
     let raw = std::env::var("PIO_TEST_MODEL").ok()?;
@@ -409,10 +409,10 @@ fn tool_model() -> Option<PathBuf> {
     Some(path)
 }
 
-fn weather_tool() -> pio_gen2::ToolSpec {
-    pio_gen2::ToolSpec {
+fn weather_tool() -> gen2::ToolSpec {
+    gen2::ToolSpec {
         r#type: "function".into(),
-        function: pio_gen2::FunctionDefinition {
+        function: gen2::FunctionDefinition {
             name: "get_weather".into(),
             description: Some("Current weather for a city".into()),
             arguments: serde_json::json!({
@@ -507,7 +507,7 @@ fn an_agent_dispatches_a_registered_tool_and_answers_from_it() {
         .run_streaming(
             Some("What is the weather in Paris? Use the tool.".into()),
             |step| {
-                if let pio_gen2::AgentStep::Calling { tool, .. } = step {
+                if let gen2::AgentStep::Calling { tool, .. } = step {
                     calls.push(tool.to_string());
                 }
             },
@@ -545,7 +545,7 @@ fn an_agent_hydrates_a_deferred_tool_through_search() {
         .agent(&mut session)
         .add_tool(weather_agent_tool())
         .defer_tool(resize_agent_tool())
-        .tool_search(pio_gen2::ToolSearch::Bm25)
+        .tool_search(gen2::ToolSearch::Bm25)
         .max_steps(4)
         .run_streaming(
             Some(
@@ -554,7 +554,7 @@ fn an_agent_hydrates_a_deferred_tool_through_search() {
                     .into(),
             ),
             |step| {
-                if let pio_gen2::AgentStep::Calling { tool, .. } = step {
+                if let gen2::AgentStep::Calling { tool, .. } = step {
                     calls.push(tool.to_string());
                 }
             },
@@ -562,43 +562,40 @@ fn an_agent_hydrates_a_deferred_tool_through_search() {
         .expect("the agent should complete");
 
     assert!(
-        calls.contains(&pio_gen2::SEARCH_TOOL.to_string()),
+        calls.contains(&gen2::SEARCH_TOOL.to_string()),
         "the model should have searched, got {calls:?}"
     );
 }
 
-fn weather_agent_tool() -> pio_gen2::FunctionTool<WeatherArgs> {
-    pio_gen2::FunctionTool::new(
+fn weather_agent_tool() -> gen2::FunctionTool<WeatherArgs> {
+    gen2::FunctionTool::new(
         "get_weather",
         "Current weather for a city",
         |_ctx, a: WeatherArgs| async move {
-            Ok(pio_gen2::ToolOutput::Json(serde_json::json!({
+            Ok(gen2::ToolOutput::Json(serde_json::json!({
                 "city": a.city, "temp_c": 18, "sky": "clear"
             })))
         },
     )
 }
 
-fn resize_agent_tool() -> pio_gen2::FunctionTool<ResizeArgs> {
-    pio_gen2::FunctionTool::new(
+fn resize_agent_tool() -> gen2::FunctionTool<ResizeArgs> {
+    gen2::FunctionTool::new(
         "resize_image",
         "Shrink a picture to a smaller width",
         |_ctx, a: ResizeArgs| async move {
-            Ok(pio_gen2::ToolOutput::from(format!(
-                "resized to {}px",
-                a.width
-            )))
+            Ok(gen2::ToolOutput::from(format!("resized to {}px", a.width)))
         },
     )
 }
 
-#[derive(serde::Deserialize, pio_gen2::schemars::JsonSchema)]
+#[derive(serde::Deserialize, gen2::schemars::JsonSchema)]
 struct WeatherArgs {
     /// City to look up.
     city: String,
 }
 
-#[derive(serde::Deserialize, pio_gen2::schemars::JsonSchema)]
+#[derive(serde::Deserialize, gen2::schemars::JsonSchema)]
 struct ResizeArgs {
     /// Target width in pixels.
     width: u32,
@@ -631,7 +628,7 @@ fn parallel_safe_tools_in_one_turn_run_concurrently() {
                 live: Arc<AtomicUsize>,
                 peak: Arc<AtomicUsize>,
                 total: Arc<AtomicUsize>| {
-        pio_gen2::FunctionTool::new(
+        gen2::FunctionTool::new(
             name,
             format!("Check the {name} system"),
             move |_c, _a: NoArgs| {
@@ -643,7 +640,7 @@ fn parallel_safe_tools_in_one_turn_run_concurrently() {
                     tokio::time::sleep(std::time::Duration::from_millis(300)).await;
                     live.fetch_sub(1, Ordering::SeqCst);
                     total.fetch_add(1, Ordering::SeqCst);
-                    Ok(pio_gen2::ToolOutput::from("ok"))
+                    Ok(gen2::ToolOutput::from("ok"))
                 }
             },
         )
@@ -675,7 +672,7 @@ fn parallel_safe_tools_in_one_turn_run_concurrently() {
     }
 }
 
-#[derive(serde::Deserialize, pio_gen2::schemars::JsonSchema)]
+#[derive(serde::Deserialize, gen2::schemars::JsonSchema)]
 struct NoArgs {}
 
 /// A spawned agent streams updates and can be steered mid-run.
@@ -699,7 +696,7 @@ fn a_spawned_agent_interrupt_cuts_the_generation_short() {
         .max_steps(1)
         .spawn()
     {
-        if let pio_gen2::Update::Delta(t) = update {
+        if let gen2::Update::Delta(t) = update {
             baseline += t.len();
         }
     }
@@ -725,9 +722,9 @@ fn a_spawned_agent_interrupt_cuts_the_generation_short() {
     let mut saw_done = false;
     for update in run {
         match update {
-            pio_gen2::Update::Delta(t) => chars += t.len(),
-            pio_gen2::Update::Done { .. } => saw_done = true,
-            pio_gen2::Update::Failed { error, .. } => panic!("run failed: {error}"),
+            gen2::Update::Delta(t) => chars += t.len(),
+            gen2::Update::Done { .. } => saw_done = true,
+            gen2::Update::Failed { error, .. } => panic!("run failed: {error}"),
             _ => {}
         }
     }

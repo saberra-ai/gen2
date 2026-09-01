@@ -27,8 +27,8 @@ type Handler<A> = Box<
 /// declaration and cannot drift.
 ///
 /// ```no_run
-/// # use pio_gen2::{FunctionTool, ToolOutput};
-/// # use pio_gen2::schemars::JsonSchema;
+/// # use gen2::{FunctionTool, ToolOutput};
+/// # use gen2::schemars::JsonSchema;
 /// # use serde::Deserialize;
 /// #[derive(Deserialize, JsonSchema)]
 /// struct WeatherArgs {

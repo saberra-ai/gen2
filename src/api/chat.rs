@@ -18,7 +18,7 @@ use super::stream::{Completion, Finish, TokenStream, Tokens};
 /// managing it.
 ///
 /// ```no_run
-/// # use pio_gen2::{Engine, Session};
+/// # use gen2::{Engine, Session};
 /// # let engine = Engine::load("m.gguf")?;
 /// let mut session = Session::new();
 /// engine.chat(&mut session)
@@ -26,7 +26,7 @@ use super::stream::{Completion, Finish, TokenStream, Tokens};
 ///     .max_tokens(256)
 ///     .send()?;
 /// println!("{}", session.latest_text().unwrap_or_default());
-/// # Ok::<(), pio_gen2::Error>(())
+/// # Ok::<(), gen2::Error>(())
 /// ```
 #[must_use = "a Chat does nothing until .send(), .text(), .stream(), or .tokens() is called"]
 pub struct Chat<'a> {
@@ -77,13 +77,13 @@ impl<'a> Chat<'a> {
     /// [`EngineBuilder::mmproj`](super::EngineBuilder::mmproj).
     ///
     /// ```no_run
-    /// # use pio_gen2::{Engine, Session};
+    /// # use gen2::{Engine, Session};
     /// # let engine = Engine::load("m.gguf")?;
     /// # let mut session = Session::new();
     /// engine.chat(&mut session)
     ///     .user_with_images("What is in this picture?", ["/tmp/photo.png"])
     ///     .send()?;
-    /// # Ok::<(), pio_gen2::Error>(())
+    /// # Ok::<(), gen2::Error>(())
     /// ```
     pub fn user_with_images<I, P>(self, text: impl Into<String>, images: I) -> Self
     where
@@ -216,7 +216,7 @@ impl<'a> Chat<'a> {
     /// results that came back. `f` returns the tool's output as text.
     ///
     /// ```no_run
-    /// # use pio_gen2::{Engine, Session};
+    /// # use gen2::{Engine, Session};
     /// # let engine = Engine::load("m.gguf")?;
     /// # let mut session = Session::new();
     /// # let (tools, prompt) = (vec![], String::new());
@@ -229,7 +229,7 @@ impl<'a> Chat<'a> {
     ///     })
     ///     .send()?;
     /// println!("answered after {} tool rounds", done.tool_rounds);
-    /// # Ok::<(), pio_gen2::Error>(())
+    /// # Ok::<(), gen2::Error>(())
     /// ```
     pub fn on_tool(mut self, f: impl FnMut(&ToolCall) -> String + 'a) -> Self {
         self.handler = Some(Box::new(f));

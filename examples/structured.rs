@@ -9,7 +9,7 @@
 //! cargo run --example structured --no-default-features --features metal -- /path/model.gguf
 //! ```
 
-use pio_gen2::{Engine, GrammarSpec};
+use gen2::{Engine, GrammarSpec};
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]

@@ -4,7 +4,7 @@
 //! cargo run --example tools --no-default-features --features metal -- /path/model.gguf
 //! ```
 
-use pio_gen2::{Engine, FunctionDefinition, Session, ToolSpec};
+use gen2::{Engine, FunctionDefinition, Session, ToolSpec};
 
 fn weather_tool() -> ToolSpec {
     ToolSpec {

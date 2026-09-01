@@ -29,7 +29,7 @@ Pick by what you need to keep.
 For a classification, a title, an extraction. There's no session to read back.
 
 ```rust
-use pio_gen2::Engine;
+use gen2::Engine;
 
 let engine = Engine::load("/models/model.gguf")?;
 
@@ -39,7 +39,7 @@ let title = engine.infer("Title this in three words: …").max_tokens(16).text()
 Constrain the shape when you need to parse the answer:
 
 ```rust
-use pio_gen2::GrammarSpec;
+use gen2::GrammarSpec;
 
 let json = engine.infer("Classify the sentiment of: '…'")
     .grammar(GrammarSpec::JsonSchema(schema))
@@ -54,7 +54,7 @@ The reply is appended to a `Session` you hold, so the transcript is yours to
 render, persist, or edit.
 
 ```rust
-use pio_gen2::{Engine, Session};
+use gen2::{Engine, Session};
 
 let engine = Engine::load("/models/model.gguf")?;
 let mut session = Session::new().with_system("Be terse.");
@@ -82,7 +82,7 @@ Off-thread, so the caller never blocks. The session comes back on `Done`:
 
 ```rust
 use std::sync::Arc;
-use pio_gen2::Update;
+use gen2::Update;
 
 let engine = Arc::new(engine);
 let turn = engine.chat_owned(session).user("Hello").spawn();
@@ -107,8 +107,8 @@ arguments against that tool's schema, runs it, and decides whether a failure is
 worth handing back.
 
 ```rust
-use pio_gen2::{Engine, FunctionTool, Session, ToolOutput, ToolSearch};
-use pio_gen2::schemars::JsonSchema;
+use gen2::{Engine, FunctionTool, Session, ToolOutput, ToolSearch};
+use gen2::schemars::JsonSchema;
 
 #[derive(serde::Deserialize, JsonSchema)]
 struct WeatherArgs {

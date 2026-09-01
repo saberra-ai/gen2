@@ -1,6 +1,6 @@
 //! The smallest useful program: make a session, stream the reply.
 
-use pio_gen2::{Engine, Session};
+use gen2::{Engine, Session};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let model = std::env::args().nth(1).unwrap();

@@ -1779,6 +1779,64 @@ dependencies = [
 ]
 
 [[package]]
+name = "gen2"
+version = "0.1.0"
+dependencies = [
+ "anyhow",
+ "arc-swap",
+ "async-trait",
+ "bitflags",
+ "byteorder",
+ "bytes",
+ "candle-core",
+ "candle-nn",
+ "candle-transformers",
+ "chrono",
+ "dashmap",
+ "dirs",
+ "encoding_rs",
+ "futures",
+ "half",
+ "hex",
+ "image",
+ "libc",
+ "llama-cpp-2",
+ "llama-cpp-sys-2",
+ "llguidance",
+ "log",
+ "minijinja",
+ "minijinja-contrib",
+ "mlx-rs",
+ "mlxcel",
+ "mlxcel-core",
+ "mockito",
+ "ndarray",
+ "once_cell",
+ "ort",
+ "parking_lot",
+ "rand 0.10.2",
+ "regex",
+ "reqwest 0.13.4",
+ "safetensors 0.8.0",
+ "schemars",
+ "self_cell",
+ "serde",
+ "serde_json",
+ "sha2 0.11.0",
+ "specta",
+ "sysinfo",
+ "tempfile",
+ "thiserror 2.0.20",
+ "tokenizers 0.23.1",
+ "tokio",
+ "toktrie",
+ "tracing",
+ "url",
+ "uuid",
+ "windows-sys 0.61.2",
+]
+
+[[package]]
 name = "generic-array"
 version = "0.14.7"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -3386,64 +3444,6 @@ name = "pin-project-lite"
 version = "0.2.17"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 checksum = "a89322df9ebe1c1578d689c92318e070967d1042b512afbe49518723f4e6d5cd"
-
-[[package]]
-name = "pio-gen2"
-version = "0.1.0"
-dependencies = [
- "anyhow",
- "arc-swap",
- "async-trait",
- "bitflags",
- "byteorder",
- "bytes",
- "candle-core",
- "candle-nn",
- "candle-transformers",
- "chrono",
- "dashmap",
- "dirs",
- "encoding_rs",
- "futures",
- "half",
- "hex",
- "image",
- "libc",
- "llama-cpp-2",
- "llama-cpp-sys-2",
- "llguidance",
- "log",
- "minijinja",
- "minijinja-contrib",
- "mlx-rs",
- "mlxcel",
- "mlxcel-core",
- "mockito",
- "ndarray",
- "once_cell",
- "ort",
- "parking_lot",
- "rand 0.10.2",
- "regex",
- "reqwest 0.13.4",
- "safetensors 0.8.0",
- "schemars",
- "self_cell",
- "serde",
- "serde_json",
- "sha2 0.11.0",
- "specta",
- "sysinfo",
- "tempfile",
- "thiserror 2.0.20",
- "tokenizers 0.23.1",
- "tokio",
- "toktrie",
- "tracing",
- "url",
- "uuid",
- "windows-sys 0.61.2",
-]
 
 [[package]]
 name = "pkg-config"

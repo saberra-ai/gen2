@@ -3,7 +3,7 @@
 //! Load a model, hold a conversation, read tokens back:
 //!
 //! ```no_run
-//! use pio_gen2::{Engine, Session};
+//! use gen2::{Engine, Session};
 //!
 //! let engine = Engine::load("/models/model.gguf")?;
 //!
@@ -17,7 +17,7 @@
 //!
 //! // One-off, nothing kept.
 //! let title = engine.infer("Title this in three words.").max_tokens(16).text()?;
-//! # Ok::<(), pio_gen2::Error>(())
+//! # Ok::<(), gen2::Error>(())
 //! ```
 //!
 //! Everything underneath — backend dispatch, session runtime, KV cache, the

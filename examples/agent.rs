@@ -4,8 +4,8 @@
 //! cargo run --example agent --no-default-features --features metal -- /path/model.gguf
 //! ```
 
-use pio_gen2::schemars::JsonSchema;
-use pio_gen2::{AgentStep, Engine, ExecutionPolicy, FunctionTool, Session, ToolOutput, ToolSearch};
+use gen2::schemars::JsonSchema;
+use gen2::{AgentStep, Engine, ExecutionPolicy, FunctionTool, Session, ToolOutput, ToolSearch};
 use serde::Deserialize;
 
 #[derive(Deserialize, JsonSchema)]

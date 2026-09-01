@@ -202,7 +202,7 @@ impl OwnedChat {
     ///
     /// ```no_run
     /// # use std::sync::Arc;
-    /// # use pio_gen2::{Engine, Session, Update};
+    /// # use gen2::{Engine, Session, Update};
     /// # let engine = Arc::new(Engine::load("m.gguf")?);
     /// let turn = engine.chat_owned(Session::new()).user("Hello").spawn();
     ///
@@ -216,7 +216,7 @@ impl OwnedChat {
     ///         _ => {}
     ///     }
     /// }
-    /// # Ok::<(), pio_gen2::Error>(())
+    /// # Ok::<(), gen2::Error>(())
     /// ```
     pub fn spawn(self) -> Turn {
         let (tx, rx) = channel();

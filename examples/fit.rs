@@ -4,7 +4,7 @@
 //! cargo run --example fit --no-default-features --features metal -- /path/model.gguf
 //! ```
 
-use pio_gen2::{Engine, HardwareProfile, ModelInfo};
+use gen2::{Engine, HardwareProfile, ModelInfo};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let path = std::env::args().nth(1).ok_or("usage: fit <model.gguf>")?;

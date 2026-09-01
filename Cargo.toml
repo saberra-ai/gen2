@@ -1,5 +1,5 @@
 [package]
-name = "pio-gen2"
+name = "gen2"
 version = "0.1.0"
 description = "gen2 — pluggable-backend local inference engine (llama.cpp / MLX / ONNX / Candle / ExecuTorch / external API)"
 authors = ["Victor Lopez"]
@@ -8,7 +8,7 @@ license = "MIT"
 repository = "https://github.com/saberra-ai/gen2"
 
 [lib]
-name = "pio_gen2"
+name = "gen2"
 path = "src/lib.rs"
 
 [dependencies]

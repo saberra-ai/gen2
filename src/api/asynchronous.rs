@@ -36,8 +36,8 @@ impl OwnedChat {
     /// ```no_run
     /// # use std::sync::Arc;
     /// # use futures::StreamExt;
-    /// # use pio_gen2::{Engine, Session, Update};
-    /// # async fn demo() -> Result<(), pio_gen2::Error> {
+    /// # use gen2::{Engine, Session, Update};
+    /// # async fn demo() -> Result<(), gen2::Error> {
     /// # let engine = Arc::new(Engine::load("m.gguf")?);
     /// let mut turn = engine.chat_owned(Session::new()).user("Hello").spawn_async();
     ///
@@ -124,8 +124,8 @@ impl OwnedAgent {
     /// ```no_run
     /// # use std::sync::Arc;
     /// # use futures::StreamExt;
-    /// # use pio_gen2::{Engine, Session, Update};
-    /// # async fn demo() -> Result<(), pio_gen2::Error> {
+    /// # use gen2::{Engine, Session, Update};
+    /// # async fn demo() -> Result<(), gen2::Error> {
     /// # let engine = Arc::new(Engine::load("m.gguf")?);
     /// let mut run = engine.agent_owned(Session::new())
     ///     .goal("Summarise the repository")

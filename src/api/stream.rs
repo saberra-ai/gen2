@@ -169,12 +169,12 @@ impl TokenStream {
     /// For when you want to stream tokens but not match on event kinds:
     ///
     /// ```no_run
-    /// # use pio_gen2::Engine;
+    /// # use gen2::Engine;
     /// # let engine = Engine::load("m.gguf")?;
     /// for token in engine.infer("hi").tokens()? {
     ///     print!("{}", token?);
     /// }
-    /// # Ok::<(), pio_gen2::Error>(())
+    /// # Ok::<(), gen2::Error>(())
     /// ```
     pub fn tokens(self) -> Tokens {
         Tokens { inner: self }
