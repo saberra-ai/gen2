@@ -40,13 +40,12 @@ impl Tool for McpTool {
 
         // MCP returns content blocks; the model wants text. Concatenating is
         // lossy for images, which is honest until ToolOutput carries them.
-        let text = result
-            .content
-            .iter()
-            .map(|b| b.text.as_str())
-            .filter(|t| !t.is_empty())
-            .collect::<Vec<_>>()
-            .join("\n");
+        //
+        // Through `CallToolResult::text`, so the two agree on what counts as
+        // text. Reading `text` off every block regardless of type — which this
+        // used to do — splices a non-text block's payload into the model's
+        // transcript for any server that populates that field.
+        let text = result.text();
 
         if result.is_error {
             // The server ran the tool and it failed — the model can react to

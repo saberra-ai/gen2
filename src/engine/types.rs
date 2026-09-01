@@ -959,7 +959,6 @@ pub struct ModelParamsInput {
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct CtxParamsInput {
     pub n_ctx: Option<u32>,
-    pub seed: Option<u64>,
     pub threads: Option<u32>,
 }
 

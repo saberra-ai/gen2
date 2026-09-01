@@ -959,12 +959,17 @@ mod tests {
     }
 
     #[test]
-    fn gemma_4_linux_cpu_routes_to_candle_safetensors() {
+    fn gemma_4_linux_cpu_routes_to_a_backend_that_can_generate() {
+        // It used to route to Candle and safetensors. Candle's `start_session`
+        // returns `Unimplemented` and no feature bundle compiles it in, so a
+        // Linux CPU box selecting gemma-4 downloaded weights and then could not
+        // generate from them. It now takes the same GGUF as every other
+        // non-Apple platform.
         let zoo = ModelZoo::bundled();
         let gemma = zoo.get("gemma-4").expect("gemma-4 bundled");
         let bundle = gemma.platforms.get("linux_cpu").unwrap();
-        assert_eq!(bundle.backend, "candle");
-        assert!(bundle.source.ends_with("safetensors"));
+        assert_eq!(bundle.backend, "llamacpp");
+        assert!(bundle.source.contains("GGUF"));
     }
 
     #[test]
@@ -1932,14 +1937,11 @@ mod tests {
     }
 
     #[test]
-    fn a_backend_that_cannot_generate_yet_is_confined_to_the_routes_that_already_use_it() {
-        // `gemma-4/linux_cpu` is the one route pointing at a scaffold
-        // backend. It is a real gap — a Linux CPU box selecting gemma-4
-        // downloads safetensors and then gets `Unimplemented` from
-        // `start_session`, and no feature bundle in Cargo.toml even
-        // compiles `backend-candle` in — but it predates this test and
-        // fixing it is a routing decision, not a test fix. What this
-        // guards is that the gap does not spread to new entries.
+    fn no_bundle_is_routed_to_a_backend_that_cannot_generate() {
+        // `gemma-4/linux_cpu` used to point at Candle, whose `start_session`
+        // returns `Unimplemented`. That is now fixed, and this holds the line:
+        // routing a download at a backend that cannot consume it wastes the
+        // user's bandwidth and fails at the last possible moment.
         let zoo = ModelZoo::bundled();
         let mut routes: Vec<String> = zoo
             .models
@@ -1957,7 +1959,7 @@ mod tests {
         routes.sort();
         assert_eq!(
             routes,
-            vec!["gemma-4/linux_cpu -> candle".to_string()],
+            Vec::<String>::new(),
             "a bundle was routed to a backend that cannot generate yet; either finish that \
              backend or point the platform at llamacpp",
         );

@@ -37,11 +37,11 @@
           "min_ram_mb": 8192
         },
         "linux_cpu": {
-          "backend": "candle",
-          "source": "unsloth/gemma-4-E4B.safetensors",
-          "file": "gemma-4-E4B.safetensors",
-          "min_ram_mb": 12288
-        },
+        "backend": "llamacpp",
+        "source": "unsloth/gemma-4-E2B-it-GGUF",
+        "file": "gemma-4-E2B-it-Q4_K_M.gguf",
+        "min_ram_mb": 8192
+      },
         "windows": {
           "backend": "llamacpp",
           "source": "unsloth/gemma-4-E2B-it-GGUF",

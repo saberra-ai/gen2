@@ -354,3 +354,30 @@ async fn every_tool_from_one_server_shares_the_one_connection() {
     })
     .await;
 }
+
+/// The two paths that turn content blocks into text must agree on which
+/// blocks count. A server that puts a payload in a non-text block's `text`
+/// field would otherwise have it spliced into the model's transcript.
+#[test]
+fn only_text_blocks_reach_the_model() {
+    let result = crate::mcp::protocol::CallToolResult {
+        content: vec![
+            crate::mcp::protocol::ContentBlock {
+                block_type: "text".into(),
+                text: "the answer".into(),
+            },
+            crate::mcp::protocol::ContentBlock {
+                block_type: "image".into(),
+                text: "PAYLOAD THAT IS NOT TEXT".into(),
+            },
+        ],
+        is_error: false,
+    };
+
+    let joined = result.text();
+    assert!(joined.contains("the answer"));
+    assert!(
+        !joined.contains("PAYLOAD"),
+        "a non-text block reached the model's transcript: {joined:?}"
+    );
+}

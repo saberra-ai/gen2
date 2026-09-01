@@ -108,12 +108,39 @@ pub fn parse_blob(bytes: &[u8]) -> anyhow::Result<(KvHeader, &[u8])> {
     Ok((header, payload))
 }
 
+/// Write a blob so that the path either holds the previous contents or the new
+/// ones, never a prefix of the new ones.
+///
+/// `File::create` truncates first, so a crash between that and the last write
+/// leaves a short file at the real path. The digests catch it on the next read
+/// and it degrades to a cache miss rather than corruption — but the miss is
+/// avoidable. Writing to a sibling and renaming makes the switch atomic on
+/// every platform this runs on, and the temp file carries the process id so two
+/// writers cannot collide on it.
 pub fn write_to_path(path: &Path, bytes: &[u8]) -> anyhow::Result<()> {
     if let Some(parent) = path.parent() {
         fs::create_dir_all(parent)?;
     }
-    let mut f = fs::File::create(path).with_context(|| format!("create {}", path.display()))?;
-    f.write_all(bytes)?;
+
+    let temp = path.with_extension(format!("tmp-{}", std::process::id()));
+    let write = (|| -> anyhow::Result<()> {
+        let mut f =
+            fs::File::create(&temp).with_context(|| format!("create {}", temp.display()))?;
+        f.write_all(bytes)?;
+        // Durable before the rename, so a crash cannot leave the name pointing
+        // at bytes that never reached the disk.
+        f.sync_all()?;
+        Ok(())
+    })();
+
+    if let Err(e) = write {
+        // Leaving a stray temp file behind would grow the store without ever
+        // being read, and the budget sweep only knows about real entries.
+        let _ = fs::remove_file(&temp);
+        return Err(e);
+    }
+
+    fs::rename(&temp, path).with_context(|| format!("rename into {}", path.display()))?;
     Ok(())
 }
 
@@ -167,6 +194,44 @@ mod tests {
         write_to_path(tmp.path(), &blob).unwrap();
         let back = read_from_path(tmp.path()).unwrap();
         assert_eq!(&back[..], &blob[..]);
+    }
+
+    #[test]
+    fn a_write_leaves_no_temp_file_behind() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("cache.kv");
+        write_to_path(&path, b"payload").unwrap();
+
+        let strays: Vec<_> = std::fs::read_dir(dir.path())
+            .unwrap()
+            .flatten()
+            .map(|e| e.file_name().to_string_lossy().into_owned())
+            .filter(|n| n != "cache.kv")
+            .collect();
+        assert!(
+            strays.is_empty(),
+            "the write left {strays:?} in the store, which nothing will ever read \
+             and the budget sweep does not know about"
+        );
+        assert_eq!(std::fs::read(&path).unwrap(), b"payload");
+    }
+
+    #[test]
+    fn overwriting_keeps_the_old_blob_readable_until_the_new_one_is_whole() {
+        // The reason for the rename: a reader either sees the previous blob or
+        // the new one, never a prefix of the new one.
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("cache.kv");
+        write_to_path(&path, b"first version").unwrap();
+        write_to_path(&path, b"second, longer version").unwrap();
+        assert_eq!(std::fs::read(&path).unwrap(), b"second, longer version");
+
+        write_to_path(&path, b"short").unwrap();
+        assert_eq!(
+            std::fs::read(&path).unwrap(),
+            b"short",
+            "a shorter blob must replace the longer one whole, not overwrite its front"
+        );
     }
 
     #[test]

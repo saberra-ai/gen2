@@ -161,6 +161,22 @@ impl Iterator for TokenPuller {
                         }
                     };
 
+                    // An error object mid-stream ends the generation. Skipping
+                    // it — which this used to do, falling through to "no
+                    // choices, continue" — hands the caller a truncated answer
+                    // marked complete, and the Anthropic puller has always
+                    // surfaced its equivalent.
+                    if let Some(message) = json
+                        .get("error")
+                        .and_then(|e| e.get("message"))
+                        .and_then(|m| m.as_str())
+                    {
+                        self.done = true;
+                        return Some(Err(ExecError::Other(anyhow::anyhow!(
+                            "OpenAI API error: {message}"
+                        ))));
+                    }
+
                     // Extract content from choices[0].delta.content
                     let content = json
                         .get("choices")

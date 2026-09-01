@@ -306,17 +306,30 @@ fn max_tokens_caps_the_number_of_tokens_the_caller_sees() {
 }
 
 #[test]
-fn a_mid_stream_error_object_is_currently_indistinguishable_from_a_clean_end() {
-    // Documenting a real gap rather than a design: the OpenAI-format parser
-    // reads only `delta.content` and `finish_reason`, so a provider that
-    // aborts with `data: {"error": ...}` mid-stream leaves the caller holding
-    // a truncated answer marked complete. The Anthropic parser in this same
-    // directory *does* surface `event: error`, so the two disagree.
+fn a_mid_stream_error_object_ends_the_stream_as_an_error() {
+    // A provider that aborts with `data: {"error": ...}` must not leave the
+    // caller holding a truncated answer marked complete. The Anthropic parser
+    // in this same directory always surfaced its `event: error`; this one used
+    // to skip the object and reach `[DONE]` or EOF as though nothing had gone
+    // wrong.
     let body = stream(&[
         &chunk("partial"),
         "data: {\"error\":{\"message\":\"upstream exploded\",\"type\":\"server_error\"}}\n\n",
     ]);
     let x = Wire::openai().sse(&body).run();
 
-    assert_eq!(x.trace(), vec!["token:partial", "eos"]);
+    let trace = x.trace();
+    assert_eq!(
+        trace.first().map(String::as_str),
+        Some("token:partial"),
+        "what arrived before the error still belongs to the caller: {trace:?}"
+    );
+    assert!(
+        trace.last().is_some_and(|t| t.starts_with("err")),
+        "the stream must end as an error, not as a clean finish: {trace:?}"
+    );
+    assert!(
+        !trace.iter().any(|t| t == "eos"),
+        "an aborted stream is not an end-of-sequence: {trace:?}"
+    );
 }

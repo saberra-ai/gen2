@@ -730,8 +730,15 @@ impl Session {
             )
             .max(128)
         });
+        // `kv_token_count` comes off the blob header. It is inside the header
+        // digest now, so it is no longer attacker-chosen, but a wrong number
+        // here should decline the cache rather than wrap and silently accept a
+        // state that does not fit.
         let restored_n = hdr.meta.kv_token_count as usize;
-        if restored_n + delta_tokens.len() + 64 >= ctx_size as usize {
+        let needed = restored_n
+            .saturating_add(delta_tokens.len())
+            .saturating_add(64);
+        if needed >= ctx_size as usize {
             miss!(format!(
                 "restored state ({restored_n} tokens) + delta ({}) won't fit ctx {ctx_size}",
                 delta_tokens.len()
