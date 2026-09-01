@@ -7,7 +7,7 @@ use crate::types::message::{Message, Tool};
 
 use super::engine::{Engine, event_channel};
 use super::error::Result;
-use super::stream::TokenStream;
+use super::stream::{Completion, TokenStream, Tokens};
 
 /// A turn being built.
 ///
@@ -89,6 +89,10 @@ impl<'e> Chat<'e> {
     }
 
     /// Seed the sampler, making a given temperature reproducible.
+    ///
+    /// Pairs with [`Chat::greedy`] in either order: `greedy()` only supplies a
+    /// seed when you haven't set one, so `.seed(42).greedy()` and
+    /// `.greedy().seed(42)` both end at temperature 0 with seed 42.
     pub fn seed(mut self, seed: u64) -> Self {
         self.spec.seed = Some(seed);
         self
@@ -98,7 +102,7 @@ impl<'e> Chat<'e> {
     ///
     /// Worth naming, because it is *not* the default — an unconfigured turn
     /// samples with a random seed, so the same prompt gives different text
-    /// each run.
+    /// each run. Keeps an explicit [`Chat::seed`] if one was set.
     pub fn greedy(mut self) -> Self {
         self.spec.temperature = Some(0.0);
         self.spec.seed = Some(self.spec.seed.unwrap_or(0));
@@ -201,6 +205,22 @@ impl<'e> Chat<'e> {
     /// Generate, invoking `on_token` per fragment, and return the full text.
     pub fn text_streaming(self, on_token: impl FnMut(&str)) -> Result<String> {
         self.stream()?.text_streaming(on_token)
+    }
+
+    /// Generate and return everything that happened — text, finish reason,
+    /// timing, tool calls, and whether context had to be shed.
+    pub fn complete(self) -> Result<Completion> {
+        self.stream()?.complete()
+    }
+
+    /// [`Self::complete`], with `on_token` called per fragment as it arrives.
+    pub fn complete_streaming(self, on_token: impl FnMut(&str)) -> Result<Completion> {
+        self.stream()?.complete_streaming(on_token)
+    }
+
+    /// Generate and iterate the text fragments, without matching event kinds.
+    pub fn tokens(self) -> Result<Tokens> {
+        Ok(self.stream()?.tokens())
     }
 }
 

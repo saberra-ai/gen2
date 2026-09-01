@@ -159,7 +159,9 @@ pub(crate) mod zoo;
 // `controller` itself.
 
 /// The primary API — see [`api`].
-pub use api::{Chat, Engine, EngineBuilder, Error, Event, Finish, Result, TokenStream};
+pub use api::{
+    Chat, Completion, Engine, EngineBuilder, Error, Event, Finish, Result, TokenStream, Tokens,
+};
 
 /// Commands, events, and handles — see [`controller`].
 pub use controller::{

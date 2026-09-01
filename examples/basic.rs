@@ -6,7 +6,7 @@
 
 use std::io::Write;
 
-use pio_gen2::{Engine, Event};
+use pio_gen2::Engine;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let model = std::env::args().nth(1).ok_or("usage: basic <model.gguf>")?;
@@ -49,24 +49,33 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .text()?;
     println!("recalled: {recalled}\n");
 
-    // ── 4. When you want the events, not just the text ──────────────────────
-    let mut stream = engine
+    // ── 4. The text plus what happened, in one value ────────────────────────
+    let done = engine
         .prompt("Name three colours.")
         .max_tokens(64)
-        .stream()?;
+        .complete()?;
 
-    let mut tokens = 0;
-    for event in &mut stream {
-        // `?` here because a decode failure arrives as `Err` — the stream never
-        // just ends early and lets a partial reply look complete.
-        match event? {
-            Event::Token(_) => tokens += 1,
-            Event::Stats(s) => println!("\n{} tokens at {:.1} tok/s", s.decode_tokens, s.avg_tps),
-            Event::ContextTruncated { dropped } => eprintln!("dropped {dropped} old messages"),
-            _ => {}
-        }
+    println!("text: {}", done.text);
+    println!("finished: {:?}", done.finish);
+    if let Some(s) = &done.stats {
+        println!("{} tokens at {:.1} tok/s", s.decode_tokens, s.avg_tps);
     }
-    println!("streamed {tokens} tokens, finished: {:?}", stream.finish());
+    if done.context_was_shed() {
+        eprintln!(
+            "shed context: {} dropped, {} compacted",
+            done.dropped, done.compacted
+        );
+    }
+
+    // ── 5. Or just the tokens, as an iterator ───────────────────────────────
+    print!("tokens: ");
+    for token in engine.prompt("Count to three.").max_tokens(32).tokens()? {
+        print!("{}", token?);
+    }
+    println!();
+
+    // The full `Event` stream is still there via `.stream()` when you need
+    // media boundaries or tool calls as they arrive.
 
     // Dropping `engine` here stops the controller and waits for the backend to
     // be released. Nothing to remember.

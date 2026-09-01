@@ -25,4 +25,4 @@ mod stream;
 pub use chat::Chat;
 pub use engine::{Engine, EngineBuilder};
 pub use error::{Error, Result};
-pub use stream::{Event, Finish, TokenStream};
+pub use stream::{Completion, Event, Finish, TokenStream, Tokens};
