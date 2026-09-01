@@ -1,4 +1,4 @@
-# pio-gen2
+# gen2
 
 A local-first inference engine with pluggable backends. Load a model, run a
 turn, stream tokens back — the same API whether the weights are running through
