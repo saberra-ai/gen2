@@ -61,6 +61,20 @@ pub enum Step {
 }
 
 impl Step {
+    /// A tool call, as the cross-backend parser would have extracted it.
+    pub fn tool_call(name: &str, arguments: &str) -> Self {
+        Self::Emit(TokenEvent::ToolCall(crate::generation::ToolCall {
+            id: None,
+            name: name.to_string(),
+            arguments: arguments.to_string(),
+        }))
+    }
+
+    /// End of generation.
+    pub fn eos() -> Self {
+        Self::Emit(TokenEvent::Eos)
+    }
+
     /// A plain text token.
     pub fn token(text: &str) -> Self {
         Self::Emit(TokenEvent::Token(crate::generation::Token {
@@ -165,9 +179,13 @@ pub type CallLog = Vec<String>;
 #[derive(Default)]
 struct Inner {
     calls: CallLog,
-    /// The program every session's first pull runs. A second pull on the same
-    /// session replays it, which matches how a continued chat behaves.
+    /// The program every pull runs, when no per-turn script was given.
     program: Vec<Step>,
+    /// One program per turn, consumed in order. Takes precedence over
+    /// `program`; see [`Script::turns`].
+    turns: Vec<Vec<Step>>,
+    /// How many pulls have happened, which is the index into `turns`.
+    turn: usize,
     load_result: Option<ErrorFn>,
     start_session_result: Option<ErrorFn>,
     pull_result: Option<ErrorFn>,
@@ -221,6 +239,17 @@ impl Script {
     /// stream that ends badly, or does not end at all.
     pub fn program(self, steps: impl IntoIterator<Item = Step>) -> Self {
         self.inner.lock().unwrap().program = steps.into_iter().collect();
+        self
+    }
+
+    /// Script each turn separately, in order.
+    ///
+    /// An agent loop pulls once per round, so a single fixed program would
+    /// replay the same tool call forever. This is how a run that calls a tool
+    /// and then answers is expressed. Once the turns run out, every further
+    /// pull is a bare `Eos`, which ends the loop rather than hanging it.
+    pub fn turns(self, turns: impl IntoIterator<Item = Vec<Step>>) -> Self {
+        self.inner.lock().unwrap().turns = turns.into_iter().collect();
         self
     }
 
@@ -517,7 +546,23 @@ impl BackendSession for FakeSession {
         if let Some(fail) = self.script.inner.lock().unwrap().pull_result.as_ref() {
             return Err(fail());
         }
-        let program = self.script.inner.lock().unwrap().program.clone();
+        let program = {
+            let mut inner = self.script.inner.lock().unwrap();
+            if inner.turns.is_empty() {
+                inner.program.clone()
+            } else {
+                let at = inner.turn;
+                inner.turn += 1;
+                // Past the end of the script, end the turn rather than
+                // replaying it: an agent loop that keeps pulling would
+                // otherwise never terminate.
+                inner
+                    .turns
+                    .get(at)
+                    .cloned()
+                    .unwrap_or_else(|| vec![Step::eos()])
+            }
+        };
         Ok(Box::new(FakePuller {
             program,
             at: 0,

@@ -746,6 +746,7 @@ fn run_batch(
         });
         let denial = registry.get(&call.name).and_then(|tool| {
             if approval == ApprovalMode::AskOnRisky
+                && tool.risk() == Risk::Risky
                 && let Some(f) = on_approval.as_deref_mut()
                 && let Decision::Deny(why) = f(&call.name, &args, tool.spec())
             {
@@ -824,6 +825,7 @@ fn dispatch(
     };
 
     if approval == ApprovalMode::AskOnRisky
+        && tool.risk() == Risk::Risky
         && let Some(f) = on_approval
         && let Decision::Deny(why) = f(&call.name, args, tool.spec())
     {

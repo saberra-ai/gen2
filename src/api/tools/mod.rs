@@ -24,6 +24,10 @@ pub use set::{IntoTool, ToolSet};
 pub use skill::{Skill, SkillLibrary};
 pub use spec::{ToolLoading, ToolSpec};
 
+/// Re-exported so a tool can declare its risk where the tool is written,
+/// rather than reaching across into the agent module.
+pub use super::agent::{Decision, Risk};
+
 /// Anything the model can call.
 ///
 /// Implement it directly for stateful tools, or use [`FunctionTool`] to build
@@ -47,6 +51,17 @@ pub trait Tool: Send + Sync {
     /// How this tool may be scheduled. Defaults to fully parallel.
     fn execution_policy(&self) -> ExecutionPolicy {
         ExecutionPolicy::default()
+    }
+
+    /// Whether this tool needs a human's say-so before it runs.
+    ///
+    /// Only consulted under
+    /// [`ApprovalMode::AskOnRisky`](crate::ApprovalMode::AskOnRisky). Safe by
+    /// default: a tool that reads is not something to interrupt someone over,
+    /// and a gate that fires on everything trains people to approve without
+    /// reading.
+    fn risk(&self) -> Risk {
+        Risk::Safe
     }
 }
 

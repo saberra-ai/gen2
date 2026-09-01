@@ -8,7 +8,7 @@ use async_trait::async_trait;
 use schemars::JsonSchema;
 use serde::de::DeserializeOwned;
 
-use super::{ExecutionPolicy, Tool, ToolContext, ToolError, ToolOutput, ToolSpec};
+use super::{ExecutionPolicy, Risk, Tool, ToolContext, ToolError, ToolOutput, ToolSpec};
 
 type Handler<A> = Box<
     dyn for<'a> Fn(
@@ -48,6 +48,7 @@ pub struct FunctionTool<A> {
     spec: ToolSpec,
     handler: Handler<A>,
     policy: ExecutionPolicy,
+    risk: Risk,
     _args: PhantomData<fn(A)>,
 }
 
@@ -68,6 +69,7 @@ where
             spec: ToolSpec::new(name, description, schema),
             handler: Box::new(move |ctx, args| Box::pin(f(ctx, args))),
             policy: ExecutionPolicy::default(),
+            risk: Risk::Safe,
             _args: PhantomData,
         }
     }
@@ -76,6 +78,25 @@ where
     #[must_use]
     pub fn with_policy(mut self, policy: ExecutionPolicy) -> Self {
         self.policy = policy;
+        self
+    }
+
+    /// Declare that this tool needs approval under
+    /// [`ApprovalMode::AskOnRisky`](crate::ApprovalMode::AskOnRisky).
+    ///
+    /// ```
+    /// # use gen2::{FunctionTool, ToolOutput};
+    /// # use schemars::JsonSchema;
+    /// # #[derive(serde::Deserialize, JsonSchema)]
+    /// # struct Path { path: String }
+    /// let delete = FunctionTool::new("delete_file", "Delete a file", |_c, a: Path| async move {
+    ///     Ok(ToolOutput::from(format!("deleted {}", a.path)))
+    /// })
+    /// .risky();
+    /// ```
+    #[must_use]
+    pub fn risky(mut self) -> Self {
+        self.risk = Risk::Risky;
         self
     }
 }
@@ -87,6 +108,10 @@ where
 {
     fn spec(&self) -> &ToolSpec {
         &self.spec
+    }
+
+    fn risk(&self) -> Risk {
+        self.risk
     }
 
     async fn call(

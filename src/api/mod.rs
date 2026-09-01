@@ -63,3 +63,7 @@ pub use tools::{
 /// Session invariants under generated operation sequences.
 #[cfg(test)]
 mod session_props;
+
+/// Agent-loop contracts, on scripted model behaviour.
+#[cfg(test)]
+mod agent_contract_tests;

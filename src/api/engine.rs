@@ -663,6 +663,45 @@ impl EngineBuilder {
     }
 }
 
+#[cfg(test)]
+impl Engine {
+    /// An engine over a scripted backend, with a model already loaded.
+    ///
+    /// The seam agent tests use. Real model behaviour is probabilistic — an
+    /// agent test that needs the model to emit two tool calls can only hope it
+    /// does — so the loop's own contracts (dispatch, budgets, approval,
+    /// steering, scheduling) are tested against a script instead, and the live
+    /// tests prove a real backend implements the same contract.
+    pub(crate) fn scripted(script: crate::test_support::Script) -> Self {
+        let (handle, join) = crate::controller::start_controller_with_engine(
+            ControllerConfig::default(),
+            script.into_engine_factory(),
+        );
+        let engine = Engine {
+            handle,
+            join: Some(join),
+            sent_through: Mutex::new(HashMap::new()),
+            defaults: GenSpec::default(),
+            generation: std::sync::atomic::AtomicU64::new(0),
+        };
+        let (resp, rx) = channel();
+        engine
+            .send(ControllerCmd::LoadModel {
+                model_path: "/scripted/model.gguf".into(),
+                mmproj_path: None,
+                settings: Default::default(),
+                api_key: None,
+                api_format: None,
+                resp,
+            })
+            .expect("the scripted controller should accept a load");
+        rx.recv()
+            .expect("the scripted controller should answer")
+            .expect("the scripted backend should load");
+        engine
+    }
+}
+
 impl std::fmt::Debug for EngineBuilder {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("EngineBuilder")

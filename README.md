@@ -166,9 +166,11 @@ Approval, off by default:
 ```rust
 use gen2::{ApprovalMode, Decision};
 
+let delete_file = FunctionTool::new("delete_file", "Delete a file", handler).risky();
+
 engine.agent(&mut session)
-    .add_tool(delete_file)                       // declares Risk::Risky
-    .approval(ApprovalMode::AskOnRisky)
+    .add_tool(delete_file)
+    .approval(ApprovalMode::AskOnRisky)          // safe tools are not asked about
     .on_approval(|name, args, _spec| match confirm(name, args) {
         true => Decision::Allow,
         false => Decision::Deny("user declined".into()),
