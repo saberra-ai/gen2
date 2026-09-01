@@ -1436,7 +1436,7 @@ mod tests {
             .expect("send should succeed");
         let result = rx.recv().expect("should receive a response");
         // Cold start: `backend::facade::Engine::new` eagerly instantiates a
-        // backend ONLY for llamacpp/mlx/onnx — for those, `as_backend()` is
+        // backend ONLY for the local ones — for those, `as_backend()` is
         // Some and `upload_settings` succeeds even with no model file loaded.
         // `backend-external-api` (and the no-backend build) start `Uninit` and
         // instantiate lazily on `load_model`, so `upload_settings` short-circuits
@@ -1446,7 +1446,9 @@ mod tests {
         #[cfg(not(any(
             feature = "backend-llamacpp",
             feature = "backend-mlx",
-            feature = "backend-onnx"
+            feature = "backend-mlxcel",
+            feature = "backend-onnx",
+            feature = "backend-mistralrs"
         )))]
         assert!(
             result.is_err(),
@@ -1455,7 +1457,9 @@ mod tests {
         #[cfg(any(
             feature = "backend-llamacpp",
             feature = "backend-mlx",
-            feature = "backend-onnx"
+            feature = "backend-mlxcel",
+            feature = "backend-onnx",
+            feature = "backend-mistralrs"
         ))]
         assert!(
             result.is_ok(),

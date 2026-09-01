@@ -75,6 +75,11 @@ pub enum Engine {
     Onnx(super::onnx::Engine),
     #[cfg(feature = "backend-external-api")]
     ExternalApi(super::external_api::Engine),
+    /// mistral.rs — one backend across GGUF, safetensors, UQFF and HF repos.
+    /// Routed only for formats no other compiled backend claims, so adding it
+    /// to an existing build does not move anyone's models.
+    #[cfg(feature = "backend-mistralrs")]
+    MistralRs(super::mistralrs::MistralRsEngine),
     /// A scripted backend, for tests that need the runtime to misbehave on
     /// demand. Sticky: `ensure_backend` never switches away from it, so a
     /// `LoadModel` for any path still lands on the script.
@@ -98,6 +103,8 @@ impl std::fmt::Debug for Engine {
             Self::Onnx(e) => e.fmt(f),
             #[cfg(feature = "backend-external-api")]
             Self::ExternalApi(e) => e.fmt(f),
+            #[cfg(feature = "backend-mistralrs")]
+            Self::MistralRs(e) => e.fmt(f),
             #[cfg(test)]
             Self::Fake(e) => e.fmt(f),
             Self::Uninit => f.debug_struct("Engine(Uninit)").finish(),
@@ -129,8 +136,22 @@ fn detect_backend(req: &LoadRequest) -> Result<BackendKind, ExecError> {
         && let Some(ext) = path.extension().and_then(|e| e.to_str())
     {
         match ext {
+            // GGUF stays with llama.cpp wherever llama.cpp is compiled.
+            // Adding mistral.rs to an existing build must not silently move
+            // somebody's models to a different implementation.
+            #[cfg(feature = "backend-llamacpp")]
+            "gguf" => return Ok(BackendKind::LlamaCpp),
+            #[cfg(all(not(feature = "backend-llamacpp"), feature = "backend-mistralrs"))]
+            "gguf" => return Ok(BackendKind::MistralRs),
+            // Neither compiled: keep naming llama.cpp, so the failure a
+            // caller sees is the same one they saw before this backend
+            // existed.
+            #[cfg(all(not(feature = "backend-llamacpp"), not(feature = "backend-mistralrs")))]
             "gguf" => return Ok(BackendKind::LlamaCpp),
             "onnx" => return Ok(BackendKind::Onnx),
+            // UQFF is mistral.rs's own format; nothing else reads it.
+            #[cfg(feature = "backend-mistralrs")]
+            "uqff" => return Ok(BackendKind::MistralRs),
             _ => {}
         }
     }
@@ -146,10 +167,32 @@ fn detect_backend(req: &LoadRequest) -> Result<BackendKind, ExecError> {
                 if let Some(ext) = entry.path().extension().and_then(|e| e.to_str())
                     && ext == "safetensors"
                 {
+                    // MLX keeps the Apple path it already had; mistral.rs
+                    // takes safetensors only where MLX is not compiled.
+                    #[cfg(any(feature = "backend-mlx", feature = "backend-mlxcel"))]
+                    return Ok(BackendKind::Mlx);
+                    #[cfg(all(
+                        not(feature = "backend-mlx"),
+                        not(feature = "backend-mlxcel"),
+                        feature = "backend-mistralrs"
+                    ))]
+                    return Ok(BackendKind::MistralRs);
+                    #[cfg(all(
+                        not(feature = "backend-mlx"),
+                        not(feature = "backend-mlxcel"),
+                        not(feature = "backend-mistralrs")
+                    ))]
                     return Ok(BackendKind::Mlx);
                 }
             }
         }
+    }
+
+    // A Hugging Face model directory — config.json and no safetensors that an
+    // Apple backend claimed above.
+    #[cfg(feature = "backend-mistralrs")]
+    if path.is_dir() && path.join("config.json").exists() {
+        return Ok(BackendKind::MistralRs);
     }
 
     // Fallback to the default compiled backend
@@ -167,11 +210,20 @@ fn detect_backend(req: &LoadRequest) -> Result<BackendKind, ExecError> {
         feature = "backend-onnx"
     ))]
     return Ok(BackendKind::Onnx);
+    #[cfg(all(
+        not(feature = "backend-llamacpp"),
+        not(feature = "backend-mlx"),
+        not(feature = "backend-mlxcel"),
+        not(feature = "backend-onnx"),
+        feature = "backend-mistralrs"
+    ))]
+    return Ok(BackendKind::MistralRs);
     #[cfg(not(any(
         feature = "backend-llamacpp",
         feature = "backend-mlx",
         feature = "backend-mlxcel",
-        feature = "backend-onnx"
+        feature = "backend-onnx",
+        feature = "backend-mistralrs"
     )))]
     Err(ExecError::Other(anyhow::anyhow!("no backend compiled")))
 }
@@ -181,6 +233,8 @@ enum BackendKind {
     LlamaCpp,
     Mlx,
     Onnx,
+    #[cfg(feature = "backend-mistralrs")]
+    MistralRs,
     #[cfg(feature = "backend-external-api")]
     ExternalApi,
 }
@@ -206,6 +260,8 @@ impl Engine {
             Self::Onnx(e) => Some(e),
             #[cfg(feature = "backend-external-api")]
             Self::ExternalApi(e) => Some(e),
+            #[cfg(feature = "backend-mistralrs")]
+            Self::MistralRs(e) => Some(e),
             #[cfg(test)]
             Self::Fake(e) => Some(e),
             Self::Uninit => None,
@@ -233,6 +289,8 @@ impl Engine {
         v.push("external-api");
         #[cfg(feature = "backend-mlxcel")]
         v.push("mlxcel");
+        #[cfg(feature = "backend-mistralrs")]
+        v.push("mistralrs");
         #[cfg(feature = "backend-candle")]
         v.push("candle");
         #[cfg(feature = "backend-executorch")]
@@ -268,6 +326,8 @@ impl Engine {
             Ok(BackendKind::Onnx) => "onnx",
             #[cfg(feature = "backend-external-api")]
             Ok(BackendKind::ExternalApi) => "external-api",
+            #[cfg(feature = "backend-mistralrs")]
+            Ok(BackendKind::MistralRs) => "mistralrs",
             Err(_) => "unknown",
         }
     }
@@ -304,11 +364,24 @@ impl Engine {
         {
             Self::Onnx(super::onnx::Engine::new())
         }
+        #[cfg(all(
+            not(feature = "backend-llamacpp"),
+            not(feature = "backend-mlx"),
+            not(feature = "backend-mlxcel"),
+            not(feature = "backend-onnx"),
+            feature = "backend-mistralrs"
+        ))]
+        {
+            // Tail expr, as in the arms above: with every other local backend
+            // absent, the blocks after this one are cfg'd out.
+            Self::MistralRs(super::mistralrs::MistralRsEngine::new())
+        }
         #[cfg(not(any(
             feature = "backend-llamacpp",
             feature = "backend-mlx",
             feature = "backend-mlxcel",
-            feature = "backend-onnx"
+            feature = "backend-onnx",
+            feature = "backend-mistralrs"
         )))]
         Self::Uninit
     }
@@ -349,6 +422,8 @@ impl Engine {
             (Self::Onnx(_), BackendKind::Onnx) => false,
             #[cfg(feature = "backend-external-api")]
             (Self::ExternalApi(_), BackendKind::ExternalApi) => false,
+            #[cfg(feature = "backend-mistralrs")]
+            (Self::MistralRs(_), BackendKind::MistralRs) => false,
             _ => true,
         };
         if !needs_switch {
@@ -365,6 +440,8 @@ impl Engine {
             BackendKind::Onnx => Self::Onnx(super::onnx::Engine::new()),
             #[cfg(feature = "backend-external-api")]
             BackendKind::ExternalApi => Self::ExternalApi(super::external_api::Engine::new()),
+            #[cfg(feature = "backend-mistralrs")]
+            BackendKind::MistralRs => Self::MistralRs(super::mistralrs::MistralRsEngine::new()),
             // Backend not compiled in
             #[allow(unreachable_patterns)]
             _ => Self::Uninit,
@@ -662,11 +739,20 @@ mod tests {
             feature = "backend-onnx"
         ))]
         assert_eq!(name, "onnx");
+        #[cfg(all(
+            not(feature = "backend-llamacpp"),
+            not(feature = "backend-mlx"),
+            not(feature = "backend-mlxcel"),
+            not(feature = "backend-onnx"),
+            feature = "backend-mistralrs"
+        ))]
+        assert_eq!(name, "mistralrs");
         #[cfg(not(any(
             feature = "backend-llamacpp",
             feature = "backend-mlx",
             feature = "backend-mlxcel",
-            feature = "backend-onnx"
+            feature = "backend-onnx",
+            feature = "backend-mistralrs"
         )))]
         assert_eq!(name, "none");
     }
@@ -678,5 +764,41 @@ mod tests {
         let stats = engine.stats();
         assert_eq!(stats.decode_tokens, 0);
         let _ = caps;
+    }
+
+    /// Adding mistral.rs must not move anybody's models.
+    ///
+    /// The precedence rule exists because a backend feature is additive: a
+    /// build that already sent GGUF to llama.cpp must keep doing so when
+    /// mistral.rs is compiled in beside it, or upgrading the feature list
+    /// silently changes which implementation runs a user's model.
+    #[test]
+    #[cfg(all(feature = "backend-llamacpp", feature = "backend-mistralrs"))]
+    fn gguf_stays_with_llamacpp_when_both_are_compiled() {
+        assert_eq!(
+            Engine::detect_backend_for_path(std::path::Path::new("/models/model.gguf")),
+            "llamacpp"
+        );
+    }
+
+    /// And with llama.cpp absent, mistral.rs picks GGUF up rather than leaving
+    /// the caller with a backend that cannot open it.
+    #[test]
+    #[cfg(all(not(feature = "backend-llamacpp"), feature = "backend-mistralrs"))]
+    fn gguf_falls_to_mistralrs_when_llamacpp_is_absent() {
+        assert_eq!(
+            Engine::detect_backend_for_path(std::path::Path::new("/models/model.gguf")),
+            "mistralrs"
+        );
+    }
+
+    /// A format only mistral.rs reads is always its own.
+    #[test]
+    #[cfg(feature = "backend-mistralrs")]
+    fn uqff_is_always_mistralrs() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("weights.uqff");
+        std::fs::write(&path, b"not really a uqff, only the extension matters").unwrap();
+        assert_eq!(Engine::detect_backend_for_path(&path), "mistralrs");
     }
 }

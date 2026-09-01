@@ -61,6 +61,7 @@ jobs:
           - { os: ubuntu-latest, features: backend-candle }
           - { os: ubuntu-latest, features: backend-onnx }
           - { os: ubuntu-latest, features: backend-llamacpp }
+          - { os: ubuntu-latest, features: backend-mistralrs }
           - { os: macos-latest, features: metal }
           - { os: macos-latest, features: "metal,tokio" }
     steps:

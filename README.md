@@ -532,12 +532,15 @@ Pick at least one. A build with none fails to compile.
 | `backend-mlx` | MLX (Apple Silicon). Needs the Metal Toolchain component. Mutually exclusive with `backend-mlxcel`. |
 | `backend-mlxcel` | mlxcel, the Mac fast path. |
 | `backend-onnx` | ONNX Runtime |
+| `backend-mistralrs` | mistral.rs. GGUF, safetensors, UQFF and HF repos in one backend. Claims only formats no other compiled backend takes. |
 | `backend-candle` | Candle (pure Rust) |
 | `backend-executorch` | ExecuTorch (mobile). Stub, returns Unimplemented. |
 | `tokio` | Async API. Off by default. |
 
 Only llama.cpp and MLX have been shown to generate a token; the rest compile
-and satisfy the parts of the backend contract that need no weights. The
+and satisfy the parts of the backend contract that need no weights.
+Adding a backend never moves an existing one's models: `backend-mistralrs`
+takes GGUF only where llama.cpp is absent, and safetensors only where MLX is. The
 conformance suite says which on every run, and fails if that list goes stale.
 
 Not yet publishable to crates.io: three dependencies resolve only to git

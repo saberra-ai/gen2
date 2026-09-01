@@ -22,6 +22,11 @@ candle-core = { version = "0.11", optional = true }
 candle-nn = { version = "0.11", optional = true }
 candle-transformers = { version = "0.11", optional = true }
 
+# mistral.rs. Default features off: the accelerator features (metal, cuda) are
+# the caller's to enable, and pulling them in unconditionally would make a
+# plain `cargo build` require a GPU toolchain.
+mistralrs = { version = "0.8.1", optional = true, default-features = false }
+
 # HTTP client for the external-api backend (OpenAI / Anthropic wire formats).
 reqwest = { version = "0.13", features = ["json", "blocking", "query", "form", "stream"], optional = true }
 
@@ -171,6 +176,12 @@ backend-candle = ["dep:candle-core", "dep:candle-nn", "dep:candle-transformers"]
 # Mobile scaffold — compiles stubs that return Unimplemented.
 backend-executorch = []
 backend-external-api = ["dep:reqwest"]
+# mistral.rs: one backend covering GGUF, safetensors, UQFF and HF repos, with
+# its own paged attention, quantization and device mapping. None of that is
+# configured from here — the backend consumes the existing `LoadRequest`,
+# `Settings`, `SessionSpec` and `GenSpec` and produces existing `TokenEvent`s,
+# so nothing about it reaches the public API.
+backend-mistralrs = ["dep:mistralrs"]
 
 # GPU acceleration, forwarded to llama.cpp.
 cuda = ["backend-llamacpp", "llama-cpp-2/cuda"]

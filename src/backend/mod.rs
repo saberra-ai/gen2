@@ -47,16 +47,20 @@ pub(crate) mod candle;
     feature = "backend-onnx",
     feature = "backend-external-api",
     feature = "backend-executorch",
-    feature = "backend-candle"
+    feature = "backend-candle",
+    feature = "backend-mistralrs"
 )))]
 compile_error!(
-    "No inference backend selected. Enable at least one of: backend-llamacpp, backend-mlx, backend-mlxcel, backend-onnx, backend-external-api, backend-executorch, backend-candle"
+    "No inference backend selected. Enable at least one of: backend-llamacpp, backend-mlx, backend-mlxcel, backend-onnx, backend-external-api, backend-executorch, backend-candle, backend-mistralrs"
 );
 
 /// One contract every compiled backend must satisfy. See the module docs for
 /// which half needs a real model and which does not.
 #[cfg(test)]
 mod conformance;
+
+#[cfg(feature = "backend-mistralrs")]
+pub(crate) mod mistralrs;
 
 pub mod caps;
 mod facade;

@@ -44,6 +44,9 @@ use crate::session_rt::SessionSpec;
 /// - `mlx` — `PIO_TEST_MLX_MODEL` pointed at an MLX safetensors bundle
 ///   (`llama-3.2-3b-4bit`), on macOS 26.3 with the Metal Toolchain installed.
 ///   Decoded to its 16-token cap.
+/// - `mistralrs` — `PIO_TEST_MISTRALRS_MODEL` pointed at a GGUF, CPU only.
+///   Decoded 15 tokens, and a two-turn chat runs through the public API with
+///   nothing in it naming the backend.
 ///
 /// The others need a model this repository does not carry. Point the variable
 /// in [`model_env`] at one and the generating half runs.
@@ -56,6 +59,7 @@ fn model_env(backend: &str) -> &'static str {
         "llamacpp" => "PIO_TEST_MODEL",
         "mlx" | "mlxcel" => "PIO_TEST_MLX_MODEL",
         "onnx" => "PIO_TEST_ONNX_MODEL",
+        "mistralrs" => "PIO_TEST_MISTRALRS_MODEL",
         "candle" => "PIO_TEST_CANDLE_MODEL",
         "external-api" => "PIO_TEST_API_URL",
         _ => "PIO_TEST_MODEL",
@@ -472,6 +476,9 @@ backend_contract!(
 #[cfg(feature = "backend-external-api")]
 backend_contract!(external_api, crate::backend::external_api::Engine::new());
 
+#[cfg(feature = "backend-mistralrs")]
+backend_contract!(mistralrs, crate::backend::mistralrs::MistralRsEngine::new());
+
 /// The list of backends nobody has ever seen generate a token must match the
 /// backends that are compiled.
 ///
@@ -507,6 +514,7 @@ fn unverified_backends() {
         "candle",
         "executorch",
         "external-api",
+        "mistralrs",
     ];
     for backend in NEVER_PRODUCED_A_TOKEN {
         assert!(
