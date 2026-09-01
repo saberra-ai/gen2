@@ -304,6 +304,15 @@ pub(crate) fn event_channel(
 mod tests {
     use super::*;
 
+    /// An app runs inference off its UI thread, so `Arc<Engine>` has to be
+    /// shareable. If this stops compiling, every multi-threaded consumer breaks.
+    #[test]
+    fn engine_is_send_and_sync() {
+        fn assert_send_sync<T: Send + Sync>() {}
+        assert_send_sync::<Engine>();
+        assert_send_sync::<std::sync::Arc<Engine>>();
+    }
+
     #[test]
     fn building_without_a_model_is_an_error_not_a_panic() {
         let err = Engine::builder().build().unwrap_err();
