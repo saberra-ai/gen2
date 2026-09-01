@@ -245,17 +245,21 @@ impl EngineBuilder {
 
     /// Serve from an OpenAI-compatible endpoint instead of local weights.
     ///
-    /// `model` is the endpoint's model identifier rather than a file path.
-    pub fn openai(mut self, model: impl Into<String>, api_key: impl Into<String>) -> Self {
-        self.model_path = Some(PathBuf::from(model.into()));
+    /// `base_url` is the API root — `https://api.openai.com/v1`, or any
+    /// compatible server (`http://localhost:11434/v1` for Ollama). The backend
+    /// is selected from the URL, so this must be one.
+    pub fn openai(mut self, base_url: impl Into<String>, api_key: impl Into<String>) -> Self {
+        self.model_path = Some(PathBuf::from(base_url.into()));
         self.api_key = Some(api_key.into());
         self.api_format = Some("openai".into());
         self
     }
 
     /// Serve from an Anthropic-compatible endpoint instead of local weights.
-    pub fn anthropic(mut self, model: impl Into<String>, api_key: impl Into<String>) -> Self {
-        self.model_path = Some(PathBuf::from(model.into()));
+    ///
+    /// `base_url` is the API root, e.g. `https://api.anthropic.com/v1`.
+    pub fn anthropic(mut self, base_url: impl Into<String>, api_key: impl Into<String>) -> Self {
+        self.model_path = Some(PathBuf::from(base_url.into()));
         self.api_key = Some(api_key.into());
         self.api_format = Some("anthropic".into());
         self
@@ -327,6 +331,19 @@ mod tests {
         fn assert_send_sync<T: Send + Sync>() {}
         assert_send_sync::<Engine>();
         assert_send_sync::<std::sync::Arc<Engine>>();
+    }
+
+    #[test]
+    #[cfg(feature = "backend-external-api")]
+    fn openai_builder_selects_the_external_api_backend() {
+        // Backend detection keys off the path being a URL. An earlier version
+        // put the model *name* here, which silently fell through to the default
+        // local backend instead of talking to the API at all.
+        let b = Engine::builder().openai("https://api.openai.com/v1", "sk-test");
+        let detected = crate::backend::Engine::detect_backend_for_path(
+            b.model_path.as_ref().unwrap().as_path(),
+        );
+        assert_eq!(detected, "external-api", "got {detected}");
     }
 
     #[test]
