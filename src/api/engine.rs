@@ -384,6 +384,15 @@ impl Engine {
     /// Record that the engine now has `count` of `session_id`'s messages.
     pub(crate) fn mark_sent(&self, session_id: &str, count: usize) {
         if let Ok(mut m) = self.sent_through.lock() {
+            // Dropping a Session cannot reach in here to clean up, and
+            // `Engine::infer` mints one per call, so this is bounded rather
+            // than left to grow for the life of the process. Well above
+            // `max_active_chats`, since a dropped entry only costs the next
+            // turn a resend.
+            const MAX_TRACKED: usize = 1024;
+            if m.len() >= MAX_TRACKED && !m.contains_key(session_id) {
+                m.clear();
+            }
             m.insert(session_id.to_string(), count);
         }
     }

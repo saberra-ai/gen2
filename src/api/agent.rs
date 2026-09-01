@@ -429,11 +429,33 @@ impl<'a> Agent<'a> {
     ) -> Result<Completion> {
         let mut registry = ToolRegistry::build(std::mem::take(&mut self.entries), self.search)?;
 
+        // Index the deferred tools for semantic search. Skipped when no
+        // embedder is loaded: hybrid then runs lexical-only, which costs recall
+        // rather than the whole search.
+        if registry
+            .search_strategy()
+            .is_some_and(|s| s.needs_embedder())
+            && self.engine.is_embedder_loaded()
+        {
+            let texts = registry.deferred_search_text();
+            let corpus: Vec<String> = texts.iter().map(|(_, t)| t.clone()).collect();
+            if let Ok(vectors) = self.engine.embed(&corpus) {
+                registry.set_embeddings(
+                    texts
+                        .into_iter()
+                        .map(|(name, _)| name)
+                        .zip(vectors)
+                        .collect(),
+                );
+            }
+        }
+
         // Tool definitions only reach the model when a conversation opens, so a
         // run registering a different set than the session was opened with must
         // reopen it — otherwise its tools are silently ignored and the model
         // keeps calling the old ones.
-        self.session.note_tools(registry.fingerprint());
+        self.session
+            .note_tools(registry.prefix_fingerprint(&self.tool_prompt));
 
         let images = std::mem::take(&mut self.images);
         if let Some(text) = goal {
@@ -457,6 +479,7 @@ impl<'a> Agent<'a> {
         let started = Instant::now();
         let mut totals = Completion::default();
         let mut recent: VecDeque<(String, String)> = VecDeque::new();
+        let mut spent_tokens: u32 = 0;
         let ctx = ToolContext::new(session.id());
 
         for step in 0..=budgets.max_steps {
@@ -495,23 +518,36 @@ impl<'a> Agent<'a> {
             totals.dropped += turn.dropped;
             totals.compacted += turn.compacted;
             totals.tool_rounds = step;
+
+            // Accumulate rather than replace. `ExecutionStats` describes one
+            // turn, so a budget checked against the latest turn alone would let
+            // the run spend its whole allowance on every step.
+            spent_tokens += turn.stats.as_ref().map_or(0, |s| s.decode_tokens);
             if let Some(s) = &turn.stats {
-                totals.stats = Some(s.clone());
+                let mut merged = s.clone();
+                merged.decode_tokens = spent_tokens;
+                totals.stats = Some(merged);
             }
 
             if let Some(limit) = budgets.max_tokens
-                && turn
-                    .stats
-                    .as_ref()
-                    .is_some_and(|s| s.decode_tokens >= limit)
+                && spent_tokens >= limit
             {
                 totals.finish = Finish::OutOfBudget(Budget::Tokens);
                 return Ok(totals);
             }
 
             if turn.tool_calls.is_empty() {
-                // The model answered; record it and stop.
                 session.push(Message::assistant_structured(turn.text.clone(), None));
+
+                // A stop with steering waiting is an interruption, not an
+                // answer: the caller cut this generation *in order to* say
+                // something. Returning here would drop the message they
+                // interrupted with, which is the opposite of what they asked
+                // for. Loop instead, and the boundary delivers it.
+                if turn.finish == Finish::Stopped && steering.is_pending() {
+                    continue;
+                }
+
                 totals.finish = turn.finish.clone();
 
                 // The work is done, so now shape the answer. One extra turn
@@ -596,7 +632,7 @@ impl<'a> Agent<'a> {
                         args: &args,
                     });
                     let outcome = if call.name == SEARCH_TOOL {
-                        run_search(&mut registry, &args)
+                        run_search(engine, &mut registry, &args)
                     } else {
                         dispatch(&registry, &ctx, call, &args, approval, on_approval.as_mut())
                     };
@@ -802,6 +838,7 @@ fn dispatch(
 
 /// The built-in tool that finds deferred tools.
 fn run_search(
+    engine: &Engine,
     registry: &mut ToolRegistry,
     args: &Value,
 ) -> std::result::Result<ToolOutput, ToolError> {
@@ -810,7 +847,15 @@ fn run_search(
         .and_then(|q| q.as_str())
         .ok_or_else(|| ToolError::InvalidArguments("expected a 'query' string".into()))?;
 
-    let found = registry.search(query, 5, None);
+    // The semantic half needs the query in the same space as the indexed tool
+    // descriptions. Without this the strategy silently degraded to lexical, and
+    // `Semantic` returned nothing at all.
+    let embedding = registry
+        .search_strategy()
+        .filter(|s| s.needs_embedder())
+        .and_then(|_| engine.embed_one(query).ok());
+
+    let found = registry.search(query, 5, embedding.as_deref());
     if found.is_empty() {
         return Ok(ToolOutput::Text(format!("No tools match '{query}'.")));
     }

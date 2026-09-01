@@ -4,11 +4,21 @@ use crate::types::message::Message;
 
 /// A conversation: its messages, and the engine state that belongs to it.
 ///
-/// You hold this, not the engine. That means you can read the transcript,
-/// render it, edit it, persist it, and drop it — and when you drop it, the
-/// engine's cached state for it goes too. An engine that owned conversations
-/// behind string ids could do none of that, and would leak one entry per
-/// conversation for the life of the process.
+/// You hold this, not the engine. You can read the transcript, render it, edit
+/// it, and persist it, none of which an engine-owned conversation behind a
+/// string id would allow.
+///
+/// Dropping a session does not reach into the engine. The controller keeps its
+/// own runtime until it is evicted (bounded by
+/// [`ControllerConfig::max_active_chats`](crate::ControllerConfig)), and the
+/// engine's per-session bookkeeping is cleared by
+/// [`Engine::forget`](crate::Engine::forget). Call it when a conversation is
+/// finished if you create many; nothing breaks without it, since a missing
+/// entry just means the next turn resends.
+///
+/// Not `Clone`, deliberately. Two copies would share one engine conversation
+/// and overwrite each other's cached prefill. [`Session::fork`] is the
+/// independent copy.
 ///
 /// It carries an opaque id that the engine uses to key its warm KV cache, so
 /// owning the history costs you nothing in speed: a follow-up turn still reuses
@@ -41,7 +51,7 @@ use crate::types::message::Message;
 /// engine.chat(&mut session).user("Now one more.").send()?;
 /// # Ok::<(), gen2::Error>(())
 /// ```
-#[derive(Debug, Clone, serde::Serialize, serde::Deserialize)]
+#[derive(Debug, serde::Serialize, serde::Deserialize)]
 pub struct Session {
     id: String,
     messages: Vec<Message>,
@@ -102,10 +112,13 @@ impl Session {
         }
     }
 
-    /// Branch this conversation.
+    /// Branch this conversation into an independent copy.
     ///
-    /// The fork carries the same messages and a *new* engine identity, so the
-    /// two run independently — retry from a point, or compare two directions
+    /// This is the reason `Session` is not `Clone`: a clone would share the
+    /// engine identity and the two would fight over one cached prefill.
+    ///
+    /// The fork carries the same messages and a new engine identity, so the two
+    /// run independently. Retry from a point, or compare two directions,
     /// without either overwriting the other's cached prefill.
     ///
     /// The fork starts unopened: the engine has nothing cached for it, so its

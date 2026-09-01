@@ -204,22 +204,51 @@ impl ToolRegistry {
         }
     }
 
-    /// A stable fingerprint of the registered tool set.
+    /// A fingerprint of exactly what goes into the prompt prefix.
     ///
-    /// Over what is *registered*, not what is currently visible: hydration is
-    /// designed to leave the prompt prefix alone, so a tool becoming visible
-    /// mid-run must not read as a changed set and trigger a re-prefill.
-    pub fn fingerprint(&self) -> u64 {
+    /// The prefix is what the prefill was built over, so this has to cover
+    /// precisely that and nothing else. Two ways to get it wrong, and the first
+    /// version managed both:
+    ///
+    /// - Too little. Names and schemas alone miss descriptions and the
+    ///   resident/deferred split, both of which change what the model reads. A
+    ///   reworded description would have kept a prefill describing the old text.
+    /// - Too much. Deferred tools are absent from the prefix by design, so
+    ///   hashing them made every catalogue change cost a re-prefill it did not
+    ///   owe.
+    ///
+    /// Hydration is deliberately invisible here: a discovered spec joins the
+    /// conversation, not the prefix, so finding a tool must not cost the
+    /// re-prefill that hydration exists to avoid.
+    pub fn prefix_fingerprint(&self, tool_prompt: &str) -> u64 {
         use std::hash::{Hash, Hasher};
-        let mut names: Vec<&String> = self.tools.keys().collect();
-        names.sort();
         let mut h = std::collections::hash_map::DefaultHasher::new();
-        for name in names {
-            name.hash(&mut h);
-            if let Some(t) = self.tools.get(name) {
-                t.spec().input_schema.to_string().hash(&mut h);
-            }
+
+        // Resident only. Deferred specs are absent from the prefix by design,
+        // and a hydrated one reaches the model through the conversation rather
+        // than the prefix, so counting either would charge a re-prefill for
+        // something the model reads where it always did.
+        let mut resident: Vec<ToolSpec> = self
+            .resident
+            .iter()
+            .filter_map(|n| self.tools.get(n).map(|t| t.spec().clone()))
+            .collect();
+        // Sorted so registration order alone never forces a re-prefill.
+        resident.sort_by(|a, b| a.name.cmp(&b.name));
+        for spec in &resident {
+            spec.name.hash(&mut h);
+            spec.description.hash(&mut h);
+            spec.input_schema.to_string().hash(&mut h);
         }
+
+        // The search tool joins the prefix whenever anything is deferred, so
+        // its presence matters even though the deferred catalogue does not.
+        let has_search = self.search.is_some() && !self.deferred.is_empty();
+        has_search.hash(&mut h);
+
+        // Rendered into the prefix alongside the specs.
+        tool_prompt.hash(&mut h);
+
         h.finish()
     }
 
@@ -370,29 +399,90 @@ mod tests {
         assert_eq!(r.search("kubectl", 2, None)[0].name, "kubectl_apply");
     }
 
-    #[test]
-    fn the_fingerprint_tracks_registration_not_visibility() {
-        // Hydration deliberately avoids touching the prompt prefix, so a tool
-        // becoming visible must not look like a changed tool set.
-        let mut r = registry();
-        let before = r.fingerprint();
-        r.mark_hydrated("github_create_pull_request");
-        assert_eq!(r.fingerprint(), before, "hydration is not a set change");
+    fn fp(r: &ToolRegistry) -> u64 {
+        r.prefix_fingerprint("call a tool")
     }
 
     #[test]
-    fn different_tool_sets_fingerprint_differently() {
-        let a = registry().fingerprint();
+    fn hydration_does_not_change_the_prefix() {
+        // A discovered tool arrives in the conversation, not the prompt. If it
+        // moved the fingerprint, finding a tool would reopen the conversation
+        // and throw away the cache hydration exists to protect.
+        let mut r = registry();
+        let before = fp(&r);
+        r.mark_hydrated("github_create_pull_request");
+        assert_eq!(fp(&r), before);
+    }
+
+    #[test]
+    fn a_reworded_description_changes_the_prefix() {
+        // Descriptions are in the prefix. Hashing only names and schemas would
+        // leave a prefill describing text the model no longer sees.
+        let a = ToolRegistry::build(
+            vec![(tool("read_file", "Read a file"), ToolLoading::Resident)],
+            None,
+        )
+        .unwrap();
         let b = ToolRegistry::build(
             vec![(
-                tool("read_file", "Read a file from disk"),
+                tool("read_file", "Read a file, following symlinks"),
                 ToolLoading::Resident,
             )],
             None,
         )
-        .unwrap()
-        .fingerprint();
-        assert_ne!(a, b);
+        .unwrap();
+        assert_ne!(fp(&a), fp(&b));
+    }
+
+    #[test]
+    fn moving_a_tool_between_resident_and_deferred_changes_the_prefix() {
+        let resident = ToolRegistry::build(
+            vec![(tool("a", "does a"), ToolLoading::Resident)],
+            Some(ToolSearch::Bm25),
+        )
+        .unwrap();
+        let deferred = ToolRegistry::build(
+            vec![
+                (tool("a", "does a"), ToolLoading::Deferred),
+                (tool("b", "does b"), ToolLoading::Resident),
+            ],
+            Some(ToolSearch::Bm25),
+        )
+        .unwrap();
+        assert_ne!(fp(&resident), fp(&deferred));
+    }
+
+    #[test]
+    fn changing_the_deferred_catalogue_alone_does_not_change_the_prefix() {
+        // Deferred specs are absent from the prefix by design, so a bigger
+        // catalogue must not cost a re-prefill it does not owe.
+        let one = ToolRegistry::build(
+            vec![
+                (tool("resident", "stays"), ToolLoading::Resident),
+                (tool("x", "deferred one"), ToolLoading::Deferred),
+            ],
+            Some(ToolSearch::Bm25),
+        )
+        .unwrap();
+        let two = ToolRegistry::build(
+            vec![
+                (tool("resident", "stays"), ToolLoading::Resident),
+                (tool("x", "deferred one"), ToolLoading::Deferred),
+                (tool("y", "deferred two"), ToolLoading::Deferred),
+            ],
+            Some(ToolSearch::Bm25),
+        )
+        .unwrap();
+        assert_eq!(fp(&one), fp(&two));
+    }
+
+    #[test]
+    fn the_tool_prompt_is_part_of_the_prefix() {
+        let r = registry();
+        assert_ne!(
+            r.prefix_fingerprint("call a tool"),
+            r.prefix_fingerprint("do not call tools unless asked")
+        );
     }
 
     #[test]
@@ -404,8 +494,7 @@ mod tests {
             ],
             None,
         )
-        .unwrap()
-        .fingerprint();
+        .unwrap();
         let two = ToolRegistry::build(
             vec![
                 (tool("b", "does b"), ToolLoading::Resident),
@@ -413,9 +502,8 @@ mod tests {
             ],
             None,
         )
-        .unwrap()
-        .fingerprint();
-        assert_eq!(one, two, "the same tools registered in either order match");
+        .unwrap();
+        assert_eq!(fp(&one), fp(&two));
     }
 
     #[test]
