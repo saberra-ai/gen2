@@ -139,6 +139,12 @@ proptest = "1"
 name = "hot_paths"
 harness = false
 
+# gen2's throughput against llama.cpp's own benchmark on the same file. Needs a
+# model, so it prints a skip without one.
+[[bench]]
+name = "backend_parity"
+harness = false
+
 [features]
 # llama.cpp is the default because GGUF is what most people point this crate
 # at first, and a default that cannot open a `.gguf` fails at

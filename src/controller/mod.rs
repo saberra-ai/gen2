@@ -26,7 +26,7 @@ pub use state::ControllerState;
 
 use std::path::PathBuf;
 use std::sync::Arc;
-use std::sync::mpsc::{Receiver, Sender, SyncSender, channel};
+use std::sync::mpsc::{Receiver, RecvTimeoutError, Sender, SyncSender, channel};
 use std::thread;
 use std::time::{Duration, Instant};
 
@@ -948,14 +948,34 @@ fn run_loop_with_engine(
             continue;
         }
 
-        match rx.recv_timeout(state.tick_idle()) {
+        // Waiting for a command before pulling the next token puts that wait
+        // on every token. At `tick_idle` of 2ms against a model decoding in
+        // 4ms, that was a third of throughput spent idle — measured at 73% of
+        // llama.cpp's own rate on the same file, and back to parity without
+        // it. While something is generating, take whatever command has already
+        // arrived and get on with decoding; the decode itself paces the loop.
+        //
+        // The wait stays for chats that are resident but not generating, which
+        // is what keeps an idle controller off the CPU.
+        let generating = state.chats.values().any(|c| c.state.is_generating());
+        let received = if generating {
+            rx.try_recv().map_err(|e| match e {
+                std::sync::mpsc::TryRecvError::Empty => RecvTimeoutError::Timeout,
+                std::sync::mpsc::TryRecvError::Disconnected => RecvTimeoutError::Disconnected,
+            })
+        } else {
+            rx.recv_timeout(state.tick_idle())
+        };
+
+        match received {
             Ok(ControllerCmd::Shutdown) => break 'outer,
             Ok(cmd) => {
                 if let ControlFlow::Break = commands::dispatch_cmd(cmd, &mut state) {
                     break 'outer;
                 }
             }
-            Err(_timeout) => {}
+            Err(RecvTimeoutError::Disconnected) => break 'outer,
+            Err(RecvTimeoutError::Timeout) => {}
         }
 
         commands::tick_active_chats(&mut state, tick_busy);

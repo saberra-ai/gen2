@@ -148,7 +148,16 @@ reloads — asserting threads and resident sessions return to baseline.
 
 ## 18. Performance is a separate suite
 
-Benchmarks tracked over time, never a PR gate.
+Benchmarks tracked over time, never a PR gate. Two of them: `hot_paths`
+for the per-turn work that does not involve a model, and
+`backend_parity` for the question nothing else asks — what the wrapper
+costs against llama.cpp's own `llama-bench` on the same file.
+
+That one found a third of throughput being spent idle: the controller
+waited `tick_idle` for a command before every token pull, so 2ms landed
+on each 4ms token. 73% of the reference before, ~82% after. The rest is
+work a streaming API does and `llama-bench` does not — detokenising to a
+`String`, a channel send per token, scanning for reply parts.
 
 ## Build order
 
