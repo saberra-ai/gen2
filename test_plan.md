@@ -193,8 +193,10 @@ Nine bugs, found by the tests rather than by reading:
 
 ## Still not proven
 
-- MLX, mlxcel, ONNX and Candle compile and are held to the conformance
-  suite's shape, but none has been shown to actually generate a token.
+- MLX, mlxcel, ONNX and Candle only compile. There is no conformance
+  suite yet (item 5), and none of the four has been shown to generate a
+  single token. The crate's headline claim — one API over many backends
+  — is verified for two of them.
 - No sanitizer run.
 - The KV store's writes are not atomic. Digests turn a torn write into a
   cache miss rather than corruption, but a crash mid-write leaves a dead
