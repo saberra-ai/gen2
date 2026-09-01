@@ -1,84 +1,68 @@
 # gen2
 
-A local-first inference engine with pluggable backends. Load a model, run a
-turn, stream tokens back — the same API whether the weights are running through
-llama.cpp, MLX, ONNX Runtime, Candle, ExecuTorch, or a remote OpenAI/Anthropic-
-compatible endpoint.
+A local-first inference engine with pluggable backends — llama.cpp, MLX, ONNX
+Runtime, Candle, ExecuTorch, or an OpenAI/Anthropic-compatible endpoint, behind
+one API.
 
-**The public API is `Engine`, `Session`, and the three call modes below.**
-Everything underneath — backend dispatch, session runtime, KV cache, the model
-zoo, placement routing, residency policy — is internal, so it can change without
-breaking you. `engine.controller()` is the escape hatch.
+```toml
+gen2 = { git = "https://github.com/saberra-ai/gen2" }
+```
 
-Extracted from [pio-app](https://github.com/saberra-ai/pio-app)'s `pio-core`
-crate, with history. See [`docs/EXTRACTION.md`](docs/EXTRACTION.md) for what
-moved and what a host app still supplies.
+---
 
 ## Three ways to call a model
 
-Pick by what you need to keep.
+| | You get | Keeps |
+| --- | --- | --- |
+| `infer` | a string | nothing |
+| `chat` | a turn | the conversation |
+| `agent` | a task done | the conversation, and runs your tools |
 
-| | You get | Nothing kept | Conversation kept | Tools |
-|---|---|---|---|---|
-| `infer` | a string | ✓ | | |
-| `chat` | a turn in a conversation | | ✓ | you dispatch |
-| `agent` | a task carried out | | ✓ | it dispatches |
-
-### `infer` — one prompt, nothing kept
-
-For a classification, a title, an extraction. There's no session to read back.
+### infer
 
 ```rust
 use gen2::Engine;
 
 let engine = Engine::load("/models/model.gguf")?;
-
 let title = engine.infer("Title this in three words: …").max_tokens(16).text()?;
 ```
 
-Constrain the shape when you need to parse the answer:
+Shaped output, enforced during decoding:
 
 ```rust
 use gen2::GrammarSpec;
 
-let json = engine.infer("Classify the sentiment of: '…'")
+let raw = engine.infer("Classify the sentiment of: '…'")
     .grammar(GrammarSpec::JsonSchema(schema))
     .greedy()
     .text()?;
-let parsed: Sentiment = serde_json::from_str(&json)?;   // sound, not hopeful
+let parsed: Sentiment = serde_json::from_str(&raw)?;
 ```
 
-### `chat` — a conversation you own
-
-The reply is appended to a `Session` you hold, so the transcript is yours to
-render, persist, or edit.
+### chat
 
 ```rust
 use gen2::{Engine, Session};
 
-let engine = Engine::load("/models/model.gguf")?;
 let mut session = Session::new().with_system("Be terse.");
 
 engine.chat(&mut session).user("Name two colours.").send()?;
 println!("{}", session.latest_text().unwrap_or_default());
 
-// A follow-up. The history is already in the session, so nothing is resent
-// and the engine's warm KV cache is reused.
-engine.chat(&mut session).user("Now one more.").send()?;
+engine.chat(&mut session).user("Now one more.").send()?;   // history is already there
 
 for message in session.messages() { /* render */ }
 ```
 
-Streaming, for a UI on a blocking thread:
+Streaming:
 
 ```rust
 engine.chat(&mut session)
     .user("Write a haiku about Rust.")
-    .max_tokens(64)
     .send_streaming(|token| print!("{token}"))?;
 ```
 
-Off-thread, so the caller never blocks. The session comes back on `Done`:
+Off-thread — the session comes back on `Done`:
 
 ```rust
 use std::sync::Arc;
@@ -97,17 +81,18 @@ for update in turn {
 }
 ```
 
-If you want the tool calls but want to run them yourself, `chat` gives you
-`.tools(...)` plus `.on_tool(handler)` and a `.tool_depth(7)` bound.
-
-### `agent` — a task carried out
-
-You register tools; the agent resolves what the model named, validates the
-arguments against that tool's schema, runs it, and decides whether a failure is
-worth handing back.
+Images:
 
 ```rust
-use gen2::{Engine, FunctionTool, Session, ToolOutput, ToolSearch};
+engine.chat(&mut session)
+    .user_with_images("What is in this picture?", ["/tmp/photo.png"])
+    .send()?;
+```
+
+### agent
+
+```rust
+use gen2::{FunctionTool, ToolOutput, ToolSearch};
 use gen2::schemars::JsonSchema;
 
 #[derive(serde::Deserialize, JsonSchema)]
@@ -124,7 +109,7 @@ let weather = FunctionTool::new(
 
 let done = engine.agent(&mut session)
     .add_tool(weather)
-    .defer_tools(mcp_tools)              // 40 tools, none in the prompt
+    .defer_tools(mcp_tools)              // absent from the prompt until searched for
     .tool_search(ToolSearch::Hybrid)
     .max_steps(12)
     .goal("What is the weather in Paris?")?;
@@ -133,374 +118,220 @@ println!("{} after {} tool rounds", done.text, done.tool_rounds);
 ```
 
 The schema comes from `WeatherArgs`, so what the model sees and what the handler
-reads cannot drift.
+reads can't drift.
 
-Off-thread, with steering — this is the form a UI wants:
-
-```rust
-let run = engine.agent_owned(session)
-    .add_tool(weather)
-    .goal("Summarise the repository")
-    .spawn();
-
-let steering = run.steering();       // move this to wherever the user is
-// steering.follow_up("also check the tests");
-// steering.interrupt("stop, just summarise the README");
-
-for update in run {
-    match update {
-        Update::Delta(t) => print!("{t}"),
-        Update::ToolCall { tool, args, .. } => status(format!("{tool} {args}")),
-        Update::Done { completion, session } => finish(completion, session),
-        _ => {}
-    }
-}
-```
-
-`interrupt` on an owned run cuts the generation short — measured at 223 chars
-against 3840 uninterrupted. On a borrowed `agent(&mut session)` there is no
-engine handle to ask, so it lands at the next step boundary instead;
-`steering.can_interrupt_generation()` tells you which you have.
-
-Under the `tokio` feature, `spawn_async()` gives the same thing as a `Stream`,
-and `send_async().await` awaits a whole turn.
-
-### Continuing a run
-
-Runs share a `Session`, so the second one sees the first:
-
-```rust
-let mut session = Session::new();
-engine.agent(&mut session).add_tool(weather).goal("Weather in Paris?")?;
-engine.agent(&mut session).add_tool(weather).goal("Which city did I ask about?")?;
-// → "Paris"
-```
-
-Registering the tools each time is backwards — the tool set is the stable part
-and the conversation is what changes — so `AgentConfig` holds it:
-
-```rust
-let researcher = AgentConfig::new()
-    .add_tool(weather)
-    .defer_tools(mcp)
-    .tool_search(ToolSearch::Hybrid)
-    .max_steps(8);
-
-researcher.agent(&engine, &mut session).goal("Weather in Paris?")?;
-researcher.agent(&engine, &mut session).goal("And which city was that?")?;
-```
-
-It's cheap to clone (tools sit behind `Arc`) and `agent_owned` gives the spawned
-form. The approval callback isn't part of a config — it's a `FnMut` that usually
-closes over a UI — so set it per run.
-
-**What sharing a session means, precisely:**
-
-- **History accumulates**, and the model uses it. Nothing is resent, and the
-  warm KV cache is reused.
-- **Budgets are per run.** `max_steps(8)` is eight steps for *this* task, not
-  eight across the conversation. Repeat detection resets too.
-- **Changing the tool set reopens the conversation.** Tool definitions live in
-  the prompt prefix and are only sent when a conversation opens, so a run
-  registering a different set used to be *silently ignored* — the model kept
-  seeing the old tools. It now costs one re-prefill instead, on the same
-  principle as `Session::edit`: change what lives in the prefix, and the prefix
-  is rebuilt.
-- **`session.shed()` keeps accumulating**, so context loss stays visible across
-  runs.
-
-### How an agent stops, and what it may run
-
-**Deferred tools** stay out of the prompt entirely. When the model calls
-`search_tools`, matches are appended to the *conversation* — never the prefix —
-so the warm KV cache survives. Search is hybrid by default: BM25 over names,
-descriptions and argument names catches exact terminology, embeddings catch
-intent, and RRF fuses them on rank.
-
-**Structured answers.** `answer_as(grammar, instruction)` shapes the final
-reply. It applies to one extra turn *after* the work is done, not to the whole
-run — constraining every turn would forbid the tool-call syntax the model needs
-to get anywhere:
+A typed final answer:
 
 ```rust
 let done = engine.agent(&mut session)
     .add_tool(weather)
     .answer_as(GrammarSpec::JsonSchema(schema), "Answer as JSON with city and temperature_c.")
     .goal("What is the weather in Paris?")?;
-let report: Report = serde_json::from_str(&done.text)?;   // sound, not hopeful
+
+let report: Report = serde_json::from_str(&done.text)?;
 ```
 
-`.images([path])` attaches images to the goal, on a multimodal model.
-
-**Stopping** is a first-class answer, not a timeout. `Finish::OutOfBudget(Budget::Steps
-| Tokens | Deadline)` says which limit; `Finish::GaveUp(Struggle::RepeatingCall
-{ .. })` catches a model calling the same tool with the same arguments — the
-failure a step count never sees.
-
-**Approval** is off by default, because a gate nobody reads is worse than none.
-Tools declare `Risk::Risky`; `ApprovalMode::AskOnRisky` routes those through
-`on_approval`, synchronously, because you cannot approve something by observing
-a stream.
-
-**Scheduling** honours each tool's `ExecutionPolicy`. Independent calls in one
-turn run concurrently; anything declaring itself unsafe to parallelise runs
-alone. Results are appended in call order regardless of completion order.
+Off-thread, with steering:
 
 ```rust
+let run = engine.agent_owned(session).add_tool(weather).goal("Summarise the repo").spawn();
+
+let steering = run.steering();
+// steering.follow_up("also check the tests");
+// steering.interrupt("stop, just the README");
+
+for update in run {
+    match update {
+        Update::Delta(t) => print!("{t}"),
+        Update::ToolCall { tool, args, .. } => status(tool, args),
+        Update::Done { completion, session } => finish(completion, session),
+        _ => {}
+    }
+}
+```
+
+Reusable across runs:
+
+```rust
+use gen2::AgentConfig;
+
+let researcher = AgentConfig::new().add_tool(weather).max_steps(8);
+
+researcher.agent(&engine, &mut session).goal("Weather in Paris?")?;
+researcher.agent(&engine, &mut session).goal("And which city was that?")?;
+```
+
+Approval, off by default:
+
+```rust
+use gen2::{ApprovalMode, Decision};
+
+engine.agent(&mut session)
+    .add_tool(delete_file)                       // declares Risk::Risky
+    .approval(ApprovalMode::AskOnRisky)
+    .on_approval(|name, args, _spec| match confirm(name, args) {
+        true => Decision::Allow,
+        false => Decision::Deny("user declined".into()),
+    })
+    .goal("Clean up the temp directory")?;
+```
+
+---
+
+## Tools
+
+```rust
+// Bundle and reuse.
+let filesystem = ToolSet::new().add(read_file).add(write_file).add(list_dir);
+engine.agent(&mut session).add_tools(filesystem);
+
+// Scheduling: independent calls in one turn run concurrently.
 FunctionTool::new(..).with_policy(ExecutionPolicy::exclusive())   // a shared write
 FunctionTool::new(..).with_policy(ExecutionPolicy::gpu_bound())   // contends with the model
-```
 
-### Sub-agents, skills, MCP
-
-A sub-agent is not a new concept — it's a `Tool` that happens to run a nested
-loop, so the parent sees one call and one result instead of a context full of
-intermediate reading:
-
-```rust
+// A whole agent as one tool.
 let researcher = AgentTool::new("researcher", "Investigates a question", engine.clone())
     .tools(research_tools)
     .max_steps(5);
-```
 
-Skills are the same trade as deferred tools, applied to prose — descriptions
-stay in the prompt, bodies load on demand:
-
-```rust
+// Instructions loaded on demand — descriptions in the prompt, bodies when asked for.
 let skills = SkillLibrary::new([
     Skill::new("migrations", "when writing a database migration", MIGRATION_GUIDE),
 ]);
-engine.agent(&mut session).add_tool(skills).goal("…")?;
-```
 
-An MCP server's whole surface registers as an iterator:
-
-```rust
+// An MCP server's whole surface.
 let mcp = McpToolSet::connect("mcp-server-git", ["--repo", "."]).await?;
 engine.agent(&mut session).defer_tools(mcp).tool_search(ToolSearch::Hybrid);
 ```
 
-### Steering and forking
-
-`agent.steering()` hands out a movable handle — the thread driving the agent is
-busy, so mid-run input has to come from elsewhere. `follow_up` adds to the task;
-`interrupt` also abandons the rest of the current round's tool calls. Both land
-at a step boundary, never mid-call: a tool already running has side effects that
-must be recorded.
-
-`session.fork()` branches a conversation — same history, new engine identity, so
-two directions run without overwriting each other's cached prefill. `Session` is
-`Serialize`/`Deserialize`, with the engine-state fields deliberately skipped: a
-restored session must never claim a prefill the engine doesn't hold.
-
-### Constrained output
-
-`.grammar(...)` shapes decoding with a JSON schema, regex, Lark grammar, or
-GBNF, enforced *during* decoding so the model cannot emit anything that
-violates it. Per turn, or as an engine default:
+## Sessions
 
 ```rust
-let classifier = Engine::builder().model(path).grammar(schema).greedy().build()?;
-let json = classifier.infer("Classify: '…'").text()?;      // always the right shape
+session.messages();            // the transcript, yours to render or persist
+session.latest_text();
+session.shed();                // messages no longer in the model's context
+session.fork();                // branch: same history, independent from here
+session.edit(|m| m.truncate(4));
+
+let json = serde_json::to_string(&session)?;   // Serialize / Deserialize
 ```
 
-A turn can still override it, or drop it with `.unconstrained()` — loading
-weights is the expensive part, so one engine should serve several shapes.
-
-### Async
-
-Behind the `tokio` feature. The controller stays synchronous — decoding is a
-blocking native call — so this runs it on `spawn_blocking` and hands you a
-`Stream`, instead of every async caller writing that bridge themselves.
+## Engine
 
 ```rust
-let (completion, session) = engine.chat_owned(session).user("…").send_async().await?;
-let mut run = engine.agent_owned(session).goal("…").spawn_async();
-while let Some(update) = run.next().await { /* … */ }
+Engine::builder()
+    .model(path)                    // GGUF file, or an MLX / ONNX directory
+    .mmproj(path)                   // vision projector
+    .embedder(path)                 // alongside, or instead of, a chat model
+    .openai("https://api.openai.com/v1", key)
+    .auto_context()                 // size the window to the machine
+    .greedy()                       // defaults every turn starts from
+    .grammar(schema)
+    .build()?;
+
+engine.load_model(path)?;           // swap on a live engine
+engine.reload_model()?;
+engine.unload_model()?;
+
+engine.capabilities();              // TEXT | IMAGES | AUDIO
+engine.supports_images();
+
+engine.embed(&corpus)?;             // one vector per input
+engine.embed_one("a query")?;
+
+engine.stop(id)?;  engine.pause(id)?;  engine.resume(id)?;
 ```
 
-Off by default, so sync consumers need no runtime.
-
-### Will it fit?
-
-Reads the model's header and measures the machine, before loading anything:
+## Will it fit?
 
 ```rust
+use gen2::{HardwareProfile, ModelInfo};
+
 let info = ModelInfo::read("/models/model.gguf")?;   // header only, no weights
 let hw   = HardwareProfile::detect();
 
-info.max_context(&hw);          // largest context this machine can give
-info.fits(&hw, Some(8192));     // Fits / ContextTooLarge / TooLarge
-```
-
-Or let the builder size it, and fail with a verdict rather than a load error:
-
-```rust
-let engine = Engine::builder().model(path).auto_context().build()?;
+info.max_context(&hw);
+info.fits(&hw, Some(8192));         // Fits | ContextTooLarge | TooLarge
 
 match Engine::builder().model(path).context(1_000_000).build() {
-    Err(e) => if let Some(fit) = e.fit() {
-        println!("{fit}");                  // why, in bytes
-        println!("{} would work", fit.max_context);
-    },
+    Err(e) => if let Some(fit) = e.fit() { println!("{fit}") },
     Ok(engine) => { /* … */ }
 }
 ```
 
-GGUF only — other formats keep the backend's default context.
+## Async
 
-### Asking what the model can do
-
-```rust
-engine.capabilities();        // TEXT | IMAGES | AUDIO
-engine.supports_images();
-engine.supports_audio();
-```
-
-You rarely need to. Sending images to a text-only model is checked *before
-anything is generated* and comes back as `Error::Unsupported` with code
-`"unsupported"` — and the turn is rolled back, so the conversation is left as it
-was found and dropping the attachment is enough to carry on.
-
-### Swapping models
-
-The model can change on a live engine. Sessions, tools and settings survive it:
+Behind the `tokio` feature:
 
 ```rust
-let engine = Engine::load("/models/small.gguf")?;
-engine.chat(&mut session).user("Hello").send()?;
+let (completion, session) = engine.chat_owned(session).user("…").send_async().await?;
 
-engine.load_model("/models/large.gguf")?;      // engine stays up
-// also: engine.reload_model()?  ·  engine.unload_model()?
-engine.chat(&mut session).user("Continue").send()?;   // same conversation
+let mut run = engine.agent_owned(session).goal("…").spawn_async();
+while let Some(update) = run.next().await { /* … */ }
 ```
 
-What can't survive is the cached prefill — it was produced by weights that are
-no longer loaded. Every live session notices and reopens on its next turn,
-paying one re-read. That's automatic; `engine.model_generation()` is the same
-signal if you want to show "model changed" in a UI.
+---
 
-**A load that fails part-way leaves no model.** The old one is torn down before
-the new one is read, so the path is checked first — a missing or non-model file
-is refused before anything is unloaded. A failure *during* load (out of memory,
-corrupt weights) can't be undone; check `is_model_loaded()` after an unexpected
-one.
+## Things that will otherwise cost you an afternoon
 
-### Embeddings
-
-An embedder loads independently of the chat model — an engine can hold both, or
-only one:
-
-```rust
-let engine = Engine::builder().embedder("/models/embedding-model.gguf").build()?;
-
-let vectors = engine.embed(&corpus)?;          // one per input, in order
-let query   = engine.embed_one("a question")?; // single
-```
-
-### Remote endpoints
-
-Same API, different weights. The URL selects the backend:
-
-```rust
-let engine = Engine::builder().openai("https://api.openai.com/v1", key).build()?;
-```
+- **`.greedy()` is not the default.** An unconfigured turn samples with a random
+  seed, so the same prompt gives different text each run.
+- **Deferred tool specs never enter the prompt prefix.** They arrive in the
+  conversation when search finds them, which is what keeps the warm KV cache
+  intact.
+- **Changing the tool set between runs reopens the conversation.** Tool
+  definitions live in the prefix; changing them costs one re-prefill. Silently
+  ignoring them was the alternative.
+- **Swapping a model invalidates every session's prefill.** Handled
+  automatically; `engine.model_generation()` is the signal.
+- **A load that fails part-way leaves no model.** The path is checked first, so
+  a typo is refused cleanly, but an out-of-memory mid-load can't be undone.
+- **Just drop the `Engine` when you're done.** The loop holds the backend on its
+  own thread; exiting while it's live aborts inside ggml's destructors. `Drop`
+  handles it.
+- **A cancelled turn is `Done`, not `Failed`.** The partial reply is real.
 
 ## Backends
 
-Pick at least one — a build with none fails to compile, by design.
+Pick at least one — a build with none fails to compile.
 
-| Feature | Backend | Notes |
-| --- | --- | --- |
-| `backend-external-api` | OpenAI / Anthropic wire formats | **Default.** No C toolchain needed. |
-| `backend-llamacpp` | llama.cpp (GGUF) | Add `metal`, `cuda`, or `vulkan` for GPU. |
-| `backend-mlx` | MLX (Apple Silicon) | Mutually exclusive with `backend-mlxcel`. |
-| `backend-mlxcel` | mlxcel (faster MLX decode) | Mac fast path. |
-| `backend-onnx` | ONNX Runtime | |
-| `backend-candle` | Candle (pure Rust) | |
-| `backend-executorch` | ExecuTorch (mobile) | Scaffold; returns `Unimplemented`. |
-
-```bash
-cargo test                                                  # default, no C toolchain
-cargo check --no-default-features --features backend-llamacpp
-cargo check --no-default-features --features backend-mlxcel # Mac fast path
-```
-
-### Examples
+| Feature | Backend |
+| --- | --- |
+| `backend-external-api` | OpenAI / Anthropic wire formats. **Default**, no C toolchain. |
+| `backend-llamacpp` | llama.cpp (GGUF). Add `metal`, `cuda`, or `vulkan`. |
+| `backend-mlx` | MLX (Apple Silicon). Mutually exclusive with `backend-mlxcel`. |
+| `backend-mlxcel` | mlxcel — the Mac fast path. |
+| `backend-onnx` | ONNX Runtime |
+| `backend-candle` | Candle (pure Rust) |
+| `backend-executorch` | ExecuTorch (mobile). Scaffold. |
+| `tokio` | Async API. Off by default. |
 
 ```sh
-cargo run --example minimal    --no-default-features --features metal -- /path/model.gguf
-cargo run --example basic      --no-default-features --features metal -- /path/model.gguf
-cargo run --example structured --no-default-features --features metal -- /path/model.gguf
-cargo run --example chat_app   --no-default-features --features metal -- /path/model.gguf
-cargo run --example embeddings --no-default-features --features metal -- /path/embedding-model.gguf
-cargo run --example fit        --no-default-features --features metal -- /path/model.gguf
-cargo run --example agent      --no-default-features --features metal -- /path/model.gguf
-cargo run --example tools      --no-default-features --features metal -- /path/model.gguf
-cargo run --example async_chat --no-default-features --features metal,tokio -- /path/model.gguf
+cargo test
+cargo check --no-default-features --features backend-llamacpp
 ```
 
-- `minimal` — the smallest useful program: make a chat, stream the reply.
-- `basic` — ask / stream / converse, and the four ways to consume a generation.
-- `structured` — grammar-constrained output (JSON schema, bare JSON, regex).
-- `agent` — registered tools, owned dispatch, and a deferred tool found by search.
-- `tools` — the lower-level `chat().on_tool()` loop, where you dispatch.
-- `async_chat` — the `tokio` feature: await a turn, stream one, cancel from a task.
-- `fit` — inspect a model and ask whether this machine can run it.
-- `embeddings` — embedder-only engine, batch and single, cosine similarity.
-- `chat_app` — the shape of a real app: `Arc<Engine>` shared across threads,
-  generation on a worker, cancellation, and concurrent conversations.
+## Examples
 
-### Live inference
-
-Unit tests never load a model. To prove the engine actually generates, point
-`PIO_TEST_MODEL` at a small instruct GGUF:
-
-```bash
-PIO_TEST_MODEL=/path/SmolLM2-360M-Instruct-Q4_K_M.gguf \
-  cargo test --test live_inference --no-default-features --features metal -- --nocapture
+```sh
+cargo run --example minimal --no-default-features --features metal -- /path/model.gguf
 ```
 
-`PIO_TEST_EMBEDDER` adds the embedding test and `PIO_TEST_TOOL_MODEL` the tool
-loop (needs a model with native tool calling — Qwen3 works, SmolLM2 doesn't). These skip without the
-env vars, but never pass by skipping: once set, a model that won't load or won't
-decode is a hard failure.
+`minimal` · `basic` · `agent` · `tools` · `structured` · `chat_app` ·
+`embeddings` · `fit` · `async_chat` (needs `metal,tokio`)
 
-## What's in here
+## Live tests
 
-Public:
+Unit tests never load a model. These do:
 
-- **`Engine`**, **`Session`**, **`Chat`**, **`Completion`**, **`Event`**,
-  **`Error`** — the API, re-exported at the crate root. `Session` holds the
-  transcript; the engine keys its warm cache to it, so owning your history
-  costs nothing in speed.
-- **`controller`** — the layer underneath: commands, events, handles, config,
-  and the observability snapshots. Reach for it via `engine.controller()` when
-  you need something the facade doesn't cover.
-- The vocabulary those signatures are written in: `GenSpec`, `Settings`,
-  `Message`, `ExecutionStats`, `ThinkingMode`, `ToolCall`, `GrammarSpec`, and
-  the residency/memory types the snapshots expose.
+```sh
+PIO_TEST_MODEL=/path/model.gguf \
+PIO_TEST_TOOL_MODEL=/path/tool-capable.gguf \
+PIO_TEST_EMBEDDER=/path/embedding-model.gguf \
+  cargo test --test live_inference --no-default-features --features metal
+```
 
-Internal (`pub(crate)`), driven by the controller:
-
-- **`engine/`** — load models, validate architectures, report stats.
-- **`session_rt/`** — sessions, prompt assembly, context truncation + compaction.
-- **`generation/`** — token events, reply/thinking parsing.
-- **`backend/`** — the pluggable backends behind one trait set, plus shared
-  chat-templating, tokenization, sampling, grammar-constrained decoding, and
-  stop-sequence matching.
-- **`kv/`** — versioned KV-cache save/load with checksums and strict/lenient
-  compatibility policies.
-- **`residency*`, `memory/`, `hardware.rs`** — how much of the machine a
-  resident model may take, and what the machine actually is.
-- **`zoo.rs`** — the canonical model zoo and per-platform bundle selector,
-  editable at `resources/models/zoo.json`.
-- **`router.rs`** — pure placement: given a request, local capability, and a
-  peer list, pick which device runs it. Local-first.
-
-The crate warns on `unnameable_types`, so a type that becomes reachable through
-the public API without being nameable fails the build rather than silently
-becoming a hole.
+They skip without the env vars, but never pass by skipping.
 
 ## License
 
