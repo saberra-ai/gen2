@@ -350,6 +350,10 @@ impl<'a> Chat<'a> {
     fn begin(self) -> Result<(TokenStream, &'a mut Session)> {
         let engine = self.engine;
         let session = self.session;
+        // A cached prefill belongs to the model that produced it. If the model
+        // has been swapped since this conversation was opened, the engine's
+        // cache is for weights that are gone, so the conversation reopens.
+        session.note_model(engine.model_generation());
         let (tx, rx) = event_channel(engine.event_channel_capacity());
 
         // A conversation the engine already holds gets only what's new; one it

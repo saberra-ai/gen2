@@ -44,6 +44,12 @@ pub struct Engine {
     sent_through: Mutex<HashMap<String, usize>>,
     /// Sampling defaults every turn starts from.
     defaults: GenSpec,
+    /// Bumped every time the chat model changes.
+    ///
+    /// A session's cached prefill belongs to the model that produced it, so a
+    /// swap has to invalidate every live session. Sessions record the
+    /// generation they were opened against and reopen when it moves.
+    generation: std::sync::atomic::AtomicU64,
 }
 
 impl Engine {
@@ -111,6 +117,82 @@ impl Engine {
         rx.recv()
             .map_err(|_| Error::ControllerGone)?
             .map_err(Error::Load)
+    }
+
+    /// Load a chat model, replacing whatever is loaded.
+    ///
+    /// The engine stays up — sessions, tools, and settings survive. What does
+    /// not survive is the cached prefill: it belongs to the previous model, so
+    /// every live session reopens on its next turn and pays one re-read. That
+    /// happens automatically; there is nothing to remember.
+    ///
+    /// Returns once the new weights are resident.
+    ///
+    /// # A failed load leaves no model
+    ///
+    /// The old model is torn down before the new one is read, so a load that
+    /// fails part-way leaves the engine with nothing loaded. The path is
+    /// checked first, which catches a missing or non-model file cleanly, but a
+    /// failure during load — out of memory, corrupt weights — cannot be undone.
+    /// Check [`Engine::is_model_loaded`] after a failure you did not expect.
+    pub fn load_model(&self, path: impl AsRef<Path>) -> Result<()> {
+        self.load_model_with(path, None, Settings::default())
+    }
+
+    /// [`Engine::load_model`], with a projector and explicit settings.
+    pub fn load_model_with(
+        &self,
+        path: impl AsRef<Path>,
+        mmproj: Option<&Path>,
+        settings: Settings,
+    ) -> Result<()> {
+        let path = path.as_ref();
+
+        // Check the file before asking the controller to load it. A load that
+        // fails part-way leaves *nothing* loaded — it tears the old model down
+        // first — so a typo in a path would otherwise cost you the model you
+        // had. This catches a missing file or a non-model, which is most of it;
+        // a failure during load (out of memory, corrupt weights) still ends
+        // with no model loaded, and there is no undo for that from here.
+        let is_url = path
+            .to_str()
+            .is_some_and(|p| p.starts_with("http://") || p.starts_with("https://"));
+        if !is_url {
+            crate::engine::validate_model_file(path)?;
+        }
+
+        let (resp, rx) = channel();
+        self.send(ControllerCmd::LoadModel {
+            model_path: path.to_path_buf(),
+            mmproj_path: mmproj.map(Path::to_path_buf),
+            settings,
+            api_key: None,
+            api_format: None,
+            resp,
+        })?;
+        rx.recv()
+            .map_err(|_| Error::ControllerGone)?
+            .map_err(Error::Load)?;
+
+        // Only after a successful load: a failed swap leaves the old model in
+        // place, and invalidating sessions against a model still loaded would
+        // cost a re-prefill for nothing.
+        self.generation
+            .fetch_add(1, std::sync::atomic::Ordering::SeqCst);
+        // Per-session message counts describe a conversation the new model has
+        // never seen.
+        if let Ok(mut m) = self.sent_through.lock() {
+            m.clear();
+        }
+        Ok(())
+    }
+
+    /// How many times the chat model has been swapped.
+    ///
+    /// Sessions use this to notice a swap; exposed because a caller displaying
+    /// "model changed" wants the same signal.
+    pub fn model_generation(&self) -> u64 {
+        self.generation.load(std::sync::atomic::Ordering::SeqCst)
     }
 
     /// Load an embedding model, replacing any already loaded.
@@ -486,6 +568,7 @@ impl EngineBuilder {
             join: Some(join),
             sent_through: Mutex::new(HashMap::new()),
             defaults: self.defaults,
+            generation: std::sync::atomic::AtomicU64::new(0),
         };
 
         // On any failure below, `engine` drops here — which stops and joins the

@@ -334,6 +334,29 @@ match Engine::builder().model(path).context(1_000_000).build() {
 
 GGUF only — other formats keep the backend's default context.
 
+### Swapping models
+
+The model can change on a live engine. Sessions, tools and settings survive it:
+
+```rust
+let engine = Engine::load("/models/small.gguf")?;
+engine.chat(&mut session).user("Hello").send()?;
+
+engine.load_model("/models/large.gguf")?;      // engine stays up
+engine.chat(&mut session).user("Continue").send()?;   // same conversation
+```
+
+What can't survive is the cached prefill — it was produced by weights that are
+no longer loaded. Every live session notices and reopens on its next turn,
+paying one re-read. That's automatic; `engine.model_generation()` is the same
+signal if you want to show "model changed" in a UI.
+
+**A load that fails part-way leaves no model.** The old one is torn down before
+the new one is read, so the path is checked first — a missing or non-model file
+is refused before anything is unloaded. A failure *during* load (out of memory,
+corrupt weights) can't be undone; check `is_model_loaded()` after an unexpected
+one.
+
 ### Embeddings
 
 An embedder loads independently of the chat model — an engine can hold both, or

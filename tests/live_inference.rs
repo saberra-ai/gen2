@@ -835,3 +835,112 @@ fn named_tool(name: &'static str) -> gen2::FunctionTool<WeatherArgs> {
         |_c, a: WeatherArgs| async move { Ok(gen2::ToolOutput::from(format!("ok for {}", a.city))) },
     )
 }
+
+/// A model can be swapped on a live engine, and conversations survive it.
+///
+/// The engine stays up — sessions, tools and settings persist. What cannot
+/// persist is the cached prefill: it was produced by weights that are no longer
+/// loaded, so every live session reopens on its next turn. That is the part
+/// worth testing, because getting it wrong means answering from another
+/// model's state with no symptom until the output is subtly wrong.
+///
+/// Needs `PIO_TEST_MODEL` and `PIO_TEST_TOOL_MODEL` to be different files.
+#[test]
+fn a_model_can_be_swapped_on_a_live_engine() {
+    let (Some(first), Some(second)) = (test_model(), tool_model()) else {
+        eprintln!("SKIP: set PIO_TEST_MODEL and PIO_TEST_TOOL_MODEL");
+        return;
+    };
+    if first == second {
+        eprintln!("SKIP: the two models must differ");
+        return;
+    }
+
+    let engine = Engine::load(&first).expect("first model should load");
+    assert_eq!(engine.model_generation(), 0);
+
+    let mut session = Session::new();
+    engine
+        .chat(&mut session)
+        .user("Say hello.")
+        .max_tokens(16)
+        .greedy()
+        .send()
+        .expect("first model should generate");
+    let before = session.len();
+
+    // Swap. The engine stays up.
+    engine
+        .load_model(&second)
+        .expect("second model should load");
+    assert_eq!(engine.model_generation(), 1, "the swap is observable");
+    assert!(engine.is_model_loaded());
+
+    // The same session keeps generating — its prefill is rebuilt against the
+    // new weights rather than reused from the old ones.
+    let done = engine
+        .chat(&mut session)
+        .user("Say goodbye.")
+        .max_tokens(16)
+        .greedy()
+        .send()
+        .expect("the swapped model should generate on the same session");
+
+    eprintln!(
+        "--- gen {} · {} msgs · {:?}",
+        engine.model_generation(),
+        session.len(),
+        done.text.chars().take(40).collect::<String>()
+    );
+    assert!(!done.text.trim().is_empty(), "no text after the swap");
+    assert!(session.len() > before, "the transcript kept growing");
+
+    // The whole conversation survived — nothing was rewritten to fit the swap.
+    let roles: Vec<&str> = session.messages().iter().map(|m| m.role.as_str()).collect();
+    assert_eq!(roles, ["user", "assistant", "user", "assistant"]);
+}
+
+/// A swap refused up front leaves the loaded model alone.
+///
+/// The controller tears the old model down before reading the new one, so a
+/// load that fails part-way leaves nothing loaded — a typo in a path would cost
+/// you a working model. The path is checked before any of that happens, which
+/// is what makes the common mistake survivable.
+#[test]
+fn a_swap_refused_up_front_does_not_disturb_the_loaded_model() {
+    let Some(model) = test_model() else {
+        eprintln!("SKIP: set PIO_TEST_MODEL");
+        return;
+    };
+
+    let engine = Engine::load(model).expect("model should load");
+    let before = engine.model_generation();
+
+    let err = engine
+        .load_model("/nonexistent/model.gguf")
+        .expect_err("loading a missing file must fail");
+    eprintln!("--- refused: {err}");
+
+    // Nothing moved: bumping the generation here would invalidate every live
+    // session's prefill for a model that is still perfectly loaded.
+    assert_eq!(
+        engine.model_generation(),
+        before,
+        "a failed swap is not a swap"
+    );
+    assert!(engine.is_model_loaded(), "the old model is still there");
+
+    let mut session = Session::new();
+    assert!(
+        !engine
+            .chat(&mut session)
+            .user("Still working?")
+            .max_tokens(16)
+            .greedy()
+            .send()
+            .expect("the surviving model should still generate")
+            .text
+            .trim()
+            .is_empty()
+    );
+}

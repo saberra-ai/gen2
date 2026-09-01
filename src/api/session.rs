@@ -69,6 +69,13 @@ pub struct Session {
     /// instead.
     #[serde(skip)]
     pub(crate) tools_fingerprint: Option<u64>,
+    /// Which model generation this conversation was opened against.
+    ///
+    /// A cached prefill belongs to the model that produced it. Swapping models
+    /// leaves the engine holding a cache for a conversation the new weights
+    /// never saw, so the swap has to reopen every live session.
+    #[serde(skip)]
+    pub(crate) model_generation: Option<u64>,
 }
 
 impl Session {
@@ -80,6 +87,7 @@ impl Session {
             opened: false,
             shed: 0,
             tools_fingerprint: None,
+            model_generation: None,
         }
     }
 
@@ -109,6 +117,7 @@ impl Session {
             opened: false,
             shed: 0,
             tools_fingerprint: None,
+            model_generation: None,
         }
     }
 
@@ -163,6 +172,27 @@ impl Session {
     /// Record that the engine shed `n` messages this turn.
     pub(crate) fn note_shed(&mut self, n: usize) {
         self.shed = self.shed.saturating_add(n);
+    }
+
+    /// Declare which model generation a turn is about to run against.
+    ///
+    /// A different one reopens the conversation, because the engine's cached
+    /// prefill was produced by weights that are no longer loaded.
+    ///
+    /// Returns whether the conversation was reopened.
+    pub(crate) fn note_model(&mut self, generation: u64) -> bool {
+        match self.model_generation {
+            Some(current) if current == generation => false,
+            None if !self.opened => {
+                self.model_generation = Some(generation);
+                false
+            }
+            _ => {
+                self.model_generation = Some(generation);
+                self.opened = false;
+                true
+            }
+        }
     }
 
     /// Declare the tool set a run is about to use.
@@ -238,6 +268,7 @@ impl Session {
         self.opened = false;
         self.shed = 0;
         self.tools_fingerprint = None;
+        self.model_generation = None;
     }
 
     /// Edit the transcript in place — trim it, delete a message, rewrite one.
@@ -389,6 +420,19 @@ mod tests {
         let mut s = Session::new();
         s.push_user_with_images("hello", Vec::<String>::new());
         assert_eq!(s.latest_text().as_deref(), Some("hello"));
+    }
+
+    #[test]
+    fn swapping_the_model_reopens_a_conversation() {
+        // The engine's cached prefill was produced by weights that are no
+        // longer loaded; continuing against it would answer from the wrong
+        // model's state.
+        let mut s = Session::new();
+        assert!(!s.note_model(0), "first use has nothing to invalidate");
+        s.opened = true;
+        assert!(!s.note_model(0), "the same model keeps the warm prefill");
+        assert!(s.note_model(1), "a swap must reopen");
+        assert!(!s.opened);
     }
 
     #[test]
