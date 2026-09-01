@@ -6,7 +6,7 @@
 
 use std::io::Write;
 
-use pio_gen2::Engine;
+use pio_gen2::{Engine, Session};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let model = std::env::args().nth(1).ok_or("usage: basic <model.gguf>")?;
@@ -17,7 +17,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // ── 1. Ask a question, get a string ─────────────────────────────────────
     let answer = engine
-        .prompt("Explain entropy in one sentence.")
+        .infer("Explain entropy in one sentence.")
         .max_tokens(128)
         .text()?;
     println!("answer: {answer}\n");
@@ -25,7 +25,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // ── 2. Stream it instead, so the user sees tokens as they land ──────────
     print!("streaming: ");
     engine
-        .prompt("Write a haiku about the borrow checker.")
+        .infer("Write a haiku about the borrow checker.")
         .max_tokens(64)
         .text_streaming(|token| {
             print!("{token}");
@@ -36,24 +36,23 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // ── 3. Hold a conversation ──────────────────────────────────────────────
     // Reusing a chat id continues that conversation, so the second turn can
     // rely on the first without you resending the history.
+    let mut session = Session::new();
     engine
-        .chat("demo")
+        .chat(&mut session)
         .user("My favourite colour is blue. Reply with just: ok")
         .max_tokens(16)
-        .text()?;
+        .send()?;
 
-    let recalled = engine
-        .chat("demo")
+    engine
+        .chat(&mut session)
         .user("What is my favourite colour? Answer in one word.")
         .max_tokens(16)
-        .text()?;
-    println!("recalled: {recalled}\n");
+        .send()?;
+    println!("recalled: {}\n", session.latest_text().unwrap_or_default());
+    println!("transcript: {} messages\n", session.len());
 
     // ── 4. The text plus what happened, in one value ────────────────────────
-    let done = engine
-        .prompt("Name three colours.")
-        .max_tokens(64)
-        .complete()?;
+    let done = engine.infer("Name three colours.").max_tokens(64).run()?;
 
     println!("text: {}", done.text);
     println!("finished: {:?}", done.finish);
@@ -69,7 +68,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // ── 5. Or just the tokens, as an iterator ───────────────────────────────
     print!("tokens: ");
-    for token in engine.prompt("Count to three.").max_tokens(32).tokens()? {
+    for token in engine.infer("Count to three.").max_tokens(32).tokens()? {
         print!("{}", token?);
     }
     println!();

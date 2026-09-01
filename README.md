@@ -17,65 +17,83 @@ moved and what a host app still supplies.
 ## Quick start
 
 ```rust
-use pio_gen2::Engine;
+use pio_gen2::{Engine, Session};
 
 let engine = Engine::load("/models/model.gguf")?;
 
-let reply = engine.prompt("Explain entropy in one sentence.")
-    .max_tokens(256)
-    .text()?;
+// A conversation you own. The reply is appended to it.
+let mut session = Session::new();
+engine.chat(&mut session).user("Explain entropy in one sentence.").send()?;
+println!("{}", session.latest_text().unwrap_or_default());
+
+// A follow-up. The history is already in the session, so nothing is resent
+// and the engine's warm KV cache is reused.
+engine.chat(&mut session).user("Simpler?").send()?;
+
+// The transcript is yours — render it, persist it, edit it.
+for message in session.messages() { /* … */ }
 ```
 
-Streaming, when you want the tokens as they arrive:
+Streaming, when you want tokens as they arrive:
 
 ```rust
-let mut stream = engine.chat("chat-1")
+engine.chat(&mut session)
     .user("Write a haiku about Rust.")
     .max_tokens(64)
-    .stream()?;
+    .send_streaming(|token| print!("{token}"))?;
+```
 
-for event in &mut stream {
-    match event? {
-        Event::Token(t) => print!("{t}"),
+One-offs with nothing to keep — a classification, a title:
+
+```rust
+let title = engine.infer("Title this in three words.").max_tokens(16).text()?;
+```
+
+Off the calling thread, for a UI. The session comes back on `Done`:
+
+```rust
+let turn = engine.chat_owned(session).user("Hello").spawn();
+
+for update in turn {
+    match update {
+        Update::Delta(t) => print!("{t}"),
+        Update::Done { session, .. } => save(session),
+        Update::Failed { error, .. } => show(error),
         _ => {}
     }
 }
-assert_eq!(stream.finish(), Some(Finish::Eos));
 ```
 
-A second turn on the same chat id continues that conversation, reusing its warm
-KV cache:
-
-```rust
-engine.chat("chat-1").user("Now make it about Go.").text()?;
-```
-
-Shutdown is automatic — dropping the `Engine` stops the controller and waits for
-the backend to be released. Call `engine.shutdown()?` instead when you want
-teardown failures to surface.
+Shutdown is automatic: dropping the `Engine` stops the controller and waits for
+the backend to be released. `engine.shutdown()?` instead if you want teardown
+failures to surface.
 
 ### Reproducibility
 
-`.greedy()` pins temperature 0 and a fixed seed. Worth knowing that it is **not**
-the default: an unconfigured turn samples with a random seed, so the same prompt
-gives different text each run.
-
-```rust
-engine.prompt("Count to three").greedy().text()?;   // same output every time
-```
+`.greedy()` pins temperature 0 and a fixed seed. It is **not** the default — an
+unconfigured turn samples with a random seed. Set it per turn, or once for the
+whole engine with `Engine::builder().greedy()`.
 
 ### Constrained output
 
 `.grammar(...)` shapes decoding with a JSON schema, regex, Lark grammar, or
-GBNF. It is enforced *during* decoding — the model cannot emit anything that
-violates it — and behaves identically across every backend.
+GBNF, enforced *during* decoding so the model cannot emit anything that
+violates it. Per turn, or as an engine default:
+
+```rust
+let classifier = Engine::builder().model(path).grammar(schema).greedy().build()?;
+let json = classifier.infer("Classify: '…'").text()?;      // always the right shape
+```
+
+A turn can still override it, or drop it with `.unconstrained()` — loading
+weights is the expensive part, so one engine should serve several shapes.
 
 ### Remote endpoints
 
-The same API, different weights:
+Same API, different weights. The URL selects the backend:
 
 ```rust
-let engine = Engine::builder().openai("gpt-4o-mini", api_key).build()?;
+let engine = Engine::builder().openai("https://api.openai.com/v1", key).build()?;
 ```
 
 ## Backends
@@ -130,8 +148,10 @@ model that won't load or won't decode is a hard failure.
 
 Public:
 
-- **`Engine`**, **`Chat`**, **`TokenStream`**, **`Event`**, **`Error`** — the
-  API, re-exported at the crate root.
+- **`Engine`**, **`Session`**, **`Chat`**, **`Completion`**, **`Event`**,
+  **`Error`** — the API, re-exported at the crate root. `Session` holds the
+  transcript; the engine keys its warm cache to it, so owning your history
+  costs nothing in speed.
 - **`controller`** — the layer underneath: commands, events, handles, config,
   and the observability snapshots. Reach for it via `engine.controller()` when
   you need something the facade doesn't cover.

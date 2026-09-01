@@ -3,9 +3,9 @@
 //! A UI can't block on a generation, so inference runs on a worker and the UI
 //! reads a channel. That's the whole architecture; everything below is detail.
 //!
-//! Covers the four things a real chat app needs beyond "call the model":
-//! background generation, cancellation, concurrent conversations, and owning
-//! the transcript.
+//! Covers what a real app needs beyond "call the model": background
+//! generation, cancellation, concurrent conversations, and owning the
+//! transcript.
 //!
 //! ```sh
 //! cargo run --example chat_app --no-default-features --features metal -- /path/model.gguf
@@ -15,7 +15,7 @@ use std::sync::Arc;
 use std::thread;
 use std::time::Duration;
 
-use pio_gen2::{Engine, Error, Update};
+use pio_gen2::{Engine, Error, Session, Update};
 
 /// Turn an error into something worth putting on screen.
 ///
@@ -28,6 +28,41 @@ fn describe(e: &Error) -> String {
     }
 }
 
+/// Run a turn on a worker, print deltas as they arrive, and hand the session
+/// back. Your app would render instead of printing, and keep the session in
+/// whatever holds its conversation list.
+fn run_turn(engine: &Arc<Engine>, session: Session, prompt: &str) -> Session {
+    let turn = engine
+        .chat_owned(session)
+        .user(prompt)
+        .max_tokens(256)
+        .spawn();
+
+    let mut carried = None;
+    for update in turn {
+        match update {
+            Update::Delta(t) => print!("{t}"),
+            Update::Done {
+                completion,
+                session,
+            } => {
+                println!(
+                    "\n[done, {} tokens]",
+                    completion.stats.map(|s| s.decode_tokens).unwrap_or(0)
+                );
+                carried = Some(session);
+            }
+            Update::Failed { error, session } => {
+                eprintln!("\n[failed: {}]", describe(&error));
+                carried = Some(session);
+            }
+            _ => {}
+        }
+    }
+    // Every terminal update returns the session, so this always resolves.
+    carried.expect("a turn always ends with Done or Failed")
+}
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let model = std::env::args()
         .nth(1)
@@ -36,58 +71,32 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // One engine, shared. Loading is the slow part; do it once at startup.
     let engine = Arc::new(Engine::load(&model)?);
 
-    // ── A turn, streamed to the "UI" ────────────────────────────────────────
-    // `spawn` runs the turn on a worker and hands back the updates. No thread,
-    // no channel, no sender clone to write.
+    // ── A conversation, streamed to the "UI" ────────────────────────────────
     println!("── turn 1 ──");
-    let turn = engine
-        .chat_owned("general")
-        .user("Name two colours.")
-        .max_tokens(256)
-        .spawn();
+    let session = Session::new().with_system("Answer briefly.");
+    let session = run_turn(&engine, session, "Name two colours.");
 
-    for update in turn {
-        match update {
-            Update::Delta(t) => print!("{t}"),
-            Update::Done(done) => println!(
-                "\n[done, {} tokens]",
-                done.stats.map(|s| s.decode_tokens).unwrap_or(0)
-            ),
-            Update::Failed(e) => eprintln!("\n[failed: {}]", describe(&e)),
-            _ => {}
-        }
-    }
-
-    // ── A follow-up on the same conversation ────────────────────────────────
-    // Same chat id, so the engine keeps the history and its warm KV cache. The
-    // app never resends the transcript.
+    // ── A follow-up ─────────────────────────────────────────────────────────
+    // The session carries the history, so nothing is resent and the engine's
+    // warm cache is reused.
     println!("\n── turn 2 (same conversation) ──");
-    for update in engine
-        .chat_owned("general")
-        .user("Now name one more.")
-        .max_tokens(256)
-        .spawn()
-    {
-        match update {
-            Update::Delta(t) => print!("{t}"),
-            Update::Done(_) => println!("\n[done]"),
-            Update::Failed(e) => eprintln!("\n[failed: {}]", describe(&e)),
-            _ => {}
-        }
+    let session = run_turn(&engine, session, "Now name one more.");
+
+    println!("\ntranscript: {} messages", session.len());
+    for m in session.messages() {
+        println!("  {}", m.role);
     }
 
     // ── Cancellation ────────────────────────────────────────────────────────
-    // The user hits stop. `stop` is by chat id and can be called from any
-    // thread, which is the point: the worker is blocked draining the stream.
+    // The user hits stop. The thread iterating updates is blocked, so the stop
+    // has to come from elsewhere — that's what `canceller()` is for.
     println!("\n── cancellation ──");
     let turn = engine
-        .chat_owned("long")
+        .chat_owned(Session::new())
         .user("Write a very long essay about rust.")
         .max_tokens(512)
         .spawn();
 
-    // `canceller()` is movable and cheap to clone — the iterating thread below
-    // is blocked, so cancelling has to come from somewhere else.
     let canceller = turn.canceller();
     thread::spawn(move || {
         thread::sleep(Duration::from_millis(300));
@@ -98,28 +107,33 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     for update in turn {
         match update {
             Update::Delta(_) => got += 1,
-            // A cancelled turn is Done, not Failed: the partial reply is real.
-            Update::Done(done) => println!(
-                "stopped after {got} fragments; kept {} chars ({:?})",
-                done.text.len(),
-                done.finish
+            // A cancelled turn is Done, not Failed: the partial reply is real,
+            // and it is already in the session.
+            Update::Done {
+                completion,
+                session,
+            } => println!(
+                "stopped after {got} fragments; kept {} chars ({:?}), session has {} messages",
+                completion.text.len(),
+                completion.finish,
+                session.len()
             ),
-            Update::Failed(e) => eprintln!("[failed: {}]", describe(&e)),
+            Update::Failed { error, .. } => eprintln!("[failed: {}]", describe(&error)),
             _ => {}
         }
     }
 
     // ── Concurrent conversations ────────────────────────────────────────────
-    // Distinct chat ids run independently. The controller schedules them; how
-    // many run at once is `ControllerConfig::max_active_chats`.
+    // Independent sessions run independently. How many at once is
+    // `ControllerConfig::max_active_chats`.
     println!("\n── two conversations at once ──");
     let a = engine
-        .chat_owned("chat-a")
+        .chat_owned(Session::new())
         .user("Say 'apple' and nothing else.")
         .max_tokens(32)
         .spawn();
     let b = engine
-        .chat_owned("chat-b")
+        .chat_owned(Session::new())
         .user("Say 'banana' and nothing else.")
         .max_tokens(32)
         .spawn();
@@ -127,14 +141,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     for (name, turn) in [("a", a), ("b", b)] {
         let text: String = turn
             .filter_map(|u| match u {
-                Update::Done(done) => Some(done.text),
+                Update::Done { session, .. } => session.latest_text(),
                 _ => None,
             })
             .collect();
         println!("{name}: {}", text.trim());
     }
 
-    // Dropping the Arc's last reference shuts the engine down and waits for the
+    // Dropping the last Arc reference shuts the engine down and waits for the
     // backend to be released.
     Ok(())
 }

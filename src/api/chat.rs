@@ -1,87 +1,77 @@
-//! [`Chat`] — one turn, configured fluently.
+//! [`Chat`] — one turn against a [`Session`].
 
 use crate::backend::common::grammar::GrammarSpec;
 use crate::controller::ControllerCmd;
 use crate::generation::{GenSpec, ThinkingMode};
 use crate::types::message::{Message, Tool};
 
-use std::borrow::Borrow;
-
 use super::engine::{Engine, event_channel};
 use super::error::Result;
+use super::session::Session;
 use super::stream::{Completion, TokenStream, Tokens};
 
-/// A turn being built.
+/// A turn being built against a conversation.
 ///
-/// Add messages, set sampling, then call [`Chat::stream`] for events or
-/// [`Chat::text`] for the finished reply.
+/// Add messages, set sampling, then run it. Whatever the model replies is
+/// appended to the session, so the conversation stays whole without you
+/// managing it.
 ///
 /// ```no_run
-/// # use pio_gen2::Engine;
-/// # let engine = Engine::load("model.gguf")?;
-/// let reply = engine.chat("c1")
+/// # use pio_gen2::{Engine, Session};
+/// # let engine = Engine::load("m.gguf")?;
+/// let mut session = Session::new();
+/// engine.chat(&mut session)
 ///     .user("Explain entropy in one sentence.")
 ///     .max_tokens(256)
-///     .text()?;
+///     .send()?;
+/// println!("{}", session.latest_text().unwrap_or_default());
 /// # Ok::<(), pio_gen2::Error>(())
 /// ```
-#[must_use = "a Chat does nothing until .text(), .complete(), .stream(), or .spawn() is called"]
-pub struct Chat<E: Borrow<Engine>> {
-    engine: E,
-    chat_id: String,
-    messages: Vec<Message>,
+#[must_use = "a Chat does nothing until .send(), .text(), .stream(), or .tokens() is called"]
+pub struct Chat<'a> {
+    engine: &'a Engine,
+    session: &'a mut Session,
     spec: GenSpec,
     thinking: ThinkingMode,
     tools: Option<(Vec<Tool>, String)>,
-    fresh: bool,
 }
 
-impl<E: Borrow<Engine>> Chat<E> {
-    pub(crate) fn new(engine: E, chat_id: String) -> Self {
+impl<'a> Chat<'a> {
+    pub(crate) fn new(engine: &'a Engine, session: &'a mut Session) -> Self {
         Self {
+            // Starts from the engine's configured defaults, so anything set at
+            // build time applies unless this turn overrides it.
+            spec: engine.default_gen_spec(),
             engine,
-            chat_id,
-            messages: Vec::new(),
-            spec: GenSpec::default(),
+            session,
             thinking: ThinkingMode::default(),
             tools: None,
-            fresh: false,
         }
-    }
-
-    /// The engine this turn runs on.
-    pub(crate) fn engine_handle(&self) -> &E {
-        &self.engine
-    }
-
-    /// The conversation this turn belongs to.
-    pub(crate) fn chat_id(&self) -> &str {
-        &self.chat_id
-    }
-
-    /// Start this turn from scratch, ignoring any history under this chat id.
-    pub fn fresh(mut self) -> Self {
-        self.fresh = true;
-        self
     }
 
     // ── Messages ────────────────────────────────────────────────────────────
 
-    /// Append a user message.
-    pub fn user(mut self, text: impl Into<String>) -> Self {
-        self.messages.push(Message::user(text));
+    /// Append a user message to the conversation.
+    pub fn user(self, text: impl Into<String>) -> Self {
+        self.message(Message::user(text))
+    }
+
+    /// Append a system message to the conversation.
+    pub fn system(self, text: impl Into<String>) -> Self {
+        self.message(Message::system(text))
+    }
+
+    /// Append an already-built message.
+    pub fn message(self, message: Message) -> Self {
+        self.session.push(message);
         self
     }
 
-    /// Append a system message.
-    pub fn system(mut self, text: impl Into<String>) -> Self {
-        self.messages.push(Message::system(text));
-        self
-    }
-
-    /// Append already-built messages.
-    pub fn messages(mut self, messages: impl IntoIterator<Item = Message>) -> Self {
-        self.messages.extend(messages);
+    /// Append several messages.
+    pub fn messages(self, messages: impl IntoIterator<Item = Message>) -> Self {
+        for m in messages {
+            self.session.push(m);
+        }
         self
     }
 
@@ -103,8 +93,7 @@ impl<E: Borrow<Engine>> Chat<E> {
     /// Seed the sampler, making a given temperature reproducible.
     ///
     /// Pairs with [`Chat::greedy`] in either order: `greedy()` only supplies a
-    /// seed when you haven't set one, so `.seed(42).greedy()` and
-    /// `.greedy().seed(42)` both end at temperature 0 with seed 42.
+    /// seed when you haven't set one.
     pub fn seed(mut self, seed: u64) -> Self {
         self.spec.seed = Some(seed);
         self
@@ -113,8 +102,9 @@ impl<E: Borrow<Engine>> Chat<E> {
     /// Decode deterministically: temperature 0 with a fixed seed.
     ///
     /// Worth naming, because it is *not* the default — an unconfigured turn
-    /// samples with a random seed, so the same prompt gives different text
-    /// each run. Keeps an explicit [`Chat::seed`] if one was set.
+    /// samples with a random seed. Set it once on
+    /// [`EngineBuilder::greedy`](super::EngineBuilder::greedy) if every turn
+    /// should be reproducible.
     pub fn greedy(mut self) -> Self {
         self.spec.temperature = Some(0.0);
         self.spec.seed = Some(self.spec.seed.unwrap_or(0));
@@ -139,16 +129,25 @@ impl<E: Borrow<Engine>> Chat<E> {
         self
     }
 
-    /// Constrain the output to a grammar — JSON schema, regex, Lark, or GBNF.
+    /// Constrain this turn's output to a grammar — JSON schema, regex, Lark,
+    /// or GBNF.
     ///
     /// Enforced during decoding, so the model cannot produce output that
-    /// violates it. Works the same across every backend.
+    /// violates it. Overrides
+    /// [`EngineBuilder::grammar`](super::EngineBuilder::grammar) for this turn;
+    /// [`Chat::unconstrained`] drops an engine-level default.
     pub fn grammar(mut self, grammar: GrammarSpec) -> Self {
         self.spec.grammar = Some(grammar);
         self
     }
 
-    /// Use a fully-built [`GenSpec`], overriding anything set above.
+    /// Drop any engine-level grammar for this turn.
+    pub fn unconstrained(mut self) -> Self {
+        self.spec.grammar = None;
+        self
+    }
+
+    /// Use a fully-built [`GenSpec`], overriding everything above.
     pub fn gen_spec(mut self, spec: GenSpec) -> Self {
         self.spec = spec;
         self
@@ -157,16 +156,12 @@ impl<E: Borrow<Engine>> Chat<E> {
     // ── Tools and reasoning ─────────────────────────────────────────────────
 
     /// Offer tools to the model. `prompt` introduces them in the template.
-    ///
-    /// The names also arm the output parser, so `name[...]`-shaped text
-    /// outside a real call block stays text.
     pub fn tools(mut self, tools: Vec<Tool>, prompt: impl Into<String>) -> Self {
         self.tools = Some((tools, prompt.into()));
         self
     }
 
     /// Force the reasoning channel on or off for models that expose one.
-    /// Defaults to the model's own template default.
     pub fn thinking(mut self, mode: ThinkingMode) -> Self {
         self.thinking = mode;
         self
@@ -174,20 +169,63 @@ impl<E: Borrow<Engine>> Chat<E> {
 
     // ── Running ─────────────────────────────────────────────────────────────
 
-    /// Start generating and return the event stream.
+    /// Run the turn, appending the reply to the session.
     ///
-    /// The first turn under a given chat id opens the conversation; later
-    /// turns continue it, reusing its warm KV cache rather than re-reading the
-    /// history. [`Chat::fresh`] forces a restart.
+    /// Read it with [`Session::latest`], or use the returned [`Completion`] for
+    /// stats and the finish reason.
+    pub fn send(self) -> Result<Completion> {
+        self.send_streaming(|_| {})
+    }
+
+    /// [`Chat::send`], with `on_token` called per fragment as it arrives.
+    ///
+    /// This is the one a UI wants on a blocking thread: tokens land as they
+    /// decode, and the session ends up holding the finished reply.
+    pub fn send_streaming(self, on_token: impl FnMut(&str)) -> Result<Completion> {
+        let (stream, session) = self.begin()?;
+        let done = stream.complete_streaming(on_token)?;
+        session.push(Message::assistant_structured(done.text.clone(), None));
+        Ok(done)
+    }
+
+    /// Run the turn and return just the reply text. Also appended to the
+    /// session.
+    pub fn text(self) -> Result<String> {
+        Ok(self.send()?.text)
+    }
+
+    /// Run the turn and return the raw event stream.
+    ///
+    /// The reply is **not** appended to the session — you are draining the
+    /// events, so only you know what the final text was. Push it yourself with
+    /// [`Session::push`], or use [`Chat::send_streaming`], which does.
     pub fn stream(self) -> Result<TokenStream> {
-        let engine = self.engine.borrow();
+        Ok(self.begin()?.0)
+    }
+
+    /// Run the turn and iterate the text fragments.
+    ///
+    /// As with [`Chat::stream`], the reply is not appended to the session.
+    pub fn tokens(self) -> Result<Tokens> {
+        Ok(self.stream()?.tokens())
+    }
+
+    /// Dispatch the turn, handing back the stream and the session to append to.
+    fn begin(self) -> Result<(TokenStream, &'a mut Session)> {
+        let engine = self.engine;
+        let session = self.session;
         let (tx, rx) = event_channel(engine.event_channel_capacity());
-        let start = self.fresh || engine.claim_new_chat(&self.chat_id);
+
+        // A conversation the engine already holds gets only what's new; one it
+        // doesn't gets the whole history.
+        let start = !session.opened;
+        let messages = session.pending(engine.sent_through(session.id()));
+        let sent = session.len();
 
         let cmd = if start {
             ControllerCmd::StartChat {
-                chat_id: self.chat_id,
-                messages: self.messages,
+                chat_id: session.id().to_string(),
+                messages,
                 gen_spec: self.spec,
                 thinking: self.thinking,
                 model_id: None,
@@ -197,8 +235,8 @@ impl<E: Borrow<Engine>> Chat<E> {
             }
         } else {
             ControllerCmd::ContinueChat {
-                chat_id: self.chat_id,
-                new_messages: self.messages,
+                chat_id: session.id().to_string(),
+                new_messages: messages,
                 gen_spec: self.spec,
                 model_id: None,
                 model_size_bytes: None,
@@ -207,42 +245,17 @@ impl<E: Borrow<Engine>> Chat<E> {
         };
 
         engine.send(cmd)?;
-        Ok(TokenStream::new(rx))
-    }
-
-    /// Generate and return the reply text, discarding other events.
-    pub fn text(self) -> Result<String> {
-        self.stream()?.text()
-    }
-
-    /// Generate, invoking `on_token` per fragment, and return the full text.
-    pub fn text_streaming(self, on_token: impl FnMut(&str)) -> Result<String> {
-        self.stream()?.text_streaming(on_token)
-    }
-
-    /// Generate and return everything that happened — text, finish reason,
-    /// timing, tool calls, and whether context had to be shed.
-    pub fn complete(self) -> Result<Completion> {
-        self.stream()?.complete()
-    }
-
-    /// [`Self::complete`], with `on_token` called per fragment as it arrives.
-    pub fn complete_streaming(self, on_token: impl FnMut(&str)) -> Result<Completion> {
-        self.stream()?.complete_streaming(on_token)
-    }
-
-    /// Generate and iterate the text fragments, without matching event kinds.
-    pub fn tokens(self) -> Result<Tokens> {
-        Ok(self.stream()?.tokens())
+        engine.mark_sent(session.id(), sent);
+        session.opened = true;
+        Ok((TokenStream::new(rx), session))
     }
 }
 
-impl<E: Borrow<Engine>> std::fmt::Debug for Chat<E> {
+impl std::fmt::Debug for Chat<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("Chat")
-            .field("chat_id", &self.chat_id)
-            .field("messages", &self.messages.len())
-            .field("fresh", &self.fresh)
+            .field("session", &self.session.id())
+            .field("messages", &self.session.len())
             .finish_non_exhaustive()
     }
 }

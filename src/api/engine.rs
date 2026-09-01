@@ -1,24 +1,29 @@
 //! [`Engine`] — load a model, run turns, shut down cleanly.
 
-use std::collections::HashSet;
+use std::collections::HashMap;
 use std::path::{Path, PathBuf};
 use std::sync::mpsc::{channel, sync_channel};
 use std::sync::{Arc, Mutex};
 use std::thread::JoinHandle;
 
+use crate::backend::common::grammar::GrammarSpec;
 use crate::controller::{
     ControllerCmd, ControllerConfig, ControllerHandle, start_controller_joinable,
 };
 use crate::engine::Settings;
+use crate::generation::GenSpec;
 
 use super::chat::Chat;
 use super::error::{Error, Result};
+use super::inference::Inference;
+use super::session::Session;
+use super::spawned::OwnedChat;
 
 /// A running inference engine.
 ///
 /// Owns the controller loop and the backend it holds. Build one with
 /// [`Engine::builder`], then start turns with [`Engine::chat`] or
-/// [`Engine::prompt`].
+/// [`Engine::infer`].
 ///
 /// Shutting down is automatic: dropping an `Engine` stops the loop and waits
 /// for it to release the backend. Use [`Engine::shutdown`] instead when you
@@ -26,9 +31,15 @@ use super::error::{Error, Result};
 pub struct Engine {
     handle: ControllerHandle,
     join: Option<JoinHandle<()>>,
-    /// Chat ids already opened, so a second turn on one continues it instead
-    /// of restarting and throwing away its warm KV cache.
-    started: Mutex<HashSet<String>>,
+    /// How many of each live session's messages the engine has already been
+    /// given, so a follow-up sends only what's new.
+    ///
+    /// Keyed by session id and pruned when a session is dropped —
+    /// `Session::opened` is the authority on whether a conversation is live, so
+    /// a missing entry here just means "send everything", never a wrong answer.
+    sent_through: Mutex<HashMap<String, usize>>,
+    /// Sampling defaults every turn starts from.
+    defaults: GenSpec,
 }
 
 impl Engine {
@@ -44,35 +55,30 @@ impl Engine {
         Self::builder().model(path).build()
     }
 
-    /// Start a turn in a named conversation.
+    /// Start a turn in a conversation you own.
     ///
-    /// Reusing a `chat_id` continues that conversation, keeping its warm KV
-    /// cache instead of re-reading the history from scratch.
-    pub fn chat(&self, chat_id: impl Into<String>) -> Chat<&Engine> {
-        Chat::new(self, chat_id.into())
+    /// The reply is appended to `session`, and the engine keeps that
+    /// conversation's warm KV cache keyed to it — so a follow-up resends
+    /// nothing and re-prefills nothing.
+    pub fn chat<'a>(&'a self, session: &'a mut Session) -> Chat<'a> {
+        Chat::new(self, session)
     }
 
-    /// Start a one-shot turn: a fresh conversation with a single user message.
-    pub fn prompt(&self, text: impl Into<String>) -> Chat<&Engine> {
-        Chat::new(self, format!("oneshot-{}", uuid::Uuid::new_v4()))
-            .user(text)
-            .fresh()
+    /// Run one prompt against a throwaway conversation.
+    ///
+    /// For when there is nothing to keep: classification, extraction, a title.
+    /// Use [`Engine::chat`] with a [`Session`] whenever a later turn might
+    /// reference this one.
+    pub fn infer(&self, text: impl Into<String>) -> Inference<'_> {
+        Inference::new(self, text.into())
     }
 
-    /// As [`Engine::chat`], but the turn owns its engine reference so it can be
-    /// [`spawn`](Chat::spawn)ed onto a worker thread.
-    pub fn chat_owned(self: &Arc<Self>, chat_id: impl Into<String>) -> Chat<Arc<Engine>> {
-        Chat::new(Arc::clone(self), chat_id.into())
-    }
-
-    /// As [`Engine::prompt`], but spawnable. See [`Engine::chat_owned`].
-    pub fn prompt_owned(self: &Arc<Self>, text: impl Into<String>) -> Chat<Arc<Engine>> {
-        Chat::new(
-            Arc::clone(self),
-            format!("oneshot-{}", uuid::Uuid::new_v4()),
-        )
-        .user(text)
-        .fresh()
+    /// Start a turn on a conversation the engine takes ownership of, so it can
+    /// be [`spawn`](OwnedChat::spawn)ed onto a worker thread.
+    ///
+    /// The session comes back on [`Update::Done`](super::Update::Done).
+    pub fn chat_owned(self: &Arc<Self>, session: Session) -> OwnedChat {
+        OwnedChat::new(Arc::clone(self), session)
     }
 
     /// Replace the sampling and prompt settings for subsequent turns.
@@ -162,15 +168,36 @@ impl Engine {
         self.handle.config().event_channel_capacity
     }
 
-    /// Record `chat_id` as opened, returning whether this call is the one that
-    /// opened it (i.e. the turn should be a `StartChat`).
-    pub(crate) fn claim_new_chat(&self, chat_id: &str) -> bool {
-        match self.started.lock() {
-            Ok(mut started) => started.insert(chat_id.to_string()),
-            // A poisoned lock means a previous caller panicked mid-turn. Start
-            // the chat rather than continue one whose state we can't vouch for.
-            Err(_) => true,
+    /// How many of `session_id`'s messages the engine already has.
+    pub(crate) fn sent_through(&self, session_id: &str) -> usize {
+        self.sent_through
+            .lock()
+            .ok()
+            .and_then(|m| m.get(session_id).copied())
+            .unwrap_or(0)
+    }
+
+    /// Record that the engine now has `count` of `session_id`'s messages.
+    pub(crate) fn mark_sent(&self, session_id: &str, count: usize) {
+        if let Ok(mut m) = self.sent_through.lock() {
+            m.insert(session_id.to_string(), count);
         }
+    }
+
+    /// Forget a conversation's cached bookkeeping.
+    ///
+    /// Called when a [`Session`] is finished with. Not required for
+    /// correctness — a missing entry just means the next turn resends
+    /// everything — but without it the map grows for the life of the process.
+    pub fn forget(&self, session: &Session) {
+        if let Ok(mut m) = self.sent_through.lock() {
+            m.remove(session.id());
+        }
+    }
+
+    /// Sampling defaults every turn starts from.
+    pub(crate) fn default_gen_spec(&self) -> GenSpec {
+        self.defaults.clone()
     }
 
     fn stop_and_join(&mut self) -> Result<()> {
@@ -212,6 +239,7 @@ pub struct EngineBuilder {
     config: Option<ControllerConfig>,
     api_key: Option<String>,
     api_format: Option<String>,
+    defaults: GenSpec,
 }
 
 impl EngineBuilder {
@@ -265,6 +293,45 @@ impl EngineBuilder {
         self
     }
 
+    /// Cap tokens for every turn unless it overrides this.
+    pub fn max_tokens(mut self, n: usize) -> Self {
+        self.defaults.max_tokens = Some(n);
+        self
+    }
+
+    /// Sampling temperature for every turn unless it overrides this.
+    pub fn temperature(mut self, t: f32) -> Self {
+        self.defaults.temperature = Some(t);
+        self
+    }
+
+    /// Seed for every turn unless it overrides this.
+    pub fn seed(mut self, seed: u64) -> Self {
+        self.defaults.seed = Some(seed);
+        self
+    }
+
+    /// Decode deterministically by default: temperature 0 with a fixed seed.
+    ///
+    /// Set here, every turn is reproducible without repeating `.greedy()` at
+    /// each call site.
+    pub fn greedy(mut self) -> Self {
+        self.defaults.temperature = Some(0.0);
+        self.defaults.seed = Some(self.defaults.seed.unwrap_or(0));
+        self
+    }
+
+    /// Constrain every turn's output to a grammar unless it overrides this.
+    ///
+    /// Useful when an engine exists to produce one shape — a classifier, an
+    /// extractor. A turn can still pass its own [`Chat::grammar`], or drop the
+    /// default with [`Chat::unconstrained`], because loading the weights is the
+    /// expensive part and one engine should be able to serve several shapes.
+    pub fn grammar(mut self, grammar: GrammarSpec) -> Self {
+        self.defaults.grammar = Some(grammar);
+        self
+    }
+
     /// Start the controller and load the model.
     ///
     /// Returns once the weights are resident and the engine is ready to
@@ -278,7 +345,8 @@ impl EngineBuilder {
         let engine = Engine {
             handle,
             join: Some(join),
-            started: Mutex::new(HashSet::new()),
+            sent_through: Mutex::new(HashMap::new()),
+            defaults: self.defaults,
         };
 
         let (resp, rx) = channel();

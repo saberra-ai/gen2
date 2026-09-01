@@ -135,7 +135,7 @@ impl TokenStream {
     /// ```no_run
     /// # use pio_gen2::Engine;
     /// # let engine = Engine::load("m.gguf")?;
-    /// for token in engine.prompt("hi").stream()?.tokens() {
+    /// for token in engine.infer("hi").tokens()? {
     ///     print!("{}", token?);
     /// }
     /// # Ok::<(), pio_gen2::Error>(())

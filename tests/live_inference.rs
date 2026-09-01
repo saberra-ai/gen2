@@ -23,7 +23,7 @@
 
 use std::path::PathBuf;
 
-use pio_gen2::{Engine, Event, Finish};
+use pio_gen2::{Engine, Event, Finish, Session};
 
 fn test_model() -> Option<PathBuf> {
     let raw = std::env::var("PIO_TEST_MODEL").ok()?;
@@ -46,7 +46,7 @@ fn generates_real_tokens_from_a_real_model() {
 
     let engine = Engine::load(model).expect("real GGUF should load");
     let text = engine
-        .prompt("Reply with exactly one word: hello")
+        .infer("Reply with exactly one word: hello")
         .max_tokens(24)
         .greedy()
         .text()
@@ -74,8 +74,10 @@ fn stream_reports_a_clean_finish() {
     };
 
     let engine = Engine::load(model).expect("real GGUF should load");
+    let mut session = Session::new();
     let mut stream = engine
-        .prompt("Reply with exactly one word: hello")
+        .chat(&mut session)
+        .user("Reply with exactly one word: hello")
         .max_tokens(24)
         .greedy()
         .stream()
@@ -111,18 +113,8 @@ fn greedy_decoding_is_reproducible() {
     let engine = Engine::load(model).expect("real GGUF should load");
     let prompt = "Count: one two three";
 
-    let first = engine
-        .prompt(prompt)
-        .max_tokens(16)
-        .greedy()
-        .text()
-        .unwrap();
-    let second = engine
-        .prompt(prompt)
-        .max_tokens(16)
-        .greedy()
-        .text()
-        .unwrap();
+    let first = engine.infer(prompt).max_tokens(16).greedy().text().unwrap();
+    let second = engine.infer(prompt).max_tokens(16).greedy().text().unwrap();
 
     assert!(!first.trim().is_empty(), "first generation was empty");
     assert_eq!(
@@ -145,8 +137,10 @@ fn respects_the_max_tokens_budget() {
     let engine = Engine::load(model).expect("real GGUF should load");
 
     let mut tokens = 0_usize;
+    let mut session = Session::new();
     let stream = engine
-        .prompt("Write a long story about a robot.")
+        .chat(&mut session)
+        .user("Write a long story about a robot.")
         .max_tokens(BUDGET)
         .greedy()
         .stream()
@@ -175,27 +169,75 @@ fn a_named_chat_continues_across_turns() {
     };
 
     let engine = Engine::load(model).expect("real GGUF should load");
+    let mut session = Session::new();
 
-    let first = engine
-        .chat("multi")
+    engine
+        .chat(&mut session)
         .user("My favourite colour is blue. Reply with just: ok")
         .max_tokens(16)
         .greedy()
-        .text()
+        .send()
         .expect("first turn should succeed");
-    assert!(!first.trim().is_empty(), "first turn was empty");
+    assert_eq!(session.len(), 2, "user + assistant");
 
     // Carries no colour of its own — only answerable from the first turn.
-    let second = engine
-        .chat("multi")
+    engine
+        .chat(&mut session)
         .user("What is my favourite colour? Answer in one word.")
         .max_tokens(16)
         .greedy()
-        .text()
+        .send()
         .expect("second turn should succeed");
 
-    eprintln!("--- turn 1: {first:?}\n--- turn 2: {second:?}");
-    assert!(!second.trim().is_empty(), "second turn was empty");
+    let reply = session.latest_text().unwrap_or_default();
+    eprintln!(
+        "--- transcript: {} messages, latest: {reply:?}",
+        session.len()
+    );
+    assert_eq!(session.len(), 4, "the session holds the whole conversation");
+    assert!(!reply.trim().is_empty(), "second turn was empty");
+}
+
+/// The session owns the transcript: it can be read, edited, and rebuilt.
+#[test]
+fn the_caller_owns_the_transcript() {
+    let Some(model) = test_model() else {
+        eprintln!("SKIP: set PIO_TEST_MODEL to run live inference");
+        return;
+    };
+
+    let engine = Engine::load(model).expect("real GGUF should load");
+    let mut session = Session::new().with_system("Answer in one word.");
+
+    engine
+        .chat(&mut session)
+        .user("Name a colour.")
+        .max_tokens(16)
+        .greedy()
+        .send()
+        .unwrap();
+    assert_eq!(session.len(), 3, "system + user + assistant");
+    assert_eq!(session.messages()[0].role, "system");
+    assert_eq!(session.latest().unwrap().role, "assistant");
+
+    // Editing invalidates the engine's cached prefill, so the next turn is
+    // answered from the edited history rather than the original.
+    session.edit(|m| m.truncate(1));
+    assert_eq!(session.len(), 1);
+
+    engine
+        .chat(&mut session)
+        .user("Name a fruit.")
+        .max_tokens(16)
+        .greedy()
+        .send()
+        .expect("a turn after an edit should succeed");
+    assert_eq!(session.len(), 3, "system + new user + new assistant");
+
+    // A transcript can be rebuilt from stored messages after a restart.
+    let restored = Session::from_messages(session.messages().to_vec());
+    assert_eq!(restored.len(), session.len());
+    assert_ne!(restored.id(), session.id(), "a fresh conversation id");
 }
 
 /// Dropping the engine shuts the controller down and joins its thread.

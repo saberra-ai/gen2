@@ -160,8 +160,8 @@ pub(crate) mod zoo;
 
 /// The primary API — see [`api`].
 pub use api::{
-    Canceller, Chat, Completion, Engine, EngineBuilder, Error, Event, Finish, Result, TokenStream,
-    Tokens, Turn, Update,
+    Canceller, Chat, Completion, Engine, EngineBuilder, Error, Event, Finish, Inference, OwnedChat,
+    Result, Session, TokenStream, Tokens, Turn, Update,
 };
 
 /// Commands, events, and handles — see [`controller`].

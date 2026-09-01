@@ -35,8 +35,8 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     });
 
     let raw = engine
-        .prompt("Classify the sentiment of: 'this crate finally has a decent API'")
-        .grammar(GrammarSpec::JsonSchema(schema))
+        .infer("Classify the sentiment of: 'this crate finally has a decent API'")
+        .grammar(GrammarSpec::JsonSchema(schema.clone()))
         .max_tokens(128)
         .greedy()
         .text()?;
@@ -49,7 +49,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     // ── Other shapes ────────────────────────────────────────────────────────
     // Any JSON object, when you don't want to write a schema:
     let json = engine
-        .prompt("Describe Rust in JSON with keys 'name' and 'year'.")
+        .infer("Describe Rust in JSON with keys 'name' and 'year'.")
         .grammar(GrammarSpec::JsonObject)
         .max_tokens(64)
         .text()?;
@@ -57,7 +57,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // A regex, when you want one token-shaped thing:
     let year = engine
-        .prompt("In what year was Rust 1.0 released?")
+        .infer("In what year was Rust 1.0 released?")
         .grammar(GrammarSpec::Regex(r"\d{4}".into()))
         .max_tokens(8)
         .text()?;
@@ -65,6 +65,19 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     // `GrammarSpec::Lark(..)` takes a full grammar when the shape is more than
     // a schema or a pattern can say.
+
+    // ── Or fix the shape at build time ──────────────────────────────────────
+    // When an engine exists to produce one shape, set it once. A turn can
+    // still override it, or drop it with `.unconstrained()`.
+    let classifier = Engine::builder()
+        .model(&model)
+        .grammar(GrammarSpec::JsonSchema(schema))
+        .greedy()
+        .max_tokens(128)
+        .build()?;
+
+    let raw = classifier.infer("Classify: 'this is terrible'").text()?;
+    println!("classifier: {raw}");
 
     Ok(())
 }
