@@ -101,11 +101,13 @@ cargo check --no-default-features --features backend-mlxcel # Mac fast path
 ### Examples
 
 ```sh
+cargo run --example minimal    --no-default-features --features metal -- /path/model.gguf
 cargo run --example basic      --no-default-features --features metal -- /path/model.gguf
 cargo run --example structured --no-default-features --features metal -- /path/model.gguf
 cargo run --example chat_app   --no-default-features --features metal -- /path/model.gguf
 ```
 
+- `minimal` — the smallest useful program: make a chat, stream the reply.
 - `basic` — ask / stream / converse, and the four ways to consume a generation.
 - `structured` — grammar-constrained output (JSON schema, bare JSON, regex).
 - `chat_app` — the shape of a real app: `Arc<Engine>` shared across threads,
