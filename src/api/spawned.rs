@@ -6,7 +6,7 @@ use std::thread::JoinHandle;
 
 use crate::backend::common::grammar::GrammarSpec;
 use crate::generation::{GenSpec, ThinkingMode};
-use crate::types::message::{Message, Tool};
+use crate::types::message::{Message, ToolSpec};
 
 use super::engine::Engine;
 use super::error::{Error, Result};
@@ -47,7 +47,7 @@ pub struct OwnedChat {
     session: Session,
     spec: GenSpec,
     thinking: ThinkingMode,
-    tools: Option<(Vec<Tool>, String)>,
+    tools: Option<(Vec<ToolSpec>, String)>,
 }
 
 impl OwnedChat {
@@ -128,7 +128,7 @@ impl OwnedChat {
     }
 
     /// Offer tools to the model.
-    pub fn tools(mut self, tools: Vec<Tool>, prompt: impl Into<String>) -> Self {
+    pub fn tools(mut self, tools: Vec<ToolSpec>, prompt: impl Into<String>) -> Self {
         self.tools = Some((tools, prompt.into()));
         self
     }

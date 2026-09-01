@@ -60,7 +60,11 @@ half = { version = "2", features = ["num-traits"] }
 
 # ── Misc ────────────────────────────────────────────────────────────────────
 anyhow = "1.0.98"
+async-trait = "0.1.89"
 futures = "0.3.31"
+# Derives a tool's JSON schema from the Rust type its handler deserializes, so
+# the schema the model sees and the struct the code reads cannot drift.
+schemars = { version = "1", features = ["derive"] }
 thiserror = "2.0.12"
 tracing = "0.1"
 # `hardware.rs` logs through the `log` facade; tracing captures it via its

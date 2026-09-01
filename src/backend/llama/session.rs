@@ -830,7 +830,7 @@ impl Session {
         messages: Vec<Message>,
         persona: Option<&crate::types::Persona>,
         cache: Option<KvLoadSpec>,
-        tools: Option<(Vec<crate::types::message::Tool>, String)>,
+        tools: Option<(Vec<crate::types::message::ToolSpec>, String)>,
     ) -> Result<Self, ExecError> {
         let enabled_tool_names: Option<std::collections::HashSet<String>> = tools
             .as_ref()

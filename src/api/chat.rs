@@ -4,7 +4,7 @@ use crate::backend::common::grammar::GrammarSpec;
 use crate::controller::ControllerCmd;
 use crate::generation::ToolCall;
 use crate::generation::{GenSpec, ThinkingMode};
-use crate::types::message::{FunctionDefinition, Message, Tool, ToolCall as MessageToolCall};
+use crate::types::message::{FunctionDefinition, Message, ToolCall as MessageToolCall, ToolSpec};
 
 use super::engine::{Engine, event_channel};
 use super::error::Result;
@@ -34,7 +34,7 @@ pub struct Chat<'a> {
     session: &'a mut Session,
     spec: GenSpec,
     thinking: ThinkingMode,
-    tools: Option<(Vec<Tool>, String)>,
+    tools: Option<(Vec<ToolSpec>, String)>,
     handler: Option<ToolHandler<'a>>,
     tool_depth: usize,
 }
@@ -194,7 +194,7 @@ impl<'a> Chat<'a> {
     // ── Tools and reasoning ─────────────────────────────────────────────────
 
     /// Offer tools to the model. `prompt` introduces them in the template.
-    pub fn tools(mut self, tools: Vec<Tool>, prompt: impl Into<String>) -> Self {
+    pub fn tools(mut self, tools: Vec<ToolSpec>, prompt: impl Into<String>) -> Self {
         self.tools = Some((tools, prompt.into()));
         self
     }

@@ -44,7 +44,7 @@ where
 #[derive(Clone, Debug, Deserialize, Serialize)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 #[cfg_attr(test, derive(PartialEq))]
-pub struct Tool {
+pub struct ToolSpec {
     // The type of the tool. Currently, only 'function' is supported.
     pub r#type: String,
     // Grab the tool as generic JSON for debugging purposes.
@@ -338,7 +338,7 @@ pub struct ChatTemplateInputs<'a> {
     pub(crate) eos_token: Option<&'a str>,
     pub(crate) add_generation_prompt: bool,
     pub(crate) enable_thinking: Option<bool>,
-    pub(crate) tools: Option<Vec<Tool>>,
+    pub(crate) tools: Option<Vec<ToolSpec>>,
 }
 
 #[cfg(test)]

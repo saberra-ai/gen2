@@ -4,10 +4,10 @@
 //! cargo run --example tools --no-default-features --features metal -- /path/model.gguf
 //! ```
 
-use pio_gen2::{Engine, FunctionDefinition, Session, Tool};
+use pio_gen2::{Engine, FunctionDefinition, Session, ToolSpec};
 
-fn weather_tool() -> Tool {
-    Tool {
+fn weather_tool() -> ToolSpec {
+    ToolSpec {
         r#type: "function".into(),
         function: FunctionDefinition {
             name: "get_weather".into(),

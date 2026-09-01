@@ -5,7 +5,7 @@
 
 use crate::types::message::{
     ChatTemplateInputs, Message, MessageBody, MessageChunk, MessageContent, TextMessage,
-    TokenizerConfigToken, Tool,
+    TokenizerConfigToken, ToolSpec,
 };
 use anyhow::{Error, Result};
 use chrono::Local;
@@ -87,7 +87,7 @@ impl ChatTemplate {
     pub(crate) fn apply(
         &self,
         messages: Vec<Message>,
-        tools_and_prompt: Option<(Vec<Tool>, String)>,
+        tools_and_prompt: Option<(Vec<ToolSpec>, String)>,
         enable_thinking: Option<bool>,
     ) -> Result<String> {
         self.apply_with_options(messages, tools_and_prompt, enable_thinking, true)
@@ -132,7 +132,7 @@ impl ChatTemplate {
     pub(crate) fn apply_with_options(
         &self,
         mut messages: Vec<Message>,
-        tools_and_prompt: Option<(Vec<Tool>, String)>,
+        tools_and_prompt: Option<(Vec<ToolSpec>, String)>,
         enable_thinking: Option<bool>,
         add_generation_prompt: bool,
     ) -> Result<String> {

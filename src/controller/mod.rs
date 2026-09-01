@@ -299,7 +299,7 @@ pub enum ControllerCmd {
         model_size_bytes: Option<u64>,
         /// Tools for template rendering + the parser's name gate.
         /// `(tools, tool_prompt)`; `None` = no tool calling.
-        tools: Option<(Vec<crate::types::message::Tool>, String)>,
+        tools: Option<(Vec<crate::types::message::ToolSpec>, String)>,
         tx: SyncSender<ControllerEvent>,
     },
     /// Continue an existing chat session with newly appended messages.

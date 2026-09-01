@@ -22,7 +22,7 @@ pub struct SessionSpec {
     /// NAMES also arm the output parser's enabled-tool gate, so
     /// `name[ARGS]`-style rehearsal outside a call block stays text.
     /// `(tools, tool_prompt)`; `None` = no tool calling this session.
-    pub tools: Option<(Vec<crate::types::message::Tool>, String)>,
+    pub tools: Option<(Vec<crate::types::message::ToolSpec>, String)>,
 }
 
 #[cfg(test)]

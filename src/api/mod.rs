@@ -35,6 +35,7 @@ mod inference;
 mod session;
 mod spawned;
 mod stream;
+pub mod tools;
 
 #[cfg(feature = "tokio")]
 pub use asynchronous::AsyncTurn;
@@ -46,3 +47,7 @@ pub use inference::Inference;
 pub use session::Session;
 pub use spawned::{Canceller, OwnedChat, Turn, Update};
 pub use stream::{Completion, Event, Finish, TokenStream, Tokens};
+pub use tools::{
+    ExecutionPolicy, FunctionTool, IntoTool, Tool, ToolConfigError, ToolContext, ToolError,
+    ToolLoading, ToolOutput, ToolRegistry, ToolSearch, ToolSet, ToolSpec,
+};

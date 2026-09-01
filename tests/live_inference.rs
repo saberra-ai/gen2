@@ -409,8 +409,8 @@ fn tool_model() -> Option<PathBuf> {
     Some(path)
 }
 
-fn weather_tool() -> pio_gen2::Tool {
-    pio_gen2::Tool {
+fn weather_tool() -> pio_gen2::ToolSpec {
+    pio_gen2::ToolSpec {
         r#type: "function".into(),
         function: pio_gen2::FunctionDefinition {
             name: "get_weather".into(),
