@@ -24,7 +24,7 @@ use super::tokenizer::HfTokenizer;
 
 /// High-level grammar specification. Backend-agnostic — pass one to any
 /// gen2 session's `GenSpec` and every backend that wires up
-/// [`GrammarMatcher`] honours it.
+/// `GrammarMatcher` honours it.
 #[derive(Debug, Clone, PartialEq)]
 pub enum GrammarSpec {
     /// Constrain output to a JSON object (shorthand for schema

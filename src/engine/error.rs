@@ -11,6 +11,7 @@ impl ExecError {
 }
 
 #[derive(Debug, Error)]
+#[non_exhaustive]
 pub enum ExecError {
     #[error("model not loaded")]
     ModelNotLoaded,

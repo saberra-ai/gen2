@@ -32,7 +32,7 @@ pub struct ControllerRuntimeSnapshot {
     pub loaded_model_file_bytes: Option<u64>,
 }
 
-/// Observable fields for a single [`super::ChatRuntime`].
+/// Observable fields for a single `ChatRuntime`.
 #[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct ActiveChatSnapshot {

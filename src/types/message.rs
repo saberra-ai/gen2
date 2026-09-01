@@ -112,7 +112,7 @@ pub enum MessageContent {
     /// OAI-compat clients that POST back a prior turn with separate
     /// `content` and `reasoning_content` fields.
     ///
-    /// When rendered via [`TextMessage`] for the chat template, only
+    /// When rendered via `TextMessage` for the chat template, only
     /// `content` flows through — matching the template's `strip_thinking`
     /// behaviour on prior turns. `reasoning` is preserved for UI display,
     /// Phase-0 telemetry, and the Phase-1 template contract test suite.
@@ -184,7 +184,7 @@ impl Message {
     }
 
     /// Structured assistant reply preserving the thinking/visible split
-    /// produced by [`crate::generation::ReplyStateMachine`].
+    /// produced by `ReplyStateMachine`.
     ///
     /// When the message flows back through the chat template (next
     /// turn's replay), only `content` is rendered. `reasoning` is

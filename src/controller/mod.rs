@@ -41,6 +41,7 @@ use crate::types::message::Message;
 /// tokens streamed back, session auto-cleaned on completion.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
+#[non_exhaustive]
 pub enum SystemTask {
     /// Generate a chat title from conversation history.
     Title,
@@ -87,6 +88,7 @@ pub enum SystemTask {
 /// Primary user chat vs an internal system inference workload.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
+#[non_exhaustive]
 pub enum WorkloadKind {
     PrimaryChat,
     SystemTask(SystemTask),
@@ -95,6 +97,7 @@ pub enum WorkloadKind {
 /// Why a generation completed successfully from the controller's perspective.
 #[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
+#[non_exhaustive]
 pub enum CompletionReason {
     Eos,
     StoppedByUser,
@@ -108,6 +111,7 @@ pub enum CompletionReason {
 #[derive(Debug, Clone, Copy, PartialEq, Eq, serde::Serialize, serde::Deserialize)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 #[allow(dead_code)]
+#[non_exhaustive]
 pub enum FailureReason {
     Timeout,
     GenerationError,
@@ -209,6 +213,7 @@ impl SystemTask {
 /// - **Status queries** — synchronous checks on loaded state
 /// - **Chat operations** — start, continue, pause, stop generation
 /// - **Utility** — embeddings, system inference, shutdown
+#[non_exhaustive]
 pub enum ControllerCmd {
     // ── Model lifecycle ──────────────────────────────────────────────
     /// Load or reload the primary LLM from disk with the given settings.
@@ -279,16 +284,16 @@ pub enum ControllerCmd {
         /// `required_model` (peer match) and used to resolve the model's
         /// footprint by id from the catalog for the fit gate. `None` ⇒
         /// legacy capability-only routing. See
-        /// [`crate::model_footprint::resolve_model_footprint_bytes`].
+        /// the host's model-footprint resolver.
         model_id: Option<String>,
         /// Whole-model on-disk byte footprint for this request, resolved by the
-        /// send site (which can reach a [`crate::store::models::ModelStore`])
-        /// via [`crate::model_footprint::resolve_model_footprint_bytes`]. This
+        /// send site (which can reach a model catalog)
+        /// via the host's model-footprint resolver. This
         /// is the precise size for the flock fit gate across **all** model kinds
         /// — catalog GGUF, local file, and directory bundle (MLX/ONNX), whose
         /// summed size only the store-bearing resolver can produce. Threaded
         /// into the flock router as the caller-supplied `model_size_bytes`,
-        /// which [`crate::p2p::flock::handle::FlockHandle::resolve_route_model_size`]
+        /// which `FlockHandle::resolve_route_model_size` on the host side
         /// prefers over its sync catalog/local-loaded fallbacks. `None` ⇒ the
         /// seam falls back to catalog-by-id or the local-loaded footprint.
         model_size_bytes: Option<u64>,
@@ -360,6 +365,7 @@ pub enum ControllerCmd {
 
 /// Events emitted by the controller back to command callers during generation.
 #[derive(Debug, Clone)]
+#[non_exhaustive]
 pub enum ControllerEvent {
     /// A newly generated token fragment.
     Token(String),
@@ -845,14 +851,30 @@ impl InferenceHandle {
 
 /// Start the inference controller with explicit configuration.
 pub fn start_controller_with_config(config: ControllerConfig) -> ControllerHandle {
+    start_controller_joinable(config).0
+}
+
+/// As [`start_controller_with_config`], but also hands back the loop's
+/// `JoinHandle`.
+///
+/// The loop owns the backend's native context. A process that exits while it is
+/// still running tears down ggml's statics underneath it and aborts, so anything
+/// that wants a clean shutdown has to be able to *wait* for the loop to finish,
+/// not just ask it to stop. `Engine` uses this to join on drop.
+pub(crate) fn start_controller_joinable(
+    config: ControllerConfig,
+) -> (ControllerHandle, thread::JoinHandle<()>) {
     tracing::debug!(?config, "starting inference controller");
     let (tx, rx): (Sender<ControllerCmd>, Receiver<ControllerCmd>) = channel();
     let handle_config = config.clone();
-    thread::spawn(move || run_loop(rx, config));
-    ControllerHandle {
-        tx,
-        config: handle_config,
-    }
+    let join = thread::spawn(move || run_loop(rx, config));
+    (
+        ControllerHandle {
+            tx,
+            config: handle_config,
+        },
+        join,
+    )
 }
 
 /// Start the inference controller with a custom max-active-chats limit.
@@ -951,7 +973,7 @@ pub(super) enum ControlFlow {
 /// This is the flock dispatch **seam**: it carries the cmd's `model_id` →
 /// `required_model` (peer match) and — the gap this closes — its store-resolved
 /// `model_size_bytes` straight through to [`crate::p2p::flock::handle::RetryableInference::model_size_bytes`],
-/// which [`crate::p2p::flock::handle::FlockHandle::resolve_route_model_size`]
+/// which `FlockHandle::resolve_route_model_size` on the host side
 /// prefers over its sync catalog/local-loaded fallbacks. Extracted as a free
 /// function so the projection (especially the size carry-through) is unit-testable
 /// without standing up a live failover dispatcher.

@@ -12,20 +12,23 @@ Extracted 2026-08-31 from pio-app `5367cf0f`.
 
 ## Status
 
-- `cargo test` — **511 unit tests + doc tests passing** on the default feature set.
+- `cargo test` — **521 unit tests + doc tests passing** on the default feature
+  set; `cargo clippy --all-targets` and `cargo doc` both clean.
 - **Live inference verified.** `tests/live_inference.rs` drives a real
   SmolLM2-360M-Instruct GGUF through the real llama.cpp backend under `metal`:
   it generates real text (`"Reply with exactly one word: hello"` → `"Hello"`,
-  terminating on `Eos`), reproduces exactly across two sessions at temperature 0
-  with a fixed seed, and honours `max_tokens`. This is the test that separates
-  "the extraction compiles" from "the engine still works".
+  terminating on `Eos`), reproduces exactly across two turns under `.greedy()`,
+  honours `max_tokens`, continues a named chat across turns (turn 2 recalls a
+  fact stated only in turn 1), and shuts down cleanly on drop. It runs through
+  the public API, so it also proves that surface is sufficient. This is what
+  separates "the extraction compiles" from "the engine still works".
 - `cargo check --no-default-features --features backend-llamacpp` — **clean**.
 - `cargo clippy --all-targets` — **clean**.
 - MLX / mlxcel / ONNX / Candle feature sets — **not built or run here.** They were
   building in pio-app immediately before the split and their dependency pins
   came across unchanged, but that is inference, not verification.
-- **pio-app has not been switched over.** It still builds its own in-tree copy
-  of gen2. Nothing in pio-app changed during this extraction.
+- **pio-app is not a consumer.** It still builds its own in-tree copy of gen2,
+  and nothing in pio-app changed during or since this extraction.
 
 ## What moved in alongside gen2
 
@@ -102,34 +105,9 @@ host implements with its `FlockHandle`. That inversion should be done against
 pio-app's flock integration tests, which live on that side, so it was left for
 the switchover rather than guessed at here.
 
-## What pio-app needs to do to consume this crate
+## pio-app
 
-Not started. In rough order:
-
-1. Add `pio-gen2` as a git dependency; forward the backend/GPU features from
-   `pio-core`, `src-tauri`, and `pio-daemon`, and update the platform bundles
-   (`apple`, `ios`, `android`, `app-mobile`, `app-desktop`, `app-ios-remote`,
-   `desktop-all`).
-2. Re-export at the old paths so the ~90 `pio-core` files plus `src-tauri` and
-   `pio-daemon` that say `gen2::` keep compiling:
-   `pub use pio_gen2 as gen2;`, and re-export `types::message`, `hardware`,
-   `ComputeProvenance`, and the memory types from their original locations.
-3. Keep in `pio-core`, pointed at the new types:
-   - `From<pio_core::types::Message>` for the wire `Message` (both the owned and
-     borrowed impls) — legal there under the orphan rule, illegal here.
-   - `From<ExecError> for PioError`, extended with arms for the new
-     `Generation` and `Coded` variants (`Coded` maps via
-     `ErrorCode::from_snake_case`).
-   - `flock::discovery::PeerAdvertisement` → `pio_gen2::router::PeerAdvertisement`
-     conversion, or replace the local struct with a re-export.
-   - `fit.rs` and its `captest_vram_detect`.
-4. Close the remote-dispatch seam (above).
-5. Delete `pio-core/src/gen2/` and the now-duplicated leaf modules; re-run the
-   full gate plus `npm run check:pathguard` — PathGuard has an invariant on
-   gen2 route selection in `pio-core/src/engine.rs`.
-6. Decide what happens to the ~19 gen2 integration tests in `pio-core/tests/`
-   (residency, zoo matrix, KV keep-warm, live multiturn). The ones that need no
-   host state should move here.
-
-Until step 5, gen2 exists in two places. Changes to `pio-core/src/gen2/` will
-not reach this repo on their own.
+Out of scope. pio-app keeps its own in-tree copy of gen2; this crate is not
+trying to be drop-in for it, and its call sites are not a constraint on the API
+here. The design decisions since extraction (controller-only surface, then the
+`Engine` facade over it) were made for this crate on its own terms.

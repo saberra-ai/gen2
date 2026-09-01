@@ -17,59 +17,66 @@ moved and what a host app still supplies.
 ## Quick start
 
 ```rust
-use std::sync::mpsc::{channel, sync_channel};
-use pio_gen2::controller::start_controller;
-use pio_gen2::{ControllerCmd, ControllerEvent, GenSpec, Message, Settings};
+use pio_gen2::Engine;
 
-let handle = start_controller();
+let engine = Engine::load("/models/model.gguf")?;
 
-// Load a model and wait for it to be ready.
-let (resp, resp_rx) = channel();
-handle.send(ControllerCmd::LoadModel {
-    model_path: "/path/model.gguf".into(),
-    mmproj_path: None,
-    settings: Settings::default(),
-    api_key: None,
-    api_format: None,
-    resp,
-})?;
-resp_rx.recv()??;
+let reply = engine.prompt("Explain entropy in one sentence.")
+    .max_tokens(256)
+    .text()?;
+```
 
-// Run a turn; events stream back on `rx`.
-let (tx, rx) = sync_channel(handle.config().event_channel_capacity);
-handle.send(ControllerCmd::StartChat {
-    chat_id: "chat-1".into(),
-    messages: vec![Message::user("Hello")],
-    gen_spec: GenSpec { max_tokens: Some(32), ..Default::default() },
-    thinking: Default::default(),
-    model_id: None,
-    model_size_bytes: None,
-    tools: None,
-    tx,
-})?;
+Streaming, when you want the tokens as they arrive:
 
-for event in rx {
-    match event {
-        ControllerEvent::Token(t) => print!("{t}"),
-        ControllerEvent::Error { code, message } => eprintln!("[{code}] {message}"),
-        ControllerEvent::Eos | ControllerEvent::Stopped => break,
+```rust
+let mut stream = engine.chat("chat-1")
+    .user("Write a haiku about Rust.")
+    .max_tokens(64)
+    .stream()?;
+
+for event in &mut stream {
+    match event? {
+        Event::Token(t) => print!("{t}"),
         _ => {}
     }
 }
-
-handle.send(ControllerCmd::Shutdown)?;
+assert_eq!(stream.finish(), Some(Finish::Eos));
 ```
 
-For prompt-in/text-out without driving the channel yourself, `InferenceHandle`
-carries the `system_infer` family (`system_prompt`, `system_infer`,
-`system_infer_streaming`, …).
+A second turn on the same chat id continues that conversation, reusing its warm
+KV cache:
 
-Send `Shutdown` when you are done: the loop runs on its own thread holding the
-backend, and exiting the process while it is live aborts inside llama.cpp's
-static destructors.
+```rust
+engine.chat("chat-1").user("Now make it about Go.").text()?;
+```
 
-`ControllerCmd::PauseChat` / `ResumeChat` / `StopChat` drive a generation
-cooperatively by `chat_id`.
+Shutdown is automatic — dropping the `Engine` stops the controller and waits for
+the backend to be released. Call `engine.shutdown()?` instead when you want
+teardown failures to surface.
+
+### Reproducibility
+
+`.greedy()` pins temperature 0 and a fixed seed. Worth knowing that it is **not**
+the default: an unconfigured turn samples with a random seed, so the same prompt
+gives different text each run.
+
+```rust
+engine.prompt("Count to three").greedy().text()?;   // same output every time
+```
+
+### Constrained output
+
+`.grammar(...)` shapes decoding with a JSON schema, regex, Lark grammar, or
+GBNF. It is enforced *during* decoding — the model cannot emit anything that
+violates it — and behaves identically across every backend.
+
+### Remote endpoints
+
+The same API, different weights:
+
+```rust
+let engine = Engine::builder().openai("gpt-4o-mini", api_key).build()?;
+```
 
 ## Backends
 
@@ -108,14 +115,14 @@ model that won't load or won't decode is a hard failure.
 
 Public:
 
-- **`controller`** — the API. Commands, events, handles, config, and the
-  observability snapshots. `ControllerHandle` is the command channel;
-  `InferenceHandle` adds the `system_infer` family and can dispatch to another
-  device.
-- The vocabulary those signatures are written in, re-exported at the crate root:
-  `GenSpec`, `Settings`, `Message`, `ExecError`, `ExecutionStats`,
-  `ThinkingMode`, `ToolCall`, `GrammarSpec`, and the residency/memory types the
-  snapshots expose.
+- **`Engine`**, **`Chat`**, **`TokenStream`**, **`Event`**, **`Error`** — the
+  API, re-exported at the crate root.
+- **`controller`** — the layer underneath: commands, events, handles, config,
+  and the observability snapshots. Reach for it via `engine.controller()` when
+  you need something the facade doesn't cover.
+- The vocabulary those signatures are written in: `GenSpec`, `Settings`,
+  `Message`, `ExecutionStats`, `ThinkingMode`, `ToolCall`, `GrammarSpec`, and
+  the residency/memory types the snapshots expose.
 
 Internal (`pub(crate)`), driven by the controller:
 

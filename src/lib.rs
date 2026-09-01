@@ -72,6 +72,11 @@
 #![warn(unnameable_types)]
 
 // ── The public API ──────────────────────────────────────────────────────────
+pub mod api;
+
+/// The controller: commands, events, and handles. [`api`] is the ergonomic
+/// layer over this; reach for the controller directly when you need something
+/// the facade doesn't cover.
 // `unused_mut` is allowed here (as it was before the split): some bindings need
 // `mut` only under certain backend features.
 #[allow(unused_mut)]
@@ -152,6 +157,9 @@ pub(crate) mod zoo;
 // Public because the controller's commands, events, and return types are
 // written in these terms. This is the whole nameable surface besides
 // `controller` itself.
+
+/// The primary API — see [`api`].
+pub use api::{Chat, Engine, EngineBuilder, Error, Event, Finish, Result, TokenStream};
 
 /// Commands, events, and handles — see [`controller`].
 pub use controller::{
