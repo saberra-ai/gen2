@@ -264,3 +264,8 @@ mod tests {
         assert!(clone.is_cancelled(), "cancellation is shared, not copied");
     }
 }
+
+/// A pinned retrieval corpus. See the module docs for why ranking needs its
+/// own regression test.
+#[cfg(test)]
+mod corpus_tests;

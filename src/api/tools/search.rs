@@ -103,7 +103,14 @@ impl Bm25Index {
             .filter(|(s, _)| *s > 0.0)
             .collect();
 
-        scored.sort_by(|a, b| b.0.total_cmp(&a.0));
+        // Ties break on the name, not on registration order. Without it,
+        // registering an unrelated tool can push a needed one out of the top
+        // k, and the same corpus ranks differently depending on how it was
+        // assembled.
+        scored.sort_by(|a, b| {
+            b.0.total_cmp(&a.0)
+                .then_with(|| self.names[a.1].cmp(&self.names[b.1]))
+        });
         scored
             .into_iter()
             .take(limit)
@@ -187,7 +194,9 @@ pub(crate) fn rank_by_similarity(
         .iter()
         .map(|(name, vec)| (cosine(query, vec), name.as_str()))
         .collect();
-    scored.sort_by(|a, b| b.0.total_cmp(&a.0));
+    // Ties break on the name, as they do in the lexical ranker and the fusion
+    // below, so an identical corpus always ranks identically.
+    scored.sort_by(|a, b| b.0.total_cmp(&a.0).then_with(|| a.1.cmp(b.1)));
     scored
         .into_iter()
         .take(limit)
