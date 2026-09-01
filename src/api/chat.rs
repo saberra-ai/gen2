@@ -2,13 +2,14 @@
 
 use crate::backend::common::grammar::GrammarSpec;
 use crate::controller::ControllerCmd;
+use crate::generation::ToolCall;
 use crate::generation::{GenSpec, ThinkingMode};
-use crate::types::message::{Message, Tool};
+use crate::types::message::{FunctionDefinition, Message, Tool, ToolCall as MessageToolCall};
 
 use super::engine::{Engine, event_channel};
 use super::error::Result;
 use super::session::Session;
-use super::stream::{Completion, TokenStream, Tokens};
+use super::stream::{Completion, Finish, TokenStream, Tokens};
 
 /// A turn being built against a conversation.
 ///
@@ -34,7 +35,18 @@ pub struct Chat<'a> {
     spec: GenSpec,
     thinking: ThinkingMode,
     tools: Option<(Vec<Tool>, String)>,
+    handler: Option<ToolHandler<'a>>,
+    tool_depth: usize,
 }
+
+/// Dispatches one tool call and returns its output as text.
+type ToolHandler<'a> = Box<dyn FnMut(&ToolCall) -> String + 'a>;
+
+/// Rounds of tool calls a turn may run before giving up.
+///
+/// Deep enough for a genuine multi-step task, shallow enough that a model stuck
+/// in a call/re-call loop stops costing tokens.
+pub const DEFAULT_TOOL_DEPTH: usize = 7;
 
 impl<'a> Chat<'a> {
     pub(crate) fn new(engine: &'a Engine, session: &'a mut Session) -> Self {
@@ -46,6 +58,8 @@ impl<'a> Chat<'a> {
             session,
             thinking: ThinkingMode::default(),
             tools: None,
+            handler: None,
+            tool_depth: DEFAULT_TOOL_DEPTH,
         }
     }
 
@@ -191,6 +205,49 @@ impl<'a> Chat<'a> {
         self
     }
 
+    /// Run tools automatically, feeding results back until the model answers.
+    ///
+    /// Without this a tool call is just an [`Event`](super::Event) for you to
+    /// handle; with it the turn becomes a loop — generate, dispatch each call
+    /// through `f`, append the results, generate again — ending when the model
+    /// stops asking or [`Chat::tool_depth`] is reached.
+    ///
+    /// Both halves land in the session: the assistant turn that asked, and the
+    /// results that came back. `f` returns the tool's output as text.
+    ///
+    /// ```no_run
+    /// # use pio_gen2::{Engine, Session};
+    /// # let engine = Engine::load("m.gguf")?;
+    /// # let mut session = Session::new();
+    /// # let (tools, prompt) = (vec![], String::new());
+    /// let done = engine.chat(&mut session)
+    ///     .user("What is the weather in Paris?")
+    ///     .tools(tools, prompt)
+    ///     .on_tool(|call| match call.name.as_str() {
+    ///         "get_weather" => "18C, clear".to_string(),
+    ///         other => format!("no such tool: {other}"),
+    ///     })
+    ///     .send()?;
+    /// println!("answered after {} tool rounds", done.tool_rounds);
+    /// # Ok::<(), pio_gen2::Error>(())
+    /// ```
+    pub fn on_tool(mut self, f: impl FnMut(&ToolCall) -> String + 'a) -> Self {
+        self.handler = Some(Box::new(f));
+        self
+    }
+
+    /// Cap how many rounds of tool calls a turn may run.
+    ///
+    /// Defaults to [`DEFAULT_TOOL_DEPTH`]. Reaching it ends the turn with
+    /// [`Finish::ToolDepthReached`], which is how a model looping on the same
+    /// call stops rather than running forever.
+    ///
+    /// Only meaningful alongside [`Chat::on_tool`].
+    pub fn tool_depth(mut self, depth: usize) -> Self {
+        self.tool_depth = depth;
+        self
+    }
+
     // ── Running ─────────────────────────────────────────────────────────────
 
     /// Run the turn, appending the reply to the session.
@@ -205,11 +262,64 @@ impl<'a> Chat<'a> {
     ///
     /// This is the one a UI wants on a blocking thread: tokens land as they
     /// decode, and the session ends up holding the finished reply.
-    pub fn send_streaming(self, on_token: impl FnMut(&str)) -> Result<Completion> {
-        let (stream, session) = self.begin()?;
-        let done = stream.complete_streaming(on_token)?;
-        session.push(Message::assistant_structured(done.text.clone(), None));
-        Ok(done)
+    pub fn send_streaming(mut self, mut on_token: impl FnMut(&str)) -> Result<Completion> {
+        let Some(mut handler) = self.handler.take() else {
+            // No handler: one turn, and tool calls are the caller's to act on.
+            let (stream, session) = self.begin()?;
+            let done = stream.complete_streaming(on_token)?;
+            session.push(Message::assistant_structured(done.text.clone(), None));
+            return Ok(done);
+        };
+
+        let engine = self.engine;
+        let depth_limit = self.tool_depth;
+        let spec = self.spec.clone();
+        let thinking = self.thinking;
+        let tools = self.tools.take();
+        let session: &mut Session = self.session;
+        let mut rounds = 0_usize;
+
+        loop {
+            let turn = Chat {
+                engine,
+                session,
+                spec: spec.clone(),
+                thinking,
+                // The tool list is re-offered every round: the model needs to
+                // see what it may call on the follow-up too, not just the first.
+                tools: tools.clone(),
+                handler: None,
+                tool_depth: depth_limit,
+            };
+
+            let (stream, session_back) = turn.begin()?;
+            let mut done = stream.complete_streaming(&mut on_token)?;
+            done.tool_rounds = rounds;
+
+            if done.tool_calls.is_empty() {
+                session_back.push(Message::assistant_structured(done.text.clone(), None));
+                return Ok(done);
+            }
+
+            // Record what was asked before what came back, so the transcript
+            // reads in the order it happened.
+            session_back.push(Message::assistant_tool_calls(
+                done.tool_calls.iter().map(as_message_call).collect(),
+            ));
+
+            if rounds >= depth_limit {
+                // Still asking, but out of budget. Report it rather than
+                // looping or pretending the reply is final.
+                done.finish = Finish::ToolDepthReached;
+                return Ok(done);
+            }
+
+            for call in &done.tool_calls {
+                let result = handler(call);
+                session_back.push(Message::tool_result(result));
+            }
+            rounds += 1;
+        }
     }
 
     /// Run the turn and return just the reply text. Also appended to the
@@ -272,6 +382,28 @@ impl<'a> Chat<'a> {
         engine.mark_sent(session.id(), sent);
         session.opened = true;
         Ok((TokenStream::new(rx), session))
+    }
+}
+
+/// Translate a streamed tool call into the form a message stores.
+///
+/// The two differ because they answer different questions: the event carries
+/// raw argument text exactly as the model emitted it, while the stored message
+/// has to round-trip through the chat template. Arguments that don't parse as
+/// JSON are kept as a string rather than dropped — a malformed call is still
+/// part of the transcript.
+fn as_message_call(call: &ToolCall) -> MessageToolCall {
+    MessageToolCall {
+        // Models using native tool syntax emit no id; the template only needs
+        // one to be present and distinct within the turn.
+        id: call.id.clone().unwrap_or_else(|| call.name.clone()),
+        r#type: "function".to_string(),
+        function: FunctionDefinition {
+            description: None,
+            name: call.name.clone(),
+            arguments: serde_json::from_str(&call.arguments)
+                .unwrap_or_else(|_| serde_json::Value::String(call.arguments.clone())),
+        },
     }
 }
 

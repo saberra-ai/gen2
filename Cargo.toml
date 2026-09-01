@@ -27,7 +27,10 @@ reqwest = { version = "0.13", features = ["json", "blocking", "query", "form", "
 
 # ── Tokenization / templating / constrained decoding ────────────────────────
 tokenizers = { version = "0.23", default-features = false, features = ["onig"] }
-minijinja = "2.12.0"
+# `json` registers the `tojson` filter. Qwen-family chat templates call it to
+# render tool-call arguments, and without it tool use fails at template time
+# with "unknown filter: tojson".
+minijinja = { version = "2.12.0", features = ["json"] }
 minijinja-contrib = { version = "2.9.0", features = ["rand", "pycompat"] }
 # Grammar-constrained decoding, used across ALL backends (MLX / llama / ONNX)
 # for JSON-schema / Lark / regex / GBNF output shaping. Same crate
@@ -119,6 +122,7 @@ name = "async_chat"
 required-features = ["tokio"]
 
 [dev-dependencies]
+serde_json = "1"
 tempfile = "3.19.1"
 mockito = "1"
 

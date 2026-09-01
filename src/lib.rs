@@ -162,8 +162,9 @@ pub(crate) mod zoo;
 #[cfg(feature = "tokio")]
 pub use api::AsyncTurn;
 pub use api::{
-    Canceller, Chat, Completion, Engine, EngineBuilder, Error, Event, Finish, Fit, FitVerdict,
-    Inference, ModelInfo, OwnedChat, Result, Session, TokenStream, Tokens, Turn, Update,
+    Canceller, Chat, Completion, DEFAULT_TOOL_DEPTH, Engine, EngineBuilder, Error, Event, Finish,
+    Fit, FitVerdict, Inference, ModelInfo, OwnedChat, Result, Session, TokenStream, Tokens, Turn,
+    Update,
 };
 
 /// Commands, events, and handles — see [`controller`].

@@ -183,6 +183,32 @@ impl Message {
         }
     }
 
+    /// A tool's result, fed back so the model can use it.
+    ///
+    /// Rendered by the chat template as a `<tool_response>` block on the user
+    /// side of the conversation.
+    pub fn tool_result(content: impl Into<String>) -> Self {
+        Self {
+            role: "tool".to_string(),
+            body: MessageBody::Content {
+                content: MessageContent::SingleText(content.into()),
+            },
+            name: None,
+        }
+    }
+
+    /// The assistant turn that asked for tools.
+    ///
+    /// Appended before the results so the transcript records what was
+    /// requested, not just what came back.
+    pub fn assistant_tool_calls(tool_calls: Vec<ToolCall>) -> Self {
+        Self {
+            role: "assistant".to_string(),
+            body: MessageBody::Tool { tool_calls },
+            name: None,
+        }
+    }
+
     /// Structured assistant reply preserving the thinking/visible split
     /// produced by `ReplyStateMachine`.
     ///

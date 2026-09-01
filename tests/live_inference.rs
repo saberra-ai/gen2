@@ -323,3 +323,103 @@ fn embeds_text_into_comparable_vectors() {
     let one = engine.embed_one("Where did the cat sit?").unwrap();
     assert_eq!(one.len(), dims);
 }
+
+/// The tool loop: the model asks, the handler answers, generation resumes.
+///
+/// Needs a model whose template supports native tool calling — SmolLM2 does
+/// not. Set `PIO_TEST_TOOL_MODEL` to e.g. a Qwen3 GGUF.
+#[test]
+fn runs_a_tool_loop_and_answers_from_the_result() {
+    let Some(model) = tool_model() else {
+        eprintln!("SKIP: set PIO_TEST_TOOL_MODEL to run the tool loop");
+        return;
+    };
+
+    let engine = Engine::load(model).expect("tool model should load");
+    let mut session = Session::new();
+    let mut dispatched = Vec::new();
+
+    let done = engine
+        .chat(&mut session)
+        .user("What is the weather in Paris? Use the tool.")
+        .tools(vec![weather_tool()], "Call a tool when you need data.")
+        .on_tool(|call| {
+            dispatched.push(call.name.clone());
+            r#"{"temp_c":18,"sky":"clear"}"#.to_string()
+        })
+        .max_tokens(256)
+        .send()
+        .expect("the tool loop should complete");
+
+    eprintln!("--- rounds {} answer {:?}", done.tool_rounds, done.text);
+
+    assert_eq!(dispatched, ["get_weather"], "the tool should be dispatched");
+    assert_eq!(done.tool_rounds, 1, "one round: ask, answer, done");
+    assert_eq!(done.finish, Finish::Eos);
+
+    // The answer must come from the tool's result, not the model's guess.
+    assert!(
+        done.text.contains("18"),
+        "final answer should use the tool's data, got: {:?}",
+        done.text
+    );
+
+    // Both halves are recorded, in the order they happened.
+    let roles: Vec<&str> = session.messages().iter().map(|m| m.role.as_str()).collect();
+    assert_eq!(roles, ["user", "assistant", "tool", "assistant"]);
+}
+
+/// A depth of zero stops immediately with the model still asking, rather than
+/// looping. This is the runaway guard.
+#[test]
+fn tool_depth_bounds_the_loop() {
+    let Some(model) = tool_model() else {
+        eprintln!("SKIP: set PIO_TEST_TOOL_MODEL to run the tool loop");
+        return;
+    };
+
+    let engine = Engine::load(model).expect("tool model should load");
+    let mut session = Session::new();
+    let mut dispatched = 0;
+
+    let done = engine
+        .chat(&mut session)
+        .user("What is the weather in Paris? Use the tool.")
+        .tools(vec![weather_tool()], "Call a tool when you need data.")
+        .on_tool(|_| {
+            dispatched += 1;
+            "{}".to_string()
+        })
+        .tool_depth(0)
+        .max_tokens(256)
+        .send()
+        .expect("a depth-limited loop still returns");
+
+    assert_eq!(
+        done.finish,
+        Finish::ToolDepthReached,
+        "should report why it stopped"
+    );
+    assert_eq!(dispatched, 0, "no dispatch past the limit");
+}
+
+fn tool_model() -> Option<PathBuf> {
+    let path = PathBuf::from(std::env::var("PIO_TEST_TOOL_MODEL").ok()?);
+    assert!(path.exists(), "PIO_TEST_TOOL_MODEL does not exist");
+    Some(path)
+}
+
+fn weather_tool() -> pio_gen2::Tool {
+    pio_gen2::Tool {
+        r#type: "function".into(),
+        function: pio_gen2::FunctionDefinition {
+            name: "get_weather".into(),
+            description: Some("Current weather for a city".into()),
+            arguments: serde_json::json!({
+                "type": "object",
+                "properties": { "city": { "type": "string" } },
+                "required": ["city"]
+            }),
+        },
+    }
+}

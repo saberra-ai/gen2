@@ -44,6 +44,9 @@ pub enum Finish {
     Eos,
     /// Stopped on request.
     Stopped,
+    /// The tool loop hit its depth limit with the model still asking for more
+    /// tools. See [`Chat::tool_depth`](super::Chat::tool_depth).
+    ToolDepthReached,
 }
 
 /// A generation in progress.
@@ -161,6 +164,11 @@ pub struct Completion {
     pub dropped: usize,
     /// Old messages replaced by a summary to fit the context window.
     pub compacted: usize,
+    /// How many rounds of tool calls ran before the model answered.
+    ///
+    /// `0` for an ordinary turn. Only the tool loop raises it — see
+    /// [`Chat::on_tool`](super::Chat::on_tool).
+    pub tool_rounds: usize,
 }
 
 impl Completion {

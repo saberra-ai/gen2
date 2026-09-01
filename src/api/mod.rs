@@ -38,7 +38,7 @@ mod stream;
 
 #[cfg(feature = "tokio")]
 pub use asynchronous::AsyncTurn;
-pub use chat::Chat;
+pub use chat::{Chat, DEFAULT_TOOL_DEPTH};
 pub use engine::{Engine, EngineBuilder};
 pub use error::{Error, Result};
 pub use fit::{Fit, FitVerdict, ModelInfo};

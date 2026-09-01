@@ -74,6 +74,29 @@ failures to surface.
 unconfigured turn samples with a random seed. Set it per turn, or once for the
 whole engine with `Engine::builder().greedy()`.
 
+### Tool calling
+
+Without a handler, a tool call is an `Event` for you to act on. With one, the
+turn becomes a loop — generate, dispatch, feed results back, generate again:
+
+```rust
+let done = engine.chat(&mut session)
+    .user("What is the weather in Paris?")
+    .tools(vec![weather_tool()], "Call a tool when you need data.")
+    .on_tool(|call| match call.name.as_str() {
+        "get_weather" => fetch_weather(&call.arguments),
+        other => format!("no such tool: {other}"),
+    })
+    .send()?;
+
+done.tool_rounds       // how many rounds ran
+```
+
+`.tool_depth(n)` caps the rounds, defaulting to **7**. Reaching it ends the turn
+with `Finish::ToolDepthReached` rather than looping forever — which is what
+stops a model stuck re-calling the same tool. Both halves land in the session:
+the assistant turn that asked, and the results that came back.
+
 ### Constrained output
 
 `.grammar(...)` shapes decoding with a JSON schema, regex, Lark grammar, or
@@ -192,12 +215,14 @@ cargo run --example structured --no-default-features --features metal -- /path/m
 cargo run --example chat_app   --no-default-features --features metal -- /path/model.gguf
 cargo run --example embeddings --no-default-features --features metal -- /path/embedding-model.gguf
 cargo run --example fit        --no-default-features --features metal -- /path/model.gguf
+cargo run --example tools      --no-default-features --features metal -- /path/model.gguf
 cargo run --example async_chat --no-default-features --features metal,tokio -- /path/model.gguf
 ```
 
 - `minimal` — the smallest useful program: make a chat, stream the reply.
 - `basic` — ask / stream / converse, and the four ways to consume a generation.
 - `structured` — grammar-constrained output (JSON schema, bare JSON, regex).
+- `tools` — the tool loop, dispatched automatically.
 - `async_chat` — the `tokio` feature: await a turn, stream one, cancel from a task.
 - `fit` — inspect a model and ask whether this machine can run it.
 - `embeddings` — embedder-only engine, batch and single, cosine similarity.
@@ -214,7 +239,8 @@ PIO_TEST_MODEL=/path/SmolLM2-360M-Instruct-Q4_K_M.gguf \
   cargo test --test live_inference --no-default-features --features metal -- --nocapture
 ```
 
-`PIO_TEST_EMBEDDER` additionally runs the embedding test. These skip without the
+`PIO_TEST_EMBEDDER` adds the embedding test and `PIO_TEST_TOOL_MODEL` the tool
+loop (needs a model with native tool calling — Qwen3 works, SmolLM2 doesn't). These skip without the
 env vars, but never pass by skipping: once set, a model that won't load or won't
 decode is a hard failure.
 
