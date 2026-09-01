@@ -83,6 +83,51 @@ failures to surface.
 unconfigured turn samples with a random seed. Set it per turn, or once for the
 whole engine with `Engine::builder().greedy()`.
 
+### Agents
+
+An agent owns dispatch. You register tools; it resolves what the model named,
+validates the arguments against that tool's schema, runs it, and routes the
+failure by whether the model can fix it.
+
+```rust
+use pio_gen2::{Engine, FunctionTool, Session, ToolOutput, ToolSearch};
+use pio_gen2::schemars::JsonSchema;
+
+#[derive(serde::Deserialize, JsonSchema)]
+struct WeatherArgs {
+    /// City to look up.
+    city: String,
+}
+
+let weather = FunctionTool::new("get_weather", "Current weather for a city",
+    |_ctx, a: WeatherArgs| async move { Ok(ToolOutput::from(fetch(&a.city))) });
+
+let done = engine.agent(&mut session)
+    .add_tool(weather)
+    .defer_tools(mcp_tools)          // absent from the prompt until searched for
+    .tool_search(ToolSearch::Hybrid)
+    .max_steps(12)
+    .goal("What is the weather in Paris?")?;
+```
+
+The schema comes from `WeatherArgs`, so what the model sees and what the handler
+reads cannot drift.
+
+**Deferred tools** stay out of the prompt entirely. When the model calls
+`search_tools`, matches are appended to the *conversation* — never the prefix —
+so the warm KV cache survives. Search is hybrid by default: BM25 over names,
+descriptions and argument names catches exact terminology, embeddings catch
+intent, and RRF fuses them.
+
+**Stopping** is a first-class answer, not a timeout. `Finish::OutOfBudget(Budget::Steps
+| Tokens | Deadline)` says which limit; `Finish::GaveUp(Struggle::RepeatingCall
+{ .. })` catches a model calling the same tool with the same arguments — the
+failure a step count never sees.
+
+**Approval** is off by default, because a gate nobody reads is worse than none.
+Tools declare `Risk::Risky`; `ApprovalMode::AskOnRisky` routes those through
+`on_approval`.
+
 ### Tool calling
 
 Without a handler, a tool call is an `Event` for you to act on. With one, the
@@ -224,6 +269,7 @@ cargo run --example structured --no-default-features --features metal -- /path/m
 cargo run --example chat_app   --no-default-features --features metal -- /path/model.gguf
 cargo run --example embeddings --no-default-features --features metal -- /path/embedding-model.gguf
 cargo run --example fit        --no-default-features --features metal -- /path/model.gguf
+cargo run --example agent      --no-default-features --features metal -- /path/model.gguf
 cargo run --example tools      --no-default-features --features metal -- /path/model.gguf
 cargo run --example async_chat --no-default-features --features metal,tokio -- /path/model.gguf
 ```
@@ -231,7 +277,8 @@ cargo run --example async_chat --no-default-features --features metal,tokio -- /
 - `minimal` — the smallest useful program: make a chat, stream the reply.
 - `basic` — ask / stream / converse, and the four ways to consume a generation.
 - `structured` — grammar-constrained output (JSON schema, bare JSON, regex).
-- `tools` — the tool loop, dispatched automatically.
+- `agent` — registered tools, owned dispatch, and a deferred tool found by search.
+- `tools` — the lower-level `chat().on_tool()` loop.
 - `async_chat` — the `tokio` feature: await a turn, stream one, cancel from a task.
 - `fit` — inspect a model and ask whether this machine can run it.
 - `embeddings` — embedder-only engine, batch and single, cosine similarity.

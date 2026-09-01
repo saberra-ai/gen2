@@ -36,7 +36,10 @@ pub enum Event {
 }
 
 /// Why a generation ended.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Default)]
+///
+/// Not `Copy`: the agent variants carry which budget or which tool, and that
+/// detail is what makes the reason actionable.
+#[derive(Debug, Clone, PartialEq, Eq, Default)]
 #[non_exhaustive]
 pub enum Finish {
     /// The model emitted end-of-sequence, or hit the token budget.
@@ -47,6 +50,36 @@ pub enum Finish {
     /// The tool loop hit its depth limit with the model still asking for more
     /// tools. See [`Chat::tool_depth`](super::Chat::tool_depth).
     ToolDepthReached,
+    /// An agent ran out of a budget — which one is in the payload.
+    OutOfBudget(Budget),
+    /// An agent stopped because it was making no progress.
+    GaveUp(Struggle),
+}
+
+/// Which limit an agent reached.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+#[non_exhaustive]
+pub enum Budget {
+    /// Rounds of generate-and-call.
+    Steps,
+    /// Total tokens generated across the run.
+    Tokens,
+    /// Wall-clock.
+    Deadline,
+}
+
+/// Why an agent was judged to be going nowhere.
+///
+/// Depth alone doesn't catch these: a model calling the same tool with the same
+/// arguments seven times has burned its budget without doing anything, and
+/// that is the characteristic small-model failure.
+#[derive(Debug, Clone, PartialEq, Eq)]
+#[non_exhaustive]
+pub enum Struggle {
+    /// The same call, with the same arguments, repeatedly.
+    RepeatingCall { tool: String, times: usize },
+    /// One tool failing over and over.
+    ToolKeepsFailing { tool: String, times: usize },
 }
 
 /// A generation in progress.
@@ -75,7 +108,7 @@ impl TokenStream {
     /// How the generation ended, once it has. `None` while still running, or
     /// if it failed.
     pub fn finish(&self) -> Option<Finish> {
-        self.finish
+        self.finish.clone()
     }
 
     /// Run to completion, concatenating every text fragment.
@@ -127,7 +160,7 @@ impl TokenStream {
         }
         // Set last: `finish` is only known once the stream has drained, and a
         // stream that drained without erroring always has one.
-        done.finish = self.finish.unwrap_or(Finish::Eos);
+        done.finish = self.finish.clone().unwrap_or(Finish::Eos);
         Ok(done)
     }
 

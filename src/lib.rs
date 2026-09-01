@@ -168,11 +168,13 @@ pub use api::AsyncTurn;
 pub use schemars;
 
 pub use api::{
-    Canceller, Chat, Completion, DEFAULT_TOOL_DEPTH, Engine, EngineBuilder, Error, Event,
-    ExecutionPolicy, Finish, Fit, FitVerdict, FunctionTool, Inference, IntoTool, ModelInfo,
-    OwnedChat, Result, Session, TokenStream, Tokens, Tool, ToolConfigError, ToolContext, ToolError,
-    ToolLoading, ToolOutput, ToolRegistry, ToolSearch, ToolSet, Turn, Update,
+    Agent, AgentStep, ApprovalMode, Budget, Canceller, Chat, Completion, DEFAULT_MAX_STEPS,
+    DEFAULT_TOOL_DEPTH, Decision, Engine, EngineBuilder, Error, Event, ExecutionPolicy, Finish,
+    Fit, FitVerdict, FunctionTool, Inference, IntoTool, ModelInfo, OwnedChat, Result, Session,
+    TokenStream, Tokens, Tool, ToolConfigError, ToolContext, ToolError, ToolLoading, ToolOutput,
+    ToolRegistry, ToolSearch, ToolSet, Turn, Update,
 };
+pub use api::{Risk, SEARCH_TOOL, Struggle};
 
 /// Commands, events, and handles — see [`controller`].
 pub use controller::{

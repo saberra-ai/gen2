@@ -21,6 +21,22 @@ use super::stream::Completion;
 pub enum Update {
     /// A fragment of text, as it was decoded.
     Delta(String),
+    /// The agent is about to run a tool. `args` is the model's own JSON, so a
+    /// consumer can render or inspect it however it likes — this crate does no
+    /// formatting on its behalf.
+    ToolCall {
+        id: String,
+        tool: String,
+        args: serde_json::Value,
+    },
+    /// A tool finished. The `Err` arm carries the real error so a consumer can
+    /// ask whether the model gets to correct it.
+    ToolResult {
+        id: String,
+        tool: String,
+        result: std::result::Result<crate::api::ToolOutput, crate::api::ToolError>,
+        took: std::time::Duration,
+    },
     /// The turn finished. Carries the outcome and hands the session back with
     /// the reply already appended.
     ///

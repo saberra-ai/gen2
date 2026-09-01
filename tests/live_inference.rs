@@ -486,3 +486,120 @@ fn a_session_survives_outgrowing_the_context_window() {
     );
     assert!(!session.fully_in_context());
 }
+
+/// The agent owns dispatch: it resolves the tool the model named, validates the
+/// arguments against that tool's schema, and records both halves of the turn.
+#[test]
+fn an_agent_dispatches_a_registered_tool_and_answers_from_it() {
+    let Some(model) = tool_model() else {
+        eprintln!("SKIP: set PIO_TEST_TOOL_MODEL to run the agent");
+        return;
+    };
+
+    let engine = Engine::load(model).expect("tool model should load");
+    let mut session = Session::new();
+    let mut calls = Vec::new();
+
+    let done = engine
+        .agent(&mut session)
+        .add_tool(weather_agent_tool())
+        .max_steps(4)
+        .run_streaming(
+            Some("What is the weather in Paris? Use the tool.".into()),
+            |step| {
+                if let pio_gen2::AgentStep::Calling { tool, .. } = step {
+                    calls.push(tool.to_string());
+                }
+            },
+        )
+        .expect("the agent should complete");
+
+    assert_eq!(calls, ["get_weather"], "the registry dispatched the call");
+    assert_eq!(done.tool_rounds, 1);
+    assert!(
+        done.text.contains("18"),
+        "answered from the tool: {:?}",
+        done.text
+    );
+
+    // One assistant turn per round — a duplicate here means the agent and the
+    // chat layer both appended.
+    let roles: Vec<&str> = session.messages().iter().map(|m| m.role.as_str()).collect();
+    assert_eq!(roles, ["user", "assistant", "tool", "assistant"]);
+}
+
+/// A deferred tool is absent from the prompt until the model searches for it,
+/// at which point its spec joins the conversation.
+#[test]
+fn an_agent_hydrates_a_deferred_tool_through_search() {
+    let Some(model) = tool_model() else {
+        eprintln!("SKIP: set PIO_TEST_TOOL_MODEL to run the agent");
+        return;
+    };
+
+    let engine = Engine::load(model).expect("tool model should load");
+    let mut session = Session::new();
+    let mut calls = Vec::new();
+
+    engine
+        .agent(&mut session)
+        .add_tool(weather_agent_tool())
+        .defer_tool(resize_agent_tool())
+        .tool_search(pio_gen2::ToolSearch::Bm25)
+        .max_steps(4)
+        .run_streaming(
+            Some(
+                "Resize /tmp/a.png to 200 pixels wide. You do not have that tool — \
+                 call search_tools first."
+                    .into(),
+            ),
+            |step| {
+                if let pio_gen2::AgentStep::Calling { tool, .. } = step {
+                    calls.push(tool.to_string());
+                }
+            },
+        )
+        .expect("the agent should complete");
+
+    assert!(
+        calls.contains(&pio_gen2::SEARCH_TOOL.to_string()),
+        "the model should have searched, got {calls:?}"
+    );
+}
+
+fn weather_agent_tool() -> pio_gen2::FunctionTool<WeatherArgs> {
+    pio_gen2::FunctionTool::new(
+        "get_weather",
+        "Current weather for a city",
+        |_ctx, a: WeatherArgs| async move {
+            Ok(pio_gen2::ToolOutput::Json(serde_json::json!({
+                "city": a.city, "temp_c": 18, "sky": "clear"
+            })))
+        },
+    )
+}
+
+fn resize_agent_tool() -> pio_gen2::FunctionTool<ResizeArgs> {
+    pio_gen2::FunctionTool::new(
+        "resize_image",
+        "Shrink a picture to a smaller width",
+        |_ctx, a: ResizeArgs| async move {
+            Ok(pio_gen2::ToolOutput::from(format!(
+                "resized to {}px",
+                a.width
+            )))
+        },
+    )
+}
+
+#[derive(serde::Deserialize, pio_gen2::schemars::JsonSchema)]
+struct WeatherArgs {
+    /// City to look up.
+    city: String,
+}
+
+#[derive(serde::Deserialize, pio_gen2::schemars::JsonSchema)]
+struct ResizeArgs {
+    /// Target width in pixels.
+    width: u32,
+}

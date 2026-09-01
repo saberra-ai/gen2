@@ -14,6 +14,7 @@ use crate::engine::Settings;
 use crate::generation::GenSpec;
 use crate::hardware::HardwareProfile;
 
+use super::agent::Agent;
 use super::chat::Chat;
 use super::error::{Error, Result};
 use super::fit::ModelInfo;
@@ -64,6 +65,16 @@ impl Engine {
     /// nothing and re-prefills nothing.
     pub fn chat<'a>(&'a self, session: &'a mut Session) -> Chat<'a> {
         Chat::new(self, session)
+    }
+
+    /// Start an agent: tools it can call, and a loop that runs until it
+    /// answers or hits a budget.
+    ///
+    /// Unlike [`Chat::on_tool`](super::Chat::on_tool), the agent owns dispatch
+    /// — it resolves the tool the model named, validates the arguments, and
+    /// routes failures. You register tools, not a `match`.
+    pub fn agent<'a>(&'a self, session: &'a mut Session) -> Agent<'a> {
+        Agent::new(self, session)
     }
 
     /// Run one prompt against a throwaway conversation.

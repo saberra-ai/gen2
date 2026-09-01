@@ -30,6 +30,27 @@ fn fallback_runtime() -> &'static Runtime {
     })
 }
 
+/// Run a future to completion from synchronous code.
+///
+/// Tools are async but the chat path is not, so the agent loop has to bridge.
+/// Doing that with a bare `block_on` panics when the caller is already inside a
+/// runtime — a real case, since a consumer may drive the sync API from a Tokio
+/// thread. So work is always handed to the dedicated runtime and awaited over a
+/// std channel: correct on a plain thread, and correct inside someone else's
+/// runtime, at the cost of one hop.
+pub(crate) fn block_on<T, F>(fut: F) -> T
+where
+    F: Future<Output = T> + Send + 'static,
+    T: Send + 'static,
+{
+    let (tx, rx) = std::sync::mpsc::sync_channel(1);
+    fallback_runtime().spawn(async move {
+        let _ = tx.send(fut.await);
+    });
+    rx.recv()
+        .expect("the agent runtime dropped a task without returning a result")
+}
+
 /// Spawn a future on the Tokio runtime with panic logging.
 ///
 /// If the future panics, the panic is caught and logged at `error!` level with
