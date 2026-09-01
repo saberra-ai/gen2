@@ -6,8 +6,8 @@ use std::time::Duration;
 
 use serde::{Deserialize, Serialize};
 
-use crate::ResidencyStats;
 use crate::backend::BackendCaps;
+use crate::residency_stats::ResidencyStats;
 
 use super::config::ControllerConfig;
 use super::metrics::ControllerMetricsSnapshot;

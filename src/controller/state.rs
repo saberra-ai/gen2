@@ -2,8 +2,9 @@ use std::collections::HashMap;
 use std::sync::Arc;
 use std::time::Duration;
 
-use crate::Engine;
-use crate::{ResidencyInventory, ResidencyPolicy};
+use crate::backend::Engine;
+use crate::residency::ResidencyInventory;
+use crate::residency_policy::ResidencyPolicy;
 
 use super::ChatRuntime;
 use super::ControllerConfig;

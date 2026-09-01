@@ -1,9 +1,14 @@
 # pio-gen2
 
-A local-first inference engine with pluggable backends. Load a model, start a
-session, pull tokens — the same API whether the weights are running through
+A local-first inference engine with pluggable backends. Load a model, run a
+turn, stream tokens back — the same API whether the weights are running through
 llama.cpp, MLX, ONNX Runtime, Candle, ExecuTorch, or a remote OpenAI/Anthropic-
 compatible endpoint.
+
+**The public API is the controller.** You send it commands and read events;
+everything underneath — backend dispatch, session runtime, KV cache, the model
+zoo, placement routing, residency policy — is internal, so it can change without
+breaking you.
 
 Extracted from [pio-app](https://github.com/saberra-ai/pio-app)'s `pio-core`
 crate, with history. See [`docs/EXTRACTION.md`](docs/EXTRACTION.md) for what
@@ -12,41 +17,59 @@ moved and what a host app still supplies.
 ## Quick start
 
 ```rust
-use pio_gen2::engine::{Engine, LoadRequest};
-use pio_gen2::generation::{GenSpec, TokenEvent};
-use pio_gen2::session_rt::SessionSpec;
-use pio_gen2::{Message, MessageBody, MessageContent};
+use std::sync::mpsc::{channel, sync_channel};
+use pio_gen2::controller::start_controller;
+use pio_gen2::{ControllerCmd, ControllerEvent, GenSpec, Message, Settings};
 
-let mut engine = Engine::new();
-engine.load_model(LoadRequest {
+let handle = start_controller();
+
+// Load a model and wait for it to be ready.
+let (resp, resp_rx) = channel();
+handle.send(ControllerCmd::LoadModel {
     model_path: "/path/model.gguf".into(),
-    ..Default::default()
+    mmproj_path: None,
+    settings: Settings::default(),
+    api_key: None,
+    api_format: None,
+    resp,
+})?;
+resp_rx.recv()??;
+
+// Run a turn; events stream back on `rx`.
+let (tx, rx) = sync_channel(handle.config().event_channel_capacity);
+handle.send(ControllerCmd::StartChat {
+    chat_id: "chat-1".into(),
+    messages: vec![Message::user("Hello")],
+    gen_spec: GenSpec { max_tokens: Some(32), ..Default::default() },
+    thinking: Default::default(),
+    model_id: None,
+    model_size_bytes: None,
+    tools: None,
+    tx,
 })?;
 
-let messages = vec![Message {
-    name: None,
-    role: "user".into(),
-    body: MessageBody::Content {
-        content: MessageContent::SingleText("Hello".into()),
-    },
-}];
-
-let session = engine.start_session(SessionSpec { messages, ..Default::default() })?;
-let puller = session.pull(GenSpec { max_tokens: Some(32), ..Default::default() })?;
-
-// Each step is a `Result` — a decode failure surfaces here rather than
-// silently ending the stream.
-for event in puller {
-    match event? {
-        TokenEvent::Token(t) => print!("{}", t.text),
-        TokenEvent::Eos | TokenEvent::Stopped => break,
+for event in rx {
+    match event {
+        ControllerEvent::Token(t) => print!("{t}"),
+        ControllerEvent::Error { code, message } => eprintln!("[{code}] {message}"),
+        ControllerEvent::Eos | ControllerEvent::Stopped => break,
         _ => {}
     }
 }
+
+handle.send(ControllerCmd::Shutdown)?;
 ```
 
-`session.pause()` / `resume()` / `stop()` drive generation cooperatively; the
-puller yields `Paused` and `Stopped` in response.
+For prompt-in/text-out without driving the channel yourself, `InferenceHandle`
+carries the `system_infer` family (`system_prompt`, `system_infer`,
+`system_infer_streaming`, …).
+
+Send `Shutdown` when you are done: the loop runs on its own thread holding the
+backend, and exiting the process while it is live aborts inside llama.cpp's
+static destructors.
+
+`ControllerCmd::PauseChat` / `ResumeChat` / `StopChat` drive a generation
+cooperatively by `chat_id`.
 
 ## Backends
 
@@ -83,21 +106,37 @@ model that won't load or won't decode is a hard failure.
 
 ## What's in here
 
+Public:
+
+- **`controller`** — the API. Commands, events, handles, config, and the
+  observability snapshots. `ControllerHandle` is the command channel;
+  `InferenceHandle` adds the `system_infer` family and can dispatch to another
+  device.
+- The vocabulary those signatures are written in, re-exported at the crate root:
+  `GenSpec`, `Settings`, `Message`, `ExecError`, `ExecutionStats`,
+  `ThinkingMode`, `ToolCall`, `GrammarSpec`, and the residency/memory types the
+  snapshots expose.
+
+Internal (`pub(crate)`), driven by the controller:
+
 - **`engine/`** — load models, validate architectures, report stats.
 - **`session_rt/`** — sessions, prompt assembly, context truncation + compaction.
-- **`generation/`** — `GenSpec`, token events, reply/thinking parsing.
+- **`generation/`** — token events, reply/thinking parsing.
 - **`backend/`** — the pluggable backends behind one trait set, plus shared
   chat-templating, tokenization, sampling, grammar-constrained decoding, and
   stop-sequence matching.
 - **`kv/`** — versioned KV-cache save/load with checksums and strict/lenient
   compatibility policies.
-- **`controller/`** — lifecycle, scheduling, metrics, observability.
 - **`residency*`, `memory/`, `hardware.rs`** — how much of the machine a
   resident model may take, and what the machine actually is.
 - **`zoo.rs`** — the canonical model zoo and per-platform bundle selector,
   editable at `resources/models/zoo.json`.
 - **`router.rs`** — pure placement: given a request, local capability, and a
   peer list, pick which device runs it. Local-first.
+
+The crate warns on `unnameable_types`, so a type that becomes reachable through
+the public API without being nameable fails the build rather than silently
+becoming a hole.
 
 ## Constrained decoding
 

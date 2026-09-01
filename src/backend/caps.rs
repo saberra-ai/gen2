@@ -77,7 +77,7 @@ mod tests {
     use super::*;
     // Used by tests exercised only under other backend features.
     #[allow(unused_imports)]
-    use crate::Engine;
+    use crate::backend::Engine;
 
     #[cfg(feature = "backend-llamacpp")]
     #[test]

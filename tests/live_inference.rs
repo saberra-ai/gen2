@@ -4,6 +4,11 @@
 //! through the real llama.cpp backend, asserting on real decoded tokens. It is
 //! the test that would have caught a broken extraction that still compiled.
 //!
+//! It goes through the controller because that is the crate's public API. As an
+//! external test target it can reach exactly what any other consumer can, so it
+//! doubles as proof that the narrowed surface is actually sufficient to load a
+//! model and generate from it.
+//!
 //! Point `PIO_TEST_MODEL` at a small instruct GGUF and run:
 //!
 //! ```sh
@@ -18,11 +23,10 @@
 #![cfg(feature = "backend-llamacpp")]
 
 use std::path::PathBuf;
+use std::sync::mpsc::{channel, sync_channel};
 
-use pio_gen2::engine::{Engine, LoadRequest};
-use pio_gen2::generation::{GenSpec, TokenEvent};
-use pio_gen2::session_rt::SessionSpec;
-use pio_gen2::{Message, MessageBody, MessageContent};
+use pio_gen2::controller::start_controller;
+use pio_gen2::{ControllerCmd, ControllerEvent, ControllerHandle, GenSpec, Message, Settings};
 
 fn test_model() -> Option<PathBuf> {
     let raw = std::env::var("PIO_TEST_MODEL").ok()?;
@@ -35,25 +39,41 @@ fn test_model() -> Option<PathBuf> {
     Some(path)
 }
 
-fn user_message(text: &str) -> Message {
-    Message {
-        name: None,
-        role: "user".into(),
-        body: MessageBody::Content {
-            content: MessageContent::SingleText(text.into()),
-        },
-    }
+/// A controller with the model loaded and confirmed ready.
+fn loaded_controller(model: PathBuf) -> ControllerHandle {
+    let handle = start_controller();
+    let (resp, resp_rx) = channel();
+
+    handle
+        .send(ControllerCmd::LoadModel {
+            model_path: model,
+            mmproj_path: None,
+            settings: Settings::default(),
+            api_key: None,
+            api_format: None,
+            resp,
+        })
+        .expect("controller should accept a LoadModel command");
+
+    resp_rx
+        .recv()
+        .expect("controller should answer LoadModel")
+        .expect("real GGUF should load through the llama.cpp backend");
+
+    handle
 }
 
-fn loaded_engine(model: PathBuf) -> Engine {
-    let mut engine = Engine::new();
-    engine
-        .load_model(LoadRequest {
-            model_path: model,
-            ..Default::default()
-        })
-        .expect("real GGUF should load through the llama.cpp backend");
-    engine
+/// Stop the controller and let it release the backend.
+///
+/// Not optional hygiene: the loop runs on its own thread holding the llama.cpp
+/// context, and a test binary that reaches `exit()` while it is still alive
+/// aborts inside ggml's static destructors — a passing test with a SIGABRT
+/// after it. Shutdown is fire-and-forget (no ack on the command), so this waits
+/// for the loop to actually wind down.
+fn shutdown(handle: ControllerHandle) {
+    let _ = handle.send(ControllerCmd::Shutdown);
+    drop(handle);
+    std::thread::sleep(std::time::Duration::from_millis(250));
 }
 
 /// A sampler pinned to be reproducible: temperature 0 and a fixed seed.
@@ -70,27 +90,40 @@ fn deterministic_spec(max_tokens: usize) -> GenSpec {
     }
 }
 
-/// Drain a session's token stream into decoded text plus the terminal event.
-fn generate_with(engine: &Engine, prompt: &str, gen_spec: GenSpec) -> (String, Option<TokenEvent>) {
-    let session = engine
-        .start_session(SessionSpec {
-            messages: vec![user_message(prompt)],
-            ..Default::default()
-        })
-        .expect("session should start on a loaded model");
+/// Run one chat turn to completion, returning the decoded text and the
+/// terminal event.
+fn generate(
+    handle: &ControllerHandle,
+    chat_id: &str,
+    prompt: &str,
+    gen_spec: GenSpec,
+) -> (String, Option<ControllerEvent>) {
+    let (tx, rx) = sync_channel(handle.config().event_channel_capacity);
 
-    let mut puller = session
-        .pull(gen_spec)
-        .expect("pull should start a generation");
+    handle
+        .send(ControllerCmd::StartChat {
+            chat_id: chat_id.into(),
+            messages: vec![Message::user(prompt)],
+            gen_spec,
+            thinking: Default::default(),
+            model_id: None,
+            model_size_bytes: None,
+            tools: None,
+            tx,
+        })
+        .expect("controller should accept a StartChat command");
 
     let mut text = String::new();
     let mut terminal = None;
-    for event in puller.by_ref() {
-        // A decode error is a failure, never something to skip past — swallowing
-        // it is how an empty generation gets reported as a successful one.
-        match event.expect("decode step returned an error") {
-            TokenEvent::Token(t) => text.push_str(&t.text),
-            ev @ (TokenEvent::Eos | TokenEvent::Stopped) => {
+    for event in rx {
+        match event {
+            ControllerEvent::Token(t) => text.push_str(&t),
+            // A generation error is a failure, never something to read past —
+            // swallowing it is how an empty result gets reported as success.
+            ControllerEvent::Error { code, message } => {
+                panic!("generation failed [{code}]: {message}")
+            }
+            ev @ (ControllerEvent::Eos | ControllerEvent::Stopped) => {
                 terminal = Some(ev);
                 break;
             }
@@ -100,7 +133,7 @@ fn generate_with(engine: &Engine, prompt: &str, gen_spec: GenSpec) -> (String, O
     (text, terminal)
 }
 
-/// The load → session → decode path produces real text from a real model.
+/// The load → chat → decode path produces real text from a real model.
 #[test]
 fn generates_real_tokens_from_a_real_model() {
     let Some(model) = test_model() else {
@@ -108,9 +141,10 @@ fn generates_real_tokens_from_a_real_model() {
         return;
     };
 
-    let engine = loaded_engine(model);
-    let (text, terminal) = generate_with(
-        &engine,
+    let handle = loaded_controller(model);
+    let (text, terminal) = generate(
+        &handle,
+        "live-1",
         "Reply with exactly one word: hello",
         deterministic_spec(24),
     );
@@ -126,14 +160,16 @@ fn generates_real_tokens_from_a_real_model() {
         "output has no letters, so this is not decoded text: {text:?}"
     );
     assert!(
-        terminal.is_some(),
-        "stream ended without Eos or Stopped — the generation did not terminate cleanly"
+        matches!(terminal, Some(ControllerEvent::Eos)),
+        "expected the stream to end on Eos, got {terminal:?}"
     );
+
+    shutdown(handle);
 }
 
 /// At temperature 0 with a fixed seed, the same prompt twice gives the same
 /// text. Catches a sampler or KV cache that survived the move but wired itself
-/// to the wrong state — a fresh session must not inherit the previous one's.
+/// to the wrong state — a fresh chat must not inherit the previous one's.
 #[test]
 fn greedy_decoding_is_reproducible() {
     let Some(model) = test_model() else {
@@ -141,18 +177,20 @@ fn greedy_decoding_is_reproducible() {
         return;
     };
 
-    let engine = loaded_engine(model);
+    let handle = loaded_controller(model);
     let prompt = "Count: one two three";
 
-    let (first, _) = generate_with(&engine, prompt, deterministic_spec(16));
-    let (second, _) = generate_with(&engine, prompt, deterministic_spec(16));
+    let (first, _) = generate(&handle, "repro-a", prompt, deterministic_spec(16));
+    let (second, _) = generate(&handle, "repro-b", prompt, deterministic_spec(16));
 
     assert!(!first.trim().is_empty(), "first generation was empty");
     assert_eq!(
         first, second,
-        "same prompt gave different text across two sessions — \
+        "same prompt gave different text across two chats — \
          sampler or session state is not being reset"
     );
+
+    shutdown(handle);
 }
 
 /// `max_tokens` is honoured, so a caller can bound a generation. A budget that
@@ -164,24 +202,31 @@ fn respects_the_max_tokens_budget() {
         return;
     };
 
-    let engine = loaded_engine(model);
-    let session = engine
-        .start_session(SessionSpec {
-            messages: vec![user_message("Write a long story about a robot.")],
-            ..Default::default()
-        })
-        .expect("session should start");
-
     const BUDGET: usize = 8;
-    let mut puller = session
-        .pull(deterministic_spec(BUDGET))
-        .expect("pull should start");
+    let handle = loaded_controller(model);
+    let (tx, rx) = sync_channel(handle.config().event_channel_capacity);
+
+    handle
+        .send(ControllerCmd::StartChat {
+            chat_id: "budget-1".into(),
+            messages: vec![Message::user("Write a long story about a robot.")],
+            gen_spec: deterministic_spec(BUDGET),
+            thinking: Default::default(),
+            model_id: None,
+            model_size_bytes: None,
+            tools: None,
+            tx,
+        })
+        .expect("controller should accept a StartChat command");
 
     let mut tokens = 0_usize;
-    for event in puller.by_ref() {
-        match event.expect("decode step returned an error") {
-            TokenEvent::Token(_) => tokens += 1,
-            TokenEvent::Eos | TokenEvent::Stopped => break,
+    for event in rx {
+        match event {
+            ControllerEvent::Token(_) => tokens += 1,
+            ControllerEvent::Error { code, message } => {
+                panic!("generation failed [{code}]: {message}")
+            }
+            ControllerEvent::Eos | ControllerEvent::Stopped => break,
             _ => {}
         }
         assert!(
@@ -191,4 +236,6 @@ fn respects_the_max_tokens_budget() {
     }
 
     assert!(tokens > 0, "budget-limited generation produced no tokens");
+
+    shutdown(handle);
 }

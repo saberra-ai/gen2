@@ -1,5 +1,5 @@
-use crate::ResidencyPolicy;
 use crate::memory::{MemoryGovernor, MemoryPressureLevel};
+use crate::residency_policy::ResidencyPolicy;
 
 use serde::{Deserialize, Serialize};
 

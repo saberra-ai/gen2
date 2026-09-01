@@ -35,17 +35,19 @@ pub enum MemoryPressureLevel {
 ///
 /// Uses integer arithmetic throughout to avoid floating-point on hot paths.
 ///
-/// ```
-/// # use pio_gen2::memory::{MemoryBudgets, MemoryPressureLevel, classify_pressure};
-/// # let budgets = MemoryBudgets {
-/// #     process_soft_limit_mb: 3072,
-/// #     process_hard_limit_mb: 4096,
-/// #     search_working_set_mb: 400,
-/// #     kg_derived_state_mb: 200,
-/// #     ingestion_peak_mb: 800,
-/// #     inference_resident_mb: 1536,
-/// #     multimodal_peak_mb: 768,
-/// # };
+/// Illustrative only — `memory` is crate-internal, so this cannot be a doc
+/// test. The same four boundaries are asserted in the unit tests below.
+///
+/// ```text
+/// let budgets = MemoryBudgets {
+///     process_soft_limit_mb: 3072,
+///     process_hard_limit_mb: 4096,
+///     search_working_set_mb: 400,
+///     kg_derived_state_mb: 200,
+///     ingestion_peak_mb: 800,
+///     inference_resident_mb: 1536,
+///     multimodal_peak_mb: 768,
+/// };
 /// assert_eq!(classify_pressure(1000, &budgets), MemoryPressureLevel::Normal);
 /// assert_eq!(classify_pressure(2600, &budgets), MemoryPressureLevel::Constrained);
 /// assert_eq!(classify_pressure(3500, &budgets), MemoryPressureLevel::Severe);

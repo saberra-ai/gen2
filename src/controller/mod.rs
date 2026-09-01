@@ -1032,7 +1032,7 @@ mod tests {
     use super::lifecycle::{RuntimeOutcome, terminate_runtime};
     use super::observability::EmitResult;
     use super::*;
-    use crate::Engine;
+    use crate::backend::Engine;
     use std::collections::HashMap;
     use std::sync::mpsc::sync_channel;
 

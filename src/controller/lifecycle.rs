@@ -13,11 +13,12 @@ use super::{
     ChatRunState, ChatRuntime, CompletionReason, ControllerEvent, FailureReason, SystemTask,
     WorkloadKind, metrics, scheduler,
 };
+use crate::backend::Engine;
 use crate::engine::LoadRequest;
+use crate::engine::Settings;
 use crate::generation::GenSpec;
 use crate::session_rt::SessionSpec;
 use crate::types::message::Message;
-use crate::{Engine, Settings};
 
 /// Terminal outcome for a chat runtime.
 pub(super) enum RuntimeOutcome {
