@@ -8,6 +8,8 @@ pub mod anthropic_puller;
 mod engine;
 mod puller;
 mod session;
+#[cfg(test)]
+mod tests;
 
 pub use engine::Engine;
 // Re-exported for other backend feature configs; default surface uses neither.

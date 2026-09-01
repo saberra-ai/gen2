@@ -23,6 +23,9 @@ pub struct TokenPuller {
     start_us: u64,
     first_token_us: Option<u64>,
     done: bool,
+    /// Set when a chunk carried both content and a terminal `finish_reason`:
+    /// the token goes out first, and `Eos` is owed on the following call.
+    pending_eos: bool,
     line_buf: String,
 }
 
@@ -46,6 +49,7 @@ impl TokenPuller {
             start_us: now_us(),
             first_token_us: None,
             done: false,
+            pending_eos: false,
             line_buf: String::with_capacity(512),
         }
     }
@@ -84,6 +88,13 @@ impl Iterator for TokenPuller {
     fn next(&mut self) -> Option<Self::Item> {
         if self.done {
             return None;
+        }
+
+        // Owed from the previous call, and owed unconditionally: the stream
+        // has already ended upstream, so reporting Stopped here instead would
+        // tell the caller a finished answer was cancelled.
+        if self.pending_eos {
+            return self.finish(TokenEvent::Eos);
         }
 
         // Check stop flag
@@ -179,13 +190,12 @@ impl Iterator for TokenPuller {
                                 token_id: 0,
                                 text_len: text.len(),
                             });
-                            // We'll get Eos on the next call
-                            self.done = true;
-                            let stats = self.stats_now();
-                            self.hooks.emit(HookEvent::FinalStats {
-                                session_id: self.session_id,
-                                stats,
-                            });
+                            // Eos is owed on the next call. Ending the
+                            // iterator here instead would return `None`, and
+                            // the controller reads `None` as a user
+                            // cancellation — a completed answer would be
+                            // reported as stopped by the user.
+                            self.pending_eos = true;
                             return Some(Ok(TokenEvent::Token(Token {
                                 id: 0,
                                 text: text.to_string(),
