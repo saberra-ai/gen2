@@ -34,6 +34,15 @@ engine.chat(&mut session).user("Simpler?").send()?;
 for message in session.messages() { /* … */ }
 ```
 
+A long conversation outgrows the context window. The engine sheds its oldest
+messages to make room and carries on; the session keeps everything. So the
+transcript you hold can be a superset of what the model still sees:
+
+```rust
+session.shed()               // messages no longer in the model's view
+session.fully_in_context()   // false once anything has been shed
+```
+
 Streaming, when you want tokens as they arrive:
 
 ```rust

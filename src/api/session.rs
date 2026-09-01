@@ -14,6 +14,21 @@ use crate::types::message::Message;
 /// owning the history costs you nothing in speed: a follow-up turn still reuses
 /// the prefill from the last one.
 ///
+/// # The session outlives the model's view of it
+///
+/// A session keeps every message. The engine's working set does not: when a
+/// conversation outgrows the context window, the engine sheds its oldest
+/// messages — compacting them into a summary where it can, dropping them
+/// outright where it can't — and carries on. Nothing fails, and the session is
+/// not rewritten.
+///
+/// So after a long conversation the transcript you hold is a superset of what
+/// the model can still see. That is the right split — your record shouldn't be
+/// destroyed to fit someone's context window — but it is worth knowing when you
+/// render it. [`Session::shed`] counts how many messages have fallen out of the
+/// model's view, and per turn [`Completion`](super::Completion) reports
+/// `dropped` and `compacted`.
+///
 /// ```no_run
 /// # use pio_gen2::{Engine, Session};
 /// # let engine = Engine::load("m.gguf")?;
@@ -33,6 +48,9 @@ pub struct Session {
     /// Whether the engine has opened this conversation yet. Lives here rather
     /// than in the engine so it's dropped with the session.
     pub(crate) opened: bool,
+    /// Messages the engine has shed from its working set to fit the context
+    /// window, across the whole conversation.
+    pub(crate) shed: usize,
 }
 
 impl Session {
@@ -42,6 +60,7 @@ impl Session {
             id: format!("session-{}", uuid::Uuid::new_v4()),
             messages: Vec::new(),
             opened: false,
+            shed: 0,
         }
     }
 
@@ -84,6 +103,29 @@ impl Session {
     /// The most recent message's text.
     pub fn latest_text(&self) -> Option<String> {
         self.latest().map(text_of)
+    }
+
+    /// How many messages have fallen out of the model's context window.
+    ///
+    /// Grows when a turn overflows the window and the engine sheds history to
+    /// make room. Non-zero means the transcript you hold is longer than what
+    /// the model can still see — worth surfacing if a user is about to ask
+    /// about something early in a long conversation.
+    ///
+    /// This counts what left the *model's* view. Your messages are all still
+    /// here; nothing rewrites them.
+    pub fn shed(&self) -> usize {
+        self.shed
+    }
+
+    /// Whether the model can still see the whole conversation.
+    pub fn fully_in_context(&self) -> bool {
+        self.shed == 0
+    }
+
+    /// Record that the engine shed `n` messages this turn.
+    pub(crate) fn note_shed(&mut self, n: usize) {
+        self.shed = self.shed.saturating_add(n);
     }
 
     /// Append a message.
@@ -134,6 +176,7 @@ impl Session {
     pub fn clear(&mut self) {
         self.messages.clear();
         self.opened = false;
+        self.shed = 0;
     }
 
     /// Edit the transcript in place — trim it, delete a message, rewrite one.

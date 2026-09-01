@@ -423,3 +423,66 @@ fn weather_tool() -> pio_gen2::Tool {
         },
     }
 }
+
+/// A conversation that outgrows the context window keeps working, and says so.
+///
+/// The engine sheds its oldest messages to make room; the session keeps the
+/// whole transcript and records how much fell out of the model's view. Nothing
+/// errors, and later turns still generate.
+#[test]
+fn a_session_survives_outgrowing_the_context_window() {
+    let Some(model) = test_model() else {
+        eprintln!("SKIP: set PIO_TEST_MODEL to run live inference");
+        return;
+    };
+
+    // The smallest window the engine will give, so overflow arrives quickly.
+    let engine = Engine::builder()
+        .model(model)
+        .context(2048)
+        .build()
+        .expect("model should load at a small context");
+
+    let mut session = Session::new();
+    assert!(session.fully_in_context(), "nothing shed before we start");
+
+    let filler = "Discuss at length: ".to_string() + &"lorem ipsum dolor sit amet ".repeat(60);
+    let mut shed_reported = 0;
+
+    for turn in 1..=6 {
+        let done = engine
+            .chat(&mut session)
+            .user(format!("{filler} (turn {turn}). Reply in one sentence."))
+            .max_tokens(48)
+            .greedy()
+            .send()
+            .unwrap_or_else(|e| panic!("turn {turn} should still generate, got: {e}"));
+
+        shed_reported += done.dropped + done.compacted;
+        assert!(
+            !done.text.trim().is_empty(),
+            "turn {turn} produced no text after overflow"
+        );
+    }
+
+    eprintln!(
+        "--- {} messages held, {} shed from the model's view",
+        session.len(),
+        session.shed()
+    );
+
+    // The transcript is complete: two messages per turn, nothing rewritten.
+    assert_eq!(session.len(), 12, "the session keeps every message");
+
+    // And the divergence is visible rather than silent.
+    assert!(
+        session.shed() > 0,
+        "six long turns at 2048 context should have overflowed"
+    );
+    assert_eq!(
+        session.shed(),
+        shed_reported,
+        "the session's count matches what the turns reported"
+    );
+    assert!(!session.fully_in_context());
+}

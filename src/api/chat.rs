@@ -267,6 +267,7 @@ impl<'a> Chat<'a> {
             // No handler: one turn, and tool calls are the caller's to act on.
             let (stream, session) = self.begin()?;
             let done = stream.complete_streaming(on_token)?;
+            session.note_shed(done.dropped + done.compacted);
             session.push(Message::assistant_structured(done.text.clone(), None));
             return Ok(done);
         };
@@ -295,6 +296,7 @@ impl<'a> Chat<'a> {
             let (stream, session_back) = turn.begin()?;
             let mut done = stream.complete_streaming(&mut on_token)?;
             done.tool_rounds = rounds;
+            session_back.note_shed(done.dropped + done.compacted);
 
             if done.tool_calls.is_empty() {
                 session_back.push(Message::assistant_structured(done.text.clone(), None));
