@@ -3,7 +3,7 @@
 use std::panic::{AssertUnwindSafe, catch_unwind};
 use std::sync::Arc;
 use std::sync::atomic::Ordering;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use crate::engine::EmbedLoadRequest;
 use crate::generation::TokenEvent;
@@ -207,6 +207,37 @@ fn save_all_chat_kv(state: &ControllerState) {
         }
     }
     store::enforce_budget(&dir);
+}
+
+/// Keepwarm idle-unload: when enabled (`PIO_LLM_IDLE_UNLOAD_SECS`), a
+/// quiesced LLM past the idle budget saves its chats' KV and unloads —
+/// freeing the memory while the saved state makes the next request a
+/// sub-second resume instead of a cold prefill.
+/// Memory-pressure eviction and idle unloading. See [`MAINTENANCE_INTERVAL`]
+/// for why this is not on the per-token path.
+fn run_residency_maintenance(state: &mut ControllerState) {
+    let active_foreground = if state.chats.is_empty() {
+        None
+    } else {
+        Some(RuntimeKind::Llm)
+    };
+    let evicted_for_pressure = state
+        .residency
+        .unload_for_pressure(&current_memory_governor(), active_foreground);
+    for runtime in evicted_for_pressure {
+        if matches!(runtime.kind, RuntimeKind::Embedder) {
+            state.engine.unload_embedder();
+        }
+    }
+    let evicted_idle = state
+        .residency
+        .evict_idle_helpers(chrono::Utc::now().timestamp(), &state.residency_policy);
+    maybe_idle_unload_llm(state);
+    for runtime in evicted_idle {
+        if matches!(runtime.kind, RuntimeKind::Embedder) {
+            state.engine.unload_embedder();
+        }
+    }
 }
 
 /// Keepwarm idle-unload: when enabled (`PIO_LLM_IDLE_UNLOAD_SECS`), a
@@ -909,28 +940,22 @@ pub(super) fn dispatch_cmd(cmd: ControllerCmd, state: &mut ControllerState) -> C
 }
 
 /// One scheduler pass over actively generating runtimes.
+/// How often residency maintenance runs.
+///
+/// It probes memory pressure and evicts idle runtimes — decisions measured in
+/// seconds. The tick it used to live in pulls one token per call, so it ran at
+/// token frequency, and a `getrusage`, two eviction scans and a clock read on
+/// every token cost roughly a sixth of decode throughput. Frequent enough that
+/// pressure is still noticed promptly, rare enough to be free.
+const MAINTENANCE_INTERVAL: Duration = Duration::from_millis(250);
+
 pub(super) fn tick_active_chats(state: &mut ControllerState, tick_busy: Duration) {
-    let active_foreground = if state.chats.is_empty() {
-        None
-    } else {
-        Some(RuntimeKind::Llm)
-    };
-    let evicted_for_pressure = state
-        .residency
-        .unload_for_pressure(&current_memory_governor(), active_foreground);
-    for runtime in evicted_for_pressure {
-        if matches!(runtime.kind, RuntimeKind::Embedder) {
-            state.engine.unload_embedder();
-        }
-    }
-    let evicted_idle = state
-        .residency
-        .evict_idle_helpers(chrono::Utc::now().timestamp(), &state.residency_policy);
-    maybe_idle_unload_llm(state);
-    for runtime in evicted_idle {
-        if matches!(runtime.kind, RuntimeKind::Embedder) {
-            state.engine.unload_embedder();
-        }
+    let due = state
+        .last_maintenance
+        .is_none_or(|at| at.elapsed() >= MAINTENANCE_INTERVAL);
+    if due {
+        state.last_maintenance = Some(Instant::now());
+        run_residency_maintenance(state);
     }
 
     let generation_timeout = state.generation_timeout();
@@ -1091,7 +1116,11 @@ pub(super) fn tick_active_chats(state: &mut ControllerState, tick_busy: Duration
         }
     }
 
-    if !state.chats.is_empty() {
+    // Zero is the default and means "do not pace"; sleeping for it is not
+    // free. `thread::sleep(Duration::ZERO)` still enters the kernel and yields
+    // the thread, and being rescheduled can cost a scheduler quantum — paid
+    // once per token, because the tick pulls one.
+    if !tick_busy.is_zero() && !state.chats.is_empty() {
         std::thread::sleep(tick_busy);
     }
 }

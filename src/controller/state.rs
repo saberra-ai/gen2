@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 use std::sync::Arc;
-use std::time::Duration;
+use std::time::{Duration, Instant};
 
 use crate::backend::Engine;
 use crate::residency::ResidencyInventory;
@@ -34,6 +34,13 @@ pub struct ControllerState {
     /// Residency identity (name, estimated MB) of an LLM that keepwarm
     /// idle-unloaded, so wake-on-demand can re-admit the same runtime.
     pub(super) idle_unloaded_llm: Option<(String, u64)>,
+    /// When residency maintenance last ran.
+    ///
+    /// The tick pulls one token per call, so anything it does unconditionally
+    /// runs at token frequency. Memory-pressure probing and idle eviction are
+    /// housekeeping measured in seconds; doing them per token cost about a
+    /// sixth of decode throughput.
+    pub(super) last_maintenance: Option<Instant>,
 }
 
 impl ControllerState {
@@ -58,6 +65,7 @@ impl ControllerState {
             loaded_model_file_bytes: None,
             last_llm_activity_unix: chrono::Utc::now().timestamp(),
             idle_unloaded_llm: None,
+            last_maintenance: None,
         }
     }
 

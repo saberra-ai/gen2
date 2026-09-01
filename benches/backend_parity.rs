@@ -110,8 +110,10 @@ fn main() {
         return;
     };
     println!(
-        "llama-bench  prefill {:>8.1} tok/s    decode {:>7.1} tok/s",
-        theirs.prefill_tps, theirs.decode_tps
+        "llama-bench  prefill {:>8.1} tok/s    decode {:>7.1} tok/s  (±{:.0}%)",
+        theirs.prefill_tps,
+        theirs.decode_tps,
+        theirs.decode_spread() * 100.0
     );
 
     // Both sides are medians. A mean lets one disturbed run move the headline,
@@ -122,12 +124,19 @@ fn main() {
     // Refuse to conclude from a measurement that was measuring the machine.
     // The threshold is generous: anything above it and the two sides were not
     // given comparable conditions, whatever the ratio says.
-    const NOISE_CEILING: f64 = 0.25;
-    if ours.decode_spread() > NOISE_CEILING {
+    const NOISE_CEILING: f64 = 0.15;
+    let noisiest = ours.decode_spread().max(theirs.decode_spread());
+    if noisiest > NOISE_CEILING {
+        let who = if ours.decode_spread() >= theirs.decode_spread() {
+            "gen2"
+        } else {
+            "the reference"
+        };
         println!(
-            "inconclusive: gen2's own runs varied by {:.0}%, so this ratio is \
-             noise. Close what else is using the GPU and run it again.",
-            ours.decode_spread() * 100.0
+            "inconclusive: {who} varied by {:.0}% across its own runs, which is \
+             more than the difference being measured. Close what else is using \
+             the GPU and run it again.",
+            noisiest * 100.0
         );
         return;
     }
@@ -213,6 +222,7 @@ fn measure_llama_bench(model: &str) -> Option<Measurement> {
     let text = String::from_utf8_lossy(&out.stdout);
     let mut prefill_tps = 0.0;
     let mut decode_tps = 0.0;
+    let mut decode_deviation = 0.0;
     for line in text.lines() {
         // Rows look like `| … | pp128 | 4573.44 ± 1.63 |`; the rate is the
         // last numeric cell.
@@ -220,26 +230,34 @@ fn measure_llama_bench(model: &str) -> Option<Measurement> {
         let Some(test) = cells.iter().rev().nth(2) else {
             continue;
         };
-        let Some(rate) = cells
-            .iter()
-            .rev()
-            .nth(1)
-            .and_then(|c| c.split_whitespace().next())
-            .and_then(|n| n.parse::<f64>().ok())
-        else {
+        let Some(cell) = cells.iter().rev().nth(1) else {
             continue;
         };
+        let mut parts = cell.split_whitespace();
+        let Some(rate) = parts.next().and_then(|n| n.parse::<f64>().ok()) else {
+            continue;
+        };
+        // Cells read `4573.44 ± 1.63`; the third field is the reference's own
+        // standard deviation, which is how this tells a slow gen2 apart from a
+        // disturbed reference.
+        let deviation = parts
+            .nth(1)
+            .and_then(|n| n.parse::<f64>().ok())
+            .unwrap_or(0.0);
         if test.starts_with("pp") {
             prefill_tps = rate;
         } else if test.starts_with("tg") {
             decode_tps = rate;
+            decode_deviation = deviation;
         }
     }
 
+    // Reconstruct a spread from the reported deviation so both sides answer
+    // `decode_spread` the same way.
     (decode_tps > 0.0).then_some(Measurement {
         prefill_tps,
         decode_tps,
-        decode_samples: vec![decode_tps],
+        decode_samples: vec![decode_tps - decode_deviation, decode_tps + decode_deviation],
     })
 }
 

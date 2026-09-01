@@ -468,6 +468,19 @@ impl Session {
         if let Some(bias) = Self::architecture_logit_bias(bundle) {
             chain.push(bias);
         }
+
+        // Temperature zero means "take the most likely token", and the
+        // truncation samplers below cannot change which token that is: they
+        // discard tails, and the maximum is never in a tail. Running them
+        // anyway sorts a vocabulary — 151k entries for Qwen3 — once per token,
+        // for a result that is decided before they start. Penalties and the
+        // architecture bias stay, because those rewrite logits and so can move
+        // the maximum.
+        if settings.sampling.temperature == Some(0.0) {
+            chain.push(LlamaSampler::greedy());
+            return LlamaSampler::chain_simple(chain);
+        }
+
         if let Some(k) = settings.sampling.top_k {
             tracing::debug!("Sampling top_k: {}", k);
             chain.push(LlamaSampler::top_k(k));
