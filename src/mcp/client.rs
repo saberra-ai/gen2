@@ -24,8 +24,8 @@ use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader, Lines};
 use tokio::process::{Child, ChildStdin, ChildStdout, Command};
 
 use super::protocol::{
-    CallToolResult, InitializeResult, JsonRpcRequest, JsonRpcResponse, ListToolsResult,
-    PROTOCOL_VERSION, ToolDescriptor,
+    CallToolResult, InitializeResult, JsonRpcNotification, JsonRpcRequest, JsonRpcResponse,
+    ListToolsResult, PROTOCOL_VERSION, ToolDescriptor,
 };
 
 /// Default per-request timeout. An external MCP server that neither answers nor
@@ -72,6 +72,17 @@ pub struct McpClient {
     stdout: Lines<BufReader<ChildStdout>>,
     next_id: u64,
     timeout: Duration,
+}
+
+impl std::fmt::Debug for McpClient {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        // The pipes are not printable, and the pid is what a caller chasing a
+        // stuck server actually needs.
+        f.debug_struct("McpClient")
+            .field("pid", &self.child.id())
+            .field("timeout", &self.timeout)
+            .finish_non_exhaustive()
+    }
 }
 
 impl McpClient {
@@ -125,8 +136,23 @@ impl McpClient {
             "clientInfo": { "name": "pio-agent", "version": env!("CARGO_PKG_VERSION") }
         });
         let result = self.request("initialize", params).await?;
-        serde_json::from_value(result)
-            .map_err(|e| McpError::Protocol(format!("invalid initialize result: {e}")))
+        let parsed = serde_json::from_value(result)
+            .map_err(|e| McpError::Protocol(format!("invalid initialize result: {e}")))?;
+
+        // The lifecycle requires this notification before any other request:
+        // an SDK-backed server (the Python `mcp` server behind `mcp-server-git`
+        // among them) refuses `tools/list` until it arrives. Best-effort,
+        // because a server that has already died must be reported by the next
+        // real request — with `ServerClosed` — not by a broken-pipe `Io` from a
+        // frame the caller never asked about.
+        let _ = self
+            .notify(
+                "notifications/initialized",
+                serde_json::Value::Object(Default::default()),
+            )
+            .await;
+
+        Ok(parsed)
     }
 
     /// List the tools the server exposes (`tools/list`).
@@ -152,6 +178,34 @@ impl McpClient {
             .map_err(|e| McpError::Protocol(format!("invalid tools/call result: {e}")))
     }
 
+    /// Send one notification. Carries no `id`, so there is nothing to await —
+    /// only the write is bounded.
+    async fn notify(&mut self, method: &str, params: serde_json::Value) -> Result<(), McpError> {
+        let note = JsonRpcNotification {
+            jsonrpc: "2.0",
+            method,
+            params,
+        };
+        self.write_frame(&note).await
+    }
+
+    /// Serialize one frame and put it on the child's stdin, LF-terminated.
+    async fn write_frame<T: serde::Serialize>(&mut self, frame: &T) -> Result<(), McpError> {
+        let mut line = serde_json::to_string(frame)
+            .map_err(|e| McpError::Protocol(format!("failed to encode request: {e}")))?;
+        line.push('\n');
+
+        tokio::time::timeout(self.timeout, self.stdin.write_all(line.as_bytes()))
+            .await
+            .map_err(|_| McpError::Timeout)?
+            .map_err(|e| McpError::Io(e.to_string()))?;
+        tokio::time::timeout(self.timeout, self.stdin.flush())
+            .await
+            .map_err(|_| McpError::Timeout)?
+            .map_err(|e| McpError::Io(e.to_string()))?;
+        Ok(())
+    }
+
     /// Send one request and return its `result` value, correlating by `id`.
     /// Notifications and any interleaved frame whose `id` does not match the
     /// one we sent are skipped. Every read/write is timeout-bounded.
@@ -169,18 +223,7 @@ impl McpClient {
             method,
             params,
         };
-        let mut line = serde_json::to_string(&req)
-            .map_err(|e| McpError::Protocol(format!("failed to encode request: {e}")))?;
-        line.push('\n');
-
-        tokio::time::timeout(self.timeout, self.stdin.write_all(line.as_bytes()))
-            .await
-            .map_err(|_| McpError::Timeout)?
-            .map_err(|e| McpError::Io(e.to_string()))?;
-        tokio::time::timeout(self.timeout, self.stdin.flush())
-            .await
-            .map_err(|_| McpError::Timeout)?
-            .map_err(|e| McpError::Io(e.to_string()))?;
+        self.write_frame(&req).await?;
 
         // Read until we see the response carrying our id (or the server closes,
         // or we time out). A single malformed line is a protocol violation —

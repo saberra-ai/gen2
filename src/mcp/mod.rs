@@ -28,6 +28,9 @@ pub mod client;
 pub mod protocol;
 mod tool;
 
+#[cfg(test)]
+mod tests;
+
 pub use client::{DEFAULT_TIMEOUT, McpClient, McpError};
 pub use protocol::{
     CallToolResult, ContentBlock, InitializeResult, ListToolsResult, PROTOCOL_VERSION, ServerInfo,

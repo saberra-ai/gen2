@@ -16,6 +16,9 @@ use crate::api::tools::{Tool, ToolContext, ToolError, ToolOutput, ToolSpec};
 pub struct McpTool {
     spec: ToolSpec,
     client: Arc<Mutex<McpClient>>,
+    /// The connection's per-request budget, carried so a timeout reports the
+    /// deadline that actually elapsed rather than the default one.
+    timeout: std::time::Duration,
 }
 
 #[async_trait]
@@ -33,7 +36,7 @@ impl Tool for McpTool {
         let result = client
             .call_tool(&self.spec.name, args)
             .await
-            .map_err(map_error)?;
+            .map_err(|e| map_error(e, self.timeout))?;
 
         // MCP returns content blocks; the model wants text. Concatenating is
         // lossy for images, which is honest until ToolOutput carries them.
@@ -55,9 +58,9 @@ impl Tool for McpTool {
 }
 
 /// A transport failure is not the model's to fix; a tool-level one is.
-fn map_error(e: McpError) -> ToolError {
+fn map_error(e: McpError, timeout: std::time::Duration) -> ToolError {
     match e {
-        McpError::Timeout => ToolError::TimedOut(DEFAULT_TIMEOUT),
+        McpError::Timeout => ToolError::TimedOut(timeout),
         other => ToolError::Unavailable(other.to_string()),
     }
 }
@@ -109,7 +112,7 @@ impl McpToolSet {
         let client = Arc::new(Mutex::new(client));
         let tools = descriptors
             .into_iter()
-            .map(|d| Arc::new(as_tool(d, Arc::clone(&client))) as Arc<dyn Tool>)
+            .map(|d| Arc::new(as_tool(d, Arc::clone(&client), timeout)) as Arc<dyn Tool>)
             .collect();
 
         Ok(Self {
@@ -139,7 +142,11 @@ impl McpToolSet {
     }
 }
 
-fn as_tool(d: ToolDescriptor, client: Arc<Mutex<McpClient>>) -> McpTool {
+fn as_tool(
+    d: ToolDescriptor,
+    client: Arc<Mutex<McpClient>>,
+    timeout: std::time::Duration,
+) -> McpTool {
     McpTool {
         spec: ToolSpec::new(
             d.name,
@@ -154,6 +161,7 @@ fn as_tool(d: ToolDescriptor, client: Arc<Mutex<McpClient>>) -> McpTool {
             d.input_schema,
         ),
         client,
+        timeout,
     }
 }
 

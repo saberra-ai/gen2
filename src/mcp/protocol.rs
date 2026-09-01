@@ -27,6 +27,17 @@ pub struct JsonRpcRequest<'a> {
     pub params: serde_json::Value,
 }
 
+/// Outbound JSON-RPC 2.0 notification — a request with no `id`, so the server
+/// must not answer it. The only one the client emits is
+/// `notifications/initialized`, which the lifecycle requires after the
+/// `initialize` handshake.
+#[derive(Debug, Serialize)]
+pub struct JsonRpcNotification<'a> {
+    pub jsonrpc: &'static str,
+    pub method: &'a str,
+    pub params: serde_json::Value,
+}
+
 /// Inbound JSON-RPC 2.0 response. Mirrors the server's `JsonRpcResponse`:
 /// exactly one of `result` / `error` is present. `id` is kept as a raw
 /// `Value` so we can correlate it against the numeric id we sent (and skip

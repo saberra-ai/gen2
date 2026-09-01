@@ -75,3 +75,7 @@ mod spawned_tests;
 /// Tool bundles, reusable agent configurations, and sub-agents.
 #[cfg(test)]
 mod composition_tests;
+
+/// `infer` and `chat`, the two entry points most callers reach for first.
+#[cfg(test)]
+mod entrypoint_tests;
