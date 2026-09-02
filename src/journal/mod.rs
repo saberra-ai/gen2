@@ -38,10 +38,16 @@
 
 mod entry;
 mod projection;
+mod resident;
+mod scratch;
 mod store;
 mod turn;
+mod wake;
 
 pub use entry::{EntryId, InputSource, JournalEntry, Record, WakeReason};
 pub use projection::{Everything, Projection, RecentTurns, WithPreamble};
+pub use resident::{Resident, Wake};
+pub use scratch::Scratch;
 pub use store::{Journal, JournalError, JsonlJournal, MemoryJournal};
 pub use turn::{Turn, round_len};
+pub use wake::{Declined, Heartbeat, MIN_INTERVAL, WakeScheduler};
