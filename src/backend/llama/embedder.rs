@@ -2,6 +2,7 @@ use super::llama_config::ModelConfig;
 use anyhow::{Context, Result};
 use llama_cpp_2::context::LlamaContext;
 use llama_cpp_2::llama_batch::LlamaBatch;
+use llama_cpp_2::token::LlamaToken;
 use llama_cpp_2::{
     context::params::{LlamaContextParams, LlamaPoolingType},
     llama_backend::LlamaBackend,
@@ -199,10 +200,14 @@ impl LlamaEmbedder {
         //      `encoder requires n_ubatch >= n_tokens` crashes whenever a
         //      batch exceeds 512 tokens total.
         //
-        // We solve both by processing one prompt at a time with a context
-        // sized to that specific prompt. This is slightly slower than
-        // packed batching but robust: every prompt gets its own correctly-
-        // sized context and there's no cross-prompt budget contention.
+        // Both are satisfiable rather than fatal: size the context once to a
+        // token budget, declare `n_seq_max` up front, and pack prompts into
+        // each decode until either the token budget or the sequence limit is
+        // reached. One prompt per decode left the GPU idle between forward
+        // passes and capped ingest at roughly five documents a second, which
+        // is the difference between indexing a corpus overnight and over a
+        // week. A group that fails to decode falls back to one prompt at a
+        // time, so the robustness the old path bought is kept.
         //
         // Per-family input adaptation (pluggable embedder seam): some families
         // require a literal suffix on every input. Qwen3-Embedding wants the
@@ -241,15 +246,35 @@ impl LlamaEmbedder {
         // dominant cost (~5-10s), so creating a new context per prompt
         // would make backfill impossibly slow. Each `batch_decode` call
         // clears the KV cache, so sequential reuse is safe.
-        let ctx_size = model_max_ctx;
+        // Three limits have to line up, and they are not independent.
+        //
+        // `n_ctx` is the whole KV cache and llama.cpp divides it evenly across
+        // `n_seq_max`, so each sequence really gets `n_ctx / n_seq_max` cells.
+        // Ask for more sequences without growing `n_ctx` and every prompt
+        // longer than that share fails with `NoKvCacheSlot`. So `n_ctx` is
+        // sized as slots x per-sequence length, not as a token budget.
+        //
+        // `n_ubatch` must cover the tokens in one `decode`, and it drives the
+        // activation buffer — 8192 asked Metal for 4.8 GB. It is therefore the
+        // thing to keep small, and it, not `n_ctx`, is what bounds a group.
+        const MAX_SEQS: usize = 8;
+        // Tokens per decode. Also `n_ubatch`, hence the modest value: eight
+        // ordinary documents fit comfortably, and one full-length document
+        // still fits alone.
+        const TOKEN_BUDGET: usize = 2048;
+
+        // Individual inputs stay capped at what the model was trained on, so
+        // packing never truncates a document that would have fit before.
+        let per_seq_max = (model_max_ctx as usize).min(TOKEN_BUDGET);
+        let ctx_size = (MAX_SEQS * per_seq_max) as u32;
         let n_ctx_nz =
             std::num::NonZeroU32::new(ctx_size).with_context(|| "context size must be non-zero")?;
 
         let ctx_params = LlamaContextParams::default()
             .with_n_ctx(Some(n_ctx_nz))
-            .with_n_batch(ctx_size)
-            .with_n_ubatch(ctx_size)
-            .with_n_seq_max(1)
+            .with_n_batch(TOKEN_BUDGET as u32)
+            .with_n_ubatch(TOKEN_BUDGET as u32)
+            .with_n_seq_max(MAX_SEQS as u32)
             .with_n_threads_batch(n_threads)
             .with_embeddings(true)
             // Pooling is family-specific: Gemma/BGE = Mean (default path,
@@ -261,38 +286,91 @@ impl LlamaEmbedder {
             .new_context(&self.backend, ctx_params)
             .with_context(|| "unable to create the llama_context")?;
 
-        let mut batch = LlamaBatch::new(ctx_size as usize, 1);
+        let mut batch = LlamaBatch::new(TOKEN_BUDGET, MAX_SEQS as i32);
+
+        // Greedily pack prompts into groups that fit both limits, then decode
+        // each group in a single pass.
+        let mut group: Vec<(usize, &[LlamaToken])> = Vec::with_capacity(MAX_SEQS);
+        let mut group_tokens = 0usize;
 
         for (orig_idx, tokens) in tokens_lines_list.iter().enumerate() {
             if tokens.is_empty() {
                 continue;
             }
+            let truncated: &[LlamaToken] = &tokens[..tokens.len().min(per_seq_max)];
 
-            // Truncate to ctx_size — longer inputs would exceed n_ctx.
-            let truncated: &[_] = if tokens.len() > ctx_size as usize {
-                &tokens[..ctx_size as usize]
-            } else {
-                tokens.as_slice()
-            };
-
-            batch.clear();
-            batch.add_sequence(truncated, 0, false)?;
-
-            let mut single_out: Vec<Vec<f32>> = Vec::with_capacity(1);
-            batch_decode(&mut ctx, &mut batch, 1, &mut single_out, normalize)?;
-            if let Some(emb) = single_out.into_iter().next() {
-                // Matryoshka (MRL) truncation for families that support it.
-                // Truncate to the target dim, then re-normalize so cosine
-                // similarity stays well-defined. Gemma's target_dim is None,
-                // so this is a pure pass-through on the default path.
-                output[orig_idx] = match self.kind.target_dim() {
-                    Some(dim) if emb.len() > dim => mrl_truncate(&emb, dim),
-                    _ => emb,
-                };
+            let would_overflow = group_tokens + truncated.len() > TOKEN_BUDGET;
+            if !group.is_empty() && (would_overflow || group.len() >= MAX_SEQS) {
+                self.decode_group(&mut ctx, &mut batch, &group, normalize, &mut output)?;
+                group.clear();
+                group_tokens = 0;
             }
+
+            group_tokens += truncated.len();
+            group.push((orig_idx, truncated));
+        }
+        if !group.is_empty() {
+            self.decode_group(&mut ctx, &mut batch, &group, normalize, &mut output)?;
         }
 
         Ok(output)
+    }
+}
+
+impl LlamaEmbedder {
+    /// Decode one packed group, writing each embedding to its original slot.
+    ///
+    /// Falls back to one prompt per decode if the packed pass fails. Packing is
+    /// the fast path, not a required one: a model or backend that dislikes
+    /// multi-sequence batches should still produce correct embeddings, just
+    /// slowly.
+    fn decode_group(
+        &self,
+        ctx: &mut LlamaContext,
+        batch: &mut LlamaBatch<'_>,
+        group: &[(usize, &[LlamaToken])],
+        normalize: bool,
+        output: &mut [Vec<f32>],
+    ) -> Result<()> {
+        let packed = (|| -> Result<Vec<Vec<f32>>> {
+            batch.clear();
+            for (slot, (_, tokens)) in group.iter().enumerate() {
+                batch.add_sequence(tokens, slot as i32, false)?;
+            }
+            let mut out = Vec::with_capacity(group.len());
+            batch_decode(ctx, batch, group.len() as i32, &mut out, normalize)?;
+            Ok(out)
+        })();
+
+        let embeddings = match packed {
+            Ok(embeddings) if embeddings.len() == group.len() => embeddings,
+            // Either the decode failed or it returned a different number of
+            // embeddings than sequences, which would silently misalign every
+            // document in the group with someone else's vector.
+            _ => {
+                let mut one_at_a_time = Vec::with_capacity(group.len());
+                for (_, tokens) in group {
+                    batch.clear();
+                    batch.add_sequence(tokens, 0, false)?;
+                    let mut single = Vec::with_capacity(1);
+                    batch_decode(ctx, batch, 1, &mut single, normalize)?;
+                    one_at_a_time.push(single.into_iter().next().unwrap_or_default());
+                }
+                one_at_a_time
+            }
+        };
+
+        for ((orig_idx, _), embedding) in group.iter().zip(embeddings) {
+            // Matryoshka (MRL) truncation for families that support it.
+            // Truncate to the target dim, then re-normalize so cosine
+            // similarity stays well-defined. Gemma's target_dim is None, so
+            // this is a pure pass-through on the default path.
+            output[*orig_idx] = match self.kind.target_dim() {
+                Some(dim) if embedding.len() > dim => mrl_truncate(&embedding, dim),
+                _ => embedding,
+            };
+        }
+        Ok(())
     }
 }
 
@@ -502,6 +580,71 @@ mod tests {
     ///   1. the MRL-truncated output is 768-d (drop-in for the existing store);
     ///   2. semantically related sentences score higher than unrelated ones.
     #[test]
+    /// Packing must not change the answer.
+    ///
+    /// Prompts share one decode now, so a bug in sequence assignment would
+    /// hand a document its neighbour's vector — a failure that produces
+    /// perfectly plausible embeddings and silently ruins retrieval, rather
+    /// than crashing. Compare a packed call against the same prompts embedded
+    /// one at a time and require them to agree.
+    #[test]
+    #[ignore]
+    fn packing_produces_the_same_vectors_as_one_at_a_time() {
+        let Some(model_path) = std::env::var("LLAMA_QWEN3_EMBEDDER_MODEL")
+            .ok()
+            .or_else(|| std::env::var("LLAMA_EMBEDDER_MODEL").ok())
+        else {
+            eprintln!("set LLAMA_QWEN3_EMBEDDER_MODEL to run this");
+            return;
+        };
+
+        // The backend is process-global; another test may already hold it.
+        let backend = match LlamaBackend::init() {
+            Ok(backend) => std::sync::Arc::new(backend),
+            Err(err) => {
+                eprintln!("skipping test: failed to init backend: {err:?}");
+                return;
+            }
+        };
+        let embedder = LlamaEmbedder::load_from_path(backend, &model_path, ModelConfig::default())
+            .expect("load embedder");
+
+        // Deliberately uneven lengths, so the packer actually has to split
+        // rather than putting everything in one convenient group.
+        let prompts: Vec<String> = vec![
+            "the cat sat on the mat".into(),
+            "mortgage refinancing options for a second home".into(),
+            "a".repeat(400),
+            "quarterly revenue grew twelve percent year over year".into(),
+            "b ".repeat(900),
+            "sourdough starter needs feeding twice daily".into(),
+        ];
+        let refs: Vec<&str> = prompts.iter().map(String::as_str).collect();
+
+        let packed = embedder.embed(&refs, true).expect("packed embed");
+        assert_eq!(packed.len(), prompts.len(), "one vector per prompt");
+
+        for (i, prompt) in refs.iter().enumerate() {
+            let alone = embedder.embed(&[prompt], true).expect("single embed");
+            let single = &alone[0];
+            assert_eq!(
+                packed[i].len(),
+                single.len(),
+                "prompt {i} changed width when packed"
+            );
+
+            let dot: f32 = packed[i]
+                .iter()
+                .zip(single.iter())
+                .map(|(a, b)| a * b)
+                .sum();
+            assert!(
+                dot > 0.999,
+                "prompt {i} embedded differently when packed: cosine {dot}"
+            );
+        }
+    }
+
     #[ignore]
     fn qwen3_embedding_similarity_and_768_dim() {
         let Some(model_path) = std::env::var("LLAMA_QWEN3_EMBEDDER_MODEL")
