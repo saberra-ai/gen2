@@ -53,32 +53,47 @@ impl ModelFacts {
 /// matters — never invent a context size — is testable on a machine with no
 /// LiteRT-LM runtime installed, which is every machine in CI, and cannot drift
 /// from what the real path does.
+///
+/// Three separate ideas, deliberately not collapsed: what the model can hold,
+/// what the caller asked for, and what the engine gets configured with. An
+/// earlier version returned the introspected maximum whenever it had one,
+/// which meant a future runtime reporting a 128K window would quietly ignore
+/// `.context(4096)` and allocate 128K of KV — worst on exactly the small
+/// devices this backend exists for.
 fn decide(
     introspected: Option<(u32, bool)>,
-    ctx_size: Option<u32>,
+    requested: Option<u32>,
     model_path: &str,
 ) -> Result<ModelFacts, ExecError> {
     // A runtime that answers zero has not answered. Treating it as a context
     // window would configure an engine that can hold nothing.
-    if let Some((tokens, tools)) = introspected.filter(|(t, _)| *t > 0) {
-        return Ok(ModelFacts {
-            max_context_tokens: tokens,
-            supports_function_calling: Some(tools),
-        });
-    }
-    if let Some(n) = ctx_size.filter(|n| *n > 0) {
-        return Ok(ModelFacts {
-            max_context_tokens: n,
-            supports_function_calling: None,
-        });
-    }
-    Err(ExecError::InvalidModelFile(format!(
-        "this LiteRT-LM runtime cannot report the context window of \
-         `{model_path}`, and gen2 will not guess one. Set an explicit context \
-         size (`Engine::builder().context(n)`) matching the bundle — the \
-         `ekv` number in its filename is usually it — or use a LiteRT-LM build \
-         that exports the loaded-file capability API."
-    )))
+    let model_max = introspected.map(|(t, _)| t).filter(|t| *t > 0);
+    let supports_function_calling = introspected.map(|(_, tools)| tools);
+    let requested = requested.filter(|n| *n > 0);
+
+    let configured = match (requested, model_max) {
+        // The caller's number, clamped to what the model can actually hold.
+        // Asking for more than the model has is a mistake worth correcting
+        // quietly; asking for less is a choice worth honouring exactly.
+        (Some(want), Some(max)) => want.min(max),
+        (Some(want), None) => want,
+        (None, Some(max)) => max,
+        (None, None) => {
+            return Err(ExecError::InvalidModelFile(format!(
+                "this LiteRT-LM runtime cannot report the context window of \
+                 `{model_path}`, and gen2 will not guess one. Set an explicit \
+                 context size (`Engine::builder().context(n)`) matching the \
+                 bundle — the `ekv` number in its filename is usually it — or \
+                 use a LiteRT-LM build that exports the loaded-file capability \
+                 API."
+            )));
+        }
+    };
+
+    Ok(ModelFacts {
+        max_context_tokens: configured,
+        supports_function_calling,
+    })
 }
 
 /// What the runtime can tell us, if it has the capability API at all.
@@ -141,13 +156,33 @@ mod tests {
         assert_eq!(facts.max_context_tokens, 4096);
     }
 
+    /// A request larger than the model can hold is clamped to the model.
     #[test]
-    fn what_the_runtime_reports_beats_what_the_caller_assumed() {
-        // A real context window from the bundle is better information than a
-        // number typed into a builder.
+    fn a_request_beyond_the_model_is_clamped_to_what_the_model_holds() {
         let facts = decide(Some((1280, true)), Some(4096), "m").expect("introspection answered");
         assert_eq!(facts.max_context_tokens, 1280);
         assert_eq!(facts.supports_function_calling, Some(true));
+    }
+
+    /// A request smaller than the model can hold is honoured exactly.
+    ///
+    /// The case that matters on a phone. Returning the model's maximum here
+    /// would allocate a KV cache many times the size the caller budgeted for,
+    /// and the caller would have no way to tell.
+    #[test]
+    fn a_request_smaller_than_the_model_is_honoured_rather_than_widened() {
+        let facts = decide(Some((131_072, true)), Some(4096), "m").expect("introspection answered");
+        assert_eq!(
+            facts.max_context_tokens, 4096,
+            "asking for 4K on a 128K model must give 4K, not 128K"
+        );
+    }
+
+    /// With no request, the model's own window stands.
+    #[test]
+    fn the_model_window_is_used_when_the_caller_asks_for_nothing() {
+        let facts = decide(Some((8192, false)), None, "m").expect("introspection answered");
+        assert_eq!(facts.max_context_tokens, 8192);
     }
 
     #[test]

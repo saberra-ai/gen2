@@ -113,6 +113,7 @@ impl Session {
                         content: MessageContent::SingleText(merged_prompt),
                     },
                     name: None,
+                    tool_call_id: None,
                 },
             );
         }

@@ -4,6 +4,15 @@ A separate workspace (`[workspace] members = ["."]` in `fuzz/Cargo.toml`), so
 `cargo build` / `cargo test` / `cargo clippy` at the repo root never see it.
 It only builds under nightly, which libFuzzer and the sanitizers require.
 
+It also depends on gen2 with `default-features = false`, because no target here
+fuzzes an inference backend — the `gguf` target is header parsing and
+arithmetic. The default `backend-llamacpp` does not merely cost a C++ build:
+llama.cpp's `common` bundles `download.cpp` and `hf-cache.cpp`, whose
+cpp-httplib calls nothing in the archive defines, and the fuzz link pulls those
+objects in and dies on undefined `httplib::` symbols. `backend-litertlm` stands
+in because `src/backend/mod.rs` requires *some* backend and that one links
+nothing at build time.
+
 ```sh
 # Seed first — "GGUF" is four specific bytes the mutator will not find on its
 # own, so without seeds almost every input dies at the magic check.

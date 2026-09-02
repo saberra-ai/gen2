@@ -124,6 +124,8 @@ pub(super) struct RequiredApi {
         unsafe extern "C" fn(*mut LiteRtLmRepetitionPenaltyConfig, f32),
     pub repetition_penalty_config_set_presence_penalty:
         unsafe extern "C" fn(*mut LiteRtLmRepetitionPenaltyConfig, f32),
+    pub repetition_penalty_config_set_window_size:
+        unsafe extern "C" fn(*mut LiteRtLmRepetitionPenaltyConfig, c_int),
 
     pub conversation_config_create: unsafe extern "C" fn() -> *mut LiteRtLmConversationConfig,
     pub conversation_config_delete: unsafe extern "C" fn(*mut LiteRtLmConversationConfig),
@@ -347,6 +349,10 @@ impl Runtime {
             repetition_penalty_config_set_presence_penalty: resolve!(
                 library,
                 "litert_lm_repetition_penalty_config_set_presence_penalty"
+            ),
+            repetition_penalty_config_set_window_size: resolve!(
+                library,
+                "litert_lm_repetition_penalty_config_set_window_size"
             ),
 
             conversation_config_create: resolve!(library, "litert_lm_conversation_config_create"),
@@ -822,11 +828,15 @@ impl OwnedOptionalArgs {
     }
 
     /// Repetition, frequency and presence penalties, as one config.
+    ///
+    /// `window` is how many recent tokens they look back over — gen2's
+    /// `penalty_last_n`. `None` leaves the runtime's own window alone.
     pub(super) fn set_penalties(
         &mut self,
         repeat: f32,
         freq: f32,
         present: f32,
+        window: Option<i32>,
     ) -> Result<(), ExecError> {
         let api = &self.rt.required;
         // SAFETY: null-checked, configured, attached (the setter deep-copies)
@@ -841,6 +851,9 @@ impl OwnedOptionalArgs {
             (api.repetition_penalty_config_set_repetition_penalty)(cfg, repeat);
             (api.repetition_penalty_config_set_frequency_penalty)(cfg, freq);
             (api.repetition_penalty_config_set_presence_penalty)(cfg, present);
+            if let Some(n) = window {
+                (api.repetition_penalty_config_set_window_size)(cfg, n);
+            }
             (api.optional_args_set_repetition_penalty_config)(self.ptr, cfg);
             (api.repetition_penalty_config_delete)(cfg);
         }

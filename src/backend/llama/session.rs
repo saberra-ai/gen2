@@ -911,6 +911,7 @@ impl Session {
                             content: MessageContent::SingleText(merged_prompt),
                         },
                         name: None,
+                        tool_call_id: None,
                     },
                 );
             } else if let Some(first_user_idx) = messages.iter().position(|m| m.role == "user")
@@ -1651,6 +1652,7 @@ mod tests {
                 content: MessageContent::SingleText("What is the capital of France?".into()),
             },
             name: None,
+            tool_call_id: None,
         };
 
         let prompt = chat_template

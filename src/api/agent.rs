@@ -662,16 +662,21 @@ impl<'a> Agent<'a> {
             results.sort_by_key(|(i, _)| *i);
             for (i, outcome) in results {
                 let name = &turn.tool_calls[i].name;
+                // The call this result answers. The id is right here in the
+                // turn, and dropping it left the transcript unable to say
+                // which of several parallel results belonged to which call —
+                // every backend then had to guess, and guessed wrong.
+                let call_id = turn.tool_calls[i].id.clone();
                 match outcome {
                     Ok(out) => {
-                        session.push(Message::tool_result(out.to_model_text()));
+                        session.push(result_message(call_id, out.to_model_text()));
                     }
                     // A model-fixable failure goes back as a result so it can
                     // correct itself; anything else ends the run, because the
                     // model cannot repair a dead socket and telling it wastes a
                     // round of context.
                     Err(e) if e.is_model_actionable() => {
-                        session.push(Message::tool_result(format!("error: {e}")));
+                        session.push(result_message(call_id, format!("error: {e}")));
                     }
                     Err(e) => {
                         totals.finish = Finish::Stopped;
@@ -931,6 +936,18 @@ fn as_wire_call(call: &crate::generation::ToolCall) -> ToolCall {
             arguments: serde_json::from_str(&call.arguments)
                 .unwrap_or_else(|_| Value::String(call.arguments.clone())),
         },
+    }
+}
+
+/// A tool result, tied to the call it answers when the model gave one an id.
+///
+/// Not every model does — some emit calls with no id at all — so this falls
+/// back to an untied result rather than inventing one. A fabricated id is
+/// worse than none: a backend would match it to a call that never existed.
+fn result_message(call_id: Option<String>, content: String) -> Message {
+    match call_id {
+        Some(id) => Message::tool_result_for(id, content),
+        None => Message::tool_result(content),
     }
 }
 

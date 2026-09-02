@@ -90,7 +90,16 @@ pub(super) fn message_json(message: &Message, call_id: &str) -> Value {
 }
 
 /// The id of the call a tool result at `index` is answering.
-fn call_id_before(messages: &[Message], index: usize) -> String {
+///
+/// The message's own `tool_call_id` when it has one, which is the only answer
+/// that stays right when the model asked for several tools at once. The
+/// backward search is the fallback for results recorded before ids were
+/// carried: it takes the nearest preceding call, which is correct whenever
+/// there was only one.
+fn call_id_for(messages: &[Message], index: usize) -> String {
+    if let Some(id) = messages[index].tool_call_id.as_ref() {
+        return id.clone();
+    }
     messages[..index]
         .iter()
         .rev()
@@ -109,7 +118,7 @@ pub(super) fn messages_json(messages: &[Message]) -> String {
     let array: Vec<Value> = messages
         .iter()
         .enumerate()
-        .map(|(i, m)| message_json(m, &call_id_before(messages, i)))
+        .map(|(i, m)| message_json(m, &call_id_for(messages, i)))
         .collect();
     Value::Array(array).to_string()
 }
@@ -259,7 +268,7 @@ pub(super) fn constraint_of(grammar: &GrammarSpec) -> Result<(i32, String), Exec
 /// top-k, and anything else is top-p. Deriving it from what the caller
 /// actually set means a request that says nothing gets the runtime's own
 /// default rather than a chain gen2 invented.
-#[derive(Debug, PartialEq)]
+#[derive(Debug, Clone, PartialEq)]
 pub(super) struct Sampler {
     pub kind: i32,
     pub temperature: Option<f32>,
@@ -268,16 +277,44 @@ pub(super) struct Sampler {
     pub seed: Option<i32>,
 }
 
+/// A `top_k` that truncates nothing.
+///
+/// LiteRT-LM samples top-p from the top-k candidates and rejects `k <= 0`, so
+/// "the caller asked for no top-k" has to be said as a k larger than any
+/// vocabulary. Not an invented sampling default: it is how this runtime spells
+/// the absence of one. `i32::MAX` was accepted by the shipped runtime, and
+/// 2^20 is still about eight times the largest vocabulary in use — big enough
+/// to mean nothing, small enough not to bet on the runtime never allocating
+/// against it.
+const UNTRUNCATED_TOP_K: i32 = 1 << 20;
+
+/// A `top_k` that keeps only the single most likely token — argmax.
+///
+/// This is what `.greedy()` becomes. It is exact rather than an approximation:
+/// sampling from a one-token candidate set is argmax however the sampler is
+/// implemented.
+const GREEDY_TOP_K: i32 = 1;
+
+/// A `top_p` that truncates nothing, for the same reason as
+/// [`UNTRUNCATED_TOP_K`] — a caller who set only `top_k` must not silently
+/// acquire the runtime's own nucleus threshold on top of it.
+const UNTRUNCATED_TOP_P: f32 = 1.0;
+
 /// What this backend cannot honour from a merged settings block.
 ///
 /// min-p, DRY and XTC have no LiteRT-LM equivalent. Reporting them rather than
 /// ignoring them is the difference between a caller knowing their sampling did
 /// not apply and quietly getting different output than they asked for.
+///
+/// Merged first, deliberately: a caller who sets `min_p` on the request rather
+/// than on the engine is asking for exactly the same thing, and checking only
+/// the engine's settings let the per-request form through unreported.
 pub(super) fn unsupported_sampling(settings: &Settings, spec: &GenSpec) -> Option<&'static str> {
-    if settings.sampling.min_p.is_some_and(|v| v > 0.0) {
+    let merged = settings.with_gen_spec_overrides(spec);
+    if merged.sampling.min_p.is_some_and(|v| v > 0.0) {
         return Some(
-            "min_p: LiteRT-LM samples with top-k, top-p or greedy only; \
-             use top_p, or a backend with min-p",
+            "min_p: LiteRT-LM samples with top-k and top-p only; use top_p, or \
+             a backend with min-p",
         );
     }
     if spec.dry_multiplier.is_some_and(|v| v > 0.0) {
@@ -289,31 +326,75 @@ pub(super) fn unsupported_sampling(settings: &Settings, spec: &GenSpec) -> Optio
     None
 }
 
+/// The sampler a turn asks for, or `None` to leave the runtime's own alone.
+///
+/// # Why everything is top-p
+///
+/// The C ABI names three sampler types, and the shipped runtime implements
+/// one. Asked directly, it answers:
+///
+/// ```text
+/// greedy (type 3) → UNIMPLEMENTED: Sampler type: 3 not implemented yet.
+/// top-k  (type 1) → UNIMPLEMENTED: Sampler type: 1 not implemented yet.
+/// top-p  (type 2) → INVALID_ARGUMENT: k must be positive.   (k unset)
+/// top-p  (type 2) with k > 0 → works
+/// ```
+///
+/// So top-p with an explicit k is the only shape that runs, and the other two
+/// modes are expressed through it exactly rather than approximated: `k = 1` is
+/// argmax, and a k past the vocabulary is no truncation at all. Selecting
+/// `GREEDY` or `TOP_K` because the names match would have made `.greedy()` and
+/// `.top_k()` fail outright on every model.
 pub(super) fn sampler_of(settings: &Settings, spec: &GenSpec) -> Option<Sampler> {
     let merged = settings.with_gen_spec_overrides(spec);
     let s = &merged.sampling;
-    // Nobody expressed a preference, so the runtime keeps its own.
-    s.temperature?;
-    let greedy = s.temperature.is_some_and(|t| t <= 0.0);
 
-    let kind = if greedy {
-        super::ffi::sampler_type::GREEDY
-    } else if s.top_k.is_some_and(|k| k > 0) {
-        super::ffi::sampler_type::TOP_K
-    } else {
-        super::ffi::sampler_type::TOP_P
-    };
+    // Nobody expressed a preference, so the runtime keeps the sampler the
+    // bundle shipped with. Checking every field rather than temperature alone:
+    // a caller who sets only `.seed()` or only `.top_k()` has expressed one,
+    // and reading temperature first silently dropped both.
+    if s.temperature.is_none() && s.top_k.is_none() && s.top_p.is_none() && s.seed.is_none() {
+        return None;
+    }
+
+    let seed = s.seed.map(|v| v as i32);
+    if s.temperature.is_some_and(|t| t <= 0.0) {
+        // Temperature is left unset: with one candidate it cannot matter, and
+        // handing a runtime a zero to divide by is a bad trade for nothing.
+        return Some(Sampler {
+            kind: super::ffi::sampler_type::TOP_P,
+            temperature: None,
+            top_k: Some(GREEDY_TOP_K),
+            top_p: Some(UNTRUNCATED_TOP_P),
+            seed,
+        });
+    }
 
     Some(Sampler {
-        kind,
+        kind: super::ffi::sampler_type::TOP_P,
         temperature: s.temperature,
-        top_k: s.top_k.filter(|k| *k > 0),
-        top_p: s.top_p,
+        // Each unset field becomes the value that does nothing, so a caller who
+        // set one knob does not silently acquire the runtime's default for the
+        // other.
+        top_k: Some(s.top_k.filter(|k| *k > 0).unwrap_or(UNTRUNCATED_TOP_K)),
+        top_p: Some(s.top_p.unwrap_or(UNTRUNCATED_TOP_P)),
         // Narrowed to the C API's `int`. Deterministic either way; two seeds
         // differing only above bit 31 land on the same stream, which is a far
         // smaller surprise than a seed that does nothing.
-        seed: s.seed.map(|v| v as i32),
+        seed,
     })
+}
+
+/// The repetition-penalty window, if the caller set one.
+///
+/// `penalty_last_n` is how many recent tokens the penalties look back over,
+/// which LiteRT-LM calls the window size.
+pub(super) fn penalty_window(settings: &Settings, spec: &GenSpec) -> Option<i32> {
+    settings
+        .with_gen_spec_overrides(spec)
+        .sampling
+        .penalty_last_n
+        .filter(|n| *n > 0)
 }
 
 /// The three penalties LiteRT-LM's repetition config takes, if any were asked
@@ -357,6 +438,7 @@ mod tests {
                 content: MessageContent::SingleText(text.into()),
             },
             name: None,
+            tool_call_id: None,
         }
     }
 
@@ -375,6 +457,7 @@ mod tests {
                 }],
             },
             name: None,
+            tool_call_id: None,
         }
     }
 
@@ -385,6 +468,7 @@ mod tests {
                 content: MessageContent::SingleText(text.into()),
             },
             name: Some("get_weather".into()),
+            tool_call_id: None,
         }
     }
 
@@ -426,6 +510,76 @@ mod tests {
         assert_eq!(visible(result), "18C and sunny");
     }
 
+    /// Two calls in one turn, two results, each tied to its own call.
+    ///
+    /// The reason `tool_call_id` exists on `Message`. Reconstructing the id by
+    /// searching backward can only ever return one call, so both results were
+    /// attributed to the same one — the model was told the calendar lookup
+    /// answered the weather call, and nothing in the transcript disagreed.
+    #[test]
+    fn parallel_tool_results_each_answer_their_own_call() {
+        let calls = Message {
+            role: "assistant".into(),
+            body: MessageBody::Tool {
+                tool_calls: vec![
+                    ToolCall {
+                        id: "call_weather".into(),
+                        r#type: "function".into(),
+                        function: FunctionDefinition {
+                            description: None,
+                            name: "get_weather".into(),
+                            arguments: json!({}),
+                        },
+                    },
+                    ToolCall {
+                        id: "call_calendar".into(),
+                        r#type: "function".into(),
+                        function: FunctionDefinition {
+                            description: None,
+                            name: "get_calendar".into(),
+                            arguments: json!({}),
+                        },
+                    },
+                ],
+            },
+            name: None,
+            tool_call_id: None,
+        };
+        let transcript = vec![
+            user("weather and calendar?"),
+            calls,
+            Message::tool_result_for("call_weather", "18C and sunny"),
+            Message::tool_result_for("call_calendar", "one meeting at 3"),
+        ];
+
+        let rendered: Value = serde_json::from_str(&messages_json(&transcript)).unwrap();
+        assert_eq!(
+            rendered[2]["tool_call_id"], "call_weather",
+            "the weather result was attributed to the wrong call"
+        );
+        assert_eq!(
+            rendered[3]["tool_call_id"], "call_calendar",
+            "the calendar result was attributed to the wrong call — this is \
+             exactly what the backward search got wrong"
+        );
+    }
+
+    /// A result with no id still lands on the nearest call.
+    ///
+    /// Models that emit calls without ids are real, and one call with one
+    /// result is the overwhelmingly common shape. The fallback has to keep
+    /// working.
+    #[test]
+    fn a_result_with_no_id_still_finds_the_call_before_it() {
+        let transcript = vec![
+            user("weather in Paris?"),
+            call_turn("call_7", "get_weather", json!({"city": "Paris"})),
+            Message::tool_result("18C and sunny"),
+        ];
+        let rendered: Value = serde_json::from_str(&messages_json(&transcript)).unwrap();
+        assert_eq!(rendered[2]["tool_call_id"], "call_7");
+    }
+
     #[test]
     fn transcript_order_is_never_reinterpreted() {
         let transcript = vec![user("one"), user("two"), user("three")];
@@ -442,6 +596,7 @@ mod tests {
                 content: MessageContent::SingleText("be terse".into()),
             },
             name: None,
+            tool_call_id: None,
         };
         let opens_with_one = [system.clone(), user("hi")];
         let (lifted, rest) = leading_system(&opens_with_one);
@@ -480,19 +635,26 @@ mod tests {
         assert_eq!(body, "[0-9]+");
     }
 
+    /// `.greedy()` has to reach the runtime as argmax.
+    ///
+    /// The obvious mapping — the sampler type literally named "greedy" — is
+    /// the one that does not work: the shipped runtime answers
+    /// `UNIMPLEMENTED: Sampler type: 3`. A single-candidate top-p is argmax,
+    /// and it runs.
     #[test]
-    fn temperature_zero_asks_for_the_greedy_sampler() {
+    fn greedy_becomes_a_single_candidate_rather_than_an_unimplemented_sampler() {
         let spec = GenSpec {
             temperature: Some(0.0),
             ..GenSpec::default()
         };
         let sampler = sampler_of(&Settings::default(), &spec).expect("a temperature was set");
+        assert_eq!(sampler.kind, super::super::ffi::sampler_type::TOP_P);
         assert_eq!(
-            sampler.kind,
-            super::super::ffi::sampler_type::GREEDY,
-            "greedy() has to reach the runtime as greedy, or determinism is a \
-             knob that does nothing"
+            sampler.top_k,
+            Some(1),
+            "greedy is one candidate; anything else is sampling"
         );
+        assert_eq!(sampler.top_p, Some(1.0), "and no nucleus truncation on top");
     }
 
     #[test]
@@ -506,16 +668,85 @@ mod tests {
         assert_eq!(sampler.seed, Some(42));
     }
 
+    /// A caller who sets only a seed has expressed a sampling preference.
+    ///
+    /// Reading temperature first and bailing meant `.seed(42)` produced no
+    /// sampler at all, so the runtime kept its own — the seed was accepted,
+    /// documented, and dropped. The same held for `.top_k()` and `.top_p()`
+    /// alone.
     #[test]
-    fn an_explicit_top_k_selects_the_top_k_sampler() {
+    fn any_sampling_field_on_its_own_still_builds_a_sampler() {
+        for (label, spec) in [
+            (
+                "seed",
+                GenSpec {
+                    seed: Some(42),
+                    ..GenSpec::default()
+                },
+            ),
+            (
+                "top_k",
+                GenSpec {
+                    top_k: Some(40),
+                    ..GenSpec::default()
+                },
+            ),
+            (
+                "top_p",
+                GenSpec {
+                    top_p: Some(0.9),
+                    ..GenSpec::default()
+                },
+            ),
+        ] {
+            assert!(
+                sampler_of(&Settings::default(), &spec).is_some(),
+                "setting only {label} must still configure the sampler"
+            );
+        }
+    }
+
+    #[test]
+    fn a_request_that_asks_for_nothing_leaves_the_runtime_its_own_sampler() {
+        assert_eq!(
+            sampler_of(&Settings::default(), &GenSpec::default()),
+            None,
+            "the bundle ships with a sampler; replacing it with one gen2 \
+             invented would change output nobody asked to change"
+        );
+    }
+
+    /// An explicit top-k must not silently acquire a nucleus threshold too.
+    #[test]
+    fn top_k_alone_truncates_by_k_and_by_nothing_else() {
         let spec = GenSpec {
             temperature: Some(0.8),
             top_k: Some(40),
             ..GenSpec::default()
         };
-        let sampler = sampler_of(&Settings::default(), &spec).expect("a temperature was set");
-        assert_eq!(sampler.kind, super::super::ffi::sampler_type::TOP_K);
+        let sampler = sampler_of(&Settings::default(), &spec).expect("top_k was set");
         assert_eq!(sampler.top_k, Some(40));
+        assert_eq!(sampler.top_p, Some(1.0), "no top-p was asked for");
+    }
+
+    /// And top-p alone must not silently acquire a top-k cut.
+    ///
+    /// The runtime rejects `k <= 0`, so "no top-k" has to be spelled as a k
+    /// past the vocabulary rather than left unset.
+    #[test]
+    fn top_p_alone_is_not_quietly_turned_into_top_k_as_well() {
+        let spec = GenSpec {
+            temperature: Some(0.8),
+            top_p: Some(0.9),
+            ..GenSpec::default()
+        };
+        let sampler = sampler_of(&Settings::default(), &spec).expect("top_p was set");
+        assert_eq!(sampler.top_p, Some(0.9));
+        assert!(
+            sampler.top_k.is_some_and(|k| k >= 1 << 20),
+            "expected a k that truncates nothing, got {:?}",
+            sampler.top_k
+        );
     }
 
     #[test]
@@ -531,6 +762,35 @@ mod tests {
             ..GenSpec::default()
         };
         assert!(unsupported_sampling(&Settings::default(), &spec).is_some());
+    }
+
+    /// The same refusal has to fire for a per-request `min_p`.
+    ///
+    /// Checking the engine's settings before merging the request let the
+    /// per-request form through silently, which is the shape a caller is most
+    /// likely to use.
+    #[test]
+    fn min_p_set_on_the_request_is_refused_just_like_min_p_on_the_engine() {
+        let spec = GenSpec {
+            min_p: Some(0.1),
+            ..GenSpec::default()
+        };
+        assert!(
+            unsupported_sampling(&Settings::default(), &spec).is_some(),
+            "a request-level min_p was accepted and then ignored"
+        );
+    }
+
+    #[test]
+    fn the_penalty_window_is_only_sent_when_the_caller_set_one() {
+        assert_eq!(
+            penalty_window(&Settings::default(), &GenSpec::default()),
+            None
+        );
+
+        let mut settings = Settings::default();
+        settings.sampling.penalty_last_n = Some(64);
+        assert_eq!(penalty_window(&settings, &GenSpec::default()), Some(64));
     }
 
     #[test]

@@ -346,6 +346,7 @@ pub(super) fn message(role: &str, text: &str) -> Message {
             content: MessageContent::SingleText(text.into()),
         },
         name: None,
+        tool_call_id: None,
     }
 }
 
@@ -373,6 +374,7 @@ pub(super) fn chunked(role: &str, parts: &[&str]) -> Message {
             ),
         },
         name: None,
+        tool_call_id: None,
     }
 }
 
@@ -386,6 +388,7 @@ pub(super) fn structured_assistant(content: &str, reasoning: &str) -> Message {
             },
         },
         name: None,
+        tool_call_id: None,
     }
 }
 
@@ -405,5 +408,6 @@ pub(super) fn tool_call(name: &str) -> Message {
             }],
         },
         name: None,
+        tool_call_id: None,
     }
 }

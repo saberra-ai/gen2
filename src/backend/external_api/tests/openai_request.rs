@@ -7,6 +7,7 @@
 
 use crate::engine::{PromptSettings, SamplingSettings, Settings, StoppingSettings};
 use crate::generation::GenSpec;
+use crate::types::message::Message;
 
 use super::harness::{
     Wire, assert_number, assistant, chunked, structured_assistant, system, tool_call, user,
@@ -219,19 +220,58 @@ fn multi_chunk_text_is_flattened_into_one_string() {
 }
 
 #[test]
-fn a_tool_call_turn_is_dropped_rather_than_sent_as_an_empty_message() {
-    // The OpenAI body builder has no encoding for a tool-call turn, so it
-    // skips it. Sending it as `content: ""` would be worse: providers reject
-    // an assistant turn with neither content nor tool_calls.
+fn a_tool_call_turn_is_sent_as_the_call_the_model_made() {
+    // It used to be dropped. That left the request with a `tool` message
+    // answering a call the conversation never contained, which OpenAI rejects
+    // outright — and on providers that accept it, the model is shown a result
+    // with nothing that asked for it.
     let x = Wire::openai()
         .messages(vec![user("q"), tool_call("search"), user("q2")])
         .sse(DONE)
         .run();
 
+    let assistant = x
+        .request()
+        .messages()
+        .iter()
+        .find(|m| m["role"] == "assistant")
+        .expect("the turn that asked for a tool must reach the provider");
+    let calls = assistant["tool_calls"]
+        .as_array()
+        .expect("an assistant tool turn carries tool_calls, not prose");
+    assert_eq!(calls.len(), 1);
+    assert_eq!(calls[0]["function"]["name"], "search");
     assert_eq!(
-        x.request().contents(),
-        vec!["q", "q2"],
-        "the tool-call turn is omitted entirely"
+        calls[0]["type"], "function",
+        "the provider keys the call off its type"
+    );
+}
+
+/// A tool result has to name the call it answers.
+///
+/// `tool_call_id` is required on an OpenAI `tool` message: without it the
+/// request is rejected, and with the wrong one the model reads the answer
+/// against the wrong question.
+#[test]
+fn a_tool_result_carries_the_id_of_the_call_it_answers() {
+    let x = Wire::openai()
+        .messages(vec![
+            user("q"),
+            tool_call("search"),
+            Message::tool_result_for("call_abc", "found it"),
+        ])
+        .sse(DONE)
+        .run();
+
+    let result = x
+        .request()
+        .messages()
+        .iter()
+        .find(|m| m["role"] == "tool")
+        .expect("the tool result should be sent");
+    assert_eq!(
+        result["tool_call_id"], "call_abc",
+        "a tool message without its call id is rejected by the provider"
     );
 }
 

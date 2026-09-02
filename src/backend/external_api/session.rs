@@ -204,6 +204,12 @@ impl Session {
         }
         for msg in messages {
             let content = match &msg.body {
+                // Anthropic carries tool use as typed content blocks rather
+                // than an OpenAI-style `tool_calls` array, so the mapping is
+                // genuinely different and is not attempted here. Skipping is
+                // what this path has always done; see the OpenAI builder below
+                // for the shape that is now handled.
+                MessageBody::Tool { .. } => continue,
                 MessageBody::Content { content } => match content {
                     MessageContent::SingleText(text) => text.clone(),
                     MessageContent::MultipleChunks(chunks) => chunks
@@ -222,7 +228,6 @@ impl Session {
                     // variant docs on `MessageContent::StructuredAssistant`).
                     MessageContent::StructuredAssistant { content, .. } => content.clone(),
                 },
-                MessageBody::Tool { .. } => continue,
             };
             if msg.role == "system" {
                 if system_text.is_empty() {
@@ -269,6 +274,28 @@ impl Session {
         }
         for msg in messages {
             let content = match &msg.body {
+                // An assistant turn that asked for tools carries the calls,
+                // not prose. Skipping it left the transcript telling the model
+                // a tool result arrived with nothing having asked for it — and
+                // OpenAI rejects a `tool` message whose call is not in the
+                // conversation.
+                MessageBody::Tool { tool_calls } => {
+                    api_msgs.push(serde_json::json!({
+                        "role": "assistant",
+                        "tool_calls": tool_calls
+                            .iter()
+                            .map(|c| serde_json::json!({
+                                "id": c.id,
+                                "type": "function",
+                                "function": {
+                                    "name": c.function.name,
+                                    "arguments": c.function.arguments.to_string(),
+                                },
+                            }))
+                            .collect::<Vec<_>>(),
+                    }));
+                    continue;
+                }
                 MessageBody::Content { content } => match content {
                     MessageContent::SingleText(text) => text.clone(),
                     MessageContent::MultipleChunks(chunks) => chunks
@@ -287,11 +314,16 @@ impl Session {
                     // variant docs on `MessageContent::StructuredAssistant`).
                     MessageContent::StructuredAssistant { content, .. } => content.clone(),
                 },
-                MessageBody::Tool { .. } => {
-                    continue;
-                }
             };
-            api_msgs.push(serde_json::json!({"role": msg.role, "content": content}));
+            let mut api_msg = serde_json::json!({"role": msg.role, "content": content});
+            // `tool_call_id` is required on a `tool` message; without it the
+            // request is rejected outright.
+            if msg.role == "tool"
+                && let Some(id) = &msg.tool_call_id
+            {
+                api_msg["tool_call_id"] = serde_json::json!(id);
+            }
+            api_msgs.push(api_msg);
         }
         api_msgs
     }

@@ -148,6 +148,12 @@ pub(super) fn messages_into(mut builder: RequestBuilder, messages: &[Message]) -
 /// that do not use it ignore it, and one that does would rather have nothing
 /// than a mismatch.
 fn last_call_id(messages: &[Message], result: &Message) -> String {
+    // The result's own id when it has one — the only answer that survives the
+    // model asking for several tools at once. The search below is the fallback
+    // for results recorded before ids were carried.
+    if let Some(id) = result.tool_call_id.as_ref() {
+        return id.clone();
+    }
     let position = messages
         .iter()
         .position(|m| std::ptr::eq(m, result))

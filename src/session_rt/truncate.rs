@@ -190,6 +190,7 @@ mod tests {
                 content: MessageContent::SingleText(text.into()),
             },
             name: None,
+            tool_call_id: None,
         }
     }
 

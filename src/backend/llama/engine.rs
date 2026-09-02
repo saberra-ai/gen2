@@ -453,6 +453,7 @@ mod tests {
 
         let msgs = vec![Message {
             name: None,
+            tool_call_id: None,
             role: "user".into(),
             body: MessageBody::Content {
                 content: MessageContent::SingleText("Hello".into()),
@@ -560,6 +561,7 @@ mod tests {
         let img_url = format!("file://{}", image_path.display());
         let msgs = vec![Message {
             name: None,
+            tool_call_id: None,
             role: "user".into(),
             body: MessageBody::Content {
                 content: MessageContent::MultipleChunks(vec![
@@ -644,6 +646,7 @@ mod tests {
         // Generate briefly to confirm engine is healthy
         let msgs = vec![Message {
             name: None,
+            tool_call_id: None,
             role: "user".into(),
             body: MessageBody::Content {
                 content: MessageContent::SingleText("Hello".into()),
@@ -724,6 +727,7 @@ mod tests {
 
         let msgs = vec![Message {
             name: None,
+            tool_call_id: None,
             role: "user".into(),
             body: MessageBody::Content {
                 content: MessageContent::SingleText("Hello".into()),
@@ -775,6 +779,7 @@ mod tests {
 
         let msgs = vec![Message {
             name: None,
+            tool_call_id: None,
             role: "user".into(),
             body: MessageBody::Content {
                 content: MessageContent::SingleText("Hello".into()),
@@ -832,6 +837,7 @@ mod tests {
 
         let msgs = vec![Message {
             name: None,
+            tool_call_id: None,
             role: "user".into(),
             body: MessageBody::Content {
                 content: MessageContent::SingleText("Hello".into()),
@@ -925,6 +931,7 @@ mod tests {
 
         let msgs = vec![Message {
             name: None,
+            tool_call_id: None,
             role: "user".into(),
             body: MessageBody::Content {
                 content: MessageContent::MultipleChunks(vec![

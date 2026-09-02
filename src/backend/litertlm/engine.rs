@@ -145,6 +145,9 @@ impl Backend for LiteRtLmEngine {
     }
 
     fn upload_settings(&self, settings: Settings) -> Result<(), ExecError> {
+        // Validated for the same reason every other backend validates: a value
+        // one backend rejects and another accepts is not one API.
+        settings.validate()?;
         *self.settings.write() = Arc::new(settings);
         self.settings_version.fetch_add(1, Ordering::Release);
         Ok(())
@@ -193,10 +196,18 @@ impl Backend for LiteRtLmEngine {
         drop(guard);
 
         let id = self.next_session_id.fetch_add(1, Ordering::Relaxed);
-        let settings = spec
-            .overrides
-            .clone()
-            .unwrap_or_else(|| (*self.settings()).clone());
+        // A session override states what it wants to change, not a whole new
+        // configuration. Without `inherit_missing`, setting one field reset
+        // every other to unset — so a caller who nudged the temperature also
+        // silently discarded the engine's threads and context. Every other
+        // backend does this; the contract is the crate's, not llama.cpp's.
+        let settings = match spec.overrides.clone() {
+            Some(mut overrides) => {
+                overrides.inherit_missing(self.settings().as_ref());
+                overrides
+            }
+            None => (*self.settings()).clone(),
+        };
         let tools_json = spec
             .tools
             .as_ref()
@@ -211,11 +222,21 @@ impl Backend for LiteRtLmEngine {
             None => (&spec.messages[..], Vec::new()),
         };
 
+        // `Auto` is not "leave it alone": the crate's own mapping makes it
+        // thinking-on, because the templates these models ship with treat an
+        // undefined flag as off and were trained expecting the channel.
+        let thinking = spec.thinking.as_enable_thinking();
+        // The sampler the session opens with, so a first turn that asks for
+        // nothing does not immediately rebuild.
+        let sampler = convert::sampler_of(&settings, &GenSpec::default());
+
         let conversation = open_conversation(
             &engine,
-            &settings,
-            &GenSpec::default(),
             tools_json.as_deref(),
+            thinking,
+            sampler.clone(),
+            false,
+            &settings,
             history,
         )?;
 
@@ -228,6 +249,8 @@ impl Backend for LiteRtLmEngine {
             conversation,
             settings,
             tools_json,
+            thinking,
+            sampler,
             history.to_vec(),
             prompt,
             ctx_size,
@@ -247,11 +270,14 @@ impl Backend for LiteRtLmEngine {
 /// Shared with the session, which rebuilds through it when a turn cannot be
 /// delivered incrementally — so a rebuilt conversation is configured exactly
 /// like a fresh one, rather than by a second copy of this logic that drifts.
+#[allow(clippy::too_many_arguments)]
 pub(super) fn open_conversation(
     engine: &OwnedEngine,
-    settings: &Settings,
-    spec: &GenSpec,
     tools_json: Option<&str>,
+    thinking: Option<bool>,
+    sampler: Option<convert::Sampler>,
+    constrained_decoding: bool,
+    settings: &Settings,
     history: &[Message],
 ) -> Result<OwnedConversation, ExecError> {
     let (system, rest) = convert::leading_system(history);
@@ -261,15 +287,13 @@ pub(super) fn open_conversation(
             system_message: system.as_deref(),
             messages_json: &convert::messages_json(rest),
             tools_json,
-            sampler: convert::sampler_of(settings, spec),
+            sampler,
             max_output_tokens: settings
                 .stopping
                 .max_tokens
                 .map(|n| n.min(i32::MAX as usize) as i32),
-            // gen2 has no thinking switch of its own to forward, so the
-            // model's own default stands.
-            enable_thinking: None,
-            constrained_decoding: spec.grammar.is_some(),
+            enable_thinking: thinking,
+            constrained_decoding,
         },
     )
 }

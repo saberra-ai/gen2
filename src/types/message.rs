@@ -82,6 +82,20 @@ pub struct Message {
     pub body: MessageBody,
     #[serde(default)]
     pub name: Option<String>,
+    /// For a `tool` turn, the id of the call this result answers.
+    ///
+    /// A model may ask for several tools in one turn, and the results come
+    /// back as separate messages. Without the id, nothing in the transcript
+    /// says which result belongs to which call — so a backend replaying the
+    /// conversation has to guess, and every backend guessed the same wrong
+    /// way: it took the *last* call of the nearest preceding assistant turn,
+    /// which attributes every parallel result to the same call.
+    ///
+    /// `None` on every other role, and on tool results built before the caller
+    /// had an id to give. Backends fall back to the old guess in that case,
+    /// which is right whenever there was only one call.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub tool_call_id: Option<String>,
 }
 
 #[derive(Clone, Deserialize, Serialize, Debug, PartialEq)]
@@ -149,6 +163,7 @@ impl Message {
                 content: MessageContent::SingleText(text.into()),
             },
             name: None,
+            tool_call_id: None,
         }
     }
 
@@ -181,6 +196,7 @@ impl Message {
                 content: MessageContent::MultipleChunks(chunks),
             },
             name: None,
+            tool_call_id: None,
         }
     }
 
@@ -192,6 +208,7 @@ impl Message {
                 content: MessageContent::SingleText(text.into()),
             },
             name: None,
+            tool_call_id: None,
         }
     }
 
@@ -199,6 +216,10 @@ impl Message {
     ///
     /// Rendered by the chat template as a `<tool_response>` block on the user
     /// side of the conversation.
+    ///
+    /// Prefer [`Message::tool_result_for`] wherever the call's id is known: a
+    /// result with no id can only be matched to a call by guessing, and the
+    /// guess is wrong as soon as the model asks for two tools at once.
     pub fn tool_result(content: impl Into<String>) -> Self {
         Self {
             role: "tool".to_string(),
@@ -206,6 +227,18 @@ impl Message {
                 content: MessageContent::SingleText(content.into()),
             },
             name: None,
+            tool_call_id: None,
+        }
+    }
+
+    /// A tool's result, tied to the call it answers.
+    ///
+    /// The id comes straight from the [`ToolCall`] the model made, so parallel
+    /// calls stay distinguishable all the way back to the model.
+    pub fn tool_result_for(tool_call_id: impl Into<String>, content: impl Into<String>) -> Self {
+        Self {
+            tool_call_id: Some(tool_call_id.into()),
+            ..Self::tool_result(content)
         }
     }
 
@@ -218,6 +251,7 @@ impl Message {
             role: "assistant".to_string(),
             body: MessageBody::Tool { tool_calls },
             name: None,
+            tool_call_id: None,
         }
     }
 
@@ -237,6 +271,7 @@ impl Message {
                 },
             },
             name: None,
+            tool_call_id: None,
         }
     }
 }

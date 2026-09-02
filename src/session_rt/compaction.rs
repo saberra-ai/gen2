@@ -136,6 +136,7 @@ pub fn compact_algorithmic(messages: Vec<Message>, keep_recent: usize) -> Compac
             content: MessageContent::SingleText(summary_text),
         },
         name: None,
+        tool_call_id: None,
     };
 
     // Assemble: [system?] + [summary] + [tail]

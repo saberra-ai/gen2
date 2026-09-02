@@ -13,6 +13,7 @@ use std::sync::atomic::{AtomicBool, Ordering};
 
 use parking_lot::Mutex;
 
+use crate::backend::common::stop_matcher::StopMatcher;
 use crate::backend::common::tool_calls::Protocol;
 use crate::backend::facade::SessionId;
 use crate::backend::{BackendSession, TokenPullerDyn};
@@ -46,6 +47,17 @@ pub(super) struct LiteRtLmSession {
     delivered: Mutex<Vec<Message>>,
     /// Appended since the last generation, and not yet sent.
     pending: Mutex<Vec<Message>>,
+    /// The reasoning-channel policy this session was opened with. Fixed at
+    /// conversation-creation time by LiteRT-LM, so it travels with every
+    /// rebuild.
+    thinking: Option<bool>,
+    /// The sampler the live conversation is actually configured with.
+    ///
+    /// LiteRT-LM attaches a sampler to the conversation, not to a request, so
+    /// this is the only place a per-turn `.temperature()` or `.seed()` can be
+    /// noticed. Without it, every turn ran under whatever the conversation was
+    /// opened with and the caller's request was silently ignored.
+    sampler: Mutex<Option<convert::Sampler>>,
     /// The context the conversation was configured with, or 0 when the caller
     /// did not set one.
     ctx_size: u32,
@@ -71,6 +83,8 @@ impl LiteRtLmSession {
         conversation: OwnedConversation,
         settings: Settings,
         tools_json: Option<String>,
+        thinking: Option<bool>,
+        sampler: Option<convert::Sampler>,
         delivered: Vec<Message>,
         pending: Vec<Message>,
         ctx_size: u32,
@@ -85,6 +99,8 @@ impl LiteRtLmSession {
             engine,
             settings,
             tools_json,
+            thinking,
+            sampler: Mutex::new(sampler),
             delivered: Mutex::new(delivered),
             pending: Mutex::new(pending),
             ctx_size,
@@ -101,17 +117,36 @@ impl LiteRtLmSession {
     /// answer: it costs the prefill, and it keeps the model's view identical
     /// to gen2's, which is the invariant the whole crate rests on.
     fn rebuild(&self, history: &[Message], spec: &GenSpec) -> Result<(), ExecError> {
+        let wanted = convert::sampler_of(&self.settings, spec);
         let fresh = super::engine::open_conversation(
             &self.engine,
-            &self.settings,
-            spec,
             self.tools_json.as_deref(),
+            self.thinking,
+            wanted.clone(),
+            spec.grammar.is_some(),
+            &self.settings,
             history,
         )?;
         #[allow(clippy::arc_with_non_send_sync)]
         let fresh = Arc::new(fresh);
         *self.conversation.lock() = fresh;
+        *self.sampler.lock() = wanted;
         Ok(())
+    }
+
+    /// Make the live conversation match what this turn asked for.
+    ///
+    /// LiteRT-LM fixes the sampler when a conversation is created, so the only
+    /// way to honour a per-turn `.temperature()`, `.top_k()`, `.top_p()` or
+    /// `.seed()` is to open a new one. That costs the prefill, which is why it
+    /// happens only when the sampler actually differs — an ordinary
+    /// conversation whose settings never change never pays it.
+    fn align_sampler(&self, spec: &GenSpec, history: &[Message]) -> Result<(), ExecError> {
+        let wanted = convert::sampler_of(&self.settings, spec);
+        if *self.sampler.lock() == wanted {
+            return Ok(());
+        }
+        self.rebuild(history, spec)
     }
 }
 
@@ -154,7 +189,12 @@ impl BackendSession for LiteRtLmSession {
             options.set_constraint(kind, &body)?;
         }
         if let Some((repeat, freq, present)) = convert::penalties_of(&self.settings, &spec) {
-            options.set_penalties(repeat, freq, present)?;
+            options.set_penalties(
+                repeat,
+                freq,
+                present,
+                convert::penalty_window(&self.settings, &spec),
+            )?;
         }
 
         let turn = std::mem::take(&mut *self.pending.lock());
@@ -168,24 +208,35 @@ impl BackendSession for LiteRtLmSession {
         // and LiteRT-LM has no way to take context without generating from it.
         // Rare in practice — a turn is normally one message — so the rebuild
         // buys correctness at a cost almost nothing pays.
-        if !earlier.is_empty() {
+        let history_before_prompt = || {
             let mut history = self.delivered.lock().clone();
             history.extend_from_slice(earlier);
-            self.rebuild(&history, &spec)?;
+            history
+        };
+        if !earlier.is_empty() {
+            self.rebuild(&history_before_prompt(), &spec)?;
+        } else {
+            // Nothing to fold in, but the turn may still be asking for
+            // sampling the live conversation was not opened with.
+            self.align_sampler(&spec, &history_before_prompt())?;
         }
 
-        let call_id = self
-            .delivered
-            .lock()
-            .iter()
-            .rev()
-            .find_map(|m| match &m.body {
-                crate::types::message::MessageBody::Tool { tool_calls } => {
-                    tool_calls.last().map(|c| c.id.clone())
-                }
-                _ => None,
-            })
-            .unwrap_or_default();
+        // The message says which call it answers whenever the model gave one
+        // an id; the backward search is only the fallback for results recorded
+        // without one.
+        let call_id = last.tool_call_id.clone().unwrap_or_else(|| {
+            self.delivered
+                .lock()
+                .iter()
+                .rev()
+                .find_map(|m| match &m.body {
+                    crate::types::message::MessageBody::Tool { tool_calls } => {
+                        tool_calls.last().map(|c| c.id.clone())
+                    }
+                    _ => None,
+                })
+                .unwrap_or_default()
+        });
         let message_json = convert::message_json(last, &call_id).to_string();
 
         let runtime = Arc::clone(self.engine.runtime());
@@ -211,6 +262,10 @@ impl BackendSession for LiteRtLmSession {
             Arc::clone(&self.stopped),
             Arc::clone(&self.paused),
             Protocol::Auto,
+            // Stopwords are gen2's to enforce here: LiteRT-LM's C API exposes
+            // no stop-sequence setting, so a backend that neither applied nor
+            // refused them would let a caller's `.stop()` do nothing.
+            StopMatcher::from_strings(self.settings.stopping.stopwords.clone()),
         )))
     }
 

@@ -111,6 +111,7 @@ mod tests {
     fn detect_images() {
         let msgs = vec![Message {
             name: None,
+            tool_call_id: None,
             role: "user".into(),
             body: MessageBody::Content {
                 content: MessageContent::MultipleChunks(vec![

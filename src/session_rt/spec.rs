@@ -51,6 +51,7 @@ mod tests {
                 content: MessageContent::SingleText(text.to_string()),
             },
             name: None,
+            tool_call_id: None,
         }
     }
 

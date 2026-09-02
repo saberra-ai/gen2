@@ -110,6 +110,7 @@ impl ChatTemplate {
                     content: MessageContent::SingleText("probe".into()),
                 },
                 name: None,
+                tool_call_id: None,
             },
             Message {
                 role: "user".into(),
@@ -117,6 +118,7 @@ impl ChatTemplate {
                     content: MessageContent::SingleText("hi".into()),
                 },
                 name: None,
+                tool_call_id: None,
             },
         ];
         self.apply_with_options(probe, None, None, false).is_ok()
@@ -232,6 +234,7 @@ mod tests {
                 .apply(
                     vec![Message {
                         name: None,
+                        tool_call_id: None,
                         role: "user".to_string(),
                         body: MessageBody::Content {
                             content: MessageContent::SingleText("hello".to_string()),
@@ -368,6 +371,7 @@ mod tests {
         let msgs: Vec<Message> = vec![
             Message {
                 name: None,
+                tool_call_id: None,
                 role: "system".to_string(),
                 body: MessageBody::Content {
                     content: MessageContent::SingleText(
@@ -378,6 +382,7 @@ mod tests {
             },
             Message {
                 name: None,
+                tool_call_id: None,
                 role: "assistant".to_string(),
                 body: MessageBody::Content {
                     content: MessageContent::SingleText(
@@ -387,6 +392,7 @@ mod tests {
             },
             Message {
                 name: None,
+                tool_call_id: None,
                 role: "user".to_string(),
                 body: MessageBody::Content {
                     content: MessageContent::MultipleChunks(vec![

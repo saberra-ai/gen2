@@ -118,6 +118,126 @@ mod live {
         assert_eq!(session.messages().len(), 4);
     }
 
+    /// Per-turn sampling has to reach the model, not just the struct.
+    ///
+    /// LiteRT-LM fixes the sampler when a conversation is created, so a turn
+    /// asking for different sampling is only honoured if the backend notices
+    /// and reopens.
+    ///
+    /// The observable is the seed, not determinism. Determinism alone proves
+    /// nothing here: the sampler this runtime defaults to is itself
+    /// deterministic, so `.greedy()` twice matched even with the fix reverted.
+    /// Two different seeds diverging cannot happen unless the seed reached the
+    /// sampler, and the same seed reproducing cannot happen unless it reached
+    /// it consistently. Together they pin it.
+    #[test]
+    #[ignore = "needs PIO_TEST_LITERTLM_MODEL and a LiteRT-LM runtime"]
+    fn a_per_turn_sampling_change_reaches_the_model() {
+        let Some(path) = model() else {
+            eprintln!("SKIP: set PIO_TEST_LITERTLM_MODEL");
+            return;
+        };
+        let engine = crate::api::Engine::builder()
+            .model(&path)
+            .context(4096)
+            .build()
+            .expect("the model should load");
+
+        let ask = |seed: u64| {
+            let mut session = crate::api::Session::new();
+            engine
+                .chat(&mut session)
+                .user("Write one sentence about an unusual animal.")
+                .max_tokens(40)
+                .temperature(1.5)
+                .seed(seed)
+                .send()
+                .expect("the turn should complete")
+                .text
+        };
+
+        let a = ask(1);
+        let b = ask(1);
+        let c = ask(999_999);
+
+        assert!(!a.trim().is_empty(), "sampled decoding produced nothing");
+        assert_eq!(
+            a, b,
+            "the same seed gave two different answers, so the seed is not \
+             reaching the sampler consistently"
+        );
+        assert_ne!(
+            a, c,
+            "two different seeds gave identical output, so the sampler this \
+             turn asked for never reached the model — the conversation is \
+             still running whatever it was opened with"
+        );
+        eprintln!("seed reaches the sampler: seed 1 and seed 999999 diverge");
+    }
+
+    /// `.greedy()` has to map to something the runtime implements.
+    ///
+    /// The sampler type literally named "greedy" answers `UNIMPLEMENTED` on
+    /// the shipped runtime, so a backend that picked it by name fails here
+    /// rather than at a code review.
+    #[test]
+    #[ignore = "needs PIO_TEST_LITERTLM_MODEL and a LiteRT-LM runtime"]
+    fn greedy_decoding_runs_and_repeats_itself() {
+        let Some(path) = model() else {
+            eprintln!("SKIP: set PIO_TEST_LITERTLM_MODEL");
+            return;
+        };
+        let engine = crate::api::Engine::builder()
+            .model(&path)
+            .context(4096)
+            .build()
+            .expect("the model should load");
+
+        let ask = || {
+            let mut session = crate::api::Session::new();
+            engine
+                .chat(&mut session)
+                .user("Name exactly one colour.")
+                .max_tokens(12)
+                .greedy()
+                .send()
+                .expect("greedy decoding should complete")
+                .text
+        };
+
+        let first = ask();
+        assert!(!first.trim().is_empty(), "greedy produced nothing at all");
+        assert_eq!(first, ask(), "greedy decoding is not deterministic");
+    }
+
+    /// Sampling this backend cannot honour is refused, not ignored.
+    #[test]
+    #[ignore = "needs PIO_TEST_LITERTLM_MODEL and a LiteRT-LM runtime"]
+    fn sampling_the_runtime_lacks_is_refused_end_to_end() {
+        let Some(path) = model() else {
+            eprintln!("SKIP: set PIO_TEST_LITERTLM_MODEL");
+            return;
+        };
+        let engine = crate::api::Engine::builder()
+            .model(&path)
+            .context(4096)
+            .build()
+            .expect("the model should load");
+        let mut session = crate::api::Session::new();
+
+        let outcome = engine
+            .chat(&mut session)
+            .user("hello")
+            .max_tokens(8)
+            .min_p(0.1)
+            .send();
+        assert!(
+            outcome.is_err(),
+            "min_p has no LiteRT-LM equivalent, so accepting it would give the \
+             caller different sampling than they asked for"
+        );
+    }
+
     /// A conversation LiteRT-LM keeps prefilled must still match gen2's.
     ///
     /// This is the backend's one shared-state risk: only new messages are

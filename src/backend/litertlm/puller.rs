@@ -12,6 +12,7 @@ use std::sync::mpsc::{Receiver, RecvTimeoutError};
 use std::time::Duration;
 
 use crate::backend::TokenPullerDyn;
+use crate::backend::common::stop_matcher::{StopMatcher, StopState};
 use crate::backend::common::tool_calls::{ParserOutput, Protocol, ToolCallParser};
 use crate::engine::ExecError;
 use crate::generation::{Token, TokenEvent};
@@ -47,6 +48,13 @@ pub(super) struct LiteRtLmPuller {
     stopped: Arc<AtomicBool>,
     paused: Arc<AtomicBool>,
     parser: ToolCallParser,
+    /// The caller's stop sequences, applied here because LiteRT-LM's C API has
+    /// no setting for them.
+    stops: StopMatcher,
+    /// How much of the stop matcher's accumulated buffer has already gone
+    /// downstream. The matcher reports offsets into the whole reply, so this
+    /// is what turns those into the next slice to emit.
+    emitted: usize,
     /// Emitted one at a time, in the order the model asked for them.
     ready: Vec<TokenEvent>,
     /// The stream ended; the terminal event is owed once `ready` is drained.
@@ -63,6 +71,7 @@ impl LiteRtLmPuller {
         stopped: Arc<AtomicBool>,
         paused: Arc<AtomicBool>,
         protocol: Protocol,
+        stops: StopMatcher,
     ) -> Self {
         Self {
             chunks: stream.chunks,
@@ -71,6 +80,8 @@ impl LiteRtLmPuller {
             stopped,
             paused,
             parser: ToolCallParser::new(protocol),
+            stops,
+            emitted: 0,
             ready: Vec::new(),
             ending: None,
             done: false,
@@ -94,6 +105,37 @@ impl LiteRtLmPuller {
                 ParserOutput::ToolCall(call) => self.ready.push(TokenEvent::ToolCall(call)),
             }
         }
+    }
+
+    /// Text safe to emit, and whether a stop sequence ended the turn.
+    ///
+    /// The matcher accumulates the whole reply and answers in offsets into it,
+    /// because a stop sequence can straddle a chunk boundary. Skipped entirely
+    /// when the caller set no stop sequences, so an ordinary reply is not
+    /// buffered in full for nothing.
+    fn apply_stops(&mut self, text: &str) -> (String, bool) {
+        if self.stops.is_empty() {
+            return (text.to_string(), false);
+        }
+        let (emit_to, hit) = match self.stops.push(text) {
+            StopState::Clean => (self.stops.buffer().len(), false),
+            StopState::Partial { hold } => (self.stops.buffer().len() - hold, false),
+            StopState::Full { emit_at, .. } => (emit_at, true),
+        };
+        let buffer = self.stops.buffer();
+        // A stop pattern can sit inside text already emitted, which would make
+        // `emit_to` run backwards. Clamped rather than trusted: slicing a
+        // string on a bad range is a panic, and a panic here would take the
+        // controller down mid-reply.
+        let from = self.emitted.min(buffer.len());
+        let to = emit_to.clamp(from, buffer.len());
+        let out = if buffer.is_char_boundary(from) && buffer.is_char_boundary(to) {
+            buffer[from..to].to_string()
+        } else {
+            String::new()
+        };
+        self.emitted = to;
+        (out, hit)
     }
 
     /// End the stream after whatever is already queued.
@@ -140,8 +182,25 @@ impl TokenPullerDyn for LiteRtLmPuller {
                     for part in decode_chunk(&raw) {
                         match part {
                             Part::Text(text) => {
-                                let outputs = self.parser.push(&text);
-                                self.absorb(outputs);
+                                // Stop sequences are checked before the
+                                // tool-call parser so a stop that lands
+                                // mid-marker still ends the turn, and the text
+                                // the matcher holds back is never emitted.
+                                let (visible, hit) = self.apply_stops(&text);
+                                if !visible.is_empty() {
+                                    let outputs = self.parser.push(&visible);
+                                    self.absorb(outputs);
+                                }
+                                if hit {
+                                    // The caller asked for generation to end
+                                    // here, so the runtime is told to stop and
+                                    // the turn ends as a normal completion —
+                                    // a stop sequence is a finish, not a
+                                    // cancellation.
+                                    (self.cancel)();
+                                    self.end_with(TokenEvent::Eos);
+                                    break;
+                                }
                             }
                             Part::Call(call) => self.ready.push(TokenEvent::ToolCall(call)),
                         }
@@ -172,11 +231,22 @@ impl TokenPullerDyn for LiteRtLmPuller {
                     // the meantime is seen.
                 }
                 Err(RecvTimeoutError::Disconnected) => {
-                    // Every sender is gone without a final chunk, which means
-                    // the callback will never run again. Ending is the only
-                    // honest answer; waiting would hang the controller.
+                    // Every sender is gone without a final chunk, so the
+                    // callback will never run again. Ending is the only honest
+                    // answer — waiting would hang the controller — but *how*
+                    // it ends matters: reporting a stop would dress a runtime
+                    // failure up as a cancellation the caller made, and a
+                    // truncated answer would be shown as a complete one.
                     self.saw_final = true;
-                    self.end_with(TokenEvent::Stopped);
+                    self.done = true;
+                    if self.stopped.load(Ordering::Acquire) {
+                        return Some(Ok(TokenEvent::Stopped));
+                    }
+                    return Some(Err(ExecError::Generation(
+                        "LiteRT-LM stopped streaming without ending the turn; \
+                         the reply is incomplete"
+                            .to_string(),
+                    )));
                 }
             }
         }
@@ -209,6 +279,14 @@ mod tests {
     /// The mapping from chunks to events is where this backend's contract
     /// lives, and it is worth proving without a 600MB model.
     fn drain(chunks: Vec<Chunk>, stopped: bool) -> Vec<Result<TokenEvent, ExecError>> {
+        drain_with_stops(chunks, stopped, &[])
+    }
+
+    fn drain_with_stops(
+        chunks: Vec<Chunk>,
+        stopped: bool,
+        stops: &[&str],
+    ) -> Vec<Result<TokenEvent, ExecError>> {
         let (tx, rx) = std::sync::mpsc::channel();
         let ends = chunks
             .iter()
@@ -230,6 +308,7 @@ mod tests {
             Arc::new(AtomicBool::new(stopped)),
             Arc::new(AtomicBool::new(false)),
             Protocol::Auto,
+            StopMatcher::from_strings(stops.iter().map(|s| s.to_string()).collect()),
         );
         let mut out = Vec::new();
         while let Some(event) = puller.next_event() {
@@ -345,19 +424,101 @@ mod tests {
         assert!(call.arguments.contains("Paris"));
     }
 
+    /// A stream that dies must not look like a cancellation.
+    ///
+    /// The runtime crashing, the callback vanishing, the protocol breaking —
+    /// all reach the puller as a closed channel with no final chunk. Reporting
+    /// `Stopped` dressed every one of those up as a stop the caller made, so a
+    /// UI would show a truncated answer as a finished one and nothing would
+    /// retry.
     #[test]
-    fn a_stream_that_dies_without_a_final_chunk_still_terminates() {
-        // The channel disconnecting means the callback will never run again.
-        // Waiting for a `Done` that cannot come would hang the controller.
+    fn a_stream_that_dies_without_a_final_chunk_is_an_error_not_a_cancellation() {
         let events = drain(vec![Chunk::Text(message("cut off"))], false);
-        assert!(
-            matches!(events.last(), Some(Ok(TokenEvent::Stopped))),
-            "a dead stream must still produce a terminal event, got {events:?}"
-        );
         assert_eq!(
             texts(&events),
             "cut off",
             "what did arrive should still reach the caller"
         );
+        let last = events.last().expect("the stream should have ended");
+        assert!(
+            matches!(last, Err(ExecError::Generation(m)) if m.contains("without ending the turn")),
+            "expected a generation failure, got {last:?}"
+        );
+    }
+
+    /// But when the caller *did* stop, the same disconnect is a stop.
+    #[test]
+    fn a_stream_the_caller_stopped_still_reports_a_stop_when_it_dies() {
+        let events = drain(vec![Chunk::Text(message("par"))], true);
+        assert!(
+            matches!(events.last(), Some(Ok(TokenEvent::Stopped))),
+            "expected a stop, got {events:?}"
+        );
+    }
+
+    /// Stop sequences are gen2's to enforce here.
+    ///
+    /// LiteRT-LM's C API has no stop-sequence setting, so a backend that
+    /// neither applied nor refused them would let `.stop("END")` do nothing at
+    /// all — the caller would get the whole reply and believe it had been cut.
+    #[test]
+    fn a_stop_sequence_ends_the_turn_and_is_not_itself_emitted() {
+        let events = drain_with_stops(
+            vec![
+                Chunk::Text(message("keep this")),
+                Chunk::Text(message("END")),
+                Chunk::Text(message(" and not this")),
+                Chunk::Done,
+            ],
+            false,
+            &["END"],
+        );
+        assert_eq!(
+            texts(&events),
+            "keep this",
+            "text at or after the stop sequence must not reach the caller: {events:?}"
+        );
+        assert!(
+            matches!(events.last(), Some(Ok(TokenEvent::Eos))),
+            "a stop sequence is a normal finish, not a cancellation: {events:?}"
+        );
+    }
+
+    /// A stop sequence split across chunks still fires.
+    ///
+    /// The reason the matcher buffers at all: LiteRT-LM streams a token at a
+    /// time, so a two-character stop word routinely arrives in two pieces.
+    #[test]
+    fn a_stop_sequence_split_across_chunks_is_still_caught() {
+        let events = drain_with_stops(
+            vec![
+                Chunk::Text(message("answer")),
+                Chunk::Text(message("<|")),
+                Chunk::Text(message("end|>")),
+                Chunk::Text(message(" trailing")),
+                Chunk::Done,
+            ],
+            false,
+            &["<|end|>"],
+        );
+        assert_eq!(
+            texts(&events),
+            "answer",
+            "a stop sequence straddling two chunks was missed: {events:?}"
+        );
+    }
+
+    /// And a reply with no stop sequences is passed through untouched.
+    #[test]
+    fn text_is_not_held_back_when_the_caller_set_no_stop_sequences() {
+        let events = drain(
+            vec![
+                Chunk::Text(message("all")),
+                Chunk::Text(message(" of it")),
+                Chunk::Done,
+            ],
+            false,
+        );
+        assert_eq!(texts(&events), "all of it");
     }
 }

@@ -17,8 +17,21 @@ cargo-fuzz = true
 libfuzzer-sys = "0.4"
 arbitrary = { version = "1", features = ["derive"] }
 
+# No inference backend, because nothing here fuzzes one: the `gguf` target
+# reaches `ModelInfo::read` and the estimators, which are pure header parsing
+# and arithmetic. The default (`backend-llamacpp`) is worse than merely
+# wasteful — llama.cpp's `common` bundles `download.cpp`, whose cpp-httplib
+# calls are satisfied by nothing in the archive, and libFuzzer's link pulls
+# that object in and fails on the undefined `httplib::` symbols. A backend
+# still has to be named: `src/backend/mod.rs` makes a backend-less build a
+# `compile_error!`. `backend-litertlm` is the one that costs nothing — it
+# loads Google's runtime through its C ABI at run time, so it vendors, links
+# and downloads nothing at build time, which is exactly what a fuzz build
+# wants under a sanitizer.
 [dependencies.gen2]
 path = ".."
+default-features = false
+features = ["backend-litertlm"]
 
 [[bin]]
 name = "gguf"
