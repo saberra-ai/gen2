@@ -266,15 +266,34 @@ impl LlamaEmbedder {
         // Individual inputs stay capped at what the model was trained on, so
         // packing never truncates a document that would have fit before.
         let per_seq_max = (model_max_ctx as usize).min(TOKEN_BUDGET);
-        let ctx_size = (MAX_SEQS * per_seq_max) as u32;
+
+        // Size the context to THIS call, not to the worst case.
+        //
+        // A context is built per `embed` call and its compute buffer is
+        // allocated and freed with it — at a 16384 context that was 1.2 GB of
+        // setup on every call, which cost more than the packing saved and grew
+        // worse as memory fragmented. Tokenisation already happened above, so
+        // the real shape of the work is known: use the longest sequence
+        // actually present rather than the longest one permitted.
+        let longest = tokens_lines_list
+            .iter()
+            .map(|tokens| tokens.len().min(per_seq_max))
+            .max()
+            .unwrap_or(1)
+            .max(1);
+        let seq_slots = MAX_SEQS.min(tokens_lines_list.len().max(1));
+        let ctx_size = (seq_slots * longest) as u32;
         let n_ctx_nz =
             std::num::NonZeroU32::new(ctx_size).with_context(|| "context size must be non-zero")?;
 
         let ctx_params = LlamaContextParams::default()
             .with_n_ctx(Some(n_ctx_nz))
-            .with_n_batch(TOKEN_BUDGET as u32)
-            .with_n_ubatch(TOKEN_BUDGET as u32)
-            .with_n_seq_max(MAX_SEQS as u32)
+            // The micro-batch only has to cover one decode, and it drives the
+            // activation buffer, so it follows the context rather than the
+            // constant.
+            .with_n_batch(ctx_size)
+            .with_n_ubatch(ctx_size)
+            .with_n_seq_max(seq_slots as u32)
             .with_n_threads_batch(n_threads)
             .with_embeddings(true)
             // Pooling is family-specific: Gemma/BGE = Mean (default path,
@@ -286,7 +305,8 @@ impl LlamaEmbedder {
             .new_context(&self.backend, ctx_params)
             .with_context(|| "unable to create the llama_context")?;
 
-        let mut batch = LlamaBatch::new(TOKEN_BUDGET, MAX_SEQS as i32);
+        let group_budget = ctx_size as usize;
+        let mut batch = LlamaBatch::new(group_budget, seq_slots as i32);
 
         // Greedily pack prompts into groups that fit both limits, then decode
         // each group in a single pass.
@@ -299,8 +319,8 @@ impl LlamaEmbedder {
             }
             let truncated: &[LlamaToken] = &tokens[..tokens.len().min(per_seq_max)];
 
-            let would_overflow = group_tokens + truncated.len() > TOKEN_BUDGET;
-            if !group.is_empty() && (would_overflow || group.len() >= MAX_SEQS) {
+            let would_overflow = group_tokens + truncated.len() > group_budget;
+            if !group.is_empty() && (would_overflow || group.len() >= seq_slots) {
                 self.decode_group(&mut ctx, &mut batch, &group, normalize, &mut output)?;
                 group.clear();
                 group_tokens = 0;
@@ -580,6 +600,68 @@ mod tests {
     ///   1. the MRL-truncated output is 768-d (drop-in for the existing store);
     ///   2. semantically related sentences score higher than unrelated ones.
     #[test]
+    /// Does packing actually buy throughput, or is the GPU already token-bound?
+    ///
+    /// Batching only helps when per-call overhead dominates. If the forward
+    /// pass is compute-bound on tokens, N prompts in one decode costs the same
+    /// as N decodes and the packing is pure complexity. This prints both so the
+    /// question is settled by measurement rather than assumption.
+    #[test]
+    #[ignore]
+    fn packing_throughput_against_one_at_a_time() {
+        let Some(model_path) = std::env::var("LLAMA_QWEN3_EMBEDDER_MODEL")
+            .ok()
+            .or_else(|| std::env::var("LLAMA_EMBEDDER_MODEL").ok())
+        else {
+            eprintln!("set LLAMA_QWEN3_EMBEDDER_MODEL to run this");
+            return;
+        };
+        let backend = match LlamaBackend::init() {
+            Ok(backend) => std::sync::Arc::new(backend),
+            Err(err) => {
+                eprintln!("skipping: {err:?}");
+                return;
+            }
+        };
+        let embedder = LlamaEmbedder::load_from_path(backend, &model_path, ModelConfig::default())
+            .expect("load embedder");
+
+        // Roughly the length of a real document chunk.
+        // Sized to a real corpus: BEIR nfcorpus abstracts run ~400 tokens
+        // median, which is what decides how many fit in one group.
+        let words = std::env::var("PACK_TEST_WORDS")
+            .ok()
+            .and_then(|v| v.parse::<usize>().ok())
+            .unwrap_or(300);
+        let doc = "the quarterly report describes revenue growth across every \
+                   region with particular strength in subscription renewals "
+            .repeat(words / 14);
+        let docs: Vec<String> = (0..32).map(|i| format!("{i} {doc}")).collect();
+        let refs: Vec<&str> = docs.iter().map(String::as_str).collect();
+
+        // Warm the kernels so JIT does not land on whichever runs first.
+        let _ = embedder.embed(&refs[..2], true).expect("warmup");
+
+        let started = std::time::Instant::now();
+        let _ = embedder.embed(&refs, true).expect("packed");
+        let packed = started.elapsed().as_secs_f64();
+
+        let started = std::time::Instant::now();
+        for prompt in &refs {
+            let _ = embedder.embed(&[prompt], true).expect("single");
+        }
+        let single = started.elapsed().as_secs_f64();
+
+        println!(
+            "\n  packed   {:.2}s  ({:.1} docs/sec)\n  one-by-one {:.2}s  ({:.1} docs/sec)\n  speedup  {:.2}x\n",
+            packed,
+            refs.len() as f64 / packed,
+            single,
+            refs.len() as f64 / single,
+            single / packed,
+        );
+    }
+
     /// Packing must not change the answer.
     ///
     /// Prompts share one decode now, so a bug in sequence assignment would
