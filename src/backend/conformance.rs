@@ -1,7 +1,8 @@
 //! One contract, applied to every backend that is compiled in.
 //!
-//! The crate's claim is a single API over llama.cpp, MLX, mlxcel, ONNX,
-//! Candle, ExecuTorch and an OpenAI-compatible endpoint. A claim like that is
+//! The crate's claim is a single API over llama.cpp, mistral.rs, MLX, mlxcel,
+//! ONNX, Candle, LiteRT-LM and an OpenAI-compatible endpoint. A claim like
+//! that is
 //! only worth anything if every backend is held to the same contract, and
 //! until now each was tested — where it was tested at all — on its own terms.
 //!
@@ -47,6 +48,10 @@ use crate::session_rt::SessionSpec;
 /// - `mistralrs` — `PIO_TEST_MISTRALRS_MODEL` pointed at a GGUF, CPU only.
 ///   Decoded 15 tokens, and a two-turn chat runs through the public API with
 ///   nothing in it naming the backend.
+/// - `litertlm` — `PIO_TEST_LITERTLM_MODEL` pointed at `Qwen3-0.6B.litertlm`,
+///   with `GEN2_LITERTLM_LIBRARY` on the v0.16.0 macOS arm64 prebuilt and
+///   `PIO_TEST_CTX=4096`. Decoded 16 tokens; a two-turn chat and an
+///   edited-transcript check both run through the public API.
 ///
 /// The others need a model this repository does not carry. Point the variable
 /// in [`model_env`] at one and the generating half runs.
@@ -58,6 +63,7 @@ fn model_env(backend: &str) -> &'static str {
     match backend {
         "llamacpp" => "PIO_TEST_MODEL",
         "mlx" | "mlxcel" => "PIO_TEST_MLX_MODEL",
+        "litertlm" => "PIO_TEST_LITERTLM_MODEL",
         "onnx" => "PIO_TEST_ONNX_MODEL",
         "mistralrs" => "PIO_TEST_MISTRALRS_MODEL",
         "candle" => "PIO_TEST_CANDLE_MODEL",
@@ -212,12 +218,11 @@ pub(crate) fn contract_stats(backend: &dyn Backend) {
 
 /// Whether this backend is a scaffold that implements nothing and says so.
 ///
-/// ExecuTorch is compiled as one: the feature exists so the mobile target
-/// builds, and every call returns [`ExecError::Unimplemented`]. That is a
+/// No compiled backend is one today. The check stays because a scaffold is a
 /// legitimate state for a backend to be in, and a contract that assumed
 /// otherwise would either fail it forever or have to name it as a special
 /// case. Detected by behaviour rather than by name, so the next scaffold is
-/// covered too.
+/// covered without touching this file.
 fn is_declared_stub(backend: &dyn Backend) -> bool {
     matches!(
         backend.upload_settings(Settings::default()),
@@ -299,10 +304,20 @@ pub(crate) fn contract_without_a_model(backend: &dyn Backend) {
 pub(crate) fn contract_with_a_model(backend: &dyn Backend, model_path: &str) -> bool {
     let name = backend.backend_name();
 
-    let loaded = backend.load_model(LoadRequest {
+    let mut request = LoadRequest {
         model_path: model_path.into(),
         ..Default::default()
-    });
+    };
+    // Some backends cannot discover a model's context window and refuse to
+    // invent one — LiteRT-LM's shipped runtime is the case that forced this.
+    // The suite states it exactly as a caller would with
+    // `Engine::builder().context(n)`, rather than the harness growing a
+    // per-backend exception.
+    request.ctx_params.n_ctx = std::env::var("PIO_TEST_CTX")
+        .ok()
+        .and_then(|v| v.parse().ok());
+
+    let loaded = backend.load_model(request);
     if let Err(e) = loaded {
         panic!("{name}: could not load {model_path}: {e:?}");
     }
@@ -467,17 +482,14 @@ backend_contract!(onnx, crate::backend::onnx::Engine::new());
 #[cfg(feature = "backend-candle")]
 backend_contract!(candle, crate::backend::candle::CandleBackend::new());
 
-#[cfg(feature = "backend-executorch")]
-backend_contract!(
-    executorch,
-    crate::backend::executorch::ExecutorchBackend::new()
-);
-
 #[cfg(feature = "backend-external-api")]
 backend_contract!(external_api, crate::backend::external_api::Engine::new());
 
 #[cfg(feature = "backend-mistralrs")]
 backend_contract!(mistralrs, crate::backend::mistralrs::MistralRsEngine::new());
+
+#[cfg(feature = "backend-litertlm")]
+backend_contract!(litertlm, crate::backend::litertlm::LiteRtLmEngine::new());
 
 /// The list of backends nobody has ever seen generate a token must match the
 /// backends that are compiled.
@@ -512,9 +524,9 @@ fn unverified_backends() {
         "mlxcel",
         "onnx",
         "candle",
-        "executorch",
         "external-api",
         "mistralrs",
+        "litertlm",
     ];
     for backend in NEVER_PRODUCED_A_TOKEN {
         assert!(

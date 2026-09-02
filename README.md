@@ -1,8 +1,8 @@
 # gen2
 
 An embeddable AI runtime for Rust. Models, sessions, tools, agents and local
-inference behind one stateful API — over llama.cpp, mistral.rs, MLX, ONNX
-Runtime, Candle, ExecuTorch, or an OpenAI-compatible endpoint.
+inference behind one stateful API — over llama.cpp, mistral.rs, MLX, LiteRT-LM,
+ONNX Runtime, Candle, or an OpenAI-compatible endpoint.
 
 ```toml
 [dependencies]
@@ -534,14 +534,20 @@ Pick at least one. A build with none fails to compile.
 | `backend-onnx` | ONNX Runtime |
 | `backend-mistralrs` | mistral.rs. GGUF, safetensors and UQFF in one backend. Claims only formats no other compiled backend takes. No per-request seed: `.seed()` under sampling is refused rather than ignored. |
 | `backend-candle` | Candle (pure Rust) |
-| `backend-executorch` | ExecuTorch (mobile). Stub, returns Unimplemented. |
+| `backend-litertlm` | LiteRT-LM (Google's on-device runtime), for `.litertlm` bundles. Loads Google's C ABI at run time — nothing is vendored, linked, or downloaded by a build. Point `GEN2_LITERTLM_LIBRARY` at the shared library, or install it where the platform loader finds it. |
 | `tokio` | Async API. Off by default. |
 
-llama.cpp, mistral.rs and MLX have been shown to generate a token; the rest
-compile and satisfy the parts of the backend contract that need no weights.
-Adding a backend never moves an existing one's models: `backend-mistralrs`
-takes GGUF only where llama.cpp is absent, and safetensors only where MLX is. The
-conformance suite says which on every run, and fails if that list goes stale.
+llama.cpp, mistral.rs, MLX and LiteRT-LM have been shown to generate a token;
+the rest compile and satisfy the parts of the backend contract that need no
+weights. Adding a backend never moves an existing one's models:
+`backend-mistralrs` takes GGUF only where llama.cpp is absent and safetensors
+only where MLX is, and `backend-litertlm` takes only the `.litertlm` bundles
+nothing else can read. The conformance suite says which on every run, and fails
+if that list goes stale.
+
+LiteRT-LM's shipped runtime cannot report a bundle's context window, so state
+it — `Engine::builder().model(path).context(4096)`. gen2 refuses the load
+rather than guessing a number the controller would then plan against.
 
 Not yet publishable to crates.io: three dependencies resolve only to git
 repositories, which the registry does not accept. CI checks this so a release

@@ -57,11 +57,18 @@ jobs:
       matrix:
         include:
           - { os: ubuntu-latest, features: backend-external-api }
-          - { os: ubuntu-latest, features: backend-executorch }
           - { os: ubuntu-latest, features: backend-candle }
           - { os: ubuntu-latest, features: backend-onnx }
           - { os: ubuntu-latest, features: backend-llamacpp }
           - { os: ubuntu-latest, features: backend-mistralrs }
+          # LiteRT-LM loads Google's runtime at run time, so a build needs
+          # nothing installed — which is exactly the property worth checking on
+          # two platforms.
+          - { os: ubuntu-latest, features: backend-litertlm }
+          - { os: macos-latest, features: backend-litertlm }
+          # Two backends, two formats. Proves `.gguf` still goes to llama.cpp
+          # once LiteRT-LM is compiled in beside it.
+          - { os: ubuntu-latest, features: "backend-llamacpp,backend-litertlm" }
           - { os: macos-latest, features: metal }
           - { os: macos-latest, features: "metal,tokio" }
     steps:

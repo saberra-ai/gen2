@@ -41,7 +41,7 @@ const BUNDLED_ZOO_JSON: &str = include_str!("../resources/models/zoo.json");
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct PlatformBundle {
     /// Which gen2 backend to load: `"mlx"`, `"llamacpp"`, `"candle"`,
-    /// `"executorch"`, `"onnx"`. Backend id strings match
+    /// `"onnx"`. Backend id strings match
     /// `gen2::backend::Backend::name()`.
     pub backend: String,
     /// HuggingFace repo id, URL, or local path. Examples:
@@ -301,7 +301,6 @@ pub fn select_for_device<'a>(
         match b.backend.as_str() {
             "mlx" => cfg!(target_os = "macos") || cfg!(target_os = "ios"),
             "llamacpp" | "candle" | "onnx" => true,
-            "executorch" => cfg!(target_os = "ios") || cfg!(target_os = "android"),
             _ => true,
         }
     };
@@ -1505,7 +1504,7 @@ mod tests {
         //     AND contain the entry's `default_quant` tier (e.g. Q4_K_M)
         //     so a paste from the wrong repo's filename gets caught.
         //   - backend == "mlx" → file must be None (whole-dir snapshot).
-        //   - other backends (candle, onnx, executorch) — out of scope
+        //   - other backends (candle, onnx) — out of scope
         //     for now; their conventions are less uniform.
         let zoo = ModelZoo::bundled();
         let mut errs: Vec<String> = Vec::new();
@@ -1535,7 +1534,7 @@ mod tests {
                             bundle.file,
                         ));
                     }
-                    _ => {} // candle/onnx/executorch out of scope
+                    _ => {} // candle/onnx out of scope
                 }
             }
         }
@@ -1592,13 +1591,13 @@ mod tests {
     /// `select_for_device`'s `os_compatible` switch matches on. A bundle
     /// naming anything else falls into that switch's `_ => true` arm and
     /// is offered to a device that can never load it.
-    const KNOWN_BACKENDS: &[&str] = &["mlx", "llamacpp", "candle", "onnx", "executorch"];
+    const KNOWN_BACKENDS: &[&str] = &["mlx", "llamacpp", "candle", "onnx"];
 
     /// Backends whose `start_session` still returns `Unimplemented`
-    /// (`src/backend/candle/mod.rs`, `src/backend/executorch/mod.rs`), and
-    /// which no platform feature bundle in Cargo.toml enables. Routing a
-    /// device here gets it a download and then a failed generate.
-    const BACKENDS_THAT_CANNOT_GENERATE_YET: &[&str] = &["candle", "executorch"];
+    /// (`src/backend/candle/mod.rs`), and which no platform feature bundle
+    /// in Cargo.toml enables. Routing a device here gets it a download and
+    /// then a failed generate.
+    const BACKENDS_THAT_CANNOT_GENERATE_YET: &[&str] = &["candle"];
 
     /// Platform ids `current_platform_id` can return.
     const KNOWN_PLATFORMS: &[&str] = &[
@@ -1614,14 +1613,14 @@ mod tests {
     /// Which backends each platform can actually load, from the crate's own
     /// feature layout. MLX links Apple's Metal framework and is built only
     /// for `apple`/`ios` targets — and only on Apple Silicon, so an Intel
-    /// Mac entry is a mis-route even though the OS matches. ExecuTorch is
-    /// the mobile scaffold. Everything else is portable C/Rust.
+    /// Mac entry is a mis-route even though the OS matches. Everything else
+    /// is portable C/Rust.
     fn backends_supported_on(platform: &str) -> &'static [&'static str] {
         match platform {
             "macos_arm64" => &["mlx", "llamacpp", "candle", "onnx"],
             "macos_x86" => &["llamacpp", "candle", "onnx"],
-            "ios" => &["mlx", "llamacpp", "executorch"],
-            "android" => &["llamacpp", "onnx", "executorch"],
+            "ios" => &["mlx", "llamacpp"],
+            "android" => &["llamacpp", "onnx"],
             "linux_cuda" | "linux_cpu" | "windows" => &["llamacpp", "candle", "onnx"],
             _ => &[],
         }

@@ -1448,7 +1448,8 @@ mod tests {
             feature = "backend-mlx",
             feature = "backend-mlxcel",
             feature = "backend-onnx",
-            feature = "backend-mistralrs"
+            feature = "backend-mistralrs",
+            feature = "backend-litertlm"
         )))]
         assert!(
             result.is_err(),
@@ -1459,7 +1460,8 @@ mod tests {
             feature = "backend-mlx",
             feature = "backend-mlxcel",
             feature = "backend-onnx",
-            feature = "backend-mistralrs"
+            feature = "backend-mistralrs",
+            feature = "backend-litertlm"
         ))]
         assert!(
             result.is_ok(),

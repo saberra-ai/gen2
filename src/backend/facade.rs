@@ -32,10 +32,11 @@ pub enum ModelBundle {
     ///
     /// Some backends keep the model somewhere the facade cannot hold it: the
     /// external-api server owns it remotely, the mlxcel worker thread owns a
-    /// `!Send` model directly (`backend::mlxcel::worker`), and executorch and
-    /// candle have no bundle type yet. Unconditional, so the enum stays
-    /// inhabited no matter which single backend is compiled — without it, a
-    /// build of executorch or candle alone fails to compile on this `match`.
+    /// `!Send` model directly (`backend::mlxcel::worker`), LiteRT-LM's engine
+    /// lives behind its C ABI, and candle has no bundle type yet.
+    /// Unconditional, so the enum stays inhabited no matter which single
+    /// backend is compiled — without it, a build of candle or litertlm alone
+    /// fails to compile on this `match`.
     None,
 }
 
@@ -80,6 +81,11 @@ pub enum Engine {
     /// to an existing build does not move anyone's models.
     #[cfg(feature = "backend-mistralrs")]
     MistralRs(super::mistralrs::MistralRsEngine),
+    /// LiteRT-LM — Google's on-device runtime, loaded from its C ABI at run
+    /// time. Routed only for `.litertlm` bundles, which no other backend
+    /// reads, so adding it to an existing build moves nobody's models.
+    #[cfg(feature = "backend-litertlm")]
+    LiteRtLm(super::litertlm::LiteRtLmEngine),
     /// A scripted backend, for tests that need the runtime to misbehave on
     /// demand. Sticky: `ensure_backend` never switches away from it, so a
     /// `LoadModel` for any path still lands on the script.
@@ -105,6 +111,8 @@ impl std::fmt::Debug for Engine {
             Self::ExternalApi(e) => e.fmt(f),
             #[cfg(feature = "backend-mistralrs")]
             Self::MistralRs(e) => e.fmt(f),
+            #[cfg(feature = "backend-litertlm")]
+            Self::LiteRtLm(e) => e.fmt(f),
             #[cfg(test)]
             Self::Fake(e) => e.fmt(f),
             Self::Uninit => f.debug_struct("Engine(Uninit)").finish(),
@@ -117,6 +125,7 @@ impl std::fmt::Debug for Engine {
 ///  - `.gguf` file → LlamaCpp
 ///  - directory with `*.safetensors` → MLX (Apple only)
 ///  - `.onnx` file or dir with `model.onnx` → ONNX
+///  - `.litertlm` bundle → LiteRT-LM
 #[allow(unused_variables)]
 fn detect_backend(req: &LoadRequest) -> Result<BackendKind, ExecError> {
     let path = &req.model_path;
@@ -149,6 +158,20 @@ fn detect_backend(req: &LoadRequest) -> Result<BackendKind, ExecError> {
             #[cfg(all(not(feature = "backend-llamacpp"), not(feature = "backend-mistralrs")))]
             "gguf" => return Ok(BackendKind::LlamaCpp),
             "onnx" => return Ok(BackendKind::Onnx),
+            // A `.litertlm` bundle is LiteRT-LM's own packaging and nothing
+            // else can read it. Deliberately not a fall-through: without the
+            // feature this has to say so, because the alternative is handing
+            // the file to llama.cpp and reporting whatever it makes of a
+            // format it has never seen.
+            #[cfg(feature = "backend-litertlm")]
+            "litertlm" => return Ok(BackendKind::LiteRtLm),
+            #[cfg(not(feature = "backend-litertlm"))]
+            "litertlm" => {
+                return Err(ExecError::FeatureUnsupported(
+                    "`.litertlm` bundles need the `backend-litertlm` feature, \
+                     which is not compiled into this build",
+                ));
+            }
             // UQFF is mistral.rs's own format; nothing else reads it.
             #[cfg(feature = "backend-mistralrs")]
             "uqff" => return Ok(BackendKind::MistralRs),
@@ -218,12 +241,25 @@ fn detect_backend(req: &LoadRequest) -> Result<BackendKind, ExecError> {
         feature = "backend-mistralrs"
     ))]
     return Ok(BackendKind::MistralRs);
+    // LiteRT-LM is a fallback only where it is the sole local backend. It
+    // reads one format, so in any other build a path it cannot open should
+    // fail as whatever backend does claim that format.
+    #[cfg(all(
+        not(feature = "backend-llamacpp"),
+        not(feature = "backend-mlx"),
+        not(feature = "backend-mlxcel"),
+        not(feature = "backend-onnx"),
+        not(feature = "backend-mistralrs"),
+        feature = "backend-litertlm"
+    ))]
+    return Ok(BackendKind::LiteRtLm);
     #[cfg(not(any(
         feature = "backend-llamacpp",
         feature = "backend-mlx",
         feature = "backend-mlxcel",
         feature = "backend-onnx",
-        feature = "backend-mistralrs"
+        feature = "backend-mistralrs",
+        feature = "backend-litertlm"
     )))]
     Err(ExecError::Other(anyhow::anyhow!("no backend compiled")))
 }
@@ -235,6 +271,8 @@ enum BackendKind {
     Onnx,
     #[cfg(feature = "backend-mistralrs")]
     MistralRs,
+    #[cfg(feature = "backend-litertlm")]
+    LiteRtLm,
     #[cfg(feature = "backend-external-api")]
     ExternalApi,
 }
@@ -262,6 +300,8 @@ impl Engine {
             Self::ExternalApi(e) => Some(e),
             #[cfg(feature = "backend-mistralrs")]
             Self::MistralRs(e) => Some(e),
+            #[cfg(feature = "backend-litertlm")]
+            Self::LiteRtLm(e) => Some(e),
             #[cfg(test)]
             Self::Fake(e) => Some(e),
             Self::Uninit => None,
@@ -291,10 +331,10 @@ impl Engine {
         v.push("mlxcel");
         #[cfg(feature = "backend-mistralrs")]
         v.push("mistralrs");
+        #[cfg(feature = "backend-litertlm")]
+        v.push("litertlm");
         #[cfg(feature = "backend-candle")]
         v.push("candle");
-        #[cfg(feature = "backend-executorch")]
-        v.push("executorch");
         v
     }
 
@@ -328,6 +368,8 @@ impl Engine {
             Ok(BackendKind::ExternalApi) => "external-api",
             #[cfg(feature = "backend-mistralrs")]
             Ok(BackendKind::MistralRs) => "mistralrs",
+            #[cfg(feature = "backend-litertlm")]
+            Ok(BackendKind::LiteRtLm) => "litertlm",
             Err(_) => "unknown",
         }
     }
@@ -376,12 +418,26 @@ impl Engine {
             // absent, the blocks after this one are cfg'd out.
             Self::MistralRs(super::mistralrs::MistralRsEngine::new())
         }
+        #[cfg(all(
+            not(feature = "backend-llamacpp"),
+            not(feature = "backend-mlx"),
+            not(feature = "backend-mlxcel"),
+            not(feature = "backend-onnx"),
+            not(feature = "backend-mistralrs"),
+            feature = "backend-litertlm"
+        ))]
+        {
+            // Tail expr, as in the arms above: with every other local backend
+            // absent, the blocks after this one are cfg'd out.
+            Self::LiteRtLm(super::litertlm::LiteRtLmEngine::new())
+        }
         #[cfg(not(any(
             feature = "backend-llamacpp",
             feature = "backend-mlx",
             feature = "backend-mlxcel",
             feature = "backend-onnx",
-            feature = "backend-mistralrs"
+            feature = "backend-mistralrs",
+            feature = "backend-litertlm"
         )))]
         Self::Uninit
     }
@@ -424,6 +480,8 @@ impl Engine {
             (Self::ExternalApi(_), BackendKind::ExternalApi) => false,
             #[cfg(feature = "backend-mistralrs")]
             (Self::MistralRs(_), BackendKind::MistralRs) => false,
+            #[cfg(feature = "backend-litertlm")]
+            (Self::LiteRtLm(_), BackendKind::LiteRtLm) => false,
             _ => true,
         };
         if !needs_switch {
@@ -442,6 +500,8 @@ impl Engine {
             BackendKind::ExternalApi => Self::ExternalApi(super::external_api::Engine::new()),
             #[cfg(feature = "backend-mistralrs")]
             BackendKind::MistralRs => Self::MistralRs(super::mistralrs::MistralRsEngine::new()),
+            #[cfg(feature = "backend-litertlm")]
+            BackendKind::LiteRtLm => Self::LiteRtLm(super::litertlm::LiteRtLmEngine::new()),
             // Backend not compiled in
             #[allow(unreachable_patterns)]
             _ => Self::Uninit,
@@ -747,12 +807,22 @@ mod tests {
             feature = "backend-mistralrs"
         ))]
         assert_eq!(name, "mistralrs");
+        #[cfg(all(
+            not(feature = "backend-llamacpp"),
+            not(feature = "backend-mlx"),
+            not(feature = "backend-mlxcel"),
+            not(feature = "backend-onnx"),
+            not(feature = "backend-mistralrs"),
+            feature = "backend-litertlm"
+        ))]
+        assert_eq!(name, "litertlm");
         #[cfg(not(any(
             feature = "backend-llamacpp",
             feature = "backend-mlx",
             feature = "backend-mlxcel",
             feature = "backend-onnx",
-            feature = "backend-mistralrs"
+            feature = "backend-mistralrs",
+            feature = "backend-litertlm"
         )))]
         assert_eq!(name, "none");
     }
@@ -800,5 +870,56 @@ mod tests {
         let path = dir.path().join("weights.uqff");
         std::fs::write(&path, b"not really a uqff, only the extension matters").unwrap();
         assert_eq!(Engine::detect_backend_for_path(&path), "mistralrs");
+    }
+
+    /// Two backends, two formats, no collision.
+    ///
+    /// This is the check that adding LiteRT-LM to a working llama.cpp build
+    /// changes nothing: the GGUF a user already had keeps going to llama.cpp,
+    /// and only the format nothing else reads goes to the new backend.
+    #[test]
+    #[cfg(all(feature = "backend-llamacpp", feature = "backend-litertlm"))]
+    fn each_format_goes_to_the_backend_that_can_read_it() {
+        let dir = tempfile::tempdir().unwrap();
+        let gguf = dir.path().join("foo.gguf");
+        let bundle = dir.path().join("foo.litertlm");
+        std::fs::write(&gguf, b"only the extension matters here").unwrap();
+        std::fs::write(&bundle, b"only the extension matters here").unwrap();
+
+        assert_eq!(
+            Engine::detect_backend_for_path(&gguf),
+            "llamacpp",
+            "adding a backend must not move a model that already worked"
+        );
+        assert_eq!(
+            Engine::detect_backend_for_path(&bundle),
+            "litertlm",
+            "a `.litertlm` bundle is readable by nothing else"
+        );
+    }
+
+    /// A `.litertlm` bundle without the feature says so, rather than being
+    /// handed to a backend that has never seen the format.
+    ///
+    /// The alternative is llama.cpp reporting a parse failure on a file it was
+    /// never meant to open, which sends the caller looking at their model
+    /// instead of at their feature list.
+    #[test]
+    #[cfg(not(feature = "backend-litertlm"))]
+    fn a_litertlm_bundle_without_the_backend_names_the_missing_feature() {
+        let dir = tempfile::tempdir().unwrap();
+        let path = dir.path().join("foo.litertlm");
+        std::fs::write(&path, b"only the extension matters here").unwrap();
+
+        let req = LoadRequest {
+            model_path: path,
+            ..Default::default()
+        };
+        let err = detect_backend(&req).expect_err("the format is not compiled in");
+        let text = err.to_string();
+        assert!(
+            text.contains("backend-litertlm"),
+            "the error should name the feature to enable, got: {text}"
+        );
     }
 }

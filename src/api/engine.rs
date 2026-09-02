@@ -626,6 +626,17 @@ impl EngineBuilder {
         // run fails with a verdict instead of a load error.
         let config = self.config.unwrap_or_default();
         let mut settings = self.settings.unwrap_or_default();
+
+        // An explicit context is honoured whether or not the preflight below
+        // can run. `ModelInfo::read` understands GGUF, so without this
+        // `.context(n)` did nothing at all for a safetensors bundle, a
+        // `.litertlm` file, or anything else it cannot parse — accepted,
+        // documented, and silently dropped. The preflight still clamps it when
+        // the model *is* readable, which is why this is set first.
+        if let ContextChoice::Exact(n) = self.context {
+            settings.system.ctx_size = Some(n);
+        }
+
         if self.context != ContextChoice::Backend
             && let Some(path) = self.model_path.as_deref()
             && let Ok(info) = ModelInfo::read(path)

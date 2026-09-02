@@ -1,7 +1,7 @@
 [package]
 name = "gen2"
 version = "0.1.0"
-description = "An embeddable AI runtime for Rust: models, sessions, tools, agents and local inference behind one stateful API. Runs on llama.cpp, mistral.rs or MLX today; ONNX, Candle and ExecuTorch compile but are not yet proven to generate."
+description = "An embeddable AI runtime for Rust: models, sessions, tools, agents and local inference behind one stateful API. Runs on llama.cpp, mistral.rs, MLX or LiteRT-LM today; ONNX and Candle compile but are not yet proven to generate."
 authors = ["Victor Lopez"]
 edition = "2024"
 license = "MIT"
@@ -13,6 +13,7 @@ path = "src/lib.rs"
 
 [dependencies]
 
+libloading = { version = "0.8", optional = true }
 # ── Inference backends (all optional; pick at least one) ────────────────────
 llama-cpp-2 = { git = "https://github.com/utilityai/llama-cpp-rs", rev = "43733d1de03e8a7d582f5732e9836f2387997c4d", features = ["mtmd", "llguidance"], optional = true }
 llama-cpp-sys-2 = { git = "https://github.com/utilityai/llama-cpp-rs", rev = "43733d1de03e8a7d582f5732e9836f2387997c4d", optional = true }
@@ -173,8 +174,6 @@ backend-mlx = ["dep:mlx-rs", "dep:safetensors"]
 backend-mlxcel = ["dep:mlxcel-core", "mlxcel-core/metal", "dep:mlxcel", "mlxcel/metal", "dep:safetensors"]
 backend-onnx = ["dep:ort", "dep:ndarray"]
 backend-candle = ["dep:candle-core", "dep:candle-nn", "dep:candle-transformers"]
-# Mobile scaffold — compiles stubs that return Unimplemented.
-backend-executorch = []
 backend-external-api = ["dep:reqwest"]
 # mistral.rs: one backend covering GGUF, safetensors, UQFF and HF repos, with
 # its own paged attention, quantization and device mapping. None of that is
@@ -182,6 +181,10 @@ backend-external-api = ["dep:reqwest"]
 # `Settings`, `SessionSpec` and `GenSpec` and produces existing `TokenEvent`s,
 # so nothing about it reaches the public API.
 backend-mistralrs = ["dep:mistralrs"]
+# LiteRT-LM: Google's on-device runtime, reached through its C ABI and loaded
+# at run time. Nothing is vendored, linked or downloaded by a build — the
+# feature compiles anywhere, and the library is found when a model is loaded.
+backend-litertlm = ["dep:libloading"]
 
 # GPU acceleration, forwarded to llama.cpp.
 cuda = ["backend-llamacpp", "llama-cpp-2/cuda"]

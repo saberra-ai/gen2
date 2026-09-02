@@ -30,12 +30,9 @@ pub(crate) mod onnx;
 #[cfg(feature = "backend-external-api")]
 pub(crate) mod external_api;
 
-// Phase D week 14 — mobile + Rust-native fallback. Both are scaffolds
-// (trait impls returning Unimplemented) until the real integration ships;
-// module layout reserved so the rest of gen2 can reference them.
-#[cfg(feature = "backend-executorch")]
-pub(crate) mod executorch;
-
+// Phase D week 14 — Rust-native fallback. A scaffold (trait impls returning
+// Unimplemented) until the real integration ships; module layout reserved so
+// the rest of gen2 can reference it.
 #[cfg(feature = "backend-candle")]
 pub(crate) mod candle;
 
@@ -46,12 +43,12 @@ pub(crate) mod candle;
     feature = "backend-mlxcel",
     feature = "backend-onnx",
     feature = "backend-external-api",
-    feature = "backend-executorch",
+    feature = "backend-litertlm",
     feature = "backend-candle",
     feature = "backend-mistralrs"
 )))]
 compile_error!(
-    "No inference backend selected. Enable at least one of: backend-llamacpp, backend-mlx, backend-mlxcel, backend-onnx, backend-external-api, backend-executorch, backend-candle, backend-mistralrs"
+    "No inference backend selected. Enable at least one of: backend-llamacpp, backend-mlx, backend-mlxcel, backend-onnx, backend-external-api, backend-candle, backend-mistralrs, backend-litertlm"
 );
 
 /// One contract every compiled backend must satisfy. See the module docs for
@@ -61,6 +58,12 @@ mod conformance;
 
 #[cfg(feature = "backend-mistralrs")]
 pub(crate) mod mistralrs;
+
+/// Google's on-device runtime, loaded from its C ABI at run time. Nothing is
+/// vendored or linked, so this compiles on a machine that has never had
+/// LiteRT-LM installed.
+#[cfg(feature = "backend-litertlm")]
+pub(crate) mod litertlm;
 
 pub mod caps;
 mod facade;
