@@ -151,11 +151,11 @@ pub use api::{AsyncAgentRun, AsyncTurn};
 pub use schemars;
 
 pub use api::{
-    Agent, AgentConfig, AgentRun, AgentStep, ApprovalMode, Budget, Canceller, Chat, Completion,
-    DEFAULT_MAX_STEPS, DEFAULT_TOOL_DEPTH, Decision, Engine, EngineBuilder, Error, Event,
-    ExecutionPolicy, Finish, Fit, FitVerdict, FunctionTool, Inference, IntoTool, ModelInfo,
-    OwnedChat, Result, Session, TokenStream, Tokens, Tool, ToolConfigError, ToolContext, ToolError,
-    ToolLoading, ToolOutput, ToolRegistry, ToolSearch, ToolSet, Turn, Update,
+    Agent, AgentConfig, AgentRun, AgentStep, ApprovalMode, Budget, Canceller, Chat, Classify,
+    Completion, DEFAULT_MAX_STEPS, DEFAULT_TOOL_DEPTH, Decision, Engine, EngineBuilder, Error,
+    Event, ExecutionPolicy, Extract, Finish, Fit, FitVerdict, FunctionTool, Inference, IntoTool,
+    ModelInfo, OwnedChat, Result, Session, TokenStream, Tokens, Tool, ToolConfigError, ToolContext,
+    ToolError, ToolLoading, ToolOutput, ToolRegistry, ToolSearch, ToolSet, Turn, Update,
 };
 pub use api::{AgentTool, Risk, SEARCH_TOOL, Skill, SkillLibrary, Steering, Struggle};
 /// Tools served by an MCP server, alongside the tool types they sit with.

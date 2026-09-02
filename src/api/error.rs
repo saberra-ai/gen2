@@ -52,6 +52,31 @@ pub enum Error {
     #[error("tool configuration: {0}")]
     Tools(#[from] crate::api::tools::ToolConfigError),
 
+    /// The request itself was malformed, and nothing was generated.
+    ///
+    /// Raised before inference — two labels that are the same, a schema that
+    /// cannot be built — so the model was never asked and no tokens were
+    /// spent. Distinct from [`Error::Generation`] for exactly that reason: the
+    /// fix is in the caller's code, not in a retry.
+    #[error("invalid request: {0}")]
+    InvalidRequest(String),
+
+    /// The model generated text that did not decode into the requested type.
+    ///
+    /// Deliberately not a [`Error::Generation`]: generation succeeded. What
+    /// failed was reading the result as `T`, which is a different problem with
+    /// a different fix — and the raw text is carried so a caller can see what
+    /// the model actually said instead of guessing.
+    #[error("could not read the reply as {type_name}: {message}")]
+    Extraction {
+        /// The Rust type the caller asked for.
+        type_name: &'static str,
+        /// What went wrong decoding it.
+        message: String,
+        /// Exactly what the model produced.
+        raw: String,
+    },
+
     /// An engine-internal error surfaced verbatim.
     #[error(transparent)]
     Exec(#[from] crate::engine::ExecError),
@@ -67,6 +92,8 @@ impl Error {
             Self::WontFit(_) => Some("wont_fit"),
             Self::Tools(_) => Some("tool_config"),
             Self::Unsupported(_) => Some("unsupported"),
+            Self::InvalidRequest(_) => Some("invalid_request"),
+            Self::Extraction { .. } => Some("extraction_failed"),
             _ => None,
         }
     }

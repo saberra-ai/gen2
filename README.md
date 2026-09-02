@@ -68,6 +68,50 @@ let raw = engine.infer("Classify the sentiment of: '…'")
 # }
 ```
 
+For the two shapes people write that by hand for, there is a direct form.
+Classification returns one of your labels — never model prose, and never a
+label you did not supply:
+
+```rust,no_run
+use gen2::Engine;
+# fn main() -> Result<(), gen2::Error> {
+# let engine = Engine::load("/models/model.gguf")?;
+let label = engine
+    .classify("The service was fantastic")
+    .labels(["positive", "negative", "neutral"])
+    .label()?;
+# println!("{label}");
+# Ok(())
+# }
+```
+
+Extraction gives you the type back. The JSON schema the model decodes under is
+generated from the same declaration you deserialize into, so the constraint and
+the parser cannot drift apart:
+
+```rust,no_run
+use gen2::Engine;
+use gen2::schemars::JsonSchema;
+use serde::Deserialize;
+
+#[derive(Deserialize, JsonSchema)]
+struct Invoice {
+    vendor: String,
+    total: f64,
+}
+
+# fn main() -> Result<(), gen2::Error> {
+# let engine = Engine::load("/models/model.gguf")?;
+let invoice: Invoice = engine.extract("Acme Ltd — total due $1,240.00").value()?;
+# println!("{} {}", invoice.vendor, invoice.total);
+# Ok(())
+# }
+```
+
+A model that answers with something that is not the type you asked for gives
+you `Error::Extraction`, carrying what it actually said — distinct from a
+generation failure, because the two need different fixes.
+
 ### chat
 
 ```rust,no_run

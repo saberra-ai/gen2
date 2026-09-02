@@ -106,6 +106,51 @@ impl Engine {
         Inference::new(self, text.into())
     }
 
+    /// Sort text into one of a fixed set of labels.
+    ///
+    /// The label set is enforced by the decoder, and the returned string is
+    /// always one the caller supplied.
+    ///
+    /// ```no_run
+    /// # fn main() -> Result<(), gen2::Error> {
+    /// # let engine = gen2::Engine::load("model.gguf")?;
+    /// let label = engine
+    ///     .classify("The service was fantastic")
+    ///     .labels(["positive", "negative", "neutral"])
+    ///     .label()?;
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub fn classify(&self, text: impl Into<String>) -> super::classify::Classify<'_> {
+        super::classify::Classify::new(self, text.into())
+    }
+
+    /// Read a typed value out of unstructured text.
+    ///
+    /// The JSON schema the model decodes under is generated from `T`, and the
+    /// reply is parsed back into `T`, so the constraint and the parser cannot
+    /// drift apart.
+    ///
+    /// ```no_run
+    /// # fn main() -> Result<(), gen2::Error> {
+    /// # let engine = gen2::Engine::load("model.gguf")?;
+    /// #[derive(serde::Deserialize, schemars::JsonSchema)]
+    /// struct Invoice {
+    ///     vendor: String,
+    ///     total: f64,
+    /// }
+    ///
+    /// let invoice: Invoice = engine.extract("Acme Ltd — total $1,240.00").value()?;
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub fn extract<T>(&self, text: impl Into<String>) -> super::extract::Extract<'_, T>
+    where
+        T: serde::de::DeserializeOwned + schemars::JsonSchema,
+    {
+        super::extract::Extract::new(self, text.into())
+    }
+
     /// Start a turn on a conversation the engine takes ownership of, so it can
     /// be [`spawn`](OwnedChat::spawn)ed onto a worker thread.
     ///

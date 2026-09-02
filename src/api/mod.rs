@@ -31,8 +31,10 @@ mod agent_spawned;
 #[cfg(feature = "tokio")]
 mod asynchronous;
 mod chat;
+mod classify;
 mod engine;
 mod error;
+mod extract;
 pub(crate) mod fit;
 mod inference;
 mod session;
@@ -48,8 +50,10 @@ pub use agent_spawned::{AgentRun, OwnedAgent};
 #[cfg(feature = "tokio")]
 pub use asynchronous::{AsyncAgentRun, AsyncTurn};
 pub use chat::{Chat, DEFAULT_TOOL_DEPTH};
+pub use classify::Classify;
 pub use engine::{Engine, EngineBuilder};
 pub use error::{Error, Result};
+pub use extract::Extract;
 pub use fit::{Fit, FitVerdict, ModelInfo};
 pub use inference::Inference;
 pub use session::Session;

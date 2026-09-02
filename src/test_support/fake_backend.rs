@@ -187,6 +187,14 @@ struct Inner {
     seen: Vec<String>,
     /// Tool names the backend was given at each `start_session`.
     tools_seen: Vec<Vec<String>>,
+    /// What each turn actually asked the sampler for, in order.
+    ///
+    /// The call log says a pull happened and `seen` says what was in it;
+    /// neither says whether the grammar, temperature or token budget the
+    /// caller set ever arrived. For anything built on top of `infer` — a
+    /// classifier constraining its labels, an extractor sending a schema —
+    /// that is the whole contract.
+    specs_seen: Vec<GenSpec>,
     /// The program every pull runs, when no per-turn script was given.
     program: Vec<Step>,
     /// One program per turn, consumed in order. Takes precedence over
@@ -314,6 +322,27 @@ impl Script {
     /// The tool names supplied at each `start_session`, newest last.
     pub fn tools_seen(&self) -> Vec<Vec<String>> {
         self.inner.lock().unwrap().tools_seen.clone()
+    }
+
+    /// What each turn asked the sampler for, in order.
+    pub fn specs_seen(&self) -> Vec<GenSpec> {
+        self.inner.lock().unwrap().specs_seen.clone()
+    }
+
+    /// The grammar each turn was constrained by, for turns that had one.
+    pub fn grammars_seen(&self) -> Vec<crate::backend::common::grammar::GrammarSpec> {
+        self.specs_seen()
+            .into_iter()
+            .filter_map(|s| s.grammar)
+            .collect()
+    }
+
+    /// The temperature each turn asked for, in order.
+    pub fn temperatures_seen(&self) -> Vec<f32> {
+        self.specs_seen()
+            .into_iter()
+            .filter_map(|s| s.temperature)
+            .collect()
     }
 
     /// How many times the backend was asked to do this.
@@ -571,8 +600,9 @@ impl BackendSession for FakeSession {
         self.script.record("stop");
     }
 
-    fn pull(&self, _spec: GenSpec) -> Result<Box<dyn TokenPullerDyn>, ExecError> {
+    fn pull(&self, spec: GenSpec) -> Result<Box<dyn TokenPullerDyn>, ExecError> {
         self.script.record("pull");
+        self.script.inner.lock().unwrap().specs_seen.push(spec);
         if let Some(fail) = self.script.inner.lock().unwrap().pull_result.as_ref() {
             return Err(fail());
         }
