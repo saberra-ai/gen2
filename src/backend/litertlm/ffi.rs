@@ -508,6 +508,7 @@ impl OwnedEngine {
     ) -> Result<Self, ExecError> {
         let api = &rt.required;
         let path = c_string(model_path)?;
+        let backend_str = backend;
         let backend = c_string(backend)?;
 
         // SAFETY: both strings outlive the call; the settings pointer is
@@ -541,9 +542,19 @@ impl OwnedEngine {
                 }
                 let engine = (api.engine_create)(settings);
                 if engine.is_null() {
-                    return Err(ExecError::InvalidModelFile(format!(
-                        "LiteRT-LM could not load `{model_path}`. The file must be a \
-                         `.litertlm` bundle built for this runtime version."
+                    // Deliberately not `InvalidModelFile`: the C API gives one
+                    // null for two very different causes — a bundle this
+                    // runtime cannot read, and an accelerator this device
+                    // cannot set up — and `InvalidModelFile` is classified
+                    // fatal, so it would stop the controller's load ladder from
+                    // ever retrying on the CPU. A retryable error lets the
+                    // ladder do its job; if the file really is the problem, the
+                    // CPU rung fails too and the caller still hears about it.
+                    return Err(ExecError::Other(anyhow::anyhow!(
+                        "LiteRT-LM could not open `{model_path}` on the `{backend_str}` \
+                         accelerator. Either the file is not a `.litertlm` bundle this \
+                         runtime can read, or this device has no working `{backend_str}` \
+                         path."
                     )));
                 }
                 Ok(engine)

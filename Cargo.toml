@@ -215,6 +215,19 @@ specta = ["dep:specta"]
 # what every host on the Apple path links, which is a decision for whoever
 # owns that path rather than a consequence of the build being fixed.
 apple = ["backend-llamacpp", "metal"]
-ios = ["backend-llamacpp", "metal"]
-android = ["backend-llamacpp", "vulkan"]
+# The mobile bundles carry LiteRT-LM alongside llama.cpp rather than instead of
+# it. Purely additive: routing is by file format, so a `.gguf` still goes to
+# llama.cpp and only a `.litertlm` bundle reaches the new backend — no model
+# moves. And unlike MLX above, adding it changes nothing about what a host
+# links: LiteRT-LM is reached through its C ABI and loaded at run time, so the
+# build vendors, links and downloads nothing. That is the whole reason it can
+# join these bundles while MLX waits.
+#
+# The runtime itself is the host application's to ship: Google publishes
+# `liblitert-lm.so` for Android and a `CLiteRTLM` XCFramework for iOS, and how
+# a signed framework gets embedded and found on device is a packaging decision
+# belonging to whoever owns that path. Without it the backend simply reports
+# that no runtime was found — see `backend::litertlm::ffi::Runtime::load`.
+ios = ["backend-llamacpp", "backend-litertlm", "metal"]
+android = ["backend-llamacpp", "backend-litertlm", "vulkan"]
 desktop-all = ["backend-llamacpp", "backend-onnx", "backend-external-api"]

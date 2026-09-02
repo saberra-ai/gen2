@@ -35,7 +35,14 @@ pub(super) struct LiteRtLmSession {
     /// By `Arc` because a [`Canceller`] handed to a puller holds one too: the
     /// conversation a generation might still be cancelling cannot be freed
     /// while that handle exists.
-    conversation: Mutex<Arc<OwnedConversation>>,
+    ///
+    /// `None` until the first turn. LiteRT-LM fixes the sampler when a
+    /// conversation is created and `start_session` does not know what the
+    /// first turn will ask for, so opening one eagerly meant opening a second
+    /// immediately — two conversations per turn, each with its own KV. On the
+    /// CPU that was waste; on the GPU it was slow enough to look like a hang.
+    /// Waiting until the sampler is known costs nothing and opens one.
+    conversation: Mutex<Option<Arc<OwnedConversation>>>,
     /// Held so the conversation can be rebuilt when a turn needs context
     /// LiteRT-LM cannot be given incrementally, and so the engine outlives
     /// every conversation opened on it.
@@ -80,7 +87,6 @@ impl LiteRtLmSession {
     pub(super) fn new(
         id: SessionId,
         engine: Arc<OwnedEngine>,
-        conversation: OwnedConversation,
         settings: Settings,
         tools_json: Option<String>,
         thinking: Option<bool>,
@@ -89,13 +95,9 @@ impl LiteRtLmSession {
         pending: Vec<Message>,
         ctx_size: u32,
     ) -> Self {
-        // Shared with the `Canceller` a generation hands to its puller, all on
-        // the one thread the controller confines this backend to.
-        #[allow(clippy::arc_with_non_send_sync)]
-        let conversation = Mutex::new(Arc::new(conversation));
         Self {
             id,
-            conversation,
+            conversation: Mutex::new(None),
             engine,
             settings,
             tools_json,
@@ -116,7 +118,11 @@ impl LiteRtLmSession {
     /// once cannot be delivered incrementally. Rebuilding is the honest
     /// answer: it costs the prefill, and it keeps the model's view identical
     /// to gen2's, which is the invariant the whole crate rests on.
-    fn rebuild(&self, history: &[Message], spec: &GenSpec) -> Result<(), ExecError> {
+    fn rebuild(
+        &self,
+        history: &[Message],
+        spec: &GenSpec,
+    ) -> Result<Arc<OwnedConversation>, ExecError> {
         let wanted = convert::sampler_of(&self.settings, spec);
         let fresh = super::engine::open_conversation(
             &self.engine,
@@ -129,24 +135,31 @@ impl LiteRtLmSession {
         )?;
         #[allow(clippy::arc_with_non_send_sync)]
         let fresh = Arc::new(fresh);
-        *self.conversation.lock() = fresh;
+        // The old conversation is dropped here, before the caller can start a
+        // generation on the new one — so a rebuild never has two alive at once.
+        *self.conversation.lock() = Some(Arc::clone(&fresh));
         *self.sampler.lock() = wanted;
-        Ok(())
+        Ok(fresh)
     }
 
-    /// Make the live conversation match what this turn asked for.
+    /// The conversation to run this turn on, opened or reopened as needed.
     ///
     /// LiteRT-LM fixes the sampler when a conversation is created, so the only
     /// way to honour a per-turn `.temperature()`, `.top_k()`, `.top_p()` or
     /// `.seed()` is to open a new one. That costs the prefill, which is why it
-    /// happens only when the sampler actually differs — an ordinary
-    /// conversation whose settings never change never pays it.
-    fn align_sampler(&self, spec: &GenSpec, history: &[Message]) -> Result<(), ExecError> {
+    /// happens only when the sampler actually differs — a conversation whose
+    /// sampling never changes is opened once and kept for the session.
+    fn conversation_for(
+        &self,
+        spec: &GenSpec,
+        history: &[Message],
+    ) -> Result<Arc<OwnedConversation>, ExecError> {
         let wanted = convert::sampler_of(&self.settings, spec);
-        if *self.sampler.lock() == wanted {
-            return Ok(());
+        let current = self.conversation.lock().clone();
+        match current {
+            Some(conversation) if *self.sampler.lock() == wanted => Ok(conversation),
+            _ => self.rebuild(history, spec),
         }
-        self.rebuild(history, spec)
     }
 }
 
@@ -204,22 +217,18 @@ impl BackendSession for LiteRtLmSession {
                  holds everything gen2 has sent",
             ));
         };
-        // Everything before the final message is context rather than a prompt,
-        // and LiteRT-LM has no way to take context without generating from it.
-        // Rare in practice — a turn is normally one message — so the rebuild
-        // buys correctness at a cost almost nothing pays.
-        let history_before_prompt = || {
-            let mut history = self.delivered.lock().clone();
-            history.extend_from_slice(earlier);
-            history
-        };
-        if !earlier.is_empty() {
-            self.rebuild(&history_before_prompt(), &spec)?;
+        let mut history = self.delivered.lock().clone();
+        history.extend_from_slice(earlier);
+        let conversation = if earlier.is_empty() {
+            // The usual case: one new message, and the live conversation is
+            // reused unless this turn asks for different sampling.
+            self.conversation_for(&spec, &history)?
         } else {
-            // Nothing to fold in, but the turn may still be asking for
-            // sampling the live conversation was not opened with.
-            self.align_sampler(&spec, &history_before_prompt())?;
-        }
+            // Everything before the final message is context rather than a
+            // prompt, and LiteRT-LM has no way to take context without
+            // generating from it, so the conversation is reopened holding it.
+            self.rebuild(&history, &spec)?
+        };
 
         // The message says which call it answers whenever the model gave one
         // an id; the backward search is only the fallback for results recorded
@@ -241,16 +250,13 @@ impl BackendSession for LiteRtLmSession {
 
         let runtime = Arc::clone(self.engine.runtime());
         let (sink, chunks, finished) = StreamSink::new(runtime);
-        {
-            let conversation = self.conversation.lock();
-            conversation.send_stream(&message_json, &options, sink)?;
-        }
+        conversation.send_stream(&message_json, &options, sink)?;
 
         // Delivered only once the runtime has taken it. A message recorded as
         // delivered before the send succeeded would be skipped on the retry.
         self.delivered.lock().extend(turn.iter().cloned());
 
-        let canceller = super::ffi::Canceller::of(&self.conversation.lock());
+        let canceller = super::ffi::Canceller::of(&conversation);
         let stream = StreamHandle {
             chunks,
             finished,

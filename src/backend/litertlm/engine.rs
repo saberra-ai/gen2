@@ -23,13 +23,45 @@ use super::convert;
 use super::ffi::{ConversationSetup, OwnedConversation, OwnedEngine, Runtime};
 use super::session::LiteRtLmSession;
 
-/// The accelerator LiteRT-LM should try first.
+/// Which accelerator to ask LiteRT-LM for.
 ///
-/// gen2 has no per-backend accelerator setting and is not gaining one, so this
-/// is the backend's own default rather than something a caller configures.
-/// `cpu` because it is the one backend every shipped `.litertlm` supports; a
-/// bundle built for GPU or NPU still runs, just without that acceleration.
-const DEFAULT_BACKEND: &str = "cpu";
+/// gen2 has no per-backend accelerator setting and is not gaining one. It does
+/// not need one: `gpu_layers == Some(0)` is already how the crate says "keep
+/// this on the CPU", and it is exactly what the controller's own load ladder
+/// sets when it retries a load that failed with a GPU. So LiteRT-LM joins that
+/// ladder instead of growing a second one, and a fallback is reported as
+/// [`crate::engine::Degraded::GpuOffload`] like every other backend's.
+///
+/// # Why GPU by default
+///
+/// Measured, not assumed. Asked for 64 tokens from `Qwen3-0.6B.litertlm` on an
+/// Apple M-series machine with the v0.16.0 runtime:
+///
+/// ```text
+/// cpu  23.9 tok/s   24.0 tok/s
+/// gpu  44.1 tok/s   39.7 tok/s
+/// npu  13.7 tok/s   13.7 tok/s
+/// ```
+///
+/// GPU is the reason this backend exists, and it is real here rather than a
+/// silent fallback — the runtime registers a `GPU WebGPU` accelerator and the
+/// throughput moves with it.
+///
+/// # Why never NPU
+///
+/// It is a valid string the runtime accepts, and on this machine it is
+/// *slower than the CPU* — the NPU registry fails to load
+/// (`NPU accelerator could not be loaded and registered`) and what runs
+/// instead is worse than either real path. NPU support needs vendor libraries
+/// for a specific chip, so selecting it by default would make gen2 slower on
+/// every device that does not have them, while claiming the opposite. A
+/// device that genuinely has an NPU needs its own evidence before this changes.
+fn accelerator_for(settings: &Settings) -> &'static str {
+    match settings.system.gpu_layers {
+        Some(0) => "cpu",
+        _ => "gpu",
+    }
+}
 
 /// A model, and everything derived from it at load time.
 struct Loaded {
@@ -111,7 +143,7 @@ impl Backend for LiteRtLmEngine {
         let engine = OwnedEngine::create(
             Arc::clone(&runtime),
             &path,
-            DEFAULT_BACKEND,
+            accelerator_for(&settings),
             Some(facts.max_context_tokens as i32),
             threads.map(|n| n as i32),
             None,
@@ -226,31 +258,21 @@ impl Backend for LiteRtLmEngine {
         // thinking-on, because the templates these models ship with treat an
         // undefined flag as off and were trained expecting the channel.
         let thinking = spec.thinking.as_enable_thinking();
-        // The sampler the session opens with, so a first turn that asks for
-        // nothing does not immediately rebuild.
-        let sampler = convert::sampler_of(&settings, &GenSpec::default());
 
-        let conversation = open_conversation(
-            &engine,
-            tools_json.as_deref(),
-            thinking,
-            sampler.clone(),
-            false,
-            &settings,
-            history,
-        )?;
-
+        // No conversation is opened here. LiteRT-LM fixes the sampler at
+        // creation and this call does not know what the first turn will ask
+        // for, so opening one now would mean opening a second immediately —
+        // see `LiteRtLmSession::conversation`.
         // `Arc<dyn BackendSession>` is the trait's own return type; the
         // session is thread-confined like every other backend's.
         #[allow(clippy::arc_with_non_send_sync)]
         Ok(Arc::new(LiteRtLmSession::new(
             id,
             engine,
-            conversation,
             settings,
             tools_json,
             thinking,
-            sampler,
+            None,
             history.to_vec(),
             prompt,
             ctx_size,
@@ -311,5 +333,67 @@ impl LocalBackend for LiteRtLmEngine {
             .as_ref()
             .map(|l| l.facts.max_context_tokens as usize)
             .unwrap_or(0)
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    /// GPU is what this backend is for, so it is what gets asked for.
+    #[test]
+    fn a_load_that_says_nothing_about_the_gpu_asks_for_the_gpu() {
+        assert_eq!(accelerator_for(&Settings::default()), "gpu");
+    }
+
+    /// And the crate's existing way of saying "CPU only" is honoured.
+    ///
+    /// This is the whole mechanism: the controller's load ladder retries a
+    /// failed load with `gpu_layers = Some(0)`, so reading it here is what
+    /// makes LiteRT-LM fall back to the CPU and report
+    /// `Degraded::GpuOffload`, rather than needing a ladder of its own.
+    #[test]
+    fn a_cpu_only_load_asks_for_the_cpu() {
+        let mut settings = Settings::default();
+        settings.system.gpu_layers = Some(0);
+        assert_eq!(accelerator_for(&settings), "cpu");
+    }
+
+    /// The NPU is never selected on gen2's own initiative.
+    ///
+    /// It is a string the runtime accepts, which is exactly what makes it
+    /// dangerous: on a machine with no vendor NPU libraries it loads happily
+    /// and runs slower than the CPU.
+    #[test]
+    fn the_npu_is_never_chosen_by_default() {
+        for layers in [None, Some(0), Some(1), Some(99)] {
+            let mut settings = Settings::default();
+            settings.system.gpu_layers = layers;
+            assert_ne!(
+                accelerator_for(&settings),
+                "npu",
+                "nothing may select the NPU without evidence it is faster on \
+                 the device in hand"
+            );
+        }
+    }
+
+    /// Only strings the runtime actually accepts may be produced.
+    ///
+    /// `litert_lm_engine_settings_create` returns null for anything outside
+    /// `cpu`/`gpu`/`npu`, which surfaces as a load failure naming the model
+    /// file — a long way from the typo that caused it.
+    #[test]
+    fn only_accelerators_the_runtime_knows_are_ever_requested() {
+        const KNOWN: [&str; 3] = ["cpu", "gpu", "npu"];
+        for layers in [None, Some(0), Some(1)] {
+            let mut settings = Settings::default();
+            settings.system.gpu_layers = layers;
+            let chosen = accelerator_for(&settings);
+            assert!(
+                KNOWN.contains(&chosen),
+                "`{chosen}` is not a LiteRT-LM accelerator"
+            );
+        }
     }
 }

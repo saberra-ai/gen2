@@ -277,16 +277,31 @@ pub(super) struct Sampler {
     pub seed: Option<i32>,
 }
 
-/// A `top_k` that truncates nothing.
+/// The `top_k` used when the caller did not ask for one.
 ///
 /// LiteRT-LM samples top-p from the top-k candidates and rejects `k <= 0`, so
-/// "the caller asked for no top-k" has to be said as a k larger than any
-/// vocabulary. Not an invented sampling default: it is how this runtime spells
-/// the absence of one. `i32::MAX` was accepted by the shipped runtime, and
-/// 2^20 is still about eight times the largest vocabulary in use — big enough
-/// to mean nothing, small enough not to bet on the runtime never allocating
-/// against it.
-const UNTRUNCATED_TOP_K: i32 = 1 << 20;
+/// some k always has to be sent. The obvious answer — a k past any vocabulary,
+/// so it truncates nothing — is unaffordable. Measured on the GPU, 16 tokens
+/// from `Qwen3-0.6B.litertlm`:
+///
+/// ```text
+/// k=40         1.31s
+/// k=1000       1.81s
+/// k=50000     16.26s
+/// k=262144   106.09s
+/// k=2^20     did not finish in ten minutes
+/// ```
+///
+/// The CPU absorbs all of them, which is why a first version shipped `1 << 20`
+/// and looked fine: the default accelerator was CPU. On the GPU it is a hang.
+///
+/// So this is a bound, and saying otherwise would be a lie about the sampling
+/// a caller gets. It is a generous one: nucleus sampling at any ordinary
+/// `top_p` draws from far fewer than a thousand candidates, so for the request
+/// this constant actually serves — "top-p, and no opinion about top-k" — it
+/// does not change which tokens are reachable. A caller who wants a different
+/// k sets one, and it is used exactly.
+const DEFAULT_TOP_K: i32 = 1000;
 
 /// A `top_k` that keeps only the single most likely token — argmax.
 ///
@@ -376,7 +391,7 @@ pub(super) fn sampler_of(settings: &Settings, spec: &GenSpec) -> Option<Sampler>
         // Each unset field becomes the value that does nothing, so a caller who
         // set one knob does not silently acquire the runtime's default for the
         // other.
-        top_k: Some(s.top_k.filter(|k| *k > 0).unwrap_or(UNTRUNCATED_TOP_K)),
+        top_k: Some(s.top_k.filter(|k| *k > 0).unwrap_or(DEFAULT_TOP_K)),
         top_p: Some(s.top_p.unwrap_or(UNTRUNCATED_TOP_P)),
         // Narrowed to the C API's `int`. Deterministic either way; two seeds
         // differing only above bit 31 land on the same stream, which is a far
@@ -729,12 +744,14 @@ mod tests {
         assert_eq!(sampler.top_p, Some(1.0), "no top-p was asked for");
     }
 
-    /// And top-p alone must not silently acquire a top-k cut.
+    /// Top-p alone still has to send a k, and it has to be an affordable one.
     ///
-    /// The runtime rejects `k <= 0`, so "no top-k" has to be spelled as a k
-    /// past the vocabulary rather than left unset.
+    /// The runtime rejects `k <= 0`, so something must be sent; a k past the
+    /// vocabulary is what semantics would want and what the GPU cannot pay
+    /// for. The ceiling here is what keeps top-p usable on the accelerator
+    /// this backend defaults to.
     #[test]
-    fn top_p_alone_is_not_quietly_turned_into_top_k_as_well() {
+    fn top_p_alone_sends_a_k_the_gpu_can_afford() {
         let spec = GenSpec {
             temperature: Some(0.8),
             top_p: Some(0.9),
@@ -742,11 +759,28 @@ mod tests {
         };
         let sampler = sampler_of(&Settings::default(), &spec).expect("top_p was set");
         assert_eq!(sampler.top_p, Some(0.9));
+        let k = sampler.top_k.expect("a k is always sent");
         assert!(
-            sampler.top_k.is_some_and(|k| k >= 1 << 20),
-            "expected a k that truncates nothing, got {:?}",
-            sampler.top_k
+            (1..=10_000).contains(&k),
+            "a k of {k} is either a truncation nobody asked for or one the GPU \
+             cannot afford — measured, k=50000 takes 16s for 16 tokens"
         );
+    }
+
+    /// A k the caller did choose is used exactly, however large.
+    ///
+    /// The ceiling is a default, not a clamp: someone who asks for k=50000 has
+    /// made a choice, and quietly substituting a different one would be the
+    /// same class of bug as ignoring it.
+    #[test]
+    fn a_k_the_caller_chose_is_never_second_guessed() {
+        let spec = GenSpec {
+            temperature: Some(0.8),
+            top_k: Some(50_000),
+            ..GenSpec::default()
+        };
+        let sampler = sampler_of(&Settings::default(), &spec).expect("top_k was set");
+        assert_eq!(sampler.top_k, Some(50_000));
     }
 
     #[test]

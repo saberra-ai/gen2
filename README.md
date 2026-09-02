@@ -549,6 +549,20 @@ LiteRT-LM's shipped runtime cannot report a bundle's context window, so state
 it — `Engine::builder().model(path).context(4096)`. gen2 refuses the load
 rather than guessing a number the controller would then plan against.
 
+It asks for the GPU by default, measured at roughly 1.7x the CPU's decode rate
+on an Apple M-series machine, and falls back to the CPU through the same load
+ladder every other backend uses — reported as `Degraded::GpuOffload`, not
+hidden. It never asks for the NPU: that needs vendor libraries for a specific
+chip, and without them the runtime accepts the request and runs slower than the
+CPU.
+
+`ios` and `android` carry it alongside llama.cpp. Nothing links: the runtime is
+loaded through its C ABI at run time, so `cargo check --target
+aarch64-apple-ios --features backend-litertlm` needs nothing but rustup, and CI
+checks exactly that. Shipping the runtime itself is the host application's job
+— Google publishes `liblitert-lm.so` for Android and a `CLiteRTLM` XCFramework
+for iOS.
+
 Not yet publishable to crates.io: three dependencies resolve only to git
 repositories, which the registry does not accept. CI checks this so a release
 cannot be surprised by it.
