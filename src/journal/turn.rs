@@ -118,6 +118,51 @@ impl Turn {
     }
 }
 
+/// How many messages from `at` form one indivisible tool round.
+///
+/// The same invariant as [`Turn::group`], for code that holds a plain
+/// `Vec<Message>` rather than a journal — chiefly
+/// [`crate::session_rt::truncate`], which drops messages to fit a context
+/// window and had no idea what it was splitting.
+///
+/// Returns `1` for an ordinary message, and for an assistant turn whose calls
+/// are *never* answered. That second case looks wrong and is not: an
+/// unanswered call is already a broken pair, and dropping it alone removes the
+/// dangling half rather than creating one. The alternative — extending the
+/// round to the end of the conversation — would let one interrupted tool call
+/// make the entire history undroppable, and truncation would fail instead of
+/// truncating.
+pub fn round_len(messages: &[Message], at: usize) -> usize {
+    use crate::types::message::MessageBody;
+
+    let Some(first) = messages.get(at) else {
+        return 0;
+    };
+    let MessageBody::Tool { tool_calls } = &first.body else {
+        return 1;
+    };
+
+    let mut awaiting: Vec<&str> = tool_calls.iter().map(|c| c.id.as_str()).collect();
+    for (offset, message) in messages[at + 1..].iter().enumerate() {
+        match &message.body {
+            // A further call in the same round joins it.
+            MessageBody::Tool { tool_calls } => {
+                awaiting.extend(tool_calls.iter().map(|c| c.id.as_str()));
+            }
+            _ => {
+                if let Some(id) = message.tool_call_id.as_deref() {
+                    awaiting.retain(|a| *a != id);
+                    if awaiting.is_empty() {
+                        return offset + 2;
+                    }
+                }
+            }
+        }
+    }
+    // Never closed.
+    1
+}
+
 #[cfg(test)]
 mod tests {
     use super::*;
