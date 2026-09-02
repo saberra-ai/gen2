@@ -209,6 +209,19 @@ fn save_all_chat_kv(state: &ControllerState) {
     store::enforce_budget(&dir);
 }
 
+/// Release whatever the residency policy just evicted.
+///
+/// One place rather than two loops, so a helper added later cannot be
+/// remembered in the pressure path and forgotten in the idle one.
+fn unload_evicted_helper(state: &mut ControllerState, kind: RuntimeKind) {
+    match kind {
+        RuntimeKind::Embedder => state.utilities.unload_embedder(),
+        RuntimeKind::Reranker => state.utilities.unload_reranker(),
+        // The LLM is not the worker's, and Stt/Tts have no runtime yet.
+        RuntimeKind::Llm | RuntimeKind::Stt | RuntimeKind::Tts => {}
+    }
+}
+
 /// Keepwarm idle-unload: when enabled (`PIO_LLM_IDLE_UNLOAD_SECS`), a
 /// quiesced LLM past the idle budget saves its chats' KV and unloads —
 /// freeing the memory while the saved state makes the next request a
@@ -225,18 +238,14 @@ fn run_residency_maintenance(state: &mut ControllerState) {
         .residency
         .unload_for_pressure(&current_memory_governor(), active_foreground);
     for runtime in evicted_for_pressure {
-        if matches!(runtime.kind, RuntimeKind::Embedder) {
-            state.utilities.unload_embedder();
-        }
+        unload_evicted_helper(state, runtime.kind);
     }
     let evicted_idle = state
         .residency
         .evict_idle_helpers(chrono::Utc::now().timestamp(), &state.residency_policy);
     maybe_idle_unload_llm(state);
     for runtime in evicted_idle {
-        if matches!(runtime.kind, RuntimeKind::Embedder) {
-            state.utilities.unload_embedder();
-        }
+        unload_evicted_helper(state, runtime.kind);
     }
 }
 
@@ -453,6 +462,42 @@ fn handle_model_command(state: &mut ControllerState, cmd: ControllerCmd) -> Cont
                 .engine
                 .upload_settings(settings)
                 .map_err(|e| format!("{:?}", e));
+            let _ = resp.send(res);
+            ControlFlow::Continue
+        }
+        ControllerCmd::LoadReranker { model_path, resp } => {
+            // Same shape as the embedder: admission, load, register — a helper
+            // is a helper, and giving reranking its own memory policy would
+            // mean two policies to keep in step.
+            let estimated_mb = estimate_resident_mb_for_path(&model_path);
+            let name = model_path.display().to_string();
+            let governor = current_memory_governor();
+            if !state
+                .residency
+                .can_admit(RuntimeKind::Reranker, estimated_mb, &governor)
+            {
+                let _ = resp.send(Err("reranker admission denied by residency policy".into()));
+                return ControlFlow::Continue;
+            }
+            let res = state.utilities.load_reranker(model_path, estimated_mb);
+            if res.is_ok() {
+                let admitted = state.residency.admit(
+                    ResidentRuntime::new(
+                        RuntimeKind::Reranker,
+                        name,
+                        estimated_mb,
+                        chrono::Utc::now().timestamp(),
+                    ),
+                    &governor,
+                );
+                if !admitted {
+                    state.utilities.unload_reranker();
+                    let _ = resp.send(Err(
+                        "reranker residency registration denied after load".into()
+                    ));
+                    return ControlFlow::Continue;
+                }
+            }
             let _ = resp.send(res);
             ControlFlow::Continue
         }
@@ -951,6 +996,26 @@ fn handle_utility_command(state: &mut ControllerState, cmd: ControllerCmd) -> Co
             }
             ControlFlow::Continue
         }
+        ControllerCmd::Rerank {
+            query,
+            documents,
+            resp,
+        } => {
+            match state
+                .utilities
+                .rerank_forwarding(query, documents, resp.clone())
+            {
+                Ok(()) => {
+                    state
+                        .residency
+                        .touch(RuntimeKind::Reranker, chrono::Utc::now().timestamp());
+                }
+                Err(e) => {
+                    let _ = resp.send(Err(e));
+                }
+            }
+            ControlFlow::Continue
+        }
         ControllerCmd::WarmModel { model_dir } => {
             state.engine.warm_model(model_dir);
             ControlFlow::Continue
@@ -964,7 +1029,8 @@ pub(super) fn dispatch_cmd(cmd: ControllerCmd, state: &mut ControllerState) -> C
     match cmd {
         ControllerCmd::LoadModel { .. }
         | ControllerCmd::ApplySettings { .. }
-        | ControllerCmd::LoadEmbedder { .. } => handle_model_command(state, cmd),
+        | ControllerCmd::LoadEmbedder { .. }
+        | ControllerCmd::LoadReranker { .. } => handle_model_command(state, cmd),
         ControllerCmd::IsModelLoaded { .. }
         | ControllerCmd::GetCapabilities { .. }
         | ControllerCmd::UnloadModel { .. }
@@ -986,6 +1052,7 @@ pub(super) fn dispatch_cmd(cmd: ControllerCmd, state: &mut ControllerState) -> C
         | ControllerCmd::ResumeChat { .. } => handle_chat_command(state, cmd),
         ControllerCmd::SystemInfer { .. } => handle_system_command(state, cmd),
         ControllerCmd::GenerateEmbeddings { .. }
+        | ControllerCmd::Rerank { .. }
         | ControllerCmd::WarmModel { .. }
         | ControllerCmd::Shutdown => handle_utility_command(state, cmd),
     }

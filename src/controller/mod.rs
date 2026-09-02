@@ -247,6 +247,18 @@ pub enum ControllerCmd {
     GetActiveBackendName { resp: Sender<&'static str> },
     /// Check whether the embedding model is loaded.
     IsEmbedderLoaded { resp: Sender<bool> },
+    /// Load a reranking model onto the utility worker.
+    LoadReranker {
+        model_path: PathBuf,
+        resp: Sender<Result<(), String>>,
+    },
+    /// Score documents against a query. Answered by the utility worker
+    /// directly, so a slow rerank never stalls chat scheduling.
+    Rerank {
+        query: String,
+        documents: Vec<String>,
+        resp: Sender<Result<Vec<crate::utilities::RerankResult>, String>>,
+    },
     /// Which auxiliary runtimes are loaded.
     ///
     /// Separate from `GetCapabilities`, which answers what the *generative*

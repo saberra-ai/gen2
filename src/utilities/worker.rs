@@ -5,7 +5,8 @@ use std::thread::JoinHandle;
 
 use crate::engine::EmbedLoadRequest;
 
-use super::embedding::{EmbedderFactory, EmbeddingRuntime, default_factory};
+use super::embedding::{EmbedderFactory, EmbeddingRuntime};
+use super::rerank::{RerankResult, RerankerFactory, RerankerRuntime};
 use super::types::{LoadedUtility, UtilityStatus};
 
 /// What the controller can ask the worker to do.
@@ -28,10 +29,37 @@ pub(crate) enum UtilityCmd {
         inputs: Vec<String>,
         resp: Sender<Result<Vec<Vec<f32>>, String>>,
     },
+    LoadReranker {
+        path: std::path::PathBuf,
+        estimated_mb: u64,
+        resp: Sender<Result<(), String>>,
+    },
+    UnloadReranker,
+    /// Rank documents, answering `resp` directly — same hand-off as `Embed`.
+    Rerank {
+        query: String,
+        documents: Vec<String>,
+        resp: Sender<Result<Vec<RerankResult>, String>>,
+    },
     Status {
         resp: Sender<UtilityStatus>,
     },
     Shutdown,
+}
+
+/// How the worker builds each runtime, on its own thread.
+pub(crate) struct Factories {
+    pub embedder: EmbedderFactory,
+    pub reranker: RerankerFactory,
+}
+
+impl Default for Factories {
+    fn default() -> Self {
+        Self {
+            embedder: super::embedding::default_factory(),
+            reranker: super::rerank::default_factory(),
+        }
+    }
 }
 
 /// A handle to the auxiliary-runtime thread.
@@ -54,18 +82,27 @@ impl std::fmt::Debug for UtilityWorker {
 impl UtilityWorker {
     /// Start a worker over the real runtimes.
     pub(crate) fn spawn() -> Self {
-        Self::spawn_with(default_factory())
+        Self::spawn_with_factories(Factories::default())
     }
 
     /// Start a worker whose embedder comes from `factory`.
-    ///
-    /// The factory runs on the worker's own thread, so what it builds never
-    /// has to be `Send`.
+    #[cfg(test)]
     pub(crate) fn spawn_with(factory: EmbedderFactory) -> Self {
+        Self::spawn_with_factories(Factories {
+            embedder: factory,
+            ..Factories::default()
+        })
+    }
+
+    /// Start a worker over runtimes the caller chose.
+    ///
+    /// The factories run on the worker's own thread, so what they build never
+    /// has to be `Send`.
+    pub(crate) fn spawn_with_factories(factories: Factories) -> Self {
         let (tx, rx) = channel::<UtilityCmd>();
         let join = std::thread::Builder::new()
             .name("gen2-utilities".into())
-            .spawn(move || run(rx, factory))
+            .spawn(move || run(rx, factories))
             .expect("the utility worker thread should start");
         Self {
             tx,
@@ -94,6 +131,40 @@ impl UtilityWorker {
 
     pub(crate) fn unload_embedder(&self) {
         let _ = self.send(UtilityCmd::UnloadEmbedder);
+    }
+
+    /// Load a reranking model, waiting for the answer. Explicit, like a
+    /// chat-model load.
+    pub(crate) fn load_reranker(
+        &self,
+        path: std::path::PathBuf,
+        estimated_mb: u64,
+    ) -> Result<(), String> {
+        let (resp, rx) = channel();
+        self.send(UtilityCmd::LoadReranker {
+            path,
+            estimated_mb,
+            resp,
+        })?;
+        rx.recv().map_err(|_| gone())?
+    }
+
+    pub(crate) fn unload_reranker(&self) {
+        let _ = self.send(UtilityCmd::UnloadReranker);
+    }
+
+    /// Hand a reranking request over, answering the caller directly.
+    pub(crate) fn rerank_forwarding(
+        &self,
+        query: String,
+        documents: Vec<String>,
+        resp: Sender<Result<Vec<RerankResult>, String>>,
+    ) -> Result<(), String> {
+        self.send(UtilityCmd::Rerank {
+            query,
+            documents,
+            resp,
+        })
     }
 
     /// Hand an embedding request over, answering the caller directly.
@@ -144,16 +215,19 @@ fn gone() -> String {
 /// What the worker owns. Never leaves the thread.
 #[derive(Default)]
 struct Runtimes {
-    embedder: Option<Loaded>,
+    embedder: Option<Loaded<Box<dyn EmbeddingRuntime>>>,
+    reranker: Option<Loaded<Box<dyn RerankerRuntime>>>,
 }
 
-struct Loaded {
-    runtime: Box<dyn EmbeddingRuntime>,
+struct Loaded<T> {
+    runtime: T,
     estimated_mb: u64,
 }
 
-fn run(rx: std::sync::mpsc::Receiver<UtilityCmd>, factory: EmbedderFactory) {
+fn run(rx: std::sync::mpsc::Receiver<UtilityCmd>, factories: Factories) {
     let mut runtimes = Runtimes::default();
+    let factory = factories.embedder;
+    let rerank_factory = factories.reranker;
 
     while let Ok(cmd) = rx.recv() {
         match cmd {
@@ -182,9 +256,47 @@ fn run(rx: std::sync::mpsc::Receiver<UtilityCmd>, factory: EmbedderFactory) {
                 // gave up, which is their right and not an error here.
                 let _ = resp.send(outcome);
             }
+            UtilityCmd::LoadReranker {
+                path,
+                estimated_mb,
+                resp,
+            } => {
+                let outcome = rerank_factory(&path).map(|runtime| {
+                    runtimes.reranker = Some(Loaded {
+                        runtime,
+                        estimated_mb,
+                    });
+                });
+                let _ = resp.send(outcome);
+            }
+            UtilityCmd::UnloadReranker => {
+                runtimes.reranker = None;
+            }
+            UtilityCmd::Rerank {
+                query,
+                documents,
+                resp,
+            } => {
+                let outcome = match runtimes.reranker.as_ref() {
+                    // An empty list never reaches the model: there is nothing
+                    // to score, and loading a context to prove it would be
+                    // pure cost.
+                    _ if documents.is_empty() => Ok(Vec::new()),
+                    Some(loaded) => loaded
+                        .runtime
+                        .scores(&query, &documents)
+                        .and_then(|scores| super::rerank::rank(scores, documents.len())),
+                    None => Err("no reranking model is loaded".to_string()),
+                };
+                let _ = resp.send(outcome);
+            }
             UtilityCmd::Status { resp } => {
                 let _ = resp.send(UtilityStatus {
                     embedder: runtimes.embedder.as_ref().map(|l| LoadedUtility {
+                        name: l.runtime.name(),
+                        estimated_resident_mb: l.estimated_mb,
+                    }),
+                    reranker: runtimes.reranker.as_ref().map(|l| LoadedUtility {
                         name: l.runtime.name(),
                         estimated_resident_mb: l.estimated_mb,
                     }),

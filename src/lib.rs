@@ -165,7 +165,7 @@ pub use api::{AgentTool, Risk, SEARCH_TOOL, Skill, SkillLibrary, Steering, Strug
 /// Tools served by an MCP server, alongside the tool types they sit with.
 pub use mcp::{McpClient, McpError, McpTool, McpToolSet};
 /// Which auxiliary runtimes are loaded, separate from what the chat model can do.
-pub use utilities::{LoadedUtility, UtilityStatus};
+pub use utilities::{LoadedUtility, RerankResult, UtilityStatus};
 
 /// Commands, events, and handles — see [`controller`].
 pub use controller::{

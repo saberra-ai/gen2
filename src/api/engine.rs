@@ -327,6 +327,71 @@ impl Engine {
             .map_err(Error::Load)
     }
 
+    /// Load a reranking model.
+    ///
+    /// A cross-encoder — it reads a query and a document together and scores
+    /// how well they match. Independent of the chat model: loading one does
+    /// not disturb a conversation, and reranking does not stop generation.
+    ///
+    /// ```no_run
+    /// # fn main() -> Result<(), gen2::Error> {
+    /// # let engine = gen2::Engine::load("model.gguf")?;
+    /// engine.load_reranker("/models/bge-reranker-v2-m3-Q4_K_M.gguf")?;
+    /// let ranked = engine.rerank("how do I cancel?", &[
+    ///     "Our office hours are 9-5.".to_string(),
+    ///     "To cancel, open Settings and choose Close account.".to_string(),
+    /// ])?;
+    /// assert_eq!(ranked[0].index, 1);
+    /// # Ok(())
+    /// # }
+    /// ```
+    pub fn load_reranker(&self, path: impl AsRef<Path>) -> Result<()> {
+        let (resp, rx) = channel();
+        self.send(ControllerCmd::LoadReranker {
+            model_path: path.as_ref().to_path_buf(),
+            resp,
+        })?;
+        rx.recv()
+            .map_err(|_| Error::ControllerGone)?
+            .map_err(Error::Load)
+    }
+
+    /// Score `documents` against `query`, best first.
+    ///
+    /// Each result carries the document's original position, because the
+    /// returned order is not the order passed in. The document text is not
+    /// copied back — the caller already has it.
+    ///
+    /// An empty list returns an empty result without touching the model.
+    pub fn rerank(
+        &self,
+        query: impl Into<String>,
+        documents: &[String],
+    ) -> Result<Vec<crate::utilities::RerankResult>> {
+        if documents.is_empty() {
+            return Ok(Vec::new());
+        }
+        let (resp, rx) = channel();
+        self.send(ControllerCmd::Rerank {
+            query: query.into(),
+            documents: documents.to_vec(),
+            resp,
+        })?;
+        rx.recv()
+            .map_err(|_| Error::ControllerGone)?
+            .map_err(|message| Error::Generation {
+                code: "rerank_failed".into(),
+                message,
+            })
+    }
+
+    /// Whether a reranking model is loaded.
+    pub fn is_reranker_loaded(&self) -> bool {
+        self.utility_status()
+            .map(|s| s.reranker.is_some())
+            .unwrap_or(false)
+    }
+
     /// Whether an embedding model is loaded.
     pub fn is_embedder_loaded(&self) -> bool {
         let (resp, rx) = channel();
@@ -532,6 +597,7 @@ pub struct EngineBuilder {
     api_key: Option<String>,
     api_format: Option<String>,
     embedder_path: Option<PathBuf>,
+    reranker_path: Option<PathBuf>,
     embedder_kind: Option<String>,
     context: ContextChoice,
     defaults: GenSpec,
@@ -627,6 +693,12 @@ impl EngineBuilder {
     /// generation returns [`Error::ModelNotLoaded`].
     pub fn embedder(mut self, path: impl AsRef<Path>) -> Self {
         self.embedder_path = Some(path.as_ref().to_path_buf());
+        self
+    }
+
+    /// Load a reranking model alongside the chat model.
+    pub fn reranker(mut self, path: impl AsRef<Path>) -> Self {
+        self.reranker_path = Some(path.as_ref().to_path_buf());
         self
     }
 
@@ -752,6 +824,9 @@ impl EngineBuilder {
                 .map_err(Error::Load)?;
         }
 
+        if let Some(reranker_path) = self.reranker_path {
+            engine.load_reranker(reranker_path)?;
+        }
         if let Some(embedder_path) = self.embedder_path {
             engine.load_embedder(embedder_path, self.embedder_kind)?;
         }

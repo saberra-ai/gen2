@@ -8,6 +8,8 @@ use serde::{Deserialize, Serialize};
 pub enum RuntimeKind {
     Llm,
     Embedder,
+    /// A cross-encoder scoring documents against a query.
+    Reranker,
     Stt,
     Tts,
 }
@@ -42,6 +44,7 @@ impl ResidentRuntime {
 pub struct ResidencyInventory {
     pub llm: Option<ResidentRuntime>,
     pub embedder: Option<ResidentRuntime>,
+    pub reranker: Option<ResidentRuntime>,
     pub stt: Option<ResidentRuntime>,
     pub tts: Option<ResidentRuntime>,
 }
@@ -51,6 +54,7 @@ impl ResidencyInventory {
         [
             self.llm.as_ref(),
             self.embedder.as_ref(),
+            self.reranker.as_ref(),
             self.stt.as_ref(),
             self.tts.as_ref(),
         ]
@@ -64,6 +68,7 @@ impl ResidencyInventory {
         [
             self.llm.as_ref(),
             self.embedder.as_ref(),
+            self.reranker.as_ref(),
             self.stt.as_ref(),
             self.tts.as_ref(),
         ]
@@ -110,7 +115,12 @@ impl ResidencyInventory {
         policy: &ResidencyPolicy,
     ) -> Vec<ResidentRuntime> {
         let mut evicted = Vec::new();
-        for kind in [RuntimeKind::Embedder, RuntimeKind::Stt, RuntimeKind::Tts] {
+        for kind in [
+            RuntimeKind::Embedder,
+            RuntimeKind::Reranker,
+            RuntimeKind::Stt,
+            RuntimeKind::Tts,
+        ] {
             let should_evict = self.slot(kind).as_ref().is_some_and(|runtime| {
                 now_unix_secs.saturating_sub(runtime.last_used_unix_secs)
                     >= policy.helper_idle_timeout_secs as i64
@@ -129,7 +139,12 @@ impl ResidencyInventory {
     ) -> Vec<ResidentRuntime> {
         let mut evicted = Vec::new();
         if governor.pressure() >= MemoryPressureLevel::Constrained {
-            for kind in [RuntimeKind::Embedder, RuntimeKind::Stt, RuntimeKind::Tts] {
+            for kind in [
+                RuntimeKind::Embedder,
+                RuntimeKind::Reranker,
+                RuntimeKind::Stt,
+                RuntimeKind::Tts,
+            ] {
                 if active_foreground == Some(kind) {
                     continue;
                 }
@@ -151,6 +166,7 @@ impl ResidencyInventory {
         match kind {
             RuntimeKind::Llm => &self.llm,
             RuntimeKind::Embedder => &self.embedder,
+            RuntimeKind::Reranker => &self.reranker,
             RuntimeKind::Stt => &self.stt,
             RuntimeKind::Tts => &self.tts,
         }
@@ -160,6 +176,7 @@ impl ResidencyInventory {
         match kind {
             RuntimeKind::Llm => &mut self.llm,
             RuntimeKind::Embedder => &mut self.embedder,
+            RuntimeKind::Reranker => &mut self.reranker,
             RuntimeKind::Stt => &mut self.stt,
             RuntimeKind::Tts => &mut self.tts,
         }

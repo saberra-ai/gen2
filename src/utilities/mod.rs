@@ -29,14 +29,20 @@
 //! the public API noticing.
 
 mod embedding;
+mod rerank;
 mod types;
 mod worker;
 
+pub use rerank::RerankResult;
 pub use types::{LoadedUtility, UtilityStatus};
+#[cfg(test)]
+pub(crate) use worker::Factories;
 pub(crate) use worker::UtilityWorker;
 
 #[cfg(test)]
 pub(crate) use embedding::{EmbeddingRuntime, ScriptedEmbedder};
+#[cfg(test)]
+pub(crate) use rerank::{RerankerRuntime, ScriptedReranker};
 
 /// What the worker bought, proved through the controller rather than in
 /// isolation.

@@ -27,6 +27,7 @@ mod tests {
         let inventory = ResidencyInventory {
             llm: Some(ResidentRuntime::new(RuntimeKind::Llm, "llm", 1024, 1)),
             embedder: Some(ResidentRuntime::new(RuntimeKind::Embedder, "embed", 256, 2)),
+            reranker: None,
             stt: None,
             tts: None,
         };

@@ -28,11 +28,13 @@ pub struct LoadedUtility {
 pub struct UtilityStatus {
     /// The embedding model, if one is loaded.
     pub embedder: Option<LoadedUtility>,
+    /// The reranking model, if one is loaded.
+    pub reranker: Option<LoadedUtility>,
 }
 
 impl UtilityStatus {
     /// Whether any helper is loaded at all.
     pub fn is_empty(&self) -> bool {
-        self.embedder.is_none()
+        self.embedder.is_none() && self.reranker.is_none()
     }
 }

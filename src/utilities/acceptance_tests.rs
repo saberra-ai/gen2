@@ -242,3 +242,146 @@ fn a_real_embedder_produces_stable_vectors_through_the_worker() {
         vectors[0].len()
     );
 }
+
+/// Reranking must not stall chat either.
+///
+/// The same property as embedding, retested because it is a different command
+/// on a different path — and because reranking is the slow one: a cross-encoder
+/// runs the model once per document.
+#[test]
+fn a_chat_keeps_generating_while_a_rerank_is_running() {
+    use crate::utilities::{RerankerRuntime, ScriptedReranker};
+    let busy = Arc::new(AtomicBool::new(false));
+    let b = Arc::clone(&busy);
+    let utilities = UtilityWorker::spawn_with_factories(crate::utilities::Factories {
+        reranker: Box::new(move |_path| {
+            Ok(Box::new(ScriptedReranker {
+                name: "slow-reranker".into(),
+                latency: HELPER_LATENCY,
+                scores: vec![0.2, 0.9, 0.5],
+                busy: Arc::clone(&b),
+            }) as Box<dyn RerankerRuntime>)
+        }),
+        ..crate::utilities::Factories::default()
+    });
+
+    let engine = Engine::scripted_with(
+        Script::new().say(["one", " two"]),
+        ControllerConfig::default(),
+        Some(utilities),
+    );
+    engine
+        .load_reranker("/models/reranker.gguf")
+        .expect("the scripted reranker loads");
+
+    let (resp, rerank_rx) = channel();
+    engine
+        .send_for_test(ControllerCmd::Rerank {
+            query: "q".into(),
+            documents: vec!["a".into(), "b".into(), "c".into()],
+            resp,
+        })
+        .expect("the controller should accept the request");
+
+    let started = Instant::now();
+    let mut session = Session::new();
+    let done = engine.chat(&mut session).user("hello").send().unwrap();
+    let chat_took = started.elapsed();
+
+    assert_eq!(done.text, "one two");
+    assert!(
+        chat_took < HELPER_LATENCY,
+        "the chat turn took {chat_took:?} while a rerank was running — the \
+         controller waited for the helper"
+    );
+    assert!(
+        busy.load(Ordering::SeqCst),
+        "the rerank should still be running"
+    );
+
+    let ranked = rerank_rx
+        .recv_timeout(Duration::from_secs(10))
+        .expect("the reranker answers the caller directly")
+        .expect("scores");
+    assert_eq!(
+        ranked.iter().map(|r| r.index).collect::<Vec<_>>(),
+        vec![1, 2, 0],
+        "best first, carrying original positions"
+    );
+}
+
+/// An empty document list must not touch the model at all.
+#[test]
+fn reranking_nothing_returns_nothing_without_loading_a_model() {
+    let engine =
+        Engine::scripted_with(Script::new().say(["hi"]), ControllerConfig::default(), None);
+    // No reranker loaded, and none needed.
+    let ranked = engine
+        .rerank("q", &[])
+        .expect("an empty list is not an error");
+    assert!(ranked.is_empty());
+}
+
+/// Reranking with nothing loaded says so.
+#[test]
+fn reranking_with_no_model_loaded_reports_that() {
+    let engine =
+        Engine::scripted_with(Script::new().say(["hi"]), ControllerConfig::default(), None);
+    let outcome = engine.rerank("q", &["a".to_string()]);
+    assert!(
+        outcome.is_err(),
+        "a caller who forgot to load a reranker must be told"
+    );
+}
+
+/// The real thing: a cross-encoder ranking real documents.
+///
+/// This is what proves the token layout is right. A wrong `[BOS] q [EOS] [SEP]
+/// d [EOS]` assembly still returns numbers — plausible-looking ones — so the
+/// only check that means anything is whether the relevant document wins.
+///
+/// Needs `PIO_TEST_RERANKER` pointed at a GGUF reranking model.
+#[test]
+#[ignore = "needs PIO_TEST_RERANKER"]
+fn a_real_reranker_puts_the_relevant_document_first() {
+    let Ok(path) = std::env::var("PIO_TEST_RERANKER") else {
+        eprintln!("SKIP: set PIO_TEST_RERANKER");
+        return;
+    };
+    let engine =
+        Engine::scripted_with(Script::new().say(["hi"]), ControllerConfig::default(), None);
+    engine
+        .load_reranker(&path)
+        .expect("the reranker should load");
+
+    let documents = vec![
+        "The Eiffel Tower is in Paris and was completed in 1889.".to_string(),
+        "Photosynthesis converts light energy into chemical energy.".to_string(),
+        "To reset your password, open Settings and choose Sign-in.".to_string(),
+    ];
+    let ranked = engine
+        .rerank("how do I change my password?", &documents)
+        .expect("reranking should work");
+
+    assert_eq!(ranked.len(), 3, "one result per document");
+    assert_eq!(
+        ranked[0].index,
+        2,
+        "the password document should rank first; got order {:?} with scores {:?}",
+        ranked.iter().map(|r| r.index).collect::<Vec<_>>(),
+        ranked.iter().map(|r| r.score).collect::<Vec<_>>()
+    );
+    assert!(
+        ranked.windows(2).all(|w| w[0].score >= w[1].score),
+        "results must be descending"
+    );
+    assert!(
+        ranked.iter().all(|r| r.score.is_finite()),
+        "a non-finite score should have been refused"
+    );
+    eprintln!(
+        "reranker: order {:?} scores {:?}",
+        ranked.iter().map(|r| r.index).collect::<Vec<_>>(),
+        ranked.iter().map(|r| r.score).collect::<Vec<_>>()
+    );
+}
