@@ -128,7 +128,12 @@ mod tests {
         assert!(!caps.kv_cache);
         assert!(caps.context_truncation_tracking);
         assert!(!caps.poison_detection);
-        assert!(caps.embedding);
+        // Not an embedder. It used to say it was: the backend implemented
+        // `Embeddings` with every method returning `Unimplemented`, so this
+        // field advertised a capability that failed at the call site. gen2
+        // embeds through the utility worker now, which needs nothing from the
+        // chat backend — see `crate::utilities`.
+        assert!(!caps.embedding);
         assert_eq!(caps.first_token_tier, LatencyTier::Slow);
     }
 
