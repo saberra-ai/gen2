@@ -15,7 +15,7 @@ pub(crate) mod engine;
 #[cfg_attr(not(target_os = "ios"), allow(dead_code))]
 mod ios_memory;
 pub mod llama_config;
-mod loader;
+pub(crate) mod loader;
 mod puller;
 mod session;
 mod tokenizer_adapter;

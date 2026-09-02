@@ -226,7 +226,7 @@ fn run_residency_maintenance(state: &mut ControllerState) {
         .unload_for_pressure(&current_memory_governor(), active_foreground);
     for runtime in evicted_for_pressure {
         if matches!(runtime.kind, RuntimeKind::Embedder) {
-            state.engine.unload_embedder();
+            state.utilities.unload_embedder();
         }
     }
     let evicted_idle = state
@@ -235,7 +235,7 @@ fn run_residency_maintenance(state: &mut ControllerState) {
     maybe_idle_unload_llm(state);
     for runtime in evicted_idle {
         if matches!(runtime.kind, RuntimeKind::Embedder) {
-            state.engine.unload_embedder();
+            state.utilities.unload_embedder();
         }
     }
 }
@@ -471,10 +471,11 @@ fn handle_model_command(state: &mut ControllerState, cmd: ControllerCmd) -> Cont
                 let _ = resp.send(Err("embedder admission denied by residency policy".into()));
                 return ControlFlow::Continue;
             }
+            // The worker owns it, so the embedder no longer has to be
+            // implemented by whichever backend holds the chat model.
             let res = state
-                .engine
-                .load_embedder(EmbedLoadRequest { model_path, kind })
-                .map_err(|e| format!("{:?}", e));
+                .utilities
+                .load_embedder(EmbedLoadRequest { model_path, kind }, estimated_mb);
             if res.is_ok() {
                 let admitted = state.residency.admit(
                     ResidentRuntime::new(
@@ -486,7 +487,7 @@ fn handle_model_command(state: &mut ControllerState, cmd: ControllerCmd) -> Cont
                     &governor,
                 );
                 if !admitted {
-                    state.engine.unload_embedder();
+                    state.utilities.unload_embedder();
                     let _ = resp.send(Err(
                         "embedder residency registration denied after load".into()
                     ));
@@ -524,7 +525,13 @@ fn handle_status_command(state: &mut ControllerState, cmd: ControllerCmd) -> Con
             ControlFlow::Continue
         }
         ControllerCmd::IsEmbedderLoaded { resp } => {
-            let _ = resp.send(state.engine.is_embedder_loaded());
+            // The worker is the authority now: asking the generation backend
+            // would report on a helper it no longer owns.
+            let _ = resp.send(state.utilities.status().embedder.is_some());
+            ControlFlow::Continue
+        }
+        ControllerCmd::GetUtilityStatus { resp } => {
+            let _ = resp.send(state.utilities.status());
             ControlFlow::Continue
         }
         ControllerCmd::IsMmprojLoaded { resp } => {
@@ -923,16 +930,25 @@ fn handle_system_command(state: &mut ControllerState, cmd: ControllerCmd) -> Con
 fn handle_utility_command(state: &mut ControllerState, cmd: ControllerCmd) -> ControlFlow {
     match cmd {
         ControllerCmd::GenerateEmbeddings { inputs, resp } => {
-            let res = state
-                .engine
-                .generate_embeddings(&inputs)
-                .map_err(|e| format!("{:?}", e));
-            if res.is_ok() {
-                state
-                    .residency
-                    .touch(RuntimeKind::Embedder, chrono::Utc::now().timestamp());
+            // Handed to the utility worker, which answers `resp` itself. This
+            // thread does not wait: embedding a long batch here would stop
+            // chat token scheduling for the whole call, and the helpers still
+            // to come — transcription, OCR — take seconds rather than
+            // milliseconds.
+            match state.utilities.embed_forwarding(inputs, resp.clone()) {
+                Ok(()) => {
+                    // Touched on acceptance rather than completion. The reply
+                    // never comes back through here, so this is the last
+                    // moment the controller knows the helper was used — and a
+                    // request in flight is exactly when eviction would hurt.
+                    state
+                        .residency
+                        .touch(RuntimeKind::Embedder, chrono::Utc::now().timestamp());
+                }
+                Err(e) => {
+                    let _ = resp.send(Err(e));
+                }
             }
-            let _ = resp.send(res);
             ControlFlow::Continue
         }
         ControllerCmd::WarmModel { model_dir } => {
@@ -955,6 +971,7 @@ pub(super) fn dispatch_cmd(cmd: ControllerCmd, state: &mut ControllerState) -> C
         | ControllerCmd::ReloadModel { .. }
         | ControllerCmd::GetActiveBackendName { .. }
         | ControllerCmd::IsEmbedderLoaded { .. }
+        | ControllerCmd::GetUtilityStatus { .. }
         | ControllerCmd::IsMmprojLoaded { .. }
         | ControllerCmd::IsChatLoaded { .. }
         | ControllerCmd::GetControllerMetrics { .. }

@@ -131,6 +131,10 @@ pub(crate) mod test_support;
 /// the model/persona records a session is started from.
 #[allow(dead_code, unused_imports)]
 pub(crate) mod types;
+
+/// Auxiliary model runtimes — embedding today, more to come — owned off the
+/// controller thread so a slow helper cannot stall chat token scheduling.
+pub(crate) mod utilities;
 /// Canonical model zoo + per-platform bundle selector. Ships Gemma-4 as the
 /// reference family; new models plug in by editing `resources/models/zoo.json`.
 #[allow(dead_code, unused_imports)]
@@ -160,6 +164,8 @@ pub use api::{
 pub use api::{AgentTool, Risk, SEARCH_TOOL, Skill, SkillLibrary, Steering, Struggle};
 /// Tools served by an MCP server, alongside the tool types they sit with.
 pub use mcp::{McpClient, McpError, McpTool, McpToolSet};
+/// Which auxiliary runtimes are loaded, separate from what the chat model can do.
+pub use utilities::{LoadedUtility, UtilityStatus};
 
 /// Commands, events, and handles — see [`controller`].
 pub use controller::{

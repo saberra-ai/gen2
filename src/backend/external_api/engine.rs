@@ -157,14 +157,6 @@ impl Engine {
         self.load_model(req)
     }
 
-    pub fn load_embedder(&self, _req: EmbedLoadRequest) -> Result<(), ExecError> {
-        Err(ExecError::Unimplemented)
-    }
-
-    pub fn is_embedder_loaded(&self) -> bool {
-        false
-    }
-
     pub fn upload_settings(&self, settings: Settings) -> Result<(), ExecError> {
         settings.validate()?;
         self.settings.store(Arc::new(settings));
@@ -250,20 +242,12 @@ impl Engine {
         ExecutionStats::default()
     }
 
-    pub fn generate_embeddings(&self, _inputs: &[String]) -> Result<Vec<Vec<f32>>, ExecError> {
-        Err(ExecError::Unimplemented)
-    }
-
     pub fn unload_model(&self) {
         self.loaded.store(false, Ordering::SeqCst);
         *self.server_url.write() = String::new();
         *self.model_id.write() = String::new();
         *self.api_key.write() = None;
         *self.api_format.write() = "openai".into();
-    }
-
-    pub fn unload_embedder(&self) {
-        // no-op
     }
 
     /// Set the model_id (called from config layer when user provides external_model_id).
@@ -333,9 +317,7 @@ impl Backend for Engine {
     fn end_session(&self, id: SessionId) -> Result<(), ExecError> {
         Engine::end_session(self, id)
     }
-    fn as_embeddings(&self) -> Option<&dyn Embeddings> {
-        Some(self)
-    }
+    // No `as_embeddings`: see the note below the trait impls.
 }
 
 impl RemoteBackend for Engine {
@@ -344,20 +326,11 @@ impl RemoteBackend for Engine {
     }
 }
 
-impl Embeddings for Engine {
-    fn load_embedder(&self, req: EmbedLoadRequest) -> Result<(), ExecError> {
-        Engine::load_embedder(self, req)
-    }
-    fn is_embedder_loaded(&self) -> bool {
-        Engine::is_embedder_loaded(self)
-    }
-    fn generate_embeddings(&self, inputs: &[String]) -> Result<Vec<Vec<f32>>, ExecError> {
-        Engine::generate_embeddings(self, inputs)
-    }
-    fn unload_embedder(&self) {
-        Engine::unload_embedder(self)
-    }
-}
+// No `impl Embeddings`. There was one, and every method returned
+// `Unimplemented` — so `BackendCaps::embedding` reported `true` for a backend
+// that cannot embed anything, and a caller found out at the call site. gen2
+// embeds through the utility worker now (`crate::utilities`), which is not the
+// chat backend's business either way.
 
 #[cfg(test)]
 mod tests {

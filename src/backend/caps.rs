@@ -53,6 +53,11 @@ impl BackendCaps {
             // the BackendSession trait makes this trivially true.
             context_truncation_tracking: true,
             poison_detection: name == "llamacpp",
+            // Whether this backend carries a *native* embedding
+            // implementation — not whether gen2 can embed. Embedding is the
+            // utility worker's now (`crate::utilities`), so it works over a
+            // backend reporting `false` here, and `Engine::utility_status()`
+            // is the question a caller actually wants answered.
             embedding: b.as_embeddings().is_some(),
             first_token_tier: b.first_token_tier(),
         }

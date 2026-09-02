@@ -425,6 +425,28 @@ impl Engine {
         self.handle.send(cmd).map_err(|_| Error::ControllerGone)
     }
 
+    /// Send a raw controller command.
+    ///
+    /// Tests only, and only for the ones that need to start work without
+    /// waiting for it — proving a helper request does not block chat
+    /// scheduling means firing one and then doing something else, which no
+    /// blocking public method can express.
+    #[cfg(test)]
+    pub(crate) fn send_for_test(&self, cmd: ControllerCmd) -> Result<()> {
+        self.send(cmd)
+    }
+
+    /// Which auxiliary runtimes are loaded.
+    ///
+    /// Separate from [`Engine::capabilities`], which describes what the chat
+    /// model can accept. An embedder being resident says nothing about
+    /// whether the loaded model can read an image.
+    pub fn utility_status(&self) -> Result<crate::utilities::UtilityStatus> {
+        let (resp, rx) = channel();
+        self.send(ControllerCmd::GetUtilityStatus { resp })?;
+        rx.recv().map_err(|_| Error::ControllerGone)
+    }
+
     pub(crate) fn event_channel_capacity(&self) -> usize {
         self.handle.config().event_channel_capacity
     }
@@ -757,9 +779,23 @@ impl Engine {
         script: crate::test_support::Script,
         config: ControllerConfig,
     ) -> Self {
+        Self::scripted_with(script, config, None)
+    }
+
+    /// As [`Self::scripted_with_config`], with the utility worker supplied.
+    ///
+    /// The seam for proving a busy helper does not stop chat tokens.
+    pub(crate) fn scripted_with(
+        script: crate::test_support::Script,
+        config: ControllerConfig,
+        utilities: Option<crate::utilities::UtilityWorker>,
+    ) -> Self {
         let kept = script.clone();
-        let (handle, join) =
-            crate::controller::start_controller_with_engine(config, script.into_engine_factory());
+        let (handle, join) = crate::controller::start_controller_with_engine_and_utilities(
+            config,
+            script.into_engine_factory(),
+            utilities,
+        );
         let engine = Engine {
             handle,
             join: Some(join),

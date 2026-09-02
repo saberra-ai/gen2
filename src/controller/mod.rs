@@ -247,6 +247,13 @@ pub enum ControllerCmd {
     GetActiveBackendName { resp: Sender<&'static str> },
     /// Check whether the embedding model is loaded.
     IsEmbedderLoaded { resp: Sender<bool> },
+    /// Which auxiliary runtimes are loaded.
+    ///
+    /// Separate from `GetCapabilities`, which answers what the *generative*
+    /// model can accept. A helper being present says nothing about that.
+    GetUtilityStatus {
+        resp: Sender<crate::utilities::UtilityStatus>,
+    },
     /// Check whether the multimodal projector is loaded (image support).
     IsMmprojLoaded { resp: Sender<bool> },
     /// Check whether a chat session is active for the given chat_id.
@@ -910,9 +917,23 @@ pub(crate) fn start_controller_with_engine(
     config: ControllerConfig,
     build: Box<dyn FnOnce() -> crate::backend::Engine + Send>,
 ) -> (ControllerHandle, thread::JoinHandle<()>) {
+    start_controller_with_engine_and_utilities(config, build, None)
+}
+
+/// As [`start_controller_with_engine`], with the utility worker chosen too.
+///
+/// `None` builds the real one. A test passes a factory whose embedder behaves
+/// however the test needs — slowly, most usefully, since a helper that is busy
+/// is the only way to show chat scheduling is unaffected by one.
+#[cfg(test)]
+pub(crate) fn start_controller_with_engine_and_utilities(
+    config: ControllerConfig,
+    build: Box<dyn FnOnce() -> crate::backend::Engine + Send>,
+    utilities: Option<crate::utilities::UtilityWorker>,
+) -> (ControllerHandle, thread::JoinHandle<()>) {
     let (tx, rx): (Sender<ControllerCmd>, Receiver<ControllerCmd>) = channel();
     let handle_config = config.clone();
-    let join = thread::spawn(move || run_loop_with_engine(rx, config, build()));
+    let join = thread::spawn(move || run_loop_with_engine(rx, config, build(), utilities));
     (
         ControllerHandle {
             tx,
@@ -951,16 +972,20 @@ impl ChatRuntime {
 }
 
 fn run_loop(rx: Receiver<ControllerCmd>, config: ControllerConfig) {
-    run_loop_with_engine(rx, config, crate::backend::Engine::new())
+    run_loop_with_engine(rx, config, crate::backend::Engine::new(), None)
 }
 
 fn run_loop_with_engine(
     rx: Receiver<ControllerCmd>,
     config: ControllerConfig,
     engine: crate::backend::Engine,
+    utilities: Option<crate::utilities::UtilityWorker>,
 ) {
     let tick_busy = Duration::from_millis(0);
-    let mut state = ControllerState::with_engine(engine, config);
+    let mut state = match utilities {
+        Some(utilities) => ControllerState::with_engine_and_utilities(engine, config, utilities),
+        None => ControllerState::with_engine(engine, config),
+    };
 
     'outer: loop {
         if state.chats.is_empty() {

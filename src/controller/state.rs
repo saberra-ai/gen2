@@ -5,6 +5,7 @@ use std::time::{Duration, Instant};
 use crate::backend::Engine;
 use crate::residency::ResidencyInventory;
 use crate::residency_policy::ResidencyPolicy;
+use crate::utilities::UtilityWorker;
 
 use super::ChatRuntime;
 use super::ControllerConfig;
@@ -17,6 +18,14 @@ pub struct ControllerState {
     pub(super) residency: ResidencyInventory,
     pub(super) residency_policy: ResidencyPolicy,
     pub(super) caps: crate::backend::caps::BackendCaps,
+    /// Auxiliary runtimes — the embedder today — on their own thread.
+    ///
+    /// Not on `engine`, deliberately. A helper owned by the active generation
+    /// backend can only exist where that backend implements it, which is why
+    /// an MLX chat model could not have a llama.cpp embedder beside it. And a
+    /// helper *called* on this thread stops chat token scheduling for as long
+    /// as it runs. See [`crate::utilities`].
+    pub(super) utilities: UtilityWorker,
     pub(super) config: ControllerConfig,
     pub(super) metrics: Arc<ControllerMetrics>,
     /// Whole-model on-disk byte size of the currently-loaded primary LLM,
@@ -52,7 +61,20 @@ impl ControllerState {
     /// As [`Self::new`], but over an engine the caller built.
     ///
     /// The seam tests use to run the controller against a scripted backend.
-    pub(crate) fn with_engine(mut engine: Engine, config: ControllerConfig) -> Self {
+    pub(crate) fn with_engine(engine: Engine, config: ControllerConfig) -> Self {
+        Self::with_engine_and_utilities(engine, config, UtilityWorker::spawn())
+    }
+
+    /// As [`Self::with_engine`], over a utility worker the caller built.
+    ///
+    /// The seam a test needs to install a helper that is deliberately slow.
+    /// Proving that chat scheduling survives a busy helper is impossible
+    /// against the real embedder: it is either fast, or absent.
+    pub(crate) fn with_engine_and_utilities(
+        mut engine: Engine,
+        config: ControllerConfig,
+        utilities: UtilityWorker,
+    ) -> Self {
         let caps = engine.backend_caps();
         Self {
             engine,
@@ -60,6 +82,7 @@ impl ControllerState {
             residency: ResidencyInventory::default(),
             residency_policy: ResidencyPolicy::default(),
             caps,
+            utilities,
             config,
             metrics: Arc::new(ControllerMetrics::default()),
             loaded_model_file_bytes: None,
