@@ -111,6 +111,12 @@ pub(crate) mod residency_stats;
 #[allow(dead_code, unused_imports)]
 pub(crate) mod router;
 
+/// An append-only history and the projections that turn it into a transcript.
+///
+/// The seam a durable agent is built on: the journal is what happened, the
+/// context is a view of it, and the two are allowed to differ.
+pub mod journal;
+
 #[allow(
     dead_code,
     unused_variables,
@@ -127,6 +133,7 @@ pub(crate) mod task_util;
 #[cfg(test)]
 #[allow(dead_code)]
 pub(crate) mod test_support;
+
 /// Wire types shared by every backend: messages in, execution stats out, and
 /// the model/persona records a session is started from.
 #[allow(dead_code, unused_imports)]
