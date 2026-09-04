@@ -181,6 +181,19 @@ Observable: `crates/gen2-mlxcel` (workspace member, `publish = false`) builds wi
 Reference to mirror: `src/backend/traits.rs` (already `pub`), `mistralrs` device
 plumbing for how a backend receives settings. Gate: root `cargo publish --dry-run`
 exit 0; companion live test passes. Blocked by: S1.2. Forks: none.
+Design (2026-09-04, from reading the facade): `Backend` is `!Send` by design, so a
+consumer registers a factory, not an instance. `BackendPlugin { name, claims:
+fn(&Path) -> bool, make: Box<dyn Fn() -> Box<dyn LocalBackend> + Send + Sync> }`
+travels in `ControllerConfig.plugins`; `facade::detect_backend` asks plugins first
+and the facade `Engine` gains a `Plugin(Box<dyn LocalBackend>)` variant. Public
+surface for implementers: a curated `gen2::backend` (or `gen2::plugin`) module
+re-exporting `Backend`, `LocalBackend`, `BackendSession`, `TokenPullerDyn`,
+`HfTokenizer`, `ChatTemplate`, `load_chat_template`, `GrammarMatcher`, `SessionSpec`,
+`messages_have_images`, `TokenEvent`, `ModelMeta`, `LoadRequest`, `HookBus`, and the
+settings types (the ~20 paths `src/backend/mlxcel` reaches today). Root
+`Cargo.toml` becomes a workspace root with `crates/gen2-mlxcel` (`publish = false`);
+mlxcel's module moves there verbatim plus `pub fn plugin() -> BackendPlugin`. The
+mlx/mlxcel link-conflict note stays in docs.
 Honest ⬜: mlxcel throughput unmeasured; mlx+mlxcel still cannot be linked together.
 Status: ⬜
 
@@ -276,3 +289,4 @@ session. A ScheduleWakeup is the safety net if a background job goes quiet.
 
 - 2026-09-04 S0.1 aefe0b8 · clippy/test/doc/fmt green locally; rerank test 10/10; docs 05899a5 · no detours · ⬜ CI confirmation
 - 2026-09-04 S1.1 (this commit) · llama-cpp-2 =0.1.156 (llama.cpp b10405), penalties ported with -1→n_ctx; mlx-rs hybrid 0.25.3+git · unit 1015, live 22/22 Metal, clippy/doc/fmt/ext-api green · dry-run now fails only on mlxcel
+- 2026-09-04 ↷ detour (this commit) · Linux memory probe read sysinfo.freeram (excludes page cache) so the residency governor denied helper loads after big builds; the mistral.rs CI lane had failed on it for 6 runs · now MemAvailable from /proc/meminfo, parser unit-tested · ⬜ host-memory dependence of the acceptance tests remains (governor is a global)

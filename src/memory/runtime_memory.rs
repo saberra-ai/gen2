@@ -33,11 +33,37 @@ fn bytes_to_mb(bytes: u64) -> u64 {
     bytes / (1024 * 1024)
 }
 
+/// Linux and Android: `MemAvailable` from `/proc/meminfo`, which is what
+/// the kernel says a new allocation can take without swapping. `sysinfo`'s
+/// `freeram` is the wrong number here: it excludes the page cache, and after
+/// a large build or a long read the cache is most of RAM. On that reading a
+/// 16 GB box reports a few hundred MB "free", and the residency governor
+/// refuses to load a 100 MB helper. `MemAvailable` has been in `meminfo`
+/// since Linux 3.14; if it is missing the fallback counts free plus buffer
+/// pages, which at least does not ignore the cache entirely.
 #[cfg(any(target_os = "linux", target_os = "android"))]
 fn detect_available_memory_mb() -> u64 {
+    if let Some(mb) = std::fs::read_to_string("/proc/meminfo")
+        .ok()
+        .and_then(|text| meminfo_available_mb(&text))
+    {
+        return mb;
+    }
     let mut info: libc::sysinfo = unsafe { std::mem::zeroed() };
     unsafe { libc::sysinfo(&mut info) };
-    bytes_to_mb(info.freeram as u64 * info.mem_unit as u64)
+    let unit = info.mem_unit as u64;
+    bytes_to_mb((info.freeram as u64 + info.bufferram as u64) * unit)
+}
+
+/// `MemAvailable:   12345678 kB` → MB. Any platform can parse the text, so
+/// the test for it runs everywhere, not only on the runner that needs it.
+fn meminfo_available_mb(meminfo: &str) -> Option<u64> {
+    meminfo
+        .lines()
+        .find_map(|line| line.strip_prefix("MemAvailable:"))
+        .and_then(|rest| rest.split_whitespace().next())
+        .and_then(|kb| kb.parse::<u64>().ok())
+        .map(|kb| kb / 1024)
 }
 
 #[cfg(target_os = "macos")]
@@ -124,4 +150,22 @@ fn detect_process_memory_mb() -> u64 {
 )))]
 fn detect_process_memory_mb() -> u64 {
     0
+}
+
+#[cfg(test)]
+mod tests {
+    use super::meminfo_available_mb;
+
+    #[test]
+    fn reads_mem_available_not_mem_free() {
+        let text = "MemTotal:       16303620 kB\nMemFree:          412872 kB\n\
+                    MemAvailable:   13115460 kB\nBuffers:          254000 kB\n";
+        assert_eq!(meminfo_available_mb(text), Some(13115460 / 1024));
+    }
+
+    #[test]
+    fn a_kernel_without_mem_available_yields_nothing() {
+        let text = "MemTotal:       16303620 kB\nMemFree:          412872 kB\n";
+        assert_eq!(meminfo_available_mb(text), None);
+    }
 }
