@@ -16,8 +16,11 @@ Owner: Victor. Driven by an autonomous agent under the budget in "Autonomy budge
 - Priority stack (user chose "publishable + best DX"; ordering below the first
   item is the agent's): DX and correctness > maintainability > publishability
   > measured performance > backend breadth > novelty.
-- Taste / references: the README's existing voice (plain sentences, every
-  example doc-tested, costs stated honestly). Mirror: mistral.rs and
+- Taste / references: **`api_spec.md` (Victor, 2026-09-04, "Proposed") is the
+  public-surface reference**: `Runtime`/`Model`/`Session`/`Turn`, semantic
+  `EventStream`, first-order system prompt and tools, append-only history with an
+  active projection, agent loops OUT of the core. The README's existing voice (plain
+  sentences, every example doc-tested, costs stated honestly). Mirror: mistral.rs and
   llama-cpp-2 for the Rust surface, ollama's "one command and it talks" first
   run, `ort` for a native-dependency crate that still `cargo add`s cleanly.
 - Anti-references: LangChain-style abstraction sprawl; a backend matrix where
@@ -39,13 +42,27 @@ Owner: Victor. Driven by an autonomous agent under the budget in "Autonomy budge
   seven backends collapse to a tier list rather than all being proven;
   Windows CI is compile-and-unit-test only (no GPU); CUDA is compile-checked
   at most because GPU runners cost money.
-- Human-only forks: ⛔ crate name "gen2" (check availability; if taken the
-  user picks); ⛔ tagline/positioning; ⛔ publish/tag; ⛔ any paid runner.
+- Human-only forks: ⛔ crate name "gen2" (free on crates.io as of 2026-09-04);
+  ⛔ tagline/positioning; ⛔ publish/tag; ⛔ any paid runner; ⛔ whether the agent
+  layer (`Agent`, `AgentRun`, approvals, tool execution, MCP lifecycle) is deleted
+  or kept as an optional `agent` feature off the root (spec §26 allows either; the
+  roadmap defaults to "optional feature, off the root" because pio-app still
+  consumes it, and flags it).
 - Research questions: see "Research calls".
 
 ## Research calls
 
 Receipts (graded, cited): `docs/plans/research/0[1-5]-*.md`. Calls taken:
+
+0. **Public API** (`api_spec.md`, user-authored, pulled 2026-09-04 after S1.2). The
+   facade becomes `Runtime` → `Model` → `Turn` over a model-agnostic `Session`;
+   `gen2::load(path)` is the one-liner; `Model::generate` replaces `Engine::infer`,
+   `Model::turn(&mut session)` replaces `Engine::chat`; `GenerationOptions`,
+   `Response`, semantic `Event` stream; remote OpenAI-compatible models via
+   `runtime.openai()...connect()`; root namespace per §25 with `gen2::advanced` for
+   local tuning, residency, hardware, grammar, and the backend plugin seam. The
+   controller/backends stay below (§27). Wave 2 below implements it; the old Wave 2
+   (first run) becomes Wave 3 and its README block uses the new API.
 
 1. **Backend tiers** (01). Tier 1: `backend-llamacpp` (default), `backend-external-api`,
    `backend-litertlm` (mobile). Tier 2 experimental: `backend-mistralrs` (must forward
@@ -84,6 +101,8 @@ Receipts (graded, cited): `docs/plans/research/0[1-5]-*.md`. Calls taken:
 ## Done-when
 
 - `cargo publish --dry-run` exits 0 on `main`, and CI's `publishable` job is a hard gate.
+- The `api_spec.md` §28 walkthrough compiles and runs against the crate (doc tests
+  plus live tests), and the root namespace matches §25.
 - A fresh clone on macOS and Linux reaches a generated token by following only the
   README (`cargo run --example hello`), and a CI job proves it.
 - `cargo doc` under the docs.rs metadata builds warning-free.
@@ -105,7 +124,7 @@ Receipts (graded, cited): `docs/plans/research/0[1-5]-*.md`. Calls taken:
 
 ## Autonomy budget + blast-radius stops
 
-- Budget: this session, at most 14 slices, ≤8 commits per slice, one slice in flight
+- Budget: this session, at most 20 slices, ≤8 commits per slice, one slice in flight
   at a time; pre-flight disk (>40 GB free) before every build-heavy slice
   (`target/` was 79 GB on day one; `cargo clean` reclaimed 115 GB).
 - Stop immediately for: `cargo publish` (not dry-run); creating a git tag; any paid
@@ -202,80 +221,142 @@ Outcome: everything but the publish button is done.
 Observable: `[package.metadata.docs.rs]` present and `cargo doc` with those exact
 features is warning-free; CI `publishable` is a hard gate; CHANGELOG.md exists;
 README install snippet says `gen2 = "0.1"`.
-Gate: dry-run exit 0 on `main`; CI green. Blocked by: S1.3. Forks: ⛔ publish + tag.
+Gate: dry-run exit 0 on `main`; CI green. Blocked by: S1.3. Forks: ⛔ publish + tag (Victor may prefer to publish only after wave 2 so 0.1 ships the spec's API; the slice prepares either way).
 Status: ⬜
 
-### Wave 2 — five-minute first run
-#### S2.1 `hf:` model references
+### Wave 2 — the inference-first facade (`api_spec.md`)
+Ceiling for the whole wave: every public example in the spec's §28 walkthrough
+becomes a doc test or a live test on Qwen3-0.6B; the old `Engine` facade stays
+until S2.6 retires it, so pio-app's switchover (wave 5) can target either.
+
+#### S2.1 `Runtime`, `Model`, `gen2::load`, one-shot `generate`
+Outcome: spec §4–§6 and §28.1–28.2 work over the existing controller.
+Observable: `let model = gen2::load(path)?; model.generate("hello").text()?` is a
+live test that prints a token; `Runtime::new()?.load(path)` returns a cloneable
+`Model` with `info()`/`capabilities()` per §5; `runtime.openai().base_url(..)
+.model(..).connect()?` produces a `Model` (mockito test, mirrors tests/external_openai.rs).
+Reference to mirror: spec §4–§6, §25; `src/api/engine.rs` (what to wrap).
+Gate: `cargo test`; live test; docs.rs-feature doc build. Blocked by: S1.4.
+Forks: none. Honest ⬜: multi-model residency automation is S2.4.
+Status: ⬜
+
+#### S2.2 `Session`: first-order system prompt and tools, active projection, history
+Outcome: spec §7–§9 (`Session::new().with_system(..).with_tools(..)`, `messages()`
+active vs `history()` append-only, message ids, edit/remove/replace/fork,
+`SessionRevision`).
+Observable: unit tests for every §7 operation, each asserting the §29 invariants
+(edits lossless; active vs record separate); `src/journal` is the substrate.
+Reference to mirror: spec §7–§9, §29; `src/journal/*`.
+Gate: `cargo test`. Blocked by: S2.1. Forks: none.
+Status: ⬜
+
+#### S2.3 `Turn`, `Response`, semantic `EventStream`, tools protocol, structured output
+Outcome: spec §10–§16: `model.turn(&mut session).user(..).run()?`, `.stream()?`
+yielding §15 events, `ToolDefinition`/`ToolSet`/`ToolChoice`/`ToolCall` with NO
+execution in core, `.structured::<T>()` enforced by grammar where the backend can,
+cancellation as a finish reason with partial output kept (§16).
+Observable: §28.5 tool loop and §28.10 streaming walkthroughs pass as live tests on
+a tool-capable GGUF; §28.11 structured output live test.
+Reference to mirror: spec §10–§16, §28; existing `api/chat.rs`, grammar module.
+Gate: `cargo test`; live tests. Blocked by: S2.2. Forks: none.
+Status: ⬜
+
+#### S2.4 Model switching, cache identity, multiple resident models
+Outcome: spec §17 and §23: two `Model`s from one `Runtime`, a session switched
+between them mid-chat (§28.4), cache identity keyed by model/session/context
+fingerprint, eviction and automatic restore (§4.2).
+Observable: live test switching Qwen3-0.6B ↔ Llama-3.2-3B in one session.
+Gate: `cargo test`; live test. Blocked by: S2.3. Forks: none.
+Honest ⬜: accelerator contention scheduling beyond queueing.
+Status: ⬜
+
+#### S2.5 Async surface
+Outcome: spec §22: `run_async`, `stream_async` under the `tokio` feature with no
+parallel object model. Gate: `cargo test --features tokio`; existing async lane.
+Blocked by: S2.3. Status: ⬜
+
+#### S2.6 Root namespace and retirement of the old facade
+Outcome: spec §25–§27: root exports exactly the §25 list; `gen2::advanced` holds
+local tuning, residency, hardware, grammar, and the backend plugin seam from S1.3;
+the agent layer moves behind an `agent` feature as `gen2::agent` (default per the
+human fork above, flagged); `Engine`/`Chat`/`Inference` removed or kept as
+`#[deprecated]` shims for one release; README examples rewritten to the new API.
+Forks: ⛔ README opening/tagline (present the new text to Victor); ⛔ delete vs
+feature-gate the agent layer. Gate: `cargo test`; `cargo doc`; every README
+example doc-tested. Blocked by: S2.5.
+Status: ⬜
+
+### Wave 3 — five-minute first run
+#### S3.1 `hf:` model references
 Outcome: `Engine::load("hf:unsloth/Qwen3-0.6B-GGUF")` downloads to a cache and loads.
 Observable: a live test with a temp cache dir downloads Q4_K_M and generates a token;
 `:Q8_0` and `:file.gguf` forms resolve; `HF_TOKEN` honoured; progress callback fires.
 Reference to mirror: ollama/llama.cpp `hf:` grammar; `hf-hub` crate API; receipt 03.
 Gate: unit tests for the reference parser (offline) + live download test.
-Blocked by: S1.4. Forks: none. Honest ⬜: HF rate limits under CI not observed.
+Blocked by: S2.6. Forks: none. Honest ⬜: HF rate limits under CI not observed.
 Status: ⬜
 
-#### S2.2 Metal is the default on Apple Silicon
+#### S3.2 Metal is the default on Apple Silicon
 Outcome: nobody types `metal` to get the GPU.
 Observable: a macOS CI job with default features loads a model and reports GPU offload.
-Gate: that job green; README no longer says "add `metal`". Blocked by: S2.1.
+Gate: that job green; README no longer says "add `metal`". Blocked by: S3.1.
 Status: ⬜
 
-#### S2.3 `hello` example, README first block, prerequisites
+#### S3.3 `hello` example, README first block, prerequisites
 Outcome: the README's first screen is the whole five-minute path.
 Observable: `examples/hello.rs` runs with no arguments; README has a per-OS
 prerequisite line and an sccache hint; `examples/minimal.rs` no longer unwraps.
 Gate: `cargo run --example hello` prints a token on this Mac; doc tests pass.
 Forks: ⛔ opening paragraph/tagline untouched; any positioning sentence listed for
-Victor in the ledger. Blocked by: S2.2.
+Victor in the ledger. Blocked by: S3.2.
 Status: ⬜
 
-#### S2.4 Windows lane + fresh-clone job
+#### S3.4 Windows lane + fresh-clone job
 Outcome: CI proves the README on three OSes.
 Observable: `windows-latest` compiles and runs unit tests with default features; a
 `first-run` job on macOS and Linux does `cargo run --example hello` with the HF cache
-restored by `actions/cache`. Gate: CI green. Blocked by: S2.3.
+restored by `actions/cache`. Gate: CI green. Blocked by: S3.3.
 Honest ⬜: Windows GPU; MSVC first-build time not optimised.
 Status: ⬜
 
-### Wave 3 — honest benchmarks
-#### S3.1 Benchmark harness and first results
+### Wave 4 — honest benchmarks
+#### S4.1 Benchmark harness and first results
 Outcome: a benchmark table a skeptic can reproduce.
 Observable: `benches/results/<machine>/<date>-<sha>.json` committed for this Mac,
 produced by a harness that builds llama-bench from the vendored sha and asserts
 `build_commit`; README table generated between markers by a `bench-table` bin.
 Reference to mirror: `llama.cpp/tools/llama-bench`, `scripts/compare-llama-bench.py`,
 mistral.rs release report shape. Gate: bin regenerates the table byte-identically.
-Blocked by: S1.4. Honest ⬜: RTX 3080 and Pi 5 rows.
+Blocked by: S1.4 (may run alongside wave 2). Honest ⬜: RTX 3080 and Pi 5 rows.
 Status: ⬜
 
-#### S3.2 Freshness gate
+#### S4.2 Freshness gate
 Outcome: the table cannot rot silently.
 Observable: `bench-freshness` CI job fails on table drift, llama.cpp pin drift, or
 age >90 days; the unsourced LiteRT-LM "1.7x" sentence is removed or sourced.
-Gate: CI green. Blocked by: S3.1.
+Gate: CI green. Blocked by: S4.1.
 Status: ⬜
 
-### Wave 4 — pio-app consumes the crate
-#### S4.1 `compat` surface in gen2
+### Wave 5 — pio-app consumes the crate
+#### S5.1 `compat` surface in gen2
 Outcome: pio-app's 454 import leaves resolve against the crate.
 Observable: `#[doc(hidden)] pub mod compat` re-exports the 40 `pub(crate)` paths listed
 in receipt 05; `SystemTask` gap documented with the mapping pio-app must apply.
 Gate: `cargo test`; a compile-only check in pio-app's worktree shows the error count
-drop from ~204 to only `SystemTask`/`ControllerEvent` semantic sites. Blocked by: S1.4.
+drop from ~204 to only `SystemTask`/`ControllerEvent` semantic sites. Blocked by: S2.6 (target the new facade where pio-app's use is inference; `compat` covers the rest).
 Status: ⬜
 
-#### S4.2 pio-app `gen2-crate` feature (PR)
+#### S5.2 pio-app `gen2-crate` feature (PR)
 Outcome: pio-app builds against the standalone crate behind a feature.
 Observable: worktree off origin/main, `gen2-crate` feature with path dep, shim
 re-export, three `RemoteDispatch` impls, `HostInference` enum; gate per receipt 05
 (filtered lib tests ×3, integration suites, live chat/tool/gemma4/flock tests).
-Integration: PR, not merged by the agent. Blocked by: S4.1.
+Integration: PR, not merged by the agent. Blocked by: S5.1.
 Honest ⬜: specta bindings drift only checked by diff.
 Status: ⬜
 
-#### S4.3 Flip default, delete in-tree copy (PR)
-Outcome: pio-app has one gen2. Blocked by: S4.2 merged by Victor. Forks: ⛔ (merge).
+#### S5.3 Flip default, delete in-tree copy (PR)
+Outcome: pio-app has one gen2. Blocked by: S5.2 merged by Victor. Forks: ⛔ (merge).
 Status: ⬜
 
 ## Heartbeat adapter
@@ -291,3 +372,4 @@ session. A ScheduleWakeup is the safety net if a background job goes quiet.
 - 2026-09-04 S1.1 (this commit) · llama-cpp-2 =0.1.156 (llama.cpp b10405), penalties ported with -1→n_ctx; mlx-rs hybrid 0.25.3+git · unit 1015, live 22/22 Metal, clippy/doc/fmt/ext-api green · dry-run now fails only on mlxcel
 - 2026-09-04 ↷ detour (this commit) · Linux memory probe read sysinfo.freeram (excludes page cache) so the residency governor denied helper loads after big builds; the mistral.rs CI lane had failed on it for 6 runs · now MemAvailable from /proc/meminfo, parser unit-tested · ⬜ host-memory dependence of the acceptance tests remains (governor is a global)
 - 2026-09-04 S1.2 worktree-agent-a735c99fdb336ec65 · onnx+candle removed (1862 lines deleted, 685 added, net −1177; 1,525 LOC of backend code), mistralrs forwards metal/cuda (cargo tree proof, no Metal build), README tiered · gate: cargo test 1016/0/16 ignored default + 1014/0/4 mistralrs lane (CPU), clippy -D warnings, doc -D warnings, rustfmt, check ext-api / litertlm / llamacpp+litertlm, grep clean · ⬜ CI confirmation
+- 2026-09-04 ↷ input: Victor pushed `api_spec.md` (660cca4) after S1.2; roadmap re-sliced: new wave 2 = the facade (S2.1–S2.6), first-run → wave 3, benchmarks → wave 4, pio-app → wave 5; S1.3 in flight, told to put the plugin seam under `gen2::advanced`
