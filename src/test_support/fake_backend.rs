@@ -469,6 +469,11 @@ impl Backend for FakeBackend {
         ExecutionStats::default()
     }
 
+    fn context_window(&self) -> Option<u32> {
+        u32::try_from(LocalBackend::n_ctx(self))
+            .ok()
+            .filter(|n| *n > 0)
+    }
     fn first_token_tier(&self) -> crate::backend::caps::LatencyTier {
         crate::backend::caps::LatencyTier::Fast
     }

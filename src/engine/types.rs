@@ -20,6 +20,11 @@ pub struct LoadRequest {
     /// Set programmatically from config, not deserialized.
     #[serde(skip)]
     pub api_format: Option<String>,
+    /// Model name an external API backend puts in each request (`"gpt-5-mini"`,
+    /// `"qwen3:8b"`). Set programmatically; `None` falls back to
+    /// `PIO_EXTERNAL_MODEL_ID` and then the provider's default.
+    #[serde(skip)]
+    pub api_model: Option<String>,
 }
 
 #[derive(Deserialize, Clone, Debug, Default)]

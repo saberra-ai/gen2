@@ -30,6 +30,12 @@ pub struct ControllerRuntimeSnapshot {
     /// size isn't a single `metadata().len()`.
     #[serde(default)]
     pub loaded_model_file_bytes: Option<u64>,
+    /// Context window, in tokens, of the currently-loaded model — the size
+    /// the backend actually allocated, not the header's training length.
+    /// `None` when no model is loaded or the backend cannot say (a remote
+    /// provider that does not advertise one).
+    #[serde(default)]
+    pub loaded_model_context: Option<u32>,
 }
 
 /// Observable fields for a single `ChatRuntime`.
@@ -78,10 +84,12 @@ pub(super) fn build_runtime_snapshot(state: &ControllerState) -> ControllerRunti
         .collect();
     chats.sort_by(|a, b| a.chat_id.cmp(&b.chat_id));
     let loaded_model_architecture = state.engine.bundle_architecture();
+    let loaded_model_context = state.engine.context_window();
     ControllerRuntimeSnapshot {
         chats,
         loaded_model_architecture,
         loaded_model_file_bytes: state.loaded_model_file_bytes,
+        loaded_model_context,
     }
 }
 
@@ -117,6 +125,7 @@ mod tests {
             ],
             loaded_model_architecture: Some("gemma4".into()),
             loaded_model_file_bytes: Some(8 << 30),
+            loaded_model_context: Some(8192),
         };
         let json = serde_json::to_string(&snap).expect("serialize");
         let back: ControllerRuntimeSnapshot = serde_json::from_str(&json).expect("deserialize");

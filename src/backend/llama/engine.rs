@@ -292,6 +292,12 @@ impl Backend for Engine {
             .load_full()
             .and_then(|b| b.meta.architecture.clone())
     }
+    fn context_window(&self) -> Option<u32> {
+        self.bundle
+            .load_full()
+            .map(|b| b.meta.n_ctx)
+            .filter(|n| *n > 0)
+    }
     fn start_session(&self, spec: SessionSpec) -> Result<Arc<dyn BackendSession>, ExecError> {
         let s = Engine::start_session(self, spec)?;
         Ok(s as Arc<dyn BackendSession>)

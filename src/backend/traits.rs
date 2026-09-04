@@ -59,6 +59,14 @@ pub trait Backend: std::fmt::Debug {
         None
     }
 
+    /// Context window of the loaded model in tokens, when the backend knows
+    /// it. Local backends answer with the window they allocated; a remote
+    /// backend answers only if the provider advertised one. `None` when
+    /// nothing is loaded or the size is unknown.
+    fn context_window(&self) -> Option<u32> {
+        None
+    }
+
     fn start_session(&self, spec: SessionSpec) -> Result<Arc<dyn BackendSession>, ExecError>;
     fn end_session(&self, id: SessionId) -> Result<(), ExecError>;
 

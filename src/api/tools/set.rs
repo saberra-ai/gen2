@@ -2,7 +2,7 @@
 
 use std::sync::Arc;
 
-use super::Tool;
+use super::{Tool, ToolSpec};
 
 /// Converts anything tool-shaped into a registrable handle.
 ///
@@ -77,6 +77,15 @@ impl ToolSet {
     /// Whether the set is empty.
     pub fn is_empty(&self) -> bool {
         self.tools.is_empty()
+    }
+
+    /// What the model is shown for each tool, in set order.
+    ///
+    /// The declarations without the executables — what a one-shot
+    /// [`Generation::tools`](crate::api::Generation::tools) needs, since it
+    /// runs no tool loop.
+    pub fn specs(&self) -> Vec<ToolSpec> {
+        self.tools.iter().map(|t| t.spec().clone()).collect()
     }
 
     /// The tools, by name.

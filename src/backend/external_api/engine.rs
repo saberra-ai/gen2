@@ -82,8 +82,11 @@ impl Engine {
         let base_url = url_str.trim_end_matches('/').to_string();
 
         // Apply API key and format from the load request
-        if let Some(ref key) = req.api_key {
-            *self.api_key.write() = Some(key.clone());
+        // An empty key means "no key" — local servers need none, and a bare
+        // `Authorization: Bearer ` header is a malformed request, not a
+        // harmless one.
+        if let Some(key) = req.api_key.as_deref().filter(|k| !k.is_empty()) {
+            *self.api_key.write() = Some(key.to_string());
         }
         if let Some(ref fmt) = req.api_format {
             *self.api_format.write() = fmt.clone();
@@ -131,7 +134,14 @@ impl Engine {
         // isn't present, so honor a PIO_EXTERNAL_MODEL_ID env fallback too —
         // otherwise an empty model_id sends "default" upstream (session.rs), which
         // model-specific servers like ollama reject as not-found.
-        *self.model_id.write() = std::env::var("PIO_EXTERNAL_MODEL_ID").unwrap_or_default();
+        // The load request names the model first (`Runtime::openai().model(..)`
+        // and `EngineBuilder::remote_model`); the env var stays as the
+        // headless fallback.
+        *self.model_id.write() = req
+            .api_model
+            .clone()
+            .or_else(|| std::env::var("PIO_EXTERNAL_MODEL_ID").ok())
+            .unwrap_or_default();
         self.loaded.store(true, Ordering::SeqCst);
         self.sessions.clear();
         *self.last_load.write() = Some(req);
@@ -309,6 +319,9 @@ impl Backend for Engine {
     }
     fn first_token_tier(&self) -> LatencyTier {
         LatencyTier::Slow
+    }
+    fn context_window(&self) -> Option<u32> {
+        RemoteBackend::advertised_ctx(self).and_then(|n| u32::try_from(n).ok())
     }
     fn start_session(&self, spec: SessionSpec) -> Result<Arc<dyn BackendSession>, ExecError> {
         let s = Engine::start_session(self, spec)?;

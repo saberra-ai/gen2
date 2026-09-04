@@ -68,6 +68,7 @@ impl Harness {
                 settings: Default::default(),
                 api_key: None,
                 api_format: None,
+                api_model: None,
                 resp,
             })
             .map_err(|e| e.to_string())?;

@@ -1092,3 +1092,112 @@ fn images_on_a_text_only_model_are_refused_not_attempted() {
             .is_empty()
     );
 }
+
+// ── The inference-first facade (api_spec.md §4–§6) ───────────────────────────
+
+/// Hello world, as the spec writes it: load, generate, text.
+#[test]
+fn facade_load_and_generate_prints_a_token() {
+    let Some(model) = test_model() else {
+        eprintln!("SKIP: set PIO_TEST_MODEL");
+        return;
+    };
+
+    let model = gen2::load(model).expect("gen2::load should load a real GGUF");
+    let text = model
+        .generate("Reply with exactly one word: hello")
+        .max_tokens(8)
+        .text()
+        .expect("generation should succeed");
+
+    eprintln!("--- facade generated: {text:?}");
+    assert!(
+        !text.trim().is_empty(),
+        "the reply is empty — the model loaded but the facade returned no text"
+    );
+}
+
+/// A `Runtime` hands out cloneable, shareable models, and the handle answers
+/// what it is and what it can do.
+#[test]
+fn facade_runtime_model_is_shareable_and_describes_itself() {
+    use gen2::Runtime;
+    use gen2::model::ModelSourceKind;
+    use gen2::output::FinishReason;
+
+    let Some(path) = test_model() else {
+        eprintln!("SKIP: set PIO_TEST_MODEL");
+        return;
+    };
+
+    let runtime = Runtime::new().expect("a runtime builds");
+    let model = runtime
+        .load(&path)
+        .expect("the runtime should load a real GGUF");
+    let a = model.clone();
+    let b = model.clone();
+
+    // Two threads, sequentially: the second starts after the first finishes,
+    // which is the sharing an app does when it moves inference off the UI.
+    let first = std::thread::spawn(move || {
+        a.generate("Reply with exactly one word: hello")
+            .max_tokens(8)
+            .greedy()
+            .run()
+    })
+    .join()
+    .expect("no panic")
+    .expect("first generation should succeed");
+    let second = std::thread::spawn(move || {
+        b.generate("Reply with exactly one word: goodbye")
+            .max_tokens(8)
+            .greedy()
+            .run()
+    })
+    .join()
+    .expect("no panic")
+    .expect("second generation should succeed");
+    eprintln!(
+        "--- shared clones: {:?} / {:?} ({} / {})",
+        first.text(),
+        second.text(),
+        first.finish_reason(),
+        second.finish_reason()
+    );
+    for r in [&first, &second] {
+        assert!(
+            !r.text().is_empty() || r.reasoning().is_some(),
+            "a clone must generate: {r:?}"
+        );
+        assert!(
+            matches!(r.finish_reason(), FinishReason::Stop | FinishReason::Length),
+            "a plain reply ends by stopping or by budget, got {}",
+            r.finish_reason()
+        );
+        assert!(r.stats().reported(), "llama.cpp reports stats: {r:?}");
+        assert!(r.usage().completion_tokens > 0);
+    }
+
+    let info = model.info();
+    eprintln!("--- info: {info:?}");
+    assert!(
+        info.context_window.is_some(),
+        "the loaded model's context window must be reported"
+    );
+    assert_eq!(info.source, ModelSourceKind::LocalFile);
+    assert!(info.local);
+    assert!(info.architecture.is_some(), "a GGUF names its architecture");
+    assert_eq!(
+        info.name.as_deref(),
+        path.file_stem().and_then(|s| s.to_str())
+    );
+
+    let caps = model.capabilities();
+    eprintln!("--- capabilities: {caps:?}");
+    assert!(caps.text);
+    assert!(
+        caps.structured_output,
+        "llama.cpp constrains output by grammar"
+    );
+    assert_eq!(runtime.models(), vec![model.id()]);
+}

@@ -13,6 +13,19 @@
 //!
 //! # The API
 //!
+//! [`load`] a model and ask it to generate:
+//!
+//! ```no_run
+//! let model = gen2::load("/models/model.gguf")?;
+//! let text = model.generate("Explain entropy in one sentence.").max_tokens(64).text()?;
+//! # Ok::<(), gen2::Error>(())
+//! ```
+//!
+//! A [`Runtime`] holds several [`Model`]s, local or served by an
+//! OpenAI-compatible endpoint — see [`api::runtime`](crate::Runtime) for the
+//! walkthrough. Conversations (`Session`, `Model::turn`) on this surface are
+//! next; until then the engine below carries them.
+//!
 //! [`Engine`] loads a model; [`Session`] holds a conversation you own. Three
 //! ways to call:
 //!
@@ -156,6 +169,26 @@ pub(crate) mod zoo;
 // written in these terms. This is the whole nameable surface besides
 // `controller` itself.
 
+/// The inference-first surface: a [`Runtime`] loads [`Model`]s, a model
+/// answers an [`Input`] with a [`Response`]. Supporting types live in
+/// [`model`], [`input`], and [`output`].
+pub use api::{Input, Model, Response, Runtime};
+pub use api::{input, model, output};
+
+/// Load a model with a private runtime the returned [`Model`] keeps alive.
+///
+/// Shorthand for `Runtime::new()?.load(path)`; the one-liner for the common
+/// case of one model.
+///
+/// ```no_run
+/// let model = gen2::load("qwen3-8b.gguf")?;
+/// println!("{}", model.generate("Why is the sky blue?").text()?);
+/// # Ok::<(), gen2::Error>(())
+/// ```
+pub fn load(path: impl AsRef<std::path::Path>) -> Result<Model> {
+    Runtime::new()?.load(path)
+}
+
 /// The primary API — see [`api`].
 #[cfg(feature = "tokio")]
 pub use api::{AsyncAgentRun, AsyncTurn};
@@ -206,7 +239,10 @@ pub use engine::{
 /// [`HardwareProfile::detect`]. The input to a fit check.
 pub use hardware::{GpuBackend, HardwareProfile};
 /// A model's own header metadata, reachable from [`ModelInfo`].
-pub use types::model::{Model, ModelConfig, ModelMetadata};
+///
+/// The load record is `ModelRecord` here: `Model` at the root is the
+/// inference target, per api_spec.md §5.
+pub use types::model::{Model as ModelRecord, ModelConfig, ModelMetadata};
 
 // ── Transitively reachable types ────────────────────────────────────────────
 // Not part of the controller's own signatures, but reachable *through* them —

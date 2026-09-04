@@ -206,6 +206,8 @@ pub enum ControllerCmd {
         settings: Settings,
         api_key: Option<String>,
         api_format: Option<String>,
+        /// Model name for an external API backend; ignored by local backends.
+        api_model: Option<String>,
         /// What the load actually did, not merely whether it worked.
         ///
         /// The loader retries with safer configurations rather than failing

@@ -224,6 +224,7 @@ impl Engine {
             settings,
             api_key: None,
             api_format: None,
+            api_model: None,
             resp,
         })?;
         let outcome = rx
@@ -596,6 +597,7 @@ pub struct EngineBuilder {
     config: Option<ControllerConfig>,
     api_key: Option<String>,
     api_format: Option<String>,
+    api_model: Option<String>,
     embedder_path: Option<PathBuf>,
     reranker_path: Option<PathBuf>,
     embedder_kind: Option<String>,
@@ -676,6 +678,18 @@ impl EngineBuilder {
         self.model_path = Some(PathBuf::from(base_url.into()));
         self.api_key = Some(api_key.into());
         self.api_format = Some("anthropic".into());
+        self
+    }
+
+    /// The model name a remote endpoint should serve — `"gpt-5-mini"`,
+    /// `"qwen3:8b"`. Only meaningful after [`EngineBuilder::openai`] or
+    /// [`EngineBuilder::anthropic`]; local backends ignore it.
+    ///
+    /// Without it the backend falls back to `PIO_EXTERNAL_MODEL_ID` and then
+    /// the provider's default, which model-specific servers such as Ollama
+    /// reject.
+    pub fn remote_model(mut self, name: impl Into<String>) -> Self {
+        self.api_model = Some(name.into());
         self
     }
 
@@ -831,6 +845,7 @@ impl EngineBuilder {
                 settings,
                 api_key: self.api_key,
                 api_format: self.api_format,
+                api_model: self.api_model,
                 resp,
             })?;
             rx.recv()
@@ -901,6 +916,7 @@ impl Engine {
                 settings: Default::default(),
                 api_key: None,
                 api_format: None,
+                api_model: None,
                 resp,
             })
             .expect("the scripted controller should accept a load");

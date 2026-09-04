@@ -104,6 +104,7 @@ fn attempt_load(
     settings: crate::engine::Settings,
     api_key: Option<String>,
     api_format: Option<String>,
+    api_model: Option<String>,
     loaded_file_bytes: &mut Option<u64>,
 ) -> Result<(), LoadAttemptError> {
     let fatal_str = |message: String| LoadAttemptError {
@@ -118,6 +119,7 @@ fn attempt_load(
     let mut load_req = build_load_request(model_path, mmproj_path, &settings);
     load_req.api_key = api_key;
     load_req.api_format = api_format;
+    load_req.api_model = api_model;
     *loaded_file_bytes = ControllerState::model_file_bytes_of(&load_req.model_path);
     let runtime_name = load_req.model_path.display().to_string();
     // Offloaded weights live in VRAM, not host RAM — don't deny a
@@ -342,6 +344,7 @@ fn handle_model_command(state: &mut ControllerState, cmd: ControllerCmd) -> Cont
             settings,
             api_key,
             api_format,
+            api_model,
             resp,
         } => {
             // Capture the loaded LLM's whole-model byte size on success so the
@@ -378,6 +381,7 @@ fn handle_model_command(state: &mut ControllerState, cmd: ControllerCmd) -> Cont
                     attempt_settings,
                     api_key.clone(),
                     api_format.clone(),
+                    api_model.clone(),
                     &mut loaded_file_bytes,
                 );
                 match attempt {

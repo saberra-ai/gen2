@@ -643,6 +643,12 @@ impl Engine {
     pub fn bundle_architecture(&self) -> Option<String> {
         self.as_backend().and_then(|b| b.bundle_architecture())
     }
+
+    /// Context window of the loaded model, when the backend can say. See
+    /// [`Backend::context_window`].
+    pub fn context_window(&self) -> Option<u32> {
+        self.as_backend().and_then(|b| b.context_window())
+    }
 }
 
 // ─── Session ────────────────────────────────────────────────────────────────

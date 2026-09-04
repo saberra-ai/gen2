@@ -36,11 +36,28 @@ mod engine;
 mod error;
 mod extract;
 pub(crate) mod fit;
+mod generation;
 mod inference;
+pub mod input;
+pub mod model;
+pub mod output;
+mod response;
+mod runtime;
 mod session;
 mod spawned;
 mod stream;
 pub mod tools;
+
+// ── The inference-first facade (api_spec.md §4–§6) ──────────────────────────
+// `Runtime` loads `Model`s; a model generates a `Response`. Built over the
+// engine below rather than beside it: a `Model` is an `Engine` with a
+// registry entry, and one-shot `Generation` is a `Chat` on a session it
+// throws away.
+pub use generation::Generation;
+pub use input::Input;
+pub use model::{Model, ModelId};
+pub use response::Response;
+pub use runtime::{RemoteModelBuilder, Runtime, RuntimeBuilder};
 
 pub use agent::{
     Agent, AgentStep, ApprovalMode, DEFAULT_MAX_STEPS, Decision, Risk, SEARCH_TOOL, Steering,
