@@ -40,6 +40,10 @@ pub struct OwnedAgent {
     on_approval: Option<ApprovalFn>,
     goal: Option<String>,
     greedy: bool,
+    /// Shared with every handle `steering()` returns, before or after
+    /// `spawn`, so a message queued before the run starts is delivered at
+    /// its first step instead of racing it.
+    steering: Steering,
 }
 
 impl OwnedAgent {
@@ -57,7 +61,17 @@ impl OwnedAgent {
             on_approval: None,
             goal: None,
             greedy: false,
+            steering: Steering::default(),
         }
+    }
+
+    /// A handle for injecting messages into this run.
+    ///
+    /// Taking it before `spawn` is the reliable way to steer the first step:
+    /// a follow-up queued here is in the conversation before the model
+    /// writes at all. The same handle is available from the run afterwards.
+    pub fn steering(&self) -> Steering {
+        self.steering.clone()
     }
 
     /// Register a resident tool.
@@ -165,7 +179,10 @@ impl OwnedAgent {
         let session_id = self.session.id().to_string();
         // The handle carries the engine, so `interrupt` can stop a generation
         // rather than only queue a message.
-        let steering = Steering::default().with_engine(Arc::clone(&engine), session_id.clone());
+        let steering = self
+            .steering
+            .clone()
+            .with_engine(Arc::clone(&engine), session_id.clone());
         let steer_for_loop = steering.clone();
 
         let join = std::thread::spawn(move || {
@@ -182,6 +199,7 @@ impl OwnedAgent {
                 on_approval,
                 goal,
                 greedy,
+                steering: _,
             } = self;
 
             let mut agent = Agent::new_steered(&engine, &mut session, steer_for_loop)

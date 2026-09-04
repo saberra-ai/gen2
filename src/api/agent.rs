@@ -539,12 +539,14 @@ impl<'a> Agent<'a> {
             if turn.tool_calls.is_empty() {
                 session.push(Message::assistant_structured(turn.text.clone(), None));
 
-                // A stop with steering waiting is an interruption, not an
-                // answer: the caller cut this generation *in order to* say
-                // something. Returning here would drop the message they
-                // interrupted with, which is the opposite of what they asked
-                // for. Loop instead, and the boundary delivers it.
-                if turn.finish == Finish::Stopped && steering.is_pending() {
+                // Steering waiting at the end of a turn is a message the
+                // caller wants the model to see, whether they cut the
+                // generation short to say it or it simply arrived while the
+                // model was writing. Returning here would drop it silently,
+                // which is the opposite of what they asked for. Loop instead,
+                // and the boundary delivers it; the step budget still bounds
+                // the run.
+                if steering.is_pending() {
                     continue;
                 }
 

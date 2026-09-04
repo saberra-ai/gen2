@@ -488,13 +488,16 @@ fn a_follow_up_reaches_the_model_at_the_next_step() {
         vec![Step::token("second answer"), Step::eos()],
     ])));
 
-    let run = engine.agent_owned(Session::new()).goal("Start").spawn();
-    let steering = run.steering();
+    // Queued before the run starts, so the outcome does not depend on
+    // whether the loop or this thread gets there first.
+    let agent = engine.agent_owned(Session::new()).goal("Start");
+    let steering = agent.steering();
     steering.follow_up("also check the tests");
     assert!(
         steering.is_pending(),
         "a queued message is pending until the loop takes it"
     );
+    let run = agent.spawn();
 
     let updates: Vec<Update> = run.collect();
     assert_one_ending(&updates);
