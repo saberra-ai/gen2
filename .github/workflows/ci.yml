@@ -166,7 +166,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
       - run: cargo clippy --all-targets --no-default-features -- -D warnings
-      - run: cargo test --no-default-features --lib advanced::
+      - run: "cargo test --no-default-features --lib advanced::"
 
   # The fuzz targets live in their own workspace on a nightly toolchain, so
   # nothing in the ordinary build would notice them breaking. Building them is
