@@ -1,8 +1,7 @@
 //! One contract, applied to every backend that is compiled in.
 //!
 //! The crate's claim is a single API over llama.cpp, mistral.rs, MLX, mlxcel,
-//! ONNX, Candle, LiteRT-LM and an OpenAI-compatible endpoint. A claim like
-//! that is
+//! LiteRT-LM and an OpenAI-compatible endpoint. A claim like that is
 //! only worth anything if every backend is held to the same contract, and
 //! until now each was tested — where it was tested at all — on its own terms.
 //!
@@ -53,9 +52,14 @@ use crate::session_rt::SessionSpec;
 ///   `PIO_TEST_CTX=4096`. Decoded 16 tokens; a two-turn chat and an
 ///   edited-transcript check both run through the public API.
 ///
+/// `onnx` and `candle` sat on this list until 2026-09-04, when both were
+/// removed from the crate rather than verified: neither had decoded a token in
+/// the year it was compiled, and carrying an unproven backend costs more than
+/// the option of proving it later (git history has the code).
+///
 /// The others need a model this repository does not carry. Point the variable
 /// in [`model_env`] at one and the generating half runs.
-pub(crate) const NEVER_PRODUCED_A_TOKEN: &[&str] = &["mlxcel", "onnx", "candle"];
+pub(crate) const NEVER_PRODUCED_A_TOKEN: &[&str] = &["mlxcel"];
 
 /// The environment variable naming a model this backend can load, if the
 /// caller has one.
@@ -64,9 +68,7 @@ fn model_env(backend: &str) -> &'static str {
         "llamacpp" => "PIO_TEST_MODEL",
         "mlx" | "mlxcel" => "PIO_TEST_MLX_MODEL",
         "litertlm" => "PIO_TEST_LITERTLM_MODEL",
-        "onnx" => "PIO_TEST_ONNX_MODEL",
         "mistralrs" => "PIO_TEST_MISTRALRS_MODEL",
-        "candle" => "PIO_TEST_CANDLE_MODEL",
         "external-api" => "PIO_TEST_API_URL",
         _ => "PIO_TEST_MODEL",
     }
@@ -476,12 +478,6 @@ backend_contract!(mlx, crate::backend::mlx::Engine::new());
 #[cfg(feature = "backend-mlxcel")]
 backend_contract!(mlxcel, crate::backend::mlxcel::MlxcelEngine::new());
 
-#[cfg(feature = "backend-onnx")]
-backend_contract!(onnx, crate::backend::onnx::Engine::new());
-
-#[cfg(feature = "backend-candle")]
-backend_contract!(candle, crate::backend::candle::CandleBackend::new());
-
 #[cfg(feature = "backend-external-api")]
 backend_contract!(external_api, crate::backend::external_api::Engine::new());
 
@@ -522,8 +518,6 @@ fn unverified_backends() {
         "llamacpp",
         "mlx",
         "mlxcel",
-        "onnx",
-        "candle",
         "external-api",
         "mistralrs",
         "litertlm",

@@ -5,7 +5,7 @@ use crate::bundle::ModelMeta;
 use sha2::{Digest, Sha256};
 use std::path::Path;
 
-/// Compute a [`ModelMeta`] for HuggingFace-convention model directories (MLX / ONNX).
+/// Compute a [`ModelMeta`] for HuggingFace-convention model directories (MLX and the like).
 ///
 /// Mirrors the fingerprinting logic in the Llama backend's `build_bundle`:
 /// - `tokenizer_digest`: SHA-256(BOS bytes ‖ EOS bytes ‖ vocab_size LE)

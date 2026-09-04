@@ -48,8 +48,8 @@ pub trait Backend: std::fmt::Debug {
     fn first_token_tier(&self) -> LatencyTier;
 
     /// Architecture string for the currently-loaded bundle (lowercase
-    /// `general.architecture` from GGUF, or HF `model_type` for MLX /
-    /// ONNX). Returns `None` when no model is loaded or when the
+    /// `general.architecture` from GGUF, or HF `model_type` for MLX).
+    /// Returns `None` when no model is loaded or when the
     /// backend can't surface architecture.
     ///
     /// Used by the chat-event mapper to derive `ChannelMarkers` per
@@ -76,7 +76,7 @@ pub trait Backend: std::fmt::Debug {
     }
 }
 
-/// Local-model backend (llama, MLX, ONNX). Adds a context-size probe used by
+/// Local-model backend (llama, MLX, LiteRT-LM). Adds a context-size probe used by
 /// the generic truncation driver.
 pub trait LocalBackend: Backend {
     /// Context-window size in tokens. Zero if no model is loaded.

@@ -567,23 +567,44 @@ while let Some(update) = run.next().await { /* … */ }
 
 ## Backends
 
-Pick at least one. A build with none fails to compile.
+Pick at least one. A build with none fails to compile. Three tiers, by what
+the crate can stand behind.
+
+**Tier 1 — supported.** Built and tested in CI on every push; the README's
+claims are about these.
 
 | Feature | Backend |
 | --- | --- |
 | `backend-llamacpp` | llama.cpp (GGUF). **Default.** Add `metal`, `cuda`, or `vulkan`. |
 | `backend-external-api` | OpenAI / Anthropic wire formats. Needs no C toolchain. |
+
+**Mobile.** Supported the same way, on the platforms it exists for.
+
+| Feature | Backend |
+| --- | --- |
+| `backend-litertlm` | LiteRT-LM (Google's on-device runtime), for `.litertlm` bundles. Loads Google's C ABI at run time — nothing is vendored, linked, or downloaded by a build. Point `GEN2_LITERTLM_LIBRARY` at the shared library, or install it where the platform loader finds it. |
+
+**Experimental.** mistral.rs builds and runs its no-model tests in CI, MLX
+gets a clippy pass, mlxcel is built by hand. Real-model verification is by hand
+and noted in the conformance suite. Interfaces and defaults may change.
+
+| Feature | Backend |
+| --- | --- |
+| `backend-mistralrs` | mistral.rs. GGUF, safetensors and UQFF in one backend. Claims only formats no other compiled backend takes. No per-request seed: `.seed()` under sampling is refused rather than ignored. `metal` and `cuda` forward to it. |
 | `backend-mlx` | MLX (Apple Silicon). Needs the Metal Toolchain component. Mutually exclusive with `backend-mlxcel`. |
 | `backend-mlxcel` | mlxcel, the Mac fast path. |
-| `backend-onnx` | ONNX Runtime |
-| `backend-mistralrs` | mistral.rs. GGUF, safetensors and UQFF in one backend. Claims only formats no other compiled backend takes. No per-request seed: `.seed()` under sampling is refused rather than ignored. |
-| `backend-candle` | Candle (pure Rust) |
-| `backend-litertlm` | LiteRT-LM (Google's on-device runtime), for `.litertlm` bundles. Loads Google's C ABI at run time — nothing is vendored, linked, or downloaded by a build. Point `GEN2_LITERTLM_LIBRARY` at the shared library, or install it where the platform loader finds it. |
+
+Not a backend, but chosen alongside them:
+
+| Feature | What |
+| --- | --- |
 | `tokio` | Async API. Off by default. |
 
 llama.cpp, mistral.rs, MLX and LiteRT-LM have been shown to generate a token;
-the rest compile and satisfy the parts of the backend contract that need no
-weights. Adding a backend never moves an existing one's models:
+mlxcel compiles and satisfies the parts of the backend contract that need no
+weights. The ONNX and Candle backends that used to sit beside them were
+removed rather than kept unproven — a `.onnx` model now fails at load with an
+error naming the format. Adding a backend never moves an existing one's models:
 `backend-mistralrs` takes GGUF only where llama.cpp is absent and safetensors
 only where MLX is, and `backend-litertlm` takes only the `.litertlm` bundles
 nothing else can read. The conformance suite says which on every run, and fails

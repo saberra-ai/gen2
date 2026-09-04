@@ -216,7 +216,7 @@ impl Session {
 
         // Build the base sampler chain + an optional grammar matcher. When
         // `gen_spec.grammar` is set the matcher (the SAME llguidance engine
-        // MLX/ONNX use, fed the GGUF's embedded vocab) masks logits in the
+        // MLX uses, fed the GGUF's embedded vocab) masks logits in the
         // puller — bypassing llama.cpp's built-in `LlamaSampler::llguidance`,
         // whose Matcher rejected the opening token at this dep rev.
         let (sampler, grammar) =
@@ -245,7 +245,7 @@ impl Session {
     /// Build the base sampler chain plus an optional [`GrammarMatcher`]
     /// from `gen_spec.grammar`. The matcher masks logits in the puller
     /// (`TokenPuller::sample_one`) using the SAME llguidance engine the
-    /// MLX / ONNX backends use — fed the GGUF's embedded vocab via
+    /// MLX backend uses — fed the GGUF's embedded vocab via
     /// [`grammar_vocab_from_model`]. This replaces llama.cpp's built-in
     /// `LlamaSampler::llguidance`, whose runtime Matcher rejected the
     /// opening token at the pinned dep rev and silently fell back to

@@ -1484,7 +1484,6 @@ mod tests {
             feature = "backend-llamacpp",
             feature = "backend-mlx",
             feature = "backend-mlxcel",
-            feature = "backend-onnx",
             feature = "backend-mistralrs",
             feature = "backend-litertlm"
         )))]
@@ -1496,7 +1495,6 @@ mod tests {
             feature = "backend-llamacpp",
             feature = "backend-mlx",
             feature = "backend-mlxcel",
-            feature = "backend-onnx",
             feature = "backend-mistralrs",
             feature = "backend-litertlm"
         ))]

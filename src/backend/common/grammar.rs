@@ -90,7 +90,7 @@ pub struct GrammarMatcher {
 impl GrammarMatcher {
     /// Build a matcher that constrains output to `spec` over the tokens
     /// of `tokenizer`. Convenience wrapper over [`Self::from_vocab`] for
-    /// backends that have an [`HfTokenizer`] (MLX / ONNX).
+    /// backends that have an [`HfTokenizer`] (MLX).
     pub fn new(tokenizer: &HfTokenizer, spec: GrammarSpec) -> Result<Self> {
         Self::from_vocab(&vocab_from_hf(tokenizer), spec)
     }

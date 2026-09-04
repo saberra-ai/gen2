@@ -3,7 +3,7 @@
 //! Routes freshly-sampled tokens through the [`StopMatcher`] with proper
 //! hold-queue semantics (partial-match → hold, full-match → truncate +
 //! stop, clean → release). Every backend's puller delegates here so
-//! zero-garbage chat behaviour is the same across MLX, llama, ONNX, and
+//! zero-garbage chat behaviour is the same across MLX, llama, and
 //! any future backend — the matcher, held queue, and pending-event
 //! plumbing all live in one place.
 

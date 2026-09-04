@@ -616,7 +616,8 @@ enum ContextChoice {
 }
 
 impl EngineBuilder {
-    /// The model to load — a GGUF file, or an MLX/ONNX model directory. The
+    /// The model to load — a GGUF file, an MLX model directory, or a
+    /// `.litertlm` bundle. The
     /// backend is chosen from what's there; you never name one.
     pub fn model(mut self, path: impl AsRef<Path>) -> Self {
         self.model_path = Some(path.as_ref().to_path_buf());

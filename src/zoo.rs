@@ -40,9 +40,8 @@ const BUNDLED_ZOO_JSON: &str = include_str!("../resources/models/zoo.json");
 #[derive(Debug, Clone, Serialize, Deserialize)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct PlatformBundle {
-    /// Which gen2 backend to load: `"mlx"`, `"llamacpp"`, `"candle"`,
-    /// `"onnx"`. Backend id strings match
-    /// `gen2::backend::Backend::name()`.
+    /// Which gen2 backend to load: `"mlx"` or `"llamacpp"`. Backend id
+    /// strings match `gen2::backend::Backend::name()`.
     pub backend: String,
     /// HuggingFace repo id, URL, or local path. Examples:
     /// `"unsloth/gemma-4-E4B-it-UD-MLX-4bit"`,
@@ -238,7 +237,7 @@ pub fn current_platform_id() -> &'static str {
         return "linux_cpu";
     }
     // Unknown target — fall back to linux_cpu as the safest broadly-
-    // compatible option (it expects Candle Rust-native fallback).
+    // compatible option (its bundles are GGUF for llama.cpp on the CPU).
     "linux_cpu"
 }
 
@@ -300,7 +299,7 @@ pub fn select_for_device<'a>(
         }
         match b.backend.as_str() {
             "mlx" => cfg!(target_os = "macos") || cfg!(target_os = "ios"),
-            "llamacpp" | "candle" | "onnx" => true,
+            "llamacpp" => true,
             _ => true,
         }
     };
@@ -1020,8 +1019,8 @@ mod tests {
         // Memory is necessary but not sufficient. A bundle can only be served
         // if this build compiled the backend it names, so whether anything is
         // selectable depends on the feature set — an external-api-only build
-        // can serve none of gemma-4's, and an ONNX-only one can serve none
-        // either, because gemma-4 has no ONNX bundle.
+        // can serve none of gemma-4's, and a LiteRT-LM-only one can serve none
+        // either, because gemma-4 has no `.litertlm` bundle.
         let entry = zoo.get("gemma-4").expect("gemma-4 is bundled");
         let anything_servable = entry.platforms.values().any(|b| {
             b.min_ram_mb <= 32 * 1024 && crate::backend::Engine::backend_is_compiled(&b.backend)
@@ -1504,8 +1503,9 @@ mod tests {
         //     AND contain the entry's `default_quant` tier (e.g. Q4_K_M)
         //     so a paste from the wrong repo's filename gets caught.
         //   - backend == "mlx" → file must be None (whole-dir snapshot).
-        //   - other backends (candle, onnx) — out of scope
-        //     for now; their conventions are less uniform.
+        //   - anything else — out of scope;
+        //     `every_zoo_bundle_names_a_backend_platform_and_source_the_loader_can_act_on`
+        //     already rejects a backend id the crate does not have.
         let zoo = ModelZoo::bundled();
         let mut errs: Vec<String> = Vec::new();
         for (id, entry) in &zoo.models {
@@ -1534,7 +1534,7 @@ mod tests {
                             bundle.file,
                         ));
                     }
-                    _ => {} // candle/onnx out of scope
+                    _ => {}
                 }
             }
         }
@@ -1591,13 +1591,15 @@ mod tests {
     /// `select_for_device`'s `os_compatible` switch matches on. A bundle
     /// naming anything else falls into that switch's `_ => true` arm and
     /// is offered to a device that can never load it.
-    const KNOWN_BACKENDS: &[&str] = &["mlx", "llamacpp", "candle", "onnx"];
+    const KNOWN_BACKENDS: &[&str] = &["mlx", "llamacpp"];
 
-    /// Backends whose `start_session` still returns `Unimplemented`
-    /// (`src/backend/candle/mod.rs`), and which no platform feature bundle
-    /// in Cargo.toml enables. Routing a device here gets it a download and
-    /// then a failed generate.
-    const BACKENDS_THAT_CANNOT_GENERATE_YET: &[&str] = &["candle"];
+    /// Backends a zoo entry could name that no build of this crate can
+    /// generate with. Routing a device here gets it a download and then a
+    /// failed generate. `candle` (whose `start_session` returned
+    /// `Unimplemented`) and `onnx` were removed from the crate on 2026-09-04;
+    /// they stay named so an entry left pointing at either fails as a route
+    /// to a backend that cannot generate, and not only as an unknown id.
+    const BACKENDS_THAT_CANNOT_GENERATE_YET: &[&str] = &["candle", "onnx"];
 
     /// Platform ids `current_platform_id` can return.
     const KNOWN_PLATFORMS: &[&str] = &[
@@ -1613,15 +1615,12 @@ mod tests {
     /// Which backends each platform can actually load, from the crate's own
     /// feature layout. MLX links Apple's Metal framework and is built only
     /// for `apple`/`ios` targets — and only on Apple Silicon, so an Intel
-    /// Mac entry is a mis-route even though the OS matches. Everything else
-    /// is portable C/Rust.
+    /// Mac entry is a mis-route even though the OS matches. llama.cpp is
+    /// portable C and goes everywhere.
     fn backends_supported_on(platform: &str) -> &'static [&'static str] {
         match platform {
-            "macos_arm64" => &["mlx", "llamacpp", "candle", "onnx"],
-            "macos_x86" => &["llamacpp", "candle", "onnx"],
-            "ios" => &["mlx", "llamacpp"],
-            "android" => &["llamacpp", "onnx"],
-            "linux_cuda" | "linux_cpu" | "windows" => &["llamacpp", "candle", "onnx"],
+            "macos_arm64" | "ios" => &["mlx", "llamacpp"],
+            "macos_x86" | "android" | "linux_cuda" | "linux_cpu" | "windows" => &["llamacpp"],
             _ => &[],
         }
     }

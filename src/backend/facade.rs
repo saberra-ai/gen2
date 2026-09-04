@@ -26,17 +26,15 @@ pub enum ModelBundle {
     LlamaCpp(Arc<super::llama::ModelBundle>),
     #[cfg(feature = "backend-mlx")]
     Mlx(Arc<super::mlx::ModelBundle>),
-    #[cfg(feature = "backend-onnx")]
-    Onnx(Arc<super::onnx::ModelBundle>),
     /// No bundle at this layer.
     ///
     /// Some backends keep the model somewhere the facade cannot hold it: the
     /// external-api server owns it remotely, the mlxcel worker thread owns a
     /// `!Send` model directly (`backend::mlxcel::worker`), LiteRT-LM's engine
-    /// lives behind its C ABI, and candle has no bundle type yet.
+    /// lives behind its C ABI, and mistral.rs keeps its own loaded state.
     /// Unconditional, so the enum stays inhabited no matter which single
-    /// backend is compiled — without it, a build of candle or litertlm alone
-    /// fails to compile on this `match`.
+    /// backend is compiled — without it, a build of litertlm alone fails to
+    /// compile on this `match`.
     None,
 }
 
@@ -47,8 +45,6 @@ impl std::fmt::Debug for ModelBundle {
             Self::LlamaCpp(b) => b.fmt(f),
             #[cfg(feature = "backend-mlx")]
             Self::Mlx(b) => b.fmt(f),
-            #[cfg(feature = "backend-onnx")]
-            Self::Onnx(b) => b.fmt(f),
             Self::None => f.write_str("ModelBundle(none)"),
         }
     }
@@ -72,8 +68,6 @@ pub enum Engine {
     /// safetensors-dir models `BackendKind::Mlx` detects.
     #[cfg(feature = "backend-mlxcel")]
     Mlxcel(super::mlxcel::MlxcelEngine),
-    #[cfg(feature = "backend-onnx")]
-    Onnx(super::onnx::Engine),
     #[cfg(feature = "backend-external-api")]
     ExternalApi(super::external_api::Engine),
     /// mistral.rs — one backend across GGUF, safetensors, UQFF and HF repos.
@@ -105,8 +99,6 @@ impl std::fmt::Debug for Engine {
             Self::Mlx(e) => e.fmt(f),
             #[cfg(feature = "backend-mlxcel")]
             Self::Mlxcel(e) => e.fmt(f),
-            #[cfg(feature = "backend-onnx")]
-            Self::Onnx(e) => e.fmt(f),
             #[cfg(feature = "backend-external-api")]
             Self::ExternalApi(e) => e.fmt(f),
             #[cfg(feature = "backend-mistralrs")]
@@ -124,8 +116,9 @@ impl std::fmt::Debug for Engine {
 ///  - URL (`http://` or `https://`) → ExternalApi
 ///  - `.gguf` file → LlamaCpp
 ///  - directory with `*.safetensors` → MLX (Apple only)
-///  - `.onnx` file or dir with `model.onnx` → ONNX
 ///  - `.litertlm` bundle → LiteRT-LM
+///  - `.onnx` file or dir with `model.onnx` → an error naming the format;
+///    no compiled backend reads it
 #[allow(unused_variables)]
 fn detect_backend(req: &LoadRequest) -> Result<BackendKind, ExecError> {
     let path = &req.model_path;
@@ -157,7 +150,11 @@ fn detect_backend(req: &LoadRequest) -> Result<BackendKind, ExecError> {
             // existed.
             #[cfg(all(not(feature = "backend-llamacpp"), not(feature = "backend-mistralrs")))]
             "gguf" => return Ok(BackendKind::LlamaCpp),
-            "onnx" => return Ok(BackendKind::Onnx),
+            // ONNX had a backend once; it never decoded a token and was
+            // removed. Named here rather than falling through, so the error
+            // is about the format and not about whatever llama.cpp makes of
+            // a file it has never seen.
+            "onnx" => return Err(ExecError::FeatureUnsupported(NO_ONNX_BACKEND)),
             // A `.litertlm` bundle is LiteRT-LM's own packaging and nothing
             // else can read it. Deliberately not a fall-through: without the
             // feature this has to say so, because the alternative is handing
@@ -180,9 +177,9 @@ fn detect_backend(req: &LoadRequest) -> Result<BackendKind, ExecError> {
     }
 
     if path.is_dir() {
-        // Check for ONNX first (model.onnx in dir)
+        // An ONNX bundle directory, for the same reason as the `.onnx` arm.
         if path.join("model.onnx").exists() {
-            return Ok(BackendKind::Onnx);
+            return Err(ExecError::FeatureUnsupported(NO_ONNX_BACKEND));
         }
         // Check for safetensors (MLX format)
         if let Ok(entries) = std::fs::read_dir(path) {
@@ -230,14 +227,6 @@ fn detect_backend(req: &LoadRequest) -> Result<BackendKind, ExecError> {
         not(feature = "backend-llamacpp"),
         not(feature = "backend-mlx"),
         not(feature = "backend-mlxcel"),
-        feature = "backend-onnx"
-    ))]
-    return Ok(BackendKind::Onnx);
-    #[cfg(all(
-        not(feature = "backend-llamacpp"),
-        not(feature = "backend-mlx"),
-        not(feature = "backend-mlxcel"),
-        not(feature = "backend-onnx"),
         feature = "backend-mistralrs"
     ))]
     return Ok(BackendKind::MistralRs);
@@ -248,7 +237,6 @@ fn detect_backend(req: &LoadRequest) -> Result<BackendKind, ExecError> {
         not(feature = "backend-llamacpp"),
         not(feature = "backend-mlx"),
         not(feature = "backend-mlxcel"),
-        not(feature = "backend-onnx"),
         not(feature = "backend-mistralrs"),
         feature = "backend-litertlm"
     ))]
@@ -257,18 +245,21 @@ fn detect_backend(req: &LoadRequest) -> Result<BackendKind, ExecError> {
         feature = "backend-llamacpp",
         feature = "backend-mlx",
         feature = "backend-mlxcel",
-        feature = "backend-onnx",
         feature = "backend-mistralrs",
         feature = "backend-litertlm"
     )))]
     Err(ExecError::Other(anyhow::anyhow!("no backend compiled")))
 }
 
+/// What a caller sees for a `.onnx` file or a `model.onnx` directory.
+const NO_ONNX_BACKEND: &str = "no compiled backend reads ONNX models (`.onnx` file or `model.onnx` \
+     directory); the ONNX backend was removed — convert the model to GGUF for \
+     llama.cpp, or serve it behind an OpenAI-compatible endpoint";
+
 #[derive(Debug, Clone, Copy)]
 enum BackendKind {
     LlamaCpp,
     Mlx,
-    Onnx,
     #[cfg(feature = "backend-mistralrs")]
     MistralRs,
     #[cfg(feature = "backend-litertlm")]
@@ -294,8 +285,6 @@ impl Engine {
             Self::Mlx(e) => Some(e),
             #[cfg(feature = "backend-mlxcel")]
             Self::Mlxcel(e) => Some(e),
-            #[cfg(feature = "backend-onnx")]
-            Self::Onnx(e) => Some(e),
             #[cfg(feature = "backend-external-api")]
             Self::ExternalApi(e) => Some(e),
             #[cfg(feature = "backend-mistralrs")]
@@ -323,8 +312,6 @@ impl Engine {
         v.push("llamacpp");
         #[cfg(feature = "backend-mlx")]
         v.push("mlx");
-        #[cfg(feature = "backend-onnx")]
-        v.push("onnx");
         #[cfg(feature = "backend-external-api")]
         v.push("external-api");
         #[cfg(feature = "backend-mlxcel")]
@@ -333,8 +320,6 @@ impl Engine {
         v.push("mistralrs");
         #[cfg(feature = "backend-litertlm")]
         v.push("litertlm");
-        #[cfg(feature = "backend-candle")]
-        v.push("candle");
         v
     }
 
@@ -363,7 +348,6 @@ impl Engine {
             // active one so UI/telemetry names match `active_backend_name()`.
             Ok(BackendKind::Mlx) if cfg!(feature = "backend-mlxcel") => "mlxcel",
             Ok(BackendKind::Mlx) => "mlx",
-            Ok(BackendKind::Onnx) => "onnx",
             #[cfg(feature = "backend-external-api")]
             Ok(BackendKind::ExternalApi) => "external-api",
             #[cfg(feature = "backend-mistralrs")]
@@ -401,16 +385,6 @@ impl Engine {
             not(feature = "backend-llamacpp"),
             not(feature = "backend-mlx"),
             not(feature = "backend-mlxcel"),
-            feature = "backend-onnx"
-        ))]
-        {
-            Self::Onnx(super::onnx::Engine::new())
-        }
-        #[cfg(all(
-            not(feature = "backend-llamacpp"),
-            not(feature = "backend-mlx"),
-            not(feature = "backend-mlxcel"),
-            not(feature = "backend-onnx"),
             feature = "backend-mistralrs"
         ))]
         {
@@ -422,7 +396,6 @@ impl Engine {
             not(feature = "backend-llamacpp"),
             not(feature = "backend-mlx"),
             not(feature = "backend-mlxcel"),
-            not(feature = "backend-onnx"),
             not(feature = "backend-mistralrs"),
             feature = "backend-litertlm"
         ))]
@@ -435,7 +408,6 @@ impl Engine {
             feature = "backend-llamacpp",
             feature = "backend-mlx",
             feature = "backend-mlxcel",
-            feature = "backend-onnx",
             feature = "backend-mistralrs",
             feature = "backend-litertlm"
         )))]
@@ -474,8 +446,6 @@ impl Engine {
             (Self::Mlx(_), BackendKind::Mlx) => false,
             #[cfg(feature = "backend-mlxcel")]
             (Self::Mlxcel(_), BackendKind::Mlx) => false,
-            #[cfg(feature = "backend-onnx")]
-            (Self::Onnx(_), BackendKind::Onnx) => false,
             #[cfg(feature = "backend-external-api")]
             (Self::ExternalApi(_), BackendKind::ExternalApi) => false,
             #[cfg(feature = "backend-mistralrs")]
@@ -494,8 +464,6 @@ impl Engine {
             BackendKind::Mlx => Self::Mlx(super::mlx::Engine::new()),
             #[cfg(feature = "backend-mlxcel")]
             BackendKind::Mlx => Self::Mlxcel(super::mlxcel::MlxcelEngine::new()),
-            #[cfg(feature = "backend-onnx")]
-            BackendKind::Onnx => Self::Onnx(super::onnx::Engine::new()),
             #[cfg(feature = "backend-external-api")]
             BackendKind::ExternalApi => Self::ExternalApi(super::external_api::Engine::new()),
             #[cfg(feature = "backend-mistralrs")]
@@ -638,7 +606,7 @@ impl Engine {
 
     /// Architecture string for the currently-loaded bundle (lowercase
     /// `general.architecture` from GGUF, or HF `model_type` for MLX /
-    /// ONNX). Returns `None` when no model is loaded.
+    /// LiteRT-LM). Returns `None` when no model is loaded.
     pub fn bundle_architecture(&self) -> Option<String> {
         self.as_backend().and_then(|b| b.bundle_architecture())
     }
@@ -796,14 +764,6 @@ mod tests {
             not(feature = "backend-llamacpp"),
             not(feature = "backend-mlx"),
             not(feature = "backend-mlxcel"),
-            feature = "backend-onnx"
-        ))]
-        assert_eq!(name, "onnx");
-        #[cfg(all(
-            not(feature = "backend-llamacpp"),
-            not(feature = "backend-mlx"),
-            not(feature = "backend-mlxcel"),
-            not(feature = "backend-onnx"),
             feature = "backend-mistralrs"
         ))]
         assert_eq!(name, "mistralrs");
@@ -811,7 +771,6 @@ mod tests {
             not(feature = "backend-llamacpp"),
             not(feature = "backend-mlx"),
             not(feature = "backend-mlxcel"),
-            not(feature = "backend-onnx"),
             not(feature = "backend-mistralrs"),
             feature = "backend-litertlm"
         ))]
@@ -820,7 +779,6 @@ mod tests {
             feature = "backend-llamacpp",
             feature = "backend-mlx",
             feature = "backend-mlxcel",
-            feature = "backend-onnx",
             feature = "backend-mistralrs",
             feature = "backend-litertlm"
         )))]
@@ -921,5 +879,37 @@ mod tests {
             text.contains("backend-litertlm"),
             "the error should name the feature to enable, got: {text}"
         );
+    }
+
+    /// A `.onnx` file or a `model.onnx` directory fails naming the format.
+    ///
+    /// The ONNX backend was removed on 2026-09-04 without ever decoding a
+    /// token. Nothing left in the crate reads the format, and the error has
+    /// to say that in every build — not fall through to llama.cpp reporting
+    /// a bad magic number on a file it was never meant to open.
+    #[test]
+    fn an_onnx_model_fails_naming_the_format_in_every_build() {
+        let dir = tempfile::tempdir().unwrap();
+        let file = dir.path().join("model.onnx");
+        std::fs::write(&file, b"only the name matters here").unwrap();
+
+        for path in [file.clone(), dir.path().to_path_buf()] {
+            let req = LoadRequest {
+                model_path: path.clone(),
+                ..Default::default()
+            };
+            match detect_backend(&req) {
+                Err(ExecError::FeatureUnsupported(msg)) => assert!(
+                    msg.contains("ONNX") && msg.contains("no compiled backend"),
+                    "{}: the error should say no backend reads ONNX, got: {msg}",
+                    path.display()
+                ),
+                other => panic!(
+                    "{}: expected FeatureUnsupported, got {other:?}",
+                    path.display()
+                ),
+            }
+        }
+        assert_eq!(Engine::detect_backend_for_path(&file), "unknown");
     }
 }

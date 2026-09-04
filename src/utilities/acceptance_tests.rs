@@ -111,7 +111,7 @@ fn a_chat_keeps_generating_while_a_helper_is_busy() {
 /// The embedder is no longer the chat backend's to provide.
 ///
 /// Before this, `load_embedder` went through `Backend::as_embeddings()` on
-/// whichever backend held the chat model — and MLX and ONNX do not implement
+/// whichever backend held the chat model — and MLX does not implement
 /// it, so an MLX chat model simply could not have an embedder beside it.
 ///
 /// The scripted backend stands in for exactly that case: it implements no

@@ -20,7 +20,7 @@ use super::error::{Error, Result};
 /// Read from the file's header without loading any weights, so it's cheap
 /// enough to run over a directory of candidates.
 ///
-/// GGUF only today — MLX and ONNX carry their metadata differently, and
+/// GGUF only today — MLX bundles carry their metadata differently, and
 /// [`ModelInfo::read`] says so rather than guessing.
 #[derive(Debug, Clone)]
 #[non_exhaustive]

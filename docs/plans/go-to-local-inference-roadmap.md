@@ -171,7 +171,7 @@ backend table is grouped Tier 1 / experimental / mobile.
 Gate: `cargo test`; every remaining CI backend lane passes; conformance suite's
 stale-list check passes. Blocked by: S1.1. Forks: none (user delegated tiering).
 Honest ⬜: mistral.rs GPU forwarding unverified on NVIDIA.
-Status: ⬜
+Status: ✅ (see ledger)
 
 #### S1.3 Public backend seam + `gen2-mlxcel` companion crate
 Outcome: a consumer can register an out-of-tree backend, and mlxcel is one.
@@ -290,3 +290,4 @@ session. A ScheduleWakeup is the safety net if a background job goes quiet.
 - 2026-09-04 S0.1 aefe0b8 · clippy/test/doc/fmt green locally; rerank test 10/10; docs 05899a5 · no detours · ⬜ CI confirmation
 - 2026-09-04 S1.1 (this commit) · llama-cpp-2 =0.1.156 (llama.cpp b10405), penalties ported with -1→n_ctx; mlx-rs hybrid 0.25.3+git · unit 1015, live 22/22 Metal, clippy/doc/fmt/ext-api green · dry-run now fails only on mlxcel
 - 2026-09-04 ↷ detour (this commit) · Linux memory probe read sysinfo.freeram (excludes page cache) so the residency governor denied helper loads after big builds; the mistral.rs CI lane had failed on it for 6 runs · now MemAvailable from /proc/meminfo, parser unit-tested · ⬜ host-memory dependence of the acceptance tests remains (governor is a global)
+- 2026-09-04 S1.2 worktree-agent-a735c99fdb336ec65 · onnx+candle removed (1862 lines deleted, 685 added, net −1177; 1,525 LOC of backend code), mistralrs forwards metal/cuda (cargo tree proof, no Metal build), README tiered · gate: cargo test 1016/0/16 ignored default + 1014/0/4 mistralrs lane (CPU), clippy -D warnings, doc -D warnings, rustfmt, check ext-api / litertlm / llamacpp+litertlm, grep clean · ⬜ CI confirmation

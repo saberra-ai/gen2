@@ -108,18 +108,6 @@ mod tests {
         assert_eq!(caps.first_token_tier, LatencyTier::Medium);
     }
 
-    #[cfg(feature = "backend-onnx")]
-    #[test]
-    fn onnx_caps_via_probe() {
-        let engine = crate::backend::onnx::Engine::new();
-        let caps = BackendCaps::from_backend(&engine);
-        assert!(!caps.kv_cache);
-        assert!(caps.context_truncation_tracking);
-        assert!(!caps.poison_detection);
-        assert!(!caps.embedding);
-        assert_eq!(caps.first_token_tier, LatencyTier::Medium);
-    }
-
     #[cfg(feature = "backend-external-api")]
     #[test]
     fn external_api_caps_via_probe() {

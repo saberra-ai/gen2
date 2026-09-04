@@ -40,8 +40,8 @@ pub const DEFAULT_DRAFT_LEN: usize = 4;
 ///
 /// Feature-gated on `backend-mlx` because the `aux_hidden_states`
 /// field holds `mlx_rs::Array` — the only backend currently wiring
-/// hidden-state-aware drafters. When the llama-cpp or ONNX backends
-/// grow their own EAGLE-style support, this surface generalizes
+/// hidden-state-aware drafters. When the llama-cpp backend grows its
+/// own EAGLE-style support, this surface generalizes
 /// (e.g. via `dyn Any` or a backend-abstract tensor handle).
 #[cfg(feature = "backend-mlx")]
 #[derive(Debug, Clone)]

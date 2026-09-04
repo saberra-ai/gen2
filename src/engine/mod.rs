@@ -90,7 +90,7 @@ pub fn validate_model_file(path: &Path) -> Result<(), ExecError> {
         ExecError::InvalidModelFile(format!("cannot read model file '{}': {e}", path.display()))
     })?;
 
-    // Directory bundles (MLX safetensors, ONNX model.onnx layouts) are
+    // Directory bundles (MLX safetensors, Hugging Face layouts) are
     // validated by their backend loaders — they're not GGUF files and
     // don't have the 4-byte magic we check below. Delegating validation
     // to the backend here prevents the hard-coded GGUF check from

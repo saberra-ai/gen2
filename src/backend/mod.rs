@@ -2,7 +2,7 @@
 //!
 //! Multiple backends can be compiled simultaneously — the runtime picks
 //! the right one based on model format (GGUF → llamacpp, safetensors dir → MLX,
-//! ONNX file → onnx).  MLX is only available on Apple platforms.
+//! `.litertlm` → LiteRT-LM).  MLX is only available on Apple platforms.
 
 pub mod common;
 
@@ -24,31 +24,20 @@ compile_error!(
      enable exactly one (backend-mlxcel replaces backend-mlx on the macOS/daemon path)."
 );
 
-#[cfg(feature = "backend-onnx")]
-pub(crate) mod onnx;
-
 #[cfg(feature = "backend-external-api")]
 pub(crate) mod external_api;
-
-// Phase D week 14 — Rust-native fallback. A scaffold (trait impls returning
-// Unimplemented) until the real integration ships; module layout reserved so
-// the rest of gen2 can reference it.
-#[cfg(feature = "backend-candle")]
-pub(crate) mod candle;
 
 // Compile-time guard: at least one backend must be selected.
 #[cfg(not(any(
     feature = "backend-llamacpp",
     feature = "backend-mlx",
     feature = "backend-mlxcel",
-    feature = "backend-onnx",
     feature = "backend-external-api",
     feature = "backend-litertlm",
-    feature = "backend-candle",
     feature = "backend-mistralrs"
 )))]
 compile_error!(
-    "No inference backend selected. Enable at least one of: backend-llamacpp, backend-mlx, backend-mlxcel, backend-onnx, backend-external-api, backend-candle, backend-mistralrs, backend-litertlm"
+    "No inference backend selected. Enable at least one of: backend-llamacpp, backend-mlx, backend-mlxcel, backend-external-api, backend-mistralrs, backend-litertlm"
 );
 
 /// One contract every compiled backend must satisfy. See the module docs for

@@ -1,7 +1,7 @@
 [package]
 name = "gen2"
 version = "0.1.0"
-description = "An embeddable AI runtime for Rust: models, sessions, tools, agents and local inference behind one stateful API. Runs on llama.cpp, mistral.rs, MLX or LiteRT-LM today; ONNX and Candle compile but are not yet proven to generate."
+description = "An embeddable AI runtime for Rust: models, sessions, tools, agents and local inference behind one stateful API. Runs on llama.cpp, LiteRT-LM or an OpenAI-compatible endpoint; mistral.rs and MLX are experimental."
 authors = ["Victor Lopez"]
 edition = "2024"
 license = "MIT"
@@ -18,14 +18,10 @@ libloading = { version = "0.8", optional = true }
 llama-cpp-2 = { version = "=0.1.156", features = ["mtmd", "llguidance"], optional = true }
 llama-cpp-sys-2 = { version = "=0.1.156", optional = true }
 
-# Rust-native fallback backend.
-candle-core = { version = "0.11", optional = true }
-candle-nn = { version = "0.11", optional = true }
-candle-transformers = { version = "0.11", optional = true }
-
-# mistral.rs. Default features off: the accelerator features (metal, cuda) are
-# the caller's to enable, and pulling them in unconditionally would make a
-# plain `cargo build` require a GPU toolchain.
+# mistral.rs. Default features off: pulling its accelerator features in
+# unconditionally would make a plain `cargo build` require a GPU toolchain.
+# The crate's own `metal` / `cuda` features forward to it (see below), so one
+# flag accelerates every backend that can use it.
 mistralrs = { version = "0.8.1", optional = true, default-features = false }
 
 # HTTP client for the external-api backend (OpenAI / Anthropic wire formats).
@@ -38,7 +34,7 @@ tokenizers = { version = "0.23", default-features = false, features = ["onig"] }
 # with "unknown filter: tojson".
 minijinja = { version = "2.12.0", features = ["json"] }
 minijinja-contrib = { version = "2.9.0", features = ["rand", "pycompat"] }
-# Grammar-constrained decoding, used across ALL backends (MLX / llama / ONNX)
+# Grammar-constrained decoding, used across ALL backends (MLX / llama)
 # for JSON-schema / Lark / regex / GBNF output shaping. Same crate
 # llama_cpp_2's `llguidance_sampler` uses — keeps backend semantics aligned
 # (a grammar that works in llama mode also works in MLX mode).
@@ -89,22 +85,12 @@ tempfile = "3.19.1"
 # Type-safe Tauri bindings for host apps that export these types over IPC.
 specta = { version = "=2.0.0-rc.24", features = ["derive", "serde_json", "chrono", "uuid", "url", "indexmap"], optional = true }
 
-# ONNX Runtime — only pulled in by `backend-onnx`. Split by target the same way
-# pio-core did: Windows loads onnxruntime.dll at runtime, everything else takes
-# ort's downloaded binaries plus CoreML on macOS. `api-24` on Windows keeps the
-# OrtApi binding in lockstep with ort's `load-dynamic` VitisAI call sites.
-ndarray = { version = "0.17", optional = true }
-
 # Image decode. Not backend-gated: the session runtime bounds decode limits for
 # every multimodal path, not just MLX.
 image = "0.25.6"
 
 [target.'cfg(target_os = "windows")'.dependencies]
-ort = { version = "=2.0.0-rc.12", default-features = false, features = ["std", "ndarray", "tracing", "tls-native", "copy-dylibs", "load-dynamic", "api-24", "half"], optional = true }
 windows-sys = { version = "0.61", features = ["Win32_System_Console", "Win32_Foundation", "Win32_System_SystemInformation", "Win32_System_ProcessStatus", "Win32_System_Threading"] }
-
-[target.'cfg(not(target_os = "windows"))'.dependencies]
-ort = { version = "=2.0.0-rc.12", default-features = true, features = ["coreml", "half"], optional = true }
 
 [target.'cfg(any(target_os = "macos", target_os = "ios"))'.dependencies]
 # Forked from oxideai/mlx-rs at f4aa309c (MLX v0.30.6); adds iOS cross-compile
@@ -172,8 +158,6 @@ backend-mlx = ["dep:mlx-rs", "dep:safetensors"]
 # MUTUALLY EXCLUSIVE with backend-mlx: both link MLX C++. Build the Mac fast
 # path with `--no-default-features --features backend-mlxcel`.
 backend-mlxcel = ["dep:mlxcel-core", "mlxcel-core/metal", "dep:mlxcel", "mlxcel/metal", "dep:safetensors"]
-backend-onnx = ["dep:ort", "dep:ndarray"]
-backend-candle = ["dep:candle-core", "dep:candle-nn", "dep:candle-transformers"]
 backend-external-api = ["dep:reqwest"]
 # mistral.rs: one backend covering GGUF, safetensors, UQFF and HF repos, with
 # its own paged attention, quantization and device mapping. None of that is
@@ -186,9 +170,12 @@ backend-mistralrs = ["dep:mistralrs"]
 # feature compiles anywhere, and the library is found when a model is loaded.
 backend-litertlm = ["dep:libloading"]
 
-# GPU acceleration, forwarded to llama.cpp.
-cuda = ["backend-llamacpp", "llama-cpp-2/cuda"]
-metal = ["backend-llamacpp", "llama-cpp-2/metal"]
+# GPU acceleration, forwarded to llama.cpp — and to mistral.rs when that
+# backend is compiled too (`mistralrs?/` enables the feature without enabling
+# the backend). Before this, `backend-mistralrs,metal` built mistral.rs for the
+# CPU and said nothing.
+cuda = ["backend-llamacpp", "llama-cpp-2/cuda", "mistralrs?/cuda"]
+metal = ["backend-llamacpp", "llama-cpp-2/metal", "mistralrs?/metal"]
 vulkan = ["backend-llamacpp", "llama-cpp-2/vulkan"]
 native = ["backend-llamacpp"]
 
@@ -230,4 +217,4 @@ apple = ["backend-llamacpp", "metal"]
 # that no runtime was found — see `backend::litertlm::ffi::Runtime::load`.
 ios = ["backend-llamacpp", "backend-litertlm", "metal"]
 android = ["backend-llamacpp", "backend-litertlm", "vulkan"]
-desktop-all = ["backend-llamacpp", "backend-onnx", "backend-external-api"]
+desktop-all = ["backend-llamacpp", "backend-external-api"]

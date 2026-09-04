@@ -12,7 +12,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let model = std::env::args().nth(1).ok_or("usage: basic <model.gguf>")?;
 
     // Loading blocks until the weights are resident. The backend is picked from
-    // the file — GGUF here, but an MLX or ONNX directory would work the same.
+    // the file — GGUF here, but an MLX directory would work the same.
     let engine = Engine::load(&model)?;
 
     // ── 1. Ask a question, get a string ─────────────────────────────────────

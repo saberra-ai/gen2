@@ -57,8 +57,6 @@ jobs:
       matrix:
         include:
           - { os: ubuntu-latest, features: backend-external-api }
-          - { os: ubuntu-latest, features: backend-candle }
-          - { os: ubuntu-latest, features: backend-onnx }
           - { os: ubuntu-latest, features: backend-llamacpp }
           - { os: ubuntu-latest, features: backend-mistralrs }
           # LiteRT-LM loads Google's runtime at run time, so a build needs

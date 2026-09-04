@@ -4,7 +4,7 @@ use crate::types::ModelMetadata;
 use std::path::Path;
 
 /// Build a [`ModelMetadata`] from a HuggingFace-convention model directory
-/// (MLX safetensors or ONNX). Reads `config.json` for architecture dims,
+/// (MLX safetensors, or any other `config.json` layout). Reads `config.json` for architecture dims,
 /// `tokenizer_config.json` for chat template / tool support, and
 /// `quantize_config.json` for quantization info (MLX).
 pub fn parse_hf_model_metadata(model_dir: &Path) -> Option<ModelMetadata> {

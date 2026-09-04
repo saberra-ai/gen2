@@ -199,7 +199,7 @@ pub struct ArPuller {
     /// through the stop-matcher with hold-queue semantics, owns the pending
     /// event queue that the Iterator drains, and is the one place a
     /// terminal-stop (max_tokens / loop detector / explicit stop) pushes
-    /// Eos from. Same helper used by the llama and ONNX backends.
+    /// Eos from. Same helper the llama backend uses.
     filter: OutputFilter,
 
     /// Optional grammar-constrained sampler. When set, every step's
