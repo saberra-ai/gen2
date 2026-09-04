@@ -2,7 +2,7 @@
 
 An embeddable AI runtime for Rust. Models, sessions, tools, agents and local
 inference behind one stateful API — over llama.cpp, mistral.rs, MLX, LiteRT-LM,
-ONNX Runtime, Candle, or an OpenAI-compatible endpoint.
+or an OpenAI-compatible endpoint.
 
 ```toml
 [dependencies]
