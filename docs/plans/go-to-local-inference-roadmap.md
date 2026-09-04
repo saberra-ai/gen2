@@ -230,7 +230,7 @@ Observable: `[package.metadata.docs.rs]` present and `cargo doc` with those exac
 features is warning-free; CI `publishable` is a hard gate; CHANGELOG.md exists;
 README install snippet says `gen2 = "0.1"`.
 Gate: dry-run exit 0 on `main`; CI green. Blocked by: S1.3. Forks: ⛔ publish + tag (Victor may prefer to publish only after wave 2 so 0.1 ships the spec's API; the slice prepares either way).
-Status: ⬜
+Status: ✅ 2c0bd33 — ⛔ STOP: publish and tag are Victor's
 
 ### Wave 2 — the inference-first facade (`api_spec.md`)
 Ceiling for the whole wave: every public example in the spec's §28 walkthrough
@@ -383,3 +383,4 @@ session. A ScheduleWakeup is the safety net if a background job goes quiet.
 - 2026-09-04 S1.2 worktree-agent-a735c99fdb336ec65 · onnx+candle removed (1862 lines deleted, 685 added, net −1177; 1,525 LOC of backend code), mistralrs forwards metal/cuda (cargo tree proof, no Metal build), README tiered · gate: cargo test 1016/0/16 ignored default + 1014/0/4 mistralrs lane (CPU), clippy -D warnings, doc -D warnings, rustfmt, check ext-api / litertlm / llamacpp+litertlm, grep clean · ⬜ CI confirmation
 - 2026-09-04 ↷ input: Victor pushed `api_spec.md` (660cca4) after S1.2; roadmap re-sliced: new wave 2 = the facade (S2.1–S2.6), first-run → wave 3, benchmarks → wave 4, pio-app → wave 5; S1.3 in flight, told to put the plugin seam under `gen2::advanced`
 - 2026-09-04 goal set by Victor: "api_spec.md, ideally you get this done" → wave 2 is the priority; S2.1 dispatched in parallel with S1.3 (disjoint files, S2.1 rebases onto S1.3); S0.1 CI confirmed green at bdc6576 (first fully green main)
+- 2026-09-04 S1.4 2c0bd33 · docs.rs metadata (no-default-features; llamacpp/external-api/litertlm/tokio; x86_64 linux) verified with a local doc build; CI `publishable` is a hard gate; CHANGELOG.md · README already said publishable (S1.3) · install snippet stays `git` until the crate exists on crates.io (⛔ publish) · dry-run exit 0 on main at 64c1f81 and 2c0bd33 · ⬜ CI confirmation
