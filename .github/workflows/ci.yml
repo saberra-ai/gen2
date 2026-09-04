@@ -134,9 +134,10 @@ jobs:
   # moved to the unpublished companion under `crates/` — and this keeps it
   # that way: the check is cheap and the answer only changes when the
   # manifest does.
+  # A hard gate since S1.4: every dependency resolves from crates.io, and a
+  # change that reintroduces a git-only one fails here rather than at release.
   publishable:
     runs-on: ubuntu-latest
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
@@ -148,7 +149,7 @@ jobs:
           if cargo publish --dry-run --allow-dirty 2>&1 | tee /tmp/publish.log; then
             echo "publishable"
           else
-            echo "::warning::not publishable to crates.io yet — see the log"
+            echo "::error::not publishable to crates.io — see the log"
             grep -iE "git|registry|version" /tmp/publish.log | head -20 || true
             exit 1
           fi

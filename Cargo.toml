@@ -7,6 +7,16 @@ edition = "2024"
 license = "MIT"
 repository = "https://github.com/saberra-ai/gen2"
 
+# docs.rs builds with default features unless told otherwise, and the default
+# is llama.cpp: a C++ build the docs builder cannot finish. So the docs build
+# names the backends whose documentation needs no native toolchain. mistral.rs
+# is left out because its own docs.rs build fails on Linux; MLX because it is
+# macOS-only; the docs describe them either way.
+[package.metadata.docs.rs]
+no-default-features = true
+features = ["backend-llamacpp", "backend-external-api", "backend-litertlm", "tokio"]
+targets = ["x86_64-unknown-linux-gnu"]
+
 [lib]
 name = "gen2"
 path = "src/lib.rs"
