@@ -124,8 +124,9 @@ Receipts (graded, cited): `docs/plans/research/0[1-5]-*.md`. Calls taken:
 
 ## Autonomy budget + blast-radius stops
 
-- Budget: this session, at most 20 slices, ≤8 commits per slice, one slice in flight
-  at a time; pre-flight disk (>40 GB free) before every build-heavy slice
+- Budget: this session, at most 20 slices, ≤8 commits per slice; one slice in flight
+  at a time, raised to two on 2026-09-04 when Victor set the goal to `api_spec.md`
+  (allowed only when the two touch disjoint files and the later one rebases); pre-flight disk (>40 GB free) before every build-heavy slice
   (`target/` was 79 GB on day one; `cargo clean` reclaimed 115 GB).
 - Stop immediately for: `cargo publish` (not dry-run); creating a git tag; any paid
   runner/host/domain; changing the README's opening paragraph or tagline (positioning);
@@ -373,3 +374,4 @@ session. A ScheduleWakeup is the safety net if a background job goes quiet.
 - 2026-09-04 ↷ detour (this commit) · Linux memory probe read sysinfo.freeram (excludes page cache) so the residency governor denied helper loads after big builds; the mistral.rs CI lane had failed on it for 6 runs · now MemAvailable from /proc/meminfo, parser unit-tested · ⬜ host-memory dependence of the acceptance tests remains (governor is a global)
 - 2026-09-04 S1.2 worktree-agent-a735c99fdb336ec65 · onnx+candle removed (1862 lines deleted, 685 added, net −1177; 1,525 LOC of backend code), mistralrs forwards metal/cuda (cargo tree proof, no Metal build), README tiered · gate: cargo test 1016/0/16 ignored default + 1014/0/4 mistralrs lane (CPU), clippy -D warnings, doc -D warnings, rustfmt, check ext-api / litertlm / llamacpp+litertlm, grep clean · ⬜ CI confirmation
 - 2026-09-04 ↷ input: Victor pushed `api_spec.md` (660cca4) after S1.2; roadmap re-sliced: new wave 2 = the facade (S2.1–S2.6), first-run → wave 3, benchmarks → wave 4, pio-app → wave 5; S1.3 in flight, told to put the plugin seam under `gen2::advanced`
+- 2026-09-04 goal set by Victor: "api_spec.md, ideally you get this done" → wave 2 is the priority; S2.1 dispatched in parallel with S1.3 (disjoint files, S2.1 rebases onto S1.3); S0.1 CI confirmed green at bdc6576 (first fully green main)
