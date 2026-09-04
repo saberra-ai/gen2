@@ -194,8 +194,8 @@ pub use types::message::{Message, MessageBody, MessageChunk, MessageContent, Too
 /// [`ControllerCmd::ApplySettings`], plus the error every fallible call
 /// returns.
 pub use engine::{
-    Degraded, ExecError, LoadOutcome, MmSettings, PromptSettings, SamplingSettings, Settings,
-    StoppingSettings, SystemSettings,
+    Capabilities, Degraded, ExecError, LoadOutcome, MmSettings, PromptSettings, SamplingSettings,
+    Settings, StoppingSettings, SystemSettings,
 };
 
 /// What machine this is — memory, cores, GPU — as read by

@@ -122,7 +122,7 @@ impl Turn {
 ///
 /// The same invariant as [`Turn::group`], for code that holds a plain
 /// `Vec<Message>` rather than a journal — chiefly
-/// [`crate::session_rt::truncate`], which drops messages to fit a context
+/// `session_rt::truncate`, which drops messages to fit a context
 /// window and had no idea what it was splitting.
 ///
 /// Returns `1` for an ordinary message, and for an assistant turn whose calls

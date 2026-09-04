@@ -593,13 +593,6 @@ mod tests {
         assert_eq!(out.len(), 2);
     }
 
-    /// Qwen3-Embedding integration test (gated on a local GGUF).
-    ///
-    /// Set `LLAMA_QWEN3_EMBEDDER_MODEL` to a `Qwen3-Embedding-0.6B-*.gguf`
-    /// (e.g. from `Qwen/Qwen3-Embedding-0.6B-GGUF`). Validates:
-    ///   1. the MRL-truncated output is 768-d (drop-in for the existing store);
-    ///   2. semantically related sentences score higher than unrelated ones.
-    #[test]
     /// Does packing actually buy throughput, or is the GPU already token-bound?
     ///
     /// Batching only helps when per-call overhead dominates. If the forward
@@ -727,6 +720,13 @@ mod tests {
         }
     }
 
+    /// Qwen3-Embedding integration test (gated on a local GGUF).
+    ///
+    /// Set `LLAMA_QWEN3_EMBEDDER_MODEL` to a `Qwen3-Embedding-0.6B-*.gguf`
+    /// (e.g. from `Qwen/Qwen3-Embedding-0.6B-GGUF`). Validates:
+    ///   1. the MRL-truncated output is 768-d (drop-in for the existing store);
+    ///   2. semantically related sentences score higher than unrelated ones.
+    #[test]
     #[ignore]
     fn qwen3_embedding_similarity_and_768_dim() {
         let Some(model_path) = std::env::var("LLAMA_QWEN3_EMBEDDER_MODEL")

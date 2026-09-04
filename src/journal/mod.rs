@@ -31,7 +31,7 @@
 //! written later by someone who has not read this — can show a model a tool
 //! result with nothing that asked for it, or a call that never resolves.
 //!
-//! That failure is not hypothetical: [`crate::session_rt::truncate`] drops
+//! That failure is not hypothetical: `session_rt::truncate` drops
 //! messages oldest-first by count today, with no idea what it is splitting.
 //! Making it impossible was the reason to build this before anything that
 //! depends on it.

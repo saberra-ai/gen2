@@ -205,6 +205,34 @@ impl RerankerRuntime for LlamaReranker {
     }
 }
 
+/// A latch a test holds shut while it proves something, then opens.
+///
+/// The alternative is a sleep, and a sleep turns the test into a stopwatch:
+/// "the chat finished inside 600 ms" is true on a laptop and false on a
+/// loaded CI runner. Holding the helper open until the test says so makes
+/// the property an ordering, which no scheduler can break.
+#[cfg(test)]
+#[derive(Default)]
+pub(crate) struct Hold {
+    open: std::sync::Mutex<bool>,
+    opened: std::sync::Condvar,
+}
+
+#[cfg(test)]
+impl Hold {
+    pub(crate) fn release(&self) {
+        *self.open.lock().unwrap() = true;
+        self.opened.notify_all();
+    }
+
+    fn wait(&self) {
+        let mut open = self.open.lock().unwrap();
+        while !*open {
+            open = self.opened.wait(open).unwrap();
+        }
+    }
+}
+
 /// A reranker that answers from a fixed table, optionally slowly.
 #[cfg(test)]
 pub(crate) struct ScriptedReranker {
@@ -213,6 +241,8 @@ pub(crate) struct ScriptedReranker {
     /// Score for each document index, in the order given.
     pub(crate) scores: Vec<f32>,
     pub(crate) busy: std::sync::Arc<std::sync::atomic::AtomicBool>,
+    /// When set, every call blocks here (after `latency`) until released.
+    pub(crate) hold: Option<std::sync::Arc<Hold>>,
 }
 
 #[cfg(test)]
@@ -225,6 +255,9 @@ impl RerankerRuntime for ScriptedReranker {
         use std::sync::atomic::Ordering;
         self.busy.store(true, Ordering::SeqCst);
         std::thread::sleep(self.latency);
+        if let Some(hold) = &self.hold {
+            hold.wait();
+        }
         self.busy.store(false, Ordering::SeqCst);
         Ok(self.scores.iter().copied().take(documents.len()).collect())
     }

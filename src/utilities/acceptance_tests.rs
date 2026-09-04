@@ -253,16 +253,23 @@ fn a_real_embedder_produces_stable_vectors_through_the_worker() {
 /// runs the model once per document.
 #[test]
 fn a_chat_keeps_generating_while_a_rerank_is_running() {
+    use crate::utilities::rerank::Hold;
     use crate::utilities::{RerankerRuntime, ScriptedReranker};
     let busy = Arc::new(AtomicBool::new(false));
     let b = Arc::clone(&busy);
+    // The reranker cannot answer until this test lets it. That is the whole
+    // proof: a chat turn that completes while the helper is held open was
+    // not waiting behind it.
+    let hold = Arc::new(Hold::default());
+    let h = Arc::clone(&hold);
     let utilities = UtilityWorker::spawn_with_factories(crate::utilities::Factories {
         reranker: Box::new(move |_path| {
             Ok(Box::new(ScriptedReranker {
-                name: "slow-reranker".into(),
-                latency: HELPER_LATENCY,
+                name: "held-reranker".into(),
+                latency: Duration::ZERO,
                 scores: vec![0.2, 0.9, 0.5],
                 busy: Arc::clone(&b),
+                hold: Some(Arc::clone(&h)),
             }) as Box<dyn RerankerRuntime>)
         }),
         ..crate::utilities::Factories::default()
@@ -286,22 +293,21 @@ fn a_chat_keeps_generating_while_a_rerank_is_running() {
         })
         .expect("the controller should accept the request");
 
-    let started = Instant::now();
     let mut session = Session::new();
     let done = engine.chat(&mut session).user("hello").send().unwrap();
-    let chat_took = started.elapsed();
-
     assert_eq!(done.text, "one two");
+
+    // The rerank is still held open, so it cannot have answered. Had the
+    // controller waited for it, the chat above would never have returned.
     assert!(
-        chat_took < HELPER_LATENCY,
-        "the chat turn took {chat_took:?} while a rerank was running — the \
-         controller waited for the helper"
-    );
-    assert!(
-        busy.load(Ordering::SeqCst),
-        "the rerank should still be running"
+        matches!(
+            rerank_rx.try_recv(),
+            Err(std::sync::mpsc::TryRecvError::Empty)
+        ),
+        "the rerank answered before it was released"
     );
 
+    hold.release();
     let ranked = rerank_rx
         .recv_timeout(Duration::from_secs(10))
         .expect("the reranker answers the caller directly")
