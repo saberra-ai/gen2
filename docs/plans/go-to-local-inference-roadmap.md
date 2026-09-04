@@ -147,7 +147,7 @@ wall-clock bound that loaded runners trip (ONNX lane).
 Reference to mirror: none needed.
 Gate: the three commands above; CI green.
 Blocked by: none. Forks: none. Honest ⬜: none.
-Status: ⬜
+Status: ✅ aefe0b8 (local gates green; CI run pending at push time)
 
 ### Wave 1 — publishable
 #### S1.1 Dependencies off git
@@ -161,7 +161,7 @@ back to `=0.1.151` only if live inference regresses in a way the slice cannot fi
 Gate: `cargo test`; live_inference 22/22 under Metal; `cargo check --no-default-features
 --features backend-external-api`. Blocked by: S0.1. Forks: none.
 Honest ⬜: `backend-mlx` against upstream 0.25.3 not built (fork is what compiles).
-Status: ⬜
+Status: ✅ (see ledger)
 
 #### S1.2 Backend tiering
 Outcome: the crate carries only backends it stands behind, labelled by tier.
@@ -274,4 +274,5 @@ session. A ScheduleWakeup is the safety net if a background job goes quiet.
 
 ## Ledger
 
-(one line per beat)
+- 2026-09-04 S0.1 aefe0b8 · clippy/test/doc/fmt green locally; rerank test 10/10; docs 05899a5 · no detours · ⬜ CI confirmation
+- 2026-09-04 S1.1 (this commit) · llama-cpp-2 =0.1.156 (llama.cpp b10405), penalties ported with -1→n_ctx; mlx-rs hybrid 0.25.3+git · unit 1015, live 22/22 Metal, clippy/doc/fmt/ext-api green · dry-run now fails only on mlxcel

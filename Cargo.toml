@@ -15,8 +15,8 @@ path = "src/lib.rs"
 
 libloading = { version = "0.8", optional = true }
 # ── Inference backends (all optional; pick at least one) ────────────────────
-llama-cpp-2 = { git = "https://github.com/utilityai/llama-cpp-rs", rev = "43733d1de03e8a7d582f5732e9836f2387997c4d", features = ["mtmd", "llguidance"], optional = true }
-llama-cpp-sys-2 = { git = "https://github.com/utilityai/llama-cpp-rs", rev = "43733d1de03e8a7d582f5732e9836f2387997c4d", optional = true }
+llama-cpp-2 = { version = "=0.1.156", features = ["mtmd", "llguidance"], optional = true }
+llama-cpp-sys-2 = { version = "=0.1.156", optional = true }
 
 # Rust-native fallback backend.
 candle-core = { version = "0.11", optional = true }
@@ -113,7 +113,7 @@ ort = { version = "=2.0.0-rc.12", default-features = true, features = ["coreml",
 # MACOSX_DEPLOYMENT_TARGET=26.0 so the metallib LINK step keeps the Metal 4
 # (AIR 2.8) kernels — without it air-lld drops all kernels → empty metallib →
 # runtime "Unable to load kernel". See saberra-ai/mlx-rs@fac86ba0.
-mlx-rs = { git = "https://github.com/saberra-ai/mlx-rs", rev = "fac86ba092ba457d055f8d96d8a7a86dc8dee343", optional = true }
+mlx-rs = { version = "0.25.3", git = "https://github.com/saberra-ai/mlx-rs", rev = "fac86ba092ba457d055f8d96d8a7a86dc8dee343", optional = true }
 safetensors = { version = "0.8", optional = true }
 # mlxcel-core — fast MLX inference (Rust + MLX C++ via cxx), Apache-2. Embedded
 # as `backend-mlxcel`, REPLACING mlx-rs on the Mac path (both link MLX C++, so

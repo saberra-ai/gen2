@@ -309,7 +309,8 @@ impl Session {
     /// [`Self::GRAMMAR_ANTILOOP_PENALTIES`].
     fn sampler_from_settings_antiloop(settings: &Settings, bundle: &ModelBundle) -> LlamaSampler {
         let (last_n, repeat, freq, present) = Self::GRAMMAR_ANTILOOP_PENALTIES;
-        let antiloop = LlamaSampler::penalties(last_n, repeat, freq, present);
+        let antiloop =
+            LlamaSampler::penalties(bundle.model.n_vocab(), last_n, repeat, freq, present);
         LlamaSampler::chain_simple(vec![
             antiloop,
             Self::sampler_from_settings(settings, bundle),
@@ -461,7 +462,7 @@ impl Session {
         // Order: penalties → arch_bias → top_k → min_p → top_p → temp → dist
         let mut chain = Vec::new();
 
-        if let Some(penalties) = Self::penalties_sampler(settings) {
+        if let Some(penalties) = Self::penalties_sampler(settings, bundle) {
             tracing::debug!("Sampling penalties: {:?}", penalties);
             chain.push(penalties);
         }
@@ -583,9 +584,17 @@ impl Session {
         Some(LlamaSampler::logit_bias(n_vocab, &biases))
     }
 
-    fn penalties_sampler(settings: &Settings) -> Option<LlamaSampler> {
+    fn penalties_sampler(settings: &Settings, bundle: &ModelBundle) -> Option<LlamaSampler> {
         let sampling = &settings.sampling;
-        let penalty_last_n = sampling.penalty_last_n.unwrap_or(0);
+        // `-1` has always meant "the whole context" to callers, and the
+        // settings validator still accepts it. llama.cpp stopped reading it
+        // that way (negative values now clamp to 0, which disables the
+        // penalty), so the translation happens here instead of silently
+        // flipping the setting off.
+        let penalty_last_n = match sampling.penalty_last_n.unwrap_or(0) {
+            -1 => i32::try_from(bundle.meta.n_ctx).unwrap_or(i32::MAX),
+            n => n,
+        };
         let penalty_repeat = sampling.penalty_repeat.unwrap_or(1.0);
         let penalty_freq = sampling.penalty_freq.unwrap_or(0.0);
         let penalty_present = sampling.penalty_present.unwrap_or(0.0);
@@ -596,6 +605,7 @@ impl Session {
             None
         } else {
             Some(LlamaSampler::penalties(
+                bundle.model.n_vocab(),
                 penalty_last_n,
                 penalty_repeat,
                 penalty_freq,

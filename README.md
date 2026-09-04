@@ -607,9 +607,9 @@ checks exactly that. Shipping the runtime itself is the host application's job
 — Google publishes `liblitert-lm.so` for Android and a `CLiteRTLM` XCFramework
 for iOS.
 
-Not yet publishable to crates.io: three dependencies resolve only to git
-repositories, which the registry does not accept. CI checks this so a release
-cannot be surprised by it.
+Not yet publishable to crates.io: `mlxcel` has no registry release, and the
+registry does not accept git dependencies. CI checks this so a release cannot
+be surprised by it.
 
 ```sh
 cargo test
