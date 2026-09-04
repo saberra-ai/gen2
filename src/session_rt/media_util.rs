@@ -79,7 +79,8 @@ pub fn validate_image_path(url_or_path: &str) -> Result<String, ExecError> {
     Ok(path.to_string())
 }
 
-pub(crate) fn messages_have_images(messages: &Vec<Message>) -> bool {
+/// Whether any message carries an image chunk.
+pub fn messages_have_images(messages: &Vec<Message>) -> bool {
     for msg in messages {
         if let MessageBody::Content { content } = &msg.body {
             match content {

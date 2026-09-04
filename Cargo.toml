@@ -11,6 +11,14 @@ repository = "https://github.com/saberra-ai/gen2"
 name = "gen2"
 path = "src/lib.rs"
 
+# The crate is a workspace root so that a backend with no registry release can
+# live beside it without being published with it. `crates/gen2-mlxcel` depends
+# on git-only crates and is `publish = false`; the root package is what
+# `cargo publish` sees, and cargo leaves nested packages out of the tarball.
+# Build the companion by name: `cargo build -p gen2-mlxcel`.
+[workspace]
+members = ["crates/gen2-mlxcel"]
+
 [dependencies]
 
 libloading = { version = "0.8", optional = true }
@@ -101,17 +109,6 @@ windows-sys = { version = "0.61", features = ["Win32_System_Console", "Win32_Fou
 # runtime "Unable to load kernel". See saberra-ai/mlx-rs@fac86ba0.
 mlx-rs = { version = "0.25.3", git = "https://github.com/saberra-ai/mlx-rs", rev = "fac86ba092ba457d055f8d96d8a7a86dc8dee343", optional = true }
 safetensors = { version = "0.8", optional = true }
-# mlxcel-core — fast MLX inference (Rust + MLX C++ via cxx), Apache-2. Embedded
-# as `backend-mlxcel`, REPLACING mlx-rs on the Mac path (both link MLX C++, so
-# they are MUTUALLY EXCLUSIVE — see the compile_error guard in lib.rs).
-mlxcel-core = { git = "https://github.com/saberra-ai/mlxcel", rev = "21306cf116ed3188a156105736cc8ee6073d0e8b", optional = true, default-features = false }
-# mlxcel (top-level crate) — the model loader + tokenizer live HERE, not in
-# mlxcel-core: `mlxcel::load_model` → `(LoadedModel, MlxcelTokenizer)`, and
-# `LoadedModel` is the concrete `LanguageModel` impl the FAST-path
-# `MlxInferenceSession::generate_streaming` drives. Same rev-pin as
-# mlxcel-core so both resolve to a single MLX C++ build.
-mlxcel = { git = "https://github.com/saberra-ai/mlxcel", rev = "21306cf116ed3188a156105736cc8ee6073d0e8b", optional = true, default-features = false }
-
 # Only buildable with the async API compiled in.
 [[example]]
 name = "async_chat"
@@ -155,9 +152,6 @@ default = ["backend-llamacpp"]
 
 backend-llamacpp = ["dep:llama-cpp-2", "dep:llama-cpp-sys-2"]
 backend-mlx = ["dep:mlx-rs", "dep:safetensors"]
-# MUTUALLY EXCLUSIVE with backend-mlx: both link MLX C++. Build the Mac fast
-# path with `--no-default-features --features backend-mlxcel`.
-backend-mlxcel = ["dep:mlxcel-core", "mlxcel-core/metal", "dep:mlxcel", "mlxcel/metal", "dep:safetensors"]
 backend-external-api = ["dep:reqwest"]
 # mistral.rs: one backend covering GGUF, safetensors, UQFF and HF repos, with
 # its own paged attention, quantization and device mapping. None of that is

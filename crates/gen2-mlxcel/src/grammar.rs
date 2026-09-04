@@ -50,9 +50,7 @@ use mlxcel::LoadedModel;
 use mlxcel::tokenizer::MlxcelTokenizer;
 use mlxcel_core::generate::LanguageModel;
 
-use crate::backend::common::grammar::{GrammarMatcher, GrammarSpec};
-use crate::backend::common::tokenizer::HfTokenizer;
-use crate::engine::ExecError;
+use gen2::advanced::plugin::{ExecError, GrammarMatcher, GrammarSpec, HfTokenizer};
 
 use super::worker::DecodedToken;
 

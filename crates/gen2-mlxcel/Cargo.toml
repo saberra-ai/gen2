@@ -1,0 +1,41 @@
+[package]
+name = "gen2-mlxcel"
+version = "0.1.0"
+description = "mlxcel backend for gen2, registered through gen2::advanced::plugin. Never published: mlxcel has no registry release."
+authors = ["Victor Lopez"]
+edition = "2024"
+license = "MIT"
+repository = "https://github.com/saberra-ai/gen2"
+# crates.io refuses git dependencies, and neither mlxcel crate has a registry
+# release. This crate exists so that the published `gen2` need carry no
+# reference to them: a git or path consumer builds this one alongside.
+publish = false
+
+[dependencies]
+# No built-in backend: this crate is the backend. Enable `gen2` features you
+# want on top (e.g. `tokio`) from your own manifest.
+gen2 = { path = "../..", default-features = false }
+
+# mlxcel-core — fast MLX inference (Rust + MLX C++ via cxx), Apache-2. Builds
+# MLX from source through cmake; the first build takes minutes.
+mlxcel-core = { git = "https://github.com/saberra-ai/mlxcel", rev = "21306cf116ed3188a156105736cc8ee6073d0e8b", default-features = false }
+# mlxcel (top-level crate) — the model loader + tokenizer live HERE, not in
+# mlxcel-core: `mlxcel::load_model` → `(LoadedModel, MlxcelTokenizer)`, and
+# `LoadedModel` is the concrete `LanguageModel` impl the FAST-path
+# `MlxInferenceSession::generate_streaming` drives. Same rev-pin as
+# mlxcel-core so both resolve to a single MLX C++ build.
+mlxcel = { git = "https://github.com/saberra-ai/mlxcel", rev = "21306cf116ed3188a156105736cc8ee6073d0e8b", default-features = false }
+
+anyhow = "1"
+arc-swap = "1.7"
+parking_lot = "0.12"
+serde_json = "1"
+tracing = "0.1"
+
+[dev-dependencies]
+tempfile = "3"
+
+[features]
+# Metal is the whole point on Apple silicon; off, mlxcel runs on the CPU.
+default = ["metal"]
+metal = ["mlxcel-core/metal", "mlxcel/metal"]

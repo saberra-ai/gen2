@@ -240,10 +240,10 @@ pub enum ControllerCmd {
     /// Re-read the current model from disk.
     ReloadModel { resp: Sender<Result<(), String>> },
     /// Which backend is currently active in the controller's engine (the facade
-    /// `active_backend_name()` — e.g. `"llamacpp"`, `"mlx"`, `"mlxcel"`). Proves
-    /// routing end-to-end: after `LoadModel` a caller can assert the model
-    /// actually landed on the intended backend, not a fallback (S6 mlxcel
-    /// go/no-go). Returns `"none"` when no model is loaded.
+    /// `active_backend_name()` — e.g. `"llamacpp"`, `"mlx"`, or a plugin's
+    /// name). Proves routing end-to-end: after `LoadModel` a caller can assert
+    /// the model actually landed on the intended backend, not a fallback.
+    /// Returns `"none"` when no model is loaded.
     GetActiveBackendName { resp: Sender<&'static str> },
     /// Check whether the embedding model is loaded.
     IsEmbedderLoaded { resp: Sender<bool> },
@@ -1483,7 +1483,6 @@ mod tests {
         #[cfg(not(any(
             feature = "backend-llamacpp",
             feature = "backend-mlx",
-            feature = "backend-mlxcel",
             feature = "backend-mistralrs",
             feature = "backend-litertlm"
         )))]
@@ -1494,7 +1493,6 @@ mod tests {
         #[cfg(any(
             feature = "backend-llamacpp",
             feature = "backend-mlx",
-            feature = "backend-mlxcel",
             feature = "backend-mistralrs",
             feature = "backend-litertlm"
         ))]

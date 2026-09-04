@@ -1,6 +1,6 @@
 //! [`Backend`] impl for the mlxcel backend — [`MlxcelEngine`].
 //!
-//! Mirrors the shape of [`super::super::mlx::Engine`]: the engine owns
+//! Mirrors the shape of `gen2`'s in-tree MLX engine: the engine owns
 //! engine-level [`Settings`] and hands sessions out as `Arc<dyn BackendSession>`.
 //! The one structural difference is thread-confinement: the `!Send` MLX model +
 //! tokenizer live on a dedicated [`ModelWorker`] thread (see [`super::worker`]),
@@ -13,19 +13,16 @@ use std::sync::atomic::{AtomicU64, Ordering};
 use arc_swap::ArcSwap;
 use parking_lot::RwLock;
 
-use crate::backend::caps::LatencyTier;
-use crate::backend::traits::{Backend, BackendSession, LocalBackend};
-use crate::engine::telemetry::{HookBus, HookEvent};
-use crate::engine::{Capabilities, ExecError, ExecutionStats, LoadRequest, Settings};
-use crate::session_rt::SessionSpec;
-use crate::session_rt::media_util::messages_have_images;
+use gen2::advanced::plugin::{
+    Backend, BackendSession, Capabilities, ExecError, ExecutionStats, HookBus, HookEvent,
+    LatencyTier, LoadRequest, LocalBackend, ModelMeta, SessionSpec, Settings, messages_have_images,
+};
 
 use super::session::MlxcelSession;
 use super::worker::{LoadInfo, ModelWorker};
 
-// `pub` (capped to crate by the `pub(crate) mod mlxcel`) so it can back the
-// `pub Engine::Mlxcel` facade variant without a `private_interfaces` warning —
-// mirrors `mlx::Engine` / `llama::Engine`.
+/// The mlxcel backend. Build one through [`crate::plugin`], or directly for a
+/// test that drives the [`Backend`] contract by hand.
 pub struct MlxcelEngine {
     /// The dedicated MLX worker thread (owns the `!Send` model + tokenizer).
     worker: Arc<ModelWorker>,
@@ -54,8 +51,7 @@ impl std::fmt::Debug for MlxcelEngine {
 impl MlxcelEngine {
     /// Construct an mlxcel engine and spawn its worker thread. The worker
     /// initializes the MLX runtime; no model is loaded until `load_model`.
-    #[allow(dead_code)] // constructed by the controller/facade in a later slice
-    pub(crate) fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             worker: Arc::new(ModelWorker::spawn()),
             loaded: RwLock::new(None),
@@ -66,22 +62,6 @@ impl MlxcelEngine {
             hooks: Arc::new(HookBus::default()),
         }
     }
-
-    /// PROFILE-ONLY (S5 perf verify): run one greedy `generate_streaming` pass in
-    /// the given `on_token` mode and return the timing. Drives the worker's
-    /// [`profile_blocking`](super::worker::ModelWorker::profile_blocking); the
-    /// model must already be loaded. Used exclusively by the decode-profile
-    /// captest — not on any user path.
-    #[cfg(test)]
-    pub(crate) fn profile(
-        &self,
-        prompt: &str,
-        max_tokens: usize,
-        mode: super::worker::ProfileMode,
-    ) -> Result<super::worker::ProfileRun, ExecError> {
-        self.worker
-            .profile_blocking(prompt.to_string(), max_tokens, mode)
-    }
 }
 
 impl Backend for MlxcelEngine {
@@ -91,7 +71,7 @@ impl Backend for MlxcelEngine {
 
     fn load_model(&self, req: LoadRequest) -> Result<(), ExecError> {
         let info = self.worker.load(req.model_path.clone())?;
-        let meta = crate::bundle::ModelMeta {
+        let meta = ModelMeta {
             n_ctx: info.n_ctx as u32,
             n_layer: info.num_layers as u32,
             architecture: info.architecture.clone(),

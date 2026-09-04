@@ -41,7 +41,7 @@ pub(crate) fn default_llama3_template() -> String {
 ///
 /// Used by import-time metadata extraction, runtime fingerprinting, and
 /// engine bundle construction.
-pub(crate) fn load_chat_template(model_dir: &Path) -> Option<String> {
+pub fn load_chat_template(model_dir: &Path) -> Option<String> {
     // Preferred: embedded in tokenizer_config.json.
     if let Ok(content) = std::fs::read_to_string(model_dir.join("tokenizer_config.json"))
         && let Ok(parsed) = serde_json::from_str::<serde_json::Value>(&content)

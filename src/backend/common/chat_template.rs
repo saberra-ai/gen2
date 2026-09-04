@@ -12,8 +12,15 @@ use chrono::Local;
 use minijinja::{Environment, ErrorKind, Template};
 use minijinja_contrib::pycompat;
 
+/// A model's Jinja chat template, parsed once and rendered per turn.
+///
+/// Built from the raw template string (see
+/// [`load_chat_template`](super::load_chat_template)) and the model's BOS/EOS
+/// strings, so `{{ bos_token }}` expands to what the tokenizer would emit.
+/// The parsed template is leaked on purpose (minijinja templates borrow their
+/// source), so build one per model, not per render.
 #[derive(Clone)]
-pub(crate) struct ChatTemplate {
+pub struct ChatTemplate {
     template: Template<'static, 'static>,
     bos_token: Option<String>,
     eos_token: Option<String>,
@@ -30,7 +37,9 @@ pub(crate) fn strftime_now(format_str: String) -> Result<String, minijinja::Erro
     Ok(Local::now().format(&format_str).to_string())
 }
 impl ChatTemplate {
-    pub(crate) fn new(
+    /// Parse `template`. `bos_token`/`eos_token` are what `{{ bos_token }}`
+    /// and `{{ eos_token }}` render as; `None` renders them empty.
+    pub fn new(
         template: String,
         bos_token: Option<TokenizerConfigToken>,
         eos_token: Option<TokenizerConfigToken>,
@@ -84,7 +93,11 @@ impl ChatTemplate {
         }
     }
 
-    pub(crate) fn apply(
+    /// Render `messages` with the generation prompt appended, so the model
+    /// continues as the assistant. `tools_and_prompt` renders tool
+    /// definitions the way the template expects; `enable_thinking` sets the
+    /// template variable of that name where the model has one.
+    pub fn apply(
         &self,
         messages: Vec<Message>,
         tools_and_prompt: Option<(Vec<ToolSpec>, String)>,
@@ -93,7 +106,7 @@ impl ChatTemplate {
         self.apply_with_options(messages, tools_and_prompt, enable_thinking, true)
     }
 
-    /// Probe whether this template accepts a `system` role at message[0].
+    /// Probe whether this template accepts a `system` role as the first message.
     ///
     /// Some upstream templates (notably Gemma 2's
     /// `gemma-2-*-it/tokenizer_config.json`) hard-error on `system` via
@@ -102,7 +115,7 @@ impl ChatTemplate {
     /// probe + fold-into-first-user fallback, those models crash at
     /// inference time with `syntax error: System role not supported`.
     /// Surfaced by the 20-turn zoo matrix on gemma-2-2b.
-    pub(crate) fn supports_system_role(&self) -> bool {
+    pub fn supports_system_role(&self) -> bool {
         let probe = vec![
             Message {
                 role: "system".into(),
@@ -124,14 +137,14 @@ impl ChatTemplate {
         self.apply_with_options(probe, None, None, false).is_ok()
     }
 
-    /// Like [`apply`] but exposes `add_generation_prompt`.
+    /// Like [`apply`](Self::apply) but exposes `add_generation_prompt`.
     ///
     /// Callers that need a pure prefix render (e.g. the MLX prefix cache, which
     /// tokenizes just the system segment and expects it to be a strict prefix
     /// of the full tokenization) must pass `false` — otherwise templates that
     /// append a generation suffix like `<|turn>model\n` will produce a render
     /// that is NOT a prefix of the full chat.
-    pub(crate) fn apply_with_options(
+    pub fn apply_with_options(
         &self,
         mut messages: Vec<Message>,
         tools_and_prompt: Option<(Vec<ToolSpec>, String)>,

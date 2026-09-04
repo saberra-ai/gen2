@@ -3,6 +3,8 @@
 //! Multiple backends can be compiled simultaneously — the runtime picks
 //! the right one based on model format (GGUF → llamacpp, safetensors dir → MLX,
 //! `.litertlm` → LiteRT-LM).  MLX is only available on Apple platforms.
+//! A backend built outside the crate joins the same routing through
+//! [`crate::advanced::BackendPlugin`], and is asked before any of these.
 
 pub mod common;
 
@@ -12,33 +14,15 @@ pub mod llama;
 #[cfg(feature = "backend-mlx")]
 pub(crate) mod mlx;
 
-// mlxcel — fast MLX inference embedded via mlxcel-core (docs/plans/mlxcel-embedding-roadmap.md).
-// backend-mlx (mlx-rs) and backend-mlxcel (mlxcel-core's cxx MLX C++) BOTH link MLX C++, so
-// enabling both duplicates the MLX symbol surface → mutually exclusive (guard below).
-#[cfg(feature = "backend-mlxcel")]
-pub(crate) mod mlxcel;
-
-#[cfg(all(feature = "backend-mlx", feature = "backend-mlxcel"))]
-compile_error!(
-    "backend-mlx and backend-mlxcel both link MLX C++ and cannot be enabled together; \
-     enable exactly one (backend-mlxcel replaces backend-mlx on the macOS/daemon path)."
-);
-
 #[cfg(feature = "backend-external-api")]
 pub(crate) mod external_api;
 
-// Compile-time guard: at least one backend must be selected.
-#[cfg(not(any(
-    feature = "backend-llamacpp",
-    feature = "backend-mlx",
-    feature = "backend-mlxcel",
-    feature = "backend-external-api",
-    feature = "backend-litertlm",
-    feature = "backend-mistralrs"
-)))]
-compile_error!(
-    "No inference backend selected. Enable at least one of: backend-llamacpp, backend-mlx, backend-mlxcel, backend-external-api, backend-mistralrs, backend-litertlm"
-);
+// There is deliberately no compile-time "at least one backend" guard. A build
+// with no backend feature is a legitimate one: a consumer that brings its own
+// backend through `crate::advanced::BackendPlugin` (the way the companion crate
+// under `crates/` does) has nothing to enable here. With no feature and no
+// plugin, `Engine::new` starts `Uninit` and the first load fails naming both
+// ways out — see `facade::no_backend_error`.
 
 /// One contract every compiled backend must satisfy. See the module docs for
 /// which half needs a real model and which does not.

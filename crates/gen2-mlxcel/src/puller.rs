@@ -10,8 +10,7 @@
 
 use std::sync::mpsc::Receiver;
 
-use crate::engine::ExecError;
-use crate::generation::{Token, TokenEvent};
+use gen2::advanced::plugin::{ExecError, Token, TokenEvent, TokenPullerDyn};
 
 use super::worker::DecodedToken;
 
@@ -48,7 +47,7 @@ impl MlxcelTokenPuller {
     }
 }
 
-impl crate::backend::traits::TokenPullerDyn for MlxcelTokenPuller {
+impl TokenPullerDyn for MlxcelTokenPuller {
     fn next_event(&mut self) -> Option<Result<TokenEvent, ExecError>> {
         self.next_inner()
     }

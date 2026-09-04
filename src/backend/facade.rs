@@ -7,7 +7,8 @@
 
 use std::sync::Arc;
 
-use super::traits::{Backend, BackendSession, TokenPullerDyn};
+use super::traits::{Backend, BackendSession, LocalBackend, TokenPullerDyn};
+use crate::advanced::BackendPlugin;
 use crate::engine::telemetry::HookBus;
 use crate::engine::{
     Capabilities, EmbedLoadRequest, ExecError, ExecutionStats, LoadRequest, Settings,
@@ -29,9 +30,9 @@ pub enum ModelBundle {
     /// No bundle at this layer.
     ///
     /// Some backends keep the model somewhere the facade cannot hold it: the
-    /// external-api server owns it remotely, the mlxcel worker thread owns a
-    /// `!Send` model directly (`backend::mlxcel::worker`), LiteRT-LM's engine
-    /// lives behind its C ABI, and mistral.rs keeps its own loaded state.
+    /// external-api server owns it remotely, LiteRT-LM's engine lives behind
+    /// its C ABI, mistral.rs keeps its own loaded state, and a plugin backend
+    /// is opaque here by construction.
     /// Unconditional, so the enum stays inhabited no matter which single
     /// backend is compiled — without it, a build of litertlm alone fails to
     /// compile on this `match`.
@@ -63,11 +64,11 @@ pub enum Engine {
     LlamaCpp(super::llama::Engine),
     #[cfg(feature = "backend-mlx")]
     Mlx(super::mlx::Engine),
-    /// mlxcel — the fast embedded MLX backend (replaces mlx-rs on the macOS/
-    /// daemon path; mutually exclusive with `backend-mlx`). Routed for the same
-    /// safetensors-dir models `BackendKind::Mlx` detects.
-    #[cfg(feature = "backend-mlxcel")]
-    Mlxcel(super::mlxcel::MlxcelEngine),
+    /// A backend the consumer registered through
+    /// [`BackendPlugin`](crate::advanced::BackendPlugin). Built on the
+    /// controller thread from the plugin's factory the first time a path the
+    /// plugin claims is loaded, and asked before every built-in rule.
+    Plugin(Box<dyn LocalBackend>),
     #[cfg(feature = "backend-external-api")]
     ExternalApi(super::external_api::Engine),
     /// mistral.rs — one backend across GGUF, safetensors, UQFF and HF repos.
@@ -97,8 +98,7 @@ impl std::fmt::Debug for Engine {
             Self::LlamaCpp(e) => e.fmt(f),
             #[cfg(feature = "backend-mlx")]
             Self::Mlx(e) => e.fmt(f),
-            #[cfg(feature = "backend-mlxcel")]
-            Self::Mlxcel(e) => e.fmt(f),
+            Self::Plugin(e) => e.fmt(f),
             #[cfg(feature = "backend-external-api")]
             Self::ExternalApi(e) => e.fmt(f),
             #[cfg(feature = "backend-mistralrs")]
@@ -113,6 +113,7 @@ impl std::fmt::Debug for Engine {
 }
 
 /// Detect which backend to use from the model path:
+///  - a path some registered plugin `claims` → that plugin, before any rule below
 ///  - URL (`http://` or `https://`) → ExternalApi
 ///  - `.gguf` file → LlamaCpp
 ///  - directory with `*.safetensors` → MLX (Apple only)
@@ -120,8 +121,18 @@ impl std::fmt::Debug for Engine {
 ///  - `.onnx` file or dir with `model.onnx` → an error naming the format;
 ///    no compiled backend reads it
 #[allow(unused_variables)]
-fn detect_backend(req: &LoadRequest) -> Result<BackendKind, ExecError> {
+fn detect_backend(
+    req: &LoadRequest,
+    plugins: &[Arc<BackendPlugin>],
+) -> Result<BackendKind, ExecError> {
     let path = &req.model_path;
+
+    // A registered plugin is asked first, in registration order. First because
+    // a consumer that went to the trouble of bringing a backend means it: a
+    // plugin claiming `.gguf` takes GGUF away from llama.cpp, deliberately.
+    if let Some(i) = plugins.iter().position(|p| (p.claims)(path)) {
+        return Ok(BackendKind::Plugin(i));
+    }
 
     // URL detection — external API server
     let path_str = path.to_str().unwrap_or_default();
@@ -189,19 +200,11 @@ fn detect_backend(req: &LoadRequest) -> Result<BackendKind, ExecError> {
                 {
                     // MLX keeps the Apple path it already had; mistral.rs
                     // takes safetensors only where MLX is not compiled.
-                    #[cfg(any(feature = "backend-mlx", feature = "backend-mlxcel"))]
+                    #[cfg(feature = "backend-mlx")]
                     return Ok(BackendKind::Mlx);
-                    #[cfg(all(
-                        not(feature = "backend-mlx"),
-                        not(feature = "backend-mlxcel"),
-                        feature = "backend-mistralrs"
-                    ))]
+                    #[cfg(all(not(feature = "backend-mlx"), feature = "backend-mistralrs"))]
                     return Ok(BackendKind::MistralRs);
-                    #[cfg(all(
-                        not(feature = "backend-mlx"),
-                        not(feature = "backend-mlxcel"),
-                        not(feature = "backend-mistralrs")
-                    ))]
+                    #[cfg(all(not(feature = "backend-mlx"), not(feature = "backend-mistralrs")))]
                     return Ok(BackendKind::Mlx);
                 }
             }
@@ -220,13 +223,9 @@ fn detect_backend(req: &LoadRequest) -> Result<BackendKind, ExecError> {
     return Ok(BackendKind::LlamaCpp);
     #[cfg(all(not(feature = "backend-llamacpp"), feature = "backend-mlx"))]
     return Ok(BackendKind::Mlx);
-    // mlxcel is the MLX backend when compiled in place of mlx-rs — same kind.
-    #[cfg(all(not(feature = "backend-llamacpp"), feature = "backend-mlxcel"))]
-    return Ok(BackendKind::Mlx);
     #[cfg(all(
         not(feature = "backend-llamacpp"),
         not(feature = "backend-mlx"),
-        not(feature = "backend-mlxcel"),
         feature = "backend-mistralrs"
     ))]
     return Ok(BackendKind::MistralRs);
@@ -236,7 +235,6 @@ fn detect_backend(req: &LoadRequest) -> Result<BackendKind, ExecError> {
     #[cfg(all(
         not(feature = "backend-llamacpp"),
         not(feature = "backend-mlx"),
-        not(feature = "backend-mlxcel"),
         not(feature = "backend-mistralrs"),
         feature = "backend-litertlm"
     ))]
@@ -244,11 +242,35 @@ fn detect_backend(req: &LoadRequest) -> Result<BackendKind, ExecError> {
     #[cfg(not(any(
         feature = "backend-llamacpp",
         feature = "backend-mlx",
-        feature = "backend-mlxcel",
         feature = "backend-mistralrs",
         feature = "backend-litertlm"
     )))]
-    Err(ExecError::Other(anyhow::anyhow!("no backend compiled")))
+    Err(no_backend_error(path, plugins))
+}
+
+/// What a load fails with when nothing — compiled or registered — can take
+/// the path.
+///
+/// Reached only in a build with no local backend feature, which is allowed
+/// precisely so a consumer can bring its own; so the message names both
+/// ways out rather than just the feature list.
+fn no_backend_error(path: &std::path::Path, plugins: &[Arc<BackendPlugin>]) -> ExecError {
+    if plugins.is_empty() {
+        ExecError::Other(anyhow::anyhow!(
+            "no inference backend: this build compiled none (enable a `backend-*` \
+             feature) and none was registered with `Engine::builder().backend(..)`, \
+             so nothing can load {}",
+            path.display()
+        ))
+    } else {
+        let names: Vec<&str> = plugins.iter().map(|p| p.name).collect();
+        ExecError::Other(anyhow::anyhow!(
+            "no inference backend claims {}: this build compiled none, and the \
+             registered plugin backends ({}) declined it",
+            path.display(),
+            names.join(", ")
+        ))
+    }
 }
 
 /// What a caller sees for a `.onnx` file or a `model.onnx` directory.
@@ -258,6 +280,8 @@ const NO_ONNX_BACKEND: &str = "no compiled backend reads ONNX models (`.onnx` fi
 
 #[derive(Debug, Clone, Copy)]
 enum BackendKind {
+    /// Index into the plugin list the detection ran against.
+    Plugin(usize),
     LlamaCpp,
     Mlx,
     #[cfg(feature = "backend-mistralrs")]
@@ -283,8 +307,7 @@ impl Engine {
             Self::LlamaCpp(e) => Some(e),
             #[cfg(feature = "backend-mlx")]
             Self::Mlx(e) => Some(e),
-            #[cfg(feature = "backend-mlxcel")]
-            Self::Mlxcel(e) => Some(e),
+            Self::Plugin(e) => Some(e.as_ref()),
             #[cfg(feature = "backend-external-api")]
             Self::ExternalApi(e) => Some(e),
             #[cfg(feature = "backend-mistralrs")]
@@ -314,8 +337,6 @@ impl Engine {
         v.push("mlx");
         #[cfg(feature = "backend-external-api")]
         v.push("external-api");
-        #[cfg(feature = "backend-mlxcel")]
-        v.push("mlxcel");
         #[cfg(feature = "backend-mistralrs")]
         v.push("mistralrs");
         #[cfg(feature = "backend-litertlm")]
@@ -325,28 +346,32 @@ impl Engine {
 
     /// Whether a zoo bundle naming this backend could actually be served.
     ///
-    /// `mlxcel` replaces `mlx-rs` on the Mac path and serves the same
-    /// safetensors bundles, so a zoo entry asking for `"mlx"` is satisfied by
-    /// either. Everything else is a straight name match.
+    /// A straight name match against what is compiled. Plugins are not
+    /// consulted: they are registered per controller, and the zoo asks about
+    /// the build.
     pub fn backend_is_compiled(name: &str) -> bool {
-        let compiled = Self::available_backends();
-        match name {
-            "mlx" => compiled.contains(&"mlx") || compiled.contains(&"mlxcel"),
-            other => compiled.contains(&other),
-        }
+        Self::available_backends().contains(&name)
     }
 
-    /// Detect which backend a model path would use, without loading.
+    /// Detect which backend a model path would use, without loading and with
+    /// no plugins registered.
     pub fn detect_backend_for_path(path: &std::path::Path) -> &'static str {
+        Self::detect_backend_for_path_with(path, &[])
+    }
+
+    /// As [`Self::detect_backend_for_path`], with these plugins asked first.
+    /// A plugin's answer is its `name`.
+    pub fn detect_backend_for_path_with(
+        path: &std::path::Path,
+        plugins: &[Arc<BackendPlugin>],
+    ) -> &'static str {
         let req = LoadRequest {
             model_path: path.to_path_buf(),
             ..Default::default()
         };
-        match detect_backend(&req) {
+        match detect_backend(&req, plugins) {
+            Ok(BackendKind::Plugin(i)) => plugins[i].name,
             Ok(BackendKind::LlamaCpp) => "llamacpp",
-            // mlxcel replaces mlx-rs as the MLX backend when compiled; report the
-            // active one so UI/telemetry names match `active_backend_name()`.
-            Ok(BackendKind::Mlx) if cfg!(feature = "backend-mlxcel") => "mlxcel",
             Ok(BackendKind::Mlx) => "mlx",
             #[cfg(feature = "backend-external-api")]
             Ok(BackendKind::ExternalApi) => "external-api",
@@ -370,21 +395,14 @@ impl Engine {
         }
         #[cfg(all(not(feature = "backend-llamacpp"), feature = "backend-mlx"))]
         {
-            // Tail expr, as in the mlxcel arm below: with llamacpp absent and
-            // mlx present, every block after this one is cfg'd out, so this is
-            // the function's tail.
+            // Tail expr (not `return`): with llamacpp absent and mlx present,
+            // every block after this one is cfg'd out, so this is the
+            // function's tail.
             Self::Mlx(super::mlx::Engine::new())
-        }
-        #[cfg(all(not(feature = "backend-llamacpp"), feature = "backend-mlxcel"))]
-        {
-            // Tail expr (not `return`): this block is the function's tail whenever
-            // it's active (llamacpp absent ⇒ the blocks after it are cfg'd out).
-            Self::Mlxcel(super::mlxcel::MlxcelEngine::new())
         }
         #[cfg(all(
             not(feature = "backend-llamacpp"),
             not(feature = "backend-mlx"),
-            not(feature = "backend-mlxcel"),
             feature = "backend-mistralrs"
         ))]
         {
@@ -395,7 +413,6 @@ impl Engine {
         #[cfg(all(
             not(feature = "backend-llamacpp"),
             not(feature = "backend-mlx"),
-            not(feature = "backend-mlxcel"),
             not(feature = "backend-mistralrs"),
             feature = "backend-litertlm"
         ))]
@@ -404,10 +421,11 @@ impl Engine {
             // absent, the blocks after this one are cfg'd out.
             Self::LiteRtLm(super::litertlm::LiteRtLmEngine::new())
         }
+        // No local backend compiled: nothing to instantiate until a load
+        // names a path, which a registered plugin may claim.
         #[cfg(not(any(
             feature = "backend-llamacpp",
             feature = "backend-mlx",
-            feature = "backend-mlxcel",
             feature = "backend-mistralrs",
             feature = "backend-litertlm"
         )))]
@@ -417,7 +435,20 @@ impl Engine {
     /// Load a model, auto-detecting the backend from the file format.
     /// If the detected backend differs from the current one, the engine
     /// is re-initialized to the new backend first.
+    ///
+    /// No plugins are consulted; see [`Self::load_model_with`].
     pub fn load_model(&mut self, req: LoadRequest) -> Result<(), ExecError> {
+        self.load_model_with(req, &[])
+    }
+
+    /// As [`Self::load_model`], asking `plugins` (in order) before any
+    /// built-in rule. A plugin that `claims` the path is built from its
+    /// factory here, on the calling thread, and becomes the active backend.
+    pub fn load_model_with(
+        &mut self,
+        req: LoadRequest,
+        plugins: &[Arc<BackendPlugin>],
+    ) -> Result<(), ExecError> {
         // A scripted backend answers for every path, so format detection —
         // which reads the filesystem — must not run and must not veto a path
         // that was never meant to exist.
@@ -425,27 +456,30 @@ impl Engine {
         if let Self::Fake(fake) = self {
             return fake.load_model(req);
         }
-        let kind = detect_backend(&req)?;
-        self.ensure_backend(kind);
+        let kind = detect_backend(&req, plugins)?;
+        self.ensure_backend(kind, plugins);
         self.as_backend()
             .ok_or_else(|| ExecError::Other(anyhow::anyhow!("no backend for model format")))?
             .load_model(req)
     }
 
     /// Switch the engine to the requested backend kind if needed.
-    fn ensure_backend(&mut self, kind: BackendKind) {
+    fn ensure_backend(&mut self, kind: BackendKind, plugins: &[Arc<BackendPlugin>]) {
         let needs_switch = match (&self, kind) {
             // A scripted backend answers for every path. Switching away from
             // it on the first `LoadModel` would quietly replace the fake with
             // a real backend and make the test meaningless.
             #[cfg(test)]
             (Self::Fake(_), _) => false,
+            // The same plugin again keeps its instance (and its loaded
+            // weights); a different plugin, or a built-in, is a switch.
+            (Self::Plugin(active), BackendKind::Plugin(i)) => {
+                active.backend_name() != plugins[i].name
+            }
             #[cfg(feature = "backend-llamacpp")]
             (Self::LlamaCpp(_), BackendKind::LlamaCpp) => false,
             #[cfg(feature = "backend-mlx")]
             (Self::Mlx(_), BackendKind::Mlx) => false,
-            #[cfg(feature = "backend-mlxcel")]
-            (Self::Mlxcel(_), BackendKind::Mlx) => false,
             #[cfg(feature = "backend-external-api")]
             (Self::ExternalApi(_), BackendKind::ExternalApi) => false,
             #[cfg(feature = "backend-mistralrs")]
@@ -458,12 +492,11 @@ impl Engine {
             return;
         }
         *self = match kind {
+            BackendKind::Plugin(i) => Self::Plugin((plugins[i].make)()),
             #[cfg(feature = "backend-llamacpp")]
             BackendKind::LlamaCpp => Self::LlamaCpp(super::llama::Engine::new()),
             #[cfg(feature = "backend-mlx")]
             BackendKind::Mlx => Self::Mlx(super::mlx::Engine::new()),
-            #[cfg(feature = "backend-mlxcel")]
-            BackendKind::Mlx => Self::Mlxcel(super::mlxcel::MlxcelEngine::new()),
             #[cfg(feature = "backend-external-api")]
             BackendKind::ExternalApi => Self::ExternalApi(super::external_api::Engine::new()),
             #[cfg(feature = "backend-mistralrs")]
@@ -758,19 +791,15 @@ mod tests {
         assert_eq!(name, "llamacpp");
         #[cfg(all(not(feature = "backend-llamacpp"), feature = "backend-mlx"))]
         assert_eq!(name, "mlx");
-        #[cfg(all(not(feature = "backend-llamacpp"), feature = "backend-mlxcel"))]
-        assert_eq!(name, "mlxcel");
         #[cfg(all(
             not(feature = "backend-llamacpp"),
             not(feature = "backend-mlx"),
-            not(feature = "backend-mlxcel"),
             feature = "backend-mistralrs"
         ))]
         assert_eq!(name, "mistralrs");
         #[cfg(all(
             not(feature = "backend-llamacpp"),
             not(feature = "backend-mlx"),
-            not(feature = "backend-mlxcel"),
             not(feature = "backend-mistralrs"),
             feature = "backend-litertlm"
         ))]
@@ -778,7 +807,6 @@ mod tests {
         #[cfg(not(any(
             feature = "backend-llamacpp",
             feature = "backend-mlx",
-            feature = "backend-mlxcel",
             feature = "backend-mistralrs",
             feature = "backend-litertlm"
         )))]
@@ -873,7 +901,7 @@ mod tests {
             model_path: path,
             ..Default::default()
         };
-        let err = detect_backend(&req).expect_err("the format is not compiled in");
+        let err = detect_backend(&req, &[]).expect_err("the format is not compiled in");
         let text = err.to_string();
         assert!(
             text.contains("backend-litertlm"),
@@ -898,7 +926,7 @@ mod tests {
                 model_path: path.clone(),
                 ..Default::default()
             };
-            match detect_backend(&req) {
+            match detect_backend(&req, &[]) {
                 Err(ExecError::FeatureUnsupported(msg)) => assert!(
                     msg.contains("ONNX") && msg.contains("no compiled backend"),
                     "{}: the error should say no backend reads ONNX, got: {msg}",
@@ -911,5 +939,133 @@ mod tests {
             }
         }
         assert_eq!(Engine::detect_backend_for_path(&file), "unknown");
+    }
+
+    // ── Plugin routing ─────────────────────────────────────────
+
+    /// A plugin over the scripted backend, claiming one extension.
+    fn scripted_plugin(
+        name: &'static str,
+        claims: fn(&std::path::Path) -> bool,
+    ) -> Arc<BackendPlugin> {
+        let script = crate::test_support::Script::new();
+        Arc::new(BackendPlugin {
+            name,
+            claims,
+            make: Box::new(move || Box::new(script.backend())),
+        })
+    }
+
+    fn claims_fake(path: &std::path::Path) -> bool {
+        path.extension().is_some_and(|e| e == "fake")
+    }
+
+    fn claims_gguf(path: &std::path::Path) -> bool {
+        path.extension().is_some_and(|e| e == "gguf")
+    }
+
+    /// A path only the plugin claims lands on the plugin, whatever is
+    /// compiled in — and the path need not exist, because the plugin's
+    /// `claims` runs before any rule that reads the filesystem.
+    #[test]
+    fn a_plugin_takes_the_path_it_claims() {
+        let plugins = [scripted_plugin("scripted", claims_fake)];
+        let path = std::path::Path::new("/nowhere/model.fake");
+        assert_eq!(
+            Engine::detect_backend_for_path_with(path, &plugins),
+            "scripted"
+        );
+
+        let mut engine = Engine::new();
+        let req = LoadRequest {
+            model_path: path.to_path_buf(),
+            ..Default::default()
+        };
+        engine
+            .load_model_with(req, &plugins)
+            .expect("the scripted plugin loads anything it claims");
+        assert!(matches!(engine, Engine::Plugin(_)), "got {engine:?}");
+        assert_eq!(engine.active_backend_name(), "fake");
+        assert!(engine.is_model_loaded());
+    }
+
+    /// A plugin is asked before the built-in rules, so one claiming `.gguf`
+    /// takes GGUF away from llama.cpp even when llama.cpp is compiled.
+    #[test]
+    fn a_plugin_outranks_builtin_routing() {
+        let plugins = [scripted_plugin("gguf-plugin", claims_gguf)];
+        let path = std::path::Path::new("/nowhere/model.gguf");
+        assert_eq!(
+            Engine::detect_backend_for_path_with(path, &plugins),
+            "gguf-plugin"
+        );
+        // And without it, the built-in answer is unchanged.
+        assert_ne!(Engine::detect_backend_for_path(path), "gguf-plugin");
+    }
+
+    /// Loading a second path the same plugin claims keeps the instance. A
+    /// path the plugin declines is never handed to it: where a built-in
+    /// backend is compiled, the engine switches to that; where none is, the
+    /// detection itself fails and the engine is left exactly as it was — the
+    /// same as any path nothing can route.
+    #[test]
+    fn the_same_plugin_is_kept_across_loads_and_a_declined_path_is_not_handed_to_it() {
+        let plugins = [scripted_plugin("scripted", claims_fake)];
+        let mut engine = Engine::new();
+        for name in ["a.fake", "b.fake"] {
+            let req = LoadRequest {
+                model_path: std::path::PathBuf::from("/nowhere").join(name),
+                ..Default::default()
+            };
+            engine.load_model_with(req, &plugins).unwrap();
+        }
+        let Engine::Plugin(backend) = &engine else {
+            panic!("expected the plugin, got {engine:?}");
+        };
+        assert!(backend.is_model_loaded());
+
+        let req = LoadRequest {
+            model_path: "/nowhere/model.other".into(),
+            ..Default::default()
+        };
+        let outcome = engine.load_model_with(req, &plugins);
+        #[cfg(any(
+            feature = "backend-llamacpp",
+            feature = "backend-mlx",
+            feature = "backend-mistralrs",
+            feature = "backend-litertlm"
+        ))]
+        {
+            let _ = outcome;
+            assert!(
+                !matches!(engine, Engine::Plugin(_)),
+                "a path the plugin declined must go to the built-in backend, got {engine:?}"
+            );
+        }
+        #[cfg(not(any(
+            feature = "backend-llamacpp",
+            feature = "backend-mlx",
+            feature = "backend-mistralrs",
+            feature = "backend-litertlm"
+        )))]
+        {
+            let err = outcome.expect_err("nothing compiled can route the path");
+            assert!(err.to_string().contains("scripted"), "{err}");
+            assert!(
+                matches!(engine, Engine::Plugin(_)),
+                "a load nothing could route leaves the engine as it was, got {engine:?}"
+            );
+        }
+    }
+
+    /// With no backend compiled and no plugin registered, the error says both.
+    #[test]
+    fn the_no_backend_error_names_both_ways_out() {
+        let path = std::path::Path::new("/nowhere/model.bin");
+        let text = no_backend_error(path, &[]).to_string();
+        assert!(text.contains("backend-*"), "{text}");
+        assert!(text.contains("backend(..)"), "{text}");
+        let text = no_backend_error(path, &[scripted_plugin("scripted", claims_fake)]).to_string();
+        assert!(text.contains("scripted"), "{text}");
     }
 }

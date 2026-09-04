@@ -567,8 +567,11 @@ while let Some(update) = run.next().await { /* … */ }
 
 ## Backends
 
-Pick at least one. A build with none fails to compile. Three tiers, by what
-the crate can stand behind.
+Pick at least one — or none, and bring your own: `gen2::advanced::plugin`
+registers a backend built outside the crate, ahead of every built-in rule. A
+build with no backend feature compiles; a load then fails at run time, naming
+both ways out, unless a registered plugin claims the path. Three tiers, by
+what the crate can stand behind.
 
 **Tier 1 — supported.** Built and tested in CI on every push; the README's
 claims are about these.
@@ -585,14 +588,19 @@ claims are about these.
 | `backend-litertlm` | LiteRT-LM (Google's on-device runtime), for `.litertlm` bundles. Loads Google's C ABI at run time — nothing is vendored, linked, or downloaded by a build. Point `GEN2_LITERTLM_LIBRARY` at the shared library, or install it where the platform loader finds it. |
 
 **Experimental.** mistral.rs builds and runs its no-model tests in CI, MLX
-gets a clippy pass, mlxcel is built by hand. Real-model verification is by hand
-and noted in the conformance suite. Interfaces and defaults may change.
+gets a clippy pass. Real-model verification is by hand and noted in the
+conformance suite. Interfaces and defaults may change.
 
 | Feature | Backend |
 | --- | --- |
 | `backend-mistralrs` | mistral.rs. GGUF, safetensors and UQFF in one backend. Claims only formats no other compiled backend takes. No per-request seed: `.seed()` under sampling is refused rather than ignored. `metal` and `cuda` forward to it. |
-| `backend-mlx` | MLX (Apple Silicon). Needs the Metal Toolchain component. Mutually exclusive with `backend-mlxcel`. |
-| `backend-mlxcel` | mlxcel, the Mac fast path. |
+| `backend-mlx` | MLX (Apple Silicon). Needs the Metal Toolchain component. Do not combine with the mlxcel companion below: both link MLX C++. |
+
+mlxcel, the Mac fast path, is not a feature: it lives in `crates/gen2-mlxcel`,
+a workspace companion that is never published (mlxcel has no registry release,
+and crates.io refuses git dependencies) and joins through the plugin seam —
+`Engine::builder().model(dir).backend(gen2_mlxcel::plugin())`. Build it with
+`cargo build -p gen2-mlxcel`.
 
 Not a backend, but chosen alongside them:
 
@@ -600,9 +608,8 @@ Not a backend, but chosen alongside them:
 | --- | --- |
 | `tokio` | Async API. Off by default. |
 
-llama.cpp, mistral.rs, MLX and LiteRT-LM have been shown to generate a token;
-mlxcel compiles and satisfies the parts of the backend contract that need no
-weights. The ONNX and Candle backends that used to sit beside them were
+llama.cpp, mistral.rs, MLX and LiteRT-LM have been shown to generate a token.
+The ONNX and Candle backends that used to sit beside them were
 removed rather than kept unproven — a `.onnx` model now fails at load with an
 error naming the format. Adding a backend never moves an existing one's models:
 `backend-mistralrs` takes GGUF only where llama.cpp is absent and safetensors
@@ -628,9 +635,10 @@ checks exactly that. Shipping the runtime itself is the host application's job
 — Google publishes `liblitert-lm.so` for Android and a `CLiteRTLM` XCFramework
 for iOS.
 
-Not yet publishable to crates.io: `mlxcel` has no registry release, and the
-registry does not accept git dependencies. CI checks this so a release cannot
-be surprised by it.
+Publishable to crates.io: every dependency of the root crate resolves from
+the registry, and the one backend whose dependencies cannot (mlxcel) lives in
+the companion crate instead. CI runs `cargo publish --dry-run` so a release
+cannot be surprised by a regression.
 
 ```sh
 cargo test

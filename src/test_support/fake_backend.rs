@@ -375,6 +375,17 @@ impl Script {
         Box::new(move || crate::backend::Engine::Fake(FakeBackend { script: self }))
     }
 
+    /// The backend half, for a test that registers the fake as a plugin.
+    ///
+    /// Not `Send`, like every backend: build it inside a
+    /// [`BackendPlugin`](crate::advanced::BackendPlugin)'s factory, which
+    /// the controller calls on its own thread, and keep the script.
+    pub fn backend(&self) -> FakeBackend {
+        FakeBackend {
+            script: self.clone(),
+        }
+    }
+
     fn record(&self, call: &str) {
         self.inner.lock().unwrap().calls.push(call.to_string());
     }

@@ -14,10 +14,10 @@ use std::sync::mpsc::sync_channel;
 
 use mlxcel::SamplingConfig;
 
-use crate::backend::common::chat_template::ChatTemplate;
-use crate::engine::{ExecError, Settings};
-use crate::generation::GenSpec;
-use crate::types::message::{Message, MessageBody, MessageContent, TokenizerConfigToken};
+use gen2::advanced::plugin::{
+    BackendSession, ChatTemplate, ExecError, GenSpec, Message, MessageBody, MessageContent,
+    Settings, TokenPullerDyn, TokenizerConfigToken,
+};
 
 use super::puller::MlxcelTokenPuller;
 use super::worker::ModelWorker;
@@ -161,6 +161,7 @@ fn render_with_template(
                 content: MessageContent::SingleText(sys.trim().to_string()),
             },
             name: None,
+            tool_call_id: None,
         });
     }
     messages.extend(msgs.iter().cloned());
@@ -207,7 +208,7 @@ fn render_naive(msgs: &[Message], system_prompt: Option<&str>) -> String {
     out
 }
 
-impl crate::backend::traits::BackendSession for MlxcelSession {
+impl BackendSession for MlxcelSession {
     fn id(&self) -> u64 {
         self.id
     }
@@ -224,10 +225,7 @@ impl crate::backend::traits::BackendSession for MlxcelSession {
         self.stopped.store(true, Ordering::SeqCst);
     }
 
-    fn pull(
-        &self,
-        spec: GenSpec,
-    ) -> Result<Box<dyn crate::backend::traits::TokenPullerDyn>, ExecError> {
+    fn pull(&self, spec: GenSpec) -> Result<Box<dyn TokenPullerDyn>, ExecError> {
         // Fresh stop flag per generation so a prior `stop()` doesn't leak into
         // the next `pull`.
         self.stopped.store(false, Ordering::SeqCst);
@@ -260,8 +258,7 @@ impl crate::backend::traits::BackendSession for MlxcelSession {
             tokens_tx,
         )?;
 
-        Ok(Box::new(MlxcelTokenPuller::new(tokens_rx))
-            as Box<dyn crate::backend::traits::TokenPullerDyn>)
+        Ok(Box::new(MlxcelTokenPuller::new(tokens_rx)) as Box<dyn TokenPullerDyn>)
     }
 
     fn append_messages(&self, new_messages: Vec<Message>) -> Result<usize, ExecError> {
@@ -333,7 +330,7 @@ fn build_sampling_config(spec: &GenSpec, settings: &Settings) -> SamplingConfig 
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::engine::SamplingSettings;
+    use gen2::advanced::plugin::SamplingSettings;
 
     fn user_msg(text: &str) -> Message {
         Message {
@@ -342,6 +339,7 @@ mod tests {
                 content: MessageContent::SingleText(text.into()),
             },
             name: None,
+            tool_call_id: None,
         }
     }
 
@@ -352,6 +350,7 @@ mod tests {
                 content: MessageContent::SingleText(text.into()),
             },
             name: None,
+            tool_call_id: None,
         }
     }
 

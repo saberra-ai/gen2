@@ -1,5 +1,7 @@
+use std::sync::Arc;
 use std::time::Duration;
 
+use crate::advanced::BackendPlugin;
 use crate::generation::GenSpec;
 
 use super::SystemTask;
@@ -28,6 +30,13 @@ pub struct ControllerConfig {
     /// How long the controller sleeps between ticks when no chats are active.
     /// Lower = less latency, higher = less CPU waste.
     pub tick_idle: Duration,
+
+    /// Backends brought by the consumer, asked in order before any built-in
+    /// routing rule. Empty by default. See [`crate::advanced::plugin`].
+    ///
+    /// Not serialized: a plugin is a factory, not a value.
+    #[serde(skip)]
+    pub plugins: Vec<Arc<BackendPlugin>>,
 }
 
 impl Default for ControllerConfig {
@@ -37,6 +46,7 @@ impl Default for ControllerConfig {
             generation_timeout: Duration::from_secs(120),
             event_channel_capacity: 512,
             tick_idle: Duration::from_millis(2),
+            plugins: Vec::new(),
         }
     }
 }
@@ -96,6 +106,7 @@ mod tests {
         assert_eq!(config.generation_timeout, Duration::from_secs(120));
         assert_eq!(config.event_channel_capacity, 512);
         assert_eq!(config.tick_idle, Duration::from_millis(2));
+        assert!(config.plugins.is_empty());
     }
 
     #[test]

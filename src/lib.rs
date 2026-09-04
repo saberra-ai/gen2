@@ -51,6 +51,10 @@
 // ── The public API ──────────────────────────────────────────────────────────
 pub mod api;
 
+// Below the happy path: bring your own backend. Documented in the module,
+// not here, so its links resolve in its own scope.
+pub mod advanced;
+
 /// The controller: commands, events, and handles. [`api`] is the ergonomic
 /// layer over this; reach for the controller directly when you need something
 /// the facade doesn't cover.

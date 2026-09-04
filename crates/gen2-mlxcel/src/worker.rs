@@ -28,9 +28,7 @@ use mlxcel::tokenizer::MlxcelTokenizer;
 use mlxcel::{LoadedModel, MlxInferenceSession, SamplingConfig};
 use mlxcel_core::generate::LanguageModel;
 
-use crate::backend::common::grammar::GrammarSpec;
-use crate::backend::common::tokenizer::HfTokenizer;
-use crate::engine::ExecError;
+use gen2::advanced::plugin::{ExecError, GrammarSpec, HfTokenizer};
 
 /// One decoded token pushed from the worker's `on_token` callback to a puller.
 pub(crate) struct DecodedToken {
@@ -80,44 +78,6 @@ enum Command {
     Generate(Box<GenRequest>),
     /// Terminate the worker loop.
     Shutdown,
-    /// PROFILE-ONLY (S5 perf verify): run one `generate_streaming` pass with a
-    /// selectable `on_token` mode and report the elapsed time + generated-token
-    /// count on the worker thread (where the `!Send` model + tokenizer live).
-    /// Used exclusively by the `captest_mlxcel_decode_profile` captest to settle
-    /// whether the decode callback is pipeline-overlapped. Not on any user path,
-    /// hence `#[cfg(test)]` — it never compiles into a production binary.
-    #[cfg(test)]
-    Profile {
-        prompt: String,
-        max_tokens: usize,
-        mode: ProfileMode,
-        reply: Sender<Result<ProfileRun, ExecError>>,
-    },
-}
-
-/// Which `on_token` body the profile pass runs — the three-mode A/B/C ladder.
-#[cfg(test)]
-#[derive(Clone, Copy, Debug, PartialEq, Eq)]
-pub(crate) enum ProfileMode {
-    /// (A) no-op: `on_token` just returns `true`. The pure forward+sample
-    /// ceiling — no callback CPU work at all.
-    NoOp,
-    /// (B) id-only: send the raw id down a channel, NO text decode. Isolates the
-    /// channel/send cost.
-    IdOnly,
-    /// (C) decode+send: the production behavior — decode this id → text, then
-    /// send. Full callback cost including per-token UTF-8 decode.
-    DecodeSend,
-}
-
-/// Result of one profile pass. `text` is only populated for `DecodeSend` (the
-/// concatenated streamed text, for the byte-identical parity guard).
-#[cfg(test)]
-#[derive(Clone, Debug)]
-pub(crate) struct ProfileRun {
-    pub tokens: usize,
-    pub elapsed_s: f64,
-    pub text: String,
 }
 
 /// Cheap, `Send` facts about a freshly-loaded model, returned to the engine.
@@ -216,28 +176,6 @@ impl ModelWorker {
             .send(Command::Generate(Box::new(req)))
             .map_err(|_| worker_gone())?;
         started_rx.recv().map_err(|_| worker_gone())?
-    }
-
-    /// PROFILE-ONLY (S5): run one `generate_streaming` pass in the given mode and
-    /// block for the timing result. See [`Command::Profile`]. Not on any user
-    /// path — only the decode-profile captest calls this.
-    #[cfg(test)]
-    pub(crate) fn profile_blocking(
-        &self,
-        prompt: String,
-        max_tokens: usize,
-        mode: ProfileMode,
-    ) -> Result<ProfileRun, ExecError> {
-        let (reply, reply_rx) = mpsc::channel();
-        self.tx
-            .send(Command::Profile {
-                prompt,
-                max_tokens,
-                mode,
-                reply,
-            })
-            .map_err(|_| worker_gone())?;
-        reply_rx.recv().map_err(|_| worker_gone())?
     }
 }
 
@@ -340,15 +278,6 @@ fn worker_loop(rx: Receiver<Command>) {
             Command::Generate(req) => {
                 run_generation(loaded.as_ref(), *req);
             }
-            #[cfg(test)]
-            Command::Profile {
-                prompt,
-                max_tokens,
-                mode,
-                reply,
-            } => {
-                let _ = reply.send(run_profile(loaded.as_ref(), &prompt, max_tokens, mode));
-            }
             Command::Shutdown => break,
         }
     }
@@ -404,7 +333,7 @@ fn load_on_worker(model_dir: &Path) -> Result<LoadedState, ExecError> {
     // (the documented mlx failure mode). The pio-core `HfTokenizer` (`hf_tok`)
     // supplies bos_id/eos_id/decode_keep_specials; when it's absent we simply
     // can't derive the strings — the template still renders, minus BOS expansion.
-    let chat_template = crate::backend::common::load_chat_template(model_dir);
+    let chat_template = gen2::advanced::plugin::load_chat_template(model_dir);
     let (bos_str, eos_str) = match hf_tok.as_ref() {
         Some(tok) => {
             let bos = tok
@@ -566,120 +495,4 @@ fn run_generation(loaded: Option<&LoadedState>, req: GenRequest) {
     );
     // Dropping `tokens_tx` here (end of scope) closes the channel → the puller's
     // `recv()` returns `Err`, which it maps to end-of-stream (`Eos` then `None`).
-}
-
-/// PROFILE-ONLY (S5 perf verify): run one greedy `generate_streaming` pass with
-/// the mode-selected `on_token` body and time it on the worker thread. Mirrors
-/// [`run_generation`]'s fast path exactly (same greedy SamplingConfig, same
-/// tokenization, same session) so the A/B/C deltas isolate ONLY the callback
-/// body — not any other difference. Never on a user path.
-#[cfg(test)]
-fn run_profile(
-    loaded: Option<&LoadedState>,
-    prompt: &str,
-    max_tokens: usize,
-    mode: ProfileMode,
-) -> Result<ProfileRun, ExecError> {
-    let state = loaded.ok_or(ExecError::ModelNotLoaded)?;
-
-    let prompt_ids_u32 = state
-        .tokenizer
-        .encode(prompt, true)
-        .map_err(|e| ExecError::Other(anyhow::anyhow!("mlxcel tokenizer encode failed: {e}")))?;
-    if prompt_ids_u32.is_empty() {
-        return Err(ExecError::InvalidArg("empty prompt after tokenization"));
-    }
-    let prompt_ids_i32: Vec<i32> = prompt_ids_u32.iter().map(|&t| t as i32).collect();
-
-    // Greedy, EOS-merged — identical to the fast text path so the pass is
-    // FAST-pipeline eligible (temp 0.0 → mlxcel async GPU-argmax decode).
-    let sampling = SamplingConfig {
-        temperature: 0.0,
-        stop_token_ids: state.eos_token_ids.clone(),
-        ..SamplingConfig::default()
-    };
-
-    let mut session = MlxInferenceSession::new(state.model.num_layers());
-    let tokenizer = &state.tokenizer;
-
-    // For (B) id-only, a bounded channel + a drain thread so `send` has a live
-    // receiver (matches the production shape: bounded SyncSender to a consumer).
-    // We drain on THIS worker thread would deadlock, so spawn a scratch drainer.
-    let (id_tx, id_rx) = mpsc::sync_channel::<i32>(256);
-    let drainer = std::thread::spawn(move || {
-        let mut n = 0usize;
-        while id_rx.recv().is_ok() {
-            n += 1;
-        }
-        n
-    });
-
-    let mut text = String::new();
-    let mut count = 0usize;
-    let t = std::time::Instant::now();
-    match mode {
-        ProfileMode::NoOp => {
-            let _ = session.generate_streaming(
-                &state.model,
-                &prompt_ids_i32,
-                max_tokens,
-                &sampling,
-                |_id: i32| -> bool {
-                    count += 1;
-                    true
-                },
-            );
-        }
-        ProfileMode::IdOnly => {
-            let _ = session.generate_streaming(
-                &state.model,
-                &prompt_ids_i32,
-                max_tokens,
-                &sampling,
-                |id: i32| -> bool {
-                    count += 1;
-                    id_tx.send(id).is_ok()
-                },
-            );
-        }
-        ProfileMode::DecodeSend => {
-            // The EXACT production callback body: decode then send text down a
-            // bounded channel. We reuse the same id channel but send the decoded
-            // text length as the payload isn't needed — decode cost is what we
-            // measure, and the send must be a real bounded send to a consumer.
-            let (txt_tx, txt_rx) = mpsc::sync_channel::<String>(256);
-            let txt_drainer = std::thread::spawn(move || {
-                let mut acc = String::new();
-                while let Ok(s) = txt_rx.recv() {
-                    acc.push_str(&s);
-                }
-                acc
-            });
-            let _ = session.generate_streaming(
-                &state.model,
-                &prompt_ids_i32,
-                max_tokens,
-                &sampling,
-                |id: i32| -> bool {
-                    count += 1;
-                    let s = tokenizer.decode(&[id as u32], true).unwrap_or_default();
-                    txt_tx.send(s).is_ok()
-                },
-            );
-            drop(txt_tx);
-            text = txt_drainer.join().unwrap_or_default();
-        }
-    }
-    let elapsed_s = t.elapsed().as_secs_f64().max(1e-6);
-
-    // Tear the scratch id-channel down (NoOp/DecodeSend never used it, but the
-    // drainer thread must be joined either way).
-    drop(id_tx);
-    let _ = drainer.join();
-
-    Ok(ProfileRun {
-        tokens: count,
-        elapsed_s,
-        text,
-    })
 }

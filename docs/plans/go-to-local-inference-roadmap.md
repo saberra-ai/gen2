@@ -215,7 +215,14 @@ settings types (the ~20 paths `src/backend/mlxcel` reaches today). Root
 mlxcel's module moves there verbatim plus `pub fn plugin() -> BackendPlugin`. The
 mlx/mlxcel link-conflict note stays in docs.
 Honest ⬜: mlxcel throughput unmeasured; mlx+mlxcel still cannot be linked together.
-Status: ⬜
+Landed as designed, with three deviations: the seam lives under `gen2::advanced::plugin`
+(api_spec §25 puts local/backend-specific controls under `gen2::advanced`, not the
+root); `Engine::builder().backend(plugin)` and `ControllerConfig.plugins` carry
+`Arc<BackendPlugin>`; and the "no backend selected" `compile_error!` is gone — a build
+with no `backend-*` feature compiles (a plugin-only consumer needs none), and the first
+load nothing claims fails with an error naming both ways out. CI's
+`no-backend-is-a-compile-error` job became `no-backend-build-still-works`.
+Status: ✅ (see ledger)
 
 #### S1.4 Release readiness
 Outcome: everything but the publish button is done.
@@ -372,6 +379,7 @@ session. A ScheduleWakeup is the safety net if a background job goes quiet.
 - 2026-09-04 S0.1 aefe0b8 · clippy/test/doc/fmt green locally; rerank test 10/10; docs 05899a5 · no detours · ⬜ CI confirmation
 - 2026-09-04 S1.1 (this commit) · llama-cpp-2 =0.1.156 (llama.cpp b10405), penalties ported with -1→n_ctx; mlx-rs hybrid 0.25.3+git · unit 1015, live 22/22 Metal, clippy/doc/fmt/ext-api green · dry-run now fails only on mlxcel
 - 2026-09-04 ↷ detour (this commit) · Linux memory probe read sysinfo.freeram (excludes page cache) so the residency governor denied helper loads after big builds; the mistral.rs CI lane had failed on it for 6 runs · now MemAvailable from /proc/meminfo, parser unit-tested · ⬜ host-memory dependence of the acceptance tests remains (governor is a global)
+- 2026-09-04 S1.3 worktree-agent-a7a3921378b55dedc · `gen2::advanced::plugin` (BackendPlugin {name, claims, make} + 50 re-exported implementer types), facade `Engine::Plugin` variant asked before every built-in rule, `ControllerConfig.plugins`, `EngineBuilder::backend`; `compile_error!` guards removed (no-backend build is a run-time error at load); `src/backend/mlxcel` → `crates/gen2-mlxcel` (workspace member, `publish = false`, `pub fn plugin()`), root manifest has no mlxcel dep/feature · gate: `cargo publish --dry-run --allow-dirty` EXIT 0 (252 files, 5.7 MiB, verify build passed); `cargo test` 1025/0/16 ignored default + 1087/0/2 ext-api-only; plugin routing test green under default AND `--no-default-features --features backend-external-api` AND no features (3 tests, `advanced::`); clippy -D warnings default + no-features; doc -D warnings; rustfmt; check ext-api; `grep -rn mlxcel Cargo.toml src .github` → only the workspace `members` line and its comment in Cargo.toml (inherent to a workspace member) · companion: `cargo build -p gen2-mlxcel` EXIT 0 on macOS 26.5 (MLX C++ via cxx, Metal), 6 unit + 2 weightless + 1 doctest green, LIVE test green with qwen3-0.6b-4bit: mlxcel decoded its first token inside gen2 ("<think>\nOkay, the user wants me", 8-token cap) — off `NEVER_PRODUCED_A_TOKEN` · ⬜ CI confirmation; ⬜ mlxcel throughput unmeasured; ⬜ mlx+mlxcel link conflict now a doc rule, not a compile guard; ⬜ pio-app not yet switched to the companion (S4)
 - 2026-09-04 S1.2 worktree-agent-a735c99fdb336ec65 · onnx+candle removed (1862 lines deleted, 685 added, net −1177; 1,525 LOC of backend code), mistralrs forwards metal/cuda (cargo tree proof, no Metal build), README tiered · gate: cargo test 1016/0/16 ignored default + 1014/0/4 mistralrs lane (CPU), clippy -D warnings, doc -D warnings, rustfmt, check ext-api / litertlm / llamacpp+litertlm, grep clean · ⬜ CI confirmation
 - 2026-09-04 ↷ input: Victor pushed `api_spec.md` (660cca4) after S1.2; roadmap re-sliced: new wave 2 = the facade (S2.1–S2.6), first-run → wave 3, benchmarks → wave 4, pio-app → wave 5; S1.3 in flight, told to put the plugin seam under `gen2::advanced`
 - 2026-09-04 goal set by Victor: "api_spec.md, ideally you get this done" → wave 2 is the priority; S2.1 dispatched in parallel with S1.3 (disjoint files, S2.1 rebases onto S1.3); S0.1 CI confirmed green at bdc6576 (first fully green main)

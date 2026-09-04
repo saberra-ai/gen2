@@ -1,6 +1,6 @@
 //! One contract, applied to every backend that is compiled in.
 //!
-//! The crate's claim is a single API over llama.cpp, mistral.rs, MLX, mlxcel,
+//! The crate's claim is a single API over llama.cpp, mistral.rs, MLX,
 //! LiteRT-LM and an OpenAI-compatible endpoint. A claim like that is
 //! only worth anything if every backend is held to the same contract, and
 //! until now each was tested — where it was tested at all — on its own terms.
@@ -57,16 +57,21 @@ use crate::session_rt::SessionSpec;
 /// the year it was compiled, and carrying an unproven backend costs more than
 /// the option of proving it later (git history has the code).
 ///
-/// The others need a model this repository does not carry. Point the variable
-/// in [`model_env`] at one and the generating half runs.
-pub(crate) const NEVER_PRODUCED_A_TOKEN: &[&str] = &["mlxcel"];
+/// Empty since 2026-09-04, when the last entry moved out of the crate into a
+/// workspace companion behind the plugin seam (`crate::advanced::plugin`);
+/// its own live test is that crate's business. A new backend lands here
+/// until its generating half has run.
+///
+/// A backend that needs a model this repository does not carry: point the
+/// variable in [`model_env`] at one and the generating half runs.
+pub(crate) const NEVER_PRODUCED_A_TOKEN: &[&str] = &[];
 
 /// The environment variable naming a model this backend can load, if the
 /// caller has one.
 fn model_env(backend: &str) -> &'static str {
     match backend {
         "llamacpp" => "PIO_TEST_MODEL",
-        "mlx" | "mlxcel" => "PIO_TEST_MLX_MODEL",
+        "mlx" => "PIO_TEST_MLX_MODEL",
         "litertlm" => "PIO_TEST_LITERTLM_MODEL",
         "mistralrs" => "PIO_TEST_MISTRALRS_MODEL",
         "external-api" => "PIO_TEST_API_URL",
@@ -441,6 +446,9 @@ fn assert_terminates_exactly_once(name: &str, session: &Arc<dyn crate::backend::
 /// A macro rather than a loop because the backends are different concrete
 /// types that are not `Send`, cannot be boxed into one collection across
 /// features, and each need their own `#[cfg]`.
+// Invoked once per compiled backend, so a plugin-only build (no `backend-*`
+// feature) defines it and never uses it.
+#[allow(unused_macros)]
 macro_rules! backend_contract {
     ($mod_name:ident, $ctor:expr) => {
         mod $mod_name {
@@ -474,9 +482,6 @@ backend_contract!(llamacpp, crate::backend::llama::Engine::new());
 
 #[cfg(feature = "backend-mlx")]
 backend_contract!(mlx, crate::backend::mlx::Engine::new());
-
-#[cfg(feature = "backend-mlxcel")]
-backend_contract!(mlxcel, crate::backend::mlxcel::MlxcelEngine::new());
 
 #[cfg(feature = "backend-external-api")]
 backend_contract!(external_api, crate::backend::external_api::Engine::new());
@@ -514,14 +519,7 @@ fn unverified_backends() {
     // Nothing may sit on the list that the crate does not have, so a rename
     // cannot leave a stale entry silently covering for a backend that is now
     // untested under a new name.
-    const KNOWN: &[&str] = &[
-        "llamacpp",
-        "mlx",
-        "mlxcel",
-        "external-api",
-        "mistralrs",
-        "litertlm",
-    ];
+    const KNOWN: &[&str] = &["llamacpp", "mlx", "external-api", "mistralrs", "litertlm"];
     for backend in NEVER_PRODUCED_A_TOKEN {
         assert!(
             KNOWN.contains(backend),

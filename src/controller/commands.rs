@@ -148,7 +148,10 @@ fn attempt_load(
         Err(crate::engine::ExecError::ModelNotLoaded) => Some(settings),
         Err(e) => return Err(from_exec(e)),
     };
-    state.engine.load_model(load_req).map_err(from_exec)?;
+    state
+        .engine
+        .load_model_with(load_req, &state.config.plugins)
+        .map_err(from_exec)?;
     if let Some(settings) = deferred_settings {
         state.engine.upload_settings(settings).map_err(from_exec)?;
     }

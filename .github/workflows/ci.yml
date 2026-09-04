@@ -130,9 +130,10 @@ jobs:
   # Whether this could be published at all.
   #
   # crates.io does not accept a package whose dependencies resolve only to git
-  # repositories, and three of ours currently do. Better to have that as a
-  # standing red line here than to discover it during a release — the check is
-  # cheap and the answer only changes when the manifest does.
+  # repositories. The root crate's no longer do — the backend that needed one
+  # moved to the unpublished companion under `crates/` — and this keeps it
+  # that way: the check is cheap and the answer only changes when the
+  # manifest does.
   publishable:
     runs-on: ubuntu-latest
     continue-on-error: true
@@ -152,19 +153,19 @@ jobs:
             exit 1
           fi
 
-  # A build with no backend must fail, loudly, at compile time. If this job
-  # ever passes, the guard that produces that error has gone missing.
-  no-backend-is-a-compile-error:
+  # A build with no backend feature must compile and its plugin seam must
+  # work: a consumer that brings its own backend through
+  # `gen2::advanced::plugin` (the companion crate under `crates/` is one)
+  # enables no `backend-*` feature at all. This used to be a compile error by
+  # design; it is a run-time error now, at the first load nothing claims.
+  no-backend-build-still-works:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
-      - run: |
-          if cargo check --no-default-features 2>/dev/null; then
-            echo "::error::a build with no backend feature compiled; the guard is gone"
-            exit 1
-          fi
+      - run: cargo clippy --all-targets --no-default-features -- -D warnings
+      - run: cargo test --no-default-features --lib advanced::
 
   # The fuzz targets live in their own workspace on a nightly toolchain, so
   # nothing in the ordinary build would notice them breaking. Building them is

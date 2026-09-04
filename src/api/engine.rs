@@ -601,6 +601,7 @@ pub struct EngineBuilder {
     embedder_kind: Option<String>,
     context: ContextChoice,
     defaults: GenSpec,
+    plugins: Vec<Arc<crate::advanced::BackendPlugin>>,
 }
 
 /// How the context window is decided.
@@ -642,6 +643,17 @@ impl EngineBuilder {
     /// generation timeout.
     pub fn config(mut self, config: ControllerConfig) -> Self {
         self.config = Some(config);
+        self
+    }
+
+    /// Bring your own backend.
+    ///
+    /// A path the plugin claims loads through it, ahead of every built-in
+    /// rule; every other path is routed as before. Register several and they
+    /// are asked in this order. See [`crate::advanced::plugin`] for how to
+    /// write one.
+    pub fn backend(mut self, plugin: crate::advanced::BackendPlugin) -> Self {
+        self.plugins.push(Arc::new(plugin));
         self
     }
 
@@ -764,7 +776,8 @@ impl EngineBuilder {
 
         // Preflight the fit before starting anything, so a model that cannot
         // run fails with a verdict instead of a load error.
-        let config = self.config.unwrap_or_default();
+        let mut config = self.config.unwrap_or_default();
+        config.plugins.extend(self.plugins);
         let mut settings = self.settings.unwrap_or_default();
 
         // An explicit context is honoured whether or not the preflight below
