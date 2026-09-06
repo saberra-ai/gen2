@@ -1760,3 +1760,270 @@ async fn facade_stream_async_yields_events_and_cancels_across_tasks() {
     eprintln!("--- after cancel: {:?}", again.text());
     assert!(!again.text().trim().is_empty());
 }
+
+// ── Model switching, residency, concurrency (§4.2, §4.5, §17, §23, §28.4) ──
+
+/// A second, different model for the switching tests. `PIO_TEST_SECOND_MODEL`
+/// — Llama-3.2-3B-Instruct against Qwen3-0.6B in the reference run.
+fn second_model() -> Option<PathBuf> {
+    let path = PathBuf::from(std::env::var("PIO_TEST_SECOND_MODEL").ok()?);
+    assert!(path.exists(), "PIO_TEST_SECOND_MODEL does not exist");
+    Some(path)
+}
+
+fn two_model_paths() -> Option<(PathBuf, PathBuf)> {
+    let (Some(first), Some(second)) = (test_model(), second_model()) else {
+        eprintln!("SKIP: set PIO_TEST_MODEL and PIO_TEST_SECOND_MODEL");
+        return None;
+    };
+    if first == second {
+        eprintln!("SKIP: the two models must differ");
+        return None;
+    }
+    Some((first, second))
+}
+
+/// §28.4: two models from one runtime, one session switched between them
+/// mid-chat. The second model answers from what the first was told.
+#[test]
+fn facade_switches_models_mid_chat_and_the_second_remembers_bob() {
+    use gen2::{Runtime, Session, ThinkingMode};
+
+    let Some((first, second)) = two_model_paths() else {
+        return;
+    };
+    let runtime = Runtime::new().expect("a runtime builds");
+    let qwen = runtime.load(&first).expect("first model loads");
+    let llama = runtime.load(&second).expect("second model loads");
+    assert_eq!(runtime.models(), vec![qwen.id(), llama.id()]);
+
+    let mut session = Session::new().with_system("Be concise.");
+    let a = qwen
+        .turn(&mut session)
+        .user("My name is Bob.")
+        .max_tokens(32)
+        .greedy()
+        .reasoning(ThinkingMode::Off)
+        .run()
+        .expect("the first model answers");
+    let b = llama
+        .turn(&mut session)
+        .user("What is my name? Reply with just the name.")
+        .max_tokens(16)
+        .greedy()
+        .reasoning(ThinkingMode::Off)
+        .run()
+        .expect("the second model answers on the same session");
+    eprintln!("--- qwen: {:?}\n--- llama: {:?}", a.text(), b.text());
+    assert!(
+        b.text().contains("Bob"),
+        "the second model must answer from the transcript the first built: {:?}",
+        b.text()
+    );
+    // The session was never converted or migrated (invariant 2).
+    let roles: Vec<&str> = session.messages().iter().map(|m| m.role.as_str()).collect();
+    assert_eq!(roles, ["user", "assistant", "user", "assistant"]);
+    assert_eq!(session.system(), Some("Be concise."));
+}
+
+/// §17.2: qwen → llama → qwen. Correctness is what this proves live: the
+/// session comes back to the first model and answers from what the second
+/// model said in between — llama's reply is an assistant message qwen
+/// never generated, so qwen's runtime is rebuilt with it rather than
+/// appended to (the backends append only their own replies).
+///
+/// Reuse — appending when the tail holds no foreign reply — is proved on
+/// the scripted engine in `api::switching_tests`, by counting
+/// `append_messages` against `start_session`. It is not provable here:
+/// llama.cpp reports `prompt_tokens` as the KV position at pull time — the
+/// whole context, appended or rebuilt — so the numbers below are printed
+/// with the time to first token for the record, and only their cumulative
+/// shape is asserted.
+#[test]
+fn facade_switching_away_and_back_answers_from_the_other_models_reply() {
+    use gen2::{Runtime, Session, ThinkingMode};
+
+    let Some((first, second)) = two_model_paths() else {
+        return;
+    };
+    let runtime = Runtime::new().expect("a runtime builds");
+    let qwen = runtime.load(&first).expect("first model loads");
+    let llama = runtime.load(&second).expect("second model loads");
+
+    let system = format!(
+        "{}Answer with one word.",
+        "You are a terse assistant. ".repeat(60)
+    );
+    let mut session = Session::new().with_system(system);
+    let t1 = qwen
+        .turn(&mut session)
+        .user("Say hi.")
+        .max_tokens(8)
+        .greedy()
+        .reasoning(ThinkingMode::Off)
+        .run()
+        .expect("turn 1");
+    let t2 = llama
+        .turn(&mut session)
+        .user("The secret word is PINEAPPLE. Repeat the secret word.")
+        .max_tokens(8)
+        .greedy()
+        .reasoning(ThinkingMode::Off)
+        .run()
+        .expect("turn 2");
+    let t3 = qwen
+        .turn(&mut session)
+        .user("What did you just say the secret word was?")
+        .max_tokens(16)
+        .greedy()
+        .reasoning(ThinkingMode::Off)
+        .run()
+        .expect("turn 3");
+    let (p1, p2, p3) = (
+        t1.usage().prompt_tokens,
+        t2.usage().prompt_tokens,
+        t3.usage().prompt_tokens,
+    );
+    eprintln!(
+        "--- qwen {:?} · llama {:?} · qwen again {:?}",
+        t1.text(),
+        t2.text(),
+        t3.text()
+    );
+    eprintln!(
+        "--- prompt tokens (cumulative): qwen {p1} · llama {p2} · qwen again {p3} · ttft us {} / {} / {}",
+        t1.stats()
+            .time_to_first_token()
+            .map(|d| d.as_micros())
+            .unwrap_or(0),
+        t2.stats()
+            .time_to_first_token()
+            .map(|d| d.as_micros())
+            .unwrap_or(0),
+        t3.stats()
+            .time_to_first_token()
+            .map(|d| d.as_micros())
+            .unwrap_or(0),
+    );
+    for (t, r) in [(1, &t1), (2, &t2), (3, &t3)] {
+        assert!(r.stats().reported(), "turn {t} must report stats: {r:?}");
+        assert!(!r.text().trim().is_empty(), "turn {t} produced no text");
+    }
+    assert!(
+        t2.text().to_uppercase().contains("PINEAPPLE"),
+        "llama should repeat the word: {:?}",
+        t2.text()
+    );
+    assert!(
+        t3.text().to_uppercase().contains("PINEAPPLE"),
+        "qwen must see llama's reply after switching back: {:?}",
+        t3.text()
+    );
+    assert!(p1 > 200, "the system prompt should be long: {p1} tokens");
+    assert!(
+        p3 > p1,
+        "qwen's context grew across the switch: {p3} vs {p1}"
+    );
+    let roles: Vec<&str> = session.messages().iter().map(|m| m.role.as_str()).collect();
+    assert_eq!(
+        roles,
+        [
+            "user",
+            "assistant",
+            "user",
+            "assistant",
+            "user",
+            "assistant"
+        ]
+    );
+}
+
+/// §4.2/§4.5: a handle outlives its weights. Evict, watch residency, use it
+/// again, and the weights come back.
+#[test]
+fn facade_evicted_model_is_restored_by_its_next_generation() {
+    use gen2::{Runtime, ThinkingMode};
+
+    let Some((first, second)) = two_model_paths() else {
+        return;
+    };
+    let runtime = Runtime::new().expect("a runtime builds");
+    let qwen = runtime.load(&first).expect("first model loads");
+    let llama = runtime.load(&second).expect("second model loads");
+
+    let before = runtime.residency();
+    eprintln!(
+        "--- before: {before:?}\n--- hardware: {:?}",
+        runtime.hardware()
+    );
+    assert!(before.is_resident(qwen.id()) && before.is_resident(llama.id()));
+    assert!(before.resident_mb() > 0);
+
+    runtime.evict(&qwen).expect("evict");
+    let evicted = runtime.residency();
+    eprintln!("--- evicted: {evicted:?}");
+    assert!(!evicted.is_resident(qwen.id()), "{evicted:?}");
+    assert!(evicted.is_resident(llama.id()));
+    assert!(evicted.resident_mb() < before.resident_mb());
+
+    let text = qwen
+        .generate("Reply with exactly one word: hi")
+        .max_tokens(8)
+        .greedy()
+        .reasoning(ThinkingMode::Off)
+        .text()
+        .expect("an evicted model still generates — restored on use");
+    eprintln!("--- restored: {text:?}");
+    assert!(!text.trim().is_empty());
+    let after = runtime.residency();
+    eprintln!("--- after: {after:?}\n--- stats: {:?}", runtime.stats());
+    assert!(after.is_resident(qwen.id()), "{after:?}");
+    assert!(after.is_resident(llama.id()));
+    assert_eq!(runtime.stats().resident_models, 2);
+
+    // Preload is the eager form of the same restore.
+    runtime.evict(&llama).expect("evict");
+    assert!(!runtime.residency().is_resident(llama.id()));
+    runtime.preload(&llama).expect("preload");
+    assert!(runtime.residency().is_resident(llama.id()));
+}
+
+/// §23: two sessions on one model from two threads at once. The controller
+/// serialises them; both complete.
+#[test]
+fn facade_two_sessions_on_one_model_run_from_two_threads() {
+    use gen2::{Session, ThinkingMode};
+
+    let Some(model) = facade_model() else {
+        eprintln!("SKIP: set PIO_TEST_MODEL");
+        return;
+    };
+    let handles: Vec<_> = [
+        "Reply with exactly one word: red",
+        "Reply with exactly one word: blue",
+    ]
+    .into_iter()
+    .map(|prompt| {
+        let model = model.clone();
+        std::thread::spawn(move || {
+            let mut session = Session::new();
+            let r = model
+                .turn(&mut session)
+                .user(prompt)
+                .max_tokens(8)
+                .greedy()
+                .reasoning(ThinkingMode::Off)
+                .run()
+                .map(|r| r.text().to_string());
+            (r, session)
+        })
+    })
+    .collect();
+    for h in handles {
+        let (text, session) = h.join().expect("no panic");
+        let text = text.expect("each thread's turn completes");
+        eprintln!("--- thread: {text:?}");
+        assert!(!text.trim().is_empty());
+        assert_eq!(session.messages().len(), 2);
+    }
+}

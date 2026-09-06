@@ -50,10 +50,22 @@ pub struct Engine {
     /// swap has to invalidate every live session. Sessions record the
     /// generation they were opened against and reopen when it moves.
     generation: std::sync::atomic::AtomicU64,
+    /// Unique within the process. A session keys the runtime state it holds
+    /// on each engine by this (api_spec.md §17.1), so a conversation moved
+    /// between two models knows which engine holds what.
+    id: u64,
     /// The script behind a scripted engine, for tests that assert on what the
     /// backend was shown rather than on what the facade believes.
     #[cfg(test)]
     script: Option<crate::test_support::Script>,
+}
+
+/// Mints [`Engine::id`]s. Never reused within a process, so a session's
+/// parked binding can never be mistaken for a later engine's.
+static NEXT_ENGINE_ID: std::sync::atomic::AtomicU64 = std::sync::atomic::AtomicU64::new(1);
+
+fn next_engine_id() -> u64 {
+    NEXT_ENGINE_ID.fetch_add(1, std::sync::atomic::Ordering::Relaxed)
 }
 
 impl Engine {
@@ -309,6 +321,11 @@ impl Engine {
     /// "model changed" wants the same signal.
     pub fn model_generation(&self) -> u64 {
         self.generation.load(std::sync::atomic::Ordering::SeqCst)
+    }
+
+    /// This engine's process-unique id.
+    pub(crate) fn id(&self) -> u64 {
+        self.id
     }
 
     /// Load an embedding model, replacing any already loaded.
@@ -831,6 +848,7 @@ impl EngineBuilder {
             sent_through: Mutex::new(HashMap::new()),
             defaults: self.defaults,
             generation: std::sync::atomic::AtomicU64::new(0),
+            id: next_engine_id(),
             #[cfg(test)]
             script: None,
         };
@@ -906,6 +924,7 @@ impl Engine {
             sent_through: Mutex::new(HashMap::new()),
             defaults: GenSpec::default(),
             generation: std::sync::atomic::AtomicU64::new(0),
+            id: next_engine_id(),
             script: Some(kept),
         };
         let (resp, rx) = channel();

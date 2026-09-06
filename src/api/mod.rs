@@ -65,8 +65,10 @@ pub use generation::Generation;
 pub use input::Input;
 pub use model::{Model, ModelId};
 pub use response::Response;
-pub use runtime::{RemoteModelBuilder, Runtime, RuntimeBuilder};
-pub use session::{MessageId, SessionEvent, SessionId, SessionRevision};
+pub use runtime::{
+    ModelResidency, RemoteModelBuilder, ResidencySnapshot, Runtime, RuntimeBuilder, RuntimeStats,
+};
+pub use session::{ContextFingerprint, MessageId, SessionEvent, SessionId, SessionRevision};
 pub use tool_defs::ToolDefinition;
 pub use turn::{GenerationOptions, ToolChoice};
 
@@ -115,3 +117,8 @@ mod entrypoint_tests;
 /// What the model was actually shown, across the whole stack.
 #[cfg(test)]
 mod lifecycle_tests;
+
+/// Model switching, cache identity, residency, and concurrency (api_spec.md
+/// §4.2, §4.5, §17, §23), on scripted models.
+#[cfg(test)]
+mod switching_tests;

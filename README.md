@@ -440,9 +440,14 @@ Unit tests never load a model. These do:
 ```sh
 PIO_TEST_MODEL=/path/model.gguf \
 PIO_TEST_TOOL_MODEL=/path/tool-capable.gguf \
+PIO_TEST_SECOND_MODEL=/path/a-different-model.gguf \
 PIO_TEST_EMBEDDER=/path/embedding-model.gguf \
   cargo test --test live_inference --features metal -- --test-threads=1
 ```
+
+`PIO_TEST_SECOND_MODEL` is a second, different chat model: the switching and
+residency tests load it next to `PIO_TEST_MODEL` in one runtime and move a
+session between the two.
 
 Without the env vars they skip. With them set, a model that will not load or
 will not decode fails the test. Serially, because otherwise the tests compete

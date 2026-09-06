@@ -33,7 +33,7 @@ use std::time::{Duration, Instant};
 use crate::ExecutionStats;
 use crate::engine::Settings;
 use crate::generation::GenSpec;
-use crate::types::message::Message;
+use crate::types::message::{Message, ToolSpec};
 
 /// A background inference workload: ephemeral, fire-and-forget, hidden from
 /// the user.
@@ -332,6 +332,14 @@ pub enum ControllerCmd {
         /// miss costs a re-prefill and nothing else.
         transcript: Vec<Message>,
         gen_spec: GenSpec,
+        /// The reasoning policy the conversation runs under, used with
+        /// `transcript` when the runtime is gone: the rebuilt runtime pins
+        /// it at start, as the original did. A default here would silently
+        /// change how the model thinks after an eviction.
+        thinking: crate::generation::ThinkingMode,
+        /// The tools the conversation is offered, likewise only for a
+        /// rebuild — tool definitions enter a runtime when it starts.
+        tools: Option<(Vec<ToolSpec>, String)>,
         /// Canonical model id for remote routing (see
         /// [`ControllerCmd::StartChat::model_id`]).
         model_id: Option<String>,

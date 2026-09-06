@@ -564,12 +564,45 @@ fn handle_status_command(state: &mut ControllerState, cmd: ControllerCmd) -> Con
             ControlFlow::Continue
         }
         ControllerCmd::UnloadModel { resp } => {
+            // Every live runtime holds the weights (llama.cpp's bundle is
+            // released when its last session is), so unloading with chats
+            // resident frees nothing. Retire them; a caller's next turn
+            // rebuilds from the transcript it carries.
+            let ids: Vec<String> = state.chats.keys().cloned().collect();
+            for chat_id in ids {
+                terminate_runtime(
+                    &state.engine,
+                    &mut state.chats,
+                    &chat_id,
+                    RuntimeOutcome::Completed(CompletionReason::Evicted),
+                    state.metrics.as_ref(),
+                );
+            }
             state.engine.unload_model();
+            // Keep the identity so a reload re-admits the same runtime.
+            if let Some(rt) = state.residency.unload(RuntimeKind::Llm) {
+                state.idle_unloaded_llm = Some((rt.name, rt.estimated_resident_mb));
+            }
+            state.loaded_model_file_bytes = None;
             let _ = resp.send(());
             ControlFlow::Continue
         }
         ControllerCmd::ReloadModel { resp } => {
-            let _ = resp.send(state.engine.reload_model().map_err(|e| e.to_string()));
+            let result = state.engine.reload_model().map_err(|e| e.to_string());
+            if result.is_ok()
+                && let Some((name, mb)) = state.idle_unloaded_llm.take()
+            {
+                let governor = current_memory_governor();
+                let now = chrono::Utc::now().timestamp();
+                state.residency.admit(
+                    ResidentRuntime::new(RuntimeKind::Llm, name.clone(), mb, now),
+                    &governor,
+                );
+                state.loaded_model_file_bytes =
+                    ControllerState::model_file_bytes_of(std::path::Path::new(&name));
+                state.last_llm_activity_unix = now;
+            }
+            let _ = resp.send(result);
             ControlFlow::Continue
         }
         ControllerCmd::GetActiveBackendName { resp } => {
@@ -788,6 +821,8 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
             new_messages,
             transcript,
             gen_spec,
+            thinking,
+            tools,
             // Routing hints for a remote dispatch. The local loop already
             // knows which model it has, but they are carried through when a
             // missing runtime forces a rebuild below.
@@ -883,15 +918,19 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
                     messages = full.len(),
                     "continue found no runtime — rebuilding from the caller's transcript"
                 );
+                // With the conversation's own reasoning policy and tools:
+                // both are pinned when a runtime starts, so a rebuild that
+                // defaulted them would answer without the tools it was
+                // offered, or think when it was told not to.
                 return dispatch_cmd(
                     ControllerCmd::StartChat {
                         chat_id,
                         messages: full,
                         gen_spec,
-                        thinking: crate::generation::ThinkingMode::default(),
+                        thinking,
                         model_id,
                         model_size_bytes,
-                        tools: None,
+                        tools,
                         tx,
                     },
                     state,

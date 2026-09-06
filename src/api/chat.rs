@@ -402,6 +402,10 @@ impl<'a> Chat<'a> {
     pub(crate) fn begin(self) -> Result<(TokenStream, &'a mut Session)> {
         let engine = self.engine;
         let session = self.session;
+        // Which engine's runtime state this turn is about (api_spec.md §17):
+        // a session run on two models holds a binding per engine, and this
+        // brings the right one forward. Switching is a normal turn.
+        session.note_engine(engine.id());
         // A cached prefill belongs to the model that produced it. If the model
         // has been swapped since this conversation was opened, the engine's
         // cache is for weights that are gone, so the conversation reopens.
@@ -427,19 +431,6 @@ impl<'a> Chat<'a> {
 
         let (tx, rx) = event_channel(engine.event_channel_capacity());
 
-        // A conversation the engine already holds gets only what's new; one it
-        // doesn't gets the whole history. Either way the system prompt travels
-        // at index 0 of what the engine sees — `Session::transcript` is where
-        // first-order state rejoins the message list.
-        let start = !session.opened;
-        let messages = match &self.system_override {
-            // Reopened above, so the whole transcript goes — under the
-            // override's prompt rather than the session's.
-            Some(system) => session.transcript_with_system(system.as_deref()),
-            None => session.pending(engine.sent_through(session.id().as_str())),
-        };
-        let sent = session.len();
-
         // Tools: this turn's, else the session's (api_spec.md §7.4).
         let tools = if self.suppress_tools {
             None
@@ -450,6 +441,35 @@ impl<'a> Chat<'a> {
                     .then(|| (set.to_wire(), super::generation::TOOL_PROMPT.to_string()))
             })
         };
+        session.offered_fingerprint = offered_fingerprint(tools.as_ref());
+
+        // `opened` is this layer's belief; the prefix digest is the proof
+        // (§17.1). The engine may append only to a transcript prefix that is
+        // byte-for-byte what it was given — same messages, same ids, same
+        // tools — and anything else rebuilds. A session that switched models
+        // and came back (§17.2) passes this check when nothing but the tail
+        // grew; one whose history was edited, or whose engine forgot it,
+        // does not.
+        let held = engine.sent_through(session.id().as_str());
+        if session.opened
+            && !(session.prefix_still_held(held, session.offered_fingerprint)
+                && session.tail_is_appendable(held))
+        {
+            session.opened = false;
+        }
+
+        // A conversation the engine already holds gets only what's new; one it
+        // doesn't gets the whole history. Either way the system prompt travels
+        // at index 0 of what the engine sees — `Session::transcript` is where
+        // first-order state rejoins the message list.
+        let start = !session.opened;
+        let messages = match &self.system_override {
+            // Reopened above, so the whole transcript goes — under the
+            // override's prompt rather than the session's.
+            Some(system) => session.transcript_with_system(system.as_deref()),
+            None => session.pending(held),
+        };
+        let sent = session.len();
 
         let cmd = if start {
             ControllerCmd::StartChat {
@@ -469,9 +489,20 @@ impl<'a> Chat<'a> {
                 // Carried so a conversation the controller has evicted can be
                 // rebuilt instead of refused. `opened` is this layer's belief
                 // about a cache it does not own, and eviction happens without
-                // telling it.
-                transcript: session.transcript(),
+                // telling it. Exactly what the engine already held: the
+                // rebuild appends `new_messages` to it, so sending the whole
+                // transcript here would show the model the tail twice.
+                transcript: {
+                    let mut held_prefix = session.transcript();
+                    held_prefix.truncate(held);
+                    held_prefix
+                },
                 gen_spec: self.spec,
+                // Carried for the same rebuild: a runtime evicted between
+                // turns must come back with this conversation's tools and
+                // reasoning policy, not defaults.
+                thinking: self.thinking,
+                tools,
                 model_id: None,
                 model_size_bytes: None,
                 tx,
@@ -511,6 +542,40 @@ pub(crate) fn settle(engine: &Engine, session: &mut Session, stream: &TokenStrea
     };
     engine.mark_sent(session.id().as_str(), already + delivered);
     session.opened = true;
+    session.record_prefix(already + delivered);
+}
+
+/// Digest of what a turn offers the model as tools: definitions, order, and
+/// the prompt that introduces them. Part of the prefix identity — the same
+/// transcript under different tools is a different prefix.
+pub(crate) fn offered_fingerprint(tools: Option<&(Vec<ToolSpec>, String)>) -> u64 {
+    const OFFSET: u64 = 0xcbf2_9ce4_8422_2325;
+    const PRIME: u64 = 0x0000_0100_0000_01b3;
+    let Some((specs, prompt)) = tools else {
+        return 0;
+    };
+    let mut h = OFFSET;
+    let mut feed = |bytes: &[u8]| {
+        for b in bytes {
+            h ^= u64::from(*b);
+            h = h.wrapping_mul(PRIME);
+        }
+        h ^= 0xff;
+        h = h.wrapping_mul(PRIME);
+    };
+    feed(prompt.as_bytes());
+    for spec in specs {
+        feed(spec.function.name.as_bytes());
+        feed(
+            spec.function
+                .description
+                .as_deref()
+                .unwrap_or_default()
+                .as_bytes(),
+        );
+        feed(spec.function.arguments.to_string().as_bytes());
+    }
+    h
 }
 
 /// Whether any message carries an image.

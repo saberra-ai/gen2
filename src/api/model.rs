@@ -140,6 +140,28 @@ impl Model {
         &self.loaded.engine
     }
 
+    /// The runtime's entry for this model.
+    pub(crate) fn loaded(&self) -> &Arc<Loaded> {
+        &self.loaded
+    }
+
+    /// Whether this handle came from the runtime behind `inner`.
+    pub(crate) fn belongs_to(&self, inner: &Arc<RuntimeInner>) -> bool {
+        Arc::ptr_eq(&self.runtime, inner)
+    }
+
+    /// Make sure the weights are resident before a turn (api_spec.md §4.2).
+    ///
+    /// A handle stays valid after [`Runtime::evict`](super::Runtime::evict)
+    /// or an automatic eviction; the next use restores the model, evicting
+    /// the least recently used other model first if the budget needs it.
+    /// Marks the model used either way, for that ordering.
+    pub(crate) fn ensure_resident(&self) -> super::error::Result<()> {
+        Runtime::from_inner(Arc::clone(&self.runtime)).restore(self.id, &self.loaded)?;
+        self.loaded.touch();
+        Ok(())
+    }
+
     /// The runtime this model belongs to — the one [`gen2::load`](crate::load)
     /// made privately, or the one it was loaded into.
     pub fn runtime(&self) -> Runtime {

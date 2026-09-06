@@ -192,6 +192,11 @@ struct Inner {
     seen: Vec<String>,
     /// Tool names the backend was given at each `start_session`.
     tools_seen: Vec<Vec<String>>,
+    /// The reasoning policy pinned at each `start_session`.
+    thinking_seen: Vec<crate::generation::ThinkingMode>,
+    /// Whether a model was ever loaded, so `reload_model` after an unload
+    /// behaves as llama.cpp's does — it keeps its last `LoadRequest`.
+    ever_loaded: bool,
     /// What each turn actually asked the sampler for, in order.
     ///
     /// The call log says a pull happened and `seen` says what was in it;
@@ -329,6 +334,11 @@ impl Script {
         self.inner.lock().unwrap().tools_seen.clone()
     }
 
+    /// The reasoning policy pinned at each `start_session`, newest last.
+    pub fn thinking_seen(&self) -> Vec<crate::generation::ThinkingMode> {
+        self.inner.lock().unwrap().thinking_seen.clone()
+    }
+
     /// What each turn asked the sampler for, in order.
     pub fn specs_seen(&self) -> Vec<GenSpec> {
         self.inner.lock().unwrap().specs_seen.clone()
@@ -429,14 +439,19 @@ impl Backend for FakeBackend {
             return Err(fail());
         }
         self.script.loaded.store(true, Ordering::SeqCst);
+        self.script.inner.lock().unwrap().ever_loaded = true;
         Ok(())
     }
 
     fn reload_model(&self) -> Result<(), ExecError> {
         self.script.record("reload_model");
-        if !self.script.loaded.load(Ordering::SeqCst) {
+        // Like llama.cpp: the last load request survives an unload, so a
+        // reload restores the weights. Only an engine that never loaded
+        // has nothing to reload.
+        if !self.script.inner.lock().unwrap().ever_loaded {
             return Err(ExecError::ModelNotLoaded);
         }
+        self.script.loaded.store(true, Ordering::SeqCst);
         Ok(())
     }
 
@@ -496,6 +511,7 @@ impl Backend for FakeBackend {
                     .map(|(specs, _)| specs.iter().map(|t| t.function.name.clone()).collect())
                     .unwrap_or_default(),
             );
+            inner.thinking_seen.push(spec.thinking);
         }
         if let Some(fail) = self
             .script

@@ -393,6 +393,10 @@ impl<'a> Turn<'a> {
     /// the async surface bridges the two halves across a worker.
     pub(crate) fn begin(self) -> Result<(StreamCore, &'a mut Session)> {
         let model = self.model.clone();
+        // Weights first: a handle whose model was evicted restores it here,
+        // transparently (api_spec.md §4.2). Before validation, so an
+        // evicted model's capabilities are read from a loaded one.
+        self.model.ensure_resident()?;
         let engine = self.model.engine();
         let session = self.session;
 

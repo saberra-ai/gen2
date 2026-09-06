@@ -125,6 +125,101 @@ impl std::fmt::Display for SessionRevision {
     }
 }
 
+/// A digest of everything in a session the model can see (api_spec.md §17.1).
+///
+/// Covers the system prompt, the tool definitions and their order, and the
+/// active messages — identity and content. Two sessions with equal
+/// fingerprints would render the same prompt; a runtime holding cached
+/// state for one fingerprint cannot serve another without rebuilding. The
+/// [`SessionRevision`] is the cheap "did anything change" signal; this is
+/// the proof. Recomputed when the revision moves, never on a read.
+///
+/// Process-local: FNV-1a over the session's own encoding, not a stable
+/// content address to persist or compare across builds.
+#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+pub struct ContextFingerprint(u64);
+
+impl ContextFingerprint {
+    /// The digest as a number.
+    pub fn as_u64(self) -> u64 {
+        self.0
+    }
+}
+
+impl std::fmt::Display for ContextFingerprint {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(f, "{:016x}", self.0)
+    }
+}
+
+/// FNV-1a, the same hasher [`ToolSet::fingerprint`] uses.
+struct Fnv(u64);
+
+impl Fnv {
+    const OFFSET: u64 = 0xcbf2_9ce4_8422_2325;
+    const PRIME: u64 = 0x0000_0100_0000_01b3;
+
+    fn new() -> Self {
+        Self(Self::OFFSET)
+    }
+
+    fn feed(&mut self, bytes: &[u8]) {
+        for b in bytes {
+            self.0 ^= u64::from(*b);
+            self.0 = self.0.wrapping_mul(Self::PRIME);
+        }
+        // A separator, so `("ab", "c")` and `("a", "bc")` differ.
+        self.0 ^= 0xff;
+        self.0 = self.0.wrapping_mul(Self::PRIME);
+    }
+
+    fn feed_u64(&mut self, n: u64) {
+        self.feed(&n.to_le_bytes());
+    }
+
+    fn message(&mut self, id: MessageId, message: &Message) {
+        self.feed_u64(id.0);
+        match serde_json::to_vec(message) {
+            Ok(bytes) => self.feed(&bytes),
+            // A message that cannot serialize still has a role and text.
+            Err(_) => {
+                self.feed(message.role.as_bytes());
+                self.feed(message.text().as_bytes());
+            }
+        }
+    }
+}
+
+/// What one engine holds for a session: the model-specific session runtime
+/// of api_spec.md §17, from this side of the controller.
+///
+/// A session can be bound to several engines at once — one per model it has
+/// been run on — and each binding is validated on its own when that engine
+/// is invoked again. Everything here is process-local bookkeeping about a
+/// cache the session does not own; a wrong guess costs a re-prefill, never
+/// a wrong answer.
+#[derive(Debug, Clone, Copy, Default)]
+struct Binding {
+    /// Whether the engine has opened this conversation and still holds it.
+    opened: bool,
+    /// Fingerprint of the tool prefix the conversation was opened with.
+    tools_fingerprint: Option<u64>,
+    /// Which model generation of the engine the conversation was opened
+    /// against — a swap or reload bumps it, and the cached prefill belongs to
+    /// the weights that produced it.
+    model_generation: Option<u64>,
+    /// The reasoning-channel policy pinned when the conversation opened.
+    thinking: Option<crate::generation::ThinkingMode>,
+    /// Digest of exactly the transcript prefix the engine has been given —
+    /// what [`Session::prefix_still_held`] checks before appending to it.
+    prefix_fingerprint: Option<u64>,
+    /// Whether the message right after that prefix is this engine's own
+    /// reply. The backends append only what they did not generate
+    /// themselves, so an assistant message from anywhere else — another
+    /// model's reply after a switch — cannot be appended, only rebuilt in.
+    own_reply_follows: bool,
+}
+
 /// Identifies one immutable message record within a session.
 ///
 /// Minted on append, never reused, and carried unchanged into forks — so an
@@ -420,6 +515,22 @@ pub struct Session {
     /// backends pin it when a conversation starts, so a turn asking for a
     /// different one has to reopen.
     pub(crate) thinking: Option<crate::generation::ThinkingMode>,
+    /// Digest of the transcript prefix the bound engine holds, recorded when
+    /// it acknowledged a turn. See [`Binding::prefix_fingerprint`].
+    prefix_fingerprint: Option<u64>,
+    /// See [`Binding::own_reply_follows`].
+    own_reply_follows: bool,
+    /// Fingerprint of the tools offered by the turn in flight, stashed at
+    /// dispatch so the acknowledgement can fold it into the prefix digest.
+    pub(crate) offered_fingerprint: u64,
+    /// The engine the fields above describe. `None` until a turn runs.
+    bound_engine: Option<u64>,
+    /// Bindings for engines other than the bound one — where the state for
+    /// the previous model goes when a session switches models (§17.2), and
+    /// where it comes back from.
+    parked: HashMap<u64, Binding>,
+    /// [`Session::fingerprint`], recomputed whenever the revision moves.
+    fingerprint: u64,
 }
 
 impl Session {
@@ -445,6 +556,12 @@ impl Session {
             tools_fingerprint: None,
             model_generation: None,
             thinking: None,
+            prefix_fingerprint: None,
+            own_reply_follows: false,
+            offered_fingerprint: 0,
+            bound_engine: None,
+            parked: HashMap::new(),
+            fingerprint: 0,
         }
     }
 
@@ -497,6 +614,16 @@ impl Session {
     /// How many context-affecting mutations this session has seen.
     pub fn revision(&self) -> SessionRevision {
         SessionRevision(self.revision)
+    }
+
+    /// A digest of everything the model can see: system prompt, tools and
+    /// their order, active messages by id and content (api_spec.md §17.1).
+    ///
+    /// Changes exactly when [`Session::revision`] does. Cached, so reading it
+    /// is free; recomputing it costs one pass over the active projection
+    /// per mutation.
+    pub fn fingerprint(&self) -> ContextFingerprint {
+        ContextFingerprint(self.fingerprint)
     }
 
     /// The system prompt, if one is set.
@@ -822,6 +949,10 @@ impl Session {
         self.shed = 0;
         self.tools_fingerprint = None;
         self.model_generation = None;
+        self.prefix_fingerprint = None;
+        self.own_reply_follows = false;
+        // Every engine's copy described the old history.
+        self.parked.clear();
     }
 
     // ── Forking (§7.9) ──────────────────────────────────────────────────────
@@ -867,6 +998,12 @@ impl Session {
             tools_fingerprint: None,
             model_generation: None,
             thinking: None,
+            prefix_fingerprint: None,
+            own_reply_follows: false,
+            offered_fingerprint: 0,
+            bound_engine: None,
+            parked: HashMap::new(),
+            fingerprint: 0,
         };
         fork.log(SessionEvent::Forked {
             parent: self.id.clone(),
@@ -948,6 +1085,93 @@ impl Session {
     /// prefill was produced by weights that are no longer loaded.
     ///
     /// Returns whether the conversation was reopened.
+    /// Bind this session to `engine` (api_spec.md §17): park what the
+    /// previously bound engine holds, and bring back what this one held
+    /// last time, if anything. Returns whether the bound engine changed.
+    ///
+    /// Switching models is a normal turn: the runtime state for the model
+    /// left behind stays parked, and if the session comes back to it with
+    /// the prefix intact (§17.2), the next turn appends instead of
+    /// re-prefilling. Validity is proved per engine at dispatch, by
+    /// [`Session::prefix_still_held`] and the generation/thinking/tools
+    /// notes — parking never asserts anything.
+    pub(crate) fn note_engine(&mut self, engine: u64) -> bool {
+        if self.bound_engine == Some(engine) {
+            return false;
+        }
+        if let Some(previous) = self.bound_engine.take() {
+            let binding = Binding {
+                opened: self.opened,
+                tools_fingerprint: self.tools_fingerprint,
+                model_generation: self.model_generation,
+                thinking: self.thinking,
+                prefix_fingerprint: self.prefix_fingerprint,
+                own_reply_follows: self.own_reply_follows,
+            };
+            if binding.opened {
+                self.parked.insert(previous, binding);
+            }
+        }
+        let restored = self.parked.remove(&engine).unwrap_or_default();
+        self.opened = restored.opened;
+        self.tools_fingerprint = restored.tools_fingerprint;
+        self.model_generation = restored.model_generation;
+        self.thinking = restored.thinking;
+        self.prefix_fingerprint = restored.prefix_fingerprint;
+        self.own_reply_follows = restored.own_reply_follows;
+        self.bound_engine = Some(engine);
+        true
+    }
+
+    /// The engine acknowledged holding the first `count` transcript entries:
+    /// remember their digest, so the next turn can prove they are still
+    /// what the engine has before appending to them.
+    pub(crate) fn record_prefix(&mut self, count: usize) {
+        self.prefix_fingerprint = Some(self.prefix_digest(count, self.offered_fingerprint));
+        // What the engine generates next is its own; the caller records it
+        // right after this, so the next turn's tail starts with it.
+        self.own_reply_follows = true;
+    }
+
+    /// Whether the transcript after the first `count` entries can be
+    /// appended to the bound engine's runtime: every assistant message in
+    /// it must be the engine's own reply, and there is at most one of
+    /// those, right after the prefix. Anything else — another model's
+    /// reply after a switch (§17.2), a reply the caller wrote in — the
+    /// backends would skip rather than render, so it has to be rebuilt in.
+    pub(crate) fn tail_is_appendable(&self, count: usize) -> bool {
+        let skip = count.saturating_sub(usize::from(self.system.is_some()));
+        self.projection
+            .iter()
+            .skip(skip)
+            .enumerate()
+            .all(|(i, m)| m.role != "assistant" || (i == 0 && self.own_reply_follows))
+    }
+
+    /// Whether the first `count` transcript entries, offered with tools
+    /// hashing to `offered_tools`, are exactly what the bound engine was
+    /// given when it opened this conversation (§17.2). False when nothing
+    /// was recorded, when nothing is held, or when any of it changed —
+    /// the caller then rebuilds, which is always correct.
+    pub(crate) fn prefix_still_held(&self, count: usize, offered_tools: u64) -> bool {
+        count > 0
+            && count <= self.transcript_len()
+            && self.prefix_fingerprint == Some(self.prefix_digest(count, offered_tools))
+    }
+
+    /// Engines this session holds state on, bound and parked. For tests.
+    #[cfg(test)]
+    pub(crate) fn bound_engines(&self) -> Vec<u64> {
+        let mut out: Vec<u64> = self.parked.keys().copied().collect();
+        out.extend(self.bound_engine);
+        out.sort_unstable();
+        out
+    }
+
+    fn transcript_len(&self) -> usize {
+        self.projection.len() + usize::from(self.system.is_some())
+    }
+
     pub(crate) fn note_model(&mut self, generation: u64) -> bool {
         match self.model_generation {
             Some(current) if current == generation => false,
@@ -1009,8 +1233,44 @@ impl Session {
     fn log(&mut self, event: SessionEvent) {
         if !matches!(event, SessionEvent::MessageRecorded { .. }) {
             self.revision += 1;
+            self.fingerprint = self.compute_fingerprint();
         }
         self.events.push(event);
+    }
+
+    /// [`Session::fingerprint`] from scratch: O(active messages).
+    fn compute_fingerprint(&self) -> u64 {
+        let mut h = Fnv::new();
+        match &self.system {
+            Some(system) => h.feed(system.as_bytes()),
+            None => h.feed_u64(0),
+        }
+        h.feed_u64(self.tools.fingerprint());
+        for (id, message) in self.active.iter().zip(&self.projection) {
+            h.message(*id, message);
+        }
+        h.0
+    }
+
+    /// Digest of the first `count` entries of [`Session::transcript`] — the
+    /// system prompt at index 0 when there is one, then active messages —
+    /// together with the tools offered alongside them.
+    fn prefix_digest(&self, count: usize, offered_tools: u64) -> u64 {
+        let mut h = Fnv::new();
+        h.feed_u64(offered_tools);
+        let mut remaining = count;
+        if let Some(system) = &self.system
+            && remaining > 0
+        {
+            h.feed(system.as_bytes());
+            remaining -= 1;
+        }
+        let take = remaining.min(self.active.len());
+        for (id, message) in self.active[..take].iter().zip(&self.projection[..take]) {
+            h.message(*id, message);
+        }
+        h.feed_u64(take as u64);
+        h.0
     }
 
     /// Store a new record for a context replacement to name, and log it so
@@ -1075,6 +1335,7 @@ impl Session {
             .iter()
             .map(|id| self.records[self.index[id]].message.clone())
             .collect();
+        self.fingerprint = self.compute_fingerprint();
     }
 
     /// Ids for an edited projection: an unchanged message keeps its record,
