@@ -259,18 +259,20 @@ match Engine::builder().model("/models/model.gguf").context(1_000_000).build() {
 
 ## Async
 
-Behind the `tokio` feature. Decoding is a blocking native call, so the async
-surface runs it on a blocking task rather than pretending otherwise:
+Behind the `tokio` feature, with the same builders and the same types.
+Decoding is a blocking native call, so the async surface runs it on a blocking
+task and bridges events through a bounded channel rather than pretending
+otherwise:
 
 ```rust,ignore
-let (completion, session) = engine.chat_owned(session).user("…").send_async().await?;
+let response = model.turn(&mut session).user("hello").run_async().await?;
 
-let mut run = engine.agent_owned(session).goal("…").spawn_async();
-while let Some(update) = run.next().await { /* … */ }
+let mut stream = model.turn(&mut session).user("hello").stream_async().await?;
+while let Some(event) = stream.next().await { /* the same Event */ }
+let response = stream.finish().await?;
 ```
 
-`run_async` and `stream_async` on a turn follow the same shape and are landing
-next.
+Dropping the stream cancels the generation.
 
 ## The previous facade, and the layers below
 
