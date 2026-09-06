@@ -271,6 +271,7 @@ mod tests {
         assert_eq!(evicted, 0, "an unlimited budget must evict nothing");
     }
 
+    #[cfg(unix)] // sets a POSIX mode; Windows has no equivalent for this case
     #[test]
     fn a_removal_that_fails_is_not_counted_as_an_eviction() {
         // Fault injection: a read-only store directory still lists, but
