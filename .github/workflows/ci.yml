@@ -168,6 +168,24 @@ jobs:
       - run: cargo clippy --all-targets --no-default-features -- -D warnings
       - run: "cargo test --no-default-features --lib advanced::"
 
+  # Windows, default features: a consumer on MSVC gets llama.cpp built by
+  # cmake and bound by bindgen, so this lane needs both on the runner. It is
+  # advisory until it has been green once (S3.4 will flip it), because a
+  # toolchain gap here says nothing about the code and should not block main.
+  windows:
+    runs-on: windows-latest
+    continue-on-error: true
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Point bindgen at the runner's LLVM
+        shell: pwsh
+        run: |
+          $llvm = "C:\Program Files\LLVM\bin"
+          if (Test-Path $llvm) { "LIBCLANG_PATH=$llvm" | Out-File -FilePath $env:GITHUB_ENV -Append }
+      - run: cargo test --lib
+
   # The README benchmark table is generated from committed results JSON. This
   # job needs no GPU: it regenerates the table and fails on drift (someone
   # edited the table by hand), on a llama.cpp pin that no longer matches the
