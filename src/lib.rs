@@ -171,10 +171,15 @@ pub(crate) mod zoo;
 
 /// The inference-first surface: a [`Runtime`] loads [`Model`]s, a model
 /// answers an [`Input`] with a [`Response`]; a [`Session`] holds the
-/// conversation. Supporting types live in [`model`], [`input`], [`output`],
-/// [`session`], and [`tool_defs`].
-pub use api::{Input, Model, Response, Runtime};
-pub use api::{input, model, output, session, tool_defs};
+/// conversation, and [`Model::turn`] runs one invocation against it with
+/// [`GenerationOptions`] and a [`ToolChoice`], blocking or as an
+/// [`EventStream`]. Supporting types live in [`model`], [`input`],
+/// [`output`], [`session`], [`tool_defs`], [`turn`], and [`event`].
+///
+/// `Turn`, `Event`, and `Canceller` are reached through [`turn`] and
+/// [`event`] until the old facade's same-named types retire from the root.
+pub use api::{EventStream, GenerationOptions, Input, Model, Response, Runtime, ToolChoice};
+pub use api::{event, input, model, output, session, tool_defs, turn};
 
 /// Load a model with a private runtime the returned [`Model`] keeps alive.
 ///

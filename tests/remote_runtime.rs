@@ -8,9 +8,10 @@
 
 #![cfg(feature = "backend-external-api")]
 
-use gen2::Runtime;
+use gen2::event::Event;
 use gen2::model::ModelSourceKind;
 use gen2::output::FinishReason;
+use gen2::{Runtime, Session};
 
 fn token(text: &str) -> String {
     format!("{{\"choices\":[{{\"index\":0,\"delta\":{{\"content\":\"{text}\"}}}}]}}")
@@ -171,4 +172,121 @@ fn an_unreachable_endpoint_fails_at_connect_not_at_first_token() {
             .contains("cannot connect to external server"),
         "the error should name the connectivity problem, got: {err}"
     );
+}
+
+/// A turn over a remote model streams the same semantic events a local one
+/// does (api_spec.md §15, §28.10), and the session ends up holding the reply.
+#[test]
+fn a_remote_turn_streams_semantic_events_and_records_the_reply() {
+    let last =
+        "{\"choices\":[{\"index\":0,\"delta\":{\"content\":\"!\"},\"finish_reason\":\"stop\"}]}";
+    let (server, completions) = provider(
+        "m",
+        &sse(&[token("Hello"), token(", world"), last.to_string()]),
+    );
+    let model = Runtime::new()
+        .expect("builds")
+        .openai()
+        .base_url(format!("{}/v1", server.url()))
+        .model("m")
+        .connect()
+        .expect("connects");
+
+    let mut session = Session::new().with_system("Be brief.");
+    let mut stream = model
+        .turn(&mut session)
+        .user("hi")
+        .max_tokens(16)
+        .stream()
+        .expect("a remote turn streams");
+    let mut deltas = Vec::new();
+    let mut finished = None;
+    for event in stream.by_ref() {
+        match event.expect("no event fails") {
+            Event::TextDelta(t) => deltas.push(t),
+            Event::Finished(reason) => finished = Some(reason),
+            _ => {}
+        }
+    }
+    assert_eq!(deltas, ["Hello", ", world", "!"]);
+    assert_eq!(finished, Some(FinishReason::Stop));
+
+    let response = stream.finish().expect("the outcome");
+    assert_eq!(response.text(), "Hello, world!");
+    assert_eq!(*response.finish_reason(), FinishReason::Stop);
+    completions.assert();
+
+    let roles: Vec<&str> = session.messages().iter().map(|m| m.role.as_str()).collect();
+    assert_eq!(roles, ["user", "assistant"]);
+    assert_eq!(
+        response.message_id(),
+        session.active_ids().last().copied(),
+        "the response names the message it appended"
+    );
+    assert_eq!(session.latest_text().as_deref(), Some("Hello, world!"));
+}
+
+/// Structured output over a remote model has no grammar to lean on: the
+/// schema is asked for in the prompt and the reply is parsed, and a reply
+/// that does not decode is a typed error rather than a panic or a guess.
+#[test]
+fn remote_structured_output_parses_and_reports_a_bad_reply_as_extraction() {
+    #[derive(Debug, PartialEq, serde::Deserialize, gen2::schemars::JsonSchema)]
+    struct Invoice {
+        vendor: String,
+        total: f64,
+    }
+
+    let mut server = mockito::Server::new();
+    server
+        .mock("GET", "/v1/models")
+        .with_status(200)
+        .with_body(r#"{"data":[]}"#)
+        .expect_at_least(0)
+        .create();
+    let good = server
+        .mock("POST", "/v1/chat/completions")
+        .match_body(mockito::Matcher::Regex("JSON Schema".into()))
+        .with_status(200)
+        .with_header("content-type", "text/event-stream")
+        .with_body(sse(&[token(
+            "{\\\"vendor\\\":\\\"Acme\\\",\\\"total\\\":12.5}",
+        )]))
+        .expect(1)
+        .create();
+    let model = Runtime::new()
+        .expect("builds")
+        .openai()
+        .base_url(format!("{}/v1", server.url()))
+        .model("m")
+        .connect()
+        .expect("connects");
+    assert!(!model.capabilities().structured_output);
+
+    let invoice: Invoice = model
+        .generate("Acme — 12.50")
+        .structured()
+        .expect("valid JSON decodes");
+    assert_eq!(
+        invoice,
+        Invoice {
+            vendor: "Acme".into(),
+            total: 12.5
+        }
+    );
+    good.assert();
+
+    let (server, _) = provider("m", &sse(&[token("no invoice here")]));
+    let model = Runtime::new()
+        .expect("builds")
+        .openai()
+        .base_url(format!("{}/v1", server.url()))
+        .model("m")
+        .connect()
+        .expect("connects");
+    let err = model
+        .generate("nothing")
+        .structured::<Invoice>()
+        .expect_err("prose is not an invoice");
+    assert_eq!(err.code(), Some("extraction_failed"));
 }

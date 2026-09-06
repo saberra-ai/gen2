@@ -86,6 +86,12 @@ pub struct Session {
     /// Tool names enabled for this session — arms the output parser's
     /// name-gate on every pull (rehearsal text stays text).
     enabled_tool_names: Option<std::collections::HashSet<String>>,
+    /// The chat template's `enable_thinking`, pinned when the session
+    /// started. Every later render — the continuation delta, the overflow
+    /// probe — passes the same value, so a follow-up turn is prompted the
+    /// way the first one was: a Qwen3 continuation rendered without it
+    /// fell back to the template's default and started thinking.
+    enable_thinking: bool,
 }
 
 impl fmt::Debug for Session {
@@ -629,6 +635,7 @@ impl Session {
     #[allow(clippy::too_many_arguments, clippy::arc_with_non_send_sync)]
     fn try_restore(
         enabled_tool_names: &Option<std::collections::HashSet<String>>,
+        enable_thinking: bool,
         id: SessionId,
         bundle: &Arc<ModelBundle>,
         backend: &Arc<LlamaBackend>,
@@ -847,6 +854,7 @@ impl Session {
             initial_messages_dropped: 0,
             ctx_size,
             enabled_tool_names: enabled_tool_names.clone(),
+            enable_thinking,
         }))
     }
 
@@ -861,10 +869,25 @@ impl Session {
         persona: Option<&crate::types::Persona>,
         cache: Option<KvLoadSpec>,
         tools: Option<(Vec<crate::types::message::ToolSpec>, String)>,
+        thinking: crate::generation::ThinkingMode,
     ) -> Result<Self, ExecError> {
         let enabled_tool_names: Option<std::collections::HashSet<String>> = tools
             .as_ref()
             .map(|(ts, _)| ts.iter().map(|t| t.function.name.clone()).collect());
+        // The chat template's `enable_thinking`. An explicit policy wins;
+        // `Auto` is the family's default — see
+        // `ModelFamily::default_enable_thinking`, the single owner of that
+        // flag: Gemma 4 IT gates its thinking block on it and, without it,
+        // emits `<turn|>` inside markdown bold instead of finishing answers,
+        // so the family mirrors llama-cli's `--jinja` default of `true`.
+        let enable_thinking = match thinking {
+            crate::generation::ThinkingMode::On => true,
+            crate::generation::ThinkingMode::Off => false,
+            crate::generation::ThinkingMode::Auto => {
+                crate::zoo::ModelFamily::detect(bundle.meta.architecture.as_deref(), None)
+                    .default_enable_thinking()
+            }
+        };
         let mut messages = messages;
 
         let include_meta = settings.prompt.include_meta.unwrap_or(true)
@@ -947,6 +970,7 @@ impl Session {
         {
             match Self::try_restore(
                 &enabled_tool_names,
+                enable_thinking,
                 id,
                 &bundle,
                 &backend,
@@ -962,17 +986,6 @@ impl Session {
             }
         }
 
-        // Gemma 4 IT chat template gates the thinking block on
-        // `enable_thinking` (see `ModelFamily::default_enable_thinking`,
-        // the single owner of this family-level template flag). Without
-        // it, the rendered prompt has no `<|think|>\n` marker and the
-        // model — heavily trained to think first — emits `<turn|>`
-        // (token 106) inside markdown bold like `is **<EOS>` instead of
-        // completing answers. We mirror llama-cli's `--jinja` default of
-        // `enable_thinking=true` for the Gemma family.
-        let enable_thinking =
-            crate::zoo::ModelFamily::detect(bundle.meta.architecture.as_deref(), None)
-                .default_enable_thinking();
         let prompt = chat_template
             .apply(messages.clone(), tools.clone(), Some(enable_thinking))
             .map_err(ExecError::Other)?;
@@ -1179,6 +1192,7 @@ impl Session {
                         initial_messages_dropped: 0, // MTMD path has no truncation
                         ctx_size,
                         enabled_tool_names,
+                        enable_thinking,
                     });
                 }
             }
@@ -1240,6 +1254,7 @@ impl Session {
             messages: RwLock::new(messages),
             ctx_size,
             enabled_tool_names,
+            enable_thinking,
         })
     }
 }
@@ -1309,7 +1324,7 @@ impl Session {
         //    sampled and re-rendered tokens doesn't matter there.
         let all_messages = self.messages.read().clone();
         let full_prompt = tpl
-            .apply(all_messages, None, None)
+            .apply(all_messages, None, Some(self.enable_thinking))
             .map_err(ExecError::Other)?;
         let full_tokens = tokenize_chat_prompt(&self.bundle.model, &full_prompt)?;
 
@@ -1437,7 +1452,12 @@ impl Session {
             return Ok(0);
         }
 
-        let delta_prompt = tpl.apply(to_render, None, None).map_err(ExecError::Other)?;
+        // No tools here: the tool block is already in KV from the first
+        // prefill, and a delta rendered with tools would repeat it. The
+        // thinking flag is not — it shapes the generation prompt itself.
+        let delta_prompt = tpl
+            .apply(to_render, None, Some(self.enable_thinking))
+            .map_err(ExecError::Other)?;
 
         // Tokenize WITHOUT the BOS token — we've already emitted BOS
         // during the initial prefill and it must not reappear mid-stream.

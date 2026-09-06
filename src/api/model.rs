@@ -6,6 +6,8 @@ use super::engine::Engine;
 use super::generation::Generation;
 use super::input::Input;
 use super::runtime::{Loaded, Runtime, RuntimeInner};
+use super::session::Session;
+use super::turn::Turn;
 
 /// A model you ask to generate.
 ///
@@ -13,8 +15,8 @@ use super::runtime::{Loaded, Runtime, RuntimeInner};
 /// [`Runtime::openai`](super::Runtime::openai), or [`gen2::load`](crate::load).
 /// Cheap to clone and safe to share across threads; every clone is the same
 /// model. A `Model` owns no conversation — one-shot generation uses a
-/// conversation it discards, and a persistent one is a `Session` (S2.2), run
-/// through `Model::turn` (S2.3).
+/// conversation it discards, and a persistent one is a [`Session`], run
+/// through [`Model::turn`].
 ///
 /// The handle keeps its runtime alive, so a model from [`gen2::load`](crate::load)
 /// needs nothing else held.
@@ -46,6 +48,24 @@ impl Model {
     /// ```
     pub fn generate(&self, input: impl Into<Input>) -> Generation<'_> {
         Generation::new(self, input.into())
+    }
+
+    /// One invocation of this model against a conversation (api_spec.md §11).
+    ///
+    /// Returns a builder: stage messages, set controls, then
+    /// [`Turn::run`] or [`Turn::stream`]. The reply is appended to the
+    /// session. A turn with no new message is valid — it is how a session
+    /// continues after tool results were pushed.
+    ///
+    /// ```no_run
+    /// # let model = gen2::load("m.gguf")?;
+    /// let mut session = gen2::Session::new().with_system("Be concise.");
+    /// let first = model.turn(&mut session).user("Explain CRDTs").run()?;
+    /// let second = model.turn(&mut session).user("Now compare them to Raft").run()?;
+    /// # Ok::<(), gen2::Error>(())
+    /// ```
+    pub fn turn<'a>(&'a self, session: &'a mut Session) -> Turn<'a> {
+        Turn::new(self, session)
     }
 
     /// What this model is.

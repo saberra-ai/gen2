@@ -38,6 +38,13 @@ pub struct Chat<'a> {
     spec: GenSpec,
     thinking: ThinkingMode,
     tools: Option<(Vec<ToolSpec>, String)>,
+    /// Offer no tools this turn, whatever the session holds
+    /// ([`ToolChoice::None`](super::turn::ToolChoice::None)).
+    suppress_tools: bool,
+    /// A system prompt for this turn only (api_spec.md §11.4). `Some(None)`
+    /// means "none this turn". The session's own prompt is not touched; the
+    /// conversation is reopened around the turn instead.
+    system_override: Option<Option<String>>,
     handler: Option<ToolHandler<'a>>,
     tool_depth: usize,
 }
@@ -62,6 +69,8 @@ impl<'a> Chat<'a> {
             session,
             thinking: ThinkingMode::default(),
             tools: None,
+            suppress_tools: false,
+            system_override: None,
             handler: None,
             tool_depth: DEFAULT_TOOL_DEPTH,
         }
@@ -218,6 +227,22 @@ impl<'a> Chat<'a> {
         self
     }
 
+    /// Offer no tools this turn, even if the session holds some.
+    pub(crate) fn without_tools(mut self) -> Self {
+        self.suppress_tools = true;
+        self
+    }
+
+    /// Use `system` as the system prompt for this turn only.
+    ///
+    /// The session keeps its own. The conversation is reopened for the turn
+    /// and closed again after it, so the engine never continues a prefix
+    /// rendered under one prompt with a turn meant for another.
+    pub(crate) fn system_override(mut self, system: Option<String>) -> Self {
+        self.system_override = Some(system);
+        self
+    }
+
     /// Run tools automatically, feeding results back until the model answers.
     ///
     /// Without this a tool call is just an [`Event`](super::Event) for you to
@@ -305,6 +330,8 @@ impl<'a> Chat<'a> {
                 // The tool list is re-offered every round: the model needs to
                 // see what it may call on the follow-up too, not just the first.
                 tools: tools.clone(),
+                suppress_tools: false,
+                system_override: None,
                 handler: None,
                 tool_depth: depth_limit,
             };
@@ -372,13 +399,20 @@ impl<'a> Chat<'a> {
     }
 
     /// Dispatch the turn, handing back the stream and the session to append to.
-    fn begin(self) -> Result<(TokenStream, &'a mut Session)> {
+    pub(crate) fn begin(self) -> Result<(TokenStream, &'a mut Session)> {
         let engine = self.engine;
         let session = self.session;
         // A cached prefill belongs to the model that produced it. If the model
         // has been swapped since this conversation was opened, the engine's
         // cache is for weights that are gone, so the conversation reopens.
         session.note_model(engine.model_generation());
+        // The backends pin the reasoning policy when a conversation opens.
+        session.note_thinking(self.thinking);
+        // A per-turn prompt or tool set is a different prefix from the one
+        // the engine holds: build afresh, and again next turn.
+        if self.system_override.is_some() {
+            session.opened = false;
+        }
 
         // Checked before anything is sent, so a text-only model given an image
         // fails with the conversation untouched — the caller can drop the
@@ -398,14 +432,24 @@ impl<'a> Chat<'a> {
         // at index 0 of what the engine sees — `Session::transcript` is where
         // first-order state rejoins the message list.
         let start = !session.opened;
-        let messages = session.pending(engine.sent_through(session.id().as_str()));
+        let messages = match &self.system_override {
+            // Reopened above, so the whole transcript goes — under the
+            // override's prompt rather than the session's.
+            Some(system) => session.transcript_with_system(system.as_deref()),
+            None => session.pending(engine.sent_through(session.id().as_str())),
+        };
         let sent = session.len();
 
         // Tools: this turn's, else the session's (api_spec.md §7.4).
-        let tools = self.tools.or_else(|| {
-            let set = session.tools();
-            (!set.is_empty()).then(|| (set.to_wire(), super::generation::TOOL_PROMPT.to_string()))
-        });
+        let tools = if self.suppress_tools {
+            None
+        } else {
+            self.tools.or_else(|| {
+                let set = session.tools();
+                (!set.is_empty())
+                    .then(|| (set.to_wire(), super::generation::TOOL_PROMPT.to_string()))
+            })
+        };
 
         let cmd = if start {
             ControllerCmd::StartChat {
@@ -456,7 +500,7 @@ impl<'a> Chat<'a> {
 /// the conversation stays closed, so the next turn rebuilds from the
 /// authoritative transcript rather than sending a suffix of a conversation the
 /// backend may not have.
-fn settle(engine: &Engine, session: &mut Session, stream: &TokenStream) {
+pub(crate) fn settle(engine: &Engine, session: &mut Session, stream: &TokenStream) {
     let Some(delivered) = stream.accepted() else {
         return;
     };

@@ -135,6 +135,12 @@ impl std::fmt::Display for SessionRevision {
 pub struct MessageId(u64);
 
 impl MessageId {
+    /// An id with a chosen value, for tests of what is built from one.
+    #[cfg(test)]
+    pub(crate) fn for_test(n: u64) -> Self {
+        Self(n)
+    }
+
     /// The id as a number.
     pub fn as_u64(self) -> u64 {
         self.0
@@ -410,6 +416,10 @@ pub struct Session {
     /// Which model generation this conversation was opened against. A cached
     /// prefill belongs to the model that produced it.
     pub(crate) model_generation: Option<u64>,
+    /// The reasoning-channel policy this conversation was opened with. The
+    /// backends pin it when a conversation starts, so a turn asking for a
+    /// different one has to reopen.
+    pub(crate) thinking: Option<crate::generation::ThinkingMode>,
 }
 
 impl Session {
@@ -434,6 +444,7 @@ impl Session {
             shed: 0,
             tools_fingerprint: None,
             model_generation: None,
+            thinking: None,
         }
     }
 
@@ -855,6 +866,7 @@ impl Session {
             shed: 0,
             tools_fingerprint: None,
             model_generation: None,
+            thinking: None,
         };
         fork.log(SessionEvent::Forked {
             parent: self.id.clone(),
@@ -872,12 +884,29 @@ impl Session {
     /// The one place the system prompt rejoins the message list — it is what
     /// the backends' templates, truncation and compaction expect at index 0.
     pub(crate) fn transcript(&self) -> Vec<Message> {
+        self.transcript_with_system(self.system.as_deref())
+    }
+
+    /// [`Session::transcript`] with a system prompt other than the session's
+    /// — a per-turn override (api_spec.md §11.4). The session's own prompt
+    /// is untouched; the caller reopens the conversation around the turn so
+    /// neither prefix is mistaken for the other.
+    pub(crate) fn transcript_with_system(&self, system: Option<&str>) -> Vec<Message> {
         let mut out = Vec::with_capacity(self.projection.len() + 1);
-        if let Some(system) = &self.system {
-            out.push(Message::system(system.clone()));
+        if let Some(system) = system {
+            out.push(Message::system(system.to_string()));
         }
         out.extend(self.projection.iter().cloned());
         out
+    }
+
+    /// The id the next recorded message will get.
+    ///
+    /// Ids are minted from the event log, so this is the same after a
+    /// serialize/replay round trip — which is what lets a tool-call id
+    /// derived from it stay unique for the life of the session.
+    pub(crate) fn next_message_id(&self) -> MessageId {
+        MessageId(self.next_id)
     }
 
     /// Messages the engine still needs for the next turn.
@@ -928,6 +957,25 @@ impl Session {
             }
             _ => {
                 self.model_generation = Some(generation);
+                self.opened = false;
+                true
+            }
+        }
+    }
+
+    /// Declare the reasoning-channel policy a turn is about to run under.
+    ///
+    /// The backends pin the policy when a conversation is opened, so a turn
+    /// asking for a different one reopens it. Returns whether it did.
+    pub(crate) fn note_thinking(&mut self, mode: crate::generation::ThinkingMode) -> bool {
+        match self.thinking {
+            Some(current) if current == mode => false,
+            None if !self.opened => {
+                self.thinking = Some(mode);
+                false
+            }
+            _ => {
+                self.thinking = Some(mode);
                 self.opened = false;
                 true
             }

@@ -797,6 +797,19 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
         } => {
             if let Some(chat) = state.chats.get_mut(&chat_id) {
                 chat.tx = tx.clone();
+                // The stats forwarder was registered with the first turn's
+                // channel; point it at this turn's, or every continuation's
+                // `FinalStats` lands on a receiver that is gone.
+                let sid = chat.session.id();
+                state.engine.hooks().deregister(sid);
+                state.engine.hooks().register_with_id(
+                    sid,
+                    Arc::new(Forwarder {
+                        sid,
+                        tx: tx.clone(),
+                        metrics: state.metrics.clone(),
+                    }),
+                );
                 if chat.state.is_generating() {
                     emit_must_deliver(
                         state.metrics.as_ref(),

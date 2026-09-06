@@ -1222,3 +1222,367 @@ fn facade_runtime_model_is_shareable_and_describes_itself() {
     );
     assert_eq!(runtime.models(), vec![model.id()]);
 }
+
+// ── The turn facade: tools, streaming, structure, cancellation (§10–§16, §18) ──
+
+fn facade_model() -> Option<gen2::Model> {
+    let path = test_model()?;
+    Some(gen2::load(path).expect("gen2::load should load a real GGUF"))
+}
+
+fn weather_definition() -> gen2::tool_defs::ToolDefinition {
+    gen2::tool_defs::ToolDefinition::new("get_weather")
+        .description("Current weather for a city")
+        .schema(serde_json::json!({
+            "type": "object",
+            "properties": { "city": { "type": "string" } },
+            "required": ["city"]
+        }))
+}
+
+/// §28.5 verbatim: the model declares a call, the harness answers it, the
+/// model runs again with no new user message and answers from the result.
+#[test]
+fn facade_tool_loop_declares_a_call_and_answers_from_the_result() {
+    use gen2::output::FinishReason;
+    use gen2::tool_defs::ToolSet;
+    use gen2::{Session, ThinkingMode};
+
+    let Some(model) = facade_model() else {
+        eprintln!("SKIP: set PIO_TEST_MODEL");
+        return;
+    };
+    assert!(model.capabilities().tools, "Qwen3's template renders tools");
+
+    let mut session = Session::new()
+        .with_system("You have a weather tool. Use it for weather questions.")
+        .with_tools(ToolSet::new().with(weather_definition()));
+
+    let response = model
+        .turn(&mut session)
+        .user("What is the weather in Paris? Use the get_weather tool.")
+        .reasoning(ThinkingMode::Off)
+        .max_tokens(256)
+        .greedy()
+        .run()
+        .expect("the first turn should run");
+    eprintln!(
+        "--- first turn: {} · text {:?} · calls {:?}",
+        response.finish_reason(),
+        response.text(),
+        response.tool_calls()
+    );
+    assert_eq!(*response.finish_reason(), FinishReason::ToolCall);
+    let calls = response.tool_calls();
+    assert_eq!(calls.len(), 1, "one call: {calls:?}");
+    let call = calls[0];
+    assert_eq!(call.name(), "get_weather");
+    assert!(
+        call.arguments()["city"]
+            .as_str()
+            .is_some_and(|c| c.to_lowercase().contains("paris")),
+        "the call names the city: {:?}",
+        call.arguments()
+    );
+
+    for call in response.tool_calls() {
+        session.push_tool_result(call.id(), r#"{"temp_c":18,"sky":"clear"}"#);
+    }
+
+    let response = model
+        .turn(&mut session)
+        .reasoning(ThinkingMode::Off)
+        .max_tokens(128)
+        .greedy()
+        .run()
+        .expect("the continuation should run with no new user message");
+    eprintln!("--- answer: {:?}", response.text());
+    assert!(
+        response.tool_calls().is_empty(),
+        "the model should answer, not call again: {response:?}"
+    );
+    assert!(
+        response.text().contains("18"),
+        "the answer should use the tool's data, got {:?}",
+        response.text()
+    );
+    assert!(
+        response.stats().reported() && response.usage().completion_tokens > 0,
+        "a continued turn reports its stats too: {:?}",
+        response.stats()
+    );
+
+    let roles: Vec<&str> = session.messages().iter().map(|m| m.role.as_str()).collect();
+    assert_eq!(roles, ["user", "assistant", "tool", "assistant"]);
+    assert_eq!(
+        session.messages()[2].tool_call_id.as_deref(),
+        Some(call.id().as_str()),
+        "the result answers the call by id"
+    );
+}
+
+/// §28.10: a stream yields text deltas and ends with `Finished`; with the
+/// reasoning channel on, thinking arrives as `ReasoningDelta`, not as text.
+#[test]
+fn facade_streaming_yields_semantic_events() {
+    use gen2::event::Event;
+    use gen2::output::FinishReason;
+    use gen2::{Session, ThinkingMode};
+
+    let Some(model) = facade_model() else {
+        eprintln!("SKIP: set PIO_TEST_MODEL");
+        return;
+    };
+
+    let mut session = Session::new();
+    let mut stream = model
+        .turn(&mut session)
+        .user("Reply with one short sentence about the sea.")
+        .reasoning(ThinkingMode::Off)
+        .max_tokens(32)
+        .greedy()
+        .stream()
+        .expect("a stream starts");
+    let mut deltas = String::new();
+    let mut text_deltas = 0;
+    let mut last = None;
+    for event in stream.by_ref() {
+        let event = event.expect("no event fails");
+        match &event {
+            Event::TextDelta(t) => {
+                text_deltas += 1;
+                deltas.push_str(t);
+            }
+            Event::Finished(_) => last = Some(event.clone()),
+            _ => {}
+        }
+    }
+    eprintln!("--- {text_deltas} text deltas: {deltas:?} · last {last:?}");
+    assert!(text_deltas >= 1, "at least one TextDelta");
+    assert!(
+        matches!(
+            last,
+            Some(Event::Finished(FinishReason::Stop | FinishReason::Length))
+        ),
+        "the last event is Finished: {last:?}"
+    );
+    let response = stream.finish().expect("the outcome");
+    assert_eq!(
+        response.text(),
+        deltas,
+        "finish() returns what was streamed"
+    );
+    assert!(response.stats().reported());
+    assert_eq!(response.message_id(), session.active_ids().last().copied());
+
+    // With thinking on, Qwen3 opens with `<think>`: that is a reasoning
+    // delta, and never leaks into the text.
+    let mut session = Session::new();
+    let mut stream = model
+        .turn(&mut session)
+        .user("Is 17 prime? Think it through, then answer.")
+        .reasoning(ThinkingMode::On)
+        .max_tokens(96)
+        .greedy()
+        .stream()
+        .expect("a stream starts");
+    let mut reasoning = 0;
+    let mut text = String::new();
+    for event in stream.by_ref() {
+        match event.expect("no event fails") {
+            Event::ReasoningDelta(_) => reasoning += 1,
+            Event::TextDelta(t) => text.push_str(&t),
+            _ => {}
+        }
+    }
+    let response = stream.finish().expect("the outcome");
+    eprintln!(
+        "--- {reasoning} reasoning deltas · reasoning {:?} · text {:?}",
+        response.reasoning(),
+        response.text()
+    );
+    assert!(
+        reasoning >= 1,
+        "the reasoning channel streams as ReasoningDelta"
+    );
+    assert!(response.reasoning().is_some());
+    assert!(
+        !text.contains("<think>"),
+        "no scaffold in the text: {text:?}"
+    );
+    assert!(
+        !response.text().contains("</think>"),
+        "no scaffold in the reply: {:?}",
+        response.text()
+    );
+}
+
+/// §28.11: a typed value straight out of a generation, enforced by grammar.
+#[test]
+fn facade_structured_output_is_typed_and_grammar_enforced() {
+    #[derive(Debug, serde::Deserialize, gen2::schemars::JsonSchema)]
+    #[serde(rename_all = "lowercase")]
+    enum Sky {
+        Clear,
+        Cloudy,
+        Rain,
+    }
+    #[derive(Debug, serde::Deserialize, gen2::schemars::JsonSchema)]
+    struct Weather {
+        city: String,
+        sky: Sky,
+        temp_c: i32,
+    }
+
+    let Some(model) = facade_model() else {
+        eprintln!("SKIP: set PIO_TEST_MODEL");
+        return;
+    };
+    assert!(model.capabilities().structured_output);
+
+    let weather: Weather = model
+        .generate("Paris was clear and 18 degrees today.")
+        .system("Extract the weather report.")
+        .greedy()
+        .structured()
+        .expect("the grammar makes the reply decode");
+    eprintln!("--- structured: {weather:?}");
+    assert!(
+        weather.city.to_lowercase().contains("paris"),
+        "city: {weather:?}"
+    );
+    assert!(matches!(weather.sky, Sky::Clear), "sky: {weather:?}");
+    assert_eq!(weather.temp_c, 18, "{weather:?}");
+
+    // The same on a session turn: the JSON reply becomes part of the chat.
+    let mut session = gen2::Session::new().with_system("Extract the weather report.");
+    let weather: Weather = model
+        .turn(&mut session)
+        .user("Berlin: cloudy, 9 degrees.")
+        .greedy()
+        .structured()
+        .expect("decodes");
+    eprintln!("--- turn structured: {weather:?}");
+    assert!(matches!(weather.sky, Sky::Cloudy), "{weather:?}");
+    assert_eq!(session.len(), 2);
+}
+
+/// §16 and §16.1: cancel from another thread after the first delta; the
+/// stream ends `Cancelled`, the partial reply is recorded under an id, and a
+/// harness can drop it from the active context without losing the record.
+#[test]
+fn facade_cancellation_keeps_the_partial_reply_and_lets_the_harness_remove_it() {
+    use gen2::event::Event;
+    use gen2::output::FinishReason;
+    use gen2::{Session, ThinkingMode};
+
+    let Some(model) = facade_model() else {
+        eprintln!("SKIP: set PIO_TEST_MODEL");
+        return;
+    };
+
+    let mut session = Session::new();
+    let mut stream = model
+        .turn(&mut session)
+        .user("Count from 1 to 500, one number per line.")
+        .reasoning(ThinkingMode::Off)
+        .max_tokens(400)
+        .greedy()
+        .stream()
+        .expect("a stream starts");
+    let cancel = stream.canceller();
+
+    let first = stream.next().expect("a first event").expect("not an error");
+    eprintln!("--- first event: {first:?}");
+    assert!(matches!(first, Event::TextDelta(_)), "{first:?}");
+    let stopper = std::thread::spawn(move || cancel.cancel());
+
+    let mut events = 0;
+    let mut last = None;
+    for event in stream.by_ref() {
+        events += 1;
+        last = Some(event.expect("not an error"));
+    }
+    stopper.join().expect("the cancelling thread finishes");
+    eprintln!("--- {events} more events · last {last:?}");
+    assert_eq!(last, Some(Event::Finished(FinishReason::Cancelled)));
+
+    let response = stream.finish().expect("the outcome");
+    assert_eq!(*response.finish_reason(), FinishReason::Cancelled);
+    assert!(!response.text().is_empty(), "the partial text is kept");
+    assert!(
+        response.text().lines().count() < 300,
+        "the cancel cut the count short: {} lines",
+        response.text().lines().count()
+    );
+    let id = response
+        .message_id()
+        .expect("the partial reply was recorded");
+    assert_eq!(session.latest_text(), Some(response.text()));
+    session
+        .remove_message(id)
+        .expect("the harness can remove it");
+    assert_eq!(session.len(), 1, "gone from the active context");
+    assert_eq!(session.all_messages().len(), 2, "still on record");
+
+    // And the session still works afterwards.
+    let response = model
+        .turn(&mut session)
+        .user("Reply with exactly one word: hello")
+        .reasoning(ThinkingMode::Off)
+        .max_tokens(8)
+        .greedy()
+        .run()
+        .expect("the next turn runs");
+    eprintln!("--- after cancel: {:?}", response.text());
+    assert!(!response.text().trim().is_empty());
+}
+
+/// §18.1: a system prompt set between turns changes the next turn, and the
+/// change is only a revision bump — no message moved.
+#[test]
+fn facade_dynamic_system_prompt_changes_the_next_turn() {
+    use gen2::{Session, ThinkingMode};
+
+    let Some(model) = facade_model() else {
+        eprintln!("SKIP: set PIO_TEST_MODEL");
+        return;
+    };
+
+    let mut session = Session::new().with_system("You are a helpful assistant.");
+    let before = model
+        .turn(&mut session)
+        .user("Say hello.")
+        .reasoning(ThinkingMode::Off)
+        .max_tokens(16)
+        .greedy()
+        .run()
+        .expect("runs");
+    eprintln!("--- before: {:?}", before.text());
+    assert!(
+        !before.text().to_uppercase().contains("BANANA"),
+        "nothing about bananas yet: {:?}",
+        before.text()
+    );
+
+    let revision = session.revision();
+    let len = session.len();
+    session.set_system("Reply with exactly the single word BANANA, in capitals, and nothing else.");
+    assert_eq!(session.revision().as_u64(), revision.as_u64() + 1);
+    assert_eq!(session.len(), len, "no message moved");
+
+    let after = model
+        .turn(&mut session)
+        .user("Say hello.")
+        .reasoning(ThinkingMode::Off)
+        .max_tokens(16)
+        .greedy()
+        .run()
+        .expect("runs");
+    eprintln!("--- after: {:?}", after.text());
+    assert!(
+        after.text().to_uppercase().contains("BANANA"),
+        "the new system prompt governs the next turn: {:?}",
+        after.text()
+    );
+}

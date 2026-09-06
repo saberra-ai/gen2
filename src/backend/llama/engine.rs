@@ -176,6 +176,7 @@ impl Engine {
             spec.persona.as_ref(),
             spec.cache.clone(),
             spec.tools.clone(),
+            spec.thinking,
         )?);
         self.sessions.insert(id, ());
         Ok(session)
