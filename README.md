@@ -1,507 +1,242 @@
 # gen2
 
-An embeddable AI runtime for Rust. Models, sessions, tools, agents and local
-inference behind one stateful API — over llama.cpp, mistral.rs, MLX, LiteRT-LM,
-or an OpenAI-compatible endpoint.
+Local model inference for Rust. One `Runtime` owns the machine, a `Model` is a
+cheap handle you can clone, a `Session` is conversation state you own, and a
+`Turn` is one complete model invocation: instructions, tools, messages and
+generation options in; structured, streamable output out. Backends today are
+llama.cpp, mistral.rs, MLX, LiteRT-LM, or an OpenAI-compatible endpoint.
 
 ```toml
 [dependencies]
 gen2 = { git = "https://github.com/saberra-ai/gen2" }
 
-# Only if you build tools with typed arguments. The derives expand to paths in
-# your own crate, so re-exporting them from gen2 is not enough.
+# Only if you declare tools with typed arguments or ask for typed output. The
+# derives expand to paths in your own crate, so re-exporting them from gen2 is
+# not enough.
 schemars = "1"
 serde = { version = "1", features = ["derive"] }
 ```
 
 Defaults to llama.cpp, so a `.gguf` works out of the box and the first build
-compiles a C++ toolchain. On Apple silicon add `metal`; on NVIDIA add `cuda`.
-To skip all that and talk to a hosted endpoint instead:
+compiles a C++ toolchain (about a minute on an M-series Mac; needs `cmake`).
+Metal is on automatically on Apple silicon; on NVIDIA add the `cuda` feature.
+To skip the native build and talk to a hosted endpoint instead:
 
 ```toml
 gen2 = { git = "…", default-features = false, features = ["backend-external-api"] }
 ```
 
 Every example below is compiled by `cargo test --doc`, so none of them can
-drift from the API.
+drift from the API. The design they follow is written down in
+[`api_spec.md`](api_spec.md).
 
 ---
 
-## Three ways to call a model
-
-| | You get | Keeps |
-| --- | --- | --- |
-| `infer` | a string | nothing |
-| `chat` | a turn | the conversation |
-| `agent` | a task done | the conversation, and runs your tools |
-
-### infer
+## The smallest useful thing
 
 ```rust,no_run
-use gen2::Engine;
-# fn main() -> Result<(), gen2::Error> {
-let engine = Engine::load("/models/model.gguf")?;
-let title = engine.infer("Title this in three words: …").max_tokens(16).text()?;
-# println!("{title}");
+# fn main() -> gen2::Result<()> {
+let model = gen2::load("/models/qwen3-0.6b-q4_k_m.gguf")?;
+let answer = model.generate("Why is the sky blue?").text()?;
+# println!("{answer}");
 # Ok(())
 # }
 ```
 
-Shaped output, enforced during decoding:
+`gen2::load` inspects the file and the machine, picks a backend, sizes the
+context window, loads the weights and hands back a `Model`. Nothing about
+backends, controllers or KV caches reaches this line.
+
+Configured:
 
 ```rust,no_run
-use gen2::{Engine, GrammarSpec};
-# fn main() -> Result<(), gen2::Error> {
-# let engine = Engine::load("/models/model.gguf")?;
-let schema = serde_json::json!({
-    "type": "object",
-    "properties": { "sentiment": { "type": "string", "enum": ["positive", "negative"] } },
-    "required": ["sentiment"]
-});
+# fn main() -> gen2::Result<()> {
+# let model = gen2::load("/models/model.gguf")?;
+let response = model
+    .generate("Write a short story")
+    .system("You write terse speculative fiction.")
+    .temperature(0.8)
+    .max_tokens(512)
+    .run()?;
 
-let raw = engine.infer("Classify the sentiment of: '…'")
-    .grammar(GrammarSpec::JsonSchema(schema))
-    .greedy()
-    .text()?;
-# let _ = raw;
+response.text();           // the prose
+response.reasoning();      // a thinking model's working, kept apart from it
+response.finish_reason();  // Stop | Length | ToolCall | Cancelled | …
+response.usage();          // prompt and completion tokens
 # Ok(())
 # }
 ```
 
-For the two shapes people write that by hand for, there is a direct form.
-Classification returns one of your labels — never model prose, and never a
-label you did not supply:
+## A conversation
+
+A `Runtime` can hold more than one model. A `Session` belongs to you and to
+no model in particular.
 
 ```rust,no_run
-use gen2::Engine;
-# fn main() -> Result<(), gen2::Error> {
-# let engine = Engine::load("/models/model.gguf")?;
-let label = engine
-    .classify("The service was fantastic")
-    .labels(["positive", "negative", "neutral"])
-    .label()?;
-# println!("{label}");
+use gen2::{Runtime, Session};
+# fn main() -> gen2::Result<()> {
+let runtime = Runtime::new()?;
+let model = runtime.load("/models/model.gguf")?;
+
+let mut session = Session::new().with_system("Be concise.");
+
+model.turn(&mut session).user("My name is Bob").run()?;
+let response = model.turn(&mut session).user("What is my name?").run()?;
+assert!(response.text().contains("Bob"));
 # Ok(())
 # }
 ```
 
-Extraction gives you the type back. The JSON schema the model decodes under is
-generated from the same declaration you deserialize into, so the constraint and
-the parser cannot drift apart:
-
-```rust,no_run
-use gen2::Engine;
-use gen2::schemars::JsonSchema;
-use serde::Deserialize;
-
-#[derive(Deserialize, JsonSchema)]
-struct Invoice {
-    vendor: String,
-    total: f64,
-}
-
-# fn main() -> Result<(), gen2::Error> {
-# let engine = Engine::load("/models/model.gguf")?;
-let invoice: Invoice = engine.extract("Acme Ltd — total due $1,240.00").value()?;
-# println!("{} {}", invoice.vendor, invoice.total);
-# Ok(())
-# }
-```
-
-A model that answers with something that is not the type you asked for gives
-you `Error::Extraction`, carrying what it actually said — distinct from a
-generation failure, because the two need different fixes.
-
-### chat
-
-```rust,no_run
-use gen2::{Engine, Session};
-# fn main() -> Result<(), gen2::Error> {
-# let engine = Engine::load("/models/model.gguf")?;
-let mut session = Session::new().with_system("Be terse.");
-
-engine.chat(&mut session).user("Name two colours.").send()?;
-println!("{}", session.latest_text().unwrap_or_default());
-
-engine.chat(&mut session).user("Now one more.").send()?;   // history is already there
-
-for message in session.messages() {
-    println!("{}: {}", message.role, message.text());
-}
-# Ok(())
-# }
-```
-
-Streaming:
-
-```rust,no_run
-# use gen2::{Engine, Session};
-# fn main() -> Result<(), gen2::Error> {
-# let engine = Engine::load("/models/model.gguf")?;
-# let mut session = Session::new();
-engine.chat(&mut session)
-    .user("Write a haiku about Rust.")
-    .send_streaming(|token| print!("{token}"))?;
-# Ok(())
-# }
-```
-
-Off-thread. The session comes back on `Done`:
-
-```rust,no_run
-use std::sync::Arc;
-use gen2::{Engine, Session, Update};
-# fn main() -> Result<(), gen2::Error> {
-let engine = Arc::new(Engine::load("/models/model.gguf")?);
-let turn = engine.chat_owned(Session::new()).user("Hello").spawn();
-
-for update in turn {
-    match update {
-        Update::Delta(t) => print!("{t}"),
-        Update::Done { session, .. } => drop(session),
-        Update::Failed { error, .. } => eprintln!("{error}"),
-        _ => {}
-    }
-}
-# Ok(())
-# }
-```
-
-Images:
-
-```rust,no_run
-# use gen2::{Engine, Session};
-# fn main() -> Result<(), gen2::Error> {
-# let engine = Engine::load("/models/model.gguf")?;
-# let mut session = Session::new();
-engine.chat(&mut session)
-    .user_with_images("What is in this picture?", ["/tmp/photo.png"])
-    .send()?;
-# Ok(())
-# }
-```
-
-### agent
-
-```rust,no_run
-use gen2::{Engine, FunctionTool, Session, ToolOutput};
-use schemars::JsonSchema;
-
-#[derive(serde::Deserialize, JsonSchema)]
-struct WeatherArgs {
-    /// City to look up.
-    city: String,
-}
-
-# fn fetch(city: &str) -> String { format!("18C in {city}") }
-# fn main() -> Result<(), gen2::Error> {
-# let engine = Engine::load("/models/model.gguf")?;
-# let mut session = Session::new();
-let weather = FunctionTool::new(
-    "get_weather",
-    "Current weather for a city",
-    |_ctx, a: WeatherArgs| async move { Ok(ToolOutput::from(fetch(&a.city))) },
-);
-
-let done = engine.agent(&mut session)
-    .add_tool(weather)
-    .max_steps(12)
-    .goal("What is the weather in Paris?")?;
-
-println!("{} after {} tool rounds", done.text, done.tool_rounds);
-# Ok(())
-# }
-```
-
-`WeatherArgs` generates the schema, so renaming a field changes what the model
-sees and what the handler reads together.
-
-Tools the model has to go looking for, so a large catalogue costs no prompt:
-
-```rust,no_run
-# use gen2::{Engine, FunctionTool, Session, ToolOutput, ToolSearch};
-# use schemars::JsonSchema;
-# #[derive(serde::Deserialize, JsonSchema)]
-# struct NoArgs {}
-# fn tool(n: &'static str) -> FunctionTool<NoArgs> {
-#     FunctionTool::new(n, "does something", |_c, _a: NoArgs| async move { Ok(ToolOutput::from("ok")) })
-# }
-# fn main() -> Result<(), gen2::Error> {
-# let engine = Engine::load("/models/model.gguf")?;
-# let mut session = Session::new();
-engine.agent(&mut session)
-    .add_tool(tool("read_file"))
-    .defer_tools([tool("kubectl_apply"), tool("resize_image")])
-    .tool_search(ToolSearch::Hybrid)
-    .goal("Apply the deployment manifest")?;
-# Ok(())
-# }
-```
-
-A typed final answer:
-
-```rust,no_run
-# use gen2::{Engine, GrammarSpec, Session};
-# fn main() -> Result<(), gen2::Error> {
-# let engine = Engine::load("/models/model.gguf")?;
-# let mut session = Session::new();
-# let schema = serde_json::json!({"type": "object"});
-let done = engine.agent(&mut session)
-    .answer_as(GrammarSpec::JsonSchema(schema), "Answer as JSON with city and temperature_c.")
-    .goal("What is the weather in Paris?")?;
-
-let report: serde_json::Value = serde_json::from_str(&done.text).unwrap();
-# let _ = report;
-# Ok(())
-# }
-```
-
-Off-thread, with steering:
-
-```rust,no_run
-# use std::sync::Arc;
-# use gen2::{Engine, Session, Update};
-# fn main() -> Result<(), gen2::Error> {
-# let engine = Arc::new(Engine::load("/models/model.gguf")?);
-let run = engine.agent_owned(Session::new()).goal("Summarise the repo").spawn();
-
-let steering = run.steering();
-steering.follow_up("also check the tests");
-// steering.interrupt("stop, just the README");
-
-for update in run {
-    match update {
-        Update::Delta(t) => print!("{t}"),
-        Update::ToolCall { tool, args, .. } => println!("calling {tool} with {args}"),
-        Update::Done { completion, .. } => println!("{}", completion.text),
-        _ => {}
-    }
-}
-# Ok(())
-# }
-```
-
-Reusable across runs:
-
-```rust,no_run
-use gen2::AgentConfig;
-# use gen2::{Engine, FunctionTool, Session, ToolOutput};
-# use schemars::JsonSchema;
-# #[derive(serde::Deserialize, JsonSchema)]
-# struct NoArgs {}
-# fn main() -> Result<(), gen2::Error> {
-# let engine = Engine::load("/models/model.gguf")?;
-# let mut session = Session::new();
-# let weather = FunctionTool::new("w", "weather", |_c, _a: NoArgs| async move { Ok(ToolOutput::from("ok")) });
-let researcher = AgentConfig::new().add_tool(weather).max_steps(8);
-
-researcher.agent(&engine, &mut session).goal("Weather in Paris?")?;
-researcher.agent(&engine, &mut session).goal("And which city was that?")?;
-# Ok(())
-# }
-```
-
-Approval, off by default:
-
-```rust,no_run
-use gen2::{ApprovalMode, Decision};
-# use gen2::{Engine, FunctionTool, Session, ToolOutput};
-# use schemars::JsonSchema;
-# #[derive(serde::Deserialize, JsonSchema)]
-# struct Path { path: String }
-# fn confirm(_n: &str, _a: &serde_json::Value) -> bool { false }
-# fn main() -> Result<(), gen2::Error> {
-# let engine = Engine::load("/models/model.gguf")?;
-# let mut session = Session::new();
-let delete_file = FunctionTool::new("delete_file", "Delete a file", |_c, a: Path| async move {
-    Ok(ToolOutput::from(format!("deleted {}", a.path)))
-})
-.risky();
-
-engine.agent(&mut session)
-    .add_tool(delete_file)
-    .approval(ApprovalMode::AskOnRisky)          // safe tools are not asked about
-    .on_approval(|name, args, _spec| match confirm(name, args) {
-        true => Decision::Allow,
-        false => Decision::Deny("user declined".into()),
-    })
-    .goal("Clean up the temp directory")?;
-# Ok(())
-# }
-```
-
----
+The system prompt is session state, not a message: `set_system` changes what
+the model sees next turn, bumps the session's revision, and leaves the
+transcript alone.
 
 ## Tools
 
-Bundle and reuse:
+gen2 renders tool definitions for the model and parses its calls. It never
+executes one; your harness does, and the loop stays yours.
 
 ```rust,no_run
-use gen2::ToolSet;
-# use gen2::{Engine, FunctionTool, Session, ToolOutput};
-# use schemars::JsonSchema;
-# #[derive(serde::Deserialize, JsonSchema)]
-# struct NoArgs {}
-# fn tool(n: &'static str) -> FunctionTool<NoArgs> {
-#     FunctionTool::new(n, "does something", |_c, _a: NoArgs| async move { Ok(ToolOutput::from("ok")) })
-# }
-# fn main() -> Result<(), gen2::Error> {
-# let engine = Engine::load("/models/model.gguf")?;
-# let mut session = Session::new();
-let filesystem = ToolSet::new()
-    .add(tool("read_file"))
-    .add(tool("write_file"))
-    .add(tool("list_dir"));
+use gen2::{Session, tool_defs::{ToolDefinition, ToolSet}};
 
-engine.agent(&mut session).add_tools(filesystem).goal("Read the manifest")?;
+#[derive(serde::Deserialize, schemars::JsonSchema)]
+struct Weather { city: String }
+
+# fn main() -> gen2::Result<()> {
+# let model = gen2::load("/models/model.gguf")?;
+let tools = ToolSet::new().with(
+    ToolDefinition::new("get_weather")
+        .description("Current weather for a city")
+        .input_schema::<Weather>(),
+);
+let mut session = Session::new().with_tools(tools);
+
+session.push_user("What is the weather in Paris?");
+loop {
+    let response = model.turn(&mut session).run()?;
+    if response.tool_calls().is_empty() {
+        println!("{}", response.text());
+        break;
+    }
+    for call in response.tool_calls() {
+        let args: Weather = call.parse_arguments().expect("schema-checked arguments");
+        session.push_tool_result(call.id().as_str(), format!("{}: 18C, clear", args.city));
+    }
+}
 # Ok(())
 # }
 ```
 
-Independent calls in one turn run concurrently, unless a tool says otherwise:
+A turn with no new user message is how a tool result reaches the model. Tools
+are session state like the system prompt: `add_tool` and `remove_tool` change
+the next turn and nothing that already happened.
 
-```rust
-use gen2::{ExecutionPolicy, FunctionTool, ToolOutput};
-# use schemars::JsonSchema;
-# #[derive(serde::Deserialize, JsonSchema)]
-# struct NoArgs {}
-let shared_write = FunctionTool::new("commit", "Commit staged changes", |_c, _a: NoArgs| async move {
-    Ok(ToolOutput::from("committed"))
-})
-.with_policy(ExecutionPolicy::exclusive());
-```
+## Streaming
 
-A whole agent as one tool, with its own narrower set:
+Events are semantic, not tokenizer fragments. Reasoning arrives on its own
+channel; a tool call arrives as a start, argument deltas and an end.
 
 ```rust,no_run
-use gen2::AgentTool;
-# use std::sync::Arc;
-# use gen2::{Engine, FunctionTool, ToolOutput};
-# use schemars::JsonSchema;
-# #[derive(serde::Deserialize, JsonSchema)]
-# struct NoArgs {}
-# fn main() -> Result<(), gen2::Error> {
-# let engine = Arc::new(Engine::load("/models/model.gguf")?);
-# let search = FunctionTool::new("search", "searches", |_c, _a: NoArgs| async move { Ok(ToolOutput::from("ok")) });
-let researcher = AgentTool::new("researcher", "Investigates a question", engine.clone())
-    .tools([search])
-    .max_steps(5);
-# let _ = researcher;
+use gen2::{Session, event::Event};
+# fn main() -> gen2::Result<()> {
+# let model = gen2::load("/models/model.gguf")?;
+let mut session = Session::new();
+let mut stream = model.turn(&mut session).user("Inspect this repository").stream()?;
+let cancel = stream.canceller();       // Clone + Send: hand it to a UI thread
+
+while let Some(event) = stream.next() {
+    match event? {
+        Event::TextDelta(text) => print!("{text}"),
+        Event::ReasoningDelta(_) => {}
+        Event::ToolCallStart { name, .. } => println!("[{name}]"),
+        _ => {}
+    }
+}
+let response = stream.finish()?;       // the same Response run() returns
+# let _ = (cancel, response);
 # Ok(())
 # }
 ```
 
-Instructions loaded on demand — descriptions sit in the prompt, bodies arrive
-when the model asks for them:
+`cancel.cancel()` from anywhere ends the stream with `FinishReason::Cancelled`
+and whatever partial text was produced; the session records the partial
+message under an id you can `remove_message` if you do not want it in context.
 
-```rust
-use gen2::{Skill, SkillLibrary};
-
-let skills = SkillLibrary::new([
-    Skill::new("migrations", "when writing a database migration", "Always add a down migration…"),
-]);
-# let _ = skills;
-```
-
-Every tool an MCP server offers:
+## Typed output
 
 ```rust,no_run
-# use gen2::{Engine, Session, ToolSearch};
-use gen2::McpToolSet;
-# async fn demo() -> Result<(), Box<dyn std::error::Error>> {
-# let engine = Engine::load("/models/model.gguf")?;
-# let mut session = Session::new();
-let mcp = McpToolSet::connect("mcp-server-git", ["--repo", "."]).await?;
+#[derive(serde::Deserialize, schemars::JsonSchema)]
+struct Sentiment { label: Label, confidence: f32 }
 
-engine.agent(&mut session)
-    .defer_tools(mcp)
-    .tool_search(ToolSearch::Hybrid)
-    .goal("What changed in the last commit?")?;
+#[derive(serde::Deserialize, schemars::JsonSchema)]
+enum Label { Positive, Negative, Neutral }
+
+# fn main() -> gen2::Result<()> {
+# let model = gen2::load("/models/model.gguf")?;
+let s: Sentiment = model
+    .generate("Classify: 'the service was fantastic'")
+    .greedy()
+    .structured()?;
+# let _ = s;
 # Ok(())
 # }
 ```
 
-## Sessions
+Where the backend can constrain decoding, the schema is enforced token by
+token, so the result is your type and never prose around it. The same call
+exists on a turn.
+
+## Sessions are lossless
+
+Every message has an id. Edits, removals and compaction change the active
+projection and append to an event log; nothing rewrites history.
 
 ```rust
-use gen2::Session;
+use gen2::{Message, Session};
 # fn main() -> Result<(), Box<dyn std::error::Error>> {
 let mut session = Session::new();
-session.push_user("hello");
+let original = session.push_user("helo");
+let fixed = session.replace_message(original, Message::user("hello"))?;
 
-session.messages();            // the transcript, yours to render or persist
-session.latest_text();
-session.shed();                // messages no longer in the model's context
-session.edit(|m| m.truncate(1));
+assert_eq!(session.messages().len(), 1);        // the active conversation
+assert_eq!(session.all_messages().len(), 2);    // every version ever pushed
+session.events();                               // how it got here
 
-let branch = session.fork();   // same history, independent from here
-let json = serde_json::to_string(&session)?;   // Serialize / Deserialize
+// Compaction is your policy; gen2 only makes it reversible.
+session.replace_messages([Message::user("Summary: we greeted each other.")])?;
+session.restore_context([fixed])?;
+
+let branch = session.fork();                    // new id, same past
+let json = serde_json::to_string(&session)?;    // Serialize / Deserialize
 # let _ = (branch, json);
 # Ok(())
 # }
 ```
 
-Not `Clone`: two copies would share one cached prefill and overwrite each
-other. `fork()` is the independent copy.
+A projection can never show the model a tool result without its call, or a
+call without its result: an edit that would do so is refused.
 
-## Engine
+## A hosted model on the same interface
 
 ```rust,no_run
-use gen2::Engine;
-# fn main() -> Result<(), gen2::Error> {
-let engine = Engine::builder()
-    .model("/models/model.gguf")    // GGUF file, or an MLX / ONNX directory
-    .auto_context()                 // size the window to the machine
-    .greedy()                       // defaults every turn starts from
-    .build()?;
+use gen2::Runtime;
+# fn main() -> gen2::Result<()> {
+let runtime = Runtime::new()?;
+let gpt = runtime
+    .openai()
+    .base_url("https://api.openai.com/v1")
+    .api_key(std::env::var("OPENAI_API_KEY").unwrap_or_default())
+    .model("gpt-5-mini")
+    .connect()?;
 
-// Swapping on a live engine. A load that cannot run as asked is retried
-// without the vision projector, then on the CPU, so check what you got.
-let outcome = engine.load_model("/models/other.gguf")?;
-if !outcome.as_requested() {
-    println!("{}", outcome.summary().unwrap_or_default());
-}
-engine.reload_model()?;
-
-engine.capabilities();              // TEXT | IMAGES | AUDIO
-engine.supports_images();
-
-engine.embed_one("a query")?;
+let local = runtime.openai().base_url("http://localhost:11434/v1").model("qwen3:8b").connect()?;
+# let _ = (gpt.capabilities(), local.capabilities());
 # Ok(())
 # }
 ```
 
-An endpoint instead of a local model:
-
-```rust,no_run
-# use gen2::Engine;
-# fn main() -> Result<(), gen2::Error> {
-let engine = Engine::builder()
-    .openai("https://api.openai.com/v1", std::env::var("OPENAI_API_KEY").unwrap_or_default())
-    .build()?;
-# let _ = engine;
-# Ok(())
-# }
-```
-
-## Somewhere else
-
-The controller can live in another process or on another machine. Implement
-the transport, and everything above it is unchanged:
-
-```rust
-use gen2::{ControllerCmd, InferenceHandle, Placement, RemoteDispatch};
-
-struct OverTheWire; // your socket, your peer, your queue
-
-impl RemoteDispatch for OverTheWire {
-    fn send(&self, _cmd: ControllerCmd) -> Result<(), String> { Ok(()) }
-    fn label(&self) -> &str { "workshop-mac" }
-}
-
-let handle = InferenceHandle::remote(OverTheWire);
-assert_eq!(handle.placement(), Placement::Remote("workshop-mac"));
-```
+A remote `Model` runs the same turns and sessions; `capabilities()` says what
+it cannot do (grammar-constrained output, for one).
 
 ## Will it fit?
 
@@ -524,13 +259,47 @@ match Engine::builder().model("/models/model.gguf").context(1_000_000).build() {
 
 ## Async
 
-Behind the `tokio` feature:
+Behind the `tokio` feature. Decoding is a blocking native call, so the async
+surface runs it on a blocking task rather than pretending otherwise:
 
 ```rust,ignore
 let (completion, session) = engine.chat_owned(session).user("…").send_async().await?;
 
 let mut run = engine.agent_owned(session).goal("…").spawn_async();
 while let Some(update) = run.next().await { /* … */ }
+```
+
+`run_async` and `stream_async` on a turn follow the same shape and are landing
+next.
+
+## The previous facade, and the layers below
+
+`Engine`, `Engine::chat` and `Engine::agent` still compile: the agent loop with
+its executable tools, approvals and budgets lives under `gen2::api` and is
+moving out of the core surface, because deciding what invocation happens next
+is a harness's job, not an inference runtime's. Embeddings and reranking are
+`Engine::embed` and `Engine::rerank` until they get `Runtime` homes.
+
+Below all of it, `gen2::advanced` is where local-only control lives: raw
+grammars, residency, hardware, and a backend seam. A backend you write outside
+this crate registers through `gen2::advanced::BackendPlugin`; `crates/gen2-mlxcel`
+is one, and it is how the MLX fast path ships without a registry release.
+
+The controller can also live in another process or on another machine.
+Implement the transport, and everything above it is unchanged:
+
+```rust
+use gen2::{ControllerCmd, InferenceHandle, Placement, RemoteDispatch};
+
+struct OverTheWire; // your socket, your peer, your queue
+
+impl RemoteDispatch for OverTheWire {
+    fn send(&self, _cmd: ControllerCmd) -> Result<(), String> { Ok(()) }
+    fn label(&self) -> &str { "workshop-mac" }
+}
+
+let handle = InferenceHandle::remote(OverTheWire);
+assert_eq!(handle.placement(), Placement::Remote("workshop-mac"));
 ```
 
 ---
@@ -540,30 +309,25 @@ while let Some(update) = run.next().await { /* … */ }
 - **`.greedy()` is not the default.** An unconfigured turn leaves `temperature`
   and `seed` unset, which means backend-default sampling with a random seed. The
   same prompt gives different text each run.
-- **A reasoning model's `<think>` block is yours to strip.** Qwen3, DeepSeek-R1
-  and Gemma 4 with thinking on emit their working into the reply, and it lands
-  in `latest_text()` and in the stored transcript. Filter it before you render,
-  and before it costs you context on the next turn.
-- **Deferred tool specs never enter the prompt prefix.** Search puts them in the
-  conversation instead, so the warm KV cache survives.
-- **Changing the tool set between runs reopens the conversation.** Tool
-  definitions live in the prefix, so a change costs one re-prefill. The
-  alternative was ignoring the new tools without telling you.
-- **Swapping a model invalidates every session's prefill.** Sessions notice and
-  reopen on their own. `engine.model_generation()` is the same signal if you
-  want to show it.
-- **A load that fails part-way leaves no model.** `load_model` checks the path
-  first, so a typo is refused before anything unloads. An out-of-memory mid-load
+- **A thinking model's working is `reasoning()`, not `text()`.** Qwen3 and
+  Gemma 4 with thinking on stream it as `ReasoningDelta`; it never lands in the
+  prose. `.reasoning(ThinkingMode::Off)` on a turn switches it off where the
+  model allows.
+- **Changing tools or the system prompt reopens the conversation.** Both live in
+  the prompt prefix, so a change costs one re-prefill on the next turn. The
+  alternative was ignoring the change without telling you.
+- **A load that fails part-way leaves no model.** The path is checked before
+  anything unloads, so a typo is refused up front. An out-of-memory mid-load
   cannot be undone.
-- **Just drop the `Engine` when you're done.** The controller loop holds the
-  backend on its own thread, and exiting while it runs aborts inside ggml's
-  destructors. `Drop` stops and joins it for you.
-- **A background task you define gets no tuning.** `SystemTask::Title` and its
-  named siblings carry sampling defaults; `SystemTask::custom("triples")` gets
-  a plain spec, because nothing here knows what your task is. Pass your own to
-  `system_infer_with`.
-- **A cancelled turn is `Done`, not `Failed`.** `completion.text` holds what was
-  generated before the stop, and it is already in the session.
+- **Just drop the `Runtime` when you're done.** Each model's controller holds
+  its backend on its own thread, and exiting while it runs aborts inside
+  ggml's destructors. `Drop` stops and joins them for you.
+- **A cancelled turn is a finish, not an error.** `finish_reason()` is
+  `Cancelled`, `text()` holds what was generated before the stop, and the
+  partial message is already in the session with an id.
+- **Two clones of a `Model` are one model.** Handles are cheap and shareable;
+  turns on them queue on one controller. Two `Session`s on one model are fine;
+  one `Session` from two threads is not, and needs your own lock.
 
 ## Benchmarks
 
