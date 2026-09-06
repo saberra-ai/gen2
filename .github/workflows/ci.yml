@@ -169,12 +169,9 @@ jobs:
       - run: "cargo test --no-default-features --lib advanced::"
 
   # Windows, default features: a consumer on MSVC gets llama.cpp built by
-  # cmake and bound by bindgen, so this lane needs both on the runner. It is
-  # advisory until it has been green once (S3.4 will flip it), because a
-  # toolchain gap here says nothing about the code and should not block main.
+  # cmake and bound by bindgen. Green since c820cbf (1108 tests), so it gates.
   windows:
     runs-on: windows-latest
-    continue-on-error: true
     steps:
       - uses: actions/checkout@v4
       - uses: dtolnay/rust-toolchain@stable
@@ -184,16 +181,6 @@ jobs:
         run: |
           $llvm = "C:\Program Files\LLVM\bin"
           if (Test-Path $llvm) { "LIBCLANG_PATH=$llvm" | Out-File -FilePath $env:GITHUB_ENV -Append }
-      # The MCP client tests time out here and nowhere else. Until that is
-      # understood, show which python3 answers and let the mock's stderr
-      # through; the full run follows so the lane still reports everything.
-      - name: Which python3, and the MCP tests with output
-        shell: pwsh
-        run: |
-          python3 --version
-          python3 -c "import sys; print(sys.executable)"
-          cargo test --lib mcp:: -- --nocapture --test-threads=1
-        continue-on-error: true
       - run: cargo test --lib
 
   # The README benchmark table is generated from committed results JSON. This

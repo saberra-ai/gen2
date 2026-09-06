@@ -29,7 +29,11 @@ const TEST_DEADLINE: Duration = Duration::from_secs(20);
 
 /// The per-request budget for tests that expect an answer. Short enough that a
 /// regression which breaks correlation shows up as a fast failure.
-const FAST: Duration = Duration::from_millis(2_000);
+// Windows spawns a python process noticeably slower, and the tests run in
+// parallel, so a cold runner missed a 2 s handshake there; it passed every
+// time once the tests were serialised. The wider bound only changes how long
+// a genuinely wedged server takes to fail on that platform.
+const FAST: Duration = Duration::from_millis(if cfg!(windows) { 8_000 } else { 2_000 });
 
 /// The budget for tests that expect the timeout itself to fire.
 const IMPATIENT: Duration = Duration::from_millis(250);
