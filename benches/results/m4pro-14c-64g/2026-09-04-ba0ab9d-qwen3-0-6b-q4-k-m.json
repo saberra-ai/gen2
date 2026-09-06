@@ -1,0 +1,351 @@
+{
+  "schema_version": 1,
+  "valid": true,
+  "reason": null,
+  "warnings": [
+    "concurrent load present: 1 docker run --rm -v /private/tmp/claude-502/-Users-victor/f98a4dbb-c9e3-4db3-a2d2-133adc3e3bdf/scratchpad/flock-src:/sr"
+  ],
+  "notes": "AC power, display idle. A day-old 'docker run … cargo build -p flock-exec' container from another agent session was present for the whole run (load average ~3 on 14 cores, mostly idle); it did not end within the wait window, so the numbers carry that caveat.",
+  "date": "2026-09-04",
+  "started_at": "2026-09-04T14:39:33Z",
+  "finished_at": "2026-09-04T14:40:07Z",
+  "protocol": {
+    "n_prompt": 512,
+    "n_gen": 128,
+    "warmup": 1,
+    "repetitions": 5,
+    "sampling": "greedy",
+    "batch": 1,
+    "statistic": "median ± sample stddev (n-1) over the raw per-repetition samples, both sides",
+    "delay_s": 5,
+    "settle_s": 5,
+    "thermal_drop_limit": 0.05,
+    "spread_limit": 0.1
+  },
+  "gen2": {
+    "commit": "ba0ab9d52889bfe153cd611e8cdb02f356948bfa",
+    "short": "ba0ab9d",
+    "dirty": true,
+    "version": "0.1.0",
+    "features": [
+      "backend-llamacpp"
+    ],
+    "rustc": "rustc 1.98.0 (88d9e12ae 2026-08-18)",
+    "profile": "release"
+  },
+  "llama_cpp": {
+    "commit": "e79e4bf660e19f2ad851e06c6913f7a8c5852621",
+    "build_commit": "",
+    "build_number": 10405,
+    "llama_cpp_sys_2": "0.1.156",
+    "backends": "MTL",
+    "reference_binary": "target/llama-bench/llama-bench"
+  },
+  "machine": {
+    "slug": "m4pro-14c-64g",
+    "label": "Apple M4 Pro, 64 GB, macOS 26.3 (25D125)",
+    "chip": "Apple M4 Pro",
+    "cpu_cores": 14,
+    "perf_cores": 10,
+    "eff_cores": 4,
+    "ram_bytes": 68719476736,
+    "os": "macOS 26.3 (25D125)",
+    "cpu_info": "Apple M4 Pro",
+    "gpu_info": "Apple M4 Pro",
+    "power_source": "AC Power",
+    "battery": false,
+    "therm_before": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+    "therm_after": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded"
+  },
+  "model": {
+    "path": "/Users/victor/models/qwen3-0.6b-gguf/Qwen3-0.6B-Q4_K_M.gguf",
+    "file": "Qwen3-0.6B-Q4_K_M.gguf",
+    "name": "Qwen3-0.6B",
+    "quant": "Q4_K_M",
+    "bytes": 396705472,
+    "sha256": "ac2d97712095a558e31573f62f466a3f9d93990898b0ec79d7c974c1780d524a",
+    "type": "qwen3 0.6B Q4_K - Medium",
+    "n_params": 596049920,
+    "size_reported": 390753280,
+    "hf_repo": null
+  },
+  "settings": {
+    "n_ctx_gen2": 2048,
+    "n_batch": 512,
+    "n_ubatch": 512,
+    "n_threads": 4,
+    "n_gpu_layers": 99,
+    "n_gpu_layers_gen2": "default (all layers on a GPU build)",
+    "flash_attn": "auto",
+    "type_k": "f16",
+    "type_v": "f16",
+    "use_mmap": true,
+    "use_mlock_gen2": true,
+    "gen2_prompt_tokens": 513,
+    "gen2_decode_tokens": [
+      128,
+      128,
+      128,
+      128,
+      128
+    ],
+    "gen2_finish": [
+      "Eos",
+      "Eos",
+      "Eos",
+      "Eos",
+      "Eos"
+    ],
+    "gen2_prompt_note": "text through the chat template; token count is the engine's own, so pp is the rate over what was actually prefilled"
+  },
+  "runs": {
+    "gen2": {
+      "pp": {
+        "samples_ts": [
+          5652.705695679481,
+          5656.320635095651,
+          5623.211917263151,
+          5655.509988093663,
+          5666.629846459738
+        ],
+        "median": 5655.509988093663,
+        "stddev": 16.339758523838697,
+        "n": 5
+      },
+      "tg": {
+        "samples_ts": [
+          294.56788950535,
+          284.9980942786001,
+          291.79370059740717,
+          294.37330190845495,
+          294.6369151925094
+        ],
+        "median": 294.37330190845495,
+        "stddev": 4.129824994670102,
+        "n": 5
+      },
+      "tg_note": "engine clock: (decode_tokens - 1) / (decode_tokens / avg_tps - first_token); the span llama-bench times",
+      "tg_wall": {
+        "samples_ts": [
+          277.8804178818237,
+          269.5540075066546,
+          273.103596580829,
+          277.7923351412022,
+          278.33125457508373
+        ],
+        "median": 277.7923351412022,
+        "stddev": 3.869566811860746,
+        "n": 5
+      },
+      "tg_wall_note": "caller clock: the same tokens over run() wall time after the first token; context creation and teardown included",
+      "overhead_ms": {
+        "samples_ts": [
+          25.89112459716114,
+          25.531610186381393,
+          29.7859947028154,
+          25.75104703266384,
+          25.251837370341867
+        ],
+        "median": 25.75104703266384,
+        "stddev": 1.8847066390972156,
+        "n": 5
+      },
+      "overhead_note": "run() wall time minus the engine's prefill+decode span: what the wrapper adds per turn",
+      "ttft_ms": {
+        "samples_ts": [
+          90.753,
+          90.695,
+          91.229,
+          90.708,
+          90.53
+        ],
+        "median": 90.708,
+        "stddev": 0.2632460825919353,
+        "n": 5
+      },
+      "wall_s": [
+        0.547784125,
+        0.561843625,
+        0.556254,
+        0.547884041,
+        0.546820833
+      ]
+    },
+    "reference": {
+      "pp": {
+        "samples_ts": [
+          5923.05,
+          5917.5,
+          5912.37,
+          5922.95,
+          5924.99
+        ],
+        "median": 5922.95,
+        "stddev": 5.177453041795736,
+        "n": 5
+      },
+      "tg": {
+        "samples_ts": [
+          308.152,
+          309.441,
+          311.81,
+          312.18,
+          310.221
+        ],
+        "median": 310.221,
+        "stddev": 1.6698834390459814,
+        "n": 5
+      },
+      "command": "/Users/victor/workspace/gen2/.claude/worktrees/agent-aa3c4ea57501ce2c2/target/llama-bench/llama-bench -m /Users/victor/models/qwen3-0.6b-gguf/Qwen3-0.6B-Q4_K_M.gguf -p 512 -n 128 -r 5 -b 512 -ub 512 -t 4 -ngl 99 -fa auto -ctk f16 -ctv f16 --delay 5 -o json",
+      "raw": [
+        {
+          "build_commit": "e79e4bf66",
+          "build_number": 10405,
+          "cpu_info": "Apple M4 Pro",
+          "gpu_info": "Apple M4 Pro",
+          "backends": "MTL",
+          "model_filename": "/Users/victor/models/qwen3-0.6b-gguf/Qwen3-0.6B-Q4_K_M.gguf",
+          "model_type": "qwen3 0.6B Q4_K - Medium",
+          "model_size": 390753280,
+          "model_n_params": 596049920,
+          "n_batch": 512,
+          "n_ubatch": 512,
+          "n_threads": 4,
+          "cpu_mask": "0x0",
+          "cpu_strict": false,
+          "poll": 50,
+          "type_k": "f16",
+          "type_v": "f16",
+          "n_gpu_layers": 99,
+          "n_cpu_moe": 0,
+          "split_mode": "layer",
+          "main_gpu": 0,
+          "no_kv_offload": false,
+          "flash_attn": -1,
+          "devices": "auto",
+          "tensor_split": "0.00",
+          "tensor_buft_overrides": "none",
+          "load_mode": "auto",
+          "embeddings": false,
+          "no_op_offload": 0,
+          "no_host": false,
+          "fit_target": 0,
+          "fit_min_ctx": 0,
+          "n_prompt": 512,
+          "n_gen": 0,
+          "n_depth": 0,
+          "test_time": "2026-09-04T14:39:33Z",
+          "avg_ns": 86484025,
+          "stddev_ns": 75980,
+          "avg_ts": 5920.172106,
+          "stddev_ts": 5.178906,
+          "samples_ns": [
+            86441959,
+            86523042,
+            86598125,
+            86443375,
+            86413625
+          ],
+          "samples_ts": [
+            5923.05,
+            5917.5,
+            5912.37,
+            5922.95,
+            5924.99
+          ]
+        },
+        {
+          "build_commit": "e79e4bf66",
+          "build_number": 10405,
+          "cpu_info": "Apple M4 Pro",
+          "gpu_info": "Apple M4 Pro",
+          "backends": "MTL",
+          "model_filename": "/Users/victor/models/qwen3-0.6b-gguf/Qwen3-0.6B-Q4_K_M.gguf",
+          "model_type": "qwen3 0.6B Q4_K - Medium",
+          "model_size": 390753280,
+          "model_n_params": 596049920,
+          "n_batch": 512,
+          "n_ubatch": 512,
+          "n_threads": 4,
+          "cpu_mask": "0x0",
+          "cpu_strict": false,
+          "poll": 50,
+          "type_k": "f16",
+          "type_v": "f16",
+          "n_gpu_layers": 99,
+          "n_cpu_moe": 0,
+          "split_mode": "layer",
+          "main_gpu": 0,
+          "no_kv_offload": false,
+          "flash_attn": -1,
+          "devices": "auto",
+          "tensor_split": "0.00",
+          "tensor_buft_overrides": "none",
+          "load_mode": "auto",
+          "embeddings": false,
+          "no_op_offload": 0,
+          "no_host": false,
+          "fit_target": 0,
+          "fit_min_ctx": 0,
+          "n_prompt": 0,
+          "n_gen": 128,
+          "n_depth": 0,
+          "test_time": "2026-09-04T14:39:39Z",
+          "avg_ns": 412432799,
+          "stddev_ns": 2221234,
+          "avg_ts": 310.360785,
+          "stddev_ts": 1.670131,
+          "samples_ns": [
+            415379708,
+            413649583,
+            410506375,
+            410019250,
+            412609083
+          ],
+          "samples_ts": [
+            308.152,
+            309.441,
+            311.81,
+            312.18,
+            310.221
+          ]
+        }
+      ]
+    }
+  },
+  "ratio": {
+    "tg": 0.9489148120483621,
+    "pp": 0.954846822629545,
+    "pp_note": "includes chat template + session setup"
+  },
+  "thermal": {
+    "ref_tg_first": {
+      "samples_ts": [
+        308.152,
+        309.441,
+        311.81,
+        312.18,
+        310.221
+      ],
+      "median": 310.221,
+      "stddev": 1.6698834390459814,
+      "n": 5
+    },
+    "ref_tg_last": {
+      "samples_ts": [
+        309.134,
+        311.887,
+        313.926,
+        315.248,
+        314.904
+      ],
+      "median": 313.926,
+      "stddev": 2.5356932385444324,
+      "n": 5
+    },
+    "ref_tg_last_command": "/Users/victor/workspace/gen2/.claude/worktrees/agent-aa3c4ea57501ce2c2/target/llama-bench/llama-bench -m /Users/victor/models/qwen3-0.6b-gguf/Qwen3-0.6B-Q4_K_M.gguf -p 0 -n 128 -r 5 -b 512 -ub 512 -t 4 -ngl 99 -fa auto -ctk f16 -ctv f16 --delay 5 -o json",
+    "drop": -0.011943098629686455,
+    "therm_before": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded",
+    "therm_after": "Note: No thermal warning level has been recorded\nNote: No performance warning level has been recorded\nNote: No CPU power status has been recorded"
+  }
+}

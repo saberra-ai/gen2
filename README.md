@@ -565,6 +565,19 @@ while let Some(update) = run.next().await { /* … */ }
 - **A cancelled turn is `Done`, not `Failed`.** `completion.text` holds what was
   generated before the stop, and it is already in the session.
 
+## Benchmarks
+
+gen2 against `llama-bench` built from the same llama.cpp commit the crate links, on the same file; the method, the result schema and how to add a machine are in [benches/results/README.md](benches/results/README.md).
+
+<!-- bench:begin -->
+| Model | Machine | tg128 gen2 (tok/s) | tg128 llama-bench (tok/s) | tg128 ratio | pp512 gen2 (tok/s) † | pp512 llama-bench (tok/s) | pp512 ratio † | TTFT (ms) | llama.cpp | Date |
+| --- | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | --- | --- |
+| Llama-3.2-3B-Instruct Q4_K_M | Apple M4 Pro, 64 GB, macOS 26.3 (25D125) | 94.0 ± 0.8 | 101.1 ± 0.2 | 0.93 | 1057 ± 13 | 1110 ± 0 | 0.95 | 486.1 ± 6.1 | b10405 `e79e4bf6` | 2026-09-04 |
+| Qwen3-0.6B Q4_K_M | Apple M4 Pro, 64 GB, macOS 26.3 (25D125) | 294.4 ± 4.1 | 310.2 ± 1.7 | 0.95 | 5656 ± 16 | 5923 ± 5 | 0.95 | 90.7 ± 0.3 | b10405 `e79e4bf6` | 2026-09-04 |
+
+Median ± sample standard deviation over n=5 repetitions after one warmup, greedy, batch 1, both sides on the same GGUF and the same llama.cpp commit. Ratio is gen2 ÷ llama-bench. † pp512 through gen2 includes chat template + session setup, so it is reported, not targeted. TTFT is gen2's prefill-start-to-first-token; llama-bench has no equivalent. Raw samples, machine fingerprint and model hash: `benches/results/`.
+<!-- bench:end -->
+
 ## Backends
 
 Pick at least one — or none, and bring your own: `gen2::advanced::plugin`
@@ -621,12 +634,12 @@ LiteRT-LM's shipped runtime cannot report a bundle's context window, so state
 it — `Engine::builder().model(path).context(4096)`. gen2 refuses the load
 rather than guessing a number the controller would then plan against.
 
-It asks for the GPU by default, measured at roughly 1.7x the CPU's decode rate
-on an Apple M-series machine, and falls back to the CPU through the same load
+It asks for the GPU by default and falls back to the CPU through the same load
 ladder every other backend uses — reported as `Degraded::GpuOffload`, not
-hidden. It never asks for the NPU: that needs vendor libraries for a specific
-chip, and without them the runtime accepts the request and runs slower than the
-CPU.
+hidden. What the GPU is worth on a given machine is a number for the benchmark
+table above, not for this paragraph. It never asks for the NPU: that needs
+vendor libraries for a specific chip, and without them the runtime accepts the
+request and runs slower than the CPU.
 
 `ios` and `android` carry it alongside llama.cpp. Nothing links: the runtime is
 loaded through its C ABI at run time, so `cargo check --target

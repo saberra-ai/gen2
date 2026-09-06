@@ -138,10 +138,17 @@ proptest = "1"
 name = "hot_paths"
 harness = false
 
-# gen2's throughput against llama.cpp's own benchmark on the same file. Needs a
-# model, so it prints a skip without one.
+# gen2's throughput against llama.cpp's own benchmark, built from the same
+# llama.cpp commit (`benches/build-llama-bench.sh`), on the same file. Needs a
+# model, so it prints a skip without one; writes `benches/results/`.
 [[bench]]
 name = "backend_parity"
+harness = false
+
+# The README benchmark table, generated from `benches/results/`. A bench
+# rather than a bin so it is neither installed nor built by `cargo publish`.
+[[bench]]
+name = "bench_table"
 harness = false
 
 [features]
