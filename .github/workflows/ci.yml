@@ -184,6 +184,16 @@ jobs:
         run: |
           $llvm = "C:\Program Files\LLVM\bin"
           if (Test-Path $llvm) { "LIBCLANG_PATH=$llvm" | Out-File -FilePath $env:GITHUB_ENV -Append }
+      # The MCP client tests time out here and nowhere else. Until that is
+      # understood, show which python3 answers and let the mock's stderr
+      # through; the full run follows so the lane still reports everything.
+      - name: Which python3, and the MCP tests with output
+        shell: pwsh
+        run: |
+          python3 --version
+          python3 -c "import sys; print(sys.executable)"
+          cargo test --lib mcp:: -- --nocapture --test-threads=1
+        continue-on-error: true
       - run: cargo test --lib
 
   # The README benchmark table is generated from committed results JSON. This
