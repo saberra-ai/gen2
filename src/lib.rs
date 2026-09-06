@@ -197,7 +197,7 @@ pub fn load(path: impl AsRef<std::path::Path>) -> Result<Model> {
 
 /// The primary API — see [`api`].
 #[cfg(feature = "tokio")]
-pub use api::{AsyncAgentRun, AsyncTurn};
+pub use api::{AsyncAgentRun, AsyncEventStream, AsyncTurn};
 /// Deriving a tool's argument schema needs the same `schemars` this crate
 /// compiled against — a different version produces a `JsonSchema` impl that
 /// won't satisfy [`FunctionTool`]'s bound. Use `gen2::schemars` rather than

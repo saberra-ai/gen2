@@ -3,6 +3,7 @@
 use crate::generation::ThinkingMode;
 
 use super::error::Result;
+use super::event::{EventStream, SessionSlot, StreamCore};
 use super::input::Input;
 use super::model::Model;
 use super::response::Response;
@@ -168,6 +169,20 @@ impl<'m> Generation<'m> {
         Ok(done?.detached())
     }
 
+    /// Run it as a stream of semantic [`Event`](super::event::Event)s.
+    ///
+    /// The stream owns the ephemeral session, so it borrows nothing:
+    /// [`EventStream::finish`] returns the same [`Response`] as
+    /// [`run`](Generation::run), with no message id to name.
+    pub fn stream(self) -> Result<EventStream<'static>> {
+        let (model, session, staged) = self.prepare();
+        let (core, session) = staged.begin(model, session)?;
+        Ok(EventStream::new(
+            core,
+            SessionSlot::Owned(Box::new(session)),
+        ))
+    }
+
     /// Run it and decode the reply as `T` (api_spec.md §13, §28.11).
     ///
     /// See [`Turn::structured`] for how the schema is enforced.
@@ -194,7 +209,7 @@ impl<'m> Generation<'m> {
     }
 
     /// The ephemeral session, and what the turn on it will carry.
-    fn prepare(self) -> (&'m Model, Session, Staged) {
+    pub(crate) fn prepare(self) -> (&'m Model, Session, Staged) {
         let mut session = Session::new();
         if let Some(system) = self.system {
             session.set_system(system);
@@ -212,19 +227,35 @@ impl<'m> Generation<'m> {
 }
 
 /// What a one-shot call stages on its turn.
-struct Staged {
+pub(crate) struct Staged {
     message: crate::types::message::Message,
     options: GenerationOptions,
     tool_choice: ToolChoice,
 }
 
 impl Staged {
-    fn turn<'a>(self, model: &'a Model, session: &'a mut Session) -> Turn<'a> {
+    pub(crate) fn turn<'a>(self, model: &'a Model, session: &'a mut Session) -> Turn<'a> {
         model
             .turn(session)
             .message(self.message)
             .options(self.options)
             .tool_choice(self.tool_choice)
+    }
+
+    /// Dispatch the turn on a session the stream will own. A turn refused
+    /// before dispatch forgets the session, as a finished one would.
+    pub(crate) fn begin(
+        self,
+        model: &Model,
+        mut session: Session,
+    ) -> Result<(StreamCore, Session)> {
+        match self.turn(model, &mut session).begin() {
+            Ok((core, _)) => Ok((core, session)),
+            Err(e) => {
+                model.engine().forget(&session);
+                Err(e)
+            }
+        }
     }
 }
 

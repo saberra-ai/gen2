@@ -44,7 +44,7 @@ use crate::generation::{GenSpec, ThinkingMode};
 use crate::types::message::Message;
 
 use super::error::{Error, Result};
-use super::event::{Canceller, EventStream, Settled};
+use super::event::{Canceller, EventStream, SessionSlot, Settled, StreamCore};
 use super::generation::TOOL_PROMPT;
 use super::input::Input;
 use super::model::Model;
@@ -384,6 +384,14 @@ impl<'a> Turn<'a> {
     /// Iterate to the end, then [`EventStream::finish`] for the same
     /// [`Response`] [`run`](Turn::run) would have returned.
     pub fn stream(self) -> Result<EventStream<'a>> {
+        let (core, session) = self.begin()?;
+        Ok(EventStream::new(core, SessionSlot::Borrowed(session)))
+    }
+
+    /// Validate, commit, and dispatch: the stream's engine half, and the
+    /// session it will settle into. What [`stream`](Turn::stream) is made of;
+    /// the async surface bridges the two halves across a worker.
+    pub(crate) fn begin(self) -> Result<(StreamCore, &'a mut Session)> {
         let model = self.model.clone();
         let engine = self.model.engine();
         let session = self.session;
@@ -442,11 +450,9 @@ impl<'a> Turn<'a> {
 
         if self.cancel.load(Ordering::SeqCst) {
             // Cancelled before it began: nothing runs, nothing is staged.
-            return Ok(EventStream::cancelled_before_start(
-                session,
-                model,
-                self.cancel,
-            ));
+            let core =
+                StreamCore::cancelled_before_start(session.next_message_id(), model, self.cancel);
+            return Ok((core, session));
         }
 
         // ── Commit (§11.1) ──
@@ -483,16 +489,17 @@ impl<'a> Turn<'a> {
         if self.cancel.load(Ordering::SeqCst) {
             let _ = engine.stop(session.id().to_string());
         }
-        Ok(EventStream::new(
+        let core = StreamCore::new(
             stream,
-            session,
+            session.next_message_id(),
             model,
             self.cancel,
             Settled {
                 max_tokens,
                 close_after: per_turn_prefix,
             },
-        ))
+        );
+        Ok((core, session))
     }
 
     /// Run the turn and decode the reply as `T` (api_spec.md §13).

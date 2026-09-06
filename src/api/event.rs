@@ -27,6 +27,9 @@ use super::response::Response;
 use super::session::{MessageId, Session};
 use super::stream::{Event as TokenEvent, Finish, TokenStream};
 
+#[cfg(feature = "tokio")]
+pub use super::async_turn::AsyncEventStream;
+
 /// One thing the model did, as a stream sees it.
 ///
 /// `#[non_exhaustive]`: match with a trailing `_ =>`. The §28.10 shape:
@@ -90,13 +93,54 @@ pub enum Event {
 /// Dropping the stream early abandons the events; the generation runs on
 /// until it ends on its own. Use [`EventStream::canceller`] to stop it.
 pub struct EventStream<'a> {
+    core: StreamCore,
+    session: SessionSlot<'a>,
+}
+
+/// The session a stream writes its outcome to.
+///
+/// A turn borrows the caller's; a one-shot generation owns an ephemeral one
+/// (boxed, so the slot is a pointer either way) and forgets it when the
+/// stream is over.
+pub(crate) enum SessionSlot<'a> {
+    Borrowed(&'a mut Session),
+    Owned(Box<Session>),
+}
+
+impl SessionSlot<'_> {
+    pub(crate) fn get(&mut self) -> &mut Session {
+        match self {
+            Self::Borrowed(s) => s,
+            Self::Owned(s) => s,
+        }
+    }
+
+    pub(crate) fn id(&self) -> &super::session::SessionId {
+        match self {
+            Self::Borrowed(s) => s.id(),
+            Self::Owned(s) => s.id(),
+        }
+    }
+
+    pub(crate) fn is_owned(&self) -> bool {
+        matches!(self, Self::Owned(_))
+    }
+}
+
+/// Everything a stream is apart from the session it settles into.
+///
+/// `Send` and `'static`, so it can go to a blocking worker while the caller
+/// keeps the `&mut Session`: the async surface pulls events here, and writes
+/// the outcome to the session back on the caller's side.
+pub(crate) struct StreamCore {
     inner: TokenStream,
-    session: &'a mut Session,
     model: Model,
     assembler: Assembler,
     queue: VecDeque<Event>,
-    /// The inner stream has ended and the session has been updated.
+    /// The inner stream has ended, one way or another.
     done: bool,
+    /// The outcome has been written to the session.
+    settled: bool,
     /// Why the inner stream failed, when it did, for a `finish()` after the
     /// error was already yielded.
     failed: Option<String>,
@@ -113,22 +157,21 @@ pub(crate) struct Settled {
     pub(crate) close_after: bool,
 }
 
-impl<'a> EventStream<'a> {
+impl StreamCore {
     pub(crate) fn new(
         inner: TokenStream,
-        session: &'a mut Session,
+        next_message_id: MessageId,
         model: Model,
         cancel: Arc<AtomicBool>,
         settled: Settled,
     ) -> Self {
-        let call_ids = CallIds::new(session.next_message_id());
         Self {
             inner,
-            session,
             model,
-            assembler: Assembler::new(call_ids, settled.max_tokens),
+            assembler: Assembler::new(CallIds::new(next_message_id), settled.max_tokens),
             queue: VecDeque::new(),
             done: false,
+            settled: false,
             failed: None,
             response: None,
             cancel,
@@ -138,14 +181,14 @@ impl<'a> EventStream<'a> {
 
     /// A stream that ended before it began: cancelled ahead of dispatch.
     pub(crate) fn cancelled_before_start(
-        session: &'a mut Session,
+        next_message_id: MessageId,
         model: Model,
         cancel: Arc<AtomicBool>,
     ) -> Self {
         let (_, rx) = std::sync::mpsc::sync_channel(1);
-        let mut stream = Self::new(
+        let mut core = Self::new(
             TokenStream::new(rx),
-            session,
+            next_message_id,
             model,
             cancel,
             Settled {
@@ -153,85 +196,25 @@ impl<'a> EventStream<'a> {
                 close_after: false,
             },
         );
-        stream.done = true;
-        stream
-            .queue
+        core.done = true;
+        core.settled = true;
+        core.queue
             .push_back(Event::Finished(FinishReason::Cancelled));
-        stream.response = Some(Response::assembled(
+        core.response = Some(Response::assembled(
             AssistantMessage::default(),
             FinishReason::Cancelled,
             GenerationStats::default(),
             None,
         ));
-        stream
+        core
     }
 
-    /// A handle that stops this turn from another thread.
-    pub fn canceller(&self) -> Canceller {
-        Canceller {
-            model: self.model.clone(),
-            chat_id: self.session.id().to_string(),
-            flag: Arc::clone(&self.cancel),
-        }
-    }
-
-    /// Drain whatever is left and return the outcome.
+    /// The next event while the backend is still producing them.
     ///
-    /// The same [`Response`] shape as [`Turn::run`](super::turn::Turn::run):
-    /// text, reasoning, tool calls, finish reason, usage, and the id of the
-    /// assistant message now in the session.
-    pub fn finish(mut self) -> Result<Response> {
-        for event in self.by_ref() {
-            event?;
-        }
-        match self.response.take() {
-            Some(response) => Ok(response),
-            None => Err(Error::Generation {
-                code: "stream_failed".into(),
-                message: self
-                    .failed
-                    .take()
-                    .unwrap_or_else(|| "the stream ended without an outcome".into()),
-            }),
-        }
-    }
-
-    /// The inner stream is over: record the outcome in the session.
-    fn complete(&mut self) {
-        let finish = self.inner.finish().unwrap_or_default();
-        let engine = self.model.engine();
-        super::chat::settle(engine, self.session, &self.inner);
-        let cancelled = matches!(finish, Finish::Stopped);
-
-        self.queue.extend(self.assembler.finish(finish));
-        let (message, finish_reason, stats, shed) = self.assembler.take();
-        self.session.note_shed(shed);
-
-        // A cancelled turn that produced nothing has nothing to record.
-        let worth_recording = !cancelled
-            || !message.text().is_empty()
-            || message.reasoning().is_some()
-            || !message.tool_calls().is_empty();
-        let message_id = worth_recording.then(|| self.session.push(record_of(&message)));
-
-        // Stopping evicts the backend's runtime, and a per-turn prefix must
-        // not be continued: either way the next turn rebuilds.
-        if cancelled || self.close_after {
-            self.session.opened = false;
-        }
-        self.response = Some(Response::assembled(
-            message,
-            finish_reason,
-            stats,
-            message_id,
-        ));
-    }
-}
-
-impl Iterator for EventStream<'_> {
-    type Item = Result<Event>;
-
-    fn next(&mut self) -> Option<Self::Item> {
+    /// `None` once the inner stream has ended — by finishing or by failing —
+    /// at which point [`StreamCore::complete`] writes the outcome and queues
+    /// the closing events, unless it already did.
+    pub(crate) fn pull(&mut self) -> Option<Result<Event>> {
         loop {
             if let Some(event) = self.queue.pop_front() {
                 return Some(Ok(event));
@@ -248,9 +231,141 @@ impl Iterator for EventStream<'_> {
                 }
                 None => {
                     self.done = true;
-                    self.complete();
+                    return None;
                 }
             }
+        }
+    }
+
+    /// Whether the outcome still has to be written to the session.
+    pub(crate) fn needs_completion(&self) -> bool {
+        self.done && !self.settled && self.failed.is_none()
+    }
+
+    /// The inner stream is over: record the outcome in the session and queue
+    /// the closing events (usage, finish reason).
+    pub(crate) fn complete(&mut self, session: &mut Session) {
+        self.settled = true;
+        let finish = self.inner.finish().unwrap_or_default();
+        let engine = self.model.engine();
+        super::chat::settle(engine, session, &self.inner);
+        let cancelled = matches!(finish, Finish::Stopped);
+
+        self.queue.extend(self.assembler.finish(finish));
+        let (message, finish_reason, stats, shed) = self.assembler.take();
+        session.note_shed(shed);
+
+        // A cancelled turn that produced nothing has nothing to record.
+        let worth_recording = !cancelled
+            || !message.text().is_empty()
+            || message.reasoning().is_some()
+            || !message.tool_calls().is_empty();
+        let message_id = worth_recording.then(|| session.push(record_of(&message)));
+
+        // Stopping evicts the backend's runtime, and a per-turn prefix must
+        // not be continued: either way the next turn rebuilds.
+        if cancelled || self.close_after {
+            session.opened = false;
+        }
+        self.response = Some(Response::assembled(
+            message,
+            finish_reason,
+            stats,
+            message_id,
+        ));
+    }
+
+    /// A closing event queued by [`StreamCore::complete`], if any is left.
+    pub(crate) fn pop_queued(&mut self) -> Option<Event> {
+        self.queue.pop_front()
+    }
+
+    pub(crate) fn has_queued(&self) -> bool {
+        !self.queue.is_empty()
+    }
+
+    /// The outcome, once everything has been drained.
+    pub(crate) fn take_response(&mut self) -> Result<Response> {
+        match self.response.take() {
+            Some(response) => Ok(response),
+            None => Err(Error::Generation {
+                code: "stream_failed".into(),
+                message: self
+                    .failed
+                    .take()
+                    .unwrap_or_else(|| "the stream ended without an outcome".into()),
+            }),
+        }
+    }
+
+    pub(crate) fn canceller(&self, chat_id: String) -> Canceller {
+        Canceller {
+            model: self.model.clone(),
+            chat_id,
+            flag: Arc::clone(&self.cancel),
+        }
+    }
+
+    pub(crate) fn model(&self) -> &Model {
+        &self.model
+    }
+
+    pub(crate) fn is_done(&self) -> bool {
+        self.done
+    }
+}
+
+impl<'a> EventStream<'a> {
+    pub(crate) fn new(core: StreamCore, session: SessionSlot<'a>) -> Self {
+        Self { core, session }
+    }
+
+    /// A handle that stops this turn from another thread.
+    pub fn canceller(&self) -> Canceller {
+        self.core.canceller(self.session.id().to_string())
+    }
+
+    /// Drain whatever is left and return the outcome.
+    ///
+    /// The same [`Response`] shape as [`Turn::run`](super::turn::Turn::run):
+    /// text, reasoning, tool calls, finish reason, usage, and the id of the
+    /// assistant message now in the session.
+    pub fn finish(mut self) -> Result<Response> {
+        for event in self.by_ref() {
+            event?;
+        }
+        let response = self.core.take_response()?;
+        Ok(if self.session.is_owned() {
+            response.detached()
+        } else {
+            response
+        })
+    }
+}
+
+impl Iterator for EventStream<'_> {
+    type Item = Result<Event>;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        loop {
+            if let Some(event) = self.core.pull() {
+                return Some(event);
+            }
+            if self.core.needs_completion() {
+                self.core.complete(self.session.get());
+                continue;
+            }
+            return None;
+        }
+    }
+}
+
+impl Drop for EventStream<'_> {
+    fn drop(&mut self) {
+        // An ephemeral session is over with its stream, however it ended; the
+        // engine must not keep bookkeeping for it.
+        if let SessionSlot::Owned(session) = &self.session {
+            self.core.model().engine().forget(session);
         }
     }
 }
@@ -261,7 +376,7 @@ impl std::fmt::Debug for EventStream<'_> {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("EventStream")
             .field("session", &self.session.id())
-            .field("done", &self.done)
+            .field("done", &self.core.is_done())
             .finish_non_exhaustive()
     }
 }

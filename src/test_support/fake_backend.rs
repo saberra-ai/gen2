@@ -154,6 +154,11 @@ impl Gate {
         true
     }
 
+    /// Whether the generation has reached the hold, without waiting.
+    pub fn is_reached(&self) -> bool {
+        self.state.lock().unwrap().reached
+    }
+
     /// Let the generation continue. Never blocks, and is safe to call whether
     /// or not the stream ever reached the hold.
     pub fn open(&self) {

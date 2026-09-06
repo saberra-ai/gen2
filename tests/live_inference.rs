@@ -1586,3 +1586,177 @@ fn facade_dynamic_system_prompt_changes_the_next_turn() {
         after.text()
     );
 }
+
+/// §22: the same turn, awaited. One-shot text, a session turn, and a stream
+/// over the async surface, each producing real tokens.
+#[cfg(feature = "tokio")]
+#[tokio::test]
+async fn facade_run_async_produces_text() {
+    use gen2::output::FinishReason;
+    use gen2::{Session, ThinkingMode};
+
+    let Some(model) = facade_model() else {
+        eprintln!("SKIP: set PIO_TEST_MODEL");
+        return;
+    };
+
+    let text = model
+        .generate("Reply with the single word: hello")
+        .reasoning(ThinkingMode::Off)
+        .max_tokens(8)
+        .greedy()
+        .text_async()
+        .await
+        .expect("one-shot async text");
+    eprintln!("--- text_async: {text:?}");
+    assert!(!text.trim().is_empty(), "a real token came back");
+
+    let mut session = Session::new().with_system("Answer in one short sentence.");
+    let response = model
+        .turn(&mut session)
+        .user("What colour is the sky on a clear day?")
+        .reasoning(ThinkingMode::Off)
+        .max_tokens(32)
+        .greedy()
+        .run_async()
+        .await
+        .expect("an async turn");
+    eprintln!(
+        "--- run_async: {:?} · {:?}",
+        response.text(),
+        response.finish_reason()
+    );
+    assert!(!response.text().trim().is_empty());
+    assert!(matches!(
+        response.finish_reason(),
+        FinishReason::Stop | FinishReason::Length
+    ));
+    assert!(response.stats().reported());
+    assert_eq!(
+        response.message_id(),
+        session.active_ids().last().copied(),
+        "the reply was appended to the caller's session"
+    );
+    let roles: Vec<&str> = session.messages().iter().map(|m| m.role.as_str()).collect();
+    assert_eq!(roles, ["user", "assistant"]);
+
+    // The same session, blocking: the async turn left it continuable.
+    let follow = model
+        .turn(&mut session)
+        .user("And at night?")
+        .reasoning(ThinkingMode::Off)
+        .max_tokens(32)
+        .greedy()
+        .run()
+        .expect("a blocking follow-up");
+    eprintln!("--- follow-up: {:?}", follow.text());
+    assert!(!follow.text().trim().is_empty());
+    assert_eq!(session.len(), 4);
+}
+
+/// §22 streaming: the async stream yields the §15 events, `finish()` returns
+/// what was streamed, and a cancel from another task ends it as cancelled.
+#[cfg(feature = "tokio")]
+#[tokio::test]
+async fn facade_stream_async_yields_events_and_cancels_across_tasks() {
+    use futures::StreamExt;
+    use gen2::event::Event;
+    use gen2::output::FinishReason;
+    use gen2::{Session, ThinkingMode};
+
+    let Some(model) = facade_model() else {
+        eprintln!("SKIP: set PIO_TEST_MODEL");
+        return;
+    };
+
+    let mut session = Session::new();
+    let mut stream = model
+        .turn(&mut session)
+        .user("Reply with one short sentence about the sea.")
+        .reasoning(ThinkingMode::Off)
+        .max_tokens(32)
+        .greedy()
+        .stream_async()
+        .await
+        .expect("a stream starts");
+    let mut deltas = String::new();
+    let mut text_deltas = 0;
+    let mut last = None;
+    while let Some(event) = stream.next().await {
+        let event = event.expect("no event fails");
+        match &event {
+            Event::TextDelta(t) => {
+                text_deltas += 1;
+                deltas.push_str(t);
+            }
+            Event::Finished(_) => last = Some(event.clone()),
+            _ => {}
+        }
+    }
+    eprintln!("--- {text_deltas} text deltas: {deltas:?} · last {last:?}");
+    assert!(text_deltas >= 1, "at least one TextDelta");
+    assert!(
+        matches!(
+            last,
+            Some(Event::Finished(FinishReason::Stop | FinishReason::Length))
+        ),
+        "the last event is Finished: {last:?}"
+    );
+    let response = stream.finish().await.expect("the outcome");
+    assert_eq!(
+        response.text(),
+        deltas,
+        "finish() returns what was streamed"
+    );
+    assert!(response.stats().reported());
+    assert_eq!(response.message_id(), session.active_ids().last().copied());
+
+    // Cancel from a spawned task after the first delta (§16, across tasks).
+    let mut session = Session::new();
+    let mut stream = model
+        .turn(&mut session)
+        .user("Write a long story about a lighthouse keeper.")
+        .reasoning(ThinkingMode::Off)
+        .max_tokens(400)
+        .greedy()
+        .stream_async()
+        .await
+        .expect("a stream starts");
+    let cancel = stream.canceller();
+    let first = stream.next().await.expect("a first event").expect("ok");
+    eprintln!("--- first event before cancel: {first:?}");
+    tokio::spawn(async move { cancel.cancel() })
+        .await
+        .expect("the cancelling task");
+    let mut events = 0;
+    let mut last = None;
+    while let Some(event) = stream.next().await {
+        events += 1;
+        last = Some(event.expect("no event fails"));
+    }
+    eprintln!("--- {events} events after cancel · last {last:?}");
+    assert_eq!(last, Some(Event::Finished(FinishReason::Cancelled)));
+    assert!(
+        events < 300,
+        "the cancel cut the generation short: {events} events"
+    );
+    let response = stream.finish().await.expect("the outcome");
+    assert_eq!(*response.finish_reason(), FinishReason::Cancelled);
+    if let Some(id) = response.message_id() {
+        session
+            .remove_message(id)
+            .expect("the partial reply can be removed");
+    }
+    // The session runs again after a cancel.
+    let again = model
+        .turn(&mut session)
+        .user("Say hi.")
+        .reasoning(ThinkingMode::Off)
+        .max_tokens(8)
+        .greedy()
+        .run_async()
+        .await
+        .expect("a turn after a cancel");
+    eprintln!("--- after cancel: {:?}", again.text());
+    assert!(!again.text().trim().is_empty());
+}

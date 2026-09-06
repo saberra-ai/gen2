@@ -29,6 +29,8 @@ mod agent;
 mod agent_config;
 mod agent_spawned;
 #[cfg(feature = "tokio")]
+mod async_turn;
+#[cfg(feature = "tokio")]
 mod asynchronous;
 mod chat;
 mod classify;
@@ -56,6 +58,8 @@ pub mod turn;
 // engine below rather than beside it: a `Model` is an `Engine` with a
 // registry entry, and one-shot `Generation` is a `Chat` on a session it
 // throws away.
+#[cfg(feature = "tokio")]
+pub use async_turn::AsyncEventStream;
 pub use event::EventStream;
 pub use generation::Generation;
 pub use input::Input;
