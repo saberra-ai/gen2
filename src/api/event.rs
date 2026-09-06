@@ -276,10 +276,14 @@ impl StreamCore {
     }
 
     /// A closing event queued by [`StreamCore::complete`], if any is left.
+    /// Only the async bridge drains the queue this way; the sync iterator
+    /// reads it directly.
+    #[cfg(feature = "tokio")]
     pub(crate) fn pop_queued(&mut self) -> Option<Event> {
         self.queue.pop_front()
     }
 
+    #[cfg(feature = "tokio")]
     pub(crate) fn has_queued(&self) -> bool {
         !self.queue.is_empty()
     }
