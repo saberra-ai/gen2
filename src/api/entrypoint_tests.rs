@@ -14,9 +14,10 @@ use super::session::Session;
 use super::stream::Finish;
 use crate::test_support::{Gate, Script, Step};
 
+/// The system prompt and every active message, as one string.
 fn transcript(session: &Session) -> String {
     session
-        .messages()
+        .transcript()
         .iter()
         .map(|m| serde_json::to_string(m).unwrap_or_default())
         .collect::<Vec<_>>()
@@ -171,20 +172,82 @@ fn chat_streams_every_fragment_exactly_once() {
 
 #[test]
 fn the_system_prompt_is_set_once_and_not_repeated_per_turn() {
+    // The system prompt is session state, not a message, and the only place
+    // it rejoins the message list is what the engine is handed. So the proof
+    // is at the backend: it must see the prompt exactly once, at the start,
+    // and never again on the warm second turn.
     let engine = Engine::scripted(Script::new().say(["ok"]));
+    let script = engine.script().clone();
     let mut session = Session::new().with_system("Be terse.");
 
     engine.chat(&mut session).user("One").send().unwrap();
     engine.chat(&mut session).user("Two").send().unwrap();
 
-    let systems = session
-        .messages()
-        .iter()
-        .filter(|m| m.role == "system")
-        .count();
+    assert!(
+        session.messages().iter().all(|m| m.role != "system"),
+        "the prompt is not a message"
+    );
+    assert_eq!(session.system(), Some("Be terse."));
+    let seen = script.seen();
     assert_eq!(
-        systems, 1,
-        "a system prompt repeated per turn wastes context and confuses the model"
+        seen.iter().filter(|m| m.as_str() == "Be terse.").count(),
+        1,
+        "a system prompt repeated per turn wastes context and confuses the model: {seen:?}"
+    );
+    assert_eq!(
+        seen.first().map(String::as_str),
+        Some("Be terse."),
+        "and it leads the prompt the model was rendered from: {seen:?}"
+    );
+}
+
+#[test]
+fn changing_the_system_prompt_between_turns_reaches_the_model() {
+    // §18.1: a harness switches instructions without rebuilding the session.
+    // The change closes the conversation, so the next turn is rendered from
+    // the new prompt rather than continued against the old prefix.
+    let engine = Engine::scripted(Script::new().say(["ok"]));
+    let script = engine.script().clone();
+    let mut session = Session::new().with_system("Plan mode.");
+
+    engine.chat(&mut session).user("One").send().unwrap();
+    session.set_system("Build mode.");
+    engine.chat(&mut session).user("Two").send().unwrap();
+
+    let seen = script.seen();
+    let rebuilt = seen
+        .iter()
+        .rposition(|m| m == "Build mode.")
+        .expect("the new prompt never reached the backend");
+    assert!(
+        seen[rebuilt..].iter().any(|m| m == "One") && seen[rebuilt..].iter().any(|m| m == "Two"),
+        "the rebuild must carry the whole history under the new prompt: {seen:?}"
+    );
+}
+
+#[test]
+fn the_sessions_tools_reach_the_model_without_a_turn_naming_them() {
+    // §7.4: tools are session state. A turn that offers none of its own
+    // offers the session's, and changing the set between turns reopens the
+    // conversation so the model sees the new prefix.
+    use crate::api::tool_defs::ToolDefinition;
+    let engine = Engine::scripted(Script::new().say(["ok"]));
+    let script = engine.script().clone();
+    let mut session = Session::new();
+    session.add_tool(ToolDefinition::new("read").description("Read a file"));
+
+    engine.chat(&mut session).user("One").send().unwrap();
+    session.add_tool(ToolDefinition::new("write").description("Write a file"));
+    engine.chat(&mut session).user("Two").send().unwrap();
+
+    let sets = script.tools_seen();
+    assert_eq!(
+        sets,
+        vec![
+            vec!["read".to_string()],
+            vec!["read".to_string(), "write".to_string()]
+        ],
+        "each open must carry the session's tools of the moment"
     );
 }
 

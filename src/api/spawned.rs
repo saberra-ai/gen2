@@ -94,9 +94,9 @@ impl OwnedChat {
         self
     }
 
-    /// Append a system message.
+    /// Set the conversation's system prompt — see [`Session::set_system`].
     pub fn system(mut self, text: impl Into<String>) -> Self {
-        self.session.push(Message::system(text));
+        self.session.set_system(text);
         self
     }
 
@@ -164,7 +164,7 @@ impl OwnedChat {
     /// The conversation this turn belongs to.
     #[cfg(feature = "tokio")]
     pub(crate) fn session_id(&self) -> &str {
-        self.session.id()
+        self.session.id().as_str()
     }
 
     /// Run the turn to completion on the calling thread.

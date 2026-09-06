@@ -30,15 +30,45 @@ pub struct FunctionDefinition {
     #[serde(default)]
     pub description: Option<String>,
     pub name: String,
-    #[serde(alias = "parameters", serialize_with = "serialize_as_string")]
+    #[serde(
+        alias = "parameters",
+        serialize_with = "serialize_as_string",
+        deserialize_with = "deserialize_from_string"
+    )]
     pub arguments: serde_json::Value,
 }
 
+/// The inverse of [`serialize_as_string`]: a string holding a JSON object is
+/// read back as that object, so what was written is what is read. Anything
+/// else — an object already, or a string that is not JSON — is kept as it
+/// came.
+fn deserialize_from_string<'de, D>(deserializer: D) -> Result<serde_json::Value, D::Error>
+where
+    D: serde::Deserializer<'de>,
+{
+    let value = serde_json::Value::deserialize(deserializer)?;
+    Ok(match value {
+        serde_json::Value::String(s) => match serde_json::from_str::<serde_json::Value>(&s) {
+            Ok(parsed @ serde_json::Value::Object(_)) => parsed,
+            _ => serde_json::Value::String(s),
+        },
+        other => other,
+    })
+}
+
+/// Arguments go on the wire as a JSON *string* (the OpenAI shape). A value
+/// that is already a string — which is what reading that wire form back
+/// produces — is written as-is rather than quoted again, so a message
+/// survives any number of save/load cycles instead of gaining a layer of
+/// escaping on each.
 fn serialize_as_string<S>(value: &serde_json::Value, serializer: S) -> Result<S::Ok, S::Error>
 where
     S: serde::Serializer,
 {
-    serializer.serialize_str(&value.to_string())
+    match value {
+        serde_json::Value::String(s) => serializer.serialize_str(s),
+        other => serializer.serialize_str(&other.to_string()),
+    }
 }
 
 #[derive(Clone, Debug, Deserialize, Serialize)]
@@ -403,6 +433,31 @@ mod tests {
         let tm: TextMessage = m.into();
         assert_eq!(tm.content, "the answer is 42");
         assert!(!tm.content.contains("let me think"));
+    }
+
+    #[test]
+    fn tool_call_arguments_do_not_gain_escaping_per_round_trip() {
+        // Arguments serialize as a string. Reading that back yields a string
+        // value, and serializing *that* used to quote it again — so every
+        // save/load of a session with a tool call added a layer of escaping.
+        let call = ToolCall {
+            id: "c1".into(),
+            r#type: "function".into(),
+            function: FunctionDefinition {
+                description: None,
+                name: "t".into(),
+                arguments: serde_json::json!({"city": "Paris"}),
+            },
+        };
+        let once = serde_json::to_string(&call).unwrap();
+        let back: ToolCall = serde_json::from_str(&once).unwrap();
+        let twice = serde_json::to_string(&back).unwrap();
+        assert_eq!(once, twice, "the wire form must be a fixed point");
+        assert_eq!(back, call, "and reading it back is the identity");
+        assert!(
+            once.contains(r#""arguments":"{\"city\":\"Paris\"}""#),
+            "{once}"
+        );
     }
 
     #[test]

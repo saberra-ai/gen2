@@ -549,7 +549,7 @@ impl Engine {
     /// everything — but without it the map grows for the life of the process.
     pub fn forget(&self, session: &Session) {
         if let Ok(mut m) = self.sent_through.lock() {
-            m.remove(session.id());
+            m.remove(session.id().as_str());
         }
     }
 

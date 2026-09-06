@@ -264,14 +264,21 @@ fn the_caller_owns_the_transcript() {
         .greedy()
         .send()
         .unwrap();
-    assert_eq!(session.len(), 3, "system + user + assistant");
-    assert_eq!(session.messages()[0].role, "system");
+    // The system prompt is session state, not a message (api_spec.md §7.3).
+    assert_eq!(session.len(), 2, "user + assistant");
+    assert_eq!(session.system(), Some("Answer in one word."));
+    assert_eq!(session.messages()[0].role, "user");
     assert_eq!(session.latest().unwrap().role, "assistant");
 
     // Editing invalidates the engine's cached prefill, so the next turn is
     // answered from the edited history rather than the original.
-    session.edit(|m| m.truncate(1));
-    assert_eq!(session.len(), 1);
+    session.edit(|m| m.clear());
+    assert_eq!(session.len(), 0);
+    assert_eq!(
+        session.system(),
+        Some("Answer in one word."),
+        "instructions survive an edit"
+    );
 
     engine
         .chat(&mut session)
@@ -280,12 +287,26 @@ fn the_caller_owns_the_transcript() {
         .greedy()
         .send()
         .expect("a turn after an edit should succeed");
-    assert_eq!(session.len(), 3, "system + new user + new assistant");
+    assert_eq!(session.len(), 2, "new user + new assistant");
+    // Nothing was lost: the first exchange is still on record.
+    assert_eq!(
+        session.all_messages().len(),
+        4,
+        "two exchanges recorded, one active"
+    );
+    assert!(session.all_messages().iter().filter(|r| !r.active).count() == 2);
 
     // A transcript can be rebuilt from stored messages after a restart.
     let restored = Session::from_messages(session.messages().to_vec());
     assert_eq!(restored.len(), session.len());
     assert_ne!(restored.id(), session.id(), "a fresh conversation id");
+
+    // And the whole session — history included — round-trips as JSON.
+    let json = serde_json::to_string(&session).unwrap();
+    let back: Session = serde_json::from_str(&json).unwrap();
+    assert_eq!(back.id(), session.id());
+    assert_eq!(back.messages(), session.messages());
+    assert_eq!(back.all_messages().len(), 4);
 }
 
 /// Dropping the engine shuts the controller down and joins its thread.

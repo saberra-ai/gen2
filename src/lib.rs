@@ -170,10 +170,11 @@ pub(crate) mod zoo;
 // `controller` itself.
 
 /// The inference-first surface: a [`Runtime`] loads [`Model`]s, a model
-/// answers an [`Input`] with a [`Response`]. Supporting types live in
-/// [`model`], [`input`], and [`output`].
+/// answers an [`Input`] with a [`Response`]; a [`Session`] holds the
+/// conversation. Supporting types live in [`model`], [`input`], [`output`],
+/// [`session`], and [`tool_defs`].
 pub use api::{Input, Model, Response, Runtime};
-pub use api::{input, model, output};
+pub use api::{input, model, output, session, tool_defs};
 
 /// Load a model with a private runtime the returned [`Model`] keeps alive.
 ///

@@ -98,9 +98,14 @@ impl<'a> Chat<'a> {
         self
     }
 
-    /// Append a system message to the conversation.
+    /// Set the conversation's system prompt.
+    ///
+    /// The system prompt is session state, not a message — see
+    /// [`Session::set_system`]. Setting it here replaces whatever the session
+    /// had.
     pub fn system(self, text: impl Into<String>) -> Self {
-        self.message(Message::system(text))
+        self.session.set_system(text);
+        self
     }
 
     /// Append an already-built message.
@@ -197,7 +202,11 @@ impl<'a> Chat<'a> {
 
     // ── Tools and reasoning ─────────────────────────────────────────────────
 
-    /// Offer tools to the model. `prompt` introduces them in the template.
+    /// Offer tools to the model for this turn. `prompt` introduces them in the
+    /// template.
+    ///
+    /// Overrides the session's own [`Session::tools`] for this turn. A turn
+    /// that names none offers the session's set.
     pub fn tools(mut self, tools: Vec<ToolSpec>, prompt: impl Into<String>) -> Self {
         self.tools = Some((tools, prompt.into()));
         self
@@ -326,7 +335,10 @@ impl<'a> Chat<'a> {
 
             for call in &done.tool_calls {
                 let result = handler(call);
-                session_back.push(Message::tool_result(result));
+                // Tied to the call by the same id the transcript recorded for
+                // it, so the pair stays a pair — for a backend replaying it,
+                // and for the session's own round invariant.
+                session_back.push(Message::tool_result_for(as_message_call(call).id, result));
             }
             rounds += 1;
         }
@@ -382,10 +394,18 @@ impl<'a> Chat<'a> {
         let (tx, rx) = event_channel(engine.event_channel_capacity());
 
         // A conversation the engine already holds gets only what's new; one it
-        // doesn't gets the whole history.
+        // doesn't gets the whole history. Either way the system prompt travels
+        // at index 0 of what the engine sees — `Session::transcript` is where
+        // first-order state rejoins the message list.
         let start = !session.opened;
-        let messages = session.pending(engine.sent_through(session.id()));
+        let messages = session.pending(engine.sent_through(session.id().as_str()));
         let sent = session.len();
+
+        // Tools: this turn's, else the session's (api_spec.md §7.4).
+        let tools = self.tools.or_else(|| {
+            let set = session.tools();
+            (!set.is_empty()).then(|| (set.to_wire(), super::generation::TOOL_PROMPT.to_string()))
+        });
 
         let cmd = if start {
             ControllerCmd::StartChat {
@@ -395,7 +415,7 @@ impl<'a> Chat<'a> {
                 thinking: self.thinking,
                 model_id: None,
                 model_size_bytes: None,
-                tools: self.tools,
+                tools,
                 tx,
             }
         } else {
@@ -406,7 +426,7 @@ impl<'a> Chat<'a> {
                 // rebuilt instead of refused. `opened` is this layer's belief
                 // about a cache it does not own, and eviction happens without
                 // telling it.
-                transcript: session.messages().to_vec(),
+                transcript: session.transcript(),
                 gen_spec: self.spec,
                 model_id: None,
                 model_size_bytes: None,
@@ -441,11 +461,11 @@ fn settle(engine: &Engine, session: &mut Session, stream: &TokenStream) {
         return;
     };
     let already = if session.opened {
-        engine.sent_through(session.id())
+        engine.sent_through(session.id().as_str())
     } else {
         0
     };
-    engine.mark_sent(session.id(), already + delivered);
+    engine.mark_sent(session.id().as_str(), already + delivered);
     session.opened = true;
 }
 

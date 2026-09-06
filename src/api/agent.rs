@@ -480,7 +480,7 @@ impl<'a> Agent<'a> {
         let mut totals = Completion::default();
         let mut recent: VecDeque<(String, String)> = VecDeque::new();
         let mut spent_tokens: u32 = 0;
-        let ctx = ToolContext::new(session.id());
+        let ctx = ToolContext::new(session.id().as_str());
 
         for step in 0..=budgets.max_steps {
             if step == budgets.max_steps {

@@ -11,7 +11,7 @@ use super::session::Session;
 
 /// How tools are introduced to a model that is offered them one-shot. The
 /// same wording the agent loop uses, so a model behaves the same either way.
-const TOOL_PROMPT: &str =
+pub(crate) const TOOL_PROMPT: &str =
     "Call a tool when you need information or an action. Answer directly when you don't.";
 
 /// A one-shot generation being configured.

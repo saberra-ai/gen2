@@ -77,6 +77,14 @@ pub enum Error {
         raw: String,
     },
 
+    /// A session mutation was refused, and the session is unchanged.
+    ///
+    /// Raised by the editing operations on [`Session`](crate::Session) — an
+    /// id that names nothing, a projection that would show half a tool
+    /// round. Nothing was generated; the fix is in the caller's edit.
+    #[error("session: {0}")]
+    Session(#[from] crate::api::session::SessionError),
+
     /// An engine-internal error surfaced verbatim.
     #[error(transparent)]
     Exec(#[from] crate::engine::ExecError),
@@ -94,6 +102,7 @@ impl Error {
             Self::Unsupported(_) => Some("unsupported"),
             Self::InvalidRequest(_) => Some("invalid_request"),
             Self::Extraction { .. } => Some("extraction_failed"),
+            Self::Session(_) => Some("session"),
             _ => None,
         }
     }

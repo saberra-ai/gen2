@@ -117,10 +117,8 @@ fn the_session_that_comes_back_carries_what_the_caller_put_in() {
         .map(|m| serde_json::to_string(m).unwrap_or_default())
         .collect();
     let joined = text.join("\n");
-    assert!(
-        joined.contains("Be terse."),
-        "system prompt lost:\n{joined}"
-    );
+    // The system prompt is session state, not a message (api_spec.md §7.3).
+    assert_eq!(session.system(), Some("Be terse."), "system prompt lost");
     assert!(joined.contains("earlier turn"), "history lost:\n{joined}");
     assert!(joined.contains("Now this."), "this turn lost:\n{joined}");
 }

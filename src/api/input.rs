@@ -103,6 +103,61 @@ impl Input {
     }
 }
 
+impl crate::types::message::Message {
+    /// A user message from input parts, in the order given (api_spec.md §9.1).
+    ///
+    /// Text parts become text chunks and images become image chunks; a bare
+    /// image path becomes a `file://` URL. Text alone collapses to a plain
+    /// text message, joined with newlines, exactly as [`Message::user`](crate::Message::user) would
+    /// build it.
+    ///
+    /// ```
+    /// use gen2::{Message, input::InputPart};
+    ///
+    /// let m = Message::user_parts([
+    ///     InputPart::text("Describe this image"),
+    ///     InputPart::image("photo.png"),
+    /// ]);
+    /// assert_eq!(m.role, "user");
+    /// ```
+    pub fn user_parts(parts: impl IntoIterator<Item = InputPart>) -> Self {
+        use crate::types::message::{MessageBody, MessageChunk, MessageContent, Url, to_file_url};
+        let parts: Vec<InputPart> = parts.into_iter().collect();
+        if !parts.iter().any(|p| matches!(p, InputPart::Image(_))) {
+            let text = parts
+                .iter()
+                .filter_map(|p| match p {
+                    InputPart::Text(t) => Some(t.as_str()),
+                    _ => None,
+                })
+                .collect::<Vec<_>>()
+                .join("\n");
+            return Self::user(text);
+        }
+        let chunks = parts
+            .into_iter()
+            .filter_map(|p| match p {
+                InputPart::Text(text) => Some(MessageChunk::Text { text }),
+                InputPart::Image(image) => Some(MessageChunk::ImageUrl {
+                    image_url: Url {
+                        url: to_file_url(image.source()),
+                    },
+                }),
+                #[allow(unreachable_patterns)]
+                _ => None,
+            })
+            .collect();
+        Self {
+            role: "user".to_string(),
+            body: MessageBody::Content {
+                content: MessageContent::MultipleChunks(chunks),
+            },
+            name: None,
+            tool_call_id: None,
+        }
+    }
+}
+
 impl From<&str> for Input {
     fn from(text: &str) -> Self {
         Self::new().text(text)
@@ -194,6 +249,33 @@ mod tests {
         assert_eq!(msg.role, "user");
         assert!(matches!(
             msg.body,
+            MessageBody::Content {
+                content: MessageContent::SingleText(ref t)
+            } if t == "a\nb"
+        ));
+    }
+
+    #[test]
+    fn user_parts_keeps_the_order_given_and_normalises_paths() {
+        use crate::types::message::Message;
+        let m = Message::user_parts([
+            InputPart::image("/tmp/a.png"),
+            InputPart::text("what is this?"),
+        ]);
+        let MessageBody::Content {
+            content: MessageContent::MultipleChunks(chunks),
+        } = m.body
+        else {
+            panic!("an image part makes a chunked message");
+        };
+        assert!(
+            matches!(&chunks[0], MessageChunk::ImageUrl { image_url } if image_url.url == "file:///tmp/a.png")
+        );
+        assert!(matches!(&chunks[1], MessageChunk::Text { text } if text == "what is this?"));
+
+        let plain = Message::user_parts([InputPart::text("a"), InputPart::text("b")]);
+        assert!(matches!(
+            plain.body,
             MessageBody::Content {
                 content: MessageContent::SingleText(ref t)
             } if t == "a\nb"

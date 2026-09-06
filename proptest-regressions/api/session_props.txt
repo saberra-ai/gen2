@@ -1,0 +1,11 @@
+# Seeds for failure cases proptest has generated in the past. It is
+# automatically read and these particular cases re-run before any
+# novel cases are generated.
+#
+# It is recommended to check this file in to source control so that
+# everyone who runs the test benefits from these saved cases.
+cc 51f21f892366ed878e6873430ef647cd66d8c6c6ecb5017607996418b546096b # shrinks to ops = [ReplaceMessages(["a"])]
+cc e16d8d02e474360edfa61ebe0b8639bc4777f6f491cc6396f22675302ded3a79 # shrinks to ops = [PushRound { calls: 1, answered: 0 }, RoundTrip]
+cc 5a127e495afc74b630d534af7026bc64874f4170eb367653a90d03e5efb5cd56 # shrinks to ops = [ReplaceMessages(["a"]), RoundTrip]
+cc 1ca07efc6481a5c2178aae8b31ddf302f891e0c6645829e7444cd06bc3d85c59 # shrinks to ops = [Push("a"), Push("a"), ForkAt(2), RoundTrip]
+cc a184690148ce1d8464bcf32ecb05836ba97c7e6d935f0c5945b57d54d9199db0 # shrinks to ops = [ReplaceMessages(["a"]), Push("a"), ForkAt(6)]

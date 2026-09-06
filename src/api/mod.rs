@@ -43,9 +43,10 @@ pub mod model;
 pub mod output;
 mod response;
 mod runtime;
-mod session;
+pub mod session;
 mod spawned;
 mod stream;
+pub mod tool_defs;
 pub mod tools;
 
 // ── The inference-first facade (api_spec.md §4–§6) ──────────────────────────
@@ -58,6 +59,8 @@ pub use input::Input;
 pub use model::{Model, ModelId};
 pub use response::Response;
 pub use runtime::{RemoteModelBuilder, Runtime, RuntimeBuilder};
+pub use session::{MessageId, SessionEvent, SessionId, SessionRevision};
+pub use tool_defs::ToolDefinition;
 
 pub use agent::{
     Agent, AgentStep, ApprovalMode, DEFAULT_MAX_STEPS, Decision, Risk, SEARCH_TOOL, Steering,
