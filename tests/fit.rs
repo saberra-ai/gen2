@@ -13,8 +13,8 @@
 use std::io::{Seek, Write};
 use std::path::{Path, PathBuf};
 
-use gen2::api::{FitVerdict, ModelInfo};
-use gen2::{GpuBackend, HardwareProfile};
+use gen2::advanced::fit::{FitVerdict, ModelInfo};
+use gen2::advanced::runtime::{GpuBackend, HardwareProfile};
 
 // ── Synthetic inputs ────────────────────────────────────────────────────────
 

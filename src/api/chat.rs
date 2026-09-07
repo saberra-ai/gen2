@@ -18,7 +18,7 @@ use super::stream::{Completion, Finish, TokenStream, Tokens};
 /// managing it.
 ///
 /// ```no_run
-/// # use gen2::{Engine, Session};
+/// # use gen2::{legacy::Engine, Session};
 /// # let engine = Engine::load("m.gguf")?;
 /// let mut session = Session::new();
 /// engine.chat(&mut session)
@@ -29,6 +29,9 @@ use super::stream::{Completion, Finish, TokenStream, Tokens};
 /// # Ok::<(), gen2::Error>(())
 /// ```
 #[must_use = "a Chat does nothing until .send(), .text(), .stream(), or .tokens() is called"]
+// Named through its deprecated alias in `crate::legacy`; the lint cannot see
+// through a type alias.
+#[allow(unnameable_types)]
 pub struct Chat<'a> {
     engine: &'a Engine,
     session: &'a mut Session,
@@ -90,7 +93,7 @@ impl<'a> Chat<'a> {
     /// [`EngineBuilder::mmproj`](super::EngineBuilder::mmproj).
     ///
     /// ```no_run
-    /// # use gen2::{Engine, Session};
+    /// # use gen2::{legacy::Engine, Session};
     /// # let engine = Engine::load("m.gguf")?;
     /// # let mut session = Session::new();
     /// engine.chat(&mut session)
@@ -254,7 +257,7 @@ impl<'a> Chat<'a> {
     /// results that came back. `f` returns the tool's output as text.
     ///
     /// ```no_run
-    /// # use gen2::{Engine, Session};
+    /// # use gen2::{legacy::Engine, Session};
     /// # let engine = Engine::load("m.gguf")?;
     /// # let mut session = Session::new();
     /// # let (tools, prompt) = (vec![], String::new());

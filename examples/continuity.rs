@@ -29,11 +29,16 @@ use std::path::PathBuf;
 use std::sync::Arc;
 use std::time::Duration;
 
-use gen2::schemars::JsonSchema;
-use gen2::{
-    AgentConfig, Completion, Engine, Finish, FunctionTool, Message, Session, ToolError, ToolOutput,
-    ToolSet, Update,
+use gen2::advanced::wire::MessageBody;
+use gen2::agent::{
+    AgentConfig, Completion, Finish, FunctionTool, ToolError, ToolOutput, ToolSet, Update,
 };
+// A spawned agent owns an `Arc<Engine>` so `interrupt` can stop a generation;
+// the previous facade is the only way to hand it one today.
+#[allow(deprecated)]
+use gen2::legacy::Engine;
+use gen2::schemars::JsonSchema;
+use gen2::{Message, Session};
 use serde::Deserialize;
 
 // ── A tool set, composed once ───────────────────────────────────────────────
@@ -157,7 +162,7 @@ fn repair(mut session: Session) -> Session {
         // Walk backwards so removing an entry cannot shift one not yet seen.
         for i in (0..messages.len()).rev() {
             let unanswered: Vec<String> = match &messages[i].body {
-                gen2::MessageBody::Tool { tool_calls } => tool_calls
+                MessageBody::Tool { tool_calls } => tool_calls
                     .iter()
                     .filter(|c| !answered.contains(&c.id))
                     .map(|c| c.id.clone())
@@ -201,6 +206,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let notes = PathBuf::from(".agent-notes.md");
 
     // `Arc` because a spawned run needs an engine that outlives this scope.
+    #[allow(deprecated)]
     let engine = Arc::new(Engine::builder().model(&model).context(8192).build()?);
     let session = restore(&state, &notes);
 

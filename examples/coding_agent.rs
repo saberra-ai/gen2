@@ -30,11 +30,12 @@
 use std::path::{Path, PathBuf};
 use std::time::Duration;
 
-use gen2::schemars::JsonSchema;
-use gen2::{
-    AgentStep, ApprovalMode, Budget, Engine, ExecutionPolicy, Finish, FunctionTool, Session,
-    Struggle, ToolError, ToolOutput,
+use gen2::Session;
+use gen2::agent::{
+    Agent, AgentStep, ApprovalMode, Budget, ExecutionPolicy, Finish, FunctionTool, Struggle,
+    ToolError, ToolOutput,
 };
+use gen2::schemars::JsonSchema;
 use serde::Deserialize;
 
 /// Everything the agent may touch. Passed to each tool by cloning it into the
@@ -302,7 +303,7 @@ fn walk(dir: &Path, visit: &mut impl FnMut(&Path)) {
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut args = std::env::args().skip(1);
-    let model = args
+    let path = args
         .next()
         .ok_or("usage: coding_agent <model.gguf> <task>")?;
     let task: String = args.collect::<Vec<_>>().join(" ");
@@ -314,9 +315,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         root: std::env::current_dir()?,
     };
 
-    // One engine, loaded once. It owns the controller thread and shuts it down
-    // when dropped.
-    let engine = Engine::builder().model(&model).context(8192).build()?;
+    // One model, loaded once, sized to the machine. Its runtime owns the
+    // controller thread and shuts it down when the handle drops.
+    let model = gen2::load(&path)?;
 
     // The conversation. It is the caller's, not the engine's — which is what
     // makes the run inspectable afterwards, and what an application would
@@ -329,8 +330,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
     println!("task: {task}\n");
 
-    let done = engine
-        .agent(&mut session)
+    let done = Agent::on(&model, &mut session)
         .add_tool(read_file(workspace.clone()))
         .add_tool(list_files(workspace.clone()))
         .add_tool(search(workspace.clone()))

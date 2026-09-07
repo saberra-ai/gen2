@@ -1,11 +1,15 @@
 //! An agent: tools registered, dispatch owned by the crate, hydration on demand.
 //!
+//! The agent loop lives above the inference core, in `gen2::agent` behind the
+//! `agent` feature (on by default).
+//!
 //! ```sh
-//! cargo run --example agent --no-default-features --features metal -- /path/model.gguf
+//! cargo run --example agent --features metal -- /path/model.gguf
 //! ```
 
+use gen2::Session;
+use gen2::agent::{Agent, AgentStep, ExecutionPolicy, FunctionTool, ToolOutput, ToolSearch};
 use gen2::schemars::JsonSchema;
-use gen2::{AgentStep, Engine, ExecutionPolicy, FunctionTool, Session, ToolOutput, ToolSearch};
 use serde::Deserialize;
 
 #[derive(Deserialize, JsonSchema)]
@@ -23,8 +27,8 @@ struct ResizeArgs {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let model = std::env::args().nth(1).ok_or("usage: agent <model.gguf>")?;
-    let engine = Engine::load(&model)?;
+    let path = std::env::args().nth(1).ok_or("usage: agent <model.gguf>")?;
+    let model = gen2::load(&path)?;
     let mut session = Session::new();
 
     let weather = FunctionTool::new(
@@ -51,8 +55,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     )
     .with_policy(ExecutionPolicy::gpu_bound());
 
-    let done = engine
-        .agent(&mut session)
+    let done = Agent::on(&model, &mut session)
         .add_tool(weather)
         .defer_tool(resize)
         .tool_search(ToolSearch::Hybrid)

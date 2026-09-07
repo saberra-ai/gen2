@@ -85,6 +85,7 @@ mod live {
     /// replay to the model as a call and a result rather than as an empty
     /// assistant turn. That half broke silently until `tool_calls_of` existed,
     /// and nothing but an end-to-end run would have said so.
+    #[cfg(feature = "agent")]
     #[test]
     #[ignore = "needs PIO_TEST_MISTRALRS_MODEL"]
     fn a_tool_call_and_its_result_replay_to_the_model() {

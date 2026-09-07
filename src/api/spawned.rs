@@ -18,6 +18,9 @@ use super::stream::Completion;
 /// `#[non_exhaustive]`: match with a trailing `_ =>`.
 #[derive(Debug)]
 #[non_exhaustive]
+// Named through its deprecated alias in `crate::legacy`; the lint cannot see
+// through a type alias.
+#[allow(unnameable_types)]
 pub enum Update {
     /// A fragment of text, as it was decoded.
     Delta(String),
@@ -31,6 +34,7 @@ pub enum Update {
     },
     /// A tool finished. The `Err` arm carries the real error so a consumer can
     /// ask whether the model gets to correct it.
+    #[cfg(feature = "agent")]
     ToolResult {
         id: String,
         tool: String,
@@ -58,6 +62,9 @@ pub enum Update {
 /// what lets the work outlive the calling scope. The session comes back on
 /// [`Update::Done`].
 #[must_use = "an OwnedChat does nothing until .spawn() is called"]
+// Named through its deprecated alias in `crate::legacy`; the lint cannot see
+// through a type alias.
+#[allow(unnameable_types)]
 pub struct OwnedChat {
     engine: Arc<Engine>,
     session: Session,
@@ -206,7 +213,7 @@ impl OwnedChat {
     ///
     /// ```no_run
     /// # use std::sync::Arc;
-    /// # use gen2::{Engine, Session, Update};
+    /// # use gen2::{legacy::{Engine, Update}, Session};
     /// # let engine = Arc::new(Engine::load("m.gguf")?);
     /// let turn = engine.chat_owned(Session::new()).user("Hello").spawn();
     ///
@@ -265,6 +272,9 @@ impl std::fmt::Debug for OwnedChat {
 ///
 /// Iterate it for [`Update`]s. The channel closes when the turn ends, so a
 /// `for` loop over it terminates on its own.
+// Named through its deprecated alias in `crate::legacy`; the lint cannot see
+// through a type alias.
+#[allow(unnameable_types)]
 pub struct Turn {
     rx: Receiver<Update>,
     engine: Arc<Engine>,
@@ -327,6 +337,9 @@ impl std::fmt::Debug for Turn {
 
 /// Cancels a running [`Turn`] from anywhere. Cheap to clone.
 #[derive(Clone, Debug)]
+// Named through its deprecated alias in `crate::legacy`; the lint cannot see
+// through a type alias.
+#[allow(unnameable_types)]
 pub struct Canceller {
     engine: Arc<Engine>,
     session_id: String,

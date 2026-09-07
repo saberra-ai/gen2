@@ -20,10 +20,14 @@
 //! no "backend unavailable" escape hatch.
 
 #![cfg(feature = "backend-llamacpp")]
+// The first half of this file drives the previous facade, which stays until
+// pio-app has switched (roadmap S5); its types are deprecated aliases now.
+#![allow(deprecated)]
 
 use std::path::PathBuf;
 
-use gen2::{Engine, Event, Finish, Session};
+use gen2::Session;
+use gen2::legacy::{Engine, Event, Finish};
 
 fn test_model() -> Option<PathBuf> {
     let raw = std::env::var("PIO_TEST_MODEL").ok()?;
@@ -478,10 +482,10 @@ fn tool_model() -> Option<PathBuf> {
     Some(path)
 }
 
-fn weather_tool() -> gen2::ToolSpec {
-    gen2::ToolSpec {
+fn weather_tool() -> gen2::advanced::wire::ToolSpec {
+    gen2::advanced::wire::ToolSpec {
         r#type: "function".into(),
-        function: gen2::FunctionDefinition {
+        function: gen2::advanced::wire::FunctionDefinition {
             name: "get_weather".into(),
             description: Some("Current weather for a city".into()),
             arguments: serde_json::json!({
@@ -558,6 +562,7 @@ fn a_session_survives_outgrowing_the_context_window() {
 
 /// The agent owns dispatch: it resolves the tool the model named, validates the
 /// arguments against that tool's schema, and records both halves of the turn.
+#[cfg(feature = "agent")]
 #[test]
 fn an_agent_dispatches_a_registered_tool_and_answers_from_it() {
     let Some(model) = tool_model() else {
@@ -576,7 +581,7 @@ fn an_agent_dispatches_a_registered_tool_and_answers_from_it() {
         .run_streaming(
             Some("What is the weather in Paris? Use the tool.".into()),
             |step| {
-                if let gen2::AgentStep::Calling { tool, .. } = step {
+                if let gen2::agent::AgentStep::Calling { tool, .. } = step {
                     calls.push(tool.to_string());
                 }
             },
@@ -599,6 +604,7 @@ fn an_agent_dispatches_a_registered_tool_and_answers_from_it() {
 
 /// A deferred tool is absent from the prompt until the model searches for it,
 /// at which point its spec joins the conversation.
+#[cfg(feature = "agent")]
 #[test]
 fn an_agent_hydrates_a_deferred_tool_through_search() {
     let Some(model) = tool_model() else {
@@ -614,7 +620,7 @@ fn an_agent_hydrates_a_deferred_tool_through_search() {
         .agent(&mut session)
         .add_tool(weather_agent_tool())
         .defer_tool(resize_agent_tool())
-        .tool_search(gen2::ToolSearch::Bm25)
+        .tool_search(gen2::agent::ToolSearch::Bm25)
         .max_steps(4)
         .run_streaming(
             Some(
@@ -623,7 +629,7 @@ fn an_agent_hydrates_a_deferred_tool_through_search() {
                     .into(),
             ),
             |step| {
-                if let gen2::AgentStep::Calling { tool, .. } = step {
+                if let gen2::agent::AgentStep::Calling { tool, .. } = step {
                     calls.push(tool.to_string());
                 }
             },
@@ -631,39 +637,46 @@ fn an_agent_hydrates_a_deferred_tool_through_search() {
         .expect("the agent should complete");
 
     assert!(
-        calls.contains(&gen2::SEARCH_TOOL.to_string()),
+        calls.contains(&gen2::agent::SEARCH_TOOL.to_string()),
         "the model should have searched, got {calls:?}"
     );
 }
 
-fn weather_agent_tool() -> gen2::FunctionTool<WeatherArgs> {
-    gen2::FunctionTool::new(
+#[cfg(feature = "agent")]
+fn weather_agent_tool() -> gen2::agent::FunctionTool<WeatherArgs> {
+    gen2::agent::FunctionTool::new(
         "get_weather",
         "Current weather for a city",
         |_ctx, a: WeatherArgs| async move {
-            Ok(gen2::ToolOutput::Json(serde_json::json!({
+            Ok(gen2::agent::ToolOutput::Json(serde_json::json!({
                 "city": a.city, "temp_c": 18, "sky": "clear"
             })))
         },
     )
 }
 
-fn resize_agent_tool() -> gen2::FunctionTool<ResizeArgs> {
-    gen2::FunctionTool::new(
+#[cfg(feature = "agent")]
+fn resize_agent_tool() -> gen2::agent::FunctionTool<ResizeArgs> {
+    gen2::agent::FunctionTool::new(
         "resize_image",
         "Shrink a picture to a smaller width",
         |_ctx, a: ResizeArgs| async move {
-            Ok(gen2::ToolOutput::from(format!("resized to {}px", a.width)))
+            Ok(gen2::agent::ToolOutput::from(format!(
+                "resized to {}px",
+                a.width
+            )))
         },
     )
 }
 
+#[cfg(feature = "agent")]
 #[derive(serde::Deserialize, gen2::schemars::JsonSchema)]
 struct WeatherArgs {
     /// City to look up.
     city: String,
 }
 
+#[cfg(feature = "agent")]
 #[derive(serde::Deserialize, gen2::schemars::JsonSchema)]
 struct ResizeArgs {
     /// Target width in pixels.
@@ -677,6 +690,7 @@ struct ResizeArgs {
 /// meaningless. Each tool raises a counter on entry and lowers it on exit, so a
 /// peak above one is direct evidence two ran at the same time — the property
 /// `ExecutionPolicy::parallel_safe` is supposed to buy.
+#[cfg(feature = "agent")]
 #[test]
 fn parallel_safe_tools_in_one_turn_run_concurrently() {
     use std::sync::Arc;
@@ -697,7 +711,7 @@ fn parallel_safe_tools_in_one_turn_run_concurrently() {
                 live: Arc<AtomicUsize>,
                 peak: Arc<AtomicUsize>,
                 total: Arc<AtomicUsize>| {
-        gen2::FunctionTool::new(
+        gen2::agent::FunctionTool::new(
             name,
             format!("Check the {name} system"),
             move |_c, _a: NoArgs| {
@@ -709,7 +723,7 @@ fn parallel_safe_tools_in_one_turn_run_concurrently() {
                     tokio::time::sleep(std::time::Duration::from_millis(300)).await;
                     live.fetch_sub(1, Ordering::SeqCst);
                     total.fetch_add(1, Ordering::SeqCst);
-                    Ok(gen2::ToolOutput::from("ok"))
+                    Ok(gen2::agent::ToolOutput::from("ok"))
                 }
             },
         )
@@ -745,6 +759,7 @@ fn parallel_safe_tools_in_one_turn_run_concurrently() {
 struct NoArgs {}
 
 /// A spawned agent streams updates and can be steered mid-run.
+#[cfg(feature = "agent")]
 #[test]
 fn a_spawned_agent_interrupt_cuts_the_generation_short() {
     use std::sync::Arc;
@@ -765,7 +780,7 @@ fn a_spawned_agent_interrupt_cuts_the_generation_short() {
         .max_steps(1)
         .spawn()
     {
-        if let gen2::Update::Delta(t) = update {
+        if let gen2::agent::Update::Delta(t) = update {
             baseline += t.len();
         }
     }
@@ -791,9 +806,9 @@ fn a_spawned_agent_interrupt_cuts_the_generation_short() {
     let mut saw_done = false;
     for update in run {
         match update {
-            gen2::Update::Delta(t) => chars += t.len(),
-            gen2::Update::Done { .. } => saw_done = true,
-            gen2::Update::Failed { error, .. } => panic!("run failed: {error}"),
+            gen2::agent::Update::Delta(t) => chars += t.len(),
+            gen2::agent::Update::Done { .. } => saw_done = true,
+            gen2::agent::Update::Failed { error, .. } => panic!("run failed: {error}"),
             _ => {}
         }
     }
@@ -812,6 +827,7 @@ fn a_spawned_agent_interrupt_cuts_the_generation_short() {
 
 /// The borrowed agent cannot stop a generation; it says so rather than
 /// pretending.
+#[cfg(feature = "agent")]
 #[test]
 fn a_borrowed_agent_cannot_cut_a_generation_short() {
     let mut session = Session::new();
@@ -841,6 +857,7 @@ fn a_borrowed_agent_cannot_cut_a_generation_short() {
 /// It deliberately does *not* assert that the model calls the new tool. It can
 /// and does, but greedily this model declines given a transcript full of the
 /// old one, and that is a fact about the model, not about the reopen.
+#[cfg(feature = "agent")]
 #[test]
 fn a_session_survives_a_tool_set_change_between_runs() {
     let Some(model) = tool_model() else {
@@ -895,13 +912,17 @@ fn a_session_survives_a_tool_set_change_between_runs() {
     }
 }
 
-use gen2::AgentStep as pio_agent_step;
+#[cfg(feature = "agent")]
+use gen2::agent::AgentStep as pio_agent_step;
 
-fn named_tool(name: &'static str) -> gen2::FunctionTool<WeatherArgs> {
-    gen2::FunctionTool::new(
+#[cfg(feature = "agent")]
+fn named_tool(name: &'static str) -> gen2::agent::FunctionTool<WeatherArgs> {
+    gen2::agent::FunctionTool::new(
         name,
         format!("The {name} tool — call it with any city"),
-        |_c, a: WeatherArgs| async move { Ok(gen2::ToolOutput::from(format!("ok for {}", a.city))) },
+        |_c, a: WeatherArgs| async move {
+            Ok(gen2::agent::ToolOutput::from(format!("ok for {}", a.city)))
+        },
     )
 }
 
@@ -1020,6 +1041,7 @@ fn a_swap_refused_up_front_does_not_disturb_the_loaded_model() {
 /// whole run — constraining every turn would forbid the tool-call syntax the
 /// model needs to get anywhere. So this checks both halves: the tool still ran,
 /// and the answer still parses.
+#[cfg(feature = "agent")]
 #[test]
 fn an_agent_can_return_a_structured_answer() {
     let Some(model) = tool_model() else {
@@ -1046,7 +1068,7 @@ fn an_agent_can_return_a_structured_answer() {
         .max_steps(4)
         .greedy()
         .answer_as(
-            gen2::GrammarSpec::JsonSchema(schema),
+            gen2::advanced::generation::GrammarSpec::JsonSchema(schema),
             "Give the final answer as JSON with keys city and temperature_c.",
         )
         .run_streaming(
@@ -1244,9 +1266,10 @@ fn weather_definition() -> gen2::tool_defs::ToolDefinition {
 /// model runs again with no new user message and answers from the result.
 #[test]
 fn facade_tool_loop_declares_a_call_and_answers_from_the_result() {
+    use gen2::Session;
+    use gen2::model::ThinkingMode;
     use gen2::output::FinishReason;
     use gen2::tool_defs::ToolSet;
-    use gen2::{Session, ThinkingMode};
 
     let Some(model) = facade_model() else {
         eprintln!("SKIP: set PIO_TEST_MODEL");
@@ -1325,9 +1348,10 @@ fn facade_tool_loop_declares_a_call_and_answers_from_the_result() {
 /// reasoning channel on, thinking arrives as `ReasoningDelta`, not as text.
 #[test]
 fn facade_streaming_yields_semantic_events() {
+    use gen2::Session;
     use gen2::event::Event;
+    use gen2::model::ThinkingMode;
     use gen2::output::FinishReason;
-    use gen2::{Session, ThinkingMode};
 
     let Some(model) = facade_model() else {
         eprintln!("SKIP: set PIO_TEST_MODEL");
@@ -1472,9 +1496,10 @@ fn facade_structured_output_is_typed_and_grammar_enforced() {
 /// harness can drop it from the active context without losing the record.
 #[test]
 fn facade_cancellation_keeps_the_partial_reply_and_lets_the_harness_remove_it() {
+    use gen2::Session;
     use gen2::event::Event;
+    use gen2::model::ThinkingMode;
     use gen2::output::FinishReason;
-    use gen2::{Session, ThinkingMode};
 
     let Some(model) = facade_model() else {
         eprintln!("SKIP: set PIO_TEST_MODEL");
@@ -1542,7 +1567,8 @@ fn facade_cancellation_keeps_the_partial_reply_and_lets_the_harness_remove_it() 
 /// change is only a revision bump — no message moved.
 #[test]
 fn facade_dynamic_system_prompt_changes_the_next_turn() {
-    use gen2::{Session, ThinkingMode};
+    use gen2::Session;
+    use gen2::model::ThinkingMode;
 
     let Some(model) = facade_model() else {
         eprintln!("SKIP: set PIO_TEST_MODEL");
@@ -1592,8 +1618,9 @@ fn facade_dynamic_system_prompt_changes_the_next_turn() {
 #[cfg(feature = "tokio")]
 #[tokio::test]
 async fn facade_run_async_produces_text() {
+    use gen2::Session;
+    use gen2::model::ThinkingMode;
     use gen2::output::FinishReason;
-    use gen2::{Session, ThinkingMode};
 
     let Some(model) = facade_model() else {
         eprintln!("SKIP: set PIO_TEST_MODEL");
@@ -1660,9 +1687,10 @@ async fn facade_run_async_produces_text() {
 #[tokio::test]
 async fn facade_stream_async_yields_events_and_cancels_across_tasks() {
     use futures::StreamExt;
+    use gen2::Session;
     use gen2::event::Event;
+    use gen2::model::ThinkingMode;
     use gen2::output::FinishReason;
-    use gen2::{Session, ThinkingMode};
 
     let Some(model) = facade_model() else {
         eprintln!("SKIP: set PIO_TEST_MODEL");
@@ -1787,7 +1815,8 @@ fn two_model_paths() -> Option<(PathBuf, PathBuf)> {
 /// mid-chat. The second model answers from what the first was told.
 #[test]
 fn facade_switches_models_mid_chat_and_the_second_remembers_bob() {
-    use gen2::{Runtime, Session, ThinkingMode};
+    use gen2::model::ThinkingMode;
+    use gen2::{Runtime, Session};
 
     let Some((first, second)) = two_model_paths() else {
         return;
@@ -1841,7 +1870,8 @@ fn facade_switches_models_mid_chat_and_the_second_remembers_bob() {
 /// shape is asserted.
 #[test]
 fn facade_switching_away_and_back_answers_from_the_other_models_reply() {
-    use gen2::{Runtime, Session, ThinkingMode};
+    use gen2::model::ThinkingMode;
+    use gen2::{Runtime, Session};
 
     let Some((first, second)) = two_model_paths() else {
         return;
@@ -1942,7 +1972,8 @@ fn facade_switching_away_and_back_answers_from_the_other_models_reply() {
 /// again, and the weights come back.
 #[test]
 fn facade_evicted_model_is_restored_by_its_next_generation() {
-    use gen2::{Runtime, ThinkingMode};
+    use gen2::Runtime;
+    use gen2::model::ThinkingMode;
 
     let Some((first, second)) = two_model_paths() else {
         return;
@@ -1992,7 +2023,8 @@ fn facade_evicted_model_is_restored_by_its_next_generation() {
 /// serialises them; both complete.
 #[test]
 fn facade_two_sessions_on_one_model_run_from_two_threads() {
-    use gen2::{Session, ThinkingMode};
+    use gen2::Session;
+    use gen2::model::ThinkingMode;
 
     let Some(model) = facade_model() else {
         eprintln!("SKIP: set PIO_TEST_MODEL");

@@ -199,7 +199,7 @@ impl std::fmt::Display for ModelId {
 /// What a model is, without backend internals.
 ///
 /// Format, quantization, and weight size for a local file are on
-/// [`gen2::ModelInfo`](crate::ModelInfo), read from the header.
+/// [`gen2::advanced::fit::ModelInfo`](crate::advanced::fit::ModelInfo), read from the header.
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[non_exhaustive]
 pub struct ModelInfo {

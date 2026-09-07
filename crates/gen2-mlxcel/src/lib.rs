@@ -1,15 +1,15 @@
 //! mlxcel as a `gen2` backend — fast MLX inference embedded via the
 //! [`mlxcel`] crate (Rust + MLX C++ bindings, decode ≈ mlx-lm).
 //!
-//! Register it with the engine builder and every safetensors model directory
+//! Register it with the runtime builder and every safetensors model directory
 //! routes here:
 //!
 //! ```no_run
-//! let engine = gen2::Engine::builder()
-//!     .model("/models/qwen3-0.6b-4bit")
+//! let runtime = gen2::Runtime::builder()
 //!     .backend(gen2_mlxcel::plugin())
 //!     .build()?;
-//! let text = engine.infer("Reply with one word: hello").max_tokens(8).text()?;
+//! let model = runtime.load("/models/qwen3-0.6b-4bit")?;
+//! let text = model.generate("Reply with one word: hello").max_tokens(8).text()?;
 //! # Ok::<(), gen2::Error>(())
 //! ```
 //!
@@ -103,7 +103,7 @@ pub fn claims(path: &Path) -> bool {
 }
 
 /// The backend as a plugin, ready for
-/// [`EngineBuilder::backend`](gen2::EngineBuilder::backend).
+/// [`RuntimeBuilder::backend`](gen2::advanced::runtime::RuntimeBuilder::backend).
 ///
 /// Claims safetensors model directories (see [`claims`]). The engine is built
 /// on the controller's thread and spawns its own MLX worker thread there.

@@ -199,6 +199,12 @@ pub struct Agent<'a> {
 }
 
 impl<'a> Agent<'a> {
+    /// An agent over a [`Model`](crate::Model)'s engine — the entry point
+    /// for a consumer on the new surface, who never names the engine.
+    pub fn on(model: &'a crate::api::Model, session: &'a mut Session) -> Self {
+        Self::new(model.engine(), session)
+    }
+
     pub(crate) fn new(engine: &'a Engine, session: &'a mut Session) -> Self {
         Self {
             engine,

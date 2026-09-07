@@ -69,6 +69,7 @@ impl ToolDefinition {
     }
 }
 
+#[cfg(feature = "agent")]
 impl From<crate::api::tools::ToolSpec> for ToolDefinition {
     fn from(spec: crate::api::tools::ToolSpec) -> Self {
         Self {
@@ -79,6 +80,7 @@ impl From<crate::api::tools::ToolSpec> for ToolDefinition {
     }
 }
 
+#[cfg(feature = "agent")]
 impl From<&crate::api::tools::ToolSpec> for ToolDefinition {
     fn from(spec: &crate::api::tools::ToolSpec) -> Self {
         Self::from(spec.clone())
@@ -339,6 +341,7 @@ mod tests {
         assert_eq!(back[0].r#type, "function");
     }
 
+    #[cfg(feature = "agent")]
     #[test]
     fn an_executable_spec_converts_to_a_definition() {
         let spec = crate::api::tools::ToolSpec::new("read", "Read a file", serde_json::json!({}));

@@ -367,7 +367,7 @@ mod tests {
     use crate::generation::GenSpec;
     use crate::generation::TokenEvent;
     use crate::session_rt::SessionSpec;
-    use crate::{Message, MessageBody, MessageContent};
+    use crate::types::message::{Message, MessageBody, MessageContent};
     use std::path::PathBuf;
 
     #[test]

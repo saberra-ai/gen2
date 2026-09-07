@@ -17,7 +17,9 @@
 use std::hint::black_box;
 use std::time::{Duration, Instant};
 
-use gen2::{GrammarSpec, HardwareProfile, ModelInfo};
+use gen2::advanced::fit::ModelInfo;
+use gen2::advanced::generation::GrammarSpec;
+use gen2::advanced::runtime::HardwareProfile;
 
 /// Run `f` enough times to be worth timing, and report the per-iteration cost.
 fn bench(name: &str, iterations: u32, mut f: impl FnMut()) {

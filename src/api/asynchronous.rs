@@ -19,7 +19,9 @@ use std::task::{Context, Poll};
 use futures::Stream;
 use tokio::sync::mpsc::{UnboundedReceiver, unbounded_channel};
 
+#[cfg(feature = "agent")]
 use super::agent::Steering;
+#[cfg(feature = "agent")]
 use super::agent_spawned::OwnedAgent;
 use super::engine::Engine;
 use super::error::{Error, Result};
@@ -36,7 +38,7 @@ impl OwnedChat {
     /// ```no_run
     /// # use std::sync::Arc;
     /// # use futures::StreamExt;
-    /// # use gen2::{Engine, Session, Update};
+    /// # use gen2::{legacy::{Engine, Update}, Session};
     /// # async fn demo() -> Result<(), gen2::Error> {
     /// # let engine = Arc::new(Engine::load("m.gguf")?);
     /// let mut turn = engine.chat_owned(Session::new()).user("Hello").spawn_async();
@@ -116,6 +118,7 @@ impl OwnedChat {
     }
 }
 
+#[cfg(feature = "agent")]
 impl OwnedAgent {
     /// Run the agent on a blocking worker, streaming [`Update`]s back.
     ///
@@ -126,7 +129,7 @@ impl OwnedAgent {
     /// ```no_run
     /// # use std::sync::Arc;
     /// # use futures::StreamExt;
-    /// # use gen2::{Engine, Session, Update};
+    /// # use gen2::{legacy::Engine, agent::Update, Session};
     /// # async fn demo() -> Result<(), gen2::Error> {
     /// # let engine = Arc::new(Engine::load("m.gguf")?);
     /// let mut run = engine.agent_owned(Session::new())
@@ -169,6 +172,7 @@ impl OwnedAgent {
 }
 
 /// An agent running on a blocking worker, yielding [`Update`]s as a [`Stream`].
+#[cfg(feature = "agent")]
 pub struct AsyncAgentRun {
     rx: UnboundedReceiver<Update>,
     steering: Steering,
@@ -176,6 +180,7 @@ pub struct AsyncAgentRun {
     join: Option<tokio::task::JoinHandle<()>>,
 }
 
+#[cfg(feature = "agent")]
 impl AsyncAgentRun {
     /// A handle for injecting messages while this runs.
     pub fn steering(&self) -> Steering {
@@ -188,6 +193,7 @@ impl AsyncAgentRun {
     }
 }
 
+#[cfg(feature = "agent")]
 impl Stream for AsyncAgentRun {
     type Item = Update;
 
@@ -196,6 +202,7 @@ impl Stream for AsyncAgentRun {
     }
 }
 
+#[cfg(feature = "agent")]
 impl Drop for AsyncAgentRun {
     fn drop(&mut self) {
         // Abort rather than join: a drop can happen inside async context, where
@@ -206,6 +213,7 @@ impl Drop for AsyncAgentRun {
     }
 }
 
+#[cfg(feature = "agent")]
 impl std::fmt::Debug for AsyncAgentRun {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         f.debug_struct("AsyncAgentRun")
@@ -217,6 +225,9 @@ impl std::fmt::Debug for AsyncAgentRun {
 /// A turn running on a blocking worker, yielding [`Update`]s.
 ///
 /// Poll it as a [`Stream`]. It ends when the generation does.
+// Named through its deprecated alias in `crate::legacy`; the lint cannot see
+// through a type alias.
+#[allow(unnameable_types)]
 pub struct AsyncTurn {
     rx: UnboundedReceiver<Update>,
     engine: Arc<Engine>,

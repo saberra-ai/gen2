@@ -5,10 +5,14 @@
 //! failures the provider reports inside a 200 stream rather than as a status.
 
 #![cfg(feature = "backend-external-api")]
+// Drives the previous facade's remote builder; deprecated until pio-app has
+// switched (roadmap S5).
+#![allow(deprecated)]
 
 use std::sync::{Arc, Mutex};
 
-use gen2::{Engine, Finish, PromptSettings, Settings};
+use gen2::advanced::generation::{PromptSettings, Settings};
+use gen2::legacy::{Engine, Finish};
 
 fn text_delta(text: &str) -> String {
     format!(

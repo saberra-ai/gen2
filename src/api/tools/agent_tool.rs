@@ -27,10 +27,10 @@ struct Task {
 ///
 /// ```no_run
 /// # use std::sync::Arc;
-/// # use gen2::{AgentTool, Engine, Session};
+/// # use gen2::{agent::AgentTool, legacy::Engine, Session};
 /// # let engine = Arc::new(Engine::load("m.gguf")?);
 /// # let mut session = Session::new();
-/// # let research_tools: Vec<Arc<dyn gen2::Tool>> = vec![];
+/// # let research_tools: Vec<Arc<dyn gen2::agent::Tool>> = vec![];
 /// let researcher = AgentTool::new(
 ///     "researcher",
 ///     "Investigates a question and reports back a short answer",

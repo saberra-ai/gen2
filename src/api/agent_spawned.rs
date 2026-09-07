@@ -22,7 +22,7 @@ type ApprovalFn =
 
 /// An agent configured to run on a worker thread.
 ///
-/// Built by [`Engine::agent_owned`](crate::Engine::agent_owned). Same surface as
+/// Built by `Engine::agent_owned`. Same surface as
 /// [`Agent`](super::Agent); the difference is that it owns its engine and
 /// session, which is what lets the run outlive the calling scope and lets
 /// steering reach the engine.
@@ -155,7 +155,7 @@ impl OwnedAgent {
     ///
     /// ```no_run
     /// # use std::sync::Arc;
-    /// # use gen2::{Engine, Session, Update};
+    /// # use gen2::{legacy::Engine, agent::Update, Session};
     /// # let engine = Arc::new(Engine::load("m.gguf")?);
     /// let run = engine.agent_owned(Session::new())
     ///     .goal("Summarise the repository")

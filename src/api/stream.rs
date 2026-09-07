@@ -18,6 +18,9 @@ use super::error::{Error, Result};
 /// trailing `_ =>`.
 #[derive(Debug, Clone)]
 #[non_exhaustive]
+// Named through its deprecated alias in `crate::legacy`; the lint cannot see
+// through a type alias.
+#[allow(unnameable_types)]
 pub enum Event {
     /// A fragment of generated text. Concatenate these to get the reply.
     Token(String),
@@ -41,6 +44,9 @@ pub enum Event {
 /// detail is what makes the reason actionable.
 #[derive(Debug, Clone, PartialEq, Eq, Default)]
 #[non_exhaustive]
+// Named through its deprecated alias in `crate::legacy`; the lint cannot see
+// through a type alias.
+#[allow(unnameable_types)]
 pub enum Finish {
     /// The model emitted end-of-sequence, or hit the token budget.
     #[default]
@@ -48,7 +54,7 @@ pub enum Finish {
     /// Stopped on request.
     Stopped,
     /// The tool loop hit its depth limit with the model still asking for more
-    /// tools. See [`Chat::tool_depth`](super::Chat::tool_depth).
+    /// tools. See `Chat::tool_depth`.
     ToolDepthReached,
     /// An agent ran out of a budget — which one is in the payload.
     OutOfBudget(Budget),
@@ -59,6 +65,9 @@ pub enum Finish {
 /// Which limit an agent reached.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 #[non_exhaustive]
+// Named through its deprecated alias in `crate::legacy`; the lint cannot see
+// through a type alias.
+#[allow(unnameable_types)]
 pub enum Budget {
     /// Rounds of generate-and-call.
     Steps,
@@ -75,6 +84,9 @@ pub enum Budget {
 /// that is the characteristic small-model failure.
 #[derive(Debug, Clone, PartialEq, Eq)]
 #[non_exhaustive]
+// Named through its deprecated alias in `crate::legacy`; the lint cannot see
+// through a type alias.
+#[allow(unnameable_types)]
 pub enum Struggle {
     /// The same call, with the same arguments, repeatedly.
     RepeatingCall { tool: String, times: usize },
@@ -90,6 +102,9 @@ pub enum Struggle {
 /// Dropping it early is fine — that abandons the events, though it does not by
 /// itself stop the generation. Use [`Engine::stop`](super::Engine::stop) with
 /// the chat id for that.
+// Named through its deprecated alias in `crate::legacy`; the lint cannot see
+// through a type alias.
+#[allow(unnameable_types)]
 pub struct TokenStream {
     rx: Receiver<ControllerEvent>,
     finish: Option<Finish>,
@@ -210,7 +225,7 @@ impl TokenStream {
     /// For when you want to stream tokens but not match on event kinds:
     ///
     /// ```no_run
-    /// # use gen2::Engine;
+    /// # use gen2::legacy::Engine;
     /// # let engine = Engine::load("m.gguf")?;
     /// for token in engine.infer("hi").tokens()? {
     ///     print!("{}", token?);
@@ -225,6 +240,9 @@ impl TokenStream {
 /// Everything a finished generation produced.
 #[derive(Debug, Clone, Default)]
 #[non_exhaustive]
+// Named through its deprecated alias in `crate::legacy`; the lint cannot see
+// through a type alias.
+#[allow(unnameable_types)]
 pub struct Completion {
     /// The reply text, with every fragment concatenated.
     pub text: String,
@@ -241,7 +259,7 @@ pub struct Completion {
     /// How many rounds of tool calls ran before the model answered.
     ///
     /// `0` for an ordinary turn. Only the tool loop raises it — see
-    /// [`Chat::on_tool`](super::Chat::on_tool).
+    /// `Chat::on_tool`.
     pub tool_rounds: usize,
 }
 
@@ -254,6 +272,9 @@ impl Completion {
 }
 
 /// The text fragments of a generation. See [`TokenStream::tokens`].
+// Named through its deprecated alias in `crate::legacy`; the lint cannot see
+// through a type alias.
+#[allow(unnameable_types)]
 pub struct Tokens {
     inner: TokenStream,
 }

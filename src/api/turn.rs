@@ -87,11 +87,11 @@ impl ToolChoice {
 /// [`GenSpec`] it exposes, so the ordinary surface stays small (§12.1).
 ///
 /// Stop sequences are not a per-turn field: the engine applies them from
-/// its [`Settings`](crate::Settings), and a per-turn list has no sampler
+/// its [`Settings`](crate::advanced::generation::Settings), and a per-turn list has no sampler
 /// slot to land in yet.
 ///
 /// ```
-/// use gen2::{GenerationOptions, ThinkingMode};
+/// use gen2::{GenerationOptions, model::ThinkingMode};
 ///
 /// let options = GenerationOptions::default()
 ///     .temperature(0.7)
@@ -770,8 +770,8 @@ mod tests {
                 .filter(|e| {
                     matches!(
                         e,
-                        crate::api::SessionEvent::SystemSet { .. }
-                            | crate::api::SessionEvent::ToolsSet { .. }
+                        crate::api::session::SessionEvent::SystemSet { .. }
+                            | crate::api::session::SessionEvent::ToolsSet { .. }
                     )
                 })
                 .count()

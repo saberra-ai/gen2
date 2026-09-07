@@ -7,8 +7,11 @@
 //! so a gap in the public surface fails here first.
 
 #![cfg(feature = "backend-external-api")]
+// Drives the previous facade's remote builder; deprecated until pio-app has
+// switched (roadmap S5).
+#![allow(deprecated)]
 
-use gen2::{Engine, Finish};
+use gen2::legacy::{Engine, Finish};
 
 fn token(text: &str) -> String {
     format!("{{\"choices\":[{{\"index\":0,\"delta\":{{\"content\":\"{text}\"}}}}]}}")

@@ -49,6 +49,7 @@ pub enum Error {
     /// Distinct from [`Error::Load`], which is about the model: reporting a
     /// tool misconfiguration as "failed to load model" sends the reader to the
     /// wrong place entirely.
+    #[cfg(feature = "agent")]
     #[error("tool configuration: {0}")]
     Tools(#[from] crate::api::tools::ToolConfigError),
 
@@ -98,6 +99,7 @@ impl Error {
         match self {
             Self::Generation { code, .. } => Some(code),
             Self::WontFit(_) => Some("wont_fit"),
+            #[cfg(feature = "agent")]
             Self::Tools(_) => Some("tool_config"),
             Self::Unsupported(_) => Some("unsupported"),
             Self::InvalidRequest(_) => Some("invalid_request"),
@@ -112,7 +114,7 @@ impl Error {
     /// `Some` means the model didn't fit — read [`Fit::max_context`] for a
     /// context that would have.
     ///
-    /// [`Fit::max_context`]: crate::Fit::max_context
+    /// [`Fit::max_context`]: crate::advanced::fit::Fit::max_context
     pub fn fit(&self) -> Option<&crate::api::fit::Fit> {
         match self {
             Self::WontFit(fit) => Some(fit),

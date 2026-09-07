@@ -35,7 +35,7 @@ const MIN_TOKEN_BUDGET: usize = 16;
 ///
 /// ```no_run
 /// # fn main() -> Result<(), gen2::Error> {
-/// # let engine = gen2::Engine::load("model.gguf")?;
+/// # let engine = gen2::legacy::Engine::load("model.gguf")?;
 /// let label = engine
 ///     .classify("The service was fantastic")
 ///     .labels(["positive", "negative", "neutral"])
@@ -44,6 +44,9 @@ const MIN_TOKEN_BUDGET: usize = 16;
 /// # }
 /// ```
 #[must_use = "a Classify does nothing until .label() is called"]
+// Named through its deprecated alias in `crate::legacy`; the lint cannot see
+// through a type alias.
+#[allow(unnameable_types)]
 pub struct Classify<'e> {
     engine: &'e Engine,
     text: String,

@@ -1,32 +1,16 @@
-//! The public API.
+//! The public API, assembled.
 //!
-//! Load a model, hold a conversation, read tokens back:
-//!
-//! ```no_run
-//! use gen2::{Engine, Session};
-//!
-//! let engine = Engine::load("/models/model.gguf")?;
-//!
-//! // A conversation you own. The reply is appended to it.
-//! let mut session = Session::new();
-//! engine.chat(&mut session).user("Explain entropy.").send()?;
-//! println!("{}", session.latest_text().unwrap_or_default());
-//!
-//! // A follow-up: the history is already here, so nothing is resent.
-//! engine.chat(&mut session).user("Simpler?").send()?;
-//!
-//! // One-off, nothing kept.
-//! let title = engine.infer("Title this in three words.").max_tokens(16).text()?;
-//! # Ok::<(), gen2::Error>(())
-//! ```
-//!
-//! Everything underneath — backend dispatch, session runtime, KV cache, the
-//! model zoo, placement routing, residency policy — is internal, so it can
-//! change without breaking callers. [`Engine::controller`] is the escape hatch
-//! for what this doesn't cover.
+//! Nothing is reached through this module: the crate root re-exports the
+//! inference-first surface (api_spec.md §25), [`crate::advanced`] the local
+//! controls under it, [`crate::legacy`] the previous facade, and
+//! [`crate::agent`] the loop above it. This module only declares the parts
+//! and gates the agent-shaped ones on the `agent` feature.
 
+#[cfg(feature = "agent")]
 mod agent;
+#[cfg(feature = "agent")]
 mod agent_config;
+#[cfg(feature = "agent")]
 mod agent_spawned;
 #[cfg(feature = "tokio")]
 mod async_turn;
@@ -34,6 +18,7 @@ mod async_turn;
 mod asynchronous;
 mod chat;
 mod classify;
+mod embed;
 mod engine;
 mod error;
 pub mod event;
@@ -53,6 +38,7 @@ pub mod session;
 mod spawned;
 mod stream;
 pub mod tool_defs;
+#[cfg(feature = "agent")]
 pub mod tools;
 pub mod turn;
 
@@ -61,56 +47,66 @@ pub mod turn;
 // engine below rather than beside it: a `Model` is an `Engine` with a
 // registry entry, and one-shot `Generation` is a `Chat` on a session it
 // throws away.
-#[cfg(feature = "tokio")]
-pub use async_turn::AsyncEventStream;
-pub use event::EventStream;
+pub use embed::{Embedder, Reranker};
+pub use error::{Error, Result};
+pub use event::{Event, EventStream};
 pub use generation::Generation;
 pub use input::Input;
-pub use model::{Model, ModelId};
+pub use model::Model;
 pub use response::Response;
 pub use runtime::{
     ModelResidency, RemoteModelBuilder, ResidencySnapshot, Runtime, RuntimeBuilder, RuntimeStats,
 };
-pub use session::{ContextFingerprint, MessageId, SessionEvent, SessionId, SessionRevision};
-pub use tool_defs::ToolDefinition;
-pub use turn::{GenerationOptions, ToolChoice};
+pub use session::Session;
+pub use tool_defs::{ToolDefinition, ToolSet};
+pub use turn::{GenerationOptions, ToolChoice, Turn};
 
-pub use agent::{
-    Agent, AgentStep, ApprovalMode, DEFAULT_MAX_STEPS, Decision, Risk, SEARCH_TOOL, Steering,
-};
-pub use agent_config::AgentConfig;
-pub use agent_spawned::{AgentRun, OwnedAgent};
+// ── The previous facade (`crate::legacy`) ───────────────────────────────────
 #[cfg(feature = "tokio")]
-pub use asynchronous::{AsyncAgentRun, AsyncTurn};
+pub use asynchronous::AsyncTurn;
 pub use chat::{Chat, DEFAULT_TOOL_DEPTH};
 pub use classify::Classify;
 pub use engine::{Engine, EngineBuilder};
-pub use error::{Error, Result};
 pub use extract::Extract;
-pub use fit::{Fit, FitVerdict, ModelInfo};
+pub use fit::{Fit, FitVerdict, ModelInfo as FileModelInfo};
 pub use inference::Inference;
-pub use session::Session;
-pub use spawned::{Canceller, OwnedChat, Turn, Update};
-pub use stream::{Budget, Completion, Event, Finish, Struggle, TokenStream, Tokens};
+pub use spawned::{Canceller as ChatCanceller, OwnedChat, Turn as ChatTurn, Update};
+pub use stream::{Budget, Completion, Event as TokenEvent, Finish, Struggle, TokenStream, Tokens};
+
+// ── The agent layer (`crate::agent`, feature `agent`) ───────────────────────
+#[cfg(feature = "agent")]
+pub use agent::{Agent, AgentStep, ApprovalMode, DEFAULT_MAX_STEPS, SEARCH_TOOL, Steering};
+#[cfg(feature = "agent")]
+pub use agent_config::AgentConfig;
+#[cfg(feature = "agent")]
+pub use agent_spawned::{AgentRun, OwnedAgent};
+#[cfg(all(feature = "agent", feature = "tokio"))]
+pub use asynchronous::AsyncAgentRun;
+#[cfg(feature = "agent")]
 pub use tools::{
-    AgentTool, ExecutionPolicy, FunctionTool, IntoTool, Skill, SkillLibrary, Tool, ToolConfigError,
-    ToolContext, ToolError, ToolLoading, ToolOutput, ToolRegistry, ToolSearch, ToolSet, ToolSpec,
+    AgentTool, Decision, ExecutionPolicy, FunctionTool, IntoTool, Risk, Skill, SkillLibrary, Tool,
+    ToolConfigError, ToolContext, ToolError, ToolLoading, ToolOutput, ToolRegistry, ToolSearch,
+    ToolSet as ToolBundle, ToolSpec,
 };
+
+/// The spec's §28 walkthrough, compiled as written.
+#[cfg(doctest)]
+mod spec_walkthrough_tests;
 
 /// Session invariants under generated operation sequences.
 #[cfg(test)]
 mod session_props;
 
 /// Agent-loop contracts, on scripted model behaviour.
-#[cfg(test)]
+#[cfg(all(test, feature = "agent"))]
 mod agent_contract_tests;
 
 /// The off-thread API, on scripted model behaviour.
-#[cfg(test)]
+#[cfg(all(test, feature = "agent"))]
 mod spawned_tests;
 
 /// Tool bundles, reusable agent configurations, and sub-agents.
-#[cfg(test)]
+#[cfg(all(test, feature = "agent"))]
 mod composition_tests;
 
 /// `infer` and `chat`, the two entry points most callers reach for first.
@@ -118,7 +114,7 @@ mod composition_tests;
 mod entrypoint_tests;
 
 /// What the model was actually shown, across the whole stack.
-#[cfg(test)]
+#[cfg(all(test, feature = "agent"))]
 mod lifecycle_tests;
 
 /// Model switching, cache identity, residency, and concurrency (api_spec.md

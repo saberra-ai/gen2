@@ -378,6 +378,7 @@ impl From<serde_json::Value> for ToolResult {
     }
 }
 
+#[cfg(feature = "agent")]
 impl From<super::tools::ToolOutput> for ToolResult {
     fn from(out: super::tools::ToolOutput) -> Self {
         match out {
@@ -437,15 +438,15 @@ struct StoredRecord {
 /// costs nothing in speed: a follow-up turn still reuses the last prefill.
 ///
 /// ```no_run
-/// # use gen2::{Engine, Session};
-/// # let engine = Engine::load("m.gguf")?;
+/// # use gen2::Session;
+/// # let model = gen2::load("m.gguf")?;
 /// let mut session = Session::new().with_system("You are terse.");
 ///
-/// engine.chat(&mut session).user("Name two colours.").send()?;
-/// println!("{}", session.latest_text().unwrap_or_default());
+/// let response = model.turn(&mut session).user("Name two colours.").run()?;
+/// println!("{}", response.text());
 ///
 /// // A follow-up. The history is already here; you don't resend it.
-/// engine.chat(&mut session).user("Now one more.").send()?;
+/// model.turn(&mut session).user("Now one more.").run()?;
 /// # Ok::<(), gen2::Error>(())
 /// ```
 ///
@@ -791,7 +792,7 @@ impl Session {
     /// so a caller can pass an empty slice unconditionally.
     ///
     /// The model must be multimodal and loaded with a projector — see
-    /// [`EngineBuilder::mmproj`](super::EngineBuilder::mmproj).
+    /// `EngineBuilder::mmproj`.
     pub fn push_user_with_images<I, P>(&mut self, text: impl Into<String>, images: I) -> MessageId
     where
         I: IntoIterator<Item = P>,
@@ -1212,6 +1213,9 @@ impl Session {
     /// it, so the new definitions actually reach the model.
     ///
     /// Returns whether the conversation was reopened.
+    // Only the agent layer runs a registry over a session; the tests keep
+    // the invariant pinned either way.
+    #[cfg_attr(not(feature = "agent"), allow(dead_code))]
     pub(crate) fn note_tools(&mut self, fingerprint: u64) -> bool {
         match self.tools_fingerprint {
             Some(current) if current == fingerprint => false,
@@ -2303,8 +2307,11 @@ mod tests {
             serde_json::json!({"temp": 18}),
         );
         assert_eq!(s.latest().unwrap().text(), r#"{"temp":18}"#);
-        let out: ToolResult = super::super::tools::ToolOutput::from("x").into();
-        assert_eq!(out, ToolResult::Text("x".into()));
+        #[cfg(feature = "agent")]
+        {
+            let out: ToolResult = super::super::tools::ToolOutput::from("x").into();
+            assert_eq!(out, ToolResult::Text("x".into()));
+        }
     }
 
     // ── The tool-round invariant ────────────────────────────────────────

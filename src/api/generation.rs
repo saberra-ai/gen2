@@ -79,7 +79,7 @@ impl<'m> Generation<'m> {
     ///
     /// One-shot generation runs no tool loop: a call that needs a follow-up
     /// belongs in a `Session`. Takes a [`ToolSet`], a list of
-    /// [`ToolDefinition`]s, or wire [`ToolSpec`](crate::ToolSpec)s.
+    /// [`ToolDefinition`]s, or wire [`ToolSpec`](crate::advanced::wire::ToolSpec)s.
     pub fn tools<I>(mut self, tools: I) -> Self
     where
         I: IntoIterator,

@@ -30,9 +30,9 @@ use std::sync::mpsc::{Receiver, RecvTimeoutError, Sender, SyncSender, channel};
 use std::thread;
 use std::time::{Duration, Instant};
 
-use crate::ExecutionStats;
 use crate::engine::Settings;
 use crate::generation::GenSpec;
+use crate::types::ExecutionStats;
 use crate::types::message::{Message, ToolSpec};
 
 /// A background inference workload: ephemeral, fire-and-forget, hidden from
@@ -67,7 +67,7 @@ impl SystemTask {
     /// A host-defined background task, labelled for session ids and traces.
     ///
     /// ```
-    /// # use gen2::SystemTask;
+    /// # use gen2::advanced::controller::SystemTask;
     /// let task = SystemTask::custom("triples");
     /// assert!(task.session_id().starts_with("triples-"));
     /// ```
@@ -586,7 +586,7 @@ pub enum Placement<'a> {
 /// where inference runs.
 ///
 /// ```
-/// # use gen2::{ControllerCmd, InferenceHandle, Placement, RemoteDispatch};
+/// # use gen2::advanced::controller::{ControllerCmd, InferenceHandle, Placement, RemoteDispatch};
 /// struct OverTheWire;
 /// impl RemoteDispatch for OverTheWire {
 ///     fn send(&self, _cmd: ControllerCmd) -> Result<(), String> { Ok(()) }

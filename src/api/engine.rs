@@ -14,7 +14,9 @@ use crate::engine::{Capabilities, LoadOutcome, Settings};
 use crate::generation::GenSpec;
 use crate::hardware::HardwareProfile;
 
+#[cfg(feature = "agent")]
 use super::agent::Agent;
+#[cfg(feature = "agent")]
 use super::agent_spawned::OwnedAgent;
 use super::chat::Chat;
 use super::error::{Error, Result};
@@ -32,6 +34,9 @@ use super::spawned::OwnedChat;
 /// Shutting down is automatic: dropping an `Engine` stops the loop and waits
 /// for it to release the backend. Use [`Engine::shutdown`] instead when you
 /// want to observe teardown rather than let it happen silently.
+// Named through its deprecated alias in `crate::legacy`; the lint cannot see
+// through a type alias.
+#[allow(unnameable_types)]
 pub struct Engine {
     handle: ControllerHandle,
     join: Option<JoinHandle<()>>,
@@ -96,6 +101,7 @@ impl Engine {
     /// Unlike [`Chat::on_tool`](super::Chat::on_tool), the agent owns dispatch
     /// — it resolves the tool the model named, validates the arguments, and
     /// routes failures. You register tools, not a `match`.
+    #[cfg(feature = "agent")]
     pub fn agent<'a>(&'a self, session: &'a mut Session) -> Agent<'a> {
         Agent::new(self, session)
     }
@@ -105,6 +111,7 @@ impl Engine {
     /// The shape a UI needs: `spawn()` returns immediately, updates stream
     /// back, and the steering handle can cut a generation short — which the
     /// borrowed [`Engine::agent`] cannot, having no owned engine to ask.
+    #[cfg(feature = "agent")]
     pub fn agent_owned(self: &Arc<Self>, session: Session) -> OwnedAgent {
         OwnedAgent::new(Arc::clone(self), session)
     }
@@ -125,7 +132,7 @@ impl Engine {
     ///
     /// ```no_run
     /// # fn main() -> Result<(), gen2::Error> {
-    /// # let engine = gen2::Engine::load("model.gguf")?;
+    /// # let engine = gen2::legacy::Engine::load("model.gguf")?;
     /// let label = engine
     ///     .classify("The service was fantastic")
     ///     .labels(["positive", "negative", "neutral"])
@@ -145,7 +152,7 @@ impl Engine {
     ///
     /// ```no_run
     /// # fn main() -> Result<(), gen2::Error> {
-    /// # let engine = gen2::Engine::load("model.gguf")?;
+    /// # let engine = gen2::legacy::Engine::load("model.gguf")?;
     /// #[derive(serde::Deserialize, schemars::JsonSchema)]
     /// struct Invoice {
     ///     vendor: String,
@@ -353,7 +360,7 @@ impl Engine {
     ///
     /// ```no_run
     /// # fn main() -> Result<(), gen2::Error> {
-    /// # let engine = gen2::Engine::load("model.gguf")?;
+    /// # let engine = gen2::legacy::Engine::load("model.gguf")?;
     /// engine.load_reranker("/models/bge-reranker-v2-m3-Q4_K_M.gguf")?;
     /// let ranked = engine.rerank("how do I cancel?", &[
     ///     "Our office hours are 9-5.".to_string(),
@@ -607,6 +614,9 @@ impl std::fmt::Debug for Engine {
 
 /// Builds an [`Engine`].
 #[derive(Default)]
+// Named through its deprecated alias in `crate::legacy`; the lint cannot see
+// through a type alias.
+#[allow(unnameable_types)]
 pub struct EngineBuilder {
     model_path: Option<PathBuf>,
     mmproj_path: Option<PathBuf>,
@@ -813,9 +823,13 @@ impl EngineBuilder {
     /// Returns once the weights are resident and the engine is ready to
     /// generate — no separate "is it loaded yet" step.
     pub fn build(mut self) -> Result<Engine> {
-        if self.model_path.is_none() && self.hf.is_none() && self.embedder_path.is_none() {
+        if self.model_path.is_none()
+            && self.hf.is_none()
+            && self.embedder_path.is_none()
+            && self.reranker_path.is_none()
+        {
             return Err(Error::Load(
-                "nothing to load — call .model(path), .hf(model), .embedder(path), \
+                "nothing to load — call .model(path), .hf(model), .embedder(path), .reranker(path), \
                  .openai(..), or .anthropic(..)"
                     .into(),
             ));

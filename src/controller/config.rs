@@ -60,7 +60,7 @@ impl ControllerConfig {
     ///
     /// [`SystemTask::Custom`] gets nothing tuned, because nothing here knows
     /// what it is. Pass your own spec to
-    /// [`InferenceHandle::system_infer_with`](crate::InferenceHandle::system_infer_with).
+    /// [`InferenceHandle::system_infer_with`](crate::advanced::controller::InferenceHandle::system_infer_with).
     pub fn system_task_spec(&self, task: &SystemTask) -> GenSpec {
         match task {
             SystemTask::Title => GenSpec {

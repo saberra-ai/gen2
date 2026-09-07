@@ -56,7 +56,7 @@ pub trait Tool: Send + Sync {
     /// Whether this tool needs a human's say-so before it runs.
     ///
     /// Only consulted under
-    /// [`ApprovalMode::AskOnRisky`](crate::ApprovalMode::AskOnRisky). Safe by
+    /// [`ApprovalMode::AskOnRisky`](crate::agent::ApprovalMode::AskOnRisky). Safe by
     /// default: a tool that reads is not something to interrupt someone over,
     /// and a gate that fires on everything trains people to approve without
     /// reading.

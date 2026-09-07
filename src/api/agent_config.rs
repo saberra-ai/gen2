@@ -16,9 +16,9 @@ use super::tools::{IntoTool, Tool, ToolLoading, ToolSearch};
 /// A reusable agent setup.
 ///
 /// ```no_run
-/// # use gen2::{AgentConfig, Engine, Session};
+/// # use gen2::{agent::AgentConfig, legacy::Engine, Session};
 /// # let engine = Engine::load("m.gguf")?;
-/// # let weather = gen2::FunctionTool::new("w", "d", |_c, _a: ()| async { unimplemented!() });
+/// # let weather = gen2::agent::FunctionTool::new("w", "d", |_c, _a: ()| async { unimplemented!() });
 /// let researcher = AgentConfig::new().add_tool(weather).max_steps(8);
 ///
 /// let mut session = Session::new();

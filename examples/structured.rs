@@ -1,83 +1,71 @@
-//! Getting output you can parse: grammar-constrained decoding.
+//! Output you can parse: a type, enforced during decoding.
 //!
-//! The grammar is enforced *during* decoding, so the model cannot emit anything
-//! that violates it. No "please reply with JSON" in the prompt, no retry loop,
-//! no salvaging a half-valid object — and it behaves identically on every
-//! backend.
+//! Where the backend can constrain decoding (llama.cpp), the schema derived
+//! from your type is enforced token by token, so the model cannot emit
+//! anything that fails to deserialize. No "please reply with JSON", no retry
+//! loop, no salvaging a half-valid object. A backend that cannot (a remote
+//! endpoint) is asked for the schema in the prompt and the reply is parsed.
 //!
 //! ```sh
-//! cargo run --example structured --no-default-features --features metal -- /path/model.gguf
+//! cargo run --example structured --features metal -- /path/model.gguf
 //! ```
 
-use gen2::{Engine, GrammarSpec};
 use serde::Deserialize;
 
-#[derive(Debug, Deserialize)]
+#[derive(Debug, Deserialize, schemars::JsonSchema)]
 struct Sentiment {
-    label: String,
+    label: Label,
     confidence: f32,
 }
 
+#[derive(Debug, Deserialize, schemars::JsonSchema)]
+enum Label {
+    Positive,
+    Negative,
+    Neutral,
+}
+
+#[derive(Debug, Deserialize, schemars::JsonSchema)]
+struct Invoice {
+    vendor: String,
+    total: f64,
+}
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let model = std::env::args()
+    let path = std::env::args()
         .nth(1)
         .ok_or("usage: structured <model.gguf>")?;
-    let engine = Engine::load(&model)?;
+    let model = gen2::load(&path)?;
+    println!(
+        "grammar-enforced: {}",
+        model.capabilities().structured_output
+    );
 
-    // ── A schema the reply must satisfy ─────────────────────────────────────
-    let schema = serde_json::json!({
-        "type": "object",
-        "properties": {
-            "label": { "type": "string", "enum": ["positive", "negative", "neutral"] },
-            "confidence": { "type": "number" }
-        },
-        "required": ["label", "confidence"]
-    });
-
-    let raw = engine
-        .infer("Classify the sentiment of: 'this crate finally has a decent API'")
-        .grammar(GrammarSpec::JsonSchema(schema.clone()))
-        .max_tokens(128)
+    // ── A type the reply must satisfy ───────────────────────────────────────
+    let s: Sentiment = model
+        .generate("Classify the sentiment of: 'this crate finally has a decent API'")
         .greedy()
-        .text()?;
+        .structured()?;
+    println!("label={:?} confidence={}", s.label, s.confidence);
 
-    // Sound because the grammar made the alternative unreachable, not because
-    // we're hoping.
-    let parsed: Sentiment = serde_json::from_str(&raw)?;
-    println!("label={} confidence={}", parsed.label, parsed.confidence);
-
-    // ── Other shapes ────────────────────────────────────────────────────────
-    // Any JSON object, when you don't want to write a schema:
-    let json = engine
-        .infer("Describe Rust in JSON with keys 'name' and 'year'.")
-        .grammar(GrammarSpec::JsonObject)
-        .max_tokens(64)
-        .text()?;
-    println!("json: {json}");
-
-    // A regex, when you want one token-shaped thing:
-    let year = engine
-        .infer("In what year was Rust 1.0 released?")
-        .grammar(GrammarSpec::Regex(r"\d{4}".into()))
-        .max_tokens(8)
-        .text()?;
-    println!("year: {year}");
-
-    // `GrammarSpec::Lark(..)` takes a full grammar when the shape is more than
-    // a schema or a pattern can say.
-
-    // ── Or fix the shape at build time ──────────────────────────────────────
-    // When an engine exists to produce one shape, set it once. A turn can
-    // still override it, or drop it with `.unconstrained()`.
-    let classifier = Engine::builder()
-        .model(&model)
-        .grammar(GrammarSpec::JsonSchema(schema))
+    // ── With instructions ───────────────────────────────────────────────────
+    let invoice: Invoice = model
+        .generate("Acme Ltd — total $1,240.00")
+        .system("Extract the invoice fields")
         .greedy()
-        .max_tokens(128)
-        .build()?;
+        .structured()?;
+    println!("vendor={} total={}", invoice.vendor, invoice.total);
 
-    let raw = classifier.infer("Classify: 'this is terrible'").text()?;
-    println!("classifier: {raw}");
+    // ── On a turn, inside a conversation ────────────────────────────────────
+    let mut session = gen2::Session::new().with_system("You classify customer messages.");
+    let s: Sentiment = model
+        .turn(&mut session)
+        .user("Classify: 'this is terrible'")
+        .greedy()
+        .structured()?;
+    println!("in conversation: {:?}", s.label);
 
+    // A reply that does not decode is `Error::Extraction`, carrying the raw
+    // text — generation succeeded; reading it as your type did not.
     Ok(())
 }

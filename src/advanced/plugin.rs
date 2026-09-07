@@ -15,7 +15,7 @@
 //!    enough to write one.
 //! 2. Build a [`BackendPlugin`]: a `name`, a `claims` predicate over the
 //!    model path, and a `make` factory that constructs your backend.
-//! 3. Register it: `Engine::builder().model(path).backend(plugin).build()`.
+//! 3. Register it: `Runtime::builder().backend(plugin).build()?.load(path)`.
 //!    A path your plugin claims lands on your backend; every other path is
 //!    routed as before.
 //!
@@ -33,10 +33,8 @@
 //!     claims,
 //!     make: Box::new(my_backend),
 //! };
-//! let engine = gen2::Engine::builder()
-//!     .model("/models/weights.mybundle")
-//!     .backend(plugin)
-//!     .build()?;
+//! let runtime = gen2::Runtime::builder().backend(plugin).build()?;
+//! let model = runtime.load("/models/weights.mybundle")?;
 //! # Ok::<(), gen2::Error>(())
 //! ```
 //!
@@ -135,7 +133,7 @@ pub use crate::session_rt::media_util::messages_have_images;
 // ── The plugin ──────────────────────────────────────────────────────────────
 
 /// An out-of-tree backend, registered with
-/// [`EngineBuilder::backend`](crate::EngineBuilder::backend).
+/// [`EngineBuilder::backend`](crate::advanced::runtime::RuntimeBuilder::backend).
 ///
 /// Asked before every built-in routing rule, in registration order: the
 /// first plugin whose [`claims`](Self::claims) accepts the model path wins.
@@ -164,8 +162,9 @@ impl fmt::Debug for BackendPlugin {
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::api::Engine;
+    use crate::controller::ControllerCmd;
     use crate::test_support::Script;
-    use crate::{ControllerCmd, Engine};
 
     fn claims_fake(path: &Path) -> bool {
         path.extension().is_some_and(|e| e == "fake")

@@ -27,7 +27,7 @@ type Handler<A> = Box<
 /// declaration and cannot drift.
 ///
 /// ```no_run
-/// # use gen2::{FunctionTool, ToolOutput};
+/// # use gen2::agent::{FunctionTool, ToolOutput};
 /// # use gen2::schemars::JsonSchema;
 /// # use serde::Deserialize;
 /// #[derive(Deserialize, JsonSchema)]
@@ -82,10 +82,10 @@ where
     }
 
     /// Declare that this tool needs approval under
-    /// [`ApprovalMode::AskOnRisky`](crate::ApprovalMode::AskOnRisky).
+    /// [`ApprovalMode::AskOnRisky`](crate::agent::ApprovalMode::AskOnRisky).
     ///
     /// ```
-    /// # use gen2::{FunctionTool, ToolOutput};
+    /// # use gen2::agent::{FunctionTool, ToolOutput};
     /// # use schemars::JsonSchema;
     /// # #[derive(serde::Deserialize, JsonSchema)]
     /// # struct Path { path: String }

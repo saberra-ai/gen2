@@ -19,6 +19,9 @@ follow SemVer, and 0.x means the public surface may still move between minors.
   projector. Behind the default-on `hf` feature.
 - `ModelSourceKind::HuggingFace { repo, file }`; the enum is no longer
   `Copy`.
+- `Runtime::load_embedder` and `Runtime::load_reranker` return an
+  `Embedder`/`Reranker` (api_spec.md §21): `embed`, `embed_one`, `rerank`
+  on the runtime's settings and backends, with no session or turn.
 - `Session` is the spec's model-agnostic conversational state (api_spec.md
   §7–§9): the system prompt and a data-only `ToolSet` are first-order state
   (`set_system`/`append_system`, `set_tools`/`add_tool`/`remove_tool`),
@@ -42,6 +45,48 @@ follow SemVer, and 0.x means the public surface may still move between minors.
   translates it to the context size now that llama.cpp clamps negatives to 0.
 
 ### Changed
+- The crate root is api_spec.md §25: `Runtime`, `Model`, `Session`, `Message`,
+  `ToolDefinition`, `ToolSet`, `ToolChoice`, `GenerationOptions`, `Response`,
+  `Event`, `Error`, `Result`, `gen2::load`, plus `Turn`, `Input`, `EventStream`
+  (`AsyncEventStream` under `tokio`) and the `schemars` re-export. Supporting
+  types live in `gen2::{model, session, input, output, event, tool_defs}`;
+  `gen2::turn` is gone (`Turn`, `GenerationOptions`, `ToolChoice` are at the
+  root). `gen2::api` is no longer public.
+- The previous facade is `gen2::legacy` and deprecated: `Engine`,
+  `EngineBuilder`, `Chat`, `OwnedChat`, `Inference`, `Classify`, `Extract`,
+  `Completion`, `TokenStream`, `Tokens`, the token-level `Event`, `Finish`,
+  `Budget`, `Struggle`, the spawned `Turn`/`Canceller`/`Update`,
+  `DEFAULT_TOOL_DEPTH`, `AsyncTurn`, and the fit `ModelInfo`/`Fit`/`FitVerdict`.
+  Each is a deprecated alias whose warning names the replacement.
+- The agent layer is `gen2::agent` behind a default-on `agent` feature and
+  off the root: `Agent`, `AgentConfig`, `AgentRun`, `AgentStep`,
+  `ApprovalMode`, `Decision`, `Risk`, `Steering`, `ExecutionPolicy`,
+  `ToolRegistry`, `FunctionTool`, `AgentTool`, `Skill`, `SkillLibrary`,
+  `SEARCH_TOOL`, `OwnedAgent`, `AsyncAgentRun`, the executable `ToolSet`,
+  `gen2::agent::mcp` (was `gen2::mcp`) and `gen2::agent::journal` (was
+  `gen2::journal`). `Agent::on(&model, &mut session)` starts one from a
+  `Model`. With the feature off the crate is inference only:
+  `Error::Tools`, `Update::ToolResult` and the `ToolOutput` conversions
+  do not exist.
+- `gen2::advanced` gathers what was transitively at the root:
+  `advanced::generation` (`GenSpec`, `ThinkingMode`, `Settings` and its
+  parts, `GrammarSpec`, speculative decoding, `Capabilities`, `Degraded`,
+  `LoadOutcome`, `BackendCaps`, `LatencyTier`), `advanced::runtime` (adds
+  `RuntimeBuilder`, the memory governor and residency types),
+  `advanced::fit`, `advanced::wire` (`MessageBody`, `MessageChunk`,
+  `MessageContent`, `FunctionDefinition`, `ToolSpec`, `ToolCall`, `Url`,
+  `ModelRecord`, `ModelConfig`, `ModelMetadata`), `advanced::controller`
+  (everything `gen2::controller` exported, plus `ExecError`,
+  `ExecutionStats`, `MediaBoundary`, the stream `ToolCall`), and
+  `advanced::utilities`. `gen2::controller` is no longer public.
+- `ThinkingMode` is reached as `gen2::model::ThinkingMode`; `RerankResult`
+  as `gen2::model::RerankResult`.
+- `Runtime::builder().backend(plugin)` registers an out-of-tree backend for
+  the new surface; `crates/gen2-mlxcel` documents that path.
+- The examples use the new surface (`minimal`, `basic`, `structured`,
+  `chat_app`, `embeddings`, `fit`, `tools`, `async_chat`); `agent`,
+  `coding_agent` and `continuity` use `gen2::agent` and need the feature.
+- docs.rs builds with the `agent` feature so that layer is documented.
 - `Session::with_system` and `Chat::system` set the session's system prompt
   rather than pushing a `system` message; `messages()` no longer contains
   one, and `len()` no longer counts it. The rendered prompt is unchanged.

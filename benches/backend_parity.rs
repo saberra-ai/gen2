@@ -41,6 +41,7 @@
 //! Without the reference it prints gen2's numbers alone and writes nothing:
 //! a row without its comparison is not a row. With a reference whose
 //! `build_commit` is not the pinned commit it stops before measuring.
+#![allow(deprecated)]
 
 use std::env;
 use std::fs;
@@ -48,7 +49,9 @@ use std::path::{Path, PathBuf};
 use std::process::{Command, ExitCode};
 use std::time::{Duration, Instant};
 
-use gen2::Engine;
+// Measures the previous facade's `Engine::infer` path, the one the committed
+// results were taken on; a re-measurement on `Model::generate` is pending.
+use gen2::legacy::Engine;
 use serde_json::{Value, json};
 use sha2::{Digest, Sha256};
 

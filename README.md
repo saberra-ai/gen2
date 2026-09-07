@@ -89,7 +89,7 @@ so a warm cache works offline. `HF_TOKEN` is sent when set, which gated
 repos need. `:file.gguf` names an exact file; a repo that also carries an
 `mmproj*.gguf` gets it wired in as the vision projector. For a progress
 bar or a cache directory of your own, `gen2::hf::HfModel` is the same
-reference as a value: `Engine::builder().hf(HfModel::new("owner/repo").on_progress(..))`.
+reference as a value: `runtime.load_hf(HfModel::new("owner/repo").on_progress(..))`.
 The whole thing is the default-on `hf` feature; `default-features = false`
 leaves it out.
 
@@ -267,7 +267,8 @@ it cannot do (grammar-constrained output, for one).
 ## Will it fit?
 
 ```rust,no_run
-use gen2::{Engine, HardwareProfile, ModelInfo};
+use gen2::advanced::fit::ModelInfo;
+use gen2::advanced::runtime::HardwareProfile;
 # fn main() -> Result<(), gen2::Error> {
 let info = ModelInfo::read("/models/model.gguf")?;   // header only, no weights
 let hw = HardwareProfile::detect();
@@ -275,13 +276,17 @@ let hw = HardwareProfile::detect();
 info.max_context(&hw);
 info.fits(&hw, Some(8192));         // Fits | ContextTooLarge | TooLarge
 
-match Engine::builder().model("/models/model.gguf").context(1_000_000).build() {
+match gen2::load("/models/model.gguf") {
     Err(e) => if let Some(fit) = e.fit() { println!("{fit}") },
-    Ok(engine) => drop(engine),
+    Ok(model) => drop(model),
 }
 # Ok(())
 # }
 ```
+
+`gen2::load` runs the same check and sizes the context window to the machine
+and to how many sessions the runtime keeps warm; a model that cannot fit is
+refused with the verdict on the error, not with a load failure.
 
 ## Async
 
@@ -300,24 +305,53 @@ let response = stream.finish().await?;
 
 Dropping the stream cancels the generation.
 
-## The previous facade, and the layers below
+## Embeddings and reranking
 
-`Engine`, `Engine::chat` and `Engine::agent` still compile: the agent loop with
-its executable tools, approvals and budgets lives under `gen2::api` and is
-moving out of the core surface, because deciding what invocation happens next
-is a harness's job, not an inference runtime's. Embeddings and reranking are
-`Engine::embed` and `Engine::rerank` until they get `Runtime` homes.
+Not chat models, and not pretending to be: no session, no turn. They share
+the runtime's settings and backends.
 
-Below all of it, `gen2::advanced` is where local-only control lives: raw
-grammars, residency, hardware, and a backend seam. A backend you write outside
-this crate registers through `gen2::advanced::BackendPlugin`; `crates/gen2-mlxcel`
-is one, and it is how the MLX fast path ships without a registry release.
+```rust,no_run
+# fn main() -> gen2::Result<()> {
+let runtime = gen2::Runtime::new()?;
+let embedder = runtime.load_embedder("/models/embeddinggemma.gguf")?;
+let vectors = embedder.embed(["first document", "second document"])?;
+
+let reranker = runtime.load_reranker("/models/bge-reranker.gguf")?;
+let ranked = reranker.rerank("how do I cancel?", ["office hours", "to cancel, open Settings"])?;
+# let _ = (vectors, ranked);
+# Ok(())
+# }
+```
+
+## The root, and what lives below it
+
+The crate root is exactly the surface above: `Runtime`, `Model`, `Session`,
+`Message`, `ToolDefinition`, `ToolSet`, `ToolChoice`, `GenerationOptions`,
+`Response`, `Event`, `Error`, `Result`, plus `gen2::load` and the builders a
+turn returns. Supporting types sit in `gen2::{model, session, input, output,
+event, tool_defs}`. Three modules hold everything else:
+
+- **`gen2::advanced`** — local-only control: the full `GenSpec` and engine
+  `Settings`, raw grammars, residency and hardware, the wire types behind
+  `Message`, the controller, and a backend seam. A backend you write outside
+  this crate registers through `Runtime::builder().backend(plugin)`;
+  `crates/gen2-mlxcel` is one, and it is how the MLX fast path ships without
+  a registry release.
+- **`gen2::legacy`** — the previous facade. `Engine`, `Engine::chat`,
+  `Engine::infer` and their types still work, as deprecated aliases with the
+  replacement in every warning; the table in `gen2::legacy` maps each old
+  name to its new one.
+- **`gen2::agent`** — the loop above the inference core: `Agent`, executable
+  `FunctionTool`s, approvals, budgets, steering, MCP servers, and the
+  durable-agent journal. Behind the `agent` feature, on by default; with it
+  off the crate is inference only. Deciding what invocation happens next is a
+  harness's job, and nothing at the root needs this layer.
 
 The controller can also live in another process or on another machine.
 Implement the transport, and everything above it is unchanged:
 
 ```rust
-use gen2::{ControllerCmd, InferenceHandle, Placement, RemoteDispatch};
+use gen2::advanced::controller::{ControllerCmd, InferenceHandle, Placement, RemoteDispatch};
 
 struct OverTheWire; // your socket, your peer, your queue
 
@@ -339,8 +373,8 @@ assert_eq!(handle.placement(), Placement::Remote("workshop-mac"));
   same prompt gives different text each run.
 - **A thinking model's working is `reasoning()`, not `text()`.** Qwen3 and
   Gemma 4 with thinking on stream it as `ReasoningDelta`; it never lands in the
-  prose. `.reasoning(ThinkingMode::Off)` on a turn switches it off where the
-  model allows.
+  prose. `.reasoning(ThinkingMode::Off)` on a turn (`gen2::model::ThinkingMode`)
+  switches it off where the model allows.
 - **Changing tools or the system prompt reopens the conversation.** Both live in
   the prompt prefix, so a change costs one re-prefill on the next turn. The
   alternative was ignoring the change without telling you.
@@ -404,14 +438,15 @@ conformance suite. Interfaces and defaults may change.
 mlxcel, the Mac fast path, is not a feature: it lives in `crates/gen2-mlxcel`,
 a workspace companion that is never published (mlxcel has no registry release,
 and crates.io refuses git dependencies) and joins through the plugin seam —
-`Engine::builder().model(dir).backend(gen2_mlxcel::plugin())`. Build it with
-`cargo build -p gen2-mlxcel`.
+`Runtime::builder().backend(gen2_mlxcel::plugin()).build()?.load(dir)`. Build
+it with `cargo build -p gen2-mlxcel`.
 
 Not a backend, but chosen alongside them:
 
 | Feature | What |
 | --- | --- |
 | `tokio` | Async API. Off by default. |
+| `agent` | `gen2::agent`, the loop above the inference core. On by default. |
 
 llama.cpp, mistral.rs, MLX and LiteRT-LM have been shown to generate a token.
 The ONNX and Candle backends that used to sit beside them were
@@ -423,8 +458,9 @@ nothing else can read. The conformance suite says which on every run, and fails
 if that list goes stale.
 
 LiteRT-LM's shipped runtime cannot report a bundle's context window, so state
-it — `Engine::builder().model(path).context(4096)`. gen2 refuses the load
-rather than guessing a number the controller would then plan against.
+it — `Runtime::builder().settings(settings)` with `settings.system.ctx_size`
+set (`gen2::advanced::generation::Settings`). gen2 refuses the load rather
+than guessing a number the controller would then plan against.
 
 It asks for the GPU by default and falls back to the CPU through the same load
 ladder every other backend uses — reported as `Degraded::GpuOffload`, not
@@ -447,7 +483,7 @@ cannot be surprised by a regression.
 
 ```sh
 cargo test
-cargo check --no-default-features --features backend-external-api
+cargo check --no-default-features --features backend-external-api   # inference only, no agent layer
 ```
 
 ## Examples
@@ -456,8 +492,9 @@ cargo check --no-default-features --features backend-external-api
 cargo run --example minimal --features metal -- /path/model.gguf
 ```
 
-`minimal` · `basic` · `agent` · `tools` · `structured` · `chat_app` ·
-`embeddings` · `fit` · `async_chat` (needs `tokio`)
+`minimal` · `basic` · `tools` · `structured` · `chat_app` · `embeddings` ·
+`fit` · `async_chat` (needs `tokio`) — and, on `gen2::agent`, `agent` ·
+`coding_agent` · `continuity`.
 
 ## Live tests
 

@@ -7,7 +7,7 @@
 //!
 //! ```no_run
 //! # fn main() -> Result<(), gen2::Error> {
-//! # let engine = gen2::Engine::load("model.gguf")?;
+//! # let engine = gen2::legacy::Engine::load("model.gguf")?;
 //! #[derive(serde::Deserialize, schemars::JsonSchema)]
 //! struct Invoice {
 //!     vendor: String,
@@ -44,6 +44,9 @@ const DEFAULT_MAX_TOKENS: usize = 1024;
 /// Built by [`Engine::extract`]. `T` is inferred from whatever the result is
 /// assigned to, so it usually needs no turbofish.
 #[must_use = "an Extract does nothing until .value() is called"]
+// Named through its deprecated alias in `crate::legacy`; the lint cannot see
+// through a type alias.
+#[allow(unnameable_types)]
 pub struct Extract<'e, T> {
     engine: &'e Engine,
     text: String,

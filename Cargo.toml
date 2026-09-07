@@ -14,7 +14,7 @@ repository = "https://github.com/saberra-ai/gen2"
 # macOS-only; the docs describe them either way.
 [package.metadata.docs.rs]
 no-default-features = true
-features = ["backend-llamacpp", "backend-external-api", "backend-litertlm", "tokio", "hf"]
+features = ["backend-llamacpp", "backend-external-api", "backend-litertlm", "tokio", "hf", "agent"]
 targets = ["x86_64-unknown-linux-gnu"]
 
 [lib]
@@ -130,6 +130,19 @@ safetensors = { version = "0.8", optional = true }
 name = "async_chat"
 required-features = ["tokio"]
 
+# The agent loop lives behind the `agent` feature (on by default).
+[[example]]
+name = "agent"
+required-features = ["agent"]
+
+[[example]]
+name = "coding_agent"
+required-features = ["agent"]
+
+[[example]]
+name = "continuity"
+required-features = ["agent"]
+
 [dev-dependencies]
 serde_json = "1"
 tempfile = "3.19.1"
@@ -171,13 +184,20 @@ harness = false
 #
 # On Apple silicon add `metal`; on NVIDIA add `cuda`. Without one of those,
 # llama.cpp runs on the CPU.
-default = ["backend-llamacpp", "hf"]
+default = ["backend-llamacpp", "hf", "agent"]
 
 # `hf:owner/repo[:QUANT|:file.gguf]` model references (see `gen2::hf`). On by
 # default because the first line a new consumer writes names a model by
 # reference, not by a file they had to find. Needs no backend: it only
 # produces a local path. Opt out with `default-features = false`.
 hf = ["dep:hf-hub"]
+# The agent loop above the inference core: `gen2::agent` — `Agent`, its
+# executable tools (`FunctionTool`, `ToolRegistry`, skills, MCP servers),
+# approvals, budgets, steering, and the durable-agent journal. On by default
+# because pio-app consumes it; off, the crate is inference only (api_spec.md
+# §2, §26) and `gen2::agent` does not exist. Whether this layer stays a
+# feature or leaves the crate is Victor's call (roadmap: human fork).
+agent = []
 
 backend-llamacpp = ["dep:llama-cpp-2", "dep:llama-cpp-sys-2"]
 backend-mlx = ["dep:mlx-rs", "dep:safetensors"]

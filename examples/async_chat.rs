@@ -1,80 +1,78 @@
 //! The async API, behind the `tokio` feature.
 //!
+//! The same turns and the same types; decoding runs on a blocking task and
+//! events are bridged through a bounded channel.
+//!
 //! ```sh
-//! cargo run --example async_chat --no-default-features --features metal,tokio -- /path/model.gguf
+//! cargo run --example async_chat --features metal,tokio -- /path/model.gguf
 //! ```
 
-use std::sync::Arc;
-
 use futures::StreamExt;
-use gen2::{Engine, Session, Update};
+use gen2::{Event, Session};
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let model = std::env::args()
+    let path = std::env::args()
         .nth(1)
         .ok_or("usage: async_chat <model.gguf>")?;
-
-    let engine = Arc::new(Engine::load(&model)?);
+    let model = gen2::load(&path)?;
+    let mut session = Session::new();
 
     // ── Await a whole turn ──────────────────────────────────────────────────
-    let (completion, session) = engine
-        .chat_owned(Session::new())
+    let response = model
+        .turn(&mut session)
         .user("Name two colours.")
         .max_tokens(64)
-        .send_async()
+        .run_async()
         .await?;
-    println!("awaited: {}", completion.text.trim());
+    println!("awaited: {}", response.text().trim());
 
     // ── Stream one ──────────────────────────────────────────────────────────
     // The session carries the history, so this continues the conversation.
     print!("streamed: ");
-    let mut turn = engine
-        .chat_owned(session)
+    let mut stream = model
+        .turn(&mut session)
         .user("Now name one more.")
         .max_tokens(64)
-        .spawn_async();
-
-    let mut session = None;
-    while let Some(update) = turn.next().await {
-        match update {
-            Update::Delta(t) => print!("{t}"),
-            Update::Done { session: s, .. } => session = Some(s),
-            Update::Failed { error, .. } => eprintln!("failed: {error}"),
-            _ => {}
+        .stream_async()
+        .await?;
+    while let Some(event) = stream.next().await {
+        if let Event::TextDelta(text) = event? {
+            print!("{text}");
         }
     }
-    println!();
-
-    if let Some(s) = session {
-        println!("transcript: {} messages", s.len());
-    }
+    let response = stream.finish().await?;
+    println!(
+        "\n[{}] transcript: {} messages",
+        response.finish_reason(),
+        session.len()
+    );
 
     // ── Cancel from a task ──────────────────────────────────────────────────
-    let mut turn = engine
-        .chat_owned(Session::new())
+    let mut stream = model
+        .turn(&mut session)
         .user("Write a very long essay about rust.")
         .max_tokens(512)
-        .spawn_async();
-
-    let canceller = turn.canceller();
+        .stream_async()
+        .await?;
+    let canceller = stream.canceller();
     tokio::spawn(async move {
         tokio::time::sleep(std::time::Duration::from_millis(300)).await;
-        let _ = canceller.cancel();
+        canceller.cancel();
     });
-
     let mut fragments = 0;
-    while let Some(update) = turn.next().await {
-        match update {
-            Update::Delta(_) => fragments += 1,
-            Update::Done { completion, .. } => println!(
-                "cancelled after {fragments} fragments, kept {} chars ({:?})",
-                completion.text.len(),
-                completion.finish
-            ),
-            _ => {}
+    while let Some(event) = stream.next().await {
+        if let Event::TextDelta(_) = event? {
+            fragments += 1;
         }
     }
-
+    // A cancelled turn is a finish, not an error; the partial reply is in the
+    // session under an id you can `remove_message`.
+    let response = stream.finish().await?;
+    println!(
+        "cancelled after {fragments} fragments, kept {} chars ({})",
+        response.text().len(),
+        response.finish_reason()
+    );
     Ok(())
 }

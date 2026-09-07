@@ -22,34 +22,29 @@
 //! ```
 //!
 //! A [`Runtime`] holds several [`Model`]s, local or served by an
-//! OpenAI-compatible endpoint — see [`api::runtime`](crate::Runtime) for the
-//! walkthrough. Conversations (`Session`, `Model::turn`) on this surface are
-//! next; until then the engine below carries them.
-//!
-//! [`Engine`] loads a model; [`Session`] holds a conversation you own. Three
-//! ways to call:
-//!
-//! - [`Engine::infer`] for one prompt with nothing kept.
-//! - [`Engine::chat`] for a turn in a conversation.
-//! - [`Engine::agent`] for a task carried out with your tools.
+//! OpenAI-compatible endpoint; a [`Session`] is conversation state you own,
+//! and [`Model::turn`] runs one invocation against it:
 //!
 //! ```no_run
-//! use gen2::{Engine, Session};
+//! use gen2::{Runtime, Session};
 //!
-//! let engine = Engine::load("/models/model.gguf")?;
+//! let runtime = Runtime::new()?;
+//! let model = runtime.load("/models/model.gguf")?;
 //!
-//! let title = engine.infer("Title this in three words.").max_tokens(16).text()?;
-//!
-//! let mut session = Session::new();
-//! engine.chat(&mut session).user("Explain entropy.").send()?;
-//! engine.chat(&mut session).user("Simpler?").send()?;
+//! let mut session = Session::new().with_system("Be concise.");
+//! model.turn(&mut session).user("Explain entropy.").run()?;
+//! model.turn(&mut session).user("Simpler?").run()?;
 //! # Ok::<(), gen2::Error>(())
 //! ```
 //!
-//! [`controller`] is the layer underneath, reachable through
-//! [`Engine::controller`] for anything the facade does not cover. Everything
-//! else — backend dispatch, session runtime, KV cache, the model zoo, placement
-//! routing, residency policy — is internal and free to change.
+//! The root is the whole happy path (api_spec.md §25). Below it:
+//!
+//! - [`advanced`] — local tuning, residency and hardware, the wire types,
+//!   the controller, and the backend plugin seam.
+//! - [`legacy`] — the previous `Engine`/`Chat`/`Inference` facade, deprecated
+//!   and mapped to the new surface in api_spec.md §27.
+//! - [`agent`] — the loop above the inference core, behind the `agent`
+//!   feature (on by default).
 //!
 //! See `docs/EXTRACTION.md` for what moved out of `pio-core`, what was
 //! inverted, and the one seam (remote/flock dispatch) a host still supplies.
@@ -62,10 +57,13 @@
 #![warn(unnameable_types)]
 
 // ── The public API ──────────────────────────────────────────────────────────
-pub mod api;
+// Assembled in `api`, named from here: the root, `advanced`, `legacy`, and
+// `agent` are the only paths a consumer sees.
+pub(crate) mod api;
 
-// Below the happy path: bring your own backend. Documented in the module,
-// not here, so its links resolve in its own scope.
+// Below the happy path: local tuning, residency, hardware, the wire types,
+// the controller, and the backend seam. Documented in the module, not here,
+// so its links resolve in its own scope.
 pub mod advanced;
 
 // ── S3.1: `hf:` model references ────────────────────────────────────────────
@@ -74,13 +72,22 @@ pub mod advanced;
 pub use api::hf;
 // ── end S3.1 ────────────────────────────────────────────────────────────────
 
-/// The controller: commands, events, and handles. [`api`] is the ergonomic
-/// layer over this; reach for the controller directly when you need something
-/// the facade doesn't cover.
+// The previous facade, deprecated: `Engine`, `Chat`, `Inference` and their
+// types, each mapped to the new surface (api_spec.md §27).
+pub mod legacy;
+
+// The loop above the inference core — `Agent`, executable tools, approvals,
+// MCP — behind the `agent` feature.
+#[cfg(feature = "agent")]
+pub mod agent;
+
+// The controller: commands, events, and handles. Reached as
+// `advanced::controller`; the module itself stays crate-private so its
+// vocabulary does not sit beside `Model` and `Session` (api_spec.md §25).
 // `unused_mut` is allowed here (as it was before the split): some bindings need
 // `mut` only under certain backend features.
 #[allow(unused_mut)]
-pub mod controller;
+pub(crate) mod controller;
 
 // ── Internals ───────────────────────────────────────────────────────────────
 // Reachable within the crate only. Anything here that leaks into a public
@@ -113,8 +120,10 @@ pub(crate) mod generation;
 pub(crate) mod hardware;
 #[allow(dead_code, unused_imports)]
 pub(crate) mod kv;
-/// MCP client — register an external server's tools as this crate's tools.
-pub mod mcp;
+// MCP client — register an external server's tools as this crate's tools.
+// Reached as `agent::mcp`.
+#[cfg(feature = "agent")]
+pub(crate) mod mcp;
 #[allow(dead_code, unused_imports)]
 pub(crate) mod media;
 
@@ -134,11 +143,11 @@ pub(crate) mod residency_stats;
 #[allow(dead_code, unused_imports)]
 pub(crate) mod router;
 
-/// An append-only history and the projections that turn it into a transcript.
-///
-/// The seam a durable agent is built on: the journal is what happened, the
-/// context is a view of it, and the two are allowed to differ.
-pub mod journal;
+// An append-only history and the projections that turn it into a transcript.
+// The seam a durable agent is built on. Reached as `agent::journal`; the
+// session runtime's truncation shares its round rule.
+#[allow(dead_code, unused_imports)]
+pub(crate) mod journal;
 
 #[allow(
     dead_code,
@@ -170,22 +179,25 @@ pub(crate) mod utilities;
 #[allow(dead_code, unused_imports)]
 pub(crate) mod zoo;
 
-// ── The controller's vocabulary ─────────────────────────────────────────────
-// Public because the controller's commands, events, and return types are
-// written in these terms. This is the whole nameable surface besides
-// `controller` itself.
+// ── The root namespace (api_spec.md §25) ────────────────────────────────────
+// Exactly the list a normal consumer sees, plus `load`. Supporting types live
+// in the modules below it; everything else is under `advanced`, `legacy`, or
+// `agent`. Keep this block short — it is the crate's public identity.
 
-/// The inference-first surface: a [`Runtime`] loads [`Model`]s, a model
+#[cfg(feature = "tokio")]
+pub use api::event::AsyncEventStream;
+/// The inference-first surface: a [`Runtime`] loads [`Model`]s; a model
 /// answers an [`Input`] with a [`Response`]; a [`Session`] holds the
-/// conversation, and [`Model::turn`] runs one invocation against it with
+/// conversation, and [`Model::turn`] runs one [`Turn`] against it with
 /// [`GenerationOptions`] and a [`ToolChoice`], blocking or as an
-/// [`EventStream`]. Supporting types live in [`model`], [`input`],
-/// [`output`], [`session`], [`tool_defs`], [`turn`], and [`event`].
-///
-/// `Turn`, `Event`, and `Canceller` are reached through [`turn`] and
-/// [`event`] until the old facade's same-named types retire from the root.
-pub use api::{EventStream, GenerationOptions, Input, Model, Response, Runtime, ToolChoice};
-pub use api::{event, input, model, output, session, tool_defs, turn};
+/// [`EventStream`] of [`Event`]s.
+pub use api::{
+    Error, Event, EventStream, GenerationOptions, Input, Model, Response, Result, Runtime, Session,
+    ToolChoice, ToolDefinition, ToolSet, Turn,
+};
+/// The conversation the model is given: the role-based wire message the
+/// backends render (api_spec.md §9's `enum Message` is not yet this type).
+pub use types::message::Message;
 
 /// Load a model with a private runtime the returned [`Model`] keeps alive.
 ///
@@ -201,99 +213,61 @@ pub fn load(path: impl AsRef<std::path::Path>) -> Result<Model> {
     Runtime::new()?.load(path)
 }
 
-/// The primary API — see [`api`].
-#[cfg(feature = "tokio")]
-pub use api::{AsyncAgentRun, AsyncEventStream, AsyncTurn};
 /// Deriving a tool's argument schema needs the same `schemars` this crate
 /// compiled against — a different version produces a `JsonSchema` impl that
-/// won't satisfy [`FunctionTool`]'s bound. Use `gen2::schemars` rather than
-/// adding your own dependency.
+/// won't satisfy [`ToolDefinition::input_schema`]'s bound. Use
+/// `gen2::schemars` rather than adding your own dependency.
 pub use schemars;
 
-pub use api::{
-    Agent, AgentConfig, AgentRun, AgentStep, ApprovalMode, Budget, Canceller, Chat, Classify,
-    Completion, DEFAULT_MAX_STEPS, DEFAULT_TOOL_DEPTH, Decision, Engine, EngineBuilder, Error,
-    Event, ExecutionPolicy, Extract, Finish, Fit, FitVerdict, FunctionTool, Inference, IntoTool,
-    ModelInfo, OwnedChat, Result, Session, TokenStream, Tokens, Tool, ToolConfigError, ToolContext,
-    ToolError, ToolLoading, ToolOutput, ToolRegistry, ToolSearch, ToolSet, Turn, Update,
-};
-pub use api::{AgentTool, Risk, SEARCH_TOOL, Skill, SkillLibrary, Steering, Struggle};
-/// Tools served by an MCP server, alongside the tool types they sit with.
-pub use mcp::{McpClient, McpError, McpTool, McpToolSet};
-/// Which auxiliary runtimes are loaded, separate from what the chat model can do.
-pub use utilities::{LoadedUtility, RerankResult, UtilityStatus};
+// ── Supporting modules (api_spec.md §25) ────────────────────────────────────
+// One block per module so a line added by another slice merges cleanly.
 
-/// Commands, events, and handles — see [`controller`].
-pub use controller::{
-    ControllerCmd, ControllerConfig, ControllerEvent, ControllerHandle, ControllerMetricsSnapshot,
-    ControllerObservabilitySnapshot, ControllerPolicySnapshot, ControllerRuntimeSnapshot,
-    ControllerState, InferenceHandle, Placement, RemoteDispatch, SystemTask,
-};
+/// What a model is and does: [`ModelId`](model::ModelId),
+/// [`ModelInfo`](model::ModelInfo), [`ModelCapabilities`](model::ModelCapabilities),
+/// the [`Generation`](model::Generation) builder behind [`Model::generate`],
+/// the remote-model builder, and the auxiliary [`Embedder`](model::Embedder)
+/// and [`Reranker`](model::Reranker) (api_spec.md §5, §6, §21).
+pub mod model {
+    pub use crate::api::model::{ModelCapabilities, ModelId, ModelInfo, ModelSourceKind};
+    pub use crate::api::{Embedder, Generation, RemoteModelBuilder, Reranker};
+    pub use crate::generation::ThinkingMode;
+    pub use crate::utilities::RerankResult;
+}
 
-/// What a generation is asked to do, and how it may think.
-pub use generation::{GenSpec, ThinkingMode};
-/// Structured payloads carried by [`ControllerEvent`].
-pub use generation::{MediaBoundary, ToolCall};
+/// Conversation state: ids, revisions, the append-only event log, message
+/// records, tool results, and the errors a refused edit returns
+/// (api_spec.md §7–§8).
+pub mod session {
+    pub use crate::api::session::{
+        ContextFingerprint, MessageId, MessageRecord, SessionError, SessionEvent, SessionId,
+        SessionRevision, ToolResult,
+    };
+}
 
-/// The conversation the engine is given, and what it reports back.
-pub use types::ExecutionStats;
-pub use types::message::{Message, MessageBody, MessageChunk, MessageContent, ToolSpec};
+/// What a model is given: [`Input`], its [`InputPart`](input::InputPart)s,
+/// and an [`Image`](input::Image) (api_spec.md §9.2).
+pub mod input {
+    pub use crate::api::input::{Image, Input, InputPart};
+}
 
-/// Engine configuration accepted by [`ControllerCmd::LoadModel`] and
-/// [`ControllerCmd::ApplySettings`], plus the error every fallible call
-/// returns.
-pub use engine::{
-    Capabilities, Degraded, ExecError, LoadOutcome, MmSettings, PromptSettings, SamplingSettings,
-    Settings, StoppingSettings, SystemSettings,
-};
+/// What comes back: the [`AssistantMessage`](output::AssistantMessage) and its
+/// parts, tool calls, usage, stats, and the finish reason (api_spec.md §14).
+pub mod output {
+    pub use crate::api::output::{
+        AssistantMessage, FinishReason, GenerationStats, OutputPart, ToolCall, ToolCallId, Usage,
+    };
+}
 
-/// What machine this is — memory, cores, GPU — as read by
-/// [`HardwareProfile::detect`]. The input to a fit check.
-pub use hardware::{GpuBackend, HardwareProfile};
-/// A model's own header metadata, reachable from [`ModelInfo`].
-///
-/// The load record is `ModelRecord` here: `Model` at the root is the
-/// inference target, per api_spec.md §5.
-pub use types::model::{Model as ModelRecord, ModelConfig, ModelMetadata};
+/// Semantic streaming: [`Event`], the [`EventStream`] that yields them, and
+/// the [`Canceller`](event::Canceller) that ends one (api_spec.md §15–§16).
+pub mod event {
+    #[cfg(feature = "tokio")]
+    pub use crate::api::event::AsyncEventStream;
+    pub use crate::api::event::{Canceller, Event, EventStream};
+}
 
-// ── Transitively reachable types ────────────────────────────────────────────
-// Not part of the controller's own signatures, but reachable *through* them —
-// a field of a public struct, a member of a public snapshot. A caller can
-// receive one of these, so it must be able to name one; otherwise the value is
-// there but nothing can be declared, constructed, or matched against it.
-// `unnameable_types` (below) is what proves this list stays complete.
-
-/// What the active backend can do, and how fast it reaches first token.
-pub use backend::caps::{BackendCaps, LatencyTier};
-/// Output shaping on [`GenSpec::grammar`]: JSON schema, regex, Lark, or GBNF.
-pub use backend::common::grammar::GrammarSpec;
-/// What a predictor is given to draft from.
-///
-/// Exported because [`SpeculativePredictor::draft_with_context`] takes one: it
-/// was reachable but unnameable, so the trait could not actually be
-/// implemented outside this crate. Only exists on the MLX backend, which is
-/// the only one that surfaces the target's hidden states.
-#[cfg(feature = "backend-mlx")]
-pub use backend::common::speculative::DraftContext;
-/// Speculative-decoding policy reachable from the sampling settings.
-pub use backend::common::speculative::{SpeculativeMode, SpeculativePredictor};
-
-/// Tool definitions carried on a [`Message`], distinct from the
-/// [`ToolCall`] event the model emits mid-stream.
-pub use types::message::FunctionDefinition;
-pub use types::message::ToolCall as MessageToolCall;
-/// Media reference on a message chunk.
-pub use types::message::Url;
-
-/// Memory governance reachable through the controller's observability
-/// snapshots.
-pub use memory::{
-    MachineMemoryTier, MemoryBudgets, MemoryGovernor, MemoryPolicyInput, MemoryPressureLevel,
-    MemorySnapshot,
-};
-
-/// What is currently resident, and the policy deciding what may join it —
-/// reachable through [`ControllerObservabilitySnapshot`].
-pub use residency::{ResidencyInventory, ResidentRuntime, RuntimeKind};
-pub use residency_policy::ResidencyPolicy;
-pub use residency_stats::ResidencyStats;
+/// Tool definitions the model is told about, with nothing to run
+/// (api_spec.md §10).
+pub mod tool_defs {
+    pub use crate::api::tool_defs::{ToolDefinition, ToolSet};
+}

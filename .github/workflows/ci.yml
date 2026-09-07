@@ -45,8 +45,8 @@ jobs:
         with:
           components: clippy
       - uses: Swatinem/rust-cache@v2
-      - run: cargo clippy --all-targets --no-default-features --features backend-external-api,tokio -- -D warnings
-      - run: cargo test --no-default-features --features backend-external-api,tokio
+      - run: cargo clippy --all-targets --no-default-features --features backend-external-api,tokio,agent -- -D warnings
+      - run: cargo test --no-default-features --features backend-external-api,tokio,agent
 
   # Every backend the README lists, built the way the README says to build it.
   # A backend that only compiles alongside another one is not a backend.

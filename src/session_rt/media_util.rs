@@ -1,5 +1,5 @@
 use crate::engine::ExecError;
-use crate::{Message, MessageBody, MessageChunk, MessageContent};
+use crate::types::message::{Message, MessageBody, MessageChunk, MessageContent};
 
 /// Hard caps on attached-image inputs, shared by every vision backend so the
 /// untrusted decode path can't panic or OOM on adversarial bytes (truncated

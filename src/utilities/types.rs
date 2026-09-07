@@ -14,7 +14,7 @@ pub struct LoadedUtility {
 
 /// Which auxiliary runtimes are loaded right now.
 ///
-/// Deliberately separate from [`Capabilities`](crate::Capabilities), which
+/// Deliberately separate from [`Capabilities`](crate::advanced::generation::Capabilities), which
 /// says what the *generative* model can accept. The two answer different
 /// questions, and overloading `AUDIO` to mean "a transcription helper happens
 /// to be installed" would make both answers useless: a caller checking whether

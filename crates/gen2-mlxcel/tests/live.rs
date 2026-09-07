@@ -37,14 +37,14 @@ fn a_registered_mlxcel_plugin_generates_through_the_public_api() {
         eprintln!("live: SKIPPED — set PIO_TEST_MLX_MODEL to an MLX safetensors directory");
         return;
     };
-    let engine = gen2::Engine::builder()
-        .model(&model)
+    let runtime = gen2::Runtime::builder()
         .backend(gen2_mlxcel::plugin())
         .build()
-        .expect("the plugin loads the model");
+        .expect("a runtime with the plugin registered");
+    let model = runtime.load(&model).expect("the plugin loads the model");
 
-    let text = engine
-        .infer("Reply with exactly one word: hello")
+    let text = model
+        .generate("Reply with exactly one word: hello")
         .max_tokens(8)
         .text()
         .expect("a generation completes");

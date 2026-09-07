@@ -75,7 +75,7 @@ impl std::fmt::Debug for McpTool {
 /// Every tool an MCP server offers, ready to register.
 ///
 /// Iterating yields `Arc<dyn Tool>`, so it drops straight into
-/// [`defer_tools`](crate::Agent::defer_tools).
+/// [`defer_tools`](crate::agent::Agent::defer_tools).
 pub struct McpToolSet {
     tools: Vec<Arc<dyn Tool>>,
     server: String,

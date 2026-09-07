@@ -12,13 +12,13 @@
 //!
 //! ```no_run
 //! # async fn demo() -> Result<(), Box<dyn std::error::Error>> {
-//! # use gen2::mcp::McpToolSet;
+//! # use gen2::agent::mcp::McpToolSet;
 //! let mcp = McpToolSet::connect("mcp-server-git", ["--repo", "."]).await?;
-//! # let engine: gen2::Engine = unimplemented!();
+//! # let engine: gen2::legacy::Engine = unimplemented!();
 //! # let mut session = gen2::Session::new();
 //! engine.agent(&mut session)
 //!     .defer_tools(mcp)                       // forty tools, none in the prompt
-//!     .tool_search(gen2::ToolSearch::Hybrid)
+//!     .tool_search(gen2::agent::ToolSearch::Hybrid)
 //!     .goal("What changed in the last commit?")?;
 //! # Ok(())
 //! # }

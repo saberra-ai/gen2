@@ -1,10 +1,10 @@
 //! Embedding text — turning strings into vectors you can compare.
 //!
 //! ```sh
-//! cargo run --example embeddings --no-default-features --features metal -- /path/embedding-model.gguf
+//! cargo run --example embeddings --features metal -- /path/embedding-model.gguf
 //! ```
 
-use gen2::Engine;
+use gen2::Runtime;
 
 /// Cosine similarity — the usual way to compare two embeddings.
 fn cosine(a: &[f32], b: &[f32]) -> f32 {
@@ -15,24 +15,23 @@ fn cosine(a: &[f32], b: &[f32]) -> f32 {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let model = std::env::args()
+    let path = std::env::args()
         .nth(1)
         .ok_or("usage: embeddings <embedding-model.gguf>")?;
 
-    // An embedder-only engine. No chat model needed — generation would return
-    // ModelNotLoaded, embedding works.
-    let engine = Engine::builder().embedder(&model).build()?;
-    println!("embedder loaded: {}", engine.is_embedder_loaded());
+    // An embedder is not a chat model and never pretends to be one: no
+    // session, no turn. It shares the runtime's settings and backends.
+    let runtime = Runtime::new()?;
+    let embedder = runtime.load_embedder(&path)?;
 
     // Batch — one call, one vector per input, in order. This is the fast path
     // for embedding a corpus.
     let corpus = [
-        "The cat sat on the mat.".to_string(),
-        "A feline rested on the rug.".to_string(),
-        "Rust has a borrow checker.".to_string(),
+        "The cat sat on the mat.",
+        "A feline rested on the rug.",
+        "Rust has a borrow checker.",
     ];
-    let vectors = engine.embed(&corpus)?;
-
+    let vectors = embedder.embed(corpus)?;
     println!(
         "{} vectors of {} dimensions\n",
         vectors.len(),
@@ -45,11 +44,10 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!("cat/rust      {:.3}", cosine(&vectors[0], &vectors[2]));
 
     // Single input, when you're embedding a query rather than a corpus.
-    let query = engine.embed_one("Where did the cat sit?")?;
+    let query = embedder.embed_one("Where did the cat sit?")?;
     println!("\nquery vs each:");
     for (text, v) in corpus.iter().zip(&vectors) {
         println!("  {:.3}  {text}", cosine(&query, v));
     }
-
     Ok(())
 }

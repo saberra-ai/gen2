@@ -14,6 +14,9 @@ use super::stream::{Completion, Tokens};
 /// the difference is that nothing is retained afterwards, so there is no
 /// session to read back.
 #[must_use = "an Inference does nothing until .text(), .run(), or .tokens() is called"]
+// Named through its deprecated alias in `crate::legacy`; the lint cannot see
+// through a type alias.
+#[allow(unnameable_types)]
 pub struct Inference<'e> {
     engine: &'e Engine,
     session: Session,

@@ -104,7 +104,7 @@ fn a_reference_downloads_loads_generates_and_then_loads_offline() {
     );
     assert_eq!(
         info.source,
-        gen2::api::model::ModelSourceKind::HuggingFace {
+        gen2::model::ModelSourceKind::HuggingFace {
             repo: REPO.into(),
             file: EXPECTED_FILE.into(),
         }

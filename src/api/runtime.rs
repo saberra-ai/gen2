@@ -60,7 +60,7 @@ use crate::controller::ControllerConfig;
 use crate::engine::Settings;
 use crate::hardware::HardwareProfile;
 
-use super::engine::Engine;
+use super::engine::{Engine, EngineBuilder};
 use super::error::{Error, Result};
 use super::fit;
 use super::model::{Model, ModelId, ModelSourceKind};
@@ -247,6 +247,15 @@ impl Runtime {
         let model = self.register(Loaded::new(engine, name, source, header, estimated_mb));
         model.loaded().touch();
         Ok(model)
+    }
+
+    /// An engine builder carrying this runtime's settings and controller
+    /// config, for the auxiliary engines (embedder, reranker) that share
+    /// them.
+    pub(crate) fn engine_builder(&self) -> EngineBuilder {
+        Engine::builder()
+            .settings(self.inner.settings.clone())
+            .config(self.inner.config.clone())
     }
 
     /// A model served by an OpenAI-compatible endpoint.
@@ -630,6 +639,14 @@ impl RuntimeBuilder {
     /// Sampling, stopping, and prompt settings every model starts from.
     pub fn settings(mut self, settings: Settings) -> Self {
         self.settings = Some(settings);
+        self
+    }
+
+    /// Register a backend built outside the crate. A path the plugin claims
+    /// is routed to it ahead of every built-in rule; see
+    /// [`gen2::advanced::plugin`](crate::advanced::plugin).
+    pub fn backend(mut self, plugin: crate::advanced::BackendPlugin) -> Self {
+        self.config.plugins.push(Arc::new(plugin));
         self
     }
 
