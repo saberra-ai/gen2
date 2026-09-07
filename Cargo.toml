@@ -14,7 +14,7 @@ repository = "https://github.com/saberra-ai/gen2"
 # macOS-only; the docs describe them either way.
 [package.metadata.docs.rs]
 no-default-features = true
-features = ["backend-llamacpp", "backend-external-api", "backend-litertlm", "tokio"]
+features = ["backend-llamacpp", "backend-external-api", "backend-litertlm", "tokio", "hf"]
 targets = ["x86_64-unknown-linux-gnu"]
 
 [lib]
@@ -44,6 +44,12 @@ mistralrs = { version = "0.8.1", optional = true, default-features = false }
 
 # HTTP client for the external-api backend (OpenAI / Anthropic wire formats).
 reqwest = { version = "0.13", features = ["json", "blocking", "query", "form", "stream"], optional = true }
+
+# Hugging Face Hub client behind the `hf` feature: `hf:owner/repo[:QUANT]`
+# references resolve and download through it (`src/api/hf.rs`). `blocking`
+# because `Engine::load` is synchronous; the crate parks its own runtime on a
+# background thread, so the call is safe from inside a tokio context too.
+hf-hub = { version = "1", features = ["blocking"], optional = true }
 
 # ── Tokenization / templating / constrained decoding ────────────────────────
 tokenizers = { version = "0.23", default-features = false, features = ["onig"] }
@@ -165,7 +171,13 @@ harness = false
 #
 # On Apple silicon add `metal`; on NVIDIA add `cuda`. Without one of those,
 # llama.cpp runs on the CPU.
-default = ["backend-llamacpp"]
+default = ["backend-llamacpp", "hf"]
+
+# `hf:owner/repo[:QUANT|:file.gguf]` model references (see `gen2::hf`). On by
+# default because the first line a new consumer writes names a model by
+# reference, not by a file they had to find. Needs no backend: it only
+# produces a local path. Opt out with `default-features = false`.
+hf = ["dep:hf-hub"]
 
 backend-llamacpp = ["dep:llama-cpp-2", "dep:llama-cpp-sys-2"]
 backend-mlx = ["dep:mlx-rs", "dep:safetensors"]

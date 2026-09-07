@@ -6,6 +6,19 @@ follow SemVer, and 0.x means the public surface may still move between minors.
 ## Unreleased
 
 ### Added
+- `hf:owner/repo[:QUANT|:file.gguf]` model references, accepted wherever a
+  model path is (`gen2::load`, `Runtime::load`, `Engine::load`,
+  `EngineBuilder::model`): the file is chosen (Q4_K_M by default, then the
+  smallest Q4, then the smallest GGUF), downloaded through `hf-hub` into a
+  cache in the Hub's layout (`GEN2_MODELS_DIR` → `HF_HUB_CACHE` → platform
+  cache dir), and loaded; a warm cache makes no network request. `HF_TOKEN`
+  is honoured. The typed form is `gen2::hf::HfModel` (`on_progress`,
+  `cache_dir`, `token`, `resolve`, `download`) via `EngineBuilder::hf` and
+  `Runtime::load_hf`; errors are `gen2::hf::HfError`, each naming its fix,
+  surfaced as `Error::Load`. A repo's `mmproj*.gguf` becomes the vision
+  projector. Behind the default-on `hf` feature.
+- `ModelSourceKind::HuggingFace { repo, file }`; the enum is no longer
+  `Copy`.
 - `Session` is the spec's model-agnostic conversational state (api_spec.md
   §7–§9): the system prompt and a data-only `ToolSet` are first-order state
   (`set_system`/`append_system`, `set_tools`/`add_tool`/`remove_tool`),

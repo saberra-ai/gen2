@@ -84,7 +84,7 @@ impl Model {
                 .and_then(|s| s.loaded_model_architecture.clone())
                 .or_else(|| header.and_then(|h| h.architecture.clone())),
             context_window: snapshot.and_then(|s| s.loaded_model_context),
-            source: self.loaded.source,
+            source: self.loaded.source.clone(),
             local: self.loaded.source.is_local(),
         }
     }
@@ -220,19 +220,27 @@ pub struct ModelInfo {
 }
 
 /// Where a model's weights are.
-#[derive(Debug, Clone, Copy, PartialEq, Eq, Hash)]
+#[derive(Debug, Clone, PartialEq, Eq, Hash)]
 #[non_exhaustive]
 pub enum ModelSourceKind {
     /// A file (or bundle directory) on this machine.
     LocalFile,
+    /// A file fetched from the Hugging Face Hub by `hf:` reference and
+    /// cached on this machine — see [`gen2::hf`](crate::hf).
+    HuggingFace {
+        /// `owner/name`.
+        repo: String,
+        /// The file within the repo that was loaded.
+        file: String,
+    },
     /// An OpenAI- or Anthropic-compatible endpoint.
     Remote,
 }
 
 impl ModelSourceKind {
     /// Whether inference happens on this machine.
-    pub fn is_local(self) -> bool {
-        matches!(self, Self::LocalFile)
+    pub fn is_local(&self) -> bool {
+        matches!(self, Self::LocalFile | Self::HuggingFace { .. })
     }
 }
 

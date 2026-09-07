@@ -51,7 +51,7 @@
 //! ```
 
 use std::collections::HashMap;
-use std::path::Path;
+use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
 use std::time::{Duration, Instant};
@@ -179,12 +179,46 @@ impl Runtime {
     }
 
     /// Load a local model — a GGUF file, or a bundle directory a compiled
-    /// backend reads. The backend is chosen from what is there.
+    /// backend reads — or one from the Hugging Face Hub by reference
+    /// (`hf:owner/repo[:QUANT]`, see [`gen2::hf`](crate::hf)). The backend
+    /// is chosen from what is there.
     ///
     /// Returns once the weights are resident. A path that does not exist, or
-    /// is not a model, fails here rather than at first use.
+    /// is not a model, fails here rather than at first use; so does a
+    /// reference the Hub cannot serve.
     pub fn load(&self, path: impl AsRef<Path>) -> Result<Model> {
         let path = path.as_ref();
+        match super::hf::resolve_model_path(path)? {
+            Some(download) => self.load_downloaded(download),
+            None => self.load_local(path, None, ModelSourceKind::LocalFile),
+        }
+    }
+
+    /// Load a model from the Hugging Face Hub, in typed form.
+    ///
+    /// The string form goes through [`Runtime::load`]; this takes an
+    /// [`HfModel`](crate::hf::HfModel) built by hand — a progress hook, a
+    /// cache directory of its own. Downloads what is not cached, then loads
+    /// as [`Runtime::load`] would; the repo's projector, when it has one,
+    /// rides along as the vision projector.
+    pub fn load_hf(&self, model: super::hf::HfModel) -> Result<Model> {
+        self.load_downloaded(model.download()?)
+    }
+
+    fn load_downloaded(&self, download: super::hf::HfDownload) -> Result<Model> {
+        let source = ModelSourceKind::HuggingFace {
+            repo: download.resolved.repo,
+            file: download.resolved.file,
+        };
+        self.load_local(&download.model, download.mmproj, source)
+    }
+
+    fn load_local(
+        &self,
+        path: &Path,
+        mmproj: Option<PathBuf>,
+        source: ModelSourceKind,
+    ) -> Result<Model> {
         let estimated_mb = crate::residency_policy::estimate_resident_mb_for_path_offloaded(
             path,
             self.inner.settings.system.gpu_layers,
@@ -196,24 +230,21 @@ impl Runtime {
         let engine = {
             let _admission = self.inner.admission.lock();
             self.make_room(estimated_mb, None);
-            Engine::builder()
+            let mut builder = Engine::builder()
                 .model(path)
                 .settings(self.inner.settings.clone())
-                .config(self.inner.config.clone())
-                .build()?
+                .config(self.inner.config.clone());
+            if let Some(mmproj) = mmproj {
+                builder = builder.mmproj(mmproj);
+            }
+            builder.build()?
         };
         let header = fit::ModelInfo::read(path).ok();
         let name = path
             .file_stem()
             .map(|s| s.to_string_lossy().into_owned())
             .filter(|s| !s.is_empty());
-        let model = self.register(Loaded::new(
-            engine,
-            name,
-            ModelSourceKind::LocalFile,
-            header,
-            estimated_mb,
-        ));
+        let model = self.register(Loaded::new(engine, name, source, header, estimated_mb));
         model.loaded().touch();
         Ok(model)
     }

@@ -67,6 +67,32 @@ response.usage();          // prompt and completion tokens
 # }
 ```
 
+## Models from Hugging Face
+
+Anywhere a path goes, an `hf:` reference goes too — the grammar `llama-cli
+-hf` and `ollama run hf.co/…` use, so a string from a model card works as
+written:
+
+```rust,no_run
+# fn main() -> gen2::Result<()> {
+let model = gen2::load("hf:unsloth/Qwen3-0.6B-GGUF")?;        // the repo's Q4_K_M
+let bigger = gen2::load("hf:unsloth/Qwen3-0.6B-GGUF:Q8_0")?;  // by quantization tag
+# let _ = (model, bigger);
+# Ok(())
+# }
+```
+
+The file is downloaded once into a cache in the Hub's own layout
+(`GEN2_MODELS_DIR`, else `HF_HUB_CACHE`, else the platform cache directory)
+and read from there after that — a second load makes no network request,
+so a warm cache works offline. `HF_TOKEN` is sent when set, which gated
+repos need. `:file.gguf` names an exact file; a repo that also carries an
+`mmproj*.gguf` gets it wired in as the vision projector. For a progress
+bar or a cache directory of your own, `gen2::hf::HfModel` is the same
+reference as a value: `Engine::builder().hf(HfModel::new("owner/repo").on_progress(..))`.
+The whole thing is the default-on `hf` feature; `default-features = false`
+leaves it out.
+
 ## A conversation
 
 A `Runtime` can hold more than one model. A `Session` belongs to you and to

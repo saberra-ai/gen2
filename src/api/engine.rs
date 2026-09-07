@@ -610,6 +610,9 @@ impl std::fmt::Debug for Engine {
 pub struct EngineBuilder {
     model_path: Option<PathBuf>,
     mmproj_path: Option<PathBuf>,
+    /// A Hugging Face model in typed form; resolved to `model_path` (and
+    /// `mmproj_path`, when the repo has a projector) at `build`.
+    hf: Option<super::hf::HfModel>,
     settings: Option<Settings>,
     config: Option<ControllerConfig>,
     api_key: Option<String>,
@@ -636,11 +639,24 @@ enum ContextChoice {
 }
 
 impl EngineBuilder {
-    /// The model to load — a GGUF file, an MLX model directory, or a
-    /// `.litertlm` bundle. The
-    /// backend is chosen from what's there; you never name one.
+    /// The model to load — a GGUF file, an MLX model directory, a
+    /// `.litertlm` bundle, or a Hugging Face reference
+    /// (`hf:owner/repo[:QUANT]`, see [`gen2::hf`](crate::hf)). The backend is
+    /// chosen from what's there; you never name one.
     pub fn model(mut self, path: impl AsRef<Path>) -> Self {
         self.model_path = Some(path.as_ref().to_path_buf());
+        self
+    }
+
+    /// A model from the Hugging Face Hub, in typed form.
+    ///
+    /// The string form goes through [`EngineBuilder::model`]; this takes an
+    /// [`HfModel`](crate::hf::HfModel) built by hand, which is how a program
+    /// attaches a progress hook or names a cache directory. Downloaded (or
+    /// found in the cache) at [`EngineBuilder::build`]; the repo's projector,
+    /// when it has one, becomes the `mmproj` unless one was set.
+    pub fn hf(mut self, model: super::hf::HfModel) -> Self {
+        self.hf = Some(model);
         self
     }
 
@@ -796,13 +812,28 @@ impl EngineBuilder {
     ///
     /// Returns once the weights are resident and the engine is ready to
     /// generate — no separate "is it loaded yet" step.
-    pub fn build(self) -> Result<Engine> {
-        if self.model_path.is_none() && self.embedder_path.is_none() {
+    pub fn build(mut self) -> Result<Engine> {
+        if self.model_path.is_none() && self.hf.is_none() && self.embedder_path.is_none() {
             return Err(Error::Load(
-                "nothing to load — call .model(path), .embedder(path), .openai(..), \
-                 or .anthropic(..)"
+                "nothing to load — call .model(path), .hf(model), .embedder(path), \
+                 .openai(..), or .anthropic(..)"
                     .into(),
             ));
+        }
+
+        // A Hugging Face reference becomes a cached local path here, before
+        // anything looks at the file. A plain path never enters this block
+        // beyond the prefix check.
+        let hf_download = match (self.hf.take(), self.model_path.as_deref()) {
+            (Some(model), _) => Some(model.download()?),
+            (None, Some(path)) => super::hf::resolve_model_path(path)?,
+            (None, None) => None,
+        };
+        if let Some(download) = hf_download {
+            self.model_path = Some(download.model);
+            if self.mmproj_path.is_none() {
+                self.mmproj_path = download.mmproj;
+            }
         }
 
         // Preflight the fit before starting anything, so a model that cannot
@@ -958,6 +989,7 @@ impl std::fmt::Debug for EngineBuilder {
         f.debug_struct("EngineBuilder")
             .field("model_path", &self.model_path)
             .field("mmproj_path", &self.mmproj_path)
+            .field("hf", &self.hf)
             .finish_non_exhaustive()
     }
 }

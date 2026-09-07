@@ -68,6 +68,12 @@ pub mod api;
 // not here, so its links resolve in its own scope.
 pub mod advanced;
 
+// ── S3.1: `hf:` model references ────────────────────────────────────────────
+/// Models from the Hugging Face Hub by `hf:owner/repo[:QUANT]` reference —
+/// [`HfModel`](hf::HfModel), the cache, and the errors.
+pub use api::hf;
+// ── end S3.1 ────────────────────────────────────────────────────────────────
+
 /// The controller: commands, events, and handles. [`api`] is the ergonomic
 /// layer over this; reach for the controller directly when you need something
 /// the facade doesn't cover.

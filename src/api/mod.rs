@@ -38,6 +38,9 @@ mod engine;
 mod error;
 pub mod event;
 mod extract;
+// ── S3.1: `hf:` model references (src/api/hf.rs) ───────────────────────────
+pub mod hf;
+// ── end S3.1 ────────────────────────────────────────────────────────────────
 pub(crate) mod fit;
 mod generation;
 mod inference;
