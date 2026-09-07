@@ -1624,34 +1624,46 @@ mod tests {
         }
     }
 
+    /// An absolute path on every platform. `/g` is relative on Windows (no
+    /// drive), and the resolver anchors relative directories to the cwd, so
+    /// a fixture written that way tests the anchoring instead of the order.
+    fn abs(p: &str) -> String {
+        if cfg!(windows) {
+            format!("C:{}", p.replace('/', "\\"))
+        } else {
+            p.to_string()
+        }
+    }
+
     #[test]
     fn cache_dir_order_is_gen2_then_hf_then_platform() {
-        let platform = Some(PathBuf::from("/plat"));
+        let platform = Some(PathBuf::from(abs("/plat")));
+        let (g, hub, old, home) = (abs("/g"), abs("/hub"), abs("/old"), abs("/home"));
         let all = [
-            (MODELS_DIR_VAR, "/g"),
-            ("HF_HUB_CACHE", "/hub"),
-            ("HUGGINGFACE_HUB_CACHE", "/old"),
-            ("HF_HOME", "/home"),
+            (MODELS_DIR_VAR, g.as_str()),
+            ("HF_HUB_CACHE", hub.as_str()),
+            ("HUGGINGFACE_HUB_CACHE", old.as_str()),
+            ("HF_HOME", home.as_str()),
         ];
         assert_eq!(
             cache_dir_from(env_of(&all), platform.clone()),
-            PathBuf::from("/g")
+            PathBuf::from(abs("/g"))
         );
         assert_eq!(
             cache_dir_from(env_of(&all[1..]), platform.clone()),
-            PathBuf::from("/hub")
+            PathBuf::from(abs("/hub"))
         );
         assert_eq!(
             cache_dir_from(env_of(&all[2..]), platform.clone()),
-            PathBuf::from("/old")
+            PathBuf::from(abs("/old"))
         );
         assert_eq!(
             cache_dir_from(env_of(&all[3..]), platform.clone()),
-            PathBuf::from("/home/hub")
+            PathBuf::from(abs("/home/hub"))
         );
         assert_eq!(
             cache_dir_from(env_of(&[]), platform),
-            PathBuf::from("/plat/gen2/hf")
+            PathBuf::from(abs("/plat/gen2/hf"))
         );
         let fallback = cache_dir_from(env_of(&[]), None);
         assert!(fallback.ends_with("gen2/hf"), "{}", fallback.display());
