@@ -755,6 +755,9 @@ fn parallel_safe_tools_in_one_turn_run_concurrently() {
     }
 }
 
+/// Only the agent tests declare tools, so without that feature this type
+/// has no constructor and `-D warnings` calls it dead.
+#[cfg(feature = "agent")]
 #[derive(serde::Deserialize, gen2::schemars::JsonSchema)]
 struct NoArgs {}
 

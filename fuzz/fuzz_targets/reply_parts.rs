@@ -11,7 +11,7 @@
 use arbitrary::Arbitrary;
 use libfuzzer_sys::fuzz_target;
 
-use gen2::{ChannelMarkers, ReplyStateMachine, StreamEmission};
+use gen2::advanced::generation::{ChannelMarkers, ReplyStateMachine, StreamEmission};
 
 /// A chunk is either free-form text or one of the marker literals the real
 /// families use — the latter so the generator hits marker boundaries far

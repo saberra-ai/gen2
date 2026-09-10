@@ -73,6 +73,11 @@ pub mod generation {
         Capabilities, Degraded, LoadOutcome, MmSettings, PromptSettings, SamplingSettings,
         Settings, StoppingSettings, SystemSettings,
     };
+    /// The reply scanner: how a model's raw token text is split into prose,
+    /// reasoning and tool calls. The semantic [`Event`](crate::Event) stream
+    /// is built on this; a consumer that renders its own channels, or fuzzes
+    /// the scanner, needs it directly.
+    pub use crate::generation::{ChannelMarkers, ReplyParts, ReplyStateMachine, StreamEmission};
     pub use crate::generation::{GenSpec, ThinkingMode};
 }
 

@@ -36,7 +36,7 @@ fuzz_target!(|data: &[u8]| {
     }
     drop(f);
 
-    if let Ok(info) = gen2::ModelInfo::read(path) {
+    if let Ok(info) = gen2::advanced::fit::ModelInfo::read(path) {
         // Whatever the header claimed, every derived number must survive
         // being computed. These are the same calls a host app makes right
         // after reading a model file.
