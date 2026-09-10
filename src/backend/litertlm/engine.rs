@@ -69,7 +69,7 @@ struct Loaded {
     facts: ModelFacts,
 }
 
-pub(crate) struct LiteRtLmEngine {
+pub struct LiteRtLmEngine {
     runtime: RwLock<Option<Arc<Runtime>>>,
     loaded: RwLock<Option<Loaded>>,
     /// The request that produced the current model, so `reload_model` can

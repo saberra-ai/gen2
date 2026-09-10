@@ -6,7 +6,9 @@
 
 pub mod anthropic_puller;
 mod engine;
-mod puller;
+// `pub(crate)` so `compat::backend::external_api::puller` can name the puller
+// the facade's `TokenPuller` wraps (S5.1).
+pub(crate) mod puller;
 mod session;
 #[cfg(test)]
 mod tests;

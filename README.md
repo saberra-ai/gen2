@@ -373,6 +373,12 @@ event, tool_defs}`. Three modules hold everything else:
   off the crate is inference only. Deciding what invocation happens next is a
   harness's job, and nothing at the root needs this layer.
 
+A fourth, `gen2::compat`, is hidden from the docs: the old module tree
+(`compat::controller`, `compat::engine`, `compat::backend`, …) re-exported
+under its old names so pio-app's `crate::gen2::…` paths resolve through one
+`pub use gen2::compat::*;` shim — a list that shrinks as the host moves to the
+root.
+
 The controller can also live in another process or on another machine.
 Implement the transport, and everything above it is unchanged:
 

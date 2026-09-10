@@ -26,7 +26,7 @@ use super::session::MistralRsSession;
 /// truncation driver plans against rather than a limit being enforced here.
 const ASSUMED_CONTEXT: usize = 8192;
 
-pub(crate) struct MistralRsEngine {
+pub struct MistralRsEngine {
     model: RwLock<Option<Arc<BlockingModel>>>,
     /// The request that produced the current model, so `reload_model` can
     /// repeat it without the caller restating anything.

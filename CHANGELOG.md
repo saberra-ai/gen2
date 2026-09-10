@@ -16,6 +16,18 @@ follow SemVer, and 0.x means the public surface may still move between minors.
   and device — counted the way llama.cpp's own `offloaded N/M layers to GPU`
   line counts them. `None` for a remote model. The controller's runtime
   snapshot carries it as `loaded_model_offload`.
+- `gen2::compat` (`#[doc(hidden)]`): the module tree pio-app imports against
+  (`controller`, `engine`, `generation`, `backend::{traits, caps, common::*,
+  llama}`, `session_rt`, `zoo`, `bundle::gguf`, `kv::store`, `executor`,
+  `residency*`, `router`, `hardware`, `memory`, `utilities`, `types`, and the
+  old root re-export list with `Engine` meaning the backend facade), so the
+  host's 445 `use` leaves and 283 inline paths resolve through
+  `pub use gen2::compat::*;`. `compat::system_task` rebuilds the removed
+  `SystemTask` variants as `Custom` labels with their old generation tuning.
+  `tests/compat_pio_paths.rs` names every inventoried path so a removal fails
+  there first. The module doc lists what cannot be re-exported (the
+  `SystemTask`/`ControllerEvent::Accepted`/`LoadModel`/`ContinueChat`/
+  `InferenceHandle` semantic changes and the mlxcel companion crate).
 - `hf:owner/repo[:QUANT|:file.gguf]` model references, accepted wherever a
   model path is (`gen2::load`, `Runtime::load`, `Engine::load`,
   `EngineBuilder::model`): the file is chosen (Q4_K_M by default, then the

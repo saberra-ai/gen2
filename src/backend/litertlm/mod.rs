@@ -52,7 +52,8 @@ mod ffi;
 mod puller;
 mod session;
 
-pub(crate) use engine::LiteRtLmEngine;
+// `pub` so `compat::backend::litertlm` can name what the facade wraps (S5.1).
+pub use engine::LiteRtLmEngine;
 
 #[cfg(test)]
 mod live {

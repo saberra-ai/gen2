@@ -148,7 +148,7 @@ struct Envelope<T: Send + 'static> {
 ///   each other (one GPU op at a time).
 /// - Exclusive operations run alone — the executor drains all in-flight
 ///   operations before starting an exclusive one.
-/// - Results are yielded in submission order via [`next_result`].
+/// - Results are yielded in submission order via `next_result`.
 pub struct StreamingToolExecutor<T: Send + 'static> {
     /// Submit channel. Wrapped in std Mutex so `close()` can drop the sender
     /// to signal the executor loop. The lock is never held across an await

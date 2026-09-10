@@ -32,7 +32,8 @@ mod loader;
 mod puller;
 mod session;
 
-pub(crate) use engine::MistralRsEngine;
+// `pub` so `compat::backend::mistralrs` can name what the facade wraps (S5.1).
+pub use engine::MistralRsEngine;
 
 #[cfg(test)]
 mod live {

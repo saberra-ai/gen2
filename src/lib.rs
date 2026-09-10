@@ -81,6 +81,13 @@ pub mod legacy;
 #[cfg(feature = "agent")]
 pub mod agent;
 
+// ── S5.1: the old module tree for pio-app's switchover ──────────────────────
+// Hidden: not the supported surface, the list of what the host still reaches
+// for. Shrinks as pio-app moves to the root API.
+#[doc(hidden)]
+pub mod compat;
+// ── end S5.1 ────────────────────────────────────────────────────────────────
+
 // The controller: commands, events, and handles. Reached as
 // `advanced::controller`; the module itself stays crate-private so its
 // vocabulary does not sit beside `Model` and `Session` (api_spec.md §25).

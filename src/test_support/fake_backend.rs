@@ -407,6 +407,9 @@ impl Script {
 }
 
 /// The [`Backend`] half of the fake. Build one through [`Script`].
+// Reachable through `compat::backend::Engine::Fake` in test builds only; no
+// consumer can see a `cfg(test)` type, so there is nothing to name (S5.1).
+#[allow(unnameable_types)]
 pub struct FakeBackend {
     script: Script,
 }

@@ -16,7 +16,7 @@
 use serde::{Deserialize, Serialize};
 
 /// Result of looking the turn's prefix up in whatever session cache the
-/// transport layer owns (today: [`OaiSessionCache`] in pio-daemon).
+/// transport layer owns (today: `OaiSessionCache` in pio-daemon).
 #[derive(Debug, Clone, Copy, PartialEq, Eq, Serialize, Deserialize)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 #[serde(rename_all = "snake_case")]
@@ -136,7 +136,7 @@ pub struct TurnTelemetry {
     /// counting only user→assistant round trips. `1` = first turn.
     pub turn_index: u32,
     /// Fingerprint of the model that generated the turn. Pair with
-    /// [`ModelMeta::tokenizer_digest`] for offline slicing by model.
+    /// `ModelMeta::tokenizer_digest` for offline slicing by model.
     #[serde(default)]
     pub model_id: Option<String>,
     /// How the session-cache lookup resolved for this turn.
@@ -147,12 +147,12 @@ pub struct TurnTelemetry {
     #[serde(default)]
     pub reply_shape: ReplyShape,
     /// Wall time from request-start to the first emitted token, in
-    /// microseconds. Mirrors [`ExecutionStats::first_token_us`] so
+    /// microseconds. Mirrors `ExecutionStats::first_token_us` so
     /// aggregators don't need to cross-reference.
     #[serde(default)]
     pub first_token_us: u64,
     /// Total decode tokens for the turn (thinking + content + any
-    /// specials). Mirrors [`ExecutionStats::decode_tokens`].
+    /// specials). Mirrors `ExecutionStats::decode_tokens`.
     #[serde(default)]
     pub decode_tokens: u32,
 }

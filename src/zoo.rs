@@ -479,7 +479,7 @@ pub enum TemplateKind {
     Gemma,
     /// Gemma 4 (adds `<|think|>` control tokens for thinking mode).
     Gemma4,
-    /// Mistral [INST]…[/INST].
+    /// Mistral `[INST]…[/INST]`.
     Mistral,
     /// DeepSeek (varies by sub-family — auto-detect from tokenizer).
     DeepSeek,
@@ -518,7 +518,7 @@ pub struct FamilyDefaults {
 }
 
 /// Family-level thinking-mode classification. Distinct from
-/// [`gen2::generation::thinking::ThinkingMode`] in one critical way:
+/// `gen2::generation::ThinkingMode` in one critical way:
 /// adds `Unsupported` to express "this model has no thinking mode at
 /// all — UI should hide the toggle". The runtime `ThinkingMode` enum
 /// (Off/On/Auto) doesn't need that variant because by the time you're

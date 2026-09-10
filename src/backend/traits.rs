@@ -174,7 +174,7 @@ pub trait Multimodal {
 
 /// Minimal tokenizer contract for the truncation driver. Built per-session
 /// because chat templates are session-scoped (see
-/// [`crate::backend::llama`] for reference impl).
+/// `crate::backend::llama` for reference impl).
 pub trait SessionTokenizer: Send + Sync {
     /// Apply the session's chat template, tokenize, and return the token count.
     fn count_tokens(&self, messages: &[Message]) -> Result<usize, ExecError>;
