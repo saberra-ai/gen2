@@ -424,6 +424,11 @@ pub mod types {
     }
     /// The role-based wire message and its parts.
     pub mod message {
+        /// The name this type had before the crate renamed it.
+        pub use crate::types::message::ToolSpec as Tool;
+        /// Attachments are handed to a session as file URLs, and the host's
+        /// prompt builder needs the same spelling the session expects.
+        pub use crate::types::message::to_file_url;
         pub use crate::types::message::{
             FunctionDefinition, Message, MessageBody, MessageChunk, MessageContent, ToolCall,
             ToolSpec, Url,

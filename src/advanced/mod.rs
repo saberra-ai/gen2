@@ -87,6 +87,9 @@ pub mod generation {
 /// `Message` is the role-based shape every backend renders; api_spec.md §9's
 /// `enum Message` is not this type yet, so its parts are reachable here.
 pub mod wire {
+    /// The URL shape a session expects for an attachment. A host that
+    /// builds its own prompts needs to spell them the same way.
+    pub use crate::types::message::to_file_url;
     pub use crate::types::message::{
         FunctionDefinition, Message, MessageBody, MessageChunk, MessageContent, ToolCall, ToolSpec,
         Url,
