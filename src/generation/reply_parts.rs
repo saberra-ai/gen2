@@ -41,7 +41,7 @@ pub struct ReplyParts {
     pub reasoning: Option<String>,
     /// Tool calls extracted from the stream. Phase 2a leaves this
     /// empty — tool-call extraction is already handled by
-    /// [`crate::backend::common::tool_calls`] and will flow in
+    /// `backend::common::tool_calls` and will flow in
     /// when the state machine subscribes to backend tool events in
     /// a later phase.
     #[serde(default)]
