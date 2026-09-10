@@ -12,7 +12,7 @@
 //!
 //! ```sh
 //! PIO_TEST_MODEL=/path/SmolLM2-360M-Instruct-Q4_K_M.gguf \
-//!   cargo test --test live_inference --no-default-features --features metal -- --nocapture
+//!   cargo test --test live_inference -- --nocapture
 //! ```
 //!
 //! Without `PIO_TEST_MODEL` the tests skip. Skipping is not passing: if the
@@ -1161,6 +1161,54 @@ fn facade_load_and_generate_prints_a_token() {
         !text.trim().is_empty(),
         "the reply is empty — the model loaded but the facade returned no text"
     );
+}
+
+/// S3.2: nobody types `metal` to get the GPU. This target is built with
+/// whatever features the invocation chose; under the default set on Apple
+/// silicon the llama.cpp binding enables Metal by itself, so a plain
+/// `cargo test --test live_inference` — no `--features metal` — must load
+/// the model onto the GPU and say so.
+#[cfg(all(target_os = "macos", target_arch = "aarch64"))]
+#[test]
+fn metal_is_on_by_default_on_apple_silicon() {
+    use gen2::advanced::runtime::GpuBackend;
+
+    let Some(path) = test_model() else {
+        eprintln!("SKIP: set PIO_TEST_MODEL");
+        return;
+    };
+
+    let model = gen2::load(path).expect("gen2::load should load a real GGUF");
+    let info = model.info();
+    let offload = info
+        .offload
+        .expect("a local llama.cpp model reports where its weights went");
+    eprintln!("--- offload: {offload}");
+
+    assert!(offload.on_gpu(), "nothing on the GPU: {offload}");
+    // ggml registers the Metal backend as "MTL" (GGML_METAL_NAME).
+    assert_eq!(
+        offload.backend.as_deref(),
+        Some("MTL"),
+        "the GPU backend is not Metal: {offload}"
+    );
+    assert_eq!(
+        offload.layers, offload.total,
+        "the default offload is every layer: {offload}"
+    );
+    assert_eq!(
+        model.runtime().hardware().gpu_backend,
+        GpuBackend::Metal,
+        "the hardware profile must agree with the binding"
+    );
+
+    // And it decodes there.
+    let text = model
+        .generate("Reply with exactly one word: hello")
+        .max_tokens(8)
+        .text()
+        .expect("generation should succeed");
+    assert!(!text.trim().is_empty(), "no text came back");
 }
 
 /// A `Runtime` hands out cloneable, shareable models, and the handle answers

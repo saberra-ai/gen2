@@ -535,7 +535,21 @@ fn detect_gpu_backend() -> GpuBackend {
     #[cfg(feature = "backend-mlx")]
     return GpuBackend::Metal;
 
-    #[cfg(all(not(feature = "backend-mlx"), feature = "metal"))]
+    // llama-cpp-2 turns its `metal` feature on by itself for every
+    // macOS/aarch64 build (its Cargo.toml has a cfg-gated dependency table),
+    // so the crate's own `metal` feature is an alias there and the profile
+    // must not wait for it.
+    #[cfg(all(
+        not(feature = "backend-mlx"),
+        any(
+            feature = "metal",
+            all(
+                feature = "backend-llamacpp",
+                target_os = "macos",
+                target_arch = "aarch64"
+            )
+        )
+    ))]
     return GpuBackend::Metal;
 
     #[cfg(feature = "cuda")]

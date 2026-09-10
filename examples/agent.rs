@@ -4,7 +4,7 @@
 //! `agent` feature (on by default).
 //!
 //! ```sh
-//! cargo run --example agent --features metal -- /path/model.gguf
+//! cargo run --example agent -- /path/model.gguf
 //! ```
 
 use gen2::Session;

@@ -16,7 +16,7 @@ use std::sync::Arc;
 
 use crate::engine::telemetry::HookBus;
 use crate::engine::{
-    Capabilities, EmbedLoadRequest, ExecError, ExecutionStats, LoadRequest, Settings,
+    Capabilities, EmbedLoadRequest, ExecError, ExecutionStats, GpuOffload, LoadRequest, Settings,
 };
 use crate::generation::{GenSpec, TokenEvent};
 use crate::kv::{KvLoadReport, KvLoadSpec, KvSaveSpec, KvSnapshot as KvSnapshotBlob};
@@ -64,6 +64,13 @@ pub trait Backend: std::fmt::Debug {
     /// backend answers only if the provider advertised one. `None` when
     /// nothing is loaded or the size is unknown.
     fn context_window(&self) -> Option<u32> {
+        None
+    }
+
+    /// Where the loaded model's weights are: layers on the GPU, and which
+    /// GPU. `None` when nothing is loaded or the backend cannot say (a remote
+    /// model, or a runtime that does not report placement).
+    fn gpu_offload(&self) -> Option<GpuOffload> {
         None
     }
 

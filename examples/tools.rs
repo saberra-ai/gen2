@@ -5,7 +5,7 @@
 //! §10, §28.5).
 //!
 //! ```sh
-//! cargo run --example tools --features metal -- /path/model.gguf
+//! cargo run --example tools -- /path/model.gguf
 //! ```
 
 use gen2::{Session, ToolDefinition, ToolSet};

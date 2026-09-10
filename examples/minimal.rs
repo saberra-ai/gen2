@@ -1,11 +1,17 @@
 //! The smallest useful program: load a model, hold a conversation, stream.
+//!
+//! ```sh
+//! cargo run --example minimal -- /path/model.gguf
+//! ```
+//!
+//! (`hello` needs no path: it fetches a small model from Hugging Face.)
 
 use gen2::{Event, Session};
 
-fn main() -> gen2::Result<()> {
+fn main() -> Result<(), Box<dyn std::error::Error>> {
     let path = std::env::args()
         .nth(1)
-        .expect("usage: minimal <model.gguf>");
+        .ok_or("usage: minimal <model.gguf | hf:owner/repo>")?;
 
     // 1. A model. Its runtime is private and lives as long as the handle.
     let model = gen2::load(&path)?;

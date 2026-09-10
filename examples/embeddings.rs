@@ -1,7 +1,7 @@
 //! Embedding text — turning strings into vectors you can compare.
 //!
 //! ```sh
-//! cargo run --example embeddings --features metal -- /path/embedding-model.gguf
+//! cargo run --example embeddings -- /path/embedding-model.gguf
 //! ```
 
 use gen2::Runtime;

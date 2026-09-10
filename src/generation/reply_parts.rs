@@ -72,7 +72,7 @@ impl ChannelMarkers {
     /// Gemma-4 markers. The chat template emits
     /// `<|channel>thought\n{reasoning}\n<channel|>` when
     /// `enable_thinking=true`. Definition site for Gemma 4's marker
-    /// literals; `zoo::ModelFamily::channel_markers` maps
+    /// literals; the crate-internal `ModelFamily::channel_markers` maps
     /// the family to this constructor so the two can't drift.
     pub fn gemma4() -> Self {
         Self {
@@ -83,7 +83,7 @@ impl ChannelMarkers {
 
     /// Qwen3-Thinking / DeepSeek-R1 markers — both families use the
     /// same `<think>` / `</think>` text form. Definition site for these
-    /// marker literals; `zoo::ModelFamily::channel_markers`
+    /// marker literals; the crate-internal `ModelFamily::channel_markers`
     /// maps the Qwen3.5 and DeepSeek-R1 families to this constructor.
     pub fn qwen3_deepseek() -> Self {
         Self {
@@ -111,10 +111,10 @@ impl ChannelMarkers {
     /// (lowercased GGUF `general.architecture` or HF `model_type`). Returns
     /// `none()` when arch is unknown — callers can fall back to model-id
     /// hint detection if they have one. Sourced from
-    /// `backend::traits::Backend::bundle_architecture`.
+    /// [`crate::backend::traits::Backend::bundle_architecture`].
     ///
-    /// The marker *values* are owned by
-    /// `zoo::ModelFamily::channel_markers` — this reader
+    /// The marker *values* are owned by the crate-internal
+    /// `ModelFamily::channel_markers` — this reader
     /// only maps the raw arch tag onto the family whose markers it
     /// returns, so it can't disagree with the family's `template_kind` /
     /// `thinking` defaults. The arch tags handled here are the subset

@@ -6,6 +6,16 @@ follow SemVer, and 0.x means the public surface may still move between minors.
 ## Unreleased
 
 ### Added
+- `examples/hello.rs`: the five-minute first run. No arguments — loads
+  `hf:unsloth/Qwen3-0.6B-GGUF`, answers one question with thinking off, and
+  prints the timings and where the weights went. A CI job (`first-run`) does
+  exactly that on a fresh Ubuntu and macOS runner, with only the download
+  cached.
+- `ModelInfo::offload` (`gen2::advanced::generation::GpuOffload`): how many
+  layers the load placed on the GPU, out of how many, and on which backend
+  and device — counted the way llama.cpp's own `offloaded N/M layers to GPU`
+  line counts them. `None` for a remote model. The controller's runtime
+  snapshot carries it as `loaded_model_offload`.
 - `hf:owner/repo[:QUANT|:file.gguf]` model references, accepted wherever a
   model path is (`gen2::load`, `Runtime::load`, `Engine::load`,
   `EngineBuilder::model`): the file is chosen (Q4_K_M by default, then the
@@ -45,6 +55,14 @@ follow SemVer, and 0.x means the public surface may still move between minors.
   translates it to the context size now that llama.cpp clamps negatives to 0.
 
 ### Changed
+- Metal is on by default on Apple silicon, and the crate now says so
+  everywhere: `HardwareProfile::detect()` reports `GpuBackend::Metal` for any
+  llama.cpp build on macOS/aarch64 (it used to wait for the `metal` feature,
+  which the binding had already turned on by itself), the README no longer
+  says "add `metal`", and the feature stays as an alias. A live test,
+  `metal_is_on_by_default_on_apple_silicon`, asserts the offload without it.
+- `examples/minimal.rs` returns a usage error instead of panicking when run
+  without a path.
 - The crate root is api_spec.md §25: `Runtime`, `Model`, `Session`, `Message`,
   `ToolDefinition`, `ToolSet`, `ToolChoice`, `GenerationOptions`, `Response`,
   `Event`, `Error`, `Result`, `gen2::load`, plus `Turn`, `Input`, `EventStream`

@@ -1,7 +1,7 @@
 //! The three things you'll do most: ask, stream, converse.
 //!
 //! ```sh
-//! cargo run --example basic --features metal -- /path/model.gguf
+//! cargo run --example basic -- /path/model.gguf
 //! ```
 
 use std::io::Write;

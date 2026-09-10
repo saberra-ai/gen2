@@ -8,7 +8,7 @@
 //! transcript.
 //!
 //! ```sh
-//! cargo run --example chat_app --features metal -- /path/model.gguf
+//! cargo run --example chat_app -- /path/model.gguf
 //! ```
 
 use std::sync::mpsc;

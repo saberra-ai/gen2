@@ -335,6 +335,58 @@ impl LoadOutcome {
     }
 }
 
+/// Where the weights went: how many layers the backend placed on a GPU, and
+/// which one.
+///
+/// Counted the way llama.cpp counts them (`load_tensors: offloaded N/M layers
+/// to GPU`): `total` is the transformer layers plus the output layer, and
+/// `layers` is what the load put on the device — zero on a machine with no
+/// usable GPU, or after the fallback ladder moved the weights to the CPU
+/// ([`Degraded::GpuOffload`]).
+#[derive(Debug, Clone, Default, PartialEq, Eq, Serialize, Deserialize)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
+#[non_exhaustive]
+pub struct GpuOffload {
+    /// Layers resident on the GPU.
+    pub layers: u32,
+    /// Layers the model has, output layer included.
+    pub total: u32,
+    /// The ggml backend the layers went to, by ggml's own registry name —
+    /// `"MTL"` for Metal, `"CUDA"`, `"Vulkan"` — or `None` when nothing was
+    /// offloaded.
+    pub backend: Option<String>,
+    /// The device by name, when the backend reports one (`"Apple M4 Pro"`).
+    pub device: Option<String>,
+}
+
+impl GpuOffload {
+    /// Whether any layer runs on a GPU.
+    pub fn on_gpu(&self) -> bool {
+        self.layers > 0
+    }
+}
+
+impl std::fmt::Display for GpuOffload {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match (&self.backend, &self.device) {
+            _ if !self.on_gpu() => write!(f, "{}/{} layers on the CPU", self.total, self.total),
+            (Some(backend), Some(device)) => write!(
+                f,
+                "{}/{} layers on the GPU ({backend}, {device})",
+                self.layers, self.total
+            ),
+            (Some(backend), None) => {
+                write!(
+                    f,
+                    "{}/{} layers on the GPU ({backend})",
+                    self.layers, self.total
+                )
+            }
+            (None, _) => write!(f, "{}/{} layers on the GPU", self.layers, self.total),
+        }
+    }
+}
+
 #[derive(Serialize, Deserialize, Clone, Debug, Default)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct SystemSettings {

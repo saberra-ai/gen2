@@ -8,6 +8,7 @@ use super::input::Input;
 use super::runtime::{Loaded, Runtime, RuntimeInner};
 use super::session::Session;
 use super::turn::Turn;
+use crate::engine::GpuOffload;
 
 /// A model you ask to generate.
 ///
@@ -83,7 +84,8 @@ impl Model {
                 .as_ref()
                 .and_then(|s| s.loaded_model_architecture.clone())
                 .or_else(|| header.and_then(|h| h.architecture.clone())),
-            context_window: snapshot.and_then(|s| s.loaded_model_context),
+            context_window: snapshot.as_ref().and_then(|s| s.loaded_model_context),
+            offload: snapshot.and_then(|s| s.loaded_model_offload),
             source: self.loaded.source.clone(),
             local: self.loaded.source.is_local(),
         }
@@ -217,6 +219,12 @@ pub struct ModelInfo {
     pub source: ModelSourceKind,
     /// Whether inference happens on this machine.
     pub local: bool,
+    /// Where the weights are: layers on the GPU, and which GPU, as the load
+    /// placed them. `None` for a remote model, or a backend that does not
+    /// report placement. On Apple silicon the default build reports the
+    /// Metal backend (`"MTL"`, ggml's name for it) — no feature flag is
+    /// involved.
+    pub offload: Option<GpuOffload>,
 }
 
 /// Where a model's weights are.

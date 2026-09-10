@@ -299,6 +299,9 @@ impl Backend for Engine {
             .map(|b| b.meta.n_ctx)
             .filter(|n| *n > 0)
     }
+    fn gpu_offload(&self) -> Option<crate::engine::GpuOffload> {
+        self.bundle.load_full().map(|b| b.offload.clone())
+    }
     fn start_session(&self, spec: SessionSpec) -> Result<Arc<dyn BackendSession>, ExecError> {
         let s = Engine::start_session(self, spec)?;
         Ok(s as Arc<dyn BackendSession>)

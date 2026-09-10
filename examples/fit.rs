@@ -1,7 +1,7 @@
 //! Will this model run here, and at what context?
 //!
 //! ```sh
-//! cargo run --example fit --features metal -- /path/model.gguf
+//! cargo run --example fit -- /path/model.gguf
 //! ```
 
 use gen2::advanced::fit::ModelInfo;

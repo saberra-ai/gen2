@@ -17,10 +17,21 @@ schemars = "1"
 serde = { version = "1", features = ["derive"] }
 ```
 
-Defaults to llama.cpp, so a `.gguf` works out of the box and the first build
-compiles a C++ toolchain (about a minute on an M-series Mac; needs `cmake`).
-Metal is on automatically on Apple silicon; on NVIDIA add the `cuda` feature.
-To skip the native build and talk to a hosted endpoint instead:
+Defaults to llama.cpp, so a `.gguf` works out of the box. The first build
+compiles llama.cpp from source — about a minute on an M-series Mac, a few on
+a Linux box — and needs a C++ compiler, `cmake` and `libclang`:
+
+- **macOS**: Xcode Command Line Tools (`xcode-select --install`), then `brew install cmake`.
+- **Ubuntu / Debian**: `sudo apt-get install build-essential cmake libclang-dev`.
+- **Windows**: Visual Studio Build Tools (C++ workload), `winget install Kitware.CMake LLVM.LLVM`, and `LIBCLANG_PATH` set to LLVM's `bin` directory.
+
+Metal is on automatically on Apple silicon — the llama.cpp binding enables it
+for every macOS/aarch64 build, so there is no feature to add. On NVIDIA add
+`cuda`. If you rebuild often, [sccache](https://github.com/mozilla/sccache)
+caches the C++ half too: the binding's build script forwards every `CMAKE_*`
+variable, so `CMAKE_C_COMPILER_LAUNCHER=sccache CMAKE_CXX_COMPILER_LAUNCHER=sccache`
+is all it takes. To skip the native build and talk to a hosted endpoint
+instead:
 
 ```toml
 gen2 = { git = "…", default-features = false, features = ["backend-external-api"] }
@@ -34,18 +45,28 @@ drift from the API. The design they follow is written down in
 
 ## The smallest useful thing
 
+```sh
+cargo run --example hello
+```
+
+No arguments. It fetches Qwen3-0.6B (400 MB) from Hugging Face into a cache,
+answers a question, and prints the timings and where the weights went — on an
+M-series Mac, `29/29 layers on the GPU (MTL, Apple M4 Pro)`. The whole of it
+is two lines:
+
 ```rust,no_run
 # fn main() -> gen2::Result<()> {
-let model = gen2::load("/models/qwen3-0.6b-q4_k_m.gguf")?;
+let model = gen2::load("hf:unsloth/Qwen3-0.6B-GGUF")?;
 let answer = model.generate("Why is the sky blue?").text()?;
 # println!("{answer}");
 # Ok(())
 # }
 ```
 
-`gen2::load` inspects the file and the machine, picks a backend, sizes the
-context window, loads the weights and hands back a `Model`. Nothing about
-backends, controllers or KV caches reaches this line.
+`gen2::load` takes a path just the same (`gen2::load("/models/model.gguf")`).
+It inspects the file and the machine, picks a backend, sizes the context
+window, loads the weights and hands back a `Model`. Nothing about backends,
+controllers or KV caches reaches this line.
 
 Configured:
 
@@ -81,6 +102,11 @@ let bigger = gen2::load("hf:unsloth/Qwen3-0.6B-GGUF:Q8_0")?;  // by quantization
 # Ok(())
 # }
 ```
+
+Qwen3-0.6B is the smoke model: small enough to arrive inside the five
+minutes and prove the path. The first size worth building on is Qwen3-1.7B
+(`hf:unsloth/Qwen3-1.7B-GGUF`) — same family, same template, and enough
+model to follow a tool schema.
 
 The file is downloaded once into a cache in the Hub's own layout
 (`GEN2_MODELS_DIR`, else `HF_HUB_CACHE`, else the platform cache directory)
@@ -417,7 +443,7 @@ claims are about these.
 
 | Feature | Backend |
 | --- | --- |
-| `backend-llamacpp` | llama.cpp (GGUF). **Default.** Add `metal`, `cuda`, or `vulkan`. |
+| `backend-llamacpp` | llama.cpp (GGUF). **Default.** Metal is on by itself on Apple silicon (`metal` is an alias kept for compatibility); `cuda` and `vulkan` are opt-in. |
 | `backend-external-api` | OpenAI / Anthropic wire formats. Needs no C toolchain. |
 
 **Mobile.** Supported the same way, on the platforms it exists for.
@@ -489,12 +515,13 @@ cargo check --no-default-features --features backend-external-api   # inference 
 ## Examples
 
 ```sh
-cargo run --example minimal --features metal -- /path/model.gguf
+cargo run --example hello                              # fetches a small model
+cargo run --example minimal -- /path/model.gguf        # or hf:owner/repo
 ```
 
-`minimal` · `basic` · `tools` · `structured` · `chat_app` · `embeddings` ·
-`fit` · `async_chat` (needs `tokio`) — and, on `gen2::agent`, `agent` ·
-`coding_agent` · `continuity`.
+`hello` · `minimal` · `basic` · `tools` · `structured` · `chat_app` ·
+`embeddings` · `fit` · `async_chat` (needs `tokio`) — and, on `gen2::agent`,
+`agent` · `coding_agent` · `continuity`.
 
 ## Live tests
 
@@ -505,8 +532,13 @@ PIO_TEST_MODEL=/path/model.gguf \
 PIO_TEST_TOOL_MODEL=/path/tool-capable.gguf \
 PIO_TEST_SECOND_MODEL=/path/a-different-model.gguf \
 PIO_TEST_EMBEDDER=/path/embedding-model.gguf \
-  cargo test --test live_inference --features metal -- --test-threads=1
+  cargo test --test live_inference -- --test-threads=1
 ```
+
+Default features, deliberately: on Apple silicon one of the tests,
+`metal_is_on_by_default_on_apple_silicon`, asserts that the model landed on
+the GPU with no `metal` feature on the command line. Add `--features tokio`
+for the async tests.
 
 `PIO_TEST_SECOND_MODEL` is a second, different chat model: the switching and
 residency tests load it next to `PIO_TEST_MODEL` in one runtime and move a

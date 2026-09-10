@@ -183,6 +183,54 @@ jobs:
           if (Test-Path $llvm) { "LIBCLANG_PATH=$llvm" | Out-File -FilePath $env:GITHUB_ENV -Append }
       - run: cargo test --lib
 
+  # The README's first screen, on a fresh machine: check out, install exactly
+  # the prerequisites the README lists (no Rust build cache — the first build's
+  # cost is part of the claim), and `cargo run --example hello` with default
+  # features. Only the model download is cached, keyed on the model reference,
+  # so the 397 MB arrives once per key rather than once per run. On macOS this
+  # is also S3.2's proof: no `metal` feature on the command line, and the
+  # example must report the weights on Metal. A hard gate — it is the README.
+  first-run:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    env:
+      GEN2_MODELS_DIR: ${{ github.workspace }}/.gen2-models
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Prerequisites, as the README lists them
+        run: |
+          if [ "$RUNNER_OS" = "Linux" ]; then
+            sudo apt-get update && sudo apt-get install -y build-essential cmake libclang-dev
+          else
+            brew install cmake
+          fi
+      # unsloth's repo is public, so no HF_TOKEN. The key names the model the
+      # example loads; change one, change the other.
+      - name: Restore the model download
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/.gen2-models
+          key: gen2-models-hf-unsloth-Qwen3-0.6B-GGUF-Q4_K_M
+      - name: cargo run --example hello
+        run: |
+          set -o pipefail
+          attempt() { cargo run --example hello 2>&1 | tee hello.log; }
+          if ! attempt; then
+            echo "::warning::first attempt failed (the download can be flaky); retrying once"
+            sleep 30
+            attempt
+          fi
+      - name: The model answered and reported its timings
+        run: grep -E "tok/s" hello.log
+      - name: Metal is the default on Apple silicon
+        if: runner.os == 'macOS'
+        # ggml's registry name for its Metal backend is "MTL".
+        run: grep -E 'layers on the GPU \(MTL' hello.log
+
   # The README benchmark table is generated from committed results JSON. This
   # job needs no GPU: it regenerates the table and fails on drift (someone
   # edited the table by hand), on a llama.cpp pin that no longer matches the

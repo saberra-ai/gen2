@@ -70,8 +70,8 @@ pub mod generation {
     pub use crate::backend::common::speculative::DraftContext;
     pub use crate::backend::common::speculative::{SpeculativeMode, SpeculativePredictor};
     pub use crate::engine::{
-        Capabilities, Degraded, LoadOutcome, MmSettings, PromptSettings, SamplingSettings,
-        Settings, StoppingSettings, SystemSettings,
+        Capabilities, Degraded, GpuOffload, LoadOutcome, MmSettings, PromptSettings,
+        SamplingSettings, Settings, StoppingSettings, SystemSettings,
     };
     /// The reply scanner: how a model's raw token text is split into prose,
     /// reasoning and tool calls. The semantic [`Event`](crate::Event) stream

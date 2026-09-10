@@ -36,6 +36,11 @@ pub struct ControllerRuntimeSnapshot {
     /// provider that does not advertise one).
     #[serde(default)]
     pub loaded_model_context: Option<u32>,
+    /// Where the currently-loaded model's weights are — layers on the GPU
+    /// and which GPU — when the backend reports placement. `None` when no
+    /// model is loaded or the backend cannot say.
+    #[serde(default)]
+    pub loaded_model_offload: Option<crate::engine::GpuOffload>,
 }
 
 /// Observable fields for a single `ChatRuntime`.
@@ -85,11 +90,13 @@ pub(super) fn build_runtime_snapshot(state: &ControllerState) -> ControllerRunti
     chats.sort_by(|a, b| a.chat_id.cmp(&b.chat_id));
     let loaded_model_architecture = state.engine.bundle_architecture();
     let loaded_model_context = state.engine.context_window();
+    let loaded_model_offload = state.engine.gpu_offload();
     ControllerRuntimeSnapshot {
         chats,
         loaded_model_architecture,
         loaded_model_file_bytes: state.loaded_model_file_bytes,
         loaded_model_context,
+        loaded_model_offload,
     }
 }
 
@@ -126,6 +133,12 @@ mod tests {
             loaded_model_architecture: Some("gemma4".into()),
             loaded_model_file_bytes: Some(8 << 30),
             loaded_model_context: Some(8192),
+            loaded_model_offload: Some(crate::engine::GpuOffload {
+                layers: 29,
+                total: 29,
+                backend: Some("MTL".into()),
+                device: Some("Apple M4 Pro".into()),
+            }),
         };
         let json = serde_json::to_string(&snap).expect("serialize");
         let back: ControllerRuntimeSnapshot = serde_json::from_str(&json).expect("deserialize");

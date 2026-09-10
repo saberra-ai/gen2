@@ -7,7 +7,7 @@
 //! endpoint) is asked for the schema in the prompt and the reply is parsed.
 //!
 //! ```sh
-//! cargo run --example structured --features metal -- /path/model.gguf
+//! cargo run --example structured -- /path/model.gguf
 //! ```
 
 use serde::Deserialize;

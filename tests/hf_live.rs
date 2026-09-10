@@ -5,7 +5,7 @@
 //! Needs the network and ~400 MB, so it runs only when asked:
 //!
 //! ```sh
-//! GEN2_TEST_HF=1 cargo test --test hf_live --features metal -- --nocapture
+//! GEN2_TEST_HF=1 cargo test --test hf_live -- --nocapture
 //! ```
 //!
 //! Without `GEN2_TEST_HF=1` it skips. With it, every failure is a failure.

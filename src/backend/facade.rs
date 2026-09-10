@@ -649,6 +649,12 @@ impl Engine {
     pub fn context_window(&self) -> Option<u32> {
         self.as_backend().and_then(|b| b.context_window())
     }
+
+    /// Where the loaded model's weights are, when the backend can say. See
+    /// [`Backend::gpu_offload`].
+    pub fn gpu_offload(&self) -> Option<crate::engine::GpuOffload> {
+        self.as_backend().and_then(|b| b.gpu_offload())
+    }
 }
 
 // ─── Session ────────────────────────────────────────────────────────────────

@@ -4,7 +4,7 @@
 //! events are bridged through a bounded channel.
 //!
 //! ```sh
-//! cargo run --example async_chat --features metal,tokio -- /path/model.gguf
+//! cargo run --example async_chat --features tokio -- /path/model.gguf
 //! ```
 
 use futures::StreamExt;

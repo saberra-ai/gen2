@@ -2,7 +2,7 @@ use super::bundle::ModelBundle;
 use super::embedder::LlamaEmbedder;
 use super::llama_config::ModelConfig;
 use crate::bundle::ModelMeta;
-use crate::engine::{Capabilities, EmbedLoadRequest, ExecError, LoadRequest};
+use crate::engine::{Capabilities, EmbedLoadRequest, ExecError, GpuOffload, LoadRequest};
 use anyhow::{Context, anyhow};
 use llama_cpp_2::llama_backend::LlamaBackend;
 use llama_cpp_2::model::{LlamaModel, params::LlamaModelParams};
@@ -62,6 +62,7 @@ pub(crate) fn build_bundle(
     let model = LlamaModel::load_from_file(backend, &req.model_path, &model_params)
         .with_context(|| format!("failed to load model: {}", req.model_path.display()))
         .map_err(ExecError::Other)?;
+    let offload = gpu_offload(backend, &model, model_params.n_gpu_layers());
 
     // Fast model UUID from GGUF metadata + file size (microseconds, not seconds)
     let model_uuid = {
@@ -179,7 +180,47 @@ pub(crate) fn build_bundle(
         meta,
         mtmd_ctx,
         mtmd_marker,
+        offload,
     })
+}
+
+/// Where the weights went, computed as llama.cpp computes the line it logs
+/// (`llama-model.cpp`, `load_tensors`: `offloaded min(n_gpu_layers,
+/// n_layer + 1)/n_layer + 1 layers to GPU`, printed only when
+/// `llama_supports_gpu_offload()`; a negative `n_gpu_layers` means all). The
+/// public C API exposes no per-tensor placement, so this mirrors the same
+/// inputs the loader used rather than parsing its log.
+fn gpu_offload(backend: &LlamaBackend, model: &LlamaModel, n_gpu_layers: i32) -> GpuOffload {
+    let total = model.n_layer().saturating_add(1);
+    let requested = u32::try_from(n_gpu_layers).unwrap_or(total);
+    let gpu = if backend.supports_gpu_offload() {
+        llama_cpp_2::list_llama_ggml_backend_devices()
+            .into_iter()
+            .find(|d| {
+                matches!(
+                    d.device_type,
+                    llama_cpp_2::LlamaBackendDeviceType::Gpu
+                        | llama_cpp_2::LlamaBackendDeviceType::IntegratedGpu
+                )
+            })
+    } else {
+        None
+    };
+    let layers = if gpu.is_some() {
+        requested.min(total)
+    } else {
+        0
+    };
+    let gpu = gpu.filter(|_| layers > 0);
+    GpuOffload {
+        layers,
+        total,
+        backend: gpu.as_ref().map(|d| d.backend.clone()),
+        device: gpu
+            .as_ref()
+            .map(|d| d.description.trim().to_string())
+            .filter(|d| !d.is_empty()),
+    }
 }
 
 fn _sha256_file(path: &Path) -> anyhow::Result<String> {
