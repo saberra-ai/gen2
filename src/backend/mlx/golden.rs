@@ -106,6 +106,7 @@ fn sys_msg(text: &str) -> Message {
             content: MessageContent::SingleText(text.into()),
         },
         name: None,
+        tool_call_id: None,
     }
 }
 
@@ -116,6 +117,7 @@ fn user_msg(text: &str) -> Message {
             content: MessageContent::SingleText(text.into()),
         },
         name: None,
+        tool_call_id: None,
     }
 }
 
@@ -126,6 +128,7 @@ fn asst_msg(text: &str) -> Message {
             content: MessageContent::SingleText(text.into()),
         },
         name: None,
+        tool_call_id: None,
     }
 }
 

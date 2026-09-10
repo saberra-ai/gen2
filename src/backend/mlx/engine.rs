@@ -211,6 +211,12 @@ fn build_bundle_from_dir(model_dir: &Path) -> Result<ModelBundle, ExecError> {
 
 // ─── Engine impl ──────────────────────────────────────────────────────────────
 
+impl Default for Engine {
+    fn default() -> Self {
+        Self::new()
+    }
+}
+
 impl Engine {
     pub fn new() -> Self {
         Self {
@@ -723,6 +729,7 @@ mod tests {
                 content: MessageContent::SingleText("What is 2 + 2?".into()),
             },
             name: None,
+            tool_call_id: None,
         }];
 
         let session = e.start_session(SessionSpec {
@@ -793,6 +800,7 @@ mod tests {
                 content: MessageContent::SingleText(t.into()),
             },
             name: None,
+            tool_call_id: None,
         };
         let asst_msg = |t: &str| Message {
             role: "assistant".into(),
@@ -800,6 +808,7 @@ mod tests {
                 content: MessageContent::SingleText(t.into()),
             },
             name: None,
+            tool_call_id: None,
         };
 
         // Mixed-skill conversation — memory, reasoning, creativity, callbacks.
@@ -905,6 +914,7 @@ mod tests {
                 content: MessageContent::SingleText(t.into()),
             },
             name: None,
+            tool_call_id: None,
         };
         let asst_msg = |t: &str| Message {
             role: "assistant".into(),
@@ -912,6 +922,7 @@ mod tests {
                 content: MessageContent::SingleText(t.into()),
             },
             name: None,
+            tool_call_id: None,
         };
 
         let session = e.start_session(SessionSpec {
@@ -1028,6 +1039,7 @@ mod tests {
                 content: MessageContent::SingleText(t.into()),
             },
             name: None,
+            tool_call_id: None,
         };
         let user_msg = |t: &str| Message {
             role: "user".into(),
@@ -1035,6 +1047,7 @@ mod tests {
                 content: MessageContent::SingleText(t.into()),
             },
             name: None,
+            tool_call_id: None,
         };
 
         let drain = |puller: &mut TokenPuller| -> String {

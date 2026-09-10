@@ -9,14 +9,23 @@ mod golden;
 #[cfg(test)]
 mod kv_donation_probe;
 mod loader;
+// The MLX model zoo, its puller and its session are implementation: layers,
+// attention blocks and quantisation kernels. `compat` re-exports this
+// backend's `Engine` for pio-app, which makes those types *reachable*
+// without making them nameable, and `unnameable_types` says so once per
+// type. They are not API — a caller drives the engine — so the lint is
+// allowed here rather than 42 internals being published.
+#[allow(unnameable_types)]
 pub(crate) mod model;
 // ngram module replaced by cross-backend `common::speculative::*` —
 // see that module for the trigram impl plus PLD / Lookahead / Eagle3
 // alternatives. Kept as an alias for backward-compat in external code.
 #[cfg(test)]
 mod profile_decode;
+#[allow(unnameable_types)]
 mod puller;
 mod sampler;
+#[allow(unnameable_types)]
 mod session;
 mod tokenizer;
 #[cfg(test)]

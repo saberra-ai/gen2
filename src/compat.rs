@@ -250,11 +250,12 @@ pub mod backend {
         }
     }
 
-    /// The MLX backend (`backend-mlx`). Unverified here: that lane does not
-    /// compile on `main` today (`mlx/session.rs` predates `Message.tool_call_id`).
+    /// The MLX backend (`backend-mlx`).
     #[cfg(feature = "backend-mlx")]
     pub mod mlx {
-        pub use crate::backend::mlx::{Engine, ModelBundle, Session, TokenPuller};
+        // `Session`/`TokenPuller` are `#[cfg(test)]`-only in the MLX module
+        // and nothing outside the crate names them.
+        pub use crate::backend::mlx::{Engine, ModelBundle};
     }
 
     /// The LiteRT-LM backend (`backend-litertlm`).
