@@ -14,7 +14,8 @@ def main(a):
         exports=subprocess.check_output([str(a.readelf),"--dyn-syms","--wide",str(path)],text=True)
         needed=re.findall(r'\(NEEDED\).*?\[(.*?)\]',text)
         alignments=[int(line.split()[-1],16) for line in text.splitlines() if line.strip().startswith("LOAD ")]
-        if "AArch64" not in text or not alignments or any(n<16384 for n in alignments):
+        machine = "AArch64" if a.abi == "arm64-v8a" else "Advanced Micro Devices X86-64"
+        if machine not in text or not alignments or any(n<16384 for n in alignments):
             raise ValueError(f"{path.name}: wrong architecture or insufficient LOAD alignment")
         if any("/" in n or "\\" in n or ":" in n for n in needed):
             raise ValueError("absolute build path leaked into DT_NEEDED")
@@ -36,7 +37,8 @@ def main(a):
                    [workspace/name for name in ("Cargo.toml","Cargo.lock","examples/laya-mobile/Cargo.toml",
                                                 "examples/laya-mobile/android/laya_jni.cpp","examples/laya-mobile/gen2_laya.h")])
     inventory=[(p.relative_to(workspace).as_posix(),hashlib.sha256(p.read_bytes()).hexdigest()) for p in sources]
-    result=dict(status="cross-compiled and linked; device execution not verified",target="aarch64-linux-android",android_api=a.api,
+    target = "aarch64-linux-android" if a.abi == "arm64-v8a" else "x86_64-linux-android"
+    result=dict(status="cross-compiled and linked; device execution not verified",target=target,abi=a.abi,android_api=a.api,
                 ndk=(a.ndk/"source.properties").read_text(),ort_android_version="1.24.3",artifacts=artifacts,
                 source_tree_sha256=hashlib.sha256(json.dumps(inventory,separators=(",", ":")).encode()).hexdigest(),
                 source_file_count=len(inventory),
@@ -50,4 +52,5 @@ if __name__=="__main__":
     p=argparse.ArgumentParser(description=__doc__)
     for name in ("libraries","readelf","ndk","output"):p.add_argument("--"+name,type=Path,required=True)
     p.add_argument("--api",type=int,default=24)
+    p.add_argument("--abi",choices=["arm64-v8a","x86_64"],default="arm64-v8a")
     main(p.parse_args())

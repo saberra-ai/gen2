@@ -20,10 +20,10 @@ def inspect(a):
     libraries = []
     with zipfile.ZipFile(a.apk) as archive, a.apk.open('rb') as stream:
         names = {name for name in archive.namelist() if name.startswith('lib/')}
-        expected = {'lib/arm64-v8a/' + name for name in
+        expected = {'lib/' + a.abi + '/' + name for name in
                     ('libgen2_laya_mobile.so', 'libgen2_laya_jni.so', 'libonnxruntime.so')}
         if names != expected:
-            raise ValueError('APK must contain exactly the inspected arm64 libraries')
+            raise ValueError('APK must contain exactly the inspected ABI libraries')
         for name in sorted(expected):
             info = archive.getinfo(name)
             stream.seek(info.header_offset)
@@ -44,7 +44,7 @@ def inspect(a):
         if not fixtures or 'classes.dex' not in archive.namelist():
             raise ValueError('Missing Java classes or synthetic assets')
     report = dict(status='APK packaging inspected; device execution not verified',
-                  package='example.gen2.laya', min_sdk=24, target_sdk=35,
+                  package='example.gen2.laya', abi=a.abi, min_sdk=24, target_sdk=35,
                   apk_sha256=sha(a.apk.read_bytes()), apk_bytes=a.apk.stat().st_size,
                   libraries=libraries, fixture_files=len(fixtures), permissions=permissions,
                   badging=badging)
@@ -65,4 +65,5 @@ if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ('apk', 'aapt2', 'libraries', 'fixture', 'output'):
         parser.add_argument('--'+name, type=Path, required=True)
+    parser.add_argument('--abi', choices=['arm64-v8a', 'x86_64'], default='arm64-v8a')
     inspect(parser.parse_args())

@@ -20,6 +20,7 @@ public final class MainActivity extends Activity {
     private TextView status;
     private Button run;
     private Spinner families;
+    private boolean ciSmokePending;
 
     @Override public void onCreate(Bundle saved) {
         super.onCreate(saved);
@@ -49,6 +50,7 @@ public final class MainActivity extends Activity {
         column.addView(scroll);
         setContentView(column);
         run.setOnClickListener(v -> start((String) families.getSelectedItem()));
+        ciSmokePending = getIntent().getBooleanExtra("ci_smoke", false);
     }
 
     private void start(String family) {
@@ -69,6 +71,7 @@ public final class MainActivity extends Activity {
         try {
             report.put("schema", "gen2-laya-android-smoke/v1");
             report.put("family", family);
+            report.put("run_id", getIntent().getStringExtra("ci_run_id"));
             report.put("synthetic", family.equals("smoke"));
             report.put("device", Build.MANUFACTURER + " " + Build.MODEL);
             report.put("android_sdk", Build.VERSION.SDK_INT);
@@ -76,7 +79,8 @@ public final class MainActivity extends Activity {
             File bundle = new File(getFilesDir(), "bundles/" + family);
             if (family.equals("smoke")) copyAssetTree("smoke", bundle);
             JSONObject config = new JSONObject().put("bundle", bundle.getAbsolutePath())
-                .put("native_library", JSONObject.NULL).put("resident_budget_mb", 4096).put("queue_capacity", 2);
+                .put("native_library", JSONObject.NULL).put("resident_budget_mb", family.equals("smoke") ? 16 : 4096)
+                .put("queue_capacity", 2).put("intra_threads", 1).put("max_input_bytes", 1048576);
             long started = SystemClock.elapsedRealtimeNanos();
             long id = value(LayaNative.open(config.toString())).getLong("handle");
             handle.set(id);
@@ -110,6 +114,12 @@ public final class MainActivity extends Activity {
             JSONObject scan = value(LayaNative.invoke(id, scanCall.toString()));
             if (scan.getJSONArray("windows").length() < 2) throw new IOException("Expected multiple scan windows");
             report.put("long_scan", scan);
+            JSONObject expiredCall = new JSONObject().put("operation", "decide").put("request", new JSONObject(request))
+                .put("options", new JSONObject().put("timeout_ms", 0));
+            JSONObject expired = new JSONObject(LayaNative.invoke(id, expiredCall.toString()));
+            if (expired.getBoolean("ok") || !expired.optString("error").toLowerCase(java.util.Locale.ROOT).contains("deadline"))
+                throw new IOException("Expired deadline was not rejected");
+            report.put("deadline_error", expired.getString("error"));
             value(LayaNative.suspend(id));
             JSONObject suspended = new JSONObject(LayaNative.decide(id, request));
             if (suspended.getBoolean("ok")) throw new IOException("Suspended model accepted inference");
@@ -191,6 +201,8 @@ public final class MainActivity extends Activity {
             for (int i = 0; i < left.length(); i++) if (!equivalent(left.get(i), right.get(i))) return false;
             return true;
         }
+        if (a instanceof Number && b instanceof Number)
+            return Math.abs(((Number) a).doubleValue() - ((Number) b).doubleValue()) <= 0.0001;
         return a.equals(b);
     }
 
@@ -199,6 +211,10 @@ public final class MainActivity extends Activity {
         if (id != 0) LayaNative.suspend(id); // Nonblocking; worker retains any active kernel.
     }
     @Override protected void onStart() { super.onStart(); foreground = true; }
+    @Override protected void onPostResume() {
+        super.onPostResume();
+        if (ciSmokePending) { ciSmokePending = false; start("smoke"); }
+    }
     @Override protected void onStop() { foreground = false; suspendActive(); super.onStop(); }
     @Override public void onTrimMemory(int level) {
         super.onTrimMemory(level);

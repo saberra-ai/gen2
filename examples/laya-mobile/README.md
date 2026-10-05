@@ -103,6 +103,19 @@ app-private storage and are immutable while loaded.
 
 ## Android
 
+Android CI builds the arm64 device APK and a separate x86_64 emulator APK. The
+Gradle `gen2Abi` property selects the ABI (default `arm64-v8a`); both retain the
+same JNI/Rust/ORT interface and 16 KiB library alignment checks. The x86_64 lane
+runs API 35 in an emulator, starts the synthetic smoke suite with a unique run
+ID, and verifies the app-private report. Reports and a screenshot are uploaded
+alongside packaging evidence. Emulator results do not qualify physical arm64
+devices or real checkpoint performance. The new emulator lane is pending its
+first successful run.
+
+`run_android_emulator.py` deliberately accepts only an emulator serial. For
+manual physical-device qualification, install the arm64 APK and use the app's
+family picker; the original device workflow below still applies.
+
 The local Android link check uses the published ONNX Runtime **1.24.3** AAR,
 NDK **r27d (27.3.13750724)**, Rust **1.95.0**, arm64-v8a and Android API **24**.
 Maven did not publish a 1.24.4 Android AAR at inspection time; the Windows
