@@ -77,6 +77,23 @@ records hashes and toolchain versions. Choose a fresh output directory as the
 second argument for repeat builds. The CI job uploads these products and evidence.
 This is SDK/link qualification; it does not execute a model on a simulator or device.
 
+The script also produces `aarch64-apple-ios/Gen2Laya.app` (unsigned device app)
+and `aarch64-apple-ios-sim/Gen2Laya.app` (ad hoc signed simulator app) under the
+output directory. The offline UI runs single/batch/window decisions, deadline
+rejection and suspend/resume/close checks on a background queue. It suspends
+admission on memory warnings or backgrounding. A JSON report is saved to
+`Documents/laya-smoke-report.json`. The packaged graph is explicitly synthetic.
+For real-model checks, copy each immutable exported bundle into
+`Documents/laya/<family>` and choose it in the picker. Resume after OS pressure,
+thermal behavior and physical-device parity still need device qualification.
+
+CI creates a disposable iPhone simulator, installs the app, passes `--ci-smoke`,
+and checks its report with `tools/laya/run_ios_simulator.py`. It uploads the
+report and screenshot and removes only the simulator it created. A successful
+simulator smoke establishes native execution of the synthetic graph, not model
+quality or physical-device performance. Signing/installing the device app
+requires the owner's Apple development identity and provisioning profile.
+
 Add the Gen2 XCFramework and matching ONNX framework to the host app. Include
 `gen2_laya.h` in its bridging header, or import the packaged `Gen2Laya` C module.
 Link the C++ runtime and Foundation/CoreML/Accelerate frameworks as in the script;

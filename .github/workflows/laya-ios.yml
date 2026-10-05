@@ -41,7 +41,10 @@ jobs:
           unzip -q target/laya/ios/ort.zip -d target/laya/ios/runtime
       - name: Build both slices, link the Swift host and package XCFramework
         run: bash tools/laya/build_ios.sh target/laya/ios/runtime/onnxruntime.xcframework
+      - name: Execute offline native inference in an iOS simulator
+        run: python3 tools/laya/run_ios_simulator.py --app target/laya/ios/build/aarch64-apple-ios-sim/Gen2Laya.app --output target/laya/ios/build
       - uses: actions/upload-artifact@v4
+        if: always()
         with:
           name: laya-ios-build-evidence
           path: target/laya/ios/build/

@@ -37,6 +37,31 @@ for TARGET in aarch64-apple-ios aarch64-apple-ios-sim; do
     -F "$ORT_IOS_XCFWK_PATH/$SLICE" -framework onnxruntime \
     -framework Foundation -framework CoreML -framework Accelerate \
     -lc++ -lz -liconv -o "$OUT/$TARGET-host.dylib"
+  APP="$OUT/$TARGET/Gen2Laya.app"
+  mkdir -p "$APP"
+  xcrun --sdk "$SDK" swiftc -parse-as-library -target "$SWIFT_TARGET" \
+    -sdk "$(xcrun --sdk "$SDK" --show-sdk-path)" \
+    -import-objc-header examples/laya-mobile/gen2_laya.h \
+    examples/laya-mobile/LayaSmoke.swift examples/laya-mobile/ios/LayaSmokeApp.swift "$LIB" \
+    -F "$ORT_IOS_XCFWK_PATH/$SLICE" -framework onnxruntime \
+    -framework Foundation -framework CoreML -framework Accelerate -framework SwiftUI -framework UIKit \
+    -lc++ -lz -liconv -o "$APP/Gen2Laya"
+  cp -R tests/fixtures/laya/smoke "$APP/smoke"
+  python3 - "$APP" "$SDK" <<'PY'
+import pathlib, plistlib, sys
+app, sdk = pathlib.Path(sys.argv[1]), sys.argv[2]
+info = dict(CFBundleIdentifier='ai.saberra.gen2.laya.smoke', CFBundleName='Gen2 Laya',
+            CFBundleExecutable='Gen2Laya', CFBundlePackageType='APPL', CFBundleVersion='1',
+            CFBundleShortVersionString='1.0', MinimumOSVersion='15.1',
+            CFBundleSupportedPlatforms=['iPhoneOS' if sdk == 'iphoneos' else 'iPhoneSimulator'],
+            UIDeviceFamily=[1, 2], UILaunchScreen={}, UIFileSharingEnabled=True,
+            UIApplicationSceneManifest=dict(UIApplicationSupportsMultipleScenes=False),
+            LSSupportsOpeningDocumentsInPlace=True,
+            UISupportedInterfaceOrientations=['UIInterfaceOrientationPortrait', 'UIInterfaceOrientationLandscapeLeft', 'UIInterfaceOrientationLandscapeRight'])
+(app / 'Info.plist').write_bytes(plistlib.dumps(info))
+PY
+  # Simulator signing is ad hoc. A device app requires the owner's signing identity.
+  if [[ "$SDK" == iphonesimulator ]]; then codesign --force --sign - "$APP"; fi
 done
 xcodebuild -create-xcframework \
   -library "$ROOT/target/aarch64-apple-ios/release/libgen2_laya_mobile.a" -headers "$OUT/headers" \

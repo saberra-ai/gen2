@@ -51,8 +51,22 @@ def inspect(output, runtime):
         assert command("xcrun", "lipo", "-archs", str(host)) == "arm64"
         artifacts.append({"path": host.name, "sha256": digest(host),
                           "load_commands": command("xcrun", "otool", "-L", str(host))})
+        app = output / target / "Gen2Laya.app"
+        info = plistlib.loads((app / "Info.plist").read_bytes())
+        assert info["CFBundleIdentifier"] == "ai.saberra.gen2.laya.smoke"
+        assert info["MinimumOSVersion"] == "15.1"
+        executable = app / info["CFBundleExecutable"]
+        assert command("xcrun", "lipo", "-archs", str(executable)) == "arm64"
+        smoke = app / "smoke"
+        manifest = json.loads((smoke / "manifest.json").read_text(encoding="utf-8"))
+        assert manifest["versions"]["fixture"] == "SYNTHETIC_TEST_ONLY"
+        for name, expected in manifest["files"].items():
+            path = smoke / name
+            assert digest(path) == expected["sha256"] and path.stat().st_size == expected["bytes"]
+        artifacts.append({"path": str(executable.relative_to(output)), "sha256": digest(executable),
+                          "build_version": command("xcrun", "vtool", "-show-build", str(executable))})
     evidence = {
-        "scope": "Apple SDK device/simulator arm64 build, C exports, Swift final link and XCFramework packaging",
+        "scope": "Apple SDK device/simulator arm64 build, C exports, Swift final link, XCFramework and offline app packaging",
         "device_execution": False,
         "simulator_execution": False,
         "real_checkpoint_qualification": False,
