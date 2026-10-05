@@ -1,0 +1,47 @@
+name: Laya Apple SDK
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'src/**'
+      - 'Cargo.*'
+      - 'examples/laya-mobile/**'
+      - 'tools/laya/**'
+      - '.github/workflows/laya-ios.yml'
+  pull_request:
+    paths:
+      - 'src/**'
+      - 'Cargo.*'
+      - 'examples/laya-mobile/**'
+      - 'tools/laya/**'
+      - '.github/workflows/laya-ios.yml'
+  workflow_dispatch:
+
+jobs:
+  ios-package:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: aarch64-apple-ios,aarch64-apple-ios-sim
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: Swatinem/rust-cache@v2
+      - name: Obtain the pinned full Apple runtime
+        shell: bash
+        run: |
+          mkdir -p target/laya/ios
+          curl --fail --location --silent --show-error -o target/laya/ios/ort.zip \
+            https://download.onnxruntime.ai/pod-archive-onnxruntime-c-1.24.2.zip
+          echo 'f7100a992d2a8135168c8afd831e6a58b465349101982aa58b3e11d36e600b54  target/laya/ios/ort.zip' | shasum -a 256 -c -
+          unzip -q target/laya/ios/ort.zip -d target/laya/ios/runtime
+      - name: Build both slices, link the Swift host and package XCFramework
+        run: bash tools/laya/build_ios.sh target/laya/ios/runtime/onnxruntime.xcframework
+      - uses: actions/upload-artifact@v4
+        with:
+          name: laya-ios-build-evidence
+          path: target/laya/ios/build/
+      # Physical-device and real-checkpoint execution are separate gates.

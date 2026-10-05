@@ -1,0 +1,107 @@
+{
+  "commit": "cfb3b37639e637124195994729666004df98c4ca",
+  "run_url": "https://github.com/saberra-ai/gen2/actions/runs/37257203712",
+  "scope": "Desktop native synthetic graph, mobile C ABI and Android build/packaging; not real-model or mobile-device qualification",
+  "jobs": [
+    {
+      "id": 111596741531,
+      "name": "laya (ubuntu-latest)",
+      "conclusion": "success",
+      "steps": [
+        "Set up job",
+        "Run actions/checkout@v4",
+        "Run dtolnay/rust-toolchain@stable",
+        "Run actions/setup-python@v5",
+        "Run Swatinem/rust-cache@v2",
+        "Run python -m pip install onnxruntime==1.24.4",
+        "Locate the explicitly installed native runtime",
+        "Run cargo clippy --no-default-features --features laya-dynamic,tokio --all-targets -- -D warnings",
+        "Run cargo test --no-default-features --features laya-dynamic,tokio --lib",
+        "Run cargo test --no-default-features --features laya-dynamic,tokio --test laya_native native_worker -- --ignored",
+        "Run cargo clippy -p gen2-laya-mobile --features dynamic -- -D warnings",
+        "Run cargo build -p gen2-laya-mobile --features dynamic",
+        "Exercise the mobile ABI against the native synthetic graph",
+        "Run python -m unittest discover -s tools/laya -p test_quality.py -v",
+        "Post Run Swatinem/rust-cache@v2",
+        "Post Run actions/setup-python@v5",
+        "Post Run actions/checkout@v4",
+        "Complete job"
+      ]
+    },
+    {
+      "id": 111596741548,
+      "name": "laya (windows-latest)",
+      "conclusion": "success",
+      "steps": [
+        "Set up job",
+        "Run actions/checkout@v4",
+        "Run dtolnay/rust-toolchain@stable",
+        "Run actions/setup-python@v5",
+        "Run Swatinem/rust-cache@v2",
+        "Run python -m pip install onnxruntime==1.24.4",
+        "Locate the explicitly installed native runtime",
+        "Run cargo clippy --no-default-features --features laya-dynamic,tokio --all-targets -- -D warnings",
+        "Run cargo test --no-default-features --features laya-dynamic,tokio --lib",
+        "Run cargo test --no-default-features --features laya-dynamic,tokio --test laya_native native_worker -- --ignored",
+        "Run cargo clippy -p gen2-laya-mobile --features dynamic -- -D warnings",
+        "Run cargo build -p gen2-laya-mobile --features dynamic",
+        "Exercise the mobile ABI against the native synthetic graph",
+        "Run python -m unittest discover -s tools/laya -p test_quality.py -v",
+        "Post Run Swatinem/rust-cache@v2",
+        "Post Run actions/setup-python@v5",
+        "Post Run actions/checkout@v4",
+        "Complete job"
+      ]
+    },
+    {
+      "id": 111596741606,
+      "name": "laya (macos-latest)",
+      "conclusion": "success",
+      "steps": [
+        "Set up job",
+        "Run actions/checkout@v4",
+        "Run dtolnay/rust-toolchain@stable",
+        "Run actions/setup-python@v5",
+        "Run Swatinem/rust-cache@v2",
+        "Run python -m pip install onnxruntime==1.24.4",
+        "Locate the explicitly installed native runtime",
+        "Run cargo clippy --no-default-features --features laya-dynamic,tokio --all-targets -- -D warnings",
+        "Run cargo test --no-default-features --features laya-dynamic,tokio --lib",
+        "Run cargo test --no-default-features --features laya-dynamic,tokio --test laya_native native_worker -- --ignored",
+        "Run cargo clippy -p gen2-laya-mobile --features dynamic -- -D warnings",
+        "Run cargo build -p gen2-laya-mobile --features dynamic",
+        "Exercise the mobile ABI against the native synthetic graph",
+        "Run python -m unittest discover -s tools/laya -p test_quality.py -v",
+        "Post Run Swatinem/rust-cache@v2",
+        "Post Run actions/setup-python@v5",
+        "Post Run actions/checkout@v4",
+        "Complete job"
+      ]
+    },
+    {
+      "id": 111596741724,
+      "name": "laya-android",
+      "conclusion": "success",
+      "steps": [
+        "Set up job",
+        "Run actions/checkout@v4",
+        "Run actions/setup-java@v4",
+        "Run gradle/actions/setup-gradle@v4",
+        "Run dtolnay/rust-toolchain@stable",
+        "Run actions/setup-python@v5",
+        "Run Swatinem/rust-cache@v2",
+        "Prepare pinned NDK and Android runtime",
+        "Run cargo build --locked --release -p gen2-laya-mobile --target aarch64-linux-android",
+        "Link and inspect the complete JNI library set",
+        "Build, lint and inspect the offline host APK",
+        "Run actions/upload-artifact@v4",
+        "Post Run Swatinem/rust-cache@v2",
+        "Post Run actions/setup-python@v5",
+        "Post Run gradle/actions/setup-gradle@v4",
+        "Post Run actions/setup-java@v4",
+        "Post Run actions/checkout@v4",
+        "Complete job"
+      ]
+    }
+  ]
+}

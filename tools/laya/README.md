@@ -289,3 +289,11 @@ The CPU run under `target/laya/benchmarks-worker-scan-20261004` was interrupted
 by a session reset and remains partial. It records
 concurrent SDK/Gradle activity in its provenance; it is an active-host experiment,
 not an isolated performance release qualification.
+
+The desktop native smoke and Android packaging CI lanes passed at commit
+`cfb3b37639e637124195994729666004df98c4ca`; see
+[`evidence/ci/desktop-android.json`](evidence/ci/desktop-android.json). They cover
+synthetic inference on Windows/Linux/macOS and Android native/APK packaging.
+The separate Apple SDK workflow builds device/simulator libraries and links the
+Swift host; its first result remains pending. Neither lane replaces real-model
+or physical-device qualification.

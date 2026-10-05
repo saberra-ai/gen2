@@ -54,22 +54,34 @@ Load configuration also exposes the Rust execution-provider policy.
 
 ## iOS
 
-On a macOS build host with the Apple SDK and Rust iOS targets installed, build
-ONNX Runtime **1.24.4** with its iOS framework build tooling. Use the full CPU
-operator set initially; a reduced operator build needs graph-coverage testing.
-Point `ORT_IOS_XCFWK_PATH` at the resulting matching XCFramework, then:
+The Apple SDK CI lane downloads the full ONNX Runtime **1.24.2** XCFramework
+published in Microsoft's [Swift package manifest](https://github.com/microsoft/onnxruntime-swift-package-manager/blob/main/Package.swift).
+The archive SHA-256 is `f7100a992d2a8135168c8afd831e6a58b465349101982aa58b3e11d36e600b54`;
+its device and simulator slices use ORT API 24, matching the Rust binding.
+This patch version is separate from the desktop and Android runtimes and still
+requires iOS parity qualification. A reduced operator build needs its own
+graph-coverage testing.
+
+On a macOS build host with Xcode and both Rust iOS targets installed, extract
+that archive and run:
 
 ```sh
-cargo build -p gen2-laya-mobile --release --target aarch64-apple-ios
-cargo build -p gen2-laya-mobile --release --target aarch64-apple-ios-sim
+bash tools/laya/build_ios.sh /absolute/path/onnxruntime.xcframework
 ```
 
-The pinned ort-sys build reads `ORT_IOS_XCFWK_PATH`, selects the platform slice
-and supplies native framework linkage. Add the Rust static library, the ONNX
-framework and `gen2_laya.h` to the host app's bridging header. Keep device and
-simulator products separate or package them as an XCFramework. Sign/embed any
-dynamic framework through Xcode. `LayaSmoke.swift` shows the C calls. Bundles
-live in the app bundle or app-private storage and are immutable while loaded.
+The script sets `ORT_IOS_XCFWK_PATH`, builds arm64 device and simulator libraries,
+links `LayaSmoke.swift` against the C ABI and runtime for both targets, and packages
+`target/laya/ios/build/Gen2Laya.xcframework`. The build floor is iOS 15.0.
+`inspect_ios.py` checks slices, exported C symbols and linked host binaries, then
+records hashes and toolchain versions. Choose a fresh output directory as the
+second argument for repeat builds. The CI job uploads these products and evidence.
+This is SDK/link qualification; it does not execute a model on a simulator or device.
+
+Add the Gen2 XCFramework and matching ONNX framework to the host app. Include
+`gen2_laya.h` in its bridging header, or import the packaged `Gen2Laya` C module.
+Link the C++ runtime and Foundation/CoreML/Accelerate frameworks as in the script;
+sign/embed dynamic frameworks through Xcode. Bundles live in the app bundle or
+app-private storage and are immutable while loaded.
 
 ## Android
 
