@@ -1,0 +1,17 @@
+[package]
+name = "gen2-laya-mobile"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+[lib]
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[features]
+default = []
+dynamic = ["gen2/laya-dynamic"]
+
+[dependencies]
+gen2 = { path = "../..", default-features = false, features = ["backend-laya-onnx"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"

@@ -1,0 +1,86 @@
+{
+  "status": "cross-compiled and linked; device execution not verified",
+  "target": "aarch64-linux-android",
+  "android_api": 24,
+  "ndk": "Pkg.Desc = Android NDK\nPkg.Revision = 27.3.13750724\nPkg.BaseRevision = 27.3.13750724\nPkg.ReleaseName = r27d\n",
+  "ort_android_version": "1.24.3",
+  "artifacts": [
+    {
+      "file": "libgen2_laya_jni.so",
+      "bytes": 477440,
+      "sha256": "c8315a697567bb33b138dc2b4a2f602dd3f0cdf68737ac213d69964c2faf1a2c",
+      "needed": [
+        "libgen2_laya_mobile.so",
+        "libm.so",
+        "libdl.so",
+        "libc.so"
+      ],
+      "load_alignments": [
+        16384,
+        16384,
+        16384,
+        16384
+      ],
+      "checked_exports": [
+        "Java_example_gen2_LayaNative_openBytes",
+        "Java_example_gen2_LayaNative_decideBytes",
+        "Java_example_gen2_LayaNative_invokeBytes",
+        "Java_example_gen2_LayaNative_suspendBytes",
+        "Java_example_gen2_LayaNative_resumeBytes",
+        "Java_example_gen2_LayaNative_closeBytes"
+      ]
+    },
+    {
+      "file": "libgen2_laya_mobile.so",
+      "bytes": 10443760,
+      "sha256": "0a07ee8a75eeeee0b3fb9ebc69dd4170abacfe9e337ace04b933e256a0d5a01f",
+      "needed": [
+        "libonnxruntime.so",
+        "libdl.so",
+        "libm.so",
+        "libc.so"
+      ],
+      "load_alignments": [
+        16384,
+        16384,
+        16384,
+        16384
+      ],
+      "checked_exports": [
+        "gen2_laya_open",
+        "gen2_laya_decide",
+        "gen2_laya_invoke",
+        "gen2_laya_suspend",
+        "gen2_laya_resume",
+        "gen2_laya_close",
+        "gen2_laya_free"
+      ]
+    },
+    {
+      "file": "libonnxruntime.so",
+      "bytes": 25831632,
+      "sha256": "4d2318b3849abb8862133d3068fc7e807ed8b2671cc6d83657fff2fcb9e1caad",
+      "needed": [
+        "libdl.so",
+        "liblog.so",
+        "libandroid.so",
+        "libm.so",
+        "libc.so"
+      ],
+      "load_alignments": [
+        16384,
+        16384,
+        16384
+      ],
+      "checked_exports": [
+        "OrtGetApiBase"
+      ]
+    }
+  ],
+  "source_tree_sha256": "993c461f34d1b6efdc8fd0c58a83db054e6ce95bee765b2231f89c516e1d3e21",
+  "source_file_count": 233,
+  "sources": {
+    "ndk": "https://github.com/android/ndk/releases/tag/r27d",
+    "runtime": "https://repo.maven.apache.org/maven2/com/microsoft/onnxruntime/onnxruntime-android/1.24.3/"
+  }
+}

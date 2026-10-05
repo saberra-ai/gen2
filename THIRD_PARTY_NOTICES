@@ -1,0 +1,13 @@
+Laya preprocessing and decision semantics
+=========================================
+
+The sequence construction, decoding and window-selection semantics in
+src/decision/{encode,decode,long}.rs are adapted from:
+https://github.com/NandhaKishorM/laya
+Revision: 8a6e1328cce2460a0e5aa348ad465bb1b5821cd2
+Source files: laya/common.py, laya/agent.py, laya/calibrate.py
+Upstream project: Laya, Convai Innovations
+License: Apache License, Version 2.0 (see licenses/laya-Apache-2.0.txt).
+
+Modifications: Rust implementation, owned typed requests, checked request
+validation, explicit overflow policies, and per-question diagnostics.

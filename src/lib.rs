@@ -66,6 +66,9 @@ pub(crate) mod api;
 // so its links resolve in its own scope.
 pub mod advanced;
 
+/// Typed, non-generative decisions and the Laya inference contract.
+pub mod decision;
+
 // ── S3.1: `hf:` model references ────────────────────────────────────────────
 /// Models from the Hugging Face Hub by `hf:owner/repo[:QUANT]` reference —
 /// [`HfModel`](hf::HfModel), the cache, and the errors.

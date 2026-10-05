@@ -1,0 +1,57 @@
+{
+  "date": "2026-10-04",
+  "platform": "Windows x64",
+  "provider": "CPUExecutionProvider",
+  "native_runtime": "1.24.4",
+  "rust": "1.95.0",
+  "native_tokio_library_suite": {
+    "passed": 1007,
+    "ignored": 3
+  },
+  "no_default_library_suite": {
+    "passed": 996,
+    "ignored": 3
+  },
+  "cross_state_batch_reference": {
+    "checkpoints": [
+      "english",
+      "multilingual",
+      "typed-decisions"
+    ],
+    "passed": true,
+    "coverage": "Heterogeneous states and question counts, empty states, repeated IDs across states, exact unpadded input rows, canonical answer ordering and probability tolerance 0.0001."
+  },
+  "permutation_reference_max_probability_difference": {
+    "english": 5.805362135458125e-08,
+    "multilingual": 2.4588718505746954e-08,
+    "typed-decisions": 2.4226125744375437e-08
+  },
+  "local_checkpoint_export": {
+    "source": "Existing English checkpoint through --checkpoint-dir; weights unchanged",
+    "model_repository": "local/export-path-verification",
+    "manifest_sha256": "c36467d7a55ddf48c10e52d656fc8b0ea0f166686f963409ff0d9c72d0de56ba",
+    "export_and_rust_inference_passed": true,
+    "fine_tune_quality_claim": false
+  },
+  "provider_failure_reservation_rollback": "passed; unsupported CoreML on Windows errors even when CPU partition fallback is allowed",
+  "mobile_c_abi_desktop_smoke": "passed; configured input/thread/queue budgets, capabilities, Unicode single/batch/seven-window inference, deadlines, overflow options, malformed input and suspend/resume/close",
+  "long_input_admission": "Input byte and graph-envelope limits are checked before tokenization; real long-state reference still passes",
+  "long_worker_ownership": "Tokenization and all windows execute as one bounded worker job using its tokenizer; queue saturation, unload and Tokio future-drop resource-lifetime tests pass; English six-window upstream parity passes",
+  "quality_tooling": "Six analytic/leakage tests and synthetic native pipeline passed; no application accuracy claim",
+  "performance_tooling": "Full 12-case Rust/Python matrix implemented. Updated-code run interrupted by session reset; partial files preserved in target/laya/benchmarks-worker-scan-20261004. No completed latency gate. Concurrent SDK/Gradle activity is recorded as a host-load confound.",
+  "qualification_still_required": [
+    "macOS real checkpoint family execution",
+    "Windows ARM64 native execution",
+    "iOS SDK build and native packaging; Android installation; both physical-device family execution (Android native libraries and debug APK built)",
+    "accelerator graph partitioning, parity, memory and performance",
+    "100-call latency matrix, Python baseline and chat coexistence",
+    "mobile memory pressure, suspend/resume and thermal behavior",
+    "application-specific labeled holdout quality and calibration evaluation"
+  ],
+  "android_host_apk": "Built and signature-verified; package hash/alignment/native identity/synthetic assets/no permissions inspected. See ../android-arm64/apk-evidence.json. adb reports no attached devices; installation and execution unverified.",
+  "default_library_suite": {
+    "passed": 1180,
+    "ignored": 17
+  },
+  "staged_fixture_integrity": "All Git-index smoke bundle file hashes and sizes match the manifest; .gitattributes preserves exact fixture/evidence bytes"
+}

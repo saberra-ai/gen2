@@ -103,6 +103,21 @@ pub(crate) struct RuntimeInner {
     budget_mb: Option<u64>,
     /// Models evicted to make room, over the runtime's life.
     evictions: AtomicU64,
+    /// Reservations remain live until the decision worker drops its session.
+    decision_reserved_mb: AtomicU64,
+    decision_models: Mutex<Vec<crate::decision::DecisionMonitor>>,
+}
+
+struct DecisionReservation {
+    inner: Arc<RuntimeInner>,
+    mb: u64,
+}
+impl Drop for DecisionReservation {
+    fn drop(&mut self) {
+        self.inner
+            .decision_reserved_mb
+            .fetch_sub(self.mb, Ordering::SeqCst);
+    }
 }
 
 /// One model the runtime has loaded.
@@ -168,6 +183,112 @@ impl Loaded {
 }
 
 impl Runtime {
+    /// Load a complete offline Laya bundle on a dedicated worker.
+    pub fn load_decider(
+        &self,
+        path: impl AsRef<Path>,
+        options: crate::decision::LoadOptions,
+    ) -> Result<crate::decision::DecisionModel> {
+        if !cfg!(feature = "backend-laya-onnx") {
+            return Err(crate::decision::DecisionError::BackendUnavailable(
+                "enable backend-laya-onnx or laya-dynamic".into(),
+            )
+            .into());
+        }
+        options.validate()?;
+        let bundle = crate::decision::LayaBundle::open(path)?;
+        self.load_verified_decider(bundle, options)
+    }
+
+    /// Restore a stopped decision worker from the exact same bundle manifest.
+    /// Call after shutdown completes; a new handle is returned to the host.
+    pub fn reload_decider(
+        &self,
+        previous: &crate::decision::DecisionModel,
+        options: crate::decision::LoadOptions,
+    ) -> Result<crate::decision::DecisionModel> {
+        if previous.status() != crate::decision::DecisionStatus::Unloaded {
+            return Err(crate::decision::DecisionError::Busy.into());
+        }
+        options.validate()?;
+        let bundle = crate::decision::LayaBundle::open(previous.bundle().directory())?;
+        if bundle.manifest_sha256() != previous.bundle().manifest_sha256() {
+            return Err(crate::decision::DecisionError::InvalidBundle(
+                "manifest changed since suspension".into(),
+            )
+            .into());
+        }
+        self.load_verified_decider(bundle, options)
+    }
+
+    fn load_verified_decider(
+        &self,
+        bundle: crate::decision::LayaBundle,
+        options: crate::decision::LoadOptions,
+    ) -> Result<crate::decision::DecisionModel> {
+        let _span = tracing::info_span!(
+            "laya_admission",
+            manifest = bundle.manifest_sha256(),
+            reservation_mb = bundle.manifest().envelope.reservation_mb
+        )
+        .entered();
+        let mb = bundle.manifest().envelope.reservation_mb;
+        let reservation = {
+            let _admission = self
+                .inner
+                .admission
+                .lock()
+                .map_err(|_| Error::Load("admission lock poisoned".into()))?;
+            self.make_room(mb, None);
+            if !self.can_admit(mb) {
+                return Err(crate::decision::DecisionError::ResourceLimit(format!(
+                    "cannot reserve {mb} MB alongside resident models"
+                ))
+                .into());
+            }
+            self.inner
+                .decision_reserved_mb
+                .fetch_add(mb, Ordering::SeqCst);
+            DecisionReservation {
+                inner: Arc::clone(&self.inner),
+                mb,
+            }
+        };
+        let model = crate::decision::spawn_worker(bundle, options, Box::new(reservation))?;
+        self.inner
+            .decision_models
+            .lock()
+            .unwrap_or_else(|e| e.into_inner())
+            .push(model.monitor());
+        Ok(model)
+    }
+
+    /// Live decision handles in load order; registry entries are weak and never
+    /// keep weights alive after the application's last handle is dropped.
+    pub fn decision_models(&self) -> Vec<crate::decision::DecisionModel> {
+        let mut models = self
+            .inner
+            .decision_models
+            .lock()
+            .unwrap_or_else(|e| e.into_inner());
+        models.retain(|m| m.upgrade().is_some());
+        models.iter().filter_map(|m| m.upgrade()).collect()
+    }
+
+    /// Memory held or reserved by decision workers, including in-flight unload.
+    pub fn decision_reserved_mb(&self) -> u64 {
+        self.inner.decision_reserved_mb.load(Ordering::SeqCst)
+    }
+
+    fn respect_decision_reservations(&self, extra_mb: u64) -> Result<()> {
+        if self.decision_reserved_mb() > 0 && !self.can_admit(extra_mb) {
+            return Err(crate::decision::DecisionError::ResourceLimit(
+                "resident decisions leave insufficient memory for this model".into(),
+            )
+            .into());
+        }
+        Ok(())
+    }
     /// A runtime with default policy.
     pub fn new() -> Result<Self> {
         Self::builder().build()
@@ -227,9 +348,10 @@ impl Runtime {
         // so nothing else is admitted on the strength of the same free
         // memory. The engine's own admission check is the final say; this
         // only evicts what it can to let that succeed.
+        let _admission = self.inner.admission.lock();
         let engine = {
-            let _admission = self.inner.admission.lock();
             self.make_room(estimated_mb, None);
+            self.respect_decision_reservations(estimated_mb)?;
             let mut builder = Engine::builder()
                 .model(path)
                 .settings(self.inner.settings.clone())
@@ -385,7 +507,10 @@ impl Runtime {
         RuntimeStats {
             models: residency.models.len(),
             resident_models: residency.models.iter().filter(|m| m.resident).count(),
-            estimated_resident_mb: residency.resident_mb(),
+            estimated_resident_mb: residency
+                .resident_mb()
+                .saturating_add(self.decision_reserved_mb()),
+            decision_reserved_mb: self.decision_reserved_mb(),
             active_sessions,
             evictions: self.inner.evictions.load(Ordering::SeqCst),
         }
@@ -410,6 +535,7 @@ impl Runtime {
         // controller's idle unload, say). Same restore.
         loaded.set_resident(false);
         self.make_room(loaded.estimated_mb, Some(id));
+        self.respect_decision_reservations(loaded.estimated_mb)?;
         loaded.engine.reload_model()?;
         loaded.set_resident(true);
         Ok(())
@@ -443,8 +569,13 @@ impl Runtime {
     /// Whether `extra_mb` more resident memory fits: the runtime's ledger
     /// against the budget, and the machine's memory governor.
     fn can_admit(&self, extra_mb: u64) -> bool {
-        let ledger = self.residency().resident_mb();
-        let projected = ledger.saturating_add(extra_mb);
+        let ledger = self
+            .residency()
+            .resident_mb()
+            .saturating_add(self.decision_reserved_mb());
+        let Some(projected) = ledger.checked_add(extra_mb) else {
+            return false;
+        };
         match self.inner.budget_mb {
             Some(budget) => projected <= budget,
             None => {
@@ -521,8 +652,8 @@ impl Runtime {
     ) -> Model {
         // Through the same admission as `load`, so eviction on load is
         // testable without weights.
+        let _admission = self.inner.admission.lock();
         let engine = {
-            let _admission = self.inner.admission.lock();
             self.make_room(estimated_mb, None);
             Engine::scripted_with_config(script, self.inner.config.clone())
         };
@@ -602,6 +733,8 @@ pub struct RuntimeStats {
     pub resident_models: usize,
     /// Estimated MB the resident local models hold.
     pub estimated_resident_mb: u64,
+    /// Subset of estimated residency reserved for decision workers' peak usage.
+    pub decision_reserved_mb: u64,
     /// Conversations the engines currently hold runtime state for, summed.
     pub active_sessions: usize,
     /// Models evicted to make room for another, over the runtime's life.
@@ -650,12 +783,16 @@ impl RuntimeBuilder {
         self
     }
 
-    /// Pin the resident-memory budget instead of asking the machine, so
-    /// eviction is decided by arithmetic the test controls.
-    #[cfg(test)]
+    /// Set the host application's resident-memory budget in MiB instead of
+    /// using the automatic governor. Includes chat weights and decision peak
+    /// reservations. The host must leave space for its own UI and other work.
     pub(crate) fn resident_budget_mb(mut self, mb: u64) -> Self {
         self.budget_mb = Some(mb);
         self
+    }
+
+    pub fn resident_memory_budget_mb(self, mb: u64) -> Self {
+        self.resident_budget_mb(mb)
     }
 
     /// Build it. Starts nothing: backends start when a model is loaded.
@@ -669,6 +806,8 @@ impl RuntimeBuilder {
                 admission: Mutex::new(()),
                 budget_mb: self.budget_mb,
                 evictions: AtomicU64::new(0),
+                decision_reserved_mb: AtomicU64::new(0),
+                decision_models: Mutex::new(Vec::new()),
             }),
         })
     }
@@ -952,6 +1091,47 @@ mod tests {
             runtime.models().is_empty(),
             "a model that failed to load must not be registered"
         );
+    }
+
+    #[test]
+    fn decision_reservations_block_chat_restore_and_release_exactly() {
+        let runtime = Runtime::builder()
+            .resident_memory_budget_mb(10)
+            .build()
+            .unwrap();
+        let chat = runtime.scripted_in(Script::new(), 8);
+        Runtime::unload(chat.loaded()).unwrap();
+        runtime
+            .inner
+            .decision_reserved_mb
+            .store(6, Ordering::SeqCst);
+        let reservation = DecisionReservation {
+            inner: runtime.inner.clone(),
+            mb: 6,
+        };
+        assert!(matches!(
+            runtime.restore(chat.id(), chat.loaded()),
+            Err(Error::Decision(
+                crate::decision::DecisionError::ResourceLimit(_)
+            ))
+        ));
+        assert_eq!(runtime.stats().decision_reserved_mb, 6);
+        drop(reservation);
+        runtime.restore(chat.id(), chat.loaded()).unwrap();
+        assert_eq!(runtime.decision_reserved_mb(), 0);
+    }
+
+    #[test]
+    fn reservation_arithmetic_cannot_wrap_at_a_large_host_budget() {
+        let runtime = Runtime::builder()
+            .resident_memory_budget_mb(u64::MAX)
+            .build()
+            .unwrap();
+        runtime
+            .inner
+            .decision_reserved_mb
+            .store(u64::MAX - 1, Ordering::SeqCst);
+        assert!(!runtime.can_admit(2));
     }
 
     #[test]

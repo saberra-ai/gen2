@@ -1,0 +1,992 @@
+{
+  "mode": "onnx",
+  "source_revision": "8a6e1328cce2460a0e5aa348ad465bb1b5821cd2",
+  "checkpoint": "typed-decisions",
+  "manifest_sha256": "39188a34f95ad59351ab488aeca10ace3e8c5619f7c5e709c9fd30a8be298000",
+  "cases": [
+    {
+      "name": "three-types",
+      "request": {
+        "state": {
+          "kind": "text",
+          "value": "Our invoice was charged twice. Please refund it."
+        },
+        "questions": [
+          [
+            "team",
+            {
+              "type": "choice",
+              "instructions": "Who handles this?",
+              "options": [
+                {
+                  "label": "billing",
+                  "description": "Payments"
+                },
+                {
+                  "label": "support",
+                  "description": "Product issues"
+                }
+              ]
+            }
+          ],
+          [
+            "urgency",
+            {
+              "type": "score",
+              "instructions": "How urgent?",
+              "levels": [
+                "Routine",
+                "Soon",
+                "Blocking"
+              ]
+            }
+          ],
+          [
+            "refund",
+            {
+              "type": "yes_no",
+              "instructions": "Is a refund requested?",
+              "false_label": "false",
+              "true_label": "true",
+              "false_description": null,
+              "true_description": null
+            }
+          ]
+        ]
+      },
+      "options": {
+        "max_len": 512,
+        "head_max_len": 192,
+        "overflow": "allow_with_diagnostics"
+      },
+      "probabilities": [
+        [
+          0.7728056907653809,
+          0.22719426453113556
+        ],
+        [
+          0.029063383117318153,
+          0.21513865888118744,
+          0.7557979822158813
+        ],
+        [
+          0.26384419202804565,
+          0.7361558079719543
+        ]
+      ],
+      "act_probabilities": [
+        1.0,
+        1.0,
+        1.0
+      ],
+      "inputs": [
+        {
+          "id": "team",
+          "input_ids": [
+            50281,
+            22122,
+            1953,
+            27,
+            8452,
+            22139,
+            436,
+            32,
+            50282,
+            50284,
+            33484,
+            27,
+            12286,
+            942,
+            50284,
+            1329,
+            27,
+            13126,
+            3374,
+            50282,
+            6067,
+            45156,
+            369,
+            6636,
+            7019,
+            15,
+            7764,
+            23005,
+            352,
+            15,
+            50282
+          ],
+          "marker_pos": [
+            9,
+            14
+          ],
+          "qtype": 0,
+          "state_tokens": 10,
+          "state_tokens_dropped": 0,
+          "options_total": 2,
+          "options_distinct": 2,
+          "tokens_per_option": null,
+          "instruction_tokens_dropped": 0,
+          "option_tokens_dropped": [
+            0,
+            0
+          ]
+        },
+        {
+          "id": "urgency",
+          "input_ids": [
+            50281,
+            18891,
+            1953,
+            27,
+            1359,
+            21007,
+            32,
+            50282,
+            50284,
+            1268,
+            470,
+            27,
+            30852,
+            460,
+            50284,
+            1268,
+            337,
+            27,
+            21965,
+            50284,
+            1268,
+            374,
+            27,
+            15204,
+            272,
+            50282,
+            6067,
+            45156,
+            369,
+            6636,
+            7019,
+            15,
+            7764,
+            23005,
+            352,
+            15,
+            50282
+          ],
+          "marker_pos": [
+            8,
+            14,
+            19
+          ],
+          "qtype": 1,
+          "state_tokens": 10,
+          "state_tokens_dropped": 0,
+          "options_total": 3,
+          "options_distinct": 3,
+          "tokens_per_option": null,
+          "instruction_tokens_dropped": 0,
+          "option_tokens_dropped": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "refund",
+          "input_ids": [
+            50281,
+            79,
+            3941,
+            1953,
+            27,
+            1680,
+            247,
+            23005,
+            9521,
+            32,
+            50282,
+            50284,
+            3221,
+            27,
+            642,
+            13,
+            253,
+            3908,
+            1057,
+            417,
+            2186,
+            50284,
+            2032,
+            27,
+            4754,
+            13,
+            253,
+            3908,
+            6556,
+            50282,
+            6067,
+            45156,
+            369,
+            6636,
+            7019,
+            15,
+            7764,
+            23005,
+            352,
+            15,
+            50282
+          ],
+          "marker_pos": [
+            11,
+            21
+          ],
+          "qtype": 2,
+          "state_tokens": 10,
+          "state_tokens_dropped": 0,
+          "options_total": 2,
+          "options_distinct": 2,
+          "tokens_per_option": null,
+          "instruction_tokens_dropped": 0,
+          "option_tokens_dropped": [
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "name": "unicode-mask",
+      "request": {
+        "state": {
+          "kind": "text",
+          "value": "[MASK] Bonjour 👋 café — 返金してください"
+        },
+        "questions": [
+          [
+            "q",
+            {
+              "type": "choice",
+              "instructions": "Select [MASK]",
+              "options": [
+                {
+                  "label": "z",
+                  "description": "[MASK] final"
+                },
+                {
+                  "label": "a",
+                  "description": "first"
+                }
+              ]
+            }
+          ]
+        ]
+      },
+      "options": {
+        "max_len": 512,
+        "head_max_len": 192,
+        "overflow": "allow_with_diagnostics"
+      },
+      "probabilities": [
+        [
+          0.2703495919704437,
+          0.7296503782272339
+        ]
+      ],
+      "act_probabilities": [
+        1.0
+      ],
+      "inputs": [
+        {
+          "id": "q",
+          "input_ids": [
+            50281,
+            22122,
+            1953,
+            27,
+            16551,
+            50276,
+            50282,
+            50284,
+            1182,
+            27,
+            50275,
+            13017,
+            50284,
+            247,
+            27,
+            806,
+            50282,
+            50276,
+            27157,
+            19923,
+            22692,
+            228,
+            222,
+            36241,
+            1905,
+            209,
+            47397,
+            38001,
+            18309,
+            14016,
+            13973,
+            13129,
+            5151,
+            50282
+          ],
+          "marker_pos": [
+            7,
+            12
+          ],
+          "qtype": 0,
+          "state_tokens": 16,
+          "state_tokens_dropped": 0,
+          "options_total": 2,
+          "options_distinct": 2,
+          "tokens_per_option": null,
+          "instruction_tokens_dropped": 0,
+          "option_tokens_dropped": [
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "name": "one-option",
+      "request": {
+        "state": {
+          "kind": "text",
+          "value": ""
+        },
+        "questions": [
+          [
+            "q",
+            {
+              "type": "choice",
+              "instructions": "Only option",
+              "options": [
+                {
+                  "label": "one",
+                  "description": null
+                }
+              ]
+            }
+          ]
+        ]
+      },
+      "options": {
+        "max_len": 512,
+        "head_max_len": 192,
+        "overflow": "allow_with_diagnostics"
+      },
+      "probabilities": [
+        [
+          1.0
+        ]
+      ],
+      "act_probabilities": [
+        1.0
+      ],
+      "inputs": [
+        {
+          "id": "q",
+          "input_ids": [
+            50281,
+            22122,
+            1953,
+            27,
+            7214,
+            4500,
+            50282,
+            50284,
+            581,
+            50282,
+            50282
+          ],
+          "marker_pos": [
+            7
+          ],
+          "qtype": 0,
+          "state_tokens": 0,
+          "state_tokens_dropped": 0,
+          "options_total": 1,
+          "options_distinct": 1,
+          "tokens_per_option": null,
+          "instruction_tokens_dropped": 0,
+          "option_tokens_dropped": [
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "name": "right-truncation",
+      "request": {
+        "state": {
+          "kind": "text",
+          "value": "old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context latest intent"
+        },
+        "questions": [
+          [
+            "q",
+            {
+              "type": "yes_no",
+              "instructions": "Urgent?",
+              "false_label": "false",
+              "true_label": "true",
+              "false_description": null,
+              "true_description": null
+            }
+          ]
+        ]
+      },
+      "options": {
+        "max_len": 64,
+        "head_max_len": 32,
+        "overflow": "allow_with_diagnostics"
+      },
+      "probabilities": [
+        [
+          0.7945590615272522,
+          0.2054409235715866
+        ]
+      ],
+      "act_probabilities": [
+        1.0
+      ],
+      "inputs": [
+        {
+          "id": "q",
+          "input_ids": [
+            50281,
+            79,
+            3941,
+            1953,
+            27,
+            15520,
+            7322,
+            32,
+            50282,
+            50284,
+            3221,
+            27,
+            642,
+            13,
+            253,
+            3908,
+            1057,
+            50284,
+            2032,
+            27,
+            4754,
+            13,
+            253,
+            3908,
+            6556,
+            50282,
+            744,
+            3634,
+            1711,
+            3634,
+            1711,
+            3634,
+            1711,
+            3634,
+            1711,
+            3634,
+            1711,
+            3634,
+            1711,
+            3634,
+            1711,
+            3634,
+            1711,
+            3634,
+            1711,
+            3634,
+            1711,
+            3634,
+            1711,
+            3634,
+            1711,
+            3634,
+            1711,
+            3634,
+            1711,
+            3634,
+            1711,
+            3634,
+            1711,
+            3634,
+            1711,
+            3634,
+            1711,
+            50282
+          ],
+          "marker_pos": [
+            9,
+            17
+          ],
+          "qtype": 2,
+          "state_tokens": 202,
+          "state_tokens_dropped": 165,
+          "options_total": 2,
+          "options_distinct": 2,
+          "tokens_per_option": 8,
+          "instruction_tokens_dropped": 0,
+          "option_tokens_dropped": [
+            2,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "name": "left-truncation",
+      "request": {
+        "state": {
+          "kind": "conversation",
+          "value": [
+            {
+              "role": "user",
+              "content": "old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context "
+            },
+            {
+              "role": "user",
+              "content": "latest intent"
+            }
+          ]
+        },
+        "questions": [
+          [
+            "q",
+            {
+              "type": "yes_no",
+              "instructions": "Urgent?",
+              "false_label": "false",
+              "true_label": "true",
+              "false_description": null,
+              "true_description": null
+            }
+          ]
+        ]
+      },
+      "options": {
+        "max_len": 64,
+        "head_max_len": 32,
+        "overflow": "allow_with_diagnostics"
+      },
+      "probabilities": [
+        [
+          0.7359579801559448,
+          0.2640419900417328
+        ]
+      ],
+      "act_probabilities": [
+        1.0
+      ],
+      "inputs": [
+        {
+          "id": "q",
+          "input_ids": [
+            50281,
+            79,
+            3941,
+            1953,
+            27,
+            15520,
+            7322,
+            32,
+            50282,
+            50284,
+            3221,
+            27,
+            642,
+            13,
+            253,
+            3908,
+            1057,
+            50284,
+            2032,
+            27,
+            4754,
+            13,
+            253,
+            3908,
+            6556,
+            50282,
+            3634,
+            1711,
+            3634,
+            1711,
+            3634,
+            1711,
+            3634,
+            1711,
+            3634,
+            1711,
+            3634,
+            1711,
+            3634,
+            1711,
+            3634,
+            1711,
+            3634,
+            1711,
+            3634,
+            1711,
+            3634,
+            346,
+            2023,
+            17579,
+            14337,
+            1381,
+            346,
+            4537,
+            995,
+            346,
+            6071,
+            1381,
+            346,
+            35261,
+            6860,
+            986,
+            62,
+            50282
+          ],
+          "marker_pos": [
+            9,
+            17
+          ],
+          "qtype": 2,
+          "state_tokens": 227,
+          "state_tokens_dropped": 190,
+          "options_total": 2,
+          "options_distinct": 2,
+          "tokens_per_option": 8,
+          "instruction_tokens_dropped": 0,
+          "option_tokens_dropped": [
+            2,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ordered-json",
+      "request": {
+        "state": {
+          "kind": "json",
+          "value": {
+            "z": [
+              true,
+              null,
+              "é"
+            ],
+            "a": {
+              "y": 1e-07,
+              "x": -0.0
+            }
+          }
+        },
+        "questions": [
+          [
+            "q",
+            {
+              "type": "choice",
+              "instructions": "Route",
+              "options": [
+                {
+                  "label": 3,
+                  "description": {
+                    "z": true,
+                    "a": 0
+                  }
+                },
+                {
+                  "label": 4,
+                  "description": "Other"
+                }
+              ]
+            }
+          ]
+        ]
+      },
+      "options": {
+        "max_len": 512,
+        "head_max_len": 192,
+        "overflow": "allow_with_diagnostics"
+      },
+      "probabilities": [
+        [
+          0.5877280235290527,
+          0.4122719466686249
+        ]
+      ],
+      "act_probabilities": [
+        1.0
+      ],
+      "inputs": [
+        {
+          "id": "q",
+          "input_ids": [
+            50281,
+            22122,
+            1953,
+            27,
+            22720,
+            50282,
+            50284,
+            495,
+            27,
+            17579,
+            91,
+            1381,
+            2032,
+            13,
+            346,
+            66,
+            1381,
+            470,
+            94,
+            50284,
+            577,
+            27,
+            5131,
+            50282,
+            9819,
+            91,
+            1381,
+            544,
+            5672,
+            13,
+            3635,
+            13,
+            346,
+            860,
+            21391,
+            346,
+            66,
+            1381,
+            17579,
+            90,
+            1381,
+            337,
+            70,
+            14,
+            2922,
+            13,
+            346,
+            89,
+            1381,
+            428,
+            17,
+            15,
+            17,
+            599,
+            50282
+          ],
+          "marker_pos": [
+            6,
+            19
+          ],
+          "qtype": 0,
+          "state_tokens": 30,
+          "state_tokens_dropped": 0,
+          "options_total": 2,
+          "options_distinct": 2,
+          "tokens_per_option": null,
+          "instruction_tokens_dropped": 0,
+          "option_tokens_dropped": [
+            0,
+            0
+          ]
+        }
+      ]
+    },
+    {
+      "name": "option-budget",
+      "request": {
+        "state": {
+          "kind": "text",
+          "value": "document"
+        },
+        "questions": [
+          [
+            "q",
+            {
+              "type": "choice",
+              "instructions": "Choose an option with descriptions",
+              "options": [
+                {
+                  "label": "label0",
+                  "description": "description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description "
+                },
+                {
+                  "label": "label1",
+                  "description": "description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description "
+                },
+                {
+                  "label": "label2",
+                  "description": "description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description "
+                },
+                {
+                  "label": "label3",
+                  "description": "description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description "
+                },
+                {
+                  "label": "label4",
+                  "description": "description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description "
+                },
+                {
+                  "label": "label5",
+                  "description": "description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description "
+                },
+                {
+                  "label": "label6",
+                  "description": "description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description "
+                },
+                {
+                  "label": "label7",
+                  "description": "description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description "
+                }
+              ]
+            }
+          ]
+        ]
+      },
+      "options": {
+        "max_len": 128,
+        "head_max_len": 64,
+        "overflow": "allow_with_diagnostics"
+      },
+      "probabilities": [
+        [
+          0.14320679008960724,
+          0.18527846038341522,
+          0.15641583502292633,
+          0.12999974191188812,
+          0.09738966822624207,
+          0.1005396693944931,
+          0.10545193403959274,
+          0.08171790838241577
+        ]
+      ],
+      "act_probabilities": [
+        1.0
+      ],
+      "inputs": [
+        {
+          "id": "q",
+          "input_ids": [
+            50281,
+            22122,
+            1953,
+            27,
+            28890,
+            271,
+            4500,
+            342,
+            20121,
+            50282,
+            50284,
+            5203,
+            17,
+            27,
+            5740,
+            5740,
+            50284,
+            5203,
+            18,
+            27,
+            5740,
+            5740,
+            50284,
+            5203,
+            19,
+            27,
+            5740,
+            5740,
+            50284,
+            5203,
+            20,
+            27,
+            5740,
+            5740,
+            50284,
+            5203,
+            21,
+            27,
+            5740,
+            5740,
+            50284,
+            5203,
+            22,
+            27,
+            5740,
+            5740,
+            50284,
+            5203,
+            23,
+            27,
+            5740,
+            5740,
+            50284,
+            5203,
+            24,
+            27,
+            5740,
+            5740,
+            50282,
+            3306,
+            50282
+          ],
+          "marker_pos": [
+            10,
+            16,
+            22,
+            28,
+            34,
+            40,
+            46,
+            52
+          ],
+          "qtype": 0,
+          "state_tokens": 1,
+          "state_tokens_dropped": 0,
+          "options_total": 8,
+          "options_distinct": 8,
+          "tokens_per_option": 6,
+          "instruction_tokens_dropped": 0,
+          "option_tokens_dropped": [
+            79,
+            79,
+            79,
+            79,
+            79,
+            79,
+            79,
+            79
+          ]
+        }
+      ]
+    },
+    {
+      "name": "empty-questions",
+      "request": {
+        "state": {
+          "kind": "text",
+          "value": ""
+        },
+        "questions": []
+      },
+      "options": {
+        "max_len": 512,
+        "head_max_len": 192,
+        "overflow": "allow_with_diagnostics"
+      },
+      "probabilities": [],
+      "inputs": []
+    }
+  ]
+}

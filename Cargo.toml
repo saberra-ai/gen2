@@ -27,11 +27,12 @@ path = "src/lib.rs"
 # `cargo publish` sees, and cargo leaves nested packages out of the tarball.
 # Build the companion by name: `cargo build -p gen2-mlxcel`.
 [workspace]
-members = ["crates/gen2-mlxcel"]
+members = ["crates/gen2-mlxcel", "examples/laya-mobile"]
 
 [dependencies]
 
 libloading = { version = "0.8", optional = true }
+ort = { version = "=2.0.0-rc.12", default-features = false, features = ["std", "api-24"], optional = true }
 # ── Inference backends (all optional; pick at least one) ────────────────────
 llama-cpp-2 = { version = "=0.1.156", features = ["mtmd", "llguidance"], optional = true }
 llama-cpp-sys-2 = { version = "=0.1.156", optional = true }
@@ -143,6 +144,14 @@ required-features = ["agent"]
 name = "continuity"
 required-features = ["agent"]
 
+[[example]]
+name = "laya_decisions"
+required-features = ["backend-laya-onnx"]
+
+[[example]]
+name = "laya_benchmark"
+required-features = ["backend-laya-onnx"]
+
 [dev-dependencies]
 serde_json = "1"
 tempfile = "3.19.1"
@@ -212,6 +221,14 @@ backend-mistralrs = ["dep:mistralrs"]
 # at run time. Nothing is vendored, linked or downloaded by a build — the
 # feature compiles anywhere, and the library is found when a model is loaded.
 backend-litertlm = ["dep:libloading"]
+# No binary downloads. Desktop hosts supply an ONNX Runtime 1.24 library.
+backend-laya-onnx = ["dep:ort"]
+laya-dynamic = ["backend-laya-onnx", "ort/load-dynamic"]
+# App-linked provider registration; matching native provider libraries are host supplied.
+laya-coreml = ["backend-laya-onnx", "ort/coreml"]
+laya-nnapi = ["backend-laya-onnx", "ort/nnapi"]
+laya-directml = ["backend-laya-onnx", "ort/directml"]
+laya-cuda = ["backend-laya-onnx", "ort/cuda"]
 
 # GPU acceleration, forwarded to llama.cpp — and to mistral.rs when that
 # backend is compiled too (`mistralrs?/` enables the feature without enabling

@@ -1,0 +1,52 @@
+{
+  "schema": "gen2-laya-bundle/v1",
+  "model_repository": "convaiinnovations/laya",
+  "model_revision": "7b928d828b7b0e022f929d9bd2e44165aa270148",
+  "code_revision": "8a6e1328cce2460a0e5aa348ad465bb1b5821cd2",
+  "checkpoint": "english",
+  "graph": "model.onnx",
+  "tokenizer": "tokenizer.json",
+  "config": "config.json",
+  "calibration": null,
+  "licenses": [
+    "LICENSE.txt"
+  ],
+  "dtype": "fp32",
+  "opset": 18,
+  "exporter_sha256": "2d3145d03d2dd0378262925fd9443072ba7c59d4b3002789f70fd746d760096f",
+  "versions": {
+    "fixture": "SYNTHETIC_TEST_ONLY"
+  },
+  "envelope": {
+    "max_len": 512,
+    "head_max_len": 192,
+    "max_batch": 2,
+    "max_options": 16,
+    "reservation_mb": 1
+  },
+  "special_tokens": {
+    "cls": 1,
+    "sep": 2,
+    "pad": 0,
+    "mask": 3,
+    "mask_text": "[MASK]"
+  },
+  "files": {
+    "config.json": {
+      "bytes": 25,
+      "sha256": "11dd78283463b78f6dd681ebea9913f05d8aa371496d46ab3062538a2b7a5fdc"
+    },
+    "LICENSE.txt": {
+      "bytes": 85,
+      "sha256": "2faae787ef0be20a92b6d86c3833f95e12d99ef886f761fcd056df5961a2d55f"
+    },
+    "model.onnx": {
+      "bytes": 537,
+      "sha256": "b0ccc91cbf539b4f0cdbee85dbb25a62d8c58bb851db96636c3762b00bc2ba27"
+    },
+    "tokenizer.json": {
+      "bytes": 529,
+      "sha256": "b7577a9075b4d429ce7c65f5a3e27d576082a55ef86a1513d45f5e694f78ced6"
+    }
+  }
+}

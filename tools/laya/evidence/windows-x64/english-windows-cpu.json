@@ -1,0 +1,40 @@
+{
+  "platform": "Windows-11-10.0.26200-SP0",
+  "architecture": "AMD64",
+  "runtime": "1.24.4",
+  "provider": "CPUExecutionProvider",
+  "threads": 2,
+  "manifest_sha256": "97bf19bc0512df7581e3daedb3ed25e856aa2d5b90f369736145d1b615372a85",
+  "checkpoint": "english",
+  "load_seconds": 5.803174000000581,
+  "peak_process_bytes": 1976614912,
+  "reservation_mb": 4096,
+  "reservation_covers_measured_peak": true,
+  "shapes": [
+    {
+      "batch": 1,
+      "sequence": 17,
+      "markers": 2,
+      "runs": 3,
+      "median_seconds": 0.06449209997663274,
+      "p95_seconds": 0.06970030997763388
+    },
+    {
+      "batch": 2,
+      "sequence": 31,
+      "markers": 3,
+      "runs": 3,
+      "median_seconds": 0.18637410004157573,
+      "p95_seconds": 0.18657561000436546
+    },
+    {
+      "batch": 4,
+      "sequence": 512,
+      "markers": 12,
+      "runs": 3,
+      "median_seconds": 7.709504299971741,
+      "p95_seconds": 7.830751939996844
+    }
+  ],
+  "processor": "Intel64 Family 6 Model 167 Stepping 1, GenuineIntel"
+}

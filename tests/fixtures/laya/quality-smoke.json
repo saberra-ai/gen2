@@ -1,0 +1,36 @@
+{
+  "schema": "gen2-laya-quality/v1",
+  "dataset_id": "SYNTHETIC_PIPELINE_TEST_ONLY",
+  "purpose": "Tests evaluator plumbing with the synthetic graph; not an application accuracy dataset.",
+  "records": [
+    {
+      "id": "calibration-a", "split": "calibration", "group": "smoke",
+      "request": {"state": {"kind": "text", "value": "a"}, "questions": [
+        ["choice", {"type": "choice", "instructions": "pick", "options": [{"label": "a", "description": "low"}, {"label": "b", "description": "high"}]}],
+        ["score", {"type": "score", "instructions": "level", "levels": ["low", "high"]}],
+        ["yes", {"type": "yes_no", "instructions": "holds", "false_label": "false", "true_label": "true"}]
+      ]},
+      "labels": {"choice": 0, "score": 0, "yes": 0}
+    },
+    {
+      "id": "holdout-b", "split": "holdout", "group": "smoke",
+      "request": {"state": {"kind": "text", "value": "b"}, "questions": [
+        ["choice", {"type": "choice", "instructions": "pick", "options": [{"label": "a", "description": "low"}, {"label": "b", "description": "high"}]}],
+        ["score", {"type": "score", "instructions": "level", "levels": ["low", "high"]}],
+        ["yes", {"type": "yes_no", "instructions": "holds", "false_label": "false", "true_label": "true"}]
+      ]},
+      "labels": {"choice": 1, "score": 1, "yes": 1},
+      "heuristic": {"choice": 0, "score": 0, "yes": 0}
+    },
+    {
+      "id": "holdout-ab", "split": "holdout", "group": "smoke",
+      "request": {"state": {"kind": "text", "value": "a b"}, "questions": [
+        ["choice", {"type": "choice", "instructions": "pick", "options": [{"label": "a", "description": "low"}, {"label": "b", "description": "high"}]}],
+        ["score", {"type": "score", "instructions": "level", "levels": ["low", "high"]}],
+        ["yes", {"type": "yes_no", "instructions": "holds", "false_label": "false", "true_label": "true"}]
+      ]},
+      "labels": {"choice": 0, "score": 1, "yes": 0},
+      "heuristic": {"choice": 1, "score": 1, "yes": 1}
+    }
+  ]
+}

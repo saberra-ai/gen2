@@ -1,0 +1,283 @@
+{
+  "mode": "onnx",
+  "source_revision": "8a6e1328cce2460a0e5aa348ad465bb1b5821cd2",
+  "checkpoint": "english",
+  "manifest_sha256": "97bf19bc0512df7581e3daedb3ed25e856aa2d5b90f369736145d1b615372a85",
+  "cases": [
+    {
+      "name": "permuted-three-types",
+      "request": {
+        "state": {
+          "kind": "text",
+          "value": "Our invoice was charged twice. Please refund it."
+        },
+        "questions": [
+          [
+            "team",
+            {
+              "type": "choice",
+              "instructions": "Who handles this?",
+              "options": [
+                {
+                  "label": "billing",
+                  "description": "Payments"
+                },
+                {
+                  "label": "support",
+                  "description": "Product issues"
+                },
+                {
+                  "label": "sales",
+                  "description": "New purchase"
+                }
+              ],
+              "option_order": [
+                2,
+                0,
+                1
+              ]
+            }
+          ],
+          [
+            "urgency",
+            {
+              "type": "score",
+              "instructions": "How urgent?",
+              "levels": [
+                "Routine",
+                "Soon",
+                "Blocking"
+              ],
+              "option_order": [
+                2,
+                0,
+                1
+              ]
+            }
+          ],
+          [
+            "refund",
+            {
+              "type": "yes_no",
+              "instructions": "Is a refund requested?",
+              "false_label": "false",
+              "true_label": "true",
+              "false_description": null,
+              "true_description": null,
+              "option_order": [
+                1,
+                0
+              ]
+            }
+          ]
+        ]
+      },
+      "options": {
+        "max_len": 512,
+        "head_max_len": 192,
+        "overflow": "allow_with_diagnostics"
+      },
+      "inputs": [
+        {
+          "id": "team",
+          "input_ids": [
+            50281,
+            22122,
+            1953,
+            27,
+            8452,
+            22139,
+            436,
+            32,
+            50282,
+            50284,
+            6224,
+            27,
+            1457,
+            7471,
+            50284,
+            33484,
+            27,
+            12286,
+            942,
+            50284,
+            1329,
+            27,
+            13126,
+            3374,
+            50282,
+            6067,
+            45156,
+            369,
+            6636,
+            7019,
+            15,
+            7764,
+            23005,
+            352,
+            15,
+            50282
+          ],
+          "marker_pos": [
+            9,
+            14,
+            19
+          ],
+          "qtype": 0,
+          "state_tokens": 10,
+          "state_tokens_dropped": 0,
+          "options_total": 3,
+          "options_distinct": 3,
+          "tokens_per_option": null,
+          "instruction_tokens_dropped": 0,
+          "option_tokens_dropped": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "urgency",
+          "input_ids": [
+            50281,
+            18891,
+            1953,
+            27,
+            1359,
+            21007,
+            32,
+            50282,
+            50284,
+            1268,
+            374,
+            27,
+            15204,
+            272,
+            50284,
+            1268,
+            470,
+            27,
+            30852,
+            460,
+            50284,
+            1268,
+            337,
+            27,
+            21965,
+            50282,
+            6067,
+            45156,
+            369,
+            6636,
+            7019,
+            15,
+            7764,
+            23005,
+            352,
+            15,
+            50282
+          ],
+          "marker_pos": [
+            8,
+            14,
+            20
+          ],
+          "qtype": 1,
+          "state_tokens": 10,
+          "state_tokens_dropped": 0,
+          "options_total": 3,
+          "options_distinct": 3,
+          "tokens_per_option": null,
+          "instruction_tokens_dropped": 0,
+          "option_tokens_dropped": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "refund",
+          "input_ids": [
+            50281,
+            79,
+            3941,
+            1953,
+            27,
+            1680,
+            247,
+            23005,
+            9521,
+            32,
+            50282,
+            50284,
+            2032,
+            27,
+            4754,
+            13,
+            253,
+            3908,
+            6556,
+            50284,
+            3221,
+            27,
+            642,
+            13,
+            253,
+            3908,
+            1057,
+            417,
+            2186,
+            50282,
+            6067,
+            45156,
+            369,
+            6636,
+            7019,
+            15,
+            7764,
+            23005,
+            352,
+            15,
+            50282
+          ],
+          "marker_pos": [
+            11,
+            19
+          ],
+          "qtype": 2,
+          "state_tokens": 10,
+          "state_tokens_dropped": 0,
+          "options_total": 2,
+          "options_distinct": 2,
+          "tokens_per_option": null,
+          "instruction_tokens_dropped": 0,
+          "option_tokens_dropped": [
+            0,
+            0
+          ]
+        }
+      ],
+      "probabilities": [
+        [
+          0.875877320766449,
+          0.10014630109071732,
+          0.023976344615221024
+        ],
+        [
+          0.1935107260942459,
+          0.2530946731567383,
+          0.5533945560455322
+        ],
+        [
+          0.1135367825627327,
+          0.8864632844924927
+        ]
+      ],
+      "act_probabilities": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    }
+  ]
+}

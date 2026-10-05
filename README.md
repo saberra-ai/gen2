@@ -6,6 +6,11 @@ cheap handle you can clone, a `Session` is conversation state you own, and a
 generation options in; structured, streamable output out. Backends today are
 llama.cpp, mistral.rs, MLX, LiteRT-LM, or an OpenAI-compatible endpoint.
 
+For non-generative choice, score and yes/no decisions, the experimental
+`gen2::decision` API loads native Laya bundles. Enable `laya-dynamic` on desktop
+and supply an ONNX Runtime 1.24 library, or `backend-laya-onnx` for app-linked
+builds. [Setup, current evidence and platform gates](tools/laya/README.md).
+
 ```toml
 [dependencies]
 gen2 = { git = "https://github.com/saberra-ai/gen2" }

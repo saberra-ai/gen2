@@ -8,6 +8,9 @@ use thiserror::Error;
 #[derive(Debug, Error)]
 #[non_exhaustive]
 pub enum Error {
+    /// Typed decision validation, admission, lifecycle or native execution error.
+    #[error(transparent)]
+    Decision(#[from] crate::decision::DecisionError),
     /// The controller loop is gone — it panicked, or shutdown already ran.
     /// Nothing further can be sent through this engine.
     #[error("the inference controller is no longer running")]
@@ -97,6 +100,7 @@ impl Error {
     /// Callers route on this rather than matching error text.
     pub fn code(&self) -> Option<&str> {
         match self {
+            Self::Decision(e) => Some(e.code()),
             Self::Generation { code, .. } => Some(code),
             Self::WontFit(_) => Some("wont_fit"),
             #[cfg(feature = "agent")]
@@ -132,6 +136,7 @@ impl Error {
     /// like a `Generation` threw that distinction away at the API boundary.
     pub fn is_retryable(&self) -> bool {
         match self {
+            Self::Decision(crate::decision::DecisionError::Busy) => true,
             Self::Generation { code, .. } => !NOT_WORTH_RETRYING.contains(&code.as_str()),
             _ => false,
         }

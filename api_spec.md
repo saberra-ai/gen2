@@ -2048,3 +2048,49 @@ let answer = model.generate("hello").text()?;
 ```
 
 That is the API Gen2 should optimize around.
+
+## 32. Native typed decisions (experimental)
+
+Non-generative Laya inference lives in `gen2::decision`, separate from chat
+sessions and token generation. `Runtime::load_decider(path, LoadOptions)` loads
+an offline, integrity-checked encoder/head bundle and returns `DecisionModel`.
+The handle provides `decide`, `decide_batch`, `decide_long`, `info`, `capabilities`,
+`status`, `unload` and `shutdown`; Tokio adds `decide_async`, `decide_batch_async`,
+`decide_long_async` and `shutdown_async`. A batch is one worker job; independent question rows from
+different states share native microbatches while preserving original ordering.
+The configured input byte limit applies to the complete job.
+Long-state tokenization and all windows also run as one bounded worker job.
+Dropping an async scan signals cancellation while the worker retains native
+resources until execution returns. Scan-level timings include preprocessing
+and all windows; nested window timings exclude the scan's queue wait.
+
+Requests preserve state and option order and return typed choice, ordinal-score
+or P(true) values plus distributions and input-loss diagnostics. Calibration
+entropy and calibrated answer confidence remain separate. The action head
+never grants permission to execute a tool. Explicit checkpoint routing is
+provided by `DecisionRouter`.
+
+`LoadOptions.execution` selects CPU, DirectML, CUDA, CoreML or NNAPI. Device
+indices apply to DirectML/CUDA. Provider registration failures are errors;
+CPU graph partition fallback requires explicit opt-in. Results include the
+configured provider policy and job-wide queue/execution times. Provider API
+availability does not imply model/device qualification. Compatible fine-tunes
+use the same validated graph contract and immutable source provenance without
+a repository-name allowlist.
+
+Questions support an explicit `option_order` permutation while retaining
+canonical labels, score levels and yes/no polarity in output. Malformed
+permutations and unknown question fields fail before inference. Structured
+tracing spans cover admission, load, jobs, encode, forward and decode; default
+events carry shapes, timing and provenance without raw states or descriptions.
+
+Decision peak-memory reservations participate in runtime admission alongside
+chat weights. `unload` stops admission without joining a kernel on the UI
+thread. `reload_decider` verifies the original manifest before returning a new
+worker after suspension. No request state is persisted automatically.
+
+`laya-dynamic` loads a host-packaged ONNX Runtime library; `backend-laya-onnx`
+uses application linkage. Neither feature downloads a runtime during builds or
+inference. The current qualification evidence and commands are maintained in
+[the Laya integration guide](tools/laya/README.md). Mobile compilation and
+physical-device execution remain distinct qualification gates.

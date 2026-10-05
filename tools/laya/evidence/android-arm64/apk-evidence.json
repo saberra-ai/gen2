@@ -1,0 +1,44 @@
+{
+  "status": "APK packaging inspected; device execution not verified",
+  "package": "example.gen2.laya",
+  "min_sdk": 24,
+  "target_sdk": 35,
+  "apk_sha256": "370bc5f4dcc21d705669849e6667b6167a76996ca6e22700c9a444dd918694eb",
+  "apk_bytes": 47083587,
+  "libraries": [
+    {
+      "file": "lib/arm64-v8a/libgen2_laya_jni.so",
+      "sha256": "c8315a697567bb33b138dc2b4a2f602dd3f0cdf68737ac213d69964c2faf1a2c",
+      "bytes": 477440,
+      "offset": 16384
+    },
+    {
+      "file": "lib/arm64-v8a/libgen2_laya_mobile.so",
+      "sha256": "0a07ee8a75eeeee0b3fb9ebc69dd4170abacfe9e337ace04b933e256a0d5a01f",
+      "bytes": 10443760,
+      "offset": 36634624
+    },
+    {
+      "file": "lib/arm64-v8a/libonnxruntime.so",
+      "sha256": "4d2318b3849abb8862133d3068fc7e807ed8b2671cc6d83657fff2fcb9e1caad",
+      "bytes": 25831632,
+      "offset": 10797056
+    }
+  ],
+  "fixture_files": 5,
+  "permissions": "package: example.gen2.laya\n",
+  "badging": "package: name='example.gen2.laya' versionCode='1' versionName='0.1' platformBuildVersionName='15' platformBuildVersionCode='35' compileSdkVersion='35' compileSdkVersionCodename='15'\nminSdkVersion:'24'\ntargetSdkVersion:'35'\napplication-label:'Gen2 Laya smoke'\napplication-icon-160:'res/drawable/app_icon.xml'\napplication: label='Gen2 Laya smoke' icon='res/drawable/app_icon.xml'\napplication-debuggable\nlaunchable-activity: name='example.gen2.MainActivity'  label='' icon=''\nfeature-group: label=''\n  uses-feature: name='android.hardware.faketouch'\n  uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'\nmain\nsupports-screens: 'small' 'normal' 'large' 'xlarge'\nsupports-any-density: 'true'\nlocales: '--_--'\ndensities: '160'\nnative-code: 'arm64-v8a'\n",
+  "host_sources": {
+    "app/build.gradle": "dad1ad5f068808748d6ec2d3208ac5e8a3ee070ad82e5d87785570ef213bc61e",
+    "app/src/main/AndroidManifest.xml": "b0e6997b0dbb4cbabd9c535ab17e881c6d6a1e48f6e49c63a92f3b3a5f092e4d",
+    "app/src/main/java/example/gen2/MainActivity.java": "3dd79b127684a4d58298fb7af4968c3f3baa2e295ae31c7d0aaadf39ce00d471",
+    "app/src/main/res/drawable/app_icon.xml": "c079dba958471f87b2a084a3f98b9733063b9492b760df1fd8732f6de294aeb6",
+    "app/src/main/res/values/strings.xml": "613fb50621de554b9c187f8717f62664778cfed558a82cd2336f726bc69ddbc9",
+    "app/src/main/res/xml/data_extraction_rules.xml": "6238bab9fd5d86e6604b3b4735235d10e1921eeb1c2403178854bced1983e21c",
+    "build.gradle": "4b08d3c261d317db5e5a5f7fa8ade50f361690e3b03fa86ee69a678f2a4b3a37",
+    "gradle.properties": "2a65693bf6bc9de8c5b91cdcedb2cf60cbf7675398bc65a2909f511d351e1803",
+    "LayaNative.java": "b5d422bb872f3b83ec8018fe33d8ff70a4e27f17433c72a27b0d04328cbc2f4d",
+    "settings.gradle": "fbbd5ec77d4d820591b4175c1b5f77c955b31ee952ccc35ba2807abe728ee75d"
+  },
+  "host_source_sha256": "98276953ed3187aa82960faff0c397e254ed570048da5fd9e6830a6e32a13dbd"
+}

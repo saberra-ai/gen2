@@ -1,0 +1,49 @@
+plugins { id 'com.android.application' }
+
+def fixtureAssets = layout.buildDirectory.dir('generated/fixtureAssets')
+def bridgeSources = layout.buildDirectory.dir('generated/bridgeSources')
+tasks.register('stageBridge', Sync) {
+    from('../LayaNative.java')
+    into bridgeSources
+}
+tasks.register('stageFixture', Sync) {
+    from('../../../../tests/fixtures/laya/smoke') { into 'smoke' }
+    into fixtureAssets
+}
+android {
+    namespace 'example.gen2'
+    compileSdk 35
+    defaultConfig {
+        applicationId 'example.gen2.laya'
+        minSdk 24
+        targetSdk 35
+        versionCode 1
+        versionName '0.1'
+        ndk { abiFilters 'arm64-v8a' }
+    }
+    signingConfigs {
+        debug {
+            storeFile file('../../../../target/laya/android/debug.keystore')
+            storePassword 'android'
+            keyAlias 'gen2debug'
+            keyPassword 'android'
+        }
+    }
+    sourceSets {
+        main {
+            // Keep the JNI bridge's existing Java source authoritative.
+            java.srcDir bridgeSources
+            jniLibs.srcDirs = [providers.gradleProperty('gen2JniLibs').getOrElse('../../../../target/laya/android/jniLibs')]
+            assets.srcDir fixtureAssets
+        }
+    }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_11
+        targetCompatibility JavaVersion.VERSION_11
+    }
+    packaging { jniLibs {
+        useLegacyPackaging = false
+        keepDebugSymbols += ['**/*.so'] // Preserve the inspected library hashes in this debug harness.
+    } }
+}
+tasks.named('preBuild').configure { dependsOn 'stageFixture', 'stageBridge' }
