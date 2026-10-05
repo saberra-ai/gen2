@@ -1,0 +1,66 @@
+{
+  "schema": "gen2-laya-bundle/v1",
+  "model_repository": "convaiinnovations/laya",
+  "model_revision": "7b928d828b7b0e022f929d9bd2e44165aa270148",
+  "code_revision": "8a6e1328cce2460a0e5aa348ad465bb1b5821cd2",
+  "checkpoint": "typed-decisions",
+  "graph": "model.onnx",
+  "tokenizer": "tokenizer/tokenizer.json",
+  "config": "rl_agent_config.json",
+  "calibration": null,
+  "licenses": [
+    "LICENSE-LAYA.txt"
+  ],
+  "dtype": "fp32",
+  "opset": 18,
+  "exporter_sha256": "af94f447c3cd0962ae6f85c0130750a0a4e82be45a0a88584c3bc0fa48db4cad",
+  "versions": {
+    "torch": "2.8.0",
+    "transformers": "4.57.6",
+    "tokenizers": "0.22.2",
+    "onnx": "1.19.1",
+    "onnxruntime": "1.24.4",
+    "numpy": "2.2.6",
+    "safetensors": "0.8.0"
+  },
+  "envelope": {
+    "max_len": 1024,
+    "head_max_len": 256,
+    "max_batch": 4,
+    "max_options": 12,
+    "reservation_mb": 4096
+  },
+  "special_tokens": {
+    "cls": 50281,
+    "sep": 50282,
+    "pad": 50283,
+    "mask": 50284,
+    "mask_text": "[MASK]"
+  },
+  "files": {
+    "LICENSE-LAYA.txt": {
+      "bytes": 10173,
+      "sha256": "a6cba85bc92e0cff7a450b1d873c0eaa2e9fc96bf472df0247a26bec77bf3ff9"
+    },
+    "model.data": {
+      "bytes": 1685175296,
+      "sha256": "92778ebb6a278de5a7041b8a2f9449a05172264d99d8cf471a878ec50ae04741"
+    },
+    "model.onnx": {
+      "bytes": 858429,
+      "sha256": "a006b90a296b00a17bc5ce3c6da6db1b65cfcccc1d85417b8c846a15b4112cf7"
+    },
+    "rl_agent_config.json": {
+      "bytes": 847,
+      "sha256": "ebf0cd524d92342a6be5e48e9fca3d7c2babfb5a56ccd79d2171ef5d8c7f7be8"
+    },
+    "tokenizer/tokenizer.json": {
+      "bytes": 3583228,
+      "sha256": "6c8aaa9a542084f2457eab775d4eeb51f92a70c0fd9de28d5edb0ddec3c08d30"
+    },
+    "tokenizer/tokenizer_config.json": {
+      "bytes": 337,
+      "sha256": "08d4cf3ac4dca381759441b85b91a6d40e688471dcd33d15d6649eb0a9a854d1"
+    }
+  }
+}

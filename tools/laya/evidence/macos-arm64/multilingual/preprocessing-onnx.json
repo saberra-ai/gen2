@@ -1,0 +1,996 @@
+{
+  "mode": "onnx",
+  "source_revision": "8a6e1328cce2460a0e5aa348ad465bb1b5821cd2",
+  "checkpoint": "multilingual",
+  "manifest_sha256": "3c91e806587799f65d0e37e60a14512c8bb26153addf6a9ef9b0c37238ec1af5",
+  "cases": [
+    {
+      "name": "three-types",
+      "request": {
+        "state": {
+          "kind": "text",
+          "value": "Our invoice was charged twice. Please refund it."
+        },
+        "questions": [
+          [
+            "team",
+            {
+              "type": "choice",
+              "instructions": "Who handles this?",
+              "options": [
+                {
+                  "label": "billing",
+                  "description": "Payments"
+                },
+                {
+                  "label": "support",
+                  "description": "Product issues"
+                }
+              ]
+            }
+          ],
+          [
+            "urgency",
+            {
+              "type": "score",
+              "instructions": "How urgent?",
+              "levels": [
+                "Routine",
+                "Soon",
+                "Blocking"
+              ]
+            }
+          ],
+          [
+            "refund",
+            {
+              "type": "yes_no",
+              "instructions": "Is a refund requested?",
+              "false_label": "false",
+              "true_label": "true",
+              "false_description": null,
+              "true_description": null
+            }
+          ]
+        ]
+      },
+      "options": {
+        "max_len": 512,
+        "head_max_len": 192,
+        "overflow": "allow_with_diagnostics"
+      },
+      "inputs": [
+        {
+          "id": "team",
+          "input_ids": [
+            2,
+            6241,
+            2872,
+            235292,
+            7702,
+            26446,
+            736,
+            235336,
+            1,
+            4,
+            54972,
+            235292,
+            55710,
+            4,
+            2676,
+            235292,
+            8826,
+            5004,
+            1,
+            5626,
+            42529,
+            729,
+            12497,
+            11594,
+            235265,
+            5651,
+            19745,
+            665,
+            235265,
+            1
+          ],
+          "marker_pos": [
+            9,
+            13
+          ],
+          "qtype": 0,
+          "state_tokens": 10,
+          "state_tokens_dropped": 0,
+          "options_total": 2,
+          "options_distinct": 2,
+          "tokens_per_option": null,
+          "instruction_tokens_dropped": 0,
+          "option_tokens_dropped": [
+            0,
+            0
+          ]
+        },
+        {
+          "id": "urgency",
+          "input_ids": [
+            2,
+            7716,
+            2872,
+            235292,
+            2250,
+            34722,
+            235336,
+            1,
+            4,
+            2403,
+            235248,
+            235276,
+            235292,
+            82172,
+            4,
+            2403,
+            235248,
+            235274,
+            235292,
+            29598,
+            4,
+            2403,
+            235248,
+            235284,
+            235292,
+            142114,
+            1,
+            5626,
+            42529,
+            729,
+            12497,
+            11594,
+            235265,
+            5651,
+            19745,
+            665,
+            235265,
+            1
+          ],
+          "marker_pos": [
+            8,
+            14,
+            20
+          ],
+          "qtype": 1,
+          "state_tokens": 10,
+          "state_tokens_dropped": 0,
+          "options_total": 3,
+          "options_distinct": 3,
+          "tokens_per_option": null,
+          "instruction_tokens_dropped": 0,
+          "option_tokens_dropped": [
+            0,
+            0,
+            0
+          ]
+        },
+        {
+          "id": "refund",
+          "input_ids": [
+            2,
+            552,
+            6311,
+            2872,
+            235292,
+            2125,
+            476,
+            19745,
+            16350,
+            235336,
+            1,
+            4,
+            1566,
+            235292,
+            793,
+            235269,
+            573,
+            6218,
+            1721,
+            780,
+            3385,
+            4,
+            1382,
+            235292,
+            7778,
+            235269,
+            573,
+            6218,
+            12723,
+            1,
+            5626,
+            42529,
+            729,
+            12497,
+            11594,
+            235265,
+            5651,
+            19745,
+            665,
+            235265,
+            1
+          ],
+          "marker_pos": [
+            11,
+            21
+          ],
+          "qtype": 2,
+          "state_tokens": 10,
+          "state_tokens_dropped": 0,
+          "options_total": 2,
+          "options_distinct": 2,
+          "tokens_per_option": null,
+          "instruction_tokens_dropped": 0,
+          "option_tokens_dropped": [
+            0,
+            0
+          ]
+        }
+      ],
+      "probabilities": [
+        [
+          0.9995717406272888,
+          0.0004282186273485422
+        ],
+        [
+          0.005136202555149794,
+          0.0662892684340477,
+          0.9285745620727539
+        ],
+        [
+          0.012482867576181889,
+          0.9875170588493347
+        ]
+      ],
+      "act_probabilities": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "name": "unicode-mask",
+      "request": {
+        "state": {
+          "kind": "text",
+          "value": "[MASK] Bonjour 👋 café — 返金してください"
+        },
+        "questions": [
+          [
+            "q",
+            {
+              "type": "choice",
+              "instructions": "Select [MASK]",
+              "options": [
+                {
+                  "label": "z",
+                  "description": "[MASK] final"
+                },
+                {
+                  "label": "a",
+                  "description": "first"
+                }
+              ]
+            }
+          ]
+        ]
+      },
+      "options": {
+        "max_len": 512,
+        "head_max_len": 192,
+        "overflow": "allow_with_diagnostics"
+      },
+      "inputs": [
+        {
+          "id": "q",
+          "input_ids": [
+            2,
+            6241,
+            2872,
+            235292,
+            12408,
+            892,
+            43551,
+            235307,
+            1,
+            4,
+            868,
+            235292,
+            892,
+            43551,
+            235307,
+            2048,
+            4,
+            476,
+            235292,
+            1370,
+            1,
+            892,
+            43551,
+            235307,
+            97882,
+            169692,
+            18688,
+            2062,
+            235248,
+            236572,
+            235854,
+            54934,
+            1
+          ],
+          "marker_pos": [
+            9,
+            16
+          ],
+          "qtype": 0,
+          "state_tokens": 11,
+          "state_tokens_dropped": 0,
+          "options_total": 2,
+          "options_distinct": 2,
+          "tokens_per_option": null,
+          "instruction_tokens_dropped": 0,
+          "option_tokens_dropped": [
+            0,
+            0
+          ]
+        }
+      ],
+      "probabilities": [
+        [
+          0.19188089668750763,
+          0.8081190586090088
+        ]
+      ],
+      "act_probabilities": [
+        1.0
+      ]
+    },
+    {
+      "name": "one-option",
+      "request": {
+        "state": {
+          "kind": "text",
+          "value": ""
+        },
+        "questions": [
+          [
+            "q",
+            {
+              "type": "choice",
+              "instructions": "Only option",
+              "options": [
+                {
+                  "label": "one",
+                  "description": null
+                }
+              ]
+            }
+          ]
+        ]
+      },
+      "options": {
+        "max_len": 512,
+        "head_max_len": 192,
+        "overflow": "allow_with_diagnostics"
+      },
+      "inputs": [
+        {
+          "id": "q",
+          "input_ids": [
+            2,
+            6241,
+            2872,
+            235292,
+            8786,
+            4984,
+            1,
+            4,
+            974,
+            1,
+            1
+          ],
+          "marker_pos": [
+            7
+          ],
+          "qtype": 0,
+          "state_tokens": 0,
+          "state_tokens_dropped": 0,
+          "options_total": 1,
+          "options_distinct": 1,
+          "tokens_per_option": null,
+          "instruction_tokens_dropped": 0,
+          "option_tokens_dropped": [
+            0
+          ]
+        }
+      ],
+      "probabilities": [
+        [
+          1.0
+        ]
+      ],
+      "act_probabilities": [
+        1.0
+      ]
+    },
+    {
+      "name": "right-truncation",
+      "request": {
+        "state": {
+          "kind": "text",
+          "value": "old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context latest intent"
+        },
+        "questions": [
+          [
+            "q",
+            {
+              "type": "yes_no",
+              "instructions": "Urgent?",
+              "false_label": "false",
+              "true_label": "true",
+              "false_description": null,
+              "true_description": null
+            }
+          ]
+        ]
+      },
+      "options": {
+        "max_len": 64,
+        "head_max_len": 32,
+        "overflow": "allow_with_diagnostics"
+      },
+      "inputs": [
+        {
+          "id": "q",
+          "input_ids": [
+            2,
+            552,
+            6311,
+            2872,
+            235292,
+            181797,
+            235336,
+            1,
+            4,
+            1566,
+            235292,
+            793,
+            235269,
+            573,
+            6218,
+            1721,
+            4,
+            1382,
+            235292,
+            7778,
+            235269,
+            573,
+            6218,
+            12723,
+            1,
+            2187,
+            4807,
+            2187,
+            4807,
+            2187,
+            4807,
+            2187,
+            4807,
+            2187,
+            4807,
+            2187,
+            4807,
+            2187,
+            4807,
+            2187,
+            4807,
+            2187,
+            4807,
+            2187,
+            4807,
+            2187,
+            4807,
+            2187,
+            4807,
+            2187,
+            4807,
+            2187,
+            4807,
+            2187,
+            4807,
+            2187,
+            4807,
+            2187,
+            4807,
+            2187,
+            4807,
+            2187,
+            4807,
+            1
+          ],
+          "marker_pos": [
+            8,
+            16
+          ],
+          "qtype": 2,
+          "state_tokens": 202,
+          "state_tokens_dropped": 164,
+          "options_total": 2,
+          "options_distinct": 2,
+          "tokens_per_option": 8,
+          "instruction_tokens_dropped": 0,
+          "option_tokens_dropped": [
+            2,
+            0
+          ]
+        }
+      ],
+      "probabilities": [
+        [
+          0.9974441528320312,
+          0.0025558406487107277
+        ]
+      ],
+      "act_probabilities": [
+        1.0
+      ]
+    },
+    {
+      "name": "left-truncation",
+      "request": {
+        "state": {
+          "kind": "conversation",
+          "value": [
+            {
+              "role": "user",
+              "content": "old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context old context "
+            },
+            {
+              "role": "user",
+              "content": "latest intent"
+            }
+          ]
+        },
+        "questions": [
+          [
+            "q",
+            {
+              "type": "yes_no",
+              "instructions": "Urgent?",
+              "false_label": "false",
+              "true_label": "true",
+              "false_description": null,
+              "true_description": null
+            }
+          ]
+        ]
+      },
+      "options": {
+        "max_len": 64,
+        "head_max_len": 32,
+        "overflow": "allow_with_diagnostics"
+      },
+      "inputs": [
+        {
+          "id": "q",
+          "input_ids": [
+            2,
+            552,
+            6311,
+            2872,
+            235292,
+            181797,
+            235336,
+            1,
+            4,
+            1566,
+            235292,
+            793,
+            235269,
+            573,
+            6218,
+            1721,
+            4,
+            1382,
+            235292,
+            7778,
+            235269,
+            573,
+            6218,
+            12723,
+            1,
+            2187,
+            4807,
+            2187,
+            4807,
+            2187,
+            4807,
+            2187,
+            4807,
+            2187,
+            4807,
+            2187,
+            4807,
+            2187,
+            4807,
+            2187,
+            4807,
+            2187,
+            4807,
+            2187,
+            4807,
+            2187,
+            4807,
+            664,
+            789,
+            19946,
+            8247,
+            1192,
+            664,
+            1645,
+            824,
+            664,
+            3312,
+            1192,
+            664,
+            32390,
+            13503,
+            235281,
+            12765,
+            1
+          ],
+          "marker_pos": [
+            8,
+            16
+          ],
+          "qtype": 2,
+          "state_tokens": 227,
+          "state_tokens_dropped": 189,
+          "options_total": 2,
+          "options_distinct": 2,
+          "tokens_per_option": 8,
+          "instruction_tokens_dropped": 0,
+          "option_tokens_dropped": [
+            2,
+            0
+          ]
+        }
+      ],
+      "probabilities": [
+        [
+          0.9976992011070251,
+          0.0023007711861282587
+        ]
+      ],
+      "act_probabilities": [
+        1.0
+      ]
+    },
+    {
+      "name": "ordered-json",
+      "request": {
+        "state": {
+          "kind": "json",
+          "value": {
+            "z": [
+              true,
+              null,
+              "é"
+            ],
+            "a": {
+              "y": 1e-07,
+              "x": -0.0
+            }
+          }
+        },
+        "questions": [
+          [
+            "q",
+            {
+              "type": "choice",
+              "instructions": "Route",
+              "options": [
+                {
+                  "label": 3,
+                  "description": {
+                    "z": true,
+                    "a": 0
+                  }
+                },
+                {
+                  "label": 4,
+                  "description": "Other"
+                }
+              ]
+            }
+          ]
+        ]
+      },
+      "options": {
+        "max_len": 512,
+        "head_max_len": 192,
+        "overflow": "allow_with_diagnostics"
+      },
+      "inputs": [
+        {
+          "id": "q",
+          "input_ids": [
+            2,
+            6241,
+            2872,
+            235292,
+            20716,
+            1,
+            4,
+            235248,
+            235304,
+            235292,
+            19946,
+            235306,
+            1192,
+            1382,
+            235269,
+            664,
+            235250,
+            1192,
+            235248,
+            235276,
+            235270,
+            4,
+            235248,
+            235310,
+            235292,
+            6464,
+            1,
+            19946,
+            235306,
+            1192,
+            892,
+            3271,
+            235269,
+            1468,
+            235269,
+            664,
+            235335,
+            12229,
+            664,
+            235250,
+            1192,
+            19946,
+            235267,
+            1192,
+            235248,
+            235274,
+            235249,
+            235290,
+            235276,
+            235324,
+            235269,
+            664,
+            235297,
+            1192,
+            728,
+            235276,
+            235265,
+            235276,
+            2304,
+            1
+          ],
+          "marker_pos": [
+            6,
+            21
+          ],
+          "qtype": 0,
+          "state_tokens": 32,
+          "state_tokens_dropped": 0,
+          "options_total": 2,
+          "options_distinct": 2,
+          "tokens_per_option": null,
+          "instruction_tokens_dropped": 0,
+          "option_tokens_dropped": [
+            0,
+            0
+          ]
+        }
+      ],
+      "probabilities": [
+        [
+          0.6701657772064209,
+          0.3298341929912567
+        ]
+      ],
+      "act_probabilities": [
+        1.0
+      ]
+    },
+    {
+      "name": "option-budget",
+      "request": {
+        "state": {
+          "kind": "text",
+          "value": "document"
+        },
+        "questions": [
+          [
+            "q",
+            {
+              "type": "choice",
+              "instructions": "Choose an option with descriptions",
+              "options": [
+                {
+                  "label": "label0",
+                  "description": "description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description "
+                },
+                {
+                  "label": "label1",
+                  "description": "description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description "
+                },
+                {
+                  "label": "label2",
+                  "description": "description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description "
+                },
+                {
+                  "label": "label3",
+                  "description": "description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description "
+                },
+                {
+                  "label": "label4",
+                  "description": "description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description "
+                },
+                {
+                  "label": "label5",
+                  "description": "description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description "
+                },
+                {
+                  "label": "label6",
+                  "description": "description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description "
+                },
+                {
+                  "label": "label7",
+                  "description": "description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description description "
+                }
+              ]
+            }
+          ]
+        ]
+      },
+      "options": {
+        "max_len": 128,
+        "head_max_len": 64,
+        "overflow": "allow_with_diagnostics"
+      },
+      "inputs": [
+        {
+          "id": "q",
+          "input_ids": [
+            2,
+            6241,
+            2872,
+            235292,
+            19262,
+            671,
+            4984,
+            675,
+            31017,
+            1,
+            4,
+            4970,
+            235276,
+            235292,
+            5966,
+            5966,
+            4,
+            4970,
+            235274,
+            235292,
+            5966,
+            5966,
+            4,
+            4970,
+            235284,
+            235292,
+            5966,
+            5966,
+            4,
+            4970,
+            235304,
+            235292,
+            5966,
+            5966,
+            4,
+            4970,
+            235310,
+            235292,
+            5966,
+            5966,
+            4,
+            4970,
+            235308,
+            235292,
+            5966,
+            5966,
+            4,
+            4970,
+            235318,
+            235292,
+            5966,
+            5966,
+            4,
+            4970,
+            235324,
+            235292,
+            5966,
+            5966,
+            1,
+            4551,
+            1
+          ],
+          "marker_pos": [
+            10,
+            16,
+            22,
+            28,
+            34,
+            40,
+            46,
+            52
+          ],
+          "qtype": 0,
+          "state_tokens": 1,
+          "state_tokens_dropped": 0,
+          "options_total": 8,
+          "options_distinct": 8,
+          "tokens_per_option": 6,
+          "instruction_tokens_dropped": 0,
+          "option_tokens_dropped": [
+            79,
+            79,
+            79,
+            79,
+            79,
+            79,
+            79,
+            79
+          ]
+        }
+      ],
+      "probabilities": [
+        [
+          0.08397676795721054,
+          0.16368049383163452,
+          0.12763017416000366,
+          0.12923532724380493,
+          0.11160851269960403,
+          0.11903264373540878,
+          0.10408641397953033,
+          0.16074968874454498
+        ]
+      ],
+      "act_probabilities": [
+        1.0
+      ]
+    },
+    {
+      "name": "empty-questions",
+      "request": {
+        "state": {
+          "kind": "text",
+          "value": ""
+        },
+        "questions": []
+      },
+      "options": {
+        "max_len": 512,
+        "head_max_len": 192,
+        "overflow": "allow_with_diagnostics"
+      },
+      "inputs": [],
+      "probabilities": []
+    }
+  ]
+}

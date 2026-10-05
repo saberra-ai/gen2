@@ -6,15 +6,29 @@ on:
     paths:
       - 'src/**'
       - 'Cargo.*'
-      - 'examples/laya-mobile/**'
-      - 'tools/laya/**'
+      - 'examples/laya-mobile/src/**'
+      - 'examples/laya-mobile/Cargo.toml'
+      - 'examples/laya-mobile/gen2_laya.h'
+      - 'examples/laya-mobile/LayaSmoke.swift'
+      - 'examples/laya-mobile/ios/**'
+      - 'tests/fixtures/laya/smoke/**'
+      - 'tools/laya/build_ios.sh'
+      - 'tools/laya/inspect_ios.py'
+      - 'tools/laya/run_ios_simulator.py'
       - '.github/workflows/laya-ios.yml'
   pull_request:
     paths:
       - 'src/**'
       - 'Cargo.*'
-      - 'examples/laya-mobile/**'
-      - 'tools/laya/**'
+      - 'examples/laya-mobile/src/**'
+      - 'examples/laya-mobile/Cargo.toml'
+      - 'examples/laya-mobile/gen2_laya.h'
+      - 'examples/laya-mobile/LayaSmoke.swift'
+      - 'examples/laya-mobile/ios/**'
+      - 'tests/fixtures/laya/smoke/**'
+      - 'tools/laya/build_ios.sh'
+      - 'tools/laya/inspect_ios.py'
+      - 'tools/laya/run_ios_simulator.py'
       - '.github/workflows/laya-ios.yml'
   workflow_dispatch:
 

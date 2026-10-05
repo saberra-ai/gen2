@@ -3,7 +3,7 @@
 This small C ABI exposes the same Rust runtime as desktop, with JSON requests
 and owned JSON replies. It is test scaffolding, not a claim of mobile device
 qualification. Desktop ABI checks, Android arm64 native/APK packaging, Apple SDK
-device/simulator builds and iOS simulator synthetic inference have passed.
+device/simulator builds and both iOS/Android emulator synthetic inference have passed.
 Physical-device execution and real mobile checkpoint qualification remain open.
 
 Functions are declared in `gen2_laya.h`. Every reply has `ok` and either `value`
@@ -109,8 +109,8 @@ same JNI/Rust/ORT interface and 16 KiB library alignment checks. The x86_64 lane
 runs API 35 in an emulator, starts the synthetic smoke suite with a unique run
 ID, and verifies the app-private report. Reports and a screenshot are uploaded
 alongside packaging evidence. Emulator results do not qualify physical arm64
-devices or real checkpoint performance. The new emulator lane is pending its
-first successful run.
+devices or real checkpoint performance. The API 35 x86_64 emulator lane passed at `684ea4f`; see
+`tools/laya/evidence/android-x86_64/emulator-evidence.json`.
 
 `run_android_emulator.py` deliberately accepts only an emulator serial. For
 manual physical-device qualification, install the arm64 APK and use the app's

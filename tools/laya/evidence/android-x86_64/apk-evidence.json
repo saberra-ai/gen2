@@ -1,0 +1,45 @@
+{
+  "status": "APK packaging inspected; device execution not verified",
+  "package": "example.gen2.laya",
+  "abi": "x86_64",
+  "min_sdk": 24,
+  "target_sdk": 35,
+  "apk_sha256": "820aa361455f15517d71ed8a5edcf7f1019400e51176176f9910e340585ba4e6",
+  "apk_bytes": 42434918,
+  "libraries": [
+    {
+      "file": "lib/x86_64/libgen2_laya_jni.so",
+      "sha256": "ecaf4adb8c86ec06bcf6b234223f04992c112b244b4eb4476b6a6356aca99754",
+      "bytes": 418904,
+      "offset": 16384
+    },
+    {
+      "file": "lib/x86_64/libgen2_laya_mobile.so",
+      "sha256": "5156c4b23f0c098b855b1b56df64c6a18693025ac03f96bf51d2670c9e031c2b",
+      "bytes": 10650496,
+      "offset": 442368
+    },
+    {
+      "file": "lib/x86_64/libonnxruntime.so",
+      "sha256": "2328d9481be5869dd8c4be96eb57b38a0105db17f1fe696a903c02a0988f0bd9",
+      "bytes": 31316520,
+      "offset": 11108352
+    }
+  ],
+  "fixture_files": 5,
+  "permissions": "package: example.gen2.laya\n",
+  "badging": "package: name='example.gen2.laya' versionCode='1' versionName='0.1' platformBuildVersionName='15' platformBuildVersionCode='35' compileSdkVersion='35' compileSdkVersionCodename='15'\nminSdkVersion:'24'\ntargetSdkVersion:'35'\napplication-label:'Gen2 Laya smoke'\napplication-icon-160:'res/drawable/app_icon.xml'\napplication: label='Gen2 Laya smoke' icon='res/drawable/app_icon.xml'\napplication-debuggable\nlaunchable-activity: name='example.gen2.MainActivity'  label='' icon=''\nfeature-group: label=''\n  uses-feature: name='android.hardware.faketouch'\n  uses-implied-feature: name='android.hardware.faketouch' reason='default feature for all apps'\nmain\nsupports-screens: 'small' 'normal' 'large' 'xlarge'\nsupports-any-density: 'true'\nlocales: '--_--'\ndensities: '160'\nnative-code: 'x86_64'\n",
+  "host_sources": {
+    "LayaNative.java": "b5d422bb872f3b83ec8018fe33d8ff70a4e27f17433c72a27b0d04328cbc2f4d",
+    "app/build.gradle": "54843489ba5707fedd72b84cd29b8359b09f5efe781e197997f088564aeb7255",
+    "app/src/main/AndroidManifest.xml": "b0e6997b0dbb4cbabd9c535ab17e881c6d6a1e48f6e49c63a92f3b3a5f092e4d",
+    "app/src/main/java/example/gen2/MainActivity.java": "be08921661df67819942651ac74d939516dc456fb2e5b7ab0fd798d7d521855a",
+    "app/src/main/res/drawable/app_icon.xml": "c079dba958471f87b2a084a3f98b9733063b9492b760df1fd8732f6de294aeb6",
+    "app/src/main/res/values/strings.xml": "613fb50621de554b9c187f8717f62664778cfed558a82cd2336f726bc69ddbc9",
+    "app/src/main/res/xml/data_extraction_rules.xml": "6238bab9fd5d86e6604b3b4735235d10e1921eeb1c2403178854bced1983e21c",
+    "build.gradle": "4b08d3c261d317db5e5a5f7fa8ade50f361690e3b03fa86ee69a678f2a4b3a37",
+    "gradle.properties": "2a65693bf6bc9de8c5b91cdcedb2cf60cbf7675398bc65a2909f511d351e1803",
+    "settings.gradle": "fbbd5ec77d4d820591b4175c1b5f77c955b31ee952ccc35ba2807abe728ee75d"
+  },
+  "host_source_sha256": "96ce8f39016ca467b8f4ddd5cf243f6d3436eab359685f573c80c6c916aa1a29"
+}

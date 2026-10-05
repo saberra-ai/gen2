@@ -1,0 +1,9 @@
+/Users/runner/work/gen2/gen2/tools/laya/record_inference.py:24: RuntimeWarning: laya: this checkpoint ships invalid temperatures or values outside [0.5, 5]; using choice:11+=0.10058280825614929 -> 0.5. Treat confidence from the affected entries as uncalibrated.
+  agent=Agent(str(a.bundle/"source"),device="cpu",compile=False,backend="eager")
+eager: three-types (3, 41, 3)
+eager: unicode-mask (1, 34, 2)
+eager: one-option (1, 11, 2)
+eager: right-truncation (1, 64, 2)
+eager: left-truncation (1, 64, 2)
+eager: ordered-json (1, 55, 2)
+eager: option-budget (1, 61, 8)

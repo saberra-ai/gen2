@@ -10,7 +10,7 @@ Use `laya-dynamic` for host-supplied desktop libraries, or
 `backend-laya-onnx` for an application-linked runtime. Default gen2 features are
 unchanged. No Python or network access is used during native inference.
 The optional binding is pinned to `ort = 2.0.0-rc.12`, API 24; use ONNX Runtime
-1.24.4. It requires Rust 1.88 or newer; local verification used Rust 1.95.0.
+1.24.4 on desktop (mobile framework versions are pinned in the host harness README). It requires Rust 1.88 or newer; local verification used Rust 1.95.0.
 
 ```toml
 gen2 = { path = "../gen2", default-features = false, features = ["laya-dynamic", "tokio"] }
@@ -253,9 +253,11 @@ On Windows x64, CPU, ONNX Runtime 1.24.4:
 | English real long-state scan | six windows; selected spans and all three answer types match upstream |
 | Mobile C boundary | Windows single/batch/long scans, budgets, deadlines, capability inspection and lifecycle pass; device runs pending |
 | Android arm64 Rust/JNI/native dependency set | NDK r27d, API 24, ORT 1.24.3 linked; exports, dependency names and 16 KiB ELF alignment verified |
-| Android debug host APK | built and signature-verified; native hashes, uncompressed 16 KiB alignment, synthetic assets and no permissions checked; no attached device |
+| Android debug host APKs | arm64 and x86_64 built/linted/signature-verified; native hashes, uncompressed 16 KiB alignment, synthetic assets and no permissions checked |
+| Android emulator native smoke | API 35 x86_64: synthetic single/batch/window inference, deadlines and lifecycle pass; physical arm64 remains unverified |
 | iOS arm64 device/simulator SDK package | iOS 15.1 floor, ORT 1.24.2, Xcode 26.6; Swift link, exports and XCFramework/app inspection pass |
 | iOS simulator native smoke | iOS 26.5: single/batch/window inference, deadlines and lifecycle pass on the synthetic graph; physical devices and execution on iOS 15.1 remain unverified |
+| macOS arm64 real models, all three families | eight-case ONNX/eager parity, cross-state batches, permutations and upstream long scans pass; largest differences 7.51e-8 vs ONNX / 1.47e-6 vs eager |
 | Quality evaluation tools | six analytic/leakage tests and native synthetic pipeline passed; application holdout still required |
 | Cross-state native batches, all three checkpoints | independent Python corpus passes, including empty states and heterogeneous rows |
 | Local checkpoint exporter | English weights repackaged through local path; export and Rust inference passed with content-bound provenance (not a fine-tune quality test) |
@@ -267,8 +269,8 @@ measurements with two CPU threads and three runs per shape, not mobile latency
 or thermal guarantees. Manifests, exact input corpus, eager/ONNX references and
 shape reports are archived in `evidence/windows-x64/`.
 
-This is an implementation preview. Domain-quality holdouts, macOS real-model
-qualification, Windows arm64, signed iOS installation and both mobile device/lifecycle tests
+This is an implementation preview. Domain-quality holdouts, sustained desktop performance, Windows arm64, signed
+iOS installation and both mobile device/lifecycle tests
 remain tracked gates. A successful compile or synthetic graph does not qualify
 a real checkpoint on a mobile platform. See the approved scope in
 `docs/plans/laya-support-design.html` and `examples/laya-mobile/README.md`.
@@ -317,3 +319,7 @@ on separate CPU hosts. It can be dispatched manually and runs when its driver
 changes; routine CI remains weight-free. Its artifacts contain references and
 logs, never model weights. These parity checks do not establish sustained
 performance, accelerator behavior, mobile suitability or application quality.
+
+The first full macOS arm64 CPU qualification passed for all three checkpoint
+families at `be4f912`. Raw references, comparison logs and manifests are archived
+in `evidence/macos-arm64/`; `evidence/ci/macos-real-models.json` links the jobs.

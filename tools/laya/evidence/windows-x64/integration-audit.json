@@ -40,7 +40,6 @@
   "quality_tooling": "Six analytic/leakage tests and synthetic native pipeline passed; no application accuracy claim",
   "performance_tooling": "Full 12-case Rust/Python matrix implemented. Earlier interrupted partial files preserved. Fresh current-runtime-code run launched under target/laya/benchmarks-main-e5e876e with source and host provenance; no completed latency gate yet.",
   "qualification_still_required": [
-    "macOS real checkpoint family execution",
     "Windows ARM64 native execution",
     "Signed iOS installation and Android installation; both physical-device family execution (Apple SDK libraries/framework and Android APK built)",
     "accelerator graph partitioning, parity, memory and performance",
@@ -48,11 +47,12 @@
     "mobile memory pressure, suspend/resume and thermal behavior",
     "application-specific labeled holdout quality and calibration evaluation"
   ],
-  "android_host_apk": "Built and signature-verified; package hash/alignment/native identity/synthetic assets/no permissions inspected. See ../android-arm64/apk-evidence.json. adb reports no attached devices; installation and execution unverified.",
+  "android_host_apk": "Both arm64 and x86_64 APKs build, lint, verify signatures and pass package/hash/alignment inspection in CI. Android API 35 x86_64 emulator passes native synthetic single/batch/window inference, deadline rejection and suspend/resume/close. See ../android-arm64, ../android-x86_64 and ../ci/android-emulator.json. Physical-device execution remains unverified.",
   "default_library_suite": {
     "passed": 1180,
     "ignored": 17
   },
   "staged_fixture_integrity": "All Git-index smoke bundle file hashes and sizes match the manifest; .gitattributes preserves exact fixture/evidence bytes",
-  "ios_sdk_package": "Apple SDK device/simulator arm64 libraries, Swift final link, exports and XCFramework/app inspection pass at iOS 15.1. Native synthetic inference, batching, windows and lifecycle pass in an iOS 26.5 simulator. See ../ios-arm64; physical devices, real mobile models and execution on iOS 15.1 remain unverified."
+  "ios_sdk_package": "Apple SDK device/simulator arm64 libraries, Swift final link, exports and XCFramework/app inspection pass at iOS 15.1. Native synthetic inference, batching, windows and lifecycle pass in an iOS 26.5 simulator. See ../ios-arm64; physical devices, real mobile models and execution on iOS 15.1 remain unverified.",
+  "macos_arm64_cpu": "All three real checkpoints passed Python ONNX/eager comparisons, cross-state batches, permutations and upstream long scans. See ../macos-arm64 and ../ci/macos-real-models.json. Sustained performance and accelerators remain unqualified."
 }

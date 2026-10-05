@@ -1,15 +1,15 @@
 {
   "status": "cross-compiled and linked; device execution not verified",
-  "target": "aarch64-linux-android",
-  "abi": "arm64-v8a",
+  "target": "x86_64-linux-android",
+  "abi": "x86_64",
   "android_api": 24,
   "ndk": "Pkg.Desc = Android NDK\nPkg.Revision = 27.3.13750724\nPkg.BaseRevision = 27.3.13750724\nPkg.ReleaseName = r27d\n",
   "ort_android_version": "1.24.3",
   "artifacts": [
     {
       "file": "libgen2_laya_jni.so",
-      "bytes": 477280,
-      "sha256": "f7cb942c823349b18bcc27a6d44084b51c94dc38e4401ed535890d9c0aaddb89",
+      "bytes": 418904,
+      "sha256": "ecaf4adb8c86ec06bcf6b234223f04992c112b244b4eb4476b6a6356aca99754",
       "needed": [
         "libgen2_laya_mobile.so",
         "libm.so",
@@ -33,8 +33,8 @@
     },
     {
       "file": "libgen2_laya_mobile.so",
-      "bytes": 10902448,
-      "sha256": "af1ceefb5fcf6a5926e93aab9f6cb4f7c874a83ef4aef61e9b8b1305e20d44ad",
+      "bytes": 10650496,
+      "sha256": "5156c4b23f0c098b855b1b56df64c6a18693025ac03f96bf51d2670c9e031c2b",
       "needed": [
         "libonnxruntime.so",
         "libdl.so",
@@ -59,8 +59,8 @@
     },
     {
       "file": "libonnxruntime.so",
-      "bytes": 25831632,
-      "sha256": "4d2318b3849abb8862133d3068fc7e807ed8b2671cc6d83657fff2fcb9e1caad",
+      "bytes": 31316520,
+      "sha256": "2328d9481be5869dd8c4be96eb57b38a0105db17f1fe696a903c02a0988f0bd9",
       "needed": [
         "libdl.so",
         "liblog.so",

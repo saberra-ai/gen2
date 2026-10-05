@@ -1,0 +1,127 @@
+{
+  "source_revision": "8a6e1328cce2460a0e5aa348ad465bb1b5821cd2",
+  "manifest_sha256": "afa03f193640ee599cc9b656fd1b708fd32077864d932c8c0a5c04b62b0c5772",
+  "request": {
+    "state": {
+      "kind": "text",
+      "value": "Routine product question . Routine product question . Routine product question . Routine product question . Routine product question . Routine product question . Routine product question . Routine product question . Routine product question . Routine product question . Routine product question . Routine product question . Our invoice was charged twice . Please refund it ! The account is blocked and this is urgent . The account is blocked and this is urgent . The account is blocked and this is urgent . "
+    },
+    "questions": [
+      [
+        "team",
+        {
+          "type": "choice",
+          "instructions": "Who handles this?",
+          "options": [
+            {
+              "label": "billing",
+              "description": "Payments"
+            },
+            {
+              "label": "support",
+              "description": "Product issues"
+            }
+          ]
+        }
+      ],
+      [
+        "urgency",
+        {
+          "type": "score",
+          "instructions": "How urgent?",
+          "levels": [
+            "Routine",
+            "Soon",
+            "Blocking"
+          ]
+        }
+      ],
+      [
+        "refund",
+        {
+          "type": "yes_no",
+          "instructions": "Is a refund requested?",
+          "false_label": "false",
+          "true_label": "true",
+          "false_description": null,
+          "true_description": null
+        }
+      ]
+    ]
+  },
+  "window_tokens": 32,
+  "stride_tokens": 16,
+  "result": {
+    "model": "laya-rl-agent-onnx",
+    "answers": {
+      "team": {
+        "type": "choice",
+        "choice": "billing",
+        "probabilities": {
+          "billing": 0.9065,
+          "support": 0.0935
+        },
+        "confidence": 0.5519,
+        "answer_confidence": 0.9065,
+        "action": {
+          "act_probability": 1.0
+        },
+        "window": {
+          "index": 3,
+          "token_start": 48,
+          "token_end": 80,
+          "count": 6
+        }
+      },
+      "urgency": {
+        "type": "score",
+        "score": 1.9619,
+        "legend": {
+          "0": "Routine",
+          "1": "Soon",
+          "2": "Blocking"
+        },
+        "probabilities": {
+          "0": 0.009,
+          "1": 0.0201,
+          "2": 0.9709
+        },
+        "confidence": 0.8639,
+        "answer_confidence": 0.9709,
+        "action": {
+          "act_probability": 1.0
+        },
+        "window": {
+          "index": 4,
+          "token_start": 64,
+          "token_end": 96,
+          "count": 6
+        }
+      },
+      "refund": {
+        "type": "noul",
+        "noul": 0.9169,
+        "confidence": 0.9169,
+        "answer_confidence": 0.9169,
+        "action": {
+          "act_probability": 1.0
+        },
+        "window": {
+          "index": 3,
+          "token_start": 48,
+          "token_end": 80,
+          "count": 6
+        }
+      }
+    },
+    "usage": {
+      "input_tokens": 1008,
+      "output_tokens": 0,
+      "state_tokens": 178,
+      "state_tokens_dropped": 0,
+      "truncated": 0,
+      "truncated_questions": [],
+      "windows": 6
+    }
+  }
+}
