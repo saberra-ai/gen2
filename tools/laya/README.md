@@ -1,4 +1,4 @@
-# Native Laya integration â€” experimental
+# Native Laya integration — experimental
 
 `Runtime::load_decider(bundle_directory, LoadOptions)` returns a cloneable
 `DecisionModel`. It supports ordered text/JSON/conversation requests, choice,
@@ -254,7 +254,8 @@ On Windows x64, CPU, ONNX Runtime 1.24.4:
 | Mobile C boundary | Windows single/batch/long scans, budgets, deadlines, capability inspection and lifecycle pass; device runs pending |
 | Android arm64 Rust/JNI/native dependency set | NDK r27d, API 24, ORT 1.24.3 linked; exports, dependency names and 16 KiB ELF alignment verified |
 | Android debug host APK | built and signature-verified; native hashes, uncompressed 16 KiB alignment, synthetic assets and no permissions checked; no attached device |
-| iOS arm64 device/simulator SDK package | iOS 15.1, ORT 1.24.2, Xcode 26.6; Swift link, exports and XCFramework inspection pass; execution pending |
+| iOS arm64 device/simulator SDK package | iOS 15.1 floor, ORT 1.24.2, Xcode 26.6; Swift link, exports and XCFramework/app inspection pass |
+| iOS simulator native smoke | iOS 26.5: single/batch/window inference, deadlines and lifecycle pass on the synthetic graph; physical devices and execution on iOS 15.1 remain unverified |
 | Quality evaluation tools | six analytic/leakage tests and native synthetic pipeline passed; application holdout still required |
 | Cross-state native batches, all three checkpoints | independent Python corpus passes, including empty states and heterogeneous rows |
 | Local checkpoint exporter | English weights repackaged through local path; export and Rust inference passed with content-bound provenance (not a fine-tune quality test) |
@@ -296,5 +297,23 @@ The desktop native smoke and Android packaging CI lanes passed at commit
 [`evidence/ci/desktop-android.json`](evidence/ci/desktop-android.json). They cover
 synthetic inference on Windows/Linux/macOS and Android native/APK packaging.
 The separate Apple SDK workflow builds device/simulator libraries and links the
-Swift host; Apple SDK inspection passes at iOS 15.1 (see `evidence/ios-arm64/sdk-build-evidence.json`). The new app/simulator execution lane remains pending. Neither lane replaces real-model
+Swift host; Apple SDK inspection passes at iOS 15.1 (see `evidence/ios-arm64/sdk-build-evidence.json`). The app/simulator lane now passes native synthetic inference on iOS 26.5; see `evidence/ios-arm64/simulator-evidence.json`. Neither lane replaces real-model
 or physical-device qualification.
+
+### Real-model qualification on another desktop host
+
+`qualify_native.py` records independent Python ONNX/eager references and runs
+the Rust native comparisons against the committed preprocessing and permutation
+corpora, then compares long scans with upstream. It records manifests, source
+hashes, toolchain versions and tolerances. For an exported bundle:
+
+```sh
+python tools/laya/qualify_native.py --source target/laya/upstream \
+  --bundle target/laya/english --output target/laya/qualification-english
+```
+
+The `Laya real-model macOS parity` workflow runs all three checkpoint families
+on separate CPU hosts. It can be dispatched manually and runs when its driver
+changes; routine CI remains weight-free. Its artifacts contain references and
+logs, never model weights. These parity checks do not establish sustained
+performance, accelerator behavior, mobile suitability or application quality.

@@ -1,0 +1,60 @@
+{
+  "scope": "Apple SDK device/simulator arm64 build, C exports, Swift final link, XCFramework and offline app packaging",
+  "device_execution": false,
+  "simulator_execution": false,
+  "real_checkpoint_qualification": false,
+  "deployment_target": "15.1",
+  "commit": "9c5d9e65a90b5d219a6e4eda94909c4327bf08dd",
+  "rust": "rustc 1.99.0 (b940084d7 2026-09-28)",
+  "archive_symbol_tool": "llvm-nm, compatible with GNU nm\nLLVM (http://llvm.org/):\n  LLVM version 23.1.1-rust-1.99.0-stable\n  Optimized build.",
+  "xcode": "Xcode 26.6\nBuild version 17F113",
+  "runtime_info_sha256": "833bdac6e46dd81a7a8fadfa12564562943c94e4d7800c5bd898febe226a03e5",
+  "runtime_binaries": [
+    {
+      "path": "ios-arm64/onnxruntime.framework/onnxruntime",
+      "sha256": "6cd9d2a7e174f2de317861331bc4454729bab187da92562f8163dee1be8cb55a"
+    },
+    {
+      "path": "ios-arm64_x86_64-simulator/onnxruntime.framework/onnxruntime",
+      "sha256": "0ff57cfcae76956ba9e47a30104617b01257f8a3f41e5cf111515e2d40b7d001"
+    },
+    {
+      "path": "macos-arm64_x86_64/onnxruntime.framework/Versions/A/onnxruntime",
+      "sha256": "1e57e861aae21b03780d796a5725288e16d68510a2916c26b3b479fa35c91b92"
+    },
+    {
+      "path": "macos-arm64_x86_64/onnxruntime.framework/onnxruntime",
+      "sha256": "1e57e861aae21b03780d796a5725288e16d68510a2916c26b3b479fa35c91b92"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "Gen2Laya.xcframework/ios-arm64-simulator/libgen2_laya_mobile.a",
+      "sha256": "faaa4bab2cbde526529f186b2daaa4cfd741eee93a86f4f62a5db0245b3708fa"
+    },
+    {
+      "path": "Gen2Laya.xcframework/ios-arm64/libgen2_laya_mobile.a",
+      "sha256": "a23e860546bcc9b9d4800b17c9b410fa275fdf3a33fd9409983218c445e55ce9"
+    },
+    {
+      "path": "aarch64-apple-ios-host.dylib",
+      "sha256": "9dd0103e2bc287f7810db0e2b6ddfaadb551d477dca93f39bbc5b514fb4f2478",
+      "load_commands": "/Users/runner/work/gen2/gen2/target/laya/ios/build/aarch64-apple-ios-host.dylib:\n\t/Users/runner/work/gen2/gen2/target/laya/ios/build/aarch64-apple-ios-host.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t/System/Library/Frameworks/Foundation.framework/Foundation (compatibility version 300.0.0, current version 5026.5.4)\n\t/System/Library/Frameworks/CoreML.framework/CoreML (compatibility version 1.0.0, current version 1.0.0)\n\t/System/Library/Frameworks/Accelerate.framework/Accelerate (compatibility version 1.0.0, current version 4.0.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2100.43.0)\n\t/usr/lib/libz.1.dylib (compatibility version 1.0.0, current version 1.2.12)\n\t/usr/lib/libiconv.2.dylib (compatibility version 7.0.0, current version 7.0.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)\n\t/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation (compatibility version 150.0.0, current version 5026.5.4)\n\t/usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0)\n\t/usr/lib/swift/libswiftCore.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t/usr/lib/swift/libswiftCoreFoundation.dylib (compatibility version 1.0.0, current version 120.100.0, weak)\n\t/usr/lib/swift/libswiftDarwin.dylib (compatibility version 1.0.0, current version 377.120.8, weak)\n\t/usr/lib/swift/libswiftDispatch.dylib (compatibility version 1.0.0, current version 1542.100.32, weak)\n\t/usr/lib/swift/libswiftObjectiveC.dylib (compatibility version 1.0.0, current version 951.7.0, weak)\n\t/usr/lib/swift/libswiftXPC.dylib (compatibility version 1.0.0, current version 128.120.2, weak)\n\t/usr/lib/swift/libswiftFoundation.dylib (compatibility version 1.0.0, current version 1.0.0)"
+    },
+    {
+      "path": "aarch64-apple-ios/Gen2Laya.app/Gen2Laya",
+      "sha256": "ca9d5a45d3630e58ddbd728e1230f1574baea7b241fe582a590dfde89514318d",
+      "build_version": "/Users/runner/work/gen2/gen2/target/laya/ios/build/aarch64-apple-ios/Gen2Laya.app/Gen2Laya:\nLoad command 11\n      cmd LC_BUILD_VERSION\n  cmdsize 32\n platform IOS\n    minos 15.1\n      sdk 26.5\n   ntools 1\n     tool LD\n  version 1267.0"
+    },
+    {
+      "path": "aarch64-apple-ios-sim-host.dylib",
+      "sha256": "2d80270b9b2497c8bf9f8ca4c5b53747d2e0791c514b9a1455eb049c60da0385",
+      "load_commands": "/Users/runner/work/gen2/gen2/target/laya/ios/build/aarch64-apple-ios-sim-host.dylib:\n\t/Users/runner/work/gen2/gen2/target/laya/ios/build/aarch64-apple-ios-sim-host.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t/System/Library/Frameworks/Foundation.framework/Foundation (compatibility version 300.0.0, current version 5026.5.4)\n\t/System/Library/Frameworks/CoreML.framework/CoreML (compatibility version 1.0.0, current version 1.0.0)\n\t/System/Library/Frameworks/Accelerate.framework/Accelerate (compatibility version 1.0.0, current version 4.0.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2100.43.0)\n\t/usr/lib/libz.1.dylib (compatibility version 1.0.0, current version 1.2.12)\n\t/usr/lib/libiconv.2.dylib (compatibility version 7.0.0, current version 7.0.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)\n\t/System/Library/Frameworks/CoreFoundation.framework/CoreFoundation (compatibility version 150.0.0, current version 5026.5.4)\n\t/usr/lib/libobjc.A.dylib (compatibility version 1.0.0, current version 228.0.0)\n\t/usr/lib/swift/libswiftCore.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t/usr/lib/swift/libswiftCoreFoundation.dylib (compatibility version 1.0.0, current version 120.100.0, weak)\n\t/usr/lib/swift/libswiftDarwin.dylib (compatibility version 1.0.0, current version 377.120.8, weak)\n\t/usr/lib/swift/libswiftDispatch.dylib (compatibility version 1.0.0, current version 1542.100.32, weak)\n\t/usr/lib/swift/libswiftObjectiveC.dylib (compatibility version 1.0.0, current version 951.7.0, weak)\n\t/usr/lib/swift/libswiftXPC.dylib (compatibility version 1.0.0, current version 128.120.2, weak)\n\t/usr/lib/swift/libswiftFoundation.dylib (compatibility version 1.0.0, current version 1.0.0)"
+    },
+    {
+      "path": "aarch64-apple-ios-sim/Gen2Laya.app/Gen2Laya",
+      "sha256": "7c2e0c00e716e876fa5ea7fb4222eaae60976f37ed2bf6e96df7ee85da006869",
+      "build_version": "/Users/runner/work/gen2/gen2/target/laya/ios/build/aarch64-apple-ios-sim/Gen2Laya.app/Gen2Laya:\nLoad command 11\n      cmd LC_BUILD_VERSION\n  cmdsize 32\n platform IOSSIMULATOR\n    minos 15.1\n      sdk 26.5\n   ntools 1\n     tool LD\n  version 1267.0"
+    }
+  ]
+}

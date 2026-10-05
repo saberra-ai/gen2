@@ -2,8 +2,9 @@
 
 This small C ABI exposes the same Rust runtime as desktop, with JSON requests
 and owned JSON replies. It is test scaffolding, not a claim of mobile device
-qualification. Windows compile/clippy and Android arm64 native link checks have
-passed. Android device execution and iOS SDK/device runs are still required.
+qualification. Desktop ABI checks, Android arm64 native/APK packaging, Apple SDK
+device/simulator builds and iOS simulator synthetic inference have passed.
+Physical-device execution and real mobile checkpoint qualification remain open.
 
 Functions are declared in `gen2_laya.h`. Every reply has `ok` and either `value`
 or `error`; release the returned string once with `gen2_laya_free`. Handles are

@@ -1,0 +1,56 @@
+name: Laya real-model macOS parity
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - '.github/workflows/laya-real-macos.yml'
+      - 'tools/laya/qualify_native.py'
+  pull_request:
+    paths:
+      - '.github/workflows/laya-real-macos.yml'
+      - 'tools/laya/qualify_native.py'
+
+jobs:
+  real-checkpoint:
+    runs-on: macos-latest
+    timeout-minutes: 90
+    strategy:
+      fail-fast: false
+      matrix:
+        checkpoint: [english, multilingual, typed-decisions]
+    env:
+      TOKENIZERS_PARALLELISM: 'false'
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: tools/laya/requirements.txt
+      - uses: Swatinem/rust-cache@v2
+      - name: Install the pinned reference environment
+        run: python -m pip install -r tools/laya/requirements.txt
+      - name: Check out immutable upstream source
+        run: |
+          git init target/laya/upstream
+          git -C target/laya/upstream remote add origin https://github.com/NandhaKishorM/laya.git
+          git -C target/laya/upstream fetch --depth 1 origin 8a6e1328cce2460a0e5aa348ad465bb1b5821cd2
+          git -C target/laya/upstream checkout --detach FETCH_HEAD
+      - name: Export the pinned real checkpoint
+        run: |
+          python tools/laya/export_bundle.py --source target/laya/upstream \
+            --output target/laya/${{ matrix.checkpoint }} --checkpoint ${{ matrix.checkpoint }} \
+            --reservation-mb 4096
+      - name: Compare native CPU execution with independent Python and upstream scans
+        run: |
+          python tools/laya/qualify_native.py --source target/laya/upstream \
+            --bundle target/laya/${{ matrix.checkpoint }} --output target/laya/qualification-${{ matrix.checkpoint }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: laya-macos-${{ matrix.checkpoint }}-qualification
+          path: target/laya/qualification-${{ matrix.checkpoint }}/
+      # Artifacts contain manifests, fixed-corpus references and logs, never weights.
