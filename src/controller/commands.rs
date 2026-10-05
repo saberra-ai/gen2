@@ -7,7 +7,7 @@ use std::time::{Duration, Instant};
 
 use crate::engine::EmbedLoadRequest;
 use crate::generation::TokenEvent;
-use crate::memory::current_memory_governor;
+
 use crate::residency::{ResidentRuntime, RuntimeKind};
 use crate::residency_policy::{
     estimate_resident_mb_for_path, estimate_resident_mb_for_path_offloaded,
@@ -128,7 +128,7 @@ fn attempt_load(
         &load_req.model_path,
         load_req.model_params.gpu_layers,
     );
-    let governor = current_memory_governor();
+    let governor = state.config.memory_governor();
     if state.residency_policy.llm_swap_requires_unload && state.residency.llm.is_some() {
         state.engine.unload_model();
         let _ = state.residency.unload(RuntimeKind::Llm);
@@ -137,7 +137,14 @@ fn attempt_load(
         .residency
         .can_admit(RuntimeKind::Llm, estimated_mb, &governor)
     {
-        return Err(fatal_str("llm admission denied by residency policy".into()));
+        return Err(fatal_str(format!(
+            "llm admission denied by residency policy: model_mb={estimated_mb}, inference_budget_mb={}, process_mb={}, process_soft_limit_mb={}, available_mb={}, pressure={:?}",
+            governor.budgets().inference_resident_mb,
+            governor.snapshot().estimated_process_mb,
+            governor.budgets().process_soft_limit_mb,
+            governor.snapshot().available_memory_mb,
+            governor.pressure(),
+        )));
     }
     // Lazily-created backends (external-api, or a no-eager-init
     // build) have no backend to accept settings before the first
@@ -241,7 +248,7 @@ fn run_residency_maintenance(state: &mut ControllerState) {
     };
     let evicted_for_pressure = state
         .residency
-        .unload_for_pressure(&current_memory_governor(), active_foreground);
+        .unload_for_pressure(&state.config.memory_governor(), active_foreground);
     for runtime in evicted_for_pressure {
         unload_evicted_helper(state, runtime.kind);
     }
@@ -310,19 +317,11 @@ fn maybe_wake_llm(state: &mut ControllerState) {
     if state.engine.is_model_loaded() {
         return;
     }
-    let Some((name, mb)) = state.idle_unloaded_llm.clone() else {
+    let Some(_) = state.idle_unloaded_llm.as_ref() else {
         return;
     };
-    match state.engine.reload_model() {
+    match reload_with_admission(state) {
         Ok(()) => {
-            let governor = current_memory_governor();
-            let now = chrono::Utc::now().timestamp();
-            state.residency.admit(
-                ResidentRuntime::new(RuntimeKind::Llm, name, mb, now),
-                &governor,
-            );
-            state.idle_unloaded_llm = None;
-            state.last_llm_activity_unix = now;
             tracing::info!(
                 target: "gen2::kv::keepwarm",
                 "woke idle-unloaded LLM on demand"
@@ -333,6 +332,61 @@ fn maybe_wake_llm(state: &mut ControllerState) {
             error = ?e,
             "failed to wake idle-unloaded LLM"
         ),
+    }
+}
+
+/// Re-admit an unloaded model before allocating its weights. Keep the saved
+/// identity on refusal so the caller can retry after memory becomes available.
+fn reload_with_admission(state: &mut ControllerState) -> Result<(), String> {
+    let governor = state.config.memory_governor();
+    let pending = state.idle_unloaded_llm.clone();
+    if let Some((_, mb)) = &pending
+        && !state.residency.can_admit(RuntimeKind::Llm, *mb, &governor)
+    {
+        return Err("llm reload admission denied by residency policy".into());
+    }
+    state.engine.reload_model().map_err(|e| e.to_string())?;
+    if let Some((name, mb)) = pending {
+        let now = chrono::Utc::now().timestamp();
+        if !state.residency.admit(
+            ResidentRuntime::new(RuntimeKind::Llm, name.clone(), mb, now),
+            &governor,
+        ) {
+            state.engine.unload_model();
+            return Err("llm reload residency registration denied".into());
+        }
+        state.loaded_model_file_bytes =
+            ControllerState::model_file_bytes_of(std::path::Path::new(&name));
+        state.idle_unloaded_llm = None;
+        state.last_llm_activity_unix = now;
+    }
+    Ok(())
+}
+
+#[cfg(test)]
+mod memory_admission_tests {
+    use super::*;
+
+    #[test]
+    fn refused_reload_does_not_allocate_and_keeps_identity_for_retry() {
+        let script = crate::test_support::Script::new();
+        let mut state = ControllerState::with_engine(
+            (script.clone().into_engine_factory())(),
+            crate::controller::ControllerConfig {
+                resident_memory_budget_mb: Some(0),
+                ..Default::default()
+            },
+        );
+        let identity = ("/synthetic/saved.gguf".into(), 256);
+        state.idle_unloaded_llm = Some(identity.clone());
+        assert!(
+            reload_with_admission(&mut state)
+                .unwrap_err()
+                .contains("admission denied")
+        );
+        assert_eq!(script.count("reload_model"), 0);
+        assert_eq!(state.idle_unloaded_llm, Some(identity));
+        assert!(state.residency.llm.is_none());
     }
 }
 
@@ -478,7 +532,7 @@ fn handle_model_command(state: &mut ControllerState, cmd: ControllerCmd) -> Cont
             // mean two policies to keep in step.
             let estimated_mb = estimate_resident_mb_for_path(&model_path);
             let name = model_path.display().to_string();
-            let governor = current_memory_governor();
+            let governor = state.config.memory_governor();
             if !state
                 .residency
                 .can_admit(RuntimeKind::Reranker, estimated_mb, &governor)
@@ -515,7 +569,7 @@ fn handle_model_command(state: &mut ControllerState, cmd: ControllerCmd) -> Cont
         } => {
             let estimated_mb = estimate_resident_mb_for_path(&model_path);
             let name = model_path.display().to_string();
-            let governor = current_memory_governor();
+            let governor = state.config.memory_governor();
             if !state
                 .residency
                 .can_admit(RuntimeKind::Embedder, estimated_mb, &governor)
@@ -588,20 +642,7 @@ fn handle_status_command(state: &mut ControllerState, cmd: ControllerCmd) -> Con
             ControlFlow::Continue
         }
         ControllerCmd::ReloadModel { resp } => {
-            let result = state.engine.reload_model().map_err(|e| e.to_string());
-            if result.is_ok()
-                && let Some((name, mb)) = state.idle_unloaded_llm.take()
-            {
-                let governor = current_memory_governor();
-                let now = chrono::Utc::now().timestamp();
-                state.residency.admit(
-                    ResidentRuntime::new(RuntimeKind::Llm, name.clone(), mb, now),
-                    &governor,
-                );
-                state.loaded_model_file_bytes =
-                    ControllerState::model_file_bytes_of(std::path::Path::new(&name));
-                state.last_llm_activity_unix = now;
-            }
+            let result = reload_with_admission(state);
             let _ = resp.send(result);
             ControlFlow::Continue
         }

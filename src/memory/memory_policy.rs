@@ -63,7 +63,9 @@ pub struct MemoryBudgets {
 /// Classify `input` into a `MachineMemoryTier`.
 ///
 /// Mobile always maps to `MobileConstrained`. Desktop tiers are
-/// assigned by total RAM:
+/// assigned by OS-visible total RAM, allowing 256 MiB of hardware-reserved
+/// memory below each nominal boundary (for example, a 16 GiB Windows machine
+/// reporting 16235 MiB). Available-memory clamping still applies afterward:
 ///
 /// | Total RAM   | Tier               |
 /// |-------------|--------------------|
@@ -76,11 +78,12 @@ pub fn detect_machine_tier(input: &MemoryPolicyInput) -> MachineMemoryTier {
     if input.is_mobile {
         return MachineMemoryTier::MobileConstrained;
     }
-    // Boundaries in MiB (1 GiB = 1024 MiB)
+    // A small, fixed tolerance avoids demoting nominal 8/16/32 GiB machines.
+    // Do not round arbitrarily large reservations up to the next tier.
     match input.total_memory_mb {
-        0..=8191 => MachineMemoryTier::DesktopConstrained,
-        8192..=16383 => MachineMemoryTier::DesktopMainstream,
-        16384..=32767 => MachineMemoryTier::DesktopPower,
+        0..=7935 => MachineMemoryTier::DesktopConstrained,
+        7936..=16127 => MachineMemoryTier::DesktopMainstream,
+        16128..=32511 => MachineMemoryTier::DesktopPower,
         _ => MachineMemoryTier::Workstation,
     }
 }
@@ -133,7 +136,7 @@ pub fn base_budgets_for_tier(tier: MachineMemoryTier) -> MemoryBudgets {
             search_working_set_mb: 400,
             kg_derived_state_mb: 200,
             ingestion_peak_mb: 800,
-            inference_resident_mb: 1536,
+            inference_resident_mb: 2048,
             multimodal_peak_mb: 768,
         },
         MachineMemoryTier::DesktopPower => MemoryBudgets {
@@ -142,7 +145,9 @@ pub fn base_budgets_for_tier(tier: MachineMemoryTier) -> MemoryBudgets {
             search_working_set_mb: 800,
             kg_derived_state_mb: 400,
             ingestion_peak_mb: 1536,
-            inference_resident_mb: 3072,
+            // Inference may use two thirds of the process soft limit, as in
+            // DesktopMainstream. This leaves headroom for KV and other work.
+            inference_resident_mb: 4096,
             multimodal_peak_mb: 1536,
         },
         MachineMemoryTier::Workstation => MemoryBudgets {
@@ -301,6 +306,35 @@ mod tests {
     fn tier_16gb_desktop() {
         let i = input(16384, 8192);
         assert_eq!(detect_machine_tier(&i), MachineMemoryTier::DesktopPower);
+    }
+
+    #[test]
+    fn nominal_desktop_ram_tolerates_small_hardware_reservations() {
+        for (boundary, lower, upper) in [
+            (
+                7936,
+                MachineMemoryTier::DesktopConstrained,
+                MachineMemoryTier::DesktopMainstream,
+            ),
+            (
+                16128,
+                MachineMemoryTier::DesktopMainstream,
+                MachineMemoryTier::DesktopPower,
+            ),
+            (
+                32512,
+                MachineMemoryTier::DesktopPower,
+                MachineMemoryTier::Workstation,
+            ),
+        ] {
+            assert_eq!(detect_machine_tier(&input(boundary - 1, 4096)), lower);
+            assert_eq!(detect_machine_tier(&input(boundary, 4096)), upper);
+        }
+        let ample = effective_budgets(&input(16235, 14000));
+        assert_eq!(ample.inference_resident_mb, 4096);
+        let busy = effective_budgets(&input(16235, 3200));
+        assert!(busy.inference_resident_mb < 2048);
+        assert_eq!(busy.process_soft_limit_mb, 1600);
     }
 
     #[test]

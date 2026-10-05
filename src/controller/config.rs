@@ -12,6 +12,9 @@ use super::SystemTask;
 /// `Default` impl is a behavior change and should be benchmarked.
 #[derive(Debug, Clone, serde::Serialize)]
 pub struct ControllerConfig {
+    /// Optional host inference allocation in MiB. Applies to initial loads,
+    /// restores and helpers; live pressure and process ceilings still apply.
+    pub resident_memory_budget_mb: Option<u64>,
     /// Maximum number of concurrent chat sessions before LRU eviction kicks in.
     pub max_active_chats: usize,
 
@@ -42,6 +45,7 @@ pub struct ControllerConfig {
 impl Default for ControllerConfig {
     fn default() -> Self {
         Self {
+            resident_memory_budget_mb: None,
             max_active_chats: 3,
             generation_timeout: Duration::from_secs(120),
             event_channel_capacity: 512,
@@ -52,6 +56,11 @@ impl Default for ControllerConfig {
 }
 
 impl ControllerConfig {
+    pub(crate) fn memory_governor(&self) -> crate::memory::MemoryGovernor {
+        crate::memory::current_memory_governor()
+            .with_inference_budget(self.resident_memory_budget_mb)
+    }
+
     /// Sampling defaults for a background task.
     ///
     /// The named tasks get specs tuned for what they are: a title is short and

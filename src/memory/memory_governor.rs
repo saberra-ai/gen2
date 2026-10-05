@@ -37,6 +37,16 @@ impl MemoryGovernor {
         Self { snapshot }
     }
 
+    /// Replace the inference allocation, while retaining live pressure and
+    /// process ceilings. An explicit host budget is not permission to overrun
+    /// available RAM or the process soft limit.
+    pub(crate) fn with_inference_budget(mut self, budget_mb: Option<u64>) -> Self {
+        if let Some(mb) = budget_mb {
+            self.snapshot.budgets.inference_resident_mb = mb;
+        }
+        self
+    }
+
     /// Current pressure level.
     #[inline]
     pub fn pressure(&self) -> MemoryPressureLevel {
@@ -130,6 +140,26 @@ mod tests {
     use crate::memory::memory_pressure::MemoryPressureLevel;
     use crate::memory::memory_snapshot::MemorySnapshot;
     use crate::memory::memory_tier::MachineMemoryTier;
+
+    #[test]
+    fn host_inference_budget_preserves_pressure_and_process_guards() {
+        let inventory = crate::residency::ResidencyInventory::default();
+        let kind = crate::residency::RuntimeKind::Llm;
+        assert!(!inventory.can_admit(kind, 2000, &governor_at(MemoryPressureLevel::Normal)));
+        let normal = governor_at(MemoryPressureLevel::Normal).with_inference_budget(Some(4096));
+        assert_eq!(normal.budgets().inference_resident_mb, 4096);
+        assert!(inventory.can_admit(kind, 2000, &normal));
+        assert!(normal.can_load_additional_model(2000));
+        assert!(!normal.can_load_additional_model(3000));
+        let severe = governor_at(MemoryPressureLevel::Severe).with_inference_budget(Some(u64::MAX));
+        assert!(!severe.can_load_additional_model(1));
+        let zero = governor_at(MemoryPressureLevel::Normal).with_inference_budget(Some(0));
+        assert!(!crate::residency::ResidencyInventory::default().can_admit(
+            crate::residency::RuntimeKind::Llm,
+            1,
+            &zero
+        ));
+    }
 
     /// Build a snapshot manually, pinning the pressure level so tests are
     /// deterministic regardless of the budget-derivation logic.

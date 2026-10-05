@@ -319,6 +319,19 @@ match gen2::load("/models/model.gguf") {
 and to how many sessions the runtime keeps warm; a model that cannot fit is
 refused with the verdict on the error, not with a load failure.
 
+Memory admission is a separate check from model/context compatibility. Automatic
+desktop inference allocations are 2 GiB for the nominal 8–16 GiB tier and 4 GiB
+for the nominal 16–32 GiB tier. Tier selection allows up to 256 MiB of
+hardware-reserved RAM below the 8/16/32 GiB boundaries. These are base allowances:
+the available-memory clamp can reduce them when other applications use RAM.
+
+`Runtime::builder().resident_memory_budget_mb(4096)` sets an explicit inference
+allocation, shared by runtime accounting and controller loads, helpers and
+restores. It does **not** override live memory pressure or the process ceiling.
+Zero denies local model admission. Budget checks precede initial load and reload;
+initial-load refusal diagnostics include the estimate, allocation, process usage
+and available memory in MiB. This estimate is not a guarantee of peak memory use.
+
 ## Async
 
 Behind the `tokio` feature, with the same builders and the same types.

@@ -327,13 +327,13 @@ fn a_session_survives_its_model_being_evicted_between_turns() {
 
 #[test]
 fn loading_past_the_budget_evicts_the_least_recently_used() {
-    let runtime = Runtime::builder().resident_budget_mb(100).build().unwrap();
+    let runtime = Runtime::builder().resident_budget_mb(1000).build().unwrap();
     let a = Script::new().say(["a"]);
     let b = Script::new().say(["b"]);
     let c = Script::new().say(["c"]);
-    let ma = runtime.scripted_in(a.clone(), 60);
-    let mb = runtime.scripted_in(b.clone(), 60);
-    // 60 + 60 > 100: loading b evicted a, the only other resident model.
+    let ma = runtime.scripted_in(a.clone(), 600);
+    let mb = runtime.scripted_in(b.clone(), 600);
+    // 600 + 600 > 1000: loading b evicted a, the only other resident model.
     let r = runtime.residency();
     assert!(!r.is_resident(ma.id()), "{r:?}");
     assert!(r.is_resident(mb.id()));
@@ -348,33 +348,32 @@ fn loading_past_the_budget_evicts_the_least_recently_used() {
     assert_eq!(a.count("reload_model"), 1);
 
     // A third model that fits alongside a evicts nothing.
-    let mc = runtime.scripted_in(c.clone(), 30);
+    let mc = runtime.scripted_in(c.clone(), 300);
     let r = runtime.residency();
     assert!(r.is_resident(ma.id()) && r.is_resident(mc.id()));
     assert_eq!(runtime.stats().evictions, 2, "{:?}", runtime.stats());
 
-    // Now b comes back (60): a is the least recently used of {a, c}.
+    // Now b comes back (600): a is the least recently used of {a, c}.
     mb.generate("y").text().unwrap();
     let r = runtime.residency();
     assert!(r.is_resident(mb.id()));
     assert!(r.is_resident(mc.id()), "c was used more recently than a");
     assert!(!r.is_resident(ma.id()));
-    assert_eq!(r.resident_mb(), 90);
+    assert_eq!(r.resident_mb(), 900);
     let stats = runtime.stats();
     assert_eq!(stats.models, 3);
     assert_eq!(stats.resident_models, 2);
-    assert_eq!(stats.estimated_resident_mb, 90);
+    assert_eq!(stats.estimated_resident_mb, 900);
 }
 
 #[test]
-fn a_model_that_does_not_fit_at_all_is_still_loaded() {
-    // Nothing to evict cannot mean nothing to load: the engine's own
-    // admission decides, and a scripted engine admits.
-    let runtime = Runtime::builder().resident_budget_mb(10).build().unwrap();
-    let a = Script::new().say(["a"]);
-    let ma = runtime.scripted_in(a.clone(), 60);
-    assert!(runtime.residency().is_resident(ma.id()));
-    assert_eq!(ma.generate("x").text().unwrap(), "a");
+fn an_explicit_zero_budget_refuses_a_load_without_registering_a_model() {
+    let runtime = Runtime::builder()
+        .resident_memory_budget_mb(0)
+        .build()
+        .unwrap();
+    assert!(runtime.load("/synthetic/missing.gguf").is_err());
+    assert!(runtime.residency().models.is_empty());
 }
 
 #[test]

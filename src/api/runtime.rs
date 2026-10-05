@@ -98,9 +98,6 @@ pub(crate) struct RuntimeInner {
     /// time, so two turns racing to restore two models cannot both pass a
     /// check the other's weights then break.
     admission: Mutex<()>,
-    /// Resident-memory budget in MB, when fixed rather than read from the
-    /// memory governor. Tests pin it; a real runtime asks the machine.
-    budget_mb: Option<u64>,
     /// Models evicted to make room, over the runtime's life.
     evictions: AtomicU64,
     /// Reservations remain live until the decision worker drops its session.
@@ -280,14 +277,26 @@ impl Runtime {
         self.inner.decision_reserved_mb.load(Ordering::SeqCst)
     }
 
-    fn respect_decision_reservations(&self, extra_mb: u64) -> Result<()> {
-        if self.decision_reserved_mb() > 0 && !self.can_admit(extra_mb) {
+    fn require_admission(&self, extra_mb: u64) -> Result<()> {
+        if self.can_admit(extra_mb) {
+            return Ok(());
+        }
+        if self.decision_reserved_mb() > 0 {
             return Err(crate::decision::DecisionError::ResourceLimit(
                 "resident decisions leave insufficient memory for this model".into(),
             )
             .into());
         }
-        Ok(())
+        let governor = self.inner.config.memory_governor();
+        Err(Error::Load(format!(
+            "runtime admission denied by residency policy: model_mb={extra_mb}, resident_mb={}, inference_budget_mb={}, process_mb={}, process_soft_limit_mb={}, available_mb={}, pressure={:?}",
+            self.residency().resident_mb(),
+            governor.budgets().inference_resident_mb,
+            governor.snapshot().estimated_process_mb,
+            governor.budgets().process_soft_limit_mb,
+            governor.snapshot().available_memory_mb,
+            governor.pressure(),
+        )))
     }
     /// A runtime with default policy.
     pub fn new() -> Result<Self> {
@@ -351,7 +360,7 @@ impl Runtime {
         let _admission = self.inner.admission.lock();
         let engine = {
             self.make_room(estimated_mb, None);
-            self.respect_decision_reservations(estimated_mb)?;
+            self.require_admission(estimated_mb)?;
             let mut builder = Engine::builder()
                 .model(path)
                 .settings(self.inner.settings.clone())
@@ -535,7 +544,7 @@ impl Runtime {
         // controller's idle unload, say). Same restore.
         loaded.set_resident(false);
         self.make_room(loaded.estimated_mb, Some(id));
-        self.respect_decision_reservations(loaded.estimated_mb)?;
+        self.require_admission(loaded.estimated_mb)?;
         loaded.engine.reload_model()?;
         loaded.set_resident(true);
         Ok(())
@@ -545,8 +554,7 @@ impl Runtime {
     /// `extra_mb` more fits the budget or nothing evictable is left.
     ///
     /// Called with the admission lock held. Best effort: when nothing can
-    /// be evicted, the load or restore proceeds and the engine's own
-    /// admission check has the final say.
+    /// be evicted, the caller must refuse admission before loading or restoring.
     fn make_room(&self, extra_mb: u64, keep: Option<ModelId>) {
         loop {
             if self.can_admit(extra_mb) {
@@ -576,14 +584,9 @@ impl Runtime {
         let Some(projected) = ledger.checked_add(extra_mb) else {
             return false;
         };
-        match self.inner.budget_mb {
-            Some(budget) => projected <= budget,
-            None => {
-                let governor = crate::memory::current_memory_governor();
-                projected <= governor.budgets().inference_resident_mb
-                    && governor.can_load_additional_model(extra_mb)
-            }
-        }
+        let governor = self.inner.config.memory_governor();
+        projected <= governor.budgets().inference_resident_mb
+            && governor.can_load_additional_model(extra_mb)
     }
 
     /// The resident local model used longest ago, other than `keep`.
@@ -655,6 +658,8 @@ impl Runtime {
         let _admission = self.inner.admission.lock();
         let engine = {
             self.make_room(estimated_mb, None);
+            self.require_admission(estimated_mb)
+                .expect("scripted model fits its test budget");
             Engine::scripted_with_config(script, self.inner.config.clone())
         };
         let model = self.register(Loaded::new(
@@ -757,7 +762,6 @@ impl std::fmt::Debug for Runtime {
 pub struct RuntimeBuilder {
     config: ControllerConfig,
     settings: Option<Settings>,
-    budget_mb: Option<u64>,
 }
 
 impl RuntimeBuilder {
@@ -784,13 +788,18 @@ impl RuntimeBuilder {
     }
 
     /// Set the host application's resident-memory budget in MiB instead of
-    /// using the automatic governor. Includes chat weights and decision peak
-    /// reservations. The host must leave space for its own UI and other work.
+    /// using the automatic inference allocation. Includes chat weights and
+    /// decision peak reservations. Live memory pressure and process ceilings
+    /// still apply at both runtime and controller admission. The host must
+    /// leave space for its own UI and other work.
     pub(crate) fn resident_budget_mb(mut self, mb: u64) -> Self {
-        self.budget_mb = Some(mb);
+        self.config.resident_memory_budget_mb = Some(mb);
         self
     }
 
+    /// Set the inference allocation shared by runtime and controller admission.
+    /// Live memory pressure and process ceilings still apply; zero refuses
+    /// local model admission. The value is in MiB, not decimal megabytes.
     pub fn resident_memory_budget_mb(self, mb: u64) -> Self {
         self.resident_budget_mb(mb)
     }
@@ -804,7 +813,6 @@ impl RuntimeBuilder {
                 models: Mutex::new(HashMap::new()),
                 next_id: AtomicU64::new(0),
                 admission: Mutex::new(()),
-                budget_mb: self.budget_mb,
                 evictions: AtomicU64::new(0),
                 decision_reserved_mb: AtomicU64::new(0),
                 decision_models: Mutex::new(Vec::new()),
@@ -1096,18 +1104,18 @@ mod tests {
     #[test]
     fn decision_reservations_block_chat_restore_and_release_exactly() {
         let runtime = Runtime::builder()
-            .resident_memory_budget_mb(10)
+            .resident_memory_budget_mb(1000)
             .build()
             .unwrap();
-        let chat = runtime.scripted_in(Script::new(), 8);
+        let chat = runtime.scripted_in(Script::new(), 800);
         Runtime::unload(chat.loaded()).unwrap();
         runtime
             .inner
             .decision_reserved_mb
-            .store(6, Ordering::SeqCst);
+            .store(600, Ordering::SeqCst);
         let reservation = DecisionReservation {
             inner: runtime.inner.clone(),
-            mb: 6,
+            mb: 600,
         };
         assert!(matches!(
             runtime.restore(chat.id(), chat.loaded()),
@@ -1115,7 +1123,7 @@ mod tests {
                 crate::decision::DecisionError::ResourceLimit(_)
             ))
         ));
-        assert_eq!(runtime.stats().decision_reserved_mb, 6);
+        assert_eq!(runtime.stats().decision_reserved_mb, 600);
         drop(reservation);
         runtime.restore(chat.id(), chat.loaded()).unwrap();
         assert_eq!(runtime.decision_reserved_mb(), 0);
@@ -1132,6 +1140,39 @@ mod tests {
             .decision_reserved_mb
             .store(u64::MAX - 1, Ordering::SeqCst);
         assert!(!runtime.can_admit(2));
+    }
+
+    #[test]
+    fn public_host_budget_reaches_controller_and_refuses_initial_load() {
+        let runtime = Runtime::builder()
+            .resident_memory_budget_mb(0)
+            .build()
+            .unwrap();
+        let script = Script::new();
+        let (engine, join) = crate::controller::start_controller_with_engine(
+            runtime.inner.config.clone(),
+            script.clone().into_engine_factory(),
+        );
+        assert_eq!(engine.config().resident_memory_budget_mb, Some(0));
+        let (resp, rx) = std::sync::mpsc::channel();
+        engine
+            .send(crate::controller::ControllerCmd::LoadModel {
+                model_path: "/synthetic/not-loaded.gguf".into(),
+                mmproj_path: None,
+                settings: Default::default(),
+                api_key: None,
+                api_format: None,
+                api_model: None,
+                resp,
+            })
+            .unwrap();
+        let error = rx.recv().unwrap().unwrap_err();
+        engine
+            .send(crate::controller::ControllerCmd::Shutdown)
+            .unwrap();
+        join.join().unwrap();
+        assert!(error.contains("inference_budget_mb=0"), "{error}");
+        assert_eq!(script.count("load_model"), 0);
     }
 
     #[test]
