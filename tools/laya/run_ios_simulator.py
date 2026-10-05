@@ -14,12 +14,23 @@ def command(*args, timeout=180):
 def main(app, output):
     output.mkdir(parents=True, exist_ok=True)
     inventory = json.loads(command("xcrun", "simctl", "list", "--json"))
+    (output / "simulator-inventory.json").write_text(json.dumps(inventory, indent=2) + "\n", encoding="utf-8")
     runtimes = [r for r in inventory["runtimes"] if r.get("isAvailable") and ".iOS-" in r["identifier"]]
     if not runtimes:
         raise RuntimeError("No available iOS simulator runtime; install one with Xcode")
     runtime = max(runtimes, key=lambda r: tuple(map(int, r["version"].split("."))))
-    devices = [d for d in inventory["devicetypes"] if d.get("productFamily") == "iPhone"]
-    device = devices[-1]
+    # productFamily=iPhone also includes old iPods. Reuse the *type* of a
+    # preconfigured iPhone paired with this runtime, never an arbitrary last item.
+    paired = [d for d in inventory["devices"].get(runtime["identifier"], [])
+              if d.get("isAvailable") and d["name"].startswith("iPhone")]
+    if not paired:
+        raise RuntimeError("No available iPhone is paired with the installed runtime; create one in Xcode")
+    existing = paired[0]
+    matches = [d for d in inventory["devicetypes"]
+               if d["identifier"] == existing.get("deviceTypeIdentifier") or d["name"] == existing["name"]]
+    if not matches:
+        raise RuntimeError("Could not resolve the paired iPhone's device type")
+    device = matches[0]
     identifier = command("xcrun", "simctl", "create", "Gen2 Laya smoke", device["identifier"], runtime["identifier"])
     assert re.fullmatch(r"[0-9A-Fa-f-]{36}", identifier), "Unexpected created simulator ID"
     try:

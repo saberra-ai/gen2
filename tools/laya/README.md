@@ -254,6 +254,7 @@ On Windows x64, CPU, ONNX Runtime 1.24.4:
 | Mobile C boundary | Windows single/batch/long scans, budgets, deadlines, capability inspection and lifecycle pass; device runs pending |
 | Android arm64 Rust/JNI/native dependency set | NDK r27d, API 24, ORT 1.24.3 linked; exports, dependency names and 16 KiB ELF alignment verified |
 | Android debug host APK | built and signature-verified; native hashes, uncompressed 16 KiB alignment, synthetic assets and no permissions checked; no attached device |
+| iOS arm64 device/simulator SDK package | iOS 15.1, ORT 1.24.2, Xcode 26.6; Swift link, exports and XCFramework inspection pass; execution pending |
 | Quality evaluation tools | six analytic/leakage tests and native synthetic pipeline passed; application holdout still required |
 | Cross-state native batches, all three checkpoints | independent Python corpus passes, including empty states and heterogeneous rows |
 | Local checkpoint exporter | English weights repackaged through local path; export and Rust inference passed with content-bound provenance (not a fine-tune quality test) |
@@ -265,8 +266,8 @@ measurements with two CPU threads and three runs per shape, not mobile latency
 or thermal guarantees. Manifests, exact input corpus, eager/ONNX references and
 shape reports are archived in `evidence/windows-x64/`.
 
-This is an implementation preview. Domain-quality holdouts, macOS native
-qualification, Windows arm64, iOS packaging and both mobile device/lifecycle tests
+This is an implementation preview. Domain-quality holdouts, macOS real-model
+qualification, Windows arm64, signed iOS installation and both mobile device/lifecycle tests
 remain tracked gates. A successful compile or synthetic graph does not qualify
 a real checkpoint on a mobile platform. See the approved scope in
 `docs/plans/laya-support-design.html` and `examples/laya-mobile/README.md`.
@@ -295,5 +296,5 @@ The desktop native smoke and Android packaging CI lanes passed at commit
 [`evidence/ci/desktop-android.json`](evidence/ci/desktop-android.json). They cover
 synthetic inference on Windows/Linux/macOS and Android native/APK packaging.
 The separate Apple SDK workflow builds device/simulator libraries and links the
-Swift host; complete Apple SDK inspection remains pending (the first build linked both slices, but Xcode nm could not read newer Rust bitcode; the lane now uses Rust LLVM tools). Neither lane replaces real-model
+Swift host; Apple SDK inspection passes at iOS 15.1 (see `evidence/ios-arm64/sdk-build-evidence.json`). The new app/simulator execution lane remains pending. Neither lane replaces real-model
 or physical-device qualification.

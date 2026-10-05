@@ -38,11 +38,11 @@
   "long_input_admission": "Input byte and graph-envelope limits are checked before tokenization; real long-state reference still passes",
   "long_worker_ownership": "Tokenization and all windows execute as one bounded worker job using its tokenizer; queue saturation, unload and Tokio future-drop resource-lifetime tests pass; English six-window upstream parity passes",
   "quality_tooling": "Six analytic/leakage tests and synthetic native pipeline passed; no application accuracy claim",
-  "performance_tooling": "Full 12-case Rust/Python matrix implemented. Updated-code run interrupted by session reset; partial files preserved in target/laya/benchmarks-worker-scan-20261004. No completed latency gate. Concurrent SDK/Gradle activity is recorded as a host-load confound.",
+  "performance_tooling": "Full 12-case Rust/Python matrix implemented. Earlier interrupted partial files preserved. Fresh current-runtime-code run launched under target/laya/benchmarks-main-e5e876e with source and host provenance; no completed latency gate yet.",
   "qualification_still_required": [
     "macOS real checkpoint family execution",
     "Windows ARM64 native execution",
-    "iOS SDK build and native packaging; Android installation; both physical-device family execution (Android native libraries and debug APK built)",
+    "Signed iOS installation and Android installation; both physical-device family execution (Apple SDK libraries/framework and Android APK built)",
     "accelerator graph partitioning, parity, memory and performance",
     "100-call latency matrix, Python baseline and chat coexistence",
     "mobile memory pressure, suspend/resume and thermal behavior",
@@ -53,5 +53,6 @@
     "passed": 1180,
     "ignored": 17
   },
-  "staged_fixture_integrity": "All Git-index smoke bundle file hashes and sizes match the manifest; .gitattributes preserves exact fixture/evidence bytes"
+  "staged_fixture_integrity": "All Git-index smoke bundle file hashes and sizes match the manifest; .gitattributes preserves exact fixture/evidence bytes",
+  "ios_sdk_package": "Apple SDK device/simulator arm64 libraries, Swift final link, C exports and XCFramework inspection passed at iOS 15.1; see ../ios-arm64/sdk-build-evidence.json. App/simulator execution lane newly added, not yet qualified."
 }

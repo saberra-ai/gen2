@@ -9,7 +9,7 @@ private enum SmokeFailure: Error, CustomStringConvertible {
 
 // The Rust registry owns native resources. The lock only protects our handle ID;
 // never hold it across inference, resume or shutdown.
-private final class NativeRun {
+private final class NativeRun: @unchecked Sendable {
     private let lock = NSLock()
     private var handle: UInt64?
     func set(_ value: UInt64?) { lock.lock(); handle = value; lock.unlock() }
@@ -94,7 +94,7 @@ private final class NativeRun {
             try require(((scan?["windows"] as? [Any])?.count ?? 0) > 1, "multi-window decision")
             let expired = try envelope(LayaSmoke.invoke(handle: id, invocationJSON: json([
                 "operation": "decide", "request": request, "options": ["timeout_ms": 0]])))
-            try require(expired["ok"] as? Bool == false, "expired deadline rejected")
+            try require(expired["ok"] as? Bool == false && (expired["error"] as? String)?.lowercased().contains("deadline") == true, "expired deadline rejected")
             _ = try value(LayaSmoke.suspend(handle: id))
             let suspended = try envelope(LayaSmoke.decide(handle: id, requestJSON: json(request)))
             try require(suspended["ok"] as? Bool == false, "suspended inference rejected")
