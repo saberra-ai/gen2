@@ -541,12 +541,19 @@ impl Backend for FakeBackend {
         self.script.record("end_session");
         // Saturating: a controller that ends the same session twice is a bug
         // worth seeing as a count, not as a panic inside the fake.
-        let _ = self
-            .script
-            .live_sessions
-            .fetch_update(Ordering::SeqCst, Ordering::SeqCst, |n| {
-                Some(n.saturating_sub(1))
-            });
+        let count = &self.script.live_sessions;
+        let mut observed = count.load(Ordering::SeqCst);
+        while observed != 0 {
+            match count.compare_exchange_weak(
+                observed,
+                observed - 1,
+                Ordering::SeqCst,
+                Ordering::SeqCst,
+            ) {
+                Ok(_) => break,
+                Err(current) => observed = current,
+            }
+        }
         Ok(())
     }
 

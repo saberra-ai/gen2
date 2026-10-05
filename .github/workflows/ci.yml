@@ -80,7 +80,9 @@ jobs:
       - name: Prepare pinned NDK and Android runtime
         shell: bash
         run: |
-          sdkmanager 'ndk;27.3.13750724' 'platforms;android-35' 'build-tools;35.0.0'
+          SDKMANAGER="$(find "$ANDROID_SDK_ROOT/cmdline-tools" -type f -name sdkmanager | sort -V | tail -n 1)"
+          test -x "$SDKMANAGER"
+          "$SDKMANAGER" --sdk_root="$ANDROID_SDK_ROOT" 'ndk;27.3.13750724' 'platforms;android-35' 'build-tools;35.0.0'
           NDK="$ANDROID_SDK_ROOT/ndk/27.3.13750724"
           BIN="$NDK/toolchains/llvm/prebuilt/linux-x86_64/bin"
           mkdir -p target/laya/android
