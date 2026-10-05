@@ -103,5 +103,10 @@
         "Complete job"
       ]
     }
+  ],
+  "overall_workflow_conclusion": "failure",
+  "other_job_failures": [
+    "Windows default suite: three MCP mock-process handshake timeouts; this job passed on the next commit without a source fix",
+    "macOS first-run Qwen/Metal example: 120-second generation deadline exceeded on the hosted Apple Paravirtual GPU"
   ]
 }

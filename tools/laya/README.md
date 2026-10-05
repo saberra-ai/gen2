@@ -1,4 +1,4 @@
-# Native Laya integration — experimental
+# Native Laya integration â€” experimental
 
 `Runtime::load_decider(bundle_directory, LoadOptions)` returns a cloneable
 `DecisionModel`. It supports ordered text/JSON/conversation requests, choice,
@@ -295,5 +295,5 @@ The desktop native smoke and Android packaging CI lanes passed at commit
 [`evidence/ci/desktop-android.json`](evidence/ci/desktop-android.json). They cover
 synthetic inference on Windows/Linux/macOS and Android native/APK packaging.
 The separate Apple SDK workflow builds device/simulator libraries and links the
-Swift host; its first result remains pending. Neither lane replaces real-model
+Swift host; complete Apple SDK inspection remains pending (the first build linked both slices, but Xcode nm could not read newer Rust bitcode; the lane now uses Rust LLVM tools). Neither lane replaces real-model
 or physical-device qualification.

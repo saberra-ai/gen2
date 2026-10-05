@@ -62,8 +62,8 @@ This patch version is separate from the desktop and Android runtimes and still
 requires iOS parity qualification. A reduced operator build needs its own
 graph-coverage testing.
 
-On a macOS build host with Xcode and both Rust iOS targets installed, extract
-that archive and run:
+On a macOS build host with Xcode, both Rust iOS targets and the active toolchain's
+`llvm-tools-preview` component installed, extract that archive and run:
 
 ```sh
 bash tools/laya/build_ios.sh /absolute/path/onnxruntime.xcframework
@@ -71,7 +71,7 @@ bash tools/laya/build_ios.sh /absolute/path/onnxruntime.xcframework
 
 The script sets `ORT_IOS_XCFWK_PATH`, builds arm64 device and simulator libraries,
 links `LayaSmoke.swift` against the C ABI and runtime for both targets, and packages
-`target/laya/ios/build/Gen2Laya.xcframework`. The build floor is iOS 15.0.
+`target/laya/ios/build/Gen2Laya.xcframework`. The build floor is iOS 15.1.
 `inspect_ios.py` checks slices, exported C symbols and linked host binaries, then
 records hashes and toolchain versions. Choose a fresh output directory as the
 second argument for repeat builds. The CI job uploads these products and evidence.

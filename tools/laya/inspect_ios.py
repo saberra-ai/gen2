@@ -16,6 +16,20 @@ def digest(path):
 
 
 def inspect(output, runtime):
+    # Rust archives can contain bitcode newer than Xcode's LLVM reader. Use the
+    # matching rustup component for archive symbols; Xcode still links the host.
+    host = next(line.split(": ", 1)[1] for line in command("rustc", "-vV").splitlines()
+                if line.startswith("host: "))
+    nm = Path(command("rustc", "--print", "sysroot")) / "lib/rustlib" / host / "bin/llvm-nm"
+    if not nm.is_file():
+        raise RuntimeError("Install the active toolchain's llvm-tools-preview rustup component")
+    runtime_slices = plistlib.loads((runtime / "Info.plist").read_bytes())["AvailableLibraries"]
+    for runtime_slice in runtime_slices:
+        if runtime_slice["SupportedPlatform"] == "ios":
+            info = runtime / runtime_slice["LibraryIdentifier"] / runtime_slice["LibraryPath"] / "Info.plist"
+            metadata = plistlib.loads(info.read_bytes())
+            assert metadata["MinimumOSVersion"] == "15.1", "Requalify a changed runtime deployment floor"
+            assert metadata["CFBundleShortVersionString"] == "1.24.2", "Requalify a changed runtime version"
     framework = output / "Gen2Laya.xcframework"
     metadata = plistlib.loads((framework / "Info.plist").read_bytes())
     slices = metadata["AvailableLibraries"]
@@ -28,7 +42,7 @@ def inspect(output, runtime):
         assert slice_info["SupportedArchitectures"] == ["arm64"]
         library = framework / slice_info["LibraryIdentifier"] / slice_info["LibraryPath"]
         assert command("xcrun", "lipo", "-archs", str(library)) == "arm64"
-        exported = command("xcrun", "nm", "-gU", str(library))
+        exported = command(str(nm), "--extern-only", "--defined-only", str(library))
         actual = {line.split()[-1].removeprefix("_") for line in exported.splitlines() if line.split()}
         assert symbols <= actual, f"Missing C exports: {symbols - actual}"
         artifacts.append({"path": str(library.relative_to(output)), "sha256": digest(library)})
@@ -42,9 +56,10 @@ def inspect(output, runtime):
         "device_execution": False,
         "simulator_execution": False,
         "real_checkpoint_qualification": False,
-        "deployment_target": "15.0",
+        "deployment_target": "15.1",
         "commit": command("git", "rev-parse", "HEAD"),
         "rust": command("rustc", "--version"),
+        "archive_symbol_tool": command(str(nm), "--version"),
         "xcode": command("xcodebuild", "-version"),
         "runtime_info_sha256": digest(runtime / "Info.plist"),
         "runtime_binaries": [{"path": str(p.relative_to(runtime)), "sha256": digest(p)}

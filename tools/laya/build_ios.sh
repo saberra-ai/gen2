@@ -8,7 +8,7 @@ OUT="${2:-$ROOT/target/laya/ios/build}"
 mkdir -p "$OUT"
 OUT="$(cd "$OUT" && pwd)"
 test ! -e "$OUT/Gen2Laya.xcframework" || { echo 'Choose a fresh output directory.' >&2; exit 1; }
-export IPHONEOS_DEPLOYMENT_TARGET=15.0
+export IPHONEOS_DEPLOYMENT_TARGET=15.1
 # The full ORT Apple framework includes CoreML even when CPU inference is selected.
 export RUSTFLAGS="${RUSTFLAGS:-} -C link-arg=-framework -C link-arg=CoreML -C link-arg=-framework -C link-arg=Accelerate -C link-arg=-framework -C link-arg=Foundation -C link-arg=-lc++"
 mkdir -p "$OUT/headers"
@@ -17,11 +17,11 @@ printf 'module Gen2Laya { header "gen2_laya.h" export * }\n' > "$OUT/headers/mod
 for TARGET in aarch64-apple-ios aarch64-apple-ios-sim; do
   if [[ "$TARGET" == aarch64-apple-ios ]]; then
     SDK=iphoneos
-    SWIFT_TARGET=arm64-apple-ios15.0
+    SWIFT_TARGET=arm64-apple-ios15.1
     SLICE=ios-arm64
   else
     SDK=iphonesimulator
-    SWIFT_TARGET=arm64-apple-ios15.0-simulator
+    SWIFT_TARGET=arm64-apple-ios15.1-simulator
     SLICE=ios-arm64_x86_64-simulator
     if [[ ! -d "$ORT_IOS_XCFWK_PATH/$SLICE" ]]; then SLICE=ios-arm64-simulator; fi
   fi

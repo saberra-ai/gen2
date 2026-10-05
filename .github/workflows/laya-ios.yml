@@ -26,6 +26,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
         with:
           targets: aarch64-apple-ios,aarch64-apple-ios-sim
+          components: llvm-tools-preview
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
