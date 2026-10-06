@@ -44,16 +44,19 @@ fn fallback_tool_messages(messages: Vec<Message>) -> Vec<Message> {
                     "tool_call_id": message.tool_call_id, "content": message.text()
                 })
             );
-            message = Message::user(text.clone());
-            if let Some(previous) = rendered.last_mut()
-                && previous.role == "user"
-                && let MessageBody::Content { content } = &mut previous.body
-            {
-                content.push(MessageChunk::Text {
-                    text: format!("\n{text}"),
-                });
-                continue;
-            }
+            message = Message::user(text);
+        }
+        // An interrupted turn may have no committed assistant message. Keep
+        // both inputs without inventing an assistant reply for strict templates.
+        if message.role == "user"
+            && let Some(previous) = rendered.last_mut()
+            && previous.role == "user"
+            && let MessageBody::Content { content } = &mut previous.body
+        {
+            content.push(MessageChunk::Text {
+                text: format!("\n\n{}", message.text()),
+            });
+            continue;
         }
         rendered.push(message);
     }
@@ -348,6 +351,23 @@ mod tests {
         assert!(out.contains("tool:native result"));
         assert!(!out.contains(FALLBACK_TOOL_PROMPT));
         assert!(!out.contains("Tool result (data)"));
+    }
+
+    #[test]
+    fn fallback_replays_unanswered_user_turn_without_fabricated_assistant() {
+        let template = r#"{% for m in messages %}{% if (m.role == 'user') != (loop.index0 % 2 == 0) %}{{ raise_exception('roles must alternate') }}{% endif %}{{ m.role }}: {{ m.content }}{% endfor %}"#;
+        let ct = ChatTemplate::new(template.into(), None, None);
+        let out = ct
+            .apply(
+                vec![
+                    Message::user("interrupted input"),
+                    Message::user("follow up"),
+                ],
+                None,
+                None,
+            )
+            .unwrap();
+        assert_eq!(out, "user: interrupted input\n\nfollow up");
     }
 
     /// Tracer for `ChatTemplate::supports_system_role`. Gemma 2's
