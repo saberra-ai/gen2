@@ -235,7 +235,21 @@ impl ChatTemplate {
                 {
                     content.push(MessageChunk::Text { text });
                 }
-                Some(tools)
+                // Templates expect tool *definitions* with an object-valued
+                // parameters schema, distinct from a call's arguments payload.
+                Some(
+                    tools
+                        .into_iter()
+                        .map(|tool| {
+                            serde_json::json!({
+                                "type": tool.r#type,
+                                "function": {"name": tool.function.name,
+                                    "description": tool.function.description,
+                                    "parameters": tool.function.arguments}
+                            })
+                        })
+                        .collect(),
+                )
             }
             None => None,
         };
@@ -351,6 +365,35 @@ mod tests {
         assert!(out.contains("tool:native result"));
         assert!(!out.contains(FALLBACK_TOOL_PROMPT));
         assert!(!out.contains("Tool result (data)"));
+    }
+
+    #[test]
+    fn native_template_receives_schema_calls_and_matched_results() {
+        let template = r#"schema={{ tools[0].function.parameters.properties.source_id.type }};{% for m in messages %}{% if m.tool_calls %}{% for call in m.tool_calls %}call={{ call.id }}:{{ call.function.name }}:{{ call.function.arguments.source_id }};{% endfor %}{% elif m.role == 'tool' %}result={{ m.tool_call_id }}:{{ m.content }};{% endif %}{% endfor %}"#;
+        let ct = ChatTemplate::new(template.into(), None, None);
+        let call = ToolCall {
+            id: "read-1".into(),
+            r#type: "function".into(),
+            function: FunctionDefinition {
+                name: "read_source".into(),
+                description: None,
+                arguments: serde_json::json!({"source_id":"note-1"}),
+            },
+        };
+        let out = ct
+            .apply(
+                vec![
+                    Message::user("read"),
+                    Message::assistant_tool_calls(vec![call]),
+                    Message::tool_result_for("read-1", "actual source"),
+                ],
+                Some((vec![test_tool()], "Use tools.".into())),
+                None,
+            )
+            .unwrap();
+        assert!(out.contains("schema=string;"), "{out}");
+        assert!(out.contains("call=read-1:read_source:note-1;"), "{out}");
+        assert!(out.contains("result=read-1:actual source"), "{out}");
     }
 
     #[test]

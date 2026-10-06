@@ -388,21 +388,30 @@ pub struct TextMessage {
     pub content: String,
     #[serde(default)]
     pub tool_call_id: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub name: Option<String>,
+    #[serde(default, skip_serializing_if = "Vec::is_empty")]
+    pub tool_calls: Vec<serde_json::Value>,
 }
 
 impl From<Message> for TextMessage {
     fn from(value: Message) -> Self {
-        let content = match value.body {
-            MessageBody::Content { content } => content,
+        let (content, tool_calls) = match value.body {
+            MessageBody::Content { content } => (content, vec![]),
             MessageBody::Tool { tool_calls } => {
-                let content = serde_json::to_string(&tool_calls).unwrap_or_default();
-                MessageContent::SingleText(content)
+                let calls = tool_calls.into_iter().map(|call| serde_json::json!({
+                    "id": call.id, "type": call.r#type,
+                    "function": {"name": call.function.name, "arguments": call.function.arguments}
+                })).collect();
+                (MessageContent::SingleText(String::new()), calls)
             }
         };
         TextMessage {
             role: value.role,
             content: content.as_visible_text(),
-            ..Default::default()
+            tool_call_id: value.tool_call_id,
+            name: value.name,
+            tool_calls,
         }
     }
 }
@@ -415,7 +424,7 @@ pub struct ChatTemplateInputs<'a> {
     pub(crate) eos_token: Option<&'a str>,
     pub(crate) add_generation_prompt: bool,
     pub(crate) enable_thinking: Option<bool>,
-    pub(crate) tools: Option<Vec<ToolSpec>>,
+    pub(crate) tools: Option<Vec<serde_json::Value>>,
 }
 
 #[cfg(test)]
