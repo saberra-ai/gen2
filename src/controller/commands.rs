@@ -116,6 +116,29 @@ fn attempt_load(
         fatal: load_error_is_fatal(&e),
     };
 
+    let mut settings = settings;
+    if state.residency_policy.llm_swap_requires_unload && state.residency.llm.is_some() {
+        state.engine.unload_model();
+        let _ = state.residency.unload(RuntimeKind::Llm);
+    }
+    let governor = state.config.memory_governor();
+    let budget = crate::residency_policy::available_for_model_mb(&governor).min(
+        governor
+            .budgets()
+            .inference_resident_mb
+            .saturating_sub(state.residency.total_estimated_mb()),
+    );
+    let memory_plan = crate::residency_policy::plan_gguf(
+        &model_path,
+        mmproj_path.as_deref(),
+        &settings,
+        state.config.max_active_chats,
+        budget,
+    )
+    .map_err(fatal_str)?;
+    if let Some(plan) = &memory_plan {
+        settings.system.ctx_size = Some(plan.context_tokens);
+    }
     let mut load_req = build_load_request(model_path, mmproj_path, &settings);
     load_req.api_key = api_key;
     load_req.api_format = api_format;
@@ -124,15 +147,15 @@ fn attempt_load(
     let runtime_name = load_req.model_path.display().to_string();
     // Offloaded weights live in VRAM, not host RAM — don't deny a
     // GPU-bound model on a RAM-tight host (residency_policy.rs).
-    let estimated_mb = estimate_resident_mb_for_path_offloaded(
-        &load_req.model_path,
-        load_req.model_params.gpu_layers,
+    let estimated_mb = memory_plan.as_ref().map_or_else(
+        || {
+            estimate_resident_mb_for_path_offloaded(
+                &load_req.model_path,
+                load_req.model_params.gpu_layers,
+            )
+        },
+        |plan| plan.total_mb,
     );
-    let governor = state.config.memory_governor();
-    if state.residency_policy.llm_swap_requires_unload && state.residency.llm.is_some() {
-        state.engine.unload_model();
-        let _ = state.residency.unload(RuntimeKind::Llm);
-    }
     if !state
         .residency
         .can_admit(RuntimeKind::Llm, estimated_mb, &governor)

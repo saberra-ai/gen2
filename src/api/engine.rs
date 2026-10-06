@@ -877,7 +877,10 @@ impl EngineBuilder {
                 // resident, not for one. Every live conversation holds its own
                 // KV cache, so a window picked for a single chat is exceeded
                 // as soon as a second one opens.
-                _ => Some(info.max_context_for(&hw, config.max_active_chats)),
+                _ => settings
+                    .system
+                    .ctx_size
+                    .or_else(|| Some(info.max_context_for(&hw, config.max_active_chats))),
             };
             let fit = info.fits(&hw, wanted);
             if !fit.ok() {

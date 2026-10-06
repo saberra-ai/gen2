@@ -29,6 +29,13 @@ pub struct Model {
 }
 
 impl Model {
+    /// Actual GGUF context and estimated host allocation selected at load time.
+    /// Other formats/backends may not provide a plan. This is an estimate, not
+    /// measured peak RSS. Automatic context reductions are explicit here.
+    pub fn memory_plan(&self) -> Option<&crate::advanced::fit::ModelMemoryPlan> {
+        self.loaded.memory_plan.as_ref()
+    }
+
     pub(crate) fn new(runtime: Arc<RuntimeInner>, id: ModelId, loaded: Arc<Loaded>) -> Self {
         Self {
             runtime,

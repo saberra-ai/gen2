@@ -53,6 +53,7 @@ pub mod runtime {
 /// cannot fit fails with [`Error::fit`](crate::Error::fit) set.
 pub mod fit {
     pub use crate::api::{FileModelInfo as ModelInfo, Fit, FitVerdict};
+    pub use crate::residency_policy::ModelMemoryPlan;
     pub use crate::types::model::ModelMetadata;
 }
 

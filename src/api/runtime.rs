@@ -119,6 +119,7 @@ impl Drop for DecisionReservation {
 
 /// One model the runtime has loaded.
 pub(crate) struct Loaded {
+    pub(crate) memory_plan: Option<crate::residency_policy::ModelMemoryPlan>,
     pub(crate) engine: Engine,
     pub(crate) name: Option<String>,
     pub(crate) source: ModelSourceKind,
@@ -147,6 +148,7 @@ impl Loaded {
         estimated_mb: u64,
     ) -> Self {
         Self {
+            memory_plan: None,
             engine,
             name,
             source,
@@ -180,6 +182,12 @@ impl Loaded {
 }
 
 impl Runtime {
+    /// Current admission limits and measured host memory, for inspection before
+    /// attempting a load. The snapshot can change as other applications allocate.
+    pub fn memory_snapshot(&self) -> crate::advanced::runtime::MemorySnapshot {
+        self.inner.config.memory_governor().snapshot().clone()
+    }
+
     /// Load a complete offline Laya bundle on a dedicated worker.
     pub fn load_decider(
         &self,
@@ -349,7 +357,7 @@ impl Runtime {
         mmproj: Option<PathBuf>,
         source: ModelSourceKind,
     ) -> Result<Model> {
-        let estimated_mb = crate::residency_policy::estimate_resident_mb_for_path_offloaded(
+        let weight_mb = crate::residency_policy::estimate_resident_mb_for_path_offloaded(
             path,
             self.inner.settings.system.gpu_layers,
         );
@@ -358,12 +366,41 @@ impl Runtime {
         // memory. The engine's own admission check is the final say; this
         // only evicts what it can to let that succeed.
         let _admission = self.inner.admission.lock();
+        let mut settings = self.inner.settings.clone();
+        let ideal = crate::residency_policy::plan_gguf(
+            path,
+            mmproj.as_deref(),
+            &settings,
+            self.inner.config.max_active_chats,
+            u64::MAX,
+        )
+        .map_err(Error::Load)?;
+        self.make_room(ideal.as_ref().map_or(weight_mb, |p| p.total_mb), None);
+        let governor = self.inner.config.memory_governor();
+        let budget = crate::residency_policy::available_for_model_mb(&governor).min(
+            governor
+                .budgets()
+                .inference_resident_mb
+                .saturating_sub(self.residency().resident_mb())
+                .saturating_sub(self.decision_reserved_mb()),
+        );
+        let memory_plan = crate::residency_policy::plan_gguf(
+            path,
+            mmproj.as_deref(),
+            &settings,
+            self.inner.config.max_active_chats,
+            budget,
+        )
+        .map_err(Error::Load)?;
+        let estimated_mb = memory_plan.as_ref().map_or(weight_mb, |p| p.total_mb);
+        if let Some(plan) = &memory_plan {
+            settings.system.ctx_size = Some(plan.context_tokens);
+        }
         let engine = {
-            self.make_room(estimated_mb, None);
             self.require_admission(estimated_mb)?;
             let mut builder = Engine::builder()
                 .model(path)
-                .settings(self.inner.settings.clone())
+                .settings(settings)
                 .config(self.inner.config.clone());
             if let Some(mmproj) = mmproj {
                 builder = builder.mmproj(mmproj);
@@ -375,7 +412,9 @@ impl Runtime {
             .file_stem()
             .map(|s| s.to_string_lossy().into_owned())
             .filter(|s| !s.is_empty());
-        let model = self.register(Loaded::new(engine, name, source, header, estimated_mb));
+        let mut loaded = Loaded::new(engine, name, source, header, estimated_mb);
+        loaded.memory_plan = memory_plan;
+        let model = self.register(loaded);
         model.loaded().touch();
         Ok(model)
     }

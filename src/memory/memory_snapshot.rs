@@ -39,7 +39,25 @@ impl MemorySnapshot {
         use super::memory_pressure::classify_pressure;
 
         let tier = detect_machine_tier(input);
-        let budgets = effective_budgets(input);
+        let mut budgets = effective_budgets(input);
+        if !input.is_mobile {
+            // OS-visible available memory excludes our resident pages. Add
+            // those back when setting a total process ceiling, so allocating
+            // weights does not itself make the ceiling fall a second time.
+            // Keep one explicit system reserve, not stacked percentages of
+            // free RAM for every subsystem. Mobile retains its OS policy.
+            let reserve = desktop_system_reserve_mb(input.total_memory_mb);
+            let capacity = estimated_process_mb.saturating_add(input.available_memory_mb);
+            let process_cap = input.total_memory_mb / 4 * 3;
+            budgets.process_soft_limit_mb = capacity.saturating_sub(reserve).min(process_cap);
+            budgets.process_hard_limit_mb = capacity
+                .saturating_sub(reserve / 2)
+                .min(input.total_memory_mb.saturating_sub(reserve / 2))
+                .max(budgets.process_soft_limit_mb);
+            // Admission estimates include weights, context and working buffers.
+            // The process check separately accounts for non-inference RSS.
+            budgets.inference_resident_mb = budgets.process_soft_limit_mb;
+        }
         let pressure = classify_pressure(estimated_process_mb, &budgets);
 
         Self {
@@ -50,6 +68,12 @@ impl MemorySnapshot {
             available_memory_mb: input.available_memory_mb,
         }
     }
+}
+
+/// Desktop headroom heuristic: 1/16 of physical RAM, bounded to 512–4096 MiB.
+/// This is reserved once, outside the model's estimated working set.
+pub fn desktop_system_reserve_mb(total_mb: u64) -> u64 {
+    (total_mb / 16).clamp(512, 4096)
 }
 
 #[cfg(test)]
@@ -77,11 +101,34 @@ mod tests {
 
     #[test]
     fn snapshot_new_detects_severe_pressure() {
-        // 10 GiB machine, ample free RAM → base budgets apply (soft=3072)
-        let input = make_input(10240, 8000);
+        // Available memory has fallen below the explicit system reserve.
+        let input = make_input(10240, 500);
         let snap = MemorySnapshot::new(&input, 3500);
-        // 3500 > soft (3072) → Severe
         assert_eq!(snap.pressure, MemoryPressureLevel::Severe);
+    }
+
+    #[test]
+    fn loading_does_not_shrink_the_desktop_ceiling_again() {
+        let before = MemorySnapshot::new(&make_input(16235, 5000), 100);
+        let after = MemorySnapshot::new(&make_input(16235, 2000), 3100);
+        assert_eq!(
+            before.budgets.process_soft_limit_mb,
+            after.budgets.process_soft_limit_mb
+        );
+        assert_eq!(before.budgets.inference_resident_mb, 4086);
+        assert!(crate::memory::MemoryGovernor::new(before).can_load_additional_model(3700));
+        assert!(crate::memory::MemoryGovernor::new(after).can_load_additional_model(100));
+    }
+
+    #[test]
+    fn real_pressure_and_process_cap_still_refuse_loads() {
+        for available in [0, 200, 1000] {
+            let snap = MemorySnapshot::new(&make_input(16235, available), 3000);
+            assert!(!crate::memory::MemoryGovernor::new(snap).can_load_additional_model(1));
+        }
+        let snap = MemorySnapshot::new(&make_input(16384, 15000), 100);
+        assert_eq!(snap.budgets.process_soft_limit_mb, 12288);
+        assert!(!crate::memory::MemoryGovernor::new(snap).can_load_additional_model(12500));
     }
 
     #[test]

@@ -58,6 +58,112 @@ pub fn effective_context_budget(
 
 use crate::hardware::GpuBackend;
 
+/// Estimated peak host allocation for a GGUF, not a measured RSS guarantee.
+#[derive(Debug, Clone, PartialEq, Eq)]
+pub struct ModelMemoryPlan {
+    /// Combined host estimate for model weights and any vision projector.
+    pub weights_mb: u64,
+    pub context_mb: u64,
+    pub working_mb: u64,
+    pub total_mb: u64,
+    pub context_tokens: u32,
+    pub concurrent_sessions: usize,
+    pub context_reduced: bool,
+    pub admission_budget_mb: u64,
+}
+
+impl ModelMemoryPlan {
+    fn estimate(
+        info: &crate::api::fit::ModelInfo,
+        weights_mb: u64,
+        context: u32,
+        concurrent: usize,
+    ) -> Self {
+        let mib = 1024 * 1024;
+        let fixed = info.memory_needed(0);
+        let working_mb = fixed.saturating_sub(info.file_bytes).div_ceil(mib).max(500);
+        let context_mb = info
+            .memory_needed(context)
+            .saturating_sub(fixed)
+            .saturating_mul(concurrent.max(1) as u64)
+            .div_ceil(mib);
+        Self {
+            weights_mb,
+            context_mb,
+            working_mb,
+            total_mb: weights_mb
+                .saturating_add(context_mb)
+                .saturating_add(working_mb),
+            context_tokens: context,
+            concurrent_sessions: concurrent.max(1),
+            context_reduced: false,
+            admission_budget_mb: 0,
+        }
+    }
+
+    fn select(
+        info: &crate::api::fit::ModelInfo,
+        weights_mb: u64,
+        requested: Option<u32>,
+        concurrent: usize,
+        budget_mb: u64,
+    ) -> Result<Self, String> {
+        let initial = requested.unwrap_or(4096.min(info.train_context.unwrap_or(4096)));
+        let mut context = initial;
+        loop {
+            let mut plan = Self::estimate(info, weights_mb, context, concurrent);
+            plan.context_reduced = context < initial;
+            plan.admission_budget_mb = budget_mb;
+            if plan.total_mb <= budget_mb {
+                return Ok(plan);
+            }
+            if requested.is_some() || context <= 2048 {
+                return Err(format!(
+                    "model admission denied: weights_mb={}, context_mb={}, working_mb={}, total_mb={}, available_for_model_mb={budget_mb}, context_tokens={context}, sessions={concurrent}",
+                    plan.weights_mb, plan.context_mb, plan.working_mb, plan.total_mb,
+                ));
+            }
+            context = (context / 2).max(2048);
+        }
+    }
+}
+
+/// Plan supported GGUFs against live host headroom. An explicitly requested
+/// context is never silently reduced. Other formats retain their backend policy.
+pub(crate) fn plan_gguf(
+    path: &std::path::Path,
+    projector: Option<&std::path::Path>,
+    settings: &crate::engine::Settings,
+    concurrent: usize,
+    budget_mb: u64,
+) -> Result<Option<ModelMemoryPlan>, String> {
+    let Ok(info) = crate::api::fit::ModelInfo::read(path) else {
+        return Ok(None);
+    };
+    let weights = estimate_resident_mb_for_path_offloaded(path, settings.system.gpu_layers)
+        .saturating_add(projector.map_or(0, |p| {
+            estimate_resident_mb_for_path_offloaded(p, settings.system.gpu_layers)
+        }));
+    ModelMemoryPlan::select(
+        &info,
+        weights,
+        settings.system.ctx_size,
+        concurrent,
+        budget_mb,
+    )
+    .map(Some)
+}
+
+pub(crate) fn available_for_model_mb(governor: &crate::memory::MemoryGovernor) -> u64 {
+    governor.budgets().inference_resident_mb.min(
+        governor
+            .budgets()
+            .process_soft_limit_mb
+            .saturating_sub(governor.snapshot().estimated_process_mb)
+            .saturating_sub(1),
+    )
+}
+
 fn file_mb_of(path: &std::path::Path) -> u64 {
     std::fs::metadata(path)
         .ok()
@@ -141,6 +247,53 @@ pub(crate) fn resident_mb_from_file_mb(
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    fn planning_model() -> crate::api::fit::ModelInfo {
+        crate::api::fit::ModelInfo {
+            file_bytes: 2000 * 1024 * 1024,
+            architecture: Some("llama".into()),
+            quantization: None,
+            parameters: None,
+            train_context: Some(8192),
+            supports_tools: false,
+            metadata: crate::types::ModelMetadata {
+                block_count: Some(32),
+                head_count_kv: Some(8),
+                embedding_length: Some(4096),
+                head_count: Some(32),
+                ..Default::default()
+            },
+        }
+    }
+
+    #[test]
+    fn admission_counts_context_working_memory_and_concurrency() {
+        let info = planning_model();
+        let plan = ModelMemoryPlan::select(&info, 2000, Some(4096), 1, 4000).unwrap();
+        assert_eq!(
+            (
+                plan.weights_mb,
+                plan.context_mb,
+                plan.working_mb,
+                plan.total_mb
+            ),
+            (2000, 512, 500, 3012)
+        );
+        let more = ModelMemoryPlan::select(&info, 2000, Some(4096), 2, 4000).unwrap();
+        assert_eq!(more.total_mb, 3524);
+        assert!(ModelMemoryPlan::select(&info, 2000, None, 3, 3000).is_err());
+    }
+
+    #[test]
+    fn only_automatic_context_can_shrink_and_too_large_still_fails() {
+        let info = planning_model();
+        let plan = ModelMemoryPlan::select(&info, 2000, None, 1, 2800).unwrap();
+        assert_eq!(plan.context_tokens, 2048);
+        assert!(plan.context_reduced);
+        assert!(ModelMemoryPlan::select(&info, 2000, Some(4096), 1, 2800).is_err());
+        assert!(ModelMemoryPlan::select(&info, 2000, None, 1, 2200).is_err());
+        assert!(ModelMemoryPlan::select(&info, 2000, None, 1, 0).is_err());
+    }
 
     #[test]
     fn context_budget_grows_with_tier() {

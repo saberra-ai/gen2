@@ -319,11 +319,22 @@ match gen2::load("/models/model.gguf") {
 and to how many sessions the runtime keeps warm; a model that cannot fit is
 refused with the verdict on the error, not with a load failure.
 
-Memory admission is a separate check from model/context compatibility. Automatic
-desktop inference allocations are 2 GiB for the nominal 8–16 GiB tier and 4 GiB
-for the nominal 16–32 GiB tier. Tier selection allows up to 256 MiB of
-hardware-reserved RAM below the 8/16/32 GiB boundaries. These are base allowances:
-the available-memory clamp can reduce them when other applications use RAM.
+Memory admission is a separate check from model/context compatibility. Desktop
+admission reserves 1/16 of physical RAM for the system, bounded to 512–4096 MiB,
+and caps the process at 75% of physical RAM. Its live ceiling counts current
+process RSS plus available RAM, minus that reserve. Loading weights therefore
+does not itself shrink the ceiling again. Mobile retains the existing OS policy;
+desktop qualification does not establish mobile safety.
+
+For supported GGUFs, admission estimates host weights (including an optional
+projector), context caches for every configured concurrent session, and working
+buffers. The working allowance is at least 500 MiB; missing architecture metadata
+uses the existing conservative fallback. Automatic context starts at up to 4096
+tokens and may decrease to 2048 before refusal. An explicit context is preserved
+or refused, never silently reduced. `model.memory_plan()` exposes the selected
+context, any reduction, the allocation breakdown and admission budget.
+`runtime.memory_snapshot()` exposes the live limits before loading. These are
+estimates and headroom heuristics, not a guarantee of peak RSS on every backend.
 
 `Runtime::builder().resident_memory_budget_mb(4096)` sets an explicit inference
 allocation, shared by runtime accounting and controller loads, helpers and
