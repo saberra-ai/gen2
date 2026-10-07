@@ -992,7 +992,7 @@ impl Session {
                 bundle
                     .mtmd_marker
                     .as_deref()
-                    .unwrap_or_else(mtmd_default_marker),
+                    .unwrap_or(mtmd_default_marker()),
             )
         } else {
             messages.clone()
@@ -1129,7 +1129,7 @@ impl Session {
                     // than associating pixels with the wrong message.
                     let prompt_mm = prompt.clone();
                     if prompt_mm.matches(&marker).count() != img_paths.len() {
-                        return Err(ExecError::Other(anyhow!(
+                        return Err(ExecError::Other(anyhow::anyhow!(
                             "image marker count does not match attachments"
                         )));
                     }

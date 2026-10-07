@@ -78,10 +78,19 @@ impl ModelMemoryPlan {
         weights_mb: u64,
         context: u32,
         concurrent: usize,
+        vision: bool,
     ) -> Self {
         let mib = 1024 * 1024;
         let fixed = info.memory_needed(0);
-        let working_mb = fixed.saturating_sub(info.file_bytes).div_ceil(mib).max(500);
+        // Projector weights alone omit native vision compute buffers. The
+        // 512px LFM CPU qualification peaked at 3506 MiB against a 2718 MiB
+        // text-style plan. Reserve another GiB for vision; this is a heuristic,
+        // not a measured bound for every projector or image resolution.
+        let working_mb = fixed
+            .saturating_sub(info.file_bytes)
+            .div_ceil(mib)
+            .max(500)
+            .saturating_add(if vision { 1024 } else { 0 });
         let context_mb = info
             .memory_needed(context)
             .saturating_sub(fixed)
@@ -107,11 +116,12 @@ impl ModelMemoryPlan {
         requested: Option<u32>,
         concurrent: usize,
         budget_mb: u64,
+        vision: bool,
     ) -> Result<Self, String> {
         let initial = requested.unwrap_or(4096.min(info.train_context.unwrap_or(4096)));
         let mut context = initial;
         loop {
-            let mut plan = Self::estimate(info, weights_mb, context, concurrent);
+            let mut plan = Self::estimate(info, weights_mb, context, concurrent, vision);
             plan.context_reduced = context < initial;
             plan.admission_budget_mb = budget_mb;
             if plan.total_mb <= budget_mb {
@@ -150,6 +160,7 @@ pub(crate) fn plan_gguf(
         settings.system.ctx_size,
         concurrent,
         budget_mb,
+        projector.is_some(),
     )
     .map(Some)
 }
@@ -269,7 +280,7 @@ mod tests {
     #[test]
     fn admission_counts_context_working_memory_and_concurrency() {
         let info = planning_model();
-        let plan = ModelMemoryPlan::select(&info, 2000, Some(4096), 1, 4000).unwrap();
+        let plan = ModelMemoryPlan::select(&info, 2000, Some(4096), 1, 4000, false).unwrap();
         assert_eq!(
             (
                 plan.weights_mb,
@@ -279,20 +290,30 @@ mod tests {
             ),
             (2000, 512, 500, 3012)
         );
-        let more = ModelMemoryPlan::select(&info, 2000, Some(4096), 2, 4000).unwrap();
+        let more = ModelMemoryPlan::select(&info, 2000, Some(4096), 2, 4000, false).unwrap();
         assert_eq!(more.total_mb, 3524);
-        assert!(ModelMemoryPlan::select(&info, 2000, None, 3, 3000).is_err());
+        assert!(ModelMemoryPlan::select(&info, 2000, None, 3, 3000, false).is_err());
     }
 
     #[test]
     fn only_automatic_context_can_shrink_and_too_large_still_fails() {
         let info = planning_model();
-        let plan = ModelMemoryPlan::select(&info, 2000, None, 1, 2800).unwrap();
+        let plan = ModelMemoryPlan::select(&info, 2000, None, 1, 2800, false).unwrap();
         assert_eq!(plan.context_tokens, 2048);
         assert!(plan.context_reduced);
-        assert!(ModelMemoryPlan::select(&info, 2000, Some(4096), 1, 2800).is_err());
-        assert!(ModelMemoryPlan::select(&info, 2000, None, 1, 2200).is_err());
-        assert!(ModelMemoryPlan::select(&info, 2000, None, 1, 0).is_err());
+        assert!(ModelMemoryPlan::select(&info, 2000, Some(4096), 1, 2800, false).is_err());
+        assert!(ModelMemoryPlan::select(&info, 2000, None, 1, 2200, false).is_err());
+        assert!(ModelMemoryPlan::select(&info, 2000, None, 1, 0, false).is_err());
+    }
+
+    #[test]
+    fn vision_buffers_are_reserved_before_admission() {
+        let info = planning_model();
+        let text = ModelMemoryPlan::select(&info, 2500, Some(4096), 1, 5000, false).unwrap();
+        let vision = ModelMemoryPlan::select(&info, 2500, Some(4096), 1, 5000, true).unwrap();
+        assert_eq!(vision.working_mb, text.working_mb + 1024);
+        assert_eq!(vision.total_mb, text.total_mb + 1024);
+        assert!(ModelMemoryPlan::select(&info, 2500, Some(4096), 1, text.total_mb, true).is_err());
     }
 
     #[test]

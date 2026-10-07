@@ -341,7 +341,9 @@ estimate; it cannot prevent another process allocating memory after the check.
 
 For supported GGUFs, admission estimates host weights (including an optional
 projector), context caches for every configured concurrent session, and working
-buffers. The working allowance is at least 500 MiB; missing architecture metadata
+buffers. The working allowance is at least 500 MiB, plus 1024 MiB when loading
+a vision projector (calibrated against a 512px LFM CPU test, not a bound for all
+projectors/resolutions). Missing architecture metadata
 uses the existing conservative fallback. Automatic context starts at up to 4096
 tokens and may decrease to 2048 before refusal. An explicit context is preserved
 or refused, never silently reduced. `model.memory_plan()` exposes the selected

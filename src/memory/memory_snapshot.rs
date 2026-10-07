@@ -219,14 +219,14 @@ mod tests {
     }
 
     #[test]
-    fn bounded_paging_admits_small_image_bundle_with_commit_backing() {
-        let strict = MemorySnapshot::new(&make_input(16384, 2400), 100);
-        assert!(!crate::memory::MemoryGovernor::new(strict).can_load_additional_model(2718));
-        let flexible = flexible(2400, 100, Some(8000));
-        assert_eq!(flexible.budgets.process_soft_limit_mb, 3012);
+    fn bounded_paging_admits_image_bundle_with_commit_backing() {
+        let strict = MemorySnapshot::new(&make_input(16384, 3400), 100);
+        assert!(!crate::memory::MemoryGovernor::new(strict).can_load_additional_model(3742));
+        let flexible = flexible(3400, 100, Some(8000));
+        assert_eq!(flexible.budgets.process_soft_limit_mb, 4012);
         let governor = crate::memory::MemoryGovernor::new(flexible);
-        assert!(governor.can_load_additional_model(2718));
-        assert!(!governor.can_load_additional_model(2912));
+        assert!(governor.can_load_additional_model(3742));
+        assert!(!governor.can_load_additional_model(3912));
     }
 
     #[test]
