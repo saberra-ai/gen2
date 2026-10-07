@@ -872,6 +872,17 @@ impl RuntimeBuilder {
         self.resident_budget_mb(mb)
     }
 
+    /// Configure desktop headroom and a bounded paging allowance in MiB.
+    /// Paging requires a reliable OS commit probe (currently Windows only).
+    /// Process caps and live admission checks still apply; mobile is unchanged.
+    pub fn desktop_memory_policy(mut self, system_reserve_mb: u64, max_paging_mb: u64) -> Self {
+        self.config.desktop_memory_policy = crate::memory::DesktopMemoryPolicy {
+            system_reserve_mb: Some(system_reserve_mb),
+            max_paging_mb,
+        };
+        self
+    }
+
     /// Build it. Starts nothing: backends start when a model is loaded.
     pub fn build(self) -> Result<Runtime> {
         Ok(Runtime {
@@ -1230,6 +1241,7 @@ mod tests {
     fn public_host_budget_reaches_controller_and_refuses_initial_load() {
         let runtime = Runtime::builder()
             .resident_memory_budget_mb(0)
+            .desktop_memory_policy(512, 1024)
             .build()
             .unwrap();
         let script = Script::new();
@@ -1238,6 +1250,11 @@ mod tests {
             script.clone().into_engine_factory(),
         );
         assert_eq!(engine.config().resident_memory_budget_mb, Some(0));
+        assert_eq!(
+            engine.config().desktop_memory_policy.system_reserve_mb,
+            Some(512)
+        );
+        assert_eq!(engine.config().desktop_memory_policy.max_paging_mb, 1024);
         let (resp, rx) = std::sync::mpsc::channel();
         engine
             .send(crate::controller::ControllerCmd::LoadModel {

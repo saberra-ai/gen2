@@ -187,6 +187,7 @@ mod tests {
             pressure,
             estimated_process_mb,
             available_memory_mb: 6000,
+            desktop: None,
         };
         MemoryGovernor::new(snap)
     }

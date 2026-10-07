@@ -205,6 +205,7 @@ mod tests {
             pressure: MemoryPressureLevel::Normal,
             estimated_process_mb: 512,
             available_memory_mb: 8_192,
+            desktop: None,
         })
     }
 
@@ -278,6 +279,7 @@ mod tests {
             pressure: MemoryPressureLevel::Constrained,
             estimated_process_mb: 2_800,
             available_memory_mb: 2_048,
+            desktop: None,
         });
         let evicted = inventory.unload_for_pressure(&governor, Some(RuntimeKind::Llm));
         assert_eq!(evicted.len(), 1);
@@ -299,6 +301,7 @@ mod tests {
             pressure: MemoryPressureLevel::Severe,
             estimated_process_mb: 3_500,
             available_memory_mb: 1_024,
+            desktop: None,
         });
         let _ = inventory.unload_for_pressure(&governor, Some(RuntimeKind::Llm));
         assert!(inventory.llm.is_some());

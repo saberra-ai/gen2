@@ -35,8 +35,8 @@ pub mod runtime {
     pub use crate::hardware::{GpuBackend, HardwareProfile};
     /// Memory governance the residency decisions are made against.
     pub use crate::memory::{
-        MachineMemoryTier, MemoryBudgets, MemoryGovernor, MemoryPolicyInput, MemoryPressureLevel,
-        MemorySnapshot,
+        DesktopMemoryPolicy, DesktopMemoryStatus, MachineMemoryTier, MemoryBudgets, MemoryGovernor,
+        MemoryPolicyInput, MemoryPressureLevel, MemorySnapshot,
     };
     /// What is resident and the policy deciding what may join it, as the
     /// controller's observability snapshots report them.

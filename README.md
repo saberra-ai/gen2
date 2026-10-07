@@ -320,11 +320,24 @@ and to how many sessions the runtime keeps warm; a model that cannot fit is
 refused with the verdict on the error, not with a load failure.
 
 Memory admission is a separate check from model/context compatibility. Desktop
-admission reserves 1/16 of physical RAM for the system, bounded to 512–4096 MiB,
+admission by default reserves 1/16 of physical RAM for the system, bounded to 512–4096 MiB,
 and caps the process at 75% of physical RAM. Its live ceiling counts current
 process RSS plus available RAM, minus that reserve. Loading weights therefore
 does not itself shrink the ceiling again. Mobile retains the existing OS policy;
 desktop qualification does not establish mobile safety.
+
+Desktop hosts can opt into `Runtime::builder().desktop_memory_policy(512, 1024)`:
+512 MiB physical headroom and at most 1024 MiB additional admission allowance for
+paging. This is a performance tradeoff, not extra physical RAM. The allowance
+requires a successful OS commit probe (currently Windows only), is capped at
+1/8 of total RAM and 2048 MiB, and turns off below 256 MiB available physical RAM.
+The reserve has a 256 MiB minimum. The 75% process cap still applies, and the
+entire incremental estimate must also fit available commit minus the reserve.
+Unknown commit capacity disables paging; zero commit capacity refuses admission.
+`runtime.memory_snapshot().desktop` reports the reserve, paging allowance and
+available commit separately. Initial loads, helpers and restores use the same
+controller configuration. Mobile ignores desktop options. Admission is a live
+estimate; it cannot prevent another process allocating memory after the check.
 
 For supported GGUFs, admission estimates host weights (including an optional
 projector), context caches for every configured concurrent session, and working

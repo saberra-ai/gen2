@@ -18,7 +18,7 @@ pub use memory_policy::{
     MemoryBudgets, MemoryPolicyInput, base_budgets_for_tier, detect_machine_tier, effective_budgets,
 };
 pub use memory_pressure::{MemoryPressureLevel, classify_pressure};
-pub use memory_snapshot::MemorySnapshot;
+pub use memory_snapshot::{DesktopMemoryPolicy, DesktopMemoryStatus, MemorySnapshot};
 pub use memory_tier::MachineMemoryTier;
 pub use runtime_memory::{
     current_memory_governor, current_memory_policy_input, current_memory_snapshot,

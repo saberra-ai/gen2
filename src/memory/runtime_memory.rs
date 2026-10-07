@@ -21,8 +21,28 @@ pub fn current_memory_policy_input() -> MemoryPolicyInput {
 }
 
 pub fn current_memory_snapshot() -> MemorySnapshot {
+    current_memory_snapshot_with_policy(Default::default())
+}
+
+pub fn current_memory_snapshot_with_policy(policy: super::DesktopMemoryPolicy) -> MemorySnapshot {
     let input = current_memory_policy_input();
-    MemorySnapshot::new(&input, detect_process_memory_mb())
+    MemorySnapshot::with_desktop_policy(
+        &input,
+        detect_process_memory_mb(),
+        detect_available_commit_mb(),
+        policy,
+    )
+}
+
+#[cfg(target_os = "windows")]
+fn detect_available_commit_mb() -> Option<u64> {
+    windows_memory_status()
+        .map(|status| bytes_to_mb(status.ullAvailPageFile.min(status.ullAvailVirtual)))
+}
+
+#[cfg(not(target_os = "windows"))]
+fn detect_available_commit_mb() -> Option<u64> {
+    None
 }
 
 pub fn current_memory_governor() -> MemoryGovernor {
@@ -75,14 +95,19 @@ fn detect_available_memory_mb() -> u64 {
 
 #[cfg(target_os = "windows")]
 fn detect_available_memory_mb() -> u64 {
+    windows_memory_status().map_or(0, |status| bytes_to_mb(status.ullAvailPhys))
+}
+
+#[cfg(target_os = "windows")]
+fn windows_memory_status() -> Option<windows_sys::Win32::System::SystemInformation::MEMORYSTATUSEX>
+{
     use windows_sys::Win32::System::SystemInformation::{GlobalMemoryStatusEx, MEMORYSTATUSEX};
 
     let mut status = MEMORYSTATUSEX {
         dwLength: std::mem::size_of::<MEMORYSTATUSEX>() as u32,
         ..unsafe { std::mem::zeroed() }
     };
-    unsafe { GlobalMemoryStatusEx(&mut status) };
-    bytes_to_mb(status.ullAvailPhys)
+    (unsafe { GlobalMemoryStatusEx(&mut status) } != 0).then_some(status)
 }
 
 #[cfg(not(any(

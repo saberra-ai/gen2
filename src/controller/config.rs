@@ -15,6 +15,7 @@ pub struct ControllerConfig {
     /// Optional host inference allocation in MiB. Applies to initial loads,
     /// restores and helpers; live pressure and process ceilings still apply.
     pub resident_memory_budget_mb: Option<u64>,
+    pub desktop_memory_policy: crate::memory::DesktopMemoryPolicy,
     /// Maximum number of concurrent chat sessions before LRU eviction kicks in.
     pub max_active_chats: usize,
 
@@ -46,6 +47,7 @@ impl Default for ControllerConfig {
     fn default() -> Self {
         Self {
             resident_memory_budget_mb: None,
+            desktop_memory_policy: Default::default(),
             max_active_chats: 3,
             generation_timeout: Duration::from_secs(120),
             event_channel_capacity: 512,
@@ -57,8 +59,12 @@ impl Default for ControllerConfig {
 
 impl ControllerConfig {
     pub(crate) fn memory_governor(&self) -> crate::memory::MemoryGovernor {
-        crate::memory::current_memory_governor()
-            .with_inference_budget(self.resident_memory_budget_mb)
+        crate::memory::MemoryGovernor::new(
+            crate::memory::runtime_memory::current_memory_snapshot_with_policy(
+                self.desktop_memory_policy,
+            ),
+        )
+        .with_inference_budget(self.resident_memory_budget_mb)
     }
 
     /// Sampling defaults for a background task.
