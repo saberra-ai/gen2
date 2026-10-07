@@ -63,6 +63,7 @@ pub fn parse_hf_model_metadata(model_dir: &Path) -> Option<ModelMetadata> {
     let supports_tools = super::load_chat_template(model_dir).map(|tpl| tpl.contains("tools"));
 
     Some(ModelMetadata {
+        head_count_kv_per_layer: None,
         architecture,
         quantization,
         file_type: None,

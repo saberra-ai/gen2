@@ -78,6 +78,7 @@ pub struct GgufMetadata {
     pub block_count: Option<u64>,
     pub head_count: Option<u64>,
     pub head_count_kv: Option<u64>,
+    pub head_count_kv_per_layer: Option<Vec<u64>>,
     pub vocab_size: Option<u64>,
     pub feed_forward_length: Option<u64>,
     pub chat_template: Option<String>,
@@ -370,7 +371,25 @@ pub fn parse_gguf_metadata(path: &Path) -> Result<GgufMetadata, ExecError> {
                     }
                 } else if key_str.ends_with(".attention.head_count_kv") {
                     // Must check before .head_count to avoid partial suffix match
-                    if let Some(value) =
+                    if value_type == GGUF_TYPE_ARRAY {
+                        let kind = reader.read_u32::<LittleEndian>().map_err(ExecError::io)?;
+                        let count = reader.read_u64::<LittleEndian>().map_err(ExecError::io)?;
+                        if count == 0 || count > 4096 {
+                            return Err(ExecError::io(io::Error::new(
+                                io::ErrorKind::InvalidData,
+                                "KV head array exceeds layer limit",
+                            )));
+                        }
+                        let mut values = Vec::new();
+                        let mut valid = true;
+                        for _ in 0..count {
+                            match read_value_as_u64(&mut reader, kind).map_err(ExecError::io)? {
+                                Some(value) => values.push(value),
+                                None => valid = false,
+                            }
+                        }
+                        metadata.head_count_kv_per_layer = valid.then_some(values);
+                    } else if let Some(value) =
                         read_value_as_u64(&mut reader, value_type).map_err(ExecError::io)?
                     {
                         metadata.head_count_kv = Some(value);
@@ -588,22 +607,39 @@ pub fn estimate_ram_bytes(metadata: &ModelMetadata, file_size: u64, context_size
     const OVERHEAD: u64 = 500 * 1024 * 1024; // 500 MB runtime overhead
 
     // If we have architecture details, compute KV cache estimate
-    if let (Some(n_layer), Some(n_kv), Some(d), Some(n_head)) = (
-        metadata.block_count,
-        metadata.head_count_kv,
-        metadata.embedding_length,
-        metadata.head_count,
-    ) && n_head > 0
-    {
-        let head_dim = d / n_head;
-        // Saturating throughout: every input here is header-derived.
-        let kv_cache =
-            kv_bytes_per_token(n_layer, n_kv, head_dim).saturating_mul(context_size as u64);
+    if let Some(per_token) = model_kv_bytes_per_token(metadata) {
+        let kv_cache = per_token.saturating_mul(context_size as u64);
         return file_size.saturating_add(kv_cache).saturating_add(OVERHEAD);
     }
 
     // Fallback: 1.2x file size + overhead
     ((file_size as f64 * 1.2) as u64).saturating_add(OVERHEAD)
+}
+
+/// Header-derived KV allocation, including per-layer arrays used by LFM2.
+/// Recurrent-state and compute buffers remain covered by runtime overhead.
+pub(crate) fn model_kv_bytes_per_token(metadata: &ModelMetadata) -> Option<u64> {
+    let layers = metadata.block_count?;
+    let width = metadata.embedding_length?;
+    let heads = metadata.head_count?;
+    if layers == 0 || heads == 0 || width < heads {
+        return None;
+    }
+    let head_dim = width / heads;
+    if let Some(per_layer) = &metadata.head_count_kv_per_layer {
+        if per_layer.len() as u64 != layers || per_layer.iter().any(|n| *n > heads) {
+            return None;
+        }
+        let sum = per_layer
+            .iter()
+            .fold(0_u64, |sum, n| sum.saturating_add(*n));
+        return Some(kv_bytes_per_token(1, sum, head_dim));
+    }
+    Some(kv_bytes_per_token(
+        layers,
+        metadata.head_count_kv?,
+        head_dim,
+    ))
 }
 
 /// Build a [`ModelMetadata`] from raw GGUF header fields.
@@ -635,6 +671,7 @@ pub fn build_model_metadata(gguf: &GgufMetadata, file_size: Option<u64>) -> Opti
         block_count: gguf.block_count,
         head_count: gguf.head_count,
         head_count_kv: gguf.head_count_kv,
+        head_count_kv_per_layer: gguf.head_count_kv_per_layer.clone(),
         vocab_size: gguf.vocab_size,
         feed_forward_length: gguf.feed_forward_length,
         supports_tools,
@@ -1623,6 +1660,61 @@ mod tests {
             .unwrap();
         assert_eq!(meta.head_count_kv, Some(8));
         assert_eq!(meta.head_count, Some(32));
+    }
+
+    #[test]
+    fn hybrid_kv_arrays_preserve_recurrent_layers_and_remove_fallback_padding() {
+        let counts = [
+            0, 0, 8, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 0, 8, 0, 0, 8, 0, 0, 8, 0,
+            0,
+        ];
+        let mut builder = GgufBuilder::header(3, 0, 5)
+            .key("general.architecture")
+            .u32(GGUF_TYPE_STRING)
+            .string(b"lfm2")
+            .key("lfm2.block_count")
+            .u32(GGUF_TYPE_UINT32)
+            .u32(30)
+            .key("lfm2.embedding_length")
+            .u32(GGUF_TYPE_UINT32)
+            .u32(2048)
+            .key("lfm2.attention.head_count")
+            .u32(GGUF_TYPE_UINT32)
+            .u32(32)
+            .key("lfm2.attention.head_count_kv")
+            .u32(GGUF_TYPE_ARRAY)
+            .u32(GGUF_TYPE_UINT32)
+            .u64(30);
+        for count in counts {
+            builder = builder.u32(count);
+        }
+        let raw = builder.parse().unwrap();
+        let mut metadata = build_model_metadata(&raw, Some(1_674_455_072)).unwrap();
+        assert_eq!(model_kv_bytes_per_token(&metadata), Some(16_384));
+        assert_eq!(
+            estimate_ram_bytes(&metadata, 1_674_455_072, 2048),
+            1_674_455_072 + 532 * 1024 * 1024
+        );
+        metadata.block_count = Some(31);
+        assert_eq!(
+            model_kv_bytes_per_token(&metadata),
+            None,
+            "mismatched array must retain fallback, not undercount"
+        );
+        assert!(
+            estimate_ram_bytes(&metadata, 1_674_455_072, 2048) > 1_674_455_072 + 532 * 1024 * 1024
+        );
+    }
+
+    #[test]
+    fn oversized_kv_head_array_is_rejected_before_allocation() {
+        let result = GgufBuilder::header(3, 0, 1)
+            .key("lfm2.attention.head_count_kv")
+            .u32(GGUF_TYPE_ARRAY)
+            .u32(GGUF_TYPE_UINT32)
+            .u64(u64::MAX)
+            .parse();
+        assert!(result.is_err());
     }
 
     #[test]

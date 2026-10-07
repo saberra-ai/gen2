@@ -8,7 +8,8 @@
 use std::path::Path;
 
 use crate::bundle::gguf::{
-    build_model_metadata, estimate_ram_bytes, fit_context, kv_bytes_per_token, parse_gguf_metadata,
+    build_model_metadata, estimate_ram_bytes, fit_context, model_kv_bytes_per_token,
+    parse_gguf_metadata,
 };
 use crate::hardware::HardwareProfile;
 use crate::types::ModelMetadata;
@@ -86,16 +87,9 @@ impl ModelInfo {
 
     /// Memory cost of one token of context.
     fn kv_cost(&self) -> KvCost {
-        match (
-            self.metadata.block_count,
-            self.metadata.head_count_kv,
-            self.metadata.embedding_length,
-            self.metadata.head_count,
-        ) {
-            (Some(layers), Some(kv_heads), Some(width), Some(heads)) if heads > 0 => {
-                KvCost::Measured(kv_bytes_per_token(layers, kv_heads, width / heads))
-            }
-            _ => KvCost::Assumed(ASSUMED_KV_BYTES_PER_TOKEN),
+        match model_kv_bytes_per_token(&self.metadata) {
+            Some(bytes) => KvCost::Measured(bytes),
+            None => KvCost::Assumed(ASSUMED_KV_BYTES_PER_TOKEN),
         }
     }
 
@@ -306,6 +300,21 @@ mod tests {
             supports_tools: false,
             metadata,
         }
+    }
+
+    #[test]
+    fn hybrid_context_uses_array_kv_once_without_generic_fallback() {
+        let mut info = model(2);
+        info.metadata.head_count_kv = None;
+        info.metadata.block_count = Some(4);
+        info.metadata.embedding_length = Some(2048);
+        info.metadata.head_count_kv_per_layer = Some(vec![0, 8, 0, 8]);
+        assert!(matches!(info.kv_cost(), KvCost::Measured(4096)));
+        assert_eq!(
+            info.memory_needed(2048) - info.memory_needed(0),
+            8 * 1024 * 1024
+        );
+        assert_eq!(info.memory_needed(0), info.file_bytes + 500 * 1024 * 1024);
     }
 
     #[test]

@@ -45,6 +45,9 @@ pub struct ModelMetadata {
     pub head_count: Option<u64>,
     /// Number of KV heads for GQA (`{arch}.attention.head_count_kv`).
     pub head_count_kv: Option<u64>,
+    /// Hybrid architectures may declare zero KV heads for recurrent layers.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub head_count_kv_per_layer: Option<Vec<u64>>,
     /// Vocabulary size.
     pub vocab_size: Option<u64>,
     /// FFN intermediate dimension (`{arch}.feed_forward_length`).
