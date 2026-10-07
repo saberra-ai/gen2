@@ -49,14 +49,24 @@ pub fn check_dimensions(path: &str, w: u32, h: u32) -> Result<(), ExecError> {
 
 /// Validate an attached-image path BEFORE handing it to a native decoder
 /// (e.g. llama.cpp's `MtmdBitmap::from_file`, whose C++ stb_image path Pio
-/// can't cap directly). Strips a `file://` prefix, rejects a missing/unreadable
+/// can't cap directly). Decodes a `file://` URL, rejects a missing/unreadable
 /// path or a directory, and rejects an over-cap image by reading only the
 /// header dimensions — so a decompression bomb is refused before the native
 /// decoder allocates. Returns the resolved filesystem path on success.
 ///
 /// Never panics: every failure maps to a graceful [`ExecError`].
 pub fn validate_image_path(url_or_path: &str) -> Result<String, ExecError> {
-    let path = url_or_path.strip_prefix("file://").unwrap_or(url_or_path);
+    let resolved;
+    let path = if url_or_path.starts_with("file://") {
+        resolved = url::Url::parse(url_or_path)
+            .ok()
+            .and_then(|url| url.to_file_path().ok())
+            .and_then(|path| path.into_os_string().into_string().ok())
+            .ok_or_else(|| ExecError::Io("invalid local image file URL".into()))?;
+        resolved.as_str()
+    } else {
+        url_or_path
+    };
 
     let meta =
         std::fs::metadata(path).map_err(|e| ExecError::Io(format!("open image {path}: {e}")))?;
@@ -77,6 +87,28 @@ pub fn validate_image_path(url_or_path: &str) -> Result<String, ExecError> {
         .map_err(|e| ExecError::Other(anyhow::anyhow!("read image dimensions {path}: {e}")))?;
     check_dimensions(path, w, h)?;
     Ok(path.to_string())
+}
+
+/// Replace image paths with the backend marker in their original message and
+/// chunk position. Keep the original messages for loading the matching bitmaps.
+#[cfg(any(feature = "backend-llamacpp", test))]
+pub(crate) fn with_image_markers(messages: &[Message], marker: &str) -> Vec<Message> {
+    let mut rendered = messages.to_vec();
+    for message in &mut rendered {
+        if let MessageBody::Content {
+            content: MessageContent::MultipleChunks(chunks),
+        } = &mut message.body
+        {
+            for chunk in chunks {
+                if matches!(chunk, MessageChunk::ImageUrl { .. }) {
+                    *chunk = MessageChunk::Text {
+                        text: marker.to_string(),
+                    };
+                }
+            }
+        }
+    }
+    rendered
 }
 
 /// Whether any message carries an image chunk.
@@ -107,6 +139,23 @@ pub fn messages_have_images(messages: &Vec<Message>) -> bool {
 mod tests {
     use super::*;
     use crate::types::message::{MessageBody, Url};
+
+    #[test]
+    fn image_markers_stay_in_their_original_turns_without_exposing_paths() {
+        let messages = vec![
+            Message::user_with_images("first", ["file:///private/a.png".into()]),
+            Message::assistant_structured("answer", None),
+            Message::user_with_images("second", ["file:///private/b.png".into()]),
+        ];
+        let rendered = with_image_markers(&messages, "<image>");
+        assert_eq!(rendered[0].text(), "first<image>");
+        assert_eq!(rendered[1].text(), "answer");
+        assert_eq!(rendered[2].text(), "second<image>");
+        assert_eq!(rendered[0].role, "user");
+        assert_eq!(rendered[2].role, "user");
+        assert!(messages_have_images(&messages));
+        assert!(!messages_have_images(&rendered));
+    }
 
     #[test]
     fn detect_images() {
@@ -207,12 +256,14 @@ mod tests {
     }
 
     #[test]
-    fn validate_accepts_in_cap_image_and_strips_file_url() {
-        let p = temp_file("ok.png", &valid_png(8, 8));
-        let url = format!("file://{}", p.display());
+    fn validate_accepts_image_url_from_public_path_converter() {
+        // Spaces, a literal percent sign, # and Unicode must round-trip; on
+        // Windows file:///C:/... must not become the invalid /C:/... path.
+        let p = temp_file("image % # café.png", &valid_png(8, 8));
+        let url = crate::types::message::to_file_url(p.to_str().unwrap());
         let r = validate_image_path(&url);
         let resolved = r.expect("in-cap image must validate");
-        assert_eq!(resolved, p.to_str().unwrap(), "file:// prefix stripped");
+        assert_eq!(std::path::Path::new(&resolved), p);
         std::fs::remove_file(&p).ok();
     }
 

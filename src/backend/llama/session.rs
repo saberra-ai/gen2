@@ -986,8 +986,19 @@ impl Session {
             }
         }
 
+        let template_messages = if bundle.mtmd_ctx.is_some() && messages_have_images(&messages) {
+            crate::session_rt::media_util::with_image_markers(
+                &messages,
+                bundle
+                    .mtmd_marker
+                    .as_deref()
+                    .unwrap_or_else(mtmd_default_marker),
+            )
+        } else {
+            messages.clone()
+        };
         let prompt = chat_template
-            .apply(messages.clone(), tools.clone(), Some(enable_thinking))
+            .apply(template_messages, tools.clone(), Some(enable_thinking))
             .map_err(ExecError::Other)?;
         tracing::info!(
             target: "pio::gen2::llama::prompt",
@@ -1107,23 +1118,20 @@ impl Session {
                     {
                         for ch in chunks {
                             if let MessageChunk::ImageUrl { image_url } = ch {
-                                let u = image_url.url.clone();
-                                let path = if let Some(rest) = u.strip_prefix("file://") {
-                                    rest.to_string()
-                                } else {
-                                    u
-                                };
-                                img_paths.push(path);
+                                img_paths.push(image_url.url.clone());
                             }
                         }
                     }
                 }
                 if !img_paths.is_empty() {
-                    // Ensure prompt has enough markers
-                    let mut prompt_mm = prompt.clone();
-                    let have = prompt_mm.matches(&marker).count();
-                    for _ in have..img_paths.len() {
-                        prompt_mm.push_str(&marker);
+                    // Markers belong to their original user turns, never after
+                    // the assistant generation prefix. Refuse mismatches rather
+                    // than associating pixels with the wrong message.
+                    let prompt_mm = prompt.clone();
+                    if prompt_mm.matches(&marker).count() != img_paths.len() {
+                        return Err(ExecError::Other(anyhow!(
+                            "image marker count does not match attachments"
+                        )));
                     }
 
                     // Load bitmaps

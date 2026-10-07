@@ -309,7 +309,7 @@ impl Message {
 /// Normalize an attached image/document reference into a URL the inference
 /// backends can resolve: an already-formed `http(s)://` / `file://` URL passes
 /// through unchanged; a local path becomes a `file://` URL. The gen2 llama VLM
-/// session strips the `file://` prefix and loads the bitmap from disk.
+/// session decodes the file URL and loads the bitmap from disk.
 ///
 /// The single source of truth for the chat image paths — the desktop chat
 /// (`src-tauri/api/message.rs`), the prompt builder, and the Birds chat all
