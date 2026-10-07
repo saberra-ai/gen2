@@ -332,6 +332,35 @@ impl Runtime {
         }
     }
 
+    /// Load a local GGUF with an explicit local vision projector, without Hub
+    /// resolution. Uses the same residency/admission policy as `load`, including
+    /// projector memory. A failed projector must not silently become text-only.
+    pub fn load_with_projector(
+        &self,
+        model: impl AsRef<Path>,
+        projector: impl AsRef<Path>,
+    ) -> Result<Model> {
+        let model = model.as_ref();
+        let projector = projector.as_ref();
+        if !model.is_file() || !projector.is_file() {
+            return Err(Error::Load(
+                "local model and projector files are required".into(),
+            ));
+        }
+        let loaded = self.load_local(
+            model,
+            Some(projector.to_path_buf()),
+            ModelSourceKind::LocalFile,
+        )?;
+        if !loaded.capabilities().images {
+            self.evict(&loaded)?;
+            return Err(Error::Load(
+                "vision projector could not be loaded; image capability is required".into(),
+            ));
+        }
+        Ok(loaded)
+    }
+
     /// Load a model from the Hugging Face Hub, in typed form.
     ///
     /// The string form goes through [`Runtime::load`]; this takes an
@@ -980,6 +1009,22 @@ mod tests {
             second, first,
             "each generation starts fresh — a second call must not continue the first"
         );
+    }
+
+    #[test]
+    fn explicit_projector_load_requires_both_local_files() {
+        let dir = tempfile::tempdir().unwrap();
+        let model = dir.path().join("model.gguf");
+        let projector = dir.path().join("projector.gguf");
+        std::fs::write(&model, b"not a model").unwrap();
+        let runtime = Runtime::new().unwrap();
+        let error = runtime.load_with_projector(&model, &projector).unwrap_err();
+        assert!(
+            error
+                .to_string()
+                .contains("local model and projector files are required")
+        );
+        assert!(runtime.models().is_empty());
     }
 
     #[test]
