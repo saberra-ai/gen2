@@ -52,9 +52,10 @@ fn features_with_observer(
         // tail. Other tiles/platforms use a single sequential FMA chain.
         // A one-ULP mel drift changed punctuation on two real recordings.
         let full_tiles = frames / 12 * 12;
-        let four_tail = full_tiles + (frames % 12 / 8) * 8;
-        let split_all =
-            split_mel && frames - four_tail >= 4 && frame >= four_tail && frame < four_tail + 4;
+        // The BLAS driver dispatches remaining 8–11 frames as two
+        // 4-frame calls, not this kernel's otherwise available 8-frame path.
+        let four_tail_end = full_tiles + (frames % 12 / 4) * 4;
+        let split_all = split_mel && frame >= full_tiles && frame < four_tail_end;
         let split_edges = split_mel && frame < full_tiles && frame % 12 < 6;
         let mut odd = [0f32; 128];
         for (bin, power) in power.into_iter().enumerate() {
