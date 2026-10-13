@@ -71,6 +71,7 @@ const VERIFIED_ARCHITECTURES: &[&str] = &[
     "olmoe",
     "qwen3",
     "qwen3moe",
+    "qwen35",
 ];
 
 /// Architectures with known Metal kernel crashes. These will be blocked.
@@ -78,7 +79,8 @@ const KNOWN_METAL_CRASHES: &[&str] = &[
     // NB: "gemma3" was removed (2026-06) after the llama-cpp-rs bump to 8625c7c —
     // it now loads + generates on Metal (re-validated with gemma-3-1b-it). The
     // 2026-03 abort was a stale-fork issue, not an arch limit.
-    "qwen35", // Gated Delta Net tensor op — Metal abort, llama.cpp #20358; not re-tested (no local model)
+    // qwen35 revalidated 2026-10 with Woof 0.8B Q4_K_M on Apple M4 Pro:
+    // 25/25 layers offloaded, 32 decoded tokens with llama-cpp-2 0.1.156.
 ];
 
 /// Validate that `path` points to a non-empty file with a valid GGUF header.
@@ -287,7 +289,7 @@ fn skip_gguf_value(f: &mut File, vtype: u32) -> Option<()> {
 /// Validate a model architecture against known compatibility data.
 ///
 /// - Verified architectures pass silently.
-/// - Known-crash architectures (e.g. gemma3 on Metal) return an error.
+/// - Architectures with a current, reproduced backend crash return an error.
 /// - Unknown architectures log a warning but pass.
 pub fn validate_model_architecture(arch: &str) -> Result<(), ExecError> {
     let normalized = arch.trim().to_lowercase();
@@ -357,14 +359,8 @@ mod tests {
     }
 
     #[test]
-    fn blocks_known_metal_crash_architecture() {
-        // qwen35 stays blocked (Gated Delta Net Metal abort; not re-tested).
-        let r = validate_model_architecture("qwen35");
-        assert!(r.is_err(), "qwen35 must be blocked");
-        let msg = r.unwrap_err().to_string();
-        assert!(msg.contains("compatibility issues"));
-        assert!(msg.contains("Qwen 2.5"));
-        // gemma3 was un-blocked after the llama.cpp bump — it must now PASS.
+    fn allows_architectures_revalidated_on_current_metal_backend() {
+        assert!(validate_model_architecture("qwen35").is_ok());
         assert!(validate_model_architecture("gemma3").is_ok());
     }
 
@@ -384,9 +380,8 @@ mod tests {
 
     #[test]
     fn architecture_check_is_case_insensitive() {
-        // qwen35 is still blocked (gemma3 was un-blocked after the llama.cpp bump).
-        assert!(validate_model_architecture("Qwen35").is_err());
-        assert!(validate_model_architecture("QWEN35").is_err());
+        assert!(validate_model_architecture("Qwen35").is_ok());
+        assert!(validate_model_architecture("QWEN35").is_ok());
         assert!(validate_model_architecture("Llama").is_ok());
         assert!(validate_model_architecture("QWEN2").is_ok());
     }

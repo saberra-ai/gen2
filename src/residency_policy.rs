@@ -175,11 +175,38 @@ pub(crate) fn available_for_model_mb(governor: &crate::memory::MemoryGovernor) -
     )
 }
 
+fn onnx_bundle_directory(path: &std::path::Path) -> Option<&std::path::Path> {
+    let directory = if path.is_dir() { path } else { path.parent()? };
+    directory
+        .join("genai_config.json")
+        .is_file()
+        .then_some(directory)
+}
+
+fn bundle_bytes(directory: &std::path::Path) -> u64 {
+    let Ok(entries) = std::fs::read_dir(directory) else {
+        return 0;
+    };
+    entries.flatten().fold(0u64, |bytes, entry| {
+        let additional = match entry.file_type() {
+            Ok(kind) if kind.is_dir() => bundle_bytes(&entry.path()),
+            // Follow file symlinks to count linked external weights, but never
+            // recurse through directory symlinks (cycles or unrelated trees).
+            _ => std::fs::metadata(entry.path())
+                .ok()
+                .filter(|md| md.is_file())
+                .map(|md| md.len())
+                .unwrap_or(0),
+        };
+        bytes.saturating_add(additional)
+    })
+}
+
 fn file_mb_of(path: &std::path::Path) -> u64 {
-    std::fs::metadata(path)
-        .ok()
-        .map(|md| (md.len().saturating_add(1024 * 1024 - 1)) / (1024 * 1024))
-        .unwrap_or(0)
+    let bytes = onnx_bundle_directory(path)
+        .map(bundle_bytes)
+        .unwrap_or_else(|| std::fs::metadata(path).ok().map(|md| md.len()).unwrap_or(0));
+    bytes.saturating_add(1024 * 1024 - 1) / (1024 * 1024)
 }
 
 /// Estimate resident memory for a local runtime path.
@@ -214,6 +241,11 @@ pub fn estimate_resident_mb_for_path_offloaded(
     path: &std::path::Path,
     gpu_layers: Option<u32>,
 ) -> u64 {
+    // ONNX placement comes from the bundle's execution providers, not ggml
+    // layer offload. In particular, a CPU bundle stays in RAM on a Metal host.
+    if onnx_bundle_directory(path).is_some() {
+        return resident_mb_from_file_mb(file_mb_of(path), GpuBackend::Cpu, Some(0));
+    }
     let backend = crate::hardware::HardwareProfile::detect().gpu_backend;
     resident_mb_from_file_mb(file_mb_of(path), backend, gpu_layers)
 }
@@ -495,6 +527,29 @@ mod tests {
             one_layer_offloaded > cpu_only,
             "expected the offload branch's fixed host overhead to dominate for a small model",
         );
+    }
+
+    #[test]
+    fn onnx_bundle_estimate_includes_external_weights_and_never_assumes_metal_offload() {
+        let directory = tempfile::tempdir().unwrap();
+        std::fs::write(directory.path().join("genai_config.json"), b"{}").unwrap();
+        let graph = directory.path().join("model.onnx");
+        std::fs::write(&graph, b"graph").unwrap();
+        std::fs::File::create(directory.path().join("model.onnx.data"))
+            .unwrap()
+            .set_len(600 * 1024 * 1024)
+            .unwrap();
+        assert!(estimate_resident_mb_for_path_offloaded(directory.path(), None) >= 600);
+        assert!(estimate_resident_mb_for_path_offloaded(&graph, None) >= 600);
+        #[cfg(unix)]
+        {
+            let external = tempfile::tempdir().unwrap();
+            let weights = external.path().join("weights.data");
+            let linked = directory.path().join("model.onnx.data");
+            std::fs::rename(&linked, &weights).unwrap();
+            std::os::unix::fs::symlink(&weights, &linked).unwrap();
+            assert!(estimate_resident_mb_for_path_offloaded(directory.path(), None) >= 600);
+        }
     }
 
     #[test]

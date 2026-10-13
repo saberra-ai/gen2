@@ -125,9 +125,10 @@ impl ChannelMarkers {
         use crate::zoo::ModelFamily;
         match arch {
             Some(a) if a.starts_with("gemma4") => ModelFamily::Gemma4.channel_markers(),
-            Some("qwen3") | Some("qwen3moe") | Some("deepseek2") => {
-                ModelFamily::Qwen35.channel_markers()
-            }
+            Some(
+                "qwen3" | "qwen3moe" | "qwen35" | "qwen3_5" | "qwen3_5_text" | "qwen3_5_moe"
+                | "qwen3_5_moe_text" | "deepseek2",
+            ) => ModelFamily::Qwen35.channel_markers(),
             _ => Self::none(),
         }
     }

@@ -506,6 +506,7 @@ claims are about these.
 | Feature | Backend |
 | --- | --- |
 | `backend-litertlm` | LiteRT-LM (Google's on-device runtime), for `.litertlm` bundles. Loads Google's C ABI at run time — nothing is vendored, linked, or downloaded by a build. Point `GEN2_LITERTLM_LIBRARY` at the shared library, or install it where the platform loader finds it. |
+| `backend-onnx` | ONNX Runtime GenAI text generation. Requires a GenAI bundle, a host-supplied GenAI 0.15.2 library (`GEN2_ONNX_LIBRARY`) and an ONNX Runtime API 31 library file (`ORT_LIB_PATH`). No native downloads during Cargo builds. CPU qualified on macOS arm64; other providers/platforms are not yet qualified. |
 
 **Experimental.** mistral.rs builds and runs its no-model tests in CI, MLX
 gets a clippy pass. Real-model verification is by hand and noted in the
@@ -529,14 +530,46 @@ Not a backend, but chosen alongside them:
 | `tokio` | Async API. Off by default. |
 | `agent` | `gen2::agent`, the loop above the inference core. On by default. |
 
-llama.cpp, mistral.rs, MLX and LiteRT-LM have been shown to generate a token.
-The ONNX and Candle backends that used to sit beside them were
-removed rather than kept unproven — a `.onnx` model now fails at load with an
-error naming the format. Adding a backend never moves an existing one's models:
+llama.cpp, mistral.rs, MLX, LiteRT-LM and ONNX GenAI have been shown to generate
+tokens. The former ONNX scaffold and Candle backend were removed; the new
+ONNX backend runs native generation rather than declaring a scaffold ready.
+Adding a backend never moves an existing one's models:
 `backend-mistralrs` takes GGUF only where llama.cpp is absent and safetensors
 only where MLX is, and `backend-litertlm` takes only the `.litertlm` bundles
 nothing else can read. The conformance suite says which on every run, and fails
 if that list goes stale.
+
+### ONNX text generation
+
+Enable `backend-onnx` and load a bundle directory with `genai_config.json`,
+its declared decoder graph (usually `model.onnx` plus external weights),
+`tokenizer.json` and a chat template. A graph alone is not a generation model;
+plain encoder/classifier/audio ONNX graphs are not accepted. The existing
+`backend-laya-onnx` decision API is separate and unchanged.
+
+```sh
+export GEN2_ONNX_LIBRARY=/runtime/libonnxruntime-genai.dylib
+export ORT_LIB_PATH=/runtime/libonnxruntime.1.31.0.dylib
+cargo run --features backend-onnx --example text_filler -- /models/woof-genai
+```
+
+The usual `gen2::load`, `generate`, `turn`, token stream and `structured::<T>`
+work without backend-specific caller code. Native GenAI enforces JSON-schema,
+regex and Lark constraints. CPU is selected when `gpu_layers = Some(0)`;
+otherwise execution providers come from the bundle, not ggml/Metal defaults.
+Each turn replays the transcript into a fresh native generator: there is no
+cross-turn KV snapshot import or automatic context truncation. Prompt plus
+output budget must fit the declared bundle context. Unsupported sampler
+controls (min-p, DRY, XTC and frequency/presence/windowed penalties) fail
+explicitly rather than being silently ignored.
+
+Woof's published package has MLX/GGUF weights, not ONNX. The Apple-silicon
+exporter in `tools/onnx/export_woof.py` reconstructs the text checkpoint from
+MLX affine weights, reverses its convolution/norm transforms, checks every
+tensor name and shape, then uses the GenAI Qwen3.5 text-only builder. INT4
+re-quantizes the already-quantized source; it is not numerically identical to
+the original. Export/runtime dependencies and qualification instructions are
+in [tools/onnx/README.md](tools/onnx/README.md). Rust inference needs no Python.
 
 LiteRT-LM's shipped runtime cannot report a bundle's context window, so state
 it — `Runtime::builder().settings(settings)` with `settings.system.ctx_size`

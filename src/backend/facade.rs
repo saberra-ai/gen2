@@ -81,6 +81,8 @@ pub enum Engine {
     /// reads, so adding it to an existing build moves nobody's models.
     #[cfg(feature = "backend-litertlm")]
     LiteRtLm(super::litertlm::LiteRtLmEngine),
+    #[cfg(feature = "backend-onnx")]
+    Onnx(super::onnx::OnnxEngine),
     /// A scripted backend, for tests that need the runtime to misbehave on
     /// demand. Sticky: `ensure_backend` never switches away from it, so a
     /// `LoadModel` for any path still lands on the script.
@@ -105,6 +107,8 @@ impl std::fmt::Debug for Engine {
             Self::MistralRs(e) => e.fmt(f),
             #[cfg(feature = "backend-litertlm")]
             Self::LiteRtLm(e) => e.fmt(f),
+            #[cfg(feature = "backend-onnx")]
+            Self::Onnx(e) => e.fmt(f),
             #[cfg(test)]
             Self::Fake(e) => e.fmt(f),
             Self::Uninit => f.debug_struct("Engine(Uninit)").finish(),
@@ -118,8 +122,7 @@ impl std::fmt::Debug for Engine {
 ///  - `.gguf` file → LlamaCpp
 ///  - directory with `*.safetensors` → MLX (Apple only)
 ///  - `.litertlm` bundle → LiteRT-LM
-///  - `.onnx` file or dir with `model.onnx` → an error naming the format;
-///    no compiled backend reads it
+///  - `.onnx` file or dir with `genai_config.json` → ONNX Runtime GenAI
 #[allow(unused_variables)]
 fn detect_backend(
     req: &LoadRequest,
@@ -161,10 +164,9 @@ fn detect_backend(
             // existed.
             #[cfg(all(not(feature = "backend-llamacpp"), not(feature = "backend-mistralrs")))]
             "gguf" => return Ok(BackendKind::LlamaCpp),
-            // ONNX had a backend once; it never decoded a token and was
-            // removed. Named here rather than falling through, so the error
-            // is about the format and not about whatever llama.cpp makes of
-            // a file it has never seen.
+            #[cfg(feature = "backend-onnx")]
+            "onnx" => return Ok(BackendKind::Onnx),
+            #[cfg(not(feature = "backend-onnx"))]
             "onnx" => return Err(ExecError::FeatureUnsupported(NO_ONNX_BACKEND)),
             // A `.litertlm` bundle is LiteRT-LM's own packaging and nothing
             // else can read it. Deliberately not a fall-through: without the
@@ -189,7 +191,10 @@ fn detect_backend(
 
     if path.is_dir() {
         // An ONNX bundle directory, for the same reason as the `.onnx` arm.
-        if path.join("model.onnx").exists() {
+        if path.join("genai_config.json").exists() || path.join("model.onnx").exists() {
+            #[cfg(feature = "backend-onnx")]
+            return Ok(BackendKind::Onnx);
+            #[cfg(not(feature = "backend-onnx"))]
             return Err(ExecError::FeatureUnsupported(NO_ONNX_BACKEND));
         }
         // Check for safetensors (MLX format)
@@ -239,11 +244,20 @@ fn detect_backend(
         feature = "backend-litertlm"
     ))]
     return Ok(BackendKind::LiteRtLm);
+    #[cfg(all(
+        not(feature = "backend-llamacpp"),
+        not(feature = "backend-mlx"),
+        not(feature = "backend-mistralrs"),
+        not(feature = "backend-litertlm"),
+        feature = "backend-onnx"
+    ))]
+    return Ok(BackendKind::Onnx);
     #[cfg(not(any(
         feature = "backend-llamacpp",
         feature = "backend-mlx",
         feature = "backend-mistralrs",
-        feature = "backend-litertlm"
+        feature = "backend-litertlm",
+        feature = "backend-onnx"
     )))]
     Err(no_backend_error(path, plugins))
 }
@@ -274,9 +288,9 @@ fn no_backend_error(path: &std::path::Path, plugins: &[Arc<BackendPlugin>]) -> E
 }
 
 /// What a caller sees for a `.onnx` file or a `model.onnx` directory.
-const NO_ONNX_BACKEND: &str = "no compiled backend reads ONNX models (`.onnx` file or `model.onnx` \
-     directory); the ONNX backend was removed — convert the model to GGUF for \
-     llama.cpp, or serve it behind an OpenAI-compatible endpoint";
+#[cfg(not(feature = "backend-onnx"))]
+const NO_ONNX_BACKEND: &str = "no compiled backend reads ONNX text models; enable the \
+    `backend-onnx` feature and supply an ONNX Runtime GenAI bundle with genai_config.json";
 
 #[derive(Debug, Clone, Copy)]
 enum BackendKind {
@@ -288,6 +302,8 @@ enum BackendKind {
     MistralRs,
     #[cfg(feature = "backend-litertlm")]
     LiteRtLm,
+    #[cfg(feature = "backend-onnx")]
+    Onnx,
     #[cfg(feature = "backend-external-api")]
     ExternalApi,
 }
@@ -314,6 +330,8 @@ impl Engine {
             Self::MistralRs(e) => Some(e),
             #[cfg(feature = "backend-litertlm")]
             Self::LiteRtLm(e) => Some(e),
+            #[cfg(feature = "backend-onnx")]
+            Self::Onnx(e) => Some(e),
             #[cfg(test)]
             Self::Fake(e) => Some(e),
             Self::Uninit => None,
@@ -341,6 +359,8 @@ impl Engine {
         v.push("mistralrs");
         #[cfg(feature = "backend-litertlm")]
         v.push("litertlm");
+        #[cfg(feature = "backend-onnx")]
+        v.push("onnx");
         v
     }
 
@@ -379,6 +399,8 @@ impl Engine {
             Ok(BackendKind::MistralRs) => "mistralrs",
             #[cfg(feature = "backend-litertlm")]
             Ok(BackendKind::LiteRtLm) => "litertlm",
+            #[cfg(feature = "backend-onnx")]
+            Ok(BackendKind::Onnx) => "onnx",
             Err(_) => "unknown",
         }
     }
@@ -421,13 +443,24 @@ impl Engine {
             // absent, the blocks after this one are cfg'd out.
             Self::LiteRtLm(super::litertlm::LiteRtLmEngine::new())
         }
+        #[cfg(all(
+            not(feature = "backend-llamacpp"),
+            not(feature = "backend-mlx"),
+            not(feature = "backend-mistralrs"),
+            not(feature = "backend-litertlm"),
+            feature = "backend-onnx"
+        ))]
+        {
+            Self::Onnx(super::onnx::OnnxEngine::new())
+        }
         // No local backend compiled: nothing to instantiate until a load
         // names a path, which a registered plugin may claim.
         #[cfg(not(any(
             feature = "backend-llamacpp",
             feature = "backend-mlx",
             feature = "backend-mistralrs",
-            feature = "backend-litertlm"
+            feature = "backend-litertlm",
+            feature = "backend-onnx"
         )))]
         Self::Uninit
     }
@@ -486,6 +519,8 @@ impl Engine {
             (Self::MistralRs(_), BackendKind::MistralRs) => false,
             #[cfg(feature = "backend-litertlm")]
             (Self::LiteRtLm(_), BackendKind::LiteRtLm) => false,
+            #[cfg(feature = "backend-onnx")]
+            (Self::Onnx(_), BackendKind::Onnx) => false,
             _ => true,
         };
         if !needs_switch {
@@ -503,6 +538,8 @@ impl Engine {
             BackendKind::MistralRs => Self::MistralRs(super::mistralrs::MistralRsEngine::new()),
             #[cfg(feature = "backend-litertlm")]
             BackendKind::LiteRtLm => Self::LiteRtLm(super::litertlm::LiteRtLmEngine::new()),
+            #[cfg(feature = "backend-onnx")]
+            BackendKind::Onnx => Self::Onnx(super::onnx::OnnxEngine::new()),
             // Backend not compiled in
             #[allow(unreachable_patterns)]
             _ => Self::Uninit,
@@ -820,9 +857,18 @@ mod tests {
             feature = "backend-llamacpp",
             feature = "backend-mlx",
             feature = "backend-mistralrs",
-            feature = "backend-litertlm"
+            feature = "backend-litertlm",
+            feature = "backend-onnx"
         )))]
         assert_eq!(name, "none");
+        #[cfg(all(
+            not(feature = "backend-llamacpp"),
+            not(feature = "backend-mlx"),
+            not(feature = "backend-mistralrs"),
+            not(feature = "backend-litertlm"),
+            feature = "backend-onnx"
+        ))]
+        assert_eq!(name, "onnx");
     }
 
     #[test]
@@ -928,6 +974,7 @@ mod tests {
     /// to say that in every build — not fall through to llama.cpp reporting
     /// a bad magic number on a file it was never meant to open.
     #[test]
+    #[cfg(not(feature = "backend-onnx"))]
     fn an_onnx_model_fails_naming_the_format_in_every_build() {
         let dir = tempfile::tempdir().unwrap();
         let file = dir.path().join("model.onnx");
@@ -1045,7 +1092,8 @@ mod tests {
             feature = "backend-llamacpp",
             feature = "backend-mlx",
             feature = "backend-mistralrs",
-            feature = "backend-litertlm"
+            feature = "backend-litertlm",
+            feature = "backend-onnx"
         ))]
         {
             let _ = outcome;
@@ -1058,7 +1106,8 @@ mod tests {
             feature = "backend-llamacpp",
             feature = "backend-mlx",
             feature = "backend-mistralrs",
-            feature = "backend-litertlm"
+            feature = "backend-litertlm",
+            feature = "backend-onnx"
         )))]
         {
             let err = outcome.expect_err("nothing compiled can route the path");

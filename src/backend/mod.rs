@@ -38,6 +38,9 @@ pub(crate) mod mistralrs;
 #[cfg(feature = "backend-litertlm")]
 pub(crate) mod litertlm;
 
+#[cfg(feature = "backend-onnx")]
+pub mod onnx;
+
 pub mod caps;
 mod facade;
 pub mod health;
