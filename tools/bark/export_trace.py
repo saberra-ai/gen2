@@ -4,6 +4,7 @@ import json
 import contextlib
 import io
 import platform
+import ctypes
 from pathlib import Path
 import numpy as np
 import onnxruntime as ort
@@ -24,9 +25,18 @@ probes = [0, 1, 2, 13, 34, 41, 43, 249]
 runtime = io.StringIO()
 with contextlib.redirect_stdout(runtime):
     np.show_runtime()
+blas_runtime = []
+for library in (Path(np.__file__).parent.parent / "numpy.libs").glob("*openblas*"):
+    handle = ctypes.CDLL(str(library))
+    for symbol in ["scipy_openblas_get_corename64_", "scipy_openblas_get_config64_"]:
+        function = getattr(handle, symbol, None)
+        if function is not None:
+            function.restype = ctypes.c_char_p
+            blas_runtime.append({"library": library.name, "symbol": symbol,
+                                 "value": function().decode()})
 (args.reference / "numpy-runtime.json").write_text(json.dumps({
     "platform": platform.platform(), "numpy_runtime": runtime.getvalue(),
-    "numpy_build": np.show_config(mode="dicts"),
+    "numpy_build": np.show_config(mode="dicts"), "blas_runtime": blas_runtime,
 }, indent=2) + "\n")
 for record in receipt["records"]:
     if "token_ids" in record and record["id"] not in probes:

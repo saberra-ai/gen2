@@ -35,6 +35,7 @@ fn features_with_observer(
     let mut input = vec![Complex::default(); 512];
     let mut scratch = vec![Complex::default(); fft.get_inplace_scratch_len()];
     let mut mel = vec![0f32; frames * 128];
+    let split_mel = numpy_split_mel();
     for frame in 0..frames {
         for i in 0..512 {
             input[i] = Complex::new(emphasized[frame * 160 + i] as f64 * window[i], 0.);
@@ -46,11 +47,29 @@ fn features_with_observer(
             power[bin] = magnitude * magnitude;
         }
         observe("power", &power);
+        // The pinned Linux AVX2 OpenBLAS kernel uses two interleaved
+        // accumulators at the edges of each 12-frame tile and in its 4-frame
+        // tail. Other tiles/platforms use a single sequential FMA chain.
+        // A one-ULP mel drift changed punctuation on two real recordings.
+        let full_tiles = frames / 12 * 12;
+        let four_tail = full_tiles + (frames % 12 / 8) * 8;
+        let split_all =
+            split_mel && frames - four_tail >= 4 && frame >= four_tail && frame < four_tail + 4;
+        let split_edges = split_mel && frame < full_tiles && frame % 12 < 6;
+        let mut odd = [0f32; 128];
         for (bin, power) in power.into_iter().enumerate() {
             for band in 0..128 {
-                mel[frame * 128 + band] =
-                    power.mul_add(filters[bin * 128 + band], mel[frame * 128 + band]);
+                let sum =
+                    if bin % 2 == 1 && (split_all || (split_edges && !(8..120).contains(&band))) {
+                        &mut odd[band]
+                    } else {
+                        &mut mel[frame * 128 + band]
+                    };
+                *sum = power.mul_add(filters[bin * 128 + band], *sum);
             }
+        }
+        for band in 0..128 {
+            mel[frame * 128 + band] += odd[band];
         }
         observe("mel", &mel[frame * 128..(frame + 1) * 128]);
         for band in 0..128 {
@@ -81,6 +100,21 @@ fn features_with_observer(
         ));
     }
     Ok((normalized, frames, valid))
+}
+
+// NumPy's pinned manylinux wheel uses the Haswell SGEMM family for AVX2
+// machines. Match its accumulation order, not an alternative BLAS provider.
+// See OpenBLAS v0.3.34 kernel/x86_64/sgemm_kernel_8x4_haswell_2.c.
+// ARM and the measured AVX512 Windows path use the sequential FMA order.
+fn numpy_split_mel() -> bool {
+    #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
+    {
+        std::is_x86_feature_detected!("avx2")
+            && std::is_x86_feature_detected!("fma")
+            && !std::is_x86_feature_detected!("avx512f")
+    }
+    #[cfg(not(all(target_os = "linux", target_arch = "x86_64")))]
+    false
 }
 
 // NumPy 2.5.4's AVX2/AVX512 float32 log uses a fused rational approximation,

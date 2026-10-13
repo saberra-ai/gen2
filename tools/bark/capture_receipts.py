@@ -42,7 +42,7 @@ for path in inputs.values():
 for name in ["performance.json", "mixed-performance.json", "qualification.json", "audio-quality.json"]:
     basis = json.loads(inputs[name].read_text())["git_sha"]
     subprocess.run(["git", "merge-base", "--is-ancestor", basis, sha], check=True)
-    changed = subprocess.check_output(["git", "diff", "--name-only", basis, sha, "--", "src", "Cargo.toml", "Cargo.lock", "assets", "examples/bark_benchmark.rs", "tests"], text=True)
+    changed = subprocess.check_output(["git", "diff", "--name-only", basis, sha, "--", "src", "Cargo.toml", "Cargo.lock", "build.rs", "assets", "examples/bark_benchmark.rs", "tests"], text=True)
     assert not changed, f"implementation changed since receipt {name}: {changed}"
 assert json.loads(inputs["audio-quality.json"].read_text())["passed"]
 assert json.loads(inputs["performance-comparison.json"].read_text())["passed"]
@@ -52,11 +52,18 @@ for name in ["numeric.log", "integration.log"]:
 args.output.mkdir(parents=True, exist_ok=True)
 for name, path in inputs.items():
     shutil.copyfile(path, args.output / name)
-source_files = [Path("Cargo.toml"), Path("Cargo.lock"), Path("tools/bark/reference.lock"),
+source_files = [Path("Cargo.toml"), Path("Cargo.lock"), Path("build.rs"), Path("tools/bark/reference.lock"),
+                Path("tools/bark/runtime123.lock"), Path("src/memory/runtime_memory.rs"),
+                *sorted(p for p in Path("assets/bark/soxr").rglob("*") if p.is_file()),
                 *sorted(Path("src/speech").glob("*.rs")), Path("src/onnx_runtime.rs"),
                 Path("src/api/runtime.rs"),
                 Path("assets/bark/nemo128.f32"), Path("tests/fixtures/bark/smoke.json"),
                 Path("tools/bark/critical-content.json")]
+for name in ["runtime-compatibility.json", "provisioning.log", "runtime-rejection-green.log", "live-memory-green.log"]:
+    path = args.root / name
+    assert path.is_file(), path
+    shutil.copyfile(path, args.output / name)
+    inputs[name] = path
 cpu = subprocess.check_output(["sysctl", "-n", "machdep.cpu.brand_string"], text=True).strip() if platform.system() == "Darwin" else platform.processor()
 provenance = {
     "implementation_git_sha": sha, "created_utc": datetime.datetime.now(datetime.timezone.utc).isoformat(),

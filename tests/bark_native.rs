@@ -461,6 +461,59 @@ fn real_audio_workflow_matches_qualified_reference() {
 fn coexistence_laya_first() {
     coexistence(true);
 }
+
+#[test]
+#[ignore = "requires GEN2_BARK_BUNDLE, GEN2_ORT_LIBRARY and GEN2_ORT_OLD_LIBRARY; run in a fresh process"]
+fn incompatible_runtime_is_rejected_before_binding_initialization() {
+    let bundle = std::env::var("GEN2_BARK_BUNDLE").expect("bundle");
+    let old: PathBuf = std::env::var("GEN2_ORT_OLD_LIBRARY")
+        .expect("old runtime")
+        .into();
+    let good: PathBuf = std::env::var("GEN2_ORT_LIBRARY")
+        .expect("qualified runtime")
+        .into();
+    let runtime = Runtime::builder()
+        .resident_memory_budget_mb(8192)
+        .build()
+        .unwrap();
+    let malformed = tempfile::tempdir().unwrap();
+    let invalid = malformed.path().join(old.file_name().unwrap());
+    std::fs::write(&invalid, b"not a native library").unwrap();
+    for library in [invalid, old] {
+        let (tx, rx) = std::sync::mpsc::channel();
+        let host = runtime.clone();
+        let path = bundle.clone();
+        std::thread::spawn(move || {
+            let result = host.load_transcriber(
+                &path,
+                LoadOptions {
+                    native_library: Some(library),
+                    ..Default::default()
+                },
+            );
+            let _ = tx.send(result);
+        });
+        let rejected = rx
+            .recv_timeout(Duration::from_secs(10))
+            .expect("native library rejection must not hang");
+        assert!(matches!(
+            rejected,
+            Err(gen2::Error::Speech(SpeechError::BackendUnavailable(_)))
+        ));
+        assert_eq!(runtime.speech_reserved_mb(), 0);
+    }
+    let speech = runtime
+        .load_transcriber(
+            &bundle,
+            LoadOptions {
+                native_library: Some(good),
+                ..Default::default()
+            },
+        )
+        .unwrap();
+    speech.shutdown();
+    assert_eq!(runtime.speech_reserved_mb(), 0);
+}
 #[cfg(feature = "laya-dynamic")]
 #[test]
 #[ignore = "requires GEN2_BARK_BUNDLE and GEN2_ORT_LIBRARY; run in a fresh process"]

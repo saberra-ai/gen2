@@ -16,6 +16,10 @@ API-24 bindings. A single process-global library policy is shared with Laya;
 different library paths are rejected after initialization. Do not initialize a
 different ORT library elsewhere in the host first. `backend-asr-onnx` instead
 uses the app-linked runtime, following `ort`'s linking configuration.
+Malformed libraries and older ABIs are rejected before initializing the Rust
+bindings, and failed loads release admission before returning. A 25-clip smoke
+comparison matched the original Python ORT 1.23.2 and qualified 1.24.4 helper
+exactly; this is not a full-corpus compatibility claim for the old runtime.
 
 ```rust,no_run
 use gen2::{Runtime, speech::{Audio, LoadOptions, TranscribeOptions}};
@@ -35,14 +39,17 @@ speech.shutdown();
 `Audio::from_wav` accepts PCM16/float32 WAV and arithmetic downmixing of 1–8
 channels. The core feature accepts 16 kHz. Opt into `asr-resample-soxr` for
 8/44.1/48 kHz using libsoxr HQ, the helper's resampling algorithm. Resampling is
-**experimental**: native FFT/reduction rounding can change punctuation near a
-greedy decoding boundary. Qualification checks normalized PCM error and words
-separately, retaining every raw difference; it does not claim bit-exact Python
-resampling or punctuation parity. This feature
-includes **LGPL-2.1 native code** through pinned `soxr-sys`; its Rust binding
-metadata says Apache-2.0, but the vendored C source has its own LGPL notices.
-Keep the accompanying [libsoxr notice](../../assets/bark/SOXR-LICENCE) and review
-distribution obligations for linked binaries. It is off by default, including
+**experimental**: compiler/SIMD rounding can change greedy decisions. The
+unmodified SoXR/PFFFT source is pinned to Python-SoXR 1.1.0's submodule and built
+locally with CMake and a C compiler; there are no build-time downloads. It
+replaced a scalar FFT4G build that caused measured punctuation/word differences.
+The updated build matched normalized samples on all 54 non-16-kHz Mac fixtures
+and all 112 supplementary transcripts exactly. Qualification still checks PCM
+error and words separately and retains every raw difference; those measurements
+are not a bit-exact guarantee for other compilers, CPUs or recordings.
+This feature statically links **LGPL-2.1-or-later native code** plus PFFFT's
+per-file license. Keep the accompanying [source and notices](../../assets/bark/soxr/UPSTREAM.md)
+and review source/relinking obligations for distributed linked binaries. It is off by default, including
 in `asr-dynamic`. Hosts may normalize audio themselves without this dependency.
 Unsupported encodings/rates fail explicitly. The 128 MiB encoded-file bound and
 20 ms–60 s original/post-normalization duration bounds are checked without
@@ -112,8 +119,10 @@ export GEN2_BARK_BUNDLE="$PWD/target/bark/model/onnx"
 export GEN2_BARK_REFERENCE="$PWD/target/bark/oracle"
 export GEN2_BARK_AUDIO_REFERENCE="$PWD/target/bark/audio"
 export GEN2_BARK_RESULTS="$PWD/target/bark/native.json"
-cargo test --release --no-default-features --features asr-dynamic,asr-resample-soxr,laya-dynamic \
-  --test bark_native -- --ignored --test-threads=1
+for test in real_bark_matches_reference_and_reuses_resident_weights real_audio_workflow_matches_qualified_reference real_bundle_integrity_and_warm_offline_cache real_worker_bounds_queue_cancellation_shutdown_and_admission; do
+  cargo test --release --no-default-features --features asr-dynamic,asr-resample-soxr,laya-dynamic \
+    --test bark_native "$test" -- --ignored --exact
+done
 cargo test --release --no-default-features --features asr-dynamic --lib native_frontend -- --ignored
 cargo test --release --no-default-features --features asr-dynamic --lib native_graphs -- --ignored
 python tools/bark/compare_results.py --reference target/bark/oracle/reference.json \
@@ -140,6 +149,9 @@ The native DSP frontend ports ONNX ASR 0.12.0's default NumPy implementation and
 uses its original MIT-licensed filterbank coefficients. The packaged ONNX
 frontend was rejected: under ORT 1.24.4 it agreed on only 239/250 transcripts.
 The native frontend uses float64 FFT/Hann window and float32 mel/FMA/normalization;
+the pinned Linux AVX2 OpenBLAS profile uses interleaved mel accumulators for its
+edge/tail tiles. Platform-local stage traces verify this profile independently;
+alternate BLAS providers and CPU configurations need separate qualification.
 it passed features at `atol=rtol=1e-4`, independent encoder/decoder tensors, and
 exact text/token decisions on all 250 clips on the reference Mac. WER was
 3.8597%, equal to matched Python, not a reproduction of the model card's MLX

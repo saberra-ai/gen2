@@ -122,6 +122,19 @@ fn detect_available_memory_mb() -> u64 {
 
 #[cfg(any(target_os = "linux", target_os = "android"))]
 fn detect_process_memory_mb() -> u64 {
+    // Admission needs live RSS: ru_maxrss never falls after a model unloads.
+    // statm's resident count is in host pages (not necessarily 4 KiB).
+    if let Some(pages) = std::fs::read_to_string("/proc/self/statm")
+        .ok()
+        .and_then(|text| text.split_whitespace().nth(1)?.parse::<u64>().ok())
+    {
+        // SAFETY: sysconf reads a process-independent system property.
+        let page_size = unsafe { libc::sysconf(libc::_SC_PAGESIZE) };
+        if page_size > 0 {
+            return pages.saturating_mul(page_size as u64).div_ceil(1024 * 1024);
+        }
+    }
+    // A missing procfs keeps the previous conservative peak-RSS fallback.
     let mut usage: libc::rusage = unsafe { std::mem::zeroed() };
     let rc = unsafe { libc::getrusage(libc::RUSAGE_SELF, &mut usage) };
     if rc == 0 {
@@ -134,6 +147,23 @@ fn detect_process_memory_mb() -> u64 {
 
 #[cfg(target_os = "macos")]
 fn detect_process_memory_mb() -> u64 {
+    // SAFETY: proc_pidinfo fills the correctly sized writable structure for
+    // our own PID. A short/error result is not inspected; it falls back below.
+    let mut info: libc::proc_taskinfo = unsafe { std::mem::zeroed() };
+    let size = std::mem::size_of::<libc::proc_taskinfo>() as libc::c_int;
+    let read = unsafe {
+        libc::proc_pidinfo(
+            libc::getpid(),
+            libc::PROC_PIDTASKINFO,
+            0,
+            (&mut info as *mut libc::proc_taskinfo).cast(),
+            size,
+        )
+    };
+    if read == size {
+        return info.pti_resident_size.div_ceil(1024 * 1024);
+    }
+    // Preserve the conservative fallback if the live probe is unavailable.
     let mut usage: libc::rusage = unsafe { std::mem::zeroed() };
     let rc = unsafe { libc::getrusage(libc::RUSAGE_SELF, &mut usage) };
     if rc == 0 {
@@ -180,6 +210,50 @@ fn detect_process_memory_mb() -> u64 {
 #[cfg(test)]
 mod tests {
     use super::meminfo_available_mb;
+
+    #[cfg(any(target_os = "macos", target_os = "linux"))]
+    #[test]
+    #[ignore = "touches 128 MiB; run alone in a fresh process"]
+    fn snapshot_tracks_released_pages_not_lifetime_peak() {
+        const SIZE: usize = 128 * 1024 * 1024;
+        struct Mapping(*mut libc::c_void);
+        impl Drop for Mapping {
+            fn drop(&mut self) {
+                // SAFETY: exactly the live mapping returned below, owned once.
+                assert_eq!(unsafe { libc::munmap(self.0, SIZE) }, 0);
+            }
+        }
+        let before = super::current_memory_snapshot().estimated_process_mb;
+        // SAFETY: anonymous private mapping, no requested address or file.
+        let pointer = unsafe {
+            libc::mmap(
+                std::ptr::null_mut(),
+                SIZE,
+                libc::PROT_READ | libc::PROT_WRITE,
+                libc::MAP_PRIVATE | libc::MAP_ANON,
+                -1,
+                0,
+            )
+        };
+        assert_ne!(pointer, libc::MAP_FAILED);
+        let mapping = Mapping(pointer);
+        for offset in (0..SIZE).step_by(4096) {
+            // SAFETY: every offset is inside the writable mapping. Volatile
+            // stores make these pages resident even in an optimized build.
+            unsafe { pointer.cast::<u8>().add(offset).write_volatile(1) };
+        }
+        let during = super::current_memory_snapshot().estimated_process_mb;
+        assert!(
+            during >= before + 112,
+            "pages must be resident: {before} -> {during}"
+        );
+        drop(mapping);
+        let after = super::current_memory_snapshot().estimated_process_mb;
+        assert!(
+            after + 96 < during,
+            "released pages must leave the snapshot: {during} -> {after}"
+        );
+    }
 
     #[test]
     fn reads_mem_available_not_mem_free() {

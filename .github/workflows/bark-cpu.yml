@@ -3,9 +3,9 @@ on:
   workflow_dispatch:
   push:
     branches: [main, codex/bark-onnx]
-    paths: ['src/speech/**', 'src/onnx_runtime.rs', 'src/api/runtime.rs', 'src/decision/onnx.rs', 'Cargo.*', 'tools/bark/**', 'tests/bark_native.rs', 'assets/bark/**', '.github/workflows/bark-cpu.yml']
+    paths: ['src/speech/**', 'src/onnx_runtime.rs', 'src/api/runtime.rs', 'src/decision/onnx.rs', 'src/memory/runtime_memory.rs', 'Cargo.*', 'build.rs', 'tools/bark/**', 'tests/bark_native.rs', 'assets/bark/**', '.github/workflows/bark-cpu.yml']
   pull_request:
-    paths: ['src/speech/**', 'src/onnx_runtime.rs', 'src/api/runtime.rs', 'src/decision/onnx.rs', 'Cargo.*', 'tools/bark/**', 'tests/bark_native.rs', 'assets/bark/**', '.github/workflows/bark-cpu.yml']
+    paths: ['src/speech/**', 'src/onnx_runtime.rs', 'src/api/runtime.rs', 'src/decision/onnx.rs', 'src/memory/runtime_memory.rs', 'Cargo.*', 'build.rs', 'tools/bark/**', 'tests/bark_native.rs', 'assets/bark/**', '.github/workflows/bark-cpu.yml']
 jobs:
   real-model:
     env:
@@ -32,6 +32,7 @@ jobs:
           path: ~/.cache/huggingface
           key: bark-0d5f814-disfluency-b7da294
       - run: python -m pip install --require-hashes -r tools/bark/reference.lock
+      - run: python -m pip download --no-deps --require-hashes -r tools/bark/runtime123.lock -d target/bark/old-runtime
       - name: Provision pinned weights and corpus
         run: python tools/bark/provision_reference.py target/bark
       - name: Freeze independent CPU oracle, including token decisions
@@ -43,19 +44,31 @@ jobs:
         shell: bash
         run: |
           python - <<'PY'
-          import os, pathlib, onnxruntime
+          import os, pathlib, zipfile, onnxruntime
           root = pathlib.Path(onnxruntime.__file__).parent / 'capi'
           matches = list(root.glob('onnxruntime.dll')) + list(root.glob('libonnxruntime.so*')) + list(root.glob('libonnxruntime*.dylib'))
           assert matches, f'no native runtime in {root}'
+          old_root = pathlib.Path('target/bark/old-runtime')
+          with zipfile.ZipFile(next(old_root.glob('*.whl'))) as wheel:
+              for name in wheel.namelist():
+                  if name.startswith('onnxruntime/capi/') and '..' not in pathlib.PurePosixPath(name).parts:
+                      wheel.extract(name, old_root)
+          old_capi = old_root / 'onnxruntime/capi'
+          old_matches = list(old_capi.glob('onnxruntime.dll')) + list(old_capi.glob('libonnxruntime.so*')) + list(old_capi.glob('libonnxruntime*.dylib'))
+          assert old_matches, f'no old native runtime in {old_capi}'
           with open(os.environ['GITHUB_ENV'], 'a') as f:
-              for key, value in {'GEN2_ORT_LIBRARY':matches[0], 'GEN2_BARK_BUNDLE':pathlib.Path('target/bark/model/onnx').resolve(), 'GEN2_BARK_REFERENCE':pathlib.Path('target/bark/oracle').resolve(), 'GEN2_BARK_RESULTS':pathlib.Path('target/bark/native.json').resolve(), 'GEN2_BARK_AUDIO_REFERENCE':pathlib.Path('target/bark/audio').resolve()}.items():
+              for key, value in {'GEN2_ORT_LIBRARY':matches[0], 'GEN2_ORT_OLD_LIBRARY':old_matches[0].resolve(), 'GEN2_BARK_BUNDLE':pathlib.Path('target/bark/model/onnx').resolve(), 'GEN2_BARK_REFERENCE':pathlib.Path('target/bark/oracle').resolve(), 'GEN2_BARK_RESULTS':pathlib.Path('target/bark/native.json').resolve(), 'GEN2_BARK_AUDIO_REFERENCE':pathlib.Path('target/bark/audio').resolve()}.items():
                   f.write(f'{key}={value}\n')
           PY
       - run: cargo clippy --locked --no-default-features --features asr-dynamic,asr-resample-soxr,laya-dynamic,hf --all-targets -- -D warnings
       - run: cargo test --locked --release --no-default-features --features asr-dynamic,asr-resample-soxr,laya-dynamic --lib
       - run: cargo test --locked --release --no-default-features --features asr-dynamic,asr-resample-soxr,laya-dynamic --test bark_native
+      - name: Live resident-memory accounting
+        if: runner.os != 'Windows'
+        run: cargo test --locked --release --no-default-features --features asr-dynamic --lib snapshot_tracks_released_pages_not_lifetime_peak -- --ignored
       - run: cargo test --locked --release --no-default-features --features asr-dynamic,asr-resample-soxr,laya-dynamic --lib native_frontend -- --ignored
       - run: cargo test --locked --release --no-default-features --features asr-dynamic,asr-resample-soxr,laya-dynamic --lib native_graphs -- --ignored
+      - run: cargo test --locked --release --no-default-features --features asr-dynamic --test bark_native incompatible_runtime_is_rejected_before_binding_initialization -- --ignored --exact
       # A 60-second encoder run can leave reusable allocator pages resident.
       # Independent cases get fresh processes; no host admission gate is disabled.
       - name: Real transcripts, audio, integrity and lifecycle

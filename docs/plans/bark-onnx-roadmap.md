@@ -1,7 +1,55 @@
 # Bark 2.0 support: ONNX-first roadmap and verification plan
 
-Status: proposed; implementation and model inference have not started.
-Prepared: 2026-10-12. Gen2 baseline inspected: `c98d99f`.
+Status: native CPU implementation exists; desktop release qualification is in
+progress. Main has not yet received this work. Updated: 2026-10-13 UTC.
+Prepared: 2026-10-12. Original Gen2 baseline: `c98d99f`.
+
+## Current qualification status
+
+The isolated `codex/bark-onnx` branch implements the dedicated speech API,
+native frontend/encoder/TDT decoder, bounded workers, shared speech/chat/Laya
+admission, WAV handling, and pinned offline provisioning. Remote-main dependency
+and ONNX text-generation changes have been merged without changing the ASR
+operation into generation.
+
+On the Apple M4 Pro, native text **and token IDs** match all 250 pinned
+DisfluencySpeech clips. Human-reference WER is 3.8597%, equal to the independent
+Python CPU reference. Eight frontend probes match exactly on this Mac;
+independent fixed encoder/decoder tensors pass `atol=rtol=1e-4`. The candidate
+ONNX preprocessing graph was rejected (239/250 raw transcript matches), so the
+native implementation ports the helper's default NumPy frontend.
+
+The matched 1/5/15/30/60-second CPU sweep passed the native/Python performance
+gate, with a 60-second median of 2.21 seconds and sampled peak process RSS of
+3.09 GB. A separate mixed run kept the real Qwen3-0.6B GGUF chat model, speech,
+and a synthetic Laya smoke model simultaneously resident; 100 speech requests
+were repeatable and final reservations were zero. This is not real Laya
+checkpoint quality/performance evidence.
+
+The original Python ORT 1.23.2 and candidate 1.24.4 environments now match on
+25/25 pinned clips (PCM, text and token IDs). Native code uses API 24, not 1.23.2.
+An incompatible-library test exposed a binding-initialization deadlock; ABI
+preflight now rejects malformed/older libraries before binding initialization,
+with zero leaked reservations and a subsequent successful correct-library load.
+
+The user approved shipping optional resampling as **experimental with measured
+limits**. The replacement pinned SoXR/PFFFT build now matches all 54 non-16-kHz
+normalized sample fixtures and all 112 supplementary transcripts exactly on the
+reference Mac, including the original three 8-kHz punctuation differences.
+Human-quality gates pass. This is not a universal parity guarantee.
+
+M4 remains open: Windows passed full 250-clip raw text/token parity but three
+48 kHz float32 variants duplicated a word after native resampling. Linux has
+two raw punctuation differences on the main corpus. Stage traces located the
+first Linux drift in OpenBLAS Haswell's interleaved mel accumulation. The native
+fix reproduces all eight captured mel tensors exactly in the diagnostic loop;
+the core 16-kHz gate has not been relaxed. CI also exposed that macOS/Linux
+admission used lifetime peak RSS as current memory. Live-RSS probes now pass a
+red/green released-page regression without relaxing admission ceilings. The
+updated three-OS real-model run must pass before release. Independent CI cases
+use fresh processes to isolate unrelated model loads.
+Accelerators, physical mobile, MLX, microphone capture and live caption stitching
+remain follow-ups, not completion claims for M0–M4.
 
 ## Outcome and scope
 
@@ -58,7 +106,7 @@ advances. Loading the encoder alone, running CTC decoding, or feeding these
 weights to an LLM loader cannot establish support.
 [Graph invocation][nemo] [Decode loop][decode]
 
-### Gen2 today
+### Gen2 at the original planning baseline
 
 | Existing module | Implication for this work |
 | --- | --- |
@@ -71,16 +119,19 @@ weights to an LLM loader cannot establish support.
 | `src/api/hf.rs` | The current Hub resolver selects GGUF files; it does not provision this multi-file ASR package |
 | `src/backend/facade.rs` | General ONNX model loading is rejected |
 
-The earlier answer's ONNX limitation applies to general generation loading.
-The existing Laya ONNX path gives this project a useful runtime precedent.
+The earlier answer's ONNX limitation applied to general generation loading at
+that baseline. Remote main now has a separate ONNX Runtime GenAI text backend,
+requiring its own API-31 runtime package. It is not this API-24 ASR adapter and
+does not establish Bark compatibility. Existing Laya supplies the ASR runtime
+precedent; mixed GenAI/API-24 native-library coexistence is not qualified here.
 
 ## Recommended interface and implementation
 
 Add a deep `gen2::speech` module with a typed transcriber handle, analogous to
 the separate `gen2::decision` operation. The small caller interface hides
 bundle validation, frontend processing, both graph sessions, recurrent state,
-text reconstruction and worker lifecycle. Proposed names below are design
-sketches; they are not existing callable functions.
+text reconstruction and worker lifecycle. The names below are now callable;
+see `tools/bark/README.md` for the runnable example and packaging instructions.
 
 ```rust,ignore
 let runtime = gen2::Runtime::builder().build()?;
@@ -120,7 +171,7 @@ deadline, shutdown and resource limits. Check cancellation between graph calls
 and decoder iterations. Native execution can retain resources until it returns;
 do not promise immediate interruption of an in-flight encoder call.
 
-Proposed features: `backend-asr-onnx` and `asr-dynamic`, optional and off by
+Implemented features: `backend-asr-onnx` and `asr-dynamic`, optional and off by
 default. Internally share dynamic runtime initialization with Laya. ORT is
 process-global: a separate ASR-local initialization lock would fail to detect
 a library conflict with Laya. Preserve the existing `laya-*` feature spellings;
@@ -371,28 +422,31 @@ digest, corpus revision/audio hashes, normalizer version, OS/architecture/CPU,
 provider partitions, threads, raw transcripts, numeric parity, WER and timing/
 memory samples. Keep speech content out of ordinary production logs.
 
-Proposed commands after the corresponding targets/features are implemented:
+Implemented verification commands (set the documented real-model environment
+variables first; use a fresh process for each independent real-model case):
 
 ```bash
 cargo test --no-default-features --lib speech
 cargo clippy --no-default-features --features asr-dynamic --all-targets -- -D warnings
-cargo test --no-default-features --features asr-dynamic --test bark_native native_smoke
-cargo test --no-default-features --features asr-dynamic,laya-dynamic --test bark_native coexistence
+cargo test --release --no-default-features --features asr-dynamic,laya-dynamic --test bark_native coexistence_laya_first -- --ignored --exact
+cargo test --release --no-default-features --features asr-dynamic,laya-dynamic --test bark_native coexistence_speech_first -- --ignored --exact
 # Explicit opt-in real-model lane; missing assets are errors inside the test.
 cargo test --no-default-features --features asr-dynamic --test bark_native real_bark -- --ignored
 ```
 
 Also run the existing default, no-backend and Laya gates, documentation/example
 checks, and publish-shape checks when their respective files change. These
-commands and new targets have not been run or implemented in this planning task.
+commands are implemented and exercised locally. A skipped/ignored ordinary-test
+invocation is not a native compatibility pass. Cross-platform release gates
+and final provenance-rich checked-in receipts remain required.
 
-## First executable step
+## Remaining release work
 
-Complete M0: download the pinned ONNX package and a small licensed real-speech
-corpus, reproduce the Python CPU result, then verify Runtime 1.24.4 and the
-candidate ONNX frontend against it. This establishes the artifacts, frontend
-choice and oracle needed for the native Rust slice. No current evidence claims
-that Gen2 or a particular accelerator has already transcribed with Bark.
+Resolve the Linux frontend drift and Windows experimental-resampling quality
+failure, complete all three real-model desktop CPU CI gates, capture receipts
+against the final merged implementation, complete review and publish-shape
+checks, then non-force push the verified commit to remote main. Keep unqualified
+targets and live-caption behavior explicit in the final release summary.
 
 ## Sources
 
