@@ -42,7 +42,7 @@ pub(crate) fn features(wave: &[f32]) -> Result<(Vec<f32>, usize, usize)> {
             }
         }
         for band in 0..128 {
-            mel[frame * 128 + band] = (mel[frame * 128 + band] + 2f32.powi(-24)).ln();
+            mel[frame * 128 + band] = numpy_log(mel[frame * 128 + band] + 2f32.powi(-24));
         }
     }
     let mut normalized = vec![0f32; frames * 128];
@@ -70,15 +70,56 @@ pub(crate) fn features(wave: &[f32]) -> Result<(Vec<f32>, usize, usize)> {
     Ok((normalized, frames, valid))
 }
 
+// NumPy 2.5.4's AVX2/AVX512 float32 log uses a fused rational approximation,
+// not the platform's scalar logf. Preserve that rounding on x86 with FMA;
+// ARM NumPy uses scalar logf. Source: loops_exponent_log.dispatch.c.src and
+// npy_simd_data.h, v2.5.4 (BSD-3-Clause; assets/bark/NUMPY-LICENSE).
+fn numpy_log(value: f32) -> f32 {
+    #[cfg(target_arch = "x86_64")]
+    if std::is_x86_feature_detected!(avx2) && std::is_x86_feature_detected!(fma) {
+        return numpy_fma_log(value);
+    }
+    value.ln()
+}
+
+#[cfg(any(target_arch = "x86_64", test))]
+fn numpy_fma_log(value: f32) -> f32 {
+    // Frontend energies are finite, positive and at least 2^-24 (no denormals).
+    let bits = value.to_bits();
+    let mut exponent = ((bits >> 23) as i32 - 126) as f32;
+    let mut x = f32::from_bits((bits & 0x7fffff) | (126 << 23));
+    if x <= std::f32::consts::FRAC_1_SQRT_2 {
+        x += x;
+        exponent -= 1.;
+    }
+    x -= 1.;
+    let numerator = [0.38088378f32, 1.4800006, 2.1126776, 1., 0.]
+        .into_iter()
+        .fold(0.025899792f32, |p, coefficient| p.mul_add(x, coefficient));
+    let denominator = [0.15464763f32, 0.9864943, 2.453006, 2.6126776, 1.]
+        .into_iter()
+        .fold(0.0058750953f32, |p, coefficient| p.mul_add(x, coefficient));
+    exponent.mul_add(std::f32::consts::LN_2, numerator / denominator)
+}
+
 #[cfg(test)]
 mod tests {
+    #[test]
+    fn numpy_log_approximation_is_bounded_on_frontend_domain() {
+        for exponent in -24..100 {
+            for mantissa in 0..128 {
+                let x = 2f32.powi(exponent) * (1. + mantissa as f32 / 128.);
+                assert!((super::numpy_fma_log(x) - x.ln()).abs() <= 1e-5);
+            }
+        }
+    }
     #[test]
     #[ignore = "requires GEN2_BARK_REFERENCE containing independently exported NumPy tensors"]
     fn native_frontend_matches_pinned_numpy_reference() {
         let root = std::path::PathBuf::from(
             std::env::var("GEN2_BARK_REFERENCE").expect("reference corpus"),
         );
-        for index in [0, 1, 2, 34] {
+        for index in [0, 1, 2, 13, 34, 41] {
             let wave = super::super::Audio::from_wav(root.join(format!("{index:03}.wav"))).unwrap();
             let expected = std::fs::read(root.join(format!("{index:03}.features.f32"))).unwrap();
             let expected: Vec<_> = expected

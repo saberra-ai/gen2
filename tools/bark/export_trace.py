@@ -24,7 +24,7 @@ for record in receipt["records"]:
     tokens, timestamps, _ = next(asr._decoding(encoded, encoded_lengths))
     record["token_ids"] = list(tokens)
     record["timestamps"] = list(timestamps)
-    if record["id"] < 3 or record["id"] == 34:
+    if record["id"] in [0, 1, 2, 13, 34, 41]:
         prefix = args.reference / f'{record["id"]:03}'
         features.astype("<f4").tofile(str(prefix) + ".features.f32")
         encoded.transpose(0, 2, 1).astype("<f4").tofile(str(prefix) + ".encoder.f32")

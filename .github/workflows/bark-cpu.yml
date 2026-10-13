@@ -8,6 +8,11 @@ on:
     paths: ['src/speech/**', 'src/onnx_runtime.rs', 'src/api/runtime.rs', 'src/decision/onnx.rs', 'Cargo.*', 'tools/bark/**', 'tests/bark_native.rs', 'assets/bark/**', '.github/workflows/bark-cpu.yml']
 jobs:
   real-model:
+    env:
+      OPENBLAS_NUM_THREADS: '1'
+      VECLIB_MAXIMUM_THREADS: '1'
+      OMP_NUM_THREADS: '1'
+      GEN2_BARK_DUMP: '1'
     strategy:
       fail-fast: false
       matrix:
@@ -64,4 +69,5 @@ jobs:
             target/bark/oracle/reference.json
             target/bark/audio/audio-reference.json
             target/bark/audio/native-audio.json
+            target/bark/oracle/*.features.f32
           if-no-files-found: error

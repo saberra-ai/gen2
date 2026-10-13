@@ -250,7 +250,11 @@ fn real_bundle_integrity_and_warm_offline_cache() {
     std::fs::create_dir(&destination).unwrap();
     for entry in std::fs::read_dir(&bundle).unwrap() {
         let entry = entry.unwrap();
-        std::fs::hard_link(entry.path(), destination.join(entry.file_name())).unwrap();
+        let target = destination.join(entry.file_name());
+        // Windows' default temp directory can be on a different volume.
+        std::fs::hard_link(entry.path(), &target)
+            .or_else(|_| std::fs::copy(entry.path(), &target).map(|_| ()))
+            .unwrap();
     }
     SpeechBundle::open(&destination).unwrap();
     // Works even without the hf feature: there is no network client on this path.
