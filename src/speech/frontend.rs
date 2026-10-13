@@ -76,7 +76,7 @@ pub(crate) fn features(wave: &[f32]) -> Result<(Vec<f32>, usize, usize)> {
 // npy_simd_data.h, v2.5.4 (BSD-3-Clause; assets/bark/NUMPY-LICENSE).
 fn numpy_log(value: f32) -> f32 {
     #[cfg(target_arch = "x86_64")]
-    if std::is_x86_feature_detected!(avx2) && std::is_x86_feature_detected!(fma) {
+    if std::is_x86_feature_detected!("avx2") && std::is_x86_feature_detected!("fma") {
         return numpy_fma_log(value);
     }
     value.ln()
