@@ -71,7 +71,7 @@ pub mod generation {
     pub use crate::backend::common::speculative::DraftContext;
     pub use crate::backend::common::speculative::{SpeculativeMode, SpeculativePredictor};
     pub use crate::engine::{
-        Capabilities, Degraded, GpuOffload, LoadOutcome, MmSettings, PromptSettings,
+        Capabilities, DFlash2Config, Degraded, GpuOffload, LoadOutcome, MmSettings, PromptSettings,
         SamplingSettings, Settings, StoppingSettings, SystemSettings,
     };
     /// The reply scanner: how a model's raw token text is split into prose,

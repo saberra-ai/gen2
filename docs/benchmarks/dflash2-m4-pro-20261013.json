@@ -1,0 +1,787 @@
+{
+  "native_revision": "847f447c310a3784d623a953e6f0bb07f04c0f27",
+  "target": "/Users/victor/models/underdog-saluki-27b-mtp/Underdog-Saluki-27B-1.0-IQ2-mix-MTP.gguf",
+  "draft": "/Users/victor/models/qwen3.8-27b-dflash2-gguf/Qwen3.8-27B-DFlash2-Q8_0.gguf",
+  "other_jobs_left_running": true,
+  "order": [
+    [
+      "embedded-control",
+      "server-control",
+      "server-dflash2",
+      "embedded-dflash2"
+    ],
+    [
+      "embedded-dflash2",
+      "server-dflash2",
+      "server-control",
+      "embedded-control"
+    ]
+  ],
+  "summary": {
+    "embedded-control": {
+      "decode_tps": {
+        "median": 13.976847322110743,
+        "mean": 13.86227692870624,
+        "stddev": 0.8223622322488325,
+        "min": 12.813407465285408,
+        "max": 14.682005605318064,
+        "n": 4
+      },
+      "end_to_end_tps": {
+        "median": 13.1181016587859,
+        "mean": 13.042609043530396,
+        "stddev": 0.742343395944033,
+        "min": 12.123261030392712,
+        "max": 13.810971826157072,
+        "n": 4
+      },
+      "ttft_visible_ms": {
+        "median": 650.035229,
+        "mean": 651.92595825,
+        "stddev": 29.502828893753023,
+        "min": 617.9360419999999,
+        "max": 689.6973330000001,
+        "n": 4
+      },
+      "wall_s": {
+        "median": 9.763359999999999,
+        "mean": 9.83823225025,
+        "stddev": 0.5683316742600685,
+        "min": 9.267993709,
+        "max": 10.558215292,
+        "n": 4
+      },
+      "prompt_tokens": {
+        "median": 48,
+        "mean": 48,
+        "stddev": 0,
+        "min": 48,
+        "max": 48,
+        "n": 4
+      },
+      "generated_tokens": {
+        "median": 128,
+        "mean": 128,
+        "stddev": 0,
+        "min": 128,
+        "max": 128,
+        "n": 4
+      },
+      "load_s": {
+        "median": 0.703338646,
+        "mean": 0.703338646,
+        "stddev": 0.03332785744248545,
+        "min": 0.679772292,
+        "max": 0.726905,
+        "n": 2
+      },
+      "rss_peak_bytes": {
+        "median": 9536970752,
+        "mean": 9536970752,
+        "stddev": 312801.4125799307,
+        "min": 9536749568,
+        "max": 9537191936,
+        "n": 2
+      },
+      "output_parity": true,
+      "draft_acceptance": null,
+      "drafted": 0,
+      "accepted": 0
+    },
+    "server-control": {
+      "decode_tps": {
+        "median": 13.151121336599964,
+        "mean": 13.347326502774473,
+        "stddev": 0.989802139477635,
+        "min": 12.423635198869375,
+        "max": 14.663428139028591,
+        "n": 4
+      },
+      "end_to_end_tps": {
+        "median": 12.401162858245222,
+        "mean": 12.578590426131342,
+        "stddev": 0.8859938500244193,
+        "min": 11.757915947421177,
+        "max": 13.754120040613747,
+        "n": 4
+      },
+      "ttft_visible_ms": {
+        "median": 657.695228999728,
+        "mean": 659.617874999185,
+        "stddev": 14.373606118795438,
+        "min": 645.221707998644,
+        "max": 677.8593339986401,
+        "n": 4
+      },
+      "wall_s": {
+        "median": 10.329559166499166,
+        "mean": 10.212925916499444,
+        "stddev": 0.699225681362773,
+        "min": 9.306302375000087,
+        "max": 10.886282957999356,
+        "n": 4
+      },
+      "prompt_tokens": {
+        "median": 48,
+        "mean": 48,
+        "stddev": 0,
+        "min": 48,
+        "max": 48,
+        "n": 4
+      },
+      "generated_tokens": {
+        "median": 128,
+        "mean": 128,
+        "stddev": 0,
+        "min": 128,
+        "max": 128,
+        "n": 4
+      },
+      "load_s": {
+        "median": 0.9865529794997201,
+        "mean": 0.9865529794997201,
+        "stddev": 0.07157738526600771,
+        "min": 0.935940124998524,
+        "max": 1.0371658340009162,
+        "n": 2
+      },
+      "rss_peak_bytes": {
+        "median": 8720867328,
+        "mean": 8720867328,
+        "stddev": 984745.1877516336,
+        "min": 8720171008,
+        "max": 8721563648,
+        "n": 2
+      },
+      "output_parity": true,
+      "draft_acceptance": null,
+      "drafted": 0,
+      "accepted": 0
+    },
+    "server-dflash2": {
+      "decode_tps": {
+        "median": 22.19813824829305,
+        "mean": 22.102136843666297,
+        "stddev": 2.712435039781732,
+        "min": 19.465282807958832,
+        "max": 24.546988070120253,
+        "n": 4
+      },
+      "end_to_end_tps": {
+        "median": 19.904993133914335,
+        "mean": 19.85246525774603,
+        "stddev": 2.2553452295904846,
+        "min": 17.662933545775132,
+        "max": 21.936941217380316,
+        "n": 4
+      },
+      "ttft_visible_ms": {
+        "median": 705.7461249996777,
+        "mean": 698.5591459992975,
+        "stddev": 28.41441650396752,
+        "min": 661.0252499995113,
+        "max": 721.7190839983232,
+        "n": 4
+      },
+      "wall_s": {
+        "median": 6.48055820799982,
+        "mean": 6.510709302249779,
+        "stddev": 0.7412996207438733,
+        "min": 5.8349064590001944,
+        "max": 7.246814333999282,
+        "n": 4
+      },
+      "prompt_tokens": {
+        "median": 48,
+        "mean": 48,
+        "stddev": 0,
+        "min": 48,
+        "max": 48,
+        "n": 4
+      },
+      "generated_tokens": {
+        "median": 128,
+        "mean": 128,
+        "stddev": 0,
+        "min": 128,
+        "max": 128,
+        "n": 4
+      },
+      "load_s": {
+        "median": 3.211392457999864,
+        "mean": 3.211392457999864,
+        "stddev": 2.202216187753167,
+        "min": 1.6541904580008122,
+        "max": 4.7685944579989155,
+        "n": 2
+      },
+      "rss_peak_bytes": {
+        "median": 11780554752,
+        "mean": 11780554752,
+        "stddev": 3382889.350864435,
+        "min": 11778162688,
+        "max": 11782946816,
+        "n": 2
+      },
+      "output_parity": true,
+      "draft_acceptance": 0.4195121951219512,
+      "drafted": 820,
+      "accepted": 344
+    },
+    "embedded-dflash2": {
+      "decode_tps": {
+        "median": 21.035191891060602,
+        "mean": 21.366500214047953,
+        "stddev": 1.0774827030431438,
+        "min": 20.490814022285726,
+        "max": 22.90480305178488,
+        "n": 4
+      },
+      "end_to_end_tps": {
+        "median": 18.24882018644322,
+        "mean": 18.52419365626763,
+        "stddev": 0.9536363004847218,
+        "min": 17.73248718055018,
+        "max": 19.86664707163391,
+        "n": 4
+      },
+      "ttft_visible_ms": {
+        "median": 977.3007080000001,
+        "mean": 968.3336662500001,
+        "stddev": 56.975887786490176,
+        "min": 898.256916,
+        "max": 1020.476333,
+        "n": 4
+      },
+      "wall_s": {
+        "median": 7.015707083000001,
+        "mean": 6.9231907705,
+        "stddev": 0.3448197534526292,
+        "min": 6.442959375,
+        "max": 7.218389541,
+        "n": 4
+      },
+      "prompt_tokens": {
+        "median": 48,
+        "mean": 48,
+        "stddev": 0,
+        "min": 48,
+        "max": 48,
+        "n": 4
+      },
+      "generated_tokens": {
+        "median": 128,
+        "mean": 128,
+        "stddev": 0,
+        "min": 128,
+        "max": 128,
+        "n": 4
+      },
+      "load_s": {
+        "median": 2.4045975,
+        "mean": 2.4045975,
+        "stddev": 1.6804801009064436,
+        "min": 1.216318625,
+        "max": 3.592876375,
+        "n": 2
+      },
+      "rss_peak_bytes": {
+        "median": 14827012096,
+        "mean": 14827012096,
+        "stddev": 4888970.226249287,
+        "min": 14823555072,
+        "max": 14830469120,
+        "n": 2
+      },
+      "output_parity": true,
+      "draft_acceptance": 0.4195121951219512,
+      "drafted": 820,
+      "accepted": 344
+    }
+  },
+  "runs": [
+    {
+      "config": "embedded-control",
+      "round": 0,
+      "returncode": 0,
+      "command": [
+        "/Users/victor/workspace/underdog-benchmark/target/dflash-embedded/release/examples/dflash2_bench",
+        "/Users/victor/models/underdog-saluki-27b-mtp/Underdog-Saluki-27B-1.0-IQ2-mix-MTP.gguf",
+        "-",
+        "2",
+        "128"
+      ],
+      "rss_peak_bytes": 9537191936,
+      "peak_footprint_bytes": 1698504528,
+      "swaps": 0,
+      "page_faults": 797,
+      "load_s": [
+        0.726905
+      ],
+      "measured": [
+        {
+          "trial": 0,
+          "wall_s": 9.267993709,
+          "ttft_visible_ms": 617.9360419999999,
+          "prompt_tokens": 48,
+          "generated_tokens": 128,
+          "decode_tps": 14.682005605318064,
+          "end_to_end_tps": 13.810971826157072,
+          "thinking_actual": false,
+          "timings": {
+            "draft_n": 0,
+            "draft_n_accepted": 0
+          }
+        },
+        {
+          "trial": 1,
+          "wall_s": 9.524358542,
+          "ttft_visible_ms": 653.3601249999999,
+          "prompt_tokens": 48,
+          "generated_tokens": 128,
+          "decode_tps": 14.31633511161255,
+          "end_to_end_tps": 13.439225270190379,
+          "thinking_actual": false,
+          "timings": {
+            "draft_n": 0,
+            "draft_n_accepted": 0
+          }
+        }
+      ]
+    },
+    {
+      "config": "server-control",
+      "round": 0,
+      "returncode": 0,
+      "command": [
+        "/Users/victor/workspace/underdog-benchmark/.venv/bin/python",
+        "/Users/victor/workspace/underdog-benchmark/benchmark_llama.py",
+        "/Users/victor/models/underdog-saluki-27b-mtp/Underdog-Saluki-27B-1.0-IQ2-mix-MTP.gguf",
+        "--mode",
+        "short",
+        "--trials",
+        "2",
+        "--max-tokens",
+        "128",
+        "--short-task",
+        "code",
+        "--log-tag",
+        "embedded-compare-20261013T033109Z-r0"
+      ],
+      "rss_peak_bytes": 8721563648,
+      "peak_footprint_bytes": 852728864,
+      "swaps": 0,
+      "page_faults": 875,
+      "load_s": [
+        1.0371658340009162
+      ],
+      "measured": [
+        {
+          "trial": 0,
+          "wall_s": 10.886282957999356,
+          "ttft_visible_ms": 663.7122079991968,
+          "prompt_tokens": 48,
+          "generated_tokens": 128,
+          "decode_tps": 12.423635198869375,
+          "end_to_end_tps": 11.757915947421177,
+          "thinking_actual": false,
+          "timings": {
+            "draft_n": null,
+            "draft_n_accepted": null
+          }
+        },
+        {
+          "trial": 1,
+          "wall_s": 10.616061416998491,
+          "ttft_visible_ms": 677.8593339986401,
+          "prompt_tokens": 48,
+          "generated_tokens": 128,
+          "decode_tps": 12.779097984096582,
+          "end_to_end_tps": 12.057202287379928,
+          "thinking_actual": false,
+          "timings": {
+            "draft_n": null,
+            "draft_n_accepted": null
+          }
+        }
+      ]
+    },
+    {
+      "config": "server-dflash2",
+      "round": 0,
+      "returncode": 0,
+      "command": [
+        "/Users/victor/workspace/underdog-benchmark/.venv/bin/python",
+        "/Users/victor/workspace/underdog-benchmark/benchmark_llama.py",
+        "/Users/victor/models/underdog-saluki-27b-mtp/Underdog-Saluki-27B-1.0-IQ2-mix-MTP.gguf",
+        "--mode",
+        "short",
+        "--trials",
+        "2",
+        "--max-tokens",
+        "128",
+        "--short-task",
+        "code",
+        "--log-tag",
+        "embedded-compare-20261013T033109Z-r0",
+        "--dflash-draft",
+        "/Users/victor/models/qwen3.8-27b-dflash2-gguf/Qwen3.8-27B-DFlash2-Q8_0.gguf",
+        "--draft-tokens",
+        "5"
+      ],
+      "rss_peak_bytes": 11782946816,
+      "peak_footprint_bytes": 1845028104,
+      "swaps": 0,
+      "page_faults": 91,
+      "load_s": [
+        4.7685944579989155
+      ],
+      "measured": [
+        {
+          "trial": 0,
+          "wall_s": 7.246814333999282,
+          "ttft_visible_ms": 721.7190839983232,
+          "prompt_tokens": 48,
+          "generated_tokens": 128,
+          "decode_tps": 19.465282807958832,
+          "end_to_end_tps": 17.662933545775132,
+          "thinking_actual": false,
+          "timings": {
+            "draft_n": 205,
+            "draft_n_accepted": 86
+          }
+        },
+        {
+          "trial": 1,
+          "wall_s": 7.049854749999213,
+          "ttft_visible_ms": 719.4146249985351,
+          "prompt_tokens": 48,
+          "generated_tokens": 128,
+          "decode_tps": 20.06235007169332,
+          "end_to_end_tps": 18.15640244219419,
+          "thinking_actual": false,
+          "timings": {
+            "draft_n": 205,
+            "draft_n_accepted": 86
+          }
+        }
+      ]
+    },
+    {
+      "config": "embedded-dflash2",
+      "round": 0,
+      "returncode": 0,
+      "command": [
+        "/Users/victor/workspace/underdog-benchmark/target/dflash-embedded/release/examples/dflash2_bench",
+        "/Users/victor/models/underdog-saluki-27b-mtp/Underdog-Saluki-27B-1.0-IQ2-mix-MTP.gguf",
+        "/Users/victor/models/qwen3.8-27b-dflash2-gguf/Qwen3.8-27B-DFlash2-Q8_0.gguf",
+        "2",
+        "128"
+      ],
+      "rss_peak_bytes": 14830469120,
+      "peak_footprint_bytes": 4948799344,
+      "swaps": 0,
+      "page_faults": 666,
+      "load_s": [
+        3.592876375
+      ],
+      "measured": [
+        {
+          "trial": 0,
+          "wall_s": 7.218389541,
+          "ttft_visible_ms": 1020.476333,
+          "prompt_tokens": 48,
+          "generated_tokens": 128,
+          "decode_tps": 20.490814022285726,
+          "end_to_end_tps": 17.73248718055018,
+          "thinking_actual": false,
+          "timings": {
+            "draft_n": 205,
+            "draft_n_accepted": 86
+          }
+        },
+        {
+          "trial": 1,
+          "wall_s": 7.1201555,
+          "ttft_visible_ms": 1008.5123330000001,
+          "prompt_tokens": 48,
+          "generated_tokens": 128,
+          "decode_tps": 20.780069773950405,
+          "end_to_end_tps": 17.977135471268852,
+          "thinking_actual": false,
+          "timings": {
+            "draft_n": 205,
+            "draft_n_accepted": 86
+          }
+        }
+      ]
+    },
+    {
+      "config": "embedded-dflash2",
+      "round": 1,
+      "returncode": 0,
+      "command": [
+        "/Users/victor/workspace/underdog-benchmark/target/dflash-embedded/release/examples/dflash2_bench",
+        "/Users/victor/models/underdog-saluki-27b-mtp/Underdog-Saluki-27B-1.0-IQ2-mix-MTP.gguf",
+        "/Users/victor/models/qwen3.8-27b-dflash2-gguf/Qwen3.8-27B-DFlash2-Q8_0.gguf",
+        "2",
+        "128"
+      ],
+      "rss_peak_bytes": 14823555072,
+      "peak_footprint_bytes": 4941606768,
+      "swaps": 0,
+      "page_faults": 666,
+      "load_s": [
+        1.216318625
+      ],
+      "measured": [
+        {
+          "trial": 0,
+          "wall_s": 6.911258666,
+          "ttft_visible_ms": 946.0890830000001,
+          "prompt_tokens": 48,
+          "generated_tokens": 128,
+          "decode_tps": 21.2903140081708,
+          "end_to_end_tps": 18.52050490161758,
+          "thinking_actual": false,
+          "timings": {
+            "draft_n": 205,
+            "draft_n_accepted": 86
+          }
+        },
+        {
+          "trial": 1,
+          "wall_s": 6.442959375,
+          "ttft_visible_ms": 898.256916,
+          "prompt_tokens": 48,
+          "generated_tokens": 128,
+          "decode_tps": 22.90480305178488,
+          "end_to_end_tps": 19.86664707163391,
+          "thinking_actual": false,
+          "timings": {
+            "draft_n": 205,
+            "draft_n_accepted": 86
+          }
+        }
+      ]
+    },
+    {
+      "config": "server-dflash2",
+      "round": 1,
+      "returncode": 0,
+      "command": [
+        "/Users/victor/workspace/underdog-benchmark/.venv/bin/python",
+        "/Users/victor/workspace/underdog-benchmark/benchmark_llama.py",
+        "/Users/victor/models/underdog-saluki-27b-mtp/Underdog-Saluki-27B-1.0-IQ2-mix-MTP.gguf",
+        "--mode",
+        "short",
+        "--trials",
+        "2",
+        "--max-tokens",
+        "128",
+        "--short-task",
+        "code",
+        "--log-tag",
+        "embedded-compare-20261013T033109Z-r1",
+        "--dflash-draft",
+        "/Users/victor/models/qwen3.8-27b-dflash2-gguf/Qwen3.8-27B-DFlash2-Q8_0.gguf",
+        "--draft-tokens",
+        "5"
+      ],
+      "rss_peak_bytes": 11778162688,
+      "peak_footprint_bytes": 1846912288,
+      "swaps": 0,
+      "page_faults": 961,
+      "load_s": [
+        1.6541904580008122
+      ],
+      "measured": [
+        {
+          "trial": 0,
+          "wall_s": 5.911261666000428,
+          "ttft_visible_ms": 692.0776250008203,
+          "prompt_tokens": 48,
+          "generated_tokens": 128,
+          "decode_tps": 24.33392642489278,
+          "end_to_end_tps": 21.65358382563448,
+          "thinking_actual": false,
+          "timings": {
+            "draft_n": 205,
+            "draft_n_accepted": 86
+          }
+        },
+        {
+          "trial": 1,
+          "wall_s": 5.8349064590001944,
+          "ttft_visible_ms": 661.0252499995113,
+          "prompt_tokens": 48,
+          "generated_tokens": 128,
+          "decode_tps": 24.546988070120253,
+          "end_to_end_tps": 21.936941217380316,
+          "thinking_actual": false,
+          "timings": {
+            "draft_n": 205,
+            "draft_n_accepted": 86
+          }
+        }
+      ]
+    },
+    {
+      "config": "server-control",
+      "round": 1,
+      "returncode": 0,
+      "command": [
+        "/Users/victor/workspace/underdog-benchmark/.venv/bin/python",
+        "/Users/victor/workspace/underdog-benchmark/benchmark_llama.py",
+        "/Users/victor/models/underdog-saluki-27b-mtp/Underdog-Saluki-27B-1.0-IQ2-mix-MTP.gguf",
+        "--mode",
+        "short",
+        "--trials",
+        "2",
+        "--max-tokens",
+        "128",
+        "--short-task",
+        "code",
+        "--log-tag",
+        "embedded-compare-20261013T033109Z-r1"
+      ],
+      "rss_peak_bytes": 8720171008,
+      "peak_footprint_bytes": 849763288,
+      "swaps": 0,
+      "page_faults": 59,
+      "load_s": [
+        0.935940124998524
+      ],
+      "measured": [
+        {
+          "trial": 0,
+          "wall_s": 10.043056915999841,
+          "ttft_visible_ms": 651.6782500002591,
+          "prompt_tokens": 48,
+          "generated_tokens": 128,
+          "decode_tps": 13.523144689103345,
+          "end_to_end_tps": 12.745123429110517,
+          "thinking_actual": false,
+          "timings": {
+            "draft_n": null,
+            "draft_n_accepted": null
+          }
+        },
+        {
+          "trial": 1,
+          "wall_s": 9.306302375000087,
+          "ttft_visible_ms": 645.221707998644,
+          "prompt_tokens": 48,
+          "generated_tokens": 128,
+          "decode_tps": 14.663428139028591,
+          "end_to_end_tps": 13.754120040613747,
+          "thinking_actual": false,
+          "timings": {
+            "draft_n": null,
+            "draft_n_accepted": null
+          }
+        }
+      ]
+    },
+    {
+      "config": "embedded-control",
+      "round": 1,
+      "returncode": 0,
+      "command": [
+        "/Users/victor/workspace/underdog-benchmark/target/dflash-embedded/release/examples/dflash2_bench",
+        "/Users/victor/models/underdog-saluki-27b-mtp/Underdog-Saluki-27B-1.0-IQ2-mix-MTP.gguf",
+        "-",
+        "2",
+        "128"
+      ],
+      "rss_peak_bytes": 9536749568,
+      "peak_footprint_bytes": 1698078568,
+      "swaps": 0,
+      "page_faults": 666,
+      "load_s": [
+        0.679772292
+      ],
+      "measured": [
+        {
+          "trial": 0,
+          "wall_s": 10.558215292,
+          "ttft_visible_ms": 646.710333,
+          "prompt_tokens": 48,
+          "generated_tokens": 128,
+          "decode_tps": 12.813407465285408,
+          "end_to_end_tps": 12.123261030392712,
+          "thinking_actual": false,
+          "timings": {
+            "draft_n": 0,
+            "draft_n_accepted": 0
+          }
+        },
+        {
+          "trial": 1,
+          "wall_s": 10.002361458,
+          "ttft_visible_ms": 689.6973330000001,
+          "prompt_tokens": 48,
+          "generated_tokens": 128,
+          "decode_tps": 13.637359532608937,
+          "end_to_end_tps": 12.796978047381419,
+          "thinking_actual": false,
+          "timings": {
+            "draft_n": 0,
+            "draft_n_accepted": 0
+          }
+        }
+      ]
+    }
+  ],
+  "measured_at_utc": "2026-10-13",
+  "code_baseline": "faeb3604190496d661cdf050976707e49623ce00",
+  "machine": {
+    "model": "Mac mini",
+    "chip": "Apple M4 Pro",
+    "gpu_cores": 20,
+    "memory_gib": 64,
+    "os": "macOS 26.3"
+  },
+  "models": {
+    "target": {
+      "bytes": 8349689920,
+      "sha256": "98f6ebb527917a2541df8e667d51c3ec8a8bb135b44c606d40cc6ed924e89e52"
+    },
+    "draft": {
+      "bytes": 2056414816,
+      "sha256": "c18e800daedc59ca68fd13b6a856d795746af6d399a9279ac6a277d1d422f87e",
+      "hf_revision": "51962825493a48b846b40126d35c799ac4093ad0"
+    }
+  },
+  "settings": {
+    "context": 8192,
+    "batch": 512,
+    "micro_batch": 512,
+    "threads": 4,
+    "threads_batch": 4,
+    "gpu_layers": 99,
+    "flash_attention": true,
+    "target_kv": "q8_0",
+    "draft_kv": "f16",
+    "draft_tokens": 5,
+    "temperature": 0,
+    "seed": 42,
+    "thinking": false,
+    "output_tokens": 128,
+    "fresh_kv_each_request": true
+  },
+  "method": {
+    "first_requests_per_process": 1,
+    "warmups_per_process": 1,
+    "measured_requests_per_process": 2,
+    "processes_per_configuration": 2,
+    "decode_tps": "(generated_tokens - 1) / (last visible delta seconds - first visible delta seconds)",
+    "ttft": "Request start to first nonempty visible text; Gen2 includes context creation and prefill",
+    "load": "Gen2 Runtime.load weights only; server process start to readiness including native warmup. Not interchangeable cold-start measures",
+    "rss": "Median of two process peaks, in bytes. Not total system memory or a GPU allocation bound",
+    "output_parity": "All 16 measured output strings match exactly",
+    "scope": "Single short code-generation prompt under concurrent unrelated jobs, not an uncontended maximum or universal speedup",
+    "raw_report": "embedded-compare-20261013T033109Z-summary.json",
+    "prompt": "Write a complete Python implementation of a thread-safe LRU cache with get, put, eviction, capacity validation and unit tests. Explain the design briefly, then provide the full code."
+  }
+}

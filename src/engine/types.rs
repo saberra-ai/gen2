@@ -148,6 +148,33 @@ impl Settings {
                 t
             )));
         }
+        if let Some(draft) = &self.system.dflash2 {
+            if draft.model_path.as_os_str().is_empty() || !(1..=64).contains(&draft.max_tokens) {
+                return Err(ExecError::SettingsError(
+                    "DFlash2 needs a draft path and 1..=64 draft tokens".into(),
+                ));
+            }
+            if self
+                .system
+                .batch_size
+                .is_some_and(|batch| batch as usize <= draft.max_tokens)
+            {
+                return Err(ExecError::SettingsError(
+                    "DFlash2 batch_size must fit the anchor plus draft tokens".into(),
+                ));
+            }
+            #[cfg(not(feature = "llama-dflash2"))]
+            return Err(ExecError::FeatureUnsupported(
+                "build with llama-dflash2 for embedded drafting",
+            ));
+        }
+        if let Some(kind) = &self.system.kv_cache_type
+            && !matches!(kind.as_str(), "f16" | "q8_0")
+        {
+            return Err(ExecError::SettingsError(
+                "KV cache type must be f16 or q8_0".into(),
+            ));
+        }
         Ok(())
     }
 
@@ -238,6 +265,12 @@ impl Settings {
         }
         if self.system.flash_attn.is_none() {
             self.system.flash_attn = defaults.system.flash_attn;
+        }
+        if self.system.dflash2.is_none() {
+            self.system.dflash2 = defaults.system.dflash2.clone();
+        }
+        if self.system.kv_cache_type.is_none() {
+            self.system.kv_cache_type = defaults.system.kv_cache_type.clone();
         }
 
         if self.prompt.system_prompt.is_none() {
@@ -396,6 +429,20 @@ pub struct SystemSettings {
     pub gpu_layers: Option<u32>,
     pub ctx_size: Option<u32>,
     pub flash_attn: Option<bool>,
+    /// Experimental llama.cpp DFlash2 draft; requires `llama-dflash2`.
+    #[serde(default)]
+    pub dflash2: Option<DFlash2Config>,
+    /// llama.cpp KV storage (`f16` or `q8_0`); None keeps native defaults.
+    #[serde(default)]
+    pub kv_cache_type: Option<String>,
+}
+
+/// An external GGUF draft used by embedded llama.cpp, never a server address.
+#[derive(Serialize, Deserialize, Clone, Debug, PartialEq, Eq)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
+pub struct DFlash2Config {
+    pub model_path: PathBuf,
+    pub max_tokens: usize,
 }
 
 #[derive(Serialize, Deserialize, Clone, Debug, Default)]
@@ -536,6 +583,7 @@ mod tests {
                 gpu_layers: None,
                 ctx_size: Some(2048),
                 flash_attn: Some(true),
+                ..Default::default()
             },
             prompt: PromptSettings::default(),
             mm: MmSettings::default(),
@@ -575,6 +623,7 @@ mod tests {
                 gpu_layers: Some(1),
                 ctx_size: Some(4096),
                 flash_attn: Some(true),
+                ..Default::default()
             },
             prompt: PromptSettings {
                 system_prompt: Some("Act like a helpful assistant".into()),

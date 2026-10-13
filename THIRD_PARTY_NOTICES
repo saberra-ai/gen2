@@ -11,3 +11,14 @@ License: Apache License, Version 2.0 (see licenses/laya-Apache-2.0.txt).
 
 Modifications: Rust implementation, owned typed requests, checked request
 validation, explicit overflow policies, and per-question diagnostics.
+
+Vendored llama.cpp Rust bindings
+==============================
+vendor/llama-cpp-{2,sys-2} are derived from utilityai/llama-cpp-rs,
+crates.io version 0.1.156, licensed MIT OR Apache-2.0. Used under MIT;
+copyright and permission notice: vendor/LICENSE-MIT.llama-cpp-rs.
+Modifications: DFlash2 initializer, dependency paths, context drop ordering,
+and compatibility with the pinned native APIs and hash library.
+Native llama.cpp is an unmodified submodule at
+847f447c310a3784d623a953e6f0bb07f04c0f27. Its license and bundled dependency
+notices are retained inside vendor/llama-cpp-sys-2/llama.cpp.

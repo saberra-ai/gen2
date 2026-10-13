@@ -1,6 +1,8 @@
 //! llama-cpp-2 inference backend.
 
 mod bundle;
+#[cfg(feature = "llama-dflash2")]
+mod dflash2;
 pub mod embedder;
 pub(crate) mod engine;
 /// iOS runtime memory-budgeting (jetsam-aware load preflight).

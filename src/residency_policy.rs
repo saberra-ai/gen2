@@ -154,15 +154,52 @@ pub(crate) fn plan_gguf(
         .saturating_add(projector.map_or(0, |p| {
             estimate_resident_mb_for_path_offloaded(p, settings.system.gpu_layers)
         }));
-    ModelMemoryPlan::select(
+    // Draft weights are shared, but every session owns a second context and
+    // target-feature buffers. Reserve these before selecting the target plan.
+    // This is conservative sizing, not an RSS bound (as with the target plan).
+    let draft_plan = settings
+        .system
+        .dflash2
+        .as_ref()
+        .map(|draft| {
+            let info = crate::api::fit::ModelInfo::read(&draft.model_path)
+                .map_err(|e| format!("cannot plan DFlash2 draft: {e}"))?;
+            let mut plan = ModelMemoryPlan::estimate(
+                &info,
+                estimate_resident_mb_for_path_offloaded(
+                    &draft.model_path,
+                    settings.system.gpu_layers,
+                ),
+                settings.system.ctx_size.unwrap_or(4096),
+                concurrent,
+                false,
+            );
+            // Feature extraction and selector buffers also belong to each context.
+            plan.working_mb = plan.working_mb.saturating_mul(concurrent.max(1) as u64);
+            plan.total_mb = plan
+                .weights_mb
+                .saturating_add(plan.context_mb)
+                .saturating_add(plan.working_mb);
+            Ok::<_, String>(plan)
+        })
+        .transpose()?;
+    let draft_mb = draft_plan.as_ref().map_or(0, |p| p.total_mb);
+    let mut plan = ModelMemoryPlan::select(
         &info,
         weights,
         settings.system.ctx_size,
         concurrent,
-        budget_mb,
+        budget_mb.saturating_sub(draft_mb),
         projector.is_some(),
-    )
-    .map(Some)
+    )?;
+    if let Some(draft) = draft_plan {
+        plan.weights_mb = plan.weights_mb.saturating_add(draft.weights_mb);
+        plan.context_mb = plan.context_mb.saturating_add(draft.context_mb);
+        plan.working_mb = plan.working_mb.saturating_add(draft.working_mb);
+        plan.total_mb = plan.total_mb.saturating_add(draft.total_mb);
+    }
+    plan.admission_budget_mb = budget_mb;
+    Ok(Some(plan))
 }
 
 pub(crate) fn available_for_model_mb(governor: &crate::memory::MemoryGovernor) -> u64 {

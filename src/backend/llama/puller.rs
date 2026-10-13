@@ -21,6 +21,17 @@ use std::collections::VecDeque;
 use parking_lot::Mutex;
 use std::sync::{Arc, Weak};
 
+#[cfg(feature = "llama-dflash2")]
+#[derive(Default)]
+struct DFlashDecode {
+    enabled: bool,
+    queued: VecDeque<LlamaToken>,
+    anchor: Option<LlamaToken>,
+    drafted: u32,
+    accepted: u32,
+    failed: bool,
+}
+
 pub struct TokenPuller {
     session_id: u64,
     hooks: Arc<HookBus>,
@@ -49,6 +60,8 @@ pub struct TokenPuller {
     first_token_us: Option<u64>,
     pre_events: VecDeque<TokenEvent>,
     done: bool,
+    #[cfg(feature = "llama-dflash2")]
+    dflash: DFlashDecode,
 
     /// Cross-backend stop-pattern filter. Every emitted token funnels through
     /// here so the llama backend gets the same zero-garbage chat behaviour
@@ -97,6 +110,8 @@ impl TokenPuller {
             first_token_us: None,
             pre_events,
             done: false,
+            #[cfg(feature = "llama-dflash2")]
+            dflash: DFlashDecode::default(),
             filter: OutputFilter::new(StopMatcher::gemma4_chat_defaults()),
             state_slot: Default::default(),
         }
@@ -140,8 +155,26 @@ impl TokenPuller {
             cache_tokens: 0,
             cache_budget: 0,
             evictions: 0,
-            spec_drafted: 0,
-            spec_accepted: 0,
+            spec_drafted: {
+                #[cfg(feature = "llama-dflash2")]
+                {
+                    self.dflash.drafted
+                }
+                #[cfg(not(feature = "llama-dflash2"))]
+                {
+                    0
+                }
+            },
+            spec_accepted: {
+                #[cfg(feature = "llama-dflash2")]
+                {
+                    self.dflash.accepted
+                }
+                #[cfg(not(feature = "llama-dflash2"))]
+                {
+                    0
+                }
+            },
         }
     }
 
@@ -195,9 +228,196 @@ impl TokenPuller {
             None => Ok(ctx_ref.with_dependent(|_, ctx| sampler.sample(ctx, logits_i))),
         }
     }
+
+    fn decode_single(&mut self, token: LlamaToken) -> Result<(), ExecError> {
+        self.batch.clear();
+        self.batch
+            .add(token, self.cur_pos, &[0], true)
+            .map_err(|e| ExecError::Other(e.into()))?;
+        let result = self
+            .ctx_cell
+            .as_mut()
+            .ok_or(ExecError::InvalidArg("context already consumed"))?
+            .with_dependent_mut(|_, ctx| ctx.decode(&mut self.batch));
+        #[cfg(feature = "llama-dflash2")]
+        if result.is_err() && self.bundle.draft.is_some() {
+            self.dflash.failed = true;
+        }
+        result?;
+        self.cur_pos += 1;
+        self.logits_i = 0;
+        Ok(())
+    }
+
+    #[cfg(feature = "llama-dflash2")]
+    fn verify_dflash_block(&mut self, anchor: LlamaToken) -> Result<(), ExecError> {
+        use super::session::DepCtx;
+        let draft_model = self
+            .bundle
+            .draft
+            .as_ref()
+            .ok_or(ExecError::InvalidArg("no DFlash2 model"))?;
+        let ctx_size = self
+            .ctx_cell
+            .as_ref()
+            .unwrap()
+            .with_dependent(|_, ctx| ctx.n_ctx()) as usize;
+        // The trained noise block still needs room even when output is capped.
+        if self.cur_pos as usize + draft_model.block_size > ctx_size {
+            return self.decode_single(anchor);
+        }
+        let mut proposed = self
+            .ctx_cell
+            .as_mut()
+            .unwrap()
+            .with_dependent_mut(|_, ctx| {
+                match ctx {
+                    DepCtx::DFlash2(spec) => {
+                        let proposed = spec
+                            .draft(self.cur_pos, anchor, &[])
+                            .map_err(|e| ExecError::Other(e.into()))?;
+                        // Drafting writes a temporary noise block. As in llama-server,
+                        // remove it before injecting the verified target features.
+                        spec.draft_context_mut()
+                            .kv_cache_seq_rm(0, Some(self.cur_pos as u32), None)
+                            .map_err(|e| ExecError::Other(e.into()))?;
+                        Ok(proposed)
+                    }
+                    _ => Err(ExecError::InvalidArg("no DFlash2 context")),
+                }
+            })?;
+        let drafted = proposed.len();
+        self.dflash.drafted = self.dflash.drafted.saturating_add(drafted as u32);
+        if let Some(limit) = self.max_tokens {
+            proposed.truncate(limit.saturating_sub(self.produced));
+        }
+        self.batch = LlamaBatch::new(proposed.len() + 1, 1);
+        self.batch
+            .add(anchor, self.cur_pos, &[0], true)
+            .map_err(|e| ExecError::Other(e.into()))?;
+        for (i, &token) in proposed.iter().enumerate() {
+            self.batch
+                .add(token, self.cur_pos + i as i32 + 1, &[0], true)
+                .map_err(|e| ExecError::Other(e.into()))?;
+        }
+        self.ctx_cell
+            .as_mut()
+            .unwrap()
+            .with_dependent_mut(|_, ctx| ctx.decode(&mut self.batch))?;
+        self.logits_i = 0;
+        let mut accepted = 0usize;
+        for token in proposed.iter().copied() {
+            let verified = self.sample_one()?;
+            if verified != token || self.bundle.model.is_eog_token(verified) {
+                break;
+            }
+            self.sampler.as_mut().unwrap().accept(verified);
+            self.dflash.queued.push_back(verified);
+            accepted += 1;
+            self.logits_i += 1;
+        }
+        let keep = self.cur_pos + accepted as i32 + 1;
+        self.ctx_cell
+            .as_mut()
+            .unwrap()
+            .with_dependent_mut(|_, ctx| -> Result<(), ExecError> {
+                if accepted < proposed.len() {
+                    ctx.kv_cache_seq_rm(0, Some(keep as u32), None)
+                        .map_err(|e| ExecError::Other(e.into()))?;
+                }
+                if drafted > 0
+                    && let DepCtx::DFlash2(spec) = ctx
+                {
+                    spec.draft_context_mut()
+                        .kv_cache_seq_rm(0, Some(keep as u32), None)
+                        .map_err(|e| ExecError::Other(e.into()))?;
+                    spec.accept(accepted as u16)
+                        .map_err(|e| ExecError::Other(e.into()))?;
+                }
+                Ok(())
+            })?;
+        self.cur_pos = keep;
+        self.dflash.accepted = self.dflash.accepted.saturating_add(accepted as u32);
+        Ok(())
+    }
+
+    fn next_token(&mut self) -> Result<LlamaToken, ExecError> {
+        #[cfg(feature = "llama-dflash2")]
+        if self.dflash.enabled {
+            if let Some(anchor) = self.dflash.anchor.take() {
+                if let Err(e) = self.verify_dflash_block(anchor) {
+                    self.dflash.failed = true;
+                    return Err(e);
+                }
+            }
+            if let Some(token) = self.dflash.queued.pop_front() {
+                return Ok(token);
+            }
+            let ctx_size = self
+                .ctx_cell
+                .as_ref()
+                .unwrap()
+                .with_dependent(|_, ctx| ctx.n_ctx()) as i32;
+            if self.cur_pos >= ctx_size {
+                return Err(ExecError::InvalidArg("DFlash2 context exhausted"));
+            }
+            let token = self.sample_one()?;
+            self.sampler.as_mut().unwrap().accept(token);
+            if !self.bundle.model.is_eog_token(token) {
+                // Emit the anchor before running the next block, matching llama-server TTFT.
+                self.dflash.anchor = Some(token);
+            }
+            return Ok(token);
+        }
+        let token = self.sample_one()?;
+        self.sampler.as_mut().unwrap().accept(token);
+        if !self.bundle.model.is_eog_token(token) {
+            self.decode_single(token)?;
+        }
+        Ok(token)
+    }
+
+    #[cfg(feature = "llama-dflash2")]
+    fn settle_dflash(&mut self) -> Result<(), ExecError> {
+        if self.dflash.failed {
+            return Err(ExecError::InvalidArg(
+                "DFlash2 decode failed; discard context",
+            ));
+        }
+        if !self.dflash.enabled {
+            return Ok(());
+        }
+        if let Some(anchor) = self.dflash.anchor.take() {
+            self.decode_single(anchor)?;
+        }
+        if !self.dflash.queued.is_empty() {
+            let count = self.dflash.queued.len() as i32;
+            let keep = self.cur_pos - count;
+            self.ctx_cell.as_mut().unwrap().with_dependent_mut(
+                |_, ctx| -> Result<(), ExecError> {
+                    ctx.kv_cache_seq_rm(0, Some(keep as u32), None)
+                        .map_err(|e| ExecError::Other(e.into()))?;
+                    if let super::session::DepCtx::DFlash2(spec) = ctx {
+                        spec.draft_context_mut()
+                            .kv_cache_seq_rm(0, Some(keep as u32), None)
+                            .map_err(|e| ExecError::Other(e.into()))?;
+                    }
+                    Ok(())
+                },
+            )?;
+            self.cur_pos = keep;
+            self.logits_i -= count;
+            self.dflash.queued.clear();
+        }
+        Ok(())
+    }
 }
 
 impl TokenPuller {
+    #[cfg(feature = "llama-dflash2")]
+    pub(crate) fn enable_dflash2(&mut self, enabled: bool) {
+        self.dflash.enabled = enabled;
+    }
     #[allow(clippy::too_many_arguments)]
     pub(crate) fn new_from_session(
         session_id: u64,
@@ -234,6 +454,8 @@ impl TokenPuller {
             first_token_us: None,
             pre_events,
             done: false,
+            #[cfg(feature = "llama-dflash2")]
+            dflash: DFlashDecode::default(),
             filter: OutputFilter::new(StopMatcher::gemma4_chat_defaults()),
             state_slot,
         }
@@ -242,6 +464,12 @@ impl TokenPuller {
 
 impl Drop for TokenPuller {
     fn drop(&mut self) {
+        #[cfg(feature = "llama-dflash2")]
+        if let Err(e) = self.settle_dflash() {
+            tracing::error!(%e, "DFlash2 state could not be restored");
+            self.stopped.store(true, Ordering::Release);
+            return;
+        }
         if let Some(slot) = self.state_slot.upgrade()
             && let (Some(ctx_cell), Some(_sampler)) = (self.ctx_cell.take(), self.sampler.take())
         {
@@ -305,7 +533,7 @@ impl Iterator for TokenPuller {
             // ── Sample + decode one token ──────────────────────────────
             // (grammar-aware: masks logits via llguidance when a
             // GrammarMatcher is present — see `sample_one`).
-            let token = match self.sample_one() {
+            let token = match self.next_token() {
                 Ok(t) => t,
                 Err(e) => {
                     self.emit_final_stats();
@@ -314,9 +542,6 @@ impl Iterator for TokenPuller {
                     continue;
                 }
             };
-            if let Some(sampler) = self.sampler.as_mut() {
-                sampler.accept(token);
-            }
 
             if self.bundle.model.is_eog_token(token) {
                 tracing::info!(
@@ -345,29 +570,6 @@ impl Iterator for TokenPuller {
             };
             let mut out = String::with_capacity(32);
             let _ = self.utf8_decoder.decode_to_string(&bytes, &mut out, false);
-
-            self.batch.clear();
-            if let Err(e) = self.batch.add(token, self.cur_pos, &[0], true) {
-                self.emit_final_stats();
-                self.filter.push_err(ExecError::Other(e.into()));
-                continue;
-            }
-            self.cur_pos += 1;
-
-            let Some(ctx_mut) = self.ctx_cell.as_mut() else {
-                self.emit_final_stats();
-                self.done = true;
-                self.filter
-                    .push_err(ExecError::InvalidArg("context already consumed"));
-                continue;
-            };
-            if let Err(e) = ctx_mut.with_dependent_mut(|_, ctx| ctx.decode(&mut self.batch)) {
-                self.emit_final_stats();
-                self.filter.push_err(ExecError::Other(e.into()));
-                continue;
-            }
-
-            self.logits_i = self.batch.n_tokens() - 1;
 
             if self.first_token_us.is_none() {
                 self.first_token_us = Some((ggml_time_us() as u64).saturating_sub(self.start_us));

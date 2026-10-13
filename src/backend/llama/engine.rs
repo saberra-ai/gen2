@@ -89,7 +89,7 @@ impl Engine {
         // self.hooks.emit(HookEvent::EngineLoadStart { path: req.model_path.display().to_string() });
         let backend = get_backend()?;
 
-        let bundle = super::loader::build_bundle(&backend, &req)?;
+        let bundle = super::loader::build_bundle(&backend, &req, &self.settings())?;
         let caps = bundle.capabilities;
         let meta = bundle.meta.clone();
         // Drop session registry so callers can't keep using stale sessions after a reload.
@@ -129,6 +129,12 @@ impl Engine {
     // 2) upload settings
     pub fn upload_settings(&self, settings: Settings) -> Result<(), ExecError> {
         settings.validate()?;
+        let _guard = self.load_guard.lock();
+        if self.is_model_loaded() && settings.system.dflash2 != self.settings().system.dflash2 {
+            return Err(ExecError::SettingsError(
+                "DFlash2 configuration is fixed at model load; unload before changing it".into(),
+            ));
+        }
         self.settings.store(Arc::new(settings));
         self.settings_version.fetch_add(1, Ordering::Relaxed);
         Ok(())
@@ -154,6 +160,12 @@ impl Engine {
         } else {
             (*base_settings).clone()
         };
+        settings.validate()?;
+        if settings.system.dflash2 != base_settings.system.dflash2 {
+            return Err(ExecError::SettingsError(
+                "DFlash2 cannot be overridden per session".into(),
+            ));
+        }
         {
             if messages_have_images(&spec.messages)
                 && !bundle.capabilities.contains(Capabilities::IMAGES)
@@ -414,6 +426,46 @@ mod tests {
         s.sampling.temperature = Some(3.0);
         let err = e.upload_settings(s).unwrap_err();
         matches!(err, ExecError::SettingsError(_));
+    }
+
+    #[cfg(feature = "llama-dflash2")]
+    #[test]
+    #[ignore = "requires local Saluki and DFlash2 GGUFs"]
+    fn dflash2_session_override_is_validated_before_context_creation() {
+        let engine = Engine::new();
+        let mut settings = Settings::default();
+        settings.system.ctx_size = Some(512);
+        settings.system.batch_size = Some(512);
+        settings.system.dflash2 = Some(crate::engine::DFlash2Config {
+            model_path: std::env::var("GEN2_DFLASH2_DRAFT").unwrap().into(),
+            max_tokens: 5,
+        });
+        engine.upload_settings(settings).unwrap();
+        engine
+            .load_model(LoadRequest {
+                model_path: std::env::var("GEN2_DFLASH2_TARGET").unwrap().into(),
+                model_params: crate::engine::ModelParamsInput {
+                    gpu_layers: Some(99),
+                },
+                ..Default::default()
+            })
+            .unwrap();
+        let mut overrides = Settings::default();
+        overrides.system.batch_size = Some(1);
+        let error = engine
+            .start_session(SessionSpec {
+                messages: vec![Message::user("Hello")],
+                overrides: Some(overrides),
+                ..Default::default()
+            })
+            .unwrap_err();
+        assert!(matches!(error, ExecError::SettingsError(_)));
+        let mut changed = (*engine.settings()).clone();
+        changed.system.dflash2.as_mut().unwrap().max_tokens = 4;
+        assert!(matches!(
+            engine.upload_settings(changed),
+            Err(ExecError::SettingsError(_))
+        ));
     }
 
     // Helper: read model path from TEST_MODEL_PATH; return None if not set.
