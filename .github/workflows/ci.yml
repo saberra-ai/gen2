@@ -218,6 +218,12 @@ jobs:
           # two platforms.
           - { os: ubuntu-latest, features: backend-litertlm }
           - { os: macos-latest, features: backend-litertlm }
+          # GenAI is loaded dynamically too; these verify the Rust contract
+          # without claiming platform-specific native inference qualification.
+          - { os: ubuntu-latest, features: backend-onnx }
+          - { os: macos-latest, features: backend-onnx }
+          - { os: windows-latest, features: backend-onnx }
+          - { os: ubuntu-latest, features: "backend-llamacpp,backend-onnx" }
           # Two backends, two formats. Proves `.gguf` still goes to llama.cpp
           # once LiteRT-LM is compiled in beside it.
           - { os: ubuntu-latest, features: "backend-llamacpp,backend-litertlm" }

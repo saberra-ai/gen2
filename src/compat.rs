@@ -264,6 +264,12 @@ pub mod backend {
         pub use crate::backend::litertlm::LiteRtLmEngine;
     }
 
+    /// The ONNX Runtime GenAI backend (`backend-onnx`).
+    #[cfg(feature = "backend-onnx")]
+    pub mod onnx {
+        pub use crate::backend::onnx::OnnxEngine;
+    }
+
     /// The mistral.rs backend (`backend-mistralrs`).
     #[cfg(feature = "backend-mistralrs")]
     pub mod mistralrs {

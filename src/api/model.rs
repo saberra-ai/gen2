@@ -103,6 +103,14 @@ impl Model {
         let engine = self.engine();
         let caps = engine.capabilities();
         let local = self.loaded.source.is_local();
+        let (resp, rx) = std::sync::mpsc::channel();
+        let structured_output = engine
+            .controller()
+            .send(crate::controller::ControllerCmd::GetActiveBackendName { resp })
+            .is_ok()
+            && rx
+                .recv()
+                .is_ok_and(|name| matches!(name, "llamacpp" | "onnx"));
         let architecture = self
             .loaded
             .header
@@ -132,10 +140,9 @@ impl Model {
             reasoning: architecture
                 .as_deref()
                 .is_some_and(is_reasoning_architecture),
-            // Grammar-constrained decoding is llama.cpp's; nothing else
-            // compiled in enforces a schema, and the remote request carries
-            // no `response_format`.
-            structured_output: local && cfg!(feature = "backend-llamacpp"),
+            // Report the loaded backend, not unrelated compiled features.
+            // llama.cpp and ONNX GenAI enforce schemas during decoding.
+            structured_output: local && structured_output,
         }
     }
 
@@ -179,10 +186,20 @@ impl Model {
 }
 
 /// Architectures whose chat template the crate knows to carry a reasoning
-/// channel: Qwen3's `<think>` and Gemma 4's thought channel are the two the
+/// channel: Qwen3/3.5's `<think>` and Gemma 4's thought channel are the two the
 /// backends' templates and `ThinkingMode` are written against.
 fn is_reasoning_architecture(arch: &str) -> bool {
-    matches!(arch, "qwen3" | "qwen3moe" | "gemma4")
+    matches!(
+        arch,
+        "qwen3"
+            | "qwen3moe"
+            | "qwen35"
+            | "qwen3_5"
+            | "qwen3_5_text"
+            | "qwen3_5_moe"
+            | "qwen3_5_moe_text"
+            | "gemma4"
+    )
 }
 
 impl std::fmt::Debug for Model {
@@ -295,6 +312,8 @@ mod tests {
     #[test]
     fn reasoning_is_claimed_only_for_families_the_crate_knows() {
         assert!(is_reasoning_architecture("qwen3"));
+        assert!(is_reasoning_architecture("qwen35"));
+        assert!(is_reasoning_architecture("qwen3_5_text"));
         assert!(is_reasoning_architecture("gemma4"));
         assert!(!is_reasoning_architecture("llama"));
         assert!(!is_reasoning_architecture("qwen2"));
