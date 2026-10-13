@@ -37,12 +37,46 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             std::thread::sleep(Duration::from_millis(20));
         }
     });
-    let runtime = Runtime::builder().resident_memory_budget_mb(4096).build()?;
+    let mut settings = gen2::advanced::generation::Settings::default();
+    settings.system.gpu_layers = Some(0);
+    settings.system.threads = Some(4);
+    settings.system.threads_batch = Some(4);
+    settings.system.ctx_size = Some(2048);
+    let runtime = Runtime::builder()
+        .settings(settings)
+        .resident_memory_budget_mb(8192)
+        .build()?;
+    let chat_path = std::env::var("GEN2_BARK_CHAT").ok();
+    let chat = chat_path
+        .as_ref()
+        .map(|path| runtime.load(path))
+        .transpose()?;
+    let chat_before = chat
+        .as_ref()
+        .map(|m| {
+            m.generate("Reply with one word: hello")
+                .max_tokens(24)
+                .temperature(0.)
+                .text()
+        })
+        .transpose()?;
+    let laya = if chat.is_some() {
+        Some(runtime.load_decider(
+            std::path::PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/laya/smoke"),
+            gen2::decision::LoadOptions {
+                native_library: Some(library.clone().into()),
+                ..Default::default()
+            },
+        )?)
+    } else {
+        None
+    };
+    let mixed_residency = runtime.stats();
     let started = Instant::now();
     let speech = runtime.load_transcriber(
         &args[0],
         LoadOptions {
-            native_library: Some(library.into()),
+            native_library: Some(library.clone().into()),
             ..Default::default()
         },
     )?;
@@ -83,11 +117,50 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         soak_memory.push(memory());
     }
     let before_shutdown = memory();
+    let chat_after = chat
+        .as_ref()
+        .map(|m| {
+            m.generate("Reply with one word: hello")
+                .max_tokens(24)
+                .temperature(0.)
+                .text()
+        })
+        .transpose()?;
+    assert_eq!(
+        chat_before, chat_after,
+        "chat generation changed across speech residency"
+    );
+    if chat.is_some() {
+        assert!(matches!(
+            runtime.load_transcriber(
+                &args[0],
+                LoadOptions {
+                    native_library: Some(library.into()),
+                    ..Default::default()
+                }
+            ),
+            Err(gen2::Error::Speech(
+                gen2::speech::SpeechError::ResourceLimit(_)
+            ))
+        ));
+        assert_eq!(runtime.speech_reserved_mb(), 4096);
+    }
+    if let Some(laya) = &laya {
+        laya.decide(
+            gen2::decision::DecisionRequest::text("a b")
+                .question("q", gen2::decision::Question::yes_no("a?")),
+            gen2::decision::DecisionOptions::default(),
+        )?;
+        laya.shutdown();
+    }
+    if let Some(chat) = &chat {
+        runtime.evict(chat)?;
+    }
     speech.shutdown();
     assert_eq!(runtime.speech_reserved_mb(), 0);
     stop.store(true, Ordering::Release);
     sampler.join().unwrap();
-    let receipt = serde_json::json!({"git_sha":String::from_utf8(std::process::Command::new("git").args(["rev-parse","HEAD"]).output()?.stdout)?.trim(),"cpu":sysinfo::System::new_all().cpus().first().map(|c|c.brand()),"cold_load_micros":cold_load_micros,"process_baseline_bytes":baseline,"sampled_peak_rss_bytes":peak.load(Ordering::Relaxed),"soak_start_bytes":soak_start,"soak_memory_bytes":soak_memory,"before_shutdown_bytes":before_shutdown,"after_shutdown_bytes":memory(),"provider":"CPUExecutionProvider","intra_threads":4,"inter_threads":1,"model_revision":gen2::speech::MODEL_REVISION,"sweep":sweep});
+    let receipt = serde_json::json!({"git_sha":String::from_utf8(std::process::Command::new("git").args(["rev-parse","HEAD"]).output()?.stdout)?.trim(),"cpu":sysinfo::System::new_all().cpus().first().map(|c|c.brand()),"cold_load_micros":cold_load_micros,"process_baseline_bytes":baseline,"sampled_peak_rss_bytes":peak.load(Ordering::Relaxed),"soak_start_bytes":soak_start,"soak_memory_bytes":soak_memory,"before_shutdown_bytes":before_shutdown,"after_shutdown_bytes":memory(),"provider":"CPUExecutionProvider","intra_threads":4,"inter_threads":1,"model_revision":gen2::speech::MODEL_REVISION,"sweep":sweep,"mixed_residency":{"chat_path":chat_path,"chat_before":chat_before,"chat_after":chat_after,"decision_bundle":"synthetic Laya smoke when chat is present","estimated_before_speech_mb":mixed_residency.estimated_resident_mb},"final_reserved_mb":runtime.stats().estimated_resident_mb});
     std::fs::write(&args[2], serde_json::to_vec_pretty(&receipt)?)?;
     Ok(())
 }

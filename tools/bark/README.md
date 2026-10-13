@@ -144,13 +144,12 @@ exact text/token decisions on all 250 clips on the reference Mac. WER was
 Supplementary fixtures use 18 preselected LibriSpeech clips, quiet and with
 deterministic 20 dB white noise, names/numerals/negation labels, 72 real-speech
 WAV rate/channel/encoding variants, and silence/noise duration controls.
-This is small domain coverage, not a universal dictation-quality claim. Cleanup
+This is small domain coverage, not a universal dictation-quality claim.
 The human-label scorer gates names/numerals/negation facts on both paths and
 reports quiet/noisy WER separately. Frozen non-gating name probes expose shared
 upstream weaknesses: Ann/Anne, Kaliko/Calico, Ruggedo and noisy Rocky Ithaca.
 These are disclosed limitations, not spelling corrections hidden in scoring.
-Cleanup
-can still omit or change words; review consequential transcripts. Silence
+Cleanup can still omit or change words; review consequential transcripts. Silence
 behavior is model behavior, with no hidden suppression policy.
 
 Model weights are Conway Research Bark 2.0, CC-BY-4.0; its LICENSE stays in the

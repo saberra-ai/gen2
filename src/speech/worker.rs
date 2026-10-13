@@ -354,9 +354,19 @@ pub(crate) fn spawn(
                 worker_state.done.notify_all();
             })
             .map_err(|e| SpeechError::Execution(e.to_string()))?;
-        ready_rx
+        let loaded = ready_rx
             .recv()
-            .map_err(|_| SpeechError::Execution("speech worker failed during load".into()))??;
+            .map_err(|_| SpeechError::Execution("speech worker failed during load".into()))
+            .and_then(|result| result);
+        if let Err(error) = loaded {
+            // A failed load must not return while its reservation is still
+            // charged. The worker drops native sessions before signaling done.
+            let mut status = state.status.lock().unwrap_or_else(|e| e.into_inner());
+            while *status != SpeechStatus::Unloaded {
+                status = state.done.wait(status).unwrap_or_else(|e| e.into_inner());
+            }
+            return Err(error);
+        }
         Ok(Transcriber {
             inner: Arc::new(Inner {
                 tx,

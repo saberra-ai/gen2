@@ -11,3 +11,22 @@ License: Apache License, Version 2.0 (see licenses/laya-Apache-2.0.txt).
 
 Modifications: Rust implementation, owned typed requests, checked request
 validation, explicit overflow policies, and per-question diagnostics.
+
+Bark speech preprocessing
+=========================
+
+The native frontend/filterbank follows ONNX ASR 0.12.0:
+https://github.com/istupakov/onnx-asr
+Revision: b9e0ce0ae3223b3d24ce5a22a5e701a726ca35fc
+License: MIT (assets/bark/LICENSE).
+
+The x86 float32 logarithm follows NumPy 2.5.4's fused rational approximation:
+https://github.com/numpy/numpy/tree/v2.5.4
+License: BSD-3-Clause (assets/bark/NUMPY-LICENSE).
+
+Optional asr-resample-soxr links pinned soxr-sys 0.1.3 with LGPL-2.1 libsoxr
+native code. See assets/bark/SOXR-LICENCE and tools/bark/README.md. It is off
+by default; the Rust binding's Apache-2.0 metadata does not replace C licenses.
+
+Bark model weights are distributed separately under CC-BY-4.0 by Conway
+Research. Their LICENSE is retained and hash-validated in the downloaded bundle.

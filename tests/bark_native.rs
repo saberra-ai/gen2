@@ -533,10 +533,10 @@ fn coexistence(laya_first: bool) {
         ),
         Err(gen2::Error::Speech(SpeechError::BackendUnavailable(_)))
     ));
-    let until = Instant::now() + Duration::from_secs(2);
-    while runtime.speech_reserved_mb() != 0 {
-        assert!(Instant::now() < until);
-        std::thread::yield_now();
-    }
+    assert_eq!(
+        runtime.speech_reserved_mb(),
+        0,
+        "failed load releases before returning"
+    );
     assert_eq!(runtime.stats().estimated_resident_mb, 0);
 }
