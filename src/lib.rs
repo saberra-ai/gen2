@@ -69,6 +69,12 @@ pub mod advanced;
 /// Typed, non-generative decisions and the Laya inference contract.
 pub mod decision;
 
+/// Local English speech recognition and cleanup, independent of chat sessions.
+pub mod speech;
+
+#[cfg(any(feature = "backend-laya-onnx", feature = "backend-asr-onnx"))]
+mod onnx_runtime;
+
 // ── S3.1: `hf:` model references ────────────────────────────────────────────
 /// Models from the Hugging Face Hub by `hf:owner/repo[:QUANT]` reference —
 /// [`HfModel`](hf::HfModel), the cache, and the errors.

@@ -1,0 +1,63 @@
+name: Bark CPU qualification
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, codex/bark-onnx]
+    paths: ['src/speech/**', 'src/onnx_runtime.rs', 'src/api/runtime.rs', 'src/decision/onnx.rs', 'Cargo.*', 'tools/bark/**', 'tests/bark_native.rs', 'assets/bark/**', '.github/workflows/bark-cpu.yml']
+  pull_request:
+    paths: ['src/speech/**', 'src/onnx_runtime.rs', 'src/api/runtime.rs', 'src/decision/onnx.rs', 'Cargo.*', 'tools/bark/**', 'tests/bark_native.rs', 'assets/bark/**', '.github/workflows/bark-cpu.yml']
+jobs:
+  real-model:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: Swatinem/rust-cache@v2
+      - uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: bark-0d5f814-disfluency-b7da294
+      - run: python -m pip install --require-hashes -r tools/bark/reference.lock
+      - name: Provision pinned weights and corpus
+        run: python tools/bark/provision_reference.py target/bark
+      - name: Freeze independent CPU oracle, including token decisions
+        run: |
+          python tools/bark/qualify_reference.py --bundle target/bark/model/onnx --parquet target/bark/test.parquet --output target/bark/oracle
+          python tools/bark/export_trace.py --bundle target/bark/model/onnx --reference target/bark/oracle
+      - name: Locate explicit native runtime and offline inputs
+        shell: bash
+        run: |
+          python - <<'PY'
+          import os, pathlib, onnxruntime
+          root = pathlib.Path(onnxruntime.__file__).parent / 'capi'
+          matches = list(root.glob('onnxruntime.dll')) + list(root.glob('libonnxruntime.so*')) + list(root.glob('libonnxruntime*.dylib'))
+          assert matches, f'no native runtime in {root}'
+          with open(os.environ['GITHUB_ENV'], 'a') as f:
+              for key, value in {'GEN2_ORT_LIBRARY':matches[0], 'GEN2_BARK_BUNDLE':pathlib.Path('target/bark/model/onnx').resolve(), 'GEN2_BARK_REFERENCE':pathlib.Path('target/bark/oracle').resolve(), 'GEN2_BARK_RESULTS':pathlib.Path('target/bark/native.json').resolve()}.items():
+                  f.write(f'{key}={value}\n')
+          PY
+      - run: cargo clippy --locked --no-default-features --features asr-dynamic,laya-dynamic,hf --all-targets -- -D warnings
+      - run: cargo test --locked --release --no-default-features --features asr-dynamic,laya-dynamic --lib
+      - run: cargo test --locked --release --no-default-features --features asr-dynamic,laya-dynamic --test bark_native
+      - run: cargo test --locked --release --no-default-features --features asr-dynamic,laya-dynamic --lib native_frontend -- --ignored
+      - run: cargo test --locked --release --no-default-features --features asr-dynamic,laya-dynamic --test bark_native -- --ignored --skip coexistence --test-threads=1
+      # Each order has a fresh process-global ORT environment.
+      - run: cargo test --locked --release --no-default-features --features asr-dynamic,laya-dynamic --test bark_native coexistence_laya_first -- --ignored
+      - run: cargo test --locked --release --no-default-features --features asr-dynamic,laya-dynamic --test bark_native coexistence_speech_first -- --ignored
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: bark-cpu-${{ matrix.os }}
+          path: |
+            target/bark/native.json
+            target/bark/oracle/reference.json
+          if-no-files-found: error

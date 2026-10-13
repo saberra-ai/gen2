@@ -103,11 +103,25 @@ pub(crate) struct RuntimeInner {
     /// Reservations remain live until the decision worker drops its session.
     decision_reserved_mb: AtomicU64,
     decision_models: Mutex<Vec<crate::decision::DecisionMonitor>>,
+    speech_reserved_mb: AtomicU64,
+    speech_models: Mutex<Vec<crate::speech::SpeechMonitor>>,
 }
 
 struct DecisionReservation {
     inner: Arc<RuntimeInner>,
     mb: u64,
+}
+
+struct SpeechReservation {
+    inner: Arc<RuntimeInner>,
+    mb: u64,
+}
+impl Drop for SpeechReservation {
+    fn drop(&mut self) {
+        self.inner
+            .speech_reserved_mb
+            .fetch_sub(self.mb, Ordering::SeqCst);
+    }
 }
 impl Drop for DecisionReservation {
     fn drop(&mut self) {
@@ -182,6 +196,70 @@ impl Loaded {
 }
 
 impl Runtime {
+    /// Load the pinned offline Bark ONNX bundle on a bounded CPU worker.
+    pub fn load_transcriber(
+        &self,
+        path: impl AsRef<Path>,
+        options: crate::speech::LoadOptions,
+    ) -> Result<crate::speech::Transcriber> {
+        use crate::speech::SpeechError;
+        if !cfg!(feature = "backend-asr-onnx") {
+            return Err(SpeechError::BackendUnavailable(
+                "enable asr-dynamic or backend-asr-onnx".into(),
+            )
+            .into());
+        }
+        options.validate()?;
+        let bundle = crate::speech::SpeechBundle::open(path)?;
+        let mb = options.reservation_mb;
+        let reservation = {
+            let _admission = self
+                .inner
+                .admission
+                .lock()
+                .map_err(|_| Error::Load("admission lock poisoned".into()))?;
+            self.make_room(mb, None);
+            if !self.can_admit(mb) {
+                return Err(SpeechError::ResourceLimit(format!(
+                    "cannot reserve {mb} MB alongside resident models"
+                ))
+                .into());
+            }
+            self.inner
+                .speech_reserved_mb
+                .fetch_add(mb, Ordering::SeqCst);
+            SpeechReservation {
+                inner: Arc::clone(&self.inner),
+                mb,
+            }
+        };
+        let model = crate::speech::spawn(bundle, options, Box::new(reservation))?;
+        self.inner
+            .speech_models
+            .lock()
+            .map_err(|_| Error::Load("speech registry lock poisoned".into()))?
+            .push(model.monitor());
+        Ok(model)
+    }
+
+    pub fn speech_reserved_mb(&self) -> u64 {
+        self.inner.speech_reserved_mb.load(Ordering::SeqCst)
+    }
+
+    fn auxiliary_reserved_mb(&self) -> u64 {
+        self.decision_reserved_mb()
+            .saturating_add(self.speech_reserved_mb())
+    }
+
+    /// Live speech handles in load order. Registry entries do not keep workers alive.
+    pub fn speech_models(&self) -> Vec<crate::speech::Transcriber> {
+        self.inner
+            .speech_models
+            .lock()
+            .map(|models| models.iter().filter_map(|m| m.upgrade()).collect())
+            .unwrap_or_default()
+    }
+
     /// Current admission limits and measured host memory, for inspection before
     /// attempting a load. The snapshot can change as other applications allocate.
     pub fn memory_snapshot(&self) -> crate::advanced::runtime::MemorySnapshot {
@@ -288,6 +366,12 @@ impl Runtime {
     fn require_admission(&self, extra_mb: u64) -> Result<()> {
         if self.can_admit(extra_mb) {
             return Ok(());
+        }
+        if self.speech_reserved_mb() > 0 {
+            return Err(crate::speech::SpeechError::ResourceLimit(
+                "resident speech/decision workers leave insufficient memory for this model".into(),
+            )
+            .into());
         }
         if self.decision_reserved_mb() > 0 {
             return Err(crate::decision::DecisionError::ResourceLimit(
@@ -411,7 +495,7 @@ impl Runtime {
                 .budgets()
                 .inference_resident_mb
                 .saturating_sub(self.residency().resident_mb())
-                .saturating_sub(self.decision_reserved_mb()),
+                .saturating_sub(self.auxiliary_reserved_mb()),
         );
         let memory_plan = crate::residency_policy::plan_gguf(
             path,
@@ -586,8 +670,9 @@ impl Runtime {
             resident_models: residency.models.iter().filter(|m| m.resident).count(),
             estimated_resident_mb: residency
                 .resident_mb()
-                .saturating_add(self.decision_reserved_mb()),
+                .saturating_add(self.auxiliary_reserved_mb()),
             decision_reserved_mb: self.decision_reserved_mb(),
+            speech_reserved_mb: self.speech_reserved_mb(),
             active_sessions,
             evictions: self.inner.evictions.load(Ordering::SeqCst),
         }
@@ -648,7 +733,7 @@ impl Runtime {
         let ledger = self
             .residency()
             .resident_mb()
-            .saturating_add(self.decision_reserved_mb());
+            .saturating_add(self.auxiliary_reserved_mb());
         let Some(projected) = ledger.checked_add(extra_mb) else {
             return false;
         };
@@ -808,6 +893,8 @@ pub struct RuntimeStats {
     pub estimated_resident_mb: u64,
     /// Subset of estimated residency reserved for decision workers' peak usage.
     pub decision_reserved_mb: u64,
+    /// Subset of estimated residency reserved for speech workers' peak usage.
+    pub speech_reserved_mb: u64,
     /// Conversations the engines currently hold runtime state for, summed.
     pub active_sessions: usize,
     /// Models evicted to make room for another, over the runtime's life.
@@ -895,6 +982,8 @@ impl RuntimeBuilder {
                 evictions: AtomicU64::new(0),
                 decision_reserved_mb: AtomicU64::new(0),
                 decision_models: Mutex::new(Vec::new()),
+                speech_reserved_mb: AtomicU64::new(0),
+                speech_models: Mutex::new(Vec::new()),
             }),
         })
     }
@@ -1235,6 +1324,44 @@ mod tests {
             .decision_reserved_mb
             .store(u64::MAX - 1, Ordering::SeqCst);
         assert!(!runtime.can_admit(2));
+    }
+
+    #[test]
+    fn speech_and_decision_reservations_share_chat_admission_and_release() {
+        let runtime = Runtime::builder()
+            .resident_memory_budget_mb(1000)
+            .build()
+            .unwrap();
+        let chat = runtime.scripted_in(Script::new(), 800);
+        Runtime::unload(chat.loaded()).unwrap();
+        runtime
+            .inner
+            .speech_reserved_mb
+            .store(400, Ordering::SeqCst);
+        runtime
+            .inner
+            .decision_reserved_mb
+            .store(200, Ordering::SeqCst);
+        let speech = SpeechReservation {
+            inner: runtime.inner.clone(),
+            mb: 400,
+        };
+        let decision = DecisionReservation {
+            inner: runtime.inner.clone(),
+            mb: 200,
+        };
+        assert!(!runtime.can_admit(500));
+        assert_eq!(runtime.stats().estimated_resident_mb, 600);
+        assert_eq!(runtime.stats().speech_reserved_mb, 400);
+        assert!(matches!(
+            runtime.restore(chat.id(), chat.loaded()),
+            Err(Error::Speech(crate::speech::SpeechError::ResourceLimit(_)))
+        ));
+        drop(speech);
+        drop(decision);
+        runtime.restore(chat.id(), chat.loaded()).unwrap();
+        assert_eq!(runtime.stats().estimated_resident_mb, 800);
+        assert_eq!(runtime.speech_reserved_mb(), 0);
     }
 
     #[test]

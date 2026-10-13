@@ -12,38 +12,8 @@ fn native(e: impl std::fmt::Display) -> DecisionError {
 impl OnnxBackend {
     pub(crate) fn load(bundle: LayaBundle, options: LoadOptions) -> Result<Self> {
         let _span = tracing::info_span!("laya_load", manifest = bundle.manifest_sha256(), provider = ?options.execution).entered();
-        #[cfg(feature = "laya-dynamic")]
-        {
-            // ORT is process-global. Refuse a different library after the first
-            // successful initialization, rather than silently using the old one.
-            static LIBRARY: std::sync::Mutex<Option<std::path::PathBuf>> =
-                std::sync::Mutex::new(None);
-            let path = options
-                .native_library
-                .as_ref()
-                .ok_or_else(|| {
-                    DecisionError::BackendUnavailable(
-                        "set LoadOptions.native_library to the packaged ONNX Runtime 1.24 library"
-                            .into(),
-                    )
-                })?
-                .canonicalize()
-                .map_err(|e| DecisionError::BackendUnavailable(e.to_string()))?;
-            let mut loaded = LIBRARY.lock().map_err(|_| {
-                DecisionError::BackendUnavailable("ONNX initialization lock poisoned".into())
-            })?;
-            if loaded.as_ref().is_some_and(|p| p != &path) {
-                return Err(DecisionError::BackendUnavailable(
-                    "another ONNX library is already initialized in this process".into(),
-                ));
-            }
-            if loaded.is_none() {
-                ort::init_from(&path)
-                    .map_err(|e| DecisionError::BackendUnavailable(e.to_string()))?
-                    .commit();
-                *loaded = Some(path);
-            }
-        }
+        crate::onnx_runtime::initialize(options.native_library.as_deref())
+            .map_err(DecisionError::BackendUnavailable)?;
         let m = bundle.manifest();
         let tokenizer =
             LayaTokenizer::from_file(bundle.path(&m.tokenizer)?, m.special_tokens.clone())?;

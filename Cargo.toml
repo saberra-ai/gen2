@@ -33,6 +33,9 @@ members = ["crates/gen2-mlxcel", "examples/laya-mobile"]
 
 libloading = { version = "0.8", optional = true }
 ort = { version = "=2.0.0-rc.12", default-features = false, features = ["std", "api-24"], optional = true }
+rustfft = { version = "6", optional = true }
+hound = { version = "3.5", optional = true }
+rubato = { version = "0.16", optional = true }
 # ── Inference backends (all optional; pick at least one) ────────────────────
 llama-cpp-2 = { version = "=0.1.156", features = ["mtmd", "llguidance"], optional = true }
 llama-cpp-sys-2 = { version = "=0.1.156", optional = true }
@@ -152,6 +155,10 @@ required-features = ["backend-laya-onnx"]
 name = "laya_benchmark"
 required-features = ["backend-laya-onnx"]
 
+[[example]]
+name = "bark_transcribe"
+required-features = ["asr-dynamic"]
+
 [dev-dependencies]
 serde_json = "1"
 tempfile = "3.19.1"
@@ -223,7 +230,11 @@ backend-mistralrs = ["dep:mistralrs"]
 backend-litertlm = ["dep:libloading"]
 # No binary downloads. Desktop hosts supply an ONNX Runtime 1.24 library.
 backend-laya-onnx = ["dep:ort"]
-laya-dynamic = ["backend-laya-onnx", "ort/load-dynamic"]
+onnx-dynamic = ["ort/load-dynamic"]
+laya-dynamic = ["backend-laya-onnx", "onnx-dynamic"]
+# Native Bark speech recognition; independent of generation and Laya.
+backend-asr-onnx = ["dep:ort", "dep:rustfft", "dep:hound", "dep:rubato"]
+asr-dynamic = ["backend-asr-onnx", "onnx-dynamic"]
 # App-linked provider registration; matching native provider libraries are host supplied.
 laya-coreml = ["backend-laya-onnx", "ort/coreml"]
 laya-nnapi = ["backend-laya-onnx", "ort/nnapi"]
