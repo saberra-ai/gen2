@@ -210,19 +210,29 @@ impl ResultRow {
 
 fn load_results(dir: &Path) -> Result<Vec<ResultRow>, String> {
     let mut files = Vec::new();
-    collect_json(dir, &mut files)?;
+    collect_json(dir, &mut files, dir)?;
     files.sort();
     files.into_iter().map(|f| parse_result(&f)).collect()
 }
 
-fn collect_json(dir: &Path, out: &mut Vec<PathBuf>) -> Result<(), String> {
+fn collect_json(dir: &Path, out: &mut Vec<PathBuf>, root: &Path) -> Result<(), String> {
     let Ok(entries) = fs::read_dir(dir) else {
         return Ok(());
     };
     for entry in entries {
         let path = entry.map_err(|e| e.to_string())?.path();
         if path.is_dir() {
-            collect_json(&path, out)?;
+            // These top-level namespaces hold speech qualification receipts,
+            // not backend_parity rows. Keep strict schema checks for every
+            // JSON file in the chat benchmark machine directories.
+            if dir == root
+                && path
+                    .file_name()
+                    .is_some_and(|n| n == "bark" || n == "whistle")
+            {
+                continue;
+            }
+            collect_json(&path, out, root)?;
         } else if path.extension().is_some_and(|e| e == "json") {
             out.push(path);
         }

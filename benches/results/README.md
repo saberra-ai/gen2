@@ -1,9 +1,13 @@
 # Benchmark results
 
-Every number in the README's benchmark table comes from a JSON file in this
-directory, and every file was written by `benches/backend_parity.rs` on a
+Every number in the README's benchmark table comes from a JSON file in a chat
+benchmark machine directory here, written by `benches/backend_parity.rs` on a
 machine its author owns. Nothing here is edited by hand. The design and the
 sources behind it: `docs/plans/research/04-benchmark-method.md`.
+
+The top-level `bark/` and `whistle/` directories contain speech qualification
+receipts with separate schemas and acceptance tools. They do not supply rows
+for the chat benchmark table.
 
 ## What is measured
 
