@@ -2,7 +2,7 @@ name: Whistle CPU qualification
 on:
   workflow_dispatch:
   push:
-    branches: [main, codex/whistle-onnx]
+    branches: [main]
     paths: ['src/speech/**', 'src/onnx_runtime.rs', 'src/api/runtime.rs', 'Cargo.*', 'tools/whistle/**', 'tests/whistle*', 'examples/speech_benchmark.rs', '.github/workflows/whistle-cpu.yml']
   pull_request:
     paths: ['src/speech/**', 'src/onnx_runtime.rs', 'src/api/runtime.rs', 'Cargo.*', 'tools/whistle/**', 'tests/whistle*', '.github/workflows/whistle-cpu.yml']
