@@ -88,7 +88,7 @@ Native CPU qualification does not establish GPU, FP16, mobile or MLX support.
 
 ## Reproduce qualification
 
-The reference uses the pinned upstream JavaScript on CPU with four intra-op
+The reference uses Node 25.9.0 and the pinned upstream JavaScript on CPU with four intra-op
 threads and one inter-op thread. Its Node ORT is 1.24.3; native Rust uses the
 qualified ORT 1.24.4 library. Exact transcript/token decisions are compared under
 matched settings. Reference tools and Node are development-only dependencies.
@@ -106,9 +106,9 @@ export GEN2_WHISTLE_CORPUS="$PWD/target/whistle/corpus"
 export GEN2_WHISTLE_REFERENCE="$PWD/target/whistle/oracle/reference.json"
 export GEN2_WHISTLE_RESULTS="$PWD/target/whistle/native.json"
 # Set GEN2_ORT_LIBRARY to the actual installed 1.24.4 native library.
-cargo test --release --no-default-features --features asr-dynamic,laya-dynamic \
+cargo test --release --no-default-features --features asr-dynamic,asr-resample-soxr,laya-dynamic \
   --test whistle_native real_whistle_matches_reference_and_reports_language_and_completion -- --ignored --exact
-cargo test --release --no-default-features --features asr-dynamic,laya-dynamic \
+cargo test --release --no-default-features --features asr-dynamic,asr-resample-soxr,laya-dynamic \
   --test whistle_native real_whistle_integrity_offline_cache_and_lifecycle -- --ignored --exact
 python tools/whistle/report_quality.py --reference target/whistle/oracle/reference.json \
   --native target/whistle/native.json --output target/whistle/quality.json
@@ -116,11 +116,21 @@ python tools/whistle/report_quality.py --reference target/whistle/oracle/referen
 
 Explicit real-model tests fail when assets are missing. The frozen FLEURS subset
 uses 20 identified real recordings per language (first ten parity, next ten
-held-out quality), with human transcripts and hashes. This is a compatibility
+held-out quality), with human transcripts and hashes. Separate receipt slices cover 40 dB quieter
+speech and seeded 10 dB white noise in each language, plus 48 WAV variants
+(8/16/44.1/48 kHz, 1/2/8 channels, PCM16/float32). Names, numbers and negation
+are explicitly tagged in five English source recordings; those narrow cases do
+not establish critical-content accuracy for every language. Held-out metrics
+are reported separately from parity recordings. This is a compatibility
 and small quality sample, not a broad accuracy benchmark. Raw text/token parity
 and human-reference accuracy are separate evidence. The reference's own
 transcripts can have substantial errors, particularly on Dutch/Polish in this
 subset; matching the reference does not establish good dictation quality.
+
+Independent numeric probes compare mel, engram features, encoder K/V and the
+first three decoder steps (logits, recurrent state and growing K/V) against
+the upstream oracle using `atol=rtol=1e-4`. The production adapter has no tracing
+overhead; the probe hook exists only in test builds.
 
 The three-platform workflow regenerates the oracle on the host, compares the
 same pinned audio through public calls, and uploads results. Also run Bark's

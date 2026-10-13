@@ -1,5 +1,6 @@
 //! Matched PCM duration sweep and repeated-request residency measurements.
 use gen2::{Runtime, speech::*};
+use sha2::{Digest, Sha256};
 use std::{
     sync::{
         Arc,
@@ -112,7 +113,10 @@ fn main() -> anyhow::Result<()> {
     let sha = std::process::Command::new("git")
         .args(["rev-parse", "HEAD"])
         .output()?;
-    let receipt = serde_json::json!({"git_sha":String::from_utf8_lossy(&sha.stdout).trim(),"model":args[0],"model_revision":speech.bundle().revision(),"manifest_sha256":speech.bundle().manifest_sha256(),"provider":"CPUExecutionProvider","intra_threads":4,"inter_threads":1,"cold_load_micros":cold_load_micros,"baseline_rss":baseline,"loaded_rss":loaded_rss,"peak_rss":peak.load(Ordering::Relaxed),"soak_start_rss":soak_start,"before_shutdown_rss":before_shutdown,"after_shutdown_rss":memory(),"soak_rss":soak,"sweep":sweep});
+    let system = sysinfo::System::new_all();
+    let library = std::env::var("GEN2_ORT_LIBRARY")?;
+    let native_hash = hex::encode(Sha256::digest(std::fs::read(&library)?));
+    let receipt = serde_json::json!({"os":sysinfo::System::long_os_version(),"architecture":std::env::consts::ARCH,"cpu":system.cpus().first().map(|c|c.brand()),"native_library_sha256":native_hash,"native_library":library,"git_sha":String::from_utf8_lossy(&sha.stdout).trim(),"model":args[0],"model_revision":speech.bundle().revision(),"manifest_sha256":speech.bundle().manifest_sha256(),"provider":"CPUExecutionProvider","intra_threads":4,"inter_threads":1,"cold_load_micros":cold_load_micros,"baseline_rss":baseline,"loaded_rss":loaded_rss,"peak_rss":peak.load(Ordering::Relaxed),"soak_start_rss":soak_start,"before_shutdown_rss":before_shutdown,"after_shutdown_rss":memory(),"soak_rss":soak,"sweep":sweep});
     std::fs::write(&args[3], serde_json::to_vec_pretty(&receipt)?)?;
     Ok(())
 }

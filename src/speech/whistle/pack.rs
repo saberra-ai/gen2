@@ -56,7 +56,9 @@ impl Tokenizer {
             }
         }
         // Matches the reference TextDecoder's replacement behavior on byte fallback.
-        Ok(String::from_utf8_lossy(&bytes).trim().into())
+        Ok(String::from_utf8_lossy(&bytes)
+            .trim_matches(js_whitespace)
+            .into())
     }
 }
 pub(super) struct Pack {
@@ -209,4 +211,38 @@ fn checked_slice(bytes: &[u8], base: usize, offset: usize, length: usize) -> Res
     bytes
         .get(start..end)
         .ok_or_else(|| invalid("pack section out of bounds"))
+}
+
+// ECMAScript String.trim differs from Rust's Unicode White_Space: BOM is
+// whitespace in JavaScript, while NEL (U+0085) is preserved. TextDecoder drops
+// an initial BOM, which this edge trim also removes.
+fn js_whitespace(c: char) -> bool {
+    matches!(c, '\u{0009}'..='\u{000d}' | '\u{0020}' | '\u{00a0}' | '\u{1680}'
+        | '\u{2000}'..='\u{200a}' | '\u{2028}' | '\u{2029}' | '\u{202f}'
+        | '\u{205f}' | '\u{3000}' | '\u{feff}')
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    #[test]
+    fn byte_fallback_matches_textdecoder_and_ecmascript_trim() {
+        let tokenizer = Tokenizer {
+            pieces: [
+                "<0xEF>", "<0xBB>", "<0xBF>", "<0xC2>", "<0x85>", "<0x41>", "<0xFF>",
+            ]
+            .into_iter()
+            .map(str::to_owned)
+            .collect(),
+            scores: vec![0.; 7],
+            types: vec![4; 7],
+        };
+        assert_eq!(tokenizer.decode(&[0, 1, 2, 5]).unwrap(), "A");
+        assert_eq!(
+            tokenizer.decode(&[3, 4, 5, 3, 4]).unwrap(),
+            "\u{0085}A\u{0085}"
+        );
+        assert_eq!(tokenizer.decode(&[5, 6]).unwrap(), "A\u{fffd}");
+        assert_eq!(tokenizer.decode(&[5, 0, 1, 2, 5]).unwrap(), "A\u{feff}A");
+    }
 }

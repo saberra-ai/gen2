@@ -99,6 +99,28 @@ fn real_whistle_matches_reference_and_reports_language_and_completion() {
                 .collect(),
         )
         .unwrap();
+        let audio = if let Some(wav) = record["wav"].as_str() {
+            #[cfg(feature = "asr-resample-soxr")]
+            let supported = true;
+            #[cfg(not(feature = "asr-resample-soxr"))]
+            let supported = record["rate"] == 16000;
+            if supported {
+                let normalized = Audio::from_wav(corpus.join(wav)).unwrap();
+                assert_eq!(normalized.samples().len(), audio.samples().len());
+                let error = normalized
+                    .samples()
+                    .iter()
+                    .zip(audio.samples())
+                    .map(|(a, b)| (a - b).abs())
+                    .fold(0f32, f32::max);
+                assert!(error <= 1e-5, "normalization error {error}: {wav}");
+                normalized
+            } else {
+                audio
+            }
+        } else {
+            audio
+        };
         let result = speech
             .transcribe_request(TranscriptionRequest {
                 audio: audio.clone(),
@@ -160,7 +182,10 @@ fn real_whistle_matches_reference_and_reports_language_and_completion() {
             serde_json::to_value(forced.detected_language).unwrap(),
             record["detected_language"]
         );
-        assert_eq!(forced.completion, Completion::EndOfSpeech);
+        assert_eq!(
+            forced.completion == Completion::EndOfSpeech,
+            record["forced_complete"].as_bool().unwrap()
+        );
         results.push(result);
     }
     for _ in 0..3 {
@@ -406,4 +431,101 @@ fn both_models_share_the_request_interface_and_admission() {
         w.shutdown();
         assert_eq!(runtime.stats().estimated_resident_mb, 0);
     }
+}
+
+#[cfg(all(feature = "backend-llamacpp", feature = "laya-dynamic"))]
+#[test]
+#[ignore = "requires GEN2_WHISTLE_CHAT, both speech bundles and native runtime"]
+fn chat_laya_and_both_speech_models_remain_resident_together() {
+    let mut settings = gen2::advanced::generation::Settings::default();
+    settings.system.gpu_layers = Some(0);
+    settings.system.threads = Some(4);
+    settings.system.threads_batch = Some(4);
+    settings.system.ctx_size = Some(2048);
+    let runtime = Runtime::builder()
+        .settings(settings)
+        .resident_memory_budget_mb(8192)
+        .build()
+        .unwrap();
+    let chat = runtime
+        .load(std::env::var("GEN2_WHISTLE_CHAT").expect("chat model"))
+        .unwrap();
+    let before = chat
+        .generate("Reply with one word: hello")
+        .max_tokens(24)
+        .temperature(0.)
+        .text()
+        .unwrap();
+    let library: PathBuf = std::env::var("GEN2_ORT_LIBRARY")
+        .expect("native runtime")
+        .into();
+    let laya = runtime
+        .load_decider(
+            PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/laya/smoke"),
+            gen2::decision::LoadOptions {
+                native_library: Some(library.clone()),
+                ..Default::default()
+            },
+        )
+        .unwrap();
+    let load = |source, mb| {
+        runtime
+            .load_speech(
+                source,
+                LoadOptions {
+                    native_library: Some(library.clone()),
+                    reservation_mb: mb,
+                    ..Default::default()
+                },
+            )
+            .unwrap()
+    };
+    let bark = load(
+        SpeechSource::bark(std::env::var("GEN2_BARK_BUNDLE").expect("Bark bundle")),
+        4096,
+    );
+    let whistle = load(
+        SpeechSource::whistle(std::env::var("GEN2_WHISTLE_BUNDLE").expect("Whistle bundle")),
+        2048,
+    );
+    assert_eq!(runtime.speech_reserved_mb(), 6144);
+    assert_eq!(runtime.decision_reserved_mb(), 1);
+    assert!(runtime.residency().is_resident(chat.id()));
+    for model in [&bark, &whistle] {
+        model
+            .transcribe_request(TranscriptionRequest::new(
+                Audio::mono_16khz(vec![0.; 640]).unwrap(),
+            ))
+            .unwrap();
+    }
+    laya.decide(
+        gen2::decision::DecisionRequest::text("a b")
+            .question("q", gen2::decision::Question::yes_no("a?")),
+        gen2::decision::DecisionOptions::default(),
+    )
+    .unwrap();
+    assert!(runtime.residency().is_resident(chat.id()));
+    let after = chat
+        .generate("Reply with one word: hello")
+        .max_tokens(24)
+        .temperature(0.)
+        .text()
+        .unwrap();
+    assert_eq!(before, after);
+    assert!(matches!(
+        runtime.load_speech(
+            SpeechSource::whistle(std::env::var("GEN2_WHISTLE_BUNDLE").unwrap()),
+            LoadOptions {
+                native_library: Some(library),
+                reservation_mb: 2048,
+                ..Default::default()
+            }
+        ),
+        Err(gen2::Error::Speech(SpeechError::ResourceLimit(_)))
+    ));
+    bark.shutdown();
+    whistle.shutdown();
+    laya.shutdown();
+    assert_eq!(runtime.speech_reserved_mb(), 0);
+    assert_eq!(runtime.decision_reserved_mb(), 0);
 }
