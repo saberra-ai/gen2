@@ -57,12 +57,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             .max_tokens(limit)
             .stream()?;
         for event in stream.by_ref() {
-            if let Event::TextDelta(text) = event? {
-                if !text.is_empty() {
-                    last = start.elapsed().as_secs_f64();
-                    first.get_or_insert(last);
-                    arrival.push(last);
-                }
+            if let Event::TextDelta(text) = event?
+                && !text.is_empty()
+            {
+                last = start.elapsed().as_secs_f64();
+                first.get_or_insert(last);
+                arrival.push(last);
             }
         }
         let reply = stream.finish()?;
