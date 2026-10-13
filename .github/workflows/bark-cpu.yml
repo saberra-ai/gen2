@@ -57,6 +57,8 @@ jobs:
       - run: cargo test --locked --release --no-default-features --features asr-dynamic,asr-resample-soxr,laya-dynamic --lib native_frontend -- --ignored
       - run: cargo test --locked --release --no-default-features --features asr-dynamic,asr-resample-soxr,laya-dynamic --lib native_graphs -- --ignored
       - run: cargo test --locked --release --no-default-features --features asr-dynamic,asr-resample-soxr,laya-dynamic --test bark_native -- --ignored --skip coexistence --test-threads=1
+      - run: python tools/bark/compare_results.py --reference target/bark/oracle/reference.json --native target/bark/native.json --output target/bark/qualification.json
+      - run: python tools/bark/report_audio.py --reference target/bark/audio/audio-reference.json --native target/bark/audio/native-audio.json --output target/bark/audio-quality.json
       # Each order has a fresh process-global ORT environment.
       - run: cargo test --locked --release --no-default-features --features asr-dynamic,laya-dynamic --test bark_native coexistence_laya_first -- --ignored
       - run: cargo test --locked --release --no-default-features --features asr-dynamic,laya-dynamic --test bark_native coexistence_speech_first -- --ignored
@@ -66,8 +68,11 @@ jobs:
           name: bark-cpu-${{ matrix.os }}
           path: |
             target/bark/native.json
+            target/bark/qualification.json
             target/bark/oracle/reference.json
             target/bark/audio/audio-reference.json
             target/bark/audio/native-audio.json
+            target/bark/audio/normalization-errors.json
+            target/bark/audio-quality.json
             target/bark/oracle/*.features.f32
           if-no-files-found: error

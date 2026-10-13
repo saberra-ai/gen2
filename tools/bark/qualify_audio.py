@@ -33,6 +33,7 @@ def record(wave,rate,name,human,category,channels=1,subtype="FLOAT"):
     decoded,_=sf.read(path,dtype="float32",always_2d=True)
     normalized=decoded.mean(axis=1)
     if rate!=16000: normalized=soxr.resample(normalized,rate,16000,quality="HQ")
+    normalized.astype("<f4").tofile(args.output/(name+".normalized.f32"))
     text=asr.recognize(normalized,sample_rate=16000).strip()
     records.append({"wav":path.name,"sha256":hashlib.sha256(path.read_bytes()).hexdigest(),"text":text,"human":human,"category":category,"rate":rate,"channels":channels,"encoding":subtype})
     print(name,text,flush=True)

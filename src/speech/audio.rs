@@ -72,7 +72,17 @@ impl Audio {
         validate_pcm_shape(frames, rate, channels)?;
         let mono: Vec<f32> = samples
             .chunks_exact(channels)
-            .map(|frame| frame.iter().sum::<f32>() / channels as f32)
+            .map(|frame| {
+                // NumPy's contiguous reduction switches to a balanced sum at
+                // eight lanes. Preserve rounding, including identical channels.
+                let sum = if channels == 8 {
+                    ((frame[0] + frame[1]) + (frame[2] + frame[3]))
+                        + ((frame[4] + frame[5]) + (frame[6] + frame[7]))
+                } else {
+                    frame.iter().sum::<f32>()
+                };
+                sum / channels as f32
+            })
             .collect();
         if rate == 16000 {
             return Self::mono_16khz(mono);

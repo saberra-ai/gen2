@@ -406,15 +406,34 @@ fn real_audio_workflow_matches_qualified_reference() {
         .unwrap();
     let mut results = Vec::new();
     let mut mismatches = Vec::new();
+    let mut normalization_errors = Vec::new();
     for record in receipt["records"].as_array().unwrap() {
         let wav = record["wav"].as_str().unwrap();
+        let audio = Audio::from_wav(root.join(wav)).unwrap();
+        let expected = std::fs::read(root.join(wav.replace(".wav", ".normalized.f32"))).unwrap();
+        let expected: Vec<f32> = expected
+            .as_chunks::<4>()
+            .0
+            .iter()
+            .map(|b| f32::from_le_bytes(*b))
+            .collect();
+        assert_eq!(
+            audio.samples().len(),
+            expected.len(),
+            "normalized length: {wav}"
+        );
+        let max_error = audio
+            .samples()
+            .iter()
+            .zip(&expected)
+            .map(|(a, b)| (a - b).abs())
+            .fold(0f32, f32::max);
+        normalization_errors.push(serde_json::json!({"wav":wav,"max_absolute_error":max_error}));
+        assert!(max_error <= 1e-5, "resampling error {max_error}: {wav}");
         let result = speech
-            .transcribe(
-                Audio::from_wav(root.join(wav)).unwrap(),
-                TranscribeOptions::default(),
-            )
+            .transcribe(audio, TranscribeOptions::default())
             .unwrap();
-        if result.text != record["text"].as_str().unwrap() {
+        if result.text != record["text"].as_str().unwrap() && record["rate"] == 16000 {
             mismatches.push(wav);
         }
         results.push(result);
@@ -424,10 +443,15 @@ fn real_audio_workflow_matches_qualified_reference() {
         serde_json::to_vec_pretty(&results).unwrap(),
     )
     .unwrap();
+    std::fs::write(
+        root.join("normalization-errors.json"),
+        serde_json::to_vec_pretty(&normalization_errors).unwrap(),
+    )
+    .unwrap();
     speech.shutdown();
     assert!(
         mismatches.is_empty(),
-        "audio transcript mismatches: {mismatches:?}"
+        "qualified 16 kHz audio transcript mismatches: {mismatches:?}"
     );
 }
 

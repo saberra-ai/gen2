@@ -34,7 +34,11 @@ speech.shutdown();
 
 `Audio::from_wav` accepts PCM16/float32 WAV and arithmetic downmixing of 1–8
 channels. The core feature accepts 16 kHz. Opt into `asr-resample-soxr` for
-8/44.1/48 kHz using libsoxr HQ, the helper's resampling algorithm. This feature
+8/44.1/48 kHz using libsoxr HQ, the helper's resampling algorithm. Resampling is
+**experimental**: native FFT/reduction rounding can change punctuation near a
+greedy decoding boundary. Qualification checks normalized PCM error and words
+separately, retaining every raw difference; it does not claim bit-exact Python
+resampling or punctuation parity. This feature
 includes **LGPL-2.1 native code** through pinned `soxr-sys`; its Rust binding
 metadata says Apache-2.0, but the vendored C source has its own LGPL notices.
 Keep the accompanying [libsoxr notice](../../assets/bark/SOXR-LICENCE) and review
@@ -110,8 +114,13 @@ cargo test --release --no-default-features --features asr-dynamic --lib native_f
 cargo test --release --no-default-features --features asr-dynamic --lib native_graphs -- --ignored
 python tools/bark/compare_results.py --reference target/bark/oracle/reference.json \
   --native target/bark/native.json --output target/bark/qualification.json
+python tools/bark/report_audio.py --reference target/bark/audio/audio-reference.json \
+  --native target/bark/audio/native-audio.json --output target/bark/audio-quality.json
 cargo run --release --no-default-features --features asr-dynamic --example bark_benchmark -- \
   "$GEN2_BARK_BUNDLE" target/bark/oracle/000.wav target/bark/performance.json
+python tools/bark/benchmark_reference.py --bundle "$GEN2_BARK_BUNDLE" \
+  --wav target/bark/oracle/000.wav --native target/bark/performance.json \
+  --output target/bark/performance-comparison.json
 ```
 
 The explicit real tests fail when their inputs are absent; ignored tests in an
@@ -136,11 +145,18 @@ Supplementary fixtures use 18 preselected LibriSpeech clips, quiet and with
 deterministic 20 dB white noise, names/numerals/negation labels, 72 real-speech
 WAV rate/channel/encoding variants, and silence/noise duration controls.
 This is small domain coverage, not a universal dictation-quality claim. Cleanup
+The human-label scorer gates names/numerals/negation facts on both paths and
+reports quiet/noisy WER separately. Frozen non-gating name probes expose shared
+upstream weaknesses: Ann/Anne, Kaliko/Calico, Ruggedo and noisy Rocky Ithaca.
+These are disclosed limitations, not spelling corrections hidden in scoring.
+Cleanup
 can still omit or change words; review consequential transcripts. Silence
 behavior is model behavior, with no hidden suppression policy.
 
 Model weights are Conway Research Bark 2.0, CC-BY-4.0; its LICENSE stays in the
 validated bundle. Filterbank notices are in `assets/bark/LICENSE` (ONNX ASR).
+The x86 fused logarithm follows NumPy 2.5.4's rational approximation; its
+BSD-3-Clause notice is in `assets/bark/NUMPY-LICENSE`.
 DisfluencySpeech is Apache-2.0, pinned revision `b7da294fe3a70dd96df6640893f2a5dfc2c87638`.
 The [LibriSpeech excerpt](https://huggingface.co/datasets/hf-internal-testing/librispeech_asr_dummy/tree/5be91486e11a2d616f4ec5db8d3fd248585ac07a)
 is from [LibriSpeech/OpenSLR](https://www.openslr.org/12), CC-BY-4.0, prepared by
