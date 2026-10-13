@@ -49,6 +49,7 @@ jobs:
       - run: cargo test --locked --release --no-default-features --features asr-dynamic,laya-dynamic --lib
       - run: cargo test --locked --release --no-default-features --features asr-dynamic,laya-dynamic --test bark_native
       - run: cargo test --locked --release --no-default-features --features asr-dynamic,laya-dynamic --lib native_frontend -- --ignored
+      - run: cargo test --locked --release --no-default-features --features asr-dynamic,laya-dynamic --lib native_graphs -- --ignored
       - run: cargo test --locked --release --no-default-features --features asr-dynamic,laya-dynamic --test bark_native -- --ignored --skip coexistence --test-threads=1
       # Each order has a fresh process-global ORT environment.
       - run: cargo test --locked --release --no-default-features --features asr-dynamic,laya-dynamic --test bark_native coexistence_laya_first -- --ignored
