@@ -105,7 +105,7 @@ fn features_with_observer(
 // NumPy's pinned manylinux wheel uses the Haswell SGEMM family for AVX2
 // machines. Match its accumulation order, not an alternative BLAS provider.
 // See OpenBLAS v0.3.34 kernel/x86_64/sgemm_kernel_8x4_haswell_2.c.
-// ARM and the measured AVX512 Windows path use the sequential FMA order.
+// ARM and the measured Windows wheel use the sequential FMA order.
 fn numpy_split_mel() -> bool {
     #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
     {

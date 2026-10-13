@@ -46,9 +46,15 @@ for name in ["performance.json", "mixed-performance.json", "qualification.json",
     assert not changed, f"implementation changed since receipt {name}: {changed}"
 assert json.loads(inputs["audio-quality.json"].read_text())["passed"]
 assert json.loads(inputs["performance-comparison.json"].read_text())["passed"]
-for name in ["numeric.log", "integration.log"]:
-    log = inputs[name].read_text()
+for name in ["numeric.log", "integration.log", "runtime-rejection-green.log", "live-memory-green.log"]:
+    path = inputs.get(name, args.root / name)
+    log = path.read_text()
     assert "test result: ok." in log and "FAILED" not in log, f"unpassed native gate: {name}"
+compatibility = json.loads((args.root / "runtime-compatibility.json").read_text())
+assert compatibility["passed"]
+assert len(compatibility["records"]) == 25
+assert all(record[field] for record in compatibility["records"]
+           for field in ["pcm_equal", "text_equal", "tokens_equal"])
 args.output.mkdir(parents=True, exist_ok=True)
 for name, path in inputs.items():
     shutil.copyfile(path, args.output / name)
