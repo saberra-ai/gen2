@@ -1,0 +1,445 @@
+{
+  "git_sha": "8277263fe2054e79f1ffb00bdc545e1d80cb7320",
+  "dataset_revision": "5be91486e11a2d616f4ec5db8d3fd248585ac07a",
+  "clips": 112,
+  "normalizer": "lowercase-remove-punctuation-collapse-space-v1",
+  "reference_sha256": "3c51d8b44dcb2eacef81efd8cdbaac5691e0379f9558dbd57e01d94fda851de2",
+  "native_sha256": "bbf8951f4a518716d57b43e9345d1dfde4e09f2272853a9bfd51873aff9757d5",
+  "critical_facts_sha256": "4970f62860fbde2b8e8960a653a0815a84c41ac95d0da131d7d877d1de388fbf",
+  "raw_text_matches": 112,
+  "slices": {
+    "20dB-white-noise": {
+      "clips": 18,
+      "reference": {
+        "wer": 0.05761316872427984,
+        "substitutions": 11,
+        "deletions": 1,
+        "insertions": 2
+      },
+      "native": {
+        "wer": 0.05761316872427984,
+        "substitutions": 11,
+        "deletions": 1,
+        "insertions": 2
+      }
+    },
+    "noise": {
+      "clips": 1,
+      "reference": {
+        "wer": 0,
+        "substitutions": 0,
+        "deletions": 0,
+        "insertions": 0
+      },
+      "native": {
+        "wer": 0,
+        "substitutions": 0,
+        "deletions": 0,
+        "insertions": 0
+      }
+    },
+    "quiet-fluent": {
+      "clips": 18,
+      "reference": {
+        "wer": 0.037037037037037035,
+        "substitutions": 8,
+        "deletions": 1,
+        "insertions": 0
+      },
+      "native": {
+        "wer": 0.037037037037037035,
+        "substitutions": 8,
+        "deletions": 1,
+        "insertions": 0
+      }
+    },
+    "silence": {
+      "clips": 3,
+      "reference": {
+        "wer": 0,
+        "substitutions": 0,
+        "deletions": 0,
+        "insertions": 0
+      },
+      "native": {
+        "wer": 0,
+        "substitutions": 0,
+        "deletions": 0,
+        "insertions": 0
+      }
+    },
+    "wav-conformance": {
+      "clips": 72,
+      "reference": {
+        "wer": 0.05232558139534884,
+        "substitutions": 48,
+        "deletions": 0,
+        "insertions": 6
+      },
+      "native": {
+        "wer": 0.05232558139534884,
+        "substitutions": 48,
+        "deletions": 0,
+        "insertions": 6
+      }
+    }
+  },
+  "critical_content": [
+    {
+      "id": "1272-128104-0000",
+      "phrase": "Quilter",
+      "kind": "name",
+      "release_gate": true,
+      "wav": "fluent-1272-128104-0000.wav",
+      "reference_pass": true,
+      "native_pass": true
+    },
+    {
+      "id": "1272-128104-0000",
+      "phrase": "Quilter",
+      "kind": "name",
+      "release_gate": true,
+      "wav": "noisy-1272-128104-0000.wav",
+      "reference_pass": true,
+      "native_pass": true
+    },
+    {
+      "id": "1272-128104-0003",
+      "phrase": "Frederick Leighton's",
+      "kind": "name",
+      "release_gate": true,
+      "wav": "fluent-1272-128104-0003.wav",
+      "reference_pass": true,
+      "native_pass": true
+    },
+    {
+      "id": "1272-128104-0003",
+      "phrase": "Frederick Leighton's",
+      "kind": "name",
+      "release_gate": true,
+      "wav": "noisy-1272-128104-0003.wav",
+      "reference_pass": true,
+      "native_pass": true
+    },
+    {
+      "id": "1272-135031-0006",
+      "phrase": "would not go",
+      "kind": "negation",
+      "release_gate": true,
+      "wav": "fluent-1272-135031-0006.wav",
+      "reference_pass": true,
+      "native_pass": true
+    },
+    {
+      "id": "1272-135031-0006",
+      "phrase": "would not go",
+      "kind": "negation",
+      "release_gate": true,
+      "wav": "noisy-1272-135031-0006.wav",
+      "reference_pass": true,
+      "native_pass": true
+    },
+    {
+      "id": "1272-135031-0008",
+      "phrase": "Shaggy",
+      "kind": "name",
+      "release_gate": true,
+      "wav": "fluent-1272-135031-0008.wav",
+      "reference_pass": true,
+      "native_pass": true
+    },
+    {
+      "id": "1272-135031-0008",
+      "phrase": "Shaggy",
+      "kind": "name",
+      "release_gate": true,
+      "wav": "noisy-1272-135031-0008.wav",
+      "reference_pass": true,
+      "native_pass": true
+    },
+    {
+      "id": "1272-135031-0009",
+      "phrase": "doesn't work at all",
+      "kind": "negation",
+      "release_gate": true,
+      "wav": "fluent-1272-135031-0009.wav",
+      "reference_pass": true,
+      "native_pass": true
+    },
+    {
+      "id": "1272-135031-0009",
+      "phrase": "doesn't work at all",
+      "kind": "negation",
+      "release_gate": true,
+      "wav": "noisy-1272-135031-0009.wav",
+      "reference_pass": true,
+      "native_pass": true
+    },
+    {
+      "id": "1272-135031-0018",
+      "phrase": "no I'm quite sure he didn't",
+      "kind": "negation",
+      "release_gate": true,
+      "wav": "fluent-1272-135031-0018.wav",
+      "reference_pass": true,
+      "native_pass": true
+    },
+    {
+      "id": "1272-135031-0018",
+      "phrase": "no I'm quite sure he didn't",
+      "kind": "negation",
+      "release_gate": true,
+      "wav": "noisy-1272-135031-0018.wav",
+      "reference_pass": true,
+      "native_pass": true
+    },
+    {
+      "id": "1272-135031-0020",
+      "phrase": "I don't believe",
+      "kind": "negation",
+      "release_gate": true,
+      "wav": "fluent-1272-135031-0020.wav",
+      "reference_pass": true,
+      "native_pass": true
+    },
+    {
+      "id": "1272-135031-0020",
+      "phrase": "I don't believe",
+      "kind": "negation",
+      "release_gate": true,
+      "wav": "noisy-1272-135031-0020.wav",
+      "reference_pass": true,
+      "native_pass": true
+    },
+    {
+      "id": "1272-135031-0021",
+      "phrase": "I do not know",
+      "kind": "negation",
+      "release_gate": true,
+      "wav": "fluent-1272-135031-0021.wav",
+      "reference_pass": true,
+      "native_pass": true
+    },
+    {
+      "id": "1272-135031-0021",
+      "phrase": "I do not know",
+      "kind": "negation",
+      "release_gate": true,
+      "wav": "noisy-1272-135031-0021.wav",
+      "reference_pass": true,
+      "native_pass": true
+    },
+    {
+      "id": "1272-135031-0023",
+      "phrase": "no one answered",
+      "kind": "negation",
+      "release_gate": true,
+      "wav": "fluent-1272-135031-0023.wav",
+      "reference_pass": true,
+      "native_pass": true
+    },
+    {
+      "id": "1272-135031-0023",
+      "phrase": "no one answered",
+      "kind": "negation",
+      "release_gate": true,
+      "wav": "noisy-1272-135031-0023.wav",
+      "reference_pass": true,
+      "native_pass": true
+    },
+    {
+      "id": "1272-141231-0004",
+      "phrase": "one minute",
+      "kind": "numeral",
+      "release_gate": true,
+      "wav": "fluent-1272-141231-0004.wav",
+      "reference_pass": true,
+      "native_pass": true
+    },
+    {
+      "id": "1272-141231-0004",
+      "phrase": "one minute",
+      "kind": "numeral",
+      "release_gate": true,
+      "wav": "noisy-1272-141231-0004.wav",
+      "reference_pass": true,
+      "native_pass": true
+    },
+    {
+      "id": "1272-141231-0005",
+      "phrase": "a minute is not",
+      "kind": "negation",
+      "release_gate": true,
+      "wav": "fluent-1272-141231-0005.wav",
+      "reference_pass": true,
+      "native_pass": true
+    },
+    {
+      "id": "1272-141231-0005",
+      "phrase": "a minute is not",
+      "kind": "negation",
+      "release_gate": true,
+      "wav": "noisy-1272-141231-0005.wav",
+      "reference_pass": true,
+      "native_pass": true
+    },
+    {
+      "id": "1272-141231-0016",
+      "phrase": "ten seconds",
+      "kind": "numeral",
+      "release_gate": true,
+      "wav": "fluent-1272-141231-0016.wav",
+      "reference_pass": true,
+      "native_pass": true
+    },
+    {
+      "id": "1272-141231-0016",
+      "phrase": "ten seconds",
+      "kind": "numeral",
+      "release_gate": true,
+      "wav": "noisy-1272-141231-0016.wav",
+      "reference_pass": true,
+      "native_pass": true
+    },
+    {
+      "id": "1272-128104-0003",
+      "phrase": "Rocky Ithaca",
+      "kind": "name",
+      "release_gate": false,
+      "wav": "fluent-1272-128104-0003.wav",
+      "reference_pass": true,
+      "native_pass": true
+    },
+    {
+      "id": "1272-128104-0003",
+      "phrase": "Rocky Ithaca",
+      "kind": "name",
+      "release_gate": false,
+      "wav": "noisy-1272-128104-0003.wav",
+      "reference_pass": false,
+      "native_pass": false
+    },
+    {
+      "id": "1272-135031-0020",
+      "phrase": "Ann",
+      "kind": "name",
+      "release_gate": false,
+      "wav": "fluent-1272-135031-0020.wav",
+      "reference_pass": false,
+      "native_pass": false
+    },
+    {
+      "id": "1272-135031-0020",
+      "phrase": "Ann",
+      "kind": "name",
+      "release_gate": false,
+      "wav": "noisy-1272-135031-0020.wav",
+      "reference_pass": false,
+      "native_pass": false
+    },
+    {
+      "id": "1272-135031-0023",
+      "phrase": "Kaliko",
+      "kind": "name",
+      "release_gate": false,
+      "wav": "fluent-1272-135031-0023.wav",
+      "reference_pass": false,
+      "native_pass": false
+    },
+    {
+      "id": "1272-135031-0023",
+      "phrase": "Kaliko",
+      "kind": "name",
+      "release_gate": false,
+      "wav": "noisy-1272-135031-0023.wav",
+      "reference_pass": false,
+      "native_pass": false
+    },
+    {
+      "id": "1272-135031-0023",
+      "phrase": "Ruggedo",
+      "kind": "name",
+      "release_gate": false,
+      "wav": "fluent-1272-135031-0023.wav",
+      "reference_pass": false,
+      "native_pass": false
+    },
+    {
+      "id": "1272-135031-0023",
+      "phrase": "Ruggedo",
+      "kind": "name",
+      "release_gate": false,
+      "wav": "noisy-1272-135031-0023.wav",
+      "reference_pass": false,
+      "native_pass": false
+    }
+  ],
+  "experimental_resampling": true,
+  "raw_text_differences": [],
+  "limitations": [
+    {
+      "id": "1272-128104-0003",
+      "phrase": "Rocky Ithaca",
+      "kind": "name",
+      "release_gate": false,
+      "wav": "noisy-1272-128104-0003.wav",
+      "reference_pass": false,
+      "native_pass": false
+    },
+    {
+      "id": "1272-135031-0020",
+      "phrase": "Ann",
+      "kind": "name",
+      "release_gate": false,
+      "wav": "fluent-1272-135031-0020.wav",
+      "reference_pass": false,
+      "native_pass": false
+    },
+    {
+      "id": "1272-135031-0020",
+      "phrase": "Ann",
+      "kind": "name",
+      "release_gate": false,
+      "wav": "noisy-1272-135031-0020.wav",
+      "reference_pass": false,
+      "native_pass": false
+    },
+    {
+      "id": "1272-135031-0023",
+      "phrase": "Kaliko",
+      "kind": "name",
+      "release_gate": false,
+      "wav": "fluent-1272-135031-0023.wav",
+      "reference_pass": false,
+      "native_pass": false
+    },
+    {
+      "id": "1272-135031-0023",
+      "phrase": "Kaliko",
+      "kind": "name",
+      "release_gate": false,
+      "wav": "noisy-1272-135031-0023.wav",
+      "reference_pass": false,
+      "native_pass": false
+    },
+    {
+      "id": "1272-135031-0023",
+      "phrase": "Ruggedo",
+      "kind": "name",
+      "release_gate": false,
+      "wav": "fluent-1272-135031-0023.wav",
+      "reference_pass": false,
+      "native_pass": false
+    },
+    {
+      "id": "1272-135031-0023",
+      "phrase": "Ruggedo",
+      "kind": "name",
+      "release_gate": false,
+      "wav": "noisy-1272-135031-0023.wav",
+      "reference_pass": false,
+      "native_pass": false
+    }
+  ],
+  "passed": true
+}

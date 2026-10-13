@@ -1,0 +1,66 @@
+{
+  "implementation_git_sha": "8277263fe2054e79f1ffb00bdc545e1d80cb7320",
+  "checks": {
+    "default": {
+      "passed_counts": [
+        1209,
+        0,
+        1,
+        3,
+        0,
+        0,
+        18,
+        1,
+        0,
+        34,
+        0,
+        0,
+        1,
+        74
+      ],
+      "full_log_sha256": "94a64c2ecbbd519d3b1115cee642d4d077ed67c3b8c43667a3a0a4c879c8f76e"
+    },
+    "no-backend": {
+      "passed_counts": [
+        1025,
+        0,
+        1,
+        3,
+        0,
+        0,
+        18,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        66
+      ],
+      "full_log_sha256": "1f42f5d87c403afd3f0571ffa61ec2c6132066a6ace6c6a9c92a7989b532d4ab"
+    },
+    "native": {
+      "passed_counts": [
+        1026
+      ],
+      "full_log_sha256": "ea9d83f3da96bdb25a3ef4c1954972afedbf6d979813977aa28b7fb6f53b0b76"
+    },
+    "final-clippy": {
+      "full_log_sha256": "20654dafa1bf49f61889cfe491abe9a6d84dc3623cde4dca36e4dca3ee062396"
+    },
+    "intel-cross-final": {
+      "full_log_sha256": "825c85ff412dcebc9c4b9387ff7c3e1e3fd4c901a7153b12feef663dedfe243b"
+    },
+    "package-final": {
+      "full_log_sha256": "0d681a818f7a3f6829ff9ecaa3b7fcb3a243c0c3dcf606d39f76491b1d3fc02b"
+    },
+    "receipt-guard-final": {
+      "full_log_sha256": "b535b85257b1a844915aad05dfaa33480501fa9da8e5dfa63574c9c7640d6981"
+    }
+  },
+  "native_chat_gitlink": "847f447c310a3784d623a953e6f0bb07f04c0f27",
+  "format_check": "cargo fmt --package gen2 -- --check passed; excluded vendored bindings left untouched",
+  "package_check": "cargo package --locked --allow-dirty --no-verify and --list; no registry publication or package compile claim",
+  "registry_limit": "Merged native-chat path dependencies are a workspace experiment; see vendor/README.md",
+  "intel_mac_limit": "Cross-check only, not real-model Intel Mac qualification"
+}

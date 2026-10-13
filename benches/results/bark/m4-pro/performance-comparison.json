@@ -1,0 +1,90 @@
+{
+  "native_git_sha": "8277263fe2054e79f1ffb00bdc545e1d80cb7320",
+  "provider": "CPUExecutionProvider",
+  "intra_threads": 4,
+  "inter_threads": 1,
+  "python_cold_seconds": 1.0998727500009409,
+  "sweep": [
+    {
+      "seconds": 1,
+      "python_seconds": [
+        0.04683633300010115,
+        0.04607970800134353,
+        0.04593120800018369,
+        0.04707458400116593,
+        0.047303250001277775
+      ],
+      "native_median_seconds": 0.049523,
+      "native_p95_seconds": 0.0546154,
+      "python_median_seconds": 0.04683633300010115,
+      "median_native_to_python_ratio": 1.0573628810755327,
+      "native_rtf": 0.049523,
+      "passed": true
+    },
+    {
+      "seconds": 5,
+      "python_seconds": [
+        0.1789481669984525,
+        0.175980250000066,
+        0.1783335829986754,
+        0.1759634999998525,
+        0.17529712499890593
+      ],
+      "native_median_seconds": 0.181521,
+      "native_p95_seconds": 0.2301338,
+      "python_median_seconds": 0.175980250000066,
+      "median_native_to_python_ratio": 1.0314850672159626,
+      "native_rtf": 0.036304199999999995,
+      "passed": true
+    },
+    {
+      "seconds": 15,
+      "python_seconds": [
+        0.5618887500004348,
+        0.4800461670001823,
+        0.4718088749996241,
+        0.4684286659994541,
+        0.4692730829992797
+      ],
+      "native_median_seconds": 0.478612,
+      "native_p95_seconds": 0.4851028,
+      "python_median_seconds": 0.4718088749996241,
+      "median_native_to_python_ratio": 1.014419239147168,
+      "native_rtf": 0.03190746666666667,
+      "passed": true
+    },
+    {
+      "seconds": 30,
+      "python_seconds": [
+        0.9585434170003282,
+        0.9445425829999294,
+        0.9639940419983759,
+        0.9456792500004667,
+        0.9431433339996147
+      ],
+      "native_median_seconds": 1.033595,
+      "native_p95_seconds": 1.2991696,
+      "python_median_seconds": 0.9456792500004667,
+      "median_native_to_python_ratio": 1.092965717498285,
+      "native_rtf": 0.03445316666666667,
+      "passed": true
+    },
+    {
+      "seconds": 60,
+      "python_seconds": [
+        2.0885515000009036,
+        2.081556958000874,
+        2.0239102080013254,
+        2.1169844590003777,
+        2.127441708000333
+      ],
+      "native_median_seconds": 2.288765,
+      "native_p95_seconds": 2.4914476,
+      "python_median_seconds": 2.0885515000009036,
+      "median_native_to_python_ratio": 1.0958623716001306,
+      "native_rtf": 0.03814608333333334,
+      "passed": true
+    }
+  ],
+  "passed": true
+}

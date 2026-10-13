@@ -1,30 +1,32 @@
 # Bark 2.0 support: ONNX-first roadmap and verification plan
 
-Status: native CPU implementation exists; desktop release qualification is in
-progress. Main has not yet received this work. Updated: 2026-10-13 UTC.
+Status: M0–M3 implemented; M4 qualified locally on Apple M4 Pro and in Linux CPU CI.
+Merged macOS/Windows CI remains pending. The user requested publication without
+waiting for those jobs. Updated: 2026-10-13 UTC.
 Prepared: 2026-10-12. Original Gen2 baseline: `c98d99f`.
 
 ## Current qualification status
 
 The isolated `codex/bark-onnx` branch implements the dedicated speech API,
 native frontend/encoder/TDT decoder, bounded workers, shared speech/chat/Laya
-admission, WAV handling, and pinned offline provisioning. Remote-main dependency
-and ONNX text-generation changes have been merged without changing the ASR
+admission, WAV handling, and pinned offline provisioning. Remote-main dependency,
+ONNX text-generation and native DFlash2 changes have been merged without changing the ASR
 operation into generation.
 
 On the Apple M4 Pro, native text **and token IDs** match all 250 pinned
 DisfluencySpeech clips. Human-reference WER is 3.8597%, equal to the independent
-Python CPU reference. Eight frontend probes match exactly on this Mac;
+Python CPU reference. Eleven frontend probes match exactly on this Mac;
 independent fixed encoder/decoder tensors pass `atol=rtol=1e-4`. The candidate
 ONNX preprocessing graph was rejected (239/250 raw transcript matches), so the
 native implementation ports the helper's default NumPy frontend.
 
 The matched 1/5/15/30/60-second CPU sweep passed the native/Python performance
-gate, with a 5-second median of 0.184 seconds, 60-second median of 2.48 seconds,
-and sampled peak process RSS of 3.07 GB. A separate mixed run kept the real Qwen3-0.6B GGUF chat model, speech,
+gate, with a 5-second median of 0.182 seconds, 60-second median of 2.29 seconds,
+and sampled peak process RSS of 3.09 GB. A separate mixed run kept the real Qwen3-0.6B GGUF chat model, speech,
 and a synthetic Laya smoke model simultaneously resident; 100 speech requests
 were repeatable and final reservations were zero. This is not real Laya
-checkpoint quality/performance evidence.
+checkpoint quality/performance evidence. These refreshed local receipts identify
+merged implementation `8277263` and its pinned native chat dependency.
 
 The original Python ORT 1.23.2 and candidate 1.24.4 environments now match on
 25/25 pinned clips (PCM, text and token IDs). Native code uses API 24, not 1.23.2.
@@ -38,23 +40,24 @@ normalized sample fixtures and all 112 supplementary transcripts exactly on the
 reference Mac, including the original three 8-kHz punctuation differences.
 Human-quality gates pass. This is not a universal parity guarantee.
 
-M4 remains open pending the next three-platform run. Earlier Windows runs
-passed full 250-clip raw text/token parity but three 48-kHz float32 variants
-duplicated a word after scalar resampling. Earlier Linux runs had two raw
-punctuation differences on the main corpus. Stage traces located the
-first Linux drift in OpenBLAS Haswell's interleaved mel accumulation. The native
-fix reproduces all eight captured mel tensors exactly in the diagnostic loop;
-the core 16-kHz gate has not been relaxed. CI also exposed that macOS/Linux
-admission used lifetime peak RSS as current memory. Live-RSS probes now pass a
-red/green released-page regression without relaxing admission ceilings. The
-tail-adjusted run passed every real-model gate on Linux and macOS. Its Windows
-oracle selected Haswell and exposed three core transcript differences: one
-extra word and two punctuation changes. Replaying the Haswell reduction order
-reproduces all eight Windows mel tensors exactly; equal mel inputs also give
-equal logarithms. The same DSP profile now covers Windows AVX2 hosts, with
-three additional stage probes for those failing clips. All three OS gates must
-pass the updated implementation before release. Independent CI cases use fresh
-processes to isolate unrelated model loads.
+The corrected pre-merge implementation passed the three-platform CPU run
+[38343559265](https://github.com/saberra-ai/gen2/actions/runs/38343559265).
+The merged implementation's Linux job in
+[38345540390](https://github.com/saberra-ai/gen2/actions/runs/38345540390)
+also passes 250/250 raw text/token decisions, all 112 supplementary raw
+transcripts, numeric probes, ABI rejection, lifecycle and both Laya orders.
+Merged macOS and Windows jobs are still running at publication; the user
+explicitly requested pushing without waiting. Full three-platform M4 completion
+is therefore not claimed by this publication. [Receipts](../../benches/results/bark/)
+identify the exact implementation and measured configurations.
+
+Earlier CI failures were resolved by pinned SoXR/PFFFT resampling, the
+Linux/Windows AVX2 Haswell mel-reduction profile, and live rather than lifetime
+peak RSS admission probes. Eleven frontend probes now include the three
+Windows regression clips. No core raw-text/token gate or admission ceiling was
+relaxed. CPU/BLAS configurations outside the recorded profiles need separate
+qualification. Independent CI cases use fresh processes to isolate unrelated
+model loads.
 Accelerators, physical mobile, MLX, microphone capture and live caption stitching
 remain follow-ups, not completion claims for M0–M4.
 
@@ -445,16 +448,18 @@ cargo test --no-default-features --features asr-dynamic --test bark_native real_
 Also run the existing default, no-backend and Laya gates, documentation/example
 checks, and publish-shape checks when their respective files change. These
 commands are implemented and exercised locally. A skipped/ignored ordinary-test
-invocation is not a native compatibility pass. Cross-platform release gates
-and final provenance-rich checked-in receipts remain required.
+invocation is not a native compatibility pass. Checked-in receipts qualify only
+the completed configurations they identify; pending jobs are not passes.
+Package-shape checks are not registry-publication qualification of the merged
+native-chat path dependencies; see [vendor notes](../../vendor/README.md).
 
-## Remaining release work
+## Remaining qualification work
 
-Complete the updated three-OS real-model CPU CI gates after the Windows Haswell
-profile fix, capture receipts against the final merged implementation, complete
-review and publish-shape checks, then non-force push the verified commit to remote main.
-Keep unqualified targets and live-caption behavior explicit in the final release
-summary.
+The user waived waiting for the merged macOS/Windows CPU CI jobs before the
+non-force push to main. Their final outcomes and corresponding merged-code
+receipts are not included in this publication. Full M4 qualification still
+requires those completed gates. M5/M6 and live-caption integration remain
+separately scoped follow-ups.
 
 ## Sources
 

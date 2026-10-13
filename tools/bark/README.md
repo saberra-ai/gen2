@@ -159,6 +159,9 @@ It passed features at `atol=rtol=1e-4`, independent encoder/decoder tensors, and
 exact text/token decisions on all 250 clips on the reference Mac. WER was
 3.8597%, equal to matched Python, not a reproduction of the model card's MLX
 3.79% benchmark. [Receipts](../../benches/results/bark/) identify measured runs.
+The merged implementation is qualified on the local M4 Pro and Linux CPU CI.
+Merged macOS/Windows CI was still pending when the user requested publication;
+those targets are not claimed as completed merged-code qualification.
 
 Supplementary fixtures use 18 preselected LibriSpeech clips, quiet and with
 deterministic 20 dB white noise, names/numerals/negation labels, 72 real-speech

@@ -1,0 +1,161 @@
+{
+  "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+  "numpy_runtime": "WARNING: `threadpoolctl` not found in system! Install it by `pip install threadpoolctl`. Once installed, try `np.show_runtime` again for more detailed build information\n[{'numpy_version': '2.5.4',\n  'python': '3.12.15 (main, Oct  1 2026, 02:35:59) [GCC 13.3.0]',\n  'uname': uname_result(system='Linux', node='runnervmmprz5', release='6.17.0-1022-azure', version='#22-Ubuntu SMP Mon Jul 27 17:24:03 UTC 2026', machine='x86_64')},\n {'simd_extensions': {'baseline': ['X86_V2'],\n                      'found': ['X86_V3'],\n                      'not_found': ['X86_V4', 'AVX512_ICL', 'AVX512_SPR']}},\n {'ignore_floating_point_errors_in_matmul': False}]\n",
+  "numpy_build": {
+    "Compilers": {
+      "c": {
+        "name": "gcc",
+        "linker": "ld.bfd",
+        "version": "14.2.1",
+        "commands": "cc"
+      },
+      "cython": {
+        "name": "cython",
+        "linker": "cython",
+        "version": "3.3.0",
+        "commands": "cython"
+      },
+      "c++": {
+        "name": "gcc",
+        "linker": "ld.bfd",
+        "version": "14.2.1",
+        "commands": "c++"
+      }
+    },
+    "Machine Information": {
+      "host": {
+        "cpu": "x86_64",
+        "family": "x86_64",
+        "endian": "little",
+        "system": "linux"
+      },
+      "build": {
+        "cpu": "x86_64",
+        "family": "x86_64",
+        "endian": "little",
+        "system": "linux"
+      }
+    },
+    "Build Dependencies": {
+      "blas": {
+        "name": "scipy-openblas",
+        "found": true,
+        "version": "0.3.34.106.0",
+        "detection method": "pkgconfig",
+        "include directory": "/opt/_internal/cpython-3.12.13/lib/python3.12/site-packages/scipy_openblas64/include",
+        "lib directory": "/opt/_internal/cpython-3.12.13/lib/python3.12/site-packages/scipy_openblas64/lib",
+        "openblas configuration": "OpenBLAS 0.3.34.106.0  USE64BITINT DYNAMIC_ARCH NO_AFFINITY SkylakeX MAX_THREADS=64",
+        "pc file directory": "/project/.openblas"
+      },
+      "lapack": {
+        "name": "scipy-openblas",
+        "found": true,
+        "version": "0.3.34.106.0",
+        "detection method": "pkgconfig",
+        "include directory": "/opt/_internal/cpython-3.12.13/lib/python3.12/site-packages/scipy_openblas64/include",
+        "lib directory": "/opt/_internal/cpython-3.12.13/lib/python3.12/site-packages/scipy_openblas64/lib",
+        "openblas configuration": "OpenBLAS 0.3.34.106.0  USE64BITINT DYNAMIC_ARCH NO_AFFINITY SkylakeX MAX_THREADS=64",
+        "pc file directory": "/project/.openblas"
+      }
+    },
+    "Python Information": {
+      "path": "/tmp/build-env-ptu49_tp/bin/python",
+      "version": "3.12"
+    },
+    "SIMD Extensions": {
+      "baseline": [
+        "X86_V2"
+      ],
+      "found": [
+        "X86_V3"
+      ],
+      "not found": [
+        "X86_V4",
+        "AVX512_ICL",
+        "AVX512_SPR"
+      ]
+    }
+  },
+  "blas_runtime": [
+    {
+      "library": "libscipy_openblas64_-f48b354e.so",
+      "symbol": "scipy_openblas_get_corename64_",
+      "value": "Haswell"
+    },
+    {
+      "library": "libscipy_openblas64_-f48b354e.so",
+      "symbol": "scipy_openblas_get_config64_",
+      "value": "OpenBLAS 0.3.34.106.0  USE64BITINT DYNAMIC_ARCH NO_AFFINITY Haswell MAX_THREADS=64"
+    }
+  ],
+  "cpu_features": {
+    "MMX": true,
+    "SSE": true,
+    "SSE2": true,
+    "SSE3": true,
+    "SSSE3": true,
+    "SSE41": true,
+    "POPCNT": true,
+    "SSE42": true,
+    "X86_V2": true,
+    "AVX": true,
+    "F16C": true,
+    "XOP": false,
+    "FMA4": false,
+    "FMA3": true,
+    "AVX2": true,
+    "LAHF": true,
+    "CX16": true,
+    "MOVBE": true,
+    "BMI": true,
+    "BMI2": true,
+    "LZCNT": true,
+    "GFNI": false,
+    "VPCLMULQDQ": true,
+    "VAES": true,
+    "X86_V3": true,
+    "AVX512F": false,
+    "AVX512CD": false,
+    "AVX512ER": false,
+    "AVX512PF": false,
+    "AVX5124FMAPS": false,
+    "AVX5124VNNIW": false,
+    "AVX512VPOPCNTDQ": false,
+    "AVX512VL": false,
+    "AVX512BW": false,
+    "AVX512DQ": false,
+    "AVX512VNNI": false,
+    "AVX512IFMA": false,
+    "AVX512VBMI": false,
+    "AVX512VBMI2": false,
+    "AVX512BITALG": false,
+    "AVX512FP16": false,
+    "AVX512BF16": false,
+    "AVX512_KNL": false,
+    "AVX512_KNM": false,
+    "AVX512_SKX": false,
+    "X86_V4": false,
+    "AVX512_CLX": false,
+    "AVX512_CNL": false,
+    "AVX512_ICL": false,
+    "AVX512_SPR": false,
+    "VSX": false,
+    "VSX2": false,
+    "VSX3": false,
+    "VSX4": false,
+    "VX": false,
+    "VXE": false,
+    "VXE2": false,
+    "NEON": false,
+    "NEON_FP16": false,
+    "NEON_VFPV4": false,
+    "ASIMD": false,
+    "FPHP": false,
+    "ASIMDHP": false,
+    "ASIMDDP": false,
+    "ASIMDFHM": false,
+    "SVE": false,
+    "RVV": false,
+    "LSX": false
+  }
+}
