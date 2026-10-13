@@ -11,10 +11,11 @@ For non-generative choice, score and yes/no decisions, the experimental
 and supply an ONNX Runtime 1.24 library, or `backend-laya-onnx` for app-linked
 builds. [Setup, current evidence and platform gates](tools/laya/README.md).
 
-English transcription of the pinned Conway Research Bark 2.0 checkpoint lives
-in `gen2::speech`, separate from generation. Enable `asr-dynamic` for native
-ONNX CPU inference; WAV resampling is an opt-in feature. [Speech setup, limits,
-verification and example](tools/bark/README.md).
+Local transcription lives in `gen2::speech`, separate from generation. Bark
+provides cleaned English transcripts; Whistle supports seven languages. Both
+use the same transcriber/request interface and `asr-dynamic` ONNX CPU feature;
+WAV resampling is opt-in. [Bark setup](tools/bark/README.md),
+[Whistle setup and qualification](tools/whistle/README.md).
 
 ```toml
 [dependencies]

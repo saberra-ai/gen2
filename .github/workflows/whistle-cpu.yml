@@ -1,0 +1,71 @@
+name: Whistle CPU qualification
+on:
+  workflow_dispatch:
+  push:
+    branches: [main, codex/whistle-onnx]
+    paths: ['src/speech/**', 'src/onnx_runtime.rs', 'src/api/runtime.rs', 'Cargo.*', 'tools/whistle/**', 'tests/whistle*', 'examples/speech_benchmark.rs', '.github/workflows/whistle-cpu.yml']
+  pull_request:
+    paths: ['src/speech/**', 'src/onnx_runtime.rs', 'src/api/runtime.rs', 'Cargo.*', 'tools/whistle/**', 'tests/whistle*', '.github/workflows/whistle-cpu.yml']
+jobs:
+  real-model:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: tools/whistle/reference/package-lock.json
+      - uses: Swatinem/rust-cache@v2
+      - uses: actions/cache@v4
+        with:
+          path: |
+            target/whistle/model
+            target/whistle/corpus
+          key: whistle-14fc92c-fleurs-70bb2e8-20-per-language
+      - run: python -m pip install --require-hashes -r tools/bark/reference.lock
+      - run: npm ci --prefix tools/whistle/reference --ignore-scripts
+      - run: python tools/whistle/provision_reference.py
+      - run: python tools/whistle/fetch_corpus.py
+      - run: node tools/whistle/reference/qualify.mjs target/whistle/model target/whistle/corpus target/whistle/oracle
+      - name: Explicit offline inputs and runtime
+        shell: bash
+        run: |
+          python - <<'PY'
+          import os, pathlib, onnxruntime
+          root = pathlib.Path(onnxruntime.__file__).parent / 'capi'
+          libraries = list(root.glob('onnxruntime.dll')) + list(root.glob('libonnxruntime.so*')) + list(root.glob('libonnxruntime*.dylib'))
+          assert libraries
+          env = {'GEN2_ORT_LIBRARY':libraries[0].resolve(), 'GEN2_WHISTLE_BUNDLE':pathlib.Path('target/whistle/model').resolve(),
+                 'GEN2_WHISTLE_CORPUS':pathlib.Path('target/whistle/corpus').resolve(),
+                 'GEN2_WHISTLE_REFERENCE':pathlib.Path('target/whistle/oracle/reference.json').resolve(),
+                 'GEN2_WHISTLE_RESULTS':pathlib.Path('target/whistle/native.json').resolve()}
+          with open(os.environ['GITHUB_ENV'], 'a') as out:
+              for key, value in env.items(): out.write(f'{key}={value}\n')
+          PY
+      - run: cargo clippy --locked --no-default-features --features asr-dynamic,laya-dynamic,hf --all-targets -- -D warnings
+      - run: cargo test --locked --release --no-default-features --features asr-dynamic,laya-dynamic --lib --test whistle_contract
+      - run: cargo test --locked --release --no-default-features --features asr-dynamic,laya-dynamic --test whistle_native real_whistle_matches_reference_and_reports_language_and_completion -- --ignored --exact
+      - run: cargo test --locked --release --no-default-features --features asr-dynamic,laya-dynamic --test whistle_native real_whistle_integrity_offline_cache_and_lifecycle -- --ignored --exact
+      - run: python tools/whistle/report_quality.py --reference target/whistle/oracle/reference.json --native target/whistle/native.json --output target/whistle/quality.json
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: whistle-cpu-${{ matrix.os }}
+          path: |
+            target/whistle/native.json
+            target/whistle/quality.json
+            target/whistle/oracle/reference.json
+            target/whistle/oracle/*.f32
+            target/whistle/corpus/corpus.json
+            tools/whistle/model-lock.json

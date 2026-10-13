@@ -202,6 +202,15 @@ impl Runtime {
         path: impl AsRef<Path>,
         options: crate::speech::LoadOptions,
     ) -> Result<crate::speech::Transcriber> {
+        self.load_speech(crate::speech::SpeechSource::bark(path), options)
+    }
+
+    /// Load an explicitly selected, pinned speech adapter on a bounded CPU worker.
+    pub fn load_speech(
+        &self,
+        source: crate::speech::SpeechSource,
+        options: crate::speech::LoadOptions,
+    ) -> Result<crate::speech::Transcriber> {
         use crate::speech::SpeechError;
         if !cfg!(feature = "backend-asr-onnx") {
             return Err(SpeechError::BackendUnavailable(
@@ -209,8 +218,13 @@ impl Runtime {
             )
             .into());
         }
-        options.validate()?;
-        let bundle = crate::speech::SpeechBundle::open(path)?;
+        let bundle = match source {
+            crate::speech::SpeechSource::BarkOnnx(path) => crate::speech::SpeechBundle::open(path)?,
+            crate::speech::SpeechSource::WhistleOnnx(path) => {
+                crate::speech::WhistleBundle::open(path)?.0
+            }
+        };
+        options.validate_for(bundle.model())?;
         let mb = options.reservation_mb;
         let reservation = {
             let _admission = self

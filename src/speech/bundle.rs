@@ -28,6 +28,7 @@ struct FileDigest {
 #[derive(Clone, Debug)]
 pub struct SpeechBundle {
     root: PathBuf,
+    model: super::SpeechModel,
 }
 impl SpeechBundle {
     pub fn open(root: impl AsRef<Path>) -> Result<Self> {
@@ -79,15 +80,33 @@ impl SpeechBundle {
                 return Err(invalid(format!("{name}: checksum mismatch")));
             }
         }
-        Ok(Self { root })
+        Ok(Self {
+            root,
+            model: super::SpeechModel::Bark,
+        })
     }
     pub fn directory(&self) -> &Path {
         &self.root
     }
     pub fn revision(&self) -> &'static str {
-        MODEL_REVISION
+        match self.model {
+            super::SpeechModel::Bark => MODEL_REVISION,
+            super::SpeechModel::Whistle => super::WHISTLE_REVISION,
+        }
     }
     pub fn manifest_sha256(&self) -> &'static str {
-        MANIFEST_SHA256
+        match self.model {
+            super::SpeechModel::Bark => MANIFEST_SHA256,
+            super::SpeechModel::Whistle => super::whistle_bundle::LOCK_SHA256,
+        }
+    }
+    pub fn model(&self) -> super::SpeechModel {
+        self.model
+    }
+    pub(crate) fn whistle(root: PathBuf) -> Self {
+        Self {
+            root,
+            model: super::SpeechModel::Whistle,
+        }
     }
 }

@@ -163,6 +163,14 @@ required-features = ["asr-dynamic"]
 name = "bark_benchmark"
 required-features = ["asr-dynamic"]
 
+[[example]]
+name = "whistle_transcribe"
+required-features = ["asr-dynamic"]
+
+[[example]]
+name = "speech_benchmark"
+required-features = ["asr-dynamic"]
+
 [dev-dependencies]
 serde_json = "1"
 tempfile = "3.27.0"
@@ -247,6 +255,7 @@ backend-laya-onnx = ["dep:ort"]
 onnx-dynamic = ["ort/load-dynamic", "dep:libloading"]
 laya-dynamic = ["backend-laya-onnx", "onnx-dynamic"]
 # Native Bark speech recognition; independent of generation and Laya.
+# Whistle uses the same ORT/DSP dependency feature through a separate adapter.
 backend-asr-onnx = ["dep:ort", "dep:rustfft", "dep:hound"]
 asr-resample-soxr = ["backend-asr-onnx", "dep:cmake"]
 asr-dynamic = ["backend-asr-onnx", "onnx-dynamic"]

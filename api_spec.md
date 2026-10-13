@@ -2095,12 +2095,16 @@ inference. The current qualification evidence and commands are maintained in
 [the Laya integration guide](tools/laya/README.md). Mobile compilation and
 physical-device execution remain distinct qualification gates.
 
-## 33. Local English transcription (ONNX CPU)
+## 33. Local transcription (ONNX CPU)
 
 Non-generative speech recognition lives in `gen2::speech`, separate from chat
 messages, generation tokens and typed decisions. `Runtime::load_transcriber`
 loads the complete integrity-checked, revision-pinned Conway Research Bark 2.0
-ONNX bundle. Arbitrary speech checkpoints and streaming encoders are not claimed.
+ONNX bundle. `Runtime::load_speech(SpeechSource, LoadOptions)` selects that same
+Bark adapter or the pinned `mrfakename/whistle-ONNX` FP32 adapter explicitly.
+Both return the same `Transcriber`. Arbitrary speech checkpoints and streaming
+encoders are not claimed. Existing Bark entrypoints and public options/results
+retain their field layouts.
 
 `Audio::mono_16khz(Vec<f32>)` validates finite mono PCM between 20 ms and 60 s.
 With the native backend, `Audio::from_wav` decodes bounded PCM16/float32 WAV and
@@ -2109,17 +2113,41 @@ With the native backend, `Audio::from_wav` decodes bounded PCM16/float32 WAV and
 LGPL native dependency. Unsupported audio fails without silent truncation.
 Capture, utterance detection and normalization outside this envelope belong to
 the host. Capabilities report the actually compiled input formats/rates, English,
-duration envelope, cleanup, CPU provider and `streaming = false`.
+duration envelope, cleanup, CPU provider and `streaming = false`. Whistle
+requires at least 40 ms, reports `language = "mul"` and `cleanup = false`.
+`profile()` lists supported languages and request controls; automatic language
+ID and text-token limits are currently Whistle capabilities. Shared decoded
+audio can still be rejected by an adapter's stricter duration bounds.
 
 `Transcriber` is cloneable and owns one bounded worker. `transcribe(audio,
 TranscribeOptions)` returns text, duration, token decisions, provenance and
 queue/frontend/encoder/decoder/execution timings. Decoder state resets per
 request. Text is the model's cleaned output with reference whitespace handling
 and final trim, without a second cleanup model or extra rewriting. No confidence
-or word timestamps are exposed. Cleanup can omit meaningful words.
+or word timestamps are exposed. Cleanup can omit meaningful words. Whistle
+performs ordinary ASR with its own frontend, tokenizer, engram lookup and
+autoregressive decoder; it does not inherit Bark's cleanup promise.
+
+`transcribe_request(TranscriptionRequest::new(audio))` is the shared detailed
+interface for either model. Builder controls include `language(SpeechLanguage)`,
+`max_tokens(usize)`, `allow_partial(bool)` and `options(TranscribeOptions)`.
+Unsupported controls fail with `speech_invalid_request`. Bark accepts English
+or no explicit language and does not accept text-token limits. Whistle accepts
+English/German/French/Spanish/Italian/Dutch/Polish, selects a language when none
+is supplied, and permits limits of 1–1024 text tokens. Its default duration-based
+limit matches the pinned oracle and is capped at 320.
+
+`DetailedTranscription` contains the existing `Transcription`, selected language,
+independent detected language (absent for Bark), and completion status.
+Without EOS, a token limit yields `speech_token_limit` in ordinary calls;
+opt-in detailed partial output is labeled `Completion::TokenLimit`. Partial text
+is never presented as a complete successful transcript. A forced language does
+not overwrite the independent language-ID result. Neither call exposes neural
+graph/cache/engram internals or requires a model-specific transcription method.
 
 Load options configure host native-library path, 1–64 queue slots, 1–16 intra-op
-threads and a reservation of at least 4096 MiB. Admission and runtime statistics
+threads and adapter-specific reservations (Bark at least 4096 MiB, Whistle at
+least 2048 MiB; existing load defaults remain 4096 MiB). Admission and runtime statistics
 include speech alongside decisions and chat. Workers are not silently evicted;
 the caller uses `unload` to stop admission or `shutdown` to wait for native
 session release. Dropping the final handle stops the worker. Reservations remain
@@ -2135,7 +2163,9 @@ again and cannot inherit a previous utterance's recurrent state.
 `asr-dynamic` uses the same process-global host-library policy as `laya-dynamic`.
 `backend-asr-onnx` supports app linkage. CPU is explicit; no accelerator fallback
 is hidden. `speech::download_bark` uses `hf` only for an uncached pinned package;
-validated warm caches and all local inference work offline. Atomic publication
+`speech::download_whistle` provisions its complete pinned FP32 package,
+including `whistle.pack` host data. Validated warm caches and all local inference
+work offline. Atomic publication
 follows complete hash verification, with corrupt entries preserved for recovery.
 See [setup and verification](tools/bark/README.md) for supported targets, licenses,
 quality limits and reproducible gates. Mobile/accelerators/MLX remain follow-ups.
