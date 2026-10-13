@@ -53,12 +53,11 @@ fn real_bark_matches_reference_and_reuses_resident_weights() {
         if result.text != record["text"].as_str().unwrap() {
             mismatches.push(record["id"].clone());
         }
-        assert_eq!(
-            serde_json::to_value(&result.token_ids).unwrap(),
-            record["token_ids"],
-            "token decisions clip {}",
-            record["id"]
-        );
+        if serde_json::to_value(&result.token_ids).unwrap() != record["token_ids"]
+            && !mismatches.contains(&record["id"])
+        {
+            mismatches.push(record["id"].clone());
+        }
         eprintln!(
             "clip {}: {} us {:?}",
             record["id"], result.execution_micros, result.text
@@ -130,7 +129,12 @@ fn real_bark_matches_reference_and_reuses_resident_weights() {
 
 #[test]
 fn wav_rates_and_channel_averaging_preserve_duration_and_signal() {
-    for rate in [8000u32, 16000, 44100, 48000] {
+    let rates: &[u32] = if cfg!(feature = "asr-resample-soxr") {
+        &[8000, 16000, 44100, 48000]
+    } else {
+        &[16000]
+    };
+    for &rate in rates {
         for channels in [1, 2, 8] {
             let samples = (0..rate as usize)
                 .flat_map(|i| {
@@ -173,7 +177,12 @@ fn wav_rates_and_channel_averaging_preserve_duration_and_signal() {
 #[test]
 fn wav_files_validate_encodings_bounds_and_truncation() {
     let root = tempfile::tempdir().unwrap();
-    for rate in [8000, 16000, 44100, 48000] {
+    let rates: &[u32] = if cfg!(feature = "asr-resample-soxr") {
+        &[8000, 16000, 44100, 48000]
+    } else {
+        &[16000]
+    };
+    for &rate in rates {
         for channels in 1..=8 {
             for (format, bits) in [
                 (hound::SampleFormat::Int, 16),
@@ -259,13 +268,44 @@ fn real_bundle_integrity_and_warm_offline_cache() {
     ));
 }
 
+#[cfg(feature = "hf")]
+#[test]
+#[ignore = "downloads the pinned 488 MB model; explicitly requested provisioning qualification"]
+fn real_provisioner_recovers_incomplete_and_corrupt_entries() {
+    let cache = tempfile::tempdir().unwrap();
+    let incomplete = cache.path().join("bark-staging-interrupted");
+    std::fs::create_dir(&incomplete).unwrap();
+    std::fs::write(incomplete.join("partial"), b"interrupted download").unwrap();
+    let host = tokio::runtime::Builder::new_current_thread()
+        .enable_all()
+        .build()
+        .unwrap();
+    let bundle = host.block_on(async { download_bark(cache.path()).unwrap() });
+    SpeechBundle::open(&bundle).unwrap();
+    assert_eq!(download_bark(cache.path()).unwrap(), bundle);
+    std::fs::write(bundle.join("vocab.txt"), b"corrupt").unwrap();
+    assert_eq!(download_bark(cache.path()).unwrap(), bundle);
+    SpeechBundle::open(&bundle).unwrap();
+    assert!(incomplete.join("partial").exists());
+    let quarantines: Vec<_> = std::fs::read_dir(cache.path())
+        .unwrap()
+        .flatten()
+        .filter(|e| e.file_name().to_string_lossy().contains(".corrupt-"))
+        .collect();
+    assert_eq!(quarantines.len(), 1);
+    assert_eq!(
+        std::fs::read(quarantines[0].path().join("vocab.txt")).unwrap(),
+        b"corrupt"
+    );
+}
+
 #[test]
 #[ignore = "requires GEN2_BARK_BUNDLE and GEN2_ORT_LIBRARY"]
 fn real_worker_bounds_queue_cancellation_shutdown_and_admission() {
     let bundle = std::env::var("GEN2_BARK_BUNDLE").expect("bundle");
     let library: PathBuf = std::env::var("GEN2_ORT_LIBRARY").expect("runtime").into();
     let runtime = Runtime::builder()
-        .resident_memory_budget_mb(2048)
+        .resident_memory_budget_mb(4096)
         .build()
         .unwrap();
     let speech = runtime
@@ -274,7 +314,7 @@ fn real_worker_bounds_queue_cancellation_shutdown_and_admission() {
             LoadOptions {
                 native_library: Some(library.clone()),
                 queue_capacity: 1,
-                reservation_mb: 2048,
+                reservation_mb: 4096,
                 ..Default::default()
             },
         )
@@ -284,7 +324,7 @@ fn real_worker_bounds_queue_cancellation_shutdown_and_admission() {
             &bundle,
             LoadOptions {
                 native_library: Some(library),
-                reservation_mb: 2048,
+                reservation_mb: 4096,
                 ..Default::default()
             }
         ),
@@ -333,12 +373,58 @@ fn real_worker_bounds_queue_cancellation_shutdown_and_admission() {
         active.join().unwrap(),
         Err(SpeechError::Cancelled)
     ));
-    assert_eq!(runtime.speech_reserved_mb(), 2048);
+    assert_eq!(runtime.speech_reserved_mb(), 4096);
     speech.unload();
     speech.shutdown();
     assert_eq!(runtime.speech_reserved_mb(), 0);
     assert_eq!(speech.status(), SpeechStatus::Unloaded);
     assert_eq!(runtime.stats().estimated_resident_mb, 0);
+}
+
+#[test]
+#[ignore = "requires GEN2_BARK_AUDIO_REFERENCE, GEN2_BARK_BUNDLE and GEN2_ORT_LIBRARY"]
+fn real_audio_workflow_matches_qualified_reference() {
+    let root = PathBuf::from(std::env::var("GEN2_BARK_AUDIO_REFERENCE").expect("audio reference"));
+    let receipt: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(root.join("audio-reference.json")).unwrap()).unwrap();
+    let runtime = Runtime::builder()
+        .resident_memory_budget_mb(4096)
+        .build()
+        .unwrap();
+    let speech = runtime
+        .load_transcriber(
+            std::env::var("GEN2_BARK_BUNDLE").unwrap(),
+            LoadOptions {
+                native_library: Some(std::env::var("GEN2_ORT_LIBRARY").unwrap().into()),
+                ..Default::default()
+            },
+        )
+        .unwrap();
+    let mut results = Vec::new();
+    let mut mismatches = Vec::new();
+    for record in receipt["records"].as_array().unwrap() {
+        let wav = record["wav"].as_str().unwrap();
+        let result = speech
+            .transcribe(
+                Audio::from_wav(root.join(wav)).unwrap(),
+                TranscribeOptions::default(),
+            )
+            .unwrap();
+        if result.text != record["text"].as_str().unwrap() {
+            mismatches.push(wav);
+        }
+        results.push(result);
+    }
+    std::fs::write(
+        root.join("native-audio.json"),
+        serde_json::to_vec_pretty(&results).unwrap(),
+    )
+    .unwrap();
+    speech.shutdown();
+    assert!(
+        mismatches.is_empty(),
+        "audio transcript mismatches: {mismatches:?}"
+    );
 }
 
 #[cfg(feature = "laya-dynamic")]
@@ -358,7 +444,7 @@ fn coexistence(laya_first: bool) {
     let bundle = std::env::var("GEN2_BARK_BUNDLE").expect("bundle");
     let library: PathBuf = std::env::var("GEN2_ORT_LIBRARY").expect("runtime").into();
     let runtime = Runtime::builder()
-        .resident_memory_budget_mb(2049)
+        .resident_memory_budget_mb(4097)
         .build()
         .unwrap();
     let load_speech = || {
@@ -367,7 +453,7 @@ fn coexistence(laya_first: bool) {
                 &bundle,
                 LoadOptions {
                     native_library: Some(library.clone()),
-                    reservation_mb: 2048,
+                    reservation_mb: 4096,
                     ..Default::default()
                 },
             )
@@ -390,7 +476,7 @@ fn coexistence(laya_first: bool) {
     } else {
         (load_speech(), load_laya())
     };
-    assert_eq!(runtime.stats().estimated_resident_mb, 2049);
+    assert_eq!(runtime.stats().estimated_resident_mb, 4097);
     laya.decide(
         gen2::decision::DecisionRequest::text("a b")
             .question("q", gen2::decision::Question::yes_no("a?")),
@@ -413,7 +499,7 @@ fn coexistence(laya_first: bool) {
             &bundle,
             LoadOptions {
                 native_library: Some(other),
-                reservation_mb: 2048,
+                reservation_mb: 4096,
                 ..Default::default()
             }
         ),

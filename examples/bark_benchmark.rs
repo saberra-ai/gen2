@@ -1,0 +1,93 @@
+//! Controlled warm duration sweep and a 100-request memory/state soak.
+use gen2::{
+    Runtime,
+    speech::{Audio, LoadOptions, TranscribeOptions},
+};
+use std::{
+    sync::{
+        Arc,
+        atomic::{AtomicBool, AtomicU64, Ordering},
+    },
+    time::{Duration, Instant},
+};
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let args: Vec<_> = std::env::args().skip(1).collect();
+    if args.len() != 3 {
+        return Err("usage: bark_benchmark BUNDLE BASE_WAV OUTPUT_JSON".into());
+    }
+    let library = std::env::var("GEN2_ORT_LIBRARY")?;
+    let pid = sysinfo::get_current_pid()?;
+    let memory = || {
+        let mut s = sysinfo::System::new();
+        s.refresh_processes(sysinfo::ProcessesToUpdate::Some(&[pid]), true);
+        s.process(pid).map_or(0, |p| p.memory())
+    };
+    let baseline = memory();
+    let peak = Arc::new(AtomicU64::new(baseline));
+    let stop = Arc::new(AtomicBool::new(false));
+    let sampler_peak = peak.clone();
+    let sampler_stop = stop.clone();
+    let sampler = std::thread::spawn(move || {
+        let mut system = sysinfo::System::new();
+        while !sampler_stop.load(Ordering::Acquire) {
+            system.refresh_processes(sysinfo::ProcessesToUpdate::Some(&[pid]), true);
+            if let Some(p) = system.process(pid) {
+                sampler_peak.fetch_max(p.memory(), Ordering::Relaxed);
+            }
+            std::thread::sleep(Duration::from_millis(20));
+        }
+    });
+    let runtime = Runtime::builder().resident_memory_budget_mb(4096).build()?;
+    let started = Instant::now();
+    let speech = runtime.load_transcriber(
+        &args[0],
+        LoadOptions {
+            native_library: Some(library.into()),
+            ..Default::default()
+        },
+    )?;
+    let cold_load_micros = started.elapsed().as_micros();
+    let base = Audio::from_wav(&args[1])?;
+    let mut sweep = Vec::new();
+    for seconds in [1, 5, 15, 30, 60] {
+        let wave: Vec<f32> = base
+            .samples()
+            .iter()
+            .copied()
+            .cycle()
+            .take(seconds * 16000)
+            .collect();
+        let audio = Audio::mono_16khz(wave)?;
+        let expected = speech.transcribe(audio.clone(), TranscribeOptions::default())?;
+        let mut samples = Vec::new();
+        for _ in 0..5 {
+            let started = Instant::now();
+            let result = speech.transcribe(audio.clone(), TranscribeOptions::default())?;
+            assert_eq!(
+                result.token_ids, expected.token_ids,
+                "duration state contamination"
+            );
+            samples.push(serde_json::json!({"wall_micros":started.elapsed().as_micros(),"frontend_micros":result.frontend_micros,"encoder_micros":result.encoder_micros,"decoder_micros":result.decoder_micros,"queue_micros":result.queue_micros}));
+        }
+        sweep.push(serde_json::json!({"seconds":seconds,"text":expected.text,"token_ids":expected.token_ids,"samples":samples}));
+    }
+    let expected = speech.transcribe(base.clone(), TranscribeOptions::default())?;
+    let soak_start = memory();
+    let mut soak_memory = Vec::new();
+    for _ in 0..100 {
+        let result = speech.transcribe(base.clone(), TranscribeOptions::default())?;
+        assert_eq!(
+            result.token_ids, expected.token_ids,
+            "soak state contamination"
+        );
+        soak_memory.push(memory());
+    }
+    let before_shutdown = memory();
+    speech.shutdown();
+    assert_eq!(runtime.speech_reserved_mb(), 0);
+    stop.store(true, Ordering::Release);
+    sampler.join().unwrap();
+    let receipt = serde_json::json!({"git_sha":String::from_utf8(std::process::Command::new("git").args(["rev-parse","HEAD"]).output()?.stdout)?.trim(),"cpu":sysinfo::System::new_all().cpus().first().map(|c|c.brand()),"cold_load_micros":cold_load_micros,"process_baseline_bytes":baseline,"sampled_peak_rss_bytes":peak.load(Ordering::Relaxed),"soak_start_bytes":soak_start,"soak_memory_bytes":soak_memory,"before_shutdown_bytes":before_shutdown,"after_shutdown_bytes":memory(),"provider":"CPUExecutionProvider","intra_threads":4,"inter_threads":1,"model_revision":gen2::speech::MODEL_REVISION,"sweep":sweep});
+    std::fs::write(&args[2], serde_json::to_vec_pretty(&receipt)?)?;
+    Ok(())
+}

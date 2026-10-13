@@ -56,14 +56,10 @@ impl Audio {
         Self::from_interleaved(samples, spec.sample_rate, spec.channels as usize)
     }
 
-    /// Normalize interleaved PCM using arithmetic downmixing and a native sinc
-    /// resampler. The sample-rate envelope is deliberately explicit.
+    /// Normalize interleaved PCM using arithmetic downmixing. Rates other than
+    /// 16 kHz require the opt-in `asr-resample-soxr` feature (libsoxr HQ).
     #[cfg(feature = "backend-asr-onnx")]
     pub fn from_interleaved(samples: Vec<f32>, rate: u32, channels: usize) -> Result<Self> {
-        use rubato::{
-            Resampler, SincFixedIn, SincInterpolationParameters, SincInterpolationType,
-            WindowFunction,
-        };
         if channels == 0
             || !samples.len().is_multiple_of(channels)
             || samples.iter().any(|s| !s.is_finite())
@@ -81,41 +77,17 @@ impl Audio {
         if rate == 16000 {
             return Self::mono_16khz(mono);
         }
-        let mut resampler = SincFixedIn::<f32>::new(
-            16000. / rate as f64,
-            1.,
-            SincInterpolationParameters {
-                sinc_len: 512,
-                f_cutoff: 0.95,
-                interpolation: SincInterpolationType::Cubic,
-                oversampling_factor: 256,
-                window: WindowFunction::BlackmanHarris2,
-            },
-            1024,
-            1,
-        )
-        .map_err(|e| SpeechError::InvalidAudio(e.to_string()))?;
-        let delay = resampler.output_delay();
-        let expected = (frames * 16000 + rate as usize / 2) / rate as usize;
-        let mut output = Vec::with_capacity(expected + delay + 2048);
-        for chunk in mono.chunks(1024) {
-            let block = resampler
-                .process_partial(Some(&[chunk]), None)
-                .map_err(|e| SpeechError::InvalidAudio(e.to_string()))?;
-            output.extend_from_slice(&block[0]);
-        }
-        while output.len() < expected + delay {
-            let block = resampler
-                .process_partial::<&[f32]>(None, None)
-                .map_err(|e| SpeechError::InvalidAudio(e.to_string()))?;
-            if block[0].is_empty() {
-                return Err(SpeechError::InvalidAudio(
-                    "resampler made no progress".into(),
-                ));
+        #[cfg(feature = "asr-resample-soxr")]
+        {
+            if mono.iter().any(|s| !s.is_finite()) {
+                return Err(SpeechError::InvalidAudio("downmix overflow".into()));
             }
-            output.extend_from_slice(&block[0]);
+            Self::mono_16khz(super::resample::mono(&mono, rate)?)
         }
-        Self::mono_16khz(output[delay..delay + expected].to_vec())
+        #[cfg(not(feature = "asr-resample-soxr"))]
+        {
+            Err(SpeechError::InvalidAudio("enable asr-resample-soxr for 8/44.1/48 kHz PCM, or normalize to 16 kHz in the host".into()))
+        }
     }
 }
 

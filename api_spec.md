@@ -2094,3 +2094,48 @@ uses application linkage. Neither feature downloads a runtime during builds or
 inference. The current qualification evidence and commands are maintained in
 [the Laya integration guide](tools/laya/README.md). Mobile compilation and
 physical-device execution remain distinct qualification gates.
+
+## 33. Local English transcription (ONNX CPU)
+
+Non-generative speech recognition lives in `gen2::speech`, separate from chat
+messages, generation tokens and typed decisions. `Runtime::load_transcriber`
+loads the complete integrity-checked, revision-pinned Conway Research Bark 2.0
+ONNX bundle. Arbitrary speech checkpoints and streaming encoders are not claimed.
+
+`Audio::mono_16khz(Vec<f32>)` validates finite mono PCM between 20 ms and 60 s.
+With the native backend, `Audio::from_wav` decodes bounded PCM16/float32 WAV and
+`Audio::from_interleaved` averages 1–8 channels. Core input is 16 kHz; the explicit
+`asr-resample-soxr` feature adds libsoxr HQ conversion from 8/44.1/48 kHz and its
+LGPL native dependency. Unsupported audio fails without silent truncation.
+Capture, utterance detection and normalization outside this envelope belong to
+the host. Capabilities report the actually compiled input formats/rates, English,
+duration envelope, cleanup, CPU provider and `streaming = false`.
+
+`Transcriber` is cloneable and owns one bounded worker. `transcribe(audio,
+TranscribeOptions)` returns text, duration, token decisions, provenance and
+queue/frontend/encoder/decoder/execution timings. Decoder state resets per
+request. Text is the model's cleaned output with reference whitespace handling
+and final trim, without a second cleanup model or extra rewriting. No confidence
+or word timestamps are exposed. Cleanup can omit meaningful words.
+
+Load options configure host native-library path, 1–64 queue slots, 1–16 intra-op
+threads and a reservation of at least 4096 MiB. Admission and runtime statistics
+include speech alongside decisions and chat. Workers are not silently evicted;
+the caller uses `unload` to stop admission or `shutdown` to wait for native
+session release. Dropping the final handle stops the worker. Reservations remain
+charged while native work is still running, including after caller cancellation.
+
+Request options contain a cloneable cancellation flag and optional monotonic
+deadline. Native kernels are cooperatively cancelled between graph calls, not
+forcibly interrupted. Stable `SpeechError` codes distinguish input/bundle/runtime,
+execution/output, admission, saturation, cancellation, deadline and unload.
+Only queue saturation is retryable. A fresh runtime load verifies the bundle
+again and cannot inherit a previous utterance's recurrent state.
+
+`asr-dynamic` uses the same process-global host-library policy as `laya-dynamic`.
+`backend-asr-onnx` supports app linkage. CPU is explicit; no accelerator fallback
+is hidden. `speech::download_bark` uses `hf` only for an uncached pinned package;
+validated warm caches and all local inference work offline. Atomic publication
+follows complete hash verification, with corrupt entries preserved for recovery.
+See [setup and verification](tools/bark/README.md) for supported targets, licenses,
+quality limits and reproducible gates. Mobile/accelerators/MLX remain follow-ups.

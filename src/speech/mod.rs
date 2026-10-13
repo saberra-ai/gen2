@@ -19,6 +19,8 @@ pub(crate) use worker::{SpeechMonitor, spawn};
 mod frontend;
 #[cfg(feature = "backend-asr-onnx")]
 mod onnx;
+#[cfg(feature = "asr-resample-soxr")]
+mod resample;
 
 /// Speech failures have stable categories; callers need not parse display text.
 #[derive(Debug, thiserror::Error)]

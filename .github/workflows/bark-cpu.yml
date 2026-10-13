@@ -33,6 +33,7 @@ jobs:
         run: |
           python tools/bark/qualify_reference.py --bundle target/bark/model/onnx --parquet target/bark/test.parquet --output target/bark/oracle
           python tools/bark/export_trace.py --bundle target/bark/model/onnx --reference target/bark/oracle
+          python tools/bark/qualify_audio.py --bundle target/bark/model/onnx --fluent target/bark/fluent.parquet --disfluent target/bark/test.parquet --output target/bark/audio
       - name: Locate explicit native runtime and offline inputs
         shell: bash
         run: |
@@ -42,15 +43,15 @@ jobs:
           matches = list(root.glob('onnxruntime.dll')) + list(root.glob('libonnxruntime.so*')) + list(root.glob('libonnxruntime*.dylib'))
           assert matches, f'no native runtime in {root}'
           with open(os.environ['GITHUB_ENV'], 'a') as f:
-              for key, value in {'GEN2_ORT_LIBRARY':matches[0], 'GEN2_BARK_BUNDLE':pathlib.Path('target/bark/model/onnx').resolve(), 'GEN2_BARK_REFERENCE':pathlib.Path('target/bark/oracle').resolve(), 'GEN2_BARK_RESULTS':pathlib.Path('target/bark/native.json').resolve()}.items():
+              for key, value in {'GEN2_ORT_LIBRARY':matches[0], 'GEN2_BARK_BUNDLE':pathlib.Path('target/bark/model/onnx').resolve(), 'GEN2_BARK_REFERENCE':pathlib.Path('target/bark/oracle').resolve(), 'GEN2_BARK_RESULTS':pathlib.Path('target/bark/native.json').resolve(), 'GEN2_BARK_AUDIO_REFERENCE':pathlib.Path('target/bark/audio').resolve()}.items():
                   f.write(f'{key}={value}\n')
           PY
-      - run: cargo clippy --locked --no-default-features --features asr-dynamic,laya-dynamic,hf --all-targets -- -D warnings
-      - run: cargo test --locked --release --no-default-features --features asr-dynamic,laya-dynamic --lib
-      - run: cargo test --locked --release --no-default-features --features asr-dynamic,laya-dynamic --test bark_native
-      - run: cargo test --locked --release --no-default-features --features asr-dynamic,laya-dynamic --lib native_frontend -- --ignored
-      - run: cargo test --locked --release --no-default-features --features asr-dynamic,laya-dynamic --lib native_graphs -- --ignored
-      - run: cargo test --locked --release --no-default-features --features asr-dynamic,laya-dynamic --test bark_native -- --ignored --skip coexistence --test-threads=1
+      - run: cargo clippy --locked --no-default-features --features asr-dynamic,asr-resample-soxr,laya-dynamic,hf --all-targets -- -D warnings
+      - run: cargo test --locked --release --no-default-features --features asr-dynamic,asr-resample-soxr,laya-dynamic --lib
+      - run: cargo test --locked --release --no-default-features --features asr-dynamic,asr-resample-soxr,laya-dynamic --test bark_native
+      - run: cargo test --locked --release --no-default-features --features asr-dynamic,asr-resample-soxr,laya-dynamic --lib native_frontend -- --ignored
+      - run: cargo test --locked --release --no-default-features --features asr-dynamic,asr-resample-soxr,laya-dynamic --lib native_graphs -- --ignored
+      - run: cargo test --locked --release --no-default-features --features asr-dynamic,asr-resample-soxr,laya-dynamic --test bark_native -- --ignored --skip coexistence --test-threads=1
       # Each order has a fresh process-global ORT environment.
       - run: cargo test --locked --release --no-default-features --features asr-dynamic,laya-dynamic --test bark_native coexistence_laya_first -- --ignored
       - run: cargo test --locked --release --no-default-features --features asr-dynamic,laya-dynamic --test bark_native coexistence_speech_first -- --ignored
@@ -61,4 +62,6 @@ jobs:
           path: |
             target/bark/native.json
             target/bark/oracle/reference.json
+            target/bark/audio/audio-reference.json
+            target/bark/audio/native-audio.json
           if-no-files-found: error

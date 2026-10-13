@@ -11,6 +11,11 @@ For non-generative choice, score and yes/no decisions, the experimental
 and supply an ONNX Runtime 1.24 library, or `backend-laya-onnx` for app-linked
 builds. [Setup, current evidence and platform gates](tools/laya/README.md).
 
+English transcription of the pinned Conway Research Bark 2.0 checkpoint lives
+in `gen2::speech`, separate from generation. Enable `asr-dynamic` for native
+ONNX CPU inference; WAV resampling is an opt-in feature. [Speech setup, limits,
+verification and example](tools/bark/README.md).
+
 ```toml
 [dependencies]
 gen2 = { git = "https://github.com/saberra-ai/gen2" }

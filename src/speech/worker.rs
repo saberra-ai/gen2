@@ -24,7 +24,7 @@ pub struct LoadOptions {
     pub native_library: Option<PathBuf>,
     pub queue_capacity: usize,
     pub intra_threads: usize,
-    /// Conservative peak workspace plus native weights; never below 2 GiB.
+    /// Conservative peak workspace plus native weights; never below 4 GiB.
     pub reservation_mb: u64,
 }
 impl Default for LoadOptions {
@@ -42,10 +42,11 @@ impl LoadOptions {
         if self.queue_capacity == 0
             || self.queue_capacity > 64
             || self.intra_threads == 0
-            || self.reservation_mb < 2048
+            || self.intra_threads > 16
+            || self.reservation_mb < 4096
         {
             return Err(SpeechError::ResourceLimit(
-                "queue capacity must be 1–64, threads nonzero, reservation at least 2048 MB".into(),
+                "queue capacity must be 1–64, threads 1–16, reservation at least 4096 MB".into(),
             ));
         }
         #[cfg(feature = "onnx-dynamic")]
@@ -364,7 +365,11 @@ pub(crate) fn spawn(
                 capabilities: SpeechCapabilities {
                     language: "en",
                     sample_rate: 16000,
-                    input_sample_rates: &[8000, 16000, 44100, 48000],
+                    input_sample_rates: if cfg!(feature = "asr-resample-soxr") {
+                        &[8000, 16000, 44100, 48000]
+                    } else {
+                        &[16000]
+                    },
                     maximum_channels: 8,
                     wav_encodings: &["pcm16", "float32"],
                     minimum_audio_seconds: 0.02,

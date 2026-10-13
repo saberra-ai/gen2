@@ -20,3 +20,6 @@ for name in ("bark-release.json", "infer.py", "LICENSE"):
 source = hf_hub_download("amaai-lab/DisfluencySpeech", "data/test-00000-of-00001.parquet", repo_type="dataset",
                         revision="b7da294fe3a70dd96df6640893f2a5dfc2c87638")
 shutil.copyfile(source, args.destination / "test.parquet")
+source = hf_hub_download("hf-internal-testing/librispeech_asr_dummy", "clean/validation-00000-of-00001.parquet", repo_type="dataset",
+                        revision="5be91486e11a2d616f4ec5db8d3fd248585ac07a")
+shutil.copyfile(source,args.destination / "fluent.parquet")

@@ -215,49 +215,90 @@ mod tests {
     fn floats(path: impl AsRef<std::path::Path>) -> Vec<f32> {
         let bytes = std::fs::read(path).unwrap();
         assert!(bytes.as_chunks::<4>().1.is_empty());
-        bytes.as_chunks::<4>().0.iter().map(|b|f32::from_le_bytes(*b)).collect()
+        bytes
+            .as_chunks::<4>()
+            .0
+            .iter()
+            .map(|b| f32::from_le_bytes(*b))
+            .collect()
     }
-    fn close(actual:&[f32],expected:&[f32]) {
-        assert_eq!(actual.len(),expected.len());
-        for (a,b) in actual.iter().zip(expected) {
-            assert!(a.is_finite() && (a-b).abs()<=1e-4+1e-4*b.abs(),"tensor {a} != {b}");
+    fn close(actual: &[f32], expected: &[f32]) {
+        assert_eq!(actual.len(), expected.len());
+        for (a, b) in actual.iter().zip(expected) {
+            assert!(
+                a.is_finite() && (a - b).abs() <= 1e-4 + 1e-4 * b.abs(),
+                "tensor {a} != {b}"
+            );
         }
     }
     #[test]
     #[ignore = "requires pinned GEN2_BARK_BUNDLE, GEN2_ORT_LIBRARY, GEN2_BARK_REFERENCE tensors"]
     fn native_graphs_match_independent_encoder_decoder_tensors() {
-        let root=std::path::PathBuf::from(std::env::var("GEN2_BARK_REFERENCE").expect("reference"));
-        let receipt:serde_json::Value=serde_json::from_slice(&std::fs::read(root.join("reference.json")).unwrap()).unwrap();
-        let bundle=SpeechBundle::open(std::env::var("GEN2_BARK_BUNDLE").expect("bundle")).unwrap();
-        let mut backend=OnnxBackend::load(&bundle,&LoadOptions { native_library:Some(std::env::var("GEN2_ORT_LIBRARY").unwrap().into()),..Default::default() }).unwrap();
+        let root =
+            std::path::PathBuf::from(std::env::var("GEN2_BARK_REFERENCE").expect("reference"));
+        let receipt: serde_json::Value =
+            serde_json::from_slice(&std::fs::read(root.join("reference.json")).unwrap()).unwrap();
+        let bundle =
+            SpeechBundle::open(std::env::var("GEN2_BARK_BUNDLE").expect("bundle")).unwrap();
+        let mut backend = OnnxBackend::load(
+            &bundle,
+            &LoadOptions {
+                native_library: Some(std::env::var("GEN2_ORT_LIBRARY").unwrap().into()),
+                ..Default::default()
+            },
+        )
+        .unwrap();
         for index in 0..3 {
-            let record=&receipt["records"][index];
-            let features=floats(root.join(format!("{index:03}.features.f32")));
-            let frames=features.len()/128;
-            let valid=record["samples"].as_u64().unwrap() as i64/160;
-            let output=backend.encoder.run(ort::inputs![
-                "audio_signal"=>Tensor::from_array(([1usize,128,frames],features)).unwrap(),
-                "length"=>Tensor::from_array(([1usize],vec![valid])).unwrap(),
-            ]).unwrap();
-            let (shape,encoded)=output["outputs"].try_extract_tensor::<f32>().unwrap();
-            let encoded_frames=shape[2] as usize;
-            let frozen=floats(root.join(format!("{index:03}.encoder.f32")));
-            close(encoded,&frozen);
-            assert_eq!(output["encoded_lengths"].try_extract_tensor::<i64>().unwrap().1[0],(valid+7)/8);
+            let record = &receipt["records"][index];
+            let features = floats(root.join(format!("{index:03}.features.f32")));
+            let frames = features.len() / 128;
+            let valid = record["samples"].as_u64().unwrap() as i64 / 160;
+            let output = backend
+                .encoder
+                .run(ort::inputs![
+                    "audio_signal"=>Tensor::from_array(([1usize,128,frames],features)).unwrap(),
+                    "length"=>Tensor::from_array(([1usize],vec![valid])).unwrap(),
+                ])
+                .unwrap();
+            let (shape, encoded) = output["outputs"].try_extract_tensor::<f32>().unwrap();
+            let encoded_frames = shape[2] as usize;
+            let frozen = floats(root.join(format!("{index:03}.encoder.f32")));
+            close(encoded, &frozen);
+            assert_eq!(
+                output["encoded_lengths"]
+                    .try_extract_tensor::<i64>()
+                    .unwrap()
+                    .1[0],
+                (valid + 7) / 8
+            );
             drop(output);
-            let frame:Vec<f32>=(0..1024).map(|band|frozen[band*encoded_frames]).collect();
-            let output=backend.decoder.run(ort::inputs![
-                "encoder_outputs"=>Tensor::from_array(([1usize,1024,1],frame)).unwrap(),
-                "targets"=>Tensor::from_array(([1usize,1],vec![backend.blank as i32])).unwrap(),
-                "target_length"=>Tensor::from_array(([1usize],vec![1i32])).unwrap(),
-                "input_states_1"=>Tensor::from_array(([2usize,1,640],vec![0f32;1280])).unwrap(),
-                "input_states_2"=>Tensor::from_array(([2usize,1,640],vec![0f32;1280])).unwrap(),
-            ]).unwrap();
-            let logits=output["outputs"].try_extract_tensor::<f32>().unwrap().1;
-            close(&logits[..8193],&floats(root.join(format!("{index:03}.logits.f32"))));
-            assert_eq!(argmax(&logits[8193..]),record["first_duration"].as_u64().unwrap() as usize);
-            for (name,file) in [("output_states_1","state1"),("output_states_2","state2")] {
-                close(output[name].try_extract_tensor::<f32>().unwrap().1,&floats(root.join(format!("{index:03}.{file}.f32"))));
+            let frame: Vec<f32> = (0..1024)
+                .map(|band| frozen[band * encoded_frames])
+                .collect();
+            let output = backend
+                .decoder
+                .run(ort::inputs![
+                    "encoder_outputs"=>Tensor::from_array(([1usize,1024,1],frame)).unwrap(),
+                    "targets"=>Tensor::from_array(([1usize,1],vec![backend.blank as i32])).unwrap(),
+                    "target_length"=>Tensor::from_array(([1usize],vec![1i32])).unwrap(),
+                    "input_states_1"=>Tensor::from_array(([2usize,1,640],vec![0f32;1280])).unwrap(),
+                    "input_states_2"=>Tensor::from_array(([2usize,1,640],vec![0f32;1280])).unwrap(),
+                ])
+                .unwrap();
+            let logits = output["outputs"].try_extract_tensor::<f32>().unwrap().1;
+            close(
+                &logits[..8193],
+                &floats(root.join(format!("{index:03}.logits.f32"))),
+            );
+            assert_eq!(
+                argmax(&logits[8193..]),
+                record["first_duration"].as_u64().unwrap() as usize
+            );
+            for (name, file) in [("output_states_1", "state1"), ("output_states_2", "state2")] {
+                close(
+                    output[name].try_extract_tensor::<f32>().unwrap().1,
+                    &floats(root.join(format!("{index:03}.{file}.f32"))),
+                );
             }
         }
     }
