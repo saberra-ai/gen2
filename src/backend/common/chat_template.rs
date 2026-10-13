@@ -256,14 +256,16 @@ impl ChatTemplate {
 
         let messages: Vec<TextMessage> = messages.into_iter().map(|c| c.into()).collect();
         let final_message = messages.last().cloned();
-        let mut rendered_template = self.template.render(ChatTemplateInputs {
-            messages,
-            bos_token: self.bos_token.as_deref(),
-            eos_token: self.eos_token.as_deref(),
-            add_generation_prompt,
-            enable_thinking,
-            tools,
-        })?;
+        let mut rendered_template =
+            self.template
+                .render(minijinja::Value::from_serialize(ChatTemplateInputs {
+                    messages,
+                    bos_token: self.bos_token.as_deref(),
+                    eos_token: self.eos_token.as_deref(),
+                    add_generation_prompt,
+                    enable_thinking,
+                    tools,
+                }))?;
 
         // if the last message is from the assistant, continue the generation prompt
         rendered_template = match final_message {
