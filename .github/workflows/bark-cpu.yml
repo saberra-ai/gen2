@@ -56,7 +56,14 @@ jobs:
       - run: cargo test --locked --release --no-default-features --features asr-dynamic,asr-resample-soxr,laya-dynamic --test bark_native
       - run: cargo test --locked --release --no-default-features --features asr-dynamic,asr-resample-soxr,laya-dynamic --lib native_frontend -- --ignored
       - run: cargo test --locked --release --no-default-features --features asr-dynamic,asr-resample-soxr,laya-dynamic --lib native_graphs -- --ignored
-      - run: cargo test --locked --release --no-default-features --features asr-dynamic,asr-resample-soxr,laya-dynamic --test bark_native -- --ignored --skip coexistence --test-threads=1
+      # A 60-second encoder run can leave reusable allocator pages resident.
+      # Independent cases get fresh processes; no host admission gate is disabled.
+      - name: Real transcripts, audio, integrity and lifecycle
+        shell: bash
+        run: |
+          for test in real_bark_matches_reference_and_reuses_resident_weights real_audio_workflow_matches_qualified_reference real_bundle_integrity_and_warm_offline_cache real_worker_bounds_queue_cancellation_shutdown_and_admission; do
+            cargo test --locked --release --no-default-features --features asr-dynamic,asr-resample-soxr,laya-dynamic --test bark_native "$test" -- --ignored --exact
+          done
       - run: python tools/bark/compare_results.py --reference target/bark/oracle/reference.json --native target/bark/native.json --output target/bark/qualification.json
       - run: python tools/bark/report_audio.py --reference target/bark/audio/audio-reference.json --native target/bark/audio/native-audio.json --output target/bark/audio-quality.json
       # Each order has a fresh process-global ORT environment.
@@ -74,5 +81,6 @@ jobs:
             target/bark/audio/native-audio.json
             target/bark/audio/normalization-errors.json
             target/bark/audio-quality.json
-            target/bark/oracle/*.features.f32
+            target/bark/oracle/*.f32
+            target/bark/oracle/numpy-runtime.json
           if-no-files-found: error

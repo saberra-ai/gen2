@@ -3,6 +3,13 @@ use super::{Result, SpeechError};
 use rustfft::{FftPlanner, num_complex::Complex};
 
 pub(crate) fn features(wave: &[f32]) -> Result<(Vec<f32>, usize, usize)> {
+    features_with_observer(wave, |_, _| {})
+}
+
+fn features_with_observer(
+    wave: &[f32],
+    mut observe: impl FnMut(&'static str, &[f32]),
+) -> Result<(Vec<f32>, usize, usize)> {
     let valid = wave.len() / 160;
     let frames = valid + 1;
     let mut emphasized = vec![0f32; wave.len() + 512];
@@ -33,17 +40,23 @@ pub(crate) fn features(wave: &[f32]) -> Result<(Vec<f32>, usize, usize)> {
             input[i] = Complex::new(emphasized[frame * 160 + i] as f64 * window[i], 0.);
         }
         fft.process_with_scratch(&mut input, &mut scratch);
+        let mut power = [0f32; 257];
         for (bin, value) in input.iter().take(257).enumerate() {
             let magnitude = value.norm() as f32;
-            let power = magnitude * magnitude;
+            power[bin] = magnitude * magnitude;
+        }
+        observe("power", &power);
+        for (bin, power) in power.into_iter().enumerate() {
             for band in 0..128 {
                 mel[frame * 128 + band] =
                     power.mul_add(filters[bin * 128 + band], mel[frame * 128 + band]);
             }
         }
+        observe("mel", &mel[frame * 128..(frame + 1) * 128]);
         for band in 0..128 {
             mel[frame * 128 + band] = numpy_log(mel[frame * 128 + band] + 2f32.powi(-24));
         }
+        observe("log-mel", &mel[frame * 128..(frame + 1) * 128]);
     }
     let mut normalized = vec![0f32; frames * 128];
     for band in 0..128 {
@@ -119,7 +132,7 @@ mod tests {
         let root = std::path::PathBuf::from(
             std::env::var("GEN2_BARK_REFERENCE").expect("reference corpus"),
         );
-        for index in [0, 1, 2, 13, 34, 41] {
+        for index in [0, 1, 2, 13, 34, 41, 43, 249] {
             let wave = super::super::Audio::from_wav(root.join(format!("{index:03}.wav"))).unwrap();
             let expected = std::fs::read(root.join(format!("{index:03}.features.f32"))).unwrap();
             let expected: Vec<_> = expected
@@ -128,11 +141,23 @@ mod tests {
                 .iter()
                 .map(|b| f32::from_le_bytes(*b))
                 .collect();
-            let (actual, _, _) = super::features(wave.samples()).unwrap();
-            if std::env::var_os("GEN2_BARK_DUMP").is_some() {
+            let mut stages = std::collections::BTreeMap::<&str, Vec<f32>>::new();
+            let dump = std::env::var_os("GEN2_BARK_DUMP").is_some();
+            let (actual, _, _) = super::features_with_observer(wave.samples(), |name, values| {
+                if dump {
+                    stages.entry(name).or_default().extend_from_slice(values);
+                }
+            })
+            .unwrap();
+            if dump {
                 let bytes: Vec<u8> = actual.iter().flat_map(|v| v.to_le_bytes()).collect();
                 std::fs::write(root.join(format!("{index:03}.native.features.f32")), bytes)
                     .unwrap();
+                for (name, values) in stages {
+                    let bytes: Vec<u8> = values.iter().flat_map(|v| v.to_le_bytes()).collect();
+                    std::fs::write(root.join(format!("{index:03}.native.{name}.f32")), bytes)
+                        .unwrap();
+                }
             }
             assert_eq!(actual.len(), expected.len());
             let mut max_error = 0f32;

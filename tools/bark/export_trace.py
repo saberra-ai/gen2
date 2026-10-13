@@ -1,6 +1,9 @@
 """Export independent NumPy features, encoder tensors and greedy token decisions."""
 import argparse
 import json
+import contextlib
+import io
+import platform
 from pathlib import Path
 import numpy as np
 import onnxruntime as ort
@@ -17,17 +20,44 @@ asr = Manager(providers=["CPUExecutionProvider"], sess_options=options,
               preprocessor_config={"use_numpy_preprocessors": True}).create_asr(
                   "nemo-conformer-tdt", args.bundle, offline=True).asr
 receipt = json.loads((args.reference / "reference.json").read_text())
+probes = [0, 1, 2, 13, 34, 41, 43, 249]
+runtime = io.StringIO()
+with contextlib.redirect_stdout(runtime):
+    np.show_runtime()
+(args.reference / "numpy-runtime.json").write_text(json.dumps({
+    "platform": platform.platform(), "numpy_runtime": runtime.getvalue(),
+    "numpy_build": np.show_config(mode="dicts"),
+}, indent=2) + "\n")
 for record in receipt["records"]:
-    if "token_ids" in record and record["id"] not in [0, 1, 2, 13, 34, 41]:
+    if "token_ids" in record and record["id"] not in probes:
         continue
     wave = np.fromfile(args.reference / record["pcm"], dtype="<f4")
-    features, lengths = asr._preprocessor(wave[None], np.array([len(wave)], np.int64))
+    # Observe the helper's original NumPy operations without changing their
+    # inputs or results. Stage artifacts locate the first cross-platform drift.
+    prefix = args.reference / f'{record["id"]:03}'
+    original_matmul, original_log, original_rfft = np.matmul, np.log, np.fft.rfft
+    def observe_matmul(*inputs, **kwargs):
+        result = original_matmul(*inputs, **kwargs)
+        result.astype("<f4").tofile(str(prefix) + ".mel.f32")
+        return result
+    def observe_log(*inputs, **kwargs):
+        result = original_log(*inputs, **kwargs)
+        result.astype("<f4").tofile(str(prefix) + ".log-mel.f32")
+        return result
+    def observe_rfft(*inputs, **kwargs):
+        result = original_rfft(*inputs, **kwargs)
+        (np.abs(result).astype(np.float32) ** 2).astype("<f4").tofile(str(prefix) + ".power.f32")
+        return result
+    try:
+        np.matmul, np.log, np.fft.rfft = observe_matmul, observe_log, observe_rfft
+        features, lengths = asr._preprocessor(wave[None], np.array([len(wave)], np.int64))
+    finally:
+        np.matmul, np.log, np.fft.rfft = original_matmul, original_log, original_rfft
     encoded, encoded_lengths = asr._encode(features, lengths)
     tokens, timestamps, _ = next(asr._decoding(encoded, encoded_lengths))
     record["token_ids"] = list(tokens)
     record["timestamps"] = list(timestamps)
-    if record["id"] in [0, 1, 2, 13, 34, 41]:
-        prefix = args.reference / f'{record["id"]:03}'
+    if record["id"] in probes:
         features.astype("<f4").tofile(str(prefix) + ".features.f32")
         encoded.transpose(0, 2, 1).astype("<f4").tofile(str(prefix) + ".encoder.f32")
         states = asr._create_state()
