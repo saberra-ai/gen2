@@ -258,7 +258,7 @@ impl ChatTemplate {
         let final_message = messages.last().cloned();
         let mut rendered_template =
             self.template
-                .render(minijinja::Value::from_serialize(ChatTemplateInputs {
+                .render(minijinja::value::Serde(ChatTemplateInputs {
                     messages,
                     bos_token: self.bos_token.as_deref(),
                     eos_token: self.eos_token.as_deref(),

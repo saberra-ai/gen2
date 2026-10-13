@@ -60,7 +60,7 @@ tokenizers = { version = "0.23", default-features = false, features = ["onig"] }
 # `json` registers the `tojson` filter. Qwen-family chat templates call it to
 # render tool-call arguments, and without it tool use fails at template time
 # with "unknown filter: tojson".
-minijinja = { version = "3.0.0", features = ["json"] }
+minijinja = { version = "3.0.0", features = ["json", "serde"] }
 minijinja-contrib = { version = "3.0.0", features = ["rand", "pycompat"] }
 # Grammar-constrained decoding, used across ALL backends (MLX / llama)
 # for JSON-schema / Lark / regex / GBNF output shaping. Same crate
