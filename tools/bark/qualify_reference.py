@@ -35,6 +35,8 @@ def main():
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--limit", type=int, default=250)
     parser.add_argument("--export-assets", type=Path)
+    parser.add_argument("--skip-candidate-frontend", action="store_true",
+                        help="Release CI needs only the qualified NumPy oracle, not the rejected ONNX frontend audit")
     args = parser.parse_args()
     manifest = json.loads((args.bundle / "manifest.json").read_bytes())
     assert digest((args.bundle / "manifest.json").read_bytes()) == "8cd94f24f677b74f9e92306039491f23e3e22863205e59a5bdda322026f98f8c"
@@ -56,7 +58,16 @@ def main():
         ).create_asr("nemo-conformer-tdt", args.bundle, offline=True)
 
     reference = load(True)
-    graph_reference = load(False)
+    graph_reference = None if args.skip_candidate_frontend else load(False)
+    # Observe the helper's own decisions during recognize(), without replacing
+    # its encoder, decoder or text conversion. Avoid a second corpus decode.
+    captured_decisions = []
+    original_decoding = reference.asr._decoding
+    def observe_decoding(*inputs):
+        for result in original_decoding(*inputs):
+            captured_decisions.append((list(result[0]), list(result[1])))
+            yield result
+    reference.asr._decoding = observe_decoding
     graph_inventory = {}
     for name in ("encoder-model.onnx", "decoder_joint-model.onnx"):
         graph = onnx.load(args.bundle / name, load_external_data=False)
@@ -79,16 +90,23 @@ def main():
         assert np.isfinite(wave).all() and 320 <= len(wave) <= 960000
         inputs = (wave[None], np.array([len(wave)], dtype=np.int64))
         f1, l1 = reference.asr._preprocessor(*inputs)
-        f2, l2 = graph_reference.asr._preprocessor(*inputs)
-        assert np.array_equal(l1, l2) and f1.shape == f2.shape
-        err = float(np.max(np.abs(f1-f2)))
-        frontend_max_error = max(frontend_max_error, err)
+        err = None
+        if graph_reference is not None:
+            f2, l2 = graph_reference.asr._preprocessor(*inputs)
+            assert np.array_equal(l1, l2) and f1.shape == f2.shape
+            err = float(np.max(np.abs(f1-f2)))
+            frontend_max_error = max(frontend_max_error, err)
+        captured_decisions.clear()
         started = time.perf_counter()
         text = reference.recognize(wave, sample_rate=16000).strip()
         reference_times.append(time.perf_counter() - started)
-        started = time.perf_counter()
-        graph_text = graph_reference.recognize(wave, sample_rate=16000).strip()
-        graph_times.append(time.perf_counter() - started)
+        assert len(captured_decisions) == 1, "expected one helper decoding result per recording"
+        tokens, timestamps = captured_decisions[0]
+        graph_text = None
+        if graph_reference is not None:
+            started = time.perf_counter()
+            graph_text = graph_reference.recognize(wave, sample_rate=16000).strip()
+            graph_times.append(time.perf_counter() - started)
         pcm = wave.astype("<f4").tobytes()
         (args.output / f"{index:03}.f32").write_bytes(pcm)
         sf.write(args.output / f"{index:03}.wav", wave, 16000, subtype="FLOAT")
@@ -96,8 +114,9 @@ def main():
             (args.output / f"{index:03}.features.f32").write_bytes(f1.astype("<f4").tobytes())
         records.append({"id": index, "pcm": f"{index:03}.f32", "sha256": digest(pcm),
                         "samples": len(wave), "text": text, "graph_text": graph_text,
-                        "cleaned_reference": row["transcript_c"], "frontend_max_error": err})
-        print(f"{index+1}/{len(rows)} exact={text == graph_text} frontend_error={err:.3g}", flush=True)
+                        "cleaned_reference": row["transcript_c"], "frontend_max_error": err,
+                        "token_ids": tokens, "timestamps": timestamps})
+        print(f"{index+1}/{len(rows)} candidate_error={err}", flush=True)
     normalize = jiwer.Compose([jiwer.ToLowerCase(), jiwer.RemovePunctuation(),
                               jiwer.RemoveMultipleSpaces(), jiwer.Strip(), jiwer.ReduceToListOfListOfWords()])
     def score(key):
@@ -109,9 +128,10 @@ def main():
                             ("numpy", "onnx-asr", "onnxruntime", "soundfile", "soxr", "onnx", "jiwer", "pyarrow")},
                "manifest_sha256": digest((args.bundle / "manifest.json").read_bytes()),
                "provider": "CPUExecutionProvider", "intra_threads": 4, "inter_threads": 1,
-               "graphs": graph_inventory, "frontend_max_error": frontend_max_error,
-               "graph_transcript_matches": sum(r["text"] == r["graph_text"] for r in records),
-               "wer": score("text"), "graph_wer": score("graph_text"),
+               "graphs": graph_inventory, "candidate_frontend_evaluated": graph_reference is not None,
+               "frontend_max_error": frontend_max_error if graph_reference is not None else None,
+               "graph_transcript_matches": sum(r["text"] == r["graph_text"] for r in records) if graph_reference is not None else None,
+               "wer": score("text"), "graph_wer": score("graph_text") if graph_reference is not None else None,
                "reference_seconds": reference_times, "graph_seconds": graph_times,
                "records": records}
     (args.output / "reference.json").write_text(json.dumps(receipt, indent=2)+"\n")

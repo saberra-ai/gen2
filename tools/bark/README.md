@@ -96,6 +96,10 @@ actual CPU provider, and queue/frontend/encoder/decoder/execution timings.
 Install Python 3.12 and the hash-locked test dependencies with
 `python -m pip install --require-hashes -r tools/bark/reference.lock`.
 These are verification tools only; they are not application dependencies.
+CI skips the already-rejected candidate ONNX frontend audit and observes token
+decisions during the helper's own `recognize` call. Fixed tensor probes are then
+exported separately. This keeps the complete 250-clip oracle without loading a
+second copy of the model or decoding the whole corpus twice for token capture.
 
 ```sh
 python tools/bark/provision_reference.py target/bark

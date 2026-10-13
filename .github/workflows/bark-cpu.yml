@@ -36,7 +36,7 @@ jobs:
         run: python tools/bark/provision_reference.py target/bark
       - name: Freeze independent CPU oracle, including token decisions
         run: |
-          python tools/bark/qualify_reference.py --bundle target/bark/model/onnx --parquet target/bark/test.parquet --output target/bark/oracle
+          python tools/bark/qualify_reference.py --skip-candidate-frontend --bundle target/bark/model/onnx --parquet target/bark/test.parquet --output target/bark/oracle
           python tools/bark/export_trace.py --bundle target/bark/model/onnx --reference target/bark/oracle
           python tools/bark/qualify_audio.py --bundle target/bark/model/onnx --fluent target/bark/fluent.parquet --disfluent target/bark/test.parquet --output target/bark/audio
       - name: Locate explicit native runtime and offline inputs

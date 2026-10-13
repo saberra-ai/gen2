@@ -18,6 +18,8 @@ asr = Manager(providers=["CPUExecutionProvider"], sess_options=options,
                   "nemo-conformer-tdt", args.bundle, offline=True).asr
 receipt = json.loads((args.reference / "reference.json").read_text())
 for record in receipt["records"]:
+    if "token_ids" in record and record["id"] not in [0, 1, 2, 13, 34, 41]:
+        continue
     wave = np.fromfile(args.reference / record["pcm"], dtype="<f4")
     features, lengths = asr._preprocessor(wave[None], np.array([len(wave)], np.int64))
     encoded, encoded_lengths = asr._encode(features, lengths)

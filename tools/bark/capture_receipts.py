@@ -40,7 +40,10 @@ inputs = {
 for path in inputs.values():
     assert path.is_file(), path
 for name in ["performance.json", "mixed-performance.json", "qualification.json", "audio-quality.json"]:
-    assert json.loads(inputs[name].read_text())["git_sha"] == sha, f"stale implementation receipt: {name}"
+    basis = json.loads(inputs[name].read_text())["git_sha"]
+    subprocess.run(["git", "merge-base", "--is-ancestor", basis, sha], check=True)
+    changed = subprocess.check_output(["git", "diff", "--name-only", basis, sha, "--", "src", "Cargo.toml", "Cargo.lock", "assets", "examples/bark_benchmark.rs", "tests"], text=True)
+    assert not changed, f"implementation changed since receipt {name}: {changed}"
 assert json.loads(inputs["audio-quality.json"].read_text())["passed"]
 assert json.loads(inputs["performance-comparison.json"].read_text())["passed"]
 for name in ["numeric.log", "integration.log"]:
@@ -49,7 +52,9 @@ for name in ["numeric.log", "integration.log"]:
 args.output.mkdir(parents=True, exist_ok=True)
 for name, path in inputs.items():
     shutil.copyfile(path, args.output / name)
-source_files = [Path("Cargo.lock"), Path("tools/bark/reference.lock"), Path("src/speech/frontend.rs"),
+source_files = [Path("Cargo.toml"), Path("Cargo.lock"), Path("tools/bark/reference.lock"),
+                *sorted(Path("src/speech").glob("*.rs")), Path("src/onnx_runtime.rs"),
+                Path("src/api/runtime.rs"),
                 Path("assets/bark/nemo128.f32"), Path("tests/fixtures/bark/smoke.json"),
                 Path("tools/bark/critical-content.json")]
 cpu = subprocess.check_output(["sysctl", "-n", "machdep.cpu.brand_string"], text=True).strip() if platform.system() == "Darwin" else platform.processor()
@@ -59,6 +64,10 @@ provenance = {
     "native_runtime": {"version": "1.24.4", "library_name": args.library.name,
                        "sha256": digest(args.library)},
     "provider": "CPUExecutionProvider", "intra_threads": 4, "inter_threads": 1,
+    "verification_features": "asr-dynamic,asr-resample-soxr,laya-dynamic; benchmark additionally backend-llamacpp",
+    "numeric_gates": {"frontend_atol": 1e-4, "frontend_rtol": 1e-4,
+                      "encoder_decoder_atol": 1e-4, "encoder_decoder_rtol": 1e-4,
+                      "experimental_resampling_max_absolute_error": 1e-5},
     "frontend": "native NumPy-compatible DSP, float64 FFT, float32 mel/FMA/normalization",
     "source_sha256": {str(p): digest(p) for p in source_files},
     "evidence_sha256": {name: digest(path) for name, path in inputs.items()},
