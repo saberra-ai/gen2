@@ -24,7 +24,7 @@ pub struct LoadOptions {
     pub native_library: Option<PathBuf>,
     pub queue_capacity: usize,
     pub intra_threads: usize,
-    /// Conservative peak workspace plus native weights; never below 4 GiB.
+    /// Conservative peak workspace plus native weights (adapter-specific floor).
     pub reservation_mb: u64,
 }
 impl Default for LoadOptions {
@@ -38,16 +38,17 @@ impl Default for LoadOptions {
     }
 }
 impl LoadOptions {
-    pub(crate) fn validate(&self) -> Result<()> {
+    pub(crate) fn validate_for(&self, model: SpeechModel) -> Result<()> {
         if self.queue_capacity == 0
             || self.queue_capacity > 64
             || self.intra_threads == 0
             || self.intra_threads > 16
-            || self.reservation_mb < 4096
+            || self.reservation_mb < model.minimum_reservation_mb()
         {
-            return Err(SpeechError::ResourceLimit(
-                "queue capacity must be 1–64, threads 1–16, reservation at least 4096 MB".into(),
-            ));
+            return Err(SpeechError::ResourceLimit(format!(
+                "queue capacity must be 1–64, threads 1–16, reservation at least {} MB",
+                model.minimum_reservation_mb()
+            )));
         }
         #[cfg(feature = "onnx-dynamic")]
         if !self.native_library.as_ref().is_some_and(|p| p.is_file()) {
@@ -130,8 +131,9 @@ impl Drop for Inner {
 struct Job {
     audio: Audio,
     options: TranscribeOptions,
+    request: Option<TranscriptionSettings>,
     queued: Instant,
-    reply: mpsc::Sender<Result<Transcription>>,
+    reply: mpsc::Sender<Result<DetailedTranscription>>,
 }
 #[derive(Clone)]
 pub struct Transcriber {
@@ -156,6 +158,23 @@ impl Transcriber {
     }
     pub fn bundle(&self) -> &SpeechBundle {
         &self.inner.bundle
+    }
+    pub fn supported_languages(&self) -> &'static [&'static str] {
+        self.inner.bundle.model().supported_languages()
+    }
+    pub fn profile(&self) -> SpeechProfile {
+        let model = self.inner.bundle.model();
+        SpeechProfile {
+            model,
+            languages: model.supported_languages(),
+            automatic_language: model == SpeechModel::Whistle,
+            maximum_text_tokens: if model == SpeechModel::Whistle {
+                Some(1024)
+            } else {
+                None
+            },
+            partial_transcripts: model == SpeechModel::Whistle,
+        }
     }
     pub(crate) fn monitor(&self) -> SpeechMonitor {
         SpeechMonitor(Arc::downgrade(&self.inner))
@@ -210,6 +229,22 @@ impl Transcriber {
         }
     }
     pub fn transcribe(&self, audio: Audio, options: TranscribeOptions) -> Result<Transcription> {
+        self.submit(audio, options, None).map(|r| r.transcription)
+    }
+    /// Model-independent request interface, with language and completion details.
+    pub fn transcribe_request(
+        &self,
+        request: TranscriptionRequest,
+    ) -> Result<DetailedTranscription> {
+        request.settings.validate_for(self.inner.bundle.model())?;
+        self.submit(request.audio, request.options, Some(request.settings))
+    }
+    fn submit(
+        &self,
+        audio: Audio,
+        options: TranscribeOptions,
+        request: Option<TranscriptionSettings>,
+    ) -> Result<DetailedTranscription> {
         options.check()?;
         if self.inner.state.stop.load(Ordering::Acquire) {
             return Err(SpeechError::Unloaded);
@@ -220,6 +255,7 @@ impl Transcriber {
             .try_send(Job {
                 audio,
                 options: options.clone(),
+                request,
                 queued: Instant::now(),
                 reply,
             })
@@ -263,7 +299,7 @@ pub(crate) fn spawn(
     }
     #[cfg(feature = "backend-asr-onnx")]
     {
-        options.validate()?;
+        options.validate_for(bundle.model())?;
         let state = Arc::new(State {
             status: Mutex::new(SpeechStatus::Ready),
             done: Condvar::new(),
@@ -275,10 +311,10 @@ pub(crate) fn spawn(
         let (ready, ready_rx) = mpsc::channel();
         let worker_bundle = bundle.clone();
         std::thread::Builder::new()
-            .name("gen2-bark".into())
+            .name(format!("gen2-speech-{:?}", bundle.model()))
             .spawn(move || {
                 let _ = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
-                    let mut backend = match super::onnx::OnnxBackend::load(&worker_bundle, &options)
+                    let mut backend = match super::adapter::Adapter::load(&worker_bundle, &options)
                     {
                         Ok(b) => b,
                         Err(e) => {
@@ -316,18 +352,20 @@ pub(crate) fn spawn(
                         let result = job
                             .options
                             .check()
-                            .and_then(|_| backend.run(job.audio, &job.options))
+                            .and_then(|_| {
+                                backend.run(job.audio, &job.options, job.request.as_ref())
+                            })
                             .and_then(|mut response| {
                                 job.options.check()?;
                                 if worker_state.stop.load(Ordering::Acquire) {
                                     return Err(SpeechError::Unloaded);
                                 }
-                                response.queue_micros = started
+                                response.transcription.queue_micros = started
                                     .duration_since(job.queued)
                                     .as_micros()
                                     .min(u64::MAX as u128)
                                     as u64;
-                                response.execution_micros = micros(started);
+                                response.transcription.execution_micros = micros(started);
                                 Ok(response)
                             });
                         *worker_state
@@ -367,13 +405,18 @@ pub(crate) fn spawn(
             }
             return Err(error);
         }
+        let model = bundle.model();
         Ok(Transcriber {
             inner: Arc::new(Inner {
                 tx,
                 state,
                 bundle,
                 capabilities: SpeechCapabilities {
-                    language: "en",
+                    language: if model == SpeechModel::Bark {
+                        "en"
+                    } else {
+                        "mul"
+                    },
                     sample_rate: 16000,
                     input_sample_rates: if cfg!(feature = "asr-resample-soxr") {
                         &[8000, 16000, 44100, 48000]
@@ -382,10 +425,14 @@ pub(crate) fn spawn(
                     },
                     maximum_channels: 8,
                     wav_encodings: &["pcm16", "float32"],
-                    minimum_audio_seconds: 0.02,
+                    minimum_audio_seconds: if model == SpeechModel::Bark {
+                        0.02
+                    } else {
+                        0.04
+                    },
                     maximum_audio_seconds: 60.,
                     streaming: false,
-                    cleanup: true,
+                    cleanup: model == SpeechModel::Bark,
                     provider: "CPUExecutionProvider",
                 },
             }),

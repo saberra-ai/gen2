@@ -39,6 +39,28 @@ and review the linked binary's distribution/relinking obligations separately.
 Bark model weights are distributed separately under CC-BY-4.0 by Conway
 Research. Their LICENSE is retained and hash-validated in the downloaded bundle.
 
+Whistle speech frontend, pack and decoding
+=========================================
+
+The native Whistle implementation adapts mrfakename's Whistle ONNX export:
+https://huggingface.co/mrfakename/whistle-ONNX
+Revision: 14fc92cb09ad5c271fe9a4ec4be70274790050d2
+Source files: js/{whistle,pack,backend}.js
+Base model: Cactus-Compute/whistle, Cactus Compute.
+License declared by the pinned model card: Apache-2.0
+(licenses/whistle-Apache-2.0.txt).
+Modifications: native Rust host pipeline, checked package and tensor validation,
+bounded engram cache, shared worker lifecycle, explicit completion status.
+Model weights are separately downloaded and integrity checked; native inference
+uses full FP32 ONNX data, not the compact pack's quantized network weights.
+
+Qualification text/audio derives from Google FLEURS, revision
+70bb2e84b976b7e960aa89f1c648e09c59f894dd, test split, CC-BY-4.0:
+https://huggingface.co/datasets/google/fleurs
+Citation: Conneau et al., FLEURS: Few-shot Learning Evaluation of Universal
+Representations of Speech (2022). Record identifiers, original texts, hashes
+and selection are retained in qualification metadata; audio stays outside Git.
+
 Vendored llama.cpp Rust bindings
 ==============================
 vendor/llama-cpp-{2,sys-2} are derived from utilityai/llama-cpp-rs,

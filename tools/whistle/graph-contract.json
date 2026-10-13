@@ -1,0 +1,48 @@
+{
+  "encoder": {
+    "opsets": [
+      [
+        "",
+        17
+      ]
+    ],
+    "inputs": {
+      "mel": "FLOAT, Tx80"
+    },
+    "outputs": {
+      "cross_k": "FLOAT, 8x8xSx48",
+      "cross_v": "FLOAT, 8x8xSx64"
+    },
+    "external_locations": [
+      "encoder.onnx.data"
+    ]
+  },
+  "decoder": {
+    "opsets": [
+      [
+        "",
+        17
+      ]
+    ],
+    "inputs": {
+      "token": "INT64, 1",
+      "pos": "INT64, 1",
+      "efeat": "FLOAT, 2x4x512",
+      "prev": "FLOAT, 8x2x608",
+      "past_k": "FLOAT, 8x2xPx48",
+      "past_v": "FLOAT, 8x2xPx64",
+      "cross_k": "FLOAT, 8x8xSx48",
+      "cross_v": "FLOAT, 8x8xSx64"
+    },
+    "outputs": {
+      "logits": "FLOAT, 8199",
+      "prev_out": "FLOAT, 8x2x608",
+      "present_k": "FLOAT, 8x2xP1x48",
+      "present_v": "FLOAT, 8x2xP1x64",
+      "xattn": "FLOAT, 4x8xS"
+    },
+    "external_locations": [
+      "decoder.onnx.data"
+    ]
+  }
+}
