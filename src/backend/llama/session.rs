@@ -41,17 +41,115 @@ use std::ops::{Deref, DerefMut};
 pub type SessionId = u64;
 
 // Wrapper so self_cell can accept an ident for the dependent type
-pub struct DepCtx<'a>(pub LlamaContext<'a>);
+pub enum DepCtx<'a> {
+    Plain(LlamaContext<'a>),
+    #[cfg(feature = "llama-dflash2")]
+    DFlash2(llama_cpp_2::speculative::MtpSpeculative<'a>),
+}
 impl<'a> Deref for DepCtx<'a> {
     type Target = LlamaContext<'a>;
     fn deref(&self) -> &Self::Target {
-        &self.0
+        match self {
+            Self::Plain(ctx) => ctx,
+            #[cfg(feature = "llama-dflash2")]
+            Self::DFlash2(spec) => spec.target_context(),
+        }
     }
 }
 impl<'a> DerefMut for DepCtx<'a> {
     fn deref_mut(&mut self) -> &mut Self::Target {
-        &mut self.0
+        match self {
+            Self::Plain(ctx) => ctx,
+            #[cfg(feature = "llama-dflash2")]
+            Self::DFlash2(spec) => spec.target_context_mut(),
+        }
     }
+}
+
+impl<'a> DepCtx<'a> {
+    fn create(
+        owner: &'a ModelBundle,
+        backend: &LlamaBackend,
+        params: LlamaContextParams,
+    ) -> Result<Self, ExecError> {
+        #[cfg(feature = "llama-dflash2")]
+        if let Some(draft) = &owner.draft {
+            let target = owner
+                .model
+                .new_context(
+                    backend,
+                    params
+                        .clone()
+                        .with_n_rs_seq(draft.config.max_tokens as u32)
+                        .with_output_limits(
+                            draft.config.max_tokens as u32 + 1,
+                            draft.config.max_tokens as u32 + 1,
+                        ),
+                )
+                .map_err(|e| ExecError::Other(e.into()))?;
+            let draft_ctx = draft
+                .model
+                .new_context_with_ctx_other(
+                    backend,
+                    // Match the server: draft KV is F16 independently of target KV.
+                    params
+                        .with_n_rs_seq(0)
+                        .with_type_k(llama_cpp_2::context::params::KvCacheType::F16)
+                        .with_type_v(llama_cpp_2::context::params::KvCacheType::F16)
+                        .with_output_limits(
+                            draft.config.max_tokens as u32 + 1,
+                            draft.config.max_tokens as u32 + 1,
+                        ),
+                    &target,
+                )
+                .map_err(|e| ExecError::Other(e.into()))?;
+            return llama_cpp_2::speculative::MtpSpeculative::new_dflash2(
+                target,
+                draft_ctx,
+                draft.config.max_tokens,
+            )
+            .map(Self::DFlash2)
+            .map_err(|e| ExecError::Other(e.into()));
+        }
+        owner
+            .model
+            .new_context(backend, params.with_output_limits(1, 1))
+            .map(Self::Plain)
+            .map_err(|e| ExecError::Other(e.into()))
+    }
+
+    /// DFlash2 consumes target features after every physical prefill/decode batch.
+    pub fn decode(&mut self, batch: &mut LlamaBatch<'_>) -> Result<(), ExecError> {
+        self.deref_mut()
+            .decode(batch)
+            .map_err(|e| ExecError::Other(e.into()))?;
+        #[cfg(feature = "llama-dflash2")]
+        if let Self::DFlash2(spec) = self {
+            spec.process(batch).map_err(|e| {
+                ExecError::Other(anyhow::Error::new(e).context("DFlash2 feature injection failed"))
+            })?;
+        }
+        Ok(())
+    }
+
+    /// Compaction restarts both sequences, never just the target's transcript.
+    pub fn clear_kv_cache(&mut self) {
+        self.deref_mut().clear_kv_cache();
+        #[cfg(feature = "llama-dflash2")]
+        if let Self::DFlash2(spec) = self {
+            spec.draft_context_mut().clear_kv_cache();
+        }
+    }
+}
+
+fn kv_params(mut params: LlamaContextParams, settings: &Settings) -> LlamaContextParams {
+    use llama_cpp_2::context::params::KvCacheType;
+    if settings.system.kv_cache_type.as_deref() == Some("q8_0") {
+        params = params
+            .with_type_k(KvCacheType::Q8_0)
+            .with_type_v(KvCacheType::Q8_0);
+    }
+    params
 }
 
 self_cell! {
@@ -212,6 +310,14 @@ impl Session {
         // the matrix harness and any per-call temp/top_p override try
         // to pass.
         let effective_settings = self.settings.with_gen_spec_overrides(&gen_spec);
+        #[cfg(feature = "llama-dflash2")]
+        let use_dflash = self.bundle.draft.is_some()
+            && effective_settings.sampling.temperature == Some(0.0)
+            && gen_spec.grammar.is_none()
+            && !matches!(
+                gen_spec.speculative,
+                Some(crate::backend::common::speculative::SpeculativeMode::Off)
+            );
         let mut guard = self.state.lock();
         let state = guard
             .take()
@@ -245,6 +351,8 @@ impl Session {
         if let Some(tools) = &self.enabled_tool_names {
             puller.arm_enabled_tools(tools.clone());
         }
+        #[cfg(feature = "llama-dflash2")]
+        puller.enable_dflash2(use_dflash);
         Ok(puller)
     }
 
@@ -324,6 +432,12 @@ impl Session {
     }
 
     pub fn save_cache(&self, dst: KvSaveSpec) -> Result<KvSnapshot, ExecError> {
+        #[cfg(feature = "llama-dflash2")]
+        if self.bundle.draft.is_some() {
+            return Err(ExecError::FeatureUnsupported(
+                "DFlash2 persistent KV snapshots",
+            ));
+        }
         let guard = self.state.lock();
         let state = guard
             .as_ref()
@@ -370,6 +484,12 @@ impl Session {
     }
 
     pub fn load_cache(&self, src: KvLoadSpec) -> Result<KvLoadReport, ExecError> {
+        #[cfg(feature = "llama-dflash2")]
+        if self.bundle.draft.is_some() {
+            return Err(ExecError::FeatureUnsupported(
+                "DFlash2 persistent KV snapshots",
+            ));
+        }
         let mut guard = self.state.lock();
         let state = guard
             .as_mut()
@@ -781,7 +901,7 @@ impl Session {
                 ctx_params.with_flash_attention_policy(llama_cpp_sys_2::LLAMA_FLASH_ATTN_TYPE_AUTO);
         }
         let mut ctx_cell = SessionCtxCell::try_new(bundle.clone(), |owner| {
-            owner.model.new_context(backend, ctx_params).map(DepCtx)
+            DepCtx::create(owner, backend, kv_params(ctx_params, settings))
         })
         .map_err(|e| ExecError::Other(e.into()))?;
 
@@ -968,6 +1088,12 @@ impl Session {
         if let Some(spec) = &cache
             && !messages_have_images(&messages)
         {
+            #[cfg(feature = "llama-dflash2")]
+            if bundle.draft.is_some() {
+                return Err(ExecError::FeatureUnsupported(
+                    "DFlash2 persistent KV restore",
+                ));
+            }
             match Self::try_restore(
                 &enabled_tool_names,
                 enable_thinking,
@@ -1094,7 +1220,7 @@ impl Session {
                 ctx_params.with_flash_attention_policy(llama_cpp_sys_2::LLAMA_FLASH_ATTN_TYPE_AUTO);
         }
         let mut ctx_cell = SessionCtxCell::try_new(bundle.clone(), |owner| {
-            owner.model.new_context(&backend, ctx_params).map(DepCtx)
+            DepCtx::create(owner, &backend, kv_params(ctx_params, &settings))
         })
         .map_err(|e| ExecError::Other(e.into()))?;
 
@@ -1386,7 +1512,7 @@ impl Session {
             // Re-tokenize the final message list for prefill.
             let remaining = {
                 let p = tpl
-                    .apply(working.clone(), None, None)
+                    .apply(working.clone(), None, Some(self.enable_thinking))
                     .map_err(ExecError::Other)?;
                 tokenize_chat_prompt(&self.bundle.model, &p)?
             };
@@ -1420,11 +1546,15 @@ impl Session {
                         .add(token, absolute, &[0], is_last)
                         .map_err(|_| ExecError::Other(anyhow::anyhow!("batch add error")))?;
                 }
-                st.ctx_cell
+                if let Err(error) = st
+                    .ctx_cell
                     .with_dependent_mut(|_, ctx| ctx.decode(&mut batch))
-                    .map_err(|_| {
-                        ExecError::Other(anyhow::anyhow!("decode failed after context truncation"))
-                    })?;
+                {
+                    // A successful target decode followed by failed draft
+                    // injection must never leave warm state available for reuse.
+                    *guard = None;
+                    return Err(error);
+                }
                 st.cur_pos += chunk_size as i32;
                 last_batch_tokens = batch.n_tokens();
             }
@@ -1508,9 +1638,13 @@ impl Session {
                     .map_err(|_e| ExecError::Other(anyhow::anyhow!("batch error")))?;
             }
 
-            st.ctx_cell
+            if let Err(error) = st
+                .ctx_cell
                 .with_dependent_mut(|_, ctx| ctx.decode(&mut batch))
-                .map_err(|_e| ExecError::Other(anyhow::anyhow!("batch error")))?;
+            {
+                *guard = None;
+                return Err(error);
+            }
             st.cur_pos += chunk_size as i32;
             last_batch_tokens = batch.n_tokens();
         }
@@ -1553,6 +1687,10 @@ impl BackendSession for Session {
         Session::append_messages(self, new_messages)
     }
     fn as_kv_snapshot(&self) -> Option<&dyn KvSnapshotTrait> {
+        #[cfg(feature = "llama-dflash2")]
+        if self.bundle.draft.is_some() {
+            return None;
+        }
         Some(self)
     }
     fn initial_messages_dropped(&self) -> usize {

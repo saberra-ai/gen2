@@ -24,7 +24,7 @@ The x86 float32 logarithm follows NumPy 2.5.4's fused rational approximation:
 https://github.com/numpy/numpy/tree/v2.5.4
 License: BSD-3-Clause (assets/bark/NUMPY-LICENSE).
 
-The Linux AVX2 mel accumulation order matches OpenBLAS v0.3.34's Haswell
+The Linux/Windows AVX2 mel accumulation order matches OpenBLAS v0.3.34's Haswell
 SGEMM kernel; the native Rust implementation uses scalar fused sums, not BLAS:
 https://github.com/OpenMathLib/OpenBLAS/blob/v0.3.34/kernel/x86_64/sgemm_kernel_8x4_haswell_2.c
 
@@ -38,3 +38,14 @@ and review the linked binary's distribution/relinking obligations separately.
 
 Bark model weights are distributed separately under CC-BY-4.0 by Conway
 Research. Their LICENSE is retained and hash-validated in the downloaded bundle.
+
+Vendored llama.cpp Rust bindings
+==============================
+vendor/llama-cpp-{2,sys-2} are derived from utilityai/llama-cpp-rs,
+crates.io version 0.1.156, licensed MIT OR Apache-2.0. Used under MIT;
+copyright and permission notice: vendor/LICENSE-MIT.llama-cpp-rs.
+Modifications: DFlash2 initializer, dependency paths, context drop ordering,
+and compatibility with the pinned native APIs and hash library.
+Native llama.cpp is an unmodified submodule at
+847f447c310a3784d623a953e6f0bb07f04c0f27. Its license and bundled dependency
+notices are retained inside vendor/llama-cpp-sys-2/llama.cpp.

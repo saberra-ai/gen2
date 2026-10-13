@@ -28,6 +28,7 @@ path = "src/lib.rs"
 # Build the companion by name: `cargo build -p gen2-mlxcel`.
 [workspace]
 members = ["crates/gen2-mlxcel", "examples/laya-mobile"]
+exclude = ["vendor/llama-cpp-2", "vendor/llama-cpp-sys-2"]
 
 [dependencies]
 
@@ -36,8 +37,8 @@ ort = { version = "=2.0.0-rc.12", default-features = false, features = ["std", "
 rustfft = { version = "6", optional = true }
 hound = { version = "3.5", optional = true }
 # ── Inference backends (all optional; pick at least one) ────────────────────
-llama-cpp-2 = { version = "=0.1.156", features = ["mtmd", "llguidance"], optional = true }
-llama-cpp-sys-2 = { version = "=0.1.156", optional = true }
+llama-cpp-2 = { version = "=0.1.156", path = "vendor/llama-cpp-2", features = ["mtmd", "llguidance"], optional = true }
+llama-cpp-sys-2 = { version = "=0.1.156", path = "vendor/llama-cpp-sys-2", optional = true }
 
 # mistral.rs. Default features off: pulling its accelerator features in
 # unconditionally would make a plain `cargo build` require a GPU toolchain.
@@ -224,6 +225,8 @@ hf = ["dep:hf-hub"]
 agent = []
 
 backend-llamacpp = ["dep:llama-cpp-2", "dep:llama-cpp-sys-2"]
+# Experimental in-process DFlash2 drafting. Native source is pinned in .gitmodules.
+llama-dflash2 = ["backend-llamacpp"]
 backend-mlx = ["dep:mlx-rs", "dep:safetensors"]
 backend-external-api = ["dep:reqwest"]
 # mistral.rs: one backend covering GGUF, safetensors, UQFF and HF repos, with

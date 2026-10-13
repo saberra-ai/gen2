@@ -26,9 +26,18 @@ use tracing::warn;
 pub(crate) fn build_bundle(
     backend: &Arc<LlamaBackend>,
     req: &LoadRequest,
+    settings: &crate::engine::Settings,
 ) -> Result<ModelBundle, ExecError> {
     // Validate model file before passing to llama-cpp (prevents C FFI hang on empty/corrupt files)
     crate::engine::validate_model_file(&req.model_path)?;
+    if let Some(draft) = &settings.system.dflash2 {
+        crate::engine::validate_model_file(&draft.model_path)?;
+        if req.mmproj_path.is_some() {
+            return Err(ExecError::FeatureUnsupported(
+                "DFlash2 multimodal generation",
+            ));
+        }
+    }
 
     // iOS-only: budget the load against the process's jetsam memory limit and
     // enforce the device floor (A14 / iPhone 12) + model ceiling (~4B / Q4_K_M)
@@ -63,6 +72,13 @@ pub(crate) fn build_bundle(
         .with_context(|| format!("failed to load model: {}", req.model_path.display()))
         .map_err(ExecError::Other)?;
     let offload = gpu_offload(backend, &model, model_params.n_gpu_layers());
+    #[cfg(feature = "llama-dflash2")]
+    let draft = settings
+        .system
+        .dflash2
+        .as_ref()
+        .map(|config| super::dflash2::DraftModel::load(backend, &model, config, &model_params))
+        .transpose()?;
 
     // Fast model UUID from GGUF metadata + file size (microseconds, not seconds)
     let model_uuid = {
@@ -175,6 +191,8 @@ pub(crate) fn build_bundle(
     }
 
     Ok(ModelBundle {
+        #[cfg(feature = "llama-dflash2")]
+        draft,
         model,
         capabilities: caps,
         meta,

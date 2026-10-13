@@ -149,10 +149,10 @@ The native DSP frontend ports ONNX ASR 0.12.0's default NumPy implementation and
 uses its original MIT-licensed filterbank coefficients. The packaged ONNX
 frontend was rejected: under ORT 1.24.4 it agreed on only 239/250 transcripts.
 The native frontend uses float64 FFT/Hann window and float32 mel/FMA/normalization;
-the pinned Linux AVX2 OpenBLAS profile uses interleaved mel accumulators for its
+the pinned Linux/Windows AVX2 OpenBLAS profile uses interleaved mel accumulators for its
 edge/tail tiles. Platform-local stage traces verify this profile independently;
 alternate BLAS providers and CPU configurations need separate qualification.
-it passed features at `atol=rtol=1e-4`, independent encoder/decoder tensors, and
+It passed features at `atol=rtol=1e-4`, independent encoder/decoder tensors, and
 exact text/token decisions on all 250 clips on the reference Mac. WER was
 3.8597%, equal to matched Python, not a reproduction of the model card's MLX
 3.79% benchmark. [Receipts](../../benches/results/bark/) identify measured runs.
