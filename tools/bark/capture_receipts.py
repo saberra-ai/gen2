@@ -4,6 +4,7 @@ import datetime
 import hashlib
 import json
 import platform
+import re
 import shutil
 import subprocess
 from pathlib import Path
@@ -46,10 +47,25 @@ for name in ["performance.json", "mixed-performance.json", "qualification.json",
     assert not changed, f"implementation changed since receipt {name}: {changed}"
 assert json.loads(inputs["audio-quality.json"].read_text())["passed"]
 assert json.loads(inputs["performance-comparison.json"].read_text())["passed"]
-for name in ["numeric.log", "integration.log", "runtime-rejection-green.log", "live-memory-green.log"]:
+required_tests = {
+    "numeric.log": ["native_frontend_matches_pinned_numpy_reference",
+                    "native_graphs_match_independent_encoder_decoder_tensors"],
+    "integration.log": ["real_bark_matches_reference_and_reuses_resident_weights",
+                        "real_audio_workflow_matches_qualified_reference",
+                        "real_bundle_integrity_and_warm_offline_cache",
+                        "real_worker_bounds_queue_cancellation_shutdown_and_admission",
+                        "coexistence_laya_first", "coexistence_speech_first"],
+    "runtime-rejection-green.log": ["incompatible_runtime_is_rejected_before_binding_initialization"],
+    "live-memory-green.log": ["snapshot_tracks_released_pages_not_lifetime_peak"],
+    "provisioning.log": ["real_provisioner_recovers_incomplete_and_corrupt_entries"],
+}
+for name, tests in required_tests.items():
     path = inputs.get(name, args.root / name)
     log = path.read_text()
-    assert "test result: ok." in log and "FAILED" not in log, f"unpassed native gate: {name}"
+    passed = re.findall(r"test result: ok\. (\d+) passed;", log)
+    assert passed and all(int(count) > 0 for count in passed) and "FAILED" not in log, f"unpassed native gate: {name}"
+    for test in tests:
+        assert re.search(rf"(?m)^test (?:\w+::)*{re.escape(test)} \.\.\. ok\s*$", log), f"missing executed gate: {name}: {test}"
 compatibility = json.loads((args.root / "runtime-compatibility.json").read_text())
 assert compatibility["passed"]
 assert len(compatibility["records"]) == 25

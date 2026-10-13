@@ -47,7 +47,7 @@ fn features_with_observer(
             power[bin] = magnitude * magnitude;
         }
         observe("power", &power);
-        // The pinned Linux AVX2 OpenBLAS kernel uses two interleaved
+        // The pinned x86 AVX2 OpenBLAS kernel uses two interleaved
         // accumulators at the edges of each 12-frame tile and in its 4-frame
         // tail. Other tiles/platforms use a single sequential FMA chain.
         // A one-ULP mel drift changed punctuation on two real recordings.
@@ -103,18 +103,24 @@ fn features_with_observer(
     Ok((normalized, frames, valid))
 }
 
-// NumPy's pinned manylinux wheel uses the Haswell SGEMM family for AVX2
-// machines. Match its accumulation order, not an alternative BLAS provider.
+// NumPy's pinned Linux and Windows wheels use the Haswell SGEMM family for
+// AVX2 machines. Match its order, not an alternative BLAS provider.
 // See OpenBLAS v0.3.34 kernel/x86_64/sgemm_kernel_8x4_haswell_2.c.
-// ARM and the measured Windows wheel use the sequential FMA order.
+// ARM and AVX512 hosts use the sequential FMA order.
 fn numpy_split_mel() -> bool {
-    #[cfg(all(target_os = "linux", target_arch = "x86_64"))]
+    #[cfg(all(
+        any(target_os = "linux", target_os = "windows"),
+        target_arch = "x86_64"
+    ))]
     {
         std::is_x86_feature_detected!("avx2")
             && std::is_x86_feature_detected!("fma")
             && !std::is_x86_feature_detected!("avx512f")
     }
-    #[cfg(not(all(target_os = "linux", target_arch = "x86_64")))]
+    #[cfg(not(all(
+        any(target_os = "linux", target_os = "windows"),
+        target_arch = "x86_64"
+    )))]
     false
 }
 
@@ -167,7 +173,7 @@ mod tests {
         let root = std::path::PathBuf::from(
             std::env::var("GEN2_BARK_REFERENCE").expect("reference corpus"),
         );
-        for index in [0, 1, 2, 13, 34, 41, 43, 249] {
+        for index in [0, 1, 2, 13, 34, 41, 43, 90, 99, 111, 249] {
             let wave = super::super::Audio::from_wav(root.join(format!("{index:03}.wav"))).unwrap();
             let expected = std::fs::read(root.join(format!("{index:03}.features.f32"))).unwrap();
             let expected: Vec<_> = expected

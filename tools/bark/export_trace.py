@@ -21,7 +21,7 @@ asr = Manager(providers=["CPUExecutionProvider"], sess_options=options,
               preprocessor_config={"use_numpy_preprocessors": True}).create_asr(
                   "nemo-conformer-tdt", args.bundle, offline=True).asr
 receipt = json.loads((args.reference / "reference.json").read_text())
-probes = [0, 1, 2, 13, 34, 41, 43, 249]
+probes = [0, 1, 2, 13, 34, 41, 43, 90, 99, 111, 249]
 runtime = io.StringIO()
 with contextlib.redirect_stdout(runtime):
     np.show_runtime()
@@ -37,6 +37,7 @@ for library in (Path(np.__file__).parent.parent / "numpy.libs").glob("*openblas*
 (args.reference / "numpy-runtime.json").write_text(json.dumps({
     "platform": platform.platform(), "numpy_runtime": runtime.getvalue(),
     "numpy_build": np.show_config(mode="dicts"), "blas_runtime": blas_runtime,
+    "cpu_features": np._core._multiarray_umath.__cpu_features__,
 }, indent=2) + "\n")
 for record in receipt["records"]:
     if "token_ids" in record and record["id"] not in probes:

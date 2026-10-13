@@ -20,8 +20,8 @@ ONNX preprocessing graph was rejected (239/250 raw transcript matches), so the
 native implementation ports the helper's default NumPy frontend.
 
 The matched 1/5/15/30/60-second CPU sweep passed the native/Python performance
-gate, with a 60-second median of 2.21 seconds and sampled peak process RSS of
-3.09 GB. A separate mixed run kept the real Qwen3-0.6B GGUF chat model, speech,
+gate, with a 5-second median of 0.184 seconds, 60-second median of 2.48 seconds,
+and sampled peak process RSS of 3.07 GB. A separate mixed run kept the real Qwen3-0.6B GGUF chat model, speech,
 and a synthetic Laya smoke model simultaneously resident; 100 speech requests
 were repeatable and final reservations were zero. This is not real Laya
 checkpoint quality/performance evidence.
@@ -38,16 +38,23 @@ normalized sample fixtures and all 112 supplementary transcripts exactly on the
 reference Mac, including the original three 8-kHz punctuation differences.
 Human-quality gates pass. This is not a universal parity guarantee.
 
-M4 remains open: Windows passed full 250-clip raw text/token parity but three
-48 kHz float32 variants duplicated a word after native resampling. Linux has
-two raw punctuation differences on the main corpus. Stage traces located the
+M4 remains open pending the next three-platform run. Earlier Windows runs
+passed full 250-clip raw text/token parity but three 48-kHz float32 variants
+duplicated a word after scalar resampling. Earlier Linux runs had two raw
+punctuation differences on the main corpus. Stage traces located the
 first Linux drift in OpenBLAS Haswell's interleaved mel accumulation. The native
 fix reproduces all eight captured mel tensors exactly in the diagnostic loop;
 the core 16-kHz gate has not been relaxed. CI also exposed that macOS/Linux
 admission used lifetime peak RSS as current memory. Live-RSS probes now pass a
 red/green released-page regression without relaxing admission ceilings. The
-updated three-OS real-model run must pass before release. Independent CI cases
-use fresh processes to isolate unrelated model loads.
+tail-adjusted run passed every real-model gate on Linux and macOS. Its Windows
+oracle selected Haswell and exposed three core transcript differences: one
+extra word and two punctuation changes. Replaying the Haswell reduction order
+reproduces all eight Windows mel tensors exactly; equal mel inputs also give
+equal logarithms. The same DSP profile now covers Windows AVX2 hosts, with
+three additional stage probes for those failing clips. All three OS gates must
+pass the updated implementation before release. Independent CI cases use fresh
+processes to isolate unrelated model loads.
 Accelerators, physical mobile, MLX, microphone capture and live caption stitching
 remain follow-ups, not completion claims for M0–M4.
 
@@ -368,10 +375,10 @@ the upstream model.
 | Coexistence | ASR plus Laya plus GGUF chat within/over budget; load/restore failure paths | Aggregate admission enforced; reservations charged/released exactly once; existing operations still work |
 | Offline/cache | Interrupted provisioning, corruption detection, warm cache, network disabled after provisioning | Complete cache recovery and zero inference-time downloads |
 
-Numeric tolerances are **proposed starting gates**, not measurements. M0 must
-confirm them on the reference assets. Do not widen a tolerance solely to make
-an unexplained discrepancy pass. Export tensors and the first divergent decoder
-step so a failure identifies the faulty part of the pipeline.
+The originally proposed numeric tolerances above now pass the measured native
+frontend and independent graph probes. They were not widened to accommodate the
+platform drift. Export tensors and the first divergent decoder step so a future
+failure identifies the faulty part of the pipeline.
 
 Silence and minimum-duration behavior need an explicit supported policy. If
 the upstream oracle hallucinates on the chosen silent/noisy fixtures, record
@@ -388,12 +395,13 @@ peak process memory and provider/thread settings. Measure process memory from
 a process-start baseline, including native allocations. Run an A–B–A repetition
 and a 100-request soak to detect state contamination or retained native memory.
 
-Proposed desktop usefulness gate: warm RTF below 1.0 on the named target, and
+Desktop usefulness gate: warm RTF below 1.0 on the named target, and
 median native inference no more than 1.25 times the matched Python CPU reference.
 Compare from normalized PCM with the same frontend route for the fair core
 comparison; report file decode/resample overhead separately. These are target
-criteria, not claimed current performance. Re-run with chat/Laya residency to
-measure contention and validate the conservative reservation.
+criteria; the final M4 Pro sweep passed every duration, with raw samples retained
+in the receipts. The separate chat/Laya residency run measures contention and
+validates the conservative reservation on that host.
 
 The model card's 3.79% WER and 261 ms per minute are MLX measurements on an M5
 Max, with short clips and already-loaded weights. They are contextual references,
@@ -415,8 +423,8 @@ fixtures are absent; skipped/ignored tests cannot produce a green compatibility
 claim. PR-only synthetic coverage is not the real-model release gate. Full
 benchmark results must correspond to the release code/model/dependency pins.
 
-Save machine-readable receipts under a proposed
-`benches/results/bark/<machine>/<run-id>/` location: Gen2 SHA, model revision and
+Save machine-readable receipts under
+`benches/results/bark/<machine>/`: Gen2 SHA, model revision and
 manifest SHA, ORT native build/library hash, frontend route/hash, oracle lock
 digest, corpus revision/audio hashes, normalizer version, OS/architecture/CPU,
 provider partitions, threads, raw transcripts, numeric parity, WER and timing/
@@ -442,11 +450,11 @@ and final provenance-rich checked-in receipts remain required.
 
 ## Remaining release work
 
-Resolve the Linux frontend drift and Windows experimental-resampling quality
-failure, complete all three real-model desktop CPU CI gates, capture receipts
-against the final merged implementation, complete review and publish-shape
-checks, then non-force push the verified commit to remote main. Keep unqualified
-targets and live-caption behavior explicit in the final release summary.
+Complete the updated three-OS real-model CPU CI gates after the Windows Haswell
+profile fix, capture receipts against the final merged implementation, complete
+review and publish-shape checks, then non-force push the verified commit to remote main.
+Keep unqualified targets and live-caption behavior explicit in the final release
+summary.
 
 ## Sources
 
