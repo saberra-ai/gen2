@@ -14,7 +14,7 @@ repository = "https://github.com/saberra-ai/gen2"
 # macOS-only; the docs describe them either way.
 [package.metadata.docs.rs]
 no-default-features = true
-features = ["backend-llamacpp", "backend-external-api", "backend-litertlm", "tokio", "hf", "agent"]
+features = ["backend-llamacpp", "backend-external-api", "backend-litertlm", "backend-onnx", "tokio", "hf", "agent"]
 targets = ["x86_64-unknown-linux-gnu"]
 
 [lib]
@@ -31,7 +31,7 @@ members = ["crates/gen2-mlxcel", "examples/laya-mobile"]
 
 [dependencies]
 
-libloading = { version = "0.8", optional = true }
+libloading = { version = "0.9", optional = true }
 ort = { version = "=2.0.0-rc.12", default-features = false, features = ["std", "api-24"], optional = true }
 # ── Inference backends (all optional; pick at least one) ────────────────────
 llama-cpp-2 = { version = "=0.1.156", features = ["mtmd", "llguidance"], optional = true }
@@ -57,62 +57,62 @@ tokenizers = { version = "0.23", default-features = false, features = ["onig"] }
 # `json` registers the `tojson` filter. Qwen-family chat templates call it to
 # render tool-call arguments, and without it tool use fails at template time
 # with "unknown filter: tojson".
-minijinja = { version = "2.12.0", features = ["json"] }
-minijinja-contrib = { version = "2.9.0", features = ["rand", "pycompat"] }
+minijinja = { version = "3.0.0", features = ["json"] }
+minijinja-contrib = { version = "3.0.0", features = ["rand", "pycompat"] }
 # Grammar-constrained decoding, used across ALL backends (MLX / llama)
 # for JSON-schema / Lark / regex / GBNF output shaping. Same crate
 # llama_cpp_2's `llguidance_sampler` uses — keeps backend semantics aligned
 # (a grammar that works in llama mode also works in MLX mode).
-llguidance = "1.7"
-toktrie = "1.7"
+llguidance = "1.9"
+toktrie = "1.9"
 
 # ── Async / concurrency ─────────────────────────────────────────────────────
-tokio = { version = "1.44.2", features = ["full"] }
-parking_lot = "0.12.4"
-once_cell = "1.21.3"
-dashmap = "6.1.0"
-arc-swap = "1.7.1"
-self_cell = "1.0"
+tokio = { version = "1.53.2", features = ["full"] }
+parking_lot = "0.12.5"
+once_cell = "1.21.4"
+dashmap = "6.2.1"
+arc-swap = "1.9.2"
+self_cell = "1.3"
 
 # ── Serialization / encoding ────────────────────────────────────────────────
 serde = { version = "1", features = ["derive"] }
 serde_json = "1"
 byteorder = "1.5"
-bytes = "1.10.1"
-encoding_rs = "0.8.35"
+bytes = "1.12.1"
+encoding_rs = "0.8.42"
 sha2 = "0.11"
 hex = "0.4"
-bitflags = "2.9.3"
+bitflags = "2.13.2"
 half = { version = "2", features = ["num-traits"] }
 
 # ── Misc ────────────────────────────────────────────────────────────────────
-anyhow = "1.0.98"
-async-trait = "0.1.89"
-futures = "0.3.31"
+anyhow = "1.0.104"
+async-trait = "0.1.92"
+futures = "0.3.34"
 # Derives a tool's JSON schema from the Rust type its handler deserializes, so
 # the schema the model sees and the struct the code reads cannot drift.
 schemars = { version = "1", features = ["derive"] }
-thiserror = "2.0.12"
+thiserror = "2.0.21"
 tracing = "0.1"
 # `hardware.rs` logs through the `log` facade; tracing captures it via its
 # log-compat layer in a host that installs one.
 log = "0.4"
-chrono = { version = "0.4.41", features = ["serde"] }
-uuid = { version = "1.16.0", features = ["serde", "v4", "v5"] }
+chrono = { version = "0.4.45", features = ["serde"] }
+uuid = { version = "1.28.0", features = ["serde", "v4", "v5"] }
 rand = "0.10"
-regex = "1.11.1"
-dirs = "6"
-url = "2.5.4"
-sysinfo = "0.37"
+regex = "1.12.4"
+dirs = "7"
+url = "2.5.8"
+sysinfo = "0.39"
 libc = "0.2"
-tempfile = "3.19.1"
+tempfile = "3.27.0"
 
 # Type-safe Tauri bindings for host apps that export these types over IPC.
 specta = { version = "=2.0.0-rc.24", features = ["derive", "serde_json", "chrono", "uuid", "url", "indexmap"], optional = true }
 
 # Image decode. Not backend-gated: the session runtime bounds decode limits for
 # every multimodal path, not just MLX.
-image = "0.25.6"
+image = "0.25.10"
 
 [target.'cfg(target_os = "windows")'.dependencies]
 windows-sys = { version = "0.61", features = ["Win32_System_Console", "Win32_Foundation", "Win32_System_SystemInformation", "Win32_System_ProcessStatus", "Win32_System_Threading"] }
@@ -154,7 +154,7 @@ required-features = ["backend-laya-onnx"]
 
 [dev-dependencies]
 serde_json = "1"
-tempfile = "3.19.1"
+tempfile = "3.27.0"
 mockito = "1"
 # Property-based tests over the untrusted-input decoders (KV blob codec,
 # reply-part scanner): generate + shrink, rather than hand-fed cases only.
@@ -221,6 +221,9 @@ backend-mistralrs = ["dep:mistralrs"]
 # at run time. Nothing is vendored, linked or downloaded by a build — the
 # feature compiles anywhere, and the library is found when a model is loaded.
 backend-litertlm = ["dep:libloading"]
+# ONNX Runtime GenAI's C ABI, supplied by the host at load time. Unlike
+# backend-laya-onnx this backend generates text from genai_config.json bundles.
+backend-onnx = ["dep:libloading"]
 # No binary downloads. Desktop hosts supply an ONNX Runtime 1.24 library.
 backend-laya-onnx = ["dep:ort"]
 laya-dynamic = ["backend-laya-onnx", "ort/load-dynamic"]
