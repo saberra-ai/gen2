@@ -55,7 +55,10 @@ impl WhistleBackend {
                 .map_err(execution)?
                 .with_inter_threads(1)
                 .map_err(execution)?
-                .with_execution_providers([ort::ep::CPU::default().build().error_on_failure()])
+                .with_execution_providers([ort::ep::CPU::default()
+                    .with_arena_allocator(true)
+                    .build()
+                    .error_on_failure()])
                 .map_err(execution)?
                 .commit_from_file(bundle.directory().join("onnx").join(name))
                 .map_err(execution)

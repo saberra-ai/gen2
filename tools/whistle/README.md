@@ -89,7 +89,7 @@ Native CPU qualification does not establish GPU, FP16, mobile or MLX support.
 ## Reproduce qualification
 
 The reference uses Node 25.9.0 and the pinned upstream JavaScript on CPU with four intra-op
-threads and one inter-op thread. Its Node ORT is 1.24.3; native Rust uses the
+threads, one inter-op thread and the CPU memory arena enabled on both paths. Its Node ORT is 1.24.3; native Rust uses the
 qualified ORT 1.24.4 library. Exact transcript/token decisions are compared under
 matched settings. Reference tools and Node are development-only dependencies.
 Source hashes and npm integrity lock are checked in. Reuse Bark's hash-locked

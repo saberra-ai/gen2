@@ -13,7 +13,7 @@ const buf = fs.readFileSync(path.join(model, 'whistle.pack'));
 const pack = parsePack(buf.buffer.slice(buf.byteOffset, buf.byteOffset + buf.byteLength));
 const ctx = {tok: new Tokenizer(pack.man.tok), engram: new Engram(pack),
   fb: new Float32Array(pack.buf.slice(pack.base + pack.man.melfb.src, pack.base + pack.man.melfb.src + 257*80*4))};
-const options = {executionProviders:['cpu'],intraOpNumThreads:4,interOpNumThreads:1};
+const options = {executionProviders:['cpu'],intraOpNumThreads:4,interOpNumThreads:1,enableCpuMemArena:true};
 const backend = new OrtBackend(ort,
   await ort.InferenceSession.create(path.join(model, 'onnx/encoder.onnx'),options),
   await ort.InferenceSession.create(path.join(model, 'onnx/decoder.onnx'),options));
@@ -54,7 +54,7 @@ for (const record of manifest.records) {
     const features=ctx.engram.feat([2,8192,42,110,77,12,400],6);
     fs.writeFileSync(path.join(output,'engram.f32'),Buffer.from(features.buffer));
   }
-  fs.writeFileSync(path.join(output,'reference.json'),JSON.stringify({environment:{node:process.version,ort:ort.env.versions},corpus:manifest,records},null,2));
+  fs.writeFileSync(path.join(output,'reference.json'),JSON.stringify({environment:{node:process.version,ort:ort.env.versions,session_options:options},corpus:manifest,records},null,2));
   console.log(record.id,result.language,result.ids.length,Math.round(result.timing.total_ms));
 }
 backend.release();

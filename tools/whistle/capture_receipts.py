@@ -21,6 +21,7 @@ probes = read(args.root / "probe-errors.json")
 assert len(reference["records"]) == quality["clips"] == 202, "incomplete corpus"
 assert quality["passed"] and not quality["raw_parity_mismatches"], "failed parity"
 assert comparison["passed"] and comparison["memory"]["passed"], "failed performance/memory"
+assert performance["cpu_memory_arena"] and comparison["environment"]["session_options"]["enableCpuMemArena"], "unmatched allocator settings"
 assert len(performance["soak_rss"]) == 100, "incomplete residency soak"
 assert len(probes) == 19 and all(p["atol"] == p["rtol"] == 1e-4 for p in probes), "incomplete stage probes"
 lock = pathlib.Path("tools/whistle/model-lock.json")
@@ -40,7 +41,7 @@ for path in files:
 receipt = {"code_sha": performance["git_sha"], "capture_sha": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),
            "model_revision": performance["model_revision"], "runtime_library_sha256": performance["native_library_sha256"],
            "os": performance["os"], "cpu": performance["cpu"], "architecture": performance["architecture"],
-           "provider": performance["provider"], "intra_threads": performance["intra_threads"], "inter_threads": performance["inter_threads"],
+           "provider": performance["provider"], "cpu_memory_arena": performance["cpu_memory_arena"], "intra_threads": performance["intra_threads"], "inter_threads": performance["inter_threads"],
            "corpus_cases": 202, "artifacts": hashes, "accepted": True}
 (args.output / "receipt.json").write_text(json.dumps(receipt, indent=2) + "\n", encoding="utf-8")
 print(args.output)

@@ -106,7 +106,6 @@ rand = "0.10"
 regex = "1.12.4"
 dirs = "7"
 url = "2.5.8"
-sysinfo = "0.39"
 libc = "0.2"
 tempfile = "3.27.0"
 
@@ -172,6 +171,8 @@ name = "speech_benchmark"
 required-features = ["asr-dynamic"]
 
 [dev-dependencies]
+# Host benchmark telemetry is not needed by the library or mobile builds.
+sysinfo = "0.39"
 serde_json = "1"
 tempfile = "3.27.0"
 

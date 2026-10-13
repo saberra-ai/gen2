@@ -8,7 +8,7 @@ const {Tokenizer,Engram,transcribe}=await import(pathToFileURL(path.join(model,'
 const {OrtBackend}=await import(pathToFileURL(path.join(model,'js/backend.js')));
 const bytes=fs.readFileSync(path.join(model,'whistle.pack'));const pack=parsePack(bytes.buffer.slice(bytes.byteOffset,bytes.byteOffset+bytes.byteLength));
 const ctx={tok:new Tokenizer(pack.man.tok),engram:new Engram(pack),fb:new Float32Array(pack.buf.slice(pack.base+pack.man.melfb.src,pack.base+pack.man.melfb.src+257*80*4))};
-const sessionOptions={executionProviders:['cpu'],intraOpNumThreads:4,interOpNumThreads:1};
+const sessionOptions={executionProviders:['cpu'],intraOpNumThreads:4,interOpNumThreads:1,enableCpuMemArena:true};
 const backend=new OrtBackend(ort,await ort.InferenceSession.create(path.join(model,'onnx/encoder.onnx'),sessionOptions),await ort.InferenceSession.create(path.join(model,'onnx/decoder.onnx'),sessionOptions));
 const raw=fs.readFileSync(pcmPath);const base=new Float32Array(raw.buffer.slice(raw.byteOffset,raw.byteOffset+raw.byteLength));
 const native=JSON.parse(fs.readFileSync(nativePath));const sweep=[];
@@ -26,5 +26,5 @@ backend.release();
 const reservationBytes=2048*1024*1024;
 const soakTail=native.soak_rss.slice(10);
 const memory={reservation_bytes:reservationBytes,peak_rss:native.peak_rss,soak_growth_bytes:Math.max(...soakTail)-soakTail[0],passed:native.peak_rss<reservationBytes&&Math.max(...soakTail)-soakTail[0]<=64*1024*1024};
-const receipt={environment:{node:process.version,ort:ort.env.versions},sweep,memory,passed:sweep.every(s=>s.passed)&&memory.passed};
+const receipt={environment:{node:process.version,ort:ort.env.versions,session_options:sessionOptions},sweep,memory,passed:sweep.every(s=>s.passed)&&memory.passed};
 fs.writeFileSync(output,JSON.stringify(receipt,null,2));if(!receipt.passed)throw new Error('performance gate failed');
