@@ -10,8 +10,47 @@ Local evidence: 140 FLEURS recordings across all seven languages match the
 pinned JavaScript oracle in automatic and forced-language modes. The full
 feature suite passed (1345 tests), as did the 250-record Bark regression,
 Whistle lifecycle/cache tests and Bark/Whistle/Laya coexistence. Performance
-measurements and the three-platform CI gate are still being completed.
+and memory gates pass on Apple M4 Pro; three-platform CI remains in progress.
 Streaming, timestamps and keyword biasing remain outside this initial slice.
+
+## Implementation evidence (2026-10-13)
+
+Bark was merged as `6a659ff`; Whistle implementation commits start at `80545f7`.
+Both adapters expose the same source/load/request/result interface. Unsupported
+language/token controls fail explicitly according to the loaded profile.
+
+- 202 cases: 140 pinned FLEURS recordings (20 per language), 14 quiet/noisy
+  derivatives and 48 WAV variants from English/Spanish recordings. Automatic
+  and forced-language text, token IDs, detected/selected language and termination
+  match the upstream oracle exactly. The 16 kHz public WAV path and optional
+  libsoxr conversion passed; conversion retains its experimental designation.
+- 19 independent stage probes (mel, fixed engram, encoder K/V, three decoder
+  logits/recurrent/KV steps) had zero numeric difference on the named host;
+  their acceptance tolerance is `atol=rtol=1e-4`.
+- Lifecycle/queue/cancellation/deadlines/reload/runtime conflicts and offline
+  integrity passed, as did online provisioning and corruption recovery.
+- The existing 250-record Bark oracle regression passed. Bark + Whistle +
+  chat + Laya stayed resident together, produced stable results and rejected
+  an additional over-budget speech load. Shutdown released reservations.
+- Full feature suite: 1345 passed before the byte-decoding regression was added;
+  that regression passed separately. No-backend suite and ASR/Laya/HF Clippy pass.
+- Apple M4 Pro, macOS 26.3: cold load 1.08 s, median RTF 0.008–0.021 for
+  1/5/15/30/60 s inputs, native/Node median ratios 0.86–0.93, sampled peak RSS
+  770 MiB. The 100-request soak grew 16 KiB after warmup. This supports the
+  conservative 2 GiB floor; native allocator pages can remain after shutdown.
+
+Receipts: [Apple M4 Pro run](../../benches/results/whistle/apple-m4-pro/2026-10-13/receipt.json).
+The frozen corpus and host-native oracle are distinct from quality claims.
+Held-out WER is 20.2% en, 21.0% de, 20.8% fr, 11.5% es, 19.5% it,
+38.2% nl and 39.3% pl (ten recordings per language). Quiet/noisy and tagged
+English names/numbers/negation metrics are separate receipt slices. These small
+samples establish parity and expose upstream weaknesses; they do not establish
+broad dictation or multilingual critical-content accuracy.
+
+The initial Windows CI corpus encoding failure was fixed by explicit UTF-8.
+macOS/Linux/Windows qualification and the PR's existing regression workflows
+are still required before treating this as a qualified desktop release. W5
+word details, biasing and streaming remain deferred.
 
 ## Outcome and prerequisite
 

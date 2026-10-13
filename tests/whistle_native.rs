@@ -88,6 +88,7 @@ fn real_whistle_matches_reference_and_reports_language_and_completion() {
         Err(SpeechError::InvalidAudio(_))
     ));
     let mut results = Vec::new();
+    let mut forced_results = Vec::new();
     for record in receipt["records"].as_array().unwrap() {
         let bytes = std::fs::read(corpus.join(record["pcm"].as_str().unwrap())).unwrap();
         let audio = Audio::mono_16khz(
@@ -187,6 +188,7 @@ fn real_whistle_matches_reference_and_reports_language_and_completion() {
             record["forced_complete"].as_bool().unwrap()
         );
         results.push(result);
+        forced_results.push(forced);
     }
     for _ in 0..3 {
         assert_eq!(
@@ -198,7 +200,12 @@ fn real_whistle_matches_reference_and_reports_language_and_completion() {
         );
     }
     if let Ok(path) = std::env::var("GEN2_WHISTLE_RESULTS") {
-        std::fs::write(path, serde_json::to_vec_pretty(&results).unwrap()).unwrap();
+        std::fs::write(&path, serde_json::to_vec_pretty(&results).unwrap()).unwrap();
+        std::fs::write(
+            PathBuf::from(path).with_extension("forced.json"),
+            serde_json::to_vec_pretty(&forced_results).unwrap(),
+        )
+        .unwrap();
     }
     let cancelled = Cancellation::default();
     cancelled.cancel();

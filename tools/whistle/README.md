@@ -111,7 +111,7 @@ cargo test --release --no-default-features --features asr-dynamic,asr-resample-s
 cargo test --release --no-default-features --features asr-dynamic,asr-resample-soxr,laya-dynamic \
   --test whistle_native real_whistle_integrity_offline_cache_and_lifecycle -- --ignored --exact
 python tools/whistle/report_quality.py --reference target/whistle/oracle/reference.json \
-  --native target/whistle/native.json --output target/whistle/quality.json
+  --native target/whistle/native.json --forced target/whistle/native.forced.json --output target/whistle/quality.json
 ```
 
 Explicit real-model tests fail when assets are missing. The frozen FLEURS subset
@@ -149,9 +149,13 @@ node tools/whistle/reference/benchmark.mjs "$GEN2_WHISTLE_BUNDLE" \
   /path/to/the/same.f32 target/whistle/performance.json target/whistle/performance-comparison.json
 ```
 
-The proposed performance gates are RTF <1.0 and native median ≤1.25× the matched
+On the initial Apple M4 Pro run, native medians were 0.86–0.93× Node, with RTF
+0.008–0.021. Peak RSS was about 770 MiB and post-warmup soak growth was 16 KiB.
+These are local CPU measurements; other platforms require their own receipts.
+
+The performance gates are RTF <1.0 and native median ≤1.25× the matched
 Node reference on a named host. Sampler measurements include native allocations.
-The memory floor is conservative; record peak residency for the longest input
+The 2 GiB memory floor covers the measured longest-input workspace with headroom; record peak residency for the longest input
 and bounded token limit instead of inferring it from the weight file sizes.
 
 Qualification status and machine receipts are tracked in

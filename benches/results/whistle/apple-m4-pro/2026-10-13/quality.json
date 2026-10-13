@@ -1,0 +1,465 @@
+{
+  "normalizer": "NFC-lower-alphanumeric-space-v1",
+  "clips": 202,
+  "reference_sha256": "40c2d1be4505a7c31a8be4325ee44c1cdaab50498f396441675c7f03f65d3a2c",
+  "forced_sha256": "06be105819df9b22d7de5013c251d6a0478fbec13c06bfb113354b8a85f6dd7b",
+  "native_sha256": "4106507b2843d12636eb8d78fcf44a29fa3d6724cc6fe9f6de0f658d0dc89e07",
+  "raw_parity_mismatches": [],
+  "languages": {
+    "en": {
+      "clips": 20,
+      "words": 440,
+      "word_errors": 72,
+      "characters": 2495,
+      "character_errors": 182,
+      "language_correct": 20,
+      "incomplete": 0,
+      "wer": 0.16363636363636364,
+      "cer": 0.07294589178356714
+    },
+    "de": {
+      "clips": 20,
+      "words": 450,
+      "word_errors": 91,
+      "characters": 3053,
+      "character_errors": 209,
+      "language_correct": 20,
+      "incomplete": 0,
+      "wer": 0.20222222222222222,
+      "cer": 0.06845725515886014
+    },
+    "fr": {
+      "clips": 20,
+      "words": 624,
+      "word_errors": 136,
+      "characters": 3481,
+      "character_errors": 355,
+      "language_correct": 20,
+      "incomplete": 0,
+      "wer": 0.21794871794871795,
+      "cer": 0.10198218902614191
+    },
+    "es": {
+      "clips": 20,
+      "words": 479,
+      "word_errors": 43,
+      "characters": 2762,
+      "character_errors": 72,
+      "language_correct": 20,
+      "incomplete": 0,
+      "wer": 0.08977035490605428,
+      "cer": 0.02606806661839247
+    },
+    "it": {
+      "clips": 20,
+      "words": 507,
+      "word_errors": 83,
+      "characters": 3107,
+      "character_errors": 149,
+      "language_correct": 20,
+      "incomplete": 0,
+      "wer": 0.16370808678500987,
+      "cer": 0.047956227872545866
+    },
+    "nl": {
+      "clips": 20,
+      "words": 448,
+      "word_errors": 170,
+      "characters": 2800,
+      "character_errors": 363,
+      "language_correct": 20,
+      "incomplete": 0,
+      "wer": 0.3794642857142857,
+      "cer": 0.12964285714285714
+    },
+    "pl": {
+      "clips": 20,
+      "words": 325,
+      "word_errors": 149,
+      "characters": 2429,
+      "character_errors": 358,
+      "language_correct": 19,
+      "incomplete": 0,
+      "wer": 0.4584615384615385,
+      "cer": 0.14738575545491972
+    }
+  },
+  "slices": {
+    "parity": {
+      "en": {
+        "clips": 10,
+        "words": 212,
+        "word_errors": 26,
+        "characters": 1209,
+        "character_errors": 69,
+        "language_correct": 10,
+        "incomplete": 0,
+        "wer": 0.12264150943396226,
+        "cer": 0.05707196029776675
+      },
+      "de": {
+        "clips": 10,
+        "words": 245,
+        "word_errors": 48,
+        "characters": 1646,
+        "character_errors": 116,
+        "language_correct": 10,
+        "incomplete": 0,
+        "wer": 0.19591836734693877,
+        "cer": 0.07047387606318348
+      },
+      "fr": {
+        "clips": 10,
+        "words": 306,
+        "word_errors": 70,
+        "characters": 1692,
+        "character_errors": 181,
+        "language_correct": 10,
+        "incomplete": 0,
+        "wer": 0.22875816993464052,
+        "cer": 0.10697399527186761
+      },
+      "es": {
+        "clips": 10,
+        "words": 235,
+        "word_errors": 15,
+        "characters": 1392,
+        "character_errors": 28,
+        "language_correct": 10,
+        "incomplete": 0,
+        "wer": 0.06382978723404255,
+        "cer": 0.020114942528735632
+      },
+      "it": {
+        "clips": 10,
+        "words": 235,
+        "word_errors": 30,
+        "characters": 1400,
+        "character_errors": 51,
+        "language_correct": 10,
+        "incomplete": 0,
+        "wer": 0.1276595744680851,
+        "cer": 0.03642857142857143
+      },
+      "nl": {
+        "clips": 10,
+        "words": 210,
+        "word_errors": 79,
+        "characters": 1314,
+        "character_errors": 179,
+        "language_correct": 10,
+        "incomplete": 0,
+        "wer": 0.3761904761904762,
+        "cer": 0.13622526636225266
+      },
+      "pl": {
+        "clips": 10,
+        "words": 175,
+        "word_errors": 90,
+        "characters": 1338,
+        "character_errors": 229,
+        "language_correct": 9,
+        "incomplete": 0,
+        "wer": 0.5142857142857142,
+        "cer": 0.1711509715994021
+      }
+    },
+    "held-out-quality": {
+      "en": {
+        "clips": 10,
+        "words": 228,
+        "word_errors": 46,
+        "characters": 1286,
+        "character_errors": 113,
+        "language_correct": 10,
+        "incomplete": 0,
+        "wer": 0.20175438596491227,
+        "cer": 0.08786936236391912
+      },
+      "de": {
+        "clips": 10,
+        "words": 205,
+        "word_errors": 43,
+        "characters": 1407,
+        "character_errors": 93,
+        "language_correct": 10,
+        "incomplete": 0,
+        "wer": 0.2097560975609756,
+        "cer": 0.06609808102345416
+      },
+      "fr": {
+        "clips": 10,
+        "words": 318,
+        "word_errors": 66,
+        "characters": 1789,
+        "character_errors": 174,
+        "language_correct": 10,
+        "incomplete": 0,
+        "wer": 0.20754716981132076,
+        "cer": 0.09726103968697597
+      },
+      "es": {
+        "clips": 10,
+        "words": 244,
+        "word_errors": 28,
+        "characters": 1370,
+        "character_errors": 44,
+        "language_correct": 10,
+        "incomplete": 0,
+        "wer": 0.11475409836065574,
+        "cer": 0.032116788321167884
+      },
+      "it": {
+        "clips": 10,
+        "words": 272,
+        "word_errors": 53,
+        "characters": 1707,
+        "character_errors": 98,
+        "language_correct": 10,
+        "incomplete": 0,
+        "wer": 0.1948529411764706,
+        "cer": 0.05741066198008202
+      },
+      "nl": {
+        "clips": 10,
+        "words": 238,
+        "word_errors": 91,
+        "characters": 1486,
+        "character_errors": 184,
+        "language_correct": 10,
+        "incomplete": 0,
+        "wer": 0.38235294117647056,
+        "cer": 0.12382234185733512
+      },
+      "pl": {
+        "clips": 10,
+        "words": 150,
+        "word_errors": 59,
+        "characters": 1091,
+        "character_errors": 129,
+        "language_correct": 10,
+        "incomplete": 0,
+        "wer": 0.3933333333333333,
+        "cer": 0.11824014665444546
+      }
+    },
+    "quiet-40dB": {
+      "en": {
+        "clips": 1,
+        "words": 15,
+        "word_errors": 3,
+        "characters": 85,
+        "character_errors": 9,
+        "language_correct": 1,
+        "incomplete": 0,
+        "wer": 0.2,
+        "cer": 0.10588235294117647
+      },
+      "de": {
+        "clips": 1,
+        "words": 17,
+        "word_errors": 5,
+        "characters": 117,
+        "character_errors": 8,
+        "language_correct": 1,
+        "incomplete": 0,
+        "wer": 0.29411764705882354,
+        "cer": 0.06837606837606838
+      },
+      "fr": {
+        "clips": 1,
+        "words": 33,
+        "word_errors": 12,
+        "characters": 162,
+        "character_errors": 34,
+        "language_correct": 1,
+        "incomplete": 0,
+        "wer": 0.36363636363636365,
+        "cer": 0.20987654320987653
+      },
+      "es": {
+        "clips": 1,
+        "words": 24,
+        "word_errors": 5,
+        "characters": 137,
+        "character_errors": 9,
+        "language_correct": 1,
+        "incomplete": 0,
+        "wer": 0.20833333333333334,
+        "cer": 0.06569343065693431
+      },
+      "it": {
+        "clips": 1,
+        "words": 18,
+        "word_errors": 6,
+        "characters": 123,
+        "character_errors": 12,
+        "language_correct": 1,
+        "incomplete": 0,
+        "wer": 0.3333333333333333,
+        "cer": 0.0975609756097561
+      },
+      "nl": {
+        "clips": 1,
+        "words": 20,
+        "word_errors": 7,
+        "characters": 131,
+        "character_errors": 15,
+        "language_correct": 1,
+        "incomplete": 0,
+        "wer": 0.35,
+        "cer": 0.11450381679389313
+      },
+      "pl": {
+        "clips": 1,
+        "words": 23,
+        "word_errors": 17,
+        "characters": 145,
+        "character_errors": 23,
+        "language_correct": 1,
+        "incomplete": 0,
+        "wer": 0.7391304347826086,
+        "cer": 0.15862068965517243
+      }
+    },
+    "noisy-10dB": {
+      "en": {
+        "clips": 1,
+        "words": 15,
+        "word_errors": 8,
+        "characters": 85,
+        "character_errors": 29,
+        "language_correct": 1,
+        "incomplete": 0,
+        "wer": 0.5333333333333333,
+        "cer": 0.3411764705882353
+      },
+      "de": {
+        "clips": 1,
+        "words": 17,
+        "word_errors": 12,
+        "characters": 117,
+        "character_errors": 47,
+        "language_correct": 1,
+        "incomplete": 0,
+        "wer": 0.7058823529411765,
+        "cer": 0.4017094017094017
+      },
+      "fr": {
+        "clips": 1,
+        "words": 33,
+        "word_errors": 24,
+        "characters": 162,
+        "character_errors": 83,
+        "language_correct": 1,
+        "incomplete": 0,
+        "wer": 0.7272727272727273,
+        "cer": 0.5123456790123457
+      },
+      "es": {
+        "clips": 1,
+        "words": 24,
+        "word_errors": 7,
+        "characters": 137,
+        "character_errors": 20,
+        "language_correct": 1,
+        "incomplete": 0,
+        "wer": 0.2916666666666667,
+        "cer": 0.145985401459854
+      },
+      "it": {
+        "clips": 1,
+        "words": 18,
+        "word_errors": 6,
+        "characters": 123,
+        "character_errors": 15,
+        "language_correct": 1,
+        "incomplete": 0,
+        "wer": 0.3333333333333333,
+        "cer": 0.12195121951219512
+      },
+      "nl": {
+        "clips": 1,
+        "words": 20,
+        "word_errors": 20,
+        "characters": 131,
+        "character_errors": 87,
+        "language_correct": 0,
+        "incomplete": 0,
+        "wer": 1.0,
+        "cer": 0.6641221374045801
+      },
+      "pl": {
+        "clips": 1,
+        "words": 23,
+        "word_errors": 21,
+        "characters": 145,
+        "character_errors": 37,
+        "language_correct": 1,
+        "incomplete": 0,
+        "wer": 0.9130434782608695,
+        "cer": 0.25517241379310346
+      }
+    },
+    "wav-conformance": {
+      "en": {
+        "clips": 24,
+        "words": 456,
+        "word_errors": 87,
+        "characters": 2376,
+        "character_errors": 381,
+        "language_correct": 24,
+        "incomplete": 0,
+        "wer": 0.19078947368421054,
+        "cer": 0.16035353535353536
+      },
+      "es": {
+        "clips": 24,
+        "words": 696,
+        "word_errors": 48,
+        "characters": 4056,
+        "character_errors": 48,
+        "language_correct": 24,
+        "incomplete": 0,
+        "wer": 0.06896551724137931,
+        "cer": 0.011834319526627219
+      }
+    }
+  },
+  "critical_content": {
+    "numbers": {
+      "clips": 2,
+      "words": 34,
+      "word_errors": 7,
+      "characters": 184,
+      "character_errors": 27,
+      "language_correct": 2,
+      "incomplete": 0,
+      "wer": 0.20588235294117646,
+      "cer": 0.14673913043478262
+    },
+    "names": {
+      "clips": 2,
+      "words": 48,
+      "word_errors": 4,
+      "characters": 271,
+      "character_errors": 10,
+      "language_correct": 2,
+      "incomplete": 0,
+      "wer": 0.08333333333333333,
+      "cer": 0.03690036900369004
+    },
+    "negation": {
+      "clips": 2,
+      "words": 45,
+      "word_errors": 6,
+      "characters": 243,
+      "character_errors": 22,
+      "language_correct": 2,
+      "incomplete": 0,
+      "wer": 0.13333333333333333,
+      "cer": 0.09053497942386832
+    }
+  },
+  "passed": true
+}

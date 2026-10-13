@@ -26,17 +26,23 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--reference", type=pathlib.Path, required=True)
     parser.add_argument("--native", type=pathlib.Path, required=True)
+    parser.add_argument("--forced", type=pathlib.Path, required=True)
     parser.add_argument("--output", type=pathlib.Path, required=True)
     args = parser.parse_args()
     reference = json.loads(args.reference.read_text(encoding="utf-8"))
     native = json.loads(args.native.read_text(encoding="utf-8"))
+    forced = json.loads(args.forced.read_text(encoding="utf-8"))
     records = reference["records"]
+    assert len(forced) == len(records)
     assert len(records) == len(native) and len(records) >= 140
     by_language = collections.defaultdict(lambda: collections.Counter())
     by_slice = collections.defaultdict(lambda: collections.defaultdict(collections.Counter))
     critical = collections.defaultdict(collections.Counter)
     mismatches = []
-    for record, actual in zip(records, native):
+    for record, actual, forced_actual in zip(records, native, forced):
+        forced_transcript = forced_actual["transcription"]
+        if forced_transcript["text"] != record["forced_text"] or forced_transcript["token_ids"] != record["forced_token_ids"] or forced_actual["language"] != record["language"] or forced_actual["detected_language"] != record["detected_language"] or (forced_actual["completion"] == "EndOfSpeech") != record["forced_complete"]:
+            mismatches.append(record["id"] + "-forced")
         transcript = actual["transcription"]
         if transcript["text"] != record["text"] or transcript["token_ids"] != record["token_ids"] or actual["language"] != record["detected_language"] or (actual["completion"] == "EndOfSpeech") != record["complete"]:
             mismatches.append(record["id"])
@@ -53,6 +59,7 @@ if __name__ == "__main__":
         return {**counts, "wer": counts["word_errors"] / max(1, counts["words"]), "cer": counts["character_errors"] / max(1, counts["characters"])}
     result = {"normalizer": "NFC-lower-alphanumeric-space-v1", "clips": len(records),
         "reference_sha256": hashlib.sha256(args.reference.read_bytes()).hexdigest(),
+        "forced_sha256": hashlib.sha256(args.forced.read_bytes()).hexdigest(),
         "native_sha256": hashlib.sha256(args.native.read_bytes()).hexdigest(),
         "raw_parity_mismatches": mismatches,
         "languages": {language: {**counts, "wer": counts["word_errors"] / counts["words"],

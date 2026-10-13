@@ -62,7 +62,7 @@ jobs:
       - run: cargo test --locked --release --no-default-features --features asr-dynamic,asr-resample-soxr,laya-dynamic --lib --test whistle_contract
       - run: cargo test --locked --release --no-default-features --features asr-dynamic,asr-resample-soxr,laya-dynamic --test whistle_native real_whistle_matches_reference_and_reports_language_and_completion -- --ignored --exact
       - run: cargo test --locked --release --no-default-features --features asr-dynamic,asr-resample-soxr,laya-dynamic --test whistle_native real_whistle_integrity_offline_cache_and_lifecycle -- --ignored --exact
-      - run: python tools/whistle/report_quality.py --reference target/whistle/oracle/reference.json --native target/whistle/native.json --output target/whistle/quality.json
+      - run: python tools/whistle/report_quality.py --reference target/whistle/oracle/reference.json --native target/whistle/native.json --forced target/whistle/native.forced.json --output target/whistle/quality.json
       - name: Independent numeric stage probes
         run: cargo test --locked --release --no-default-features --features asr-dynamic --lib real_whistle_stage_probes_match_the_independent_oracle -- --ignored
         env:
@@ -77,14 +77,16 @@ jobs:
           PY
       - run: cargo run --locked --release --no-default-features --features asr-dynamic --example speech_benchmark -- whistle target/whistle/model "${{ env.GEN2_WHISTLE_BASE_PCM }}" target/whistle/performance.json
       - run: node tools/whistle/reference/benchmark.mjs target/whistle/model "${{ env.GEN2_WHISTLE_BASE_PCM }}" target/whistle/performance.json target/whistle/performance-comparison.json
+      - run: python tools/whistle/capture_receipts.py --root target/whistle --reference target/whistle/oracle/reference.json --native target/whistle/native.json --output target/whistle/accepted-receipt
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: whistle-cpu-${{ matrix.os }}
           path: |
+            target/whistle/accepted-receipt/**
             target/whistle/performance*.json
             target/whistle/probe-errors.json
-            target/whistle/native.json
+            target/whistle/native*.json
             target/whistle/quality.json
             target/whistle/oracle/reference.json
             target/whistle/oracle/*.f32
