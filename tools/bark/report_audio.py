@@ -35,7 +35,7 @@ for category in sorted({r["category"] for r in records}):
     labels = [records[i]["human"] for i in indices]
     slice_result = {"clips": len(indices)}
     for path, texts in [("reference", [r["text"] for r in records]),
-                        ("native", [r["text"] for r in native])]:
+                        ("native", [r["fulltext"] for r in native])]:
         score = jiwer.process_words(labels, [texts[i] for i in indices],
                                     reference_transform=normalize, hypothesis_transform=normalize)
         slice_result[path] = {"wer": score.wer, "substitutions": score.substitutions,
@@ -50,17 +50,17 @@ for fact in facts["facts"]:
         index = next(i for i, r in enumerate(records) if r["wav"] == wav)
         assert contains(records[index]["human"], fact["phrase"]), "fact must come from human label"
         result = dict(fact, wav=wav, reference_pass=contains(records[index]["text"], fact["phrase"]),
-                      native_pass=contains(native[index]["text"], fact["phrase"]))
+                      native_pass=contains(native[index]["fulltext"], fact["phrase"]))
         critical.append(result)
         if fact["release_gate"]:
             gates.append(result["reference_pass"] and result["native_pass"])
 
 for r in records:
     assert hashlib.sha256((args.reference.parent / r["wav"]).read_bytes()).hexdigest() == r["sha256"]
-matches = sum(a["text"] == b["text"] for a, b in zip(records, native))
-differences = [{"wav": a["wav"], "rate": a["rate"], "reference": a["text"], "native": b["text"],
-                "normalized_words_match": normalize(a["text"]) == normalize(b["text"])}
-               for a, b in zip(records, native) if a["text"] != b["text"]]
+matches = sum(a["text"] == b["fulltext"] for a, b in zip(records, native))
+differences = [{"wav": a["wav"], "rate": a["rate"], "reference": a["text"], "native": b["fulltext"],
+                "normalized_words_match": normalize(a["text"]) == normalize(b["fulltext"])}
+               for a, b in zip(records, native) if a["text"] != b["fulltext"]]
 gates.append(all(d["rate"] != 16000 and d["normalized_words_match"] for d in differences))
 receipt = {
     "git_sha": subprocess.check_output(["git", "rev-parse", "HEAD"], text=True).strip(),

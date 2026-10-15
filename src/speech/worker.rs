@@ -89,7 +89,10 @@ pub struct SpeechCapabilities {
 }
 #[derive(Debug, Clone, serde::Serialize)]
 pub struct Transcription {
-    pub text: String,
+    pub fulltext: String,
+    /// One interval per emitted token, in the same order as `token_ids`.
+    /// Concatenating their text fragments reproduces `fulltext`.
+    pub timestamps: Vec<Timestamp>,
     pub duration_seconds: f64,
     pub model_revision: &'static str,
     pub manifest_sha256: &'static str,
@@ -101,6 +104,17 @@ pub struct Transcription {
     pub execution_micros: u64,
     /// Greedy decoder decisions, useful for independent compatibility checks.
     pub token_ids: Vec<u32>,
+}
+/// Approximate token interval measured in milliseconds from the input's start.
+/// Starts use Bark's 80 ms encoder grid. Ends use the next token's start, or
+/// the recording's duration for the final token. Intervals can have zero length
+/// and include silence; they are not measured word or phoneme boundaries.
+#[derive(Debug, Clone, PartialEq, Eq, serde::Serialize)]
+pub struct Timestamp {
+    pub startms: u64,
+    pub endms: u64,
+    /// Cleaned token fragment, including its separator when present. May be empty.
+    pub text: String,
 }
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 pub enum SpeechStatus {

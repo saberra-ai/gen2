@@ -50,7 +50,7 @@ fn real_bark_matches_reference_and_reuses_resident_weights() {
                 TranscribeOptions::default(),
             )
             .unwrap();
-        if result.text != record["text"].as_str().unwrap() {
+        if result.fulltext != record["text"].as_str().unwrap() {
             mismatches.push(record["id"].clone());
         }
         if serde_json::to_value(&result.token_ids).unwrap() != record["token_ids"]
@@ -58,9 +58,47 @@ fn real_bark_matches_reference_and_reuses_resident_weights() {
         {
             mismatches.push(record["id"].clone());
         }
+        let expected_times: Vec<u64> = record["timestamps"]
+            .as_array()
+            .expect("reference token frame positions")
+            .iter()
+            .map(|frame| frame.as_u64().unwrap() * 80)
+            .collect();
+        assert_eq!(
+            result.timestamps.len(),
+            result.token_ids.len(),
+            "one timestamp per emitted token: clip {}",
+            record["id"]
+        );
+        assert_eq!(
+            result
+                .timestamps
+                .iter()
+                .map(|t| t.startms)
+                .collect::<Vec<_>>(),
+            expected_times,
+            "token emission times: clip {}",
+            record["id"]
+        );
+        let duration_ms = record["samples"].as_u64().unwrap() / 16;
+        for (i, timestamp) in result.timestamps.iter().enumerate() {
+            assert_eq!(
+                timestamp.endms,
+                expected_times.get(i + 1).copied().unwrap_or(duration_ms)
+            );
+            assert!(timestamp.startms <= timestamp.endms && timestamp.endms <= duration_ms);
+        }
+        assert_eq!(
+            result
+                .timestamps
+                .iter()
+                .map(|t| t.text.as_str())
+                .collect::<String>(),
+            result.fulltext
+        );
         eprintln!(
             "clip {}: {} us {:?}",
-            record["id"], result.execution_micros, result.text
+            record["id"], result.execution_micros, result.fulltext
         );
         results.push(result);
     }
@@ -69,18 +107,17 @@ fn real_bark_matches_reference_and_reuses_resident_weights() {
     }
     assert!(
         mismatches.is_empty(),
-        "raw transcript mismatches: {mismatches:?}"
+        "raw transcript/token mismatches: {mismatches:?}"
     );
     let first = &records[0];
     let wav = reference.join(format!("{:03}.wav", first["id"].as_u64().unwrap()));
     for _ in 0..3 {
-        assert_eq!(
-            speech
-                .transcribe(Audio::from_wav(&wav).unwrap(), TranscribeOptions::default())
-                .unwrap()
-                .text,
-            first["text"].as_str().unwrap()
-        );
+        let repeated = speech
+            .transcribe(Audio::from_wav(&wav).unwrap(), TranscribeOptions::default())
+            .unwrap();
+        assert_eq!(repeated.fulltext, first["text"].as_str().unwrap());
+        assert_eq!(repeated.token_ids, results[0].token_ids);
+        assert_eq!(repeated.timestamps, results[0].timestamps);
     }
     let cancelled = Cancellation::default();
     cancelled.cancel();
@@ -433,7 +470,7 @@ fn real_audio_workflow_matches_qualified_reference() {
         let result = speech
             .transcribe(audio, TranscribeOptions::default())
             .unwrap();
-        if result.text != record["text"].as_str().unwrap() && record["rate"] == 16000 {
+        if result.fulltext != record["text"].as_str().unwrap() && record["rate"] == 16000 {
             mismatches.push(wav);
         }
         results.push(result);

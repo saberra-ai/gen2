@@ -30,7 +30,7 @@ let speech = runtime.load_transcriber("/models/bark/onnx", LoadOptions {
     ..Default::default()
 })?;
 let result = speech.transcribe(Audio::mono_16khz(vec![0.; 16000])?, TranscribeOptions::default())?;
-println!("{}", result.text);
+println!("{}", result.fulltext);
 speech.shutdown();
 # Ok(())
 # }
@@ -95,8 +95,21 @@ Dropping the last handle stops the worker. A fresh load starts with clean state.
 Other stable error codes distinguish invalid audio, corrupt bundle, unavailable
 runtime, execution/output failure, resource limit, cancellation, deadline and
 unloaded worker. Only queue saturation is marked retryable by `gen2::Error`.
-Results include raw trimmed text, token IDs, duration, model/manifest pins,
-actual CPU provider, and queue/frontend/encoder/decoder/execution timings.
+Results include `fulltext`, `timestamps: Vec<Timestamp>`, token IDs, duration,
+model/manifest pins, actual CPU provider, and queue/frontend/encoder/decoder/execution timings.
+Each `Timestamp { startms, endms, text }` corresponds to the token ID at the same
+index. Concatenating its text fragments reproduces `fulltext`. Starts measure
+approximate emission positions on the pinned encoder's 80 ms grid; ends use the
+next token's start, or the recording's duration truncated to milliseconds for the
+final token. Intervals can have zero length or include silence, and text fragments
+can be empty. These are approximate decoder intervals, not measured word or
+phoneme boundaries. Bark's cleanup can omit spoken words.
+
+```rust,ignore
+for timestamp in &result.timestamps {
+    println!("{}–{} ms: {}", timestamp.startms, timestamp.endms, timestamp.text);
+}
+```
 
 ## Verification and reproduction
 

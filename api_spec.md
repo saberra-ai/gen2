@@ -2112,11 +2112,18 @@ the host. Capabilities report the actually compiled input formats/rates, English
 duration envelope, cleanup, CPU provider and `streaming = false`.
 
 `Transcriber` is cloneable and owns one bounded worker. `transcribe(audio,
-TranscribeOptions)` returns text, duration, token decisions, provenance and
+TranscribeOptions)` returns `fulltext`, `timestamps: Vec<Timestamp>`, duration, token decisions, provenance and
 queue/frontend/encoder/decoder/execution timings. Decoder state resets per
 request. Text is the model's cleaned output with reference whitespace handling
 and final trim, without a second cleanup model or extra rewriting. No confidence
 or word timestamps are exposed. Cleanup can omit meaningful words.
+Each `Timestamp { startms, endms, text }` corresponds to the `token_ids` entry at
+the same index. Its text is a cleaned token fragment, possibly empty; concatenating
+all fragments reproduces `fulltext`. Times are integer milliseconds from the
+input's start. Starts use the 80 ms encoder grid; ends use the next token's start,
+or the recording's duration truncated to milliseconds for the final token.
+Intervals may have zero length or include silence. They are approximate decoder
+intervals, not measured word or phoneme boundaries.
 
 Load options configure host native-library path, 1–64 queue slots, 1–16 intra-op
 threads and a reservation of at least 4096 MiB. Admission and runtime statistics

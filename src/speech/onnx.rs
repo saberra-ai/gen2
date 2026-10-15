@@ -105,6 +105,7 @@ impl OnnxBackend {
         let mut state1 = vec![0f32; 1280];
         let mut state2 = vec![0f32; 1280];
         let mut tokens = Vec::<u32>::new();
+        let mut token_frames = Vec::new();
         let mut t = 0usize;
         let mut emitted = 0usize;
         let mut iterations = 0usize;
@@ -149,6 +150,9 @@ impl OnnxBackend {
                 state1.copy_from_slice(next1);
                 state2.copy_from_slice(next2);
                 tokens.push(token as u32);
+                // Pinned Bark frontend: 10 ms hop, encoder subsampling of 8.
+                // Record the emission position before the TDT time advance.
+                token_frames.push(t);
                 emitted += 1;
             }
             if duration > 0 {
@@ -159,33 +163,16 @@ impl OnnxBackend {
                 emitted = 0;
             }
         }
-        let raw = tokens
-            .iter()
-            .map(|&id| self.vocab[id as usize].as_str())
-            .collect::<String>();
-        // ONNX ASR's whitespace regex preserves a separator only before a word
-        // character, and removes initial/trailing whitespace. No extra cleanup.
-        let chars: Vec<char> = raw.chars().collect();
-        let text: String = chars
-            .iter()
-            .enumerate()
-            .filter_map(|(i, &c)| {
-                if !c.is_whitespace() {
-                    Some(c)
-                } else if i > 0
-                    && chars
-                        .get(i + 1)
-                        .is_some_and(|c| c.is_alphanumeric() || *c == '_')
-                {
-                    Some(' ')
-                } else {
-                    None
-                }
-            })
-            .collect();
+        let (fulltext, timestamps) = timestamped_text(
+            &tokens,
+            &token_frames,
+            &self.vocab,
+            audio.samples.len() as u64 / 16,
+        );
         options.check()?;
         Ok(Transcription {
-            text: text.trim().into(),
+            fulltext,
+            timestamps,
             duration_seconds: audio.duration_seconds(),
             model_revision: MODEL_REVISION,
             manifest_sha256: MANIFEST_SHA256,
@@ -198,6 +185,58 @@ impl OnnxBackend {
             token_ids: tokens,
         })
     }
+}
+fn timestamped_text(
+    tokens: &[u32],
+    frames: &[usize],
+    vocab: &[String],
+    duration_ms: u64,
+) -> (String, Vec<Timestamp>) {
+    let mut timestamps: Vec<_> = frames
+        .iter()
+        .enumerate()
+        .map(|(i, &frame)| Timestamp {
+            startms: frame as u64 * 80,
+            endms: frames
+                .get(i + 1)
+                .map_or(duration_ms, |&next| next as u64 * 80),
+            text: String::new(),
+        })
+        .collect();
+    let chars: Vec<_> = tokens
+        .iter()
+        .enumerate()
+        .flat_map(|(i, &id)| vocab[id as usize].chars().map(move |c| (i, c)))
+        .collect();
+    // Apply the reference whitespace handling across token boundaries while
+    // preserving each character's owning token. Trim the full transcript once.
+    let normalized: Vec<_> = chars
+        .iter()
+        .enumerate()
+        .filter_map(|(i, &(owner, c))| {
+            if !c.is_whitespace() {
+                Some((owner, c))
+            } else if i > 0
+                && chars
+                    .get(i + 1)
+                    .is_some_and(|(_, c)| c.is_alphanumeric() || *c == '_')
+            {
+                Some((owner, ' '))
+            } else {
+                None
+            }
+        })
+        .collect();
+    let start = normalized.iter().position(|(_, c)| !c.is_whitespace());
+    let end = normalized.iter().rposition(|(_, c)| !c.is_whitespace());
+    let mut fulltext = String::new();
+    if let (Some(start), Some(end)) = (start, end) {
+        for &(owner, c) in &normalized[start..=end] {
+            fulltext.push(c);
+            timestamps[owner].text.push(c);
+        }
+    }
+    (fulltext, timestamps)
 }
 fn argmax(values: &[f32]) -> usize {
     let mut best = 0;
@@ -212,6 +251,49 @@ fn argmax(values: &[f32]) -> usize {
 #[cfg(test)]
 mod tests {
     use super::*;
+
+    #[test]
+    fn timestamp_objects_preserve_token_fragments_and_shared_frames() {
+        let vocab = [" ", " Hello", " wor", "ld", " ! ", "\t世界", "\n"].map(String::from);
+        let (fulltext, timestamps) =
+            timestamped_text(&[0, 1, 2, 3, 4, 5, 6], &[0, 1, 3, 3, 4, 5, 6], &vocab, 601);
+        assert_eq!(fulltext, "Hello world! 世界");
+        assert_eq!(
+            serde_json::to_value(&timestamps).unwrap(),
+            serde_json::json!([
+                {"startms":0,"endms":80,"text":""},
+                {"startms":80,"endms":240,"text":"Hello"},
+                {"startms":240,"endms":240,"text":" wor"},
+                {"startms":240,"endms":320,"text":"ld"},
+                {"startms":320,"endms":400,"text":"!"},
+                {"startms":400,"endms":480,"text":" 世界"},
+                {"startms":480,"endms":601,"text":""}
+            ])
+        );
+        assert_eq!(
+            timestamps
+                .iter()
+                .map(|t| t.text.as_str())
+                .collect::<String>(),
+            fulltext
+        );
+    }
+
+    #[test]
+    fn empty_and_whitespace_only_transcripts_preserve_token_alignment() {
+        assert_eq!(timestamped_text(&[], &[], &[], 20), (String::new(), vec![]));
+        let (fulltext, timestamps) = timestamped_text(&[0], &[0], &[" \t\n".into()], 20);
+        assert!(fulltext.is_empty());
+        assert_eq!(
+            timestamps,
+            vec![Timestamp {
+                startms: 0,
+                endms: 20,
+                text: String::new()
+            }]
+        );
+    }
+
     fn floats(path: impl AsRef<std::path::Path>) -> Vec<f32> {
         let bytes = std::fs::read(path).unwrap();
         assert!(bytes.as_chunks::<4>().1.is_empty());

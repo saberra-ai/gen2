@@ -11,8 +11,8 @@ mod provision;
 pub use provision::download_bark;
 mod worker;
 pub use worker::{
-    Cancellation, LoadOptions, SpeechCapabilities, SpeechStatus, TranscribeOptions, Transcriber,
-    Transcription,
+    Cancellation, LoadOptions, SpeechCapabilities, SpeechStatus, Timestamp, TranscribeOptions,
+    Transcriber, Transcription,
 };
 pub(crate) use worker::{SpeechMonitor, spawn};
 #[cfg(feature = "backend-asr-onnx")]

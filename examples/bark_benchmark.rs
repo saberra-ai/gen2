@@ -111,7 +111,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             );
             samples.push(serde_json::json!({"wall_micros":started.elapsed().as_micros(),"frontend_micros":result.frontend_micros,"encoder_micros":result.encoder_micros,"decoder_micros":result.decoder_micros,"queue_micros":result.queue_micros}));
         }
-        sweep.push(serde_json::json!({"seconds":seconds,"text":expected.text,"token_ids":expected.token_ids,"samples":samples}));
+        sweep.push(serde_json::json!({"seconds":seconds,"text":expected.fulltext,"token_ids":expected.token_ids,"samples":samples}));
     }
     let expected = speech.transcribe(base.clone(), TranscribeOptions::default())?;
     let soak_start = memory();
