@@ -48,9 +48,27 @@ If diarization is unavailable or fails, successful text is retained. If ASR
 fails, the valid timeline is returned and an explicit **Save speaker timeline**
 action persists it. A scoped child cancellation token prevents aborting a
 diarization operation from accidentally cancelling its sibling ASR operation;
-parent/user cancellation still reaches both. The existing sectioned live ASR
-flow remains compatible. This overlay currently adds final recorded-file labels;
-provisional labels for live microphone capture remain an open N4 item.
+parent/user cancellation still reaches both.
+
+Live capture now tees normalized PCM into one continuous native speaker stream
+beside the eight-second durable ASR sections. The adapter batches at most 16640
+samples, queues four blocks, and never waits for inference on the microphone
+writer. Saturation, a model failure or the one-hour speaker cap marks retained
+labels incomplete while ASR capture continues. Snapshots replace revisions for
+one native session; the UI marks active labels provisional and preserves names
+only within that session. Live turns do not assign words to voices.
+
+Stopping closes the input, flushes the native tail and persists the final
+speaker snapshot alongside the sectioned transcript. Recovery cannot restore
+the native speaker cache: prior active labels become explicitly interrupted,
+and resuming saved ASR sections never creates a supposedly continuous replacement
+speaker session. Live section audio is removed after ASR under the existing
+recovery policy, so live timeline playback is unavailable.
+
+The real capture-output test feeds a licensed 60-second meeting at 20 ms
+microphone cadence, checks provisional revisions, compares saved PCM sample for
+sample, and compares final turns with the recording API. It uses recorded audio;
+physical microphone and native visual qualification remain open.
 
 Verification from Pnola:
 
@@ -61,10 +79,19 @@ cargo test --manifest-path src-tauri/Cargo.toml
 cargo clippy --manifest-path src-tauri/Cargo.toml --all-targets -- -D warnings
 ```
 
-Three ignored native tests in `transcription.rs` explicitly exercise real
+The three ignored recorded-file native tests in `transcription.rs` explicitly exercise real
 transcription/timeline parity and each direction of partial success. They
 require pinned local assets and fresh processes with the documented environment
-variables. The ordinary suite does not count them as executed model evidence.
+variables. `capture::tests::real_live_pcm_tee_preserves_audio_and_speaker_session`
+is also ignored by default and explicitly requires the same native artifacts.
+The ordinary suite does not count these as executed model evidence.
+
+With those variables set, `cargo run --manifest-path src-tauri/Cargo.toml --
+--verify-live-speakers /absolute/mono16k.wav /absolute/receipt.json` feeds 80.04
+seconds at capture cadence while the actual live worker runs Bark sections. It
+requires complete durable ASR/export, provisional native revisions and final
+speaker parity against an independent recording call. `--verify-live` retains
+the existing ASR-only verification mode.
 
 Real AMI evaluation is intentionally reported with all omissions and unknown
 labels included. The initial 60-second clip contains 147 normalized reference

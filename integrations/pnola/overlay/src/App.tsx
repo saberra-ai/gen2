@@ -8,6 +8,7 @@ import { useStudio } from "@/hooks/use-studio";
 import { useRecorder } from "@/hooks/use-recorder";
 import { formatTime } from "@/lib/studio/state";
 import { desktop } from "@/lib/api/backend";
+import { LiveSpeakersPanel } from "@/components/studio/live-speakers-panel";
 import { SpeakerPanel } from "@/components/studio/speaker-panel";
 
 export function App() {
@@ -484,6 +485,7 @@ export function App() {
                 </div>
                 <div className="transcript-body">
                   {state.current?.attribution&&<SpeakerPanel key={state.current.id} entry={state.current} disabled={processing} saved={state.history.some(entry=>entry.id===state.current?.id)} canSeek={playbackMatches} onSeek={seconds=>{if(playbackMatches&&player.current){player.current.currentTime=seconds;void player.current.play().catch(()=>{});}}} onRename={(speaker,name)=>{if(state.current?.attribution?.status==='complete')studio.dispatch({type:'rename-speaker',entryId:state.current.id,sessionId:state.current.attribution.session_id,speaker,name});}} onSave={()=>studio.dispatch({type:'save-current'})}/>}
+                  {state.current?.liveSpeakers&&<LiveSpeakersPanel key={state.current.id} entry={state.current} onRename={(speaker,name)=>{const sessionId=state.current?.liveSpeakers?.session_id;if(sessionId&&state.current)studio.dispatch({type:'rename-speaker',entryId:state.current.id,sessionId,speaker,name});}}/>}
                   {state.current && (!processing || state.current.text) ? (
                     <Textarea
                       id="transcript"

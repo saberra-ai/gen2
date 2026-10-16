@@ -5,6 +5,7 @@ mod capture;
 mod engine;
 mod live;
 mod live_audio;
+mod live_speakers;
 mod store;
 mod transcription;
 use std::{path::PathBuf, sync::Arc};
@@ -202,8 +203,12 @@ async fn delete_live(state: State<'_, AppState>, id: String) -> Result<(), Strin
 }
 
 fn main() {
-    if std::env::args().nth(1).as_deref() == Some("--verify-live") {
-        if let Err(error) = live::verify() {
+    if matches!(
+        std::env::args().nth(1).as_deref(),
+        Some("--verify-live" | "--verify-live-speakers")
+    ) {
+        let speakers = std::env::args().nth(1).as_deref() == Some("--verify-live-speakers");
+        if let Err(error) = live::verify(speakers) {
             eprintln!("{error}");
             std::process::exit(1);
         }

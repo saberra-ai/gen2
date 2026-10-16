@@ -321,7 +321,7 @@ state. Do not route all uploaded recordings through stateless full attention.
 ### N4: align Bark text and integrate Pnola
 
 Development checkpoint: a conservative `attribute_bark` API and Pnola
-recorded-file integration are implemented and under review. Pnola now returns
+recorded-file integration are implemented and reviewed. Pnola now returns
 independent text/timeline outcomes, additive session/revision/provenance data,
 session-scoped rename maps and source-audio hashes. Native tests exercised real
 Bark+Nemotron output and both directions of partial success. Public unit tests
@@ -347,7 +347,18 @@ overlap words treated as an unmapped insertion stream. Text WER remains 27.21%.
 These are single-clip investigations, not a held-out attribution acceptance gate.
 The 800 ms/50%/20% rules are conservative uncertainty policy, not a calibrated
 forced aligner. Broader timing/short-turn/overlap evaluation, quality improvement
-and provisional live microphone attribution remain open. N4 is not complete.
+and physical microphone/native visual qualification remain open. N4 is not complete.
+
+The live capture path now tees normalized PCM into a bounded continuous native
+speaker session beside the durable eight-second ASR sections. Four adapter
+blocks plus the Gen2 queue bound transport; saturation and the one-hour speaker
+cap preserve ASR and expose retained labels as incomplete. Active UI revisions
+are provisional. Stop flushes and saves final turns; process recovery marks old
+active labels interrupted because the native cache cannot be restored. A real
+60-second fixture fed at 20 ms microphone cadence preserved every saved sample,
+published native revisions under one UUID, and matched final recording turns.
+This is capture-path evidence with recorded audio, not a physical microphone
+receipt or a live word-attribution claim.
 
 
 - [ ] At the start of this milestone, choose the alignment path using real

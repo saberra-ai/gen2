@@ -5,6 +5,7 @@ import type {
   Progress,
   Transcript,
   SpeakerAttribution,
+  LiveSpeakers,
 } from "./types";
 export interface StudioState {
   phase: Phase;
@@ -53,10 +54,16 @@ export type Action =
   | { type: "delete"; id: string };
 export function reducer(state: StudioState, action: Action): StudioState {
   switch (action.type) {
-    case "live":
+    case "live": {
+      const previous=state.history.find(entry=>entry.id===action.entry.id);
+      const sameSession=!!previous?.liveSpeakers?.session_id&&previous.liveSpeakers.session_id===action.entry.liveSpeakers?.session_id;
+      if(sameSession&&previous!.liveSpeakers!.revision>action.entry.liveSpeakers!.revision)return state;
+      if(sameSession&&previous!.liveSpeakers!.status!=='active'&&action.entry.liveSpeakers!.status==='active')return state;
+      const entry=sameSession?{...action.entry,speakerNames:previous?.speakerNames}:action.entry;
       return { ...state, audio: state.current?.id === action.entry.id ? state.audio : null,
-        current: action.entry, error: null,
-        history: [action.entry, ...state.history.filter(entry => entry.id !== action.entry.id)].slice(0,20) };
+        current: entry, error: null,
+        history: [entry, ...state.history.filter(value => value.id !== entry.id)].slice(0,20) };
+    }
     case "engine":
       return { ...state, engine: action.value };
     case "history":
@@ -130,7 +137,8 @@ export function reducer(state: StudioState, action: Action): StudioState {
       return !state.current||state.phase!=='idle'?state:{...state,history:[state.current,...state.history.filter(entry=>entry.id!==state.current!.id)].slice(0,20)};
     case 'rename-speaker': {
       const current=state.current;
-      if(!current||state.phase!=='idle'||current.id!==action.entryId||current.attribution?.status!=='complete'||current.attribution.session_id!==action.sessionId||!current.attribution.timeline.turns.some(t=>t.speaker===action.speaker)||action.name.length>80) return state;
+      const session=current?.attribution?.status==='complete'?current.attribution:current?.liveSpeakers;
+      if(!current||state.phase!=='idle'||current.id!==action.entryId||session?.session_id!==action.sessionId||!session?.timeline?.turns.some(t=>t.speaker===action.speaker)||action.name.length>80) return state;
       const updated={...current,speakerNames:{...current.speakerNames,[String(action.speaker)]:action.name}};
       return {...state,current:updated,history:state.history.map(entry=>entry.id===updated.id?updated:entry)};
     }
@@ -196,11 +204,33 @@ export function validateHistory(value: unknown): Transcript[] {
     )
     .slice(0, 20)
     .map(entry=>{
-      const {attribution,speakerNames,...original}=entry;
+      const {attribution,speakerNames,liveSpeakers,...original}=entry;
       const valid=validateAttribution(attribution);
+      const live=validateLiveSpeakers(liveSpeakers);
       const names=speakerNames&&typeof speakerNames==='object'?Object.fromEntries(Object.entries(speakerNames).filter(([id,name])=>/^[1-8]$/.test(id)&&typeof name==='string'&&name.length<=80)):undefined;
-      return {...original,...(valid?{attribution:valid}:{}),...(names?{speakerNames:names}:{})};
+      return {...original,...(valid?{attribution:valid}:{}),...(live?{liveSpeakers:live}:{}),...(names?{speakerNames:names}:{})};
     });
+}
+
+function validateLiveSpeakers(value:unknown):LiveSpeakers|undefined {
+  if(!value||typeof value!=='object')return undefined;
+  const v=value as LiveSpeakers;
+  if(!['unavailable','active','complete','interrupted'].includes(v.status)||
+    !(v.session_id===null||typeof v.session_id==='string'&&v.session_id.length<=64)||
+    !Number.isSafeInteger(v.revision)||v.revision<0||
+    !Number.isFinite(v.accepted_audio_seconds)||v.accepted_audio_seconds<0||v.accepted_audio_seconds>3600+1e-6||
+    !Number.isFinite(v.processed_audio_seconds)||v.processed_audio_seconds<0||v.processed_audio_seconds>3600+1e-6||
+    !(v.reason===null||typeof v.reason==='string'))return undefined;
+  if(v.timeline){
+    const t=v.timeline;
+    if(!Number.isFinite(t.audio_duration_seconds)||t.audio_duration_seconds<=0||t.audio_duration_seconds>3600||
+      typeof t.model_revision!=='string'||typeof t.runtime_version!=='string'||typeof t.backend!=='string'||
+      !Array.isArray(t.geometry)||t.geometry.length!==6||!t.geometry.every(Number.isInteger)||
+      !Array.isArray(t.turns)||t.turns.length>100000)return undefined;
+    let previous=0;
+    for(const turn of t.turns){if(!turn||!Number.isFinite(turn.start_seconds)||!Number.isFinite(turn.end_seconds)||turn.start_seconds<previous||turn.end_seconds<turn.start_seconds||turn.end_seconds>t.audio_duration_seconds||!Number.isInteger(turn.speaker)||turn.speaker<1||turn.speaker>8)return undefined;previous=turn.start_seconds;}
+  }else if(v.timeline!==null||v.status==='complete')return undefined;
+  return v;
 }
 
 function validateAttribution(value:unknown):SpeakerAttribution|undefined {

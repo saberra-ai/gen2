@@ -35,6 +35,8 @@ pub struct Snapshot {
     pub seconds: f64,
     pub level: f32,
     pub error: Option<String>,
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub speakers: Option<crate::live_speakers::Snapshot>,
 }
 #[derive(Serialize, Deserialize)]
 struct Section {
@@ -61,6 +63,9 @@ fn rebuild(directory: &Path) -> Result<Snapshot, String> {
         fs::File::open(directory.join("session.json")).map_err(|e| e.to_string())?,
     )
     .map_err(|e| e.to_string())?;
+    if let Some(speakers) = &mut snapshot.speakers {
+        speakers.mark_recovered();
+    }
     snapshot.completed = 0;
     snapshot.duration = 0.;
     snapshot.execution = 0;
@@ -119,10 +124,14 @@ pub struct Session {
     capture_done: AtomicBool,
     published: AtomicU64,
     worker: Mutex<Option<thread::JoinHandle<()>>>,
+    speakers: Option<Arc<crate::live_speakers::LiveSpeakers>>,
 }
 impl Session {
     fn snapshot(&self) -> Snapshot {
         let mut snapshot = self.state.lock().unwrap().clone();
+        if let Some(speakers) = &self.speakers {
+            snapshot.speakers = Some(speakers.snapshot());
+        }
         let capture = self.capture.state();
         let published = self.published.load(Ordering::Acquire).max(
             if self.capture_done.load(Ordering::Acquire) {
@@ -148,6 +157,20 @@ impl Session {
         let session = self.clone();
         let handle = thread::spawn(move || {
             let result = session.run(&job);
+            // Stop and flush capture before finalizing its speaker feed, also
+            // when ASR fails. A valid standalone timeline survives that failure.
+            session.capture.request_stop();
+            if !session.capture_done.load(Ordering::Acquire) {
+                if let Ok(final_state) = session.capture.stop_live() {
+                    session
+                        .published
+                        .store(final_state.sections, Ordering::Release);
+                }
+                session.capture_done.store(true, Ordering::Release);
+            }
+            if let Some(speakers) = &session.speakers {
+                speakers.finish();
+            }
             if let Err(error) = result {
                 session.capture.request_stop();
                 let mut state = session.state.lock().unwrap();
@@ -256,6 +279,9 @@ impl Session {
                 state.duration += section.duration;
                 state.execution += section.execution;
                 state.words += section.text.split_whitespace().count() as u64;
+                if let Some(speakers) = &self.speakers {
+                    state.speakers = Some(speakers.snapshot());
+                }
                 atomic_json(&self.directory.join("session.json"), &*state)?;
             }
             fs::remove_file(path).map_err(|e| e.to_string())?;
@@ -314,6 +340,7 @@ impl Live {
         let directory = location(root, &id)?;
         fs::create_dir_all(root).map_err(|e| e.to_string())?;
         fs::create_dir(&directory).map_err(|e| e.to_string())?;
+        let speakers = crate::live_speakers::LiveSpeakers::start(&job);
         let snapshot = Snapshot {
             id,
             name,
@@ -328,9 +355,10 @@ impl Live {
             seconds: 0.,
             level: 0.,
             error: None,
+            speakers: Some(speakers.snapshot()),
         };
         atomic_json(&directory.join("session.json"), &snapshot)?;
-        capture.start_live(directory.clone())?;
+        capture.start_live(directory.clone(), speakers.clone())?;
         let session = Arc::new(Session {
             directory,
             state: Mutex::new(snapshot),
@@ -338,6 +366,7 @@ impl Live {
             capture_done: AtomicBool::new(false),
             published: AtomicU64::new(0),
             worker: Mutex::new(None),
+            speakers: Some(speakers),
         });
         session.spawn(job);
         let snapshot = session.snapshot();
@@ -391,6 +420,7 @@ impl Live {
             capture_done: AtomicBool::new(true),
             published: AtomicU64::new(published),
             worker: Mutex::new(None),
+            speakers: None,
         });
         session.spawn(job);
         let snapshot = session.snapshot();
@@ -455,7 +485,7 @@ impl Live {
 
 /// Exercise the native section writer, resident Bark worker, durable results,
 /// final flush and complete export using real speech without opening a mic.
-pub fn verify() -> Result<(), String> {
+pub fn verify(with_speakers: bool) -> Result<(), String> {
     let executable = std::env::current_exe().map_err(|e| e.to_string())?;
     let packaged = executable
         .parent()
@@ -490,6 +520,23 @@ pub fn verify() -> Result<(), String> {
     let temporary = tempfile::tempdir().map_err(|e| e.to_string())?;
     let directory = temporary.path().join("native-live-verification");
     let mut writer = crate::live_audio::Sections::new(&directory)?;
+    let engine = Engine::new();
+    engine.load(&resources);
+    let job = engine
+        .claim("native-live-verification".into())
+        .map_err(|_| engine.status(false).detail)?;
+    let speakers = with_speakers.then(|| crate::live_speakers::LiveSpeakers::start(&job));
+    if speakers
+        .as_ref()
+        .is_some_and(|s| s.snapshot().status != crate::live_speakers::Status::Active)
+    {
+        return Err("Live speaker qualification requires a real loaded Nemotron model.".into());
+    }
+    let reference_model = if with_speakers {
+        job.diarizer.clone()
+    } else {
+        None
+    };
     let snapshot = Snapshot {
         id: "native-live-verification".into(),
         name: "Native live verification".into(),
@@ -504,13 +551,9 @@ pub fn verify() -> Result<(), String> {
         seconds: 0.,
         level: 0.,
         error: None,
+        speakers: speakers.as_ref().map(|s| s.snapshot()),
     };
     atomic_json(&directory.join("session.json"), &snapshot)?;
-    let engine = Engine::new();
-    engine.load(&resources);
-    let job = engine
-        .claim("native-live-verification".into())
-        .map_err(|_| engine.status(false).detail)?;
     let session = Session {
         directory,
         state: Mutex::new(snapshot),
@@ -518,28 +561,58 @@ pub fn verify() -> Result<(), String> {
         capture_done: AtomicBool::new(false),
         published: AtomicU64::new(0),
         worker: Mutex::new(None),
+        speakers: speakers.clone(),
     };
     let session = Arc::new(session);
     session.spawn(job);
     let total = 80 * 16000 + 640;
     let mut written = 0;
+    let started = Instant::now();
+    let mut revisions = Vec::new();
+    let mut last_revision = 0;
     while written < total {
-        let count = sample.len().min(total - written);
-        writer.push(&sample[..count])?;
+        let offset = written % sample.len();
+        let count = (sample.len() - offset)
+            .min(total - written)
+            .min(if with_speakers { 320 } else { sample.len() });
+        let block = &sample[offset..offset + count];
+        writer.push(block)?;
+        if let Some(speakers) = &speakers {
+            speakers.push(block);
+            let snapshot = speakers.snapshot();
+            if snapshot.status != crate::live_speakers::Status::Active {
+                return Err(format!(
+                    "Live speaker processing failed: {:?}",
+                    snapshot.reason
+                ));
+            }
+            if snapshot.revision > last_revision {
+                last_revision = snapshot.revision;
+                revisions.push(serde_json::json!({"revision":snapshot.revision,"elapsed_seconds":started.elapsed().as_secs_f64(),"processed_audio_seconds":snapshot.processed_audio_seconds}));
+            }
+        }
         written += count;
         session.published.store(
             writer.frames / crate::live_audio::SECTION_FRAMES as u64,
             Ordering::Release,
         );
+        if with_speakers
+            && let Some(wait) =
+                Duration::from_secs_f64(written as f64 / 16000.).checked_sub(started.elapsed())
+        {
+            thread::sleep(wait);
+        }
     }
     writer.flush()?;
+    if let Some(speakers) = &speakers {
+        speakers.close_input();
+    }
     session.published.store(11, Ordering::Release);
     session.capture_done.store(true, Ordering::Release);
     let finished = session.finish()?;
     if let Some(error) = finished.error {
         return Err(error);
     }
-    engine.shutdown();
     let recovered = rebuild(&session.directory)?;
     let export = temporary.path().join("complete.txt");
     Live::export(temporary.path(), &recovered.id, &export)?;
@@ -551,7 +624,45 @@ pub fn verify() -> Result<(), String> {
     {
         return Err("Native live verification did not cover the complete session.".into());
     }
-    let receipt = serde_json::json!({"passed":true,"duration_seconds":recovered.duration,"sections":recovered.completed,"words":recovered.words,"queued":recovered.queued,"execution_micros":recovered.execution,"export_bytes":text.len(),"microphone_used":false});
+    if let Some(model) = reference_model {
+        let result = model
+            .diarize(
+                gen2::diarization::Audio::mono_16khz(
+                    (0..total)
+                        .map(|index| sample[index % sample.len()] as f32 / 32768.)
+                        .collect(),
+                )
+                .map_err(|e| e.to_string())?,
+                Default::default(),
+            )
+            .map_err(|e| e.to_string())?;
+        let actual = recovered
+            .speakers
+            .as_ref()
+            .ok_or("Missing saved speaker state")?;
+        if actual.status != crate::live_speakers::Status::Complete
+            || revisions.is_empty()
+            || actual
+                .timeline
+                .as_ref()
+                .is_none_or(|timeline| timeline.turns != result.turns)
+            || (actual.processed_audio_seconds - 80.04).abs() > 1e-6
+        {
+            let failure = serde_json::json!({"passed":false,"scope":"live speaker parity diagnostics","actual":actual,"reference":result,"provisional_revisions":revisions});
+            if let Some(path) = std::env::args().nth(3) {
+                fs::write(path, serde_json::to_vec_pretty(&failure).unwrap())
+                    .map_err(|e| e.to_string())?;
+            }
+            return Err(format!(
+                "Live speakers failed final parity, revisions, or tail coverage: status={:?}, revisions={}, processed={}.",
+                actual.status,
+                revisions.len(),
+                actual.processed_audio_seconds
+            ));
+        }
+    }
+    engine.shutdown();
+    let receipt = serde_json::json!({"passed":true,"duration_seconds":recovered.duration,"sections":recovered.completed,"words":recovered.words,"queued":recovered.queued,"execution_micros":recovered.execution,"export_bytes":text.len(),"microphone_used":false,"speaker_qualification":with_speakers,"speakers":recovered.speakers,"provisional_revisions":revisions});
     if let Some(path) = std::env::args().nth(3) {
         fs::write(path, serde_json::to_vec_pretty(&receipt).unwrap()).map_err(|e| e.to_string())?;
     }
@@ -581,6 +692,7 @@ mod tests {
             seconds: 0.,
             level: 0.,
             error: None,
+            speakers: None,
         };
         atomic_json(&directory.join("session.json"), &snapshot).unwrap();
         for index in 0..901 {

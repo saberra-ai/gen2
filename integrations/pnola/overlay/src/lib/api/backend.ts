@@ -116,7 +116,10 @@ export async function loadHistory(): Promise<Transcript[]> {
   if (!desktop) return entries;
   const sessions = await invoke<LiveSnapshot[]>("list_live");
   const ids = new Set(sessions.map(session => session.id));
-  return [...sessions.map(liveTranscript), ...entries.filter(entry => !ids.has(entry.id))]
+  return [...sessions.map(session=>{
+    const entry=liveTranscript(session),saved=entries.find(value=>value.id===session.id);
+    return saved?.liveSpeakers?.session_id===entry.liveSpeakers?.session_id?{...entry,speakerNames:saved?.speakerNames}:entry;
+  }), ...entries.filter(entry => !ids.has(entry.id))]
     .sort((a,b) => b.date.localeCompare(a.date)).slice(0,20);
 
 }
@@ -184,7 +187,7 @@ export async function onFileDrop(
 export function liveTranscript(value: LiveSnapshot): Transcript {
   return { id: value.id, liveSessionId: value.id, name: value.name, date: value.date,
     text: value.text, words: value.words, duration: value.duration, execution: value.execution,
-    queued: value.queued, partial: value.phase !== 'complete' };
+    queued: value.queued, partial: value.phase !== 'complete', liveSpeakers:value.speakers };
 }
 export function startNativeLive(): Promise<LiveSnapshot> {
   return invoke('start_live', { id: crypto.randomUUID(), name: `Live note ${new Date().toLocaleTimeString([], { hour:'2-digit', minute:'2-digit' })}`, date: new Date().toISOString() });

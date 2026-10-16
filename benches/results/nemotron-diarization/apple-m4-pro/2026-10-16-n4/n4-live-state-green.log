@@ -1,0 +1,40 @@
+
+> pnola@0.1.0 test
+> node --test tests/*.test.mjs
+
+✔ splits long audio at quiet points without gaps, overlap, or oversized parts (11.644834ms)
+✔ keeps a subminute clip intact and handles a tiny final tail within Bark bounds (1.5735ms)
+✔ encodes bounded PCM16 WAV and rejects nonfinite samples (0.673666ms)
+✔ the actual capture worklet runs beyond a minute and flushes its final samples exactly once (30.91725ms)
+✔ a live session passes two hours, keeps a bounded preview, and exports every section in order (3837.372542ms)
+✔ unprocessed audio survives a failed worker and is recovered without duplicate text (4.541208ms)
+✔ temporary server contention retries a saved section without losing it (6.214167ms)
+✔ stopping while the engine is unavailable leaves saved audio for explicit resume (2.525875ms)
+✔ storage failure stops accepting audio and surfaces the failure (0.324ms)
+✔ plans and reads a multiminute WAV without dropping or repeating samples (30.715041ms)
+✔ accepts Core Audio extensible PCM headers and rejects non-PCM subtypes (5.390959ms)
+✔ serves the built React UI and rejects arbitrary paths (1345.3315ms)
+✔ rejects unsupported content types, foreign origins, malformed and oversized WAV (5.934167ms)
+✔ transcribes real speech twice with clean state in the resident worker (606.813167ms)
+✔ bounds admission while the native worker is occupied (359.885459ms)
+✔ streams original audio through conversion, transcription, and completion (560.589792ms)
+✔ reports conversion failures and releases admission for the next upload (58.850208ms)
+✔ reads progress and transcript messages across arbitrary UTF-8 chunk boundaries (5.242333ms)
+✔ reactive progress accumulates text and ignores stale job events (0.828ms)
+✔ cancellation keeps completed sections and rejects late results (0.068334ms)
+✔ editing an empty transcript remains editable and updates saved history (0.476459ms)
+✔ invalid saved history does not silently become an empty file (0.8935ms)
+✔ live updates retain one history entry beyond two hours and protect its bounded preview from edits (0.179667ms)
+✔ speaker names and timelines survive storage, while text edits invalidate word labels (0.197208ms)
+✔ a standalone timeline is saved only after explicit selection (0.060583ms)
+✔ opening history clears unrelated playback audio (0.0565ms)
+✔ live speaker updates replace revisions and retain names only within one native session (0.170416ms)
+✔ malformed live speaker history does not attach invalid labels to valid text (0.11ms)
+ℹ tests 28
+ℹ suites 0
+ℹ pass 28
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 4000.382375

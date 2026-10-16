@@ -1,0 +1,135 @@
+{
+  "schema_version": 1,
+  "scope": "N4 recorded-file integration and live PCM development evidence",
+  "release_qualified": false,
+  "machine": "macOS-26.3-arm64-arm-64bit-Mach-O",
+  "gen2_commit_at_collection": "a47f20985abf82e5d4cbd76ea4bdd4da0018a00f",
+  "working_tree_note": "Live source is captured by source hashes; receipts predate the live implementation commit. Recorded-file pipeline behavior rerun after overlap review correction. Full default feature suite predates two overlap regressions and live app changes; targeted tests cover those separately.",
+  "source_hashes": {
+    "src/diarization/alignment.rs": "f7ee54bcc0e3531255103bc3fe245dd54d85f27d5ae3947ad81d39232c6b30e4",
+    "src/speech/worker.rs": "8ef05ef2ad6944d1b401a6cb94e88e4fd10240ea7a0e78c1123fc43adb21365d",
+    "tests/diarization_alignment.rs": "b53e46291d4c3349d531d9cbe75ae25276790af559dfbce951fde811901e6b42",
+    "pnola/src-tauri/src/attribution.rs": "105a2c970f783fdf66c441fd10699bbd3c7edab0d4c67fcfb82f9d0dba99d19a",
+    "pnola/src-tauri/src/transcription.rs": "ad3238df581d7177e7db024c4281ef21ab118029fbed50da339409a3e8afe8cd",
+    "pnola/src-tauri/src/capture.rs": "9786466a996125ed215134a6ed2d8c658278c044b29f6cc6316be388f886bece",
+    "pnola/src-tauri/src/live.rs": "49c9e4bba6df49f811eace8c860ce3311892821b6c57524f5f857ae83aa4a106",
+    "pnola/src-tauri/src/live_speakers.rs": "eb5a5259d4711b236d590c803deae475e319d6531312db8e8fb606220f854ab3"
+  },
+  "artifacts": {
+    "n4-bark-ami.json": "2bcc2c25788d1347aa9dd7acc1e50b059374f3b2928f0390af8d6d9bc13a45ba",
+    "n4-alignment-receipt.json": "0038fccbec706b4ced866126f81514636c2b3a86b8a26f6eee38f8dff5b4c723",
+    "n4-attribution-after-review.json": "96babd739d8987e7a31ceaf6c4252aa95d8e2bbc24c318f5d571a70f2b1c8b1d",
+    "n4-pnola-real-after-review.json": "ca6d5ed7b8b7606833996028f562d723e89d6c5d522a8106baae2a7b45d07fc7",
+    "n4-pnola-asr-unavailable-result.json": "906d377b7eb1afcf86b26de1f7a4d4334324dcb2c84ab13cdf17a8443829fab8",
+    "n4-pnola-diar-unavailable-result.json": "abb7a848b05ccb532dda941e33592913aeaf8827ee461b8e31e1e70d4c4dfbd6",
+    "n4-live-real-result.json": "b7e4ecfb6a106e095c5f535c59c376884083096153a88c88c593092acf3ab7be",
+    "n4-pnola-turns-layout.png": "cf5661a33861738ca1ad9fb994c16c494df8e416058f487d689aa8edf94bde53",
+    "n4-pnola-words.png": "7a09fada864d8a314498764e20c1e3cf8c6b0e9905fe22bcb2e8130a6b515114",
+    "n4-pnola-real-after-review.log": "31a7a35e95ce2db06f78edd31397df559f24e52d86b944b6c1ae3d4df5f1e8ae",
+    "n4-pnola-asr-unavailable.log": "0f74d2518652da43b1146ed4f8efdaa557fa3f84803e9d6e2fba8bbb9a09d237",
+    "n4-pnola-diar-unavailable.log": "e3907f640a41cde2efd9d145480d60daa28afe4dbbcbcadcb84d7757922dcaef",
+    "n4-native-child-cancellation.log": "584224f10ea4363926b13232229984e4f27bf0b16bb695b49597d2eb1bef3bd0",
+    "n4-default-integration-tests.log": "f973a713339d83aeaec335bf9177b582d2c3ba52c409f3a52ce985869b7e44f2",
+    "n4-pnola-final-tests.log": "e53b26e348bb671e70aa3fb778ad369c93bd21695850cfa0fd787f97f4a99cf8",
+    "n4-pnola-final-clippy.log": "dc742914b33fcb2bb269525eb13790b5e21e9ede33110a095daf9de07f63cf20",
+    "n4-live-real.log": "4b395fc8915e27d7aeb37326c409a23fbf8d39b19370ada6f6ecb897276e95c4",
+    "n4-live-app-tests.log": "03266dd0636416134f0462ee125b1856ccc22fa5c84c715c777d92809414c7e7",
+    "n4-live-clippy.log": "d4ffc23b70ddccb6a0a73b3734d4199718d5240f8c8b547eedcf5e60df2ee9da",
+    "n4-live-ui-check.log": "68cdb5bb446b5915be82b72d8e993802d04594300f38ca7c433943c94b27fa8d",
+    "n4-live-state-green.log": "dccc3e59d189302ded496baf2a2c6368139617c58e3ce1f7ab846bee1182555a",
+    "n4-overlap-red.log": "ce9b38e70b7516c8ed4565b0533db2bc067ab8a5781e9ae4fb263e7be6a59832",
+    "n4-overlap-green.log": "35f92ab4d1f0569472942fc91e0398f14c2ff396c799322aec557bf76d2bc5a0"
+  },
+  "alignment_metrics": {
+    "reference_words": 147,
+    "predicted_words": 117,
+    "matched_words": 108,
+    "chronological_merged_wer": 0.272108843537415,
+    "deletions": 31,
+    "insertions": 1,
+    "substitutions": 8,
+    "matched_start_error_median_seconds": 0.07999999999986329,
+    "matched_start_error_p95_seconds": 0.20999999999989072,
+    "matched_end_error_median_seconds": 0.09999999999991971,
+    "matched_end_error_p95_seconds": 1.1500000000001975
+  },
+  "attribution_metrics": {
+    "reference_words": 147,
+    "predicted_words": 117,
+    "chronological_merged_wer": 0.272108843537415,
+    "known_speaker_words": 91,
+    "unknown_words": 21,
+    "overlap_words": 5,
+    "known_speaker_stream_edit_errors": 70,
+    "conservative_cpwer": 0.6530612244897959,
+    "speaker_tagged_word_error_rate": 0.46938775510204084,
+    "speaker_tagged_word_edit_errors": 69,
+    "speaker_tagged_metric_definition": "minimum chronological Levenshtein on (word, speaker) pairs over global known-speaker permutations; word/speaker mismatch costs one substitution; unknown/overlap never match a reference person",
+    "speaker_tagged_mapping": {
+      "2": "A",
+      "4": "B",
+      "1": "C",
+      "3": "D"
+    },
+    "metric_definition": "minimum concatenated per-speaker Levenshtein errors with global permutation of known IDs, plus unknown/overlap words as an unmapped insertion stream; reference omissions remain deletions",
+    "speaker_mapping": {
+      "2": "A",
+      "4": "B",
+      "1": "C",
+      "3": "D"
+    },
+    "short_reference_words_400ms_or_less": 113
+  },
+  "recorded_file": {
+    "native_turns": 27,
+    "words": 117,
+    "asr_error": null,
+    "audio_sha256": "f00f92e53115a4a6724aec0ddaf9c675df6d5fabd3a489b43fffe56ba52a3ae9",
+    "finality": true
+  },
+  "live_capture_path": {
+    "microphone_used": false,
+    "audio_seconds": 60.0,
+    "section_count": 8,
+    "native_revision": 12,
+    "provisional_revisions": 11,
+    "final_matches_recording": true,
+    "saved_pcm_matches_input": true
+  },
+  "tests": {
+    "gen2_full_previous": {
+      "passed": 1352,
+      "failed": 0,
+      "ignored": 46
+    },
+    "overlap_public": 5,
+    "cancellation_hierarchy_public": 1,
+    "pnola_ordinary": 12,
+    "pnola_ordinary_ignored_real_tests": 4,
+    "frontend": 28,
+    "native_recorded_file_and_partial_success_cases_executed": 3,
+    "native_child_stream_drop_executed": true
+  },
+  "desktop_ui": {
+    "real_models_executed": true,
+    "renamed_speaker": "Alex Morgan",
+    "name_persisted_after_reload": true,
+    "observed_seek_seconds": 33.61099924361706,
+    "text_edit_cleared_words": true,
+    "preserved_turns": 27,
+    "native_screen_verified": false,
+    "native_screen_limitation": "Mac was locked. UI actions and WebView DOM/rendered artifacts were verified; OS-native pixels were not.",
+    "gui_diarization_seconds": 77.316017,
+    "gui_bark_seconds": 51.428131,
+    "gui_background_slowdown_cause": "unresolved; N5 measurement/diagnosis required"
+  },
+  "unmet_gates": [
+    "held-out licensed two/four/eight-speaker corpus and per-slice DER/quantization criteria",
+    "attribution quality, short-turn word loss and overlap/boundary evaluation beyond development clip",
+    "physical live microphone/native visual verification",
+    "concurrent live Bark+Nemotron verification (under investigation separately)",
+    "N5 relocated signed CPU/Metal native package and notices",
+    "Linux/Windows real-model offline packaging/coexistence qualification",
+    "clean committed release performance/reload/soak evidence"
+  ]
+}

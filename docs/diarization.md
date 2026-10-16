@@ -104,8 +104,13 @@ to the original audio SHA-256. Editing text invalidates word labels without
 altering native turns. Successful text survives unavailable diarization; valid
 timelines survive unavailable ASR and have an explicit save action. A child
 cancellation token isolates diarization cleanup from sibling ASR while observing
-parent/user cancellation. Existing live ASR remains compatible; provisional
-live microphone attribution is still open work.
+parent/user cancellation. Live capture feeds a separate bounded continuous speaker
+stream alongside durable ASR sections. The UI replaces provisional revisions;
+queue saturation or the one-hour speaker cap marks labels incomplete while ASR
+continues. Stopping flushes and saves the final native timeline. Recovery retains
+interrupted provisional labels and resumes only ASR, since the native speaker
+cache cannot be restored. Recorded-audio capture-path testing passed; physical
+microphone and native visual qualification remain open.
 
 Initial real AMI evaluation found 27.21% chronological merged WER and 46.94%
 speaker-tagged word error, including 21 unknown and 5 overlap words among 117

@@ -68,3 +68,26 @@ test('opening history clears unrelated playback audio',()=>{
   const state={...initialState,history:[entry],audio:{url:'wrong.wav',name:'Different recording'}};
   assert.equal(reducer(state,{type:'open',id:entry.id}).audio,null);
 });
+
+test('live speaker updates replace revisions and retain names only within one native session',()=>{
+  const speakers={status:'active',session_id:'native-one',revision:3,accepted_audio_seconds:8,processed_audio_seconds:5,timeline:{turns:[{start_seconds:0,end_seconds:4,speaker:1}],audio_duration_seconds:5,model_revision:'model',runtime_version:'runtime',backend:'cpu',geometry:[9,4,0,264,264,222],native_compute_micros:1},reason:null};
+  const live={...entry,id:'live',liveSessionId:'live',liveSpeakers:speakers};
+  let state=reducer(initialState,{type:'live',entry:live});
+  state=reducer(state,{type:'rename-speaker',entryId:'live',sessionId:'native-one',speaker:1,name:'Alex Morgan'});
+  assert.equal(state.current.speakerNames['1'],'Alex Morgan');
+  state=reducer(state,{type:'live',entry:{...live,liveSpeakers:{...speakers,revision:4}}});
+  assert.equal(state.current.speakerNames['1'],'Alex Morgan');
+  const newer=state;
+  assert.equal(reducer(state,{type:'live',entry:live}),newer);
+  assert.equal(validateHistory(JSON.parse(JSON.stringify(state.history)))[0].liveSpeakers.revision,4);
+  state=reducer(state,{type:'live',entry:{...live,liveSpeakers:{...speakers,revision:4,status:'interrupted',reason:'Queue full'}}});
+  assert.equal(reducer(state,{type:'live',entry:{...live,liveSpeakers:{...speakers,revision:4}}}),state);
+  state=reducer(state,{type:'live',entry:{...live,liveSpeakers:{...speakers,session_id:'different-native-session',revision:1}}});
+  assert.equal(state.current.speakerNames,undefined);
+});
+
+test('malformed live speaker history does not attach invalid labels to valid text',()=>{
+  const restored=validateHistory([{...entry,liveSpeakers:{status:'complete',session_id:'s',revision:1,accepted_audio_seconds:1,processed_audio_seconds:1,timeline:{turns:[{start_seconds:0,end_seconds:2,speaker:1}],audio_duration_seconds:1,model_revision:'model',runtime_version:'runtime',backend:'cpu',geometry:[9,4,0,264,264,222]},reason:null}}])[0];
+  assert.equal(restored.text,entry.text);
+  assert.equal(restored.liveSpeakers,undefined);
+});

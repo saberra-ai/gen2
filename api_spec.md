@@ -2222,3 +2222,14 @@ standalone timelines when ASR fails, with an explicit save action. Renames,
 media identity checks, history compatibility and seek-to-time controls are host
 responsibilities. Live microphone attribution and full release-quality gates
 remain tracked in the roadmap.
+
+
+Pnola live capture tees normalized PCM into a continuous speaker stream beside
+its durable ASR sections. Its four-block adapter is nonblocking for capture:
+saturation, native failure or the one-hour cap preserves ASR and marks speaker
+labels incomplete. Active snapshots remain provisional and replace native
+revisions. Stop flushes and persists final turns. Recovered active labels remain
+interrupted; resuming ASR does not restore or reset the old native speaker cache.
+Live turns have no word attribution or seek playback under the existing section
+retention policy. Physical microphone qualification remains separate from the
+recorded-audio capture-path test.

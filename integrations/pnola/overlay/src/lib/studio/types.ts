@@ -32,11 +32,18 @@ export interface Transcript {
   audio_sha256?:string;
   asr_error?:string|null;
   wordsEdited?:boolean;
+  liveSpeakers?:LiveSpeakers;
+}
+export interface LiveSpeakers {
+  status:'unavailable'|'active'|'complete'|'interrupted';session_id:string|null;revision:number;
+  accepted_audio_seconds:number;processed_audio_seconds:number;reason:string|null;
+  timeline:null|{turns:SpeakerTurn[];audio_duration_seconds:number;model_revision:string;runtime_version:string;backend:string;geometry:number[];native_compute_micros:number};
 }
 export interface LiveSnapshot {
   id: string; name: string; date: string; phase: 'recording' | 'stopping' | 'complete' | 'error' | 'interrupted';
   text: string; duration: number; execution: number; words: number;
   completed: number; queued: number; seconds: number; level: number; error?: string;
+  speakers?:LiveSpeakers;
 }
 export interface Result {
   text: string;

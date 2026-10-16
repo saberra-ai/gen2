@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "scope": "single-clip alignment/attribution investigation",
+  "reference_sha256": "0038fccbec706b4ced866126f81514636c2b3a86b8a26f6eee38f8dff5b4c723",
+  "result_sha256": "ca6d5ed7b8b7606833996028f562d723e89d6c5d522a8106baae2a7b45d07fc7",
+  "tool_sha256": "9e25fe890f89c8ee08f1316da8c78b40115849ba3ef12c940056b2ef5ebf5049",
+  "metrics": {
+    "reference_words": 147,
+    "predicted_words": 117,
+    "chronological_merged_wer": 0.272108843537415,
+    "known_speaker_words": 91,
+    "unknown_words": 21,
+    "overlap_words": 5,
+    "known_speaker_stream_edit_errors": 70,
+    "conservative_cpwer": 0.6530612244897959,
+    "speaker_tagged_word_error_rate": 0.46938775510204084,
+    "speaker_tagged_word_edit_errors": 69,
+    "speaker_tagged_metric_definition": "minimum chronological Levenshtein on (word, speaker) pairs over global known-speaker permutations; word/speaker mismatch costs one substitution; unknown/overlap never match a reference person",
+    "speaker_tagged_mapping": {
+      "2": "A",
+      "4": "B",
+      "1": "C",
+      "3": "D"
+    },
+    "metric_definition": "minimum concatenated per-speaker Levenshtein errors with global permutation of known IDs, plus unknown/overlap words as an unmapped insertion stream; reference omissions remain deletions",
+    "speaker_mapping": {
+      "2": "A",
+      "4": "B",
+      "1": "C",
+      "3": "D"
+    },
+    "short_reference_words_400ms_or_less": 113
+  }
+}
