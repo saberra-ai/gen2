@@ -19,6 +19,20 @@ fn load_options(library: impl Into<PathBuf>) -> LoadOptions {
     }
 }
 
+fn verify_chat_placement(chat: &gen2::Model, stage: &str) {
+    let offload = chat.info().offload;
+    println!(
+        "chat-placement {stage}: {}",
+        serde_json::to_string(&offload).unwrap()
+    );
+    if let Ok(expected) = std::env::var("GEN2_CHAT_EXPECT_BACKEND") {
+        let offload = offload.expect("chat GPU placement must be reported");
+        assert!(offload.on_gpu(), "chat unexpectedly fell back to CPU");
+        assert_eq!(offload.backend.as_deref(), Some(expected.as_str()));
+        assert!(offload.device.is_some_and(|device| !device.is_empty()));
+    }
+}
+
 #[test]
 #[ignore = "requires GEN2_NEMOTRON_ASSETS, GEN2_NEMO_LIBRARY, GEN2_BARK_BUNDLE, GEN2_ORT_LIBRARY, GEN2_CHAT_GGUF; fresh process"]
 fn mixed_chat_first() {
@@ -86,6 +100,7 @@ fn mixed(chat_first: bool, real_laya: bool) {
             .run()
     };
     assert!(!generate().unwrap().text().is_empty());
+    verify_chat_placement(&chat, "initial");
     let laya = runtime
         .load_decider(
             &laya_bundle,
@@ -147,6 +162,7 @@ fn mixed(chat_first: bool, real_laya: bool) {
     speech.shutdown();
     assert_eq!(runtime.speech_reserved_mb(), 0);
     assert!(!generate().unwrap().text().is_empty());
+    verify_chat_placement(&chat, "restored");
     diarizer.shutdown();
     laya.shutdown();
     assert_eq!(runtime.diarization_reserved_mb(), 0);
