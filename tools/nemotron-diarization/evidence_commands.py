@@ -24,5 +24,5 @@ class CommandRunner:
         if (result.returncode == 0) == expected_failure:
             raise ValueError(f'{name}: unexpected exit status {result.returncode}')
         print('PASS ' + name, flush=True)
-        return (self.output / (name + '.stdout.log')).read_text()
+        return (self.output / (name + '.stdout.log')).read_text(encoding='utf-8-sig')
 

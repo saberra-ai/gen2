@@ -637,8 +637,14 @@ imports. A bounded PE inspector and malformed-input/naming regressions pass;
 all fifteen previously delivered PE images independently agree with LLVM's
 ordinary-import inspection. The workflow also captures actual redist byte
 origin, versions/signers and vcpkg metadata without claiming distribution
-qualification. New private Windows execution is pending; this source work does
-not close offline packaging, licensing or coexistence gates.
+qualification. The first private build linked all five DLLs and the probe, then stopped at an
+overstrict installed-import-library assertion. Its [failed receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-private-import-library-control/qualification.json)
+is retained; the checker now matches upstream's single installed public C ABI
+import library, and its actual model/provenance retry is pending. The separate
+[read-only Windows prerequisites](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-container-prerequisites/qualification.json)
+confirm an available process-container engine and preloaded Server Core image.
+No container/model payload ran in that prerequisite check. Offline packaging,
+licensing, coexistence and desktop machine gates remain open.
 
 The actual Linux SDK archive job now passes native/public parity and all seven
 lifecycle tests, then preserves all 82 filesystem records, including seven

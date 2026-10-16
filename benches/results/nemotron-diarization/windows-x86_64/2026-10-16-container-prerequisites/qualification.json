@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "runtime_qualified": false,
+  "server2022_process_container_candidate": true,
+  "ci_run_id": 38882586356,
+  "source_commit": "5ed163d5985cc116f4c511b96d099b75bacd71e6",
+  "scope": "Actual read-only host/engine/local-image prerequisites only; no container creation, runtime payload, models or fresh-machine qualification.",
+  "receiver_checks": {
+    "ci_source_and_success_verified": true,
+    "historical_tool_materialization_verified": "Actual tool SHA exactly matches historical Git LF source materialized as CRLF by Windows checkout. Subsequent workflow explicitly disables autocrlf before checkout.",
+    "all_four_observational_commands_successful": true,
+    "candidate_recomputed": true
+  },
+  "receiver_harness_note": "Initial exact-LF Git-tool assertion failed before collection; explicit CRLF materialization comparison explains and verifies the observed bytes without changing the source claim."
+}

@@ -2,7 +2,7 @@ name: Diarization Windows container prerequisites
 on:
   push:
     branches: [codex/nemotron3-windows-probe]
-    paths: ['.github/workflows/diarization-windows-preflight.yml', 'tools/nemotron-diarization/windows_container_preflight.py']
+    paths: ['.github/workflows/diarization-windows-preflight.yml', 'tools/nemotron-diarization/windows_container_preflight.py', 'tools/nemotron-diarization/windows_container_smoke.py', 'tools/nemotron-diarization/windows_smoke_controls.ps1', 'tools/nemotron-diarization/windows-container.lock.json']
 permissions:
   contents: read
 jobs:
@@ -10,6 +10,8 @@ jobs:
     runs-on: windows-2022
     timeout-minutes: 10
     steps:
+      - name: Preserve byte-pinned source line endings
+        run: git config --global core.autocrlf false
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
@@ -18,9 +20,17 @@ jobs:
           python-version: '3.12'
       - name: Observe host and existing Docker prerequisites without mutations
         run: python tools/nemotron-diarization/windows_container_preflight.py --output "${{ runner.temp }}/windows-container-prerequisites"
+      - name: Exercise frozen Server Core process-container controls
+        run: python tools/nemotron-diarization/windows_container_smoke.py --prerequisites "${{ runner.temp }}/windows-container-prerequisites/preflight.json" --output "${{ runner.temp }}/windows-container-controls"
       - uses: actions/upload-artifact@v4
         if: always()
         with:
           name: windows-container-prerequisites
           path: ${{ runner.temp }}/windows-container-prerequisites/
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: windows-container-controls
+          path: ${{ runner.temp }}/windows-container-controls/
           retention-days: 7

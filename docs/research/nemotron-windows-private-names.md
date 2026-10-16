@@ -134,7 +134,10 @@ change daemon/features, create containers, install tools or execute models. Each
 observation is bounded to 30 seconds, endpoint/context environment overrides
 prevent Docker queries, and only selected non-secret fields are retained. A
 candidate result requires kernel build 20348 and an x64 Windows engine;
-`runtime_qualified` remains false. Actual preflight execution is pending. Even a
+`runtime_qualified` remains false. The actual [read-only preflight](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-container-prerequisites/qualification.json)
+passed in run 38882586356 at `5ed163d`: all four observational commands succeeded,
+with a local Windows Docker 29.7.2 process engine on kernel build 20348 and
+preloaded Server Core/Nano Server images. No container was created in that run. Even a
 positive result establishes only prerequisites for a later fresh offline container
 run, not desktop support or usable nested Hyper-V.
 
@@ -149,3 +152,18 @@ and passes the correction. A read-only macOS receiver rehashed all 66 delivered
 files, checked all fifteen PE files and confirmed all five native export sets
 are unchanged from `4bd34aa`, with no generic native imports. That receiver did
 not execute Windows code; actual Windows requalification is pending.
+
+A separate controls tool now pins the observed Server Core digest and image ID
+in `windows-container.lock.json` and requires it already present (`--pull never`).
+It creates only its own disposable process container with network none, read-only
+Unicode-path control inputs and a writable result folder. It freezes image/source/
+tool/input hashes before creation, requires actual input read success plus write
+denial with Win32 error 5, no operational non-loopback interface and no expected
+development commands/Visual Studio directory, then checks actual Docker mount
+sources/flags, isolation, image and exit status. The managed container is removed
+and input inventory must stay identical. This implementation awaits actual
+execution and tests infrastructure controls only; it contains no Gen2/native/model/
+package payload and keeps runtime qualification false. It is separate from desktop
+machine qualification. The next workflow preserves LF before checkout, and Docker
+JSON is explicitly decoded as UTF-8 so the Unicode relocation path is preserved
+under Windows legacy locales.
