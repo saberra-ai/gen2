@@ -1,6 +1,8 @@
 """Preserve a development SDK's exact filesystem metadata in a CI artifact.
 
 This is an SDK snapshot, not a closed runtime or portable release package.
+Extractors that filter permissions must restore the recorded safe mode bits
+before comparing the extracted inventory, including directory modes.
 """
 import gzip
 import hashlib

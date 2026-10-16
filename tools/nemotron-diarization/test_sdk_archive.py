@@ -16,6 +16,8 @@ class SDKArchiveTests(unittest.TestCase):
             (sdk / 'lib').mkdir(parents=True)
             (sdk / 'bin').mkdir()
             (sdk / 'lib/real.so.1').write_bytes(b'native-library')
+            (sdk / 'lib').chmod(0o775)
+            (sdk / 'lib/real.so.1').chmod(0o664)
             (sdk / 'lib/entry.so').symlink_to('real.so.1')
             (sdk / 'bin/probe').write_bytes(b'#!/bin/sh\nexit 0\n')
             (sdk / 'bin/probe').chmod(0o755)
@@ -29,10 +31,18 @@ class SDKArchiveTests(unittest.TestCase):
                 self.assertEqual(hashlib.sha256(snapshots[-1]).hexdigest(), summary['archive_sha256'])
                 delivered = root / (name + ' relocated ü')
                 delivered.mkdir()
-                with tarfile.open(archive) as tar:
-                    tar.extractall(delivered, filter='data')
-                self.assertEqual(inventory(delivered / 'sdk'), inventory(sdk))
                 manifest = json.loads((output / 'development-sdk-files.json').read_text())
+                with tarfile.open(archive) as tar:
+                    for relative, record in manifest['files'].items():
+                        name = 'sdk' if relative == '.' else 'sdk/' + relative
+                        self.assertEqual(tar.getmember(name).mode, record['mode'])
+                    tar.extractall(delivered, filter='data')
+                # Python's data filter intentionally drops directory modes and
+                # group-write bits; restore the validated inventory's modes.
+                for relative, record in manifest['files'].items():
+                    if record['type'] != 'symlink':
+                        (delivered / 'sdk' / relative).chmod(record['mode'])
+                self.assertEqual(inventory(delivered / 'sdk'), inventory(sdk))
                 self.assertEqual(manifest['files'], inventory(sdk))
                 self.assertFalse(manifest['release_qualified'])
             self.assertEqual(*snapshots)
