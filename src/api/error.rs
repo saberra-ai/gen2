@@ -8,6 +8,10 @@ use thiserror::Error;
 #[derive(Debug, Error)]
 #[non_exhaustive]
 pub enum Error {
+    /// Shared Runtime memory admission refused host working memory or a model
+    /// blocked by that work. No allocation or fallback is acknowledged.
+    #[error("cannot reserve {requested_mb} MiB alongside resident work")]
+    ResourceLimit { requested_mb: u64 },
     /// Typed speaker timeline admission, lifecycle and native execution failure.
     #[error(transparent)]
     Diarization(#[from] crate::diarization::DiarizationError),
@@ -105,6 +109,7 @@ impl Error {
     /// Callers route on this rather than matching error text.
     pub fn code(&self) -> Option<&str> {
         match self {
+            Self::ResourceLimit { .. } => Some("resource_limit"),
             Self::Speech(e) => Some(e.code()),
             Self::Diarization(e) => Some(e.code()),
             Self::Decision(e) => Some(e.code()),

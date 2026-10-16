@@ -185,9 +185,15 @@ impl Bundle {
     }
 }
 pub struct Transcriber {
-    context: NonNull<c_void>,
+    context: Option<NonNull<c_void>>,
     api: ffi::Api,
     _reservation: Box<dyn Send>,
+}
+/// Keeps the original peak admission occupied after native context close, while
+/// the host finishes bounded durable output/cleanup. Contains no native pointers.
+#[must_use = "Hold through final output buffers and durable commit teardown"]
+pub struct FinalizationReservation {
+    _owner: Box<dyn Send>,
 }
 impl Transcriber {
     pub(crate) fn load(
@@ -205,7 +211,7 @@ impl Transcriber {
                 SpeechError::BackendUnavailable("Local Whisper context could not be created".into())
             })?;
         Ok(Self {
-            context,
+            context: Some(context),
             api: api.with_threads(options.threads as i32),
             _reservation: reservation,
         })
@@ -219,6 +225,9 @@ impl Transcriber {
     ) -> Result<Transcription> {
         validate_audio(samples)?;
         options.check()?;
+        let context = self
+            .context
+            .ok_or_else(|| SpeechError::BackendUnavailable("Whisper context is closed".into()))?;
         let started = Instant::now();
         // Exact digital zero contains no recoverable speech signal. This is not
         // acoustic VAD and does not qualify ordinary background/noise silence.
@@ -237,7 +246,7 @@ impl Transcriber {
         // callback data remain live until the synchronous native call returns.
         let status = unsafe {
             (self.api.run)(
-                self.context.as_ptr(),
+                context.as_ptr(),
                 samples.as_ptr(),
                 samples.len(),
                 options.language.native(),
@@ -261,8 +270,8 @@ impl Transcriber {
         // segment is copied into a bounded owned UTF-8 buffer before the next call.
         let (count, detected_language) = unsafe {
             (
-                (self.api.segments)(self.context.as_ptr()),
-                (self.api.language)(self.context.as_ptr()),
+                (self.api.segments)(context.as_ptr()),
+                (self.api.language)(context.as_ptr()),
             )
         };
         if !(0..=512).contains(&count) || !(0..100).contains(&detected_language) {
@@ -277,7 +286,7 @@ impl Transcriber {
             let mut buffer = vec![0u8; 65536];
             let code = unsafe {
                 (self.api.segment)(
-                    self.context.as_ptr(),
+                    context.as_ptr(),
                     index,
                     &mut start,
                     &mut end,
@@ -318,14 +327,29 @@ impl Transcriber {
             execution_micros: started.elapsed().as_micros().min(u64::MAX as u128) as u64,
         })
     }
+    /// Close native weights/workspace on their owner thread, retaining the full
+    /// already-admitted peak for remaining serialization/commit buffers. The
+    /// consumed model cannot run again; dropping the returned guard releases it.
+    pub fn close_native(mut self) -> FinalizationReservation {
+        self.close_context();
+        FinalizationReservation {
+            _owner: std::mem::replace(&mut self._reservation, Box::new(())),
+        }
+    }
+    fn close_context(&mut self) {
+        if let Some(context) = self.context.take() {
+            // SAFETY: unique owned context, owner thread, no outstanding call.
+            unsafe {
+                (self.api.close)(context.as_ptr());
+            }
+        }
+    }
 }
 impl Drop for Transcriber {
     fn drop(&mut self) {
         // SAFETY: owned context is closed on its creating thread before the API library
         // or Runtime peak reservation is dropped. No inference can borrow it now.
-        unsafe {
-            (self.api.close)(self.context.as_ptr());
-        }
+        self.close_context();
     }
 }
 unsafe extern "C" fn abort(data: *mut c_void) -> i32 {
@@ -494,6 +518,26 @@ mod tests {
             .err()
             .expect("old shim must reject tiny");
         assert!(error.to_string().contains("TinyQ5_1 support"), "{error}");
+        assert_eq!(runtime.speech_reserved_mb(), 0);
+    }
+
+    #[test]
+    #[ignore = "requires pinned tiny weights and current native shim"]
+    fn native_close_transfers_peak_reservation_through_final_commit() {
+        let model = std::env::var_os("GEN2_WHISPER_TINY_MODEL").expect("pinned tiny model fixture");
+        let native =
+            std::env::var_os("GEN2_WHISPER_NATIVE_LIBRARY").expect("current native fixture");
+        let runtime = crate::Runtime::new().unwrap();
+        let model = runtime
+            .load_whisper_profile(
+                PathBuf::from(model),
+                ModelProfile::TinyQ5_1,
+                LoadOptions::cpu(native),
+            )
+            .unwrap();
+        let finalization = model.close_native();
+        assert_eq!(runtime.speech_reserved_mb(), MINIMUM_RESERVATION_MIB);
+        drop(finalization);
         assert_eq!(runtime.speech_reserved_mb(), 0);
     }
 }

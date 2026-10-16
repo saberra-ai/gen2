@@ -56,6 +56,7 @@ pub use model::Model;
 pub use response::Response;
 pub use runtime::{
     ModelResidency, RemoteModelBuilder, ResidencySnapshot, Runtime, RuntimeBuilder, RuntimeStats,
+    WorkingMemoryReservation,
 };
 pub use session::Session;
 pub use tool_defs::{ToolDefinition, ToolSet};

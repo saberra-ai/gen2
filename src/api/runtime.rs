@@ -107,6 +107,23 @@ pub(crate) struct RuntimeInner {
     speech_models: Mutex<Vec<crate::speech::SpeechMonitor>>,
     diarization_reserved_mb: AtomicU64,
     diarization_models: Mutex<Vec<crate::diarization::Monitor>>,
+    working_memory_reserved_mb: AtomicU64,
+}
+
+/// Peak working memory for a native host operation sharing this Runtime's ledger.
+/// Own this guard until all associated work/buffers actually return and drop.
+/// Cancellation acknowledgement alone does not release the reservation.
+#[must_use = "Hold the reservation through actual worker and buffer teardown"]
+pub struct WorkingMemoryReservation {
+    inner: Arc<RuntimeInner>,
+    mb: u64,
+}
+impl Drop for WorkingMemoryReservation {
+    fn drop(&mut self) {
+        self.inner
+            .working_memory_reserved_mb
+            .fetch_sub(self.mb, Ordering::SeqCst);
+    }
 }
 
 struct DiarizationReservation {
@@ -368,10 +385,44 @@ impl Runtime {
         self.inner.speech_reserved_mb.load(Ordering::SeqCst)
     }
 
+    /// Reserve host-selected peak working memory before allocating native media,
+    /// encrypted-cache or finalization buffers. Shares model admission and live
+    /// pressure checks; this never changes any model's minimum reservation.
+    pub fn reserve_working_memory(&self, peak_mb: u64) -> Result<WorkingMemoryReservation> {
+        if peak_mb == 0 {
+            return Err(Error::InvalidRequest(
+                "working memory must be positive MiB".into(),
+            ));
+        }
+        let _admission = self
+            .inner
+            .admission
+            .lock()
+            .map_err(|_| Error::Load("admission lock poisoned".into()))?;
+        self.make_room(peak_mb, None);
+        if !self.can_admit(peak_mb) {
+            return Err(Error::ResourceLimit {
+                requested_mb: peak_mb,
+            });
+        }
+        self.inner
+            .working_memory_reserved_mb
+            .fetch_add(peak_mb, Ordering::SeqCst);
+        Ok(WorkingMemoryReservation {
+            inner: self.inner.clone(),
+            mb: peak_mb,
+        })
+    }
+
+    pub fn working_memory_reserved_mb(&self) -> u64 {
+        self.inner.working_memory_reserved_mb.load(Ordering::SeqCst)
+    }
+
     fn auxiliary_reserved_mb(&self) -> u64 {
         self.decision_reserved_mb()
             .saturating_add(self.speech_reserved_mb())
             .saturating_add(self.diarization_reserved_mb())
+            .saturating_add(self.working_memory_reserved_mb())
     }
 
     /// Live Bark speech handles in load order. Registry entries do not keep workers alive.
@@ -509,6 +560,11 @@ impl Runtime {
                 "resident decisions leave insufficient memory for this model".into(),
             )
             .into());
+        }
+        if self.working_memory_reserved_mb() > 0 {
+            return Err(Error::ResourceLimit {
+                requested_mb: extra_mb,
+            });
         }
         let governor = self.inner.config.memory_governor();
         Err(Error::Load(format!(
@@ -805,6 +861,7 @@ impl Runtime {
             decision_reserved_mb: self.decision_reserved_mb(),
             speech_reserved_mb: self.speech_reserved_mb(),
             diarization_reserved_mb: self.diarization_reserved_mb(),
+            working_memory_reserved_mb: self.working_memory_reserved_mb(),
             active_sessions,
             evictions: self.inner.evictions.load(Ordering::SeqCst),
         }
@@ -1029,6 +1086,8 @@ pub struct RuntimeStats {
     pub speech_reserved_mb: u64,
     /// Peak residency reserved by speaker diarization, including stopping workers.
     pub diarization_reserved_mb: u64,
+    /// Host media/cache/finalization work, including stopping operations.
+    pub working_memory_reserved_mb: u64,
     /// Conversations the engines currently hold runtime state for, summed.
     pub active_sessions: usize,
     /// Models evicted to make room for another, over the runtime's life.
@@ -1120,6 +1179,7 @@ impl RuntimeBuilder {
                 speech_models: Mutex::new(Vec::new()),
                 diarization_reserved_mb: AtomicU64::new(0),
                 diarization_models: Mutex::new(Vec::new()),
+                working_memory_reserved_mb: AtomicU64::new(0),
             }),
         })
     }
@@ -1498,6 +1558,89 @@ mod tests {
         runtime.restore(chat.id(), chat.loaded()).unwrap();
         assert_eq!(runtime.stats().estimated_resident_mb, 800);
         assert_eq!(runtime.speech_reserved_mb(), 0);
+    }
+
+    #[test]
+    fn working_memory_shares_model_restore_admission_and_releases_on_drop() {
+        let runtime = Runtime::builder()
+            .resident_memory_budget_mb(1000)
+            .build()
+            .unwrap();
+        let chat = runtime.scripted_in(Script::new(), 800);
+        let work = runtime.reserve_working_memory(256).unwrap();
+        assert_eq!(runtime.stats().working_memory_reserved_mb, 256);
+        assert_eq!(runtime.stats().estimated_resident_mb, 256);
+        assert!(matches!(
+            runtime.restore(chat.id(), chat.loaded()),
+            Err(Error::ResourceLimit { requested_mb: 800 })
+        ));
+        assert!(runtime.reserve_working_memory(800).is_err());
+        assert_eq!(runtime.working_memory_reserved_mb(), 256);
+        drop(work);
+        runtime.restore(chat.id(), chat.loaded()).unwrap();
+        assert_eq!(runtime.stats().estimated_resident_mb, 800);
+        assert_eq!(runtime.working_memory_reserved_mb(), 0);
+    }
+
+    #[test]
+    fn racing_working_memory_admissions_cannot_both_spend_the_same_capacity() {
+        let runtime = Runtime::builder()
+            .resident_memory_budget_mb(200)
+            .build()
+            .unwrap();
+        let start = Arc::new(std::sync::Barrier::new(3));
+        let admitted = Arc::new(std::sync::Barrier::new(3));
+        let release = Arc::new(std::sync::Barrier::new(3));
+        let workers: Vec<_> = (0..2)
+            .map(|_| {
+                let runtime = runtime.clone();
+                let (start, admitted, release) = (start.clone(), admitted.clone(), release.clone());
+                std::thread::spawn(move || {
+                    start.wait();
+                    let reservation = runtime.reserve_working_memory(128);
+                    admitted.wait();
+                    release.wait();
+                    reservation.is_ok()
+                })
+            })
+            .collect();
+        start.wait();
+        admitted.wait();
+        let held = runtime.working_memory_reserved_mb();
+        release.wait();
+        assert_eq!(held, 128);
+        assert_eq!(
+            workers
+                .into_iter()
+                .filter_map(|worker| worker.join().ok())
+                .filter(|success| *success)
+                .count(),
+            1
+        );
+        assert_eq!(runtime.working_memory_reserved_mb(), 0);
+    }
+
+    #[test]
+    fn working_memory_invalid_overflow_and_panic_paths_preserve_accounting() {
+        let runtime = Runtime::builder()
+            .resident_memory_budget_mb(1000)
+            .build()
+            .unwrap();
+        assert!(matches!(
+            runtime.reserve_working_memory(0),
+            Err(Error::InvalidRequest(_))
+        ));
+        assert!(matches!(
+            runtime.reserve_working_memory(u64::MAX),
+            Err(Error::ResourceLimit { .. })
+        ));
+        let outcome = std::panic::catch_unwind(std::panic::AssertUnwindSafe(|| {
+            let _work = runtime.reserve_working_memory(128).unwrap();
+            assert_eq!(runtime.working_memory_reserved_mb(), 128);
+            panic!("synthetic native worker panic");
+        }));
+        assert!(outcome.is_err());
+        assert_eq!(runtime.working_memory_reserved_mb(), 0);
     }
 
     #[test]
