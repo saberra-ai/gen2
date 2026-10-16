@@ -579,6 +579,14 @@ The 800 ms/50%/20% rules are conservative uncertainty policy, not a calibrated
 forced aligner. Broader timing/short-turn/overlap evaluation, quality improvement
 and physical microphone/native visual qualification remain open. N4 is not complete.
 
+The [human word-time reference investigation](../research/nemotron-word-time-gold.md)
+distinguishes actual manual boundary correction from automatic alignment and
+software-test references. Official small samples are useful calibration
+candidates, but no representative, demonstrably licensed human word-time fixture
+was adopted. TIMIT's acquired demo also contains overlapping word labels that
+must remain visible. This research changes no DER reference, quality criterion,
+held-out status or existing N4 result.
+
 The live capture path now tees normalized PCM into a bounded continuous native
 speaker session beside the durable eight-second ASR sections. Four adapter
 blocks plus the Gen2 queue bound transport; saturation and the one-hour speaker
