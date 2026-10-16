@@ -571,8 +571,15 @@ transcriber labels. Production-default DER remains 27.6171% / 35.4388% against
 published labels. Thus reference convention explains much of the score but does
 not resolve the distant-mic or production-default quality deficit. All four
 synthetic independent-scorer calibrations pass. See the [diagnostic receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-ami-reference-diagnostic/collection.json).
-The original frozen failures and release status are unchanged. The 13-job feature
-matrix also passed at `4974318`.
+The original frozen failures and release status are unchanged. The
+[next-diagnostics source audit](../research/nemotron-quality-next-diagnostics.md)
+confirms that the retained FP32 comparison already uses official HF/PyTorch CPU
+execution at the recommended 9/4/0/264/264/222 geometry. It distinguishes the
+legacy native postprocessor from that geometry and proposes saved-output error
+localization, frontend/model numerical controls, one fixed session-prefix
+contrast and a canonical context comparison on separate development data. These
+are unrun diagnostics; neither a native F32 control nor original-NeMo execution
+is claimed. The 13-job feature matrix also passed at `4974318`.
 
 Linux/Windows CPU development jobs now build the pinned source SDK with an
 explicit x86_64AVX2/FMA/F16C baseline, retain installed dependency discovery,
