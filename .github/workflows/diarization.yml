@@ -2,10 +2,10 @@ name: Diarization feature checks
 on:
   workflow_dispatch:
   pull_request:
-    paths: ['src/diarization/**', 'src/api/runtime.rs', 'src/api/error.rs', 'src/lib.rs', 'tests/diarization*.rs', 'examples/nemotron*.rs', 'Cargo.*', '.github/workflows/diarization.yml']
+    paths: ['src/diarization/**', 'src/api/runtime.rs', 'src/api/error.rs', 'src/speech/worker.rs', 'src/lib.rs', 'tests/diarization*.rs', 'tests/speech_cancellation.rs', 'tools/nemotron-diarization/**', 'integrations/pnola/**', 'examples/nemotron*.rs', 'Cargo.*', '.github/workflows/diarization.yml']
   push:
     branches: [main, codex/nemotron3-n0]
-    paths: ['src/diarization/**', 'src/api/runtime.rs', 'src/api/error.rs', 'src/lib.rs', 'tests/diarization*.rs', 'examples/nemotron*.rs', 'Cargo.*', '.github/workflows/diarization.yml']
+    paths: ['src/diarization/**', 'src/api/runtime.rs', 'src/api/error.rs', 'src/speech/worker.rs', 'src/lib.rs', 'tests/diarization*.rs', 'tests/speech_cancellation.rs', 'tools/nemotron-diarization/**', 'integrations/pnola/**', 'examples/nemotron*.rs', 'Cargo.*', '.github/workflows/diarization.yml']
 jobs:
   features:
     strategy:
@@ -27,3 +27,13 @@ jobs:
       - run: cargo test --locked --no-default-features --features '${{ matrix.features }}' --lib --test diarization_api --test diarization_alignment --test speech_cancellation
       # Feature compatibility only. No model or native SDK is required here;
       # these jobs never stand in for platform real-model receipts.
+
+  evidence-tools:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m unittest discover -s tools/nemotron-diarization -p 'test_*.py'
+      - run: python -m unittest discover -s integrations/pnola -p 'test_*.py'
