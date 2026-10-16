@@ -92,3 +92,35 @@ patched finish ran, and neither inference nor production substitution is admitte
 The applied C++ source passes `git diff --check`; the literal unified patch's
 last blank context row necessarily contains its single context marker space.
 Keep that frozen patch payload unchanged.
+
+
+## Fixed candidate finish regression, before neural execution
+
+The separate `valid-mel-finish.protocol.json` admits one CPU helper invocation
+only after review and commit. Its fixed scope is 28 stream sessions: four
+calibration push schedules, one reset/replay, 21 silence boundary lengths, and
+two nonzero-left-context calibration schedules. Four direct graph calls assemble
+independent valid-Mel references. Internal stream forward counts are not
+instrumented; the fixed inputs, schedules and geometry bound that work.
+
+The same-runtime maximum absolute probability policy is **0.0001**, declared
+before any candidate neural output. This applies only to candidate pipeline
+versus independently assembled candidate graph probabilities; it does not change
+an HF, DER, quantization or release criterion. Require 111 final rows on the
+17872-sample calibration, `floor(N/160)` on each silence case, an actual preview,
+unchanged stable prefixes, reset equivalence and unchanged second finish/late push.
+The whole and uneven calibration cases also trigger actual front erasure before
+finish by the pinned `compact_front` source rule. No probability-history
+compaction or long-session qualification is implied.
+
+The helper is already compiled without execution. Compiler sandboxing denied
+model/audio access. Its 101912-byte binary SHA256 is
+`e2c99b3e15c29f49484238ab6d5cb72f7649fa5228ad068e5bbf3141e82dfb2d`,
+linked against the newly constructed SDK and the 235360-byte runtime archive
+SHA256 `824d8f4771c907ddccbb98b62bb1af462c357d476b610980df1973f545a11cfb`.
+The protocol binds compiler command, source, SDK libraries, archive, construction
+receipt and exact calibration PCM/Mel/model identities. Available direct tensors
+and per-push/final stream snapshots persist before validation, with started and
+completed events; failed attempts remain intact. No candidate model or finish
+has executed at this preregistration point. Production migration and all original
+quality, platform, desktop and performance gates remain open.

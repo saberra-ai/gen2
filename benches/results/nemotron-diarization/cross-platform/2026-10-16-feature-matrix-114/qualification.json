@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "source_commit": "9e98003e247578121f7bdd96c266cbe947d03101",
+  "ci_url": "https://github.com/saberra-ai/gen2/actions/runs/38912826242",
+  "all_thirteen_feature_jobs_passed": true,
+  "model_free_evidence_tests_passed": 114,
+  "platforms": [
+    "ubuntu-latest",
+    "windows-latest",
+    "macos-latest"
+  ],
+  "feature_sets": [
+    "",
+    "backend-diar-nemo",
+    "asr-dynamic,backend-diar-nemo",
+    "backend-llamacpp,asr-dynamic,backend-diar-nemo"
+  ],
+  "all_twelve_feature_jobs_ran_fmt_clippy_tests_successfully": true,
+  "evidence_and_pnola_python_and_desktop_asset_test_steps_passed": true,
+  "combined_log_retained_outside_git": {
+    "bytes": 10024208,
+    "sha256": "44d5d9c4b4db471ab84bbd06670a29d0c2f5483bc59bdc24ac6ab37556a131ff"
+  },
+  "release_qualified": false,
+  "limits": [
+    "CI source is9e98003. This proves its12OS/feature combinations and114model-free evidence tests. Candidate valid-Mel source/build/finish tools are later and outside this CI source.",
+    "No model/nativeSDK is required by this workflow. It does not replace real-model, desktop, distribution, held-out-quality or uncontended-performance gates. Earlier network-failure and102-test success receipts remain unchanged."
+  ]
+}

@@ -673,8 +673,9 @@ including the formerly blocked macOS job and102 evidence-tool tests. The origina
 fetch failure remains retained; no build gate is waived. The later
 [c729cea matrix also passes all13jobs](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-108/qualification.json),
 including108evidence-tool tests. Subsequent calibration tools and114local tests
-are outside that CI source. The subsequent `9e98003` matrix run38912826242
-now passes all13jobs; its saved log/receipt collection is still pending.
+are outside that CI source. The subsequent [114-test matrix](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-114/qualification.json)
+at `9e98003`, run38912826242, now passes all13jobs. The later valid-Mel
+candidate tools remain outside that CI source.
 
 Linux/Windows CPU development jobs now build the pinned source SDK with an
 explicit x86_64AVX2/FMA/F16C baseline, retain installed dependency discovery,
