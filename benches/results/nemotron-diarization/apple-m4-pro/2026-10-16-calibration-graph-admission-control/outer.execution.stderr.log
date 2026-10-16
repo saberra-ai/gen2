@@ -1,0 +1,26 @@
+W1016 09:54:46.163000 29293 torch/distributed/elastic/multiprocessing/redirects.py:29] NOTE: Redirects are currently not supported in Windows or MacOs.
+Loading weights:   0%|          | 0/417 [00:00<?, ?it/s]Loading weights: 100%|██████████| 417/417 [00:00<00:00, 28669.25it/s]
+Traceback (most recent call last):
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/diagnose_calibration_graph.py", line 243, in <module>
+    main()
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/diagnose_calibration_graph.py", line 99, in main
+    write_json('hf-loading-info.json', loading_info)
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/diagnose_calibration_graph.py", line 95, in <lambda>
+    write_json = lambda name, value: (args.output / name).write_text(json.dumps(value, indent=2) + '\n')
+                                                                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/victor/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/__init__.py", line 238, in dumps
+    **kw).encode(obj)
+          ^^^^^^^^^^^
+  File "/Users/victor/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 202, in encode
+    chunks = list(chunks)
+             ^^^^^^^^^^^^
+  File "/Users/victor/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "/Users/victor/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "/Users/victor/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "/Users/victor/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/json/encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type set is not JSON serializable

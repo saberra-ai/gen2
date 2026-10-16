@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "source_commit": "dc02371f4a9ff67ad6a0ff050b8dbe9c951d1c7d",
+  "control_completed": false,
+  "failure_stage": "HF loading-info serialization after local model construction and before first forward",
+  "failure": "TypeError: Object of type set is not JSON serializable",
+  "hf_published_weights_loaded": true,
+  "hf_forward_calls_completed_or_started": 0,
+  "native_graph_calls_started": 0,
+  "original_or_ami_target_inference": false,
+  "preflight_tests_passed": 3,
+  "source_and_input_configuration_changed_after_failure": false,
+  "raw_local_files": {
+    "hf-load.started.json": {
+      "bytes": 72,
+      "sha256": "79786ccea3b7566a5f32f7e21bad2b45b083aa58f8f3ebf405c12d56468f16ca"
+    },
+    "empty.fifo.f32": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "probe-build.json": {
+      "bytes": 2746,
+      "sha256": "dfdffc837086f0c755328b0c427c2a65072805a2e7e9be35a06c0f33f7d4aacc"
+    },
+    "extra40.mel.f32": {
+      "bytes": 20480,
+      "sha256": "7277e8a59446b6d3b7cbb7270a2d3db0757c44a9a524c21cff831ce5547178e5"
+    },
+    "first104.mel.f32": {
+      "bytes": 53248,
+      "sha256": "e154027f512ea2d20d35c9b92f83dd175facf277dcef9549937ced3db8a523c8"
+    },
+    "helper-load-commands.txt": {
+      "bytes": 6545,
+      "sha256": "6ba7a7da1bb717249632875e29818215c19db568d3e05409163cfd5de2cf347c"
+    },
+    "protocol.json": {
+      "bytes": 24742,
+      "sha256": "9d676074f16ed08aacc62a009d50af8b5ceb7374efb8686653a38f6243cd3ed1"
+    },
+    "valid39.mel.f32": {
+      "bytes": 19968,
+      "sha256": "91dfd769fd1820d6494b2a9734af0af20dd9586714690a032f4089bc63ccf9f8"
+    },
+    "zero40.mel.f32": {
+      "bytes": 20480,
+      "sha256": "f57a93ad423e3e8f436b8ed68e53af8210b67cca2f8f8716faf1280b0be06d4b"
+    }
+  },
+  "original_gate_status_changed": false,
+  "release_qualified": false,
+  "limits": [
+    "No graph probability result exists; no numerical-control pass or failure can be inferred.",
+    "Initial probev1 link failure and successful probev2 compile are separate build-only records.",
+    "A separate reviewed/preregistered revision is required for serialization repair and a fresh attempt; this prefix remains immutable."
+  ]
+}

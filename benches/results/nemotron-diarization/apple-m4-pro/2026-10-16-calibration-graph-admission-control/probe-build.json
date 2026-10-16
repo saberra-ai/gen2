@@ -1,0 +1,60 @@
+{
+  "argv": [
+    "/usr/bin/c++",
+    "-std=c++17",
+    "-O2",
+    "-fvisibility=hidden",
+    "-DNEMO_SPEECH_GGML_PATCHED=1",
+    "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/calibration_graph_probe.cpp",
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/runtime/ggml/backend.cpp",
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/runtime/ggml/logging.cpp",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/asr",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/asr/features",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/asr/encoder",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/asr/decoders",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/asr/vad",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/asr/diar",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/asr/postproc",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/asr/pnc",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/common",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/runtime/ggml",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/llama.cpp/ggml/include",
+    "-L/Users/victor/.cache/gen2-nemotron3-n0/sdk-cpu/lib",
+    "-lnemo_speech_asr",
+    "-lggml",
+    "-lggml-base",
+    "-lggml-cpu",
+    "-Wl,-rpath,/Users/victor/.cache/gen2-nemotron3-n0/sdk-cpu/lib",
+    "-o",
+    "/Users/victor/.cache/gen2-nemotron3-n0/calibration-graph-probe-v2/calibration-graph-probe"
+  ],
+  "returncode": 0,
+  "elapsed_seconds": 1.069339375011623,
+  "source": {
+    "bytes": 5131,
+    "sha256": "9dfa4a121936a4e439af404089019db7de1564e4af961f4ecc6a7b7cb26ea33d"
+  },
+  "compiler_version": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.3.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "runtime_sources": {
+    "src/runtime/ggml/backend.cpp": {
+      "bytes": 6376,
+      "sha256": "92ea19f833c9ba132c81cfe33693ab1090d436e25c2aaea7e6186315f5265394"
+    },
+    "src/runtime/ggml/logging.cpp": {
+      "bytes": 2114,
+      "sha256": "8b06d0484a2c9036f4669edb049ec1e9c9ba4fa1489bf387936d67c8a7fea8ca"
+    },
+    "src/runtime/ggml/runtime.h": {
+      "bytes": 19230,
+      "sha256": "8b16754a48bc69a9d0f9d2bc29913e9cf4a7e9b5321bd118780093010c5c0f25"
+    },
+    "src/common/model_logging.h": {
+      "bytes": 2148,
+      "sha256": "c59336a0aa25598c20c29f75cf4e4b045fd4ee03a8aaf6c78820d41eab6199fe"
+    }
+  },
+  "binary": {
+    "bytes": 79960,
+    "sha256": "c3ebd297d84d630b70ba6c553792778faec4a348fbc14836c469f2a560ef0bb4"
+  }
+}

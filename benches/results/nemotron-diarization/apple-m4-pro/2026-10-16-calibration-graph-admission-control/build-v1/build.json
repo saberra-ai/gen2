@@ -1,0 +1,33 @@
+{
+  "argv": [
+    "/usr/bin/c++",
+    "-std=c++17",
+    "-O2",
+    "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/calibration_graph_probe.cpp",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/asr",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/asr/features",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/asr/encoder",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/asr/decoders",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/asr/vad",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/asr/diar",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/asr/postproc",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/asr/pnc",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/common",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/runtime/ggml",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/llama.cpp/ggml/include",
+    "-L/Users/victor/.cache/gen2-nemotron3-n0/sdk-cpu/lib",
+    "-lnemo_speech_asr",
+    "-lnemo_speech_runtime_ggml",
+    "-Wl,-rpath,/Users/victor/.cache/gen2-nemotron3-n0/sdk-cpu/lib",
+    "-o",
+    "/Users/victor/.cache/gen2-nemotron3-n0/calibration-graph-probe-v1/calibration-graph-probe"
+  ],
+  "returncode": 1,
+  "elapsed_seconds": 0.4407580830156803,
+  "source": {
+    "bytes": 5131,
+    "sha256": "9dfa4a121936a4e439af404089019db7de1564e4af961f4ecc6a7b7cb26ea33d"
+  },
+  "compiler_version": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.3.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "binary": null
+}
