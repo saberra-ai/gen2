@@ -1,0 +1,205 @@
+[
+  {
+    "name": "base-image-inspect",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "image",
+      "inspect",
+      "mcr.microsoft.com/windows/servercore@sha256:76cf422c98ca437b308374d0498280541fa42ac7061bb44015a6c8b70cf4db6a"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.046999999999997044
+  },
+  {
+    "name": "installer-host-signature",
+    "argv": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-File",
+      "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\windows_vc_signature.ps1",
+      "-InputFile",
+      "D:\\a\\_temp\\windows-central-setup\\setup inputs \u00fc\\VC_redist.x64.exe",
+      "-Output",
+      "D:\\a\\_temp\\windows-central-setup\\installer-host-signature.json"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.6869999999999834
+  },
+  {
+    "name": "install-create",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "create",
+      "--name",
+      "gen2-vc-bb22899baefe4c1894f534642c73f339",
+      "--pull",
+      "never",
+      "--isolation",
+      "process",
+      "--network",
+      "none",
+      "--mount",
+      "type=bind,source=D:\\a\\_temp\\windows-central-setup\\setup inputs \u00fc,target=C:\\inputs,readonly",
+      "--mount",
+      "type=bind,source=D:\\a\\_temp\\windows-central-setup\\install,target=C:\\results",
+      "--env",
+      "PATH=C:\\Windows\\System32;C:\\Windows",
+      "sha256:76e6f57c103004c102b102281f3e6c750a1aa80cef8c5267d6fc2435408c87fc",
+      "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\inputs\\setup.ps1",
+      "-Mode",
+      "Install"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.9690000000000225
+  },
+  {
+    "name": "install-start",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "start",
+      "--attach",
+      "0158ea474f40c44ef04c0b27bb030ba946e9c162d6d81b7ab722bd99eae42cb3"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 31.312999999999988
+  },
+  {
+    "name": "install-inspect",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "inspect",
+      "0158ea474f40c44ef04c0b27bb030ba946e9c162d6d81b7ab722bd99eae42cb3"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.03100000000000591
+  },
+  {
+    "name": "freeze-provisioned-image",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "commit",
+      "0158ea474f40c44ef04c0b27bb030ba946e9c162d6d81b7ab722bd99eae42cb3"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 5.204000000000008
+  },
+  {
+    "name": "install-remove",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "rm",
+      "--force",
+      "0158ea474f40c44ef04c0b27bb030ba946e9c162d6d81b7ab722bd99eae42cb3"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.06200000000001182
+  },
+  {
+    "name": "provisioned-image-inspect",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "image",
+      "inspect",
+      "sha256:cbab8d5a841920d40fe2ea698e57185799a2cd94a58c41be472b6519657e861b"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.015999999999991132
+  },
+  {
+    "name": "fresh-state-create",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "create",
+      "--name",
+      "gen2-vc-a810b264ec8f4540ab227b4f33b2df44",
+      "--pull",
+      "never",
+      "--isolation",
+      "process",
+      "--network",
+      "none",
+      "--mount",
+      "type=bind,source=D:\\a\\_temp\\windows-central-setup\\setup inputs \u00fc,target=C:\\inputs,readonly",
+      "--mount",
+      "type=bind,source=D:\\a\\_temp\\windows-central-setup\\fresh-state,target=C:\\results",
+      "--env",
+      "PATH=C:\\Windows\\System32;C:\\Windows",
+      "sha256:cbab8d5a841920d40fe2ea698e57185799a2cd94a58c41be472b6519657e861b",
+      "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\inputs\\setup.ps1",
+      "-Mode",
+      "Observe"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.578000000000003
+  },
+  {
+    "name": "fresh-state-start",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "start",
+      "--attach",
+      "1b976d49d7e04e81ea2f095bc7198eadc269d7086145fd3e1be421e0b10c3e0b"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 5.563000000000017
+  },
+  {
+    "name": "fresh-state-inspect",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "inspect",
+      "1b976d49d7e04e81ea2f095bc7198eadc269d7086145fd3e1be421e0b10c3e0b"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.03099999999997749
+  },
+  {
+    "name": "fresh-state-remove",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "rm",
+      "--force",
+      "1b976d49d7e04e81ea2f095bc7198eadc269d7086145fd3e1be421e0b10c3e0b"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.046999999999997044
+  }
+]

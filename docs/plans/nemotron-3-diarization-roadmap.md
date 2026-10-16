@@ -728,7 +728,16 @@ The setup-only workflow now validates the actual Windows publisher signature
 before any installer execution, provisions only a disposable process image,
 requires exit 0/no pending restart, checks exact System32 DLL bytes/versions/
 signatures and both registry views, then re-observes a fresh committed image.
-Its first actual run uses source `9c277fc`; no setup pass is claimed in advance.
+The first actual [central setup receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-central-prerequisite-setup/qualification.json),
+source `9c277fc`/run `38896477423`, now passes that setup-only gate: the installer
+has a connected-host Valid Microsoft signature and returns 0; all nine targeted
+DLLs were absent before setup and now match exact 14.51.36247 System32 payload
+bytes/versions/signatures. Both registry views report the installed version,
+no restart indicators are present, and a fresh offline Observe-only container
+from the exact base-plus-one-layer image repeats the contracts. All 40 receipt
+members and frozen inputs were independently reverified. Actual Gen2/native/
+lifecycle/chat loading against this central variant remains pending; no image
+or Microsoft binary bytes are published or added to Git.
 All 92 current model-free tool regressions pass.
 
 A guarded [Windows private-DLL build](../research/nemotron-windows-private-names.md)
