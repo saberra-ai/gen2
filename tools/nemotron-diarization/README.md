@@ -35,7 +35,10 @@ The [long-session attempt](../../benches/results/nemotron-diarization/apple-m4-p
 retains a passing 30-minute Metal pair. Its one-hour native command failed to
 persist output during a disk-space shortage; the child terminal status was not
 recorded, the public one-hour command never started, and one-hour qualification
-remains open. The failed attempt is retained unchanged.
+remains open. The failed attempt is retained unchanged. The separate
+[guarded continuation](valid-mel-metal-long-v2.protocol.json) admits only the two
+one-hour streams, with disk-space checks, a diagnostic reserve and atomic
+command records; it does not repeat the passing 30-minute neural work.
 
 # Nemotron 3 — N0 qualification
 
