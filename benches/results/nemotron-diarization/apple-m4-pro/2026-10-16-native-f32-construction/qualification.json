@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "source_commit": "23d2db780a697dc3bf3c6f20a8948e82fd907b4e",
+  "artifact": {
+    "bytes": 395298848,
+    "sha256": "6e946d20b9a3d749a9b23d7106f73ec8cf3a9186fad3afa9bf34d8e0cd58828a"
+  },
+  "artifact_name": "Nemotron-3-Diarization.f32-control.gguf",
+  "checkpoint_deserialization_performed": true,
+  "neural_model_inference_performed": false,
+  "original_gate_status_changed": false,
+  "release_qualified": false,
+  "artifact_admitted_for_inference": false,
+  "source_tensor_count": 363,
+  "all_source_tensors_bfloat16": true,
+  "stored_tensor_count": 360,
+  "stored_f32": 359,
+  "stored_f16": 1,
+  "f16_tensor": "subpixel_upsample.weight",
+  "all_mapped_names_shapes_dtypes_bytes_equal_independent_source_casts": true,
+  "all_stored_values_finite": true,
+  "all_source_keys_accounted_including_three_intentional_exclusions": true,
+  "native_filterbank_exactly_matches_previous_q8_frontend_control": true,
+  "converter_exit_code": 0,
+  "converter_elapsed_seconds": 1.9315307500073686,
+  "writer_warning_retained": "Upstream writer inserts general.architecture then the converter explicitly writes it again; warning retained. Parsed final value is sortformer, no duplicate output tensor names.",
+  "limits": [
+    "Artifact construction does not establish native model execution, HF/original-NeMo tensor equivalence or a quality fix.",
+    "Stored training geometry is not the future inference configuration; any subsequent fixed numerical run must explicitly retain9/4/0/FIFO264/cache264/update222 and correct native10ms/HF cached-prefix/lookahead/valid-frame alignment.",
+    "Checkpoint, control GGUF and raw tensor payloads remain outside Git. No published Q8/reference model lock, frozen scorer/protocol/input/output or release gate changes.",
+    "No original-NeMo model instantiated. Deserialization and conversion are distinct from neural inference.",
+    "Source BF16 weights are upcast for F32 arithmetic; this does not recover precision absent from the original checkpoint.",
+    "Artifact construction and exact cast accounting only. This metadata does not authorize or claim completed native F32 inference; numerical-execution protocol/admission remains separate.",
+    "Original checkpoint, converted GGUF and source tensor payloads remain outside Git."
+  ]
+}

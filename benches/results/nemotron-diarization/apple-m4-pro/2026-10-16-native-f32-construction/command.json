@@ -1,0 +1,31 @@
+{
+  "argv": [
+    "/usr/bin/sandbox-exec",
+    "-f",
+    "/Users/victor/.cache/gen2-nemotron3-n0/native-f32-conversion-v1/offline.sb",
+    "/Users/victor/.cache/gen2-nemotron3-n0/python-reference/bin/python",
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/convert_model.py",
+    "/Users/victor/.cache/gen2-nemotron3-n0/research/native-f32-control/Nemotron-3-Diarization.nemo",
+    "--architecture",
+    "diarization",
+    "--outtype",
+    "f32",
+    "--outfile",
+    "/Users/victor/.cache/gen2-nemotron3-n0/native-f32-conversion-v1/Nemotron-3-Diarization.f32-control.gguf"
+  ],
+  "environment": {
+    "PATH": "/usr/bin:/bin",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/llama.cpp/gguf-py",
+    "HF_HUB_OFFLINE": "1",
+    "TRANSFORMERS_OFFLINE": "1",
+    "OMP_NUM_THREADS": "4",
+    "MKL_NUM_THREADS": "4"
+  },
+  "source_commit": "23d2db780a697dc3bf3c6f20a8948e82fd907b4e",
+  "native_source_commit": "083861c241061562b8ec29eb06d7f6cdc3af8775",
+  "protocol_sha256": "be1f5f0f1e72663b0b4bb345f81268e1e19c610c493284d9f106721ef94393ef",
+  "sandbox_sha256": "324f4f80957ea1b49963d5fb63a7110e3081e5621d2dcc3e078b3e9c434aff84",
+  "returncode": 0,
+  "elapsed_seconds": 1.9315307500073686
+}

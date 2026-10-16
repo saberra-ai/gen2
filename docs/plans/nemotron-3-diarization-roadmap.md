@@ -604,8 +604,17 @@ value above the fixed0.001 absolute flag under each bank, maximum0.00112629.
 The [42-file metadata receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-frontend-control/qualification.json)
 retains that outlier, all source/input/library/loader bindings and the numeric
 limits; raw tensors remain outside Git. This neither selects a replacement bank
-nor proves streaming/model/cache equivalence or a quality fix. Native F32,
-original-NeMo and persistent-prefix controls remain open.
+nor proves streaming/model/cache equivalence or a quality fix. The separate
+F32-dominant artifact is now constructed at `23d2db7`: all363 original checkpoint
+tensors are BF16; manual independent mapping/cast accounting verifies every one
+of360 stored tensors (359F32 and oneF16 subpixel convolution), plus the three
+intentional source exclusions. All stored values are finite and its native bank
+matches the original Q8 bank exactly. The [14-file construction receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-native-f32-construction/qualification.json)
+retains the395298848-byte artifact hash, exact source/checkpoint/dependency pins,
+logs and full tensor accounting; checkpoint/GGUF bytes remain outside Git.
+This performs checkpoint deserialization/conversion, not neural inference, and
+upcasting BF16 source values does not recover missing source precision. Native
+F32 inference, original-NeMo and persistent-prefix controls remain open.
 The 13-job feature matrix also passed at `4974318`. Later source `cf64214`
 passed12 jobs; its macOS mixed-feature job failed before compilation when GitHub
 submodule fetch could not connect to port443. A failed-job rerun was denied by

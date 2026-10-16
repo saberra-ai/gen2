@@ -1,0 +1,9 @@
+[convert] weight_type = f32 (linear=F32)
+[convert] reading /Users/victor/.cache/gen2-nemotron3-n0/research/native-f32-control/Nemotron-3-Diarization.nemo
+[convert] state_dict has 363 tensors
+[convert] encoder d_model=512 n_layers=31 n_heads=8 d_ff=2048 feat_in=128; variant=v3; num_speakers=8
+[convert] preprocessor.fb from checkpoint, shape (128, 257)
+[convert] emitted 359 tensors, skipped 4
+[convert] dtype tally: F16=1, F32=358
+[convert] wrote /Users/victor/.cache/gen2-nemotron3-n0/native-f32-conversion-v1/Nemotron-3-Diarization.f32-control.gguf (395.3 MB)
+converted diarization model to /Users/victor/.cache/gen2-nemotron3-n0/native-f32-conversion-v1/Nemotron-3-Diarization.f32-control.gguf

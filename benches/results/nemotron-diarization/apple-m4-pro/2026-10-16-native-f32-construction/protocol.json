@@ -1,0 +1,244 @@
+{
+  "schema_version": 1,
+  "name": "Native F32-dominant V3 artifact construction control v1",
+  "release_qualified": false,
+  "purpose": "Construct and fully account for a separately pinned numerical-control artifact from the acquired original publisher checkpoint. Conversion/deserialization only; no neural inference, source/output selection by DER, model lock replacement or release gate promotion.",
+  "publisher_revision": "f667ed73aee57d40cc39428eb768b4fd87a0a29e",
+  "native_revision": "083861c241061562b8ec29eb06d7f6cdc3af8775",
+  "gguf_revision": "bd4f514db14d87fded667787a7a963bfbaa98e89",
+  "checkpoint": {
+    "name": "Nemotron-3-Diarization.nemo",
+    "url": "https://huggingface.co/nvidia/Nemotron-3-Diarization/resolve/f667ed73aee57d40cc39428eb768b4fd87a0a29e/Nemotron-3-Diarization.nemo",
+    "bytes": 198676480,
+    "sha256": "867c53f552998f772e5b5e5c082962ae85ee7ca5669c2bc17d7f615133d4e96d"
+  },
+  "checkpoint_members": [
+    {
+      "name": "model_config.yaml",
+      "bytes": 3461,
+      "sha256": "0a738c13104761be11da4a315af0a94b3c14a1cd6509a3e788a78555751e1ccb"
+    },
+    {
+      "name": "model_weights.ckpt",
+      "bytes": 198666820,
+      "sha256": "9930e1719c85b35da083c557cdbd6503072c311ffe8bc9cbd3371d2609e21d0f"
+    }
+  ],
+  "source_config": {
+    "bytes": 3461,
+    "sha256": "0a738c13104761be11da4a315af0a94b3c14a1cd6509a3e788a78555751e1ccb"
+  },
+  "converter_files": {
+    "convert_model.py": {
+      "bytes": 4255,
+      "sha256": "84b8b8ca2eeabc6e846181026b27222029c75fadf94f004680518ae9a6a54659"
+    },
+    "conversion/__init__.py": {
+      "bytes": 388,
+      "sha256": "8c43965b961176ecc5cf65b4b4e62ad7ba271030bac0be342a8e0a7be822b7d7"
+    },
+    "conversion/asr.py": {
+      "bytes": 32557,
+      "sha256": "51ca2b7e0bc145a1038f4182d4720cb857ce285c077fb07b5339e9e66fdbf4c2"
+    },
+    "conversion/codec.py": {
+      "bytes": 16641,
+      "sha256": "4553f201708a007923c5b64ad4b85091451eed566d3ec52838852b341a82b993"
+    },
+    "conversion/diarization.py": {
+      "bytes": 21233,
+      "sha256": "b246c039dd56fea63500f105d77be17eafbc73f9c79fb6c8cd6e420101ed2317"
+    },
+    "conversion/pnc.py": {
+      "bytes": 7965,
+      "sha256": "2c206ab647e6bfc52f2f58f1b94dd44ab7c740dfeb213d2af961b4cf924eec9f"
+    },
+    "conversion/quantization.py": {
+      "bytes": 4714,
+      "sha256": "203df33778a5e3f68d6a416ff626db9643d2c3a5d7b525dee50056ef1841bd15"
+    },
+    "conversion/registry.py": {
+      "bytes": 8536,
+      "sha256": "ec2bdcdd16a1027390c8c5e1d27ea43dbac29340b5e6b69715ece6d3d6c009ad"
+    },
+    "conversion/s2s.py": {
+      "bytes": 20581,
+      "sha256": "44488a162297e007137dc8bd742176fb7a09e73f516be9169ee2dacdd894b43a"
+    },
+    "conversion/s2s_components/__init__.py": {
+      "bytes": 205,
+      "sha256": "9d590cc6812e9413afff7071824a03d1dace651f1c5a842056d906c6c0e5fc52"
+    },
+    "conversion/s2s_components/codec.py": {
+      "bytes": 16533,
+      "sha256": "48ce59c0705693b29d9c1c876ec178e2e5fac8c5cb9ebaa6575e17735e960511"
+    },
+    "conversion/s2s_components/eartts_backbone.py": {
+      "bytes": 14748,
+      "sha256": "4f9c60b8da3dce3b616dbc836b50ba009eb685b1322dc1949c8796e2818d5387"
+    },
+    "conversion/s2s_components/eartts_side.py": {
+      "bytes": 22470,
+      "sha256": "348e6213afc904188b55e7cab92f4379960b9859745b489cb0ae690f5838e8a4"
+    },
+    "conversion/s2s_components/llm_aux.py": {
+      "bytes": 9347,
+      "sha256": "224c4f2a7d1a602504d1b5907cb6b434641f79a533d4fdf01c435cc46dddb446"
+    },
+    "conversion/s2s_components/llm_backbone.py": {
+      "bytes": 11584,
+      "sha256": "cc7fc161ae9e594e33789164cd9dabe26fd0e31234cbf26fb98f9134faed5d28"
+    },
+    "conversion/s2s_components/perception.py": {
+      "bytes": 21214,
+      "sha256": "910f3cb4ab845c392a5629f073f07aac201837eb39c14c047755cefe2288a7c4"
+    },
+    "conversion/s2s_components/tts_prompt.py": {
+      "bytes": 5615,
+      "sha256": "a40022cdeab43268b0629f5860216c60205a60a8bd97efe4e834f5ba6bf14065"
+    },
+    "conversion/s2s_components/voicechat_source.py": {
+      "bytes": 13441,
+      "sha256": "b92ccdf1589d74a64c7ada0cb76fad03e30c7ef9e743a814b01d997378910df3"
+    },
+    "conversion/source.py": {
+      "bytes": 6079,
+      "sha256": "9cf0649eb831c46c810b2409446601abb33d4737a0ef97bc2999281845e37dd7"
+    },
+    "conversion/tts.py": {
+      "bytes": 19086,
+      "sha256": "16b6a44202130d85e84ea3301c6a2879c2237449156b196e0b0f7d9dcdde8bd0"
+    },
+    "conversion/tts_tokenizer_profiles.py": {
+      "bytes": 6585,
+      "sha256": "4fd29c82f0167a26e077ff7257b7896c45e0fefdb87326b60248406664d16773"
+    },
+    "conversion/vad.py": {
+      "bytes": 11504,
+      "sha256": "622460be6688bbd1ecdefc874a6216348dfb737b793b4cc08bf1aee55a10e1ac"
+    }
+  },
+  "gguf_files": {
+    "gguf/__init__.py": {
+      "bytes": 219,
+      "sha256": "3ccfc0104cd7ea88c6028743b7bf3f2c89b5f474425de03a217a6072320d7c2f"
+    },
+    "gguf/constants.py": {
+      "bytes": 233858,
+      "sha256": "462ef1a793adacb60ffc5e35c4dd5da41583fd7745b13eebcaa1c236e3f2b687"
+    },
+    "gguf/gguf.py": {
+      "bytes": 478,
+      "sha256": "f0c0eeedad0911784b52ffed8e162a0eb5ae6d535ce35705bc16196e46597a72"
+    },
+    "gguf/gguf_reader.py": {
+      "bytes": 16321,
+      "sha256": "d0ea743200e19d7ef0a4c969edcc4a6dba8e3656a790b217e3bdc7b31170718e"
+    },
+    "gguf/gguf_writer.py": {
+      "bytes": 70929,
+      "sha256": "7e3ff8d04b290dde083ae30d1091b67c95299f6865958fe1cdcb7e35dd201766"
+    },
+    "gguf/lazy.py": {
+      "bytes": 12015,
+      "sha256": "dbc98e3ee9ef8606df34e9d91f98ab29c2697e6824995f1dd8952938c135ad85"
+    },
+    "gguf/metadata.py": {
+      "bytes": 39318,
+      "sha256": "7cedac3b8457271a3f58e5531a7e6958fdecb9ea072f7895ba5d7f6693c9db29"
+    },
+    "gguf/quants.py": {
+      "bytes": 64946,
+      "sha256": "2c927a1b3d9f0920dcf4007fb686e1b0999333e9f65ce43dcc689900c0beae8b"
+    },
+    "gguf/scripts/gguf_convert_endian.py": {
+      "bytes": 7681,
+      "sha256": "6be91de3af4d9b3fc2c90dafb3d1d8eed7e9dd72b3d6b52d245f005c76ece280"
+    },
+    "gguf/scripts/gguf_dump.py": {
+      "bytes": 23104,
+      "sha256": "d8b8fc28e96d15d8a4d6f05cdff4a747f5a06f31172efee9dfc971998ed0203f"
+    },
+    "gguf/scripts/gguf_editor_gui.py": {
+      "bytes": 64438,
+      "sha256": "6e9d70e850268fff5d4108d9ecbc2b4d90e70b61f08e71f7d37ac20916d854bb"
+    },
+    "gguf/scripts/gguf_hash.py": {
+      "bytes": 3725,
+      "sha256": "9f277c9338d12a73857a4e54683d7da4d5de01531751f14401267c9289e4197f"
+    },
+    "gguf/scripts/gguf_new_metadata.py": {
+      "bytes": 10231,
+      "sha256": "972499d35957b4721b9243828d5547d1c84def8d4e6fc641887c6578bf765255"
+    },
+    "gguf/scripts/gguf_set_metadata.py": {
+      "bytes": 4145,
+      "sha256": "c8612a7109428a677ea55976dd5eeed6088934ddef7ef01246a5bc7a6e585b3b"
+    },
+    "gguf/tensor_mapping.py": {
+      "bytes": 134036,
+      "sha256": "df97c2291dc1d8e8992ae91b800e0cf139f94d5173b9ed4705f5ef75a371d924"
+    },
+    "gguf/utility.py": {
+      "bytes": 13534,
+      "sha256": "da920e2c62166ec9f30e407e9fb35ec29fda671310ffbf0f8ce856b62f1c70d7"
+    },
+    "gguf/vocab.py": {
+      "bytes": 42431,
+      "sha256": "16cddd93700f86c8b72e6f9e741e2362189155b9f96aa9e3bbb0995060095f1a"
+    }
+  },
+  "packages": {
+    "torch": "2.8.0",
+    "numpy": "2.2.6",
+    "PyYAML": "6.0.3"
+  },
+  "python_version": "Python 3.12.13",
+  "argv": [
+    "/Users/victor/.cache/gen2-nemotron3-n0/python-reference/bin/python",
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/convert_model.py",
+    "/Users/victor/.cache/gen2-nemotron3-n0/research/native-f32-control/Nemotron-3-Diarization.nemo",
+    "--architecture",
+    "diarization",
+    "--outtype",
+    "f32",
+    "--outfile",
+    "/Users/victor/.cache/gen2-nemotron3-n0/native-f32-conversion-v1/Nemotron-3-Diarization.f32-control.gguf"
+  ],
+  "environment": {
+    "PATH": "/usr/bin:/bin",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONPATH": "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/llama.cpp/gguf-py",
+    "HF_HUB_OFFLINE": "1",
+    "TRANSFORMERS_OFFLINE": "1",
+    "OMP_NUM_THREADS": "4",
+    "MKL_NUM_THREADS": "4"
+  },
+  "construction_rules": [
+    "Require exact publisher archive and both member hashes before checkpoint deserialization. Retain source configuration and exact V3 guard checks.",
+    "Execute the unmodified local upstream explicit diarization/f32 converter with the pinned source/gguf/dependencies; no remote model discovery or installation. Its actual default torch.load uses map_location=cpu,weights_only=False; record deserialization as performed.",
+    "Refuse preexisting output; retain exact stdout/stderr/argv/status even on failure. Write no control artifact into production assets.",
+    "After construction, inspect every GGUF tensor name/shape/type/byte hash; retain full source-to-output mapping and every skipped/unused checkpoint key. Compare every stored tensor against independently derived expected remap/shape/dtype casts from original source weights, including original F32 bank and F16 convolution exceptions.",
+    "Require no missing/unexplained duplicate output names or unaccounted tensors before admitting the artifact for any subsequent numerical inference. This v1 runs no inference or DER scoring."
+  ],
+  "expected_config": {
+    "high_resolution": true,
+    "max_num_of_spks": 8,
+    "output_subsampling_factor": 1,
+    "encoder_layers": 31,
+    "encoder_hidden": 512,
+    "features": 128,
+    "self_attention_model": "rope",
+    "subsampling": "feature_stacking",
+    "learnable_silence": true,
+    "qk_norm": false,
+    "attn_mode": "full"
+  },
+  "precision_scope": "F32-dominant with F16 convolution kernels required by CPU im2col. Upstream nominal file_type0 does not make every tensor F32. Do not call this an all-FP32 oracle.",
+  "limitations": [
+    "Artifact construction does not establish native model execution, HF/original-NeMo tensor equivalence or a quality fix.",
+    "Stored training geometry is not the future inference configuration; any subsequent fixed numerical run must explicitly retain9/4/0/FIFO264/cache264/update222 and correct native10ms/HF cached-prefix/lookahead/valid-frame alignment.",
+    "Checkpoint, control GGUF and raw tensor payloads remain outside Git. No published Q8/reference model lock, frozen scorer/protocol/input/output or release gate changes.",
+    "No original-NeMo model instantiated. Deserialization and conversion are distinct from neural inference."
+  ]
+}
