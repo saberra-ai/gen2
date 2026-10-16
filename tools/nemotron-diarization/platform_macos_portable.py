@@ -54,6 +54,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ['upstream', 'source', 'sdk', 'package', 'output']:
         parser.add_argument('--' + name, type=Path, required=True)
+    parser.add_argument('--protocol', type=Path,
+                        default=Path(__file__).with_name('macos-portable-construction-v2.protocol.json'))
     args = parser.parse_args()
     if platform.system() != 'Darwin' or platform.machine() != 'arm64':
         parser.error('portable candidate construction requires an actual arm64 Mac')
@@ -64,7 +66,7 @@ def main():
         parser.error(str(error))
     tools = Path(__file__).resolve().parent
     repo = tools.parents[1]
-    protocol_path = tools / 'macos-portable-construction.protocol.json'
+    protocol_path = args.protocol.resolve()
     protocol_bytes = protocol_path.read_bytes()
     p = json.loads(protocol_bytes)
     lock_path, lock = load_profile()

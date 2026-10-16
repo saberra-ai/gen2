@@ -696,11 +696,16 @@ and rejected for native/additional-ISA overrides; actual compiler-source hashes
 are retained alongside the independent GGML patch replay. Hardware/model
 compatibility is not established by compiler flags.
 
-The separate `macos-portable-construction.protocol.json` and
+The separate `macos-portable-construction-v2.protocol.json` and
 `diarization-macos-portable.yml` freeze a fresh arm64Mac construction job: local
 source preparation, offline build/state/version checks, private dependency
 packaging and exact filesystem archives. All original library payloads are
 retained for later relocation verification. The sandbox negatively tests all
 six dummy weight suffixes and loopback; no model or audio is acquired or run.
-At preparation this candidate has not been constructed or qualified for runtime.
+The first attempt compiled/installed the SDK and passed the one native state
+test on an actual Apple M1 virtual machine. Its validator rejected CTest's new
+summary wording before terminal audits, version query or packaging. That failed
+receipt remains unchanged. The v2 protocol accepts both observed summary formats
+while requiring exactly one passing test; the separate fresh retry is not yet run.
+No portable SDK/runtime archive or real-model qualification was admitted.
 Existing M4 packages, model outputs and quality failures remain unchanged.

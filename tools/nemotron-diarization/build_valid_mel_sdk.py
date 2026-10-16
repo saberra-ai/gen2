@@ -3,13 +3,13 @@ import argparse
 import json
 from pathlib import Path
 import platform
-import re
 import subprocess
 import sys
 import time
 
 from artifacts import digest
 from build_valid_mel_candidate import capture, descriptor, source_inventory
+from ctest_output import require_single_test_pass
 from macos_cpu_architecture import PORTABLE_ARM64, audit_portable_commands, portable_definitions
 from platform_valid_mel_sources import verify_completed_source
 from runtime_profiles import audit_cpu_compiler_tree, load_profile, verify_source
@@ -72,8 +72,7 @@ def main():
     run('model-free-state-test', ['/opt/homebrew/bin/ctest', '--test-dir', 'build/cpu-diar',
                                   '--output-on-failure', '-R', '^diar_state$'])
     log = (output / 'model-free-state-test.stdout.log').read_text()
-    if not re.search(r'1/1 Test #\d+: diar_state\s+.*Passed', log) or '100% tests passed, 0 tests failed out of 1' not in log:
-        raise ValueError('required model-free state test did not execute and pass')
+    require_single_test_pass(log, 'diar_state')
     if source_inventory(materialized) != inventory:
         raise ValueError('materialized compiler inputs changed during build')
     if capture(['git', 'diff', '--binary', '--no-ext-diff', '--ignore-submodules=all'], source) != patch.read_bytes():

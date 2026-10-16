@@ -8,6 +8,7 @@ on:
       - tools/nemotron-diarization/platform_macos_portable.py
       - tools/nemotron-diarization/macos_cpu_architecture.py
       - tools/nemotron-diarization/macos-portable-construction.protocol.json
+      - tools/nemotron-diarization/macos-portable-construction-v2.protocol.json
 permissions:
   contents: read
 jobs:
@@ -36,7 +37,7 @@ jobs:
       - name: Bootstrap build tools and dependency bottles
         run: brew install cmake ninja sentencepiece abseil protobuf
       - name: Offline portable SDK and private package construction, with no model admission
-        run: python tools/nemotron-diarization/platform_macos_portable.py --upstream native-upstream --source "${{ runner.temp }}/portable-source" --sdk "${{ runner.temp }}/portable-sdk" --package "${{ runner.temp }}/portable-runtime" --output "${{ runner.temp }}/portable-evidence"
+        run: python tools/nemotron-diarization/platform_macos_portable.py --protocol tools/nemotron-diarization/macos-portable-construction-v2.protocol.json --upstream native-upstream --source "${{ runner.temp }}/portable-source" --sdk "${{ runner.temp }}/portable-sdk" --package "${{ runner.temp }}/portable-runtime" --output "${{ runner.temp }}/portable-evidence"
       - name: Retain success or failure evidence and exact opaque filesystem archives
         if: always()
         uses: actions/upload-artifact@v4

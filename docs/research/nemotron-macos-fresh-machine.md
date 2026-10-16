@@ -1,7 +1,7 @@
 # Fresh Mac receiver: architecture prerequisites
 
-2026-10-16, source/metadata inspection only. No SDK construction, package upload,
-receiver process, model or kernel execution was performed for this note. Current
+2026-10-16. The initial inspection below performed no SDK construction or native
+execution. The later construction attempt is recorded separately below. Current
 same-host CPU/Metal app receipts do not qualify a second Mac.
 
 ## Current artifact and available runner are different CPU targets
@@ -65,15 +65,32 @@ GGML patch/source verification, model-free state/version checks and private
 library packaging. The [workflow](../../.github/workflows/diarization-macos-portable.yml)
 will retain the exact SDK/runtime archives and original dependency payloads.
 Bootstrap dependency versions are measured candidate inputs, not a production
-dependency lock. Construction has not yet run; runtime qualification requires a
-separate protocol binding the actual resulting artifacts.
+dependency lock. Runtime qualification requires a separate protocol binding the
+actual resulting artifacts.
 
-All191 local model-free tool tests pass. A new regression checks each dangling
+All 191 local model-free tool tests pass. A new regression checks each dangling
 destination symlink before canonical path resolution. The construction sandbox
-also actually denies reads of six11-byte dummy weight formats and loopback.
+also actually denies reads of six 11-byte dummy weight formats and loopback.
 That test exposed an over-escaped wildcard in the earlier original-NeMo import
 policy; the [correction receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-sandbox-regex-control/qualification.json)
 preserves the old policy, demonstrates its wildcard failure and verifies the
 corrected pattern. The old policy's explicit known-model-directory and network
 denials still pass. Later neural diagnostics used separate explicit path rules;
 none of their outputs or qualification statuses changed.
+
+The [first actual construction attempt](../../benches/results/nemotron-diarization/macos-arm64/2026-10-16-portable-cpu-construction-failure/qualification.json)
+ran on `Apple M1 (Virtual)`, macOS 26.6.2, Xcode 26.6. All 24 native build commands
+returned0, including compilation, installation and `diar_state` 1/1 Passed.
+The validator rejected CTest's new `100% tests passed out of 1` summary because
+it expected the older zero-failure clause. The attempt remains failed: terminal
+architecture/source audits, version query, packaging and artifact snapshots
+never ran. Its82-member receipt binds the actual 11,884,596-byte artifact ZIP and
+all 78 extracted members. No model ran. The 121 storage checks observed at least
+101,361,618,944 free bytes; the 256 MiB reserve was released.
+
+The separate [v2 protocol](../../tools/nemotron-diarization/macos-portable-construction-v2.protocol.json)
+keeps the original target, storage and construction criteria and binds that
+failure. Its parser requires exactly one passed test and accepts both observed
+CTest summary formats. Missing, skipped, failed, duplicate and multiple test
+outputs are rejected. All 193 local model-free tests pass. This fresh retry has
+not yet run and admits no model execution or quality-gate change.

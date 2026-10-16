@@ -159,13 +159,19 @@ compared; probabilities are unequal and raw discrepancies are retained.
 This later official3.1path does not identify the checkpoint's training3.0source.
 No old quality gate or release status changes. All185model-free tests pass.
 The [185-test source CI receipt](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-185/qualification.json)
-now passes all13 jobs, including all12 OS/feature combinations. Local model-free
-tests now total191. The separate [portable Mac construction plan](../research/nemotron-macos-fresh-machine.md)
-freezes a fresh VM SDK/package build with an explicit ARM target; it has not yet
-run and admits no model execution. Its sandbox regression exposed an earlier
+now passes all 13 jobs, including all 12 OS/feature combinations. Local model-free
+tests now total 191. The separate [portable Mac construction plan](../research/nemotron-macos-fresh-machine.md)
+freezes a fresh VM SDK/package build with an explicit ARM target and admits no
+model execution. Its sandbox regression exposed an earlier
 import-policy wildcard error, preserved in a separate correction receipt.
 The original AMI quality failures, GUI/microphone, receiver runtime, performance
 and public release gates remain open; main remains unchanged.
+The [first portable Mac attempt](../../benches/results/nemotron-diarization/macos-arm64/2026-10-16-portable-cpu-construction-failure/qualification.json)
+now preserves a validator failure after all 24 native commands passed on an M1
+virtual machine. CTest changed its summary wording; terminal audits, version
+query and packaging never ran. No SDK/runtime snapshot or model is admitted.
+A separate frozen v2 construction retry retains the same criteria with a parser
+for both observed single-test summary formats. Local model-free tests total 193.
 
 Prepared: 2026-10-14.
 Updated: 2026-10-16.
@@ -861,15 +867,15 @@ The 13-job feature matrix also passed at `4974318`. Later source `cf64214`
 passed12 jobs; its macOS mixed-feature job failed before compilation when GitHub
 submodule fetch could not connect to port443. A failed-job rerun was denied by
 the token's Actions permissions. Fresh source `ec88564` triggered a new full
-matrix, and [all13 jobs now pass](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix/qualification.json),
+matrix, and [all 13 jobs now pass](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix/qualification.json),
 including the formerly blocked macOS job and102 evidence-tool tests. The original
 fetch failure remains retained; no build gate is waived. The later
-[c729cea matrix also passes all13jobs](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-108/qualification.json),
+[c729cea matrix also passes all 13jobs](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-108/qualification.json),
 including108evidence-tool tests. Subsequent calibration tools and114local tests
 are outside that CI source. The subsequent [114-test matrix](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-114/qualification.json)
-at `9e98003`, run38912826242, now passes all13jobs. The later valid-Mel
+at `9e98003`, run38912826242, now passes all 13jobs. The later valid-Mel
 candidate tools remain outside that CI source. The later [121-test matrix](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-121/qualification.json)
-at `c15a0b9`, run38920681529, passes all13jobs and covers strict tagged-runtime
+at `c15a0b9`, run38920681529, passes all 13jobs and covers strict tagged-runtime
 Rust admission plus construction/recovery tools. The subsequent fixed-case
 qualification tools are outside that CI source.
 
@@ -1076,7 +1082,7 @@ this CI host, not a live/uncontended-performance claim. Microsoft distribution
 rights, physical Windows desktop, Bark/Laya coexistence, universal namespace and
 held-out-quality gates remain open. The separate AMI diagnostic raises the
 model-free regression total to96 at that point. The frontend diagnostic
-subsequently raises it to102; all13 jobs in source `ec88564`
+subsequently raises it to102; all 13 jobs in source `ec88564`
 run `38903243271` now pass.
 
 A guarded [Windows private-DLL build](../research/nemotron-windows-private-names.md)

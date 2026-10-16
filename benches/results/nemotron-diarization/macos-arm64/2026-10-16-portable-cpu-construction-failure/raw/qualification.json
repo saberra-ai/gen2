@@ -1,0 +1,88 @@
+{
+  "source_commit": "5e5c4d0a389eabc57dc80bc421e804858a088131",
+  "protocol": {
+    "bytes": 7982,
+    "sha256": "e670b71d0fdbec21f2caf3d76db81d8dc3b3ea59e7d630d1025b10d92ebe3ddb"
+  },
+  "commands": [
+    {
+      "name": "sandbox-controls",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-evidence/construction.sb",
+        "/Library/Frameworks/Python.framework/Versions/3.12/bin/python",
+        "-c",
+        "import pathlib, socket, sys\ndef denied(operation):\n    try:\n        operation()\n    except PermissionError:\n        return\n    raise RuntimeError(\"sandbox operation unexpectedly permitted\")\nfor name in sys.argv[1:]:\n    denied(lambda name=name: pathlib.Path(name).read_bytes())\ndenied(lambda: socket.create_connection((\"127.0.0.1\", 9), timeout=1))\n",
+        "/Users/runner/work/_temp/portable-evidence/denied-probe.nemo",
+        "/Users/runner/work/_temp/portable-evidence/denied-probe.gguf",
+        "/Users/runner/work/_temp/portable-evidence/denied-probe.safetensors",
+        "/Users/runner/work/_temp/portable-evidence/denied-probe.onnx",
+        "/Users/runner/work/_temp/portable-evidence/denied-probe.npy",
+        "/Users/runner/work/_temp/portable-evidence/denied-probe.f32"
+      ],
+      "cwd": "/Users/runner/work/gen2/gen2",
+      "pid": 2451,
+      "returncode": 0,
+      "elapsed_seconds": 0.10899583299999449
+    },
+    {
+      "name": "prepare",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-evidence/construction.sb",
+        "/Library/Frameworks/Python.framework/Versions/3.12/bin/python",
+        "/Users/runner/work/gen2/gen2/tools/nemotron-diarization/prepare_valid_mel_source.py",
+        "--upstream",
+        "/Users/runner/work/gen2/gen2/native-upstream",
+        "--destination",
+        "/Users/runner/work/_temp/portable-source",
+        "--output",
+        "/Users/runner/work/_temp/portable-evidence/preparation"
+      ],
+      "cwd": "/Users/runner/work/gen2/gen2",
+      "pid": 2457,
+      "returncode": 0,
+      "elapsed_seconds": 5.406987791999995
+    },
+    {
+      "name": "build",
+      "argv": [
+        "/Library/Frameworks/Python.framework/Versions/3.12/bin/python",
+        "/Users/runner/work/gen2/gen2/tools/nemotron-diarization/build_valid_mel_sdk.py",
+        "--source",
+        "/Users/runner/work/_temp/portable-source",
+        "--prefix",
+        "/Users/runner/work/_temp/portable-sdk",
+        "--output",
+        "/Users/runner/work/_temp/portable-evidence/build",
+        "--jobs",
+        "2",
+        "--cpu-arch",
+        "armv8.2-a+dotprod+fp16",
+        "--sandbox-profile",
+        "/Users/runner/work/_temp/portable-evidence/construction.sb"
+      ],
+      "cwd": "/Users/runner/work/gen2/gen2",
+      "pid": 2514,
+      "returncode": 1,
+      "elapsed_seconds": 114.35967729100003
+    }
+  ],
+  "model_calls": 0,
+  "model_or_frontend_execution_admitted": false,
+  "release_qualified": false,
+  "construction_and_package_passed": false,
+  "error": "ValueError('portable construction phase failed: build')",
+  "storage": {
+    "start_minimum_bytes": 3221225472,
+    "running_minimum_bytes": 1073741824,
+    "reserve_requested_bytes": 268435456,
+    "checks": 121,
+    "released": true,
+    "minimum_observed_free_bytes": 101361618944,
+    "last_observed_free_bytes": 101361618944,
+    "reserve_reported_allocated_bytes": 268435456
+  }
+}
