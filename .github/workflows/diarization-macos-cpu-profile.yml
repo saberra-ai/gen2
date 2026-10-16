@@ -1,0 +1,57 @@
+name: Diarization portable macOS CPU profile
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/nemotron3-n0]
+    paths:
+      - .github/workflows/diarization-macos-cpu-profile.yml
+      - tools/nemotron-diarization/profile_macos_portable_cpu.py
+      - tools/nemotron-diarization/macos-portable-cpu-profile.protocol.json
+permissions:
+  contents: read
+  actions: read
+jobs:
+  profile:
+    runs-on: macos-26
+    timeout-minutes: 20
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download exact qualified construction and receiver artifacts
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p "${{ runner.temp }}/profile-delivery"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12074849757 > "${{ runner.temp }}/profile-delivery/construction.json"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12074849757/zip > "${{ runner.temp }}/profile-delivery/construction.zip"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12080325210 > "${{ runner.temp }}/profile-delivery/receiver.json"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12080325210/zip > "${{ runner.temp }}/profile-delivery/receiver.zip"
+      - name: Validate sampler without models then profile one fixed short native run
+        run: |
+          python tools/nemotron-diarization/profile_macos_portable_cpu.py \
+            --protocol tools/nemotron-diarization/macos-portable-cpu-profile.protocol.json \
+            --construction-zip "${{ runner.temp }}/profile-delivery/construction.zip" \
+            --construction-metadata "${{ runner.temp }}/profile-delivery/construction.json" \
+            --receiver-zip "${{ runner.temp }}/profile-delivery/receiver.zip" \
+            --receiver-metadata "${{ runner.temp }}/profile-delivery/receiver.json" \
+            --output "${{ runner.temp }}/cpu-profile"
+      - name: Preserve passing or failed diagnostic evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nemotron-macos-cpu-profile
+          path: |
+            ${{ runner.temp }}/cpu-profile/*.json
+            ${{ runner.temp }}/cpu-profile/*.log
+            ${{ runner.temp }}/cpu-profile/*.txt
+            ${{ runner.temp }}/cpu-profile/*.sb
+            ${{ runner.temp }}/cpu-profile/*.f32
+            ${{ runner.temp }}/cpu-profile/control.c
+          include-hidden-files: true
+          retention-days: 30

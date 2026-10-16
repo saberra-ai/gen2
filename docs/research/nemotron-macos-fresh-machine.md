@@ -188,6 +188,29 @@ GUI/microphone, complete-app delivery/execution, mixed-model coexistence,
 uncontended performance, signing/notarization and the original accuracy failures
 remain separate.
 
+## Frozen CPU sampling diagnostic
+
+The separate [CPU profile protocol](../../tools/nemotron-diarization/macos-portable-cpu-profile.protocol.json)
+registers one 12-second native command using the exact qualified package and
+archived native executable. Model, SDK, preset and thread count stay unchanged.
+It samples five seconds of stacks and retains `/usr/bin/time -l` process usage,
+actual CPU counts and host load. An actual model-free C sampling control must
+pass before model acquisition/admission. Offline input/source/write controls,
+the original storage floors and the strict private-library auditor still apply.
+
+The ranked hypotheses are fixed-thread contention, matrix-kernel/Accelerate
+work, and shared-VM scheduling delay. Their predictions are in the protocol;
+none is established by the existing RTF alone. The instrumented shorter crop
+cannot establish a speedup against the earlier 60-second run.
+
+Local model-free testing exposed macOS redaction of sample-report paths. The
+original report and failed exact-path check remain in cache. The corrected
+observer requires the live PID, exact `ps` executable path and matching target
+UUID in dyld and the sample's Binary Images section. Redacted report paths stay
+redacted; the separate dyld audit still checks exact actual paths and hashes.
+Identity queries, sampling and observer waits are bounded. This prepares a
+diagnostic, with no completed performance fix or release qualification.
+
 ## Portable CPU complete-app construction
 
 The [local construction receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-portable-cpu-pnola-app-construction/qualification.json)
