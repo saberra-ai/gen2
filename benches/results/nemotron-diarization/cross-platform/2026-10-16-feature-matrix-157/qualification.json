@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "source_commit": "8fbef3e8a46a034b8e0ffa8f096409db683a923e",
+  "ci_url": "https://github.com/saberra-ai/gen2/actions/runs/38940008376",
+  "all_thirteen_feature_jobs_passed": true,
+  "model_free_evidence_tests_passed": 157,
+  "platforms": [
+    "ubuntu-latest",
+    "windows-latest",
+    "macos-latest"
+  ],
+  "feature_sets": [
+    "",
+    "backend-diar-nemo",
+    "asr-dynamic,backend-diar-nemo",
+    "backend-llamacpp,asr-dynamic,backend-diar-nemo"
+  ],
+  "all_twelve_feature_jobs_ran_fmt_clippy_tests_successfully": true,
+  "evidence_and_pnola_python_and_desktop_asset_test_steps_passed": true,
+  "combined_log_retained_outside_git": {
+    "bytes": 10076168,
+    "sha256": "d48e034e6ccc1f62d6b7d6100e9d1ef92b02c72ab1db8d7cefe8520a9c51e3ea"
+  },
+  "release_qualified": false,
+  "limits": [
+    "CI source is8fbef3e. This proves its12OS/feature combinations and157model-free evidence tests, including Metal runtime/combined-loader/guardedlong tools and initial freshplatform SDK source guards. Later Linux/Windows v2 package/qualifier migrations and SDKrestorer are outside this source.",
+    "No model/nativeSDK is required by this workflow. It does not replace real-model, desktop, distribution, held-out-quality or uncontended-performance gates. Earlier network-failure and102-test success receipts remain unchanged."
+  ]
+}

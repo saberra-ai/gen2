@@ -63,8 +63,11 @@ v2 packages with exact SDK-library source mappings and retained profile, patch,
 protocol and compiler-audit provenance. Offline and CPU chat qualifiers use the
 complete 6,000-row comparator; a fresh consumer builds its own public helper
 and acquires omitted pinned assets on the host before offline testing. These
-source changes pass 161 model-free tests. Current-profile Linux construction,
-offline execution and chat coexistence remain unqualified until actual runs.
+source changes passed 161 model-free tests at that source. The
+[actual Linux v2 construction](../../benches/results/nemotron-diarization/linux-x86_64/2026-10-16-valid-mel-runtime-construction/qualification.json)
+now passes with eight libraries, exact SDK mappings, corresponding sources and
+notices. Its 110,340,200-byte archive restores with matching files, modes and
+aliases. Offline execution and chat coexistence remain unqualified.
 
 The Windows constructor likewise requires the completed tagged SDK and emits
 v2 app-local or central-VC packages. Both formats retain exact profile/patch/
@@ -85,8 +88,14 @@ The [Linux construction protocol](valid-mel-linux-construction.protocol.json)
 now freezes the successful SDK receipt, exact producer artifact and current
 constructor sources. `construct_valid_mel_linux_package.py` restores that archive
 and invokes package construction with retained command/failure records. It does
-not rebuild the SDK, query its version or load a model. Actual construction is
-pending; offline inference and coexistence require later separate gates.
+not rebuild the SDK, query its version or load a model. Actual construction
+passes at source `054cac64`; the original producer SDK remains bound to `8fbef3e`.
+The [next runtime protocol](valid-mel-linux-runtime.protocol.json) freezes that
+exact archive for fresh offline native/public/lifecycle and CPU chat gates.
+The consumer checks constructor source hashes across the separate producer
+commit and records all source identities. These runtime gates remain pending;
+all 167 model-free tool tests pass. The [157-test CI source](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-157/qualification.json)
+also passes all 13 jobs; later package migrations are outside that CI source.
 
 # Nemotron 3 — N0 qualification
 

@@ -1,0 +1,837 @@
+{
+  "format": "gen2-nemo-linux-cpu-v2",
+  "release_qualified": false,
+  "architecture": "x86_64",
+  "backend": "cpu",
+  "platform_baseline": "Ubuntu 24.04 / glibc 2.39 / AVX2 FMA F16C",
+  "runtime_revision": "083861c241061562b8ec29eb06d7f6cdc3af8775",
+  "llama_revision": "bd4f514db14d87fded667787a7a963bfbaa98e89",
+  "lock_sha256": "af40e586994f223390fcac59936e3781d967c03080350f4b5df141b1bdaf51be",
+  "runtime_profile": "gen2-valid-mel-v1",
+  "runtime_reported_version": "nemo-speech-asr 0.2.0+gen2-valid-mel-v1",
+  "compatibility_patches": [
+    {
+      "path": "patches/v3-finish-valid-mel.patch",
+      "bytes": 1194,
+      "sha256": "8c1434c14f63ebeb2515c719a90594124fd4f75af85b80451fd145b5caef3c36",
+      "source_sha256_before": {
+        "src/asr/diar/diar_pipeline.cpp": "4143ca8e6d6f14ee454263702510cb163fe8e170aa928f236c0b4b540a7a7da9"
+      },
+      "source_sha256_after": {
+        "src/asr/diar/diar_pipeline.cpp": "fe00ae415f4741d7e07579acdc77c60f5d7327be024cf7f8aff8f52142ae9af2"
+      }
+    }
+  ],
+  "frame_contract": {
+    "name": "v3-streaming-valid-mel-v1",
+    "scope": "V3 streaming finish only; offline and V2 semantics unchanged",
+    "sample_rate": 16000,
+    "hop_samples": 160,
+    "final_frames": "floor(real_input_samples / 160)",
+    "output_channels": 8
+  },
+  "build_receipt_sha256": "78e4cde1111168f7f614a33ba22f59edfac6e720dafa91b499be59f43da97aea",
+  "entry_library": "libgen2_nemo_linux_nemo_speech_asr_c.so.1",
+  "components": {
+    "libgcc-s1": {
+      "package": {
+        "binary:Package": "libgcc-s1:amd64",
+        "Version": "14.2.0-4ubuntu2~24.04.1",
+        "Architecture": "amd64",
+        "source:Package": "gcc-14",
+        "source:Version": "14.2.0-4ubuntu2~24.04.1"
+      },
+      "notice_package": {
+        "binary:Package": "gcc-14-base:amd64",
+        "Version": "14.2.0-4ubuntu2~24.04.1",
+        "Architecture": "amd64",
+        "source:Package": "gcc-14",
+        "source:Version": "14.2.0-4ubuntu2~24.04.1"
+      },
+      "source_bundle": {
+        "source_package": "gcc-14",
+        "source_version": "14.2.0-4ubuntu2~24.04.1",
+        "descriptor_sha256": "50950080874a6ec6780dd60c243e21d9cda9d736bb32bca98d16095d27cc01b5"
+      },
+      "copyright_sha256": "20390f8a6f3b1e4d7cb45dd8652dabb259bbef688cbad839bcdb0b9ba7252f79"
+    },
+    "libstdc++6": {
+      "package": {
+        "binary:Package": "libstdc++6:amd64",
+        "Version": "14.2.0-4ubuntu2~24.04.1",
+        "Architecture": "amd64",
+        "source:Package": "gcc-14",
+        "source:Version": "14.2.0-4ubuntu2~24.04.1"
+      },
+      "notice_package": {
+        "binary:Package": "gcc-14-base:amd64",
+        "Version": "14.2.0-4ubuntu2~24.04.1",
+        "Architecture": "amd64",
+        "source:Package": "gcc-14",
+        "source:Version": "14.2.0-4ubuntu2~24.04.1"
+      },
+      "source_bundle": {
+        "source_package": "gcc-14",
+        "source_version": "14.2.0-4ubuntu2~24.04.1",
+        "descriptor_sha256": "50950080874a6ec6780dd60c243e21d9cda9d736bb32bca98d16095d27cc01b5"
+      },
+      "copyright_sha256": "20390f8a6f3b1e4d7cb45dd8652dabb259bbef688cbad839bcdb0b9ba7252f79"
+    },
+    "libsentencepiece0": {
+      "package": {
+        "binary:Package": "libsentencepiece0",
+        "Version": "0.2.0-1build1",
+        "Architecture": "amd64",
+        "source:Package": "sentencepiece",
+        "source:Version": "0.2.0-1build1"
+      },
+      "notice_package": {
+        "binary:Package": "libsentencepiece0",
+        "Version": "0.2.0-1build1",
+        "Architecture": "amd64",
+        "source:Package": "sentencepiece",
+        "source:Version": "0.2.0-1build1"
+      },
+      "source_bundle": {
+        "source_package": "sentencepiece",
+        "source_version": "0.2.0-1build1",
+        "descriptor_sha256": "cf9b2a6d56e921f481b39c904487a8bab622318f7ac5e066d60e2378fabd3b9d"
+      },
+      "copyright_sha256": "4fcdf289da4573eb616853f9cbfbdb4b9f899e2aaa90c94212ecdd195d94df59"
+    }
+  },
+  "libraries": {
+    "libgen2_nemo_linux_nemo_speech_asr_c.so.1": {
+      "source": "/home/runner/work/_temp/linux-valid-mel-construction/restored-sdk/lib/libnemo_speech_asr_c.so.1",
+      "source_sha256": "fb31a01e7d6a7dd613dc7d92b0137660627e743254703cabdd9e7f5a1a147a3e",
+      "source_bytes": 83864,
+      "original_soname": "libnemo_speech_asr_c.so.1",
+      "platform_dependencies": {
+        "libc.so.6": {
+          "path": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+          "sha256": "3a15d66867d83762c7f2f1e37359cb8f6c5743edb369c65285cb0b1c4f7498bf"
+        },
+        "ld-linux-x86-64.so.2": {
+          "path": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+          "sha256": "c20a2dc8917c755f02b94049356320fe1f62ac7d9f8994731f807d9df39302da"
+        }
+      },
+      "final_elf": {
+        "soname": "libgen2_nemo_linux_nemo_speech_asr_c.so.1",
+        "needed": [
+          "libgen2_nemo_linux_nemo_speech_asr.so",
+          "libstdc++.so.6",
+          "libgcc_s.so.1",
+          "libc.so.6",
+          "ld-linux-x86-64.so.2"
+        ],
+        "rpath": [
+          "$ORIGIN"
+        ],
+        "runpath": [],
+        "required_symbol_versions": [
+          "CXXABI_1.3",
+          "CXXABI_1.3.7",
+          "CXXABI_1.3.9",
+          "GCC_3.0",
+          "GLIBCXX_3.4",
+          "GLIBCXX_3.4.21",
+          "GLIBC_2.14",
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.32",
+          "GLIBC_2.4"
+        ]
+      }
+    },
+    "libgcc_s.so.1": {
+      "source": "/usr/lib/x86_64-linux-gnu/libgcc_s.so.1",
+      "source_sha256": "d93224d2b0dab4247598be683adca02f5cf00586f99c187579cd7e92058fb7cb",
+      "source_bytes": 183024,
+      "original_soname": "libgcc_s.so.1",
+      "platform_dependencies": {
+        "libc.so.6": {
+          "path": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+          "sha256": "3a15d66867d83762c7f2f1e37359cb8f6c5743edb369c65285cb0b1c4f7498bf"
+        },
+        "ld-linux-x86-64.so.2": {
+          "path": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+          "sha256": "c20a2dc8917c755f02b94049356320fe1f62ac7d9f8994731f807d9df39302da"
+        }
+      },
+      "final_elf": {
+        "soname": "libgcc_s.so.1",
+        "needed": [
+          "libc.so.6",
+          "ld-linux-x86-64.so.2"
+        ],
+        "rpath": [
+          "$ORIGIN"
+        ],
+        "runpath": [],
+        "required_symbol_versions": [
+          "GLIBC_2.14",
+          "GLIBC_2.2.5",
+          "GLIBC_2.3",
+          "GLIBC_2.3.2",
+          "GLIBC_2.3.4",
+          "GLIBC_2.34",
+          "GLIBC_2.35"
+        ]
+      }
+    },
+    "libstdc++.so.6": {
+      "source": "/usr/lib/x86_64-linux-gnu/libstdc++.so.6.0.33",
+      "source_sha256": "1fd75fe70354a416d75aef22bcae68c47bd25d20e2d0568c30b1a9838cf62f11",
+      "source_bytes": 2592224,
+      "original_soname": "libstdc++.so.6",
+      "platform_dependencies": {
+        "libm.so.6": {
+          "path": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+          "sha256": "fce00b6f25f459cf4ae0b7fae4257909a1a8a86f9149e7c029a5d617baf1ccd0"
+        },
+        "libc.so.6": {
+          "path": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+          "sha256": "3a15d66867d83762c7f2f1e37359cb8f6c5743edb369c65285cb0b1c4f7498bf"
+        },
+        "ld-linux-x86-64.so.2": {
+          "path": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+          "sha256": "c20a2dc8917c755f02b94049356320fe1f62ac7d9f8994731f807d9df39302da"
+        }
+      },
+      "final_elf": {
+        "soname": "libstdc++.so.6",
+        "needed": [
+          "libm.so.6",
+          "libc.so.6",
+          "ld-linux-x86-64.so.2",
+          "libgcc_s.so.1"
+        ],
+        "rpath": [
+          "$ORIGIN"
+        ],
+        "runpath": [],
+        "required_symbol_versions": [
+          "GCC_3.0",
+          "GCC_3.3",
+          "GCC_4.2.0",
+          "GCC_4.3.0",
+          "GLIBC_2.14",
+          "GLIBC_2.17",
+          "GLIBC_2.18",
+          "GLIBC_2.2.5",
+          "GLIBC_2.25",
+          "GLIBC_2.26",
+          "GLIBC_2.3",
+          "GLIBC_2.3.2",
+          "GLIBC_2.3.4",
+          "GLIBC_2.32",
+          "GLIBC_2.33",
+          "GLIBC_2.34",
+          "GLIBC_2.36",
+          "GLIBC_2.38",
+          "GLIBC_2.4",
+          "GLIBC_2.6",
+          "GLIBC_2.7"
+        ]
+      }
+    },
+    "libgen2_nemo_linux_nemo_speech_asr.so": {
+      "source": "/home/runner/work/_temp/linux-valid-mel-construction/restored-sdk/lib/libnemo_speech_asr.so",
+      "source_sha256": "165a7624b7ecadf179c6f462b5f20b9fba0d343273a48ffcc551f0e1b6ad74ec",
+      "source_bytes": 1966184,
+      "original_soname": "libnemo_speech_asr.so",
+      "platform_dependencies": {
+        "libm.so.6": {
+          "path": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+          "sha256": "fce00b6f25f459cf4ae0b7fae4257909a1a8a86f9149e7c029a5d617baf1ccd0"
+        },
+        "libc.so.6": {
+          "path": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+          "sha256": "3a15d66867d83762c7f2f1e37359cb8f6c5743edb369c65285cb0b1c4f7498bf"
+        },
+        "ld-linux-x86-64.so.2": {
+          "path": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+          "sha256": "c20a2dc8917c755f02b94049356320fe1f62ac7d9f8994731f807d9df39302da"
+        }
+      },
+      "final_elf": {
+        "soname": "libgen2_nemo_linux_nemo_speech_asr.so",
+        "needed": [
+          "libgen2_nemo_linux_sentencepiece.so.0.0.0",
+          "libgen2_nemo_linux_ggml.so.0.25.1",
+          "libgen2_nemo_linux_ggml-base.so.0.25.1",
+          "libstdc++.so.6",
+          "libm.so.6",
+          "libgcc_s.so.1",
+          "libc.so.6",
+          "ld-linux-x86-64.so.2"
+        ],
+        "rpath": [
+          "$ORIGIN"
+        ],
+        "runpath": [],
+        "required_symbol_versions": [
+          "CXXABI_1.3",
+          "CXXABI_1.3.11",
+          "CXXABI_1.3.13",
+          "CXXABI_1.3.2",
+          "CXXABI_1.3.3",
+          "CXXABI_1.3.5",
+          "CXXABI_1.3.9",
+          "GCC_3.0",
+          "GLIBCXX_3.4",
+          "GLIBCXX_3.4.11",
+          "GLIBCXX_3.4.14",
+          "GLIBCXX_3.4.15",
+          "GLIBCXX_3.4.17",
+          "GLIBCXX_3.4.18",
+          "GLIBCXX_3.4.19",
+          "GLIBCXX_3.4.20",
+          "GLIBCXX_3.4.21",
+          "GLIBCXX_3.4.22",
+          "GLIBCXX_3.4.29",
+          "GLIBCXX_3.4.30",
+          "GLIBCXX_3.4.32",
+          "GLIBCXX_3.4.9",
+          "GLIBC_2.14",
+          "GLIBC_2.2.5",
+          "GLIBC_2.27",
+          "GLIBC_2.29",
+          "GLIBC_2.3",
+          "GLIBC_2.3.4",
+          "GLIBC_2.32",
+          "GLIBC_2.34",
+          "GLIBC_2.38",
+          "GLIBC_2.4"
+        ]
+      }
+    },
+    "libgen2_nemo_linux_ggml-base.so.0.25.1": {
+      "source": "/home/runner/work/_temp/linux-valid-mel-construction/restored-sdk/lib/libggml-base.so.0.25.1",
+      "source_sha256": "82fc79b5a1cc1d20be6f88cd652dab21740ff113aa3c0c45861665246fa704dd",
+      "source_bytes": 944472,
+      "original_soname": "libggml-base.so.0",
+      "platform_dependencies": {
+        "libm.so.6": {
+          "path": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+          "sha256": "fce00b6f25f459cf4ae0b7fae4257909a1a8a86f9149e7c029a5d617baf1ccd0"
+        },
+        "libc.so.6": {
+          "path": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+          "sha256": "3a15d66867d83762c7f2f1e37359cb8f6c5743edb369c65285cb0b1c4f7498bf"
+        }
+      },
+      "final_elf": {
+        "soname": "libgen2_nemo_linux_ggml-base.so.0.25.1",
+        "needed": [
+          "libstdc++.so.6",
+          "libm.so.6",
+          "libgcc_s.so.1",
+          "libc.so.6"
+        ],
+        "rpath": [
+          "$ORIGIN"
+        ],
+        "runpath": [],
+        "required_symbol_versions": [
+          "CXXABI_1.3",
+          "CXXABI_1.3.9",
+          "GCC_3.0",
+          "GLIBCXX_3.4",
+          "GLIBCXX_3.4.11",
+          "GLIBCXX_3.4.18",
+          "GLIBCXX_3.4.20",
+          "GLIBCXX_3.4.21",
+          "GLIBCXX_3.4.29",
+          "GLIBC_2.14",
+          "GLIBC_2.17",
+          "GLIBC_2.2.5",
+          "GLIBC_2.27",
+          "GLIBC_2.29",
+          "GLIBC_2.3.4",
+          "GLIBC_2.38",
+          "GLIBC_2.4"
+        ]
+      }
+    },
+    "libgen2_nemo_linux_ggml.so.0.25.1": {
+      "source": "/home/runner/work/_temp/linux-valid-mel-construction/restored-sdk/lib/libggml.so.0.25.1",
+      "source_sha256": "e3662ce91e97807e22ca723f8e3592f14db153a2d2d2f0c233e7f00711864e11",
+      "source_bytes": 60720,
+      "original_soname": "libggml.so.0",
+      "platform_dependencies": {
+        "libc.so.6": {
+          "path": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+          "sha256": "3a15d66867d83762c7f2f1e37359cb8f6c5743edb369c65285cb0b1c4f7498bf"
+        }
+      },
+      "final_elf": {
+        "soname": "libgen2_nemo_linux_ggml.so.0.25.1",
+        "needed": [
+          "libgen2_nemo_linux_ggml-cpu.so.0.25.1",
+          "libgen2_nemo_linux_ggml-base.so.0.25.1",
+          "libstdc++.so.6",
+          "libgcc_s.so.1",
+          "libc.so.6"
+        ],
+        "rpath": [
+          "$ORIGIN"
+        ],
+        "runpath": [],
+        "required_symbol_versions": [
+          "CXXABI_1.3",
+          "CXXABI_1.3.9",
+          "GCC_3.0",
+          "GLIBCXX_3.4",
+          "GLIBCXX_3.4.20",
+          "GLIBCXX_3.4.21",
+          "GLIBCXX_3.4.26",
+          "GLIBC_2.14",
+          "GLIBC_2.2.5",
+          "GLIBC_2.32",
+          "GLIBC_2.34",
+          "GLIBC_2.4"
+        ]
+      }
+    },
+    "libgen2_nemo_linux_ggml-cpu.so.0.25.1": {
+      "source": "/home/runner/work/_temp/linux-valid-mel-construction/restored-sdk/lib/libggml-cpu.so.0.25.1",
+      "source_sha256": "369ac383c27bfefba3dbd34ed0475d90a1a61928dc9979df8c4be5a23b331215",
+      "source_bytes": 1214000,
+      "original_soname": "libggml-cpu.so.0",
+      "platform_dependencies": {
+        "libm.so.6": {
+          "path": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+          "sha256": "fce00b6f25f459cf4ae0b7fae4257909a1a8a86f9149e7c029a5d617baf1ccd0"
+        },
+        "libc.so.6": {
+          "path": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+          "sha256": "3a15d66867d83762c7f2f1e37359cb8f6c5743edb369c65285cb0b1c4f7498bf"
+        }
+      },
+      "final_elf": {
+        "soname": "libgen2_nemo_linux_ggml-cpu.so.0.25.1",
+        "needed": [
+          "libgen2_nemo_linux_ggml-base.so.0.25.1",
+          "libstdc++.so.6",
+          "libm.so.6",
+          "libgcc_s.so.1",
+          "libc.so.6"
+        ],
+        "rpath": [
+          "$ORIGIN"
+        ],
+        "runpath": [],
+        "required_symbol_versions": [
+          "CXXABI_1.3",
+          "CXXABI_1.3.9",
+          "GCC_3.0",
+          "GLIBCXX_3.4",
+          "GLIBCXX_3.4.21",
+          "GLIBCXX_3.4.29",
+          "GLIBC_2.14",
+          "GLIBC_2.2.5",
+          "GLIBC_2.27",
+          "GLIBC_2.29",
+          "GLIBC_2.3.2",
+          "GLIBC_2.3.4",
+          "GLIBC_2.32",
+          "GLIBC_2.33",
+          "GLIBC_2.34",
+          "GLIBC_2.38",
+          "GLIBC_2.4",
+          "GLIBC_2.7"
+        ]
+      }
+    },
+    "libgen2_nemo_linux_sentencepiece.so.0.0.0": {
+      "source": "/usr/lib/x86_64-linux-gnu/libsentencepiece.so.0.0.0",
+      "source_sha256": "a80984e38c70bcfabec6974f1a9bcacb2f46d7c5b6a3d70637b8ae7d4cff4d58",
+      "source_bytes": 1178768,
+      "original_soname": "libsentencepiece.so.0",
+      "platform_dependencies": {
+        "libm.so.6": {
+          "path": "/usr/lib/x86_64-linux-gnu/libm.so.6",
+          "sha256": "fce00b6f25f459cf4ae0b7fae4257909a1a8a86f9149e7c029a5d617baf1ccd0"
+        },
+        "libc.so.6": {
+          "path": "/usr/lib/x86_64-linux-gnu/libc.so.6",
+          "sha256": "3a15d66867d83762c7f2f1e37359cb8f6c5743edb369c65285cb0b1c4f7498bf"
+        },
+        "ld-linux-x86-64.so.2": {
+          "path": "/usr/lib/x86_64-linux-gnu/ld-linux-x86-64.so.2",
+          "sha256": "c20a2dc8917c755f02b94049356320fe1f62ac7d9f8994731f807d9df39302da"
+        }
+      },
+      "final_elf": {
+        "soname": "libgen2_nemo_linux_sentencepiece.so.0.0.0",
+        "needed": [
+          "libstdc++.so.6",
+          "libm.so.6",
+          "libgcc_s.so.1",
+          "libc.so.6",
+          "ld-linux-x86-64.so.2"
+        ],
+        "rpath": [
+          "$ORIGIN"
+        ],
+        "runpath": [],
+        "required_symbol_versions": [
+          "CXXABI_1.3",
+          "CXXABI_1.3.5",
+          "CXXABI_1.3.7",
+          "CXXABI_1.3.8",
+          "CXXABI_1.3.9",
+          "GCC_3.0",
+          "GCC_3.3.1",
+          "GLIBCXX_3.4",
+          "GLIBCXX_3.4.11",
+          "GLIBCXX_3.4.14",
+          "GLIBCXX_3.4.18",
+          "GLIBCXX_3.4.20",
+          "GLIBCXX_3.4.21",
+          "GLIBCXX_3.4.26",
+          "GLIBCXX_3.4.29",
+          "GLIBCXX_3.4.32",
+          "GLIBCXX_3.4.9",
+          "GLIBC_2.14",
+          "GLIBC_2.2.5",
+          "GLIBC_2.27",
+          "GLIBC_2.29",
+          "GLIBC_2.3",
+          "GLIBC_2.3.4",
+          "GLIBC_2.32",
+          "GLIBC_2.34",
+          "GLIBC_2.38",
+          "GLIBC_2.4"
+        ]
+      }
+    }
+  },
+  "apt_provenance": {
+    "config": "APT \"\";\nAPT::Architecture \"amd64\";\nAPT::Build-Essential \"\";\nAPT::Build-Essential:: \"build-essential\";\nAPT::Install-Recommends \"1\";\nAPT::Install-Suggests \"0\";\nAPT::Key \"\";\nAPT::Key::Assert-Pubkey-Algo \">=rsa1024,ed25519,ed448,nistp256,nistp384,nistp512,brainpoolP256r1,brainpoolP320r1,brainpoolP384r1,brainpoolP512r1,secp256k1\";\nAPT::Key::Assert-Pubkey-Algo::Next \">=rsa2048,ed25519,ed448,nistp256,nistp384,nistp512\";\nAPT::Key::Assert-Pubkey-Algo::Future \">=rsa3072,ed25519,ed448\";\nAPT::Sandbox \"\";\nAPT::Sandbox::User \"_apt\";\nAPT::NeverAutoRemove \"\";\nAPT::NeverAutoRemove:: \"^firmware-linux.*\";\nAPT::NeverAutoRemove:: \"^linux-firmware$\";\nAPT::NeverAutoRemove:: \"^linux-image-[a-z0-9]*$\";\nAPT::NeverAutoRemove:: \"^linux-image-[a-z0-9]*-[a-z0-9]*$\";\nAPT::NeverAutoRemove:: \"^postgresql.*-16\";\nAPT::VersionedKernelPackages \"\";\nAPT::VersionedKernelPackages:: \"linux-.*\";\nAPT::VersionedKernelPackages:: \"kfreebsd-.*\";\nAPT::VersionedKernelPackages:: \"gnumach-.*\";\nAPT::VersionedKernelPackages:: \".*-modules\";\nAPT::VersionedKernelPackages:: \".*-kernel\";\nAPT::Never-MarkAuto-Sections \"\";\nAPT::Never-MarkAuto-Sections:: \"metapackages\";\nAPT::Never-MarkAuto-Sections:: \"tasks\";\nAPT::Move-Autobit-Sections \"\";\nAPT::Move-Autobit-Sections:: \"oldlibs\";\nAPT::Get \"\";\nAPT::Get::AutomaticRemove \"0\";\nAPT::Get::HideAutoRemove \"1\";\nAPT::Get::Assume-Yes \"true\";\nAPT::Get::Always-Include-Phased-Updates \"true\";\nAPT::Periodic \"\";\nAPT::Periodic::Update-Package-Lists \"1\";\nAPT::Periodic::Download-Upgradeable-Packages \"0\";\nAPT::Periodic::AutocleanInterval \"0\";\nAPT::Update \"\";\nAPT::Update::Post-Invoke-Success \"\";\nAPT::Update::Post-Invoke-Success:: \"touch /var/lib/apt/periodic/update-success-stamp 2>/dev/null || true\";\nAPT::Update::Post-Invoke-Success:: \"/usr/bin/test -e /usr/share/dbus-1/system-services/org.freedesktop.PackageKit.service && /usr/bin/test -S /var/run/dbus/system_bus_socket && /usr/bin/gdbus call --system --dest org.freedesktop.PackageKit --object-path /org/freedesktop/PackageKit --timeout 4 --method org.freedesktop.PackageKit.StateHasChanged cache-update > /dev/null; /bin/echo > /dev/null\";\nAPT::Update::Post-Invoke-Success:: \"if /usr/bin/test -w /var/cache/swcatalog -a -e /usr/bin/appstreamcli; then appstreamcli refresh --source=os > /dev/null || true; fi\";\nAPT::Update::Post-Invoke-Success:: \"if /usr/bin/test -w /var/lib/command-not-found/ -a -e /usr/lib/cnf-update-db; then /usr/lib/cnf-update-db > /dev/null; fi\";\nAPT::Update::Post-Invoke-Success:: \"/usr/lib/update-notifier/update-motd-updates-available 2>/dev/null || true\";\nAPT::Update::Pre-Invoke \"\";\nAPT::Update::Pre-Invoke:: \"[ ! -e /run/systemd/system ] || [ $(id -u) -ne 0 ] || systemctl start --no-block apt-news.service esm-cache.service >/dev/null 2>&1 || true\";\nAPT::Archives \"\";\nAPT::Archives::MaxAge \"30\";\nAPT::Archives::MinAge \"2\";\nAPT::Archives::MaxSize \"500\";\nAPT::Architectures \"\";\nAPT::Architectures:: \"amd64\";\nAPT::Compressor \"\";\nAPT::Compressor::. \"\";\nAPT::Compressor::.::Name \".\";\nAPT::Compressor::.::Extension \"\";\nAPT::Compressor::.::Binary \"\";\nAPT::Compressor::.::Cost \"0\";\nAPT::Compressor::zstd \"\";\nAPT::Compressor::zstd::Name \"zstd\";\nAPT::Compressor::zstd::Extension \".zst\";\nAPT::Compressor::zstd::Binary \"zstd\";\nAPT::Compressor::zstd::Cost \"60\";\nAPT::Compressor::zstd::CompressArg \"\";\nAPT::Compressor::zstd::CompressArg:: \"-19\";\nAPT::Compressor::zstd::UncompressArg \"\";\nAPT::Compressor::zstd::UncompressArg:: \"-d\";\nAPT::Compressor::lz4 \"\";\nAPT::Compressor::lz4::Name \"lz4\";\nAPT::Compressor::lz4::Extension \".lz4\";\nAPT::Compressor::lz4::Binary \"lz4\";\nAPT::Compressor::lz4::Cost \"50\";\nAPT::Compressor::lz4::CompressArg \"\";\nAPT::Compressor::lz4::CompressArg:: \"-1\";\nAPT::Compressor::lz4::UncompressArg \"\";\nAPT::Compressor::lz4::UncompressArg:: \"-d\";\nAPT::Compressor::gzip \"\";\nAPT::Compressor::gzip::Name \"gzip\";\nAPT::Compressor::gzip::Extension \".gz\";\nAPT::Compressor::gzip::Binary \"gzip\";\nAPT::Compressor::gzip::Cost \"100\";\nAPT::Compressor::gzip::CompressArg \"\";\nAPT::Compressor::gzip::CompressArg:: \"-6n\";\nAPT::Compressor::gzip::UncompressArg \"\";\nAPT::Compressor::gzip::UncompressArg:: \"-d\";\nAPT::Compressor::xz \"\";\nAPT::Compressor::xz::Name \"xz\";\nAPT::Compressor::xz::Extension \".xz\";\nAPT::Compressor::xz::Binary \"xz\";\nAPT::Compressor::xz::Cost \"200\";\nAPT::Compressor::xz::CompressArg \"\";\nAPT::Compressor::xz::CompressArg:: \"-6\";\nAPT::Compressor::xz::UncompressArg \"\";\nAPT::Compressor::xz::UncompressArg:: \"-d\";\nAPT::Compressor::bzip2 \"\";\nAPT::Compressor::bzip2::Name \"bzip2\";\nAPT::Compressor::bzip2::Extension \".bz2\";\nAPT::Compressor::bzip2::Binary \"bzip2\";\nAPT::Compressor::bzip2::Cost \"300\";\nAPT::Compressor::bzip2::CompressArg \"\";\nAPT::Compressor::bzip2::CompressArg:: \"-6\";\nAPT::Compressor::bzip2::UncompressArg \"\";\nAPT::Compressor::bzip2::UncompressArg:: \"-d\";\nAPT::Compressor::lzma \"\";\nAPT::Compressor::lzma::Name \"lzma\";\nAPT::Compressor::lzma::Extension \".lzma\";\nAPT::Compressor::lzma::Binary \"xz\";\nAPT::Compressor::lzma::Cost \"400\";\nAPT::Compressor::lzma::CompressArg \"\";\nAPT::Compressor::lzma::CompressArg:: \"--format=lzma\";\nAPT::Compressor::lzma::CompressArg:: \"-6\";\nAPT::Compressor::lzma::UncompressArg \"\";\nAPT::Compressor::lzma::UncompressArg:: \"--format=lzma\";\nAPT::Compressor::lzma::UncompressArg:: \"-d\";\nDir \"/\";\nDir::State \"var/lib/apt\";\nDir::State::lists \"lists/\";\nDir::State::cdroms \"cdroms.list\";\nDir::State::extended_states \"extended_states\";\nDir::State::status \"/var/lib/dpkg/status\";\nDir::Cache \"var/cache/apt\";\nDir::Cache::archives \"archives/\";\nDir::Cache::srcpkgcache \"srcpkgcache.bin\";\nDir::Cache::pkgcache \"pkgcache.bin\";\nDir::Etc \"etc/apt\";\nDir::Etc::sourcelist \"sources.list\";\nDir::Etc::sourceparts \"sources.list.d\";\nDir::Etc::main \"apt.conf\";\nDir::Etc::netrc \"auth.conf\";\nDir::Etc::netrcparts \"auth.conf.d\";\nDir::Etc::parts \"apt.conf.d\";\nDir::Etc::preferences \"preferences\";\nDir::Etc::preferencesparts \"preferences.d\";\nDir::Etc::trusted \"trusted.gpg\";\nDir::Etc::trustedparts \"trusted.gpg.d\";\nDir::Bin \"\";\nDir::Bin::methods \"/usr/lib/apt/methods\";\nDir::Bin::solvers \"\";\nDir::Bin::solvers:: \"/usr/lib/apt/solvers\";\nDir::Bin::planners \"\";\nDir::Bin::planners:: \"/usr/lib/apt/planners\";\nDir::Bin::dpkg \"/usr/bin/dpkg\";\nDir::Bin::gzip \"/bin/gzip\";\nDir::Bin::bzip2 \"/bin/bzip2\";\nDir::Bin::xz \"/usr/bin/xz\";\nDir::Bin::lz4 \"/usr/bin/lz4\";\nDir::Bin::zstd \"/usr/bin/zstd\";\nDir::Bin::lzma \"/usr/bin/xz\";\nDir::Media \"\";\nDir::Media::MountPath \"/media/apt\";\nDir::Log \"var/log/apt\";\nDir::Log::Terminal \"term.log\";\nDir::Log::History \"history.log\";\nDir::Log::Planner \"eipp.log.xz\";\nDir::Ignore-Files-Silently \"\";\nDir::Ignore-Files-Silently:: \"~$\";\nDir::Ignore-Files-Silently:: \"\\.disabled$\";\nDir::Ignore-Files-Silently:: \"\\.bak$\";\nDir::Ignore-Files-Silently:: \"\\.dpkg-[a-z]+$\";\nDir::Ignore-Files-Silently:: \"\\.ucf-[a-z]+$\";\nDir::Ignore-Files-Silently:: \"\\.save$\";\nDir::Ignore-Files-Silently:: \"\\.orig$\";\nDir::Ignore-Files-Silently:: \"\\.distUpgrade$\";\nAcquire \"\";\nAcquire::AllowInsecureRepositories \"0\";\nAcquire::AllowWeakRepositories \"0\";\nAcquire::AllowDowngradeToInsecureRepositories \"0\";\nAcquire::cdrom \"\";\nAcquire::cdrom::mount \"/media/cdrom/\";\nAcquire::IndexTargets \"\";\nAcquire::IndexTargets::deb \"\";\nAcquire::IndexTargets::deb::Packages \"\";\nAcquire::IndexTargets::deb::Packages::MetaKey \"$(COMPONENT)/binary-$(ARCHITECTURE)/Packages\";\nAcquire::IndexTargets::deb::Packages::flatMetaKey \"Packages\";\nAcquire::IndexTargets::deb::Packages::ShortDescription \"Packages\";\nAcquire::IndexTargets::deb::Packages::Description \"$(RELEASE)/$(COMPONENT) $(ARCHITECTURE) Packages\";\nAcquire::IndexTargets::deb::Packages::flatDescription \"$(RELEASE) Packages\";\nAcquire::IndexTargets::deb::Packages::Optional \"0\";\nAcquire::IndexTargets::deb::Translations \"\";\nAcquire::IndexTargets::deb::Translations::MetaKey \"$(COMPONENT)/i18n/Translation-$(LANGUAGE)\";\nAcquire::IndexTargets::deb::Translations::flatMetaKey \"$(LANGUAGE)\";\nAcquire::IndexTargets::deb::Translations::ShortDescription \"Translation-$(LANGUAGE)\";\nAcquire::IndexTargets::deb::Translations::Description \"$(RELEASE)/$(COMPONENT) Translation-$(LANGUAGE)\";\nAcquire::IndexTargets::deb::Translations::flatDescription \"$(RELEASE) Translation-$(LANGUAGE)\";\nAcquire::IndexTargets::deb::DEP-11 \"\";\nAcquire::IndexTargets::deb::DEP-11::MetaKey \"$(COMPONENT)/dep11/Components-$(NATIVE_ARCHITECTURE).yml\";\nAcquire::IndexTargets::deb::DEP-11::ShortDescription \"Components-$(NATIVE_ARCHITECTURE)\";\nAcquire::IndexTargets::deb::DEP-11::Description \"$(RELEASE)/$(COMPONENT) $(NATIVE_ARCHITECTURE) Components\";\nAcquire::IndexTargets::deb::DEP-11::KeepCompressed \"true\";\nAcquire::IndexTargets::deb::DEP-11::KeepCompressedAs \"gz\";\nAcquire::IndexTargets::deb::DEP-11::DefaultEnabled \"false\";\nAcquire::IndexTargets::deb::DEP-11-icons-small \"\";\nAcquire::IndexTargets::deb::DEP-11-icons-small::MetaKey \"$(COMPONENT)/dep11/icons-48x48.tar\";\nAcquire::IndexTargets::deb::DEP-11-icons-small::ShortDescription \"icons-48x48\";\nAcquire::IndexTargets::deb::DEP-11-icons-small::Description \"$(RELEASE)/$(COMPONENT) Icons (48x48)\";\nAcquire::IndexTargets::deb::DEP-11-icons-small::KeepCompressed \"true\";\nAcquire::IndexTargets::deb::DEP-11-icons-small::KeepCompressedAs \"gz\";\nAcquire::IndexTargets::deb::DEP-11-icons-small::DefaultEnabled \"false\";\nAcquire::IndexTargets::deb::DEP-11-icons \"\";\nAcquire::IndexTargets::deb::DEP-11-icons::MetaKey \"$(COMPONENT)/dep11/icons-64x64.tar\";\nAcquire::IndexTargets::deb::DEP-11-icons::ShortDescription \"icons-64x64\";\nAcquire::IndexTargets::deb::DEP-11-icons::Description \"$(RELEASE)/$(COMPONENT) Icons (64x64)\";\nAcquire::IndexTargets::deb::DEP-11-icons::KeepCompressed \"true\";\nAcquire::IndexTargets::deb::DEP-11-icons::KeepCompressedAs \"gz\";\nAcquire::IndexTargets::deb::DEP-11-icons::DefaultEnabled \"false\";\nAcquire::IndexTargets::deb::DEP-11-icons-hidpi \"\";\nAcquire::IndexTargets::deb::DEP-11-icons-hidpi::MetaKey \"$(COMPONENT)/dep11/icons-64x64@2.tar\";\nAcquire::IndexTargets::deb::DEP-11-icons-hidpi::ShortDescription \"icons-64x64@2\";\nAcquire::IndexTargets::deb::DEP-11-icons-hidpi::Description \"$(RELEASE)/$(COMPONENT) Icons (64x64@2)\";\nAcquire::IndexTargets::deb::DEP-11-icons-hidpi::KeepCompressed \"true\";\nAcquire::IndexTargets::deb::DEP-11-icons-hidpi::KeepCompressedAs \"gz\";\nAcquire::IndexTargets::deb::DEP-11-icons-hidpi::DefaultEnabled \"false\";\nAcquire::IndexTargets::deb::DEP-11-icons-large \"\";\nAcquire::IndexTargets::deb::DEP-11-icons-large::MetaKey \"$(COMPONENT)/dep11/icons-128x128.tar\";\nAcquire::IndexTargets::deb::DEP-11-icons-large::ShortDescription \"icons-128x128\";\nAcquire::IndexTargets::deb::DEP-11-icons-large::Description \"$(RELEASE)/$(COMPONENT) Icons (128x128)\";\nAcquire::IndexTargets::deb::DEP-11-icons-large::KeepCompressed \"true\";\nAcquire::IndexTargets::deb::DEP-11-icons-large::KeepCompressedAs \"gz\";\nAcquire::IndexTargets::deb::DEP-11-icons-large::DefaultEnabled \"false\";\nAcquire::IndexTargets::deb::DEP-11-icons-large-hidpi \"\";\nAcquire::IndexTargets::deb::DEP-11-icons-large-hidpi::MetaKey \"$(COMPONENT)/dep11/icons-128x128@2.tar\";\nAcquire::IndexTargets::deb::DEP-11-icons-large-hidpi::ShortDescription \"icons-128x128@2\";\nAcquire::IndexTargets::deb::DEP-11-icons-large-hidpi::Description \"$(RELEASE)/$(COMPONENT) Icons (128x128@2)\";\nAcquire::IndexTargets::deb::DEP-11-icons-large-hidpi::KeepCompressed \"true\";\nAcquire::IndexTargets::deb::DEP-11-icons-large-hidpi::KeepCompressedAs \"gz\";\nAcquire::IndexTargets::deb::DEP-11-icons-large-hidpi::DefaultEnabled \"false\";\nAcquire::IndexTargets::deb::CNF \"\";\nAcquire::IndexTargets::deb::CNF::MetaKey \"$(COMPONENT)/cnf/Commands-$(NATIVE_ARCHITECTURE)\";\nAcquire::IndexTargets::deb::CNF::ShortDescription \"Commands-$(NATIVE_ARCHITECTURE)\";\nAcquire::IndexTargets::deb::CNF::Description \"$(RELEASE)/$(COMPONENT) $(NATIVE_ARCHITECTURE) c-n-f Metadata\";\nAcquire::IndexTargets::deb-src \"\";\nAcquire::IndexTargets::deb-src::Sources \"\";\nAcquire::IndexTargets::deb-src::Sources::MetaKey \"$(COMPONENT)/source/Sources\";\nAcquire::IndexTargets::deb-src::Sources::flatMetaKey \"Sources\";\nAcquire::IndexTargets::deb-src::Sources::ShortDescription \"Sources\";\nAcquire::IndexTargets::deb-src::Sources::Description \"$(RELEASE)/$(COMPONENT) Sources\";\nAcquire::IndexTargets::deb-src::Sources::flatDescription \"$(RELEASE) Sources\";\nAcquire::IndexTargets::deb-src::Sources::Optional \"0\";\nAcquire::Changelogs \"\";\nAcquire::Changelogs::URI \"\";\nAcquire::Changelogs::URI::Origin \"\";\nAcquire::Changelogs::URI::Origin::Debian \"https://metadata.ftp-master.debian.org/changelogs/@CHANGEPATH@_changelog\";\nAcquire::Changelogs::URI::Origin::Ubuntu \"https://changelogs.ubuntu.com/changelogs/pool/@CHANGEPATH@/changelog\";\nAcquire::Changelogs::AlwaysOnline \"true\";\nAcquire::Changelogs::AlwaysOnline::Origin \"\";\nAcquire::Changelogs::AlwaysOnline::Origin::Ubuntu \"1\";\nAcquire::Snapshots \"\";\nAcquire::Snapshots::URI \"\";\nAcquire::Snapshots::URI::Origin \"\";\nAcquire::Snapshots::URI::Origin::Debian \"https://snapshot.debian.org/archive/debian/@SNAPSHOTID@/\";\nAcquire::Snapshots::URI::Origin::Ubuntu \"https://snapshot.ubuntu.com/ubuntu/@SNAPSHOTID@/\";\nAcquire::Snapshots::URI::Override \"\";\nAcquire::Snapshots::URI::Override::Label \"\";\nAcquire::Snapshots::URI::Override::Label::Debian-Security \"https://snapshot.debian.org/archive/debian-security/@SNAPSHOTID@/\";\nAcquire::Snapshots::URI::Host \"\";\nAcquire::Snapshots::URI::Host::archive.ubuntu.com \"https://snapshot.ubuntu.com/@PATH@/@SNAPSHOTID@/\";\nAcquire::Snapshots::URI::Host::deb.debian.org \"https://snapshot.debian.org/archive/@PATH@/@SNAPSHOTID@/\";\nAcquire::Snapshots::URI::Host::.archive.ubuntu.com \"https://snapshot.ubuntu.com/@PATH@/@SNAPSHOTID@/\";\nAcquire::Snapshots::URI::Host::security.ubuntu.com \"https://snapshot.ubuntu.com/@PATH@/@SNAPSHOTID@/\";\nAcquire::Snapshots::URI::Host::ppa.launchpadcontent.net \"https://snapshot.ppa.launchpadcontent.net/@PATH@/@SNAPSHOTID@/\";\nAcquire::Snapshots::URI::Host::ppa.launchpad.net \"https://snapshot.ppa.launchpadcontent.net/@PATH@/@SNAPSHOTID@/\";\nAcquire::http \"\";\nAcquire::http::User-Agent-Non-Interactive \"true\";\nAcquire::http::Timeout \"15\";\nAcquire::http::Pipeline-Depth \"0\";\nAcquire::http::No-Cache \"true\";\nAcquire::Retries \"1\";\nAcquire::https \"\";\nAcquire::https::Timeout \"15\";\nAcquire::https::Pipeline-Depth \"0\";\nAcquire::https::No-Cache \"true\";\nAcquire::BrokenProxy \"true\";\nAcquire::Languages \"\";\nAcquire::Languages:: \"en\";\nAcquire::Languages:: \"none\";\nAcquire::CompressionTypes \"\";\nAcquire::CompressionTypes::xz \"xz\";\nAcquire::CompressionTypes::bz2 \"bzip2\";\nAcquire::CompressionTypes::lzma \"lzma\";\nAcquire::CompressionTypes::gz \"gzip\";\nAcquire::CompressionTypes::lz4 \"lz4\";\nAcquire::CompressionTypes::zst \"zstd\";\nDPkg \"\";\nDPkg::Path \"/usr/sbin:/usr/bin:/sbin:/bin\";\nDPkg::Options \"\";\nDPkg::Options:: \"--force-confdef\";\nDPkg::Options:: \"--force-confold\";\nDPkg::Options:: \"--force-unsafe-io\";\nDPkg::Options:: \"--force-confdef\";\nDPkg::Options:: \"--force-confold\";\nDPkg::Post-Invoke \"\";\nDPkg::Post-Invoke:: \"/usr/bin/test -e /usr/share/dbus-1/system-services/org.freedesktop.PackageKit.service && /usr/bin/test -S /var/run/dbus/system_bus_socket && /usr/bin/gdbus call --system --dest org.freedesktop.PackageKit --object-path /org/freedesktop/PackageKit --timeout 4 --method org.freedesktop.PackageKit.StateHasChanged cache-update > /dev/null; /bin/echo > /dev/null\";\nDPkg::Post-Invoke:: \"test -x /usr/lib/needrestart/apt-pinvoke && /usr/lib/needrestart/apt-pinvoke -m u || true\";\nDPkg::Post-Invoke:: \"if [ -d /var/lib/update-notifier ]; then touch /var/lib/update-notifier/dpkg-run-stamp; fi; /usr/lib/update-notifier/update-motd-updates-available 2>/dev/null || true\";\nDPkg::Pre-Install-Pkgs \"\";\nDPkg::Pre-Install-Pkgs:: \"/usr/sbin/dpkg-preconfigure --apt || true\";\nbinary \"apt-config\";\nbinary::apt \"\";\nbinary::apt::AptCli \"\";\nbinary::apt::AptCli::Hooks \"\";\nbinary::apt::AptCli::Hooks::Upgrade \"\";\nbinary::apt::AptCli::Hooks::Upgrade:: \"[ ! -f /usr/lib/ubuntu-advantage/apt-esm-json-hook ] || [ $(id -u) -ne 0 ] || /usr/lib/ubuntu-advantage/apt-esm-json-hook 2>> /var/log/ubuntu-advantage-apt-hook.log || true\";\nbinary::apt::AptCli::Hooks::Install \"\";\nbinary::apt::AptCli::Hooks::Install:: \"[ ! -f /usr/bin/snap ] || /usr/bin/snap advise-snap --from-apt 2>/dev/null || true\";\nbinary::apt::APT \"\";\nbinary::apt::APT::Color \"1\";\nbinary::apt::APT::Cache \"\";\nbinary::apt::APT::Cache::Show \"\";\nbinary::apt::APT::Cache::Show::Version \"2\";\nbinary::apt::APT::Cache::AllVersions \"0\";\nbinary::apt::APT::Cache::ShowVirtuals \"1\";\nbinary::apt::APT::Cache::Search \"\";\nbinary::apt::APT::Cache::Search::Version \"2\";\nbinary::apt::APT::Cache::ShowDependencyType \"1\";\nbinary::apt::APT::Cache::ShowVersion \"1\";\nbinary::apt::APT::Get \"\";\nbinary::apt::APT::Get::Upgrade-Allow-New \"1\";\nbinary::apt::APT::Get::Update \"\";\nbinary::apt::APT::Get::Update::InteractiveReleaseInfoChanges \"1\";\nbinary::apt::APT::Cmd \"\";\nbinary::apt::APT::Cmd::Show-Update-Stats \"1\";\nbinary::apt::APT::Cmd::Pattern-Only \"1\";\nbinary::apt::APT::Keep-Downloaded-Packages \"0\";\nbinary::apt::DPkg \"\";\nbinary::apt::DPkg::Progress-Fancy \"1\";\nbinary::apt::DPkg::Lock \"\";\nbinary::apt::DPkg::Lock::Timeout \"120\";\nCommandLine \"\";\nCommandLine::AsString \"apt-config dump\";",
+    "source_files": {
+      "/etc/apt/sources.list": {
+        "sha256": "8ce6407d5487bed332b5fcb4aab26dacf3f516d811c26792efb0c67f06f1958b",
+        "content": "# Ubuntu sources have moved to the /etc/apt/sources.list.d/ubuntu.sources\n# file, which uses the deb822 format. Use deb822-formatted .sources files\n# to manage package sources in the /etc/apt/sources.list.d/ directory.\n# See the sources.list(5) manual page for details.\n"
+      },
+      "/etc/apt/sources.list.d/microsoft-prod.list": {
+        "sha256": "b1603241c9619c02611a77a663f55e726608bde079c4f559bcccdf73847a45c8",
+        "content": "deb [arch=amd64,arm64,armhf signed-by=/usr/share/keyrings/microsoft-prod.gpg] https://packages.microsoft.com/ubuntu/24.04/prod noble main\n"
+      },
+      "/etc/apt/sources.list.d/ubuntu.sources": {
+        "sha256": "ea351c1db706f345acf9acd22c25ca5c1375d02b54b6550b41baf102ed52f21d",
+        "content": "## Note, this file is written by cloud-init on first boot of an instance\n## modifications made here will not survive a re-bundle.\n##\n## If you wish to make changes you can:\n## a.) add 'apt_preserve_sources_list: true' to /etc/cloud/cloud.cfg\n##     or do the same in user-data\n## b.) add supplemental sources in /etc/apt/sources.list.d\n## c.) make changes to template file\n##      /etc/cloud/templates/sources.list.ubuntu.deb822.tmpl\n##\n\n# See http://help.ubuntu.com/community/UpgradeNotes for how to upgrade to\n# newer versions of the distribution.\n\n## Ubuntu distribution repository\n##\n## The following settings can be adjusted to configure which packages to use from Ubuntu.\n## Mirror your choices (except for URIs and Suites) in the security section below to\n## ensure timely security updates.\n##\n## Types: Append deb-src to enable the fetching of source package.\n## URIs: A URL to the repository (you may add multiple URLs)\n## Suites: The following additional suites can be configured\n##   <name>-updates   - Major bug fix updates produced after the final release of the\n##                      distribution.\n##   <name>-backports - software from this repository may not have been tested as\n##                      extensively as that contained in the main release, although it includes\n##                      newer versions of some applications which may provide useful features.\n##                      Also, please note that software in backports WILL NOT receive any review\n##                      or updates from the Ubuntu security team.\n## Components: Aside from main, the following components can be added to the list\n##   restricted  - Software that may not be under a free license, or protected by patents.\n##   universe    - Community maintained packages. Software in this repository receives maintenance\n##                 from volunteers in the Ubuntu community, or a 10 year security maintenance\n##                 commitment from Canonical when an Ubuntu Pro subscription is attached.\n##   multiverse  - Community maintained of restricted. Software from this repository is\n##                 ENTIRELY UNSUPPORTED by the Ubuntu team, and may not be under a free\n##                 licence. Please satisfy yourself as to your rights to use the software.\n##                 Also, please note that software in multiverse WILL NOT receive any\n##                 review or updates from the Ubuntu security team.\n##\n## See the sources.list(5) manual page for further settings.\nTypes: deb deb-src\nURIs: mirror+file:/etc/apt/apt-mirrors.txt\nSuites: noble noble-updates noble-backports\nComponents: main universe restricted multiverse\nSigned-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg\n\n## Ubuntu security updates. Aside from URIs and Suites,\n## this should mirror your choices in the previous section.\nTypes: deb deb-src\nURIs: mirror+file:/etc/apt/apt-mirrors.txt\nSuites: noble-security\nComponents: main universe restricted multiverse\nSigned-By: /usr/share/keyrings/ubuntu-archive-keyring.gpg\n"
+      }
+    },
+    "keyrings": {
+      "/etc/apt/trusted.gpg.d/ubuntu-keyring-2012-cdimage.gpg": "192b3782ba2e00e05b6521371fbe67847efad3fdd1cfb87621882d833c8703fa",
+      "/etc/apt/trusted.gpg.d/ubuntu-keyring-2018-archive.gpg": "5ebbeeb474034b1fa7e50abbe6f136e177fc826219e01f314b3623f7b3097e96",
+      "/usr/share/keyrings/microsoft-prod.gpg": "098f10efd65c0d0a856a980144b5f37c05374eaa575a208d46913fd8f7eae951",
+      "/usr/share/keyrings/ubuntu-archive-keyring.gpg": "80a36b0a6de2f69f49d2df75ef473ccde121e9e190b9ea01d20a4f63778d5c31"
+    }
+  },
+  "tools": {
+    "readelf": {
+      "version": "GNU readelf (GNU Binutils for Ubuntu) 2.42",
+      "path": "/usr/bin/readelf",
+      "sha256": "64c58e15274bbbb5153f31078e455e9e77ee5f51489e709bba5bb788ce9df2b0"
+    },
+    "patchelf": {
+      "version": "patchelf 0.18.0",
+      "path": "/usr/bin/patchelf",
+      "sha256": "35fc95654387035338a74bb8cf62fde3712ec83dd8ca30a768deb714d07f063a"
+    },
+    "dpkg-query": {
+      "version": "Debian dpkg-query package management program query tool version 1.22.6 (amd64).",
+      "path": "/usr/bin/dpkg-query",
+      "sha256": "cc2a19017c37132e4ad46c1fbddea6472262d0a62a0b8585c383706c20005ea1"
+    },
+    "apt-get": {
+      "version": "apt 2.8.3 (amd64)",
+      "path": "/usr/bin/apt-get",
+      "sha256": "eb53b3b66cbb7a90a370e26439e941b7cf146ddd91a5422063c761ce9e59c53b"
+    }
+  },
+  "os_release": "PRETTY_NAME=\"Ubuntu 24.04.5 LTS\"\nNAME=\"Ubuntu\"\nVERSION_ID=\"24.04\"\nVERSION=\"24.04.5 LTS (Noble Numbat)\"\nVERSION_CODENAME=noble\nID=ubuntu\nID_LIKE=debian\nHOME_URL=\"https://www.ubuntu.com/\"\nSUPPORT_URL=\"https://help.ubuntu.com/\"\nBUG_REPORT_URL=\"https://bugs.launchpad.net/ubuntu/\"\nPRIVACY_POLICY_URL=\"https://www.ubuntu.com/legal/terms-and-policies/privacy-policy\"\nUBUNTU_CODENAME=noble\nLOGO=ubuntu-logo\n",
+  "limits": [
+    "Package construction only; independent fresh-container and native coexistence gates still required.",
+    "GCC runtime SONAMEs remain shared; existing host process namespaces need coexistence qualification.",
+    "Installed component identity assumes the trusted CI package installation; source provenance is not a reproducible-build proof.",
+    "Host glibc/loader remain platform dependencies; no musl or older-distro claim."
+  ],
+  "files": {
+    ".": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "lib": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "lib/libgcc_s.so.1": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 189953,
+      "sha256": "d61b31b7c252d01f165cea949dd99108c17de9ba273d4d56d790fd83e1fefd0f"
+    },
+    "lib/libgen2_nemo_linux_ggml-base.so.0.25.1": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 986593,
+      "sha256": "476821f9fa2c33a79d9e1866bd8c876f4b36fa326f4fb50afdfcc341e1d6d790"
+    },
+    "lib/libgen2_nemo_linux_ggml-cpu.so.0.25.1": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 1285225,
+      "sha256": "e0097d1a2a796442cd2ee7153de191004c1079a73d43597c401c04b2b7a7bfab"
+    },
+    "lib/libgen2_nemo_linux_ggml.so.0.25.1": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 74025,
+      "sha256": "2a0a00fc3e3e071a0af3b776a23e0dc345e61be2bb56efced3db82c116ae3b25"
+    },
+    "lib/libgen2_nemo_linux_nemo_speech_asr.so": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 2380657,
+      "sha256": "71179230e91df1aef263d91e42d81dd81f6e78818f600ce3352dc0a7fa9a4bb9"
+    },
+    "lib/libgen2_nemo_linux_nemo_speech_asr_c.so.1": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 98585,
+      "sha256": "310278b06b5149008a41fe7763e1e299e991c7153a913d4b09e2036852242ced"
+    },
+    "lib/libgen2_nemo_linux_sentencepiece.so.0.0.0": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 1468209,
+      "sha256": "c6c4a6f6f53633775429acf38e68d5a00e1a8adb3be0d526775b8e2a5e698962"
+    },
+    "lib/libnemo_speech_asr_c.so": {
+      "mode": 511,
+      "type": "symlink",
+      "target": "libgen2_nemo_linux_nemo_speech_asr_c.so.1"
+    },
+    "lib/libstdc++.so.6": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 2938433,
+      "sha256": "61bb2c0a20ddc52916eb2ee610901a64c57a7aba19cef18dc956028feffbd6ff"
+    },
+    "notices": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "notices/common-licenses": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "notices/common-licenses/Artistic": {
+      "mode": 511,
+      "type": "file",
+      "bytes": 6111,
+      "sha256": "b7fd9b73ea99602016a326e0b62e6646060d18febdd065ceca8bb482208c3d88"
+    },
+    "notices/common-licenses/GFDL-1.2": {
+      "mode": 511,
+      "type": "file",
+      "bytes": 20432,
+      "sha256": "d8e94ae5fdb5433fcae2961aeb1a8cf17174d6f4a0465d24bf37dd8a038bd439"
+    },
+    "notices/common-licenses/GPL": {
+      "mode": 511,
+      "type": "file",
+      "bytes": 35149,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+    },
+    "notices/common-licenses/GPL-2": {
+      "mode": 511,
+      "type": "file",
+      "bytes": 18092,
+      "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643"
+    },
+    "notices/common-licenses/GPL-3": {
+      "mode": 511,
+      "type": "file",
+      "bytes": 35149,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+    },
+    "notices/common-licenses/LGPL": {
+      "mode": 511,
+      "type": "file",
+      "bytes": 7652,
+      "sha256": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118"
+    },
+    "notices/libgcc-s1": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "notices/libgcc-s1/copyright": {
+      "mode": 511,
+      "type": "file",
+      "bytes": 69004,
+      "sha256": "20390f8a6f3b1e4d7cb45dd8652dabb259bbef688cbad839bcdb0b9ba7252f79"
+    },
+    "notices/libgcc-s1/package-policy.txt": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 440,
+      "sha256": "b0b23a54f6478b28a525bf6a2435443af63b8d5b1b2d2aba610405adee0f16f2"
+    },
+    "notices/libsentencepiece0": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "notices/libsentencepiece0/copyright": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 6770,
+      "sha256": "4fcdf289da4573eb616853f9cbfbdb4b9f899e2aaa90c94212ecdd195d94df59"
+    },
+    "notices/libsentencepiece0/package-policy.txt": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 225,
+      "sha256": "1397a45e713adcad94989ce07dc361876e34806bcc6088354312e8efbe16f2fc"
+    },
+    "notices/libstdc++6": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "notices/libstdc++6/copyright": {
+      "mode": 511,
+      "type": "file",
+      "bytes": 69004,
+      "sha256": "20390f8a6f3b1e4d7cb45dd8652dabb259bbef688cbad839bcdb0b9ba7252f79"
+    },
+    "notices/libstdc++6/package-policy.txt": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 441,
+      "sha256": "a0d52d138a97b69f2d2a692ed440a19be886a5424dd4622809191787b849cce9"
+    },
+    "notices/nemo-speech": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "notices/nemo-speech/LICENSE": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 12238,
+      "sha256": "eaaca34b26b27c7be5a5099a0b9ddf9913f2db0aa96f6d5854435f2916d6fdc3"
+    },
+    "notices/nemo-speech/NOTICE": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 233,
+      "sha256": "d5ea773d67035e676503579ecf7d5836a124649d7fe99d59ec3c50cd101e1a80"
+    },
+    "notices/nemo-speech/THIRD_PARTY_NOTICES.md": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 10277,
+      "sha256": "fd8fcc0c71abde95b1b742a74c70aa27d2b4f2811fc19f64378b6845d8f3254a"
+    },
+    "notices/nemo-speech/third_party": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "notices/nemo-speech/third_party/ggml": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "notices/nemo-speech/third_party/ggml/LICENSE": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 1078,
+      "sha256": "94f29bbed6a22c35b992c5c6ebf0e7c92f13b836b90f36f461c9cf2f0f1d010d"
+    },
+    "provenance": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "provenance/compiler-audit.json": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 587926,
+      "sha256": "1ee614ed0f901cf651e3b0e57e040a5f5560d5b10c860da025ffe3e62f83475a"
+    },
+    "provenance/inference.patch": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 1194,
+      "sha256": "8c1434c14f63ebeb2515c719a90594124fd4f75af85b80451fd145b5caef3c36"
+    },
+    "provenance/native-protocol.json": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 49143,
+      "sha256": "9887e4fb94950fa53c28f6ff3ff4a60b8f3d46ef037cf141ba1eea04738216e4"
+    },
+    "provenance/native-receipt.json": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 36566,
+      "sha256": "78e4cde1111168f7f614a33ba22f59edfac6e720dafa91b499be59f43da97aea"
+    },
+    "provenance/runtime-profile.json": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 6339,
+      "sha256": "af40e586994f223390fcac59936e3781d967c03080350f4b5df141b1bdaf51be"
+    },
+    "sources": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "sources/gcc-14": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "sources/gcc-14/gcc-14_14.2.0-4ubuntu2~24.04.1.debian.tar.xz": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 1950432,
+      "sha256": "cfece214c2fb790ef5f3baffb9a53e40618e7ae12d053610b251e94d77d08ade"
+    },
+    "sources/gcc-14/gcc-14_14.2.0-4ubuntu2~24.04.1.dsc": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 46930,
+      "sha256": "50950080874a6ec6780dd60c243e21d9cda9d736bb32bca98d16095d27cc01b5"
+    },
+    "sources/gcc-14/gcc-14_14.2.0.orig.tar.gz": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 97158172,
+      "sha256": "768c314c11eeab56ccebb91eb42ec4a41122fa94f0d83400126401942622197b"
+    },
+    "sources/sentencepiece": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "sources/sentencepiece/sentencepiece_0.2.0-1build1.debian.tar.xz": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 11352,
+      "sha256": "056076fa62c114b52deef3ad4ed8ab9b1ac07938a5991011c25220cd6850f780"
+    },
+    "sources/sentencepiece/sentencepiece_0.2.0-1build1.dsc": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 2400,
+      "sha256": "cf9b2a6d56e921f481b39c904487a8bab622318f7ac5e066d60e2378fabd3b9d"
+    },
+    "sources/sentencepiece/sentencepiece_0.2.0.orig.tar.gz": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 11988325,
+      "sha256": "d72556a0cb343d6ea23264ecdbc0ff04dfecd879be4d2d7a7026b9de1af2e4d1"
+    }
+  }
+}

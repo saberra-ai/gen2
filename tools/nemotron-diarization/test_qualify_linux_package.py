@@ -3,10 +3,21 @@ import os
 import tempfile
 import unittest
 
-from qualify_linux_package import LIFECYCLE_GATES, RUNTIME_PATH, container_command, loader_paths, require_lifecycle
+from qualify_linux_package import LIFECYCLE_GATES, RUNTIME_PATH, container_command, loader_paths, require_lifecycle, require_constructor_sources
+from package_linux import digest
 
 
 class LinuxContainerGateTests(unittest.TestCase):
+    def test_separate_producer_commit_requires_identical_constructor_bytes(self):
+        tools = Path(__file__).resolve().parent
+        fields = {'packager_sha256': 'package_linux.py', 'archive_tool_sha256': 'sdk_archive.py',
+                  'runner_sha256': 'platform_linux_package.py'}
+        build = {'source_commit': 'a' * 40, **{key: digest(tools / name) for key, name in fields.items()}}
+        require_constructor_sources(build, tools)
+        for key in fields:
+            with self.subTest(key=key), self.assertRaisesRegex(ValueError, 'constructor source differs'):
+                require_constructor_sources({**build, key: '0' * 64}, tools)
+
     def test_loader_trace_requires_every_bundled_library_including_gcc(self):
         names = {'libgen2_nemo_linux_native.so', 'libstdc++.so.6', 'libgcc_s.so.1'}
         paths = [RUNTIME_PATH + '/lib/' + name for name in sorted(names)]

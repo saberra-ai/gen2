@@ -64,6 +64,17 @@ def require_lifecycle(text, completed=False):
         raise ValueError('compiled/executed real-model gates differ: ' + str(sorted(passed ^ LIFECYCLE_GATES)))
 
 
+
+def require_constructor_sources(build, tools):
+    # SDK, package and runtime jobs may have distinct commits. Require the
+    # constructor bytes used by that package; actual receipts stay bound.
+    for field, name in [('packager_sha256', 'package_linux.py'),
+                        ('archive_tool_sha256', 'sdk_archive.py'),
+                        ('runner_sha256', 'platform_linux_package.py')]:
+        if build.get(field) != digest(tools / name):
+            raise ValueError('qualified package constructor source differs: ' + name)
+
+
 def container_command(image, mounts, results, command, environment=None):
     args = ['docker', 'run', '--rm', '--pull', 'never', '--platform', 'linux/amd64',
             '--user', f'{os.getuid()}:{os.getgid()}',
@@ -126,8 +137,7 @@ class Qualification(CommandRunner):
         if digest(native / 'receipt.json') != build['native_receipt_sha256'] or native_receipt.get('development_native_gates_passed') is not True:
             raise ValueError('package does not bind a successful native prerequisite')
         current = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=self.repo, text=True).strip()
-        if build['source_commit'] != current:
-            raise ValueError('package construction and helper checkout must share a revision')
+        require_constructor_sources(build, self.tools)
         _, lock = load_profile()
         assets = self.work / 'assets'
         assets.mkdir()
@@ -189,7 +199,8 @@ class Qualification(CommandRunner):
         if len(image) != 1 or image[0]['Architecture'] != 'amd64' or image[0]['Os'] != 'linux' or not image[0]['RepoDigests']:
             raise ValueError('runtime image lacks content-bound amd64 Linux provenance')
         self.image = image[0]['Id']
-        inputs = {'source_commit': current, 'native_source_commit': native_receipt['source_commit'], 'construction_receipt_sha256': digest(evidence / 'receipt.json'),
+        inputs = {'source_commit': current, 'native_source_commit': native_receipt['source_commit'],
+                  'construction_source_commit': build['source_commit'], 'construction_receipt_sha256': digest(evidence / 'receipt.json'),
                   'native_receipt_sha256': digest(native / 'receipt.json'), 'archive': build['archive'],
                   'package_manifest_sha256': build['package_manifest_sha256'], 'image': image[0],
                   'helpers': helpers, 'inputs': inventory(self.work),

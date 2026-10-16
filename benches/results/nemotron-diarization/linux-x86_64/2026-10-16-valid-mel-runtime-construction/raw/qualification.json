@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "package_construction_passed": true,
+  "release_qualified": false,
+  "scope": "Tagged Linux package construction and exact archive identity only; no model execution.",
+  "new_native_model_or_neural_calls": 0,
+  "protocol": {
+    "bytes": 47373,
+    "sha256": "2bb4a782ce67496e2eb6e2537e3126f0d524bdf0450c0820dced8d7b8adbc444"
+  },
+  "command": {
+    "argv": [
+      "/opt/hostedtoolcache/Python/3.12.15/x64/bin/python",
+      "/home/runner/work/gen2/gen2/tools/nemotron-diarization/platform_linux_package.py",
+      "--sdk-prefix",
+      "/home/runner/work/_temp/linux-valid-mel-construction/restored-sdk",
+      "--native-receipt",
+      "/home/runner/work/_temp/qualified-linux-native/nemo-valid-mel-evidence/receipt.json",
+      "--output",
+      "/home/runner/work/_temp/linux-valid-mel-construction/construction"
+    ],
+    "cwd": "/home/runner/work/gen2/gen2",
+    "returncode": 0,
+    "elapsed_seconds": 10.076432475000018
+  },
+  "source_commit": "054cac64bd3fb6ae286bd35245d35bee3ab04115",
+  "construction_receipt": {
+    "bytes": 2355,
+    "sha256": "2697a3c5f2f02a354ca22623b7c692aa7532bbf8eb0425c9f1cd46955f19a159"
+  },
+  "native_receipt": {
+    "bytes": 36566,
+    "sha256": "78e4cde1111168f7f614a33ba22f59edfac6e720dafa91b499be59f43da97aea"
+  },
+  "archive": {
+    "schema_version": 1,
+    "release_qualified": false,
+    "scope": "Development filesystem snapshot; preserves aliases/modes, does not by itself close dependencies or establish relocation.",
+    "archive": "development-runtime.tar.gz",
+    "archive_bytes": 110340200,
+    "archive_sha256": "d50fd90522481c0b7309978398e6a1a57dddae18ae93442767a81db836bd7202"
+  }
+}

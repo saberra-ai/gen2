@@ -34,10 +34,17 @@ compiler inputs. All 157 model-free tool tests passed at that source. The
 [actual Linux candidate SDK](../../benches/results/nemotron-diarization/linux-x86_64/2026-10-16-valid-mel-native/qualification.json)
 now passes 40 commands, exact 6,000-row/26-turn parity and seven lifecycle gates.
 Its compiler audit binds 3,425 files and all 97 actual compiler units; delivery
-also preserves SDK bytes, modes and aliases. Windows SDK, both platforms'
-packages, offline execution and coexistence still require new candidate evidence.
-The later source-only package/qualifier migrations and Linux SDK restorer pass
-166 model-free tests; that is not actual package or release qualification.
+also preserves SDK bytes, modes and aliases. The
+[actual Linux v2 construction](../../benches/results/nemotron-diarization/linux-x86_64/2026-10-16-valid-mel-runtime-construction/qualification.json)
+now passes eight-library closure/source mappings and source/notice provenance;
+its archive restores with exact files, modes and aliases. The
+[separate runtime protocol](../../tools/nemotron-diarization/valid-mel-linux-runtime.protocol.json)
+freezes the exact SDK and constructed package for offline native/public/lifecycle
+then actual CPU chat coexistence. Windows SDK/package and actual Linux offline/
+coexistence evidence remain pending. All 167 model-free tools tests pass locally;
+[CI at the 157-test source](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-157/qualification.json)
+passes all 13 jobs. Later package/qualifier changes are outside that CI source;
+release criteria remain open.
 
 Prepared: 2026-10-14.
 Updated: 2026-10-16.

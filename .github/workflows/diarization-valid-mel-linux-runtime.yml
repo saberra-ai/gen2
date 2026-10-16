@@ -1,0 +1,64 @@
+name: Diarization valid-Mel Linux offline runtime and CPU chat
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/nemotron3-n0]
+    paths:
+      - .github/workflows/diarization-valid-mel-linux-runtime.yml
+      - tools/nemotron-diarization/qualify_valid_mel_linux_runtime.py
+      - tools/nemotron-diarization/valid-mel-linux-runtime.protocol.json
+permissions:
+  contents: read
+  actions: read
+jobs:
+  qualify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          submodules: recursive
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Retrieve exact tagged SDK artifact
+        uses: actions/download-artifact@v4
+        with:
+          artifact-ids: '12063127655'
+          run-id: 38940008466
+          github-token: ${{ github.token }}
+          merge-multiple: true
+          path: ${{ runner.temp }}/qualified-linux-native
+      - name: Retrieve exact Linux v2 construction artifact
+        uses: actions/download-artifact@v4
+        with:
+          artifact-ids: '12063542841'
+          run-id: 38942471178
+          github-token: ${{ github.token }}
+          merge-multiple: true
+          path: ${{ runner.temp }}/qualified-linux-package
+      - name: Install host compilation and introspection prerequisites
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends build-essential cmake ninja-build pkg-config patchelf binutils libsentencepiece0
+      - name: Execute frozen offline runtime then CPU chat coexistence
+        run: python tools/nemotron-diarization/qualify_valid_mel_linux_runtime.py --native-evidence "${{ runner.temp }}/qualified-linux-native/nemo-valid-mel-evidence" --package-evidence "${{ runner.temp }}/qualified-linux-package/linux-valid-mel-construction" --output "${{ runner.temp }}/linux-valid-mel-runtime"
+      - name: Preserve successful or failed runtime evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nemotron-valid-mel-linux-runtime
+          path: |
+            ${{ runner.temp }}/linux-valid-mel-runtime/*.json
+            ${{ runner.temp }}/linux-valid-mel-runtime/*.log
+            ${{ runner.temp }}/linux-valid-mel-runtime/offline/*.json
+            ${{ runner.temp }}/linux-valid-mel-runtime/offline/*.log
+            ${{ runner.temp }}/linux-valid-mel-runtime/offline/results/
+            ${{ runner.temp }}/linux-valid-mel-runtime/chat/*.json
+            ${{ runner.temp }}/linux-valid-mel-runtime/chat/*.log
+            ${{ runner.temp }}/linux-valid-mel-runtime/chat/results/
+          include-hidden-files: true
+          retention-days: 30

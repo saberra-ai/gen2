@@ -1,0 +1,387 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "package_construction_passed": true,
+  "scope": "Actual Linux v2 construction plus receiver-only archive bytes/modes/aliases, complete SDK mapping, provenance and corresponding source/notice verification. No Linux or native code executed during collection.",
+  "source_commit": "054cac64bd3fb6ae286bd35245d35bee3ab04115",
+  "run_id": 38942471178,
+  "ci_url": "https://github.com/saberra-ai/gen2/actions/runs/38942471178",
+  "protocol": {
+    "bytes": 47373,
+    "sha256": "2bb4a782ce67496e2eb6e2537e3126f0d524bdf0450c0820dced8d7b8adbc444"
+  },
+  "native_receipt": {
+    "bytes": 36566,
+    "sha256": "78e4cde1111168f7f614a33ba22f59edfac6e720dafa91b499be59f43da97aea"
+  },
+  "constructor_returncode": 0,
+  "constructor_elapsed_seconds": 10.076432475000018,
+  "runtime_archive": {
+    "schema_version": 1,
+    "release_qualified": false,
+    "scope": "Development filesystem snapshot; preserves aliases/modes, does not by itself close dependencies or establish relocation.",
+    "archive": "development-runtime.tar.gz",
+    "archive_bytes": 110340200,
+    "archive_sha256": "d50fd90522481c0b7309978398e6a1a57dddae18ae93442767a81db836bd7202"
+  },
+  "runtime_manifest": {
+    "bytes": 49268,
+    "sha256": "ad0e253505647c6f06a28210a8de240be079e6f778fbde78f404514776de47d7"
+  },
+  "libraries": [
+    "libgen2_nemo_linux_nemo_speech_asr_c.so.1",
+    "libgcc_s.so.1",
+    "libstdc++.so.6",
+    "libgen2_nemo_linux_nemo_speech_asr.so",
+    "libgen2_nemo_linux_ggml-base.so.0.25.1",
+    "libgen2_nemo_linux_ggml.so.0.25.1",
+    "libgen2_nemo_linux_ggml-cpu.so.0.25.1",
+    "libgen2_nemo_linux_sentencepiece.so.0.0.0"
+  ],
+  "package_inventory_entries_excluding_manifest": 50,
+  "independently_restored_inventory_matches": true,
+  "complete_sdk_library_source_mapping_matches": true,
+  "packaged_provenance_matches": true,
+  "native_notices_match_qualified_sdk": true,
+  "source_bundles_rechecked": {
+    "libgcc-s1": {
+      "source_package": "gcc-14",
+      "source_version": "14.2.0-4ubuntu2~24.04.1",
+      "descriptor_sha256": "50950080874a6ec6780dd60c243e21d9cda9d736bb32bca98d16095d27cc01b5"
+    },
+    "libstdc++6": {
+      "source_package": "gcc-14",
+      "source_version": "14.2.0-4ubuntu2~24.04.1",
+      "descriptor_sha256": "50950080874a6ec6780dd60c243e21d9cda9d736bb32bca98d16095d27cc01b5"
+    },
+    "libsentencepiece0": {
+      "source_package": "sentencepiece",
+      "source_version": "0.2.0-1build1",
+      "descriptor_sha256": "cf9b2a6d56e921f481b39c904487a8bab622318f7ac5e066d60e2378fabd3b9d"
+    }
+  },
+  "new_native_model_or_neural_calls": 0,
+  "limits": [
+    "Actual ELF introspection/closure checks happened in the named Linux CI constructor; receiver rechecks bytes, filesystem and provenance without executing Linux tools.",
+    "Opaque runtime/library/source archives retained in CI/cache, omitted from Git with exact descriptors preserved.",
+    "Offline native/public/lifecycle, CPU chat/Bark/Laya coexistence, original AMI quality, desktop and release gates remain open."
+  ],
+  "files": {
+    "collect-valid-mel-linux-construction.py": {
+      "bytes": 6752,
+      "sha256": "e82c8cf58fb98a8c71464c768e4561b0a03a460cc9b4e7fd454a55bf06620602"
+    },
+    "delivered-metadata/notices/common-licenses/Artistic": {
+      "bytes": 6111,
+      "sha256": "b7fd9b73ea99602016a326e0b62e6646060d18febdd065ceca8bb482208c3d88"
+    },
+    "delivered-metadata/notices/common-licenses/GFDL-1.2": {
+      "bytes": 20432,
+      "sha256": "d8e94ae5fdb5433fcae2961aeb1a8cf17174d6f4a0465d24bf37dd8a038bd439"
+    },
+    "delivered-metadata/notices/common-licenses/GPL": {
+      "bytes": 35149,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+    },
+    "delivered-metadata/notices/common-licenses/GPL-2": {
+      "bytes": 18092,
+      "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643"
+    },
+    "delivered-metadata/notices/common-licenses/GPL-3": {
+      "bytes": 35149,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+    },
+    "delivered-metadata/notices/common-licenses/LGPL": {
+      "bytes": 7652,
+      "sha256": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118"
+    },
+    "delivered-metadata/notices/libgcc-s1/copyright": {
+      "bytes": 69004,
+      "sha256": "20390f8a6f3b1e4d7cb45dd8652dabb259bbef688cbad839bcdb0b9ba7252f79"
+    },
+    "delivered-metadata/notices/libgcc-s1/package-policy.txt": {
+      "bytes": 440,
+      "sha256": "b0b23a54f6478b28a525bf6a2435443af63b8d5b1b2d2aba610405adee0f16f2"
+    },
+    "delivered-metadata/notices/libsentencepiece0/copyright": {
+      "bytes": 6770,
+      "sha256": "4fcdf289da4573eb616853f9cbfbdb4b9f899e2aaa90c94212ecdd195d94df59"
+    },
+    "delivered-metadata/notices/libsentencepiece0/package-policy.txt": {
+      "bytes": 225,
+      "sha256": "1397a45e713adcad94989ce07dc361876e34806bcc6088354312e8efbe16f2fc"
+    },
+    "delivered-metadata/notices/libstdc++6/copyright": {
+      "bytes": 69004,
+      "sha256": "20390f8a6f3b1e4d7cb45dd8652dabb259bbef688cbad839bcdb0b9ba7252f79"
+    },
+    "delivered-metadata/notices/libstdc++6/package-policy.txt": {
+      "bytes": 441,
+      "sha256": "a0d52d138a97b69f2d2a692ed440a19be886a5424dd4622809191787b849cce9"
+    },
+    "delivered-metadata/notices/nemo-speech/LICENSE": {
+      "bytes": 12238,
+      "sha256": "eaaca34b26b27c7be5a5099a0b9ddf9913f2db0aa96f6d5854435f2916d6fdc3"
+    },
+    "delivered-metadata/notices/nemo-speech/NOTICE": {
+      "bytes": 233,
+      "sha256": "d5ea773d67035e676503579ecf7d5836a124649d7fe99d59ec3c50cd101e1a80"
+    },
+    "delivered-metadata/notices/nemo-speech/THIRD_PARTY_NOTICES.md": {
+      "bytes": 10277,
+      "sha256": "fd8fcc0c71abde95b1b742a74c70aa27d2b4f2811fc19f64378b6845d8f3254a"
+    },
+    "delivered-metadata/notices/nemo-speech/third_party/ggml/LICENSE": {
+      "bytes": 1078,
+      "sha256": "94f29bbed6a22c35b992c5c6ebf0e7c92f13b836b90f36f461c9cf2f0f1d010d"
+    },
+    "delivered-metadata/package.json": {
+      "bytes": 49268,
+      "sha256": "ad0e253505647c6f06a28210a8de240be079e6f778fbde78f404514776de47d7"
+    },
+    "delivered-metadata/provenance/compiler-audit.json": {
+      "bytes": 587926,
+      "sha256": "1ee614ed0f901cf651e3b0e57e040a5f5560d5b10c860da025ffe3e62f83475a"
+    },
+    "delivered-metadata/provenance/inference.patch": {
+      "bytes": 1194,
+      "sha256": "8c1434c14f63ebeb2515c719a90594124fd4f75af85b80451fd145b5caef3c36"
+    },
+    "delivered-metadata/provenance/native-protocol.json": {
+      "bytes": 49143,
+      "sha256": "9887e4fb94950fa53c28f6ff3ff4a60b8f3d46ef037cf141ba1eea04738216e4"
+    },
+    "delivered-metadata/provenance/native-receipt.json": {
+      "bytes": 36566,
+      "sha256": "78e4cde1111168f7f614a33ba22f59edfac6e720dafa91b499be59f43da97aea"
+    },
+    "delivered-metadata/provenance/runtime-profile.json": {
+      "bytes": 6339,
+      "sha256": "af40e586994f223390fcac59936e3781d967c03080350f4b5df141b1bdaf51be"
+    },
+    "delivered-metadata/sources/gcc-14/gcc-14_14.2.0-4ubuntu2~24.04.1.dsc": {
+      "bytes": 46930,
+      "sha256": "50950080874a6ec6780dd60c243e21d9cda9d736bb32bca98d16095d27cc01b5"
+    },
+    "delivered-metadata/sources/sentencepiece/sentencepiece_0.2.0-1build1.dsc": {
+      "bytes": 2400,
+      "sha256": "cf9b2a6d56e921f481b39c904487a8bab622318f7ac5e066d60e2378fabd3b9d"
+    },
+    "execution-tools/artifacts.py": {
+      "bytes": 2869,
+      "sha256": "17df6411ab0394b4d9bb30a099915badf357af26050b6cd08bfd44887688ff42"
+    },
+    "execution-tools/build_valid_mel_candidate.py": {
+      "bytes": 12180,
+      "sha256": "5bfb3ec59548ae0b56e8e3eaded10201933f574b0b04ca12384eb35795dd546b"
+    },
+    "execution-tools/compare_stream.py": {
+      "bytes": 6774,
+      "sha256": "6d6a80a3b9710d0d2d0705225653935d40cd69aac9abe50454c0609631c6daa4"
+    },
+    "execution-tools/compare_stream_valid_mel.py": {
+      "bytes": 6928,
+      "sha256": "67164da5abee447b987e1274b487cf764fbc3073971930fc87f92f35b127f1bc"
+    },
+    "execution-tools/construct_valid_mel_linux_package.py": {
+      "bytes": 5513,
+      "sha256": "f2ce3aed7b16ca7e2d9cca6801c6ff99f1e08c0cdbb5463f64fba9be84f60c25"
+    },
+    "execution-tools/native_stream_probe_valid_mel.cpp": {
+      "bytes": 8690,
+      "sha256": "00c558ca1453dc99dd5beaef20816ccdffdda0f9e0cef4a2ccff04ac315efcfb"
+    },
+    "execution-tools/package_linux.py": {
+      "bytes": 22736,
+      "sha256": "b517520ffa28e32ae982828972c4db19983d2f509a6a9d554a573e843fe62ff5"
+    },
+    "execution-tools/patches/v3-finish-valid-mel.patch": {
+      "bytes": 1194,
+      "sha256": "8c1434c14f63ebeb2515c719a90594124fd4f75af85b80451fd145b5caef3c36"
+    },
+    "execution-tools/platform_linux_package.py": {
+      "bytes": 2985,
+      "sha256": "195d5d918e779e80181e63c13ffd493acf2992f2d3c1483d5e11f28c3c55ce6a"
+    },
+    "execution-tools/platform_native.py": {
+      "bytes": 19472,
+      "sha256": "e5803b27098015109053ce077674b1f5c56cb153caa571de90ad4101c8d2a813"
+    },
+    "execution-tools/platform_sdk_receipt.py": {
+      "bytes": 4114,
+      "sha256": "6916c730d0c1a5c402d9c75c3e289a2dcf3dbb5e014c82a5ca28692e2eee23fa"
+    },
+    "execution-tools/platform_valid_mel_native.py": {
+      "bytes": 22617,
+      "sha256": "3c843baca7c01c35c3624f762e542ef802d5000458a266a7402d96057fb13367"
+    },
+    "execution-tools/platform_valid_mel_sources.py": {
+      "bytes": 6446,
+      "sha256": "90337aec582be7cc94cf6381a9f0dd9b6b3e12a61503f5bb168db8a510740867"
+    },
+    "execution-tools/qualification_storage.py": {
+      "bytes": 3914,
+      "sha256": "8bbb4dfe53797d8d03c3ba18f24acce8458878602c1c85f28a4f816d6f4416f6"
+    },
+    "execution-tools/restore_valid_mel_linux_sdk.py": {
+      "bytes": 1396,
+      "sha256": "4d5ad35384ee378061a8cb5f2d61b97d4a83a5da4fe69aa0f18ad4a543b0614c"
+    },
+    "execution-tools/runtime-valid-mel.lock.json": {
+      "bytes": 6339,
+      "sha256": "af40e586994f223390fcac59936e3781d967c03080350f4b5df141b1bdaf51be"
+    },
+    "execution-tools/runtime.lock.json": {
+      "bytes": 4917,
+      "sha256": "e66e5651608636bbb04528fed7944ab8972a778d1141b36fef3fb391eefd0dcc"
+    },
+    "execution-tools/runtime_profiles.py": {
+      "bytes": 7345,
+      "sha256": "f99c8c33a3a64005ef477319c8bc7f1d6c32180c44665c2fe189a54a4b31ac7d"
+    },
+    "execution-tools/sdk_archive.py": {
+      "bytes": 7022,
+      "sha256": "0b1d80768d15c2818afc82efcc1f3ddf253360b99c16c623e170073e020cb3cd"
+    },
+    "execution-tools/test_package_linux.py": {
+      "bytes": 11728,
+      "sha256": "3f9716d64d332ec6b0a984b87c215fcaf99f1d842debdaf13ed1cd1e1c663a51"
+    },
+    "execution-tools/test_platform_native.py": {
+      "bytes": 4860,
+      "sha256": "8636b15a6ecb6c5935ac3ccb8489ddb8a1f5f48b34ae780f93b7562e7986f0e6"
+    },
+    "execution-tools/test_platform_sdk_receipt.py": {
+      "bytes": 4275,
+      "sha256": "7e2a4a389b14d24eca949bb6fae2d4e7f80becdb1c8e9d61f4492a628c61e522"
+    },
+    "execution-tools/test_platform_valid_mel.py": {
+      "bytes": 7679,
+      "sha256": "c18afd7cff36ac6dba79c103cb436679ebeeddeba8e3df5d4fec8415198f5d49"
+    },
+    "execution-tools/test_qualification_storage.py": {
+      "bytes": 4417,
+      "sha256": "e6c8a567be86f2d614868e96f10dd6e682077aa3b3cd03b8347aab95fad20332"
+    },
+    "execution-tools/test_restore_valid_mel_linux_sdk.py": {
+      "bytes": 3313,
+      "sha256": "872745deb4a7b867edbcd311fdf008827c430b73cb47befb5bb70a224b0277ea"
+    },
+    "execution-tools/test_runtime_profiles.py": {
+      "bytes": 3659,
+      "sha256": "60b39d8ba2e5edf374d424e865bf019056e88ec8d3f57a63772ecef55f83a3a6"
+    },
+    "execution-tools/test_sdk_archive.py": {
+      "bytes": 4216,
+      "sha256": "4407f90b1d5cc33eb1438401a77f0673ccf7a7c665f2f955c5b5a1180433da0f"
+    },
+    "execution-tools/test_stream_comparison_valid_mel.py": {
+      "bytes": 5048,
+      "sha256": "9b1a8cba62969c38df4b71bc16b9f14ddc513f376d48b7784f472a9de49c56d9"
+    },
+    "execution-tools/test_windows_compat.py": {
+      "bytes": 2347,
+      "sha256": "869776429bdf20e5fc6d1eaa94225f14c77f022e50d17fec31bf319a71a4d81d"
+    },
+    "execution-tools/test_windows_loader_control.py": {
+      "bytes": 2317,
+      "sha256": "56aad0abc2f0c3eb76678f4758138e7b54a823c902ae704b9ac29247b6c626e4"
+    },
+    "execution-tools/test_windows_naming.py": {
+      "bytes": 5213,
+      "sha256": "3660792b5abef2c6111aba7b63a4bd921fca5a4ff83f77ae699ad8570ac3ea4a"
+    },
+    "execution-tools/test_windows_pe.py": {
+      "bytes": 5240,
+      "sha256": "6ccf8d0cda11d5a8081af662fba4ce03756eb88352f1e50d4ed87ef6b7f4348f"
+    },
+    "execution-tools/valid-mel-platform-native.protocol.json": {
+      "bytes": 49143,
+      "sha256": "9887e4fb94950fa53c28f6ff3ff4a60b8f3d46ef037cf141ba1eea04738216e4"
+    },
+    "execution-tools/windows_compat.py": {
+      "bytes": 2393,
+      "sha256": "091eb520c5171f0f598182acada97549415191eb5ff20801040be30ec43e43ea"
+    },
+    "execution-tools/windows_loader_control.py": {
+      "bytes": 1516,
+      "sha256": "04f63b8b69e736df0dcd69990e00a48e9cdfd68bbfaa0c792d4e606745db3aca"
+    },
+    "execution-tools/windows_naming.py": {
+      "bytes": 3538,
+      "sha256": "756b8f24d1ee84c4da479f63fb0ba1e2f2ee2f2bed4d2407b9f37cb7af871efa"
+    },
+    "execution-tools/windows_pe.py": {
+      "bytes": 8676,
+      "sha256": "d194378b4a666444c350f4f4896debcee649568714ae51fc7797844f1cf4d52c"
+    },
+    "execution-tools/windows_private_dlls.cmake": {
+      "bytes": 2471,
+      "sha256": "d5fb3bcc2582a3420819ecab797aa3dd0a0a64ee9e1cf979f4ce8df5168033b7"
+    },
+    "execution-tools/windows_provenance.ps1": {
+      "bytes": 5101,
+      "sha256": "fc2cc488c4101e9762b55314612e0be99210842a38f92c17f050194e771075a3"
+    },
+    "raw/command.json": {
+      "bytes": 562,
+      "sha256": "d5f831fd2460ee5591decaa1494fd6c1d55d9d963aa91a30b30c0a705173d116"
+    },
+    "raw/construct.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "raw/construct.stdout.log": {
+      "bytes": 2355,
+      "sha256": "2697a3c5f2f02a354ca22623b7c692aa7532bbf8eb0425c9f1cd46955f19a159"
+    },
+    "raw/construction/commands.json": {
+      "bytes": 452,
+      "sha256": "6fcc3f2a34604e8be298ff0c8958f65c749d5c62a74a5d35ae64edf127c10a87"
+    },
+    "raw/construction/development-runtime-files.json": {
+      "bytes": 8775,
+      "sha256": "d40218ecc1327711c3e555798b42bf01b8e5637902f9bc6848409bff0e513a4a"
+    },
+    "raw/construction/package-build.log": {
+      "bytes": 1748,
+      "sha256": "945401c55b766677b19bfbe3d6f0637460fa30741cbab992d0e0927a89a19c10"
+    },
+    "raw/construction/package.json": {
+      "bytes": 49268,
+      "sha256": "ad0e253505647c6f06a28210a8de240be079e6f778fbde78f404514776de47d7"
+    },
+    "raw/construction/receipt.json": {
+      "bytes": 2355,
+      "sha256": "2697a3c5f2f02a354ca22623b7c692aa7532bbf8eb0425c9f1cd46955f19a159"
+    },
+    "raw/frozen-inputs.json": {
+      "bytes": 44732,
+      "sha256": "53b4f9e96ea6bed28c14fae27b7e4d36ef6239ef8f73786456fbaed91ff92374"
+    },
+    "raw/native-receipt.json": {
+      "bytes": 36566,
+      "sha256": "78e4cde1111168f7f614a33ba22f59edfac6e720dafa91b499be59f43da97aea"
+    },
+    "raw/producer-run.json": {
+      "bytes": 11843,
+      "sha256": "21fcdcba6912357a380796a55c3e706682a570a44331fb980523524e58341cf8"
+    },
+    "raw/protocol.json": {
+      "bytes": 47373,
+      "sha256": "2bb4a782ce67496e2eb6e2537e3126f0d524bdf0450c0820dced8d7b8adbc444"
+    },
+    "raw/qualification.json": {
+      "bytes": 1667,
+      "sha256": "8494b87adc605db83983c5ff5332cc1712e3a2f445755680961057f1f21fbfe7"
+    },
+    "valid-mel-linux-package-artifacts.json": {
+      "bytes": 739,
+      "sha256": "ddc8c7c1674930826051ef109c488aca7a47b65be6f4a14534de277ec50933a4"
+    },
+    "valid-mel-linux-package-run.json": {
+      "bytes": 2376,
+      "sha256": "7d3fe799fe6ded65e40989a8db16ae92ce90ac74bcee05920a2d5240ded04981"
+    }
+  }
+}
