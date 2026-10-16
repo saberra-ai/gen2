@@ -256,3 +256,20 @@ source/metadata and performs no model work. It avoids nested seatbelt setup by
 passing the strict profile to each build child. No model, frontend or finish
 execution, inference admission, packaging, public Rust qualification or release
 claim is included in this construction protocol.
+
+The first tagged construction attempt at `d5a05c4` has a retained late metadata
+failure. Source preparation and all 25 build phases completed successfully,
+including compile, install, the actual state test and actual exact version
+query. The outer process then failed because `brew list --versions` requires
+`HOME`, which the launcher's deliberately narrow environment omitted. No model
+or frontend ran, and no complete build receipt was written. Preserve this failed
+attempt and its distinct SDK; do not rerun compilation or relabel its outer exit.
+
+`valid-mel-tagged-metadata.protocol.json` preregisters a separate read-only
+recovery. It binds all retained attempt files, SDK aliases/binaries, compiler
+cache/database and archive. It will verify saved source/compiler/state/version
+records and gather only toolchain/installed-package metadata; the Homebrew query
+receives the actual user home and disables auto-update. No compilation, test,
+version-function or neural call may rerun. A recovered receipt must expose the
+original outer failure and the separate metadata completion, while keeping
+inference, production and release admission false.
