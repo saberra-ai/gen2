@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "source_commit": "7db170d0c8f17b3aea670769577d2d3cd2deaf5b",
+  "model_free_app_construction_passed": true,
+  "release_qualified": false,
+  "models_or_app_executed": false,
+  "commands_passed": 100,
+  "app_inventory_entries": 246,
+  "changed_entries": 110,
+  "frameworks_byte_verified_except_signature_extents": 94,
+  "old_main_payload_byte_equal_except_signature_extents": true,
+  "signature_extent_normalization": "Only LC_CODE_SIGNATURE.datasize and __LINKEDIT.filesize/vmsize; signature payload removed; all remaining bytes must match.",
+  "hardened_adhoc_entitlements_preserved": {
+    "com.apple.security.cs.disable-library-validation": true,
+    "com.apple.security.device.audio-input": true
+  },
+  "storage": {
+    "start_minimum_bytes": 3221225472,
+    "running_minimum_bytes": 1073741824,
+    "reserve_requested_bytes": 268435456,
+    "checks": 106,
+    "released": true,
+    "minimum_observed_free_bytes": 3386621952,
+    "last_observed_free_bytes": 3386621952,
+    "reserve_reported_allocated_bytes": 268435456
+  },
+  "limits": [
+    "Constructed locally on M4 from exact prior complete CPU app and qualified M1 portable package.",
+    "No fresh-machine app execution, inference, GUI, microphone, uncontended performance, accuracy, Developer ID, notarization or release qualification.",
+    "Opaque app and model bytes remain in owned cache; this receipt retains hashes, protocol, raw static/signing logs and byte comparison evidence only.",
+    "Collection executes only Python byte/hash/plist comparisons. No codesign, otool, loader, model, app or native version function is executed."
+  ]
+}

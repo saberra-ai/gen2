@@ -191,8 +191,20 @@ strict image auditor rejected the sandbox launcher included by misplaced
 tracing. No inference or lifecycle case ran. A separate v2 protocol fixes
 child-only tracing, retaining the unchanged package, cases and strict image
 closure. Its model-free C regression fails before and passes after the fix;
-the fresh v2 receiver is still unrun. All quality and release criteria remain
+the fresh v2 receiver has no completed passing qualification yet. All quality and release criteria remain
 unchanged.
+
+A separate [portable CPU complete-app candidate](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-portable-cpu-pnola-app-construction/qualification.json)
+also passes local model-free construction: 100 static/clone/signing commands,
+unchanged main payload/models/ORT/hardened entitlements, and independent byte
+comparisons of all 94 Frameworks against the exact portable package/ORT.
+The 211-file receipt makes no app execution, fresh-machine, GUI/microphone,
+performance, accuracy or public signing/notarization claim.
+The [current receiver-source feature CI](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-198/qualification.json)
+passes all 13 jobs at `7db170d`: all 12 OS/feature combinations and the evidence,
+Pnola and desktop asset checks. Linux reports 198 tools tests, 195 passing and
+three platform skips; all 198 pass locally on macOS. This does not replace the
+separate real-model or desktop release gates.
 
 Prepared: 2026-10-14.
 Updated: 2026-10-16.

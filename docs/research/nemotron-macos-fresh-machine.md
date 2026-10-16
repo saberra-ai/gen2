@@ -160,8 +160,31 @@ system images and the exact private closure. The standalone C regression
 fails with the old placement and passes with the correction; all 198 local
 model-free tools tests pass. No SDK or pretrained model runs in that regression.
 
-The v2 receiver has not run yet. It preserves the 5 GiB neural
+The v2 receiver has no completed passing qualification yet. It preserves the 5 GiB neural
 admission floor, 1 GiB running floor and 256 MiB reserve. It changes no reference
 policy, quality criterion or held-out claim. GUI/microphone, app distribution,
 mixed-model coexistence, uncontended performance, signing/notarization and
 the original accuracy failures remain separate.
+
+## Portable CPU complete-app construction
+
+The [local construction receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-portable-cpu-pnola-app-construction/qualification.json)
+records a separate APFS clone of the previously qualified complete CPU app.
+Only its Nemo resource package and corresponding Frameworks were replaced with
+the exact M1-constructed portable package. All 100 clone/static/signing commands
+passed, retaining the original hardened ad-hoc entitlements and unchanged model
+assets, ORT and application payload. The existing qualified apps are unchanged.
+
+The 211-file receipt includes independent byte comparisons of the main and all
+94 Frameworks. Only signature payloads and their declared extent fields are
+excluded; every remaining byte must match the original executable or the exact
+portable runtime/ORT source. Construction used a 3 GiB admission floor, 1 GiB
+running floor and 256 MiB reserve; the separate 5 GiB neural floor is unchanged.
+No model, native version function or app was executed. This is local M4
+construction only; fresh-machine app execution, GUI/microphone, performance,
+accuracy and public signing/notarization remain unqualified.
+
+The [receiver-source feature CI](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-198/qualification.json)
+passes all 13 jobs at `7db170d`. Its Linux tools suite reports 198 tests with
+195 passing and three platform skips; the local macOS suite passes all 198.
+These feature checks execute no diarization model or desktop application.
