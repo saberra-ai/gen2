@@ -7,9 +7,12 @@ SDK [passes native/public parity and lifecycle checks](../../benches/results/nem
 The [development constructor](../../tools/nemotron-diarization/package_windows.py)
 now preserves its exact 13 DLLs, notices and retained provenance, verifies PE
 closure against an explicit Server 2022 OS-import set, and produces a bounded
-ZIP with a verified Unicode-path byte restoration. Its first receiver execution
-on macOS passes; actual Windows construction and subsequent offline runtime
-execution need separate evidence. Microsoft redistribution terms/entitlement,
+ZIP with a verified Unicode-path byte restoration. The actual `abcef06`
+[Windows construction receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-runtime-construction/qualification.json)
+now passes: 13 unchanged DLLs, 43 ZIP entries and Unicode restoration on Server
+2022. An independent macOS receiver rehashed the SDK and delivered package and
+repeated byte restoration/PE inspection. Subsequent offline runtime execution
+needs separate evidence. Microsoft redistribution terms/entitlement,
 complete static-dependency source provenance, desktop qualification, coexistence
 and quality/performance gates remain open. The research inventory and proposed
 steps below retain their original source-specific limits.

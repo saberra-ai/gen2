@@ -479,3 +479,32 @@ The Windows probe workflow downloads the specific successful native run before
 construction. Construction alone does not execute the package or establish
 Microsoft redistribution rights, fresh-machine closure, coexistence or release
 qualification; all those receipt flags stay false.
+
+The actual `abcef06` [Windows construction receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-runtime-construction/qualification.json)
+passes construction and restoration on Server 2022. All 43 archive entries and
+13 unchanged DLLs were independently reverified on the macOS receiver.
+
+After same-checkout prerequisites and construction pass on a Windows Docker
+host, the separate execution gate is:
+
+```sh
+python tools/nemotron-diarization/qualify_windows_package.py \
+  --sdk-prefix /absolute/path/nemo-sdk \
+  --native-evidence /absolute/path/nemo-evidence \
+  --package-evidence /absolute/path/new-windows-package-evidence \
+  --prerequisites /absolute/path/windows-container-prerequisites/preflight.json \
+  --output /absolute/path/new-windows-offline-evidence
+```
+
+It builds current Gen2 public/lifecycle helpers, acquires the locked assets on
+the host and restores the delivered ZIP. Native inference, public inference,
+seven lifecycle tests and a missing-private-GGML control run in separate fresh
+Server Core process containers with network disabled and read-only input mounts.
+Stable observations record actual child module paths and disk hashes, requiring
+all five private DLLs at the relocated runtime and exact qualified CRT bytes.
+Test executables receive identical app-local CRT copies for their startup
+imports. Only the independent native probe uses the runtime directory on PATH
+for its static C ABI import; Gen2 uses its explicit loader and system-only PATH.
+The helper ZIP is a separate test artifact. This gate has not yet passed actual
+execution and does not establish Windows desktop, mixed-model, redistribution,
+accuracy or uncontended-performance qualification.

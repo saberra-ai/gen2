@@ -2,14 +2,14 @@ name: Diarization Windows package and container prerequisites
 on:
   push:
     branches: [codex/nemotron3-windows-probe]
-    paths: ['.github/workflows/diarization-windows-preflight.yml', 'tools/nemotron-diarization/**', 'examples/support/windows_modules.rs']
+    paths: ['.github/workflows/diarization-windows-preflight.yml', 'tools/nemotron-diarization/**', 'src/**', 'tests/diarization_native.rs', 'examples/nemotron_stream.rs', 'examples/support/windows_modules.rs', 'Cargo.*', 'build.rs', '.cargo/**', 'vendor/**']
 permissions:
   contents: read
   actions: read
 jobs:
   inspect:
     runs-on: windows-2022
-    timeout-minutes: 15
+    timeout-minutes: 45
     steps:
       - name: Preserve byte-pinned source line endings
         run: git config --global core.autocrlf false
@@ -22,7 +22,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - name: Run packaging and evidence regressions
         working-directory: tools/nemotron-diarization
-        run: python -m unittest test_package_windows test_windows_archive test_windows_pe test_windows_naming test_windows_compat test_windows_loader_control test_windows_container_preflight test_platform_native test_evidence_commands
+        run: python -m unittest test_package_windows test_windows_archive test_windows_pe test_windows_naming test_windows_compat test_windows_loader_control test_windows_container_preflight test_platform_native test_evidence_commands test_windows_runtime_audit
       - name: Retrieve the exact qualified private-name SDK
         uses: actions/download-artifact@v4
         with:
@@ -40,6 +40,22 @@ jobs:
         run: python tools/nemotron-diarization/windows_container_preflight.py --output "${{ runner.temp }}/windows-container-prerequisites"
       - name: Exercise frozen Server Core process-container controls
         run: python tools/nemotron-diarization/windows_container_smoke.py --prerequisites "${{ runner.temp }}/windows-container-prerequisites/preflight.json" --output "${{ runner.temp }}/windows-container-controls"
+      - name: Exercise delivered Windows runtime and real model in fresh offline containers
+        run: python tools/nemotron-diarization/qualify_windows_package.py --sdk-prefix "${{ runner.temp }}/qualified-windows-native/nemo-sdk" --native-evidence "${{ runner.temp }}/qualified-windows-native/nemo-evidence" --package-evidence "${{ runner.temp }}/windows-runtime-package" --prerequisites "${{ runner.temp }}/windows-container-prerequisites/preflight.json" --output "${{ runner.temp }}/windows-runtime-offline"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: windows-runtime-offline-development
+          path: |
+            ${{ runner.temp }}/windows-runtime-offline/*.json
+            ${{ runner.temp }}/windows-runtime-offline/*.log
+            ${{ runner.temp }}/windows-runtime-offline/*.zip
+            ${{ runner.temp }}/windows-runtime-offline/*/frozen-inputs.json
+            ${{ runner.temp }}/windows-runtime-offline/*/loaded-modules.json
+            ${{ runner.temp }}/windows-runtime-offline/*/results/*.json
+            ${{ runner.temp }}/windows-runtime-offline/*/results/*.log
+            ${{ runner.temp }}/windows-runtime-offline/*/results/*.f32
+          retention-days: 7
       - uses: actions/upload-artifact@v4
         if: always()
         with:

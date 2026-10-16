@@ -633,11 +633,18 @@ not a new portable-package or clean-machine result.
 A portable [Windows development constructor](../../tools/nemotron-diarization/package_windows.py)
 now preserves the qualified SDK's five private DLLs and eight unchanged VC
 DLLs, installed notices and retained provenance. It checks actual SDK/PE/cache
-identity and performs a bounded ZIP round trip into a Unicode path. All 78
-model-free packaging/evidence regressions and receiver construction on macOS
-pass. Actual Windows construction and offline execution require their own
-receipts; this does not close Microsoft redistribution, desktop, coexistence,
-quality or performance gates.
+identity and performs a bounded ZIP round trip into a Unicode path. All 80
+model-free packaging/evidence regressions pass. The actual `abcef06`
+[Windows construction receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-runtime-construction/qualification.json)
+passes 25 Windows/portable tests and exact construction/restoration on Server
+2022; the macOS receiver reverified 66 SDK files, all 13 DLLs and all 43 archive
+entries. The 2,491,252-byte ZIP has SHA-256
+`269c9e04522d662079b3b2c6063f7f2db5ee1f728c9bba15b6450755b0328bae`.
+A subsequent gate now implements real native/public inference, seven lifecycle
+tests, observed module paths/hashes and a missing-private-library control in
+fresh offline Server Core containers. Its actual execution remains unverified;
+Microsoft redistribution, desktop, coexistence, quality and performance gates
+remain open.
 
 A guarded [Windows private-DLL build](../research/nemotron-windows-private-names.md)
 now relinks the five owned DLLs through an external CMake naming hook, updates

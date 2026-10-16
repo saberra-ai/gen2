@@ -1,0 +1,138 @@
+inspect	Run packaging and evidence regressions	﻿2026-10-16T10:30:43.9418960Z ##[group]Run python -m unittest discover -s tools/nemotron-diarization -p 'test_*.py'
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:43.9419499Z [36;1mpython -m unittest discover -s tools/nemotron-diarization -p 'test_*.py'[0m
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:43.9449125Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:43.9449473Z env:
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:43.9449741Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:43.9450135Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:43.9450538Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:43.9450890Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:43.9451266Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:43.9451589Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:43.9451833Z   CARGO_INCREMENTAL: 0
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:43.9452063Z   CARGO_TERM_COLOR: always
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:43.9452339Z ##[endgroup]
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:47.4181831Z START docker-json
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:47.4371996Z PASS docker-json
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5078367Z ..E..E........E.........F.F........E.........E...FE......................
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5078881Z ======================================================================
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5079438Z ERROR: test_ami_reference_diagnostic (unittest.loader._FailedTest.test_ami_reference_diagnostic)
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5079988Z ----------------------------------------------------------------------
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5080456Z ImportError: Failed to import test module: test_ami_reference_diagnostic
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5080861Z Traceback (most recent call last):
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5086889Z   File "C:\hostedtoolcache\windows\Python\3.12.10\x64\Lib\unittest\loader.py", line 396, in _find_test_path
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5087397Z     module = self._get_module_from_name(name)
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5087650Z              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5088121Z   File "C:\hostedtoolcache\windows\Python\3.12.10\x64\Lib\unittest\loader.py", line 339, in _get_module_from_name
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5088502Z     __import__(name)
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5088868Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\test_ami_reference_diagnostic.py", line 3, in <module>
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5089251Z     from diagnose_ami_reference import crop_reference
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5089640Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\diagnose_ami_reference.py", line 14, in <module>
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5089987Z     import numpy as np
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5090182Z ModuleNotFoundError: No module named 'numpy'
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5090333Z 
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5090338Z 
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5090432Z ======================================================================
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5090716Z ERROR: test_compare (unittest.loader._FailedTest.test_compare)
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5091013Z ----------------------------------------------------------------------
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5091307Z ImportError: Failed to import test module: test_compare
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5091556Z Traceback (most recent call last):
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5091929Z   File "C:\hostedtoolcache\windows\Python\3.12.10\x64\Lib\unittest\loader.py", line 396, in _find_test_path
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5092309Z     module = self._get_module_from_name(name)
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5092522Z              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5092899Z   File "C:\hostedtoolcache\windows\Python\3.12.10\x64\Lib\unittest\loader.py", line 339, in _get_module_from_name
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5093265Z     __import__(name)
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5093547Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\test_compare.py", line 8, in <module>
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5093861Z     import numpy as np
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5094050Z ModuleNotFoundError: No module named 'numpy'
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5094931Z 
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5094937Z 
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5095025Z ======================================================================
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5096764Z ERROR: test_corpus_qualification (unittest.loader._FailedTest.test_corpus_qualification)
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5097145Z ----------------------------------------------------------------------
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5097468Z ImportError: Failed to import test module: test_corpus_qualification
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5097751Z Traceback (most recent call last):
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5098142Z   File "C:\hostedtoolcache\windows\Python\3.12.10\x64\Lib\unittest\loader.py", line 396, in _find_test_path
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5098520Z     module = self._get_module_from_name(name)
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5098733Z              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5099102Z   File "C:\hostedtoolcache\windows\Python\3.12.10\x64\Lib\unittest\loader.py", line 339, in _get_module_from_name
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5099473Z     __import__(name)
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5099799Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\test_corpus_qualification.py", line 7, in <module>
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5100158Z     import numpy as np
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5100344Z ModuleNotFoundError: No module named 'numpy'
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5100489Z 
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5100493Z 
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5100585Z ======================================================================
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5101140Z ERROR: test_unlisted_native_code_and_mutated_notices_fail_verification (test_package_macos.LoaderResolution.test_unlisted_native_code_and_mutated_notices_fail_verification)
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5101706Z ----------------------------------------------------------------------
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5101955Z Traceback (most recent call last):
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5102426Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\test_package_macos.py", line 73, in test_unlisted_native_code_and_mutated_notices_fail_verification
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5102880Z     verify_files(root, files)
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5103196Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\package_macos.py", line 182, in verify_files
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5103594Z     raise ValueError("package file set differs from its manifest")
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5103883Z ValueError: package file set differs from its manifest
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5104055Z 
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5104162Z ======================================================================
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5104827Z ERROR: test_negative_runtime_is_the_only_package_mounted_at_the_positive_search_path (test_qualify_linux_package.LinuxContainerGateTests.test_negative_runtime_is_the_only_package_mounted_at_the_positive_search_path)
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5105499Z ----------------------------------------------------------------------
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5105748Z Traceback (most recent call last):
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5106274Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\test_qualify_linux_package.py", line 45, in test_negative_runtime_is_the_only_package_mounted_at_the_positive_search_path
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5106927Z     command = container_command(image, [(negative, RUNTIME_PATH)], results, ['/work/bin/public-stream'])
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5107315Z               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5107732Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\qualify_linux_package.py", line 67, in container_command
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5108097Z     '--user', f'{os.getuid()}:{os.getgid()}',
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5108299Z                  ^^^^^^^^^
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5108558Z AttributeError: module 'os' has no attribute 'getuid'. Did you mean: 'getpid'?
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5108785Z 
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5108866Z ======================================================================
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5109428Z ERROR: test_escaping_or_dangling_alias_is_rejected_before_archive_creation (test_sdk_archive.SDKArchiveTests.test_escaping_or_dangling_alias_is_rejected_before_archive_creation)
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5110106Z ----------------------------------------------------------------------
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5110400Z Traceback (most recent call last):
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5111256Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\test_sdk_archive.py", line 82, in test_escaping_or_dangling_alias_is_rejected_before_archive_creation
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5111717Z     write_archive(sdk, output)
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5112028Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\sdk_archive.py", line 50, in write_archive
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5112347Z     records = inventory(sdk)
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5112518Z               ^^^^^^^^^^^^^^
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5112794Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\sdk_archive.py", line 29, in inventory
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5113181Z     if target.is_absolute() or not path.resolve(strict=True).is_relative_to(root):
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5113473Z                                    ^^^^^^^^^^^^^^^^^^^^^^^^^
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5113806Z   File "C:\hostedtoolcache\windows\Python\3.12.10\x64\Lib\pathlib.py", line 1240, in resolve
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5114150Z     s = self._flavour.realpath(self, strict=strict)
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5114376Z         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5114617Z   File "<frozen ntpath>", line 727, in realpath
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5115127Z OSError: [WinError 123] The filename, directory name, or volume label syntax is incorrect: 'C:\\Users\\runneradmin\\AppData\\Local\\Temp\\tmp6gwitbvi\\sdk\\alias'
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5115533Z 
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5115619Z ======================================================================
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5116127Z FAIL: test_folded_signed_by_fields_bind_every_external_keyring (test_package_linux.LinuxPackageTests.test_folded_signed_by_fields_bind_every_external_keyring)
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5116646Z ----------------------------------------------------------------------
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5116884Z Traceback (most recent call last):
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5117339Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\test_package_linux.py", line 105, in test_folded_signed_by_fields_bind_every_external_keyring
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5117813Z     self.assertEqual(apt_provenance()['keyrings'], expected)
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5118131Z AssertionError: {} != {'C:\\Users\\RUNNER~1\\AppData\\Local\\Tem[223 chars]3e0'}
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5118390Z - {}
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5118750Z + {'C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\tmprgbh589m\\one.gpg': '44ae90f3c388804324d1935d435cc4648563577e2b082e4b8e587f6b66e46ee0',
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5119359Z +  'C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\tmprgbh589m\\two.gpg': '6cd39f77c94e16f04e25623231b385f5c99622e286a4c124e131eca845dc83e0'}
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5119693Z 
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5119772Z ======================================================================
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5120314Z FAIL: test_ldd_handles_direct_loader_dependency_and_paths_with_spaces (test_package_linux.LinuxPackageTests.test_ldd_handles_direct_loader_dependency_and_paths_with_spaces)
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5120874Z ----------------------------------------------------------------------
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5121115Z Traceback (most recent call last):
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5121575Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\test_package_linux.py", line 138, in test_ldd_handles_direct_loader_dependency_and_paths_with_spaces
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5122093Z     self.assertEqual(parsed, {'libnative.so': native, loader.name: loader})
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5122503Z AssertionError: {} != {'libnative.so': WindowsPath('C:/Users/run[173 chars].2')}
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5122779Z - {}
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5123097Z + {'ld-linux-x86-64.so.2': WindowsPath('C:/Users/runneradmin/AppData/Local/Temp/tmph60yl4hs/ld-linux-x86-64.so.2'),
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5123628Z +  'libnative.so': WindowsPath('C:/Users/runneradmin/AppData/Local/Temp/tmph60yl4hs/library with spaces.so')}
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5123921Z 
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5124004Z ======================================================================
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5124667Z FAIL: test_delivered_archive_restores_executable_aliases_and_is_deterministic (test_sdk_archive.SDKArchiveTests.test_delivered_archive_restores_executable_aliases_and_is_deterministic)
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5125338Z ----------------------------------------------------------------------
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5125588Z Traceback (most recent call last):
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5126078Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\test_sdk_archive.py", line 43, in test_delivered_archive_restores_executable_aliases_and_is_deterministic
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5126615Z     self.assertEqual((delivered / 'bin/probe').stat().st_mode & 0o777, 0o755)
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5126893Z AssertionError: 438 != 493
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5127004Z 
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5127105Z ----------------------------------------------------------------------
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5127336Z Ran 73 tests in 8.977s
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5127440Z 
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.5127515Z FAILED (failures=3, errors=6)
+inspect	Run packaging and evidence regressions	2026-10-16T10:30:55.6017642Z ##[error]Process completed with exit code 1.

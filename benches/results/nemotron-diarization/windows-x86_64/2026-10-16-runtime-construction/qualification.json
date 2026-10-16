@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "source_commit": "abcef0692c8ffd9775802b4e9b4583b0204e7731",
+  "run_url": "https://github.com/saberra-ai/gen2/actions/runs/38887851020",
+  "ci_job_id": 116929871121,
+  "package_construction_passed": true,
+  "release_qualified": false,
+  "redistribution_qualified": false,
+  "runtime_qualified": false,
+  "native_source_commit": "24ad9271ef2b46c86a554b61da5395b9bf42404a",
+  "native_receipt_sha256": "18fcacac2b79a31a9ff1791ae62c09defb43a70bbf2c9cf173bdbc3991af26d3",
+  "archive": {
+    "schema_version": 1,
+    "release_qualified": false,
+    "archive": "development-windows-runtime.zip",
+    "scope": "Exact portable file bytes/directory names; no Windows ACL or runtime qualification.",
+    "archive_bytes": 2491252,
+    "archive_sha256": "269c9e04522d662079b3b2c6063f7f2db5ee1f728c9bba15b6450755b0328bae"
+  },
+  "archive_entries_reverified": 43,
+  "dlls_preserved_from_qualified_sdk": 13,
+  "sdk_regular_files_reverified": 66,
+  "receiver_archive_restore_and_pe_manifest_passed": true,
+  "packaging_host": {
+    "platform": "Windows-2022Server-10.0.20348-SP0",
+    "python": "3.12.10"
+  },
+  "prior_failed_run": {
+    "source_commit": "cb46d2b72604b8e206b1165c8830a2cdaabb2485",
+    "run_url": "https://github.com/saberra-ai/gen2/actions/runs/38887646359",
+    "reason": "Workflow attempted POSIX/scientific tests on Windows without their dependencies; failed before artifact acquisition or package construction. Retry selects 25 Windows/portable tests. Full 78 tests passed on macOS and run separately in Linux evidence CI."
+  },
+  "limits": [
+    "Actual Windows construction and Unicode byte restoration only; no model/native package execution.",
+    "Receiver macOS rehashed SDK/package/archive and re-inspected PE tables; no Windows execution or ACL reconstruction on receiver.",
+    "No offline runtime, desktop machine, chat/Bark/Laya coexistence, held-out accuracy or performance qualification.",
+    "No Microsoft redistribution terms/entitlement or complete static-dependency source qualification.",
+    "Opaque DLL/archive payload stays in the named CI artifact and local receiver cache, not this Git evidence directory."
+  ]
+}
