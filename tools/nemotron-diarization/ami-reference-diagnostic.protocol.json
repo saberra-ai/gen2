@@ -125,5 +125,17 @@
     "Original20%/2pp gates and their failed status remain unchanged. No release gate is passed by this diagnostic.",
     "Same120s cold-start crop and FP32 safetensors conversion differ from full-meeting original-NeMo model-card evaluation. No claimed reproduction of corpus-level published numbers.",
     "Reference convention is diagnosed after outcomes were seen; these data cannot be relabeled untouched heldout for future tuning."
-  ]
+  ],
+  "independent_scorer": {
+    "url": "https://raw.githubusercontent.com/NVIDIA-NeMo/Speech/218d0b443441b7d8aa1c832f47df310f186cf0a4/nemo/collections/asr/metrics/md_eval.py",
+    "revision": "218d0b443441b7d8aa1c832f47df310f186cf0a4",
+    "bytes": 54914,
+    "sha256": "c34af6eeec07e1df795c6820f36cb05459c28ac8d5d84fb0efea433035546de3",
+    "license": "Apache-2.0 with retained original BSD-2-Clause notice",
+    "numpy_version": "2.2.6",
+    "scipy_version": "1.18.1",
+    "invocation": "Unmodified md_eval.py get_rttm_data/get_uem_data/evaluate(collar=0,opt_1=False,verbose=False); standard Python logging shim only for nemo.utils.logging. These NumPy/SciPy pins match our original oracle environment, not the full official NeMo lock.",
+    "calibrations": "Before reading target labels: synthetic overlap/mapping, missed overlap, false alarm and global confusion cases on exact10ms boundaries, expected DER0/.5/.5/.5."
+  },
+  "adapter_sha256": "5df4b4999f1868460472538c36bd08a77258b4585257d7b4d37ca49e5f346a03"
 }
