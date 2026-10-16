@@ -1,0 +1,149 @@
+[0/2] Re-checking globbed directories...
+[1/84] Building CXX object ggml/src/CMakeFiles/ggml-base.dir/ggml.cpp.o
+[2/84] Building C object ggml/src/CMakeFiles/ggml-base.dir/ggml-alloc.c.o
+[3/84] Building C object ggml/src/CMakeFiles/ggml-base.dir/ggml.c.o
+[4/84] Building CXX object ggml/src/CMakeFiles/ggml-base.dir/ggml-backend.cpp.o
+[5/84] Building CXX object ggml/src/CMakeFiles/ggml-base.dir/ggml-opt.cpp.o
+[6/84] Building CXX object ggml/src/CMakeFiles/ggml-base.dir/ggml-threading.cpp.o
+[7/84] Building CXX object ggml/src/CMakeFiles/ggml-base.dir/ggml-backend-meta.cpp.o
+[8/84] Building CXX object ggml/src/CMakeFiles/ggml-base.dir/gguf.cpp.o
+[9/84] Building C object ggml/src/CMakeFiles/ggml-base.dir/ggml-quants.c.o
+[10/84] Linking CXX shared library bin/libggml-base.so.0.25.1
+[11/84] Creating library symlink bin/libggml-base.so.0 bin/libggml-base.so
+[12/84] Building C object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/ggml-cpu.c.o
+[13/84] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/ggml-cpu.cpp.o
+[14/84] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/iqp.cpp.o
+[15/84] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/hbm.cpp.o
+[16/84] Building C object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/quants.c.o
+[17/84] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/traits.cpp.o
+[18/84] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/amx/amx.cpp.o
+[19/84] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/amx/mmq.cpp.o
+[20/84] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/repack.cpp.o
+[21/84] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/binary-ops.cpp.o
+[22/84] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/vec.cpp.o
+[23/84] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/unary-ops.cpp.o
+[24/84] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/llamafile/sgemm.cpp.o
+[25/84] Building C object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/arch/x86/quants.c.o
+[26/84] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/arch/x86/repack.cpp.o
+[27/84] Building CXX object ggml/src/CMakeFiles/ggml.dir/ggml-backend-dl.cpp.o
+[28/84] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/ops.cpp.o
+[29/84] Linking CXX shared library bin/libggml-cpu.so.0.25.1
+[30/84] Creating library symlink bin/libggml-cpu.so.0 bin/libggml-cpu.so
+[31/84] Building CXX object ggml/src/CMakeFiles/ggml.dir/ggml-backend-reg.cpp.o
+[32/84] Building CXX object src/runtime/ggml/CMakeFiles/nemo_speech_runtime_ggml.dir/backend.cpp.o
+/home/runner/work/gen2/gen2/native-source/src/runtime/ggml/backend.cpp: In member function ‘void ggml_runtime::BackendManager::init_backends()’:
+/home/runner/work/gen2/gen2/native-source/src/runtime/ggml/backend.cpp:89:27: warning: comparison of integer expressions of different signedness: ‘int’ and ‘long unsigned int’ [-Wsign-compare]
+   89 |         for (int i = 0; i < dev_count; i++) {
+      |                         ~~^~~~~~~~~~~
+/home/runner/work/gen2/gen2/native-source/src/runtime/ggml/backend.cpp:159:28: warning: unused variable ‘dev’ [-Wunused-variable]
+  159 |         ggml_backend_dev_t dev = buft.first;
+      |                            ^~~
+[33/84] Linking CXX shared library bin/libggml.so.0.25.1
+[34/84] Creating library symlink bin/libggml.so.0 bin/libggml.so
+[35/84] Building CXX object src/runtime/ggml/CMakeFiles/nemo_speech_runtime_ggml.dir/logging.cpp.o
+[36/84] Building CXX object src/runtime/ggml/CMakeFiles/nemo_speech_runtime_ggml.dir/loader.cpp.o
+In file included from /home/runner/work/gen2/gen2/native-source/src/runtime/ggml/loader.cpp:9:
+/home/runner/work/gen2/gen2/native-source/src/runtime/ggml/loader.cpp: In constructor ‘ggml_runtime::GGUFLoader::GGUFLoader(const std::string&)’:
+/home/runner/work/gen2/gen2/native-source/src/runtime/ggml/loader.cpp:250:20: warning: format ‘%d’ expects argument of type ‘int’, but argument 6 has type ‘long int’ [-Wformat=]
+  250 |     GGMLF_LOG_INFO("GGUF has %d tensors\n", n_tensors);
+      |                    ^~~~~~~~~~~~~~~~~~~~~~~  ~~~~~~~~~
+      |                                             |
+      |                                             long int
+/home/runner/work/gen2/gen2/native-source/src/runtime/ggml/runtime.h:60:85: note: in definition of macro ‘GGMLF_LOG_INFO’
+   60 |     ::ggml_runtime::log_internal(GGML_LOG_LEVEL_INFO, __FILE__, __LINE__, __func__, __VA_ARGS__)
+      |                                                                                     ^~~~~~~~~~~
+/home/runner/work/gen2/gen2/native-source/src/runtime/ggml/loader.cpp:250:31: note: format string is defined here
+  250 |     GGMLF_LOG_INFO("GGUF has %d tensors\n", n_tensors);
+      |                              ~^
+      |                               |
+      |                               int
+      |                              %ld
+[37/84] Building CXX object src/runtime/ggml/CMakeFiles/nemo_speech_runtime_ggml.dir/nn.cpp.o
+/home/runner/work/gen2/gen2/native-source/src/runtime/ggml/nn.cpp: In member function ‘virtual void ggml_runtime::ReLU::define_tensors(ggml_runtime::Session*)’:
+/home/runner/work/gen2/gen2/native-source/src/runtime/ggml/nn.cpp:181:31: warning: unused parameter ‘session’ [-Wunused-parameter]
+  181 | ReLU::define_tensors(Session* session) {}
+      |                      ~~~~~~~~~^~~~~~~
+/home/runner/work/gen2/gen2/native-source/src/runtime/ggml/nn.cpp: In member function ‘virtual ggml_runtime::TensorBag ggml_runtime::ReLU::build_graph(ggml_runtime::Session*, ggml_runtime::TensorBag, ggml_runtime::TensorContainer*)’:
+/home/runner/work/gen2/gen2/native-source/src/runtime/ggml/nn.cpp:185:14: warning: unused parameter ‘session’ [-Wunused-parameter]
+  185 |     Session* session, TensorBag input_tensors, TensorContainer* session_tensor_container) {
+      |     ~~~~~~~~~^~~~~~~
+/home/runner/work/gen2/gen2/native-source/src/runtime/ggml/nn.cpp: In member function ‘virtual void ggml_runtime::ReLU::set_data(ggml_runtime::Session*)’:
+/home/runner/work/gen2/gen2/native-source/src/runtime/ggml/nn.cpp:195:25: warning: unused parameter ‘session’ [-Wunused-parameter]
+  195 | ReLU::set_data(Session* session) {}
+      |                ~~~~~~~~~^~~~~~~
+[38/84] Building CXX object src/runtime/ggml/CMakeFiles/nemo_speech_runtime_ggml.dir/tensor_container.cpp.o
+[39/84] Building CXX object src/common/CMakeFiles/nemo_speech_common.dir/audio_decoder.cpp.o
+[40/84] Building CXX object src/common/CMakeFiles/nemo_speech_common.dir/audio_file.cpp.o
+[41/84] Building CXX object src/runtime/ggml/CMakeFiles/nemo_speech_runtime_ggml.dir/session.cpp.o
+/home/runner/work/gen2/gen2/native-source/src/runtime/ggml/session.cpp: In member function ‘void ggml_runtime::Session::run_impl(uint64_t, const std::function<ggml_runtime::TensorBag(ggml_runtime::Session*, ggml_runtime::TensorContainer*)>&, const std::function<bool(ggml_runtime::Session*, ggml_runtime::TensorContainer*)>&, const std::function<bool(ggml_runtime::Session*, ggml_runtime::TensorBag, ggml_runtime::TensorContainer*)>&, ggml_runtime::SessionState*)’:
+/home/runner/work/gen2/gen2/native-source/src/runtime/ggml/session.cpp:921:20: warning: unused variable ‘host_output_pending’ [-Wunused-variable]
+  921 |         const bool host_output_pending = return_output(this, cr.output_tensors, cr.container.get());
+      |                    ^~~~~~~~~~~~~~~~~~~
+/home/runner/work/gen2/gen2/native-source/src/runtime/ggml/session.cpp: At global scope:
+/home/runner/work/gen2/gen2/native-source/src/runtime/ggml/session.cpp:151:1: warning: ‘uint64_t ggml_runtime::hash_input_shapes(const TensorBag&)’ defined but not used [-Wunused-function]
+  151 | hash_input_shapes(const TensorBag& bag) {
+      | ^~~~~~~~~~~~~~~~~
+[42/84] Building CXX object src/common/CMakeFiles/nemo_speech_common.dir/audio_resampler.cpp.o
+[43/84] Building CXX object src/common/CMakeFiles/nemo_speech_common.dir/json.cpp.o
+[44/84] Building CXX object src/common/CMakeFiles/nemo_speech_common.dir/parameter_parser.cpp.o
+[45/84] Linking CXX static library src/runtime/ggml/libnemo_speech_runtime_ggml.a
+[46/84] Building CXX object src/common/CMakeFiles/nemo_speech_common.dir/subtitles.cpp.o
+[47/84] Linking CXX static library src/common/libnemo_speech_common.a
+[48/84] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/decoders/flashlight_decoder.cpp.o
+[49/84] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/decoders/context_biasing.cpp.o
+[50/84] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/decoders/greedy_ctc_decoder.cpp.o
+[51/84] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/decoders/rnnt_greedy_decoder.cpp.o
+[52/84] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/decoders/rnnt_modules.cpp.o
+[53/84] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/diar/aosc_state.cpp.o
+[54/84] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/diar/diar_pipeline.cpp.o
+[55/84] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/diar/diarizer.cpp.o
+[56/84] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/diar/sortformer_model.cpp.o
+[57/84] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/encoder/cache_aware_encoder.cpp.o
+[58/84] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/encoder/rel_pos_attention.cpp.o
+[59/84] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/encoder/fastconformer.cpp.o
+[60/84] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/encoder/rope_transformer.cpp.o
+[61/84] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/encoder/transformer_encoder.cpp.o
+[62/84] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/features/fe.cpp.o
+/home/runner/work/gen2/gen2/native-source/src/asr/features/fe.cpp: In function ‘bool read_wav_mono_16k(const std::string&, std::vector<float>&, int&)’:
+/home/runner/work/gen2/gen2/native-source/src/asr/features/fe.cpp:606:23: warning: ignoring return value of ‘size_t fread(void*, size_t, size_t, FILE*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  606 |             std::fread(&fmt_tag, 2, 1, f);
+      |             ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~
+/home/runner/work/gen2/gen2/native-source/src/asr/features/fe.cpp:607:23: warning: ignoring return value of ‘size_t fread(void*, size_t, size_t, FILE*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  607 |             std::fread(&channels, 2, 1, f);
+      |             ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~
+/home/runner/work/gen2/gen2/native-source/src/asr/features/fe.cpp:608:23: warning: ignoring return value of ‘size_t fread(void*, size_t, size_t, FILE*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  608 |             std::fread(&sr, 4, 1, f);
+      |             ~~~~~~~~~~^~~~~~~~~~~~~~
+/home/runner/work/gen2/gen2/native-source/src/asr/features/fe.cpp:609:23: warning: ignoring return value of ‘size_t fread(void*, size_t, size_t, FILE*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  609 |             std::fread(&byte_rate, 4, 1, f);
+      |             ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~
+/home/runner/work/gen2/gen2/native-source/src/asr/features/fe.cpp:610:23: warning: ignoring return value of ‘size_t fread(void*, size_t, size_t, FILE*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  610 |             std::fread(&block_align, 2, 1, f);
+      |             ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~
+/home/runner/work/gen2/gen2/native-source/src/asr/features/fe.cpp:611:23: warning: ignoring return value of ‘size_t fread(void*, size_t, size_t, FILE*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  611 |             std::fread(&bits, 2, 1, f);
+      |             ~~~~~~~~~~^~~~~~~~~~~~~~~~
+/home/runner/work/gen2/gen2/native-source/src/asr/features/fe.cpp:616:23: warning: ignoring return value of ‘size_t fread(void*, size_t, size_t, FILE*)’ declared with attribute ‘warn_unused_result’ [-Wunused-result]
+  616 |             std::fread(data_bytes.data(), 1, chunk_size, f);
+      |             ~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+[63/84] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/pnc/pnc_model.cpp.o
+[64/84] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/pnc/pnc_runner.cpp.o
+[65/84] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/pnc/wordpiece.cpp.o
+[66/84] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/postproc/itn.cpp.o
+[67/84] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/model.cpp.o
+[68/84] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/postproc/itn_align.cpp.o
+[69/84] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/postproc/pipeline.cpp.o
+[70/84] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/postproc/profanity.cpp.o
+[71/84] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/recognizer.cpp.o
+[72/84] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/vad/silero_vad.cpp.o
+[73/84] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/vad/vad_endpointer.cpp.o
+[74/84] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/runner.cpp.o
+[75/84] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/vad/vad_masker.cpp.o
+[76/84] Linking CXX shared library bin/libnemo_speech_asr.so
+[77/84] Building CXX object src/core/CMakeFiles/nemo_speech_engine_registry.dir/engine_registry.cpp.o
+[78/84] Building CXX object examples/CMakeFiles/diarize_file.dir/diarize_file.cpp.o
+[79/84] Linking CXX static library src/core/libnemo_speech_engine_registry.a
+[80/84] Building CXX object src/asr/CMakeFiles/nemo_speech_asr_c.dir/c_api.cpp.o
+[81/84] Linking CXX shared library bin/libnemo_speech_asr_c.so.1
+[82/84] Creating library symlink bin/libnemo_speech_asr_c.so
+[83/84] Linking CXX executable bin/diarize_file

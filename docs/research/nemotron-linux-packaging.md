@@ -78,7 +78,8 @@ copyright/common-license texts are included. The downloaded archive's 45 entries
 package manifest and both source descriptor inventories were independently
 checked on macOS; this check did not execute Linux code. Earlier paragraphs
 that say construction/archiving is pending describe the investigation's starting
-state. Container execution and native backend coexistence are still pending.
+state. The later source-specific result below closes the offline container
+gate; native backend coexistence remains separate.
 
 `qualify_linux_package.py` implements the next execution gate: restore the exact
 delivered tar into a path with spaces/non-ASCII characters, bind prebuilt helpers
@@ -91,9 +92,16 @@ private GGML dependency is tested at the identical runtime path with the intact
 package unavailable. Native/public parity and all seven Linux lifecycle tests
 must actually pass. Docker documents the [none network](https://docs.docker.com/engine/network/drivers/none/)
 and [read-only filesystem/mount options](https://docs.docker.com/reference/cli/docker/container/run/).
-This source implementation is not a passing container receipt. Even a passing
-container run will not close the separate ELF chat/GGML interposition gate or
-prove physical-machine portability.
+The actual `c242201` [container receipt](../../benches/results/nemotron-diarization/linux-x86_64/2026-10-16-offline-container/qualification.json)
+now passes this complete gate in [run 38878287549](https://github.com/saberra-ai/gen2/actions/runs/38878287549).
+It records exact native/public parity (26 turns/6,001 frames), all seven lifecycle
+tests including 100 reloads, all eight delivered DSOs initialized and the
+missing-private-GGML control with its exact OS cause. The delivered archive
+(110,126,343 bytes, SHA-256 `83ef52fed709501d7aa57110cc74d125b1835dba83e48cc737fda40d6dd0515a`)
+and all 45 filesystem entries, corresponding-source bundles and frozen tools
+were independently checked on macOS. Actual Linux execution occurred only in
+the named CI run. This passes the selected Ubuntu/glibc/CPU container scope;
+the separate ELF chat/GGML interposition and physical-machine gates remain open.
 
 The separate `qualify_linux_chat.py`/`nemotron_chat_coexistence` implementation
 now covers an isolated chat baseline and both load orders in fresh offline

@@ -424,3 +424,10 @@ native result, shutdown/reload must release reservations, and exported intervals
 must prove overlapping public inference calls (preparation/serialization do
 not count). Actual loader paths and critical GGML symbol bindings must remain
 within the declared payload. Bark/Laya, other baselines and accuracy stay open.
+
+The actual `c242201` [offline container receipt](../../benches/results/nemotron-diarization/linux-x86_64/2026-10-16-offline-container/qualification.json)
+passes relocated native/public parity, all seven lifecycle tests, eight-library
+loader closure and the missing-private-library control on the selected Ubuntu
+24.04 x86_64 AVX2/FMA/F16C baseline. The independent receiver rechecked all
+delivered archive/source bytes; this is not a chat/Bark/Laya, other-baseline,
+physical-machine, accuracy or complete release qualification.

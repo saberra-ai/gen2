@@ -1,0 +1,400 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "development_native_gates_passed": true,
+  "error": null,
+  "scope": "Linux/Windows x86_64 AVX2 CPU source SDK and same-host actual native/public lifecycle; not offline packaging",
+  "platform": "Linux-6.17.0-1022-azure-x86_64-with-glibc2.39",
+  "machine": "x86_64",
+  "python": "3.12.15",
+  "source_commit": "c2422018ee5bf7449236e34f9185c36445d21ac5",
+  "runtime_revision": "083861c241061562b8ec29eb06d7f6cdc3af8775",
+  "llama_revision": "bd4f514db14d87fded667787a7a963bfbaa98e89",
+  "lock_sha256": "e66e5651608636bbb04528fed7944ab8972a778d1141b36fef3fb391eefd0dcc",
+  "runner_sha256": "1bafb61574be15f40b067eb1309cf5c23877d97f21b44088b39483c6403b7e55",
+  "commands": [
+    {
+      "name": "sdk-configure",
+      "command": [
+        "cmake",
+        "--preset",
+        "cpu-diar",
+        "-DNEMO_SPEECH_BUILD_EXAMPLES=ON",
+        "-DNEMO_SPEECH_BUILD_CLI=OFF",
+        "-DNEMO_SPEECH_BUILD_MIC_CAPTURE=OFF",
+        "-DGGML_OPENMP=OFF",
+        "-DGGML_NATIVE=OFF",
+        "-DGGML_AVX=ON",
+        "-DGGML_AVX2=ON",
+        "-DGGML_AVX512=OFF",
+        "-DGGML_AVX_VNNI=OFF",
+        "-DGGML_FMA=ON",
+        "-DGGML_F16C=ON",
+        "-DNEMO_SPEECH_WITH_NORM=OFF",
+        "-DCMAKE_INSTALL_LIBDIR=lib",
+        "-DCMAKE_INSTALL_PREFIX=/home/runner/work/_temp/nemo-sdk"
+      ],
+      "cwd": "/home/runner/work/gen2/gen2/native-source"
+    },
+    {
+      "name": "sdk-build",
+      "command": [
+        "cmake",
+        "--build",
+        "/home/runner/work/gen2/gen2/native-source/build/cpu-diar",
+        "--parallel",
+        "2"
+      ],
+      "cwd": "/home/runner/work/gen2/gen2"
+    },
+    {
+      "name": "sdk-install",
+      "command": [
+        "cmake",
+        "--install",
+        "/home/runner/work/gen2/gen2/native-source/build/cpu-diar",
+        "--config",
+        "Release"
+      ],
+      "cwd": "/home/runner/work/gen2/gen2"
+    },
+    {
+      "name": "native-probe-build",
+      "command": [
+        "c++",
+        "-std=c++17",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-x",
+        "c++",
+        "/home/runner/work/gen2/gen2/tools/nemotron-diarization/native_stream_probe.cpp",
+        "/home/runner/work/gen2/gen2/native-source/llama.cpp/vendor/hash/sha256/sha256.c",
+        "-I/home/runner/work/_temp/nemo-sdk/include",
+        "-I/home/runner/work/gen2/gen2/native-source/examples",
+        "-I/home/runner/work/gen2/gen2/native-source/llama.cpp/vendor/hash",
+        "-L/home/runner/work/_temp/nemo-sdk/lib",
+        "-lnemo_speech_asr_c",
+        "-Wl,-rpath,/home/runner/work/_temp/nemo-sdk/lib",
+        "-o",
+        "/home/runner/work/_temp/nemo-sdk/bin/gen2_native_stream_probe"
+      ],
+      "cwd": "/home/runner/work/_temp/nemo-evidence"
+    },
+    {
+      "name": "gen2-build",
+      "command": [
+        "cargo",
+        "build",
+        "--locked",
+        "--release",
+        "--no-default-features",
+        "--features",
+        "backend-diar-nemo",
+        "--example",
+        "nemotron_stream",
+        "--test",
+        "diarization_native"
+      ],
+      "cwd": "/home/runner/work/gen2/gen2"
+    },
+    {
+      "name": "loader-dependencies",
+      "command": [
+        "ldd",
+        "/home/runner/work/_temp/nemo-sdk/lib/libnemo_speech_asr_c.so"
+      ],
+      "cwd": "/home/runner/work/gen2/gen2"
+    },
+    {
+      "name": "native-inference",
+      "command": [
+        "/home/runner/work/_temp/nemo-sdk/bin/gen2_native_stream_probe",
+        "/home/runner/work/_temp/nemo-evidence/assets/Nemotron-3-Diarization.q8_0.gguf",
+        "/home/runner/work/_temp/nemo-evidence/assets/ami_en2002d_2132.wav",
+        "1",
+        "-1",
+        "/home/runner/work/_temp/nemo-evidence/native-ami.json"
+      ],
+      "cwd": "/home/runner/work/gen2/gen2"
+    },
+    {
+      "name": "public-inference",
+      "command": [
+        "/home/runner/work/gen2/gen2/target/release/examples/nemotron_stream",
+        "/home/runner/work/_temp/nemo-evidence/assets",
+        "/home/runner/work/_temp/nemo-sdk/lib/libnemo_speech_asr_c.so",
+        "/home/runner/work/_temp/nemo-evidence/assets/ami_en2002d_2132.wav",
+        "1",
+        "/home/runner/work/_temp/nemo-evidence/public.f32"
+      ],
+      "cwd": "/home/runner/work/gen2/gen2"
+    },
+    {
+      "name": "native-lifecycle-list",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--release",
+        "--no-default-features",
+        "--features",
+        "backend-diar-nemo",
+        "--test",
+        "diarization_native",
+        "--",
+        "--ignored",
+        "--list"
+      ],
+      "cwd": "/home/runner/work/gen2/gen2"
+    },
+    {
+      "name": "native-lifecycle",
+      "command": [
+        "cargo",
+        "test",
+        "--locked",
+        "--release",
+        "--no-default-features",
+        "--features",
+        "backend-diar-nemo",
+        "--test",
+        "diarization_native",
+        "--",
+        "--ignored",
+        "--test-threads=1"
+      ],
+      "cwd": "/home/runner/work/gen2/gen2"
+    }
+  ],
+  "windows_loader_control_sha256": null,
+  "installed_files": {
+    "bin/diarize_file": {
+      "sha256": "5c80714700d644a6dbe3c6858a4788c3ab03e7cd9833c0c31e8521b3633ea3c4",
+      "bytes": 27264
+    },
+    "bin/gen2_native_stream_probe": {
+      "sha256": "30220aad450e65d917a08c88b9ba3a1f358d24b0d04bd91d3630501fa44e0ec6",
+      "bytes": 57216
+    },
+    "include/nemo_speech/asr.h": {
+      "sha256": "12f3e017391ae19daabe59d2d50541f0aabb010228d075426b4a9834337422fa",
+      "bytes": 12718
+    },
+    "include/nemo_speech/diar.h": {
+      "sha256": "4839f70ccab30af3ed9949751792a547f3a8a4129848f64c8cd69889bd433afd",
+      "bytes": 7606
+    },
+    "lib/cmake/NeMoSpeech/NeMoSpeechConfig.cmake": {
+      "sha256": "c97f7f7ae08f8ed0694c132e8773c81fcc3f50aae806969dd755195209790fa1",
+      "bytes": 2459
+    },
+    "lib/cmake/NeMoSpeech/NeMoSpeechConfigVersion.cmake": {
+      "sha256": "f1f7887f16102d42a1ec373d902e672111bcb69a72c17a29ad093105426391cd",
+      "bytes": 3675
+    },
+    "lib/libggml-base.so.0.25.1": {
+      "sha256": "82fc79b5a1cc1d20be6f88cd652dab21740ff113aa3c0c45861665246fa704dd",
+      "bytes": 944472
+    },
+    "lib/libggml-cpu.so.0.25.1": {
+      "sha256": "369ac383c27bfefba3dbd34ed0475d90a1a61928dc9979df8c4be5a23b331215",
+      "bytes": 1214000
+    },
+    "lib/libggml.so.0.25.1": {
+      "sha256": "e3662ce91e97807e22ca723f8e3592f14db153a2d2d2f0c233e7f00711864e11",
+      "bytes": 60720
+    },
+    "lib/libnemo_speech_asr.so": {
+      "sha256": "aeedb3b74b4cb4bd93af99bd142569debbb55e2799c799b89b3614859690f206",
+      "bytes": 1966120
+    },
+    "lib/libnemo_speech_asr_c.so.1": {
+      "sha256": "81d0454a7dbee5996392939d179b0630e9b66c331df3608f7cfe2d48c79f45ad",
+      "bytes": 83864
+    },
+    "share/doc/nemo-speech/CONTRIBUTING.md": {
+      "sha256": "dab40307a65b606e687f7731273817794293c16e8d67ba7d836e83a96478c367",
+      "bytes": 5328
+    },
+    "share/doc/nemo-speech/README.md": {
+      "sha256": "54f85f532a1bfe23324ced98b4ad0da675d8e98b4f3d4552644f74be23b1d6b2",
+      "bytes": 9445
+    },
+    "share/doc/nemo-speech/docs/README.md": {
+      "sha256": "0bd53c4c04a1a6670d440a626b04e19ce3354006807882e9d5f8e36d37b4b936",
+      "bytes": 2363
+    },
+    "share/doc/nemo-speech/docs/api.md": {
+      "sha256": "eb23ac5107ffbd2fb797eefcb2ce6deb50c4560e526d08d3b39d7b0bc07fdef1",
+      "bytes": 11151
+    },
+    "share/doc/nemo-speech/docs/asr/configuration.md": {
+      "sha256": "c4be8d65c0a4abcdf064d4124a767ae9626cdf5c3b476b124dd22651d02f9c73",
+      "bytes": 14812
+    },
+    "share/doc/nemo-speech/docs/asr/customization.md": {
+      "sha256": "3849d88f25926a1196737b11420027ee1f451abbc9b7307f799190036b4c622d",
+      "bytes": 4494
+    },
+    "share/doc/nemo-speech/docs/asr/models.md": {
+      "sha256": "dd89dde01f1b77a095750f4fadcf4762b971103e7026f52ef88096e19f9fe769",
+      "bytes": 7032
+    },
+    "share/doc/nemo-speech/docs/build.md": {
+      "sha256": "1adaeccf203a4561be08fa0bd3effb46f6bc1fae07b4d6020449a9b1dde75c74",
+      "bytes": 11278
+    },
+    "share/doc/nemo-speech/docs/cli.md": {
+      "sha256": "bbf0c8b54a67261e3f6dddadbbd7bcbbf915c9a157d068ca75cf189a3927614b",
+      "bytes": 10849
+    },
+    "share/doc/nemo-speech/docs/clients.md": {
+      "sha256": "c4977349b3fed97eee0700543ef77e58d3ea2c07b1b89ba8510adb2e3476cd6c",
+      "bytes": 2948
+    },
+    "share/doc/nemo-speech/docs/development/README.md": {
+      "sha256": "91b7eeb45247c5ccb86c728e100926f690bce39a13d7c2fe185ddf03eecc8847",
+      "bytes": 997
+    },
+    "share/doc/nemo-speech/docs/development/asr-batching.md": {
+      "sha256": "351e7cc131aa055a032aa2cb74b261320fab47793ace608b757abdce84b500a7",
+      "bytes": 6192
+    },
+    "share/doc/nemo-speech/docs/development/cublas-shim.md": {
+      "sha256": "126b2e92e74451cb999932474ddabab44e9d1064607dbafd7e36b36cb6ae4679",
+      "bytes": 2312
+    },
+    "share/doc/nemo-speech/docs/development/diagnostics.md": {
+      "sha256": "e82ced430db61edd107af84d2ac096bb6ddfa1c1d48c2a8a284469592cf7e97a",
+      "bytes": 3747
+    },
+    "share/doc/nemo-speech/docs/development/releasing.md": {
+      "sha256": "c4445d64f55519613c0e698b24c1a7f94ea10c5ba301cc8f483015f6b725370b",
+      "bytes": 4865
+    },
+    "share/doc/nemo-speech/docs/development/windows-build.md": {
+      "sha256": "4b7f3efa6f8d3242edcef47a658d381c1d7800cd94d50e44738f60d3a075c278",
+      "bytes": 8299
+    },
+    "share/doc/nemo-speech/docs/install.md": {
+      "sha256": "bec102a2ac4f4566db8f9be6d1c5143cd5345c6a199e018b3083ab48594afc64",
+      "bytes": 8249
+    },
+    "share/doc/nemo-speech/docs/model-conversion.md": {
+      "sha256": "063a4651ac62559390241520d54d4ac47e9e952708205ce290304c7012d95f68",
+      "bytes": 2571
+    },
+    "share/doc/nemo-speech/docs/nmt/configuration.md": {
+      "sha256": "fc32f28f71114b049382d850d8c91bdb4d2a7a8cd17e96e05cb8b17f61ecf875",
+      "bytes": 3282
+    },
+    "share/doc/nemo-speech/docs/nmt/models.md": {
+      "sha256": "a0f5874b51448351ad36e2a572db16b8647e0b58a19043411e9303ac224a2451",
+      "bytes": 1575
+    },
+    "share/doc/nemo-speech/docs/s2s/README.md": {
+      "sha256": "b07a3b137188bc1a29ee21b071c78f01adc452bf22b7cb7307f6cc8290cd503e",
+      "bytes": 2805
+    },
+    "share/doc/nemo-speech/docs/s2s/clients.md": {
+      "sha256": "a8c19f0b745b6ad6bdbfb3c9fee588f260d88b1f3036376a35cba507b5069ed9",
+      "bytes": 4968
+    },
+    "share/doc/nemo-speech/docs/s2s/configuration.md": {
+      "sha256": "2178cb877efd78a344d646a479e117babb332e86ea68d116840a5ab6ee48e7ca",
+      "bytes": 3470
+    },
+    "share/doc/nemo-speech/docs/s2s/docker.md": {
+      "sha256": "f430241ae0296304bac4fc20d6df04f7c8194021c282f06f486c8e7b36e2c750",
+      "bytes": 2475
+    },
+    "share/doc/nemo-speech/docs/s2s/models.md": {
+      "sha256": "4e4a8089fd8f0b4c9d7fe7d07af5466dbe98b9e2531065374c20662a1f7d65a7",
+      "bytes": 4537
+    },
+    "share/doc/nemo-speech/docs/sdk.md": {
+      "sha256": "290466ffb5ca4064abaeecfab4d0b351ce6b983d434057a67782a834622c6def",
+      "bytes": 7652
+    },
+    "share/doc/nemo-speech/docs/server.md": {
+      "sha256": "01b99ed2681cf2227ef525cbb5f22605411ee046bfc15f7a9fb40649a15fea19",
+      "bytes": 10509
+    },
+    "share/doc/nemo-speech/docs/troubleshooting.md": {
+      "sha256": "50cc4f3c85e397c78e5ab77065f0d9ed44058de62d634fee6aab2ca532927063",
+      "bytes": 2548
+    },
+    "share/doc/nemo-speech/docs/tts/configuration.md": {
+      "sha256": "5d60b9e3dc3b51b23622653b8a3463758c79e4386b1f5229b0d97ca3adf07532",
+      "bytes": 9143
+    },
+    "share/doc/nemo-speech/docs/tts/models.md": {
+      "sha256": "969ded2e62a455b5df28094cf8fb6a4b284f3758856dfcfc380a21f5f3b15ffa",
+      "bytes": 7029
+    },
+    "share/licenses/nemo-speech/LICENSE": {
+      "sha256": "eaaca34b26b27c7be5a5099a0b9ddf9913f2db0aa96f6d5854435f2916d6fdc3",
+      "bytes": 12238
+    },
+    "share/licenses/nemo-speech/NOTICE": {
+      "sha256": "d5ea773d67035e676503579ecf7d5836a124649d7fe99d59ec3c50cd101e1a80",
+      "bytes": 233
+    },
+    "share/licenses/nemo-speech/THIRD_PARTY_NOTICES.md": {
+      "sha256": "fd8fcc0c71abde95b1b742a74c70aa27d2b4f2811fc19f64378b6845d8f3254a",
+      "bytes": 10277
+    },
+    "share/licenses/nemo-speech/third_party/ggml/LICENSE": {
+      "sha256": "94f29bbed6a22c35b992c5c6ebf0e7c92f13b836b90f36f461c9cf2f0f1d010d",
+      "bytes": 1078
+    },
+    "share/nemo-speech/config/README.md": {
+      "sha256": "981118a586fa2cdaab5bed0f0775292002821007ee1da5740a8a77877db50c89",
+      "bytes": 881
+    },
+    "share/nemo-speech/config/asr.example.yaml": {
+      "sha256": "c406506f22ef5baa008138c28817dd18445407e404bfb507630469d203798716",
+      "bytes": 2903
+    },
+    "share/nemo-speech/config/diar.example.yaml": {
+      "sha256": "ac0e5d93af9fb37c9a03ab0039acd5af0790c36a2b12cc8d181212a1fbd01b5b",
+      "bytes": 505
+    },
+    "share/nemo-speech/config/nmt.example.yaml": {
+      "sha256": "313214fe93f9f9f57897823d2d3fe20e7a9986fc18b1df37063985389874d46f",
+      "bytes": 998
+    },
+    "share/nemo-speech/config/server.example.yaml": {
+      "sha256": "afe8b2575c036156322a93aaf2f328f925e6685e3cddc9604c0fca37a9406d0c",
+      "bytes": 3391
+    },
+    "share/nemo-speech/config/tts.example.yaml": {
+      "sha256": "a1ccdd6886f25d635aaffd4501c3b9626f7c7b264f280ca72273bb3b14bb651a",
+      "bytes": 1728
+    },
+    "share/nemo-speech/config/voicechat.yaml": {
+      "sha256": "9013c7a390fc3f8c68c6833400a55aadd91543e01a49db32e64a81a1b32ef17b",
+      "bytes": 390
+    },
+    "share/nemo-speech/model-index.json": {
+      "sha256": "4d5d88c93b006b33b2e02e5c214e97e6c28e96f8673b0d744ccfa1e8f4a255b7",
+      "bytes": 7975
+    }
+  },
+  "build_compatibility": null,
+  "development_sdk_archive": {
+    "schema_version": 1,
+    "release_qualified": false,
+    "scope": "Development filesystem snapshot; preserves aliases/modes, does not by itself close dependencies or establish relocation.",
+    "archive": "development-sdk.tar.gz",
+    "archive_bytes": 1677632,
+    "archive_sha256": "716a14fc161bc9edc10ffd2240ddff83ef98a51bd287fa2b967b44ee75dfaba3"
+  },
+  "limits": [
+    "No offline/fresh-machine relocation claim.",
+    "No chat/Bark/Laya coexistence or heldout quality claim.",
+    "CPU baseline explicitly requires AVX2/FMA/F16C."
+  ]
+}

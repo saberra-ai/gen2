@@ -645,7 +645,9 @@ SentencePiece source bundles. The delivered 110,126,341-byte archive matches
 SHA-256 `05cf4bc046ea0de8472f2aca72533ecd95106e6bf093cd657ae94a9aab80864e`;
 all 45 entries and both `.dsc` source inventories were rechecked on macOS.
 See the [construction receipt](../../benches/results/nemotron-diarization/linux-x86_64/2026-10-16-runtime-construction/qualification.json).
-Clean-container execution and actual chat/Bark/Laya coexistence remain open.
+The following first container attempts are retained as failures; the later
+passing source-specific receipt below closes the offline container gate. Actual
+chat/Bark/Laya coexistence remains a separate gate.
 The first container attempt passed the isolation controls and initialized all
 eight bundled libraries at the relocated path, including GCC. It then failed
 opening the locked WAV: capability-free container root could not read the CI
@@ -658,10 +660,21 @@ missing-library process correctly fails, but Gen2 discarded the OS cause from
 libloading's error chain, so the detailed negative assertion still fails. The
 [retained diagnostic receipt](../../benches/results/nemotron-diarization/linux-x86_64/2026-10-16-container-loader-diagnostic/qualification.json)
 keeps the overall gate false. A reviewed Rust fix preserves that cause and
-requires the exact missing dependency in the assertion; its actual retry is
-pending. The [pinned chat fixture](../research/nemotron-linux-chat-fixture.md)
-matches the Mac fixture bytes and makes the separate Linux coexistence gate
-reproducible; it has not yet been executed on Linux.
+requires the exact missing dependency in the assertion. The actual `c242201`
+[offline container receipt](../../benches/results/nemotron-diarization/linux-x86_64/2026-10-16-offline-container/qualification.json)
+now passes the complete gate in run 38878287549: relocated native/public parity
+(26 turns, 6,001 frames, zero numerical error), all seven lifecycle tests including
+100 reloads, all eight delivered libraries initialized and the exact missing-GGML
+negative control. Each check used a fresh, network-disabled, read-only Ubuntu
+24.04 container under the owning UID/GID. The delivered 110,126,343-byte archive
+hashes to `83ef52fed709501d7aa57110cc74d125b1835dba83e48cc737fda40d6dd0515a`;
+all 45 entries, corresponding-source bundles and frozen tool hashes were
+independently rechecked on macOS, without executing Linux code there. This
+closes this Ubuntu/glibc/ISA container scope only; physical-machine, other
+baseline, quality and chat/Bark/Laya coexistence gates remain open. The
+[pinned chat fixture](../research/nemotron-linux-chat-fixture.md) matches the Mac
+fixture bytes. Its reviewed actual CPU chat coexistence implementation is
+dispatched at `3364fd7`; no passing chat result is claimed yet.
 
 - [ ] Run Mac CPU first; compare Metal against the same Q8 reference and real
   annotated audio. Record device placement/fallback rather than treating a

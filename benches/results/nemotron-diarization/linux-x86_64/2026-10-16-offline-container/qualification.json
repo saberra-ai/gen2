@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "offline_container_gates_passed": true,
+  "scope": "Delivered Ubuntu 24.04 x86_64 CPU runtime relocation, native/public parity and lifecycle in fresh offline containers.",
+  "limits": [
+    "No chat/Bark/Laya namespace coexistence qualification.",
+    "No other OS/glibc/CPU baseline or separate physical machine claim.",
+    "No held-out accuracy or uncontended performance claim."
+  ],
+  "source_commit": "c2422018ee5bf7449236e34f9185c36445d21ac5",
+  "image_id": "sha256:69f919497cada9a8611f3de61df902d9f94bf20f84552ef5bd93125c38608ef9",
+  "image_repo_digests": [
+    "ubuntu@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55"
+  ],
+  "frozen_inputs_sha256": "e36c52140f43e27a952ac56f0767c9af708549520a0aa40e4d6b4268326e20fb",
+  "package_manifest_sha256": "75e56ee1ac4936c3a52a3b44829de775be009255e04382a33f451fb1efd92b0a",
+  "lifecycle_tests": [
+    "dropping_a_diarization_child_keeps_the_parent_pipeline_active",
+    "native_admission_cancellation_and_failed_load_release_reservations",
+    "real_diarizer_matches_native_reference_and_resets_recordings",
+    "repeated_reload_full_queue_cancel_and_dropped_stream_release_resources",
+    "silence_short_tail_and_idle_deadline_have_explicit_terminal_results",
+    "streamed_uneven_pcm_matches_recording_and_finish_is_idempotent",
+    "verified_provisioned_cache_is_reused_offline"
+  ],
+  "native_public_comparison": {
+    "passed": true,
+    "scope": "long-session wrapper/reference correctness, not held-out quality or full release qualification",
+    "audio_duration_seconds": 60.0,
+    "backend": "cpu",
+    "device": null,
+    "native_frame_count": 6001,
+    "retained_first_frame": 0,
+    "retained_rows": 6001,
+    "turns": 26,
+    "maximum_turn_error_seconds": 0.0,
+    "turn_tolerance_seconds": 1e-06,
+    "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+    "retained_probabilities_match": true,
+    "maximum_probability_error": 0.0,
+    "probability_tolerance": 1e-06,
+    "gen2_rtf": 0.9385471833333334,
+    "native_rtf": 0.93764465
+  },
+  "negative_control_passed": true,
+  "receiver_verification": {
+    "archive_sha256": "83ef52fed709501d7aa57110cc74d125b1835dba83e48cc737fda40d6dd0515a",
+    "archive_bytes": 110126343,
+    "filesystem_entries": 45,
+    "source_bundles_verified": true,
+    "all_frozen_tool_sources_verified": true,
+    "native_public_comparison_recomputed": true,
+    "all_seven_lifecycle_passes_reparsed": true,
+    "all_loaded_library_paths_reparsed": true,
+    "scope": "Downloaded package/evidence bytes verified on macOS; actual Linux model/container execution occurred only in the named CI run."
+  }
+}
