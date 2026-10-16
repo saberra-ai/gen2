@@ -69,6 +69,8 @@ pub mod advanced;
 /// Typed, non-generative decisions and the Laya inference contract.
 pub mod decision;
 
+/// Local speaker diarization with bounded, runtime-admitted native execution.
+pub mod diarization;
 /// Local English speech recognition and cleanup, independent of chat sessions.
 pub mod speech;
 

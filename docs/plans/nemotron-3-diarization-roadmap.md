@@ -1,6 +1,6 @@
 # Nemotron 3 Diarization support in Gen2
 
-Status: N0 implemented and qualified on macOS arm64 CPU; N1–N5 pending.
+Status: N0 qualified; N1 implemented with macOS arm64 CPU parity; N2/N3 in qualification; N4/N5 pending.
 Prepared: 2026-10-14.
 Updated: 2026-10-15.
 
@@ -145,6 +145,30 @@ N3 establishes standalone Gen2 model support. N4 establishes the distinct
 product claim of speaker-attributed transcription. Neither is complete when
 the GGUF merely loads.
 
+### Implementation checkpoint — 2026-10-15
+
+N1 now runs through `gen2::diarization` on the owning CPU worker. The real
+AMI fixture matches every native reference turn and probability within 1e-6,
+including A–B–A state reset. The 20 ms minimum runs successfully. Unsupported
+ABI versions and missing symbols fail before publishing a handle. Public
+contracts and examples are documented in [the guide](../diarization.md).
+
+N2 has pinned atomic provisioning (three concurrent processes, corrupt-entry
+repair, abandoned staging and offline warm reuse verified), shared admission,
+failed-load rollback, cancellation and shutdown. Actual Bark + chat + native
+diarization + synthetic Laya smoke-graph tests pass in both load orders,
+including chat eviction, rejected restore at the budget ceiling and successful
+restore after speech shutdown. The synthetic Laya graph establishes admission
+and native-runtime coexistence, not real-checkpoint Laya quality. Conservative
+peak-memory evidence and complete milestone review remain in progress.
+
+N3 now has a two-block queue, returned PCM on saturation, separate finish and
+cancel controls, session UUIDs/replacement revisions, coalesced five-second
+segment snapshots, cached finish, and a one-hour/100000-turn hard safety cap.
+Uneven transport including one-sample splits matches the recording result
+exactly. Long-session measurements, silence/rapid-turn coverage and release
+limits remain under qualification. No N4 or N5 completion is claimed.
+
 ### N0: freeze dependencies and resolve native coexistence
 
 - [x] Add a Gen2-owned model/runtime lock with the pins above, artifact hashes,
@@ -182,20 +206,20 @@ that decision is unresolved; the output is evidence, not a stub claiming support
 
 ### N1: prove the native Rust path
 
-- [ ] Add a private FFI module with audited layouts, null/status checks and RAII
+- [x] Add a private FFI module with audited layouts, null/status checks and RAII
   cleanup. Initialize struct sizes and all override sentinels explicitly:
   `left_context_frames = 0` is a real override, whereas negative preserves the
   preset; `gpu = -1` selects CPU. Read native error text on the calling thread.
-- [ ] Verify `num_speakers == 8` and the expected V3 output cadence against the
+- [x] Verify `num_speakers == 8` and the expected V3 output cadence against the
   pinned model; reject wrong checkpoints, missing symbols and unsupported ABI
   versions with typed errors before publishing a ready handle.
-- [ ] Implement a normalized-PCM path that opens one stream, pushes bounded
+- [x] Implement a normalized-PCM path that opens one stream, pushes bounded
   blocks, finishes once, copies final segments and closes the stream. Start
   with the V3 preset, selected explicitly; retain effective settings in receipts.
-- [ ] Add `examples/nemotron_diarize.rs`: load the verified bundle once and emit
+- [x] Add `examples/nemotron_diarize.rs`: load the verified bundle once and emit
   machine-readable turns or RTTM. Raw per-frame output is diagnostic opt-in,
   bounded by explicit output limits.
-- [ ] Compare every speaker turn and, where retained, frame probability against
+- [x] Compare every speaker turn and, where retained, frame probability against
   the pinned native reference from identical PCM. Set numerical tolerances
   from repeatability evidence. Test A–B–A sessions to catch state leakage.
 

@@ -2146,3 +2146,47 @@ validated warm caches and all local inference work offline. Atomic publication
 follows complete hash verification, with corrupt entries preserved for recovery.
 See [setup and verification](tools/bark/README.md) for supported targets, licenses,
 quality limits and reproducible gates. Mobile/accelerators/MLX remain follow-ups.
+
+
+## 34. Local speaker diarization (native CPU)
+
+`gen2::diarization` is an independent operation. With `backend-diar-nemo`,
+`Runtime::load_diarizer(bundle, LoadOptions::cpu(native_library))` verifies the
+pinned Nemotron 3 Q8 GGUF and admits a worker under the shared runtime budget.
+Loading is offline and the host supplies the qualified C ABI dependency bundle.
+`download_nemotron(cache)` explicitly provisions weights/model card with `hf`;
+verified warm caches work without network or that feature. Builds never fetch
+models or native SDKs. Chat accelerator flags do not alter CPU placement.
+
+`Diarizer` exposes `diarize`, `start_stream`, `status`, `bundle`, `unload` and
+`shutdown`. One recording/session owns the active slot; competitors get typed
+`Busy`. A reservation remains live until native destruction. Cancellation and
+monotonic deadlines cooperate between bounded native calls; shutdown waits for
+actual teardown. `RuntimeStats` includes `diarization_reserved_mb`.
+
+`Audio::mono_16khz` accepts finite mono PCM from 20 ms through 120 seconds.
+The WAV helper accepts mono 16 kHz PCM16/float32. Long recordings use the
+stateful incremental API, independently of Bark's 60-second input limit.
+`DiarizationStream::try_push(samples, sample_rate)` accepts 1–16640 samples at
+16 kHz through a two-block queue. `PushError` returns rejected PCM, including
+on `Busy`; hosts retry without advancing their cursor. A stream has a one-hour
+safety cap and at most 100000 output turns, with supported release envelopes
+subject to the separately recorded real-model qualification.
+
+Snapshots carry a session UUID, increasing revision, provisional/completed flag,
+native processed-audio position and a shared timeline. Replace prior revisions;
+no stable prefix is promised. Snapshots coalesce at five-second input intervals
+and completion; raw frame copies are diagnostic opt-in at finish only. Finish
+uses a separate control path, drains accepted input, flushes once and caches its
+result/failure. Repeated finish is idempotent, pushes after finish fail, and
+failed/cancelled sessions never publish a successful completed result.
+
+Results preserve overlapping anonymous one-based speaker IDs (1–8), scoped to
+one session. Times use seconds from that session's input start. Native 10 ms
+cadence does not establish boundary accuracy; only proven terminal padding is
+clipped to real audio duration. Results include model revision, runtime version,
+effective geometry, CPU placement, wall time and native compute time. Native
+default segmentation is the only long-session postprocessing policy exposed.
+This timeline provides no word alignment, source separation or automatic names.
+See [contracts and limits](docs/diarization.md) and the
+[qualification roadmap](docs/plans/nemotron-3-diarization-roadmap.md).

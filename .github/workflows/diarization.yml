@@ -1,0 +1,27 @@
+name: Diarization feature checks
+on:
+  workflow_dispatch:
+  pull_request:
+    paths: ['src/diarization/**', 'src/api/runtime.rs', 'src/api/error.rs', 'src/lib.rs', 'tests/diarization*.rs', 'examples/nemotron*.rs', 'Cargo.*', '.github/workflows/diarization.yml']
+  push:
+    branches: [main, codex/nemotron3-n0]
+    paths: ['src/diarization/**', 'src/api/runtime.rs', 'src/api/error.rs', 'src/lib.rs', 'tests/diarization*.rs', 'examples/nemotron*.rs', 'Cargo.*', '.github/workflows/diarization.yml']
+jobs:
+  features:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest, macos-latest]
+        features: ['', 'backend-diar-nemo', 'asr-dynamic,backend-diar-nemo', 'backend-llamacpp,asr-dynamic,backend-diar-nemo']
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+      - uses: Swatinem/rust-cache@v2
+      - run: cargo fmt --package gen2 -- --check
+      - run: cargo clippy --locked --no-default-features --features '${{ matrix.features }}' --lib --tests -- -D warnings
+      - run: cargo test --locked --no-default-features --features '${{ matrix.features }}' --lib --test diarization_api
+      # Feature compatibility only. No model or native SDK is required here;
+      # these jobs never stand in for platform real-model receipts.

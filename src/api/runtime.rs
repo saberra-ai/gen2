@@ -105,6 +105,20 @@ pub(crate) struct RuntimeInner {
     decision_models: Mutex<Vec<crate::decision::DecisionMonitor>>,
     speech_reserved_mb: AtomicU64,
     speech_models: Mutex<Vec<crate::speech::SpeechMonitor>>,
+    diarization_reserved_mb: AtomicU64,
+    diarization_models: Mutex<Vec<crate::diarization::Monitor>>,
+}
+
+struct DiarizationReservation {
+    inner: Arc<RuntimeInner>,
+    mb: u64,
+}
+impl Drop for DiarizationReservation {
+    fn drop(&mut self) {
+        self.inner
+            .diarization_reserved_mb
+            .fetch_sub(self.mb, Ordering::SeqCst);
+    }
 }
 
 struct DecisionReservation {
@@ -196,6 +210,63 @@ impl Loaded {
 }
 
 impl Runtime {
+    /// Load the pinned Nemotron Q8 bundle on an admitted native CPU worker.
+    pub fn load_diarizer(
+        &self,
+        path: impl AsRef<Path>,
+        options: crate::diarization::LoadOptions,
+    ) -> Result<crate::diarization::Diarizer> {
+        use crate::diarization::{DiarizationBundle, DiarizationError};
+        if !cfg!(feature = "backend-diar-nemo") {
+            return Err(
+                DiarizationError::BackendUnavailable("enable backend-diar-nemo".into()).into(),
+            );
+        }
+        options.validate()?;
+        let bundle = DiarizationBundle::open(path)?;
+        let mb = options.reservation_mb;
+        let reservation = {
+            let _admission = self
+                .inner
+                .admission
+                .lock()
+                .map_err(|_| Error::Load("admission lock poisoned".into()))?;
+            self.make_room(mb, None);
+            if !self.can_admit(mb) {
+                return Err(DiarizationError::ResourceLimit(format!(
+                    "cannot reserve {mb} MiB alongside resident models"
+                ))
+                .into());
+            }
+            self.inner
+                .diarization_reserved_mb
+                .fetch_add(mb, Ordering::SeqCst);
+            DiarizationReservation {
+                inner: Arc::clone(&self.inner),
+                mb,
+            }
+        };
+        let model = crate::diarization::spawn(bundle, options, Box::new(reservation))?;
+        self.inner
+            .diarization_models
+            .lock()
+            .unwrap_or_else(|e| e.into_inner())
+            .push(model.monitor());
+        Ok(model)
+    }
+    /// Peak residency held by diarizers, including native work still stopping.
+    pub fn diarization_reserved_mb(&self) -> u64 {
+        self.inner.diarization_reserved_mb.load(Ordering::SeqCst)
+    }
+    pub fn diarization_models(&self) -> Vec<crate::diarization::Diarizer> {
+        let mut models = self
+            .inner
+            .diarization_models
+            .lock()
+            .unwrap_or_else(|e| e.into_inner());
+        models.retain(|m| m.upgrade().is_some());
+        models.iter().filter_map(|m| m.upgrade()).collect()
+    }
     /// Load the pinned offline Bark ONNX bundle on a bounded CPU worker.
     pub fn load_transcriber(
         &self,
@@ -249,6 +320,7 @@ impl Runtime {
     fn auxiliary_reserved_mb(&self) -> u64 {
         self.decision_reserved_mb()
             .saturating_add(self.speech_reserved_mb())
+            .saturating_add(self.diarization_reserved_mb())
     }
 
     /// Live speech handles in load order. Registry entries do not keep workers alive.
@@ -366,6 +438,12 @@ impl Runtime {
     fn require_admission(&self, extra_mb: u64) -> Result<()> {
         if self.can_admit(extra_mb) {
             return Ok(());
+        }
+        if self.diarization_reserved_mb() > 0 {
+            return Err(crate::diarization::DiarizationError::ResourceLimit(
+                "resident diarizers leave insufficient memory for this model".into(),
+            )
+            .into());
         }
         if self.speech_reserved_mb() > 0 {
             return Err(crate::speech::SpeechError::ResourceLimit(
@@ -673,6 +751,7 @@ impl Runtime {
                 .saturating_add(self.auxiliary_reserved_mb()),
             decision_reserved_mb: self.decision_reserved_mb(),
             speech_reserved_mb: self.speech_reserved_mb(),
+            diarization_reserved_mb: self.diarization_reserved_mb(),
             active_sessions,
             evictions: self.inner.evictions.load(Ordering::SeqCst),
         }
@@ -895,6 +974,8 @@ pub struct RuntimeStats {
     pub decision_reserved_mb: u64,
     /// Subset of estimated residency reserved for speech workers' peak usage.
     pub speech_reserved_mb: u64,
+    /// Peak residency reserved by speaker diarization, including stopping workers.
+    pub diarization_reserved_mb: u64,
     /// Conversations the engines currently hold runtime state for, summed.
     pub active_sessions: usize,
     /// Models evicted to make room for another, over the runtime's life.
@@ -984,6 +1065,8 @@ impl RuntimeBuilder {
                 decision_models: Mutex::new(Vec::new()),
                 speech_reserved_mb: AtomicU64::new(0),
                 speech_models: Mutex::new(Vec::new()),
+                diarization_reserved_mb: AtomicU64::new(0),
+                diarization_models: Mutex::new(Vec::new()),
             }),
         })
     }

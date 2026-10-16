@@ -160,6 +160,14 @@ name = "bark_transcribe"
 required-features = ["asr-dynamic"]
 
 [[example]]
+name = "nemotron_diarize"
+required-features = ["backend-diar-nemo"]
+
+[[example]]
+name = "nemotron_stream"
+required-features = ["backend-diar-nemo"]
+
+[[example]]
 name = "bark_benchmark"
 required-features = ["asr-dynamic"]
 
@@ -248,6 +256,8 @@ onnx-dynamic = ["ort/load-dynamic", "dep:libloading"]
 laya-dynamic = ["backend-laya-onnx", "onnx-dynamic"]
 # Native Bark speech recognition; independent of generation and Laya.
 backend-asr-onnx = ["dep:ort", "dep:rustfft", "dep:hound"]
+# Host-supplied NeMo-Speech.cpp C ABI; no C++ build or binary/model download.
+backend-diar-nemo = ["dep:libloading", "dep:hound"]
 asr-resample-soxr = ["backend-asr-onnx", "dep:cmake"]
 asr-dynamic = ["backend-asr-onnx", "onnx-dynamic"]
 # App-linked provider registration; matching native provider libraries are host supplied.

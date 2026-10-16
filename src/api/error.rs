@@ -8,6 +8,9 @@ use thiserror::Error;
 #[derive(Debug, Error)]
 #[non_exhaustive]
 pub enum Error {
+    /// Typed speaker timeline admission, lifecycle and native execution failure.
+    #[error(transparent)]
+    Diarization(#[from] crate::diarization::DiarizationError),
     #[error(transparent)]
     Speech(#[from] crate::speech::SpeechError),
     /// Typed decision validation, admission, lifecycle or native execution error.
@@ -103,6 +106,7 @@ impl Error {
     pub fn code(&self) -> Option<&str> {
         match self {
             Self::Speech(e) => Some(e.code()),
+            Self::Diarization(e) => Some(e.code()),
             Self::Decision(e) => Some(e.code()),
             Self::Generation { code, .. } => Some(code),
             Self::WontFit(_) => Some("wont_fit"),
@@ -140,6 +144,7 @@ impl Error {
     pub fn is_retryable(&self) -> bool {
         match self {
             Self::Speech(crate::speech::SpeechError::Busy) => true,
+            Self::Diarization(crate::diarization::DiarizationError::Busy) => true,
             Self::Decision(crate::decision::DecisionError::Busy) => true,
             Self::Generation { code, .. } => !NOT_WORTH_RETRYING.contains(&code.as_str()),
             _ => false,
