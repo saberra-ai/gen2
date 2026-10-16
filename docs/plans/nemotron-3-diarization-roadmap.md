@@ -141,6 +141,12 @@ All 182 model-free tools tests pass locally;
 passes all 13 jobs, including fmt, clippy and tests across 12 OS/feature pairs.
 This model-free CI does not execute app/model/corpus qualification. Quality,
 GUI, physical microphone and the remaining release criteria stay open.
+The separate [original-NeMo environment receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-original-nemo-environment/qualification.json)
+passes source/wheel/installation checks and offline class imports without model
+or frontend execution. A [one-forward excluded CPU calibration protocol](../../tools/nemotron-diarization/original-nemo-calibration.protocol.json)
+now binds that environment and strict local checkpoint restore; it is a separate
+numerical diagnostic, not a quality-gate replacement. Original-NeMo execution
+and numerical agreement remain unqualified.
 
 Prepared: 2026-10-14.
 Updated: 2026-10-16.

@@ -1,0 +1,88 @@
+{
+  "phase": "model-free environment construction",
+  "model_loaded": false,
+  "model_executed": false,
+  "inputs": {
+    "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-env-v1/requirements-wheel.lock": {
+      "bytes": 304122,
+      "sha256": "47a47459d2b1d51c7f156a67d12de6014276e291f672636092d8ee4d224eace2"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-env-v1/wheels/nemo_toolkit-3.1.0-py3-none-any.whl": {
+      "bytes": 4744047,
+      "sha256": "4ec664de0c7fbc7a1cf54bedba69cd0589d16d34f1f01207958434e183b455c1"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/install-original-nemo-env-v1.py": {
+      "bytes": 2090,
+      "sha256": "bf07b06eb371721bf71c719eee6393b3e3ed455e07476c1633872f1e21c2dc5d"
+    }
+  },
+  "commands": [
+    {
+      "name": "venv",
+      "argv": [
+        "/opt/homebrew/bin/uv",
+        "venv",
+        "--python",
+        "/Users/victor/.cache/gen2-nemotron3-n0/python-reference/bin/python",
+        "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-env-v1/venv"
+      ],
+      "pid": 39118,
+      "returncode": 0,
+      "elapsed_seconds": 0.020928166981320828
+    },
+    {
+      "name": "sync",
+      "argv": [
+        "/opt/homebrew/bin/uv",
+        "pip",
+        "sync",
+        "--python",
+        "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-env-v1/venv/bin/python",
+        "--link-mode",
+        "clone",
+        "--require-hashes",
+        "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-env-v1/requirements-wheel.lock"
+      ],
+      "pid": 39119,
+      "returncode": 0,
+      "elapsed_seconds": 12.022064000018872
+    },
+    {
+      "name": "freeze",
+      "argv": [
+        "/opt/homebrew/bin/uv",
+        "pip",
+        "freeze",
+        "--python",
+        "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-env-v1/venv/bin/python"
+      ],
+      "pid": 39133,
+      "returncode": 0,
+      "elapsed_seconds": 0.010902917012572289
+    },
+    {
+      "name": "check",
+      "argv": [
+        "/opt/homebrew/bin/uv",
+        "pip",
+        "check",
+        "--python",
+        "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-env-v1/venv/bin/python"
+      ],
+      "pid": 39134,
+      "returncode": 0,
+      "elapsed_seconds": 0.07773875002749264
+    }
+  ],
+  "passed": true,
+  "storage": {
+    "start_minimum_bytes": 3221225472,
+    "running_minimum_bytes": 1073741824,
+    "reserve_requested_bytes": 134217728,
+    "checks": 17,
+    "released": true,
+    "minimum_observed_free_bytes": 5729923072,
+    "last_observed_free_bytes": 5729923072,
+    "reserve_reported_allocated_bytes": 134217728
+  }
+}

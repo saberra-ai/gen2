@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "source_commit": "218d0b443441b7d8aa1c832f47df310f186cf0a4",
+  "original_source_files_verified": 2606,
+  "wheel_and_installed_source_files_equal": 774,
+  "wheel_outside_git": {
+    "bytes": 4744047,
+    "sha256": "4ec664de0c7fbc7a1cf54bedba69cd0589d16d34f1f01207958434e183b455c1"
+  },
+  "resolved_hash_locked_environment_installed": true,
+  "model_free_class_import_passed": true,
+  "torch_cpu_available": true,
+  "actual_cuda_available": false,
+  "model_or_frontend_execution": false,
+  "original_model_parity_qualified": false,
+  "release_qualified": false,
+  "limits": [
+    "Independent NeMo3.1.0 source at the pinned later official V3 commit, not a reproduction of the checkpoint training environment (declared3.0.0).",
+    "The actual142-package macOS/Python3.12 resolution pins Torch2.8.0 and NumPy2.2.6; this is a separately resolved diagnostic environment, not the upstream complete uv.lock resolution.",
+    "Four environment construction/check commands and one offline model-class/frontend-class import only. No checkpoint restore, model/frontend construction or inference.",
+    "Imports run with network and weight-format reads denied, private HOME/TMP, and source/environment writes denied. Normal CLI test success alone is not app, quality or performance qualification.",
+    "The first archive policy rejected three known internal relative symlinks before extraction. Those exact three links were then explicitly admitted and retained.",
+    "Source archive, wheel, installed environment and dependencies remain in cache; their hashes and original source mapping are retained here. Production Rust/native runtime and original HF reference environment were not changed."
+  ]
+}

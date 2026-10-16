@@ -36,3 +36,27 @@ The [official evaluation script](https://github.com/NVIDIA-NeMo/Speech/blob/218d
 ## Retained sources
 
 Small official sources, API tag/commit metadata and hashes are retained outside Git in [original-nemo-tail cache](/Users/victor/.cache/gen2-nemotron3-n0/research/original-nemo-tail). Main source SHA256s: features `5cbc7b5eff0c2e57c4d9e548e5abc33b8c20078e48661faba9f5872c123d4321`; model `36778c16b633d3ab537c391e6042dcecf9b5620eebd7f0d767461aef9134b1e6`; modules `ead9804248b45153a1abfbe54ba67fab3c1d418da904f025ade5500168e7ee7c`; subsampling `ad9cdbff181ded2f896849317a975c3839c60e02a72c2cc19994b28ba56701d4`; TransformerEncoder `3bc16fef80f562fec26eface872dcb15560dc5f8e2e45adaf405e8076228253c`; transformer utils `1de045b6db9671406ed37f236495085ef2394443aabfa84549f190e95890ef7a`; pyproject `f1885f10304801e1b5c9b0bcf157f48d716c59b6299185d2357a575a4aa3d5c6`. Missing legacy `requirements/requirements_{asr,common}.txt` paths returned404; the pinned pyproject is the inspected dependency authority. No actual NeMo environment/restore/parity is claimed, and all prior quality gates remain unchanged.
+
+
+## Isolated environment qualification update
+
+The separate [37-member construction/import receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-original-nemo-environment/qualification.json)
+now verifies 2,606 original source files, all 774 wheel/source/installed NeMo
+file mappings and a hash-locked 142-package macOS/Python3.12 resolution with
+Torch2.8.0/NumPy2.2.6. Four construction/check commands and one offline class
+import pass. Source/environment writes and network/weight-format reads are
+denied during the import. No checkpoint, model or frontend is constructed or
+executed by that receipt. The original HF environment remains unchanged.
+This is the pinned later official3.1 source and a separately resolved diagnostic
+environment, rather than a reconstruction of the declared3.0 training environment.
+
+The [original CPU calibration protocol](../../tools/nemotron-diarization/original-nemo-calibration.protocol.json)
+separately freezes one strict restore and one whole-waveform forward on the
+excluded1.117s/17,872-sample calibration. It requires all111valid/eight-channel
+probability rows, fixed9/4/0/264/264/222 geometry and unchanged CPU attention;
+it retains frontend, logits, probabilities, config and parameter hashes.
+Saved target/oracle directories are denied to the child. The parent compares
+cached HF output without new HF/native calls. Numerical differences are a
+diagnostic, with no changed quality threshold, selected preset or release claim.
+Immediate frontend persistence and hook cleanup preserve evidence on failure.
+No original-NeMo restore or forward has run at protocol preparation.
