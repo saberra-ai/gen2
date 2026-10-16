@@ -1,0 +1,78 @@
+{
+  "scope": "one licensed 60-second AMI smoke fixture; not release qualification",
+  "native_sha256": "a02a4f2ac3c9af9fb9d600fab7d89b35fad45c4f2febecb45f40fd4b44528da0",
+  "reference_sha256": "1c8be74c5c117b9f557ca79d2b5fe46797b7f2317d0627590c7b8b474020c417",
+  "native_probabilities_sha256": "50da6a139a5f048a36ab105c6c70b0ec636356cc3324b342aea06404616a8280",
+  "reference_metadata_sha256": "bcd4d39c94df7a3f27c66e90f9f73bd25b33fbf7a074f8f42187a61e17fe99f1",
+  "geometry": {
+    "chunk": 9,
+    "right": 4,
+    "left": 0,
+    "fifo": 264,
+    "cache": 264,
+    "update": 222
+  },
+  "rttm_sha256": "40751c9fc0bb934f741789ce3fafccd2c1f9d7c112585b8b40ac177a9de13b2d",
+  "shape_difference": {
+    "native": [
+      6001,
+      8
+    ],
+    "reference": [
+      6000,
+      8
+    ],
+    "extra_native_tail_frames": 1,
+    "frame_seconds": 0.01,
+    "scoring_uem_seconds": [
+      0,
+      60.0
+    ],
+    "interpretation": "native finish emits a padded terminal frame; retain it in raw evidence, clip presentation to audio duration"
+  },
+  "channel_mae_on_common_real_frames": 0.001268643420189619,
+  "channel_max_error_on_common_real_frames": 0.24461953341960907,
+  "shared_postprocessing": "sigmoid probability > 0.5; no hysteresis/padding/min-duration",
+  "fp32": {
+    "der": 0.334479055,
+    "missed_speaker_seconds": 13.5,
+    "false_alarm_speaker_seconds": 0.42,
+    "confusion_speaker_seconds": 1.65,
+    "reference_speaker_seconds": 46.55,
+    "reference_speakers": 4,
+    "hypothesis_speakers": 4,
+    "frame_seconds": 0.01,
+    "collar_seconds": 0,
+    "overlap_included": true,
+    "scoring_duration_seconds": 60.0
+  },
+  "q8": {
+    "der": 0.318367347,
+    "missed_speaker_seconds": 13.39,
+    "false_alarm_speaker_seconds": 0.4,
+    "confusion_speaker_seconds": 1.03,
+    "reference_speaker_seconds": 46.55,
+    "reference_speakers": 4,
+    "hypothesis_speakers": 4,
+    "frame_seconds": 0.01,
+    "collar_seconds": 0,
+    "overlap_included": true,
+    "scoring_duration_seconds": 60.0
+  },
+  "native_default_postprocessing": {
+    "der": 0.280773362,
+    "missed_speaker_seconds": 6.73,
+    "false_alarm_speaker_seconds": 4.35,
+    "confusion_speaker_seconds": 1.99,
+    "reference_speaker_seconds": 46.55,
+    "reference_speakers": 4,
+    "hypothesis_speakers": 4,
+    "frame_seconds": 0.01,
+    "collar_seconds": 0,
+    "overlap_included": true,
+    "scoring_duration_seconds": 60.0
+  },
+  "q8_minus_fp32_absolute_der": -0.016111708000000002,
+  "q8_degradation_limit": 0.02,
+  "smoke_quality_passed": true
+}

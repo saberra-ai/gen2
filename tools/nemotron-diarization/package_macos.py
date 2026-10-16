@@ -1,4 +1,4 @@
-"""Relocate the qualified arm64 CPU SDK and its complete native dependency closure.
+"""Relocate a pinned arm64 CPU or Metal SDK and its complete native dependency closure.
 
 Packaging is explicit and offline. It never edits the source SDK or installed
 Homebrew files. Ad-hoc signatures establish local integrity, not notarization.
@@ -204,14 +204,28 @@ def verify_entry(package, name, expected_sha256):
         raise ValueError("native package entry copy differs from its qualified library")
 
 
+def package_backend(build):
+    preset = build["commands"][0][1]
+    if preset == "cpu-diar" and build.get("backend", "cpu") == "cpu":
+        return "cpu"
+    if preset == "metal-diar" and build.get("backend") == "metal" and build.get("metal_shaders_embedded") is True:
+        return "metal"
+    raise ValueError("unsupported native preset/backend or Metal shaders are not embedded")
+
+
+def private_prefix(backend):
+    return "libgen2_nemo_" if backend == "cpu" else "libgen2_nemo_metal_"
+
+
 def verify(package):
     manifest = json.loads((package / "package.json").read_text())
-    if manifest.get("format") != "gen2-nemo-macos-cpu-v1":
+    backend = manifest.get("backend")
+    if backend not in {"cpu", "metal"} or manifest.get("format") != f"gen2-nemo-macos-{backend}-v1":
         raise ValueError("unsupported native package format")
     verify_files(package, manifest["files"])
     deployments = []
     for name in manifest["libraries"]:
-        if Path(name).name != name or not name.startswith("libgen2_nemo_") or f"lib/{name}" not in manifest["files"]:
+        if Path(name).name != name or not name.startswith(private_prefix(backend)) or f"lib/{name}" not in manifest["files"]:
             raise ValueError(f"invalid private library name: {name}")
         path = package / "lib" / name
         info = inspect_library(path)
@@ -238,7 +252,7 @@ def verify(package):
 
 def package_sdk(sdk, build_path, destination):
     if platform.system() != "Darwin":
-        raise ValueError("this CPU package is qualified only on macOS arm64")
+        raise ValueError("native packaging requires macOS arm64")
     if destination.exists():
         raise FileExistsError(f"refusing to replace an existing package: {destination}")
     sdk = sdk.resolve()
@@ -247,11 +261,10 @@ def package_sdk(sdk, build_path, destination):
     build = json.loads(build_path.read_text())
     if build["runtime_revision"] != lock["runtime"]["revision"] or build["lock_sha256"] != digest(lock_path):
         raise ValueError("native build receipt does not match the immutable lock")
-    if build["commands"][0][1] != "cpu-diar":
-        raise ValueError("only the qualified CPU build preset can be packaged")
+    backend = package_backend(build)
     entry = qualified_entry(sdk, build)
     libraries = discover(entry, sdk, build)
-    names = {path: "libgen2_nemo_" + path.name.removeprefix("lib") for path in libraries}
+    names = {path: private_prefix(backend) + path.name.removeprefix("lib") for path in libraries}
     if len(set(names.values())) != len(names):
         raise ValueError("native libraries have colliding output names")
     destination.parent.mkdir(parents=True, exist_ok=True)
@@ -278,7 +291,7 @@ def package_sdk(sdk, build_path, destination):
                              "minimum_macos": info["minimum_macos"],
                              "dependencies": [f"@loader_path/{names[target]}" for target in info["edges"].values()]}
         (staged / "lib/libnemo_speech_asr_c.dylib").symlink_to(names[entry])
-        manifest = {"format": "gen2-nemo-macos-cpu-v1", "architecture": "arm64", "backend": "cpu",
+        manifest = {"format": f"gen2-nemo-macos-{backend}-v1", "architecture": "arm64", "backend": backend,
                     "minimum_macos": max((info["minimum_macos"] for info in libraries.values()), key=version_tuple),
                     "runtime_revision": lock["runtime"]["revision"], "lock_sha256": digest(lock_path),
                     "build_receipt_sha256": digest(build_path), "entry_library": names[entry],

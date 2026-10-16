@@ -1,4 +1,4 @@
-"""Build the pinned standalone CPU SDK and record its actual dependency closure."""
+"""Build a pinned standalone CPU or Metal SDK and record its actual dependency closure."""
 import argparse
 import json
 from pathlib import Path
@@ -19,9 +19,12 @@ def main():
     parser.add_argument("--prefix", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
     parser.add_argument("--jobs", type=int, default=6)
+    parser.add_argument("--backend", choices=["cpu", "metal"], default="cpu")
     args = parser.parse_args()
     if args.jobs < 1:
         parser.error("jobs must be positive")
+    if platform.system() != "Darwin":
+        parser.error("SDK/shim packaging is currently qualified only for macOS")
     source, prefix = args.source.resolve(), args.prefix.resolve()
     lock_path = Path(__file__).with_name("runtime.lock.json")
     lock = json.loads(lock_path.read_text())["runtime"]
@@ -35,19 +38,20 @@ def main():
         if digest(source / name) != expected:
             parser.error(f"locked native source changed: {name}")
     args.output.mkdir(parents=True, exist_ok=True)
+    preset = lock["preset"] if args.backend == "cpu" else "metal-diar"
+    # Both presets are covered by the locked CMakePresets.json digest. Metal
+    # intentionally uses the upstream unpatched ggml path selected by its preset.
     flags = [f"-D{k}={v}" for k, v in lock["cmake_definitions"].items()]
     flags.append(f"-DCMAKE_INSTALL_PREFIX={prefix}")
     commands = [
-        ["scripts/configure.sh", lock["preset"], *flags],
-        ["cmake", "--build", "--preset", lock["preset"], "--parallel", str(args.jobs)],
-        ["cmake", "--install", f"build/{lock['preset']}"],
+        ["scripts/configure.sh", preset, *flags],
+        ["cmake", "--build", "--preset", preset, "--parallel", str(args.jobs)],
+        ["cmake", "--install", f"build/{preset}"],
     ]
     for name, command in zip(["configure", "build", "install"], commands):
         with (args.output / f"{name}.log").open("w") as log:
             subprocess.run(command, cwd=source, stdout=log, stderr=subprocess.STDOUT, check=True)
     shim = args.output.resolve() / "n0_probe.dylib"
-    if platform.system() != "Darwin":
-        parser.error("N0 shim packaging is currently qualified only for macOS")
     shim_command = ["clang++", "-std=c++17", "-O2", "-dynamiclib",
                     str(Path(__file__).with_name("native_probe.cpp").resolve()),
                     f"-I{prefix / 'include'}", f"-I{source / 'examples'}",
@@ -70,10 +74,12 @@ def main():
         toolchain["packages"] = capture(["brew", "list", "--versions", "sentencepiece", "abseil", "protobuf"])
     receipt = {"runtime_revision": lock["revision"], "lock_sha256": digest(lock_path),
                "platform": platform.platform(), "machine": platform.machine(),
+               "backend": args.backend, "preset": preset,
+               "metal_shaders_embedded": "GGML_METAL_EMBED_LIBRARY:BOOL=ON" in (source / "build" / preset / "CMakeCache.txt").read_text(),
                "commands": commands, "toolchain": toolchain, "libraries": files,
                "shim": {"command": shim_command, "sha256": digest(shim),
                         "source_sha256": digest(Path(__file__).with_name("native_probe.cpp"))},
-               "cmake_cache_sha256": digest(source / "build" / lock["preset"] / "CMakeCache.txt")}
+               "cmake_cache_sha256": digest(source / "build" / preset / "CMakeCache.txt")}
     (args.output / "build.json").write_text(json.dumps(receipt, indent=2) + "\n")
     print(args.output / "build.json")
 

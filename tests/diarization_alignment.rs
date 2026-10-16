@@ -38,6 +38,7 @@ fn timeline(turns: Vec<SpeakerTurn>) -> Diarization {
         execution_micros: 0,
         native_compute_micros: 0,
         backend: "cpu",
+        device: None,
     }
 }
 fn turn(start: f64, end: f64, speaker: u8) -> SpeakerTurn {

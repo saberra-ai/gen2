@@ -1,0 +1,18 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.16s
+     Running tests/diarization_native.rs (/Users/victor/.cache/gen2-bark-onnx/build/debug/deps/diarization_native-67e66d94dcbed435)
+
+running 1 test
+
+thread 'explicit_metal_matches_native_reference_and_cpu_sdk_cannot_silently_fallback' (17624315) panicked at tests/diarization_native.rs:505:10:
+called `Result::unwrap()` on an `Err` value: Diarization(BackendUnavailable("requested Metal device is unavailable in the native SDK"))
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+test explicit_metal_matches_native_reference_and_cpu_sdk_cannot_silently_fallback ... FAILED
+
+failures:
+
+failures:
+    explicit_metal_matches_native_reference_and_cpu_sdk_cannot_silently_fallback
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 8 filtered out; finished in 1.55s
+
+error: test failed, to rerun pass `--test diarization_native`

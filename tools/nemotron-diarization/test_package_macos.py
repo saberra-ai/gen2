@@ -4,10 +4,19 @@ import tempfile
 import unittest
 
 import hashlib
-from package_macos import resolve_dependency, verify_files, qualified_entry, verify_entry
+from package_macos import resolve_dependency, verify_files, qualified_entry, verify_entry, package_backend, private_prefix
 
 
 class LoaderResolution(unittest.TestCase):
+    def test_metal_requires_embedded_shaders_and_separate_loader_namespace(self):
+        self.assertEqual(package_backend({"commands": [["configure", "cpu-diar"]]}), "cpu")
+        metal = {"commands": [["configure", "metal-diar"]], "backend": "metal", "metal_shaders_embedded": True}
+        self.assertEqual(package_backend(metal), "metal")
+        self.assertNotEqual(private_prefix("cpu"), private_prefix("metal"))
+        for invalid in [{**metal, "metal_shaders_embedded": False}, {**metal, "backend": "cpu"}, {"commands": [["configure", "cuda-diar"]]}]:
+            with self.assertRaises(ValueError):
+                package_backend(invalid)
+
     def test_bundler_materialized_entry_must_equal_the_qualified_private_library(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory).resolve()

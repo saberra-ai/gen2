@@ -48,3 +48,10 @@ fn uncached_provisioning_requires_download_feature() {
         Err(DiarizationError::BackendUnavailable(_))
     ));
 }
+
+#[test]
+fn placement_requires_an_explicit_backend_without_implicit_gpu_fallback() {
+    use gen2::diarization::ExecutionDevice;
+    assert_eq!(LoadOptions::cpu("native").device, ExecutionDevice::Cpu);
+    assert_eq!(LoadOptions::metal("native").device, ExecutionDevice::Metal);
+}

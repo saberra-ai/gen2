@@ -1,6 +1,6 @@
 use super::{
-    Audio, Diarization, DiarizationBundle, DiarizationError, DiarizeOptions, FrameProbabilities,
-    LoadOptions, MODEL_REVISION, Result, SpeakerTurn, ffi,
+    Audio, Diarization, DiarizationBundle, DiarizationError, DiarizeOptions, ExecutionDevice,
+    FrameProbabilities, LoadOptions, MODEL_REVISION, Result, SpeakerTurn, ffi,
 };
 use std::{
     ffi::{CString, c_void},
@@ -14,10 +14,18 @@ pub(super) struct Native {
     model: NonNull<c_void>,
     api: ffi::Api,
     options: LoadOptions,
+    device: Option<String>,
 }
 impl Native {
     pub fn load(bundle: &DiarizationBundle, options: LoadOptions) -> Result<Self> {
         let api = ffi::Api::load(&options.native_library)?;
+        let (gpu, device) = match options.device {
+            ExecutionDevice::Cpu => (-1, None),
+            ExecutionDevice::Metal => {
+                let (index, description) = api.metal_device()?;
+                (index, Some(description))
+            }
+        };
         let path = CString::new(bundle.model_path().to_str().ok_or_else(|| {
             DiarizationError::InvalidBundle("native model path must be UTF-8".into())
         })?)
@@ -26,7 +34,7 @@ impl Native {
         let config = ffi::ModelConfig {
             size: std::mem::size_of::<ffi::ModelConfig>(),
             model_path: path.as_ptr(),
-            gpu: -1,
+            gpu,
             preset: c"v3-streaming".as_ptr(),
             chunk_frames: g.chunk,
             right_context_frames: g.right,
@@ -46,6 +54,7 @@ impl Native {
             model,
             api,
             options,
+            device,
         };
         // SAFETY: a created model remains owned until Drop on this thread.
         unsafe {
@@ -286,7 +295,11 @@ impl Session<'_> {
                 geometry: self.native.options.preset.geometry(),
                 execution_micros: self.started.elapsed().as_micros().min(u64::MAX as u128) as u64,
                 native_compute_micros: self.compute.as_micros().min(u64::MAX as u128) as u64,
-                backend: "cpu",
+                backend: match self.native.options.device {
+                    ExecutionDevice::Cpu => "cpu",
+                    ExecutionDevice::Metal => "metal",
+                },
+                device: self.native.device.clone(),
             })
         }
     }

@@ -42,10 +42,18 @@ impl Preset {
         }
     }
 }
+/// Explicit native placement. Metal requires a Metal device in the supplied SDK;
+/// unavailable placement fails loading instead of silently running on CPU.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ExecutionDevice {
+    Cpu,
+    Metal,
+}
 /// Native loading and admitted peak residency. No runtime/model auto-download.
 #[derive(Debug, Clone)]
 pub struct LoadOptions {
     pub native_library: PathBuf,
+    pub device: ExecutionDevice,
     pub preset: Preset,
     /// MiB covering native weights/workspace, bounded PCM and outputs.
     pub reservation_mb: u64,
@@ -55,11 +63,25 @@ impl LoadOptions {
     pub fn cpu(native_library: impl Into<PathBuf>) -> Self {
         Self {
             native_library: native_library.into(),
+            device: ExecutionDevice::Cpu,
             preset: Preset::default(),
             reservation_mb: 1024,
         }
     }
+    /// Explicit Metal execution through a separately built native SDK on macOS.
+    /// Gen2's chat `metal` feature does not select this dynamic SDK's placement.
+    pub fn metal(native_library: impl Into<PathBuf>) -> Self {
+        Self {
+            device: ExecutionDevice::Metal,
+            ..Self::cpu(native_library)
+        }
+    }
     pub(crate) fn validate(&self) -> Result<()> {
+        if self.device == ExecutionDevice::Metal && !cfg!(target_os = "macos") {
+            return Err(DiarizationError::BackendUnavailable(
+                "Metal diarization requires macOS".into(),
+            ));
+        }
         if !(1024..=65536).contains(&self.reservation_mb) {
             return Err(DiarizationError::ResourceLimit(
                 "reservation must be 1024–65536 MiB".into(),
@@ -119,6 +141,8 @@ pub struct Diarization {
     pub execution_micros: u64,
     /// Time inside synchronous native push/finish calls, excluding idle input waits.
     pub native_compute_micros: u64,
-    /// Explicit placement; this implementation requests native CPU execution.
+    /// Explicit placement, admitted before model creation; never an automatic fallback.
     pub backend: &'static str,
+    /// Selected Metal device description; CPU execution has no GPU device.
+    pub device: Option<String>,
 }

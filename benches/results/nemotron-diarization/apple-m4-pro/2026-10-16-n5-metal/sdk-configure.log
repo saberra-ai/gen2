@@ -1,0 +1,28 @@
+-- Diarization currently shares the ASR runtime library; building that library without the transcribe CLI/API surface
+-- ggml and llama.cpp source: /Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/llama.cpp
+-- Warning: ccache not found - consider installing it for faster compilation or disable this warning with GGML_CCACHE=OFF
+-- CMAKE_SYSTEM_PROCESSOR: arm64
+-- GGML_SYSTEM_ARCH: ARM
+-- Including CPU backend
+-- Accelerate framework found
+-- ARM detected
+CMake Warning at llama.cpp/ggml/src/ggml-cpu/CMakeLists.txt:140 (message):
+  ARM -march/-mcpu not found, -mcpu=native will be used
+Call Stack (most recent call first):
+  llama.cpp/ggml/src/CMakeLists.txt:586 (ggml_add_cpu_backend_variant_impl)
+
+
+-- Checking for ARM features using flags:
+--   -U__ARM_FEATURE_SVE
+--   -mcpu=native+dotprod+i8mm+nosve+sme
+-- Adding CPU backend variant ggml-cpu: -U__ARM_FEATURE_SVE;-mcpu=native+dotprod+i8mm+nosve+sme 
+-- BLAS found, Libraries: /Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Accelerate.framework
+-- BLAS found, Includes: 
+-- Including BLAS backend
+-- Metal framework found
+-- Including METAL backend
+-- ggml version: 0.25.1
+-- ggml commit:  bd4f514
+-- Configuring done (0.2s)
+-- Generating done (0.0s)
+-- Build files have been written to: /Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/build/metal-diar

@@ -105,6 +105,86 @@ impl Api {
             })
         }
     }
+    pub fn metal_device(&self) -> Result<(i32, String)> {
+        let bad = |message: String| DiarizationError::BackendUnavailable(message);
+        // SAFETY: these signatures come from the pinned ggml-backend.h. Symbol
+        // and returned registry/device lifetimes are covered by this library.
+        // NeMo chooses gpu by ordinal among GPU/IGPU devices, not all devices.
+        unsafe {
+            macro_rules! get {
+                ($name:literal, $type:ty) => {
+                    *self
+                        ._library
+                        .get::<$type>(concat!($name, "\0").as_bytes())
+                        .map_err(|e| bad(format!("Metal placement requires {}: {e}", $name)))?
+                };
+            }
+            let count = get!("ggml_backend_dev_count", unsafe extern "C" fn() -> usize);
+            let device = get!(
+                "ggml_backend_dev_get",
+                unsafe extern "C" fn(usize) -> *mut c_void
+            );
+            let kind = get!(
+                "ggml_backend_dev_type",
+                unsafe extern "C" fn(*mut c_void) -> i32
+            );
+            let registry = get!(
+                "ggml_backend_dev_backend_reg",
+                unsafe extern "C" fn(*mut c_void) -> *mut c_void
+            );
+            let name = get!(
+                "ggml_backend_reg_name",
+                unsafe extern "C" fn(*mut c_void) -> *const c_char
+            );
+            let description = get!(
+                "ggml_backend_dev_description",
+                unsafe extern "C" fn(*mut c_void) -> *const c_char
+            );
+            let n = count();
+            if n > 1024 {
+                return Err(bad("excessive native device count".into()));
+            }
+            let mut gpu_index = 0;
+            for i in 0..n {
+                let dev = device(i);
+                if dev.is_null() {
+                    return Err(bad("null native device".into()));
+                }
+                // Pinned enum: CPU=0, GPU=1, IGPU=2, ACCEL=3, META=4.
+                if !matches!(kind(dev), 1 | 2) {
+                    continue;
+                }
+                let reg = registry(dev);
+                if reg.is_null() {
+                    return Err(bad("null GPU registry".into()));
+                }
+                let reg_name = name(reg);
+                if reg_name.is_null() {
+                    return Err(bad("null GPU backend name".into()));
+                }
+                // The pinned ggml-metal registry names itself "MTL".
+                if CStr::from_ptr(reg_name).to_bytes() == b"MTL" {
+                    let text = description(dev);
+                    if text.is_null() {
+                        return Err(bad("null Metal device description".into()));
+                    }
+                    let text = CStr::from_ptr(text)
+                        .to_str()
+                        .map_err(|e| bad(e.to_string()))?;
+                    if text.is_empty() {
+                        return Err(bad("empty Metal device description".into()));
+                    }
+                    // Pinned NeMo BackendManager throws if this exact GPU cannot
+                    // initialize. It does not fall back to CPU after gpu>=0.
+                    return Ok((gpu_index, text.to_owned()));
+                }
+                gpu_index += 1;
+            }
+            Err(bad(
+                "requested Metal device is unavailable in the native SDK".into(),
+            ))
+        }
+    }
     pub fn check(&self, status: i32) -> Result<()> {
         if status == 0 {
             return Ok(());

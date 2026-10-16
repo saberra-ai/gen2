@@ -437,6 +437,23 @@ relocation evidence, not a fresh-machine, app bundle, Metal, notarization or
 cross-platform release receipt. N5 remains open.
 
 
+Metal development now builds the pinned `metal-diar` preset with embedded shaders
+and a distinct private loader namespace (93 libraries). `LoadOptions::metal`
+resolves the actual Metal GPU ordinal and records Apple M4 Pro placement; a CPU
+package cannot silently satisfy that request. The public wrapper matches an
+independent native Metal run. A relocated copy passed with networking, Homebrew,
+both original SDKs/packages/model sources denied; loader traces account for all
+93 private Metal libraries. This same-host development test used 245448704 bytes
+maximum RSS, not a clean performance or long-session receipt. Metal native default
+DER on the smoke clip is 28.08%, still above the proposed release target. See the
+[Metal development receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-n5-metal/receipt.json).
+
+The relocated CPU package also passed actual chat/Bark/full-Laya/Nemotron load
+orders and shared-budget eviction/restoration with source models and networking
+denied. That admission test runs short silence through speech/diarization and a
+text decision through Laya; it is not a new real-meeting quality or performance
+receipt. See the [relocated mixed-model receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-n5-relocated-mixed/receipt.json).
+
 - [ ] Run Mac CPU first; compare Metal against the same Q8 reference and real
   annotated audio. Record device placement/fallback rather than treating a
   successful Metal build as acceleration evidence.

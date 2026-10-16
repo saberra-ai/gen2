@@ -473,3 +473,78 @@ fn real_diarizer_matches_native_reference_and_resets_recordings() {
     model.shutdown();
     assert_eq!(runtime.diarization_reserved_mb(), 0);
 }
+
+#[cfg(target_os = "macos")]
+#[test]
+#[ignore = "requires pinned assets, CPU SDK, Metal SDK and matched independent Metal reference"]
+fn explicit_metal_matches_native_reference_and_cpu_sdk_cannot_silently_fallback() {
+    use gen2::diarization::DiarizationError;
+    let assets = PathBuf::from(std::env::var("GEN2_NEMOTRON_ASSETS").unwrap());
+    let runtime = Runtime::builder()
+        .resident_memory_budget_mb(2048)
+        .build()
+        .unwrap();
+    let rejected = runtime
+        .load_diarizer(
+            &assets,
+            LoadOptions::metal(std::env::var("GEN2_NEMO_LIBRARY").unwrap()),
+        )
+        .unwrap_err();
+    assert!(matches!(
+        rejected,
+        gen2::Error::Diarization(DiarizationError::BackendUnavailable(_))
+    ));
+    assert!(rejected.to_string().contains("Metal"), "{rejected}");
+    assert_eq!(runtime.diarization_reserved_mb(), 0);
+    assert!(runtime.diarization_models().is_empty());
+    let model = runtime
+        .load_diarizer(
+            &assets,
+            LoadOptions::metal(std::env::var("GEN2_NEMO_METAL_LIBRARY").unwrap()),
+        )
+        .unwrap();
+    let result = model
+        .diarize(
+            Audio::from_wav(assets.join("ami_en2002d_2132.wav")).unwrap(),
+            DiarizeOptions {
+                frame_probabilities: true,
+                ..Default::default()
+            },
+        )
+        .unwrap();
+    assert_eq!(result.backend, "metal");
+    assert_eq!(
+        result.device.as_deref(),
+        Some(std::env::var("GEN2_NEMO_METAL_DEVICE").unwrap().as_str())
+    );
+    let reference = PathBuf::from(std::env::var("GEN2_NEMO_METAL_REFERENCE").unwrap());
+    let expected: serde_json::Value =
+        serde_json::from_slice(&std::fs::read(&reference).unwrap()).unwrap();
+    assert_eq!(
+        result.native_frame_count,
+        expected["frames"].as_u64().unwrap()
+    );
+    let raw = std::fs::read(reference.with_extension("json.f32")).unwrap();
+    let actual = &result.frame_probabilities.as_ref().unwrap().values;
+    assert_eq!(raw.len(), actual.len() * 8 * 4);
+    let max_error = raw
+        .as_chunks::<4>()
+        .0
+        .iter()
+        .zip(actual.iter().flatten())
+        .map(|(bytes, value)| (f32::from_le_bytes(*bytes) - value).abs())
+        .fold(0.0_f32, f32::max);
+    assert!(
+        max_error < 1e-5,
+        "Metal wrapper/reference probability error {max_error}"
+    );
+    let expected_turns = expected["segments"].as_array().unwrap();
+    assert_eq!(result.turns.len(), expected_turns.len());
+    for (actual, expected) in result.turns.iter().zip(expected_turns) {
+        assert_eq!(actual.speaker as u64, expected["speaker"].as_u64().unwrap());
+        assert!((actual.start_seconds - expected["start"].as_f64().unwrap()).abs() < 1e-6);
+        assert!((actual.end_seconds - expected["end"].as_f64().unwrap().min(60.)).abs() < 1e-6);
+    }
+    model.shutdown();
+    assert_eq!(runtime.diarization_reserved_mb(), 0);
+}

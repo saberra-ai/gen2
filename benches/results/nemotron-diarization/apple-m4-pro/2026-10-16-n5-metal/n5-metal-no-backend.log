@@ -1,0 +1,23 @@
+   Compiling gen2 v0.1.0 (/Users/victor/workspace/gen2-nemotron3-n0)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 4.78s
+     Running tests/diarization_alignment.rs (/Users/victor/.cache/gen2-bark-onnx/build/debug/deps/diarization_alignment-e4948fe91e7658f9)
+
+running 5 tests
+test edited_or_invalid_timing_is_rejected_without_retiming_text ... ok
+test overlap_counts_cumulative_common_activity ... ok
+test overlap_transitions_gaps_and_zero_duration_stay_explicit ... ok
+test words_use_whole_token_evidence_and_recording_offsets ... ok
+test pairwise_overlap_does_not_include_a_sequential_third_speaker ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/diarization_api.rs (/Users/victor/.cache/gen2-bark-onnx/build/debug/deps/diarization_api-c2dd69028169d76b)
+
+running 4 tests
+test placement_requires_an_explicit_backend_without_implicit_gpu_fallback ... ok
+test input_requires_bounded_finite_mono_pcm ... ok
+test unavailable_runtime_does_not_reserve_memory ... ok
+test uncached_provisioning_requires_download_feature ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

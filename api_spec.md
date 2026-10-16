@@ -2153,7 +2153,7 @@ cancellation flag. Parent cancellation reaches children; cancelling a child
 (including native stream-drop cleanup) cannot cancel its parent or siblings.
 This lets a diarization failure preserve independently successful transcription.
 
-## 34. Local speaker diarization (native CPU)
+## 34. Local speaker diarization (native CPU/Metal)
 
 `gen2::diarization` is an independent operation. With `backend-diar-nemo`,
 `Runtime::load_diarizer(bundle, LoadOptions::cpu(native_library))` verifies the
@@ -2161,7 +2161,13 @@ pinned Nemotron 3 Q8 GGUF and admits a worker under the shared runtime budget.
 Loading is offline and the host supplies the qualified C ABI dependency bundle.
 `download_nemotron(cache)` explicitly provisions weights/model card with `hf`;
 verified warm caches work without network or that feature. Builds never fetch
-models or native SDKs. Chat accelerator flags do not alter CPU placement.
+models or native SDKs. Chat accelerator flags do not alter diarization placement.
+`LoadOptions.device` selects `ExecutionDevice::Cpu` or `ExecutionDevice::Metal`.
+The `metal(library)` constructor requires macOS and an actual Metal GPU in the
+supplied SDK. It resolves that device’s GPU ordinal before creating the model;
+absence or initialization failure is an error rather than automatic CPU fallback.
+Results include the selected Metal device description. CPU partitions inside a
+GPU computation remain possible. Metal release qualification is still open.
 
 `Diarizer` exposes `diarize`, `start_stream`, `status`, `bundle`, `unload` and
 `shutdown`. One recording/session owns the active slot; competitors get typed
@@ -2190,7 +2196,7 @@ Results preserve overlapping anonymous one-based speaker IDs (1–8), scoped to
 one session. Times use seconds from that session's input start. Native 10 ms
 cadence does not establish boundary accuracy; only proven terminal padding is
 clipped to real audio duration. Results include model revision, runtime version,
-effective geometry, CPU placement, wall time and native compute time. Native
+effective geometry, explicit backend/device placement, wall time and native compute time. Native
 default segmentation is the only long-session postprocessing policy exposed.
 This timeline provides no word alignment, source separation or automatic names.
 See [contracts and limits](docs/diarization.md) and the

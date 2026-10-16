@@ -1,0 +1,76 @@
+   Compiling gen2 v0.1.0 (/Users/victor/workspace/gen2-nemotron3-n0)
+error[E0432]: unresolved import `gen2::diarization::ExecutionDevice`
+  --> tests/diarization_api.rs:54:9
+   |
+54 |     use gen2::diarization::ExecutionDevice;
+   |         ^^^^^^^^^^^^^^^^^^^---------------
+   |                            |
+   |                            no `ExecutionDevice` in `diarization`
+
+error[E0599]: no associated function or constant named `metal` found for struct `gen2::diarization::LoadOptions` in the current scope
+   --> tests/diarization_native.rs:485:64
+    |
+485 |     let rejected = runtime.load_diarizer(&assets, LoadOptions::metal(std::env::var("GEN2_NEMO_LIBRARY").unwrap())).unwrap_err();
+    |                                                                ^^^^^ associated function or constant not found in `gen2::diarization::LoadOptions`
+    |
+note: if you're trying to build a new `gen2::diarization::LoadOptions`, consider using `gen2::diarization::LoadOptions::cpu` which returns `gen2::diarization::LoadOptions`
+   --> src/diarization/types.rs:55:5
+    |
+ 55 |     pub fn cpu(native_library: impl Into<PathBuf>) -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0599]: no associated function or constant named `metal` found for struct `gen2::diarization::LoadOptions` in the current scope
+   --> tests/diarization_native.rs:490:61
+    |
+490 |     let model = runtime.load_diarizer(&assets, LoadOptions::metal(std::env::var("GEN2_NEMO_METAL_LIBRARY").unwrap())).unwrap();
+    |                                                             ^^^^^ associated function or constant not found in `gen2::diarization::LoadOptions`
+    |
+note: if you're trying to build a new `gen2::diarization::LoadOptions`, consider using `gen2::diarization::LoadOptions::cpu` which returns `gen2::diarization::LoadOptions`
+   --> src/diarization/types.rs:55:5
+    |
+ 55 |     pub fn cpu(native_library: impl Into<PathBuf>) -> Self {
+    |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+error[E0609]: no field `device` on type `gen2::diarization::Diarization`
+   --> tests/diarization_native.rs:493:20
+    |
+493 |     assert!(result.device.as_ref().is_some_and(|name|name.contains("M4 Pro")),"{:?}",result.device);
+    |                    ^^^^^^ unknown field
+    |
+    = note: available fields are: `turns`, `audio_duration_seconds`, `native_frame_count`, `frame_probabilities`, `model_revision` ... and 5 others
+
+error[E0609]: no field `device` on type `gen2::diarization::Diarization`
+   --> tests/diarization_native.rs:493:93
+    |
+493 |     assert!(result.device.as_ref().is_some_and(|name|name.contains("M4 Pro")),"{:?}",result.device);
+    |                                                                                             ^^^^^^ unknown field
+    |
+    = note: available fields are: `turns`, `audio_duration_seconds`, `native_frame_count`, `frame_probabilities`, `model_revision` ... and 5 others
+
+Some errors have detailed explanations: E0599, E0609.
+For more information about an error, try `rustc --explain E0599`.
+error: could not compile `gen2` (test "diarization_native") due to 4 previous errors
+warning: build failed, waiting for other jobs to finish...
+error[E0609]: no field `device` on type `gen2::diarization::LoadOptions`
+  --> tests/diarization_api.rs:55:43
+   |
+55 |     assert_eq!(LoadOptions::cpu("native").device, ExecutionDevice::Cpu);
+   |                                           ^^^^^^ unknown field
+   |
+   = note: available fields are: `native_library`, `preset`, `reservation_mb`
+
+error[E0599]: no associated function or constant named `metal` found for struct `gen2::diarization::LoadOptions` in the current scope
+  --> tests/diarization_api.rs:56:29
+   |
+56 |     assert_eq!(LoadOptions::metal("native").device, ExecutionDevice::Metal);
+   |                             ^^^^^ associated function or constant not found in `gen2::diarization::LoadOptions`
+   |
+note: if you're trying to build a new `gen2::diarization::LoadOptions`, consider using `gen2::diarization::LoadOptions::cpu` which returns `gen2::diarization::LoadOptions`
+  --> src/diarization/types.rs:55:5
+   |
+55 |     pub fn cpu(native_library: impl Into<PathBuf>) -> Self {
+   |     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Some errors have detailed explanations: E0432, E0599, E0609.
+For more information about an error, try `rustc --explain E0432`.
+error: could not compile `gen2` (test "diarization_api") due to 3 previous errors

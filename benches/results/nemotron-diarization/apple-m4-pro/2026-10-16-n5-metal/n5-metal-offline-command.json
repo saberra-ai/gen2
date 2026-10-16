@@ -1,0 +1,26 @@
+{
+  "environment": {
+    "PATH": "/usr/bin:/bin",
+    "GEN2_NEMOTRON_ASSETS": "/Users/victor/.cache/gen2-nemotron3-n0/relocated Metal candidate/assets",
+    "GEN2_NEMO_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/relocated Pnola frameworks candidate/Pnola.app/Contents/Resources/nemo/lib/libnemo_speech_asr_c.dylib",
+    "GEN2_NEMO_METAL_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/relocated Metal candidate/nemo/lib/libnemo_speech_asr_c.dylib",
+    "GEN2_NEMO_METAL_REFERENCE": "/Users/victor/.cache/gen2-nemotron3-n0/relocated Metal candidate/ami.json",
+    "GEN2_NEMO_METAL_DEVICE": "Apple M4 Pro"
+  },
+  "command": [
+    "/usr/bin/time",
+    "-l",
+    "/usr/bin/sandbox-exec",
+    "-f",
+    "/Users/victor/.cache/gen2-nemotron3-n0/n5-metal-offline.sb",
+    "/usr/bin/env",
+    "DYLD_PRINT_LIBRARIES=1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/relocated Metal candidate/native-tests",
+    "--ignored",
+    "--exact",
+    "explicit_metal_matches_native_reference_and_cpu_sdk_cannot_silently_fallback",
+    "--nocapture",
+    "--test-threads=1"
+  ],
+  "executable_sha256": "b4e46ab3c03db3ca2f972b6761ea4ec688ca0e982d8953a2c653649ccfd7b857"
+}

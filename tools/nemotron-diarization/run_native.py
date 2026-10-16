@@ -14,7 +14,10 @@ def main():
     p.add_argument("--assets", type=Path, required=True)
     p.add_argument("--output", type=Path, required=True)
     p.add_argument("--geometry", choices=["official", "upstream-example"], default="official")
+    p.add_argument("--gpu", type=int, default=-1, help="GPU index; -1 requests CPU without fallback")
     a = p.parse_args()
+    if a.gpu < -1:
+        p.error("GPU index must be at least -1")
     lock = json.loads(Path(__file__).with_name("runtime.lock.json").read_text())
     for entry in lock["artifacts"]:
         if entry["role"] != "reference" and not matches(a.assets / entry["name"], entry):
@@ -36,8 +39,15 @@ def main():
     library.n0_run.restype = ctypes.c_int
     library.n0_last_error.argtypes = []
     library.n0_last_error.restype = ctypes.c_char_p
-    model = library.n0_open(str(a.assets / "Nemotron-3-Diarization.q8_0.gguf").encode(),
-                            int(a.geometry == "official"))
+    open_model = library.n0_open
+    arguments = []
+    if a.gpu >= 0:
+        open_model = library.n0_open_device
+        open_model.argtypes = [ctypes.c_char_p, ctypes.c_int, ctypes.c_int]
+        open_model.restype = ctypes.c_void_p
+        arguments = [a.gpu]
+    model = open_model(str(a.assets / "Nemotron-3-Diarization.q8_0.gguf").encode(),
+                            int(a.geometry == "official"), *arguments)
     if not model:
         raise RuntimeError(library.n0_last_error().decode())
     records = []
@@ -60,7 +70,7 @@ def main():
     receipt = {"records": records, "geometry": records[0]["geometry"], "push_samples": 2560,
                "runner_sha256": digest(Path(__file__)),
                "lock_sha256": digest(Path(__file__).with_name("runtime.lock.json")),
-               "shim_sha256": digest(a.shim), "model_revision": lock["model"]["revision"]}
+               "shim_sha256": digest(a.shim), "requested_gpu": a.gpu, "model_revision": lock["model"]["revision"]}
     (a.output / "native.json").write_text(json.dumps(receipt, indent=2) + "\n")
     print(a.output / "native.json")
 

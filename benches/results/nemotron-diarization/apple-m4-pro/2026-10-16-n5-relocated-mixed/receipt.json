@@ -1,0 +1,51 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "scope": "Relocated macOS CPU shared runtime admission across actual chat/Bark/Laya/Nemotron models",
+  "gen2_commit_at_build": "f6533ac",
+  "models_laya_and_chat_relocated_by_hardlink_without_source_mutation": true,
+  "sandbox_network_and_original_model_source_paths_denied": true,
+  "independent_controls_passed": true,
+  "load_orders_passed": [
+    "mixed_real_laya_chat_first",
+    "mixed_real_laya_diarization_first"
+  ],
+  "assertions": [
+    "Actual chat generation before and after other backends",
+    "1024MiB diarization, 4096MiB Bark and full Laya admission share one exact budget",
+    "Chat evicted and restoration refused at full budget",
+    "Additional diarizer rejected without reservation leak",
+    "Native silence diarization, Bark short-silence inference and Laya text decision succeed",
+    "After ASR shutdown chat restoration succeeds; all reservations release; diarizer reload succeeds"
+  ],
+  "limitations": [
+    "Development tests, not a clean release performance receipt.",
+    "Native diarization/Bark use silence fixtures in this admission test; no new real-meeting quality claim.",
+    "Same-host relocation; no fresh machine or Metal mixed-model qualification."
+  ],
+  "relocated_file_sha256": {
+    "mixed-native-tests": "96a6c89313e56391cb9a1972dcd0748d01ef772ba9b4d25928d5737475cb3de0",
+    "chat.gguf": "ac2d97712095a558e31573f62f466a3f9d93990898b0ec79d7c974c1780d524a",
+    "laya/model.data": "afcc11e72b59193fbec6e5dc8b693c9baa81cf66bec53279cefd687b318c3199",
+    "laya/model.onnx": "ed704145e382b16edf14cf1d6ed7f70d03ea04ed539657eea6d33517bad4c72b",
+    "laya/manifest.json": "afa03f193640ee599cc9b656fd1b708fd32077864d932c8c0a5c04b62b0c5772",
+    "laya/LICENSE-LAYA.txt": "a6cba85bc92e0cff7a450b1d873c0eaa2e9fc96bf472df0247a26bec77bf3ff9",
+    "laya/rl_agent_config.json": "ae287b56bbcf5f8c4f4541ae9dfd00c914c4c48b940b8398c3058af37ba92bbd",
+    "laya/tokenizer/tokenizer_config.json": "50044de60daaa73df97d262e15a40d4faf0160e7d742df64b377877a1320dd12",
+    "laya/tokenizer/tokenizer.json": "6c8aaa9a542084f2457eab775d4eeb51f92a70c0fd9de28d5edb0ddec3c08d30",
+    "laya/source/model.safetensors": "891102d372688fc2a094dac56a384bc537b87c63f21f9f3dac0be2b7cbc8d86c",
+    "laya/source/rl_agent_config.json": "ae287b56bbcf5f8c4f4541ae9dfd00c914c4c48b940b8398c3058af37ba92bbd",
+    "laya/source/encoder/config.json": "bf3ab80598fdccf414855a2ce80f22859e4492d06ca8a62ddd1cfb63972f8979",
+    "laya/source/tokenizer/tokenizer_config.json": "50044de60daaa73df97d262e15a40d4faf0160e7d742df64b377877a1320dd12",
+    "laya/source/tokenizer/tokenizer.json": "6c8aaa9a542084f2457eab775d4eeb51f92a70c0fd9de28d5edb0ddec3c08d30"
+  },
+  "native_test_source_sha256": "3f02490221e523a8af0fd73c5098042c6f35cb596bcae6a32e7357736a39e1a7",
+  "artifacts": {
+    "n5-mixed-build.log": "8f781b4468fa34bcffdc61f550f4f22829048b00352e83b7c4f4d89874e516c6",
+    "n5-mixed-command.json": "aa8d9ec1303e59e9bf98378fda901384a2fd937dac4bb122341fd23b7b57a5bd",
+    "n5-mixed-offline.sb": "bcc0e2b7e512552af631d2a29e9047ab4ff02001671d127448cf45ec67d40822",
+    "n5-mixed-sandbox-controls.json": "ec4ac4ba27e2e0171c4d0b2afc80689034f2685b5af4a3279eadd72df8c538c7",
+    "n5-relocated-mixed_real_laya_chat_first.log": "b7c465147788a72ab7583adfa9d76719881778e054c32a7d7d9ecfad401f2475",
+    "n5-relocated-mixed_real_laya_diarization_first.log": "583579b6612580243803d96d22b7ed3c6c3abce2e21e61902bc09edb89cf5bac"
+  }
+}

@@ -26,12 +26,13 @@ extern "C" const char* n0_last_error() { return error.c_str(); }
 extern "C" void n0_close(void* model) {
     delete static_cast<ProbeModel*>(model);
 }
-extern "C" void* n0_open(const char* path, int official_geometry) noexcept {
+extern "C" void* n0_open_device(const char* path, int official_geometry, int gpu) noexcept {
     try {
         nemo_speech_diar_model_config cfg{};
         cfg.size = sizeof(cfg);
         cfg.model_path = path;
-        cfg.gpu = -1;
+        if (gpu < -1) throw std::runtime_error("invalid GPU index");
+        cfg.gpu = gpu;
         cfg.preset = "v3-streaming";
         if (official_geometry != 0 && official_geometry != 1)
             throw std::runtime_error("unknown qualification geometry");
@@ -54,6 +55,11 @@ extern "C" void* n0_open(const char* path, int official_geometry) noexcept {
         return new ProbeModel{std::move(owned), official_geometry == 1};
     } catch (const std::exception& e) { error = e.what(); return nullptr; }
     catch (...) { error = "unknown native failure"; return nullptr; }
+}
+
+// Preserve the original CPU-only probe ABI and its callers.
+extern "C" void* n0_open(const char* path, int official_geometry) noexcept {
+    return n0_open_device(path, official_geometry, -1);
 }
 
 extern "C" int n0_run(void* pointer, const char* wav, const char* output_path) noexcept {

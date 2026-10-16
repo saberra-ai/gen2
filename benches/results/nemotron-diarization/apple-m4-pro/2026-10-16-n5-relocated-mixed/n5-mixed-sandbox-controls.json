@@ -1,0 +1,27 @@
+{
+  "file_reads": [
+    {
+      "path": "/Users/victor/models/laya-english/manifest.json",
+      "unsandboxed_exit": 0,
+      "sandbox_exit": 1,
+      "sandbox_error": "head: /Users/victor/models/laya-english/manifest.json: Operation not permitted"
+    },
+    {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/sdk-cpu/lib/libnemo_speech_asr_c.dylib",
+      "unsandboxed_exit": 0,
+      "sandbox_exit": 1,
+      "sandbox_error": "head: /Users/victor/.cache/gen2-nemotron3-n0/sdk-cpu/lib/libnemo_speech_asr_c.dylib: Operation not permitted"
+    },
+    {
+      "path": "/Users/victor/workspace/gen2-nemotron3-n0/Cargo.toml",
+      "unsandboxed_exit": 0,
+      "sandbox_exit": 1,
+      "sandbox_error": "head: /Users/victor/workspace/gen2-nemotron3-n0/Cargo.toml: Operation not permitted"
+    }
+  ],
+  "local_socket_unsandboxed_exit": 0,
+  "local_socket_unsandboxed_response": "ok",
+  "sandbox_network_exit": 7,
+  "sandbox_network_error": "curl: (7) Failed to connect to 127.0.0.1 port 60333 after 0 ms: Couldn't connect to server",
+  "local_socket_rechecked_after_denied_attempt": true
+}

@@ -257,3 +257,38 @@ files. Loader traces show the private libraries resolving inside the relocated
 copy. This establishes relocation/offline behavior on the named host; a fresh
 machine, app bundle, relocated mixed-model coexistence, Metal and other OS
 qualification remain separate N5 gates.
+
+
+## Metal development qualification
+
+The same pinned source/preset digest also covers upstream `metal-diar`, which
+uses unpatched ggml and embedded Metal shaders. Build it in separate directories:
+
+```sh
+python3 tools/nemotron-diarization/build_sdk.py --backend metal \
+  --source "$task_cache/NeMo-Speech.cpp" --prefix "$task_cache/sdk-metal" \
+  --output "$task_cache/receipts/build-metal"
+python3 tools/nemotron-diarization/run_native.py \
+  --shim "$task_cache/receipts/build-metal/n0_probe.dylib" --assets "$task_cache/assets" \
+  --output "$task_cache/receipts/native-metal" --gpu 0
+python3 tools/nemotron-diarization/package_macos.py \
+  --sdk-prefix "$task_cache/sdk-metal" --build-receipt "$task_cache/receipts/build-metal/build.json" \
+  --output "$task_cache/package-metal"
+```
+
+The native probe's GPU argument is strict: a missing device fails creation.
+Gen2's explicit `LoadOptions::metal` additionally checks the selected registry is
+Metal and records the actual device description. CPU/Metal native libraries get
+different private loader names. Mixing their raw SDKs can reuse generic ggml
+install names from the first load and hide the second SDK's device registry.
+Package verification checks embedded shaders in the build receipt before
+admitting a Metal package. Metal GPU and CPU outputs need their own numerical
+and annotated-quality comparisons; CPU output is not an exact Metal oracle.
+The ordinary ignored tests do not establish Metal support. To execute the
+public Metal reference check, supply `GEN2_NEMO_LIBRARY` (relocated CPU package),
+`GEN2_NEMO_METAL_LIBRARY` (relocated Metal package), `GEN2_NEMOTRON_ASSETS`,
+`GEN2_NEMO_METAL_REFERENCE` (independent Metal probe `ami.json`) and
+`GEN2_NEMO_METAL_DEVICE` (expected hardware description), then run the ignored
+`explicit_metal_matches_native_reference_and_cpu_sdk_cannot_silently_fallback`
+test in a fresh process. This is development qualification; full lifecycle,
+long-session, mixed-backend, offline app and clean performance gates remain open.

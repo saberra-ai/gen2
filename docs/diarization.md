@@ -9,7 +9,15 @@ SDK requirement. Supply the pinned NeMo-Speech.cpp C ABI library and its
 dependencies explicitly; the build instructions and locked native revisions
 are in [the qualification tools](../tools/nemotron-diarization/README.md).
 Gen2's chat `metal`/`cuda` flags do not change diarization placement. This
-implementation requests CPU and reports `backend: "cpu"`.
+CPU constructor reports `backend: "cpu"`. On macOS, `LoadOptions::metal(library)`
+explicitly selects a Metal device from a separately built SDK and reports
+`backend: "metal"` plus its device description. An unavailable Metal device
+fails loading; it never silently falls back to CPU. Native GPU execution can
+still partition unsupported operations onto CPU. Metal is under development
+qualification; the app package remains CPU until its own Metal gate passes.
+Use the relocated packages rather than mixing raw SDKs: their generic ggml
+loader identities can collide inside one process. CPU and Metal packages use
+distinct private loader names.
 
 ```rust,no_run
 use gen2::{Runtime, diarization::{Audio, DiarizeOptions, LoadOptions}};
