@@ -1,0 +1,28 @@
+{
+  "argv": [
+    "/usr/bin/c++",
+    "-std=c++17",
+    "-O2",
+    "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/frontend_tail_probe.cpp",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/asr/features",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/asr",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/common",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/llama.cpp/ggml/include",
+    "-L/Users/victor/.cache/gen2-nemotron3-n0/sdk-cpu/lib",
+    "-lnemo_speech_asr",
+    "-Wl,-rpath,/Users/victor/.cache/gen2-nemotron3-n0/sdk-cpu/lib",
+    "-o",
+    "/Users/victor/.cache/gen2-nemotron3-n0/frontend-tail-probe-v1/frontend-tail-probe"
+  ],
+  "returncode": 0,
+  "elapsed_seconds": 0.44331979198614135,
+  "source": {
+    "bytes": 4907,
+    "sha256": "8ea74454d0a779544afd4f18d1eebac39035a5b3fc5bcefd435151d4d50a8bb0"
+  },
+  "compiler_version": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.3.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "binary": {
+    "bytes": 41664,
+    "sha256": "7c70f5a400061d57c4920aa090331f22268ba83925923bb3b52baa363e2e1b08"
+  }
+}

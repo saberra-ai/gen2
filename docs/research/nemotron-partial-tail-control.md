@@ -55,3 +55,17 @@ HF downsamples the valid mel mask with `attention_mask[:,::8]`, prepends true en
 Source hashes inspected: native `diar_pipeline.cpp` `4143ca8e6d6f14ee454263702510cb163fe8e170aa928f236c0b4b540a7a7da9`; `fe.cpp` `c2cbd1630ac2e2417f863aead766fdee47f3f96868c79b942571dae7804596b9`; `sortformer_model.cpp` `831d819e0a3986b7b6007987a67b4ccc5f2895d6d68247ca138ed4d9c3c3d2c9`; `rope_transformer.cpp` `125ebd73fa132f47198ffdc53ba764d0171c16d78d4f406012b8c2ceeb3de908`; HF processor `37d700fd8a041c80cc8a792fbbdc67764e291cfe111928c10e5d266ab5ebad7c`; HF model `6f7688dbcff3123216fa8860af73af934912683f2191e6b36adc4dd19a39fcad`; HF extractor `8d2df13e251dcd8315654495b9768138d6e61a359e4f8166f623d890c132dc3d`.
 
 The prior [weight-identity audit cache](/Users/victor/.cache/gen2-nemotron3-n0/research/hf-nemo-weight-identity) remains retained and unchanged; mapped-parameter equality does not remove this framing boundary.
+
+## Subsequent fixed frontend execution
+
+The separate protocol and tools were reviewed and committed at `5204386` before execution. The network- and weight-denied outer launcher first passed all three array grouping/conservation tests, then completed two fixed synthetic controls, the excluded calibration and both unchanged AMI crops. Five fresh native CPU frontend processes called upstream `produce_new_mel_frames` with the actual helper's16640-sample transport and copied finish-decay rule. The HF processor ran the unchanged reference chunk loop under the fixed shared native bank. Neither neural models, learned projection, cache, attention nor probability generation executed. Native scheduling remains an explicitly source-derived integer replay over observed frontend readiness.
+
+The [44-file metadata receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-tail-framing/qualification.json) binds91 local files, commands, build/source/library identities, all raw/trimmed/final features, padded stacks and masks. The receiver rehashed every local file, reconstructed all ten final stacks/encoder masks and recomputed all five final common-Mel comparisons without frontend execution. Raw tensors remain outside Git.
+
+| Fixed real input | HF / native final real Mel rows | HF / native final encoder inputs | Common final Mel mean / maximum absolute error |
+| --- | ---: | ---: | ---: |
+| Excluded1.117s calibration |39 /40 |5 /5 |9.18714e-7 /6.38962e-5 |
+| Close120s AMI |48 /49 |6 /7 |1.59722e-7 /1.90735e-6 |
+| Distant120s AMI |48 /49 |6 /7 |8.15994e-7 /1.23978e-5 |
+
+Every final common-Mel comparison has zero values above the retained0.001 descriptive flag; this does not cover every feature in the recording or establish neural equivalence. Calibration confirms HF's one zero feature slot versus native's computed terminal Mel row. Both120s crops confirm the additional native encoder input with one computed row plus seven zero feature rows. The1s synthetic silence also preserves the short-input domain difference: one actual HF processor call versus two source-derived native calls, with their different final cursors compared only at matching global coordinates. These observations establish frontend framing inputs, not the cause of the earlier probability discrepancies or a quality fix. Original DER failures, production configuration and release gates remain unchanged.

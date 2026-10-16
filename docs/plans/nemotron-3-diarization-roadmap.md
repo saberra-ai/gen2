@@ -632,7 +632,23 @@ now verifies all417 HF F32 tensors exactly against the pinned mapping/cast of
 native activity-head tensors unused by the pinned graph, preserving historical
 construction accounting. This closes parameter identity only; frontend, runtime
 arithmetic, framing and cache effects remain separate. Local model-free tests
-now total105, including terminal/partial-tail/range regressions.
+now total108, including terminal/partial-tail/range and stack/conservation regressions.
+A separately preregistered streaming-frontend/tail control at `5204386` now
+executes five frontend-only cases under the shared retained native bank. Its
+[44-file metadata receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-tail-framing/qualification.json)
+binds91 local files, all five actual CPU frontend commands and ten reconstructed
+final stacks/masks. Both120s targets have48HF versus49native final Mel rows,
+producing6HF versus7native encoder inputs; their common final Mel maxima are
+1.90735e-6close /1.23978e-5distant. The short calibration has39HF versus40native
+rows in five encoder inputs, with HF zero-padding the slot native fills. No
+neural model/cache/projection ran; native scheduling is an explicitly
+source-derived replay of observed frontend readiness. This establishes a framing
+boundary without attributing probability errors or changing quality gates.
+The separate [original-NeMo source audit](../research/nemotron-original-nemo-tail-reference.md)
+finds that official V3 source `218d0b4` also crops to floor-valid Mel rows before
+stacking, matching HF counts. This later official source declares3.1.0; the
+checkpoint's3.0.0 label does not pin its training source. Actual original-NeMo
+CPU environment, restore and numerical execution remain unqualified.
 The 13-job feature matrix also passed at `4974318`. Later source `cf64214`
 passed12 jobs; its macOS mixed-feature job failed before compilation when GitHub
 submodule fetch could not connect to port443. A failed-job rerun was denied by

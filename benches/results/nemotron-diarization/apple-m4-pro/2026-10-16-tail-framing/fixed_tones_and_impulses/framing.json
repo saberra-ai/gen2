@@ -1,0 +1,114 @@
+{
+  "case": "fixed_tones_and_impulses",
+  "origin": {
+    "synthetic": true
+  },
+  "pcm": {
+    "bytes": 128012,
+    "sha256": "0e56ad92f7117c9dbaa5d2f00c755d7d37528e17e0a60b30256089f140233cdc"
+  },
+  "native_frontend": {
+    "audio_samples": 32003,
+    "raw_frames": 201,
+    "before_finish_frames": 199,
+    "mel_bins": 128,
+    "push_samples": 16640,
+    "uses_gpu": false,
+    "available_after_push": [
+      103,
+      199
+    ]
+  },
+  "native_source_derived_schedule": [
+    {
+      "start": 0,
+      "emitted_end": 72,
+      "input_end": 104,
+      "phase": "feed"
+    },
+    {
+      "start": 72,
+      "emitted_end": 144,
+      "input_end": 176,
+      "phase": "feed"
+    },
+    {
+      "start": 144,
+      "emitted_end": 201,
+      "input_end": 201,
+      "phase": "finish"
+    }
+  ],
+  "hf_actual_calls": [
+    {
+      "start": 0,
+      "input_end": 104,
+      "emitted_end": 72,
+      "raw_start": 0,
+      "raw_end": 16680,
+      "first": true,
+      "last": false,
+      "num_lookahead_frames": 4,
+      "raw_feature_rows": 105,
+      "valid_feature_rows": 104
+    },
+    {
+      "start": 72,
+      "input_end": 176,
+      "emitted_end": 144,
+      "raw_start": 11264,
+      "raw_end": 28304,
+      "first": false,
+      "last": false,
+      "num_lookahead_frames": 4
+    },
+    {
+      "start": 144,
+      "input_end": 200,
+      "emitted_end": 200,
+      "raw_start": 22784,
+      "raw_end": 32003,
+      "first": false,
+      "last": true,
+      "num_lookahead_frames": null,
+      "raw_feature_rows": 56,
+      "valid_feature_rows": 56
+    }
+  ],
+  "final_stack_inputs": {
+    "native": {
+      "real_mel_rows": 57,
+      "zero_feature_padding_rows": 7,
+      "encoder_tokens": 8,
+      "all_encoder_tokens_valid": true
+    },
+    "hf": {
+      "real_mel_rows": 56,
+      "zero_feature_padding_rows": 0,
+      "encoder_tokens": 7,
+      "all_encoder_tokens_valid": true
+    }
+  },
+  "final_common_mel_comparison": {
+    "shape": [
+      56,
+      128
+    ],
+    "bitwise_equal": false,
+    "maximum_absolute_error": 0.0005550384521484375,
+    "mean_absolute_error": 2.3279455490410328e-05,
+    "root_mean_square_error": 5.712785809105991e-05,
+    "p95_absolute_error": 0.00013256072998046875,
+    "p99_absolute_error": 0.00024509429931640625,
+    "worst_frame_feature": [
+      15,
+      31
+    ],
+    "first_frame_feature_over_tolerance": null,
+    "values_over_tolerance": 0,
+    "absolute_tolerance": 0.001
+  },
+  "comparison_global_start": 144,
+  "comparison_global_end": 200,
+  "native_extra_computed_rows": 1
+}

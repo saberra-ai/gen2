@@ -1,0 +1,85 @@
+{
+  "case": "silence",
+  "origin": {
+    "synthetic": true
+  },
+  "pcm": {
+    "bytes": 64000,
+    "sha256": "4f7988030a00d082fe445e00a2ac5dab502300ff1b80e8592dd569867b60ef74"
+  },
+  "native_frontend": {
+    "audio_samples": 16000,
+    "raw_frames": 101,
+    "before_finish_frames": 99,
+    "mel_bins": 128,
+    "push_samples": 16640,
+    "uses_gpu": false,
+    "available_after_push": [
+      99
+    ]
+  },
+  "native_source_derived_schedule": [
+    {
+      "start": 0,
+      "emitted_end": 72,
+      "input_end": 101,
+      "phase": "finish"
+    },
+    {
+      "start": 72,
+      "emitted_end": 101,
+      "input_end": 101,
+      "phase": "finish"
+    }
+  ],
+  "hf_actual_calls": [
+    {
+      "start": 0,
+      "input_end": 100,
+      "emitted_end": 100,
+      "raw_start": 0,
+      "raw_end": 16000,
+      "first": true,
+      "last": true,
+      "num_lookahead_frames": null,
+      "raw_feature_rows": 101,
+      "valid_feature_rows": 100
+    }
+  ],
+  "final_stack_inputs": {
+    "native": {
+      "real_mel_rows": 29,
+      "zero_feature_padding_rows": 3,
+      "encoder_tokens": 4,
+      "all_encoder_tokens_valid": true
+    },
+    "hf": {
+      "real_mel_rows": 100,
+      "zero_feature_padding_rows": 4,
+      "encoder_tokens": 13,
+      "all_encoder_tokens_valid": true
+    }
+  },
+  "final_common_mel_comparison": {
+    "shape": [
+      28,
+      128
+    ],
+    "bitwise_equal": true,
+    "maximum_absolute_error": 0.0,
+    "mean_absolute_error": 0.0,
+    "root_mean_square_error": 0.0,
+    "p95_absolute_error": 0.0,
+    "p99_absolute_error": 0.0,
+    "worst_frame_feature": [
+      0,
+      0
+    ],
+    "first_frame_feature_over_tolerance": null,
+    "values_over_tolerance": 0,
+    "absolute_tolerance": 0.001
+  },
+  "comparison_global_start": 72,
+  "comparison_global_end": 100,
+  "native_extra_computed_rows": 1
+}

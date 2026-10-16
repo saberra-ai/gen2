@@ -1,0 +1,26 @@
+{
+  "source_commit": "5204386c8054e3ce294b543e91dd5c7770048c69",
+  "argv": [
+    "/usr/bin/sandbox-exec",
+    "-f",
+    "/Users/victor/.cache/gen2-nemotron3-n0/tail-framing-v1.sb",
+    "/Users/victor/.cache/gen2-nemotron3-n0/python-reference/bin/python",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization",
+    "-p",
+    "test_tail_framing.py"
+  ],
+  "environment_overrides": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "HF_HUB_OFFLINE": "1",
+    "TRANSFORMERS_OFFLINE": "1",
+    "OMP_NUM_THREADS": "4",
+    "MKL_NUM_THREADS": "4",
+    "PYTHONPATH": "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization"
+  },
+  "returncode": 0,
+  "elapsed_seconds": 0.07864025002345443
+}

@@ -1,0 +1,38 @@
+{
+  "source_commit": "5204386c8054e3ce294b543e91dd5c7770048c69",
+  "argv": [
+    "/usr/bin/sandbox-exec",
+    "-f",
+    "/Users/victor/.cache/gen2-nemotron3-n0/tail-framing-v1.sb",
+    "/Users/victor/.cache/gen2-nemotron3-n0/python-reference/bin/python",
+    "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/diagnose_tail_framing.py",
+    "--assets",
+    "/Users/victor/.cache/gen2-nemotron3-n0/assets",
+    "--corpus",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality-corpus-v1",
+    "--evidence",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907",
+    "--frontend-evidence",
+    "/Users/victor/.cache/gen2-nemotron3-n0/frontend-diagnostic-ec88564",
+    "--native-source",
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp",
+    "--sdk",
+    "/Users/victor/.cache/gen2-nemotron3-n0/sdk-cpu",
+    "--probe",
+    "/Users/victor/.cache/gen2-nemotron3-n0/frontend-tail-probe-v1/frontend-tail-probe",
+    "--probe-build",
+    "/Users/victor/.cache/gen2-nemotron3-n0/frontend-tail-probe-v1/build.json",
+    "--output",
+    "/Users/victor/.cache/gen2-nemotron3-n0/tail-framing-v1"
+  ],
+  "environment_overrides": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "HF_HUB_OFFLINE": "1",
+    "TRANSFORMERS_OFFLINE": "1",
+    "OMP_NUM_THREADS": "4",
+    "MKL_NUM_THREADS": "4",
+    "PYTHONPATH": "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization"
+  },
+  "returncode": 0,
+  "elapsed_seconds": 5.0166841659811325
+}

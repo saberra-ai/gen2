@@ -1,0 +1,104 @@
+{
+  "case": "calibration",
+  "origin": {
+    "pcm_sha256": "547f9157d1484b1e0b955c899cbbc1c4b888bb0feda9c4f48a67dd751c91f436",
+    "wav": "partial-1.117s-smoke.wav",
+    "wav_identity": {
+      "bytes": 35788,
+      "sha256": "1a6fcc5758334348397ceb8e5975589508a65d4d47ff3bf2bdd3a5ed183634c8"
+    },
+    "calibration": true
+  },
+  "pcm": {
+    "bytes": 71488,
+    "sha256": "547f9157d1484b1e0b955c899cbbc1c4b888bb0feda9c4f48a67dd751c91f436"
+  },
+  "native_frontend": {
+    "audio_samples": 17872,
+    "raw_frames": 112,
+    "before_finish_frames": 111,
+    "mel_bins": 128,
+    "push_samples": 16640,
+    "uses_gpu": false,
+    "available_after_push": [
+      103,
+      111
+    ]
+  },
+  "native_source_derived_schedule": [
+    {
+      "start": 0,
+      "emitted_end": 72,
+      "input_end": 104,
+      "phase": "feed"
+    },
+    {
+      "start": 72,
+      "emitted_end": 112,
+      "input_end": 112,
+      "phase": "finish"
+    }
+  ],
+  "hf_actual_calls": [
+    {
+      "start": 0,
+      "input_end": 104,
+      "emitted_end": 72,
+      "raw_start": 0,
+      "raw_end": 16680,
+      "first": true,
+      "last": false,
+      "num_lookahead_frames": 4,
+      "raw_feature_rows": 105,
+      "valid_feature_rows": 104
+    },
+    {
+      "start": 72,
+      "input_end": 111,
+      "emitted_end": 111,
+      "raw_start": 11264,
+      "raw_end": 17872,
+      "first": false,
+      "last": true,
+      "num_lookahead_frames": null,
+      "raw_feature_rows": 39,
+      "valid_feature_rows": 39
+    }
+  ],
+  "final_stack_inputs": {
+    "native": {
+      "real_mel_rows": 40,
+      "zero_feature_padding_rows": 0,
+      "encoder_tokens": 5,
+      "all_encoder_tokens_valid": true
+    },
+    "hf": {
+      "real_mel_rows": 39,
+      "zero_feature_padding_rows": 1,
+      "encoder_tokens": 5,
+      "all_encoder_tokens_valid": true
+    }
+  },
+  "final_common_mel_comparison": {
+    "shape": [
+      39,
+      128
+    ],
+    "bitwise_equal": false,
+    "maximum_absolute_error": 6.389617919921875e-05,
+    "mean_absolute_error": 9.187138997591459e-07,
+    "root_mean_square_error": 2.7666527011150037e-06,
+    "p95_absolute_error": 2.86102294921875e-06,
+    "p99_absolute_error": 6.67572021484375e-06,
+    "worst_frame_feature": [
+      29,
+      127
+    ],
+    "first_frame_feature_over_tolerance": null,
+    "values_over_tolerance": 0,
+    "absolute_tolerance": 0.001
+  },
+  "comparison_global_start": 72,
+  "comparison_global_end": 111,
+  "native_extra_computed_rows": 1
+}
