@@ -1,4 +1,4 @@
-//! Local multilingual Whisper base CPU adapter. The host builds/ships the pinned
+//! Local multilingual Whisper CPU profiles. The host builds/ships the pinned
 //! C shim; this module never downloads models or dispatches to a remote service.
 //! Load and run on a host worker: contexts stay on their creating thread, take
 //! one mutable call at a time, and hold Runtime's peak reservation until Drop.
@@ -17,9 +17,36 @@ pub const MODEL_REPOSITORY: &str = "ggerganov/whisper.cpp";
 pub const MODEL_REVISION: &str = "5359861c739e955e79d9a303bcbc70fb988958b1";
 pub const MODEL_SHA256: &str = "422f1ae452ade6f30a004d7e5c6a43195e4433bc370bf23fac9cc591f01a8898";
 pub const MODEL_BYTES: u64 = 59_707_625;
+/// Closed, exact artifact profiles; selecting tiny is explicit, never fallback.
+#[derive(Debug, Clone, Copy, PartialEq, Eq)]
+pub enum ModelProfile {
+    BaseQ5_1,
+    TinyQ5_1,
+}
+impl ModelProfile {
+    pub fn bytes(self) -> u64 {
+        match self {
+            Self::BaseQ5_1 => MODEL_BYTES,
+            Self::TinyQ5_1 => 32_152_673,
+        }
+    }
+    pub fn sha256(self) -> &'static str {
+        match self {
+            Self::BaseQ5_1 => MODEL_SHA256,
+            Self::TinyQ5_1 => "818710568da3ca15689e31a743197b520007872ff9576237bda97bd1b469c3d7",
+        }
+    }
+    pub fn file_name(self) -> &'static str {
+        match self {
+            Self::BaseQ5_1 => "ggml-base-q5_1.bin",
+            Self::TinyQ5_1 => "ggml-tiny-q5_1.bin",
+        }
+    }
+}
 pub const NATIVE_ABI: &str = "gen2-whisper-v1:d1be6fde11ac6e0407606b4e42fe72d34add8037";
 /// Includes verified input weights during load plus native weights/workspace.
-/// Short physical-device peak was198MiB;30s/long-session qualification is needed.
+/// Base short physical-device peak was198MiB; tiny retains this conservative
+/// floor. Whole-app/long-session qualification is still required for both.
 pub const MINIMUM_RESERVATION_MIB: u64 = 384;
 /// Pinned frontend/decoder needs more than100mel-ms;1800frames reaches110ms.
 pub const MINIMUM_FRAMES: usize = 1800;
@@ -109,26 +136,28 @@ pub struct Transcription {
 }
 pub(crate) struct Bundle {
     file: File,
+    profile: ModelProfile,
 }
 impl Bundle {
-    pub(crate) fn open(path: &Path) -> Result<Self> {
+    pub(crate) fn open(path: &Path, profile: ModelProfile) -> Result<Self> {
         let file = File::open(path)
             .map_err(|_| SpeechError::InvalidBundle("Local Whisper model is unavailable".into()))?;
         if !file
             .metadata()
-            .is_ok_and(|m| m.is_file() && m.len() == MODEL_BYTES)
+            .is_ok_and(|m| m.is_file() && m.len() == profile.bytes())
         {
-            return Err(SpeechError::InvalidBundle(
-                "Expected the pinned multilingual Whisper base-q5_1 weights".into(),
-            ));
+            return Err(SpeechError::InvalidBundle(format!(
+                "Expected the pinned multilingual Whisper {} weights",
+                profile.file_name()
+            )));
         }
-        Ok(Self { file })
+        Ok(Self { file, profile })
     }
     fn read_verified(mut self) -> Result<Vec<u8>> {
         // Keep the already-open regular file through admission; no path reopen
         // can switch it to a pipe or another inode. Allocation stays fixed even
         // if a concurrent writer grows the file.
-        let mut bytes = vec![0; MODEL_BYTES as usize];
+        let mut bytes = vec![0; self.profile.bytes() as usize];
         self.file.read_exact(&mut bytes).map_err(|_| {
             SpeechError::InvalidBundle("Local Whisper model could not be read".into())
         })?;
@@ -141,12 +170,12 @@ impl Bundle {
                 "Local Whisper model size changed".into(),
             ));
         }
-        if bytes.len() != MODEL_BYTES as usize
+        if bytes.len() != self.profile.bytes() as usize
             || Sha256::digest(&bytes)
                 .iter()
                 .map(|b| format!("{b:02x}"))
                 .collect::<String>()
-                != MODEL_SHA256
+                != self.profile.sha256()
         {
             return Err(SpeechError::InvalidBundle(
                 "Local Whisper model checksum changed; reinstall its pinned weights".into(),
@@ -166,8 +195,9 @@ impl Transcriber {
         options: LoadOptions,
         reservation: Box<dyn Send>,
     ) -> Result<Self> {
+        let profile = bundle.profile;
         let bytes = bundle.read_verified()?;
-        let api = ffi::Api::load(&options.native_library)?;
+        let api = ffi::Api::load(&options.native_library, profile)?;
         // SAFETY: exact verified weights stay alive for synchronous native loading;
         // upstream's buffer loader copies weights before returning its owned context.
         let context = NonNull::new(unsafe { (api.open)(bytes.as_ptr().cast(), bytes.len()) })
@@ -394,7 +424,7 @@ mod tests {
         let root = tempfile::tempdir().unwrap();
         let path = root.path().join("model.bin");
         std::fs::write(&path, [1, 2, 3]).unwrap();
-        assert!(Bundle::open(&path).is_err());
+        assert!(Bundle::open(&path, ModelProfile::BaseQ5_1).is_err());
         let mut options = LoadOptions::cpu("not-a-library");
         options.reservation_mb = 383;
         assert!(options.validate().is_err());
@@ -406,20 +436,64 @@ mod tests {
     fn runtime_budget_rejects_before_weight_allocation_or_native_loading() {
         let root = tempfile::tempdir().unwrap();
         let path = root.path().join("model.bin");
-        File::create(&path).unwrap().set_len(MODEL_BYTES).unwrap();
         let runtime = crate::Runtime::builder()
             .resident_memory_budget_mb(0)
             .build()
             .unwrap();
-        let error = runtime
-            .load_whisper(&path, LoadOptions::cpu("no-library"))
-            .err()
+        for profile in [ModelProfile::BaseQ5_1, ModelProfile::TinyQ5_1] {
+            File::create(&path)
+                .unwrap()
+                .set_len(profile.bytes())
+                .unwrap();
+            let error = runtime
+                .load_whisper_profile(&path, profile, LoadOptions::cpu("no-library"))
+                .err()
+                .unwrap()
+                .to_string();
+            assert!(
+                error.contains("cannot reserve384") || error.contains("cannot reserve 384"),
+                "{error}"
+            );
+            assert_eq!(runtime.speech_reserved_mb(), 0);
+        }
+    }
+    #[test]
+    fn wrong_profile_or_same_size_wrong_hash_is_rejected_before_native_load() {
+        let root = tempfile::tempdir().unwrap();
+        let path = root.path().join("model.bin");
+        File::create(&path)
             .unwrap()
-            .to_string();
-        assert!(
-            error.contains("cannot reserve384") || error.contains("cannot reserve 384"),
-            "{error}"
-        );
+            .set_len(ModelProfile::TinyQ5_1.bytes())
+            .unwrap();
+        assert!(Bundle::open(&path, ModelProfile::BaseQ5_1).is_err());
+        assert!(matches!(
+            Bundle::open(&path, ModelProfile::TinyQ5_1)
+                .unwrap()
+                .read_verified(),
+            Err(SpeechError::InvalidBundle(_))
+        ));
+        File::create(&path)
+            .unwrap()
+            .set_len(ModelProfile::BaseQ5_1.bytes())
+            .unwrap();
+        assert!(Bundle::open(&path, ModelProfile::TinyQ5_1).is_err());
+    }
+    #[test]
+    #[ignore = "requires pinned tiny weights and original base-only native shim"]
+    fn older_native_host_rejects_tiny_and_releases_shared_reservation() {
+        let model = std::env::var_os("GEN2_WHISPER_TINY_MODEL").expect("pinned tiny model fixture");
+        let native =
+            std::env::var_os("GEN2_WHISPER_LEGACY_LIBRARY").expect("base-only native fixture");
+        let runtime = crate::Runtime::new().unwrap();
+        let error = runtime
+            .load_whisper_profile(
+                PathBuf::from(model),
+                ModelProfile::TinyQ5_1,
+                LoadOptions::cpu(native),
+            )
+            .err()
+            .expect("old shim must reject tiny");
+        assert!(error.to_string().contains("TinyQ5_1 support"), "{error}");
         assert_eq!(runtime.speech_reserved_mb(), 0);
     }
 }

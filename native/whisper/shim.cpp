@@ -8,11 +8,18 @@ struct Check {g2w_cancel function;void * data;};
 static bool cancelled(void * p){const auto * c=static_cast<Check *>(p);return c->function&&c->function(c->data)!=0;}
 static bool encoding(whisper_context *,whisper_state *,void * p){return !cancelled(p);}
 static void quiet(enum ggml_log_level,const char *,void *){}
+static void * open_model(const void * model,size_t bytes){
+    try {static std::once_flag logging;std::call_once(logging,[]{whisper_log_set(quiet,nullptr);});auto p=whisper_context_default_params();p.use_gpu=false;p.flash_attn=true;return whisper_init_from_buffer_with_params(const_cast<void *>(model),bytes,p);}catch(...){return nullptr;}
+}
 extern "C" {
 const char * gen2_whisper_abi(void){return "gen2-whisper-v1:d1be6fde11ac6e0407606b4e42fe72d34add8037";}
 void * gen2_whisper_open(const void * model,size_t bytes){
     if(!model||bytes!=59707625)return nullptr;
-    try {static std::once_flag logging;std::call_once(logging,[]{whisper_log_set(quiet,nullptr);});auto p=whisper_context_default_params();p.use_gpu=false;p.flash_attn=true;return whisper_init_from_buffer_with_params(const_cast<void *>(model),bytes,p);}catch(...){return nullptr;}
+    return open_model(model,bytes);
+}
+void * gen2_whisper_open_tiny_v1(const void * model,size_t bytes){
+    if(!model||bytes!=32152673)return nullptr;
+    return open_model(model,bytes);
 }
 void gen2_whisper_close(void * context){if(context)whisper_free(static_cast<whisper_context *>(context));}
 int gen2_whisper_run(void * context,const float * samples,size_t count,int language,int threads,g2w_cancel stop,void * user){

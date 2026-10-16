@@ -321,8 +321,20 @@ impl Runtime {
         path: impl AsRef<Path>,
         options: crate::whisper::LoadOptions,
     ) -> Result<crate::whisper::Transcriber> {
+        self.load_whisper_profile(path, crate::whisper::ModelProfile::BaseQ5_1, options)
+    }
+
+    /// Explicit pinned multilingual model selection. Tiny retains the same384MiB
+    /// reservation floor until its complete native peak is separately qualified.
+    #[cfg(feature = "backend-asr-whisper")]
+    pub fn load_whisper_profile(
+        &self,
+        path: impl AsRef<Path>,
+        profile: crate::whisper::ModelProfile,
+        options: crate::whisper::LoadOptions,
+    ) -> Result<crate::whisper::Transcriber> {
         options.validate()?;
-        let bundle = crate::whisper::Bundle::open(path.as_ref())?;
+        let bundle = crate::whisper::Bundle::open(path.as_ref(), profile)?;
         let mb = options.reservation_mb;
         let reservation = {
             let _admission = self

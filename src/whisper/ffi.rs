@@ -1,4 +1,4 @@
-use super::{NATIVE_ABI, Result, SpeechError};
+use super::{ModelProfile, NATIVE_ABI, Result, SpeechError};
 use std::{
     ffi::{CStr, c_char, c_void},
     path::Path,
@@ -28,11 +28,11 @@ impl Api {
         self.threads = threads;
         self
     }
-    pub fn load(path: &Path) -> Result<Self> {
+    pub fn load(path: &Path, profile: ModelProfile) -> Result<Self> {
         let bad = || {
-            SpeechError::BackendUnavailable(
-                "Expected the pinned gen2-whisper-v1 native library".into(),
-            )
+            SpeechError::BackendUnavailable(format!(
+                "Expected the pinned gen2-whisper-v1 native library with {profile:?} support"
+            ))
         };
         // SAFETY: host ships this reviewed C ABI. All symbols/version are checked
         // before loading weights. The library outlives context and every function call.
@@ -51,7 +51,12 @@ impl Api {
                 return Err(bad());
             }
             Ok(Self {
-                open: symbol!("gen2_whisper_open"),
+                // Base keeps its original ABI and rejects tiny bytes. A distinct
+                // versioned tiny constructor fails closed on older native hosts.
+                open: match profile {
+                    ModelProfile::BaseQ5_1 => symbol!("gen2_whisper_open"),
+                    ModelProfile::TinyQ5_1 => symbol!("gen2_whisper_open_tiny_v1"),
+                },
                 close: symbol!("gen2_whisper_close"),
                 run: symbol!("gen2_whisper_run"),
                 segments: symbol!("gen2_whisper_segments"),

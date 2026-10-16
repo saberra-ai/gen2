@@ -12,7 +12,7 @@ cmake -S native/whisper -B /tmp/gen2-whisper -G Ninja \
 cmake --build /tmp/gen2-whisper --target gen2_whisper
 ```
 
-The stable C header hides upstream parameter-struct layouts. Only seven
+The stable C header hides upstream parameter-struct layouts. Only eight
 `gen2_whisper_*` symbols export; statically linked GGML/Whisper symbols stay
 private to prevent collision with a separate Gen2 llama.cpp backend. Inspect the
 actual final binary exports and test coexistence; a source setting alone is not
@@ -25,6 +25,16 @@ admission, then loaded from those verified bytes. Its384MiB reservation includes
 that temporary input buffer plus native weights/workspace; it stays held until
 native context teardown. Bark's separate4GiB floor is unchanged. The actual
 mobile/app memory and co-residency budgets still require qualification.
+
+`Runtime::load_whisper_profile(..., whisper::ModelProfile::TinyQ5_1, ...)` is an
+explicit candidate profile using multilingual tiny-q5_1 from the same publisher
+revision,32,152,673bytes/SHA818710568da3ca15689e31a743197b520007872ff9576237bda97bd1b469c3d7.
+It keeps the384MiB floor; no measured smaller envelope or product quality is claimed.
+Its additive `gen2_whisper_open_tiny_v1` constructor leaves the original base-only
+constructor and ABI unchanged. Older shims fail closed when tiny is explicitly
+requested. Both profiles verify complete bytes after shared admission and use the
+same CPU/beam5/flash-attention/context/input/cancellation/timestamp settings.
+No automatic fallback or phone app model-selection behavior is introduced here.
 
 `Transcriber` stays on its creating thread; `&mut self` serializes calls. A host
 owns its job queue, cancellation/deadline, durable journal/progress and worker

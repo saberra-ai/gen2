@@ -14,6 +14,9 @@ extern "C" {
 typedef int (*g2w_cancel)(void *);
 G2W_API const char * gen2_whisper_abi(void);
 G2W_API void * gen2_whisper_open(const void * model,size_t bytes);
+// Additive profile extension: exact multilingual tiny-q5_1, host verifies SHA256.
+// The legacy constructor remains base-only. Same inference strategy/limits.
+G2W_API void * gen2_whisper_open_tiny_v1(const void * model,size_t bytes);
 G2W_API void gen2_whisper_close(void * context);
 // Input1800–480000 finite mono16kHz frames. 0=complete,1=failed,2=cancelled. Language0=auto,1=en,2=es; never translate.
 G2W_API int gen2_whisper_run(void *,const float *,size_t,int,int,g2w_cancel,void *);
