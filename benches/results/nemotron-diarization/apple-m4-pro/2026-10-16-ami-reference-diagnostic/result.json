@@ -1,0 +1,764 @@
+{
+  "release_qualified": false,
+  "original_gate_status_changed": false,
+  "scope": "Isolate AMI reference convention effects on already-frozen outputs. This is post-failure protocol diagnosis, not fresh heldout validation or full model-card reproduction.",
+  "protocol_sha256": "190b73dac9cbdfc16e9e298d5c3892227514dd8ddfe45bb67f149388cff51c2d",
+  "script_sha256": "5df4b4999f1868460472538c36bd08a77258b4585257d7b4d37ca49e5f346a03",
+  "reference_sha256": "3ed314bb088e11a2a53f6eb1a8ed3876f6ae6f3f92d3340640baabac90167c98",
+  "scoring": "10ms midpoint, zero collar, overlap included; not exact official continuous scorer",
+  "independent_scoring": {
+    "url": "https://raw.githubusercontent.com/NVIDIA-NeMo/Speech/218d0b443441b7d8aa1c832f47df310f186cf0a4/nemo/collections/asr/metrics/md_eval.py",
+    "revision": "218d0b443441b7d8aa1c832f47df310f186cf0a4",
+    "bytes": 54914,
+    "sha256": "c34af6eeec07e1df795c6820f36cb05459c28ac8d5d84fb0efea433035546de3",
+    "license": "Apache-2.0 with retained original BSD-2-Clause notice",
+    "numpy_version": "2.2.6",
+    "scipy_version": "1.18.1",
+    "invocation": "Unmodified md_eval.py get_rttm_data/get_uem_data/evaluate(collar=0,opt_1=False,verbose=False); standard Python logging shim only for nemo.utils.logging. These NumPy/SciPy pins match our original oracle environment, not the full official NeMo lock.",
+    "calibrations": "Before reading target labels: synthetic overlap/mapping, missed overlap, false alarm and global confusion cases on exact10ms boundaries, expected DER0/.5/.5/.5."
+  },
+  "independent_calibrations": [
+    {
+      "case": "overlap_and_mapping",
+      "expected_der": 0,
+      "official": {
+        "der": 0.0,
+        "missed_speaker_seconds": 0.0,
+        "false_alarm_speaker_seconds": 0.0,
+        "confusion_speaker_seconds": 0.0,
+        "reference_speaker_seconds": 1.2,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 1
+      },
+      "frame": {
+        "der": 0.0,
+        "missed_speaker_seconds": 0.0,
+        "false_alarm_speaker_seconds": 0.0,
+        "confusion_speaker_seconds": 0.0,
+        "reference_speaker_seconds": 1.2,
+        "reference_speakers": 2,
+        "hypothesis_speakers": 2,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 1
+      }
+    },
+    {
+      "case": "missed_overlap",
+      "expected_der": 0.5,
+      "official": {
+        "der": 0.5,
+        "missed_speaker_seconds": 0.6,
+        "false_alarm_speaker_seconds": 0.0,
+        "confusion_speaker_seconds": 0.0,
+        "reference_speaker_seconds": 1.2,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 1
+      },
+      "frame": {
+        "der": 0.5,
+        "missed_speaker_seconds": 0.6,
+        "false_alarm_speaker_seconds": 0.0,
+        "confusion_speaker_seconds": 0.0,
+        "reference_speaker_seconds": 1.2,
+        "reference_speakers": 2,
+        "hypothesis_speakers": 1,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 1
+      }
+    },
+    {
+      "case": "false_alarm",
+      "expected_der": 0.5,
+      "official": {
+        "der": 0.4999999999999999,
+        "missed_speaker_seconds": 0.0,
+        "false_alarm_speaker_seconds": 0.19999999999999996,
+        "confusion_speaker_seconds": 0.0,
+        "reference_speaker_seconds": 0.4,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 1
+      },
+      "frame": {
+        "der": 0.5,
+        "missed_speaker_seconds": 0.0,
+        "false_alarm_speaker_seconds": 0.2,
+        "confusion_speaker_seconds": 0.0,
+        "reference_speaker_seconds": 0.4,
+        "reference_speakers": 1,
+        "hypothesis_speakers": 1,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 1
+      }
+    },
+    {
+      "case": "global_confusion",
+      "expected_der": 0.5,
+      "official": {
+        "der": 0.5,
+        "missed_speaker_seconds": 0.0,
+        "false_alarm_speaker_seconds": 0.0,
+        "confusion_speaker_seconds": 0.5,
+        "reference_speaker_seconds": 1.0,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 1
+      },
+      "frame": {
+        "der": 0.5,
+        "missed_speaker_seconds": 0.0,
+        "false_alarm_speaker_seconds": 0.0,
+        "confusion_speaker_seconds": 0.5,
+        "reference_speaker_seconds": 1.0,
+        "reference_speakers": 2,
+        "hypothesis_speakers": 1,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 1
+      }
+    }
+  ],
+  "license": "CC-BY-4.0",
+  "reference_url": "https://raw.githubusercontent.com/nttcslab-sp/diar-forced-alignment/9527b7c64846fb38316a610f32e9d3466bd6d8b7/AMI/test/ES2004a.rttm",
+  "results": [
+    {
+      "slice": "ami-ES2004a-Mix-Headset",
+      "backend": "cpu",
+      "profile": "fp32_shared_threshold",
+      "original_transcriber_reference": {
+        "der": 0.414447315,
+        "missed_speaker_seconds": 45.67,
+        "false_alarm_speaker_seconds": 0.02,
+        "confusion_speaker_seconds": 0.84,
+        "reference_speaker_seconds": 112.27,
+        "reference_speakers": 4,
+        "hypothesis_speakers": 4,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "published_forced_reference": {
+        "der": 0.167430536,
+        "missed_speaker_seconds": 7.35,
+        "false_alarm_speaker_seconds": 4.15,
+        "confusion_speaker_seconds": 0.19,
+        "reference_speaker_seconds": 69.82,
+        "reference_speakers": 4,
+        "hypothesis_speakers": 4,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "official_original_transcriber_reference": {
+        "der": 0.41437325210637815,
+        "missed_speaker_seconds": 45.67399999999984,
+        "false_alarm_speaker_seconds": 0.016000000000019554,
+        "confusion_speaker_seconds": 0.8350000000000009,
+        "reference_speaker_seconds": 112.27799999999985,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "official_published_forced_reference": {
+        "der": 0.16741861097982394,
+        "missed_speaker_seconds": 7.34800000000012,
+        "false_alarm_speaker_seconds": 4.149000000000184,
+        "confusion_speaker_seconds": 0.19200000000001793,
+        "reference_speaker_seconds": 69.81899999999996,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "der_change": -0.247016779
+    },
+    {
+      "slice": "ami-ES2004a-Mix-Headset",
+      "backend": "cpu",
+      "profile": "q8_shared_threshold",
+      "original_transcriber_reference": {
+        "der": 0.414714527,
+        "missed_speaker_seconds": 45.71,
+        "false_alarm_speaker_seconds": 0.02,
+        "confusion_speaker_seconds": 0.83,
+        "reference_speaker_seconds": 112.27,
+        "reference_speakers": 4,
+        "hypothesis_speakers": 4,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "published_forced_reference": {
+        "der": 0.168146663,
+        "missed_speaker_seconds": 7.39,
+        "false_alarm_speaker_seconds": 4.15,
+        "confusion_speaker_seconds": 0.2,
+        "reference_speaker_seconds": 69.82,
+        "reference_speakers": 4,
+        "hypothesis_speakers": 4,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "official_original_transcriber_reference": {
+        "der": 0.41464044603573186,
+        "missed_speaker_seconds": 45.71399999999982,
+        "false_alarm_speaker_seconds": 0.016000000000019554,
+        "confusion_speaker_seconds": 0.8249999999999957,
+        "reference_speaker_seconds": 112.27799999999985,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "official_published_forced_reference": {
+        "der": 0.16813474842092196,
+        "missed_speaker_seconds": 7.388000000000115,
+        "false_alarm_speaker_seconds": 4.149000000000205,
+        "confusion_speaker_seconds": 0.20200000000002305,
+        "reference_speaker_seconds": 69.81899999999996,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "der_change": -0.246567864
+    },
+    {
+      "slice": "ami-ES2004a-Mix-Headset",
+      "backend": "cpu",
+      "profile": "q8_production_default",
+      "original_transcriber_reference": {
+        "der": 0.33214572,
+        "missed_speaker_seconds": 34.76,
+        "false_alarm_speaker_seconds": 1.2,
+        "confusion_speaker_seconds": 1.33,
+        "reference_speaker_seconds": 112.27,
+        "reference_speakers": 4,
+        "hypothesis_speakers": 4,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "published_forced_reference": {
+        "der": 0.276568319,
+        "missed_speaker_seconds": 4.56,
+        "false_alarm_speaker_seconds": 13.45,
+        "confusion_speaker_seconds": 1.3,
+        "reference_speaker_seconds": 69.82,
+        "reference_speakers": 4,
+        "hypothesis_speakers": 4,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "official_original_transcriber_reference": {
+        "der": 0.3326920897653004,
+        "missed_speaker_seconds": 34.839002493113284,
+        "false_alarm_speaker_seconds": 1.1930010040402834,
+        "confusion_speaker_seconds": 1.3219989575147792,
+        "reference_speaker_seconds": 112.27799999999985,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "official_published_forced_reference": {
+        "der": 0.27617126539628917,
+        "missed_speaker_seconds": 4.592001211911494,
+        "false_alarm_speaker_seconds": 13.404999722838383,
+        "confusion_speaker_seconds": 1.285000643953623,
+        "reference_speaker_seconds": 69.81899999999996,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "der_change": -0.05557740099999997
+    },
+    {
+      "slice": "ami-ES2004a-Mix-Headset",
+      "backend": "metal",
+      "profile": "fp32_shared_threshold",
+      "original_transcriber_reference": {
+        "der": 0.414447315,
+        "missed_speaker_seconds": 45.67,
+        "false_alarm_speaker_seconds": 0.02,
+        "confusion_speaker_seconds": 0.84,
+        "reference_speaker_seconds": 112.27,
+        "reference_speakers": 4,
+        "hypothesis_speakers": 4,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "published_forced_reference": {
+        "der": 0.167430536,
+        "missed_speaker_seconds": 7.35,
+        "false_alarm_speaker_seconds": 4.15,
+        "confusion_speaker_seconds": 0.19,
+        "reference_speaker_seconds": 69.82,
+        "reference_speakers": 4,
+        "hypothesis_speakers": 4,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "official_original_transcriber_reference": {
+        "der": 0.41437325210637815,
+        "missed_speaker_seconds": 45.67399999999984,
+        "false_alarm_speaker_seconds": 0.016000000000019554,
+        "confusion_speaker_seconds": 0.8350000000000009,
+        "reference_speaker_seconds": 112.27799999999985,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "official_published_forced_reference": {
+        "der": 0.16741861097982394,
+        "missed_speaker_seconds": 7.34800000000012,
+        "false_alarm_speaker_seconds": 4.149000000000184,
+        "confusion_speaker_seconds": 0.19200000000001793,
+        "reference_speaker_seconds": 69.81899999999996,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "der_change": -0.247016779
+    },
+    {
+      "slice": "ami-ES2004a-Mix-Headset",
+      "backend": "metal",
+      "profile": "q8_shared_threshold",
+      "original_transcriber_reference": {
+        "der": 0.415427095,
+        "missed_speaker_seconds": 45.78,
+        "false_alarm_speaker_seconds": 0.02,
+        "confusion_speaker_seconds": 0.84,
+        "reference_speaker_seconds": 112.27,
+        "reference_speakers": 4,
+        "hypothesis_speakers": 4,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "published_forced_reference": {
+        "der": 0.167716987,
+        "missed_speaker_seconds": 7.39,
+        "false_alarm_speaker_seconds": 4.08,
+        "confusion_speaker_seconds": 0.24,
+        "reference_speaker_seconds": 69.82,
+        "reference_speakers": 4,
+        "hypothesis_speakers": 4,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "official_original_transcriber_reference": {
+        "der": 0.4153529631806759,
+        "missed_speaker_seconds": 45.78399999999984,
+        "false_alarm_speaker_seconds": 0.016000000000019554,
+        "confusion_speaker_seconds": 0.8350000000000009,
+        "reference_speaker_seconds": 112.27799999999985,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "official_published_forced_reference": {
+        "der": 0.16776235695155065,
+        "missed_speaker_seconds": 7.390000000000114,
+        "false_alarm_speaker_seconds": 4.081000000000179,
+        "confusion_speaker_seconds": 0.2420000000000151,
+        "reference_speaker_seconds": 69.81899999999996,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "der_change": -0.247710108
+    },
+    {
+      "slice": "ami-ES2004a-Mix-Headset",
+      "backend": "metal",
+      "profile": "q8_production_default",
+      "original_transcriber_reference": {
+        "der": 0.332234791,
+        "missed_speaker_seconds": 34.76,
+        "false_alarm_speaker_seconds": 1.21,
+        "confusion_speaker_seconds": 1.33,
+        "reference_speaker_seconds": 112.27,
+        "reference_speakers": 4,
+        "hypothesis_speakers": 4,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "published_forced_reference": {
+        "der": 0.276281868,
+        "missed_speaker_seconds": 4.53,
+        "false_alarm_speaker_seconds": 13.43,
+        "confusion_speaker_seconds": 1.33,
+        "reference_speaker_seconds": 69.82,
+        "reference_speakers": 4,
+        "hypothesis_speakers": 4,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "official_original_transcriber_reference": {
+        "der": 0.33278115440642764,
+        "missed_speaker_seconds": 34.839002493113284,
+        "false_alarm_speaker_seconds": 1.203001003816766,
+        "confusion_speaker_seconds": 1.3219989575147792,
+        "reference_speaker_seconds": 112.27799999999985,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "official_published_forced_reference": {
+        "der": 0.27588481042625285,
+        "missed_speaker_seconds": 4.562001212582047,
+        "false_alarm_speaker_seconds": 13.384999723285418,
+        "confusion_speaker_seconds": 1.3150006432830708,
+        "reference_speaker_seconds": 69.81899999999996,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "der_change": -0.05595292299999999
+    },
+    {
+      "slice": "ami-ES2004a-Array1-01",
+      "backend": "cpu",
+      "profile": "fp32_shared_threshold",
+      "original_transcriber_reference": {
+        "der": 0.500222677,
+        "missed_speaker_seconds": 51.49,
+        "false_alarm_speaker_seconds": 0.13,
+        "confusion_speaker_seconds": 4.54,
+        "reference_speaker_seconds": 112.27,
+        "reference_speakers": 4,
+        "hypothesis_speakers": 4,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "published_forced_reference": {
+        "der": 0.275995417,
+        "missed_speaker_seconds": 12.14,
+        "false_alarm_speaker_seconds": 3.23,
+        "confusion_speaker_seconds": 3.9,
+        "reference_speaker_seconds": 69.82,
+        "reference_speakers": 4,
+        "hypothesis_speakers": 4,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "official_original_transcriber_reference": {
+        "der": 0.5001781292862355,
+        "missed_speaker_seconds": 51.49599999999987,
+        "false_alarm_speaker_seconds": 0.12800000000004275,
+        "confusion_speaker_seconds": 4.534999999999962,
+        "reference_speaker_seconds": 112.27799999999985,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "official_published_forced_reference": {
+        "der": 0.2760709835431626,
+        "missed_speaker_seconds": 12.138000000000003,
+        "false_alarm_speaker_seconds": 3.229000000000071,
+        "confusion_speaker_seconds": 3.9079999999999835,
+        "reference_speaker_seconds": 69.81899999999996,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "der_change": -0.22422725999999998
+    },
+    {
+      "slice": "ami-ES2004a-Array1-01",
+      "backend": "cpu",
+      "profile": "q8_shared_threshold",
+      "original_transcriber_reference": {
+        "der": 0.499599181,
+        "missed_speaker_seconds": 51.53,
+        "false_alarm_speaker_seconds": 0.11,
+        "confusion_speaker_seconds": 4.45,
+        "reference_speaker_seconds": 112.27,
+        "reference_speakers": 4,
+        "hypothesis_speakers": 4,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "published_forced_reference": {
+        "der": 0.274849613,
+        "missed_speaker_seconds": 12.19,
+        "false_alarm_speaker_seconds": 3.22,
+        "confusion_speaker_seconds": 3.78,
+        "reference_speaker_seconds": 69.82,
+        "reference_speakers": 4,
+        "hypothesis_speakers": 4,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "official_original_transcriber_reference": {
+        "der": 0.49953686385578594,
+        "missed_speaker_seconds": 51.53399999999985,
+        "false_alarm_speaker_seconds": 0.10600000000003718,
+        "confusion_speaker_seconds": 4.446999999999977,
+        "reference_speaker_seconds": 112.27799999999985,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "official_published_forced_reference": {
+        "der": 0.2748965181397624,
+        "missed_speaker_seconds": 12.18599999999999,
+        "false_alarm_speaker_seconds": 3.2170000000000707,
+        "confusion_speaker_seconds": 3.7900000000000045,
+        "reference_speaker_seconds": 69.81899999999996,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "der_change": -0.224749568
+    },
+    {
+      "slice": "ami-ES2004a-Array1-01",
+      "backend": "cpu",
+      "profile": "q8_production_default",
+      "original_transcriber_reference": {
+        "der": 0.438407411,
+        "missed_speaker_seconds": 42.32,
+        "false_alarm_speaker_seconds": 1.17,
+        "confusion_speaker_seconds": 5.73,
+        "reference_speaker_seconds": 112.27,
+        "reference_speakers": 4,
+        "hypothesis_speakers": 4,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "published_forced_reference": {
+        "der": 0.354626182,
+        "missed_speaker_seconds": 9.27,
+        "false_alarm_speaker_seconds": 10.57,
+        "confusion_speaker_seconds": 4.92,
+        "reference_speaker_seconds": 69.82,
+        "reference_speakers": 4,
+        "hypothesis_speakers": 4,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "official_original_transcriber_reference": {
+        "der": 0.4386879227802386,
+        "missed_speaker_seconds": 42.391002928078116,
+        "false_alarm_speaker_seconds": 1.1610015878677373,
+        "confusion_speaker_seconds": 5.70299807797371,
+        "reference_speaker_seconds": 112.27799999999985,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "official_published_forced_reference": {
+        "der": 0.35438782957838394,
+        "missed_speaker_seconds": 9.303003458037935,
+        "false_alarm_speaker_seconds": 10.532002117827446,
+        "confusion_speaker_seconds": 4.907998297467792,
+        "reference_speaker_seconds": 69.81899999999996,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "der_change": -0.08378122900000001
+    },
+    {
+      "slice": "ami-ES2004a-Array1-01",
+      "backend": "metal",
+      "profile": "fp32_shared_threshold",
+      "original_transcriber_reference": {
+        "der": 0.500222677,
+        "missed_speaker_seconds": 51.49,
+        "false_alarm_speaker_seconds": 0.13,
+        "confusion_speaker_seconds": 4.54,
+        "reference_speaker_seconds": 112.27,
+        "reference_speakers": 4,
+        "hypothesis_speakers": 4,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "published_forced_reference": {
+        "der": 0.275995417,
+        "missed_speaker_seconds": 12.14,
+        "false_alarm_speaker_seconds": 3.23,
+        "confusion_speaker_seconds": 3.9,
+        "reference_speaker_seconds": 69.82,
+        "reference_speakers": 4,
+        "hypothesis_speakers": 4,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "official_original_transcriber_reference": {
+        "der": 0.5001781292862355,
+        "missed_speaker_seconds": 51.49599999999987,
+        "false_alarm_speaker_seconds": 0.12800000000004275,
+        "confusion_speaker_seconds": 4.534999999999962,
+        "reference_speaker_seconds": 112.27799999999985,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "official_published_forced_reference": {
+        "der": 0.2760709835431626,
+        "missed_speaker_seconds": 12.138000000000003,
+        "false_alarm_speaker_seconds": 3.229000000000071,
+        "confusion_speaker_seconds": 3.9079999999999835,
+        "reference_speaker_seconds": 69.81899999999996,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "der_change": -0.22422725999999998
+    },
+    {
+      "slice": "ami-ES2004a-Array1-01",
+      "backend": "metal",
+      "profile": "q8_shared_threshold",
+      "original_transcriber_reference": {
+        "der": 0.499599181,
+        "missed_speaker_seconds": 51.5,
+        "false_alarm_speaker_seconds": 0.12,
+        "confusion_speaker_seconds": 4.47,
+        "reference_speaker_seconds": 112.27,
+        "reference_speakers": 4,
+        "hypothesis_speakers": 4,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "published_forced_reference": {
+        "der": 0.274563162,
+        "missed_speaker_seconds": 12.13,
+        "false_alarm_speaker_seconds": 3.2,
+        "confusion_speaker_seconds": 3.84,
+        "reference_speaker_seconds": 69.82,
+        "reference_speakers": 4,
+        "hypothesis_speakers": 4,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "official_original_transcriber_reference": {
+        "der": 0.49956358324872163,
+        "missed_speaker_seconds": 51.50399999999986,
+        "false_alarm_speaker_seconds": 0.11600000000002808,
+        "confusion_speaker_seconds": 4.469999999999998,
+        "reference_speaker_seconds": 112.27799999999985,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "official_published_forced_reference": {
+        "der": 0.2746530314097891,
+        "missed_speaker_seconds": 12.125999999999998,
+        "false_alarm_speaker_seconds": 3.1970000000000534,
+        "confusion_speaker_seconds": 3.8530000000000033,
+        "reference_speaker_seconds": 69.81899999999996,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "der_change": -0.22503601899999998
+    },
+    {
+      "slice": "ami-ES2004a-Array1-01",
+      "backend": "metal",
+      "profile": "q8_production_default",
+      "original_transcriber_reference": {
+        "der": 0.438229269,
+        "missed_speaker_seconds": 42.32,
+        "false_alarm_speaker_seconds": 1.17,
+        "confusion_speaker_seconds": 5.71,
+        "reference_speaker_seconds": 112.27,
+        "reference_speakers": 4,
+        "hypothesis_speakers": 4,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "published_forced_reference": {
+        "der": 0.354482956,
+        "missed_speaker_seconds": 9.27,
+        "false_alarm_speaker_seconds": 10.57,
+        "confusion_speaker_seconds": 4.91,
+        "reference_speaker_seconds": 69.82,
+        "reference_speakers": 4,
+        "hypothesis_speakers": 4,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "official_original_transcriber_reference": {
+        "der": 0.43850979349798413,
+        "missed_speaker_seconds": 42.391002928078116,
+        "false_alarm_speaker_seconds": 1.1610015878677373,
+        "confusion_speaker_seconds": 5.682998078420745,
+        "reference_speaker_seconds": 112.27799999999985,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "official_published_forced_reference": {
+        "der": 0.3542446020933658,
+        "missed_speaker_seconds": 9.303003458037935,
+        "false_alarm_speaker_seconds": 10.532002117827446,
+        "confusion_speaker_seconds": 4.897998297691309,
+        "reference_speaker_seconds": 69.81899999999996,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "der_change": -0.08374631299999996
+    }
+  ],
+  "limitations": [
+    "Report every channel/backend/postprocessing result, including failure, and MISS/FA/confusion/reference-speaker-seconds.",
+    "Original20%/2pp gates and their failed status remain unchanged. No release gate is passed by this diagnostic.",
+    "Same120s cold-start crop and FP32 safetensors conversion differ from full-meeting original-NeMo model-card evaluation. No claimed reproduction of corpus-level published numbers.",
+    "Reference convention is diagnosed after outcomes were seen; these data cannot be relabeled untouched heldout for future tuning."
+  ]
+}

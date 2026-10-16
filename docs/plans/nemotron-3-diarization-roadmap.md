@@ -520,9 +520,18 @@ protocol. See the [full corpus receipt](../../benches/results/nemotron-diarizati
 The [quality-gap investigation](../research/nemotron-quality-gaps.md) corrects an
 earlier reference-policy recommendation: NVIDIA publishes AMI scores against
 specific forced-alignment RTTMs, not the broader transcriber segments used here.
-That mismatch may inflate missed-speech error; no rescore has established its
-size or cured the frozen failure. A separate published-reference reproduction
-must retain these outcomes. The13-job feature matrix also passed at4974318.
+That mismatch materially affects missed-speech scoring, as quantified below;
+it does not cure the original frozen failure. A separate published-reference reproduction
+must retain these outcomes. That separately preregistered diagnostic is now
+complete using saved outputs, with no inference or tuning: the exact pinned NeMo
+continuous scorer gives CPU shared-threshold DER16.8135%close /27.4897%distant
+against published labels, compared with41.4640% /49.9537%against the original
+transcriber labels. Production-default DER remains27.6171% /35.4388%against
+published labels. Thus reference convention explains much of the score but does
+not resolve the distant-mic or production-default quality deficit. All four
+synthetic independent-scorer calibrations pass. See the [diagnostic receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-ami-reference-diagnostic/collection.json).
+The original frozen failures and release status are unchanged. The13-job feature
+matrix also passed at4974318.
 
 Linux/Windows CPU development jobs now build the pinned source SDK with an
 explicit x86_64AVX2/FMA/F16C baseline, retain installed dependency discovery,

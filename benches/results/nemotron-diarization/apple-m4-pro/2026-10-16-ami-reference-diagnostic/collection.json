@@ -1,0 +1,26 @@
+{
+  "release_qualified": false,
+  "original_gate_status_changed": false,
+  "adapter_source_commit": "a91ec3d",
+  "executed_inference_source_commit": "125f907d05df8c0084ce350e2261d3bb5198562c",
+  "diagnostic_result": "Reference policy explains much of the AMI missed-speech score. Published-reference CPU shared Q8 DER is16.8135%close /27.4897%distant under exact NeMo scorer. Production defaults still exceed20%bothchannels (27.6171% /35.4388%). Original frozen failures remain.",
+  "independent_scorer_calibrations_passed": 4,
+  "all_original_frame_metrics_reproduced": true,
+  "maximum_original_frame_vs_continuous_der_difference": 0.0005463697653004251,
+  "limitations": [
+    "Post-failure diagnosis on already-seen fixed120s crops, not new heldout validation or full-meeting model-card reproduction.",
+    "No inference, config tuning, reference replacement or release-gate promotion."
+  ],
+  "artifacts": {
+    "cropped-reference.json": "3bb4ce616b73e3028fe6ee2a95ded32880dd4db31affe86f1d671ed678b26742",
+    "result.json": "9647542f9a9221dfd5e89b851f6d7e20d93585eb2442d5cd80cfef856fa7ffdd",
+    "LICENSE.reference": "41c689784902f8341b8e8766bf43167d748218d336012e4582575e67502a9619",
+    "LICENSE.Apache-2.0": "eaaca34b26b27c7be5a5099a0b9ddf9913f2db0aa96f6d5854435f2916d6fdc3",
+    "command.json": "391eb5151b6964b2afac8435ebdb2c645b86d40d1926bbfcb488920a4385d0f3",
+    "protocol.json": "190b73dac9cbdfc16e9e298d5c3892227514dd8ddfe45bb67f149388cff51c2d",
+    "ES2004a.rttm": "3ed314bb088e11a2a53f6eb1a8ed3876f6ae6f3f92d3340640baabac90167c98",
+    "md_eval.py": "c34af6eeec07e1df795c6820f36cb05459c28ac8d5d84fb0efea433035546de3",
+    "diagnose_ami_reference.py": "5df4b4999f1868460472538c36bd08a77258b4585257d7b4d37ca49e5f346a03",
+    "NOTICE.md": "ddc2f83d2745dab1f8cebbc15c492220dc8e8c4b1b91af7369fa219322b3e505"
+  }
+}
