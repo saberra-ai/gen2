@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "name": "AMI published-reference diagnostic v1",
+  "release_qualified": false,
+  "purpose": "Isolate AMI reference convention effects on already-frozen outputs. This is post-failure protocol diagnosis, not fresh heldout validation or full model-card reproduction.",
+  "original_protocol_sha256": "3b4780afa4bc80eb84e6e630301cbb1e652d5d682cab897b4db0a0a7b17cc25d",
+  "original_corpus_manifest_sha256": "c514152766948139ed21a496b1b81661c2e06d647004901fa4683bea4b423ece",
+  "executed_source_commit": "125f907d05df8c0084ce350e2261d3bb5198562c",
+  "reference": {
+    "url": "https://raw.githubusercontent.com/nttcslab-sp/diar-forced-alignment/9527b7c64846fb38316a610f32e9d3466bd6d8b7/AMI/test/ES2004a.rttm",
+    "revision": "9527b7c64846fb38316a610f32e9d3466bd6d8b7",
+    "bytes": 34230,
+    "sha256": "3ed314bb088e11a2a53f6eb1a8ed3876f6ae6f3f92d3340640baabac90167c98",
+    "license": "CC-BY-4.0"
+  },
+  "selection": {
+    "recording": "ES2004a",
+    "source_interval_seconds": [
+      300,
+      420
+    ],
+    "local_uem_seconds": [
+      0,
+      120
+    ],
+    "channels": [
+      "Mix-Headset",
+      "Array1-01"
+    ],
+    "rule": "All RTTM entries for ES2004a intersecting the original fixed interval; clip to [300,420), subtract300, preserve speaker IDs and overlap; no output-dependent filtering."
+  },
+  "fixed_inference": "Reuse exactly original FP32 and CPU/Metal Q8 shared >0.5 probabilities and native-production turns. No model rerun, preset/threshold/padding changes or selecting a subset of outputs.",
+  "scoring": {
+    "primary_diagnostic": "Existing frozen 10ms midpoint DER, zero collar, overlap included, full120s UEM. Compare beside original transcriber reference with identical hypotheses.",
+    "independent_followup": "Cross-check against pinned official continuous scorer separately; record exact scorer/dependency hashes before execution. Do not call the 10ms metric exact official scoring.",
+    "tool_sha256": {
+      "score.py": "32aea92676133e42e2c30a914f8729d1c31c0c96e02faf9b7cab42911b389eb8",
+      "compare.py": "a53fccc162ead3b488a3880950d4dbf244897fd837f3b8e0898235029e559282"
+    }
+  },
+  "original_inputs": {
+    "ami-ES2004a-Array1-01-metal-native.json.f32": {
+      "sha256": "491d1c0150b3b9ea7924dbc0762ff2e16c8e948e5b7bd060439c7369efcea28b",
+      "bytes": 384032
+    },
+    "ami-ES2004a-Array1-01-cpu-gen2.json": {
+      "sha256": "f86a92cee2dc63aafddefd998636c0635a0bbf4d4ac96a63212990ece38eae2a",
+      "bytes": 5774
+    },
+    "ami-ES2004a-Array1-01-metal-gen2.f32": {
+      "sha256": "491d1c0150b3b9ea7924dbc0762ff2e16c8e948e5b7bd060439c7369efcea28b",
+      "bytes": 384032
+    },
+    "ami-ES2004a-Mix-Headset-metal-gen2.f32": {
+      "sha256": "36573e340860310a8ed142087c4562c1dba5264589753db917714955a5c7941f",
+      "bytes": 384032
+    },
+    "ami-ES2004a-Array1-01-fp32.json": {
+      "sha256": "d7a2e4f84bf60a679654f41c8e949c87241dc5fea347d9be132ce807c5326309",
+      "bytes": 2881
+    },
+    "ami-ES2004a-Array1-01-metal-gen2.json": {
+      "sha256": "99cb0353c26792c296ed92ea1856170f2d8ee23e9e91f425f13f54d2c37e4db6",
+      "bytes": 5775
+    },
+    "ami-ES2004a-Mix-Headset-metal-native.json.f32": {
+      "sha256": "36573e340860310a8ed142087c4562c1dba5264589753db917714955a5c7941f",
+      "bytes": 384032
+    },
+    "ami-ES2004a-Array1-01-cpu-native.json": {
+      "sha256": "e509d1ce717079dc98599a1e84b0255b4e1cbfa2dfa76493e6d76d9f628b8095",
+      "bytes": 3530
+    },
+    "ami-ES2004a-Mix-Headset-metal-gen2.json": {
+      "sha256": "a2ad15a98b9c67712ec0b10e5b27382d5954a3fb5b641820ac3967feec0e375f",
+      "bytes": 6012
+    },
+    "ami-ES2004a-Mix-Headset-cpu-native.json.f32": {
+      "sha256": "0421979bbec6d868afce1e99f1f72fe19b4d30a40e66d1cddfc4dbbcac74a1f1",
+      "bytes": 384032
+    },
+    "ami-ES2004a-Mix-Headset-fp32.npy": {
+      "sha256": "2db1197c259343daf67f6a4497cd3b7d91cfde2214afb2bdea19917d640c3a4d",
+      "bytes": 384128
+    },
+    "ami-ES2004a-Array1-01-fp32.npy": {
+      "sha256": "177854edb832800fa4364e4d1382f44f10f64433036f7b0b4d50110ba6918273",
+      "bytes": 384128
+    },
+    "ami-ES2004a-Mix-Headset-fp32.json": {
+      "sha256": "abce7ad36c1c1eb249ace5d6aa01388b43fa8356fb040858496cc9339ded5876",
+      "bytes": 2882
+    },
+    "ami-ES2004a-Mix-Headset-cpu-native.json": {
+      "sha256": "3f19ef1ebbaa5b2d4971ddfc8691919502109a1abd42cb91f69a4cd84ed98f29",
+      "bytes": 3777
+    },
+    "ami-ES2004a-Array1-01-metal-native.json": {
+      "sha256": "0c157bbe940f6851015ffd7533365ab066851990c78f429808328b5ca105c36e",
+      "bytes": 3524
+    },
+    "ami-ES2004a-Array1-01-cpu-gen2.f32": {
+      "sha256": "4bab53c38c28104fc634b1997b98e437962d18faf4170ab409c10a1c7a5a6e39",
+      "bytes": 384032
+    },
+    "ami-ES2004a-Mix-Headset-cpu-gen2.json": {
+      "sha256": "4da7657dfa0fe0b7013850bab2c4519da6ee012a9ef0a242d0c4c999dec11225",
+      "bytes": 6014
+    },
+    "ami-ES2004a-Mix-Headset-metal-native.json": {
+      "sha256": "144df81c350661a75e4b7eaa6829af3c78bad9aa487a1224e24fbdd19f0ab658",
+      "bytes": 3769
+    },
+    "ami-ES2004a-Mix-Headset-cpu-gen2.f32": {
+      "sha256": "0421979bbec6d868afce1e99f1f72fe19b4d30a40e66d1cddfc4dbbcac74a1f1",
+      "bytes": 384032
+    },
+    "ami-ES2004a-Array1-01-cpu-native.json.f32": {
+      "sha256": "4bab53c38c28104fc634b1997b98e437962d18faf4170ab409c10a1c7a5a6e39",
+      "bytes": 384032
+    }
+  },
+  "reporting": [
+    "Report every channel/backend/postprocessing result, including failure, and MISS/FA/confusion/reference-speaker-seconds.",
+    "Original20%/2pp gates and their failed status remain unchanged. No release gate is passed by this diagnostic.",
+    "Same120s cold-start crop and FP32 safetensors conversion differ from full-meeting original-NeMo model-card evaluation. No claimed reproduction of corpus-level published numbers.",
+    "Reference convention is diagnosed after outcomes were seen; these data cannot be relabeled untouched heldout for future tuning."
+  ]
+}
