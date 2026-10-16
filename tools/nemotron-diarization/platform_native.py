@@ -22,7 +22,8 @@ def capture(command, **kwargs):
 def msvc_environment(environment):
     """Import the compiler environment only into this process's child mapping."""
     env = environment.copy()
-    vswhere = Path(env['ProgramFiles(x86)']) / 'Microsoft Visual Studio/Installer/vswhere.exe'
+    variables = {name.upper(): value for name, value in env.items()}
+    vswhere = Path(variables['PROGRAMFILES(X86)']) / 'Microsoft Visual Studio/Installer/vswhere.exe'
     install = capture([str(vswhere), '-latest', '-products', '*', '-requires',
                        'Microsoft.VisualStudio.Component.VC.Tools.x86.x64', '-property', 'installationPath'])
     vcvars = Path(install) / 'VC/Auxiliary/Build/vcvars64.bat'
@@ -162,8 +163,20 @@ class Qualification:
         shutil.copy2(str(native) + '.f32', reference / 'ami.json.f32')
         env = {**self.environment, 'GEN2_NEMOTRON_ASSETS': str(assets), 'GEN2_NEMO_LIBRARY': str(self.library),
                'GEN2_NEMOTRON_REFERENCE': str(reference), 'GEN2_NEMO_EXECUTION': 'cpu'}
-        self.run('native-lifecycle', ['cargo', 'test', '--locked', '--release', '--no-default-features', '--features',
-                                    'backend-diar-nemo', '--test', 'diarization_native', '--', '--ignored', '--test-threads=1'], environment=env)
+        command = ['cargo', 'test', '--locked', '--release', '--no-default-features', '--features',
+                   'backend-diar-nemo', '--test', 'diarization_native', '--']
+        self.run('native-lifecycle-list', [*command, '--ignored', '--list'], environment=env)
+        expected = {'dropping_a_diarization_child_keeps_the_parent_pipeline_active',
+                    'silence_short_tail_and_idle_deadline_have_explicit_terminal_results',
+                    'repeated_reload_full_queue_cancel_and_dropped_stream_release_resources',
+                    'streamed_uneven_pcm_matches_recording_and_finish_is_idempotent',
+                    'native_admission_cancellation_and_failed_load_release_reservations',
+                    'verified_provisioned_cache_is_reused_offline',
+                    'real_diarizer_matches_native_reference_and_resets_recordings'}
+        listed = {line.removesuffix(': test') for line in (self.output / 'native-lifecycle-list.stdout.log').read_text().splitlines() if line.endswith(': test')}
+        if not expected <= listed:
+            raise ValueError('required real-model lifecycle gates were not compiled: ' + str(sorted(expected - listed)))
+        self.run('native-lifecycle', [*command, '--ignored', '--test-threads=1'], environment=env)
 
     def receipt(self, passed, error=None):
         files = {}
