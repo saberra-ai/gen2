@@ -1,0 +1,335 @@
+{
+  "source_commit": "03bc8a09a7fadd3d6ecfef3b2408d0d089a9e8bc",
+  "protocol_sha256": "b97092532220a890b255658bc80ee1a5533df332e917f5b660ab894fecd1f5d1",
+  "scope": "Post-failure numerical diagnosis on the excluded1.117s calibration and both unchanged AMI120s cold-start crops. Native F32-dominant/F16-conv inference compared with saved native Q8 and official HF/PyTorch CPU FP32. No DER rescoring, parameter selection or release-model substitution.",
+  "native_f32_neural_inference_performed": true,
+  "original_gate_status_changed": false,
+  "release_qualified": false,
+  "results": [
+    {
+      "case": "calibration",
+      "calibration": true,
+      "comparison": {
+        "native_f32_vs_hf_fp32_common_valid": {
+          "shape": [
+            111,
+            8
+          ],
+          "bitwise_equal": false,
+          "maximum_absolute_error": 0.24097681045532227,
+          "mean_absolute_error": 0.0031444501247457745,
+          "root_mean_square_error": 0.021109684228682767,
+          "p95_absolute_error": 0.0007762848632410153,
+          "p99_absolute_error": 0.07698755383491507,
+          "values_over_tolerance": 888,
+          "absolute_tolerance": 0,
+          "worst_frame_speaker_channel": [
+            107,
+            0
+          ],
+          "first_unequal_frame_speaker_channel": [
+            0,
+            0
+          ]
+        },
+        "native_q8_vs_hf_fp32_common_valid": {
+          "shape": [
+            111,
+            8
+          ],
+          "bitwise_equal": false,
+          "maximum_absolute_error": 0.23981600999832153,
+          "mean_absolute_error": 0.00321573279663888,
+          "root_mean_square_error": 0.02094778506068412,
+          "p95_absolute_error": 0.002216512919403608,
+          "p99_absolute_error": 0.0763266122341155,
+          "values_over_tolerance": 888,
+          "absolute_tolerance": 0,
+          "worst_frame_speaker_channel": [
+            107,
+            0
+          ],
+          "first_unequal_frame_speaker_channel": [
+            0,
+            0
+          ]
+        },
+        "native_f32_vs_native_q8_all_rows": {
+          "shape": [
+            112,
+            8
+          ],
+          "bitwise_equal": false,
+          "maximum_absolute_error": 0.023615151643753052,
+          "mean_absolute_error": 0.00018187741398230617,
+          "root_mean_square_error": 0.001400137260090433,
+          "p95_absolute_error": 0.0006416738033294678,
+          "p99_absolute_error": 0.0033356279134750177,
+          "values_over_tolerance": 896,
+          "absolute_tolerance": 0,
+          "worst_frame_speaker_channel": [
+            30,
+            0
+          ],
+          "first_unequal_frame_speaker_channel": [
+            0,
+            0
+          ]
+        },
+        "native_terminal_frame_retained": {
+          "frame": 111,
+          "f32": [
+            0.8985735177993774,
+            0.004483435768634081,
+            0.0045381104573607445,
+            0.005491234827786684,
+            0.008397461846470833,
+            0.006333914119750261,
+            0.004290285520255566,
+            0.0011608656495809555
+          ],
+          "q8": [
+            0.8967135548591614,
+            0.0045445882715284824,
+            0.004623183514922857,
+            0.005640437360852957,
+            0.008378369733691216,
+            0.006249195896089077,
+            0.004112242721021175,
+            0.0010853460989892483
+          ]
+        },
+        "hf_valid_rows": 111,
+        "native_raw_rows": 112,
+        "rule": "Zero numeric tolerance describes equality only; no quality/release acceptance threshold."
+      },
+      "native_output": {
+        "bytes": 632,
+        "sha256": "dd832489889bb5b8bc044e7aa4cdf5de5c606a34fce6c71005fbaa384d74c297"
+      },
+      "native_probabilities": {
+        "bytes": 3584,
+        "sha256": "1e695fdbbf79c736a46e0757571f2a78c93b04b7bc87b95462aecd0bbbf69259"
+      }
+    },
+    {
+      "case": "ami-close",
+      "calibration": false,
+      "comparison": {
+        "native_f32_vs_hf_fp32_common_valid": {
+          "shape": [
+            12000,
+            8
+          ],
+          "bitwise_equal": false,
+          "maximum_absolute_error": 0.044495999813079834,
+          "mean_absolute_error": 0.00010495795788148135,
+          "root_mean_square_error": 0.0009906954999365275,
+          "p95_absolute_error": 0.00028286727610975514,
+          "p99_absolute_error": 0.002194082140922528,
+          "values_over_tolerance": 95941,
+          "absolute_tolerance": 0,
+          "worst_frame_speaker_channel": [
+            7527,
+            1
+          ],
+          "first_unequal_frame_speaker_channel": [
+            0,
+            0
+          ]
+        },
+        "native_q8_vs_hf_fp32_common_valid": {
+          "shape": [
+            12000,
+            8
+          ],
+          "bitwise_equal": false,
+          "maximum_absolute_error": 0.058883488178253174,
+          "mean_absolute_error": 0.00034402254530435455,
+          "root_mean_square_error": 0.002069890612520279,
+          "p95_absolute_error": 0.0010796844959259037,
+          "p99_absolute_error": 0.008453571200370776,
+          "values_over_tolerance": 95997,
+          "absolute_tolerance": 0,
+          "worst_frame_speaker_channel": [
+            9810,
+            3
+          ],
+          "first_unequal_frame_speaker_channel": [
+            0,
+            0
+          ]
+        },
+        "native_f32_vs_native_q8_all_rows": {
+          "shape": [
+            12001,
+            8
+          ],
+          "bitwise_equal": false,
+          "maximum_absolute_error": 0.05905330181121826,
+          "mean_absolute_error": 0.0003713105767949369,
+          "root_mean_square_error": 0.0021767715368035535,
+          "p95_absolute_error": 0.001212821528315542,
+          "p99_absolute_error": 0.00912623822689054,
+          "values_over_tolerance": 96008,
+          "absolute_tolerance": 0,
+          "worst_frame_speaker_channel": [
+            9810,
+            3
+          ],
+          "first_unequal_frame_speaker_channel": [
+            0,
+            0
+          ]
+        },
+        "native_terminal_frame_retained": {
+          "frame": 12000,
+          "f32": [
+            2.9911081583122723e-05,
+            3.7467776564881206e-05,
+            7.609986641909927e-05,
+            0.00017733716231305152,
+            2.1554781142185675e-06,
+            2.1988291187824416e-09,
+            1.9048777583508675e-13,
+            1.6159433840388465e-16
+          ],
+          "q8": [
+            2.945110281871166e-05,
+            3.6836434446740896e-05,
+            7.379710586974397e-05,
+            0.00017165810277219862,
+            2.102029384332127e-06,
+            2.1050599041672058e-09,
+            1.771495412384097e-13,
+            1.4740747621455098e-16
+          ]
+        },
+        "hf_valid_rows": 12000,
+        "native_raw_rows": 12001,
+        "rule": "Zero numeric tolerance describes equality only; no quality/release acceptance threshold."
+      },
+      "native_output": {
+        "bytes": 3776,
+        "sha256": "e36750ff30c3fc558f1b27bf32cd97ce60b73dafaa39d8da773dee5520362145"
+      },
+      "native_probabilities": {
+        "bytes": 384032,
+        "sha256": "eb569ef7feb927e6dd3605726b88f9198230a639f3097cc2262d3423ea1ad405"
+      }
+    },
+    {
+      "case": "ami-distant",
+      "calibration": false,
+      "comparison": {
+        "native_f32_vs_hf_fp32_common_valid": {
+          "shape": [
+            12000,
+            8
+          ],
+          "bitwise_equal": false,
+          "maximum_absolute_error": 0.0059737670089816675,
+          "mean_absolute_error": 8.017597499393153e-06,
+          "root_mean_square_error": 5.576755173120442e-05,
+          "p95_absolute_error": 3.2782554626464844e-05,
+          "p99_absolute_error": 0.00016612112522125088,
+          "values_over_tolerance": 95924,
+          "absolute_tolerance": 0,
+          "worst_frame_speaker_channel": [
+            11999,
+            2
+          ],
+          "first_unequal_frame_speaker_channel": [
+            0,
+            0
+          ]
+        },
+        "native_q8_vs_hf_fp32_common_valid": {
+          "shape": [
+            12000,
+            8
+          ],
+          "bitwise_equal": false,
+          "maximum_absolute_error": 0.07751034200191498,
+          "mean_absolute_error": 0.0007253744958707476,
+          "root_mean_square_error": 0.003560118705463201,
+          "p95_absolute_error": 0.002782806009054184,
+          "p99_absolute_error": 0.01621075198054312,
+          "values_over_tolerance": 95999,
+          "absolute_tolerance": 0,
+          "worst_frame_speaker_channel": [
+            9430,
+            0
+          ],
+          "first_unequal_frame_speaker_channel": [
+            0,
+            0
+          ]
+        },
+        "native_f32_vs_native_q8_all_rows": {
+          "shape": [
+            12001,
+            8
+          ],
+          "bitwise_equal": false,
+          "maximum_absolute_error": 0.0771811455488205,
+          "mean_absolute_error": 0.0007265252173310875,
+          "root_mean_square_error": 0.003567941365374476,
+          "p95_absolute_error": 0.002779920399188995,
+          "p99_absolute_error": 0.016250976026058045,
+          "values_over_tolerance": 96008,
+          "absolute_tolerance": 0,
+          "worst_frame_speaker_channel": [
+            9430,
+            0
+          ],
+          "first_unequal_frame_speaker_channel": [
+            0,
+            0
+          ]
+        },
+        "native_terminal_frame_retained": {
+          "frame": 12000,
+          "f32": [
+            0.0009015265968628228,
+            0.0009086004574783146,
+            0.0009344851714558899,
+            0.0015294053591787815,
+            6.669005961157382e-05,
+            5.004077365811099e-07,
+            7.12239545119786e-10,
+            4.639774241893546e-12
+          ],
+          "q8": [
+            0.0009386470774188638,
+            0.0009609643602743745,
+            0.0009962080512195826,
+            0.001595718553289771,
+            7.027792162261903e-05,
+            5.149362323209061e-07,
+            7.130918078246395e-10,
+            4.620416028944252e-12
+          ]
+        },
+        "hf_valid_rows": 12000,
+        "native_raw_rows": 12001,
+        "rule": "Zero numeric tolerance describes equality only; no quality/release acceptance threshold."
+      },
+      "native_output": {
+        "bytes": 3527,
+        "sha256": "1db1700f9fcea09ffa206749cd31aa3866c41a73c1cc1087eb5cebd619a511ae"
+      },
+      "native_probabilities": {
+        "bytes": 384032,
+        "sha256": "d93326138092376d66e8e8dd5859270ea47aed533d2f13b9a3fcf0380f646d5c"
+      }
+    }
+  ],
+  "limitations": [
+    "Already-seen targets; not fresh heldout validation. Original frozen DER/reference/scorer/protocol/model locks and failures remain unchanged.",
+    "The original .nemo source stores363BF16tensors; the published HF safetensors header stores417F32tensors. Native control upcasts the .nemo values toF32 except one F16 convolution, and the saved HF run executes CPU FP32. No missing .nemo source precision is recovered and this is not an all-FP32 native artifact. Full HF-versus-.nemo source-weight mapping remains a distinct verification boundary.",
+    "Native and HF use different filterbank values as measured separately; this free-running comparison includes frontend arithmetic/bank, graph and cache effects. Does not isolate each contribution or establish original-NeMo equivalence.",
+    "No production-model replacement, quantization selection, postprocessing change, CPU/Metal claim, uncontended timing claim or release qualification.",
+    "No HF/original-NeMo model rerun; saved official HF CPU arrays are reused. Native NN execution is new and explicitly labeled."
+  ]
+}

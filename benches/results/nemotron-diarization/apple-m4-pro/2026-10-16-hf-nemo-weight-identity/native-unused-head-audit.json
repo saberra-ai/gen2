@@ -1,0 +1,144 @@
+{
+  "schema_version": 1,
+  "scope": "Read-only source callsite audit and crosscheck of existing native construction metadata; no binary reread, source mutation or inference.",
+  "native_revision": "083861c241061562b8ec29eb06d7f6cdc3af8775",
+  "sources": {
+    "conversion/diarization.py": {
+      "bytes": 21233,
+      "sha256": "b246c039dd56fea63500f105d77be17eafbc73f9c79fb6c8cd6e420101ed2317"
+    },
+    "src/asr/diar/sortformer_model.cpp": {
+      "bytes": 25857,
+      "sha256": "831d819e0a3986b7b6007987a67b4ccc5f2895d6d68247ca138ed4d9c3c3d2c9"
+    },
+    "src/asr/diar/sortformer_model.h": {
+      "bytes": 7325,
+      "sha256": "30a3daf3396d628294457ab9e2c8b1d8ab63829ab28f68dc1e8e96f11c635893"
+    }
+  },
+  "construction_accounting": {
+    "path": "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-native-f32-construction/source-tensor-accounting.json",
+    "bytes": 281082,
+    "sha256": "37b3cf4d8d2d0542cc13fd81619cd5c1056b73100a88dfef2bdf20bbaf1c781d"
+  },
+  "stored_activity_head_rows": [
+    {
+      "source": "sortformer_modules.activity_head.0.weight",
+      "source_shape": [
+        192
+      ],
+      "source_dtype": "torch.bfloat16",
+      "source_bytes": 384,
+      "source_sha256": "faebb20d6720979531ca64cc8af9641d7a7e9af48ab03dd4262da023c544da69",
+      "destination": "head.activity_head.0.weight",
+      "reason": "inference speaker head namespace",
+      "output_shape": [
+        192
+      ],
+      "ggml_shape": [
+        192
+      ],
+      "output_type": "F32",
+      "output_bytes": 768,
+      "output_sha256": "41ac8b3c079866479d0776ba5d6d43d880b8eb59ce25deb96cdfed09a5de9209",
+      "expected_cast_sha256": "41ac8b3c079866479d0776ba5d6d43d880b8eb59ce25deb96cdfed09a5de9209",
+      "exact_source_mapping_cast_match": true
+    },
+    {
+      "source": "sortformer_modules.activity_head.0.bias",
+      "source_shape": [
+        192
+      ],
+      "source_dtype": "torch.bfloat16",
+      "source_bytes": 384,
+      "source_sha256": "390d3e6574ac605fdaf1cc652ab936a336595f03fb2df81a35f576d895879c0a",
+      "destination": "head.activity_head.0.bias",
+      "reason": "inference speaker head namespace",
+      "output_shape": [
+        192
+      ],
+      "ggml_shape": [
+        192
+      ],
+      "output_type": "F32",
+      "output_bytes": 768,
+      "output_sha256": "b008021380319b358741433b8e5d55f7ef17d8e3d3ba59b7010f433e9426b6d6",
+      "expected_cast_sha256": "b008021380319b358741433b8e5d55f7ef17d8e3d3ba59b7010f433e9426b6d6",
+      "exact_source_mapping_cast_match": true
+    },
+    {
+      "source": "sortformer_modules.activity_head.1.weight",
+      "source_shape": [
+        3,
+        192
+      ],
+      "source_dtype": "torch.bfloat16",
+      "source_bytes": 1152,
+      "source_sha256": "b95657b6b3302bf83affbe97971941a768d073bc44b1eb22089b7e74f93b873c",
+      "destination": "head.activity_head.1.weight",
+      "reason": "inference speaker head namespace",
+      "output_shape": [
+        3,
+        192
+      ],
+      "ggml_shape": [
+        192,
+        3
+      ],
+      "output_type": "F32",
+      "output_bytes": 2304,
+      "output_sha256": "a5b4842df8779b2011e7d9ac86e2bcd8b725f8df3770fa8e78fde6aae4db1973",
+      "expected_cast_sha256": "a5b4842df8779b2011e7d9ac86e2bcd8b725f8df3770fa8e78fde6aae4db1973",
+      "exact_source_mapping_cast_match": true
+    },
+    {
+      "source": "sortformer_modules.activity_head.1.bias",
+      "source_shape": [
+        3
+      ],
+      "source_dtype": "torch.bfloat16",
+      "source_bytes": 6,
+      "source_sha256": "d17fc189cac994c9b871e377beb4fd8cb6beb55194e720058b6d819d3138ecb5",
+      "destination": "head.activity_head.1.bias",
+      "reason": "inference speaker head namespace",
+      "output_shape": [
+        3
+      ],
+      "ggml_shape": [
+        3
+      ],
+      "output_type": "F32",
+      "output_bytes": 12,
+      "output_sha256": "0fed290f68ef7fedbb5ee1ef0d9ed8a1380575fa842d62c23f023c461cfbfe14",
+      "expected_cast_sha256": "0fed290f68ef7fedbb5ee1ef0d9ed8a1380575fa842d62c23f023c461cfbfe14",
+      "exact_source_mapping_cast_match": true
+    }
+  ],
+  "graph_callsites": {
+    "constructor": [
+      118,
+      119,
+      120,
+      121
+    ],
+    "define_tensors": [
+      148,
+      149
+    ],
+    "set_data": [
+      165,
+      166
+    ],
+    "v3_forward": [
+      237,
+      238,
+      239,
+      240,
+      241,
+      242,
+      245
+    ],
+    "description": "Only head.first_hidden_to_hidden and head.single_hidden_to_spks are declared/defined/bound/called. No activity_head reference in src/asr/diar."
+  },
+  "activity_heads_unused_by_pinned_sortformer_graph": true
+}

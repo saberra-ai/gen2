@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "source_commit": "03bc8a09a7fadd3d6ecfef3b2408d0d089a9e8bc",
+  "fixed_native_f32_execution_completed": true,
+  "new_native_cpu_model_calls": 3,
+  "excluded_partial_tail_calibration_first": true,
+  "all_actual_input_config_frame_range_contracts_reparsed": true,
+  "all_three_probability_comparisons_recomputed_per_case": true,
+  "all_original_q8_hf_inputs_unchanged": true,
+  "f32_artifact_and_93_library_paths_rehashed": true,
+  "native_helper_exact_original_cpu_package_rpath": true,
+  "native_model_artifact": {
+    "bytes": 395298848,
+    "sha256": "6e946d20b9a3d749a9b23d7106f73ec8cf3a9186fad3afa9bf34d8e0cd58828a"
+  },
+  "native_f32_neural_inference_performed": true,
+  "hf_or_original_nemo_model_rerun": false,
+  "der_scoring_performed": false,
+  "original_gate_status_changed": false,
+  "release_qualified": false,
+  "both_target_raw_frame_counts": 12001,
+  "both_target_hf_common_valid_rows": 12000,
+  "calibration_native_raw_rows": 112,
+  "calibration_hf_common_valid_rows": 111,
+  "native_terminal_vectors_preserved": true,
+  "numeric_equivalence_claimed": false,
+  "outer_execution_seconds": 46.22183416696498,
+  "limits": [
+    "Already-seen targets; not fresh heldout validation. Original frozen DER/reference/scorer/protocol/model locks and failures remain unchanged.",
+    "The original .nemo source stores363BF16tensors; the published HF safetensors header stores417F32tensors. Native control upcasts the .nemo values toF32 except one F16 convolution, and the saved HF run executes CPU FP32. No missing .nemo source precision is recovered and this is not an all-FP32 native artifact. Full HF-versus-.nemo source-weight mapping remains a distinct verification boundary.",
+    "Native and HF use different filterbank values as measured separately; this free-running comparison includes frontend arithmetic/bank, graph and cache effects. Does not isolate each contribution or establish original-NeMo equivalence.",
+    "No production-model replacement, quantization selection, postprocessing change, CPU/Metal claim, uncontended timing claim or release qualification.",
+    "No HF/original-NeMo model rerun; saved official HF CPU arrays are reused. Native NN execution is new and explicitly labeled.",
+    "Validity/shape/PCM calibration passes, but nativeF32/HF calibration maximum difference is0.240976810455; no numerical-equality calibration pass is claimed.",
+    "Native F32/HF target maximum differences remain0.0444959998close and0.0059737670distant. Smaller means do not establish universal model equivalence or fix the original failed quality gate.",
+    "Receiver recomputed comparisons from retained new native vectors and original hash-locked local HF/Q8 arrays without rerunning inference. Timings are incidental on this host, not uncontended-performance qualification."
+  ]
+}

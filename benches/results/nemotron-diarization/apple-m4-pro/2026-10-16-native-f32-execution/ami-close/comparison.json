@@ -1,0 +1,94 @@
+{
+  "native_f32_vs_hf_fp32_common_valid": {
+    "shape": [
+      12000,
+      8
+    ],
+    "bitwise_equal": false,
+    "maximum_absolute_error": 0.044495999813079834,
+    "mean_absolute_error": 0.00010495795788148135,
+    "root_mean_square_error": 0.0009906954999365275,
+    "p95_absolute_error": 0.00028286727610975514,
+    "p99_absolute_error": 0.002194082140922528,
+    "values_over_tolerance": 95941,
+    "absolute_tolerance": 0,
+    "worst_frame_speaker_channel": [
+      7527,
+      1
+    ],
+    "first_unequal_frame_speaker_channel": [
+      0,
+      0
+    ]
+  },
+  "native_q8_vs_hf_fp32_common_valid": {
+    "shape": [
+      12000,
+      8
+    ],
+    "bitwise_equal": false,
+    "maximum_absolute_error": 0.058883488178253174,
+    "mean_absolute_error": 0.00034402254530435455,
+    "root_mean_square_error": 0.002069890612520279,
+    "p95_absolute_error": 0.0010796844959259037,
+    "p99_absolute_error": 0.008453571200370776,
+    "values_over_tolerance": 95997,
+    "absolute_tolerance": 0,
+    "worst_frame_speaker_channel": [
+      9810,
+      3
+    ],
+    "first_unequal_frame_speaker_channel": [
+      0,
+      0
+    ]
+  },
+  "native_f32_vs_native_q8_all_rows": {
+    "shape": [
+      12001,
+      8
+    ],
+    "bitwise_equal": false,
+    "maximum_absolute_error": 0.05905330181121826,
+    "mean_absolute_error": 0.0003713105767949369,
+    "root_mean_square_error": 0.0021767715368035535,
+    "p95_absolute_error": 0.001212821528315542,
+    "p99_absolute_error": 0.00912623822689054,
+    "values_over_tolerance": 96008,
+    "absolute_tolerance": 0,
+    "worst_frame_speaker_channel": [
+      9810,
+      3
+    ],
+    "first_unequal_frame_speaker_channel": [
+      0,
+      0
+    ]
+  },
+  "native_terminal_frame_retained": {
+    "frame": 12000,
+    "f32": [
+      2.9911081583122723e-05,
+      3.7467776564881206e-05,
+      7.609986641909927e-05,
+      0.00017733716231305152,
+      2.1554781142185675e-06,
+      2.1988291187824416e-09,
+      1.9048777583508675e-13,
+      1.6159433840388465e-16
+    ],
+    "q8": [
+      2.945110281871166e-05,
+      3.6836434446740896e-05,
+      7.379710586974397e-05,
+      0.00017165810277219862,
+      2.102029384332127e-06,
+      2.1050599041672058e-09,
+      1.771495412384097e-13,
+      1.4740747621455098e-16
+    ]
+  },
+  "hf_valid_rows": 12000,
+  "native_raw_rows": 12001,
+  "rule": "Zero numeric tolerance describes equality only; no quality/release acceptance threshold."
+}

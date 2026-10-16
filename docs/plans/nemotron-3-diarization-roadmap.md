@@ -614,7 +614,25 @@ retains the395298848-byte artifact hash, exact source/checkpoint/dependency pins
 logs and full tensor accounting; checkpoint/GGUF bytes remain outside Git.
 This performs checkpoint deserialization/conversion, not neural inference, and
 upcasting BF16 source values does not recover missing source precision. Native
-F32 inference, original-NeMo and persistent-prefix controls remain open.
+F32 inference is subsequently complete at `03bc8a0` under its separately frozen
+fixed-CPU protocol: the excluded1.117s calibration and both original AMI crops
+run in three fresh native processes, with actual PCM/config/frame/range binding.
+The [36-file numerical receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-native-f32-execution/qualification.json)
+retains all raw native vectors and nine independently recomputed comparisons.
+F32/HF mean probability error is0.000104958close /0.000008018distant, versus
+Q8/HF0.000344023 /0.000725374; maxima remain0.044496 /0.005974. The short
+calibration retains0.240977maximum F32/HF difference near its end, so no universal
+numerical-equality claim is made. Native terminal rows stay retained and separate
+from the HF common valid prefix. This includes native neural inference, reuses
+saved official HF/Q8 arrays and performs no DER scoring or gate promotion.
+Original-NeMo, teacher-forced graph/cache and persistent-prefix controls remain
+open. The separate [eight-file source-weight audit](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-hf-nemo-weight-identity/qualification.json)
+now verifies all417 HF F32 tensors exactly against the pinned mapping/cast of
+363 source BF16 tensors. Its source-backed addendum identifies four stored
+native activity-head tensors unused by the pinned graph, preserving historical
+construction accounting. This closes parameter identity only; frontend, runtime
+arithmetic, framing and cache effects remain separate. Local model-free tests
+now total105, including terminal/partial-tail/range regressions.
 The 13-job feature matrix also passed at `4974318`. Later source `cf64214`
 passed12 jobs; its macOS mixed-feature job failed before compilation when GitHub
 submodule fetch could not connect to port443. A failed-job rerun was denied by

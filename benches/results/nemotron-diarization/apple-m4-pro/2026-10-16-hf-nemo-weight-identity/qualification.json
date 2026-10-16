@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "scope": "Static publisher checkpoint-parameter identity and source-backed native unused-head addendum",
+  "hf_tensors_exactly_matched": 417,
+  "source_bf16_tensors": 363,
+  "hf_excluded_source_tensors": 8,
+  "native_stored_activity_head_tensors_unused_by_pinned_graph": 4,
+  "neural_model_instantiation_or_inference": false,
+  "native_conversion_performed": false,
+  "native_artifact_reread_by_weight_audit": false,
+  "collector_rehashed_both_publisher_files": true,
+  "collector_verified_all_source_blobs_and_construction_metadata": true,
+  "frontend_or_arithmetic_or_cache_equivalence_claimed": false,
+  "original_gate_status_changed": false,
+  "release_qualified": false,
+  "limits": [
+    "Exact mapping/cast byte identity closes parameter identity only; it does not prove matching frontend buffers, F16 convolution, runtime arithmetic, framing, cache state or output probabilities.",
+    "Four native activity-head tensors are stored but source-unused by the pinned graph. The historical construction accounting remains unchanged.",
+    "Full source tensor bytes and both publisher artifacts remain outside Git."
+  ]
+}

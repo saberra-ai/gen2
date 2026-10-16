@@ -1,0 +1,344 @@
+Module(
+  body=[
+    Assign(
+      targets=[
+        Name(id='STATE_DICT_MAPPING', ctx=Store())],
+      value=Dict(
+        keys=[
+          Constant(value='^encoder\\.pre_encode\\.proj\\.'),
+          Constant(value='^encoder\\.embed_norm\\.'),
+          Constant(value='^encoder\\.final_norm\\.'),
+          Constant(value='^encoder\\.layers\\.(\\d+)\\.norm1\\.'),
+          Constant(value='^encoder\\.layers\\.(\\d+)\\.norm2\\.'),
+          Constant(value='^encoder\\.layers\\.(\\d+)\\.attn\\.out_proj\\.'),
+          Constant(value='^encoder\\.layers\\.(\\d+)\\.ffn\\.net\\.0\\.'),
+          Constant(value='^encoder\\.layers\\.(\\d+)\\.ffn\\.net\\.3\\.'),
+          Constant(value='^sortformer_modules\\.encoder_proj\\.'),
+          Constant(value='^sortformer_modules\\.subpixel_upsample\\.'),
+          Constant(value='^sortformer_modules\\.first_hidden_to_hidden\\.'),
+          Constant(value='^sortformer_modules\\.single_hidden_to_spks\\.'),
+          Constant(value='^sortformer_modules\\.learnable_sil_emb$')],
+        values=[
+          Constant(value='model.audio_tower.embedder.projection.'),
+          Constant(value='model.audio_tower.input_layer_norm.'),
+          Constant(value='model.audio_tower.layer_norm.'),
+          Constant(value='model.audio_tower.layers.\\1.layer_norm1.'),
+          Constant(value='model.audio_tower.layers.\\1.layer_norm2.'),
+          Constant(value='model.audio_tower.layers.\\1.self_attn.o_proj.'),
+          Constant(value='model.audio_tower.layers.\\1.mlp.fc1.'),
+          Constant(value='model.audio_tower.layers.\\1.mlp.fc2.'),
+          Constant(value='model.proj.'),
+          Constant(value='model.upsampler.conv.'),
+          Constant(value='classifier.dense.'),
+          Constant(value='classifier.out_proj.'),
+          Constant(value='silence_embeds')])),
+    Assign(
+      targets=[
+        Name(id='KEYS_TO_DROP', ctx=Store())],
+      value=Set(
+        elts=[
+          Constant(value='^sortformer_modules\\.hidden_to_spks\\.'),
+          Constant(value='^sortformer_modules\\.activity_head\\.'),
+          Constant(value='^preprocessor\\.featurizer\\.')])),
+    FunctionDef(
+      name='split_fused_qkv',
+      args=arguments(
+        posonlyargs=[],
+        args=[
+          arg(
+            arg='state_dict',
+            annotation=Name(id='dict', ctx=Load()))],
+        kwonlyargs=[],
+        kw_defaults=[],
+        defaults=[]),
+      body=[
+        Expr(
+          value=Constant(value='NeMo `w_qkv` rows are ordered `[query | key | value]`, each `hidden_size` wide.')),
+        Assign(
+          targets=[
+            Name(id='converted', ctx=Store())],
+          value=Dict(keys=[], values=[])),
+        For(
+          target=Tuple(
+            elts=[
+              Name(id='key', ctx=Store()),
+              Name(id='value', ctx=Store())],
+            ctx=Store()),
+          iter=Call(
+            func=Attribute(
+              value=Name(id='state_dict', ctx=Load()),
+              attr='items',
+              ctx=Load()),
+            args=[],
+            keywords=[]),
+          body=[
+            Assign(
+              targets=[
+                Name(id='match', ctx=Store())],
+              value=Call(
+                func=Attribute(
+                  value=Name(id='re', ctx=Load()),
+                  attr='match',
+                  ctx=Load()),
+                args=[
+                  Constant(value='^encoder\\.layers\\.(\\d+)\\.attn\\.w_qkv\\.weight$'),
+                  Name(id='key', ctx=Load())],
+                keywords=[])),
+            If(
+              test=Compare(
+                left=Name(id='match', ctx=Load()),
+                ops=[
+                  Is()],
+                comparators=[
+                  Constant(value=None)]),
+              body=[
+                Assign(
+                  targets=[
+                    Subscript(
+                      value=Name(id='converted', ctx=Load()),
+                      slice=Name(id='key', ctx=Load()),
+                      ctx=Store())],
+                  value=Name(id='value', ctx=Load())),
+                Continue()],
+              orelse=[]),
+            Assign(
+              targets=[
+                Tuple(
+                  elts=[
+                    Name(id='query', ctx=Store()),
+                    Name(id='key_weight', ctx=Store()),
+                    Name(id='value_weight', ctx=Store())],
+                  ctx=Store())],
+              value=Call(
+                func=Attribute(
+                  value=Name(id='value', ctx=Load()),
+                  attr='chunk',
+                  ctx=Load()),
+                args=[
+                  Constant(value=3)],
+                keywords=[
+                  keyword(
+                    arg='dim',
+                    value=Constant(value=0))])),
+            Assign(
+              targets=[
+                Name(id='prefix', ctx=Store())],
+              value=JoinedStr(
+                values=[
+                  Constant(value='model.audio_tower.layers.'),
+                  FormattedValue(
+                    value=Call(
+                      func=Attribute(
+                        value=Name(id='match', ctx=Load()),
+                        attr='group',
+                        ctx=Load()),
+                      args=[
+                        Constant(value=1)],
+                      keywords=[]),
+                    conversion=-1),
+                  Constant(value='.self_attn.')])),
+            Assign(
+              targets=[
+                Subscript(
+                  value=Name(id='converted', ctx=Load()),
+                  slice=BinOp(
+                    left=Name(id='prefix', ctx=Load()),
+                    op=Add(),
+                    right=Constant(value='q_proj.weight')),
+                  ctx=Store())],
+              value=Name(id='query', ctx=Load())),
+            Assign(
+              targets=[
+                Subscript(
+                  value=Name(id='converted', ctx=Load()),
+                  slice=BinOp(
+                    left=Name(id='prefix', ctx=Load()),
+                    op=Add(),
+                    right=Constant(value='k_proj.weight')),
+                  ctx=Store())],
+              value=Name(id='key_weight', ctx=Load())),
+            Assign(
+              targets=[
+                Subscript(
+                  value=Name(id='converted', ctx=Load()),
+                  slice=BinOp(
+                    left=Name(id='prefix', ctx=Load()),
+                    op=Add(),
+                    right=Constant(value='v_proj.weight')),
+                  ctx=Store())],
+              value=Name(id='value_weight', ctx=Load()))],
+          orelse=[]),
+        Return(
+          value=Name(id='converted', ctx=Load()))],
+      decorator_list=[],
+      returns=Name(id='dict', ctx=Load()),
+      type_params=[]),
+    FunctionDef(
+      name='convert_state_dict',
+      args=arguments(
+        posonlyargs=[],
+        args=[
+          arg(
+            arg='state_dict',
+            annotation=Name(id='dict', ctx=Load()))],
+        kwonlyargs=[],
+        kw_defaults=[],
+        defaults=[]),
+      body=[
+        Assign(
+          targets=[
+            Name(id='state_dict', ctx=Store())],
+          value=Call(
+            func=Name(id='split_fused_qkv', ctx=Load()),
+            args=[
+              Name(id='state_dict', ctx=Load())],
+            keywords=[])),
+        Assign(
+          targets=[
+            Name(id='converted', ctx=Store())],
+          value=Dict(keys=[], values=[])),
+        For(
+          target=Tuple(
+            elts=[
+              Name(id='key', ctx=Store()),
+              Name(id='value', ctx=Store())],
+            ctx=Store()),
+          iter=Call(
+            func=Attribute(
+              value=Name(id='state_dict', ctx=Load()),
+              attr='items',
+              ctx=Load()),
+            args=[],
+            keywords=[]),
+          body=[
+            If(
+              test=Call(
+                func=Name(id='any', ctx=Load()),
+                args=[
+                  GeneratorExp(
+                    elt=Call(
+                      func=Attribute(
+                        value=Name(id='re', ctx=Load()),
+                        attr='match',
+                        ctx=Load()),
+                      args=[
+                        Name(id='pattern', ctx=Load()),
+                        Name(id='key', ctx=Load())],
+                      keywords=[]),
+                    generators=[
+                      comprehension(
+                        target=Name(id='pattern', ctx=Store()),
+                        iter=Name(id='KEYS_TO_DROP', ctx=Load()),
+                        ifs=[],
+                        is_async=0)])],
+                keywords=[]),
+              body=[
+                Continue()],
+              orelse=[]),
+            If(
+              test=BoolOp(
+                op=And(),
+                values=[
+                  Call(
+                    func=Attribute(
+                      value=Name(id='key', ctx=Load()),
+                      attr='startswith',
+                      ctx=Load()),
+                    args=[
+                      Constant(value='model.audio_tower.layers.')],
+                    keywords=[]),
+                  Compare(
+                    left=Constant(value='.self_attn.'),
+                    ops=[
+                      In()],
+                    comparators=[
+                      Name(id='key', ctx=Load())])]),
+              body=[
+                Assign(
+                  targets=[
+                    Subscript(
+                      value=Name(id='converted', ctx=Load()),
+                      slice=Name(id='key', ctx=Load()),
+                      ctx=Store())],
+                  value=Name(id='value', ctx=Load())),
+                Continue()],
+              orelse=[]),
+            Assign(
+              targets=[
+                Name(id='new_key', ctx=Store())],
+              value=Constant(value=None)),
+            For(
+              target=Tuple(
+                elts=[
+                  Name(id='pattern', ctx=Store()),
+                  Name(id='replacement', ctx=Store())],
+                ctx=Store()),
+              iter=Call(
+                func=Attribute(
+                  value=Name(id='STATE_DICT_MAPPING', ctx=Load()),
+                  attr='items',
+                  ctx=Load()),
+                args=[],
+                keywords=[]),
+              body=[
+                If(
+                  test=Call(
+                    func=Attribute(
+                      value=Name(id='re', ctx=Load()),
+                      attr='match',
+                      ctx=Load()),
+                    args=[
+                      Name(id='pattern', ctx=Load()),
+                      Name(id='key', ctx=Load())],
+                    keywords=[]),
+                  body=[
+                    Assign(
+                      targets=[
+                        Name(id='new_key', ctx=Store())],
+                      value=Call(
+                        func=Attribute(
+                          value=Name(id='re', ctx=Load()),
+                          attr='sub',
+                          ctx=Load()),
+                        args=[
+                          Name(id='pattern', ctx=Load()),
+                          Name(id='replacement', ctx=Load()),
+                          Name(id='key', ctx=Load())],
+                        keywords=[])),
+                    Break()],
+                  orelse=[])],
+              orelse=[]),
+            If(
+              test=Compare(
+                left=Name(id='new_key', ctx=Load()),
+                ops=[
+                  Is()],
+                comparators=[
+                  Constant(value=None)]),
+              body=[
+                Raise(
+                  exc=Call(
+                    func=Name(id='ValueError', ctx=Load()),
+                    args=[
+                      JoinedStr(
+                        values=[
+                          Constant(value='No mapping for checkpoint key '),
+                          FormattedValue(
+                            value=Name(id='key', ctx=Load()),
+                            conversion=114)])],
+                    keywords=[]))],
+              orelse=[]),
+            Assign(
+              targets=[
+                Subscript(
+                  value=Name(id='converted', ctx=Load()),
+                  slice=Name(id='new_key', ctx=Load()),
+                  ctx=Store())],
+              value=Name(id='value', ctx=Load()))],
+          orelse=[]),
+        Return(
+          value=Name(id='converted', ctx=Load()))],
+      decorator_list=[],
+      returns=Name(id='dict', ctx=Load()),
+      type_params=[])],
+  type_ignores=[])
