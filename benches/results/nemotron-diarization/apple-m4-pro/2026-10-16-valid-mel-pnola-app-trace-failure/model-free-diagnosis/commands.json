@@ -1,0 +1,92 @@
+[
+  {
+    "name": "plain-compile",
+    "argv": [
+      "/usr/bin/clang",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "/Users/victor/.cache/gen2-nemotron3-n0/hardened-dyld-diagnostics-v1/probe.c",
+      "-o",
+      "/Users/victor/.cache/gen2-nemotron3-n0/hardened-dyld-diagnostics-v1/plain"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.061319458996877074
+  },
+  {
+    "name": "plain-sign",
+    "argv": [
+      "/usr/bin/codesign",
+      "--sign",
+      "-",
+      "/Users/victor/.cache/gen2-nemotron3-n0/hardened-dyld-diagnostics-v1/plain"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.009110916987992823
+  },
+  {
+    "name": "plain-signature",
+    "argv": [
+      "/usr/bin/codesign",
+      "--display",
+      "--verbose=4",
+      "/Users/victor/.cache/gen2-nemotron3-n0/hardened-dyld-diagnostics-v1/plain"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.003491792012937367
+  },
+  {
+    "name": "plain-run",
+    "argv": [
+      "/Users/victor/.cache/gen2-nemotron3-n0/hardened-dyld-diagnostics-v1/plain"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.2311485829995945
+  },
+  {
+    "name": "hardened-compile",
+    "argv": [
+      "/usr/bin/clang",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "/Users/victor/.cache/gen2-nemotron3-n0/hardened-dyld-diagnostics-v1/probe.c",
+      "-o",
+      "/Users/victor/.cache/gen2-nemotron3-n0/hardened-dyld-diagnostics-v1/hardened"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.0589754999964498
+  },
+  {
+    "name": "hardened-sign",
+    "argv": [
+      "/usr/bin/codesign",
+      "--sign",
+      "-",
+      "--options",
+      "runtime",
+      "/Users/victor/.cache/gen2-nemotron3-n0/hardened-dyld-diagnostics-v1/hardened"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.009393083048053086
+  },
+  {
+    "name": "hardened-signature",
+    "argv": [
+      "/usr/bin/codesign",
+      "--display",
+      "--verbose=4",
+      "/Users/victor/.cache/gen2-nemotron3-n0/hardened-dyld-diagnostics-v1/hardened"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.003596791997551918
+  },
+  {
+    "name": "hardened-run",
+    "argv": [
+      "/Users/victor/.cache/gen2-nemotron3-n0/hardened-dyld-diagnostics-v1/hardened"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.13089137501083314
+  }
+]

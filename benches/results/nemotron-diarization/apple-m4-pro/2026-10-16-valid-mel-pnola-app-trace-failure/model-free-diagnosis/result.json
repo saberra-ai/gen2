@@ -1,0 +1,17 @@
+{
+  "scope": "Model-free reproduction of hardened runtime suppression of dyld environment diagnostics.",
+  "reproduced": true,
+  "observations": {
+    "plain": {
+      "stdout": "DYLD_PRINT_LIBRARIES=1\n",
+      "stderr_bytes": 102105,
+      "dyld_trace_observed": true
+    },
+    "hardened": {
+      "stdout": "DYLD_PRINT_LIBRARIES=<absent>\n",
+      "stderr_bytes": 0,
+      "dyld_trace_observed": false
+    }
+  },
+  "app_or_native_model_calls": 0
+}

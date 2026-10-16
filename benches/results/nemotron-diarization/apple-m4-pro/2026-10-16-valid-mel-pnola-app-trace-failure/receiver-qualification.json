@@ -1,0 +1,250 @@
+{
+  "schema_version": 1,
+  "automatic_packaged_resolution_gates_passed": false,
+  "release_qualified": false,
+  "scope": "Actual first complete CPU app recording returned0 with correct output; qualification fails because hardened signing suppressed required environment dyld telemetry.",
+  "source_commit": "19718b52c0435cb6b6bb4f35660a2a2ef52d9097",
+  "protocol": {
+    "bytes": 184372,
+    "sha256": "33aa89462d6448bdd8edb3d23db07f681631c9ad46f11bc6bff5738e23046680"
+  },
+  "neural_child_processes_started": 1,
+  "remaining_four_neural_cases_started": false,
+  "partial_recorded_turn_comparison": {
+    "turns": 27,
+    "frames": 6000,
+    "native_frame_count_observed": true,
+    "maximum_turn_error_seconds": 0.0
+  },
+  "first_command_elapsed_seconds": 14.74521162500605,
+  "recorded_words": 117,
+  "recorded_text_matches_frozen_bark": true,
+  "actual_dyld_telemetry_observed": false,
+  "hardened_suppression_reproduced_without_models": true,
+  "diagnostic_probe_binaries": {
+    "plain": {
+      "bytes": 51424,
+      "sha256": "b5493cdfa5f337261a5ca9782068d0b2b26fb07fb08478921d23f9ba7ad07663"
+    },
+    "hardened": {
+      "bytes": 51440,
+      "sha256": "ae3b1b93ad92a6d2ebb765184c7da227265cf26b68c64dfdf41e398f44ac6248"
+    }
+  },
+  "new_native_or_neural_calls_during_collection": 0,
+  "limits": [
+    "CPU partial numerical/ASR output is retained, but it cannot establish actual framework closure or pass the original case.",
+    "Original five-case attempt stays failed. A future versioned protocol must obtain process image diagnostics without weakening release signing.",
+    "No CPU live, Metal app, explicit-Metal negative, GUI, microphone, quality, performance or release qualification from this attempt."
+  ],
+  "files": {
+    "actual-cpu-app-signature.log": {
+      "bytes": 959,
+      "sha256": "9925cf45e02452a6861f0e15ad3edeec63eef6aed0d9b33faf6517434672deb4"
+    },
+    "cleanup-stale-owned-incremental-app-v1.py": {
+      "bytes": 2683,
+      "sha256": "e378050fa4058d4ce442c61d28b449b552918dec74e8dbeb63e705d41202dee9"
+    },
+    "collect-valid-mel-pnola-app-trace-failure.py": {
+      "bytes": 4784,
+      "sha256": "ecb03b60987f4d8c902d544995280f6b7fbbf50d3048b6f080ab9df940fcab53"
+    },
+    "commands.json": {
+      "bytes": 1068,
+      "sha256": "069d84d8b7812c08ffc78dd8c3c4a29ad81c3da8563989fd6d4461392346f548"
+    },
+    "cpu-recorded.result.json": {
+      "bytes": 42905,
+      "sha256": "2f53641863908af2bb1f98aeb02cc51b4a8e22efbedfbe896abd0e728fd31565"
+    },
+    "cpu-recorded.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "cpu-recorded.stdout.log": {
+      "bytes": 100,
+      "sha256": "877dc3d84baf75857f709d9ab0a02c865223bca41ac42de000a4405580dd7345"
+    },
+    "execution-tools/artifacts.py": {
+      "bytes": 2869,
+      "sha256": "17df6411ab0394b4d9bb30a099915badf357af26050b6cd08bfd44887688ff42"
+    },
+    "execution-tools/build_valid_mel_candidate.py": {
+      "bytes": 12180,
+      "sha256": "5bfb3ec59548ae0b56e8e3eaded10201933f574b0b04ca12384eb35795dd546b"
+    },
+    "execution-tools/macos_auxiliary_loaded_libraries.py": {
+      "bytes": 1402,
+      "sha256": "446119644a6a9769f92602bc1f8b0b8d8eaf5bd3590e1b98a12079eebdb0dfbe"
+    },
+    "execution-tools/macos_loaded_libraries.py": {
+      "bytes": 1805,
+      "sha256": "69c2dfcc6d2cf8e2966b929ff997b337c6c4e3a62fd8ada110b36ba27da4833b"
+    },
+    "execution-tools/notices/openmdw-1.1/sources.json": {
+      "bytes": 332,
+      "sha256": "ff840c8c5559a4bed7d73e01828b83527a4606d6a446c7796c3dc27d7d41d436"
+    },
+    "execution-tools/package_macos.py": {
+      "bytes": 18168,
+      "sha256": "301cf904fa444a3a655f38b5a40e365d6bc0e1f348f5bbede8962d6352fffda3"
+    },
+    "execution-tools/patches/v3-finish-valid-mel.patch": {
+      "bytes": 1194,
+      "sha256": "8c1434c14f63ebeb2515c719a90594124fd4f75af85b80451fd145b5caef3c36"
+    },
+    "execution-tools/qualification_storage.py": {
+      "bytes": 3914,
+      "sha256": "8bbb4dfe53797d8d03c3ba18f24acce8458878602c1c85f28a4f816d6f4416f6"
+    },
+    "execution-tools/qualify_valid_mel_mixed.py": {
+      "bytes": 8454,
+      "sha256": "ad56982cd1d6cc4e668d67b30c4ff6f4284ad8c6d3442fb0d79031c50b1c5d6b"
+    },
+    "execution-tools/qualify_valid_mel_pnola.py": {
+      "bytes": 13787,
+      "sha256": "4628f4b6242a7cd0985ba5b20a7ac8f38bbec4dc5042b786e34e488ed738e423"
+    },
+    "execution-tools/qualify_valid_mel_pnola_app.py": {
+      "bytes": 10218,
+      "sha256": "68fbcb38c6c965db6df091f2e0e6d14d630cd044bd734899bd5a300c1f88b478"
+    },
+    "execution-tools/runtime-valid-mel.lock.json": {
+      "bytes": 6339,
+      "sha256": "af40e586994f223390fcac59936e3781d967c03080350f4b5df141b1bdaf51be"
+    },
+    "execution-tools/runtime.lock.json": {
+      "bytes": 4917,
+      "sha256": "e66e5651608636bbb04528fed7944ab8972a778d1141b36fef3fb391eefd0dcc"
+    },
+    "execution-tools/runtime_profiles.py": {
+      "bytes": 7345,
+      "sha256": "f99c8c33a3a64005ef477319c8bc7f1d6c32180c44665c2fe189a54a4b31ac7d"
+    },
+    "execution-tools/sdk_archive.py": {
+      "bytes": 7022,
+      "sha256": "0b1d80768d15c2818afc82efcc1f3ddf253360b99c16c623e170073e020cb3cd"
+    },
+    "execution-tools/test_macos_auxiliary_loaded_libraries.py": {
+      "bytes": 3000,
+      "sha256": "562150666ede4ba72c9822fd5b5d50cca5695d9a65572f5eeb87d5adf7c3e08b"
+    },
+    "execution-tools/test_qualification_storage.py": {
+      "bytes": 4417,
+      "sha256": "e6c8a567be86f2d614868e96f10dd6e682077aa3b3cd03b8347aab95fad20332"
+    },
+    "execution-tools/test_valid_mel_pnola_app.py": {
+      "bytes": 2882,
+      "sha256": "77e3dd836e82ef93674f8ea670b8321072132e9b7dd1b4d5e9d67822999957ca"
+    },
+    "execution-tools/test_valid_mel_pnola_complete_app.py": {
+      "bytes": 3406,
+      "sha256": "7d7e97551e2f12cdcf0857baa98a2f1838b8e964a6ff4b1eddd2086713d8f272"
+    },
+    "execution-tools/verify_valid_mel_pnola_app.py": {
+      "bytes": 8979,
+      "sha256": "6cead1406fc57eebf6cdfaca3de76a34d3945f604bea97389c8991a0c09908ae"
+    },
+    "launch.log": {
+      "bytes": 647,
+      "sha256": "c49f2ccdf1a40546becadd8ee097cc0016906127dfdee260bc234cfb8cb25a81"
+    },
+    "model-free-diagnosis/commands.json": {
+      "bytes": 2278,
+      "sha256": "d63e69948c52a95727d120aa5ea9c6374254c1f033a4202bfb9503c40306122e"
+    },
+    "model-free-diagnosis/hardened-compile.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "model-free-diagnosis/hardened-compile.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "model-free-diagnosis/hardened-run.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "model-free-diagnosis/hardened-run.stdout.log": {
+      "bytes": 30,
+      "sha256": "26bf934e23a0e7c86ebca75d3b88a8977aae522746a61d27e760bed53be67013"
+    },
+    "model-free-diagnosis/hardened-sign.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "model-free-diagnosis/hardened-sign.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "model-free-diagnosis/hardened-signature.stderr.log": {
+      "bytes": 906,
+      "sha256": "47ee08f01d5ccd14d2f23e36317fad156d0ea34cac5bf64c1be1f6a27999d8f4"
+    },
+    "model-free-diagnosis/hardened-signature.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "model-free-diagnosis/plain-compile.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "model-free-diagnosis/plain-compile.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "model-free-diagnosis/plain-run.stderr.log": {
+      "bytes": 102105,
+      "sha256": "6c4908ba59b750f35a16deac6229a9772528fca9e06d1b3df247c3c6527cafdc"
+    },
+    "model-free-diagnosis/plain-run.stdout.log": {
+      "bytes": 23,
+      "sha256": "4f3e0652aaf73b1766c31c0294f05f474a335547a912b5c6ec6e60d745e71f36"
+    },
+    "model-free-diagnosis/plain-sign.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "model-free-diagnosis/plain-sign.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "model-free-diagnosis/plain-signature.stderr.log": {
+      "bytes": 865,
+      "sha256": "c8497afdbbc55b84d26e2d2ce3ffddf86ac1ed254e8e91311a3ccb6849161d9a"
+    },
+    "model-free-diagnosis/plain-signature.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "model-free-diagnosis/probe.c": {
+      "bytes": 167,
+      "sha256": "33b014cb0896e7556162a8dcdd18f8e02a591a548176fe9853bb96d072ea2aea"
+    },
+    "model-free-diagnosis/result.json": {
+      "bytes": 452,
+      "sha256": "4aafeeb7210035fa23eceb9a8cf75ab71415acd39591d6e4ac7f7e4c8d643faf"
+    },
+    "owned-incremental-app-cleanup-v1.json": {
+      "bytes": 4002110,
+      "sha256": "b6152e6849ff8f1a2709413c07d10c3c256dde3604159595cdb00133a13a3eee"
+    },
+    "protocol.json": {
+      "bytes": 184372,
+      "sha256": "33aa89462d6448bdd8edb3d23db07f681631c9ad46f11bc6bff5738e23046680"
+    },
+    "qualification.json": {
+      "bytes": 1214,
+      "sha256": "f486080d96702982fe4ad29ed1997634c6225d355b0393d530d17552f7d43e12"
+    },
+    "reproduce-hardened-dyld-v1.py": {
+      "bytes": 2151,
+      "sha256": "8995d3608ec73077cf54fb1b2c8f688a053537b7b3d617947f9c86ef1cbf48a8"
+    },
+    "runtime.sb": {
+      "bytes": 8440,
+      "sha256": "07d49f081fad76e105dd0241fdf3c1c06cf17ca49a6f180d45147f5015b1868d"
+    }
+  }
+}

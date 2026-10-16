@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/qualify_valid_mel_pnola_app.py", line 157, in <module>
+    main()
+    ~~~~^^
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/qualify_valid_mel_pnola_app.py", line 136, in main
+    images = audit_app_images((output / (name + '.stderr.log')).read_text(), app, verified[backend])
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/verify_valid_mel_pnola_app.py", line 112, in audit_app_images
+    raise ValueError('missing app dyld telemetry')
+ValueError: missing app dyld telemetry

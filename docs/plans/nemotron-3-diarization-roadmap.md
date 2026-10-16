@@ -86,7 +86,13 @@ recorded and paced-live resolution per backend, then explicit Metal rejection
 by the CPU package while preserving Bark. Source/SDK/build/Homebrew/network
 reads are denied to each app; app and staged inputs are read-only. Actual
 framework telemetry, recorded/native parity and saved compact-live timelines
-are required. No case has executed yet; GUI and microphone remain separate.
+are required. The [first attempt remains failed](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-pnola-app-trace-failure/receiver-qualification.json):
+its CPU recording command returned0 with exact 6000-frame/27-turn parity and
+117-word Bark text, but hardened signing suppressed the required environment
+dyld trace. The remaining four commands never started. A model-free signed C
+probe independently reproduces the suppression. A future versioned attempt
+requires process-local image diagnostics while retaining hardened signing;
+no full-app inference gate is promoted. GUI and microphone remain separate.
 The separate current-profile corpus scorer preserves every valid row and all
 original quality criteria. A new frozen runner and fresh native/public corpus
 outputs are still required; historical quality failures remain unchanged.
