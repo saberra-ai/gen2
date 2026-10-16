@@ -1,0 +1,16 @@
+[package]
+name = "gen2-qwen-image-metal-probe"
+version = "0.1.0"
+edition = "2024"
+publish = false
+
+# A disposable qualification harness, independent of the public gen2 API.
+[workspace]
+
+[dependencies]
+anyhow = "1"
+gen2 = { path = "../..", default-features = false, features = ["backend-llamacpp", "metal"] }
+image = { version = "0.25.10", default-features = false, features = ["png"] }
+libloading = "0.9"
+serde_json = "1"
+sha2 = "0.11"
