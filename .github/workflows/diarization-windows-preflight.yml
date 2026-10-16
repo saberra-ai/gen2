@@ -1,0 +1,26 @@
+name: Diarization Windows container prerequisites
+on:
+  push:
+    branches: [codex/nemotron3-windows-probe]
+    paths: ['.github/workflows/diarization-windows-preflight.yml', 'tools/nemotron-diarization/windows_container_preflight.py']
+permissions:
+  contents: read
+jobs:
+  inspect:
+    runs-on: windows-2022
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Observe host and existing Docker prerequisites without mutations
+        run: python tools/nemotron-diarization/windows_container_preflight.py --output "${{ runner.temp }}/windows-container-prerequisites"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: windows-container-prerequisites
+          path: ${{ runner.temp }}/windows-container-prerequisites/
+          retention-days: 7

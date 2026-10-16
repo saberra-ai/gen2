@@ -126,3 +126,14 @@ vcpkg installed status/metadata hashes. It lists only license candidates actuall
 found under the recorded redist root and keeps redistribution qualification
 false. This read-only PowerShell collector awaits actual Windows execution;
 license selection, entitlement and corresponding-source closure remain open.
+
+The separate `diarization-windows-preflight.yml` probe now observes the actual
+Server 2022 build VM's OS/CPU/service identity and existing default-context Docker
+version, engine information and local image inventory. It does not pull images,
+change daemon/features, create containers, install tools or execute models. Each
+observation is bounded to 30 seconds, endpoint/context environment overrides
+prevent Docker queries, and only selected non-secret fields are retained. A
+candidate result requires kernel build 20348 and an x64 Windows engine;
+`runtime_qualified` remains false. Actual preflight execution is pending. Even a
+positive result establishes only prerequisites for a later fresh offline container
+run, not desktop support or usable nested Hyper-V.
