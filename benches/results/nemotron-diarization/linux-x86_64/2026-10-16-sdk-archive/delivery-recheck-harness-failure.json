@@ -1,0 +1,5 @@
+{
+  "error": "AssertionError at symlink path containment check",
+  "cause": "On macOS TemporaryDirectory uses /var/folders but symlink resolve returns /private/var/folders. Verifier compared canonical target against uncanonicalized SDK root. Archive metadata/content unchanged.",
+  "fix": "Canonicalize extracted SDK root before containment checks. No model inference repeated."
+}

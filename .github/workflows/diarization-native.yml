@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches: [codex/nemotron3-platforms, codex/nemotron3-linux]
-    paths: ['tools/nemotron-diarization/platform_native.py', 'tools/nemotron-diarization/windows_compat.py', 'tools/nemotron-diarization/sdk_archive.py', '.github/workflows/diarization-native.yml', 'src/diarization/**', 'tests/diarization_native.rs']
+    paths: ['tools/nemotron-diarization/platform_native.py', 'tools/nemotron-diarization/windows_compat.py', 'tools/nemotron-diarization/sdk_archive.py', 'tools/nemotron-diarization/package_linux.py', 'tools/nemotron-diarization/platform_linux_package.py', '.github/workflows/diarization-native.yml', 'src/diarization/**', 'tests/diarization_native.rs']
 permissions:
   contents: read
 jobs:
@@ -48,6 +48,15 @@ jobs:
           key: nemo-diar-vcpkg-9e593bb18ea69cc5095e012465dcd675a822ed0d-x64-static-md
       - name: Build and exercise actual CPU SDK
         run: python tools/nemotron-diarization/platform_native.py --source native-source --prefix "${{ runner.temp }}/nemo-sdk" --output "${{ runner.temp }}/nemo-evidence" --jobs 2
+      - name: Linux runtime packaging prerequisites
+        if: runner.os == 'Linux' && github.ref_name == 'codex/nemotron3-linux'
+        run: |
+          sudo sed -i 's/^Types: deb$/Types: deb deb-src/' /etc/apt/sources.list.d/ubuntu.sources
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends patchelf binutils
+      - name: Construct Linux runtime package with corresponding sources
+        if: runner.os == 'Linux' && github.ref_name == 'codex/nemotron3-linux'
+        run: python tools/nemotron-diarization/platform_linux_package.py --sdk-prefix "${{ runner.temp }}/nemo-sdk" --native-receipt "${{ runner.temp }}/nemo-evidence/receipt.json" --output "${{ runner.temp }}/nemo-package-evidence"
       - name: Preserve Windows dependency cache after build failure
         if: always() && runner.os == 'Windows' && steps.vcpkg-cache.outcome == 'success' && steps.vcpkg-cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
@@ -66,4 +75,7 @@ jobs:
             ${{ runner.temp }}/nemo-evidence/*.tar.gz
             ${{ runner.temp }}/nemo-evidence/reference/
             ${{ runner.temp }}/nemo-sdk/
+            ${{ runner.temp }}/nemo-package-evidence/*.json
+            ${{ runner.temp }}/nemo-package-evidence/*.log
+            ${{ runner.temp }}/nemo-package-evidence/*.tar.gz
           retention-days: 7

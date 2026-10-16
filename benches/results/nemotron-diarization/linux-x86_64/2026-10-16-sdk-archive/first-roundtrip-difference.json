@@ -1,0 +1,89 @@
+{
+  "cause": "Mac extraction created symlinks with0755 rather than Linux0777; header modes are exact. Initial verifier restored files/directories but skipped symlink modes.",
+  "differences": {
+    "lib/libggml-base.so": {
+      "expected": {
+        "mode": 511,
+        "type": "symlink",
+        "target": "libggml-base.so.0"
+      },
+      "actual": {
+        "mode": 493,
+        "type": "symlink",
+        "target": "libggml-base.so.0"
+      }
+    },
+    "lib/libggml-base.so.0": {
+      "expected": {
+        "mode": 511,
+        "type": "symlink",
+        "target": "libggml-base.so.0.25.1"
+      },
+      "actual": {
+        "mode": 493,
+        "type": "symlink",
+        "target": "libggml-base.so.0.25.1"
+      }
+    },
+    "lib/libggml-cpu.so": {
+      "expected": {
+        "mode": 511,
+        "type": "symlink",
+        "target": "libggml-cpu.so.0"
+      },
+      "actual": {
+        "mode": 493,
+        "type": "symlink",
+        "target": "libggml-cpu.so.0"
+      }
+    },
+    "lib/libggml-cpu.so.0": {
+      "expected": {
+        "mode": 511,
+        "type": "symlink",
+        "target": "libggml-cpu.so.0.25.1"
+      },
+      "actual": {
+        "mode": 493,
+        "type": "symlink",
+        "target": "libggml-cpu.so.0.25.1"
+      }
+    },
+    "lib/libggml.so": {
+      "expected": {
+        "mode": 511,
+        "type": "symlink",
+        "target": "libggml.so.0"
+      },
+      "actual": {
+        "mode": 493,
+        "type": "symlink",
+        "target": "libggml.so.0"
+      }
+    },
+    "lib/libggml.so.0": {
+      "expected": {
+        "mode": 511,
+        "type": "symlink",
+        "target": "libggml.so.0.25.1"
+      },
+      "actual": {
+        "mode": 493,
+        "type": "symlink",
+        "target": "libggml.so.0.25.1"
+      }
+    },
+    "lib/libnemo_speech_asr_c.so": {
+      "expected": {
+        "mode": 511,
+        "type": "symlink",
+        "target": "libnemo_speech_asr_c.so.1"
+      },
+      "actual": {
+        "mode": 493,
+        "type": "symlink",
+        "target": "libnemo_speech_asr_c.so.1"
+      }
+    }
+  }
+}

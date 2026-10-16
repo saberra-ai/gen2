@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "source_commit": "0ab232b",
+  "run_url": "https://github.com/saberra-ai/gen2/actions/runs/38867965011",
+  "outcome": "All19patchedGGML materializations apply; native objects compile. SDK link fails before model execution because CMake Ninja selected MinGW c++.exe for the intendedMSVC/vcpkg build.",
+  "actual_compilers": {
+    "c": "C:/mingw64/bin/cc.exe",
+    "cxx": "C:/mingw64/bin/c++.exe",
+    "linker": "C:/mingw64/bin/ld.exe"
+  },
+  "link_error": "c++.exe: error: unrecognized command-line option '-ignore:4221'",
+  "fix_commit": "f36b9d9",
+  "fix": "Resolve absolute cl.exe from active vcvars PATH and supply both CMAKE_C_COMPILER/CMAKE_CXX_COMPILER. No native inference code, model or patch payload changes.",
+  "regression": "Missing-helper red followed by green explicit compiler-definition/case-insensitive PATH test. Green log includes uncommitted Linux packager tests; committed Windows tool count is44 and full working evidence count52 at capture.",
+  "limits": [
+    "No successful native Windows SDK, model inference, lifecycle, loader-control or release qualification yet.",
+    "Actual repaired MSVC run pending."
+  ]
+}

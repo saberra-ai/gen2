@@ -598,14 +598,31 @@ A guarded, build-only Windows compatibility overlay now materializes LF with
 the unchanged normalized content before patching. It changes no native C++ or
 patch payload. See the [investigation](../research/nemotron-windows-patch-lines.md)
 and [captured failure receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-patch-materialization/collection.json).
-The actual repaired native CI run is pending; neither Windows execution nor
-repair success is claimed yet. These jobs do not establish closed portable
+That actual retry now applies all 19 patches and compiles native objects, but
+fails during linking because CMake Ninja selects ambient MinGW for the intended
+MSVC/vcpkg build (`c++.exe` rejects `-ignore:4221`). The LF correction is confirmed;
+there is still no successful Windows SDK/model run. The [compiler-selection failure receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-compiler-selection/diagnostic.json)
+retains the actual CMake cache and link diagnostics. A separate reviewed fix
+binds CMake C/C++ explicitly to the absolute active MSVC `cl.exe`; its native
+retry is pending. These jobs do not establish closed portable
 packages, fresh-machine offline operation or mixed-model coexistence on those
 platforms. The [Linux packaging investigation](../research/nemotron-linux-packaging.md)
 sets out the next implementation gates: exact non-glibc dependency closure,
 license/source provenance, relative ELF resolution, archive metadata, and a
 clean offline container plus actual chat/GGML coexistence. This is a plan,
 not a new portable-package or clean-machine result.
+
+The actual Linux SDK archive job now passes native/public parity and all seven
+lifecycle tests, then preserves all 82 filesystem records, including seven
+aliases and two executables. Delivered tar bytes and every header mode match;
+a Mac extraction initially missed Linux symlink modes, then restoring those
+modes produced an exact inventory match. The failed verifier comparison and a
+standalone rechecker are retained in the [SDK archive receipt](../../benches/results/nemotron-diarization/linux-x86_64/2026-10-16-sdk-archive/qualification.json).
+This is archive delivery/metadata evidence, not Linux runtime relocation. A
+separate runtime packager now implements receipt/ISA checks, recursive ELF
+closure, private native/SentencePiece identities, relative RPATHs, component
+copyright/common-license texts and exact source-package acquisition. Its actual
+Linux construction and clean-container/coexistence gates remain pending.
 
 - [ ] Run Mac CPU first; compare Metal against the same Q8 reference and real
   annotated audio. Record device placement/fallback rather than treating a

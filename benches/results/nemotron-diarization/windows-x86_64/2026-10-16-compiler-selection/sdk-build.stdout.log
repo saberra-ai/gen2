@@ -1,0 +1,1260 @@
+==> nemo-speech Windows build
+    backend=cpu profile=asr asr=True diar=True tts=False nmt=False http=False grpc=False flashlight=False tts-ja=False tts-zh=False tests=False examples=False tools=False
+    config=Release compiler=msvc host=AMD64 target=x64 build=D:\a\gen2\gen2\native-source\build\gen2-cpu-diar jobs=2 cublas-shim=False
+    vcpkg=asr triplet=x64-windows-static-md
+==> importing MSVC env from C:\Program Files\Microsoft Visual Studio\2022\Enterprise (vcvars64.bat)
+==> bootstrapping vcpkg 2026.07.29 in C:\Users\runneradmin\AppData\Local\NeMoSpeech\vcpkg-2026.07.29
+==> building vcpkg
+Downloading https://github.com/microsoft/vcpkg-tool/releases/download/2026-07-27/vcpkg.exe -> C:\Users\runneradmin\AppData\Local\NeMoSpeech\vcpkg-2026.07.29\vcpkg.exe... done.
+Validating signature... done.
+
+vcpkg package management program version 2026-07-27-98d7cb0cf1f4686a3e43aa5672b6230c1d56bce8
+
+See LICENSE.txt for license information.
+==> vcpkg features: asr (x64-windows-static-md)
+==> cmake -S D:\a\gen2\gen2\native-source -B D:\a\gen2\gen2\native-source\build\gen2-cpu-diar -G Ninja -DCMAKE_BUILD_TYPE=Release -DNEMO_SPEECH_BUILD_ASR=ON -DNEMO_SPEECH_BUILD_DIAR=ON -DNEMO_SPEECH_BUILD_TTS=OFF -DNEMO_SPEECH_BUILD_NMT=OFF -DNEMO_SPEECH_BUILD_HTTP=OFF -DNEMO_SPEECH_HTTP_TLS=OFF -DNEMO_SPEECH_BUILD_GRPC=OFF -DNEMO_SPEECH_WITH_FLASHLIGHT=OFF -DNEMO_SPEECH_WITH_NORM=OFF -DNEMO_SPEECH_TTS_WITH_JA=OFF -DNEMO_SPEECH_TTS_WITH_ZH=OFF -DNEMO_SPEECH_BUILD_TESTS=OFF -DBUILD_TESTING=OFF -DNEMO_SPEECH_BUILD_EXAMPLES=OFF -DNEMO_SPEECH_BUILD_TOOLS=OFF -DCMAKE_TOOLCHAIN_FILE=C:\Users\runneradmin\AppData\Local\NeMoSpeech\vcpkg-2026.07.29\scripts\buildsystems\vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static-md -DVCPKG_MANIFEST_FEATURES=asr -DVCPKG_INSTALLED_DIR=D:\a\gen2\gen2\native-source\build\gen2-cpu-diar\vcpkg_installed -DGGML_CUDA=OFF -DGGML_VULKAN=OFF -DNEMO_SPEECH_BUILD_EXAMPLES=ON -DNEMO_SPEECH_BUILD_CLI=OFF -DNEMO_SPEECH_BUILD_MIC_CAPTURE=OFF -DGGML_OPENMP=OFF -DGGML_NATIVE=OFF -DGGML_AVX=ON -DGGML_AVX2=ON -DGGML_AVX512=OFF -DGGML_AVX_VNNI=OFF -DGGML_FMA=ON -DGGML_F16C=ON -DNEMO_SPEECH_WITH_NORM=OFF -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_PREFIX=D:\a\_temp\nemo-sdk -DNEMO_SPEECH_BUILD_ASR=OFF -DNEMO_SPEECH_BUILD_TTS=OFF
+-- Running vcpkg install
+A suitable version of cmake was not found (required v4.4.0).
+Downloading https://github.com/Kitware/CMake/releases/download/v4.4.0/cmake-4.4.0-windows-x86_64.zip -> cmake-4.4.0-windows-x86_64.zip
+Successfully downloaded cmake-4.4.0-windows-x86_64.zip
+Extracting cmake...
+Detecting compiler hash for triplet x64-windows...
+Compiler found: C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe
+Detecting compiler hash for triplet x64-windows-static-md...
+Compiler found: C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe
+The following packages will be built and installed:
+  * abseil:x64-windows-static-md@20260107.1#3
+  * abseil:x64-windows@20260107.1#3
+  * protobuf:x64-windows@6.33.4#2
+  * protobuf:x64-windows-static-md@6.33.4#2
+    sentencepiece:x64-windows-static-md@0.2.1
+  * utf8-range:x64-windows-static-md@6.33.4
+  * utf8-range:x64-windows@6.33.4
+  * vcpkg-cmake:x64-windows@2024-04-23
+  * vcpkg-cmake-config:x64-windows@2026-07-21
+Additional packages (*) will be modified to complete this operation.
+Restored 0 package(s) from C:\Users\runneradmin\AppData\Local\vcpkg\archives in 183 us. Use --debug to see more details.
+Installing 1/9 vcpkg-cmake:x64-windows@2024-04-23...
+vcpkg-cmake:x64-windows@2024-04-23 package ABI: 09c130905edcb7e9be99065665de8cf0fca09a344c3415634c6211024dc42bdd
+Building vcpkg-cmake:x64-windows@2024-04-23...
+-- Installing: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/vcpkg-cmake_x64-windows/share/vcpkg-cmake/vcpkg_cmake_configure.cmake
+-- Installing: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/vcpkg-cmake_x64-windows/share/vcpkg-cmake/vcpkg_cmake_build.cmake
+-- Installing: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/vcpkg-cmake_x64-windows/share/vcpkg-cmake/vcpkg_cmake_install.cmake
+-- Installing: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/vcpkg-cmake_x64-windows/share/vcpkg-cmake/vcpkg-port-config.cmake
+-- Installing: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/vcpkg-cmake_x64-windows/share/vcpkg-cmake/copyright
+-- Performing post-build validation
+Starting submission of vcpkg-cmake:x64-windows@2024-04-23 to 1 binary cache(s) in the background
+Elapsed time to handle vcpkg-cmake:x64-windows: 53.6 ms
+Installing 2/9 vcpkg-cmake-config:x64-windows@2026-07-21...
+vcpkg-cmake-config:x64-windows@2026-07-21 package ABI: e0f3d04f0a682716bb22adf54363f309f16004f952e580cbec7f64b098dbcf26
+Building vcpkg-cmake-config:x64-windows@2026-07-21...
+-- Installing: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/vcpkg-cmake-config_x64-windows/share/vcpkg-cmake-config/vcpkg_cmake_config_fixup.cmake
+-- Installing: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/vcpkg-cmake-config_x64-windows/share/vcpkg-cmake-config/vcpkg-port-config.cmake
+-- Installing: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/vcpkg-cmake-config_x64-windows/share/vcpkg-cmake-config/copyright
+-- Skipping post-build validation due to VCPKG_POLICY_EMPTY_PACKAGE
+Starting submission of vcpkg-cmake-config:x64-windows@2026-07-21 to 1 binary cache(s) in the background
+Elapsed time to handle vcpkg-cmake-config:x64-windows: 66.2 ms
+Installing 3/9 abseil:x64-windows-static-md@20260107.1#3...
+abseil:x64-windows-static-md@20260107.1#3 package ABI: 20ec1fc01b2a19cfae2c28caf7709026a73019f99be790ffe5931f4ae0ce3ee2
+Building abseil:x64-windows-static-md@20260107.1#3...
+Downloading https://github.com/abseil/abseil-cpp/archive/20260107.1.tar.gz -> abseil-abseil-cpp-20260107.1.tar.gz
+Successfully downloaded abseil-abseil-cpp-20260107.1.tar.gz
+-- Extracting source C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/downloads/abseil-abseil-cpp-20260107.1.tar.gz
+-- Applying patch 003-force-cxx-17.patch
+-- Applying patch fix-heterogeneous_lookup_testing-target.patch
+-- Applying patch fix-mingw-dll.patch
+-- Applying patch fix-gcc13-constexpr-function-pointer.patch
+-- Using source at C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/buildtrees/abseil/src/20260107.1-b1a4a53e9a.clean
+-- Configuring x64-windows-static-md
+-- Building x64-windows-static-md-dbg
+-- Building x64-windows-static-md-rel
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_absl_check.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_absl_log.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_absl_vlog_is_on.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_algorithm.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_algorithm_container.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_any.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_any_invocable.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_atomic_hook.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_bad_any_cast.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_bad_optional_access.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_bad_variant_access.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_base.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_base_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_bind_front.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_bits.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_borrowed_fixup_buffer.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_bounded_utf8_length_sequence.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_btree.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_charset.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_check.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_chunked_queue.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_city.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_civil_time.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_cleanup.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_cleanup_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_common_policy_traits.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_compare.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_compressed_tuple.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_config.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_constexpr_testing_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_container_common.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_container_memory.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_cord.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_cord_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_cordz_functions.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_cordz_handle.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_cordz_info.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_cordz_sample_token.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_cordz_statistics.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_cordz_update_scope.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_cordz_update_tracker.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_core_headers.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_crc32c.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_crc_cord_state.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_crc_cpu_detect.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_crc_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_debugging.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_debugging_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_decode_rust_punycode.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_demangle_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_demangle_rust.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_die_if_null.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_dynamic_annotations.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_endian.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_errno_saver.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_examine_stack.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_exponential_biased.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_failure_signal_handler.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_fast_type_id.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_fixed_array.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_flags.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_flags_commandlineflag.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_flags_commandlineflag_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_flags_config.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_flags_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_flags_marshalling.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_flags_parse.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_flags_path_util.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_flags_private_handle_accessor.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_flags_program_name.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_flags_reflection.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_flags_usage.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_flags_usage_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_flat_hash_map.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_flat_hash_set.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_function_ref.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_generic_printer_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_graphcycles_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_has_ostream_operator.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_hash.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_hash_container_defaults.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_hash_function_defaults.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_hash_policy_traits.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_hashtable_control_bytes.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_hashtable_debug.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_hashtable_debug_hooks.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_hashtable_profiler.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_hashtablez_sampler.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_inlined_vector.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_inlined_vector_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_int128.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_iterator_traits_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_iterator_traits_test_helper_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_kernel_timeout_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_layout.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_leak_check.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_linked_hash_map.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_linked_hash_set.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_log.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_log_entry.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_log_flags.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_log_globals.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_log_initialize.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_log_internal_append_truncated.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_log_internal_check_impl.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_log_internal_check_op.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_log_internal_conditions.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_log_internal_config.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_log_internal_container.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_log_internal_flags.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_log_internal_fnmatch.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_log_internal_format.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_log_internal_globals.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_log_internal_log_impl.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_log_internal_log_sink_set.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_log_internal_message.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_log_internal_nullguard.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_log_internal_nullstream.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_log_internal_proto.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_log_internal_strip.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_log_internal_structured.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_log_internal_structured_proto.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_log_internal_voidify.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_log_severity.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_log_sink.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_log_sink_registry.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_log_streamer.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_log_structured.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_malloc_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_memory.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_meta.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_no_destructor.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_node_hash_map.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_node_hash_set.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_node_slot_policy.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_non_temporal_arm_intrinsics.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_non_temporal_memcpy.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_nullability.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_nullability_traits_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_numeric.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_numeric_representation.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_optional.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_overload.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_periodic_sampler.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_poison.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_prefetch.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_pretty_function.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_profile_builder.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_random_bit_gen_ref.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_random_distributions.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_random_internal_distribution_caller.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_random_internal_distribution_test_util.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_random_internal_entropy_pool.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_random_internal_fast_uniform_bits.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_random_internal_fastmath.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_random_internal_generate_real.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_random_internal_iostream_state_saver.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_random_internal_mock_helpers.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_random_internal_nonsecure_base.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_random_internal_pcg_engine.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_random_internal_platform.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_random_internal_randen.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_random_internal_randen_engine.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_random_internal_randen_hwaes.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_random_internal_randen_hwaes_impl.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_random_internal_randen_slow.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_random_internal_salted_seed_seq.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_random_internal_seed_material.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_random_internal_traits.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_random_internal_uniform_helper.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_random_internal_wide_multiply.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_random_random.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_random_seed_gen_exception.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_random_seed_sequences.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_raw_hash_map.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_raw_hash_set.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_raw_hash_set_resize_impl.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_raw_logging_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_requires_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_sample_recorder.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_scoped_set_env.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_span.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_spinlock_wait.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_stacktrace.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_status.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_statusor.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_str_format.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_str_format_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_strerror.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_string_view.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_strings.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_strings_append_and_overwrite.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_strings_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_strings_resize_and_overwrite.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_symbolize.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_synchronization.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_throw_delegate.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_time.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_time_zone.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_tracing_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_type_traits.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_utf8_for_code_point.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_utility.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_variant.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_vlog_config_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_vlog_is_on.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/lib/pkgconfig/absl_weakly_mixed_integer.pc
+Downloading msys2-mingw-w64-x86_64-pkgconf-1~2.5.1-1-any.pkg.tar.zst, trying https://mirror.msys2.org/mingw/mingw64/mingw-w64-x86_64-pkgconf-1~2.5.1-1-any.pkg.tar.zst
+Successfully downloaded msys2-mingw-w64-x86_64-pkgconf-1~2.5.1-1-any.pkg.tar.zst
+Downloading msys2-msys2-runtime-3.6.5-1-x86_64.pkg.tar.zst, trying https://mirror.msys2.org/msys/x86_64/msys2-runtime-3.6.5-1-x86_64.pkg.tar.zst
+Successfully downloaded msys2-msys2-runtime-3.6.5-1-x86_64.pkg.tar.zst
+-- Using msys root at C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/downloads/tools/msys2/3e71d1f8e22ab23f
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_absl_check.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_absl_log.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_absl_vlog_is_on.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_algorithm.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_algorithm_container.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_any.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_any_invocable.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_atomic_hook.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_bad_any_cast.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_bad_optional_access.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_bad_variant_access.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_base.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_base_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_bind_front.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_bits.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_borrowed_fixup_buffer.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_bounded_utf8_length_sequence.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_btree.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_charset.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_check.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_chunked_queue.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_city.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_civil_time.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_cleanup.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_cleanup_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_common_policy_traits.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_compare.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_compressed_tuple.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_config.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_constexpr_testing_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_container_common.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_container_memory.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_cord.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_cord_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_cordz_functions.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_cordz_handle.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_cordz_info.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_cordz_sample_token.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_cordz_statistics.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_cordz_update_scope.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_cordz_update_tracker.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_core_headers.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_crc32c.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_crc_cord_state.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_crc_cpu_detect.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_crc_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_debugging.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_debugging_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_decode_rust_punycode.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_demangle_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_demangle_rust.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_die_if_null.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_dynamic_annotations.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_endian.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_errno_saver.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_examine_stack.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_exponential_biased.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_failure_signal_handler.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_fast_type_id.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_fixed_array.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_flags.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_flags_commandlineflag.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_flags_commandlineflag_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_flags_config.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_flags_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_flags_marshalling.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_flags_parse.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_flags_path_util.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_flags_private_handle_accessor.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_flags_program_name.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_flags_reflection.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_flags_usage.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_flags_usage_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_flat_hash_map.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_flat_hash_set.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_function_ref.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_generic_printer_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_graphcycles_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_has_ostream_operator.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_hash.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_hash_container_defaults.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_hash_function_defaults.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_hash_policy_traits.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_hashtable_control_bytes.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_hashtable_debug.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_hashtable_debug_hooks.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_hashtable_profiler.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_hashtablez_sampler.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_inlined_vector.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_inlined_vector_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_int128.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_iterator_traits_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_iterator_traits_test_helper_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_kernel_timeout_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_layout.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_leak_check.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_linked_hash_map.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_linked_hash_set.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_log.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_log_entry.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_log_flags.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_log_globals.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_log_initialize.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_log_internal_append_truncated.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_log_internal_check_impl.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_log_internal_check_op.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_log_internal_conditions.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_log_internal_config.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_log_internal_container.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_log_internal_flags.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_log_internal_fnmatch.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_log_internal_format.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_log_internal_globals.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_log_internal_log_impl.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_log_internal_log_sink_set.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_log_internal_message.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_log_internal_nullguard.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_log_internal_nullstream.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_log_internal_proto.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_log_internal_strip.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_log_internal_structured.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_log_internal_structured_proto.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_log_internal_voidify.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_log_severity.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_log_sink.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_log_sink_registry.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_log_streamer.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_log_structured.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_malloc_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_memory.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_meta.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_no_destructor.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_node_hash_map.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_node_hash_set.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_node_slot_policy.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_non_temporal_arm_intrinsics.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_non_temporal_memcpy.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_nullability.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_nullability_traits_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_numeric.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_numeric_representation.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_optional.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_overload.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_periodic_sampler.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_poison.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_prefetch.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_pretty_function.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_profile_builder.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_random_bit_gen_ref.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_random_distributions.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_random_internal_distribution_caller.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_random_internal_distribution_test_util.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_random_internal_entropy_pool.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_random_internal_fast_uniform_bits.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_random_internal_fastmath.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_random_internal_generate_real.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_random_internal_iostream_state_saver.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_random_internal_mock_helpers.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_random_internal_nonsecure_base.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_random_internal_pcg_engine.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_random_internal_platform.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_random_internal_randen.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_random_internal_randen_engine.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_random_internal_randen_hwaes.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_random_internal_randen_hwaes_impl.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_random_internal_randen_slow.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_random_internal_salted_seed_seq.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_random_internal_seed_material.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_random_internal_traits.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_random_internal_uniform_helper.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_random_internal_wide_multiply.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_random_random.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_random_seed_gen_exception.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_random_seed_sequences.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_raw_hash_map.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_raw_hash_set.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_raw_hash_set_resize_impl.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_raw_logging_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_requires_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_sample_recorder.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_scoped_set_env.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_span.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_spinlock_wait.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_stacktrace.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_status.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_statusor.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_str_format.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_str_format_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_strerror.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_string_view.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_strings.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_strings_append_and_overwrite.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_strings_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_strings_resize_and_overwrite.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_symbolize.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_synchronization.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_throw_delegate.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_time.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_time_zone.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_tracing_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_type_traits.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_utf8_for_code_point.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_utility.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_variant.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_vlog_config_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_vlog_is_on.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/debug/lib/pkgconfig/absl_weakly_mixed_integer.pc
+-- Installing: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows-static-md/share/abseil/copyright
+-- Performing post-build validation
+Starting submission of abseil:x64-windows-static-md@20260107.1#3 to 1 binary cache(s) in the background
+Elapsed time to handle abseil:x64-windows-static-md: 2.1 min
+Completed submission of vcpkg-cmake:x64-windows@2024-04-23 to 1 binary cache(s) in 75.9 ms
+Completed submission of vcpkg-cmake-config:x64-windows@2026-07-21 to 1 binary cache(s) in 55.9 ms
+Installing 4/9 utf8-range:x64-windows-static-md@6.33.4...
+utf8-range:x64-windows-static-md@6.33.4 package ABI: ace053ed5cbc7abc3fa11d0438ed63ebf5828c3d93316161ee492ba5373601c7
+Building utf8-range:x64-windows-static-md@6.33.4...
+Downloading https://github.com/protocolbuffers/protobuf/archive/v33.4.tar.gz -> protocolbuffers-protobuf-v33.4.tar.gz
+Successfully downloaded protocolbuffers-protobuf-v33.4.tar.gz
+-- Extracting source C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/downloads/protocolbuffers-protobuf-v33.4.tar.gz
+-- Applying patch fix-cmake.patch
+-- Using source at C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/buildtrees/utf8-range/src/v33.4-7b17d08241.clean
+-- Configuring x64-windows-static-md
+-- Building x64-windows-static-md-dbg
+-- Building x64-windows-static-md-rel
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/utf8-range_x64-windows-static-md/lib/pkgconfig/utf8_range.pc
+-- Using cached msys2-mingw-w64-x86_64-pkgconf-1~2.5.1-1-any.pkg.tar.zst
+-- Using cached msys2-msys2-runtime-3.6.5-1-x86_64.pkg.tar.zst
+-- Using msys root at C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/downloads/tools/msys2/3e71d1f8e22ab23f
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/utf8-range_x64-windows-static-md/debug/lib/pkgconfig/utf8_range.pc
+-- Installing: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/utf8-range_x64-windows-static-md/share/utf8-range/copyright
+-- Performing post-build validation
+Starting submission of utf8-range:x64-windows-static-md@6.33.4 to 1 binary cache(s) in the background
+Elapsed time to handle utf8-range:x64-windows-static-md: 8 s
+Completed submission of abseil:x64-windows-static-md@20260107.1#3 to 1 binary cache(s) in 6.9 s
+Installing 5/9 abseil:x64-windows@20260107.1#3...
+abseil:x64-windows@20260107.1#3 package ABI: 25bc6b1d107f9e70bdb64c74195ded07e0b52a51e04ed51eb17aa31391b761b7
+Building abseil:x64-windows@20260107.1#3...
+-- Using cached abseil-abseil-cpp-20260107.1.tar.gz
+-- Cleaning sources at C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/buildtrees/abseil/src/20260107.1-b1a4a53e9a.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/downloads/abseil-abseil-cpp-20260107.1.tar.gz
+-- Applying patch 003-force-cxx-17.patch
+-- Applying patch fix-heterogeneous_lookup_testing-target.patch
+-- Applying patch fix-mingw-dll.patch
+-- Applying patch fix-gcc13-constexpr-function-pointer.patch
+-- Using source at C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/buildtrees/abseil/src/20260107.1-b1a4a53e9a.clean
+-- Configuring x64-windows
+-- Building x64-windows-dbg
+-- Building x64-windows-rel
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/abseil_dll.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_absl_check.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_absl_log.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_absl_vlog_is_on.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_algorithm.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_algorithm_container.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_any.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_any_invocable.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_atomic_hook.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_bad_any_cast.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_bad_optional_access.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_bad_variant_access.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_base.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_base_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_bind_front.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_bits.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_borrowed_fixup_buffer.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_bounded_utf8_length_sequence.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_btree.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_charset.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_check.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_chunked_queue.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_city.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_civil_time.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_cleanup.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_cleanup_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_common_policy_traits.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_compare.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_compressed_tuple.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_config.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_constexpr_testing_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_container_common.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_container_memory.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_cord.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_cord_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_cordz_functions.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_cordz_handle.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_cordz_info.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_cordz_sample_token.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_cordz_statistics.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_cordz_update_scope.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_cordz_update_tracker.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_core_headers.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_crc32c.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_crc_cord_state.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_crc_cpu_detect.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_crc_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_debugging.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_debugging_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_decode_rust_punycode.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_demangle_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_demangle_rust.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_die_if_null.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_dynamic_annotations.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_endian.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_errno_saver.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_examine_stack.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_exponential_biased.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_failure_signal_handler.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_fast_type_id.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_fixed_array.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_flags.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_flags_commandlineflag.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_flags_commandlineflag_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_flags_config.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_flags_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_flags_marshalling.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_flags_parse.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_flags_path_util.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_flags_private_handle_accessor.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_flags_program_name.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_flags_reflection.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_flags_usage.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_flags_usage_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_flat_hash_map.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_flat_hash_set.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_function_ref.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_generic_printer_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_graphcycles_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_has_ostream_operator.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_hash.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_hash_container_defaults.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_hash_function_defaults.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_hash_policy_traits.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_hashtable_control_bytes.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_hashtable_debug.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_hashtable_debug_hooks.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_hashtable_profiler.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_hashtablez_sampler.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_inlined_vector.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_inlined_vector_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_int128.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_iterator_traits_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_iterator_traits_test_helper_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_kernel_timeout_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_layout.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_leak_check.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_linked_hash_map.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_linked_hash_set.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_log.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_log_entry.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_log_flags.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_log_globals.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_log_initialize.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_log_internal_append_truncated.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_log_internal_check_impl.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_log_internal_check_op.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_log_internal_conditions.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_log_internal_config.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_log_internal_container.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_log_internal_flags.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_log_internal_fnmatch.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_log_internal_format.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_log_internal_globals.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_log_internal_log_impl.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_log_internal_log_sink_set.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_log_internal_message.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_log_internal_nullguard.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_log_internal_nullstream.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_log_internal_proto.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_log_internal_strip.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_log_internal_structured.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_log_internal_structured_proto.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_log_internal_voidify.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_log_severity.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_log_sink.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_log_sink_registry.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_log_streamer.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_log_structured.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_malloc_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_memory.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_meta.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_no_destructor.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_node_hash_map.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_node_hash_set.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_node_slot_policy.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_non_temporal_arm_intrinsics.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_non_temporal_memcpy.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_nullability.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_nullability_traits_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_numeric.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_numeric_representation.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_optional.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_overload.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_periodic_sampler.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_poison.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_prefetch.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_pretty_function.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_profile_builder.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_random_bit_gen_ref.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_random_distributions.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_random_internal_distribution_caller.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_random_internal_distribution_test_util.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_random_internal_entropy_pool.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_random_internal_fast_uniform_bits.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_random_internal_fastmath.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_random_internal_generate_real.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_random_internal_iostream_state_saver.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_random_internal_mock_helpers.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_random_internal_nonsecure_base.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_random_internal_pcg_engine.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_random_internal_platform.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_random_internal_randen.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_random_internal_randen_engine.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_random_internal_randen_hwaes.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_random_internal_randen_hwaes_impl.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_random_internal_randen_slow.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_random_internal_salted_seed_seq.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_random_internal_seed_material.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_random_internal_traits.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_random_internal_uniform_helper.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_random_internal_wide_multiply.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_random_random.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_random_seed_gen_exception.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_random_seed_sequences.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_raw_hash_map.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_raw_hash_set.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_raw_hash_set_resize_impl.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_raw_logging_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_requires_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_sample_recorder.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_scoped_set_env.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_span.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_spinlock_wait.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_stacktrace.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_status.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_statusor.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_str_format.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_str_format_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_strerror.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_string_view.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_strings.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_strings_append_and_overwrite.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_strings_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_strings_resize_and_overwrite.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_symbolize.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_synchronization.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_throw_delegate.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_time.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_time_zone.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_tracing_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_type_traits.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_utf8_for_code_point.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_utility.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_variant.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_vlog_config_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_vlog_is_on.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/lib/pkgconfig/absl_weakly_mixed_integer.pc
+-- Using cached msys2-mingw-w64-x86_64-pkgconf-1~2.5.1-1-any.pkg.tar.zst
+-- Using cached msys2-msys2-runtime-3.6.5-1-x86_64.pkg.tar.zst
+-- Using msys root at C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/downloads/tools/msys2/3e71d1f8e22ab23f
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/abseil_dll.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_absl_check.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_absl_log.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_absl_vlog_is_on.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_algorithm.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_algorithm_container.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_any.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_any_invocable.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_atomic_hook.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_bad_any_cast.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_bad_optional_access.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_bad_variant_access.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_base.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_base_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_bind_front.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_bits.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_borrowed_fixup_buffer.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_bounded_utf8_length_sequence.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_btree.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_charset.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_check.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_chunked_queue.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_city.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_civil_time.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_cleanup.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_cleanup_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_common_policy_traits.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_compare.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_compressed_tuple.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_config.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_constexpr_testing_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_container_common.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_container_memory.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_cord.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_cord_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_cordz_functions.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_cordz_handle.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_cordz_info.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_cordz_sample_token.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_cordz_statistics.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_cordz_update_scope.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_cordz_update_tracker.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_core_headers.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_crc32c.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_crc_cord_state.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_crc_cpu_detect.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_crc_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_debugging.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_debugging_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_decode_rust_punycode.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_demangle_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_demangle_rust.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_die_if_null.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_dynamic_annotations.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_endian.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_errno_saver.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_examine_stack.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_exponential_biased.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_failure_signal_handler.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_fast_type_id.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_fixed_array.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_flags.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_flags_commandlineflag.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_flags_commandlineflag_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_flags_config.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_flags_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_flags_marshalling.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_flags_parse.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_flags_path_util.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_flags_private_handle_accessor.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_flags_program_name.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_flags_reflection.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_flags_usage.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_flags_usage_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_flat_hash_map.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_flat_hash_set.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_function_ref.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_generic_printer_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_graphcycles_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_has_ostream_operator.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_hash.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_hash_container_defaults.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_hash_function_defaults.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_hash_policy_traits.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_hashtable_control_bytes.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_hashtable_debug.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_hashtable_debug_hooks.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_hashtable_profiler.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_hashtablez_sampler.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_inlined_vector.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_inlined_vector_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_int128.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_iterator_traits_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_iterator_traits_test_helper_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_kernel_timeout_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_layout.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_leak_check.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_linked_hash_map.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_linked_hash_set.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_log.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_log_entry.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_log_flags.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_log_globals.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_log_initialize.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_log_internal_append_truncated.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_log_internal_check_impl.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_log_internal_check_op.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_log_internal_conditions.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_log_internal_config.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_log_internal_container.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_log_internal_flags.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_log_internal_fnmatch.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_log_internal_format.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_log_internal_globals.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_log_internal_log_impl.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_log_internal_log_sink_set.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_log_internal_message.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_log_internal_nullguard.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_log_internal_nullstream.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_log_internal_proto.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_log_internal_strip.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_log_internal_structured.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_log_internal_structured_proto.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_log_internal_voidify.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_log_severity.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_log_sink.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_log_sink_registry.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_log_streamer.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_log_structured.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_malloc_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_memory.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_meta.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_no_destructor.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_node_hash_map.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_node_hash_set.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_node_slot_policy.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_non_temporal_arm_intrinsics.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_non_temporal_memcpy.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_nullability.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_nullability_traits_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_numeric.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_numeric_representation.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_optional.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_overload.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_periodic_sampler.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_poison.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_prefetch.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_pretty_function.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_profile_builder.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_random_bit_gen_ref.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_random_distributions.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_random_internal_distribution_caller.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_random_internal_distribution_test_util.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_random_internal_entropy_pool.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_random_internal_fast_uniform_bits.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_random_internal_fastmath.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_random_internal_generate_real.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_random_internal_iostream_state_saver.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_random_internal_mock_helpers.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_random_internal_nonsecure_base.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_random_internal_pcg_engine.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_random_internal_platform.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_random_internal_randen.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_random_internal_randen_engine.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_random_internal_randen_hwaes.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_random_internal_randen_hwaes_impl.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_random_internal_randen_slow.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_random_internal_salted_seed_seq.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_random_internal_seed_material.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_random_internal_traits.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_random_internal_uniform_helper.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_random_internal_wide_multiply.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_random_random.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_random_seed_gen_exception.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_random_seed_sequences.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_raw_hash_map.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_raw_hash_set.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_raw_hash_set_resize_impl.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_raw_logging_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_requires_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_sample_recorder.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_scoped_set_env.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_span.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_spinlock_wait.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_stacktrace.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_status.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_statusor.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_str_format.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_str_format_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_strerror.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_string_view.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_strings.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_strings_append_and_overwrite.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_strings_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_strings_resize_and_overwrite.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_symbolize.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_synchronization.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_throw_delegate.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_time.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_time_zone.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_tracing_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_type_traits.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_utf8_for_code_point.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_utility.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_variant.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_vlog_config_internal.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_vlog_is_on.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/debug/lib/pkgconfig/absl_weakly_mixed_integer.pc
+-- Installing: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/abseil_x64-windows/share/abseil/copyright
+-- Performing post-build validation
+Starting submission of abseil:x64-windows@20260107.1#3 to 1 binary cache(s) in the background
+Elapsed time to handle abseil:x64-windows: 2.3 min
+Completed submission of utf8-range:x64-windows-static-md@6.33.4 to 1 binary cache(s) in 63.8 ms
+Installing 6/9 utf8-range:x64-windows@6.33.4...
+utf8-range:x64-windows@6.33.4 package ABI: 3257d95315e22ba8ccd74f52b723d7fc376a58b8add373bf1d70d1dece437a6c
+Building utf8-range:x64-windows@6.33.4...
+-- Note: utf8-range only supports static library linkage. Building static library.
+-- Using cached protocolbuffers-protobuf-v33.4.tar.gz
+-- Cleaning sources at C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/buildtrees/utf8-range/src/v33.4-7b17d08241.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/downloads/protocolbuffers-protobuf-v33.4.tar.gz
+-- Applying patch fix-cmake.patch
+-- Using source at C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/buildtrees/utf8-range/src/v33.4-7b17d08241.clean
+-- Configuring x64-windows
+-- Building x64-windows-dbg
+-- Building x64-windows-rel
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/utf8-range_x64-windows/lib/pkgconfig/utf8_range.pc
+-- Using cached msys2-mingw-w64-x86_64-pkgconf-1~2.5.1-1-any.pkg.tar.zst
+-- Using cached msys2-msys2-runtime-3.6.5-1-x86_64.pkg.tar.zst
+-- Using msys root at C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/downloads/tools/msys2/3e71d1f8e22ab23f
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/utf8-range_x64-windows/debug/lib/pkgconfig/utf8_range.pc
+-- Installing: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/utf8-range_x64-windows/share/utf8-range/copyright
+-- Performing post-build validation
+Starting submission of utf8-range:x64-windows@6.33.4 to 1 binary cache(s) in the background
+Elapsed time to handle utf8-range:x64-windows: 7 s
+Completed submission of abseil:x64-windows@20260107.1#3 to 1 binary cache(s) in 3.7 s
+Installing 7/9 protobuf:x64-windows@6.33.4#2...
+protobuf:x64-windows@6.33.4#2 package ABI: ea2b589777f6d3c4679784738c6e41fefa466aeb8ba222bf4f8f05a2ffd4e689
+Building protobuf:x64-windows@6.33.4#2...
+-- Using cached protocolbuffers-protobuf-v33.4.tar.gz
+-- Extracting source C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/downloads/protocolbuffers-protobuf-v33.4.tar.gz
+-- Applying patch fix-static-build.patch
+-- Applying patch fix-default-proto-file-path.patch
+-- Applying patch fix-utf8-range.patch
+-- Applying patch fix-install-dirs.patch
+-- Applying patch fix-constinit-with-clang-cl.patch
+-- Applying patch fix-upb.patch
+-- Using source at C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/buildtrees/protobuf/src/v33.4-f8b43d71cd.clean
+-- Configuring x64-windows
+CMake Warning at D:/a/gen2/gen2/native-source/build/gen2-cpu-diar/vcpkg_installed/x64-windows/share/vcpkg-cmake/vcpkg_cmake_configure.cmake:344 (message):
+  The following variables are not used in CMakeLists.txt:
+
+      protobuf_BUILD_TARGET_LIBPROTOC
+
+  Please recheck them and remove the unnecessary options from the
+  `vcpkg_cmake_configure` call.
+
+  If these options should still be passed for whatever reason, please use the
+  `MAYBE_UNUSED_VARIABLES` argument.
+Call Stack (most recent call first):
+  buildtrees/versioning_/versions/protobuf/ed5f5c06952c67498f580082ff1209d051222947/portfile.cmake:51 (vcpkg_cmake_configure)
+  scripts/ports.cmake:209 (include)
+
+
+-- Building x64-windows-dbg
+-- Building x64-windows-rel
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/protobuf_x64-windows/lib/pkgconfig/protobuf-lite.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/protobuf_x64-windows/lib/pkgconfig/protobuf.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/protobuf_x64-windows/lib/pkgconfig/upb.pc
+-- Using cached msys2-mingw-w64-x86_64-pkgconf-1~2.5.1-1-any.pkg.tar.zst
+-- Using cached msys2-msys2-runtime-3.6.5-1-x86_64.pkg.tar.zst
+-- Using msys root at C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/downloads/tools/msys2/3e71d1f8e22ab23f
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/protobuf_x64-windows/debug/lib/pkgconfig/protobuf-lite.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/protobuf_x64-windows/debug/lib/pkgconfig/protobuf.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/protobuf_x64-windows/debug/lib/pkgconfig/upb.pc
+-- Installing: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/protobuf_x64-windows/share/protobuf/copyright
+-- Performing post-build validation
+Starting submission of protobuf:x64-windows@6.33.4#2 to 1 binary cache(s) in the background
+Elapsed time to handle protobuf:x64-windows: 16 min
+Completed submission of utf8-range:x64-windows@6.33.4 to 1 binary cache(s) in 50.3 ms
+Installing 8/9 protobuf:x64-windows-static-md@6.33.4#2...
+protobuf:x64-windows-static-md@6.33.4#2 package ABI: 31d9662c5b7194528672414b73d9b2afa588d0db8b4c1097dc96c01c0f1528db
+Building protobuf:x64-windows-static-md@6.33.4#2...
+-- Using cached protocolbuffers-protobuf-v33.4.tar.gz
+-- Cleaning sources at C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/buildtrees/protobuf/src/v33.4-f8b43d71cd.clean. Use --editable to skip cleaning for the packages you specify.
+-- Extracting source C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/downloads/protocolbuffers-protobuf-v33.4.tar.gz
+-- Applying patch fix-static-build.patch
+-- Applying patch fix-default-proto-file-path.patch
+-- Applying patch fix-utf8-range.patch
+-- Applying patch fix-install-dirs.patch
+-- Applying patch fix-constinit-with-clang-cl.patch
+-- Applying patch fix-upb.patch
+-- Using source at C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/buildtrees/protobuf/src/v33.4-f8b43d71cd.clean
+-- Configuring x64-windows-static-md
+CMake Warning at D:/a/gen2/gen2/native-source/build/gen2-cpu-diar/vcpkg_installed/x64-windows/share/vcpkg-cmake/vcpkg_cmake_configure.cmake:344 (message):
+  The following variables are not used in CMakeLists.txt:
+
+      protobuf_BUILD_TARGET_LIBPROTOC
+
+  Please recheck them and remove the unnecessary options from the
+  `vcpkg_cmake_configure` call.
+
+  If these options should still be passed for whatever reason, please use the
+  `MAYBE_UNUSED_VARIABLES` argument.
+Call Stack (most recent call first):
+  buildtrees/versioning_/versions/protobuf/ed5f5c06952c67498f580082ff1209d051222947/portfile.cmake:51 (vcpkg_cmake_configure)
+  scripts/ports.cmake:209 (include)
+
+
+-- Building x64-windows-static-md-dbg
+-- Building x64-windows-static-md-rel
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/protobuf_x64-windows-static-md/lib/pkgconfig/protobuf-lite.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/protobuf_x64-windows-static-md/lib/pkgconfig/protobuf.pc
+-- Using cached msys2-mingw-w64-x86_64-pkgconf-1~2.5.1-1-any.pkg.tar.zst
+-- Using cached msys2-msys2-runtime-3.6.5-1-x86_64.pkg.tar.zst
+-- Using msys root at C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/downloads/tools/msys2/3e71d1f8e22ab23f
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/protobuf_x64-windows-static-md/debug/lib/pkgconfig/protobuf-lite.pc
+-- Fixing pkgconfig file: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/protobuf_x64-windows-static-md/debug/lib/pkgconfig/protobuf.pc
+-- Installing: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/protobuf_x64-windows-static-md/share/protobuf/copyright
+-- Performing post-build validation
+Starting submission of protobuf:x64-windows-static-md@6.33.4#2 to 1 binary cache(s) in the background
+Elapsed time to handle protobuf:x64-windows-static-md: 4.3 min
+Completed submission of protobuf:x64-windows@6.33.4#2 to 1 binary cache(s) in 21 s
+Installing 9/9 sentencepiece:x64-windows-static-md@0.2.1...
+sentencepiece:x64-windows-static-md@0.2.1 package ABI: a189a5e1d02764911a95003c50f457ec8be0767a8ede96ef9f4f187cba793377
+Building sentencepiece:x64-windows-static-md@0.2.1...
+Downloading https://github.com/google/sentencepiece/archive/v0.2.1.tar.gz -> google-sentencepiece-v0.2.1.tar.gz
+Successfully downloaded google-sentencepiece-v0.2.1.tar.gz
+-- Extracting source C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/downloads/google-sentencepiece-v0.2.1.tar.gz
+-- Applying patch abseil.diff
+-- Applying patch linkage.diff
+-- Using source at C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/buildtrees/sentencepiece/src/v0.2.1-3e6e94c790.clean
+-- Configuring x64-windows-static-md
+-- Building x64-windows-static-md-dbg
+-- Building x64-windows-static-md-rel
+-- Using cached msys2-mingw-w64-x86_64-pkgconf-1~2.5.1-1-any.pkg.tar.zst
+-- Using cached msys2-msys2-runtime-3.6.5-1-x86_64.pkg.tar.zst
+-- Using msys root at C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/downloads/tools/msys2/3e71d1f8e22ab23f
+-- Installing: C:/Users/runneradmin/AppData/Local/NeMoSpeech/vcpkg-2026.07.29/packages/sentencepiece_x64-windows-static-md/share/sentencepiece/copyright
+-- Performing post-build validation
+Starting submission of sentencepiece:x64-windows-static-md@0.2.1 to 1 binary cache(s) in the background
+Elapsed time to handle sentencepiece:x64-windows-static-md: 1.8 min
+Installed contents are licensed to you by owners. Microsoft is not responsible for, nor does it grant any licenses to, third-party packages.
+Packages installed in this vcpkg installation declare the following licenses:
+Apache-2.0
+BSD-3-Clause
+MIT
+Completed submission of protobuf:x64-windows-static-md@6.33.4#2 to 1 binary cache(s) in 55 s
+Waiting for 1 remaining binary cache submissions...
+Completed submission of sentencepiece:x64-windows-static-md@0.2.1 to 1 binary cache(s) in 5 s (1/1)
+All requested installations completed successfully in: 26 min
+-- Running vcpkg install - done
+-- The C compiler identification is GNU 14.2.0
+-- The CXX compiler identification is GNU 14.2.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: C:/mingw64/bin/cc.exe - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: C:/mingw64/bin/c++.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Diarization currently shares the ASR runtime library; building that library without the transcribe CLI/API surface
+-- Applying 19 patches from D:/a/gen2/gen2/native-source/patches to llama.cpp in D:/a/gen2/gen2/native-source/build/gen2-cpu-diar/_deps/llama.cpp
+-- ggml and llama.cpp source: D:/a/gen2/gen2/native-source/build/gen2-cpu-diar/_deps/llama.cpp
+-- The ASM compiler identification is GNU
+-- Found assembler: C:/mingw64/bin/cc.exe
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE
+-- Warning: ccache not found - consider installing it for faster compilation or disable this warning with GGML_CCACHE=OFF
+-- CMAKE_SYSTEM_PROCESSOR: AMD64
+-- GGML_SYSTEM_ARCH: x86
+-- Including CPU backend
+-- x86 detected
+-- Adding CPU backend variant ggml-cpu: -msse4.2;-mf16c;-mfma;-mbmi2;-mavx;-mavx2 GGML_SSE42;GGML_F16C;GGML_FMA;GGML_BMI2;GGML_AVX;GGML_AVX2
+-- ggml version: 0.25.1
+-- ggml commit:  083861c
+-- Configuring done (1628.7s)
+-- Generating done (0.1s)
+-- Build files have been written to: D:/a/gen2/gen2/native-source/build/gen2-cpu-diar
+==> building
+[0/2] Re-checking globbed directories...
+[1/80] Building CXX object ggml/src/CMakeFiles/ggml-base.dir/ggml.cpp.obj
+[2/80] Building C object ggml/src/CMakeFiles/ggml-base.dir/ggml-alloc.c.obj
+[3/80] Building C object ggml/src/CMakeFiles/ggml-base.dir/ggml.c.obj
+[4/80] Building CXX object ggml/src/CMakeFiles/ggml-base.dir/ggml-backend.cpp.obj
+[5/80] Building CXX object ggml/src/CMakeFiles/ggml-base.dir/ggml-opt.cpp.obj
+[6/80] Building CXX object ggml/src/CMakeFiles/ggml-base.dir/ggml-threading.cpp.obj
+[7/80] Building CXX object ggml/src/CMakeFiles/ggml-base.dir/ggml-backend-meta.cpp.obj
+[8/80] Building CXX object ggml/src/CMakeFiles/ggml-base.dir/gguf.cpp.obj
+[9/80] Building C object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/ggml-cpu.c.obj
+[10/80] Building C object ggml/src/CMakeFiles/ggml-base.dir/ggml-quants.c.obj
+[11/80] Linking CXX static library ggml\src\ggml-base.a
+[12/80] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/ggml-cpu.cpp.obj
+[13/80] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/iqp.cpp.obj
+[14/80] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/hbm.cpp.obj
+[15/80] Building C object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/quants.c.obj
+[16/80] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/traits.cpp.obj
+[17/80] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/amx/amx.cpp.obj
+[18/80] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/amx/mmq.cpp.obj
+[19/80] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/repack.cpp.obj
+[20/80] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/binary-ops.cpp.obj
+[21/80] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/vec.cpp.obj
+[22/80] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/unary-ops.cpp.obj
+[23/80] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/llamafile/sgemm.cpp.obj
+[24/80] Building C object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/arch/x86/quants.c.obj
+[25/80] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/arch/x86/repack.cpp.obj
+[26/80] Building CXX object ggml/src/CMakeFiles/ggml.dir/ggml-backend-dl.cpp.obj
+[27/80] Building CXX object ggml/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/ops.cpp.obj
+[28/80] Linking CXX static library ggml\src\ggml-cpu.a
+[29/80] Building CXX object src/runtime/ggml/CMakeFiles/nemo_speech_runtime_ggml.dir/backend.cpp.obj
+D:/a/gen2/gen2/native-source/src/runtime/ggml/backend.cpp: In member function 'void ggml_runtime::BackendManager::init_backends()':
+D:/a/gen2/gen2/native-source/src/runtime/ggml/backend.cpp:89:27: warning: comparison of integer expressions of different signedness: 'int' and 'long long unsigned int' [-Wsign-compare]
+   89 |         for (int i = 0; i < dev_count; i++) {
+      |                         ~~^~~~~~~~~~~
+D:/a/gen2/gen2/native-source/src/runtime/ggml/backend.cpp:159:28: warning: unused variable 'dev' [-Wunused-variable]
+  159 |         ggml_backend_dev_t dev = buft.first;
+      |                            ^~~
+[30/80] Building CXX object ggml/src/CMakeFiles/ggml.dir/ggml-backend-reg.cpp.obj
+[31/80] Linking CXX static library ggml\src\ggml.a
+[32/80] Building CXX object src/runtime/ggml/CMakeFiles/nemo_speech_runtime_ggml.dir/logging.cpp.obj
+[33/80] Building CXX object src/runtime/ggml/CMakeFiles/nemo_speech_runtime_ggml.dir/loader.cpp.obj
+In file included from D:/a/gen2/gen2/native-source/src/runtime/ggml/loader.cpp:9:
+D:/a/gen2/gen2/native-source/src/runtime/ggml/loader.cpp: In constructor 'ggml_runtime::GGUFLoader::GGUFLoader(const std::string&)':
+D:/a/gen2/gen2/native-source/src/runtime/ggml/loader.cpp:247:20: warning: format '%ld' expects argument of type 'long int', but argument 6 has type 'size_t' {aka 'long long unsigned int'} [-Wformat=]
+  247 |     GGMLF_LOG_INFO("GGUF file size: %ld\n", m_file->size);
+      |                    ^~~~~~~~~~~~~~~~~~~~~~~  ~~~~~~~~~~~~
+      |                                                     |
+      |                                                     size_t {aka long long unsigned int}
+D:/a/gen2/gen2/native-source/src/runtime/ggml/runtime.h:60:85: note: in definition of macro 'GGMLF_LOG_INFO'
+   60 |     ::ggml_runtime::log_internal(GGML_LOG_LEVEL_INFO, __FILE__, __LINE__, __func__, __VA_ARGS__)
+      |                                                                                     ^~~~~~~~~~~
+D:/a/gen2/gen2/native-source/src/runtime/ggml/loader.cpp:247:39: note: format string is defined here
+  247 |     GGMLF_LOG_INFO("GGUF file size: %ld\n", m_file->size);
+      |                                     ~~^
+      |                                       |
+      |                                       long int
+      |                                     %lld
+D:/a/gen2/gen2/native-source/src/runtime/ggml/loader.cpp:250:20: warning: format '%d' expects argument of type 'int', but argument 6 has type 'long long int' [-Wformat=]
+  250 |     GGMLF_LOG_INFO("GGUF has %d tensors\n", n_tensors);
+      |                    ^~~~~~~~~~~~~~~~~~~~~~~  ~~~~~~~~~
+      |                                             |
+      |                                             long long int
+D:/a/gen2/gen2/native-source/src/runtime/ggml/runtime.h:60:85: note: in definition of macro 'GGMLF_LOG_INFO'
+   60 |     ::ggml_runtime::log_internal(GGML_LOG_LEVEL_INFO, __FILE__, __LINE__, __func__, __VA_ARGS__)
+      |                                                                                     ^~~~~~~~~~~
+D:/a/gen2/gen2/native-source/src/runtime/ggml/loader.cpp:250:31: note: format string is defined here
+  250 |     GGMLF_LOG_INFO("GGUF has %d tensors\n", n_tensors);
+      |                              ~^
+      |                               |
+      |                               int
+      |                              %lld
+[34/80] Building CXX object src/runtime/ggml/CMakeFiles/nemo_speech_runtime_ggml.dir/nn.cpp.obj
+D:/a/gen2/gen2/native-source/src/runtime/ggml/nn.cpp: In member function 'virtual void ggml_runtime::ReLU::define_tensors(ggml_runtime::Session*)':
+D:/a/gen2/gen2/native-source/src/runtime/ggml/nn.cpp:181:31: warning: unused parameter 'session' [-Wunused-parameter]
+  181 | ReLU::define_tensors(Session* session) {}
+      |                      ~~~~~~~~~^~~~~~~
+D:/a/gen2/gen2/native-source/src/runtime/ggml/nn.cpp: In member function 'virtual ggml_runtime::TensorBag ggml_runtime::ReLU::build_graph(ggml_runtime::Session*, ggml_runtime::TensorBag, ggml_runtime::TensorContainer*)':
+D:/a/gen2/gen2/native-source/src/runtime/ggml/nn.cpp:185:14: warning: unused parameter 'session' [-Wunused-parameter]
+  185 |     Session* session, TensorBag input_tensors, TensorContainer* session_tensor_container) {
+      |     ~~~~~~~~~^~~~~~~
+D:/a/gen2/gen2/native-source/src/runtime/ggml/nn.cpp: In member function 'virtual void ggml_runtime::ReLU::set_data(ggml_runtime::Session*)':
+D:/a/gen2/gen2/native-source/src/runtime/ggml/nn.cpp:195:25: warning: unused parameter 'session' [-Wunused-parameter]
+  195 | ReLU::set_data(Session* session) {}
+      |                ~~~~~~~~~^~~~~~~
+[35/80] Building CXX object src/runtime/ggml/CMakeFiles/nemo_speech_runtime_ggml.dir/tensor_container.cpp.obj
+[36/80] Building CXX object src/common/CMakeFiles/nemo_speech_common.dir/audio_decoder.cpp.obj
+[37/80] Building CXX object src/runtime/ggml/CMakeFiles/nemo_speech_runtime_ggml.dir/session.cpp.obj
+D:/a/gen2/gen2/native-source/src/runtime/ggml/session.cpp: In member function 'void ggml_runtime::Session::run_impl(uint64_t, const std::function<ggml_runtime::TensorBag(ggml_runtime::Session*, ggml_runtime::TensorContainer*)>&, const std::function<bool(ggml_runtime::Session*, ggml_runtime::TensorContainer*)>&, const std::function<bool(ggml_runtime::Session*, ggml_runtime::TensorBag, ggml_runtime::TensorContainer*)>&, ggml_runtime::SessionState*)':
+D:/a/gen2/gen2/native-source/src/runtime/ggml/session.cpp:921:20: warning: unused variable 'host_output_pending' [-Wunused-variable]
+  921 |         const bool host_output_pending = return_output(this, cr.output_tensors, cr.container.get());
+      |                    ^~~~~~~~~~~~~~~~~~~
+D:/a/gen2/gen2/native-source/src/runtime/ggml/session.cpp: At global scope:
+D:/a/gen2/gen2/native-source/src/runtime/ggml/session.cpp:151:1: warning: 'uint64_t ggml_runtime::hash_input_shapes(const TensorBag&)' defined but not used [-Wunused-function]
+  151 | hash_input_shapes(const TensorBag& bag) {
+      | ^~~~~~~~~~~~~~~~~
+[38/80] Building CXX object src/common/CMakeFiles/nemo_speech_common.dir/audio_file.cpp.obj
+[39/80] Building CXX object src/common/CMakeFiles/nemo_speech_common.dir/audio_resampler.cpp.obj
+[40/80] Building CXX object src/common/CMakeFiles/nemo_speech_common.dir/parameter_parser.cpp.obj
+[41/80] Building CXX object src/common/CMakeFiles/nemo_speech_common.dir/json.cpp.obj
+[42/80] Linking CXX static library src\runtime\ggml\libnemo_speech_runtime_ggml.a
+[43/80] Building CXX object src/common/CMakeFiles/nemo_speech_common.dir/subtitles.cpp.obj
+[44/80] Linking CXX static library src\common\libnemo_speech_common.a
+[45/80] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/decoders/flashlight_decoder.cpp.obj
+[46/80] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/decoders/context_biasing.cpp.obj
+[47/80] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/decoders/greedy_ctc_decoder.cpp.obj
+[48/80] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/decoders/rnnt_greedy_decoder.cpp.obj
+[49/80] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/decoders/rnnt_modules.cpp.obj
+[50/80] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/diar/aosc_state.cpp.obj
+[51/80] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/diar/diar_pipeline.cpp.obj
+[52/80] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/diar/diarizer.cpp.obj
+[53/80] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/diar/sortformer_model.cpp.obj
+[54/80] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/encoder/cache_aware_encoder.cpp.obj
+[55/80] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/encoder/rel_pos_attention.cpp.obj
+[56/80] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/encoder/fastconformer.cpp.obj
+[57/80] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/encoder/rope_transformer.cpp.obj
+[58/80] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/encoder/transformer_encoder.cpp.obj
+[59/80] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/features/fe.cpp.obj
+[60/80] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/pnc/pnc_model.cpp.obj
+[61/80] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/pnc/pnc_runner.cpp.obj
+[62/80] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/pnc/wordpiece.cpp.obj
+[63/80] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/postproc/itn.cpp.obj
+[64/80] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/model.cpp.obj
+[65/80] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/postproc/itn_align.cpp.obj
+[66/80] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/postproc/pipeline.cpp.obj
+[67/80] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/postproc/profanity.cpp.obj
+[68/80] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/recognizer.cpp.obj
+[69/80] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/vad/silero_vad.cpp.obj
+[70/80] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/vad/vad_endpointer.cpp.obj
+[71/80] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/runner.cpp.obj
+[72/80] Building CXX object src/asr/CMakeFiles/nemo_speech_asr.dir/vad/vad_masker.cpp.obj
+[73/80] Linking CXX shared library bin\libnemo_speech_asr.dll
+FAILED: [code=1] bin/libnemo_speech_asr.dll src/asr/libnemo_speech_asr.dll.a 
+C:\Windows\system32\cmd.exe /C "cd . && C:\mingw64\bin\c++.exe -O3 -DNDEBUG   -shared -o bin\libnemo_speech_asr.dll -Wl,--out-implib,src\asr\libnemo_speech_asr.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\nemo_speech_asr.rsp && C:\Windows\system32\cmd.exe /C "cd /D D:\a\gen2\gen2\native-source\build\gen2-cpu-diar\src\asr && C:\Users\runneradmin\AppData\Local\NeMoSpeech\vcpkg-2026.07.29\vcpkg.exe z-applocal --target-binary=D:/a/gen2/gen2/native-source/build/gen2-cpu-diar/bin/libnemo_speech_asr.dll --installed-bin-dir=D:/a/gen2/gen2/native-source/build/gen2-cpu-diar/vcpkg_installed/x64-windows-static-md/bin""
+c++.exe: error: unrecognized command-line option '-ignore:4221'
+[74/80] Building CXX object src/asr/CMakeFiles/nemo_speech_asr_c.dir/c_api.cpp.obj
+ninja: build stopped: subcommand failed.

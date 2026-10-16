@@ -1,0 +1,20 @@
+E
+======================================================================
+ERROR: test_platform_native (unittest.loader._FailedTest.test_platform_native)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_platform_native
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/unittest/loader.py", line 433, in _find_test_path
+    module = self._get_module_from_name(name)
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/unittest/loader.py", line 374, in _get_module_from_name
+    __import__(name)
+    ~~~~~~~~~~^^^^^^
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/test_platform_native.py", line 6, in <module>
+    from platform_native import msvc_compiler_definitions, msvc_environment, pinned_git_environment, powershell_literal
+ImportError: cannot import name 'msvc_compiler_definitions' from 'platform_native' (/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/platform_native.py)
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (errors=1)

@@ -41,12 +41,14 @@ def inventory(root):
     return records
 
 
-def write_archive(sdk, output):
+def write_archive(sdk, output, stem='development-sdk'):
     """Write a deterministic tar plus its complete lstat inventory; no extraction."""
     sdk, output = Path(sdk), Path(output)
+    if Path(stem).name != stem or not stem:
+        raise ValueError('archive stem must be a simple filename')
     records = inventory(sdk)
-    archive = output / 'development-sdk.tar.gz'
-    manifest = output / 'development-sdk-files.json'
+    archive = output / (stem + '.tar.gz')
+    manifest = output / (stem + '-files.json')
     # Exclusive creation prevents replacing evidence from an earlier run.
     with archive.open('xb') as raw:
         with gzip.GzipFile(fileobj=raw, mode='wb', filename='', mtime=0) as compressed:
@@ -72,7 +74,7 @@ def write_archive(sdk, output):
     if inventory(sdk) != records:
         raise ValueError('SDK filesystem changed during archive creation')
     result = {'schema_version': 1, 'release_qualified': False,
-              'scope': 'Development SDK snapshot; preserves aliases/modes, does not close dependencies or establish relocation.',
+              'scope': 'Development filesystem snapshot; preserves aliases/modes, does not by itself close dependencies or establish relocation.',
               'archive': archive.name, 'archive_bytes': archive.stat().st_size,
               'archive_sha256': hashlib.sha256(archive.read_bytes()).hexdigest(), 'files': records}
     with manifest.open('x') as stream:
