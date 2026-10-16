@@ -70,11 +70,20 @@ passes all ten cases, six exact turn comparisons and complete library audits.
 Both 80.04-second live runs retain 11 ASR sections, 152 words and 15 provisional
 revisions. This is debug CLI/test evidence; signed-bundle resolution, GUI,
 physical microphone and quality criteria remain open.
-The complete-app static verifier now checks exact framework siblings, signed
-payload mapping and packaged model/license/Bark identities; its saved-trace
-auditor counts the public entry copy as one native component. These metadata
-checks do not establish application inference or GUI behavior.
-All 175 model-free tools tests pass locally;
+The [complete-app construction receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-pnola-app-construction/qualification.json)
+now retains complete CPU/Metal ad-hoc build and static verification, with
+94/95 physical framework entries representing 92/93 native components plus
+the public entry copy and ORT provider. The original controller and first
+Metal-only storage-admission failures remain failed; CPU compilation was
+reused. The successful Metal-only continuation executes no model and uses a
+separate construction storage policy. Five-GiB neural admission is unchanged.
+The verifier checks exact framework siblings, signed payload mapping and
+packaged model/license/Bark identities. These metadata checks do not establish
+application inference, automatic resolution or GUI behavior.
+The separate current-profile corpus scorer preserves every valid row and all
+original quality criteria. A new frozen runner and fresh native/public corpus
+outputs are still required; historical quality failures remain unchanged.
+All 178 model-free tools tests pass locally;
 [CI at the 157-test source](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-157/qualification.json)
 passes all 13 jobs. Later package/qualifier changes are outside that CI source;
 release criteria remain open.

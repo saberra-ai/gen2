@@ -1,0 +1,30 @@
+[
+  {
+    "name": "metal-build",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-metal-app-build-v2/construction.sb",
+      "npm",
+      "run",
+      "desktop:build"
+    ],
+    "cwd": "/Users/victor/workspace/pnola",
+    "pid": 50856,
+    "returncode": 0,
+    "elapsed_seconds": 77.41068279196043
+  },
+  {
+    "name": "metal-clone",
+    "argv": [
+      "/bin/cp",
+      "-cR",
+      "/Users/victor/.cache/pnola-nemotron-build/release/bundle/macos/Pnola.app",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-metal-app-build-v2/Pnola.app"
+    ],
+    "cwd": "/Users/victor/workspace/pnola",
+    "pid": 56072,
+    "returncode": 0,
+    "elapsed_seconds": 0.04700462496839464
+  }
+]

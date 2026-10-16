@@ -1,0 +1,23 @@
+[package]
+name = "pnola-desktop"
+version = "0.2.0"
+description = "Private local transcription with Gen2 Bark"
+edition = "2024"
+default-run = "pnola-desktop"
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = ["protocol-asset"] }
+tauri-plugin-dialog = "2"
+tauri-plugin-clipboard-manager = "2"
+gen2 = { path = "../../gen2-nemotron3-n0", default-features = false, features = ["asr-dynamic", "backend-diar-nemo"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+tempfile = "3"
+hound = "3.5"
+libloading = "0.9"
+cpal = "0.18"
+sha2 = "0.11"
+tauri-plugin-mcp-bridge = "0.13"
