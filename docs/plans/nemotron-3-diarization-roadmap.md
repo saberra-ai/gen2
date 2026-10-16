@@ -479,6 +479,14 @@ has conditional official evaluation-split evidence. This set supports local
 integration/quantization checks, not a broad unseen-recording claim. Stronger
 unseen-data qualification still needs separately excluded or newer recordings.
 
+Repaired committed Metal release streams now pass both30m and1h against an
+independent C-header executable, with exact final turns and every retained
+probability value, including after compaction. The [release stream receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-n5-metal-release-stream/receipt.json)
+records RTF, cold instance load, native push median/p95, peak RSS, revisions,
+source/library/model/audio hashes and source/network-denial policy. This proves
+long-stream parity and throughput on M4Pro; capture/UI end-to-end delay, broader
+quality and other release combinations remain open.
+
 - [ ] Run Mac CPU first; compare Metal against the same Q8 reference and real
   annotated audio. Record device placement/fallback rather than treating a
   successful Metal build as acceleration evidence.

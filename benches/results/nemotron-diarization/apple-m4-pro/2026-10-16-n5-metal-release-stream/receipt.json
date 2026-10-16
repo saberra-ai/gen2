@@ -1,0 +1,114 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "gen2_commit": "d01ef80f8a290b7ae8a3282b3941dd39867f4ff4",
+  "scope": "Committed optimized macOS Metal public long-session/native-reference parity and throughput; no capture cadence or GUI delay claim",
+  "backend": "metal",
+  "device": "Apple M4 Pro",
+  "host": "M4Pro64GiB/macOS26.3",
+  "cpu_threads": 4,
+  "model_sha256": "08456d9e22cd9a323c0364d98375f3746d6e68507ebb705cd46438c534c7a3a1",
+  "source_audio_sha256": "f00f92e53115a4a6724aec0ddaf9c675df6d5fabd3a489b43fffe56ba52a3ae9",
+  "metrics": [
+    {
+      "minutes": 30,
+      "matched": true,
+      "turns": 750,
+      "frame_count": 180001,
+      "retained_first_frame": 117176,
+      "retained_rows": 62825,
+      "retained_values_compared": 502600,
+      "maximum_turn_error_seconds": 0.0,
+      "maximum_probability_error": 0.0,
+      "gen2_rtf": 0.038115105,
+      "native_rtf": 0.038506683333333326,
+      "gen2_peak_rss_bytes": 258408448,
+      "cold_gen2_load_micros": 11116157,
+      "native_push_median_micros": 33561,
+      "native_push_p95_micros": 65220,
+      "native_push_max_micros": 71895,
+      "observed_provisional_revisions": 341,
+      "finish_micros": 158258
+    },
+    {
+      "minutes": 60,
+      "matched": true,
+      "turns": 1500,
+      "frame_count": 360001,
+      "retained_first_frame": 296627,
+      "retained_rows": 63374,
+      "retained_values_compared": 506992,
+      "maximum_turn_error_seconds": 0.0,
+      "maximum_probability_error": 0.0,
+      "gen2_rtf": 0.038878398333333335,
+      "native_rtf": 0.03811032527777778,
+      "gen2_peak_rss_bytes": 264257536,
+      "cold_gen2_load_micros": 116521,
+      "native_push_median_micros": 33290,
+      "native_push_p95_micros": 64676,
+      "native_push_max_micros": 69926,
+      "observed_provisional_revisions": 683,
+      "finish_micros": 158452
+    }
+  ],
+  "raw_probability_artifacts": {
+    "gen2-30m.f32": {
+      "size": 2010400,
+      "sha256": "d0953576e2e490e0d8aa5eb8ce1855ad3466f7692a561813176c69b695242ba5",
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/release Metal qualification d01ef80/gen2-30m.f32"
+    },
+    "gen2-60m.f32": {
+      "size": 2027968,
+      "sha256": "a9ef3249f826631651037af98d366880913eeb7d9bf64f5f55131450f170d332",
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/release Metal qualification d01ef80/gen2-60m.f32"
+    },
+    "native-60m.json.f32": {
+      "size": 2027968,
+      "sha256": "a9ef3249f826631651037af98d366880913eeb7d9bf64f5f55131450f170d332",
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/release Metal qualification d01ef80/native-60m.json.f32"
+    },
+    "native-30m.json.f32": {
+      "size": 2010400,
+      "sha256": "d0953576e2e490e0d8aa5eb8ce1855ad3466f7692a561813176c69b695242ba5",
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/release Metal qualification d01ef80/native-30m.json.f32"
+    }
+  },
+  "native_header_geometry": {
+    "chunk": 9,
+    "right": 4,
+    "left": 0,
+    "fifo": 264,
+    "cache": 264,
+    "update": 222
+  },
+  "input_semantics": "Licensed60sAMI repeated through one native session without resetting its cache; same PCM and transport chunks in each fresh public/reference process. Not32minutes of varied heldoutquality.",
+  "offline": "Each native process runs under network/sourceSDK/checkouts/originalmodels/privatepackage/Homebrew denials; full policy retained. Earlier native device+93library-loader receipts support same package closure.",
+  "timing_scope": "Sequential new processes from frozen release/independentO2binaries. Ordinary OS/browser background work remains; OS file/shader caches were not cleared. Public timing includes queue/input reads but excludes model load; native push distribution is direct C-ABI compute, distinct from microphone/UI end-to-end latency.",
+  "limits": [
+    "Same-host relocation, not fresh-machine packaging.",
+    "No physical microphone/GUI, developer signing/notarization, Linux/Windows native package or actual capture/UI latency claim.",
+    "Warm throughput passes proposedRTF<1 on this named configuration; cold latency and native push distributions reported, not a complete live-configuration release receipt.",
+    "Quality/attribution/broader heldout and clean CPU release streams remain open."
+  ],
+  "artifacts": {
+    "compare_stream.py": "6d6a80a3b9710d0d2d0705225653935d40cd69aac9abe50454c0609631c6daa4",
+    "comparison-30m.json": "1170f6dfe737dd941914ab21d52282ce6939a88114239df2ba7cc0cacad40590",
+    "comparison-60m.json": "5d272dafbb6fae6c2190a31c1d79058aa85c36f1000e9c7c151eea015a694e7f",
+    "gen2-30m.command.json": "d5812e4597b5a1271d270dcc5a2bd01ef5257b66c1874c1948411e6184d76b3c",
+    "gen2-30m.json": "286a1127e23d58847e217fef43aca34e0e2cb2b2db8cbd80e20624e0c681d114",
+    "gen2-30m.time.log": "71c9fceacf7c34e2a140f04987d484c32ddeef698c1b50bb2ef9625203161ba7",
+    "gen2-60m.command.json": "3add774494221f54124f99d469a1753605124193d21f3c58d88cd9c2e558df22",
+    "gen2-60m.json": "755681f105f7fda3797d6a4a81cbd7b74102ce5e17814ddcf208ee55847b5754",
+    "gen2-60m.time.log": "aad5e414652ef364f9bc4edc516ae1146db6dee5fc2702acf0d0e3879f49ca4b",
+    "manifest.json": "11b190ce3e802660030ed73c5374b52b76b27a47785f01b00b33648c41db0c15",
+    "native-30m.command.json": "16b40a978ecd1638e346031782440792fa6ef40a34266458dc1e7d1d25be36ab",
+    "native-30m.json": "ab092b7738a6110cb4604bc22244cddcfe57979f99cdbf6f7dbb4eb0e50eb16e",
+    "native-30m.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "native-30m.time.log": "202d307c99d7be114d2868c439f9bbc0e60e740d2ebb6f2b95ea9e957ecb9493",
+    "native-60m.command.json": "5ec5dee7cc13f053c43942b6b7a2171b819222c18da55c4fac152d5a617b960d",
+    "native-60m.json": "4900527ca279865ccadb66209d7ceccfcfc5ffc96ab9a8ad445f3a7e452a8d7e",
+    "native-60m.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "native-60m.time.log": "ca399814dad5588bcfcba64642265a8b60a60220986f4ffe68172569c90950be",
+    "offline.sb": "0ac13c9f8912703e54b255f95b31d3ac19522a5b246856baddbb2d09c59c1e89"
+  }
+}
