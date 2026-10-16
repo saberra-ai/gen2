@@ -709,6 +709,19 @@ fixes that observed issue without changing module locations, hashes or allowed
 basenames; tests and all three recorded stage snapshots now pass. Diar-first
 was not executed in that attempt, so full chat qualification remains false.
 A new complete both-order run uses source `d47bdeb` and the supplemented runtime.
+That [208-file Windows chat receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-chat-coexistence/qualification.json),
+run `38896240605`, now passes. The delivered 47-entry runtime and both opaque
+helper archives were independently restored/rehashed; all eight fresh container
+control/command/cleanup chains, seven lifecycle tests, native/public comparison
+and six mixed-model comparisons pass. Every comparison has 27 turns, 6,001 rows
+and zero probability/turn error. All ten chat outputs remain `Hello!`; actual
+chat/diarization API calls overlap by 31.815610 and 30.536961 seconds in the two
+orders, with zero reservation after shutdown. Internal module stages show zero
+private DLLs in isolated chat and all five exact private DLLs when mixed and
+reloaded, alongside the exact declared CRT/OpenMP bytes. Native/public RTF is
+1.05759/1.06111 on this CI host; Windows live/uncontended performance, desktop,
+Bark/Laya coexistence, Microsoft distribution rights and general namespace
+isolation remain unqualified.
 
 The separate [central prerequisite investigation](../research/nemotron-windows-central-prerequisite.md)
 has now acquired and hash-verified the fixed Microsoft 14.51.36247 installer,
@@ -739,6 +752,14 @@ members and frozen inputs were independently reverified. Actual Gen2/native/
 lifecycle/chat loading against this central variant remains pending; no image
 or Microsoft binary bytes are published or added to Git.
 All 92 current model-free tool regressions pass.
+The subsequent same-job central model workflow now constructs the five-DLL
+runtime, re-provisions the publisher prerequisite, builds regular CPU chat and
+requires native/public/lifecycle/both-order comparisons with exact observed
+System32 CRT/OpenMP bytes and no app-local copies. Its additional fresh-base
+negative keeps all five private DLLs present and requires startup failure with
+`STATUS_DLL_NOT_FOUND` and no output when the central prerequisite is absent.
+Source `76952a9` is the first actual full central-model attempt; it is still
+pending, and 93 current model-free tool regressions pass.
 
 A guarded [Windows private-DLL build](../research/nemotron-windows-private-names.md)
 now relinks the five owned DLLs through an external CMake naming hook, updates

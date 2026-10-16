@@ -1,0 +1,235 @@
+{
+  "schema_version": 1,
+  "source_commit": "d47bdeba29d67560ad32670fd588c7005a318022",
+  "run_url": "https://github.com/saberra-ai/gen2/actions/runs/38896240605",
+  "ci_job_id": 116957276895,
+  "offline_container_gates_passed": true,
+  "release_qualified": false,
+  "redistribution_qualified": false,
+  "native_source_commit": "24ad9271ef2b46c86a554b61da5395b9bf42404a",
+  "image_id": "sha256:76e6f57c103004c102b102281f3e6c750a1aa80cef8c5267d6fc2435408c87fc",
+  "chat_diarization_gates_passed": true,
+  "chat_comparisons_recomputed": {
+    "isolated_chat_text": "Hello!",
+    "comparisons": {
+      "chat-first/first": {
+        "passed": true,
+        "scope": "long-session wrapper/reference correctness, not held-out quality or full release qualification",
+        "audio_duration_seconds": 60.0,
+        "backend": "cpu",
+        "device": null,
+        "native_frame_count": 6001,
+        "retained_first_frame": 0,
+        "retained_rows": 6001,
+        "turns": 27,
+        "maximum_turn_error_seconds": 0.0,
+        "turn_tolerance_seconds": 1e-06,
+        "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+        "retained_probabilities_match": true,
+        "maximum_probability_error": 0.0,
+        "probability_tolerance": 1e-06,
+        "gen2_rtf": 1.0546518,
+        "native_rtf": 1.0575914833333333
+      },
+      "chat-first/concurrent": {
+        "passed": true,
+        "scope": "long-session wrapper/reference correctness, not held-out quality or full release qualification",
+        "audio_duration_seconds": 60.0,
+        "backend": "cpu",
+        "device": null,
+        "native_frame_count": 6001,
+        "retained_first_frame": 0,
+        "retained_rows": 6001,
+        "turns": 27,
+        "maximum_turn_error_seconds": 0.0,
+        "turn_tolerance_seconds": 1e-06,
+        "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+        "retained_probabilities_match": true,
+        "maximum_probability_error": 0.0,
+        "probability_tolerance": 1e-06,
+        "gen2_rtf": 1.0615919333333332,
+        "native_rtf": 1.0575914833333333
+      },
+      "chat-first/reloaded": {
+        "passed": true,
+        "scope": "long-session wrapper/reference correctness, not held-out quality or full release qualification",
+        "audio_duration_seconds": 60.0,
+        "backend": "cpu",
+        "device": null,
+        "native_frame_count": 6001,
+        "retained_first_frame": 0,
+        "retained_rows": 6001,
+        "turns": 27,
+        "maximum_turn_error_seconds": 0.0,
+        "turn_tolerance_seconds": 1e-06,
+        "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+        "retained_probabilities_match": true,
+        "maximum_probability_error": 0.0,
+        "probability_tolerance": 1e-06,
+        "gen2_rtf": 1.05602585,
+        "native_rtf": 1.0575914833333333
+      },
+      "diar-first/first": {
+        "passed": true,
+        "scope": "long-session wrapper/reference correctness, not held-out quality or full release qualification",
+        "audio_duration_seconds": 60.0,
+        "backend": "cpu",
+        "device": null,
+        "native_frame_count": 6001,
+        "retained_first_frame": 0,
+        "retained_rows": 6001,
+        "turns": 27,
+        "maximum_turn_error_seconds": 0.0,
+        "turn_tolerance_seconds": 1e-06,
+        "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+        "retained_probabilities_match": true,
+        "maximum_probability_error": 0.0,
+        "probability_tolerance": 1e-06,
+        "gen2_rtf": 1.0577759833333333,
+        "native_rtf": 1.0575914833333333
+      },
+      "diar-first/concurrent": {
+        "passed": true,
+        "scope": "long-session wrapper/reference correctness, not held-out quality or full release qualification",
+        "audio_duration_seconds": 60.0,
+        "backend": "cpu",
+        "device": null,
+        "native_frame_count": 6001,
+        "retained_first_frame": 0,
+        "retained_rows": 6001,
+        "turns": 27,
+        "maximum_turn_error_seconds": 0.0,
+        "turn_tolerance_seconds": 1e-06,
+        "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+        "retained_probabilities_match": true,
+        "maximum_probability_error": 0.0,
+        "probability_tolerance": 1e-06,
+        "gen2_rtf": 1.0622331,
+        "native_rtf": 1.0575914833333333
+      },
+      "diar-first/reloaded": {
+        "passed": true,
+        "scope": "long-session wrapper/reference correctness, not held-out quality or full release qualification",
+        "audio_duration_seconds": 60.0,
+        "backend": "cpu",
+        "device": null,
+        "native_frame_count": 6001,
+        "retained_first_frame": 0,
+        "retained_rows": 6001,
+        "turns": 27,
+        "maximum_turn_error_seconds": 0.0,
+        "turn_tolerance_seconds": 1e-06,
+        "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+        "retained_probabilities_match": true,
+        "maximum_probability_error": 0.0,
+        "probability_tolerance": 1e-06,
+        "gen2_rtf": 1.05523715,
+        "native_rtf": 1.0575914833333333
+      }
+    }
+  },
+  "chat_model_bytes_checked_by_receiver": false,
+  "openmp_payload_bytes_reverified": {
+    "bytes": 193152,
+    "sha256": "55aba23cdcd6484fbb06f4155b8ca75adfce7a881f10afd0c49457165e677164"
+  },
+  "chat_helper_archive": {
+    "schema_version": 1,
+    "release_qualified": false,
+    "archive": "development-windows-chat-helpers.zip",
+    "scope": "Exact portable file bytes/directory names; no Windows ACL or runtime qualification.",
+    "archive_bytes": 7929971,
+    "archive_sha256": "0d03331c614e6df5b07f36fe365846d786e5cf3053ae3f9cc5bd77c98e9fb74d"
+  },
+  "native_public_comparison_recomputed": {
+    "passed": true,
+    "scope": "long-session wrapper/reference correctness, not held-out quality or full release qualification",
+    "audio_duration_seconds": 60.0,
+    "backend": "cpu",
+    "device": null,
+    "native_frame_count": 6001,
+    "retained_first_frame": 0,
+    "retained_rows": 6001,
+    "turns": 27,
+    "maximum_turn_error_seconds": 0.0,
+    "turn_tolerance_seconds": 1e-06,
+    "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+    "retained_probabilities_match": true,
+    "maximum_probability_error": 0.0,
+    "probability_tolerance": 1e-06,
+    "gen2_rtf": 1.06110915,
+    "native_rtf": 1.0575914833333333
+  },
+  "actual_pcm_sha256": "96858fdcf0c8854f8fc659403c11ddc7565f538a7402803e4235e9e354d87ae6",
+  "all_seven_lifecycle_tests_reparsed": true,
+  "all_eight_containers_controls_reparsed": true,
+  "all_eight_original_command_specs_reparsed_exact_frozen_bytes": true,
+  "runtime_archive_entries_reverified": 47,
+  "helper_archive_entries_reverified": 12,
+  "private_dlls_observed_per_helper": {
+    "native": 5,
+    "public": 5,
+    "lifecycle": 5,
+    "isolated": 0,
+    "chat-first": 5,
+    "diar-first": 5
+  },
+  "crt_paths_observed_per_helper": {
+    "native": [
+      "C:\\inputs\\bin\\MSVCP140.dll",
+      "C:\\inputs\\bin\\VCRUNTIME140.dll",
+      "C:\\inputs\\bin\\VCRUNTIME140_1.dll"
+    ],
+    "public": [
+      "C:\\inputs\\bin\\VCRUNTIME140.dll",
+      "C:\\inputs\\relocated runtime \u00fc\\lib\\MSVCP140.dll",
+      "C:\\inputs\\relocated runtime \u00fc\\lib\\VCRUNTIME140_1.dll"
+    ],
+    "lifecycle": [
+      "C:\\inputs\\bin\\VCRUNTIME140.dll",
+      "C:\\inputs\\relocated runtime \u00fc\\lib\\MSVCP140.dll",
+      "C:\\inputs\\relocated runtime \u00fc\\lib\\VCRUNTIME140_1.dll"
+    ],
+    "isolated": [
+      "C:\\inputs\\bin\\MSVCP140.dll",
+      "C:\\inputs\\bin\\VCRUNTIME140.dll",
+      "C:\\inputs\\bin\\VCRUNTIME140_1.dll"
+    ],
+    "chat-first": [
+      "C:\\inputs\\bin\\MSVCP140.dll",
+      "C:\\inputs\\bin\\VCRUNTIME140.dll",
+      "C:\\inputs\\bin\\VCRUNTIME140_1.dll"
+    ],
+    "diar-first": [
+      "C:\\inputs\\bin\\MSVCP140.dll",
+      "C:\\inputs\\bin\\VCRUNTIME140.dll",
+      "C:\\inputs\\bin\\VCRUNTIME140_1.dll"
+    ]
+  },
+  "negative_missing_private_library_error126_no_output": true,
+  "runtime_archive": {
+    "schema_version": 1,
+    "release_qualified": false,
+    "archive": "development-windows-runtime.zip",
+    "scope": "Exact portable file bytes/directory names; no Windows ACL or runtime qualification.",
+    "archive_bytes": 2496055,
+    "archive_sha256": "853fb0bbabff84577080c25036b8a82a720424221639000129283bb5c05fcc29"
+  },
+  "test_helper_archive": {
+    "schema_version": 1,
+    "release_qualified": false,
+    "archive": "development-windows-test-helpers.zip",
+    "scope": "Exact portable file bytes/directory names; no Windows ACL or runtime qualification.",
+    "archive_bytes": 1873537,
+    "archive_sha256": "a44ba4b32bd16d94e17dfa630487fc2c2e5c1707d16f1f15ecf200a3352f9bcd"
+  },
+  "limits": [
+    "No Windows desktop/physical-machine, Bark/Laya coexistence or universal namespace guarantee.",
+    "No held-out quality, live/uncontended-performance or Microsoft redistribution qualification.",
+    "Test executables carry exact app-local CRT copies to control their process-start imports; these are separate from the runtime archive.",
+    "The independent native probe alone uses the relocated runtime directory on PATH for its static private C ABI import. Gen2 uses its explicit library loader with system-only PATH.",
+    "Chat helper uses an additional exact VS OpenMP test dependency; no redistribution grant or universal namespace qualification.",
+    "macOS receiver rehashed opaque runtime/helper/OpenMP bytes and reparsed eight recorded calls, actual stage modules, ten chat outcomes and six native comparisons; large model bytes, actual Windows calls, immutability and system-module disk hashes remain CI observations.",
+    "Observed module closure applies to recorded helpers/calls, not every potential dynamic load or process namespace."
+  ]
+}
