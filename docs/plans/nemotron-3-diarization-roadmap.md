@@ -80,10 +80,17 @@ separate construction storage policy. Five-GiB neural admission is unchanged.
 The verifier checks exact framework siblings, signed payload mapping and
 packaged model/license/Bark identities. These metadata checks do not establish
 application inference, automatic resolution or GUI behavior.
+The separate [complete-app runtime protocol](../../tools/nemotron-diarization/valid-mel-pnola-app.protocol.json)
+now freezes five CLI cases against both exact app inventories: automatic
+recorded and paced-live resolution per backend, then explicit Metal rejection
+by the CPU package while preserving Bark. Source/SDK/build/Homebrew/network
+reads are denied to each app; app and staged inputs are read-only. Actual
+framework telemetry, recorded/native parity and saved compact-live timelines
+are required. No case has executed yet; GUI and microphone remain separate.
 The separate current-profile corpus scorer preserves every valid row and all
 original quality criteria. A new frozen runner and fresh native/public corpus
 outputs are still required; historical quality failures remain unchanged.
-All 178 model-free tools tests pass locally;
+All 180 model-free tools tests pass locally;
 [CI at the 157-test source](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-157/qualification.json)
 passes all 13 jobs. Later package/qualifier changes are outside that CI source;
 release criteria remain open.
