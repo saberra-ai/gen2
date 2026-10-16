@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches: [codex/nemotron3-platforms]
-    paths: ['tools/nemotron-diarization/platform_native.py', '.github/workflows/diarization-native.yml', 'src/diarization/**', 'tests/diarization_native.rs']
+    paths: ['tools/nemotron-diarization/platform_native.py', 'tools/nemotron-diarization/windows_compat.py', '.github/workflows/diarization-native.yml', 'src/diarization/**', 'tests/diarization_native.rs']
 permissions:
   contents: read
 jobs:
@@ -40,12 +40,19 @@ jobs:
           sudo apt-get install -y --no-install-recommends build-essential cmake ninja-build pkg-config libsentencepiece-dev
       - name: Windows vcpkg binary cache
         if: runner.os == 'Windows'
-        uses: actions/cache@v4
+        id: vcpkg-cache
+        uses: actions/cache/restore@v4
         with:
           path: ~\AppData\Local\vcpkg\archives
           key: nemo-diar-vcpkg-9e593bb18ea69cc5095e012465dcd675a822ed0d-x64-static-md
       - name: Build and exercise actual CPU SDK
         run: python tools/nemotron-diarization/platform_native.py --source native-source --prefix "${{ runner.temp }}/nemo-sdk" --output "${{ runner.temp }}/nemo-evidence" --jobs 2
+      - name: Preserve Windows dependency cache after build failure
+        if: always() && runner.os == 'Windows' && steps.vcpkg-cache.outcome == 'success' && steps.vcpkg-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ~\AppData\Local\vcpkg\archives
+          key: nemo-diar-vcpkg-9e593bb18ea69cc5095e012465dcd675a822ed0d-x64-static-md
       - name: Preserve successful or failed evidence
         if: always()
         uses: actions/upload-artifact@v4

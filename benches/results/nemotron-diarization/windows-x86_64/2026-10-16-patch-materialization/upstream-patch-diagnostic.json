@@ -1,0 +1,14 @@
+{
+  "ggml/include/ggml.h": {
+    "bytes": 116144,
+    "sha256": "12ee71f99db7db9b353bc02b1fbb57c344ee17c01ac5fb7952b41a637a747ea9",
+    "crlf_count": 0,
+    "head": "#pragma once\n\n//\n// GGML Tensor Library\n//\n// This documentation is still a work in progress.\n// If you wish some specific topics to be covered, feel free to drop a comment:\n//\n//   https://github.com/ggml-org/whisper.cpp/issues/40\n//\n// ## Overview\n//\n// "
+  },
+  "ggml/src/ggml.c": {
+    "bytes": 260696,
+    "sha256": "e13c516a4009cdda5a15ddc08f23f1931d6a910bbe19c4a50671d90397c95676",
+    "crlf_count": 0,
+    "head": "#define _CRT_SECURE_NO_DEPRECATE // Disables \"unsafe\" warnings on Windows\n#define _USE_MATH_DEFINES // For M_PI on MSVC\n\n#include \"ggml-version.h\"\n#include \"ggml-backend.h\"\n#include \"ggml-impl.h\"\n#include \"ggml-threading.h\"\n#include \"ggml-cpu.h\"\n#include \""
+  }
+}

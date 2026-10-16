@@ -1,7 +1,8 @@
 """Linux/Windows CPU development qualification; not a portable release package.
 
-Build the immutable upstream SDK, compare real public/native output on the same
-host, then run Gen2 lifecycle gates. Installed dependency paths and all commands
+Build the pinned upstream SDK (with a recorded Windows CMake-only LF overlay),
+compare real public/native output on the same host, then run Gen2 lifecycle gates.
+Installed dependency paths and all commands
 are retained. Offline relocation and mixed-model packaging are separate gates.
 """
 import argparse
@@ -14,6 +15,7 @@ import subprocess
 import sys
 
 from artifacts import acquire, digest, matches
+from windows_compat import apply_windows_lf_compat
 
 
 def capture(command, **kwargs):
@@ -71,6 +73,7 @@ class Qualification:
         environment = msvc_environment(dict(os.environ)) if self.windows else dict(os.environ)
         self.environment = pinned_git_environment(environment)
         self.commands = []
+        self.compatibility = None
         self.lock_path = self.tools / 'runtime.lock.json'
         self.lock = json.loads(self.lock_path.read_text())
 
@@ -109,6 +112,8 @@ class Qualification:
                   '-DNEMO_SPEECH_WITH_NORM=OFF', '-DCMAKE_INSTALL_LIBDIR=lib',
                   f'-DCMAKE_INSTALL_PREFIX={self.prefix}']
         if self.windows:
+            self.compatibility = apply_windows_lf_compat(self.source, self.output)
+            self.run('cmake-version', ['cmake', '--version'])
             build = self.source / 'build/gen2-cpu-diar'
             flags += ['-DNEMO_SPEECH_BUILD_ASR=OFF', '-DNEMO_SPEECH_BUILD_TTS=OFF']
             script = self.source / 'scripts/windows/build.ps1'
@@ -117,6 +122,9 @@ class Qualification:
             try:
                 self.run('sdk-build', ['pwsh', '-NoProfile', '-NonInteractive', '-Command', command])
             finally:
+                cache = build / 'CMakeCache.txt'
+                if cache.is_file():
+                    shutil.copy2(cache, self.output / 'cmake-cache.log')
                 # Preserve the actual patch and exported context when upstream
                 # configuration fails, rather than guessing from Git globals.
                 staging = build / '_deps/llama.cpp.staging'
@@ -235,7 +243,8 @@ else:
                 'source_commit': capture(['git', 'rev-parse', 'HEAD'], cwd=self.repo),
                 'runtime_revision': self.lock['runtime']['revision'], 'llama_revision': self.lock['runtime']['llama_revision'],
                 'lock_sha256': digest(self.lock_path), 'runner_sha256': digest(Path(__file__)), 'commands': self.commands,
-                'installed_files': files, 'limits': ['No offline/fresh-machine relocation claim.',
+                'installed_files': files, 'build_compatibility': self.compatibility,
+                'limits': ['No offline/fresh-machine relocation claim.',
                 'No chat/Bark/Laya coexistence or heldout quality claim.', 'CPU baseline explicitly requires AVX2/FMA/F16C.']}
 
 

@@ -1,0 +1,20 @@
+{
+  "release_qualified": false,
+  "source_commit": "35bf11cc0b1d180a47ea4879f052c995c379e890",
+  "run_id": 38862692131,
+  "job_id": 116848381672,
+  "scope": "Windows build-only failure before native SDK compilation or model inference",
+  "observed": "Generated patch has2113CRLF lines while archivedsource isLF. Removing onlyCRLF yields exact93523B pinnedpatch SHA58a43285e49f3ab9569bfb98a459979c062084b87da8d54cdbdc377ee1724152. Explicit descendantGitLF config did not fix CMake text-mode output.",
+  "local_reproduction": "gitapply--check on a fresh pinned ggml Gitarchive fails at the same five contexts with actualgeneratedCRLF bytes; passes after exactLF normalization. No native/model run.",
+  "proposed_repair": "Pinned upstream plus explicit build-only CMake fileCONFIGURE LF overlay; generatedpatch SHA must equalnormalized originalcontent before eachGitapply. Native patch series/ISA/model unchanged. NewWindowsbuild/lifecycle must stillpass.",
+  "artifacts": {
+    "git-line-ending-config.stdout.log": "ead0aa1e47ec8e02874482ecba0a4ec19c7e4a8c80a29a220ba844e8dbda0056",
+    "git-line-ending-config.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "sdk-build.log": "8cef0ddaa9cc66f864eda8aca08d425437d39d0269ef4a7e422137ee3d1527fa",
+    "failed-upstream.patch.log": "f7836ddc130a8722b6895d54490e8a1e3caf649a7ab4277d02941c11450d9d7f",
+    "commands.json": "3ae27e14d7f3a33405230cf9234c0f2b99cfe1c0c6a4ad7b1b903b73fc591a34",
+    "upstream-patch-diagnostic.json": "a84a5b8f37874f1eb7162401fa1ea4286f94dff088bcbe3978687163900e8a92",
+    "sdk-build.stdout.log": "e639a2c6d0e4efce56a0d9d05f2dc96dac08423c862777d49ee86c835e6e3ec4",
+    "receipt.json": "16635f385b5169e22ebbdadce90d530f1a0255c5b769bce662c2ea5d1d2af9b6"
+  }
+}
