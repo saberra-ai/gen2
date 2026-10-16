@@ -199,19 +199,13 @@ impl Session<'_> {
     }
     fn results(&self, include_frames: bool) -> Result<Diarization> {
         let duration = self.samples as f64 / 16000.;
-        let expected_frames = self.samples / 160 + 1;
         let api = &self.native.api;
         let pointer = self.pointer.as_ptr();
         let invalid = |s: &str| DiarizationError::InvalidOutput(s.into());
         // SAFETY: this thread owns the finished stream and bounds all copied output.
         unsafe {
             let count = (api.frame_count)(pointer);
-            if count < 0
-                || count as usize > expected_frames
-                || (self.finished && count as usize != expected_frames)
-            {
-                return Err(invalid("invalid/incomplete native frame count"));
-            }
+            validate_frame_count(count, self.samples, self.finished)?;
             let mut length = 0usize;
             api.check((api.segments)(
                 pointer,
@@ -250,7 +244,7 @@ impl Session<'_> {
                     return Err(invalid("invalid speaker interval"));
                 }
                 previous = s.start;
-                // Only the proven padded terminal span is clipped. Other bad output fails above.
+                // Public turns never extend past the actual recording endpoint.
                 if s.start < duration {
                     turns.push(SpeakerTurn {
                         start_seconds: s.start,
@@ -309,6 +303,55 @@ impl Drop for Session<'_> {
         // SAFETY: no synchronous call is active; closing precedes model/library destruction.
         unsafe {
             (self.native.api.close)(self.pointer.as_ptr());
+        }
+    }
+}
+
+fn validate_frame_count(count: i64, samples: usize, finished: bool) -> Result<()> {
+    let valid_frames = samples / 160;
+    // Keep the existing conservative bound for unfinished/provisional snapshots.
+    if count < 0
+        || count as usize > valid_frames + 1
+        || (finished && count as usize != valid_frames)
+    {
+        return Err(DiarizationError::InvalidOutput(
+            "invalid/incomplete native frame count".into(),
+        ));
+    }
+    Ok(())
+}
+
+#[cfg(test)]
+mod tests {
+    use super::validate_frame_count;
+
+    #[test]
+    fn finished_counts_require_every_valid_row_and_reject_the_legacy_extra_row() {
+        for samples in [
+            320,
+            321,
+            479,
+            480,
+            17872,
+            17920,
+            960017,
+            super::super::MAX_SESSION_SAMPLES,
+        ] {
+            let valid = (samples / 160) as i64;
+            assert!(validate_frame_count(valid, samples, true).is_ok());
+            assert!(validate_frame_count(valid - 1, samples, true).is_err());
+            assert!(validate_frame_count(valid + 1, samples, true).is_err());
+        }
+    }
+
+    #[test]
+    fn unfinished_counts_keep_partial_and_provisional_bounds() {
+        let samples = 17872;
+        for count in [0, 16, 40, 72, 111, 112] {
+            assert!(validate_frame_count(count, samples, false).is_ok());
+        }
+        for count in [-1, 113, i64::MAX] {
+            assert!(validate_frame_count(count, samples, false).is_err());
         }
     }
 }

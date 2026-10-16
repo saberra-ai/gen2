@@ -6,6 +6,9 @@ use std::{
     path::Path,
 };
 
+/// Semantic compatibility guard; host package qualification still binds the closure.
+const RUNTIME_VERSION: &str = "nemo-speech-asr 0.2.0+gen2-valid-mel-v1";
+
 #[repr(C)]
 pub(super) struct ModelConfig {
     pub size: usize,
@@ -100,12 +103,11 @@ impl Api {
                 .to_str()
                 .map_err(|e| bad(e.to_string()))?
                 .to_owned();
-            if version
-                .strip_prefix("nemo-speech-asr ")
-                .and_then(|v| v.split('+').next())
-                != Some("0.2.0")
-            {
-                return Err(bad(format!("unqualified NeMo ABI version: {version}")));
+            // The upstream ABI version alone cannot identify final-frame semantics.
+            if version != RUNTIME_VERSION {
+                return Err(bad(format!(
+                    "unqualified NeMo runtime version: {version}; expected {RUNTIME_VERSION}"
+                )));
             }
             Ok(Self {
                 create: symbol!("nemo_speech_diar_create"),
@@ -247,6 +249,62 @@ mod tests {
             loader_message(libloading::Error::InteriorZeroElements),
             "interior zero element in parameter"
         );
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn runtime_profile_is_checked_before_model_symbols() {
+        let directory = tempfile::tempdir().unwrap();
+        for (index, version) in [
+            "nemo-speech-asr 0.2.0",
+            "nemo-speech-asr 0.2.0+nightly.083861",
+            "nemo-speech-asr 0.2.0+gen2-valid-mel-v1.extra",
+            "nemo-speech-asr 0.3.0+gen2-valid-mel-v1",
+            RUNTIME_VERSION,
+        ]
+        .into_iter()
+        .enumerate()
+        {
+            let source = directory.path().join(format!("version-{index}.c"));
+            let library = directory.path().join(format!("version-{index}.so"));
+            std::fs::write(
+                &source,
+                format!("const char *nemo_speech_asr_version(void) {{ return \"{version}\"; }}\n"),
+            )
+            .unwrap();
+            let mut compiler = std::process::Command::new("cc");
+            compiler.arg(if cfg!(target_os = "macos") {
+                "-dynamiclib"
+            } else {
+                "-shared"
+            });
+            let compiled = compiler
+                .arg("-fPIC")
+                .arg(&source)
+                .arg("-o")
+                .arg(&library)
+                .output()
+                .unwrap();
+            assert!(
+                compiled.status.success(),
+                "{}",
+                String::from_utf8_lossy(&compiled.stderr)
+            );
+            let Err(DiarizationError::BackendUnavailable(message)) = Api::load(&library) else {
+                panic!("version-only fixture must not load a complete native API");
+            };
+            if version == RUNTIME_VERSION {
+                assert!(
+                    message.contains("missing native symbol nemo_speech_diar_create"),
+                    "{message}"
+                );
+            } else {
+                assert!(
+                    message.contains("unqualified NeMo runtime version"),
+                    "{message}"
+                );
+            }
+        }
     }
 
     #[cfg(unix)]

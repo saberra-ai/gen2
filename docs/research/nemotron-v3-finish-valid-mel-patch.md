@@ -150,8 +150,79 @@ another model or helper. No audio, model, SDK or helper binary is in Git.
 This closes the fixed **CPU/F32 candidate finish** regression only. The native
 V3 correction is exercised rather than inferred from an output crop. It does
 not qualify Q8, other backends/platforms, probability-history compaction, long
-sessions or production Rust. The current Rust strict `floor+1` expectation still
-rejects this candidate intentionally. Its explicit artifact/contract migration
-is next, followed by separately admitted model/platform/quality qualification.
+sessions or production Rust. At the receipt source, Rust still required `floor+1` and rejected this
+candidate intentionally. Subsequent artifact/contract implementation is separate
+from that fixed receipt and from model/platform/quality qualification.
 No HF/original-NeMo model, AMI target or DER scoring ran; original quality and
 release gates remain unchanged.
+
+## Production migration seam and current inventory
+
+The separate [runtime profile](../../tools/nemotron-diarization/runtime-valid-mel.lock.json)
+is an implementation input, not a new artifact qualification. It retains the
+original lock's upstream/model pins, binds the one compatibility patch and
+patched pipeline, and adds the upstream-supported CMake definition
+`NEMO_SPEECH_VERSION_METADATA=gen2-valid-mel-v1`. New builds must report exactly
+`nemo-speech-asr 0.2.0+gen2-valid-mel-v1`. The currently qualified candidate SDK
+reports the plain upstream version and cannot be silently relabelled: construct
+a distinct tagged SDK, bind its real outputs, and qualify it separately.
+
+The minimal migration keeps the existing trusted, explicit library-path API.
+Change Rust's version admission to exact full-string equality for that profile
+and require strict `floor(samples/160)` final counts. The compatibility check
+runs **after library loading, before model creation**. It is a semantic guard,
+not cryptographic verification of a library closure. Build and package receipts
+must still verify the actual source patch and every relocated dependency; a
+matching C shim alone cannot establish that its ASR core has the same contract.
+Do not add a permissive alternative accepting either final count. A separate
+public manifest-verification API would be broader work than this migration.
+
+Inventory at source `f3ea770`:
+
+- Runtime: `src/diarization/ffi.rs` currently strips all version metadata;
+  `nemo.rs` requires the old extra frame. Keep cancellation, provisional bounds,
+  retained/global accounting and resource checks. Current real-model tests in
+  `tests/diarization_native.rs` expect 6001 rows and three rows for 320 samples;
+  the negative ABI fixture must distinguish legacy/wrong metadata from a valid
+  profile missing required symbols.
+- Construction: retain `runtime.lock.json` as historical. Add explicit profile
+  source/patch admission and tagged builds to Mac `build_sdk.py` and
+  Linux/Windows `platform_native.py`; the latter also chooses the count-locked
+  native helper and comparator. Windows LF compatibility and private naming
+  remain separate recorded overlays. Existing frozen probe/comparator files
+  must remain unchanged; add versioned valid-Mel tools for current qualification.
+- Packages: Mac, Linux and Windows packagers currently bind the old lock.
+  New package metadata and verification must bind the new profile, patch and
+  frame contract while preserving closure/notice/CRT checks. Linux and Windows
+  fresh-container qualifiers also import the old comparator, lock and installed
+  helper identity; migrate these together with SDK construction. The central
+  Windows workflow's immutable old SDK run cannot be reused as a candidate.
+- Pnola: model-asset verification can retain the old unchanged model pins;
+  runtime-package validation needs the new profile. Two real transcription
+  tests in `overlay/src-tauri/src/transcription.rs` expect 6001 rows. Existing
+  persisted results/receipts remain historical; new outputs expose the runtime
+  version that produced them.
+- Qualification: use new protocols and receipts for Q8, tagged CPU/Metal,
+  all-platform wrapper/native equality, lifecycle, long sessions, coexistence,
+  offline desktop deployment and the unchanged corpus gates. Preserve all
+  original failures. This inventory authorizes no inference beyond the completed
+  fixed CPU/F32 run and records no production migration as complete.
+
+
+The first Rust migration change now requires the exact tagged version before
+resolving model symbols and strict floor-valid final counts. It preserves the
+existing conservative unfinished/provisional upper bound and all interval,
+retained-range and resource validation. Model-free shared-library fixtures reject
+plain upstream, arbitrary suffixes, an extra candidate suffix and a different ABI;
+the exact profile reaches the missing-model-symbol check. Frame-admission tests
+reject both missing rows and the historical extra row, including partial hops
+and the one-hour endpoint. Current native integration expectations now use two
+rows for 320 samples and 6000 for 60 seconds plus 17 samples.
+
+Validation of this source change: 1030 library tests and 11 API/alignment/native
+negative-evidence/cancellation tests pass; four library tests and nine
+external-asset native integration tests are ignored. Clippy and formatting checks pass. The shared-library fixtures call only a
+version function and never load a model. This is **not** tagged-SDK/Q8/public real-model qualification. Builders,
+packages, current comparison tools, platform workflows and Pnola migration remain
+pending. The old plain-version candidate is still inadmissible to current Rust;
+construct and qualify a distinct tagged SDK before any real-model public run.

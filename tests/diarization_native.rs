@@ -80,7 +80,7 @@ fn silence_short_tail_and_idle_deadline_have_explicit_terminal_results() {
         )
         .unwrap();
     assert!(result.turns.is_empty());
-    assert_eq!(result.native_frame_count, 6001);
+    assert_eq!(result.native_frame_count, 6000);
     assert_eq!(result.audio_duration_seconds, 60. + 17. / 16000.);
     let mut stream = model
         .start_stream(DiarizeOptions {
@@ -140,7 +140,7 @@ fn repeated_reload_full_queue_cancel_and_dropped_stream_release_resources() {
             assert!(started.elapsed() < Duration::from_secs(5));
         } else if index % 2 == 0 {
             stream.try_push(vec![0.; 320], 16000).unwrap();
-            assert_eq!(stream.finish().unwrap().native_frame_count, 3);
+            assert_eq!(stream.finish().unwrap().native_frame_count, 2);
         }
         // Odd iterations abandon the consumer before finish.
         drop(stream);
@@ -169,7 +169,7 @@ fn unsupported_abi_and_missing_symbols_fail_before_ready() {
         .unwrap();
     for (name, version) in [
         ("unsupported", "nemo-speech-asr 9.0.0"),
-        ("missing", "nemo-speech-asr 0.2.0"),
+        ("missing", "nemo-speech-asr 0.2.0+gen2-valid-mel-v1"),
     ] {
         let source = directory.path().join(format!("{name}.c"));
         let library = directory.path().join(format!("{name}.dylib"));
@@ -198,7 +198,7 @@ fn unsupported_abi_and_missing_symbols_fail_before_ready() {
         let message = error.to_string();
         assert!(
             message.contains(if name == "unsupported" {
-                "unqualified NeMo ABI"
+                "unqualified NeMo runtime"
             } else {
                 "nemo_speech_diar_create"
             }),
@@ -296,7 +296,7 @@ fn streamed_uneven_pcm_matches_recording_and_finish_is_idempotent() {
         final_result.frame_probabilities,
         expected.frame_probabilities
     );
-    assert_eq!(final_result.native_frame_count, 6001);
+    assert_eq!(final_result.native_frame_count, 6000);
     assert!(std::sync::Arc::ptr_eq(
         &final_result,
         &stream.finish().unwrap()
@@ -366,7 +366,7 @@ fn native_admission_cancellation_and_failed_load_release_reservations() {
             .diarize(minimum(), Default::default())
             .unwrap()
             .native_frame_count,
-        3
+        2
     );
     let cancellation = Cancellation::default();
     let other = model.clone();

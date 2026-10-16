@@ -50,6 +50,7 @@ pub enum ExecutionDevice {
     Metal,
 }
 /// Native loading and admitted peak residency. No runtime/model auto-download.
+/// The supplied SDK must be qualified for the `gen2-valid-mel-v1` runtime profile.
 #[derive(Debug, Clone)]
 pub struct LoadOptions {
     pub native_library: PathBuf,
@@ -100,7 +101,7 @@ impl LoadOptions {
 pub struct DiarizeOptions {
     pub cancellation: Cancellation,
     pub deadline: Option<Instant>,
-    /// Return bounded raw frame probabilities for diagnostics, including native padding.
+    /// Return bounded raw frame probabilities for diagnostics at the native cadence.
     pub frame_probabilities: bool,
 }
 impl DiarizeOptions {
