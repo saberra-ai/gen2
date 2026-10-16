@@ -16,6 +16,15 @@ struct llama_vocab;
 extern "C" {
 #endif
 
+// Read-only geometry from the owned native model, never a reopened pathname.
+// Returns INVALID_ARGUMENT for null outputs or a layer outside the pinned model.
+llama_rs_status llama_rs_model_kv_layer_geometry(
+    const struct llama_model * model,
+    uint32_t layer,
+    uint32_t * kv_heads,
+    uint32_t * key_width,
+    uint32_t * value_width);
+
 llama_rs_status llama_rs_json_schema_to_grammar(
     const char * schema_json,
     bool force_gbnf,

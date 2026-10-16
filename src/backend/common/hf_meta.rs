@@ -64,6 +64,17 @@ pub fn parse_hf_model_metadata(model_dir: &Path) -> Option<ModelMetadata> {
 
     Some(ModelMetadata {
         head_count_kv_per_layer: None,
+        // HF's head_dim is explicit for Qwen3/Gemma; null means derive default.
+        key_length: cfg
+            .get("head_dim")
+            .filter(|v| !v.is_null())
+            .map(|v| v.as_u64().unwrap_or(0)),
+        value_length: cfg
+            .get("head_dim")
+            .filter(|v| !v.is_null())
+            .map(|v| v.as_u64().unwrap_or(0)),
+        key_length_swa: None,
+        value_length_swa: None,
         architecture,
         quantization,
         file_type: None,
@@ -146,6 +157,28 @@ mod tests {
         assert!(meta.parameter_count.unwrap() > 0);
         assert!(meta.quantization.is_none());
         assert!(meta.supports_tools.is_none());
+    }
+
+    #[test]
+    fn hf_explicit_head_dim_uses_the_same_qwen_geometry_and_rejects_invalid_cost() {
+        let dir = TempDir::new().unwrap();
+        for (dimension, expected) in [
+            ("128", 114_688),
+            ("null", 57_344),
+            ("\"invalid\"", u64::MAX),
+        ] {
+            write_config(
+                dir.path(),
+                &format!(
+                    r#"{{"model_type":"qwen3","hidden_size":1024,"num_hidden_layers":28,"num_attention_heads":16,"num_key_value_heads":8,"head_dim":{dimension}}}"#
+                ),
+            );
+            let metadata = parse_hf_model_metadata(dir.path()).unwrap();
+            assert_eq!(
+                crate::bundle::gguf::model_kv_bytes_per_token(&metadata),
+                Some(expected)
+            );
+        }
     }
 
     #[test]

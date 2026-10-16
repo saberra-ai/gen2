@@ -644,6 +644,28 @@ impl LlamaModel {
             .unwrap()
     }
 
+    /// Read attention KV heads and independent K/V widths for one decoder layer.
+    ///
+    /// Uses the owned native model's hparams, including its per-layer/SWA layout.
+    /// Returns `None` for an invalid index; does not read a model pathname or
+    /// allocate a context. These are geometry facts, not measured memory usage.
+    #[cfg(feature = "common")]
+    pub fn attention_kv_layer_geometry(&self, layer: u32) -> Option<(u32, u32, u32)> {
+        let (mut heads, mut key, mut value) = (0, 0, 0);
+        // SAFETY: self keeps the native model alive; outputs are distinct valid
+        // local pointers. The shim bounds-checks the index before reading arrays.
+        let status = unsafe {
+            llama_cpp_sys_2::llama_rs_model_kv_layer_geometry(
+                self.model.as_ptr(),
+                layer,
+                &mut heads,
+                &mut key,
+                &mut value,
+            )
+        };
+        crate::status_is_ok(status).then_some((heads, key, value))
+    }
+
     #[cfg(feature = "common")]
     /// Check DFlash2 vocabulary, embedding width and extraction-layer bounds
     /// before creating a draft context against the target model.

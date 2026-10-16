@@ -9,6 +9,9 @@ pub struct ModelBundle {
     pub model: LlamaModel,
     pub capabilities: Capabilities,
     pub meta: ModelMeta,
+    /// Shared F16 geometry cost read from this owned native model after load.
+    /// This covers attention arithmetic, not native workspace measurement.
+    pub(crate) context_kv_bytes_per_token: u64,
     pub mtmd_ctx: Option<MtmdContext>,
     pub mtmd_marker: Option<String>,
     /// Where the weights went, as the load placed them.

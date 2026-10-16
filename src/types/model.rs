@@ -48,6 +48,18 @@ pub struct ModelMetadata {
     /// Hybrid architectures may declare zero KV heads for recurrent layers.
     #[serde(default, skip_serializing_if = "Option::is_none")]
     pub head_count_kv_per_layer: Option<Vec<u64>>,
+    /// Explicit attention key length; absent legacy values use the shared fallback.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key_length: Option<u64>,
+    /// Explicit attention value length; absent legacy values use the shared fallback.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value_length: Option<u64>,
+    /// Explicit attention key length swa; absent legacy values use the shared fallback.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub key_length_swa: Option<u64>,
+    /// Explicit attention value length swa; absent legacy values use the shared fallback.
+    #[serde(default, skip_serializing_if = "Option::is_none")]
+    pub value_length_swa: Option<u64>,
     /// Vocabulary size.
     pub vocab_size: Option<u64>,
     /// FFN intermediate dimension (`{arch}.feed_forward_length`).

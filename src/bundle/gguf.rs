@@ -79,6 +79,10 @@ pub struct GgufMetadata {
     pub head_count: Option<u64>,
     pub head_count_kv: Option<u64>,
     pub head_count_kv_per_layer: Option<Vec<u64>>,
+    pub key_length: Option<u64>,
+    pub value_length: Option<u64>,
+    pub key_length_swa: Option<u64>,
+    pub value_length_swa: Option<u64>,
     pub vocab_size: Option<u64>,
     pub feed_forward_length: Option<u64>,
     pub chat_template: Option<String>,
@@ -279,6 +283,9 @@ pub fn parse_gguf_metadata(path: &Path) -> Result<GgufMetadata, ExecError> {
     let kv_count = reader.read_u64::<LittleEndian>().map_err(ExecError::io)?;
 
     let mut metadata = GgufMetadata::default();
+    // general.architecture may appear after its dimensions. Keep only a bounded
+    // set of short dimension keys, then bind them to that exact architecture.
+    let mut explicit_widths: Vec<(String, u64)> = Vec::new();
 
     for _ in 0..kv_count {
         let key = read_len_prefixed_string(&mut reader).map_err(ExecError::io)?;
@@ -351,7 +358,52 @@ pub fn parse_gguf_metadata(path: &Path) -> Result<GgufMetadata, ExecError> {
             // Arch-prefixed keys: use suffix matching to handle all architectures
             _ => {
                 let key_str = key.as_str();
-                if key_str.ends_with(".context_length") {
+                if [
+                    ".attention.key_length",
+                    ".attention.value_length",
+                    ".attention.key_length_swa",
+                    ".attention.value_length_swa",
+                ]
+                .iter()
+                .any(|suffix| key_str.ends_with(suffix))
+                {
+                    if key.len() > 256
+                        || explicit_widths.len() >= 16
+                        || explicit_widths.iter().any(|(seen, _)| seen == &key)
+                    {
+                        return Err(ExecError::InvalidModelFile(
+                            "Invalid or duplicate explicit attention width key".into(),
+                        ));
+                    }
+                    if !matches!(
+                        value_type,
+                        GGUF_TYPE_UINT8
+                            | GGUF_TYPE_INT8
+                            | GGUF_TYPE_UINT16
+                            | GGUF_TYPE_INT16
+                            | GGUF_TYPE_UINT32
+                            | GGUF_TYPE_INT32
+                            | GGUF_TYPE_UINT64
+                            | GGUF_TYPE_INT64
+                    ) {
+                        return Err(ExecError::InvalidModelFile(
+                            "Explicit attention width must be an integer".into(),
+                        ));
+                    }
+                    let value = read_value_as_u64(&mut reader, value_type)
+                        .map_err(|e| {
+                            ExecError::InvalidModelFile(format!(
+                                "Invalid explicit attention width: {e}"
+                            ))
+                        })?
+                        .filter(|value| *value > 0)
+                        .ok_or_else(|| {
+                            ExecError::InvalidModelFile(
+                                "Explicit attention width must be positive".into(),
+                            )
+                        })?;
+                    explicit_widths.push((key, value));
+                } else if key_str.ends_with(".context_length") {
                     if let Some(value) =
                         read_value_as_u64(&mut reader, value_type).map_err(ExecError::io)?
                     {
@@ -431,6 +483,25 @@ pub fn parse_gguf_metadata(path: &Path) -> Result<GgufMetadata, ExecError> {
         }
     }
 
+    if !explicit_widths.is_empty() {
+        let architecture = metadata.architecture.as_deref().ok_or_else(|| {
+            ExecError::InvalidModelFile("Explicit attention width requires an architecture".into())
+        })?;
+        for (key, value) in explicit_widths {
+            if key == format!("{architecture}.attention.key_length") {
+                metadata.key_length = Some(value);
+            }
+            if key == format!("{architecture}.attention.value_length") {
+                metadata.value_length = Some(value);
+            }
+            if key == format!("{architecture}.attention.key_length_swa") {
+                metadata.key_length_swa = Some(value);
+            }
+            if key == format!("{architecture}.attention.value_length_swa") {
+                metadata.value_length_swa = Some(value);
+            }
+        }
+    }
     Ok(metadata)
 }
 
@@ -565,11 +636,7 @@ pub fn estimate_parameter_count(meta: &GgufMetadata, file_size: Option<u64>) -> 
 /// untrusted header, and a saturated cost makes every downstream fit
 /// decision refuse, which is the right answer for absurd dimensions.
 pub fn kv_bytes_per_token(n_layer: u64, n_head_kv: u64, head_dim: u64) -> u64 {
-    2u64.saturating_mul(n_layer)
-        .saturating_mul(n_head_kv)
-        .saturating_mul(head_dim)
-        .saturating_mul(2)
-        .max(1)
+    kv_bytes_with_widths(n_layer, n_head_kv, head_dim, head_dim).max(1)
 }
 
 /// Largest context that fits the memory budget once model weights and
@@ -616,16 +683,46 @@ pub fn estimate_ram_bytes(metadata: &ModelMetadata, file_size: u64, context_size
     ((file_size as f64 * 1.2) as u64).saturating_add(OVERHEAD)
 }
 
-/// Header-derived KV allocation, including per-layer arrays used by LFM2.
-/// Recurrent-state and compute buffers remain covered by runtime overhead.
+/// Shared saturating F16 attention arithmetic for header and owned-native geometry.
+/// This excludes cache padding, recurrent state and compute buffers.
+pub(crate) fn kv_bytes_with_widths(layers: u64, kv_heads: u64, key: u64, value: u64) -> u64 {
+    layers
+        .saturating_mul(kv_heads)
+        .saturating_mul(key.saturating_add(value))
+        .saturating_mul(2)
+}
+
 pub(crate) fn model_kv_bytes_per_token(metadata: &ModelMetadata) -> Option<u64> {
+    // JSON/HF metadata may not have passed the strict GGUF width parser. Never
+    // reinterpret a declared invalid width as a cheap inferred width.
+    if [
+        metadata.key_length,
+        metadata.value_length,
+        metadata.key_length_swa,
+        metadata.value_length_swa,
+    ]
+    .into_iter()
+    .flatten()
+    .any(|width| width == 0)
+    {
+        return Some(u64::MAX);
+    }
     let layers = metadata.block_count?;
-    let width = metadata.embedding_length?;
     let heads = metadata.head_count?;
-    if layers == 0 || heads == 0 || width < heads {
+    if layers == 0 || heads == 0 {
         return None;
     }
-    let head_dim = width / heads;
+    let derived = || {
+        let width = metadata.embedding_length?;
+        (width >= heads && width % heads == 0).then_some(width / heads)
+    };
+    let key = metadata.key_length.or_else(derived)?;
+    let value = metadata.value_length.or_else(derived)?;
+    // Without a per-layer SWA layout, charge the largest full/window head width
+    // to every attention layer. This is conservative KV arithmetic, not native
+    // recurrent/MLA/workspace measurement.
+    let key = key.max(metadata.key_length_swa.unwrap_or(key));
+    let value = value.max(metadata.value_length_swa.unwrap_or(value));
     if let Some(per_layer) = &metadata.head_count_kv_per_layer {
         if per_layer.len() as u64 != layers || per_layer.iter().any(|n| *n > heads) {
             return None;
@@ -633,13 +730,9 @@ pub(crate) fn model_kv_bytes_per_token(metadata: &ModelMetadata) -> Option<u64> 
         let sum = per_layer
             .iter()
             .fold(0_u64, |sum, n| sum.saturating_add(*n));
-        return Some(kv_bytes_per_token(1, sum, head_dim));
+        return Some(kv_bytes_with_widths(1, sum, key, value).max(1));
     }
-    Some(kv_bytes_per_token(
-        layers,
-        metadata.head_count_kv?,
-        head_dim,
-    ))
+    Some(kv_bytes_with_widths(layers, metadata.head_count_kv?, key, value).max(1))
 }
 
 /// Build a [`ModelMetadata`] from raw GGUF header fields.
@@ -672,6 +765,10 @@ pub fn build_model_metadata(gguf: &GgufMetadata, file_size: Option<u64>) -> Opti
         head_count: gguf.head_count,
         head_count_kv: gguf.head_count_kv,
         head_count_kv_per_layer: gguf.head_count_kv_per_layer.clone(),
+        key_length: gguf.key_length,
+        value_length: gguf.value_length,
+        key_length_swa: gguf.key_length_swa,
+        value_length_swa: gguf.value_length_swa,
         vocab_size: gguf.vocab_size,
         feed_forward_length: gguf.feed_forward_length,
         supports_tools,
@@ -1660,6 +1757,180 @@ mod tests {
             .unwrap();
         assert_eq!(meta.head_count_kv, Some(8));
         assert_eq!(meta.head_count, Some(32));
+    }
+
+    #[test]
+    fn explicit_qwen_key_value_widths_survive_header_and_charge_full_kv() {
+        let raw = GgufBuilder::header(3, 0, 7)
+            .key("general.architecture")
+            .u32(GGUF_TYPE_STRING)
+            .string(b"qwen3")
+            .key("qwen3.block_count")
+            .u32(GGUF_TYPE_UINT32)
+            .u32(28)
+            .key("qwen3.embedding_length")
+            .u32(GGUF_TYPE_UINT32)
+            .u32(1024)
+            .key("qwen3.attention.head_count")
+            .u32(GGUF_TYPE_UINT32)
+            .u32(16)
+            .key("qwen3.attention.head_count_kv")
+            .u32(GGUF_TYPE_UINT32)
+            .u32(8)
+            .key("qwen3.attention.key_length")
+            .u32(GGUF_TYPE_UINT32)
+            .u32(128)
+            .key("qwen3.attention.value_length")
+            .u32(GGUF_TYPE_UINT32)
+            .u32(128)
+            .parse()
+            .unwrap();
+        let metadata = build_model_metadata(&raw, Some(396_705_472)).unwrap();
+        assert_eq!(model_kv_bytes_per_token(&metadata), Some(114_688));
+        assert_eq!(
+            estimate_ram_bytes(&metadata, 396_705_472, 512),
+            396_705_472 + 56 * 1024 * 1024 + 500 * 1024 * 1024
+        );
+    }
+
+    fn qwen_width_metadata() -> ModelMetadata {
+        ModelMetadata {
+            architecture: Some("qwen3".into()),
+            block_count: Some(28),
+            embedding_length: Some(1024),
+            head_count: Some(16),
+            head_count_kv: Some(8),
+            key_length: Some(128),
+            value_length: Some(128),
+            ..Default::default()
+        }
+    }
+
+    #[test]
+    fn explicit_widths_are_independent_and_legacy_derivation_remains_compatible() {
+        let mut metadata = qwen_width_metadata();
+        metadata.value_length = Some(64);
+        assert_eq!(model_kv_bytes_per_token(&metadata), Some(86_016));
+        metadata.value_length = None;
+        assert_eq!(model_kv_bytes_per_token(&metadata), Some(86_016));
+        metadata.key_length = None;
+        assert_eq!(model_kv_bytes_per_token(&metadata), Some(57_344));
+        metadata.value_length = Some(128);
+        assert_eq!(model_kv_bytes_per_token(&metadata), Some(86_016));
+        metadata.key_length = Some(128);
+        metadata.embedding_length = None;
+        assert_eq!(model_kv_bytes_per_token(&metadata), Some(114_688));
+    }
+
+    #[test]
+    fn explicit_widths_apply_to_per_layer_heads_and_larger_swa_geometry() {
+        let mut metadata = qwen_width_metadata();
+        metadata.block_count = Some(2);
+        metadata.head_count_kv = None;
+        metadata.head_count_kv_per_layer = Some(vec![0, 8]);
+        metadata.value_length = Some(64);
+        assert_eq!(model_kv_bytes_per_token(&metadata), Some(3_072));
+        metadata.key_length_swa = Some(256);
+        metadata.value_length_swa = Some(128);
+        assert_eq!(model_kv_bytes_per_token(&metadata), Some(6_144));
+        metadata.head_count_kv_per_layer = Some(vec![8]);
+        assert_eq!(model_kv_bytes_per_token(&metadata), None);
+    }
+
+    #[test]
+    fn invalid_declared_widths_never_become_a_cheaper_inferred_value() {
+        let mut metadata = qwen_width_metadata();
+        metadata.key_length = Some(0);
+        metadata.embedding_length = None;
+        assert_eq!(model_kv_bytes_per_token(&metadata), Some(u64::MAX));
+        assert_eq!(estimate_ram_bytes(&metadata, 1, 512), u64::MAX);
+        metadata.key_length = Some(u64::MAX);
+        assert_eq!(model_kv_bytes_per_token(&metadata), Some(u64::MAX));
+        metadata.key_length = None;
+        metadata.value_length = None;
+        metadata.embedding_length = Some(1025);
+        assert_eq!(model_kv_bytes_per_token(&metadata), None);
+    }
+
+    #[test]
+    fn metadata_json_preserves_widths_and_legacy_absence() {
+        let mut metadata = qwen_width_metadata();
+        metadata.key_length_swa = Some(64);
+        metadata.value_length_swa = Some(96);
+        let encoded = serde_json::to_string(&metadata).unwrap();
+        let restored: ModelMetadata = serde_json::from_str(&encoded).unwrap();
+        assert_eq!(restored.key_length, Some(128));
+        assert_eq!(restored.value_length, Some(128));
+        assert_eq!(restored.key_length_swa, Some(64));
+        assert_eq!(restored.value_length_swa, Some(96));
+        assert_eq!(model_kv_bytes_per_token(&restored), Some(114_688));
+        let old: ModelMetadata = serde_json::from_str(
+            r#"{"block_count":28,"embedding_length":1024,"head_count":16,"head_count_kv":8}"#,
+        )
+        .unwrap();
+        assert_eq!(old.key_length, None);
+        assert_eq!(model_kv_bytes_per_token(&old), Some(57_344));
+        assert!(!serde_json::to_string(&old).unwrap().contains("key_length"));
+    }
+
+    #[test]
+    fn width_keys_bind_to_architecture_even_when_it_appears_later() {
+        let raw = GgufBuilder::header(3, 0, 3)
+            .key("wrong.attention.key_length")
+            .u32(GGUF_TYPE_UINT32)
+            .u32(1)
+            .key("qwen3.attention.key_length")
+            .u32(GGUF_TYPE_UINT32)
+            .u32(128)
+            .key("general.architecture")
+            .u32(GGUF_TYPE_STRING)
+            .string(b"qwen3")
+            .parse()
+            .unwrap();
+        assert_eq!(raw.key_length, Some(128));
+    }
+
+    #[test]
+    fn invalid_width_types_and_duplicates_fail_before_dimension_fallback() {
+        for ty in [
+            GGUF_TYPE_STRING,
+            GGUF_TYPE_ARRAY,
+            GGUF_TYPE_FLOAT32,
+            GGUF_TYPE_BOOL,
+        ] {
+            let error = GgufBuilder::header(3, 0, 1)
+                .key("qwen3.attention.key_length")
+                .u32(ty)
+                .u64(u64::MAX)
+                .parse()
+                .unwrap_err();
+            assert!(error.to_string().contains("must be an integer"));
+        }
+        for value in [0, u64::MAX] {
+            let error = GgufBuilder::header(3, 0, 1)
+                .key("qwen3.attention.key_length")
+                .u32(GGUF_TYPE_INT64)
+                .u64(value)
+                .parse()
+                .unwrap_err();
+            assert!(error.to_string().contains("must be positive"));
+        }
+        let error = GgufBuilder::header(3, 0, 2)
+            .key("qwen3.attention.key_length")
+            .u32(GGUF_TYPE_UINT32)
+            .u32(128)
+            .key("qwen3.attention.key_length")
+            .u32(GGUF_TYPE_UINT32)
+            .u32(1)
+            .parse()
+            .unwrap_err();
+        assert!(error.to_string().contains("duplicate"));
+        let truncated = GgufBuilder::header(3, 0, 1)
+            .key("qwen3.attention.value_length")
+            .u32(GGUF_TYPE_UINT64)
+            .u32(1)
+            .parse();
+        assert!(truncated.is_err());
     }
 
     #[test]

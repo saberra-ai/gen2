@@ -71,6 +71,9 @@ pub(crate) fn build_bundle(
     let model = LlamaModel::load_from_file(backend, &req.model_path, &model_params)
         .with_context(|| format!("failed to load model: {}", req.model_path.display()))
         .map_err(ExecError::Other)?;
+    let context_kv_bytes_per_token = native_context_kv_cost(model.n_layer(), |layer| {
+        model.attention_kv_layer_geometry(layer)
+    })?;
     let offload = gpu_offload(backend, &model, model_params.n_gpu_layers());
     #[cfg(feature = "llama-dflash2")]
     let draft = settings
@@ -196,6 +199,7 @@ pub(crate) fn build_bundle(
         model,
         capabilities: caps,
         meta,
+        context_kv_bytes_per_token,
         mtmd_ctx,
         mtmd_marker,
         offload,
@@ -296,5 +300,148 @@ mod tests {
         let expected = hex::encode(Sha256::digest(b"hello world"));
         let got = _sha256_file(f.path()).unwrap();
         assert_eq!(got, expected);
+    }
+}
+
+/// Fold owned native layer geometry with the same saturating F16 formula as
+/// header planning. No source pathname can substitute a different model here.
+fn native_context_kv_cost(
+    layers: u32,
+    mut read: impl FnMut(u32) -> Option<(u32, u32, u32)>,
+) -> Result<u64, ExecError> {
+    if layers == 0 || layers > 512 {
+        return Err(ExecError::Other(anyhow!(
+            "Unsupported native KV layer geometry"
+        )));
+    }
+    let mut bytes = 0_u64;
+    for layer in 0..layers {
+        let (heads, key, value) = read(layer)
+            .ok_or_else(|| ExecError::Other(anyhow!("Native KV layer geometry is unavailable")))?;
+        if heads != 0 && (key == 0 || value == 0) {
+            return Err(ExecError::Other(anyhow!(
+                "Invalid native attention KV width"
+            )));
+        }
+        bytes = bytes.saturating_add(crate::bundle::gguf::kv_bytes_with_widths(
+            1,
+            u64::from(heads),
+            u64::from(key),
+            u64::from(value),
+        ));
+    }
+    // No ordinary attention geometry does not establish an SSM/MLA state bound.
+    // Force the existing minimum automatic context; explicit settings still use
+    // ordinary residency admission and the generic working floor.
+    Ok(if bytes == 0 { u64::MAX } else { bytes })
+}
+
+#[cfg(test)]
+mod kv_geometry_tests {
+    use super::*;
+
+    #[test]
+    fn native_geometry_shim_refuses_null_model_and_outputs() {
+        let mut output = 0_u32;
+        // SAFETY: the shim checks the deliberately null pointers before access.
+        let status = unsafe {
+            llama_cpp_sys_2::llama_rs_model_kv_layer_geometry(
+                std::ptr::null(),
+                0,
+                &mut output,
+                std::ptr::null_mut(),
+                std::ptr::null_mut(),
+            )
+        };
+        assert_eq!(status, llama_cpp_sys_2::LLAMA_RS_STATUS_INVALID_ARGUMENT);
+    }
+
+    #[test]
+    fn native_geometry_is_per_layer_independent_and_saturating() {
+        assert_eq!(
+            native_context_kv_cost(28, |_| Some((8, 128, 128))).unwrap(),
+            114_688
+        );
+        let geometry = [(0, 0, 0), (8, 128, 64), (8, 256, 128)];
+        assert_eq!(
+            native_context_kv_cost(3, |i| geometry.get(i as usize).copied()).unwrap(),
+            9_216
+        );
+        assert_eq!(
+            native_context_kv_cost(512, |_| Some((u32::MAX, u32::MAX, u32::MAX))).unwrap(),
+            u64::MAX
+        );
+        assert_eq!(
+            native_context_kv_cost(2, |_| Some((0, 0, 0))).unwrap(),
+            u64::MAX
+        );
+        assert!(native_context_kv_cost(0, |_| None).is_err());
+        assert!(native_context_kv_cost(513, |_| Some((8, 128, 128))).is_err());
+        assert!(native_context_kv_cost(2, |i| (i == 0).then_some((8, 128, 128))).is_err());
+        assert!(native_context_kv_cost(1, |_| Some((8, 0, 128))).is_err());
+    }
+
+    #[test]
+    #[ignore = "Requires pinned public Qwen3-0.6B Q4_K_M and ordinary1024MiB admission"]
+    fn real_qwen_native_geometry_stays_bound_after_owned_path_replacement() {
+        let source = std::path::PathBuf::from(
+            std::env::var("GEN2_QWEN_KV_MODEL").expect("explicit model path"),
+        );
+        let runtime = crate::Runtime::new().unwrap();
+        let admission = runtime
+            .reserve_working_memory(1024)
+            .expect("normal live admission must fit; no bypass");
+        let root = tempfile::tempdir().unwrap();
+        let path = root.path().join("owned-model.gguf");
+        std::fs::copy(&source, &path).unwrap();
+        let mut hash = Sha256::new();
+        let mut input = File::open(&path).unwrap();
+        let mut buffer = [0; 65536];
+        loop {
+            let n = input.read(&mut buffer).unwrap();
+            if n == 0 {
+                break;
+            }
+            hash.update(&buffer[..n]);
+        }
+        assert_eq!(
+            hex::encode(hash.finalize()),
+            "ac2d97712095a558e31573f62f466a3f9d93990898b0ec79d7c974c1780d524a"
+        );
+        let backend = Arc::new(LlamaBackend::init().unwrap());
+        let request = LoadRequest {
+            model_path: path.clone(),
+            model_params: crate::engine::ModelParamsInput {
+                gpu_layers: Some(0),
+            },
+            ..Default::default()
+        };
+        let bundle = build_bundle(&backend, &request, &crate::engine::Settings::default()).unwrap();
+        assert_eq!(bundle.context_kv_bytes_per_token, 114_688);
+        assert_eq!(
+            bundle.model.attention_kv_layer_geometry(0),
+            Some((8, 128, 128))
+        );
+        assert_eq!(
+            bundle
+                .model
+                .attention_kv_layer_geometry(bundle.model.n_layer()),
+            None
+        );
+        #[cfg(unix)]
+        {
+            std::fs::remove_file(&path).unwrap();
+            std::fs::write(&path, b"different pathname contents").unwrap();
+            assert_eq!(
+                native_context_kv_cost(bundle.model.n_layer(), |i| bundle
+                    .model
+                    .attention_kv_layer_geometry(i))
+                .unwrap(),
+                114_688
+            );
+        }
+        drop(bundle);
+        drop(backend);
+        drop(admission);
     }
 }

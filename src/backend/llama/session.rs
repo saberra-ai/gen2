@@ -878,15 +878,9 @@ impl Session {
 
         // Context setup mirrors the cold path (incl. the fit clamp).
         let ctx_size = settings.system.ctx_size.unwrap_or_else(|| {
-            use crate::bundle::gguf::{fit_context, kv_bytes_per_token};
+            use crate::bundle::gguf::fit_context;
             let hw = crate::hardware::HardwareProfile::cached();
-            let n_head = bundle.model.n_head().max(1) as u64;
-            let head_dim = (bundle.model.n_embd().max(1) as u64) / n_head;
-            let kv = kv_bytes_per_token(
-                bundle.model.n_layer() as u64,
-                bundle.model.n_head_kv().max(1) as u64,
-                head_dim.max(1),
-            );
+            let kv = bundle.context_kv_bytes_per_token;
             fit_context(
                 hw.inference_budget_bytes(),
                 bundle.model.size(),
@@ -1196,15 +1190,9 @@ impl Session {
         // n_ctx_train can be 262144, whose KV cache alone would blow the
         // inference budget the fit/residency layers were built around.
         let ctx_size = settings.system.ctx_size.unwrap_or_else(|| {
-            use crate::bundle::gguf::{fit_context, kv_bytes_per_token};
+            use crate::bundle::gguf::fit_context;
             let hw = crate::hardware::HardwareProfile::cached();
-            let n_head = bundle.model.n_head().max(1) as u64;
-            let head_dim = (bundle.model.n_embd().max(1) as u64) / n_head;
-            let kv = kv_bytes_per_token(
-                bundle.model.n_layer() as u64,
-                bundle.model.n_head_kv().max(1) as u64,
-                head_dim.max(1),
-            );
+            let kv = bundle.context_kv_bytes_per_token;
             let fitted = fit_context(
                 hw.inference_budget_bytes(),
                 bundle.model.size(),

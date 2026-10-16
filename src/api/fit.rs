@@ -74,7 +74,7 @@ impl ModelInfo {
         let base = estimate_ram_bytes(&self.metadata, self.file_bytes, context);
         match self.kv_cost() {
             // The estimator already charged context against real dimensions.
-            KvCost::Measured(_) => base,
+            KvCost::HeaderDerived(_) => base,
             // It could not, and fell back to a flat multiple of the file size
             // that does not move with `context` at all. Left alone, asking
             // whether a 4M-token window fits would answer yes. Charge the
@@ -88,15 +88,15 @@ impl ModelInfo {
     /// Memory cost of one token of context.
     fn kv_cost(&self) -> KvCost {
         match model_kv_bytes_per_token(&self.metadata) {
-            Some(bytes) => KvCost::Measured(bytes),
+            Some(bytes) => KvCost::HeaderDerived(bytes),
             None => KvCost::Assumed(ASSUMED_KV_BYTES_PER_TOKEN),
         }
     }
 
-    /// Memory cost of one token of context, however it was arrived at.
+    /// Shared header-derived or explicitly assumed F16 KV cost, never a native measurement.
     fn kv_per_token(&self) -> u64 {
         match self.kv_cost() {
-            KvCost::Measured(bytes) | KvCost::Assumed(bytes) => bytes,
+            KvCost::HeaderDerived(bytes) | KvCost::Assumed(bytes) => bytes,
         }
     }
 
@@ -166,11 +166,11 @@ impl ModelInfo {
 /// What a token of context costs, and whether the header actually said.
 ///
 /// The distinction is the point: an assumed cost is still charged, but the
-/// caller-facing estimate must not be built as though it were measured.
+/// caller-facing estimate must not be built as though its geometry were known.
 #[derive(Debug, Clone, Copy, PartialEq, Eq)]
 enum KvCost {
     /// Derived from the header's own layer count, KV heads and head width.
-    Measured(u64),
+    HeaderDerived(u64),
     /// The header did not say, so [`ASSUMED_KV_BYTES_PER_TOKEN`] was charged.
     Assumed(u64),
 }
@@ -303,13 +303,28 @@ mod tests {
     }
 
     #[test]
+    fn explicit_head_widths_raise_memory_and_reduce_fitted_context() {
+        let mut info = model(1);
+        info.metadata.block_count = Some(28);
+        info.metadata.head_count = Some(16);
+        info.metadata.head_count_kv = Some(8);
+        info.metadata.embedding_length = Some(1024);
+        let old_memory = info.memory_needed(2048);
+        let old_context = info.max_context(&machine(4));
+        info.metadata.key_length = Some(128);
+        info.metadata.value_length = Some(128);
+        assert_eq!(info.memory_needed(2048) - old_memory, 112 * 1024 * 1024);
+        assert!(info.max_context(&machine(4)) < old_context);
+    }
+
+    #[test]
     fn hybrid_context_uses_array_kv_once_without_generic_fallback() {
         let mut info = model(2);
         info.metadata.head_count_kv = None;
         info.metadata.block_count = Some(4);
         info.metadata.embedding_length = Some(2048);
         info.metadata.head_count_kv_per_layer = Some(vec![0, 8, 0, 8]);
-        assert!(matches!(info.kv_cost(), KvCost::Measured(4096)));
+        assert!(matches!(info.kv_cost(), KvCost::HeaderDerived(4096)));
         assert_eq!(
             info.memory_needed(2048) - info.memory_needed(0),
             8 * 1024 * 1024

@@ -13,10 +13,31 @@
 #include "llama.cpp/common/json-schema-to-grammar.h"
 #include "llama.cpp/common/speculative.h"
 #include "llama.cpp/src/llama-ext.h"
+#include "llama.cpp/src/llama-model.h"
 #include "llama.cpp/include/llama.h"
 #include "wrapper_utils.h"
 
 #include <nlohmann/json.hpp>
+
+extern "C" llama_rs_status llama_rs_model_kv_layer_geometry(
+    const struct llama_model * model,
+    uint32_t layer,
+    uint32_t * kv_heads,
+    uint32_t * key_width,
+    uint32_t * value_width) {
+    if (!model || !kv_heads || !key_width || !value_width) {
+        return LLAMA_RS_STATUS_INVALID_ARGUMENT;
+    }
+    const auto & hp = model->hparams;
+    if (hp.n_layer_all > LLAMA_MAX_LAYERS || hp.n_layer_nextn > hp.n_layer_all
+        || layer >= hp.n_layer()) {
+        return LLAMA_RS_STATUS_INVALID_ARGUMENT;
+    }
+    *kv_heads = hp.n_head_kv(layer);
+    *key_width = hp.n_embd_head_k(layer);
+    *value_width = hp.n_embd_head_v(layer);
+    return LLAMA_RS_STATUS_OK;
+}
 
 extern "C" llama_rs_status llama_rs_json_schema_to_grammar(
     const char * schema_json,

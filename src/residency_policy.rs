@@ -147,8 +147,14 @@ pub(crate) fn plan_gguf(
     concurrent: usize,
     budget_mb: u64,
 ) -> Result<Option<ModelMemoryPlan>, String> {
-    let Ok(info) = crate::api::fit::ModelInfo::read(path) else {
-        return Ok(None);
+    let info = match crate::api::fit::ModelInfo::read(path) {
+        Ok(info) => info,
+        // Invalid declared geometry must not discard the context/working plan
+        // and quietly fall back to a cheaper weights-only reservation.
+        Err(crate::Error::Exec(crate::engine::ExecError::InvalidModelFile(reason))) => {
+            return Err(reason);
+        }
+        Err(_) => return Ok(None),
     };
     let weights = estimate_resident_mb_for_path_offloaded(path, settings.system.gpu_layers)
         .saturating_add(projector.map_or(0, |p| {
@@ -344,6 +350,43 @@ mod tests {
                 ..Default::default()
             },
         }
+    }
+
+    #[test]
+    fn invalid_explicit_geometry_cannot_select_weights_only_fallback() {
+        let directory = tempfile::tempdir().unwrap();
+        let path = directory.path().join("bad-width.gguf");
+        let mut bytes = b"GGUF".to_vec();
+        bytes.extend_from_slice(&3_u32.to_le_bytes());
+        bytes.extend_from_slice(&0_u64.to_le_bytes());
+        bytes.extend_from_slice(&1_u64.to_le_bytes());
+        let key = b"qwen3.attention.key_length";
+        bytes.extend_from_slice(&(key.len() as u64).to_le_bytes());
+        bytes.extend_from_slice(key);
+        bytes.extend_from_slice(&4_u32.to_le_bytes()); // UINT32
+        bytes.extend_from_slice(&0_u32.to_le_bytes()); // Invalid declared width
+        std::fs::write(&path, bytes).unwrap();
+        assert!(
+            plan_gguf(&path, None, &Default::default(), 1, 4000)
+                .unwrap_err()
+                .contains("must be positive")
+        );
+    }
+
+    #[test]
+    fn explicit_key_value_widths_charge_both_sessions_without_reducing_working_floor() {
+        let mut info = planning_model();
+        info.metadata.block_count = Some(28);
+        info.metadata.embedding_length = Some(1024);
+        info.metadata.head_count = Some(16);
+        info.metadata.head_count_kv = Some(8);
+        info.metadata.key_length = Some(128);
+        info.metadata.value_length = Some(128);
+        let plan = ModelMemoryPlan::select(&info, 2000, Some(2048), 2, 4000, false).unwrap();
+        assert_eq!(plan.context_mb, 448);
+        assert_eq!(plan.working_mb, 500);
+        assert_eq!(plan.total_mb, 2948);
+        assert!(ModelMemoryPlan::select(&info, 2000, Some(2048), 2, 2947, false).is_err());
     }
 
     #[test]
