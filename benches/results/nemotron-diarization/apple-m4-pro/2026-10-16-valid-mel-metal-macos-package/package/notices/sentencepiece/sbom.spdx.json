@@ -1,0 +1,162 @@
+{
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "spdxVersion": "SPDX-2.3",
+  "name": "SBOM-SPDX-sentencepiece-0.2.2",
+  "creationInfo": {
+    "created": "2026-10-16T01:46:10Z",
+    "creators": [
+      "Tool: https://github.com/Homebrew/brew@7.0.9"
+    ]
+  },
+  "dataLicense": "CC0-1.0",
+  "documentNamespace": "https://formulae.brew.sh/spdx/sentencepiece-0.2.2.json",
+  "documentDescribes": [
+    "SPDXRef-Archive-sentencepiece-src",
+    "SPDXRef-Package-SPDXRef-abseil-20260817.2e.0",
+    "SPDXRef-Package-SPDXRef-protobuf-36.2e.2",
+    "SPDXRef-Compiler",
+    "SPDXRef-Bottle-sentencepiece"
+  ],
+  "files": [
+    {
+      "SPDXID": "SPDXRef-File-sentencepiece",
+      "fileName": "v0.2.2.tar.gz",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "92381f713e094a15a1ccff1ac4a5315a4c4b82a99ac1332d6ac53c9dc8e1bcf1"
+        }
+      ]
+    }
+  ],
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Archive-sentencepiece-src",
+      "name": "sentencepiece",
+      "versionInfo": "0.2.2",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "builtDate": "2026-07-01T16:52:43Z",
+      "licenseConcluded": "Apache-2.0",
+      "downloadLocation": "https://github.com/google/sentencepiece/archive/refs/tags/v0.2.2.tar.gz",
+      "copyrightText": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:brew/homebrew/core/sentencepiece@0.2.2",
+          "referenceType": "purl"
+        }
+      ],
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "92381f713e094a15a1ccff1ac4a5315a4c4b82a99ac1332d6ac53c9dc8e1bcf1"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-SPDXRef-abseil-20260817.2e.0",
+      "name": "abseil",
+      "versionInfo": "20260817.0",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "licenseConcluded": "Apache-2.0",
+      "downloadLocation": "https://ghcr.io/v2/homebrew/core/abseil/blobs/sha256:ba58c7ded7fbf67a9bcd508055ad1ebd2b3503bf20e0153a92386cc9459d6568",
+      "copyrightText": "NOASSERTION",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ba58c7ded7fbf67a9bcd508055ad1ebd2b3503bf20e0153a92386cc9459d6568"
+        }
+      ],
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:brew/abseil@20260817.0",
+          "referenceType": "purl"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-SPDXRef-protobuf-36.2e.2",
+      "name": "protobuf",
+      "versionInfo": "36.2",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "licenseConcluded": "BSD-3-Clause",
+      "downloadLocation": "https://ghcr.io/v2/homebrew/core/protobuf/blobs/sha256:573d5907842eba3930afbac15f7fbab91df421acc610d9c79278062c1c70c33c",
+      "copyrightText": "NOASSERTION",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "573d5907842eba3930afbac15f7fbab91df421acc610d9c79278062c1c70c33c"
+        }
+      ],
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:brew/protobuf@36.2",
+          "referenceType": "purl"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Compiler",
+      "name": "clang",
+      "versionInfo": "27.0",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "downloadLocation": "NOASSERTION",
+      "checksums": [],
+      "externalRefs": []
+    },
+    {
+      "SPDXID": "SPDXRef-Bottle-sentencepiece",
+      "name": "sentencepiece",
+      "versionInfo": "0.2.2",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "builtDate": "2026-10-13T01:02:15Z",
+      "licenseConcluded": "Apache-2.0",
+      "downloadLocation": "https://ghcr.io/v2/homebrew/core/sentencepiece/blobs/sha256:04c5953f410677d5e8deb67a42ee7953a10ed4e3d253895dc4c4b23b0abbd35f",
+      "copyrightText": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:brew/sentencepiece@0.2.2",
+          "referenceType": "purl"
+        }
+      ],
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "04c5953f410677d5e8deb67a42ee7953a10ed4e3d253895dc4c4b23b0abbd35f"
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-File-sentencepiece",
+      "relationshipType": "PACKAGE_OF",
+      "relatedSpdxElement": "SPDXRef-Archive-sentencepiece-src"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-SPDXRef-abseil-20260817.2e.0",
+      "relationshipType": "RUNTIME_DEPENDENCY_OF",
+      "relatedSpdxElement": "SPDXRef-Bottle-sentencepiece"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-SPDXRef-protobuf-36.2e.2",
+      "relationshipType": "RUNTIME_DEPENDENCY_OF",
+      "relatedSpdxElement": "SPDXRef-Bottle-sentencepiece"
+    },
+    {
+      "spdxElementId": "SPDXRef-Compiler",
+      "relationshipType": "BUILD_TOOL_OF",
+      "relatedSpdxElement": "SPDXRef-Archive-sentencepiece-src"
+    }
+  ]
+}

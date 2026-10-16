@@ -1,0 +1,106 @@
+[
+  {
+    "name": "30m-native",
+    "argv": [
+      "/usr/bin/time",
+      "-l",
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-cpu-long-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-runtime-inputs-v1/work/bin/native-stream",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-runtime-inputs-v1/work/assets/Nemotron-3-Diarization.q8_0.gguf",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-runtime-inputs-v1/work/assets/ami_en2002d_2132.wav",
+      "30",
+      "-1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-cpu-long-v1/30m-native.json"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C"
+    },
+    "timeout_seconds": 1800,
+    "process_group_id": 64193,
+    "returncode": 0,
+    "elapsed_seconds": 336.0738504159963
+  },
+  {
+    "name": "30m-public",
+    "argv": [
+      "/usr/bin/time",
+      "-l",
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-cpu-long-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-runtime-inputs-v1/work/bin/public-stream",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-runtime-inputs-v1/work/assets",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-runtime-inputs-v1/work/nemo/lib/libnemo_speech_asr_c.dylib",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-runtime-inputs-v1/work/assets/ami_en2002d_2132.wav",
+      "30",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-cpu-long-v1/30m-public.f32"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C"
+    },
+    "timeout_seconds": 1800,
+    "process_group_id": 66198,
+    "returncode": 0,
+    "elapsed_seconds": 332.81593187496765
+  },
+  {
+    "name": "60m-native",
+    "argv": [
+      "/usr/bin/time",
+      "-l",
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-cpu-long-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-runtime-inputs-v1/work/bin/native-stream",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-runtime-inputs-v1/work/assets/Nemotron-3-Diarization.q8_0.gguf",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-runtime-inputs-v1/work/assets/ami_en2002d_2132.wav",
+      "60",
+      "-1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-cpu-long-v1/60m-native.json"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C"
+    },
+    "timeout_seconds": 1800,
+    "process_group_id": 67407,
+    "returncode": 0,
+    "elapsed_seconds": 669.3117012079456
+  },
+  {
+    "name": "60m-public",
+    "argv": [
+      "/usr/bin/time",
+      "-l",
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-cpu-long-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-runtime-inputs-v1/work/bin/public-stream",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-runtime-inputs-v1/work/assets",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-runtime-inputs-v1/work/nemo/lib/libnemo_speech_asr_c.dylib",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-runtime-inputs-v1/work/assets/ami_en2002d_2132.wav",
+      "60",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-cpu-long-v1/60m-public.f32"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C"
+    },
+    "timeout_seconds": 1800,
+    "process_group_id": 71817,
+    "returncode": 0,
+    "elapsed_seconds": 663.3148471660097
+  }
+]

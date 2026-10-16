@@ -1,0 +1,70 @@
+{
+  "homebrew_version": "7.0.9-78-g1db66fd",
+  "used_options": [],
+  "unused_options": [],
+  "built_as_bottle": true,
+  "built_prefix": "/opt/homebrew",
+  "poured_from_bottle": true,
+  "loaded_from_api": true,
+  "loaded_from_internal_api": true,
+  "installed_on_request": true,
+  "changed_files": [
+    "lib/pkgconfig/sentencepiece.pc"
+  ],
+  "linkage_files": [
+    "bin/spm_decode",
+    "bin/spm_encode",
+    "bin/spm_export_vocab",
+    "bin/spm_normalize",
+    "bin/spm_train",
+    "lib/libsentencepiece.0.0.0.dylib",
+    "lib/libsentencepiece_train.0.0.0.dylib"
+  ],
+  "binary_relocation_files": [
+    "lib/libsentencepiece.0.0.0.dylib",
+    "lib/libsentencepiece.a"
+  ],
+  "time": 1792115170,
+  "source_modified_time": 1782924763,
+  "compiler": "clang",
+  "aliases": [],
+  "runtime_dependencies": [
+    {
+      "full_name": "abseil",
+      "version": "20260817.0",
+      "revision": 0,
+      "bottle_rebuild": 1,
+      "pkg_version": "20260817.0",
+      "declared_directly": true
+    },
+    {
+      "full_name": "protobuf",
+      "version": "36.2",
+      "revision": 0,
+      "bottle_rebuild": 0,
+      "pkg_version": "36.2",
+      "declared_directly": true
+    }
+  ],
+  "source": {
+    "spec": "stable",
+    "versions": {
+      "stable": "0.2.2",
+      "head": null,
+      "version_scheme": 0,
+      "compatibility_version": null
+    },
+    "path": "/Users/victor/Library/Caches/Homebrew/api/internal/packages.arm64_tahoe.jws.json",
+    "tap_git_head": null,
+    "tap": "homebrew/core"
+  },
+  "arch": "arm64",
+  "built_on": {
+    "os": "Macintosh",
+    "os_version": "macOS 26.6",
+    "cpu_family": "dunno",
+    "xcode": "27.0",
+    "clt": "27.0.0.0.1788430756",
+    "preferred_perl": "5.34"
+  }
+}

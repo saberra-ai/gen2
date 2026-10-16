@@ -1,0 +1,5 @@
+(version 1)
+(allow default)
+(deny network*)
+(deny file-read* (subpath "/Users/victor/.cache/gen2-nemotron3-n0/assets") (subpath "/Users/victor/.cache/gen2-nemotron3-n0/native-f32-conversion-v1") (subpath "/Users/victor/.cache/gen2-nemotron3-n0/tail-framing-v1") (subpath "/Users/victor/.cache/gen2-nemotron3-n0/tagged-valid-mel-probes-v1/calibration.wav") (subpath "/Users/victor/.cache/gen2-nemotron3-n0/tagged-valid-mel-public-inputs-v1"))
+(deny file-write* (subpath "/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-tagged-metal-v1") (subpath "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-metal-v1") (subpath "/opt/homebrew"))

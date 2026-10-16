@@ -6,8 +6,10 @@ and public Rust parity on short calibration/silence. Current macOS packaging
 constructs v2 packages bound to that build receipt, patch and frame contract.
 The CPU v2 package passes 60-second public/native parity, all seven lifecycle
 gates and actual 92-library loader closure checks on the named M4 Pro.
-Long sessions, coexistence, Metal, other platforms and desktop qualification
-remain pending for this profile.
+The [30-minute and one-hour CPU qualification](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-cpu-long/qualification.json)
+passes retained-tail parity, compaction, bounded provisional revisions and peak
+process RSS below 249 MB. It repeats the named smoke fixture; diverse long-audio
+quality, coexistence, Metal, other platforms and desktop qualification remain open.
 See the [migration and current evidence](../../docs/research/nemotron-v3-finish-valid-mel-patch.md).
 
 The separate [Metal construction protocol](valid-mel-metal-build.protocol.json)
@@ -19,6 +21,12 @@ The [actual construction receipt](../../benches/results/nemotron-diarization/app
 passes all 11 construction phases, the state test and exact tagged version check;
 7 real SDK libraries and 18 installed paths are bound. Construction does not
 qualify inference, GPU placement or a desktop release.
+The [Metal v2 package](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-metal-macos-package/qualification.json)
+also passes construction and relocation with 93 private libraries. Its
+[fixed runtime protocol](valid-mel-metal-package.protocol.json) separately admits
+60-second native/public Metal parity, seven lifecycle tests and explicit CPU-SDK
+Metal rejection. The combined test checks sequential CPU rejection followed by
+Metal parity in one process; simultaneous model residency is a separate gate.
 
 # Nemotron 3 — N0 qualification
 
