@@ -15,6 +15,8 @@ from windows_archive import byte_inventory, digest, restore_archive, safe_relati
 from windows_naming import NAMES, verify_private_outputs
 from windows_pe import inspect_pe
 from windows_notices import install_supplement, verify_supplement
+from platform_sdk_receipt import copy_provenance, validate_native_receipt, verify_provenance
+from runtime_profiles import load_profile, profile_provenance
 
 CRT = {'concrt140.dll', 'msvcp140.dll', 'msvcp140_1.dll', 'msvcp140_2.dll',
        'msvcp140_atomic_wait.dll', 'msvcp140_codecvt_ids.dll', 'vcruntime140.dll', 'vcruntime140_1.dll'}
@@ -66,9 +68,12 @@ def validate_libraries(libraries, *, central=False):
 
 def qualified_sdk(sdk, evidence, lock):
     build = json.loads((evidence / 'receipt.json').read_text(encoding='utf-8-sig'))
+    lock_path, current_lock = validate_native_receipt(build)
+    if lock != current_lock:
+        raise ValueError('Windows package profile differs from qualified SDK')
     if (build['development_native_gates_passed'] is not True or build['runtime_revision'] != lock['runtime']['revision']
             or build['llama_revision'] != lock['runtime']['llama_revision']
-            or build['lock_sha256'] != digest(Path(__file__).with_name('runtime.lock.json'))
+            or build['lock_sha256'] != digest(lock_path)
             or build['machine'].lower() not in {'amd64', 'x86_64'} or not build['platform'].startswith('Windows-')):
         raise ValueError('qualified pinned Windows native SDK required')
     records = byte_inventory(sdk)
@@ -97,7 +102,9 @@ def qualified_sdk(sdk, evidence, lock):
                 'GGML_NATIVE': 'OFF', 'GGML_AVX': 'ON', 'GGML_AVX2': 'ON', 'GGML_AVX512': 'OFF',
                 'GGML_AVX_VNNI': 'OFF', 'GGML_FMA': 'ON', 'GGML_F16C': 'ON', 'GGML_OPENMP': 'OFF',
                 'GGML_BACKEND_DL': 'OFF', 'GGML_CUDA': 'OFF', 'GGML_VULKAN': 'OFF',
-                'NEMO_SPEECH_BUILD_ASR': 'OFF', 'NEMO_SPEECH_BUILD_TTS': 'OFF'}
+                'NEMO_SPEECH_BUILD_ASR': 'OFF', 'NEMO_SPEECH_BUILD_TTS': 'OFF',
+                'NEMO_SPEECH_VERSION_METADATA': lock['profile'],
+                'NEMO_SPEECH_GGML_PATCHED': 'ON', 'NEMO_SPEECH_LLAMA_CPP_SOURCE_DIR': ''}
     if any(cache.get(key) != value for key, value in required.items()):
         raise ValueError('SDK CMake cache differs from qualified CPU/ISA profile')
     naming = build['windows_private_names']
@@ -133,8 +140,8 @@ def qualified_sdk(sdk, evidence, lock):
 
 def verify(root):
     manifest = json.loads((root / 'package.json').read_text(encoding='utf-8-sig'))
-    central = manifest['format'] == 'gen2-nemo-windows-cpu-central-v1'
-    if (manifest['format'] not in {'gen2-nemo-windows-cpu-v1', 'gen2-nemo-windows-cpu-central-v1'} or manifest['platform_baseline'] != BASELINE
+    central = manifest['format'] == 'gen2-nemo-windows-cpu-central-v2'
+    if (manifest['format'] not in {'gen2-nemo-windows-cpu-v2', 'gen2-nemo-windows-cpu-central-v2'} or manifest['platform_baseline'] != BASELINE
             or manifest['architecture'] != 'AMD64' or manifest['backend'] != 'cpu'
             or manifest['release_qualified'] is not False or manifest['redistribution_qualified'] is not False):
         raise ValueError('unsupported Windows development runtime contract')
@@ -142,9 +149,9 @@ def verify(root):
     files.pop('package.json')
     if files != manifest['files']:
         raise ValueError('Windows runtime filesystem differs from manifest')
-    # Earlier development receipts predate this additive notice supplement.
-    if 'source_notice_supplement' in manifest:
-        verify_supplement(root, manifest['source_notice_supplement'])
+    if 'source_notice_supplement' not in manifest:
+        raise ValueError('Windows v2 requires supplemental source notices')
+    verify_supplement(root, manifest['source_notice_supplement'])
     names = set(NAMES.values()) | (set() if central else CRT)
     if set(manifest['libraries']) != names:
         raise ValueError('Windows library names escape the declared set')
@@ -157,8 +164,9 @@ def verify(root):
             raise ValueError('central Windows contract must retain exactly five private DLLs and the pinned external prerequisite')
     metadata = root / 'metadata'
     native = json.loads((metadata / 'receipt.json').read_text(encoding='utf-8-sig'))
-    lock_path = Path(__file__).with_name('runtime.lock.json')
-    lock = json.loads(lock_path.read_text())
+    lock_path, lock = load_profile()
+    if verify_provenance(root, manifest) != native:
+        raise ValueError('Windows retained native receipt copies differ')
     if (digest(metadata / 'receipt.json') != manifest['native_receipt_sha256']
             or digest(metadata / 'windows-provenance.json') != manifest['msvc_provenance_sha256']
             or native['development_native_gates_passed'] is not True
@@ -184,7 +192,7 @@ def package_sdk(sdk, evidence, destination, *, central=False):
     if destination.exists() or destination.is_symlink():
         raise FileExistsError('refusing to replace a Windows runtime')
     tools = Path(__file__).resolve().parent
-    lock = json.loads((tools / 'runtime.lock.json').read_text())
+    lock_path, lock = load_profile()
     evidence_before = {name: digest(evidence / name) for name in EVIDENCE_FILES}
     build, provenance, original = qualified_sdk(sdk, evidence, lock)
     destination.parent.mkdir(parents=True, exist_ok=True)
@@ -199,6 +207,7 @@ def package_sdk(sdk, evidence, destination, *, central=False):
             if digest(notices / name) != lock['runtime']['source_sha256'][name]:
                 raise ValueError('pinned NeMo notice differs')
         shutil.copytree(notices, staged / 'notices/nemo-speech')
+        copy_provenance(evidence / 'receipt.json', staged / 'provenance')
         supplement = install_supplement(staged)
         (staged / 'notices/gen2').mkdir()
         shutil.copy2(tools.parents[1] / 'LICENSE', staged / 'notices/gen2/LICENSE')
@@ -209,11 +218,12 @@ def package_sdk(sdk, evidence, destination, *, central=False):
             if digest(metadata / name) != evidence_before[name]:
                 raise ValueError('qualification evidence changed during copying')
         libraries = {name: summary(inspect_pe(staged / 'lib' / name)) for name in sorted(names)}
-        manifest = {'format': 'gen2-nemo-windows-cpu-central-v1' if central else 'gen2-nemo-windows-cpu-v1', 'release_qualified': False, 'redistribution_qualified': False,
+        manifest = {'format': 'gen2-nemo-windows-cpu-central-v2' if central else 'gen2-nemo-windows-cpu-v2', 'release_qualified': False, 'redistribution_qualified': False,
                     'architecture': 'AMD64', 'backend': 'cpu', 'platform_baseline': BASELINE,
-                    'runtime_revision': build['runtime_revision'], 'llama_revision': build['llama_revision'],
+                    **profile_provenance(lock_path, lock),
+                    'build_receipt_sha256': digest(evidence / 'receipt.json'),
                     'native_source_commit': build['source_commit'], 'native_receipt_sha256': digest(evidence / 'receipt.json'),
-                    'lock_sha256': digest(tools / 'runtime.lock.json'), 'entry_library': NAMES['nemo_speech_asr_c.dll'],
+                    'entry_library': NAMES['nemo_speech_asr_c.dll'],
                     'libraries': libraries, 'dependency_closure': validate_libraries(libraries, central=central),
                     'msvc_provenance_sha256': digest(evidence / 'windows-provenance.json'),
                     'source_notice_supplement': supplement,
@@ -253,7 +263,8 @@ def main():
     parser.add_argument('--central-runtime', action='store_true', help='Exclude Microsoft bytes; declare the exact publisher-hosted VC prerequisite (execution qualification remains separate).')
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
-    receipt = {'schema_version': 1, 'package_construction_passed': False, 'release_qualified': False,
+    lock_path, lock = load_profile()
+    receipt = {**profile_provenance(lock_path, lock), 'schema_version': 2, 'package_construction_passed': False, 'release_qualified': False,
                'redistribution_qualified': False, 'runtime_qualified': False}
     try:
         package = args.output / 'runtime'

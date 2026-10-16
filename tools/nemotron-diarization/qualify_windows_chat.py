@@ -12,6 +12,7 @@ import subprocess
 
 from artifacts import acquire
 from linux_chat_audit import audit_results
+from platform_valid_mel_native import compare_complete_60s as compare
 from qualify_windows_package import Qualification as OfflineQualification
 from windows_central_setup import MINIMUM
 from windows_archive import byte_inventory, digest, write_archive
@@ -99,7 +100,7 @@ class Qualification(OfflineQualification):
                   'example_sha256': digest(self.repo / 'examples/nemotron_chat_coexistence.rs'),
                   'tools': {name: digest(self.tools / name) for name in ['qualify_windows_chat.py', 'windows_chat_inputs.py',
                             'windows_chat_openmp.ps1', 'windows_runtime_audit.py', 'qualify_windows_package.py',
-                            'linux_chat_audit.py', 'linux-chat.lock.json']}}
+                            'linux_chat_audit.py', 'compare_stream_valid_mel.py', 'platform_valid_mel_native.py', 'runtime-valid-mel.lock.json', 'valid-mel-platform-native.protocol.json', 'linux-chat.lock.json']}}
         (self.output / 'chat-frozen-inputs.json').write_text(json.dumps(frozen, indent=2) + '\n', encoding='utf-8')
         self.receipt['chat_frozen_inputs_sha256'] = digest(self.output / 'chat-frozen-inputs.json')
 
@@ -129,7 +130,7 @@ class Qualification(OfflineQualification):
                 stages[order][stage] = self.audit_modules({'stable_snapshots': 1, 'modules': modules}, self.chat_helper)
         native_path = self.output / 'native/results/native.json'
         native = json.loads(native_path.read_text(encoding='utf-8-sig'))
-        comparisons = audit_results(collected, native, native_path.with_suffix('.json.f32').read_bytes(), self.fingerprints)
+        comparisons = audit_results(collected, native, native_path.with_suffix('.json.f32').read_bytes(), self.fingerprints, comparator=compare)
         (self.output / 'chat-comparison.json').write_text(json.dumps(comparisons, indent=2) + '\n', encoding='utf-8')
         (self.output / 'chat-module-stages.json').write_text(json.dumps(stages, indent=2) + '\n', encoding='utf-8')
         if model_inventory(self.chat, self.chat_lock) != self.chat_inventory or byte_inventory(self.work) != self.with_reference_inventory:

@@ -11,6 +11,25 @@ from windows_notices import install_supplement
 
 
 class WindowsPackageTests(unittest.TestCase):
+    def test_historical_package_formats_cannot_pass_current_admission(self):
+        for form in ['gen2-nemo-windows-cpu-v1', 'gen2-nemo-windows-cpu-central-v1']:
+            with tempfile.TemporaryDirectory() as temporary:
+                root = Path(temporary)
+                (root / 'package.json').write_text(json.dumps({'format': form}))
+                with self.assertRaisesRegex(ValueError, 'unsupported Windows'):
+                    verify(root)
+
+    def test_v2_app_local_package_requires_supplemental_source_notices(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            manifest = {'format': 'gen2-nemo-windows-cpu-v2', 'platform_baseline': BASELINE,
+                        'architecture': 'AMD64', 'backend': 'cpu', 'release_qualified': False,
+                        'redistribution_qualified': False, 'files': byte_inventory(root)}
+            (root / 'package.json').write_text(json.dumps(manifest))
+            with patch('package_windows.inspect_pe', side_effect=AssertionError('unadmitted PE opened')):
+                with self.assertRaisesRegex(ValueError, 'requires supplemental source notices'):
+                    verify(root)
+
     def test_central_variant_ships_only_private_dlls_and_declares_external_crt_imports(self):
         private = {name: row for name, row in self.libraries().items() if name in NAMES.values()}
         entry = NAMES['nemo_speech_asr_c.dll']
@@ -35,7 +54,7 @@ class WindowsPackageTests(unittest.TestCase):
                     (root / 'lib' / name).write_bytes(b'PE fixture must not be opened')
                 (root / extra).write_bytes(b'undeclared publisher payload')
                 requirement = json.loads(Path(__file__).with_name('windows-vc-runtime.lock.json').read_text())
-                manifest = {'format': 'gen2-nemo-windows-cpu-central-v1', 'platform_baseline': BASELINE,
+                manifest = {'format': 'gen2-nemo-windows-cpu-central-v2', 'platform_baseline': BASELINE,
                             'architecture': 'AMD64', 'backend': 'cpu', 'release_qualified': False,
                             'redistribution_qualified': False, 'microsoft_payload_included': False,
                             'source_notice_supplement': supplement, 'required_vc_runtime': requirement,
@@ -76,7 +95,7 @@ class WindowsPackageTests(unittest.TestCase):
     def test_manifest_library_paths_are_rejected_before_opening_unlisted_files(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
-            manifest = {'format': 'gen2-nemo-windows-cpu-v1', 'platform_baseline': BASELINE,
+            manifest = {'format': 'gen2-nemo-windows-cpu-v2', 'platform_baseline': BASELINE,
                         'architecture': 'AMD64', 'backend': 'cpu',
                         'release_qualified': False, 'redistribution_qualified': False,
                         'files': {'.': {'type': 'directory'}}, 'libraries': {'../../outside.dll': {}}}

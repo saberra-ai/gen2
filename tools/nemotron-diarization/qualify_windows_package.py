@@ -12,7 +12,8 @@ import subprocess
 import uuid
 
 from artifacts import acquire, matches
-from compare_stream import compare
+from platform_valid_mel_native import compare_complete_60s as compare
+from runtime_profiles import load_profile, profile_provenance, validate_provenance
 from package_windows import CRT, qualified_sdk, verify
 from qualify_linux_package import LIFECYCLE_GATES, require_lifecycle
 from windows_archive import byte_inventory, digest, restore_archive, write_archive
@@ -29,7 +30,8 @@ class Qualification(Smoke):
         self.args = args
         self.central_crt = None
         self.work = self.output / 'base inputs ü'
-        self.receipt = {'schema_version': 1, 'release_qualified': False, 'redistribution_qualified': False,
+        lock_path, lock = load_profile()
+        self.receipt = {**profile_provenance(lock_path, lock), 'schema_version': 2, 'release_qualified': False, 'redistribution_qualified': False,
                         'offline_container_gates_passed': False,
                         'scope': 'Delivered Windows Server 2022 AMD64 AVX2/FMA/F16C runtime, fresh process containers with network none, native/public parity, lifecycle and observed modules.',
                         'limits': ['No Windows desktop/physical-machine, chat/Bark/Laya coexistence or universal namespace guarantee.',
@@ -52,6 +54,7 @@ class Qualification(Smoke):
             raise ValueError('actual Windows runtime image differs from frozen fixture')
         evidence = self.args.package_evidence.resolve(strict=True)
         construction = json.loads((evidence / 'receipt.json').read_text(encoding='utf-8-sig'))
+        validate_provenance(construction)
         if construction['package_construction_passed'] is not True:
             raise ValueError('passing Windows runtime construction required')
         archive = json.loads((evidence / 'development-windows-runtime-files.json').read_text(encoding='utf-8-sig'))
@@ -60,7 +63,7 @@ class Qualification(Smoke):
         self.work.mkdir()
         self.runtime = restore_archive(evidence / archive['archive'], archive, self.work / 'relocated runtime ü')
         self.package = verify(self.runtime)
-        if self.package['format'] == 'gen2-nemo-windows-cpu-central-v1':
+        if self.package['format'] == 'gen2-nemo-windows-cpu-central-v2':
             self.use_central_image()
         elif getattr(self.args, 'central_setup', None) is not None:
             raise ValueError('central setup evidence requires the five-DLL central runtime format')
@@ -69,7 +72,7 @@ class Qualification(Smoke):
         native = self.args.native_evidence.resolve(strict=True)
         if digest(native / 'receipt.json') != construction['native_receipt_sha256']:
             raise ValueError('package/native receipt differs')
-        runtime_lock = json.loads((self.tools / 'runtime.lock.json').read_text())
+        _, runtime_lock = load_profile()
         build, _, _ = qualified_sdk(self.args.sdk_prefix.resolve(strict=True), native, runtime_lock)
         if build['source_commit'] != self.package['native_source_commit']:
             raise ValueError('qualified native source differs from runtime')
@@ -84,7 +87,7 @@ class Qualification(Smoke):
                 if not matches(assets / entry['name'], entry):
                     raise ValueError('locked Windows qualification asset differs')
         self.run('build-public-helper', ['cargo', 'build', '--locked', '--release', '--no-default-features',
-                 '--features', 'backend-diar-nemo', '--example', 'nemotron_stream'])
+                 '--features', 'backend-diar-nemo', '--example', 'nemotron_valid_mel_stream'])
         metadata = json.loads(self.run('cargo-metadata', ['cargo', 'metadata', '--locked', '--no-deps', '--format-version', '1']))
         test = self.run('build-lifecycle-helper', ['cargo', 'test', '--locked', '--release', '--no-default-features',
                         '--features', 'backend-diar-nemo', '--test', 'diarization_native', '--no-run', '--message-format=json'])
@@ -95,12 +98,12 @@ class Qualification(Smoke):
             raise ValueError('expected exactly one compiled Windows lifecycle executable')
         binaries = self.work / 'bin'
         binaries.mkdir()
-        helpers = {'native-probe.exe': self.args.sdk_prefix.resolve() / 'bin/gen2_native_stream_probe.exe',
-                   'public-stream.exe': Path(metadata['target_directory']) / 'release/examples/nemotron_stream.exe',
+        helpers = {'native-probe.exe': self.args.sdk_prefix.resolve() / 'bin/gen2_native_stream_probe_valid_mel.exe',
+                   'public-stream.exe': Path(metadata['target_directory']) / 'release/examples/nemotron_valid_mel_stream.exe',
                    'native-lifecycle.exe': Path(executables[0])}
         installed = {name.replace('\\', '/'): row for name, row in build['installed_files'].items()}
         probe = helpers['native-probe.exe']
-        if {'bytes': probe.stat().st_size, 'sha256': digest(probe)} != installed['bin/gen2_native_stream_probe.exe']:
+        if {'bytes': probe.stat().st_size, 'sha256': digest(probe)} != installed['bin/gen2_native_stream_probe_valid_mel.exe']:
             raise ValueError('independent native probe differs from qualified SDK')
         self.helpers = {}
         for name, path in helpers.items():
@@ -123,7 +126,7 @@ class Qualification(Smoke):
                   'tools': {name: digest(self.tools / name) for name in ['qualify_windows_package.py', 'windows_package_commands.ps1',
                     'windows_runtime_audit.py', 'windows_smoke_controls.ps1', 'windows_container_smoke.py',
                     'windows_archive.py', 'package_windows.py', 'windows_pe.py', 'windows_naming.py',
-                    'runtime.lock.json', 'windows-container.lock.json', 'evidence_commands.py', 'compare_stream.py', 'qualify_linux_package.py']}}
+                    'runtime.lock.json', 'windows-container.lock.json', 'evidence_commands.py', 'compare_stream_valid_mel.py', 'platform_valid_mel_native.py', 'platform_valid_mel_sources.py', 'platform_native.py', 'platform_sdk_receipt.py', 'runtime_profiles.py', 'build_valid_mel_candidate.py', 'qualification_storage.py', 'runtime-valid-mel.lock.json', 'valid-mel-platform-native.protocol.json', 'qualify_linux_package.py']}}
         if self.central_crt is not None:
             frozen['central_setup'] = {'receipt_sha256': digest(self.args.central_setup / 'receipt.json'),
                 'frozen_inputs_sha256': digest(self.args.central_setup / 'frozen-inputs.json'),
@@ -256,7 +259,8 @@ class Qualification(Smoke):
         public = json.loads((public_dir / 'child.stdout.log').read_text(encoding='utf-8-sig'))
         (public_dir / 'public.json').write_text(json.dumps(public, indent=2) + '\n', encoding='utf-8')
         comparison = compare(public, native, (native_dir / 'native.json.f32').read_bytes(), (public_dir / 'public.f32').read_bytes())
-        if public['input_pcm_f32le_sha256'] != native['input_pcm_f32le_sha256'] or native['input_repeats'] != 1 or public['input_repeats'] != 1:
+        expected_pcm = json.loads((self.tools / 'valid-mel-platform-native.protocol.json').read_text())['cases']['actual_pcm_sha256']
+        if public['input_pcm_f32le_sha256'] != expected_pcm or native['input_pcm_f32le_sha256'] != expected_pcm or native['input_repeats'] != 1 or public['input_repeats'] != 1:
             raise ValueError('actual Windows native/public PCM identity differs')
         reference = self.work / 'reference'
         reference.mkdir()

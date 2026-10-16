@@ -62,6 +62,16 @@ and acquires omitted pinned assets on the host before offline testing. These
 source changes pass 161 model-free tests. Current-profile Linux construction,
 offline execution and chat coexistence remain unqualified until actual runs.
 
+The Windows constructor likewise requires the completed tagged SDK and emits
+v2 app-local or central-VC packages. Both formats retain exact profile/patch/
+protocol/compiler provenance and require supplemental source notices. Existing
+private PE, CRT-byte and import-closure checks remain. Windows offline and chat
+qualifiers now use tagged helpers, complete rows and the fixed PCM digest.
+All 163 model-free tool tests pass; current-profile Windows construction,
+offline execution and chat coexistence still need actual qualification. The
+historical central-VC workflow remains pinned to its historical SDK and is not
+a candidate qualification recipe.
+
 # Nemotron 3 — N0 qualification
 
 This directory implements the first milestone of the
