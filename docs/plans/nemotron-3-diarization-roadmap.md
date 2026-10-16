@@ -112,9 +112,15 @@ freezes the same five cases on these newly built apps, requiring process-local
 image history with no environment trace dependency. No instrumented app-model
 case has executed yet; the original attempt remains failed.
 The separate current-profile corpus scorer preserves every valid row and all
-original quality criteria. A new frozen runner and fresh native/public corpus
-outputs are still required; historical quality failures remain unchanged.
-All 180 model-free tools tests pass locally;
+original quality criteria. Its [frozen runner protocol](../../tools/nemotron-diarization/valid-mel-corpus.protocol.json)
+now binds 33 tools, 258 unchanged compiled Rust sources and 306 staged entries.
+It schedules 32 fresh native/public CPU/Metal processes across the same eight
+slices, reusing only the exact eight original hash-locked CPU FP32 oracles.
+Native children cannot read staged oracles or labels. Scoring retains all
+quality failures and uses the unchanged original gates, with every valid row
+included. No corpus neural case has executed yet; historical failures remain
+unchanged and unwaived.
+All 182 model-free tools tests pass locally;
 [CI at the 157-test source](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-157/qualification.json)
 passes all 13 jobs. Later package/qualifier changes are outside that CI source;
 release criteria remain open.
