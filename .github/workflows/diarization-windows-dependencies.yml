@@ -1,0 +1,47 @@
+name: Diarization Windows cached dependency provenance
+on:
+  push:
+    branches: [codex/nemotron3-platforms]
+    paths: ['.github/workflows/diarization-windows-dependencies.yml', 'tools/nemotron-diarization/windows_vcpkg_metadata.py', 'tools/nemotron-diarization/test_windows_vcpkg_metadata.py']
+permissions:
+  contents: read
+  actions: read
+jobs:
+  recover:
+    runs-on: windows-2022
+    timeout-minutes: 15
+    steps:
+      - name: Preserve byte-pinned source line endings
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run metadata identity regressions
+        working-directory: tools/nemotron-diarization
+        run: python -m unittest test_windows_vcpkg_metadata
+      - uses: actions/download-artifact@v4
+        with:
+          name: nemotron-native-windows-2022
+          run-id: 38882923286
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/qualified-windows-native
+      - name: Restore exact existing binary cache on its owning branch
+        id: vcpkg-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ~\AppData\Local\vcpkg\archives
+          key: nemo-diar-vcpkg-9e593bb18ea69cc5095e012465dcd675a822ed0d-x64-static-md
+      - name: Refuse replacement packages or prefix-key cache fallback
+        if: steps.vcpkg-cache.outputs.cache-hit != 'true'
+        run: throw 'Exact historical vcpkg cache not found; do not build replacements'
+      - name: Recover ABI-bound original metadata and compare qualified notices
+        run: python tools/nemotron-diarization/windows_vcpkg_metadata.py --archives "$env:LOCALAPPDATA/vcpkg/archives" --native-evidence "${{ runner.temp }}/qualified-windows-native/nemo-evidence" --sdk-prefix "${{ runner.temp }}/qualified-windows-native/nemo-sdk" --output "${{ runner.temp }}/windows-vcpkg-recovery"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: windows-vcpkg-cache-metadata-recovery
+          path: ${{ runner.temp }}/windows-vcpkg-recovery/
+          retention-days: 7

@@ -508,3 +508,14 @@ for its static C ABI import; Gen2 uses its explicit loader and system-only PATH.
 The helper ZIP is a separate test artifact. This gate has not yet passed actual
 execution and does not establish Windows desktop, mixed-model, redistribution,
 accuracy or uncontended-performance qualification.
+
+The separate `diarization-windows-dependencies.yml` job performs one-shot
+historical metadata recovery on the cache-owning `codex/nemotron3-platforms`
+branch. `windows_vcpkg_metadata.py` accepts `--archives`, `--native-evidence`,
+`--sdk-prefix` and a new `--output` directory. It requires the exact retained
+native/status hashes, recovers nine original ZIPs and selected metadata,
+cross-checks raw ABI/dependency, CONTROL/status and SPDX identities, and matches
+four target notices to the SDK. It executes no cached tools and never builds
+replacement packages. Original installed-list bodies, source closure and actual
+native linker membership remain unqualified; actual cache recovery needs its
+own receipt. See the [recovery design](../../docs/research/nemotron-windows-static-provenance.md).
