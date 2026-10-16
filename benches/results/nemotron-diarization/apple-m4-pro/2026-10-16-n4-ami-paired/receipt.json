@@ -1,0 +1,149 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "scope": "Fixed two-channel120s AMI Bark/Pnola recorded-file attribution and word-boundary investigation. Same meeting as diarization corpus; results already seen for diarization, no fresh heldout/model-unseen claim.",
+  "original_protocol_commit": "03a90ef",
+  "corrected_resume_commit": "27ee4b5",
+  "artifact_provenance": "Exact existing signed release app, same225file hashes before/after; source/build limitations and priorreceipt bound inprotocol. No currentHEAD rebuild claim.",
+  "actual_app_files_unchanged": 225,
+  "native_timeline_parity": "All39close /36distant turns exactly equal saved125f907publicCPUturns, no endpoint tolerance required. Onecontinuous120sdiarization session across3ASRparts percase.",
+  "pairs": [
+    {
+      "slice": "ami-ES2004a-Mix-Headset",
+      "parts": 3,
+      "parts_completed": 3,
+      "audio_seconds": 120.0,
+      "native_turns": 39,
+      "timeline_identical_to_frozen_cpu": true,
+      "frozen_cpu_sha256": "4da7657dfa0fe0b7013850bab2c4519da6ee012a9ef0a242d0c4c999dec11225",
+      "word_intervals": 194,
+      "metrics": {
+        "reference_words": 272,
+        "predicted_words": 194,
+        "chronological_merged_wer": 0.3382352941176471,
+        "known_speaker_words": 151,
+        "unknown_words": 20,
+        "overlap_words": 23,
+        "known_speaker_stream_edit_errors": 133,
+        "conservative_cpwer": 0.6470588235294118,
+        "speaker_tagged_word_error_rate": 0.4963235294117647,
+        "speaker_tagged_word_edit_errors": 135,
+        "speaker_tagged_metric_definition": "minimum chronological Levenshtein on (word, speaker) pairs over global known-speaker permutations; word/speaker mismatch costs one substitution; unknown/overlap never match a reference person",
+        "speaker_tagged_mapping": {
+          "2": "A",
+          "4": "B",
+          "3": "C",
+          "1": "D"
+        },
+        "metric_definition": "minimum concatenated per-speaker Levenshtein errors with global permutation of known IDs, plus unknown/overlap words as an unmapped insertion stream; reference omissions remain deletions",
+        "speaker_mapping": {
+          "2": "A",
+          "4": "B",
+          "3": "C",
+          "1": "D"
+        },
+        "short_reference_words_400ms_or_less": 212
+      },
+      "alignment_diagnostic": {
+        "reference_words": 272,
+        "predicted_words": 194,
+        "matched_words": 183,
+        "chronological_merged_wer": 0.3382352941176471,
+        "deletions": 81,
+        "insertions": 3,
+        "substitutions": 8,
+        "matched_start_error_median_seconds": 0.05999999999998096,
+        "matched_start_error_p95_seconds": 0.19999999999999574,
+        "matched_end_error_median_seconds": 0.06000000000001293,
+        "matched_end_error_p95_seconds": 0.4399999999999764
+      }
+    },
+    {
+      "slice": "ami-ES2004a-Array1-01",
+      "parts": 3,
+      "parts_completed": 3,
+      "audio_seconds": 120.0,
+      "native_turns": 36,
+      "timeline_identical_to_frozen_cpu": true,
+      "frozen_cpu_sha256": "f86a92cee2dc63aafddefd998636c0635a0bbf4d4ac96a63212990ece38eae2a",
+      "word_intervals": 165,
+      "metrics": {
+        "reference_words": 272,
+        "predicted_words": 165,
+        "chronological_merged_wer": 0.4889705882352941,
+        "known_speaker_words": 138,
+        "unknown_words": 20,
+        "overlap_words": 7,
+        "known_speaker_stream_edit_errors": 152,
+        "conservative_cpwer": 0.6580882352941176,
+        "speaker_tagged_word_error_rate": 0.5588235294117647,
+        "speaker_tagged_word_edit_errors": 152,
+        "speaker_tagged_metric_definition": "minimum chronological Levenshtein on (word, speaker) pairs over global known-speaker permutations; word/speaker mismatch costs one substitution; unknown/overlap never match a reference person",
+        "speaker_tagged_mapping": {
+          "2": "A",
+          "1": "B",
+          "3": "C",
+          "4": "D"
+        },
+        "metric_definition": "minimum concatenated per-speaker Levenshtein errors with global permutation of known IDs, plus unknown/overlap words as an unmapped insertion stream; reference omissions remain deletions",
+        "speaker_mapping": {
+          "2": "A",
+          "1": "B",
+          "3": "C",
+          "4": "D"
+        },
+        "short_reference_words_400ms_or_less": 212
+      },
+      "alignment_diagnostic": {
+        "reference_words": 272,
+        "predicted_words": 165,
+        "matched_words": 140,
+        "chronological_merged_wer": 0.4889705882352941,
+        "deletions": 108,
+        "insertions": 1,
+        "substitutions": 24,
+        "matched_start_error_median_seconds": 0.05999999999997385,
+        "matched_start_error_p95_seconds": 0.3200000000000074,
+        "matched_end_error_median_seconds": 0.05999999999997385,
+        "matched_end_error_p95_seconds": 0.5299999999999869
+      }
+    }
+  ],
+  "harness_failures": [
+    "Initialwrapper expectedexactly2ASRparts; actualapp succeeded3/3. Savedresult reused without rerun.",
+    "Firstresume source pointedatoriginalprotocol; adapterhashguard rejected beforeanyscoring/inference. V2correctedprotocolpath and separate signaturelog. Allfailedscripts/protocols retained."
+  ],
+  "offline_scope": "Network, Homebrew, nativeSDK/sourcecheckouts/originalpackages denied by previously verified identicalsandboxpolicy on samehost. No physicalmicrophone/nativeGUI/freshmachineclaim.",
+  "quality_conclusion": "Integrated recordedfile pipeline works, but allword conservativecpWER64.71%close/65.81%distant and speaker-tagged49.63%/55.88% remainqualityconcerns. No wordomissions or unknown/overlap filtered to improve scores. Timing error distributions cover only exact lexicalmatches and use automaticreferencealignment.",
+  "limits": [
+    "No GUI or physicalmicrophone execution; this uses actual bundled recordedfile app pipeline.",
+    "Samehost source/networkdenial, not freshmachine portability.",
+    "Native production segmentation and fixed Bark settings unchanged. No threshold/profile tuning.",
+    "Editing/OSbackground activity may occur; no clean throughput or end-to-end GUI-delay claim."
+  ],
+  "artifacts": {
+    "summary.json": "4247467365a2bdd83ea69cf288cdc12f15aa09bf30c82fe2d19640060acc4eaf",
+    "ami-ES2004a-Mix-Headset-reference.json": "845dae494dd85cd37bbea4f061113c89017dd13902d0d3d7c6d166b4e2e62c55",
+    "run.py": "1e5e5fbeaa24a8f5933d97620ee876a7ff03238a46d5c34ce36a162ad78e6ae8",
+    "ami-ES2004a-Array1-01-result.json": "9caf53135d4d394686864e9205c9928d3ddd5c8dcb1f8669f1dec2e0327980aa",
+    "ami-ES2004a-Mix-Headset.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "resume.py": "dad9872b566b8cc11d7587fc068621038d9b96d42a20c2118101016636802535",
+    "ami-ES2004a-Mix-Headset-metrics.json": "f8a70e87ef9414eb01465c7d1ac01316bbc6cb914c246c31177753d0ee94e532",
+    "signature.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ami-ES2004a-Mix-Headset-result.json": "33a9c9843eaa2e337793c72c3f15d0a9f9f2e8fb58db4c981f3599671c846399",
+    "resume-signature.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ami-ES2004a-Array1-01.stdout.log": "55f0783e0dcd72ba0ba49e19d95483101599061392d0e56bc217407f98cc2e93",
+    "ami-ES2004a-Array1-01-metrics.json": "87c210ba02b11136df856551c569034afe0f4ac90a2821b48046c71039af90e5",
+    "ami-ES2004a-Array1-01-reference.json": "845dae494dd85cd37bbea4f061113c89017dd13902d0d3d7c6d166b4e2e62c55",
+    "failed-resume-protocol.json": "ac82cb73366078f6e1acdb31b60669847c7d1bc5f9fa5634ba787ba7484a9d1c",
+    "ami-ES2004a-Mix-Headset-command.json": "b27f5d35b55915ac238acde558b1865b5829485322c2ac683e07686cef7439d5",
+    "protocol.json": "6edb72d6bb5473d52e8501018a85172e1532c52d213e7d0209a6c71d3c70cb94",
+    "failed-resume.py": "5c619c43954382a532d65e7e7a7e0131c20045fde6d17a72f9baf7f139c5bc02",
+    "ami-ES2004a-Mix-Headset.stdout.log": "c304c502f50d275a2763170faa7cb166ea9b9c95d9dd6d221cd6008afd022917",
+    "ami-ES2004a-Array1-01.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "resume-protocol.json": "ddd7333f964ef0519beef48f27954e5eed5fbaeb3c98385596596bcce094d954",
+    "harness-failure.json": "165d96e443534c355de233175839df6dd29e0ed7ff35d4db0460470e9f535fcd",
+    "ami-ES2004a-Array1-01-command.json": "53d3d2b0542037d623ce2a7adc1c09e611829152c8ed4e7ae5ef4890b4e313ec",
+    "NOTICE.md": "83c7136c5bf59eddc0050334861e1d125e1edb480a1264d21a1b950f65a5d216"
+  }
+}

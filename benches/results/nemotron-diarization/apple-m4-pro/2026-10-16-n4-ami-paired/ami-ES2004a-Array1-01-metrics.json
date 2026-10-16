@@ -1,0 +1,46 @@
+{
+  "slice": "ami-ES2004a-Array1-01",
+  "source_audio_sha256": "740626182eddec2734523426cdcbcd6cff926a1c9224250e20e7bd922f7365f4",
+  "result_sha256": "9caf53135d4d394686864e9205c9928d3ddd5c8dcb1f8669f1dec2e0327980aa",
+  "attribution_metrics": {
+    "reference_words": 272,
+    "predicted_words": 165,
+    "chronological_merged_wer": 0.4889705882352941,
+    "known_speaker_words": 138,
+    "unknown_words": 20,
+    "overlap_words": 7,
+    "known_speaker_stream_edit_errors": 152,
+    "conservative_cpwer": 0.6580882352941176,
+    "speaker_tagged_word_error_rate": 0.5588235294117647,
+    "speaker_tagged_word_edit_errors": 152,
+    "speaker_tagged_metric_definition": "minimum chronological Levenshtein on (word, speaker) pairs over global known-speaker permutations; word/speaker mismatch costs one substitution; unknown/overlap never match a reference person",
+    "speaker_tagged_mapping": {
+      "2": "A",
+      "1": "B",
+      "3": "C",
+      "4": "D"
+    },
+    "metric_definition": "minimum concatenated per-speaker Levenshtein errors with global permutation of known IDs, plus unknown/overlap words as an unmapped insertion stream; reference omissions remain deletions",
+    "speaker_mapping": {
+      "2": "A",
+      "1": "B",
+      "3": "C",
+      "4": "D"
+    },
+    "short_reference_words_400ms_or_less": 212
+  },
+  "word_alignment_diagnostic": {
+    "reference_words": 272,
+    "predicted_words": 165,
+    "matched_words": 140,
+    "chronological_merged_wer": 0.4889705882352941,
+    "deletions": 108,
+    "insertions": 1,
+    "substitutions": 24,
+    "matched_start_error_median_seconds": 0.05999999999997385,
+    "matched_start_error_p95_seconds": 0.3200000000000074,
+    "matched_end_error_median_seconds": 0.05999999999997385,
+    "matched_end_error_p95_seconds": 0.5299999999999869
+  },
+  "release_qualified": false
+}

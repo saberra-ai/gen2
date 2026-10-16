@@ -339,6 +339,21 @@ plus 51.43 seconds ASR for 60 seconds of audio, versus 8.51 + 5.14 seconds in th
 native test). N5 must investigate background/locked-screen behavior and measure
 a committed release build; GUI real-time performance is not established.
 
+A later fixed paired-AMI recording check uses the actual relocated signed CPU
+app on ES2004a [300,420) for both close and distant microphones. Both complete
+all three ASR parts with one continuous 120-second timeline; 39/36 turns exactly
+match the saved qualified CPU results. Full-word speaker-tagged error is 49.63%
+close / 55.88% distant, and conservative cpWER is 64.71% / 65.81%. Chronological
+lexical WER is 33.82% / 48.90%: 81/108 deletions, 3/1 insertions and 8/24
+substitutions. Matched-word end-time p95 error is 440/530 ms against automatic
+forced-alignment word times; this timing subset
+does not represent missing/substituted words. No uncertain or omitted word was
+dropped from the word-error metrics. The initial part-count wrapper assertion
+and a failed resume hashguard are retained; neither required repeated model
+execution. See the [paired attribution receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-n4-ami-paired/receipt.json).
+This verifies functional multi-part app behavior while leaving transcript and
+attribution quality open, and remains CLI/same-host evidence.
+
 The current clip produces 91 single-speaker, 21 unknown and 5 overlap words.
 Speaker-tagged chronological word error is 46.94% (global known-speaker mapping;
 word or speaker mismatch costs one substitution, unknown/overlap never match a
@@ -509,29 +524,29 @@ PCM digest and verify installed oracle package versions and Transformers commit.
 Rebuilt release runners passed an excluded1.117s smoke calibration: native112
 frames, FP32mask111frames, actual PCM identity and exact native/public parity.
 See the [calibration receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-quality-calibration/receipt.json).
-The frozen set is complete at125f907: all16CPU/Metal wrapper comparisons match
+The frozen set is complete at `125f907`: all 16 CPU/Metal wrapper comparisons match
 native turns after required terminal clipping and probabilities exactly; every
-Q8-minus-FP32 bound is at most2pp.
-Twelve of16slice/backend pairs pass all quality gates (all five Vox cases and
-ICSI). Both AMI channels fail the20%target on both backends: CPU production DER
-is33.2146%close-mic and43.8407%distant-mic. ICSI production DER is19.3362%CPU /
-19.9881%Metal, close to the boundary. Failed slices remain in the unchanged
+Q8-minus-FP32 bound is at most 2 percentage points.
+Twelve of 16 slice/backend pairs pass all quality gates (all five Vox cases and
+ICSI). Both AMI channels fail the 20% target on both backends: CPU production DER
+is 33.2146% close-mic and 43.8407% distant-mic. ICSI production DER is 19.3362% CPU /
+19.9881% Metal, close to the boundary. Failed slices remain in the unchanged
 protocol. See the [full corpus receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-frozen-corpus/receipt.json).
 The [quality-gap investigation](../research/nemotron-quality-gaps.md) corrects an
 earlier reference-policy recommendation: NVIDIA publishes AMI scores against
 specific forced-alignment RTTMs, not the broader transcriber segments used here.
 That mismatch materially affects missed-speech scoring, as quantified below;
-it does not cure the original frozen failure. A separate published-reference reproduction
-must retain these outcomes. That separately preregistered diagnostic is now
+it does not cure the original frozen failure. A separate published-reference
+reproduction must retain these outcomes. That preregistered diagnostic is now
 complete using saved outputs, with no inference or tuning: the exact pinned NeMo
-continuous scorer gives CPU shared-threshold DER16.8135%close /27.4897%distant
-against published labels, compared with41.4640% /49.9537%against the original
-transcriber labels. Production-default DER remains27.6171% /35.4388%against
+continuous scorer gives CPU shared-threshold DER of 16.8135% close / 27.4897% distant
+against published labels, compared with 41.4640% / 49.9537% against the original
+transcriber labels. Production-default DER remains 27.6171% / 35.4388% against
 published labels. Thus reference convention explains much of the score but does
 not resolve the distant-mic or production-default quality deficit. All four
 synthetic independent-scorer calibrations pass. See the [diagnostic receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-ami-reference-diagnostic/collection.json).
-The original frozen failures and release status are unchanged. The13-job feature
-matrix also passed at4974318.
+The original frozen failures and release status are unchanged. The 13-job feature
+matrix also passed at `4974318`.
 
 Linux/Windows CPU development jobs now build the pinned source SDK with an
 explicit x86_64AVX2/FMA/F16C baseline, retain installed dependency discovery,
