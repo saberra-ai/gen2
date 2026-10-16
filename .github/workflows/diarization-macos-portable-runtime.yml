@@ -1,0 +1,54 @@
+name: Diarization portable macOS CPU offline receiver
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/nemotron3-n0]
+    paths:
+      - .github/workflows/diarization-macos-portable-runtime.yml
+      - tools/nemotron-diarization/qualify_macos_portable_runtime.py
+      - tools/nemotron-diarization/macos_portable_delivery.py
+      - tools/nemotron-diarization/macos-portable-runtime.protocol.json
+permissions:
+  contents: read
+  actions: read
+jobs:
+  receiver:
+    runs-on: macos-26
+    timeout-minutes: 90
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          submodules: recursive
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Bootstrap locked Rust dependency sources without building
+        run: cargo fetch --locked
+      - name: Download the exact opaque construction artifact and API identity
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p "${{ runner.temp }}/portable-delivery"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12074849757 > "${{ runner.temp }}/portable-delivery/artifact.json"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12074849757/zip > "${{ runner.temp }}/portable-delivery/artifact.zip"
+      - name: Execute frozen receiver with offline source-hidden native children
+        run: python tools/nemotron-diarization/qualify_macos_portable_runtime.py --producer-zip "${{ runner.temp }}/portable-delivery/artifact.zip" --producer-metadata "${{ runner.temp }}/portable-delivery/artifact.json" --output "${{ runner.temp }}/portable-receiver"
+      - name: Preserve passing or failed receiver evidence and compiled helpers
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nemotron-macos-portable-runtime
+          path: |
+            ${{ runner.temp }}/portable-receiver/*.json
+            ${{ runner.temp }}/portable-receiver/*.log
+            ${{ runner.temp }}/portable-receiver/*.sb
+            ${{ runner.temp }}/portable-receiver/receiver-helpers.tar.gz
+            ${{ runner.temp }}/portable-receiver/results/
+            ${{ runner.temp }}/portable-receiver/reference/
+          include-hidden-files: true
+          retention-days: 30

@@ -179,8 +179,14 @@ collection checks the opaque GitHub artifact, exact restored inventories and
 all original/private library sections. No model ran. A separate exact-artifact
 receiver protocol is still required; no accuracy or release gate changes.
 The [191-test source CI](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-191/qualification.json)
-also passes all 13 jobs. The later 193-test parser source passes locally; its
-separate feature matrix remains in progress.
+also passes all 13 jobs. The later [193-test parser source CI](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-193/qualification.json)
+now also passes all 13 jobs. Local tests total197 with the receiver artifact
+admission controls; this newer receiver source has not yet run CI or inference.
+The separate [M1 receiver protocol](../research/nemotron-macos-fresh-machine.md)
+now freezes the exact construction artifact for offline native/public parity
+and all seven lifecycle gates on a fresh VM. Its admission tests reject changed
+artifact identity/bytes/members and unsafe destinations. No receiver inference
+has run yet; all quality and release criteria remain unchanged.
 
 Prepared: 2026-10-14.
 Updated: 2026-10-16.

@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "source_commit": "e1c219a56782eabf7cf612935550871c62561c5d",
+  "ci_url": "https://github.com/saberra-ai/gen2/actions/runs/38967939643",
+  "all_thirteen_feature_jobs_passed": true,
+  "model_free_evidence_tests_passed": 193,
+  "platforms": [
+    "ubuntu-latest",
+    "windows-latest",
+    "macos-latest"
+  ],
+  "feature_sets": [
+    "",
+    "backend-diar-nemo",
+    "asr-dynamic,backend-diar-nemo",
+    "backend-llamacpp,asr-dynamic,backend-diar-nemo"
+  ],
+  "all_twelve_feature_jobs_ran_fmt_clippy_tests_successfully": true,
+  "evidence_and_pnola_python_and_desktop_asset_test_steps_passed": true,
+  "combined_log_retained_outside_git": {
+    "bytes": 10109859,
+    "sha256": "8dacd713dbf19a1a156ca587aded960018cfcf6e03d917c47329c6d262d3d2d0"
+  },
+  "release_qualified": false,
+  "limits": [
+    "CI source is e1c219a. This proves its12OS/feature combinations and193model-free evidence tests, including both observed CTest output formats, portable Mac controls and existing current-platform/original-NeMo evidence tools. It does not execute the app/model/corpus gates.",
+    "No model/nativeSDK is required by this workflow. It does not replace real-model, desktop, distribution, held-out-quality or uncontended-performance gates. Earlier network-failure and102-test success receipts remain unchanged."
+  ]
+}

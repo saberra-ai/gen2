@@ -116,3 +116,37 @@ This qualifies construction and static payload delivery. Real-model execution
 on a fresh receiver, lifecycle, application packaging, GUI/microphone,
 performance, public signing/notarization and the original quality gates remain
 open. The first attempt remains failed, and the M4 packages are unchanged.
+
+## Frozen M1 receiver qualification
+
+The separate [receiver protocol](../../tools/nemotron-diarization/macos-portable-runtime.protocol.json)
+now binds artifact 12074849757 from run 38967939615 and all 186 delivered files,
+17 tools and 265 repository files. The [receiver workflow](../../.github/workflows/diarization-macos-portable-runtime.yml)
+uses a fresh `macos-26` job and requires the observed `Apple M1 (Virtual)` CPU.
+It has not yet run.
+
+Preparation verifies the opaque ZIP against the frozen/API digests and every
+member before atomic publication, then restores the exact SDK and private
+runtime. It acquires only the locked Q8 model, card, previously observed 60-second
+WAV and four small source files at the pinned native/LLAMA revisions. Locked
+Cargo dependencies are fetched before offline admission. C++ helpers use the
+explicit ARM target; Rust uses `target-cpu=generic`. Offline compiler children
+cannot read the staged model/audio directory or modify the SDK/package/checkout.
+The compiled helper archive and actual build/source metadata are retained.
+
+Runtime children cannot read the checkout, original SDK, producer archive,
+Cargo target, helper sources, Cargo/Rustup homes or Homebrew. Actual positive
+read controls precede sandbox denial tests; loopback and protected writes must
+also fail. A version-only query and a missing-private-library control precede
+model admission. Public CPU-package Metal rejection, one native/public 60-second
+pair and all seven existing lifecycle tests follow. Every valid probability row
+and turn must match; no cached HF/original-NeMo reference or quality labels are
+staged. Each lifecycle test must actually execute and pass. Actual dyld traces
+must contain exactly the private dependency closure, or no native runtime for
+the offline cache-only case.
+
+This remains an unexecuted runtime protocol. It preserves the 5 GiB neural
+admission floor, 1 GiB running floor and 256 MiB reserve. It changes no reference
+policy, quality criterion or held-out claim. GUI/microphone, app distribution,
+mixed-model coexistence, uncontended performance, signing/notarization and
+the original accuracy failures remain separate.
