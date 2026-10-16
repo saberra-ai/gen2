@@ -226,3 +226,33 @@ version function and never load a model. This is **not** tagged-SDK/Q8/public re
 packages, current comparison tools, platform workflows and Pnola migration remain
 pending. The old plain-version candidate is still inadmissible to current Rust;
 construct and qualify a distinct tagged SDK before any real-model public run.
+
+
+## Tagged CPU SDK construction preregistration
+
+`prepare_valid_mel_source.py` and `build_valid_mel_sdk.py` now provide the next
+construction step. The source preparer creates an independent local clone and
+applies only the locked patch; it rejects existing source/evidence destinations.
+The builder requires a fresh source build, SDK prefix and evidence directory,
+all disjoint, and verifies source pins, sole diff and absence of untracked or
+ignored compiler inputs. Shared `runtime_profiles.py` verifies the historical
+lock, unchanged model/fixture pins, explicit patch provenance and exact semantic
+profile. Seven mutation/admission tests pass; the model-free evidence-tool suite
+now totals 121 tests.
+
+The frozen `valid-mel-tagged-build.protocol.json` and external launcher admit
+only a new macOS arm64 CPU construction at:
+
+- source `/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1`;
+- SDK `/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-tagged-cpu-v1`;
+- evidence `/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1`.
+
+Build phases repeat the independent GGML patch replay and before/after compiler
+input audit, run the actual model-free state test, and query only the C ABI's
+version function in a fresh process. Expected version is the exact identifier
+required by current Rust. Network and model/audio roots are denied for source
+preparation and build-phase children; the Python bookkeeping parent validates
+source/metadata and performs no model work. It avoids nested seatbelt setup by
+passing the strict profile to each build child. No model, frontend or finish
+execution, inference admission, packaging, public Rust qualification or release
+claim is included in this construction protocol.
