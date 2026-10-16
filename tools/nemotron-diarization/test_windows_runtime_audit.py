@@ -6,6 +6,20 @@ from windows_runtime_audit import loaded_modules
 
 
 class WindowsRuntimeAuditTests(unittest.TestCase):
+    def test_extended_dos_module_paths_admit_only_the_same_c_drive_package_locations(self):
+        libraries, observed = self.fixture()
+        for row in observed['modules']:
+            row['path'] = '\\\\?\\' + row['path']
+        helper = {'bytes': 7, 'sha256': 'b' * 64}
+        self.assertEqual(len(loaded_modules(observed, libraries, 'public.exe', helper)['private_native']), 5)
+        for path in ['\\\\?\\GLOBALROOT\\Device\\HarddiskVolume1\\inputs\\bin\\public.exe',
+                     '\\\\?\\UNC\\server\\share\\public.exe', '\\\\?\\C:\\inputs\\bin\\..\\public.exe',
+                     '\\\\?\\D:\\inputs\\bin\\public.exe']:
+            invalid = copy.deepcopy(observed)
+            invalid['modules'][-2]['path'] = path
+            with self.subTest(path=path), self.assertRaises(ValueError):
+                loaded_modules(invalid, libraries, 'public.exe', helper)
+
     def fixture(self):
         libraries = {name: {'bytes': 3, 'sha256': 'a' * 64} for name in set(NAMES.values()) | CRT}
         modules = [{'path': 'C:\\inputs\\relocated runtime ü\\lib\\' + name, **record}

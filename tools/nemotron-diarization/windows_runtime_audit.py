@@ -9,6 +9,16 @@ BIN = PureWindowsPath('C:/inputs/bin')
 SYSTEM = PureWindowsPath('C:/Windows/System32')
 
 
+def module_path(value):
+    # GetModuleFileNameW can preserve Rust's canonical extended DOS spelling.
+    # This is only a spelling alias for the same C: path, not device/UNC access.
+    if value.startswith('\\\\?\\'):
+        if not re.match(r'^\\\\\?\\[cC]:\\', value) or any(part in {'.', '..'} for part in value[4:].split('\\')):
+            raise ValueError('unsupported extended Windows module path')
+        value = value[4:]
+    return PureWindowsPath(value)
+
+
 def loaded_modules(observation, libraries, helper_name, helper, *, private_required=True, openmp=None):
     rows = observation['modules']
     if (type(observation['stable_snapshots']) is not int or observation['stable_snapshots'] < 1
@@ -16,7 +26,7 @@ def loaded_modules(observation, libraries, helper_name, helper, *, private_requi
         raise ValueError('actual stable bounded Windows module observations required')
     seen, private, crt, platform, extra, executable = set(), [], [], [], [], False
     for row in rows:
-        path = PureWindowsPath(row['path'])
+        path = module_path(row['path'])
         name = path.name.lower()
         if (not path.is_absolute() or path.drive.lower() != 'c:' or '..' in path.parts
                 or name in seen or type(row['bytes']) is not int or row['bytes'] < 1
