@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "base_gen2_commit": "18395b9",
+  "scope": "Post-Metal-review qualification-gate hardening; native implementation unchanged",
+  "source_sha256": {
+    "tests/diarization_native.rs": "635544b93403520db89ca97466e4a4ef4af010bbf9e4d6053a611388cb448fce",
+    ".github/workflows/diarization.yml": "2724b41aa6c16900cea9aa4d41b3bac618b5f5f08a03084593fc376e849a6113",
+    "tools/nemotron-diarization/evidence-requirements.txt": "efaf8c0757770f80a87d96fd69c4901c18f698070f05cd016780d0ab875fecbb"
+  },
+  "tests": {
+    "nan_and_invalid_probability_reference_reproduced_then_rejected": true,
+    "real_metal_reference_test_reexecuted_and_passed": true,
+    "clippy_passed": true,
+    "fresh_python312_missing_numpy_reproduced": true,
+    "hash_pinned_numpy_install_and_15_evidence_tests_passed": true
+  },
+  "note": "NumPy hashes are existing reference/uv.lock artifacts for Python3.12 macOSarm64 and Linuxx86_64. Remote feature CI still requires execution; same-host prior Metal release limits remain.",
+  "artifacts": {
+    "n5-evidence-clean-green.log": "74369f638fd3d5a927005fc8c75ac13fb9b9e25a71cdbd036d4b051f2200570a",
+    "n5-evidence-clean-install.log": "088583791f91dbf5d172c11ba81c806129ae1b9db3a3b8309c4e5e686a351e9c",
+    "n5-evidence-clean-red.log": "525eb508f482fd22081a4ba033e30a442ea951c89bb6f225ad6c3b57264f0c31",
+    "n5-metal-nan-clippy.log": "7200823b7e804c7774d7151e2436f9537827661424a23a318ab8424195639482",
+    "n5-metal-nan-green.log": "fae4d4b3292935ccff458b7075b7503fbd8fe23a3830a69931c40867a7647f98",
+    "n5-metal-nan-native.log": "492266fe46519262f6f4a228a18f88d0f4b881d213de22cd64294cc9aab95622",
+    "n5-metal-nan-red.log": "58991a9e0d7aa6f70d2879c9dde2aaca4bcb4135a6d407b72a91107e51feb190"
+  }
+}

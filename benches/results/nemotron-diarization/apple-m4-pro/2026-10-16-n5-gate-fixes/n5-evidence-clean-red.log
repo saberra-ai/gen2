@@ -1,0 +1,20 @@
+....E..........
+======================================================================
+ERROR: test_compare (unittest.loader._FailedTest.test_compare)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_compare
+Traceback (most recent call last):
+  File "/Users/victor/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/unittest/loader.py", line 396, in _find_test_path
+    module = self._get_module_from_name(name)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/victor/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/unittest/loader.py", line 339, in _get_module_from_name
+    __import__(name)
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/test_compare.py", line 8, in <module>
+    import numpy as np
+ModuleNotFoundError: No module named 'numpy'
+
+
+----------------------------------------------------------------------
+Ran 15 tests in 0.210s
+
+FAILED (errors=1)

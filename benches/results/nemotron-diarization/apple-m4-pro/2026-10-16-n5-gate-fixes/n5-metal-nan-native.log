@@ -1,0 +1,43 @@
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 0.17s
+     Running tests/diarization_native.rs (/Users/victor/.cache/gen2-bark-onnx/build/debug/deps/diarization_native-67e66d94dcbed435)
+
+running 1 test
+ggml_metal_device_init: tensor API disabled for pre-M5 and pre-A19 devices
+ggml_metal_library_init: using embedded metal library
+ggml_metal_library_compile_all: compiled 'fa' library in 0.011 sec
+ggml_metal_library_compile_all: compiled 'mul_mv' library in 0.004 sec
+ggml_metal_library_compile_all: compiled 'mul_mm' library in 0.002 sec
+ggml_metal_library_compile_all: compiled 'quantize' library in 0.003 sec
+ggml_metal_library_compile_all: compiled 'softmax' library in 0.001 sec
+ggml_metal_library_compile_all: compiled 'norm' library in 0.002 sec
+ggml_metal_library_compile_all: compiled 'unary' library in 0.010 sec
+ggml_metal_library_compile_all: compiled 'binbcast' library in 0.004 sec
+ggml_metal_library_compile_all: compiled 'reduce' library in 0.003 sec
+ggml_metal_library_compile_all: compiled 'tri' library in 0.002 sec
+ggml_metal_library_compile_all: compiled 'ssm' library in 0.002 sec
+ggml_metal_library_compile_all: compiled 'wkv' library in 0.003 sec
+ggml_metal_library_compile_all: compiled 'gated_delta_net' library in 0.002 sec
+ggml_metal_library_compile_all: compiled 'solve_tri' library in 0.003 sec
+ggml_metal_library_compile_all: compiled 'rope' library in 0.003 sec
+ggml_metal_library_compile_all: compiled 'conv' library in 0.010 sec
+ggml_metal_library_compile_all: compiled 'upscale' library in 0.003 sec
+ggml_metal_library_compile_all: compiled 'argsort' library in 0.010 sec
+ggml_metal_library_compile_all: compiled 'pool' library in 0.010 sec
+ggml_metal_library_compile_all: compiled 'misc' library in 0.003 sec
+ggml_metal_library_compile_all: loaded 20 libraries from embedded data in 0.011 sec (max single = 0.011 sec)
+ggml_metal_rsets_init: creating a residency set collection (keep_alive = 180 s)
+ggml_metal_device_init: GPU name:   MTL0 (Apple M4 Pro)
+ggml_metal_device_init: GPU family: MTLGPUFamilyApple9  (1009)
+ggml_metal_device_init: GPU family: MTLGPUFamilyMetal4  (5002)
+ggml_metal_device_init: simdgroup reduction   = true
+ggml_metal_device_init: simdgroup matrix mul. = true
+ggml_metal_device_init: has unified memory    = true
+ggml_metal_device_init: has bfloat            = true
+ggml_metal_device_init: has tensor            = false
+ggml_metal_device_init: use residency sets    = true
+ggml_metal_device_init: use shared buffers    = true
+ggml_metal_device_init: recommendedMaxWorkingSetSize  = 55662.79 MB
+test explicit_metal_matches_native_reference_and_cpu_sdk_cannot_silently_fallback ... ok
+
+test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 9 filtered out; finished in 3.70s
+

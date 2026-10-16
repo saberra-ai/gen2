@@ -527,13 +527,8 @@ fn explicit_metal_matches_native_reference_and_cpu_sdk_cannot_silently_fallback(
     let raw = std::fs::read(reference.with_extension("json.f32")).unwrap();
     let actual = &result.frame_probabilities.as_ref().unwrap().values;
     assert_eq!(raw.len(), actual.len() * 8 * 4);
-    let max_error = raw
-        .as_chunks::<4>()
-        .0
-        .iter()
-        .zip(actual.iter().flatten())
-        .map(|(bytes, value)| (f32::from_le_bytes(*bytes) - value).abs())
-        .fold(0.0_f32, f32::max);
+    let max_error =
+        metal_reference_max_error(&raw, actual).expect("valid Metal reference probabilities");
     assert!(
         max_error < 1e-5,
         "Metal wrapper/reference probability error {max_error}"
@@ -547,4 +542,42 @@ fn explicit_metal_matches_native_reference_and_cpu_sdk_cannot_silently_fallback(
     }
     model.shutdown();
     assert_eq!(runtime.diarization_reserved_mb(), 0);
+}
+
+fn metal_reference_max_error(raw: &[u8], actual: &[[f32; 8]]) -> Result<f32, &'static str> {
+    if raw.len() != actual.len() * 8 * 4 {
+        return Err("Metal reference length mismatch");
+    }
+    raw.as_chunks::<4>()
+        .0
+        .iter()
+        .zip(actual.iter().flatten())
+        .try_fold(0.0_f32, |maximum, (bytes, value)| {
+            let expected = f32::from_le_bytes(*bytes);
+            if !expected.is_finite()
+                || !(0.0..=1.0).contains(&expected)
+                || !value.is_finite()
+                || !(0.0..=1.0).contains(value)
+            {
+                return Err("nonfinite or out-of-range Metal probabilities");
+            }
+            Ok(maximum.max((expected - value).abs()))
+        })
+}
+
+#[test]
+fn corrupt_metal_probability_evidence_cannot_pass_native_parity() {
+    let actual = [[0.25_f32; 8]];
+    for invalid in [f32::NAN, f32::INFINITY, -0.01, 1.01] {
+        let raw = invalid.to_le_bytes().repeat(8);
+        assert!(
+            metal_reference_max_error(&raw, &actual).is_err(),
+            "invalid reference {invalid}"
+        );
+    }
+    assert!(metal_reference_max_error(&[], &actual).is_err());
+    assert_eq!(
+        metal_reference_max_error(&0.25_f32.to_le_bytes().repeat(8), &actual),
+        Ok(0.)
+    );
 }
