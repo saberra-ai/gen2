@@ -11,6 +11,14 @@ use gen2::{
 };
 use std::path::PathBuf;
 
+fn load_options(library: impl Into<PathBuf>) -> LoadOptions {
+    match std::env::var("GEN2_NEMO_EXECUTION").as_deref() {
+        Err(std::env::VarError::NotPresent) | Ok("cpu") => LoadOptions::cpu(library),
+        Ok("metal") => LoadOptions::metal(library),
+        other => panic!("unsupported GEN2_NEMO_EXECUTION: {other:?}"),
+    }
+}
+
 #[test]
 #[ignore = "requires GEN2_NEMOTRON_ASSETS, GEN2_NEMO_LIBRARY, GEN2_BARK_BUNDLE, GEN2_ORT_LIBRARY, GEN2_CHAT_GGUF; fresh process"]
 fn mixed_chat_first() {
@@ -62,12 +70,12 @@ fn mixed(chat_first: bool, real_laya: bool) {
         (
             chat,
             runtime
-                .load_diarizer(&assets, LoadOptions::cpu(&library))
+                .load_diarizer(&assets, load_options(&library))
                 .unwrap(),
         )
     } else {
         let diarizer = runtime
-            .load_diarizer(&assets, LoadOptions::cpu(&library))
+            .load_diarizer(&assets, load_options(&library))
             .unwrap();
         (runtime.load(&chat_path).unwrap(), diarizer)
     };
@@ -103,20 +111,27 @@ fn mixed(chat_first: bool, real_laya: bool) {
         Err(gen2::Error::Diarization(DiarizationError::ResourceLimit(_)))
     ));
     assert!(matches!(
-        runtime.load_diarizer(&assets, LoadOptions::cpu(&library)),
+        runtime.load_diarizer(&assets, load_options(&library)),
         Err(gen2::Error::Diarization(DiarizationError::ResourceLimit(_)))
     ));
     assert_eq!(runtime.diarization_reserved_mb(), 1024);
-    assert!(
-        diarizer
-            .diarize(
-                Audio::mono_16khz(vec![0.; 16000]).unwrap(),
-                Default::default()
-            )
-            .unwrap()
-            .turns
-            .is_empty()
-    );
+    let result = diarizer
+        .diarize(
+            Audio::mono_16khz(vec![0.; 16000]).unwrap(),
+            Default::default(),
+        )
+        .unwrap();
+    assert!(result.turns.is_empty());
+    match load_options(&library).device {
+        gen2::diarization::ExecutionDevice::Cpu => {
+            assert_eq!(result.backend, "cpu");
+            assert!(result.device.is_none());
+        }
+        gen2::diarization::ExecutionDevice::Metal => {
+            assert_eq!(result.backend, "metal");
+            assert!(result.device.is_some_and(|device| !device.is_empty()));
+        }
+    }
     laya.decide(
         gen2::decision::DecisionRequest::text("a b")
             .question("q", gen2::decision::Question::yes_no("a?")),
@@ -137,7 +152,7 @@ fn mixed(chat_first: bool, real_laya: bool) {
     assert_eq!(runtime.diarization_reserved_mb(), 0);
     assert_eq!(runtime.decision_reserved_mb(), 0);
     let reloaded = runtime
-        .load_diarizer(&assets, LoadOptions::cpu(&library))
+        .load_diarizer(&assets, load_options(&library))
         .unwrap();
     reloaded
         .diarize(

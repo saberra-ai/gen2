@@ -30,6 +30,8 @@ pub struct Timeline {
     pub model_revision: String,
     pub runtime_version: String,
     pub backend: String,
+    #[serde(default)]
+    pub device: Option<String>,
     /// chunk, right, left, FIFO, cache, update, in coarse encoder frames.
     pub geometry: [i32; 6],
     pub native_compute_micros: u64,
@@ -43,6 +45,7 @@ impl From<&Diarization> for Timeline {
             model_revision: value.model_revision.into(),
             runtime_version: value.runtime_version.clone(),
             backend: value.backend.into(),
+            device: value.device.clone(),
             geometry: [g.chunk, g.right, g.left, g.fifo, g.cache, g.update],
             native_compute_micros: value.native_compute_micros,
         }

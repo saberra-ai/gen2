@@ -37,7 +37,7 @@ export interface Transcript {
 export interface LiveSpeakers {
   status:'unavailable'|'active'|'complete'|'interrupted';session_id:string|null;revision:number;
   accepted_audio_seconds:number;processed_audio_seconds:number;reason:string|null;
-  timeline:null|{turns:SpeakerTurn[];audio_duration_seconds:number;model_revision:string;runtime_version:string;backend:string;geometry:number[];native_compute_micros:number};
+  timeline:null|{turns:SpeakerTurn[];audio_duration_seconds:number;model_revision:string;runtime_version:string;backend:string;device?:string|null;geometry:number[];native_compute_micros:number};
 }
 export interface LiveSnapshot {
   id: string; name: string; date: string; phase: 'recording' | 'stopping' | 'complete' | 'error' | 'interrupted';
@@ -60,7 +60,7 @@ export type WordAttribution = {kind:'speaker';speaker:number} | {kind:'overlap';
 export interface AttributedWord {text:string;start_seconds:number;end_seconds:number;attribution:WordAttribution;candidates:{speaker:number;fraction:number}[];}
 export type SpeakerAttribution = {status:'unavailable';reason:string} | {
   status:'complete';session_id:string;revision:number;complete:boolean;
-  timeline:{turns:SpeakerTurn[];audio_duration_seconds:number;model_revision:string;runtime_version:string;backend:string;geometry:Record<string,number>};
+  timeline:{turns:SpeakerTurn[];audio_duration_seconds:number;model_revision:string;runtime_version:string;backend:string;device?:string|null;geometry:Record<string,number>};
   words:AttributedWord[];words_complete:boolean;timing_method:string;alignment_error:string|null;
 };
 export type Progress =

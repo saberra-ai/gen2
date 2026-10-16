@@ -29,6 +29,15 @@ in [the Gen2 guide](../../docs/diarization.md). Packaged fallback locations are
 `Contents/Frameworks`. Same-host CPU relocation is verified; fresh-machine
 qualification remains N5 work. No inference-time downloads occur.
 
+The bundled `nemo/package.json` selects CPU or Metal execution. Supplying an
+external `GEN2_NEMO_LIBRARY` defaults to CPU; set `GEN2_NEMO_EXECUTION=metal`
+explicitly to qualify an external Metal SDK, or `cpu` to request CPU. Unsupported
+values and malformed package metadata make speaker labels unavailable while
+Bark remains usable. A missing requested Metal device fails speaker loading;
+there is no automatic CPU fallback. Recorded and live timelines retain the
+selected backend and optional device description, including saved live history.
+This selection behavior alone is not a Metal app release receipt.
+
 Recorded audio uses one continuous native diarization stream, independently of
 Bark's completed 60-second windows. Speaker labels have a one-hour cap; longer
 ASR recordings remain supported with attribution explicitly unavailable.
@@ -116,7 +125,7 @@ Metal acceleration claim follows from these app-source changes.
 ## macOS app bundle
 
 The full desktop build stages the pinned speaker model, card, OpenMDW-1.1 text
-and verified CPU native package explicitly. Set these paths before building:
+and verified CPU or Metal native package explicitly. Set these paths before building:
 
 ```sh
 export GEN2_NEMO_PACKAGE=/absolute/nemo-cpu-package

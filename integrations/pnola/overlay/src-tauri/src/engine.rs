@@ -3,11 +3,78 @@ use gen2::{
     diarization::Diarizer,
     speech::{Cancellation, LoadOptions, Transcriber},
 };
-use serde::Serialize;
+use serde::{Deserialize, Serialize};
 use std::{
-    path::Path,
+    ffi::OsStr,
+    path::{Path, PathBuf},
     sync::{Arc, Mutex},
 };
+
+fn diarization_options(
+    resources: &Path,
+    library_override: Option<PathBuf>,
+    execution_override: Option<&OsStr>,
+) -> Result<gen2::diarization::LoadOptions, String> {
+    use gen2::diarization::{ExecutionDevice, LoadOptions};
+    let device = if let Some(value) = execution_override {
+        match value.to_str() {
+            Some("cpu") => ExecutionDevice::Cpu,
+            Some("metal") => ExecutionDevice::Metal,
+            _ => return Err("GEN2_NEMO_EXECUTION must be cpu or metal.".into()),
+        }
+    } else if library_override.is_some() {
+        // An external SDK does not inherit the bundled package's placement.
+        ExecutionDevice::Cpu
+    } else {
+        #[derive(Deserialize)]
+        #[serde(rename_all = "lowercase")]
+        enum Backend {
+            Cpu,
+            Metal,
+        }
+        #[derive(Deserialize)]
+        struct Package {
+            backend: Backend,
+        }
+        match std::fs::read(resources.join("nemo/package.json")) {
+            Ok(bytes) => match serde_json::from_slice::<Package>(&bytes)
+                .map_err(|e| format!("Invalid speaker package configuration: {e}"))?
+                .backend
+            {
+                Backend::Cpu => ExecutionDevice::Cpu,
+                Backend::Metal => ExecutionDevice::Metal,
+            },
+            Err(error) if error.kind() == std::io::ErrorKind::NotFound => ExecutionDevice::Cpu,
+            Err(error) => {
+                return Err(format!(
+                    "Could not read speaker package configuration: {error}"
+                ));
+            }
+        }
+    };
+    let name = if cfg!(target_os = "macos") {
+        "libnemo_speech_asr_c.dylib"
+    } else if cfg!(target_os = "windows") {
+        "nemo_speech_asr_c.dll"
+    } else {
+        "libnemo_speech_asr_c.so"
+    };
+    let library = library_override.unwrap_or_else(|| {
+        let framework = resources
+            .parent()
+            .unwrap_or(resources)
+            .join("Frameworks")
+            .join(name);
+        if cfg!(target_os = "macos") && framework.is_file() {
+            framework
+        } else {
+            resources.join("nemo/lib").join(name)
+        }
+    });
+    let mut options = LoadOptions::cpu(library);
+    options.device = device;
+    Ok(options)
+}
 
 #[derive(Serialize)]
 pub struct Status {
@@ -77,37 +144,23 @@ impl Engine {
                 Ok(model) => (Some(model), None),
                 Err(e) => (None, Some(e.to_string())),
             };
-            let nemo_name = if cfg!(target_os = "macos") {
-                "libnemo_speech_asr_c.dylib"
-            } else if cfg!(target_os = "windows") {
-                "nemo_speech_asr_c.dll"
-            } else {
-                "libnemo_speech_asr_c.so"
-            };
-            let nemo_library = std::env::var_os("GEN2_NEMO_LIBRARY")
-                .map(std::path::PathBuf::from)
-                .unwrap_or_else(|| {
-                    let framework = resources
-                        .parent()
-                        .unwrap_or(resources)
-                        .join("Frameworks")
-                        .join(nemo_name);
-                    if cfg!(target_os = "macos") && framework.is_file() {
-                        framework
-                    } else {
-                        resources.join("nemo/lib").join(nemo_name)
-                    }
-                });
             let nemo_model = std::env::var_os("GEN2_NEMOTRON_ASSETS")
                 .map(std::path::PathBuf::from)
                 .unwrap_or_else(|| resources.join("nemotron"));
-            let diarizer = runtime.load_diarizer(
-                nemo_model,
-                gen2::diarization::LoadOptions::cpu(nemo_library),
-            );
+            let execution = std::env::var_os("GEN2_NEMO_EXECUTION");
+            let diarizer = diarization_options(
+                resources,
+                std::env::var_os("GEN2_NEMO_LIBRARY").map(PathBuf::from),
+                execution.as_deref(),
+            )
+            .and_then(|options| {
+                runtime
+                    .load_diarizer(nemo_model, options)
+                    .map_err(|e| e.to_string())
+            });
             let (diarizer, diarization_error) = match diarizer {
                 Ok(model) => (Some(model), None),
-                Err(e) => (None, Some(e.to_string())),
+                Err(e) => (None, Some(e)),
             };
             Ok::<_, String>(Models {
                 _runtime: runtime,
@@ -229,5 +282,61 @@ impl Drop for Job {
         if active.as_ref().is_some_and(|(id, _)| id == &self.id) {
             *active = None;
         }
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+    use gen2::diarization::ExecutionDevice;
+    use std::{ffi::OsStr, path::PathBuf};
+
+    fn packaged_resources(backend: &str) -> tempfile::TempDir {
+        let root = tempfile::tempdir().unwrap();
+        std::fs::create_dir(root.path().join("nemo")).unwrap();
+        std::fs::write(
+            root.path().join("nemo/package.json"),
+            format!(r#"{{"backend":"{backend}"}}"#),
+        )
+        .unwrap();
+        root
+    }
+
+    #[test]
+    fn packaged_speaker_backend_selects_native_execution() {
+        for (backend, expected) in [
+            ("cpu", ExecutionDevice::Cpu),
+            ("metal", ExecutionDevice::Metal),
+        ] {
+            let root = packaged_resources(backend);
+            let options = diarization_options(root.path(), None, None).unwrap();
+            assert_eq!(options.device, expected);
+        }
+        let root = tempfile::tempdir().unwrap();
+        assert_eq!(
+            diarization_options(root.path(), None, None).unwrap().device,
+            ExecutionDevice::Cpu
+        );
+    }
+
+    #[test]
+    fn external_sdk_uses_cpu_unless_execution_is_explicit() {
+        let root = packaged_resources("metal");
+        let external = PathBuf::from("external-sdk");
+        let options = diarization_options(root.path(), Some(external.clone()), None).unwrap();
+        assert_eq!(options.device, ExecutionDevice::Cpu);
+        assert_eq!(options.native_library, external);
+        let options =
+            diarization_options(root.path(), Some(external), Some(OsStr::new("metal"))).unwrap();
+        assert_eq!(options.device, ExecutionDevice::Metal);
+    }
+
+    #[test]
+    fn invalid_execution_configuration_does_not_silently_select_cpu() {
+        let root = packaged_resources("cuda");
+        assert!(diarization_options(root.path(), None, None).is_err());
+        assert!(diarization_options(root.path(), None, Some(OsStr::new("auto"))).is_err());
+        std::fs::write(root.path().join("nemo/package.json"), b"not-json").unwrap();
+        assert!(diarization_options(root.path(), None, None).is_err());
     }
 }
