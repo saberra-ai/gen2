@@ -441,3 +441,30 @@ controller/protocol/output: a source-pinned Python controller without an outer
 sandbox, keeping the same strict sandbox on every native child and keeping
 model-free preflights network-denied. No numerical, loader, lifecycle or release
 criterion changes; the failed attempt remains intact.
+
+
+The second fixed attempt at `52d9346` now passes. The
+[78-member packaged CPU receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-macos-runtime/qualification.json)
+retains all command logs, loader traces, raw probabilities, references and
+preparation metadata. After all 29 preflights, the version probe loaded exactly 92
+private libraries and returned the required tag; the missing-GGML-base control
+failed at `dlopen` before model creation. Independent native and public Rust
+60-second streams returned 6000 rows and 27 turns, with byte-identical probabilities
+and zero turn-boundary error. The full [0,6000) histories and actual normalized
+PCM identity were independently replayed from saved output.
+
+All seven exact lifecycle tests ran and passed in separate processes, including
+100 actual reloads. Nine runtime-using processes each matched the complete 92-image
+private closure (828 per-process image records in total); warm offline provisioning
+loaded zero native images. Cancellation, idle deadlines, full queues/abandoned
+streams, silence/short tails, uneven transport/snapshots/repeated finish, reset,
+failed loading, admission and zero-reservation cleanup assertions passed at their
+pinned test sources. Internal neural-forward counts are not instrumented.
+The complete qualification took 80.209557708 seconds; these timings are descriptive.
+
+This closes the fixed same-host macOS arm64 CPU package/parity/lifecycle gate.
+It does not requalify 30-minute/one-hour sessions, Metal, Linux/Windows, mixed
+Bark/chat/Laya coexistence, Pnola recorded/live/native GUI/physical microphone,
+clean performance, signing/notarization or the unchanged AMI quality gate.
+The original zero-neural sandbox failure and separate admission correction remain
+retained; no failed neural result or acceptance threshold was replaced.

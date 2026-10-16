@@ -1,0 +1,89 @@
+[
+  {
+    "name": "native-probe-compile",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-runtime-inputs-v1/compile.sb",
+      "/usr/bin/c++",
+      "-std=c++17",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-x",
+      "c++",
+      "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/native_stream_probe_valid_mel.cpp",
+      "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/llama.cpp/vendor/hash/sha256/sha256.c",
+      "-I/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-tagged-cpu-v1/include",
+      "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/examples",
+      "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/llama.cpp/vendor/hash",
+      "-L/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-runtime-inputs-v1/work/nemo/lib",
+      "-lnemo_speech_asr_c",
+      "-Wl,-rpath,@loader_path/../nemo/lib",
+      "-o",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-runtime-inputs-v1/work/bin/native-stream"
+    ],
+    "environment": {
+      "PATH": "/Users/victor/.cargo/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/Users/victor",
+      "CARGO_HOME": "/Users/victor/.cargo",
+      "CARGO_TARGET_DIR": "/Users/victor/.cache/gen2-bark-onnx/build",
+      "LC_ALL": "C",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.5828302499721758
+  },
+  {
+    "name": "lifecycle-compile",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-runtime-inputs-v1/compile.sb",
+      "/Users/victor/.cargo/bin/cargo",
+      "test",
+      "--offline",
+      "--locked",
+      "--release",
+      "--no-default-features",
+      "--features",
+      "backend-diar-nemo",
+      "--test",
+      "diarization_native",
+      "--no-run",
+      "--message-format=json"
+    ],
+    "environment": {
+      "PATH": "/Users/victor/.cargo/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/Users/victor",
+      "CARGO_HOME": "/Users/victor/.cargo",
+      "CARGO_TARGET_DIR": "/Users/victor/.cache/gen2-bark-onnx/build",
+      "LC_ALL": "C",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 9.899259375000838
+  },
+  {
+    "name": "lifecycle-list",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-runtime-inputs-v1/compile.sb",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-runtime-inputs-v1/work/bin/native-lifecycle",
+      "--ignored",
+      "--list"
+    ],
+    "environment": {
+      "PATH": "/Users/victor/.cargo/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "HOME": "/Users/victor",
+      "CARGO_HOME": "/Users/victor/.cargo",
+      "CARGO_TARGET_DIR": "/Users/victor/.cache/gen2-bark-onnx/build",
+      "LC_ALL": "C",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.18905487499432638
+  }
+]

@@ -1,6 +1,11 @@
 # Nemotron 3 Diarization support in Gen2
 
 Status: N0–N3 implemented and verified on macOS arm64 CPU; N4/N5 remain open. Development receipts do not establish a supported desktop release.
+Current runtime migration: the tagged valid-Mel CPU v2 package passes
+[60-second parity and seven lifecycle gates](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-macos-runtime/qualification.json).
+Historical long-session, Metal, other-platform and Pnola receipts still require
+requalification for this profile; original quality and release criteria stay open.
+
 Prepared: 2026-10-14.
 Updated: 2026-10-16.
 
@@ -500,7 +505,7 @@ text decision through Laya; it is not a new real-meeting quality or performance
 receipt. See the [relocated mixed-model receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-n5-relocated-mixed/receipt.json).
 
 Metal additionally passed the existing eight real native lifecycle gates,
-including100actual reloads, streaming transport parity, cancellation, deadlines,
+including100 actual reloads, streaming transport parity, cancellation, deadlines,
 ABI failures and warm-cache reuse. These are development functional receipts;
 committed release long-session timings/independent long-reference comparisons
 are now being collected. The examples accept explicit `--metal` selection. Feature CI passed all12
@@ -683,9 +688,14 @@ full lifecycle/long-session/coexistence, Metal, AMI quality and original release
 gates remain open. The subsequent [macOS v2 construction/relocation receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-macos-package/qualification.json)
 binds92private libraries and all6SDK identities to the current patch/profile.
 Relocated structural verification passes with original libraries denied; no
-native library or model was loaded. Actual packaged runtime behavior is pending.
+native library or model was loaded. That receipt covers structural verification only.
 Pnola's updated staging overlay is applied with18model-free Rust tests passing
-and5real-model tests still ignored.
+and5real-model tests still ignored. The [separate packaged CPU runtime run](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-macos-runtime/qualification.json)
+now passes full 6000-row/27-turn native/public parity and all 7 lifecycle tests,
+including 100 reloads. Nine runtime processes each load the exact 92-image private
+closure; the missing-library control fails before model creation. An earlier
+sandbox admission failure is retained with zero neural calls. Long-session,
+coexistence, Metal, other platforms, Pnola and quality/release gates remain open.
 The 13-job feature matrix also passed at `4974318`. Later source `cf64214`
 passed12 jobs; its macOS mixed-feature job failed before compilation when GitHub
 submodule fetch could not connect to port443. A failed-job rerun was denied by
@@ -712,7 +722,7 @@ Two actual Windows compiler-environment setup failures are retained as diagnosti
 evidence, not qualification. Linux now passes actual public/native parity on
 the60s smoke input:26turns and48008probability values match exactly, with actual
 PCM identity checked. All seven required lifecycle tests execute and pass,
-including100reloads; uploaded SDK file hashes were verified. See the
+including 100 reloads; uploaded SDK file hashes were verified. See the
 [Linux development receipt](../../benches/results/nemotron-diarization/linux-x86_64/2026-10-16-native-development/collection.json).
 System SentencePiece remains an installed dependency. The Windows rerun at74c663e
 passed compiler setup and dependency provisioning but failed upstream CMake's

@@ -1,7 +1,10 @@
 # Local Nemotron 3 speaker timelines
 
-Implementation qualification is in progress. macOS arm64 CPU/Metal have
-real-model wrapper parity; quality, attribution and desktop release gates remain open.
+Current Rust requires exactly `nemo-speech-asr 0.2.0+gen2-valid-mel-v1` and
+floor-valid final probability rows. The macOS arm64 CPU v2 package passes
+60-second native/public parity and seven lifecycle gates, including 100 reloads.
+Long sessions, Metal, other platforms, Pnola and quality/desktop release gates
+still require qualification for this profile.
 See [the roadmap](plans/nemotron-3-diarization-roadmap.md).
 
 Build with `backend-diar-nemo`. This adds no build-time model downloads or C++
@@ -13,8 +16,10 @@ CPU constructor reports `backend: "cpu"`. On macOS, `LoadOptions::metal(library)
 explicitly selects a Metal device from a separately built SDK and reports
 `backend: "metal"` plus its device description. An unavailable Metal device
 fails loading; it never silently falls back to CPU. Native GPU execution can
-still partition unsupported operations onto CPU. The ad-hoc Pnola CPU/Metal
-packages have recorded/live CLI receipts on the named M4 Pro. Fresh-machine,
+still partition unsupported operations onto CPU. Earlier ad-hoc Pnola CPU/Metal
+packages have recorded/live CLI receipts on the named M4 Pro at their recorded
+historical runtime versions. Current staging rejects those v1 packages; the new
+profile's recorded/live and Metal receipts remain pending. Fresh-machine,
 native GUI, physical microphone, signing and accuracy gates remain open.
 On macOS, use the relocated packages: raw SDKs' generic ggml
 loader identities can collide inside one process. CPU and Metal packages use

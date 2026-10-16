@@ -1,0 +1,42 @@
+{
+  "source_commit": "52d934652c1c33390b148775a57a7f9909dcc6cd",
+  "scope": "Same-host relocated macOS arm64 CPU model/loader/public-native/lifecycle qualification only. Not supported desktop release.",
+  "protocol_sha256": "c599e4130ebcd2d5238646b28de8497df31157f6d32a9d5e1521f83f09070183",
+  "fixed_packaged_cpu_parity_and_lifecycle_passed": true,
+  "private_libraries_per_native_process": 92,
+  "full_runtime_processes_audited": 9,
+  "audited_private_image_records": 828,
+  "warm_provisioning_native_images": 0,
+  "missing_private_library_failed_before_model_creation": true,
+  "all6000rows_native_public_byte_identical": true,
+  "turns": 27,
+  "maximum_probability_error": 0.0,
+  "maximum_turn_error_seconds": 0.0,
+  "actual_normalized_pcm_sha256": "96858fdcf0c8854f8fc659403c11ddc7565f538a7402803e4235e9e354d87ae6",
+  "lifecycle_tests_passed": [
+    "dropping_a_diarization_child_keeps_the_parent_pipeline_active",
+    "silence_short_tail_and_idle_deadline_have_explicit_terminal_results",
+    "repeated_reload_full_queue_cancel_and_dropped_stream_release_resources",
+    "streamed_uneven_pcm_matches_recording_and_finish_is_idempotent",
+    "native_admission_cancellation_and_failed_load_release_reservations",
+    "verified_provisioned_cache_is_reused_offline",
+    "real_diarizer_matches_native_reference_and_resets_recordings"
+  ],
+  "actual100reload_test_passed": true,
+  "model_free_preflight_tests_passed": 29,
+  "qualification_elapsed_seconds": 80.20955770800356,
+  "neural_inference_performed": true,
+  "internal_neural_forward_counts_instrumented": false,
+  "prior_zeroNN_sandbox_failure_retained": true,
+  "original_quality_gate_changed": false,
+  "release_qualified": false,
+  "limits": [
+    "Twenty-nine model-free preflight tests must pass before controller. Exactly two model-free loader commands then two60sspeech model runs and seven exact existing lifecycle tests in fixedorder; failuresstop andpersist, no retry under thisattempt.",
+    "Seven lifecycle source tests include100actualreloads, oddabandonedstreams, cancelledfullqueue, silence60s+17samples, deadline andshorttail, unevenPCM/backpressure/snapshot/finish/reset, budgetrefusal/failedload/cancellation/cleanup andwarmofflineprovisioning. Internal model-forward counts and asynchronous queue scheduling are notinstrumented. Inputs/testselection/source are fixed and each command has a300second timeout; no extra cases.",
+    "All floor-valid rows, includinglast, are compared at1e-6 probability and1e-6seconds turnboundaries. No historicalquality/HF/DER/quantization threshold changes. ActualPCMhash must matchthefixed60sWAV; no HF/originalNeMo/AMI-quality targets execute.",
+    "Each native command isfresh, network-denied, sourceSDK/Homebrew/originalpackage/modelroots denied, stagedinputsreadonly. DYLD_PRINT_LIBRARIES is set after sandbox startup using env. Successful native commands must show exactly92qualifiedprivate images andactualexecutable; warmcachetestmustshownoprivateimages. Missingdependencynegative retainsrawloadertrace/error separately.",
+    "Model-free loaderpreflight already proves591Apple/executable images and0nativeimages whenlistingtests; compile-only builds executednoinference. SeparateRust CLI artifact andcopiedtest/probe binaries are pinned withsource/header/build/Cargo identities.",
+    "This isnot30m/1hlongsession, actualmixedchat/Bark/Laya coexistence, CPU/Metalperformance, Metal/Linux/Windows, desktop/physicalmic, heldoutquality orreleasequalification. Original AMI<=20%gate remains unchanged."
+  ],
+  "temporary_files_after_tests": {}
+}

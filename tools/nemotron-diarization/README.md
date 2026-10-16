@@ -1,11 +1,13 @@
-Current runtime migration: Gen2 now requires the explicit
-`nemo-speech-asr 0.2.0+gen2-valid-mel-v1` profile and floor-valid final rows.
+Current runtime migration: Gen2 requires exactly
+`nemo-speech-asr 0.2.0+gen2-valid-mel-v1` and floor-valid final rows.
 The original N0 SDK/lock and historical recipes below remain controls for their
-recorded source versions. A fresh tagged CPU SDK passes the fixed F32/Q8 finish suites and public Rust
-parity on short calibration/silence. The current macOS packager constructs only
-v2 packages bound to the tagged build receipt, patch and frame contract. Actual
-package qualification, full lifecycle/long-session,
-Metal and other platform qualification remain pending.
+recorded source versions. The tagged CPU SDK passes fixed F32/Q8 finish suites
+and public Rust parity on short calibration/silence. Current macOS packaging
+constructs v2 packages bound to that build receipt, patch and frame contract.
+The CPU v2 package passes 60-second public/native parity, all seven lifecycle
+gates and actual 92-library loader closure checks on the named M4 Pro.
+Long sessions, coexistence, Metal, other platforms and desktop qualification
+remain pending for this profile.
 See the [migration and current evidence](../../docs/research/nemotron-v3-finish-valid-mel-patch.md).
 
 # Nemotron 3 — N0 qualification
