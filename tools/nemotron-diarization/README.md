@@ -517,5 +517,10 @@ native/status hashes, recovers nine original ZIPs and selected metadata,
 cross-checks raw ABI/dependency, CONTROL/status and SPDX identities, and matches
 four target notices to the SDK. It executes no cached tools and never builds
 replacement packages. Original installed-list bodies, source closure and actual
-native linker membership remain unqualified; actual cache recovery needs its
-own receipt. See the [recovery design](../../docs/research/nemotron-windows-static-provenance.md).
+native linker membership remain separate. The actual `9be6a4b`
+[recovery receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-cache-metadata-recovery/qualification.json)
+now revalidates all nine opaque archives (304,920,284 bytes), 45 metadata files
+and four target notices on the receiver. The receiver also reproduced all nine
+installed-list bodies with exact historical size/SHA matches; the producer's
+original no-reconstruction flag is preserved. Source recipes/archives and actual
+linker membership remain open. See the [recovery design](../../docs/research/nemotron-windows-static-provenance.md).

@@ -653,6 +653,15 @@ identity from the COFF characteristics while retaining DLL-only dependencies.
 Its new regression passes, all 81 tool tests pass and the qualified 13 DLL PE
 reports remain unchanged. A retry needs separate actual evidence.
 
+The separate `9be6a4b` [cache-metadata receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-cache-metadata-recovery/qualification.json)
+recovers all nine exact ABI-selected archives without installing or executing
+cached packages. Receiver verification rehashes 304,920,284 archive bytes,
+rechecks CONTROL/status, ABI/dependency and SPDX identities, all 45 metadata
+files and four target SDK notices. All nine installed-list bodies were then
+reconstructed with exact historical size/SHA matches. The original producer
+record remains unchanged; source-recipe/archive closure and native linker
+membership are separate open checks. All 85 model-free tool regressions pass.
+
 A guarded [Windows private-DLL build](../research/nemotron-windows-private-names.md)
 now relinks the five owned DLLs through an external CMake naming hook, updates
 probe/entry paths and rejects residual generic ordinary/delay/forwarded native
