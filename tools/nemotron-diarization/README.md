@@ -706,6 +706,10 @@ The first attempt compiled/installed the SDK and passed the one native state
 test on an actual Apple M1 virtual machine. Its validator rejected CTest's new
 summary wording before terminal audits, version query or packaging. That failed
 receipt remains unchanged. The v2 protocol accepts both observed summary formats
-while requiring exactly one passing test; the separate fresh retry is not yet run.
-No portable SDK/runtime archive or real-model qualification was admitted.
+while requiring exactly one passing test. The separate fresh retry now passes
+construction, all 98 compiler units, state/version checks and 92-library private
+packaging on an M1 virtual machine. Both delivered archives restore with exact
+files, modes and aliases; original/private library sections match. This admits
+construction artifacts for a separately frozen receiver evaluation, with no
+real-model execution or runtime qualification yet.
 Existing M4 packages, model outputs and quality failures remain unchanged.

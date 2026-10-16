@@ -1,0 +1,568 @@
+[
+  {
+    "phase": "configure",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+      "/bin/bash",
+      "scripts/configure.sh",
+      "cpu-diar",
+      "-DNEMO_SPEECH_BUILD_EXAMPLES=ON",
+      "-DNEMO_SPEECH_BUILD_CLI=OFF",
+      "-DNEMO_SPEECH_BUILD_MIC_CAPTURE=OFF",
+      "-DGGML_OPENMP=OFF",
+      "-DNEMO_SPEECH_VERSION_METADATA=gen2-valid-mel-v1",
+      "-DNEMO_SPEECH_BUILD_TESTS=ON",
+      "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+      "-DCMAKE_INSTALL_PREFIX=/Users/runner/work/_temp/portable-sdk",
+      "-DGGML_NATIVE=OFF",
+      "-DGGML_CPU_ARM_ARCH=armv8.2-a+dotprod+fp16",
+      "-DCMAKE_C_FLAGS=-march=armv8.2-a+dotprod+fp16",
+      "-DCMAKE_CXX_FLAGS=-march=armv8.2-a+dotprod+fp16",
+      "-DCMAKE_OSX_ARCHITECTURES=arm64",
+      "-DCMAKE_OSX_DEPLOYMENT_TARGET=26.0"
+    ],
+    "cwd": "/Users/runner/work/_temp/portable-source",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 9.809339582999996
+  },
+  {
+    "phase": "llama-archive",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+      "git",
+      "archive",
+      "--format=tar",
+      "-o",
+      "/Users/runner/work/_temp/portable-evidence/build/pristine-llama.tar",
+      "bd4f514db14d87fded667787a7a963bfbaa98e89",
+      "--",
+      ".",
+      ":(exclude)models",
+      ":(exclude)docs",
+      ":(exclude)media"
+    ],
+    "cwd": "/Users/runner/work/_temp/portable-source/llama.cpp",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.15280575000002727
+  },
+  {
+    "phase": "llama-patch-0",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.04472033299998657
+  },
+  {
+    "phase": "llama-patch-1",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.03205491700003904
+  },
+  {
+    "phase": "llama-patch-2",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.031159333000005063
+  },
+  {
+    "phase": "llama-patch-3",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.03052662500004999
+  },
+  {
+    "phase": "llama-patch-4",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.029516416999967987
+  },
+  {
+    "phase": "llama-patch-5",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.027390542000034657
+  },
+  {
+    "phase": "llama-patch-6",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.030316833999961545
+  },
+  {
+    "phase": "llama-patch-7",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.028095624999991742
+  },
+  {
+    "phase": "llama-patch-8",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.03627962499996329
+  },
+  {
+    "phase": "llama-patch-9",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.024211792000016885
+  },
+  {
+    "phase": "llama-patch-10",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.02043383300002688
+  },
+  {
+    "phase": "llama-patch-11",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.033922000000018215
+  },
+  {
+    "phase": "llama-patch-12",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.024317915999972683
+  },
+  {
+    "phase": "llama-patch-13",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.02284958299998152
+  },
+  {
+    "phase": "llama-patch-14",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.030221709000045394
+  },
+  {
+    "phase": "llama-patch-15",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.02271220799997309
+  },
+  {
+    "phase": "llama-patch-16",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.01695379199998115
+  },
+  {
+    "phase": "llama-patch-17",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.018224499999973887
+  },
+  {
+    "phase": "llama-patch-18",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.02005958400002328
+  },
+  {
+    "phase": "build",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+      "/opt/homebrew/bin/cmake",
+      "--build",
+      "--preset",
+      "cpu-diar",
+      "--parallel",
+      "2"
+    ],
+    "cwd": "/Users/runner/work/_temp/portable-source",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 86.78852024999998
+  },
+  {
+    "phase": "install",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+      "/opt/homebrew/bin/cmake",
+      "--install",
+      "build/cpu-diar"
+    ],
+    "cwd": "/Users/runner/work/_temp/portable-source",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 2.64076454100001
+  },
+  {
+    "phase": "model-free-state-test",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+      "/opt/homebrew/bin/ctest",
+      "--test-dir",
+      "build/cpu-diar",
+      "--output-on-failure",
+      "-R",
+      "^diar_state$"
+    ],
+    "cwd": "/Users/runner/work/_temp/portable-source",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.7284788329999969
+  },
+  {
+    "phase": "version-only",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+      "/Library/Frameworks/Python.framework/Versions/3.12/bin/python",
+      "-c",
+      "import ctypes,sys; library=ctypes.CDLL(sys.argv[1]); version=library.nemo_speech_asr_version; version.restype=ctypes.c_char_p; print(version().decode(\"utf-8\"))",
+      "/Users/runner/work/_temp/portable-sdk/lib/libnemo_speech_asr_c.dylib"
+    ],
+    "cwd": "/Users/runner/work/_temp/portable-source",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.19760745799999313
+  },
+  {
+    "phase": "brew-packages",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+      "/opt/homebrew/bin/brew",
+      "list",
+      "--versions",
+      "sentencepiece",
+      "abseil",
+      "protobuf"
+    ],
+    "cwd": "/Users/runner/work/_temp/portable-source",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "HOME": "/Users/runner",
+      "HOMEBREW_NO_AUTO_UPDATE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.7992072919999487
+  }
+]

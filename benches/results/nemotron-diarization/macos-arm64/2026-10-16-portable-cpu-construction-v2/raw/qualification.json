@@ -1,0 +1,136 @@
+{
+  "source_commit": "e1c219a56782eabf7cf612935550871c62561c5d",
+  "protocol": {
+    "bytes": 9726,
+    "sha256": "93e633f066e1e3626c84e09c026e606da33a212312f2a1828cb14cd1a83ff4c8"
+  },
+  "commands": [
+    {
+      "name": "sandbox-controls",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-evidence/construction.sb",
+        "/Library/Frameworks/Python.framework/Versions/3.12/bin/python",
+        "-c",
+        "import pathlib, socket, sys\ndef denied(operation):\n    try:\n        operation()\n    except PermissionError:\n        return\n    raise RuntimeError(\"sandbox operation unexpectedly permitted\")\nfor name in sys.argv[1:]:\n    denied(lambda name=name: pathlib.Path(name).read_bytes())\ndenied(lambda: socket.create_connection((\"127.0.0.1\", 9), timeout=1))\n",
+        "/Users/runner/work/_temp/portable-evidence/denied-probe.nemo",
+        "/Users/runner/work/_temp/portable-evidence/denied-probe.gguf",
+        "/Users/runner/work/_temp/portable-evidence/denied-probe.safetensors",
+        "/Users/runner/work/_temp/portable-evidence/denied-probe.onnx",
+        "/Users/runner/work/_temp/portable-evidence/denied-probe.npy",
+        "/Users/runner/work/_temp/portable-evidence/denied-probe.f32"
+      ],
+      "cwd": "/Users/runner/work/gen2/gen2",
+      "pid": 3518,
+      "returncode": 0,
+      "elapsed_seconds": 0.126460542000018
+    },
+    {
+      "name": "prepare",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-evidence/construction.sb",
+        "/Library/Frameworks/Python.framework/Versions/3.12/bin/python",
+        "/Users/runner/work/gen2/gen2/tools/nemotron-diarization/prepare_valid_mel_source.py",
+        "--upstream",
+        "/Users/runner/work/gen2/gen2/native-upstream",
+        "--destination",
+        "/Users/runner/work/_temp/portable-source",
+        "--output",
+        "/Users/runner/work/_temp/portable-evidence/preparation"
+      ],
+      "cwd": "/Users/runner/work/gen2/gen2",
+      "pid": 3524,
+      "returncode": 0,
+      "elapsed_seconds": 4.293931708000002
+    },
+    {
+      "name": "build",
+      "argv": [
+        "/Library/Frameworks/Python.framework/Versions/3.12/bin/python",
+        "/Users/runner/work/gen2/gen2/tools/nemotron-diarization/build_valid_mel_sdk.py",
+        "--source",
+        "/Users/runner/work/_temp/portable-source",
+        "--prefix",
+        "/Users/runner/work/_temp/portable-sdk",
+        "--output",
+        "/Users/runner/work/_temp/portable-evidence/build",
+        "--jobs",
+        "2",
+        "--cpu-arch",
+        "armv8.2-a+dotprod+fp16",
+        "--sandbox-profile",
+        "/Users/runner/work/_temp/portable-evidence/construction.sb"
+      ],
+      "cwd": "/Users/runner/work/gen2/gen2",
+      "pid": 3733,
+      "returncode": 0,
+      "elapsed_seconds": 113.60572587500002
+    },
+    {
+      "name": "package",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-evidence/construction.sb",
+        "/Library/Frameworks/Python.framework/Versions/3.12/bin/python",
+        "/Users/runner/work/gen2/gen2/tools/nemotron-diarization/package_macos.py",
+        "--sdk-prefix",
+        "/Users/runner/work/_temp/portable-sdk",
+        "--build-receipt",
+        "/Users/runner/work/_temp/portable-evidence/build/build.json",
+        "--output",
+        "/Users/runner/work/_temp/portable-runtime"
+      ],
+      "cwd": "/Users/runner/work/gen2/gen2",
+      "pid": 6658,
+      "returncode": 0,
+      "elapsed_seconds": 32.23147533299999
+    }
+  ],
+  "model_calls": 0,
+  "model_or_frontend_execution_admitted": false,
+  "release_qualified": false,
+  "sdk_archive": {
+    "schema_version": 1,
+    "release_qualified": false,
+    "scope": "Development filesystem snapshot; preserves aliases/modes, does not by itself close dependencies or establish relocation.",
+    "archive": "portable-cpu-sdk.tar.gz",
+    "archive_bytes": 1273464,
+    "archive_sha256": "55e00d68412aa6b1bdacd236ffddd98edffe77c399df46b6c11b0fd05dbfbe52"
+  },
+  "package_archive": {
+    "schema_version": 1,
+    "release_qualified": false,
+    "scope": "Development filesystem snapshot; preserves aliases/modes, does not by itself close dependencies or establish relocation.",
+    "archive": "portable-cpu-runtime.tar.gz",
+    "archive_bytes": 2179545,
+    "archive_sha256": "67fe5b2f50d6785586809252f06707dcfd44fe6ad2151afbaeb41d7b164fc890"
+  },
+  "construction_and_package_passed": true,
+  "cpu_architecture": {
+    "mode": "explicit-portable-arm64",
+    "arm_arch": "armv8.2-a+dotprod+fp16",
+    "all_compiler_units_have_explicit_target": true,
+    "compiler_units": 98,
+    "cpu_kernel_units_present": [
+      "arch/arm/quants.c",
+      "arch/arm/repack.cpp",
+      "ggml-cpu.cpp"
+    ],
+    "hardware_or_model_qualification": false
+  },
+  "real_model_or_receiver_inference_qualified": false,
+  "storage": {
+    "start_minimum_bytes": 3221225472,
+    "running_minimum_bytes": 1073741824,
+    "reserve_requested_bytes": 268435456,
+    "checks": 148,
+    "released": true,
+    "minimum_observed_free_bytes": 101429686272,
+    "last_observed_free_bytes": 101429686272,
+    "reserve_reported_allocated_bytes": 268435456
+  }
+}

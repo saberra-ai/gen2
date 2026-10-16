@@ -1,0 +1,65 @@
+{
+  "homebrew_version": "7.0.4-2-g4ad6fe9",
+  "used_options": [],
+  "unused_options": [],
+  "built_as_bottle": true,
+  "poured_from_bottle": true,
+  "loaded_from_api": true,
+  "loaded_from_internal_api": true,
+  "installed_on_request": false,
+  "changed_files": [
+    "lib/pkgconfig/protobuf-lite.pc",
+    "lib/pkgconfig/protobuf.pc",
+    "lib/pkgconfig/upb.pc",
+    "lib/pkgconfig/utf8_range.pc"
+  ],
+  "linkage_files": [
+    "bin/protoc-36.2.0",
+    "bin/protoc-gen-upb-36.2.0",
+    "bin/protoc-gen-upb_minitable-36.2.0",
+    "bin/protoc-gen-upbdefs-36.2.0",
+    "lib/libprotobuf-lite.36.2.0.dylib",
+    "lib/libprotobuf.36.2.0.dylib",
+    "lib/libprotoc.36.2.0.dylib",
+    "lib/libutf8_range.36.2.0.dylib",
+    "lib/libutf8_validity.36.2.0.dylib"
+  ],
+  "binary_relocation_files": [],
+  "time": 1792185286,
+  "source_modified_time": 1789632217,
+  "compiler": "clang",
+  "aliases": [
+    "protobuf@36"
+  ],
+  "runtime_dependencies": [
+    {
+      "full_name": "abseil",
+      "version": "20260817.0",
+      "revision": 0,
+      "bottle_rebuild": 1,
+      "pkg_version": "20260817.0",
+      "declared_directly": true
+    }
+  ],
+  "source": {
+    "spec": "stable",
+    "versions": {
+      "stable": "36.2",
+      "head": null,
+      "version_scheme": 0,
+      "compatibility_version": null
+    },
+    "path": "/Users/runner/Library/Caches/Homebrew/api/internal/packages.arm64_tahoe.jws.json",
+    "tap_git_head": "d468370ffda2edead693e575824fcba0692af9ee",
+    "tap": "homebrew/core"
+  },
+  "arch": "arm64",
+  "built_on": {
+    "os": "Macintosh",
+    "os_version": "macOS 26.6",
+    "cpu_family": "dunno",
+    "xcode": "27.0",
+    "clt": "27.0.0.0.1788430756",
+    "preferred_perl": "5.34"
+  }
+}

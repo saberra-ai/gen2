@@ -172,6 +172,15 @@ virtual machine. CTest changed its summary wording; terminal audits, version
 query and packaging never ran. No SDK/runtime snapshot or model is admitted.
 A separate frozen v2 construction retry retains the same criteria with a parser
 for both observed single-test summary formats. Local model-free tests total 193.
+The [actual portable v2 construction](../../benches/results/nemotron-diarization/macos-arm64/2026-10-16-portable-cpu-construction-v2/qualification.json)
+now passes on an M1 virtual machine: 98 explicit-target compiler units, exact
+source checks, state/version and 92-library private packaging. Byte-only
+collection checks the opaque GitHub artifact, exact restored inventories and
+all original/private library sections. No model ran. A separate exact-artifact
+receiver protocol is still required; no accuracy or release gate changes.
+The [191-test source CI](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-191/qualification.json)
+also passes all 13 jobs. The later 193-test parser source passes locally; its
+separate feature matrix remains in progress.
 
 Prepared: 2026-10-14.
 Updated: 2026-10-16.

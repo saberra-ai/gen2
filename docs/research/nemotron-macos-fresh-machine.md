@@ -92,5 +92,27 @@ The separate [v2 protocol](../../tools/nemotron-diarization/macos-portable-const
 keeps the original target, storage and construction criteria and binds that
 failure. Its parser requires exactly one passed test and accepts both observed
 CTest summary formats. Missing, skipped, failed, duplicate and multiple test
-outputs are rejected. All 193 local model-free tests pass. This fresh retry has
-not yet run and admits no model execution or quality-gate change.
+outputs are rejected. All 193 local model-free tests pass. This retry admits no
+model execution or quality-gate change.
+
+The [actual v2 construction receipt](../../benches/results/nemotron-diarization/macos-arm64/2026-10-16-portable-cpu-construction-v2/qualification.json)
+now passes on an Apple M1 virtual machine. All four outer phases and 26 native
+build commands pass. Every one of 98 compiler units has the explicit portable
+target; all 3,425 materialized source files and every compiled source hash match
+the independently guarded pinned source. State/version checks and 92-library
+private packaging pass. Measured dependencies are SentencePiece 0.2.2, Abseil
+20260817.0 and Protobuf 36.2; these remain candidate observations.
+
+Byte-only collection verifies the 17,579,487-byte GitHub artifact against its
+API digest and all 186 extracted members. Both SDK/runtime archives restore
+with exact 84/123-entry inventories, including modes and aliases. Original and
+relocated Mach-O section metadata/payloads match for all 92 libraries. The
+115-member receipt retains metadata and raw command evidence; opaque archives,
+original library bytes and pristine GGML tar remain in cache/CI. No native code
+or model ran during collection. The 148 storage checks observed at least
+101,429,686,272 free bytes, and the 256 MiB reserve was released.
+
+This qualifies construction and static payload delivery. Real-model execution
+on a fresh receiver, lifecycle, application packaging, GUI/microphone,
+performance, public signing/notarization and the original quality gates remain
+open. The first attempt remains failed, and the M4 packages are unchanged.

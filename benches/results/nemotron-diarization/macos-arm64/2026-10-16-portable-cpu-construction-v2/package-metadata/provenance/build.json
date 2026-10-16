@@ -1,0 +1,1157 @@
+{
+  "runtime_revision": "083861c241061562b8ec29eb06d7f6cdc3af8775",
+  "llama_revision": "bd4f514db14d87fded667787a7a963bfbaa98e89",
+  "runtime_profile": "gen2-valid-mel-v1",
+  "runtime_reported_version": "nemo-speech-asr 0.2.0+gen2-valid-mel-v1",
+  "lock_sha256": "af40e586994f223390fcac59936e3781d967c03080350f4b5df141b1bdaf51be",
+  "compatibility_patches": [
+    {
+      "path": "patches/v3-finish-valid-mel.patch",
+      "bytes": 1194,
+      "sha256": "8c1434c14f63ebeb2515c719a90594124fd4f75af85b80451fd145b5caef3c36",
+      "source_sha256_before": {
+        "src/asr/diar/diar_pipeline.cpp": "4143ca8e6d6f14ee454263702510cb163fe8e170aa928f236c0b4b540a7a7da9"
+      },
+      "source_sha256_after": {
+        "src/asr/diar/diar_pipeline.cpp": "fe00ae415f4741d7e07579acdc77c60f5d7327be024cf7f8aff8f52142ae9af2"
+      }
+    }
+  ],
+  "frame_contract": {
+    "name": "v3-streaming-valid-mel-v1",
+    "scope": "V3 streaming finish only; offline and V2 semantics unchanged",
+    "sample_rate": 16000,
+    "hop_samples": 160,
+    "final_frames": "floor(real_input_samples / 160)",
+    "output_channels": 8
+  },
+  "platform": "macOS-26.6.2-arm64-arm-64bit",
+  "machine": "arm64",
+  "backend": "cpu",
+  "preset": "cpu-diar",
+  "metal_shaders_embedded": false,
+  "commands": [
+    {
+      "phase": "configure",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+        "/bin/bash",
+        "scripts/configure.sh",
+        "cpu-diar",
+        "-DNEMO_SPEECH_BUILD_EXAMPLES=ON",
+        "-DNEMO_SPEECH_BUILD_CLI=OFF",
+        "-DNEMO_SPEECH_BUILD_MIC_CAPTURE=OFF",
+        "-DGGML_OPENMP=OFF",
+        "-DNEMO_SPEECH_VERSION_METADATA=gen2-valid-mel-v1",
+        "-DNEMO_SPEECH_BUILD_TESTS=ON",
+        "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+        "-DCMAKE_INSTALL_PREFIX=/Users/runner/work/_temp/portable-sdk",
+        "-DGGML_NATIVE=OFF",
+        "-DGGML_CPU_ARM_ARCH=armv8.2-a+dotprod+fp16",
+        "-DCMAKE_C_FLAGS=-march=armv8.2-a+dotprod+fp16",
+        "-DCMAKE_CXX_FLAGS=-march=armv8.2-a+dotprod+fp16",
+        "-DCMAKE_OSX_ARCHITECTURES=arm64",
+        "-DCMAKE_OSX_DEPLOYMENT_TARGET=26.0"
+      ],
+      "cwd": "/Users/runner/work/_temp/portable-source",
+      "environment": {
+        "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1"
+      },
+      "returncode": 0,
+      "elapsed_seconds": 9.809339582999996
+    },
+    {
+      "phase": "llama-archive",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+        "git",
+        "archive",
+        "--format=tar",
+        "-o",
+        "/Users/runner/work/_temp/portable-evidence/build/pristine-llama.tar",
+        "bd4f514db14d87fded667787a7a963bfbaa98e89",
+        "--",
+        ".",
+        ":(exclude)models",
+        ":(exclude)docs",
+        ":(exclude)media"
+      ],
+      "cwd": "/Users/runner/work/_temp/portable-source/llama.cpp",
+      "environment": {
+        "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1"
+      },
+      "returncode": 0,
+      "elapsed_seconds": 0.15280575000002727
+    },
+    {
+      "phase": "llama-patch-0",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+        "git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+      ],
+      "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+      "environment": {
+        "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1",
+        "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+      },
+      "returncode": 0,
+      "elapsed_seconds": 0.04472033299998657
+    },
+    {
+      "phase": "llama-patch-1",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+        "git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+      ],
+      "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+      "environment": {
+        "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1",
+        "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+      },
+      "returncode": 0,
+      "elapsed_seconds": 0.03205491700003904
+    },
+    {
+      "phase": "llama-patch-2",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+        "git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+      ],
+      "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+      "environment": {
+        "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1",
+        "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+      },
+      "returncode": 0,
+      "elapsed_seconds": 0.031159333000005063
+    },
+    {
+      "phase": "llama-patch-3",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+        "git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+      ],
+      "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+      "environment": {
+        "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1",
+        "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+      },
+      "returncode": 0,
+      "elapsed_seconds": 0.03052662500004999
+    },
+    {
+      "phase": "llama-patch-4",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+        "git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+      ],
+      "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+      "environment": {
+        "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1",
+        "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+      },
+      "returncode": 0,
+      "elapsed_seconds": 0.029516416999967987
+    },
+    {
+      "phase": "llama-patch-5",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+        "git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+      ],
+      "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+      "environment": {
+        "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1",
+        "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+      },
+      "returncode": 0,
+      "elapsed_seconds": 0.027390542000034657
+    },
+    {
+      "phase": "llama-patch-6",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+        "git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+      ],
+      "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+      "environment": {
+        "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1",
+        "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+      },
+      "returncode": 0,
+      "elapsed_seconds": 0.030316833999961545
+    },
+    {
+      "phase": "llama-patch-7",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+        "git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+      ],
+      "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+      "environment": {
+        "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1",
+        "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+      },
+      "returncode": 0,
+      "elapsed_seconds": 0.028095624999991742
+    },
+    {
+      "phase": "llama-patch-8",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+        "git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+      ],
+      "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+      "environment": {
+        "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1",
+        "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+      },
+      "returncode": 0,
+      "elapsed_seconds": 0.03627962499996329
+    },
+    {
+      "phase": "llama-patch-9",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+        "git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+      ],
+      "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+      "environment": {
+        "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1",
+        "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+      },
+      "returncode": 0,
+      "elapsed_seconds": 0.024211792000016885
+    },
+    {
+      "phase": "llama-patch-10",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+        "git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+      ],
+      "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+      "environment": {
+        "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1",
+        "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+      },
+      "returncode": 0,
+      "elapsed_seconds": 0.02043383300002688
+    },
+    {
+      "phase": "llama-patch-11",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+        "git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+      ],
+      "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+      "environment": {
+        "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1",
+        "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+      },
+      "returncode": 0,
+      "elapsed_seconds": 0.033922000000018215
+    },
+    {
+      "phase": "llama-patch-12",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+        "git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+      ],
+      "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+      "environment": {
+        "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1",
+        "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+      },
+      "returncode": 0,
+      "elapsed_seconds": 0.024317915999972683
+    },
+    {
+      "phase": "llama-patch-13",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+        "git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+      ],
+      "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+      "environment": {
+        "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1",
+        "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+      },
+      "returncode": 0,
+      "elapsed_seconds": 0.02284958299998152
+    },
+    {
+      "phase": "llama-patch-14",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+        "git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+      ],
+      "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+      "environment": {
+        "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1",
+        "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+      },
+      "returncode": 0,
+      "elapsed_seconds": 0.030221709000045394
+    },
+    {
+      "phase": "llama-patch-15",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+        "git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+      ],
+      "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+      "environment": {
+        "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1",
+        "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+      },
+      "returncode": 0,
+      "elapsed_seconds": 0.02271220799997309
+    },
+    {
+      "phase": "llama-patch-16",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+        "git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+      ],
+      "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+      "environment": {
+        "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1",
+        "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+      },
+      "returncode": 0,
+      "elapsed_seconds": 0.01695379199998115
+    },
+    {
+      "phase": "llama-patch-17",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+        "git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+      ],
+      "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+      "environment": {
+        "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1",
+        "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+      },
+      "returncode": 0,
+      "elapsed_seconds": 0.018224499999973887
+    },
+    {
+      "phase": "llama-patch-18",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+        "git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/runner/work/_temp/portable-evidence/build/current-llama.patch"
+      ],
+      "cwd": "/Users/runner/work/_temp/portable-evidence/build/llama-replay-45jig3sk",
+      "environment": {
+        "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1",
+        "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/portable-evidence/build"
+      },
+      "returncode": 0,
+      "elapsed_seconds": 0.02005958400002328
+    },
+    {
+      "phase": "build",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+        "/opt/homebrew/bin/cmake",
+        "--build",
+        "--preset",
+        "cpu-diar",
+        "--parallel",
+        "2"
+      ],
+      "cwd": "/Users/runner/work/_temp/portable-source",
+      "environment": {
+        "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1"
+      },
+      "returncode": 0,
+      "elapsed_seconds": 86.78852024999998
+    },
+    {
+      "phase": "install",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+        "/opt/homebrew/bin/cmake",
+        "--install",
+        "build/cpu-diar"
+      ],
+      "cwd": "/Users/runner/work/_temp/portable-source",
+      "environment": {
+        "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1"
+      },
+      "returncode": 0,
+      "elapsed_seconds": 2.64076454100001
+    },
+    {
+      "phase": "model-free-state-test",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+        "/opt/homebrew/bin/ctest",
+        "--test-dir",
+        "build/cpu-diar",
+        "--output-on-failure",
+        "-R",
+        "^diar_state$"
+      ],
+      "cwd": "/Users/runner/work/_temp/portable-source",
+      "environment": {
+        "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1"
+      },
+      "returncode": 0,
+      "elapsed_seconds": 0.7284788329999969
+    },
+    {
+      "phase": "version-only",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+        "/Library/Frameworks/Python.framework/Versions/3.12/bin/python",
+        "-c",
+        "import ctypes,sys; library=ctypes.CDLL(sys.argv[1]); version=library.nemo_speech_asr_version; version.restype=ctypes.c_char_p; print(version().decode(\"utf-8\"))",
+        "/Users/runner/work/_temp/portable-sdk/lib/libnemo_speech_asr_c.dylib"
+      ],
+      "cwd": "/Users/runner/work/_temp/portable-source",
+      "environment": {
+        "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1"
+      },
+      "returncode": 0,
+      "elapsed_seconds": 0.19760745799999313
+    },
+    {
+      "phase": "brew-packages",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-evidence/build/offline.sb",
+        "/opt/homebrew/bin/brew",
+        "list",
+        "--versions",
+        "sentencepiece",
+        "abseil",
+        "protobuf"
+      ],
+      "cwd": "/Users/runner/work/_temp/portable-source",
+      "environment": {
+        "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1",
+        "HOME": "/Users/runner",
+        "HOMEBREW_NO_AUTO_UPDATE": "1"
+      },
+      "returncode": 0,
+      "elapsed_seconds": 0.7992072919999487
+    }
+  ],
+  "cmake_definitions": {
+    "NEMO_SPEECH_BUILD_EXAMPLES": "ON",
+    "NEMO_SPEECH_BUILD_CLI": "OFF",
+    "NEMO_SPEECH_BUILD_MIC_CAPTURE": "OFF",
+    "GGML_OPENMP": "OFF",
+    "NEMO_SPEECH_VERSION_METADATA": "gen2-valid-mel-v1",
+    "NEMO_SPEECH_BUILD_TESTS": "ON",
+    "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+    "CMAKE_INSTALL_PREFIX": "/Users/runner/work/_temp/portable-sdk",
+    "GGML_NATIVE": "OFF",
+    "GGML_CPU_ARM_ARCH": "armv8.2-a+dotprod+fp16",
+    "CMAKE_C_FLAGS": "-march=armv8.2-a+dotprod+fp16",
+    "CMAKE_CXX_FLAGS": "-march=armv8.2-a+dotprod+fp16",
+    "CMAKE_OSX_ARCHITECTURES": "arm64",
+    "CMAKE_OSX_DEPLOYMENT_TARGET": "26.0"
+  },
+  "toolchain": {
+    "cmake": "cmake version 4.4.4",
+    "ninja": "1.13.2",
+    "clang++": "Apple clang version 21.0.0 (clang-2100.1.1.101)",
+    "sdk": "26.5",
+    "packages": "abseil 20260817.0\nprotobuf 36.2\nsentencepiece 0.2.2"
+  },
+  "libraries": {
+    "libggml-base.0.25.1.dylib": {
+      "sha256": "69a56de3df36c1883d7c4359a7113ead073265432c13e45967b63f56d480da36",
+      "size": 752856,
+      "dependencies": "/Users/runner/work/_temp/portable-sdk/lib/libggml-base.0.25.1.dylib:\n\t@rpath/libggml-base.0.dylib (compatibility version 0.0.0, current version 0.25.1)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2100.43.0)\n",
+      "exports": "000000000005f2a0 T __Z14gguf_type_size9gguf_type\n0000000000065358 T __Z17gguf_write_to_bufPK12gguf_contextRNSt3__16vectorIaNS2_9allocatorIaEEEEb\n00000000000771d8 S __ZNSt3__119piecewise_constructE\n000000000004dca4 T _dequantize_row_iq1_m\n000000000004dae0 T _dequantize_row_iq1_s\n000000000004ccac T _dequantize_row_iq2_s\n000000000004c80c T _dequantize_row_iq2_xs\n000000000004c49c T _dequantize_row_iq2_xxs\n000000000004d3f8 T _dequantize_row_iq3_s\n000000000004d058 T _dequantize_row_iq3_xxs\n000000000004def0 T _dequantize_row_iq4_nl\n000000000004e2f4 T _dequantize_row_iq4_xs\n0000000000037e4c T _dequantize_row_mxfp4\n000000000003822c T _dequantize_row_nvfp4\n0000000000036fc0 T _dequantize_row_q1_0\n00000000000372e0 T _dequantize_row_q2_0\n0000000000039250 T _dequantize_row_q2_K\n000000000003b2e8 T _dequantize_row_q3_K\n00000000000375d4 T _dequantize_row_q4_0\n0000000000037760 T _dequantize_row_q4_1\n000000000003e2a4 T _dequantize_row_q4_K\n0000000000037908 T _dequantize_row_q5_0\n0000000000037b00 T _dequantize_row_q5_1\n00000000000419c8 T _dequantize_row_q5_K\n0000000000044504 T _dequantize_row_q6_K\n0000000000037d40 T _dequantize_row_q8_0\n000000000004eed8 T _dequantize_row_q8_K\n000000000004ae58 T _dequantize_row_tq1_0\n000000000004bad4 T _dequantize_row_tq2_0\n0000000000071adc T _ggml_abort\n0000000000004ce4 T _ggml_abs\n0000000000004d64 T _ggml_abs_inplace\n00000000000039bc T _ggml_acc\n0000000000003b60 T _ggml_acc_inplace\n00000000000035c8 T _ggml_add\n0000000000003890 T _ggml_add1\n00000000000039b4 T _ggml_add1_inplace\n00000000000036fc T _ggml_add_cast\n00000000000037f0 T _ggml_add_id\n00000000000036f4 T _ggml_add_inplace\n000000000000d6e4 T _ggml_add_rel_pos\n000000000000d990 T _ggml_add_rel_pos_inplace\n0000000000001728 T _ggml_aligned_free\n0000000000001654 T _ggml_aligned_malloc\n000000000000c0c8 T _ggml_arange\n0000000000002900 T _ggml_are_same_shape\n000000000000294c T _ggml_are_same_stride\n0000000000004818 T _ggml_argmax\n000000000000beb4 T _ggml_argsort\n000000000000bf0c T _ggml_argsort_top_k\n00000000000187ec T _ggml_backend_alloc_buffer\n0000000000016d9c T _ggml_backend_alloc_ctx_tensors\n0000000000016d38 T _ggml_backend_alloc_ctx_tensors_from_buft\n0000000000016a44 T _ggml_backend_alloc_ctx_tensors_from_buft_size\n0000000000018298 T _ggml_backend_buffer_clear\n00000000000186e0 T _ggml_backend_buffer_copy_tensor\n0000000000018138 T _ggml_backend_buffer_free\n00000000000182e0 T _ggml_backend_buffer_get_alignment\n00000000000183d4 T _ggml_backend_buffer_get_alloc_size\n00000000000181a8 T _ggml_backend_buffer_get_base\n0000000000018350 T _ggml_backend_buffer_get_max_size\n000000000001816c T _ggml_backend_buffer_get_size\n00000000000180fc T _ggml_backend_buffer_get_type\n0000000000018660 T _ggml_backend_buffer_get_usage\n0000000000017e10 T _ggml_backend_buffer_init\n0000000000018250 T _ggml_backend_buffer_init_tensor\n0000000000018410 T _ggml_backend_buffer_is_host\n0000000000021e44 T _ggml_backend_buffer_is_meta\n0000000000018558 T _ggml_backend_buffer_is_multi_buffer\n000000000001808c T _ggml_backend_buffer_name\n000000000001869c T _ggml_backend_buffer_reset\n0000000000018494 T _ggml_backend_buffer_set_usage\n0000000000017d88 T _ggml_backend_buft_alloc_buffer\n0000000000017e70 T _ggml_backend_buft_get_alignment\n0000000000017ef4 T _ggml_backend_buft_get_alloc_size\n0000000000018050 T _ggml_backend_buft_get_device\n0000000000017eac T _ggml_backend_buft_get_max_size\n0000000000018008 T _ggml_backend_buft_is_host\n0000000000021e28 T _ggml_backend_buft_is_meta\n0000000000017d4c T _ggml_backend_buft_name\n0000000000020490 T _ggml_backend_compare_graph_backend\n000000000002088c T _ggml_backend_cpu_buffer_from_ptr\n00000000000207b8 T _ggml_backend_cpu_buffer_type\n000000000001a4e8 T _ggml_backend_dev_backend_reg\n000000000001a5a8 T _ggml_backend_dev_buffer_from_host_ptr\n00000000000187b0 T _ggml_backend_dev_buffer_type\n000000000001a3e8 T _ggml_backend_dev_description\n000000000001a49c T _ggml_backend_dev_get_props\n000000000001a560 T _ggml_backend_dev_host_buffer_type\n000000000001a524 T _ggml_backend_dev_init\n000000000001a424 T _ggml_backend_dev_memory\n000000000001a3ac T _ggml_backend_dev_name\n0000000000019db0 T _ggml_backend_dev_offload_op\n0000000000019cf0 T _ggml_backend_dev_supports_buft\n0000000000019c44 T _ggml_backend_dev_supports_op\n000000000001a460 T _ggml_backend_dev_type\n000000000001a23c T _ggml_backend_event_free\n000000000001a224 T _ggml_backend_event_new\n000000000001a254 T _ggml_backend_event_record\n000000000001a2cc T _ggml_backend_event_synchronize\n000000000001a340 T _ggml_backend_event_wait\n0000000000018730 T _ggml_backend_free\n00000000000188d8 T _ggml_backend_get_alignment\n0000000000018740 T _ggml_backend_get_default_buffer_type\n0000000000019df8 T _ggml_backend_get_device\n0000000000018978 T _ggml_backend_get_max_size\n0000000000019b2c T _ggml_backend_graph_compute\n0000000000019b98 T _ggml_backend_graph_compute_async\n000000000001fbc0 T _ggml_backend_graph_copy\n0000000000020448 T _ggml_backend_graph_copy_free\n0000000000019ac0 T _ggml_backend_graph_plan_compute\n00000000000199e8 T _ggml_backend_graph_plan_create\n0000000000019a54 T _ggml_backend_graph_plan_free\n000000000001870c T _ggml_backend_guid\n0000000000023128 T _ggml_backend_is_meta\n0000000000021f08 T _ggml_backend_meta_alloc_ctx_tensors_from_buft\n0000000000021e60 T _ggml_backend_meta_buffer_set_usage\n000000000002166c T _ggml_backend_meta_device\n0000000000023144 T _ggml_backend_meta_n_backends\n00000000000231ac T _ggml_backend_meta_simple_backend\n0000000000021598 T _ggml_backend_meta_split_axis_name\n000000000001a6e0 T _ggml_backend_multi_buffer_alloc_buffer\n00000000000185a4 T _ggml_backend_multi_buffer_set_usage\n0000000000018718 T _ggml_backend_name\n0000000000019d2c T _ggml_backend_offload_op\n000000000001a620 T _ggml_backend_reg_dev_count\n000000000001a65c T _ggml_backend_reg_dev_get\n000000000001a698 T _ggml_backend_reg_get_proc_address\n000000000001a5e4 T _ggml_backend_reg_name\n000000000001e1ec T _ggml_backend_sched_alloc_graph\n000000000001dccc T _ggml_backend_sched_free\n000000000001f4a4 T _ggml_backend_sched_get_backend\n000000000001f5c0 T _ggml_backend_sched_get_buffer_size\n000000000001f520 T _ggml_backend_sched_get_buffer_type\n000000000001f468 T _ggml_backend_sched_get_n_backends\n000000000001f42c T _ggml_backend_sched_get_n_copies\n000000000001f3f0 T _ggml_backend_sched_get_n_splits\n000000000001f77c T _ggml_backend_sched_get_tensor_backend\n000000000001e4ac T _ggml_backend_sched_graph_compute\n000000000001e57c T _ggml_backend_sched_graph_compute_async\n000000000001d748 T _ggml_backend_sched_new\n000000000001e074 T _ggml_backend_sched_reserve\n000000000001de10 T _ggml_backend_sched_reserve_size\n000000000001dc30 T _ggml_backend_sched_reset\n000000000001f3b0 T _ggml_backend_sched_set_eval_callback\n000000000001f660 T _ggml_backend_sched_set_tensor_backend\n000000000001a888 T _ggml_backend_sched_split_graph\n000000000001dfb0 T _ggml_backend_sched_synchronize\n0000000000019c80 T _ggml_backend_supports_buft\n0000000000019bd4 T _ggml_backend_supports_op\n0000000000018c08 T _ggml_backend_synchronize\n000000000001f978 T _ggml_backend_tensor_alloc\n0000000000019e34 T _ggml_backend_tensor_copy\n000000000001a084 T _ggml_backend_tensor_copy_async\n0000000000018f60 T _ggml_backend_tensor_get\n0000000000019634 T _ggml_backend_tensor_get_2d\n000000000001923c T _ggml_backend_tensor_get_2d_async\n0000000000018d84 T _ggml_backend_tensor_get_async\n0000000000019888 T _ggml_backend_tensor_memset\n0000000000018c4c T _ggml_backend_tensor_set\n00000000000193e0 T _ggml_backend_tensor_set_2d\n0000000000019098 T _ggml_backend_tensor_set_2d_async\n0000000000018a2c T _ggml_backend_tensor_set_async\n000000000001f85c T _ggml_backend_view_init\n0000000000001830 T _ggml_bf16_to_fp32\n0000000000001b30 T _ggml_bf16_to_fp32_row\n0000000000002084 T _ggml_blck_size\n000000000000ff74 T _ggml_build_backward_expand\n000000000000fec4 T _ggml_build_forward_expand\n000000000000ff1c T _ggml_build_forward_order\n000000000000fe10 T _ggml_build_forward_select\n0000000000012e94 T _ggml_can_fuse_subgraph_ext\n00000000000029a8 T _ggml_can_repeat\n0000000000007f60 T _ggml_cast\n00000000000060dc T _ggml_ceil\n000000000000615c T _ggml_ceil_inplace\n0000000000009394 T _ggml_clamp\n00000000000093f0 T _ggml_clamp_inplace\n000000000000a25c T _ggml_col2im_1d\n0000000000001e0c T _ggml_commit\n0000000000004b90 T _ggml_concat\n0000000000007fbc T _ggml_cont\n0000000000008018 T _ggml_cont_1d\n0000000000008190 T _ggml_cont_2d\n000000000000824c T _ggml_cont_3d\n00000000000080d4 T _ggml_cont_4d\n000000000000c9f8 T _ggml_conv1d_fused\n000000000000cc08 T _ggml_conv1d_fused_grouped\n0000000000009f6c T _ggml_conv_1d\n000000000000a0dc T _ggml_conv_1d_dw\n000000000000a198 T _ggml_conv_1d_dw_ph\n000000000000a020 T _ggml_conv_1d_ph\n000000000000a4ec T _ggml_conv_2d\n000000000000ad7c T _ggml_conv_2d_direct\n000000000000aa84 T _ggml_conv_2d_dw\n000000000000abbc T _ggml_conv_2d_dw_direct\n000000000000aa40 T _ggml_conv_2d_s1_ph\n000000000000aa08 T _ggml_conv_2d_sk_p0\n000000000000a820 T _ggml_conv_3d\n000000000000aeac T _ggml_conv_3d_direct\n000000000000a3dc T _ggml_conv_transpose_1d\n000000000000b068 T _ggml_conv_transpose_2d_p0\n00000000000045a8 T _ggml_cos\n00000000000045e8 T _ggml_cos_inplace\n0000000000004898 T _ggml_count_equal\n0000000000007e74 T _ggml_cpy\n0000000000034628 T _ggml_critical_section_end\n00000000000940a0 D _ggml_critical_section_mutex\n000000000003461c T _ggml_critical_section_start\n000000000000ecd8 T _ggml_cross_entropy_loss\n000000000000ed70 T _ggml_cross_entropy_loss_back\n0000000000004740 T _ggml_cumsum\n000000000000eadc T _ggml_custom_4d\n000000000000eba0 T _ggml_custom_inplace\n0000000000001eb8 T _ggml_cycles\n0000000000001ebc T _ggml_cycles_per_ms\n0000000000009168 T _ggml_diag\n00000000000091fc T _ggml_diag_mask_inf\n0000000000009248 T _ggml_diag_mask_inf_inplace\n00000000000092c8 T _ggml_diag_mask_zero\n0000000000009314 T _ggml_diag_mask_zero_inplace\n0000000000003dd0 T _ggml_div\n0000000000003efc T _ggml_div_inplace\n000000000000f7b0 T _ggml_dsv4_hc_comb\n000000000000fad4 T _ggml_dsv4_hc_post\n000000000000f974 T _ggml_dsv4_hc_pre\n000000000000facc T _ggml_dsv4_hc_pre_gated\n000000000000350c T _ggml_dup\n000000000000354c T _ggml_dup_inplace\n0000000000003338 T _ggml_dup_tensor\n00000000000022a4 T _ggml_element_size\n0000000000005310 T _ggml_elu\n0000000000005390 T _ggml_elu_inplace\n0000000000005e64 T _ggml_exp\n0000000000005ee4 T _ggml_exp_inplace\n0000000000004138 T _ggml_expm1\n0000000000004238 T _ggml_expm1_inplace\n000000000000bd68 T _ggml_fill\n000000000000beac T _ggml_fill_inplace\n0000000000071b88 T _ggml_flash_attn_back\n000000000000c140 T _ggml_flash_attn_ext\n000000000000cf0c T _ggml_flash_attn_ext_add_sinks\n000000000000cec0 T _ggml_flash_attn_ext_get_prec\n000000000000cee0 T _ggml_flash_attn_ext_set_n_kv_max\n000000000000cea0 T _ggml_flash_attn_ext_set_prec\n0000000000005fa0 T _ggml_floor\n0000000000006020 T _ggml_floor_inplace\n0000000000001ec4 T _ggml_fopen\n00000000000033e0 T _ggml_format_name\n0000000000001770 T _ggml_fp16_to_fp32\n0000000000001874 T _ggml_fp16_to_fp32_row\n000000000000183c T _ggml_fp32_to_bf16\n0000000000001d08 T _ggml_fp32_to_bf16_row\n0000000000001c28 T _ggml_fp32_to_bf16_row_ref\n00000000000017bc T _ggml_fp32_to_fp16\n0000000000001994 T _ggml_fp32_to_fp16_row\n0000000000002bbc T _ggml_free\n000000000000239c T _ggml_ftype_to_ggml_type\n000000000000c9b4 T _ggml_fused_attn_cached\n000000000000c310 T _ggml_fused_relpos_attn\n000000000000c9a8 T _ggml_fused_relpos_attn_cached\n00000000000161d4 T _ggml_gallocr_alloc_graph\n0000000000015350 T _ggml_gallocr_free\n000000000001682c T _ggml_gallocr_get_buffer_size\n0000000000015328 T _ggml_gallocr_new\n0000000000015120 T _ggml_gallocr_new_n\n00000000000161c4 T _ggml_gallocr_reserve\n00000000000161bc T _ggml_gallocr_reserve_n\n0000000000015540 T _ggml_gallocr_reserve_n_size\n000000000000f284 T _ggml_gated_delta_net\n000000000000de08 T _ggml_gated_linear_attn\n00000000000069d0 T _ggml_geglu\n0000000000006e50 T _ggml_geglu_erf\n0000000000007084 T _ggml_geglu_erf_split\n0000000000006f68 T _ggml_geglu_erf_swapped\n0000000000007090 T _ggml_geglu_quick\n00000000000072c4 T _ggml_geglu_quick_split\n00000000000071a8 T _ggml_geglu_quick_swapped\n0000000000006c04 T _ggml_geglu_split\n0000000000006ae8 T _ggml_geglu_swapped\n0000000000005770 T _ggml_gelu\n00000000000058ac T _ggml_gelu_erf\n000000000000592c T _ggml_gelu_erf_inplace\n00000000000057f0 T _ggml_gelu_inplace\n00000000000059e8 T _ggml_gelu_quick\n0000000000005a68 T _ggml_gelu_quick_inplace\n000000000000339c T _ggml_get_data\n00000000000033a4 T _ggml_get_data_f32\n0000000000002d40 T _ggml_get_first_tensor\n0000000000002284 T _ggml_get_glu_op\n0000000000002c4c T _ggml_get_max_tensor_size\n0000000000002c3c T _ggml_get_mem_buffer\n0000000000002c44 T _ggml_get_mem_size\n00000000000033ac T _ggml_get_name\n0000000000002d70 T _ggml_get_next_tensor\n0000000000002c2c T _ggml_get_no_alloc\n000000000000d638 T _ggml_get_rel_pos\n0000000000008df4 T _ggml_get_rows\n0000000000008ecc T _ggml_get_rows_back\n0000000000003494 T _ggml_get_tensor\n0000000000001ec8 T _ggml_get_type_traits\n0000000000002264 T _ggml_get_unary_op\n0000000000006490 T _ggml_glu\n00000000000021fc T _ggml_glu_op_name\n0000000000006788 T _ggml_glu_split\n0000000000012b74 T _ggml_graph_add_node\n0000000000012b08 T _ggml_graph_clear\n00000000000123f8 T _ggml_graph_cpy\n0000000000013120 T _ggml_graph_dump_dot\n0000000000012760 T _ggml_graph_dup\n0000000000012c50 T _ggml_graph_get_grad\n0000000000012a9c T _ggml_graph_get_grad_acc\n0000000000012ba4 T _ggml_graph_get_tensor\n0000000000012b6c T _ggml_graph_n_nodes\n00000000000012a8 T _ggml_graph_next_uid\n0000000000012b2c T _ggml_graph_node\n0000000000012b64 T _ggml_graph_nodes\n00000000000121a4 T _ggml_graph_overhead\n000000000001210c T _ggml_graph_overhead_custom\n0000000000012cbc T _ggml_graph_print\n000000000001290c T _ggml_graph_reset\n0000000000012b24 T _ggml_graph_size\n00000000000123b8 T _ggml_graph_view\n0000000000007550 T _ggml_group_norm\n00000000000075a4 T _ggml_group_norm_inplace\n0000000000001de8 T _ggml_guid_matches\n0000000000005de4 T _ggml_hardsigmoid\n0000000000005d64 T _ggml_hardswish\n000000000000fde8 T _ggml_hash_set_free\n000000000000fc84 T _ggml_hash_set_new\n000000000000fdd0 T _ggml_hash_set_reset\n000000000000fd88 T _ggml_hash_size\n0000000000009d34 T _ggml_im2col\n000000000000a680 T _ggml_im2col_3d\n0000000000009ef0 T _ggml_im2col_back\n0000000000002a48 T _ggml_init\n000000000000b578 T _ggml_interpolate\n0000000000002350 T _ggml_is_3d\n00000000000023e8 T _ggml_is_contiguous\n0000000000002484 T _ggml_is_contiguous_0\n0000000000002520 T _ggml_is_contiguous_1\n00000000000025a8 T _ggml_is_contiguous_2\n0000000000002840 T _ggml_is_contiguous_channels\n0000000000002888 T _ggml_is_contiguous_rows\n0000000000002614 T _ggml_is_contiguous_to_1\n0000000000002660 T _ggml_is_contiguous_to_2\n00000000000026c4 T _ggml_is_contiguous_to_3\n0000000000002744 T _ggml_is_contiguously_allocated\n00000000000028d0 T _ggml_is_empty\n000000000000232c T _ggml_is_matrix\n0000000000002808 T _ggml_is_permuted\n00000000000021b4 T _ggml_is_quantized\n00000000000022c0 T _ggml_is_scalar\n00000000000023d8 T _ggml_is_transposed\n00000000000022fc T _ggml_is_vector\n0000000000002998 T _ggml_is_view\n0000000000007634 T _ggml_l2_norm\n0000000000007684 T _ggml_l2_norm_inplace\n0000000000005588 T _ggml_leaky_relu\n000000000000f628 T _ggml_lightning_indexer\n000000000000407c T _ggml_log\n0000000000001624 T _ggml_log_callback_default\n000000000001443c T _ggml_log_get\n00000000000040bc T _ggml_log_inplace\n0000000000001520 T _ggml_log_internal\n0000000000014458 T _ggml_log_set\n000000000000e718 T _ggml_map_custom1\n000000000000e794 T _ggml_map_custom1_inplace\n000000000000e844 T _ggml_map_custom2\n000000000000e8cc T _ggml_map_custom2_inplace\n000000000000e988 T _ggml_map_custom3\n000000000000ea18 T _ggml_map_custom3_inplace\n000000000000478c T _ggml_mean\n0000000000003c9c T _ggml_mul\n0000000000003dc8 T _ggml_mul_inplace\n000000000000778c T _ggml_mul_mat\n00000000000078a0 T _ggml_mul_mat_id\n0000000000007880 T _ggml_mul_mat_set_hint\n0000000000007860 T _ggml_mul_mat_set_prec\n0000000000002360 T _ggml_n_dims\n0000000000001fdc T _ggml_nbytes\n00000000000020b4 T _ggml_nbytes_pad\n0000000000004f5c T _ggml_neg\n0000000000004fdc T _ggml_neg_inplace\n0000000000001fb0 T _ggml_nelements\n00000000000031b4 T _ggml_new_buffer\n00000000000123ac T _ggml_new_graph\n0000000000012214 T _ggml_new_graph_custom\n0000000000002da0 T _ggml_new_tensor\n0000000000003068 T _ggml_new_tensor_1d\n0000000000003098 T _ggml_new_tensor_2d\n00000000000030f4 T _ggml_new_tensor_3d\n0000000000003154 T _ggml_new_tensor_4d\n000000000000732c T _ggml_norm\n0000000000007384 T _ggml_norm_inplace\n0000000000001fc8 T _ggml_nrows\n0000000000017fe8 T _ggml_op_alloc_size_may_expand\n0000000000014fac T _ggml_op_can_inplace\n000000000000220c T _ggml_op_desc\n00000000000021cc T _ggml_op_name\n00000000000021dc T _ggml_op_symbol\n0000000000031cc0 T _ggml_opt_alloc\n0000000000033954 T _ggml_opt_context_optimizer_type\n00000000000302c4 T _ggml_opt_dataset_data\n000000000003027c T _ggml_opt_dataset_free\n000000000003045c T _ggml_opt_dataset_get_batch\n000000000003070c T _ggml_opt_dataset_get_batch_host\n000000000003001c T _ggml_opt_dataset_init\n00000000000302cc T _ggml_opt_dataset_labels\n00000000000302bc T _ggml_opt_dataset_ndata\n00000000000302d4 T _ggml_opt_dataset_shuffle\n00000000000308c0 T _ggml_opt_default_params\n0000000000032874 T _ggml_opt_epoch\n0000000000032b48 T _ggml_opt_epoch_callback_progress_bar\n0000000000032160 T _ggml_opt_eval\n00000000000333c4 T _ggml_opt_fit\n0000000000031510 T _ggml_opt_free\n00000000000308ac T _ggml_opt_get_constant_optimizer_params\n000000000003088c T _ggml_opt_get_default_optimizer_params\n0000000000031604 T _ggml_opt_grad_acc\n00000000000308f4 T _ggml_opt_init\n00000000000315d4 T _ggml_opt_inputs\n00000000000315e4 T _ggml_opt_labels\n00000000000315ec T _ggml_opt_loss\n00000000000315fc T _ggml_opt_ncorrect\n000000000003395c T _ggml_opt_optimizer_name\n00000000000315dc T _ggml_opt_outputs\n00000000000315f4 T _ggml_opt_pred\n0000000000031c70 T _ggml_opt_prepare_alloc\n0000000000031590 T _ggml_opt_reset\n0000000000031c04 T _ggml_opt_result_accuracy\n000000000003163c T _ggml_opt_result_free\n000000000003160c T _ggml_opt_result_init\n00000000000316ac T _ggml_opt_result_loss\n00000000000316a0 T _ggml_opt_result_ndata\n0000000000031b40 T _ggml_opt_result_pred\n0000000000031684 T _ggml_opt_result_reset\n00000000000315cc T _ggml_opt_static_graphs\n000000000000ee3c T _ggml_opt_step_adamw\n000000000000efc4 T _ggml_opt_step_sgd\n00000000000079d4 T _ggml_out_prod\n000000000000b624 T _ggml_pad\n000000000000b7e8 T _ggml_pad_circular\n000000000000b6ec T _ggml_pad_ext\n000000000000b8b4 T _ggml_pad_ext_circular\n000000000000b9b4 T _ggml_pad_reflect_1d\n0000000000008ba8 T _ggml_permute\n000000000000b12c T _ggml_pool_1d\n000000000000b220 T _ggml_pool_2d\n000000000000b354 T _ggml_pool_2d_back\n0000000000007710 T _ggml_prec_set_acc\n0000000000007750 T _ggml_prec_set_src\n00000000000012bc T _ggml_print_backtrace\n0000000000001edc T _ggml_print_object\n0000000000001f1c T _ggml_print_objects\n0000000000013cd8 T _ggml_quantize_chunk\n0000000000013c78 T _ggml_quantize_free\n0000000000013bfc T _ggml_quantize_init\n0000000000013cc4 T _ggml_quantize_requires_imatrix\n0000000000006790 T _ggml_reglu\n00000000000069c4 T _ggml_reglu_split\n00000000000068a8 T _ggml_reglu_swapped\n000000000000544c T _ggml_relu\n00000000000054cc T _ggml_relu_inplace\n0000000000004930 T _ggml_repeat\n00000000000049f8 T _ggml_repeat_4d\n0000000000004ac8 T _ggml_repeat_back\n0000000000002ba8 T _ggml_reset\n0000000000008308 T _ggml_reshape\n0000000000008420 T _ggml_reshape_1d\n0000000000008550 T _ggml_reshape_2d\n0000000000008684 T _ggml_reshape_3d\n00000000000087c0 T _ggml_reshape_4d\n0000000000007410 T _ggml_rms_norm\n00000000000074f4 T _ggml_rms_norm_back\n0000000000007468 T _ggml_rms_norm_inplace\n000000000000bb1c T _ggml_roll\n0000000000009828 T _ggml_rope\n0000000000009b74 T _ggml_rope_custom\n0000000000009ba8 T _ggml_rope_custom_inplace\n0000000000009b18 T _ggml_rope_ext\n0000000000009c98 T _ggml_rope_ext_back\n0000000000009b44 T _ggml_rope_ext_inplace\n0000000000009ac0 T _ggml_rope_inplace\n0000000000009a7c T _ggml_rope_multi\n0000000000009ccc T _ggml_rope_multi_back\n0000000000009a9c T _ggml_rope_multi_inplace\n0000000000009cf4 T _ggml_rope_set_offset\n0000000000009be0 T _ggml_rope_yarn_corr_dims\n0000000000006218 T _ggml_round\n0000000000006298 T _ggml_round_inplace\n0000000000002150 T _ggml_row_size\n000000000000d998 T _ggml_rwkv_wkv6\n000000000000e1f4 T _ggml_rwkv_wkv7\n0000000000007aa8 T _ggml_scale\n0000000000007c58 T _ggml_scale_bias\n0000000000007d00 T _ggml_scale_bias_inplace\n0000000000007c4c T _ggml_scale_inplace\n0000000000007d08 T _ggml_set\n0000000000007e2c T _ggml_set_1d\n0000000000007e40 T _ggml_set_1d_inplace\n0000000000007e54 T _ggml_set_2d\n0000000000007e64 T _ggml_set_2d_inplace\n000000000000150c T _ggml_set_abort_callback\n0000000000007e24 T _ggml_set_inplace\n0000000000013b50 T _ggml_set_input\n0000000000013ba0 T _ggml_set_loss\n00000000000033b4 T _ggml_set_name\n0000000000002c34 T _ggml_set_no_alloc\n0000000000013b60 T _ggml_set_output\n0000000000013b7c T _ggml_set_param\n0000000000008fc4 T _ggml_set_rows\n00000000000127a4 T _ggml_set_zero\n0000000000004e20 T _ggml_sgn\n0000000000004ea0 T _ggml_sgn_inplace\n0000000000005634 T _ggml_sigmoid\n00000000000056b4 T _ggml_sigmoid_inplace\n0000000000005b24 T _ggml_silu\n0000000000005d20 T _ggml_silu_back\n0000000000005ba4 T _ggml_silu_inplace\n00000000000044ec T _ggml_sin\n000000000000452c T _ggml_sin_inplace\n0000000000009480 T _ggml_soft_max\n00000000000096d8 T _ggml_soft_max_add_sinks\n00000000000096c8 T _ggml_soft_max_ext\n000000000000973c T _ggml_soft_max_ext_back\n0000000000009794 T _ggml_soft_max_ext_back_inplace\n00000000000096d0 T _ggml_soft_max_ext_inplace\n00000000000096b4 T _ggml_soft_max_inplace\n00000000000043b0 T _ggml_softplus\n0000000000004430 T _ggml_softplus_inplace\n000000000000f0d0 T _ggml_solve_tri\n0000000000003f04 T _ggml_sqr\n0000000000003f44 T _ggml_sqr_inplace\n0000000000003fc0 T _ggml_sqrt\n0000000000004000 T _ggml_sqrt_inplace\n000000000000cf70 T _ggml_ssm_conv\n000000000000d050 T _ggml_ssm_scan\n0000000000001748 T _ggml_status_to_string\n0000000000005098 T _ggml_step\n0000000000005118 T _ggml_step_inplace\n0000000000003b68 T _ggml_sub\n0000000000003c94 T _ggml_sub_inplace\n0000000000004664 T _ggml_sum\n00000000000046b4 T _ggml_sum_rows\n0000000000006c10 T _ggml_swiglu\n0000000000007300 T _ggml_swiglu_clamp\n00000000000072d0 T _ggml_swiglu_oai\n0000000000006e44 T _ggml_swiglu_split\n0000000000006d28 T _ggml_swiglu_swapped\n0000000000015050 T _ggml_tallocr_alloc\n0000000000014ff8 T _ggml_tallocr_new\n00000000000051d4 T _ggml_tanh\n0000000000005254 T _ggml_tanh_inplace\n00000000000023d0 T _ggml_tensor_overhead\n00000000000144d8 T _ggml_threadpool_params_default\n000000000001447c T _ggml_threadpool_params_init\n0000000000014534 T _ggml_threadpool_params_match\n0000000000001e18 T _ggml_time_init\n0000000000001e1c T _ggml_time_ms\n0000000000001e68 T _ggml_time_us\n000000000000bc08 T _ggml_timestep_embedding\n000000000000c02c T _ggml_top_k\n0000000000008d48 T _ggml_transpose\n000000000000bc9c T _ggml_tri\n0000000000006354 T _ggml_trunc\n00000000000063d4 T _ggml_trunc_inplace\n000000000000219c T _ggml_type_name\n000000000000209c T _ggml_type_size\n0000000000002174 T _ggml_type_sizef\n00000000000041b8 T _ggml_unary\n00000000000042f4 T _ggml_unary_inplace\n00000000000021ec T _ggml_unary_op_name\n0000000000003350 T _ggml_unravel_index\n000000000000b3f0 T _ggml_upscale\n000000000000b4bc T _ggml_upscale_ext\n0000000000002c10 T _ggml_used_mem\n000000000005cae4 T _ggml_validate_row_data\n0000000000001e00 T _ggml_version\n0000000000008900 T _ggml_view_1d\n0000000000008970 T _ggml_view_2d\n0000000000008a24 T _ggml_view_3d\n0000000000008aec T _ggml_view_4d\n0000000000003424 T _ggml_view_tensor\n000000000000d490 T _ggml_win_part\n000000000000d594 T _ggml_win_unpart\n0000000000005c60 T _ggml_xielu\n0000000000064dc0 T _gguf_add_tensor\n0000000000060b2c T _gguf_find_key\n0000000000062354 T _gguf_find_tensor\n0000000000060a4c T _gguf_free\n0000000000060b00 T _gguf_get_alignment\n0000000000060d24 T _gguf_get_arr_data\n0000000000060e7c T _gguf_get_arr_n\n0000000000060dc0 T _gguf_get_arr_str\n0000000000060c8c T _gguf_get_arr_type\n0000000000060b08 T _gguf_get_data_offset\n0000000000060ba8 T _gguf_get_key\n0000000000060c18 T _gguf_get_kv_type\n0000000000065ef0 T _gguf_get_meta_data\n0000000000065e88 T _gguf_get_meta_size\n0000000000060b10 T _gguf_get_n_kv\n0000000000062330 T _gguf_get_n_tensors\n00000000000623d0 T _gguf_get_tensor_name\n00000000000624a8 T _gguf_get_tensor_ne\n000000000006243c T _gguf_get_tensor_offset\n0000000000062580 T _gguf_get_tensor_size\n0000000000062514 T _gguf_get_tensor_type\n0000000000061fa0 T _gguf_get_val_bool\n0000000000062248 T _gguf_get_val_data\n00000000000619c0 T _gguf_get_val_f32\n0000000000061e28 T _gguf_get_val_f64\n0000000000061558 T _gguf_get_val_i16\n0000000000061848 T _gguf_get_val_i32\n0000000000061cb0 T _gguf_get_val_i64\n0000000000061268 T _gguf_get_val_i8\n0000000000062118 T _gguf_get_val_str\n00000000000613e0 T _gguf_get_val_u16\n00000000000616d0 T _gguf_get_val_u32\n0000000000061b38 T _gguf_get_val_u64\n0000000000060fb0 T _gguf_get_val_u8\n0000000000060af8 T _gguf_get_version\n000000000005f2f8 T _gguf_init_empty\n00000000000608bc T _gguf_init_from_buffer\n000000000005f334 T _gguf_init_from_callback\n00000000000609a4 T _gguf_init_from_file\n00000000000606fc T _gguf_init_from_file_ptr\n00000000000625e8 T _gguf_remove_key\n0000000000063e6c T _gguf_set_arr_data\n00000000000641d4 T _gguf_set_arr_str\n000000000006456c T _gguf_set_kv\n00000000000652c0 T _gguf_set_tensor_data\n000000000006513c T _gguf_set_tensor_type\n00000000000639fc T _gguf_set_val_bool\n0000000000063274 T _gguf_set_val_f32\n0000000000063818 T _gguf_set_val_f64\n0000000000062ccc T _gguf_set_val_i16\n0000000000063090 T _gguf_set_val_i32\n0000000000063638 T _gguf_set_val_i64\n0000000000062904 T _gguf_set_val_i8\n0000000000063be0 T _gguf_set_val_str\n0000000000062ae8 T _gguf_set_val_u16\n0000000000062eb0 T _gguf_set_val_u32\n0000000000063458 T _gguf_set_val_u64\n0000000000062720 T _gguf_set_val_u8\n0000000000060aa0 T _gguf_type_name\n0000000000065dc4 T _gguf_write_to_file\n00000000000659f4 T _gguf_write_to_file_ptr\n00000000000503d0 T _iq2xs_free_impl\n000000000004f66c T _iq2xs_init_impl\n0000000000054270 T _iq3xs_free_impl\n0000000000053798 T _iq3xs_init_impl\n0000000000058c44 T _quantize_iq1_m\n000000000005743c T _quantize_iq1_s\n000000000005b44c T _quantize_iq2_s\n0000000000051e60 T _quantize_iq2_xs\n00000000000504c8 T _quantize_iq2_xxs\n0000000000055ac0 T _quantize_iq3_s\n0000000000054300 T _quantize_iq3_xxs\n000000000005a08c T _quantize_iq4_nl\n000000000005b1a0 T _quantize_iq4_xs\n000000000004a7c0 T _quantize_mxfp4\n000000000004a7f8 T _quantize_nvfp4\n0000000000045818 T _quantize_q1_0\n0000000000045c00 T _quantize_q2_0\n00000000000395fc T _quantize_q2_K\n000000000003b828 T _quantize_q3_K\n0000000000045f08 T _quantize_q4_0\n0000000000046d50 T _quantize_q4_1\n000000000003e974 T _quantize_q4_K\n0000000000048070 T _quantize_q5_0\n00000000000490f8 T _quantize_q5_1\n0000000000041eb4 T _quantize_q5_K\n0000000000044d30 T _quantize_q6_K\n000000000004a764 T _quantize_q8_0\n000000000005cad4 T _quantize_row_iq2_s_ref\n000000000005742c T _quantize_row_iq3_s_ref\n0000000000055ab8 T _quantize_row_iq3_xxs_ref\n000000000005b0c0 T _quantize_row_iq4_nl_ref\n000000000005b36c T _quantize_row_iq4_xs_ref\n0000000000036190 T _quantize_row_mxfp4_ref\n0000000000036a30 T _quantize_row_nvfp4_ref\n0000000000034650 T _quantize_row_q1_0_ref\n00000000000347fc T _quantize_row_q2_0_ref\n00000000000384f0 T _quantize_row_q2_K_ref\n000000000003a5d4 T _quantize_row_q3_K_ref\n0000000000034938 T _quantize_row_q4_0_ref\n0000000000034ce8 T _quantize_row_q4_1_ref\n000000000003cc50 T _quantize_row_q4_K_ref\n0000000000035114 T _quantize_row_q5_0_ref\n00000000000355c8 T _quantize_row_q5_1_ref\n00000000000401d0 T _quantize_row_q5_K_ref\n00000000000438c4 T _quantize_row_q6_K_ref\n0000000000035af0 T _quantize_row_q8_0_ref\n0000000000035e04 T _quantize_row_q8_1_ref\n000000000004e75c T _quantize_row_q8_K_ref\n000000000004a830 T _quantize_row_tq1_0_ref\n000000000004abcc T _quantize_row_tq2_0_ref\n000000000004ada0 T _quantize_tq1_0\n000000000004adfc T _quantize_tq2_0\n"
+    },
+    "libggml-blas.0.25.1.dylib": {
+      "sha256": "8074f18ab9d95309ae4d9be587abc3d6befad740096cb29671e352ca103ce2f0",
+      "size": 58776,
+      "dependencies": "/Users/runner/work/_temp/portable-sdk/lib/libggml-blas.0.25.1.dylib:\n\t@rpath/libggml-blas.0.dylib (compatibility version 0.0.0, current version 0.25.1)\n\t@rpath/libggml-base.0.dylib (compatibility version 0.0.0, current version 0.25.1)\n\t/System/Library/Frameworks/Accelerate.framework/Versions/A/Accelerate (compatibility version 1.0.0, current version 4.0.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2100.43.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)\n",
+      "exports": "0000000000001af0 T _ggml_backend_blas_init\n0000000000001ba4 T _ggml_backend_blas_reg\n0000000000001bc8 T _ggml_backend_blas_set_n_threads\n0000000000001bb0 T _ggml_backend_is_blas\n"
+    },
+    "libggml-cpu.0.25.1.dylib": {
+      "sha256": "8cc202c7a312c31a8caff5059d1eb5b1fcddce615380adfee3f3b8352a1d8089",
+      "size": 1022488,
+      "dependencies": "/Users/runner/work/_temp/portable-sdk/lib/libggml-cpu.0.25.1.dylib:\n\t@rpath/libggml-cpu.0.dylib (compatibility version 0.0.0, current version 0.25.1)\n\t@rpath/libggml-base.0.dylib (compatibility version 0.0.0, current version 0.25.1)\n\t/System/Library/Frameworks/Accelerate.framework/Versions/A/Accelerate (compatibility version 1.0.0, current version 4.0.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2100.43.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)\n",
+      "exports": "000000000000c054 T __Z19ggml_quantize_mat_tILx4EL9ggml_type15EEvPKfPvxx\n000000000000c044 T __Z19ggml_quantize_mat_tILx4EL9ggml_type8EEvPKfPvxx\n000000000000c05c T __Z19ggml_quantize_mat_tILx8EL9ggml_type15EEvPKfPvxx\n000000000000c04c T __Z19ggml_quantize_mat_tILx8EL9ggml_type8EEvPKfPvxx\n000000000001ce58 T __Z35ggml_backend_cpu_repack_buffer_typev\n0000000000008078 T __Z39ggml_backend_cpu_get_extra_buffer_typesv\n00000000000b976c T __ZN4ggml3cpu13tensor_traitsD0Ev\n00000000000b9768 T __ZN4ggml3cpu13tensor_traitsD1Ev\n000000000003b704 T __ZN4ggml3cpu13tensor_traitsD2Ev\n00000000000b9774 T __ZN4ggml3cpu17extra_buffer_typeD0Ev\n00000000000b9770 T __ZN4ggml3cpu17extra_buffer_typeD1Ev\n000000000003b708 T __ZN4ggml3cpu17extra_buffer_typeD2Ev\n000000000001ce10 T __ZN4ggml3cpu6repack4gemmI10block_q1_0Lx4ELx4EL9ggml_type8EEEviPfmPKvS7_ii\n000000000001ce14 T __ZN4ggml3cpu6repack4gemmI10block_q1_0Lx8ELx4EL9ggml_type8EEEviPfmPKvS7_ii\n000000000001ce24 T __ZN4ggml3cpu6repack4gemmI10block_q2_KLx8ELx8EL9ggml_type15EEEviPfmPKvS7_ii\n000000000001ce18 T __ZN4ggml3cpu6repack4gemmI10block_q4_0Lx4ELx4EL9ggml_type8EEEviPfmPKvS7_ii\n000000000001ce1c T __ZN4ggml3cpu6repack4gemmI10block_q4_0Lx8ELx4EL9ggml_type8EEEviPfmPKvS7_ii\n000000000001ce20 T __ZN4ggml3cpu6repack4gemmI10block_q4_0Lx8ELx8EL9ggml_type8EEEviPfmPKvS7_ii\n000000000001ce28 T __ZN4ggml3cpu6repack4gemmI10block_q4_KLx4ELx8EL9ggml_type15EEEviPfmPKvS7_ii\n000000000001ce2c T __ZN4ggml3cpu6repack4gemmI10block_q4_KLx8ELx8EL9ggml_type15EEEviPfmPKvS7_ii\n000000000001ce30 T __ZN4ggml3cpu6repack4gemmI10block_q5_KLx4ELx8EL9ggml_type15EEEviPfmPKvS7_ii\n000000000001ce34 T __ZN4ggml3cpu6repack4gemmI10block_q5_KLx8ELx8EL9ggml_type15EEEviPfmPKvS7_ii\n000000000001ce38 T __ZN4ggml3cpu6repack4gemmI10block_q6_KLx4ELx8EL9ggml_type15EEEviPfmPKvS7_ii\n000000000001ce3c T __ZN4ggml3cpu6repack4gemmI10block_q6_KLx8ELx8EL9ggml_type15EEEviPfmPKvS7_ii\n000000000001ce50 T __ZN4ggml3cpu6repack4gemmI10block_q8_0Lx4ELx4EL9ggml_type8EEEviPfmPKvS7_ii\n000000000001ce54 T __ZN4ggml3cpu6repack4gemmI10block_q8_0Lx8ELx4EL9ggml_type8EEEviPfmPKvS7_ii\n000000000001ce48 T __ZN4ggml3cpu6repack4gemmI11block_mxfp4Lx4ELx4EL9ggml_type8EEEviPfmPKvS7_ii\n000000000001ce4c T __ZN4ggml3cpu6repack4gemmI11block_mxfp4Lx8ELx8EL9ggml_type8EEEviPfmPKvS7_ii\n000000000001ce40 T __ZN4ggml3cpu6repack4gemmI12block_iq4_nlLx4ELx4EL9ggml_type8EEEviPfmPKvS7_ii\n000000000001ce44 T __ZN4ggml3cpu6repack4gemmI12block_iq4_nlLx8ELx8EL9ggml_type8EEEviPfmPKvS7_ii\n000000000001cdc8 T __ZN4ggml3cpu6repack4gemvI10block_q1_0Lx4ELx4EL9ggml_type8EEEviPfmPKvS7_ii\n000000000001cdcc T __ZN4ggml3cpu6repack4gemvI10block_q1_0Lx8ELx4EL9ggml_type8EEEviPfmPKvS7_ii\n000000000001cddc T __ZN4ggml3cpu6repack4gemvI10block_q2_KLx8ELx8EL9ggml_type15EEEviPfmPKvS7_ii\n000000000001cdd0 T __ZN4ggml3cpu6repack4gemvI10block_q4_0Lx4ELx4EL9ggml_type8EEEviPfmPKvS7_ii\n000000000001cdd4 T __ZN4ggml3cpu6repack4gemvI10block_q4_0Lx8ELx4EL9ggml_type8EEEviPfmPKvS7_ii\n000000000001cdd8 T __ZN4ggml3cpu6repack4gemvI10block_q4_0Lx8ELx8EL9ggml_type8EEEviPfmPKvS7_ii\n000000000001cde0 T __ZN4ggml3cpu6repack4gemvI10block_q4_KLx4ELx8EL9ggml_type15EEEviPfmPKvS7_ii\n000000000001cde4 T __ZN4ggml3cpu6repack4gemvI10block_q4_KLx8ELx8EL9ggml_type15EEEviPfmPKvS7_ii\n000000000001cde8 T __ZN4ggml3cpu6repack4gemvI10block_q5_KLx4ELx8EL9ggml_type15EEEviPfmPKvS7_ii\n000000000001cdec T __ZN4ggml3cpu6repack4gemvI10block_q5_KLx8ELx8EL9ggml_type15EEEviPfmPKvS7_ii\n000000000001cdf0 T __ZN4ggml3cpu6repack4gemvI10block_q6_KLx4ELx8EL9ggml_type15EEEviPfmPKvS7_ii\n000000000001cdf4 T __ZN4ggml3cpu6repack4gemvI10block_q6_KLx8ELx8EL9ggml_type15EEEviPfmPKvS7_ii\n000000000001ce08 T __ZN4ggml3cpu6repack4gemvI10block_q8_0Lx4ELx4EL9ggml_type8EEEviPfmPKvS7_ii\n000000000001ce0c T __ZN4ggml3cpu6repack4gemvI10block_q8_0Lx8ELx4EL9ggml_type8EEEviPfmPKvS7_ii\n000000000001ce00 T __ZN4ggml3cpu6repack4gemvI11block_mxfp4Lx4ELx4EL9ggml_type8EEEviPfmPKvS7_ii\n000000000001ce04 T __ZN4ggml3cpu6repack4gemvI11block_mxfp4Lx8ELx8EL9ggml_type8EEEviPfmPKvS7_ii\n000000000001cdf8 T __ZN4ggml3cpu6repack4gemvI12block_iq4_nlLx4ELx4EL9ggml_type8EEEviPfmPKvS7_ii\n000000000001cdfc T __ZN4ggml3cpu6repack4gemvI12block_iq4_nlLx8ELx8EL9ggml_type8EEEviPfmPKvS7_ii\n0000000000019108 T __ZN4ggml3cpu6repack6repackI10block_q1_0Lx4ELx4EEEiP11ggml_tensorPKvm\n0000000000019750 T __ZN4ggml3cpu6repack6repackI10block_q1_0Lx8ELx4EEEiP11ggml_tensorPKvm\n000000000001a934 T __ZN4ggml3cpu6repack6repackI10block_q2_KLx8ELx8EEEiP11ggml_tensorPKvm\n0000000000019760 T __ZN4ggml3cpu6repack6repackI10block_q4_0Lx4ELx4EEEiP11ggml_tensorPKvm\n0000000000019bf4 T __ZN4ggml3cpu6repack6repackI10block_q4_0Lx8ELx4EEEiP11ggml_tensorPKvm\n0000000000019c04 T __ZN4ggml3cpu6repack6repackI10block_q4_0Lx8ELx8EEEiP11ggml_tensorPKvm\n000000000001a924 T __ZN4ggml3cpu6repack6repackI10block_q4_KLx4ELx8EEEiP11ggml_tensorPKvm\n0000000000019e98 T __ZN4ggml3cpu6repack6repackI10block_q4_KLx8ELx8EEEiP11ggml_tensorPKvm\n000000000001adc8 T __ZN4ggml3cpu6repack6repackI10block_q5_KLx4ELx8EEEiP11ggml_tensorPKvm\n000000000001b8f4 T __ZN4ggml3cpu6repack6repackI10block_q5_KLx8ELx8EEEiP11ggml_tensorPKvm\n000000000001b904 T __ZN4ggml3cpu6repack6repackI10block_q6_KLx4ELx8EEEiP11ggml_tensorPKvm\n000000000001c290 T __ZN4ggml3cpu6repack6repackI10block_q6_KLx8ELx8EEEiP11ggml_tensorPKvm\n000000000001ca9c T __ZN4ggml3cpu6repack6repackI10block_q8_0Lx4ELx4EEEiP11ggml_tensorPKvm\n000000000001cdb8 T __ZN4ggml3cpu6repack6repackI10block_q8_0Lx8ELx4EEEiP11ggml_tensorPKvm\n000000000001c6ac T __ZN4ggml3cpu6repack6repackI11block_mxfp4Lx4ELx4EEEiP11ggml_tensorPKvm\n000000000001c85c T __ZN4ggml3cpu6repack6repackI11block_mxfp4Lx8ELx8EEEiP11ggml_tensorPKvm\n000000000001c2a0 T __ZN4ggml3cpu6repack6repackI12block_iq4_nlLx4ELx4EEEiP11ggml_tensorPKvm\n000000000001c45c T __ZN4ggml3cpu6repack6repackI12block_iq4_nlLx8ELx8EEEiP11ggml_tensorPKvm\n00000000000dd0f0 S __ZTIN4ggml3cpu13tensor_traitsE\n00000000000dd130 S __ZTIN4ggml3cpu17extra_buffer_typeE\n00000000000cb508 S __ZTSN4ggml3cpu13tensor_traitsE\n00000000000cb523 S __ZTSN4ggml3cpu17extra_buffer_typeE\n00000000000dd0c0 S __ZTVN4ggml3cpu13tensor_traitsE\n00000000000dd100 S __ZTVN4ggml3cpu17extra_buffer_typeE\n00000000000e00d0 S _ggml_arm_arch_features\n000000000000826c T _ggml_backend_cpu_init\n000000000000832c T _ggml_backend_cpu_reg\n000000000000844c T _ggml_backend_cpu_set_abort_callback\n0000000000008360 T _ggml_backend_cpu_set_n_threads\n00000000000083cc T _ggml_backend_cpu_set_threadpool\n00000000000084c4 T _ggml_backend_cpu_set_use_ref\n0000000000008348 T _ggml_backend_is_cpu\n0000000000001ba4 T _ggml_barrier\n00000000000484a0 T _ggml_compute_forward_abs\n0000000000069d98 T _ggml_compute_forward_acc\n00000000000673a8 T _ggml_compute_forward_add\n00000000000683dc T _ggml_compute_forward_add1\n0000000000067dd8 T _ggml_compute_forward_add_id\n000000000003b848 T _ggml_compute_forward_add_non_quantized\n00000000000914bc T _ggml_compute_forward_add_rel_pos\n0000000000085bb0 T _ggml_compute_forward_arange\n000000000006b154 T _ggml_compute_forward_argmax\n0000000000085fb4 T _ggml_compute_forward_argsort\n0000000000059af4 T _ggml_compute_forward_ceil\n0000000000078318 T _ggml_compute_forward_clamp\n000000000007dbb0 T _ggml_compute_forward_col2im_1d\n000000000006c97c T _ggml_compute_forward_concat\n000000000007580c T _ggml_compute_forward_cont\n000000000007e0d0 T _ggml_compute_forward_conv_2d\n00000000000811c4 T _ggml_compute_forward_conv_2d_dw\n000000000007ebe4 T _ggml_compute_forward_conv_3d\n000000000007b508 T _ggml_compute_forward_conv_transpose_1d\n000000000007fa1c T _ggml_compute_forward_conv_transpose_2d\n0000000000055080 T _ggml_compute_forward_cos\n000000000006b268 T _ggml_compute_forward_count_equal\n0000000000075808 T _ggml_compute_forward_cpy\n0000000000095800 T _ggml_compute_forward_cross_entropy_loss\n0000000000095db0 T _ggml_compute_forward_cross_entropy_loss_back\n000000000006aa6c T _ggml_compute_forward_cumsum\n00000000000957e8 T _ggml_compute_forward_custom\n0000000000076e70 T _ggml_compute_forward_diag\n0000000000077274 T _ggml_compute_forward_diag_mask_inf\n00000000000774e4 T _ggml_compute_forward_diag_mask_zero\n000000000004517c T _ggml_compute_forward_div\n00000000000940f8 T _ggml_compute_forward_dsv4_hc_comb\n0000000000094eb8 T _ggml_compute_forward_dsv4_hc_post\n0000000000094a70 T _ggml_compute_forward_dsv4_hc_pre\n000000000005e58c T _ggml_compute_forward_dup\n000000000004ce80 T _ggml_compute_forward_elu\n00000000000504d4 T _ggml_compute_forward_exp\n0000000000057118 T _ggml_compute_forward_expm1\n000000000006de50 T _ggml_compute_forward_fill\n0000000000088f20 T _ggml_compute_forward_flash_attn_back\n0000000000086a94 T _ggml_compute_forward_flash_attn_ext\n0000000000058d28 T _ggml_compute_forward_floor\n0000000000096d20 T _ggml_compute_forward_fwht\n0000000000093394 T _ggml_compute_forward_gated_delta_net\n00000000000911bc T _ggml_compute_forward_get_rel_pos\n0000000000075810 T _ggml_compute_forward_get_rows\n0000000000076900 T _ggml_compute_forward_get_rows_back\n0000000000092210 T _ggml_compute_forward_gla\n000000000008da68 T _ggml_compute_forward_glu\n00000000000709b8 T _ggml_compute_forward_group_norm\n000000000004f5e8 T _ggml_compute_forward_hardsigmoid\n0000000000051520 T _ggml_compute_forward_hardswish\n000000000007c298 T _ggml_compute_forward_im2col\n000000000007d0f0 T _ggml_compute_forward_im2col_3d\n000000000007cb84 T _ggml_compute_forward_im2col_back_f32\n0000000000071660 T _ggml_compute_forward_l2_norm\n000000000006e4a8 T _ggml_compute_forward_leaky_relu\n00000000000977ac T _ggml_compute_forward_lightning_indexer\n00000000000560cc T _ggml_compute_forward_log\n000000000009578c T _ggml_compute_forward_map_custom1\n00000000000957a8 T _ggml_compute_forward_map_custom2\n00000000000957c8 T _ggml_compute_forward_map_custom3\n000000000006afe8 T _ggml_compute_forward_mean\n0000000000041e78 T _ggml_compute_forward_mul\n00000000000038f8 T _ggml_compute_forward_mul_mat\n0000000000032874 T _ggml_compute_forward_mul_mat_id_iqp\n0000000000034148 T _ggml_compute_forward_mul_mat_iqp\n000000000004a20c T _ggml_compute_forward_neg\n000000000006f228 T _ggml_compute_forward_norm\n0000000000096268 T _ggml_compute_forward_opt_step_adamw\n0000000000096770 T _ggml_compute_forward_opt_step_sgd\n0000000000071d8c T _ggml_compute_forward_out_prod\n0000000000083674 T _ggml_compute_forward_pad\n0000000000083e74 T _ggml_compute_forward_pad_reflect_1d\n0000000000081cdc T _ggml_compute_forward_pool_1d\n0000000000081f94 T _ggml_compute_forward_pool_2d\n000000000008278c T _ggml_compute_forward_pool_2d_back\n000000000004d6b4 T _ggml_compute_forward_relu\n000000000006b6c8 T _ggml_compute_forward_repeat\n000000000006c1f0 T _ggml_compute_forward_repeat_back\n000000000006f5c0 T _ggml_compute_forward_rms_norm\n00000000000702e0 T _ggml_compute_forward_rms_norm_back\n000000000006fc24 T _ggml_compute_forward_rms_norm_mul_fused\n0000000000085778 T _ggml_compute_forward_roll\n00000000000789b8 T _ggml_compute_forward_rope\n000000000007b4c4 T _ggml_compute_forward_rope_back\n000000000005a8c0 T _ggml_compute_forward_round\n0000000000091674 T _ggml_compute_forward_rwkv_wkv6\n000000000009537c T _ggml_compute_forward_rwkv_wkv7\n0000000000074d34 T _ggml_compute_forward_scale\n0000000000074f40 T _ggml_compute_forward_set\n0000000000075fbc T _ggml_compute_forward_set_rows\n0000000000049240 T _ggml_compute_forward_sgn\n000000000004e490 T _ggml_compute_forward_sigmoid\n000000000006eac8 T _ggml_compute_forward_silu_back\n0000000000054034 T _ggml_compute_forward_sin\n0000000000077518 T _ggml_compute_forward_soft_max\n0000000000077d04 T _ggml_compute_forward_soft_max_ext_back\n0000000000058204 T _ggml_compute_forward_softplus\n0000000000092e5c T _ggml_compute_forward_solve_tri\n000000000005244c T _ggml_compute_forward_sqr\n0000000000053254 T _ggml_compute_forward_sqrt\n000000000008a2d4 T _ggml_compute_forward_ssm_conv\n000000000008a758 T _ggml_compute_forward_ssm_scan\n000000000004b008 T _ggml_compute_forward_step\n000000000003eb60 T _ggml_compute_forward_sub\n000000000006a10c T _ggml_compute_forward_sum\n000000000006ad5c T _ggml_compute_forward_sum_rows\n000000000004be34 T _ggml_compute_forward_tanh\n0000000000085d70 T _ggml_compute_forward_timestep_embedding\n00000000000863cc T _ggml_compute_forward_top_k\n000000000006e2c8 T _ggml_compute_forward_tri\n000000000005b68c T _ggml_compute_forward_trunc\n000000000008c75c T _ggml_compute_forward_unary\n0000000000082c30 T _ggml_compute_forward_upscale\n000000000008be80 T _ggml_compute_forward_win_part\n000000000008c4ac T _ggml_compute_forward_win_unpart\n000000000005c458 T _ggml_compute_forward_xielu\n0000000000007024 T _ggml_cpu_bf16_to_fp32\n000000000003b70c T _ggml_cpu_extra_compute_forward\n000000000003b7a0 T _ggml_cpu_extra_work_size\n0000000000004830 T _ggml_cpu_fp16_to_fp32\n0000000000006e78 T _ggml_cpu_fp32_to_bf16\n0000000000006cdc T _ggml_cpu_fp32_to_fp16\n0000000000006cc8 T _ggml_cpu_fp32_to_fp32\n0000000000006f58 T _ggml_cpu_fp32_to_i32\n000000000000717c T _ggml_cpu_get_rvv_vlen\n00000000000071e4 T _ggml_cpu_get_sve_cnt\n0000000000007154 T _ggml_cpu_has_amx_int8\n000000000000716c T _ggml_cpu_has_arm_fma\n000000000000711c T _ggml_cpu_has_avx\n000000000000712c T _ggml_cpu_has_avx2\n0000000000007134 T _ggml_cpu_has_avx512\n000000000000714c T _ggml_cpu_has_avx512_bf16\n000000000000713c T _ggml_cpu_has_avx512_vbmi\n0000000000007144 T _ggml_cpu_has_avx512_vnni\n0000000000007124 T _ggml_cpu_has_avx_vnni\n000000000000715c T _ggml_cpu_has_bmi2\n00000000000071cc T _ggml_cpu_has_dotprod\n0000000000007184 T _ggml_cpu_has_f16c\n0000000000007164 T _ggml_cpu_has_fma\n000000000000718c T _ggml_cpu_has_fp16_va\n000000000000719c T _ggml_cpu_has_llamafile\n00000000000071dc T _ggml_cpu_has_matmul_int8\n00000000000071c4 T _ggml_cpu_has_neon\n0000000000007174 T _ggml_cpu_has_riscv_v\n00000000000071ec T _ggml_cpu_has_sme\n00000000000071f4 T _ggml_cpu_has_sme2\n00000000000071a4 T _ggml_cpu_has_sse3\n00000000000071ac T _ggml_cpu_has_ssse3\n00000000000071d4 T _ggml_cpu_has_sve\n00000000000071b4 T _ggml_cpu_has_vsx\n00000000000071bc T _ggml_cpu_has_vxe\n0000000000007194 T _ggml_cpu_has_wasm_simd\n0000000000005964 T _ggml_cpu_init\n00000000000326d8 T _ggml_cpu_iqp_mul_mat_id_min_batch\n0000000000032c2c T _ggml_cpu_iqp_scratch_size\n00000000000326e4 T _ggml_cpu_iqp_supports_mul_mat\n0000000000032840 T _ggml_cpu_iqp_supports_mul_mat_id\n00000000000b6d90 T _ggml_gemm_iq4_nl_4x4_q8_0\n0000000000016a24 T _ggml_gemm_iq4_nl_4x4_q8_0_generic\n0000000000016fd4 T _ggml_gemm_iq4_nl_8x8_q8_0\n00000000000b702c T _ggml_gemm_mxfp4_4x4_q8_0\n0000000000017454 T _ggml_gemm_mxfp4_4x4_q8_0_generic\n0000000000017a44 T _ggml_gemm_mxfp4_8x8_q8_0\n00000000000b8ea8 T _ggml_gemm_q1_0_4x4_q8_0\n000000000001878c T _ggml_gemm_q1_0_4x4_q8_0_generic\n00000000000b91f8 T _ggml_gemm_q1_0_4x8_q8_0\n0000000000018c4c T _ggml_gemm_q1_0_4x8_q8_0_generic\n0000000000013bf4 T _ggml_gemm_q2_K_8x8_q8_K\n00000000000b6658 T _ggml_gemm_q4_0_4x4_q8_0\n0000000000011ae4 T _ggml_gemm_q4_0_4x4_q8_0_generic\n00000000000b6d88 T _ggml_gemm_q4_0_4x8_q8_0\n0000000000012078 T _ggml_gemm_q4_0_4x8_q8_0_generic\n00000000000b6d8c T _ggml_gemm_q4_0_8x8_q8_0\n00000000000125a0 T _ggml_gemm_q4_0_8x8_q8_0_generic\n00000000000b72ec T _ggml_gemm_q4_K_8x4_q8_K\n0000000000012b18 T _ggml_gemm_q4_K_8x4_q8_K_generic\n00000000000b8428 T _ggml_gemm_q4_K_8x8_q8_K\n0000000000013300 T _ggml_gemm_q4_K_8x8_q8_K_generic\n00000000000b7c60 T _ggml_gemm_q5_K_8x4_q8_K\n00000000000148a0 T _ggml_gemm_q5_K_8x4_q8_K_generic\n00000000000b842c T _ggml_gemm_q5_K_8x8_q8_K\n00000000000154cc T _ggml_gemm_q5_K_8x8_q8_K_generic\n00000000000b8430 T _ggml_gemm_q6_K_8x4_q8_K\n00000000000161c4 T _ggml_gemm_q6_K_8x4_q8_K_generic\n00000000000b8c58 T _ggml_gemm_q6_K_8x8_q8_K\n00000000000165b8 T _ggml_gemm_q6_K_8x8_q8_K_generic\n00000000000b8c5c T _ggml_gemm_q8_0_4x4_q8_0\n0000000000017edc T _ggml_gemm_q8_0_4x4_q8_0_generic\n00000000000b8ea4 T _ggml_gemm_q8_0_4x8_q8_0\n000000000001828c T _ggml_gemm_q8_0_4x8_q8_0_generic\n00000000000b3764 T _ggml_gemv_iq4_nl_4x4_q8_0\n000000000000fffc T _ggml_gemv_iq4_nl_4x4_q8_0_generic\n00000000000103ac T _ggml_gemv_iq4_nl_8x8_q8_0\n00000000000b3890 T _ggml_gemv_mxfp4_4x4_q8_0\n0000000000010680 T _ggml_gemv_mxfp4_4x4_q8_0_generic\n0000000000010a84 T _ggml_gemv_mxfp4_8x8_q8_0\n00000000000b6060 T _ggml_gemv_q1_0_4x4_q8_0\n000000000001115c T _ggml_gemv_q1_0_4x4_q8_0_generic\n00000000000b648c T _ggml_gemv_q1_0_4x8_q8_0\n00000000000118d0 T _ggml_gemv_q1_0_4x8_q8_0_generic\n000000000000d630 T _ggml_gemv_q2_K_8x8_q8_K\n00000000000b354c T _ggml_gemv_q4_0_4x4_q8_0\n000000000000c064 T _ggml_gemv_q4_0_4x4_q8_0_generic\n00000000000b3648 T _ggml_gemv_q4_0_4x8_q8_0\n000000000000c2bc T _ggml_gemv_q4_0_4x8_q8_0_generic\n00000000000b3760 T _ggml_gemv_q4_0_8x8_q8_0\n000000000000c608 T _ggml_gemv_q4_0_8x8_q8_0_generic\n00000000000b39e4 T _ggml_gemv_q4_K_8x4_q8_K\n000000000000c8e0 T _ggml_gemv_q4_K_8x4_q8_K_generic\n00000000000b3dd8 T _ggml_gemv_q4_K_8x8_q8_K\n000000000000cfa8 T _ggml_gemv_q4_K_8x8_q8_K_generic\n00000000000b4270 T _ggml_gemv_q5_K_8x4_q8_K\n000000000000e4e8 T _ggml_gemv_q5_K_8x4_q8_K_generic\n00000000000b489c T _ggml_gemv_q5_K_8x8_q8_K\n000000000000ef7c T _ggml_gemv_q5_K_8x8_q8_K_generic\n00000000000b4f40 T _ggml_gemv_q6_K_8x4_q8_K\n000000000000fa98 T _ggml_gemv_q6_K_8x4_q8_K_generic\n00000000000b574c T _ggml_gemv_q6_K_8x8_q8_K\n000000000000fd4c T _ggml_gemv_q6_K_8x8_q8_K_generic\n00000000000b5e90 T _ggml_gemv_q8_0_4x4_q8_0\n0000000000010d88 T _ggml_gemv_q8_0_4x4_q8_0_generic\n00000000000b5f6c T _ggml_gemv_q8_0_4x8_q8_0\n0000000000010f18 T _ggml_gemv_q8_0_4x8_q8_0_generic\n0000000000003268 T _ggml_get_f32_1d\n0000000000003450 T _ggml_get_f32_nd\n0000000000002a18 T _ggml_get_i32_1d\n0000000000002d18 T _ggml_get_i32_nd\n0000000000001b90 T _ggml_get_type_traits_cpu\n00000000000056f4 T _ggml_graph_compute\n0000000000006c70 T _ggml_graph_compute_with_ctx\n0000000000004a80 T _ggml_graph_plan\n0000000000001c10 T _ggml_is_numa\n0000000000002308 T _ggml_new_f32\n0000000000001c18 T _ggml_new_i32\n0000000000001c0c T _ggml_numa_init\n00000000000b289c T _ggml_quantize_mat_q8_0_4x4\n000000000000b2f0 T _ggml_quantize_mat_q8_0_4x4_generic\n00000000000b2f00 T _ggml_quantize_mat_q8_0_4x8\n000000000000b658 T _ggml_quantize_mat_q8_0_4x8_generic\n000000000000b9e4 T _ggml_quantize_mat_q8_K_4x4\n000000000000bd14 T _ggml_quantize_mat_q8_K_4x8\n0000000000002378 T _ggml_set_f32\n0000000000003528 T _ggml_set_f32_1d\n000000000000378c T _ggml_set_f32_nd\n0000000000001c80 T _ggml_set_i32\n0000000000002de0 T _ggml_set_i32_1d\n00000000000030fc T _ggml_set_i32_nd\n00000000001200d4 S _ggml_table_f32_e8m0_half\n00000000001204d4 S _ggml_table_f32_f16\n00000000001604d4 S _ggml_table_f32_ue4m3\n00000000000e00d4 S _ggml_table_gelu_f16\n00000000001000d4 S _ggml_table_gelu_quick_f16\n0000000000001c00 T _ggml_threadpool_chunk_add\n0000000000001bf8 T _ggml_threadpool_chunk_set\n0000000000004910 T _ggml_threadpool_free\n00000000000052cc T _ggml_threadpool_new\n0000000000004a04 T _ggml_threadpool_pause\n0000000000004a44 T _ggml_threadpool_resume\n000000000005d9a0 T _ggml_vec_cvar_f32\n000000000005cf3c T _ggml_vec_dot_bf16\n000000000005d10c T _ggml_vec_dot_f16\n000000000005cd50 T _ggml_vec_dot_f32\n00000000000b2064 T _ggml_vec_dot_iq1_m_q8_K\n000000000003ac0c T _ggml_vec_dot_iq1_m_q8_K_generic\n00000000000b1e68 T _ggml_vec_dot_iq1_s_q8_K\n000000000003aab0 T _ggml_vec_dot_iq1_s_q8_K_generic\n00000000000b1790 T _ggml_vec_dot_iq2_s_q8_K\n0000000000039a1c T _ggml_vec_dot_iq2_s_q8_K_generic\n00000000000b1594 T _ggml_vec_dot_iq2_xs_q8_K\n0000000000039648 T _ggml_vec_dot_iq2_xs_q8_K_generic\n00000000000b13ec T _ggml_vec_dot_iq2_xxs_q8_K\n00000000000392c0 T _ggml_vec_dot_iq2_xxs_q8_K_generic\n00000000000b1bb8 T _ggml_vec_dot_iq3_s_q8_K\n000000000003a1f0 T _ggml_vec_dot_iq3_s_q8_K_generic\n00000000000b19b8 T _ggml_vec_dot_iq3_xxs_q8_K\n0000000000039dc0 T _ggml_vec_dot_iq3_xxs_q8_K_generic\n00000000000b22d4 T _ggml_vec_dot_iq4_nl_q8_0\n000000000003aef4 T _ggml_vec_dot_iq4_nl_q8_0_generic\n00000000000b266c T _ggml_vec_dot_iq4_xs_q8_K\n000000000003b18c T _ggml_vec_dot_iq4_xs_q8_K_generic\n00000000000af48c T _ggml_vec_dot_mxfp4_q8_0\n00000000000363e4 T _ggml_vec_dot_mxfp4_q8_0_generic\n00000000000af868 T _ggml_vec_dot_nvfp4_q8_0\n0000000000036694 T _ggml_vec_dot_nvfp4_q8_0_generic\n00000000000aed54 T _ggml_vec_dot_q1_0_q8_0\n00000000000354b8 T _ggml_vec_dot_q1_0_q8_0_generic\n00000000000aef40 T _ggml_vec_dot_q2_0_q8_0\n0000000000035ed0 T _ggml_vec_dot_q2_0_q8_0_generic\n00000000000b04e4 T _ggml_vec_dot_q2_K_q8_K\n0000000000037818 T _ggml_vec_dot_q2_K_q8_K_generic\n00000000000b0798 T _ggml_vec_dot_q3_K_q8_K\n0000000000038194 T _ggml_vec_dot_q3_K_q8_K_generic\n00000000000af038 T _ggml_vec_dot_q4_0_q8_0\n0000000000036270 T _ggml_vec_dot_q4_0_q8_0_generic\n00000000000af254 T _ggml_vec_dot_q4_1_q8_1\n0000000000036328 T _ggml_vec_dot_q4_1_q8_1_generic\n00000000000b0b6c T _ggml_vec_dot_q4_K_q8_K\n0000000000038470 T _ggml_vec_dot_q4_K_q8_K_generic\n00000000000af964 T _ggml_vec_dot_q5_0_q8_0\n0000000000036898 T _ggml_vec_dot_q5_0_q8_0_generic\n00000000000afccc T _ggml_vec_dot_q5_1_q8_1\n0000000000036aa4 T _ggml_vec_dot_q5_1_q8_1_generic\n00000000000b0dc8 T _ggml_vec_dot_q5_K_q8_K\n00000000000389fc T _ggml_vec_dot_q5_K_q8_K_generic\n00000000000b10b0 T _ggml_vec_dot_q6_K_q8_K\n0000000000039028 T _ggml_vec_dot_q6_K_q8_K_generic\n00000000000b0020 T _ggml_vec_dot_q8_0_q8_0\n0000000000036c64 T _ggml_vec_dot_q8_0_q8_0_generic\n00000000000b0160 T _ggml_vec_dot_tq1_0_q8_K\n0000000000036cc8 T _ggml_vec_dot_tq1_0_q8_K_generic\n00000000000b0390 T _ggml_vec_dot_tq2_0_q8_K\n00000000000372b4 T _ggml_vec_dot_tq2_0_q8_K_generic\n000000000005e1dc T _ggml_vec_log_soft_max_f32\n000000000005d408 T _ggml_vec_silu_f32\n000000000005dbc8 T _ggml_vec_soft_max_f32\n000000000005d6b8 T _ggml_vec_swiglu_f32\n000000000009b660 T _llamafile_sgemm\n000000000003b6f0 T _quantize_row_iq4_nl\n000000000003b6f4 T _quantize_row_iq4_xs\n0000000000035490 T _quantize_row_mxfp4\n0000000000035494 T _quantize_row_nvfp4\n0000000000035470 T _quantize_row_q1_0\n0000000000035474 T _quantize_row_q2_0\n0000000000035498 T _quantize_row_q2_K\n000000000003549c T _quantize_row_q3_K\n0000000000035478 T _quantize_row_q4_0\n000000000003547c T _quantize_row_q4_1\n00000000000354a0 T _quantize_row_q4_K\n0000000000035480 T _quantize_row_q5_0\n0000000000035484 T _quantize_row_q5_1\n00000000000354a4 T _quantize_row_q5_K\n00000000000354a8 T _quantize_row_q6_K\n00000000000ae960 T _quantize_row_q8_0\n0000000000035488 T _quantize_row_q8_0_generic\n00000000000aeb18 T _quantize_row_q8_1\n000000000003548c T _quantize_row_q8_1_generic\n00000000000aed50 T _quantize_row_q8_K\n00000000000354b4 T _quantize_row_q8_K_generic\n00000000000354ac T _quantize_row_tq1_0\n00000000000354b0 T _quantize_row_tq2_0\n"
+    },
+    "libggml.0.25.1.dylib": {
+      "sha256": "137f5eeedb415905726151eb8b8be68c831dc52780d6a14fcbed59bf74734658",
+      "size": 59992,
+      "dependencies": "/Users/runner/work/_temp/portable-sdk/lib/libggml.0.25.1.dylib:\n\t@rpath/libggml.0.dylib (compatibility version 0.0.0, current version 0.25.1)\n\t@rpath/libggml-cpu.0.dylib (compatibility version 0.0.0, current version 0.25.1)\n\t@rpath/libggml-blas.0.dylib (compatibility version 0.0.0, current version 0.25.1)\n\t@rpath/libggml-base.0.dylib (compatibility version 0.0.0, current version 0.25.1)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2100.43.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)\n",
+      "exports": "0000000000001eac T __Z10dl_get_symPvPKc\n0000000000001e00 T __Z15dl_load_libraryRKNSt3__14__fs10filesystem4pathE\n0000000000001eb0 T __Z8dl_errorv\n00000000000028d8 T _ggml_backend_dev_by_name\n0000000000002a10 T _ggml_backend_dev_by_type\n00000000000026fc T _ggml_backend_dev_count\n0000000000002794 T _ggml_backend_dev_get\n00000000000021dc T _ggml_backend_device_register\n0000000000002b60 T _ggml_backend_init_best\n0000000000002af8 T _ggml_backend_init_by_name\n0000000000002b2c T _ggml_backend_init_by_type\n0000000000002b9c T _ggml_backend_load\n0000000000003390 T _ggml_backend_load_all\n0000000000003398 T _ggml_backend_load_all_from_path\n00000000000025c8 T _ggml_backend_reg_by_name\n00000000000023e8 T _ggml_backend_reg_count\n0000000000002480 T _ggml_backend_reg_get\n0000000000001fe8 T _ggml_backend_register\n0000000000003110 T _ggml_backend_unload\n"
+    },
+    "libnemo_speech_asr.dylib": {
+      "sha256": "e5146381373f456be7d3bb332b2a1db26a2a8aed3e3e787be617005884522a1c",
+      "size": 1227016,
+      "dependencies": "/Users/runner/work/_temp/portable-sdk/lib/libnemo_speech_asr.dylib:\n\t@rpath/libnemo_speech_asr.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/sentencepiece/lib/libsentencepiece.0.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_status.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t@rpath/libggml.0.dylib (compatibility version 0.0.0, current version 0.25.1)\n\t@rpath/libggml-blas.0.dylib (compatibility version 0.0.0, current version 0.25.1)\n\t@rpath/libggml-cpu.0.dylib (compatibility version 0.0.0, current version 0.25.1)\n\t@rpath/libggml-base.0.dylib (compatibility version 0.0.0, current version 0.25.1)\n\t/opt/homebrew/opt/abseil/lib/libabsl_cord.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_cordz_info.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_cord_internal.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_hash.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_city.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_cordz_functions.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_exponential_biased.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_cordz_handle.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_synchronization.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_graphcycles_internal.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_kernel_timeout_internal.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_tracing_internal.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_time.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_civil_time.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_time_zone.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation (compatibility version 150.0.0, current version 5026.5.4)\n\t/opt/homebrew/opt/abseil/lib/libabsl_crc_cord_state.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_crc32c.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_crc_internal.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_base_cpu_detect.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_leak_check.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_stacktrace.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_str_format_internal.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_strerror.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_symbolize.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_strings.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_source_location.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_strings_internal.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_hardening.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_int128.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_throw_delegate.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_debugging_internal.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_malloc_internal.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_demangle_internal.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_demangle_rust.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_decode_rust_punycode.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_base.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_raw_logging_internal.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_log_severity.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_spinlock_wait.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/opt/homebrew/opt/abseil/lib/libabsl_utf8_for_code_point.2608.0.0.dylib (compatibility version 2608.0.0, current version 0.0.0)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2100.43.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)\n",
+      "exports": "000000000004992c T __Z17read_wav_mono_16kRKNSt3__112basic_stringIcNS_11char_traitsIcEENS_9allocatorIcEEEERNS_6vectorIfNS3_IfEEEERi\n000000000004acf0 T __Z22produce_new_mel_framesR23MelSpectrogramExtractorRKNSt3__16vectorIfNS1_9allocatorIfEEEEmxRS5_\n000000000001f7a4 T __ZN11nemo_speech3asr10DiarStream10ensure_melEv\n000000000001f854 T __ZN11nemo_speech3asr10DiarStream10feed_audioEPKfm\n0000000000020224 T __ZN11nemo_speech3asr10DiarStream13maybe_compactEv\n000000000001fb18 T __ZN11nemo_speech3asr10DiarStream13run_one_chunkEbb\n0000000000021318 T __ZN11nemo_speech3asr10DiarStream14set_compactionExx\n00000000000205b4 T __ZN11nemo_speech3asr10DiarStream15flush_availableEx\n000000000001f8ac T __ZN11nemo_speech3asr10DiarStream16run_ready_chunksEb\n000000000001f618 T __ZN11nemo_speech3asr10DiarStream5resetEv\n000000000001f8e0 T __ZN11nemo_speech3asr10DiarStream6finishEv\n000000000001f614 T __ZN11nemo_speech3asr10DiarStreamC1ERNS0_9DiarModelERKNS0_12DiarGeometryE\n000000000001f340 T __ZN11nemo_speech3asr10DiarStreamC2ERNS0_9DiarModelERKNS0_12DiarGeometryE\n00000000000805f0 T __ZN11nemo_speech3asr10Recognizer19streaming_recognizeENS0_17AsrRequestOptionsERKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEEb\n000000000007d49c T __ZN11nemo_speech3asr10Recognizer6warmupEv\n00000000000808c0 T __ZN11nemo_speech3asr10Recognizer9recognizeEPKfmNS0_17AsrRequestOptionsERKNSt3__112basic_stringIcNS5_11char_traitsIcEENS5_9allocatorIcEEEEi\n000000000007cfdc T __ZN11nemo_speech3asr10RecognizerC1ENS0_16RecognizerConfigE\n000000000007c3d4 T __ZN11nemo_speech3asr10RecognizerC2ENS0_16RecognizerConfigE\n000000000007d17c T __ZN11nemo_speech3asr10RecognizerD1Ev\n000000000007cfe0 T __ZN11nemo_speech3asr10RecognizerD2Ev\n000000000003548c T __ZN11nemo_speech3asr11ConformerFF11build_graphEPN12ggml_runtime7SessionENS2_9TensorBagEPNS2_15TensorContainerE\n000000000003544c T __ZN11nemo_speech3asr11ConformerFF14define_tensorsEPN12ggml_runtime7SessionE\n0000000000035910 T __ZN11nemo_speech3asr11ConformerFF8set_dataEPN12ggml_runtime7SessionE\n00000000000352ec T __ZN11nemo_speech3asr11ConformerFFC1ERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEEiib\n0000000000035014 T __ZN11nemo_speech3asr11ConformerFFC2ERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEEiib\n00000000000353d8 T __ZN11nemo_speech3asr11ConformerFFD0Ev\n0000000000035364 T __ZN11nemo_speech3asr11ConformerFFD1Ev\n00000000000352f0 T __ZN11nemo_speech3asr11ConformerFFD2Ev\n0000000000034894 T __ZN11nemo_speech3asr11SubSampling11build_graphEPN12ggml_runtime7SessionENS2_9TensorBagEPNS2_15TensorContainerE\n0000000000034854 T __ZN11nemo_speech3asr11SubSampling14define_tensorsEPN12ggml_runtime7SessionE\n0000000000034fd4 T __ZN11nemo_speech3asr11SubSampling8set_dataEPN12ggml_runtime7SessionE\n00000000000346f4 T __ZN11nemo_speech3asr11SubSamplingC1ERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEERKNS0_13EncoderConfigE\n000000000003359c T __ZN11nemo_speech3asr11SubSamplingC2ERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEERKNS0_13EncoderConfigE\n00000000000347e0 T __ZN11nemo_speech3asr11SubSamplingD0Ev\n000000000003476c T __ZN11nemo_speech3asr11SubSamplingD1Ev\n00000000000346f8 T __ZN11nemo_speech3asr11SubSamplingD2Ev\n000000000001af2c T __ZN11nemo_speech3asr12DiarGeometry6presetERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEE\n0000000000036b7c T __ZN11nemo_speech3asr13ConformerConv11build_graphEPN12ggml_runtime7SessionENS2_9TensorBagEPNS2_15TensorContainerE\n0000000000036260 T __ZN11nemo_speech3asr13ConformerConv14build_post_gluEPN12ggml_runtime7SessionEPNS2_15TensorContainerENS2_14ggml_bf_tensorEP11ggml_tensorPS9_\n00000000000361e4 T __ZN11nemo_speech3asr13ConformerConv14define_tensorsEPN12ggml_runtime7SessionE\n0000000000037050 T __ZN11nemo_speech3asr13ConformerConv18build_graph_cachedEPN12ggml_runtime7SessionENS2_9TensorBagEPNS2_15TensorContainerEP11ggml_tensorPS9_\n00000000000374e8 T __ZN11nemo_speech3asr13ConformerConv21build_graph_cached_ctEPN12ggml_runtime7SessionENS2_9TensorBagEPNS2_15TensorContainerEP11ggml_tensorPS9_S9_\n0000000000037e2c T __ZN11nemo_speech3asr13ConformerConv8set_dataEPN12ggml_runtime7SessionE\n0000000000035fd0 T __ZN11nemo_speech3asr13ConformerConvC1ERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEEiibNS0_8ConvNormENS0_11ConvContextE\n0000000000035950 T __ZN11nemo_speech3asr13ConformerConvC2ERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEEiibNS0_8ConvNormENS0_11ConvContextE\n0000000000036134 T __ZN11nemo_speech3asr13ConformerConvD0Ev\n0000000000036084 T __ZN11nemo_speech3asr13ConformerConvD1Ev\n0000000000035fd4 T __ZN11nemo_speech3asr13ConformerConvD2Ev\n0000000000011ba8 T __ZN11nemo_speech3asr13CtcHeadModule11build_graphEPN12ggml_runtime7SessionENS2_9TensorBagEPNS2_15TensorContainerE\n00000000000119cc T __ZN11nemo_speech3asr13CtcHeadModule11build_probsEPN12ggml_runtime7SessionENS2_9TensorBagEPNS2_15TensorContainerE\n0000000000011904 T __ZN11nemo_speech3asr13CtcHeadModule14define_tensorsEPN12ggml_runtime7SessionE\n0000000000011cc0 T __ZN11nemo_speech3asr13CtcHeadModule18build_greedy_graphEPN12ggml_runtime7SessionENS2_9TensorBagEPNS2_15TensorContainerE\n0000000000011e84 T __ZN11nemo_speech3asr13CtcHeadModule8set_dataEPN12ggml_runtime7SessionE\n0000000000011798 T __ZN11nemo_speech3asr13CtcHeadModuleC1ERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEERKNS0_9CtcConfigE\n0000000000011558 T __ZN11nemo_speech3asr13CtcHeadModuleC2ERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEERKNS0_9CtcConfigE\n000000000001188c T __ZN11nemo_speech3asr13CtcHeadModuleD0Ev\n0000000000011814 T __ZN11nemo_speech3asr13CtcHeadModuleD1Ev\n000000000001179c T __ZN11nemo_speech3asr13CtcHeadModuleD2Ev\n0000000000085490 T __ZN11nemo_speech3asr13OfflineRunner10feed_audioEPKfm\n00000000000853dc T __ZN11nemo_speech3asr13OfflineRunner20pad_audio_to_bucket_Ev\n0000000000086388 T __ZN11nemo_speech3asr13OfflineRunner5resetEv\n00000000000854fc T __ZN11nemo_speech3asr13OfflineRunner8finalizeEv\n0000000000084960 T __ZN11nemo_speech3asr13OfflineRunnerC1EPNS0_8AsrModelERKNS0_16RecognizerConfigENSt3__110shared_ptrIKNS0_19FlashlightResourcesEEE\n00000000000846a8 T __ZN11nemo_speech3asr13OfflineRunnerC2EPNS0_8AsrModelERKNS0_16RecognizerConfigENSt3__110shared_ptrIKNS0_19FlashlightResourcesEEE\n000000000009a9b0 T __ZN11nemo_speech3asr13VadEndpointer4pollEdd\n000000000009aa30 T __ZN11nemo_speech3asr13VadEndpointer5resetEv\n000000000003899c T __ZN11nemo_speech3asr14ConformerLayer11build_graphEPN12ggml_runtime7SessionENS2_9TensorBagEPNS2_15TensorContainerE\n0000000000038a6c T __ZN11nemo_speech3asr14ConformerLayer11build_graphEPN12ggml_runtime7SessionENS2_9TensorBagEPNS2_15TensorContainerEPNS0_12LayerCacheIOE\n00000000000388d0 T __ZN11nemo_speech3asr14ConformerLayer14define_tensorsEPN12ggml_runtime7SessionE\n00000000000397b0 T __ZN11nemo_speech3asr14ConformerLayer16build_mha_cachedEPN12ggml_runtime7SessionEPNS2_15TensorContainerENS2_14ggml_bf_tensorEPNS0_12LayerCacheIOE\n000000000003a584 T __ZN11nemo_speech3asr14ConformerLayer8set_dataEPN12ggml_runtime7SessionE\n00000000000387b4 T __ZN11nemo_speech3asr14ConformerLayerC1ERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEERKNS0_13EncoderConfigE\n0000000000037ea8 T __ZN11nemo_speech3asr14ConformerLayerC2ERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEERKNS0_13EncoderConfigE\n00000000000388bc T __ZN11nemo_speech3asr14ConformerLayerD0Ev\n00000000000388b8 T __ZN11nemo_speech3asr14ConformerLayerD1Ev\n00000000000387b8 T __ZN11nemo_speech3asr14ConformerLayerD2Ev\n0000000000095608 T __ZN11nemo_speech3asr14SileroVadModel10make_stateEv\n0000000000095764 T __ZN11nemo_speech3asr14SileroVadModel10zero_slotsENSt3__16vectorIiNS2_9allocatorIiEEEE\n00000000000959e0 T __ZN11nemo_speech3asr14SileroVadModel11reset_stateERNS1_5StateE\n0000000000094a84 T __ZN11nemo_speech3asr14SileroVadModel12release_slotEi\n0000000000094b8c T __ZN11nemo_speech3asr14SileroVadModel5StateC1EOS2_\n0000000000094b60 T __ZN11nemo_speech3asr14SileroVadModel5StateC2EOS2_\n0000000000094ae4 T __ZN11nemo_speech3asr14SileroVadModel5StateD1Ev\n0000000000094a08 T __ZN11nemo_speech3asr14SileroVadModel5StateD2Ev\n0000000000094bb8 T __ZN11nemo_speech3asr14SileroVadModel5StateaSEOS2_\n0000000000095aa0 T __ZN11nemo_speech3asr14SileroVadModel5inferERNS1_5StateEPKfiRNSt3__16vectorIfNS6_9allocatorIfEEEE\n00000000000956ec T __ZN11nemo_speech3asr14SileroVadModel9zero_slotEi\n0000000000095534 T __ZN11nemo_speech3asr14SileroVadModelC1ERN12ggml_runtime14BackendManagerERKNSt3__112basic_stringIcNS5_11char_traitsIcEENS5_9allocatorIcEEEERKNS0_14BatchingConfigE\n0000000000094c68 T __ZN11nemo_speech3asr14SileroVadModelC2ERN12ggml_runtime14BackendManagerERKNSt3__112basic_stringIcNS5_11char_traitsIcEENS5_9allocatorIcEEEERKNS0_14BatchingConfigE\n0000000000095604 T __ZN11nemo_speech3asr14SileroVadModelD1Ev\n0000000000095538 T __ZN11nemo_speech3asr14SileroVadModelD2Ev\n0000000000018994 T __ZN11nemo_speech3asr15RnntJointModule11build_graphEPN12ggml_runtime7SessionENS2_9TensorBagEPNS2_15TensorContainerE\n000000000001817c T __ZN11nemo_speech3asr15RnntJointModule14define_tensorsEPN12ggml_runtime7SessionE\n00000000000184b8 T __ZN11nemo_speech3asr15RnntJointModule16build_joint_tailEPN12ggml_runtime7SessionENS2_14ggml_bf_tensorES5_PNS2_15TensorContainerEbPKS5_\n0000000000018b28 T __ZN11nemo_speech3asr15RnntJointModule16set_decoder_dataEPN12ggml_runtime7SessionE\n0000000000018b18 T __ZN11nemo_speech3asr15RnntJointModule16set_encoder_dataEPN12ggml_runtime7SessionE\n00000000000181e0 T __ZN11nemo_speech3asr15RnntJointModule22define_decoder_tensorsEPN12ggml_runtime7SessionE\n00000000000181d0 T __ZN11nemo_speech3asr15RnntJointModule22define_encoder_tensorsEPN12ggml_runtime7SessionE\n0000000000018220 T __ZN11nemo_speech3asr15RnntJointModule24build_encoder_projectionEPN12ggml_runtime7SessionENS2_14ggml_bf_tensorEPNS2_15TensorContainerE\n000000000001836c T __ZN11nemo_speech3asr15RnntJointModule26build_predictor_projectionEPN12ggml_runtime7SessionENS2_14ggml_bf_tensorEPNS2_15TensorContainerE\n0000000000018ac4 T __ZN11nemo_speech3asr15RnntJointModule8set_dataEPN12ggml_runtime7SessionE\n0000000000017fb0 T __ZN11nemo_speech3asr15RnntJointModuleC1ERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEERKNS0_10RnntConfigE\n0000000000017d70 T __ZN11nemo_speech3asr15RnntJointModuleC2ERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEERKNS0_10RnntConfigE\n00000000000180e4 T __ZN11nemo_speech3asr15RnntJointModuleD0Ev\n000000000001804c T __ZN11nemo_speech3asr15RnntJointModuleD1Ev\n0000000000017fb4 T __ZN11nemo_speech3asr15RnntJointModuleD2Ev\n0000000000024aa4 T __ZN11nemo_speech3asr15SortformerGraph11build_graphEPN12ggml_runtime7SessionENS2_9TensorBagEPNS2_15TensorContainerE\n0000000000024904 T __ZN11nemo_speech3asr15SortformerGraph14define_tensorsEPN12ggml_runtime7SessionE\n00000000000249d4 T __ZN11nemo_speech3asr15SortformerGraph8set_dataEPN12ggml_runtime7SessionE\n000000000002481c T __ZN11nemo_speech3asr15SortformerGraphC1ERKNS0_21SortformerModelConfigE\n00000000000243e4 T __ZN11nemo_speech3asr15SortformerGraphC2ERKNS0_21SortformerModelConfigE\n00000000000248f0 T __ZN11nemo_speech3asr15SortformerGraphD0Ev\n00000000000248ec T __ZN11nemo_speech3asr15SortformerGraphD1Ev\n0000000000024820 T __ZN11nemo_speech3asr15SortformerGraphD2Ev\n0000000000027d2c T __ZN11nemo_speech3asr15SortformerModel9run_chunkEPKfiS3_iS3_i\n0000000000027c14 T __ZN11nemo_speech3asr15SortformerModelC1ERN12ggml_runtime14BackendManagerERKNSt3__112basic_stringIcNS5_11char_traitsIcEENS5_9allocatorIcEEEERKNS0_14BatchingConfigE\n00000000000260e0 T __ZN11nemo_speech3asr15SortformerModelC2ERN12ggml_runtime14BackendManagerERKNSt3__112basic_stringIcNS5_11char_traitsIcEENS5_9allocatorIcEEEERKNS0_14BatchingConfigE\n0000000000027cb4 T __ZN11nemo_speech3asr15SortformerModelD1Ev\n0000000000027c18 T __ZN11nemo_speech3asr15SortformerModelD2Ev\n0000000000019838 T __ZN11nemo_speech3asr16ChannelBirthGate5resetEv\n000000000001a4b8 T __ZN11nemo_speech3asr16ChannelBirthGate6appendERKNSt3__16vectorIfNS2_9allocatorIfEEEERS6_\n0000000000019e14 T __ZN11nemo_speech3asr16ChannelBirthGate7observeEPKf\n000000000001a430 T __ZN11nemo_speech3asr16ChannelBirthGate8push_rawEPKf\n0000000000019974 T __ZN11nemo_speech3asr16ChannelBirthGateC1Ei\n0000000000019700 T __ZN11nemo_speech3asr16ChannelBirthGateC2Ei\n0000000000012084 T __ZN11nemo_speech3asr16GreedyCtcDecoder10flush_wordEv\n0000000000012440 T __ZN11nemo_speech3asr16GreedyCtcDecoder12step_compactEPKiPKfix\n000000000001221c T __ZN11nemo_speech3asr16GreedyCtcDecoder4stepEPKfiix\n0000000000011ff0 T __ZN11nemo_speech3asr16GreedyCtcDecoder5resetEv\n0000000000012150 T __ZN11nemo_speech3asr16GreedyCtcDecoder8finalizeEv\n0000000000015e00 T __ZN11nemo_speech3asr16TdtGreedyDecoder10flush_wordEv\n0000000000015d80 T __ZN11nemo_speech3asr16TdtGreedyDecoder15reset_utteranceEv\n0000000000015f98 T __ZN11nemo_speech3asr16TdtGreedyDecoder4stepEPKfiix\n0000000000015c28 T __ZN11nemo_speech3asr16TdtGreedyDecoder5resetEv\n0000000000015ecc T __ZN11nemo_speech3asr16TdtGreedyDecoder8finalizeEv\n0000000000015c24 T __ZN11nemo_speech3asr16TdtGreedyDecoderC1EPNS0_10RnntEngineE\n0000000000015aa8 T __ZN11nemo_speech3asr16TdtGreedyDecoderC2EPNS0_10RnntEngineE\n0000000000045504 T __ZN11nemo_speech3asr16TransformerBlock11build_graphEPN12ggml_runtime7SessionENS2_9TensorBagEPNS2_15TensorContainerE\n0000000000045394 T __ZN11nemo_speech3asr16TransformerBlock14define_tensorsEPN12ggml_runtime7SessionE\n000000000004544c T __ZN11nemo_speech3asr16TransformerBlock8set_dataEPN12ggml_runtime7SessionE\n000000000004528c T __ZN11nemo_speech3asr16TransformerBlockC1ERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEERKNS0_17TransformerConfigE\n00000000000447d0 T __ZN11nemo_speech3asr16TransformerBlockC2ERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEERKNS0_17TransformerConfigE\n0000000000045380 T __ZN11nemo_speech3asr16TransformerBlockD0Ev\n000000000004537c T __ZN11nemo_speech3asr16TransformerBlockD1Ev\n0000000000045290 T __ZN11nemo_speech3asr16TransformerBlockD2Ev\n000000000002e89c T __ZN11nemo_speech3asr17CacheAwareEncoder10make_stateEv\n000000000002ea24 T __ZN11nemo_speech3asr17CacheAwareEncoder10zero_slotsENSt3__16vectorIiNS2_9allocatorIiEEEE\n000000000002ecec T __ZN11nemo_speech3asr17CacheAwareEncoder11reset_stateERNS1_5StateE\n000000000002edb0 T __ZN11nemo_speech3asr17CacheAwareEncoder12chunk_framesEv\n000000000002db34 T __ZN11nemo_speech3asr17CacheAwareEncoder12release_slotEi\n000000000002e09c T __ZN11nemo_speech3asr17CacheAwareEncoder13set_right_ctxEi\n000000000002e164 T __ZN11nemo_speech3asr17CacheAwareEncoder14ensure_sessionEv\n000000000002dc3c T __ZN11nemo_speech3asr17CacheAwareEncoder5StateC1EOS2_\n000000000002dc10 T __ZN11nemo_speech3asr17CacheAwareEncoder5StateC2EOS2_\n000000000002db94 T __ZN11nemo_speech3asr17CacheAwareEncoder5StateD1Ev\n000000000002dab8 T __ZN11nemo_speech3asr17CacheAwareEncoder5StateD2Ev\n000000000002dc68 T __ZN11nemo_speech3asr17CacheAwareEncoder5StateaSEOS2_\n000000000002ee00 T __ZN11nemo_speech3asr17CacheAwareEncoder6encodeERNS1_5StateEPKfiS5_iRNSt3__16vectorIfNS6_9allocatorIfEEEERiS5_iPN12ggml_runtime12DeviceTensorE\n000000000002e9ac T __ZN11nemo_speech3asr17CacheAwareEncoder9zero_slotEi\n000000000002dfec T __ZN11nemo_speech3asr17CacheAwareEncoderC1ERN12ggml_runtime14BackendManagerEPNS2_10GGUFLoaderERKNS0_13EncoderConfigEiPNS2_6ModuleEiRKNS0_14BatchingConfigE\n000000000002dd18 T __ZN11nemo_speech3asr17CacheAwareEncoderC2ERN12ggml_runtime14BackendManagerEPNS2_10GGUFLoaderERKNS0_13EncoderConfigEiPNS2_6ModuleEiRKNS0_14BatchingConfigE\n000000000002e098 T __ZN11nemo_speech3asr17CacheAwareEncoderD1Ev\n000000000002dff0 T __ZN11nemo_speech3asr17CacheAwareEncoderD2Ev\n0000000000086d74 T __ZN11nemo_speech3asr17CacheStreamRunner10feed_audioEPKfm\n0000000000086bb0 T __ZN11nemo_speech3asr17CacheStreamRunner11zero_cachesEv\n0000000000087fcc T __ZN11nemo_speech3asr17CacheStreamRunner12trim_buffersEv\n0000000000087d9c T __ZN11nemo_speech3asr17CacheStreamRunner13poll_endpointERNS0_15StreamingUpdateEb\n0000000000086bd4 T __ZN11nemo_speech3asr17CacheStreamRunner16upload_attn_maskEv\n0000000000086d98 T __ZN11nemo_speech3asr17CacheStreamRunner17process_one_chunkEv\n0000000000087930 T __ZN11nemo_speech3asr17CacheStreamRunner18compact_mel_bufferEv\n0000000000086b04 T __ZN11nemo_speech3asr17CacheStreamRunner19set_request_optionsERKNS0_17AsrRequestOptionsE\n0000000000088804 T __ZN11nemo_speech3asr17CacheStreamRunner19take_encoder_framesERNSt3__16vectorIfNS2_9allocatorIfEEEERiS8_\n00000000000875e0 T __ZN11nemo_speech3asr17CacheStreamRunner4stepEv\n00000000000886cc T __ZN11nemo_speech3asr17CacheStreamRunner5resetEv\n0000000000088114 T __ZN11nemo_speech3asr17CacheStreamRunner8finalizeEv\n0000000000086b98 T __ZN11nemo_speech3asr17CacheStreamRunner9force_eouEv\n0000000000086858 T __ZN11nemo_speech3asr17CacheStreamRunnerC1EPNS0_9RnntModelERKNS0_16RecognizerConfigENSt3__110shared_ptrINS0_14SileroVadModelEEE\n0000000000086408 T __ZN11nemo_speech3asr17CacheStreamRunnerC2EPNS0_9RnntModelERKNS0_16RecognizerConfigENSt3__110shared_ptrINS0_14SileroVadModelEEE\n0000000000086a44 T __ZN11nemo_speech3asr17CacheStreamRunnerD0Ev\n0000000000086a40 T __ZN11nemo_speech3asr17CacheStreamRunnerD1Ev\n000000000008685c T __ZN11nemo_speech3asr17CacheStreamRunnerD2Ev\n0000000000023580 T __ZN11nemo_speech3asr17DiarizationStream4pushEPKfmi\n0000000000023768 T __ZN11nemo_speech3asr17DiarizationStream6finishEv\n000000000002357c T __ZN11nemo_speech3asr17DiarizationStreamC1ENSt3__110shared_ptrINS0_9DiarModelEEERKNS0_12DiarGeometryE\n000000000002336c T __ZN11nemo_speech3asr17DiarizationStreamC2ENSt3__110shared_ptrINS0_9DiarModelEEERKNS0_12DiarGeometryE\n000000000007e8e0 T __ZN11nemo_speech3asr17RecognitionStream14force_endpointEv\n000000000007ffc8 T __ZN11nemo_speech3asr17RecognitionStream19flush_diar_deficit_ERKNS0_15StreamingUpdateE\n000000000008013c T __ZN11nemo_speech3asr17RecognitionStream4nextEv\n000000000007e650 T __ZN11nemo_speech3asr17RecognitionStream4pushEPKfmi\n000000000008038c T __ZN11nemo_speech3asr17RecognitionStream6finishEv\n000000000007e4d8 T __ZN11nemo_speech3asr17RecognitionStreamC1EPNS0_10RecognizerENSt3__110unique_ptrINS0_9AsrRunnerENS4_14default_deleteIS6_EEEENS0_17AsrRequestOptionsEb\n000000000007e1c8 T __ZN11nemo_speech3asr17RecognitionStreamC2EPNS0_10RecognizerENSt3__110unique_ptrINS0_9AsrRunnerENS4_14default_deleteIS6_EEEENS0_17AsrRequestOptionsEb\n000000000007e64c T __ZN11nemo_speech3asr17RecognitionStreamD1Ev\n000000000007e4dc T __ZN11nemo_speech3asr17RecognitionStreamD2Ev\n0000000000014218 T __ZN11nemo_speech3asr17RnntGreedyDecoder10flush_wordEv\n000000000001576c T __ZN11nemo_speech3asr17RnntGreedyDecoder11step_deviceERKN12ggml_runtime12DeviceTensorEiix\n00000000000143b8 T __ZN11nemo_speech3asr17RnntGreedyDecoder13present_tokenEix\n0000000000013af4 T __ZN11nemo_speech3asr17RnntGreedyDecoder19set_request_optionsERKNS0_17AsrRequestOptionsE\n0000000000014dc8 T __ZN11nemo_speech3asr17RnntGreedyDecoder4stepEPKfiix\n0000000000014054 T __ZN11nemo_speech3asr17RnntGreedyDecoder5resetEv\n00000000000142e8 T __ZN11nemo_speech3asr17RnntGreedyDecoder8finalizeEv\n0000000000014ddc T __ZN11nemo_speech3asr17RnntGreedyDecoder9step_implEPKfPKN12ggml_runtime12DeviceTensorEiix\n0000000000013af0 T __ZN11nemo_speech3asr17RnntGreedyDecoderC1EPNS0_10RnntEngineERKNS0_13DecoderConfigE\n0000000000013828 T __ZN11nemo_speech3asr17RnntGreedyDecoderC2EPNS0_10RnntEngineERKNS0_13DecoderConfigE\n000000000000e080 T __ZN11nemo_speech3asr18ContextBiasingTree5buildERKNSt3__16vectorINS3_IiNS2_9allocatorIiEEEENS4_IS6_EEEERKNS3_IfNS4_IfEEEEf\n000000000000ea50 T __ZN11nemo_speech3asr18ContextBiasingTree9fill_failEv\n000000000001909c T __ZN11nemo_speech3asr18PromptFusionModule11build_graphEPN12ggml_runtime7SessionENS2_9TensorBagEPNS2_15TensorContainerE\n000000000001905c T __ZN11nemo_speech3asr18PromptFusionModule14define_tensorsEPN12ggml_runtime7SessionE\n0000000000019340 T __ZN11nemo_speech3asr18PromptFusionModule8set_dataEPN12ggml_runtime7SessionE\n0000000000018f44 T __ZN11nemo_speech3asr18PromptFusionModuleC1Eii\n0000000000018b68 T __ZN11nemo_speech3asr18PromptFusionModuleC2Eii\n0000000000019000 T __ZN11nemo_speech3asr18PromptFusionModuleD0Ev\n0000000000018fa4 T __ZN11nemo_speech3asr18PromptFusionModuleD1Ev\n0000000000018f48 T __ZN11nemo_speech3asr18PromptFusionModuleD2Ev\n00000000000176bc T __ZN11nemo_speech3asr19RnntPredictorModule11build_graphEPN12ggml_runtime7SessionENS2_9TensorBagEPNS2_15TensorContainerE\n00000000000175cc T __ZN11nemo_speech3asr19RnntPredictorModule14define_tensorsEPN12ggml_runtime7SessionE\n0000000000017cfc T __ZN11nemo_speech3asr19RnntPredictorModule8set_dataEPN12ggml_runtime7SessionE\n00000000000174d8 T __ZN11nemo_speech3asr19RnntPredictorModuleC1ERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEERKNS0_10RnntConfigE\n0000000000016ffc T __ZN11nemo_speech3asr19RnntPredictorModuleC2ERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEERKNS0_10RnntConfigE\n00000000000175b8 T __ZN11nemo_speech3asr19RnntPredictorModuleD0Ev\n00000000000175b4 T __ZN11nemo_speech3asr19RnntPredictorModuleD1Ev\n00000000000174dc T __ZN11nemo_speech3asr19RnntPredictorModuleD2Ev\n0000000000082ea8 T __ZN11nemo_speech3asr20BufferedStreamRunner10feed_audioEPKfm\n0000000000083e04 T __ZN11nemo_speech3asr20BufferedStreamRunner12trim_buffersEv\n0000000000083bbc T __ZN11nemo_speech3asr20BufferedStreamRunner13poll_endpointERNS0_15StreamingUpdateE\n00000000000830bc T __ZN11nemo_speech3asr20BufferedStreamRunner14process_windowEmmb\n0000000000084600 T __ZN11nemo_speech3asr20BufferedStreamRunner16ensure_mel_cacheEv\n0000000000082e00 T __ZN11nemo_speech3asr20BufferedStreamRunner19set_request_optionsERKNS0_17AsrRequestOptionsE\n0000000000082ecc T __ZN11nemo_speech3asr20BufferedStreamRunner4stepEv\n0000000000084554 T __ZN11nemo_speech3asr20BufferedStreamRunner5resetEv\n0000000000084190 T __ZN11nemo_speech3asr20BufferedStreamRunner8finalizeEv\n0000000000082e94 T __ZN11nemo_speech3asr20BufferedStreamRunner9force_eouEv\n0000000000082dfc T __ZN11nemo_speech3asr20BufferedStreamRunnerC1EPNS0_8CtcModelERKNS0_16RecognizerConfigENSt3__110shared_ptrIKNS0_19FlashlightResourcesEEENS8_INS0_14SileroVadModelEEE\n0000000000082670 T __ZN11nemo_speech3asr20BufferedStreamRunnerC2EPNS0_8CtcModelERKNS0_16RecognizerConfigENSt3__110shared_ptrIKNS0_19FlashlightResourcesEEENS8_INS0_14SileroVadModelEEE\n000000000003d004 T __ZN11nemo_speech3asr20FastConformerEncoder11build_graphEPN12ggml_runtime7SessionENS2_9TensorBagEPNS2_15TensorContainerE\n000000000003c1ac T __ZN11nemo_speech3asr20FastConformerEncoder14define_tensorsEPN12ggml_runtime7SessionE\n000000000003c680 T __ZN11nemo_speech3asr20FastConformerEncoder16build_pre_encodeEPN12ggml_runtime7SessionENS2_9TensorBagEPNS2_15TensorContainerE\n000000000003b9f4 T __ZN11nemo_speech3asr20FastConformerEncoder22build_precompute_graphEPN12ggml_runtime7SessionEPNS2_15TensorContainerE\n000000000003c754 T __ZN11nemo_speech3asr20FastConformerEncoder27build_graph_from_embeddingsEPN12ggml_runtime7SessionENS2_9TensorBagEPNS2_15TensorContainerE\n000000000003dbd8 T __ZN11nemo_speech3asr20FastConformerEncoder8set_dataEPN12ggml_runtime7SessionE\n000000000003ac84 T __ZN11nemo_speech3asr20FastConformerEncoderC1ERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEERKNS0_13EncoderConfigE\n000000000003a664 T __ZN11nemo_speech3asr20FastConformerEncoderC2ERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEERKNS0_13EncoderConfigE\n000000000003ad6c T __ZN11nemo_speech3asr20FastConformerEncoderD0Ev\n000000000003ad68 T __ZN11nemo_speech3asr20FastConformerEncoderD1Ev\n000000000003ac88 T __ZN11nemo_speech3asr20FastConformerEncoderD2Ev\n0000000000043368 T __ZN11nemo_speech3asr20RopeTransformerBlock11build_graphEPN12ggml_runtime7SessionENS2_9TensorBagEPNS2_15TensorContainerE\n0000000000043248 T __ZN11nemo_speech3asr20RopeTransformerBlock14define_tensorsEPN12ggml_runtime7SessionE\n00000000000432d8 T __ZN11nemo_speech3asr20RopeTransformerBlock8set_dataEPN12ggml_runtime7SessionE\n0000000000043058 T __ZN11nemo_speech3asr20RopeTransformerBlockC1ERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEERKNS0_21RopeTransformerConfigE\n00000000000429dc T __ZN11nemo_speech3asr20RopeTransformerBlockC2ERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEERKNS0_21RopeTransformerConfigE\n00000000000431a4 T __ZN11nemo_speech3asr20RopeTransformerBlockD0Ev\n0000000000043100 T __ZN11nemo_speech3asr20RopeTransformerBlockD1Ev\n000000000004305c T __ZN11nemo_speech3asr20RopeTransformerBlockD2Ev\n00000000000c8058 S __ZN11nemo_speech3asr21g_batch_cohort_targetE\n00000000000444ec T __ZN11nemo_speech3asr22RopeTransformerEncoder11build_graphEPN12ggml_runtime7SessionENS2_9TensorBagEPNS2_15TensorContainerE\n00000000000443fc T __ZN11nemo_speech3asr22RopeTransformerEncoder14define_tensorsEPN12ggml_runtime7SessionE\n0000000000044474 T __ZN11nemo_speech3asr22RopeTransformerEncoder8set_dataEPN12ggml_runtime7SessionE\n0000000000044230 T __ZN11nemo_speech3asr22RopeTransformerEncoderC1ERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEERKNS0_21RopeTransformerConfigE\n0000000000043a74 T __ZN11nemo_speech3asr22RopeTransformerEncoderC2ERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEERKNS0_21RopeTransformerConfigE\n0000000000044364 T __ZN11nemo_speech3asr22RopeTransformerEncoderD0Ev\n00000000000442cc T __ZN11nemo_speech3asr22RopeTransformerEncoderD1Ev\n0000000000044234 T __ZN11nemo_speech3asr22RopeTransformerEncoderD2Ev\n0000000000046644 T __ZN11nemo_speech3asr24TransformerEncoderModule11build_graphEPN12ggml_runtime7SessionENS2_9TensorBagEPNS2_15TensorContainerE\n00000000000465ac T __ZN11nemo_speech3asr24TransformerEncoderModule14define_tensorsEPN12ggml_runtime7SessionE\n00000000000465f8 T __ZN11nemo_speech3asr24TransformerEncoderModule8set_dataEPN12ggml_runtime7SessionE\n00000000000463bc T __ZN11nemo_speech3asr24TransformerEncoderModuleC1ERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEERKNS0_17TransformerConfigE\n0000000000045fc4 T __ZN11nemo_speech3asr24TransformerEncoderModuleC2ERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEERKNS0_17TransformerConfigE\n0000000000046508 T __ZN11nemo_speech3asr24TransformerEncoderModuleD0Ev\n0000000000046464 T __ZN11nemo_speech3asr24TransformerEncoderModuleD1Ev\n00000000000463c0 T __ZN11nemo_speech3asr24TransformerEncoderModuleD2Ev\n0000000000012f88 T __ZN11nemo_speech3asr24detokenize_sentencepieceERKNSt3__16vectorIiNS1_9allocatorIiEEEERKNS2_INS1_12basic_stringIcNS1_11char_traitsIcEENS3_IcEEEENS3_ISC_EEEE\n00000000000209dc T __ZN11nemo_speech3asr24diar_segments_from_probsEPKfxidRKNS0_19DiarSegmentationCfgE\n000000000003a650 T __ZN11nemo_speech3asr26planar_q8_weight_load_hookEv\n0000000000012a00 T __ZN11nemo_speech3asr27append_sentencepiece_tokensERNSt3__112basic_stringIcNS1_11char_traitsIcEENS1_9allocatorIcEEEERKNS1_6vectorIiNS5_IiEEEERKNS9_IS7_NS5_IS7_EEEE\n000000000007c2b4 T __ZN11nemo_speech3asr30exceeds_offline_position_limitERKNS0_8AsrModelEmi\n0000000000071608 T __ZN11nemo_speech3asr3pnc18WordPieceTokenizerC1ENSt3__16vectorINS3_12basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEENS8_ISA_EEEEiiiii\n0000000000071444 T __ZN11nemo_speech3asr3pnc18WordPieceTokenizerC2ENSt3__16vectorINS3_12basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEENS8_ISA_EEEEiiiii\n000000000006b434 T __ZN11nemo_speech3asr3pnc8PncModel5inferEPKiiRNSt3__16vectorIiNS5_9allocatorIiEEEESA_\n000000000006b3a8 T __ZN11nemo_speech3asr3pnc8PncModelC1ERN12ggml_runtime14BackendManagerERKNSt3__112basic_stringIcNS6_11char_traitsIcEENS6_9allocatorIcEEEERKNS0_14BatchingConfigE\n0000000000069ba0 T __ZN11nemo_speech3asr3pnc8PncModelC2ERN12ggml_runtime14BackendManagerERKNSt3__112basic_stringIcNS6_11char_traitsIcEENS6_9allocatorIcEEEERKNS0_14BatchingConfigE\n000000000006b430 T __ZN11nemo_speech3asr3pnc8PncModelD1Ev\n000000000006b3ac T __ZN11nemo_speech3asr3pnc8PncModelD2Ev\n0000000000070420 T __ZN11nemo_speech3asr3pnc9PncRunnerC1EPNS1_8PncModelE\n00000000000702b4 T __ZN11nemo_speech3asr3pnc9PncRunnerC2EPNS1_8PncModelE\n000000000004e6f8 T __ZN11nemo_speech3asr8AsrModel21apply_model_mel_basisER23MelSpectrogramExtractor\n000000000004eb7c T __ZN11nemo_speech3asr8AsrModel4loadERN12ggml_runtime14BackendManagerERKNSt3__112basic_stringIcNS5_11char_traitsIcEENS5_9allocatorIcEEEERKNS0_14BatchingConfigE\n000000000004e094 T __ZN11nemo_speech3asr8AsrModelC2ERN12ggml_runtime14BackendManagerEONS1_6CommonERKNS0_14BatchingConfigE\n00000000000adbbc T __ZN11nemo_speech3asr8AsrModelD0Ev\n00000000000adbb8 T __ZN11nemo_speech3asr8AsrModelD1Ev\n000000000004ea88 T __ZN11nemo_speech3asr8AsrModelD2Ev\n00000000000526b8 T __ZN11nemo_speech3asr8CtcModel16infer_ctc_greedyEPKfmRNSt3__16vectorIiNS4_9allocatorIiEEEERNS5_IfNS6_IfEEEERi\n00000000000525e0 T __ZN11nemo_speech3asr8CtcModel18infer_ctc_from_melEPKfiRNSt3__16vectorIfNS4_9allocatorIfEEEERiSA_\n000000000005275c T __ZN11nemo_speech3asr8CtcModel25infer_ctc_greedy_from_melEPKfiRNSt3__16vectorIiNS4_9allocatorIiEEEERNS5_IfNS6_IfEEEERi\n000000000005253c T __ZN11nemo_speech3asr8CtcModel9infer_ctcEPKfmRNSt3__16vectorIfNS4_9allocatorIfEEEERiSA_\n0000000000051920 T __ZN11nemo_speech3asr8CtcModelC1ERN12ggml_runtime14BackendManagerEONS0_8AsrModel6CommonERKNS0_14BatchingConfigE\n00000000000519e4 T __ZN11nemo_speech3asr8CtcModelC2ERN12ggml_runtime14BackendManagerEONS0_8AsrModel6CommonERKNS0_14BatchingConfigE\n0000000000052528 T __ZN11nemo_speech3asr8CtcModelD0Ev\n0000000000052524 T __ZN11nemo_speech3asr8CtcModelD1Ev\n0000000000052478 T __ZN11nemo_speech3asr8CtcModelD2Ev\n0000000000023858 T __ZN11nemo_speech3asr8Diarizer4loadEiRKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEENS0_12DiarGeometryENS0_14BatchingConfigE\n0000000000023af4 T __ZN11nemo_speech3asr8DiarizerC1ENSt3__110shared_ptrINS0_9DiarModelEEENS0_12DiarGeometryE\n00000000000239e8 T __ZN11nemo_speech3asr8DiarizerC2ENSt3__110shared_ptrINS0_9DiarModelEEENS0_12DiarGeometryE\n0000000000077964 T __ZN11nemo_speech3asr8postproc13PostprocessorC1ERKNS1_14PostprocConfigEPN12ggml_runtime14BackendManagerEbRKNS0_14BatchingConfigE\n0000000000077690 T __ZN11nemo_speech3asr8postproc13PostprocessorC2ERKNS1_14PostprocConfigEPN12ggml_runtime14BackendManagerEbRKNS0_14BatchingConfigE\n0000000000077a54 T __ZN11nemo_speech3asr8postproc13PostprocessorD1Ev\n0000000000077968 T __ZN11nemo_speech3asr8postproc13PostprocessorD2Ev\n000000000007274c T __ZN11nemo_speech3asr8postproc19update_word_timingsERNSt3__16vectorINS0_10WordTimingENS2_9allocatorIS4_EEEERKNS2_12basic_stringIcNS2_11char_traitsIcEENS5_IcEEEE\n00000000000725e0 T __ZN11nemo_speech3asr8postproc3ItnC1ERKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEE\n000000000007253c T __ZN11nemo_speech3asr8postproc3ItnC2ERKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEE\n00000000000726b8 T __ZN11nemo_speech3asr8postproc3ItnD1Ev\n0000000000072684 T __ZN11nemo_speech3asr8postproc3ItnD2Ev\n000000000007b4ac T __ZN11nemo_speech3asr8postproc9ProfanityC1ERKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEE\n000000000007af3c T __ZN11nemo_speech3asr8postproc9ProfanityC2ERKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEE\n000000000001bbe4 T __ZN11nemo_speech3asr9AoscState18accumulate_silenceEPKfS3_i\n000000000001c298 T __ZN11nemo_speech3asr9AoscState6updateEPKfiS3_ii\n000000000001c5d8 T __ZN11nemo_speech3asr9AoscState8compressERKNSt3__16vectorIfNS2_9allocatorIfEEEE\n000000000001bbe0 T __ZN11nemo_speech3asr9AoscStateC1ERKNS0_12DiarGeometryERKNS0_17DiarScoringConfigEiiRKNSt3__16vectorIfNS8_9allocatorIfEEEE\n000000000001b990 T __ZN11nemo_speech3asr9AoscStateC2ERKNS0_12DiarGeometryERKNS0_17DiarScoringConfigEiiRKNSt3__16vectorIfNS8_9allocatorIfEEEE\n000000000001eb90 T __ZN11nemo_speech3asr9DiarModel15diarize_offlineEPKfmPx\n000000000001eb74 T __ZN11nemo_speech3asr9DiarModelC1ERN12ggml_runtime14BackendManagerERKNSt3__112basic_stringIcNS5_11char_traitsIcEENS5_9allocatorIcEEEERKNS0_14BatchingConfigE\n000000000001ea94 T __ZN11nemo_speech3asr9DiarModelC2ERN12ggml_runtime14BackendManagerERKNSt3__112basic_stringIcNS5_11char_traitsIcEENS5_9allocatorIcEEEERKNS0_14BatchingConfigE\n0000000000055b6c T __ZN11nemo_speech3asr9RnntModel12joint_argmaxERNS0_15RnntStreamStateEPKfiiPiS5_\n00000000000556cc T __ZN11nemo_speech3asr9RnntModel12predict_rnntERNS0_15RnntStreamStateEii\n0000000000054c54 T __ZN11nemo_speech3asr9RnntModel13infer_offlineEPKfmRNSt3__16vectorIfNS4_9allocatorIfEEEERii\n000000000005569c T __ZN11nemo_speech3asr9RnntModel15end_decode_stepEv\n00000000000566bc T __ZN11nemo_speech3asr9RnntModel16joint_tdt_argmaxERNS0_15RnntStreamStateEPKfiiPiS6_\n0000000000057b14 T __ZN11nemo_speech3asr9RnntModel16make_cache_stateEv\n00000000000554c0 T __ZN11nemo_speech3asr9RnntModel17begin_decode_stepEv\n0000000000057b68 T __ZN11nemo_speech3asr9RnntModel17reset_cache_stateERNS0_17CacheAwareEncoder5StateE\n0000000000057024 T __ZN11nemo_speech3asr9RnntModel17zero_decoder_slotEi\n0000000000057f14 T __ZN11nemo_speech3asr9RnntModel18encode_cache_awareERNS0_17CacheAwareEncoder5StateEPKfiS6_iRNSt3__16vectorIfNS7_9allocatorIfEEEERiiPN12ggml_runtime12DeviceTensorE\n0000000000054f84 T __ZN11nemo_speech3asr9RnntModel18infer_s2s_from_melEPKfiRNSt3__16vectorIfNS4_9allocatorIfEEEES9_Ri\n000000000005709c T __ZN11nemo_speech3asr9RnntModel18zero_decoder_slotsENSt3__16vectorIiNS2_9allocatorIiEEEE\n00000000000548a4 T __ZN11nemo_speech3asr9RnntModel19ensure_offline_pathEv\n0000000000056344 T __ZN11nemo_speech3asr9RnntModel19joint_argmax_deviceERNS0_15RnntStreamStateERKN12ggml_runtime12DeviceTensorEiiiPiPKf\n0000000000057ac0 T __ZN11nemo_speech3asr9RnntModel19set_cache_right_ctxEi\n00000000000552b8 T __ZN11nemo_speech3asr9RnntModel20acquire_decoder_slotERb\n000000000005785c T __ZN11nemo_speech3asr9RnntModel20release_decoder_slotEi\n0000000000054d94 T __ZN11nemo_speech3asr9RnntModel22infer_offline_from_melEPKfiRNSt3__16vectorIfNS4_9allocatorIfEEEERii\n0000000000055254 T __ZN11nemo_speech3asr9RnntModel22make_rnnt_stream_stateEv\n0000000000056f90 T __ZN11nemo_speech3asr9RnntModel23make_transducer_decoderERKNS0_13DecoderConfigE\n00000000000568f4 T __ZN11nemo_speech3asr9RnntModel28predict_and_joint_tdt_argmaxERNS0_15RnntStreamStateEiiPKfiPiS6_\n00000000000564d4 T __ZN11nemo_speech3asr9RnntModel36predict_and_joint_rnnt_argmax_deviceERNS0_15RnntStreamStateEiiRKN12ggml_runtime12DeviceTensorEiiiPiPKf\n0000000000051924 T __ZN11nemo_speech3asr9RnntModelC1ERN12ggml_runtime14BackendManagerEONS0_8AsrModel6CommonERKNS0_14BatchingConfigE\n0000000000052bf4 T __ZN11nemo_speech3asr9RnntModelC2ERN12ggml_runtime14BackendManagerEONS0_8AsrModel6CommonERKNS0_14BatchingConfigE\n0000000000054788 T __ZN11nemo_speech3asr9RnntModelD0Ev\n000000000005477c T __ZN11nemo_speech3asr9RnntModelD1Ev\n0000000000054584 T __ZN11nemo_speech3asr9RnntModelD2Ev\n00000000000962f0 T __ZN11nemo_speech3asr9SileroVad10feed_audioEPKfmRNSt3__16vectorIfNS4_9allocatorIfEEEE\n00000000000962d4 T __ZN11nemo_speech3asr9SileroVad11run_windowsEPKfiRNSt3__16vectorIfNS4_9allocatorIfEEEE\n00000000000967fc T __ZN11nemo_speech3asr9SileroVad13observe_audioEPKfm\n0000000000096620 T __ZN11nemo_speech3asr9SileroVad13set_binarizerEffi\n0000000000096860 T __ZN11nemo_speech3asr9SileroVad14flush_timelineEv\n000000000009662c T __ZN11nemo_speech3asr9SileroVad15binarize_windowEfx\n0000000000096908 T __ZN11nemo_speech3asr9SileroVad23discard_timeline_beforeEx\n0000000000096438 T __ZN11nemo_speech3asr9SileroVad5flushERNSt3__16vectorIfNS2_9allocatorIfEEEE\n00000000000965cc T __ZN11nemo_speech3asr9SileroVad5resetEv\n000000000009619c T __ZN11nemo_speech3asr9SileroVadC1ENSt3__110shared_ptrINS0_14SileroVadModelEEE\n0000000000096094 T __ZN11nemo_speech3asr9SileroVadC1ERN12ggml_runtime14BackendManagerERKNSt3__112basic_stringIcNS5_11char_traitsIcEENS5_9allocatorIcEEEE\n0000000000095dfc T __ZN11nemo_speech3asr9SileroVadC2ENSt3__110shared_ptrINS0_14SileroVadModelEEE\n0000000000095cf4 T __ZN11nemo_speech3asr9SileroVadC2ERN12ggml_runtime14BackendManagerERKNSt3__112basic_stringIcNS5_11char_traitsIcEENS5_9allocatorIcEEEE\n00000000000962d0 T __ZN11nemo_speech3asr9SileroVadD1Ev\n00000000000961a0 T __ZN11nemo_speech3asr9SileroVadD2Ev\n000000000009ac8c T __ZN11nemo_speech3asr9VadMasker5applyEPfix\n000000000009aad0 T __ZN11nemo_speech3asr9VadMaskerC1EPNS0_9SileroVadEiNS0_12VadMaskerCfgE\n000000000009aa3c T __ZN11nemo_speech3asr9VadMaskerC2EPNS0_9SileroVadEiNS0_12VadMaskerCfgE\n000000000009b3cc T __ZN11nemo_speech5audio14AudioResampler14emit_availableEbPNSt3__16vectorIfNS2_9allocatorIfEEEE\n000000000009b5e0 T __ZN11nemo_speech5audio14AudioResampler15compact_historyEv\n000000000009b7dc T __ZN11nemo_speech5audio14AudioResampler23advance_source_positionEv\n000000000009b668 T __ZN11nemo_speech5audio14AudioResampler6finishEPNSt3__16vectorIfNS2_9allocatorIfEEEE\n000000000009b1f8 T __ZN11nemo_speech5audio14AudioResampler7processEPKfmPNSt3__16vectorIfNS4_9allocatorIfEEEE\n000000000009b1f4 T __ZN11nemo_speech5audio14AudioResamplerC1Eii\n000000000009ade0 T __ZN11nemo_speech5audio14AudioResamplerC2Eii\n000000000009bb4c T __ZN11nemo_speech5audio14Pcm16Resampler10append_pcmERKNSt3__16vectorIfNS2_9allocatorIfEEEEPNS3_IhNS4_IhEEEE\n000000000009bd2c T __ZN11nemo_speech5audio14Pcm16Resampler6finishEPNSt3__16vectorIhNS2_9allocatorIhEEEE\n000000000009b8c8 T __ZN11nemo_speech5audio14Pcm16Resampler7processEPKhmPNSt3__16vectorIhNS4_9allocatorIhEEEE\n000000000009b8a4 T __ZN11nemo_speech5audio14Pcm16ResamplerC1Eii\n000000000009b880 T __ZN11nemo_speech5audio14Pcm16ResamplerC2Eii\n000000000009be00 T __ZN11nemo_speech5audio14resample_audioEPKfmii\n000000000009adc4 T __ZN11nemo_speech5audio27supported_input_sample_rateEi\n0000000000040040 T __ZN12ggml_runtime21RelPositionalEncoding11build_graphEPNS_7SessionENS_9TensorBagEPNS_15TensorContainerE\n000000000003fb00 T __ZN12ggml_runtime21RelPositionalEncoding13get_pe_tensorEPNS_7SessionEPNS_15TensorContainerE\n000000000003f8f4 T __ZN12ggml_runtime21RelPositionalEncoding14define_tensorsEPNS_7SessionE\n000000000004046c T __ZN12ggml_runtime21RelPositionalEncoding8set_dataEPNS_7SessionE\n0000000000040be4 T __ZN12ggml_runtime29RelPositionMultiHeadAttention11build_graphEPNS_7SessionENS_9TensorBagEPNS_15TensorContainerE\n0000000000040894 T __ZN12ggml_runtime29RelPositionMultiHeadAttention14define_tensorsEPNS_7SessionE\n0000000000040cb4 T __ZN12ggml_runtime29RelPositionMultiHeadAttention18build_graph_maskedEPNS_7SessionENS_9TensorBagEPNS_15TensorContainerEP11ggml_tensor\n00000000000415e0 T __ZN12ggml_runtime29RelPositionMultiHeadAttention8set_dataEPNS_7SessionE\n0000000000046ebc T __ZN23MelSpectrogramExtractor11init_windowEv\n0000000000047ad0 T __ZN23MelSpectrogramExtractor13set_mel_basisEPKfii\n0000000000047090 T __ZN23MelSpectrogramExtractor14init_mel_basisEv\n0000000000047608 T __ZN23MelSpectrogramExtractor15init_cpu_tablesEv\n000000000004795c T __ZN23MelSpectrogramExtractorC1ERK13MelSpecConfigPN12ggml_runtime14BackendManagerERKN11nemo_speech3asr14BatchingConfigE\n00000000000468ec T __ZN23MelSpectrogramExtractorC2ERK13MelSpecConfigPN12ggml_runtime14BackendManagerERKN11nemo_speech3asr14BatchingConfigE\n0000000000047a5c T __ZN23MelSpectrogramExtractorD1Ev\n0000000000047960 T __ZN23MelSpectrogramExtractorD2Ev\n00000000000205f0 T __ZNK11nemo_speech3asr10DiarStream13stable_framesEv\n000000000002099c T __ZNK11nemo_speech3asr10DiarStream16speaker_for_timeEdd\n0000000000020660 T __ZNK11nemo_speech3asr10DiarStream18speaker_for_framesExx\n00000000000209b4 T __ZNK11nemo_speech3asr10DiarStream21speaker_for_word_timeEdd\n0000000000020ff8 T __ZNK11nemo_speech3asr10DiarStream8segmentsERKNS0_19DiarSegmentationCfgE\n000000000007d210 T __ZNK11nemo_speech3asr10Recognizer11make_runnerEv\n000000000007e8d4 T __ZNK11nemo_speech3asr10Recognizer11sample_rateEv\n000000000007cc88 T __ZNK11nemo_speech3asr10Recognizer16log_model_statusEv\n000000000007f860 T __ZNK11nemo_speech3asr10Recognizer16ms_per_enc_frameEv\n000000000007d1ec T __ZNK11nemo_speech3asr10Recognizer17vad_batch_metricsEv\n0000000000081460 T __ZNK11nemo_speech3asr10Recognizer19supported_languagesEv\n000000000007d180 T __ZNK11nemo_speech3asr10Recognizer20log_execution_statusEb\n000000000001aea4 T __ZNK11nemo_speech3asr12DiarGeometry8resolvedEb\n000000000001b238 T __ZNK11nemo_speech3asr12DiarGeometry8validateEiii\n0000000000084a54 T __ZNK11nemo_speech3asr13OfflineRunner14snap_to_quiet_Emm\n0000000000084ebc T __ZNK11nemo_speech3asr13OfflineRunner17offline_segments_Ev\n0000000000084964 T __ZNK11nemo_speech3asr13OfflineRunner20max_offline_samples_Ev\n0000000000095cb0 T __ZNK11nemo_speech3asr14SileroVadModel13batch_metricsEv\n0000000000027f1c T __ZNK11nemo_speech3asr15SortformerModel13batch_metricsEv\n0000000000027cb8 T __ZNK11nemo_speech3asr15SortformerModel14subsampled_lenEi\n000000000001adac T __ZNK11nemo_speech3asr16ChannelBirthGate14is_establishedEi\n000000000001add8 T __ZNK11nemo_speech3asr16ChannelBirthGate14settled_framesEv\n000000000001a0a8 T __ZNK11nemo_speech3asr16ChannelBirthGate7relabelEPf\n000000000002f1d8 T __ZNK11nemo_speech3asr17CacheAwareEncoder13batch_metricsEv\n0000000000086a58 T __ZNK11nemo_speech3asr17CacheStreamRunner17rnnt_decode_statsEv\n00000000000237fc T __ZNK11nemo_speech3asr17DiarizationStream11frame_countEv\n0000000000023838 T __ZNK11nemo_speech3asr17DiarizationStream12num_speakersEv\n0000000000023820 T __ZNK11nemo_speech3asr17DiarizationStream17frame_probs_startEv\n0000000000023844 T __ZNK11nemo_speech3asr17DiarizationStream17seconds_per_frameEv\n000000000002382c T __ZNK11nemo_speech3asr17DiarizationStream19frame_probabilitiesEv\n0000000000023850 T __ZNK11nemo_speech3asr17DiarizationStream8segmentsERKNS0_19DiarSegmentationCfgE\n000000000007e8f0 T __ZNK11nemo_speech3asr17RecognitionStream13build_result_ERKNS0_15StreamingUpdateEb\n00000000000805a8 T __ZNK11nemo_speech3asr17RecognitionStream19stable_speaker_timeEv\n000000000007fa48 T __ZNK11nemo_speech3asr17RecognitionStream20refresh_speaker_tagsERNS0_6ResultE\n000000000000efa4 T __ZNK11nemo_speech3asr18ContextBiasingTree10step_boostEi\n000000000000f20c T __ZNK11nemo_speech3asr18ContextBiasingTree7advanceEii\n000000000003b848 T __ZNK11nemo_speech3asr20FastConformerEncoder10dw_ct_nameEi\n000000000003ad80 T __ZNK11nemo_speech3asr20FastConformerEncoder13kv_cache_nameEi\n000000000003b6a4 T __ZNK11nemo_speech3asr20FastConformerEncoder13pos_proj_nameEi\n000000000003b0dc T __ZNK11nemo_speech3asr20FastConformerEncoder14attn_mask_nameEv\n000000000003af2c T __ZNK11nemo_speech3asr20FastConformerEncoder15conv_cache_nameEi\n000000000003b1a8 T __ZNK11nemo_speech3asr20FastConformerEncoder16k_cache_out_nameEi\n000000000003b354 T __ZNK11nemo_speech3asr20FastConformerEncoder16v_cache_out_nameEi\n000000000003b500 T __ZNK11nemo_speech3asr20FastConformerEncoder19conv_cache_out_nameEi\n000000000007160c T __ZNK11nemo_speech3asr3pnc18WordPieceTokenizer8tokenizeERKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEE\n000000000006b5ac T __ZNK11nemo_speech3asr3pnc8PncModel13batch_metricsEv\n0000000000070424 T __ZNK11nemo_speech3asr3pnc9PncRunner11postprocessERKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEE\n000000000005296c T __ZNK11nemo_speech3asr8CtcModel13batch_metricsEv\n00000000000529cc T __ZNK11nemo_speech3asr8CtcModel19diagnostic_sessionsEv\n00000000000529b8 T __ZNK11nemo_speech3asr8CtcModel25offline_frontend_uses_gpuEv\n00000000000529b0 T __ZNK11nemo_speech3asr8CtcModel30offline_frontend_batch_metricsEv\n0000000000023eec T __ZNK11nemo_speech3asr8Diarizer11sample_rateEv\n000000000002403c T __ZNK11nemo_speech3asr8Diarizer12num_speakersEv\n0000000000024064 T __ZNK11nemo_speech3asr8Diarizer13batch_metricsEv\n0000000000024048 T __ZNK11nemo_speech3asr8Diarizer17seconds_per_frameEv\n0000000000023ef8 T __ZNK11nemo_speech3asr8Diarizer17streaming_diarizeEv\n0000000000023af8 T __ZNK11nemo_speech3asr8Diarizer7diarizeEPKfmiNS0_15DiarizationModeERKNS0_19DiarSegmentationCfgE\n0000000000077a58 T __ZNK11nemo_speech3asr8postproc13Postprocessor17pnc_batch_metricsEv\n0000000000077a7c T __ZNK11nemo_speech3asr8postproc13Postprocessor5applyERKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEERKNS0_17AsrRequestOptionsEPNS3_6vectorINS0_10WordTimingENS7_ISG_EEEESB_\n00000000000784e0 T __ZNK11nemo_speech3asr8postproc13Postprocessor9apply_cpuERKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEERKNS0_17AsrRequestOptionsEPNS3_6vectorINS0_10WordTimingENS7_ISG_EEEESB_\n0000000000072740 T __ZNK11nemo_speech3asr8postproc3Itn9alignmentERKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEE\n00000000000726ec T __ZNK11nemo_speech3asr8postproc3Itn9normalizeERKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEEPS9_\n000000000007b4b0 T __ZNK11nemo_speech3asr8postproc9Profanity4maskERKNSt3__112basic_stringIcNS3_11char_traitsIcEENS3_9allocatorIcEEEE\n000000000001eb78 T __ZNK11nemo_speech3asr9DiarModel17resolved_geometryERKNS0_12DiarGeometryE\n00000000000547b4 T __ZNK11nemo_speech3asr9RnntModel13encode_phraseERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEE\n0000000000057bbc T __ZNK11nemo_speech3asr9RnntModel19diagnostic_sessionsEv\n00000000000579d4 T __ZNK11nemo_speech3asr9RnntModel19joint_batch_metricsEv\n00000000000578c4 T __ZNK11nemo_speech3asr9RnntModel21encoder_batch_metricsEv\n000000000005519c T __ZNK11nemo_speech3asr9RnntModel21prompt_index_for_langERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEE\n00000000000578e8 T __ZNK11nemo_speech3asr9RnntModel23predictor_batch_metricsEv\n000000000005517c T __ZNK11nemo_speech3asr9RnntModel25offline_frontend_uses_gpuEv\n00000000000550e8 T __ZNK11nemo_speech3asr9RnntModel29offline_encoder_batch_metricsEv\n0000000000055158 T __ZNK11nemo_speech3asr9RnntModel30offline_frontend_batch_metricsEv\n00000000000968c0 T __ZNK11nemo_speech3asr9SileroVad12frame_speechEx\n000000000009ab64 T __ZNK11nemo_speech3asr9VadMasker13decide_maskedEx\n000000000009b7ac T __ZNK11nemo_speech5audio14AudioResampler11phase_indexEv\n000000000009b804 T __ZNK11nemo_speech5audio14AudioResampler12input_sampleEx\n000000000009b6f8 T __ZNK11nemo_speech5audio14AudioResampler15filtered_sampleEym\n0000000000047a60 T __ZNK23MelSpectrogramExtractor13batch_metricsEv\n000000000004806c T __ZNK23MelSpectrogramExtractor14compute_paddedEPKfmmRNSt3__16vectorIfNS2_9allocatorIfEEEERibb\n00000000000496e4 T __ZNK23MelSpectrogramExtractor23compute_gpu_via_sessionEPKfmmRNSt3__16vectorIfNS2_9allocatorIfEEEERibb\n0000000000049f3c T __ZNK23MelSpectrogramExtractor29compute_gpu_batch_via_sessionEONSt3__16vectorINS_12BatchRequestENS0_9allocatorIS2_EEEE\n0000000000048054 T __ZNK23MelSpectrogramExtractor7computeEPKfmRNSt3__16vectorIfNS2_9allocatorIfEEEERibb\n00000000000bda00 S __ZNSt3__119piecewise_constructE\n00000000000c5368 S __ZTIN11nemo_speech3asr11ConformerFFE\n00000000000c5350 S __ZTIN11nemo_speech3asr11SubSamplingE\n00000000000c5380 S __ZTIN11nemo_speech3asr13ConformerConvE\n00000000000c4c00 S __ZTIN11nemo_speech3asr13CtcHeadModuleE\n00000000000c6578 S __ZTIN11nemo_speech3asr13OfflineRunnerE\n00000000000c5398 S __ZTIN11nemo_speech3asr14ConformerLayerE\n00000000000c4e78 S __ZTIN11nemo_speech3asr15RnntJointModuleE\n00000000000c4f80 S __ZTIN11nemo_speech3asr15SortformerGraphE\n00000000000c4bd8 S __ZTIN11nemo_speech3asr16GreedyCtcDecoderE\n00000000000c4da0 S __ZTIN11nemo_speech3asr16TdtGreedyDecoderE\n00000000000c5608 S __ZTIN11nemo_speech3asr16TransformerBlockE\n00000000000c6590 S __ZTIN11nemo_speech3asr17CacheStreamRunnerE\n00000000000c4d88 S __ZTIN11nemo_speech3asr17RnntGreedyDecoderE\n00000000000c4e90 S __ZTIN11nemo_speech3asr18PromptFusionModuleE\n00000000000c4e60 S __ZTIN11nemo_speech3asr19RnntPredictorModuleE\n00000000000c6550 S __ZTIN11nemo_speech3asr20BufferedStreamRunnerE\n00000000000c53b0 S __ZTIN11nemo_speech3asr20FastConformerEncoderE\n00000000000c5568 S __ZTIN11nemo_speech3asr20RopeTransformerBlockE\n00000000000c5580 S __ZTIN11nemo_speech3asr22RopeTransformerEncoderE\n00000000000c5620 S __ZTIN11nemo_speech3asr24TransformerEncoderModuleE\n00000000000c59a0 S __ZTIN11nemo_speech3asr8AsrModelE\n00000000000c59b0 S __ZTIN11nemo_speech3asr8CtcModelE\n00000000000c59c8 S __ZTIN11nemo_speech3asr9RnntModelE\n00000000000c5490 S __ZTIN12ggml_runtime21RelPositionalEncodingE\n00000000000c54e0 S __ZTIN12ggml_runtime29RelPositionMultiHeadAttentionE\n00000000000be5ae S __ZTSN11nemo_speech3asr11ConformerFFE\n00000000000be58d S __ZTSN11nemo_speech3asr11SubSamplingE\n00000000000be5cf S __ZTSN11nemo_speech3asr13ConformerConvE\n00000000000bda72 S __ZTSN11nemo_speech3asr13CtcHeadModuleE\n00000000000c00fd S __ZTSN11nemo_speech3asr13OfflineRunnerE\n00000000000be5f2 S __ZTSN11nemo_speech3asr14ConformerLayerE\n00000000000bdb39 S __ZTSN11nemo_speech3asr15RnntJointModuleE\n00000000000bdef0 S __ZTSN11nemo_speech3asr15SortformerGraphE\n00000000000bda30 S __ZTSN11nemo_speech3asr16GreedyCtcDecoderE\n00000000000bdad4 S __ZTSN11nemo_speech3asr16TdtGreedyDecoderE\n00000000000be88e S __ZTSN11nemo_speech3asr16TransformerBlockE\n00000000000c0120 S __ZTSN11nemo_speech3asr17CacheStreamRunnerE\n00000000000bdaad S __ZTSN11nemo_speech3asr17RnntGreedyDecoderE\n00000000000bdb5e S __ZTSN11nemo_speech3asr18PromptFusionModuleE\n00000000000bdb10 S __ZTSN11nemo_speech3asr19RnntPredictorModuleE\n00000000000c00b5 S __ZTSN11nemo_speech3asr20BufferedStreamRunnerE\n00000000000be616 S __ZTSN11nemo_speech3asr20FastConformerEncoderE\n00000000000be838 S __ZTSN11nemo_speech3asr20RopeTransformerBlockE\n00000000000be862 S __ZTSN11nemo_speech3asr22RopeTransformerEncoderE\n00000000000be8b4 S __ZTSN11nemo_speech3asr24TransformerEncoderModuleE\n00000000000becfd S __ZTSN11nemo_speech3asr8AsrModelE\n00000000000bed1a S __ZTSN11nemo_speech3asr8CtcModelE\n00000000000bed37 S __ZTSN11nemo_speech3asr9RnntModelE\n00000000000be7e0 S __ZTSN12ggml_runtime21RelPositionalEncodingE\n00000000000be808 S __ZTSN12ggml_runtime29RelPositionMultiHeadAttentionE\n00000000000c5270 S __ZTVN11nemo_speech3asr11ConformerFFE\n00000000000c5238 S __ZTVN11nemo_speech3asr11SubSamplingE\n00000000000c52a8 S __ZTVN11nemo_speech3asr13ConformerConvE\n00000000000c4af0 S __ZTVN11nemo_speech3asr13CtcHeadModuleE\n00000000000c6490 S __ZTVN11nemo_speech3asr13OfflineRunnerE\n00000000000c52e0 S __ZTVN11nemo_speech3asr14ConformerLayerE\n00000000000c4df0 S __ZTVN11nemo_speech3asr15RnntJointModuleE\n00000000000c4f48 S __ZTVN11nemo_speech3asr15SortformerGraphE\n00000000000c4b28 S __ZTVN11nemo_speech3asr16GreedyCtcDecoderE\n00000000000c4cd8 S __ZTVN11nemo_speech3asr16TdtGreedyDecoderE\n00000000000c5598 S __ZTVN11nemo_speech3asr16TransformerBlockE\n00000000000c64f0 S __ZTVN11nemo_speech3asr17CacheStreamRunnerE\n00000000000c4c28 S __ZTVN11nemo_speech3asr17RnntGreedyDecoderE\n00000000000c4e28 S __ZTVN11nemo_speech3asr18PromptFusionModuleE\n00000000000c4db8 S __ZTVN11nemo_speech3asr19RnntPredictorModuleE\n00000000000c6430 S __ZTVN11nemo_speech3asr20BufferedStreamRunnerE\n00000000000c5318 S __ZTVN11nemo_speech3asr20FastConformerEncoderE\n00000000000c54f8 S __ZTVN11nemo_speech3asr20RopeTransformerBlockE\n00000000000c5530 S __ZTVN11nemo_speech3asr22RopeTransformerEncoderE\n00000000000c55d0 S __ZTVN11nemo_speech3asr24TransformerEncoderModuleE\n00000000000c57b0 S __ZTVN11nemo_speech3asr8AsrModelE\n00000000000c5800 S __ZTVN11nemo_speech3asr8CtcModelE\n00000000000c5850 S __ZTVN11nemo_speech3asr9RnntModelE\n00000000000c5458 S __ZTVN12ggml_runtime21RelPositionalEncodingE\n00000000000c54a8 S __ZTVN12ggml_runtime29RelPositionMultiHeadAttentionE\n000000000007af10 T __ZTWN11nemo_speech3asr8postproc13Postprocessor8Executor8current_E\n000000000005633c T __ZThn240_N11nemo_speech3asr9RnntModel12joint_argmaxERNS0_15RnntStreamStateEPKfiiPiS5_\n0000000000055b64 T __ZThn240_N11nemo_speech3asr9RnntModel12predict_rnntERNS0_15RnntStreamStateEii\n00000000000556b4 T __ZThn240_N11nemo_speech3asr9RnntModel15end_decode_stepEv\n00000000000568ec T __ZThn240_N11nemo_speech3asr9RnntModel16joint_tdt_argmaxERNS0_15RnntStreamStateEPKfiiPiS6_\n0000000000055694 T __ZThn240_N11nemo_speech3asr9RnntModel17begin_decode_stepEv\n00000000000564cc T __ZThn240_N11nemo_speech3asr9RnntModel19joint_argmax_deviceERNS0_15RnntStreamStateERKN12ggml_runtime12DeviceTensorEiiiPiPKf\n0000000000055458 T __ZThn240_N11nemo_speech3asr9RnntModel22make_rnnt_stream_stateEv\n0000000000056f88 T __ZThn240_N11nemo_speech3asr9RnntModel28predict_and_joint_tdt_argmaxERNS0_15RnntStreamStateEiiPKfiPiS6_\n00000000000566b4 T __ZThn240_N11nemo_speech3asr9RnntModel36predict_and_joint_rnnt_argmax_deviceERNS0_15RnntStreamStateEiiRKN12ggml_runtime12DeviceTensorEiiiPiPKf\n000000000005479c T __ZThn240_N11nemo_speech3asr9RnntModelD0Ev\n0000000000054780 T __ZThn240_N11nemo_speech3asr9RnntModelD1Ev\n000000000005489c T __ZThn240_NK11nemo_speech3asr9RnntModel13encode_phraseERKNSt3__112basic_stringIcNS2_11char_traitsIcEENS2_9allocatorIcEEEE\n00000000000c8000 D __ZZN11nemo_speech3asr7Decoder19set_request_optionsERKNS0_17AsrRequestOptionsEE6warned\n"
+    },
+    "libnemo_speech_asr_c.1.dylib": {
+      "sha256": "e9d2f506f6b7276fb0823c005bbaf70248ea79ccf868b17013f311ad604033b4",
+      "size": 96224,
+      "dependencies": "/Users/runner/work/_temp/portable-sdk/lib/libnemo_speech_asr_c.1.dylib:\n\t@rpath/libnemo_speech_asr_c.1.dylib (compatibility version 1.0.0, current version 0.0.0)\n\t@rpath/libnemo_speech_asr.dylib (compatibility version 0.0.0, current version 0.0.0)\n\t@rpath/libggml.0.dylib (compatibility version 0.0.0, current version 0.25.1)\n\t@rpath/libggml-blas.0.dylib (compatibility version 0.0.0, current version 0.25.1)\n\t@rpath/libggml-cpu.0.dylib (compatibility version 0.0.0, current version 0.25.1)\n\t@rpath/libggml-base.0.dylib (compatibility version 0.0.0, current version 0.25.1)\n\t/usr/lib/libc++.1.dylib (compatibility version 1.0.0, current version 2100.43.0)\n\t/usr/lib/libSystem.B.dylib (compatibility version 1.0.0, current version 1356.0.0)\n",
+      "exports": "0000000000002750 T _nemo_speech_asr_create\n0000000000003878 T _nemo_speech_asr_destroy\n00000000000052d4 T _nemo_speech_asr_last_error\n0000000000002728 T _nemo_speech_asr_recognition_options_default\n00000000000038b8 T _nemo_speech_asr_recognize_f32\n0000000000004e44 T _nemo_speech_asr_result_alternative_count\n0000000000004e24 T _nemo_speech_asr_result_audio_processed\n0000000000004e38 T _nemo_speech_asr_result_channel_tag\n0000000000004ec4 T _nemo_speech_asr_result_confidence\n0000000000005264 T _nemo_speech_asr_result_destroy\n0000000000004e0c T _nemo_speech_asr_result_is_final\n00000000000051ec T _nemo_speech_asr_result_language_code\n0000000000005198 T _nemo_speech_asr_result_language_count\n0000000000004e64 T _nemo_speech_asr_result_transcript\n000000000000512c T _nemo_speech_asr_result_word_confidence\n0000000000004f00 T _nemo_speech_asr_result_word_count\n00000000000050bc T _nemo_speech_asr_result_word_end_time\n0000000000004fdc T _nemo_speech_asr_result_word_speaker_tag\n000000000000504c T _nemo_speech_asr_result_word_start_time\n0000000000004f5c T _nemo_speech_asr_result_word_text\n0000000000004d4c T _nemo_speech_asr_stream_close\n00000000000046fc T _nemo_speech_asr_stream_finish\n0000000000004500 T _nemo_speech_asr_stream_force_endpoint\n0000000000004a0c T _nemo_speech_asr_stream_next\n0000000000004244 T _nemo_speech_asr_stream_push_f32\n0000000000003e1c T _nemo_speech_asr_streaming_recognize\n0000000000006ffc T _nemo_speech_asr_version\n0000000000005324 T _nemo_speech_diar_create\n0000000000005930 T _nemo_speech_diar_destroy\n00000000000065ec T _nemo_speech_diar_frame_count\n00000000000066b4 T _nemo_speech_diar_frame_probs\n0000000000006650 T _nemo_speech_diar_frame_probs_start\n0000000000005994 T _nemo_speech_diar_num_speakers\n0000000000006178 T _nemo_speech_diar_offline_f32\n00000000000059a4 T _nemo_speech_diar_seconds_per_frame\n0000000000006ab4 T _nemo_speech_diar_segments\n0000000000006110 T _nemo_speech_diar_stream_close\n0000000000005ee0 T _nemo_speech_diar_stream_finish\n00000000000059b8 T _nemo_speech_diar_stream_open\n0000000000005c88 T _nemo_speech_diar_stream_push_f32\n"
+    }
+  },
+  "installed_library_paths": {
+    "libggml-base.0.25.1.dylib": {
+      "bytes": 752856,
+      "sha256": "69a56de3df36c1883d7c4359a7113ead073265432c13e45967b63f56d480da36",
+      "symlink_target": null
+    },
+    "libggml-base.0.dylib": {
+      "bytes": 752856,
+      "sha256": "69a56de3df36c1883d7c4359a7113ead073265432c13e45967b63f56d480da36",
+      "symlink_target": "libggml-base.0.25.1.dylib"
+    },
+    "libggml-base.dylib": {
+      "bytes": 752856,
+      "sha256": "69a56de3df36c1883d7c4359a7113ead073265432c13e45967b63f56d480da36",
+      "symlink_target": "libggml-base.0.dylib"
+    },
+    "libggml-blas.0.25.1.dylib": {
+      "bytes": 58776,
+      "sha256": "8074f18ab9d95309ae4d9be587abc3d6befad740096cb29671e352ca103ce2f0",
+      "symlink_target": null
+    },
+    "libggml-blas.0.dylib": {
+      "bytes": 58776,
+      "sha256": "8074f18ab9d95309ae4d9be587abc3d6befad740096cb29671e352ca103ce2f0",
+      "symlink_target": "libggml-blas.0.25.1.dylib"
+    },
+    "libggml-blas.dylib": {
+      "bytes": 58776,
+      "sha256": "8074f18ab9d95309ae4d9be587abc3d6befad740096cb29671e352ca103ce2f0",
+      "symlink_target": "libggml-blas.0.dylib"
+    },
+    "libggml-cpu.0.25.1.dylib": {
+      "bytes": 1022488,
+      "sha256": "8cc202c7a312c31a8caff5059d1eb5b1fcddce615380adfee3f3b8352a1d8089",
+      "symlink_target": null
+    },
+    "libggml-cpu.0.dylib": {
+      "bytes": 1022488,
+      "sha256": "8cc202c7a312c31a8caff5059d1eb5b1fcddce615380adfee3f3b8352a1d8089",
+      "symlink_target": "libggml-cpu.0.25.1.dylib"
+    },
+    "libggml-cpu.dylib": {
+      "bytes": 1022488,
+      "sha256": "8cc202c7a312c31a8caff5059d1eb5b1fcddce615380adfee3f3b8352a1d8089",
+      "symlink_target": "libggml-cpu.0.dylib"
+    },
+    "libggml.0.25.1.dylib": {
+      "bytes": 59992,
+      "sha256": "137f5eeedb415905726151eb8b8be68c831dc52780d6a14fcbed59bf74734658",
+      "symlink_target": null
+    },
+    "libggml.0.dylib": {
+      "bytes": 59992,
+      "sha256": "137f5eeedb415905726151eb8b8be68c831dc52780d6a14fcbed59bf74734658",
+      "symlink_target": "libggml.0.25.1.dylib"
+    },
+    "libggml.dylib": {
+      "bytes": 59992,
+      "sha256": "137f5eeedb415905726151eb8b8be68c831dc52780d6a14fcbed59bf74734658",
+      "symlink_target": "libggml.0.dylib"
+    },
+    "libnemo_speech_asr.dylib": {
+      "bytes": 1227016,
+      "sha256": "e5146381373f456be7d3bb332b2a1db26a2a8aed3e3e787be617005884522a1c",
+      "symlink_target": null
+    },
+    "libnemo_speech_asr_c.1.dylib": {
+      "bytes": 96224,
+      "sha256": "e9d2f506f6b7276fb0823c005bbaf70248ea79ccf868b17013f311ad604033b4",
+      "symlink_target": null
+    },
+    "libnemo_speech_asr_c.dylib": {
+      "bytes": 96224,
+      "sha256": "e9d2f506f6b7276fb0823c005bbaf70248ea79ccf868b17013f311ad604033b4",
+      "symlink_target": "libnemo_speech_asr_c.1.dylib"
+    }
+  },
+  "cpu_architecture": {
+    "mode": "explicit-portable-arm64",
+    "arm_arch": "armv8.2-a+dotprod+fp16",
+    "all_compiler_units_have_explicit_target": true,
+    "compiler_units": 98,
+    "cpu_kernel_units_present": [
+      "arch/arm/quants.c",
+      "arch/arm/repack.cpp",
+      "ggml-cpu.cpp"
+    ],
+    "hardware_or_model_qualification": false
+  },
+  "actual_compiler_sources": {
+    "/Users/runner/work/_temp/portable-source/build/cpu-diar/_deps/llama.cpp/ggml/src/ggml.c": {
+      "bytes": 271747,
+      "sha256": "c642c7ab0b3684717cd8ae5c1803e923b1a24736a1fc07b38b6db68744575c86"
+    },
+    "/Users/runner/work/_temp/portable-source/build/cpu-diar/_deps/llama.cpp/ggml/src/ggml.cpp": {
+      "bytes": 738,
+      "sha256": "64e6b5c8d716ae8697e45481a7153540be01f721be2dc7e753aa47b36a69c753"
+    },
+    "/Users/runner/work/_temp/portable-source/build/cpu-diar/_deps/llama.cpp/ggml/src/ggml-alloc.c": {
+      "bytes": 47847,
+      "sha256": "213b48d6ef6d6ffef55c438db837116105de72cdae3dd152673035e61508d384"
+    },
+    "/Users/runner/work/_temp/portable-source/build/cpu-diar/_deps/llama.cpp/ggml/src/ggml-backend.cpp": {
+      "bytes": 99321,
+      "sha256": "2dd6a572f087a1fddaa52dbf2378b777cd21752f4b2a1292c8da3bcb05fbcfd9"
+    },
+    "/Users/runner/work/_temp/portable-source/build/cpu-diar/_deps/llama.cpp/ggml/src/ggml-backend-meta.cpp": {
+      "bytes": 119131,
+      "sha256": "46454efd6467cc5cca7583266acfd0484b42a09692ca3b815f4bf24de8d98519"
+    },
+    "/Users/runner/work/_temp/portable-source/build/cpu-diar/_deps/llama.cpp/ggml/src/ggml-opt.cpp": {
+      "bytes": 42081,
+      "sha256": "e35fd27856e37f3611d3bc6f17ee963be51bfe92bec96fad0a9fa2c7ebbe9c46"
+    },
+    "/Users/runner/work/_temp/portable-source/build/cpu-diar/_deps/llama.cpp/ggml/src/ggml-threading.cpp": {
+      "bytes": 250,
+      "sha256": "13a18d885393722b7c9f42d4cf8575a4d41699926d656f78a867fa4fac9dad20"
+    },
+    "/Users/runner/work/_temp/portable-source/build/cpu-diar/_deps/llama.cpp/ggml/src/ggml-quants.c": {
+      "bytes": 226703,
+      "sha256": "7878680cc60493f98469a116e9b14af8b84789292ccf891c249230b2fa3d157f"
+    },
+    "/Users/runner/work/_temp/portable-source/build/cpu-diar/_deps/llama.cpp/ggml/src/gguf.cpp": {
+      "bytes": 58330,
+      "sha256": "2293c7bd9009154da9de075c8ea49be291a9086a5d1a06984b80b80bf7a9cea9"
+    },
+    "/Users/runner/work/_temp/portable-source/build/cpu-diar/_deps/llama.cpp/ggml/src/ggml-backend-dl.cpp": {
+      "bytes": 1051,
+      "sha256": "acd76df8b83bcdef6807bc7b0520f57b379d61b4ff1027c04aa4d140d16ad07f"
+    },
+    "/Users/runner/work/_temp/portable-source/build/cpu-diar/_deps/llama.cpp/ggml/src/ggml-backend-reg.cpp": {
+      "bytes": 18555,
+      "sha256": "0f63c69ad083e0744872f57d59d049b069283303f5bbc646222907d779afe4d1"
+    },
+    "/Users/runner/work/_temp/portable-source/build/cpu-diar/_deps/llama.cpp/ggml/src/ggml-cpu/ggml-cpu.c": {
+      "bytes": 132918,
+      "sha256": "d4dd2c161a3f5c0ed45216683de99dd9b13b93330d81c992f4c4163fea904a04"
+    },
+    "/Users/runner/work/_temp/portable-source/build/cpu-diar/_deps/llama.cpp/ggml/src/ggml-cpu/ggml-cpu.cpp": {
+      "bytes": 24943,
+      "sha256": "0a48134cecf8cefa2d10348ad6f93987272b81b9013a4fd39d8c9d089776d9c5"
+    },
+    "/Users/runner/work/_temp/portable-source/build/cpu-diar/_deps/llama.cpp/ggml/src/ggml-cpu/repack.cpp": {
+      "bytes": 213451,
+      "sha256": "0d604f463513bc796ffd7031f770c1706300990c0a8670a0e9000949667155c3"
+    },
+    "/Users/runner/work/_temp/portable-source/build/cpu-diar/_deps/llama.cpp/ggml/src/ggml-cpu/iqp.cpp": {
+      "bytes": 48342,
+      "sha256": "0e2ab5a4be4bea1dbce740a5ff436ddeac0bcfdaff6fd9edfa367dc75c069126"
+    },
+    "/Users/runner/work/_temp/portable-source/build/cpu-diar/_deps/llama.cpp/ggml/src/ggml-cpu/hbm.cpp": {
+      "bytes": 2003,
+      "sha256": "3c75b5aaf9b51d17060ecfb93cb5f8b22ce3974d7eff3d76dec2156d2f194b80"
+    },
+    "/Users/runner/work/_temp/portable-source/build/cpu-diar/_deps/llama.cpp/ggml/src/ggml-cpu/quants.c": {
+      "bytes": 45124,
+      "sha256": "a61f1011e49d05b5f99d352b158d5b8e36cf008294bb0db309f72bdd7f1d4e35"
+    },
+    "/Users/runner/work/_temp/portable-source/build/cpu-diar/_deps/llama.cpp/ggml/src/ggml-cpu/traits.cpp": {
+      "bytes": 1231,
+      "sha256": "a85bd3ff50c91cb67d14221988544664dfe5975db0811b330dc4a2f385239de4"
+    },
+    "/Users/runner/work/_temp/portable-source/build/cpu-diar/_deps/llama.cpp/ggml/src/ggml-cpu/amx/amx.cpp": {
+      "bytes": 8265,
+      "sha256": "636d1e4b858a86ad6568100bbdb4bf9715d9dfb25d3831415d55e04e39acad86"
+    },
+    "/Users/runner/work/_temp/portable-source/build/cpu-diar/_deps/llama.cpp/ggml/src/ggml-cpu/amx/mmq.cpp": {
+      "bytes": 108216,
+      "sha256": "0f95c80e0300eca3b3a3df07272042fee708425e19cd5f2c4cba7b253b26d226"
+    },
+    "/Users/runner/work/_temp/portable-source/build/cpu-diar/_deps/llama.cpp/ggml/src/ggml-cpu/binary-ops.cpp": {
+      "bytes": 6709,
+      "sha256": "2df261aadce36a20f5e3bf6961d4ca27b8c2d461afc41488361ee6ad09c1730d"
+    },
+    "/Users/runner/work/_temp/portable-source/build/cpu-diar/_deps/llama.cpp/ggml/src/ggml-cpu/unary-ops.cpp": {
+      "bytes": 11555,
+      "sha256": "e63b382766f1b8c5ded1577be9704e85cb4e9cd24584f3e1474911a40146df33"
+    },
+    "/Users/runner/work/_temp/portable-source/build/cpu-diar/_deps/llama.cpp/ggml/src/ggml-cpu/vec.cpp": {
+      "bytes": 25309,
+      "sha256": "cda0babb53f9c8ff1faa7459b2c49019d15e5970dfe0c613d58e2659e919f524"
+    },
+    "/Users/runner/work/_temp/portable-source/build/cpu-diar/_deps/llama.cpp/ggml/src/ggml-cpu/ops.cpp": {
+      "bytes": 422746,
+      "sha256": "695e87a0a22a130b3ccd5b0aa2efb9e27062ffc4a6aace6a80f75d672980a290"
+    },
+    "/Users/runner/work/_temp/portable-source/build/cpu-diar/_deps/llama.cpp/ggml/src/ggml-cpu/llamafile/sgemm.cpp": {
+      "bytes": 162829,
+      "sha256": "e226380b05393302ba91b38d22718d9521700ee2cb7943f83ad316a7a9dcd597"
+    },
+    "/Users/runner/work/_temp/portable-source/build/cpu-diar/_deps/llama.cpp/ggml/src/ggml-cpu/arch/arm/quants.c": {
+      "bytes": 216963,
+      "sha256": "9fccd3897db24c9df89b8431b588175894e5f54697cf45768d0c6e6c5544093e"
+    },
+    "/Users/runner/work/_temp/portable-source/build/cpu-diar/_deps/llama.cpp/ggml/src/ggml-cpu/arch/arm/repack.cpp": {
+      "bytes": 269785,
+      "sha256": "6a96da05d38f693bcf259ef063c0e4adf762c006a92252fd83133f7cf626b76d"
+    },
+    "/Users/runner/work/_temp/portable-source/build/cpu-diar/_deps/llama.cpp/ggml/src/ggml-blas/ggml-blas.cpp": {
+      "bytes": 17567,
+      "sha256": "d81fd424f08c47b5fc2711030b94104a487d2acad9b197783e7dd2c99caeba37"
+    },
+    "/Users/runner/work/_temp/portable-source/src/runtime/ggml/backend.cpp": {
+      "bytes": 6376,
+      "sha256": "92ea19f833c9ba132c81cfe33693ab1090d436e25c2aaea7e6186315f5265394"
+    },
+    "/Users/runner/work/_temp/portable-source/src/runtime/ggml/loader.cpp": {
+      "bytes": 12922,
+      "sha256": "b637cdc587eac7d626d74b0c9763885c89ea7bd4ff137fae2ad504058be22c0a"
+    },
+    "/Users/runner/work/_temp/portable-source/src/runtime/ggml/logging.cpp": {
+      "bytes": 2114,
+      "sha256": "8b06d0484a2c9036f4669edb049ec1e9c9ba4fa1489bf387936d67c8a7fea8ca"
+    },
+    "/Users/runner/work/_temp/portable-source/src/runtime/ggml/nn.cpp": {
+      "bytes": 18881,
+      "sha256": "ba8b61473b665a6c8e3f35232fcb7fcae16c025109c49c6f3b0441c5430cd603"
+    },
+    "/Users/runner/work/_temp/portable-source/src/runtime/ggml/session.cpp": {
+      "bytes": 41165,
+      "sha256": "b37a3a1b5810d9034a847aa0923d5ae7063ec70f8f43080fec36c01db6e6d81c"
+    },
+    "/Users/runner/work/_temp/portable-source/src/runtime/ggml/tensor_container.cpp": {
+      "bytes": 10879,
+      "sha256": "95d65e2f7d64ab56027b67bb8ea6591bfe5d7f73ec3a1328fe33ece11590b914"
+    },
+    "/Users/runner/work/_temp/portable-source/src/common/audio_decoder.cpp": {
+      "bytes": 7874,
+      "sha256": "7909a6dab387e3546d7efc5a18a73cc787cde0519556a707c2d380b43028c1e2"
+    },
+    "/Users/runner/work/_temp/portable-source/src/common/audio_file.cpp": {
+      "bytes": 6929,
+      "sha256": "f4b6e3e89600efb184694c2167eaa3701309305b3874152a74a4fe0ca0066bf2"
+    },
+    "/Users/runner/work/_temp/portable-source/src/common/audio_resampler.cpp": {
+      "bytes": 11167,
+      "sha256": "5c28beca3042b14ef84139d1b6670348bce8a6e5e788e1ca8c2b48d88e73b70d"
+    },
+    "/Users/runner/work/_temp/portable-source/src/common/json.cpp": {
+      "bytes": 15067,
+      "sha256": "17474348cf2878b0be77804b29b0ab1f89aa156576fe82395a20d9f0f3803454"
+    },
+    "/Users/runner/work/_temp/portable-source/src/common/parameter_parser.cpp": {
+      "bytes": 8502,
+      "sha256": "f229ef4f5b38c92bcb9627c78e202dbdfa1c909d750bbd84b9f5d117049d076f"
+    },
+    "/Users/runner/work/_temp/portable-source/src/common/subtitles.cpp": {
+      "bytes": 9236,
+      "sha256": "0e3f7c80720033b536436f911766a8ee986b0725db6a4a23f9c2e4a08c3a4e24"
+    },
+    "/Users/runner/work/_temp/portable-source/src/asr/decoders/context_biasing.cpp": {
+      "bytes": 4814,
+      "sha256": "f9a1f226fa9f02c42b4ec4357ab6609cbe2094c3e0141881621234f55137874d"
+    },
+    "/Users/runner/work/_temp/portable-source/src/asr/decoders/flashlight_decoder.cpp": {
+      "bytes": 22319,
+      "sha256": "a3ae0aa0eb9aa7e11e578502524560fdfc111240931cbed4e13eda987741e613"
+    },
+    "/Users/runner/work/_temp/portable-source/src/asr/decoders/greedy_ctc_decoder.cpp": {
+      "bytes": 9149,
+      "sha256": "e35a05aee2445c61b8cf61bbbbdb1ca170f9736ffaf5d6c2ab0c0a1070869175"
+    },
+    "/Users/runner/work/_temp/portable-source/src/asr/decoders/rnnt_greedy_decoder.cpp": {
+      "bytes": 18817,
+      "sha256": "10f85c437537511c8ecafd06648d897756a4b3a74683838a11d2f7422fc24cac"
+    },
+    "/Users/runner/work/_temp/portable-source/src/asr/decoders/rnnt_modules.cpp": {
+      "bytes": 14624,
+      "sha256": "645a09e4721dbfed67b665791a7c7ff9b915fddbc5ac751accad63426a608fce"
+    },
+    "/Users/runner/work/_temp/portable-source/src/asr/diar/aosc_state.cpp": {
+      "bytes": 18257,
+      "sha256": "766545092a69bdc9444f69b7745f3b4397718cbf3d87c7f00776c0142470d59b"
+    },
+    "/Users/runner/work/_temp/portable-source/src/asr/diar/diar_pipeline.cpp": {
+      "bytes": 19539,
+      "sha256": "fe00ae415f4741d7e07579acdc77c60f5d7327be024cf7f8aff8f52142ae9af2"
+    },
+    "/Users/runner/work/_temp/portable-source/src/asr/diar/diarizer.cpp": {
+      "bytes": 6763,
+      "sha256": "1536bc044bc17fcc4c7913f983c5314ebef6fd2df14649cef4024832424f2b82"
+    },
+    "/Users/runner/work/_temp/portable-source/src/asr/diar/sortformer_model.cpp": {
+      "bytes": 25857,
+      "sha256": "831d819e0a3986b7b6007987a67b4ccc5f2895d6d68247ca138ed4d9c3c3d2c9"
+    },
+    "/Users/runner/work/_temp/portable-source/src/asr/encoder/cache_aware_encoder.cpp": {
+      "bytes": 16392,
+      "sha256": "d8593f4eb4401ca08f3346e3f49344c9d66c21bf03587195227995eb8d37fd27"
+    },
+    "/Users/runner/work/_temp/portable-source/src/asr/encoder/fastconformer.cpp": {
+      "bytes": 79898,
+      "sha256": "8990e47b18b142cbf867bf5924ea042a56a8a7b45761fe74ad84a827e0e0d631"
+    },
+    "/Users/runner/work/_temp/portable-source/src/asr/encoder/rel_pos_attention.cpp": {
+      "bytes": 19780,
+      "sha256": "3446bc5a71f4e513f3173072e2bf90da6303b9e0b454e5a30478d9139485ce4a"
+    },
+    "/Users/runner/work/_temp/portable-source/src/asr/encoder/rope_transformer.cpp": {
+      "bytes": 7464,
+      "sha256": "125ebd73fa132f47198ffdc53ba764d0171c16d78d4f406012b8c2ceeb3de908"
+    },
+    "/Users/runner/work/_temp/portable-source/src/asr/encoder/transformer_encoder.cpp": {
+      "bytes": 6581,
+      "sha256": "d2d8799bdc1ff48d46e875e8e7d5cf26dcceae67a4695b7bf2cf37768a32d7ee"
+    },
+    "/Users/runner/work/_temp/portable-source/src/asr/features/fe.cpp": {
+      "bytes": 34869,
+      "sha256": "c2cbd1630ac2e2417f863aead766fdee47f3f96868c79b942571dae7804596b9"
+    },
+    "/Users/runner/work/_temp/portable-source/src/asr/model.cpp": {
+      "bytes": 94885,
+      "sha256": "83e8f1afe5e8c75cf6c43f688648246c18ef9692ccfc1b07064548afcab1a04d"
+    },
+    "/Users/runner/work/_temp/portable-source/src/asr/pnc/pnc_model.cpp": {
+      "bytes": 14995,
+      "sha256": "9f43e95589596d1b1d1bf581575034a33ae1b37435302dd32e12c9b6c3436c88"
+    },
+    "/Users/runner/work/_temp/portable-source/src/asr/pnc/pnc_runner.cpp": {
+      "bytes": 3753,
+      "sha256": "d8110d9322d07c56413385ea740a64f5de51c1ec3352f35caa27ac8ecfd8b2c3"
+    },
+    "/Users/runner/work/_temp/portable-source/src/asr/pnc/wordpiece.cpp": {
+      "bytes": 2046,
+      "sha256": "6d572a39dfa7785cfbc7a8582081611efb5c1c1f34b1485521f637b65a133029"
+    },
+    "/Users/runner/work/_temp/portable-source/src/asr/postproc/itn.cpp": {
+      "bytes": 1805,
+      "sha256": "9c6fd2cf650013db74d205e270cd9e2a665971e724225a7752b12517bc5b2814"
+    },
+    "/Users/runner/work/_temp/portable-source/src/asr/postproc/itn_align.cpp": {
+      "bytes": 8874,
+      "sha256": "2f8b9fd33d4ec9540e5a8fbf9f36187c4eaae364db6730eeee2663f5578fb44e"
+    },
+    "/Users/runner/work/_temp/portable-source/src/asr/postproc/pipeline.cpp": {
+      "bytes": 13210,
+      "sha256": "0ede5e938b3551f948749bb0c9c24b6777968953075aac34a2615c365dc24a40"
+    },
+    "/Users/runner/work/_temp/portable-source/src/asr/postproc/profanity.cpp": {
+      "bytes": 3379,
+      "sha256": "03cfc43001faec75def03ad3c93efd31984450839781aef9bc5cd2325313e412"
+    },
+    "/Users/runner/work/_temp/portable-source/src/asr/recognizer.cpp": {
+      "bytes": 28601,
+      "sha256": "470b9d9ffcfa9b8f7e23ed257e3e491bd0401b3ca7fb2bbc6eeffaf450fa47f9"
+    },
+    "/Users/runner/work/_temp/portable-source/src/asr/runner.cpp": {
+      "bytes": 53008,
+      "sha256": "64a2423514d42786c5e527769dc72262f83af55286a010a86e7319c7f8cccb25"
+    },
+    "/Users/runner/work/_temp/portable-source/src/asr/vad/silero_vad.cpp": {
+      "bytes": 22080,
+      "sha256": "25224099603f379f8f185ee412cf62468baaa38d92165533ad0cc30e93adb464"
+    },
+    "/Users/runner/work/_temp/portable-source/src/asr/vad/vad_endpointer.cpp": {
+      "bytes": 982,
+      "sha256": "bbbafcea01c08b04c34418ac439dd0a583b5bb49bcfa93cc4c2637ed7d2b0d3c"
+    },
+    "/Users/runner/work/_temp/portable-source/src/asr/vad/vad_masker.cpp": {
+      "bytes": 2609,
+      "sha256": "38003f0d5fa5b220e0e03e08034a3b5f53240ef2ff19d3c911c63902d53edd03"
+    },
+    "/Users/runner/work/_temp/portable-source/src/asr/c_api.cpp": {
+      "bytes": 28872,
+      "sha256": "d031ee096eefc0d5ed597bd8897fe05d0fe538fbe4f2119d2533a606400862fe"
+    },
+    "/Users/runner/work/_temp/portable-source/src/core/engine_registry.cpp": {
+      "bytes": 6665,
+      "sha256": "555a442b7e047ce5d75ef6992779f91bdab4bfc797029b39bebd6889668db6aa"
+    },
+    "/Users/runner/work/_temp/portable-source/examples/diarize_file.cpp": {
+      "bytes": 6732,
+      "sha256": "486332c36080906f65b37c0086b6b2ee55bc6e882f1edfcb9fe7b044894ada4d"
+    },
+    "/Users/runner/work/_temp/portable-source/tests/cpp/utils/wer.cpp": {
+      "bytes": 2831,
+      "sha256": "37366479a32d6d5546dea79863441f4a71fedd3b56c8bb2d19a58d13f07de699"
+    },
+    "/Users/runner/work/_temp/portable-source/tests/cpp/common/test_shared_utilities.cpp": {
+      "bytes": 7913,
+      "sha256": "720cbd9690dd49162cad6dda3c78f901172109f6ec1f96c940d0a4a712c5e743"
+    },
+    "/Users/runner/work/_temp/portable-source/app/cli_util.cpp": {
+      "bytes": 10074,
+      "sha256": "d8ae7de5cd1488f481a073ca1ecd6900bb69ff53e029bfe6d51795fb5e6d2a30"
+    },
+    "/Users/runner/work/_temp/portable-source/tests/cpp/common/test_subtitles.cpp": {
+      "bytes": 7089,
+      "sha256": "0c4b664977fd60f8a5e650888fec8b1e597c7e3be5e0dc34fde7d0ea6b8e894a"
+    },
+    "/Users/runner/work/_temp/portable-source/tests/cpp/asr/test_ctc_offline.cpp": {
+      "bytes": 17768,
+      "sha256": "0ae7abdf6868713eed00bbb514a38ab31f5260e42f2cecb90cfd58e57f0dfa1b"
+    },
+    "/Users/runner/work/_temp/portable-source/tests/cpp/asr/test_ctc_streaming.cpp": {
+      "bytes": 6101,
+      "sha256": "cb7680d722c1a8a82a040c76bcecb74961cfbb14405f55e3f9424131b4ea340b"
+    },
+    "/Users/runner/work/_temp/portable-source/tests/cpp/asr/test_rnnt_streaming.cpp": {
+      "bytes": 9692,
+      "sha256": "6c1f40855074afcde8e9e7a995ee7ff8de5e8fe5d40e473a2f53cac7212d930b"
+    },
+    "/Users/runner/work/_temp/portable-source/tests/cpp/asr/test_transducer_offline.cpp": {
+      "bytes": 7951,
+      "sha256": "f611762ae8efc504a6532d8dd0449b5ea65695697acb7c87235f35032bc9e317"
+    },
+    "/Users/runner/work/_temp/portable-source/tests/cpp/asr/test_rnnt_concurrency.cpp": {
+      "bytes": 20787,
+      "sha256": "7b540696da01cb150f5b00f80a64cd9468bb8b184c2b26d3d600ba2e0a46bf8d"
+    },
+    "/Users/runner/work/_temp/portable-source/tests/cpp/asr/test_vad.cpp": {
+      "bytes": 12987,
+      "sha256": "066c7b6a6f5c97c6a56932f027286cd07ba7ebda4277d4627ec67e258a7a72fc"
+    },
+    "/Users/runner/work/_temp/portable-source/tests/cpp/asr/test_endpointer.cpp": {
+      "bytes": 17677,
+      "sha256": "2073c1d278da5dfe56600ab22894d2ff92b137728c42f3180bddf8dc8f95cac0"
+    },
+    "/Users/runner/work/_temp/portable-source/tests/cpp/asr/test_postproc.cpp": {
+      "bytes": 14974,
+      "sha256": "ea20b740a8ff81b6220b4f92afa6680fd10d99e9cce1cce1c8abf212e126e4e0"
+    },
+    "/Users/runner/work/_temp/portable-source/tests/cpp/asr/test_audio_resampler.cpp": {
+      "bytes": 7426,
+      "sha256": "5135432485802b03b7b2f50aa918746eca9c8a4dc65ede8f38e1dc0578ccc32f"
+    },
+    "/Users/runner/work/_temp/portable-source/tests/cpp/asr/test_audio_decoder.cpp": {
+      "bytes": 7043,
+      "sha256": "7b8632100d3cee811eb1a7775088a9ed1981bd490f626d63121962c55137223c"
+    },
+    "/Users/runner/work/_temp/portable-source/tests/cpp/asr/test_decoders.cpp": {
+      "bytes": 32843,
+      "sha256": "74ebef97b2fdea6a385e20b8e6bf867e8b27b8afd52d54dfc29ae416aa5cf28d"
+    },
+    "/Users/runner/work/_temp/portable-source/tests/cpp/asr/test_oov_boost.cpp": {
+      "bytes": 6625,
+      "sha256": "6d2aba678ce531b8a268a205dbb1943ac2fa0d292f7e2f2e5a4eed9d5e1d313b"
+    },
+    "/Users/runner/work/_temp/portable-source/tests/cpp/asr/test_pnc.cpp": {
+      "bytes": 6636,
+      "sha256": "ad313f0e012cc83ade13be26aec2198305f4b6e238e19875a1c241452c880a02"
+    },
+    "/Users/runner/work/_temp/portable-source/tests/cpp/asr/test_sortformer_parity.cpp": {
+      "bytes": 18398,
+      "sha256": "eaf3e3d37f16602504e35c05ad1fda2a3e995479848be9aeb3184a23bc4748f5"
+    },
+    "/Users/runner/work/_temp/portable-source/tests/cpp/asr/test_diar_streaming.cpp": {
+      "bytes": 18013,
+      "sha256": "ab0ee682abded6868ae00744154602a346f78fb3f67d0fd9c8360f134f0da80a"
+    },
+    "/Users/runner/work/_temp/portable-source/tests/cpp/asr/test_diar_state.cpp": {
+      "bytes": 10956,
+      "sha256": "d04deea716dcb6c84a9ced80601dd13d5a25a52ffac90eab07b5234f1c3fac0f"
+    },
+    "/Users/runner/work/_temp/portable-source/tests/cpp/asr/test_mel_features.cpp": {
+      "bytes": 7967,
+      "sha256": "86d86f0fe8acea08978fb30811fa4e64c83b43fb5fd1d5ce2f9ffd617258a60d"
+    },
+    "/Users/runner/work/_temp/portable-source/tests/cpp/asr/test_diar_recognizer.cpp": {
+      "bytes": 4640,
+      "sha256": "d65c7831c352b2d503da38c2a0509d2f85776a99eff75211370a69f59cd16d42"
+    },
+    "/Users/runner/work/_temp/portable-source/tests/cpp/asr/test_live_transcript.cpp": {
+      "bytes": 24437,
+      "sha256": "8c38444d1685f089fd35c3c57a817e355030138430cc13129df9d08e16d7f580"
+    },
+    "/Users/runner/work/_temp/portable-source/app/live_transcript.cpp": {
+      "bytes": 9009,
+      "sha256": "2be93495b337fa94d3f07a44ec9605e120c3ac104fbe7c0565550e97266714b6"
+    },
+    "/Users/runner/work/_temp/portable-source/tests/cpp/asr/test_batching.cpp": {
+      "bytes": 5957,
+      "sha256": "c3b53ca84b2e44325ed2c0f1179c0729e6477859a1539b527ccd16af1710c1de"
+    },
+    "/Users/runner/work/_temp/portable-source/tests/c/asr_c_smoke.c": {
+      "bytes": 5883,
+      "sha256": "0a791ed58991a66509ec32cb54884e856799f678dcbc43428997ca6c1f0304d1"
+    },
+    "/Users/runner/work/_temp/portable-source/tests/c/asr_c_dlopen.c": {
+      "bytes": 2122,
+      "sha256": "b2fbb8cadefb5d1c853ce3e69162c9f8352ef2248f4bec2b73e26e583ae325a2"
+    }
+  },
+  "runtime_archive": {
+    "path": "/Users/runner/work/_temp/portable-source/build/cpu-diar/src/runtime/ggml/libnemo_speech_runtime_ggml.a",
+    "bytes": 235240,
+    "sha256": "70c206d36e649bd2447952d3bc74302da47b8bd7a87dc3dbbefd198944e7e3f2"
+  },
+  "cmake_cache_sha256": "52f92ae08911058637131d8a44e524044b1e1b0efd0c83ca7c071e260ec9fa25",
+  "model_free_state_test_completed": true,
+  "version_function_only_executed": true,
+  "model_instantiated_or_inference_performed": false,
+  "artifact_admitted_for_inference": false,
+  "production_qualified": false,
+  "release_qualified": false
+}
