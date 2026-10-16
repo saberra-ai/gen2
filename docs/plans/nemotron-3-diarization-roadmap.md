@@ -109,8 +109,18 @@ model files were replaced with APFS clones to recover space, preserving every
 app payload byte, inventory and signature. The separate
 [v2 runtime protocol](../../tools/nemotron-diarization/valid-mel-pnola-app-v2.protocol.json)
 freezes the same five cases on these newly built apps, requiring process-local
-image history with no environment trace dependency. No instrumented app-model
-case has executed yet; the original attempt remains failed.
+image history with no environment trace dependency. The
+[actual complete-app qualification](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-complete-pnola-apps/receiver-qualification.json)
+now passes all five cases. Automatic recorded CPU/Metal resolution matches
+6000 frames and 27/26 turns with zero turn error and exact Bark text. Both
+80.04-second live runs retain 11 ASR sections, 152 words and 15 provisional
+revisions, matching 35/34-turn saved timelines; independent recording parity
+is asserted internally. No separate live probability tensor is delivered.
+Callback histories match 462 native components and five ORT records across
+the five processes, including the exact CPU-package Metal-rejection error
+while preserving Bark. The original attempt remains failed. These hardened
+same-host CLI results do not establish GUI, microphone, fresh-machine, quality,
+uncontended performance, public signing/notarization or release qualification.
 The separate current-profile corpus scorer preserves every valid row and all
 original quality criteria. Its [frozen runner protocol](../../tools/nemotron-diarization/valid-mel-corpus.protocol.json)
 now binds 33 tools, 258 unchanged compiled Rust sources and 306 staged entries.
@@ -118,8 +128,8 @@ It schedules 32 fresh native/public CPU/Metal processes across the same eight
 slices, reusing only the exact eight original hash-locked CPU FP32 oracles.
 Native children cannot read staged oracles or labels. Scoring retains all
 quality failures and uses the unchanged original gates, with every valid row
-included. No corpus neural case has executed yet; historical failures remain
-unchanged and unwaived.
+included. The fixed corpus sequence is running separately after app-model
+qualification finished; historical failures remain unchanged and unwaived.
 All 182 model-free tools tests pass locally;
 [CI at the 157-test source](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-157/qualification.json)
 passes all 13 jobs. Later package/qualifier changes are outside that CI source;

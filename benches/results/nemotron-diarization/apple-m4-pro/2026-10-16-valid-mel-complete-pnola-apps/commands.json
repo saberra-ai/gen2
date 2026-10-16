@@ -1,0 +1,113 @@
+[
+  {
+    "name": "cpu-recorded",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-runtime-v2/runtime.sb",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-instrumented-app-build-v1/cpu/Pnola.app/Contents/MacOS/pnola-desktop",
+      "--verify-bundle",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-inputs-v1/ami.wav",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-runtime-v2/cpu-recorded.result.json"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-runtime-v2",
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-runtime-v2/home",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-runtime-v2/tmp/",
+      "LC_ALL": "C"
+    },
+    "pid": 4400,
+    "returncode": 0,
+    "elapsed_seconds": 14.549937541014515
+  },
+  {
+    "name": "cpu-live",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-runtime-v2/runtime.sb",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-instrumented-app-build-v1/cpu/Pnola.app/Contents/MacOS/pnola-desktop",
+      "--verify-live-speakers",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-inputs-v1/ami.wav",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-runtime-v2/cpu-live.result.json"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-runtime-v2",
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-runtime-v2/home",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-runtime-v2/tmp/",
+      "LC_ALL": "C"
+    },
+    "pid": 4419,
+    "returncode": 0,
+    "elapsed_seconds": 94.01160274998983
+  },
+  {
+    "name": "metal-recorded",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-runtime-v2/runtime.sb",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-instrumented-app-build-v1/metal/Pnola.app/Contents/MacOS/pnola-desktop",
+      "--verify-bundle",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-inputs-v1/ami.wav",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-runtime-v2/metal-recorded.result.json"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-runtime-v2",
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-runtime-v2/home",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-runtime-v2/tmp/",
+      "LC_ALL": "C"
+    },
+    "pid": 4802,
+    "returncode": 0,
+    "elapsed_seconds": 22.742777583014686
+  },
+  {
+    "name": "metal-live",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-runtime-v2/runtime.sb",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-instrumented-app-build-v1/metal/Pnola.app/Contents/MacOS/pnola-desktop",
+      "--verify-live-speakers",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-inputs-v1/ami.wav",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-runtime-v2/metal-live.result.json"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-runtime-v2",
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-runtime-v2/home",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-runtime-v2/tmp/",
+      "LC_ALL": "C"
+    },
+    "pid": 5396,
+    "returncode": 0,
+    "elapsed_seconds": 84.26402116700774
+  },
+  {
+    "name": "cpu-explicit-metal",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-runtime-v2/runtime.sb",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-instrumented-app-build-v1/cpu/Pnola.app/Contents/MacOS/pnola-desktop",
+      "--verify-bundle",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-inputs-v1/ami.wav",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-runtime-v2/cpu-explicit-metal.result.json"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-runtime-v2",
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-runtime-v2/home",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-runtime-v2/tmp/",
+      "LC_ALL": "C",
+      "GEN2_NEMO_EXECUTION": "metal"
+    },
+    "pid": 31035,
+    "returncode": 0,
+    "elapsed_seconds": 3.8531289999955334
+  }
+]

@@ -1,0 +1,89 @@
+[
+  {
+    "name": "cpu-recorded",
+    "passed": true,
+    "result": {
+      "bytes": 42905,
+      "sha256": "664d44d42356ed6deff8feced31708e91d8f020c482a055d517c57984e66ff3f"
+    },
+    "images": {
+      "bytes": 33684,
+      "sha256": "125b8a5a6c14d597092116b82e51cb3e99bc117b356182316424d43024d95f0b"
+    },
+    "comparison": {
+      "turns": 27,
+      "frames": 6000,
+      "native_frame_count_observed": true,
+      "maximum_turn_error_seconds": 0.0
+    }
+  },
+  {
+    "name": "cpu-live",
+    "passed": true,
+    "result": {
+      "bytes": 7373,
+      "sha256": "3ce908a5ba6a8a78464c02ca994f01dab7390aff9189bcc3580185ccfa56650a"
+    },
+    "images": {
+      "bytes": 33684,
+      "sha256": "125b8a5a6c14d597092116b82e51cb3e99bc117b356182316424d43024d95f0b"
+    },
+    "comparison": {
+      "turns": 35,
+      "maximum_turn_error_seconds": 0.0,
+      "native_frame_count_observed": false,
+      "reference": "hash-locked prior debug paced-live output; independent recording parity is asserted internally by both helpers"
+    }
+  },
+  {
+    "name": "metal-recorded",
+    "passed": true,
+    "result": {
+      "bytes": 42860,
+      "sha256": "1b94b8377a9448e9a8b16d6544c76a37eaae5342b15b3dcc35f751effa8cfdc3"
+    },
+    "images": {
+      "bytes": 35316,
+      "sha256": "677166eb8d7c7e10dcfb07773ac9560b7fd2f23ac00bdcebee6ab5a5ae15183a"
+    },
+    "comparison": {
+      "turns": 26,
+      "frames": 6000,
+      "native_frame_count_observed": true,
+      "maximum_turn_error_seconds": 0.0
+    }
+  },
+  {
+    "name": "metal-live",
+    "passed": true,
+    "result": {
+      "bytes": 7248,
+      "sha256": "617e7587c03c2f0fdd11cf84f8225852db29f6770d8a5cca52c914e4449b14f5"
+    },
+    "images": {
+      "bytes": 35316,
+      "sha256": "677166eb8d7c7e10dcfb07773ac9560b7fd2f23ac00bdcebee6ab5a5ae15183a"
+    },
+    "comparison": {
+      "turns": 34,
+      "maximum_turn_error_seconds": 0.0,
+      "native_frame_count_observed": false,
+      "reference": "hash-locked prior debug paced-live output; independent recording parity is asserted internally by both helpers"
+    }
+  },
+  {
+    "name": "cpu-explicit-metal",
+    "passed": true,
+    "result": {
+      "bytes": 1084,
+      "sha256": "cd10a612c3c9f22b75e03cd3e572c2b38082f9a298e46508007de997bc562388"
+    },
+    "images": {
+      "bytes": 33684,
+      "sha256": "125b8a5a6c14d597092116b82e51cb3e99bc117b356182316424d43024d95f0b"
+    },
+    "comparison": {
+      "unsupported_metal_preserves_exact_bark_text": true
+    }
+  }
+]

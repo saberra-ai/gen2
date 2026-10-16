@@ -1,0 +1,265 @@
+{
+  "schema_version": 1,
+  "automatic_packaged_resolution_gates_passed": true,
+  "release_qualified": false,
+  "source_commit": "0a9c42c9eeefc0c0f61259ab7f1b53f294abcaed",
+  "protocol": {
+    "bytes": 187679,
+    "sha256": "8643172e804eb70838ec6eb0aac9dadbe911fb1341c49a0dd3a682aeb0e860d7"
+  },
+  "source_pins": {
+    "tools": 20,
+    "repository_files": 315
+  },
+  "scope": "Actual instrumented hardened same-host complete CPU/Metal app CLI resolution, recorded/live recovery/export and explicit CPU-package Metal rejection; all five neural processes completed.",
+  "comparisons": [
+    {
+      "name": "cpu-recorded",
+      "turns": 27,
+      "frames": 6000,
+      "native_frame_count_observed": true,
+      "maximum_turn_error_seconds": 0.0
+    },
+    {
+      "name": "cpu-live",
+      "turns": 35,
+      "maximum_turn_error_seconds": 0.0,
+      "native_frame_count_observed": false,
+      "reference": "hash-locked prior debug paced-live output; independent recording parity is asserted internally by both helpers"
+    },
+    {
+      "name": "metal-recorded",
+      "turns": 26,
+      "frames": 6000,
+      "native_frame_count_observed": true,
+      "maximum_turn_error_seconds": 0.0
+    },
+    {
+      "name": "metal-live",
+      "turns": 34,
+      "maximum_turn_error_seconds": 0.0,
+      "native_frame_count_observed": false,
+      "reference": "hash-locked prior debug paced-live output; independent recording parity is asserted internally by both helpers"
+    },
+    {
+      "name": "cpu-explicit-metal",
+      "unsupported_metal_preserves_exact_bark_text": true
+    }
+  ],
+  "logical_native_image_counts": [
+    92,
+    92,
+    93,
+    93,
+    92
+  ],
+  "ort_image_records": 5,
+  "process_local_add_image_history_required_and_reparsed": true,
+  "no_artifact_environment_overrides": true,
+  "neural_processes": 5,
+  "new_app_or_neural_or_native_version_calls_during_collection": 0,
+  "limits": [
+    "The original first attempt remains failed; these newly built binaries include verification-only loader instrumentation and retain hardened signing/exact local entitlements.",
+    "Recorded full timelines match hash-locked independent native outputs. Live compact timelines match prior debug outputs, plus source-pinned internal recording-API parity assertions; separate8004-row live tensors are not delivered or inferred.",
+    "All inputs/apps are read-only under source/SDK/build/Homebrew/network denials. Actual image history is complete for these five calls, including unloaded negative-load components, not every future workload.",
+    "No GUI, physical microphone, fresh-machine, quality, clean latency/performance, Developer ID/notarization or supported desktop release qualification."
+  ],
+  "files": {
+    "cases.json": {
+      "bytes": 2475,
+      "sha256": "fee262c5c325640d86afdc69e5ff3d1fd344fd2ea40423bd89bcc455a51af6ae"
+    },
+    "collect-complete-pnola-app-runtime-v2.py": {
+      "bytes": 7518,
+      "sha256": "dd14dfc5b0be5e316f885571f118bd9fd9446592751da23d72ae4afdf4f7ef8b"
+    },
+    "commands.json": {
+      "bytes": 5167,
+      "sha256": "a767fffe35eb223ce49a34896db1fd2cbfdfdc413a8f3ed2147585e3afbaee8c"
+    },
+    "cpu-explicit-metal.images.json": {
+      "bytes": 33684,
+      "sha256": "125b8a5a6c14d597092116b82e51cb3e99bc117b356182316424d43024d95f0b"
+    },
+    "cpu-explicit-metal.result.json": {
+      "bytes": 1084,
+      "sha256": "cd10a612c3c9f22b75e03cd3e572c2b38082f9a298e46508007de997bc562388"
+    },
+    "cpu-explicit-metal.stderr.log": {
+      "bytes": 120818,
+      "sha256": "5357d758aa73b163cca579da6e55c6a6c2bd4e887790971b0d080d963e9a5b03"
+    },
+    "cpu-explicit-metal.stdout.log": {
+      "bytes": 100,
+      "sha256": "6b870808d5d58a79fd65f2b5990d928f46ebcb9881bbb42a25aeb2140f8d6d35"
+    },
+    "cpu-live.images.json": {
+      "bytes": 33684,
+      "sha256": "125b8a5a6c14d597092116b82e51cb3e99bc117b356182316424d43024d95f0b"
+    },
+    "cpu-live.result.json": {
+      "bytes": 7373,
+      "sha256": "3ce908a5ba6a8a78464c02ca994f01dab7390aff9189bcc3580185ccfa56650a"
+    },
+    "cpu-live.stderr.log": {
+      "bytes": 120818,
+      "sha256": "5357d758aa73b163cca579da6e55c6a6c2bd4e887790971b0d080d963e9a5b03"
+    },
+    "cpu-live.stdout.log": {
+      "bytes": 4740,
+      "sha256": "6de4830f7be61790a05bf1c949d8c65cb6463a3fbec5acec20c2f74d94b924ab"
+    },
+    "cpu-recorded.images.json": {
+      "bytes": 33684,
+      "sha256": "125b8a5a6c14d597092116b82e51cb3e99bc117b356182316424d43024d95f0b"
+    },
+    "cpu-recorded.result.json": {
+      "bytes": 42905,
+      "sha256": "664d44d42356ed6deff8feced31708e91d8f020c482a055d517c57984e66ff3f"
+    },
+    "cpu-recorded.stderr.log": {
+      "bytes": 120818,
+      "sha256": "5357d758aa73b163cca579da6e55c6a6c2bd4e887790971b0d080d963e9a5b03"
+    },
+    "cpu-recorded.stdout.log": {
+      "bytes": 100,
+      "sha256": "b99f50ba7c6cbbfa2afbf161cedac07bf93dc84ca7299c7e922357f4f4fe90ee"
+    },
+    "execution-tools/artifacts.py": {
+      "bytes": 2869,
+      "sha256": "17df6411ab0394b4d9bb30a099915badf357af26050b6cd08bfd44887688ff42"
+    },
+    "execution-tools/build_valid_mel_candidate.py": {
+      "bytes": 12180,
+      "sha256": "5bfb3ec59548ae0b56e8e3eaded10201933f574b0b04ca12384eb35795dd546b"
+    },
+    "execution-tools/macos_auxiliary_loaded_libraries.py": {
+      "bytes": 1402,
+      "sha256": "446119644a6a9769f92602bc1f8b0b8d8eaf5bd3590e1b98a12079eebdb0dfbe"
+    },
+    "execution-tools/macos_loaded_libraries.py": {
+      "bytes": 1805,
+      "sha256": "69c2dfcc6d2cf8e2966b929ff997b337c6c4e3a62fd8ada110b36ba27da4833b"
+    },
+    "execution-tools/notices/openmdw-1.1/sources.json": {
+      "bytes": 332,
+      "sha256": "ff840c8c5559a4bed7d73e01828b83527a4606d6a446c7796c3dc27d7d41d436"
+    },
+    "execution-tools/package_macos.py": {
+      "bytes": 18168,
+      "sha256": "301cf904fa444a3a655f38b5a40e365d6bc0e1f348f5bbede8962d6352fffda3"
+    },
+    "execution-tools/patches/v3-finish-valid-mel.patch": {
+      "bytes": 1194,
+      "sha256": "8c1434c14f63ebeb2515c719a90594124fd4f75af85b80451fd145b5caef3c36"
+    },
+    "execution-tools/qualification_storage.py": {
+      "bytes": 3914,
+      "sha256": "8bbb4dfe53797d8d03c3ba18f24acce8458878602c1c85f28a4f816d6f4416f6"
+    },
+    "execution-tools/qualify_valid_mel_mixed.py": {
+      "bytes": 8454,
+      "sha256": "ad56982cd1d6cc4e668d67b30c4ff6f4284ad8c6d3442fb0d79031c50b1c5d6b"
+    },
+    "execution-tools/qualify_valid_mel_pnola.py": {
+      "bytes": 13787,
+      "sha256": "4628f4b6242a7cd0985ba5b20a7ac8f38bbec4dc5042b786e34e488ed738e423"
+    },
+    "execution-tools/qualify_valid_mel_pnola_app.py": {
+      "bytes": 10497,
+      "sha256": "38e73c24f438b083e13c29e4a5a12178051b7841b2b13420f53f4ed93ea68a62"
+    },
+    "execution-tools/runtime-valid-mel.lock.json": {
+      "bytes": 6339,
+      "sha256": "af40e586994f223390fcac59936e3781d967c03080350f4b5df141b1bdaf51be"
+    },
+    "execution-tools/runtime.lock.json": {
+      "bytes": 4917,
+      "sha256": "e66e5651608636bbb04528fed7944ab8972a778d1141b36fef3fb391eefd0dcc"
+    },
+    "execution-tools/runtime_profiles.py": {
+      "bytes": 7345,
+      "sha256": "f99c8c33a3a64005ef477319c8bc7f1d6c32180c44665c2fe189a54a4b31ac7d"
+    },
+    "execution-tools/sdk_archive.py": {
+      "bytes": 7022,
+      "sha256": "0b1d80768d15c2818afc82efcc1f3ddf253360b99c16c623e170073e020cb3cd"
+    },
+    "execution-tools/test_macos_auxiliary_loaded_libraries.py": {
+      "bytes": 3000,
+      "sha256": "562150666ede4ba72c9822fd5b5d50cca5695d9a65572f5eeb87d5adf7c3e08b"
+    },
+    "execution-tools/test_qualification_storage.py": {
+      "bytes": 4417,
+      "sha256": "e6c8a567be86f2d614868e96f10dd6e682077aa3b3cd03b8347aab95fad20332"
+    },
+    "execution-tools/test_valid_mel_pnola_app.py": {
+      "bytes": 3593,
+      "sha256": "dd429261e2bd81de2d164496edbbdee50e7034728ba1052df14f4b01ff05d053"
+    },
+    "execution-tools/test_valid_mel_pnola_complete_app.py": {
+      "bytes": 3406,
+      "sha256": "7d7e97551e2f12cdcf0857baa98a2f1838b8e964a6ff4b1eddd2086713d8f272"
+    },
+    "execution-tools/verify_valid_mel_pnola_app.py": {
+      "bytes": 9794,
+      "sha256": "fc5bd7c4223169d1b020f568326872035d4c552af207e93b742498b47490d272"
+    },
+    "identical-app-data-reclone-v1.json": {
+      "bytes": 4722,
+      "sha256": "d94183a2f3a522e1b7550eb0ae424de693c03ba9c07854e70d887f80a64ce46f"
+    },
+    "metal-live.images.json": {
+      "bytes": 35316,
+      "sha256": "677166eb8d7c7e10dcfb07773ac9560b7fd2f23ac00bdcebee6ab5a5ae15183a"
+    },
+    "metal-live.result.json": {
+      "bytes": 7248,
+      "sha256": "617e7587c03c2f0fdd11cf84f8225852db29f6770d8a5cca52c914e4449b14f5"
+    },
+    "metal-live.stderr.log": {
+      "bytes": 125311,
+      "sha256": "4fb6bd84418883be056b34b1b950cee972c1d4178cf57f500fb56487075d1cbf"
+    },
+    "metal-live.stdout.log": {
+      "bytes": 4669,
+      "sha256": "d7a3c252bac6cc9f4057b599c9f70a8bbf3e44eca1308fd9bb37289119df4d47"
+    },
+    "metal-recorded.images.json": {
+      "bytes": 35316,
+      "sha256": "677166eb8d7c7e10dcfb07773ac9560b7fd2f23ac00bdcebee6ab5a5ae15183a"
+    },
+    "metal-recorded.result.json": {
+      "bytes": 42860,
+      "sha256": "1b94b8377a9448e9a8b16d6544c76a37eaae5342b15b3dcc35f751effa8cfdc3"
+    },
+    "metal-recorded.stderr.log": {
+      "bytes": 125330,
+      "sha256": "2c2ba23a8c3bc854bef8396114120d1a542cc26630a101cae20a8aba19c9ab74"
+    },
+    "metal-recorded.stdout.log": {
+      "bytes": 100,
+      "sha256": "2d23a7231dde903c2aff27fd45b8c35da13c9291ba38c5bc4062cda604267181"
+    },
+    "protocol.json": {
+      "bytes": 187679,
+      "sha256": "8643172e804eb70838ec6eb0aac9dadbe911fb1341c49a0dd3a682aeb0e860d7"
+    },
+    "qualification.json": {
+      "bytes": 3782,
+      "sha256": "8818bb68d40b13add0dfed1d705038be100235fb4717f6dcc359efeef3567bd3"
+    },
+    "reclone-identical-app-data-v1.py": {
+      "bytes": 2951,
+      "sha256": "0617a7c797876e4005e6b0e91673b4cabd2943e65b2f507420d547e141120ff5"
+    },
+    "runtime.sb": {
+      "bytes": 8884,
+      "sha256": "73f2b80cd9a9667dfab8e7b87c784646b7b074c20e31da1d68887520d272cc03"
+    },
+    "valid-mel-pnola-complete-app-runtime-v2.launch.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  }
+}
