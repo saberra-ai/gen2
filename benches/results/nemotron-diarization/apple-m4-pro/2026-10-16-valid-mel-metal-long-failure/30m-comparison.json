@@ -1,0 +1,30 @@
+{
+  "passed": true,
+  "scope": "wrapper/reference correctness at the recorded duration; not held-out quality or full release qualification",
+  "runtime_profile": "gen2-valid-mel-v1",
+  "frame_contract": "v3-streaming-valid-mel-v1",
+  "audio_duration_seconds": 1800.0,
+  "backend": "metal",
+  "device": "Apple M4 Pro",
+  "native_frame_count": 180000,
+  "retained_first_frame": 117176,
+  "retained_rows": 62824,
+  "turns": 750,
+  "maximum_turn_error_seconds": 0.0,
+  "turn_tolerance_seconds": 1e-06,
+  "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+  "retained_probabilities_match": true,
+  "maximum_probability_error": 0.0,
+  "probability_tolerance": 1e-06,
+  "gen2_rtf": 0.039129025,
+  "native_rtf": 0.038375670555555554,
+  "peak_rss_bytes": {
+    "native": 252985344,
+    "public": 260964352
+  },
+  "process_rss_within_1024_mib": true,
+  "provisional_snapshots": 341,
+  "first_provisional_audio_seconds": 4.32,
+  "last_provisional_audio_seconds": 1793.52,
+  "backpressure_count": 23431
+}

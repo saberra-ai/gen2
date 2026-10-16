@@ -16,6 +16,10 @@ CPU-only SDK rejection, and sequential CPU rejection followed by Metal parity
 in one process. Simultaneous residency and desktop application qualification
 remain pending. The [Metal package construction and relocation](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-metal-macos-package/qualification.json)
 passes with all 93 private libraries.
+The [first Metal long-session attempt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-metal-long-failure/qualification.json)
+passes the 30-minute pair but fails overall after a disk-space/output-persistence
+interruption during the one-hour native command. One-hour terminal tensors and
+status are unavailable; its public run never started. No one-hour pass is claimed.
 
 Prepared: 2026-10-14.
 Updated: 2026-10-16.

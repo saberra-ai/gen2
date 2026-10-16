@@ -31,6 +31,11 @@ passes all 13 commands, exact 6,000-row/26-turn parity, 100 reloads and actual
 private loader closure on the named M4 Pro. The combined test checks sequential
 CPU rejection followed by Metal parity in one process; simultaneous model
 residency is a separate gate.
+The [long-session attempt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-metal-long-failure/qualification.json)
+retains a passing 30-minute Metal pair. Its one-hour native command failed to
+persist output during a disk-space shortage; the child terminal status was not
+recorded, the public one-hour command never started, and one-hour qualification
+remains open. The failed attempt is retained unchanged.
 
 # Nemotron 3 — N0 qualification
 
