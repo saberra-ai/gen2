@@ -124,3 +124,34 @@ and per-push/final stream snapshots persist before validation, with started and
 completed events; failed attempts remain intact. No candidate model or finish
 has executed at this preregistration point. Production migration and all original
 quality, platform, desktop and performance gates remain open.
+
+
+## Executed candidate finish regression — 2026-10-16
+
+The [candidate finish receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-finish/qualification.json)
+now records one successful invocation at source
+`0ec641aea9ec66a3549d2db1aafa2649febf09df`, under protocol SHA256
+`fc7d7900b04fc7bb41ffea593dfedc1f1bbea38af92e40eed602945e99667eb6`.
+All 28 fixed stream sessions and four explicit direct graph calls completed in
+2.440346 seconds including admission/controller work. Each of the six
+calibration pipeline/direct comparisons is **byte-identical**, maximum error
+zero, within the preregistered 0.0001 policy. The calibration returns 111 rows.
+All 21 silence boundaries return `floor(N/160)`, including zero rows for
+0/1/159 samples, two rows for the public minimum 320 samples, and 112 rows for
+17920 samples.
+
+Saved per-push tensors establish an actual provisional result, unchanged stable
+prefixes, final stable frontiers, unchanged repeated finish/late push and exact
+reset replay. Direct first/full/final probabilities, preencoder embeddings,
+FIFO and Mel inputs are retained. Both review axes independently verified all
+387 collected files and recomputed the saved-array invariants without running
+another model or helper. No audio, model, SDK or helper binary is in Git.
+
+This closes the fixed **CPU/F32 candidate finish** regression only. The native
+V3 correction is exercised rather than inferred from an output crop. It does
+not qualify Q8, other backends/platforms, probability-history compaction, long
+sessions or production Rust. The current Rust strict `floor+1` expectation still
+rejects this candidate intentionally. Its explicit artifact/contract migration
+is next, followed by separately admitted model/platform/quality qualification.
+No HF/original-NeMo model, AMI target or DER scoring ran; original quality and
+release gates remain unchanged.

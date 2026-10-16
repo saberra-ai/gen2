@@ -1,0 +1,50 @@
+{
+  "argv": [
+    "/usr/bin/sandbox-exec",
+    "-f",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-finish-probe-v1/offline.sb",
+    "/usr/bin/c++",
+    "-std=c++17",
+    "-O2",
+    "-fvisibility=hidden",
+    "-DNEMO_SPEECH_GGML_PATCHED=1",
+    "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/valid_mel_finish_probe.cpp",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/features",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/encoder",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/decoders",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/vad",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/diar",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/postproc",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/pnc",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/common",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/runtime/ggml",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/build/cpu-diar/_deps/llama.cpp/ggml/include",
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/build/cpu-diar/src/runtime/ggml/libnemo_speech_runtime_ggml.a",
+    "-L/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-cpu-v1/lib",
+    "-lnemo_speech_asr",
+    "-lggml",
+    "-lggml-base",
+    "-lggml-cpu",
+    "-Wl,-rpath,/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-cpu-v1/lib",
+    "-o",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-finish-probe-v1/valid-mel-finish-probe"
+  ],
+  "environment": {
+    "PATH": "/usr/bin:/bin",
+    "LC_ALL": "C"
+  },
+  "source": {
+    "bytes": 14157,
+    "sha256": "118b5836ec4b557d216ac2e1041bf9561d8f14e066fb1df1fdfc934e734155d8"
+  },
+  "runtime_archive": {
+    "path": "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/build/cpu-diar/src/runtime/ggml/libnemo_speech_runtime_ggml.a",
+    "bytes": 235360,
+    "sha256": "824d8f4771c907ddccbb98b62bb1af462c357d476b610980df1973f545a11cfb"
+  },
+  "sdk_build_result": {
+    "bytes": 54452,
+    "sha256": "f9da3a755e5643870f846f33c10bf8c0c3de20c5158d35746d0c1f0db964dbf3"
+  }
+}

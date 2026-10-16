@@ -663,7 +663,11 @@ rerun, DER or quality-gate change occurred. Local evidence-tool tests total114. 
 [CPU candidate construction receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-candidate-build/qualification.json)
 now records a successful isolated build of the reviewed V3 valid-Mel finish patch,
 including actual model-free state tests and independently replayed compiler inputs.
-Candidate finish/model execution and production contract migration remain pending.
+The subsequent [fixed CPU/F32 finish regression](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-finish/qualification.json)
+passes all28stream sessions and21boundary lengths. Six calibration/direct graph
+comparisons are byte-identical, with actual provisional/reset/stability checks.
+Q8, production artifact/count-contract migration and all-platform/quality
+requalification remain pending; no original quality gate is changed.
 The 13-job feature matrix also passed at `4974318`. Later source `cf64214`
 passed12 jobs; its macOS mixed-feature job failed before compilation when GitHub
 submodule fetch could not connect to port443. A failed-job rerun was denied by

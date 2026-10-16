@@ -1,0 +1,762 @@
+{
+  "schema_version": 1,
+  "scope": "One isolated macOS arm64 CPU V3 candidate finish regression using only excluded 17872-sample calibration and 21 fixed silence lengths. New source/SDK and floor-valid final frame contract; no production migration or quality qualification.",
+  "native_base_revision": "083861c241061562b8ec29eb06d7f6cdc3af8775",
+  "candidate_source_path": "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1",
+  "sdk_path": "/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-cpu-v1",
+  "probe_path": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-finish-probe-v1/valid-mel-finish-probe",
+  "probe_build_manifest_path": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-finish-probe-v1/build.json",
+  "probe_build_command": [
+    "/usr/bin/sandbox-exec",
+    "-f",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-finish-probe-v1/offline.sb",
+    "/usr/bin/c++",
+    "-std=c++17",
+    "-O2",
+    "-fvisibility=hidden",
+    "-DNEMO_SPEECH_GGML_PATCHED=1",
+    "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/valid_mel_finish_probe.cpp",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/features",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/encoder",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/decoders",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/vad",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/diar",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/postproc",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/pnc",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/common",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/runtime/ggml",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/build/cpu-diar/_deps/llama.cpp/ggml/include",
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/build/cpu-diar/src/runtime/ggml/libnemo_speech_runtime_ggml.a",
+    "-L/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-cpu-v1/lib",
+    "-lnemo_speech_asr",
+    "-lggml",
+    "-lggml-base",
+    "-lggml-cpu",
+    "-Wl,-rpath,/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-cpu-v1/lib",
+    "-o",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-finish-probe-v1/valid-mel-finish-probe"
+  ],
+  "model_path": "/Users/victor/.cache/gen2-nemotron3-n0/native-f32-conversion-v1/Nemotron-3-Diarization.f32-control.gguf",
+  "audio_path": "/Users/victor/.cache/gen2-nemotron3-n0/tail-framing-v1/calibration/audio.f32",
+  "mel_path": "/Users/victor/.cache/gen2-nemotron3-n0/tail-framing-v1/calibration/native-stream.f32",
+  "output_path": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-finish-v1",
+  "bound_paths": {
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/types.h": {
+      "bytes": 2920,
+      "sha256": "67af99af722503a3fc623b107c38dfd33fd8d9a4b87201aedccdaec430274790"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/recognizer.h": {
+      "bytes": 7854,
+      "sha256": "d0eac9b980797901e19b40f11369798d2a80dd3ffbd65ce346ebc6984872de22"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/runner.h": {
+      "bytes": 17470,
+      "sha256": "4c59e3a5c6167488818121ce99ab40d838891d7383db000fb72bceae05f95f7a"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/model.h": {
+      "bytes": 14982,
+      "sha256": "08ee01e62c124bbbea64758657728cd68148555e7d0489a281fae8806283aa8b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/batching.h": {
+      "bytes": 17278,
+      "sha256": "d5933c7db797a7722fbe8bdba445ef82093b38bdeb0da36afeb88c0b985c5857"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/diar/diar_pipeline.h": {
+      "bytes": 10483,
+      "sha256": "ed55fab4c14ae7c5618c1960a9872d036bca8dfce98e74d030fc903d38d6433e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/diar/aosc_state.h": {
+      "bytes": 5477,
+      "sha256": "c14f4e0ee44d27951a2be5d7798d8606ab01a96fda91872776e0ff204b76da85"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/diar/sortformer_model.h": {
+      "bytes": 7325,
+      "sha256": "30a3daf3396d628294457ab9e2c8b1d8ab63829ab28f68dc1e8e96f11c635893"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/diar/diarizer.h": {
+      "bytes": 2293,
+      "sha256": "c20e110335bb7fed2aaaf02f391c7b9861b0a37dd8cdbda33e1a363fabfa964b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/encoder/rel_pos_attention.h": {
+      "bytes": 3643,
+      "sha256": "be8f42215441b210843c2427e48d16fc27949bc81dad058501b86609bc11ae7b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/encoder/rope_transformer.h": {
+      "bytes": 2182,
+      "sha256": "48440373226b3241fbc50573fe7ffed37415547eacd2d455709605e566461790"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/encoder/cache_aware_encoder.h": {
+      "bytes": 4781,
+      "sha256": "37629e736f40b1ba77e41cb710cbc46a34fe6713629e17d7416a16aec72b4910"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/encoder/transformer_encoder.h": {
+      "bytes": 2753,
+      "sha256": "5e4bc5734db5e242f84d1e6a409d93d08e30f180c1273cb4dc0d4e752930d7a0"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/encoder/fastconformer.h": {
+      "bytes": 18551,
+      "sha256": "c29994bd8ee21609919a9b1a5e38dd7be31f358fc7841eb0d7c347ed94d844c1"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/features/fe.h": {
+      "bytes": 7817,
+      "sha256": "8b2a01bd955160d3ebf3de64e172244f842d4d994d80ff5f674c99107fe3e3b3"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/postproc/itn_align.h": {
+      "bytes": 1067,
+      "sha256": "3ff721e81de7ff81aeed7dfe37769cdcffb4cb2f57de90e5651f572324bfdbe4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/postproc/itn.h": {
+      "bytes": 2055,
+      "sha256": "129d777d547090c7a0a53e0497e5b346c8da9a9f4d5faf00d4cd4298f5c5ec3b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/postproc/profanity.h": {
+      "bytes": 982,
+      "sha256": "668b5bd1b5674a911e726920a02cc90c91d0936cf59e4ad16d373259b21ccb42"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/postproc/pipeline.h": {
+      "bytes": 3426,
+      "sha256": "4c5898a5d32f5cc6a191082436252e49d08b6375d8849fddec5f8fe93810730c"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/decoders/rnnt_modules.h": {
+      "bytes": 5486,
+      "sha256": "5bf5754161a5074fd3e5088dca73554b12dfae4eab8d2c2a7c5ae5f53181dde2"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/decoders/rnnt_greedy_decoder.h": {
+      "bytes": 12853,
+      "sha256": "b3c5b212cf0061edb2bdea2d602f5c313026b7f59c1a30395e190099dd9b459d"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/decoders/decoder.h": {
+      "bytes": 12602,
+      "sha256": "0637d67d73959b6242ed1e0e120457c13c4c99edffbbfc05b8f867695a795afa"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/decoders/context_biasing.h": {
+      "bytes": 2885,
+      "sha256": "0d96a4efafd5732060a90456722688322b82f63fa453c48c2e3ed47405594752"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/decoders/greedy_ctc_decoder.h": {
+      "bytes": 5315,
+      "sha256": "62a995737a22daeb2592d7eb8cfff633f2cb670d202c052d00fbe5f6a8be3b82"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/decoders/flashlight_decoder.h": {
+      "bytes": 10941,
+      "sha256": "823baa60cdee1c15491c51473c37d18e15e1f8bd0043ee7c4b342a9b602951e1"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/vad/vad_masker.h": {
+      "bytes": 5108,
+      "sha256": "a23a9ee3c7e094da7bb978dccd5463f3cd4a2bcce4b228f8aced8418cee9693b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/vad/silero_vad.h": {
+      "bytes": 8684,
+      "sha256": "7a946f77669019abe25cc326b9672639a05c8978a36ef9ca5fccd0563482490b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/vad/vad_endpointer.h": {
+      "bytes": 3345,
+      "sha256": "9f2d2cc4fa064dcafc80edc2a20f15658302ddebf8a39a08290ec974e42d1b50"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/pnc/wordpiece.h": {
+      "bytes": 1426,
+      "sha256": "bc0ab14a0c7221a1374e46ab395306d8e7354ecc4335948cc5167bf0ea83ca23"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/pnc/pnc_runner.h": {
+      "bytes": 822,
+      "sha256": "fa9bc0e4badf94255ba7c4a31c915c4d4249f50e4a2cac7cf5a3be5901487721"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/pnc/pnc_model.h": {
+      "bytes": 1956,
+      "sha256": "68f628134c97449540266091eaf7575cc1a9e07db5752f977727b0ff640d2922"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/runtime/ggml/runtime.h": {
+      "bytes": 19230,
+      "sha256": "8b16754a48bc69a9d0f9d2bc29913e9cf4a7e9b5321bd118780093010c5c0f25"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/runtime/ggml/nn.h": {
+      "bytes": 7521,
+      "sha256": "837ad68a88d15f9b53cb9ae5f3b2e2bed65824bb78337cdf02d03b500fd09fd9"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/common/nvtx_utils.h": {
+      "bytes": 2305,
+      "sha256": "277d5a7ef7e7697f579ae8a563ea9c99d570304a570c2949c4d68ec1380cf0b3"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/common/audio_file.h": {
+      "bytes": 1124,
+      "sha256": "9ba8b3e779b75c198256c8d5c07f78ccc98840f367715d3767e06e23d20f19b3"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/common/ggml_log_filter.h": {
+      "bytes": 1246,
+      "sha256": "21b4dfd554a7dc40bc0be62b77e5962fe9c2371cd008b650295cd9de10c785f3"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/common/subtitles.h": {
+      "bytes": 933,
+      "sha256": "20b5fe27c789bd93a7fb4a9e42b60121edafc0fccccbf7e4d65e1e26aee65945"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/common/parameter_parser.h": {
+      "bytes": 5856,
+      "sha256": "2165ea6e0afeb77b7509a5f92a1dc4bc2ec1d590841a0780c40243f73927d9f4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/common/audio_resampler.h": {
+      "bytes": 2622,
+      "sha256": "2f71548582c980468ea58d0afd94b530c708c5a69316fd9040dd1d78b9cc7c40"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/common/audio_decoder.h": {
+      "bytes": 1875,
+      "sha256": "2415866e06cb3c64b5e515c491c200a63172806618e3c771b23e27559c845df1"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/common/model_logging.h": {
+      "bytes": 2148,
+      "sha256": "c59336a0aa25598c20c29f75cf4e4b045fd4ee03a8aaf6c78820d41eab6199fe"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/common/json.h": {
+      "bytes": 1842,
+      "sha256": "0f948e13aefcaa53cda7d3d6195ff9bc50925d5317f5aca271a6ad7702ece84c"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/common/subprocess.h": {
+      "bytes": 1351,
+      "sha256": "f7367f51f5955d80d068c241627ce4f27845e47e6976a290a78cfb71202fabbd"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/common/text_normalization/fst_normalizer.h": {
+      "bytes": 919,
+      "sha256": "d7d11deb8c760c3a2008da4b9197a2a05ea64fe8cb95b5fa23d7c17348b29f90"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/common/text_normalization/compat/sparrowhawk_compat.h": {
+      "bytes": 1485,
+      "sha256": "ff7c7b1ea5a234e753321de30d2b8474d3afec9c155d4051cf738c58d3c64e2e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/common/text_normalization/compat/thrax/grm-manager.h": {
+      "bytes": 4444,
+      "sha256": "f803b0c99b22917a22fd7e9dc3c27c34681e3a5587f112d3252d96521dde0a6c"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/common/text_normalization/compat/thrax/thrax.h": {
+      "bytes": 329,
+      "sha256": "002d0a3a0d0e90d9c658c995cbc453a898faea1c15486504e0f25d2b6cb1b3fb"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/llama.cpp/ggml/include/ggml-vulkan.h": {
+      "bytes": 952,
+      "sha256": "7eae5dad2cc7bb4d3eca828539f441816d5fd59fdc7b224d49aa229fc7b7248c"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/llama.cpp/ggml/include/ggml-virtgpu.h": {
+      "bytes": 194,
+      "sha256": "ed231e7db3f0f58b84073f5ee67f9ec9d63046d1a7ed091c36a6cfe9f685a463"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/llama.cpp/ggml/include/ggml-zdnn.h": {
+      "bytes": 292,
+      "sha256": "ee1d79c95ade45ba195a6b71f59a05c18617de4a596d2b2b03ecf38975a9a448"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/llama.cpp/ggml/include/ggml-opencl.h": {
+      "bytes": 581,
+      "sha256": "8e443e1aa9c8bc6e0cf116c4cc3f42f4858938fa15e65b06bc07b26686e1233a"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/llama.cpp/ggml/include/ggml-hexagon.h": {
+      "bytes": 351,
+      "sha256": "b2c12bac390f14707b16bdd27c8c75ce4f075ed509c729ee28fd4f03b17e7375"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/llama.cpp/ggml/include/ggml-cann.h": {
+      "bytes": 4553,
+      "sha256": "2cdb134f27fe5c4ec19d52f1eb58f5355aa42b8f54bf385f0e487501c5df7362"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/llama.cpp/ggml/include/ggml-cpp.h": {
+      "bytes": 1652,
+      "sha256": "bc15ba002c68685df23faae42df0d2b3d58032011f88b649021ab92485862c72"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/llama.cpp/ggml/include/ggml-sycl.h": {
+      "bytes": 2492,
+      "sha256": "728e4f15d0853d63feb95dd596821c750181c26995fff57fe035e964e70fd85f"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/llama.cpp/ggml/include/ggml-blas.h": {
+      "bytes": 586,
+      "sha256": "e76cb8594dc9866d99e7d63191b9fff6ab8b50244b4a28ce3af0f962964a6b5b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/llama.cpp/ggml/include/ggml-backend.h": {
+      "bytes": 25374,
+      "sha256": "46d84cb998105f871240864fd0f55446939a2fe86c5c281afa63a010fb1f65a2"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/llama.cpp/ggml/include/ggml-et.h": {
+      "bytes": 887,
+      "sha256": "33118c0642b8059a99ea930fd4e4a045e78ccb41760b173ede221f1297c35977"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/llama.cpp/ggml/include/ggml-openvino.h": {
+      "bytes": 1034,
+      "sha256": "c2e3f301e28ad815b4285888aad6130808a77e6acb4e8b558de63a648cf9743e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/llama.cpp/ggml/include/ggml-cuda.h": {
+      "bytes": 1565,
+      "sha256": "9cbfcea49f6da4d07f41dc22fa8dbf870825faaa2a68e34e65fe30ea6c41e042"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/llama.cpp/ggml/include/ggml-alloc.h": {
+      "bytes": 3753,
+      "sha256": "94e4cd069b9313b2ceb35dacec901981e0bb478d8bb31035b7126be091998c23"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/llama.cpp/ggml/include/ggml-zendnn.h": {
+      "bytes": 498,
+      "sha256": "2cb034b842438281616ce647232d922fb224450323f0d422d2af567c334aa8ff"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/llama.cpp/ggml/include/ggml-opt.h": {
+      "bytes": 14040,
+      "sha256": "3586de1bc8a934b5c72339e2b6937b0641e8f149b512231e666f67de0736eea2"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/llama.cpp/ggml/include/ggml-metal.h": {
+      "bytes": 2141,
+      "sha256": "322f36cd30f3e9e7aad7b5b9bc63078012fd0b7706ac4e24f5721b604f3d8980"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/llama.cpp/ggml/include/ggml-cpu.h": {
+      "bytes": 7753,
+      "sha256": "316279e004cdeb8e6ef78599acb602bf79a8abdf897fed9fd1914808c1518c6e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/llama.cpp/ggml/include/gguf.h": {
+      "bytes": 11355,
+      "sha256": "e56714aab702e5ce62ee587a409643c08f7e93e8fbb77f48ef7cc85075f96fa4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/llama.cpp/ggml/include/ggml-webgpu.h": {
+      "bytes": 328,
+      "sha256": "a91d855313a9e85e75ba597ff869a267247dea936a2c0faef03aeb7f1ea6e79c"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/llama.cpp/ggml/include/ggml-rpc.h": {
+      "bytes": 1184,
+      "sha256": "196d2a7434f0abdb01f13c5360e0b118b9f2d66c6452e3a7a844fbecc890205c"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/llama.cpp/ggml/include/ggml.h": {
+      "bytes": 116144,
+      "sha256": "12ee71f99db7db9b353bc02b1fbb57c344ee17c01ac5fb7952b41a637a747ea9"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/diar/sortformer_model.cpp": {
+      "bytes": 25857,
+      "sha256": "831d819e0a3986b7b6007987a67b4ccc5f2895d6d68247ca138ed4d9c3c3d2c9"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/runtime/ggml/backend.cpp": {
+      "bytes": 6376,
+      "sha256": "92ea19f833c9ba132c81cfe33693ab1090d436e25c2aaea7e6186315f5265394"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/runtime/ggml/logging.cpp": {
+      "bytes": 2114,
+      "sha256": "8b06d0484a2c9036f4669edb049ec1e9c9ba4fa1489bf387936d67c8a7fea8ca"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-cpu-v1/lib/libggml.dylib": {
+      "bytes": 59992,
+      "sha256": "3e59d6abb33eb1e9e6e1e9f0fb45b202e580aacb59ee22138399e21732b024f6"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-cpu-v1/lib/libggml.0.dylib": {
+      "bytes": 59992,
+      "sha256": "3e59d6abb33eb1e9e6e1e9f0fb45b202e580aacb59ee22138399e21732b024f6"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-cpu-v1/lib/libggml-blas.0.25.1.dylib": {
+      "bytes": 58776,
+      "sha256": "8e34552741f47e15414de1ba990572a4f2076b64eb8a4891ae80008a24c40fc8"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-cpu-v1/lib/libggml-base.dylib": {
+      "bytes": 752856,
+      "sha256": "0218ddff8169fa854a7f9eb92e10ee52774f7ffb4e1e52a90f4745bf27d5f18e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-cpu-v1/lib/libggml-blas.dylib": {
+      "bytes": 58776,
+      "sha256": "8e34552741f47e15414de1ba990572a4f2076b64eb8a4891ae80008a24c40fc8"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-cpu-v1/lib/libggml-cpu.0.25.1.dylib": {
+      "bytes": 1039000,
+      "sha256": "d8e4bfc696ec65c329aeb17d3404d7d1eda76954e34acc19d95add5e67c49f1e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-cpu-v1/lib/libnemo_speech_asr_c.1.dylib": {
+      "bytes": 96224,
+      "sha256": "b3e9451061550865d218dcbbabfae6957f6097d45db86f89ff7146e97ede928e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-cpu-v1/lib/libggml.0.25.1.dylib": {
+      "bytes": 59992,
+      "sha256": "3e59d6abb33eb1e9e6e1e9f0fb45b202e580aacb59ee22138399e21732b024f6"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-cpu-v1/lib/libggml-cpu.dylib": {
+      "bytes": 1039000,
+      "sha256": "d8e4bfc696ec65c329aeb17d3404d7d1eda76954e34acc19d95add5e67c49f1e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-cpu-v1/lib/libggml-base.0.25.1.dylib": {
+      "bytes": 752856,
+      "sha256": "0218ddff8169fa854a7f9eb92e10ee52774f7ffb4e1e52a90f4745bf27d5f18e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-cpu-v1/lib/libnemo_speech_asr_c.dylib": {
+      "bytes": 96224,
+      "sha256": "b3e9451061550865d218dcbbabfae6957f6097d45db86f89ff7146e97ede928e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-cpu-v1/lib/libggml-base.0.dylib": {
+      "bytes": 752856,
+      "sha256": "0218ddff8169fa854a7f9eb92e10ee52774f7ffb4e1e52a90f4745bf27d5f18e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-cpu-v1/lib/libggml-blas.0.dylib": {
+      "bytes": 58776,
+      "sha256": "8e34552741f47e15414de1ba990572a4f2076b64eb8a4891ae80008a24c40fc8"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-cpu-v1/lib/libggml-cpu.0.dylib": {
+      "bytes": 1039000,
+      "sha256": "d8e4bfc696ec65c329aeb17d3404d7d1eda76954e34acc19d95add5e67c49f1e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-cpu-v1/lib/libnemo_speech_asr.dylib": {
+      "bytes": 1227016,
+      "sha256": "3cb7b30d31812d0f740839f8743b2f97a32704b73ab3a60379bf2c121334dc4f"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-candidate-build-v1/result.json": {
+      "bytes": 54452,
+      "sha256": "f9da3a755e5643870f846f33c10bf8c0c3de20c5158d35746d0c1f0db964dbf3"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-candidate-build-v1/llama-materialized-audit.json": {
+      "bytes": 564097,
+      "sha256": "790d2fbcc3e19ab68d81b937e93ce60d5e1f63f23638c4e434391bc06ed94410"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/build/cpu-diar/src/runtime/ggml/libnemo_speech_runtime_ggml.a": {
+      "bytes": 235360,
+      "sha256": "824d8f4771c907ddccbb98b62bb1af462c357d476b610980df1973f545a11cfb"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-finish-probe-v1/build.json": {
+      "bytes": 2865,
+      "sha256": "825adab9e79c78c464ab540436e4f981613a527a42d9967778b799e1bc75f5a6"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-finish-probe-v1/valid-mel-finish-probe": {
+      "bytes": 101912,
+      "sha256": "e2c99b3e15c29f49484238ab6d5cb72f7649fa5228ad068e5bbf3141e82dfb2d"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-finish-probe-v1/load-commands.txt": {
+      "bytes": 6557,
+      "sha256": "c71450129b3af8c9c70021a81df90f6c4bcb4aeaa8ee98e8dadc3a3fc7e17776"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/build-valid-mel-finish-probe.py": {
+      "bytes": 2818,
+      "sha256": "67252395239dab99349e08e2674fd9e5db344127aee87ad05ca9cb14e32d9c0a"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/tail-framing-v1/calibration/audio.f32": {
+      "bytes": 71488,
+      "sha256": "547f9157d1484b1e0b955c899cbbc1c4b888bb0feda9c4f48a67dd751c91f436"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/tail-framing-v1/calibration/native-stream.f32": {
+      "bytes": 57344,
+      "sha256": "88901c4fd8bc9b9fb9cf781ba733d69182ed93e037e69dc63b207a8e59e87177"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/native-f32-conversion-v1/Nemotron-3-Diarization.f32-control.gguf": {
+      "bytes": 395298848,
+      "sha256": "6e946d20b9a3d749a9b23d7106f73ec8cf3a9186fad3afa9bf34d8e0cd58828a"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-candidate-build/collection.json": {
+      "bytes": 18882,
+      "sha256": "dda52a0ad11c52045e846ffa7924141d3c1e57924b7dc0e163953c8c46cc47b8"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-candidate-build/qualification.json": {
+      "bytes": 2085,
+      "sha256": "032b9a66425c975945ae41ea932c003967a890e37adca18c77e96f65e4b7163e"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-tail-framing/collection.json": {
+      "bytes": 6552,
+      "sha256": "5560007b8a365b7588fb3b9053176c13660ef1612037fdf69a2846eb39532d7c"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-tail-framing/qualification.json": {
+      "bytes": 2761,
+      "sha256": "8679b21b960507504f75aae884d3db50be326037c25e1fa6986222cde251f56b"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-native-f32-construction/collection.json": {
+      "bytes": 2005,
+      "sha256": "368957d8a90c98611192a8655edb4b34b351ff7e8d231c95c89374876634c337"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-native-f32-construction/qualification.json": {
+      "bytes": 2299,
+      "sha256": "8dd91d6889a7d7718df04cb8647762bc264072c7e091f1b64599f4b508e7c85c"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-alloc.h": {
+      "bytes": 3753,
+      "sha256": "94e4cd069b9313b2ceb35dacec901981e0bb478d8bb31035b7126be091998c23"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-backend.h": {
+      "bytes": 25374,
+      "sha256": "46d84cb998105f871240864fd0f55446939a2fe86c5c281afa63a010fb1f65a2"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-blas.h": {
+      "bytes": 586,
+      "sha256": "e76cb8594dc9866d99e7d63191b9fff6ab8b50244b4a28ce3af0f962964a6b5b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-cann.h": {
+      "bytes": 4553,
+      "sha256": "2cdb134f27fe5c4ec19d52f1eb58f5355aa42b8f54bf385f0e487501c5df7362"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-cpp.h": {
+      "bytes": 1652,
+      "sha256": "bc15ba002c68685df23faae42df0d2b3d58032011f88b649021ab92485862c72"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-cpu.h": {
+      "bytes": 7753,
+      "sha256": "316279e004cdeb8e6ef78599acb602bf79a8abdf897fed9fd1914808c1518c6e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-cuda.h": {
+      "bytes": 2929,
+      "sha256": "9bb92a7ba114dd3d7d00985372e98db5f1535860686d4871444d53214dd935d0"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-et.h": {
+      "bytes": 887,
+      "sha256": "33118c0642b8059a99ea930fd4e4a045e78ccb41760b173ede221f1297c35977"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-hexagon.h": {
+      "bytes": 351,
+      "sha256": "b2c12bac390f14707b16bdd27c8c75ce4f075ed509c729ee28fd4f03b17e7375"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-metal.h": {
+      "bytes": 2141,
+      "sha256": "322f36cd30f3e9e7aad7b5b9bc63078012fd0b7706ac4e24f5721b604f3d8980"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-opencl.h": {
+      "bytes": 581,
+      "sha256": "8e443e1aa9c8bc6e0cf116c4cc3f42f4858938fa15e65b06bc07b26686e1233a"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-openvino.h": {
+      "bytes": 1034,
+      "sha256": "c2e3f301e28ad815b4285888aad6130808a77e6acb4e8b558de63a648cf9743e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-opt.h": {
+      "bytes": 14040,
+      "sha256": "3586de1bc8a934b5c72339e2b6937b0641e8f149b512231e666f67de0736eea2"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-rpc.h": {
+      "bytes": 1184,
+      "sha256": "196d2a7434f0abdb01f13c5360e0b118b9f2d66c6452e3a7a844fbecc890205c"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-sycl.h": {
+      "bytes": 2492,
+      "sha256": "728e4f15d0853d63feb95dd596821c750181c26995fff57fe035e964e70fd85f"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-virtgpu.h": {
+      "bytes": 194,
+      "sha256": "ed231e7db3f0f58b84073f5ee67f9ec9d63046d1a7ed091c36a6cfe9f685a463"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-vulkan.h": {
+      "bytes": 952,
+      "sha256": "7eae5dad2cc7bb4d3eca828539f441816d5fd59fdc7b224d49aa229fc7b7248c"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-webgpu.h": {
+      "bytes": 328,
+      "sha256": "a91d855313a9e85e75ba597ff869a267247dea936a2c0faef03aeb7f1ea6e79c"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-zdnn.h": {
+      "bytes": 292,
+      "sha256": "ee1d79c95ade45ba195a6b71f59a05c18617de4a596d2b2b03ecf38975a9a448"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-zendnn.h": {
+      "bytes": 498,
+      "sha256": "2cb034b842438281616ce647232d922fb224450323f0d422d2af567c334aa8ff"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml.h": {
+      "bytes": 122981,
+      "sha256": "c74dda8a6f9550e79a5847188d86715a3d6a2b92a4d09766d02bd5586faca8f3"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/gguf.h": {
+      "bytes": 11355,
+      "sha256": "e56714aab702e5ce62ee587a409643c08f7e93e8fbb77f48ef7cc85075f96fa4"
+    }
+  },
+  "tools": {
+    "valid_mel_finish_probe.cpp": {
+      "bytes": 14157,
+      "sha256": "118b5836ec4b557d216ac2e1041bf9561d8f14e066fb1df1fdfc934e734155d8"
+    },
+    "diagnose_valid_mel_finish.py": {
+      "bytes": 4801,
+      "sha256": "2bb7c5f170dc7bc1ca25ab708b7bb3ea63831c5d8931c180c649c6a2a0dd067b"
+    },
+    "valid_mel_finish_metrics.py": {
+      "bytes": 5311,
+      "sha256": "434e2e0595a4b118998c1f61ae3555b6de1d69df5bd1c4876ef3e6ba9b379fe3"
+    },
+    "artifacts.py": {
+      "bytes": 2869,
+      "sha256": "17df6411ab0394b4d9bb30a099915badf357af26050b6cd08bfd44887688ff42"
+    },
+    "frontend_admission.py": {
+      "bytes": 1460,
+      "sha256": "54b977cbca1074e083b8c8880839d9f2d618b2e5c43da9d89dd641e99b397a8d"
+    },
+    "frontend_metrics.py": {
+      "bytes": 2059,
+      "sha256": "6e0fe650decac087915d517e76f71dd7462fb9195ff81393ec93818edf7546dc"
+    },
+    "patches/v3-finish-valid-mel.patch": {
+      "bytes": 1194,
+      "sha256": "8c1434c14f63ebeb2515c719a90594124fd4f75af85b80451fd145b5caef3c36"
+    }
+  },
+  "external_launcher": {
+    "bytes": 2148,
+    "sha256": "4eb9347538b2625231534e75504cb01c7e86ff7ddb0c97ad370e53315d636964"
+  },
+  "fixed_cases": {
+    "stream_sessions": 28,
+    "direct_graph_calls": 4,
+    "boundary_samples": [
+      0,
+      1,
+      159,
+      160,
+      161,
+      319,
+      320,
+      321,
+      11519,
+      11520,
+      11521,
+      16639,
+      16640,
+      16679,
+      16680,
+      16735,
+      16736,
+      16799,
+      16800,
+      17872,
+      17920
+    ],
+    "calibration_schedules": [
+      [
+        17872
+      ],
+      [
+        16640
+      ],
+      [
+        317,
+        3,
+        1021,
+        160,
+        997
+      ],
+      [
+        8000,
+        4000,
+        5872
+      ]
+    ],
+    "calibration_reset_replay": true,
+    "left_context_one_schedules": [
+      [
+        17872
+      ],
+      [
+        317,
+        3,
+        1021,
+        160,
+        997
+      ]
+    ],
+    "cpu_threads": 4,
+    "batching": false,
+    "gpu_requested": false,
+    "geometry": {
+      "chunk": 9,
+      "right": 4,
+      "left": 0,
+      "fifo": 264,
+      "cache": 264,
+      "update": 222
+    },
+    "same_runtime_absolute_probability_policy": 0.0001,
+    "policy_declared_before_candidate_neural_execution": true
+  },
+  "denied_paths": [
+    "/Users/victor/.cache/gen2-nemotron3-n0/assets",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality-corpus-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/sdk-cpu",
+    "/Users/victor/.cache/gen2-nemotron3-n0/sdk-metal",
+    "/Users/victor/.cache/gen2-nemotron3-n0/tail-framing-v1/ami-close",
+    "/Users/victor/.cache/gen2-nemotron3-n0/tail-framing-v1/ami-distant"
+  ],
+  "limitations": [
+    "Fresh candidate sourceSDK is admitted only to this fixed CPU regression after independent construction and preregistration review. Originalruntime locks/probes/quality gates remain unchanged.",
+    "28 fixed stream sessions and four explicit direct reference graph calls are allowed. Internal stream graph-call count is not instrumented or asserted; it is bounded by these fixed inputs, push schedules and source geometry. No extra cases or retries under this protocol.",
+    "The direct reference uses first104 valid nativeMel, first9 native preencoder embeddings asFIFO, then39 finalMel (47 with left1); output slices explicitly assemble111 rows. This bypasses DiarStream finish and tests probability-level boundary correction rather than output-only truncation.",
+    "Four main schedules plus reset/replay and two left1 schedules check frozen stable prefixes, actual provisional output, exact finish counts, secondfinish and ignoredlatefeed. The21silence lengths check empty/tiny/hop/center/FFTreadiness/stack boundaries. No V2model is acquired or executed; publicGen2 minimum20ms remains separate.",
+    "With this fixed111row calibration, the first72row commit triggers actual lazy front erasure:72*128 deadMel elements exceed39*128 retained beforefinish, and11264 dead raw samples exceed6608 retained (left1:64Mel and9984raw still exceed47Mel and7888raw). Thus bothwhole anduneven cases exercise finish after source-definedPCM/Mel compaction. Privatebuffer bases are not exposed bythehelper; no probability timeline compaction or long-recording qualification is claimed.",
+    "Available reference tensors and per-push/final stream snapshots are persisted before checks or later model calls. Started/returned/completed events and native/outer command logs retain partial failures; a failedattempt is never overwritten.",
+    "The1e-4 maxabsolute policy is only a predeclared samecandidate CPU pipeline/directgraph regression, with raw outputs retained. It changes no HFparity, DER, quantization, targetAMI, release, desktop or uncontendedperformance criterion.",
+    "Only native model/frontend/AOSC on excludedcalibration/fixedsilence execute. No HF/originalNeMo model, AMItarget audio, DERscoring, productionRust API, Metal/Linux/Windows or desktop execution is admitted."
+  ],
+  "materialized_audit_path": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-candidate-build-v1/llama-materialized-audit.json",
+  "materialized_compiler_headers": {
+    "ggml/include/ggml-alloc.h": {
+      "bytes": 3753,
+      "sha256": "94e4cd069b9313b2ceb35dacec901981e0bb478d8bb31035b7126be091998c23"
+    },
+    "ggml/include/ggml-backend.h": {
+      "bytes": 25374,
+      "sha256": "46d84cb998105f871240864fd0f55446939a2fe86c5c281afa63a010fb1f65a2"
+    },
+    "ggml/include/ggml-blas.h": {
+      "bytes": 586,
+      "sha256": "e76cb8594dc9866d99e7d63191b9fff6ab8b50244b4a28ce3af0f962964a6b5b"
+    },
+    "ggml/include/ggml-cann.h": {
+      "bytes": 4553,
+      "sha256": "2cdb134f27fe5c4ec19d52f1eb58f5355aa42b8f54bf385f0e487501c5df7362"
+    },
+    "ggml/include/ggml-cpp.h": {
+      "bytes": 1652,
+      "sha256": "bc15ba002c68685df23faae42df0d2b3d58032011f88b649021ab92485862c72"
+    },
+    "ggml/include/ggml-cpu.h": {
+      "bytes": 7753,
+      "sha256": "316279e004cdeb8e6ef78599acb602bf79a8abdf897fed9fd1914808c1518c6e"
+    },
+    "ggml/include/ggml-cuda.h": {
+      "bytes": 2929,
+      "sha256": "9bb92a7ba114dd3d7d00985372e98db5f1535860686d4871444d53214dd935d0"
+    },
+    "ggml/include/ggml-et.h": {
+      "bytes": 887,
+      "sha256": "33118c0642b8059a99ea930fd4e4a045e78ccb41760b173ede221f1297c35977"
+    },
+    "ggml/include/ggml-hexagon.h": {
+      "bytes": 351,
+      "sha256": "b2c12bac390f14707b16bdd27c8c75ce4f075ed509c729ee28fd4f03b17e7375"
+    },
+    "ggml/include/ggml-metal.h": {
+      "bytes": 2141,
+      "sha256": "322f36cd30f3e9e7aad7b5b9bc63078012fd0b7706ac4e24f5721b604f3d8980"
+    },
+    "ggml/include/ggml-opencl.h": {
+      "bytes": 581,
+      "sha256": "8e443e1aa9c8bc6e0cf116c4cc3f42f4858938fa15e65b06bc07b26686e1233a"
+    },
+    "ggml/include/ggml-openvino.h": {
+      "bytes": 1034,
+      "sha256": "c2e3f301e28ad815b4285888aad6130808a77e6acb4e8b558de63a648cf9743e"
+    },
+    "ggml/include/ggml-opt.h": {
+      "bytes": 14040,
+      "sha256": "3586de1bc8a934b5c72339e2b6937b0641e8f149b512231e666f67de0736eea2"
+    },
+    "ggml/include/ggml-rpc.h": {
+      "bytes": 1184,
+      "sha256": "196d2a7434f0abdb01f13c5360e0b118b9f2d66c6452e3a7a844fbecc890205c"
+    },
+    "ggml/include/ggml-sycl.h": {
+      "bytes": 2492,
+      "sha256": "728e4f15d0853d63feb95dd596821c750181c26995fff57fe035e964e70fd85f"
+    },
+    "ggml/include/ggml-virtgpu.h": {
+      "bytes": 194,
+      "sha256": "ed231e7db3f0f58b84073f5ee67f9ec9d63046d1a7ed091c36a6cfe9f685a463"
+    },
+    "ggml/include/ggml-vulkan.h": {
+      "bytes": 952,
+      "sha256": "7eae5dad2cc7bb4d3eca828539f441816d5fd59fdc7b224d49aa229fc7b7248c"
+    },
+    "ggml/include/ggml-webgpu.h": {
+      "bytes": 328,
+      "sha256": "a91d855313a9e85e75ba597ff869a267247dea936a2c0faef03aeb7f1ea6e79c"
+    },
+    "ggml/include/ggml-zdnn.h": {
+      "bytes": 292,
+      "sha256": "ee1d79c95ade45ba195a6b71f59a05c18617de4a596d2b2b03ecf38975a9a448"
+    },
+    "ggml/include/ggml-zendnn.h": {
+      "bytes": 498,
+      "sha256": "2cb034b842438281616ce647232d922fb224450323f0d422d2af567c334aa8ff"
+    },
+    "ggml/include/ggml.h": {
+      "bytes": 122981,
+      "sha256": "c74dda8a6f9550e79a5847188d86715a3d6a2b92a4d09766d02bd5586faca8f3"
+    },
+    "ggml/include/gguf.h": {
+      "bytes": 11355,
+      "sha256": "e56714aab702e5ce62ee587a409643c08f7e93e8fbb77f48ef7cc85075f96fa4"
+    }
+  }
+}
