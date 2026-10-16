@@ -320,6 +320,36 @@ state. Do not route all uploaded recordings through stateless full attention.
 
 ### N4: align Bark text and integrate Pnola
 
+Development checkpoint: a conservative `attribute_bark` API and Pnola
+recorded-file integration are implemented and under review. Pnola now returns
+independent text/timeline outcomes, additive session/revision/provenance data,
+session-scoped rename maps and source-audio hashes. Native tests exercised real
+Bark+Nemotron output and both directions of partial success. Public unit tests
+cover whole-token word grouping, offsets, overlaps, transitions, gaps and
+edited-text rejection. A child cancellation token prevents diarization cleanup
+from cancelling sibling transcription; a real native stream-drop test passed.
+
+Actual desktop UI execution on AMI completed both models, persisted a two-word
+speaker name across reload, and sought to 33.610999 seconds. Editing text cleared
+word labels while retaining 27 turns and the rename map. A layout correction
+keeps the speaker panel and text editor at full width. Native screen inspection
+was blocked by the locked Mac; WebView/DOM checks and rendered artifacts were
+captured. The debug GUI run was much slower than CLI (77.32 seconds diarization
+plus 51.43 seconds ASR for 60 seconds of audio, versus 8.51 + 5.14 seconds in the
+native test). N5 must investigate background/locked-screen behavior and measure
+a committed release build; GUI real-time performance is not established.
+
+The current clip produces 91 single-speaker, 21 unknown and 5 overlap words.
+Speaker-tagged chronological word error is 46.94% (global known-speaker mapping;
+word or speaker mismatch costs one substitution, unknown/overlap never match a
+person). Conservative concatenated per-speaker WER is 65.31%, with unknown and
+overlap words treated as an unmapped insertion stream. Text WER remains 27.21%.
+These are single-clip investigations, not a held-out attribution acceptance gate.
+The 800 ms/50%/20% rules are conservative uncertainty policy, not a calibrated
+forced aligner. Broader timing/short-turn/overlap evaluation, quality improvement
+and provisional live microphone attribution remain open. N4 is not complete.
+
+
 - [ ] At the start of this milestone, choose the alignment path using real
   evidence. Preferred: retain validated Bark token/frame timing and group words,
   or use a compatible forced aligner. Alternative prototype: transcribe speaker

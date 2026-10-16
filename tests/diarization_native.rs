@@ -8,6 +8,48 @@ use gen2::{
 use std::path::PathBuf;
 
 #[test]
+#[ignore = "requires pinned N0 assets and SDK; checks scoped pipeline cancellation"]
+fn dropping_a_diarization_child_keeps_the_parent_pipeline_active() {
+    use gen2::diarization::{Cancellation, Status};
+    use std::time::{Duration, Instant};
+    let runtime = Runtime::builder()
+        .resident_memory_budget_mb(1024)
+        .build()
+        .unwrap();
+    let model = runtime
+        .load_diarizer(
+            std::env::var("GEN2_NEMOTRON_ASSETS").unwrap(),
+            LoadOptions::cpu(std::env::var("GEN2_NEMO_LIBRARY").unwrap()),
+        )
+        .unwrap();
+    let parent = Cancellation::default();
+    let stream = model
+        .start_stream(DiarizeOptions {
+            cancellation: parent.child_token(),
+            ..Default::default()
+        })
+        .unwrap();
+    drop(stream);
+    let deadline = Instant::now() + Duration::from_secs(5);
+    while model.status() != Status::Ready {
+        assert!(Instant::now() < deadline);
+        std::thread::sleep(Duration::from_millis(2));
+    }
+    assert!(!parent.is_cancelled());
+    model
+        .diarize(
+            Audio::mono_16khz(vec![0.; 320]).unwrap(),
+            DiarizeOptions {
+                cancellation: parent,
+                ..Default::default()
+            },
+        )
+        .unwrap();
+    model.shutdown();
+    assert_eq!(runtime.diarization_reserved_mb(), 0);
+}
+
+#[test]
 #[ignore = "requires pinned N0 assets and SDK; silence, short tail and idle deadline"]
 fn silence_short_tail_and_idle_deadline_have_explicit_terminal_results() {
     use gen2::diarization::{DiarizationError, StreamStatus};

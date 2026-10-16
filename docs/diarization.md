@@ -84,3 +84,32 @@ Model terms: OpenMDW-1.1. Native runtime and transitive dependency notices are
 separate. Model-free CI does not establish native packaging, acceleration or
 real-model support for an OS. Speaker-attributed transcription requires the
 roadmap's separate alignment and Pnola work.
+
+
+## Bark attribution and Pnola development integration
+
+`attribute_bark(transcription, timeline, offset_seconds)` groups complete Bark
+measured token intervals into words and applies temporal speaker coverage.
+Presentation text stays separate from timing evidence. The API rejects stale
+edited text, invalid offsets and malformed intervals. A word receives a single
+speaker only with at least 50% interval coverage and no competitor covering 20%.
+Intervals over 800 ms and zero-duration tokens remain uncertain; simultaneous
+speakers remain overlap candidates and speaker transitions remain unknown.
+Temporal coverage is not calibrated confidence or precise forced alignment.
+
+The versioned [Pnola overlay](../integrations/pnola/README.md) implements final
+recorded-file timelines, speaker renames, compatible history and playback bound
+to the original audio SHA-256. Editing text invalidates word labels without
+altering native turns. Successful text survives unavailable diarization; valid
+timelines survive unavailable ASR and have an explicit save action. A child
+cancellation token isolates diarization cleanup from sibling ASR while observing
+parent/user cancellation. Existing live ASR remains compatible; provisional
+live microphone attribution is still open work.
+
+Initial real AMI evaluation found 27.21% chronological merged WER and 46.94%
+speaker-tagged word error, including 21 unknown and 5 overlap words among 117
+hypothesis words. The conservative concatenated per-speaker score is 65.31%
+when unknown/overlap words form an unmapped insertion stream. The reference has
+147 normalized words. These metrics expose cleanup and uncertainty rather than
+measuring only successfully labeled words. This single clip does not qualify
+the attribution release. See the roadmap for remaining corpus and release gates.

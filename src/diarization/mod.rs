@@ -3,6 +3,7 @@
 //! Load through [`crate::Runtime::load_diarizer`]. Native calls stay on the
 //! owning worker; the host supplies the qualified NeMo-Speech.cpp library.
 
+mod alignment;
 mod audio;
 mod bundle;
 mod error;
@@ -17,6 +18,10 @@ mod worker;
 
 /// Cooperative cancellation shared with other local speech operations.
 pub use crate::speech::Cancellation;
+pub use alignment::{
+    AttributedTranscript, AttributedWord, Attribution, AttributionUncertainty, SpeakerCoverage,
+    attribute_bark,
+};
 pub use audio::Audio;
 pub use bundle::{DiarizationBundle, MODEL_FILENAME, MODEL_REVISION, MODEL_SHA256};
 pub use error::{DiarizationError, Result};

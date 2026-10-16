@@ -1,0 +1,122 @@
+{
+  "schema": 1,
+  "purpose": "Add Nemotron speaker timelines and conservative Bark word attribution to the existing separate Pnola app",
+  "files": {
+    "src-tauri/Cargo.lock": {
+      "base_sha256": "6e8b429eee9766de6a364b206a186150d5c6920d0b21460a459d56be6a0b66dc",
+      "overlay_sha256": "438494eba6eb292215805e7a5b85d2578c9b39c598766c7ac4799e8c27d94808",
+      "compatible_base_sha256": [
+        "6e8b429eee9766de6a364b206a186150d5c6920d0b21460a459d56be6a0b66dc"
+      ]
+    },
+    "src-tauri/Cargo.toml": {
+      "base_sha256": "80ef77e4dfe971341c41663f9bdce0f0ced45dc3dc13dfa5aa6f2cec135aea40",
+      "overlay_sha256": "608dee7ee593504dcabfc7afe934bf44e976457119c00d8518d3b8ae3c67a666",
+      "compatible_base_sha256": [
+        "80ef77e4dfe971341c41663f9bdce0f0ced45dc3dc13dfa5aa6f2cec135aea40",
+        "0264040aed263e1cca38550d39e1567c4117cb8e39104b756f7fcf021da3e1c5"
+      ]
+    },
+    "src-tauri/src/attribution.rs": {
+      "base_sha256": null,
+      "overlay_sha256": "105a2c970f783fdf66c441fd10699bbd3c7edab0d4c67fcfb82f9d0dba99d19a",
+      "compatible_base_sha256": [
+        null
+      ]
+    },
+    "src-tauri/src/audio.rs": {
+      "base_sha256": "c0ba2ee6aef98d9899e3f46958ab352fb77da7b726300f50e7949742033439a2",
+      "overlay_sha256": "c0c8683dc8a1efa62d4b1d0f05f3355ead7156f0beeecfef154ffb0390a89f31",
+      "compatible_base_sha256": [
+        "c0ba2ee6aef98d9899e3f46958ab352fb77da7b726300f50e7949742033439a2"
+      ]
+    },
+    "src-tauri/src/engine.rs": {
+      "base_sha256": "7d5d2fc4dc8987285700d8857f3abb9c69afa4a35b5a92a73a8ddb9b3365fbe7",
+      "overlay_sha256": "85a2c0e001de26881981ba19a94dede60492b8161de2a7bc8bfcb1df586da0d5",
+      "compatible_base_sha256": [
+        "7d5d2fc4dc8987285700d8857f3abb9c69afa4a35b5a92a73a8ddb9b3365fbe7",
+        "959849e612ca2317f550b937b1c4c6d71cf99d6bc724b3f69228bfef8b0f4863"
+      ]
+    },
+    "src-tauri/src/live.rs": {
+      "base_sha256": "10dbacfab95efc8faa18b812803c1aeb4e318bea9feb4c12b1e3d5f838533ac8",
+      "overlay_sha256": "d69c1c69a3f7ba9b6f90359e0592f846e9f6e13d7a256e3c1dea637229c0dae1",
+      "compatible_base_sha256": [
+        "10dbacfab95efc8faa18b812803c1aeb4e318bea9feb4c12b1e3d5f838533ac8",
+        "2d8f31492731465bd8a5123308dffac73a2fa52661ca81187fecea3ddb90d2ab"
+      ]
+    },
+    "src-tauri/src/main.rs": {
+      "base_sha256": "12598aba55ab2de52ac2e06307477723f17cb9d50c218876ddd97a2f7775e099",
+      "overlay_sha256": "800e76d944bb1d7549897ed23f51b977cb9ee134084999a98006f05d2132167e",
+      "compatible_base_sha256": [
+        "12598aba55ab2de52ac2e06307477723f17cb9d50c218876ddd97a2f7775e099"
+      ]
+    },
+    "src-tauri/src/transcription.rs": {
+      "base_sha256": "4f643be8c250c2661e0c8b11b5b276ecd9187f8ce352d5571f232bd0cbe047cc",
+      "overlay_sha256": "ad3238df581d7177e7db024c4281ef21ab118029fbed50da339409a3e8afe8cd",
+      "compatible_base_sha256": [
+        "4f643be8c250c2661e0c8b11b5b276ecd9187f8ce352d5571f232bd0cbe047cc"
+      ]
+    },
+    "src/App.tsx": {
+      "base_sha256": "dccb2ec5012b5f40d0935204ec94eb77136bfbb52343bc2990b340436f247804",
+      "overlay_sha256": "ddfa748abf531de2cb647305bdd9cc632d0d1850e6eec15ed8fa96f457d9cbb7",
+      "compatible_base_sha256": [
+        "dccb2ec5012b5f40d0935204ec94eb77136bfbb52343bc2990b340436f247804"
+      ]
+    },
+    "src/components/studio/speaker-panel.tsx": {
+      "base_sha256": null,
+      "overlay_sha256": "c6046ebf14b7e98bebd1c4db9c4e6142f9c5eb853769cff0420f3ef0dc6f8fb8",
+      "compatible_base_sha256": [
+        null
+      ]
+    },
+    "src/hooks/use-studio.ts": {
+      "base_sha256": "0844e5fd37a7fe96aa3301606d86184f218f3e12fc6525bef344ca49355e187c",
+      "overlay_sha256": "66d13856deddf1a067d9ff2f7841d5144ada3f1333ae17d4c8f4575e1e7e225b",
+      "compatible_base_sha256": [
+        "0844e5fd37a7fe96aa3301606d86184f218f3e12fc6525bef344ca49355e187c"
+      ]
+    },
+    "src/lib/api/backend.ts": {
+      "base_sha256": "6039a4e5aa74e99eae71279c78e7593a735b739a598f0282696915739178f922",
+      "overlay_sha256": "f60b143f39f7437490b4e3615b74fc95c3c3ba9c67d23ab85e7cd33c5e2b47c3",
+      "compatible_base_sha256": [
+        "6039a4e5aa74e99eae71279c78e7593a735b739a598f0282696915739178f922"
+      ]
+    },
+    "src/lib/studio/state.ts": {
+      "base_sha256": "9d6a76d56046b27bab65f9cee238f83a3790415bd3a490094b55906c109839bb",
+      "overlay_sha256": "3619fbebf628682f7fd334266d7c216cd06cde00dc0334d2afa370e127f2eb17",
+      "compatible_base_sha256": [
+        "9d6a76d56046b27bab65f9cee238f83a3790415bd3a490094b55906c109839bb"
+      ]
+    },
+    "src/lib/studio/types.ts": {
+      "base_sha256": "cc1a8edccdbf657fdc1b3feea7341a21e99d7238f5fa3ca7de370646c2d64a37",
+      "overlay_sha256": "5eb09531f791e7cde33a6ba779a91eb2e4f1209d1ecb31869127424dd03dcb02",
+      "compatible_base_sha256": [
+        "cc1a8edccdbf657fdc1b3feea7341a21e99d7238f5fa3ca7de370646c2d64a37"
+      ]
+    },
+    "src/neobrutal.css": {
+      "base_sha256": "d3cefcbe7f73b5200bb5f44ed93d9810b9a2c81fdfac9289f14dc7ea6cb78edb",
+      "overlay_sha256": "80e3ac587e847c6dac35ad0cb4f4e9b7cb05960c2d568b354ae47454455c7d4e",
+      "compatible_base_sha256": [
+        "d3cefcbe7f73b5200bb5f44ed93d9810b9a2c81fdfac9289f14dc7ea6cb78edb"
+      ]
+    },
+    "tests/studio.test.mjs": {
+      "base_sha256": "f62e6d3834ec9ade0e4b7e603643f38cd7e3ce27580a6403b2445a0958db05c4",
+      "overlay_sha256": "ee342b41df0dfa7430614852c2b2d4fe9a4495d0873cb69add4078a16a1bd974",
+      "compatible_base_sha256": [
+        "f62e6d3834ec9ade0e4b7e603643f38cd7e3ce27580a6403b2445a0958db05c4"
+      ]
+    }
+  },
+  "pnola_base_commit": "81ae9ba82545dc45530da283fdd4b6e00589b867"
+}

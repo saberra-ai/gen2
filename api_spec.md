@@ -2148,6 +2148,11 @@ See [setup and verification](tools/bark/README.md) for supported targets, licens
 quality limits and reproducible gates. Mobile/accelerators/MLX remain follow-ups.
 
 
+`Cancellation::child_token()` scopes an operation beneath a shared recording
+cancellation flag. Parent cancellation reaches children; cancelling a child
+(including native stream-drop cleanup) cannot cancel its parent or siblings.
+This lets a diarization failure preserve independently successful transcription.
+
 ## 34. Local speaker diarization (native CPU)
 
 `gen2::diarization` is an independent operation. With `backend-diar-nemo`,
@@ -2190,3 +2195,29 @@ default segmentation is the only long-session postprocessing policy exposed.
 This timeline provides no word alignment, source separation or automatic names.
 See [contracts and limits](docs/diarization.md) and the
 [qualification roadmap](docs/plans/nemotron-3-diarization-roadmap.md).
+
+
+### 34.1 Bark word attribution
+
+`diarization::attribute_bark(transcription, timeline, offset_seconds)` groups
+whole measured Bark token intervals into words in the continuous recording's
+timebase. It verifies that token text still reconstructs the cleaned transcript;
+edited presentation text cannot be retimed through character proportions.
+Results retain the exact cleaned text, approximate word intervals and explicit
+single-speaker, overlap or unknown attribution. Per-speaker coverage measures
+temporal overlap with the union of native turns; it is not calibrated confidence.
+
+The initial conservative policy requires at least 50% coverage for a single
+speaker and no competitor with at least 20%. Competing speakers with at least
+20 ms of simultaneous activity remain overlap candidates; sequential competing
+speakers remain uncertain. Zero-length words and intervals over 800 ms remain
+uncertain rather than stretching a word through silence. The method is named
+`bark_token_intervals_v1`; corpus qualification and uncertainty rates must be
+reported separately. These boundaries are not precise forced alignment.
+
+The Pnola integration is versioned under `integrations/pnola`. Its current
+recorded-file flow preserves text when diarization fails and returns valid
+standalone timelines when ASR fails, with an explicit save action. Renames,
+media identity checks, history compatibility and seek-to-time controls are host
+responsibilities. Live microphone attribution and full release-quality gates
+remain tracked in the roadmap.

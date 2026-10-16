@@ -10,13 +10,35 @@ use std::{
 };
 
 #[derive(Debug, Clone, Default)]
-pub struct Cancellation(Arc<AtomicBool>);
+pub struct Cancellation(Arc<CancellationState>);
+#[derive(Debug, Default)]
+struct CancellationState {
+    cancelled: AtomicBool,
+    parent: Option<Arc<CancellationState>>,
+}
 impl Cancellation {
     pub fn cancel(&self) {
-        self.0.store(true, Ordering::Release);
+        self.0.cancelled.store(true, Ordering::Release);
     }
     pub fn is_cancelled(&self) -> bool {
-        self.0.load(Ordering::Acquire)
+        let mut state = self.0.as_ref();
+        loop {
+            if state.cancelled.load(Ordering::Acquire) {
+                return true;
+            }
+            match state.parent.as_deref() {
+                Some(parent) => state = parent,
+                None => return false,
+            }
+        }
+    }
+    /// A scoped operation observes parent cancellation, while cancelling or
+    /// dropping that operation cannot cancel its parent or sibling operations.
+    pub fn child_token(&self) -> Self {
+        Self(Arc::new(CancellationState {
+            cancelled: AtomicBool::new(false),
+            parent: Some(Arc::clone(&self.0)),
+        }))
     }
 }
 #[derive(Debug, Clone)]
