@@ -11,6 +11,7 @@ import json
 from pathlib import Path
 import stat
 import tarfile
+import tempfile
 
 
 def inventory(root):
@@ -80,3 +81,49 @@ def write_archive(sdk, output, stem='development-sdk'):
     with manifest.open('x') as stream:
         stream.write(json.dumps(result, indent=2) + '\n')
     return {key: value for key, value in result.items() if key != 'files'}
+
+
+def restore_archive(archive, manifest, destination):
+    """Verify delivered bytes, extract safely, restore modes and publish atomically."""
+    archive, destination = Path(archive), Path(destination)
+    if destination.exists() or destination.is_symlink():
+        raise FileExistsError('refusing to replace an extracted snapshot')
+    if archive.stat().st_size != manifest['archive_bytes'] or hashlib.sha256(archive.read_bytes()).hexdigest() != manifest['archive_sha256']:
+        raise ValueError('delivered archive checksum differs from snapshot manifest')
+    records = manifest['files']
+    if records.get('.', {}).get('type') != 'directory':
+        raise ValueError('snapshot has no root directory')
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    with tempfile.TemporaryDirectory(dir=destination.parent, prefix='.restore-sdk-') as temporary:
+        extracted = Path(temporary)
+        with tarfile.open(archive) as tar:
+            expected = set()
+            for relative, record in records.items():
+                path = Path(relative)
+                if not relative or path.is_absolute() or path.drive or '..' in path.parts or path.as_posix() != relative:
+                    raise ValueError('unsafe snapshot file path')
+                name = 'sdk' if relative == '.' else 'sdk/' + relative
+                expected.add(name)
+                member = tar.getmember(name)
+                if member.mode != record['mode'] or not 0 <= member.mode <= 0o777:
+                    raise ValueError('archive mode differs from validated snapshot')
+                valid_type = {'file': member.isfile(), 'directory': member.isdir(), 'symlink': member.issym()}
+                if not valid_type.get(record['type'], False):
+                    raise ValueError('archive file type differs from validated snapshot')
+                if record['type'] == 'symlink' and member.linkname != record['target']:
+                    raise ValueError('archive alias differs from validated snapshot')
+            members = tar.getmembers()
+            if len(members) != len(expected) or {member.name for member in members} != expected:
+                raise ValueError('archive file set differs from validated snapshot')
+            tar.extractall(extracted, filter='data')
+        root = (extracted / 'sdk').resolve(strict=True)
+        # The data filter removes some directory/file permission bits; macOS
+        # also creates symlinks with a different default mode than Linux.
+        for relative, record in records.items():
+            path = root / relative
+            if stat.S_IMODE(path.lstat().st_mode) != record['mode']:
+                path.chmod(record['mode'], follow_symlinks=record['type'] != 'symlink')
+        if inventory(root) != records:
+            raise ValueError('extracted filesystem differs from validated snapshot')
+        root.rename(destination)
+    return destination

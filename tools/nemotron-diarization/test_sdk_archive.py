@@ -5,7 +5,7 @@ import tarfile
 import tempfile
 import unittest
 
-from sdk_archive import inventory, write_archive
+from sdk_archive import inventory, restore_archive, write_archive
 
 
 class SDKArchiveTests(unittest.TestCase):
@@ -30,22 +30,42 @@ class SDKArchiveTests(unittest.TestCase):
                 snapshots.append(archive.read_bytes())
                 self.assertEqual(hashlib.sha256(snapshots[-1]).hexdigest(), summary['archive_sha256'])
                 delivered = root / (name + ' relocated ü')
-                delivered.mkdir()
                 manifest = json.loads((output / 'development-sdk-files.json').read_text())
                 with tarfile.open(archive) as tar:
                     for relative, record in manifest['files'].items():
                         name = 'sdk' if relative == '.' else 'sdk/' + relative
                         self.assertEqual(tar.getmember(name).mode, record['mode'])
-                    tar.extractall(delivered, filter='data')
-                # Python's data filter intentionally drops directory modes and
-                # group-write bits; restore the validated inventory's modes.
-                for relative, record in manifest['files'].items():
-                    if record['type'] != 'symlink':
-                        (delivered / 'sdk' / relative).chmod(record['mode'])
-                self.assertEqual(inventory(delivered / 'sdk'), inventory(sdk))
+                restore_archive(archive, manifest, delivered)
+                self.assertEqual(inventory(delivered), inventory(sdk))
+                self.assertTrue((delivered / 'lib/entry.so').is_symlink())
+                self.assertEqual((delivered / 'lib/entry.so').readlink().as_posix(), 'real.so.1')
+                self.assertEqual((delivered / 'lib/real.so.1').read_bytes(), b'native-library')
+                self.assertEqual((delivered / 'bin/probe').stat().st_mode & 0o777, 0o755)
                 self.assertEqual(manifest['files'], inventory(sdk))
                 self.assertFalse(manifest['release_qualified'])
             self.assertEqual(*snapshots)
+
+    def test_corrupt_delivery_does_not_publish_or_replace_existing_files(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            sdk = root / 'sdk'
+            sdk.mkdir()
+            (sdk / 'file').write_bytes(b'input')
+            output = root / 'output'
+            output.mkdir()
+            summary = write_archive(sdk, output)
+            archive = output / summary['archive']
+            manifest = json.loads((output / 'development-sdk-files.json').read_text())
+            archive.write_bytes(archive.read_bytes() + b'changed')
+            destination = root / 'delivered'
+            with self.assertRaisesRegex(ValueError, 'checksum'):
+                restore_archive(archive, manifest, destination)
+            self.assertFalse(destination.exists())
+            destination.mkdir()
+            (destination / 'user-file').write_bytes(b'preserve')
+            with self.assertRaises(FileExistsError):
+                restore_archive(archive, manifest, destination)
+            self.assertEqual((destination / 'user-file').read_bytes(), b'preserve')
 
     def test_escaping_or_dangling_alias_is_rejected_before_archive_creation(self):
         with tempfile.TemporaryDirectory() as temporary:
