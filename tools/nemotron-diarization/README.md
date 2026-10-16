@@ -458,3 +458,24 @@ license candidates keep redistribution unqualified. Closed/offline runtime,
 actual mixed-model calls, desktop machine and live performance gates remain open.
 The Windows module snapshot diagnostic separately passes two Win32 tests,
 including Unicode executable relocation, without a packaged-runtime claim.
+
+Windows development runtime construction now accepts that exact qualified SDK:
+
+```sh
+python tools/nemotron-diarization/package_windows.py \
+  --sdk-prefix /absolute/path/nemo-sdk \
+  --native-evidence /absolute/path/nemo-evidence \
+  --output /absolute/path/new-windows-package-evidence
+```
+
+This portable constructor rechecks all SDK file bytes, private PE tables,
+CPU/CMake settings and retained Microsoft source/signature observations. It
+copies five private native DLLs and eight unchanged VC DLLs, installed notices
+and qualification metadata. The deterministic ZIP has a bounded, validated
+central directory and exact byte inventory; extraction rejects Windows aliases,
+links, case collisions and undeclared members, then verifies a Unicode-path
+restoration. It deliberately makes no ACL or executable-permission claim.
+The Windows probe workflow downloads the specific successful native run before
+construction. Construction alone does not execute the package or establish
+Microsoft redistribution rights, fresh-machine closure, coexistence or release
+qualification; all those receipt flags stay false.

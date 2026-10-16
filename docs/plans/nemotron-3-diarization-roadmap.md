@@ -630,6 +630,15 @@ license/source provenance, relative ELF resolution, archive metadata, and a
 clean offline container plus actual chat/GGML coexistence. This is a plan,
 not a new portable-package or clean-machine result.
 
+A portable [Windows development constructor](../../tools/nemotron-diarization/package_windows.py)
+now preserves the qualified SDK's five private DLLs and eight unchanged VC
+DLLs, installed notices and retained provenance. It checks actual SDK/PE/cache
+identity and performs a bounded ZIP round trip into a Unicode path. All 78
+model-free packaging/evidence regressions and receiver construction on macOS
+pass. Actual Windows construction and offline execution require their own
+receipts; this does not close Microsoft redistribution, desktop, coexistence,
+quality or performance gates.
+
 A guarded [Windows private-DLL build](../research/nemotron-windows-private-names.md)
 now relinks the five owned DLLs through an external CMake naming hook, updates
 probe/entry paths and rejects residual generic ordinary/delay/forwarded native

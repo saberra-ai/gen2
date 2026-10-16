@@ -2,6 +2,18 @@
 
 Primary-source research, 2026-10-16. This is an implementation plan, not a qualified package. Only this note was written; no builds, model execution, package downloads or installations were performed. The original inventory below is historical; the source-specific retry update immediately below records later evidence. Its later [native execution/control-failure receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-native-loader-control/qualification.json) records successful SDK/probe/Rust builds and native AMI inference (27 turns, 6,001 frames), followed by a CPython control-harness error. That delivery contains 66 files including the qualification probe; the 65-file runtime inventory below remains tied to the earlier source. Public/native parity, lifecycle and packaging remain unqualified.
 
+**Current implementation checkpoint:** the later `24ad927` private-name native
+SDK [passes native/public parity and lifecycle checks](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-private-native-development/qualification.json).
+The [development constructor](../../tools/nemotron-diarization/package_windows.py)
+now preserves its exact 13 DLLs, notices and retained provenance, verifies PE
+closure against an explicit Server 2022 OS-import set, and produces a bounded
+ZIP with a verified Unicode-path byte restoration. Its first receiver execution
+on macOS passes; actual Windows construction and subsequent offline runtime
+execution need separate evidence. Microsoft redistribution terms/entitlement,
+complete static-dependency source provenance, desktop qualification, coexistence
+and quality/performance gates remain open. The research inventory and proposed
+steps below retain their original source-specific limits.
+
 ## Source-specific retry update
 
 The 65-file inventory below belongs specifically to historical Gen2 `fd91ed1108528f09262c8aaafea2b4f5aaa6d7b9`, run 38873722221. The later [loader-control qualification record](/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/windows-x86_64/2026-10-16-native-loader-control/qualification.json) binds Gen2 `ad9e1e6eff22d1437d3f63873e451d10f3eb7186`, [run 38874742702](https://github.com/saberra-ai/gen2/actions/runs/38874742702): SDK, independent probe and Rust build completed, and the locked Q8 AMI native run produced 27 turns/6001 frames with finite bounded probabilities. It verifies 66 SDK regular files, adding the native probe as **qualification-only** payload; this does not expand the proposed production DLL set. The run then failed a negative-control harness assertion because CPython CDLL translated ERROR_MOD_NOT_FOUND126 into FileNotFoundError without `winerror`. The recorded remedy is a typed direct LoadLibraryExW/GetLastError control. That source has no public/native parity, loader-control pass, lifecycle, closed-package, coexistence or release qualification. Its 27 native turns are not a cross-OS bitwise claim against Linux26. Later control-fix results need separate evidence; nothing here promotes this source to qualified.
