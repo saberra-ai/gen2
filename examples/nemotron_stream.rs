@@ -8,10 +8,15 @@ use gen2::{
 use std::time::{Duration, Instant};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
-    let args: Vec<_> = std::env::args().collect();
+    let mut args: Vec<_> = std::env::args().collect();
+    let metal = args.get(1).is_some_and(|arg| arg == "--metal");
+    if metal {
+        args.remove(1);
+    }
     if args.len() != 5 {
         return Err(
-            "usage: nemotron_stream MODEL_DIRECTORY NATIVE_C_LIBRARY AUDIO.wav REPEATS".into(),
+            "usage: nemotron_stream [--metal] MODEL_DIRECTORY NATIVE_C_LIBRARY AUDIO.wav REPEATS"
+                .into(),
         );
     }
     let repeats: u32 = args[4].parse()?;
@@ -30,7 +35,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     drop(reader);
     let runtime = Runtime::builder().resident_memory_budget_mb(2048).build()?;
-    let model = runtime.load_diarizer(&args[1], LoadOptions::cpu(&args[2]))?;
+    let model = runtime.load_diarizer(
+        &args[1],
+        if metal {
+            LoadOptions::metal(&args[2])
+        } else {
+            LoadOptions::cpu(&args[2])
+        },
+    )?;
     let started = Instant::now();
     let mut stream = model.start_stream(DiarizeOptions {
         frame_probabilities: true,
@@ -82,7 +94,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!(
         "{}",
         serde_json::to_string(
-            &serde_json::json!({"session_id": stream.session_id(), "complete": stream.snapshot().is_some_and(|s| s.complete), "accepted_samples": stream.accepted_samples(), "audio_duration_seconds": result.audio_duration_seconds, "native_frame_count": result.native_frame_count, "retained_probabilities": retained, "model_revision": result.model_revision, "runtime_version": result.runtime_version, "backend": result.backend, "geometry": result.geometry, "turns": result.turns, "native_compute_micros": result.native_compute_micros, "finish_micros": finish_micros, "elapsed_micros": elapsed_micros, "backpressure_count": backpressure_count, "snapshots": snapshots})
+            &serde_json::json!({"session_id": stream.session_id(), "complete": stream.snapshot().is_some_and(|s| s.complete), "accepted_samples": stream.accepted_samples(), "audio_duration_seconds": result.audio_duration_seconds, "native_frame_count": result.native_frame_count, "retained_probabilities": retained, "model_revision": result.model_revision, "runtime_version": result.runtime_version, "backend": result.backend, "device": result.device, "geometry": result.geometry, "turns": result.turns, "native_compute_micros": result.native_compute_micros, "finish_micros": finish_micros, "elapsed_micros": elapsed_micros, "backpressure_count": backpressure_count, "snapshots": snapshots})
         )?
     );
     model.shutdown();

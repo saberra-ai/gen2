@@ -292,3 +292,16 @@ public Metal reference check, supply `GEN2_NEMO_LIBRARY` (relocated CPU package)
 `explicit_metal_matches_native_reference_and_cpu_sdk_cannot_silently_fallback`
 test in a fresh process. This is development qualification; full lifecycle,
 long-session, mixed-backend, offline app and clean performance gates remain open.
+
+
+The two `nemotron_diarize` / `nemotron_stream` Rust examples accept an optional
+leading `--metal` flag; CPU remains explicit by default. The stream example's
+receipt includes backend and selected GPU description. To reuse the existing
+native lifecycle, streaming, cancellation, ABI, warm-cache and100-reload gates
+against Metal, set `GEN2_NEMO_EXECUTION=metal`, point `GEN2_NEMO_LIBRARY` at the
+private Metal package and `GEN2_NEMOTRON_REFERENCE` at its independently generated
+native outputs. Run `cargo test --no-default-features --features backend-diar-nemo
+--test diarization_native -- --ignored --skip explicit_metal --test-threads=1`.
+The separate explicit-Metal test still requires both CPU and Metal packages and
+must run in a fresh process with its own documented environment. Invalid backend
+selection fails immediately. Compile-only or ignored results are not qualification.

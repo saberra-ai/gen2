@@ -7,6 +7,16 @@ use gen2::{
 };
 use std::path::PathBuf;
 
+// Reuse the exact lifecycle gates against a separately qualified SDK/reference.
+// The default remains CPU; an invalid selection never quietly changes the test.
+fn load_options(library: impl Into<PathBuf>) -> LoadOptions {
+    match std::env::var("GEN2_NEMO_EXECUTION").as_deref() {
+        Err(std::env::VarError::NotPresent) | Ok("cpu") => LoadOptions::cpu(library),
+        Ok("metal") => LoadOptions::metal(library),
+        other => panic!("unsupported GEN2_NEMO_EXECUTION: {other:?}"),
+    }
+}
+
 #[test]
 #[ignore = "requires pinned N0 assets and SDK; checks scoped pipeline cancellation"]
 fn dropping_a_diarization_child_keeps_the_parent_pipeline_active() {
@@ -19,7 +29,7 @@ fn dropping_a_diarization_child_keeps_the_parent_pipeline_active() {
     let model = runtime
         .load_diarizer(
             std::env::var("GEN2_NEMOTRON_ASSETS").unwrap(),
-            LoadOptions::cpu(std::env::var("GEN2_NEMO_LIBRARY").unwrap()),
+            load_options(std::env::var("GEN2_NEMO_LIBRARY").unwrap()),
         )
         .unwrap();
     let parent = Cancellation::default();
@@ -61,7 +71,7 @@ fn silence_short_tail_and_idle_deadline_have_explicit_terminal_results() {
         .build()
         .unwrap();
     let model = runtime
-        .load_diarizer(assets, LoadOptions::cpu(library))
+        .load_diarizer(assets, load_options(library))
         .unwrap();
     let result = model
         .diarize(
@@ -113,7 +123,7 @@ fn repeated_reload_full_queue_cancel_and_dropped_stream_release_resources() {
         .unwrap();
     for index in 0..100 {
         let model = runtime
-            .load_diarizer(&assets, LoadOptions::cpu(&library))
+            .load_diarizer(&assets, load_options(&library))
             .unwrap();
         let mut stream = model.start_stream(Default::default()).unwrap();
         if index == 0 {
@@ -179,7 +189,7 @@ fn unsupported_abi_and_missing_symbols_fail_before_ready() {
                 .success()
         );
         let error = runtime
-            .load_diarizer(&assets, LoadOptions::cpu(library))
+            .load_diarizer(&assets, load_options(library))
             .unwrap_err();
         assert!(matches!(
             error,
@@ -211,7 +221,7 @@ fn streamed_uneven_pcm_matches_recording_and_finish_is_idempotent() {
         .build()
         .unwrap();
     let model = runtime
-        .load_diarizer(&assets, LoadOptions::cpu(library))
+        .load_diarizer(&assets, load_options(library))
         .unwrap();
     let wav = assets.join("ami_en2002d_2132.wav");
     let expected = model
@@ -321,7 +331,7 @@ fn native_admission_cancellation_and_failed_load_release_reservations() {
         .build()
         .unwrap();
     assert!(matches!(
-        small.load_diarizer(&assets, LoadOptions::cpu(&library)),
+        small.load_diarizer(&assets, load_options(&library)),
         Err(gen2::Error::Diarization(DiarizationError::ResourceLimit(_)))
     ));
     assert_eq!(small.diarization_reserved_mb(), 0);
@@ -331,14 +341,14 @@ fn native_admission_cancellation_and_failed_load_release_reservations() {
         .unwrap();
     let bad = tempfile::NamedTempFile::new().unwrap();
     assert!(matches!(
-        runtime.load_diarizer(&assets, LoadOptions::cpu(bad.path())),
+        runtime.load_diarizer(&assets, load_options(bad.path())),
         Err(gen2::Error::Diarization(
             DiarizationError::BackendUnavailable(_)
         ))
     ));
     assert_eq!(runtime.diarization_reserved_mb(), 0);
     let model = runtime
-        .load_diarizer(&assets, LoadOptions::cpu(&library))
+        .load_diarizer(&assets, load_options(&library))
         .unwrap();
     let minimum = || Audio::mono_16khz(vec![0.; 320]).unwrap();
     assert!(matches!(
@@ -423,7 +433,7 @@ fn real_diarizer_matches_native_reference_and_resets_recordings() {
         .build()
         .unwrap();
     let model = runtime
-        .load_diarizer(&assets, LoadOptions::cpu(library))
+        .load_diarizer(&assets, load_options(library))
         .unwrap();
     let wav = assets.join("ami_en2002d_2132.wav");
     let options = DiarizeOptions {
