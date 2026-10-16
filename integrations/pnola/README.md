@@ -25,8 +25,9 @@ For local qualification, set `GEN2_BARK_BUNDLE`, `GEN2_ORT_LIBRARY`,
 `GEN2_NEMOTRON_ASSETS` and `GEN2_NEMO_LIBRARY` to the pinned artifacts described
 in [the Gen2 guide](../../docs/diarization.md). Packaged fallback locations are
 `Resources/bark`, `Resources/runtime`, `Resources/nemotron` and
-`Resources/nemo/lib`; native dependency relocation, signing and clean-machine
-qualification remain N5 work. No inference-time downloads occur.
+`Resources/nemo/lib`; packaged macOS builds prefer signed native libraries in
+`Contents/Frameworks`. Same-host CPU relocation is verified; fresh-machine
+qualification remains N5 work. No inference-time downloads occur.
 
 Recorded audio uses one continuous native diarization stream, independently of
 Bark's completed 60-second windows. Speaker labels have a one-hour cap; longer
@@ -122,6 +123,8 @@ export GEN2_NEMO_PACKAGE=/absolute/nemo-cpu-package
 export GEN2_NEMOTRON_ASSETS=/absolute/pinned-model-assets
 export GEN2_BARK_BUNDLE=/absolute/bark/onnx
 export GEN2_ORT_LIBRARY=/absolute/libonnxruntime.dylib
+export GEN2_ORT_LICENSE=/absolute/onnxruntime/LICENSE
+export PNOLA_SAMPLE_AUDIO=/absolute/licensed-demo.wav
 npm run desktop:build
 ```
 
@@ -130,7 +133,11 @@ otherwise the helper follows Pnola's actual Cargo dependency path. Python 3 is a
 packaging/verification tool only; the application performs native inference.
 Builds do not download models or libraries. `PNOLA_SPEAKERS=0` explicitly selects
 an ASR-only build and removes stale derived speaker resources. Missing speaker
-paths in a full build fail clearly.
+paths in a full build fail clearly. Bark, ORT, the matching ORT license and
+licensed demo audio paths are required for both build variants; no sibling
+checkout or Python environment layout is assumed. All assets are staged in a
+temporary directory before replacing the prior complete resource set. A failed
+preparation preserves the previous assets.
 
 The model and license are checked before publication. Failed staging retains
 previous speaker resources. Every private native dependency and the public entry

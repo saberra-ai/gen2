@@ -1,0 +1,44 @@
+
+> pnola@0.1.0 test
+> node --test tests/*.test.mjs
+
+✔ splits long audio at quiet points without gaps, overlap, or oversized parts (8.742792ms)
+✔ keeps a subminute clip intact and handles a tiny final tail within Bark bounds (1.119958ms)
+✔ encodes bounded PCM16 WAV and rejects nonfinite samples (0.438417ms)
+✔ speaker tooling follows the actual Cargo checkout and requires an explicit ASR-only selection (4.377291ms)
+✔ desktop staging rejects changed model bytes and missing notice files (4.267416ms)
+✔ speaker bundle declares the actual native macOS floor and preserves base resources (0.925125ms)
+✔ desktop preparation uses explicit artifacts in an isolated checkout and preserves staged assets on invalid input (197.618375ms)
+✔ the actual capture worklet runs beyond a minute and flushes its final samples exactly once (28.687292ms)
+✔ a live session passes two hours, keeps a bounded preview, and exports every section in order (2895.869458ms)
+✔ unprocessed audio survives a failed worker and is recovered without duplicate text (3.222334ms)
+✔ temporary server contention retries a saved section without losing it (4.595959ms)
+✔ stopping while the engine is unavailable leaves saved audio for explicit resume (1.53825ms)
+✔ storage failure stops accepting audio and surfaces the failure (0.283042ms)
+✔ plans and reads a multiminute WAV without dropping or repeating samples (24.686209ms)
+✔ accepts Core Audio extensible PCM headers and rejects non-PCM subtypes (1.864875ms)
+✔ serves the built React UI and rejects arbitrary paths (1335.514875ms)
+✔ rejects unsupported content types, foreign origins, malformed and oversized WAV (7.051042ms)
+✔ transcribes real speech twice with clean state in the resident worker (556.567125ms)
+✔ bounds admission while the native worker is occupied (271.99975ms)
+✔ streams original audio through conversion, transcription, and completion (299.470417ms)
+✔ reports conversion failures and releases admission for the next upload (117.223333ms)
+✔ reads progress and transcript messages across arbitrary UTF-8 chunk boundaries (4.839709ms)
+✔ reactive progress accumulates text and ignores stale job events (1.174959ms)
+✔ cancellation keeps completed sections and rejects late results (0.079458ms)
+✔ editing an empty transcript remains editable and updates saved history (0.066041ms)
+✔ invalid saved history does not silently become an empty file (0.866292ms)
+✔ live updates retain one history entry beyond two hours and protect its bounded preview from edits (0.177917ms)
+✔ speaker names and timelines survive storage, while text edits invalidate word labels (0.17925ms)
+✔ a standalone timeline is saved only after explicit selection (0.060292ms)
+✔ opening history clears unrelated playback audio (0.048708ms)
+✔ live speaker updates replace revisions and retain names only within one native session (0.153917ms)
+✔ malformed live speaker history does not attach invalid labels to valid text (0.109209ms)
+ℹ tests 32
+ℹ suites 0
+ℹ pass 32
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3024.414625

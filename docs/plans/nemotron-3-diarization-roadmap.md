@@ -413,6 +413,11 @@ were denied; independent controls proved the denials. 31 frontend/build tests,
 14 ordinary Rust tests and 14 Python tool tests pass. See the [app-bundle development receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-n5-pnola-bundle/receipt.json).
 This is same-host relocation and native CLI execution, not fresh-machine,
 physical microphone/native GUI, public notarization or clean performance proof.
+A subsequent spec review reproduced hidden ORT-notice/demo paths in an isolated
+checkout. Preparation now requires explicit artifact paths and publishes the
+complete asset set after successful staging. Both fixture and real-artifact
+preparation pass with the original Bark/Pnola checkouts denied; all 127 file
+contents match the earlier packaged resources. See the [portable-build fix receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-n5-portable-build/receipt.json).
 The other N5 and quality gates remain open.
 
 

@@ -1,6 +1,6 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtemp, writeFile, readFile, rm, mkdir } from 'node:fs/promises';
+import { mkdtemp, writeFile, readFile, rm, mkdir, cp } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
@@ -46,4 +46,30 @@ test('speaker bundle declares the actual native macOS floor and preserves base r
   assert.equal(speakerBuildConfiguration(base,null).bundle.resources['../.desktop-assets/nemo/'],undefined);
   assert.equal(speakerBuildConfiguration(base,{minimum_macos:'12.0'}).bundle.macOS.minimumSystemVersion,'13.0');
   assert.throws(()=>speakerBuildConfiguration(base,{minimum_macos:'unknown'}),/macOS/);
+});
+
+
+test('desktop preparation uses explicit artifacts in an isolated checkout and preserves staged assets on invalid input',async()=>{
+  const root=await mkdtemp(join(tmpdir(),'pnola-portable-desktop-'));
+  try {
+    await cp(new URL('../scripts/',import.meta.url),join(root,'scripts'),{recursive:true});
+    await mkdir(join(root,'inputs/bark'),{recursive:true});
+    await writeFile(join(root,'inputs/bark/model.onnx'),'fixture model');
+    await writeFile(join(root,'inputs/ort.dylib'),'fixture runtime');
+    await writeFile(join(root,'inputs/LICENSE'),'fixture runtime license');
+    await writeFile(join(root,'inputs/sample.wav'),'fixture audio');
+    const {execFile}=await import('node:child_process');
+    const {promisify}=await import('node:util');
+    const run=promisify(execFile);
+    const env={PATH:process.env.PATH,PNOLA_SPEAKERS:'0',GEN2_BARK_BUNDLE:join(root,'inputs/bark'),GEN2_ORT_LIBRARY:join(root,'inputs/ort.dylib'),GEN2_ORT_LICENSE:join(root,'inputs/LICENSE'),PNOLA_SAMPLE_AUDIO:join(root,'inputs/sample.wav')};
+    await run(process.execPath,[join(root,'scripts/prepare-desktop.mjs')],{env});
+    assert.equal(await readFile(join(root,'.desktop-assets/runtime/LICENSE'),'utf8'),'fixture runtime license');
+    assert.equal(await readFile(join(root,'.desktop-assets/bark/model.onnx'),'utf8'),'fixture model');
+    assert.equal(await readFile(join(root,'.desktop-assets/sample.wav'),'utf8'),'fixture audio');
+    const prior=await readFile(join(root,'.desktop-assets/runtime/LICENSE'),'utf8');
+    await assert.rejects(run(process.execPath,[join(root,'scripts/prepare-desktop.mjs')],{env:{...env,GEN2_ORT_LICENSE:join(root,'missing')}}),/GEN2_ORT_LICENSE/);
+    assert.equal(await readFile(join(root,'.desktop-assets/runtime/LICENSE'),'utf8'),prior);
+    await assert.rejects(run(process.execPath,[join(root,'scripts/prepare-desktop.mjs')],{env:{...env,PNOLA_SAMPLE_AUDIO:''}}),/PNOLA_SAMPLE_AUDIO/);
+    assert.equal(await readFile(join(root,'.desktop-assets/runtime/LICENSE'),'utf8'),prior);
+  }finally{await rm(root,{recursive:true,force:true});}
 });

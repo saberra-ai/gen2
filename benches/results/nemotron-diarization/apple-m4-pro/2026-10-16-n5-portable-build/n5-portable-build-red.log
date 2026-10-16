@@ -1,0 +1,49 @@
+✔ speaker tooling follows the actual Cargo checkout and requires an explicit ASR-only selection (3.6065ms)
+✔ desktop staging rejects changed model bytes and missing notice files (3.168375ms)
+✔ speaker bundle declares the actual native macOS floor and preserves base resources (0.792334ms)
+✖ desktop preparation uses explicit artifacts in an isolated checkout and preserves staged assets on invalid input (64.44275ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 3
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 137.549375
+
+✖ failing tests:
+
+test at tests/desktop-assets.test.mjs:52:1
+✖ desktop preparation uses explicit artifacts in an isolated checkout and preserves staged assets on invalid input (64.44275ms)
+  Error: Command failed: /opt/homebrew/Cellar/node/25.9.0_2/bin/node /var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/pnola-portable-desktop-FdEDrL/scripts/prepare-desktop.mjs
+  node:internal/fs/promises:1671
+    const result = await PromisePrototypeThen(
+                   ^
+  
+  Error: ENOENT: no such file or directory, lstat '/private/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/gen2-bark-onnx/target/bark/reference124/lib/python3.12/site-packages/onnxruntime/LICENSE'
+      at async lstat (node:internal/fs/promises:1671:18)
+      at async Promise.all (index 0)
+      at async checkPaths (node:internal/fs/cp/cp:77:39)
+      at async cpFn (node:internal/fs/cp/cp:66:17)
+      at async file:///private/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/pnola-portable-desktop-FdEDrL/scripts/prepare-desktop.mjs:29:1 {
+    errno: -2,
+    code: 'ENOENT',
+    syscall: 'lstat',
+    path: '/private/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/gen2-bark-onnx/target/bark/reference124/lib/python3.12/site-packages/onnxruntime/LICENSE'
+  }
+  
+  Node.js v25.9.0
+  
+      at genericNodeError (node:internal/errors:998:15)
+      at wrappedFn (node:internal/errors:543:14)
+      at ChildProcess.exithandler (node:child_process:417:12)
+      at ChildProcess.emit (node:events:509:20)
+      at maybeClose (node:internal/child_process:1108:16)
+      at ChildProcess._handle.onexit (node:internal/child_process:305:5) {
+    code: 1,
+    killed: false,
+    signal: null,
+    cmd: '/opt/homebrew/Cellar/node/25.9.0_2/bin/node /var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/pnola-portable-desktop-FdEDrL/scripts/prepare-desktop.mjs',
+    stdout: '',
+    stderr: "node:internal/fs/promises:1671\n  const result = await PromisePrototypeThen(\n                 ^\n\nError: ENOENT: no such file or directory, lstat '/private/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/gen2-bark-onnx/target/bark/reference124/lib/python3.12/site-packages/onnxruntime/LICENSE'\n    at async lstat (node:internal/fs/promises:1671:18)\n    at async Promise.all (index 0)\n    at async checkPaths (node:internal/fs/cp/cp:77:39)\n    at async cpFn (node:internal/fs/cp/cp:66:17)\n    at async file:///private/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/pnola-portable-desktop-FdEDrL/scripts/prepare-desktop.mjs:29:1 {\n  errno: -2,\n  code: 'ENOENT',\n  syscall: 'lstat',\n  path: '/private/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/gen2-bark-onnx/target/bark/reference124/lib/python3.12/site-packages/onnxruntime/LICENSE'\n}\n\nNode.js v25.9.0\n"
+  }

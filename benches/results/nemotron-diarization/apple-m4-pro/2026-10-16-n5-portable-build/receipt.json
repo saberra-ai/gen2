@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "scope": "Fix explicit desktop build inputs after N5 spec review",
+  "gen2_base_commit": "f31b700",
+  "source_hashes": {
+    "integrations/pnola/overlay/scripts/prepare-desktop.mjs": "b74ad8aebd78afe184145f6f6d138c8e54bd0a00002536f75dac67f727b2cd4b",
+    "integrations/pnola/overlay/tests/desktop-assets.test.mjs": "443128818282c2a1425684b84596fc2e8bfb37eec3d23c27aaecf16fbc24404d"
+  },
+  "red_then_green": true,
+  "isolated_artifact_fixture": true,
+  "real_packaged_artifacts_source_and_network_denied": true,
+  "all_127_staged_file_contents_match": true,
+  "frontend_build_tests_passed": 32,
+  "overlay_tests_passed": 2,
+  "note": "No executable/inference change. Original app qualification remains tied to its original receipt; Metal/cross-platform/held-out quality/fresh-machine/performance gates remain open.",
+  "artifacts": {
+    "n5-portable-build-green.log": "0937d6a349b556637db4b782e369128bc05bf550318d5a15c3c87ed7183242c1",
+    "n5-portable-build-js.log": "597902112f277f68a865515dcd156e08c30f87ad1890ccc51811a286ece130a9",
+    "n5-portable-build-real.json": "53507856d925119d1c1cf57426fb6aa170fbac325c8f64855d6a1cbc312ac81f",
+    "n5-portable-build-real.log": "078dbaa516c902fdf2260fbc234eca104f997d8464c3b4a0a8282bb862a6bcf8",
+    "n5-portable-build-red.log": "ce66f8980ca9ef71b3bcf8d7719a643fd1c6811c62db7a73bb8b8744221ba449"
+  }
+}
