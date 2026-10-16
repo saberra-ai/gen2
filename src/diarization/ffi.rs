@@ -61,6 +61,23 @@ impl Api {
         // SAFETY: the host supplies the qualified C ABI. All required symbols
         // are resolved before native model creation. The library outlives calls.
         unsafe {
+            #[cfg(target_os = "windows")]
+            let library: Library = {
+                use libloading::os::windows::{
+                    LOAD_LIBRARY_SEARCH_DEFAULT_DIRS, LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR,
+                };
+                // LoadLibrary's default search does not include an absolute
+                // entry DLL's directory for its imported sibling DLLs. Scope
+                // that search to this load, without changing process PATH.
+                let absolute = std::fs::canonicalize(path).map_err(|e| bad(e.to_string()))?;
+                libloading::os::windows::Library::load_with_flags(
+                    absolute,
+                    LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_DEFAULT_DIRS,
+                )
+                .map_err(|e| bad(e.to_string()))?
+                .into()
+            };
+            #[cfg(not(target_os = "windows"))]
             let library = Library::new(path).map_err(|e| bad(e.to_string()))?;
             macro_rules! symbol {
                 ($name:literal) => {

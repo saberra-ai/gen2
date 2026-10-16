@@ -1,0 +1,9 @@
+2026-10-16T06:10:34.4615163Z ##[group]Run python tools/nemotron-diarization/platform_native.py --source native-source --prefix "D:\a\_temp/nemo-sdk" --output "D:\a\_temp/nemo-evidence" --jobs 2
+2026-10-16T06:10:34.4616073Z [36;1mpython tools/nemotron-diarization/platform_native.py --source native-source --prefix "D:\a\_temp/nemo-sdk" --output "D:\a\_temp/nemo-evidence" --jobs 2[0m
+2026-10-16T06:10:37.0414970Z Traceback (most recent call last):
+2026-10-16T06:10:37.0420392Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\platform_native.py", line 207, in <module>
+2026-10-16T06:10:37.0502383Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\platform_native.py", line 195, in main
+2026-10-16T06:10:37.0548230Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\platform_native.py", line 55, in __init__
+2026-10-16T06:10:37.0550128Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\platform_native.py", line 25, in msvc_environment
+2026-10-16T06:10:37.0550901Z     vswhere = Path(env['ProgramFiles(x86)']) / 'Microsoft Visual Studio/Installer/vswhere.exe'
+2026-10-16T06:10:37.0596418Z KeyError: 'ProgramFiles(x86)'

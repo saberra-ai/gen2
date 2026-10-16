@@ -11,6 +11,7 @@ from pathlib import Path
 import platform
 import shutil
 import subprocess
+import sys
 
 from artifacts import acquire, digest, matches
 
@@ -29,7 +30,7 @@ def msvc_environment(environment):
     vcvars = Path(install) / 'VC/Auxiliary/Build/vcvars64.bat'
     if not install or not vcvars.is_file() or '"' in str(vcvars):
         raise ValueError('MSVC x64 compiler environment unavailable')
-    result = subprocess.check_output(['cmd.exe', '/u', '/c', f'"{vcvars}" >NUL 2>&1 && set'], env=env)
+    result = subprocess.check_output(f'cmd.exe /d /u /s /c ""{vcvars}" >NUL 2>&1 && set"', env=env)
     for line in result.decode('utf-16-le').splitlines():
         name, separator, value = line.partition('=')
         if name and separator:
@@ -141,6 +142,18 @@ class Qualification:
         wav = assets / 'ami_en2002d_2132.wav'
         native = self.output / 'native-ami.json'
         self.run('native-inference', [self.probe, model, wav, '1', '-1', native])
+        if self.windows:
+            control = '''import ctypes, sys
+try:
+    ctypes.CDLL(sys.argv[1], winmode=0)
+except OSError as error:
+    if error.winerror != 126:
+        raise
+    print('Confirmed default Windows loader cannot resolve sibling SDK DLLs:', error)
+else:
+    raise RuntimeError('Default Windows loader unexpectedly resolved SDK dependencies; control invalid')
+'''
+            self.run('windows-default-loader-control', [sys.executable, '-c', control, self.library])
         target = Path(self.environment.get('CARGO_TARGET_DIR', self.repo / 'target'))
         if not target.is_absolute():
             target = self.repo / target
