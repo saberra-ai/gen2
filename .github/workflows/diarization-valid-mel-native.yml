@@ -1,0 +1,70 @@
+name: Diarization valid-Mel native CPU qualification
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/nemotron3-n0]
+    paths:
+      - .github/workflows/diarization-valid-mel-native.yml
+      - tools/nemotron-diarization/platform_valid_mel_native.py
+      - tools/nemotron-diarization/platform_valid_mel_sources.py
+      - tools/nemotron-diarization/valid-mel-platform-native.protocol.json
+permissions:
+  contents: read
+jobs:
+  native:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 120
+    steps:
+      - name: Preserve byte-pinned source line endings
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: NVIDIA/NeMo-Speech.cpp
+          ref: 083861c241061562b8ec29eb06d7f6cdc3af8775
+          path: native-source
+          persist-credentials: false
+      - name: Initialize pinned ggml source
+        run: git -C native-source submodule update --init --depth 1 llama.cpp
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Linux build dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends build-essential cmake ninja-build pkg-config libsentencepiece-dev
+      - name: Windows vcpkg binary cache
+        if: runner.os == 'Windows'
+        id: vcpkg-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ~\AppData\Local\vcpkg\archives
+          key: nemo-diar-vcpkg-9e593bb18ea69cc5095e012465dcd675a822ed0d-x64-static-md
+      - name: Build tagged CPU SDK and execute frozen native/public lifecycle gates
+        run: python tools/nemotron-diarization/platform_valid_mel_native.py --source native-source --prefix "${{ runner.temp }}/nemo-valid-mel-sdk" --output "${{ runner.temp }}/nemo-valid-mel-evidence" --jobs 2 ${{ runner.os == 'Windows' && '--windows-private-dlls' || '' }}
+      - name: Preserve Windows dependency cache after build failure
+        if: always() && runner.os == 'Windows' && steps.vcpkg-cache.outcome == 'success' && steps.vcpkg-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ~\AppData\Local\vcpkg\archives
+          key: nemo-diar-vcpkg-9e593bb18ea69cc5095e012465dcd675a822ed0d-x64-static-md
+      - name: Preserve successful or failed qualification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nemotron-valid-mel-native-${{ matrix.os }}
+          path: |
+            ${{ runner.temp }}/nemo-valid-mel-evidence/
+            !${{ runner.temp }}/nemo-valid-mel-evidence/assets/
+            ${{ runner.temp }}/nemo-valid-mel-sdk/
+          include-hidden-files: true
+          retention-days: 30

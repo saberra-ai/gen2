@@ -26,6 +26,13 @@ Both durations have exact retained-probability/turn parity after compaction,
 bounded revisions and peak process RSS below 261 MB. The reserve and storage
 checks completed normally; no passing 30-minute neural run was repeated.
 
+The [fresh Linux/Windows SDK protocol](../../tools/nemotron-diarization/valid-mel-platform-native.protocol.json)
+is now frozen for tagged CPU construction and same-host native/public lifecycle.
+Its [model-free source preflight](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-valid-mel-source-preflight/qualification.json)
+passes independent 19-patch replay, 3,425 materialized files and all 98 saved CPU
+compiler inputs. All 157 model-free tool tests pass. Actual platform construction,
+runtime, packages and coexistence still require new candidate evidence.
+
 Prepared: 2026-10-14.
 Updated: 2026-10-16.
 

@@ -1,0 +1,488 @@
+[
+  {
+    "name": "compiler-llama-archive",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/source-audit.sb",
+      "git",
+      "archive",
+      "--format=tar",
+      "-o",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/platform-pristine-llama.tar",
+      "bd4f514db14d87fded667787a7a963bfbaa98e89",
+      "--",
+      ".",
+      ":(exclude)models",
+      ":(exclude)docs",
+      ":(exclude)media"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/llama.cpp",
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "GIT_CONFIG_COUNT": "2",
+      "GIT_CONFIG_KEY_0": "core.autocrlf",
+      "GIT_CONFIG_VALUE_0": "false",
+      "GIT_CONFIG_KEY_1": "core.eol",
+      "GIT_CONFIG_VALUE_1": "lf"
+    },
+    "returncode": 0
+  },
+  {
+    "name": "compiler-llama-patch-0",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/source-audit.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/current-platform-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/platform-llama-replay-n8b6xv66",
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "GIT_CONFIG_COUNT": "2",
+      "GIT_CONFIG_KEY_0": "core.autocrlf",
+      "GIT_CONFIG_VALUE_0": "false",
+      "GIT_CONFIG_KEY_1": "core.eol",
+      "GIT_CONFIG_VALUE_1": "lf",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2"
+    },
+    "returncode": 0
+  },
+  {
+    "name": "compiler-llama-patch-1",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/source-audit.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/current-platform-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/platform-llama-replay-n8b6xv66",
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "GIT_CONFIG_COUNT": "2",
+      "GIT_CONFIG_KEY_0": "core.autocrlf",
+      "GIT_CONFIG_VALUE_0": "false",
+      "GIT_CONFIG_KEY_1": "core.eol",
+      "GIT_CONFIG_VALUE_1": "lf",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2"
+    },
+    "returncode": 0
+  },
+  {
+    "name": "compiler-llama-patch-2",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/source-audit.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/current-platform-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/platform-llama-replay-n8b6xv66",
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "GIT_CONFIG_COUNT": "2",
+      "GIT_CONFIG_KEY_0": "core.autocrlf",
+      "GIT_CONFIG_VALUE_0": "false",
+      "GIT_CONFIG_KEY_1": "core.eol",
+      "GIT_CONFIG_VALUE_1": "lf",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2"
+    },
+    "returncode": 0
+  },
+  {
+    "name": "compiler-llama-patch-3",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/source-audit.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/current-platform-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/platform-llama-replay-n8b6xv66",
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "GIT_CONFIG_COUNT": "2",
+      "GIT_CONFIG_KEY_0": "core.autocrlf",
+      "GIT_CONFIG_VALUE_0": "false",
+      "GIT_CONFIG_KEY_1": "core.eol",
+      "GIT_CONFIG_VALUE_1": "lf",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2"
+    },
+    "returncode": 0
+  },
+  {
+    "name": "compiler-llama-patch-4",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/source-audit.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/current-platform-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/platform-llama-replay-n8b6xv66",
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "GIT_CONFIG_COUNT": "2",
+      "GIT_CONFIG_KEY_0": "core.autocrlf",
+      "GIT_CONFIG_VALUE_0": "false",
+      "GIT_CONFIG_KEY_1": "core.eol",
+      "GIT_CONFIG_VALUE_1": "lf",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2"
+    },
+    "returncode": 0
+  },
+  {
+    "name": "compiler-llama-patch-5",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/source-audit.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/current-platform-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/platform-llama-replay-n8b6xv66",
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "GIT_CONFIG_COUNT": "2",
+      "GIT_CONFIG_KEY_0": "core.autocrlf",
+      "GIT_CONFIG_VALUE_0": "false",
+      "GIT_CONFIG_KEY_1": "core.eol",
+      "GIT_CONFIG_VALUE_1": "lf",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2"
+    },
+    "returncode": 0
+  },
+  {
+    "name": "compiler-llama-patch-6",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/source-audit.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/current-platform-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/platform-llama-replay-n8b6xv66",
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "GIT_CONFIG_COUNT": "2",
+      "GIT_CONFIG_KEY_0": "core.autocrlf",
+      "GIT_CONFIG_VALUE_0": "false",
+      "GIT_CONFIG_KEY_1": "core.eol",
+      "GIT_CONFIG_VALUE_1": "lf",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2"
+    },
+    "returncode": 0
+  },
+  {
+    "name": "compiler-llama-patch-7",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/source-audit.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/current-platform-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/platform-llama-replay-n8b6xv66",
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "GIT_CONFIG_COUNT": "2",
+      "GIT_CONFIG_KEY_0": "core.autocrlf",
+      "GIT_CONFIG_VALUE_0": "false",
+      "GIT_CONFIG_KEY_1": "core.eol",
+      "GIT_CONFIG_VALUE_1": "lf",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2"
+    },
+    "returncode": 0
+  },
+  {
+    "name": "compiler-llama-patch-8",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/source-audit.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/current-platform-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/platform-llama-replay-n8b6xv66",
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "GIT_CONFIG_COUNT": "2",
+      "GIT_CONFIG_KEY_0": "core.autocrlf",
+      "GIT_CONFIG_VALUE_0": "false",
+      "GIT_CONFIG_KEY_1": "core.eol",
+      "GIT_CONFIG_VALUE_1": "lf",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2"
+    },
+    "returncode": 0
+  },
+  {
+    "name": "compiler-llama-patch-9",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/source-audit.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/current-platform-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/platform-llama-replay-n8b6xv66",
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "GIT_CONFIG_COUNT": "2",
+      "GIT_CONFIG_KEY_0": "core.autocrlf",
+      "GIT_CONFIG_VALUE_0": "false",
+      "GIT_CONFIG_KEY_1": "core.eol",
+      "GIT_CONFIG_VALUE_1": "lf",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2"
+    },
+    "returncode": 0
+  },
+  {
+    "name": "compiler-llama-patch-10",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/source-audit.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/current-platform-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/platform-llama-replay-n8b6xv66",
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "GIT_CONFIG_COUNT": "2",
+      "GIT_CONFIG_KEY_0": "core.autocrlf",
+      "GIT_CONFIG_VALUE_0": "false",
+      "GIT_CONFIG_KEY_1": "core.eol",
+      "GIT_CONFIG_VALUE_1": "lf",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2"
+    },
+    "returncode": 0
+  },
+  {
+    "name": "compiler-llama-patch-11",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/source-audit.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/current-platform-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/platform-llama-replay-n8b6xv66",
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "GIT_CONFIG_COUNT": "2",
+      "GIT_CONFIG_KEY_0": "core.autocrlf",
+      "GIT_CONFIG_VALUE_0": "false",
+      "GIT_CONFIG_KEY_1": "core.eol",
+      "GIT_CONFIG_VALUE_1": "lf",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2"
+    },
+    "returncode": 0
+  },
+  {
+    "name": "compiler-llama-patch-12",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/source-audit.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/current-platform-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/platform-llama-replay-n8b6xv66",
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "GIT_CONFIG_COUNT": "2",
+      "GIT_CONFIG_KEY_0": "core.autocrlf",
+      "GIT_CONFIG_VALUE_0": "false",
+      "GIT_CONFIG_KEY_1": "core.eol",
+      "GIT_CONFIG_VALUE_1": "lf",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2"
+    },
+    "returncode": 0
+  },
+  {
+    "name": "compiler-llama-patch-13",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/source-audit.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/current-platform-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/platform-llama-replay-n8b6xv66",
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "GIT_CONFIG_COUNT": "2",
+      "GIT_CONFIG_KEY_0": "core.autocrlf",
+      "GIT_CONFIG_VALUE_0": "false",
+      "GIT_CONFIG_KEY_1": "core.eol",
+      "GIT_CONFIG_VALUE_1": "lf",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2"
+    },
+    "returncode": 0
+  },
+  {
+    "name": "compiler-llama-patch-14",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/source-audit.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/current-platform-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/platform-llama-replay-n8b6xv66",
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "GIT_CONFIG_COUNT": "2",
+      "GIT_CONFIG_KEY_0": "core.autocrlf",
+      "GIT_CONFIG_VALUE_0": "false",
+      "GIT_CONFIG_KEY_1": "core.eol",
+      "GIT_CONFIG_VALUE_1": "lf",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2"
+    },
+    "returncode": 0
+  },
+  {
+    "name": "compiler-llama-patch-15",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/source-audit.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/current-platform-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/platform-llama-replay-n8b6xv66",
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "GIT_CONFIG_COUNT": "2",
+      "GIT_CONFIG_KEY_0": "core.autocrlf",
+      "GIT_CONFIG_VALUE_0": "false",
+      "GIT_CONFIG_KEY_1": "core.eol",
+      "GIT_CONFIG_VALUE_1": "lf",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2"
+    },
+    "returncode": 0
+  },
+  {
+    "name": "compiler-llama-patch-16",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/source-audit.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/current-platform-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/platform-llama-replay-n8b6xv66",
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "GIT_CONFIG_COUNT": "2",
+      "GIT_CONFIG_KEY_0": "core.autocrlf",
+      "GIT_CONFIG_VALUE_0": "false",
+      "GIT_CONFIG_KEY_1": "core.eol",
+      "GIT_CONFIG_VALUE_1": "lf",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2"
+    },
+    "returncode": 0
+  },
+  {
+    "name": "compiler-llama-patch-17",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/source-audit.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/current-platform-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/platform-llama-replay-n8b6xv66",
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "GIT_CONFIG_COUNT": "2",
+      "GIT_CONFIG_KEY_0": "core.autocrlf",
+      "GIT_CONFIG_VALUE_0": "false",
+      "GIT_CONFIG_KEY_1": "core.eol",
+      "GIT_CONFIG_VALUE_1": "lf",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2"
+    },
+    "returncode": 0
+  },
+  {
+    "name": "compiler-llama-patch-18",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/source-audit.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/current-platform-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2/platform-llama-replay-n8b6xv66",
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "GIT_CONFIG_COUNT": "2",
+      "GIT_CONFIG_KEY_0": "core.autocrlf",
+      "GIT_CONFIG_VALUE_0": "false",
+      "GIT_CONFIG_KEY_1": "core.eol",
+      "GIT_CONFIG_VALUE_1": "lf",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2"
+    },
+    "returncode": 0
+  }
+]

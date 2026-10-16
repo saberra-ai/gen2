@@ -41,6 +41,19 @@ and atomic command records. Together with the saved 30-minute pair, both
 durations pass exact retained-tail parity, compaction, revisions and process RSS
 below 261 MB. The passing 30-minute neural work was not repeated.
 
+The [fresh Linux/Windows SDK protocol](valid-mel-platform-native.protocol.json)
+pins the tagged CPU source, sole inference patch, Windows LF/private-name
+composition, all qualification tools and local Cargo inputs. The new
+`platform_valid_mel_native.py` runner requires an independent 19-patch GGML
+replay and every actual compiler source, the model-free state test and actual
+tagged version before model admission. It then checks one native/public
+60-second pair with all 6,000 rows, a fixed PCM digest and seven exact lifecycle
+tests. The [saved-source preflight](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-valid-mel-source-preflight/qualification.json)
+passes against the saved macOS CPU build (3,425 files, 98 compiler units);
+all 157 model-free tool tests pass. Fresh Linux/Windows builds and runtime
+qualification are pending. The separate workflow preserves failed evidence;
+this stage does not establish offline packages, coexistence or release support.
+
 # Nemotron 3 — N0 qualification
 
 This directory implements the first milestone of the
