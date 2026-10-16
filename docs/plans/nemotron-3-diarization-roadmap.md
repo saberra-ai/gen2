@@ -205,6 +205,12 @@ passes all 13 jobs at `7db170d`: all 12 OS/feature combinations and the evidence
 Pnola and desktop asset checks. Linux reports 198 tools tests, 195 passing and
 three platform skips; all 198 pass locally on macOS. This does not replace the
 separate real-model or desktop release gates.
+The [complete app delivery archive](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-portable-cpu-pnola-app-archive/collection-qualification.json)
+also passes local model-free construction and independent byte verification:
+573,473,763 bytes and all 246 inventory entries match. The 13-file receipt
+retains the original protocol, explicit later transitive-source verification
+and the receiver-verifier root correction. It remains local; no app execution,
+fresh-machine delivery or release gate is claimed.
 
 Prepared: 2026-10-14.
 Updated: 2026-10-16.

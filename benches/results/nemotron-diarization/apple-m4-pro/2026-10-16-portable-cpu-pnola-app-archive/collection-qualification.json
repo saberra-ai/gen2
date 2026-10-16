@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "app_source_commit": "7db170d0c8f17b3aea670769577d2d3cd2deaf5b",
+  "local_archive_construction_and_byte_verification_passed": true,
+  "archive": {
+    "bytes": 573473763,
+    "sha256": "2b74246cb6deb65380edf23c3fbcc14134423d5a547a32f9b6e7b19f868bfe93"
+  },
+  "entries": 246,
+  "regular_files": 225,
+  "models_or_app_executed": false,
+  "delivered_to_fresh_receiver": false,
+  "release_qualified": false,
+  "storage": {
+    "start_minimum_bytes": 3221225472,
+    "running_minimum_bytes": 1073741824,
+    "reserve_requested_bytes": 268435456,
+    "checks": 20,
+    "released": true,
+    "minimum_observed_free_bytes": 2764546048,
+    "last_observed_free_bytes": 2764546048,
+    "reserve_reported_allocated_bytes": 268435456
+  },
+  "scope": "Retain local complete-app archive metadata, not opaque app/model payloads.",
+  "limits": [
+    "Archive is in owned local cache; no cloud asset, public release, fresh-machine app execution, GUI, microphone, quality, performance or signing/notarization gate is established.",
+    "Exact full app contains model bytes for later offline delivery; only metadata/hashes/scripts/logs are retained in Git.",
+    "Independent standard-library tar iteration checks all canonical sdk/ member names, uniqueness, modes, types, alias targets and regular-file lengths/digests without extraction.",
+    "Model-free archive construction uses3GiB start/1GiB running/256MiB reserve;5GiB neural admission remains unchanged."
+  ]
+}

@@ -1,0 +1,48 @@
+{
+  "archive_construction_passed": true,
+  "models_or_app_executed": false,
+  "release_qualified": false,
+  "command": {
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-cpu-pnola-app-delivery-v1/archive.sb",
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "-c",
+      "from pathlib import Path; import json,sys; from sdk_archive import write_archive; print(json.dumps(write_archive(Path(sys.argv[1]),Path(sys.argv[2]),\"portable-cpu-pnola-app\")))",
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-cpu-pnola-app-build-v1/Pnola.app",
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-cpu-pnola-app-delivery-v1"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "PYTHONPATH": "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/portable-cpu-pnola-app-delivery-v1",
+    "pid": 79626,
+    "returncode": 0
+  },
+  "archive": {
+    "schema_version": 1,
+    "release_qualified": false,
+    "scope": "Development filesystem snapshot; preserves aliases/modes, does not by itself close dependencies or establish relocation.",
+    "archive": "portable-cpu-pnola-app.tar.gz",
+    "archive_bytes": 573473763,
+    "archive_sha256": "2b74246cb6deb65380edf23c3fbcc14134423d5a547a32f9b6e7b19f868bfe93"
+  },
+  "archive_descriptor": {
+    "bytes": 573473763,
+    "sha256": "2b74246cb6deb65380edf23c3fbcc14134423d5a547a32f9b6e7b19f868bfe93"
+  },
+  "inventory_entries": 246,
+  "storage": {
+    "start_minimum_bytes": 3221225472,
+    "running_minimum_bytes": 1073741824,
+    "reserve_requested_bytes": 268435456,
+    "checks": 20,
+    "released": true,
+    "minimum_observed_free_bytes": 2764546048,
+    "last_observed_free_bytes": 2764546048,
+    "reserve_reported_allocated_bytes": 268435456
+  }
+}

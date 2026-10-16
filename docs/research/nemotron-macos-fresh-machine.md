@@ -188,3 +188,13 @@ The [receiver-source feature CI](../../benches/results/nemotron-diarization/cros
 passes all 13 jobs at `7db170d`. Its Linux tools suite reports 198 tests with
 195 passing and three platform skips; the local macOS suite passes all 198.
 These feature checks execute no diarization model or desktop application.
+
+The [local delivery archive receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-portable-cpu-pnola-app-archive/collection-qualification.json)
+now binds the complete 573,473,763-byte app snapshot. Independent tar iteration
+matches all 246 entries (225 regular files, 20 directories, one alias), including
+every payload hash and mode, without extraction or execution. The 13-file
+metadata receipt preserves the executed four-tool protocol and an explicit
+post-execution binding of all nine Python imports to the earlier constructor
+and historical Git sources. It also records the verifier's initial `sdk/` root
+correction; the archive was unchanged. No fresh-machine delivery or app runtime
+qualification has occurred.

@@ -1,0 +1,5 @@
+(version 1)
+(allow default)
+(deny network*)
+(deny file-write* (subpath "/Users/victor/.cache/gen2-nemotron3-n0/portable-cpu-pnola-app-build-v1/Pnola.app"))
+(deny process-exec (subpath "/Users/victor/.cache/gen2-nemotron3-n0/portable-cpu-pnola-app-build-v1/Pnola.app"))
