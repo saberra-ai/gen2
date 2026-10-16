@@ -1,5 +1,6 @@
 name: Diarization Windows central VC prerequisite
 on:
+  workflow_dispatch:
   push:
     branches: [codex/nemotron3-windows-central]
     paths: ['.github/workflows/diarization-windows-central.yml', 'tools/nemotron-diarization/**', 'benches/results/nemotron-diarization/windows-x86_64/2026-10-16-central-prerequisite-static/**']
