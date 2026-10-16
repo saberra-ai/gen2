@@ -659,7 +659,11 @@ with that terminal row. All14saved-array probability/embedding reports were
 independently recomputed. The prior loading-report serialization failure is
 retained separately with zero forward/native calls. This supports a separately
 qualified V3 valid-Mel implementation correction; no production patch, AMI-target
-rerun, DER or quality-gate change occurred. Local evidence-tool tests total114.
+rerun, DER or quality-gate change occurred. Local evidence-tool tests total114. A separate
+[CPU candidate construction receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-candidate-build/qualification.json)
+now records a successful isolated build of the reviewed V3 valid-Mel finish patch,
+including actual model-free state tests and independently replayed compiler inputs.
+Candidate finish/model execution and production contract migration remain pending.
 The 13-job feature matrix also passed at `4974318`. Later source `cf64214`
 passed12 jobs; its macOS mixed-feature job failed before compilation when GitHub
 submodule fetch could not connect to port443. A failed-job rerun was denied by
@@ -669,7 +673,8 @@ including the formerly blocked macOS job and102 evidence-tool tests. The origina
 fetch failure remains retained; no build gate is waived. The later
 [c729cea matrix also passes all13jobs](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-108/qualification.json),
 including108evidence-tool tests. Subsequent calibration tools and114local tests
-are outside that CI source and require their own matrix run.
+are outside that CI source. The subsequent `9e98003` matrix run38912826242
+now passes all13jobs; its saved log/receipt collection is still pending.
 
 Linux/Windows CPU development jobs now build the pinned source SDK with an
 explicit x86_64AVX2/FMA/F16C baseline, retain installed dependency discovery,

@@ -1,0 +1,19 @@
+{
+  "phase": "llama-patch-13",
+  "argv": [
+    "/usr/bin/sandbox-exec",
+    "-f",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-candidate-build-v1/offline.sb",
+    "git",
+    "apply",
+    "--whitespace=nowarn",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-candidate-build-v1/current-llama.patch"
+  ],
+  "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-candidate-build-v1/llama-replay-2qrlyq_w",
+  "environment": {
+    "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+    "LC_ALL": "C",
+    "GIT_LFS_SKIP_SMUDGE": "1",
+    "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-candidate-build-v1"
+  }
+}

@@ -72,3 +72,23 @@ The production native test expectation sites identified by the implementer (incl
 ## Isolated source candidate, before build admission
 
 The reviewed1194-byte [compatibility patch](../../tools/nemotron-diarization/patches/v3-finish-valid-mel.patch), SHA256 `8c1434c14f63ebeb2515c719a90594124fd4f75af85b80451fd145b5caef3c36`, is now applied only to `/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1`, an independent local clone at083861with pristine llama bd4f. The patched pipeline SHA256 is `fe00ae415f4741d7e07579acdc77c60f5d7327be024cf7f8aff8f52142ae9af2`; its complete root diff equals that patch, with no other tracked root-source change. The original checkout, SDK, locks and frozen evidence remain unchanged. Source preparation required no network acquisition, build or model execution. A separately frozen build-only protocol will construct a fresh CPU SDK and run the existing model-free diar_state test; it does not admit the candidate for inference or production use.
+
+
+## Candidate CPU construction receipt — 2026-10-16
+
+The [build-only receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-candidate-build/qualification.json)
+records successful configure, compile, install and one actual `diar_state` test
+(1/1 passed) at Gen2 source `1bc12ce2291743a9d5b423db5fb1e00eeb2719ce`.
+The frozen protocol SHA256 is
+`27210ba8cdd8592ffa1871f13f83197f8bc76b01a7d4c38034309cc4704ddc34`.
+Both review axes independently verified all 131 collected members, 15 installed
+SDK paths and the runtime static archive. An independent archive plus 19-patch
+replay reproduced all 3,425 materialized GGML compiler inputs. The complete
+compiler database and phase logs are retained. The large source archive and
+compiled artifacts remain local and hash-bound.
+
+This is construction evidence only: no model was instantiated, no frontend or
+patched finish ran, and neither inference nor production substitution is admitted.
+The applied C++ source passes `git diff --check`; the literal unified patch's
+last blank context row necessarily contains its single context marker space.
+Keep that frozen patch payload unchanged.

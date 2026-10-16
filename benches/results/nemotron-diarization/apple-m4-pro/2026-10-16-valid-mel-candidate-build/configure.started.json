@@ -1,0 +1,24 @@
+{
+  "phase": "configure",
+  "argv": [
+    "/usr/bin/sandbox-exec",
+    "-f",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-candidate-build-v1/offline.sb",
+    "/bin/bash",
+    "scripts/configure.sh",
+    "cpu-diar",
+    "-DNEMO_SPEECH_BUILD_EXAMPLES=ON",
+    "-DNEMO_SPEECH_BUILD_CLI=OFF",
+    "-DNEMO_SPEECH_BUILD_MIC_CAPTURE=OFF",
+    "-DGGML_OPENMP=OFF",
+    "-DNEMO_SPEECH_BUILD_TESTS=ON",
+    "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+    "-DCMAKE_INSTALL_PREFIX=/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-cpu-v1"
+  ],
+  "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1",
+  "environment": {
+    "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+    "LC_ALL": "C",
+    "GIT_LFS_SKIP_SMUDGE": "1"
+  }
+}

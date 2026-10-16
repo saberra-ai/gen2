@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "source_commit": "1bc12ce2291743a9d5b423db5fb1e00eeb2719ce",
+  "candidate_cpu_build_completed": true,
+  "model_free_diar_state_test_completed": true,
+  "materialized_ggml_input_files": 3425,
+  "independent_patch_replay_matched_before_compile_and_after_build": true,
+  "sdk_library_paths": 15,
+  "runtime_static_archive_bound": true,
+  "neural_model_instantiation_or_inference": false,
+  "candidate_finish_executed": false,
+  "artifact_admitted_for_inference": false,
+  "production_runtime_changed": false,
+  "release_qualified": false,
+  "large_archive_sdk_models_audio_not_in_git": true,
+  "limits": [
+    "One pipeline.cpp patch over the exact upstream base; all other tracked root sources are checked by exact gitdiff, and llama starts pristine atbd4. Untracked and ignored source inputs are rejected beforeconfigure. UpstreamCMake materializes a patchedexport underbuild/cpu-diar/_deps/llama.cpp while the submodule stayspristine; an independentgitarchive+gitapplyseries replay must match every actualmaterialized file beforecompilation and afterbuild. Fullfilehashmanifest is retained.",
+    "No model or audio acquisition/loading/inference. Relevant model paths and network are denied during configure/build/install/model-free test.",
+    "The model-free diar_state test must actually execute andpass; it doesnot instantiate DiarModel or exercise patchedfinish. Successful compilation is not functional qualification.",
+    "Installed candidate sourceSDK and runtime staticarchive are construction outputs only; neither is admitted for neural execution or production substitution. Candidate frame-count convention and all neural probability/lifecycle gates require separate protocol/review.",
+    "This build uses original cpu-diar defaults plus testsON and compile_commands output; all concrete CMake cache/compiler/command/library identities are retained.",
+    "No runtime lock, Rust finished-count check, original probe/qualifier, modelartifact or historical evidence is replaced. All-platform/quality/desktop/performance gates remain open."
+  ]
+}

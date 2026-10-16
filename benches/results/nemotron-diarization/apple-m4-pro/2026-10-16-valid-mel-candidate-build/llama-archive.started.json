@@ -1,0 +1,25 @@
+{
+  "phase": "llama-archive",
+  "argv": [
+    "/usr/bin/sandbox-exec",
+    "-f",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-candidate-build-v1/offline.sb",
+    "git",
+    "archive",
+    "--format=tar",
+    "-o",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-candidate-build-v1/pristine-llama.tar",
+    "bd4f514db14d87fded667787a7a963bfbaa98e89",
+    "--",
+    ".",
+    ":(exclude)models",
+    ":(exclude)docs",
+    ":(exclude)media"
+  ],
+  "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/llama.cpp",
+  "environment": {
+    "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+    "LC_ALL": "C",
+    "GIT_LFS_SKIP_SMUDGE": "1"
+  }
+}

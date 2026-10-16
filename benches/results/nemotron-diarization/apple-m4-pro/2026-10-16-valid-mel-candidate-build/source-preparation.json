@@ -1,0 +1,115 @@
+{
+  "source_base_revision": "083861c241061562b8ec29eb06d7f6cdc3af8775",
+  "llama_revision": "bd4f514db14d87fded667787a7a963bfbaa98e89",
+  "source_original": "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp",
+  "source_candidate": "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1",
+  "patched_file": "src/asr/diar/diar_pipeline.cpp",
+  "patched_file_identity": {
+    "bytes": 19539,
+    "sha256": "fe00ae415f4741d7e07579acdc77c60f5d7327be024cf7f8aff8f52142ae9af2"
+  },
+  "patch": {
+    "bytes": 1194,
+    "sha256": "8c1434c14f63ebeb2515c719a90594124fd4f75af85b80451fd145b5caef3c36"
+  },
+  "network_acquisition_performed": false,
+  "build_performed": false,
+  "neural_inference_performed": false,
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "git",
+        "rev-parse",
+        "HEAD"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/llama.cpp",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "git",
+        "clone",
+        "--no-hardlinks",
+        "--no-checkout",
+        "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp",
+        "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1"
+      ],
+      "cwd": null,
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "git",
+        "checkout",
+        "--detach",
+        "083861c241061562b8ec29eb06d7f6cdc3af8775"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "git",
+        "clone",
+        "--no-hardlinks",
+        "--no-checkout",
+        "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/llama.cpp",
+        "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/llama.cpp"
+      ],
+      "cwd": null,
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "git",
+        "checkout",
+        "--detach",
+        "bd4f514db14d87fded667787a7a963bfbaa98e89"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/llama.cpp",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "git",
+        "status",
+        "--porcelain",
+        "--ignore-submodules=all",
+        "--untracked-files=no"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "git",
+        "diff",
+        "--binary",
+        "--no-ext-diff",
+        "--ignore-submodules=all"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "git",
+        "status",
+        "--porcelain",
+        "--ignore-submodules=all",
+        "--untracked-files=no"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1",
+      "returncode": 0
+    }
+  ]
+}
