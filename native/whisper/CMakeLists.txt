@@ -24,6 +24,21 @@ set(GGML_NATIVE OFF CACHE BOOL "" FORCE)
 set(GGML_CPU_ARM_ARCH armv8-a CACHE STRING "" FORCE)
 add_subdirectory("${WHISPER_SOURCE_DIR}" whisper EXCLUDE_FROM_ALL)
 add_library(gen2_whisper SHARED shim.cpp)
+option(GEN2_WHISPER_FRAMEWORK "Package the private iOS runtime as a framework" OFF)
+if(GEN2_WHISPER_FRAMEWORK)
+ cmake_minimum_required(VERSION 3.31)
+ if(NOT CMAKE_SYSTEM_NAME STREQUAL "iOS")
+  message(FATAL_ERROR "The framework target requires an explicit iOS SDK")
+ endif()
+ set_target_properties(gen2_whisper PROPERTIES
+  FRAMEWORK TRUE
+  OUTPUT_NAME Gen2Whisper
+  MACOSX_FRAMEWORK_BUNDLE_NAME Gen2Whisper
+  MACOSX_FRAMEWORK_IDENTIFIER com.pnola.Gen2Whisper
+  MACOSX_FRAMEWORK_BUNDLE_VERSION 1
+  MACOSX_FRAMEWORK_SHORT_VERSION_STRING 1.0
+  INSTALL_NAME_DIR "@rpath")
+endif()
 target_compile_features(gen2_whisper PRIVATE cxx_std_17)
 target_link_libraries(gen2_whisper PRIVATE whisper)
 if(APPLE)
