@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "source_commit": "63aabe75e875d390450b456e5d4a5683258f8c83",
+  "ci_url": "https://github.com/saberra-ai/gen2/actions/runs/38970855035",
+  "artifact": {
+    "id": 12076527982,
+    "node_id": "MDg6QXJ0aWZhY3QxMjA3NjUyNzk4Mg==",
+    "name": "nemotron-macos-portable-runtime",
+    "size_in_bytes": 1251915,
+    "url": "https://api.github.com/repos/saberra-ai/gen2/actions/artifacts/12076527982",
+    "archive_download_url": "https://api.github.com/repos/saberra-ai/gen2/actions/artifacts/12076527982/zip",
+    "expired": false,
+    "digest": "sha256:b4e311db9997ea49dca7615b99dc7a5e9c650d9111547f0d934268c8124da075",
+    "created_at": "2026-10-16T21:45:29Z",
+    "updated_at": "2026-10-16T21:45:29Z",
+    "expires_at": "2026-11-15T21:45:28Z",
+    "workflow_run": {
+      "id": 38970855035,
+      "repository_id": 1353161693,
+      "head_repository_id": 1353161693,
+      "head_branch": "codex/nemotron3-n0",
+      "head_sha": "63aabe75e875d390450b456e5d4a5683258f8c83"
+    }
+  },
+  "opaque_download": {
+    "bytes": 1251915,
+    "sha256": "b4e311db9997ea49dca7615b99dc7a5e9c650d9111547f0d934268c8124da075"
+  },
+  "all_delivered_files_match_opaque_zip": true,
+  "fixed_receiver_runtime_passed": false,
+  "model_execution_admitted": false,
+  "inference_commands_started": [],
+  "release_qualified": false,
+  "saved_version_query_returned_expected_tag": true,
+  "all_seven_native_or_control_commands_returned_zero": true,
+  "saved_trace_expected_private_components": 92,
+  "saved_trace_has_sandbox_launcher_and_no_other_foreign_images": true,
+  "failure_is_strict_image_audit_rejection_of_launcher": true,
+  "helper_archive_restored_byte_exact_without_execution": {
+    "schema_version": 1,
+    "release_qualified": false,
+    "scope": "Development filesystem snapshot; preserves aliases/modes, does not by itself close dependencies or establish relocation.",
+    "archive": "receiver-helpers.tar.gz",
+    "archive_bytes": 1016048,
+    "archive_sha256": "b9cbce4f6a68c53125b35cd58487afa2a0646d6f16ad69111b921c33a48458c2"
+  },
+  "host": {
+    "cpu": "Apple M1 (Virtual)",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "machine": "arm64",
+    "python": "3.12.10 (v3.12.10:0cc81280367, Apr  8 2025, 08:46:59) [Clang 13.0.0 (clang-1300.0.29.30)]",
+    "os": "ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n",
+    "xcode": "Xcode 26.6\nBuild version 17F113\n"
+  },
+  "storage": {
+    "start_minimum_bytes": 5368709120,
+    "running_minimum_bytes": 1073741824,
+    "reserve_requested_bytes": 268435456,
+    "checks": 258,
+    "released": true,
+    "minimum_observed_free_bytes": 99622662144,
+    "last_observed_free_bytes": 99622662144,
+    "reserve_reported_allocated_bytes": 268435456
+  },
+  "scope": "Specific failed M1 receiver before model admission. Builds/controls/version return0; inherited DYLD tracing includes sandbox-exec, which strict audit rejects. Missing-library and all inference/lifecycle cases never started.",
+  "limits": [
+    "All previous AMI original-NeMo/HF/native quality failures and20%/2pp criteria remain unchanged.",
+    "Previously observed60s smoke fixture, not a new heldout meeting or quality evaluation.",
+    "Actual M1 virtual runtime of this exact portableCPU package only; no universal CPU/OS guarantee.",
+    "Native children cannot read source SDK/checkout/producer artifacts/build target/helper sources/Cargo/Rustup/Homebrew, and network is denied.",
+    "Preparation downloads and dependency bootstrap precede offline native admission. Compiler subprocesses deny model reads/network and writes to package/SDK/source.",
+    "Model execution admission includes the public CPU-Metal rejection command; no claim of an exact underlying neural-forward count is made.",
+    "Measured RTF/load/push metrics are descriptive shared-VM observations, not uncontended live performance qualification.",
+    "No Pnola app/GUI/physical microphone, public signing/notarization, Bark/Laya/chat coexistence or release qualification.",
+    "Byte-only collection restores compiled helpers and diagnoses the saved image history without loading/executing any helper, library, version/state function, model or app."
+  ]
+}

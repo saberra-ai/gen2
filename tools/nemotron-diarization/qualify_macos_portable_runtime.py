@@ -18,6 +18,7 @@ import wave
 from artifacts import acquire, matches
 from build_valid_mel_candidate import descriptor
 from compare_stream_valid_mel import compare
+from macos_child_environment import sandboxed_command
 from macos_loaded_libraries import audit_loaded_libraries
 from macos_portable_delivery import admit_delivery
 from package_macos import verify
@@ -62,6 +63,8 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ['producer-zip', 'producer-metadata', 'output']:
         parser.add_argument('--' + name, type=Path, required=True)
+    parser.add_argument('--protocol', type=Path,
+                        default=Path(__file__).with_name('macos-portable-runtime-v2.protocol.json'))
     args = parser.parse_args()
     if platform.system() != 'Darwin' or platform.machine() != 'arm64':
         parser.error('actual arm64 Mac receiver required')
@@ -73,7 +76,7 @@ def main():
     inputs = [args.producer_zip.resolve(), args.producer_metadata.resolve()]
     if output.is_relative_to(repo) or any(p.is_relative_to(output) for p in inputs):
         parser.error('receiver output must be separate from checkout and delivery inputs')
-    protocol_path = tools / 'macos-portable-runtime.protocol.json'
+    protocol_path = args.protocol.resolve(strict=True)
     protocol_bytes = protocol_path.read_bytes()
     p = json.loads(protocol_bytes)
     lock_path, lock = load_profile()
@@ -105,13 +108,13 @@ def main():
         guard.before_model()
         if inference:
             r['inference_commands_started'].append(name)
-        actual = ['/usr/bin/sandbox-exec', '-f', str(profile), *map(str, argv)]
-        command = {'name': name, 'argv': actual, 'cwd': str(output), 'environment': environment,
+        actual, parent_environment = sandboxed_command(argv, profile, environment)
+        command = {'name': name, 'argv': actual, 'cwd': str(output), 'environment': parent_environment,
                    'expected_returncode': expected, 'inference_admitted': inference}
         r['commands'].append(command)
         persist()
         with (output / (name + '.stdout.log')).open('xb') as stdout, (output / (name + '.stderr.log')).open('xb') as stderr:
-            execute_guarded(actual, cwd=output, environment=environment, stdout=stdout, stderr=stderr,
+            execute_guarded(actual, cwd=output, environment=parent_environment, stdout=stdout, stderr=stderr,
                             guard=guard, record=command, persist=persist, timeout=p['command_timeout_seconds'])
         persist()
         if command['returncode'] != expected:

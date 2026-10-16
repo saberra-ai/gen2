@@ -123,7 +123,12 @@ The separate [receiver protocol](../../tools/nemotron-diarization/macos-portable
 now binds artifact 12074849757 from run 38967939615 and all 186 delivered files,
 17 tools and 265 repository files. The [receiver workflow](../../.github/workflows/diarization-macos-portable-runtime.yml)
 uses a fresh `macos-26` job and requires the observed `Apple M1 (Virtual)` CPU.
-It has not yet run.
+The [actual first receiver attempt](../../benches/results/nemotron-diarization/macos-arm64/2026-10-16-portable-cpu-offline-runtime-failure/qualification.json)
+failed before model admission. All four helper builds, the compile/runtime
+sandbox controls and the version-only command returned zero, but the strict
+image auditor rejected `/usr/bin/sandbox-exec` in the trace. The harness had
+enabled tracing in the launcher's environment. All 26 delivered files and the
+compiled helper archive were verified; no inference or lifecycle case ran.
 
 Preparation verifies the opaque ZIP against the frozen/API digests and every
 member before atomic publication, then restores the exact SDK and private
@@ -145,7 +150,17 @@ staged. Each lifecycle test must actually execute and pass. Actual dyld traces
 must contain exactly the private dependency closure, or no native runtime for
 the offline cache-only case.
 
-This remains an unexecuted runtime protocol. It preserves the 5 GiB neural
+The separate [v2 receiver protocol](../../tools/nemotron-diarization/macos-portable-runtime-v2.protocol.json)
+binds the unchanged construction artifact, 18 tools and 269 repository files,
+including the failed attempt and the [actual model-free loader regression](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-child-loader-environment/qualification.json).
+It places `DYLD_PRINT_LIBRARIES=1` inside the sandbox using `/usr/bin/env`,
+removes it from the launcher's environment, and records both the exact argv
+and parent environment. The strict auditor still permits only the target,
+system images and the exact private closure. The standalone C regression
+fails with the old placement and passes with the correction; all 198 local
+model-free tools tests pass. No SDK or pretrained model runs in that regression.
+
+The v2 receiver has not run yet. It preserves the 5 GiB neural
 admission floor, 1 GiB running floor and 256 MiB reserve. It changes no reference
 policy, quality criterion or held-out claim. GUI/microphone, app distribution,
 mixed-model coexistence, uncontended performance, signing/notarization and

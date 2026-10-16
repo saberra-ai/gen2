@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "scope": "Model-free actual macOS standalone C loader-boundary regression; no SDK or pretrained model loaded.",
+  "old_parent_environment_behavior": "FAIL: target DYLD_PRINT_LIBRARIES missing on local macOS26.3.",
+  "child_environment_behavior": "PASS: target sees1, target image present and sandbox-exec/env images absent; caller environment preserved.",
+  "suite": "198 model-free tools tests passed",
+  "source_files": {
+    "macos_child_environment.py": {
+      "bytes": 422,
+      "sha256": "7446965f6c63a5e78f0e22720f90c11ada0e08f2543b597d43bc29b8a676590d"
+    },
+    "test_macos_child_environment.py": {
+      "bytes": 1882,
+      "sha256": "8bd9a5259ca7914b3e9d3a6fc87e383da94c3644120b3f056ba32da84582aff9"
+    }
+  },
+  "files": {
+    "child-environment-green.stderr.log": {
+      "bytes": 268,
+      "sha256": "ee65aed32c3dc6b5d5108011fbd55717307a7c02bf0fd63419c65bb206d36636"
+    },
+    "child-environment-green.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "child-environment-red.stderr.log": {
+      "bytes": 962,
+      "sha256": "73a07267c0bcecb5304862025163022794b31fd52074fd1076db7f98d5a7bbd4"
+    },
+    "child-environment-red.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "tools-198.stderr.log": {
+      "bytes": 298,
+      "sha256": "2c799073527de3591dc6232f1016a8051bc78cda2df24512d12b0e96e65af186"
+    },
+    "tools-198.stdout.log": {
+      "bytes": 35,
+      "sha256": "dda7eb1fbac71db9c20324e9d05327da68a9d37e115f79dfd02c6456f061be2d"
+    }
+  },
+  "runtime_receiver_qualified": false,
+  "release_qualified": false
+}

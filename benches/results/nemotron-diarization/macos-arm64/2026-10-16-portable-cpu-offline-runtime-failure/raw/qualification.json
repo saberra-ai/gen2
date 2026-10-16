@@ -1,0 +1,407 @@
+{
+  "schema_version": 1,
+  "source_commit": "63aabe75e875d390450b456e5d4a5683258f8c83",
+  "protocol": {
+    "bytes": 79601,
+    "sha256": "a919619b893cc28a8d89605ef510a726b3108da511c531c67c5be5d4ddbe5189"
+  },
+  "fixed_receiver_runtime_passed": false,
+  "model_execution_admitted": false,
+  "inference_commands_started": [],
+  "release_qualified": false,
+  "commands": [
+    {
+      "name": "compile-controls",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-receiver/compile.sb",
+        "/Library/Frameworks/Python.framework/Versions/3.12/bin/python",
+        "-c",
+        "import json, pathlib, socket, sys\ndef denied(operation):\n    try:\n        operation()\n    except PermissionError:\n        return\n    raise RuntimeError(\"sandbox operation unexpectedly permitted\")\ncases = json.loads(sys.argv[1])\nfor name in cases[\"reads\"]:\n    denied(lambda name=name: pathlib.Path(name).read_bytes())\nfor name in cases[\"writes\"]:\n    denied(lambda name=name: pathlib.Path(name).write_bytes(b\"changed\"))\ndenied(lambda: socket.create_connection((\"127.0.0.1\", 9), timeout=1))\n",
+        "{\"reads\": [\"/Users/runner/work/_temp/portable-receiver/work/assets/Nemotron-3-Diarization.q8_0.gguf\", \"/Users/runner/work/_temp/portable-receiver/work/assets/README.md\", \"/Users/runner/work/_temp/portable-receiver/work/assets/ami_en2002d_2132.wav\"], \"writes\": []}"
+      ],
+      "cwd": "/Users/runner/work/_temp/portable-receiver",
+      "environment": {
+        "PATH": "/Users/runner/.cargo/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/runner",
+        "CARGO_HOME": "/Users/runner/.cargo",
+        "RUSTUP_HOME": "/Users/runner/.rustup",
+        "CARGO_TARGET_DIR": "/Users/runner/work/_temp/portable-receiver/cargo-target",
+        "LC_ALL": "C",
+        "RUSTFLAGS": "-C target-cpu=generic -C link-arg=-mmacosx-version-min=26.0",
+        "MACOSX_DEPLOYMENT_TARGET": "26.0",
+        "CC": "/usr/bin/clang",
+        "CXX": "/usr/bin/clang++",
+        "CFLAGS": "-march=armv8.2-a+dotprod+fp16",
+        "CXXFLAGS": "-march=armv8.2-a+dotprod+fp16"
+      },
+      "expected_returncode": 0,
+      "inference_admitted": false,
+      "pid": 13867,
+      "returncode": 0
+    },
+    {
+      "name": "native-helper-build",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-receiver/compile.sb",
+        "/usr/bin/c++",
+        "-std=c++17",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-arch",
+        "arm64",
+        "-march=armv8.2-a+dotprod+fp16",
+        "-mmacosx-version-min=26.0",
+        "-x",
+        "c++",
+        "/Users/runner/work/gen2/gen2/tools/nemotron-diarization/native_stream_probe_valid_mel.cpp",
+        "/Users/runner/work/_temp/portable-receiver/helper-source/sha256/sha256.c",
+        "-I/Users/runner/work/_temp/portable-receiver/sdk/include",
+        "-I/Users/runner/work/_temp/portable-receiver/helper-source",
+        "-L/Users/runner/work/_temp/portable-receiver/work/nemo/lib",
+        "-lnemo_speech_asr_c",
+        "-Wl,-rpath,@loader_path/../nemo/lib",
+        "-o",
+        "/Users/runner/work/_temp/portable-receiver/work/bin/native-stream"
+      ],
+      "cwd": "/Users/runner/work/_temp/portable-receiver",
+      "environment": {
+        "PATH": "/Users/runner/.cargo/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/runner",
+        "CARGO_HOME": "/Users/runner/.cargo",
+        "RUSTUP_HOME": "/Users/runner/.rustup",
+        "CARGO_TARGET_DIR": "/Users/runner/work/_temp/portable-receiver/cargo-target",
+        "LC_ALL": "C",
+        "RUSTFLAGS": "-C target-cpu=generic -C link-arg=-mmacosx-version-min=26.0",
+        "MACOSX_DEPLOYMENT_TARGET": "26.0",
+        "CC": "/usr/bin/clang",
+        "CXX": "/usr/bin/clang++",
+        "CFLAGS": "-march=armv8.2-a+dotprod+fp16",
+        "CXXFLAGS": "-march=armv8.2-a+dotprod+fp16"
+      },
+      "expected_returncode": 0,
+      "inference_admitted": false,
+      "pid": 13869,
+      "returncode": 0
+    },
+    {
+      "name": "load-helper-build",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-receiver/compile.sb",
+        "/usr/bin/c++",
+        "-std=c++17",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-arch",
+        "arm64",
+        "-march=armv8.2-a+dotprod+fp16",
+        "-mmacosx-version-min=26.0",
+        "/Users/runner/work/gen2/gen2/tools/nemotron-diarization/macos_runtime_load_probe.cpp",
+        "-o",
+        "/Users/runner/work/_temp/portable-receiver/work/bin/load-probe"
+      ],
+      "cwd": "/Users/runner/work/_temp/portable-receiver",
+      "environment": {
+        "PATH": "/Users/runner/.cargo/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/runner",
+        "CARGO_HOME": "/Users/runner/.cargo",
+        "RUSTUP_HOME": "/Users/runner/.rustup",
+        "CARGO_TARGET_DIR": "/Users/runner/work/_temp/portable-receiver/cargo-target",
+        "LC_ALL": "C",
+        "RUSTFLAGS": "-C target-cpu=generic -C link-arg=-mmacosx-version-min=26.0",
+        "MACOSX_DEPLOYMENT_TARGET": "26.0",
+        "CC": "/usr/bin/clang",
+        "CXX": "/usr/bin/clang++",
+        "CFLAGS": "-march=armv8.2-a+dotprod+fp16",
+        "CXXFLAGS": "-march=armv8.2-a+dotprod+fp16"
+      },
+      "expected_returncode": 0,
+      "inference_admitted": false,
+      "pid": 14130,
+      "returncode": 0
+    },
+    {
+      "name": "lifecycle-build",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-receiver/compile.sb",
+        "/Users/runner/.cargo/bin/cargo",
+        "test",
+        "--offline",
+        "--locked",
+        "--release",
+        "--no-default-features",
+        "--features",
+        "backend-diar-nemo",
+        "--jobs",
+        "2",
+        "--message-format=json",
+        "--manifest-path",
+        "/Users/runner/work/gen2/gen2/Cargo.toml",
+        "--test",
+        "diarization_native",
+        "--no-run"
+      ],
+      "cwd": "/Users/runner/work/_temp/portable-receiver",
+      "environment": {
+        "PATH": "/Users/runner/.cargo/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/runner",
+        "CARGO_HOME": "/Users/runner/.cargo",
+        "RUSTUP_HOME": "/Users/runner/.rustup",
+        "CARGO_TARGET_DIR": "/Users/runner/work/_temp/portable-receiver/cargo-target",
+        "LC_ALL": "C",
+        "RUSTFLAGS": "-C target-cpu=generic -C link-arg=-mmacosx-version-min=26.0",
+        "MACOSX_DEPLOYMENT_TARGET": "26.0",
+        "CC": "/usr/bin/clang",
+        "CXX": "/usr/bin/clang++",
+        "CFLAGS": "-march=armv8.2-a+dotprod+fp16",
+        "CXXFLAGS": "-march=armv8.2-a+dotprod+fp16"
+      },
+      "expected_returncode": 0,
+      "inference_admitted": false,
+      "pid": 14144,
+      "returncode": 0
+    },
+    {
+      "name": "public-helper-build",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-receiver/compile.sb",
+        "/Users/runner/.cargo/bin/cargo",
+        "build",
+        "--offline",
+        "--locked",
+        "--release",
+        "--no-default-features",
+        "--features",
+        "backend-diar-nemo",
+        "--jobs",
+        "2",
+        "--message-format=json",
+        "--manifest-path",
+        "/Users/runner/work/gen2/gen2/Cargo.toml",
+        "--example",
+        "nemotron_valid_mel_stream"
+      ],
+      "cwd": "/Users/runner/work/_temp/portable-receiver",
+      "environment": {
+        "PATH": "/Users/runner/.cargo/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/runner",
+        "CARGO_HOME": "/Users/runner/.cargo",
+        "RUSTUP_HOME": "/Users/runner/.rustup",
+        "CARGO_TARGET_DIR": "/Users/runner/work/_temp/portable-receiver/cargo-target",
+        "LC_ALL": "C",
+        "RUSTFLAGS": "-C target-cpu=generic -C link-arg=-mmacosx-version-min=26.0",
+        "MACOSX_DEPLOYMENT_TARGET": "26.0",
+        "CC": "/usr/bin/clang",
+        "CXX": "/usr/bin/clang++",
+        "CFLAGS": "-march=armv8.2-a+dotprod+fp16",
+        "CXXFLAGS": "-march=armv8.2-a+dotprod+fp16"
+      },
+      "expected_returncode": 0,
+      "inference_admitted": false,
+      "pid": 21639,
+      "returncode": 0
+    },
+    {
+      "name": "runtime-controls",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-receiver/runtime.sb",
+        "/Library/Frameworks/Python.framework/Versions/3.12/bin/python",
+        "-c",
+        "import json, pathlib, socket, sys\ndef denied(operation):\n    try:\n        operation()\n    except PermissionError:\n        return\n    raise RuntimeError(\"sandbox operation unexpectedly permitted\")\ncases = json.loads(sys.argv[1])\nfor name in cases[\"reads\"]:\n    denied(lambda name=name: pathlib.Path(name).read_bytes())\nfor name in cases[\"writes\"]:\n    denied(lambda name=name: pathlib.Path(name).write_bytes(b\"changed\"))\ndenied(lambda: socket.create_connection((\"127.0.0.1\", 9), timeout=1))\n",
+        "{\"reads\": [\"/Users/runner/work/_temp/portable-receiver/sdk/include/nemo_speech/diar.h\", \"/Users/runner/work/_temp/portable-receiver/producer/protocol.json\", \"/Users/runner/work/gen2/gen2/Cargo.toml\", \"/Users/runner/work/_temp/portable-receiver/cargo-target/runtime-denial-control.txt\", \"/Users/runner/work/_temp/portable-receiver/helper-source/wav_reader.h\", \"/opt/homebrew/bin/brew\"], \"writes\": [\"/Users/runner/work/_temp/portable-receiver/work/read-only-control.txt\"]}"
+      ],
+      "cwd": "/Users/runner/work/_temp/portable-receiver",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "HOME": "/Users/runner/work/_temp/portable-receiver/home",
+        "TMPDIR": "/Users/runner/work/_temp/portable-receiver/tmp/",
+        "LC_ALL": "C",
+        "DYLD_PRINT_LIBRARIES": "1"
+      },
+      "expected_returncode": 0,
+      "inference_admitted": false,
+      "pid": 21742,
+      "returncode": 0
+    },
+    {
+      "name": "version-only",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/runner/work/_temp/portable-receiver/runtime.sb",
+        "/Users/runner/work/_temp/portable-receiver/work/bin/load-probe",
+        "/Users/runner/work/_temp/portable-receiver/work/nemo/lib/libnemo_speech_asr_c.dylib",
+        "nemo-speech-asr 0.2.0+gen2-valid-mel-v1"
+      ],
+      "cwd": "/Users/runner/work/_temp/portable-receiver",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "HOME": "/Users/runner/work/_temp/portable-receiver/home",
+        "TMPDIR": "/Users/runner/work/_temp/portable-receiver/tmp/",
+        "LC_ALL": "C",
+        "DYLD_PRINT_LIBRARIES": "1"
+      },
+      "expected_returncode": 0,
+      "inference_admitted": false,
+      "pid": 21744,
+      "returncode": 0
+    }
+  ],
+  "loaded_images": {},
+  "limits": [
+    "All previous AMI original-NeMo/HF/native quality failures and20%/2pp criteria remain unchanged.",
+    "Previously observed60s smoke fixture, not a new heldout meeting or quality evaluation.",
+    "Actual M1 virtual runtime of this exact portableCPU package only; no universal CPU/OS guarantee.",
+    "Native children cannot read source SDK/checkout/producer artifacts/build target/helper sources/Cargo/Rustup/Homebrew, and network is denied.",
+    "Preparation downloads and dependency bootstrap precede offline native admission. Compiler subprocesses deny model reads/network and writes to package/SDK/source.",
+    "Model execution admission includes the public CPU-Metal rejection command; no claim of an exact underlying neural-forward count is made.",
+    "Measured RTF/load/push metrics are descriptive shared-VM observations, not uncontended live performance qualification.",
+    "No Pnola app/GUI/physical microphone, public signing/notarization, Bark/Laya/chat coexistence or release qualification."
+  ],
+  "producer_artifact": {
+    "id": 12074849757,
+    "node_id": "MDg6QXJ0aWZhY3QxMjA3NDg0OTc1Nw==",
+    "name": "nemotron-macos-portable-construction",
+    "size_in_bytes": 17579487,
+    "url": "https://api.github.com/repos/saberra-ai/gen2/actions/artifacts/12074849757",
+    "archive_download_url": "https://api.github.com/repos/saberra-ai/gen2/actions/artifacts/12074849757/zip",
+    "expired": false,
+    "digest": "sha256:9cff013c88d3614289191544c35221f72756bcfdceca853a36737f1cd5bcc82b",
+    "created_at": "2026-10-16T21:17:27Z",
+    "updated_at": "2026-10-16T21:17:27Z",
+    "expires_at": "2026-11-15T21:17:23Z",
+    "workflow_run": {
+      "id": 38967939615,
+      "repository_id": 1353161693,
+      "head_repository_id": 1353161693,
+      "head_branch": "codex/nemotron3-n0",
+      "head_sha": "e1c219a56782eabf7cf612935550871c62561c5d"
+    }
+  },
+  "acquisition_attempts": [
+    {
+      "name": "Nemotron-3-Diarization.q8_0.gguf",
+      "expected": {
+        "name": "Nemotron-3-Diarization.q8_0.gguf",
+        "size": 107012128,
+        "sha256": "08456d9e22cd9a323c0364d98375f3746d6e68507ebb705cd46438c534c7a3a1",
+        "role": "model",
+        "url": "https://huggingface.co/nvidia/Nemotron-3-Diarization/resolve/f667ed73aee57d40cc39428eb768b4fd87a0a29e/Nemotron-3-Diarization.q8_0.gguf"
+      },
+      "verified": {
+        "bytes": 107012128,
+        "sha256": "08456d9e22cd9a323c0364d98375f3746d6e68507ebb705cd46438c534c7a3a1"
+      }
+    },
+    {
+      "name": "README.md",
+      "expected": {
+        "name": "README.md",
+        "size": 43239,
+        "sha256": "5fe88ca4020d2ee134f806a0a02c52c19855b73047bc2e6f25b9171e1abeebfd",
+        "role": "notice",
+        "url": "https://huggingface.co/nvidia/Nemotron-3-Diarization/resolve/f667ed73aee57d40cc39428eb768b4fd87a0a29e/README.md"
+      },
+      "verified": {
+        "bytes": 43239,
+        "sha256": "5fe88ca4020d2ee134f806a0a02c52c19855b73047bc2e6f25b9171e1abeebfd"
+      }
+    },
+    {
+      "name": "ami_en2002d_2132.wav",
+      "expected": {
+        "name": "ami_en2002d_2132.wav",
+        "size": 1920044,
+        "sha256": "f00f92e53115a4a6724aec0ddaf9c675df6d5fabd3a489b43fffe56ba52a3ae9",
+        "role": "fixture",
+        "url": "https://raw.githubusercontent.com/NVIDIA/NeMo-Speech.cpp/083861c241061562b8ec29eb06d7f6cdc3af8775/test_files/diar/ami_en2002d_2132.wav"
+      },
+      "verified": {
+        "bytes": 1920044,
+        "sha256": "f00f92e53115a4a6724aec0ddaf9c675df6d5fabd3a489b43fffe56ba52a3ae9"
+      }
+    },
+    {
+      "name": "helper/sha256/sha256.c",
+      "expected": {
+        "url": "https://raw.githubusercontent.com/ggml-org/llama.cpp/bd4f514db14d87fded667787a7a963bfbaa98e89/vendor/hash/sha256/sha256.c",
+        "size": 5282,
+        "sha256": "ba7a8ea69ad125385db28ef17e77be4a09dfdc30bb9532c30b259baaf670129c"
+      },
+      "verified": {
+        "bytes": 5282,
+        "sha256": "ba7a8ea69ad125385db28ef17e77be4a09dfdc30bb9532c30b259baaf670129c"
+      }
+    },
+    {
+      "name": "helper/sha256/sha256.h",
+      "expected": {
+        "url": "https://raw.githubusercontent.com/ggml-org/llama.cpp/bd4f514db14d87fded667787a7a963bfbaa98e89/vendor/hash/sha256/sha256.h",
+        "size": 549,
+        "sha256": "6086b0330eafe9ddef74072738290bc268b2dcccae16bc6d6cde84dc7585ca07"
+      },
+      "verified": {
+        "bytes": 549,
+        "sha256": "6086b0330eafe9ddef74072738290bc268b2dcccae16bc6d6cde84dc7585ca07"
+      }
+    },
+    {
+      "name": "helper/rotate-bits/rotate-bits.h",
+      "expected": {
+        "url": "https://raw.githubusercontent.com/ggml-org/llama.cpp/bd4f514db14d87fded667787a7a963bfbaa98e89/vendor/hash/rotate-bits/rotate-bits.h",
+        "size": 1017,
+        "sha256": "4a100f5e9b6bdc3e780bec38caeaec7f0edc87cf06b69b5bc1f87c2c867bdf23"
+      },
+      "verified": {
+        "bytes": 1017,
+        "sha256": "4a100f5e9b6bdc3e780bec38caeaec7f0edc87cf06b69b5bc1f87c2c867bdf23"
+      }
+    },
+    {
+      "name": "helper/wav_reader.h",
+      "expected": {
+        "url": "https://raw.githubusercontent.com/NVIDIA/NeMo-Speech.cpp/083861c241061562b8ec29eb06d7f6cdc3af8775/examples/wav_reader.h",
+        "size": 3522,
+        "sha256": "0af593f097a1ce49078ef363feb244690598f5a53dc6a34cf208d441a52fe726"
+      },
+      "verified": {
+        "bytes": 3522,
+        "sha256": "0af593f097a1ce49078ef363feb244690598f5a53dc6a34cf208d441a52fe726"
+      }
+    }
+  ],
+  "helper_archive": {
+    "schema_version": 1,
+    "release_qualified": false,
+    "scope": "Development filesystem snapshot; preserves aliases/modes, does not by itself close dependencies or establish relocation.",
+    "archive": "receiver-helpers.tar.gz",
+    "archive_bytes": 1016048,
+    "archive_sha256": "b9cbce4f6a68c53125b35cd58487afa2a0646d6f16ad69111b921c33a48458c2"
+  },
+  "error": "ValueError('unexpected non-system dyld image: /usr/bin/sandbox-exec')",
+  "storage": {
+    "start_minimum_bytes": 5368709120,
+    "running_minimum_bytes": 1073741824,
+    "reserve_requested_bytes": 268435456,
+    "checks": 258,
+    "released": true,
+    "minimum_observed_free_bytes": 99622662144,
+    "last_observed_free_bytes": 99622662144,
+    "reserve_reported_allocated_bytes": 268435456
+  }
+}

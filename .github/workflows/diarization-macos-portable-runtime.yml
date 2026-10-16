@@ -7,7 +7,8 @@ on:
       - .github/workflows/diarization-macos-portable-runtime.yml
       - tools/nemotron-diarization/qualify_macos_portable_runtime.py
       - tools/nemotron-diarization/macos_portable_delivery.py
-      - tools/nemotron-diarization/macos-portable-runtime.protocol.json
+      - tools/nemotron-diarization/macos_child_environment.py
+      - tools/nemotron-diarization/macos-portable-runtime-v2.protocol.json
 permissions:
   contents: read
   actions: read
@@ -37,7 +38,7 @@ jobs:
           gh api repos/saberra-ai/gen2/actions/artifacts/12074849757 > "${{ runner.temp }}/portable-delivery/artifact.json"
           gh api repos/saberra-ai/gen2/actions/artifacts/12074849757/zip > "${{ runner.temp }}/portable-delivery/artifact.zip"
       - name: Execute frozen receiver with offline source-hidden native children
-        run: python tools/nemotron-diarization/qualify_macos_portable_runtime.py --producer-zip "${{ runner.temp }}/portable-delivery/artifact.zip" --producer-metadata "${{ runner.temp }}/portable-delivery/artifact.json" --output "${{ runner.temp }}/portable-receiver"
+        run: python tools/nemotron-diarization/qualify_macos_portable_runtime.py --protocol tools/nemotron-diarization/macos-portable-runtime-v2.protocol.json --producer-zip "${{ runner.temp }}/portable-delivery/artifact.zip" --producer-metadata "${{ runner.temp }}/portable-delivery/artifact.json" --output "${{ runner.temp }}/portable-receiver"
       - name: Preserve passing or failed receiver evidence and compiled helpers
         if: always()
         uses: actions/upload-artifact@v4

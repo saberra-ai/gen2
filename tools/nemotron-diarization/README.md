@@ -714,11 +714,18 @@ construction artifacts for a separately frozen receiver evaluation, with no
 real-model execution or runtime qualification yet.
 Existing M4 packages, model outputs and quality failures remain unchanged.
 
-`qualify_macos_portable_runtime.py` and `macos-portable-runtime.protocol.json`
+`qualify_macos_portable_runtime.py` and `macos-portable-runtime-v2.protocol.json`
 freeze a separate fresh M1 receiver for the exact constructed artifacts. The
 controller verifies the API/opaque ZIP and complete member set before restoring
 the SDK/runtime, compiles the pinned native and public helpers without model
 access, then hides source/build/SDK/Homebrew paths from offline native children.
 Version/missing-library controls, explicit CPU Metal rejection, complete 6000-row
 native/public parity and the seven unchanged lifecycle tests are required.
-No real-model receiver result is claimed until that separate workflow runs.
+The first receiver run is preserved as a pre-model failure: all helper builds
+and sandbox controls passed, but misplaced loader tracing included
+`/usr/bin/sandbox-exec` and the strict image auditor rejected it. No inference
+or lifecycle case ran. The separate v2 protocol sets tracing inside the sandbox
+for the target only, retaining the exact package, cases and strict image audit.
+The actual model-free standalone C regression fails with the old placement and
+passes with this correction; all 198 local tools tests pass. The fresh v2
+receiver remains unrun; quality and release criteria are unchanged.

@@ -176,17 +176,23 @@ The [actual portable v2 construction](../../benches/results/nemotron-diarization
 now passes on an M1 virtual machine: 98 explicit-target compiler units, exact
 source checks, state/version and 92-library private packaging. Byte-only
 collection checks the opaque GitHub artifact, exact restored inventories and
-all original/private library sections. No model ran. A separate exact-artifact
-receiver protocol is still required; no accuracy or release gate changes.
+all original/private library sections. No model ran. A passing exact-artifact
+receiver qualification is still required; no accuracy or release gate changes.
 The [191-test source CI](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-191/qualification.json)
 also passes all 13 jobs. The later [193-test parser source CI](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-193/qualification.json)
-now also passes all 13 jobs. Local tests total197 with the receiver artifact
-admission controls; this newer receiver source has not yet run CI or inference.
+now also passes all 13 jobs. Local tests total198 with the receiver artifact
+admission controls and the actual macOS child-loader regression.
 The separate [M1 receiver protocol](../research/nemotron-macos-fresh-machine.md)
 now freezes the exact construction artifact for offline native/public parity
 and all seven lifecycle gates on a fresh VM. Its admission tests reject changed
-artifact identity/bytes/members and unsafe destinations. No receiver inference
-has run yet; all quality and release criteria remain unchanged.
+artifact identity/bytes/members and unsafe destinations. The [first actual receiver attempt](../../benches/results/nemotron-diarization/macos-arm64/2026-10-16-portable-cpu-offline-runtime-failure/qualification.json)
+failed before model admission: all helper builds and controls passed, then the
+strict image auditor rejected the sandbox launcher included by misplaced
+tracing. No inference or lifecycle case ran. A separate v2 protocol fixes
+child-only tracing, retaining the unchanged package, cases and strict image
+closure. Its model-free C regression fails before and passes after the fix;
+the fresh v2 receiver is still unrun. All quality and release criteria remain
+unchanged.
 
 Prepared: 2026-10-14.
 Updated: 2026-10-16.

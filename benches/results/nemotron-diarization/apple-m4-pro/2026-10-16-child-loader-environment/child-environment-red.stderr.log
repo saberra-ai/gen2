@@ -1,0 +1,18 @@
+test_loader_trace_contains_target_without_launcher_images (test_macos_child_environment.ChildEnvironment.test_loader_trace_contains_target_without_launcher_images) ... FAIL
+
+======================================================================
+FAIL: test_loader_trace_contains_target_without_launcher_images (test_macos_child_environment.ChildEnvironment.test_loader_trace_contains_target_without_launcher_images)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/test_macos_child_environment.py", line 28, in test_loader_trace_contains_target_without_launcher_images
+    self.assertEqual(result.stdout.strip(), '1')
+    ~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'missing' != '1'
+- missing
++ 1
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.303s
+
+FAILED (failures=1)
