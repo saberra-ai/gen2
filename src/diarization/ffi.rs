@@ -74,16 +74,20 @@ impl Api {
                     absolute,
                     LOAD_LIBRARY_SEARCH_DLL_LOAD_DIR | LOAD_LIBRARY_SEARCH_DEFAULT_DIRS,
                 )
-                .map_err(|e| bad(e.to_string()))?
+                .map_err(|e| bad(loader_message(e)))?
                 .into()
             };
             #[cfg(not(target_os = "windows"))]
-            let library = Library::new(path).map_err(|e| bad(e.to_string()))?;
+            let library = Library::new(path).map_err(|e| bad(loader_message(e)))?;
             macro_rules! symbol {
                 ($name:literal) => {
-                    *library
-                        .get(concat!($name, "\0").as_bytes())
-                        .map_err(|e| bad(format!("missing native symbol {}: {e}", $name)))?
+                    *library.get(concat!($name, "\0").as_bytes()).map_err(|e| {
+                        bad(format!(
+                            "missing native symbol {}: {}",
+                            $name,
+                            loader_message(e)
+                        ))
+                    })?
                 };
             }
             let version_fn: unsafe extern "C" fn() -> *const c_char =
@@ -133,7 +137,13 @@ impl Api {
                     *self
                         ._library
                         .get::<$type>(concat!($name, "\0").as_bytes())
-                        .map_err(|e| bad(format!("Metal placement requires {}: {e}", $name)))?
+                        .map_err(|e| {
+                            bad(format!(
+                                "Metal placement requires {}: {}",
+                                $name,
+                                loader_message(e)
+                            ))
+                        })?
                 };
             }
             let count = get!("ggml_backend_dev_count", unsafe extern "C" fn() -> usize);
@@ -216,5 +226,45 @@ impl Api {
             }
         };
         Err(DiarizationError::Execution(message))
+    }
+}
+
+fn loader_message(error: libloading::Error) -> String {
+    use std::error::Error;
+    match error.source() {
+        Some(cause) => format!("{error}: {cause}"),
+        None => error.to_string(),
+    }
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn loader_error_without_a_system_cause_keeps_its_context() {
+        assert_eq!(
+            loader_message(libloading::Error::InteriorZeroElements),
+            "interior zero element in parameter"
+        );
+    }
+
+    #[cfg(unix)]
+    #[test]
+    fn missing_library_retains_the_operating_system_loader_cause() {
+        let directory = tempfile::tempdir().unwrap();
+        let path = directory
+            .path()
+            .join("gen2-intentionally-missing-native-library.so");
+        match Api::load(&path) {
+            Err(DiarizationError::BackendUnavailable(message)) => {
+                assert!(
+                    message.contains("gen2-intentionally-missing-native-library.so"),
+                    "{message}"
+                );
+                assert!(message.contains("dlopen"), "{message}");
+            }
+            _ => panic!("missing library must fail before resolving native symbols"),
+        }
     }
 }

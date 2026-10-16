@@ -257,7 +257,7 @@ printenv
                        '/work/assets/ami_en2002d_2132.wav', '1', '/results/negative.f32'], environment,
                        runtime=negative, expected_failure=True)
         error = (self.output / 'missing-library-control.stderr.log').read_text()
-        if missing not in error or not re.search(r'cannot open shared object file|No such file', error) or (self.results / 'negative.f32').exists():
+        if missing + ': cannot open shared object file' not in error or (self.results / 'negative.f32').exists():
             raise ValueError('missing-library control did not establish fail-closed loading')
         frozen = json.loads((self.output / 'frozen-inputs.json').read_text())
         if inventory(self.work) != frozen['inputs'] or verify(self.runtime) != self.package:
