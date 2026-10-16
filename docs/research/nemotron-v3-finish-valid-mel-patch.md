@@ -296,3 +296,37 @@ uses the existing recorded sandboxed command runner, receives the actual user
 home, disables auto-update, and retains stdout/stderr/status. This matches the
 environment that succeeded during metadata recovery. The old failed construction
 protocol/tool source remains retained; no new build is claimed for this repair.
+
+## Tagged F32/Q8 and public Rust fixed-case admission
+
+The separate `tagged-valid-mel-qualification.protocol.json` preregisters exactly
+six model loads: one fixed 28-case native finish suite for each F32/Q8 model,
+then independent installed-C-API and public Rust runs on 320 silent samples and
+the excluded 17872-sample calibration. The two native suites make eight explicit
+direct graph calls in total. Internal streaming forward counts are bounded by
+the fixed cases and source schedules; they are not instrumented. Fifteen
+model-free profile/comparison tests precede any neural work.
+
+The numerical policies are fixed before these tagged neural outputs: 0.0001
+maximum absolute error for each native pipeline/direct comparison and the tagged
+F32 calibration versus saved untagged-candidate F32 output; 0.000001 for C API
+versus C++ pipeline and public Rust versus C API probabilities, with 0.000001
+seconds for wrapper/native turn boundaries. All floor-valid rows are compared,
+including the last. The minimum case must return two rows; calibration 111.
+No original HF, DER or quality criterion changes.
+
+All three probes compiled without execution. The Rust probe uses a separate
+Cargo artifact name pointing to the unchanged `nemotron_stream.rs`, preserving
+historical executables while reusing existing dependencies under limited disk
+space. The resulting duplicate-source Cargo warning is retained in build logs.
+The calibration PCM16 WAV roundtrips every original f32 value exactly. All
+actual inputs, model/library/binary/source identities, 22 materialized compiler
+headers, the static runtime archive, 257 Rust source/manifest files and a static
+92-library non-system loader closure are bound. Static closure discovery is not
+actual loaded-path telemetry or offline deployment qualification.
+
+This protocol admits only fixed macOS arm64 CPU calibration/silence behavior.
+Complete Rust lifecycle/reload/cancellation gates, long sessions, other platforms,
+Metal, packages/coexistence/desktop/physical microphone and unchanged AMI quality
+remain separate requirements. Started/completed commands and available tensors
+persist on failure; there are no automatic retries under the same attempt.

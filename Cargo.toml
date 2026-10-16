@@ -167,6 +167,12 @@ required-features = ["backend-diar-nemo"]
 name = "nemotron_stream"
 required-features = ["backend-diar-nemo"]
 
+# A distinct output artifact preserves the historical qualification executable.
+[[example]]
+name = "nemotron_valid_mel_stream"
+path = "examples/nemotron_stream.rs"
+required-features = ["backend-diar-nemo"]
+
 [[example]]
 name = "nemotron_chat_coexistence"
 required-features = ["backend-llamacpp", "backend-diar-nemo"]
