@@ -1,4 +1,4 @@
-"""Qualify complete long-session accounting, retained tails and bounded CPU RSS."""
+"""Qualify complete long-session accounting, retained tails and bounded process RSS."""
 import math
 import re
 
@@ -12,14 +12,14 @@ def peak_rss(log):
     return int(values[0])
 
 
-def audit_case(public, native, raw, actual_raw, native_time, public_time, case):
+def audit_case(public, native, raw, actual_raw, native_time, public_time, case, backend='cpu', device=None):
     samples = case['samples']
     for record, key in [(public, 'accepted_samples'), (native, 'audio_samples')]:
         if (record[key] != samples or record['input_repeats'] != case['repeats']
                 or record['input_pcm_f32le_sha256'] != case['pcm_sha256']):
             raise ValueError('fixed long-session actual input differs')
-    if public['backend'] != 'cpu':
-        raise ValueError('fixed long-session backend differs')
+    if public['backend'] != backend or public.get('device') != device:
+        raise ValueError('fixed long-session backend or device differs')
     if integer(native['retained_rows'], 'retained rows') < 60000:
         raise ValueError('long-session compaction retained less than the prescribed ten-minute tail')
     result = compare(public, native, raw, actual_raw)

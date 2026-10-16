@@ -39,6 +39,20 @@ class LongSessionMetricsTests(unittest.TestCase):
                 audit_case({**public, key: value}, native, raw, raw,
                            '1 maximum resident set size', '1 maximum resident set size', case)
 
+    def test_metal_requires_explicit_backend_and_named_device(self):
+        public, native, raw, case = self.fixture()
+        public.update(backend='metal', device='Apple M4 Pro')
+        native['requested_gpu_index'] = 0
+        args = (public, native, raw, raw, '1 maximum resident set size', '1 maximum resident set size', case)
+        self.assertTrue(audit_case(*args, backend='metal', device='Apple M4 Pro')['passed'])
+        with self.assertRaisesRegex(ValueError, 'backend or device'):
+            audit_case(*args)
+        with self.assertRaisesRegex(ValueError, 'backend or device'):
+            audit_case(*args, backend='metal', device='other device')
+        native['requested_gpu_index'] = -1
+        with self.assertRaisesRegex(ValueError, 'Metal placement'):
+            audit_case(*args, backend='metal', device='Apple M4 Pro')
+
     def test_matching_short_tail_cannot_replace_prescribed_retention(self):
         public, native, raw, case = self.fixture()
         raw = raw[-3200:]
