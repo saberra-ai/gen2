@@ -1,0 +1,227 @@
+{
+  "schema_version": 1,
+  "adapter_gates_passed": false,
+  "release_qualified": false,
+  "source_commit": "959f5a83ccf5e5788a400497e26c5ebe1f91bbcb",
+  "protocol": {
+    "bytes": 111839,
+    "sha256": "7c5082320765b812b00ea06129f7eb2881027ed69f5eb29289a449259803faf2"
+  },
+  "interruption_reason": "Implementer found capture-result validation assumed full Diarization geometry/frame-count fields, while actual live snapshot is compact. Explicit SIGINT stopped the parent during first CPU recorded test, before any model case completed.",
+  "controller_exit_status": 130,
+  "completed_model_cases": 0,
+  "model_free_listing_passed": true,
+  "interrupted_command": "cpu-recorded-test",
+  "interrupted_child_status": -9,
+  "child_process_group_killed_and_reaped": true,
+  "reserve_released": true,
+  "new_native_or_neural_calls_during_collection": 0,
+  "preparation_history": [
+    "First helper compilation failed because model-denying sandbox blocked Tauri resource staging; zero helper/model execution.",
+    "Second helper test/CLI compilation succeeded offline with model reads denied and explicit TAURI_CONFIG bundle.resources/frameworks empty; this is not signed bundle construction.",
+    "First clone-only staging incorrectly expected80.04s source WAV; actual60s source is repeated/truncated to80.04s by existing live verifier. Zero native/model/helper calls.",
+    "Second clone-only staging succeeds; exact245regularfiles/twoaliases and both profile-bound v2packages are preserved in the preparation record."
+  ],
+  "limits": [
+    "No Pnola adapter case passes from this interrupted attempt. No real-model parity, capture/live, GUI, microphone, quality, performance or release claim.",
+    "Original failed/interrupted records are retained unchanged; the separate compact-schema continuation requires a fresh frozen protocol."
+  ],
+  "files": {
+    "build-valid-mel-pnola-helpers-v2.py": {
+      "bytes": 4092,
+      "sha256": "8e6c192c075c5a1c48d4d7463cf60eeadc65e75e0ba63450915060804c88c4b6"
+    },
+    "build-valid-mel-pnola-helpers.py": {
+      "bytes": 4013,
+      "sha256": "79825aa66a4f4b171dee757516dd445752207d9938e5c40cfbbcb68f98ba4159"
+    },
+    "cleanup-stale-pnola-incremental-v1.py": {
+      "bytes": 1870,
+      "sha256": "ab1a855774e1051c438ba49fa09a4096843a9c0f0d6c1af4c83db80242ab7f88"
+    },
+    "collect-valid-mel-pnola-interruption.py": {
+      "bytes": 4282,
+      "sha256": "10d4b59d04ca034a1ce92d636d662a566240848c3e087b5994844c93df4fd9f2"
+    },
+    "execution-tools/artifacts.py": {
+      "bytes": 2869,
+      "sha256": "17df6411ab0394b4d9bb30a099915badf357af26050b6cd08bfd44887688ff42"
+    },
+    "execution-tools/build_valid_mel_candidate.py": {
+      "bytes": 12180,
+      "sha256": "5bfb3ec59548ae0b56e8e3eaded10201933f574b0b04ca12384eb35795dd546b"
+    },
+    "execution-tools/macos_auxiliary_loaded_libraries.py": {
+      "bytes": 1402,
+      "sha256": "446119644a6a9769f92602bc1f8b0b8d8eaf5bd3590e1b98a12079eebdb0dfbe"
+    },
+    "execution-tools/macos_loaded_libraries.py": {
+      "bytes": 1805,
+      "sha256": "69c2dfcc6d2cf8e2966b929ff997b337c6c4e3a62fd8ada110b36ba27da4833b"
+    },
+    "execution-tools/package_macos.py": {
+      "bytes": 18168,
+      "sha256": "301cf904fa444a3a655f38b5a40e365d6bc0e1f348f5bbede8962d6352fffda3"
+    },
+    "execution-tools/patches/v3-finish-valid-mel.patch": {
+      "bytes": 1194,
+      "sha256": "8c1434c14f63ebeb2515c719a90594124fd4f75af85b80451fd145b5caef3c36"
+    },
+    "execution-tools/qualification_storage.py": {
+      "bytes": 3914,
+      "sha256": "8bbb4dfe53797d8d03c3ba18f24acce8458878602c1c85f28a4f816d6f4416f6"
+    },
+    "execution-tools/qualify_valid_mel_mixed.py": {
+      "bytes": 8454,
+      "sha256": "ad56982cd1d6cc4e668d67b30c4ff6f4284ad8c6d3442fb0d79031c50b1c5d6b"
+    },
+    "execution-tools/qualify_valid_mel_pnola.py": {
+      "bytes": 13505,
+      "sha256": "b8b61543696969bc545433405e91f8cc48430302024b34f3e509760f2d273711"
+    },
+    "execution-tools/runtime-valid-mel.lock.json": {
+      "bytes": 6339,
+      "sha256": "af40e586994f223390fcac59936e3781d967c03080350f4b5df141b1bdaf51be"
+    },
+    "execution-tools/runtime.lock.json": {
+      "bytes": 4917,
+      "sha256": "e66e5651608636bbb04528fed7944ab8972a778d1141b36fef3fb391eefd0dcc"
+    },
+    "execution-tools/runtime_profiles.py": {
+      "bytes": 7345,
+      "sha256": "f99c8c33a3a64005ef477319c8bc7f1d6c32180c44665c2fe189a54a4b31ac7d"
+    },
+    "execution-tools/test_macos_auxiliary_loaded_libraries.py": {
+      "bytes": 3000,
+      "sha256": "562150666ede4ba72c9822fd5b5d50cca5695d9a65572f5eeb87d5adf7c3e08b"
+    },
+    "execution-tools/test_qualification_storage.py": {
+      "bytes": 4417,
+      "sha256": "e6c8a567be86f2d614868e96f10dd6e682077aa3b3cd03b8347aab95fad20332"
+    },
+    "pnola-incremental-cleanup-v1.json": {
+      "bytes": 352139,
+      "sha256": "4acfa11b5eba21c123927809314ac8f6d673facf48345b4c6966eda7ee38d41e"
+    },
+    "preparation/valid-mel-pnola-helper-build-v1/build.json": {
+      "bytes": 1071,
+      "sha256": "ab438654c41af3b6f1afd1e9755cd2042d5c447703b453d4d42bc160e3f1bdd1"
+    },
+    "preparation/valid-mel-pnola-helper-build-v1/commands.json": {
+      "bytes": 518,
+      "sha256": "5d2b55d7a241cc2fd12609ac6d2ce8204d77478ae1b987647470e56e5cdce0eb"
+    },
+    "preparation/valid-mel-pnola-helper-build-v1/compile-only.sb": {
+      "bytes": 171,
+      "sha256": "081a3159f99c187316d0a244ae41d5517d11362fe336391453488ec960d5f3a3"
+    },
+    "preparation/valid-mel-pnola-helper-build-v1/protocol.json": {
+      "bytes": 62290,
+      "sha256": "c182514c00efb0d048bf6c98f1e003817e95fa600e290b61272079c0eaf0d77c"
+    },
+    "preparation/valid-mel-pnola-helper-build-v1/tests.stderr.log": {
+      "bytes": 1419,
+      "sha256": "48318c725316f1f191946d34385ebd418dad632f97767cd75e77390206a9c3c0"
+    },
+    "preparation/valid-mel-pnola-helper-build-v1/tests.stdout.jsonl": {
+      "bytes": 464007,
+      "sha256": "b45d527727175584a023cc3526900e724ef35120a0c16f558e1040b524738db1"
+    },
+    "preparation/valid-mel-pnola-helper-build-v2/build.json": {
+      "bytes": 1977,
+      "sha256": "a16a2c1f41c5cf92e6f8041a5f19529eb1125ad28ceba047616bed33c841b4de"
+    },
+    "preparation/valid-mel-pnola-helper-build-v2/cli.stderr.log": {
+      "bytes": 148,
+      "sha256": "b9369da7688c37ee45bf23bfd3d40fd6c2fb5422d829196d9555637684a7130c"
+    },
+    "preparation/valid-mel-pnola-helper-build-v2/cli.stdout.jsonl": {
+      "bytes": 468721,
+      "sha256": "d13f0c7762dfa36f61676d67749077d5ed9921f0949ce9554d8a0c96f2a7c95c"
+    },
+    "preparation/valid-mel-pnola-helper-build-v2/commands.json": {
+      "bytes": 1011,
+      "sha256": "babac8d0de33235ccf5f3b272a4c112abf7b4f9f2c7aaa58056d04f632868849"
+    },
+    "preparation/valid-mel-pnola-helper-build-v2/compile-only.sb": {
+      "bytes": 171,
+      "sha256": "081a3159f99c187316d0a244ae41d5517d11362fe336391453488ec960d5f3a3"
+    },
+    "preparation/valid-mel-pnola-helper-build-v2/protocol.json": {
+      "bytes": 62380,
+      "sha256": "b63c6c132b83bc0e0ef82ef5c827a353a3f64e0188ae1430b83c7cfc1813ce16"
+    },
+    "preparation/valid-mel-pnola-helper-build-v2/tests.stderr.log": {
+      "bytes": 149,
+      "sha256": "d17748a5b4f40077c757e7fbabafb4ef6abfc72f151e1059a872a2db7ce6d32a"
+    },
+    "preparation/valid-mel-pnola-helper-build-v2/tests.stdout.jsonl": {
+      "bytes": 468764,
+      "sha256": "761054f33978cf7a94ab73585bf58698b0701d595dc37508eaddab5ffc7d8a6d"
+    },
+    "preparation/valid-mel-pnola-inputs-v1/commands.json": {
+      "bytes": 4265,
+      "sha256": "4352fc608cacc60e8c23a37e99871fd861fc912cd3d97c8b854db47098dd8a7a"
+    },
+    "preparation/valid-mel-pnola-inputs-v1/failure.json": {
+      "bytes": 371,
+      "sha256": "e8d766646a978583080776bcfe36dea125dd26d7bbffc8b980c958df1a3da60f"
+    },
+    "preparation/valid-mel-pnola-inputs-v2/build.json": {
+      "bytes": 125037,
+      "sha256": "7684b94abff7a4b3652f8b6980a63ab122124cb13e77968a40d112128e9afa0c"
+    },
+    "preparation/valid-mel-pnola-inputs-v2/commands.json": {
+      "bytes": 4265,
+      "sha256": "0854a4a8ca8354dbb8c03e8ac048dfb890353f11cf897e94ff782c52838bab80"
+    },
+    "prepare-valid-mel-pnola-inputs-v2.py": {
+      "bytes": 3113,
+      "sha256": "ea344fb432a9ee87dc0084ec4bcb28c60df9b0a915c48203c5384aa9e4896982"
+    },
+    "prepare-valid-mel-pnola-inputs.py": {
+      "bytes": 3115,
+      "sha256": "2db25b4dd708bc679c2cb99fd55fd1cd1cb647742fd8942801c519e6691064d5"
+    },
+    "raw/commands.json": {
+      "bytes": 2338,
+      "sha256": "5a7884aab5f8fb18bb9a4040f8f1a31dc36ebf8ad3655989d82b1bb26f561705"
+    },
+    "raw/cpu-recorded-test.stderr.log": {
+      "bytes": 108710,
+      "sha256": "a0a575cd8622ff0de5511c887dfd80823e1796f8d2ee080c4bdb3ed091a70c81"
+    },
+    "raw/cpu-recorded-test.stdout.log": {
+      "bytes": 16,
+      "sha256": "daf071121a9ffe32bbce44190e37a068c96d08bff63fd7b660dd95b77d786dca"
+    },
+    "raw/list-images.json": {
+      "bytes": 325,
+      "sha256": "e85cbfa0b742a835996fada30546788bb10d9872805a18c189de3e6cb0eff637"
+    },
+    "raw/list.sb": {
+      "bytes": 2106,
+      "sha256": "40397c7dd02084316c9dc06ad907e275fcfa83e9ad77f3d412190a14c9f10338"
+    },
+    "raw/list.stderr.log": {
+      "bytes": 87326,
+      "sha256": "b4d1258f03143b9fe36c6469fd85aafa9d5edfd9dae931e20998b661d3f0b6cd"
+    },
+    "raw/list.stdout.log": {
+      "bytes": 471,
+      "sha256": "06956d3bd99220c294c07ba795fecc49dd0f8a9f9f6c324d0d491a44fdbd7d57"
+    },
+    "raw/protocol.json": {
+      "bytes": 111839,
+      "sha256": "7c5082320765b812b00ea06129f7eb2881027ed69f5eb29289a449259803faf2"
+    },
+    "raw/qualification.json": {
+      "bytes": 1056,
+      "sha256": "f0f604652f6961fcc6c6847acca7435278128b50ecfdb4fff91534234dc9772c"
+    },
+    "raw/runtime.sb": {
+      "bytes": 1465,
+      "sha256": "3b333bf96c1c55656727309d769d3ac66e87e1e687e5f178511fd62177e548d1"
+    }
+  }
+}

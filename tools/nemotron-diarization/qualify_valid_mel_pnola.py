@@ -17,12 +17,13 @@ from package_macos import verify
 from qualification_storage import StorageGuard, atomic_json
 
 
-def timeline_matches(actual, expected, duration, backend):
-    for result in [actual, expected]:
+def timeline_matches(actual, expected, duration, backend, *, compact=False):
+    geometry = {'chunk': 9, 'right': 4, 'left': 0, 'fifo': 264, 'cache': 264, 'update': 222}
+    for result, is_compact in [(actual, compact), (expected, False)]:
         if (result['runtime_version'] != 'nemo-speech-asr 0.2.0+gen2-valid-mel-v1'
                 or result['model_revision'] != 'f667ed73aee57d40cc39428eb768b4fd87a0a29e'
                 or result['backend'] != backend
-                or result['geometry'] != {'chunk': 9, 'right': 4, 'left': 0, 'fifo': 264, 'cache': 264, 'update': 222}
+                or result['geometry'] != (list(geometry.values()) if is_compact else geometry)
                 or not math.isfinite(result['audio_duration_seconds'])
                 or abs(result['audio_duration_seconds'] - duration) > 1e-6):
             raise ValueError('Pnola timeline identity/geometry/duration differs')
@@ -30,7 +31,9 @@ def timeline_matches(actual, expected, duration, backend):
         raise ValueError('Pnola Metal device differs')
     if backend == 'cpu' and actual.get('device') is not None:
         raise ValueError('Pnola CPU device differs')
-    if actual['native_frame_count'] != int(duration * 100) or len(actual['turns']) != len(expected['turns']):
+    if (expected['native_frame_count'] != int(duration * 100)
+            or (not compact and actual['native_frame_count'] != int(duration * 100))
+            or len(actual['turns']) != len(expected['turns'])):
         raise ValueError('Pnola native frame/turn count differs')
     maximum = 0.
     for left, right in zip(actual['turns'], expected['turns']):
@@ -42,7 +45,7 @@ def timeline_matches(actual, expected, duration, backend):
             maximum = max(maximum, abs(left[key] - right[key]))
     if maximum > 1e-6:
         raise ValueError('Pnola turn boundary differs')
-    return {'turns': len(actual['turns']), 'frames': actual['native_frame_count'], 'maximum_turn_error_seconds': maximum}
+    return {'turns': len(actual['turns']), 'frames': actual.get('native_frame_count'), 'native_frame_count_observed': not compact, 'maximum_turn_error_seconds': maximum}
 
 
 def execute_guarded(argv, *, cwd, environment, stdout, stderr, guard, record, persist, timeout):
@@ -164,7 +167,7 @@ def main():
                 elif case.get('capture'):
                     if not value['passed'] or value['microphone_used'] or not value['saved_pcm_matches_input'] or not value['final_matches_recording'] or not value['provisional_revisions']:
                         raise ValueError('Pnola paced capture-output verification differs')
-                    detail['turn_comparison'] = timeline_matches(value['final']['timeline'], expected, 60., backend)
+                    detail['turn_comparison'] = timeline_matches(value['final']['timeline'], expected, 60., backend, compact=True)
                 else:
                     if value['attribution']['status'] != 'complete' or value['attribution']['complete'] is not True or value['audio_sha256'] != p['input_wav_sha256']:
                         raise ValueError('Pnola recorded attribution/input differs')

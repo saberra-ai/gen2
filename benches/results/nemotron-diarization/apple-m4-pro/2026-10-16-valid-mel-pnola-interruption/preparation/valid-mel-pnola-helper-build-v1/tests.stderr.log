@@ -1,0 +1,23 @@
+   Compiling gen2 v0.1.0 (/Users/victor/workspace/gen2-nemotron3-n0)
+   Compiling pnola-desktop v0.2.0 (/Users/victor/workspace/pnola/src-tauri)
+error: failed to run custom build command for `pnola-desktop v0.2.0 (/Users/victor/workspace/pnola/src-tauri)`
+
+Caused by:
+  process didn't exit successfully: `/Users/victor/.cache/pnola-nemotron-build/debug/build/pnola-desktop-9c2d7b733384141b/build-script-build` (exit status: 1)
+  --- stdout
+  cargo:rustc-link-arg=-Wl,-sectcreate,__TEXT,__info_plist,/Users/victor/workspace/pnola/src-tauri/Info.plist
+  cargo:rerun-if-env-changed=TAURI_CONFIG
+  cargo:rustc-check-cfg=cfg(desktop)
+  cargo:rustc-cfg=desktop
+  cargo:rustc-check-cfg=cfg(mobile)
+  cargo:rerun-if-changed=/Users/victor/workspace/pnola/src-tauri/tauri.conf.json
+  cargo:rustc-env=TAURI_ANDROID_PACKAGE_NAME_APP_NAME=desktop
+  cargo:rustc-env=TAURI_ANDROID_PACKAGE_NAME_PREFIX=com_pnola
+  cargo:rustc-check-cfg=cfg(dev)
+  cargo:rustc-cfg=dev
+  cargo:PERMISSION_FILES_PATH=/Users/victor/.cache/pnola-nemotron-build/debug/build/pnola-desktop-e3eac45639d71c92/out/app-manifest/__app__-permission-files
+  cargo:rerun-if-changed=/Users/victor/workspace/pnola/src-tauri/capabilities
+  cargo:rerun-if-env-changed=REMOVE_UNUSED_COMMANDS
+  cargo:rustc-env=TAURI_ENV_TARGET_TRIPLE=aarch64-apple-darwin
+  resource path `../.desktop-assets/runtime` doesn't exist
+warning: build failed, waiting for other jobs to finish...

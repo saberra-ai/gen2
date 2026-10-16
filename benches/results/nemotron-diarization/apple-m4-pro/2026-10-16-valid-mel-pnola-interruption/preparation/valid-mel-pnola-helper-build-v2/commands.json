@@ -1,0 +1,41 @@
+[
+  {
+    "name": "tests",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-helper-build-v2/compile-only.sb",
+      "cargo",
+      "test",
+      "--no-run",
+      "--offline",
+      "--locked",
+      "--manifest-path",
+      "/Users/victor/workspace/pnola/src-tauri/Cargo.toml",
+      "--message-format=json"
+    ],
+    "cwd": "/Users/victor/workspace/pnola",
+    "pid": 45782,
+    "returncode": 0,
+    "elapsed_seconds": 3.1029336669598706
+  },
+  {
+    "name": "cli",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-helper-build-v2/compile-only.sb",
+      "cargo",
+      "build",
+      "--offline",
+      "--locked",
+      "--manifest-path",
+      "/Users/victor/workspace/pnola/src-tauri/Cargo.toml",
+      "--message-format=json"
+    ],
+    "cwd": "/Users/victor/workspace/pnola",
+    "pid": 45811,
+    "returncode": 0,
+    "elapsed_seconds": 4.901302499987651
+  }
+]

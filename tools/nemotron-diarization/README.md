@@ -132,7 +132,13 @@ denied and Tauri resource staging explicitly disabled; execution uses explicit
 artifact overrides. Signed bundles, automatic bundled resolution, GUI, physical
 microphone and held-out attribution quality remain separate. A regression also
 checks that PID-metadata failure kills and reaps the child before releasing disk
-reserve. All 172 model-free tests pass; actual adapter execution is pending.
+reserve. The [interrupted first attempt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-pnola-interruption/qualification.json)
+completed only the model-free listing. It was stopped during its first model
+case after finding a validator mismatch with the compact live snapshot schema;
+the child process group was killed/reaped and reserve released. No adapter case
+passes from that attempt. The corrected protocol uses a fresh output directory,
+validates compact geometry explicitly and leaves unexposed raw frame counts
+unclaimed. All 173 model-free tests pass; actual adapter qualification is pending.
 
 # Nemotron 3 — N0 qualification
 

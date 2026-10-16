@@ -1,0 +1,66 @@
+{
+  "compiled": true,
+  "models_loaded": false,
+  "gen2_source_commit": "997ab557e2e4ee24f8b925b67e12f6afc358d184",
+  "commands": [
+    {
+      "name": "tests",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-helper-build-v2/compile-only.sb",
+        "cargo",
+        "test",
+        "--no-run",
+        "--offline",
+        "--locked",
+        "--manifest-path",
+        "/Users/victor/workspace/pnola/src-tauri/Cargo.toml",
+        "--message-format=json"
+      ],
+      "cwd": "/Users/victor/workspace/pnola",
+      "pid": 45782,
+      "returncode": 0,
+      "elapsed_seconds": 3.1029336669598706
+    },
+    {
+      "name": "cli",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-helper-build-v2/compile-only.sb",
+        "cargo",
+        "build",
+        "--offline",
+        "--locked",
+        "--manifest-path",
+        "/Users/victor/workspace/pnola/src-tauri/Cargo.toml",
+        "--message-format=json"
+      ],
+      "cwd": "/Users/victor/workspace/pnola",
+      "pid": 45811,
+      "returncode": 0,
+      "elapsed_seconds": 4.901302499987651
+    }
+  ],
+  "tests": {
+    "source_path": "/Users/victor/.cache/pnola-nemotron-build/debug/deps/pnola_desktop-89ecddee3919a030",
+    "bytes": 15897552,
+    "sha256": "2ad769a94be484523b6f25d69beef5d800b6dbb11bbc0cb7d5cd69b65a45bc42"
+  },
+  "cli": {
+    "source_path": "/Users/victor/.cache/pnola-nemotron-build/debug/pnola-desktop",
+    "bytes": 88931376,
+    "sha256": "9d217328310b36f8a85b2c3b6f5275760ccc987094326879a466072f0bf590e5"
+  },
+  "storage": {
+    "start_minimum_bytes": 3221225472,
+    "running_minimum_bytes": 1073741824,
+    "reserve_requested_bytes": 268435456,
+    "checks": 9,
+    "released": true,
+    "minimum_observed_free_bytes": 4255064064,
+    "last_observed_free_bytes": 4255064064,
+    "reserve_reported_allocated_bytes": 268435456
+  }
+}

@@ -1,0 +1,57 @@
+[
+  {
+    "name": "list",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-runtime-v1/list.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/bin/pnola-tests",
+      "--ignored",
+      "--list"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "HOME": "/Users/victor",
+      "TMPDIR": "/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/",
+      "LC_ALL": "C"
+    },
+    "pid": 53720,
+    "returncode": 0,
+    "elapsed_seconds": 0.3798486669547856
+  },
+  {
+    "name": "cpu-recorded-test",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/bin/pnola-tests",
+      "--ignored",
+      "--exact",
+      "transcription::integration_tests::real_transcript_and_speaker_timeline_preserve_measured_text",
+      "--nocapture"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "HOME": "/Users/victor",
+      "TMPDIR": "/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/",
+      "LC_ALL": "C",
+      "GEN2_NEMO_EXECUTION": "cpu",
+      "GEN2_NEMOTRON_ASSETS": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/models/nemotron",
+      "GEN2_NEMO_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/cpu/nemo/lib/libnemo_speech_asr_c.dylib",
+      "GEN2_BARK_BUNDLE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/models/bark",
+      "GEN2_ORT_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/providers/libonnxruntime.dylib",
+      "PNOLA_VERIFY_AUDIO": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/assets/ami.wav",
+      "PNOLA_BARK_REFERENCE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/assets/bark-reference.json",
+      "PNOLA_VERIFY_OUTPUT": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-runtime-v1/cpu-recorded-test.result.json"
+    },
+    "pid": 53721,
+    "forced_process_group_termination": true,
+    "returncode": -9,
+    "elapsed_seconds": 26.96024645800935
+  }
+]

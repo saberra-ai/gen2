@@ -1,0 +1,38 @@
+{
+  "compiled": false,
+  "models_loaded": false,
+  "gen2_source_commit": "0fa21aa36f9904b5f4e6270348b970e0dfed5491",
+  "commands": [
+    {
+      "name": "tests",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-helper-build-v1/compile-only.sb",
+        "cargo",
+        "test",
+        "--no-run",
+        "--offline",
+        "--locked",
+        "--manifest-path",
+        "/Users/victor/workspace/pnola/src-tauri/Cargo.toml",
+        "--message-format=json"
+      ],
+      "cwd": "/Users/victor/workspace/pnola",
+      "pid": 45685,
+      "returncode": 101,
+      "elapsed_seconds": 8.769582249980886
+    }
+  ],
+  "error": "Pnola compile-only command failed: tests",
+  "storage": {
+    "start_minimum_bytes": 3221225472,
+    "running_minimum_bytes": 1073741824,
+    "reserve_requested_bytes": 268435456,
+    "checks": 10,
+    "released": true,
+    "minimum_observed_free_bytes": 6876016640,
+    "last_observed_free_bytes": 6876016640,
+    "reserve_reported_allocated_bytes": 268435456
+  }
+}

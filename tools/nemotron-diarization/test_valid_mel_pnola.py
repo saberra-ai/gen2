@@ -24,6 +24,17 @@ class PnolaTimelineTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             timeline_matches(actual, expected, 60., 'cpu')
 
+    def test_compact_live_schema_preserves_turn_checks_without_inventing_frames(self):
+        expected = self.reference(); actual = copy.deepcopy(expected)
+        actual['geometry'] = [9, 4, 0, 264, 264, 222]
+        del actual['native_frame_count']
+        result = timeline_matches(actual, expected, 60., 'cpu', compact=True)
+        self.assertIsNone(result['frames'])
+        self.assertFalse(result['native_frame_count_observed'])
+        actual['geometry'][0] = 8
+        with self.assertRaises(ValueError):
+            timeline_matches(actual, expected, 60., 'cpu', compact=True)
+
     def test_bad_identity_placement_and_nonfinite_outputs_rejected(self):
         expected = self.reference()
         for field, value in [('runtime_version', 'nemo-speech-asr 0.2.0'), ('native_frame_count', 6001),
