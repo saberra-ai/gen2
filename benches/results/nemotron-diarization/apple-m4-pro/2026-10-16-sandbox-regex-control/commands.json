@@ -1,0 +1,61 @@
+[
+  {
+    "name": "historical-wildcard",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/macos-sandbox-regex-control-v1/historical-import.sb",
+      "/Users/victor/.cache/gen2-nemotron3-n0/evidence-tools-env/bin/python",
+      "/Users/victor/.cache/gen2-nemotron3-n0/macos-sandbox-regex-control-v1/allowed-control.py",
+      "/Users/victor/.cache/gen2-nemotron3-n0/macos-sandbox-regex-control-v1/dummy.gguf"
+    ],
+    "environment": {
+      "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-sandbox-regex-control-v1/home",
+      "PATH": "/usr/bin:/bin",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "returncode": 0,
+    "seconds": 0.04843329096911475
+  },
+  {
+    "name": "historical-explicit-directory-and-network",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/macos-sandbox-regex-control-v1/historical-import.sb",
+      "/Users/victor/.cache/gen2-nemotron3-n0/evidence-tools-env/bin/python",
+      "/Users/victor/.cache/gen2-nemotron3-n0/macos-sandbox-regex-control-v1/denied-control.py",
+      "/Users/victor/.cache/gen2-nemotron3-n0/research/native-f32-control/model_config.yaml"
+    ],
+    "environment": {
+      "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-sandbox-regex-control-v1/home",
+      "PATH": "/usr/bin:/bin",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "returncode": 0,
+    "seconds": 0.04189504199894145
+  },
+  {
+    "name": "corrected-six-formats-and-network",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/macos-sandbox-regex-control-v1/corrected-import.sb",
+      "/Users/victor/.cache/gen2-nemotron3-n0/evidence-tools-env/bin/python",
+      "/Users/victor/.cache/gen2-nemotron3-n0/macos-sandbox-regex-control-v1/denied-control.py",
+      "/Users/victor/.cache/gen2-nemotron3-n0/macos-sandbox-regex-control-v1/dummy.nemo",
+      "/Users/victor/.cache/gen2-nemotron3-n0/macos-sandbox-regex-control-v1/dummy.gguf",
+      "/Users/victor/.cache/gen2-nemotron3-n0/macos-sandbox-regex-control-v1/dummy.safetensors",
+      "/Users/victor/.cache/gen2-nemotron3-n0/macos-sandbox-regex-control-v1/dummy.onnx",
+      "/Users/victor/.cache/gen2-nemotron3-n0/macos-sandbox-regex-control-v1/dummy.npy",
+      "/Users/victor/.cache/gen2-nemotron3-n0/macos-sandbox-regex-control-v1/dummy.f32"
+    ],
+    "environment": {
+      "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-sandbox-regex-control-v1/home",
+      "PATH": "/usr/bin:/bin",
+      "PYTHONDONTWRITEBYTECODE": "1"
+    },
+    "returncode": 0,
+    "seconds": 0.0413310420117341
+  }
+]

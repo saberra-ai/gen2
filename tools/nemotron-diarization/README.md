@@ -684,3 +684,23 @@ verifies 34 pinned port files, 53 SPDX/53 ABI comparisons and three actual sourc
 archive SHA512s. Complete downstream notice/source closure and actual linker
 membership remain open, including the separate Darts-clone BSD notice and esaxx
 scope. See the [recovery design](../../docs/research/nemotron-windows-static-provenance.md).
+
+
+### Portable macOS CPU construction candidate
+
+`build_valid_mel_sdk.py --cpu-arch armv8.2-a+dotprod+fp16` requests an explicit
+portable candidate instead of the unchanged build-host-native default. It sets
+`GGML_NATIVE=OFF`, the explicit GGML ARM target, both global C/C++ architecture
+flags, arm64 and macOS26.0. Every actual compiler unit is checked for the target
+and rejected for native/additional-ISA overrides; actual compiler-source hashes
+are retained alongside the independent GGML patch replay. Hardware/model
+compatibility is not established by compiler flags.
+
+The separate `macos-portable-construction.protocol.json` and
+`diarization-macos-portable.yml` freeze a fresh arm64Mac construction job: local
+source preparation, offline build/state/version checks, private dependency
+packaging and exact filesystem archives. All original library payloads are
+retained for later relocation verification. The sandbox negatively tests all
+six dummy weight suffixes and loopback; no model or audio is acquired or run.
+At preparation this candidate has not been constructed or qualified for runtime.
+Existing M4 packages, model outputs and quality failures remain unchanged.

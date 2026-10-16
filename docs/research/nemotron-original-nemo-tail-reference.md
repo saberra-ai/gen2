@@ -44,9 +44,15 @@ The separate [37-member construction/import receipt](../../benches/results/nemot
 now verifies 2,606 original source files, all 774 wheel/source/installed NeMo
 file mappings and a hash-locked 142-package macOS/Python3.12 resolution with
 Torch2.8.0/NumPy2.2.6. Four construction/check commands and one offline class
-import pass. Source/environment writes and network/weight-format reads are
-denied during the import. No checkpoint, model or frontend is constructed or
-executed by that receipt. The original HF environment remains unchanged.
+import pass. Source/environment writes are denied. The explicit model-directory
+and network denials are verified, but the global weight-format regex claim was
+overstated: its backslash was over-escaped. The separate [actual sandbox correction](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-sandbox-regex-control/qualification.json)
+reproduces dummy GGUF read permission under the historical wildcard, verifies
+the historical explicit model-directory/network denials, and verifies all six
+format denials with the corrected regex. The original receipt/policy remain
+unchanged. No checkpoint, model or frontend is constructed or executed by that
+import-only receipt; the later neural qualifiers use separate explicit
+oracle/label path denials, with no such wildcard assumption. The original HF environment remains unchanged.
 This is the pinned later official3.1 source and a separately resolved diagnostic
 environment, rather than a reconstruction of the declared3.0 training environment.
 

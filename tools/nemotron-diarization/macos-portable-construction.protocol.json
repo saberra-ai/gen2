@@ -1,0 +1,167 @@
+{
+  "schema_version": 1,
+  "scope": "Freshmacos-26arm64 VM model-free SDK and closed private package construction only. No model acquisition, restore, frontend, graph/inference or app launch. Existing M4 binaries/receipts remain unchanged.",
+  "runtime_provenance": {
+    "runtime_revision": "083861c241061562b8ec29eb06d7f6cdc3af8775",
+    "llama_revision": "bd4f514db14d87fded667787a7a963bfbaa98e89",
+    "lock_sha256": "af40e586994f223390fcac59936e3781d967c03080350f4b5df141b1bdaf51be",
+    "runtime_profile": "gen2-valid-mel-v1",
+    "runtime_reported_version": "nemo-speech-asr 0.2.0+gen2-valid-mel-v1",
+    "compatibility_patches": [
+      {
+        "path": "patches/v3-finish-valid-mel.patch",
+        "bytes": 1194,
+        "sha256": "8c1434c14f63ebeb2515c719a90594124fd4f75af85b80451fd145b5caef3c36",
+        "source_sha256_before": {
+          "src/asr/diar/diar_pipeline.cpp": "4143ca8e6d6f14ee454263702510cb163fe8e170aa928f236c0b4b540a7a7da9"
+        },
+        "source_sha256_after": {
+          "src/asr/diar/diar_pipeline.cpp": "fe00ae415f4741d7e07579acdc77c60f5d7327be024cf7f8aff8f52142ae9af2"
+        }
+      }
+    ],
+    "frame_contract": {
+      "name": "v3-streaming-valid-mel-v1",
+      "scope": "V3 streaming finish only; offline and V2 semantics unchanged",
+      "sample_rate": 16000,
+      "hop_samples": 160,
+      "final_frames": "floor(real_input_samples / 160)",
+      "output_channels": 8
+    }
+  },
+  "tools": {
+    "artifacts.py": {
+      "bytes": 2869,
+      "sha256": "17df6411ab0394b4d9bb30a099915badf357af26050b6cd08bfd44887688ff42"
+    },
+    "build_valid_mel_candidate.py": {
+      "bytes": 12180,
+      "sha256": "5bfb3ec59548ae0b56e8e3eaded10201933f574b0b04ca12384eb35795dd546b"
+    },
+    "build_valid_mel_sdk.py": {
+      "bytes": 9652,
+      "sha256": "c6822d1ac0d37783de0fccd71372a597b213d6e0cde8295a3d13a725e130c166"
+    },
+    "macos_auxiliary_loaded_libraries.py": {
+      "bytes": 1402,
+      "sha256": "446119644a6a9769f92602bc1f8b0b8d8eaf5bd3590e1b98a12079eebdb0dfbe"
+    },
+    "macos_cpu_architecture.py": {
+      "bytes": 2339,
+      "sha256": "c4ef246fde1d9c869bcb66fa2a8575dca1d9df244db11f83581b1162f75d3363"
+    },
+    "macos_loaded_libraries.py": {
+      "bytes": 1805,
+      "sha256": "69c2dfcc6d2cf8e2966b929ff997b337c6c4e3a62fd8ada110b36ba27da4833b"
+    },
+    "notices/sentencepiece-0.2.2/DARTS_LICENSE": {
+      "bytes": 1481,
+      "sha256": "155f59997298ee336602c49f9c1110f268ac394ca2197eb02647a3555935ad52"
+    },
+    "notices/sentencepiece-0.2.2/PROTOBUF_LITE_LICENSE": {
+      "bytes": 1732,
+      "sha256": "6e5e117324afd944dcf67f36cf329843bc1a92229a8cd9bb573d7a83130fea7d"
+    },
+    "notices/sentencepiece-0.2.2/sources.json": {
+      "bytes": 689,
+      "sha256": "381710a6e88a366e60109e476182cb9fe02c0cea1392af7b8cd3dfb1a7a398be"
+    },
+    "package_macos.py": {
+      "bytes": 18168,
+      "sha256": "301cf904fa444a3a655f38b5a40e365d6bc0e1f348f5bbede8962d6352fffda3"
+    },
+    "patches/v3-finish-valid-mel.patch": {
+      "bytes": 1194,
+      "sha256": "8c1434c14f63ebeb2515c719a90594124fd4f75af85b80451fd145b5caef3c36"
+    },
+    "platform_macos_portable.py": {
+      "bytes": 8525,
+      "sha256": "1762b9d9e724cf34aa73384cf32f1a812002ea67499fa82a99227f54e950122d"
+    },
+    "platform_valid_mel_sources.py": {
+      "bytes": 6446,
+      "sha256": "90337aec582be7cc94cf6381a9f0dd9b6b3e12a61503f5bb168db8a510740867"
+    },
+    "prepare_valid_mel_source.py": {
+      "bytes": 3207,
+      "sha256": "8a305519a6f79f243a6de5641c1664d4accc23a2e634670893af8cedccb815be"
+    },
+    "qualification_storage.py": {
+      "bytes": 3914,
+      "sha256": "8bbb4dfe53797d8d03c3ba18f24acce8458878602c1c85f28a4f816d6f4416f6"
+    },
+    "qualify_valid_mel_pnola.py": {
+      "bytes": 13787,
+      "sha256": "4628f4b6242a7cd0985ba5b20a7ac8f38bbec4dc5042b786e34e488ed738e423"
+    },
+    "runtime-valid-mel.lock.json": {
+      "bytes": 6339,
+      "sha256": "af40e586994f223390fcac59936e3781d967c03080350f4b5df141b1bdaf51be"
+    },
+    "runtime.lock.json": {
+      "bytes": 4917,
+      "sha256": "e66e5651608636bbb04528fed7944ab8972a778d1141b36fef3fb391eefd0dcc"
+    },
+    "runtime_profiles.py": {
+      "bytes": 7345,
+      "sha256": "f99c8c33a3a64005ef477319c8bc7f1d6c32180c44665c2fe189a54a4b31ac7d"
+    },
+    "sdk_archive.py": {
+      "bytes": 7022,
+      "sha256": "0b1d80768d15c2818afc82efcc1f3ddf253360b99c16c623e170073e020cb3cd"
+    },
+    "windows_compat.py": {
+      "bytes": 2393,
+      "sha256": "091eb520c5171f0f598182acada97549415191eb5ff20801040be30ec43e43ea"
+    }
+  },
+  "repository_files": {
+    ".github/workflows/diarization-macos-portable.yml": {
+      "bytes": 1963,
+      "sha256": "52af60bb138af6cc56613709f4ca990c1fddc83edc8f260981d09cb76097821f"
+    },
+    "tools/nemotron-diarization/test_macos_cpu_architecture.py": {
+      "bytes": 3743,
+      "sha256": "f59ea79ca069468a7176cf7628a6d896ecb548559310d3f69954c7062d43cc8d"
+    }
+  },
+  "portable_cmake_overrides": {
+    "GGML_NATIVE": "OFF",
+    "GGML_CPU_ARM_ARCH": "armv8.2-a+dotprod+fp16",
+    "CMAKE_C_FLAGS": "-march=armv8.2-a+dotprod+fp16",
+    "CMAKE_CXX_FLAGS": "-march=armv8.2-a+dotprod+fp16",
+    "CMAKE_OSX_ARCHITECTURES": "arm64",
+    "CMAKE_OSX_DEPLOYMENT_TARGET": "26.0"
+  },
+  "commands": [
+    "sandbox network/weight-read negative controls",
+    "prepare separate pinned source clone and exact valid-Mel patch",
+    "configure portable SDK with explicit architecture flags",
+    "independent19patch GGML replay before compilation",
+    "compile/install and actual compiler-source/flag audit",
+    "model-free diar_state test",
+    "CABI version query only",
+    "copy/private-relocate/sign/verify dependency closure and license notices",
+    "Retain every original SDK/Homebrew source-library payload plus mapping for independent private-relocation verification after the host disappears",
+    "deterministic SDK and private-runtime archives preserving modes/aliases"
+  ],
+  "bootstrap": "Actions checks out exact source083861/llamabd4, initializes pinned submodule, sets upPython3.12 and installs cmake/ninja/sentencepiece/abseil/protobuf bottles before offline construction. Their actual versions,paths,notices and hashes are measured; this is not a production dependency lock or model-inference admission.",
+  "storage_policy": {
+    "start_minimum_bytes": 3221225472,
+    "running_minimum_bytes": 1073741824,
+    "reserve_bytes": 268435456,
+    "phase_timeout_seconds": 1200,
+    "workflow_timeout_minutes": 60
+  },
+  "model_calls_admitted": 0,
+  "limits": [
+    "NativeCPUexplicit baseline armv8.2-a+dotprod+fp16. Actual CPU/OS/image/compiler facts must be observed, not inferred solely from hosted-runner label.",
+    "Every actual SDK compiler unit must contain the explicit target and no native/additional-ISA overrides; requiredCPU kernel units are checked. Compiler source identity is audited against tracked/native patched source and independently replayedGGML inputs.",
+    "Model-free state/version/packaging proves construction/closure on actualhost, not real-model accuracy, lifecycle or performance on anotherCPU.",
+    "No production package/app is replaced; later exact-artifact runtime and app protocols are required.",
+    "MacGUI, physical microphone, publicsigning/notarization, cleanperformance, freshheldoutquality and all oldquality failures remain separate/open.",
+    "Network and weight-format reads are denied and negatively tested for all relevant native children; originalupstream/Gen2 checkout writes denied.",
+    "Source-builtSDK and private-runtime archives retain exact payloads for later restore without relying on Homebrew/source paths. They contain no model weights or audio.",
+    "Before construction, local actual sandbox regression exposed an over-escaped historical import-only wildcard. The new exact construction policy denies all6dummy formats and loopback in a model-free regression. Historical receipt is retained with a separate correction; no old model/quality gate changes."
+  ]
+}

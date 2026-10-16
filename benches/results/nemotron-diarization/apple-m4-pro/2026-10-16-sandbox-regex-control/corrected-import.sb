@@ -1,0 +1,5 @@
+(version 1)
+(allow default)
+(deny network*)
+(deny file-read* (subpath "/Users/victor/.cache/gen2-nemotron3-n0/research/native-f32-control") (subpath "/Users/victor/.cache/huggingface") (regex #".*\.(nemo|gguf|safetensors|onnx|npy|f32)$"))
+(deny file-write* (subpath "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-env-v1/venv") (subpath "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-env-v1/Speech-218d0b443441b7d8aa1c832f47df310f186cf0a4"))

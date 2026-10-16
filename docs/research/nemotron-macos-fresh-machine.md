@@ -56,3 +56,24 @@ public signing/notarization, uncontended performance and the failed original
 quality criteria separate. The Mac is currently locked for native UI automation;
 a read-only codesigning-identity query returned0valid identities. No existing
 user app/process or Keychain state was changed.
+
+## Frozen construction candidate
+
+The separate [portable construction protocol](../../tools/nemotron-diarization/macos-portable-construction.protocol.json)
+now freezes the explicit ARM target for all SDK compiler units, independent
+GGML patch/source verification, model-free state/version checks and private
+library packaging. The [workflow](../../.github/workflows/diarization-macos-portable.yml)
+will retain the exact SDK/runtime archives and original dependency payloads.
+Bootstrap dependency versions are measured candidate inputs, not a production
+dependency lock. Construction has not yet run; runtime qualification requires a
+separate protocol binding the actual resulting artifacts.
+
+All191 local model-free tool tests pass. A new regression checks each dangling
+destination symlink before canonical path resolution. The construction sandbox
+also actually denies reads of six11-byte dummy weight formats and loopback.
+That test exposed an over-escaped wildcard in the earlier original-NeMo import
+policy; the [correction receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-sandbox-regex-control/qualification.json)
+preserves the old policy, demonstrates its wildcard failure and verifies the
+corrected pattern. The old policy's explicit known-model-directory and network
+denials still pass. Later neural diagnostics used separate explicit path rules;
+none of their outputs or qualification statuses changed.

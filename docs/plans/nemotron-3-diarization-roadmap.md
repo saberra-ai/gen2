@@ -158,6 +158,14 @@ also fails20%, alongside cached HF41.4447%/50.0223%. All12,000valid rows are
 compared; probabilities are unequal and raw discrepancies are retained.
 This later official3.1path does not identify the checkpoint's training3.0source.
 No old quality gate or release status changes. All185model-free tests pass.
+The [185-test source CI receipt](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-185/qualification.json)
+now passes all13 jobs, including all12 OS/feature combinations. Local model-free
+tests now total191. The separate [portable Mac construction plan](../research/nemotron-macos-fresh-machine.md)
+freezes a fresh VM SDK/package build with an explicit ARM target; it has not yet
+run and admits no model execution. Its sandbox regression exposed an earlier
+import-policy wildcard error, preserved in a separate correction receipt.
+The original AMI quality failures, GUI/microphone, receiver runtime, performance
+and public release gates remain open; main remains unchanged.
 
 Prepared: 2026-10-14.
 Updated: 2026-10-16.

@@ -1,0 +1,1 @@
+import pathlib,sys; assert pathlib.Path(sys.argv[1]).read_bytes()==b"not a model"; print("historical wildcard permitted dummy GGUF read")

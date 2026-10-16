@@ -1,0 +1,47 @@
+name: Diarization portable macOS CPU construction
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/nemotron3-n0]
+    paths:
+      - .github/workflows/diarization-macos-portable.yml
+      - tools/nemotron-diarization/platform_macos_portable.py
+      - tools/nemotron-diarization/macos_cpu_architecture.py
+      - tools/nemotron-diarization/macos-portable-construction.protocol.json
+permissions:
+  contents: read
+jobs:
+  construction:
+    runs-on: macos-26
+    timeout-minutes: 60
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      HOMEBREW_NO_AUTO_UPDATE: '1'
+      HOMEBREW_NO_INSTALL_CLEANUP: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: NVIDIA/NeMo-Speech.cpp
+          ref: 083861c241061562b8ec29eb06d7f6cdc3af8775
+          path: native-upstream
+          persist-credentials: false
+      - name: Initialize pinned GGML source
+        run: git -C native-upstream submodule update --init --depth 1 llama.cpp
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Bootstrap build tools and dependency bottles
+        run: brew install cmake ninja sentencepiece abseil protobuf
+      - name: Offline portable SDK and private package construction, with no model admission
+        run: python tools/nemotron-diarization/platform_macos_portable.py --upstream native-upstream --source "${{ runner.temp }}/portable-source" --sdk "${{ runner.temp }}/portable-sdk" --package "${{ runner.temp }}/portable-runtime" --output "${{ runner.temp }}/portable-evidence"
+      - name: Retain success or failure evidence and exact opaque filesystem archives
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nemotron-macos-portable-construction
+          path: ${{ runner.temp }}/portable-evidence/
+          include-hidden-files: true
+          retention-days: 30

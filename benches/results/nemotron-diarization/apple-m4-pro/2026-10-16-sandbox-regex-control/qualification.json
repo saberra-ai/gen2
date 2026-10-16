@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "old_policy_source": "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-env-v1/import.sb",
+  "old_policy": {
+    "bytes": 456,
+    "sha256": "843cd2caa762aea27bcf1eaf929572908ec6ae9a810986b143789da4c75c0d5a"
+  },
+  "historical_wildcard_denied_weight_formats": false,
+  "historical_explicit_model_directory_and_network_denial_verified": true,
+  "corrected_policy_denied_all_six_formats_and_network": true,
+  "format_suffixes": [
+    "nemo",
+    "gguf",
+    "safetensors",
+    "onnx",
+    "npy",
+    "f32"
+  ],
+  "model_or_frontend_or_native_execution": false,
+  "import_receipt_correction": "The original37member import-only receipt overstated wildcard weight-format denial. Its explicit model-directory/network denial and class-import evidence remain separate; the original policy/receipt are unchanged.",
+  "limits": [
+    "All format probes are11-byte dummy files, never parsed as model/tensor data. The actual known-directory control reads at most1byte of model_config.yaml if denied protection were absent.",
+    "This corrects only a sandbox wildcard claim, not any model/quality outcome. Neural original-NeMo calibration/AMI qualifiers use explicit oracle/label path denials rather than this wildcard.",
+    "Source/environment writes are still denied by both saved policies. No source, model, SDK, prior receipt or user app was modified."
+  ]
+}

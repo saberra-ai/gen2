@@ -10,6 +10,8 @@ import time
 
 from artifacts import digest
 from build_valid_mel_candidate import capture, descriptor, source_inventory
+from macos_cpu_architecture import PORTABLE_ARM64, audit_portable_commands, portable_definitions
+from platform_valid_mel_sources import verify_completed_source
 from runtime_profiles import audit_cpu_compiler_tree, load_profile, verify_source
 
 
@@ -18,6 +20,8 @@ def main():
     for name in ['source', 'prefix', 'output']:
         parser.add_argument('--' + name, type=Path, required=True)
     parser.add_argument('--jobs', type=int, default=6)
+    parser.add_argument('--cpu-arch', choices=['native', PORTABLE_ARM64], default='native',
+                        help='explicit portable candidate, or the unchanged build-host native default')
     parser.add_argument('--sandbox-profile', type=Path, help='optional stricter child profile retained with evidence')
     args = parser.parse_args()
     if platform.system() != 'Darwin' or platform.machine() != 'arm64' or args.jobs < 1:
@@ -58,6 +62,8 @@ def main():
         completed.check_returncode()
     definitions = {**runtime['cmake_definitions'], 'NEMO_SPEECH_BUILD_TESTS': 'ON',
                    'CMAKE_EXPORT_COMPILE_COMMANDS': 'ON', 'CMAKE_INSTALL_PREFIX': str(prefix)}
+    if args.cpu_arch != 'native':
+        definitions.update(portable_definitions())
     run('configure', ['/bin/bash', 'scripts/configure.sh', 'cpu-diar',
                       *['-D' + key + '=' + value for key, value in definitions.items()]])
     materialized, inventory = audit_cpu_compiler_tree(source, output, run)
@@ -74,6 +80,24 @@ def main():
         raise ValueError('root source changed during construction')
     if capture(['git', 'status', '--porcelain', '--untracked-files=no'], source / 'llama.cpp'):
         raise ValueError('pristine llama changed during construction')
+    build = source / 'build/cpu-diar'
+    verify_completed_source(source, build, lock, patch, False)
+    compiler_commands = json.loads((build / 'compile_commands.json').read_text())
+    architecture = (audit_portable_commands(compiler_commands) if args.cpu_arch != 'native'
+                    else {'mode': 'build-host-native', 'hardware_or_model_qualification': False})
+    tracked = {(source / name.decode()).resolve() for name in
+               capture(['git', 'ls-files', '-z'], source).split(b'\0') if name}
+    compiler_inputs = {}
+    for item in compiler_commands:
+        path = Path(item['file']).resolve()
+        if path.is_relative_to(materialized.resolve()):
+            if descriptor(path) != inventory.get(path.relative_to(materialized).as_posix()):
+                raise ValueError('actual compiler source differs from independent patch replay')
+        elif path not in tracked or path.is_relative_to(build) or not path.is_file():
+            raise ValueError('unbound actual SDK compiler source: ' + str(path))
+        compiler_inputs[str(path)] = descriptor(path)
+    (output / 'compiler-inputs.json').write_text(json.dumps(compiler_inputs, indent=2) + '\n')
+    (output / 'cpu-architecture.json').write_text(json.dumps(architecture, indent=2) + '\n')
     entry = prefix / 'lib/libnemo_speech_asr_c.dylib'
     query = ('import ctypes,sys; library=ctypes.CDLL(sys.argv[1]); '
              'version=library.nemo_speech_asr_version; version.restype=ctypes.c_char_p; '
@@ -108,6 +132,7 @@ def main():
         'platform': platform.platform(), 'machine': platform.machine(), 'backend': 'cpu', 'preset': 'cpu-diar',
         'metal_shaders_embedded': False, 'commands': commands, 'cmake_definitions': definitions,
         'toolchain': toolchain, 'libraries': libraries, 'installed_library_paths': paths,
+        'cpu_architecture': architecture, 'actual_compiler_sources': compiler_inputs,
         'runtime_archive': {'path': str(archive), **descriptor(archive)},
         'cmake_cache_sha256': digest(build / 'CMakeCache.txt'), 'model_free_state_test_completed': True,
         'version_function_only_executed': True, 'model_instantiated_or_inference_performed': False,
