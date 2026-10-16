@@ -1,0 +1,118 @@
+{
+  "profile": "gen2-valid-mel-v1",
+  "upstream": "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp",
+  "destination": "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-metal-v1",
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "clone",
+        "--no-hardlinks",
+        "--no-checkout",
+        "--",
+        "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp",
+        "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-metal-v1"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1"
+      },
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "git",
+        "checkout",
+        "--detach",
+        "083861c241061562b8ec29eb06d7f6cdc3af8775"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-metal-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1"
+      },
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "git",
+        "clone",
+        "--no-hardlinks",
+        "--no-checkout",
+        "--",
+        "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/llama.cpp",
+        "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-metal-v1/llama.cpp"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-metal-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1"
+      },
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "git",
+        "checkout",
+        "--detach",
+        "bd4f514db14d87fded667787a7a963bfbaa98e89"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-metal-v1/llama.cpp",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1"
+      },
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "git",
+        "apply",
+        "--check",
+        "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/patches/v3-finish-valid-mel.patch"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-metal-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1"
+      },
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "git",
+        "apply",
+        "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/patches/v3-finish-valid-mel.patch"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-metal-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1"
+      },
+      "returncode": 0
+    }
+  ],
+  "base_revision": "083861c241061562b8ec29eb06d7f6cdc3af8775",
+  "llama_revision": "bd4f514db14d87fded667787a7a963bfbaa98e89",
+  "compatibility_patches": [
+    {
+      "path": "patches/v3-finish-valid-mel.patch",
+      "bytes": 1194,
+      "sha256": "8c1434c14f63ebeb2515c719a90594124fd4f75af85b80451fd145b5caef3c36",
+      "source_sha256_before": {
+        "src/asr/diar/diar_pipeline.cpp": "4143ca8e6d6f14ee454263702510cb163fe8e170aa928f236c0b4b540a7a7da9"
+      },
+      "source_sha256_after": {
+        "src/asr/diar/diar_pipeline.cpp": "fe00ae415f4741d7e07579acdc77c60f5d7327be024cf7f8aff8f52142ae9af2"
+      }
+    }
+  ],
+  "network_or_model_execution": false
+}

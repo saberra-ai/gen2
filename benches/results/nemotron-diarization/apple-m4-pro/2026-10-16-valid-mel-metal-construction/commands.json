@@ -1,0 +1,101 @@
+[
+  {
+    "phase": "shader-audit-tests",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-metal-build-v1/preflight.sb",
+      "/Users/victor/.cache/gen2-nemotron3-n0/evidence-tools-env/bin/python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization",
+      "-p",
+      "test_valid_mel_metal_audit.py"
+    ],
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "GIT_LFS_SKIP_SMUDGE": "1"
+    },
+    "source_commit": "448c632a5a8a2bf4bc60bfec29a1b44c3935de42",
+    "returncode": 0,
+    "elapsed_seconds": 0.053136250004172325
+  },
+  {
+    "phase": "configuration-tests",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-metal-build-v1/preflight.sb",
+      "/Users/victor/.cache/gen2-nemotron3-n0/evidence-tools-env/bin/python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization",
+      "-p",
+      "test_valid_mel_metal_configuration.py"
+    ],
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "GIT_LFS_SKIP_SMUDGE": "1"
+    },
+    "source_commit": "448c632a5a8a2bf4bc60bfec29a1b44c3935de42",
+    "returncode": 0,
+    "elapsed_seconds": 0.055762833973858505
+  },
+  {
+    "phase": "profile-tests",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-metal-build-v1/preflight.sb",
+      "/Users/victor/.cache/gen2-nemotron3-n0/evidence-tools-env/bin/python",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization",
+      "-p",
+      "test_runtime_profiles.py"
+    ],
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "GIT_LFS_SKIP_SMUDGE": "1"
+    },
+    "source_commit": "448c632a5a8a2bf4bc60bfec29a1b44c3935de42",
+    "returncode": 0,
+    "elapsed_seconds": 0.07810583402169868
+  },
+  {
+    "phase": "construction",
+    "argv": [
+      "/Users/victor/.cache/gen2-nemotron3-n0/evidence-tools-env/bin/python",
+      "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/build_valid_mel_metal_sdk.py",
+      "--source",
+      "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-metal-v1",
+      "--prefix",
+      "/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-tagged-metal-v1",
+      "--output",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-metal-build-v1/build",
+      "--jobs",
+      "4"
+    ],
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "GIT_LFS_SKIP_SMUDGE": "1"
+    },
+    "source_commit": "448c632a5a8a2bf4bc60bfec29a1b44c3935de42",
+    "returncode": 0,
+    "elapsed_seconds": 28.266142417036463
+  }
+]

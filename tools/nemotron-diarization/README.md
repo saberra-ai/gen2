@@ -15,7 +15,10 @@ freezes a fresh tagged SDK build with pristine pinned GGML sources, 20 embedded
 shader-text bundles and model-free state/version checks.
 `build_valid_mel_metal_sdk.py` records the compiler inputs and verifies the
 installed Mach-O payload bytes against independently flattened shader sources.
-Construction does not qualify inference, GPU placement or a desktop release.
+The [actual construction receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-metal-construction/qualification.json)
+passes all 11 construction phases, the state test and exact tagged version check;
+7 real SDK libraries and 18 installed paths are bound. Construction does not
+qualify inference, GPU placement or a desktop release.
 
 # Nemotron 3 — N0 qualification
 

@@ -1,0 +1,136 @@
+{
+  "schema_version": 1,
+  "source_commit": "448c632a5a8a2bf4bc60bfec29a1b44c3935de42",
+  "tagged_metal_sdk_constructed": true,
+  "actual_saved_runtime_version": "nemo-speech-asr 0.2.0+gen2-valid-mel-v1",
+  "outer_commands_passed": 4,
+  "construction_phase_commands_passed": 11,
+  "model_free_preflight_tests_passed": 12,
+  "model_free_state_test_completed": true,
+  "version_function_only_executed": true,
+  "pristine_compiler_files": 3619,
+  "cpu_ggml_patches_applied": false,
+  "generated_shader_text_bundles": 20,
+  "generated_shader_and_assembly_files": 40,
+  "actual_installed_payload_spans_verified": 20,
+  "embedded_payloads_are_shader_text_not_precompiled_gpu_code": true,
+  "sdk_library_paths": 18,
+  "sdk_real_libraries": 7,
+  "runtime_static_archive_bound": true,
+  "neural_calls": 0,
+  "model_instantiated_or_inference_performed": false,
+  "artifact_admitted_for_inference": false,
+  "production_qualified": false,
+  "release_qualified": false,
+  "omitted_binary_inputs": {
+    "pristine_llama_archive": {
+      "bytes": 175656960,
+      "sha256": "d4ce36570bb27150c223c21ccfd693e174fb685b064078556fd3220d8109a260"
+    },
+    "installed_sdk_libraries": {
+      "libggml-base.0.25.1.dylib": {
+        "bytes": 733208,
+        "sha256": "9135d3dfd1706497a53bec674eff51355b6fc9267936db4e500675012a7f2ebc",
+        "symlink_target": null
+      },
+      "libggml-base.0.dylib": {
+        "bytes": 733208,
+        "sha256": "9135d3dfd1706497a53bec674eff51355b6fc9267936db4e500675012a7f2ebc",
+        "symlink_target": "libggml-base.0.25.1.dylib"
+      },
+      "libggml-base.dylib": {
+        "bytes": 733208,
+        "sha256": "9135d3dfd1706497a53bec674eff51355b6fc9267936db4e500675012a7f2ebc",
+        "symlink_target": "libggml-base.0.dylib"
+      },
+      "libggml-blas.0.25.1.dylib": {
+        "bytes": 58776,
+        "sha256": "9898dd3da5f52fa798d58957903afcb24972846b9fc234427a41ff3f2ef507c5",
+        "symlink_target": null
+      },
+      "libggml-blas.0.dylib": {
+        "bytes": 58776,
+        "sha256": "9898dd3da5f52fa798d58957903afcb24972846b9fc234427a41ff3f2ef507c5",
+        "symlink_target": "libggml-blas.0.25.1.dylib"
+      },
+      "libggml-blas.dylib": {
+        "bytes": 58776,
+        "sha256": "9898dd3da5f52fa798d58957903afcb24972846b9fc234427a41ff3f2ef507c5",
+        "symlink_target": "libggml-blas.0.dylib"
+      },
+      "libggml-cpu.0.25.1.dylib": {
+        "bytes": 1022488,
+        "sha256": "916581d318ca0136ed2a35fc2da60edd665e98c1d790e44745e27d7b03a9610e",
+        "symlink_target": null
+      },
+      "libggml-cpu.0.dylib": {
+        "bytes": 1022488,
+        "sha256": "916581d318ca0136ed2a35fc2da60edd665e98c1d790e44745e27d7b03a9610e",
+        "symlink_target": "libggml-cpu.0.25.1.dylib"
+      },
+      "libggml-cpu.dylib": {
+        "bytes": 1022488,
+        "sha256": "916581d318ca0136ed2a35fc2da60edd665e98c1d790e44745e27d7b03a9610e",
+        "symlink_target": "libggml-cpu.0.dylib"
+      },
+      "libggml-metal.0.25.1.dylib": {
+        "bytes": 2181864,
+        "sha256": "efc03f480fde61e99c9bbbe8795a01c0e4e6dcd156bcbcc3a405794a2a958f7f",
+        "symlink_target": null
+      },
+      "libggml-metal.0.dylib": {
+        "bytes": 2181864,
+        "sha256": "efc03f480fde61e99c9bbbe8795a01c0e4e6dcd156bcbcc3a405794a2a958f7f",
+        "symlink_target": "libggml-metal.0.25.1.dylib"
+      },
+      "libggml-metal.dylib": {
+        "bytes": 2181864,
+        "sha256": "efc03f480fde61e99c9bbbe8795a01c0e4e6dcd156bcbcc3a405794a2a958f7f",
+        "symlink_target": "libggml-metal.0.dylib"
+      },
+      "libggml.0.25.1.dylib": {
+        "bytes": 60072,
+        "sha256": "4ca05c6f4c3e2d5273f1e0655f5156863d096af7b23913e5b0d1e0501270684c",
+        "symlink_target": null
+      },
+      "libggml.0.dylib": {
+        "bytes": 60072,
+        "sha256": "4ca05c6f4c3e2d5273f1e0655f5156863d096af7b23913e5b0d1e0501270684c",
+        "symlink_target": "libggml.0.25.1.dylib"
+      },
+      "libggml.dylib": {
+        "bytes": 60072,
+        "sha256": "4ca05c6f4c3e2d5273f1e0655f5156863d096af7b23913e5b0d1e0501270684c",
+        "symlink_target": "libggml.0.dylib"
+      },
+      "libnemo_speech_asr.dylib": {
+        "bytes": 1227352,
+        "sha256": "8fd3a82beb7e3ed1d21e90810e859c954de3e9e0ccd72cacc8a4be008d5c0d6b",
+        "symlink_target": null
+      },
+      "libnemo_speech_asr_c.1.dylib": {
+        "bytes": 96224,
+        "sha256": "9bb0a66ab7cbce1dd1b0eec191654dbb66943701b19a8ce5ff0275484719bae2",
+        "symlink_target": null
+      },
+      "libnemo_speech_asr_c.dylib": {
+        "bytes": 96224,
+        "sha256": "9bb0a66ab7cbce1dd1b0eec191654dbb66943701b19a8ce5ff0275484719bae2",
+        "symlink_target": "libnemo_speech_asr_c.1.dylib"
+      }
+    },
+    "runtime_archive": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-metal-v1/build/metal-diar/src/runtime/ggml/libnemo_speech_runtime_ggml.a",
+      "bytes": 235376,
+      "sha256": "abcecd33f3976b710301d76834c51f5a31b7a49b918c5fb703052e73d5f99e6f"
+    }
+  },
+  "limits": [
+    "No GPU placement, model instantiation, inference, CPU/Metal parity, performance, quality, lifecycle, packaging, desktop or release qualification. Separate fixed preregistered inference required.",
+    "The 20 embedded payloads are shader text compiled at runtime, not precompiled GPU machine code. Exact independent flattening, generated text/assembly and actual installed Mach-O symbol spans must match.",
+    "Metal compiles directly from the pristine pinned llama submodule; none of the 19 CPU GGML patches or materialized CPU tree may participate. Root source differs only by the exact valid-Mel compatibility patch and tracked version definition.",
+    "Existing SDKs, source builds and receipts remain unchanged. CPU long-session qualification may overlap this non-neural compilation; it already declares this condition. Model directories/network denied to construction commands; Homebrew, pristine submodule and current CPU staged work/SDK are write-denied.",
+    "No automatic construction retry. Persist phase commands/status/stdout/stderr; a failure remains failed. All AMI and other roadmap release gates remain unchanged.",
+    "Collection replays saved hashes, physical source inventory, shader flattening and installed Mach-O payload spans using Python byte reads only. No native library load/version/state test/build/model rerun. Native SDK, source Git archive, weights and audio are omitted; their original hashes and compiler/source manifests remain."
+  ]
+}

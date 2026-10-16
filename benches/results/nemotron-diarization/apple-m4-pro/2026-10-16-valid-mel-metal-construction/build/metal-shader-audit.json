@@ -1,0 +1,313 @@
+{
+  "shader_text_bundles": 20,
+  "precompiled_gpu_machine_code": false,
+  "runtime_compiles_embedded_source": true,
+  "generated_files": {
+    "ggml-metal-embed-fa.metal": {
+      "bytes": 391159,
+      "sha256": "d46adc0c74e86212fd80d7836e48d5d0beeece478f6f20f477e03bcd8683083c"
+    },
+    "ggml-metal-embed-fa.s": {
+      "bytes": 297,
+      "sha256": "0a4d0a9c60b737e982d7f8da4a8ac2ff0d690e010ce93b76c27c5d8815823a50"
+    },
+    "ggml-metal-embed-mul_mv.metal": {
+      "bytes": 327292,
+      "sha256": "2da8fe467cdf17bd99f429aeeee7191c0c9ad0b51f8b6bf8611d76b1d5ce386f"
+    },
+    "ggml-metal-embed-mul_mv.s": {
+      "bytes": 317,
+      "sha256": "e2564130e63b38be09ff1c61c6436c8498e2408cef96c89039f8b4149c4533fe"
+    },
+    "ggml-metal-embed-mul_mm.metal": {
+      "bytes": 250033,
+      "sha256": "f5d82045f823a6d4381887329285646628951fd98ed358ec8a769d8853eaa223"
+    },
+    "ggml-metal-embed-mul_mm.s": {
+      "bytes": 317,
+      "sha256": "ad39ca09bf9a2c9a0ba8eece0ba2d93bd5799053ed971dc130f078ed27895171"
+    },
+    "ggml-metal-embed-quantize.metal": {
+      "bytes": 227126,
+      "sha256": "3254fb56d9cf25cf7273cfe0d2f43ba124701a55103afddfb1ca80c4589edcde"
+    },
+    "ggml-metal-embed-quantize.s": {
+      "bytes": 327,
+      "sha256": "8b9994d7f98f484342a21068781b344875882bdfae4d46c7c01e81d58a2458fb"
+    },
+    "ggml-metal-embed-softmax.metal": {
+      "bytes": 38410,
+      "sha256": "d19aa81a9e6aeafd3cec5f4f94d43565ea0d38c0707b3ccde356e8be40aa8aff"
+    },
+    "ggml-metal-embed-softmax.s": {
+      "bytes": 322,
+      "sha256": "4ebc7ad382a1ddabe224cd11421f99cdea061eafc0f36e42a611a1150e130971"
+    },
+    "ggml-metal-embed-norm.metal": {
+      "bytes": 41537,
+      "sha256": "07a92a2a3261a92f705199370e838b7815b07a56ea0720bb61a9e4c9892376e1"
+    },
+    "ggml-metal-embed-norm.s": {
+      "bytes": 307,
+      "sha256": "62fe6046a4756f26b386d79ca6c6fe1c4c4d2910999f3bac7856346d8e6585ad"
+    },
+    "ggml-metal-embed-unary.metal": {
+      "bytes": 45411,
+      "sha256": "33efa1be7620716147190454398097562ae6da72060421df1e1cb3281753659d"
+    },
+    "ggml-metal-embed-unary.s": {
+      "bytes": 312,
+      "sha256": "1a2c6eade76251cdff32bfc548887881748d3ea007d6148730df4a721ba8ffdc"
+    },
+    "ggml-metal-embed-binbcast.metal": {
+      "bytes": 39280,
+      "sha256": "f82b1ed216fac2f399f7902938f7c5f14153cf28bf1125280124757b43492315"
+    },
+    "ggml-metal-embed-binbcast.s": {
+      "bytes": 327,
+      "sha256": "fd25b100f2a76895eaece616ae76322077c1984b737a876839b8ef13fd37f5e6"
+    },
+    "ggml-metal-embed-reduce.metal": {
+      "bytes": 37590,
+      "sha256": "67593b442b4445c79bfcd0ae99ce7e6aec8f843f940312ea8512c69ff2a9efd7"
+    },
+    "ggml-metal-embed-reduce.s": {
+      "bytes": 317,
+      "sha256": "d416fb0cdfed5016ba8e376edc9597ea08dc5380a2b2fdce21af4e03453fc4d5"
+    },
+    "ggml-metal-embed-tri.metal": {
+      "bytes": 33977,
+      "sha256": "27184dff815430c1498ae12e4bc45f5cf9f3155db406a69ffffaf342dec2d220"
+    },
+    "ggml-metal-embed-tri.s": {
+      "bytes": 302,
+      "sha256": "ec374c46c01229cced78cf8fe882b09827aadc0ac05d6d82d28e5cf9b4741352"
+    },
+    "ggml-metal-embed-ssm.metal": {
+      "bytes": 51598,
+      "sha256": "ed6eaf030ef1c9dc521a74359da8037b0e9fd7940f651ad3c4fef9e668c8d1c8"
+    },
+    "ggml-metal-embed-ssm.s": {
+      "bytes": 302,
+      "sha256": "d4b26e39080e8bdcdf7114eedf400c450bdfb78590f05ccf47b11c67c9d56b4b"
+    },
+    "ggml-metal-embed-wkv.metal": {
+      "bytes": 36886,
+      "sha256": "354259387c7aa8503b2149ed2ee1d9577d7391d54545cf23c76bd508797dbb79"
+    },
+    "ggml-metal-embed-wkv.s": {
+      "bytes": 302,
+      "sha256": "c619b0ce97d6e5fdd442a65e91a9ea527f8cfe4037a3214c0128e87c308cd16e"
+    },
+    "ggml-metal-embed-gated_delta_net.metal": {
+      "bytes": 40559,
+      "sha256": "45240911df6eb6609e6f4ed08675b57b8233334a3a4a3c2f9ad7138ac27afb9e"
+    },
+    "ggml-metal-embed-gated_delta_net.s": {
+      "bytes": 362,
+      "sha256": "38ada20c208792dba6d6ca46f985d72fc1e5ba14c9b09f4d380623bc594b534a"
+    },
+    "ggml-metal-embed-solve_tri.metal": {
+      "bytes": 33613,
+      "sha256": "9a110d63159d0864db6e6e622af7fa036455e64b8596cbd6cfbcedcab3fb2c70"
+    },
+    "ggml-metal-embed-solve_tri.s": {
+      "bytes": 332,
+      "sha256": "bd151c9f652d4e8a27978ca2f6b03ce15a8e7bb4933b68547e0bd92f61496254"
+    },
+    "ggml-metal-embed-rope.metal": {
+      "bytes": 45122,
+      "sha256": "462c6bb5dd21e5917be969079f0c1861205c1ff887f0c93ca5f5b8ef8fc98250"
+    },
+    "ggml-metal-embed-rope.s": {
+      "bytes": 307,
+      "sha256": "e73212c88207a28fcb3d93c913495c509bc3fa28beac63ca2611f3a3b4f02257"
+    },
+    "ggml-metal-embed-conv.metal": {
+      "bytes": 57426,
+      "sha256": "4c5886168a92e14936ed03e379796598f0e7ad280ff2945e4bfdb51977775226"
+    },
+    "ggml-metal-embed-conv.s": {
+      "bytes": 307,
+      "sha256": "e5bc0bf4065734dfb00db863b5758f74c4481f6d7df81131eb5bfcde71bbc7f2"
+    },
+    "ggml-metal-embed-upscale.metal": {
+      "bytes": 38087,
+      "sha256": "1a88ec02f408f45caff8f9b065b9aba280246a791ea0b1b3cde2dda795aa796f"
+    },
+    "ggml-metal-embed-upscale.s": {
+      "bytes": 322,
+      "sha256": "662b1f2b32db20a78455e8d9efe1e376c58566a9ddd3cac55dc93c6db6ca80c2"
+    },
+    "ggml-metal-embed-argsort.metal": {
+      "bytes": 46898,
+      "sha256": "7a96e3d41289c392cda338b939c5fd36ffbb4ed3e429a17ac36a7946937540ba"
+    },
+    "ggml-metal-embed-argsort.s": {
+      "bytes": 322,
+      "sha256": "c5e4ac43e801be1737c2e0ba997a60a7f2e46f3c9af606b842d397ce3b45aecb"
+    },
+    "ggml-metal-embed-pool.metal": {
+      "bytes": 35056,
+      "sha256": "5e1a35ad23e61a31e893e57bffa62f3276a7327e4d989f5c047c81002be11803"
+    },
+    "ggml-metal-embed-pool.s": {
+      "bytes": 307,
+      "sha256": "5e03c70bd13f20d2bee252f9447cc20d8052dfd678a88ed16dd97d3c33e00765"
+    },
+    "ggml-metal-embed-misc.metal": {
+      "bytes": 53921,
+      "sha256": "77e851f743c9205faaa8dfb5c38cf9df644b689380c4ce5ee803fda6ff6cfb0b"
+    },
+    "ggml-metal-embed-misc.s": {
+      "bytes": 307,
+      "sha256": "4068ab85f204f417200880766fde88e5923be8911ec5b471787169b12535b146"
+    }
+  },
+  "installed_library": {
+    "bytes": 2181864,
+    "sha256": "efc03f480fde61e99c9bbbe8795a01c0e4e6dcd156bcbcc3a405794a2a958f7f"
+  },
+  "actual_installed_payloads": {
+    "fa": {
+      "start_symbol_address": 230386,
+      "end_symbol_address": 621545,
+      "bytes": 391159,
+      "file_offset": 230386,
+      "independent_source_bytes_match": true
+    },
+    "mul_mv": {
+      "start_symbol_address": 621545,
+      "end_symbol_address": 948837,
+      "bytes": 327292,
+      "file_offset": 621545,
+      "independent_source_bytes_match": true
+    },
+    "mul_mm": {
+      "start_symbol_address": 948837,
+      "end_symbol_address": 1198870,
+      "bytes": 250033,
+      "file_offset": 948837,
+      "independent_source_bytes_match": true
+    },
+    "quantize": {
+      "start_symbol_address": 1198870,
+      "end_symbol_address": 1425996,
+      "bytes": 227126,
+      "file_offset": 1198870,
+      "independent_source_bytes_match": true
+    },
+    "softmax": {
+      "start_symbol_address": 1425996,
+      "end_symbol_address": 1464406,
+      "bytes": 38410,
+      "file_offset": 1425996,
+      "independent_source_bytes_match": true
+    },
+    "norm": {
+      "start_symbol_address": 1464406,
+      "end_symbol_address": 1505943,
+      "bytes": 41537,
+      "file_offset": 1464406,
+      "independent_source_bytes_match": true
+    },
+    "unary": {
+      "start_symbol_address": 1505943,
+      "end_symbol_address": 1551354,
+      "bytes": 45411,
+      "file_offset": 1505943,
+      "independent_source_bytes_match": true
+    },
+    "binbcast": {
+      "start_symbol_address": 1551354,
+      "end_symbol_address": 1590634,
+      "bytes": 39280,
+      "file_offset": 1551354,
+      "independent_source_bytes_match": true
+    },
+    "reduce": {
+      "start_symbol_address": 1590634,
+      "end_symbol_address": 1628224,
+      "bytes": 37590,
+      "file_offset": 1590634,
+      "independent_source_bytes_match": true
+    },
+    "tri": {
+      "start_symbol_address": 1628224,
+      "end_symbol_address": 1662201,
+      "bytes": 33977,
+      "file_offset": 1628224,
+      "independent_source_bytes_match": true
+    },
+    "ssm": {
+      "start_symbol_address": 1662201,
+      "end_symbol_address": 1713799,
+      "bytes": 51598,
+      "file_offset": 1662201,
+      "independent_source_bytes_match": true
+    },
+    "wkv": {
+      "start_symbol_address": 1713799,
+      "end_symbol_address": 1750685,
+      "bytes": 36886,
+      "file_offset": 1713799,
+      "independent_source_bytes_match": true
+    },
+    "gated_delta_net": {
+      "start_symbol_address": 1750685,
+      "end_symbol_address": 1791244,
+      "bytes": 40559,
+      "file_offset": 1750685,
+      "independent_source_bytes_match": true
+    },
+    "solve_tri": {
+      "start_symbol_address": 1791244,
+      "end_symbol_address": 1824857,
+      "bytes": 33613,
+      "file_offset": 1791244,
+      "independent_source_bytes_match": true
+    },
+    "rope": {
+      "start_symbol_address": 1824857,
+      "end_symbol_address": 1869979,
+      "bytes": 45122,
+      "file_offset": 1824857,
+      "independent_source_bytes_match": true
+    },
+    "conv": {
+      "start_symbol_address": 1869979,
+      "end_symbol_address": 1927405,
+      "bytes": 57426,
+      "file_offset": 1869979,
+      "independent_source_bytes_match": true
+    },
+    "upscale": {
+      "start_symbol_address": 1927405,
+      "end_symbol_address": 1965492,
+      "bytes": 38087,
+      "file_offset": 1927405,
+      "independent_source_bytes_match": true
+    },
+    "argsort": {
+      "start_symbol_address": 1965492,
+      "end_symbol_address": 2012390,
+      "bytes": 46898,
+      "file_offset": 1965492,
+      "independent_source_bytes_match": true
+    },
+    "pool": {
+      "start_symbol_address": 2012390,
+      "end_symbol_address": 2047446,
+      "bytes": 35056,
+      "file_offset": 2012390,
+      "independent_source_bytes_match": true
+    },
+    "misc": {
+      "start_symbol_address": 2047446,
+      "end_symbol_address": 2101367,
+      "bytes": 53921,
+      "file_offset": 2047446,
+      "independent_source_bytes_match": true
+    }
+  }
+}
