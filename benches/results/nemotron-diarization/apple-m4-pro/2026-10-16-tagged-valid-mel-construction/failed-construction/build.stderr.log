@@ -1,0 +1,16 @@
+Error: $HOME must be set to run brew.
+Traceback (most recent call last):
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/build_valid_mel_sdk.py", line 118, in <module>
+    main()
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/build_valid_mel_sdk.py", line 98, in main
+    toolchain['packages'] = capture(['/opt/homebrew/bin/brew', 'list', '--versions', 'sentencepiece', 'abseil', 'protobuf'], source).decode().strip()
+                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/build_valid_mel_candidate.py", line 20, in capture
+    return subprocess.check_output(argv, cwd=cwd)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/victor/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/victor/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/opt/homebrew/bin/brew', 'list', '--versions', 'sentencepiece', 'abseil', 'protobuf']' returned non-zero exit status 1.

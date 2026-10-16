@@ -1,0 +1,88 @@
+[
+  {
+    "name": "cmake",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-metadata-v1/offline.sb",
+      "/opt/homebrew/bin/cmake",
+      "--version"
+    ],
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.032643500017002225
+  },
+  {
+    "name": "ninja",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-metadata-v1/offline.sb",
+      "/opt/homebrew/bin/ninja",
+      "--version"
+    ],
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.014228584012016654
+  },
+  {
+    "name": "clang++",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-metadata-v1/offline.sb",
+      "/usr/bin/clang++",
+      "--version"
+    ],
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.018113541009370238
+  },
+  {
+    "name": "xcode-sdk",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-metadata-v1/offline.sb",
+      "/usr/bin/xcrun",
+      "--show-sdk-version"
+    ],
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.012805667007341981
+  },
+  {
+    "name": "brew-packages",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-metadata-v1/offline.sb",
+      "/opt/homebrew/bin/brew",
+      "list",
+      "--versions",
+      "sentencepiece",
+      "abseil",
+      "protobuf"
+    ],
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "HOME": "/Users/victor",
+      "HOMEBREW_NO_AUTO_UPDATE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.38457083399407566
+  }
+]

@@ -273,3 +273,26 @@ receives the actual user home and disables auto-update. No compilation, test,
 version-function or neural call may rerun. A recovered receipt must expose the
 original outer failure and the separate metadata completion, while keeping
 inference, production and release admission false.
+
+## Tagged construction metadata recovered — 2026-10-16
+
+The [109-member construction receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-tagged-valid-mel-construction/qualification.json)
+retains the failed `d5a05c4` outer attempt beside the successful, separately
+preregistered metadata recovery at `0cafd29`. All 25 original construction phases
+passed, including the actual state test and version function. Exactly five
+read-only metadata queries completed in the recovery, taking 1.118489 seconds;
+no compile, test, C ABI version query, frontend or neural work repeated.
+The original SDK/source/compiler bytes and failure logs remain unchanged.
+
+Both review axes independently verified all collected hashes, 3,425 materialized
+compiler inputs, 15 SDK paths representing six real libraries, runtime archive,
+saved exact runtime identifier, state-test result and historical command/tool
+bindings. The recovered receipt completes **construction metadata only** and
+keeps inference, production and release admission false. Q8/F32 inference and
+public Rust behavior against this distinct tagged SDK remain the next gate.
+
+The generic builder is also repaired for future builds: its Homebrew query now
+uses the existing recorded sandboxed command runner, receives the actual user
+home, disables auto-update, and retains stdout/stderr/status. This matches the
+environment that succeeded during metadata recovery. The old failed construction
+protocol/tool source remains retained; no new build is claimed for this repair.

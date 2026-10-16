@@ -668,6 +668,13 @@ passes all28stream sessions and21boundary lengths. Six calibration/direct graph
 comparisons are byte-identical, with actual provisional/reset/stability checks.
 Q8, production artifact/count-contract migration and all-platform/quality
 requalification remain pending; no original quality gate is changed.
+The first Rust migration step now admits only the exact tagged runtime identifier
+and floor-valid final counts, with 1030 library and11targeted model-free tests
+passing. The [tagged CPU construction receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-tagged-valid-mel-construction/qualification.json)
+retains a late Homebrew metadata failure and its separately reviewed read-only
+recovery; compile, install, actual state-test and actual version-query phases
+passed. This SDK is not yet admitted for Q8/F32 or public Rust neural runs.
+Package/comparison/platform/Pnola migration and original release gates stay open.
 The 13-job feature matrix also passed at `4974318`. Later source `cf64214`
 passed12 jobs; its macOS mixed-feature job failed before compilation when GitHub
 submodule fetch could not connect to port443. A failed-job rerun was denied by

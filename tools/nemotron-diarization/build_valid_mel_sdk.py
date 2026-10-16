@@ -95,7 +95,9 @@ def main():
                  for name, path in [('cmake', '/opt/homebrew/bin/cmake'), ('ninja', '/opt/homebrew/bin/ninja'),
                                     ('clang++', '/usr/bin/clang++')]}
     toolchain['sdk'] = capture(['/usr/bin/xcrun', '--show-sdk-version'], source).decode().strip()
-    toolchain['packages'] = capture(['/opt/homebrew/bin/brew', 'list', '--versions', 'sentencepiece', 'abseil', 'protobuf'], source).decode().strip()
+    run('brew-packages', ['/opt/homebrew/bin/brew', 'list', '--versions', 'sentencepiece', 'abseil', 'protobuf'],
+        overrides={'HOME': str(Path.home()), 'HOMEBREW_NO_AUTO_UPDATE': '1'})
+    toolchain['packages'] = (output / 'brew-packages.stdout.log').read_text().strip()
     build = source / 'build/cpu-diar'
     for name in ['CMakeCache.txt', 'compile_commands.json']:
         (output / name).write_bytes((build / name).read_bytes())

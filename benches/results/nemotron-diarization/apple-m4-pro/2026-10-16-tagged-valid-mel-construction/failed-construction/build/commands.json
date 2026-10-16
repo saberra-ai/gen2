@@ -1,0 +1,538 @@
+[
+  {
+    "phase": "configure",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/offline.sb",
+      "/bin/bash",
+      "scripts/configure.sh",
+      "cpu-diar",
+      "-DNEMO_SPEECH_BUILD_EXAMPLES=ON",
+      "-DNEMO_SPEECH_BUILD_CLI=OFF",
+      "-DNEMO_SPEECH_BUILD_MIC_CAPTURE=OFF",
+      "-DGGML_OPENMP=OFF",
+      "-DNEMO_SPEECH_VERSION_METADATA=gen2-valid-mel-v1",
+      "-DNEMO_SPEECH_BUILD_TESTS=ON",
+      "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+      "-DCMAKE_INSTALL_PREFIX=/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-tagged-cpu-v1"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 4.990236082987394
+  },
+  {
+    "phase": "llama-archive",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/offline.sb",
+      "git",
+      "archive",
+      "--format=tar",
+      "-o",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/pristine-llama.tar",
+      "bd4f514db14d87fded667787a7a963bfbaa98e89",
+      "--",
+      ".",
+      ":(exclude)models",
+      ":(exclude)docs",
+      ":(exclude)media"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/llama.cpp",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.1778470830176957
+  },
+  {
+    "phase": "llama-patch-0",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/llama-replay-x268a3yc",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.02191958302864805
+  },
+  {
+    "phase": "llama-patch-1",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/llama-replay-x268a3yc",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.020019041025079787
+  },
+  {
+    "phase": "llama-patch-2",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/llama-replay-x268a3yc",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.01888079202035442
+  },
+  {
+    "phase": "llama-patch-3",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/llama-replay-x268a3yc",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.021214208973105997
+  },
+  {
+    "phase": "llama-patch-4",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/llama-replay-x268a3yc",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.019472916959784925
+  },
+  {
+    "phase": "llama-patch-5",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/llama-replay-x268a3yc",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.018693208985496312
+  },
+  {
+    "phase": "llama-patch-6",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/llama-replay-x268a3yc",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.019640166021417826
+  },
+  {
+    "phase": "llama-patch-7",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/llama-replay-x268a3yc",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.029769540997222066
+  },
+  {
+    "phase": "llama-patch-8",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/llama-replay-x268a3yc",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.020616958034224808
+  },
+  {
+    "phase": "llama-patch-9",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/llama-replay-x268a3yc",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.022708167030941695
+  },
+  {
+    "phase": "llama-patch-10",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/llama-replay-x268a3yc",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.02132229204289615
+  },
+  {
+    "phase": "llama-patch-11",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/llama-replay-x268a3yc",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.01895462500397116
+  },
+  {
+    "phase": "llama-patch-12",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/llama-replay-x268a3yc",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.01893529196968302
+  },
+  {
+    "phase": "llama-patch-13",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/llama-replay-x268a3yc",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.01871399994706735
+  },
+  {
+    "phase": "llama-patch-14",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/llama-replay-x268a3yc",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.022331374988425523
+  },
+  {
+    "phase": "llama-patch-15",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/llama-replay-x268a3yc",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.02042320795590058
+  },
+  {
+    "phase": "llama-patch-16",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/llama-replay-x268a3yc",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.01962724997429177
+  },
+  {
+    "phase": "llama-patch-17",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/llama-replay-x268a3yc",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.02039616700494662
+  },
+  {
+    "phase": "llama-patch-18",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/llama-replay-x268a3yc",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.01868304196977988
+  },
+  {
+    "phase": "build",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/offline.sb",
+      "/opt/homebrew/bin/cmake",
+      "--build",
+      "--preset",
+      "cpu-diar",
+      "--parallel",
+      "6"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 11.374221790989395
+  },
+  {
+    "phase": "install",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/offline.sb",
+      "/opt/homebrew/bin/cmake",
+      "--install",
+      "build/cpu-diar"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.11040862504160032
+  },
+  {
+    "phase": "model-free-state-test",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/offline.sb",
+      "/opt/homebrew/bin/ctest",
+      "--test-dir",
+      "build/cpu-diar",
+      "--output-on-failure",
+      "-R",
+      "^diar_state$"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 1.0114597080391832
+  },
+  {
+    "phase": "version-only",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1/build/offline.sb",
+      "/Users/victor/.cache/gen2-nemotron3-n0/evidence-tools-env/bin/python",
+      "-c",
+      "import ctypes,sys; library=ctypes.CDLL(sys.argv[1]); version=library.nemo_speech_asr_version; version.restype=ctypes.c_char_p; print(version().decode(\"utf-8\"))",
+      "/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-tagged-cpu-v1/lib/libnemo_speech_asr_c.dylib"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.857492417038884
+  }
+]

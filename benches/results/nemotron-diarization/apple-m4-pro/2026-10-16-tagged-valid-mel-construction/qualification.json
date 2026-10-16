@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "construction_commit": "d5a05c43efa62336610c0ec654928a13b5841abb",
+  "metadata_recovery_commit": "0cafd2944cebcea5340a68f8968f06c22d5f2814",
+  "original_outer_returncode": 1,
+  "original_failure": "late Homebrew metadata capture required HOME; all25 construction/state/version phases succeeded",
+  "metadata_recovery_returncode": 0,
+  "tagged_cpu_sdk_construction_metadata_complete": true,
+  "source_preparation_completed": true,
+  "all_25_construction_phase_commands_succeeded": true,
+  "model_free_state_test_completed": true,
+  "actual_saved_runtime_version": "nemo-speech-asr 0.2.0+gen2-valid-mel-v1",
+  "sdk_library_paths": 15,
+  "sdk_real_libraries": 6,
+  "materialized_compiler_inputs": 3425,
+  "runtime_static_archive_bound": true,
+  "new_metadata_queries": 5,
+  "new_compile_test_version_or_neural_calls_in_recovery": 0,
+  "original_attempt_and_sdk_unchanged": true,
+  "model_instantiated_or_inference_performed": false,
+  "artifact_admitted_for_inference": false,
+  "production_qualified": false,
+  "release_qualified": false,
+  "limits": [
+    "The originalfailedattempt, successfulphase logs, SDK andcompiler outputs remain unchanged. A separate recovered-build.json records both constructionfailure and metadatarecovery; no historicalfailure is renamed success.",
+    "Metadata commands are only cmake/ninja/clang version, XcodeSDKversion, and brewlist installedversions. All are network/model/audio-denied. Only thebrewquery receives the actual userHOME and HOMEBREW_NO_AUTO_UPDATE1; HOME is not repurposed.",
+    "No configure/compile/install/ctest/versionfunction/helper/frontend/model execution is admitted. SHA, Gitdiff/source, actualcompiler-input, savedstate-test and savedversion assertions inspect retained evidence only.",
+    "The produced SDK/archive/compiler/provenance bytes are bound before and after recovery. This is constructionmetadata completion only; no inference, Q8/publicRust, otherplatform, quality, packaging, desktop or release qualification.",
+    "The builder source atd5failed after successfulnative construction. The distinct0cafdmetadata-onlyprotocol completed its provenance without rerunning compilation, state tests, CAPIversion or neural work. Historicalfailure remains visible.",
+    "This qualifies construction metadata only. TaggedSDK Q8/F32/publicRust, otherbackend/platforms, package/offline/coexistence/lifecycle/longsession/quality/desktop qualification remain open."
+  ]
+}

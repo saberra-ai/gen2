@@ -1,0 +1,83 @@
+{
+  "schema_version": 1,
+  "scope": "Fresh tagged macOS arm64 CPU sourceSDK construction only. Local source clone, exact V3patch, versionmetadata, independently replayedGGML compiler inputs, actual model-free diar_state test and version-function query. No model/audio acquisition/loading/NN.",
+  "original_source_path": "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp",
+  "candidate_source_path": "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1",
+  "candidate_prefix_path": "/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-tagged-cpu-v1",
+  "evidence_path": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1",
+  "tools": {
+    "prepare_valid_mel_source.py": {
+      "bytes": 3207,
+      "sha256": "8a305519a6f79f243a6de5641c1664d4accc23a2e634670893af8cedccb815be"
+    },
+    "build_valid_mel_sdk.py": {
+      "bytes": 7723,
+      "sha256": "13a3ec63f3b2f3d76c91c88a462d28ee35a9290129aeceaefde60f3db57cc34c"
+    },
+    "runtime_profiles.py": {
+      "bytes": 6449,
+      "sha256": "e6407da8af7083282bf201ad8b0fc73996099a0e63fe05dc091aba0d1ed668a3"
+    },
+    "test_runtime_profiles.py": {
+      "bytes": 3659,
+      "sha256": "60b39d8ba2e5edf374d424e865bf019056e88ec8d3f57a63772ecef55f83a3a6"
+    },
+    "build_valid_mel_candidate.py": {
+      "bytes": 12180,
+      "sha256": "5bfb3ec59548ae0b56e8e3eaded10201933f574b0b04ca12384eb35795dd546b"
+    },
+    "artifacts.py": {
+      "bytes": 2869,
+      "sha256": "17df6411ab0394b4d9bb30a099915badf357af26050b6cd08bfd44887688ff42"
+    },
+    "runtime-valid-mel.lock.json": {
+      "bytes": 6339,
+      "sha256": "af40e586994f223390fcac59936e3781d967c03080350f4b5df141b1bdaf51be"
+    },
+    "runtime.lock.json": {
+      "bytes": 4917,
+      "sha256": "e66e5651608636bbb04528fed7944ab8972a778d1141b36fef3fb391eefd0dcc"
+    },
+    "patches/v3-finish-valid-mel.patch": {
+      "bytes": 1194,
+      "sha256": "8c1434c14f63ebeb2515c719a90594124fd4f75af85b80451fd145b5caef3c36"
+    }
+  },
+  "receipts": {
+    "benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-candidate-build/collection.json": {
+      "bytes": 18882,
+      "sha256": "dda52a0ad11c52045e846ffa7924141d3c1e57924b7dc0e163953c8c46cc47b8"
+    },
+    "benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-candidate-build/qualification.json": {
+      "bytes": 2085,
+      "sha256": "032b9a66425c975945ae41ea932c003967a890e37adca18c77e96f65e4b7163e"
+    },
+    "benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-finish/collection.json": {
+      "bytes": 57479,
+      "sha256": "095c34ed4a84fc8121172c901a8e27d2f0958a3056b0467c74c55b1186da2653"
+    },
+    "benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-finish/qualification.json": {
+      "bytes": 3788,
+      "sha256": "9899b2a752f746125a844bfcea28dbbbfc420f55c42e10325775c40b41ac1a0a"
+    }
+  },
+  "external_launcher": {
+    "bytes": 3022,
+    "sha256": "4c5dac6e2b68939d2435db84e3b7d116d9fae1208e03c5ecb3bd407a40a8ce90"
+  },
+  "denied_paths": [
+    "/Users/victor/.cache/gen2-nemotron3-n0/assets",
+    "/Users/victor/.cache/gen2-nemotron3-n0/native-f32-conversion-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/research/native-f32-control",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality-corpus-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/tail-framing-v1"
+  ],
+  "expected_version": "nemo-speech-asr 0.2.0+gen2-valid-mel-v1",
+  "limitations": [
+    "The completed fixedCPUF32finish regression used an untaggedsourceSDK. This protocol creates a distinctSDK; no oldartifact/evidence is overwritten or relabelled.",
+    "SourceSDK construction and versionfunction execution only. No DiarModel, frontend, patchedfinish, Q8/F32 neural graph or productionRust diarization is admitted. AllNN/publicmodel qualification requires a separatepreregistered protocol.",
+    "The exact newruntime profile binds base083861/llamabd4, original+patchedpipeline identities and solepatch8c1434c1, unchanged model/fixture artifacts, versionmetadata and floor-validV3streaming contract. Untracked/ignoredsource and unexpectedtrackedchanges are rejected beforeconfiguration.",
+    "Beforecompile, materializedGGML inputs must match independentarchive plus committedpatchseries; fullfilemanifest retained and checkedafterbuild. All SDK aliases/realbinaries, staticarchive, compiler/database/cache and phasecommand identities are retained.",
+    "Actual model-free diar_state must execute and pass; actual CAPIversion must match the profile. No inference, modelquality, Metal/Linux/Windows, packaging, desktop, longsession, coexistence or release qualification is claimed."
+  ]
+}
