@@ -1,0 +1,564 @@
+{
+  "source_commit": "f8f7d71f0e2ef3d5a53327763e94e8aa8e25e763",
+  "protocol_sha256": "a1fa29eb18378a1c5f29e419c1c1abec8d8e2cb775a2fb4e2721d8b67fef4a58",
+  "new_hf_forward_calls": 2,
+  "new_native_graph_calls": 4,
+  "excluded_calibration_only": true,
+  "hf_fifo_cloned_before_mutating_final_forward": true,
+  "native_fifo_teacher_forced_for_all_final_cases": true,
+  "native_aosc_executed": false,
+  "frontend_or_processor_executed": false,
+  "neural_model_inference_performed": true,
+  "original_nemo_executed": false,
+  "target_ami_inputs_executed": false,
+  "der_scoring_performed": false,
+  "original_gate_status_changed": false,
+  "release_qualified": false,
+  "numeric_equivalence_claimed": false,
+  "probability_comparisons": {
+    "first_full_native_hf": {
+      "shape": [
+        104,
+        8
+      ],
+      "bitwise_equal": false,
+      "maximum_absolute_error": 0.0002592504024505615,
+      "mean_absolute_error": 1.3166147181336017e-06,
+      "root_mean_square_error": 1.3079125704420043e-05,
+      "p95_absolute_error": 2.338679041713472e-06,
+      "p99_absolute_error": 2.0098090171813785e-05,
+      "worst_frame_feature": [
+        30,
+        0
+      ],
+      "first_frame_feature_over_tolerance": [
+        0,
+        0
+      ],
+      "values_over_tolerance": 831,
+      "absolute_tolerance": 0
+    },
+    "valid39_full_native_hf": {
+      "shape": [
+        112,
+        8
+      ],
+      "bitwise_equal": false,
+      "maximum_absolute_error": 0.0004227161407470703,
+      "mean_absolute_error": 2.269309679871616e-06,
+      "root_mean_square_error": 1.825358626780556e-05,
+      "p95_absolute_error": 5.149282515048981e-06,
+      "p99_absolute_error": 4.2796134948730143e-05,
+      "worst_frame_feature": [
+        79,
+        0
+      ],
+      "first_frame_feature_over_tolerance": [
+        0,
+        0
+      ],
+      "values_over_tolerance": 895,
+      "absolute_tolerance": 0
+    },
+    "zero40_full_native_hf": {
+      "shape": [
+        112,
+        8
+      ],
+      "bitwise_equal": false,
+      "maximum_absolute_error": 0.0004227161407470703,
+      "mean_absolute_error": 2.269309679871616e-06,
+      "root_mean_square_error": 1.825358626780556e-05,
+      "p95_absolute_error": 5.149282515048981e-06,
+      "p99_absolute_error": 4.2796134948730143e-05,
+      "worst_frame_feature": [
+        79,
+        0
+      ],
+      "first_frame_feature_over_tolerance": [
+        0,
+        0
+      ],
+      "values_over_tolerance": 895,
+      "absolute_tolerance": 0
+    },
+    "extra40_full_native_hf": {
+      "shape": [
+        112,
+        8
+      ],
+      "bitwise_equal": false,
+      "maximum_absolute_error": 0.2410401701927185,
+      "mean_absolute_error": 0.0035878951121624744,
+      "root_mean_square_error": 0.021896290287393462,
+      "p95_absolute_error": 0.0042829811573028564,
+      "p99_absolute_error": 0.09716495573520553,
+      "worst_frame_feature": [
+        107,
+        0
+      ],
+      "first_frame_feature_over_tolerance": [
+        0,
+        0
+      ],
+      "values_over_tolerance": 896,
+      "absolute_tolerance": 0
+    },
+    "valid39_zero40_full_native": {
+      "shape": [
+        112,
+        8
+      ],
+      "bitwise_equal": true,
+      "maximum_absolute_error": 0.0,
+      "mean_absolute_error": 0.0,
+      "root_mean_square_error": 0.0,
+      "p95_absolute_error": 0.0,
+      "p99_absolute_error": 0.0,
+      "worst_frame_feature": [
+        0,
+        0
+      ],
+      "first_frame_feature_over_tolerance": null,
+      "values_over_tolerance": 0,
+      "absolute_tolerance": 0
+    },
+    "extra40_zero40_full_native": {
+      "shape": [
+        112,
+        8
+      ],
+      "bitwise_equal": false,
+      "maximum_absolute_error": 0.24105334281921387,
+      "mean_absolute_error": 0.003588107810402038,
+      "root_mean_square_error": 0.02189828051512196,
+      "p95_absolute_error": 0.004285156726837158,
+      "p99_absolute_error": 0.0971316218376149,
+      "worst_frame_feature": [
+        107,
+        0
+      ],
+      "first_frame_feature_over_tolerance": [
+        0,
+        0
+      ],
+      "values_over_tolerance": 896,
+      "absolute_tolerance": 0
+    },
+    "hf_full_returned_prefix": {
+      "shape": [
+        39,
+        8
+      ],
+      "bitwise_equal": true,
+      "maximum_absolute_error": 0.0,
+      "mean_absolute_error": 0.0,
+      "root_mean_square_error": 0.0,
+      "p95_absolute_error": 0.0,
+      "p99_absolute_error": 0.0,
+      "worst_frame_feature": [
+        0,
+        0
+      ],
+      "first_frame_feature_over_tolerance": null,
+      "values_over_tolerance": 0,
+      "absolute_tolerance": 0
+    },
+    "valid39_returned_native_hf": {
+      "shape": [
+        39,
+        8
+      ],
+      "bitwise_equal": false,
+      "maximum_absolute_error": 0.0004227161407470703,
+      "mean_absolute_error": 4.168192387209622e-06,
+      "root_mean_square_error": 2.683953469782428e-05,
+      "p95_absolute_error": 1.5240907669067365e-05,
+      "p99_absolute_error": 6.200432777404766e-05,
+      "worst_frame_feature": [
+        7,
+        0
+      ],
+      "first_frame_feature_over_tolerance": [
+        0,
+        0
+      ],
+      "values_over_tolerance": 311,
+      "absolute_tolerance": 0
+    },
+    "zero40_returned_native_hf": {
+      "shape": [
+        39,
+        8
+      ],
+      "bitwise_equal": false,
+      "maximum_absolute_error": 0.0004227161407470703,
+      "mean_absolute_error": 4.168192387209622e-06,
+      "root_mean_square_error": 2.683953469782428e-05,
+      "p95_absolute_error": 1.5240907669067365e-05,
+      "p99_absolute_error": 6.200432777404766e-05,
+      "worst_frame_feature": [
+        7,
+        0
+      ],
+      "first_frame_feature_over_tolerance": [
+        0,
+        0
+      ],
+      "values_over_tolerance": 311,
+      "absolute_tolerance": 0
+    },
+    "extra40_returned_native_hf": {
+      "shape": [
+        39,
+        8
+      ],
+      "bitwise_equal": false,
+      "maximum_absolute_error": 0.2410401701927185,
+      "mean_absolute_error": 0.008948741406273882,
+      "root_mean_square_error": 0.03562343355630843,
+      "p95_absolute_error": 0.04842863082885737,
+      "p99_absolute_error": 0.21689230918884272,
+      "worst_frame_feature": [
+        35,
+        0
+      ],
+      "first_frame_feature_over_tolerance": [
+        0,
+        0
+      ],
+      "values_over_tolerance": 312,
+      "absolute_tolerance": 0
+    }
+  },
+  "pre_encoder_embedding_comparisons": {
+    "first104": {
+      "shape": [
+        13,
+        512
+      ],
+      "bitwise_equal": false,
+      "maximum_absolute_error": 0.0001277923583984375,
+      "mean_absolute_error": 9.191736405857508e-06,
+      "root_mean_square_error": 1.3753785485317244e-05,
+      "p95_absolute_error": 2.4318695068359375e-05,
+      "p99_absolute_error": 5.396511405706402e-05,
+      "worst_frame_feature": [
+        7,
+        164
+      ],
+      "first_frame_feature_over_tolerance": [
+        0,
+        0
+      ],
+      "values_over_tolerance": 6602,
+      "absolute_tolerance": 0
+    },
+    "valid39": {
+      "shape": [
+        5,
+        512
+      ],
+      "bitwise_equal": false,
+      "maximum_absolute_error": 0.00011444091796875,
+      "mean_absolute_error": 8.580638314015232e-06,
+      "root_mean_square_error": 1.2801568721428151e-05,
+      "p95_absolute_error": 2.3308396339416488e-05,
+      "p99_absolute_error": 4.874706268310526e-05,
+      "worst_frame_feature": [
+        1,
+        418
+      ],
+      "first_frame_feature_over_tolerance": [
+        0,
+        0
+      ],
+      "values_over_tolerance": 2525,
+      "absolute_tolerance": 0
+    },
+    "zero40": {
+      "shape": [
+        5,
+        512
+      ],
+      "bitwise_equal": false,
+      "maximum_absolute_error": 0.00011444091796875,
+      "mean_absolute_error": 8.580638314015232e-06,
+      "root_mean_square_error": 1.2801568721428151e-05,
+      "p95_absolute_error": 2.3308396339416488e-05,
+      "p99_absolute_error": 4.874706268310526e-05,
+      "worst_frame_feature": [
+        1,
+        418
+      ],
+      "first_frame_feature_over_tolerance": [
+        0,
+        0
+      ],
+      "values_over_tolerance": 2525,
+      "absolute_tolerance": 0
+    },
+    "extra40": {
+      "shape": [
+        5,
+        512
+      ],
+      "bitwise_equal": false,
+      "maximum_absolute_error": 107.55845260620117,
+      "mean_absolute_error": 0.8708351386678259,
+      "root_mean_square_error": 4.3189596927375,
+      "p95_absolute_error": 5.009483861923185,
+      "p99_absolute_error": 10.102946906089752,
+      "worst_frame_feature": [
+        4,
+        227
+      ],
+      "first_frame_feature_over_tolerance": [
+        0,
+        0
+      ],
+      "values_over_tolerance": 2536,
+      "absolute_tolerance": 0
+    }
+  },
+  "transformers_direct_url": {
+    "url": "https://github.com/huggingface/transformers.git",
+    "vcs_info": {
+      "vcs": "git",
+      "commit_id": "683b721971417b3b2c64fba9001f525607547e5a",
+      "requested_revision": "683b721971417b3b2c64fba9001f525607547e5a"
+    }
+  },
+  "files": {
+    "hf-final.graph-mask.u8": {
+      "bytes": 14,
+      "sha256": "ea3ced18d8c9f5ed3017afbc235db40d7af1a0d3ad50c4d49f7c1549322266c3"
+    },
+    "hf-first.embeddings.f32": {
+      "bytes": 26624,
+      "sha256": "5e8df8baf568f7518b554d8ffaf81e6045ae12686620a0b25d299033bb6f7c32"
+    },
+    "hf-load.started.json": {
+      "bytes": 72,
+      "sha256": "79786ccea3b7566a5f32f7e21bad2b45b083aa58f8f3ebf405c12d56468f16ca"
+    },
+    "empty.fifo.f32": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "hf-loading-info.json": {
+      "bytes": 95,
+      "sha256": "ea8462ce1fb5161e28a2547070c1a7915315f32097d1aec2ca40a21e18831d85"
+    },
+    "probe-build.json": {
+      "bytes": 2746,
+      "sha256": "dfdffc837086f0c755328b0c427c2a65072805a2e7e9be35a06c0f33f7d4aacc"
+    },
+    "hf-final.full-probabilities.f32": {
+      "bytes": 3584,
+      "sha256": "a14e54fd7a19a12bd43575b89e65a17e512b12081d5857be5b52ad9e31b6fac3"
+    },
+    "hf-load.completed.json": {
+      "bytes": 144,
+      "sha256": "96744896d5a1442307388bf205ba4fbd877a742e40b58e12d636a334725f5c4b"
+    },
+    "hf-final.capture.json": {
+      "bytes": 623,
+      "sha256": "150f1c35913f14016b5423a9d44624546314b855ee1f1347c81821512872857f"
+    },
+    "hf-final.embeddings.f32": {
+      "bytes": 10240,
+      "sha256": "be590786befb0a204d60c0f22b645a8ca79c2674af3ff3713f2088dafba13924"
+    },
+    "hf-first.started.json": {
+      "bytes": 68,
+      "sha256": "f9fc65fe5a4c4526e57f4cb5850cfd171902565ed2c6a7d79091a3420adb2b84"
+    },
+    "extra40.mel.f32": {
+      "bytes": 20480,
+      "sha256": "7277e8a59446b6d3b7cbb7270a2d3db0757c44a9a524c21cff831ce5547178e5"
+    },
+    "hf-final.returned-probabilities.f32": {
+      "bytes": 1248,
+      "sha256": "59b6c365747329550d0eb6659db1c6e5f039fbdc3fba9d9619552e20a9d14cf2"
+    },
+    "hf-first.positions.i64": {
+      "bytes": 104,
+      "sha256": "2e67e70889cafae229c7288a576b2538aac397816569efaa9df65b070e269443"
+    },
+    "hf-first.fifo.f32": {
+      "bytes": 18432,
+      "sha256": "3da39f6448175c54f9da42e98c31812a91a8b8b388739345e676486bbce890aa"
+    },
+    "hf-first.capture.json": {
+      "bytes": 624,
+      "sha256": "02fdb4113e50a5e18f2e958bf3db1fe5eac383861247f36d0a315ac2b518ec3d"
+    },
+    "hf-first.completed.json": {
+      "bytes": 100,
+      "sha256": "64a0d1f6c27cd684dd24f1bcc8354da46399120863acd82ebf2ffe8b0a1141ed"
+    },
+    "first104.mel.f32": {
+      "bytes": 53248,
+      "sha256": "e154027f512ea2d20d35c9b92f83dd175facf277dcef9549937ced3db8a523c8"
+    },
+    "helper-load-commands.txt": {
+      "bytes": 6545,
+      "sha256": "6ba7a7da1bb717249632875e29818215c19db568d3e05409163cfd5de2cf347c"
+    },
+    "hf-final.started.json": {
+      "bytes": 98,
+      "sha256": "0d4ac85cd1bb5c8aba574f5792d8ccc982694cf918b7dd0e966234ea53e5dec0"
+    },
+    "hf-final.positions.i64": {
+      "bytes": 112,
+      "sha256": "8d6386596e4beae87c4c1f35717ed59d15725eff8bd3521b8bb4f8608bc2afdd"
+    },
+    "hf-first.full-probabilities.f32": {
+      "bytes": 3328,
+      "sha256": "ec60056b01d46925b991bb75b9b6b0980deeb9818ec8d120f4a168ac0709ff8f"
+    },
+    "protocol.json": {
+      "bytes": 26624,
+      "sha256": "a1fa29eb18378a1c5f29e419c1c1abec8d8e2cb775a2fb4e2721d8b67fef4a58"
+    },
+    "hf-first.full-logits.f32": {
+      "bytes": 3328,
+      "sha256": "4a6041e852a31d057edd11c0dc36f167bf59df65f052246227bbae05b5e5f839"
+    },
+    "hf-first.graph-mask.u8": {
+      "bytes": 13,
+      "sha256": "fc1df255dfe9a3d6d2d53746ade768d6cc6578c08b2a4bbc9d6c19153b673791"
+    },
+    "valid39.mel.f32": {
+      "bytes": 19968,
+      "sha256": "91dfd769fd1820d6494b2a9734af0af20dd9586714690a032f4089bc63ccf9f8"
+    },
+    "hf-first.graph-input.f32": {
+      "bytes": 26624,
+      "sha256": "5e8df8baf568f7518b554d8ffaf81e6045ae12686620a0b25d299033bb6f7c32"
+    },
+    "zero40.mel.f32": {
+      "bytes": 20480,
+      "sha256": "f57a93ad423e3e8f436b8ed68e53af8210b67cca2f8f8716faf1280b0be06d4b"
+    },
+    "hf-final.graph-input.f32": {
+      "bytes": 28672,
+      "sha256": "9000038d4e2e6aa2e27c5b590ab2f5e5dde119efd9200c5099886c5725ebcaa6"
+    },
+    "hf-final.full-logits.f32": {
+      "bytes": 3584,
+      "sha256": "aa32bd1466c015a7fb555fb8275ec464ed0173c71354e882f1f06d2bc81e5a0d"
+    },
+    "hf-final.completed.json": {
+      "bytes": 151,
+      "sha256": "0a4255201db0f1459c524a48c6e0988d92501b7b8fad87e3591115451b9fd19b"
+    },
+    "valid39/native.stdout.log": {
+      "bytes": 43,
+      "sha256": "126f08df84793869842c0f0bcd1684edf05c2309b07ea4e0bcca7435a3a4af15"
+    },
+    "valid39/native.command.json": {
+      "bytes": 567,
+      "sha256": "9000a5df39d08fc8f32fab4e18d1322a6e5eb3dc6aa4535b0c877014fc38934a"
+    },
+    "valid39/native.predictions.f32": {
+      "bytes": 3584,
+      "sha256": "00779a4bbe2bd4585b413a59ad284997015934a46ba4ded53386343b71817052"
+    },
+    "valid39/native.json": {
+      "bytes": 216,
+      "sha256": "e77bba7bf6f5e45617742c9855a8222230f07081f22306e5d7192e2acba678cc"
+    },
+    "valid39/native.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "valid39/native.embeddings.f32": {
+      "bytes": 10240,
+      "sha256": "e5a541a3f483b84db69be0105e48dadea7cc73a99c5aabf9fc7d70f135cf14cd"
+    },
+    "zero40/native.stdout.log": {
+      "bytes": 43,
+      "sha256": "126f08df84793869842c0f0bcd1684edf05c2309b07ea4e0bcca7435a3a4af15"
+    },
+    "zero40/native.command.json": {
+      "bytes": 565,
+      "sha256": "3f69841780478932d1c8a18e5587f3faf547bf99fedb67cba5d6c5a4a06b2260"
+    },
+    "zero40/native.predictions.f32": {
+      "bytes": 3584,
+      "sha256": "00779a4bbe2bd4585b413a59ad284997015934a46ba4ded53386343b71817052"
+    },
+    "zero40/native.json": {
+      "bytes": 216,
+      "sha256": "80f488271c3afab66e4d20241c3a980c8aa1f6bfcc36eb96fc6bf2caa3a05890"
+    },
+    "zero40/native.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "zero40/native.embeddings.f32": {
+      "bytes": 10240,
+      "sha256": "e5a541a3f483b84db69be0105e48dadea7cc73a99c5aabf9fc7d70f135cf14cd"
+    },
+    "extra40/native.stdout.log": {
+      "bytes": 43,
+      "sha256": "126f08df84793869842c0f0bcd1684edf05c2309b07ea4e0bcca7435a3a4af15"
+    },
+    "extra40/native.command.json": {
+      "bytes": 567,
+      "sha256": "2c49b22b03eb451834ae5592aa5dea059d939875f097f36c89cc61cd7e4ec021"
+    },
+    "extra40/native.predictions.f32": {
+      "bytes": 3584,
+      "sha256": "0697d552d0369ca49deb2101e7303bb6315be37c3d35ebe9d21ce92f8b6a756c"
+    },
+    "extra40/native.json": {
+      "bytes": 216,
+      "sha256": "80f488271c3afab66e4d20241c3a980c8aa1f6bfcc36eb96fc6bf2caa3a05890"
+    },
+    "extra40/native.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "extra40/native.embeddings.f32": {
+      "bytes": 10240,
+      "sha256": "e705cb3072ded3ab7aae40f2223b0f1c9f67a4a20f144bef9b3c9c32036563e6"
+    },
+    "first104/native.stdout.log": {
+      "bytes": 43,
+      "sha256": "126f08df84793869842c0f0bcd1684edf05c2309b07ea4e0bcca7435a3a4af15"
+    },
+    "first104/native.command.json": {
+      "bytes": 566,
+      "sha256": "7bae585d18cf7b81500668fb178d817f4776b0fb69d9062b52c6fc3c346642c6"
+    },
+    "first104/native.predictions.f32": {
+      "bytes": 3328,
+      "sha256": "e769c840ab52e5c6e12305c06ada0ca8c15bebcc1bb18364f7116da88bff0c94"
+    },
+    "first104/native.json": {
+      "bytes": 218,
+      "sha256": "14fa8faa8fedc7d2dbc78b63f23a57c3f040399c9c504398550b95437458d91e"
+    },
+    "first104/native.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "first104/native.embeddings.f32": {
+      "bytes": 26624,
+      "sha256": "f4ca49119d5cd6b5a2443fce743620093eab7f132951b5ca3d3bd5cc3e265551"
+    }
+  },
+  "limitations": [
+    "Excluded calibration and its previouslyseen sourceonly; no new heldout or targetmeetingquality evidence. Originalqualityscorers/outputs/thresholds/locks untouched.",
+    "HFofficialpublishedF32 weights exactlymap from sourceBF16; nativeartifact retainsF16convolution. Identicalinput graph contrast still includes CPUarithmetic, projection andF16conv effects.",
+    "FIFOteacherforcing doesnot test nativecachecompression/stateupdates/free-running drift. HFcache updatesonlytwofixedsteps, with no compression.",
+    "extra40 is a deliberateone-Mel-slot content intervention, not an input-parity claim. All39realMelrows andFIFOremain identical.",
+    "Full native112rows include9cachetokens and finalsyntheticpadding outputs. Returned39row comparisons use72:111 andretainrow111separately, never hideit.",
+    "Qualificationhelper compiles unchanged pinnedbackend.cpp+logging.cpp objects becauseinstalledASR hidesBackendManager symbols; it links the frozen SDKgraph/ggml libs. This is a separatequalification executable, not productionSDKmutation. Initialv1linkfailure records retained.",
+    "No nativeFE/processor/originalNeMo or targetAMI model calls, no scorer/threshold search orrelease claim. No NNrun is permitted until protocol is reviewed andcommitted.",
+    "All directHFload/forwardstarted/completed records andnativecommands/logs retained. Failedattemptprefixes cannotbeoverwritten; no automatic NNretry."
+  ]
+}

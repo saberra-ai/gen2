@@ -1,0 +1,48 @@
+{
+  "full-logits.f32": {
+    "shape": [
+      1,
+      104,
+      8
+    ],
+    "dtype": "torch.float32"
+  },
+  "full-probabilities.f32": {
+    "shape": [
+      1,
+      104,
+      8
+    ],
+    "dtype": "torch.float32"
+  },
+  "embeddings.f32": {
+    "shape": [
+      1,
+      13,
+      512
+    ],
+    "dtype": "torch.float32"
+  },
+  "graph-input.f32": {
+    "shape": [
+      1,
+      13,
+      512
+    ],
+    "dtype": "torch.float32"
+  },
+  "graph-mask.u8": {
+    "shape": [
+      1,
+      13
+    ],
+    "dtype": "torch.bool"
+  },
+  "positions.i64": {
+    "shape": [
+      1,
+      13
+    ],
+    "dtype": "torch.int64"
+  }
+}

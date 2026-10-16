@@ -1,0 +1,26 @@
+{
+  "source_commit": "f8f7d71f0e2ef3d5a53327763e94e8aa8e25e763",
+  "argv": [
+    "/usr/bin/sandbox-exec",
+    "-f",
+    "/Users/victor/.cache/gen2-nemotron3-n0/calibration-graph-v2.sb",
+    "/Users/victor/.cache/gen2-nemotron3-n0/python-reference/bin/python",
+    "-m",
+    "unittest",
+    "discover",
+    "-s",
+    "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization",
+    "-p",
+    "test_loading_info_json.py"
+  ],
+  "environment_overrides": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "HF_HUB_OFFLINE": "1",
+    "TRANSFORMERS_OFFLINE": "1",
+    "OMP_NUM_THREADS": "4",
+    "MKL_NUM_THREADS": "4",
+    "PYTHONPATH": "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization"
+  },
+  "returncode": 0,
+  "elapsed_seconds": 0.029058874992188066
+}

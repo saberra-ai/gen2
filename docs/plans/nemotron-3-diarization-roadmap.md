@@ -649,13 +649,27 @@ finds that official V3 source `218d0b4` also crops to floor-valid Mel rows befor
 stacking, matching HF counts. This later official source declares3.1.0; the
 checkpoint's3.0.0 label does not pin its training source. Actual original-NeMo
 CPU environment, restore and numerical execution remain unqualified.
+The [calibration-only teacher-forced graph control](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-calibration-graph-control/qualification.json)
+now completes at `f8f7d71`: twoHF CPU forwards and four fresh native graph calls,
+with identical39real final Mel rows and cloned HF FIFO. Native internal39-row
+padding and explicit40th zero row give byte-identical full outputs; adding only
+the computed terminal Mel row changes native probabilities by maximum0.241053343
+at frame107/channel0. Native/HF valid39maximum is0.000422716 versus0.241040170
+with that terminal row. All14saved-array probability/embedding reports were
+independently recomputed. The prior loading-report serialization failure is
+retained separately with zero forward/native calls. This supports a separately
+qualified V3 valid-Mel implementation correction; no production patch, AMI-target
+rerun, DER or quality-gate change occurred. Local evidence-tool tests total114.
 The 13-job feature matrix also passed at `4974318`. Later source `cf64214`
 passed12 jobs; its macOS mixed-feature job failed before compilation when GitHub
 submodule fetch could not connect to port443. A failed-job rerun was denied by
 the token's Actions permissions. Fresh source `ec88564` triggered a new full
 matrix, and [all13 jobs now pass](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix/qualification.json),
 including the formerly blocked macOS job and102 evidence-tool tests. The original
-fetch failure remains retained; no build gate is waived.
+fetch failure remains retained; no build gate is waived. The later
+[c729cea matrix also passes all13jobs](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-108/qualification.json),
+including108evidence-tool tests. Subsequent calibration tools and114local tests
+are outside that CI source and require their own matrix run.
 
 Linux/Windows CPU development jobs now build the pinned source SDK with an
 explicit x86_64AVX2/FMA/F16C baseline, retain installed dependency discovery,

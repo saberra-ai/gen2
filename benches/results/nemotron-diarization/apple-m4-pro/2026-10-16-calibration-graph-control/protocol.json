@@ -1,0 +1,629 @@
+{
+  "schema_version": 2,
+  "scope": "Excluded1.117s calibration-only teacher-forced CPU V3 graph control. Exactly2HF forwards and4freshnative graph calls, fixed retained Mel tensors and cloned HF FIFO. No frontend/AOSC/original-NeMo/AMI target/DER or production change.",
+  "artifact_admission": "This distinct protocol admits the exact constructed nativeF32-dominant/F16-conv artifact only for these4fixed graph calls; prior construction admissionfalse and StageC3-case evidence remain unchanged.",
+  "python_version": "3.12.13",
+  "native_revision": "083861c241061562b8ec29eb06d7f6cdc3af8775",
+  "transformers_revision": "683b721971417b3b2c64fba9001f525607547e5a",
+  "linked_sdk_path": "/Users/victor/.cache/gen2-nemotron3-n0/sdk-cpu",
+  "probe": {
+    "bytes": 79960,
+    "sha256": "c3ebd297d84d630b70ba6c553792778faec4a348fbc14836c469f2a560ef0bb4"
+  },
+  "probe_build_manifest": {
+    "bytes": 2746,
+    "sha256": "dfdffc837086f0c755328b0c427c2a65072805a2e7e9be35a06c0f33f7d4aacc"
+  },
+  "probe_build_command": [
+    "/usr/bin/c++",
+    "-std=c++17",
+    "-O2",
+    "-fvisibility=hidden",
+    "-DNEMO_SPEECH_GGML_PATCHED=1",
+    "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/calibration_graph_probe.cpp",
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/runtime/ggml/backend.cpp",
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/runtime/ggml/logging.cpp",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/asr",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/asr/features",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/asr/encoder",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/asr/decoders",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/asr/vad",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/asr/diar",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/asr/postproc",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/asr/pnc",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/common",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/runtime/ggml",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/llama.cpp/ggml/include",
+    "-L/Users/victor/.cache/gen2-nemotron3-n0/sdk-cpu/lib",
+    "-lnemo_speech_asr",
+    "-lggml",
+    "-lggml-base",
+    "-lggml-cpu",
+    "-Wl,-rpath,/Users/victor/.cache/gen2-nemotron3-n0/sdk-cpu/lib",
+    "-o",
+    "/Users/victor/.cache/gen2-nemotron3-n0/calibration-graph-probe-v2/calibration-graph-probe"
+  ],
+  "native_source_files": {
+    "src/asr/types.h": {
+      "bytes": 2920,
+      "sha256": "67af99af722503a3fc623b107c38dfd33fd8d9a4b87201aedccdaec430274790"
+    },
+    "src/asr/recognizer.h": {
+      "bytes": 7854,
+      "sha256": "d0eac9b980797901e19b40f11369798d2a80dd3ffbd65ce346ebc6984872de22"
+    },
+    "src/asr/runner.h": {
+      "bytes": 17470,
+      "sha256": "4c59e3a5c6167488818121ce99ab40d838891d7383db000fb72bceae05f95f7a"
+    },
+    "src/asr/model.h": {
+      "bytes": 14982,
+      "sha256": "08ee01e62c124bbbea64758657728cd68148555e7d0489a281fae8806283aa8b"
+    },
+    "src/asr/batching.h": {
+      "bytes": 17278,
+      "sha256": "d5933c7db797a7722fbe8bdba445ef82093b38bdeb0da36afeb88c0b985c5857"
+    },
+    "src/asr/diar/diar_pipeline.h": {
+      "bytes": 10483,
+      "sha256": "ed55fab4c14ae7c5618c1960a9872d036bca8dfce98e74d030fc903d38d6433e"
+    },
+    "src/asr/diar/aosc_state.h": {
+      "bytes": 5477,
+      "sha256": "c14f4e0ee44d27951a2be5d7798d8606ab01a96fda91872776e0ff204b76da85"
+    },
+    "src/asr/diar/sortformer_model.h": {
+      "bytes": 7325,
+      "sha256": "30a3daf3396d628294457ab9e2c8b1d8ab63829ab28f68dc1e8e96f11c635893"
+    },
+    "src/asr/diar/diarizer.h": {
+      "bytes": 2293,
+      "sha256": "c20e110335bb7fed2aaaf02f391c7b9861b0a37dd8cdbda33e1a363fabfa964b"
+    },
+    "src/asr/encoder/rel_pos_attention.h": {
+      "bytes": 3643,
+      "sha256": "be8f42215441b210843c2427e48d16fc27949bc81dad058501b86609bc11ae7b"
+    },
+    "src/asr/encoder/rope_transformer.h": {
+      "bytes": 2182,
+      "sha256": "48440373226b3241fbc50573fe7ffed37415547eacd2d455709605e566461790"
+    },
+    "src/asr/encoder/cache_aware_encoder.h": {
+      "bytes": 4781,
+      "sha256": "37629e736f40b1ba77e41cb710cbc46a34fe6713629e17d7416a16aec72b4910"
+    },
+    "src/asr/encoder/transformer_encoder.h": {
+      "bytes": 2753,
+      "sha256": "5e4bc5734db5e242f84d1e6a409d93d08e30f180c1273cb4dc0d4e752930d7a0"
+    },
+    "src/asr/encoder/fastconformer.h": {
+      "bytes": 18551,
+      "sha256": "c29994bd8ee21609919a9b1a5e38dd7be31f358fc7841eb0d7c347ed94d844c1"
+    },
+    "src/asr/features/fe.h": {
+      "bytes": 7817,
+      "sha256": "8b2a01bd955160d3ebf3de64e172244f842d4d994d80ff5f674c99107fe3e3b3"
+    },
+    "src/asr/postproc/itn_align.h": {
+      "bytes": 1067,
+      "sha256": "3ff721e81de7ff81aeed7dfe37769cdcffb4cb2f57de90e5651f572324bfdbe4"
+    },
+    "src/asr/postproc/itn.h": {
+      "bytes": 2055,
+      "sha256": "129d777d547090c7a0a53e0497e5b346c8da9a9f4d5faf00d4cd4298f5c5ec3b"
+    },
+    "src/asr/postproc/profanity.h": {
+      "bytes": 982,
+      "sha256": "668b5bd1b5674a911e726920a02cc90c91d0936cf59e4ad16d373259b21ccb42"
+    },
+    "src/asr/postproc/pipeline.h": {
+      "bytes": 3426,
+      "sha256": "4c5898a5d32f5cc6a191082436252e49d08b6375d8849fddec5f8fe93810730c"
+    },
+    "src/asr/decoders/rnnt_modules.h": {
+      "bytes": 5486,
+      "sha256": "5bf5754161a5074fd3e5088dca73554b12dfae4eab8d2c2a7c5ae5f53181dde2"
+    },
+    "src/asr/decoders/rnnt_greedy_decoder.h": {
+      "bytes": 12853,
+      "sha256": "b3c5b212cf0061edb2bdea2d602f5c313026b7f59c1a30395e190099dd9b459d"
+    },
+    "src/asr/decoders/decoder.h": {
+      "bytes": 12602,
+      "sha256": "0637d67d73959b6242ed1e0e120457c13c4c99edffbbfc05b8f867695a795afa"
+    },
+    "src/asr/decoders/context_biasing.h": {
+      "bytes": 2885,
+      "sha256": "0d96a4efafd5732060a90456722688322b82f63fa453c48c2e3ed47405594752"
+    },
+    "src/asr/decoders/greedy_ctc_decoder.h": {
+      "bytes": 5315,
+      "sha256": "62a995737a22daeb2592d7eb8cfff633f2cb670d202c052d00fbe5f6a8be3b82"
+    },
+    "src/asr/decoders/flashlight_decoder.h": {
+      "bytes": 10941,
+      "sha256": "823baa60cdee1c15491c51473c37d18e15e1f8bd0043ee7c4b342a9b602951e1"
+    },
+    "src/asr/vad/vad_masker.h": {
+      "bytes": 5108,
+      "sha256": "a23a9ee3c7e094da7bb978dccd5463f3cd4a2bcce4b228f8aced8418cee9693b"
+    },
+    "src/asr/vad/silero_vad.h": {
+      "bytes": 8684,
+      "sha256": "7a946f77669019abe25cc326b9672639a05c8978a36ef9ca5fccd0563482490b"
+    },
+    "src/asr/vad/vad_endpointer.h": {
+      "bytes": 3345,
+      "sha256": "9f2d2cc4fa064dcafc80edc2a20f15658302ddebf8a39a08290ec974e42d1b50"
+    },
+    "src/asr/pnc/wordpiece.h": {
+      "bytes": 1426,
+      "sha256": "bc0ab14a0c7221a1374e46ab395306d8e7354ecc4335948cc5167bf0ea83ca23"
+    },
+    "src/asr/pnc/pnc_runner.h": {
+      "bytes": 822,
+      "sha256": "fa9bc0e4badf94255ba7c4a31c915c4d4249f50e4a2cac7cf5a3be5901487721"
+    },
+    "src/asr/pnc/pnc_model.h": {
+      "bytes": 1956,
+      "sha256": "68f628134c97449540266091eaf7575cc1a9e07db5752f977727b0ff640d2922"
+    },
+    "src/runtime/ggml/runtime.h": {
+      "bytes": 19230,
+      "sha256": "8b16754a48bc69a9d0f9d2bc29913e9cf4a7e9b5321bd118780093010c5c0f25"
+    },
+    "src/runtime/ggml/nn.h": {
+      "bytes": 7521,
+      "sha256": "837ad68a88d15f9b53cb9ae5f3b2e2bed65824bb78337cdf02d03b500fd09fd9"
+    },
+    "src/common/nvtx_utils.h": {
+      "bytes": 2305,
+      "sha256": "277d5a7ef7e7697f579ae8a563ea9c99d570304a570c2949c4d68ec1380cf0b3"
+    },
+    "src/common/audio_file.h": {
+      "bytes": 1124,
+      "sha256": "9ba8b3e779b75c198256c8d5c07f78ccc98840f367715d3767e06e23d20f19b3"
+    },
+    "src/common/ggml_log_filter.h": {
+      "bytes": 1246,
+      "sha256": "21b4dfd554a7dc40bc0be62b77e5962fe9c2371cd008b650295cd9de10c785f3"
+    },
+    "src/common/subtitles.h": {
+      "bytes": 933,
+      "sha256": "20b5fe27c789bd93a7fb4a9e42b60121edafc0fccccbf7e4d65e1e26aee65945"
+    },
+    "src/common/parameter_parser.h": {
+      "bytes": 5856,
+      "sha256": "2165ea6e0afeb77b7509a5f92a1dc4bc2ec1d590841a0780c40243f73927d9f4"
+    },
+    "src/common/audio_resampler.h": {
+      "bytes": 2622,
+      "sha256": "2f71548582c980468ea58d0afd94b530c708c5a69316fd9040dd1d78b9cc7c40"
+    },
+    "src/common/audio_decoder.h": {
+      "bytes": 1875,
+      "sha256": "2415866e06cb3c64b5e515c491c200a63172806618e3c771b23e27559c845df1"
+    },
+    "src/common/model_logging.h": {
+      "bytes": 2148,
+      "sha256": "c59336a0aa25598c20c29f75cf4e4b045fd4ee03a8aaf6c78820d41eab6199fe"
+    },
+    "src/common/json.h": {
+      "bytes": 1842,
+      "sha256": "0f948e13aefcaa53cda7d3d6195ff9bc50925d5317f5aca271a6ad7702ece84c"
+    },
+    "src/common/subprocess.h": {
+      "bytes": 1351,
+      "sha256": "f7367f51f5955d80d068c241627ce4f27845e47e6976a290a78cfb71202fabbd"
+    },
+    "src/common/text_normalization/fst_normalizer.h": {
+      "bytes": 919,
+      "sha256": "d7d11deb8c760c3a2008da4b9197a2a05ea64fe8cb95b5fa23d7c17348b29f90"
+    },
+    "src/common/text_normalization/compat/sparrowhawk_compat.h": {
+      "bytes": 1485,
+      "sha256": "ff7c7b1ea5a234e753321de30d2b8474d3afec9c155d4051cf738c58d3c64e2e"
+    },
+    "src/common/text_normalization/compat/thrax/grm-manager.h": {
+      "bytes": 4444,
+      "sha256": "f803b0c99b22917a22fd7e9dc3c27c34681e3a5587f112d3252d96521dde0a6c"
+    },
+    "src/common/text_normalization/compat/thrax/thrax.h": {
+      "bytes": 329,
+      "sha256": "002d0a3a0d0e90d9c658c995cbc453a898faea1c15486504e0f25d2b6cb1b3fb"
+    },
+    "llama.cpp/ggml/include/ggml-vulkan.h": {
+      "bytes": 952,
+      "sha256": "7eae5dad2cc7bb4d3eca828539f441816d5fd59fdc7b224d49aa229fc7b7248c"
+    },
+    "llama.cpp/ggml/include/ggml-virtgpu.h": {
+      "bytes": 194,
+      "sha256": "ed231e7db3f0f58b84073f5ee67f9ec9d63046d1a7ed091c36a6cfe9f685a463"
+    },
+    "llama.cpp/ggml/include/ggml-zdnn.h": {
+      "bytes": 292,
+      "sha256": "ee1d79c95ade45ba195a6b71f59a05c18617de4a596d2b2b03ecf38975a9a448"
+    },
+    "llama.cpp/ggml/include/ggml-opencl.h": {
+      "bytes": 581,
+      "sha256": "8e443e1aa9c8bc6e0cf116c4cc3f42f4858938fa15e65b06bc07b26686e1233a"
+    },
+    "llama.cpp/ggml/include/ggml-hexagon.h": {
+      "bytes": 351,
+      "sha256": "b2c12bac390f14707b16bdd27c8c75ce4f075ed509c729ee28fd4f03b17e7375"
+    },
+    "llama.cpp/ggml/include/ggml-cann.h": {
+      "bytes": 4553,
+      "sha256": "2cdb134f27fe5c4ec19d52f1eb58f5355aa42b8f54bf385f0e487501c5df7362"
+    },
+    "llama.cpp/ggml/include/ggml-cpp.h": {
+      "bytes": 1652,
+      "sha256": "bc15ba002c68685df23faae42df0d2b3d58032011f88b649021ab92485862c72"
+    },
+    "llama.cpp/ggml/include/ggml-sycl.h": {
+      "bytes": 2492,
+      "sha256": "728e4f15d0853d63feb95dd596821c750181c26995fff57fe035e964e70fd85f"
+    },
+    "llama.cpp/ggml/include/ggml-blas.h": {
+      "bytes": 586,
+      "sha256": "e76cb8594dc9866d99e7d63191b9fff6ab8b50244b4a28ce3af0f962964a6b5b"
+    },
+    "llama.cpp/ggml/include/ggml-backend.h": {
+      "bytes": 25374,
+      "sha256": "46d84cb998105f871240864fd0f55446939a2fe86c5c281afa63a010fb1f65a2"
+    },
+    "llama.cpp/ggml/include/ggml-et.h": {
+      "bytes": 887,
+      "sha256": "33118c0642b8059a99ea930fd4e4a045e78ccb41760b173ede221f1297c35977"
+    },
+    "llama.cpp/ggml/include/ggml-openvino.h": {
+      "bytes": 1034,
+      "sha256": "c2e3f301e28ad815b4285888aad6130808a77e6acb4e8b558de63a648cf9743e"
+    },
+    "llama.cpp/ggml/include/ggml-cuda.h": {
+      "bytes": 1565,
+      "sha256": "9cbfcea49f6da4d07f41dc22fa8dbf870825faaa2a68e34e65fe30ea6c41e042"
+    },
+    "llama.cpp/ggml/include/ggml-alloc.h": {
+      "bytes": 3753,
+      "sha256": "94e4cd069b9313b2ceb35dacec901981e0bb478d8bb31035b7126be091998c23"
+    },
+    "llama.cpp/ggml/include/ggml-zendnn.h": {
+      "bytes": 498,
+      "sha256": "2cb034b842438281616ce647232d922fb224450323f0d422d2af567c334aa8ff"
+    },
+    "llama.cpp/ggml/include/ggml-opt.h": {
+      "bytes": 14040,
+      "sha256": "3586de1bc8a934b5c72339e2b6937b0641e8f149b512231e666f67de0736eea2"
+    },
+    "llama.cpp/ggml/include/ggml-metal.h": {
+      "bytes": 2141,
+      "sha256": "322f36cd30f3e9e7aad7b5b9bc63078012fd0b7706ac4e24f5721b604f3d8980"
+    },
+    "llama.cpp/ggml/include/ggml-cpu.h": {
+      "bytes": 7753,
+      "sha256": "316279e004cdeb8e6ef78599acb602bf79a8abdf897fed9fd1914808c1518c6e"
+    },
+    "llama.cpp/ggml/include/gguf.h": {
+      "bytes": 11355,
+      "sha256": "e56714aab702e5ce62ee587a409643c08f7e93e8fbb77f48ef7cc85075f96fa4"
+    },
+    "llama.cpp/ggml/include/ggml-webgpu.h": {
+      "bytes": 328,
+      "sha256": "a91d855313a9e85e75ba597ff869a267247dea936a2c0faef03aeb7f1ea6e79c"
+    },
+    "llama.cpp/ggml/include/ggml-rpc.h": {
+      "bytes": 1184,
+      "sha256": "196d2a7434f0abdb01f13c5360e0b118b9f2d66c6452e3a7a844fbecc890205c"
+    },
+    "llama.cpp/ggml/include/ggml.h": {
+      "bytes": 116144,
+      "sha256": "12ee71f99db7db9b353bc02b1fbb57c344ee17c01ac5fb7952b41a637a747ea9"
+    },
+    "src/asr/diar/sortformer_model.cpp": {
+      "bytes": 25857,
+      "sha256": "831d819e0a3986b7b6007987a67b4ccc5f2895d6d68247ca138ed4d9c3c3d2c9"
+    },
+    "src/runtime/ggml/backend.cpp": {
+      "bytes": 6376,
+      "sha256": "92ea19f833c9ba132c81cfe33693ab1090d436e25c2aaea7e6186315f5265394"
+    },
+    "src/runtime/ggml/logging.cpp": {
+      "bytes": 2114,
+      "sha256": "8b06d0484a2c9036f4669edb049ec1e9c9ba4fa1489bf387936d67c8a7fea8ca"
+    }
+  },
+  "sdk_libraries": {
+    "libggml-base.0.25.1.dylib": {
+      "bytes": 752856,
+      "sha256": "ff3e456eef699578f066916f2c55b2a61686869e3e86644236abaabbb9266942"
+    },
+    "libggml-base.0.dylib": {
+      "bytes": 752856,
+      "sha256": "ff3e456eef699578f066916f2c55b2a61686869e3e86644236abaabbb9266942"
+    },
+    "libggml-base.dylib": {
+      "bytes": 752856,
+      "sha256": "ff3e456eef699578f066916f2c55b2a61686869e3e86644236abaabbb9266942"
+    },
+    "libggml-blas.0.25.1.dylib": {
+      "bytes": 58776,
+      "sha256": "fd67df313686fe19d217853c334ba6229760d79dfc52bd4e6540bfd4e01857fb"
+    },
+    "libggml-blas.0.dylib": {
+      "bytes": 58776,
+      "sha256": "fd67df313686fe19d217853c334ba6229760d79dfc52bd4e6540bfd4e01857fb"
+    },
+    "libggml-blas.dylib": {
+      "bytes": 58776,
+      "sha256": "fd67df313686fe19d217853c334ba6229760d79dfc52bd4e6540bfd4e01857fb"
+    },
+    "libggml-cpu.0.25.1.dylib": {
+      "bytes": 1022488,
+      "sha256": "f665d05ab1fcd9961c7170f0345db783f17d5a113f0cc6014c21a6e7be70a635"
+    },
+    "libggml-cpu.0.dylib": {
+      "bytes": 1022488,
+      "sha256": "f665d05ab1fcd9961c7170f0345db783f17d5a113f0cc6014c21a6e7be70a635"
+    },
+    "libggml-cpu.dylib": {
+      "bytes": 1022488,
+      "sha256": "f665d05ab1fcd9961c7170f0345db783f17d5a113f0cc6014c21a6e7be70a635"
+    },
+    "libggml.0.25.1.dylib": {
+      "bytes": 59992,
+      "sha256": "3a48195f4fd94667dc1377cc7aad80e5e307b38b509f4b11558edfa40c4154bc"
+    },
+    "libggml.0.dylib": {
+      "bytes": 59992,
+      "sha256": "3a48195f4fd94667dc1377cc7aad80e5e307b38b509f4b11558edfa40c4154bc"
+    },
+    "libggml.dylib": {
+      "bytes": 59992,
+      "sha256": "3a48195f4fd94667dc1377cc7aad80e5e307b38b509f4b11558edfa40c4154bc"
+    },
+    "libnemo_speech_asr.dylib": {
+      "bytes": 1226872,
+      "sha256": "ed4e41d2d90fbf25b58aa624ee3e80bd65d597b3a81dbba8a7a7df69e34aeb2b"
+    },
+    "libnemo_speech_asr_c.1.dylib": {
+      "bytes": 96224,
+      "sha256": "b0bbb5e6dc22c32a08e552d7181733337fa5760b8a635c462d62bbc3180509c0"
+    },
+    "libnemo_speech_asr_c.dylib": {
+      "bytes": 96224,
+      "sha256": "b0bbb5e6dc22c32a08e552d7181733337fa5760b8a635c462d62bbc3180509c0"
+    }
+  },
+  "packages": {
+    "torch": "2.8.0",
+    "numpy": "2.2.6",
+    "transformers": "5.21.0.dev0"
+  },
+  "transformers_files": {
+    "transformers/models/auto/processing_auto.py": {
+      "bytes": 18565,
+      "sha256": "3f29c881f41abe7b271112eed82300c3577a01b72ba8a464467830ea66d64321"
+    },
+    "transformers/models/nemotron3_diarization/processing_nemotron3_diarization.py": {
+      "bytes": 13787,
+      "sha256": "37d700fd8a041c80cc8a792fbbdc67764e291cfe111928c10e5d266ab5ebad7c"
+    },
+    "transformers/models/nemotron_asr_streaming/feature_extraction_nemotron_asr_streaming.py": {
+      "bytes": 14333,
+      "sha256": "8d2df13e251dcd8315654495b9768138d6e61a359e4f8166f623d890c132dc3d"
+    },
+    "transformers/models/nemotron3_diarization/modeling_nemotron3_diarization.py": {
+      "bytes": 39348,
+      "sha256": "6f7688dbcff3123216fa8860af73af934912683f2191e6b36adc4dd19a39fcad"
+    },
+    "transformers/models/auto/modeling_auto.py": {
+      "bytes": 115485,
+      "sha256": "a3640b246ce40c5f0d9eb2e6f19a665c913ae1d335d8bee99bde9524969638ec"
+    },
+    "transformers/models/nemotron3_diarization/configuration_nemotron3_diarization.py": {
+      "bytes": 12162,
+      "sha256": "0f64152272bb8f27fc8b11fab26d5ec5074207afdade3b6714ce1ed18c9d2c2b"
+    },
+    "transformers/masking_utils.py": {
+      "bytes": 78675,
+      "sha256": "ef6f77df4c9bd9bbe93e21c8fe03c830b461d21dc1c6013cc2690f248cf1dee8"
+    },
+    "transformers/modeling_utils.py": {
+      "bytes": 272636,
+      "sha256": "553412f58334f65abba617f3b344828698dbf63615e109159fd03dafd3422d38"
+    },
+    "transformers/utils/loading_report.py": {
+      "bytes": 11784,
+      "sha256": "2ade91b3101cd8370ca17083e0c33039cde4236d4d4a94295604224269d333e8"
+    }
+  },
+  "assets": {
+    "config.json": {
+      "bytes": 1458,
+      "sha256": "dd795ec07ffa09acf18d231aa3fa8642aa5c521760953754e02559a7413b6873"
+    },
+    "model.safetensors": {
+      "bytes": 396954592,
+      "sha256": "c074d86335b3b794f8fa5edc25594558f128bdb3914d27806a3a5a2e44963cb6"
+    }
+  },
+  "inputs": {
+    "protocol.json": {
+      "bytes": 16733,
+      "sha256": "532841006dc60986d1434121110f0d2c7446789812ac8b845c50a8a2a6657d8c"
+    },
+    "result.json": {
+      "bytes": 161100,
+      "sha256": "1f49461bc6def69da3046f338ebc3d67b8711202fc7ce21b1d74ab3dac4edc84"
+    },
+    "calibration/framing.json": {
+      "bytes": 2464,
+      "sha256": "ccfa57a56fe86ee2636cc317b86c384089c90bf8d456a82fdd760a0267b57003"
+    },
+    "calibration/audio.f32": {
+      "bytes": 71488,
+      "sha256": "547f9157d1484b1e0b955c899cbbc1c4b888bb0feda9c4f48a67dd751c91f436"
+    },
+    "calibration/hf-first-raw.f32": {
+      "bytes": 53760,
+      "sha256": "044c92d1f11eb24fbb64b2122cbe872dd5f925d7ecb88f08f02492599862ac0e"
+    },
+    "calibration/hf-first-raw.mask.u8": {
+      "bytes": 105,
+      "sha256": "5808b2be56b987641aad988d2b06f7d316288f76f0883c068941997c158bb65d"
+    },
+    "calibration/hf-final.f32": {
+      "bytes": 19968,
+      "sha256": "91dfd769fd1820d6494b2a9734af0af20dd9586714690a032f4089bc63ccf9f8"
+    },
+    "calibration/hf-final.mask.u8": {
+      "bytes": 39,
+      "sha256": "f5576efe561214ce478995fd3cad0181ac257b8fe19f3e84e731c15b45a51776"
+    },
+    "calibration/native-final.f32": {
+      "bytes": 20480,
+      "sha256": "23ebd18e1088982e994c45262810ceaeb682f7d6654230f62a95de8e475750db"
+    }
+  },
+  "evidence_receipts": {
+    "benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-native-f32-construction/qualification.json": {
+      "bytes": 2299,
+      "sha256": "8dd91d6889a7d7718df04cb8647762bc264072c7e091f1b64599f4b508e7c85c"
+    },
+    "benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-native-f32-construction/source-tensor-accounting.json": {
+      "bytes": 281082,
+      "sha256": "37b3cf4d8d2d0542cc13fd81619cd5c1056b73100a88dfef2bdf20bbaf1c781d"
+    },
+    "benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-native-f32-construction/protocol.json": {
+      "bytes": 10382,
+      "sha256": "be1f5f0f1e72663b0b4bb345f81268e1e19c610c493284d9f106721ef94393ef"
+    },
+    "benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-native-f32-construction/acquisition.lock.json": {
+      "bytes": 635,
+      "sha256": "358b2c1c08ff5d428e02e7e7cfa495aa875d4f9218928ef3445a10b71c3a5921"
+    },
+    "benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-hf-nemo-weight-identity/qualification.json": {
+      "bytes": 1152,
+      "sha256": "35f1a535157a8b4933c2152c730057e148e659a44c6ca8906bd427dd0a8e2fc0"
+    },
+    "benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-hf-nemo-weight-identity/report.json": {
+      "bytes": 341387,
+      "sha256": "2228086e215f947dfd7170f1f948c9da920b576e3b1a1223f78ff39a976dc79f"
+    },
+    "benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-tail-framing/qualification.json": {
+      "bytes": 2761,
+      "sha256": "8679b21b960507504f75aae884d3db50be326037c25e1fa6986222cde251f56b"
+    },
+    "benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-tail-framing/collection.json": {
+      "bytes": 6552,
+      "sha256": "5560007b8a365b7588fb3b9053176c13660ef1612037fdf69a2846eb39532d7c"
+    },
+    "benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-calibration-graph-admission-control/qualification.json": {
+      "bytes": 2247,
+      "sha256": "a50cee235feee94f7021cea021e7fa969709a5960f5e519482b437d301e30b61"
+    },
+    "benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-calibration-graph-admission-control/collection.json": {
+      "bytes": 4253,
+      "sha256": "e8dd1d26f2ec9b3c8c75d24dbf874d5e6566edd2430fbcd2a110866bf125b7a7"
+    }
+  },
+  "native_f32_model": {
+    "bytes": 395298848,
+    "sha256": "6e946d20b9a3d749a9b23d7106f73ec8cf3a9186fad3afa9bf34d8e0cd58828a"
+  },
+  "hf_streaming_config": {
+    "fifo_length": 264,
+    "latest_frames_score_boost": 0.05,
+    "min_positive_scores_rate": 0.5,
+    "num_speakers": 8,
+    "prediction_score_threshold": 0.25,
+    "speaker_cache_length": 264,
+    "speaker_cache_silence_frames_per_speaker": 1,
+    "speaker_cache_update_period": 222,
+    "strong_boost_rate": 0.75,
+    "subsampling_factor": 8,
+    "weak_boost_rate": 1.5
+  },
+  "tools": {
+    "calibration_graph_probe.cpp": {
+      "bytes": 5131,
+      "sha256": "9dfa4a121936a4e439af404089019db7de1564e4af961f4ecc6a7b7cb26ea33d"
+    },
+    "diagnose_calibration_graph.py": {
+      "bytes": 15927,
+      "sha256": "3a69e1b8dd2a6b4aeaee7f25cd5f8f5cd225363525868bfde2d729693fe801f1"
+    },
+    "calibration_graph_metrics.py": {
+      "bytes": 2449,
+      "sha256": "49cac4427ddeac131935890a0d3bcc0bda095f964c9388ce494a2c214ff21ffc"
+    },
+    "test_calibration_graph_metrics.py": {
+      "bytes": 2229,
+      "sha256": "03a95193fc313af79c41385b3653d4f47b1e0d7eef9118d9d35a64933c34ed0c"
+    },
+    "artifacts.py": {
+      "bytes": 2869,
+      "sha256": "17df6411ab0394b4d9bb30a099915badf357af26050b6cd08bfd44887688ff42"
+    },
+    "frontend_admission.py": {
+      "bytes": 1460,
+      "sha256": "54b977cbca1074e083b8c8880839d9f2d618b2e5c43da9d89dd641e99b397a8d"
+    },
+    "frontend_metrics.py": {
+      "bytes": 2059,
+      "sha256": "6e0fe650decac087915d517e76f71dd7462fb9195ff81393ec93818edf7546dc"
+    },
+    "diagnose_calibration_graph_v2.py": {
+      "bytes": 16005,
+      "sha256": "262d81529236fcb1b28de724c6d4ff24422442a5a94f8309c0c0cd3a5a9cae50"
+    },
+    "loading_info_json.py": {
+      "bytes": 375,
+      "sha256": "015b2931c179bed854370723ad378440e6f5abb249056c45540d943099b8d131"
+    },
+    "test_loading_info_json.py": {
+      "bytes": 1214,
+      "sha256": "d2da4f589418c7304978e9bfb513ffb6d0ff4deee12016469d67ac9b0e151bb6"
+    }
+  },
+  "external_launcher": {
+    "bytes": 3019,
+    "sha256": "8ec005112e58babb105e314ab8e4bf144f10640ee1e34fa84217d31204967c25"
+  },
+  "native_cases": [
+    "first104",
+    "valid39",
+    "zero40",
+    "extra40"
+  ],
+  "hf_forward_calls": 2,
+  "native_graph_calls": 4,
+  "input_policy": "FirstHF104 native-bank Mel rows; finalHF39 identical real rows in all three final native cases. valid39 lets native internallyzero-pad; zero40 appends explicitzero; extra40 appends only the separatelyretainedcomputed native terminalMelrow. Everyfinalcase uses sameclonedHF9x512FIFO, no nativeAOSC.",
+  "comparison_policy": "Compare nativeprobabilities to HFclassifier-hook full logits.sigmoid (104first/112finalrows), thenfinalnative72:111 vsHF39returnedrows. Preserveallfullrows. Numericdifferences descriptive atzero tolerance, no pass threshold or productionselection. Also compare native/HFpreencoder13/5x512embeddings.",
+  "denied_paths": [
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality-corpus-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/assets/Nemotron-3-Diarization.q8_0.gguf",
+    "/Users/victor/.cache/gen2-nemotron3-n0/research/native-f32-control/Nemotron-3-Diarization.nemo"
+  ],
+  "limitations": [
+    "Excluded calibration and its previouslyseen sourceonly; no new heldout or targetmeetingquality evidence. Originalqualityscorers/outputs/thresholds/locks untouched.",
+    "HFofficialpublishedF32 weights exactlymap from sourceBF16; nativeartifact retainsF16convolution. Identicalinput graph contrast still includes CPUarithmetic, projection andF16conv effects.",
+    "FIFOteacherforcing doesnot test nativecachecompression/stateupdates/free-running drift. HFcache updatesonlytwofixedsteps, with no compression.",
+    "extra40 is a deliberateone-Mel-slot content intervention, not an input-parity claim. All39realMelrows andFIFOremain identical.",
+    "Full native112rows include9cachetokens and finalsyntheticpadding outputs. Returned39row comparisons use72:111 andretainrow111separately, never hideit.",
+    "Qualificationhelper compiles unchanged pinnedbackend.cpp+logging.cpp objects becauseinstalledASR hidesBackendManager symbols; it links the frozen SDKgraph/ggml libs. This is a separatequalification executable, not productionSDKmutation. Initialv1linkfailure records retained.",
+    "No nativeFE/processor/originalNeMo or targetAMI model calls, no scorer/threshold search orrelease claim. No NNrun is permitted until protocol is reviewed andcommitted.",
+    "All directHFload/forwardstarted/completed records andnativecommands/logs retained. Failedattemptprefixes cannotbeoverwritten; no automatic NNretry."
+  ],
+  "previous_attempt": {
+    "source_commit": "dc02371f4a9ff67ad6a0ff050b8dbe9c951d1c7d",
+    "protocol": {
+      "bytes": 24742,
+      "sha256": "9d676074f16ed08aacc62a009d50af8b5ceb7374efb8686653a38f6243cd3ed1"
+    },
+    "result": "HFloading-info JSON serialization failed aftermodelconstruction, beforeanyHFforward/nativegraphcall. Originalprefixandprotocolremainunchanged.",
+    "neural_forward_calls": 0,
+    "repair": "JSONencodepublicloading-reportsets deterministically as sortedarrays; preserveeverydiagnostic andcheckoriginalrawtruthiness. Sixmodel-freetests precede freshattempt; allNNinputs/config/model/binary/casecounts/comparisonsunchanged."
+  }
+}

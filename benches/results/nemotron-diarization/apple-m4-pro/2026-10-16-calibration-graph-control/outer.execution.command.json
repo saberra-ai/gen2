@@ -1,0 +1,36 @@
+{
+  "source_commit": "f8f7d71f0e2ef3d5a53327763e94e8aa8e25e763",
+  "argv": [
+    "/usr/bin/sandbox-exec",
+    "-f",
+    "/Users/victor/.cache/gen2-nemotron3-n0/calibration-graph-v2.sb",
+    "/Users/victor/.cache/gen2-nemotron3-n0/python-reference/bin/python",
+    "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/diagnose_calibration_graph_v2.py",
+    "--assets",
+    "/Users/victor/.cache/gen2-nemotron3-n0/assets",
+    "--model",
+    "/Users/victor/.cache/gen2-nemotron3-n0/native-f32-conversion-v1/Nemotron-3-Diarization.f32-control.gguf",
+    "--evidence",
+    "/Users/victor/.cache/gen2-nemotron3-n0/tail-framing-v1",
+    "--native-source",
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp",
+    "--sdk",
+    "/Users/victor/.cache/gen2-nemotron3-n0/sdk-cpu",
+    "--probe",
+    "/Users/victor/.cache/gen2-nemotron3-n0/calibration-graph-probe-v2/calibration-graph-probe",
+    "--probe-build",
+    "/Users/victor/.cache/gen2-nemotron3-n0/calibration-graph-probe-v2/build.json",
+    "--output",
+    "/Users/victor/.cache/gen2-nemotron3-n0/calibration-graph-v2"
+  ],
+  "environment_overrides": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "HF_HUB_OFFLINE": "1",
+    "TRANSFORMERS_OFFLINE": "1",
+    "OMP_NUM_THREADS": "4",
+    "MKL_NUM_THREADS": "4",
+    "PYTHONPATH": "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization"
+  },
+  "returncode": 0,
+  "elapsed_seconds": 3.4782134169945493
+}
