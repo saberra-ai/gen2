@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "source_commit": "125f907d05df8c0084ce350e2261d3bb5198562c",
+  "scope": "Actual optimized CPU/Metal public/native input-digest and partial-frame calibration before frozen corpus inference",
+  "passed": true,
+  "calibration_audio": "First17872PCM16 samples of excluded EN2002d smoke, exactly1.117seconds; not any frozen target recording",
+  "input_pcm_f32le_sha256": "547f9157d1484b1e0b955c899cbbc1c4b888bb0feda9c4f48a67dd751c91f436",
+  "input_repeats": 1,
+  "fp32_shape": [
+    111,
+    8
+  ],
+  "native_frames": 112,
+  "probability_tolerance": 1e-06,
+  "turn_tolerance_seconds": 1e-06,
+  "frozen_protocol_sha256": "3b4780afa4bc80eb84e6e630301cbb1e652d5d682cab897b4db0a0a7b17cc25d",
+  "raw_artifacts": {
+    "calibration-metal-gen2.f32": {
+      "bytes": 3584,
+      "sha256": "dbf47f52950e880f2d349489b26fae3b68771f8f6c507ee2fb3eb68b5085dd06",
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/calibration-metal-gen2.f32"
+    },
+    "calibration-cpu-native.json.f32": {
+      "bytes": 3584,
+      "sha256": "e5f377b032413e8ea3a8304f0fefa07321652fba5e8f537c82b1622a59b07d63",
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/calibration-cpu-native.json.f32"
+    },
+    "calibration-metal-native.json.f32": {
+      "bytes": 3584,
+      "sha256": "dbf47f52950e880f2d349489b26fae3b68771f8f6c507ee2fb3eb68b5085dd06",
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/calibration-metal-native.json.f32"
+    },
+    "calibration-cpu-gen2.f32": {
+      "bytes": 3584,
+      "sha256": "e5f377b032413e8ea3a8304f0fefa07321652fba5e8f537c82b1622a59b07d63",
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/calibration-cpu-gen2.f32"
+    },
+    "calibration-reference.npy": {
+      "bytes": 3680,
+      "sha256": "8b396c775d81c8173cd87fe3333bdb4a1337f459b522990c91457e4dd9d318b7",
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/calibration-reference.npy"
+    },
+    "partial-1.117s-smoke.wav": {
+      "bytes": 35788,
+      "sha256": "1a6fcc5758334348397ceb8e5975589508a65d4d47ff3bf2bdd3a5ed183634c8",
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/partial-1.117s-smoke.wav"
+    }
+  },
+  "binary_source_provenance": "Public release example and independent O2 C++ probe compiled from125f907 after all d01 CPU timing processes completed. SHA256 helper source/header/rotate-bits bytes verified against pinned llama git blob; installed SDKheaders/wav_reader checked against prior pinned manifests.",
+  "offline": "CPU/Metal native processes denied network/sourceSDK/checkouts/source models/Homebrew/original packages. Original FP32 process denied network and uses local_files_only with actual locked installed package/Transformers commit validation.",
+  "limits": [
+    "This short calibration establishes input identity and partial-frame protocol, not heldout quality or complete release.",
+    "Corpus inference began only after all calibration gates passed; those outcomes are separate."
+  ],
+  "artifacts": {
+    "build-manifest.json": "3ec6baee1d7f408203bfe23f4e42d302edca9078fa2a987f043f6eb017d7e8c7",
+    "calibration-cpu-gen2.command.json": "7fd75ca04791cafafe369e8b172922919feafba1f44f3135bf53d09a331f6fed",
+    "calibration-cpu-gen2.json": "d04462e816dd25ca32e6f6ec3c2ab96eb778c76b927608c56820593733634ee1",
+    "calibration-cpu-gen2.time.log": "ed0318bfcd73ce918a849a2c7d1ee91e49c747165e14575b603bbca06eaac85d",
+    "calibration-cpu-native.command.json": "b9ee68d87ee46c470b213ae96a5b792a2327cf56af1fcd33945720a517e07579",
+    "calibration-cpu-native.json": "ceae688f322b88e1442b01d7489361a6535e8273be69f712c1f0b8777acedafb",
+    "calibration-cpu-native.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "calibration-cpu-native.time.log": "9b0311a8a54f7e3d97904ac9be3c8fa1ea87a948fd7a30101806311e30ba9be4",
+    "calibration-metal-gen2.command.json": "9a5fdce44b4af760a1433124f64508152cec9b5bf7ad5d3a280f5f3874ae3f87",
+    "calibration-metal-gen2.json": "5b98c3ba0f70622c12ef553c6d055c5a49a27dafb913304b86c2dd4cb6c2c466",
+    "calibration-metal-gen2.time.log": "05d71baeab7d2be85f92799b66554058c828f74ed21eb2189e6095d8ca19fa4d",
+    "calibration-metal-native.command.json": "6b633590bbffc087564d492585f8d1b56877aa2fac4f5c6493bd249c7a68dcc1",
+    "calibration-metal-native.json": "1a22783cafd7f2853ba0f2897f73281b7cad8802b9ac2dd5b0c2fc1b160ab6d5",
+    "calibration-metal-native.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "calibration-metal-native.time.log": "7f69cdee121a04aea24ed2a5b52d68779b0bd96941b459bf0d5a20cf188efbf1",
+    "calibration-reference.command.json": "5d9a363331fbf00b9f330dae54192432b6e205c662b9ae20b8111b28637b5717",
+    "calibration-reference.json": "209e525facf305c893282546e55b988adf073983182f3da78d810d57dc3c2a3f",
+    "calibration-reference.stdout.log": "79bcbf2177c7f176d91009e04b704f6295cbbd811ebe532111e5f8eebd07975a",
+    "calibration-reference.time.log": "3a964aa0e0249181e2b7500d6a6cff49f8ebfc2f5179c1dad3258e05df6ca297",
+    "calibration.json": "c8d7974b5491d39f785412e2fc87aa5ffe477a82a10aad815034dfe17c07b606",
+    "cpp-cpu-build.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cpp-metal-build.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "frozen-protocol.json": "3b4780afa4bc80eb84e6e630301cbb1e652d5d682cab897b4db0a0a7b17cc25d",
+    "offline.sb": "0ac13c9f8912703e54b255f95b31d3ac19522a5b246856baddbb2d09c59c1e89",
+    "prepare.py": "32c571a4ae46baa8d5fc971912e3fcfbb544b0dd24a8a34452c93e8490c9324d",
+    "reference-offline.sb": "5c358b8d847211333e7ba22df82d84f796b5f30a41a2682209a949d783adbd08",
+    "rust-build.log": "719d63c8828700a0d3ef03f854b301e50f09a5c0ac50cafc15541a30eac248b4"
+  },
+  "feature_ci": {
+    "head_sha": "125f907d05df8c0084ce350e2261d3bb5198562c",
+    "url": "https://github.com/saberra-ai/gen2/actions/runs/38858816836",
+    "jobs": 13,
+    "all_passed": true,
+    "artifact_sha256": "6cdb8e2866754a9a3d593f5c7e4d91a79d7f4f20c952842c1cb3326f60475d66"
+  }
+}

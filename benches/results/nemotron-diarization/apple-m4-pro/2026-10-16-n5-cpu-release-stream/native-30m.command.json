@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/usr/bin/time",
+    "-l",
+    "/usr/bin/sandbox-exec",
+    "-f",
+    "/Users/victor/.cache/gen2-nemotron3-n0/release CPU qualification d01ef80/offline.sb",
+    "/Users/victor/.cache/gen2-nemotron3-n0/release CPU qualification d01ef80/native_stream_probe",
+    "/Users/victor/.cache/gen2-nemotron3-n0/release CPU qualification d01ef80/assets/Nemotron-3-Diarization.q8_0.gguf",
+    "/Users/victor/.cache/gen2-nemotron3-n0/release CPU qualification d01ef80/assets/ami_en2002d_2132.wav",
+    "30",
+    "-1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/release CPU qualification d01ef80/native-30m.json"
+  ],
+  "environment": {
+    "PATH": "/usr/bin:/bin"
+  }
+}

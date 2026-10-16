@@ -487,6 +487,42 @@ source/library/model/audio hashes and source/network-denial policy. This proves
 long-stream parity and throughput on M4Pro; capture/UI end-to-end delay, broader
 quality and other release combinations remain open.
 
+Committed CPU release streams now also pass30m and1h against the independent
+native executable:753/1501turns and502600/506992retained probability values
+match exactly after compaction. RTF is0.19146/0.18871 and public peak RSS is
+241238016/245252096bytes. Cold instance load and native push distributions are
+reported, with ordinary OS/background and warm file-cache limits retained.
+See the [CPU release-stream receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-n5-cpu-release-stream/receipt.json).
+These are repeated-fixture throughput/parity results, not capture/UI delay or
+varied-meeting quality. No N5 completion is claimed.
+
+The eight local tuning-held-out slices are now acquired and immutable before
+inference:1896.992audio seconds with exact WAV/reference/source hashes, full
+audio UEM and retained original annotations. AMI uses human-reviewed lexical
+transcriber segments; its word times remain a separately named forced-alignment
+diagnostic. ICSI includes substantial real digit reading. Vox auzru's26ms
+annotation overrun is explicitly clipped to actual WAV length; no selected
+recording, channel or crop changed. See the [corpus freeze receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-corpus-freeze/receipt.json).
+The committed protocol pins all scoring/reference tools before model output.
+Review repairs bind CPU/Metal public/native/FP32 output to the actual normalized
+PCM digest and verify installed oracle package versions and Transformers commit.
+Rebuilt release runners passed an excluded1.117s smoke calibration: native112
+frames, FP32mask111frames, actual PCM identity and exact native/public parity.
+See the [calibration receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-quality-calibration/receipt.json).
+The13-job feature matrix passed at125f907. Frozen corpus scoring is in progress;
+no held-out quality outcome is inferred from acquisition or calibration.
+
+Linux/Windows CPU development jobs now build the pinned source SDK with an
+explicit x86_64AVX2/FMA/F16C baseline, retain installed dependency discovery,
+compare real public/native output and require all seven native lifecycle tests
+to be compiled and executed. Windows public loading now searches the selected
+absolute DLL directory for its imported siblings without changing process PATH;
+a separate default-loader negative control exercises the original failure route.
+Two actual Windows compiler-environment setup failures are retained as diagnostic
+evidence, not qualification. Real SDK/public reruns are pending. These jobs do
+not establish closed portable packages, fresh-machine offline operation or
+mixed-model coexistence on those platforms.
+
 - [ ] Run Mac CPU first; compare Metal against the same Q8 reference and real
   annotated audio. Record device placement/fallback rather than treating a
   successful Metal build as acceleration evidence.

@@ -1,0 +1,115 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "gen2_commit": "d01ef80f8a290b7ae8a3282b3941dd39867f4ff4",
+  "scope": "Committed optimized macOS CPU public long-session/native-reference parity and throughput; no capture cadence or GUI delay claim",
+  "backend": "cpu",
+  "device": null,
+  "host": "M4Pro64GiB/macOS26.3",
+  "cpu_threads": 4,
+  "model_sha256": "08456d9e22cd9a323c0364d98375f3746d6e68507ebb705cd46438c534c7a3a1",
+  "source_audio_sha256": "f00f92e53115a4a6724aec0ddaf9c675df6d5fabd3a489b43fffe56ba52a3ae9",
+  "metrics": [
+    {
+      "minutes": 30,
+      "matched": true,
+      "turns": 753,
+      "frame_count": 180001,
+      "retained_first_frame": 117176,
+      "retained_rows": 62825,
+      "retained_values_compared": 502600,
+      "maximum_turn_error_seconds": 0.0,
+      "maximum_probability_error": 0.0,
+      "gen2_rtf": 0.19145764055555556,
+      "native_rtf": 0.1911275938888889,
+      "gen2_peak_rss_bytes": 241238016,
+      "cold_gen2_load_micros": 10863287,
+      "native_push_median_micros": 167773,
+      "native_push_p95_micros": 340637,
+      "native_push_max_micros": 1058907,
+      "observed_provisional_revisions": 341,
+      "finish_micros": 763525
+    },
+    {
+      "minutes": 60,
+      "matched": true,
+      "turns": 1501,
+      "frame_count": 360001,
+      "retained_first_frame": 296627,
+      "retained_rows": 63374,
+      "retained_values_compared": 506992,
+      "maximum_turn_error_seconds": 0.0,
+      "maximum_probability_error": 0.0,
+      "gen2_rtf": 0.1887129686111111,
+      "native_rtf": 0.1833254522222222,
+      "gen2_peak_rss_bytes": 245252096,
+      "cold_gen2_load_micros": 75617,
+      "native_push_median_micros": 166391,
+      "native_push_p95_micros": 319257,
+      "native_push_max_micros": 463491,
+      "observed_provisional_revisions": 683,
+      "finish_micros": 778798
+    }
+  ],
+  "raw_probability_artifacts": {
+    "gen2-30m.f32": {
+      "size": 2010400,
+      "sha256": "1351c77d7eb3eec032905c4317f319d3d62cf370dec0f582c550fde4f661510b",
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/release CPU qualification d01ef80/gen2-30m.f32"
+    },
+    "gen2-60m.f32": {
+      "size": 2027968,
+      "sha256": "4374eff8653016f274caf866e4588e1d2a1e627a1e1e385d96f8978411db3e34",
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/release CPU qualification d01ef80/gen2-60m.f32"
+    },
+    "native-30m.json.f32": {
+      "size": 2010400,
+      "sha256": "1351c77d7eb3eec032905c4317f319d3d62cf370dec0f582c550fde4f661510b",
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/release CPU qualification d01ef80/native-30m.json.f32"
+    },
+    "native-60m.json.f32": {
+      "size": 2027968,
+      "sha256": "4374eff8653016f274caf866e4588e1d2a1e627a1e1e385d96f8978411db3e34",
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/release CPU qualification d01ef80/native-60m.json.f32"
+    }
+  },
+  "native_header_geometry": {
+    "chunk": 9,
+    "right": 4,
+    "left": 0,
+    "fifo": 264,
+    "cache": 264,
+    "update": 222
+  },
+  "input_semantics": "Licensed60sAMI repeated through one native session without resetting cache; same PCM and16640sample transport chunks, new public/reference process per run. Not varied heldout meeting quality.",
+  "offline": "Each native process under network/sourceSDK/checkouts/originalmodels/privatepackage/Homebrew denials; policy retained. Existing92-library relocation proof supports same unchanged CPU package closure.",
+  "timing_scope": "Sequential new processes from frozen release/independentO2binaries. Ordinary OS/browser and lightweight editing/review/tooling work remains; no concurrent native inference or build during timing. OS file caches not cleared. Public elapsed includes queue/input reads, excludes model load; direct native push times distinct from capture/UI label delay.",
+  "limits": [
+    "Same-host relocation, not fresh-machine packaging.",
+    "No physical microphone/GUI, signing/notarization, Linux/Windows native package or actual live capture/UI latency claim.",
+    "Corpus quality and attribution remain open; these repeated-fixture throughput results do not establish quality.",
+    "Executed binary is d01ef80, before later input-digest instrumentation; original sources/hashes preserved."
+  ],
+  "artifacts": {
+    "compare_stream.py": "6d6a80a3b9710d0d2d0705225653935d40cd69aac9abe50454c0609631c6daa4",
+    "comparison-30m.json": "359269df83ef6ca708d29b585d38a50db465b6f8e8c4e18a51fff5acfd10346a",
+    "comparison-60m.json": "b1a582b68d292c0295e798e4f373bae504420d9d75609d2d93698670016c2d9c",
+    "gen2-30m.command.json": "a52dc55768b242f6026b1ab4ebbce6a47e23dccc5e660ddcff497bcf64012ebe",
+    "gen2-30m.json": "e0d8a7b2eddd38952868d682b9ca9bc1d34bde80ee1a47637204599022e3fe4a",
+    "gen2-30m.time.log": "e885f8f39aa37937d0278feda5d37c501ed0cfc7e0f3f4e26a009ad4dc4e6999",
+    "gen2-60m.command.json": "830f04da8606c4aed9bd67cb9b422004c4d8fdfe97e4bf5db8af3d5ebb691c0e",
+    "gen2-60m.json": "fd7d7b082024f58ade093494a78d90ea1efb8dc83b7266d84afb48ac46cac383",
+    "gen2-60m.time.log": "ee1d8ced8a7bf4fb14359c745f3bc7b9e715ed64dfa65a394d856cba6cfe867d",
+    "manifest.json": "cfdcacf9868881238de436eb70a625ac754f7bd2ac765fafbe0a94445ee47807",
+    "native-30m.command.json": "3c5a50ce34f759a1862976523c6aa1146be821e271f005d916cbdf0ffe0677af",
+    "native-30m.json": "7351963009f974d7a5d72014739532e349f7050bbaaa41d314b2043338b1e72e",
+    "native-30m.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "native-30m.time.log": "249e1eb718784b7de5b8356d80e85ac2bf96fdd98efe8840d84f6dbc15bef200",
+    "native-60m.command.json": "c85348e9a625f35837d01b3799b76655555f1f2a601ecc3267d3e1512826cd51",
+    "native-60m.json": "d1ea82659c797cb208d574788b6802a0b6d2899112deec25ee2b6a04a213e6fa",
+    "native-60m.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "native-60m.time.log": "8e20c823394543395d75524688839fa15b7c444af722ffbe828b3f477d66e325",
+    "offline.sb": "0ac13c9f8912703e54b255f95b31d3ac19522a5b246856baddbb2d09c59c1e89",
+    "run.py": "e4d6edf47ddd0dc35bfafdec32303b4327f8d96452a4b9f115a95f9f286e2a35"
+  }
+}

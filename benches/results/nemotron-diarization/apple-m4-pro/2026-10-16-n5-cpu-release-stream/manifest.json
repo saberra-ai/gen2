@@ -1,0 +1,50 @@
+{
+  "gen2_commit": "d01ef80",
+  "execution": "release optimized public example and independent O2 C-header reference, sequential processes; raw probability comparison required",
+  "host": "macOS-26.3-arm64-arm-64bit-Mach-O",
+  "cpu_threads": "4 per pinned BackendManager::Params; GPU/Accelerate driver threading not exposed",
+  "environment": {
+    "PATH": "/usr/bin:/bin"
+  },
+  "source_hashes": {
+    "src/diarization/ffi.rs": "c41264d29a84830021f4ff0ab1913be0bfceeaec5bc37c716c9133fe3561304f",
+    "src/diarization/nemo.rs": "c12d26133d2e8c5e11e70fe62064eb6d116ebfa93f0996e4221cb7f6e8471ab8",
+    "src/diarization/types.rs": "543fb439f15a3c2ab18638d6cd489afd9209268b8258eecb71362296d80276a3",
+    "examples/nemotron_stream.rs": "0058212d31a15d1194c567f3af194b633cecc19b3a3628243ddea1f35207f874",
+    "tools/nemotron-diarization/native_stream_probe.cpp": "cbc3dd6a16a725168d7712c576c7fe7f39a073b1cda426e08851bf5371f4eb2e",
+    "tools/nemotron-diarization/compare_stream.py": "6d6a80a3b9710d0d2d0705225653935d40cd69aac9abe50454c0609631c6daa4"
+  },
+  "header_hashes": {
+    "include/nemo_speech/diar.h": "4839f70ccab30af3ed9949751792a547f3a8a4129848f64c8cd69889bd433afd",
+    "include/nemo_speech/asr.h": "12f3e017391ae19daabe59d2d50541f0aabb010228d075426b4a9834337422fa"
+  },
+  "wav_reader_sha256": "0af593f097a1ce49078ef363feb244690598f5a53dc6a34cf208d441a52fe726",
+  "files": {
+    "nemotron_stream": "6a4efe476d8cd94a2be3c28e10008ec0e4efd025ecf1e19113c359cfed0e288e",
+    "native_stream_probe": "e2279a2f49c44b23095405308032ea42db3a553bb2418e1e0af5d01878c3ad6d",
+    "compare_stream.py": "6d6a80a3b9710d0d2d0705225653935d40cd69aac9abe50454c0609631c6daa4",
+    "offline.sb": "0ac13c9f8912703e54b255f95b31d3ac19522a5b246856baddbb2d09c59c1e89",
+    "nemo/package.json": "ae6e0e551f2c4a30a1f18c7543f42ad704018137042517930de3b0d17d699db8",
+    "assets/Nemotron-3-Diarization.q8_0.gguf": "08456d9e22cd9a323c0364d98375f3746d6e68507ebb705cd46438c534c7a3a1",
+    "assets/README.md": "5fe88ca4020d2ee134f806a0a02c52c19855b73047bc2e6f25b9171e1abeebfd",
+    "assets/ami_en2002d_2132.wav": "f00f92e53115a4a6724aec0ddaf9c675df6d5fabd3a489b43fffe56ba52a3ae9"
+  },
+  "native_reference_compile_command": [
+    "clang++",
+    "-std=c++17",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/native_stream_probe.cpp",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/sdk-cpu/include",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/examples",
+    "-L/Users/victor/.cache/gen2-nemotron3-n0/release CPU qualification d01ef80/nemo/lib",
+    "-lnemo_speech_asr_c",
+    "-Wl,-rpath,/Users/victor/.cache/gen2-nemotron3-n0/release CPU qualification d01ef80/nemo/lib",
+    "-o",
+    "/Users/victor/.cache/gen2-nemotron3-n0/release CPU qualification d01ef80/native_stream_probe"
+  ],
+  "cold_scope": "New process/model; OS file caches not cleared. Ordinary OS/browser background work remains. No concurrent build/native qualification.",
+  "backend": "cpu"
+}
