@@ -305,3 +305,17 @@ native outputs. Run `cargo test --no-default-features --features backend-diar-ne
 The separate explicit-Metal test still requires both CPU and Metal packages and
 must run in a fresh process with its own documented environment. Invalid backend
 selection fails immediately. Compile-only or ignored results are not qualification.
+
+
+`native_stream_probe.cpp` is an independent C-header long-session reference;
+it links the private native package, retains raw probabilities only for the
+bounded native tail, and reports actual native cold load/push median/p95/tail
+finish timings. It accepts a20ms–600s licensed mono16k WAV, repeats totaling at
+most one hour, and explicit CPU(-1)/GPU ordinal. A20MiB source-file cap, retained
+probability/turn caps, finite-value checks and no-overwrite evidence paths bound
+qualification input/output. Gen2's `nemotron_stream` example separately reports
+public load time, queue backpressure, snapshots and native compute time.
+`compare_stream.py` checks final native/wrapper speaker identities, boundaries,
+geometry, frame retention/compaction and finite probability evidence. It clips
+only presentation padding and reports timings separately from correctness.
+The independent probe's successful compile/calibration is not a completed soak.

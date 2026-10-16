@@ -1,4 +1,4 @@
-"""Measure Bark token-derived word intervals against licensed AMI manual words.
+"""Measure Bark token-derived intervals against AMI forced-aligned human transcripts.
 
 This is an alignment investigation, not an attribution acceptance receipt.
 Overlapping reference words are ordered chronologically for the diagnostic WER.
@@ -104,7 +104,10 @@ def main():
     predicted = token_words(transcription["timestamps"])
     report = evaluate([(normalize(w["text"]), w["start_seconds"], w["end_seconds"]) for w in words], predicted)
     result = {"schema_version": 1, "source": ARCHIVE_URL, "archive_sha256": archive_hash,
-              "license": "CC-BY-4.0", "meeting": args.meeting, "start_seconds": args.start,
+              "license": "CC-BY-4.0",
+              "reference_timing": "automatic forced alignment of human transcription; not manually timed words",
+              "reference_timing_source": "https://groups.inf.ed.ac.uk/ami/corpus/transcription.shtml",
+              "meeting": args.meeting, "start_seconds": args.start,
               "duration_seconds": args.seconds, "files": names, "reference_words": words,
               "transcription_sha256": hashlib.sha256(args.transcription.read_bytes()).hexdigest(),
               "tool_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),

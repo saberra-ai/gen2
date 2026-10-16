@@ -344,6 +344,10 @@ Speaker-tagged chronological word error is 46.94% (global known-speaker mapping;
 word or speaker mismatch costs one substitution, unknown/overlap never match a
 person). Conservative concatenated per-speaker WER is 65.31%, with unknown and
 overlap words treated as an unmapped insertion stream. Text WER remains 27.21%.
+AMI words are human-transcribed, but their timestamps come from automatic forced
+alignment; boundary metrics are comparisons with that alignment, not manually
+timed word ground truth. Human-reviewed AMI transcriber segments are used for
+primary DER in the newly frozen protocol.
 These are single-clip investigations, not a held-out attribution acceptance gate.
 The 800 ms/50%/20% rules are conservative uncertainty policy, not a calibrated
 forced aligner. Broader timing/short-turn/overlap evaluation, quality improvement
@@ -453,6 +457,21 @@ orders and shared-budget eviction/restoration with source models and networking
 denied. That admission test runs short silence through speech/diarization and a
 text decision through Laya; it is not a new real-meeting quality or performance
 receipt. See the [relocated mixed-model receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-n5-relocated-mixed/receipt.json).
+
+Metal additionally passed the existing eight real native lifecycle gates,
+including100actual reloads, streaming transport parity, cancellation, deadlines,
+ABI failures and warm-cache reuse. These are development functional receipts;
+committed release long-session timings/independent long-reference comparisons
+are now being collected. The examples accept explicit `--metal` selection.
+
+The [corpus investigation](../research/nemotron-heldout-corpus.md) freezes eight
+local tuning-held-out target slices from seven recordings before model output,
+including2/4/8speaker references and paired close/distant AMI channels. Exact audio
+hashes/reference extraction must be frozen before scoring. Training exposure is
+explicit: six recordings are in the model's declared training inventory; ES2004a
+has conditional official evaluation-split evidence. This set supports local
+integration/quantization checks, not a broad unseen-recording claim. Stronger
+unseen-data qualification still needs separately excluded or newer recordings.
 
 - [ ] Run Mac CPU first; compare Metal against the same Q8 reference and real
   annotated audio. Record device placement/fallback rather than treating a
