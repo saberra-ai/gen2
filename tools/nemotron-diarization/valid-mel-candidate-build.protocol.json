@@ -1,0 +1,138 @@
+{
+  "schema_version": 1,
+  "scope": "Build-only macOS arm64 CPU candidate from pinned upstream083861 plus one reviewed V3finish-valid-Mel patch. One model-free diar_state test, no frontend/model/finish execution, no inference admission or production migration.",
+  "base_revision": "083861c241061562b8ec29eb06d7f6cdc3af8775",
+  "llama_revision": "bd4f514db14d87fded667787a7a963bfbaa98e89",
+  "candidate_source_path": "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1",
+  "candidate_prefix_path": "/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-cpu-v1",
+  "original_runtime_lock": {
+    "bytes": 4917,
+    "sha256": "e66e5651608636bbb04528fed7944ab8972a778d1141b36fef3fb391eefd0dcc"
+  },
+  "patch": {
+    "bytes": 1194,
+    "sha256": "8c1434c14f63ebeb2515c719a90594124fd4f75af85b80451fd145b5caef3c36"
+  },
+  "source_files": {
+    "include/nemo_speech/diar.h": {
+      "bytes": 7606,
+      "sha256": "4839f70ccab30af3ed9949751792a547f3a8a4129848f64c8cd69889bd433afd"
+    },
+    "include/nemo_speech/asr.h": {
+      "bytes": 12718,
+      "sha256": "12f3e017391ae19daabe59d2d50541f0aabb010228d075426b4a9834337422fa"
+    },
+    "models/index.json": {
+      "bytes": 7975,
+      "sha256": "4d5d88c93b006b33b2e02e5c214e97e6c28e96f8673b0d744ccfa1e8f4a255b7"
+    },
+    "CMakePresets.json": {
+      "bytes": 9864,
+      "sha256": "2e1e02ba92865d283ac52682b993152c7d60801c00350146b7d022efb0a44cd6"
+    },
+    "patches/series": {
+      "bytes": 1127,
+      "sha256": "35e50f5c92e37c10f6e6dded26f51dd290196104990224918b455c1d828b76b8"
+    },
+    "LICENSE": {
+      "bytes": 12238,
+      "sha256": "eaaca34b26b27c7be5a5099a0b9ddf9913f2db0aa96f6d5854435f2916d6fdc3"
+    },
+    "NOTICE": {
+      "bytes": 233,
+      "sha256": "d5ea773d67035e676503579ecf7d5836a124649d7fe99d59ec3c50cd101e1a80"
+    },
+    "THIRD_PARTY_NOTICES.md": {
+      "bytes": 10277,
+      "sha256": "fd8fcc0c71abde95b1b742a74c70aa27d2b4f2811fc19f64378b6845d8f3254a"
+    },
+    "examples/wav_reader.h": {
+      "bytes": 3522,
+      "sha256": "0af593f097a1ce49078ef363feb244690598f5a53dc6a34cf208d441a52fe726"
+    },
+    "examples/diarize_file.cpp": {
+      "bytes": 6732,
+      "sha256": "486332c36080906f65b37c0086b6b2ee55bc6e882f1edfcb9fe7b044894ada4d"
+    },
+    "src/asr/c_api.cpp": {
+      "bytes": 28872,
+      "sha256": "d031ee096eefc0d5ed597bd8897fe05d0fe538fbe4f2119d2533a606400862fe"
+    },
+    "src/asr/diar/diar_pipeline.cpp": {
+      "bytes": 19539,
+      "sha256": "fe00ae415f4741d7e07579acdc77c60f5d7327be024cf7f8aff8f52142ae9af2"
+    },
+    "CMakeLists.txt": {
+      "bytes": 23042,
+      "sha256": "e79e24832e52b440808dd59a4b274ad657ed6e7bb42df992dcaf0ee87f9d39fa"
+    },
+    "scripts/configure.sh": {
+      "bytes": 4598,
+      "sha256": "ea015aec6e5c3886416038c21792428d9ba41caa7da0d4b55e0bea15c52719c1"
+    },
+    "scripts/llama-patches.sh": {
+      "bytes": 10725,
+      "sha256": "b02351855bcd64235a0e20e81a12f952812403c553dccad50b0b32ce498f4a67"
+    },
+    "src/asr/CMakeLists.txt": {
+      "bytes": 9056,
+      "sha256": "7cf799a2a8f98de94e749bbdf72bab5cabba8dd61921b78ac9be6fa2f8850e48"
+    },
+    "src/runtime/ggml/CMakeLists.txt": {
+      "bytes": 1849,
+      "sha256": "0a8f94d12d65e9bd1c89844fdd0ada6bedf1cc8227a14859220378c0c30c1049"
+    },
+    "tests/cpp/asr/CMakeLists.txt": {
+      "bytes": 4785,
+      "sha256": "b24f3b0c40191ebbbd5f6b3a00f8ec87b6c2a1cec5e2ff591404ce5ce8dc06b9"
+    },
+    "tests/cpp/asr/test_diar_state.cpp": {
+      "bytes": 10956,
+      "sha256": "d04deea716dcb6c84a9ced80601dd13d5a25a52ffac90eab07b5234f1c3fac0f"
+    },
+    "cmake/llama_cpp.cmake": {
+      "bytes": 9388,
+      "sha256": "22357d4a5d8a67716daa8b4e374abd63120432bd57540f97d572a525d5354c7b"
+    }
+  },
+  "tools": {
+    "build_valid_mel_candidate.py": {
+      "bytes": 12180,
+      "sha256": "5bfb3ec59548ae0b56e8e3eaded10201933f574b0b04ca12384eb35795dd546b"
+    },
+    "artifacts.py": {
+      "bytes": 2869,
+      "sha256": "17df6411ab0394b4d9bb30a099915badf357af26050b6cd08bfd44887688ff42"
+    }
+  },
+  "external_launcher": {
+    "bytes": 1832,
+    "sha256": "4f953bf018e882511fc15ac3a07405a02d56d3d18a3f864a75386a1d80097461"
+  },
+  "source_preparation": {
+    "bytes": 3013,
+    "sha256": "42f2aee89444032eb1736676fba4a1cdb88528b157f6a1ca2c11ea3262ec72f1"
+  },
+  "cmake_definitions": {
+    "NEMO_SPEECH_BUILD_EXAMPLES": "ON",
+    "NEMO_SPEECH_BUILD_CLI": "OFF",
+    "NEMO_SPEECH_BUILD_MIC_CAPTURE": "OFF",
+    "GGML_OPENMP": "OFF",
+    "NEMO_SPEECH_BUILD_TESTS": "ON",
+    "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+  },
+  "denied_paths": [
+    "/Users/victor/.cache/gen2-nemotron3-n0/assets",
+    "/Users/victor/.cache/gen2-nemotron3-n0/native-f32-conversion-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/research/native-f32-control",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality-corpus-v1"
+  ],
+  "limitations": [
+    "One pipeline.cpp patch over the exact upstream base; all other tracked root sources are checked by exact gitdiff, and llama starts pristine atbd4. Untracked and ignored source inputs are rejected beforeconfigure. UpstreamCMake materializes a patchedexport underbuild/cpu-diar/_deps/llama.cpp while the submodule stayspristine; an independentgitarchive+gitapplyseries replay must match every actualmaterialized file beforecompilation and afterbuild. Fullfilehashmanifest is retained.",
+    "No model or audio acquisition/loading/inference. Relevant model paths and network are denied during configure/build/install/model-free test.",
+    "The model-free diar_state test must actually execute andpass; it doesnot instantiate DiarModel or exercise patchedfinish. Successful compilation is not functional qualification.",
+    "Installed candidate sourceSDK and runtime staticarchive are construction outputs only; neither is admitted for neural execution or production substitution. Candidate frame-count convention and all neural probability/lifecycle gates require separate protocol/review.",
+    "This build uses original cpu-diar defaults plus testsON and compile_commands output; all concrete CMake cache/compiler/command/library identities are retained.",
+    "No runtime lock, Rust finished-count check, original probe/qualifier, modelartifact or historical evidence is replaced. All-platform/quality/desktop/performance gates remain open."
+  ]
+}
