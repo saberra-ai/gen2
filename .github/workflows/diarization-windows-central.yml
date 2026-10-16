@@ -1,0 +1,40 @@
+name: Diarization Windows central VC prerequisite
+on:
+  push:
+    branches: [codex/nemotron3-windows-central]
+    paths: ['.github/workflows/diarization-windows-central.yml', 'tools/nemotron-diarization/**', 'benches/results/nemotron-diarization/windows-x86_64/2026-10-16-central-prerequisite-static/**']
+permissions:
+  contents: read
+jobs:
+  setup:
+    runs-on: windows-2022
+    timeout-minutes: 20
+    steps:
+      - name: Preserve exact source line endings
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Run prerequisite admission regressions
+        working-directory: tools/nemotron-diarization
+        run: python -m unittest test_windows_central_state test_package_windows test_windows_notices
+      - name: Observe actual host and frozen local image prerequisites
+        run: python tools/nemotron-diarization/windows_container_preflight.py --output "${{ runner.temp }}/windows-central-prerequisites"
+      - name: Verify publisher signature and provision disposable image only
+        run: python tools/nemotron-diarization/windows_central_setup.py --prerequisites "${{ runner.temp }}/windows-central-prerequisites/preflight.json" --output "${{ runner.temp }}/windows-central-setup"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: windows-central-prerequisite-setup
+          path: |
+            ${{ runner.temp }}/windows-central-setup/*.json
+            ${{ runner.temp }}/windows-central-setup/*.log
+            ${{ runner.temp }}/windows-central-setup/install/*.json
+            ${{ runner.temp }}/windows-central-setup/install/*.log
+            ${{ runner.temp }}/windows-central-setup/fresh-state/*.json
+            ${{ runner.temp }}/windows-central-setup/fresh-state/*.log
+            ${{ runner.temp }}/windows-central-prerequisites/
+          retention-days: 7
