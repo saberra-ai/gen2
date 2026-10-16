@@ -61,7 +61,7 @@ export async function stageSpeakers(root,inputs){
     return null;
   }
   const manifest=await inspectSpeakerPackage(inputs);
-  const lock=await loadJson(join(inputs.gen2Root,'tools/nemotron-diarization/runtime.lock.json'));
+  const lock=await loadJson(join(inputs.gen2Root,'tools/nemotron-diarization/runtime-valid-mel.lock.json'));
   const files=await checkModelBundle(inputs.modelRoot,lock);
   const licenseRoot=join(inputs.gen2Root,'tools/nemotron-diarization/notices/openmdw-1.1');
   const license=await loadJson(join(licenseRoot,'sources.json'));
@@ -76,7 +76,7 @@ export async function stageSpeakers(root,inputs){
     await checkModelBundle(join(stage,'nemotron'),lock);
     await cp(join(licenseRoot,'LICENSE.OpenMDW-1.1'),join(stage,'nemotron/LICENSE.OpenMDW-1.1'));
     if(await sha256(join(stage,'nemotron/LICENSE.OpenMDW-1.1'))!==license.sha256)throw new Error('Staged OpenMDW license checksum mismatch.');
-    await writeFile(join(stage,'nemotron/bundle.json'),JSON.stringify({model:lock.model,files,license},null,2)+'\n');
+    await writeFile(join(stage,'nemotron/bundle.json'),JSON.stringify({model:lock.model,runtime_profile:lock.profile,frame_contract:lock.runtime.frame_contract,files,license},null,2)+'\n');
     for(const name of ['nemo','nemotron']){
       try{await rename(join(assets,name),join(stage,`old-${name}`));backups.push(name);}catch(error){if(error.code!=='ENOENT')throw error;}
       await rename(join(stage,name),join(assets,name));published.push(name);

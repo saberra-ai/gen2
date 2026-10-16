@@ -13,6 +13,8 @@ import shutil
 import subprocess
 import tempfile
 
+from runtime_profiles import load_profile, profile_provenance, validate_provenance
+
 
 def digest(path):
     return hashlib.sha256(path.read_bytes()).hexdigest()
@@ -205,8 +207,8 @@ def verify_entry(package, name, expected_sha256):
 
 
 def package_backend(build):
-    preset = build["commands"][0][1]
-    if preset == "cpu-diar" and build.get("backend", "cpu") == "cpu":
+    preset = build.get("preset")
+    if preset == "cpu-diar" and build.get("backend") == "cpu":
         return "cpu"
     if preset == "metal-diar" and build.get("backend") == "metal" and build.get("metal_shaders_embedded") is True:
         return "metal"
@@ -217,12 +219,47 @@ def private_prefix(backend):
     return "libgen2_nemo_" if backend == "cpu" else "libgen2_nemo_metal_"
 
 
+def verify_build_provenance(build):
+    lock = validate_provenance(build)
+    if build.get('model_free_state_test_completed') is not True:
+        raise ValueError('valid-Mel build is missing the completed native state test')
+    if not build.get('libraries'):
+        raise ValueError('valid-Mel build has no qualified SDK libraries')
+    return lock
+
+
+def verify_package_provenance(package, manifest):
+    validate_provenance(manifest)
+    receipt = package / 'provenance/build.json'
+    if digest(receipt) != manifest.get('build_receipt_sha256'):
+        raise ValueError('packaged build receipt differs from its manifest')
+    build = json.loads(receipt.read_text())
+    verify_build_provenance(build)
+    if package_backend(build) != manifest['backend']:
+        raise ValueError('packaged backend differs from the build receipt')
+    qualified = build['libraries']
+    observed = []
+    for name, record in manifest['libraries'].items():
+        original = record.get('sdk_library')
+        if original is None:
+            continue
+        if (original not in qualified or name != private_prefix(manifest['backend']) + original.removeprefix('lib')
+                or record.get('source_sha256') != qualified[original]['sha256']):
+            raise ValueError('packaged SDK source library differs from the build receipt: ' + name)
+        observed.append(original)
+    if len(observed) != len(set(observed)) or set(observed) != set(qualified):
+        raise ValueError('packaged SDK source library set differs from the build receipt')
+    if manifest['libraries'][manifest['entry_library']].get('sdk_library') not in qualified:
+        raise ValueError('packaged entry is not a qualified SDK library')
+
+
 def verify(package):
     manifest = json.loads((package / "package.json").read_text())
     backend = manifest.get("backend")
-    if backend not in {"cpu", "metal"} or manifest.get("format") != f"gen2-nemo-macos-{backend}-v1":
+    if backend not in {"cpu", "metal"} or manifest.get("format") != f"gen2-nemo-macos-{backend}-v2" or manifest.get("architecture") != "arm64":
         raise ValueError("unsupported native package format")
     verify_files(package, manifest["files"])
+    verify_package_provenance(package, manifest)
     deployments = []
     for name in manifest["libraries"]:
         if Path(name).name != name or not name.startswith(private_prefix(backend)) or f"lib/{name}" not in manifest["files"]:
@@ -256,11 +293,9 @@ def package_sdk(sdk, build_path, destination):
     if destination.exists():
         raise FileExistsError(f"refusing to replace an existing package: {destination}")
     sdk = sdk.resolve()
-    lock_path = Path(__file__).with_name("runtime.lock.json")
-    lock = json.loads(lock_path.read_text())
+    lock_path, lock = load_profile()
     build = json.loads(build_path.read_text())
-    if build["runtime_revision"] != lock["runtime"]["revision"] or build["lock_sha256"] != digest(lock_path):
-        raise ValueError("native build receipt does not match the immutable lock")
+    verify_build_provenance(build)
     backend = package_backend(build)
     entry = qualified_entry(sdk, build)
     libraries = discover(entry, sdk, build)
@@ -272,6 +307,8 @@ def package_sdk(sdk, build_path, destination):
         staged = Path(temporary) / "package"
         (staged / "lib").mkdir(parents=True)
         components = copy_notices(sdk, build, libraries, staged, lock)
+        (staged / "provenance").mkdir()
+        shutil.copy2(build_path, staged / "provenance/build.json")
         records = {}
         for source, info in libraries.items():
             name = names[source]
@@ -287,13 +324,14 @@ def package_sdk(sdk, build_path, destination):
             subprocess.run(["codesign", "--force", "--sign", "-", "--timestamp=none", str(output)],
                            check=True, capture_output=True)
             records[name] = {"source": str(source), "source_sha256": info["source_sha256"],
+                             "sdk_library": source.name if source.parent == (sdk / "lib").resolve() else None,
                              "original_identity": info["identity"],
                              "minimum_macos": info["minimum_macos"],
                              "dependencies": [f"@loader_path/{names[target]}" for target in info["edges"].values()]}
         (staged / "lib/libnemo_speech_asr_c.dylib").symlink_to(names[entry])
-        manifest = {"format": f"gen2-nemo-macos-{backend}-v1", "architecture": "arm64", "backend": backend,
+        manifest = {"format": f"gen2-nemo-macos-{backend}-v2", "architecture": "arm64", "backend": backend,
                     "minimum_macos": max((info["minimum_macos"] for info in libraries.values()), key=version_tuple),
-                    "runtime_revision": lock["runtime"]["revision"], "lock_sha256": digest(lock_path),
+                    **profile_provenance(lock_path, lock),
                     "build_receipt_sha256": digest(build_path), "entry_library": names[entry],
                     "signing": "ad-hoc; not notarized", "components": components, "libraries": records,
                     "files": {str(path.relative_to(staged)): {"sha256": digest(path), "size": path.stat().st_size}

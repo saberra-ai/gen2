@@ -54,6 +54,25 @@ def load_profile():
     return path, lock
 
 
+def profile_provenance(lock_path, lock):
+    """Fields shared by current build receipts and distributable manifests."""
+    runtime = lock['runtime']
+    return {'runtime_revision': runtime['revision'], 'llama_revision': runtime['llama_revision'],
+            'lock_sha256': digest(lock_path), 'runtime_profile': lock['profile'],
+            'runtime_reported_version': runtime['reported_version'],
+            'compatibility_patches': runtime['compatibility_patches'],
+            'frame_contract': runtime['frame_contract']}
+
+
+def validate_provenance(record):
+    """Reject historical or partially migrated artifacts; this does not run a model."""
+    lock_path, lock = load_profile()
+    for name, expected in profile_provenance(lock_path, lock).items():
+        if record.get(name) != expected:
+            raise ValueError('valid-Mel artifact provenance differs: ' + name)
+    return lock
+
+
 def verify_source(source, lock):
     """Require a fresh, isolated, already patched tree before configuration."""
     source = Path(source)

@@ -351,3 +351,24 @@ Linux/Windows, coexistence, desktop or physical microphone behavior. The static
 NeMo or AMI target ran, no DER was scored, and the original quality gate remains
 unchanged. The Rust helper's successful shutdown and zero reservation checks
 apply only to these two short runs. Reported timing is descriptive.
+
+
+## macOS package and Pnola staging migration
+
+Current macOS packaging now emits `gen2-nemo-macos-{cpu,metal}-v2` and rejects
+historical build receipts. Both construction and verification require the exact
+current runtime lock, profile, version, patch, frame contract and upstream/llama
+pins. The manifest includes those fields and the exact construction receipt at
+`provenance/build.json`; verification checks its bytes, backend and complete
+one-to-one original SDK library mapping. Existing closure, private install-name,
+runpath, architecture, notice, ad-hoc signature and entry-alias checks remain.
+These metadata checks establish package provenance; they are not fresh-process
+model behavior, actual loaded-path evidence or a supported release.
+
+Pnola staging uses this verifier and the current profile lock, records profile
+and frame contract alongside the unchanged model bytes, and updates the two
+60-second integration frame expectations to6000. Previous overlay versions are
+explicitly admitted by their exact hashes; unrelated local changes still fail.
+All131 model-free evidence tests, two overlay-application tests and four desktop
+asset tests pass. Actual package construction and runtime/desktop qualification
+are separate next steps.

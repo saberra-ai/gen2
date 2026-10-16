@@ -179,7 +179,7 @@ mod integration_tests {
         assert_eq!(result["attribution"]["status"], "complete");
         assert_eq!(
             result["attribution"]["timeline"]["native_frame_count"],
-            6001
+            6000
         );
         assert_eq!(
             result["attribution"]["timeline"]["turns"]
@@ -214,7 +214,7 @@ mod integration_tests {
         assert_eq!(result["attribution"]["status"], "complete");
         assert_eq!(
             result["attribution"]["timeline"]["native_frame_count"],
-            6001
+            6000
         );
         assert_eq!(result["attribution"]["words_complete"], false);
     }

@@ -29,6 +29,12 @@ in [the Gen2 guide](../../docs/diarization.md). Packaged fallback locations are
 `Contents/Frameworks`. Same-host CPU relocation is verified; fresh-machine
 qualification remains N5 work. No inference-time downloads occur.
 
+Speaker staging now requires the current v2 macOS package, whose verifier binds
+`gen2-valid-mel-v1`, the patch and strict floor-valid frame contract to its bundled
+build receipt and original SDK library identities. Historical v1 packages are
+rejected by current staging tools. Model bytes are unchanged; full desktop
+qualification of the new runtime remains pending.
+
 The bundled `nemo/package.json` selects CPU or Metal execution. Supplying an
 external `GEN2_NEMO_LIBRARY` defaults to CPU; set `GEN2_NEMO_EXECUTION=metal`
 explicitly to qualify an external Metal SDK, or `cpu` to request CPU. Unsupported
