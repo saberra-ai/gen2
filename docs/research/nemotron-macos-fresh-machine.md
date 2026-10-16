@@ -211,6 +211,35 @@ redacted; the separate dyld audit still checks exact actual paths and hashes.
 Identity queries, sampling and observer waits are bounded. This prepares a
 diagnostic, with no completed performance fix or release qualification.
 
+The [actual diagnostic receipt](../../benches/results/nemotron-diarization/macos-arm64/2026-10-16-portable-cpu-profile/collection-qualification.json)
+now completes run 38979777083 at `0770aaaa`. Its 24-file receipt binds the
+161,241-byte artifact and all 19 delivered files, 21 source pins, the exact
+native helper/package bytes and 92 private-library images. The model-free sampling
+control and the single native command pass; all 1,200 rows are finite and
+bounded. The control executable was not delivered, so its payload hash and
+live `ps` identity remain CI observations. Acquired inputs are recorded
+descriptors, rather than receiver-rehashed delivered payloads.
+
+The observed receiver has three logical/physical CPUs. The sampled 12-second
+call reports RTF 5.83664; `/usr/bin/time -l` reports 70.32 real, 193.45 user and
+1.86 system seconds, or 2.777 CPU-seconds per wall second. Initial load averages
+are 25.74/40.20/20.54. This is neither an uncontended measurement nor a speedup
+comparison with the earlier 60-second run.
+
+Of 430 main-thread stack samples, 83 include `ggml_threadpool_new_impl` and
+151 include the mutex-drop kernel call under graph computation. These are
+sampled main-thread paths, not whole-process CPU percentages. The
+[pinned CPU backend](https://github.com/ggml-org/llama.cpp/blob/bd4f514db14d87fded667787a7a963bfbaa98e89/ggml/src/ggml-cpu/ggml-cpu.cpp)
+initializes its thread-pool pointer to null;
+[graph computation](https://github.com/ggml-org/llama.cpp/blob/bd4f514db14d87fded667787a7a963bfbaa98e89/ggml/src/ggml-cpu/ggml-cpu.c)
+then creates and frees a disposable pool when none was attached. The current
+[NeMo runtime](https://github.com/NVIDIA/NeMo-Speech.cpp/blob/083861c241061562b8ec29eb06d7f6cdc3af8775/src/runtime/ggml/session.cpp)
+sets thread counts but does not attach a persistent pool. These source
+facts and stacks support testing pool reuse as the next controlled candidate;
+they do not establish the cause or a fix. The qualified artifacts stay unchanged.
+All 203 local model-free tests pass, including five sampler safety/control
+cases. The separate source feature matrix has no completed receipt yet.
+
 ## Portable CPU complete-app construction
 
 The [local construction receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-portable-cpu-pnola-app-construction/qualification.json)

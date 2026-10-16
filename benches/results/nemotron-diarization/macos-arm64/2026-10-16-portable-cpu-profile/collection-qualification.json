@@ -1,0 +1,77 @@
+{
+  "schema_version": 1,
+  "diagnostic_completed": true,
+  "release_qualified": false,
+  "source_commit": "0770aaaa62ddd50e5bccc1de9a25cb86ae3f53ae",
+  "ci_url": "https://github.com/saberra-ai/gen2/actions/runs/38979777083",
+  "artifact": {
+    "id": 12080083616,
+    "node_id": "MDg6QXJ0aWZhY3QxMjA4MDA4MzYxNg==",
+    "name": "nemotron-macos-cpu-profile",
+    "size_in_bytes": 161241,
+    "url": "https://api.github.com/repos/saberra-ai/gen2/actions/artifacts/12080083616",
+    "archive_download_url": "https://api.github.com/repos/saberra-ai/gen2/actions/artifacts/12080083616/zip",
+    "expired": false,
+    "digest": "sha256:439f7c95799f1d43665a5dc3be4e8271b0c4ba3700dd37658203a2249efc9100",
+    "created_at": "2026-10-16T23:10:27Z",
+    "updated_at": "2026-10-16T23:10:27Z",
+    "expires_at": "2026-11-15T23:10:25Z",
+    "workflow_run": {
+      "id": 38979777083,
+      "repository_id": 1353161693,
+      "head_repository_id": 1353161693,
+      "head_branch": "codex/nemotron3-n0",
+      "head_sha": "0770aaaa62ddd50e5bccc1de9a25cb86ae3f53ae"
+    }
+  },
+  "opaque_zip": {
+    "bytes": 161241,
+    "sha256": "439f7c95799f1d43665a5dc3be4e8271b0c4ba3700dd37658203a2249efc9100"
+  },
+  "delivered_members": 19,
+  "frozen_sources": 21,
+  "native_helper_and_package_bytes_independently_rehashed": true,
+  "control_binary_delivered": false,
+  "control_payload_hash_and_live_ps_identity_are_ci_observations": true,
+  "acquisitions_are_saved_descriptors_not_delivered_payloads": true,
+  "strict_private_images": 92,
+  "native_frames": 1200,
+  "native_rtf": 5.836639666666667,
+  "time_l": {
+    "real_seconds": 70.32,
+    "user_seconds": 193.45,
+    "system_seconds": 1.86,
+    "cpu_seconds_per_wall_second": 2.777445961319682
+  },
+  "host": {
+    "cpu": "Apple M1 (Virtual)",
+    "cpu_counts": "hw.ncpu: 3\nhw.logicalcpu: 3\nhw.physicalcpu: 3\n",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "os": "ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n",
+    "load_before": [
+      25.740234375,
+      40.20458984375,
+      20.53662109375
+    ]
+  },
+  "scope": "Instrumented12-second diagnostic on fresh M1 VM using the exact qualified package/native helper. No SDK/thread/preset/model change, no speedup, accuracy, app or release qualification.",
+  "limits": [
+    "One neural command only, after an actual model-free sampling control and offline policy controls.",
+    "The original qualification, package, executable, criteria and failed attempts remain unchanged.",
+    "Sampling and the shorter input confound direct comparison with the original60-second RTF; do not claim speedup.",
+    "Sampler uses exact live PID/ps path, matching target dyld UUID and sample image UUID; macOS report paths are retained redacted.",
+    "Strict dyld auditor still requires actual target and exact92 private-library hashes/paths; no launchers or profiler are whitelisted.",
+    "All three downloaded model/card/audio inputs are hash-verified before offline native admission; no new corpus/quality selection.",
+    "No Pnola GUI/microphone, signing/notarization, mixed inference, held-out quality, live performance or release claim."
+  ],
+  "storage": {
+    "start_minimum_bytes": 5368709120,
+    "running_minimum_bytes": 1073741824,
+    "reserve_requested_bytes": 268435456,
+    "checks": 88,
+    "released": true,
+    "minimum_observed_free_bytes": 101250592768,
+    "last_observed_free_bytes": 101704880128,
+    "reserve_reported_allocated_bytes": 268435456
+  }
+}

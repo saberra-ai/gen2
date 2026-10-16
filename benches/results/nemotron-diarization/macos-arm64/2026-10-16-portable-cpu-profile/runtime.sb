@@ -1,0 +1,5 @@
+(version 1)
+(allow default)
+(deny network*)
+(deny file-read* (subpath "/Users/runner/work/gen2/gen2") (subpath "/Users/runner/work/_temp/cpu-profile/construction") (subpath "/Users/runner/work/_temp/cpu-profile/receiver") (subpath "/Users/runner/work/_temp/cpu-profile/control.c") (subpath "/opt/homebrew") (subpath "/Users/runner/.cargo") (subpath "/Users/runner/.rustup") (subpath "/Users/runner/work/_temp/profile-delivery/construction.zip") (subpath "/Users/runner/work/_temp/profile-delivery/construction.json") (subpath "/Users/runner/work/_temp/profile-delivery/receiver.zip") (subpath "/Users/runner/work/_temp/profile-delivery/receiver.json"))
+(deny file-write* (subpath "/Users/runner/work/_temp/cpu-profile/work") (subpath "/Users/runner/work/gen2/gen2") (subpath "/Users/runner/work/_temp/cpu-profile/construction") (subpath "/Users/runner/work/_temp/cpu-profile/receiver"))
