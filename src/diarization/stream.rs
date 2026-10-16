@@ -164,6 +164,14 @@ impl DiarizationStream {
                 DiarizationError::ResourceLimit("one-hour session limit".into()),
             );
         }
+        if samples.capacity() > MAX_PUSH_SAMPLES {
+            return reject(
+                samples,
+                DiarizationError::ResourceLimit(
+                    "PCM allocation capacity exceeds the per-push limit".into(),
+                ),
+            );
+        }
         let length = samples.len();
         match self.tx.try_send(samples) {
             Ok(()) => {

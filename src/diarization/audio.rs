@@ -13,7 +13,10 @@ impl Audio {
                 "use finite mono 16 kHz PCM, 20 ms–120 seconds".into(),
             ));
         }
-        Ok(Self { samples })
+        // Drop spare caller allocation so admitted PCM is bounded by sample count.
+        Ok(Self {
+            samples: samples.into_boxed_slice().into_vec(),
+        })
     }
     pub fn duration_seconds(&self) -> f64 {
         self.samples.len() as f64 / 16000.

@@ -41,7 +41,7 @@ and presentation turns are clipped to real audio duration.
 
 For continuous input, `start_stream(options)` holds one native cache across all
 transport blocks and ASR cuts. `try_push(Vec<f32>, 16000)` accepts 1–16640
-samples per block. The two-block queue returns `PushError { samples, error }`
+samples per block, with allocation capacity at most 16640 samples. The two-block queue returns `PushError { samples, error }`
 when saturated; retry the returned samples on `Busy` without advancing your
 audio cursor. No audio is silently dropped. Rate changes and nonfinite samples
 are rejected. A safety cap limits a session to one hour and results to 100000

@@ -8,6 +8,57 @@ use gen2::{
 use std::path::PathBuf;
 
 #[test]
+#[ignore = "requires pinned N0 assets and SDK; silence, short tail and idle deadline"]
+fn silence_short_tail_and_idle_deadline_have_explicit_terminal_results() {
+    use gen2::diarization::{DiarizationError, StreamStatus};
+    use std::time::{Duration, Instant};
+    let assets = std::env::var("GEN2_NEMOTRON_ASSETS").unwrap();
+    let library = std::env::var("GEN2_NEMO_LIBRARY").unwrap();
+    let runtime = Runtime::builder()
+        .resident_memory_budget_mb(1024)
+        .build()
+        .unwrap();
+    let model = runtime
+        .load_diarizer(assets, LoadOptions::cpu(library))
+        .unwrap();
+    let result = model
+        .diarize(
+            Audio::mono_16khz(vec![0.; 60 * 16000 + 17]).unwrap(),
+            Default::default(),
+        )
+        .unwrap();
+    assert!(result.turns.is_empty());
+    assert_eq!(result.native_frame_count, 6001);
+    assert_eq!(result.audio_duration_seconds, 60. + 17. / 16000.);
+    let mut stream = model
+        .start_stream(DiarizeOptions {
+            deadline: Some(Instant::now() + Duration::from_millis(50)),
+            ..Default::default()
+        })
+        .unwrap();
+    std::thread::sleep(Duration::from_millis(100));
+    assert!(matches!(
+        stream.finish(),
+        Err(DiarizationError::DeadlineExceeded)
+    ));
+    assert_eq!(stream.status(), StreamStatus::Failed);
+    assert!(!stream.snapshot().is_some_and(|s| s.complete));
+    assert!(matches!(
+        stream.finish(),
+        Err(DiarizationError::DeadlineExceeded)
+    ));
+    let mut too_short = model.start_stream(Default::default()).unwrap();
+    too_short.try_push(vec![0.; 1], 16000).unwrap();
+    assert!(matches!(
+        too_short.finish(),
+        Err(DiarizationError::InvalidAudio(_))
+    ));
+    assert_eq!(too_short.status(), StreamStatus::Failed);
+    model.shutdown();
+    assert_eq!(runtime.diarization_reserved_mb(), 0);
+}
+
+#[test]
 #[ignore = "requires pinned N0 assets and SDK; 100 actual model reloads"]
 fn repeated_reload_full_queue_cancel_and_dropped_stream_release_resources() {
     use gen2::diarization::{DiarizationError, Status};
@@ -143,6 +194,11 @@ fn streamed_uneven_pcm_matches_recording_and_finish_is_idempotent() {
     let invalid = stream.try_push(vec![1.; 80], 8000).unwrap_err();
     assert!(matches!(invalid.error, DiarizationError::InvalidAudio(_)));
     assert_eq!(invalid.samples.len(), 80);
+    let mut oversized = Vec::with_capacity(1_000_000);
+    oversized.push(0.);
+    let rejected = stream.try_push(oversized, 16000).unwrap_err();
+    assert!(matches!(rejected.error, DiarizationError::ResourceLimit(_)));
+    assert_eq!(rejected.samples.capacity(), 1_000_000);
     let mut reader = hound::WavReader::open(wav).unwrap();
     let pcm: Vec<f32> = reader
         .samples::<i16>()

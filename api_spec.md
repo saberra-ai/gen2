@@ -2168,7 +2168,7 @@ actual teardown. `RuntimeStats` includes `diarization_reserved_mb`.
 The WAV helper accepts mono 16 kHz PCM16/float32. Long recordings use the
 stateful incremental API, independently of Bark's 60-second input limit.
 `DiarizationStream::try_push(samples, sample_rate)` accepts 1–16640 samples at
-16 kHz through a two-block queue. `PushError` returns rejected PCM, including
+16 kHz through a two-block queue. Allocation capacity is also bounded to 16640 samples. `PushError` returns rejected PCM, including
 on `Busy`; hosts retry without advancing their cursor. A stream has a one-hour
 safety cap and at most 100000 output turns, with supported release envelopes
 subject to the separately recorded real-model qualification.
