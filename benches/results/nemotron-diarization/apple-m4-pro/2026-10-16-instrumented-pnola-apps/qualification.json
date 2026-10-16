@@ -1,0 +1,591 @@
+{
+  "schema_version": 1,
+  "instrumented_cpu_metal_app_construction_passed": true,
+  "release_qualified": false,
+  "source_commit": "cdab633e84008b4be6e2032d4d409ede2ea1c8dd",
+  "scope": "Collect hardened instrumented app construction and exact payload-preserving storage recovery.",
+  "app_or_model_or_native_version_calls": 0,
+  "source_pins": {
+    "gen2": 315,
+    "pnola": 107
+  },
+  "apps": {
+    "cpu": {
+      "executable": {
+        "bytes": 16151184,
+        "sha256": "fa30cae006d4dd1bc9b05d2e2d0455de0804d393898556f6afb0b477c12b55cb"
+      },
+      "logical_native_components": 92,
+      "framework_files": 94
+    },
+    "metal": {
+      "executable": {
+        "bytes": 16151184,
+        "sha256": "d11dbdcee5ab5dacc670c6ec350448ce206938924ac21220c4257ea49ca1e366"
+      },
+      "logical_native_components": 93,
+      "framework_files": 95
+    }
+  },
+  "hardened_runtime_and_exact_local_entitlements_verified": true,
+  "prior_failed_app_attempt": {
+    "bytes": 1214,
+    "sha256": "f486080d96702982fe4ad29ed1997634c6225d355b0393d530d17552f7d43e12"
+  },
+  "model_free_callback_proof": {
+    "bytes": 578,
+    "sha256": "f5622ceebcac7adebc9f71e9c0fe74afd569e413e3a6d2fb1f767b31969430fc"
+  },
+  "payload_identical_model_cow_replacements": 12,
+  "limits": [
+    "Complete new same-host ad-hoc CPU/Metal apps and callback code are built and statically verified. No new app-model process has run.",
+    "Storage recovery atomically substitutes byte-identical APFS model clones. New app inventories and deep signatures remain exact; originals remain unchanged.",
+    "Construction uses3GiB/1GiB/256MiB storage policy; neural admission remains5GiB after256MiB reserve. No GUI, microphone, quality, performance, Developer ID, notarization, fresh-machine or release qualification."
+  ],
+  "files": {
+    "build-valid-mel-pnola-instrumented-apps-v1.py": {
+      "bytes": 7156,
+      "sha256": "1b64b8971b512f17e4f2bd68d8679efd63c9a6674b65a5bbf67eaf712486b555"
+    },
+    "build.json": {
+      "bytes": 138670,
+      "sha256": "378e7bfb02f8bfca0071510d877a4a323523a4fa55df4b70c21e97269cb036c5"
+    },
+    "collect-instrumented-pnola-apps-v1.py": {
+      "bytes": 4684,
+      "sha256": "3ab42b1be8ae10eaa5db0b2cc4474c83c7f7a5fc3f3d4dba7d4d9ffc2263f087"
+    },
+    "commands.json": {
+      "bytes": 15091,
+      "sha256": "d01ee721a821425902e450c1af44ed2657a3caad33e9e462c0cc77c1131ebefb"
+    },
+    "construction.sb": {
+      "bytes": 44,
+      "sha256": "5c358b8d847211333e7ba22df82d84f796b5f30a41a2682209a949d783adbd08"
+    },
+    "cpu-build.stderr.log": {
+      "bytes": 17193,
+      "sha256": "6c564b296cdf96bff85a231b30e6ceb1a36e8b4204af52e5050f782365e479eb"
+    },
+    "cpu-build.stdout.log": {
+      "bytes": 18292,
+      "sha256": "4629a1a6dab9171a6b08a5949ba32abafa79c00a96d64fd2f21c73f4069569c5"
+    },
+    "cpu-clone.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "cpu-clone.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "cpu-entitlements.plist": {
+      "bytes": 305,
+      "sha256": "7224e818a8bf538e47330e9a61cee5e17c33c877388fd30879ef720e36257d50"
+    },
+    "cpu-signature.log": {
+      "bytes": 969,
+      "sha256": "f5298c49b894237375d2413e0f8b84a097734932698c0bc70adc1c3e749f451a"
+    },
+    "cpu-signature.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "cpu-signature.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "cpu-static-verification.json": {
+      "bytes": 35200,
+      "sha256": "497c8e416685bf14050198d7fc7777cb6c8dd00464ac5f749b06dcbbbafc712d"
+    },
+    "identical-app-model-reclone-v1.json": {
+      "bytes": 6922,
+      "sha256": "718bf51f909ba852ee07de62026fbf159895b318d9c690cddbd1a8103638065b"
+    },
+    "metal-build.stderr.log": {
+      "bytes": 17911,
+      "sha256": "f6ef5c77ce54671a16bd24379d8f30dd90662a6563544229775c13eadefa0c0e"
+    },
+    "metal-build.stdout.log": {
+      "bytes": 19014,
+      "sha256": "bfad07e1fc04b65f5b241a1ebc615c6ae808e2a18569bfa4c29f728377c59ad1"
+    },
+    "metal-clone.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "metal-clone.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "metal-entitlements.plist": {
+      "bytes": 305,
+      "sha256": "7224e818a8bf538e47330e9a61cee5e17c33c877388fd30879ef720e36257d50"
+    },
+    "metal-signature.log": {
+      "bytes": 971,
+      "sha256": "18021c5a1de5c8838a7ffb5fde5afce0d8da013cf60b0df29b114b3d0f55610f"
+    },
+    "metal-signature.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "metal-signature.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "metal-static-verification.json": {
+      "bytes": 36646,
+      "sha256": "ae409a863336b25173fb54eaf12790a17ef3b71e6037b9903173f9d54a081e07"
+    },
+    "pnola-source/index.html": {
+      "bytes": 359,
+      "sha256": "a479f77e71ce7f4bcbf8f8b8f328cff1b3f0407921bd87e6f62ef098d1ebc013"
+    },
+    "pnola-source/package-lock.json": {
+      "bytes": 78601,
+      "sha256": "82965699d6e60409535c9664712f4da3b6fc8ab36a8a0e1c3d97d19e4072daaf"
+    },
+    "pnola-source/package.json": {
+      "bytes": 1606,
+      "sha256": "1b20a3338fb52d076aff13b25fd0a55c0ef75b1aa5cb54b78e42fe1ab1e43302"
+    },
+    "pnola-source/public/capture-worklet.js": {
+      "bytes": 1207,
+      "sha256": "166e545dbeede39d480ca8712e635dbed004b2803caa100a470dba923cf84f42"
+    },
+    "pnola-source/public/favicon.svg": {
+      "bytes": 221,
+      "sha256": "ba2b59d9f04b44c0ecdce3f19794c7be401dbc6266e30a27e1819522f8351c57"
+    },
+    "pnola-source/scripts/build-desktop.mjs": {
+      "bytes": 1572,
+      "sha256": "185a5886781dd589ffa3623db35c6140242c163a4c6d5bc3f34c41dcbfe92e68"
+    },
+    "pnola-source/scripts/build-native.mjs": {
+      "bytes": 492,
+      "sha256": "1bfd6728554d97cc1c31fa076a3112a161a2b33e6fa7fd6b60e7b861f1d3387d"
+    },
+    "pnola-source/scripts/prepare-desktop.mjs": {
+      "bytes": 2465,
+      "sha256": "b74ad8aebd78afe184145f6f6d138c8e54bd0a00002536f75dac67f727b2cd4b"
+    },
+    "pnola-source/scripts/speaker-assets.mjs": {
+      "bytes": 6123,
+      "sha256": "12e2daba548dc5fb597472049244c9996519e55a7daa24d488fcf175c001570b"
+    },
+    "pnola-source/src/App.tsx": {
+      "bytes": 24793,
+      "sha256": "bd8da4c2d991ac7c9d4aecdac6dd190bfe1fa9213307e26e8c89d788c05fc77a"
+    },
+    "pnola-source/src/audio.js": {
+      "bytes": 1926,
+      "sha256": "9c3991c3e8591195338eea48feec5c9bb0e3e8b7e16c07eb7ce632578d941172"
+    },
+    "pnola-source/src/components/studio/icons.tsx": {
+      "bytes": 1791,
+      "sha256": "218020d684ab01294b935b82ba95510f1b2e85ea7a81dab98151214d8c2f06d9"
+    },
+    "pnola-source/src/components/studio/live-speakers-panel.tsx": {
+      "bytes": 2270,
+      "sha256": "2dbc636d6017180080e0f77678b6b6078aff13d0d727b7338d789966700650a2"
+    },
+    "pnola-source/src/components/studio/speaker-panel.tsx": {
+      "bytes": 4662,
+      "sha256": "eecc0e977bc2468b4c0a4b351a08a2addee51d248d92b82e1861f1a989734557"
+    },
+    "pnola-source/src/components/ui/LICENSE": {
+      "bytes": 1072,
+      "sha256": "a77140948a68fafb5e0077a287502104203b7ccb11255b311101ec8fe85fa250"
+    },
+    "pnola-source/src/components/ui/UPSTREAM.md": {
+      "bytes": 302,
+      "sha256": "5d63209dea03bd19ebf1bd686ef424bb50352af55e9acbb762d3bfb05ade098e"
+    },
+    "pnola-source/src/components/ui/badge.tsx": {
+      "bytes": 1247,
+      "sha256": "d7e123443e2c912c882190dd41356cde8cca552a64b6e3962eb35b0413a8bcee"
+    },
+    "pnola-source/src/components/ui/button.tsx": {
+      "bytes": 2010,
+      "sha256": "d1bf412ba924f553d73cd8d96ec56af7798b8fcf2db660f36b2ee3b8048a270b"
+    },
+    "pnola-source/src/components/ui/card.tsx": {
+      "bytes": 2305,
+      "sha256": "f5ae5120516706facb9ee97a4ab1e3af446b9df1cdb32a30e332fd75f9c7d2b8"
+    },
+    "pnola-source/src/components/ui/textarea.tsx": {
+      "bytes": 694,
+      "sha256": "6734f7c84352fb50bbdf1ececcfb3f8f8e21cdcc16b3f463e8a5d1808e3720c9"
+    },
+    "pnola-source/src/hooks/use-recorder.ts": {
+      "bytes": 7071,
+      "sha256": "02718605fafe1598f234ca51293cf7bf0652ec20fab362a13eeb0abf909ec01b"
+    },
+    "pnola-source/src/hooks/use-studio.ts": {
+      "bytes": 7863,
+      "sha256": "66d13856deddf1a067d9ff2f7841d5144ada3f1333ae17d4c8f4575e1e7e225b"
+    },
+    "pnola-source/src/layout.css": {
+      "bytes": 13701,
+      "sha256": "876388f48f32c574d926292dde79e3c51638ceae761c44e84711a22732893bd4"
+    },
+    "pnola-source/src/lib/api/backend.ts": {
+      "bytes": 7531,
+      "sha256": "8ff5c680d1219ae866ce76f1f91d82d6c9bfb70e26dff221dedb203ef6b540f4"
+    },
+    "pnola-source/src/lib/studio/state.ts": {
+      "bytes": 11397,
+      "sha256": "ebd0591c1ee88759be607b46e509490162e3127c2b6d0f3079b3f43c9cac4942"
+    },
+    "pnola-source/src/lib/studio/types.ts": {
+      "bytes": 3141,
+      "sha256": "976a12a21bbef91c207d9930a0554418506385be9f9d729b869f24330d506622"
+    },
+    "pnola-source/src/lib/utils.ts": {
+      "bytes": 166,
+      "sha256": "0c97f5ec0478867d5369a4369f811e1b779c7f2548f671ef252f1503a6392d9d"
+    },
+    "pnola-source/src/live-session.js": {
+      "bytes": 2574,
+      "sha256": "fe751b5d560609f549af8a03d3705445076a8a5ddb6e63c463757a24da01fb5f"
+    },
+    "pnola-source/src/live-store.js": {
+      "bytes": 4792,
+      "sha256": "b66f95ddba2cc3ad610ec186cd08cd262a65c82f9487f3563ea8ea11ec096806"
+    },
+    "pnola-source/src/main.tsx": {
+      "bytes": 518,
+      "sha256": "c822304e3001560cc3271ac7402f85b63821514413736781918565ad67e3707b"
+    },
+    "pnola-source/src/neobrutal.css": {
+      "bytes": 11776,
+      "sha256": "80e3ac587e847c6dac35ad0cb4f4e9b7cb05960c2d568b354ae47454455c7d4e"
+    },
+    "pnola-source/src/stream.js": {
+      "bytes": 639,
+      "sha256": "95ddeb399d2263611a53343d30737b0b7f357fb94a0a94516e0dc8778138540b"
+    },
+    "pnola-source/src/theme.css": {
+      "bytes": 1232,
+      "sha256": "451bf4dcc4e008a24207210d56d8bcc7f9d460397a9061aa27d207f23b0ed5ee"
+    },
+    "pnola-source/src/vite-env.d.ts": {
+      "bytes": 38,
+      "sha256": "65996936fbb042915f7b74a200fcdde7e410f32a669b1ab9597cfaa4b0faddb5"
+    },
+    "pnola-source/src-tauri/Cargo.lock": {
+      "bytes": 166276,
+      "sha256": "438494eba6eb292215805e7a5b85d2578c9b39c598766c7ac4799e8c27d94808"
+    },
+    "pnola-source/src-tauri/Cargo.toml": {
+      "bytes": 656,
+      "sha256": "d7b5976959ea392d3a49f888c06b95fbbb2dcf738741f2ef47e376945d08756c"
+    },
+    "pnola-source/src-tauri/Entitlements.local.plist": {
+      "bytes": 309,
+      "sha256": "8f6570d4e806eeaa5308b65bcdf976cae8e9c9e5341a500895b1118260545a7b"
+    },
+    "pnola-source/src-tauri/Entitlements.plist": {
+      "bytes": 240,
+      "sha256": "9140d2a5939149f3e1c510fbfcdc05317d5c57d8c3cae0c13d57c4f6e87f4993"
+    },
+    "pnola-source/src-tauri/Info.plist": {
+      "bytes": 318,
+      "sha256": "79e4ff7985615d9d383d67ac5ba1364dd9caed5897f99b9651a95909dbe3d0b2"
+    },
+    "pnola-source/src-tauri/build.rs": {
+      "bytes": 228,
+      "sha256": "aee7fb5c42094b69c899a183af0081f38a8047ae13234a938247d81af82dd520"
+    },
+    "pnola-source/src-tauri/capabilities/main.json": {
+      "bytes": 253,
+      "sha256": "7049841f99a3f96d306185ffdeb0a94fd3101c443a4a1402cd2ab2488acaae51"
+    },
+    "pnola-source/src-tauri/icons/128x128.png": {
+      "bytes": 1773,
+      "sha256": "2a91e3807b26c0a6c17ce57088952b7f665122c4c0fb944c1bbcaaddab366c89"
+    },
+    "pnola-source/src-tauri/icons/128x128@2x.png": {
+      "bytes": 3468,
+      "sha256": "c32787c8d1728a56f0bc71a271743d2918d6dbf868679303f869d0a7a19d8169"
+    },
+    "pnola-source/src-tauri/icons/32x32.png": {
+      "bytes": 511,
+      "sha256": "b4eb988221c4e7aeb9496d2bedafa206b75c44f4b8a1e7f08c06fac457561229"
+    },
+    "pnola-source/src-tauri/icons/64x64.png": {
+      "bytes": 885,
+      "sha256": "b695293e657f1b0d1e6439057071e519c2bb6d15387074c1e1b31796f7711054"
+    },
+    "pnola-source/src-tauri/icons/Square107x107Logo.png": {
+      "bytes": 1689,
+      "sha256": "8d22215dfc88ff4b8e4e28f22d3dd79512ea4a88a15085af23a2c3972772b028"
+    },
+    "pnola-source/src-tauri/icons/Square142x142Logo.png": {
+      "bytes": 2293,
+      "sha256": "ac0e0ca0b6c801f13087507f52d5cad646be932eeed52aeb36d947db855e94e0"
+    },
+    "pnola-source/src-tauri/icons/Square150x150Logo.png": {
+      "bytes": 2441,
+      "sha256": "997c9bc4b4b52326ba3663f90e7cd22962460883aaec6ce5f445745185cbacbf"
+    },
+    "pnola-source/src-tauri/icons/Square284x284Logo.png": {
+      "bytes": 4566,
+      "sha256": "2194765365681409dc30ad903efcc07cc63f34565c1c2ce2ffca3e2f1e21d7dd"
+    },
+    "pnola-source/src-tauri/icons/Square30x30Logo.png": {
+      "bytes": 560,
+      "sha256": "350587e6d079debe74b037bf2d65947bef306819a80414ed3d892a683f7a1727"
+    },
+    "pnola-source/src-tauri/icons/Square310x310Logo.png": {
+      "bytes": 4900,
+      "sha256": "3db718757b839cf2802f8d63cbef8ff88823dae16d093a2afe0d4e1ff449ff63"
+    },
+    "pnola-source/src-tauri/icons/Square44x44Logo.png": {
+      "bytes": 765,
+      "sha256": "5173fa0c9d78ab30692b3cfed2b37f509da1b84d2d8089eada79f48d808b9798"
+    },
+    "pnola-source/src-tauri/icons/Square71x71Logo.png": {
+      "bytes": 1136,
+      "sha256": "d8ce97dd071a45101bbd2d1d7b9b70457255f81768c505e9601e5a71189fe086"
+    },
+    "pnola-source/src-tauri/icons/Square89x89Logo.png": {
+      "bytes": 1404,
+      "sha256": "d795cc4052770df8d814b9aa23a0bb558fdb8ae273ef5523bcddefb7321124d6"
+    },
+    "pnola-source/src-tauri/icons/StoreLogo.png": {
+      "bytes": 824,
+      "sha256": "66ace2e25bc8aa45fc6ab7af3fc6d28e429db709154206dbb4e4a79b6e2c9a8a"
+    },
+    "pnola-source/src-tauri/icons/android/mipmap-anydpi-v26/ic_launcher.xml": {
+      "bytes": 261,
+      "sha256": "760d4b8a06bf7163dd010c33ad2cac9e4a75fa0177afaba042f83e311eef0c3e"
+    },
+    "pnola-source/src-tauri/icons/android/mipmap-hdpi/ic_launcher.png": {
+      "bytes": 2499,
+      "sha256": "c46a199cfea20ac16b393eedabdaaa1dca925155c25326321159d83ab859ade5"
+    },
+    "pnola-source/src-tauri/icons/android/mipmap-hdpi/ic_launcher_foreground.png": {
+      "bytes": 2604,
+      "sha256": "5b24fdb5fc2ba45e76d7e5640012ec9d4a5052a3a2c797aad268d91655bcf1a8"
+    },
+    "pnola-source/src-tauri/icons/android/mipmap-hdpi/ic_launcher_round.png": {
+      "bytes": 1663,
+      "sha256": "c80a04b33067c4747442f2079705ab8397647ea64933e68f795a00cdacefcf20"
+    },
+    "pnola-source/src-tauri/icons/android/mipmap-mdpi/ic_launcher.png": {
+      "bytes": 1663,
+      "sha256": "4ae280d528b5a12bac427527c2218e592b731affd3a4aa76656c2003121c24d1"
+    },
+    "pnola-source/src-tauri/icons/android/mipmap-mdpi/ic_launcher_foreground.png": {
+      "bytes": 1692,
+      "sha256": "234fff772df5d38a12749e72866a90fd1e67231e3837dc1d058281e9986b8cb7"
+    },
+    "pnola-source/src-tauri/icons/android/mipmap-mdpi/ic_launcher_round.png": {
+      "bytes": 1174,
+      "sha256": "9a1380dfa13cc72e21951e4181e260d023ad785b312eb915011d8cd8b12ec080"
+    },
+    "pnola-source/src-tauri/icons/android/mipmap-xhdpi/ic_launcher.png": {
+      "bytes": 3096,
+      "sha256": "e5e3477db9146e0d003adff0b4412d2c6679941f556821ef74f7f384755ab2bf"
+    },
+    "pnola-source/src-tauri/icons/android/mipmap-xhdpi/ic_launcher_foreground.png": {
+      "bytes": 3338,
+      "sha256": "892785711bfca9f02c2f40ad730ce6455ec1108cac5a54f6284aae7e8e73d25f"
+    },
+    "pnola-source/src-tauri/icons/android/mipmap-xhdpi/ic_launcher_round.png": {
+      "bytes": 2069,
+      "sha256": "6d6d1bfb4e3438af435839feebbba96a92a974eb6ca1459f4c46968d8938e3c4"
+    },
+    "pnola-source/src-tauri/icons/android/mipmap-xxhdpi/ic_launcher.png": {
+      "bytes": 4939,
+      "sha256": "488a85ff28268c818deedb041ead323c0ec1529d66c54b8823b952875450105d"
+    },
+    "pnola-source/src-tauri/icons/android/mipmap-xxhdpi/ic_launcher_foreground.png": {
+      "bytes": 5132,
+      "sha256": "986914ea48530e6a7231fdd881258736027bde1a728b292662911694828552fd"
+    },
+    "pnola-source/src-tauri/icons/android/mipmap-xxhdpi/ic_launcher_round.png": {
+      "bytes": 3104,
+      "sha256": "e1ee48f130c5f64115adceca8a77aee5e3fec9845db1d5e767f294f636e22526"
+    },
+    "pnola-source/src-tauri/icons/android/mipmap-xxxhdpi/ic_launcher.png": {
+      "bytes": 5835,
+      "sha256": "9d44322f20bbd733613ef3afa78074a51d04d3507c7865d31ab638f81e520687"
+    },
+    "pnola-source/src-tauri/icons/android/mipmap-xxxhdpi/ic_launcher_foreground.png": {
+      "bytes": 6661,
+      "sha256": "d465e67d90a66cdc3d29f4e55c710c1c84f40fef55c21ccd09b21630507b93df"
+    },
+    "pnola-source/src-tauri/icons/android/mipmap-xxxhdpi/ic_launcher_round.png": {
+      "bytes": 3749,
+      "sha256": "2ba6eb14f89f48fc3f57b72555ac933f3641fecc188e72402815374925fbfe40"
+    },
+    "pnola-source/src-tauri/icons/android/values/ic_launcher_background.xml": {
+      "bytes": 118,
+      "sha256": "b1c42868a1777ed1cf61108b506ffc91d0a826318d8516e36cf8f76fab8c4ced"
+    },
+    "pnola-source/src-tauri/icons/icon.icns": {
+      "bytes": 48143,
+      "sha256": "ef8cad2bc89b3c94925895ab27e0d20664ec05dce53e573e33ca3792c8f332fc"
+    },
+    "pnola-source/src-tauri/icons/icon.ico": {
+      "bytes": 7901,
+      "sha256": "192664af0b3c4bfca980737c3c5c685f601311d52736b86b51d5fc30c1b13b37"
+    },
+    "pnola-source/src-tauri/icons/icon.png": {
+      "bytes": 8026,
+      "sha256": "8b386b5ad123e4f94d99fae980eccdc87182ad3170ead59ef1eb0fcc735346c7"
+    },
+    "pnola-source/src-tauri/icons/ios/AppIcon-20x20@1x.png": {
+      "bytes": 474,
+      "sha256": "61adbbeee7a8f69ad28f673a17fc1c47a7f9a77ad6d86369474d0b0853fd46d9"
+    },
+    "pnola-source/src-tauri/icons/ios/AppIcon-20x20@2x-1.png": {
+      "bytes": 704,
+      "sha256": "56803a6d9dbd794453dd5fe4820b082c0438a200d4f21e4c6f179f023206c925"
+    },
+    "pnola-source/src-tauri/icons/ios/AppIcon-20x20@2x.png": {
+      "bytes": 704,
+      "sha256": "56803a6d9dbd794453dd5fe4820b082c0438a200d4f21e4c6f179f023206c925"
+    },
+    "pnola-source/src-tauri/icons/ios/AppIcon-20x20@3x.png": {
+      "bytes": 1041,
+      "sha256": "fdb59b40dfea45bd0e689bb02c3c0495d47c140e48f656287863eea48dfd0501"
+    },
+    "pnola-source/src-tauri/icons/ios/AppIcon-29x29@1x.png": {
+      "bytes": 555,
+      "sha256": "bc18ca789d28a99c7985a9cb6a84b1feff33754e6bcdba6262cd0fb7e8100ecf"
+    },
+    "pnola-source/src-tauri/icons/ios/AppIcon-29x29@2x-1.png": {
+      "bytes": 927,
+      "sha256": "bb78df7c69e912d61553d5004feb91f16482d478bcad6db09e9b9a0b74b4732e"
+    },
+    "pnola-source/src-tauri/icons/ios/AppIcon-29x29@2x.png": {
+      "bytes": 927,
+      "sha256": "bb78df7c69e912d61553d5004feb91f16482d478bcad6db09e9b9a0b74b4732e"
+    },
+    "pnola-source/src-tauri/icons/ios/AppIcon-29x29@3x.png": {
+      "bytes": 1382,
+      "sha256": "2d2135769371a43bf3b558bc0548b4fead1caccce5a78e484d9ee8e0887d65a9"
+    },
+    "pnola-source/src-tauri/icons/ios/AppIcon-40x40@1x.png": {
+      "bytes": 704,
+      "sha256": "56803a6d9dbd794453dd5fe4820b082c0438a200d4f21e4c6f179f023206c925"
+    },
+    "pnola-source/src-tauri/icons/ios/AppIcon-40x40@2x-1.png": {
+      "bytes": 1300,
+      "sha256": "b9f6be318a9cd0af2afa98c4ada7b7656c2f190f7919f487a4b1579166c49584"
+    },
+    "pnola-source/src-tauri/icons/ios/AppIcon-40x40@2x.png": {
+      "bytes": 1300,
+      "sha256": "b9f6be318a9cd0af2afa98c4ada7b7656c2f190f7919f487a4b1579166c49584"
+    },
+    "pnola-source/src-tauri/icons/ios/AppIcon-40x40@3x.png": {
+      "bytes": 1819,
+      "sha256": "f2245158182ed8cbcbf41ecda2d808834c6e78c02680038c8342b322ba82ed7d"
+    },
+    "pnola-source/src-tauri/icons/ios/AppIcon-512@2x.png": {
+      "bytes": 18581,
+      "sha256": "19fe1aac878e8f99c2011c11a104045162560f6dece20a781f2cdaef9f7fe82f"
+    },
+    "pnola-source/src-tauri/icons/ios/AppIcon-60x60@2x.png": {
+      "bytes": 1819,
+      "sha256": "f2245158182ed8cbcbf41ecda2d808834c6e78c02680038c8342b322ba82ed7d"
+    },
+    "pnola-source/src-tauri/icons/ios/AppIcon-60x60@3x.png": {
+      "bytes": 2754,
+      "sha256": "656810d0e7417b3df74f63b3db7c1bb938837b6fe47a0a0ea588ed91236236b0"
+    },
+    "pnola-source/src-tauri/icons/ios/AppIcon-76x76@1x.png": {
+      "bytes": 1246,
+      "sha256": "cc7bf80bc7b601702cb6d762e38421cab7bd992dceda5b01d1bd7a21a31e36ad"
+    },
+    "pnola-source/src-tauri/icons/ios/AppIcon-76x76@2x.png": {
+      "bytes": 2375,
+      "sha256": "998b27da2a7d2f9f93b64c2e493a736fbe34925e02f84810fb165f6073e1e647"
+    },
+    "pnola-source/src-tauri/icons/ios/AppIcon-83.5x83.5@2x.png": {
+      "bytes": 2521,
+      "sha256": "b3897a48634a7d84aef5444bfb083266110d86fcc0a08dc3f744a72b354125c9"
+    },
+    "pnola-source/src-tauri/src/attribution.rs": {
+      "bytes": 4614,
+      "sha256": "105a2c970f783fdf66c441fd10699bbd3c7edab0d4c67fcfb82f9d0dba99d19a"
+    },
+    "pnola-source/src-tauri/src/audio.rs": {
+      "bytes": 11164,
+      "sha256": "c0c8683dc8a1efa62d4b1d0f05f3355ead7156f0beeecfef154ffb0390a89f31"
+    },
+    "pnola-source/src-tauri/src/capture.rs": {
+      "bytes": 18147,
+      "sha256": "9786466a996125ed215134a6ed2d8c658278c044b29f6cc6316be388f886bece"
+    },
+    "pnola-source/src-tauri/src/engine.rs": {
+      "bytes": 15087,
+      "sha256": "fd4823d1ad4fdf00c1e51788e6db3d594d5cd2813cff9423e493fef5799b5ea9"
+    },
+    "pnola-source/src-tauri/src/live.rs": {
+      "bytes": 30577,
+      "sha256": "380933edfebc6731fb777e6f0e842d1615abd81b8c3599eb034ff037df03a27d"
+    },
+    "pnola-source/src-tauri/src/live_audio.rs": {
+      "bytes": 3072,
+      "sha256": "1d0cd23c53a342cfb9f1de0c2b1f43fe73d00fb1fdf9294c8ae24859f092bc34"
+    },
+    "pnola-source/src-tauri/src/live_speakers.rs": {
+      "bytes": 12776,
+      "sha256": "11a7851fd66efb3e0e63fb4f04f873e0065defc079f6a52e3f17eafbe9aa1a96"
+    },
+    "pnola-source/src-tauri/src/main.rs": {
+      "bytes": 9787,
+      "sha256": "9850965cc6d4c30978760583903980afa0a747987d5a85630c2067c106dda977"
+    },
+    "pnola-source/src-tauri/src/store.rs": {
+      "bytes": 2126,
+      "sha256": "b1415d8d6e3b01c0b8ca83cea20f9458b50a1a91be03cccf8b911943c5cae364"
+    },
+    "pnola-source/src-tauri/src/transcription.rs": {
+      "bytes": 8651,
+      "sha256": "1100598920593ce83cb7b84085e741274d1c90b68db1f928192562703ae967b2"
+    },
+    "pnola-source/src-tauri/src/verification_images.rs": {
+      "bytes": 2575,
+      "sha256": "3eee7a80ff001df58e2b013575583facba1132c8dbc997db12b8aceb0153d350"
+    },
+    "pnola-source/src-tauri/tauri.conf.json": {
+      "bytes": 1579,
+      "sha256": "49f92850e391638d76b49de0aa26ea795dddce6ed89c792becf51cba3261c0ef"
+    },
+    "pnola-source/tsconfig.json": {
+      "bytes": 311,
+      "sha256": "f90c7dcae6977b8d1adf893fe4cde15803950fe2c0580d43d19b59554ad0a6dd"
+    },
+    "pnola-source/vite.config.ts": {
+      "bytes": 589,
+      "sha256": "f144f5bd28f54dfca41c915e40a3eb13e3cfdab13a2be96c443123d6a4ecae65"
+    },
+    "protocol.json": {
+      "bytes": 195785,
+      "sha256": "c4641b8298179b9c830eef6efeb971f71766eef4696307bd7033ffcfb67224c8"
+    },
+    "qualification_storage.py": {
+      "bytes": 3914,
+      "sha256": "8bbb4dfe53797d8d03c3ba18f24acce8458878602c1c85f28a4f816d6f4416f6"
+    },
+    "qualify_valid_mel_pnola.py": {
+      "bytes": 13787,
+      "sha256": "4628f4b6242a7cd0985ba5b20a7ac8f38bbec4dc5042b786e34e488ed738e423"
+    },
+    "reclone-identical-app-models-v1.py": {
+      "bytes": 2967,
+      "sha256": "4ddaf88b19396e09f324ddb12de1fc3f996de6117d313de90a44c2277e0d9ca5"
+    },
+    "verify_valid_mel_pnola_app.py": {
+      "bytes": 9794,
+      "sha256": "fc5bd7c4223169d1b020f568326872035d4c552af207e93b742498b47490d272"
+    }
+  }
+}

@@ -99,8 +99,18 @@ now verifies the actual Rust diagnostic module under hardened signing:
 while the environment trace remains suppressed. Only explicit verification
 commands register this callback. Parsing rejects malformed reserved records;
 the future qualifier requires callback history and the same complete closure.
-The original app builds and failed neural attempt remain immutable. New
-instrumented builds and a separately frozen runtime attempt are still needed.
+The original app builds and failed neural attempt remain immutable; this
+model-free proof does not qualify app inference.
+The [instrumented CPU/Metal construction](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-instrumented-pnola-apps/qualification.json)
+now passes all six build/clone/signature commands and complete static checks.
+Both retain hardened signing and the exact original local entitlements;
+315 Gen2 source pins and 107 actual Pnola source files are retained. Identical
+model files were replaced with APFS clones to recover space, preserving every
+app payload byte, inventory and signature. The separate
+[v2 runtime protocol](../../tools/nemotron-diarization/valid-mel-pnola-app-v2.protocol.json)
+freezes the same five cases on these newly built apps, requiring process-local
+image history with no environment trace dependency. No instrumented app-model
+case has executed yet; the original attempt remains failed.
 The separate current-profile corpus scorer preserves every valid row and all
 original quality criteria. A new frozen runner and fresh native/public corpus
 outputs are still required; historical quality failures remain unchanged.
