@@ -1,0 +1,177 @@
+{
+  "source_commit": "30ed38bc485be5483e0e40a754ac52b7af7de4d4",
+  "protocol": {
+    "bytes": 149985,
+    "sha256": "5880bd050213b2fedf53c51ef1d8700e34c30039aeb362add2551aed64e94e6a"
+  },
+  "results": [
+    {
+      "case": "ami-close",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-ami-runtime-v1/ami-close/runtime.sb",
+        "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-env-v1/venv/bin/python",
+        "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/original_nemo_calibration.py",
+        "--protocol",
+        "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-ami-runtime-v1/ami-close/protocol.json",
+        "--output",
+        "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-ami-runtime-v1/ami-close"
+      ],
+      "environment": {
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-ami-runtime-v1/ami-close/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-ami-runtime-v1/ami-close/tmp/",
+        "PATH": "/usr/bin:/bin",
+        "HF_HUB_OFFLINE": "1",
+        "TRANSFORMERS_OFFLINE": "1",
+        "HF_DATASETS_OFFLINE": "1",
+        "WANDB_MODE": "disabled",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "TOKENIZERS_PARALLELISM": "false"
+      },
+      "pid": 45704,
+      "returncode": 0,
+      "elapsed_seconds": 38.88767879200168,
+      "probability_comparison": {
+        "shape": [
+          12000,
+          8
+        ],
+        "bitwise_equal": false,
+        "maximum_absolute_error": 0.04523921012878418,
+        "mean_absolute_error": 0.00013800713891551851,
+        "root_mean_square_error": 0.0010689751274826585,
+        "p95_absolute_error": 0.0004942588508129121,
+        "p99_absolute_error": 0.002890056148171422,
+        "worst_frame_feature": [
+          7527,
+          1
+        ],
+        "first_frame_feature_over_tolerance": [
+          638,
+          0
+        ],
+        "values_over_tolerance": 2522,
+        "absolute_tolerance": 0.001
+      },
+      "original_shared_der": {
+        "der": 0.415070811,
+        "missed_speaker_seconds": 45.75,
+        "false_alarm_speaker_seconds": 0.02,
+        "confusion_speaker_seconds": 0.83,
+        "reference_speaker_seconds": 112.27,
+        "reference_speakers": 4,
+        "hypothesis_speakers": 4,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "cached_hf_shared_der": {
+        "der": 0.414447315,
+        "missed_speaker_seconds": 45.67,
+        "false_alarm_speaker_seconds": 0.02,
+        "confusion_speaker_seconds": 0.84,
+        "reference_speaker_seconds": 112.27,
+        "reference_speakers": 4,
+        "hypothesis_speakers": 4,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "original_shared_der_at_most_original_0_20": false
+    },
+    {
+      "case": "ami-distant",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-ami-runtime-v1/ami-distant/runtime.sb",
+        "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-env-v1/venv/bin/python",
+        "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/original_nemo_calibration.py",
+        "--protocol",
+        "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-ami-runtime-v1/ami-distant/protocol.json",
+        "--output",
+        "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-ami-runtime-v1/ami-distant"
+      ],
+      "environment": {
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-ami-runtime-v1/ami-distant/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-ami-runtime-v1/ami-distant/tmp/",
+        "PATH": "/usr/bin:/bin",
+        "HF_HUB_OFFLINE": "1",
+        "TRANSFORMERS_OFFLINE": "1",
+        "HF_DATASETS_OFFLINE": "1",
+        "WANDB_MODE": "disabled",
+        "PYTHONDONTWRITEBYTECODE": "1",
+        "TOKENIZERS_PARALLELISM": "false"
+      },
+      "pid": 46229,
+      "returncode": 0,
+      "elapsed_seconds": 41.392867084010504,
+      "probability_comparison": {
+        "shape": [
+          12000,
+          8
+        ],
+        "bitwise_equal": false,
+        "maximum_absolute_error": 0.009916961193084717,
+        "mean_absolute_error": 3.863563168896426e-05,
+        "root_mean_square_error": 0.00022687302737112188,
+        "p95_absolute_error": 0.00014197304844856275,
+        "p99_absolute_error": 0.0009057605266571001,
+        "worst_frame_feature": [
+          9416,
+          0
+        ],
+        "first_frame_feature_over_tolerance": [
+          1917,
+          1
+        ],
+        "values_over_tolerance": 852,
+        "absolute_tolerance": 0.001
+      },
+      "original_shared_der": {
+        "der": 0.500044535,
+        "missed_speaker_seconds": 51.47,
+        "false_alarm_speaker_seconds": 0.13,
+        "confusion_speaker_seconds": 4.54,
+        "reference_speaker_seconds": 112.27,
+        "reference_speakers": 4,
+        "hypothesis_speakers": 4,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "cached_hf_shared_der": {
+        "der": 0.500222677,
+        "missed_speaker_seconds": 51.49,
+        "false_alarm_speaker_seconds": 0.13,
+        "confusion_speaker_seconds": 4.54,
+        "reference_speaker_seconds": 112.27,
+        "reference_speakers": 4,
+        "hypothesis_speakers": 4,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120
+      },
+      "original_shared_der_at_most_original_0_20": false
+    }
+  ],
+  "quality_qualified": false,
+  "release_qualified": false,
+  "both_fixed_original_model_calls_completed": true,
+  "original_ami_shared_gates_passed": false,
+  "storage": {
+    "start_minimum_bytes": 5368709120,
+    "running_minimum_bytes": 1073741824,
+    "reserve_requested_bytes": 268435456,
+    "checks": 83,
+    "released": true,
+    "minimum_observed_free_bytes": 3997618176,
+    "last_observed_free_bytes": 5299990528,
+    "reserve_reported_allocated_bytes": 268435456
+  }
+}

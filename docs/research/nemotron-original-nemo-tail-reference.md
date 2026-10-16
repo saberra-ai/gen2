@@ -90,3 +90,27 @@ against the original transcriber-segment labels. Child processes cannot read
 target labels or saved oracles. This is diagnosis on previously observed data,
 not a new held-out test, profile search, gate replacement or release promotion.
 At preparation no original-NeMo AMI forward has run. All185model-free tests pass.
+
+
+## Executed original NeMo AMI comparison
+
+The [67-member actual two-crop receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-original-nemo-ami/receiver-qualification.json)
+retains both successful strict CPU restores and original whole-waveform forwards.
+Each has361finite FP32 parameter tensors,12,016physical Mel frames and12,000valid
+frames; every valid probability row is compared and scored.
+
+| Unchanged120sAMIcrop | Original NeMo shared DER | Cached HF shared DER | Max probability difference | Mean probability difference |
+|---|---:|---:|---:|---:|
+| Close mic |41.5070811%|41.4447315%|0.0452392101|0.000138007|
+| Distant mic |50.0044535%|50.0222677%|0.0099169612|0.0000386356|
+
+Both original-NeMo results fail the unchanged20%shared gate. Probabilities are
+not bitwise equal:2,522close and852distant values exceed the descriptive0.001
+comparison level. Similar DER does not establish universal numerical parity.
+These original-path failures reinforce that the frozen quality miss also occurs
+outside Gen2/native/Q8; they do not prove that every missed second is annotation
+error or reproduce the unidentified training environment. No parameters,
+references or thresholds changed, and no new HF/native inference ran.
+The first collector assumed physical width equals valid length; that assertion
+stopped before copying. Collection was corrected using the saved12,016-frame
+capture; neither model call was repeated. Every quality/release gate stays open.

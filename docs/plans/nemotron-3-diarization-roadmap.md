@@ -152,8 +152,12 @@ frontend values differ and are retained. Original-NeMo corpus parity and all
 original quality/release criteria remain unqualified. A separate
 [two-crop original-NeMo protocol](../../tools/nemotron-diarization/original-nemo-ami.protocol.json)
 now freezes one strict CPU forward per unchanged AMI channel to compare every
-valid row and report the same reference-policy DER. It is diagnostic only;
-no original-NeMo AMI call has run at preparation. All185model-free tests pass.
+valid row and report the same reference-policy DER. The [actual original-NeMo AMI diagnostic](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-original-nemo-ami/receiver-qualification.json)
+now completes both strict CPU calls. Original shared DER41.5071%/50.0045%
+also fails20%, alongside cached HF41.4447%/50.0223%. All12,000valid rows are
+compared; probabilities are unequal and raw discrepancies are retained.
+This later official3.1path does not identify the checkpoint's training3.0source.
+No old quality gate or release status changes. All185model-free tests pass.
 
 Prepared: 2026-10-14.
 Updated: 2026-10-16.

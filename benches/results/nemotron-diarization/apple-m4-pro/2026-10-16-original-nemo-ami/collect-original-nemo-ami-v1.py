@@ -1,0 +1,41 @@
+import hashlib,json,pathlib,shutil,sys,subprocess
+import numpy as np
+repo=pathlib.Path('/Users/victor/workspace/gen2-nemotron3-n0');tools=repo/'tools/nemotron-diarization';cache=pathlib.Path('/Users/victor/.cache/gen2-nemotron3-n0');work=cache/'original-nemo-ami-runtime-v1';out=repo/'benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-original-nemo-ami';sys.path.insert(0,str(tools))
+from original_nemo_metrics import compare_original
+from compare import segments
+from score import der
+def desc(f):return {'bytes':f.stat().st_size,'sha256':hashlib.sha256(f.read_bytes()).hexdigest()}
+p=json.loads((work/'protocol.json').read_text());q=json.loads((work/'qualification.json').read_text());assert desc(work/'protocol.json')==q['protocol']and (tools/'original-nemo-ami.protocol.json').read_bytes()==(work/'protocol.json').read_bytes()
+assert q['source_commit']=='30ed38b'+subprocess.check_output(['git','rev-parse','30ed38b'],cwd=repo,text=True).strip()[7:]
+assert q['both_fixed_original_model_calls_completed']is True and q['original_ami_shared_gates_passed']is False and q['release_qualified']is False and q['quality_qualified']is False and len(q['results'])==2
+for name,expected in p['tools'].items():assert desc(tools/name)==expected
+for name,expected in p['inputs'].items():assert desc(pathlib.Path(name))==expected
+for name,expected in p['environment_files'].items():assert desc(pathlib.Path(p['environment_root'])/name)==expected
+for name,expected in p['installed_nemo_files'].items():assert desc(pathlib.Path(p['environment_root'])/'venv/lib/python3.12/site-packages'/name)==expected
+for case,result in zip(p['cases'],q['results']):
+ assert result['case']==case['id']and result['returncode']==0 and result['original_shared_der_at_most_original_0_20']is False
+ directory=work/case['id'];forward=json.loads((directory/'forward-completed.json').read_text());restore=json.loads((directory/'restore-completed.json').read_text());assert forward['calls']==1 and forward['shapes']=={'probabilities':[1,12000,8],'logits':[1,12000,8],'activity':[1,12000,3]}and forward['frontend_valid_lengths']==[12000]and forward['frontend_physical_shape']==[1,128,12016]
+ assert restore['strict']is True and restore['missing_keys']==[]and restore['unexpected_keys']==[]and restore['parameter_tensors']==361 and restore['async_streaming']is False and list(restore['geometry'].values())==[9,4,0,264,264,222]
+ assert len(json.loads((directory/'restored-parameters.json').read_text()))==361
+ arrays={n:np.fromfile(directory/(n+'.f32'),dtype='<f4').reshape(12000,ch)for n,ch in [('probabilities',8),('logits',8),('activity',3)]};assert all(np.isfinite(a).all()for a in arrays.values())
+ hf=np.load(case['reference_path'],allow_pickle=False);labels=json.loads(pathlib.Path(case['labels_path']).read_text());assert compare_original(arrays['probabilities'],hf,1920000)==result['probability_comparison'];assert der(labels,segments(arrays['probabilities']),120)==result['original_shared_der'];assert der(labels,segments(hf),120)==result['cached_hf_shared_der'];assert result['cached_hf_shared_der']['der']==case['original_cached_hf_shared_der']
+ mel=np.fromfile(directory/'frontend-valid.f32',dtype='<f4').reshape(12000,128);physical=np.fromfile(directory/'frontend-physical.f32',dtype='<f4').reshape(1,128,12016);assert np.array_equal(mel,physical[0,:,:12000].T)and(directory/'frontend-capture-1.f32').read_bytes()==(directory/'frontend-physical.f32').read_bytes()
+ child={key:p[key]for key in ['nemo_source_commit','checkpoint_path','checkpoint']};child.update({key:case[key]for key in ['samples','pcm_path','pcm']});assert json.loads((directory/'protocol.json').read_text())==child
+ policy='(version 1)\n(allow default)\n(deny network*)\n'+'(deny file-read* '+' '.join('(subpath '+json.dumps(path)+')'for path in p['denied_paths'])+')\n'+'(deny file-write* '+' '.join('(subpath '+json.dumps(path)+')'for path in p['readonly_paths'])+')\n';assert(directory/'runtime.sb').read_text()==policy
+ argv=['/usr/bin/sandbox-exec','-f',str(directory/'runtime.sb'),str(pathlib.Path(p['environment_root'])/'venv/bin/python'),str(tools/'original_nemo_calibration.py'),'--protocol',str(directory/'protocol.json'),'--output',str(directory)];assert result['argv']==argv and not any('GEN2'in k or 'NEMO'in k for k in result['environment'])
+assert q['storage']['released']is True and q['storage']['reserve_reported_allocated_bytes']==256*1024**2 and not(work/'diagnostic-reserve.bin').exists()
+assert not out.exists();out.mkdir()
+for f in work.iterdir():
+ if f.is_file():shutil.copy2(f,out/f.name)
+for case in p['cases']:
+ directory=out/case['id'];directory.mkdir()
+ for f in(work/case['id']).iterdir():
+  if f.is_file():shutil.copy2(f,directory/f.name)
+ for key in ['reference_path','reference_metadata_path','labels_path']:shutil.copy2(case[key],directory/('saved-'+pathlib.Path(case[key]).name))
+for name in p['tools']:shutil.copy2(tools/name,out/name)
+for name in ['collect-original-nemo-ami-v1.py','freeze-original-nemo-ami-v1.py','cleanup-stale-rust-objects-gen2-original-nemo-v1.py','compiler-object-cleanup-gen2-original-nemo-v1.json','compiler-object-cleanup-gen2-original-nemo-v1.events.jsonl']:shutil.copy2(cache/name,out/name)
+shutil.copy2(cache/'original-nemo-ami-inputs-v1/preparation.json',out/'preparation.json')
+cleanup=json.loads((cache/'compiler-object-cleanup-gen2-original-nemo-v1.json').read_text());events=[json.loads(s)for s in(cache/'compiler-object-cleanup-gen2-original-nemo-v1.events.jsonl').read_text().splitlines()];assert len(events)==cleanup['removed_files']==696 and sum(e['bytes']for e in events)==cleanup['removed_apparent_bytes']==168786384 and cleanup['stopped_for_active_compiler']is True
+r={'schema_version':1,'source_commit':q['source_commit'],'both_fixed_original_cpu_calls_completed':True,'all_12000_valid_rows_compared_per_case':True,'strict_restore_parameter_tensors_per_case':361,'original_shared_der':{i['case']:i['original_shared_der']['der']for i in q['results']},'cached_hf_shared_der':{i['case']:i['cached_hf_shared_der']['der']for i in q['results']},'probability_max_absolute_error':{i['case']:i['probability_comparison']['maximum_absolute_error']for i in q['results']},'all_probability_values_at_most_1e_3':False,'original_hf_bitwise_parity':False,'original_ami_shared_quality_gates_passed':False,'quality_qualified':False,'release_qualified':False,'limits':['Two previously observed120sAMIcrops at unchanged9/4geometry; this is diagnosis, not a fresh held-out test.','Both originalNeMo strictCPU calls complete, but original shared DER41.5070811%/50.0044535% fails the unchanged20%gate, alongside cachedHF41.4447315%/50.0222677%.','Original/HF probabilities are unequal; max differences.0452392101/.0099169612. Do not claim bitwise or universal1e-3numerical parity from similar aggregate DER.','Original whole-wave frontend and HF chunked preprocessing differ. This later official3.1 source is not an identified reconstruction of the declared3.0training environment.','No new HF/native calls, selected parameters, replaced references or waived gates. Every priorQ8/HF/currentprofile failure remains unchanged.','Ordinary background timings, not uncontended performance, GUI/microphone, signing/notarization, fresh-machine or release qualification.','Owned Gen2 cleanup removed696old single-link Mach-O Rust intermediates/168,786,384apparentbytes and stopped on active compiler; all final models/source/evidence/SDKs/executables preserved.']}
+(out/'collection-notes.json').write_text(json.dumps({'first_collection_attempt': 'Rejected an incorrect collector-only assumption that physical Mel width equals valid length. No receipt files had been written.', 'actual_frontend_physical_shape': [1, 128, 12016], 'actual_valid_lengths': [12000], 'resolution': 'Collector now validates the retained physical width and compares exactly all12000valid frames. Runtime qualifier and frozen protocol were unchanged.', 'model_or_native_reexecution': False},indent=2)+'\n')
+(out/'receiver-qualification.json').write_text(json.dumps(r,indent=2)+'\n');records={f.relative_to(out).as_posix():desc(f)for f in out.rglob('*')if f.is_file()};(out/'collection.json').write_text(json.dumps({'files':records},indent=2)+'\n');print(json.dumps({'members':len(records)+1,'original_der':r['original_shared_der']}))

@@ -1,0 +1,44 @@
+{
+  "passed": true,
+  "calls": 1,
+  "seconds": 28.165433584013954,
+  "shapes": {
+    "probabilities": [
+      1,
+      12000,
+      8
+    ],
+    "logits": [
+      1,
+      12000,
+      8
+    ],
+    "activity": [
+      1,
+      12000,
+      3
+    ]
+  },
+  "frontend_physical_shape": [
+    1,
+    128,
+    12016
+  ],
+  "frontend_valid_lengths": [
+    12000
+  ],
+  "geometry": {
+    "chunk_len": 9,
+    "chunk_right_context": 4,
+    "chunk_left_context": 0,
+    "fifo_len": 264,
+    "spkcache_len": 264,
+    "spkcache_update_period": 222
+  },
+  "strict_restore": true,
+  "device": "cpu",
+  "dtype": "float32",
+  "official_source_commit": "218d0b443441b7d8aa1c832f47df310f186cf0a4",
+  "quality_qualified": false,
+  "release_qualified": false
+}

@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "source_commit": "30ed38bc485be5483e0e40a754ac52b7af7de4d4",
+  "both_fixed_original_cpu_calls_completed": true,
+  "all_12000_valid_rows_compared_per_case": true,
+  "strict_restore_parameter_tensors_per_case": 361,
+  "original_shared_der": {
+    "ami-close": 0.415070811,
+    "ami-distant": 0.500044535
+  },
+  "cached_hf_shared_der": {
+    "ami-close": 0.414447315,
+    "ami-distant": 0.500222677
+  },
+  "probability_max_absolute_error": {
+    "ami-close": 0.04523921012878418,
+    "ami-distant": 0.009916961193084717
+  },
+  "all_probability_values_at_most_1e_3": false,
+  "original_hf_bitwise_parity": false,
+  "original_ami_shared_quality_gates_passed": false,
+  "quality_qualified": false,
+  "release_qualified": false,
+  "limits": [
+    "Two previously observed120sAMIcrops at unchanged9/4geometry; this is diagnosis, not a fresh held-out test.",
+    "Both originalNeMo strictCPU calls complete, but original shared DER41.5070811%/50.0044535% fails the unchanged20%gate, alongside cachedHF41.4447315%/50.0222677%.",
+    "Original/HF probabilities are unequal; max differences.0452392101/.0099169612. Do not claim bitwise or universal1e-3numerical parity from similar aggregate DER.",
+    "Original whole-wave frontend and HF chunked preprocessing differ. This later official3.1 source is not an identified reconstruction of the declared3.0training environment.",
+    "No new HF/native calls, selected parameters, replaced references or waived gates. Every priorQ8/HF/currentprofile failure remains unchanged.",
+    "Ordinary background timings, not uncontended performance, GUI/microphone, signing/notarization, fresh-machine or release qualification.",
+    "Owned Gen2 cleanup removed696old single-link Mach-O Rust intermediates/168,786,384apparentbytes and stopped on active compiler; all final models/source/evidence/SDKs/executables preserved."
+  ]
+}

@@ -27,6 +27,18 @@ The five Vox slices and ICSI pass on both backends. These results confirm that
 removing the extra terminal frame does not resolve the frozen AMI quality gap.
 They neither change reference policy nor establish a new untouched test set.
 
+## Original checkpoint path also misses the frozen gate
+
+The independent [original-NeMo CPU diagnostic](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-original-nemo-ami/receiver-qualification.json)
+now completes strict restores and one forward per unchanged AMI crop. Original
+shared DER is41.5070811%close /50.0044535%distant, versus cached HF41.4447315%/
+50.0222677%. Both fail20%. All12,000valid rows/eight learned channels are
+compared; raw probabilities differ, with max0.0452392/0.00991696and mean
+0.000138007/0.0000386356. Thus the failure is also reproduced through this
+pinned later official3.1checkpoint path, with whole-wave preprocessing rather
+than HF chunked preprocessing. This does not establish bitwise numerical parity,
+identify the original3.0training source, or waive the frozen quality criteria.
+
 ## Concrete protocol discrepancy: transcriber segments versus published AMI labels
 
 The immutable model card's **Performance Evaluation** warning explicitly identifies broad AMI transcription segments as a source of inflated missed speech: internal silence can be labeled as speaker activity. Its published AMI results use separately linked forced-alignment RTTMs and warn that different references are not directly comparable. This matches the *kind* of error above; it does not establish that every missed second is annotation error. [Pinned evaluation warning and label inventory](https://huggingface.co/nvidia/Nemotron-3-Diarization/raw/f667ed73aee57d40cc39428eb768b4fd87a0a29e/README.md#performance-evaluation).
