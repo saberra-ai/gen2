@@ -313,6 +313,45 @@ impl Runtime {
         Ok(model)
     }
 
+    /// Load the pinned multilingual Whisper base CPU model on the calling
+    /// worker. Its peak reservation stays held until the native context drops.
+    #[cfg(feature = "backend-asr-whisper")]
+    pub fn load_whisper(
+        &self,
+        path: impl AsRef<Path>,
+        options: crate::whisper::LoadOptions,
+    ) -> Result<crate::whisper::Transcriber> {
+        options.validate()?;
+        let bundle = crate::whisper::Bundle::open(path.as_ref())?;
+        let mb = options.reservation_mb;
+        let reservation = {
+            let _admission = self
+                .inner
+                .admission
+                .lock()
+                .map_err(|_| Error::Load("admission lock poisoned".into()))?;
+            self.make_room(mb, None);
+            if !self.can_admit(mb) {
+                return Err(crate::speech::SpeechError::ResourceLimit(format!(
+                    "cannot reserve {mb} MiB for local Whisper alongside resident models"
+                ))
+                .into());
+            }
+            self.inner
+                .speech_reserved_mb
+                .fetch_add(mb, Ordering::SeqCst);
+            SpeechReservation {
+                inner: Arc::clone(&self.inner),
+                mb,
+            }
+        };
+        Ok(crate::whisper::Transcriber::load(
+            bundle,
+            options,
+            Box::new(reservation),
+        )?)
+    }
+
     pub fn speech_reserved_mb(&self) -> u64 {
         self.inner.speech_reserved_mb.load(Ordering::SeqCst)
     }
@@ -323,7 +362,9 @@ impl Runtime {
             .saturating_add(self.diarization_reserved_mb())
     }
 
-    /// Live speech handles in load order. Registry entries do not keep workers alive.
+    /// Live Bark speech handles in load order. Registry entries do not keep workers alive.
+    /// Caller-owned synchronous Whisper contexts are not part of this registry;
+    /// their peak memory is included in `speech_reserved_mb`.
     pub fn speech_models(&self) -> Vec<crate::speech::Transcriber> {
         self.inner
             .speech_models

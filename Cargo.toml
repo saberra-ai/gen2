@@ -258,6 +258,7 @@ laya-dynamic = ["backend-laya-onnx", "onnx-dynamic"]
 # Native Bark speech recognition; independent of generation and Laya.
 backend-asr-onnx = ["dep:ort", "dep:rustfft", "dep:hound"]
 # Host-supplied NeMo-Speech.cpp C ABI; no C++ build or binary/model download.
+backend-asr-whisper = ["dep:libloading"]
 backend-diar-nemo = ["dep:libloading", "dep:hound"]
 asr-resample-soxr = ["backend-asr-onnx", "dep:cmake"]
 asr-dynamic = ["backend-asr-onnx", "onnx-dynamic"]

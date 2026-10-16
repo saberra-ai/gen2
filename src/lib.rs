@@ -73,6 +73,9 @@ pub mod decision;
 pub mod diarization;
 /// Local English speech recognition and cleanup, independent of chat sessions.
 pub mod speech;
+/// Pinned multilingual CPU speech for constrained local devices.
+#[cfg(feature = "backend-asr-whisper")]
+pub mod whisper;
 
 #[cfg(any(feature = "backend-laya-onnx", feature = "backend-asr-onnx"))]
 mod onnx_runtime;
