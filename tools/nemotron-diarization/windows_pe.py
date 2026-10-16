@@ -16,9 +16,9 @@ MAX_IMAGE_BYTES = 256 * 1024 * 1024
 MAX_EXPORTS = 65536
 
 
-def dll_name(value):
-    if not re.fullmatch(r'[A-Za-z0-9_][A-Za-z0-9_.+-]*\.dll', value, re.IGNORECASE):
-        raise ValueError('unsafe or unsupported PE DLL name: ' + repr(value))
+def image_name(value, extension):
+    if not re.fullmatch(r'[A-Za-z0-9_][A-Za-z0-9_.+-]*\.' + extension, value, re.IGNORECASE):
+        raise ValueError('unsafe or unsupported PE ' + extension + ' name: ' + repr(value))
     return value.lower()
 
 
@@ -34,6 +34,7 @@ class PeImage:
         machine, sections, _, _, _, optional_size, characteristics = self.unpack('<HHIIIHH', pe + 4)
         if machine != 0x8664 or not 1 <= sections <= 96 or not characteristics & 2:
             raise ValueError('expected executable AMD64 PE image')
+        self.is_dll = bool(characteristics & 0x2000)
         optional = pe + 24
         self.slice(optional, optional_size)
         if optional_size < 112 or self.unpack('<H', optional)[0] != 0x20b:
@@ -126,7 +127,7 @@ class PeImage:
             if (delay and (record[5] or record[7])) or (not delay and record[1]):
                 self.descriptor_bindings = True
             name = record[1] if delay else record[3]
-            names.append(dll_name(self.string(name)))
+            names.append(image_name(self.string(name), 'dll'))
         raise ValueError('unterminated PE import directory')
 
     def exports(self):
@@ -155,9 +156,9 @@ class PeImage:
                 module, separator, symbol = value.rpartition('.')
                 if not separator or not re.fullmatch(r'(?:#[0-9]+|[A-Za-z_?@$][A-Za-z0-9_?@$]*)', symbol):
                     raise ValueError('unsupported PE export forwarder: ' + repr(value))
-                dependencies.add(dll_name(module if module.lower().endswith('.dll') else module + '.dll'))
+                dependencies.add(image_name(module if module.lower().endswith('.dll') else module + '.dll', 'dll'))
                 forwarders.append({'ordinal': base + index, 'target': value})
-        return {'export_name': dll_name(self.string(name)), 'exports': sorted(exports),
+        return {'export_name': image_name(self.string(name), 'dll' if self.is_dll else 'exe'), 'exports': sorted(exports),
                 'export_count': functions, 'forwarders': forwarders, 'forwarder_dependencies': sorted(dependencies)}
 
 
@@ -168,6 +169,6 @@ def inspect_pe(path):
     image = PeImage(data)
     imports, delay_imports = image.imports(), image.imports(delay=True)
     return {'machine': 'AMD64', 'format': 'PE32+', 'sha256': hashlib.sha256(data).hexdigest(),
-            'bytes': len(data), 'is_dll': bool(image.unpack('<H', image.unpack('<I', 0x3c)[0] + 22)[0] & 0x2000),
+            'bytes': len(data), 'is_dll': image.is_dll,
             'imports': imports, 'delay_imports': delay_imports,
             'bound_imports_present': bool(image.directory(11)[0]) or image.descriptor_bindings, **image.exports()}

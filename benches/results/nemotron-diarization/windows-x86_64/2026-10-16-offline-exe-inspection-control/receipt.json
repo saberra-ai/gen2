@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "redistribution_qualified": false,
+  "offline_container_gates_passed": false,
+  "scope": "Delivered Windows Server 2022 AMD64 AVX2/FMA/F16C runtime, fresh process containers with network none, native/public parity, lifecycle and observed modules.",
+  "limits": [
+    "No Windows desktop/physical-machine, chat/Bark/Laya coexistence or universal namespace guarantee.",
+    "No held-out quality, live/uncontended-performance or Microsoft redistribution qualification.",
+    "Test executables carry exact app-local CRT copies to control their process-start imports; these are separate from the runtime archive.",
+    "The independent native probe alone uses the relocated runtime directory on PATH for its static private C ABI import. Gen2 uses its explicit library loader with system-only PATH."
+  ],
+  "error": "unsafe or unsupported PE DLL name: 'nemotron_stream.exe'"
+}

@@ -59,6 +59,22 @@ class PeEvidenceTests(unittest.TestCase):
         self.assertEqual(report['export_count'], 2)
         self.assertFalse(report['bound_imports_present'])
 
+    def test_executable_export_identity_does_not_relax_dll_dependency_names(self):
+        data = fixture()
+        struct.pack_into('<H', data, 0x96, 0x22)  # executable image without IMAGE_FILE_DLL
+        data[0x710:0x719] = b'test.exe\0'
+        report = self.inspect(data)
+        self.assertFalse(report['is_dll'])
+        self.assertEqual(report['export_name'], 'test.exe')
+        data[0x300:0x30e] = b'dependency.exe'
+        data[0x30e] = 0
+        with self.assertRaises(ValueError):
+            self.inspect(data)
+        dll = fixture()
+        dll[0x710:0x719] = b'test.exe\0'
+        with self.assertRaises(ValueError):
+            self.inspect(dll)
+
     def test_rejects_truncated_wrong_architecture_and_ambiguous_mappings(self):
         cases = [fixture()[:200], fixture()]
         struct.pack_into('<H', cases[1], 0x84, 0x14c)

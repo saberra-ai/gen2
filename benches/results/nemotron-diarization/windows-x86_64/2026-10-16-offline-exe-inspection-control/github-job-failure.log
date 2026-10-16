@@ -1,0 +1,41 @@
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	﻿2026-10-16T10:40:24.6302120Z ##[group]Run python tools/nemotron-diarization/qualify_windows_package.py --sdk-prefix "D:\a\_temp/qualified-windows-native/nemo-sdk" --native-evidence "D:\a\_temp/qualified-windows-native/nemo-evidence" --package-evidence "D:\a\_temp/windows-runtime-package" --prerequisites "D:\a\_temp/windows-container-prerequisites/preflight.json" --output "D:\a\_temp/windows-runtime-offline"
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:40:24.6304988Z [36;1mpython tools/nemotron-diarization/qualify_windows_package.py --sdk-prefix "D:\a\_temp/qualified-windows-native/nemo-sdk" --native-evidence "D:\a\_temp/qualified-windows-native/nemo-evidence" --package-evidence "D:\a\_temp/windows-runtime-package" --prerequisites "D:\a\_temp/windows-container-prerequisites/preflight.json" --output "D:\a\_temp/windows-runtime-offline"[0m
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:40:24.6355091Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:40:24.6355423Z env:
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:40:24.6355683Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:40:24.6356187Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:40:24.6356627Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:40:24.6357021Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:40:24.6357432Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:40:24.6357765Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:40:24.6358009Z   CARGO_INCREMENTAL: 0
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:40:24.6358204Z   CARGO_TERM_COLOR: always
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:40:24.6358405Z ##[endgroup]
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:40:25.0476401Z START image-inspect
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:40:25.0740009Z PASS image-inspect
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:40:29.7282348Z START build-public-helper
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:46:20.2366811Z PASS build-public-helper
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:46:20.2371221Z START cargo-metadata
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:46:20.2757533Z PASS cargo-metadata
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:46:20.2765739Z START build-lifecycle-helper
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:46:23.1113320Z PASS build-lifecycle-helper
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:46:23.1267732Z Traceback (most recent call last):
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:46:23.1277862Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\qualify_windows_package.py", line 246, in <module>
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:46:23.1278919Z     main()
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:46:23.1279761Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\qualify_windows_package.py", line 242, in main
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:46:23.1280739Z     Qualification(args).main()
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:46:23.1281658Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\qualify_windows_package.py", line 225, in main
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:46:23.1282624Z     self.prepare()
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:46:23.1283496Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\qualify_windows_package.py", line 101, in prepare
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:46:23.1284610Z     pe = inspect_pe(binaries / name)
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:46:23.1285149Z          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:46:23.1285989Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\windows_pe.py", line 173, in inspect_pe
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:46:23.1287296Z     'bound_imports_present': bool(image.directory(11)[0]) or image.descriptor_bindings, **image.exports()}
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:46:23.1288407Z                                                                                           ^^^^^^^^^^^^^^^
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:46:23.1289448Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\windows_pe.py", line 160, in exports
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:46:23.1290591Z     return {'export_name': dll_name(self.string(name)), 'exports': sorted(exports),
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:46:23.1291370Z                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:46:23.1292150Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\windows_pe.py", line 21, in dll_name
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:46:23.1293590Z     raise ValueError('unsafe or unsupported PE DLL name: ' + repr(value))
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:46:23.1294450Z ValueError: unsafe or unsupported PE DLL name: 'nemotron_stream.exe'
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:46:23.2649304Z ##[error]Process completed with exit code 1.

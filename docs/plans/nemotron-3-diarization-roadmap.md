@@ -645,6 +645,13 @@ tests, observed module paths/hashes and a missing-private-library control in
 fresh offline Server Core containers. Its actual execution remains unverified;
 Microsoft redistribution, desktop, coexistence, quality and performance gates
 remain open.
+The first `934d46f` [offline execution attempt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-offline-exe-inspection-control/qualification.json)
+built both Gen2 release helpers, then stopped before any runtime container or
+model execution because the PE inspector incorrectly required a DLL extension
+for an executable's export identity. The checker now derives DLL/EXE export
+identity from the COFF characteristics while retaining DLL-only dependencies.
+Its new regression passes, all 81 tool tests pass and the qualified 13 DLL PE
+reports remain unchanged. A retry needs separate actual evidence.
 
 A guarded [Windows private-DLL build](../research/nemotron-windows-private-names.md)
 now relinks the five owned DLLs through an external CMake naming hook, updates

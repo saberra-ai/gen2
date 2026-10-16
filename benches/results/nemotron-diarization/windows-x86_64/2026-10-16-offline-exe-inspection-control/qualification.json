@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "source_commit": "934d46fb5a523d568ce9f7c07cbae109c9dc2aa3",
+  "run_url": "https://github.com/saberra-ai/gen2/actions/runs/38888608474",
+  "offline_container_gates_passed": false,
+  "release_qualified": false,
+  "observation": "Current Gen2 public-stream and lifecycle release builds passed. PE admission then incorrectly rejected valid EXE export identity nemotron_stream.exe before runtime containers/model execution.",
+  "fix": "Validate export identity extension using IMAGE_FILE_DLL, preserving DLL-only ordinary/delay/forwarded dependencies. Regression initially fails then passes; all13 qualified DLL reports remain identical.",
+  "limits": [
+    "No native/public inference, lifecycle execution, module-path closure or offline runtime qualification in this source-specific attempt.",
+    "Gen2 helper executable bytes were not delivered before admission failed; build records remain CI observations.",
+    "Later retry requires a separate receipt."
+  ]
+}
