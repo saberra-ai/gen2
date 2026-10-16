@@ -76,7 +76,28 @@ impl MemorySnapshot {
         let tier = detect_machine_tier(input);
         let mut budgets = effective_budgets(input);
         let mut desktop = None;
-        if !input.is_mobile {
+        if input.is_mobile {
+            // MemAvailable excludes the shell's existing RSS. Reserve half of
+            // that free headroom for the OS, then add the shell back only when
+            // expressing the resulting *total-process* ceiling. Otherwise a
+            // WebView shell is charged twice while a tiny CLI is admitted.
+            // Subsystem/model quotas retain their original conservative scale.
+            // Keep tier/physical caps so a large process cannot create room by
+            // growing, and unknown capacity/headroom cannot authorize a load.
+            let base = super::memory_policy::base_budgets_for_tier(tier);
+            let available = input
+                .available_memory_mb
+                .min(input.total_memory_mb.saturating_sub(estimated_process_mb));
+            budgets.process_soft_limit_mb = estimated_process_mb
+                .saturating_add(available / 2)
+                .min(base.process_soft_limit_mb)
+                .min(input.total_memory_mb / 2);
+            budgets.process_hard_limit_mb = estimated_process_mb
+                .saturating_add(available.saturating_mul(3) / 4)
+                .min(base.process_hard_limit_mb)
+                .min(input.total_memory_mb / 4 * 3)
+                .max(budgets.process_soft_limit_mb);
+        } else {
             // OS-visible available memory excludes our resident pages. Add
             // those back when setting a total process ceiling, so allocating
             // weights does not itself make the ceiling fall a second time.
@@ -151,6 +172,42 @@ mod tests {
             total_memory_mb: total_mb,
             available_memory_mb: avail_mb,
             is_mobile: false,
+        }
+    }
+
+    #[test]
+    fn mobile_shell_rss_is_not_charged_against_incremental_free_headroom() {
+        // Installed SM-A166U: no resident models, 262 MiB native app/UI RSS,
+        // 965 MiB available. Keep half the available RAM reserved for the OS.
+        let input = MemoryPolicyInput {
+            total_memory_mb: 3450,
+            available_memory_mb: 965,
+            is_mobile: true,
+        };
+        let snapshot = MemorySnapshot::new(&input, 262);
+        assert_eq!(snapshot.budgets.inference_resident_mb, 428);
+        let governor = crate::memory::MemoryGovernor::new(snapshot);
+        assert!(governor.can_load_additional_model(384));
+        assert!(!governor.can_load_additional_model(483));
+    }
+
+    #[test]
+    fn mobile_headroom_still_denies_pressure_unknown_capacity_and_large_processes() {
+        for (total, available, process, extra) in [
+            (3450, 500, 262, 384),
+            (3450, 0, 262, 1),
+            (0, 965, 262, 1),
+            (3450, 2000, 1725, 1),
+        ] {
+            let input = MemoryPolicyInput {
+                total_memory_mb: total,
+                available_memory_mb: available,
+                is_mobile: true,
+            };
+            assert!(
+                !crate::memory::MemoryGovernor::new(MemorySnapshot::new(&input, process))
+                    .can_load_additional_model(extra)
+            );
         }
     }
 
