@@ -389,3 +389,38 @@ The updated two-file overlay was applied safely to the local Pnola checkout;
 reapplication reports zero changes. Its model-free Rust suite passes18tests with
 five real-model tests explicitly ignored. These outcomes do not replace those
 ignored integration gates.
+
+
+## Relocated CPU runtime/lifecycle admission
+
+`valid-mel-macos-package.protocol.json` freezes the next separate runtime gate.
+Compile-only preparation copied the exact v2 package and three pinned release
+executables, compiled a model-free version/dlopen probe, and listed all seven
+required lifecycle tests without executing them. A separate model-free dyld
+preflight lists tests with591Apple/executable images and zero native images.
+No model has run in this new attempt.
+
+After29model-free tests, the fixed order is: actual relocated version/92-library
+closure, a missing-private-GGML-base dlopen negative control, independent C-API
+and public Rust Q8 streams on the pinned60-second smoke WAV, complete6000-row
+comparison at1e-6, then seven existing lifecycle tests in fresh processes.
+These include100reloads, cancellation/deadlines, silence/short tails, transport
+parity/backpressure/snapshots, reset/finish behavior, memory admission, cleanup
+and warm offline provisioning. Internal forward counts and asynchronous queue
+scheduling are not instrumented; fixed sources/inputs/test selection and a
+300-second per-command timeout bound this attempt. All source/runtime/model/
+input/binary/header/build identities are bound before execution. Original SDKs,
+source, Homebrew, model roots and the first package are denied to native children;
+staged inputs are read-only. Dyld traces must match every actual private image.
+
+A failure stops the fixed attempt and preserves logs and available tensors.
+This does not admit long sessions, mixed-model coexistence, Metal, other OSes,
+desktop/physical microphone, clean performance or the unchanged AMI quality gate.
+
+
+Pre-execution review caught that the reusable stream comparator intentionally
+allows matching retained tails. The fixed60s gate now separately requires both
+retained ranges to be exactly[0,6000) and both raw arrays192000bytes before
+comparison. Three synthetic regression tests reject matching truncated tails,
+shorter recordings, raw truncation and last-valid-row corruption. This closes an
+evidence-admission gap before neural execution; numerical tolerances are unchanged.
