@@ -1,0 +1,24 @@
+   Compiling gen2 v0.1.0 (/Users/victor/workspace/gen2-nemotron3-n0)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 2.16s
+     Running tests/diarization_api.rs (/Users/victor/.cache/gen2-bark-onnx/build/debug/deps/diarization_api-bc04b6f761a8e84d)
+
+running 3 tests
+test input_requires_bounded_finite_mono_pcm ... ok
+test unavailable_runtime_does_not_reserve_memory ... ok
+test uncached_provisioning_requires_download_feature ... ok
+
+test result: ok. 3 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/diarization_native.rs (/Users/victor/.cache/gen2-bark-onnx/build/debug/deps/diarization_native-67e66d94dcbed435)
+
+running 7 tests
+test native_admission_cancellation_and_failed_load_release_reservations ... ok
+test real_diarizer_matches_native_reference_and_resets_recordings ... ok
+test repeated_reload_full_queue_cancel_and_dropped_stream_release_resources ... ok
+test silence_short_tail_and_idle_deadline_have_explicit_terminal_results ... ok
+test streamed_uneven_pcm_matches_recording_and_finish_is_idempotent ... ok
+test unsupported_abi_and_missing_symbols_fail_before_ready ... ok
+test verified_provisioned_cache_is_reused_offline ... ok
+
+test result: ok. 7 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 147.58s
+

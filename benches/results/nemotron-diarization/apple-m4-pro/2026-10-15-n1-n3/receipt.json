@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "scope": "N1\u2013N3 macOS CPU development qualification",
+  "release_qualified": false,
+  "machine": "macOS-26.3-arm64-arm-64bit-Mach-O",
+  "commit_at_collection": "d7b916f771fe44e6e3c4d2aba7427d68e1a7017d",
+  "source_hashes_at_collection": {
+    "Cargo.toml": "b87676d92fbe855e824e987cdc49d34eebbda51f89f6aafc72da5562ee3c9319",
+    "src/api/runtime.rs": "913497ab88b277df4bcb98d8ae16850d0dc7fbf74e4b9dab83bdfe363c3e2afe",
+    "src/api/error.rs": "809ad47c46898bdc96c50eca31efba3dce6b6a12428e31db6bee678086102071",
+    "src/diarization/audio.rs": "e362feaa4656ed739db4161ed7fe18532b91306f79242e00021d1eda92f8584f",
+    "src/diarization/bundle.rs": "8509a19c075fd30e9c95161cf3446606500d80d6818f490d140fac8d367aeb49",
+    "src/diarization/error.rs": "770b05089479a23f0c065695d2dde5847e6da979a7e59320fa60c24e965f5499",
+    "src/diarization/ffi.rs": "05936e4871d1793e735b2a46b14cbd5800944d395bb99f1ae8555506ffd493a9",
+    "src/diarization/mod.rs": "0b46684ba5afbbd075cc6b8edb2fb6a31b68cb8a48a60bd4cb47c6d950c976ef",
+    "src/diarization/nemo.rs": "13ec5dfd199b8405817ce96fa0b98e7d64a570e8b53b52a265bbe2d23deb2b00",
+    "src/diarization/provision.rs": "84f05a85df837c52e1293e73660b1f52c83262c3533e96c2a5be111aa0f0ea10",
+    "src/diarization/stream.rs": "74d095fd34046d2a079899f370a0a67c704e2abcffe4edee104cb25ec321454e",
+    "src/diarization/types.rs": "65fe12588c52af7ff127e38972ab1919109fc1adbaa8407526eff9b969d71662",
+    "src/diarization/worker.rs": "d598a93e23dd92adc575cb5ac2d9456554d6a9a2fae68d0d29be50437d587825",
+    "tests/diarization_api.rs": "c4c7d3c68d612228dd1299ca9551159eea35177ddfd1e2a43256e1a0f0451df6",
+    "tests/diarization_mixed_native.rs": "3f02490221e523a8af0fd73c5098042c6f35cb596bcae6a32e7357736a39e1a7",
+    "tests/diarization_native.rs": "c5e35980edede700ea966b9ff49f3abc6412b722f546d93b18388bc4d703aaee"
+  },
+  "stream_executable_sha256": "eef827c8ad3b285cc930229c7e8a352d02cd69aa7044287bf897b3b006c9835b",
+  "stream_build_provenance": "Preserved development executable, prior to review allocation-capacity and diagnostic-message fixes; clean-commit release rerun remains required.",
+  "workload": "Repeated 60-second licensed AMI clip, one native session; development builds/tests also ran on the host.",
+  "logs": {
+    "n3-native-final.log": {
+      "sha256": "1efb339ef4f1ab58048aa1e3c3c4667c290bedf47cf86ece762704c6aa732efd",
+      "required_passed_tests": [
+        "native_admission_cancellation_and_failed_load_release_reservations",
+        "real_diarizer_matches_native_reference_and_resets_recordings",
+        "repeated_reload_full_queue_cancel_and_dropped_stream_release_resources",
+        "silence_short_tail_and_idle_deadline_have_explicit_terminal_results",
+        "streamed_uneven_pcm_matches_recording_and_finish_is_idempotent",
+        "unsupported_abi_and_missing_symbols_fail_before_ready",
+        "verified_provisioned_cache_is_reused_offline"
+      ]
+    },
+    "n2-mixed-chat-first.log": {
+      "sha256": "022f330948d10a820097ef94c1aa2d20bf9e5f6a512a906749873eab4b816672",
+      "required_passed_tests": [
+        "mixed_chat_first"
+      ]
+    },
+    "n2-mixed-diar-first.log": {
+      "sha256": "99ce10df77e3aa8ff2b9b6a47a6480ae96d30c458e10ca78d8757a4dc623853c",
+      "required_passed_tests": [
+        "mixed_diarization_first"
+      ]
+    },
+    "n2-mixed-real-laya-chat-first.log": {
+      "sha256": "985dad9b66367c445b20c9a32155b6c3ec77d179fc6eb37d57fab2b090314815",
+      "required_passed_tests": [
+        "mixed_real_laya_chat_first"
+      ]
+    },
+    "n2-mixed-real-laya-diar-first.log": {
+      "sha256": "2abc2f8858a1d8580a36d202270cf1fc6e30c44dd332d91870c1ecd8e0e00fae",
+      "required_passed_tests": [
+        "mixed_real_laya_diarization_first"
+      ]
+    }
+  },
+  "provisioning_receipt_sha256": "6c796bb15240a8e638777ca56b8f125ffb255a990f38627166e2402c2fee1b02",
+  "soaks": [
+    {
+      "audio_seconds": 1800,
+      "elapsed_seconds": 350.53236,
+      "real_time_factor": 0.1947402,
+      "peak_rss_bytes": 248201216,
+      "turn_count": 753,
+      "observed_provisional_revisions": 341,
+      "retained_probabilities": {
+        "first_frame": 117176,
+        "rows": 62825
+      },
+      "native_frame_count": 180001,
+      "result_sha256": "89256f60741c336e95bfcefb8db46aca2e70e809edb6d658a85a121f5ed486e3",
+      "time_sha256": "637875903bd2d2dfbfd2bb45a7f4eabc59ab824224316051d2814813aa52ce74",
+      "geometry": {
+        "chunk": 9,
+        "right": 4,
+        "left": 0,
+        "fifo": 264,
+        "cache": 264,
+        "update": 222
+      },
+      "runtime_version": "nemo-speech-asr 0.2.0",
+      "model_revision": "f667ed73aee57d40cc39428eb768b4fd87a0a29e"
+    },
+    {
+      "audio_seconds": 3600,
+      "elapsed_seconds": 777.774292,
+      "real_time_factor": 0.21604841444444442,
+      "peak_rss_bytes": 248889344,
+      "turn_count": 1501,
+      "observed_provisional_revisions": 683,
+      "retained_probabilities": {
+        "first_frame": 296627,
+        "rows": 63374
+      },
+      "native_frame_count": 360001,
+      "result_sha256": "30ff57432403ddfbd576450587742f55d0d699bfdaadd11d9a4fb75e91df9f93",
+      "time_sha256": "71ae4b780a914e54a08172791125124dd33a1cffd05a27278a7d709002288943",
+      "geometry": {
+        "chunk": 9,
+        "right": 4,
+        "left": 0,
+        "fifo": 264,
+        "cache": 264,
+        "update": 222
+      },
+      "runtime_version": "nemo-speech-asr 0.2.0",
+      "model_revision": "f667ed73aee57d40cc39428eb768b4fd87a0a29e"
+    }
+  ],
+  "reservation_mb": 1024,
+  "unmet_gates": [
+    "N4 alignment and Pnola integration",
+    "N5 native deployment and platform/backend release qualification",
+    "held-out corpus quality and attribution gates",
+    "clean committed release build performance/reload receipts"
+  ]
+}
