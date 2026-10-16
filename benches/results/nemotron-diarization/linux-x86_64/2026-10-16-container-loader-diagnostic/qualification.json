@@ -1,0 +1,133 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "offline_container_gates_passed": false,
+  "source_commit": "e359ced00a52fecc8cff21a5adef59b03b2c237f",
+  "run_url": "https://github.com/saberra-ai/gen2/actions/runs/38876684092",
+  "positive_offline_model_execution_passed": true,
+  "native_public_comparison_recomputed": {
+    "passed": true,
+    "scope": "long-session wrapper/reference correctness, not held-out quality or full release qualification",
+    "audio_duration_seconds": 60.0,
+    "backend": "cpu",
+    "device": null,
+    "native_frame_count": 6001,
+    "retained_first_frame": 0,
+    "retained_rows": 6001,
+    "turns": 26,
+    "maximum_turn_error_seconds": 0.0,
+    "turn_tolerance_seconds": 1e-06,
+    "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+    "retained_probabilities_match": true,
+    "maximum_probability_error": 0.0,
+    "probability_tolerance": 1e-06,
+    "gen2_rtf": 0.5514738333333333,
+    "native_rtf": 0.5481288333333333
+  },
+  "all_seven_lifecycle_passes_reparsed": true,
+  "loaded_libraries": {
+    "packaged-native": {
+      "bundled": [
+        "/work/relocated runtime \u00fc/lib/libgcc_s.so.1",
+        "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_ggml-base.so.0.25.1",
+        "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_ggml-cpu.so.0.25.1",
+        "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_ggml.so.0.25.1",
+        "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_nemo_speech_asr.so",
+        "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_nemo_speech_asr_c.so.1",
+        "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_sentencepiece.so.0.0.0",
+        "/work/relocated runtime \u00fc/lib/libstdc++.so.6"
+      ],
+      "platform": [
+        "/lib/x86_64-linux-gnu/libc.so.6",
+        "/lib/x86_64-linux-gnu/libm.so.6",
+        "/lib64/ld-linux-x86-64.so.2"
+      ],
+      "raw_initialization_paths": [
+        "/lib/x86_64-linux-gnu/libc.so.6",
+        "/lib/x86_64-linux-gnu/libm.so.6",
+        "/lib64/ld-linux-x86-64.so.2",
+        "/work/bin/../relocated runtime \u00fc/lib/libgcc_s.so.1",
+        "/work/bin/../relocated runtime \u00fc/lib/libgen2_nemo_linux_ggml-base.so.0.25.1",
+        "/work/bin/../relocated runtime \u00fc/lib/libgen2_nemo_linux_ggml-cpu.so.0.25.1",
+        "/work/bin/../relocated runtime \u00fc/lib/libgen2_nemo_linux_ggml.so.0.25.1",
+        "/work/bin/../relocated runtime \u00fc/lib/libgen2_nemo_linux_nemo_speech_asr.so",
+        "/work/bin/../relocated runtime \u00fc/lib/libgen2_nemo_linux_nemo_speech_asr_c.so.1",
+        "/work/bin/../relocated runtime \u00fc/lib/libgen2_nemo_linux_sentencepiece.so.0.0.0",
+        "/work/bin/../relocated runtime \u00fc/lib/libstdc++.so.6"
+      ]
+    },
+    "packaged-public": {
+      "bundled": [
+        "/work/relocated runtime \u00fc/lib/libgcc_s.so.1",
+        "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_ggml-base.so.0.25.1",
+        "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_ggml-cpu.so.0.25.1",
+        "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_ggml.so.0.25.1",
+        "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_nemo_speech_asr.so",
+        "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_nemo_speech_asr_c.so.1",
+        "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_sentencepiece.so.0.0.0",
+        "/work/relocated runtime \u00fc/lib/libstdc++.so.6"
+      ],
+      "platform": [
+        "/lib/x86_64-linux-gnu/libc.so.6",
+        "/lib/x86_64-linux-gnu/libm.so.6",
+        "/lib64/ld-linux-x86-64.so.2"
+      ],
+      "raw_initialization_paths": [
+        "/lib/x86_64-linux-gnu/libc.so.6",
+        "/lib/x86_64-linux-gnu/libm.so.6",
+        "/lib64/ld-linux-x86-64.so.2",
+        "/work/bin/../relocated runtime \u00fc/lib/libgcc_s.so.1",
+        "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_ggml-base.so.0.25.1",
+        "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_ggml-cpu.so.0.25.1",
+        "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_ggml.so.0.25.1",
+        "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_nemo_speech_asr.so",
+        "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_nemo_speech_asr_c.so.1",
+        "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_sentencepiece.so.0.0.0",
+        "/work/relocated runtime \u00fc/lib/libstdc++.so.6"
+      ]
+    },
+    "packaged-lifecycle": {
+      "bundled": [
+        "/work/relocated runtime \u00fc/lib/libgcc_s.so.1",
+        "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_ggml-base.so.0.25.1",
+        "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_ggml-cpu.so.0.25.1",
+        "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_ggml.so.0.25.1",
+        "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_nemo_speech_asr.so",
+        "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_nemo_speech_asr_c.so.1",
+        "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_sentencepiece.so.0.0.0",
+        "/work/relocated runtime \u00fc/lib/libstdc++.so.6"
+      ],
+      "platform": [
+        "/lib/x86_64-linux-gnu/libc.so.6",
+        "/lib/x86_64-linux-gnu/libm.so.6",
+        "/lib64/ld-linux-x86-64.so.2"
+      ],
+      "raw_initialization_paths": [
+        "/lib/x86_64-linux-gnu/libc.so.6",
+        "/lib/x86_64-linux-gnu/libm.so.6",
+        "/lib64/ld-linux-x86-64.so.2",
+        "/work/bin/../relocated runtime \u00fc/lib/libgcc_s.so.1",
+        "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_ggml-base.so.0.25.1",
+        "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_ggml-cpu.so.0.25.1",
+        "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_ggml.so.0.25.1",
+        "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_nemo_speech_asr.so",
+        "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_nemo_speech_asr_c.so.1",
+        "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_sentencepiece.so.0.0.0",
+        "/work/relocated runtime \u00fc/lib/libstdc++.so.6"
+      ]
+    }
+  },
+  "negative_process_correctly_failed": true,
+  "negative_probability_output_absent": true,
+  "diagnosis": "The missing private GGML dependency correctly prevents loading. The public error retains only libloading Display text (dlopen failed), so the qualifier cannot prove the exact OS missing-library cause and correctly stays failed. libloading0.9 stores that detail in Error::source().",
+  "fix_commit": "c242201",
+  "fix": "Preserve available loader/symbol OS cause in owned Gen2 BackendUnavailable strings; source-less errors unchanged. Tighten negative assertion to the exact deleted basename followed by glibc missing-object text. No loader flags, ABI, model or successful inference behavior changes.",
+  "archive_sha256": "4f7228600f57a2660ce1515a7885ec36e2a30b57cce36afb041350e483de2339",
+  "archive_bytes": 110126345,
+  "delivered_filesystem_entries_verified": 45,
+  "limits": [
+    "Overall offline gate remains failed at this source; a reviewed source fix and actual fresh retry are required.",
+    "No chat/Bark/Laya coexistence, other Linux baseline, physical machine, uncontended performance or held-out quality qualification.",
+    "Positive native/public model and lifecycle results are actual CI executions; downloaded evidence and archive/source inventories rechecked on macOS without Linux execution."
+  ]
+}

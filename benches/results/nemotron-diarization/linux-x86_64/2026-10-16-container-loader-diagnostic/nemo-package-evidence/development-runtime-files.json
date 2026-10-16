@@ -1,0 +1,253 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "scope": "Development filesystem snapshot; preserves aliases/modes, does not by itself close dependencies or establish relocation.",
+  "archive": "development-runtime.tar.gz",
+  "archive_bytes": 110126345,
+  "archive_sha256": "4f7228600f57a2660ce1515a7885ec36e2a30b57cce36afb041350e483de2339",
+  "files": {
+    ".": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "lib": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "lib/libgcc_s.so.1": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 189953,
+      "sha256": "d61b31b7c252d01f165cea949dd99108c17de9ba273d4d56d790fd83e1fefd0f"
+    },
+    "lib/libgen2_nemo_linux_ggml-base.so.0.25.1": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 986593,
+      "sha256": "476821f9fa2c33a79d9e1866bd8c876f4b36fa326f4fb50afdfcc341e1d6d790"
+    },
+    "lib/libgen2_nemo_linux_ggml-cpu.so.0.25.1": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 1285225,
+      "sha256": "e0097d1a2a796442cd2ee7153de191004c1079a73d43597c401c04b2b7a7bfab"
+    },
+    "lib/libgen2_nemo_linux_ggml.so.0.25.1": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 74025,
+      "sha256": "2a0a00fc3e3e071a0af3b776a23e0dc345e61be2bb56efced3db82c116ae3b25"
+    },
+    "lib/libgen2_nemo_linux_nemo_speech_asr.so": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 2380657,
+      "sha256": "183cb1bb783a72951a4e51b3ca20bf4f47637b5e46827dd639e1f4235ef7e9a5"
+    },
+    "lib/libgen2_nemo_linux_nemo_speech_asr_c.so.1": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 98585,
+      "sha256": "2875135bb86b5f682e2f12712c5f7e0944d92f7b4042f8661f68444d7c44efde"
+    },
+    "lib/libgen2_nemo_linux_sentencepiece.so.0.0.0": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 1468209,
+      "sha256": "c6c4a6f6f53633775429acf38e68d5a00e1a8adb3be0d526775b8e2a5e698962"
+    },
+    "lib/libnemo_speech_asr_c.so": {
+      "mode": 511,
+      "type": "symlink",
+      "target": "libgen2_nemo_linux_nemo_speech_asr_c.so.1"
+    },
+    "lib/libstdc++.so.6": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 2938433,
+      "sha256": "61bb2c0a20ddc52916eb2ee610901a64c57a7aba19cef18dc956028feffbd6ff"
+    },
+    "notices": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "notices/common-licenses": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "notices/common-licenses/Artistic": {
+      "mode": 511,
+      "type": "file",
+      "bytes": 6111,
+      "sha256": "b7fd9b73ea99602016a326e0b62e6646060d18febdd065ceca8bb482208c3d88"
+    },
+    "notices/common-licenses/GFDL-1.2": {
+      "mode": 511,
+      "type": "file",
+      "bytes": 20432,
+      "sha256": "d8e94ae5fdb5433fcae2961aeb1a8cf17174d6f4a0465d24bf37dd8a038bd439"
+    },
+    "notices/common-licenses/GPL": {
+      "mode": 511,
+      "type": "file",
+      "bytes": 35149,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+    },
+    "notices/common-licenses/GPL-2": {
+      "mode": 511,
+      "type": "file",
+      "bytes": 18092,
+      "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643"
+    },
+    "notices/common-licenses/GPL-3": {
+      "mode": 511,
+      "type": "file",
+      "bytes": 35149,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+    },
+    "notices/common-licenses/LGPL": {
+      "mode": 511,
+      "type": "file",
+      "bytes": 7652,
+      "sha256": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118"
+    },
+    "notices/libgcc-s1": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "notices/libgcc-s1/copyright": {
+      "mode": 511,
+      "type": "file",
+      "bytes": 69004,
+      "sha256": "20390f8a6f3b1e4d7cb45dd8652dabb259bbef688cbad839bcdb0b9ba7252f79"
+    },
+    "notices/libgcc-s1/package-policy.txt": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 440,
+      "sha256": "b0b23a54f6478b28a525bf6a2435443af63b8d5b1b2d2aba610405adee0f16f2"
+    },
+    "notices/libsentencepiece0": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "notices/libsentencepiece0/copyright": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 6770,
+      "sha256": "4fcdf289da4573eb616853f9cbfbdb4b9f899e2aaa90c94212ecdd195d94df59"
+    },
+    "notices/libsentencepiece0/package-policy.txt": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 225,
+      "sha256": "1397a45e713adcad94989ce07dc361876e34806bcc6088354312e8efbe16f2fc"
+    },
+    "notices/libstdc++6": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "notices/libstdc++6/copyright": {
+      "mode": 511,
+      "type": "file",
+      "bytes": 69004,
+      "sha256": "20390f8a6f3b1e4d7cb45dd8652dabb259bbef688cbad839bcdb0b9ba7252f79"
+    },
+    "notices/libstdc++6/package-policy.txt": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 441,
+      "sha256": "a0d52d138a97b69f2d2a692ed440a19be886a5424dd4622809191787b849cce9"
+    },
+    "notices/nemo-speech": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "notices/nemo-speech/LICENSE": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 12238,
+      "sha256": "eaaca34b26b27c7be5a5099a0b9ddf9913f2db0aa96f6d5854435f2916d6fdc3"
+    },
+    "notices/nemo-speech/NOTICE": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 233,
+      "sha256": "d5ea773d67035e676503579ecf7d5836a124649d7fe99d59ec3c50cd101e1a80"
+    },
+    "notices/nemo-speech/THIRD_PARTY_NOTICES.md": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 10277,
+      "sha256": "fd8fcc0c71abde95b1b742a74c70aa27d2b4f2811fc19f64378b6845d8f3254a"
+    },
+    "notices/nemo-speech/third_party": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "notices/nemo-speech/third_party/ggml": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "notices/nemo-speech/third_party/ggml/LICENSE": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 1078,
+      "sha256": "94f29bbed6a22c35b992c5c6ebf0e7c92f13b836b90f36f461c9cf2f0f1d010d"
+    },
+    "package.json": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 47115,
+      "sha256": "7400ffeb33dfb52e00c003a79f140b2f5a41440fe87fc003365a2ac7171a836b"
+    },
+    "sources": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "sources/gcc-14": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "sources/gcc-14/gcc-14_14.2.0-4ubuntu2~24.04.1.debian.tar.xz": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 1950432,
+      "sha256": "cfece214c2fb790ef5f3baffb9a53e40618e7ae12d053610b251e94d77d08ade"
+    },
+    "sources/gcc-14/gcc-14_14.2.0-4ubuntu2~24.04.1.dsc": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 46930,
+      "sha256": "50950080874a6ec6780dd60c243e21d9cda9d736bb32bca98d16095d27cc01b5"
+    },
+    "sources/gcc-14/gcc-14_14.2.0.orig.tar.gz": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 97158172,
+      "sha256": "768c314c11eeab56ccebb91eb42ec4a41122fa94f0d83400126401942622197b"
+    },
+    "sources/sentencepiece": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "sources/sentencepiece/sentencepiece_0.2.0-1build1.debian.tar.xz": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 11352,
+      "sha256": "056076fa62c114b52deef3ad4ed8ab9b1ac07938a5991011c25220cd6850f780"
+    },
+    "sources/sentencepiece/sentencepiece_0.2.0-1build1.dsc": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 2400,
+      "sha256": "cf9b2a6d56e921f481b39c904487a8bab622318f7ac5e066d60e2378fabd3b9d"
+    },
+    "sources/sentencepiece/sentencepiece_0.2.0.orig.tar.gz": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 11988325,
+      "sha256": "d72556a0cb343d6ea23264ecdbc0ff04dfecd879be4d2d7a7026b9de1af2e4d1"
+    }
+  }
+}

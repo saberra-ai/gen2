@@ -616,7 +616,12 @@ loader negative control: CPython rewrites error 126 without preserving
 `winerror`. The control now reads the typed Win32 API directly and still
 requires exactly error 126. Raw native outputs, 66 verified installed files,
 and the failed control remain in the [native loader-control receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-native-loader-control/qualification.json).
-Actual Windows public/native parity and lifecycle qualification remain pending.
+The subsequent `4bd34aa` retry passes exact Windows native/public parity (27
+turns, 6,001 frames, zero probability/boundary error), the explicit Win32 error
+126 control, and all seven lifecycle gates, including 100 reloads. See the
+[Windows development receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-native-development/qualification.json).
+Observed CI RTF is about 1.20, so this does not qualify live performance.
+Closed packaging, private DLL coexistence and fresh-machine operation remain open.
 These jobs do not establish closed portable
 packages, fresh-machine offline operation or mixed-model coexistence on those
 platforms. The [Linux packaging investigation](../research/nemotron-linux-packaging.md)
@@ -646,8 +651,15 @@ eight bundled libraries at the relocated path, including GCC. It then failed
 opening the locked WAV: capability-free container root could not read the CI
 user's 0600 fixture copies. The [retained container failure](../../benches/results/nemotron-diarization/linux-x86_64/2026-10-16-container-permissions/qualification.json)
 does not claim inference. The reviewed runner now uses the owning UID/GID and
-checks exact input/output permissions before any model run; its actual retry
-is pending. The [pinned chat fixture](../research/nemotron-linux-chat-fixture.md)
+checks exact input/output permissions before any model run. That retry now
+passes offline native/public parity (26 turns, 6,001 frames, zero numerical
+error), all seven lifecycle tests and the eight-library loader audit. The
+missing-library process correctly fails, but Gen2 discarded the OS cause from
+libloading's error chain, so the detailed negative assertion still fails. The
+[retained diagnostic receipt](../../benches/results/nemotron-diarization/linux-x86_64/2026-10-16-container-loader-diagnostic/qualification.json)
+keeps the overall gate false. A reviewed Rust fix preserves that cause and
+requires the exact missing dependency in the assertion; its actual retry is
+pending. The [pinned chat fixture](../research/nemotron-linux-chat-fixture.md)
 matches the Mac fixture bytes and makes the separate Linux coexistence gate
 reproducible; it has not yet been executed on Linux.
 

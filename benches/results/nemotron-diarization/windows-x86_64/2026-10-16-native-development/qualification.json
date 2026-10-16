@@ -1,0 +1,41 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "development_native_gates_passed": true,
+  "source_commit": "4bd34aa9e062e36e770dce377e589a8663ddc2f6",
+  "run_url": "https://github.com/saberra-ai/gen2/actions/runs/38876058390",
+  "sdk_regular_files_verified": 66,
+  "native_public_comparison_recomputed": {
+    "passed": true,
+    "scope": "long-session wrapper/reference correctness, not held-out quality or full release qualification",
+    "audio_duration_seconds": 60.0,
+    "backend": "cpu",
+    "device": null,
+    "native_frame_count": 6001,
+    "retained_first_frame": 0,
+    "retained_rows": 6001,
+    "turns": 27,
+    "maximum_turn_error_seconds": 0.0,
+    "turn_tolerance_seconds": 1e-06,
+    "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+    "retained_probabilities_match": true,
+    "maximum_probability_error": 0.0,
+    "probability_tolerance": 1e-06,
+    "gen2_rtf": 1.2070685666666667,
+    "native_rtf": 1.1980063666666667
+  },
+  "actual_pcm_sha256": "96858fdcf0c8854f8fc659403c11ddc7565f538a7402803e4235e9e354d87ae6",
+  "default_loader_control": {
+    "passed": true,
+    "library": "D:\\a\\_temp\\nemo-sdk\\bin\\nemo_speech_asr_c.dll",
+    "load_flags": 0,
+    "native_win32_error": 126,
+    "default_loader_resolves_siblings": false
+  },
+  "all_seven_lifecycle_passes_reparsed": true,
+  "limits": [
+    "Development same-host Windows Server 2022 CPU SDK/public API only; no closed package, private DLL isolation, fresh-machine offline, mixed-model or quality qualification.",
+    "Observed CI RTF exceeds 1.0 for native/public; this is not a qualified live performance result.",
+    "Downloaded SDK and probability/output bytes verified on macOS; Windows binaries executed only in the named CI job."
+  ]
+}

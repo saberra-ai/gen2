@@ -19,7 +19,7 @@ native GUI, physical microphone, signing and accuracy gates remain open.
 On macOS, use the relocated packages: raw SDKs' generic ggml
 loader identities can collide inside one process. CPU and Metal packages use
 distinct private loader names.
-Linux runtime construction and Windows native model execution have separate
+Linux offline parity and Windows native/public parity have separate
 development receipts; neither platform has completed release qualification.
 
 ```rust,no_run

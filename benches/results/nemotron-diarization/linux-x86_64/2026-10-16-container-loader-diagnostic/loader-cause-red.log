@@ -1,0 +1,22 @@
+   Compiling gen2 v0.1.0 (/Users/victor/workspace/gen2-nemotron3-n0)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 8.15s
+     Running unittests src/lib.rs (/Users/victor/.cache/gen2-bark-onnx/build/debug/deps/gen2-04d3a99c1560930b)
+
+running 1 test
+test diarization::ffi::tests::missing_library_retains_the_operating_system_loader_cause ... FAILED
+
+failures:
+
+---- diarization::ffi::tests::missing_library_retains_the_operating_system_loader_cause stdout ----
+
+thread 'diarization::ffi::tests::missing_library_retains_the_operating_system_loader_cause' (34402567) panicked at src/diarization/ffi.rs:233:17:
+dlopen failed
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    diarization::ffi::tests::missing_library_retains_the_operating_system_loader_cause
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 1029 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--lib`

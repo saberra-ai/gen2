@@ -1,0 +1,156 @@
+[
+  {
+    "name": "sdk-configure",
+    "command": [
+      "cmake",
+      "--preset",
+      "cpu-diar",
+      "-DNEMO_SPEECH_BUILD_EXAMPLES=ON",
+      "-DNEMO_SPEECH_BUILD_CLI=OFF",
+      "-DNEMO_SPEECH_BUILD_MIC_CAPTURE=OFF",
+      "-DGGML_OPENMP=OFF",
+      "-DGGML_NATIVE=OFF",
+      "-DGGML_AVX=ON",
+      "-DGGML_AVX2=ON",
+      "-DGGML_AVX512=OFF",
+      "-DGGML_AVX_VNNI=OFF",
+      "-DGGML_FMA=ON",
+      "-DGGML_F16C=ON",
+      "-DNEMO_SPEECH_WITH_NORM=OFF",
+      "-DCMAKE_INSTALL_LIBDIR=lib",
+      "-DCMAKE_INSTALL_PREFIX=/home/runner/work/_temp/nemo-sdk"
+    ],
+    "cwd": "/home/runner/work/gen2/gen2/native-source"
+  },
+  {
+    "name": "sdk-build",
+    "command": [
+      "cmake",
+      "--build",
+      "/home/runner/work/gen2/gen2/native-source/build/cpu-diar",
+      "--parallel",
+      "2"
+    ],
+    "cwd": "/home/runner/work/gen2/gen2"
+  },
+  {
+    "name": "sdk-install",
+    "command": [
+      "cmake",
+      "--install",
+      "/home/runner/work/gen2/gen2/native-source/build/cpu-diar",
+      "--config",
+      "Release"
+    ],
+    "cwd": "/home/runner/work/gen2/gen2"
+  },
+  {
+    "name": "native-probe-build",
+    "command": [
+      "c++",
+      "-std=c++17",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-x",
+      "c++",
+      "/home/runner/work/gen2/gen2/tools/nemotron-diarization/native_stream_probe.cpp",
+      "/home/runner/work/gen2/gen2/native-source/llama.cpp/vendor/hash/sha256/sha256.c",
+      "-I/home/runner/work/_temp/nemo-sdk/include",
+      "-I/home/runner/work/gen2/gen2/native-source/examples",
+      "-I/home/runner/work/gen2/gen2/native-source/llama.cpp/vendor/hash",
+      "-L/home/runner/work/_temp/nemo-sdk/lib",
+      "-lnemo_speech_asr_c",
+      "-Wl,-rpath,/home/runner/work/_temp/nemo-sdk/lib",
+      "-o",
+      "/home/runner/work/_temp/nemo-sdk/bin/gen2_native_stream_probe"
+    ],
+    "cwd": "/home/runner/work/_temp/nemo-evidence"
+  },
+  {
+    "name": "gen2-build",
+    "command": [
+      "cargo",
+      "build",
+      "--locked",
+      "--release",
+      "--no-default-features",
+      "--features",
+      "backend-diar-nemo",
+      "--example",
+      "nemotron_stream",
+      "--test",
+      "diarization_native"
+    ],
+    "cwd": "/home/runner/work/gen2/gen2"
+  },
+  {
+    "name": "loader-dependencies",
+    "command": [
+      "ldd",
+      "/home/runner/work/_temp/nemo-sdk/lib/libnemo_speech_asr_c.so"
+    ],
+    "cwd": "/home/runner/work/gen2/gen2"
+  },
+  {
+    "name": "native-inference",
+    "command": [
+      "/home/runner/work/_temp/nemo-sdk/bin/gen2_native_stream_probe",
+      "/home/runner/work/_temp/nemo-evidence/assets/Nemotron-3-Diarization.q8_0.gguf",
+      "/home/runner/work/_temp/nemo-evidence/assets/ami_en2002d_2132.wav",
+      "1",
+      "-1",
+      "/home/runner/work/_temp/nemo-evidence/native-ami.json"
+    ],
+    "cwd": "/home/runner/work/gen2/gen2"
+  },
+  {
+    "name": "public-inference",
+    "command": [
+      "/home/runner/work/gen2/gen2/target/release/examples/nemotron_stream",
+      "/home/runner/work/_temp/nemo-evidence/assets",
+      "/home/runner/work/_temp/nemo-sdk/lib/libnemo_speech_asr_c.so",
+      "/home/runner/work/_temp/nemo-evidence/assets/ami_en2002d_2132.wav",
+      "1",
+      "/home/runner/work/_temp/nemo-evidence/public.f32"
+    ],
+    "cwd": "/home/runner/work/gen2/gen2"
+  },
+  {
+    "name": "native-lifecycle-list",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--release",
+      "--no-default-features",
+      "--features",
+      "backend-diar-nemo",
+      "--test",
+      "diarization_native",
+      "--",
+      "--ignored",
+      "--list"
+    ],
+    "cwd": "/home/runner/work/gen2/gen2"
+  },
+  {
+    "name": "native-lifecycle",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--release",
+      "--no-default-features",
+      "--features",
+      "backend-diar-nemo",
+      "--test",
+      "diarization_native",
+      "--",
+      "--ignored",
+      "--test-threads=1"
+    ],
+    "cwd": "/home/runner/work/gen2/gen2"
+  }
+]

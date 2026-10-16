@@ -53,3 +53,16 @@ Preserve the installed NeMo LICENSE, NOTICE, THIRD_PARTY_NOTICES, MIT ggml licen
 5. Issue a new receipt only after offline relocation, closure, loader isolation and lifecycle gates pass. Keep source/model quality gates separately visible; a Windows package test cannot convert the existing quality failures into passes.
 
 These are proposed steps. There is no clean Windows runtime package or clean-machine qualification evidence established by this investigation.
+
+## Subsequent native qualification checkpoint
+
+The actual `4bd34aa` [Windows development receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-native-development/qualification.json)
+now passes native/public parity with zero turn/probability error (27 turns,
+6,001 frames), the direct Win32 default-loader error 126 control and all seven
+lifecycle tests, including 100 model reloads. All 66 delivered SDK/probe regular
+files were rehashed on macOS; that receiver did not execute Windows binaries.
+The observed CI RTF is about 1.20, so this is not live-performance qualification.
+It closes the first development gate above, while private DLL packaging,
+Microsoft runtime provenance, fresh-machine offline operation and actual
+chat/Bark/Laya coexistence remain open. The 65-file inventory in this research
+note stays tied to its earlier source; it is not a new runtime artifact.

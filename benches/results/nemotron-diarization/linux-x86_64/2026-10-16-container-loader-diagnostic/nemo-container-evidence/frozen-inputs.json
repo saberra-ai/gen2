@@ -1,0 +1,530 @@
+{
+  "source_commit": "e359ced00a52fecc8cff21a5adef59b03b2c237f",
+  "construction_receipt_sha256": "651c47dbf4cb9942a1687b8947885e8890f13905450a7c77ae41eecac4c947e6",
+  "native_receipt_sha256": "8b9156efed88446e86aaf1feaab92bcb2b93b5b58a43a584b39deb13f237f9ae",
+  "archive": {
+    "schema_version": 1,
+    "release_qualified": false,
+    "scope": "Development filesystem snapshot; preserves aliases/modes, does not by itself close dependencies or establish relocation.",
+    "archive": "development-runtime.tar.gz",
+    "archive_bytes": 110126345,
+    "archive_sha256": "4f7228600f57a2660ce1515a7885ec36e2a30b57cce36afb041350e483de2339"
+  },
+  "package_manifest_sha256": "7400ffeb33dfb52e00c003a79f140b2f5a41440fe87fc003365a2ac7171a836b",
+  "image": {
+    "Id": "sha256:69f919497cada9a8611f3de61df902d9f94bf20f84552ef5bd93125c38608ef9",
+    "RepoTags": [
+      "ubuntu:24.04"
+    ],
+    "RepoDigests": [
+      "ubuntu@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55"
+    ],
+    "Parent": "",
+    "Comment": "",
+    "Created": "2026-09-18T21:20:38.103397332Z",
+    "DockerVersion": "26.1.3",
+    "Author": "",
+    "Config": {
+      "Hostname": "",
+      "Domainname": "",
+      "User": "",
+      "AttachStdin": false,
+      "AttachStdout": false,
+      "AttachStderr": false,
+      "Tty": false,
+      "OpenStdin": false,
+      "StdinOnce": false,
+      "Env": [
+        "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+      ],
+      "Cmd": [
+        "/bin/bash"
+      ],
+      "Image": "sha256:a86351613aff94739ba02421a1565b116e182d2d6b74fac45e8b67a0ec5b4ddb",
+      "Volumes": null,
+      "WorkingDir": "",
+      "Entrypoint": null,
+      "OnBuild": null,
+      "Labels": {
+        "org.opencontainers.image.version": "24.04"
+      }
+    },
+    "Architecture": "amd64",
+    "Os": "linux",
+    "Size": 78176728,
+    "GraphDriver": {
+      "Data": {
+        "MergedDir": "/var/lib/docker/overlay2/dc33ce8a225185c02bc3f1705be227265bdb231b0dad67bd69f992d096cda884/merged",
+        "UpperDir": "/var/lib/docker/overlay2/dc33ce8a225185c02bc3f1705be227265bdb231b0dad67bd69f992d096cda884/diff",
+        "WorkDir": "/var/lib/docker/overlay2/dc33ce8a225185c02bc3f1705be227265bdb231b0dad67bd69f992d096cda884/work"
+      },
+      "Name": "overlay2"
+    },
+    "RootFS": {
+      "Type": "layers",
+      "Layers": [
+        "sha256:d81fb2a7c6ee3be05fdefaa7fd223be219c1ab172083ec1b994c3ecda33ac0a8"
+      ]
+    },
+    "Metadata": {
+      "LastTagTime": "0001-01-01T00:00:00Z"
+    }
+  },
+  "helpers": {
+    "native-probe": {
+      "source_sha256": "30220aad450e65d917a08c88b9ba3a1f358d24b0d04bd91d3630501fa44e0ec6",
+      "source": "/home/runner/work/_temp/nemo-sdk/bin/gen2_native_stream_probe",
+      "sha256": "026810dc7a3f278fa14a938142513dcfd605c890438d6c8fb6ff02e6dda768e9",
+      "elf": {
+        "soname": null,
+        "needed": [
+          "libgen2_nemo_linux_nemo_speech_asr_c.so.1",
+          "libstdc++.so.6",
+          "libgcc_s.so.1",
+          "libc.so.6"
+        ],
+        "rpath": [
+          "$ORIGIN/../relocated runtime \u00fc/lib"
+        ],
+        "runpath": [],
+        "required_symbol_versions": [
+          "CXXABI_1.3",
+          "CXXABI_1.3.9",
+          "GCC_3.0",
+          "GLIBCXX_3.4",
+          "GLIBCXX_3.4.11",
+          "GLIBCXX_3.4.19",
+          "GLIBCXX_3.4.20",
+          "GLIBCXX_3.4.21",
+          "GLIBCXX_3.4.26",
+          "GLIBCXX_3.4.32",
+          "GLIBCXX_3.4.9",
+          "GLIBC_2.14",
+          "GLIBC_2.2.5",
+          "GLIBC_2.34",
+          "GLIBC_2.4"
+        ]
+      }
+    },
+    "public-stream": {
+      "source_sha256": "c2a52bcd9c99e29f30aa8505b3575bbf2f59d35d5568d066b180f8a2dd1b15b4",
+      "source": "/home/runner/work/gen2/gen2/target/release/examples/nemotron_stream",
+      "sha256": "2eaa39814a38bb6b354521330deb27648982e3619dc0b3bc04c8b98986183ff3",
+      "elf": {
+        "soname": null,
+        "needed": [
+          "libgcc_s.so.1",
+          "libc.so.6",
+          "ld-linux-x86-64.so.2"
+        ],
+        "rpath": [
+          "$ORIGIN/../relocated runtime \u00fc/lib"
+        ],
+        "runpath": [],
+        "required_symbol_versions": [
+          "GCC_3.0",
+          "GCC_3.3",
+          "GCC_4.2.0",
+          "GLIBC_2.14",
+          "GLIBC_2.16",
+          "GLIBC_2.17",
+          "GLIBC_2.18",
+          "GLIBC_2.2.5",
+          "GLIBC_2.25",
+          "GLIBC_2.28",
+          "GLIBC_2.3",
+          "GLIBC_2.3.4",
+          "GLIBC_2.30",
+          "GLIBC_2.32",
+          "GLIBC_2.33",
+          "GLIBC_2.34"
+        ]
+      }
+    },
+    "native-lifecycle": {
+      "source_sha256": "df97d5ffa6f83082d5c51d5046df74d51c2786908a0621fab5ea9b3b274e1562",
+      "source": "/home/runner/work/gen2/gen2/target/release/deps/diarization_native-26e173ccbe155476",
+      "sha256": "3b47969869e4b921fa490832bac3eef5d7f0c283a484b568810ac5148bb0ae35",
+      "elf": {
+        "soname": null,
+        "needed": [
+          "libgcc_s.so.1",
+          "libc.so.6",
+          "ld-linux-x86-64.so.2"
+        ],
+        "rpath": [
+          "$ORIGIN/../relocated runtime \u00fc/lib"
+        ],
+        "runpath": [],
+        "required_symbol_versions": [
+          "GCC_3.0",
+          "GCC_3.3",
+          "GCC_4.2.0",
+          "GLIBC_2.14",
+          "GLIBC_2.15",
+          "GLIBC_2.16",
+          "GLIBC_2.17",
+          "GLIBC_2.18",
+          "GLIBC_2.2.5",
+          "GLIBC_2.25",
+          "GLIBC_2.27",
+          "GLIBC_2.28",
+          "GLIBC_2.29",
+          "GLIBC_2.3",
+          "GLIBC_2.3.4",
+          "GLIBC_2.30",
+          "GLIBC_2.32",
+          "GLIBC_2.33",
+          "GLIBC_2.34",
+          "GLIBC_2.39",
+          "GLIBC_2.4",
+          "GLIBC_2.5",
+          "GLIBC_2.9"
+        ]
+      }
+    }
+  },
+  "inputs": {
+    ".": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "assets": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "assets/Nemotron-3-Diarization.q8_0.gguf": {
+      "mode": 384,
+      "type": "file",
+      "bytes": 107012128,
+      "sha256": "08456d9e22cd9a323c0364d98375f3746d6e68507ebb705cd46438c534c7a3a1"
+    },
+    "assets/README.md": {
+      "mode": 384,
+      "type": "file",
+      "bytes": 43239,
+      "sha256": "5fe88ca4020d2ee134f806a0a02c52c19855b73047bc2e6f25b9171e1abeebfd"
+    },
+    "assets/ami_en2002d_2132.json": {
+      "mode": 384,
+      "type": "file",
+      "bytes": 2979,
+      "sha256": "8a77aab95e65e301f3cb23cfd0a0641b3295a9da5686ff30f2ab12d0f282e229"
+    },
+    "assets/ami_en2002d_2132.rttm": {
+      "mode": 384,
+      "type": "file",
+      "bytes": 1472,
+      "sha256": "40751c9fc0bb934f741789ce3fafccd2c1f9d7c112585b8b40ac177a9de13b2d"
+    },
+    "assets/ami_en2002d_2132.wav": {
+      "mode": 384,
+      "type": "file",
+      "bytes": 1920044,
+      "sha256": "f00f92e53115a4a6724aec0ddaf9c675df6d5fabd3a489b43fffe56ba52a3ae9"
+    },
+    "assets/fixture-README.md": {
+      "mode": 384,
+      "type": "file",
+      "bytes": 741,
+      "sha256": "e44c191f59cecdeba6dd82acce9fee820938d41487b7423809d02b4e140426ed"
+    },
+    "bin": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "bin/native-lifecycle": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 2680849,
+      "sha256": "3b47969869e4b921fa490832bac3eef5d7f0c283a484b568810ac5148bb0ae35"
+    },
+    "bin/native-probe": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 60705,
+      "sha256": "026810dc7a3f278fa14a938142513dcfd605c890438d6c8fb6ff02e6dda768e9"
+    },
+    "bin/public-stream": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 2023353,
+      "sha256": "2eaa39814a38bb6b354521330deb27648982e3619dc0b3bc04c8b98986183ff3"
+    },
+    "reference": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "reference/ami.json": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 1842,
+      "sha256": "4622688ef143d993958c41d48001ace637dc450aa72cffdd55bcdf6277271cd8"
+    },
+    "reference/ami.json.f32": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 192032,
+      "sha256": "946443332adcb04c651c18d656691dd39d01ece5831db4c014d40fadab33cf71"
+    },
+    "relocated runtime \u00fc": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "relocated runtime \u00fc/lib": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "relocated runtime \u00fc/lib/libgcc_s.so.1": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 189953,
+      "sha256": "d61b31b7c252d01f165cea949dd99108c17de9ba273d4d56d790fd83e1fefd0f"
+    },
+    "relocated runtime \u00fc/lib/libgen2_nemo_linux_ggml-base.so.0.25.1": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 986593,
+      "sha256": "476821f9fa2c33a79d9e1866bd8c876f4b36fa326f4fb50afdfcc341e1d6d790"
+    },
+    "relocated runtime \u00fc/lib/libgen2_nemo_linux_ggml-cpu.so.0.25.1": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 1285225,
+      "sha256": "e0097d1a2a796442cd2ee7153de191004c1079a73d43597c401c04b2b7a7bfab"
+    },
+    "relocated runtime \u00fc/lib/libgen2_nemo_linux_ggml.so.0.25.1": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 74025,
+      "sha256": "2a0a00fc3e3e071a0af3b776a23e0dc345e61be2bb56efced3db82c116ae3b25"
+    },
+    "relocated runtime \u00fc/lib/libgen2_nemo_linux_nemo_speech_asr.so": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 2380657,
+      "sha256": "183cb1bb783a72951a4e51b3ca20bf4f47637b5e46827dd639e1f4235ef7e9a5"
+    },
+    "relocated runtime \u00fc/lib/libgen2_nemo_linux_nemo_speech_asr_c.so.1": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 98585,
+      "sha256": "2875135bb86b5f682e2f12712c5f7e0944d92f7b4042f8661f68444d7c44efde"
+    },
+    "relocated runtime \u00fc/lib/libgen2_nemo_linux_sentencepiece.so.0.0.0": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 1468209,
+      "sha256": "c6c4a6f6f53633775429acf38e68d5a00e1a8adb3be0d526775b8e2a5e698962"
+    },
+    "relocated runtime \u00fc/lib/libnemo_speech_asr_c.so": {
+      "mode": 511,
+      "type": "symlink",
+      "target": "libgen2_nemo_linux_nemo_speech_asr_c.so.1"
+    },
+    "relocated runtime \u00fc/lib/libstdc++.so.6": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 2938433,
+      "sha256": "61bb2c0a20ddc52916eb2ee610901a64c57a7aba19cef18dc956028feffbd6ff"
+    },
+    "relocated runtime \u00fc/notices": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "relocated runtime \u00fc/notices/common-licenses": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "relocated runtime \u00fc/notices/common-licenses/Artistic": {
+      "mode": 511,
+      "type": "file",
+      "bytes": 6111,
+      "sha256": "b7fd9b73ea99602016a326e0b62e6646060d18febdd065ceca8bb482208c3d88"
+    },
+    "relocated runtime \u00fc/notices/common-licenses/GFDL-1.2": {
+      "mode": 511,
+      "type": "file",
+      "bytes": 20432,
+      "sha256": "d8e94ae5fdb5433fcae2961aeb1a8cf17174d6f4a0465d24bf37dd8a038bd439"
+    },
+    "relocated runtime \u00fc/notices/common-licenses/GPL": {
+      "mode": 511,
+      "type": "file",
+      "bytes": 35149,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+    },
+    "relocated runtime \u00fc/notices/common-licenses/GPL-2": {
+      "mode": 511,
+      "type": "file",
+      "bytes": 18092,
+      "sha256": "8177f97513213526df2cf6184d8ff986c675afb514d4e68a404010521b880643"
+    },
+    "relocated runtime \u00fc/notices/common-licenses/GPL-3": {
+      "mode": 511,
+      "type": "file",
+      "bytes": 35149,
+      "sha256": "3972dc9744f6499f0f9b2dbf76696f2ae7ad8af9b23dde66d6af86c9dfb36986"
+    },
+    "relocated runtime \u00fc/notices/common-licenses/LGPL": {
+      "mode": 511,
+      "type": "file",
+      "bytes": 7652,
+      "sha256": "e3a994d82e644b03a792a930f574002658412f62407f5fee083f2555c5f23118"
+    },
+    "relocated runtime \u00fc/notices/libgcc-s1": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "relocated runtime \u00fc/notices/libgcc-s1/copyright": {
+      "mode": 511,
+      "type": "file",
+      "bytes": 69004,
+      "sha256": "20390f8a6f3b1e4d7cb45dd8652dabb259bbef688cbad839bcdb0b9ba7252f79"
+    },
+    "relocated runtime \u00fc/notices/libgcc-s1/package-policy.txt": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 440,
+      "sha256": "b0b23a54f6478b28a525bf6a2435443af63b8d5b1b2d2aba610405adee0f16f2"
+    },
+    "relocated runtime \u00fc/notices/libsentencepiece0": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "relocated runtime \u00fc/notices/libsentencepiece0/copyright": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 6770,
+      "sha256": "4fcdf289da4573eb616853f9cbfbdb4b9f899e2aaa90c94212ecdd195d94df59"
+    },
+    "relocated runtime \u00fc/notices/libsentencepiece0/package-policy.txt": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 225,
+      "sha256": "1397a45e713adcad94989ce07dc361876e34806bcc6088354312e8efbe16f2fc"
+    },
+    "relocated runtime \u00fc/notices/libstdc++6": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "relocated runtime \u00fc/notices/libstdc++6/copyright": {
+      "mode": 511,
+      "type": "file",
+      "bytes": 69004,
+      "sha256": "20390f8a6f3b1e4d7cb45dd8652dabb259bbef688cbad839bcdb0b9ba7252f79"
+    },
+    "relocated runtime \u00fc/notices/libstdc++6/package-policy.txt": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 441,
+      "sha256": "a0d52d138a97b69f2d2a692ed440a19be886a5424dd4622809191787b849cce9"
+    },
+    "relocated runtime \u00fc/notices/nemo-speech": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "relocated runtime \u00fc/notices/nemo-speech/LICENSE": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 12238,
+      "sha256": "eaaca34b26b27c7be5a5099a0b9ddf9913f2db0aa96f6d5854435f2916d6fdc3"
+    },
+    "relocated runtime \u00fc/notices/nemo-speech/NOTICE": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 233,
+      "sha256": "d5ea773d67035e676503579ecf7d5836a124649d7fe99d59ec3c50cd101e1a80"
+    },
+    "relocated runtime \u00fc/notices/nemo-speech/THIRD_PARTY_NOTICES.md": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 10277,
+      "sha256": "fd8fcc0c71abde95b1b742a74c70aa27d2b4f2811fc19f64378b6845d8f3254a"
+    },
+    "relocated runtime \u00fc/notices/nemo-speech/third_party": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "relocated runtime \u00fc/notices/nemo-speech/third_party/ggml": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "relocated runtime \u00fc/notices/nemo-speech/third_party/ggml/LICENSE": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 1078,
+      "sha256": "94f29bbed6a22c35b992c5c6ebf0e7c92f13b836b90f36f461c9cf2f0f1d010d"
+    },
+    "relocated runtime \u00fc/package.json": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 47115,
+      "sha256": "7400ffeb33dfb52e00c003a79f140b2f5a41440fe87fc003365a2ac7171a836b"
+    },
+    "relocated runtime \u00fc/sources": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "relocated runtime \u00fc/sources/gcc-14": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "relocated runtime \u00fc/sources/gcc-14/gcc-14_14.2.0-4ubuntu2~24.04.1.debian.tar.xz": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 1950432,
+      "sha256": "cfece214c2fb790ef5f3baffb9a53e40618e7ae12d053610b251e94d77d08ade"
+    },
+    "relocated runtime \u00fc/sources/gcc-14/gcc-14_14.2.0-4ubuntu2~24.04.1.dsc": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 46930,
+      "sha256": "50950080874a6ec6780dd60c243e21d9cda9d736bb32bca98d16095d27cc01b5"
+    },
+    "relocated runtime \u00fc/sources/gcc-14/gcc-14_14.2.0.orig.tar.gz": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 97158172,
+      "sha256": "768c314c11eeab56ccebb91eb42ec4a41122fa94f0d83400126401942622197b"
+    },
+    "relocated runtime \u00fc/sources/sentencepiece": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "relocated runtime \u00fc/sources/sentencepiece/sentencepiece_0.2.0-1build1.debian.tar.xz": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 11352,
+      "sha256": "056076fa62c114b52deef3ad4ed8ab9b1ac07938a5991011c25220cd6850f780"
+    },
+    "relocated runtime \u00fc/sources/sentencepiece/sentencepiece_0.2.0-1build1.dsc": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 2400,
+      "sha256": "cf9b2a6d56e921f481b39c904487a8bab622318f7ac5e066d60e2378fabd3b9d"
+    },
+    "relocated runtime \u00fc/sources/sentencepiece/sentencepiece_0.2.0.orig.tar.gz": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 11988325,
+      "sha256": "d72556a0cb343d6ea23264ecdbc0ff04dfecd879be4d2d7a7026b9de1af2e4d1"
+    }
+  },
+  "tools": {
+    "qualify_linux_package.py": "3465cbb008de0ea8bca161b3554274089c0a1c428c5fd81916dccbeeed31f62c",
+    "package_linux.py": "020153b452cfd80bd8ba3a255c7e485cca820803554ccb2fa9ab0263b22d010d",
+    "sdk_archive.py": "0b1d80768d15c2818afc82efcc1f3ddf253360b99c16c623e170073e020cb3cd",
+    "compare_stream.py": "6d6a80a3b9710d0d2d0705225653935d40cd69aac9abe50454c0609631c6daa4",
+    "runtime.lock.json": "e66e5651608636bbb04528fed7944ab8972a778d1141b36fef3fb391eefd0dcc"
+  },
+  "geometry": {
+    "chunk": 9,
+    "right": 4,
+    "left": 0,
+    "fifo": 264,
+    "cache": 264,
+    "update": 222
+  },
+  "negative_control": "Remove private ggml-base; mount that copy at the identical runtime path so helper RPATH cannot see the good package."
+}

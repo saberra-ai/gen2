@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "offline_container_gates_passed": false,
+  "scope": "Delivered Ubuntu 24.04 x86_64 CPU runtime relocation, native/public parity and lifecycle in fresh offline containers.",
+  "limits": [
+    "No chat/Bark/Laya namespace coexistence qualification.",
+    "No other OS/glibc/CPU baseline or separate physical machine claim.",
+    "No held-out accuracy or uncontended performance claim."
+  ],
+  "source_commit": "e359ced00a52fecc8cff21a5adef59b03b2c237f",
+  "image_id": "sha256:69f919497cada9a8611f3de61df902d9f94bf20f84552ef5bd93125c38608ef9",
+  "image_repo_digests": [
+    "ubuntu@sha256:534baea6a22c03a63003dbc8dbe78fe34bc0d7e595d9a9dc9834884ff530eb55"
+  ],
+  "frozen_inputs_sha256": "3183aaff538922eb4ce4bdc8344403bf6715f0cde11567f63171e3e076458648",
+  "package_manifest_sha256": "7400ffeb33dfb52e00c003a79f140b2f5a41440fe87fc003365a2ac7171a836b",
+  "error": "missing-library control did not establish fail-closed loading"
+}
