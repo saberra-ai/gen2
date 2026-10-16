@@ -53,6 +53,7 @@ pub struct TokenPuller {
     logits_i: i32,
     produced: usize,
     max_tokens: Option<usize>,
+    request_context: Option<crate::types::RequestContext>,
     paused: Arc<AtomicBool>,
     stopped: Arc<AtomicBool>,
     utf8_decoder: encoding_rs::Decoder,
@@ -103,6 +104,7 @@ impl TokenPuller {
             logits_i: initial_logits_i,
             produced: 0,
             max_tokens: gen_spec.max_tokens,
+            request_context: None,
             paused,
             stopped,
             utf8_decoder: UTF_8.new_decoder(),
@@ -115,6 +117,10 @@ impl TokenPuller {
             filter: OutputFilter::new(StopMatcher::gemma4_chat_defaults()),
             state_slot: Default::default(),
         }
+    }
+
+    pub(crate) fn set_request_context(&mut self, context: Option<crate::types::RequestContext>) {
+        self.request_context = context;
     }
 
     /// Arm the output parser's enabled-tool gate for this pull.
@@ -146,6 +152,7 @@ impl TokenPuller {
             0.0
         };
         ExecutionStats {
+            request_context: self.request_context.clone(),
             reasoning_ms: None,
             prompt_tokens: self.prompt_tokens as u32,
             decode_tokens: self.produced as u32,
@@ -203,7 +210,13 @@ impl TokenPuller {
                 // check finalizes the stream. No special-casing needed.
                 let token = ctx_ref.with_dependent(|_, ctx| -> Result<LlamaToken, ExecError> {
                     let mut logits = ctx.get_logits_ith(logits_i).to_vec();
-                    grammar.apply_mask(&mut logits).map_err(ExecError::Other)?;
+                    grammar.apply_mask(&mut logits).map_err(|error| {
+                        if self.request_context.is_some() {
+                            ExecError::Generation("strict grammar mask failed".into())
+                        } else {
+                            ExecError::Other(error)
+                        }
+                    })?;
                     let mut data = LlamaTokenDataArray::from_iter(
                         logits
                             .iter()
@@ -220,8 +233,17 @@ impl TokenPuller {
                 })?;
                 // Advance grammar state with the accepted token (no-op once
                 // the parser has stopped; ignore that benign error).
+                let accepting = grammar.is_accepting();
                 if let Err(e) = grammar.observe(token.0 as u32) {
-                    tracing::debug!(?e, "grammar observe failed (accepting/exhausted)");
+                    if self.request_context.is_some() {
+                        if !(accepting && self.bundle.model.is_eog_token(token)) {
+                            return Err(ExecError::Generation(
+                                "strict grammar consumption failed".into(),
+                            ));
+                        }
+                    } else {
+                        tracing::debug!(?e, "grammar observe failed (accepting/exhausted)");
+                    }
                 }
                 Ok(token)
             }
@@ -230,6 +252,15 @@ impl TokenPuller {
     }
 
     fn decode_single(&mut self, token: LlamaToken) -> Result<(), ExecError> {
+        if self
+            .request_context
+            .as_ref()
+            .is_some_and(|budget| self.cur_pos < 0 || self.cur_pos as u32 >= budget.capacity_tokens)
+        {
+            return Err(ExecError::ContextOverflow(
+                "strict native decode capacity exhausted".into(),
+            ));
+        }
         self.batch.clear();
         self.batch
             .add(token, self.cur_pos, &[0], true)
@@ -446,6 +477,7 @@ impl TokenPuller {
             logits_i: state.logits_i,
             produced: 0,
             max_tokens: gen_spec.max_tokens,
+            request_context: None,
             paused,
             stopped,
             utf8_decoder: UTF_8.new_decoder(),

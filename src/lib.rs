@@ -274,6 +274,7 @@ pub mod output {
     pub use crate::api::output::{
         AssistantMessage, FinishReason, GenerationStats, OutputPart, ToolCall, ToolCallId, Usage,
     };
+    pub use crate::types::RequestContext;
 }
 
 /// Semantic streaming: [`Event`], the [`EventStream`] that yields them, and

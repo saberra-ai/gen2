@@ -590,10 +590,13 @@ impl Engine {
 
     #[allow(clippy::arc_with_non_send_sync)]
     pub fn start_session(&self, spec: SessionSpec) -> Result<Arc<Session>, ExecError> {
-        let inner = self
-            .as_backend()
-            .ok_or(ExecError::ModelNotLoaded)?
-            .start_session(spec)?;
+        let backend = self.as_backend().ok_or(ExecError::ModelNotLoaded)?;
+        if spec.strict_request.is_some()
+            && (backend.backend_name() != "llamacpp" || !spec.attachments.is_empty())
+        {
+            return Err(ExecError::FeatureUnsupported("exact context text request"));
+        }
+        let inner = backend.start_session(spec)?;
         Ok(Arc::new(Session(inner)))
     }
 

@@ -204,6 +204,11 @@ impl GenerationStats {
         }
     }
 
+    /// Exact prepared budget enforced before native prefill, when available.
+    pub fn request_context(&self) -> Option<&crate::types::RequestContext> {
+        self.inner.request_context.as_ref()
+    }
+
     /// Whether the backend reported any statistics at all.
     pub fn reported(&self) -> bool {
         self.reported

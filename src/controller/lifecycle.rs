@@ -168,6 +168,7 @@ pub(super) fn start_ephemeral(
     let gen_spec = apply_generation_defaults(engine, gen_spec);
 
     match engine.start_session(SessionSpec {
+        strict_request: gen_spec.require_full_context.then(|| gen_spec.clone()),
         messages,
         thinking,
         ..Default::default()

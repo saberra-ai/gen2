@@ -226,6 +226,7 @@ pub struct Turn<'a> {
     system_override: Option<String>,
     tools_override: Option<ToolSet>,
     grammar: Option<GrammarSpec>,
+    require_full_context: bool,
     cancel: Arc<AtomicBool>,
 }
 
@@ -240,6 +241,7 @@ impl<'a> Turn<'a> {
             system_override: None,
             tools_override: None,
             grammar: None,
+            require_full_context: false,
             cancel: Arc::new(AtomicBool::new(false)),
         }
     }
@@ -401,6 +403,11 @@ impl<'a> Turn<'a> {
         let session = self.session;
 
         // ── Validate before anything is committed (§11.1) ──
+        if self.require_full_context && !self.options.max_tokens.is_some_and(|n| n > 0) {
+            return Err(Error::InvalidRequest(
+                "full context requires a positive explicit output budget".into(),
+            ));
+        }
         let staged_images = self
             .staged
             .iter()
@@ -448,7 +455,8 @@ impl<'a> Turn<'a> {
         // A per-turn prefix — prompt, or a tool set other than the session's
         // — is not the one the engine holds: rebuild for this turn, and
         // again after it.
-        let per_turn_prefix = self.system_override.is_some()
+        let per_turn_prefix = self.require_full_context
+            || self.system_override.is_some()
             || self.tools_override.is_some()
             || !matches!(self.tool_choice, ToolChoice::Auto);
 
@@ -469,6 +477,10 @@ impl<'a> Turn<'a> {
 
         let mut spec = engine.default_gen_spec();
         self.options.apply_to(&mut spec);
+        spec.require_full_context = self.require_full_context;
+        if self.require_full_context {
+            spec.speculative = Some(crate::backend::common::speculative::SpeculativeMode::Off);
+        }
         if let Some(grammar) = self.grammar {
             spec.grammar = Some(grammar);
         }
@@ -528,10 +540,18 @@ impl<'a> Turn<'a> {
     ///     .structured()?;
     /// # Ok::<(), gen2::Error>(())
     /// ```
-    pub fn structured<T>(mut self) -> Result<T>
+    pub fn structured<T>(self) -> Result<T>
     where
         T: serde::de::DeserializeOwned + schemars::JsonSchema,
     {
+        let response = self.json_schema::<T>()?.run()?;
+        decode::<T>(&response.text())
+    }
+
+    /// Prepare the schema of `T`, keeping `run`/`stream` and full response metadata.
+    /// Always decode/validate the result and inspect its finish reason. Combine
+    /// with `full_context` for fail-closed local grammar/context enforcement.
+    pub fn json_schema<T: schemars::JsonSchema>(mut self) -> Result<Self> {
         let schema = schema_of::<T>()?;
         if self.model.capabilities().structured_output {
             self.grammar = Some(GrammarSpec::JsonSchema(schema));
@@ -552,8 +572,16 @@ impl<'a> Turn<'a> {
         if self.options.max_tokens.is_none() {
             self.options.max_tokens = Some(STRUCTURED_MAX_TOKENS);
         }
-        let response = self.run()?;
-        decode::<T>(&response.text())
+        Ok(self)
+    }
+
+    /// Preserve the entire supplied text conversation. Requires an explicit
+    /// positive max_tokens. Each turn rebuilds context; cache/append/resume and
+    /// unsupported backends are refused. Exact native budget enforcement runs
+    /// before prefill, and its receipt is returned in response statistics.
+    pub fn full_context(mut self) -> Self {
+        self.require_full_context = true;
+        self
     }
 }
 
@@ -1059,6 +1087,107 @@ mod tests {
         }
     }
 
+    #[test]
+    #[ignore = "explicit pinned local strict controller pause/full-history qualification"]
+    fn strict_controller_pause_is_refused_and_next_turn_rebuilds_all_evidence() {
+        let mut settings = crate::engine::Settings::default();
+        settings.system.ctx_size = Some(2048);
+        settings.system.gpu_layers = Some(99);
+        settings.prompt.include_meta = Some(false);
+        let runtime = Runtime::builder().settings(settings).build().unwrap();
+        let model = runtime
+            .load(std::env::var("PIO_TEST_MODEL").expect("explicit pinned model path"))
+            .unwrap();
+        let mut session = Session::new();
+        let id = session.id().to_string();
+        let stream = model
+            .turn(&mut session)
+            .user("Say one short sentence about apples.")
+            .max_tokens(24)
+            .full_context()
+            .stream()
+            .unwrap();
+        model
+            .engine()
+            .controller()
+            .send(crate::controller::ControllerCmd::PauseChat {
+                chat_id: id.clone(),
+            })
+            .unwrap();
+        model
+            .engine()
+            .controller()
+            .send(crate::controller::ControllerCmd::ResumeChat { chat_id: id })
+            .unwrap();
+        let first = stream.finish().unwrap();
+        assert_ne!(*first.finish_reason(), FinishReason::Cancelled);
+        let before = first.stats().request_context().unwrap().prompt_tokens;
+        let second = model
+            .turn(&mut session)
+            .user("Now say one short sentence about pears.")
+            .max_tokens(24)
+            .full_context()
+            .run()
+            .unwrap();
+        assert!(second.stats().request_context().unwrap().prompt_tokens > before);
+        assert_eq!(
+            session.messages()[0].text(),
+            "Say one short sentence about apples."
+        );
+        assert_eq!(session.shed(), 0);
+    }
+    #[test]
+    fn schema_preparation_keeps_terminal_response_and_raw_decode_control() {
+        let model =
+            Runtime::scripted(Script::new().say([r#"{"sentiment":"positive","score":0.9}"#]));
+        let script = model.engine().script().clone();
+        let mut session = Session::new();
+        let response = model
+            .turn(&mut session)
+            .user("example")
+            .json_schema::<Verdict>()
+            .unwrap()
+            .run()
+            .unwrap();
+        assert_eq!(*response.finish_reason(), FinishReason::Stop);
+        assert_eq!(
+            decode::<Verdict>(&response.text()).unwrap().sentiment,
+            Sentiment::Positive
+        );
+        assert_eq!(script.count("pull"), 1);
+    }
+    #[test]
+    fn strict_context_rejects_implicit_output_budget_before_staging() {
+        let model = Runtime::scripted(Script::new().say(["never"]));
+        let script = model.engine().script().clone();
+        let mut session = Session::new();
+        assert!(matches!(
+            model
+                .turn(&mut session)
+                .user("preserve")
+                .full_context()
+                .run(),
+            Err(Error::InvalidRequest(_))
+        ));
+        assert!(session.is_empty());
+        assert_eq!(script.count("pull"), 0);
+    }
+    #[test]
+    fn strict_context_refuses_backend_without_enforcement() {
+        let model = Runtime::scripted(Script::new().say(["never"]));
+        let script = model.engine().script().clone();
+        let mut session = Session::new();
+        assert!(
+            model
+                .turn(&mut session)
+                .user("evidence")
+                .max_tokens(10)
+                .full_context()
+                .run()
+                .is_err()
+        );
+        assert_eq!(script.count("pull"), 0);
+    }
     #[test]
     fn a_reply_that_does_not_fit_the_type_is_an_extraction_error() {
         let model = Runtime::scripted(Script::new().say([r#"```json{"sentiment":"meh"}```"#]));

@@ -1,8 +1,11 @@
 use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Clone, Default, Serialize, Deserialize)]
+#[derive(Debug, Clone, Default, PartialEq, Serialize, Deserialize)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct GenSpec {
+    /// Opt-in exact text context enforcement. Unsupported paths must reject it.
+    #[serde(default)]
+    pub require_full_context: bool,
     pub max_tokens: Option<usize>,
     pub temperature: Option<f32>,
     pub seed: Option<u64>,

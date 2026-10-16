@@ -9,6 +9,6 @@ pub mod message;
 pub mod model;
 pub mod persona;
 
-pub use execution_stats::ExecutionStats;
+pub use execution_stats::{ExecutionStats, RequestContext};
 pub use model::{Model, ModelConfig, ModelMetadata};
 pub use persona::Persona;

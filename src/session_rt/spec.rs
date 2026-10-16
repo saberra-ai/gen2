@@ -5,6 +5,8 @@ use crate::types::message::Message;
 
 #[derive(Debug, Clone, Default)]
 pub struct SessionSpec {
+    /// Frozen resolved generation request for an exact-context cold text session.
+    pub strict_request: Option<crate::generation::GenSpec>,
     pub attachments: Vec<crate::media::Attachment>,
     pub messages: Vec<Message>,
     pub cache: Option<crate::kv::KvLoadSpec>,

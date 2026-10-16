@@ -189,6 +189,7 @@ impl Engine {
             spec.cache.clone(),
             spec.tools.clone(),
             spec.thinking,
+            spec.strict_request,
         )?);
         self.sessions.insert(id, ());
         Ok(session)
@@ -466,6 +467,101 @@ mod tests {
             engine.upload_settings(changed),
             Err(ExecError::SettingsError(_))
         ));
+    }
+
+    #[test]
+    #[ignore = "explicit pinned local strict-context/grammar qualification"]
+    fn strict_native_preparation_rejects_before_prefill_and_preserves_state() {
+        use crate::engine::telemetry::{HookEvent, HookListener};
+        use std::sync::atomic::{AtomicUsize, Ordering};
+        #[derive(Debug, Default)]
+        struct Prefills(AtomicUsize);
+        impl HookListener for Prefills {
+            fn on_event(&self, event: &HookEvent) {
+                if matches!(event, HookEvent::SessionPrefillStart { .. }) {
+                    self.0.fetch_add(1, Ordering::SeqCst);
+                }
+            }
+        }
+        let engine = Engine::new();
+        let mut settings = Settings::default();
+        settings.system.ctx_size = Some(512);
+        settings.system.batch_size = Some(64);
+        settings.prompt.include_meta = Some(false);
+        engine.upload_settings(settings).unwrap();
+        engine
+            .load_model(LoadRequest {
+                model_path: std::env::var("PIO_TEST_MODEL")
+                    .expect("explicit pinned model path")
+                    .into(),
+                model_params: crate::engine::ModelParamsInput {
+                    gpu_layers: Some(99),
+                },
+                ..Default::default()
+            })
+            .unwrap();
+        let prefills = Arc::new(Prefills::default());
+        engine.hooks().register(prefills.clone());
+        let mut request = GenSpec {
+            require_full_context: true,
+            max_tokens: Some(600),
+            speculative: Some(crate::backend::common::speculative::SpeculativeMode::Off),
+            ..Default::default()
+        };
+        let prepare = |request: GenSpec| {
+            engine.start_session(SessionSpec {
+                strict_request: Some(request),
+                messages: vec![Message::user("Synthetic evidence")],
+                thinking: crate::generation::ThinkingMode::Off,
+                ..Default::default()
+            })
+        };
+        assert!(matches!(
+            prepare(request.clone()),
+            Err(ExecError::ContextOverflow(_))
+        ));
+        assert_eq!(prefills.0.load(Ordering::SeqCst), 0);
+        request.max_tokens = Some(16);
+        request.grammar = Some(crate::backend::common::grammar::GrammarSpec::Regex(
+            "[".into(),
+        ));
+        assert!(prepare(request.clone()).is_err());
+        assert_eq!(prefills.0.load(Ordering::SeqCst), 0);
+        request.grammar = Some(crate::backend::common::grammar::GrammarSpec::JsonObject);
+        let session = prepare(request.clone()).unwrap();
+        assert_eq!(prefills.0.load(Ordering::SeqCst), 1);
+        assert!(BackendSession::as_kv_snapshot(session.as_ref()).is_none());
+        assert!(session.save_cache(crate::kv::KvSaveSpec::InMemory).is_err());
+        assert!(
+            session
+                .load_cache(crate::kv::KvLoadSpec::Lenient(std::path::PathBuf::from(
+                    "must-not-open"
+                )))
+                .is_err()
+        );
+        assert!(
+            session
+                .append_messages(vec![Message::user("must not append")])
+                .is_err()
+        );
+        session.pause();
+        session.resume();
+        let mut changed = request.clone();
+        changed.max_tokens = Some(17);
+        assert!(session.pull(changed).is_err());
+        let mut pull = session.pull(request.clone()).unwrap();
+        for event in pull.by_ref() {
+            event.unwrap();
+        }
+        drop(pull);
+        assert!(session.pull(request.clone()).is_err());
+        let plain = engine
+            .start_session(SessionSpec {
+                messages: vec![Message::user("Legacy")],
+                ..Default::default()
+            })
+            .unwrap();
+        assert!(plain.pull(request).is_err());
     }
 
     // Helper: read model path from TEST_MODEL_PATH; return None if not set.

@@ -190,6 +190,9 @@ pub struct Session {
     /// way the first one was: a Qwen3 continuation rendered without it
     /// fell back to the template's default and started thinking.
     enable_thinking: bool,
+    strict_request: Option<GenSpec>,
+    request_context: Option<crate::types::RequestContext>,
+    prepared_sampling: Mutex<Option<(LlamaSampler, Option<GrammarMatcher>)>>,
 }
 
 impl fmt::Debug for Session {
@@ -273,9 +276,15 @@ pub(crate) fn tokenize_chat_prompt(
 
 impl Session {
     pub fn pause(&self) {
+        if self.strict_request.is_some() {
+            return;
+        }
         self.paused.store(true, Ordering::Release);
     }
     pub fn resume(&self) {
+        if self.strict_request.is_some() {
+            return;
+        }
         self.paused.store(false, Ordering::Release);
     }
     pub fn stop(&self) {
@@ -300,6 +309,11 @@ impl Session {
     }
 
     pub fn pull(&self, mut gen_spec: GenSpec) -> Result<TokenPuller, ExecError> {
+        if gen_spec.require_full_context && self.strict_request.is_none() {
+            return Err(ExecError::FeatureUnsupported(
+                "strict pull requires strict preparation",
+            ));
+        }
         if gen_spec.max_tokens.is_none() {
             gen_spec.max_tokens = self.settings.stopping.max_tokens;
         }
@@ -318,21 +332,24 @@ impl Session {
                 gen_spec.speculative,
                 Some(crate::backend::common::speculative::SpeculativeMode::Off)
             );
+        let (sampler, grammar) = if let Some(request) = &self.strict_request {
+            if &gen_spec != request {
+                return Err(ExecError::InvalidArg(
+                    "strict request generation settings are frozen",
+                ));
+            }
+            self.prepared_sampling
+                .lock()
+                .take()
+                .ok_or(ExecError::FeatureUnsupported("strict session pause/resume"))?
+        } else {
+            Self::build_sampler_and_grammar(&effective_settings, &gen_spec, &self.bundle)?
+        };
         let mut guard = self.state.lock();
         let state = guard
             .take()
             .ok_or(ExecError::InvalidArg("session already consumed"))?;
-
-        // Weak link back to this session’s state slot
         let state_slot = Arc::downgrade(&self.state);
-
-        // Build the base sampler chain + an optional grammar matcher. When
-        // `gen_spec.grammar` is set the matcher (the SAME llguidance engine
-        // MLX uses, fed the GGUF's embedded vocab) masks logits in the
-        // puller — bypassing llama.cpp's built-in `LlamaSampler::llguidance`,
-        // whose Matcher rejected the opening token at this dep rev.
-        let (sampler, grammar) =
-            Self::build_sampler_and_grammar(&effective_settings, &gen_spec, &self.bundle);
 
         let pre_events = self.build_media_events();
         let mut puller = TokenPuller::new_from_session(
@@ -348,6 +365,7 @@ impl Session {
             self.stopped.clone(),
             pre_events,
         );
+        puller.set_request_context(self.request_context.clone());
         if let Some(tools) = &self.enabled_tool_names {
             puller.arm_enabled_tools(tools.clone());
         }
@@ -364,14 +382,14 @@ impl Session {
     /// `LlamaSampler::llguidance`, whose runtime Matcher rejected the
     /// opening token at the pinned dep rev and silently fell back to
     /// unconstrained output. On matcher-build failure we generate
-    /// unconstrained (same observable behaviour as before, minus the bug).
+    /// unconstrained for legacy requests; exact-context requests fail closed.
     fn build_sampler_and_grammar(
         settings: &Settings,
         gen_spec: &GenSpec,
         bundle: &ModelBundle,
-    ) -> (LlamaSampler, Option<GrammarMatcher>) {
+    ) -> Result<(LlamaSampler, Option<GrammarMatcher>), ExecError> {
         let Some(spec) = gen_spec.grammar.clone() else {
-            return (Self::sampler_from_settings(settings, bundle), None);
+            return Ok((Self::sampler_from_settings(settings, bundle), None));
         };
         match GrammarMatcher::from_vocab(&grammar_vocab_from_model(&bundle.model), spec) {
             Ok(matcher) => {
@@ -386,14 +404,19 @@ impl Session {
                 // content ids and a count-proportional penalty poisons them
                 // (see GRAMMAR_ANTILOOP_PENALTIES).
                 let sampler = Self::sampler_from_settings_antiloop(settings, bundle);
-                (sampler, Some(matcher))
+                Ok((sampler, Some(matcher)))
             }
             Err(e) => {
+                if gen_spec.require_full_context {
+                    return Err(ExecError::Generation(
+                        "strict grammar construction failed".into(),
+                    ));
+                }
                 tracing::warn!(
                     ?e,
                     "llama grammar matcher build failed; generating unconstrained"
                 );
-                (Self::sampler_from_settings(settings, bundle), None)
+                Ok((Self::sampler_from_settings(settings, bundle), None))
             }
         }
     }
@@ -432,6 +455,9 @@ impl Session {
     }
 
     pub fn save_cache(&self, dst: KvSaveSpec) -> Result<KvSnapshot, ExecError> {
+        if self.strict_request.is_some() {
+            return Err(ExecError::FeatureUnsupported("strict session KV cache"));
+        }
         #[cfg(feature = "llama-dflash2")]
         if self.bundle.draft.is_some() {
             return Err(ExecError::FeatureUnsupported(
@@ -484,6 +510,9 @@ impl Session {
     }
 
     pub fn load_cache(&self, src: KvLoadSpec) -> Result<KvLoadReport, ExecError> {
+        if self.strict_request.is_some() {
+            return Err(ExecError::FeatureUnsupported("strict session KV cache"));
+        }
         #[cfg(feature = "llama-dflash2")]
         if self.bundle.draft.is_some() {
             return Err(ExecError::FeatureUnsupported(
@@ -975,6 +1004,9 @@ impl Session {
             ctx_size,
             enabled_tool_names: enabled_tool_names.clone(),
             enable_thinking,
+            strict_request: None,
+            request_context: None,
+            prepared_sampling: Mutex::new(None),
         }))
     }
 
@@ -990,7 +1022,30 @@ impl Session {
         cache: Option<KvLoadSpec>,
         tools: Option<(Vec<crate::types::message::ToolSpec>, String)>,
         thinking: crate::generation::ThinkingMode,
+        strict_request: Option<GenSpec>,
     ) -> Result<Self, ExecError> {
+        if let Some(request) = &strict_request {
+            if !request.require_full_context || !request.max_tokens.is_some_and(|n| n > 0) {
+                return Err(ExecError::InvalidArg(
+                    "strict request needs a positive output budget",
+                ));
+            }
+            if cache.is_some()
+                || messages_have_images(&messages)
+                || !matches!(
+                    request.speculative,
+                    Some(crate::backend::common::speculative::SpeculativeMode::Off)
+                )
+            {
+                return Err(ExecError::FeatureUnsupported(
+                    "strict request cache/media/speculation",
+                ));
+            }
+            #[cfg(feature = "llama-dflash2")]
+            if bundle.draft.is_some() {
+                return Err(ExecError::FeatureUnsupported("strict DFlash2 request"));
+            }
+        }
         let enabled_tool_names: Option<std::collections::HashSet<String>> = tools
             .as_ref()
             .map(|(ts, _)| ts.iter().map(|t| t.function.name.clone()).collect());
@@ -1021,7 +1076,9 @@ impl Session {
 
         let merged_prompt = merge_prompts(&meta_prompt, system_prompt, persona);
 
-        tracing::debug!("Session prompt messages: {:?}", messages);
+        if strict_request.is_none() {
+            tracing::debug!("Session prompt messages: {:?}", messages);
+        }
 
         // Build chat template FIRST so the system-injection logic below
         // can probe whether the template accepts a `system` role at
@@ -1126,22 +1183,13 @@ impl Session {
         let prompt = chat_template
             .apply(template_messages, tools.clone(), Some(enable_thinking))
             .map_err(ExecError::Other)?;
-        tracing::info!(
-            target: "pio::gen2::llama::prompt",
-            len = prompt.len(),
-            enable_thinking,
-            prompt = %prompt,
-            "rendered chat prompt"
-        );
-
+        if strict_request.is_none() {
+            tracing::info!(target:"pio::gen2::llama::prompt", len=prompt.len(), enable_thinking, prompt=%prompt, "rendered chat prompt");
+        }
         let mut tokens_list = tokenize_chat_prompt(&bundle.model, &prompt)?;
-        tracing::info!(
-            target: "pio::gen2::llama::prompt",
-            n_tokens = tokens_list.len(),
-            first_8 = ?tokens_list.iter().take(8).collect::<Vec<_>>(),
-            last_8 = ?tokens_list.iter().rev().take(8).rev().collect::<Vec<_>>(),
-            "tokenized chat prompt"
-        );
+        if strict_request.is_none() {
+            tracing::info!(target:"pio::gen2::llama::prompt", n_tokens=tokens_list.len(), "tokenized chat prompt");
+        }
 
         // Create context. An explicit user setting wins; otherwise clamp
         // the model's training context to what actually fits this host —
@@ -1181,7 +1229,7 @@ impl Session {
         // Context overflow: truncate old messages until conversation fits.
         // Generic driver in session_rt::truncate — Phase 3 refactor.
         let original_message_count = messages.len();
-        {
+        if strict_request.is_none() {
             let tokenizer = Arc::new(super::tokenizer_adapter::LlamaSessionTokenizer {
                 bundle: bundle.clone(),
                 chat_template: chat_template.clone(),
@@ -1223,6 +1271,30 @@ impl Session {
             DepCtx::create(owner, &backend, kv_params(ctx_params, &settings))
         })
         .map_err(|e| ExecError::Other(e.into()))?;
+
+        // Query the actual single-sequence allocation before ANY prefill. The
+        // same frozen rendered token vector below is checked and then consumed.
+        let actual_context = ctx_cell.with_dependent(|_, ctx| ctx.n_ctx());
+        let request_context = strict_request
+            .as_ref()
+            .map(|request| {
+                exact_request_context(
+                    tokens_list.len(),
+                    request.max_tokens.unwrap(),
+                    actual_context,
+                )
+            })
+            .transpose()?;
+        let prepared_sampling = strict_request
+            .as_ref()
+            .map(|request| {
+                Self::build_sampler_and_grammar(
+                    &settings.with_gen_spec_overrides(request),
+                    request,
+                    &bundle,
+                )
+            })
+            .transpose()?;
 
         // Optional MTMD (images) prefill path
         {
@@ -1327,6 +1399,9 @@ impl Session {
                         ctx_size,
                         enabled_tool_names,
                         enable_thinking,
+                        strict_request: None,
+                        request_context: None,
+                        prepared_sampling: Mutex::new(None),
                     });
                 }
             }
@@ -1389,6 +1464,9 @@ impl Session {
             ctx_size,
             enabled_tool_names,
             enable_thinking,
+            strict_request,
+            request_context,
+            prepared_sampling: Mutex::new(prepared_sampling),
         })
     }
 }
@@ -1438,6 +1516,9 @@ impl Session {
     /// turn-boundary token if the last sampled token wasn't an EOT, and
     /// prefill that delta. Mirrors the MLX path in `mlx/session.rs`.
     pub fn append_messages(&self, new_messages: Vec<Message>) -> Result<usize, ExecError> {
+        if self.strict_request.is_some() {
+            return Err(ExecError::FeatureUnsupported("strict session append"));
+        }
         if new_messages.is_empty() {
             return Ok(0);
         }
@@ -1687,6 +1768,9 @@ impl BackendSession for Session {
         Session::append_messages(self, new_messages)
     }
     fn as_kv_snapshot(&self) -> Option<&dyn KvSnapshotTrait> {
+        if self.strict_request.is_some() {
+            return None;
+        }
         #[cfg(feature = "llama-dflash2")]
         if self.bundle.draft.is_some() {
             return None;
@@ -1858,5 +1942,40 @@ mod tests {
              Token ids: {:?}",
             tokens.iter().take(8).collect::<Vec<_>>()
         );
+    }
+}
+
+/// Unlike conversational truncation, the full requested output is reserved.
+fn exact_request_context(
+    prompt: usize,
+    output: usize,
+    capacity: u32,
+) -> Result<crate::types::RequestContext, ExecError> {
+    if output == 0
+        || prompt
+            .checked_add(output)
+            .is_none_or(|total| total > capacity as usize)
+    {
+        return Err(ExecError::ContextOverflow(format!(
+            "exact prompt={prompt} output={output} capacity={capacity}; input preserved"
+        )));
+    }
+    Ok(crate::types::RequestContext {
+        prompt_tokens: prompt as u32,
+        output_tokens: output as u32,
+        capacity_tokens: capacity,
+    })
+}
+#[cfg(test)]
+mod strict_context_tests {
+    use super::*;
+    #[test]
+    fn exact_budget_uses_full_output_reserve_and_rejects_overflow() {
+        let report = exact_request_context(1, 127, 128).unwrap();
+        assert_eq!(report.output_tokens, 127);
+        assert!(exact_request_context(2, 127, 128).is_err());
+        assert!(exact_request_context(128, 1, 128).is_err());
+        assert!(exact_request_context(1, 0, 128).is_err());
+        assert!(exact_request_context(1, usize::MAX, 128).is_err());
     }
 }

@@ -726,6 +726,7 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
             tools,
             tx,
         } => {
+            let pull_spec = apply_generation_defaults(&state.engine, gen_spec);
             if let Some(chat) = state.chats.get_mut(&chat_id) {
                 if chat.state.is_generating() {
                     chat.tx = tx.clone();
@@ -776,7 +777,7 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
             // history. Lenient — any identity or transcript mismatch
             // falls back to the cold path inside the backend.
             maybe_wake_llm(state);
-            let cache = if crate::kv::store::keepwarm_enabled() {
+            let cache = if !pull_spec.require_full_context && crate::kv::store::keepwarm_enabled() {
                 let dir = crate::kv::store::kv_dir();
                 let cand = crate::kv::store::candidate_for_chat(&dir, &chat_id);
                 if cand.is_none() {
@@ -796,6 +797,7 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
             // than leaving the next turn to send a suffix the backend lacks.
             let delivered_count = messages.len();
             match state.engine.start_session(SessionSpec {
+                strict_request: pull_spec.require_full_context.then(|| pull_spec.clone()),
                 messages,
                 thinking,
                 cache,
@@ -832,7 +834,6 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
                             metrics: state.metrics.clone(),
                         }),
                     );
-                    let pull_spec = apply_generation_defaults(&state.engine, gen_spec);
                     match session.pull(pull_spec.clone()) {
                         Err(e) => {
                             deregister_and_end_session(&state.engine, sid);
@@ -894,6 +895,18 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
             model_size_bytes,
             tx,
         } => {
+            if gen_spec.require_full_context {
+                emit_must_deliver(
+                    state.metrics.as_ref(),
+                    &tx,
+                    ControllerEvent::Error {
+                        code: "unsupported".into(),
+                        message: "Full context requests require a fresh complete transcript."
+                            .into(),
+                    },
+                );
+                return ControlFlow::Continue;
+            }
             if let Some(chat) = state.chats.get_mut(&chat_id) {
                 chat.tx = tx.clone();
                 // The stats forwarder was registered with the first turn's
@@ -1014,6 +1027,14 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
         }
         ControllerCmd::PauseChat { chat_id } => {
             if let Some(chat) = state.chats.get_mut(&chat_id) {
+                // These low-level commands have no reply channel. Refuse the
+                // unsupported operation without changing a live strict stream.
+                if chat.last_gen_spec.require_full_context {
+                    tracing::warn!(
+                        "pause/resume unsupported for a full-context request; use cancellation"
+                    );
+                    return ControlFlow::Continue;
+                }
                 chat.session.pause();
                 chat.state = match std::mem::replace(&mut chat.state, ChatRunState::Idle) {
                     ChatRunState::Generating {
@@ -1032,6 +1053,14 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
         }
         ControllerCmd::ResumeChat { chat_id } => {
             if let Some(chat) = state.chats.get_mut(&chat_id) {
+                // These low-level commands have no reply channel. Refuse the
+                // unsupported operation without changing a live strict stream.
+                if chat.last_gen_spec.require_full_context {
+                    tracing::warn!(
+                        "pause/resume unsupported for a full-context request; use cancellation"
+                    );
+                    return ControlFlow::Continue;
+                }
                 chat.session.resume();
                 if !chat.state.is_generating() {
                     let spec = match &chat.state {

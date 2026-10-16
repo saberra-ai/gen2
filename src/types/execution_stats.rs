@@ -3,6 +3,9 @@ use serde::{Deserialize, Serialize};
 #[derive(Debug, Default, Serialize, Deserialize, Clone, PartialEq)]
 #[cfg_attr(feature = "specta", derive(specta::Type))]
 pub struct ExecutionStats {
+    /// Exact cold text request budget, present only when enforced by the backend.
+    #[serde(default)]
+    pub request_context: Option<RequestContext>,
     pub prompt_tokens: u32,
     pub decode_tokens: u32,
     pub first_token_us: u64,
@@ -71,4 +74,13 @@ mod tests {
         assert_eq!(s.spec_drafted, 0);
         assert_eq!(s.spec_accepted, 0);
     }
+}
+
+/// Exact prepared-token budget against queried one-sequence native capacity.
+#[derive(Debug, Clone, Serialize, Deserialize, PartialEq, Eq)]
+#[cfg_attr(feature = "specta", derive(specta::Type))]
+pub struct RequestContext {
+    pub prompt_tokens: u32,
+    pub output_tokens: u32,
+    pub capacity_tokens: u32,
 }
