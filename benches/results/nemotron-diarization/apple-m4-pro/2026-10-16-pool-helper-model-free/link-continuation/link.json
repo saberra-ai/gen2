@@ -1,0 +1,44 @@
+{
+  "scope": "model-free link-only continuation; priorsuccessfulcompilations reused; no nativefunction/model/frontend execution",
+  "previous_build": {
+    "bytes": 31985,
+    "sha256": "a50a94bab60c710db74e5a99edcb893987fbcdee92db2f14c2bee24d054aae67"
+  },
+  "object_inputs": {
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-pool-probe-build-v2/probe.o": {
+      "bytes": 23784,
+      "sha256": "9394bec4b8937893c543ce86324751f1a25cd6b25a0288034fa4cd05eb6f0be3"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-pool-probe-build-v2/backend.o": {
+      "bytes": 16848,
+      "sha256": "f46b347863862bc359a5e5151eda30ef0e7aa3493b140fbfd618925349c121f4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-pool-probe-build-v2/logging.o": {
+      "bytes": 2776,
+      "sha256": "f745b7e16692343a9b3307437af5ba20e2adc76d3591904ee4510bc2f35b5249"
+    }
+  },
+  "argv": [
+    "/usr/bin/clang++",
+    "-arch",
+    "arm64",
+    "-mmacosx-version-min=26.0",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-pool-probe-build-v2/probe.o",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-pool-probe-build-v2/backend.o",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-pool-probe-build-v2/logging.o",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_nemo_speech_asr.dylib",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_nemo_speech_asr_c.1.dylib",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_ggml-base.0.25.1.dylib",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_ggml.0.25.1.dylib",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_ggml-cpu.0.25.1.dylib",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_ggml-blas.0.25.1.dylib",
+    "-Wl,-rpath,@loader_path/../nemo/lib",
+    "-o",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-pool-probe-link-v3/work/bin/native-pool-probe"
+  ],
+  "returncode": 0,
+  "binary": {
+    "bytes": 81952,
+    "sha256": "0496705c6aa9561f8b1942444556249b18ea666ab2423abe4b42e5d2ff825e69"
+  }
+}

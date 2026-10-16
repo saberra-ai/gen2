@@ -1,0 +1,599 @@
+{
+  "scope": "model-free prototype compilation only; no model/frontend/native function execution",
+  "source_pins": {
+    "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/native_pool_probe.cpp": {
+      "bytes": 8082,
+      "sha256": "94cd140465073608bed0396de1823a42f5582864268bdd9fa5143a8fbc19ba30"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/runtime/ggml/backend.cpp": {
+      "bytes": 6376,
+      "sha256": "92ea19f833c9ba132c81cfe33693ab1090d436e25c2aaea7e6186315f5265394"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/runtime/ggml/logging.cpp": {
+      "bytes": 2114,
+      "sha256": "8b06d0484a2c9036f4669edb049ec1e9c9ba4fa1489bf387936d67c8a7fea8ca"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/core/engine_registry.h": {
+      "bytes": 3506,
+      "sha256": "0538ce8978b5500f354161b77cc826a835a3e68507cb8799719c880302a8c3f3"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/s2s/voicechat.h": {
+      "bytes": 1712,
+      "sha256": "b645fb4d77d90912b71c11dde4f0b0c48751ce479b1aece2311c1ab9fea68b4b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/s2s/pipeline.h": {
+      "bytes": 10496,
+      "sha256": "ff6eeba99aac165367cd014b0f2583c4e3ce85ff574e8b76bf0d7616e5d8b0a5"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/speech/speech_translator.h": {
+      "bytes": 2893,
+      "sha256": "de7c5cbbcf0d4cc69909f4f9c901631fc4be439daa063d32aefd978ef239d2db"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/common/nvtx_utils.h": {
+      "bytes": 2305,
+      "sha256": "277d5a7ef7e7697f579ae8a563ea9c99d570304a570c2949c4d68ec1380cf0b3"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/common/audio_file.h": {
+      "bytes": 1124,
+      "sha256": "9ba8b3e779b75c198256c8d5c07f78ccc98840f367715d3767e06e23d20f19b3"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/common/ggml_log_filter.h": {
+      "bytes": 1246,
+      "sha256": "21b4dfd554a7dc40bc0be62b77e5962fe9c2371cd008b650295cd9de10c785f3"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/common/subtitles.h": {
+      "bytes": 933,
+      "sha256": "20b5fe27c789bd93a7fb4a9e42b60121edafc0fccccbf7e4d65e1e26aee65945"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/common/parameter_parser.h": {
+      "bytes": 5856,
+      "sha256": "2165ea6e0afeb77b7509a5f92a1dc4bc2ec1d590841a0780c40243f73927d9f4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/common/audio_resampler.h": {
+      "bytes": 2622,
+      "sha256": "2f71548582c980468ea58d0afd94b530c708c5a69316fd9040dd1d78b9cc7c40"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/common/audio_decoder.h": {
+      "bytes": 1875,
+      "sha256": "2415866e06cb3c64b5e515c491c200a63172806618e3c771b23e27559c845df1"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/common/model_logging.h": {
+      "bytes": 2148,
+      "sha256": "c59336a0aa25598c20c29f75cf4e4b045fd4ee03a8aaf6c78820d41eab6199fe"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/common/json.h": {
+      "bytes": 1842,
+      "sha256": "0f948e13aefcaa53cda7d3d6195ff9bc50925d5317f5aca271a6ad7702ece84c"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/common/subprocess.h": {
+      "bytes": 1351,
+      "sha256": "f7367f51f5955d80d068c241627ce4f27845e47e6976a290a78cfb71202fabbd"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/types.h": {
+      "bytes": 2920,
+      "sha256": "67af99af722503a3fc623b107c38dfd33fd8d9a4b87201aedccdaec430274790"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/recognizer.h": {
+      "bytes": 7854,
+      "sha256": "d0eac9b980797901e19b40f11369798d2a80dd3ffbd65ce346ebc6984872de22"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/runner.h": {
+      "bytes": 17470,
+      "sha256": "4c59e3a5c6167488818121ce99ab40d838891d7383db000fb72bceae05f95f7a"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/model.h": {
+      "bytes": 14982,
+      "sha256": "08ee01e62c124bbbea64758657728cd68148555e7d0489a281fae8806283aa8b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/batching.h": {
+      "bytes": 17278,
+      "sha256": "d5933c7db797a7722fbe8bdba445ef82093b38bdeb0da36afeb88c0b985c5857"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/synthesizer.h": {
+      "bytes": 2979,
+      "sha256": "54869514444757345aeae8d24f6c8045dada7e086fbfc2939187a608a5c750d6"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/nmt/langpairs.h": {
+      "bytes": 1900,
+      "sha256": "5fbc89a81358c4859756f86c3c7fcbe71023ec762450df8b3b2e268d392a0f1b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/nmt/nmt_types.h": {
+      "bytes": 842,
+      "sha256": "05cb43e99dbaab6946aa7fac52f6f945c4fb63456fe3bc739495bdffb988fdd7"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/nmt/translator.h": {
+      "bytes": 3350,
+      "sha256": "b4f86d557674407e7d97cda64efce3e4f3e6ca753a7708c1bea1dc0bca88aca2"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/services/grpc_asr.h": {
+      "bytes": 1547,
+      "sha256": "fa7f97988cbd417595c05b07addba197e64aebbd5b03306de26d6f44eb40bf99"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/services/grpc_tts.h": {
+      "bytes": 1304,
+      "sha256": "753e4711dd0408b92f3ea6c5ae87d0aac87dc65dbb4d3a4771931d75e6660868"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/services/grpc_nmt.h": {
+      "bytes": 1733,
+      "sha256": "6fc618da9057f273f4633eb041059441e916f86e18099c7a6a4b43f7aaf42dd0"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/tokenizer/tokenizer.h": {
+      "bytes": 2688,
+      "sha256": "94d49115a76467a23d8e03593f5906926d59e6d0a769dab10bbcedd40f9dea70"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/tokenizer/mandarin_tokenizer.h": {
+      "bytes": 773,
+      "sha256": "58439f397ed839a568e063221dabc4f389df801688d60c91336c00242f276fd3"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/preproc/text_normalizer.h": {
+      "bytes": 965,
+      "sha256": "7811cb1e3cf11ac7402287b95276cdc5995d2e767966056992e55a4f52515fa1"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/magpietts/magpietts_decoder_fused.h": {
+      "bytes": 4475,
+      "sha256": "3778804213e70ccf5d23540b1c842c08431a42fddfd8f0a97d4fc5587b4b9e7b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/magpietts/magpietts_lt_fused.h": {
+      "bytes": 4910,
+      "sha256": "59bc0cab83881d76cc842aaaadcdd4b82573da917ffe21fcc6542620da7d5fe8"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/magpietts/config.h": {
+      "bytes": 891,
+      "sha256": "192efcadc83adbc54b21ed4993a3ca420197c6dc4c07437c821c17e7eb853416"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/magpietts/decoder.h": {
+      "bytes": 9588,
+      "sha256": "6de11285501dbe04432826591aef13e018ec93b43827ac7a3e3c6820b8387d8c"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/magpietts/magpietts.h": {
+      "bytes": 6266,
+      "sha256": "63c93f7789bbac1668116678ebd480d9dade493a4007d6b6a53152abd31d38d5"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/magpietts/graph.h": {
+      "bytes": 3143,
+      "sha256": "dfacc808c0ffe20fa756686d316a1101d6c9012c29f065562347e12db9a3fd33"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/magpietts/runtime.h": {
+      "bytes": 4101,
+      "sha256": "7ca61f39da651422597c662b47dd53f4ebee511b7820a9e6753013018b8242c3"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/magpietts/encoder.h": {
+      "bytes": 889,
+      "sha256": "6677244a60d2b702fcd0d090d271a638f096d4ed72fc9eda10172c01e7def58c"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/magpietts/model.h": {
+      "bytes": 14832,
+      "sha256": "ef35476b8c0061531b264ea5152c7f2b89d6dea39199391edc068643f0b08cda"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/magpietts/magpietts_cuda_sampling.h": {
+      "bytes": 5311,
+      "sha256": "52dd2ecb46fce15bc0c114c3e360e6f4725ae2204f7ce43e408bd17769ebffcd"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/magpietts/audio_pp.h": {
+      "bytes": 941,
+      "sha256": "3b9d1974bb968572ac5620aa5aef3e4ac76d85b9424d44f38e02f078e557b700"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/magpietts/token_utils.h": {
+      "bytes": 681,
+      "sha256": "460649e5deb43cf874f77a6876ca8bc3079fd77a68fa64a08e2092dc9bee515a"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/magpietts/lt.h": {
+      "bytes": 2250,
+      "sha256": "72b2206a73ba1c71d82fdaea9d0478d91197bc3e2575241378e1f9f7080b113e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/nanocodec/model.h": {
+      "bytes": 3780,
+      "sha256": "dd2e10f3cb2ef924943f22a4518b2fef32b752303192b03adc6ba13f1572b770"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/diar/diar_pipeline.h": {
+      "bytes": 10483,
+      "sha256": "ed55fab4c14ae7c5618c1960a9872d036bca8dfce98e74d030fc903d38d6433e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/diar/aosc_state.h": {
+      "bytes": 5477,
+      "sha256": "c14f4e0ee44d27951a2be5d7798d8606ab01a96fda91872776e0ff204b76da85"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/diar/sortformer_model.h": {
+      "bytes": 7325,
+      "sha256": "30a3daf3396d628294457ab9e2c8b1d8ab63829ab28f68dc1e8e96f11c635893"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/diar/diarizer.h": {
+      "bytes": 2293,
+      "sha256": "c20e110335bb7fed2aaaf02f391c7b9861b0a37dd8cdbda33e1a363fabfa964b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/encoder/rel_pos_attention.h": {
+      "bytes": 3643,
+      "sha256": "be8f42215441b210843c2427e48d16fc27949bc81dad058501b86609bc11ae7b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/encoder/rope_transformer.h": {
+      "bytes": 2182,
+      "sha256": "48440373226b3241fbc50573fe7ffed37415547eacd2d455709605e566461790"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/encoder/cache_aware_encoder.h": {
+      "bytes": 4781,
+      "sha256": "37629e736f40b1ba77e41cb710cbc46a34fe6713629e17d7416a16aec72b4910"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/encoder/transformer_encoder.h": {
+      "bytes": 2753,
+      "sha256": "5e4bc5734db5e242f84d1e6a409d93d08e30f180c1273cb4dc0d4e752930d7a0"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/encoder/fastconformer.h": {
+      "bytes": 18551,
+      "sha256": "c29994bd8ee21609919a9b1a5e38dd7be31f358fc7841eb0d7c347ed94d844c1"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/features/fe.h": {
+      "bytes": 7817,
+      "sha256": "8b2a01bd955160d3ebf3de64e172244f842d4d994d80ff5f674c99107fe3e3b3"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/postproc/itn_align.h": {
+      "bytes": 1067,
+      "sha256": "3ff721e81de7ff81aeed7dfe37769cdcffb4cb2f57de90e5651f572324bfdbe4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/postproc/itn.h": {
+      "bytes": 2055,
+      "sha256": "129d777d547090c7a0a53e0497e5b346c8da9a9f4d5faf00d4cd4298f5c5ec3b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/postproc/profanity.h": {
+      "bytes": 982,
+      "sha256": "668b5bd1b5674a911e726920a02cc90c91d0936cf59e4ad16d373259b21ccb42"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/postproc/pipeline.h": {
+      "bytes": 3426,
+      "sha256": "4c5898a5d32f5cc6a191082436252e49d08b6375d8849fddec5f8fe93810730c"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/decoders/rnnt_modules.h": {
+      "bytes": 5486,
+      "sha256": "5bf5754161a5074fd3e5088dca73554b12dfae4eab8d2c2a7c5ae5f53181dde2"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/decoders/rnnt_greedy_decoder.h": {
+      "bytes": 12853,
+      "sha256": "b3c5b212cf0061edb2bdea2d602f5c313026b7f59c1a30395e190099dd9b459d"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/decoders/decoder.h": {
+      "bytes": 12602,
+      "sha256": "0637d67d73959b6242ed1e0e120457c13c4c99edffbbfc05b8f867695a795afa"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/decoders/context_biasing.h": {
+      "bytes": 2885,
+      "sha256": "0d96a4efafd5732060a90456722688322b82f63fa453c48c2e3ed47405594752"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/decoders/greedy_ctc_decoder.h": {
+      "bytes": 5315,
+      "sha256": "62a995737a22daeb2592d7eb8cfff633f2cb670d202c052d00fbe5f6a8be3b82"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/decoders/flashlight_decoder.h": {
+      "bytes": 10941,
+      "sha256": "823baa60cdee1c15491c51473c37d18e15e1f8bd0043ee7c4b342a9b602951e1"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/vad/vad_masker.h": {
+      "bytes": 5108,
+      "sha256": "a23a9ee3c7e094da7bb978dccd5463f3cd4a2bcce4b228f8aced8418cee9693b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/vad/silero_vad.h": {
+      "bytes": 8684,
+      "sha256": "7a946f77669019abe25cc326b9672639a05c8978a36ef9ca5fccd0563482490b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/vad/vad_endpointer.h": {
+      "bytes": 3345,
+      "sha256": "9f2d2cc4fa064dcafc80edc2a20f15658302ddebf8a39a08290ec974e42d1b50"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/pnc/wordpiece.h": {
+      "bytes": 1426,
+      "sha256": "bc0ab14a0c7221a1374e46ab395306d8e7354ecc4335948cc5167bf0ea83ca23"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/pnc/pnc_runner.h": {
+      "bytes": 822,
+      "sha256": "fa9bc0e4badf94255ba7c4a31c915c4d4249f50e4a2cac7cf5a3be5901487721"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/pnc/pnc_model.h": {
+      "bytes": 1956,
+      "sha256": "68f628134c97449540266091eaf7575cc1a9e07db5752f977727b0ff640d2922"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/common/text_normalization/fst_normalizer.h": {
+      "bytes": 919,
+      "sha256": "d7d11deb8c760c3a2008da4b9197a2a05ea64fe8cb95b5fa23d7c17348b29f90"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/common/text_normalization/compat/sparrowhawk_compat.h": {
+      "bytes": 1485,
+      "sha256": "ff7c7b1ea5a234e753321de30d2b8474d3afec9c155d4051cf738c58d3c64e2e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/common/text_normalization/compat/thrax/grm-manager.h": {
+      "bytes": 4444,
+      "sha256": "f803b0c99b22917a22fd7e9dc3c27c34681e3a5587f112d3252d96521dde0a6c"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/common/text_normalization/compat/thrax/thrax.h": {
+      "bytes": 329,
+      "sha256": "002d0a3a0d0e90d9c658c995cbc453a898faea1c15486504e0f25d2b6cb1b3fb"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/s2s/eartts/config.h": {
+      "bytes": 1708,
+      "sha256": "737dcbd4f61e783b848c48c257988e4a16b8e6df24ab029c467744381ff4adaf"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/s2s/eartts/sampler.h": {
+      "bytes": 5014,
+      "sha256": "6c3b7692de615455ebf91daaaf03f74beff577ab395f431feee2e939b68f74ea"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/s2s/eartts/backbone.h": {
+      "bytes": 4730,
+      "sha256": "e7c876b64fc3f86c61ebb25a599d594f85b66ca4f53f410eb6e9722d9043aa8b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/s2s/eartts/embedder.h": {
+      "bytes": 2741,
+      "sha256": "ec83fa213b9011a9c9f6df609386e24b88118b39b5439d79729e305206be891e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/s2s/eartts/prompt.h": {
+      "bytes": 1775,
+      "sha256": "a9125d1912651c59ab6852b9347c2f163495a2e61c74b5945dfd0c6f7bead1d9"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/s2s/eartts/graph_utils.h": {
+      "bytes": 11222,
+      "sha256": "6600e81d260d74edf9476cb6f8a0ded2315640e5c15a623b5fdab0d6bc19a942"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/s2s/llm/backbone.h": {
+      "bytes": 3582,
+      "sha256": "59340a0bdf8b4e2be6e5a4cd565f9c364ff1209944bc9ae32b89148c0e51b874"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/s2s/llm/heads.h": {
+      "bytes": 2363,
+      "sha256": "4bbc8228df300eca781979a4b7beedb78d446ff3e68e5fd99bb2054d6657fad6"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/s2s/llm/llama_common.h": {
+      "bytes": 932,
+      "sha256": "0e0564f29adcffe5ba6b53faf1c1a472bdf4d303fc85b2df3a8781859c6d6a6f"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/s2s/codec/config.h": {
+      "bytes": 1225,
+      "sha256": "afa8b9bacd49b1e11997eb84f1b76b797f4bfc048b69aa5b4b94f015d843c8ca"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/s2s/codec/decoder.h": {
+      "bytes": 1562,
+      "sha256": "5561520ca5bfa4e0f8621f7ed5c71d30f1c672b5d8f138c66da1abacc745721e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/s2s/codec/codec.h": {
+      "bytes": 2654,
+      "sha256": "caf101d6a743368e964ee5e626ecec931a94c6c98e7978cef2675d91b20957cf"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/s2s/codec/encoder.h": {
+      "bytes": 994,
+      "sha256": "435a26919c35cba0d114e83e32be698e132a9664f12e679e9aa30281b0695db4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/s2s/codec/graph_utils.h": {
+      "bytes": 9223,
+      "sha256": "c76591e219ae2e19c5984ab8f53afa3bdcba1cac9ce1bcfa88399946dd065473"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/s2s/perception/perception.h": {
+      "bytes": 2034,
+      "sha256": "fbb9463c0afdb8acd14f55b9f88decb79ff9df1984a37c41070ebbe5af92153a"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/runtime/ggml/runtime.h": {
+      "bytes": 19230,
+      "sha256": "8b16754a48bc69a9d0f9d2bc29913e9cf4a7e9b5321bd118780093010c5c0f25"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/runtime/ggml/nn.h": {
+      "bytes": 7521,
+      "sha256": "837ad68a88d15f9b53cb9ae5f3b2e2bed65824bb78337cdf02d03b500fd09fd9"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-vulkan.h": {
+      "bytes": 952,
+      "sha256": "7eae5dad2cc7bb4d3eca828539f441816d5fd59fdc7b224d49aa229fc7b7248c"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-virtgpu.h": {
+      "bytes": 194,
+      "sha256": "ed231e7db3f0f58b84073f5ee67f9ec9d63046d1a7ed091c36a6cfe9f685a463"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-zdnn.h": {
+      "bytes": 292,
+      "sha256": "ee1d79c95ade45ba195a6b71f59a05c18617de4a596d2b2b03ecf38975a9a448"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-opencl.h": {
+      "bytes": 581,
+      "sha256": "8e443e1aa9c8bc6e0cf116c4cc3f42f4858938fa15e65b06bc07b26686e1233a"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-hexagon.h": {
+      "bytes": 351,
+      "sha256": "b2c12bac390f14707b16bdd27c8c75ce4f075ed509c729ee28fd4f03b17e7375"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-cann.h": {
+      "bytes": 4553,
+      "sha256": "2cdb134f27fe5c4ec19d52f1eb58f5355aa42b8f54bf385f0e487501c5df7362"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-cpp.h": {
+      "bytes": 1652,
+      "sha256": "bc15ba002c68685df23faae42df0d2b3d58032011f88b649021ab92485862c72"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-sycl.h": {
+      "bytes": 2492,
+      "sha256": "728e4f15d0853d63feb95dd596821c750181c26995fff57fe035e964e70fd85f"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-blas.h": {
+      "bytes": 586,
+      "sha256": "e76cb8594dc9866d99e7d63191b9fff6ab8b50244b4a28ce3af0f962964a6b5b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-backend.h": {
+      "bytes": 25374,
+      "sha256": "46d84cb998105f871240864fd0f55446939a2fe86c5c281afa63a010fb1f65a2"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-et.h": {
+      "bytes": 887,
+      "sha256": "33118c0642b8059a99ea930fd4e4a045e78ccb41760b173ede221f1297c35977"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-openvino.h": {
+      "bytes": 1034,
+      "sha256": "c2e3f301e28ad815b4285888aad6130808a77e6acb4e8b558de63a648cf9743e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-cuda.h": {
+      "bytes": 2929,
+      "sha256": "9bb92a7ba114dd3d7d00985372e98db5f1535860686d4871444d53214dd935d0"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-alloc.h": {
+      "bytes": 3753,
+      "sha256": "94e4cd069b9313b2ceb35dacec901981e0bb478d8bb31035b7126be091998c23"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-zendnn.h": {
+      "bytes": 498,
+      "sha256": "2cb034b842438281616ce647232d922fb224450323f0d422d2af567c334aa8ff"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-opt.h": {
+      "bytes": 14040,
+      "sha256": "3586de1bc8a934b5c72339e2b6937b0641e8f149b512231e666f67de0736eea2"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-metal.h": {
+      "bytes": 2141,
+      "sha256": "322f36cd30f3e9e7aad7b5b9bc63078012fd0b7706ac4e24f5721b604f3d8980"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-cpu.h": {
+      "bytes": 7753,
+      "sha256": "316279e004cdeb8e6ef78599acb602bf79a8abdf897fed9fd1914808c1518c6e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/gguf.h": {
+      "bytes": 11355,
+      "sha256": "e56714aab702e5ce62ee587a409643c08f7e93e8fbb77f48ef7cc85075f96fa4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-webgpu.h": {
+      "bytes": 328,
+      "sha256": "a91d855313a9e85e75ba597ff869a267247dea936a2c0faef03aeb7f1ea6e79c"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-rpc.h": {
+      "bytes": 1184,
+      "sha256": "196d2a7434f0abdb01f13c5360e0b118b9f2d66c6452e3a7a844fbecc890205c"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml.h": {
+      "bytes": 122981,
+      "sha256": "c74dda8a6f9550e79a5847188d86715a3d6a2b92a4d09766d02bd5586faca8f3"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-sdk/include/nemo_speech/asr.h": {
+      "bytes": 12718,
+      "sha256": "12f3e017391ae19daabe59d2d50541f0aabb010228d075426b4a9834337422fa"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-sdk/include/nemo_speech/diar.h": {
+      "bytes": 7606,
+      "sha256": "4839f70ccab30af3ed9949751792a547f3a8a4129848f64c8cd69889bd433afd"
+    }
+  },
+  "commands": [
+    {
+      "name": "probe-compile",
+      "argv": [
+        "/usr/bin/clang++",
+        "-std=c++17",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-arch",
+        "arm64",
+        "-march=armv8.2-a+dotprod+fp16",
+        "-mmacosx-version-min=26.0",
+        "-fvisibility=hidden",
+        "-DGGML_BACKEND_SHARED",
+        "-DGGML_SHARED",
+        "-DGGML_USE_BLAS",
+        "-DGGML_USE_CPU",
+        "-DNEMO_SPEECH_GGML_PATCHED=1",
+        "-DNEMO_SPEECH_VERSION_STR=\"0.2.0+gen2-valid-mel-v1\"",
+        "-Dnemo_speech_asr_EXPORTS",
+        "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr",
+        "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/features",
+        "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/encoder",
+        "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/decoders",
+        "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/vad",
+        "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/diar",
+        "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/postproc",
+        "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/pnc",
+        "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/common",
+        "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/runtime/ggml",
+        "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/src/../include",
+        "-DNDEBUG",
+        "-I/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-sdk/include",
+        "-c",
+        "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/native_pool_probe.cpp",
+        "-o",
+        "/Users/victor/.cache/gen2-nemotron3-n0/portable-pool-probe-build-v2/probe.o"
+      ],
+      "returncode": 0
+    },
+    {
+      "name": "backend-compile",
+      "argv": [
+        "/usr/bin/c++",
+        "-DGGML_BACKEND_SHARED",
+        "-DGGML_SHARED",
+        "-DGGML_USE_BLAS",
+        "-DGGML_USE_CPU",
+        "-DNEMO_SPEECH_GGML_PATCHED=1",
+        "-DNEMO_SPEECH_VERSION_STR=\"0.2.0+gen2-valid-mel-v1\"",
+        "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/runtime/ggml",
+        "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/common",
+        "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/src/../include",
+        "-march=armv8.2-a+dotprod+fp16",
+        "-O3",
+        "-DNDEBUG",
+        "-std=gnu++17",
+        "-arch",
+        "arm64",
+        "-mmacosx-version-min=26.0",
+        "-fPIC",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "-Wall",
+        "-Wextra",
+        "-o",
+        "/Users/victor/.cache/gen2-nemotron3-n0/portable-pool-probe-build-v2/backend.o",
+        "-c",
+        "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/runtime/ggml/backend.cpp"
+      ],
+      "returncode": 0
+    },
+    {
+      "name": "logging-compile",
+      "argv": [
+        "/usr/bin/c++",
+        "-DGGML_BACKEND_SHARED",
+        "-DGGML_SHARED",
+        "-DGGML_USE_BLAS",
+        "-DGGML_USE_CPU",
+        "-DNEMO_SPEECH_GGML_PATCHED=1",
+        "-DNEMO_SPEECH_VERSION_STR=\"0.2.0+gen2-valid-mel-v1\"",
+        "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/runtime/ggml",
+        "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/common",
+        "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/src/../include",
+        "-march=armv8.2-a+dotprod+fp16",
+        "-O3",
+        "-DNDEBUG",
+        "-std=gnu++17",
+        "-arch",
+        "arm64",
+        "-mmacosx-version-min=26.0",
+        "-fPIC",
+        "-fvisibility=hidden",
+        "-fvisibility-inlines-hidden",
+        "-Wall",
+        "-Wextra",
+        "-o",
+        "/Users/victor/.cache/gen2-nemotron3-n0/portable-pool-probe-build-v2/logging.o",
+        "-c",
+        "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/runtime/ggml/logging.cpp"
+      ],
+      "returncode": 0
+    },
+    {
+      "name": "link",
+      "argv": [
+        "/usr/bin/clang++",
+        "-arch",
+        "arm64",
+        "-mmacosx-version-min=26.0",
+        "/Users/victor/.cache/gen2-nemotron3-n0/portable-pool-probe-build-v2/probe.o",
+        "/Users/victor/.cache/gen2-nemotron3-n0/portable-pool-probe-build-v2/backend.o",
+        "/Users/victor/.cache/gen2-nemotron3-n0/portable-pool-probe-build-v2/logging.o",
+        "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_nemo_speech_asr.dylib",
+        "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_nemo_speech_asr_c.1.dylib",
+        "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_ggml-base.0.25.1.dylib",
+        "-Wl,-rpath,@loader_path/../nemo/lib",
+        "-o",
+        "/Users/victor/.cache/gen2-nemotron3-n0/portable-pool-probe-build-v2/work/bin/native-pool-probe"
+      ],
+      "returncode": 1
+    }
+  ]
+}

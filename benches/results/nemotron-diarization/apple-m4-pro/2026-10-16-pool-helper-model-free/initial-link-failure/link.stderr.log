@@ -1,0 +1,15 @@
+Undefined symbols for architecture arm64:
+  "_ggml_backend_dev_by_type", referenced from:
+      ggml_runtime::BackendManager::init_backends() in backend.o
+  "_ggml_backend_dev_count", referenced from:
+      ggml_runtime::BackendManager::init_backends() in backend.o
+      ggml_runtime::BackendManager::init_backends() in backend.o
+      ggml_runtime::BackendManager::init_backends() in backend.o
+      ggml_runtime::BackendManager::init_backends() in backend.o
+  "_ggml_backend_dev_get", referenced from:
+      ggml_runtime::BackendManager::init_backends() in backend.o
+      ggml_runtime::BackendManager::init_backends() in backend.o
+  "_ggml_backend_init_by_type", referenced from:
+      ggml_runtime::BackendManager::init_backends() in backend.o
+ld: symbol(s) not found for architecture arm64
+clang++: error: linker command failed with exit code 1 (use -v to see invocation)

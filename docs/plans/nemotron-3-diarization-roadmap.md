@@ -919,6 +919,13 @@ including 100 reloads. Nine runtime processes each load the exact 92-image priva
 closure; the missing-library control fails before model creation. An earlier
 sandbox admission failure is retained with zero neural calls. Long-session,
 coexistence, Metal, other platforms, Pnola and quality/release gates remain open.
+The latest [203-test feature matrix](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-203/qualification.json)
+passes all13jobs at0770aaaa, with199Linux evidence tests passing and four platform
+skips. All207current model-free tests pass locally on macOS. A private diagnostic
+helper also passes20backend lifetimes,10with persistent pools, against the exact
+unchanged portable SDK/package. Its [same-input four-process pool experiment](../research/nemotron-macos-fresh-machine.md)
+is prepared but unexecuted; no runtime fix, speedup or below1liveRTF is claimed.
+
 The 13-job feature matrix also passed at `4974318`. Later source `cf64214`
 passed12 jobs; its macOS mixed-feature job failed before compilation when GitHub
 submodule fetch could not connect to port443. A failed-job rerun was denied by

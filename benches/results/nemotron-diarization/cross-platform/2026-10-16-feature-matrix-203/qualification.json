@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "source_commit": "0770aaaa62ddd50e5bccc1de9a25cb86ae3f53ae",
+  "ci_url": "https://github.com/saberra-ai/gen2/actions/runs/38979777075",
+  "all_thirteen_feature_jobs_passed": true,
+  "model_free_evidence_tests_reported": 203,
+  "model_free_evidence_tests_passed": 199,
+  "model_free_evidence_tests_skipped": 4,
+  "platforms": [
+    "ubuntu-latest",
+    "windows-latest",
+    "macos-latest"
+  ],
+  "feature_sets": [
+    "",
+    "backend-diar-nemo",
+    "asr-dynamic,backend-diar-nemo",
+    "backend-llamacpp,asr-dynamic,backend-diar-nemo"
+  ],
+  "all_twelve_feature_jobs_ran_fmt_clippy_tests_successfully": true,
+  "evidence_and_pnola_python_and_desktop_asset_test_steps_passed": true,
+  "combined_log_retained_outside_git": {
+    "bytes": 10106843,
+    "sha256": "4cced87831fcda2d7ff91c4a82cfd2e86fec9caf20eb0d07740fdb6e0ea46f93"
+  },
+  "release_qualified": false,
+  "limits": [
+    "CI source is0770aaaa. All12OS/feature combinations pass. The Linux evidence suite reports203tests,199passed/4platform skips. All203pass locally onmacOS, including actual standalone C loader and sampler controls; that separate receipt is retained. This CI does not execute app/model/corpus gates.",
+    "No model/nativeSDK is required by this workflow. It does not replace real-model, desktop, distribution, held-out-quality or uncontended-performance gates. Earlier network-failure and102-test success receipts remain unchanged."
+  ]
+}

@@ -1,0 +1,64 @@
+name: Diarization portable macOS CPU pool comparison
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/nemotron3-n0]
+    paths:
+      - .github/workflows/diarization-macos-cpu-pools.yml
+      - tools/nemotron-diarization/compare_macos_cpu_pools.py
+      - tools/nemotron-diarization/native_pool_probe.cpp
+      - tools/nemotron-diarization/macos-cpu-pools.protocol.json
+permissions:
+  contents: read
+  actions: read
+jobs:
+  compare:
+    runs-on: macos-26
+    timeout-minutes: 30
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Fetch exact public native helper inputs without submodules
+        run: |
+          git init "${{ runner.temp }}/pool-native-source"
+          git -C "${{ runner.temp }}/pool-native-source" remote add origin https://github.com/NVIDIA/NeMo-Speech.cpp.git
+          git -C "${{ runner.temp }}/pool-native-source" fetch --depth=1 origin 083861c241061562b8ec29eb06d7f6cdc3af8775
+          git -C "${{ runner.temp }}/pool-native-source" checkout --detach FETCH_HEAD
+      - name: Download exact qualified construction and probability reference
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p "${{ runner.temp }}/pool-delivery"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12074849757 > "${{ runner.temp }}/pool-delivery/construction.json"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12074849757/zip > "${{ runner.temp }}/pool-delivery/construction.zip"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12080083616 > "${{ runner.temp }}/pool-delivery/reference.json"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12080083616/zip > "${{ runner.temp }}/pool-delivery/reference.zip"
+      - name: Validate model-free controls then compare four fixed pool cases
+        run: |
+          python tools/nemotron-diarization/compare_macos_cpu_pools.py \
+            --protocol tools/nemotron-diarization/macos-cpu-pools.protocol.json \
+            --native-source "${{ runner.temp }}/pool-native-source" \
+            --construction-zip "${{ runner.temp }}/pool-delivery/construction.zip" \
+            --construction-metadata "${{ runner.temp }}/pool-delivery/construction.json" \
+            --reference-zip "${{ runner.temp }}/pool-delivery/reference.zip" \
+            --reference-metadata "${{ runner.temp }}/pool-delivery/reference.json" \
+            --output "${{ runner.temp }}/cpu-pools"
+      - name: Preserve passing or failed comparison evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nemotron-macos-cpu-pools
+          path: |
+            ${{ runner.temp }}/cpu-pools/*.json
+            ${{ runner.temp }}/cpu-pools/*.log
+            ${{ runner.temp }}/cpu-pools/*.sb
+            ${{ runner.temp }}/cpu-pools/results/*.json
+            ${{ runner.temp }}/cpu-pools/results/*.f32
+          include-hidden-files: true
+          retention-days: 30

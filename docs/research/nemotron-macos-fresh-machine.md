@@ -238,7 +238,40 @@ sets thread counts but does not attach a persistent pool. These source
 facts and stacks support testing pool reuse as the next controlled candidate;
 they do not establish the cause or a fix. The qualified artifacts stay unchanged.
 All 203 local model-free tests pass, including five sampler safety/control
-cases. The separate source feature matrix has no completed receipt yet.
+cases. The [source feature matrix](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-203/qualification.json)
+passes all13jobs at0770aaaa. Its Linux evidence step reports203tests,
+199passed and four platform skips; this is separate from all203passing locally.
+
+The [private pool helper control](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pool-helper-model-free/collection-qualification.json)
+links against the unchanged portable SDK/package. Its model-free sandbox run
+passes20backend lifetimes, including10persistent-pool lifetimes at four threads;
+no model or frontend executes. The receipt verifies all84SDK and123runtime
+inventory entries against manifests bound to the prior committed receiver
+protocol. It retains the initial inherited-warning compile failure, initial
+missing-registry-library link failure, successful object reuse/link continuation,
+117compiler inputs and strict92-image audit.
+
+The helper uses private C++ headers and two unchanged upstream helper-local
+backend/logging implementation files because the SDK hides those constructors.
+Its successful control establishes lifecycle preparation only. Neural private-ABI
+compatibility and whole-output parity are still unproven. The proposed same-input
+four-process disposable/persistent/persistent/disposable comparison is unexecuted.
+The model-constructor clock excludes backend/pool setup; external process timing
+must include it. Neither this control nor the source profile establishes a
+performance fix, live qualification or a production runtime change.
+
+The [pool comparison protocol](../../tools/nemotron-diarization/macos-cpu-pools.protocol.json)
+now freezes the diagnostic source,111native source/patch inputs,15transitive
+tool inputs, the original construction artifact and the qualified12-second
+probability artifact. A fresh M1 workflow will compile the helper, require actual
+format/network/read-only controls and all20model-free lifetimes, then run four
+fresh processes in fixed disposable/persistent/persistent/disposable order.
+Each complete1,200-by8probability history must match the qualified C ABI output
+within the established1e-6wrapper tolerance before timing interpretation.
+Native children cannot read source, SDK, reference artifacts or prior results.
+The original package is checked unchanged between runs. All207local model-free
+tests pass; actual controller header replay matches all22qualified headers.
+This four-call comparison is prepared and remains unexecuted at this checkpoint.
 
 ## Portable CPU complete-app construction
 

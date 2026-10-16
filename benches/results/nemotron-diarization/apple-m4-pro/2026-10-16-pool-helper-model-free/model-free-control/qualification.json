@@ -1,0 +1,913 @@
+{
+  "scope": "actual model-free private-C++ pool lifecycle; no model path provided, weight formats/network/source reads denied",
+  "binary": {
+    "bytes": 81952,
+    "sha256": "0496705c6aa9561f8b1942444556249b18ea666ab2423abe4b42e5d2ff825e69"
+  },
+  "link_record": {
+    "bytes": 2419,
+    "sha256": "83b97d2b68e90a13a22b4196db1a66f36c596a6b2eafe428cc190fbbe364c25c"
+  },
+  "source_pins": {
+    "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/native_pool_probe.cpp": {
+      "bytes": 8082,
+      "sha256": "94cd140465073608bed0396de1823a42f5582864268bdd9fa5143a8fbc19ba30"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/runtime/ggml/backend.cpp": {
+      "bytes": 6376,
+      "sha256": "92ea19f833c9ba132c81cfe33693ab1090d436e25c2aaea7e6186315f5265394"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/runtime/ggml/logging.cpp": {
+      "bytes": 2114,
+      "sha256": "8b06d0484a2c9036f4669edb049ec1e9c9ba4fa1489bf387936d67c8a7fea8ca"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/core/engine_registry.h": {
+      "bytes": 3506,
+      "sha256": "0538ce8978b5500f354161b77cc826a835a3e68507cb8799719c880302a8c3f3"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/s2s/voicechat.h": {
+      "bytes": 1712,
+      "sha256": "b645fb4d77d90912b71c11dde4f0b0c48751ce479b1aece2311c1ab9fea68b4b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/s2s/pipeline.h": {
+      "bytes": 10496,
+      "sha256": "ff6eeba99aac165367cd014b0f2583c4e3ce85ff574e8b76bf0d7616e5d8b0a5"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/speech/speech_translator.h": {
+      "bytes": 2893,
+      "sha256": "de7c5cbbcf0d4cc69909f4f9c901631fc4be439daa063d32aefd978ef239d2db"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/common/nvtx_utils.h": {
+      "bytes": 2305,
+      "sha256": "277d5a7ef7e7697f579ae8a563ea9c99d570304a570c2949c4d68ec1380cf0b3"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/common/audio_file.h": {
+      "bytes": 1124,
+      "sha256": "9ba8b3e779b75c198256c8d5c07f78ccc98840f367715d3767e06e23d20f19b3"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/common/ggml_log_filter.h": {
+      "bytes": 1246,
+      "sha256": "21b4dfd554a7dc40bc0be62b77e5962fe9c2371cd008b650295cd9de10c785f3"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/common/subtitles.h": {
+      "bytes": 933,
+      "sha256": "20b5fe27c789bd93a7fb4a9e42b60121edafc0fccccbf7e4d65e1e26aee65945"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/common/parameter_parser.h": {
+      "bytes": 5856,
+      "sha256": "2165ea6e0afeb77b7509a5f92a1dc4bc2ec1d590841a0780c40243f73927d9f4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/common/audio_resampler.h": {
+      "bytes": 2622,
+      "sha256": "2f71548582c980468ea58d0afd94b530c708c5a69316fd9040dd1d78b9cc7c40"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/common/audio_decoder.h": {
+      "bytes": 1875,
+      "sha256": "2415866e06cb3c64b5e515c491c200a63172806618e3c771b23e27559c845df1"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/common/model_logging.h": {
+      "bytes": 2148,
+      "sha256": "c59336a0aa25598c20c29f75cf4e4b045fd4ee03a8aaf6c78820d41eab6199fe"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/common/json.h": {
+      "bytes": 1842,
+      "sha256": "0f948e13aefcaa53cda7d3d6195ff9bc50925d5317f5aca271a6ad7702ece84c"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/common/subprocess.h": {
+      "bytes": 1351,
+      "sha256": "f7367f51f5955d80d068c241627ce4f27845e47e6976a290a78cfb71202fabbd"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/types.h": {
+      "bytes": 2920,
+      "sha256": "67af99af722503a3fc623b107c38dfd33fd8d9a4b87201aedccdaec430274790"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/recognizer.h": {
+      "bytes": 7854,
+      "sha256": "d0eac9b980797901e19b40f11369798d2a80dd3ffbd65ce346ebc6984872de22"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/runner.h": {
+      "bytes": 17470,
+      "sha256": "4c59e3a5c6167488818121ce99ab40d838891d7383db000fb72bceae05f95f7a"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/model.h": {
+      "bytes": 14982,
+      "sha256": "08ee01e62c124bbbea64758657728cd68148555e7d0489a281fae8806283aa8b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/batching.h": {
+      "bytes": 17278,
+      "sha256": "d5933c7db797a7722fbe8bdba445ef82093b38bdeb0da36afeb88c0b985c5857"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/synthesizer.h": {
+      "bytes": 2979,
+      "sha256": "54869514444757345aeae8d24f6c8045dada7e086fbfc2939187a608a5c750d6"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/nmt/langpairs.h": {
+      "bytes": 1900,
+      "sha256": "5fbc89a81358c4859756f86c3c7fcbe71023ec762450df8b3b2e268d392a0f1b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/nmt/nmt_types.h": {
+      "bytes": 842,
+      "sha256": "05cb43e99dbaab6946aa7fac52f6f945c4fb63456fe3bc739495bdffb988fdd7"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/nmt/translator.h": {
+      "bytes": 3350,
+      "sha256": "b4f86d557674407e7d97cda64efce3e4f3e6ca753a7708c1bea1dc0bca88aca2"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/services/grpc_asr.h": {
+      "bytes": 1547,
+      "sha256": "fa7f97988cbd417595c05b07addba197e64aebbd5b03306de26d6f44eb40bf99"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/services/grpc_tts.h": {
+      "bytes": 1304,
+      "sha256": "753e4711dd0408b92f3ea6c5ae87d0aac87dc65dbb4d3a4771931d75e6660868"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/services/grpc_nmt.h": {
+      "bytes": 1733,
+      "sha256": "6fc618da9057f273f4633eb041059441e916f86e18099c7a6a4b43f7aaf42dd0"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/tokenizer/tokenizer.h": {
+      "bytes": 2688,
+      "sha256": "94d49115a76467a23d8e03593f5906926d59e6d0a769dab10bbcedd40f9dea70"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/tokenizer/mandarin_tokenizer.h": {
+      "bytes": 773,
+      "sha256": "58439f397ed839a568e063221dabc4f389df801688d60c91336c00242f276fd3"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/preproc/text_normalizer.h": {
+      "bytes": 965,
+      "sha256": "7811cb1e3cf11ac7402287b95276cdc5995d2e767966056992e55a4f52515fa1"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/magpietts/magpietts_decoder_fused.h": {
+      "bytes": 4475,
+      "sha256": "3778804213e70ccf5d23540b1c842c08431a42fddfd8f0a97d4fc5587b4b9e7b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/magpietts/magpietts_lt_fused.h": {
+      "bytes": 4910,
+      "sha256": "59bc0cab83881d76cc842aaaadcdd4b82573da917ffe21fcc6542620da7d5fe8"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/magpietts/config.h": {
+      "bytes": 891,
+      "sha256": "192efcadc83adbc54b21ed4993a3ca420197c6dc4c07437c821c17e7eb853416"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/magpietts/decoder.h": {
+      "bytes": 9588,
+      "sha256": "6de11285501dbe04432826591aef13e018ec93b43827ac7a3e3c6820b8387d8c"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/magpietts/magpietts.h": {
+      "bytes": 6266,
+      "sha256": "63c93f7789bbac1668116678ebd480d9dade493a4007d6b6a53152abd31d38d5"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/magpietts/graph.h": {
+      "bytes": 3143,
+      "sha256": "dfacc808c0ffe20fa756686d316a1101d6c9012c29f065562347e12db9a3fd33"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/magpietts/runtime.h": {
+      "bytes": 4101,
+      "sha256": "7ca61f39da651422597c662b47dd53f4ebee511b7820a9e6753013018b8242c3"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/magpietts/encoder.h": {
+      "bytes": 889,
+      "sha256": "6677244a60d2b702fcd0d090d271a638f096d4ed72fc9eda10172c01e7def58c"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/magpietts/model.h": {
+      "bytes": 14832,
+      "sha256": "ef35476b8c0061531b264ea5152c7f2b89d6dea39199391edc068643f0b08cda"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/magpietts/magpietts_cuda_sampling.h": {
+      "bytes": 5311,
+      "sha256": "52dd2ecb46fce15bc0c114c3e360e6f4725ae2204f7ce43e408bd17769ebffcd"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/magpietts/audio_pp.h": {
+      "bytes": 941,
+      "sha256": "3b9d1974bb968572ac5620aa5aef3e4ac76d85b9424d44f38e02f078e557b700"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/magpietts/token_utils.h": {
+      "bytes": 681,
+      "sha256": "460649e5deb43cf874f77a6876ca8bc3079fd77a68fa64a08e2092dc9bee515a"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/magpietts/lt.h": {
+      "bytes": 2250,
+      "sha256": "72b2206a73ba1c71d82fdaea9d0478d91197bc3e2575241378e1f9f7080b113e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/tts/nanocodec/model.h": {
+      "bytes": 3780,
+      "sha256": "dd2e10f3cb2ef924943f22a4518b2fef32b752303192b03adc6ba13f1572b770"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/diar/diar_pipeline.h": {
+      "bytes": 10483,
+      "sha256": "ed55fab4c14ae7c5618c1960a9872d036bca8dfce98e74d030fc903d38d6433e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/diar/aosc_state.h": {
+      "bytes": 5477,
+      "sha256": "c14f4e0ee44d27951a2be5d7798d8606ab01a96fda91872776e0ff204b76da85"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/diar/sortformer_model.h": {
+      "bytes": 7325,
+      "sha256": "30a3daf3396d628294457ab9e2c8b1d8ab63829ab28f68dc1e8e96f11c635893"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/diar/diarizer.h": {
+      "bytes": 2293,
+      "sha256": "c20e110335bb7fed2aaaf02f391c7b9861b0a37dd8cdbda33e1a363fabfa964b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/encoder/rel_pos_attention.h": {
+      "bytes": 3643,
+      "sha256": "be8f42215441b210843c2427e48d16fc27949bc81dad058501b86609bc11ae7b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/encoder/rope_transformer.h": {
+      "bytes": 2182,
+      "sha256": "48440373226b3241fbc50573fe7ffed37415547eacd2d455709605e566461790"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/encoder/cache_aware_encoder.h": {
+      "bytes": 4781,
+      "sha256": "37629e736f40b1ba77e41cb710cbc46a34fe6713629e17d7416a16aec72b4910"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/encoder/transformer_encoder.h": {
+      "bytes": 2753,
+      "sha256": "5e4bc5734db5e242f84d1e6a409d93d08e30f180c1273cb4dc0d4e752930d7a0"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/encoder/fastconformer.h": {
+      "bytes": 18551,
+      "sha256": "c29994bd8ee21609919a9b1a5e38dd7be31f358fc7841eb0d7c347ed94d844c1"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/features/fe.h": {
+      "bytes": 7817,
+      "sha256": "8b2a01bd955160d3ebf3de64e172244f842d4d994d80ff5f674c99107fe3e3b3"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/postproc/itn_align.h": {
+      "bytes": 1067,
+      "sha256": "3ff721e81de7ff81aeed7dfe37769cdcffb4cb2f57de90e5651f572324bfdbe4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/postproc/itn.h": {
+      "bytes": 2055,
+      "sha256": "129d777d547090c7a0a53e0497e5b346c8da9a9f4d5faf00d4cd4298f5c5ec3b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/postproc/profanity.h": {
+      "bytes": 982,
+      "sha256": "668b5bd1b5674a911e726920a02cc90c91d0936cf59e4ad16d373259b21ccb42"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/postproc/pipeline.h": {
+      "bytes": 3426,
+      "sha256": "4c5898a5d32f5cc6a191082436252e49d08b6375d8849fddec5f8fe93810730c"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/decoders/rnnt_modules.h": {
+      "bytes": 5486,
+      "sha256": "5bf5754161a5074fd3e5088dca73554b12dfae4eab8d2c2a7c5ae5f53181dde2"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/decoders/rnnt_greedy_decoder.h": {
+      "bytes": 12853,
+      "sha256": "b3c5b212cf0061edb2bdea2d602f5c313026b7f59c1a30395e190099dd9b459d"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/decoders/decoder.h": {
+      "bytes": 12602,
+      "sha256": "0637d67d73959b6242ed1e0e120457c13c4c99edffbbfc05b8f867695a795afa"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/decoders/context_biasing.h": {
+      "bytes": 2885,
+      "sha256": "0d96a4efafd5732060a90456722688322b82f63fa453c48c2e3ed47405594752"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/decoders/greedy_ctc_decoder.h": {
+      "bytes": 5315,
+      "sha256": "62a995737a22daeb2592d7eb8cfff633f2cb670d202c052d00fbe5f6a8be3b82"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/decoders/flashlight_decoder.h": {
+      "bytes": 10941,
+      "sha256": "823baa60cdee1c15491c51473c37d18e15e1f8bd0043ee7c4b342a9b602951e1"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/vad/vad_masker.h": {
+      "bytes": 5108,
+      "sha256": "a23a9ee3c7e094da7bb978dccd5463f3cd4a2bcce4b228f8aced8418cee9693b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/vad/silero_vad.h": {
+      "bytes": 8684,
+      "sha256": "7a946f77669019abe25cc326b9672639a05c8978a36ef9ca5fccd0563482490b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/vad/vad_endpointer.h": {
+      "bytes": 3345,
+      "sha256": "9f2d2cc4fa064dcafc80edc2a20f15658302ddebf8a39a08290ec974e42d1b50"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/pnc/wordpiece.h": {
+      "bytes": 1426,
+      "sha256": "bc0ab14a0c7221a1374e46ab395306d8e7354ecc4335948cc5167bf0ea83ca23"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/pnc/pnc_runner.h": {
+      "bytes": 822,
+      "sha256": "fa9bc0e4badf94255ba7c4a31c915c4d4249f50e4a2cac7cf5a3be5901487721"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/pnc/pnc_model.h": {
+      "bytes": 1956,
+      "sha256": "68f628134c97449540266091eaf7575cc1a9e07db5752f977727b0ff640d2922"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/common/text_normalization/fst_normalizer.h": {
+      "bytes": 919,
+      "sha256": "d7d11deb8c760c3a2008da4b9197a2a05ea64fe8cb95b5fa23d7c17348b29f90"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/common/text_normalization/compat/sparrowhawk_compat.h": {
+      "bytes": 1485,
+      "sha256": "ff7c7b1ea5a234e753321de30d2b8474d3afec9c155d4051cf738c58d3c64e2e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/common/text_normalization/compat/thrax/grm-manager.h": {
+      "bytes": 4444,
+      "sha256": "f803b0c99b22917a22fd7e9dc3c27c34681e3a5587f112d3252d96521dde0a6c"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/common/text_normalization/compat/thrax/thrax.h": {
+      "bytes": 329,
+      "sha256": "002d0a3a0d0e90d9c658c995cbc453a898faea1c15486504e0f25d2b6cb1b3fb"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/s2s/eartts/config.h": {
+      "bytes": 1708,
+      "sha256": "737dcbd4f61e783b848c48c257988e4a16b8e6df24ab029c467744381ff4adaf"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/s2s/eartts/sampler.h": {
+      "bytes": 5014,
+      "sha256": "6c3b7692de615455ebf91daaaf03f74beff577ab395f431feee2e939b68f74ea"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/s2s/eartts/backbone.h": {
+      "bytes": 4730,
+      "sha256": "e7c876b64fc3f86c61ebb25a599d594f85b66ca4f53f410eb6e9722d9043aa8b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/s2s/eartts/embedder.h": {
+      "bytes": 2741,
+      "sha256": "ec83fa213b9011a9c9f6df609386e24b88118b39b5439d79729e305206be891e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/s2s/eartts/prompt.h": {
+      "bytes": 1775,
+      "sha256": "a9125d1912651c59ab6852b9347c2f163495a2e61c74b5945dfd0c6f7bead1d9"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/s2s/eartts/graph_utils.h": {
+      "bytes": 11222,
+      "sha256": "6600e81d260d74edf9476cb6f8a0ded2315640e5c15a623b5fdab0d6bc19a942"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/s2s/llm/backbone.h": {
+      "bytes": 3582,
+      "sha256": "59340a0bdf8b4e2be6e5a4cd565f9c364ff1209944bc9ae32b89148c0e51b874"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/s2s/llm/heads.h": {
+      "bytes": 2363,
+      "sha256": "4bbc8228df300eca781979a4b7beedb78d446ff3e68e5fd99bb2054d6657fad6"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/s2s/llm/llama_common.h": {
+      "bytes": 932,
+      "sha256": "0e0564f29adcffe5ba6b53faf1c1a472bdf4d303fc85b2df3a8781859c6d6a6f"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/s2s/codec/config.h": {
+      "bytes": 1225,
+      "sha256": "afa8b9bacd49b1e11997eb84f1b76b797f4bfc048b69aa5b4b94f015d843c8ca"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/s2s/codec/decoder.h": {
+      "bytes": 1562,
+      "sha256": "5561520ca5bfa4e0f8621f7ed5c71d30f1c672b5d8f138c66da1abacc745721e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/s2s/codec/codec.h": {
+      "bytes": 2654,
+      "sha256": "caf101d6a743368e964ee5e626ecec931a94c6c98e7978cef2675d91b20957cf"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/s2s/codec/encoder.h": {
+      "bytes": 994,
+      "sha256": "435a26919c35cba0d114e83e32be698e132a9664f12e679e9aa30281b0695db4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/s2s/codec/graph_utils.h": {
+      "bytes": 9223,
+      "sha256": "c76591e219ae2e19c5984ab8f53afa3bdcba1cac9ce1bcfa88399946dd065473"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/s2s/perception/perception.h": {
+      "bytes": 2034,
+      "sha256": "fbb9463c0afdb8acd14f55b9f88decb79ff9df1984a37c41070ebbe5af92153a"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/runtime/ggml/runtime.h": {
+      "bytes": 19230,
+      "sha256": "8b16754a48bc69a9d0f9d2bc29913e9cf4a7e9b5321bd118780093010c5c0f25"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/runtime/ggml/nn.h": {
+      "bytes": 7521,
+      "sha256": "837ad68a88d15f9b53cb9ae5f3b2e2bed65824bb78337cdf02d03b500fd09fd9"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-vulkan.h": {
+      "bytes": 952,
+      "sha256": "7eae5dad2cc7bb4d3eca828539f441816d5fd59fdc7b224d49aa229fc7b7248c"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-virtgpu.h": {
+      "bytes": 194,
+      "sha256": "ed231e7db3f0f58b84073f5ee67f9ec9d63046d1a7ed091c36a6cfe9f685a463"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-zdnn.h": {
+      "bytes": 292,
+      "sha256": "ee1d79c95ade45ba195a6b71f59a05c18617de4a596d2b2b03ecf38975a9a448"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-opencl.h": {
+      "bytes": 581,
+      "sha256": "8e443e1aa9c8bc6e0cf116c4cc3f42f4858938fa15e65b06bc07b26686e1233a"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-hexagon.h": {
+      "bytes": 351,
+      "sha256": "b2c12bac390f14707b16bdd27c8c75ce4f075ed509c729ee28fd4f03b17e7375"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-cann.h": {
+      "bytes": 4553,
+      "sha256": "2cdb134f27fe5c4ec19d52f1eb58f5355aa42b8f54bf385f0e487501c5df7362"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-cpp.h": {
+      "bytes": 1652,
+      "sha256": "bc15ba002c68685df23faae42df0d2b3d58032011f88b649021ab92485862c72"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-sycl.h": {
+      "bytes": 2492,
+      "sha256": "728e4f15d0853d63feb95dd596821c750181c26995fff57fe035e964e70fd85f"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-blas.h": {
+      "bytes": 586,
+      "sha256": "e76cb8594dc9866d99e7d63191b9fff6ab8b50244b4a28ce3af0f962964a6b5b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-backend.h": {
+      "bytes": 25374,
+      "sha256": "46d84cb998105f871240864fd0f55446939a2fe86c5c281afa63a010fb1f65a2"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-et.h": {
+      "bytes": 887,
+      "sha256": "33118c0642b8059a99ea930fd4e4a045e78ccb41760b173ede221f1297c35977"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-openvino.h": {
+      "bytes": 1034,
+      "sha256": "c2e3f301e28ad815b4285888aad6130808a77e6acb4e8b558de63a648cf9743e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-cuda.h": {
+      "bytes": 2929,
+      "sha256": "9bb92a7ba114dd3d7d00985372e98db5f1535860686d4871444d53214dd935d0"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-alloc.h": {
+      "bytes": 3753,
+      "sha256": "94e4cd069b9313b2ceb35dacec901981e0bb478d8bb31035b7126be091998c23"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-zendnn.h": {
+      "bytes": 498,
+      "sha256": "2cb034b842438281616ce647232d922fb224450323f0d422d2af567c334aa8ff"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-opt.h": {
+      "bytes": 14040,
+      "sha256": "3586de1bc8a934b5c72339e2b6937b0641e8f149b512231e666f67de0736eea2"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-metal.h": {
+      "bytes": 2141,
+      "sha256": "322f36cd30f3e9e7aad7b5b9bc63078012fd0b7706ac4e24f5721b604f3d8980"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-cpu.h": {
+      "bytes": 7753,
+      "sha256": "316279e004cdeb8e6ef78599acb602bf79a8abdf897fed9fd1914808c1518c6e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/gguf.h": {
+      "bytes": 11355,
+      "sha256": "e56714aab702e5ce62ee587a409643c08f7e93e8fbb77f48ef7cc85075f96fa4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-webgpu.h": {
+      "bytes": 328,
+      "sha256": "a91d855313a9e85e75ba597ff869a267247dea936a2c0faef03aeb7f1ea6e79c"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml-rpc.h": {
+      "bytes": 1184,
+      "sha256": "196d2a7434f0abdb01f13c5360e0b118b9f2d66c6452e3a7a844fbecc890205c"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include/ggml.h": {
+      "bytes": 122981,
+      "sha256": "c74dda8a6f9550e79a5847188d86715a3d6a2b92a4d09766d02bd5586faca8f3"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-sdk/include/nemo_speech/asr.h": {
+      "bytes": 12718,
+      "sha256": "12f3e017391ae19daabe59d2d50541f0aabb010228d075426b4a9834337422fa"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-sdk/include/nemo_speech/diar.h": {
+      "bytes": 7606,
+      "sha256": "4839f70ccab30af3ed9949751792a547f3a8a4129848f64c8cd69889bd433afd"
+    }
+  },
+  "policy": {
+    "bytes": 569,
+    "sha256": "094aa58bb5d8ba91393864f5b066bbc241844b6f556eb347dc5aba236369ad2a"
+  },
+  "commands": [
+    {
+      "name": "sandbox-controls",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/portable-pool-selftest-v1/model-free.sb",
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-c",
+        "import pathlib, socket, sys\ndef denied(operation):\n    try:\n        operation()\n    except PermissionError:\n        return\n    raise RuntimeError(\"sandbox operation unexpectedly permitted\")\nfor name in sys.argv[1:]:\n    denied(lambda name=name: pathlib.Path(name).read_bytes())\ndenied(lambda: socket.create_connection((\"127.0.0.1\", 9), timeout=1))\n",
+        "/Users/victor/.cache/gen2-nemotron3-n0/portable-pool-selftest-v1/control.nemo",
+        "/Users/victor/.cache/gen2-nemotron3-n0/portable-pool-selftest-v1/control.gguf",
+        "/Users/victor/.cache/gen2-nemotron3-n0/portable-pool-selftest-v1/control.safetensors",
+        "/Users/victor/.cache/gen2-nemotron3-n0/portable-pool-selftest-v1/control.onnx",
+        "/Users/victor/.cache/gen2-nemotron3-n0/portable-pool-selftest-v1/control.npy",
+        "/Users/victor/.cache/gen2-nemotron3-n0/portable-pool-selftest-v1/control.f32"
+      ],
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor",
+        "LC_ALL": "C"
+      },
+      "returncode": 0
+    },
+    {
+      "name": "pool-selftest",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/portable-pool-selftest-v1/model-free.sb",
+        "/usr/bin/env",
+        "DYLD_PRINT_LIBRARIES=1",
+        "/Users/victor/.cache/gen2-nemotron3-n0/portable-pool-probe-link-v3/work/bin/native-pool-probe",
+        "--self-test"
+      ],
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor",
+        "LC_ALL": "C"
+      },
+      "returncode": 0
+    }
+  ],
+  "result": {
+    "model_constructed": false,
+    "frontend_executed": false,
+    "backend_lifetimes": 20,
+    "persistent_pool_lifetimes": 10,
+    "threads": 4
+  },
+  "loaded_images": {
+    "executable": "/Users/victor/.cache/gen2-nemotron3-n0/portable-pool-probe-link-v3/work/bin/native-pool-probe",
+    "executable_sha256": "0496705c6aa9561f8b1942444556249b18ea666ab2423abe4b42e5d2ff825e69",
+    "unique_reported_images": 683,
+    "private_libraries": {
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_base.2608.0.0.dylib": {
+        "sha256": "17211560eaed616ba06fc52b3f54dc066f691652e130fdd9ceba5c7d544a745f",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_base.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_base_cpu_detect.2608.0.0.dylib": {
+        "sha256": "c1567749e348c2964c9fa61ce068c53b9dc8a3eb5d66b5ffdb0564cea91a08a7",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_base_cpu_detect.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_city.2608.0.0.dylib": {
+        "sha256": "a795ef514984e1327fdd3f6e9501a4e19e7fc7fe7072891dbf768c080d0dae9c",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_city.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_civil_time.2608.0.0.dylib": {
+        "sha256": "b9b224e4c1605f6d7f46ccf47aae827724e9291612d837e78427a63ea4289196",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_civil_time.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_cord.2608.0.0.dylib": {
+        "sha256": "ca277b31e166449cfdcee4d3a2d2eb6a7e35ac298aa460aab90fde9c58767897",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_cord.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_cord_internal.2608.0.0.dylib": {
+        "sha256": "b663d7db82ef9d2649e87e5ad55a5e17bc0ebffde86fa5d507360cfddadabe69",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_cord_internal.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_cordz_functions.2608.0.0.dylib": {
+        "sha256": "0eea689aedc868ac558d7934ee25f40cdf5608b1d77895a623047ed23e700ede",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_cordz_functions.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_cordz_handle.2608.0.0.dylib": {
+        "sha256": "94ccc8275d3a6905a69c2beedc6ffd234d906298083f8528272ffe65abd94a69",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_cordz_handle.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_cordz_info.2608.0.0.dylib": {
+        "sha256": "916c53720969ce254d6a3edbe82b15b2975614ba04bc1ea39a1d2283d1573d07",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_cordz_info.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_crc32c.2608.0.0.dylib": {
+        "sha256": "adc49d10460f991f5463b97e4ef6f480e8ef56e6b069cbfdc8e09f1437e4e363",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_crc32c.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_crc_cord_state.2608.0.0.dylib": {
+        "sha256": "f8fa9c20bc89e78566b9c3603ca39824712b45f62663d2a2aa9e5a1098352041",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_crc_cord_state.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_crc_internal.2608.0.0.dylib": {
+        "sha256": "7b31ca0a5ce3d1d6422a3dfa93a553b5fd4a78c638de61fe95e76e31fee3307e",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_crc_internal.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_debugging_internal.2608.0.0.dylib": {
+        "sha256": "998012ff5d28eb28c0512e6ac43416b2c3d95a49e1cf86a1ea2d9d7a25b77121",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_debugging_internal.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_decode_rust_punycode.2608.0.0.dylib": {
+        "sha256": "244b8f4e9279957a40bd15b4fecf2992510a19ae89e015ef10ef277d95cc4bbd",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_decode_rust_punycode.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_demangle_internal.2608.0.0.dylib": {
+        "sha256": "d936d6acc8a53d0732f08b3e52272cefcf41da0b066080fdd675054639af5879",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_demangle_internal.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_demangle_rust.2608.0.0.dylib": {
+        "sha256": "7a36f168311985f35ab306a49b07e3cf88ad2c4cae290c225fe853d64e83e514",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_demangle_rust.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_die_if_null.2608.0.0.dylib": {
+        "sha256": "cb26b0179d83c90df793fda37a5b2699e4aa4bd17633f47edf1f46505625e171",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_die_if_null.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_examine_stack.2608.0.0.dylib": {
+        "sha256": "f5a43318da223ad3ba7eea5cff037499c79c5ef8c22436b432af1555660c847c",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_examine_stack.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_exponential_biased.2608.0.0.dylib": {
+        "sha256": "20b88f5cf072d55e6f42005abc22e67ea27669c86b155609a6600656f543cea0",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_exponential_biased.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_flags_commandlineflag.2608.0.0.dylib": {
+        "sha256": "7d57cfbe575da7c9406fb0234aae26be011b4e5583382b3b43e64a7b9d8f7e8f",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_flags_commandlineflag.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_flags_commandlineflag_internal.2608.0.0.dylib": {
+        "sha256": "5f5cbb4bd3802c2d19e3cfaf8d1527e9efb263d8f27be8abbbe23cca0a15f4dd",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_flags_commandlineflag_internal.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_flags_config.2608.0.0.dylib": {
+        "sha256": "b90bebba3d0013f67929d8f8f1a588d2da07887f228785e95fa0449514a99e0c",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_flags_config.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_flags_internal.2608.0.0.dylib": {
+        "sha256": "b44f2c3711e491f55df4bb6f1ed41153553052cc9b2a81da060100c49205d3cb",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_flags_internal.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_flags_marshalling.2608.0.0.dylib": {
+        "sha256": "80bc0ffd5d9e3d5594a7045bcb7a5b04d0b36877993787430e578ed9a714e11f",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_flags_marshalling.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_flags_parse.2608.0.0.dylib": {
+        "sha256": "72f162cc960ccb7fec9ab1a3174538177a64be7fab1927617a005897ed9cac70",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_flags_parse.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_flags_private_handle_accessor.2608.0.0.dylib": {
+        "sha256": "018f87b9683a5eb1b1d7350638dfefc81ec493c5e0293e8e12fce78f10525d1d",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_flags_private_handle_accessor.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_flags_program_name.2608.0.0.dylib": {
+        "sha256": "1aaa1959b6d742bb4ecd5ef44acf6c6199a8939cf25e96fe1a58b8b163a6aad3",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_flags_program_name.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_flags_reflection.2608.0.0.dylib": {
+        "sha256": "277a71c0916b99ef4eb055c51375b4590645ad54ca7fa1990e64363edc73b69a",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_flags_reflection.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_flags_usage.2608.0.0.dylib": {
+        "sha256": "ee36aa79701385a5c9d03e54d17fc5f3c3ab3a21d0bc23a15f158f6f59d6349d",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_flags_usage.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_flags_usage_internal.2608.0.0.dylib": {
+        "sha256": "b940be09c98d31ef153bea8cf2ac4b4e52e04596808569fd612c5b7d532c17da",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_flags_usage_internal.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_graphcycles_internal.2608.0.0.dylib": {
+        "sha256": "67ecd60a446d405697ad9df8725b5785ed4e60a679aa1e6e586b1558a8117257",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_graphcycles_internal.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_hardening.2608.0.0.dylib": {
+        "sha256": "70a691940da4b8a8d1b5bb760fadb2ecee5a8e2826f791e96f041b1c2af83686",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_hardening.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_hash.2608.0.0.dylib": {
+        "sha256": "ace9a9919c97c5548871d9070cdda85e64d5dff9f2ec2335442b3d07a12b6434",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_hash.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_hashtablez_sampler.2608.0.0.dylib": {
+        "sha256": "34fdddb0ea686f992667111d4a8eabd66ea051909651fb6c04562106b7bd692a",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_hashtablez_sampler.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_int128.2608.0.0.dylib": {
+        "sha256": "80f398688853dd50278e6342b0cd912e55f943f5883a51b58dbae488fb6b572e",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_int128.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_kernel_timeout_internal.2608.0.0.dylib": {
+        "sha256": "3e75ad98e4263e1729dabec6ad6fd655eef1bf6965551c575b29ac7266c2ced3",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_kernel_timeout_internal.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_leak_check.2608.0.0.dylib": {
+        "sha256": "0db7820391a2f3a0c89c1415721aeda123548ff0fdb4b3d55e4ed619767cccde",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_leak_check.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_log_entry.2608.0.0.dylib": {
+        "sha256": "9be7e37f9179ee6b1368720d365dbbdca89e86bfeabad93208b52b27f4969bad",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_log_entry.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_log_globals.2608.0.0.dylib": {
+        "sha256": "97fa39924de06331f8af80ebbd993f960fdfa1fd1e72bd3f441858df2e4f5a14",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_log_globals.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_log_initialize.2608.0.0.dylib": {
+        "sha256": "82d530f809bd067cbdc364c98f16ef56c4e7cd029de5d15b4d87269dad3b1e44",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_log_initialize.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_log_internal_check_op.2608.0.0.dylib": {
+        "sha256": "501acd676914b4a1a3d56fc3c45020d61fb19f8799bfb08e175ac44c8676f375",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_log_internal_check_op.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_log_internal_conditions.2608.0.0.dylib": {
+        "sha256": "f9e8a16c6a1e147ea7b28590f3c707d75bd83ccfbb28eeaf679f203d3f48eddf",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_log_internal_conditions.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_log_internal_fnmatch.2608.0.0.dylib": {
+        "sha256": "4752506e211ff5b2d22b63407a2b5f91ef1e18dff1affad2a93a25eacaa36084",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_log_internal_fnmatch.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_log_internal_format.2608.0.0.dylib": {
+        "sha256": "4825216d98b9ae0d820747704f078ca31b73a79a07953518e95011a5ed72146d",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_log_internal_format.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_log_internal_globals.2608.0.0.dylib": {
+        "sha256": "2794ec9e4f77a3d46fbc1e546bc09b926a433fe6173a71f37f926d9b9dfcbdb2",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_log_internal_globals.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_log_internal_log_sink_set.2608.0.0.dylib": {
+        "sha256": "2e84b405caf1a8dd9e1689d56e507bf21119dec3f291c23be89a7af03f760e20",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_log_internal_log_sink_set.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_log_internal_message.2608.0.0.dylib": {
+        "sha256": "1486907fe078ff96ce1fbf3037a2ad54f05a12655323219dca99dd43a3d96984",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_log_internal_message.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_log_internal_nullguard.2608.0.0.dylib": {
+        "sha256": "2a1d6044cdb29e574302ecec21ecfc72654eca6e553cadedbee2094ea67eff2f",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_log_internal_nullguard.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_log_internal_proto.2608.0.0.dylib": {
+        "sha256": "47dc400015696ac52bffb81d898cdaac622632b5a607189e3ef49637ce6403bf",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_log_internal_proto.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_log_internal_structured_proto.2608.0.0.dylib": {
+        "sha256": "dc5f3aaa4d39dc1fdf296d26a543d5e16c693670d314ab5e828770841bcc68e5",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_log_internal_structured_proto.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_log_severity.2608.0.0.dylib": {
+        "sha256": "870915a4f786097dff00d9cb6d95fe2a017847d7007c3c1b85c74ea343034ae6",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_log_severity.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_log_sink.2608.0.0.dylib": {
+        "sha256": "7380bfbb1030a9c22f2e8e576869d914865210c41be5a5dcfe66cbb4c61b5b23",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_log_sink.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_malloc_internal.2608.0.0.dylib": {
+        "sha256": "1e65d5c3766b0de2df4300337b6aa47a865d7324e9459db6c148d1c641ee0084",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_malloc_internal.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_random_distributions.2608.0.0.dylib": {
+        "sha256": "58889be6c232e33736e646dcaaa0cbbe3f30bc8b73b35805286f9bd6d86cec97",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_random_distributions.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_random_internal_entropy_pool.2608.0.0.dylib": {
+        "sha256": "8b8c5b3feed88e1dcf06a9149ad7add38c79a6af3c7e149a7850f4787eb58de3",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_random_internal_entropy_pool.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_random_internal_platform.2608.0.0.dylib": {
+        "sha256": "4dd577b7da9b48f0749d2f64ced9c0837474645353150f7b38aecb7f32d51447",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_random_internal_platform.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_random_internal_randen.2608.0.0.dylib": {
+        "sha256": "4b6a5267f1829b8b6890cb3ece84dc8b3a17c88e403ed0920191131db89c1cab",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_random_internal_randen.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_random_internal_randen_hwaes.2608.0.0.dylib": {
+        "sha256": "325aa6fa8cf21628ac11584e74b1cf4ab5b9b182acc308f2fface64869cea508",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_random_internal_randen_hwaes.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_random_internal_randen_hwaes_impl.2608.0.0.dylib": {
+        "sha256": "583d0daa8e3de33a3c15358a1a54ee81c88517ba8059c817ed1e2108b1325490",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_random_internal_randen_hwaes_impl.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_random_internal_randen_slow.2608.0.0.dylib": {
+        "sha256": "3be15a125ffcbf02d9c537cd460c397d94a2b723bc82574a3a11f1e5cd8352a3",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_random_internal_randen_slow.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_random_internal_seed_material.2608.0.0.dylib": {
+        "sha256": "9b386db92b5aa7c2db9f9576eb0d50c5c425583d6eed4f524de87999bdda070b",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_random_internal_seed_material.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_random_seed_gen_exception.2608.0.0.dylib": {
+        "sha256": "4cecc55e94c7303c6c961dd795aa6ba29b9748af23d5e2cfed6ad1f9ce11b8bd",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_random_seed_gen_exception.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_random_seed_sequences.2608.0.0.dylib": {
+        "sha256": "6f389cf71777376ffb914587a756678976b7d61e516c88da70ad9aae6f6ae9a7",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_random_seed_sequences.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_raw_hash_set.2608.0.0.dylib": {
+        "sha256": "749537572e3ee20ab6a36c0e23c11e55e1148ae065e931db09ca4979ea7d52d3",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_raw_hash_set.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_raw_logging_internal.2608.0.0.dylib": {
+        "sha256": "866bb5a417168fa33f5a3618bffb1d5795625d7376f07490602eef760538a618",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_raw_logging_internal.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_source_location.2608.0.0.dylib": {
+        "sha256": "8b42f8912d457fad0561d8c38b9bc978cfb1bfed167048855a8f675bbc042ead",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_source_location.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_spinlock_wait.2608.0.0.dylib": {
+        "sha256": "0275a85366293d7fb9c037d20f33066f6d6a7ec8b1e6add13e630f36b891c16a",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_spinlock_wait.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_stacktrace.2608.0.0.dylib": {
+        "sha256": "cbacdfca5c6e5b185aae352be11ae18b287b1f7911492b427ce715e4f6d2f562",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_stacktrace.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_status.2608.0.0.dylib": {
+        "sha256": "6aa97256a7393cc4d587ddbc1a2c07b8b0b31a2c2cb103c868e17565ef882bb0",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_status.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_status_builder.2608.0.0.dylib": {
+        "sha256": "0b3e7c4ccf837477574aa7414c6ac083b0d323421ad8e5eccb8e1b60ff398ee3",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_status_builder.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_statusor.2608.0.0.dylib": {
+        "sha256": "ded7ab788bae20f60156fd48b1753210dfe039bc4fad86568c563787ab49f5b8",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_statusor.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_str_format_internal.2608.0.0.dylib": {
+        "sha256": "0ea7714b1b4a1e2853d7ac2211a91adfb599f4d75f6d1de70b4b888deb20f9a7",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_str_format_internal.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_strerror.2608.0.0.dylib": {
+        "sha256": "b2745fcc36f90159aec6dd68c672848c73f3ace6d64a9d7fb2a53ce84ff25168",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_strerror.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_strings.2608.0.0.dylib": {
+        "sha256": "37a0b049f6fb17454febc191019ef39f3de9692894f2060cb2e17f53da6726a8",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_strings.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_strings_internal.2608.0.0.dylib": {
+        "sha256": "934a1dc09b02384fc4f351f41af8c3fa2e4b98ef2a354a879c9666473104b245",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_strings_internal.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_symbolize.2608.0.0.dylib": {
+        "sha256": "c078f5d662d935d36bcac2b70169806c0722d49666e03b116154d871e8441d7f",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_symbolize.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_synchronization.2608.0.0.dylib": {
+        "sha256": "98737d2effcd48b27a3c3709664faf9d9583c0ed88e20da64b033ff5f1854a38",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_synchronization.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_throw_delegate.2608.0.0.dylib": {
+        "sha256": "7974e5da30e53288baa4154a3baee3d09b4365259816b1d944b57536451f0459",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_throw_delegate.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_time.2608.0.0.dylib": {
+        "sha256": "d871e8f9cb6da12fcf6c5ad597d149c963a39b3b827a1c075f6f705fd49e87b1",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_time.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_time_zone.2608.0.0.dylib": {
+        "sha256": "3b7de44100e25d38f7a1e03f0274e5ae576a2cbe4053e3658144d254cc226512",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_time_zone.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_tracing_internal.2608.0.0.dylib": {
+        "sha256": "98ffa8d287f8c564e47a3a72e5d3df268721ba2c00bb612194969410d8450a78",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_tracing_internal.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_utf8_for_code_point.2608.0.0.dylib": {
+        "sha256": "11cd000783795ef4b576f5a28ad901a43308fcbe6d44bfbb06ea7746c30c58f6",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_utf8_for_code_point.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_vlog_config_internal.2608.0.0.dylib": {
+        "sha256": "e970ff010ad1216ce91279b77fdd421a5d185d558f7b7ce75b6439096599ba55",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_absl_vlog_config_internal.2608.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_ggml-base.0.25.1.dylib": {
+        "sha256": "b1098b90afdff48e0cc5e741693435f6cacc51d3c26f90affd8286680f44ad95",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_ggml-base.0.25.1.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_ggml-blas.0.25.1.dylib": {
+        "sha256": "e2645491e9593d519f53fe6ec96afff4d2a7982ac2cc6ef7878e0bdce23d3548",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_ggml-blas.0.25.1.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_ggml-cpu.0.25.1.dylib": {
+        "sha256": "dc6c00f5c33b886a3702368b8da38383a4fbd0a029bb4b55a136804d028cd322",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_ggml-cpu.0.25.1.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_ggml.0.25.1.dylib": {
+        "sha256": "333f918c67a26e77fe092870357136dbfa3b68c950bd232784666b6c4386c112",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_ggml.0.25.1.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_nemo_speech_asr.dylib": {
+        "sha256": "568a367cda15be607c523686541eec4596bcc1a65e8130a99c323d96319865f6",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_nemo_speech_asr.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_nemo_speech_asr_c.1.dylib": {
+        "sha256": "0a45f455798985b15fda19f794fb4dcee1155dcc66bee2c288827c30017cd6aa",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_nemo_speech_asr_c.1.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_protobuf-lite.36.2.0.dylib": {
+        "sha256": "3047b2dce1dcbc8c40caeeff77fd03466c0c46977b97a06864a0cc9da7baa0b5",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_protobuf-lite.36.2.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_sentencepiece.0.0.0.dylib": {
+        "sha256": "906ac433af5f760cf3c1924b65c211a837c3082bbac7b11590363e7221a84bcf",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_sentencepiece.0.0.0.dylib"
+      },
+      "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_utf8_validity.36.2.0.dylib": {
+        "sha256": "8359b292efcd43a11211da9e7c1bf2a31b5927a3619463951c132816b03be154",
+        "reported_path": "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2/restored-portable-cpu-runtime/lib/libgen2_nemo_utf8_validity.36.2.0.dylib"
+      }
+    },
+    "private_library_count": 92,
+    "entire_runtime_required": true
+  },
+  "passed": true
+}
