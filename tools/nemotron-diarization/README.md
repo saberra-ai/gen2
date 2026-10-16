@@ -50,8 +50,12 @@ tagged version before model admission. It then checks one native/public
 60-second pair with all 6,000 rows, a fixed PCM digest and seven exact lifecycle
 tests. The [saved-source preflight](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-valid-mel-source-preflight/qualification.json)
 passes against the saved macOS CPU build (3,425 files, 98 compiler units);
-all 157 model-free tool tests pass. Fresh Linux/Windows builds and runtime
-qualification are pending. The separate workflow preserves failed evidence;
+all 157 model-free tool tests passed at that source. The
+[actual fresh Linux SDK receipt](../../benches/results/nemotron-diarization/linux-x86_64/2026-10-16-valid-mel-native/qualification.json)
+now passes all 40 commands, the state/version checks, seven lifecycle tests and
+exact 6,000-row/26-turn native/public parity. Its 19-patch compiler audit binds
+3,425 files and 97 compiler units; the SDK archive's hashes, modes and aliases
+also verify after delivery. Windows qualification remains pending. The separate workflow preserves failed evidence;
 this stage does not establish offline packages, coexistence or release support.
 
 The Linux constructor now requires the completed tagged SDK receipt and emits
@@ -67,10 +71,15 @@ v2 app-local or central-VC packages. Both formats retain exact profile/patch/
 protocol/compiler provenance and require supplemental source notices. Existing
 private PE, CRT-byte and import-closure checks remain. Windows offline and chat
 qualifiers now use tagged helpers, complete rows and the fixed PCM digest.
-All 163 model-free tool tests pass; current-profile Windows construction,
+All 163 model-free tool tests passed at that source; current-profile Windows construction,
 offline execution and chat coexistence still need actual qualification. The
 historical central-VC workflow remains pinned to its historical SDK and is not
 a candidate qualification recipe.
+
+`restore_valid_mel_linux_sdk.py` restores a receipt-bound Linux SDK tar with exact
+modes and aliases before packaging, including executable helpers. It refuses an
+existing destination, including a dangling symlink. All 166 model-free tool
+tests pass. This restoration is metadata/byte verification and runs no SDK code.
 
 # Nemotron 3 — N0 qualification
 

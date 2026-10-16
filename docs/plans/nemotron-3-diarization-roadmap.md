@@ -30,8 +30,14 @@ The [fresh Linux/Windows SDK protocol](../../tools/nemotron-diarization/valid-me
 is now frozen for tagged CPU construction and same-host native/public lifecycle.
 Its [model-free source preflight](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-valid-mel-source-preflight/qualification.json)
 passes independent 19-patch replay, 3,425 materialized files and all 98 saved CPU
-compiler inputs. All 157 model-free tool tests pass. Actual platform construction,
-runtime, packages and coexistence still require new candidate evidence.
+compiler inputs. All 157 model-free tool tests passed at that source. The
+[actual Linux candidate SDK](../../benches/results/nemotron-diarization/linux-x86_64/2026-10-16-valid-mel-native/qualification.json)
+now passes 40 commands, exact 6,000-row/26-turn parity and seven lifecycle gates.
+Its compiler audit binds 3,425 files and all 97 actual compiler units; delivery
+also preserves SDK bytes, modes and aliases. Windows SDK, both platforms'
+packages, offline execution and coexistence still require new candidate evidence.
+The later source-only package/qualifier migrations and Linux SDK restorer pass
+166 model-free tests; that is not actual package or release qualification.
 
 Prepared: 2026-10-14.
 Updated: 2026-10-16.
