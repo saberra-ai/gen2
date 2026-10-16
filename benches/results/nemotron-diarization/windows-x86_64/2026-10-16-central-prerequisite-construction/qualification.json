@@ -1,0 +1,90 @@
+{
+  "schema_version": 1,
+  "source_commit": "39d477fb2a21c328fb3b3c7232ad1b9b313c5149",
+  "local_byte_construction_and_restore_passed": true,
+  "runtime_qualified": false,
+  "release_qualified": false,
+  "redistribution_qualified": false,
+  "microsoft_installer_and_crt_payload_excluded": true,
+  "central_runtime_installed_or_executed": false,
+  "required_vc_runtime": {
+    "schema_version": 1,
+    "purpose": "Exact publisher-hosted prerequisite for the five-DLL central Windows package. Acquisition metadata is not installation or runtime qualification.",
+    "product": "Microsoft Visual C++ v14 Redistributable",
+    "version": "14.51.36247.0",
+    "target_architecture": "AMD64",
+    "acquisition": "User or administrator downloads directly from Microsoft; Gen2 runtime archive excludes installer and CRT DLL bytes.",
+    "installer": {
+      "name": "VC_redist.x64.exe",
+      "url": "https://download.visualstudio.microsoft.com/download/pr/ebdab8e5-1d7b-4d9f-a11b-cbb1720c3b12/843068991DAAA1F73AD9F6239BCE4D0F6A07A51F18C37EA2A867E9BECA71295C/VC_redist.x64.exe",
+      "size": 18731856,
+      "sha256": "843068991daaa1f73ad9f6239bce4d0f6a07a51f18c37ea2a867e9beca71295c",
+      "manifest_revision": "7d34dbe95888e81befcf61c174a6688fb574be9c"
+    },
+    "terms": {
+      "bundle_selected_url": "https://aka.ms/VCRedistLicense",
+      "observed_page_url": "https://visualstudio.microsoft.com/license-terms/vs2026-ga-visualcpp-v14-redist-runtime/",
+      "observed_docx_url": "https://visualstudio.microsoft.com/wp-content/uploads/2025/10/Visual-C-V14-License-Redistributable_and_Runtime_ENU.docx",
+      "observed_docx_bytes": 39553,
+      "observed_docx_sha256": "08651651a7602fc7c0e2763de0fde1ff9f868df2780597cd1775ee9d6441c783",
+      "observed_utc_date": "2026-10-16",
+      "scope": "Observed bundle-selected current terms provenance only; no assent, historical/future applicability or distribution entitlement inferred."
+    },
+    "qualification": {
+      "installer_signature_before_execution": "Require actual Windows valid Microsoft signature observation, exact size and SHA256.",
+      "accepted_setup_exit": 0,
+      "restart_required_exit": 3010,
+      "restart_policy": "3010 remains unqualified until an actual required restart and resulting state are verified; container recreation does not prove a Windows restart.",
+      "runtime_policy": "Fresh offline process, no app-local CRT copies, exact installed AMD64 System32 DLL identities and actual loaded paths must be qualified separately."
+    }
+  },
+  "packaging_host": {
+    "platform": "macOS-26.3-arm64-arm-64bit-Mach-O",
+    "python": "3.14.7"
+  },
+  "native_source_commit": "24ad9271ef2b46c86a554b61da5395b9bf42404a",
+  "native_receipt_sha256": "18fcacac2b79a31a9ff1791ae62c09defb43a70bbf2c9cf173bdbc3991af26d3",
+  "archive": {
+    "schema_version": 1,
+    "release_qualified": false,
+    "archive": "development-windows-runtime.zip",
+    "scope": "Exact portable file bytes/directory names; no Windows ACL or runtime qualification.",
+    "archive_bytes": 1908634,
+    "archive_sha256": "81d32cba69720ef13929bff7501f09d3767df3aa2be94ee56a59ef5f62b26ff1"
+  },
+  "archive_entries": 39,
+  "unchanged_qualified_dlls": 5,
+  "unchanged_installed_upstream_notices": 8,
+  "supplemental_notice_files": {
+    "darts-clone-LICENSE": {
+      "bytes": 1481,
+      "sha256": "155f59997298ee336602c49f9c1110f268ac394ca2197eb02647a3555935ad52",
+      "source_member": "sentencepiece-0.2.1/third_party/darts_clone/LICENSE",
+      "source_full_bytes": 1481,
+      "source_full_sha256": "155f59997298ee336602c49f9c1110f268ac394ca2197eb02647a3555935ad52",
+      "selection": "full source file"
+    },
+    "esaxx-LICENSE": {
+      "bytes": 1112,
+      "sha256": "7c28553d1d3312d65fe309f76a22ebaf33a3d76c8c1e3b98a88ee4654ecb53db",
+      "source_member": "sentencepiece-0.2.1/third_party/esaxx/LICENSE",
+      "source_full_bytes": 1112,
+      "source_full_sha256": "7c28553d1d3312d65fe309f76a22ebaf33a3d76c8c1e3b98a88ee4654ecb53db",
+      "selection": "full source file"
+    },
+    "sais-lite-NOTICE.txt": {
+      "bytes": 1174,
+      "sha256": "162a72e52ad69921a67676af4fb59911233566dce1637e2e33db27659fcac523",
+      "source_member": "sentencepiece-0.2.1/third_party/esaxx/sais.hxx",
+      "source_full_bytes": 12385,
+      "source_full_sha256": "6c750f6cf098d346c9d1723291a062bc9154657d5be2c3833601c5a33a5b4d1d",
+      "selection": "initial block comment through first */"
+    }
+  },
+  "model_free_tool_tests": 90,
+  "limits": [
+    "Actual macOS construction and three byte-equivalent runtime trees including a fresh Unicode ZIP restoration.",
+    "All five qualified private Windows DLLs and eight original installed upstream notices are unchanged; three supplemental texts and source-selection provenance added.",
+    "No Windows, model, installer or native execution in this receipt; no complete attribution, Microsoft distribution rights, quality or release qualification."
+  ]
+}

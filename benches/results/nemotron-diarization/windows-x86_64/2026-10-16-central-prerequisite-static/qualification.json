@@ -1,0 +1,175 @@
+{
+  "schema_version": 1,
+  "research_metadata_reverified": true,
+  "installer_bytes_and_sha256_reverified": {
+    "name": "VC_redist.x64.exe",
+    "url": "https://download.visualstudio.microsoft.com/download/pr/ebdab8e5-1d7b-4d9f-a11b-cbb1720c3b12/843068991DAAA1F73AD9F6239BCE4D0F6A07A51F18C37EA2A867E9BECA71295C/VC_redist.x64.exe",
+    "size": 18731856,
+    "sha256": "843068991daaa1f73ad9f6239bce4d0f6a07a51f18c37ea2a867e9beca71295c",
+    "manifest_revision": "7d34dbe95888e81befcf61c174a6688fb574be9c"
+  },
+  "fresh_static_payloads_size_sha1_sha256_reverified": 24,
+  "fresh_minimum_cab_members_reverified": 12,
+  "selected_amd64_dll_pe_reports_recomputed": 9,
+  "actual_bundle_selected_terms_url": "https://aka.ms/VCRedistLicense",
+  "terms_docx_bytes_and_sha256_reverified": {
+    "bundle_selected_url": "https://aka.ms/VCRedistLicense",
+    "observed_page_url": "https://visualstudio.microsoft.com/license-terms/vs2026-ga-visualcpp-v14-redist-runtime/",
+    "observed_docx_url": "https://visualstudio.microsoft.com/wp-content/uploads/2025/10/Visual-C-V14-License-Redistributable_and_Runtime_ENU.docx",
+    "observed_docx_bytes": 39553,
+    "observed_docx_sha256": "08651651a7602fc7c0e2763de0fde1ff9f868df2780597cd1775ee9d6441c783",
+    "observed_utc_date": "2026-10-16",
+    "scope": "Observed bundle-selected current terms provenance only; no assent, historical/future applicability or distribution entitlement inferred."
+  },
+  "derived_docx_text_recomputed": true,
+  "opaque_binaries_and_full_terms_excluded_from_git": true,
+  "static_extractor_commands": [
+    {
+      "argv": [
+        "/opt/homebrew/bin/7z",
+        "x",
+        "-y",
+        "-o/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/tmpyb_3n01c/ux",
+        "/Users/victor/.cache/gen2-nemotron3-n0/research/windows-central-prerequisite/VC_redist.x64.exe"
+      ],
+      "returncode": 0,
+      "stdout_sha256": "b765e93f49ce554ffe6b37716542590e5999d981588b17812e359456fdc063e0",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/7z",
+        "x",
+        "-y",
+        "-o/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/tmpyb_3n01c/attached",
+        "/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/tmpyb_3n01c/attached.cab"
+      ],
+      "returncode": 0,
+      "stdout_sha256": "f26a2d52ba613b0551ba250346e3d241e2fb41f0cab4196c3e923565685877f5",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/7z",
+        "x",
+        "-y",
+        "-o/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/tmpyb_3n01c/minimum",
+        "/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/tmpyb_3n01c/attached/a4"
+      ],
+      "returncode": 0,
+      "stdout_sha256": "d10ccf1eb74ca5c08125308bad624953e69b41804cbfdb4235a0e2dd303a845f",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/7z",
+        "l",
+        "-slt",
+        "-tPE",
+        "/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/tmpyb_3n01c/minimum/concrt140.dll_amd64"
+      ],
+      "returncode": 0,
+      "stdout_sha256": "8ffffaa5e4c85d2bb4d28b6ed3b67c593cb752fc025767432a7922b013a442cc"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/7z",
+        "l",
+        "-slt",
+        "-tPE",
+        "/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/tmpyb_3n01c/minimum/msvcp140.dll_amd64"
+      ],
+      "returncode": 0,
+      "stdout_sha256": "64b1afddf1dab2d60b037a4287d864e6e3ff4ba117e2c96124a91625e69e5175"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/7z",
+        "l",
+        "-slt",
+        "-tPE",
+        "/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/tmpyb_3n01c/minimum/msvcp140_1.dll_amd64"
+      ],
+      "returncode": 0,
+      "stdout_sha256": "8693543bf264fc4a5d50409bc8806b2580753be6e507e40e0472904d1de153ea"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/7z",
+        "l",
+        "-slt",
+        "-tPE",
+        "/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/tmpyb_3n01c/minimum/msvcp140_2.dll_amd64"
+      ],
+      "returncode": 0,
+      "stdout_sha256": "8454b14e945e764ca6bccc973468119cb99d286ed240216444742f32981c9a87"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/7z",
+        "l",
+        "-slt",
+        "-tPE",
+        "/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/tmpyb_3n01c/minimum/msvcp140_atomic_wait.dll_amd64"
+      ],
+      "returncode": 0,
+      "stdout_sha256": "503c48281c6014d8ec8a89de28f64124e3901c365e9e67209e2ad6e969c9efcb"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/7z",
+        "l",
+        "-slt",
+        "-tPE",
+        "/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/tmpyb_3n01c/minimum/msvcp140_codecvt_ids.dll_amd64"
+      ],
+      "returncode": 0,
+      "stdout_sha256": "59aae90e8c656c7046f8cc8e6999e21f25cfbc9006047e911918b596b5b2dc21"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/7z",
+        "l",
+        "-slt",
+        "-tPE",
+        "/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/tmpyb_3n01c/minimum/vcomp140.dll_amd64"
+      ],
+      "returncode": 0,
+      "stdout_sha256": "fb3ee52341f21112259e841a17b82f4cc758c1fb8b5950f008f1f2963de6e10f"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/7z",
+        "l",
+        "-slt",
+        "-tPE",
+        "/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/tmpyb_3n01c/minimum/vcruntime140.dll_amd64"
+      ],
+      "returncode": 0,
+      "stdout_sha256": "280d6e9d0d71c87790cd1236c4ef7938fb4c8c35d6828a76579cdc392482e5f0"
+    },
+    {
+      "argv": [
+        "/opt/homebrew/bin/7z",
+        "l",
+        "-slt",
+        "-tPE",
+        "/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/tmpyb_3n01c/minimum/vcruntime140_1.dll_amd64"
+      ],
+      "returncode": 0,
+      "stdout_sha256": "73e756cca52eea604e392e8444077586f771fd2d59993b38f1d3fb68c453c5bc"
+    }
+  ],
+  "installer_authenticode_verified": false,
+  "installer_executed": false,
+  "actual_install_paths_verified": false,
+  "central_runtime_qualified": false,
+  "release_qualified": false,
+  "redistribution_qualified": false,
+  "limits": [
+    "macOS static bytes/extraction only; no installer, DLL, MSI, native model or Windows code execution.",
+    "Static PE certificate presence and resource version strings are not Windows Authenticode/version API/loader results.",
+    "CAB logical names are not verified MSI installed destinations; exact central runtime signature/setup/restart/loaded-module results remain pending.",
+    "Current selected terms association and acquisition are not assent, historical/future applicability, a distribution grant or complete legal qualification."
+  ]
+}

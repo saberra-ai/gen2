@@ -706,8 +706,12 @@ runtime execution remain pending. `package_windows.py --central-runtime`
 constructs a distinct five-private-DLL format with a pinned publisher-hosted
 prerequisite; it excludes Microsoft installer/runtime DLL payloads, retains the
 source notices and preserves the app-local development contract. Local
-construction/Unicode restoration and 90 model-free tool tests pass. This is a
-separate byte-construction result, not central-runtime deployment qualification.
+construction/Unicode restoration and 90 model-free tool tests pass. The
+[central construction receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-central-prerequisite-construction/qualification.json)
+retains 39 archive entries/five unchanged DLLs; the
+[static prerequisite receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-central-prerequisite-static/qualification.json)
+retains metadata and independent extraction checks. These are separate byte/data
+results, not central-runtime deployment qualification.
 
 A guarded [Windows private-DLL build](../research/nemotron-windows-private-names.md)
 now relinks the five owned DLLs through an external CMake naming hook, updates
