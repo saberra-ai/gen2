@@ -1,0 +1,57 @@
+[
+  {
+    "name": "60m-native",
+    "argv": [
+      "/usr/bin/time",
+      "-l",
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-long-v2/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/bin/native-stream",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/assets/Nemotron-3-Diarization.q8_0.gguf",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/assets/ami_en2002d_2132.wav",
+      "60",
+      "0",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-long-v2/60m-native.json"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C"
+    },
+    "timeout_seconds": 1800,
+    "disk_free_bytes_at_start": 6835118080,
+    "process_group_id": 85523,
+    "returncode": 0,
+    "elapsed_seconds": 140.32921683299355
+  },
+  {
+    "name": "60m-public",
+    "argv": [
+      "/usr/bin/time",
+      "-l",
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-long-v2/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/bin/public-stream",
+      "--metal",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/assets",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/nemo/lib/libnemo_speech_asr_c.dylib",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/assets/ami_en2002d_2132.wav",
+      "60",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-long-v2/60m-public.f32"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C"
+    },
+    "timeout_seconds": 1800,
+    "disk_free_bytes_at_start": 6828838912,
+    "process_group_id": 85998,
+    "returncode": 0,
+    "elapsed_seconds": 137.67639125004644
+  }
+]

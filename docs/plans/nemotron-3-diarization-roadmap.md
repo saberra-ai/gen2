@@ -5,8 +5,8 @@ Current runtime migration: the tagged valid-Mel CPU v2 package passes
 [60-second parity and seven lifecycle gates](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-macos-runtime/qualification.json).
 The [30-minute and one-hour CPU qualification](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-cpu-long/qualification.json)
 now passes exact retained-tail parity after compaction, provisional revisions and
-peak RSS below 249 MB on repeated smoke audio. Metal long sessions,
-other-platform and Pnola receipts still require requalification for this profile;
+peak RSS below 249 MB on repeated smoke audio. Other-platform and Pnola
+receipts still require requalification for this profile;
 original quality and release criteria stay open.
 The [tagged Metal SDK construction](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-metal-construction/qualification.json)
 passes source/shader provenance and model-free state/version checks. The
@@ -19,7 +19,12 @@ passes with all 93 private libraries.
 The [first Metal long-session attempt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-metal-long-failure/qualification.json)
 passes the 30-minute pair but fails overall after a disk-space/output-persistence
 interruption during the one-hour native command. One-hour terminal tensors and
-status are unavailable; its public run never started. No one-hour pass is claimed.
+status are unavailable; its public run never started. That attempt remains failed.
+The separate [guarded Metal continuation](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-metal-long/qualification.json)
+passes two fresh one-hour streams and reuses the saved passing 30-minute pair.
+Both durations have exact retained-probability/turn parity after compaction,
+bounded revisions and peak process RSS below 261 MB. The reserve and storage
+checks completed normally; no passing 30-minute neural run was repeated.
 
 Prepared: 2026-10-14.
 Updated: 2026-10-16.

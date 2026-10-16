@@ -498,3 +498,36 @@ These are ordinary OS/background and warm-cache observations; non-neural builds
 may overlap. They do not establish uncontended performance, capture/UI latency,
 diverse long-recording quality, mixed-model coexistence, Metal, other platforms,
 Pnola, desktop release or a change to the original AMI quality requirement.
+
+
+## Tagged CPU and Metal long-session results
+
+The [CPU long-session receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-cpu-long/qualification.json)
+now passes all four preregistered streams. The 30-minute and one-hour totals are
+180000/360000 valid rows, with 62824/63373 retained rows after compaction and
+753/1501 turns. Native/public probabilities are byte-identical and turn error is
+zero. Peak measured process RSS stays below 249 MB; revisions cover both sessions.
+
+The separate [Metal construction](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-metal-construction/qualification.json)
+verifies pristine compiler sources and 20 embedded shader-text bundles. Its
+[relocated runtime qualification](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-metal-runtime/qualification.json)
+passes complete 6000-row/26-turn parity, seven lifecycle tests including 100
+reloads, actual private loader closure and CPU-only SDK rejection. The combined
+CPU-rejection/Metal-parity test is sequential, with no simultaneous residency claim.
+
+The [first Metal long attempt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-metal-long-failure/qualification.json)
+passes its 30-minute pair but fails overall during one-hour output persistence,
+alongside a recorded ENOSPC error. Its one-hour arrays and terminal status are
+unavailable; its public one-hour run never started. Those records remain unchanged.
+The [guarded continuation](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-metal-long/qualification.json)
+passes exactly two new one-hour streams and replays the prior 30-minute arrays
+without repeating that neural work. Both durations have byte-identical native/
+public probabilities and zero turn error, with 750/1500 turns, the same retained
+row counts and process RSS below 261 MB. All 35 preflights and 279 storage checks
+pass; the allocated 256 MiB diagnostic reserve was released. Process RSS does
+not measure aggregate GPU allocations. These repeated-fixture results establish
+neither diverse long-audio quality nor uncontended performance.
+
+The original AMI quality gate, Linux/Windows profile migration, mixed-model
+coexistence, Pnola application/capture/physical-microphone, desktop latency,
+signing/notarization and other release requirements remain open.

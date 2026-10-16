@@ -9,8 +9,7 @@ gates and actual 92-library loader closure checks on the named M4 Pro.
 The [30-minute and one-hour CPU qualification](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-cpu-long/qualification.json)
 passes retained-tail parity, compaction, bounded provisional revisions and peak
 process RSS below 249 MB. It repeats the named smoke fixture; diverse long-audio
-quality, coexistence, Metal long sessions, other platforms and desktop
-qualification remain open.
+quality, coexistence, other platforms and desktop qualification remain open.
 See the [migration and current evidence](../../docs/research/nemotron-v3-finish-valid-mel-patch.md).
 
 The separate [Metal construction protocol](valid-mel-metal-build.protocol.json)
@@ -34,11 +33,13 @@ residency is a separate gate.
 The [long-session attempt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-metal-long-failure/qualification.json)
 retains a passing 30-minute Metal pair. Its one-hour native command failed to
 persist output during a disk-space shortage; the child terminal status was not
-recorded, the public one-hour command never started, and one-hour qualification
-remains open. The failed attempt is retained unchanged. The separate
-[guarded continuation](valid-mel-metal-long-v2.protocol.json) admits only the two
-one-hour streams, with disk-space checks, a diagnostic reserve and atomic
-command records; it does not repeat the passing 30-minute neural work.
+recorded and the public one-hour command never started. That failed attempt
+remains unchanged. The separate [guarded continuation](valid-mel-metal-long-v2.protocol.json)
+and its [actual receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-metal-long/qualification.json)
+pass the two fresh one-hour streams, with disk-space checks, a diagnostic reserve
+and atomic command records. Together with the saved 30-minute pair, both
+durations pass exact retained-tail parity, compaction, revisions and process RSS
+below 261 MB. The passing 30-minute neural work was not repeated.
 
 # Nemotron 3 — N0 qualification
 
