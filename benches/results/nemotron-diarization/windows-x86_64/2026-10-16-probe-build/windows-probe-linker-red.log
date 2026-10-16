@@ -1,0 +1,14 @@
+..F..
+======================================================================
+FAIL: test_standalone_msvc_tools_use_absolute_paths_from_child_environment (test_platform_native.PlatformToolTests.test_standalone_msvc_tools_use_absolute_paths_from_child_environment)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/test_platform_native.py", line 26, in test_standalone_msvc_tools_use_absolute_paths_from_child_environment
+    self.assertGreater(command.index(root / 'native.lib'), command.index('/link'))
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 9 not greater than 10
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.003s
+
+FAILED (failures=1)

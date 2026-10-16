@@ -1,0 +1,65 @@
+[
+  {
+    "name": "cmake-version",
+    "command": [
+      "cmake",
+      "--version"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2"
+  },
+  {
+    "name": "git-line-ending-config",
+    "command": [
+      "git",
+      "-C",
+      "D:\\a\\gen2\\gen2\\native-source\\llama.cpp",
+      "config",
+      "--show-origin",
+      "--get-regexp",
+      "^core\\.(autocrlf|eol)$"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2"
+  },
+  {
+    "name": "sdk-build",
+    "command": [
+      "pwsh",
+      "-NoProfile",
+      "-NonInteractive",
+      "-Command",
+      "& 'D:\\a\\gen2\\gen2\\native-source\\scripts\\windows\\build.ps1' -Backend cpu -Profile asr -Jobs 2 -BuildDir 'D:\\a\\gen2\\gen2\\native-source\\build\\gen2-cpu-diar' -CMakeArgs @('-DNEMO_SPEECH_BUILD_EXAMPLES=ON','-DNEMO_SPEECH_BUILD_CLI=OFF','-DNEMO_SPEECH_BUILD_MIC_CAPTURE=OFF','-DGGML_OPENMP=OFF','-DGGML_NATIVE=OFF','-DGGML_AVX=ON','-DGGML_AVX2=ON','-DGGML_AVX512=OFF','-DGGML_AVX_VNNI=OFF','-DGGML_FMA=ON','-DGGML_F16C=ON','-DNEMO_SPEECH_WITH_NORM=OFF','-DCMAKE_INSTALL_LIBDIR=lib','-DCMAKE_INSTALL_PREFIX=D:\\a\\_temp\\nemo-sdk','-DCMAKE_C_COMPILER=C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe','-DCMAKE_CXX_COMPILER=C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe','-DNEMO_SPEECH_BUILD_ASR=OFF','-DNEMO_SPEECH_BUILD_TTS=OFF')"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2"
+  },
+  {
+    "name": "sdk-install",
+    "command": [
+      "cmake",
+      "--install",
+      "D:\\a\\gen2\\gen2\\native-source\\build\\gen2-cpu-diar",
+      "--config",
+      "Release"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2"
+  },
+  {
+    "name": "native-probe-build",
+    "command": [
+      "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+      "/nologo",
+      "/std:c++17",
+      "/O2",
+      "/EHsc",
+      "/TP",
+      "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\native_stream_probe.cpp",
+      "D:\\a\\gen2\\gen2\\native-source\\llama.cpp\\vendor\\hash\\sha256\\sha256.c",
+      "/ID:\\a\\_temp\\nemo-sdk\\include",
+      "/ID:\\a\\gen2\\gen2\\native-source\\examples",
+      "/ID:\\a\\gen2\\gen2\\native-source\\llama.cpp\\vendor\\hash",
+      "D:\\a\\_temp\\nemo-sdk\\lib\\nemo_speech_asr_c.lib",
+      "/link",
+      "/OUT:D:\\a\\_temp\\nemo-sdk\\bin\\gen2_native_stream_probe.exe"
+    ],
+    "cwd": "D:\\a\\_temp\\nemo-evidence"
+  }
+]

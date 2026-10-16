@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "source_commit": "fd91ed1108528f09262c8aaafea2b4f5aaa6d7b9",
+  "run_url": "https://github.com/saberra-ai/gen2/actions/runs/38873722221",
+  "diagnosis": "Absolute cl.exe launched; global /TP treated the import archive as C++ and produced C2059/C2018; SDK construction succeeded.",
+  "actual_error": "Command '['C:\\\\Program Files\\\\Microsoft Visual Studio\\\\2022\\\\Enterprise\\\\VC\\\\Tools\\\\MSVC\\\\14.44.35207\\\\bin\\\\Hostx64\\\\x64\\\\cl.exe', '/nologo', '/std:c++17', '/O2', '/EHsc', '/TP', 'D:\\\\a\\\\gen2\\\\gen2\\\\tools\\\\nemotron-diarization\\\\native_stream_probe.cpp', 'D:\\\\a\\\\gen2\\\\gen2\\\\native-source\\\\llama.cpp\\\\vendor\\\\hash\\\\sha256\\\\sha256.c', '/ID:\\\\a\\\\_temp\\\\nemo-sdk\\\\include', '/ID:\\\\a\\\\gen2\\\\gen2\\\\native-source\\\\examples', '/ID:\\\\a\\\\gen2\\\\gen2\\\\native-source\\\\llama.cpp\\\\vendor\\\\hash', 'D:\\\\a\\\\_temp\\\\nemo-sdk\\\\lib\\\\nemo_speech_asr_c.lib', '/link', '/OUT:D:\\\\a\\\\_temp\\\\nemo-sdk\\\\bin\\\\gen2_native_stream_probe.exe']' returned non-zero exit status 2.",
+  "fix_commit": "ad9e1e6eff22d1437d3f63873e451d10f3eb7186",
+  "installed_files_verified": {
+    "verified_installed_regular_files": 65,
+    "all_hashes_and_sizes_match": true,
+    "scope": "Downloaded Windows SDK regular-file bytes; no execution on macOS."
+  },
+  "limits": [
+    "No successful independent probe, model inference, loader control, native lifecycle, closed Windows runtime or release qualification at this source.",
+    "MSVC SDK regular-file hashes verified after CI artifact delivery; no Windows execution on macOS."
+  ],
+  "receiver_harness_note": "Windows relative paths contain backslashes; receiver uses PureWindowsPath.parts. The initial f36 receiver Path-only lookup failed without changing SDK data."
+}

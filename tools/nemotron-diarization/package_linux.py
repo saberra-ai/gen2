@@ -43,7 +43,7 @@ def capture(command, **kwargs):
                                    text=True, stderr=subprocess.STDOUT, **kwargs).strip()
 
 
-def inspect_elf(path):
+def inspect_elf(path, require_soname=True):
     with path.open('rb') as stream:
         header = stream.read(64)
     if len(header) != 64 or header[:6] != b'\x7fELF\x02\x01' or struct.unpack_from('<H', header, 18)[0] != 62:
@@ -51,7 +51,7 @@ def inspect_elf(path):
     dynamic = capture(['readelf', '--dynamic', '--wide', path])
     names = lambda kind: re.findall(r'\(' + kind + r'\).*?\[([^\]]*)\]', dynamic)
     identity = names('SONAME')
-    if len(identity) != 1:
+    if len(identity) > 1 or (require_soname and len(identity) != 1):
         raise ValueError(f'expected one ELF SONAME: {path}')
     version_text = capture(['readelf', '--version-info', '--wide', path])
     needs = version_text.partition('Version needs section')[2]
@@ -66,7 +66,7 @@ def inspect_elf(path):
                 version.pop()
             if not match or tuple(version) > (2, 39):
                 raise ValueError(f'ELF exceeds declared glibc 2.39 baseline: {path}: {value}')
-    return {'soname': identity[0], 'needed': names('NEEDED'), 'rpath': names('RPATH'),
+    return {'soname': identity[0] if identity else None, 'needed': names('NEEDED'), 'rpath': names('RPATH'),
             'runpath': names('RUNPATH'), 'required_symbol_versions': versions}
 
 

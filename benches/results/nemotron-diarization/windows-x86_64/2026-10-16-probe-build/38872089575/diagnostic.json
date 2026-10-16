@@ -1,0 +1,19 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "source_commit": "f36b9d9ea6fa8d21908a46688080dc7ed574a856",
+  "run_url": "https://github.com/saberra-ai/gen2/actions/runs/38872089575",
+  "diagnosis": "Python could not launch bare cl.exe from the child-only vcvars PATH; SDK construction succeeded.",
+  "actual_error": "[WinError 2] The system cannot find the file specified",
+  "fix_commit": "fd91ed1108528f09262c8aaafea2b4f5aaa6d7b9",
+  "installed_files_verified": {
+    "verified_installed_regular_files": 65,
+    "all_hashes_and_sizes_match": true,
+    "scope": "Downloaded Windows SDK regular-file bytes; no execution on macOS."
+  },
+  "limits": [
+    "No successful independent probe, model inference, loader control, native lifecycle, closed Windows runtime or release qualification at this source.",
+    "MSVC SDK regular-file hashes verified after CI artifact delivery; no Windows execution on macOS."
+  ],
+  "receiver_harness_note": "Windows relative paths contain backslashes; receiver uses PureWindowsPath.parts. The initial f36 receiver Path-only lookup failed without changing SDK data."
+}

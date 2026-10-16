@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "package_construction_passed": true,
+  "source_commit": "5cae132c0cc8f53f91ce0d4799a0e83f30fa6885",
+  "run_url": "https://github.com/saberra-ai/gen2/actions/runs/38872849256",
+  "scope": "Linux CI ELF dependency closure/package construction, exact sources/notices, and downloaded archive filesystem verification on macOS.",
+  "delivered_archive": {
+    "archive_sha256": "05cf4bc046ea0de8472f2aca72533ecd95106e6bf093cd657ae94a9aab80864e",
+    "archive_bytes": 110126341,
+    "package_manifest_sha256": "7bfdc02af4a3ecd38abbf94d3187d0a2cbcb1c79b6e0ef2fd943b645011eb699",
+    "all_archive_entries_verified": 45,
+    "package_inventory_entries_verified": 44,
+    "restorer_sha256": "0b1d80768d15c2818afc82efcc1f3ddf253360b99c16c623e170073e020cb3cd",
+    "first_receiver_harness_error": "KeyError: 'inventory'; expected package manifest field is 'files'; archive restoration had already succeeded, no delivered bytes changed.",
+    "scope": "Filesystem bytes, aliases and modes verified on macOS; no Linux ELF execution."
+  },
+  "source_bundles_independently_rechecked": {
+    "libgcc-s1": {
+      "source_package": "gcc-14",
+      "source_version": "14.2.0-4ubuntu2~24.04.1",
+      "descriptor_sha256": "50950080874a6ec6780dd60c243e21d9cda9d736bb32bca98d16095d27cc01b5"
+    },
+    "libstdc++6": {
+      "source_package": "gcc-14",
+      "source_version": "14.2.0-4ubuntu2~24.04.1",
+      "descriptor_sha256": "50950080874a6ec6780dd60c243e21d9cda9d736bb32bca98d16095d27cc01b5"
+    },
+    "libsentencepiece0": {
+      "source_package": "sentencepiece",
+      "source_version": "0.2.0-1build1",
+      "descriptor_sha256": "cf9b2a6d56e921f481b39c904487a8bab622318f7ac5e066d60e2378fabd3b9d"
+    }
+  },
+  "libraries": [
+    "libgen2_nemo_linux_nemo_speech_asr_c.so.1",
+    "libgcc_s.so.1",
+    "libstdc++.so.6",
+    "libgen2_nemo_linux_nemo_speech_asr.so",
+    "libgen2_nemo_linux_ggml-base.so.0.25.1",
+    "libgen2_nemo_linux_ggml.so.0.25.1",
+    "libgen2_nemo_linux_ggml-cpu.so.0.25.1",
+    "libgen2_nemo_linux_sentencepiece.so.0.0.0"
+  ],
+  "limits": [
+    "No fresh-container execution, chat/Bark/Laya symbol coexistence, other Linux baseline or quality qualification.",
+    "Opaque 110126341-byte archive retained in CI/cache, not Git. Exact source download provenance is not reproducible-build proof."
+  ]
+}

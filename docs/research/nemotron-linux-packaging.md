@@ -67,3 +67,30 @@ Read-only review of the new `package_linux.py` source acquisition, 2026-10-16. N
 - **Path ownership and trust limits.** `dpkg-query -S` searches its recorded pathname database. Canonicalizing `/lib` to `/usr/lib` before querying can therefore fail on installations whose package records retain the alternate spelling; a controlled fallback can query both aliases, then require one package identity and the same resolved file/hash. This is a fail-closed compatibility consideration, not an observed failure in this run: current published Noble amd64 [libgcc-s1 file list](https://packages.ubuntu.com/noble/amd64/libgcc-s1/filelist) and [libstdc++6 file list](https://packages.ubuntu.com/noble/amd64/libstdc++6/filelist) already record `/usr/lib`. Retain the architecture-qualified binary package identity for queries. Ownership/version metadata also does not prove an installed file is unmodified official package content; the trusted CI installation and its logs remain an assumption unless compared with the exact authenticated `.deb` payload. These bundles provide source provenance, not reproducible-build proof.
 
 CI must still exercise the real installed package versions, copyright resolution, authenticated exact-source acquisition and package-manifest verification before this part of the gate closes. The source bundle increases artifact size substantially for GCC; deduplicating a shared exact source/version between both GCC runtime components is appropriate, while treating two different versions as interchangeable is not.
+
+## Implementation checkpoint: actual construction
+
+The [2026-10-16 construction receipt](../../benches/results/nemotron-diarization/linux-x86_64/2026-10-16-runtime-construction/qualification.json)
+now records a successful Ubuntu CI run at `5cae132`, with eight delivered DSOs.
+Both GCC runtime binaries bind `gcc-14` source `14.2.0-4ubuntu2~24.04.1`;
+SentencePiece binds source `0.2.0-1build1`. Full exact source bundles and actual
+copyright/common-license texts are included. The downloaded archive's 45 entries,
+package manifest and both source descriptor inventories were independently
+checked on macOS; this check did not execute Linux code. Earlier paragraphs
+that say construction/archiving is pending describe the investigation's starting
+state. Container execution and native backend coexistence are still pending.
+
+`qualify_linux_package.py` implements the next execution gate: restore the exact
+delivered tar into a path with spaces/non-ASCII characters, bind prebuilt helpers
+and locked assets, freeze the resolved Ubuntu 24.04 image ID/digest before any
+container model runs, and use a fresh `--network none --read-only` container for
+each check. No original SDK, checkout or development tools are mounted. Runtime
+loader traces must initialize all eight bundled DSOs, including the GCC pair;
+only the declared glibc family may come from the image. An intentionally missing
+private GGML dependency is tested at the identical runtime path with the intact
+package unavailable. Native/public parity and all seven Linux lifecycle tests
+must actually pass. Docker documents the [none network](https://docs.docker.com/engine/network/drivers/none/)
+and [read-only filesystem/mount options](https://docs.docker.com/reference/cli/docker/container/run/).
+This source implementation is not a passing container receipt. Even a passing
+container run will not close the separate ELF chat/GGML interposition gate or
+prove physical-machine portability.

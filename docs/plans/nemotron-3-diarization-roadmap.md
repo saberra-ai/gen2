@@ -601,10 +601,17 @@ and [captured failure receipt](../../benches/results/nemotron-diarization/window
 That actual retry now applies all 19 patches and compiles native objects, but
 fails during linking because CMake Ninja selects ambient MinGW for the intended
 MSVC/vcpkg build (`c++.exe` rejects `-ignore:4221`). The LF correction is confirmed;
-there is still no successful Windows SDK/model run. The [compiler-selection failure receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-compiler-selection/diagnostic.json)
+Windows model/native qualification remains incomplete. The [compiler-selection failure receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-compiler-selection/diagnostic.json)
 retains the actual CMake cache and link diagnostics. A separate reviewed fix
-binds CMake C/C++ explicitly to the absolute active MSVC `cl.exe`; its native
-retry is pending. These jobs do not establish closed portable
+binds CMake C/C++ explicitly to the absolute active MSVC `cl.exe`. That retry
+successfully built and installed the SDK (65 delivered regular files verified),
+then failed launching the standalone probe because its bare `cl.exe` was not
+resolved from the child process environment. Absolute tool resolution fixed
+launch; the next retry exposed global `/TP` parsing the import archive as C++.
+The reviewed command now passes that archive after `/link`; actual probe/model
+qualification remains pending. Both failures and SDK byte checks are retained
+in the [probe-build diagnostics](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-probe-build/collection.json).
+These jobs do not establish closed portable
 packages, fresh-machine offline operation or mixed-model coexistence on those
 platforms. The [Linux packaging investigation](../research/nemotron-linux-packaging.md)
 sets out the next implementation gates: exact non-glibc dependency closure,
@@ -621,8 +628,13 @@ standalone rechecker are retained in the [SDK archive receipt](../../benches/res
 This is archive delivery/metadata evidence, not Linux runtime relocation. A
 separate runtime packager now implements receipt/ISA checks, recursive ELF
 closure, private native/SentencePiece identities, relative RPATHs, component
-copyright/common-license texts and exact source-package acquisition. Its actual
-Linux construction and clean-container/coexistence gates remain pending.
+copyright/common-license texts and exact source-package acquisition. Actual
+Linux construction now passes with eight libraries and exact GCC 14 and
+SentencePiece source bundles. The delivered 110,126,341-byte archive matches
+SHA-256 `05cf4bc046ea0de8472f2aca72533ecd95106e6bf093cd657ae94a9aab80864e`;
+all 45 entries and both `.dsc` source inventories were rechecked on macOS.
+See the [construction receipt](../../benches/results/nemotron-diarization/linux-x86_64/2026-10-16-runtime-construction/qualification.json).
+Clean-container execution and actual chat/Bark/Laya coexistence remain open.
 
 - [ ] Run Mac CPU first; compare Metal against the same Q8 reference and real
   annotated audio. Record device placement/fallback rather than treating a

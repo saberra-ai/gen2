@@ -1,0 +1,703 @@
+native (windows-2022)	Set up job	﻿2026-10-16T08:11:57.9642703Z Current runner version: '2.337.0'
+native (windows-2022)	Set up job	2026-10-16T08:11:57.9706375Z ##[group]Runner Image Provisioner
+native (windows-2022)	Set up job	2026-10-16T08:11:57.9707745Z Hosted Compute Agent
+native (windows-2022)	Set up job	2026-10-16T08:11:57.9708725Z Version: 20261012.601
+native (windows-2022)	Set up job	2026-10-16T08:11:57.9710026Z Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+native (windows-2022)	Set up job	2026-10-16T08:11:57.9711192Z Build Date: 2026-10-12T17:48:21Z
+native (windows-2022)	Set up job	2026-10-16T08:11:57.9712552Z Worker ID: {c9298e87-c877-4d61-b281-339dd52ced1a}
+native (windows-2022)	Set up job	2026-10-16T08:11:57.9713810Z Region: eastus
+native (windows-2022)	Set up job	2026-10-16T08:11:57.9714706Z Cloud: Azure
+native (windows-2022)	Set up job	2026-10-16T08:11:57.9715566Z ##[endgroup]
+native (windows-2022)	Set up job	2026-10-16T08:11:57.9718274Z ##[group]Operating System
+native (windows-2022)	Set up job	2026-10-16T08:11:57.9719431Z Microsoft Windows Server 2022
+native (windows-2022)	Set up job	2026-10-16T08:11:57.9720303Z 10.0.20348
+native (windows-2022)	Set up job	2026-10-16T08:11:57.9721131Z Datacenter
+native (windows-2022)	Set up job	2026-10-16T08:11:57.9722019Z ##[endgroup]
+native (windows-2022)	Set up job	2026-10-16T08:11:57.9723122Z ##[group]Runner Image
+native (windows-2022)	Set up job	2026-10-16T08:11:57.9724212Z Image: windows-2022
+native (windows-2022)	Set up job	2026-10-16T08:11:57.9725090Z Version: 20261012.333.1
+native (windows-2022)	Set up job	2026-10-16T08:11:57.9726846Z Included Software: https://github.com/actions/runner-images/blob/win22/20261012.333/images/windows/Windows2022-Readme.md
+native (windows-2022)	Set up job	2026-10-16T08:11:57.9730111Z Image Release: https://github.com/actions/runner-images/releases/tag/win22%2F20261012.333
+native (windows-2022)	Set up job	2026-10-16T08:11:57.9731793Z ##[endgroup]
+native (windows-2022)	Set up job	2026-10-16T08:11:57.9733605Z ##[group]GITHUB_TOKEN Permissions
+native (windows-2022)	Set up job	2026-10-16T08:11:57.9736372Z Contents: read
+native (windows-2022)	Set up job	2026-10-16T08:11:57.9737306Z Metadata: read
+native (windows-2022)	Set up job	2026-10-16T08:11:57.9738168Z ##[endgroup]
+native (windows-2022)	Set up job	2026-10-16T08:11:57.9741010Z Secret source: Actions
+native (windows-2022)	Set up job	2026-10-16T08:11:57.9742396Z Cache mode: write
+native (windows-2022)	Set up job	2026-10-16T08:11:57.9743866Z Prepare workflow directory
+native (windows-2022)	Set up job	2026-10-16T08:11:58.0112742Z Prepare all required actions
+native (windows-2022)	Set up job	2026-10-16T08:11:58.0166711Z Getting action download info
+native (windows-2022)	Set up job	2026-10-16T08:11:58.2029799Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+native (windows-2022)	Set up job	2026-10-16T08:11:58.3269103Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+native (windows-2022)	Set up job	2026-10-16T08:11:58.4601334Z Download action repository 'dtolnay/rust-toolchain@stable' (SHA:b725eda525362e7cf34af9a7243cac1e3f01a7ec)
+native (windows-2022)	Set up job	2026-10-16T08:11:58.5647150Z Download action repository 'Swatinem/rust-cache@v2' (SHA:6323deb102c322ba6fcbdcafc7e3dddab59af2b6)
+native (windows-2022)	Set up job	2026-10-16T08:11:58.7926472Z Download action repository 'actions/cache@v4' (SHA:0057852bfaa89a56745cba8c7296529d2fc39830)
+native (windows-2022)	Set up job	2026-10-16T08:11:58.9150768Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+native (windows-2022)	Set up job	2026-10-16T08:11:59.3119569Z Complete job name: native (windows-2022)
+native (windows-2022)	Preserve byte-pinned source line endings	﻿2026-10-16T08:11:59.4852661Z ##[group]Run git config --global core.autocrlf false
+native (windows-2022)	Preserve byte-pinned source line endings	2026-10-16T08:11:59.4853948Z [36;1mgit config --global core.autocrlf false[0m
+native (windows-2022)	Preserve byte-pinned source line endings	2026-10-16T08:11:59.4976595Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+native (windows-2022)	Preserve byte-pinned source line endings	2026-10-16T08:11:59.4977811Z ##[endgroup]
+native (windows-2022)	Run actions/checkout@v4	﻿2026-10-16T08:12:00.3191169Z ##[group]Run actions/checkout@v4
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.3192041Z with:
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.3192513Z   persist-credentials: false
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.3193217Z   repository: saberra-ai/gen2
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.3201553Z   token: ***
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.3202002Z   ssh-strict: true
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.3202474Z   ssh-user: git
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.3202917Z   clean: true
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.3203402Z   sparse-checkout-cone-mode: true
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.3204050Z   fetch-depth: 1
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.3204541Z   fetch-tags: false
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.3205037Z   show-progress: true
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.3205544Z   lfs: false
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.3205975Z   submodules: false
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.3206484Z   set-safe-directory: true
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.3207094Z   allow-unsafe-pr-checkout: false
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.3207739Z ##[endgroup]
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.4658647Z Syncing repository: saberra-ai/gen2
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.4660853Z ##[group]Getting Git version info
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.4661645Z Working directory is 'D:\a\gen2\gen2'
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.5723587Z [command]"C:\Program Files\Git\bin\git.exe" version
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.6012508Z git version 2.56.0.windows.2
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.6054234Z ##[endgroup]
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.6068330Z Copying 'C:\Users\runneradmin\.gitconfig' to 'D:\a\_temp\9872b35d-a8cc-407e-91aa-77ad3b4d725c\.gitconfig'
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.6090078Z Temporarily overriding HOME='D:\a\_temp\9872b35d-a8cc-407e-91aa-77ad3b4d725c' before making global git config changes
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.6092343Z Adding repository directory to the temporary git global config as a safe directory
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.6101292Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\gen2\gen2
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.6403925Z Deleting the contents of 'D:\a\gen2\gen2'
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.6410026Z ##[group]Initializing the repository
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.6419080Z [command]"C:\Program Files\Git\bin\git.exe" init D:\a\gen2\gen2
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.7385275Z Initialized empty Git repository in D:/a/gen2/gen2/.git/
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.7422967Z [command]"C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/saberra-ai/gen2
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.8059046Z ##[endgroup]
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.8060371Z ##[group]Disabling automatic garbage collection
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.8073480Z [command]"C:\Program Files\Git\bin\git.exe" config --local gc.auto 0
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.8401676Z ##[endgroup]
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.8402837Z ##[group]Setting up auth
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.8413888Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:00.8707351Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:02.3002174Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:02.3311526Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:02.8445077Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:02.8758662Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:03.3620767Z [command]"C:\Program Files\Git\bin\git.exe" config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:03.3934019Z ##[endgroup]
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:03.3935781Z ##[group]Fetching the repository
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:03.3948898Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +f36b9d9ea6fa8d21908a46688080dc7ed574a856:refs/remotes/origin/codex/nemotron3-platforms
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:04.8387204Z From https://github.com/saberra-ai/gen2
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:04.8388644Z  * [new ref]         f36b9d9ea6fa8d21908a46688080dc7ed574a856 -> origin/codex/nemotron3-platforms
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:04.8419538Z ##[endgroup]
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:04.8420193Z ##[group]Determining the checkout info
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:04.8421988Z ##[endgroup]
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:04.8432092Z [command]"C:\Program Files\Git\bin\git.exe" sparse-checkout disable
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:04.8872066Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all extensions.worktreeConfig
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:04.9195804Z ##[group]Checking out the ref
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:04.9204327Z [command]"C:\Program Files\Git\bin\git.exe" checkout --progress --force -B codex/nemotron3-platforms refs/remotes/origin/codex/nemotron3-platforms
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:05.3075109Z Switched to a new branch 'codex/nemotron3-platforms'
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:05.3098704Z branch 'codex/nemotron3-platforms' set up to track 'origin/codex/nemotron3-platforms'.
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:05.3139356Z ##[endgroup]
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:05.3538726Z [command]"C:\Program Files\Git\bin\git.exe" log -1 --format=%H
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:05.3812280Z f36b9d9ea6fa8d21908a46688080dc7ed574a856
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:05.3845953Z ##[group]Removing auth
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:05.3854409Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:05.4158493Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:05.9276424Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:05.9541602Z http.https://github.com/.extraheader
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:05.9584626Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all http.https://github.com/.extraheader
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:05.9896996Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:06.4817901Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:06.5126351Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.0272796Z ##[endgroup]
+native (windows-2022)	Run actions/checkout@v4	﻿2026-10-16T08:12:07.0614606Z ##[group]Run actions/checkout@v4
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.0614941Z with:
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.0615157Z   repository: NVIDIA/NeMo-Speech.cpp
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.0615457Z   ref: 083861c241061562b8ec29eb06d7f6cdc3af8775
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.0615728Z   path: native-source
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.0615932Z   persist-credentials: false
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.0618609Z   token: ***
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.0618794Z   ssh-strict: true
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.0618975Z   ssh-user: git
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.0619144Z   clean: true
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.0619355Z   sparse-checkout-cone-mode: true
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.0619587Z   fetch-depth: 1
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.0619768Z   fetch-tags: false
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.0619960Z   show-progress: true
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.0620149Z   lfs: false
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.0620315Z   submodules: false
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.0620502Z   set-safe-directory: true
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.0620725Z   allow-unsafe-pr-checkout: false
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.0620961Z ##[endgroup]
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.1700856Z Syncing repository: NVIDIA/NeMo-Speech.cpp
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.1708714Z ##[group]Getting Git version info
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.1709496Z Working directory is 'D:\a\gen2\gen2\native-source'
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.2642882Z [command]"C:\Program Files\Git\bin\git.exe" version
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.2914120Z git version 2.56.0.windows.2
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.2950169Z ##[endgroup]
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.2961827Z Copying 'C:\Users\runneradmin\.gitconfig' to 'D:\a\_temp\52c627aa-e84e-4ea5-852c-62988e91aa16\.gitconfig'
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.2982049Z Temporarily overriding HOME='D:\a\_temp\52c627aa-e84e-4ea5-852c-62988e91aa16' before making global git config changes
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.2982816Z Adding repository directory to the temporary git global config as a safe directory
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.3007451Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\gen2\gen2\native-source
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.3290751Z ##[group]Initializing the repository
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.3300004Z [command]"C:\Program Files\Git\bin\git.exe" init D:\a\gen2\gen2\native-source
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.3623197Z Initialized empty Git repository in D:/a/gen2/gen2/native-source/.git/
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.3663784Z [command]"C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/NVIDIA/NeMo-Speech.cpp
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.3965335Z ##[endgroup]
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.3965724Z ##[group]Disabling automatic garbage collection
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.3975220Z [command]"C:\Program Files\Git\bin\git.exe" config --local gc.auto 0
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.4265849Z ##[endgroup]
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.4266228Z ##[group]Setting up auth
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.4278915Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.4571177Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:07.9844153Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:08.0158932Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:08.5137116Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:08.5454257Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:09.0232531Z [command]"C:\Program Files\Git\bin\git.exe" config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:09.0523844Z ##[endgroup]
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:09.0524259Z ##[group]Fetching the repository
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:09.0536333Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin 083861c241061562b8ec29eb06d7f6cdc3af8775
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:09.5396168Z From https://github.com/NVIDIA/NeMo-Speech.cpp
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:09.5396968Z  * branch            083861c241061562b8ec29eb06d7f6cdc3af8775 -> FETCH_HEAD
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:09.5424315Z ##[endgroup]
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:09.5424860Z ##[group]Determining the checkout info
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:09.5427481Z ##[endgroup]
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:09.5436456Z [command]"C:\Program Files\Git\bin\git.exe" sparse-checkout disable
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:09.5835843Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all extensions.worktreeConfig
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:09.6250319Z ##[group]Checking out the ref
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:09.6259906Z [command]"C:\Program Files\Git\bin\git.exe" checkout --progress --force 083861c241061562b8ec29eb06d7f6cdc3af8775
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.7680061Z Updating files:  79% (373/471)
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.7696970Z Updating files:  80% (377/471)
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.7818707Z Updating files:  81% (382/471)
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.7827529Z Updating files:  82% (387/471)
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.7839764Z Updating files:  83% (391/471)
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.7854181Z Updating files:  84% (396/471)
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.7866138Z Updating files:  85% (401/471)
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.7878038Z Updating files:  86% (406/471)
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.7893457Z Updating files:  87% (410/471)
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.7905661Z Updating files:  88% (415/471)
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.7915640Z Updating files:  89% (420/471)
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.7928282Z Updating files:  90% (424/471)
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.7939655Z Updating files:  91% (429/471)
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.7955393Z Updating files:  92% (434/471)
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.7966584Z Updating files:  93% (439/471)
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.7976498Z Updating files:  94% (443/471)
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.7991612Z Updating files:  95% (448/471)
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.7999776Z Updating files:  96% (453/471)
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.8013285Z Updating files:  97% (457/471)
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.8021064Z Updating files:  98% (462/471)
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.8031424Z Updating files:  99% (467/471)
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.8031909Z Updating files: 100% (471/471)
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.8032317Z Updating files: 100% (471/471), done.
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.8119995Z Note: switching to '083861c241061562b8ec29eb06d7f6cdc3af8775'.
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.8120692Z 
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.8121734Z You are in 'detached HEAD' state. You can look around, make experimental
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.8123094Z changes and commit them, and you can discard any commits you make in this
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.8123935Z state without impacting any branches by switching back to a branch.
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.8124445Z 
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.8124762Z If you want to create a new branch to retain commits you create, you may
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.8125530Z do so (now or later) by using -c with the switch command. Example:
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.8125980Z 
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.8126149Z   git switch -c <new-branch-name>
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.8126469Z 
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.8126640Z Or undo this operation with:
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.8126903Z 
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.8127037Z   git switch -
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.8127227Z 
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.8128380Z Turn off this advice by setting config variable advice.detachedHead to false
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.8129146Z 
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:17.8129584Z HEAD is now at 083861c Fix issue with magpie v2607 speakers being mapped to wrong id (#66)
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:18.2525998Z ##[endgroup]
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:18.3163113Z [command]"C:\Program Files\Git\bin\git.exe" log -1 --format=%H
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:18.3585930Z 083861c241061562b8ec29eb06d7f6cdc3af8775
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:18.3640768Z ##[group]Removing auth
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:18.3651012Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:18.4092637Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:18.9663894Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:18.9932553Z http.https://github.com/.extraheader
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:18.9968980Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all http.https://github.com/.extraheader
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:19.0284460Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:19.4968681Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:19.5283317Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+native (windows-2022)	Run actions/checkout@v4	2026-10-16T08:12:20.0026561Z ##[endgroup]
+native (windows-2022)	Initialize pinned ggml source	﻿2026-10-16T08:12:20.0289281Z ##[group]Run git -C native-source submodule update --init --depth 1 llama.cpp
+native (windows-2022)	Initialize pinned ggml source	2026-10-16T08:12:20.0289970Z [36;1mgit -C native-source submodule update --init --depth 1 llama.cpp[0m
+native (windows-2022)	Initialize pinned ggml source	2026-10-16T08:12:20.0333543Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+native (windows-2022)	Initialize pinned ggml source	2026-10-16T08:12:20.0333913Z ##[endgroup]
+native (windows-2022)	Initialize pinned ggml source	2026-10-16T08:12:20.9878800Z Submodule 'llama.cpp' (https://github.com/ggml-org/llama.cpp.git) registered for path 'llama.cpp'
+native (windows-2022)	Initialize pinned ggml source	2026-10-16T08:12:21.0249076Z Cloning into 'D:/a/gen2/gen2/native-source/llama.cpp'...
+native (windows-2022)	Initialize pinned ggml source	2026-10-16T08:12:25.2732262Z From https://github.com/ggml-org/llama.cpp
+native (windows-2022)	Initialize pinned ggml source	2026-10-16T08:12:25.2732775Z  * branch            bd4f514db14d87fded667787a7a963bfbaa98e89 -> FETCH_HEAD
+native (windows-2022)	Initialize pinned ggml source	2026-10-16T08:12:26.5378043Z Submodule path 'llama.cpp': checked out 'bd4f514db14d87fded667787a7a963bfbaa98e89'
+native (windows-2022)	Run actions/setup-python@v5	﻿2026-10-16T08:12:26.6624276Z ##[group]Run actions/setup-python@v5
+native (windows-2022)	Run actions/setup-python@v5	2026-10-16T08:12:26.6624671Z with:
+native (windows-2022)	Run actions/setup-python@v5	2026-10-16T08:12:26.6624860Z   python-version: 3.12
+native (windows-2022)	Run actions/setup-python@v5	2026-10-16T08:12:26.6625077Z   check-latest: false
+native (windows-2022)	Run actions/setup-python@v5	2026-10-16T08:12:26.6627676Z   token: ***
+native (windows-2022)	Run actions/setup-python@v5	2026-10-16T08:12:26.6627866Z   update-environment: true
+native (windows-2022)	Run actions/setup-python@v5	2026-10-16T08:12:26.6628091Z   allow-prereleases: false
+native (windows-2022)	Run actions/setup-python@v5	2026-10-16T08:12:26.6628294Z   freethreaded: false
+native (windows-2022)	Run actions/setup-python@v5	2026-10-16T08:12:26.6628475Z ##[endgroup]
+native (windows-2022)	Run actions/setup-python@v5	2026-10-16T08:12:26.8351055Z ##[group]Installed versions
+native (windows-2022)	Run actions/setup-python@v5	2026-10-16T08:12:26.8705525Z (node:2680) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+native (windows-2022)	Run actions/setup-python@v5	2026-10-16T08:12:26.8708099Z (Use `node --trace-deprecation ...` to show where the warning was created)
+native (windows-2022)	Run actions/setup-python@v5	2026-10-16T08:12:26.8708755Z Successfully set up CPython (3.12.10)
+native (windows-2022)	Run actions/setup-python@v5	2026-10-16T08:12:26.8709323Z ##[endgroup]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	﻿2026-10-16T08:12:26.9064985Z ##[group]Run dtolnay/rust-toolchain@stable
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9065340Z with:
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9065516Z   toolchain: stable
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9065699Z env:
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9065955Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9066423Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9066860Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9067248Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9067642Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9067942Z ##[endgroup]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9135659Z ##[start-action display=Parse toolchain version;id=__dtolnay_rust-toolchain.parse]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9283964Z ##[group]Run if [[ -z $toolchain ]]; then
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9284292Z [36;1mif [[ -z $toolchain ]]; then[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9284801Z [36;1m  # GitHub does not enforce `required: true` inputs itself. https://github.com/actions/runner/issues/1070[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9285392Z [36;1m  echo "'toolchain' is a required input" >&2[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9285663Z [36;1m  exit 1[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9285967Z [36;1melif [[ $toolchain =~ ^stable' '[0-9]+' '(year|month|week|day)s?' 'ago$ ]]; then[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9286373Z [36;1m  if [[ Windows == macOS ]]; then[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9287050Z [36;1m    echo "toolchain=1.$((($(date -v-$(sed 's/stable \([0-9]*\) \(.\).*/\1\2/' <<< $toolchain) +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9287624Z [36;1m  else[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9288128Z [36;1m    echo "toolchain=1.$((($(date --date "${toolchain#stable }" +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9288734Z [36;1m  fi[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9289068Z [36;1melif [[ $toolchain =~ ^stable' 'minus' '[0-9]+' 'releases?$ ]]; then[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9289701Z [36;1m  echo "toolchain=1.$((($(date +%s)/60/60/24-16569)/7/6-${toolchain//[^0-9]/}))" >> $GITHUB_OUTPUT[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9290236Z [36;1melif [[ $toolchain =~ ^1\.[0-9]+$ ]]; then[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9290823Z [36;1m  echo "toolchain=1.$((i=${toolchain#1.}, c=($(date +%s)/60/60/24-16569)/7/6, i+9*i*(10*i<=c)+90*i*(100*i<=c)))" >> $GITHUB_OUTPUT[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9291433Z [36;1melse[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9291689Z [36;1m  delimiter=EOF[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9292079Z [36;1m  while [[ $toolchain == *$delimiter* ]]; do delimiter+=_; done[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9292657Z [36;1m  printf 'toolchain<<%s\n%s\n%s\n' "$delimiter" "$toolchain" "$delimiter" >> $GITHUB_OUTPUT[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9293134Z [36;1mfi[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9310931Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9311464Z env:
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9311827Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9312329Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9329338Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9329790Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9330192Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9330504Z   toolchain: stable
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:26.9330688Z ##[endgroup]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.1278207Z ##[end-action id=__dtolnay_rust-toolchain.parse;outcome=success;conclusion=success;duration_ms=214]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.1283577Z ##[start-action display=Set $CARGO_HOME;id=__dtolnay_rust-toolchain.__run]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.1384502Z ##[group]Run echo CARGO_HOME=${CARGO_HOME:-"$USERPROFILE\.cargo"} >> $GITHUB_ENV
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.1385148Z [36;1mecho CARGO_HOME=${CARGO_HOME:-"$USERPROFILE\.cargo"} >> $GITHUB_ENV[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.1399602Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.1399998Z env:
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.1402042Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.1402523Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.1402977Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.1403368Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.1403750Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.1404050Z ##[endgroup]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.1715931Z ##[end-action id=__dtolnay_rust-toolchain.__run;outcome=success;conclusion=success;duration_ms=43]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.1718303Z ##[start-action display=Install rustup if needed;id=__dtolnay_rust-toolchain.__run_2]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.1728264Z ##[end-action id=__dtolnay_rust-toolchain.__run_2;outcome=skipped;conclusion=skipped;duration_ms=0]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.1730300Z ##[start-action display=Install rustup if needed on windows;id=__dtolnay_rust-toolchain.__run_3]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.1831808Z ##[group]Run if ! command -v rustup &>/dev/null; then
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.1832175Z [36;1mif ! command -v rustup &>/dev/null; then[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.1832929Z [36;1m  curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused --location --silent --show-error --fail https://win.rustup.rs/x86_64 --output 'D:\a\_temp\rustup-init.exe'[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.1833772Z [36;1m  'D:\a\_temp\rustup-init.exe' --default-toolchain none --no-modify-path -y[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.1834184Z [36;1m  echo "$CARGO_HOME\bin" >> $GITHUB_PATH[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.1834440Z [36;1mfi[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.1848297Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.1848704Z env:
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.1848959Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.1849410Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.1849842Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.1850245Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.1850625Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.1850952Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.1851195Z ##[endgroup]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2294073Z ##[end-action id=__dtolnay_rust-toolchain.__run_3;outcome=success;conclusion=success;duration_ms=56]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2308373Z ##[start-action display=rustup toolchain install stable;id=__dtolnay_rust-toolchain.__run_4]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2406553Z ##[group]Run set -f  # split targets and components on commas and whitespace, without glob expansion
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2407229Z [36;1mset -f  # split targets and components on commas and whitespace, without glob expansion[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2407643Z [36;1mflags=()[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2407900Z [36;1mfor t in ${targets//,/ }; do flags+=(--target "$t"); done[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2408291Z [36;1mfor c in ${components//,/ }; do flags+=(--component "$c"); done[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2408764Z [36;1mif [[ $toolchain == nightly && -n $components ]]; then flags+=(--allow-downgrade); fi[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2409160Z [36;1mlog=$(mktemp)[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2409364Z [36;1mtrap 'rm -f "$log"' EXIT[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2409599Z [36;1mfor attempt in 1 2 3 4 5; do[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2410141Z [36;1m  if rustup toolchain install "$toolchain" "${flags[@]}" --profile minimal --no-self-update --force-non-host 2>&1 | tee "$log"; then[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2410682Z [36;1m    break[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2410859Z [36;1m  else[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2411033Z [36;1m    status=$?[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2411359Z [36;1m  fi[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2411640Z [36;1m  if [[ $attempt == 5 ]] || ! grep -Fq 'checksum failed for ' "$log" \[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2412175Z [36;1m      || ! grep -Fq 'this is likely due to an ongoing update of the official release server' "$log"; then[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2413356Z [36;1m    exit "$status"[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2413562Z [36;1m  fi[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2413897Z [36;1m  echo "Retrying rustup toolchain install in 30 seconds (retry $attempt of 4)" >&2[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2414300Z [36;1m  sleep 30[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2414487Z [36;1mdone[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2428018Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2428408Z env:
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2428669Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2429127Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2429582Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2429988Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2430380Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2430714Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2430969Z   toolchain: stable
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2431147Z   targets: 
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2431311Z   components: 
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2431524Z   RUSTUP_PERMIT_COPY_RENAME: 1
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:27.2431746Z ##[endgroup]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:31.2845393Z info: syncing channel updates for stable-x86_64-pc-windows-msvc
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:31.7688469Z info: latest update on 2026-10-15 for version 1.99.1 (58cf8f9c3 2026-10-13)
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:31.8157557Z info: removing previous version of component rustfmt
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:31.8313113Z info: removing previous version of component clippy
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:31.8469460Z info: removing previous version of component rust-std for target x86_64-pc-windows-gnu
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:31.9875564Z info: removing previous version of component rust-std for target i686-pc-windows-msvc
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:32.0971939Z info: removing previous version of component cargo
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:32.1596885Z info: removing previous version of component rust-std
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:32.2691024Z info: removing previous version of component rustc
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:32.3628088Z info: downloading 7 components
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:44.3420332Z 
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.1867312Z   stable-x86_64-pc-windows-msvc updated - rustc 1.99.1 (58cf8f9c3 2026-10-13) (from rustc 1.99.0 (b940084d7 2026-09-28))
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.1868021Z 
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.2284466Z ##[end-action id=__dtolnay_rust-toolchain.__run_4;outcome=success;conclusion=success;duration_ms=18997]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.2291148Z ##[start-action display=rustup default stable;id=__dtolnay_rust-toolchain.__run_5]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.2399740Z ##[group]Run rustup default "$toolchain" --force-non-host
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.2400171Z [36;1mrustup default "$toolchain" --force-non-host[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.2414233Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.2414633Z env:
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.2414908Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.2415390Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.2415831Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.2416222Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.2416616Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.2416951Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.2417202Z   toolchain: stable
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.2417387Z ##[endgroup]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.3002757Z info: using existing install for stable-x86_64-pc-windows-msvc
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.3077876Z info: default toolchain set to stable-x86_64-pc-windows-msvc
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.3078767Z 
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.3246461Z   stable-x86_64-pc-windows-msvc unchanged - rustc 1.99.1 (58cf8f9c3 2026-10-13)
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.3246874Z 
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.3309716Z ##[end-action id=__dtolnay_rust-toolchain.__run_5;outcome=success;conclusion=success;duration_ms=101]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.3313154Z ##[start-action display=Create cachekey;id=__dtolnay_rust-toolchain.rustc-version]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.3412692Z ##[group]Run DATE=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.3413712Z [36;1mDATE=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.3414401Z [36;1mHASH=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-hash: //p')[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.3414900Z [36;1mecho "cachekey=$(echo $DATE$HASH | head -c12)" >> $GITHUB_OUTPUT[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.3428959Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.3429364Z env:
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.3429633Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.3430103Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.3430560Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.3430956Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.3431342Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.3431672Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.3431925Z   toolchain: stable
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:46.3432112Z ##[endgroup]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.1163036Z ##[end-action id=__dtolnay_rust-toolchain.rustc-version;outcome=success;conclusion=success;duration_ms=784]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.1165536Z ##[start-action display=Disable incremental compilation;id=__dtolnay_rust-toolchain.__run_6]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.1290660Z ##[group]Run if [ -z "${CARGO_INCREMENTAL+set}" ]; then
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.1291063Z [36;1mif [ -z "${CARGO_INCREMENTAL+set}" ]; then[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.1291380Z [36;1m  echo CARGO_INCREMENTAL=0 >> $GITHUB_ENV[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.1291638Z [36;1mfi[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.1307058Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.1307478Z env:
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.1307747Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.1308206Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.1308650Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.1309041Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.1309432Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.1309771Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.1310042Z ##[endgroup]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.1645665Z ##[end-action id=__dtolnay_rust-toolchain.__run_6;outcome=success;conclusion=success;duration_ms=47]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.1647970Z ##[start-action display=Enable colors in Cargo output;id=__dtolnay_rust-toolchain.__run_7]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.1749654Z ##[group]Run if [ -z "${CARGO_TERM_COLOR+set}" ]; then
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.1750028Z [36;1mif [ -z "${CARGO_TERM_COLOR+set}" ]; then[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.1750347Z [36;1m  echo CARGO_TERM_COLOR=always >> $GITHUB_ENV[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.1750614Z [36;1mfi[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.1764109Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.1764507Z env:
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.1764769Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.1765226Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.1765667Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.1766885Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.1767305Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.1767639Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.1767896Z   CARGO_INCREMENTAL: 0
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.1768226Z ##[endgroup]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.2090863Z ##[end-action id=__dtolnay_rust-toolchain.__run_7;outcome=success;conclusion=success;duration_ms=44]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.2094632Z ##[start-action display=Enable Cargo sparse registry;id=__dtolnay_rust-toolchain.__run_8]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.2195353Z ##[group]Run # implemented in 1.66, stabilized in 1.68, made default in 1.70
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.2195889Z [36;1m# implemented in 1.66, stabilized in 1.68, made default in 1.70[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.2196539Z [36;1mif [ -z "${CARGO_REGISTRIES_CRATES_IO_PROTOCOL+set}" -o -f "D:\a\_temp"/.implicit_cargo_registries_crates_io_protocol ]; then[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.2197217Z [36;1m  if rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.6[89]\.'; then[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.2197743Z [36;1m    touch "D:\a\_temp"/.implicit_cargo_registries_crates_io_protocol || true[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.2198235Z [36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse >> $GITHUB_ENV[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.2198740Z [36;1m  elif rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.6[67]\.'; then[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.2199256Z [36;1m    touch "D:\a\_temp"/.implicit_cargo_registries_crates_io_protocol || true[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.2199712Z [36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=git >> $GITHUB_ENV[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.2200039Z [36;1m  fi[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.2200208Z [36;1mfi[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.2215608Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.2216010Z env:
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.2216272Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.2216729Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.2217180Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.2217570Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.2217970Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.2218295Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.2218548Z   CARGO_INCREMENTAL: 0
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.2218751Z   CARGO_TERM_COLOR: always
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.2218950Z   toolchain: stable
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.2219127Z ##[endgroup]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.6006336Z ##[end-action id=__dtolnay_rust-toolchain.__run_8;outcome=success;conclusion=success;duration_ms=391]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.6012189Z ##[start-action display=Work around spurious network errors in curl 8.0;id=__dtolnay_rust-toolchain.__run_9]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.6117358Z ##[group]Run # https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.6118736Z [36;1m# https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.6119393Z [36;1mif rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.7[01]\.'; then[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.6119867Z [36;1m  echo CARGO_HTTP_MULTIPLEXING=false >> $GITHUB_ENV[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.6120157Z [36;1mfi[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.6134275Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.6134666Z env:
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.6134922Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.6135372Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.6135807Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.6136196Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.6136586Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.6137072Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.6137330Z   CARGO_INCREMENTAL: 0
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.6137525Z   CARGO_TERM_COLOR: always
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.6137731Z   toolchain: stable
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.6137909Z ##[endgroup]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.7254685Z ##[end-action id=__dtolnay_rust-toolchain.__run_9;outcome=success;conclusion=success;duration_ms=124]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.7259929Z ##[start-action display=rustc +stable --version --verbose;id=__dtolnay_rust-toolchain.__run_10]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.7378130Z ##[group]Run rustc +"$toolchain" --version --verbose
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.7378518Z [36;1mrustc +"$toolchain" --version --verbose[0m
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.7393421Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.7393807Z env:
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.7394062Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.7394513Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.7394959Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.7395341Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.7395728Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.7396074Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.7396330Z   CARGO_INCREMENTAL: 0
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.7396531Z   CARGO_TERM_COLOR: always
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.7396731Z   toolchain: stable
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.7396914Z ##[endgroup]
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.8113594Z rustc 1.99.1 (58cf8f9c3 2026-10-13)
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.8114250Z binary: rustc
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.8114769Z commit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.8115354Z commit-date: 2026-10-13
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.8115829Z host: x86_64-pc-windows-msvc
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.8116309Z release: 1.99.1
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.8118786Z LLVM version: 23.1.1
+native (windows-2022)	Run dtolnay/rust-toolchain@stable	2026-10-16T08:12:47.8215152Z ##[end-action id=__dtolnay_rust-toolchain.__run_10;outcome=success;conclusion=success;duration_ms=95]
+native (windows-2022)	Run Swatinem/rust-cache@v2	﻿2026-10-16T08:12:47.8393310Z ##[group]Run Swatinem/rust-cache@v2
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:47.8393672Z with:
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:47.8393861Z   prefix-key: v0-rust
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:47.8394081Z   add-job-id-key: true
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:47.8394312Z   add-rust-environment-hash-key: true
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:47.8394583Z   cache-targets: true
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:47.8394788Z   cache-all-crates: false
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:47.8395021Z   cache-workspace-crates: false
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:47.8395250Z   save-if: true
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:47.8395435Z   cache-provider: github
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:47.8395644Z   cache-bin: true
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:47.8395830Z   lookup-only: false
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:47.8396022Z   cmd-format: {0}
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:47.8396195Z env:
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:47.8396452Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:47.8396966Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:47.8397491Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:47.8397975Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:47.8398418Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:47.8398785Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:47.8399054Z   CARGO_INCREMENTAL: 0
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:47.8399266Z   CARGO_TERM_COLOR: always
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:47.8399480Z ##[endgroup]
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:49.9456427Z ##[group]Cache Configuration
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:49.9456921Z Cache Provider:
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:49.9457218Z     github
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:49.9457487Z Workspaces:
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:49.9457757Z     D:\a\gen2\gen2
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:49.9458068Z Cache Paths:
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:49.9459004Z     C:\Users\runneradmin\.cargo\bin
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:49.9459480Z     C:\Users\runneradmin\.cargo\.crates.toml
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:49.9459973Z     C:\Users\runneradmin\.cargo\.crates2.json
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:49.9460778Z     C:\Users\runneradmin\.cargo\registry
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:49.9461219Z     C:\Users\runneradmin\.cargo\git
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:49.9461633Z     D:\a\gen2\gen2\target
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:49.9461967Z Restore Key:
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:49.9462292Z     v0-rust-native-Windows_NT-x64-e70cdc14
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:49.9462696Z Cache Key:
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:49.9463038Z     v0-rust-native-Windows_NT-x64-e70cdc14-8a03a485
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:49.9463479Z .. Prefix:
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:49.9463788Z   - v0-rust-native-Windows_NT-x64
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:49.9464174Z .. Environment considered:
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:49.9464505Z   - Rust Versions:
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:49.9464955Z     - 1.99.1 x86_64-pc-windows-msvc 58cf8f9c35b355199727627d07ae34a4e2846d67
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:49.9465543Z   - CARGO_HOME
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:49.9465836Z   - CARGO_INCREMENTAL
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:49.9466155Z   - CARGO_TERM_COLOR
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:49.9466469Z .. Lockfiles considered:
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:49.9466821Z   - D:\a\gen2\gen2\Cargo.lock
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:49.9467182Z   - D:\a\gen2\gen2\Cargo.toml
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:49.9467598Z   - D:\a\gen2\gen2\crates\gen2-mlxcel\Cargo.toml
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:49.9468738Z   - D:\a\gen2\gen2\examples\laya-mobile\Cargo.toml
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:49.9469596Z ##[endgroup]
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:49.9469788Z 
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:49.9469933Z ... Restoring cache ...
+native (windows-2022)	Run Swatinem/rust-cache@v2	2026-10-16T08:12:50.3037150Z No cache found.
+native (windows-2022)	Windows vcpkg binary cache	﻿2026-10-16T08:12:50.3276436Z ##[group]Run actions/cache/restore@v4
+native (windows-2022)	Windows vcpkg binary cache	2026-10-16T08:12:50.3276801Z with:
+native (windows-2022)	Windows vcpkg binary cache	2026-10-16T08:12:50.3277017Z   path: ~\AppData\Local\vcpkg\archives
+native (windows-2022)	Windows vcpkg binary cache	2026-10-16T08:12:50.3277462Z   key: nemo-diar-vcpkg-9e593bb18ea69cc5095e012465dcd675a822ed0d-x64-static-md
+native (windows-2022)	Windows vcpkg binary cache	2026-10-16T08:12:50.3277914Z   enableCrossOsArchive: false
+native (windows-2022)	Windows vcpkg binary cache	2026-10-16T08:12:50.3278160Z   fail-on-cache-miss: false
+native (windows-2022)	Windows vcpkg binary cache	2026-10-16T08:12:50.3278395Z   lookup-only: false
+native (windows-2022)	Windows vcpkg binary cache	2026-10-16T08:12:50.3278581Z env:
+native (windows-2022)	Windows vcpkg binary cache	2026-10-16T08:12:50.3278844Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Windows vcpkg binary cache	2026-10-16T08:12:50.3279345Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+native (windows-2022)	Windows vcpkg binary cache	2026-10-16T08:12:50.3279852Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Windows vcpkg binary cache	2026-10-16T08:12:50.3280294Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Windows vcpkg binary cache	2026-10-16T08:12:50.3280725Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Windows vcpkg binary cache	2026-10-16T08:12:50.3281087Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+native (windows-2022)	Windows vcpkg binary cache	2026-10-16T08:12:50.3281390Z   CARGO_INCREMENTAL: 0
+native (windows-2022)	Windows vcpkg binary cache	2026-10-16T08:12:50.3281599Z   CARGO_TERM_COLOR: always
+native (windows-2022)	Windows vcpkg binary cache	2026-10-16T08:12:50.3281820Z   CACHE_ON_FAILURE: false
+native (windows-2022)	Windows vcpkg binary cache	2026-10-16T08:12:50.3282029Z ##[endgroup]
+native (windows-2022)	Windows vcpkg binary cache	2026-10-16T08:12:50.4638842Z (node:1452) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+native (windows-2022)	Windows vcpkg binary cache	2026-10-16T08:12:50.4639810Z (Use `node --trace-deprecation ...` to show where the warning was created)
+native (windows-2022)	Windows vcpkg binary cache	2026-10-16T08:12:50.6276090Z Cache hit for: nemo-diar-vcpkg-9e593bb18ea69cc5095e012465dcd675a822ed0d-x64-static-md
+native (windows-2022)	Windows vcpkg binary cache	2026-10-16T08:12:50.6394070Z (node:1452) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+native (windows-2022)	Windows vcpkg binary cache	2026-10-16T08:12:51.6737171Z Received 205520896 of 301702240 (68.1%), 194.1 MBs/sec
+native (windows-2022)	Windows vcpkg binary cache	2026-10-16T08:12:52.1485378Z Received 301702240 of 301702240 (100.0%), 193.8 MBs/sec
+native (windows-2022)	Windows vcpkg binary cache	2026-10-16T08:12:52.1490546Z Cache Size: ~288 MB (301702240 B)
+native (windows-2022)	Windows vcpkg binary cache	2026-10-16T08:12:52.1576593Z [command]"C:\Program Files\Git\usr\bin\tar.exe" -xf D:/a/_temp/9cd20153-a6a2-4682-9c80-e05045e8dc9f/cache.tzst -P -C D:/a/gen2/gen2 --force-local --use-compress-program "zstd -d"
+native (windows-2022)	Windows vcpkg binary cache	2026-10-16T08:12:52.7549070Z Cache restored successfully
+native (windows-2022)	Windows vcpkg binary cache	2026-10-16T08:12:52.7829741Z Cache restored from key: nemo-diar-vcpkg-9e593bb18ea69cc5095e012465dcd675a822ed0d-x64-static-md
+native (windows-2022)	Build and exercise actual CPU SDK	﻿2026-10-16T08:12:52.8078747Z ##[group]Run python tools/nemotron-diarization/platform_native.py --source native-source --prefix "D:\a\_temp/nemo-sdk" --output "D:\a\_temp/nemo-evidence" --jobs 2
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:12:52.8080211Z [36;1mpython tools/nemotron-diarization/platform_native.py --source native-source --prefix "D:\a\_temp/nemo-sdk" --output "D:\a\_temp/nemo-evidence" --jobs 2[0m
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:12:52.8120872Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:12:52.8121245Z env:
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:12:52.8121511Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:12:52.8121996Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:12:52.8122447Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:12:52.8122860Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:12:52.8123358Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:12:52.8123745Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:12:52.8124220Z   CARGO_INCREMENTAL: 0
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:12:52.8124516Z   CARGO_TERM_COLOR: always
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:12:52.8124838Z   CACHE_ON_FAILURE: false
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:12:52.8125099Z ##[endgroup]
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:13:03.1892504Z START cmake-version
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:13:04.0440024Z PASS cmake-version
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:13:04.0444042Z START git-line-ending-config
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:13:04.0748854Z PASS git-line-ending-config
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:13:04.0752192Z START sdk-build
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:15:16.6954266Z PASS sdk-build
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:15:16.7074695Z START sdk-install
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:15:16.9631582Z PASS sdk-install
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:15:16.9637132Z START native-probe-build
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:15:17.1160298Z Traceback (most recent call last):
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:15:17.1169598Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\platform_native.py", line 292, in <module>
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:15:17.1170361Z     main()
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:15:17.1217509Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\platform_native.py", line 281, in main
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:15:17.1219557Z     runner.build()
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:15:17.1220503Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\platform_native.py", line 178, in build
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:15:17.1222298Z     self.run('native-probe-build', command, self.output)
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:15:17.1223097Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\platform_native.py", line 99, in run
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:15:17.1224180Z     subprocess.run(command, cwd=cwd or self.repo, env=environment or self.environment,
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:15:17.1225055Z   File "C:\hostedtoolcache\windows\Python\3.12.10\x64\Lib\subprocess.py", line 548, in run
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:15:17.1346293Z     with Popen(*popenargs, **kwargs) as process:
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:15:17.1393604Z          ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:15:17.1394539Z   File "C:\hostedtoolcache\windows\Python\3.12.10\x64\Lib\subprocess.py", line 1026, in __init__
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:15:17.1402193Z     self._execute_child(args, executable, preexec_fn, close_fds,
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:15:17.1403136Z   File "C:\hostedtoolcache\windows\Python\3.12.10\x64\Lib\subprocess.py", line 1538, in _execute_child
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:15:17.1411817Z     hp, ht, pid, tid = _winapi.CreateProcess(executable, args,
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:15:17.1412474Z                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:15:17.1413083Z FileNotFoundError: [WinError 2] The system cannot find the file specified
+native (windows-2022)	Build and exercise actual CPU SDK	2026-10-16T08:15:17.2459245Z ##[error]Process completed with exit code 1.
+native (windows-2022)	Preserve successful or failed evidence	﻿2026-10-16T08:15:17.2637839Z ##[group]Run actions/upload-artifact@v4
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:17.2638207Z with:
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:17.2638418Z   name: nemotron-native-windows-2022
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:17.2639260Z   path: D:\a\_temp/nemo-evidence/*.json
+native (windows-2022)	Preserve successful or failed evidence	D:\a\_temp/nemo-evidence/*.log
+native (windows-2022)	Preserve successful or failed evidence	D:\a\_temp/nemo-evidence/*.f32
+native (windows-2022)	Preserve successful or failed evidence	D:\a\_temp/nemo-evidence/*.tar.gz
+native (windows-2022)	Preserve successful or failed evidence	D:\a\_temp/nemo-evidence/reference/
+native (windows-2022)	Preserve successful or failed evidence	D:\a\_temp/nemo-sdk/
+native (windows-2022)	Preserve successful or failed evidence	
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:17.2640009Z   retention-days: 7
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:17.2640214Z   if-no-files-found: warn
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:17.2640432Z   compression-level: 6
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:17.2640643Z   overwrite: false
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:17.2640841Z   include-hidden-files: false
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:17.2641069Z env:
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:17.2641524Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:17.2641999Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:17.2642446Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:17.2642855Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:17.2643286Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:17.2643623Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:17.2643893Z   CARGO_INCREMENTAL: 0
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:17.2644100Z   CARGO_TERM_COLOR: always
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:17.2644318Z   CACHE_ON_FAILURE: false
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:17.2644528Z ##[endgroup]
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:17.4493860Z (node:2416) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:17.4495126Z (Use `node --trace-deprecation ...` to show where the warning was created)
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:17.5028812Z Multiple search paths detected. Calculating the least common ancestor of all paths
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:17.5032220Z The least common ancestor is D:\a\_temp. This will be the root directory of the artifact
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:17.5032758Z With the provided path, there will be 81 files uploaded
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:17.5038822Z Artifact name is valid!
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:17.5040557Z Root directory input is valid!
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:17.7231678Z Beginning upload of artifact content to blob storage
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:18.0333921Z (node:2416) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:18.1673128Z Uploaded bytes 2495260
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:18.1829960Z Finished uploading artifact content to blob storage!
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:18.1831625Z SHA256 digest of uploaded artifact zip is 8d0c2201646505953de89451644573192fac560f351503c6af3f57ea12783d32
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:18.1833756Z Finalizing artifact upload
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:18.4129875Z Artifact nemotron-native-windows-2022.zip successfully finalized. Artifact ID 12033756347
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:18.4131070Z Artifact nemotron-native-windows-2022 has been successfully uploaded! Final size is 2495260 bytes. Artifact ID is 12033756347
+native (windows-2022)	Preserve successful or failed evidence	2026-10-16T08:15:18.4138860Z Artifact download URL: https://github.com/saberra-ai/gen2/actions/runs/38872089575/artifacts/12033756347
+native (windows-2022)	Post Run actions/checkout@v4	﻿2026-10-16T08:15:18.4431336Z Post job cleanup.
+native (windows-2022)	Post Run actions/checkout@v4	2026-10-16T08:15:18.6310097Z [command]"C:\Program Files\Git\bin\git.exe" version
+native (windows-2022)	Post Run actions/checkout@v4	2026-10-16T08:15:18.6582149Z git version 2.56.0.windows.2
+native (windows-2022)	Post Run actions/checkout@v4	2026-10-16T08:15:18.6640044Z Copying 'C:\Users\runneradmin\.gitconfig' to 'D:\a\_temp\191c9bcb-bebe-432b-a9ee-c4ff2219a108\.gitconfig'
+native (windows-2022)	Post Run actions/checkout@v4	2026-10-16T08:15:18.6663320Z Temporarily overriding HOME='D:\a\_temp\191c9bcb-bebe-432b-a9ee-c4ff2219a108' before making global git config changes
+native (windows-2022)	Post Run actions/checkout@v4	2026-10-16T08:15:18.6664958Z Adding repository directory to the temporary git global config as a safe directory
+native (windows-2022)	Post Run actions/checkout@v4	2026-10-16T08:15:18.6676342Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\gen2\gen2\native-source
+native (windows-2022)	Post Run actions/checkout@v4	2026-10-16T08:15:18.6978461Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+native (windows-2022)	Post Run actions/checkout@v4	2026-10-16T08:15:18.7279758Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+native (windows-2022)	Post Run actions/checkout@v4	2026-10-16T08:15:19.1676062Z Entering 'llama.cpp'
+native (windows-2022)	Post Run actions/checkout@v4	2026-10-16T08:15:19.2514419Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+native (windows-2022)	Post Run actions/checkout@v4	2026-10-16T08:15:19.2806444Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+native (windows-2022)	Post Run actions/checkout@v4	2026-10-16T08:15:19.7974547Z Entering 'llama.cpp'
+native (windows-2022)	Post Run actions/checkout@v4	2026-10-16T08:15:19.8776657Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+native (windows-2022)	Post Run actions/checkout@v4	2026-10-16T08:15:19.9066628Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+native (windows-2022)	Post Run actions/checkout@v4	2026-10-16T08:15:20.4081872Z Entering 'llama.cpp'
+native (windows-2022)	Post Run actions/checkout@v4	2026-10-16T08:15:20.4374443Z file:D:/a/gen2/gen2/native-source/.git/modules/llama.cpp/config	remote.origin.url
+native (windows-2022)	Post Run actions/checkout@v4	2026-10-16T08:15:20.4767518Z [command]"C:\Program Files\Git\bin\git.exe" config --file D:/a/gen2/gen2/native-source/.git/modules/llama.cpp/config --name-only --get-regexp ^includeIf\.gitdir:
+native (windows-2022)	Post Run actions/checkout@v4	﻿2026-10-16T08:15:20.5349153Z Post job cleanup.
+native (windows-2022)	Post Run actions/checkout@v4	2026-10-16T08:15:20.7327383Z [command]"C:\Program Files\Git\bin\git.exe" version
+native (windows-2022)	Post Run actions/checkout@v4	2026-10-16T08:15:20.7597163Z git version 2.56.0.windows.2
+native (windows-2022)	Post Run actions/checkout@v4	2026-10-16T08:15:20.7649231Z Copying 'C:\Users\runneradmin\.gitconfig' to 'D:\a\_temp\893d8a94-afbb-4db8-a672-875ef9efcdf2\.gitconfig'
+native (windows-2022)	Post Run actions/checkout@v4	2026-10-16T08:15:20.7670097Z Temporarily overriding HOME='D:\a\_temp\893d8a94-afbb-4db8-a672-875ef9efcdf2' before making global git config changes
+native (windows-2022)	Post Run actions/checkout@v4	2026-10-16T08:15:20.7671136Z Adding repository directory to the temporary git global config as a safe directory
+native (windows-2022)	Post Run actions/checkout@v4	2026-10-16T08:15:20.7682124Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\gen2\gen2
+native (windows-2022)	Post Run actions/checkout@v4	2026-10-16T08:15:20.7980636Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+native (windows-2022)	Post Run actions/checkout@v4	2026-10-16T08:15:20.8271307Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+native (windows-2022)	Post Run actions/checkout@v4	2026-10-16T08:15:21.2789122Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+native (windows-2022)	Post Run actions/checkout@v4	2026-10-16T08:15:21.3091232Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+native (windows-2022)	Post Run actions/checkout@v4	2026-10-16T08:15:21.7790081Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+native (windows-2022)	Post Run actions/checkout@v4	2026-10-16T08:15:21.8094335Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+native (windows-2022)	Complete job	﻿2026-10-16T08:15:22.3274073Z Cleaning up orphan processes
+native (windows-2022)	Complete job	2026-10-16T08:15:22.3544569Z Terminate orphan process: pid (5572) (vctip)
+native (windows-2022)	Complete job	2026-10-16T08:15:22.3716892Z Terminate orphan process: pid (2560) (mspdbsrv)
+native (windows-2022)	Complete job	2026-10-16T08:15:22.3811454Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/cache/restore@v4, actions/checkout@v4, actions/setup-python@v5, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

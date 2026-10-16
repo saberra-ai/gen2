@@ -153,6 +153,10 @@ class LinuxPackageTests(unittest.TestCase):
             header[18:20] = (62).to_bytes(2, 'little')
             path.write_bytes(header)
             dynamic = '(SONAME) Library soname: [libnative.so]\n(RPATH) Library rpath: [$ORIGIN]\n'
+            with patch('package_linux.capture', return_value=''):
+                with self.assertRaisesRegex(ValueError, 'SONAME'):
+                    inspect_elf(path)
+                self.assertIsNone(inspect_elf(path, require_soname=False)['soname'])
             for version, good in [('GLIBC_2.39', True), ('GLIBC_2.39.0', True), ('GLIBC_ABI_DT_RELR', True), ('GLIBC_2.39.0.1', False), ('GLIBC_2.40', False), ('GLIBC_PRIVATE', False)]:
                 with patch('package_linux.capture', side_effect=[dynamic, 'Version needs section\n Name: ' + version]):
                     if good:
