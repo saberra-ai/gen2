@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "source_commit": "0cae56eef0d4ebbdfb4fa0650c71945c772d75c6",
+  "local_byte_construction_and_restore_passed": true,
+  "runtime_qualified": false,
+  "release_qualified": false,
+  "redistribution_qualified": false,
+  "packaging_host": {
+    "platform": "macOS-26.3-arm64-arm-64bit-Mach-O",
+    "python": "3.14.7"
+  },
+  "native_source_commit": "24ad9271ef2b46c86a554b61da5395b9bf42404a",
+  "native_receipt_sha256": "18fcacac2b79a31a9ff1791ae62c09defb43a70bbf2c9cf173bdbc3991af26d3",
+  "archive": {
+    "schema_version": 1,
+    "release_qualified": false,
+    "archive": "development-windows-runtime.zip",
+    "scope": "Exact portable file bytes/directory names; no Windows ACL or runtime qualification.",
+    "archive_bytes": 2496064,
+    "archive_sha256": "218da46a20c9ead2fc6ed4a1963c3f6f3f6179cd892b8459761d74a76dcf666f"
+  },
+  "archive_entries": 47,
+  "unchanged_qualified_dlls": 13,
+  "unchanged_installed_upstream_notices": 8,
+  "supplemental_notice_files": {
+    "darts-clone-LICENSE": {
+      "bytes": 1481,
+      "sha256": "155f59997298ee336602c49f9c1110f268ac394ca2197eb02647a3555935ad52",
+      "source_member": "sentencepiece-0.2.1/third_party/darts_clone/LICENSE",
+      "source_full_bytes": 1481,
+      "source_full_sha256": "155f59997298ee336602c49f9c1110f268ac394ca2197eb02647a3555935ad52",
+      "selection": "full source file"
+    },
+    "esaxx-LICENSE": {
+      "bytes": 1112,
+      "sha256": "7c28553d1d3312d65fe309f76a22ebaf33a3d76c8c1e3b98a88ee4654ecb53db",
+      "source_member": "sentencepiece-0.2.1/third_party/esaxx/LICENSE",
+      "source_full_bytes": 1112,
+      "source_full_sha256": "7c28553d1d3312d65fe309f76a22ebaf33a3d76c8c1e3b98a88ee4654ecb53db",
+      "selection": "full source file"
+    },
+    "sais-lite-NOTICE.txt": {
+      "bytes": 1174,
+      "sha256": "162a72e52ad69921a67676af4fb59911233566dce1637e2e33db27659fcac523",
+      "source_member": "sentencepiece-0.2.1/third_party/esaxx/sais.hxx",
+      "source_full_bytes": 12385,
+      "source_full_sha256": "6c750f6cf098d346c9d1723291a062bc9154657d5be2c3833601c5a33a5b4d1d",
+      "selection": "initial block comment through first */"
+    }
+  },
+  "model_free_tool_tests": 88,
+  "limits": [
+    "Actual macOS construction and three byte-equivalent runtime trees including a fresh Unicode ZIP restoration.",
+    "All 13 qualified Windows DLLs and eight original installed upstream notices are unchanged; three supplemental texts and source-selection provenance added.",
+    "No Windows, model, installer or native execution in this receipt; no complete attribution, Microsoft distribution rights, quality or release qualification."
+  ]
+}

@@ -691,7 +691,9 @@ both esaxx's MIT notice and the distinct sais-lite/Yuta Mori header notice.
 The Windows constructor now adds those exact pinned texts and their source
 selection provenance without changing the qualified native DLLs or installed
 upstream notices. Local macOS construction, ZIP restoration and 88 model-free
-tool tests pass; that local construction is not Windows execution or complete
+tool tests pass; the [19-file local construction receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-supplemental-notice-construction/qualification.json)
+retains the 47-entry archive identity, unchanged 13 DLLs/eight upstream notices
+and exact supplemental selections. That local construction is not Windows execution or complete
 license/release qualification. Actual Windows CPU chat coexistence is being
 qualified separately using the normal OpenMP backend and fresh offline
 containers for isolated chat and both load orders.
