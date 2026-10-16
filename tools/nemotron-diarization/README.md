@@ -10,6 +10,13 @@ Long sessions, coexistence, Metal, other platforms and desktop qualification
 remain pending for this profile.
 See the [migration and current evidence](../../docs/research/nemotron-v3-finish-valid-mel-patch.md).
 
+The separate [Metal construction protocol](valid-mel-metal-build.protocol.json)
+freezes a fresh tagged SDK build with pristine pinned GGML sources, 20 embedded
+shader-text bundles and model-free state/version checks.
+`build_valid_mel_metal_sdk.py` records the compiler inputs and verifies the
+installed Mach-O payload bytes against independently flattened shader sources.
+Construction does not qualify inference, GPU placement or a desktop release.
+
 # Nemotron 3 — N0 qualification
 
 This directory implements the first milestone of the

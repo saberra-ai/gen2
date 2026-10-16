@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "source_commit": "52d934652c1c33390b148775a57a7f9909dcc6cd",
+  "ci_url": "https://github.com/saberra-ai/gen2/actions/runs/38927208450",
+  "all_thirteen_feature_jobs_passed": true,
+  "model_free_evidence_tests_passed": 137,
+  "platforms": [
+    "ubuntu-latest",
+    "windows-latest",
+    "macos-latest"
+  ],
+  "feature_sets": [
+    "",
+    "backend-diar-nemo",
+    "asr-dynamic,backend-diar-nemo",
+    "backend-llamacpp,asr-dynamic,backend-diar-nemo"
+  ],
+  "all_twelve_feature_jobs_ran_fmt_clippy_tests_successfully": true,
+  "evidence_and_pnola_python_and_desktop_asset_test_steps_passed": true,
+  "combined_log_retained_outside_git": {
+    "bytes": 10062743,
+    "sha256": "be421e5dbd65c354130693bbb23f08921d9792d8f17165505c598f7170a023b0"
+  },
+  "release_qualified": false,
+  "limits": [
+    "CI source is52d9346. This proves its12OS/feature combinations and137model-free evidence tests, including current macOSv2 packaging and fixed-runtime loader/completeness tools. Later CPU long-session and Metal construction tools are outside this CI source.",
+    "No model/nativeSDK is required by this workflow. It does not replace real-model, desktop, distribution, held-out-quality or uncontended-performance gates. Earlier network-failure and102-test success receipts remain unchanged."
+  ]
+}
