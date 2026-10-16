@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "app_source_commit": "024a88f",
+  "release_qualified": false,
+  "root": "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification 024a88f",
+  "manifest_sha256": "2af632cae360ddc6c3aeb07e80a4de6f982147f6868f6ad62e2ec2f8cf2faef1",
+  "runner_sha256": "8844a05010eb41005c660bcc9ca999cac203d7b3d677a172a1c4ccf401a23595",
+  "predecessor_protocol_sha256": "3f7847d88498cb165c0370e050044a27623501b8fa1c9b868b9e3c531051aa4f",
+  "failure": "Original runner accessed attribution.words in the intentionally unavailable variant, which omits that field. App exited0 and saved completeASR/unavailableMetal as intended. Original logs/result retained.",
+  "resume": "Validate the exact saved unavailable result, without rerunning completed inference; execute the remaining originallive andmissinginput checks unchanged.",
+  "interrupted_verification_sha256": "720b65e5c669fa807914386b45b6d43b89ae19cdd87d2dfcb19a67208d85350b",
+  "failure_log_sha256": "a0f5e36bda0cb8c1e4e6dab6718c7a6e2cebf86df5a59d4adca4f633fbca0f5d"
+}
