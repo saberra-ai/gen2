@@ -14,6 +14,7 @@ import tempfile
 from windows_archive import byte_inventory, digest, restore_archive, safe_relative, write_archive
 from windows_naming import NAMES, verify_private_outputs
 from windows_pe import inspect_pe
+from windows_notices import install_supplement, verify_supplement
 
 CRT = {'concrt140.dll', 'msvcp140.dll', 'msvcp140_1.dll', 'msvcp140_2.dll',
        'msvcp140_atomic_wait.dll', 'msvcp140_codecvt_ids.dll', 'vcruntime140.dll', 'vcruntime140_1.dll'}
@@ -134,6 +135,9 @@ def verify(root):
     files.pop('package.json')
     if files != manifest['files']:
         raise ValueError('Windows runtime filesystem differs from manifest')
+    # Earlier development receipts predate this additive notice supplement.
+    if 'source_notice_supplement' in manifest:
+        verify_supplement(root, manifest['source_notice_supplement'])
     if set(manifest['libraries']) != set(NAMES.values()) | CRT:
         raise ValueError('Windows library names escape the declared set')
     metadata = root / 'metadata'
@@ -179,6 +183,7 @@ def package_sdk(sdk, evidence, destination):
             if digest(notices / name) != lock['runtime']['source_sha256'][name]:
                 raise ValueError('pinned NeMo notice differs')
         shutil.copytree(notices, staged / 'notices/nemo-speech')
+        supplement = install_supplement(staged)
         (staged / 'notices/gen2').mkdir()
         shutil.copy2(tools.parents[1] / 'LICENSE', staged / 'notices/gen2/LICENSE')
         metadata = staged / 'metadata'
@@ -195,8 +200,9 @@ def package_sdk(sdk, evidence, destination):
                     'lock_sha256': digest(tools / 'runtime.lock.json'), 'entry_library': NAMES['nemo_speech_asr_c.dll'],
                     'libraries': libraries, 'dependency_closure': validate_libraries(libraries),
                     'msvc_provenance_sha256': digest(evidence / 'windows-provenance.json'),
+                    'source_notice_supplement': supplement,
                     'packaging_host': {'platform': platform.platform(), 'python': platform.python_version()},
-                    'tools': {name: digest(tools / name) for name in ['package_windows.py', 'windows_archive.py', 'windows_pe.py', 'windows_naming.py']},
+                    'tools': {name: digest(tools / name) for name in ['package_windows.py', 'windows_archive.py', 'windows_pe.py', 'windows_naming.py', 'windows_notices.py']},
                     'limits': ['Development byte-preserving construction only; no execution/relocation/coexistence qualification.',
                                'Conservative eight-CRT payload; static reachability is not proof that fewer files are safe.',
                                'Microsoft DLLs remain unmodified/shared names; source/signature provenance is observed on the qualified build host.',

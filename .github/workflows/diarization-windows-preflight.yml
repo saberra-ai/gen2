@@ -26,7 +26,7 @@ jobs:
           cache-on-failure: true
       - name: Run packaging and evidence regressions
         working-directory: tools/nemotron-diarization
-        run: python -m unittest test_package_windows test_windows_archive test_windows_pe test_windows_naming test_windows_compat test_windows_loader_control test_windows_container_preflight test_platform_native test_evidence_commands test_windows_runtime_audit test_windows_chat_inputs test_linux_chat_audit
+        run: python -m unittest test_package_windows test_windows_archive test_windows_pe test_windows_naming test_windows_compat test_windows_loader_control test_windows_container_preflight test_platform_native test_evidence_commands test_windows_runtime_audit test_windows_chat_inputs test_linux_chat_audit test_windows_notices
       - name: Retrieve the exact qualified private-name SDK
         uses: actions/download-artifact@v4
         with:

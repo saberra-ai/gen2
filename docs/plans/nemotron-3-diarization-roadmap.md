@@ -685,6 +685,17 @@ SentencePiece root license omits Darts-clone's distinct BSD notice; esaxx scope
 also needs review. Source identity does not establish final native linker-member
 selection or complete release qualification.
 
+The subsequent [supplemental-notice audit](../research/nemotron-windows-static-supplemental-notices.md)
+identifies Darts-clone's runtime-source BSD notice and conservatively retains
+both esaxx's MIT notice and the distinct sais-lite/Yuta Mori header notice.
+The Windows constructor now adds those exact pinned texts and their source
+selection provenance without changing the qualified native DLLs or installed
+upstream notices. Local macOS construction, ZIP restoration and 88 model-free
+tool tests pass; that local construction is not Windows execution or complete
+license/release qualification. Actual Windows CPU chat coexistence is being
+qualified separately using the normal OpenMP backend and fresh offline
+containers for isolated chat and both load orders.
+
 A guarded [Windows private-DLL build](../research/nemotron-windows-private-names.md)
 now relinks the five owned DLLs through an external CMake naming hook, updates
 probe/entry paths and rejects residual generic ordinary/delay/forwarded native
