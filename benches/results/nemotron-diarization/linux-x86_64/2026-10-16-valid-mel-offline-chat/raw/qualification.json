@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "offline_container_gates_passed": true,
+  "chat_diarization_gates_passed": true,
+  "commands": [
+    {
+      "name": "offline",
+      "argv": [
+        "/opt/hostedtoolcache/Python/3.12.15/x64/bin/python",
+        "/home/runner/work/gen2/gen2/tools/nemotron-diarization/qualify_linux_package.py",
+        "--sdk-prefix",
+        "/home/runner/work/_temp/linux-valid-mel-runtime/restored-sdk",
+        "--native-evidence",
+        "/home/runner/work/_temp/qualified-linux-native/nemo-valid-mel-evidence",
+        "--package-evidence",
+        "/home/runner/work/_temp/qualified-linux-package/linux-valid-mel-construction/construction",
+        "--output",
+        "/home/runner/work/_temp/linux-valid-mel-runtime/offline"
+      ],
+      "cwd": "/home/runner/work/gen2/gen2",
+      "returncode": 0,
+      "elapsed_seconds": 588.236206907
+    },
+    {
+      "name": "chat",
+      "argv": [
+        "/opt/hostedtoolcache/Python/3.12.15/x64/bin/python",
+        "/home/runner/work/gen2/gen2/tools/nemotron-diarization/qualify_linux_chat.py",
+        "--container-evidence",
+        "/home/runner/work/_temp/linux-valid-mel-runtime/offline",
+        "--output",
+        "/home/runner/work/_temp/linux-valid-mel-runtime/chat"
+      ],
+      "cwd": "/home/runner/work/gen2/gen2",
+      "returncode": 0,
+      "elapsed_seconds": 596.938330445
+    }
+  ],
+  "protocol": {
+    "bytes": 56956,
+    "sha256": "c9e8cdcf08b8a9cde635ff9aeef4826c9796701af4dfc1ef26aa00dd14415b35"
+  },
+  "source_commit": "b8e1899cd6b872313062867b399bfb91b6d59903",
+  "offline_receipt": {
+    "bytes": 3349,
+    "sha256": "b4951486ce3911f3dab088704ffa7dd1d4e6f759e2148db06eeea249b9a1d2ae"
+  },
+  "chat_receipt": {
+    "bytes": 7441,
+    "sha256": "6844273c30245367c394cfd58cdb9bcba319a9865dc411367e3d6bbda0b36f09"
+  }
+}

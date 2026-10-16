@@ -93,8 +93,21 @@ passes at source `054cac64`; the original producer SDK remains bound to `8fbef3e
 The [next runtime protocol](valid-mel-linux-runtime.protocol.json) freezes that
 exact archive for fresh offline native/public/lifecycle and CPU chat gates.
 The consumer checks constructor source hashes across the separate producer
-commit and records all source identities. These runtime gates remain pending;
-all 167 model-free tool tests pass. The [157-test CI source](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-157/qualification.json)
+commit and records all source identities. The [actual offline/chat receipt](../../benches/results/nemotron-diarization/linux-x86_64/2026-10-16-valid-mel-offline-chat/qualification.json)
+passes seven offline and three chat containers at `b8e1899`: complete 6,000-row
+native/public parity, seven lifecycle gates, a missing-library failure control
+and six unchanged diarization outputs across both chat load orders. Both orders
+retain isolated chat text and record overlapping API calls, with 720 observed
+private GGML bindings each. This qualifies the recorded Ubuntu CPU stack;
+Bark/Laya, physical desktop, held-out quality and release gates remain open.
+The [fresh Windows SDK receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-valid-mel-native/qualification.json)
+also passes at `8fbef3e`: 43 commands, complete 6,000-row/27-turn parity, all
+seven lifecycle gates, and 66 delivered SDK files with private PE/CRT provenance
+reverified. Same-host SDK qualification does not establish package relocation.
+The [fresh Windows runtime protocol](valid-mel-windows-runtime.protocol.json)
+binds that SDK for five-DLL v2 construction, disposable central-VC setup and
+offline native/public/lifecycle/chat execution; actual execution is pending.
+All 169 model-free tool tests pass. The [157-test CI source](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-157/qualification.json)
 also passes all 13 jobs; later package migrations are outside that CI source.
 
 The [Mac mixed-model protocol](valid-mel-mixed.protocol.json) freezes a freshly
