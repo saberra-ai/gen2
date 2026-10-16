@@ -1,4 +1,5 @@
 from pathlib import Path
+import os
 import tempfile
 import unittest
 
@@ -47,6 +48,9 @@ class LinuxContainerGateTests(unittest.TestCase):
             self.assertEqual(command[command.index('--network') + 1], 'none')
             self.assertEqual(command[command.index('--pull') + 1], 'never')
             self.assertIn('--read-only', command)
+            # Acquired fixtures are 0600; capability-free root cannot read the
+            # CI user's files or write its results. Preserve the owning UID/GID.
+            self.assertEqual(command[command.index('--user') + 1], f'{os.getuid()}:{os.getgid()}')
             self.assertEqual(command[command.index(image) + 1:command.index(image) + 3], ['/usr/bin/env', '-i'])
             self.assertEqual(sum(item.startswith('type=bind,') for item in command), 2)
             for variable in ['LD_LIBRARY_PATH', 'LD_PRELOAD', 'LD_AUDIT']:

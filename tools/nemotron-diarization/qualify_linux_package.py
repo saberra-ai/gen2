@@ -64,6 +64,7 @@ def require_lifecycle(text, completed=False):
 
 def container_command(image, mounts, results, command, environment=None):
     args = ['docker', 'run', '--rm', '--pull', 'never', '--platform', 'linux/amd64',
+            '--user', f'{os.getuid()}:{os.getgid()}',
             '--network', 'none', '--read-only', '--cap-drop', 'ALL',
             '--security-opt', 'no-new-privileges', '--tmpfs', '/tmp:rw,nosuid,nodev,size=512m',
             '--workdir', '/tmp']
@@ -206,6 +207,10 @@ class Qualification:
         control = '''set -eu
 . /etc/os-release
 test "$ID" = ubuntu && test "$VERSION_ID" = 24.04
+id
+test -r /work/assets/ami_en2002d_2132.wav
+test -r /work/assets/Nemotron-3-Diarization.q8_0.gguf
+test -w /results
 for tool in cc c++ gcc g++ clang cmake cargo; do
     if command -v "$tool"; then exit 10; fi
 done

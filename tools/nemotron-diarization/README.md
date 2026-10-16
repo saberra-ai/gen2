@@ -367,3 +367,39 @@ retention/compaction. It rejects nonfinite/out-of-range values and excess native
 padding before clipping, using the same terminal-frame bound as Gen2. Timings
 remain separate from correctness.
 The independent probe's successful compile/calibration is not a completed soak.
+
+## Linux runtime construction and container qualification
+
+Linux development SDK/native checks and runtime construction are separate stages.
+On Ubuntu 24.04 x86_64, after `platform_native.py` succeeds, install packaging
+prerequisites (`patchelf`, `binutils`, authenticated matching `deb-src` indexes),
+then run:
+
+```sh
+python tools/nemotron-diarization/platform_linux_package.py \
+  --sdk-prefix /absolute/path/nemo-sdk \
+  --native-receipt /absolute/path/nemo-evidence/receipt.json \
+  --output /absolute/path/new-package-evidence
+python tools/nemotron-diarization/qualify_linux_package.py \
+  --sdk-prefix /absolute/path/nemo-sdk \
+  --native-evidence /absolute/path/nemo-evidence \
+  --package-evidence /absolute/path/new-package-evidence \
+  --output /absolute/path/new-container-evidence
+```
+
+The second command requires a Docker daemon, prebuilt Gen2 release helpers and
+all locked assets already present in the native evidence directory. It pulls
+Ubuntu 24.04 before testing, freezes the resolved image content identity, then
+executes fresh containers with network disabled, read-only inputs and no SDK or
+checkout mounted. It verifies the delivered runtime archive in a relocated
+Unicode path, native/public outputs, seven executed lifecycle tests, actual
+loaded library paths and a missing-library negative control. It creates no
+release claim: chat/Bark/Laya coexistence, additional host baselines and quality
+remain independent gates. Existing output directories are refused so failed
+runs remain available. The workflow uploads JSON/logs/probability outputs and
+the opaque runtime archive, without putting model/runtime/source binaries in Git.
+
+The [construction receipt](../../benches/results/nemotron-diarization/linux-x86_64/2026-10-16-runtime-construction/qualification.json)
+records the passing construction and downloaded filesystem checks. Actual
+container execution is tracked in the roadmap; source and model-free tests do
+not establish that result.
