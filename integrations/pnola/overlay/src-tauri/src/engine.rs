@@ -86,7 +86,18 @@ impl Engine {
             };
             let nemo_library = std::env::var_os("GEN2_NEMO_LIBRARY")
                 .map(std::path::PathBuf::from)
-                .unwrap_or_else(|| resources.join("nemo/lib").join(nemo_name));
+                .unwrap_or_else(|| {
+                    let framework = resources
+                        .parent()
+                        .unwrap_or(resources)
+                        .join("Frameworks")
+                        .join(nemo_name);
+                    if cfg!(target_os = "macos") && framework.is_file() {
+                        framework
+                    } else {
+                        resources.join("nemo/lib").join(nemo_name)
+                    }
+                });
             let nemo_model = std::env::var_os("GEN2_NEMOTRON_ASSETS")
                 .map(std::path::PathBuf::from)
                 .unwrap_or_else(|| resources.join("nemotron"));

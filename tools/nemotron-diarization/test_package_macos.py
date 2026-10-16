@@ -4,10 +4,32 @@ import tempfile
 import unittest
 
 import hashlib
-from package_macos import resolve_dependency, verify_files, qualified_entry
+from package_macos import resolve_dependency, verify_files, qualified_entry, verify_entry
 
 
 class LoaderResolution(unittest.TestCase):
+    def test_bundler_materialized_entry_must_equal_the_qualified_private_library(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            (root / 'lib').mkdir()
+            name = 'libgen2_nemo_nemo_speech_asr_c.1.dylib'
+            native = root / 'lib' / name
+            native.write_bytes(b'qualified runtime')
+            expected = hashlib.sha256(native.read_bytes()).hexdigest()
+            alias = root / 'lib/libnemo_speech_asr_c.dylib'
+            alias.symlink_to(name)
+            verify_entry(root, name, expected)
+            alias.unlink()
+            alias.write_bytes(native.read_bytes())
+            verify_entry(root, name, expected)
+            alias.write_bytes(b'wrong runtime')
+            with self.assertRaisesRegex(ValueError, 'entry'):
+                verify_entry(root, name, expected)
+            alias.unlink()
+            alias.symlink_to(native)
+            with self.assertRaisesRegex(ValueError, 'entry'):
+                verify_entry(root, name, expected)
+
     def test_external_entry_symlink_cannot_bypass_the_native_build_receipt(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory).resolve()

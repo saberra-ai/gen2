@@ -1,0 +1,4 @@
+
+> pnola@0.1.0 check
+> tsc --noEmit && node --check server.mjs && node --check long-audio.mjs && cargo fmt --manifest-path native/Cargo.toml --check && cargo fmt --manifest-path src-tauri/Cargo.toml --check
+

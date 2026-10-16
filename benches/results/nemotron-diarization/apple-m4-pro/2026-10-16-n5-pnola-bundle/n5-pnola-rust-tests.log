@@ -1,0 +1,27 @@
+   Compiling gen2 v0.1.0 (/Users/victor/workspace/gen2-nemotron3-n0)
+   Compiling pnola-desktop v0.2.0 (/Users/victor/workspace/pnola/src-tauri)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 5.08s
+     Running unittests src/main.rs (/Users/victor/.cache/pnola-nemotron-build/debug/deps/pnola_desktop-04cc9504316114a8)
+
+running 18 tests
+test capture::tests::real_live_pcm_tee_preserves_audio_and_speaker_session ... ignored, requires real Nemotron/Bark assets and PNOLA_VERIFY_AUDIO; streams the fixture at microphone cadence
+test capture::tests::downmix_averages_stereo ... ok
+test live_speakers::tests::an_interrupted_process_cannot_restore_native_speaker_state ... ok
+test transcription::integration_tests::real_transcript_and_speaker_timeline_preserve_measured_text ... ignored, requires real Bark/Nemotron native variables, PNOLA_VERIFY_AUDIO and PNOLA_BARK_REFERENCE
+test transcription::integration_tests::unavailable_asr_preserves_a_standalone_timeline ... ignored, use a missing GEN2_BARK_BUNDLE with real Nemotron native variables and PNOLA_VERIFY_AUDIO; fresh process
+test transcription::integration_tests::unavailable_diarization_preserves_a_successful_transcript ... ignored, use a missing GEN2_NEMO_LIBRARY with real Bark native variables and PNOLA_VERIFY_AUDIO; fresh process
+test live::tests::persisted_turn_parity_accepts_roundtrip_rounding_and_rejects_changed_boundaries ... ok
+test live_speakers::tests::reaching_the_speaker_duration_cap_does_not_cancel_transcription ... ok
+test live_speakers::tests::closing_the_feed_preserves_the_short_tail_once ... ok
+test live_speakers::tests::a_full_speaker_queue_preserves_asr_and_marks_labels_incomplete ... ok
+test capture::tests::resampling_preserves_callback_continuity ... ok
+test audio::tests::tiny_tail_is_kept ... ok
+test audio::tests::boundaries_cover_all_samples ... ok
+test store::tests::invalid_save_preserves_existing_history ... ok
+test live::tests::listing_history_does_not_interrupt_the_current_native_session ... ok
+test live_audio::tests::sections_continue_past_two_hours_and_preserve_the_tail ... ok
+test audio::tests::native_conversion_accepts_mono_and_keeps_the_right_stereo_channel ... ok
+test live::tests::recovery_and_export_cross_two_hours_without_unbounded_preview ... ok
+
+test result: ok. 14 passed; 0 failed; 4 ignored; 0 measured; 0 filtered out; finished in 3.96s
+

@@ -193,6 +193,17 @@ def version_tuple(value):
     return tuple(numbers + [0] * (3 - len(numbers)))
 
 
+def verify_entry(package, name, expected_sha256):
+    alias = package / "lib/libnemo_speech_asr_c.dylib"
+    if alias.is_symlink():
+        if alias.readlink().as_posix() != name:
+            raise ValueError("native package entry alias differs from its manifest")
+    elif not alias.is_file() or digest(alias) != expected_sha256:
+        # Tauri materializes resource symlinks. Accept that copy only when its
+        # complete signed bytes equal the qualified private entry library.
+        raise ValueError("native package entry copy differs from its qualified library")
+
+
 def verify(package):
     manifest = json.loads((package / "package.json").read_text())
     if manifest.get("format") != "gen2-nemo-macos-cpu-v1":
@@ -219,11 +230,9 @@ def verify(package):
                        capture_output=True)
     if not deployments or max(deployments, key=version_tuple) != manifest.get("minimum_macos"):
         raise ValueError("package minimum macOS version differs from its libraries")
-    alias = package / "lib/libnemo_speech_asr_c.dylib"
-    if not alias.is_symlink() or alias.readlink().as_posix() != manifest["entry_library"]:
-        raise ValueError("native package entry alias differs from its manifest")
     if manifest["entry_library"] not in manifest["libraries"]:
         raise ValueError("native package entry is outside its library closure")
+    verify_entry(package, manifest["entry_library"], manifest["files"][f"lib/{manifest['entry_library']}"]["sha256"])
     return manifest
 
 

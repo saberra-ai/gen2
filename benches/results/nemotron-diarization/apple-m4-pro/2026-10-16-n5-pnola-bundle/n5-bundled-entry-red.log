@@ -1,0 +1,20 @@
+E
+======================================================================
+ERROR: test_package_macos (unittest.loader._FailedTest.test_package_macos)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_package_macos
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/unittest/loader.py", line 433, in _find_test_path
+    module = self._get_module_from_name(name)
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/unittest/loader.py", line 374, in _get_module_from_name
+    __import__(name)
+    ~~~~~~~~~~^^^^^^
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/test_package_macos.py", line 7, in <module>
+    from package_macos import resolve_dependency, verify_files, qualified_entry, verify_entry
+ImportError: cannot import name 'verify_entry' from 'package_macos' (/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/package_macos.py)
+
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+FAILED (errors=1)

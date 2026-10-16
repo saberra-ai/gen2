@@ -33,10 +33,11 @@
     },
     "src-tauri/src/engine.rs": {
       "base_sha256": "7d5d2fc4dc8987285700d8857f3abb9c69afa4a35b5a92a73a8ddb9b3365fbe7",
-      "overlay_sha256": "85a2c0e001de26881981ba19a94dede60492b8161de2a7bc8bfcb1df586da0d5",
+      "overlay_sha256": "eafa71b95e659ba12e483bb2570090805f4b107a2509234f3391e80602c12238",
       "compatible_base_sha256": [
         "7d5d2fc4dc8987285700d8857f3abb9c69afa4a35b5a92a73a8ddb9b3365fbe7",
-        "959849e612ca2317f550b937b1c4c6d71cf99d6bc724b3f69228bfef8b0f4863"
+        "959849e612ca2317f550b937b1c4c6d71cf99d6bc724b3f69228bfef8b0f4863",
+        "85a2c0e001de26881981ba19a94dede60492b8161de2a7bc8bfcb1df586da0d5"
       ]
     },
     "src-tauri/src/live.rs": {
@@ -149,6 +150,34 @@
         "4e20bd3ad7cd4aa55e958ff7a48bf13d7a3db8a4bac636c9cc0d6938b2ea93ee"
       ],
       "overlay_sha256": "2dbc636d6017180080e0f77678b6b6078aff13d0d727b7338d789966700650a2"
+    },
+    "scripts/speaker-assets.mjs": {
+      "base_sha256": null,
+      "compatible_base_sha256": [
+        null
+      ],
+      "overlay_sha256": "694cdb32565084bc9a51554636f60938ecde4cfd271a404ddf7d4e02a31dc0ef"
+    },
+    "scripts/build-desktop.mjs": {
+      "base_sha256": "6da4aa9c4edadac362fcf40b5ce112bfa604beabf626a89158fb8b7b2c56b911",
+      "compatible_base_sha256": [
+        "6da4aa9c4edadac362fcf40b5ce112bfa604beabf626a89158fb8b7b2c56b911"
+      ],
+      "overlay_sha256": "185a5886781dd589ffa3623db35c6140242c163a4c6d5bc3f34c41dcbfe92e68"
+    },
+    "scripts/prepare-desktop.mjs": {
+      "base_sha256": "51006940b3f3dc328bf8042a2e156b2afb2dde7df1ef46ebae056a42b60bbb74",
+      "compatible_base_sha256": [
+        "51006940b3f3dc328bf8042a2e156b2afb2dde7df1ef46ebae056a42b60bbb74"
+      ],
+      "overlay_sha256": "696cb5c02627b5f8f5195d72a3a84164b3ef82791561f37ab883f934b3124474"
+    },
+    "tests/desktop-assets.test.mjs": {
+      "base_sha256": null,
+      "compatible_base_sha256": [
+        null
+      ],
+      "overlay_sha256": "bab34acf784779da7c6e929bb6542e093b9f7c090d4da764c469cd6d8354af28"
     }
   },
   "pnola_base_commit": "81ae9ba82545dc45530da283fdd4b6e00589b867"

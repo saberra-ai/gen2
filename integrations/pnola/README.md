@@ -110,3 +110,41 @@ receipt. More corpus evaluation and alignment improvements remain required.
 
 The roadmap's full N4/N5 and release gates remain open. No Linux, Windows or
 Metal acceleration claim follows from these app-source changes.
+
+
+## macOS app bundle
+
+The full desktop build stages the pinned speaker model, card, OpenMDW-1.1 text
+and verified CPU native package explicitly. Set these paths before building:
+
+```sh
+export GEN2_NEMO_PACKAGE=/absolute/nemo-cpu-package
+export GEN2_NEMOTRON_ASSETS=/absolute/pinned-model-assets
+export GEN2_BARK_BUNDLE=/absolute/bark/onnx
+export GEN2_ORT_LIBRARY=/absolute/libonnxruntime.dylib
+npm run desktop:build
+```
+
+`GEN2_ROOT` optionally selects the Gen2 checkout with the packaging tools;
+otherwise the helper follows Pnola's actual Cargo dependency path. Python 3 is a
+packaging/verification tool only; the application performs native inference.
+Builds do not download models or libraries. `PNOLA_SPEAKERS=0` explicitly selects
+an ASR-only build and removes stale derived speaker resources. Missing speaker
+paths in a full build fail clearly.
+
+The model and license are checked before publication. Failed staging retains
+previous speaker resources. Every private native dependency and the public entry
+are also declared under macOS `Frameworks`, letting Tauri sign them with the
+same selected identity as the app. The loader prefers that directory; the
+original native package remains in `Resources/nemo` for provenance checks.
+The final bundle's model, card, license, original package, native identities,
+closed dependency paths and individual/deep signatures are verified separately.
+The app's deployment minimum is raised to the actual native package minimum:
+26.0 for the current artifacts. These measurements qualify only the tested
+M4 Pro/macOS 26.3 combination, not every Mac or an older macOS version.
+
+Local builds use ad-hoc signing and do not inherit host notarization credentials.
+Developer ID/notarization, fresh-machine GUI/capture and other OS/backend release
+qualification remain open. The existing `--verify-live-speakers` command can be
+run from the bundled executable with an external licensed audio fixture and
+receipt path; it requires no source models, build checkout, SDK or network.

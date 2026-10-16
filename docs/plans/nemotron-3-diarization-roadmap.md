@@ -400,6 +400,22 @@ playback, names and user-facing failure recovery.
 
 ### N5: qualify and release only supported combinations
 
+Pnola now stages the pinned model/card/license and qualified native package,
+places native code in Frameworks for the app's selected signing identity, and
+retains original package provenance under Resources. Actual native minimum 26.0
+is propagated into the app declaration and executable. Model corruption fails
+before replacing existing staged resources. The relocated 658.70 MiB release app
+passed deep signatures, 94 individual signed-framework/closed-loader checks and
+an 80.04-second real-audio offline pipeline: 11 durable ASR sections, 15 observed
+provisional revisions and 35 final native turns matching a recording reference.
+Networking, source models/checkouts/SDK/Homebrew and the original app locations
+were denied; independent controls proved the denials. 31 frontend/build tests,
+14 ordinary Rust tests and 14 Python tool tests pass. See the [app-bundle development receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-n5-pnola-bundle/receipt.json).
+This is same-host relocation and native CLI execution, not fresh-machine,
+physical microphone/native GUI, public notarization or clean performance proof.
+The other N5 and quality gates remain open.
+
+
 Mac CPU packaging development now has an explicit offline relocation tool. It
 verifies the pinned SDK build receipt, copies the complete 92-library closure
 (about 11 MiB), gives every non-system dependency a private loader-relative name,

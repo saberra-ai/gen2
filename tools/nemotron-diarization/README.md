@@ -234,7 +234,10 @@ The output must not already exist. Source SDK/Homebrew files are never edited.
 macOS version, dependency names and every distributed file. Verification checks
 the complete file set, checksums, private identities, closed loader paths,
 architecture, deployment metadata, signatures and entry alias. Preserve relative
-symlinks when copying the package. Do not modify it while loaded.
+symlinks when copying the package. A bundler may materialize the entry alias
+as a regular file; verification accepts it only when its complete signed bytes
+equal the qualified private entry. Other alias substitutions fail. Do not modify
+runtime files while loaded.
 
 The measured M4 Pro package has 92 libraries and is approximately 11 MiB. Its
 actual deployment minimum is macOS 26.0; the tested host is macOS 26.3. This

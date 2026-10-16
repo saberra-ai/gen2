@@ -1,0 +1,31 @@
+{
+  "command": [
+    "/usr/bin/sandbox-exec",
+    "-f",
+    "/Users/victor/.cache/gen2-nemotron3-n0/n5-pnola-frameworks-offline.sb",
+    "/Users/victor/.cache/gen2-nemotron3-n0/relocated Pnola frameworks candidate/Pnola.app/Contents/MacOS/pnola-desktop",
+    "--verify-live-speakers",
+    "/Users/victor/.cache/gen2-nemotron3-n0/relocated Pnola frameworks candidate/ami.wav",
+    "/Users/victor/.cache/gen2-nemotron3-n0/n5-pnola-frameworks-live.json"
+  ],
+  "environment": {
+    "PATH": "/usr/bin:/bin"
+  },
+  "denied_source_read_roots": [
+    "/opt/homebrew",
+    "/Users/victor/workspace/pnola",
+    "/Users/victor/workspace/gen2-bark-onnx",
+    "/Users/victor/workspace/gen2-nemotron3-n0",
+    "/Users/victor/.cache/pnola-nemotron-build/release/bundle/macos/Pnola.app",
+    "/Users/victor/.cache/gen2-nemotron3-n0/sdk-cpu",
+    "/Users/victor/.cache/gen2-nemotron3-n0/assets",
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp",
+    "/Users/victor/.cache/gen2-nemotron3-n0/package-cpu-n5",
+    "/Users/victor/.cache/gen2-nemotron3-n0/package-cpu-n5-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/package-cpu-n5-final",
+    "/Users/victor/.cache/gen2-nemotron3-n0/relocated CPU candidate",
+    "/Users/victor/.cache/gen2-nemotron3-n0/relocated package n5",
+    "/Users/victor/.cache/gen2-nemotron3-n0/relocated Pnola candidate"
+  ],
+  "network_denied": true
+}

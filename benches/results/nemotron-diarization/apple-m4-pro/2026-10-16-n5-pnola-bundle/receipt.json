@@ -1,0 +1,82 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "scope": "N5 local M4 Pro/macOS26.3 app-bundle packaging/relocation development",
+  "host": "macOS-26.3-arm64-arm-64bit-Mach-O",
+  "gen2_commit_at_collection": "c5c9b050b991fadf6e83cebf1358b869e69ce268",
+  "source_note": "Pnola base81ae9ba plus versioned overlay; source hashes capture the final working-tree changes. The qualifier uses bundled release code and source/model/SDK/network denials, not the Vite UI or debug overrides.",
+  "source_hashes": {
+    "tools/nemotron-diarization/package_macos.py": "bddc7e437f8e32c5a4dbad7a7a765180469f97d77234661b2acb18b19002a6cf",
+    "tools/nemotron-diarization/test_package_macos.py": "a8d6e87262babde8756d9a6870cbbc777526744061a30829bfcb7c7fea89bcf4",
+    "/Users/victor/workspace/pnola/scripts/speaker-assets.mjs": "694cdb32565084bc9a51554636f60938ecde4cfd271a404ddf7d4e02a31dc0ef",
+    "/Users/victor/workspace/pnola/scripts/build-desktop.mjs": "185a5886781dd589ffa3623db35c6140242c163a4c6d5bc3f34c41dcbfe92e68",
+    "/Users/victor/workspace/pnola/scripts/prepare-desktop.mjs": "696cb5c02627b5f8f5195d72a3a84164b3ef82791561f37ab883f934b3124474",
+    "/Users/victor/workspace/pnola/src-tauri/src/engine.rs": "eafa71b95e659ba12e483bb2570090805f4b107a2509234f3391e80602c12238",
+    "/Users/victor/workspace/pnola/tests/desktop-assets.test.mjs": "bab34acf784779da7c6e929bb6542e093b9f7c090d4da764c469cd6d8354af28"
+  },
+  "app_path": "/Users/victor/.cache/gen2-nemotron3-n0/relocated Pnola frameworks candidate/Pnola.app",
+  "minimum_macos": "26.0",
+  "app_signing": "ad-hoc; not notarized",
+  "deep_app_signature_valid": true,
+  "native_framework_files_signed_and_closed": 94,
+  "original_package_resource_verified": true,
+  "model_card_license_verified": true,
+  "models_native_only": true,
+  "python_needed_at_inference": false,
+  "artifact_hashes": {
+    "Contents/MacOS/pnola-desktop": "a2024c423c91d342eab74e291e2a205072c16cdd8fd5beac999f960e2f046ba8",
+    "Contents/Info.plist": "b33e3e01e7a3fdeee25be21754d02d7b4694eaf6177c26b27cc5cf58c2fcd479",
+    "Contents/Resources/nemo/package.json": "ae6e0e551f2c4a30a1f18c7543f42ad704018137042517930de3b0d17d699db8",
+    "Contents/Resources/nemotron/Nemotron-3-Diarization.q8_0.gguf": "08456d9e22cd9a323c0364d98375f3746d6e68507ebb705cd46438c534c7a3a1",
+    "Contents/Resources/nemotron/README.md": "5fe88ca4020d2ee134f806a0a02c52c19855b73047bc2e6f25b9171e1abeebfd",
+    "Contents/Resources/nemotron/LICENSE.OpenMDW-1.1": "2ab44b68365473c112f5092211a38f231cb23e50de68b75a13369adbd76a74df"
+  },
+  "offline_live_qualification": {
+    "passed": true,
+    "microphone_used": false,
+    "audio_seconds": 80.04,
+    "asr_sections": 11,
+    "asr_words": 152,
+    "export_bytes": 803,
+    "queued_remaining": 0,
+    "native_turns": 35,
+    "observed_provisional_revisions": 15,
+    "final_revision": 16,
+    "native_compute_micros": 13651340,
+    "asr_compute_micros": 2836815,
+    "recording_parity_tolerance_seconds": 1e-06
+  },
+  "tests": {
+    "frontend_and_build_helpers_passed": 31,
+    "ordinary_rust_passed": 14,
+    "ordinary_rust_ignored_real_cases": 4,
+    "python_tools_passed": 14,
+    "corrupt_model_rejected_without_replacing_staged_native_package": true
+  },
+  "sandbox_source_and_network_controls_verified": true,
+  "artifacts": {
+    "n5-pnola-release-frameworks-build.log": "3808907b3c133ebd71e14db4a11cc6e3659e18ce48ee19f11724e0caa9b8cdc2",
+    "n5-pnola-frameworks-live.json": "920b76c9d20f4bcc4b6371e707495b3e5e18f15ad9a45cab8b8fe57c5610370e",
+    "n5-pnola-frameworks-live.log": "593da99b5fba234e7bb85bfdfff87af062d370acf931b02b29370b1325285b80",
+    "n5-pnola-frameworks-verification.json": "6a16f8548e97c9d315c2939a5d80c4ccdaf1a89558f061bb5c664229ecd980b3",
+    "n5-pnola-frameworks-command.json": "48e8875fd2776d2a6c764b1241377362fd6d2bba9d7b1101e7efcffba27b9294",
+    "n5-pnola-frameworks-offline.sb": "6c3cd331cd284b76f2393d7a683aaf0c520860b868b3f9ba47ba3be5223cf356",
+    "n5-pnola-frameworks-sandbox-controls.json": "c4d1d194353ec71d0d49ed3cbadd80f609bf68a91bae59d97a8f174adcd1f6bb",
+    "n5-pnola-stage-real.log": "078dbaa516c902fdf2260fbc234eca104f997d8464c3b4a0a8282bb862a6bcf8",
+    "n5-pnola-rejected-model.log": "bdb93c3247d261d193f0e51f948803630d3f8498a99625071851022476e264a0",
+    "n5-pnola-check.log": "68cdb5bb446b5915be82b72d8e993802d04594300f38ca7c433943c94b27fa8d",
+    "n5-pnola-js-tests.log": "dd4e692a501f0dd13c5a6c01ce8db0d26bc0c142077963cdc46f18ae5027ee8f",
+    "n5-pnola-rust-tests.log": "91f48b3344d3b65224b3784079443dd507bc7365522f19393b3a057e1543be39",
+    "n5-pnola-clippy.log": "b79adaa799a7232c279fc97a864245bce8e239383d51c391252291c0411dc117",
+    "n5-bundled-entry-red.log": "06efcdd79172e947ac7b76c695f9d71a65440e41736c751036765371ecd8aabf",
+    "n5-bundled-entry-green.log": "9bf54f11a61151c0c17b554fa7f64303ba874294e5ab059a92fad6f9589bcf6e"
+  },
+  "limits": [
+    "Recorded audio at microphone cadence; no physical microphone or native GUI verification in this receipt.",
+    "The app was relocated and source dependencies denied on the same host; this is not a fresh-machine receipt.",
+    "Developer ID/notarization was not attempted; no host signing credentials were used.",
+    "Development builds/checks also ran on this host; compute telemetry is not clean release performance qualification.",
+    "Metal, Linux/Windows native packaging/coexistence, relocated full chat/Laya/Bark mixed-model checks and held-out quality gates remain open.",
+    "The earlier GUI/background slowdown still requires diagnosis and release GUI measurement."
+  ]
+}

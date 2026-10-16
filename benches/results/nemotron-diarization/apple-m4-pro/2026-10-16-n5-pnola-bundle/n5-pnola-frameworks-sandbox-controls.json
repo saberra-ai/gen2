@@ -1,0 +1,28 @@
+{
+  "denied_source_reads": [
+    {
+      "path": "/Users/victor/.cache/pnola-nemotron-build/release/bundle/macos/Pnola.app/Contents/MacOS/pnola-desktop",
+      "exit_code": 1,
+      "stderr": "head: /Users/victor/.cache/pnola-nemotron-build/release/bundle/macos/Pnola.app/Contents/MacOS/pnola-desktop: Operation not permitted"
+    },
+    {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/assets/Nemotron-3-Diarization.q8_0.gguf",
+      "exit_code": 1,
+      "stderr": "head: /Users/victor/.cache/gen2-nemotron3-n0/assets/Nemotron-3-Diarization.q8_0.gguf: Operation not permitted"
+    },
+    {
+      "path": "/opt/homebrew/Cellar/sentencepiece/0.2.2/LICENSE",
+      "exit_code": 1,
+      "stderr": "head: /opt/homebrew/Cellar/sentencepiece/0.2.2/LICENSE: Operation not permitted"
+    },
+    {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/relocated Pnola candidate/Pnola.app/Contents/MacOS/pnola-desktop",
+      "exit_code": 1,
+      "stderr": "head: /Users/victor/.cache/gen2-nemotron3-n0/relocated Pnola candidate/Pnola.app/Contents/MacOS/pnola-desktop: Operation not permitted"
+    }
+  ],
+  "network_control": {
+    "unsandboxed_exit_code": 0,
+    "sandboxed_exit_code": 1
+  }
+}
