@@ -94,3 +94,19 @@ and [read-only filesystem/mount options](https://docs.docker.com/reference/cli/d
 This source implementation is not a passing container receipt. Even a passing
 container run will not close the separate ELF chat/GGML interposition gate or
 prove physical-machine portability.
+
+The separate `qualify_linux_chat.py`/`nemotron_chat_coexistence` implementation
+now covers an isolated chat baseline and both load orders in fresh offline
+containers. It keeps the regular CPU backend's OpenMP feature and binds its
+additional test-only runtime to the exact packaged GCC source/version/notices.
+Chat uses explicit CPU placement, two threads, 1,024-token context, temperature
+zero and seed zero. Three real diarization calls per load order cover initial,
+concurrent and reloaded models; all six compare against the already qualified
+independent native output. Monotonic intervals bracket the actual public calls,
+excluding WAV preparation and output serialization. The audit cross-checks
+those exported windows, unchanged isolated chat output and zero released
+reservations. Loader traces must show all declared files, and every observed
+GGML binding originating in the diarization package must target that package;
+critical graph-construction/scheduler bindings are required. Source review and
+model-free tests do not establish an actual passing coexistence result. The
+implementation retains the separate Bark/Laya, other-baseline and release gates.

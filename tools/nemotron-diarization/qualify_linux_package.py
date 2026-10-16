@@ -13,9 +13,9 @@ import posixpath
 import re
 import shutil
 import subprocess
-import time
 
 from artifacts import matches
+from evidence_commands import CommandRunner
 from compare_stream import compare
 from package_linux import PLATFORM_LIBRARIES, digest, inspect_elf, verify
 from sdk_archive import inventory, restore_archive
@@ -32,7 +32,7 @@ LIFECYCLE_GATES = {
 RUNTIME_PATH = '/work/relocated runtime ü'
 
 
-def loader_paths(text, libraries):
+def loader_paths(text, libraries, extra_paths=()):
     """Require actual initialization of the complete bundled closure, including GCC."""
     raw = {path.strip() for path in re.findall(r'calling init:\s*([^\r\n]+)', text)}
     if any(not path.startswith('/') for path in raw):
@@ -40,7 +40,7 @@ def loader_paths(text, libraries):
     # The loader can retain $ORIGIN/../ in l_name. Both mounted helper/package
     # directories are real directories with verified inventories, not aliases.
     paths = {posixpath.normpath(path) for path in raw}
-    expected = {RUNTIME_PATH + '/lib/' + name for name in libraries}
+    expected = {RUNTIME_PATH + '/lib/' + name for name in libraries} | set(extra_paths)
     if not expected <= paths:
         raise ValueError('bundled libraries were not initialized: ' + str(sorted(expected - paths)))
     platform_paths = set()
@@ -79,7 +79,7 @@ def container_command(image, mounts, results, command, environment=None):
     return [*args, image, '/usr/bin/env', '-i', *[name + '=' + value for name, value in variables.items()], *command]
 
 
-class Qualification:
+class Qualification(CommandRunner):
     def __init__(self, args):
         self.args = args
         self.tools = Path(__file__).resolve().parent
@@ -87,29 +87,13 @@ class Qualification:
         self.output = args.output.resolve()
         self.work = self.output / 'inputs'
         self.results = self.output / 'results'
-        self.commands = []
+        super().__init__(self.output, self.repo)
         self.receipt = {'schema_version': 1, 'release_qualified': False,
                         'offline_container_gates_passed': False,
                         'scope': 'Delivered Ubuntu 24.04 x86_64 CPU runtime relocation, native/public parity and lifecycle in fresh offline containers.',
                         'limits': ['No chat/Bark/Laya namespace coexistence qualification.',
                                    'No other OS/glibc/CPU baseline or separate physical machine claim.',
                                    'No held-out accuracy or uncontended performance claim.']}
-
-    def run(self, name, command, expected_failure=False):
-        args = list(map(str, command))
-        record = {'name': name, 'argv': args}
-        self.commands.append(record)
-        (self.output / 'commands.json').write_text(json.dumps(self.commands, indent=2) + '\n')
-        print('START ' + name, flush=True)
-        started = time.monotonic()
-        with (self.output / (name + '.stdout.log')).open('x') as out, (self.output / (name + '.stderr.log')).open('x') as err:
-            result = subprocess.run(args, cwd=self.repo, stdout=out, stderr=err, timeout=3600)
-        record.update(returncode=result.returncode, elapsed_seconds=time.monotonic() - started)
-        (self.output / 'commands.json').write_text(json.dumps(self.commands, indent=2) + '\n')
-        if (result.returncode == 0) == expected_failure:
-            raise ValueError(f'{name}: unexpected exit status {result.returncode}')
-        print('PASS ' + name, flush=True)
-        return (self.output / (name + '.stdout.log')).read_text()
 
     def container(self, name, command, environment=None, runtime=None, expected_failure=False):
         mounts = [(self.work / 'bin', '/work/bin'), (self.work / 'assets', '/work/assets'),
@@ -195,7 +179,7 @@ class Qualification:
                   'native_receipt_sha256': digest(native / 'receipt.json'), 'archive': build['archive'],
                   'package_manifest_sha256': build['package_manifest_sha256'], 'image': image[0],
                   'helpers': helpers, 'inputs': inventory(self.work),
-                  'tools': {name: digest(self.tools / name) for name in ['qualify_linux_package.py', 'package_linux.py', 'sdk_archive.py', 'compare_stream.py', 'runtime.lock.json']},
+                  'tools': {name: digest(self.tools / name) for name in ['qualify_linux_package.py', 'package_linux.py', 'sdk_archive.py', 'compare_stream.py', 'runtime.lock.json', 'evidence_commands.py']},
                   'geometry': {'chunk': 9, 'right': 4, 'left': 0, 'fifo': 264, 'cache': 264, 'update': 222},
                   'negative_control': 'Remove private ggml-base; mount that copy at the identical runtime path so helper RPATH cannot see the good package.'}
         (self.output / 'frozen-inputs.json').write_text(json.dumps(inputs, indent=2) + '\n')

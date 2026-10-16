@@ -168,6 +168,10 @@ name = "nemotron_stream"
 required-features = ["backend-diar-nemo"]
 
 [[example]]
+name = "nemotron_chat_coexistence"
+required-features = ["backend-llamacpp", "backend-diar-nemo"]
+
+[[example]]
 name = "bark_benchmark"
 required-features = ["asr-dynamic"]
 

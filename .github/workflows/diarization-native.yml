@@ -3,7 +3,7 @@ on:
   workflow_dispatch:
   push:
     branches: [codex/nemotron3-platforms, codex/nemotron3-linux]
-    paths: ['tools/nemotron-diarization/platform_native.py', 'tools/nemotron-diarization/windows_compat.py', 'tools/nemotron-diarization/windows_loader_control.py', 'tools/nemotron-diarization/sdk_archive.py', 'tools/nemotron-diarization/package_linux.py', 'tools/nemotron-diarization/platform_linux_package.py', 'tools/nemotron-diarization/qualify_linux_package.py', '.github/workflows/diarization-native.yml', 'src/diarization/**', 'tests/diarization_native.rs']
+    paths: ['tools/nemotron-diarization/platform_native.py', 'tools/nemotron-diarization/windows_compat.py', 'tools/nemotron-diarization/windows_loader_control.py', 'tools/nemotron-diarization/sdk_archive.py', 'tools/nemotron-diarization/package_linux.py', 'tools/nemotron-diarization/platform_linux_package.py', 'tools/nemotron-diarization/qualify_linux_package.py', 'tools/nemotron-diarization/qualify_linux_chat.py', 'tools/nemotron-diarization/linux_chat_audit.py', 'tools/nemotron-diarization/evidence_commands.py', 'tools/nemotron-diarization/*.lock.json', '.github/workflows/diarization-native.yml', 'src/diarization/**', 'tests/diarization_native.rs', 'examples/nemotron_chat_coexistence.rs', 'Cargo.*']
 permissions:
   contents: read
 jobs:
@@ -60,6 +60,9 @@ jobs:
       - name: Exercise delivered Linux runtime in fresh offline containers
         if: runner.os == 'Linux' && github.ref_name == 'codex/nemotron3-linux'
         run: python tools/nemotron-diarization/qualify_linux_package.py --sdk-prefix "${{ runner.temp }}/nemo-sdk" --native-evidence "${{ runner.temp }}/nemo-evidence" --package-evidence "${{ runner.temp }}/nemo-package-evidence" --output "${{ runner.temp }}/nemo-container-evidence"
+      - name: Exercise actual CPU chat and diarization coexistence offline
+        if: runner.os == 'Linux' && github.ref_name == 'codex/nemotron3-linux'
+        run: python tools/nemotron-diarization/qualify_linux_chat.py --container-evidence "${{ runner.temp }}/nemo-container-evidence" --output "${{ runner.temp }}/nemo-chat-evidence"
       - name: Preserve Windows dependency cache after build failure
         if: always() && runner.os == 'Windows' && steps.vcpkg-cache.outcome == 'success' && steps.vcpkg-cache.outputs.cache-hit != 'true'
         uses: actions/cache/save@v4
@@ -84,4 +87,8 @@ jobs:
             ${{ runner.temp }}/nemo-container-evidence/*.json
             ${{ runner.temp }}/nemo-container-evidence/*.log
             ${{ runner.temp }}/nemo-container-evidence/results/
+            ${{ runner.temp }}/nemo-chat-evidence/*.json
+            ${{ runner.temp }}/nemo-chat-evidence/*.log
+            ${{ runner.temp }}/nemo-chat-evidence/*.f32
+            ${{ runner.temp }}/nemo-chat-evidence/results/
           retention-days: 7

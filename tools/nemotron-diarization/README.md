@@ -403,3 +403,24 @@ The [construction receipt](../../benches/results/nemotron-diarization/linux-x86_
 records the passing construction and downloaded filesystem checks. Actual
 container execution is tracked in the roadmap; source and model-free tests do
 not establish that result.
+
+After that same-source container stage passes, the separate actual chat gate is:
+
+```sh
+python tools/nemotron-diarization/qualify_linux_chat.py \
+  --container-evidence /absolute/path/new-container-evidence \
+  --output /absolute/path/new-chat-evidence
+```
+
+It builds `nemotron_chat_coexistence` with the regular CPU/OpenMP chat backend,
+acquires only the separately pinned public Qwen fixture/card/license during
+setup, and freezes all inputs before chat execution. The OpenMP test library
+must have the exact GCC source/copyright identity already present in the
+runtime's full source bundle. It is mounted as a separate test dependency;
+this stage does not turn the diarization archive into a chat release package.
+Each isolated/load-order run gets a fresh offline container. All chat outputs
+must match the isolated baseline, six diarization runs must match the independent
+native result, shutdown/reload must release reservations, and exported intervals
+must prove overlapping public inference calls (preparation/serialization do
+not count). Actual loader paths and critical GGML symbol bindings must remain
+within the declared payload. Bark/Laya, other baselines and accuracy stay open.
