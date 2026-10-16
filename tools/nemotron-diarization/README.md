@@ -505,9 +505,16 @@ all five private DLLs at the relocated runtime and exact qualified CRT bytes.
 Test executables receive identical app-local CRT copies for their startup
 imports. Only the independent native probe uses the runtime directory on PATH
 for its static C ABI import; Gen2 uses its explicit loader and system-only PATH.
-The helper ZIP is a separate test artifact. This gate has not yet passed actual
-execution and does not establish Windows desktop, mixed-model, redistribution,
-accuracy or uncontended-performance qualification.
+The helper ZIP is a separate test artifact. The actual `855a83c`
+[Windows offline receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-offline-container/qualification.json)
+now passes all five fresh-container calls, exact 27-turn/6,001-frame native/public
+parity, all seven lifecycle tests and the missing-private-library control.
+Actual public/lifecycle modules include all five private DLLs in the relocated
+package, VCRUNTIME140 in the helper directory and MSVCP140/VCRUNTIME140_1 in the
+runtime directory, all with qualified bytes. The receiver reverified both
+opaque archives, helpers/PE tables and all five exact frozen command specs.
+Observed RTF is about 1.06; Windows live performance, desktop, mixed-model,
+redistribution and held-out quality remain unqualified.
 
 The separate `diarization-windows-dependencies.yml` job performs one-shot
 historical metadata recovery on the cache-owning `codex/nemotron3-platforms`

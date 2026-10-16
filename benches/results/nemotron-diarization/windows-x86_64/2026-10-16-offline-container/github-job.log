@@ -1,0 +1,842 @@
+inspect	Set up job	﻿2026-10-16T10:49:30.3234283Z Current runner version: '2.337.0'
+inspect	Set up job	2026-10-16T10:49:30.3287828Z ##[group]Runner Image Provisioner
+inspect	Set up job	2026-10-16T10:49:30.3288647Z Hosted Compute Agent
+inspect	Set up job	2026-10-16T10:49:30.3289195Z Version: 20261012.601
+inspect	Set up job	2026-10-16T10:49:30.3289750Z Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+inspect	Set up job	2026-10-16T10:49:30.3290412Z Build Date: 2026-10-12T17:48:21Z
+inspect	Set up job	2026-10-16T10:49:30.3291066Z Worker ID: {e1af79cf-e5bc-444f-9038-72c5293ef4af}
+inspect	Set up job	2026-10-16T10:49:30.3291707Z Region: eastus
+inspect	Set up job	2026-10-16T10:49:30.3292195Z Cloud: Azure
+inspect	Set up job	2026-10-16T10:49:30.3292663Z ##[endgroup]
+inspect	Set up job	2026-10-16T10:49:30.3294072Z ##[group]Operating System
+inspect	Set up job	2026-10-16T10:49:30.3294694Z Microsoft Windows Server 2022
+inspect	Set up job	2026-10-16T10:49:30.3295241Z 10.0.20348
+inspect	Set up job	2026-10-16T10:49:30.3295715Z Datacenter
+inspect	Set up job	2026-10-16T10:49:30.3296176Z ##[endgroup]
+inspect	Set up job	2026-10-16T10:49:30.3296650Z ##[group]Runner Image
+inspect	Set up job	2026-10-16T10:49:30.3297208Z Image: windows-2022
+inspect	Set up job	2026-10-16T10:49:30.3297701Z Version: 20261012.333.1
+inspect	Set up job	2026-10-16T10:49:30.3298696Z Included Software: https://github.com/actions/runner-images/blob/win22/20261012.333/images/windows/Windows2022-Readme.md
+inspect	Set up job	2026-10-16T10:49:30.3300913Z Image Release: https://github.com/actions/runner-images/releases/tag/win22%2F20261012.333
+inspect	Set up job	2026-10-16T10:49:30.3301826Z ##[endgroup]
+inspect	Set up job	2026-10-16T10:49:30.3302877Z ##[group]GITHUB_TOKEN Permissions
+inspect	Set up job	2026-10-16T10:49:30.3304686Z Actions: read
+inspect	Set up job	2026-10-16T10:49:30.3305234Z Contents: read
+inspect	Set up job	2026-10-16T10:49:30.3305737Z Metadata: read
+inspect	Set up job	2026-10-16T10:49:30.3306222Z ##[endgroup]
+inspect	Set up job	2026-10-16T10:49:30.3308199Z Secret source: Actions
+inspect	Set up job	2026-10-16T10:49:30.3309094Z Cache mode: write
+inspect	Set up job	2026-10-16T10:49:30.3309715Z Prepare workflow directory
+inspect	Set up job	2026-10-16T10:49:30.3619959Z Prepare all required actions
+inspect	Set up job	2026-10-16T10:49:30.3666516Z Getting action download info
+inspect	Set up job	2026-10-16T10:49:30.5597544Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+inspect	Set up job	2026-10-16T10:49:30.6884175Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+inspect	Set up job	2026-10-16T10:49:30.8243644Z Download action repository 'dtolnay/rust-toolchain@stable' (SHA:b725eda525362e7cf34af9a7243cac1e3f01a7ec)
+inspect	Set up job	2026-10-16T10:49:30.9193911Z Download action repository 'Swatinem/rust-cache@v2' (SHA:6323deb102c322ba6fcbdcafc7e3dddab59af2b6)
+inspect	Set up job	2026-10-16T10:49:31.1211777Z Download action repository 'actions/download-artifact@v4' (SHA:d3f86a106a0bac45b974a628896c90dbdf5c8093)
+inspect	Set up job	2026-10-16T10:49:31.3302824Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+inspect	Set up job	2026-10-16T10:49:31.7299405Z Complete job name: inspect
+inspect	Preserve byte-pinned source line endings	﻿2026-10-16T10:49:31.8892514Z ##[group]Run git config --global core.autocrlf false
+inspect	Preserve byte-pinned source line endings	2026-10-16T10:49:31.8893705Z [36;1mgit config --global core.autocrlf false[0m
+inspect	Preserve byte-pinned source line endings	2026-10-16T10:49:31.8999295Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+inspect	Preserve byte-pinned source line endings	2026-10-16T10:49:31.9000413Z ##[endgroup]
+inspect	Run actions/checkout@v4	﻿2026-10-16T10:49:32.7264601Z ##[group]Run actions/checkout@v4
+inspect	Run actions/checkout@v4	2026-10-16T10:49:32.7265838Z with:
+inspect	Run actions/checkout@v4	2026-10-16T10:49:32.7266703Z   persist-credentials: false
+inspect	Run actions/checkout@v4	2026-10-16T10:49:32.7267816Z   repository: saberra-ai/gen2
+inspect	Run actions/checkout@v4	2026-10-16T10:49:32.7276401Z   token: ***
+inspect	Run actions/checkout@v4	2026-10-16T10:49:32.7277243Z   ssh-strict: true
+inspect	Run actions/checkout@v4	2026-10-16T10:49:32.7278093Z   ssh-user: git
+inspect	Run actions/checkout@v4	2026-10-16T10:49:32.7278932Z   clean: true
+inspect	Run actions/checkout@v4	2026-10-16T10:49:32.7279808Z   sparse-checkout-cone-mode: true
+inspect	Run actions/checkout@v4	2026-10-16T10:49:32.7280857Z   fetch-depth: 1
+inspect	Run actions/checkout@v4	2026-10-16T10:49:32.7281735Z   fetch-tags: false
+inspect	Run actions/checkout@v4	2026-10-16T10:49:32.7282604Z   show-progress: true
+inspect	Run actions/checkout@v4	2026-10-16T10:49:32.7283479Z   lfs: false
+inspect	Run actions/checkout@v4	2026-10-16T10:49:32.7284268Z   submodules: false
+inspect	Run actions/checkout@v4	2026-10-16T10:49:32.7285137Z   set-safe-directory: true
+inspect	Run actions/checkout@v4	2026-10-16T10:49:32.7286146Z   allow-unsafe-pr-checkout: false
+inspect	Run actions/checkout@v4	2026-10-16T10:49:32.7287183Z ##[endgroup]
+inspect	Run actions/checkout@v4	2026-10-16T10:49:32.8784919Z Syncing repository: saberra-ai/gen2
+inspect	Run actions/checkout@v4	2026-10-16T10:49:32.8787695Z ##[group]Getting Git version info
+inspect	Run actions/checkout@v4	2026-10-16T10:49:32.8788936Z Working directory is 'D:\a\gen2\gen2'
+inspect	Run actions/checkout@v4	2026-10-16T10:49:32.9789105Z [command]"C:\Program Files\Git\bin\git.exe" version
+inspect	Run actions/checkout@v4	2026-10-16T10:49:33.0079193Z git version 2.56.0.windows.2
+inspect	Run actions/checkout@v4	2026-10-16T10:49:33.0122302Z ##[endgroup]
+inspect	Run actions/checkout@v4	2026-10-16T10:49:33.0136806Z Copying 'C:\Users\runneradmin\.gitconfig' to 'D:\a\_temp\eaa96002-961f-47bd-adfe-2ddbf8c07eac\.gitconfig'
+inspect	Run actions/checkout@v4	2026-10-16T10:49:33.0159465Z Temporarily overriding HOME='D:\a\_temp\eaa96002-961f-47bd-adfe-2ddbf8c07eac' before making global git config changes
+inspect	Run actions/checkout@v4	2026-10-16T10:49:33.0162379Z Adding repository directory to the temporary git global config as a safe directory
+inspect	Run actions/checkout@v4	2026-10-16T10:49:33.0170435Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\gen2\gen2
+inspect	Run actions/checkout@v4	2026-10-16T10:49:33.0473575Z Deleting the contents of 'D:\a\gen2\gen2'
+inspect	Run actions/checkout@v4	2026-10-16T10:49:33.0480131Z ##[group]Initializing the repository
+inspect	Run actions/checkout@v4	2026-10-16T10:49:33.0489090Z [command]"C:\Program Files\Git\bin\git.exe" init D:\a\gen2\gen2
+inspect	Run actions/checkout@v4	2026-10-16T10:49:33.1393421Z Initialized empty Git repository in D:/a/gen2/gen2/.git/
+inspect	Run actions/checkout@v4	2026-10-16T10:49:33.1432647Z [command]"C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/saberra-ai/gen2
+inspect	Run actions/checkout@v4	2026-10-16T10:49:33.2023849Z ##[endgroup]
+inspect	Run actions/checkout@v4	2026-10-16T10:49:33.2025467Z ##[group]Disabling automatic garbage collection
+inspect	Run actions/checkout@v4	2026-10-16T10:49:33.2033557Z [command]"C:\Program Files\Git\bin\git.exe" config --local gc.auto 0
+inspect	Run actions/checkout@v4	2026-10-16T10:49:33.2347248Z ##[endgroup]
+inspect	Run actions/checkout@v4	2026-10-16T10:49:33.2349545Z ##[group]Setting up auth
+inspect	Run actions/checkout@v4	2026-10-16T10:49:33.2359328Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+inspect	Run actions/checkout@v4	2026-10-16T10:49:33.2699647Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+inspect	Run actions/checkout@v4	2026-10-16T10:49:34.6328592Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+inspect	Run actions/checkout@v4	2026-10-16T10:49:34.6637101Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+inspect	Run actions/checkout@v4	2026-10-16T10:49:35.1269633Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+inspect	Run actions/checkout@v4	2026-10-16T10:49:35.1564731Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+inspect	Run actions/checkout@v4	2026-10-16T10:49:35.6461382Z [command]"C:\Program Files\Git\bin\git.exe" config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+inspect	Run actions/checkout@v4	2026-10-16T10:49:35.6761699Z ##[endgroup]
+inspect	Run actions/checkout@v4	2026-10-16T10:49:35.6762557Z ##[group]Fetching the repository
+inspect	Run actions/checkout@v4	2026-10-16T10:49:35.6776002Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +855a83c2f56ec0267cd0b915a63eb55654b9dfec:refs/remotes/origin/codex/nemotron3-windows-probe
+inspect	Run actions/checkout@v4	2026-10-16T10:49:37.0153884Z From https://github.com/saberra-ai/gen2
+inspect	Run actions/checkout@v4	2026-10-16T10:49:37.0155268Z  * [new ref]         855a83c2f56ec0267cd0b915a63eb55654b9dfec -> origin/codex/nemotron3-windows-probe
+inspect	Run actions/checkout@v4	2026-10-16T10:49:37.0187478Z ##[endgroup]
+inspect	Run actions/checkout@v4	2026-10-16T10:49:37.0188001Z ##[group]Determining the checkout info
+inspect	Run actions/checkout@v4	2026-10-16T10:49:37.0190656Z ##[endgroup]
+inspect	Run actions/checkout@v4	2026-10-16T10:49:37.0199820Z [command]"C:\Program Files\Git\bin\git.exe" sparse-checkout disable
+inspect	Run actions/checkout@v4	2026-10-16T10:49:37.0632424Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all extensions.worktreeConfig
+inspect	Run actions/checkout@v4	2026-10-16T10:49:37.0933751Z ##[group]Checking out the ref
+inspect	Run actions/checkout@v4	2026-10-16T10:49:37.0943735Z [command]"C:\Program Files\Git\bin\git.exe" checkout --progress --force -B codex/nemotron3-windows-probe refs/remotes/origin/codex/nemotron3-windows-probe
+inspect	Run actions/checkout@v4	2026-10-16T10:49:37.6633702Z Switched to a new branch 'codex/nemotron3-windows-probe'
+inspect	Run actions/checkout@v4	2026-10-16T10:49:37.6656307Z branch 'codex/nemotron3-windows-probe' set up to track 'origin/codex/nemotron3-windows-probe'.
+inspect	Run actions/checkout@v4	2026-10-16T10:49:37.6701682Z ##[endgroup]
+inspect	Run actions/checkout@v4	2026-10-16T10:49:37.7085478Z [command]"C:\Program Files\Git\bin\git.exe" log -1 --format=%H
+inspect	Run actions/checkout@v4	2026-10-16T10:49:37.7360080Z 855a83c2f56ec0267cd0b915a63eb55654b9dfec
+inspect	Run actions/checkout@v4	2026-10-16T10:49:37.7392413Z ##[group]Removing auth
+inspect	Run actions/checkout@v4	2026-10-16T10:49:37.7400765Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+inspect	Run actions/checkout@v4	2026-10-16T10:49:37.7697602Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+inspect	Run actions/checkout@v4	2026-10-16T10:49:38.2820440Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+inspect	Run actions/checkout@v4	2026-10-16T10:49:38.3095921Z http.https://github.com/.extraheader
+inspect	Run actions/checkout@v4	2026-10-16T10:49:38.3132678Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all http.https://github.com/.extraheader
+inspect	Run actions/checkout@v4	2026-10-16T10:49:38.3427427Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+inspect	Run actions/checkout@v4	2026-10-16T10:49:38.8436064Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+inspect	Run actions/checkout@v4	2026-10-16T10:49:38.8752266Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+inspect	Run actions/checkout@v4	2026-10-16T10:49:39.3311267Z ##[endgroup]
+inspect	Run actions/setup-python@v5	﻿2026-10-16T10:49:39.3637173Z ##[group]Run actions/setup-python@v5
+inspect	Run actions/setup-python@v5	2026-10-16T10:49:39.3637537Z with:
+inspect	Run actions/setup-python@v5	2026-10-16T10:49:39.3637731Z   python-version: 3.12
+inspect	Run actions/setup-python@v5	2026-10-16T10:49:39.3637947Z   check-latest: false
+inspect	Run actions/setup-python@v5	2026-10-16T10:49:39.3640359Z   token: ***
+inspect	Run actions/setup-python@v5	2026-10-16T10:49:39.3640571Z   update-environment: true
+inspect	Run actions/setup-python@v5	2026-10-16T10:49:39.3640798Z   allow-prereleases: false
+inspect	Run actions/setup-python@v5	2026-10-16T10:49:39.3641007Z   freethreaded: false
+inspect	Run actions/setup-python@v5	2026-10-16T10:49:39.3641193Z ##[endgroup]
+inspect	Run actions/setup-python@v5	2026-10-16T10:49:39.5210837Z ##[group]Installed versions
+inspect	Run actions/setup-python@v5	2026-10-16T10:49:39.5352496Z (node:3980) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+inspect	Run actions/setup-python@v5	2026-10-16T10:49:39.5353414Z (Use `node --trace-deprecation ...` to show where the warning was created)
+inspect	Run actions/setup-python@v5	2026-10-16T10:49:39.5354105Z Successfully set up CPython (3.12.10)
+inspect	Run actions/setup-python@v5	2026-10-16T10:49:39.5355117Z ##[endgroup]
+inspect	Run dtolnay/rust-toolchain@stable	﻿2026-10-16T10:49:39.5800280Z ##[group]Run dtolnay/rust-toolchain@stable
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.5800761Z with:
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.5801023Z   toolchain: stable
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.5801248Z env:
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.5801553Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.5802116Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.5802667Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.5803156Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.5803665Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.5804047Z ##[endgroup]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.5870626Z ##[start-action display=Parse toolchain version;id=__dtolnay_rust-toolchain.parse]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.6002998Z ##[group]Run if [[ -z $toolchain ]]; then
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.6003331Z [36;1mif [[ -z $toolchain ]]; then[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.6003863Z [36;1m  # GitHub does not enforce `required: true` inputs itself. https://github.com/actions/runner/issues/1070[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.6004469Z [36;1m  echo "'toolchain' is a required input" >&2[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.6004751Z [36;1m  exit 1[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.6005068Z [36;1melif [[ $toolchain =~ ^stable' '[0-9]+' '(year|month|week|day)s?' 'ago$ ]]; then[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.6005469Z [36;1m  if [[ Windows == macOS ]]; then[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.6005991Z [36;1m    echo "toolchain=1.$((($(date -v-$(sed 's/stable \([0-9]*\) \(.\).*/\1\2/' <<< $toolchain) +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.6006686Z [36;1m  else[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.6007075Z [36;1m    echo "toolchain=1.$((($(date --date "${toolchain#stable }" +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.6007525Z [36;1m  fi[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.6007815Z [36;1melif [[ $toolchain =~ ^stable' 'minus' '[0-9]+' 'releases?$ ]]; then[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.6008337Z [36;1m  echo "toolchain=1.$((($(date +%s)/60/60/24-16569)/7/6-${toolchain//[^0-9]/}))" >> $GITHUB_OUTPUT[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.6008799Z [36;1melif [[ $toolchain =~ ^1\.[0-9]+$ ]]; then[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.6009307Z [36;1m  echo "toolchain=1.$((i=${toolchain#1.}, c=($(date +%s)/60/60/24-16569)/7/6, i+9*i*(10*i<=c)+90*i*(100*i<=c)))" >> $GITHUB_OUTPUT[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.6009812Z [36;1melse[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.6009992Z [36;1m  delimiter=EOF[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.6010348Z [36;1m  while [[ $toolchain == *$delimiter* ]]; do delimiter+=_; done[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.6010865Z [36;1m  printf 'toolchain<<%s\n%s\n%s\n' "$delimiter" "$toolchain" "$delimiter" >> $GITHUB_OUTPUT[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.6011274Z [36;1mfi[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.6028379Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.6028788Z env:
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.6029050Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.6029495Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.6029950Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.6030352Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.6030744Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.6031050Z   toolchain: stable
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.6031230Z ##[endgroup]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.7746110Z ##[end-action id=__dtolnay_rust-toolchain.parse;outcome=success;conclusion=success;duration_ms=187]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.7751216Z ##[start-action display=Set $CARGO_HOME;id=__dtolnay_rust-toolchain.__run]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.7868079Z ##[group]Run echo CARGO_HOME=${CARGO_HOME:-"$USERPROFILE\.cargo"} >> $GITHUB_ENV
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.7868626Z [36;1mecho CARGO_HOME=${CARGO_HOME:-"$USERPROFILE\.cargo"} >> $GITHUB_ENV[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.7886560Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.7886959Z env:
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.7889851Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.7890313Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.7890761Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.7891159Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.7891554Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.7891865Z ##[endgroup]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8234766Z ##[end-action id=__dtolnay_rust-toolchain.__run;outcome=success;conclusion=success;duration_ms=48]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8237493Z ##[start-action display=Install rustup if needed;id=__dtolnay_rust-toolchain.__run_2]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8247687Z ##[end-action id=__dtolnay_rust-toolchain.__run_2;outcome=skipped;conclusion=skipped;duration_ms=0]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8250076Z ##[start-action display=Install rustup if needed on windows;id=__dtolnay_rust-toolchain.__run_3]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8364826Z ##[group]Run if ! command -v rustup &>/dev/null; then
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8365226Z [36;1mif ! command -v rustup &>/dev/null; then[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8366073Z [36;1m  curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused --location --silent --show-error --fail https://win.rustup.rs/x86_64 --output 'D:\a\_temp\rustup-init.exe'[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8367002Z [36;1m  'D:\a\_temp\rustup-init.exe' --default-toolchain none --no-modify-path -y[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8367453Z [36;1m  echo "$CARGO_HOME\bin" >> $GITHUB_PATH[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8367879Z [36;1mfi[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8382053Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8382463Z env:
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8382730Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8383181Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8383628Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8384048Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8384440Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8384768Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8385026Z ##[endgroup]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8778228Z ##[end-action id=__dtolnay_rust-toolchain.__run_3;outcome=success;conclusion=success;duration_ms=52]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8793327Z ##[start-action display=rustup toolchain install stable;id=__dtolnay_rust-toolchain.__run_4]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8891852Z ##[group]Run set -f  # split targets and components on commas and whitespace, without glob expansion
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8892572Z [36;1mset -f  # split targets and components on commas and whitespace, without glob expansion[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8893034Z [36;1mflags=()[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8893312Z [36;1mfor t in ${targets//,/ }; do flags+=(--target "$t"); done[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8893749Z [36;1mfor c in ${components//,/ }; do flags+=(--component "$c"); done[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8894262Z [36;1mif [[ $toolchain == nightly && -n $components ]]; then flags+=(--allow-downgrade); fi[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8894696Z [36;1mlog=$(mktemp)[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8894926Z [36;1mtrap 'rm -f "$log"' EXIT[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8895187Z [36;1mfor attempt in 1 2 3 4 5; do[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8895782Z [36;1m  if rustup toolchain install "$toolchain" "${flags[@]}" --profile minimal --no-self-update --force-non-host 2>&1 | tee "$log"; then[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8896392Z [36;1m    break[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8896585Z [36;1m  else[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8896774Z [36;1m    status=$?[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8896987Z [36;1m  fi[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8897270Z [36;1m  if [[ $attempt == 5 ]] || ! grep -Fq 'checksum failed for ' "$log" \[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8897840Z [36;1m      || ! grep -Fq 'this is likely due to an ongoing update of the official release server' "$log"; then[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8899037Z [36;1m    exit "$status"[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8899259Z [36;1m  fi[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8899607Z [36;1m  echo "Retrying rustup toolchain install in 30 seconds (retry $attempt of 4)" >&2[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8900028Z [36;1m  sleep 30[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8900213Z [36;1mdone[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8914131Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8914522Z env:
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8914786Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8915247Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8915687Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8916078Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8916471Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8916816Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8917087Z   toolchain: stable
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8917268Z   targets: 
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8917431Z   components: 
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8917646Z   RUSTUP_PERMIT_COPY_RENAME: 1
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:39.8917871Z ##[endgroup]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:43.6626617Z info: syncing channel updates for stable-x86_64-pc-windows-msvc
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:44.1316999Z info: latest update on 2026-10-15 for version 1.99.1 (58cf8f9c3 2026-10-13)
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:44.1628819Z info: removing previous version of component rustfmt
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:44.1785005Z info: removing previous version of component clippy
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:44.2098492Z info: removing previous version of component rust-std for target x86_64-pc-windows-gnu
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:44.3191673Z info: removing previous version of component rust-std for target i686-pc-windows-msvc
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:44.4129135Z info: removing previous version of component cargo
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:44.4754198Z info: removing previous version of component rust-std
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:44.5693844Z info: removing previous version of component rustc
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:44.6477601Z info: downloading 7 components
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:56.6948117Z 
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.1180917Z   stable-x86_64-pc-windows-msvc updated - rustc 1.99.1 (58cf8f9c3 2026-10-13) (from rustc 1.99.0 (b940084d7 2026-09-28))
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.1181941Z 
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.1457632Z ##[end-action id=__dtolnay_rust-toolchain.__run_4;outcome=success;conclusion=success;duration_ms=18266]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.1465834Z ##[start-action display=rustup default stable;id=__dtolnay_rust-toolchain.__run_5]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.1570617Z ##[group]Run rustup default "$toolchain" --force-non-host
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.1571031Z [36;1mrustup default "$toolchain" --force-non-host[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.1584780Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.1585172Z env:
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.1585437Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.1585922Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.1586361Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.1586757Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.1587149Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.1587485Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.1587736Z   toolchain: stable
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.1587921Z ##[endgroup]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.2162917Z info: using existing install for stable-x86_64-pc-windows-msvc
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.2232303Z info: default toolchain set to stable-x86_64-pc-windows-msvc
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.2232830Z 
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.2402822Z   stable-x86_64-pc-windows-msvc unchanged - rustc 1.99.1 (58cf8f9c3 2026-10-13)
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.2403284Z 
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.2468594Z ##[end-action id=__dtolnay_rust-toolchain.__run_5;outcome=success;conclusion=success;duration_ms=100]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.2472731Z ##[start-action display=Create cachekey;id=__dtolnay_rust-toolchain.rustc-version]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.2574031Z ##[group]Run DATE=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.2574948Z [36;1mDATE=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.2575651Z [36;1mHASH=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-hash: //p')[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.2576220Z [36;1mecho "cachekey=$(echo $DATE$HASH | head -c12)" >> $GITHUB_OUTPUT[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.2590757Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.2591176Z env:
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.2591460Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.2591947Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.2592439Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.2592871Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.2593304Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.2593649Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.2593905Z   toolchain: stable
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:58.2594103Z ##[endgroup]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.1853803Z ##[end-action id=__dtolnay_rust-toolchain.rustc-version;outcome=success;conclusion=success;duration_ms=938]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.1856947Z ##[start-action display=Disable incremental compilation;id=__dtolnay_rust-toolchain.__run_6]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.1956708Z ##[group]Run if [ -z "${CARGO_INCREMENTAL+set}" ]; then
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.1957091Z [36;1mif [ -z "${CARGO_INCREMENTAL+set}" ]; then[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.1957410Z [36;1m  echo CARGO_INCREMENTAL=0 >> $GITHUB_ENV[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.1957682Z [36;1mfi[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.1977311Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.1978033Z env:
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.1978483Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.1979290Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.1980104Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.1980823Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.1981567Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.1982175Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.1982596Z ##[endgroup]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2342530Z ##[end-action id=__dtolnay_rust-toolchain.__run_6;outcome=success;conclusion=success;duration_ms=48]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2345414Z ##[start-action display=Enable colors in Cargo output;id=__dtolnay_rust-toolchain.__run_7]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2443562Z ##[group]Run if [ -z "${CARGO_TERM_COLOR+set}" ]; then
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2443929Z [36;1mif [ -z "${CARGO_TERM_COLOR+set}" ]; then[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2444251Z [36;1m  echo CARGO_TERM_COLOR=always >> $GITHUB_ENV[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2444523Z [36;1mfi[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2458191Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2458583Z env:
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2458851Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2459328Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2459797Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2460198Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2460593Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2460934Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2461185Z   CARGO_INCREMENTAL: 0
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2461550Z ##[endgroup]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2782354Z ##[end-action id=__dtolnay_rust-toolchain.__run_7;outcome=success;conclusion=success;duration_ms=43]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2787573Z ##[start-action display=Enable Cargo sparse registry;id=__dtolnay_rust-toolchain.__run_8]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2913894Z ##[group]Run # implemented in 1.66, stabilized in 1.68, made default in 1.70
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2914422Z [36;1m# implemented in 1.66, stabilized in 1.68, made default in 1.70[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2915068Z [36;1mif [ -z "${CARGO_REGISTRIES_CRATES_IO_PROTOCOL+set}" -o -f "D:\a\_temp"/.implicit_cargo_registries_crates_io_protocol ]; then[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2915776Z [36;1m  if rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.6[89]\.'; then[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2916300Z [36;1m    touch "D:\a\_temp"/.implicit_cargo_registries_crates_io_protocol || true[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2916779Z [36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse >> $GITHUB_ENV[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2917339Z [36;1m  elif rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.6[67]\.'; then[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2917963Z [36;1m    touch "D:\a\_temp"/.implicit_cargo_registries_crates_io_protocol || true[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2918434Z [36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=git >> $GITHUB_ENV[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2918771Z [36;1m  fi[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2919082Z [36;1mfi[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2932677Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2933228Z env:
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2933498Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2933960Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2934410Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2934805Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2935214Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2935557Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2935811Z   CARGO_INCREMENTAL: 0
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2936017Z   CARGO_TERM_COLOR: always
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2936218Z   toolchain: stable
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.2936402Z ##[endgroup]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.4973135Z ##[end-action id=__dtolnay_rust-toolchain.__run_8;outcome=success;conclusion=success;duration_ms=218]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.4977803Z ##[start-action display=Work around spurious network errors in curl 8.0;id=__dtolnay_rust-toolchain.__run_9]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.5085208Z ##[group]Run # https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.5085991Z [36;1m# https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.5086638Z [36;1mif rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.7[01]\.'; then[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.5087128Z [36;1m  echo CARGO_HTTP_MULTIPLEXING=false >> $GITHUB_ENV[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.5087434Z [36;1mfi[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.5110384Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.5110780Z env:
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.5111048Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.5111519Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.5111990Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.5112406Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.5112802Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.5113137Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.5113394Z   CARGO_INCREMENTAL: 0
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.5113602Z   CARGO_TERM_COLOR: always
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.5113813Z   toolchain: stable
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.5113996Z ##[endgroup]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.6226522Z ##[end-action id=__dtolnay_rust-toolchain.__run_9;outcome=success;conclusion=success;duration_ms=124]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.6232469Z ##[start-action display=rustc +stable --version --verbose;id=__dtolnay_rust-toolchain.__run_10]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.6407521Z ##[group]Run rustc +"$toolchain" --version --verbose
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.6407882Z [36;1mrustc +"$toolchain" --version --verbose[0m
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.6421919Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.6422330Z env:
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.6422590Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.6423041Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.6423489Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.6423888Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.6424284Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.6424622Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.6424874Z   CARGO_INCREMENTAL: 0
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.6425076Z   CARGO_TERM_COLOR: always
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.6425285Z   toolchain: stable
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.6425467Z ##[endgroup]
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.7121884Z rustc 1.99.1 (58cf8f9c3 2026-10-13)
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.7122621Z binary: rustc
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.7123182Z commit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.7123821Z commit-date: 2026-10-13
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.7124866Z host: x86_64-pc-windows-msvc
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.7125453Z release: 1.99.1
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.7125857Z LLVM version: 23.1.1
+inspect	Run dtolnay/rust-toolchain@stable	2026-10-16T10:49:59.7218840Z ##[end-action id=__dtolnay_rust-toolchain.__run_10;outcome=success;conclusion=success;duration_ms=98]
+inspect	Run Swatinem/rust-cache@v2	﻿2026-10-16T10:49:59.7429440Z ##[group]Run Swatinem/rust-cache@v2
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:49:59.7429793Z with:
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:49:59.7430001Z   shared-key: nemotron-windows-offline
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:49:59.7430277Z   cache-on-failure: true
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:49:59.7430488Z   prefix-key: v0-rust
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:49:59.7430698Z   add-job-id-key: true
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:49:59.7430929Z   add-rust-environment-hash-key: true
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:49:59.7431193Z   cache-targets: true
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:49:59.7431397Z   cache-all-crates: false
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:49:59.7431622Z   cache-workspace-crates: false
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:49:59.7431848Z   save-if: true
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:49:59.7432032Z   cache-provider: github
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:49:59.7432234Z   cache-bin: true
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:49:59.7432436Z   lookup-only: false
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:49:59.7432630Z   cmd-format: {0}
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:49:59.7432801Z env:
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:49:59.7433564Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:49:59.7434266Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:49:59.7434776Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:49:59.7435184Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:49:59.7435585Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:49:59.7435919Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:49:59.7436174Z   CARGO_INCREMENTAL: 0
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:49:59.7436372Z   CARGO_TERM_COLOR: always
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:49:59.7436575Z ##[endgroup]
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:50:01.7119708Z ##[group]Cache Configuration
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:50:01.7120288Z Cache Provider:
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:50:01.7122795Z     github
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:50:01.7123387Z Workspaces:
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:50:01.7123858Z     D:\a\gen2\gen2
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:50:01.7124346Z Cache Paths:
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:50:01.7124850Z     C:\Users\runneradmin\.cargo\bin
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:50:01.7125550Z     C:\Users\runneradmin\.cargo\.crates.toml
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:50:01.7126271Z     C:\Users\runneradmin\.cargo\.crates2.json
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:50:01.7126922Z     C:\Users\runneradmin\.cargo\registry
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:50:01.7127492Z     C:\Users\runneradmin\.cargo\git
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:50:01.7128041Z     D:\a\gen2\gen2\target
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:50:01.7128538Z Restore Key:
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:50:01.7129226Z     v0-rust-nemotron-windows-offline-Windows_NT-x64-e70cdc14
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:50:01.7129947Z Cache Key:
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:50:01.7130639Z     v0-rust-nemotron-windows-offline-Windows_NT-x64-e70cdc14-0beb53fd
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:50:01.7131447Z .. Prefix:
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:50:01.7132024Z   - v0-rust-nemotron-windows-offline-Windows_NT-x64
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:50:01.7132745Z .. Environment considered:
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:50:01.7133446Z   - Rust Versions:
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:50:01.7134113Z     - 1.99.1 x86_64-pc-windows-msvc 58cf8f9c35b355199727627d07ae34a4e2846d67
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:50:01.7134888Z   - CARGO_HOME
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:50:01.7135341Z   - CARGO_INCREMENTAL
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:50:01.7135843Z   - CARGO_TERM_COLOR
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:50:01.7136344Z .. Lockfiles considered:
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:50:01.7136834Z   - D:\a\gen2\gen2\Cargo.lock
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:50:01.7137350Z   - D:\a\gen2\gen2\Cargo.toml
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:50:01.7137877Z   - D:\a\gen2\gen2\crates\gen2-mlxcel\Cargo.toml
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:50:01.7138506Z   - D:\a\gen2\gen2\examples\laya-mobile\Cargo.toml
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:50:01.7139503Z ##[endgroup]
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:50:01.7139879Z 
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:50:01.7140168Z ... Restoring cache ...
+inspect	Run Swatinem/rust-cache@v2	2026-10-16T10:50:01.9609541Z No cache found.
+inspect	Run packaging and evidence regressions	﻿2026-10-16T10:50:01.9913591Z ##[group]Run python -m unittest test_package_windows test_windows_archive test_windows_pe test_windows_naming test_windows_compat test_windows_loader_control test_windows_container_preflight test_platform_native test_evidence_commands test_windows_runtime_audit
+inspect	Run packaging and evidence regressions	2026-10-16T10:50:01.9918096Z [36;1mpython -m unittest test_package_windows test_windows_archive test_windows_pe test_windows_naming test_windows_compat test_windows_loader_control test_windows_container_preflight test_platform_native test_evidence_commands test_windows_runtime_audit[0m
+inspect	Run packaging and evidence regressions	2026-10-16T10:50:01.9976720Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+inspect	Run packaging and evidence regressions	2026-10-16T10:50:01.9977290Z env:
+inspect	Run packaging and evidence regressions	2026-10-16T10:50:01.9977711Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run packaging and evidence regressions	2026-10-16T10:50:01.9978500Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+inspect	Run packaging and evidence regressions	2026-10-16T10:50:01.9979264Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run packaging and evidence regressions	2026-10-16T10:50:01.9979941Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run packaging and evidence regressions	2026-10-16T10:50:01.9980672Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run packaging and evidence regressions	2026-10-16T10:50:01.9981239Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+inspect	Run packaging and evidence regressions	2026-10-16T10:50:01.9981658Z   CARGO_INCREMENTAL: 0
+inspect	Run packaging and evidence regressions	2026-10-16T10:50:01.9982002Z   CARGO_TERM_COLOR: always
+inspect	Run packaging and evidence regressions	2026-10-16T10:50:01.9982343Z   CACHE_ON_FAILURE: true
+inspect	Run packaging and evidence regressions	2026-10-16T10:50:01.9982660Z ##[endgroup]
+inspect	Run packaging and evidence regressions	2026-10-16T10:50:14.0240061Z START docker-json
+inspect	Run packaging and evidence regressions	2026-10-16T10:50:14.0527204Z PASS docker-json
+inspect	Run packaging and evidence regressions	2026-10-16T10:50:14.0611907Z ............................
+inspect	Run packaging and evidence regressions	2026-10-16T10:50:14.0612791Z ----------------------------------------------------------------------
+inspect	Run packaging and evidence regressions	2026-10-16T10:50:14.0613394Z Ran 28 tests in 9.451s
+inspect	Run packaging and evidence regressions	2026-10-16T10:50:14.0613626Z 
+inspect	Run packaging and evidence regressions	2026-10-16T10:50:14.0613746Z OK
+inspect	Retrieve the exact qualified private-name SDK	﻿2026-10-16T10:50:14.1929016Z ##[group]Run actions/download-artifact@v4
+inspect	Retrieve the exact qualified private-name SDK	2026-10-16T10:50:14.1929383Z with:
+inspect	Retrieve the exact qualified private-name SDK	2026-10-16T10:50:14.1929588Z   name: nemotron-native-windows-2022
+inspect	Retrieve the exact qualified private-name SDK	2026-10-16T10:50:14.1929845Z   run-id: 38882923286
+inspect	Retrieve the exact qualified private-name SDK	2026-10-16T10:50:14.1932521Z   github-token: ***
+inspect	Retrieve the exact qualified private-name SDK	2026-10-16T10:50:14.1932778Z   path: D:\a\_temp/qualified-windows-native
+inspect	Retrieve the exact qualified private-name SDK	2026-10-16T10:50:14.1933055Z   merge-multiple: false
+inspect	Retrieve the exact qualified private-name SDK	2026-10-16T10:50:14.1933266Z   repository: saberra-ai/gen2
+inspect	Retrieve the exact qualified private-name SDK	2026-10-16T10:50:14.1933496Z env:
+inspect	Retrieve the exact qualified private-name SDK	2026-10-16T10:50:14.1933745Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Retrieve the exact qualified private-name SDK	2026-10-16T10:50:14.1934192Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+inspect	Retrieve the exact qualified private-name SDK	2026-10-16T10:50:14.1934632Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Retrieve the exact qualified private-name SDK	2026-10-16T10:50:14.1935021Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Retrieve the exact qualified private-name SDK	2026-10-16T10:50:14.1935414Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Retrieve the exact qualified private-name SDK	2026-10-16T10:50:14.1935750Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+inspect	Retrieve the exact qualified private-name SDK	2026-10-16T10:50:14.1936020Z   CARGO_INCREMENTAL: 0
+inspect	Retrieve the exact qualified private-name SDK	2026-10-16T10:50:14.1936220Z   CARGO_TERM_COLOR: always
+inspect	Retrieve the exact qualified private-name SDK	2026-10-16T10:50:14.1936425Z   CACHE_ON_FAILURE: true
+inspect	Retrieve the exact qualified private-name SDK	2026-10-16T10:50:14.1936617Z ##[endgroup]
+inspect	Retrieve the exact qualified private-name SDK	2026-10-16T10:50:14.3746652Z Downloading single artifact
+inspect	Retrieve the exact qualified private-name SDK	2026-10-16T10:50:14.3834111Z (node:6168) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+inspect	Retrieve the exact qualified private-name SDK	2026-10-16T10:50:14.3834896Z (Use `node --trace-deprecation ...` to show where the warning was created)
+inspect	Retrieve the exact qualified private-name SDK	2026-10-16T10:50:14.4355543Z (node:6168) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+inspect	Retrieve the exact qualified private-name SDK	2026-10-16T10:50:14.6219697Z Preparing to download the following artifacts:
+inspect	Retrieve the exact qualified private-name SDK	2026-10-16T10:50:14.6221613Z - nemotron-native-windows-2022 (ID: 12038907036, Size: 3395815, Expected Digest: sha256:b930b02534d68f8737a33c40ec0e48be48deee31a30f8d70dd7233714ddcbdd6)
+inspect	Retrieve the exact qualified private-name SDK	2026-10-16T10:50:14.6263634Z Downloading artifact '12038907036' from 'saberra-ai/gen2'
+inspect	Retrieve the exact qualified private-name SDK	2026-10-16T10:50:14.8174771Z Redirecting to blob download url: https://productionresultssa3.blob.core.windows.net/actions-results/910d63d6-5ae6-834c-a21f-21b75d276182/workflow-job-run-b06a4848-4e35-5760-861b-da55e0e0c774/artifacts/c0ed67fe91d3f2291bda05f54c3b11265ffbfe673b053bbc77975ce2a2be3de7.zip
+inspect	Retrieve the exact qualified private-name SDK	2026-10-16T10:50:14.8176861Z Starting download of artifact to: D:\a\_temp\qualified-windows-native
+inspect	Retrieve the exact qualified private-name SDK	2026-10-16T10:50:14.8858962Z (node:6168) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+inspect	Retrieve the exact qualified private-name SDK	2026-10-16T10:50:15.0621360Z SHA256 digest of downloaded artifact is b930b02534d68f8737a33c40ec0e48be48deee31a30f8d70dd7233714ddcbdd6
+inspect	Retrieve the exact qualified private-name SDK	2026-10-16T10:50:15.0622026Z Artifact download completed successfully.
+inspect	Retrieve the exact qualified private-name SDK	2026-10-16T10:50:15.0622324Z Total of 1 artifact(s) downloaded
+inspect	Retrieve the exact qualified private-name SDK	2026-10-16T10:50:15.0629036Z Download artifact has finished successfully
+inspect	Construct and restore a development runtime from qualified bytes	﻿2026-10-16T10:50:15.0873200Z ##[group]Run python tools/nemotron-diarization/package_windows.py --sdk-prefix "D:\a\_temp/qualified-windows-native/nemo-sdk" --native-evidence "D:\a\_temp/qualified-windows-native/nemo-evidence" --output "D:\a\_temp/windows-runtime-package"
+inspect	Construct and restore a development runtime from qualified bytes	2026-10-16T10:50:15.0875144Z [36;1mpython tools/nemotron-diarization/package_windows.py --sdk-prefix "D:\a\_temp/qualified-windows-native/nemo-sdk" --native-evidence "D:\a\_temp/qualified-windows-native/nemo-evidence" --output "D:\a\_temp/windows-runtime-package"[0m
+inspect	Construct and restore a development runtime from qualified bytes	2026-10-16T10:50:15.0915284Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+inspect	Construct and restore a development runtime from qualified bytes	2026-10-16T10:50:15.0927787Z env:
+inspect	Construct and restore a development runtime from qualified bytes	2026-10-16T10:50:15.0928120Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Construct and restore a development runtime from qualified bytes	2026-10-16T10:50:15.0928597Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+inspect	Construct and restore a development runtime from qualified bytes	2026-10-16T10:50:15.0929056Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Construct and restore a development runtime from qualified bytes	2026-10-16T10:50:15.0929462Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Construct and restore a development runtime from qualified bytes	2026-10-16T10:50:15.0929908Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Construct and restore a development runtime from qualified bytes	2026-10-16T10:50:15.0930264Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+inspect	Construct and restore a development runtime from qualified bytes	2026-10-16T10:50:15.0930532Z   CARGO_INCREMENTAL: 0
+inspect	Construct and restore a development runtime from qualified bytes	2026-10-16T10:50:15.0930744Z   CARGO_TERM_COLOR: always
+inspect	Construct and restore a development runtime from qualified bytes	2026-10-16T10:50:15.0930963Z   CACHE_ON_FAILURE: true
+inspect	Construct and restore a development runtime from qualified bytes	2026-10-16T10:50:15.0931191Z ##[endgroup]
+inspect	Compile and exercise actual Win32 module snapshots and Unicode relocation	﻿2026-10-16T10:50:21.2572344Z ##[group]Run rustc --edition=2024 --test examples/support/windows_modules.rs -D warnings -o "D:\a\_temp/windows-module-evidence.exe"
+inspect	Compile and exercise actual Win32 module snapshots and Unicode relocation	2026-10-16T10:50:21.2573400Z [36;1mrustc --edition=2024 --test examples/support/windows_modules.rs -D warnings -o "D:\a\_temp/windows-module-evidence.exe"[0m
+inspect	Compile and exercise actual Win32 module snapshots and Unicode relocation	2026-10-16T10:50:21.2574157Z [36;1m& "D:\a\_temp/windows-module-evidence.exe" --test-threads=1 --nocapture[0m
+inspect	Compile and exercise actual Win32 module snapshots and Unicode relocation	2026-10-16T10:50:21.2613376Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+inspect	Compile and exercise actual Win32 module snapshots and Unicode relocation	2026-10-16T10:50:21.2613729Z env:
+inspect	Compile and exercise actual Win32 module snapshots and Unicode relocation	2026-10-16T10:50:21.2614000Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Compile and exercise actual Win32 module snapshots and Unicode relocation	2026-10-16T10:50:21.2614463Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+inspect	Compile and exercise actual Win32 module snapshots and Unicode relocation	2026-10-16T10:50:21.2614932Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Compile and exercise actual Win32 module snapshots and Unicode relocation	2026-10-16T10:50:21.2615361Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Compile and exercise actual Win32 module snapshots and Unicode relocation	2026-10-16T10:50:21.2615762Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Compile and exercise actual Win32 module snapshots and Unicode relocation	2026-10-16T10:50:21.2616165Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+inspect	Compile and exercise actual Win32 module snapshots and Unicode relocation	2026-10-16T10:50:21.2616422Z   CARGO_INCREMENTAL: 0
+inspect	Compile and exercise actual Win32 module snapshots and Unicode relocation	2026-10-16T10:50:21.2616626Z   CARGO_TERM_COLOR: always
+inspect	Compile and exercise actual Win32 module snapshots and Unicode relocation	2026-10-16T10:50:21.2616843Z   CACHE_ON_FAILURE: true
+inspect	Compile and exercise actual Win32 module snapshots and Unicode relocation	2026-10-16T10:50:21.2617044Z ##[endgroup]
+inspect	Compile and exercise actual Win32 module snapshots and Unicode relocation	2026-10-16T10:50:23.7327355Z 
+inspect	Compile and exercise actual Win32 module snapshots and Unicode relocation	2026-10-16T10:50:23.7327997Z running 2 tests
+inspect	Compile and exercise actual Win32 module snapshots and Unicode relocation	2026-10-16T10:50:23.7443013Z test tests::current_executable_is_in_stable_snapshot ... actual modules: ["D:\\a\\_temp\\windows-module-evidence.exe", "C:\\Windows\\SYSTEM32\\VCRUNTIME140.dll", "C:\\Windows\\SYSTEM32\\apphelp.dll", "C:\\Windows\\SYSTEM32\\USERENV.dll", "C:\\Windows\\System32\\ucrtbase.dll", "C:\\Windows\\System32\\KERNELBASE.dll", "C:\\Windows\\System32\\bcryptprimitives.dll", "C:\\Windows\\System32\\RPCRT4.dll", "C:\\Windows\\System32\\KERNEL32.DLL", "C:\\Windows\\SYSTEM32\\ntdll.dll"]
+inspect	Compile and exercise actual Win32 module snapshots and Unicode relocation	2026-10-16T10:50:23.7446115Z ok
+inspect	Compile and exercise actual Win32 module snapshots and Unicode relocation	2026-10-16T10:50:23.7777242Z test tests::unicode_relocated_executable_keeps_its_actual_module_path ... 
+inspect	Compile and exercise actual Win32 module snapshots and Unicode relocation	2026-10-16T10:50:23.7778660Z running 1 test
+inspect	Compile and exercise actual Win32 module snapshots and Unicode relocation	2026-10-16T10:50:23.7782916Z actual modules: ["C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\gen2 module ü 2388 1792147823744194600\\module evidence ü.exe", "C:\\Windows\\SYSTEM32\\VCRUNTIME140.dll", "C:\\Windows\\SYSTEM32\\apphelp.dll", "C:\\Windows\\SYSTEM32\\USERENV.dll", "C:\\Windows\\System32\\ucrtbase.dll", "C:\\Windows\\System32\\KERNELBASE.dll", "C:\\Windows\\System32\\bcryptprimitives.dll", "C:\\Windows\\System32\\RPCRT4.dll", "C:\\Windows\\System32\\KERNEL32.DLL", "C:\\Windows\\SYSTEM32\\ntdll.dll"]
+inspect	Compile and exercise actual Win32 module snapshots and Unicode relocation	2026-10-16T10:50:23.7786607Z test tests::current_executable_is_in_stable_snapshot ... ok
+inspect	Compile and exercise actual Win32 module snapshots and Unicode relocation	2026-10-16T10:50:23.7787062Z 
+inspect	Compile and exercise actual Win32 module snapshots and Unicode relocation	2026-10-16T10:50:23.7787487Z test result: ok. 1 passed; 0 failed; 0 ignored; 0 measured; 1 filtered out; finished in 0.01s
+inspect	Compile and exercise actual Win32 module snapshots and Unicode relocation	2026-10-16T10:50:23.7788087Z 
+inspect	Compile and exercise actual Win32 module snapshots and Unicode relocation	2026-10-16T10:50:23.7788094Z 
+inspect	Compile and exercise actual Win32 module snapshots and Unicode relocation	2026-10-16T10:50:23.7788219Z ok
+inspect	Compile and exercise actual Win32 module snapshots and Unicode relocation	2026-10-16T10:50:23.7788361Z 
+inspect	Compile and exercise actual Win32 module snapshots and Unicode relocation	2026-10-16T10:50:23.7788770Z test result: ok. 2 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.05s
+inspect	Compile and exercise actual Win32 module snapshots and Unicode relocation	2026-10-16T10:50:23.7789401Z 
+inspect	Observe host and existing Docker prerequisites without mutations	﻿2026-10-16T10:50:23.8890243Z ##[group]Run python tools/nemotron-diarization/windows_container_preflight.py --output "D:\a\_temp/windows-container-prerequisites"
+inspect	Observe host and existing Docker prerequisites without mutations	2026-10-16T10:50:23.8891330Z [36;1mpython tools/nemotron-diarization/windows_container_preflight.py --output "D:\a\_temp/windows-container-prerequisites"[0m
+inspect	Observe host and existing Docker prerequisites without mutations	2026-10-16T10:50:23.8931635Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+inspect	Observe host and existing Docker prerequisites without mutations	2026-10-16T10:50:23.8931986Z env:
+inspect	Observe host and existing Docker prerequisites without mutations	2026-10-16T10:50:23.8932253Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Observe host and existing Docker prerequisites without mutations	2026-10-16T10:50:23.8932724Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+inspect	Observe host and existing Docker prerequisites without mutations	2026-10-16T10:50:23.8933172Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Observe host and existing Docker prerequisites without mutations	2026-10-16T10:50:23.8933580Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Observe host and existing Docker prerequisites without mutations	2026-10-16T10:50:23.8933975Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Observe host and existing Docker prerequisites without mutations	2026-10-16T10:50:23.8934339Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+inspect	Observe host and existing Docker prerequisites without mutations	2026-10-16T10:50:23.8934590Z   CARGO_INCREMENTAL: 0
+inspect	Observe host and existing Docker prerequisites without mutations	2026-10-16T10:50:23.8934819Z   CARGO_TERM_COLOR: always
+inspect	Observe host and existing Docker prerequisites without mutations	2026-10-16T10:50:23.8935028Z   CACHE_ON_FAILURE: true
+inspect	Observe host and existing Docker prerequisites without mutations	2026-10-16T10:50:23.8935220Z ##[endgroup]
+inspect	Observe host and existing Docker prerequisites without mutations	2026-10-16T10:50:33.6941512Z {"server2022_process_container_candidate": true, "runtime_qualified": false}
+inspect	Exercise frozen Server Core process-container controls	﻿2026-10-16T10:50:33.8051497Z ##[group]Run python tools/nemotron-diarization/windows_container_smoke.py --prerequisites "D:\a\_temp/windows-container-prerequisites/preflight.json" --output "D:\a\_temp/windows-container-controls"
+inspect	Exercise frozen Server Core process-container controls	2026-10-16T10:50:33.8053053Z [36;1mpython tools/nemotron-diarization/windows_container_smoke.py --prerequisites "D:\a\_temp/windows-container-prerequisites/preflight.json" --output "D:\a\_temp/windows-container-controls"[0m
+inspect	Exercise frozen Server Core process-container controls	2026-10-16T10:50:33.8092407Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+inspect	Exercise frozen Server Core process-container controls	2026-10-16T10:50:33.8092757Z env:
+inspect	Exercise frozen Server Core process-container controls	2026-10-16T10:50:33.8093024Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Exercise frozen Server Core process-container controls	2026-10-16T10:50:33.8093497Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+inspect	Exercise frozen Server Core process-container controls	2026-10-16T10:50:33.8093967Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Exercise frozen Server Core process-container controls	2026-10-16T10:50:33.8094367Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Exercise frozen Server Core process-container controls	2026-10-16T10:50:33.8094759Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Exercise frozen Server Core process-container controls	2026-10-16T10:50:33.8095118Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+inspect	Exercise frozen Server Core process-container controls	2026-10-16T10:50:33.8095368Z   CARGO_INCREMENTAL: 0
+inspect	Exercise frozen Server Core process-container controls	2026-10-16T10:50:33.8095566Z   CARGO_TERM_COLOR: always
+inspect	Exercise frozen Server Core process-container controls	2026-10-16T10:50:33.8095775Z   CACHE_ON_FAILURE: true
+inspect	Exercise frozen Server Core process-container controls	2026-10-16T10:50:33.8095973Z ##[endgroup]
+inspect	Exercise frozen Server Core process-container controls	2026-10-16T10:50:34.1883579Z START image-inspect
+inspect	Exercise frozen Server Core process-container controls	2026-10-16T10:50:34.2169427Z PASS image-inspect
+inspect	Exercise frozen Server Core process-container controls	2026-10-16T10:50:34.2211198Z START create
+inspect	Exercise frozen Server Core process-container controls	2026-10-16T10:50:34.9591647Z PASS create
+inspect	Exercise frozen Server Core process-container controls	2026-10-16T10:50:34.9601509Z START start
+inspect	Exercise frozen Server Core process-container controls	2026-10-16T10:50:55.2880417Z PASS start
+inspect	Exercise frozen Server Core process-container controls	2026-10-16T10:50:55.2885176Z START container-inspect
+inspect	Exercise frozen Server Core process-container controls	2026-10-16T10:50:55.3229295Z PASS container-inspect
+inspect	Exercise frozen Server Core process-container controls	2026-10-16T10:50:55.3252384Z START remove-managed-container
+inspect	Exercise frozen Server Core process-container controls	2026-10-16T10:50:55.3693097Z PASS remove-managed-container
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	﻿2026-10-16T10:50:55.4784921Z ##[group]Run python tools/nemotron-diarization/qualify_windows_package.py --sdk-prefix "D:\a\_temp/qualified-windows-native/nemo-sdk" --native-evidence "D:\a\_temp/qualified-windows-native/nemo-evidence" --package-evidence "D:\a\_temp/windows-runtime-package" --prerequisites "D:\a\_temp/windows-container-prerequisites/preflight.json" --output "D:\a\_temp/windows-runtime-offline"
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:50:55.4787812Z [36;1mpython tools/nemotron-diarization/qualify_windows_package.py --sdk-prefix "D:\a\_temp/qualified-windows-native/nemo-sdk" --native-evidence "D:\a\_temp/qualified-windows-native/nemo-evidence" --package-evidence "D:\a\_temp/windows-runtime-package" --prerequisites "D:\a\_temp/windows-container-prerequisites/preflight.json" --output "D:\a\_temp/windows-runtime-offline"[0m
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:50:55.4837758Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:50:55.4838103Z env:
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:50:55.4838367Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:50:55.4838861Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:50:55.4839313Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:50:55.4839707Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:50:55.4840096Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:50:55.4840424Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:50:55.4840677Z   CARGO_INCREMENTAL: 0
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:50:55.4840873Z   CARGO_TERM_COLOR: always
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:50:55.4841084Z   CACHE_ON_FAILURE: true
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:50:55.4841287Z ##[endgroup]
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:50:55.9125494Z START image-inspect
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:50:55.9406541Z PASS image-inspect
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:51:00.4057620Z START build-public-helper
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:56:44.0469879Z PASS build-public-helper
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:56:44.0474618Z START cargo-metadata
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:56:44.0839668Z PASS cargo-metadata
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:56:44.0848042Z START build-lifecycle-helper
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:56:46.8501627Z PASS build-lifecycle-helper
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:56:47.4946781Z START native-create
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:56:48.1089679Z PASS native-create
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:56:48.1096715Z START native-start
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:57:59.2463381Z PASS native-start
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:57:59.2468096Z START native-inspect
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:57:59.2781637Z PASS native-inspect
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:57:59.4256919Z START native-remove
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:57:59.4688494Z PASS native-remove
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:57:59.6704590Z START public-create
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:58:00.2873842Z PASS public-create
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:58:00.2880741Z START public-start
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:59:11.1434727Z PASS public-start
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:59:11.1439995Z START public-inspect
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:59:11.1762773Z PASS public-inspect
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:59:11.3238993Z START public-remove
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:59:11.3660869Z PASS public-remove
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:59:11.7526670Z START lifecycle-list-create
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:59:12.3331016Z PASS lifecycle-list-create
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:59:12.3338117Z START lifecycle-list-start
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:59:19.6135904Z PASS lifecycle-list-start
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:59:19.6142047Z START lifecycle-list-inspect
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:59:19.6439566Z PASS lifecycle-list-inspect
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:59:19.7923016Z START lifecycle-list-remove
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:59:19.8388372Z PASS lifecycle-list-remove
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:59:20.0420172Z START lifecycle-create
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:59:20.6148149Z PASS lifecycle-create
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T10:59:20.6156287Z START lifecycle-start
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T11:05:13.6137800Z PASS lifecycle-start
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T11:05:13.6145109Z START lifecycle-inspect
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T11:05:13.6446132Z PASS lifecycle-inspect
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T11:05:13.7957045Z START lifecycle-remove
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T11:05:13.8399585Z PASS lifecycle-remove
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T11:05:14.0476532Z START missing-private-library-create
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T11:05:14.6864552Z PASS missing-private-library-create
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T11:05:14.6875189Z START missing-private-library-start
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T11:05:22.2721939Z PASS missing-private-library-start
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T11:05:22.2730513Z START missing-private-library-inspect
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T11:05:22.3058760Z PASS missing-private-library-inspect
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T11:05:22.4553727Z START missing-private-library-remove
+inspect	Exercise delivered Windows runtime and real model in fresh offline containers	2026-10-16T11:05:22.4987637Z PASS missing-private-library-remove
+inspect	Run actions/upload-artifact@v4	﻿2026-10-16T11:05:24.0069607Z ##[group]Run actions/upload-artifact@v4
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:24.0070094Z with:
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:24.0070384Z   name: windows-runtime-offline-development
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:24.0072239Z   path: D:\a\_temp/windows-runtime-offline/*.json
+inspect	Run actions/upload-artifact@v4	D:\a\_temp/windows-runtime-offline/*.log
+inspect	Run actions/upload-artifact@v4	D:\a\_temp/windows-runtime-offline/*.zip
+inspect	Run actions/upload-artifact@v4	D:\a\_temp/windows-runtime-offline/*/frozen-inputs.json
+inspect	Run actions/upload-artifact@v4	D:\a\_temp/windows-runtime-offline/*/loaded-modules.json
+inspect	Run actions/upload-artifact@v4	D:\a\_temp/windows-runtime-offline/*/results/*.json
+inspect	Run actions/upload-artifact@v4	D:\a\_temp/windows-runtime-offline/*/results/*.log
+inspect	Run actions/upload-artifact@v4	D:\a\_temp/windows-runtime-offline/*/results/*.f32
+inspect	Run actions/upload-artifact@v4	
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:24.0073883Z   retention-days: 7
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:24.0074144Z   if-no-files-found: warn
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:24.0074415Z   compression-level: 6
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:24.0074672Z   overwrite: false
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:24.0074925Z   include-hidden-files: false
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:24.0075194Z env:
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:24.0075507Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:24.0076036Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:24.0076628Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:24.0077088Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:24.0077538Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:24.0077944Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:24.0078252Z   CARGO_INCREMENTAL: 0
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:24.0078508Z   CARGO_TERM_COLOR: always
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:24.0078803Z   CACHE_ON_FAILURE: true
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:24.0079049Z ##[endgroup]
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:24.2005750Z (node:8140) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:24.2006709Z (Use `node --trace-deprecation ...` to show where the warning was created)
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:24.2494354Z With the provided path, there will be 89 files uploaded
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:24.2500315Z Artifact name is valid!
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:24.2502373Z Root directory input is valid!
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:24.4412110Z Beginning upload of artifact content to blob storage
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:24.6252061Z (node:8140) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:24.7293539Z Uploaded bytes 2332737
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:24.7453767Z Finished uploading artifact content to blob storage!
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:24.7454938Z SHA256 digest of uploaded artifact zip is e54eecc5781123288a3cf7c9d508c33c8ac5a7679ac98be114b6e5a5a56f58cd
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:24.7457735Z Finalizing artifact upload
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:25.0074050Z Artifact windows-runtime-offline-development.zip successfully finalized. Artifact ID 12041772725
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:25.0075636Z Artifact windows-runtime-offline-development has been successfully uploaded! Final size is 2332737 bytes. Artifact ID is 12041772725
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:25.0084778Z Artifact download URL: https://github.com/saberra-ai/gen2/actions/runs/38889748843/artifacts/12041772725
+inspect	Run actions/upload-artifact@v4	﻿2026-10-16T11:05:25.0364769Z ##[group]Run actions/upload-artifact@v4
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:25.0365204Z with:
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:25.0365508Z   name: windows-runtime-package-development
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:25.0365916Z   path: D:\a\_temp/windows-runtime-package/
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:25.0366302Z   retention-days: 7
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:25.0366587Z   if-no-files-found: warn
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:25.0366886Z   compression-level: 6
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:25.0367373Z   overwrite: false
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:25.0367673Z   include-hidden-files: false
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:25.0367974Z env:
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:25.0368308Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:25.0368871Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:25.0369463Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:25.0369973Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:25.0370485Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:25.0370985Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:25.0371336Z   CARGO_INCREMENTAL: 0
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:25.0371619Z   CARGO_TERM_COLOR: always
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:25.0371938Z   CACHE_ON_FAILURE: true
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:25.0372217Z ##[endgroup]
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:25.2252107Z (node:6824) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:25.2253612Z (Use `node --trace-deprecation ...` to show where the warning was created)
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:25.2679433Z With the provided path, there will be 63 files uploaded
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:25.2685350Z Artifact name is valid!
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:25.2687328Z Root directory input is valid!
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:25.4923830Z Beginning upload of artifact content to blob storage
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.1028705Z (node:6824) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.2936412Z Uploaded bytes 7585668
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.3101017Z Finished uploading artifact content to blob storage!
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.3102253Z SHA256 digest of uploaded artifact zip is ca90d0066111b78307a383711f183a082c4164453c0d5bce76aec520c82ffa61
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.3104822Z Finalizing artifact upload
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.5103885Z Artifact windows-runtime-package-development.zip successfully finalized. Artifact ID 12041329313
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.5105727Z Artifact windows-runtime-package-development has been successfully uploaded! Final size is 7585668 bytes. Artifact ID is 12041329313
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.5113368Z Artifact download URL: https://github.com/saberra-ai/gen2/actions/runs/38889748843/artifacts/12041329313
+inspect	Run actions/upload-artifact@v4	﻿2026-10-16T11:05:26.5408282Z ##[group]Run actions/upload-artifact@v4
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.5408679Z with:
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.5408904Z   name: windows-container-prerequisites
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.5409252Z   path: D:\a\_temp/windows-container-prerequisites/
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.5409563Z   retention-days: 7
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.5409781Z   if-no-files-found: warn
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.5410013Z   compression-level: 6
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.5410225Z   overwrite: false
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.5410449Z   include-hidden-files: false
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.5410677Z env:
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.5410938Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.5411439Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.5411908Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.5412343Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.5412748Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.5413116Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.5413385Z   CARGO_INCREMENTAL: 0
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.5413590Z   CARGO_TERM_COLOR: always
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.5413805Z   CACHE_ON_FAILURE: true
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.5414018Z ##[endgroup]
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.7301470Z (node:7508) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.7302236Z (Use `node --trace-deprecation ...` to show where the warning was created)
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.7365672Z With the provided path, there will be 1 file uploaded
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.7371676Z Artifact name is valid!
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.7374139Z Root directory input is valid!
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.9338773Z Beginning upload of artifact content to blob storage
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.9542021Z (node:7508) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:26.9968104Z Uploaded bytes 2228
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.0139318Z Finished uploading artifact content to blob storage!
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.0140688Z SHA256 digest of uploaded artifact zip is 810af13ec21e284efb535ec1dd807020a9f1c64fea12d8137597023e7b7b1ece
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.0143311Z Finalizing artifact upload
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.2297363Z Artifact windows-container-prerequisites.zip successfully finalized. Artifact ID 12042256999
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.2298840Z Artifact windows-container-prerequisites has been successfully uploaded! Final size is 2228 bytes. Artifact ID is 12042256999
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.2307792Z Artifact download URL: https://github.com/saberra-ai/gen2/actions/runs/38889748843/artifacts/12042256999
+inspect	Run actions/upload-artifact@v4	﻿2026-10-16T11:05:27.2591488Z ##[group]Run actions/upload-artifact@v4
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.2592036Z with:
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.2592374Z   name: windows-container-controls
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.2592879Z   path: D:\a\_temp/windows-container-controls/
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.2593378Z   retention-days: 7
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.2593712Z   if-no-files-found: warn
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.2594088Z   compression-level: 6
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.2594435Z   overwrite: false
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.2594943Z   include-hidden-files: false
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.2595323Z env:
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.2595759Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.2596584Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.2597422Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.2598188Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.2598942Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.2599597Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.2600060Z   CARGO_INCREMENTAL: 0
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.2600401Z   CARGO_TERM_COLOR: always
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.2600773Z   CACHE_ON_FAILURE: true
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.2601122Z ##[endgroup]
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.4470542Z (node:1932) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.4471550Z (Use `node --trace-deprecation ...` to show where the warning was created)
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.4593246Z With the provided path, there will be 16 files uploaded
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.4598980Z Artifact name is valid!
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.4600963Z Root directory input is valid!
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.6637207Z Beginning upload of artifact content to blob storage
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.7099491Z (node:1932) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.7325750Z Uploaded bytes 8377
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.7481544Z Finished uploading artifact content to blob storage!
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.7482963Z SHA256 digest of uploaded artifact zip is 77e16fca0e2893cb0622cd2e4c8ac6c64220b84f5e0d01c6b30271527fa4731f
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.7485513Z Finalizing artifact upload
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.9573286Z Artifact windows-container-controls.zip successfully finalized. Artifact ID 12041319175
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.9574700Z Artifact windows-container-controls has been successfully uploaded! Final size is 8377 bytes. Artifact ID is 12041319175
+inspect	Run actions/upload-artifact@v4	2026-10-16T11:05:27.9583914Z Artifact download URL: https://github.com/saberra-ai/gen2/actions/runs/38889748843/artifacts/12041319175
+inspect	Post Run Swatinem/rust-cache@v2	﻿2026-10-16T11:05:27.9884918Z Post job cleanup.
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:05:28.1373554Z ##[group]Cache Configuration
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:05:28.1374865Z Cache Provider:
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:05:28.1375462Z     github
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:05:28.1375822Z Workspaces:
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:05:28.1376160Z     D:\a\gen2\gen2
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:05:28.1376525Z Cache Paths:
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:05:28.1376924Z     C:\Users\runneradmin\.cargo\bin
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:05:28.1377478Z     C:\Users\runneradmin\.cargo\.crates.toml
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:05:28.1378053Z     C:\Users\runneradmin\.cargo\.crates2.json
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:05:28.1378630Z     C:\Users\runneradmin\.cargo\registry
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:05:28.1379161Z     C:\Users\runneradmin\.cargo\git
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:05:28.1379661Z     D:\a\gen2\gen2\target
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:05:28.1380077Z Restore Key:
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:05:28.1380592Z     v0-rust-nemotron-windows-offline-Windows_NT-x64-e70cdc14
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:05:28.1381256Z Cache Key:
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:05:28.1381833Z     v0-rust-nemotron-windows-offline-Windows_NT-x64-e70cdc14-0beb53fd
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:05:28.1382553Z .. Prefix:
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:05:28.1383055Z   - v0-rust-nemotron-windows-offline-Windows_NT-x64
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:05:28.1383687Z .. Environment considered:
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:05:28.1384075Z   - Rust Versions:
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:05:28.1384583Z     - 1.99.1 x86_64-pc-windows-msvc 58cf8f9c35b355199727627d07ae34a4e2846d67
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:05:28.1385201Z   - CARGO_HOME
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:05:28.1385535Z   - CARGO_INCREMENTAL
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:05:28.1385898Z   - CARGO_TERM_COLOR
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:05:28.1386248Z .. Lockfiles considered:
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:05:28.1386639Z   - D:\a\gen2\gen2\Cargo.lock
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:05:28.1387051Z   - D:\a\gen2\gen2\Cargo.toml
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:05:28.1387509Z   - D:\a\gen2\gen2\crates\gen2-mlxcel\Cargo.toml
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:05:28.1388073Z   - D:\a\gen2\gen2\examples\laya-mobile\Cargo.toml
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:05:28.1388837Z ##[endgroup]
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:05:28.1389026Z 
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:06:10.0872019Z ... Cleaning D:\a\gen2\gen2\target ...
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:06:10.1209055Z ... Cleaning cargo registry (cache-all-crates: false) ...
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:06:20.9269466Z ... Cleaning cargo/bin ...
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:06:20.9347939Z ... Cleaning cargo git cache ...
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:06:20.9400371Z ... Saving cache ...
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:06:21.0680065Z [command]"C:\Program Files\Git\usr\bin\tar.exe" --posix -cf cache.tzst --exclude cache.tzst -P -C D:/a/gen2/gen2 --files-from manifest.txt --force-local --use-compress-program "zstd -T0"
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:06:29.3050676Z Sent 0 of 514758502 (0.0%), 0.0 MBs/sec
+inspect	Post Run Swatinem/rust-cache@v2	2026-10-16T11:06:29.9136459Z Sent 514758502 of 514758502 (100.0%), 304.3 MBs/sec
+inspect	Post Run actions/setup-python@v5	﻿2026-10-16T11:06:30.1183189Z Post job cleanup.
+inspect	Post Run actions/setup-python@v5	2026-10-16T11:06:30.2580005Z (node:2504) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+inspect	Post Run actions/setup-python@v5	2026-10-16T11:06:30.2581145Z (Use `node --trace-deprecation ...` to show where the warning was created)
+inspect	Post Run actions/checkout@v4	﻿2026-10-16T11:06:30.2845940Z Post job cleanup.
+inspect	Post Run actions/checkout@v4	2026-10-16T11:06:30.4772672Z [command]"C:\Program Files\Git\bin\git.exe" version
+inspect	Post Run actions/checkout@v4	2026-10-16T11:06:30.5079920Z git version 2.56.0.windows.2
+inspect	Post Run actions/checkout@v4	2026-10-16T11:06:30.5138355Z Copying 'C:\Users\runneradmin\.gitconfig' to 'D:\a\_temp\069ef3c4-4367-44c6-ae77-423d5946c51a\.gitconfig'
+inspect	Post Run actions/checkout@v4	2026-10-16T11:06:30.5160512Z Temporarily overriding HOME='D:\a\_temp\069ef3c4-4367-44c6-ae77-423d5946c51a' before making global git config changes
+inspect	Post Run actions/checkout@v4	2026-10-16T11:06:30.5161876Z Adding repository directory to the temporary git global config as a safe directory
+inspect	Post Run actions/checkout@v4	2026-10-16T11:06:30.5172860Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\gen2\gen2
+inspect	Post Run actions/checkout@v4	2026-10-16T11:06:30.5502239Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+inspect	Post Run actions/checkout@v4	2026-10-16T11:06:30.5834310Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+inspect	Post Run actions/checkout@v4	2026-10-16T11:06:31.1344276Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+inspect	Post Run actions/checkout@v4	2026-10-16T11:06:31.1654203Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+inspect	Post Run actions/checkout@v4	2026-10-16T11:06:31.6477142Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+inspect	Post Run actions/checkout@v4	2026-10-16T11:06:31.6781103Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+inspect	Complete job	﻿2026-10-16T11:06:32.1816860Z Cleaning up orphan processes
+inspect	Complete job	2026-10-16T11:06:32.2019560Z Terminate orphan process: pid (4708) (vctip)
+inspect	Complete job	2026-10-16T11:06:32.2081033Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/download-artifact@v4, actions/setup-python@v5, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

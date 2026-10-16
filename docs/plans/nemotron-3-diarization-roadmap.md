@@ -653,6 +653,22 @@ identity from the COFF characteristics while retaining DLL-only dependencies.
 Its new regression passes, all 81 tool tests pass and the qualified 13 DLL PE
 reports remain unchanged. A retry needs separate actual evidence.
 
+The subsequent `855a83c` [Windows offline receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-offline-container/qualification.json)
+now passes all five fresh Server Core containers: native/public parity is exact
+for 27 turns, 6,001 rows and 48,008 probability values; all seven lifecycle tests
+including 100 reloads pass; removing private GGML-base returns native error126
+with no probability output. Actual network-none/process/readonly mount controls
+and managed cleanup pass. Stable native/public/lifecycle snapshots observe all
+five private DLLs at the relocated Unicode path and only qualified packaged CRT
+or System32 dependencies. Public/lifecycle VCRUNTIME140 starts from the test
+helper directory; MSVCP140/VCRUNTIME140_1 load from the runtime directory. The
+macOS receiver independently restores both opaque ZIPs (43 runtime/12 helper
+entries), rehashes DLL/helpers and reconstructs all five exact frozen command
+specifications. The runtime ZIP is 2,491,251 bytes, SHA-256
+`89e7fb01b3d15a7d5c36527a4b1e7926dc8ccad360943d231c4c5d3547b79229`.
+Observed RTF is 1.06057 public/1.06117 native; this is not Windows live-performance,
+physical desktop, coexistence, rights or held-out-quality qualification.
+
 The separate `9be6a4b` [cache-metadata receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-cache-metadata-recovery/qualification.json)
 recovers all nine exact ABI-selected archives without installing or executing
 cached packages. Receiver verification rehashes 304,920,284 archive bytes,

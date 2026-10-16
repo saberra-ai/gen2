@@ -12,7 +12,11 @@ ZIP with a verified Unicode-path byte restoration. The actual `abcef06`
 now passes: 13 unchanged DLLs, 43 ZIP entries and Unicode restoration on Server
 2022. An independent macOS receiver rehashed the SDK and delivered package and
 repeated byte restoration/PE inspection. Subsequent offline runtime execution
-needs separate evidence. Microsoft redistribution terms/entitlement,
+now [passes for `855a83c`](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-offline-container/qualification.json):
+five fresh Server Core process containers pass native/public parity, all seven
+lifecycle tests, actual private module closure and a missing-library control.
+The separate helper CRT copies are explicit in that receipt; it does not
+establish an arbitrary application's central-runtime contract. Microsoft redistribution terms/entitlement,
 complete static-dependency source provenance, desktop qualification, coexistence
 and quality/performance gates remain open. The research inventory and proposed
 steps below retain their original source-specific limits.

@@ -1,0 +1,84 @@
+{
+  "schema_version": 1,
+  "source_commit": "855a83c2f56ec0267cd0b915a63eb55654b9dfec",
+  "run_url": "https://github.com/saberra-ai/gen2/actions/runs/38889748843",
+  "ci_job_id": 116936082021,
+  "offline_container_gates_passed": true,
+  "release_qualified": false,
+  "redistribution_qualified": false,
+  "native_source_commit": "24ad9271ef2b46c86a554b61da5395b9bf42404a",
+  "image_id": "sha256:76e6f57c103004c102b102281f3e6c750a1aa80cef8c5267d6fc2435408c87fc",
+  "receiver_harness_note": "Initial command-spec reconstruction used LF for indented JSON and stopped before collection. Corrected to the producer Windows CRLF bytes on every line; all five exact frozen hashes then matched without rerunning inference.",
+  "native_public_comparison_recomputed": {
+    "passed": true,
+    "scope": "long-session wrapper/reference correctness, not held-out quality or full release qualification",
+    "audio_duration_seconds": 60.0,
+    "backend": "cpu",
+    "device": null,
+    "native_frame_count": 6001,
+    "retained_first_frame": 0,
+    "retained_rows": 6001,
+    "turns": 27,
+    "maximum_turn_error_seconds": 0.0,
+    "turn_tolerance_seconds": 1e-06,
+    "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+    "retained_probabilities_match": true,
+    "maximum_probability_error": 0.0,
+    "probability_tolerance": 1e-06,
+    "gen2_rtf": 1.0605688666666666,
+    "native_rtf": 1.06117375
+  },
+  "actual_pcm_sha256": "96858fdcf0c8854f8fc659403c11ddc7565f538a7402803e4235e9e354d87ae6",
+  "all_seven_lifecycle_tests_reparsed": true,
+  "all_five_containers_controls_reparsed": true,
+  "all_five_command_specs_reconstructed_exact_frozen_bytes": true,
+  "runtime_archive_entries_reverified": 43,
+  "helper_archive_entries_reverified": 12,
+  "private_dlls_observed_per_helper": {
+    "native": 5,
+    "public": 5,
+    "lifecycle": 5
+  },
+  "crt_paths_observed_per_helper": {
+    "native": [
+      "C:\\inputs\\bin\\MSVCP140.dll",
+      "C:\\inputs\\bin\\VCRUNTIME140.dll",
+      "C:\\inputs\\bin\\VCRUNTIME140_1.dll"
+    ],
+    "public": [
+      "C:\\inputs\\bin\\VCRUNTIME140.dll",
+      "C:\\inputs\\relocated runtime \u00fc\\lib\\MSVCP140.dll",
+      "C:\\inputs\\relocated runtime \u00fc\\lib\\VCRUNTIME140_1.dll"
+    ],
+    "lifecycle": [
+      "C:\\inputs\\bin\\VCRUNTIME140.dll",
+      "C:\\inputs\\relocated runtime \u00fc\\lib\\MSVCP140.dll",
+      "C:\\inputs\\relocated runtime \u00fc\\lib\\VCRUNTIME140_1.dll"
+    ]
+  },
+  "negative_missing_private_library_error126_no_output": true,
+  "runtime_archive": {
+    "schema_version": 1,
+    "release_qualified": false,
+    "archive": "development-windows-runtime.zip",
+    "scope": "Exact portable file bytes/directory names; no Windows ACL or runtime qualification.",
+    "archive_bytes": 2491251,
+    "archive_sha256": "89e7fb01b3d15a7d5c36527a4b1e7926dc8ccad360943d231c4c5d3547b79229"
+  },
+  "test_helper_archive": {
+    "schema_version": 1,
+    "release_qualified": false,
+    "archive": "development-windows-test-helpers.zip",
+    "scope": "Exact portable file bytes/directory names; no Windows ACL or runtime qualification.",
+    "archive_bytes": 1873536,
+    "archive_sha256": "130c588709b42dd632211a45598efb8145e6d35500e04f3a446bd90401bdd801"
+  },
+  "limits": [
+    "No Windows desktop/physical-machine, chat/Bark/Laya coexistence or universal namespace guarantee.",
+    "No held-out quality, live/uncontended-performance or Microsoft redistribution qualification.",
+    "Test executables carry exact app-local CRT copies to control their process-start imports; these are separate from the runtime archive.",
+    "The independent native probe alone uses the relocated runtime directory on PATH for its static private C ABI import. Gen2 uses its explicit library loader with system-only PATH.",
+    "macOS receiver rehashed opaque archives/helpers/DLLs and reparsed recorded results/controls; actual Windows calls, immutability and system-module disk hashes remain CI observations.",
+    "Observed module closure applies to recorded helpers/calls, not every potential dynamic load or process namespace."
+  ]
+}

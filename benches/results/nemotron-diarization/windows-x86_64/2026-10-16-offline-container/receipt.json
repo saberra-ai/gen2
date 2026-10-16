@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "redistribution_qualified": false,
+  "offline_container_gates_passed": true,
+  "scope": "Delivered Windows Server 2022 AMD64 AVX2/FMA/F16C runtime, fresh process containers with network none, native/public parity, lifecycle and observed modules.",
+  "limits": [
+    "No Windows desktop/physical-machine, chat/Bark/Laya coexistence or universal namespace guarantee.",
+    "No held-out quality, live/uncontended-performance or Microsoft redistribution qualification.",
+    "Test executables carry exact app-local CRT copies to control their process-start imports; these are separate from the runtime archive.",
+    "The independent native probe alone uses the relocated runtime directory on PATH for its static private C ABI import. Gen2 uses its explicit library loader with system-only PATH."
+  ],
+  "source_commit": "855a83c2f56ec0267cd0b915a63eb55654b9dfec",
+  "native_source_commit": "24ad9271ef2b46c86a554b61da5395b9bf42404a",
+  "image_id": "sha256:76e6f57c103004c102b102281f3e6c750a1aa80cef8c5267d6fc2435408c87fc",
+  "frozen_inputs_sha256": "f6ba77526f84a6557d242983c6f4ff4dcdb77295c16bdebdb5b9507f0f6d1c04",
+  "package_manifest_sha256": "bff98f313a75d5eb8d7319d78cfb0f763f1f6dadff781a24cb9c7c6eadee22f4",
+  "native_public_comparison": {
+    "passed": true,
+    "scope": "long-session wrapper/reference correctness, not held-out quality or full release qualification",
+    "audio_duration_seconds": 60.0,
+    "backend": "cpu",
+    "device": null,
+    "native_frame_count": 6001,
+    "retained_first_frame": 0,
+    "retained_rows": 6001,
+    "turns": 27,
+    "maximum_turn_error_seconds": 0.0,
+    "turn_tolerance_seconds": 1e-06,
+    "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+    "retained_probabilities_match": true,
+    "maximum_probability_error": 0.0,
+    "probability_tolerance": 1e-06,
+    "gen2_rtf": 1.0605688666666666,
+    "native_rtf": 1.06117375
+  },
+  "lifecycle_tests": [
+    "dropping_a_diarization_child_keeps_the_parent_pipeline_active",
+    "native_admission_cancellation_and_failed_load_release_reservations",
+    "real_diarizer_matches_native_reference_and_resets_recordings",
+    "repeated_reload_full_queue_cancel_and_dropped_stream_release_resources",
+    "silence_short_tail_and_idle_deadline_have_explicit_terminal_results",
+    "streamed_uneven_pcm_matches_recording_and_finish_is_idempotent",
+    "verified_provisioned_cache_is_reused_offline"
+  ],
+  "negative_control_passed": true
+}
