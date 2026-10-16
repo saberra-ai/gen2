@@ -1,8 +1,6 @@
 import { useState } from "react";
 import type { Transcript, AttributedWord } from "@/lib/studio/types";
-import { formatTime } from "@/lib/studio/state";
-
-function formatCue(seconds:number){return `${formatTime(seconds)}.${String(Math.floor((seconds%1)*100)).padStart(2,'0')}`;}
+import { formatCue } from "@/lib/studio/state";
 
 function wordKey(word:AttributedWord):string {
   const a=word.attribution;

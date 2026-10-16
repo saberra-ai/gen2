@@ -1,0 +1,24 @@
+   Compiling pnola-desktop v0.2.0 (/Users/victor/workspace/pnola/src-tauri)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.06s
+     Running unittests src/main.rs (/Users/victor/.cache/pnola-nemotron-build/debug/deps/pnola_desktop-04cc9504316114a8)
+
+running 1 test
+test live::tests::listing_history_does_not_interrupt_the_current_native_session ... FAILED
+
+failures:
+
+---- live::tests::listing_history_does_not_interrupt_the_current_native_session stdout ----
+
+thread 'live::tests::listing_history_does_not_interrupt_the_current_native_session' (16418128) panicked at src/live.rs:700:9:
+assertion `left == right` failed
+  left: Interrupted
+ right: Active
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    live::tests::listing_history_does_not_interrupt_the_current_native_session
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 17 filtered out; finished in 0.03s
+
+error: test failed, to rerun pass `--bin pnola-desktop`

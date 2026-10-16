@@ -12,7 +12,7 @@
     "pnola/src-tauri/src/attribution.rs": "105a2c970f783fdf66c441fd10699bbd3c7edab0d4c67fcfb82f9d0dba99d19a",
     "pnola/src-tauri/src/transcription.rs": "ad3238df581d7177e7db024c4281ef21ab118029fbed50da339409a3e8afe8cd",
     "pnola/src-tauri/src/capture.rs": "9786466a996125ed215134a6ed2d8c658278c044b29f6cc6316be388f886bece",
-    "pnola/src-tauri/src/live.rs": "49c9e4bba6df49f811eace8c860ce3311892821b6c57524f5f857ae83aa4a106",
+    "pnola/src-tauri/src/live.rs": "b2c29be12fb414df0cad376c23a5d7309d99a5839752314e7eadf51f361a498f",
     "pnola/src-tauri/src/live_speakers.rs": "eb5a5259d4711b236d590c803deae475e319d6531312db8e8fb606220f854ab3"
   },
   "artifacts": {
@@ -36,9 +36,17 @@
     "n4-live-app-tests.log": "03266dd0636416134f0462ee125b1856ccc22fa5c84c715c777d92809414c7e7",
     "n4-live-clippy.log": "d4ffc23b70ddccb6a0a73b3734d4199718d5240f8c8b547eedcf5e60df2ee9da",
     "n4-live-ui-check.log": "68cdb5bb446b5915be82b72d8e993802d04594300f38ca7c433943c94b27fa8d",
-    "n4-live-state-green.log": "dccc3e59d189302ded496baf2a2c6368139617c58e3ce1f7ab846bee1182555a",
+    "n4-live-state-green.log": "ad77856d1de209fa464519882d674d409a6147901b52f83bbe133997bfe6045e",
     "n4-overlap-red.log": "ce9b38e70b7516c8ed4565b0533db2bc067ab8a5781e9ae4fb263e7be6a59832",
-    "n4-overlap-green.log": "35f92ab4d1f0569472942fc91e0398f14c2ff396c799322aec557bf76d2bc5a0"
+    "n4-overlap-green.log": "35f92ab4d1f0569472942fc91e0398f14c2ff396c799322aec557bf76d2bc5a0",
+    "n4-live-concurrent-result.json": "d946df5bee048e46a449c22135861a986059074b7e712379ed12eae3c8ffc4fa",
+    "n4-live-concurrent.log": "fe126dcbc40d9075bfebfccd1361ebd75e7165602c4026d0a789b2d49de8539d",
+    "n4-live-concurrent-roundtrip-failure.json": "c04eb534ae0be74fef725ae20bed21c58a75b3719e02692c9432194c836ab03d",
+    "n4-live-concurrent-roundtrip-failure.log": "f6d05eb1019ddbb59ae72f59bb94b7f32ca9fb6ccd4b9ecccf9f3a6ed4dcbd59",
+    "n4-live-list-red.log": "f03c7e55365aa661a6f4f7e533e2949a7e0c67a4ed25f925dc4eb1d2886c14a3",
+    "n4-live-final-tests.log": "31577cf0f33ef18cfd74ee160598228479065b04d6b8b524b49e95e219ac9111",
+    "n4-live-final-clippy.log": "299205d4e6f52cd5b0920b5334dc41fce3c68175401dd7b693e8b26a913dcaa6",
+    "n4-live-ui.png": "a06599fef93466dbbebfc72a82da4021a3e4fb5876b6e0d1b66260940c642d72"
   },
   "alignment_metrics": {
     "reference_words": 147,
@@ -104,7 +112,7 @@
     },
     "overlap_public": 5,
     "cancellation_hierarchy_public": 1,
-    "pnola_ordinary": 12,
+    "pnola_ordinary": 14,
     "pnola_ordinary_ignored_real_tests": 4,
     "frontend": 28,
     "native_recorded_file_and_partial_success_cases_executed": 3,
@@ -121,15 +129,39 @@
     "native_screen_limitation": "Mac was locked. UI actions and WebView DOM/rendered artifacts were verified; OS-native pixels were not.",
     "gui_diarization_seconds": 77.316017,
     "gui_bark_seconds": 51.428131,
-    "gui_background_slowdown_cause": "unresolved; N5 measurement/diagnosis required"
+    "gui_background_slowdown_cause": "unresolved; N5 measurement/diagnosis required",
+    "live_panel": {
+      "seeded_recorded_audio_snapshot": true,
+      "real_live_microphone": false,
+      "provisional_caption": true,
+      "turn_count": 27,
+      "name": "Jordan Lee",
+      "name_survived_reload": true,
+      "panel_and_parent_width_px": 491.625,
+      "snapshot_artifact": "n4-live-ui.png"
+    }
   },
   "unmet_gates": [
     "held-out licensed two/four/eight-speaker corpus and per-slice DER/quantization criteria",
     "attribution quality, short-turn word loss and overlap/boundary evaluation beyond development clip",
     "physical live microphone/native visual verification",
-    "concurrent live Bark+Nemotron verification (under investigation separately)",
     "N5 relocated signed CPU/Metal native package and notices",
     "Linux/Windows real-model offline packaging/coexistence qualification",
     "clean committed release performance/reload/soak evidence"
-  ]
+  ],
+  "live_concurrent": {
+    "microphone_used": false,
+    "passed": true,
+    "audio_seconds": 80.04,
+    "asr_sections": 11,
+    "asr_words": 152,
+    "asr_compute_micros": 6843436,
+    "speaker_turns": 35,
+    "native_compute_micros": 13467521,
+    "observed_provisional_revisions": 15,
+    "final_revision": 16,
+    "persisted_turn_tolerance_seconds": 1e-06,
+    "explanation": "In-memory native parity remains exact. JSON persistence introduced at most 3.55e-15 seconds rounding error with identical speaker IDs/counts; persisted comparison uses established native-reference1e-6-second tolerance. Original failing diagnostic retained. Development host also ran checks and UI QA; not a clean release performance receipt."
+  },
+  "live_concurrent_executable_sha256": "ea5d17924208665f1a6aed75b61da481b625315ea6b6176dcc48e4ceb31346de"
 }

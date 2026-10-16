@@ -359,6 +359,17 @@ active labels interrupted because the native cache cannot be restored. A real
 published native revisions under one UUID, and matched final recording turns.
 This is capture-path evidence with recorded audio, not a physical microphone
 receipt or a live word-attribution claim.
+The concurrent 80.04-second live worker run also passed: 11 durable Bark
+sections, complete export, 15 observed provisional revisions and a final
+35-turn timeline matching an independent recording call within 1e-6 seconds.
+In-memory parity is exact; the persisted boundary comparison allows only the
+established native-reference tolerance (JSON introduced at most 3.55e-15 seconds
+rounding). A review regression now proves that history listing returns an
+existing live session's authoritative snapshot, while true disk recovery marks
+its lost cache interrupted. Ordinary Pnola tests pass 14 cases; 28 frontend
+tests, clippy and source checks pass. [N4 development evidence](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-n4/receipt.json)
+retains the results and original rounding diagnostic. Quality, physical capture,
+native visual verification and N5 release qualification remain open.
 
 
 - [ ] At the start of this milestone, choose the alignment path using real

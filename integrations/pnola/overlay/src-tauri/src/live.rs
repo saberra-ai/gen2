@@ -427,15 +427,24 @@ impl Live {
         *current = Some(session);
         Ok(snapshot)
     }
-    pub fn list(root: &Path) -> Result<Vec<Snapshot>, String> {
+    pub fn list(&self, root: &Path) -> Result<Vec<Snapshot>, String> {
         if !root.exists() {
             return Ok(Vec::new());
         }
+        let current = self
+            .current
+            .lock()
+            .unwrap()
+            .as_ref()
+            .map(|session| (session.directory.clone(), session.snapshot()));
         let mut sessions = fs::read_dir(root)
             .map_err(|e| e.to_string())?
             .filter_map(Result::ok)
             .filter(|e| e.path().join("session.json").is_file())
-            .map(|e| rebuild(&e.path()))
+            .map(|e| match &current {
+                Some((path, snapshot)) if *path == e.path() => Ok(snapshot.clone()),
+                _ => rebuild(&e.path()),
+            })
             .collect::<Result<Vec<_>, _>>()?;
         sessions.sort_by(|a, b| b.date.cmp(&a.date));
         sessions.truncate(20);
@@ -481,6 +490,20 @@ impl Live {
         Self::export(root, id, output.path())?;
         fs::read_to_string(output.path()).map_err(|e| e.to_string())
     }
+}
+
+// JSON persistence can round the last bit of a boundary. Use the same native
+// reference tolerance as Gen2's qualification, with exact speaker IDs/counts.
+fn turns_match(
+    actual: &[gen2::diarization::SpeakerTurn],
+    expected: &[gen2::diarization::SpeakerTurn],
+) -> bool {
+    actual.len() == expected.len()
+        && actual.iter().zip(expected).all(|(a, b)| {
+            a.speaker == b.speaker
+                && (a.start_seconds - b.start_seconds).abs() < 1e-6
+                && (a.end_seconds - b.end_seconds).abs() < 1e-6
+        })
 }
 
 /// Exercise the native section writer, resident Bark worker, durable results,
@@ -645,7 +668,7 @@ pub fn verify(with_speakers: bool) -> Result<(), String> {
             || actual
                 .timeline
                 .as_ref()
-                .is_none_or(|timeline| timeline.turns != result.turns)
+                .is_none_or(|timeline| !turns_match(&timeline.turns, &result.turns))
             || (actual.processed_audio_seconds - 80.04).abs() > 1e-6
         {
             let failure = serde_json::json!({"passed":false,"scope":"live speaker parity diagnostics","actual":actual,"reference":result,"provisional_revisions":revisions});
@@ -662,7 +685,7 @@ pub fn verify(with_speakers: bool) -> Result<(), String> {
         }
     }
     engine.shutdown();
-    let receipt = serde_json::json!({"passed":true,"duration_seconds":recovered.duration,"sections":recovered.completed,"words":recovered.words,"queued":recovered.queued,"execution_micros":recovered.execution,"export_bytes":text.len(),"microphone_used":false,"speaker_qualification":with_speakers,"speakers":recovered.speakers,"provisional_revisions":revisions});
+    let receipt = serde_json::json!({"passed":true,"duration_seconds":recovered.duration,"sections":recovered.completed,"words":recovered.words,"queued":recovered.queued,"execution_micros":recovered.execution,"export_bytes":text.len(),"microphone_used":false,"speaker_qualification":with_speakers,"persisted_turn_tolerance_seconds":1e-6,"speakers":recovered.speakers,"provisional_revisions":revisions});
     if let Some(path) = std::env::args().nth(3) {
         fs::write(path, serde_json::to_vec_pretty(&receipt).unwrap()).map_err(|e| e.to_string())?;
     }
@@ -673,6 +696,60 @@ pub fn verify(with_speakers: bool) -> Result<(), String> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[test]
+    fn listing_history_does_not_interrupt_the_current_native_session() {
+        let root = tempfile::tempdir().unwrap();
+        let directory = root.path().join("current-session");
+        fs::create_dir(&directory).unwrap();
+        let snapshot: Snapshot = serde_json::from_value(serde_json::json!({
+            "id":"current-session","name":"Current","date":"now","phase":"recording",
+            "text":"","duration":0,"execution":0,"words":0,"completed":0,"queued":0,
+            "seconds":0,"level":0,"error":null,
+            "speakers":{"status":"active","session_id":"native-one","revision":0,
+                "accepted_audio_seconds":0,"processed_audio_seconds":0,"timeline":null,"reason":null}
+        })).unwrap();
+        atomic_json(&directory.join("session.json"), &snapshot).unwrap();
+        let live = Live {
+            current: Mutex::new(Some(Arc::new(Session {
+                directory,
+                state: Mutex::new(snapshot),
+                capture: Arc::new(Capture::default()),
+                capture_done: AtomicBool::new(false),
+                published: AtomicU64::new(0),
+                worker: Mutex::new(None),
+                speakers: None,
+            }))),
+        };
+        let listed = live.list(root.path()).unwrap();
+        assert_eq!(
+            listed[0].speakers.as_ref().unwrap().status,
+            crate::live_speakers::Status::Active
+        );
+        *live.current.lock().unwrap() = None;
+        let recovered = live.list(root.path()).unwrap();
+        assert_eq!(
+            recovered[0].speakers.as_ref().unwrap().status,
+            crate::live_speakers::Status::Interrupted
+        );
+    }
+
+    #[test]
+    fn persisted_turn_parity_accepts_roundtrip_rounding_and_rejects_changed_boundaries() {
+        let turns = vec![gen2::diarization::SpeakerTurn {
+            start_seconds: 2.8909999302625655,
+            end_seconds: 10.738999761730433,
+            speaker: 1,
+        }];
+        let mut saved: Vec<gen2::diarization::SpeakerTurn> =
+            serde_json::from_str(&serde_json::to_string(&turns).unwrap()).unwrap();
+        assert!(turns_match(&saved, &turns));
+        saved[0].end_seconds += 0.001;
+        assert!(!turns_match(&saved, &turns));
+        saved[0].end_seconds = turns[0].end_seconds;
+        saved[0].speaker = 2;
+        assert!(!turns_match(&saved, &turns));
+    }
+
     #[test]
     fn recovery_and_export_cross_two_hours_without_unbounded_preview() {
         let root = tempfile::tempdir().unwrap();

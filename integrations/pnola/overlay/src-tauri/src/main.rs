@@ -172,7 +172,8 @@ async fn resume_live(state: State<'_, AppState>, id: String) -> Result<live::Sna
 #[tauri::command]
 async fn list_live(state: State<'_, AppState>) -> Result<Vec<live::Snapshot>, String> {
     let root = state.live_root.clone();
-    tauri::async_runtime::spawn_blocking(move || live::Live::list(&root))
+    let live = state.live.clone();
+    tauri::async_runtime::spawn_blocking(move || live.list(&root))
         .await
         .map_err(|e| e.to_string())?
 }

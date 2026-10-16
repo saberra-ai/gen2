@@ -62,7 +62,8 @@ Stopping closes the input, flushes the native tail and persists the final
 speaker snapshot alongside the sectioned transcript. Recovery cannot restore
 the native speaker cache: prior active labels become explicitly interrupted,
 and resuming saved ASR sections never creates a supposedly continuous replacement
-speaker session. Live section audio is removed after ASR under the existing
+speaker session. Listing history while a native session still runs uses its
+authoritative in-memory snapshot. Live section audio is removed after ASR under the existing
 recovery policy, so live timeline playback is unavailable.
 
 The real capture-output test feeds a licensed 60-second meeting at 20 ms
@@ -90,7 +91,10 @@ With those variables set, `cargo run --manifest-path src-tauri/Cargo.toml --
 --verify-live-speakers /absolute/mono16k.wav /absolute/receipt.json` feeds 80.04
 seconds at capture cadence while the actual live worker runs Bark sections. It
 requires complete durable ASR/export, provisional native revisions and final
-speaker parity against an independent recording call. `--verify-live` retains
+speaker parity against an independent recording call, using the established
+1e-6-second tolerance after JSON persistence (in-memory parity remains exact).
+The 80.04-second development run passed with 11 ASR sections, 15 observed
+provisional revisions and 35 final turns. `--verify-live` retains
 the existing ASR-only verification mode.
 
 Real AMI evaluation is intentionally reported with all omissions and unknown

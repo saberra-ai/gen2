@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import type { Transcript } from '@/lib/studio/types';
-import { formatTime } from '@/lib/studio/state';
+import { formatTime, formatCue } from '@/lib/studio/state';
 
 export function LiveSpeakersPanel({entry,onRename}:{entry:Transcript;onRename:(speaker:number,name:string)=>void}) {
   const [shown,setShown]=useState(50);
@@ -16,7 +16,7 @@ export function LiveSpeakersPanel({entry,onRename}:{entry:Transcript;onRename:(s
     {snapshot.reason&&<p role="status">{snapshot.reason}</p>}
     <div className="speaker-names">{speakers.map(id=><label key={id}><span>Speaker {id}</span><input aria-label={`Name for live speaker ${id}`} maxLength={80} value={names[String(id)]||''} placeholder={`Speaker ${id}`} onChange={event=>onRename(id,event.target.value)}/></label>)}</div>
     <p className="speaker-note">{formatTime(snapshot.processed_audio_seconds)} processed · revision {snapshot.revision}. Live audio is saved in sections for transcription recovery; timeline playback is unavailable.</p>
-    <ol className="speaker-segments">{turns.slice(0,shown).map((turn,index)=><li key={index}><span>{formatTime(turn.start_seconds)}</span><div><strong>{label(turn.speaker)}</strong><span>{formatTime(turn.start_seconds)}–{formatTime(turn.end_seconds)}</span></div></li>)}</ol>
+    <ol className="speaker-segments">{turns.slice(0,shown).map((turn,index)=><li key={index}><span>{formatCue(turn.start_seconds)}</span><div><strong>{label(turn.speaker)}</strong><span>{formatCue(turn.start_seconds)}–{formatCue(turn.end_seconds)}</span></div></li>)}</ol>
     {!turns.length&&snapshot.status==='active'&&<p className="speaker-note">Waiting for the first speaker snapshot.</p>}
     {shown<turns.length&&<button className="speaker-more" onClick={()=>setShown(shown+50)}>Show 50 more ({turns.length-shown} remaining)</button>}
   </section>;
