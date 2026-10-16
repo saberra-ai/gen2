@@ -1,0 +1,6 @@
+(version 1)
+(allow default)
+(deny network*)
+(deny file-write* (subpath "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work"))
+(deny file-read* (subpath "/Users/victor/workspace/gen2-nemotron3-n0") (subpath "/opt/homebrew") (subpath "/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-tagged-cpu-v1") (subpath "/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-tagged-metal-v1") (subpath "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-package-v1") (subpath "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-macos-package-v1") (subpath "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification 024a88f") (subpath "/Users/victor/.cache/gen2-nemotron3-n0/relocated mixed models") (subpath "/Users/victor/.cache/gen2-bark-onnx/build"))
+(deny file-read* (subpath "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/models") (subpath "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/cpu") (subpath "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/metal") (subpath "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/providers"))

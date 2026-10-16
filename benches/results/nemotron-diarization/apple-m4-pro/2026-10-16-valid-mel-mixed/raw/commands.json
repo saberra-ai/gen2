@@ -1,0 +1,152 @@
+[
+  {
+    "name": "list",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-runtime-v1/list.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/bin/mixed-native-tests",
+      "--ignored",
+      "--list"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "HOME": "/Users/victor",
+      "TMPDIR": "/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/",
+      "LC_ALL": "C"
+    },
+    "pid": 32744,
+    "returncode": 0,
+    "elapsed_seconds": 0.42771274998085573
+  },
+  {
+    "name": "cpu-mixed_real_laya_chat_first",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/bin/mixed-native-tests",
+      "--ignored",
+      "--exact",
+      "mixed_real_laya_chat_first",
+      "--nocapture"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "HOME": "/Users/victor",
+      "TMPDIR": "/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/",
+      "LC_ALL": "C",
+      "GEN2_NEMO_EXECUTION": "cpu",
+      "GEN2_NEMOTRON_ASSETS": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/models/nemotron",
+      "GEN2_NEMO_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/cpu/nemo/lib/libnemo_speech_asr_c.dylib",
+      "GEN2_BARK_BUNDLE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/models/bark",
+      "GEN2_ORT_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/providers/libonnxruntime.dylib",
+      "GEN2_CHAT_GGUF": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/models/chat.gguf",
+      "GEN2_LAYA_BUNDLE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/models/laya",
+      "GEN2_CHAT_EXPECT_BACKEND": "MTL"
+    },
+    "pid": 32817,
+    "returncode": 0,
+    "elapsed_seconds": 25.42648200003896
+  },
+  {
+    "name": "cpu-mixed_real_laya_diarization_first",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/bin/mixed-native-tests",
+      "--ignored",
+      "--exact",
+      "mixed_real_laya_diarization_first",
+      "--nocapture"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "HOME": "/Users/victor",
+      "TMPDIR": "/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/",
+      "LC_ALL": "C",
+      "GEN2_NEMO_EXECUTION": "cpu",
+      "GEN2_NEMOTRON_ASSETS": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/models/nemotron",
+      "GEN2_NEMO_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/cpu/nemo/lib/libnemo_speech_asr_c.dylib",
+      "GEN2_BARK_BUNDLE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/models/bark",
+      "GEN2_ORT_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/providers/libonnxruntime.dylib",
+      "GEN2_CHAT_GGUF": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/models/chat.gguf",
+      "GEN2_LAYA_BUNDLE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/models/laya",
+      "GEN2_CHAT_EXPECT_BACKEND": "MTL"
+    },
+    "pid": 33970,
+    "returncode": 0,
+    "elapsed_seconds": 4.3371104169636965
+  },
+  {
+    "name": "metal-mixed_real_laya_chat_first",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/bin/mixed-native-tests",
+      "--ignored",
+      "--exact",
+      "mixed_real_laya_chat_first",
+      "--nocapture"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "HOME": "/Users/victor",
+      "TMPDIR": "/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/",
+      "LC_ALL": "C",
+      "GEN2_NEMO_EXECUTION": "metal",
+      "GEN2_NEMOTRON_ASSETS": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/models/nemotron",
+      "GEN2_NEMO_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/metal/nemo/lib/libnemo_speech_asr_c.dylib",
+      "GEN2_BARK_BUNDLE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/models/bark",
+      "GEN2_ORT_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/providers/libonnxruntime.dylib",
+      "GEN2_CHAT_GGUF": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/models/chat.gguf",
+      "GEN2_LAYA_BUNDLE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/models/laya",
+      "GEN2_CHAT_EXPECT_BACKEND": "MTL"
+    },
+    "pid": 34230,
+    "returncode": 0,
+    "elapsed_seconds": 31.764425791043323
+  },
+  {
+    "name": "metal-mixed_real_laya_diarization_first",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/bin/mixed-native-tests",
+      "--ignored",
+      "--exact",
+      "mixed_real_laya_diarization_first",
+      "--nocapture"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "HOME": "/Users/victor",
+      "TMPDIR": "/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/",
+      "LC_ALL": "C",
+      "GEN2_NEMO_EXECUTION": "metal",
+      "GEN2_NEMOTRON_ASSETS": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/models/nemotron",
+      "GEN2_NEMO_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/metal/nemo/lib/libnemo_speech_asr_c.dylib",
+      "GEN2_BARK_BUNDLE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/models/bark",
+      "GEN2_ORT_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/providers/libonnxruntime.dylib",
+      "GEN2_CHAT_GGUF": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/models/chat.gguf",
+      "GEN2_LAYA_BUNDLE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/models/laya",
+      "GEN2_CHAT_EXPECT_BACKEND": "MTL"
+    },
+    "pid": 35631,
+    "returncode": 0,
+    "elapsed_seconds": 4.38862387498375
+  }
+]

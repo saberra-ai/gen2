@@ -1,0 +1,354 @@
+{
+  "schema_version": 1,
+  "mixed_residency_smoke_passed": true,
+  "release_qualified": false,
+  "scope": "Four fresh Mac mixed-model residency/admission/sequential-silence smoke tests: actual Laya+Bark+Metalchat, CPU/Metaldiarization and both load orders. Each case uses1s+20ms silentdiarization and20ms silentBark; not speechparity, concurrentNN proof, heldout quality or release qualification.",
+  "helper_build_source_commit": "b8e1899cd6b872313062867b399bfb91b6d59903",
+  "neural_run_source_commit": "5bf0ee6168c1925240864016c1b816cc4296c882",
+  "collection_source_commit": "0fa21aa36f9904b5f4e6270348b970e0dfed5491",
+  "protocol": {
+    "bytes": 97657,
+    "sha256": "e9fdeddecf93049f73ddc00492184bcf9d080dcac8b00a032ec5154918630f2d"
+  },
+  "frozen_tool_count": 13,
+  "frozen_compiled_repository_files": 314,
+  "staged_regular_files": 251,
+  "staged_aliases": 2,
+  "compiled_helper": {
+    "bytes": 25502448,
+    "sha256": "cea22dbe87ee5c9340afff38a8c35d91a58d431164243e3eda272fc98b64baa2"
+  },
+  "commands_passed": 5,
+  "cases": [
+    {
+      "name": "cpu-mixed_real_laya_chat_first",
+      "backend": "cpu",
+      "passed": true,
+      "chat_placement": {
+        "initial": {
+          "layers": 29,
+          "total": 29,
+          "backend": "MTL",
+          "device": "Apple M4 Pro"
+        },
+        "restored": {
+          "layers": 29,
+          "total": 29,
+          "backend": "MTL",
+          "device": "Apple M4 Pro"
+        }
+      },
+      "loaded_images": {
+        "bytes": 37226,
+        "sha256": "ea94a748c71c730a80ebed9347c9a0574fd7771a07b605a50e90a922326c73b1"
+      }
+    },
+    {
+      "name": "cpu-mixed_real_laya_diarization_first",
+      "backend": "cpu",
+      "passed": true,
+      "chat_placement": {
+        "initial": {
+          "layers": 29,
+          "total": 29,
+          "backend": "MTL",
+          "device": "Apple M4 Pro"
+        },
+        "restored": {
+          "layers": 29,
+          "total": 29,
+          "backend": "MTL",
+          "device": "Apple M4 Pro"
+        }
+      },
+      "loaded_images": {
+        "bytes": 37226,
+        "sha256": "ea94a748c71c730a80ebed9347c9a0574fd7771a07b605a50e90a922326c73b1"
+      }
+    },
+    {
+      "name": "metal-mixed_real_laya_chat_first",
+      "backend": "metal",
+      "passed": true,
+      "chat_placement": {
+        "initial": {
+          "layers": 29,
+          "total": 29,
+          "backend": "MTL",
+          "device": "Apple M4 Pro"
+        },
+        "restored": {
+          "layers": 29,
+          "total": 29,
+          "backend": "MTL",
+          "device": "Apple M4 Pro"
+        }
+      },
+      "loaded_images": {
+        "bytes": 39087,
+        "sha256": "9cbef15f817bb171c594f6e623fa3f2dd62017234fc8afd492198b3ce4465d1f"
+      }
+    },
+    {
+      "name": "metal-mixed_real_laya_diarization_first",
+      "backend": "metal",
+      "passed": true,
+      "chat_placement": {
+        "initial": {
+          "layers": 29,
+          "total": 29,
+          "backend": "MTL",
+          "device": "Apple M4 Pro"
+        },
+        "restored": {
+          "layers": 29,
+          "total": 29,
+          "backend": "MTL",
+          "device": "Apple M4 Pro"
+        }
+      },
+      "loaded_images": {
+        "bytes": 39087,
+        "sha256": "9cbef15f817bb171c594f6e623fa3f2dd62017234fc8afd492198b3ce4465d1f"
+      }
+    }
+  ],
+  "elapsed_seconds": {
+    "cpu-mixed_real_laya_chat_first": 25.42648200003896,
+    "cpu-mixed_real_laya_diarization_first": 4.3371104169636965,
+    "metal-mixed_real_laya_chat_first": 31.764425791043323,
+    "metal-mixed_real_laya_diarization_first": 4.38862387498375
+  },
+  "loaded_private_image_counts": {
+    "cpu-mixed_real_laya_chat_first": 92,
+    "cpu-mixed_real_laya_diarization_first": 92,
+    "metal-mixed_real_laya_chat_first": 93,
+    "metal-mixed_real_laya_diarization_first": 93
+  },
+  "total_private_runtime_image_records": 370,
+  "auxiliary_provider_records": 4,
+  "chat_initial_and_restored_layers": 29,
+  "storage": {
+    "start_minimum_bytes": 5368709120,
+    "running_minimum_bytes": 1073741824,
+    "reserve_requested_bytes": 268435456,
+    "checks": 71,
+    "released": true,
+    "minimum_observed_free_bytes": 5535555584,
+    "last_observed_free_bytes": 6154891264,
+    "reserve_reported_allocated_bytes": 268435456
+  },
+  "new_native_or_neural_calls_during_collection": 0,
+  "limits": [
+    "Sequential residency/admission smoke only: 1s+20ms silent diarization, 20ms silent Bark and one Laya decision.",
+    "Nonempty initial/restored chat and actual placement pass; no claim of unchanged isolated text, real-speech parity, simultaneous neural calls, heldout accuracy or desktop release.",
+    "Helper compiled once at the recorded source; all314compiled repository inputs match the later neural-run source.",
+    "Raw model/helper/library payloads stay in the bound local staging cache; their descriptors and complete actual loaded-image audits are retained."
+  ],
+  "files": {
+    "build-valid-mel-mixed-helper.py": {
+      "bytes": 4141,
+      "sha256": "b13a51a0a111f271477b44e5a15c34dd0e0ba8d0b8a21a7eb6f4234cffc9bd6e"
+    },
+    "cleanup-stale-gen2-objects-mixed-v1.py": {
+      "bytes": 2085,
+      "sha256": "f23d1e5e81d86f214f75ce00f782998ea7453072ef90c55c4367b9f498658342"
+    },
+    "cleanup-stale-gen2-objects-mixed-v2.py": {
+      "bytes": 2085,
+      "sha256": "e5264f68e880f2873e1136e3bd50a1989760e9868a4a1dce7e3a45d8a6d92d0a"
+    },
+    "collect-valid-mel-mixed.py": {
+      "bytes": 7061,
+      "sha256": "7de5e8599abd55485d48634c3c57693e6de6a95054143bba551d7a629d458319"
+    },
+    "compiler-object-cleanup-mixed-v1.events.jsonl": {
+      "bytes": 88921,
+      "sha256": "4469b86a843f3ef8e962347c5f2ed7589e361ba051e2bcbbf65eba8caa4e112d"
+    },
+    "compiler-object-cleanup-mixed-v1.json": {
+      "bytes": 488,
+      "sha256": "e61e58c4ba5444cfe2b92bb18e26f165fd794baf2f7b42dcb67a0691698f3a5b"
+    },
+    "compiler-object-cleanup-mixed-v2.events.jsonl": {
+      "bytes": 950007,
+      "sha256": "36bfa648c7d9bd5240155994a0c8f9d15d23787a967d3aa749f51259024b6108"
+    },
+    "compiler-object-cleanup-mixed-v2.json": {
+      "bytes": 489,
+      "sha256": "36c104d1553ec3b52e9ea5fdb082270d3b0bd1aeba24e0d2674afef130459259"
+    },
+    "execution-tools/artifacts.py": {
+      "bytes": 2869,
+      "sha256": "17df6411ab0394b4d9bb30a099915badf357af26050b6cd08bfd44887688ff42"
+    },
+    "execution-tools/build_valid_mel_candidate.py": {
+      "bytes": 12180,
+      "sha256": "5bfb3ec59548ae0b56e8e3eaded10201933f574b0b04ca12384eb35795dd546b"
+    },
+    "execution-tools/macos_auxiliary_loaded_libraries.py": {
+      "bytes": 1402,
+      "sha256": "446119644a6a9769f92602bc1f8b0b8d8eaf5bd3590e1b98a12079eebdb0dfbe"
+    },
+    "execution-tools/macos_loaded_libraries.py": {
+      "bytes": 1805,
+      "sha256": "69c2dfcc6d2cf8e2966b929ff997b337c6c4e3a62fd8ada110b36ba27da4833b"
+    },
+    "execution-tools/package_macos.py": {
+      "bytes": 18168,
+      "sha256": "301cf904fa444a3a655f38b5a40e365d6bc0e1f348f5bbede8962d6352fffda3"
+    },
+    "execution-tools/patches/v3-finish-valid-mel.patch": {
+      "bytes": 1194,
+      "sha256": "8c1434c14f63ebeb2515c719a90594124fd4f75af85b80451fd145b5caef3c36"
+    },
+    "execution-tools/qualification_storage.py": {
+      "bytes": 3914,
+      "sha256": "8bbb4dfe53797d8d03c3ba18f24acce8458878602c1c85f28a4f816d6f4416f6"
+    },
+    "execution-tools/qualify_valid_mel_mixed.py": {
+      "bytes": 8454,
+      "sha256": "ad56982cd1d6cc4e668d67b30c4ff6f4284ad8c6d3442fb0d79031c50b1c5d6b"
+    },
+    "execution-tools/runtime-valid-mel.lock.json": {
+      "bytes": 6339,
+      "sha256": "af40e586994f223390fcac59936e3781d967c03080350f4b5df141b1bdaf51be"
+    },
+    "execution-tools/runtime.lock.json": {
+      "bytes": 4917,
+      "sha256": "e66e5651608636bbb04528fed7944ab8972a778d1141b36fef3fb391eefd0dcc"
+    },
+    "execution-tools/runtime_profiles.py": {
+      "bytes": 7345,
+      "sha256": "f99c8c33a3a64005ef477319c8bc7f1d6c32180c44665c2fe189a54a4b31ac7d"
+    },
+    "execution-tools/test_macos_auxiliary_loaded_libraries.py": {
+      "bytes": 3000,
+      "sha256": "562150666ede4ba72c9822fd5b5d50cca5695d9a65572f5eeb87d5adf7c3e08b"
+    },
+    "execution-tools/test_qualification_storage.py": {
+      "bytes": 4417,
+      "sha256": "e6c8a567be86f2d614868e96f10dd6e682077aa3b3cd03b8347aab95fad20332"
+    },
+    "freeze-valid-mel-mixed.py": {
+      "bytes": 4394,
+      "sha256": "9bd57b243ff3c9498ed4a4007fdb36bb7a3f6d1261c88b30ddda32503445801b"
+    },
+    "helper-build/cargo.stderr.log": {
+      "bytes": 346427,
+      "sha256": "6f0fd5a8d803cccf5c0b74e0aed8fdde634dd8e32a524c6179e232979318a3af"
+    },
+    "helper-build/cargo.stdout.jsonl": {
+      "bytes": 348201,
+      "sha256": "665864f7245e399e3f6152e33ea3e7b7f6cd99ea1599dd8186eff96500751fc3"
+    },
+    "helper-build/command.json": {
+      "bytes": 47753,
+      "sha256": "31f91f25fd6922afb79eb6173e2b4fa65a27a286f11632ce6370c041d97d0dc2"
+    },
+    "helper-build/compile-only.sb": {
+      "bytes": 113,
+      "sha256": "c8428bcaf58864d06de3a1e852c901d4eeba6a6365ca01c7f08da9b8528817c0"
+    },
+    "helper-build/protocol.json": {
+      "bytes": 49012,
+      "sha256": "328eb9c1adec310c15abc8b16330db8d099b84b31970d301a4603998d53d8697"
+    },
+    "input-preparation/build.json": {
+      "bytes": 175971,
+      "sha256": "1f2af3cd104acd741306d96f693757d92db3b917527035092346c2f4c6e2a413"
+    },
+    "input-preparation/commands.json": {
+      "bytes": 2766,
+      "sha256": "3a466d5ac581f98451a8ecded88f24466ed04f5e3a9d8be6b8668d0a3a877f49"
+    },
+    "prepare-valid-mel-mixed-inputs.py": {
+      "bytes": 3516,
+      "sha256": "a4272db15dc43292eb02a5b6e4ee8d76a1831230b63bf7cc58156765ce6632bc"
+    },
+    "raw/cases.json": {
+      "bytes": 2113,
+      "sha256": "92a9dab8c9e0c82f96e5b22f8d4ac01a2155a82e204fea5d2f97ae1f133a48cb"
+    },
+    "raw/commands.json": {
+      "bytes": 6727,
+      "sha256": "db19ae130e7f10f6fb335b5c46219168df269393a819ac27a099775e191a9f73"
+    },
+    "raw/cpu-mixed_real_laya_chat_first.images.json": {
+      "bytes": 37226,
+      "sha256": "ea94a748c71c730a80ebed9347c9a0574fd7771a07b605a50e90a922326c73b1"
+    },
+    "raw/cpu-mixed_real_laya_chat_first.stderr.log": {
+      "bytes": 109677,
+      "sha256": "843ae3195ea4ed4954968b7f6119cbdc0e033f0d55d41f4423f3e6b089b92464"
+    },
+    "raw/cpu-mixed_real_laya_chat_first.stdout.log": {
+      "bytes": 331,
+      "sha256": "0215b2d60206aee70977789388ac47af829eed5028db363633e87a9ec6e73c2b"
+    },
+    "raw/cpu-mixed_real_laya_diarization_first.images.json": {
+      "bytes": 37226,
+      "sha256": "ea94a748c71c730a80ebed9347c9a0574fd7771a07b605a50e90a922326c73b1"
+    },
+    "raw/cpu-mixed_real_laya_diarization_first.stderr.log": {
+      "bytes": 109677,
+      "sha256": "c73f2bdac2779b6913200d79a65164305645fe5707f3566106ef3fdb43b1301b"
+    },
+    "raw/cpu-mixed_real_laya_diarization_first.stdout.log": {
+      "bytes": 337,
+      "sha256": "8686a93146289c20157e3038ae5087fdd4d8b63e37284a2061c9ec0c6cb9b875"
+    },
+    "raw/list-images.json": {
+      "bytes": 332,
+      "sha256": "d2aeb59ef753e7acb542a9a89d5ecda9af987c00ba669b608199f1696b835a53"
+    },
+    "raw/list.sb": {
+      "bytes": 1157,
+      "sha256": "e3a1b1f792dd0c5e048fc183b78b97b7a92f8262860564b8330dfbca466b813a"
+    },
+    "raw/list.stderr.log": {
+      "bytes": 87320,
+      "sha256": "b14904932815a2fc207b13b593ea5f4e89a9cdc2dd48f04d794d7416d3b80cee"
+    },
+    "raw/list.stdout.log": {
+      "bytes": 149,
+      "sha256": "e5632fca208966d83ae92b09ab143747819c121f2cd17854b34b2ec31e71c1d6"
+    },
+    "raw/metal-mixed_real_laya_chat_first.images.json": {
+      "bytes": 39087,
+      "sha256": "9cbef15f817bb171c594f6e623fa3f2dd62017234fc8afd492198b3ce4465d1f"
+    },
+    "raw/metal-mixed_real_laya_chat_first.stderr.log": {
+      "bytes": 113251,
+      "sha256": "cb97cdd9ee8eb60f3feb4fb49dce97f468ad7cc3c81456365e9ee58e401ac722"
+    },
+    "raw/metal-mixed_real_laya_chat_first.stdout.log": {
+      "bytes": 331,
+      "sha256": "c82dd65376540423583e4c4a80d2925c0cd4a991e3b13010185e50c9d0b1dd5a"
+    },
+    "raw/metal-mixed_real_laya_diarization_first.images.json": {
+      "bytes": 39087,
+      "sha256": "9cbef15f817bb171c594f6e623fa3f2dd62017234fc8afd492198b3ce4465d1f"
+    },
+    "raw/metal-mixed_real_laya_diarization_first.stderr.log": {
+      "bytes": 113248,
+      "sha256": "64ebf5f0053d489c5605b05bf75fdbfaeeaf9b3e21067cceb4307631e06af04b"
+    },
+    "raw/metal-mixed_real_laya_diarization_first.stdout.log": {
+      "bytes": 337,
+      "sha256": "74c592721915182b20952067ede7930f756246f234b33124ec247ee04787ae15"
+    },
+    "raw/protocol.json": {
+      "bytes": 97657,
+      "sha256": "e9fdeddecf93049f73ddc00492184bcf9d080dcac8b00a032ec5154918630f2d"
+    },
+    "raw/qualification.json": {
+      "bytes": 3219,
+      "sha256": "f39fcc6a00dcc6051a98fe01e1fcd81e8d610ff07a877fd946dece7f3708fa12"
+    },
+    "raw/runtime.sb": {
+      "bytes": 784,
+      "sha256": "f01649ff50ea8850cf7874783a5783a449adcd10bcd7f7af82e64ce766caa25e"
+    }
+  }
+}

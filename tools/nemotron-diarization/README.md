@@ -117,7 +117,11 @@ both real-Laya load orders, with exact private-library and ONNX Runtime traces.
 This is a sequential residency/admission smoke test with short silence inputs
 and nonempty chat generations; it does not establish real-speech parity,
 concurrent inference, unchanged isolated chat output or held-out quality.
-All 169 model-free tool tests pass. Actual mixed execution remains pending.
+The [actual mixed receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-mixed/qualification.json)
+passes all four cases: 370 total private runtime image records plus four exact
+ORT provider records, with initial/restored chat on all 29 Metal layers. The
+compiled helper's 314 repository inputs match the later execution source.
+Storage guards complete normally. All 169 model-free tool tests pass.
 
 # Nemotron 3 — N0 qualification
 
