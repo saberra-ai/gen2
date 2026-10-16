@@ -1,0 +1,56 @@
+name: Diarization valid-Mel Windows runtime
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/nemotron3-n0]
+    paths:
+      - .github/workflows/diarization-valid-mel-windows-runtime.yml
+      - tools/nemotron-diarization/qualify_valid_mel_windows_runtime.py
+      - tools/nemotron-diarization/valid-mel-windows-runtime.protocol.json
+permissions:
+  contents: read
+  actions: read
+jobs:
+  qualify:
+    runs-on: windows-2022
+    timeout-minutes: 90
+    steps:
+      - name: Preserve frozen source line endings
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          submodules: recursive
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: nemotron-windows-chat-openmp
+          cache-on-failure: true
+      - name: Retrieve exact successful tagged SDK artifact
+        uses: actions/download-artifact@v4
+        with:
+          artifact-ids: 12065431951
+          merge-multiple: true
+          run-id: 38940008466
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/qualified-windows-native
+      - name: Retain actual SDK producer identity
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh api repos/saberra-ai/gen2/actions/runs/38940008466 | Out-File -FilePath "${{ runner.temp }}/windows-native-producer.json" -Encoding utf8
+      - name: Construct and qualify frozen central-runtime package
+        run: python tools/nemotron-diarization/qualify_valid_mel_windows_runtime.py --native-input "${{ runner.temp }}/qualified-windows-native" --producer-metadata "${{ runner.temp }}/windows-native-producer.json" --output "${{ runner.temp }}/windows-valid-mel-runtime"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: nemotron-valid-mel-windows-runtime
+          path: |
+            ${{ runner.temp }}/windows-valid-mel-runtime/**/*.json
+            ${{ runner.temp }}/windows-valid-mel-runtime/**/*.log
+            ${{ runner.temp }}/windows-valid-mel-runtime/**/*.f32
+            ${{ runner.temp }}/windows-valid-mel-runtime/construction/*.zip
+            ${{ runner.temp }}/windows-valid-mel-runtime/runtime/*.zip
+          retention-days: 30

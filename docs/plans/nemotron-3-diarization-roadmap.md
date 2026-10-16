@@ -40,8 +40,20 @@ now passes eight-library closure/source mappings and source/notice provenance;
 its archive restores with exact files, modes and aliases. The
 [separate runtime protocol](../../tools/nemotron-diarization/valid-mel-linux-runtime.protocol.json)
 freezes the exact SDK and constructed package for offline native/public/lifecycle
-then actual CPU chat coexistence. Windows SDK/package and actual Linux offline/
-coexistence evidence remain pending. All 167 model-free tools tests pass locally;
+then actual CPU chat coexistence. The [actual Linux offline/chat qualification](../../benches/results/nemotron-diarization/linux-x86_64/2026-10-16-valid-mel-offline-chat/qualification.json)
+passes seven offline and three chat containers, exact 6,000-row/26-turn parity,
+seven lifecycle gates, six unchanged diarization outputs across both load orders,
+unchanged isolated chat text and overlapping API calls. Both load orders retain
+720 observed private GGML bindings. The [actual Windows candidate SDK](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-valid-mel-native/qualification.json)
+passes 43 commands, exact 6,000-row/27-turn parity and all seven lifecycle gates;
+66 delivered SDK files and private PE/CRT provenance verify. Its fresh
+[runtime protocol](../../tools/nemotron-diarization/valid-mel-windows-runtime.protocol.json)
+binds five-DLL v2 construction, disposable central-VC setup and offline/chat
+execution; actual Windows package/runtime evidence remains pending.
+The [Mac mixed-model protocol](../../tools/nemotron-diarization/valid-mel-mixed.protocol.json)
+separately freezes CPU/Metal residency and admission smoke tests with actual
+Bark/Laya/chat. It does not establish concurrent inference or real-speech quality.
+All 169 model-free tools tests pass locally;
 [CI at the 157-test source](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-157/qualification.json)
 passes all 13 jobs. Later package/qualifier changes are outside that CI source;
 release criteria remain open.
