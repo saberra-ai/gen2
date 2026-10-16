@@ -2,6 +2,8 @@
 
 Research only, 2026-10-16. No model bytes were downloaded and no build/inference was run. JSON metadata and small model-card/license text were read. Future Linux tests must freeze their chosen artifact and bind the actual local size/SHA256 to their own receipt; the Mac result is not Linux qualification.
 
+The machine-readable [Linux chat fixture lock](../../tools/nemotron-diarization/linux-chat.lock.json) freezes the exact Q4 artifact, publisher card and separately pinned upstream license text. It leaves the existing diarization runtime lock unchanged.
+
 ## Exact Mac artifact located
 
 The [Mac N0 receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-15-n0/receipt.json) records chat SHA256 `ac2d97712095a558e31573f62f466a3f9d93990898b0ec79d7c974c1780d524a`. The publisher's [immutable Hugging Face metadata](https://huggingface.co/api/models/unsloth/Qwen3-0.6B-GGUF/revision/50968a4468ef4233ed78cd7c3de230dd1d61a56b?blobs=true) identifies an exact matching artifact:
