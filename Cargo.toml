@@ -106,7 +106,8 @@ rand = "0.10"
 regex = "1.12.4"
 dirs = "7"
 url = "2.5.8"
-sysinfo = "0.39"
+# Hardware and memory collectors use native platform APIs; the unused sysinfo
+# dependency also imports unavailable libc Mach bindings when targeting iOS.
 libc = "0.2"
 tempfile = "3.27.0"
 
