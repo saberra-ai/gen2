@@ -431,3 +431,12 @@ loader closure and the missing-private-library control on the selected Ubuntu
 24.04 x86_64 AVX2/FMA/F16C baseline. The independent receiver rechecked all
 delivered archive/source bytes; this is not a chat/Bark/Laya, other-baseline,
 physical-machine, accuracy or complete release qualification.
+
+Windows development qualification accepts `platform_native.py --windows-private-dlls`.
+It uses an exact-source-guarded CMake hook to relink all five owned DLLs under
+`gen2_nemo_windows_` names while retaining logical CMake targets and C ABI symbols.
+The probe import library and public entry follow the new names. A bounded PE
+scan rejects remaining generic native imports and bound/legacy delay forms;
+private export-directory identities and installed import libraries are required.
+Source tests do not establish actual Windows private-DLL qualification, packaged
+VC runtime provenance, offline operation or coexistence.

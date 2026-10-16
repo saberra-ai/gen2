@@ -1,0 +1,925 @@
+
+/Users/victor/.cache/gen2-nemotron3-n0/platform-ci/windows-38876058390/nemo-sdk/bin/ggml-base.dll:	file format coff-x86-64
+Characteristics 0x2022
+	executable
+	large address aware
+	DLL
+
+Time/Date               Fri Oct 16 04:50:10 2026
+Magic                   020b	(PE32+)
+MajorLinkerVersion      14
+MinorLinkerVersion      44
+SizeOfCode              0000000000078000
+SizeOfInitializedData   000000000002e000
+SizeOfUninitializedData 0000000000000000
+AddressOfEntryPoint     000000000007794c
+BaseOfCode              0000000000001000
+ImageBase               0000000180000000
+SectionAlignment        00001000
+FileAlignment           00000200
+MajorOSystemVersion     6
+MinorOSystemVersion     0
+MajorImageVersion       0
+MinorImageVersion       25
+MajorSubsystemVersion   6
+MinorSubsystemVersion   0
+Win32Version            00000000
+SizeOfImage             000aa000
+SizeOfHeaders           00000400
+CheckSum                00000000
+Subsystem               00000002	(Windows GUI)
+DllCharacteristics      00000160
+					HIGH_ENTROPY_VA
+					DYNAMIC_BASE
+					NX_COMPAT
+SizeOfStackReserve      0000000000100000
+SizeOfStackCommit       0000000000001000
+SizeOfHeapReserve       0000000000100000
+SizeOfHeapCommit        0000000000001000
+LoaderFlags             00000000
+NumberOfRvaAndSizes     00000010
+
+The Data Directory
+Entry 0 0000000000099970 00005118 Export Directory [.edata (or where ever we found it)]
+Entry 1 000000000009ea88 00000118 Import Directory [parts of .idata]
+Entry 2 00000000000a8000 000001e0 Resource Directory [.rsrc]
+Entry 3 00000000000a2000 00005d3c Exception Directory [.pdata]
+Entry 4 0000000000000000 00000000 Security Directory
+Entry 5 00000000000a9000 000003b0 Base Relocation Directory [.reloc]
+Entry 6 0000000000090b90 0000001c Debug Directory
+Entry 7 0000000000000000 00000000 Description Directory
+Entry 8 0000000000000000 00000000 Special Directory
+Entry 9 0000000000090c00 00000028 Thread Storage Directory [.tls]
+Entry a 0000000000090a50 00000140 Load Configuration Directory
+Entry b 0000000000000000 00000000 Bound Import Directory
+Entry c 0000000000079000 00000368 Import Address Table Directory
+Entry d 0000000000000000 00000000 Delay Import Directory
+Entry e 0000000000000000 00000000 CLR Runtime Header
+Entry f 0000000000000000 00000000 Reserved
+TLS directory:
+  StartAddressOfRawData: 0x00000180091428
+  EndAddressOfRawData: 0x00000180091430
+  AddressOfIndex: 0x000001800a0c80
+  AddressOfCallBacks: 0x000001800793e0
+  SizeOfZeroFill: 0
+  Characteristics: 3145728
+  Alignment: 4
+
+
+The Import Tables:
+  lookup 0009eba0 time 00000000 fwd 00000000 name 0009ef6a addr 00079000
+
+    DLL Name: KERNEL32.dll
+    Hint/Ord  Name
+        1153  QueryPerformanceCounter
+        1154  QueryPerformanceFrequency
+         912  InitOnceExecuteOnce
+        1059  MultiByteToWideChar
+         322  DisableThreadLibraryCalls
+         794  GetSystemTimeAsFileTime
+         582  GetCurrentThreadId
+         578  GetCurrentProcessId
+         944  IsDebuggerPresent
+         952  IsProcessorFeaturePresent
+        1496  TerminateProcess
+         577  GetCurrentProcess
+        1464  SetUnhandledExceptionFilter
+        1531  UnhandledExceptionFilter
+        1304  RtlVirtualUnwind
+        1297  RtlLookupFunctionEntry
+        1289  RtlCaptureContext
+        1482  SleepConditionVariableSRW
+        1581  WakeAllConditionVariable
+           0  AcquireSRWLockExclusive
+        1258  ReleaseSRWLockExclusive
+         922  InitializeSListHead
+
+  lookup 0009ec58 time 00000000 fwd 00000000 name 0009efd4 addr 000790b8
+
+    DLL Name: MSVCP140.dll
+    Hint/Ord  Name
+         629  ?_Throw_Cpp_error@std@@YAXH@Z
+        1417  _Mtx_unlock
+        1413  _Mtx_lock
+         654  ?_Xlength_error@std@@YAXPEBD@Z
+
+  lookup 0009ec80 time 00000000 fwd 00000000 name 0009f0e6 addr 000790e0
+
+    DLL Name: VCRUNTIME140.dll
+    Hint/Ord  Name
+          28  __current_exception_context
+          37  __std_type_info_destroy_list
+          27  __current_exception
+          59  memcmp
+          35  __std_terminate
+           8  __C_specific_handler
+          61  memmove
+           1  _CxxThrowException
+          60  memcpy
+          62  memset
+          34  __std_exception_destroy
+          33  __std_exception_copy
+
+  lookup 0009ece8 time 00000000 fwd 00000000 name 0009f0f8 addr 00079148
+
+    DLL Name: VCRUNTIME140_1.dll
+    Hint/Ord  Name
+           0  __CxxFrameHandler4
+
+  lookup 0009edc8 time 00000000 fwd 00000000 name 0009f3e4 addr 00079228
+
+    DLL Name: api-ms-win-crt-runtime-l1-1-0.dll
+    Hint/Ord  Name
+         103  terminate
+          63  _seh_filter_dll
+          24  _configure_narrow_argv
+          51  _initialize_narrow_environment
+          52  _initialize_onexit_table
+          60  _register_onexit_function
+          34  _execute_onexit_table
+          30  _crt_atexit
+          22  _cexit
+          54  _initterm
+          55  _initterm_e
+          98  set_terminate
+          45  _get_terminate
+          84  abort
+          33  _errno
+         100  strerror
+          58  _invoke_watson
+
+  lookup 0009ee58 time 00000000 fwd 00000000 name 0009f406 addr 000792b8
+
+    DLL Name: api-ms-win-crt-stdio-l1-1-0.dll
+    Hint/Ord  Name
+          47  _fseeki64
+           3  __stdio_common_vfprintf
+         131  fread
+         127  fputc
+          98  _wfopen
+          13  __stdio_common_vsprintf
+           0  __acrt_iob_func
+         128  fputs
+         138  fwrite
+          51  _ftelli64
+         116  fclose
+         119  fflush
+
+  lookup 0009ed18 time 00000000 fwd 00000000 name 0009f426 addr 00079178
+
+    DLL Name: api-ms-win-crt-heap-l1-1-0.dll
+    Hint/Ord  Name
+           0  _aligned_free
+           1  _aligned_malloc
+          26  realloc
+          24  free
+          23  calloc
+          25  malloc
+           8  _callnewh
+
+  lookup 0009eee8 time 00000000 fwd 00000000 name 0009f446 addr 00079348
+
+    DLL Name: api-ms-win-crt-time-l1-1-0.dll
+    Hint/Ord  Name
+          69  clock
+
+  lookup 0009ed58 time 00000000 fwd 00000000 name 0009f466 addr 000791b8
+
+    DLL Name: api-ms-win-crt-math-l1-1-0.dll
+    Hint/Ord  Name
+         208  ldexp
+         235  lroundf
+         266  roundf
+         224  log2
+         225  log2f
+         279  sqrtf
+         124  ceil
+         125  ceilf
+         182  expf
+         255  powf
+         230  logf
+         278  sqrt
+         191  floorf
+
+  lookup 0009eec0 time 00000000 fwd 00000000 name 0009f486 addr 00079320
+
+    DLL Name: api-ms-win-crt-string-l1-1-0.dll
+    Hint/Ord  Name
+         108  isprint
+         136  strcpy
+         139  strlen
+         134  strcmp
+
+  lookup 0009ed08 time 00000000 fwd 00000000 name 0009f4a8 addr 00079168
+
+    DLL Name: api-ms-win-crt-environment-l1-1-0.dll
+    Hint/Ord  Name
+          16  getenv
+
+  lookup 0009ecf8 time 00000000 fwd 00000000 name 0009f4ce addr 00079158
+
+    DLL Name: api-ms-win-crt-convert-l1-1-0.dll
+    Hint/Ord  Name
+          80  atoi
+
+  lookup 0009eef8 time 00000000 fwd 00000000 name 0009f4f0 addr 00079358
+
+    DLL Name: api-ms-win-crt-utility-l1-1-0.dll
+    Hint/Ord  Name
+          25  qsort
+
+Export Table:
+ DLL name: ggml-base.dll
+ Ordinal base: 1
+ Ordinal      RVA  Name
+       1  0x72420  ?gguf_type_size@@YA_KW4gguf_type@@@Z
+       2  0x72470  ?gguf_write_to_buf@@YAXPEBUgguf_context@@AEAV?$vector@CV?$allocator@C@std@@@std@@_N@Z
+       3  0x33e20  dequantize_row_iq1_m
+       4  0x34190  dequantize_row_iq1_s
+       5  0x34380  dequantize_row_iq2_s
+       6  0x34700  dequantize_row_iq2_xs
+       7  0x34a00  dequantize_row_iq2_xxs
+       8  0x34d00  dequantize_row_iq3_s
+       9  0x35250  dequantize_row_iq3_xxs
+      10  0x35540  dequantize_row_iq4_nl
+      11  0x35980  dequantize_row_iq4_xs
+      12  0x35e50  dequantize_row_mxfp4
+      13  0x36250  dequantize_row_nvfp4
+      14  0x36520  dequantize_row_q1_0
+      15  0x36970  dequantize_row_q2_0
+      16  0x36e00  dequantize_row_q2_K
+      17  0x37430  dequantize_row_q3_K
+      18  0x37d40  dequantize_row_q4_0
+      19  0x38140  dequantize_row_q4_1
+      20  0x38610  dequantize_row_q4_K
+      21  0x38d50  dequantize_row_q5_0
+      22  0x39100  dequantize_row_q5_1
+      23  0x39530  dequantize_row_q5_K
+      24  0x39dc0  dequantize_row_q6_K
+      25  0x3a160  dequantize_row_q8_0
+      26  0x3a4c0  dequantize_row_q8_K
+      27  0x3a5d0  dequantize_row_tq1_0
+      28  0x3b040  dequantize_row_tq2_0
+      29   0x18f0  ggml_abort
+      30   0x19a0  ggml_abs
+      31   0x19b0  ggml_abs_inplace
+      32   0x19c0  ggml_acc
+      33   0x1bb0  ggml_acc_inplace
+      34   0x1bf0  ggml_add
+      35   0x1c80  ggml_add1
+      36   0x1da0  ggml_add1_inplace
+      37   0x1e80  ggml_add_cast
+      38   0x1f70  ggml_add_id
+      39   0x2130  ggml_add_inplace
+      40   0x2270  ggml_add_rel_pos
+      41   0x2500  ggml_add_rel_pos_inplace
+      42   0x2520  ggml_aligned_free
+      43   0x2530  ggml_aligned_malloc
+      44   0x2540  ggml_arange
+      45   0x2600  ggml_are_same_shape
+      46   0x2630  ggml_are_same_stride
+      47   0x2660  ggml_argmax
+      48   0x2700  ggml_argsort
+      49   0x2780  ggml_argsort_top_k
+      50  0x19d00  ggml_backend_alloc_buffer
+      51  0x149d0  ggml_backend_alloc_ctx_tensors
+      52  0x14a30  ggml_backend_alloc_ctx_tensors_from_buft
+      53  0x14cd0  ggml_backend_alloc_ctx_tensors_from_buft_size
+      54  0x19e30  ggml_backend_buffer_clear
+      55  0x19e70  ggml_backend_buffer_copy_tensor
+      56  0x19ea0  ggml_backend_buffer_free
+      57  0x19ed0  ggml_backend_buffer_get_alignment
+      58  0x19f30  ggml_backend_buffer_get_alloc_size
+      59  0x19f70  ggml_backend_buffer_get_base
+      60  0x19ff0  ggml_backend_buffer_get_max_size
+      61  0x1a060  ggml_backend_buffer_get_size
+      62  0x1a0a0  ggml_backend_buffer_get_type
+      63  0x1a0e0  ggml_backend_buffer_get_usage
+      64  0x1a120  ggml_backend_buffer_init
+      65  0x1a1b0  ggml_backend_buffer_init_tensor
+      66  0x1a1f0  ggml_backend_buffer_is_host
+      67  0x2ecd0  ggml_backend_buffer_is_meta
+      68  0x1a260  ggml_backend_buffer_is_multi_buffer
+      69  0x1a2a0  ggml_backend_buffer_name
+      70  0x1a300  ggml_backend_buffer_reset
+      71  0x1a340  ggml_backend_buffer_set_usage
+      72  0x1a3f0  ggml_backend_buft_alloc_buffer
+      73  0x1a4a0  ggml_backend_buft_get_alignment
+      74  0x1a4e0  ggml_backend_buft_get_alloc_size
+      75  0x1a5a0  ggml_backend_buft_get_device
+      76  0x1a5e0  ggml_backend_buft_get_max_size
+      77  0x1a630  ggml_backend_buft_is_host
+      78  0x2ecf0  ggml_backend_buft_is_meta
+      79  0x1a670  ggml_backend_buft_name
+      80  0x1a6b0  ggml_backend_compare_graph_backend
+      81  0x1aa80  ggml_backend_cpu_buffer_from_ptr
+      82  0x1ab80  ggml_backend_cpu_buffer_type
+      83  0x1ab90  ggml_backend_dev_backend_reg
+      84  0x1abd0  ggml_backend_dev_buffer_from_host_ptr
+      85  0x1ac10  ggml_backend_dev_buffer_type
+      86  0x1ac50  ggml_backend_dev_description
+      87  0x1ac90  ggml_backend_dev_get_props
+      88  0x1ace0  ggml_backend_dev_host_buffer_type
+      89  0x1ad20  ggml_backend_dev_init
+      90  0x1ad60  ggml_backend_dev_memory
+      91  0x1ada0  ggml_backend_dev_name
+      92  0x1ade0  ggml_backend_dev_offload_op
+      93  0x1ae20  ggml_backend_dev_supports_buft
+      94  0x1ae60  ggml_backend_dev_supports_op
+      95  0x1aea0  ggml_backend_dev_type
+      96  0x1aee0  ggml_backend_event_free
+      97  0x1af00  ggml_backend_event_new
+      98  0x1af20  ggml_backend_event_record
+      99  0x1af90  ggml_backend_event_synchronize
+     100  0x1b000  ggml_backend_event_wait
+     101  0x1b060  ggml_backend_free
+     102  0x1b070  ggml_backend_get_alignment
+     103  0x1b100  ggml_backend_get_default_buffer_type
+     104  0x1b160  ggml_backend_get_device
+     105  0x1b1a0  ggml_backend_get_max_size
+     106  0x1b240  ggml_backend_graph_compute
+     107  0x1b2a0  ggml_backend_graph_compute_async
+     108  0x1b2e0  ggml_backend_graph_copy
+     109  0x1b6c0  ggml_backend_graph_copy_free
+     110  0x1b710  ggml_backend_graph_plan_compute
+     111  0x1b770  ggml_backend_graph_plan_create
+     112  0x1b7d0  ggml_backend_graph_plan_free
+     113  0x1b830  ggml_backend_guid
+     114  0x2ed10  ggml_backend_is_meta
+     115  0x2ed30  ggml_backend_meta_alloc_ctx_tensors_from_buft
+     116  0x2f270  ggml_backend_meta_buffer_set_usage
+     117  0x2f310  ggml_backend_meta_device
+     118  0x2fb50  ggml_backend_meta_n_backends
+     119  0x2fbc0  ggml_backend_meta_simple_backend
+     120  0x2fc20  ggml_backend_meta_split_axis_name
+     121  0x1b840  ggml_backend_multi_buffer_alloc_buffer
+     122  0x1b9e0  ggml_backend_multi_buffer_set_usage
+     123  0x1ba80  ggml_backend_name
+     124  0x1baa0  ggml_backend_offload_op
+     125  0x1bb10  ggml_backend_reg_dev_count
+     126  0x1bb50  ggml_backend_reg_dev_get
+     127  0x1bb90  ggml_backend_reg_get_proc_address
+     128  0x1bbd0  ggml_backend_reg_name
+     129  0x1bc10  ggml_backend_sched_alloc_graph
+     130  0x1bce0  ggml_backend_sched_free
+     131  0x1be70  ggml_backend_sched_get_backend
+     132  0x1bed0  ggml_backend_sched_get_buffer_size
+     133  0x1bf60  ggml_backend_sched_get_buffer_type
+     134  0x1bff0  ggml_backend_sched_get_n_backends
+     135  0x1c030  ggml_backend_sched_get_n_copies
+     136  0x1c070  ggml_backend_sched_get_n_splits
+     137  0x1c0b0  ggml_backend_sched_get_tensor_backend
+     138  0x1c120  ggml_backend_sched_graph_compute
+     139  0x1c210  ggml_backend_sched_graph_compute_async
+     140  0x1c290  ggml_backend_sched_new
+     141  0x1c790  ggml_backend_sched_reserve
+     142  0x1c850  ggml_backend_sched_reserve_size
+     143  0x1c940  ggml_backend_sched_reset
+     144  0x1c9e0  ggml_backend_sched_set_eval_callback
+     145  0x1ca20  ggml_backend_sched_set_tensor_backend
+     146  0x1cac0  ggml_backend_sched_split_graph
+     147  0x1e580  ggml_backend_sched_synchronize
+     148  0x1e630  ggml_backend_supports_buft
+     149  0x1e690  ggml_backend_supports_op
+     150  0x1e6f0  ggml_backend_synchronize
+     151  0x1e730  ggml_backend_tensor_alloc
+     152  0x1e930  ggml_backend_tensor_copy
+     153  0x1eb20  ggml_backend_tensor_copy_async
+     154  0x1ec40  ggml_backend_tensor_get
+     155  0x1ed60  ggml_backend_tensor_get_2d
+     156  0x1ef10  ggml_backend_tensor_get_2d_async
+     157  0x1f0d0  ggml_backend_tensor_get_async
+     158  0x1f210  ggml_backend_tensor_memset
+     159  0x1f360  ggml_backend_tensor_set
+     160  0x1f480  ggml_backend_tensor_set_2d
+     161  0x1f630  ggml_backend_tensor_set_2d_async
+     162  0x1f7f0  ggml_backend_tensor_set_async
+     163  0x1f930  ggml_backend_view_init
+     164   0x2820  ggml_bf16_to_fp32
+     165   0x17c0  ggml_bf16_to_fp32_row
+     166   0x2830  ggml_blck_size
+     167   0x2850  ggml_build_backward_expand
+     168   0x2d10  ggml_build_forward_expand
+     169   0x2d80  ggml_build_forward_order
+     170   0x2df0  ggml_build_forward_select
+     171   0x2ef0  ggml_can_fuse_subgraph_ext
+     172   0x31e0  ggml_can_repeat
+     173   0x3280  ggml_cast
+     174   0x32f0  ggml_ceil
+     175   0x3300  ggml_ceil_inplace
+     176   0x3310  ggml_clamp
+     177   0x33b0  ggml_clamp_inplace
+     178   0x3430  ggml_col2im_1d
+     179   0x3690  ggml_commit
+     180   0x5010  ggml_concat
+     181   0x5140  ggml_cont
+     182   0x51a0  ggml_cont_1d
+     183   0x51d0  ggml_cont_2d
+     184   0x51f0  ggml_cont_3d
+     185   0x5220  ggml_cont_4d
+     186   0x52f0  ggml_conv1d_fused
+     187   0x5680  ggml_conv1d_fused_grouped
+     188   0x5b20  ggml_conv_1d
+     189   0x5bf0  ggml_conv_1d_dw
+     190   0x5cc0  ggml_conv_1d_dw_ph
+     191   0x5cf0  ggml_conv_1d_ph
+     192   0x5d20  ggml_conv_2d
+     193   0x5e90  ggml_conv_2d_direct
+     194   0x5ff0  ggml_conv_2d_dw
+     195   0x6170  ggml_conv_2d_dw_direct
+     196   0x63a0  ggml_conv_2d_s1_ph
+     197   0x6400  ggml_conv_2d_sk_p0
+     198   0x6440  ggml_conv_3d
+     199   0x6630  ggml_conv_3d_direct
+     200   0x6890  ggml_conv_transpose_1d
+     201   0x6a50  ggml_conv_transpose_2d_p0
+     202   0x6b10  ggml_cos
+     203   0x6b50  ggml_cos_inplace
+     204   0x6b80  ggml_count_equal
+     205   0x6c30  ggml_cpy
+     206  0x33dc0  ggml_critical_section_end
+     207  0x33dd0  ggml_critical_section_start
+     208   0x6d10  ggml_cross_entropy_loss
+     209   0x6db0  ggml_cross_entropy_loss_back
+     210   0x6ea0  ggml_cumsum
+     211   0x6f00  ggml_custom_4d
+     212   0x7010  ggml_custom_inplace
+     213   0x7100  ggml_cycles
+     214   0x7120  ggml_cycles_per_ms
+     215   0x7130  ggml_diag
+     216   0x71b0  ggml_diag_mask_inf
+     217   0x7220  ggml_diag_mask_inf_inplace
+     218   0x7280  ggml_diag_mask_zero
+     219   0x72f0  ggml_diag_mask_zero_inplace
+     220   0x7350  ggml_div
+     221   0x73e0  ggml_div_inplace
+     222   0x7460  ggml_dsv4_hc_comb
+     223   0x77e0  ggml_dsv4_hc_post
+     224   0x7b80  ggml_dsv4_hc_pre
+     225   0x7ba0  ggml_dsv4_hc_pre_gated
+     226   0x7e30  ggml_dup
+     227   0x7e70  ggml_dup_inplace
+     228   0x7ea0  ggml_dup_tensor
+     229   0x7ed0  ggml_element_size
+     230   0x7ef0  ggml_elu
+     231   0x7f00  ggml_elu_inplace
+     232   0x7f10  ggml_exp
+     233   0x7f20  ggml_exp_inplace
+     234   0x7f30  ggml_expm1
+     235   0x7f40  ggml_expm1_inplace
+     236   0x7f50  ggml_fill
+     237   0x8030  ggml_fill_inplace
+     238   0x80d0  ggml_flash_attn_back
+     239   0x80f0  ggml_flash_attn_ext
+     240   0x83b0  ggml_flash_attn_ext_add_sinks
+     241   0x8480  ggml_flash_attn_ext_get_prec
+     242   0x84c0  ggml_flash_attn_ext_set_n_kv_max
+     243   0x8520  ggml_flash_attn_ext_set_prec
+     244   0x8560  ggml_floor
+     245   0x8570  ggml_floor_inplace
+     246   0x8580  ggml_fopen
+     247   0x85f0  ggml_format_name
+     248   0x8650  ggml_fp16_to_fp32
+     249   0x14c0  ggml_fp16_to_fp32_row
+     250   0x86b0  ggml_fp32_to_bf16
+     251   0x17f0  ggml_fp32_to_bf16_row
+     252   0x17f0  ggml_fp32_to_bf16_row_ref
+     253   0x86f0  ggml_fp32_to_fp16
+     254   0x16d0  ggml_fp32_to_fp16_row
+     255   0x8780  ggml_free
+     256   0x87b0  ggml_ftype_to_ggml_type
+     257   0x91e0  ggml_fused_attn_cached
+     258   0x9260  ggml_fused_relpos_attn
+     259   0x92d0  ggml_fused_relpos_attn_cached
+     260  0x15210  ggml_gallocr_alloc_graph
+     261  0x15bc0  ggml_gallocr_free
+     262  0x15e50  ggml_gallocr_get_buffer_size
+     263  0x15fb0  ggml_gallocr_new
+     264  0x15fd0  ggml_gallocr_new_n
+     265  0x162e0  ggml_gallocr_reserve
+     266  0x16300  ggml_gallocr_reserve_n
+     267  0x16990  ggml_gallocr_reserve_n_size
+     268   0x9360  ggml_gated_delta_net
+     269   0x9800  ggml_gated_linear_attn
+     270   0x9ad0  ggml_geglu
+     271   0x9af0  ggml_geglu_erf
+     272   0x9b10  ggml_geglu_erf_split
+     273   0x9b30  ggml_geglu_erf_swapped
+     274   0x9b50  ggml_geglu_quick
+     275   0x9b70  ggml_geglu_quick_split
+     276   0x9b90  ggml_geglu_quick_swapped
+     277   0x9bb0  ggml_geglu_split
+     278   0x9bd0  ggml_geglu_swapped
+     279   0x9bf0  ggml_gelu
+     280   0x9c00  ggml_gelu_erf
+     281   0x9c10  ggml_gelu_erf_inplace
+     282   0x9c20  ggml_gelu_inplace
+     283   0x9c30  ggml_gelu_quick
+     284   0x9c40  ggml_gelu_quick_inplace
+     285   0x9c50  ggml_get_data
+     286   0x9c50  ggml_get_data_f32
+     287   0x9c60  ggml_get_first_tensor
+     288   0x9c90  ggml_get_glu_op
+     289   0x9cd0  ggml_get_max_tensor_size
+     290   0x9d80  ggml_get_mem_buffer
+     291   0x9d90  ggml_get_mem_size
+     292   0x9da0  ggml_get_name
+     293   0x9db0  ggml_get_next_tensor
+     294   0x9de0  ggml_get_no_alloc
+     295   0x9df0  ggml_get_rel_pos
+     296   0x9eb0  ggml_get_rows
+     297   0x9fb0  ggml_get_rows_back
+     298   0xa0a0  ggml_get_tensor
+     299   0xa110  ggml_get_type_traits
+     300   0xa130  ggml_get_unary_op
+     301   0xa170  ggml_glu
+     302   0xa330  ggml_glu_op_name
+     303   0xa340  ggml_glu_split
+     304   0xa360  ggml_graph_add_node
+     305   0xa3b0  ggml_graph_clear
+     306   0xa3e0  ggml_graph_cpy
+     307   0xa8f0  ggml_graph_dump_dot
+     308   0xaf70  ggml_graph_dup
+     309   0xafb0  ggml_graph_get_grad
+     310   0xb010  ggml_graph_get_grad_acc
+     311   0xb130  ggml_graph_get_tensor
+     312   0xb1f0  ggml_graph_n_nodes
+     313   0xb2c0  ggml_graph_node
+     314   0xb340  ggml_graph_nodes
+     315   0xb350  ggml_graph_overhead
+     316   0xb3d0  ggml_graph_overhead_custom
+     317   0xb3f0  ggml_graph_print
+     318   0xb5b0  ggml_graph_reset
+     319   0xb7a0  ggml_graph_size
+     320   0xb810  ggml_group_norm
+     321   0xb870  ggml_group_norm_inplace
+     322   0xb8c0  ggml_guid_matches
+     323   0xb8e0  ggml_hardsigmoid
+     324   0xb8f0  ggml_hardswish
+     325   0xbae0  ggml_im2col
+     326   0xbd60  ggml_im2col_3d
+     327   0xbfd0  ggml_im2col_back
+     328   0xc090  ggml_init
+     329   0xc210  ggml_interpolate
+     330   0xc320  ggml_is_3d
+     331   0xc330  ggml_is_contiguous
+     332   0xc340  ggml_is_contiguous_0
+     333   0xc3b0  ggml_is_contiguous_1
+     334   0xc420  ggml_is_contiguous_2
+     335   0xc490  ggml_is_contiguous_channels
+     336   0xc4c0  ggml_is_contiguous_rows
+     337   0xc4f0  ggml_is_contiguous_to_1
+     338   0xc520  ggml_is_contiguous_to_2
+     339   0xc590  ggml_is_contiguous_to_3
+     340   0xc600  ggml_is_contiguously_allocated
+     341   0xc660  ggml_is_empty
+     342   0xc680  ggml_is_matrix
+     343   0xc6a0  ggml_is_permuted
+     344   0xc6c0  ggml_is_quantized
+     345   0xc6e0  ggml_is_scalar
+     346   0xc710  ggml_is_transposed
+     347   0xc720  ggml_is_vector
+     348   0xc740  ggml_is_view
+     349   0xc750  ggml_l2_norm
+     350   0xc7a0  ggml_l2_norm_inplace
+     351   0xc7e0  ggml_leaky_relu
+     352   0xc860  ggml_lightning_indexer
+     353   0xcb60  ggml_log
+     354   0x1850  ggml_log_callback_default
+     355   0xcba0  ggml_log_get
+     356   0xcbc0  ggml_log_inplace
+     357   0xcbf0  ggml_log_internal
+     358   0xcd20  ggml_log_set
+     359   0xcde0  ggml_map_custom1
+     360   0xcef0  ggml_map_custom1_inplace
+     361   0xcf10  ggml_map_custom2
+     362   0xd040  ggml_map_custom2_inplace
+     363   0xd070  ggml_map_custom3
+     364   0xd1c0  ggml_map_custom3_inplace
+     365   0xd2c0  ggml_mean
+     366   0xd320  ggml_mul
+     367   0xd3b0  ggml_mul_inplace
+     368   0xd430  ggml_mul_mat
+     369   0xd520  ggml_mul_mat_id
+     370   0xd720  ggml_mul_mat_set_hint
+     371   0xd760  ggml_mul_mat_set_prec
+     372   0xd7a0  ggml_n_dims
+     373   0xd7e0  ggml_nbytes
+     374   0xd8b0  ggml_nbytes_pad
+     375   0xd8d0  ggml_neg
+     376   0xd8e0  ggml_neg_inplace
+     377   0xd8f0  ggml_nelements
+     378   0xd910  ggml_new_buffer
+     379   0xd940  ggml_new_graph
+     380   0xd950  ggml_new_graph_custom
+     381   0xdcd0  ggml_new_tensor
+     382   0xdcf0  ggml_new_tensor_1d
+     383   0xdd20  ggml_new_tensor_2d
+     384   0xdd50  ggml_new_tensor_3d
+     385   0xdd90  ggml_new_tensor_4d
+     386   0xe200  ggml_norm
+     387   0xe280  ggml_norm_inplace
+     388   0xe2e0  ggml_nrows
+     389  0x1faf0  ggml_op_alloc_size_may_expand
+     390  0x16a60  ggml_op_can_inplace
+     391   0xe2f0  ggml_op_desc
+     392   0xe340  ggml_op_name
+     393   0xe350  ggml_op_symbol
+     394  0x31720  ggml_opt_alloc
+     395  0x31920  ggml_opt_context_optimizer_type
+     396   0xb340  ggml_opt_dataset_data
+     397  0x31930  ggml_opt_dataset_free
+     398  0x31970  ggml_opt_dataset_get_batch
+     399  0x31c50  ggml_opt_dataset_get_batch_host
+     400  0x31e10  ggml_opt_dataset_init
+     401  0x32110  ggml_opt_dataset_labels
+     402  0x32120  ggml_opt_dataset_ndata
+     403  0x32130  ggml_opt_dataset_shuffle
+     404  0x321c0  ggml_opt_default_params
+     405  0x32200  ggml_opt_epoch
+     406  0x324c0  ggml_opt_epoch_callback_progress_bar
+     407  0x32970  ggml_opt_eval
+     408  0x33100  ggml_opt_fit
+     409  0x33610  ggml_opt_free
+     410  0x33690  ggml_opt_get_constant_optimizer_params
+     411  0x336b0  ggml_opt_get_default_optimizer_params
+     412  0x336e0  ggml_opt_grad_acc
+     413  0x336f0  ggml_opt_init
+     414  0x33990  ggml_opt_inputs
+     415  0x339a0  ggml_opt_labels
+     416  0x339b0  ggml_opt_loss
+     417  0x339c0  ggml_opt_ncorrect
+     418  0x339d0  ggml_opt_optimizer_name
+     419  0x33a00  ggml_opt_outputs
+     420  0x33a10  ggml_opt_pred
+     421  0x33a20  ggml_opt_prepare_alloc
+     422  0x33a70  ggml_opt_reset
+     423  0x33ab0  ggml_opt_result_accuracy
+     424  0x33b50  ggml_opt_result_free
+     425  0x33b90  ggml_opt_result_init
+     426  0x33be0  ggml_opt_result_loss
+     427  0x33d30  ggml_opt_result_ndata
+     428  0x33d40  ggml_opt_result_pred
+     429  0x33d80  ggml_opt_result_reset
+     430  0x33db0  ggml_opt_static_graphs
+     431   0xe360  ggml_opt_step_adamw
+     432   0xe560  ggml_opt_step_sgd
+     433   0xe690  ggml_out_prod
+     434   0xe780  ggml_pad
+     435   0xe7d0  ggml_pad_circular
+     436   0xe820  ggml_pad_ext
+     437   0xe930  ggml_pad_ext_circular
+     438   0xe990  ggml_pad_reflect_1d
+     439   0xeb50  ggml_permute
+     440   0xee40  ggml_pool_1d
+     441   0xef70  ggml_pool_2d
+     442   0xf130  ggml_pool_2d_back
+     443   0xf1f0  ggml_prec_set_acc
+     444   0xf220  ggml_prec_set_src
+     445   0xf290  ggml_print_object
+     446   0xf2d0  ggml_print_objects
+     447   0xf360  ggml_quantize_chunk
+     448   0xfa30  ggml_quantize_free
+     449   0xfa90  ggml_quantize_init
+     450   0xfb30  ggml_quantize_requires_imatrix
+     451   0xfb50  ggml_reglu
+     452   0xfb70  ggml_reglu_split
+     453   0xfb90  ggml_reglu_swapped
+     454   0xfbb0  ggml_relu
+     455   0xfbc0  ggml_relu_inplace
+     456   0xfbd0  ggml_repeat
+     457   0xfc60  ggml_repeat_4d
+     458   0xfd60  ggml_repeat_back
+     459   0xfdf0  ggml_reset
+     460   0xfe10  ggml_reshape
+     461   0xff00  ggml_reshape_1d
+     462   0xfff0  ggml_reshape_2d
+     463  0x100f0  ggml_reshape_3d
+     464  0x10200  ggml_reshape_4d
+     465  0x10330  ggml_rms_norm
+     466  0x103b0  ggml_rms_norm_back
+     467  0x10440  ggml_rms_norm_inplace
+     468  0x104a0  ggml_roll
+     469  0x10630  ggml_rope
+     470  0x106a0  ggml_rope_custom
+     471  0x10740  ggml_rope_custom_inplace
+     472  0x107e0  ggml_rope_ext
+     473  0x10880  ggml_rope_ext_back
+     474  0x10920  ggml_rope_ext_inplace
+     475  0x10cd0  ggml_rope_inplace
+     476  0x10d40  ggml_rope_multi
+     477  0x10de0  ggml_rope_multi_back
+     478  0x10e90  ggml_rope_multi_inplace
+     479  0x10f30  ggml_rope_set_offset
+     480  0x10fc0  ggml_rope_yarn_corr_dims
+     481  0x110b0  ggml_round
+     482  0x110c0  ggml_round_inplace
+     483  0x110d0  ggml_row_size
+     484  0x11100  ggml_rwkv_wkv6
+     485  0x11420  ggml_rwkv_wkv7
+     486  0x117c0  ggml_scale
+     487  0x117e0  ggml_scale_bias
+     488  0x11800  ggml_scale_bias_inplace
+     489  0x11930  ggml_scale_inplace
+     490  0x11950  ggml_set
+     491  0x11990  ggml_set_1d
+     492  0x119c0  ggml_set_1d_inplace
+     493  0x119f0  ggml_set_2d
+     494  0x11a20  ggml_set_2d_inplace
+     495  0x11a50  ggml_set_abort_callback
+     496  0x11ba0  ggml_set_inplace
+     497  0x11be0  ggml_set_input
+     498  0x11bf0  ggml_set_loss
+     499  0x11c70  ggml_set_name
+     500  0x11cf0  ggml_set_no_alloc
+     501  0x11d00  ggml_set_output
+     502  0x11d30  ggml_set_param
+     503  0x11d70  ggml_set_rows
+     504  0x11fe0  ggml_set_zero
+     505  0x12080  ggml_sgn
+     506  0x12090  ggml_sgn_inplace
+     507  0x120a0  ggml_sigmoid
+     508  0x120b0  ggml_sigmoid_inplace
+     509  0x120c0  ggml_silu
+     510  0x120d0  ggml_silu_back
+     511  0x12120  ggml_silu_inplace
+     512  0x12130  ggml_sin
+     513  0x12170  ggml_sin_inplace
+     514  0x121a0  ggml_soft_max
+     515  0x12270  ggml_soft_max_add_sinks
+     516  0x12340  ggml_soft_max_ext
+     517  0x12360  ggml_soft_max_ext_back
+     518  0x123d0  ggml_soft_max_ext_back_inplace
+     519  0x12430  ggml_soft_max_ext_inplace
+     520  0x126c0  ggml_soft_max_inplace
+     521  0x12770  ggml_softplus
+     522  0x12780  ggml_softplus_inplace
+     523  0x12790  ggml_solve_tri
+     524  0x129e0  ggml_sqr
+     525  0x12a20  ggml_sqr_inplace
+     526  0x12a50  ggml_sqrt
+     527  0x12a90  ggml_sqrt_inplace
+     528  0x12ac0  ggml_ssm_conv
+     529  0x12be0  ggml_ssm_scan
+     530  0x13220  ggml_status_to_string
+     531  0x13260  ggml_step
+     532  0x13270  ggml_step_inplace
+     533  0x13280  ggml_sub
+     534  0x133c0  ggml_sub_inplace
+     535  0x13500  ggml_sum
+     536  0x13550  ggml_sum_rows
+     537  0x135c0  ggml_swiglu
+     538  0x135e0  ggml_swiglu_clamp
+     539  0x13610  ggml_swiglu_oai
+     540  0x13650  ggml_swiglu_split
+     541  0x13670  ggml_swiglu_swapped
+     542  0x16af0  ggml_tallocr_alloc
+     543  0x16bc0  ggml_tallocr_new
+     544  0x13690  ggml_tanh
+     545  0x136a0  ggml_tanh_inplace
+     546  0x136b0  ggml_tensor_overhead
+     547  0x136c0  ggml_threadpool_params_default
+     548  0x13710  ggml_threadpool_params_init
+     549  0x13740  ggml_threadpool_params_match
+     550  0x137a0  ggml_time_init
+     551  0x13800  ggml_time_ms
+     552  0x13830  ggml_time_us
+     553  0x13860  ggml_timestep_embedding
+     554  0x138d0  ggml_top_k
+     555  0x13960  ggml_transpose
+     556  0x139d0  ggml_tri
+     557  0x13ab0  ggml_trunc
+     558  0x13ac0  ggml_trunc_inplace
+     559  0x13ad0  ggml_type_name
+     560  0x13af0  ggml_type_size
+     561  0x13b10  ggml_type_sizef
+     562  0x13b70  ggml_unary
+     563  0x13c00  ggml_unary_inplace
+     564  0x13c80  ggml_unary_op_name
+     565  0x13c90  ggml_unravel_index
+     566  0x13d60  ggml_upscale
+     567  0x13dc0  ggml_upscale_ext
+     568  0x13de0  ggml_used_mem
+     569  0x3b510  ggml_validate_row_data
+     570  0x13e00  ggml_version
+     571  0x13e10  ggml_view_1d
+     572  0x13eb0  ggml_view_2d
+     573  0x13f70  ggml_view_3d
+     574  0x14050  ggml_view_4d
+     575  0x14130  ggml_view_tensor
+     576  0x143f0  ggml_win_part
+     577  0x14540  ggml_win_unpart
+     578  0x14600  ggml_xielu
+     579  0x73660  gguf_add_tensor
+     580  0x73800  gguf_find_key
+     581  0x738d0  gguf_find_tensor
+     582  0x73960  gguf_free
+     583  0x739a0  gguf_get_alignment
+     584  0x739b0  gguf_get_arr_data
+     585  0x73a40  gguf_get_arr_n
+     586  0x73b00  gguf_get_arr_str
+     587  0x73ba0  gguf_get_arr_type
+     588  0x73c30  gguf_get_data_offset
+     589  0x73c40  gguf_get_key
+     590  0x73cb0  gguf_get_kv_type
+     591  0x73d30  gguf_get_meta_data
+     592  0x73df0  gguf_get_meta_size
+     593  0x73ea0  gguf_get_n_kv
+     594  0x73ed0  gguf_get_n_tensors
+     595  0x73f00  gguf_get_tensor_name
+     596  0x73f70  gguf_get_tensor_ne
+     597  0x73fe0  gguf_get_tensor_offset
+     598  0x74050  gguf_get_tensor_size
+     599  0x740c0  gguf_get_tensor_type
+     600  0x74130  gguf_get_val_bool
+     601  0x741e0  gguf_get_val_data
+     602  0x742b0  gguf_get_val_f32
+     603  0x74360  gguf_get_val_f64
+     604  0x74410  gguf_get_val_i16
+     605  0x744c0  gguf_get_val_i32
+     606  0x74570  gguf_get_val_i64
+     607  0x74620  gguf_get_val_i8
+     608  0x746d0  gguf_get_val_str
+     609  0x74790  gguf_get_val_u16
+     610  0x74840  gguf_get_val_u32
+     611  0x748f0  gguf_get_val_u64
+     612  0x749a0  gguf_get_val_u8
+     613   0xb7a0  gguf_get_version
+     614  0x74a50  gguf_init_empty
+     615  0x74ab0  gguf_init_from_buffer
+     616  0x74b20  gguf_init_from_callback
+     617  0x74bb0  gguf_init_from_file
+     618  0x74c50  gguf_init_from_file_ptr
+     619  0x74d70  gguf_remove_key
+     620  0x74de0  gguf_set_arr_data
+     621  0x750c0  gguf_set_arr_str
+     622  0x75320  gguf_set_kv
+     623  0x75890  gguf_set_tensor_data
+     624  0x75900  gguf_set_tensor_type
+     625  0x75a60  gguf_set_val_bool
+     626  0x75bb0  gguf_set_val_f32
+     627  0x75d10  gguf_set_val_f64
+     628  0x75e70  gguf_set_val_i16
+     629  0x75fd0  gguf_set_val_i32
+     630  0x76120  gguf_set_val_i64
+     631  0x76270  gguf_set_val_i8
+     632  0x763c0  gguf_set_val_str
+     633  0x76570  gguf_set_val_u16
+     634  0x766d0  gguf_set_val_u32
+     635  0x76840  gguf_set_val_u64
+     636  0x76990  gguf_set_val_u8
+     637  0x76ae0  gguf_type_name
+     638  0x76b30  gguf_write_to_file
+     639  0x76be0  gguf_write_to_file_ptr
+     640  0x3c9f0  iq2xs_free_impl
+     641  0x3caa0  iq2xs_init_impl
+     642  0x3da60  iq3xs_free_impl
+     643  0x3db00  iq3xs_init_impl
+     644  0x41be0  quantize_iq1_m
+     645  0x41d40  quantize_iq1_s
+     646  0x41ec0  quantize_iq2_s
+     647  0x41f90  quantize_iq2_xs
+     648  0x42060  quantize_iq2_xxs
+     649  0x42130  quantize_iq3_s
+     650  0x422c0  quantize_iq3_xxs
+     651  0x42390  quantize_iq4_nl
+     652  0x425f0  quantize_iq4_xs
+     653  0x42860  quantize_mxfp4
+     654  0x428a0  quantize_nvfp4
+     655  0x428e0  quantize_q1_0
+     656  0x429a0  quantize_q2_0
+     657  0x42e00  quantize_q2_K
+     658  0x42eb0  quantize_q3_K
+     659  0x42f60  quantize_q4_0
+     660  0x43020  quantize_q4_1
+     661  0x430e0  quantize_q4_K
+     662  0x43190  quantize_q5_0
+     663  0x43250  quantize_q5_1
+     664  0x43310  quantize_q5_K
+     665  0x433c0  quantize_q6_K
+     666  0x43470  quantize_q8_0
+     667  0x49100  quantize_row_iq2_s_ref
+     668  0x4eb90  quantize_row_iq3_s_ref
+     669  0x509e0  quantize_row_iq3_xxs_ref
+     670  0x51ac0  quantize_row_iq4_nl_ref
+     671  0x51c10  quantize_row_iq4_xs_ref
+     672  0x51c30  quantize_row_mxfp4_ref
+     673  0x52380  quantize_row_nvfp4_ref
+     674  0x52a60  quantize_row_q1_0_ref
+     675  0x52fd0  quantize_row_q2_0_ref
+     676  0x542e0  quantize_row_q2_K_ref
+     677  0x56220  quantize_row_q3_K_ref
+     678  0x57250  quantize_row_q4_0_ref
+     679  0x57eb0  quantize_row_q4_1_ref
+     680  0x59ce0  quantize_row_q4_K_ref
+     681  0x5b6e0  quantize_row_q5_0_ref
+     682  0x5c700  quantize_row_q5_1_ref
+     683  0x5e6b0  quantize_row_q5_K_ref
+     684  0x60730  quantize_row_q6_K_ref
+     685  0x615c0  quantize_row_q8_0_ref
+     686  0x61930  quantize_row_q8_1_ref
+     687  0x61de0  quantize_row_q8_K_ref
+     688  0x621b0  quantize_row_tq1_0_ref
+     689  0x62520  quantize_row_tq2_0_ref
+     690  0x627e0  quantize_tq1_0
+     691  0x62850  quantize_tq2_0

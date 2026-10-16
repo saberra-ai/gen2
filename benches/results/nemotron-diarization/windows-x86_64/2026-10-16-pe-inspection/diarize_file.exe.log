@@ -1,0 +1,192 @@
+
+/Users/victor/.cache/gen2-nemotron3-n0/platform-ci/windows-38876058390/nemo-sdk/bin/diarize_file.exe:	file format coff-x86-64
+Characteristics 0x22
+	executable
+	large address aware
+
+Time/Date               Fri Oct 16 04:50:59 2026
+Magic                   020b	(PE32+)
+MajorLinkerVersion      14
+MinorLinkerVersion      44
+SizeOfCode              0000000000003600
+SizeOfInitializedData   0000000000003000
+SizeOfUninitializedData 0000000000000000
+AddressOfEntryPoint     00000000000038ac
+BaseOfCode              0000000000001000
+ImageBase               0000000140000000
+SectionAlignment        00001000
+FileAlignment           00000200
+MajorOSystemVersion     6
+MinorOSystemVersion     0
+MajorImageVersion       0
+MinorImageVersion       0
+MajorSubsystemVersion   6
+MinorSubsystemVersion   0
+Win32Version            00000000
+SizeOfImage             0000b000
+SizeOfHeaders           00000400
+CheckSum                00000000
+Subsystem               00000003	(Windows CUI)
+DllCharacteristics      00008160
+					HIGH_ENTROPY_VA
+					DYNAMIC_BASE
+					NX_COMPAT
+					TERMINAL_SERVER_AWARE
+SizeOfStackReserve      0000000000100000
+SizeOfStackCommit       0000000000001000
+SizeOfHeapReserve       0000000000100000
+SizeOfHeapCommit        0000000000001000
+LoaderFlags             00000000
+NumberOfRvaAndSizes     00000010
+
+The Data Directory
+Entry 0 0000000000000000 00000000 Export Directory [.edata (or where ever we found it)]
+Entry 1 00000000000064ac 00000104 Import Directory [parts of .idata]
+Entry 2 0000000000009000 000001e0 Resource Directory [.rsrc]
+Entry 3 0000000000008000 00000390 Exception Directory [.pdata]
+Entry 4 0000000000000000 00000000 Security Directory
+Entry 5 000000000000a000 00000058 Base Relocation Directory [.reloc]
+Entry 6 0000000000005a60 0000001c Debug Directory
+Entry 7 0000000000000000 00000000 Description Directory
+Entry 8 0000000000000000 00000000 Special Directory
+Entry 9 0000000000000000 00000000 Thread Storage Directory [.tls]
+Entry a 0000000000005920 00000140 Load Configuration Directory
+Entry b 0000000000000000 00000000 Bound Import Directory
+Entry c 0000000000005000 000002a0 Import Address Table Directory
+Entry d 0000000000000000 00000000 Delay Import Directory
+Entry e 0000000000000000 00000000 CLR Runtime Header
+Entry f 0000000000000000 00000000 Reserved
+
+The Import Tables:
+  lookup 000067f8 time 00000000 fwd 00000000 name 00006986 addr 00005248
+
+    DLL Name: nemo_speech_asr_c.dll
+    Hint/Ord  Name
+          27  nemo_speech_diar_create
+          35  nemo_speech_diar_segments
+          29  nemo_speech_diar_frame_count
+          33  nemo_speech_diar_offline_f32
+          36  nemo_speech_diar_stream_close
+          37  nemo_speech_diar_stream_finish
+          39  nemo_speech_diar_stream_push_f32
+          38  nemo_speech_diar_stream_open
+          28  nemo_speech_diar_destroy
+           2  nemo_speech_asr_last_error
+
+  lookup 00006630 time 00000000 fwd 00000000 name 000069be addr 00005080
+
+    DLL Name: MSVCP140.dll
+    Hint/Ord  Name
+         654  ?_Xlength_error@std@@YAXPEBD@Z
+
+  lookup 00006640 time 00000000 fwd 00000000 name 00006a94 addr 00005090
+
+    DLL Name: VCRUNTIME140.dll
+    Hint/Ord  Name
+          61  memmove
+          60  memcpy
+          27  __current_exception
+          28  __current_exception_context
+           8  __C_specific_handler
+          62  memset
+          33  __std_exception_copy
+          34  __std_exception_destroy
+           1  _CxxThrowException
+
+  lookup 00006690 time 00000000 fwd 00000000 name 00006aa6 addr 000050e0
+
+    DLL Name: VCRUNTIME140_1.dll
+    Hint/Ord  Name
+           0  __CxxFrameHandler4
+
+  lookup 000066f8 time 00000000 fwd 00000000 name 00006d04 addr 00005148
+
+    DLL Name: api-ms-win-crt-runtime-l1-1-0.dll
+    Hint/Ord  Name
+          40  _get_initial_narrow_environment
+          54  _initterm
+          55  _initterm_e
+          85  exit
+          51  _initialize_narrow_environment
+          24  _configure_narrow_argv
+           4  __p___argc
+           5  __p___argv
+          22  _cexit
+          21  _c_exit
+          61  _register_thread_local_exe_atexit_callback
+          66  _set_app_type
+          64  _seh_filter_exe
+          58  _invoke_watson
+          35  _exit
+          52  _initialize_onexit_table
+          60  _register_onexit_function
+          30  _crt_atexit
+         103  terminate
+
+  lookup 000066a0 time 00000000 fwd 00000000 name 00006d26 addr 000050f0
+
+    DLL Name: api-ms-win-crt-convert-l1-1-0.dll
+    Hint/Ord  Name
+          80  atoi
+
+  lookup 00006798 time 00000000 fwd 00000000 name 00006d48 addr 000051e8
+
+    DLL Name: api-ms-win-crt-stdio-l1-1-0.dll
+    Hint/Ord  Name
+           1  __p__commode
+           0  __acrt_iob_func
+         116  fclose
+          84  _set_fmode
+         125  fopen
+           3  __stdio_common_vfprintf
+         137  ftell
+         135  fseek
+         131  fread
+
+  lookup 000067e8 time 00000000 fwd 00000000 name 00006d68 addr 00005238
+
+    DLL Name: api-ms-win-crt-string-l1-1-0.dll
+    Hint/Ord  Name
+         139  strlen
+
+  lookup 000066b0 time 00000000 fwd 00000000 name 00006d8a addr 00005100
+
+    DLL Name: api-ms-win-crt-heap-l1-1-0.dll
+    Hint/Ord  Name
+          22  _set_new_mode
+          25  malloc
+           8  _callnewh
+          24  free
+
+  lookup 000066e8 time 00000000 fwd 00000000 name 00006daa addr 00005138
+
+    DLL Name: api-ms-win-crt-math-l1-1-0.dll
+    Hint/Ord  Name
+           9  __setusermatherr
+
+  lookup 000066d8 time 00000000 fwd 00000000 name 00006dca addr 00005128
+
+    DLL Name: api-ms-win-crt-locale-l1-1-0.dll
+    Hint/Ord  Name
+           8  _configthreadlocale
+
+  lookup 000065b0 time 00000000 fwd 00000000 name 00006f4a addr 00005000
+
+    DLL Name: KERNEL32.dll
+    Hint/Ord  Name
+         577  GetCurrentProcess
+         677  GetModuleHandleW
+         944  IsDebuggerPresent
+         922  InitializeSListHead
+         794  GetSystemTimeAsFileTime
+         582  GetCurrentThreadId
+         578  GetCurrentProcessId
+        1153  QueryPerformanceCounter
+         952  IsProcessorFeaturePresent
+        1496  TerminateProcess
+        1289  RtlCaptureContext
+        1297  RtlLookupFunctionEntry
+        1304  RtlVirtualUnwind
+        1531  UnhandledExceptionFilter
+        1464  SetUnhandledExceptionFilter
+

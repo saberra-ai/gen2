@@ -1,0 +1,229 @@
+
+/Users/victor/.cache/gen2-nemotron3-n0/platform-ci/windows-38876058390/nemo-sdk/bin/ggml.dll:	file format coff-x86-64
+Characteristics 0x2022
+	executable
+	large address aware
+	DLL
+
+Time/Date               Fri Oct 16 04:50:22 2026
+Magic                   020b	(PE32+)
+MajorLinkerVersion      14
+MinorLinkerVersion      44
+SizeOfCode              0000000000008200
+SizeOfInitializedData   0000000000007200
+SizeOfUninitializedData 0000000000000000
+AddressOfEntryPoint     0000000000008404
+BaseOfCode              0000000000001000
+ImageBase               0000000180000000
+SectionAlignment        00001000
+FileAlignment           00000200
+MajorOSystemVersion     6
+MinorOSystemVersion     0
+MajorImageVersion       0
+MinorImageVersion       25
+MajorSubsystemVersion   6
+MinorSubsystemVersion   0
+Win32Version            00000000
+SizeOfImage             00014000
+SizeOfHeaders           00000400
+CheckSum                00000000
+Subsystem               00000002	(Windows GUI)
+DllCharacteristics      00000160
+					HIGH_ENTROPY_VA
+					DYNAMIC_BASE
+					NX_COMPAT
+SizeOfStackReserve      0000000000100000
+SizeOfStackCommit       0000000000001000
+SizeOfHeapReserve       0000000000100000
+SizeOfHeapCommit        0000000000001000
+LoaderFlags             00000000
+NumberOfRvaAndSizes     00000010
+
+The Data Directory
+Entry 0 000000000000ea70 00000250 Export Directory [.edata (or where ever we found it)]
+Entry 1 000000000000ecc0 000000f0 Import Directory [parts of .idata]
+Entry 2 0000000000012000 000001e0 Resource Directory [.rsrc]
+Entry 3 0000000000011000 000009a8 Exception Directory [.pdata]
+Entry 4 0000000000000000 00000000 Security Directory
+Entry 5 0000000000013000 000000b0 Base Relocation Directory [.reloc]
+Entry 6 000000000000d1a0 0000001c Debug Directory
+Entry 7 0000000000000000 00000000 Description Directory
+Entry 8 0000000000000000 00000000 Special Directory
+Entry 9 000000000000d200 00000028 Thread Storage Directory [.tls]
+Entry a 000000000000d060 00000140 Load Configuration Directory
+Entry b 0000000000000000 00000000 Bound Import Directory
+Entry c 000000000000a000 00000300 Import Address Table Directory
+Entry d 0000000000000000 00000000 Delay Import Directory
+Entry e 0000000000000000 00000000 CLR Runtime Header
+Entry f 0000000000000000 00000000 Reserved
+TLS directory:
+  StartAddressOfRawData: 0x0000018000dbd0
+  EndAddressOfRawData: 0x0000018000dbd8
+  AddressOfIndex: 0x00000180010398
+  AddressOfCallBacks: 0x0000018000a360
+  SizeOfZeroFill: 0
+  Characteristics: 3145728
+  Alignment: 4
+
+
+The Import Tables:
+  lookup 0000f0a0 time 00000000 fwd 00000000 name 0000f0c8 addr 0000a2f0
+
+    DLL Name: ggml-cpu.dll
+    Hint/Ord  Name
+           1  ggml_backend_cpu_reg
+
+  lookup 0000f050 time 00000000 fwd 00000000 name 0000f1b2 addr 0000a2a0
+
+    DLL Name: ggml-base.dll
+    Hint/Ord  Name
+          28  ggml_abort
+         356  ggml_log_internal
+         125  ggml_backend_reg_dev_get
+         124  ggml_backend_reg_dev_count
+         127  ggml_backend_reg_name
+          88  ggml_backend_dev_init
+          82  ggml_backend_dev_backend_reg
+          94  ggml_backend_dev_type
+          90  ggml_backend_dev_name
+
+  lookup 0000edb0 time 00000000 fwd 00000000 name 0000f216 addr 0000a000
+
+    DLL Name: KERNEL32.dll
+    Hint/Ord  Name
+         922  InitializeSListHead
+         322  DisableThreadLibraryCalls
+         794  GetSystemTimeAsFileTime
+         582  GetCurrentThreadId
+         578  GetCurrentProcessId
+        1153  QueryPerformanceCounter
+         944  IsDebuggerPresent
+         952  IsProcessorFeaturePresent
+        1496  TerminateProcess
+         577  GetCurrentProcess
+        1464  SetUnhandledExceptionFilter
+        1371  SetErrorMode
+         733  GetProcAddress
+        1015  LoadLibraryW
+         468  FreeLibrary
+         673  GetModuleFileNameW
+           0  AcquireSRWLockExclusive
+        1258  ReleaseSRWLockExclusive
+        1612  WideCharToMultiByte
+        1059  MultiByteToWideChar
+         627  GetFileInformationByHandleEx
+         653  GetLastError
+         157  CloseHandle
+          37  AreFileApisANSI
+         621  GetFileAttributesExW
+         436  FindNextFileW
+         419  FindFirstFileExW
+         424  FindFirstFileW
+        1531  UnhandledExceptionFilter
+        1304  RtlVirtualUnwind
+         413  FindClose
+        1297  RtlLookupFunctionEntry
+         230  CreateFileW
+         570  GetCurrentDirectoryW
+         656  GetLocaleInfoEx
+        1581  WakeAllConditionVariable
+         463  FormatMessageA
+        1026  LocalFree
+        1482  SleepConditionVariableSRW
+        1289  RtlCaptureContext
+
+  lookup 0000eef8 time 00000000 fwd 00000000 name 0000f2a6 addr 0000a148
+
+    DLL Name: MSVCP140.dll
+    Hint/Ord  Name
+         654  ?_Xlength_error@std@@YAXPEBD@Z
+         655  ?_Xout_of_range@std@@YAXPEBD@Z
+         627  ?_Syserror_map@std@@YAPEBDH@Z
+         645  ?_Winerror_map@std@@YAHH@Z
+
+  lookup 0000ef20 time 00000000 fwd 00000000 name 0000f384 addr 0000a170
+
+    DLL Name: VCRUNTIME140.dll
+    Hint/Ord  Name
+          33  __std_exception_copy
+          34  __std_exception_destroy
+           1  _CxxThrowException
+          60  memcpy
+          35  __std_terminate
+          61  memmove
+          62  memset
+          59  memcmp
+           8  __C_specific_handler
+          37  __std_type_info_destroy_list
+
+  lookup 0000ef78 time 00000000 fwd 00000000 name 0000f396 addr 0000a1c8
+
+    DLL Name: VCRUNTIME140_1.dll
+    Hint/Ord  Name
+           0  __CxxFrameHandler4
+
+  lookup 0000efc8 time 00000000 fwd 00000000 name 0000f4f0 addr 0000a218
+
+    DLL Name: api-ms-win-crt-runtime-l1-1-0.dll
+    Hint/Ord  Name
+          51  _initialize_narrow_environment
+          58  _invoke_watson
+          52  _initialize_onexit_table
+          24  _configure_narrow_argv
+          84  abort
+          60  _register_onexit_function
+          55  _initterm_e
+          54  _initterm
+          22  _cexit
+          30  _crt_atexit
+          34  _execute_onexit_table
+          63  _seh_filter_dll
+
+  lookup 0000ef98 time 00000000 fwd 00000000 name 0000f512 addr 0000a1e8
+
+    DLL Name: api-ms-win-crt-heap-l1-1-0.dll
+    Hint/Ord  Name
+           8  _callnewh
+          24  free
+          25  malloc
+
+  lookup 0000f030 time 00000000 fwd 00000000 name 0000f532 addr 0000a280
+
+    DLL Name: api-ms-win-crt-string-l1-1-0.dll
+    Hint/Ord  Name
+         139  strlen
+         151  tolower
+         163  wcslen
+
+  lookup 0000ef88 time 00000000 fwd 00000000 name 0000f554 addr 0000a1d8
+
+    DLL Name: api-ms-win-crt-environment-l1-1-0.dll
+    Hint/Ord  Name
+          16  getenv
+
+  lookup 0000efb8 time 00000000 fwd 00000000 name 0000f57a addr 0000a208
+
+    DLL Name: api-ms-win-crt-locale-l1-1-0.dll
+    Hint/Ord  Name
+           0  ___lc_codepage_func
+
+Export Table:
+ DLL name: ggml.dll
+ Ordinal base: 1
+ Ordinal      RVA  Name
+       1   0x65d0  ggml_backend_dev_by_name
+       2   0x66f0  ggml_backend_dev_by_type
+       3   0x67b0  ggml_backend_dev_count
+       4   0x67d0  ggml_backend_dev_get
+       5   0x6830  ggml_backend_device_register
+       6   0x6890  ggml_backend_init_best
+       7   0x68e0  ggml_backend_init_by_name
+       8   0x6910  ggml_backend_init_by_type
+       9   0x6940  ggml_backend_load
+      10   0x69e0  ggml_backend_load_all
+      11   0x69f0  ggml_backend_load_all_from_path
+      12   0x6b20  ggml_backend_reg_by_name
+      13   0x6c30  ggml_backend_reg_count
+      14   0x6c50  ggml_backend_reg_get
+      15   0x6cb0  ggml_backend_register
+      16   0x6ce0  ggml_backend_unload

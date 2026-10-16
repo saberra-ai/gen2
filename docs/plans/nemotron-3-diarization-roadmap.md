@@ -630,6 +630,16 @@ license/source provenance, relative ELF resolution, archive metadata, and a
 clean offline container plus actual chat/GGML coexistence. This is a plan,
 not a new portable-package or clean-machine result.
 
+A guarded [Windows private-DLL build](../research/nemotron-windows-private-names.md)
+now relinks the five owned DLLs through an external CMake naming hook, updates
+probe/entry paths and rejects residual generic ordinary/delay/forwarded native
+imports. A bounded PE inspector and malformed-input/naming regressions pass;
+all fifteen previously delivered PE images independently agree with LLVM's
+ordinary-import inspection. The workflow also captures actual redist byte
+origin, versions/signers and vcpkg metadata without claiming distribution
+qualification. New private Windows execution is pending; this source work does
+not close offline packaging, licensing or coexistence gates.
+
 The actual Linux SDK archive job now passes native/public parity and all seven
 lifecycle tests, then preserves all 82 filesystem records, including seven
 aliases and two executables. Delivered tar bytes and every header mode match;

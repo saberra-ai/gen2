@@ -1,0 +1,261 @@
+
+/Users/victor/.cache/gen2-nemotron3-n0/platform-ci/windows-38876058390/nemo-sdk/bin/msvcp140_2.dll:	file format coff-x86-64
+Characteristics 0x2022
+	executable
+	large address aware
+	DLL
+
+Time/Date               Wed Jan 13 17:37:29 2066
+Magic                   020b	(PE32+)
+MajorLinkerVersion      14
+MinorLinkerVersion      44
+SizeOfCode              0000000000030400
+SizeOfInitializedData   000000000000f400
+SizeOfUninitializedData 0000000000000000
+AddressOfEntryPoint     00000000000301d0
+BaseOfCode              0000000000001000
+ImageBase               0000000180000000
+SectionAlignment        00001000
+FileAlignment           00000200
+MajorOSystemVersion     6
+MinorOSystemVersion     0
+MajorImageVersion       10
+MinorImageVersion       0
+MajorSubsystemVersion   6
+MinorSubsystemVersion   0
+Win32Version            00000000
+SizeOfImage             00044000
+SizeOfHeaders           00000400
+CheckSum                000472f5
+Subsystem               00000003	(Windows CUI)
+DllCharacteristics      00004160
+					HIGH_ENTROPY_VA
+					DYNAMIC_BASE
+					NX_COMPAT
+					GUARD_CF
+SizeOfStackReserve      0000000000100000
+SizeOfStackCommit       0000000000001000
+SizeOfHeapReserve       0000000000100000
+SizeOfHeapCommit        0000000000001000
+LoaderFlags             00000000
+NumberOfRvaAndSizes     00000010
+
+The Data Directory
+Entry 0 000000000003b5b0 000005a8 Export Directory [.edata (or where ever we found it)]
+Entry 1 000000000003bb58 000000dc Import Directory [parts of .idata]
+Entry 2 0000000000042000 000003c8 Resource Directory [.rsrc]
+Entry 3 0000000000040000 000014dc Exception Directory [.pdata]
+Entry 4 000000000003f600 00005088 Security Directory
+Entry 5 0000000000043000 00000178 Base Relocation Directory [.reloc]
+Entry 6 00000000000387f0 00000070 Debug Directory
+Entry 7 0000000000000000 00000000 Description Directory
+Entry 8 0000000000000000 00000000 Special Directory
+Entry 9 0000000000000000 00000000 Thread Storage Directory [.tls]
+Entry a 00000000000386b0 00000140 Load Configuration Directory
+Entry b 0000000000000000 00000000 Bound Import Directory
+Entry c 0000000000032000 00000380 Import Address Table Directory
+Entry d 0000000000000000 00000000 Delay Import Directory
+Entry e 0000000000000000 00000000 CLR Runtime Header
+Entry f 0000000000000000 00000000 Reserved
+
+The Import Tables:
+  lookup 0003bcb8 time 00000000 fwd 00000000 name 0003c4fa addr 00032080
+
+    DLL Name: MSVCP140.dll
+    Hint/Ord  Name
+         438  ?_Getcat@?$ctype@D@std@@SA_KPEAPEBVfacet@locale@2@PEBV42@@Z
+         685  ?clear@ios_base@std@@QEAAXH_N@Z
+        1164  ?rdstate@ios_base@std@@QEBAHXZ
+         965  ?good@ios_base@std@@QEBA_NXZ
+         871  ?flags@ios_base@std@@QEBAHXZ
+        1099  ?precision@ios_base@std@@QEBA_JXZ
+        1342  ?width@ios_base@std@@QEBA_JXZ
+        1341  ?width@ios_base@std@@QEAA_J_J@Z
+         963  ?getloc@ios_base@std@@QEBA?AVlocale@2@XZ
+        1336  ?widen@?$ctype@D@std@@QEBAPEBDPEBD0PEAD@Z
+         403  ?_Addstd@ios_base@std@@SAXPEAV12@@Z
+         119  ??0ios_base@std@@IEAA@XZ
+         526  ?_Init@ios_base@std@@IEAAXXZ
+        1220  ?setprecision@std@@YA?AU?$_Smanip@_J@1@_J@Z
+         498  ?_Incref@facet@locale@std@@UEAAXXZ
+         414  ?_Decref@facet@locale@std@@UEAAPEAV_Facet_base@3@XZ
+         494  ?_Id_cnt@id@locale@std@@0HA
+         975  ?id@?$ctype@D@std@@2V0locale@2@A
+         999  ?id@?$numpunct@D@std@@2V0locale@2@A
+        1335  ?widen@?$ctype@D@std@@QEBADD@Z
+         469  ?_Getgloballocale@locale@std@@CAPEAV_Locimp@12@XZ
+         527  ?_Init@locale@std@@CAPEAV_Locimp@12@_N@Z
+         171  ??1facet@locale@std@@MEAA@XZ
+         117  ??0facet@locale@std@@IEAA@_K@Z
+         671  ?c_str@?$_Yarn@D@std@@QEBAPEBDXZ
+         481  ?_Gettrue@_Locinfo@std@@QEBAPEBDXZ
+         459  ?_Getfalse@_Locinfo@std@@QEBAPEBDXZ
+         456  ?_Getcvt@_Locinfo@std@@QEBA?AU_Cvtvec@@XZ
+         164  ??1_Locinfo@std@@QEAA@XZ
+         108  ??0_Locinfo@std@@QEAA@PEBD@Z
+         655  ?_Xout_of_range@std@@YAXPEBD@Z
+         654  ?_Xlength_error@std@@YAXPEBD@Z
+         651  ?_Xbad_alloc@std@@YAXXZ
+        1311  ?uncaught_exceptions@std@@YAHXZ
+         165  ??1_Lockit@std@@QEAA@XZ
+         172  ??1ios_base@std@@UEAA@XZ
+         109  ??0_Lockit@std@@QEAA@H@Z
+
+  lookup 0003bde8 time 00000000 fwd 00000000 name 0003c5d8 addr 000321b0
+
+    DLL Name: VCRUNTIME140.dll
+    Hint/Ord  Name
+          60  memcpy
+          34  __std_exception_destroy
+          61  memmove
+          59  memcmp
+          35  __std_terminate
+          62  memset
+           8  __C_specific_handler
+          37  __std_type_info_destroy_list
+           1  _CxxThrowException
+          33  __std_exception_copy
+
+  lookup 0003be40 time 00000000 fwd 00000000 name 0003c5ea addr 00032208
+
+    DLL Name: VCRUNTIME140_1.dll
+    Hint/Ord  Name
+           0  __CxxFrameHandler4
+
+  lookup 0003bf28 time 00000000 fwd 00000000 name 0003c7e6 addr 000322f0
+
+    DLL Name: api-ms-win-crt-runtime-l1-1-0.dll
+    Hint/Ord  Name
+          30  _crt_atexit
+          34  _execute_onexit_table
+          60  _register_onexit_function
+          52  _initialize_onexit_table
+          51  _initialize_narrow_environment
+          24  _configure_narrow_argv
+          63  _seh_filter_dll
+          58  _invoke_watson
+          55  _initterm_e
+          22  _cexit
+          54  _initterm
+          33  _errno
+
+  lookup 0003be88 time 00000000 fwd 00000000 name 0003c808 addr 00032250
+
+    DLL Name: api-ms-win-crt-math-l1-1-0.dll
+    Hint/Ord  Name
+         274  sin
+         280  tan
+         254  pow
+         218  log
+         201  fmod
+         279  sqrtf
+         278  sqrt
+          16  _dclass
+          29  _fdclass
+          54  _ldclass
+          84  atan
+         124  ceil
+         144  cos
+         208  ldexp
+         203  frexp
+         146  cosh
+         190  floor
+         178  exp
+         276  sinh
+
+  lookup 0003be50 time 00000000 fwd 00000000 name 0003c828 addr 00032218
+
+    DLL Name: api-ms-win-crt-heap-l1-1-0.dll
+    Hint/Ord  Name
+           8  _callnewh
+          25  malloc
+          24  free
+          23  calloc
+
+  lookup 0003bfa0 time 00000000 fwd 00000000 name 0003c848 addr 00032368
+
+    DLL Name: api-ms-win-crt-string-l1-1-0.dll
+    Hint/Ord  Name
+         138  strcspn
+         139  strlen
+
+  lookup 0003bf90 time 00000000 fwd 00000000 name 0003c86a addr 00032358
+
+    DLL Name: api-ms-win-crt-stdio-l1-1-0.dll
+    Hint/Ord  Name
+          15  __stdio_common_vsprintf_s
+
+  lookup 0003be78 time 00000000 fwd 00000000 name 0003c88a addr 00032240
+
+    DLL Name: api-ms-win-crt-locale-l1-1-0.dll
+    Hint/Ord  Name
+          18  localeconv
+
+  lookup 0003bc38 time 00000000 fwd 00000000 name 0003ca12 addr 00032000
+
+    DLL Name: KERNEL32.dll
+    Hint/Ord  Name
+         308  DisableThreadLibraryCalls
+        1269  RtlCaptureContext
+        1277  RtlLookupFunctionEntry
+        1284  RtlVirtualUnwind
+        1510  UnhandledExceptionFilter
+        1444  SetUnhandledExceptionFilter
+         562  GetCurrentProcess
+        1476  TerminateProcess
+         936  IsProcessorFeaturePresent
+        1136  QueryPerformanceCounter
+         563  GetCurrentProcessId
+         567  GetCurrentThreadId
+         778  GetSystemTimeAsFileTime
+         906  InitializeSListHead
+         928  IsDebuggerPresent
+
+Export Table:
+ DLL name: MSVCP140_2.dll
+ Ordinal base: 1
+ Ordinal      RVA  Name
+       1  0x2e9f0  __std_smf_assoc_laguerre
+       2  0x2ea50  __std_smf_assoc_laguerref
+       3  0x2eab0  __std_smf_assoc_legendre
+       4  0x2eb10  __std_smf_assoc_legendref
+       5  0x2eb70  __std_smf_beta
+       6  0x2eb90  __std_smf_betaf
+       7  0x2ebb0  __std_smf_comp_ellint_1
+       8  0x2ebd0  __std_smf_comp_ellint_1f
+       9  0x2ebf0  __std_smf_comp_ellint_2
+      10  0x2ec30  __std_smf_comp_ellint_2f
+      11  0x2ec70  __std_smf_comp_ellint_3
+      12  0x2ecd0  __std_smf_comp_ellint_3f
+      13  0x2ed30  __std_smf_cyl_bessel_i
+      14  0x2ed90  __std_smf_cyl_bessel_if
+      15  0x2edf0  __std_smf_cyl_bessel_j
+      16  0x2ee50  __std_smf_cyl_bessel_jf
+      17  0x2eeb0  __std_smf_cyl_bessel_k
+      18  0x2ef10  __std_smf_cyl_bessel_kf
+      19  0x2ef70  __std_smf_cyl_neumann
+      20  0x2efd0  __std_smf_cyl_neumannf
+      21  0x2f030  __std_smf_ellint_1
+      22  0x2f090  __std_smf_ellint_1f
+      23  0x2f0f0  __std_smf_ellint_2
+      24  0x2f150  __std_smf_ellint_2f
+      25  0x2f1b0  __std_smf_ellint_3
+      26  0x2f240  __std_smf_ellint_3f
+      27  0x2f2d0  __std_smf_expint
+      28  0x2f310  __std_smf_expintf
+      29  0x2f350  __std_smf_hermite
+      30  0x2f3a0  __std_smf_hermitef
+      31  0x2f3f0  __std_smf_hypot3
+      32  0x2f4a0  __std_smf_hypot3f
+      33  0x2f550  __std_smf_laguerre
+      34  0x2f5a0  __std_smf_laguerref
+      35  0x2f5f0  __std_smf_legendre
+      36  0x2f640  __std_smf_legendref
+      37  0x2f690  __std_smf_riemann_zeta
+      38  0x2f6d0  __std_smf_riemann_zetaf
+      39  0x2f710  __std_smf_sph_bessel
+      40  0x2f760  __std_smf_sph_besself
+      41  0x2f7b0  __std_smf_sph_legendre
+      42  0x2f810  __std_smf_sph_legendref
+      43  0x2f870  __std_smf_sph_neumann
+      44  0x2f8c0  __std_smf_sph_neumannf

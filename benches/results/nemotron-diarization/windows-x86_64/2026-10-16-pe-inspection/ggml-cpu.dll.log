@@ -1,0 +1,346 @@
+
+/Users/victor/.cache/gen2-nemotron3-n0/platform-ci/windows-38876058390/nemo-sdk/bin/ggml-cpu.dll:	file format coff-x86-64
+Characteristics 0x2022
+	executable
+	large address aware
+	DLL
+
+Time/Date               Fri Oct 16 04:50:21 2026
+Magic                   020b	(PE32+)
+MajorLinkerVersion      14
+MinorLinkerVersion      44
+SizeOfCode              00000000000b4e00
+SizeOfInitializedData   00000000000b7600
+SizeOfUninitializedData 0000000000000000
+AddressOfEntryPoint     00000000000b519c
+BaseOfCode              0000000000001000
+ImageBase               0000000180000000
+SectionAlignment        00001000
+FileAlignment           00000200
+MajorOSystemVersion     6
+MinorOSystemVersion     0
+MajorImageVersion       0
+MinorImageVersion       25
+MajorSubsystemVersion   6
+MinorSubsystemVersion   0
+Win32Version            00000000
+SizeOfImage             00171000
+SizeOfHeaders           00000400
+CheckSum                00000000
+Subsystem               00000002	(Windows GUI)
+DllCharacteristics      00000160
+					HIGH_ENTROPY_VA
+					DYNAMIC_BASE
+					NX_COMPAT
+SizeOfStackReserve      0000000000100000
+SizeOfStackCommit       0000000000001000
+SizeOfHeapReserve       0000000000100000
+SizeOfHeapCommit        0000000000001000
+LoaderFlags             00000000
+NumberOfRvaAndSizes     00000010
+
+The Data Directory
+Entry 0 00000000000e0660 000007bc Export Directory [.edata (or where ever we found it)]
+Entry 1 00000000000e0e1c 00000118 Import Directory [parts of .idata]
+Entry 2 000000000016f000 000001e0 Resource Directory [.rsrc]
+Entry 3 0000000000169000 000053f4 Exception Directory [.pdata]
+Entry 4 0000000000000000 00000000 Security Directory
+Entry 5 0000000000170000 0000024c Base Relocation Directory [.reloc]
+Entry 6 00000000000d6df0 0000001c Debug Directory
+Entry 7 0000000000000000 00000000 Description Directory
+Entry 8 0000000000000000 00000000 Special Directory
+Entry 9 00000000000d6e80 00000028 Thread Storage Directory [.tls]
+Entry a 00000000000d6cb0 00000140 Load Configuration Directory
+Entry b 0000000000000000 00000000 Bound Import Directory
+Entry c 00000000000b6000 000004e8 Import Address Table Directory
+Entry d 0000000000000000 00000000 Delay Import Directory
+Entry e 0000000000000000 00000000 CLR Runtime Header
+Entry f 0000000000000000 00000000 Reserved
+TLS directory:
+  StartAddressOfRawData: 0x000001800d80d0
+  EndAddressOfRawData: 0x000001800d80d8
+  AddressOfIndex: 0x00000180127b28
+  AddressOfCallBacks: 0x000001800b6548
+  SizeOfZeroFill: 0
+  Characteristics: 3145728
+  Alignment: 4
+
+
+The Import Tables:
+  lookup 000e1218 time 00000000 fwd 00000000 name 000e19ac addr 000b62e0
+
+    DLL Name: ggml-base.dll
+    Hint/Ord  Name
+         671  quantize_row_mxfp4_ref
+         680  quantize_row_q5_0_ref
+         681  quantize_row_q5_1_ref
+         672  quantize_row_nvfp4_ref
+         675  quantize_row_q2_K_ref
+         676  quantize_row_q3_K_ref
+         679  quantize_row_q4_K_ref
+         682  quantize_row_q5_K_ref
+         683  quantize_row_q6_K_ref
+         686  quantize_row_q8_K_ref
+         687  quantize_row_tq1_0_ref
+         688  quantize_row_tq2_0_ref
+         669  quantize_row_iq4_nl_ref
+         564  ggml_unravel_index
+         299  ggml_get_unary_op
+         287  ggml_get_glu_op
+         546  ggml_threadpool_params_default
+         356  ggml_log_internal
+          42  ggml_aligned_malloc
+          41  ggml_aligned_free
+         206  ggml_critical_section_start
+         205  ggml_critical_section_end
+         321  ggml_guid_matches
+          76  ggml_backend_buft_is_host
+         125  ggml_backend_reg_dev_get
+          80  ggml_backend_cpu_buffer_from_ptr
+          81  ggml_backend_cpu_buffer_type
+         372  ggml_nbytes
+         558  ggml_type_name
+         371  ggml_n_dims
+          71  ggml_backend_buft_alloc_buffer
+         673  quantize_row_q1_0_ref
+         674  quantize_row_q2_0_ref
+         677  quantize_row_q4_0_ref
+         678  quantize_row_q4_1_ref
+         551  ggml_time_us
+         298  ggml_get_type_traits
+         479  ggml_rope_yarn_corr_dims
+         285  ggml_get_data_f32
+         334  ggml_is_contiguous_channels
+         344  ggml_is_scalar
+         228  ggml_element_size
+         248  ggml_fp16_to_fp32_row
+         247  ggml_fp16_to_fp32
+         332  ggml_is_contiguous_1
+         171  ggml_can_repeat
+         335  ggml_is_contiguous_rows
+         651  quantize_iq4_xs
+         377  ggml_new_buffer
+         381  ggml_new_tensor_1d
+         293  ggml_get_no_alloc
+         254  ggml_free
+         327  ggml_init
+          44  ggml_are_same_shape
+         330  ggml_is_contiguous
+         340  ggml_is_empty
+         343  ggml_is_quantized
+         391  ggml_op_name
+         482  ggml_row_size
+         559  ggml_type_size
+         165  ggml_blck_size
+         387  ggml_nrows
+         376  ggml_nelements
+          28  ggml_abort
+
+  lookup 000e0f58 time 00000000 fwd 00000000 name 000e1b3c addr 000b6020
+
+    DLL Name: KERNEL32.dll
+    Hint/Ord  Name
+         578  GetCurrentProcessId
+        1153  QueryPerformanceCounter
+         944  IsDebuggerPresent
+         952  IsProcessorFeaturePresent
+         794  GetSystemTimeAsFileTime
+         577  GetCurrentProcess
+        1464  SetUnhandledExceptionFilter
+        1531  UnhandledExceptionFilter
+        1304  RtlVirtualUnwind
+        1297  RtlLookupFunctionEntry
+        1289  RtlCaptureContext
+         582  GetCurrentThreadId
+         322  DisableThreadLibraryCalls
+         922  InitializeSListHead
+        1496  TerminateProcess
+         653  GetLastError
+         881  GlobalMemoryStatusEx
+        1436  SetThreadAffinityMask
+        1444  SetThreadInformation
+        1447  SetThreadPriority
+         581  GetCurrentThread
+         271  CreateThread
+        1573  WaitForSingleObject
+        1482  SleepConditionVariableSRW
+        1581  WakeAllConditionVariable
+         914  InitializeConditionVariable
+           1  AcquireSRWLockShared
+           0  AcquireSRWLockExclusive
+        1259  ReleaseSRWLockShared
+        1258  ReleaseSRWLockExclusive
+         923  InitializeSRWLock
+         157  CloseHandle
+
+  lookup 000e0f38 time 00000000 fwd 00000000 name 000e1b7c addr 000b6000
+
+    DLL Name: ADVAPI32.dll
+    Hint/Ord  Name
+         645  RegOpenKeyExA
+         658  RegQueryValueExA
+         597  RegCloseKey
+
+  lookup 000e1060 time 00000000 fwd 00000000 name 000e1bac addr 000b6128
+
+    DLL Name: MSVCP140.dll
+    Hint/Ord  Name
+         654  ?_Xlength_error@std@@YAXPEBD@Z
+
+  lookup 000e1070 time 00000000 fwd 00000000 name 000e1c7a addr 000b6138
+
+    DLL Name: VCRUNTIME140.dll
+    Hint/Ord  Name
+           8  __C_specific_handler
+          54  _purecall
+          61  memmove
+           1  _CxxThrowException
+          34  __std_exception_destroy
+          33  __std_exception_copy
+          62  memset
+          60  memcpy
+          37  __std_type_info_destroy_list
+
+  lookup 000e10c0 time 00000000 fwd 00000000 name 000e1c8c addr 000b6188
+
+    DLL Name: VCRUNTIME140_1.dll
+    Hint/Ord  Name
+           0  __CxxFrameHandler4
+
+  lookup 000e11f0 time 00000000 fwd 00000000 name 000e1e66 addr 000b62b8
+
+    DLL Name: api-ms-win-crt-stdio-l1-1-0.dll
+    Hint/Ord  Name
+           3  __stdio_common_vfprintf
+           0  __acrt_iob_func
+
+  lookup 000e1110 time 00000000 fwd 00000000 name 000e1e86 addr 000b61d8
+
+    DLL Name: api-ms-win-crt-math-l1-1-0.dll
+    Hint/Ord  Name
+         288  truncf
+         208  ldexp
+         182  expf
+         283  tanhf
+         266  roundf
+         184  expm1f
+         196  fmaxf
+         199  fminf
+         176  erff
+         145  cosf
+         255  powf
+         224  log2
+         230  logf
+         279  sqrtf
+         275  sinf
+
+  lookup 000e10d0 time 00000000 fwd 00000000 name 000e1ea6 addr 000b6198
+
+    DLL Name: api-ms-win-crt-convert-l1-1-0.dll
+    Hint/Ord  Name
+          80  atoi
+
+  lookup 000e10e0 time 00000000 fwd 00000000 name 000e1ec8 addr 000b61a8
+
+    DLL Name: api-ms-win-crt-environment-l1-1-0.dll
+    Hint/Ord  Name
+          16  getenv
+
+  lookup 000e1190 time 00000000 fwd 00000000 name 000e1eee addr 000b6258
+
+    DLL Name: api-ms-win-crt-runtime-l1-1-0.dll
+    Hint/Ord  Name
+          22  _cexit
+          63  _seh_filter_dll
+          24  _configure_narrow_argv
+          51  _initialize_narrow_environment
+          52  _initialize_onexit_table
+          54  _initterm
+          55  _initterm_e
+          30  _crt_atexit
+          58  _invoke_watson
+          60  _register_onexit_function
+          34  _execute_onexit_table
+
+  lookup 000e1208 time 00000000 fwd 00000000 name 000e1f10 addr 000b62d0
+
+    DLL Name: api-ms-win-crt-string-l1-1-0.dll
+    Hint/Ord  Name
+         134  strcmp
+
+  lookup 000e10f0 time 00000000 fwd 00000000 name 000e1f32 addr 000b61b8
+
+    DLL Name: api-ms-win-crt-heap-l1-1-0.dll
+    Hint/Ord  Name
+          25  malloc
+           8  _callnewh
+          24  free
+
+Export Table:
+ DLL name: ggml-cpu.dll
+ Ordinal base: 1
+ Ordinal      RVA  Name
+       1   0x9720  ggml_backend_cpu_init
+       2   0x9810  ggml_backend_cpu_reg
+       3   0x9830  ggml_backend_cpu_set_abort_callback
+       4   0x98b0  ggml_backend_cpu_set_n_threads
+       5   0x9910  ggml_backend_cpu_set_threadpool
+       6   0x9990  ggml_backend_cpu_set_use_ref
+       7   0x99f0  ggml_backend_is_cpu
+       8   0x44e0  ggml_cpu_bf16_to_fp32
+       9   0x45c0  ggml_cpu_fp16_to_fp32
+      10   0x1220  ggml_cpu_fp32_to_bf16
+      11   0x1190  ggml_cpu_fp32_to_fp16
+      12   0x1000  ggml_cpu_fp32_to_fp32
+      13   0x1020  ggml_cpu_fp32_to_i32
+      14   0x46f0  ggml_cpu_get_rvv_vlen
+      15   0x46f0  ggml_cpu_get_sve_cnt
+      16   0x46f0  ggml_cpu_has_amx_int8
+      17   0x46f0  ggml_cpu_has_arm_fma
+      18   0x4700  ggml_cpu_has_avx
+      19   0x4700  ggml_cpu_has_avx2
+      20   0x46f0  ggml_cpu_has_avx512
+      21   0x46f0  ggml_cpu_has_avx512_bf16
+      22   0x46f0  ggml_cpu_has_avx512_vbmi
+      23   0x46f0  ggml_cpu_has_avx512_vnni
+      24   0x46f0  ggml_cpu_has_avx_vnni
+      25   0x4700  ggml_cpu_has_bmi2
+      26   0x46f0  ggml_cpu_has_dotprod
+      27   0x4700  ggml_cpu_has_f16c
+      28   0x4700  ggml_cpu_has_fma
+      29   0x46f0  ggml_cpu_has_fp16_va
+      30   0x4700  ggml_cpu_has_llamafile
+      31   0x46f0  ggml_cpu_has_matmul_int8
+      32   0x46f0  ggml_cpu_has_neon
+      33   0x46f0  ggml_cpu_has_riscv_v
+      34   0x46f0  ggml_cpu_has_sme
+      35   0x46f0  ggml_cpu_has_sme2
+      36   0x4700  ggml_cpu_has_sse3
+      37   0x4700  ggml_cpu_has_ssse3
+      38   0x46f0  ggml_cpu_has_sve
+      39   0x46f0  ggml_cpu_has_vsx
+      40   0x46f0  ggml_cpu_has_vxe
+      41   0x46f0  ggml_cpu_has_wasm_simd
+      42   0x4710  ggml_cpu_init
+      43   0x4a40  ggml_get_f32_1d
+      44   0x4bd0  ggml_get_f32_nd
+      45   0x4ce0  ggml_get_i32_1d
+      46   0x4f60  ggml_get_i32_nd
+      47   0x5330  ggml_get_type_traits_cpu
+      48   0x5350  ggml_graph_compute
+      49   0x5a70  ggml_graph_compute_with_ctx
+      50   0x5af0  ggml_graph_plan
+      51   0x6300  ggml_is_numa
+      52   0x6310  ggml_new_f32
+      53   0x6380  ggml_new_i32
+      54   0x63f0  ggml_numa_init
+      55   0x6420  ggml_set_f32
+      56   0x6630  ggml_set_f32_1d
+      57   0x67e0  ggml_set_f32_nd
+      58   0x6900  ggml_set_i32
+      59   0x6b30  ggml_set_i32_1d
+      60   0x6dc0  ggml_set_i32_nd
+      61   0x7350  ggml_threadpool_free
+      62   0x7460  ggml_threadpool_new
+      63   0x7690  ggml_threadpool_pause
+      64   0x76d0  ggml_threadpool_resume

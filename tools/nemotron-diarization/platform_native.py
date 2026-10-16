@@ -17,6 +17,7 @@ import sys
 from artifacts import acquire, digest, matches
 from sdk_archive import write_archive
 from windows_compat import apply_windows_lf_compat
+from windows_naming import prepare_private_names, verify_private_outputs
 
 
 def capture(command, **kwargs):
@@ -86,7 +87,7 @@ def pinned_git_environment(environment):
 
 
 class Qualification:
-    def __init__(self, source, prefix, output, jobs):
+    def __init__(self, source, prefix, output, jobs, private_windows_names=False):
         self.repo = Path(__file__).resolve().parents[2]
         self.tools = Path(__file__).resolve().parent
         self.source, self.prefix, self.output = source.resolve(), prefix.resolve(), output.resolve()
@@ -96,6 +97,8 @@ class Qualification:
         self.environment = pinned_git_environment(environment)
         self.commands = []
         self.compatibility = None
+        self.private_windows_names = private_windows_names
+        self.naming = None
         self.archive = None
         self.lock_path = self.tools / 'runtime.lock.json'
         self.lock = json.loads(self.lock_path.read_text())
@@ -136,6 +139,9 @@ class Qualification:
                   f'-DCMAKE_INSTALL_PREFIX={self.prefix}']
         if self.windows:
             flags += msvc_compiler_definitions(self.environment)
+            if self.private_windows_names:
+                hook, self.naming = prepare_private_names(self.source, self.tools, self.output)
+                flags.append(f'-DCMAKE_PROJECT_TOP_LEVEL_INCLUDES:FILEPATH={hook}')
             self.compatibility = apply_windows_lf_compat(self.source, self.output)
             self.run('cmake-version', ['cmake', '--version'])
             build = self.source / 'build/gen2-cpu-diar'
@@ -149,6 +155,9 @@ class Qualification:
                 cache = build / 'CMakeCache.txt'
                 if cache.is_file():
                     shutil.copy2(cache, self.output / 'cmake-cache.log')
+                paths = build / 'gen2-private-paths-Release.txt'
+                if paths.is_file():
+                    shutil.copy2(paths, self.output / 'windows-private-paths.log')
                 # Preserve the actual patch and exported context when upstream
                 # configuration fails, rather than guessing from Git globals.
                 staging = build / '_deps/llama.cpp.staging'
@@ -170,7 +179,8 @@ class Qualification:
             self.run('sdk-build', ['cmake', '--build', str(build), '--parallel', self.jobs])
         self.run('sdk-install', ['cmake', '--install', str(build), '--config', 'Release'])
         self.build_directory = build
-        self.library = self.prefix / ('bin/nemo_speech_asr_c.dll' if self.windows else 'lib/libnemo_speech_asr_c.so')
+        stem = 'gen2_nemo_windows_nemo_speech_asr_c' if self.private_windows_names else 'nemo_speech_asr_c'
+        self.library = self.prefix / (f'bin/{stem}.dll' if self.windows else 'lib/libnemo_speech_asr_c.so')
         if not self.library.is_file():
             raise ValueError('installed C ABI library missing')
         self.probe = self.prefix / ('bin/gen2_native_stream_probe.exe' if self.windows else 'bin/gen2_native_stream_probe')
@@ -179,12 +189,21 @@ class Qualification:
         includes = [self.prefix / 'include', self.source / 'examples', hashing]
         if self.windows:
             command = msvc_probe_command(self.environment, sources, includes,
-                                         self.prefix / 'lib/nemo_speech_asr_c.lib', self.probe)
+                                         self.prefix / f'lib/{stem}.lib', self.probe)
         else:
             command = ['c++', '-std=c++17', '-O2', '-Wall', '-Wextra', '-Werror', '-x', 'c++', *sources,
                        *['-I' + str(p) for p in includes], '-L' + str(self.prefix / 'lib'), '-lnemo_speech_asr_c',
                        '-Wl,-rpath,' + str(self.prefix / 'lib'), '-o', self.probe]
         self.run('native-probe-build', command, self.output)
+        if self.private_windows_names:
+            if digest(self.tools / 'windows_private_dlls.cmake') != self.naming['hook_sha256']:
+                raise ValueError('Windows naming hook changed during build')
+            self.naming.update(verify_private_outputs(self.prefix, self.output))
+        if self.windows:
+            self.run('windows-provenance', ['pwsh', '-NoProfile', '-NonInteractive', '-File',
+                     self.tools / 'windows_provenance.ps1', '-SdkRoot', self.prefix,
+                     '-CMakeCache', build / 'CMakeCache.txt', '-Compiler', msvc_tool(self.environment, 'cl.exe'),
+                     '-Output', self.output])
         self.run('gen2-build', ['cargo', 'build', '--locked', '--release', '--no-default-features',
                               '--features', 'backend-diar-nemo', '--example', 'nemotron_stream', '--test', 'diarization_native'])
         self.run('loader-dependencies', self.dependency_command(self.library))
@@ -260,7 +279,9 @@ class Qualification:
                 'runtime_revision': self.lock['runtime']['revision'], 'llama_revision': self.lock['runtime']['llama_revision'],
                 'lock_sha256': digest(self.lock_path), 'runner_sha256': digest(Path(__file__)), 'commands': self.commands,
                 'windows_loader_control_sha256': digest(self.tools / 'windows_loader_control.py') if self.windows else None,
+                'windows_provenance_script_sha256': digest(self.tools / 'windows_provenance.ps1') if self.windows else None,
                 'installed_files': files, 'build_compatibility': self.compatibility,
+                'windows_private_names': self.naming,
                 'development_sdk_archive': self.archive,
                 'limits': ['No offline/fresh-machine relocation claim.',
                 'No chat/Bark/Laya coexistence or heldout quality claim.', 'CPU baseline explicitly requires AVX2/FMA/F16C.']}
@@ -272,13 +293,17 @@ def main():
     parser.add_argument('--prefix', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     parser.add_argument('--jobs', type=int, default=2)
+    parser.add_argument('--windows-private-dlls', action='store_true',
+                        help='Relink five Windows native DLLs under guarded private output names.')
     args = parser.parse_args()
     if platform.system() not in ('Linux', 'Windows') or platform.machine().lower() not in ('amd64', 'x86_64'):
         parser.error('this development run requires Linux/Windows x86_64')
     if args.jobs < 1 or args.output.exists() or args.prefix.exists():
         parser.error('positive jobs and new output/SDK directories required')
+    if args.windows_private_dlls and platform.system() != 'Windows':
+        parser.error('private DLL names require Windows')
     args.output.mkdir(parents=True)
-    runner = Qualification(args.source, args.prefix, args.output, args.jobs)
+    runner = Qualification(args.source, args.prefix, args.output, args.jobs, args.windows_private_dlls)
     try:
         runner.verify_source()
         runner.build()
