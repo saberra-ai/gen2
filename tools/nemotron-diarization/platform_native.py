@@ -50,15 +50,25 @@ def powershell_literal(value):
     return "'" + str(value).replace("'", "''") + "'"
 
 
-def msvc_compiler_definitions(environment):
+def msvc_tool(environment, name):
     variables = {name.upper(): value for name, value in environment.items()}
-    compiler = shutil.which('cl.exe', path=variables.get('PATH', ''))
-    if not compiler:
-        raise ValueError('MSVC compiler is unavailable in the active developer environment')
-    compiler = Path(compiler).resolve(strict=True)
+    executable = shutil.which(name, path=variables.get('PATH', ''))
+    if not executable:
+        raise ValueError(f'MSVC compiler environment does not provide {name}')
+    return Path(executable).resolve(strict=True)
+
+
+def msvc_compiler_definitions(environment):
+    compiler = msvc_tool(environment, 'cl.exe')
     # Ninja otherwise prefers an ambient cc/c++ (MinGW on hosted Windows),
     # even after vcvars has provided a valid MSVC include/library environment.
     return [f'-DCMAKE_C_COMPILER={compiler}', f'-DCMAKE_CXX_COMPILER={compiler}']
+
+
+def msvc_probe_command(environment, sources, includes, import_library, output):
+    return [msvc_tool(environment, 'cl.exe'), '/nologo', '/std:c++17', '/O2', '/EHsc', '/TP',
+            *sources, *['/I' + str(path) for path in includes], import_library,
+            '/link', '/OUT:' + str(output)]
 
 
 def pinned_git_environment(environment):
@@ -168,9 +178,8 @@ class Qualification:
         sources = [self.tools / 'native_stream_probe.cpp', hashing / 'sha256/sha256.c']
         includes = [self.prefix / 'include', self.source / 'examples', hashing]
         if self.windows:
-            command = ['cl.exe', '/nologo', '/std:c++17', '/O2', '/EHsc', '/TP', *sources,
-                       *['/I' + str(p) for p in includes], self.prefix / 'lib/nemo_speech_asr_c.lib',
-                       '/link', '/OUT:' + str(self.probe)]
+            command = msvc_probe_command(self.environment, sources, includes,
+                                         self.prefix / 'lib/nemo_speech_asr_c.lib', self.probe)
         else:
             command = ['c++', '-std=c++17', '-O2', '-Wall', '-Wextra', '-Werror', '-x', 'c++', *sources,
                        *['-I' + str(p) for p in includes], '-L' + str(self.prefix / 'lib'), '-lnemo_speech_asr_c',
@@ -183,7 +192,7 @@ class Qualification:
     def dependency_command(self, library):
         if not self.windows:
             return ['ldd', library]
-        return ['dumpbin.exe', '/nologo', '/dependents', library]
+        return [msvc_tool(self.environment, 'dumpbin.exe'), '/nologo', '/dependents', library]
 
     def infer(self):
         assets = self.output / 'assets'

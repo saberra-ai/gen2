@@ -3,10 +3,30 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from platform_native import msvc_compiler_definitions, msvc_environment, pinned_git_environment, powershell_literal
+from platform_native import Qualification, msvc_compiler_definitions, msvc_environment, msvc_probe_command, pinned_git_environment, powershell_literal
 
 
 class PlatformToolTests(unittest.TestCase):
+    def test_standalone_msvc_tools_use_absolute_paths_from_child_environment(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary).resolve()
+            for name in ['cl.exe', 'dumpbin.exe']:
+                (root / name).write_bytes(b'developer tool fixture')
+            environment = {'Path': 'developer PATH'}
+            def locate(name, path):
+                self.assertEqual(path, 'developer PATH')
+                return str(root / name)
+            with patch('platform_native.shutil.which', side_effect=locate):
+                command = msvc_probe_command(environment, ['probe.cpp', 'hash.c'], [root / 'include'], root / 'native.lib', root / 'probe.exe')
+                self.assertEqual(command[0], root / 'cl.exe')
+                self.assertIn('/I' + str(root / 'include'), command)
+                self.assertEqual(command[-1], '/OUT:' + str(root / 'probe.exe'))
+                runner = object.__new__(Qualification)
+                runner.windows = True
+                runner.environment = environment
+                dependency = runner.dependency_command(root / 'native.dll')
+                self.assertEqual(dependency, [root / 'dumpbin.exe', '/nologo', '/dependents', root / 'native.dll'])
+
     def test_windows_compiler_selection_is_explicit_and_case_insensitive(self):
         with tempfile.TemporaryDirectory() as temporary:
             compiler = Path(temporary) / 'cl.exe'
