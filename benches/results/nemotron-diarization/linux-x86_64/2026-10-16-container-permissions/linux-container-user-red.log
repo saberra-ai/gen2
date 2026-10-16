@@ -1,0 +1,14 @@
+..E
+======================================================================
+ERROR: test_negative_runtime_is_the_only_package_mounted_at_the_positive_search_path (test_qualify_linux_package.LinuxContainerGateTests.test_negative_runtime_is_the_only_package_mounted_at_the_positive_search_path)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/test_qualify_linux_package.py", line 53, in test_negative_runtime_is_the_only_package_mounted_at_the_positive_search_path
+    self.assertEqual(command[command.index('--user') + 1], f'{os.getuid()}:{os.getgid()}')
+                             ~~~~~~~~~~~~~^^^^^^^^^^
+ValueError: list.index(x): x not in list
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.001s
+
+FAILED (errors=1)

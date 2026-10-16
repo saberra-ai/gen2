@@ -641,6 +641,15 @@ SHA-256 `05cf4bc046ea0de8472f2aca72533ecd95106e6bf093cd657ae94a9aab80864e`;
 all 45 entries and both `.dsc` source inventories were rechecked on macOS.
 See the [construction receipt](../../benches/results/nemotron-diarization/linux-x86_64/2026-10-16-runtime-construction/qualification.json).
 Clean-container execution and actual chat/Bark/Laya coexistence remain open.
+The first container attempt passed the isolation controls and initialized all
+eight bundled libraries at the relocated path, including GCC. It then failed
+opening the locked WAV: capability-free container root could not read the CI
+user's 0600 fixture copies. The [retained container failure](../../benches/results/nemotron-diarization/linux-x86_64/2026-10-16-container-permissions/qualification.json)
+does not claim inference. The reviewed runner now uses the owning UID/GID and
+checks exact input/output permissions before any model run; its actual retry
+is pending. The [pinned chat fixture](../research/nemotron-linux-chat-fixture.md)
+matches the Mac fixture bytes and makes the separate Linux coexistence gate
+reproducible; it has not yet been executed on Linux.
 
 - [ ] Run Mac CPU first; compare Metal against the same Q8 reference and real
   annotated audio. Record device placement/fallback rather than treating a

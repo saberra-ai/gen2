@@ -1,0 +1,43 @@
+Preset CMake variables:
+
+  CMAKE_BUILD_TYPE="Release"
+  GGML_LLAMAFILE="ON"
+  NEMO_SPEECH_BUILD_ASR="OFF"
+  NEMO_SPEECH_BUILD_DIAR="ON"
+  NEMO_SPEECH_BUILD_NMT="OFF"
+  NEMO_SPEECH_BUILD_TESTS="OFF"
+  NEMO_SPEECH_BUILD_TOOLS="OFF"
+  NEMO_SPEECH_BUILD_TTS="OFF"
+  NEMO_SPEECH_GGML_PATCHED="ON"
+
+-- The C compiler identification is GNU 13.3.0
+-- The CXX compiler identification is GNU 13.3.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: /usr/bin/cc - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: /usr/bin/c++ - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Diarization currently shares the ASR runtime library; building that library without the transcribe CLI/API surface
+-- Applying 19 patches from /home/runner/work/gen2/gen2/native-source/patches to llama.cpp in /home/runner/work/gen2/gen2/native-source/build/cpu-diar/_deps/llama.cpp
+-- ggml and llama.cpp source: /home/runner/work/gen2/gen2/native-source/build/cpu-diar/_deps/llama.cpp
+-- The ASM compiler identification is GNU
+-- Found assembler: /usr/bin/cc
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Success
+-- Found Threads: TRUE
+-- Warning: ccache not found - consider installing it for faster compilation or disable this warning with GGML_CCACHE=OFF
+-- CMAKE_SYSTEM_PROCESSOR: x86_64
+-- GGML_SYSTEM_ARCH: x86
+-- Including CPU backend
+-- x86 detected
+-- Adding CPU backend variant ggml-cpu: -msse4.2;-mf16c;-mfma;-mbmi2;-mavx;-mavx2 GGML_SSE42;GGML_F16C;GGML_FMA;GGML_BMI2;GGML_AVX;GGML_AVX2
+-- ggml version: 0.25.1
+-- ggml commit:  083861c
+-- Configuring done (2.2s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/runner/work/gen2/gen2/native-source/build/cpu-diar

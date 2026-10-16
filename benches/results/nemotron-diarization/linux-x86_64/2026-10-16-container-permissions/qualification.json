@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "source_commit": "deb69239292fa63d749f02d313f808bf6f423b68",
+  "run_url": "https://github.com/saberra-ai/gen2/actions/runs/38875457825",
+  "offline_container_gates_passed": false,
+  "container_controls_passed": true,
+  "all_eight_bundled_libraries_initialized": {
+    "bundled": [
+      "/work/relocated runtime \u00fc/lib/libgcc_s.so.1",
+      "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_ggml-base.so.0.25.1",
+      "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_ggml-cpu.so.0.25.1",
+      "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_ggml.so.0.25.1",
+      "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_nemo_speech_asr.so",
+      "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_nemo_speech_asr_c.so.1",
+      "/work/relocated runtime \u00fc/lib/libgen2_nemo_linux_sentencepiece.so.0.0.0",
+      "/work/relocated runtime \u00fc/lib/libstdc++.so.6"
+    ],
+    "platform": [
+      "/lib/x86_64-linux-gnu/libc.so.6",
+      "/lib/x86_64-linux-gnu/libm.so.6",
+      "/lib64/ld-linux-x86-64.so.2"
+    ],
+    "raw_initialization_paths": [
+      "/lib/x86_64-linux-gnu/libc.so.6",
+      "/lib/x86_64-linux-gnu/libm.so.6",
+      "/lib64/ld-linux-x86-64.so.2",
+      "/work/bin/../relocated runtime \u00fc/lib/libgcc_s.so.1",
+      "/work/bin/../relocated runtime \u00fc/lib/libgen2_nemo_linux_ggml-base.so.0.25.1",
+      "/work/bin/../relocated runtime \u00fc/lib/libgen2_nemo_linux_ggml-cpu.so.0.25.1",
+      "/work/bin/../relocated runtime \u00fc/lib/libgen2_nemo_linux_ggml.so.0.25.1",
+      "/work/bin/../relocated runtime \u00fc/lib/libgen2_nemo_linux_nemo_speech_asr.so",
+      "/work/bin/../relocated runtime \u00fc/lib/libgen2_nemo_linux_nemo_speech_asr_c.so.1",
+      "/work/bin/../relocated runtime \u00fc/lib/libgen2_nemo_linux_sentencepiece.so.0.0.0",
+      "/work/bin/../relocated runtime \u00fc/lib/libstdc++.so.6"
+    ]
+  },
+  "archive_bytes_verified": 110126345,
+  "archive_sha256": "c60aea33a8c179a5a1fa131263978dd3d8a6916814ac98e0165d5dddbcf1027b",
+  "delivered_filesystem_entries_verified": 45,
+  "diagnosis": "Default Docker root plus --cap-drop ALL cannot read CI-owned0600 acquired WAV/model copies or write CI-owned0755 results. Native probe fails opening WAV before model inference, after successful relocation/loading of all8 bundled libraries.",
+  "fix": "Use explicit current CI UID:GID without changing asset modes or capabilities; add readable-input/writable-output preflight.",
+  "limits": [
+    "No model inference, public/native parity or lifecycle execution inside the container at this source.",
+    "No chat/Bark/Laya isolation, other host baseline, physical-machine or quality qualification.",
+    "All native development gates and runtime construction passed earlier in this same CI run; they remain distinct from failed container execution."
+  ]
+}
