@@ -67,8 +67,8 @@ def msvc_compiler_definitions(environment):
 
 def msvc_probe_command(environment, sources, includes, import_library, output):
     return [msvc_tool(environment, 'cl.exe'), '/nologo', '/std:c++17', '/O2', '/EHsc', '/TP',
-            *sources, *['/I' + str(path) for path in includes], import_library,
-            '/link', '/OUT:' + str(output)]
+            *sources, *['/I' + str(path) for path in includes],
+            '/link', import_library, '/OUT:' + str(output)]
 
 
 def pinned_git_environment(environment):

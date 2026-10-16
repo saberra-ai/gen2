@@ -20,6 +20,10 @@ class PlatformToolTests(unittest.TestCase):
                 command = msvc_probe_command(environment, ['probe.cpp', 'hash.c'], [root / 'include'], root / 'native.lib', root / 'probe.exe')
                 self.assertEqual(command[0], root / 'cl.exe')
                 self.assertIn('/I' + str(root / 'include'), command)
+                # /TP treats every compiler input as C++ regardless of suffix.
+                # Import archives must reach LINK without passing through CL.
+                self.assertIn('/TP', command[:command.index('/link')])
+                self.assertGreater(command.index(root / 'native.lib'), command.index('/link'))
                 self.assertEqual(command[-1], '/OUT:' + str(root / 'probe.exe'))
                 runner = object.__new__(Qualification)
                 runner.windows = True
