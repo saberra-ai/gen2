@@ -4,13 +4,14 @@ import json
 from pathlib import Path
 import subprocess
 
-from runtime_profiles import load_profile, verify_source
+from pooled_runtime import PROFILE, POOLED_PROFILE, load_profile, verify_source
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ['upstream', 'destination', 'output']:
         parser.add_argument('--' + name, type=Path, required=True)
+    parser.add_argument('--runtime-profile', choices=[PROFILE, POOLED_PROFILE], default=PROFILE)
     args = parser.parse_args()
     destination, output = args.destination.resolve(), args.output.resolve()
     if destination.is_relative_to(output) or output.is_relative_to(destination):
@@ -18,7 +19,7 @@ def main():
     if args.destination.exists() or args.output.exists():
         parser.error('refusing existing source or preparation evidence')
     upstream, destination = args.upstream.resolve(), args.destination.resolve()
-    lock_path, lock = load_profile()
+    lock_path, lock = load_profile(args.runtime_profile)
     runtime = lock['runtime']
     for root, revision in [(upstream, runtime['revision']), (upstream / 'llama.cpp', runtime['llama_revision'])]:
         if subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=root, text=True).strip() != revision:
@@ -40,9 +41,10 @@ def main():
     run(['git', 'checkout', '--detach', runtime['revision']], destination)
     run(['git', 'clone', '--no-hardlinks', '--no-checkout', '--', upstream / 'llama.cpp', destination / 'llama.cpp'], destination)
     run(['git', 'checkout', '--detach', runtime['llama_revision']], destination / 'llama.cpp')
-    patch = lock_path.parent / runtime['compatibility_patches'][0]['path']
-    run(['git', 'apply', '--check', patch], destination)
-    run(['git', 'apply', patch], destination)
+    for item in runtime['compatibility_patches']:
+        patch = lock_path.parent / item['path']
+        run(['git', 'apply', '--check', patch], destination)
+        run(['git', 'apply', patch], destination)
     verify_source(destination, lock)
     (args.output / 'prepared.json').write_text(json.dumps({'profile': lock['profile'],
         'upstream': str(upstream), 'destination': str(destination), 'commands': commands,

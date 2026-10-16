@@ -1,0 +1,63 @@
+name: Diarization pooled macOS CPU construction
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/nemotron3-n0]
+    paths:
+      - .github/workflows/diarization-macos-pooled-construction.yml
+      - tools/nemotron-diarization/construct_macos_pooled_cpu.py
+      - tools/nemotron-diarization/native_failed_load_probe.cpp
+      - tools/nemotron-diarization/macos-pooled-construction.protocol.json
+      - tools/nemotron-diarization/runtime-valid-mel-pool.lock.json
+      - tools/nemotron-diarization/patches/persistent-cpu-pool.patch
+permissions:
+  contents: read
+jobs:
+  construction:
+    runs-on: macos-26
+    timeout-minutes: 60
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+      HOMEBREW_NO_AUTO_UPDATE: '1'
+      HOMEBREW_NO_INSTALL_CLEANUP: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: NVIDIA/NeMo-Speech.cpp
+          ref: 083861c241061562b8ec29eb06d7f6cdc3af8775
+          path: native-upstream
+          persist-credentials: false
+      - name: Initialize pinned GGML source
+        run: git -C native-upstream submodule update --init --depth 1 llama.cpp
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Bootstrap build tools and dependency bottles
+        run: brew install cmake ninja sentencepiece abseil protobuf
+      - name: Construct pooled CPU SDK and package with failed-load cleanup controls
+        run: |
+          python tools/nemotron-diarization/construct_macos_pooled_cpu.py \
+            --protocol tools/nemotron-diarization/macos-pooled-construction.protocol.json \
+            --upstream native-upstream \
+            --source "${{ runner.temp }}/pooled-source" \
+            --sdk "${{ runner.temp }}/pooled-sdk" \
+            --package "${{ runner.temp }}/pooled-runtime" \
+            --output "${{ runner.temp }}/pooled-evidence"
+      - name: Preserve construction and cleanup evidence with opaque SDK and runtime archives
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nemotron-macos-pooled-construction
+          path: |
+            ${{ runner.temp }}/pooled-evidence/*.json
+            ${{ runner.temp }}/pooled-evidence/*.log
+            ${{ runner.temp }}/pooled-evidence/*.sb
+            ${{ runner.temp }}/pooled-evidence/*.tar.gz
+            ${{ runner.temp }}/pooled-evidence/build/
+            ${{ runner.temp }}/pooled-evidence/preparation/
+            ${{ runner.temp }}/pooled-evidence/source-libraries/
+          include-hidden-files: true
+          retention-days: 30

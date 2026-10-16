@@ -303,6 +303,35 @@ Acquired model/audio payloads are recorded descriptors rather than delivered
 inputs. Storage stays above 100,641,947,648 bytes over 216 checks, and the 256 MiB
 reserve is released; the 5 GiB/1 GiB admission/running floors are unchanged.
 
+The [native ownership candidate](../../tools/nemotron-diarization/patches/persistent-cpu-pool.patch)
+now makes each backend manager own one CPU pool at its existing thread count.
+The manager detaches and pauses the pool before destroying backend handles;
+member order then frees and joins workers. Constructor failures preserve the
+same handle-before-pool cleanup order. Sessions already serialize computation
+through the manager's mutex. The candidate changes only `backend.cpp` and
+`runtime.h` and retains the existing valid-Mel patch.
+
+The separate `gen2-valid-mel-pool-v1` [profile lock](../../tools/nemotron-diarization/runtime-valid-mel-pool.lock.json)
+keeps the old model, frame contract, preset and source bases. Selection is
+explicit, and the original Rust and build defaults remain unchanged. Candidate
+validation lives in a separate module so the historical Linux/Windows receipt
+consumers and their frozen tool bytes stay intact. An initial full-suite failure
+caught that compatibility boundary; after separation, all 211 model-free tests
+pass. The previous 207-test feature matrix also passes all 13 jobs at `643377e`.
+
+The [construction protocol](../../tools/nemotron-diarization/macos-pooled-construction.protocol.json)
+freezes 38 tool inputs plus its workflow. It requires a complete portable SDK
+rebuild, native state CTest, exact version query, relocated private package and
+101 public C ABI missing-model construction attempts under weight-file and
+network denial. These negative attempts exercise backend cleanup before any
+valid weights, frontend or inference. The control permits at most two incidental
+system threads above the first warmed failure and retains every count. The
+probe first passed against the original qualified runtime, with one thread
+after every attempt; that is a probe control, not a pooled-candidate result.
+The candidate SDK and cleanup controls have not yet executed at this checkpoint.
+Production API, numerical, long-session, mixed-model, quality and release
+qualification remain pending.
+
 ## Portable CPU complete-app construction
 
 The [local construction receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-portable-cpu-pnola-app-construction/qualification.json)

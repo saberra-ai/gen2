@@ -13,7 +13,7 @@ import shutil
 import subprocess
 import tempfile
 
-from runtime_profiles import load_profile, profile_provenance, validate_provenance
+from pooled_runtime import load_profile, profile_provenance, validate_provenance
 
 
 def digest(path):
@@ -293,8 +293,8 @@ def package_sdk(sdk, build_path, destination):
     if destination.exists():
         raise FileExistsError(f"refusing to replace an existing package: {destination}")
     sdk = sdk.resolve()
-    lock_path, lock = load_profile()
     build = json.loads(build_path.read_text())
+    lock_path, lock = load_profile(build.get('runtime_profile'))
     verify_build_provenance(build)
     backend = package_backend(build)
     entry = qualified_entry(sdk, build)

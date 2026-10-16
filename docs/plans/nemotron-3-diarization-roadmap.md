@@ -930,6 +930,13 @@ improves on disposable 5.94547/5.96922, a 3.14850 ratio of means. This private h
 experiment changes no production runtime; below-1 live RTF still fails. Integrating
 the pool under a new runtime identity and production requalification remain open.
 
+A separate `gen2-valid-mel-pool-v1` native ownership candidate is now prepared.
+It owns a CPU pool per backend manager and preserves the old frame/model/preset
+and four-thread setting. The original Rust/build defaults and frozen historical
+receipt consumers remain unchanged. All 211 current model-free tests pass;
+complete SDK/package construction and public failed-load cleanup are preregistered
+before any candidate neural qualification. See the [candidate construction notes](../research/nemotron-macos-fresh-machine.md).
+
 The 13-job feature matrix also passed at `4974318`. Later source `cf64214`
 passed12 jobs; its macOS mixed-feature job failed before compilation when GitHub
 submodule fetch could not connect to port443. A failed-job rerun was denied by

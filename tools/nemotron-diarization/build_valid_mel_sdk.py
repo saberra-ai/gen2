@@ -11,8 +11,9 @@ from artifacts import digest
 from build_valid_mel_candidate import capture, descriptor, source_inventory
 from ctest_output import require_single_test_pass
 from macos_cpu_architecture import PORTABLE_ARM64, audit_portable_commands, portable_definitions
-from platform_valid_mel_sources import verify_completed_source
-from runtime_profiles import audit_cpu_compiler_tree, load_profile, verify_source
+from pooled_runtime import (PROFILE, POOLED_PROFILE, compatibility_patch_bytes,
+                            load_profile, verify_completed_source, verify_source)
+from runtime_profiles import audit_cpu_compiler_tree
 
 
 def main():
@@ -20,6 +21,7 @@ def main():
     for name in ['source', 'prefix', 'output']:
         parser.add_argument('--' + name, type=Path, required=True)
     parser.add_argument('--jobs', type=int, default=6)
+    parser.add_argument('--runtime-profile', choices=[PROFILE, POOLED_PROFILE], default=PROFILE)
     parser.add_argument('--cpu-arch', choices=['native', PORTABLE_ARM64], default='native',
                         help='explicit portable candidate, or the unchanged build-host native default')
     parser.add_argument('--sandbox-profile', type=Path, help='optional stricter child profile retained with evidence')
@@ -32,13 +34,13 @@ def main():
         parser.error('source, prefix and evidence paths must be disjoint')
     if len(set(roots)) != 3 or output.exists() or prefix.exists() or (source / 'build').exists():
         parser.error('refusing existing construction evidence, SDK prefix or source build')
-    lock_path, lock = load_profile()
+    lock_path, lock = load_profile(args.runtime_profile)
     runtime = lock['runtime']
     verify_source(source, lock)
     output.mkdir(parents=True)
     (output / 'runtime-profile.json').write_bytes(lock_path.read_bytes())
-    patch = lock_path.parent / runtime['compatibility_patches'][0]['path']
-    (output / 'source.patch').write_bytes(patch.read_bytes())
+    patch = output / 'source.patch'
+    patch.write_bytes(compatibility_patch_bytes(lock))
     profile = output / 'offline.sb'
     if args.sandbox_profile:
         profile.write_bytes(args.sandbox_profile.read_bytes())
