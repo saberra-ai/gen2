@@ -182,3 +182,16 @@ This closes infrastructure controls only: no Gen2/native/model/runtime package
 payload ran, and `runtime_qualified` remains false. The result supplies a viable
 Server Core test environment while Windows desktop, closed-runtime, license and
 coexistence gates remain open.
+
+The coexistence diagnostic now has a Windows current-process module evidence
+path: bounded `K32EnumProcessModules` plus `GetModuleFileNameW`, preserving
+Unicode filenames and requiring two consecutive equal handle/path snapshots
+within five attempts. Returned handles remain borrowed. The diagnostic hashes
+every returned module file at isolated, both-loaded and reloaded stages.
+Microsoft documents [module enumeration and snapshot races](https://learn.microsoft.com/en-us/windows/win32/api/psapi/nf-psapi-enumprocessmodules)
+and [Unicode module paths/truncation](https://learn.microsoft.com/en-us/windows/win32/api/libloaderapi/nf-libloaderapi-getmodulefilenamew).
+Standalone Windows tests require the current executable and Kernel32, then
+copy/run the test executable in a Unicode path and verify the exact child test
+ran. Source review and macOS compilation pass; actual Windows module tests are
+pending. This adds evidence capture for a future coexistence run, not a passing
+Windows coexistence result.

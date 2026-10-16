@@ -17,6 +17,10 @@ use std::{
 type Result<T> = std::result::Result<T, Box<dyn Error>>;
 const PROMPT: &str = "Reply with the single word hello.";
 
+#[cfg(windows)]
+#[path = "support/windows_modules.rs"]
+mod windows_modules;
+
 fn hash(path: impl AsRef<Path>) -> Result<String> {
     let mut file = File::open(path)?;
     let mut digest = Sha256::new();
@@ -132,7 +136,21 @@ fn maps(output: &Path, stage: &str) -> Result<()> {
         output.join(format!("{stage}.maps")),
         std::fs::read("/proc/self/maps")?,
     )?;
-    #[cfg(not(target_os = "linux"))]
+    #[cfg(windows)]
+    {
+        let modules = windows_modules::stable_paths()?
+            .into_iter()
+            .map(|path| {
+                let digest = hash(&path)?;
+                Ok(json!({"path": path, "sha256": digest, "bytes": path.metadata()?.len()}))
+            })
+            .collect::<Result<Vec<_>>>()?;
+        write_json(
+            output.join(format!("{stage}.modules.json")),
+            &json!(modules),
+        )?;
+    }
+    #[cfg(not(any(target_os = "linux", windows)))]
     let _ = (output, stage);
     Ok(())
 }
