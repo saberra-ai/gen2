@@ -23,6 +23,15 @@ class OriginalNemoMetrics(unittest.TestCase):
             with self.assertRaises(ValueError):
                 compare_original(actual, reference, 17872)
 
+    def test_complete_ami_duration_includes_last_row(self):
+        reference = np.zeros((12000, 8), np.float32)
+        actual = reference.copy()
+        actual[-1, 0] = .25
+        result = compare_original(actual, reference, 1920000)
+        self.assertEqual(result['shape'], [12000, 8])
+        self.assertEqual(result['worst_frame_feature'], [11999, 0])
+        self.assertEqual(result['maximum_absolute_error'], .25)
+
 
 if __name__ == '__main__':
     unittest.main()

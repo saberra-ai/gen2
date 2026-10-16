@@ -76,3 +76,17 @@ error0.0297585. Raw frontend, logits, three-class activity outputs, probability
 arrays, config and parameter hashes are retained. This short excluded case
 qualifies CPU execution and close calibration agreement only. It does not
 establish original-NeMo corpus parity or cure the unchanged AMI quality failures.
+
+
+## Fixed AMI follow-up preparation
+
+The separate [two-crop original-NeMo protocol](../../tools/nemotron-diarization/original-nemo-ami.protocol.json)
+now freezes close then distant CPU forwards on the same unchanged120sAMIcrops.
+The admitted strict CPU calibration is the prerequisite; both calls retain
+whole-wave frontend, logits, activity, probabilities, config and parameter
+hashes. All12,000valid rows compare with the exact cached HF outputs, and the
+unchanged shared0.5/10ms/zero-collar/overlap-inclusive full-UEM DER is reported
+against the original transcriber-segment labels. Child processes cannot read
+target labels or saved oracles. This is diagnosis on previously observed data,
+not a new held-out test, profile search, gate replacement or release promotion.
+At preparation no original-NeMo AMI forward has run. All185model-free tests pass.

@@ -149,7 +149,11 @@ numerical diagnostic, not a quality-gate replacement. The [actual short calibrat
 now passes strict restore and one CPU forward, retaining all111valid rows.
 Maximum probability difference from the saved official HF output is0.000250578;
 frontend values differ and are retained. Original-NeMo corpus parity and all
-original quality/release criteria remain unqualified.
+original quality/release criteria remain unqualified. A separate
+[two-crop original-NeMo protocol](../../tools/nemotron-diarization/original-nemo-ami.protocol.json)
+now freezes one strict CPU forward per unchanged AMI channel to compare every
+valid row and report the same reference-policy DER. It is diagnostic only;
+no original-NeMo AMI call has run at preparation. All185model-free tests pass.
 
 Prepared: 2026-10-14.
 Updated: 2026-10-16.

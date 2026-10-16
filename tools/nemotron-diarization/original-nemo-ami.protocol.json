@@ -1,0 +1,3523 @@
+{
+  "schema_version": 1,
+  "scope": "Exactly2fresh original-NeMo strict CPU FP32 restore/whole-waveform forward calls: unchanged120sAMIclose then distant, fixed9/4/0/264/264/222. Prerequisite excluded calibration passed ataf4cfdb. No new HF/native inference, profile/threshold search, target replacement or quality waiver.",
+  "nemo_source_commit": "218d0b443441b7d8aa1c832f47df310f186cf0a4",
+  "environment_root": "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-env-v1",
+  "environment_files": {
+    "requirements-wheel.lock": {
+      "bytes": 304122,
+      "sha256": "47a47459d2b1d51c7f156a67d12de6014276e291f672636092d8ee4d224eace2"
+    },
+    "wheel-source-mapping.json": {
+      "bytes": 125557,
+      "sha256": "0981b07c233bf7b28cd0b6763bd33f91271697413d51b795ea85a2ef777d6858"
+    },
+    "import-smoke-result.json": {
+      "bytes": 4847,
+      "sha256": "fb43ca43437dc68108bd49fc893c4e334f3e6c5fd9459e2a5fcf35dc3c482e3d"
+    },
+    "installation.json": {
+      "bytes": 2597,
+      "sha256": "46cf684192d710f80818791c4ffa1a5c05354746748b960c6133f3d9dfba12c2"
+    },
+    "import-command.json": {
+      "bytes": 1181,
+      "sha256": "c92cfa5af871ecb60abfc49b9ee2572b414b778f31308bf7a57c87d14bd3c55d"
+    },
+    "wheels/nemo_toolkit-3.1.0-py3-none-any.whl": {
+      "bytes": 4744047,
+      "sha256": "4ec664de0c7fbc7a1cf54bedba69cd0589d16d34f1f01207958434e183b455c1"
+    }
+  },
+  "installed_nemo_files": {
+    "nemo/__init__.py": {
+      "bytes": 949,
+      "sha256": "5b6b2886a5bce06b553918531d35182d6dd6b3dbab126f6eec1c97c5c02d5cf8"
+    },
+    "nemo/constants.py": {
+      "bytes": 1322,
+      "sha256": "35f99868fac4f8b9521c81c2c38cf72c7a20306429543c00f9bfd1c22193d17e"
+    },
+    "nemo/package_info.py": {
+      "bytes": 2302,
+      "sha256": "4ee08dfab3750257da4fb685fb16263e61dc844b0480a97bf6644ad0fb7bc946"
+    },
+    "nemo/agents/__init__.py": {
+      "bytes": 685,
+      "sha256": "520249b30035d7a2a6c3bb0f03ec8d2553ad9adfbaea4e3fec1d98700247fa5e"
+    },
+    "nemo/agents/voice_agent/__init__.py": {
+      "bytes": 900,
+      "sha256": "22093fe72397c3f2d5ae9efb0aeb634709d4d42c997645bc2ae6f4cef79f4a7e"
+    },
+    "nemo/agents/voice_agent/pipecat/__init__.py": {
+      "bytes": 830,
+      "sha256": "07c179882fb4a673ee9582d865d01f770898f58f979103739bb7a7bb60156cff"
+    },
+    "nemo/agents/voice_agent/pipecat/frames/__init__.py": {
+      "bytes": 685,
+      "sha256": "520249b30035d7a2a6c3bb0f03ec8d2553ad9adfbaea4e3fec1d98700247fa5e"
+    },
+    "nemo/agents/voice_agent/pipecat/frames/frames.py": {
+      "bytes": 926,
+      "sha256": "d0eebda9189fc3c7118db0f74a56370e64786f33ab4437195bae0ba82d7a67ed"
+    },
+    "nemo/agents/voice_agent/pipecat/processors/__init__.py": {
+      "bytes": 685,
+      "sha256": "520249b30035d7a2a6c3bb0f03ec8d2553ad9adfbaea4e3fec1d98700247fa5e"
+    },
+    "nemo/agents/voice_agent/pipecat/processors/frameworks/__init__.py": {
+      "bytes": 685,
+      "sha256": "520249b30035d7a2a6c3bb0f03ec8d2553ad9adfbaea4e3fec1d98700247fa5e"
+    },
+    "nemo/agents/voice_agent/pipecat/processors/frameworks/rtvi.py": {
+      "bytes": 3108,
+      "sha256": "f98a9ba1d7593c660bfa6d0bbe6af9ed10681ec863f2b9f1f60a5a96b8df2b59"
+    },
+    "nemo/agents/voice_agent/pipecat/services/__init__.py": {
+      "bytes": 685,
+      "sha256": "520249b30035d7a2a6c3bb0f03ec8d2553ad9adfbaea4e3fec1d98700247fa5e"
+    },
+    "nemo/agents/voice_agent/pipecat/services/nemo/__init__.py": {
+      "bytes": 886,
+      "sha256": "63fa10b3b115a8677faa543317d644b901245801cd57ab7653b3d5bf136510f5"
+    },
+    "nemo/agents/voice_agent/pipecat/services/nemo/audio_logger.py": {
+      "bytes": 35982,
+      "sha256": "7e65af7e977568395dfbf082c820c0603fb605cb2aad4303f3f4c196c32dc9c4"
+    },
+    "nemo/agents/voice_agent/pipecat/services/nemo/diar.py": {
+      "bytes": 14216,
+      "sha256": "4826eb739c34d67f404fd60d1c56f553de1b7bc4fbcc72dcb938a3829684365f"
+    },
+    "nemo/agents/voice_agent/pipecat/services/nemo/llm.py": {
+      "bytes": 33153,
+      "sha256": "aab96ca120008e4d71b6ed0a01587abe422461800f824bb0fe51498f297f9403"
+    },
+    "nemo/agents/voice_agent/pipecat/services/nemo/streaming_asr.py": {
+      "bytes": 13734,
+      "sha256": "54aa45307ee92bc072928a072ea642a94e0f42ee1617215e044ca5aa6636bd44"
+    },
+    "nemo/agents/voice_agent/pipecat/services/nemo/streaming_diar.py": {
+      "bytes": 10282,
+      "sha256": "785409edb3a69dde2bb0cc706992b76135913dad04d01d6602caa57a22fe3662"
+    },
+    "nemo/agents/voice_agent/pipecat/services/nemo/stt.py": {
+      "bytes": 12419,
+      "sha256": "4f2d2707b11ce80af4668e87f0fd105d4190ee58c73504a0855f1d0da747942d"
+    },
+    "nemo/agents/voice_agent/pipecat/services/nemo/tts.py": {
+      "bytes": 38416,
+      "sha256": "81c1e7fa0a6506cae83a1a70aeebfdccd7ac2f781d318dec5cfc40fb40f8910e"
+    },
+    "nemo/agents/voice_agent/pipecat/services/nemo/turn_taking.py": {
+      "bytes": 22444,
+      "sha256": "efe3ecf55aa6e85a31348b7e08cc7e0e1a3f2e6459061e9933311e6057438cb1"
+    },
+    "nemo/agents/voice_agent/pipecat/services/nemo/utils.py": {
+      "bytes": 7282,
+      "sha256": "7c489f3d1e1363a6eb5332d15dcb0ff7e242140a3d194e2f855b99bbd98bab3e"
+    },
+    "nemo/agents/voice_agent/pipecat/transports/__init__.py": {
+      "bytes": 685,
+      "sha256": "520249b30035d7a2a6c3bb0f03ec8d2553ad9adfbaea4e3fec1d98700247fa5e"
+    },
+    "nemo/agents/voice_agent/pipecat/transports/base_input.py": {
+      "bytes": 2761,
+      "sha256": "a3028a0591acaa216cc61de630d9b9d423ac69d51ddd88a16f2df92ba019e2e2"
+    },
+    "nemo/agents/voice_agent/pipecat/transports/base_transport.py": {
+      "bytes": 852,
+      "sha256": "7a3cd0fed80ccc543b8449f97f02fd916827b2a6d2c9d96b8537b18182a9231b"
+    },
+    "nemo/agents/voice_agent/pipecat/transports/network/__init__.py": {
+      "bytes": 685,
+      "sha256": "520249b30035d7a2a6c3bb0f03ec8d2553ad9adfbaea4e3fec1d98700247fa5e"
+    },
+    "nemo/agents/voice_agent/pipecat/transports/network/websocket_server.py": {
+      "bytes": 11629,
+      "sha256": "62f1635b6769b4cd150bb49db6fc2419e6f162bfce580785d9068b33b2428eb6"
+    },
+    "nemo/agents/voice_agent/pipecat/utils/__init__.py": {
+      "bytes": 685,
+      "sha256": "520249b30035d7a2a6c3bb0f03ec8d2553ad9adfbaea4e3fec1d98700247fa5e"
+    },
+    "nemo/agents/voice_agent/pipecat/utils/text/__init__.py": {
+      "bytes": 685,
+      "sha256": "520249b30035d7a2a6c3bb0f03ec8d2553ad9adfbaea4e3fec1d98700247fa5e"
+    },
+    "nemo/agents/voice_agent/pipecat/utils/text/simple_text_aggregator.py": {
+      "bytes": 9947,
+      "sha256": "5467e90c7510fa0691260ba8d0def73d40f71278f2d3fcb11f3c253df9c0f26f"
+    },
+    "nemo/agents/voice_agent/utils/__init__.py": {
+      "bytes": 757,
+      "sha256": "26c147751a2ff2702efeb13da61d973311d46cd487ec6185b9d89431c326fc86"
+    },
+    "nemo/agents/voice_agent/utils/config_manager.py": {
+      "bytes": 13993,
+      "sha256": "613ae4f515aa7a020d10b4d750d41008d5b2f03e6b4af69676c63de5bf320f85"
+    },
+    "nemo/agents/voice_agent/utils/tool_calling/__init__.py": {
+      "bytes": 685,
+      "sha256": "520249b30035d7a2a6c3bb0f03ec8d2553ad9adfbaea4e3fec1d98700247fa5e"
+    },
+    "nemo/agents/voice_agent/utils/tool_calling/basic_tools.py": {
+      "bytes": 3516,
+      "sha256": "b3c55b6735e5885d5d25f1df0fc37803dac694a6c9cd108815fb15222c448b66"
+    },
+    "nemo/agents/voice_agent/utils/tool_calling/mixins.py": {
+      "bytes": 4208,
+      "sha256": "5501cffe0093b3bb828a22ebc7813a49c2a8de7df8ae061e115defa59ee4b2be"
+    },
+    "nemo/collections/__init__.py": {
+      "bytes": 685,
+      "sha256": "702e69ecbdb6a2a88da82ef22343d4ad372d2e30f0a09f02bb1152932058500d"
+    },
+    "nemo/collections/asr/__init__.py": {
+      "bytes": 997,
+      "sha256": "54f64a1a8541167bf9f06c428076fc08965dc2db53271fe38b0e90654b138c10"
+    },
+    "nemo/collections/asr/data/__init__.py": {
+      "bytes": 685,
+      "sha256": "702e69ecbdb6a2a88da82ef22343d4ad372d2e30f0a09f02bb1152932058500d"
+    },
+    "nemo/collections/asr/data/audio_to_ctm_dataset.py": {
+      "bytes": 3732,
+      "sha256": "e4dc6315c7f03aa0316ee0ccfb8947ea93d85e5371d05683eb3bf0527b14fd6f"
+    },
+    "nemo/collections/asr/data/audio_to_diar_label.py": {
+      "bytes": 64423,
+      "sha256": "3d6c702bf94ee2bfd3d7a1c505e69a6011f35876b932362a9c7a2c9194d8fa6a"
+    },
+    "nemo/collections/asr/data/audio_to_diar_label_lhotse.py": {
+      "bytes": 5843,
+      "sha256": "d5e63963646301b1673732142a1a7a77c0e85e6a7d2a174c53e80ad65680ab67"
+    },
+    "nemo/collections/asr/data/audio_to_eou_label_lhotse.py": {
+      "bytes": 25095,
+      "sha256": "4117584cbafcd70160d8c55e1ee7ddaa90fd8bd7b02dfc3ad260c2efe238c046"
+    },
+    "nemo/collections/asr/data/audio_to_label.py": {
+      "bytes": 65253,
+      "sha256": "b542658b09d768ec6e8287728f53894d6ce5936d45f46c238311dadec1b963c4"
+    },
+    "nemo/collections/asr/data/audio_to_label_dataset.py": {
+      "bytes": 13091,
+      "sha256": "4d03d78ecdf3a814cbfed050f8faf4a59721c4142a179ccfa97e731dd3e3833d"
+    },
+    "nemo/collections/asr/data/audio_to_text.py": {
+      "bytes": 63050,
+      "sha256": "5fbf7a2405edfe977dc31208ad285f5581d7f5b08caa6b5c31b659a2632cd815"
+    },
+    "nemo/collections/asr/data/audio_to_text_dali.py": {
+      "bytes": 34764,
+      "sha256": "32e2dac71545e66e341b4ff7346e901a31cbfc75bd115398a75ec4e77c2731bc"
+    },
+    "nemo/collections/asr/data/audio_to_text_dataset.py": {
+      "bytes": 45296,
+      "sha256": "f91b43ba74fb077c1e22c381f85279b96f0145e7b94f31fbc105022a18e3d688"
+    },
+    "nemo/collections/asr/data/audio_to_text_lhotse.py": {
+      "bytes": 4702,
+      "sha256": "b302ac6d7c78f353bf3a2c751ff13e0e1462a12cf99244b671a82a86130fda03"
+    },
+    "nemo/collections/asr/data/audio_to_text_lhotse_prompt.py": {
+      "bytes": 7275,
+      "sha256": "3139f18ba72a66eee004fb36a0f9faefd874c4b8962de398ef6d72eeaa52981d"
+    },
+    "nemo/collections/asr/data/audio_to_text_lhotse_prompt_index.py": {
+      "bytes": 6968,
+      "sha256": "6890667b38c46916742ff205d429ff6b32071e3a0ea0b59c75ad8eb5c3e61df0"
+    },
+    "nemo/collections/asr/data/audio_to_text_lhotse_prompted.py": {
+      "bytes": 12031,
+      "sha256": "c102a22ccdf1d497d25d3c5e11d86085e97dc78b7c5d720c5f003ca85e03232c"
+    },
+    "nemo/collections/asr/data/audio_to_text_lhotse_speaker.py": {
+      "bytes": 4665,
+      "sha256": "478dae07e6a974a0cb0189d828a7a9e3ae5a08fa258b7fe3e892a805ad0d789d"
+    },
+    "nemo/collections/asr/data/data_simulation.py": {
+      "bytes": 78799,
+      "sha256": "82d37e00982a9aeaa91bdc29a7d4406248fc44539610b5960a7670f477ca6e12"
+    },
+    "nemo/collections/asr/data/feature_to_label.py": {
+      "bytes": 20609,
+      "sha256": "b1e0003e0efc244f5a576c7da5b3de14c08ab11a6fe6a5048b9261c2a57264bc"
+    },
+    "nemo/collections/asr/data/feature_to_label_dataset.py": {
+      "bytes": 2814,
+      "sha256": "61f1e5800f2de285040d4f143688adb804714e7579728c3028bfdf00265efa79"
+    },
+    "nemo/collections/asr/data/feature_to_text.py": {
+      "bytes": 22264,
+      "sha256": "e7040ff8166eb4acd541a5ca17aa11655aa4392f8c0be19467d1af5da0a22b11"
+    },
+    "nemo/collections/asr/data/feature_to_text_dataset.py": {
+      "bytes": 4085,
+      "sha256": "a8e3c42ac2e3cb20d7d103f9d2d736f54cbef1ec9fd1a5bcbda48e4d75ff8ad0"
+    },
+    "nemo/collections/asr/data/ssl_dataset.py": {
+      "bytes": 27939,
+      "sha256": "f3f69dd7bfbeb0e7ac407b087af18d735f36b64899671e0e41f21036e7e4db3f"
+    },
+    "nemo/collections/asr/data/text_to_text.py": {
+      "bytes": 19556,
+      "sha256": "e75ac73d60a2dda2d1956f6071b06da8a60ddfe8f8e6b0368866c54fd6fbd3ec"
+    },
+    "nemo/collections/asr/data/huggingface/__init__.py": {
+      "bytes": 685,
+      "sha256": "e9bd44c73940ebcaaa941b89b2edab03eaa291e4156781580d591f2c990c56db"
+    },
+    "nemo/collections/asr/data/huggingface/hf_audio_to_text.py": {
+      "bytes": 28376,
+      "sha256": "98714712793275e18bc681f979ac57e92267a1b4df2672247019c9ec938e9125"
+    },
+    "nemo/collections/asr/data/huggingface/hf_audio_to_text_dataset.py": {
+      "bytes": 6075,
+      "sha256": "4ae821b88af91ab0d7cf16cd146ebc4aeeb6e8ff3240e005d05d41de883e76ec"
+    },
+    "nemo/collections/asr/inference/__init__.py": {
+      "bytes": 1246,
+      "sha256": "d270ddaab12ab36ea236a50f0f8c8826f4085d0a2987406b526d24fa4edf97f9"
+    },
+    "nemo/collections/asr/inference/factory/__init__.py": {
+      "bytes": 685,
+      "sha256": "520249b30035d7a2a6c3bb0f03ec8d2553ad9adfbaea4e3fec1d98700247fa5e"
+    },
+    "nemo/collections/asr/inference/factory/base_builder.py": {
+      "bytes": 9030,
+      "sha256": "b380cab236df00dcae9a6e9de4f97e3e41d68508419819db552e23afc9622a76"
+    },
+    "nemo/collections/asr/inference/factory/buffered_pipeline_builder.py": {
+      "bytes": 5760,
+      "sha256": "a9a8859c34d7e2dd02f0c443f377538959dc6912b0c35e07175e2e2ed35686e6"
+    },
+    "nemo/collections/asr/inference/factory/cache_aware_pipeline_builder.py": {
+      "bytes": 5326,
+      "sha256": "cd736265244e92a316ea14df3e5a191643b7f23088fd492ee845277b210a68e0"
+    },
+    "nemo/collections/asr/inference/factory/pipeline_builder.py": {
+      "bytes": 3060,
+      "sha256": "76c3c23bf96ebb8b750e5aa880a14688747b2e2e85079546b031730192a74daa"
+    },
+    "nemo/collections/asr/inference/itn/__init__.py": {
+      "bytes": 685,
+      "sha256": "520249b30035d7a2a6c3bb0f03ec8d2553ad9adfbaea4e3fec1d98700247fa5e"
+    },
+    "nemo/collections/asr/inference/itn/batch_inverse_normalizer.py": {
+      "bytes": 7670,
+      "sha256": "eda656f822ec19fc44565f1c863f4ac8db990bec8762cc3359cf28c4bc06a002"
+    },
+    "nemo/collections/asr/inference/itn/inverse_normalizer.py": {
+      "bytes": 13652,
+      "sha256": "1c0a1f658a3e14bf56bb5545c1fb0861631733e591d736f88ab6144e24e05bb5"
+    },
+    "nemo/collections/asr/inference/model_wrappers/__init__.py": {
+      "bytes": 685,
+      "sha256": "520249b30035d7a2a6c3bb0f03ec8d2553ad9adfbaea4e3fec1d98700247fa5e"
+    },
+    "nemo/collections/asr/inference/model_wrappers/asr_inference_wrapper.py": {
+      "bytes": 11052,
+      "sha256": "1613512d89adc1d1ab48d09066966ebd40ca4b18501c1a9e659864048885bd39"
+    },
+    "nemo/collections/asr/inference/model_wrappers/cache_aware_asr_inference_wrapper.py": {
+      "bytes": 6144,
+      "sha256": "8c2e33d9448ece47570cd29291ee2c576454443220abc177b8aa1c1b0670831e"
+    },
+    "nemo/collections/asr/inference/model_wrappers/cache_aware_ctc_inference_wrapper.py": {
+      "bytes": 8325,
+      "sha256": "bc188e20ddf099ec47870a7b182ab058933f5e8904177491f6f15a69e2f2e31e"
+    },
+    "nemo/collections/asr/inference/model_wrappers/cache_aware_rnnt_inference_wrapper.py": {
+      "bytes": 19026,
+      "sha256": "f0b2a2f07960306ea380b0e1adbaf95ec694019f7e1f6b00ae0a4fe606948bfe"
+    },
+    "nemo/collections/asr/inference/model_wrappers/ctc_inference_wrapper.py": {
+      "bytes": 4319,
+      "sha256": "46e2badf2317ddbeb710503e386de94992311a7c79f48aa3efea12af8153d986"
+    },
+    "nemo/collections/asr/inference/model_wrappers/rnnt_inference_wrapper.py": {
+      "bytes": 6170,
+      "sha256": "37d03e4911f427a981f26ea97a1c2b53c238be8c4fc27e052e7902b77c128940"
+    },
+    "nemo/collections/asr/inference/model_wrappers/salm_asr_inference_wrapper.py": {
+      "bytes": 6321,
+      "sha256": "3db7261a6e9c500a9d6b264fe8b38a63eab2f907311cb75ccfb2583bc5f7a3f1"
+    },
+    "nemo/collections/asr/inference/nmt/__init__.py": {
+      "bytes": 685,
+      "sha256": "520249b30035d7a2a6c3bb0f03ec8d2553ad9adfbaea4e3fec1d98700247fa5e"
+    },
+    "nemo/collections/asr/inference/nmt/llm_translator.py": {
+      "bytes": 14604,
+      "sha256": "1f1b0e9abd065d91b0669797bf0330ba77fee83edd14044031910dc008fa20b6"
+    },
+    "nemo/collections/asr/inference/nmt/prompts.py": {
+      "bytes": 10116,
+      "sha256": "de88f8a888bb611f1f69a6e4db6864acaeb915332a556650536eb6631533f214"
+    },
+    "nemo/collections/asr/inference/pipelines/__init__.py": {
+      "bytes": 685,
+      "sha256": "520249b30035d7a2a6c3bb0f03ec8d2553ad9adfbaea4e3fec1d98700247fa5e"
+    },
+    "nemo/collections/asr/inference/pipelines/base_pipeline.py": {
+      "bytes": 28862,
+      "sha256": "9a076596fec622d3a10ae295d023c5ba0db81e9604c073c192fc4e99e81ccc50"
+    },
+    "nemo/collections/asr/inference/pipelines/buffered_ctc_pipeline.py": {
+      "bytes": 19659,
+      "sha256": "988b0acf09a027f111a3f56f5869e285a6fe7d1b9807e391ae12e9f96a190e44"
+    },
+    "nemo/collections/asr/inference/pipelines/buffered_rnnt_pipeline.py": {
+      "bytes": 38690,
+      "sha256": "3e7195c9508a9ab0dad65eacc2b6a61f6f8d06856bc5ad78b22708c164792267"
+    },
+    "nemo/collections/asr/inference/pipelines/buffered_salm_pipeline.py": {
+      "bytes": 10622,
+      "sha256": "db67a4e4ba6e82b7b09101ffe4261cb330568e0e756db2c2e97d768c265110c8"
+    },
+    "nemo/collections/asr/inference/pipelines/cache_aware_ctc_pipeline.py": {
+      "bytes": 19875,
+      "sha256": "7d916a26e92d86be837574ef5abe725a69f96266f262b4406b2307e18b757151"
+    },
+    "nemo/collections/asr/inference/pipelines/cache_aware_rnnt_pipeline.py": {
+      "bytes": 30475,
+      "sha256": "7850a5a050990e9a572df8882a01b1b2311118babfde7ae0b669e9cf5a1b25e0"
+    },
+    "nemo/collections/asr/inference/pipelines/pipeline_interface.py": {
+      "bytes": 2301,
+      "sha256": "4dd51371b39f8cc40b6f8a50293f2559a362e90ec8f9393f20c56d4ee81d1bf5"
+    },
+    "nemo/collections/asr/inference/streaming/__init__.py": {
+      "bytes": 685,
+      "sha256": "520249b30035d7a2a6c3bb0f03ec8d2553ad9adfbaea4e3fec1d98700247fa5e"
+    },
+    "nemo/collections/asr/inference/streaming/buffering/__init__.py": {
+      "bytes": 685,
+      "sha256": "520249b30035d7a2a6c3bb0f03ec8d2553ad9adfbaea4e3fec1d98700247fa5e"
+    },
+    "nemo/collections/asr/inference/streaming/buffering/audio_bufferer.py": {
+      "bytes": 4351,
+      "sha256": "d220cbd7699f7828395c13190ae7b1b3a6681a922273295eb4add235f48b8748"
+    },
+    "nemo/collections/asr/inference/streaming/buffering/cache_feature_bufferer.py": {
+      "bytes": 10029,
+      "sha256": "56e68d1a36651ea23eb992edb3df16d2986f9f6c9263dffd3a51ef238b399679"
+    },
+    "nemo/collections/asr/inference/streaming/buffering/feature_bufferer.py": {
+      "bytes": 5391,
+      "sha256": "eed3b337c84b9e8047610b8477ebdbb5cc62f848f04588ae1f58c0cd0fba9169"
+    },
+    "nemo/collections/asr/inference/streaming/buffering/incremental_audio_bufferer.py": {
+      "bytes": 6423,
+      "sha256": "2660bc7417754c399a00a452e19e4fedcf21a75a2d99ceaaeae6b9ec0c904acc"
+    },
+    "nemo/collections/asr/inference/streaming/decoders/__init__.py": {
+      "bytes": 685,
+      "sha256": "520249b30035d7a2a6c3bb0f03ec8d2553ad9adfbaea4e3fec1d98700247fa5e"
+    },
+    "nemo/collections/asr/inference/streaming/decoders/greedy/__init__.py": {
+      "bytes": 685,
+      "sha256": "520249b30035d7a2a6c3bb0f03ec8d2553ad9adfbaea4e3fec1d98700247fa5e"
+    },
+    "nemo/collections/asr/inference/streaming/decoders/greedy/greedy_ctc_decoder.py": {
+      "bytes": 8061,
+      "sha256": "38cb30c99ee53d9f1987d545ce9dca98867e84455aa49401fce4318241fb780b"
+    },
+    "nemo/collections/asr/inference/streaming/decoders/greedy/greedy_decoder.py": {
+      "bytes": 3744,
+      "sha256": "8de45d85915085d61e02309b6ba5dc53818687a34cb171beb0c262fcb45824e8"
+    },
+    "nemo/collections/asr/inference/streaming/decoders/greedy/greedy_rnnt_decoder.py": {
+      "bytes": 11533,
+      "sha256": "40304bb6eddc43d4fe68bf1c46d9fb657233276af6220e1f735a19fde9781336"
+    },
+    "nemo/collections/asr/inference/streaming/endpointing/__init__.py": {
+      "bytes": 685,
+      "sha256": "520249b30035d7a2a6c3bb0f03ec8d2553ad9adfbaea4e3fec1d98700247fa5e"
+    },
+    "nemo/collections/asr/inference/streaming/endpointing/greedy/__init__.py": {
+      "bytes": 685,
+      "sha256": "520249b30035d7a2a6c3bb0f03ec8d2553ad9adfbaea4e3fec1d98700247fa5e"
+    },
+    "nemo/collections/asr/inference/streaming/endpointing/greedy/greedy_ctc_endpointing.py": {
+      "bytes": 3643,
+      "sha256": "1372d72a120394effd1967cb4aa2a0c7d17dc587dee944ec7bbf8e9b1ac8a12a"
+    },
+    "nemo/collections/asr/inference/streaming/endpointing/greedy/greedy_endpointing.py": {
+      "bytes": 13966,
+      "sha256": "b526c35dc76297acbb2bb45aeb42b240947560ca1bcab5df214e7c3bab809df8"
+    },
+    "nemo/collections/asr/inference/streaming/endpointing/greedy/greedy_rnnt_endpointing.py": {
+      "bytes": 2776,
+      "sha256": "edbf513f2db0a1af0747f68644149486d81458b7ed72af1542933c8d290964b3"
+    },
+    "nemo/collections/asr/inference/streaming/framing/__init__.py": {
+      "bytes": 685,
+      "sha256": "520249b30035d7a2a6c3bb0f03ec8d2553ad9adfbaea4e3fec1d98700247fa5e"
+    },
+    "nemo/collections/asr/inference/streaming/framing/mono_stream.py": {
+      "bytes": 4610,
+      "sha256": "1a3fb61860fb1d1a2e2ecb18b164ed6bcfe8c77d9959e61607d2bafef2e6d7d6"
+    },
+    "nemo/collections/asr/inference/streaming/framing/multi_stream.py": {
+      "bytes": 15586,
+      "sha256": "9588ec286bcd12a521eb0716aad49ba6864ad8edaefe5715f8f08cbc11efdeaa"
+    },
+    "nemo/collections/asr/inference/streaming/framing/request.py": {
+      "bytes": 4467,
+      "sha256": "5628549ff4359c53c881f31de9e266c8b2d4bd9521a926af0a246a5e0b7ce0b8"
+    },
+    "nemo/collections/asr/inference/streaming/framing/request_options.py": {
+      "bytes": 5617,
+      "sha256": "e4394745a61e993c23bec72af1484997d28cb4ad51c990eba22faa7521e81e8b"
+    },
+    "nemo/collections/asr/inference/streaming/framing/stream.py": {
+      "bytes": 1295,
+      "sha256": "8e3a780cb8cd0b9349f9947dad6af52b3c36fa8e84fbe74a48e238795609500c"
+    },
+    "nemo/collections/asr/inference/streaming/state/__init__.py": {
+      "bytes": 685,
+      "sha256": "520249b30035d7a2a6c3bb0f03ec8d2553ad9adfbaea4e3fec1d98700247fa5e"
+    },
+    "nemo/collections/asr/inference/streaming/state/cache_aware_ctc_state.py": {
+      "bytes": 931,
+      "sha256": "9805ca3553b575cadfd8f984f60137d73487dfc4632b83005c09225baa7f78a3"
+    },
+    "nemo/collections/asr/inference/streaming/state/cache_aware_rnnt_state.py": {
+      "bytes": 8955,
+      "sha256": "a39c296d7bbe063a8b287f59f8c05dc02fa84cbc07746b1af82f38e7a2189442"
+    },
+    "nemo/collections/asr/inference/streaming/state/cache_aware_state.py": {
+      "bytes": 3490,
+      "sha256": "49cfca1ab904519c9a55323091ac0002124d911b61b116330880866c766af536"
+    },
+    "nemo/collections/asr/inference/streaming/state/ctc_state.py": {
+      "bytes": 875,
+      "sha256": "d8f17bca9ee255ab229e1146fd93c13aed2e397487a144087147c6261a24c977"
+    },
+    "nemo/collections/asr/inference/streaming/state/rnnt_state.py": {
+      "bytes": 1352,
+      "sha256": "68d010a676e7c5256a61cb811ea0f9ad926e0ab7fea5bfcbf42e31f84d8f2e42"
+    },
+    "nemo/collections/asr/inference/streaming/state/salm_state.py": {
+      "bytes": 877,
+      "sha256": "e6e5d15f8b0beb71545681709f8853db111d812dea8be0ddbb577d283b52d69c"
+    },
+    "nemo/collections/asr/inference/streaming/state/state.py": {
+      "bytes": 14011,
+      "sha256": "89b0e5c5af0def725a5217068fa58a8b7e862eee357bc6d5b2fc98412350e6f6"
+    },
+    "nemo/collections/asr/inference/streaming/text/__init__.py": {
+      "bytes": 685,
+      "sha256": "520249b30035d7a2a6c3bb0f03ec8d2553ad9adfbaea4e3fec1d98700247fa5e"
+    },
+    "nemo/collections/asr/inference/streaming/text/text_processing.py": {
+      "bytes": 14218,
+      "sha256": "0774303c40dad07f3b12836abdd2ec52574347daa710326a59e85279c2e8d516"
+    },
+    "nemo/collections/asr/inference/utils/__init__.py": {
+      "bytes": 685,
+      "sha256": "520249b30035d7a2a6c3bb0f03ec8d2553ad9adfbaea4e3fec1d98700247fa5e"
+    },
+    "nemo/collections/asr/inference/utils/audio_io.py": {
+      "bytes": 1163,
+      "sha256": "6425965c31acea8257e0d10c861252fcbb845d3c1c24b3fa26b3d6964584b119"
+    },
+    "nemo/collections/asr/inference/utils/bpe_decoder.py": {
+      "bytes": 11788,
+      "sha256": "4687fc7960b79e059f0333f15db0a11b44530e1b02f9967c23ff21e3afa78d37"
+    },
+    "nemo/collections/asr/inference/utils/config_io.py": {
+      "bytes": 1522,
+      "sha256": "1b4fcdf24d3a4dce11a84551fa88ef720acf8340394591782967d2cf88f40a38"
+    },
+    "nemo/collections/asr/inference/utils/constants.py": {
+      "bytes": 1204,
+      "sha256": "233a30853e561cac9d8a63c2c928f484be60b15e6c2d34f78e23710748b4ad48"
+    },
+    "nemo/collections/asr/inference/utils/context_manager.py": {
+      "bytes": 7860,
+      "sha256": "5c7ecfc76c1f8c345f3be1e3ab14d2e3ffeb05fbd819750260a851052d305f0f"
+    },
+    "nemo/collections/asr/inference/utils/device_utils.py": {
+      "bytes": 2543,
+      "sha256": "66dd3306fd56b497b4b3cdf920f7fd00b0ae0d5ea665030d2186c56e3f21c0af"
+    },
+    "nemo/collections/asr/inference/utils/endpointing_utils.py": {
+      "bytes": 1685,
+      "sha256": "7dbc05799da61c4bc245ef26e79db822d61edc64f90d2d7add1985db13036d55"
+    },
+    "nemo/collections/asr/inference/utils/enums.py": {
+      "bytes": 2182,
+      "sha256": "81337e13ba4b0b91a15388ea3dcd5c5e298ace09e5a811f18d3f60ec86828e55"
+    },
+    "nemo/collections/asr/inference/utils/itn_utils.py": {
+      "bytes": 2996,
+      "sha256": "3cd7c921c9058abb39aa8248fb313b2e96c032eab616fa1b50d5e9d01180475c"
+    },
+    "nemo/collections/asr/inference/utils/lcs_merge.py": {
+      "bytes": 4188,
+      "sha256": "20f175844afb967da7ed36bae55baa3b8c13da11db376e74246eb156a3c968ca"
+    },
+    "nemo/collections/asr/inference/utils/manifest_io.py": {
+      "bytes": 8380,
+      "sha256": "dca140f178153d53956bf89caedbea6d93e624e69535f915dd39b48b7dd665b9"
+    },
+    "nemo/collections/asr/inference/utils/per_stream_biasing.py": {
+      "bytes": 4126,
+      "sha256": "c305d0a53e5e79eee050b65c50b662f38f4e65071a52c074d240626649f50184"
+    },
+    "nemo/collections/asr/inference/utils/pipeline_eval.py": {
+      "bytes": 7683,
+      "sha256": "b4192662d45134d93addd2c5d6358f0022ca0a19c786621d4072ae969d6235b0"
+    },
+    "nemo/collections/asr/inference/utils/pipeline_utils.py": {
+      "bytes": 16073,
+      "sha256": "dd8d7108ce7bbfffa82ecfbaf57aa0552bd6e11f13b05849462cd79b8b188f03"
+    },
+    "nemo/collections/asr/inference/utils/progressbar.py": {
+      "bytes": 3143,
+      "sha256": "6d9e7d151d40bd00912897ffd158b21014d857b611329d729460bb2ed86f3b78"
+    },
+    "nemo/collections/asr/inference/utils/simulstream_manifest_utils.py": {
+      "bytes": 3928,
+      "sha256": "22e58a5b3647becb1a3d73c12f90acfda471723367f63b1e2fe181abba193e0d"
+    },
+    "nemo/collections/asr/inference/utils/simulstream_pipeline_adapter.py": {
+      "bytes": 24271,
+      "sha256": "d3ac09d4d8da04c5c3dc23db3da73e783c66b43a4bf7b4ad4fafcf91be6c28d4"
+    },
+    "nemo/collections/asr/inference/utils/state_management_utils.py": {
+      "bytes": 7105,
+      "sha256": "5d277e08041932b46bef90a7bddfe3ef1a0f3dcc7b4bee06dd6bd261a0c09c00"
+    },
+    "nemo/collections/asr/inference/utils/text_segment.py": {
+      "bytes": 10067,
+      "sha256": "6ee4d36b433eb8ff1ccd4d4ae8668b004b35bfe4f127f365dd47d531168e3c63"
+    },
+    "nemo/collections/asr/losses/__init__.py": {
+      "bytes": 1378,
+      "sha256": "447c721cc821fa2660b08b6f3724b2213d42eb2de676e946eb6d35ab08fb7611"
+    },
+    "nemo/collections/asr/losses/angularloss.py": {
+      "bytes": 2427,
+      "sha256": "9990ff346b35b1fab4ba418d5cea7c9e3848e49d4f3704125063ebd03987b733"
+    },
+    "nemo/collections/asr/losses/aux_diarization_loss.py": {
+      "bytes": 8894,
+      "sha256": "f2d04c54ee3d4f6f509399f4ed228ddd1f052d1f55b092a134cb69c007d44a4b"
+    },
+    "nemo/collections/asr/losses/bce_loss.py": {
+      "bytes": 6169,
+      "sha256": "a694027a017d2332216396b6dd6bbff6cd01010bf9f69623b4d31f3540b7c562"
+    },
+    "nemo/collections/asr/losses/ctc.py": {
+      "bytes": 3354,
+      "sha256": "73c410a647efd47c5daa2a3c3ca2c15ec0fc59d2ca7dcd333675c548ef20c82b"
+    },
+    "nemo/collections/asr/losses/rnnt.py": {
+      "bytes": 20916,
+      "sha256": "24017b6fc48e3f4098f367d450f923b45c8ca56a3f9038d0cc5a2f0d459daab9"
+    },
+    "nemo/collections/asr/losses/rnnt_pytorch.py": {
+      "bytes": 16113,
+      "sha256": "486c2395dd5d782da99228a48d727196efbd6d48a3182e15ad73241fbedb4d82"
+    },
+    "nemo/collections/asr/losses/ssl_losses/__init__.py": {
+      "bytes": 765,
+      "sha256": "5d243d7115a4b86ec29f4de781cb4209efd2e276f260235281e7d55f563d9a83"
+    },
+    "nemo/collections/asr/losses/ssl_losses/contrastive.py": {
+      "bytes": 13814,
+      "sha256": "3badd9d2b6917b097f2dd34c5198e0934422669a75fdd81d17a88c12712b7490"
+    },
+    "nemo/collections/asr/losses/ssl_losses/ctc.py": {
+      "bytes": 2221,
+      "sha256": "7e7d1ba38819291584a54e1a08560397850eb3b46e0f2d413880809cf0bc8ab3"
+    },
+    "nemo/collections/asr/losses/ssl_losses/mlm.py": {
+      "bytes": 5217,
+      "sha256": "c002efde598ddfb8c1269cf04de9c5330057bbba4570ebc0cc09b3f4627c7a57"
+    },
+    "nemo/collections/asr/losses/ssl_losses/rnnt.py": {
+      "bytes": 2150,
+      "sha256": "4b161952c93fbfefac53e9a3408ea517c4b886657be2e8fbd3af0340f3977369"
+    },
+    "nemo/collections/asr/metrics/__init__.py": {
+      "bytes": 914,
+      "sha256": "37ea721ee5f8160f3ead706bce5d408483c9bae834ef16f1aac9f250f4098901"
+    },
+    "nemo/collections/asr/metrics/bleu.py": {
+      "bytes": 13686,
+      "sha256": "ca0ae8ce9c078cb3fac636601361645acefad04e409c10e015f3af7275b14858"
+    },
+    "nemo/collections/asr/metrics/cpwer.py": {
+      "bytes": 8332,
+      "sha256": "78100cf33e535e81d9319c275faee5fd0023527e81813a4ad852ddf78fbf6b63"
+    },
+    "nemo/collections/asr/metrics/der.py": {
+      "bytes": 32524,
+      "sha256": "34b42ccf8f05065cc72ff7af4e9ac125daa79ef3fe611f18db00e6806772e5fd"
+    },
+    "nemo/collections/asr/metrics/md_eval.py": {
+      "bytes": 54914,
+      "sha256": "c34af6eeec07e1df795c6820f36cb05459c28ac8d5d84fb0efea433035546de3"
+    },
+    "nemo/collections/asr/metrics/multi_binary_acc.py": {
+      "bytes": 7110,
+      "sha256": "600cdb0a9730e4431481a725181202e99685160b71a1e8719bc3de34fc07c105"
+    },
+    "nemo/collections/asr/metrics/multitask.py": {
+      "bytes": 16753,
+      "sha256": "387f093712836e4a5ffa3c03b22e2d3eed186b60e18ba99227ab913f953f932a"
+    },
+    "nemo/collections/asr/metrics/speaker_counting.py": {
+      "bytes": 1865,
+      "sha256": "9940c14d001062e96d464888ab30cacd96af5927077a3fd3284e9345de4eb13c"
+    },
+    "nemo/collections/asr/metrics/wer.py": {
+      "bytes": 14122,
+      "sha256": "7af346d9c6077fe712c556fdaff73b54b7bcff90f430ea8360ae4dc395963868"
+    },
+    "nemo/collections/asr/models/__init__.py": {
+      "bytes": 3164,
+      "sha256": "e31afa4db83df8b2b81b5acb4640c664f66cf1b0f70245b5e216376713216399"
+    },
+    "nemo/collections/asr/models/aed_multitask_models.py": {
+      "bytes": 67161,
+      "sha256": "d62819341beae831288b77c2ffe3ccd93faf07f0d5c0a0a3cf88976e83dba59a"
+    },
+    "nemo/collections/asr/models/asr_eou_models.py": {
+      "bytes": 41669,
+      "sha256": "506b35097f9eacec81d3a1fd6fee12ddcec30f0a2ea2b4ab31d4539dcc2fbf9f"
+    },
+    "nemo/collections/asr/models/asr_model.py": {
+      "bytes": 16492,
+      "sha256": "228072ab2f138f01dcb2895cf82b4e1e050356b77187f894da75903729771765"
+    },
+    "nemo/collections/asr/models/classification_models.py": {
+      "bytes": 65191,
+      "sha256": "3ab2ac830ac36e50995f4d7cdacfd0eff3c8cab99f6d0bc1a9995aa86307b967"
+    },
+    "nemo/collections/asr/models/clustering_diarizer.py": {
+      "bytes": 23887,
+      "sha256": "4e738703b19b07cfefe0d3ac5f62f1ce6c3c9b418fe6153648f3889d9042072e"
+    },
+    "nemo/collections/asr/models/confidence_ensemble.py": {
+      "bytes": 5771,
+      "sha256": "17b74573e443e6bbf34f0b70acc908aeae2e270ccd9e4db020eb35e497f4f615"
+    },
+    "nemo/collections/asr/models/ctc_bpe_models.py": {
+      "bytes": 32139,
+      "sha256": "ec3a439242bc67776185338eb9c1418ef5570943474ace857d6184c7c7105624"
+    },
+    "nemo/collections/asr/models/ctc_models.py": {
+      "bytes": 39795,
+      "sha256": "fff7accf073b2309d0e77fa102be3295f480700b6f49a26567ab20ff886f338a"
+    },
+    "nemo/collections/asr/models/hybrid_rnnt_ctc_bpe_models.py": {
+      "bytes": 31203,
+      "sha256": "a772fa4ea298a9a948e55b0e35e6422c255c490bc3242db02c9cdd8b60e16799"
+    },
+    "nemo/collections/asr/models/hybrid_rnnt_ctc_bpe_models_prompt.py": {
+      "bytes": 45592,
+      "sha256": "cc0ddd934077a1cbdf1f17596333fc264127529917d6c0082e254a8d82d65fca"
+    },
+    "nemo/collections/asr/models/hybrid_rnnt_ctc_models.py": {
+      "bytes": 33148,
+      "sha256": "bbbe0a1035f4cd8486ddbc6586a84f76cc442785f0b64baeec783195fc748468"
+    },
+    "nemo/collections/asr/models/label_models.py": {
+      "bytes": 37578,
+      "sha256": "ee07ea82565c9c3bc4aa41c72e8cbc64c18ccda5ab77f5f67873f2db4a0ca7d7"
+    },
+    "nemo/collections/asr/models/multitalker_asr_models.py": {
+      "bytes": 6030,
+      "sha256": "afa349ce2de11940a71026cc307d64f833f6f055f091caa4b2cac93d6c905a3d"
+    },
+    "nemo/collections/asr/models/online_diarizer.py": {
+      "bytes": 26216,
+      "sha256": "030253ee6fae1ff537e596022c56ad8dcbec46239720dda7ee6aa3c8db72f3c1"
+    },
+    "nemo/collections/asr/models/rnnt_bpe_models.py": {
+      "bytes": 27145,
+      "sha256": "10811592138b55c67711efd71c528b03fd5df92be635509f01323da35c8e2e7f"
+    },
+    "nemo/collections/asr/models/rnnt_bpe_models_prompt.py": {
+      "bytes": 27359,
+      "sha256": "d45198c6fa15be5b7d10c36b2a7ce261da26bb3a0b67ed8c33afa8a406f01eb9"
+    },
+    "nemo/collections/asr/models/rnnt_models.py": {
+      "bytes": 51613,
+      "sha256": "82f48e2d5f46ca056d3f92e1d1603b6b0278924988b312d5fc4fde9211441534"
+    },
+    "nemo/collections/asr/models/sortformer_diar_models.py": {
+      "bytes": 104799,
+      "sha256": "36778c16b633d3ab537c391e6042dcecf9b5620eebd7f0d767461aef9134b1e6"
+    },
+    "nemo/collections/asr/models/ssl_models.py": {
+      "bytes": 49243,
+      "sha256": "e00afd1050f4dce77ae61d6be40236d88fae7179ebbaeee1acc528f522da3b84"
+    },
+    "nemo/collections/asr/models/transformer_bpe_models.py": {
+      "bytes": 29422,
+      "sha256": "36ee841e416fb32aa625f1615c5cf0251ca148bda9907835bfd405bce5a2c9c7"
+    },
+    "nemo/collections/asr/models/configs/__init__.py": {
+      "bytes": 1684,
+      "sha256": "05248fde20d5b3905017dbdad7fe08bbf9e21e8e715dc73a90b1105d7114cb0d"
+    },
+    "nemo/collections/asr/models/configs/asr_models_config.py": {
+      "bytes": 5521,
+      "sha256": "165ba43fff428c6076315d2805889fbabd0ba0528d2003b3a2ee3bbc346e3f75"
+    },
+    "nemo/collections/asr/models/configs/classification_models_config.py": {
+      "bytes": 4296,
+      "sha256": "498c2bfe870706958ed7710f62259e50b05e7352b60a0b6f1efd56e65d755069"
+    },
+    "nemo/collections/asr/models/configs/diarizer_config.py": {
+      "bytes": 6662,
+      "sha256": "e76c028911e8a0c6befd49438feecf1d0aec554ff19daea74564489037b6ca73"
+    },
+    "nemo/collections/asr/models/configs/matchboxnet_config.py": {
+      "bytes": 13254,
+      "sha256": "67f33ddf8bb8afd6472ea1b47236164c06d4f82d5d65615a8ae6f9793058cde0"
+    },
+    "nemo/collections/asr/modules/__init__.py": {
+      "bytes": 3376,
+      "sha256": "dbeb2f7bd1f980e7ecefaf468b67419eb3d3f10106ed80bb5f6d08d5690e65e4"
+    },
+    "nemo/collections/asr/modules/audio_preprocessing.py": {
+      "bytes": 32976,
+      "sha256": "c6ef16769c20ec2b0e768eb9823a07d28a39fc7075ec2aac07676575bf2adc71"
+    },
+    "nemo/collections/asr/modules/beam_search_decoder.py": {
+      "bytes": 4497,
+      "sha256": "d00b6b868ea12924e7e27411bdcd095453cb3c5922f00348de56b42e2b4decc1"
+    },
+    "nemo/collections/asr/modules/conformer_encoder.py": {
+      "bytes": 73827,
+      "sha256": "b0b9c7997d66a654b9d54d976ef154520ce76c65f26395c0a41cdd52432fb26d"
+    },
+    "nemo/collections/asr/modules/conv_asr.py": {
+      "bytes": 36194,
+      "sha256": "4a301f908f9c58ffda49c4eecee8ace8e9bb71fdc6c85f79a566bfe94eebf7a7"
+    },
+    "nemo/collections/asr/modules/flashlight_decoder.py": {
+      "bytes": 11173,
+      "sha256": "6ebec7722411f1b1ea3b282755df35b9f664b55f06346b5c68eab886bdb7be20"
+    },
+    "nemo/collections/asr/modules/hybrid_autoregressive_transducer.py": {
+      "bytes": 10971,
+      "sha256": "d383eb62e377651dc99ea7e814a5af19a8e282b8ce985faf3f33db5500631594"
+    },
+    "nemo/collections/asr/modules/lstm_decoder.py": {
+      "bytes": 3786,
+      "sha256": "6c1051f6b3492c78ca2ba8a5f6b2b60746a65289f36b53050f20fd6d95bab5ef"
+    },
+    "nemo/collections/asr/modules/parallel_expert_encoder.py": {
+      "bytes": 98248,
+      "sha256": "8da3cfcd2e1e1345fedcd8f88a15508fb810c78dc09c2950b1ea364891c1a088"
+    },
+    "nemo/collections/asr/modules/rnn_encoder.py": {
+      "bytes": 6775,
+      "sha256": "81ca89e6684f8677ca9fb111d3af7fe6e7598c459564ff891e1badd6204c8ef1"
+    },
+    "nemo/collections/asr/modules/rnnt.py": {
+      "bytes": 99422,
+      "sha256": "5f7d2585b9693fb54a399cc1c409d7040fece7025b380d329fa911562966a6b5"
+    },
+    "nemo/collections/asr/modules/rnnt_abstract.py": {
+      "bytes": 16975,
+      "sha256": "58537a49fceb209cbd1ca7bd0ad08c017549b90bd49eeefc27bee96db5bdfea0"
+    },
+    "nemo/collections/asr/modules/sortformer_modules.py": {
+      "bytes": 67500,
+      "sha256": "ead9804248b45153a1abfbe54ba67fab3c1d418da904f025ade5500168e7ee7c"
+    },
+    "nemo/collections/asr/modules/transformer_encoder.py": {
+      "bytes": 95137,
+      "sha256": "3bc16fef80f562fec26eface872dcb15560dc5f8e2e45adaf405e8076228253c"
+    },
+    "nemo/collections/asr/modules/transformer_encoder_utils.py": {
+      "bytes": 7700,
+      "sha256": "1de045b6db9671406ed37f236495085ef2394443aabfa84549f190e95890ef7a"
+    },
+    "nemo/collections/asr/modules/wav2vec_modules.py": {
+      "bytes": 14514,
+      "sha256": "bf513b7316d0f37e4ddcf8567fdd8165acf4d5dd6bd24fef569f4cc4eb4f74d3"
+    },
+    "nemo/collections/asr/modules/ssl_modules/__init__.py": {
+      "bytes": 1483,
+      "sha256": "c8c265746fc0f1e3df76990785a4773dddec18669a5b6fedaba7409b6ee27ffe"
+    },
+    "nemo/collections/asr/modules/ssl_modules/augmentation.py": {
+      "bytes": 12085,
+      "sha256": "5b788c283f5f480627eccec078c5bd7459c60767dfc94264d7759d9828498fdd"
+    },
+    "nemo/collections/asr/modules/ssl_modules/masking.py": {
+      "bytes": 7992,
+      "sha256": "9050b82c3fbed39c410a45ae03bd6974c54bd0fb13ecc166aa29e95a792c359c"
+    },
+    "nemo/collections/asr/modules/ssl_modules/multi_layer_feat.py": {
+      "bytes": 6251,
+      "sha256": "597c48d53235e8d2b2112a1d13e4130577b4108ab1a6af748fec7f40c1d31f02"
+    },
+    "nemo/collections/asr/modules/ssl_modules/multi_softmax_decoder.py": {
+      "bytes": 3356,
+      "sha256": "9a589add59087db697623d95f7bbb5ae306769c4568b0a0f58c7471514adee5b"
+    },
+    "nemo/collections/asr/modules/ssl_modules/quantizers.py": {
+      "bytes": 6786,
+      "sha256": "e1f42eae1069bc90007c9fa37e8ceaeb2a8efce0307fa025433c48478b200c6d"
+    },
+    "nemo/collections/asr/modules/transformer/__init__.py": {
+      "bytes": 2398,
+      "sha256": "eee92f0c17895e68fc3e6f8d142a842f26879d20c8f7d0f1721f5d83c57f5d80"
+    },
+    "nemo/collections/asr/modules/transformer/bridge_encoders.py": {
+      "bytes": 5429,
+      "sha256": "a2cdff9147175847dcee902e5c64d176f9a55fafc20b33d794345a53253f8028"
+    },
+    "nemo/collections/asr/modules/transformer/decoder_module.py": {
+      "bytes": 2172,
+      "sha256": "eb2ac7cfd5ce9769257a1af3eacdbf6ba2e988182ce65bb192b4a93538197b9d"
+    },
+    "nemo/collections/asr/modules/transformer/encoder_module.py": {
+      "bytes": 1482,
+      "sha256": "929c3b2bf722f3a4060ba1dafc3e385e15edc4e8237c20270dc810bbb2c2de75"
+    },
+    "nemo/collections/asr/modules/transformer/perceiver_encoders.py": {
+      "bytes": 6940,
+      "sha256": "a58d9b71f7d577aacbb9fb20c042b574a4b151bb45174c5288c15b367dc7709c"
+    },
+    "nemo/collections/asr/modules/transformer/reduction_encoders.py": {
+      "bytes": 5137,
+      "sha256": "a2acfe90354c0b16f6f9c031ded1e1556758ac6367edd8eececeeefa9128b6e9"
+    },
+    "nemo/collections/asr/modules/transformer/text_generation.py": {
+      "bytes": 6028,
+      "sha256": "d252802383326815aaae982fdf7aadf0a49f15b57d465b304bf8c8cde0a8cc28"
+    },
+    "nemo/collections/asr/modules/transformer/transformer.py": {
+      "bytes": 10991,
+      "sha256": "1f631ef7dc12128390897d0161c23486b3bca51296ea9ee88af647baa6dfa4b3"
+    },
+    "nemo/collections/asr/modules/transformer/transformer_bottleneck.py": {
+      "bytes": 12721,
+      "sha256": "3867685981ed11ea1e438425889931882500aea65ba3a590fd715158eb9472bd"
+    },
+    "nemo/collections/asr/modules/transformer/transformer_decoders.py": {
+      "bytes": 13459,
+      "sha256": "767af4a82baece0c3c4841b35ffeb2c8b26433c2b7fc82a78f0d4dd1a539316c"
+    },
+    "nemo/collections/asr/modules/transformer/transformer_encoders.py": {
+      "bytes": 10588,
+      "sha256": "153bf3ae26e5fc64c32103dc4e2d3082e20060a445bf0d69f68a7959117f745c"
+    },
+    "nemo/collections/asr/modules/transformer/transformer_encoders_nlp.py": {
+      "bytes": 6911,
+      "sha256": "3fa827b3d59a00051d8bc2e09dfe81bc4212f7c15ce45c185ef67421d49d916e"
+    },
+    "nemo/collections/asr/modules/transformer/transformer_generators.py": {
+      "bytes": 60232,
+      "sha256": "aabf5bfc36b2f53e718e93541302095eecd19b1dd9bfaa2b05b51397d916d9f2"
+    },
+    "nemo/collections/asr/modules/transformer/transformer_modules.py": {
+      "bytes": 12140,
+      "sha256": "536d6ab13ce47eeec52ec3ca991164ddee744ff1954bc4ffbb1578f70db713a0"
+    },
+    "nemo/collections/asr/modules/transformer/transformer_utils.py": {
+      "bytes": 6506,
+      "sha256": "b46fa3c0ccadd79c4328b7b5b346250380dc62a363a6cc0608ff2de4fb47dc3e"
+    },
+    "nemo/collections/asr/parts/__init__.py": {
+      "bytes": 685,
+      "sha256": "702e69ecbdb6a2a88da82ef22343d4ad372d2e30f0a09f02bb1152932058500d"
+    },
+    "nemo/collections/asr/parts/features.py": {
+      "bytes": 1991,
+      "sha256": "38c905b32c4eec16c0958f8f9caf5b8e1e5accd834af282df7c19c45485554cc"
+    },
+    "nemo/collections/asr/parts/packed_sequence.py": {
+      "bytes": 15272,
+      "sha256": "6b927566c9f022ab0af4595c09c64729dfa8ec5bb939a4a3a659b5151e7323d3"
+    },
+    "nemo/collections/asr/parts/context_biasing/__init__.py": {
+      "bytes": 1321,
+      "sha256": "88844f7aa917649b58c8396d2a616a9cfe55c26c4f9b140ed7cef045cf3134ca"
+    },
+    "nemo/collections/asr/parts/context_biasing/biasing_multi_model.py": {
+      "bytes": 33265,
+      "sha256": "5064e86b8dd813a8d3f5d7f71c288cff5faabeca25b678e0fa39e7db1f4d174d"
+    },
+    "nemo/collections/asr/parts/context_biasing/boosting_graph_batched.py": {
+      "bytes": 29593,
+      "sha256": "9b4b1fb5d8460940b7b7f086a67432f9fa18e6101fe0b4e95b4465031d7e01c3"
+    },
+    "nemo/collections/asr/parts/context_biasing/context_biasing_utils.py": {
+      "bytes": 13757,
+      "sha256": "4e26277e37baf927f245efc1c1596e9b0b7aa15d7c464368945443289e1f09bd"
+    },
+    "nemo/collections/asr/parts/context_biasing/context_graph_ctc.py": {
+      "bytes": 10212,
+      "sha256": "6878874cd8c44a913be629ab12b53a577d31af4f3afe5e6f89ef3680ce9f8dd1"
+    },
+    "nemo/collections/asr/parts/context_biasing/context_graph_universal.py": {
+      "bytes": 28914,
+      "sha256": "340df1d544c02b11893714c4570a25a79b1b11a58da02c35d41618b0e046a5d3"
+    },
+    "nemo/collections/asr/parts/context_biasing/ctc_based_word_spotter.py": {
+      "bytes": 14168,
+      "sha256": "0a9da0e9c1337c1706a384d59fe6a43b6b482d85cf07db695896f905b0752420"
+    },
+    "nemo/collections/asr/parts/context_biasing/visualization.py": {
+      "bytes": 3795,
+      "sha256": "8e593b633ab40a12862f86b55b2ec1097d548fb5a0b94eb5c35cd9c3605ac8ba"
+    },
+    "nemo/collections/asr/parts/k2/__init__.py": {
+      "bytes": 685,
+      "sha256": "97f1b0ead8fd29160c98da485176c934ed2f7e4d2ed6e186bdfb39fa294d23c3"
+    },
+    "nemo/collections/asr/parts/k2/graph_transducer.py": {
+      "bytes": 24368,
+      "sha256": "317c57b38992bc88b0c351f2361252916c2dfe44de185ba79eef3bfdb70b6694"
+    },
+    "nemo/collections/asr/parts/k2/rnnt_logprobs.py": {
+      "bytes": 1882,
+      "sha256": "14a1f300565508d9a372ec1c87188b83e9e06d6589196ac2b7712d50cc3ddb3d"
+    },
+    "nemo/collections/asr/parts/k2/rnnt_logprobs_triton.py": {
+      "bytes": 10103,
+      "sha256": "947ce415a48ac569e5879fd9bd595a5e20d27aac2eeb3bd139e737c969932d58"
+    },
+    "nemo/collections/asr/parts/k2/w_transducer.py": {
+      "bytes": 16454,
+      "sha256": "c85087b8fb75dfa85ad6b99abbd136fa9349ce417ec11e81638d57bcd2cda892"
+    },
+    "nemo/collections/asr/parts/mixins/__init__.py": {
+      "bytes": 1562,
+      "sha256": "5f33b621605d3a57dda17d5bc28953141419933598fe481ddc854b81c5b2e259"
+    },
+    "nemo/collections/asr/parts/mixins/asr_adapter_mixins.py": {
+      "bytes": 12333,
+      "sha256": "fac99d39375c865a066a07b3aae1543c8a179ea02ac37565ff014809dbc7fb43"
+    },
+    "nemo/collections/asr/parts/mixins/diarization.py": {
+      "bytes": 27959,
+      "sha256": "c94994dcb78573faafbea97da2bbddf6d6f34d723225e60812d24fae9f52306e"
+    },
+    "nemo/collections/asr/parts/mixins/interctc_mixin.py": {
+      "bytes": 14627,
+      "sha256": "f9c84ccff71e169c0730d5a000469a79a10ebca14313b2f221845aaf99a1ded6"
+    },
+    "nemo/collections/asr/parts/mixins/mixins.py": {
+      "bytes": 47458,
+      "sha256": "d4531808440c9f1649064044a21419975c0f2424e2442d4f2ef68a301d576c96"
+    },
+    "nemo/collections/asr/parts/mixins/multitalker_asr_mixins.py": {
+      "bytes": 10464,
+      "sha256": "c402428c4e3e732b02e09e12c4914d9599bb9ccf6204d1708510711caa583f20"
+    },
+    "nemo/collections/asr/parts/mixins/streaming.py": {
+      "bytes": 6263,
+      "sha256": "d9c2a6fbebc8219d3f8ca05c39b9346956528adfd6f792276350a74c43e57c29"
+    },
+    "nemo/collections/asr/parts/mixins/transcription.py": {
+      "bytes": 34988,
+      "sha256": "594d47afb1d6dd876fbcc6873e171224dcd9bc1d4f11119202c083b90b57023e"
+    },
+    "nemo/collections/asr/parts/numba/__init__.py": {
+      "bytes": 768,
+      "sha256": "968a195960f0612f603785b388ca05963d439689501da1c3c68c90d48dfd1e95"
+    },
+    "nemo/collections/asr/parts/numba/rnnt_loss/__init__.py": {
+      "bytes": 913,
+      "sha256": "8a9f3041ae3552fb0e1a8d24468e334565318022fc4891ef934203d2f2f2d36a"
+    },
+    "nemo/collections/asr/parts/numba/rnnt_loss/rnnt.py": {
+      "bytes": 18296,
+      "sha256": "2da860ec62846a22f4dac38b589fc3ecb1ded30300ca5d603e35917b255bcf20"
+    },
+    "nemo/collections/asr/parts/numba/rnnt_loss/rnnt_numpy.py": {
+      "bytes": 13058,
+      "sha256": "46160e1c46f969f3db4c0d5f4493a642ecb0ca86edeb79ddf1ec83d6caa5b3f7"
+    },
+    "nemo/collections/asr/parts/numba/rnnt_loss/rnnt_pytorch.py": {
+      "bytes": 30522,
+      "sha256": "931eaf39e2798abc55b2d8eb7b3bf256bf238c140e1b6b37b810444cdc8a1d87"
+    },
+    "nemo/collections/asr/parts/numba/rnnt_loss/utils/__init__.py": {
+      "bytes": 685,
+      "sha256": "2c9b92264bea52d3cf909e7f27e2913bd3c310500510e72aa8e705ff6191af22"
+    },
+    "nemo/collections/asr/parts/numba/rnnt_loss/utils/global_constants.py": {
+      "bytes": 1802,
+      "sha256": "838ed2a92f3355682d8bfe62e7eb08050130c75dddaa0eb4d9a2c1ed602ab206"
+    },
+    "nemo/collections/asr/parts/numba/rnnt_loss/utils/rnnt_helper.py": {
+      "bytes": 3903,
+      "sha256": "62a7e812cc0ae8c061a039598d5a5544e2393b7001d204f0943522bfe6fee09c"
+    },
+    "nemo/collections/asr/parts/numba/rnnt_loss/utils/cpu_utils/__init__.py": {
+      "bytes": 1269,
+      "sha256": "26253a95864d77d700b1164c47e65ccc61bca12706ba44960ad0593d19c6b7fb"
+    },
+    "nemo/collections/asr/parts/numba/rnnt_loss/utils/cpu_utils/cpu_rnnt.py": {
+      "bytes": 15990,
+      "sha256": "8874b2c7100ba4ecf207047e7050a4d6f346d5aabdff375afe6606a51ac5bb3f"
+    },
+    "nemo/collections/asr/parts/numba/rnnt_loss/utils/cuda_utils/__init__.py": {
+      "bytes": 1269,
+      "sha256": "26253a95864d77d700b1164c47e65ccc61bca12706ba44960ad0593d19c6b7fb"
+    },
+    "nemo/collections/asr/parts/numba/rnnt_loss/utils/cuda_utils/gpu_rnnt.py": {
+      "bytes": 31762,
+      "sha256": "4ecf3cc921dcb5aa66920e474742ca4d68576051cb50e74578bf01704f655fe9"
+    },
+    "nemo/collections/asr/parts/numba/rnnt_loss/utils/cuda_utils/gpu_rnnt_kernel.py": {
+      "bytes": 71249,
+      "sha256": "4af886a3243331d731e57939602cf54325a4529bac66363d76bca7b100ad0e67"
+    },
+    "nemo/collections/asr/parts/numba/rnnt_loss/utils/cuda_utils/reduce.py": {
+      "bytes": 12625,
+      "sha256": "0978596ea4929b1b176086e78604380cb3642202021c4884452216d000aa8567"
+    },
+    "nemo/collections/asr/parts/numba/spec_augment/__init__.py": {
+      "bytes": 821,
+      "sha256": "1cacc5183558f0f022c248e77e56ecad8e7b6b2989eb072fc648954773dfaf73"
+    },
+    "nemo/collections/asr/parts/numba/spec_augment/spec_aug_numba.py": {
+      "bytes": 11809,
+      "sha256": "de1f2220859a220776cbf95232be655cb4beb3a35b154ad0e9063e2ec2d7dc8f"
+    },
+    "nemo/collections/asr/parts/preprocessing/__init__.py": {
+      "bytes": 1470,
+      "sha256": "3c65cb2615409899a73907cb5a3498a136d376c0f1457fe2f963b7aeb9ddd37b"
+    },
+    "nemo/collections/asr/parts/preprocessing/feature_loader.py": {
+      "bytes": 3106,
+      "sha256": "319c9bcfbe04c4b62d99fabcfba305ea9fe78c3338df7340692eaafb9bcdbd2e"
+    },
+    "nemo/collections/asr/parts/preprocessing/features.py": {
+      "bytes": 36311,
+      "sha256": "5cbc7b5eff0c2e57c4d9e548e5abc33b8c20078e48661faba9f5872c123d4321"
+    },
+    "nemo/collections/asr/parts/preprocessing/perturb.py": {
+      "bytes": 58083,
+      "sha256": "0b5ce7e787b5c3e6f9307bf5f39ecb97da736a2413816c2b428eb378536e6218"
+    },
+    "nemo/collections/asr/parts/preprocessing/segment.py": {
+      "bytes": 25361,
+      "sha256": "51084f821b65d40672f0fe4cbeb56ba39adaec1c54931011ae215f54d592bf3e"
+    },
+    "nemo/collections/asr/parts/submodules/__init__.py": {
+      "bytes": 685,
+      "sha256": "2c9b92264bea52d3cf909e7f27e2913bd3c310500510e72aa8e705ff6191af22"
+    },
+    "nemo/collections/asr/parts/submodules/batchnorm.py": {
+      "bytes": 3779,
+      "sha256": "d6031ae0ee464343813fe3870de47137b17e43186a9f1976f02405a0f28bcbbc"
+    },
+    "nemo/collections/asr/parts/submodules/causal_convs.py": {
+      "bytes": 5177,
+      "sha256": "d1853d507d4619d4bb56a906ada5604962b5d223aafd470bc40dc17713d481ca"
+    },
+    "nemo/collections/asr/parts/submodules/classifier.py": {
+      "bytes": 2999,
+      "sha256": "618b4b6f91af9e8af702c14c6002f4f79129a8a19a8a762517a2c43142243ffc"
+    },
+    "nemo/collections/asr/parts/submodules/conformer_modules.py": {
+      "bytes": 17229,
+      "sha256": "c10146c4da9685a2aa02baa84ab9f21f4f23d019d1ee4ff2346c0444f17cbf13"
+    },
+    "nemo/collections/asr/parts/submodules/ctc_batched_beam_decoding.py": {
+      "bytes": 35445,
+      "sha256": "c595fe0f918e38046ab2fa230aee28796fad14f45bb1410d2434886355c71af7"
+    },
+    "nemo/collections/asr/parts/submodules/ctc_beam_decoding.py": {
+      "bytes": 42503,
+      "sha256": "b37908eacd18f7531afaa95dca53ec5fd69c8d9976ba880d84f28a2459a335e0"
+    },
+    "nemo/collections/asr/parts/submodules/ctc_decoding.py": {
+      "bytes": 66111,
+      "sha256": "5a2526a54547d5df27de94a5c5a47530084972f32b530f202694909981772902"
+    },
+    "nemo/collections/asr/parts/submodules/ctc_greedy_decoding.py": {
+      "bytes": 47299,
+      "sha256": "b7acd1130c0d9aa098e8e7cc74be966d6aa82ac562a54afda3625c0bebd92814"
+    },
+    "nemo/collections/asr/parts/submodules/cuda_graph_rnnt_greedy_decoding.py": {
+      "bytes": 16890,
+      "sha256": "1f055c1b6e1517f9a27d7c98d8430d57863a12ea5029e7065dd975e709061839"
+    },
+    "nemo/collections/asr/parts/submodules/jasper.py": {
+      "bytes": 48690,
+      "sha256": "aba31c7dc3693a128fbc91a8ecc454b6d8f34ca5ffadb5a26d715904741f1c68"
+    },
+    "nemo/collections/asr/parts/submodules/multi_head_attention.py": {
+      "bytes": 57802,
+      "sha256": "1588a3bbf87def7ff137d7481ddd4b70d774d2d07342c39cb42ed36177784096"
+    },
+    "nemo/collections/asr/parts/submodules/multitask_beam_decoding.py": {
+      "bytes": 13231,
+      "sha256": "a713b1b7af2064fd8a3af2b91af596298a570eec256a86ab630fe2023a14b0c3"
+    },
+    "nemo/collections/asr/parts/submodules/multitask_decoding.py": {
+      "bytes": 31117,
+      "sha256": "dbd325552c69df749945d999f2afd9262d272420424a37894fb78896b5da20b7"
+    },
+    "nemo/collections/asr/parts/submodules/multitask_greedy_decoding.py": {
+      "bytes": 12248,
+      "sha256": "41e0a0f14a53031c4ad9f83ed0eb4db7760288b5090fd772cf3907b1ea515921"
+    },
+    "nemo/collections/asr/parts/submodules/rnnt_beam_decoding.py": {
+      "bytes": 79450,
+      "sha256": "19fa6a5dd483c0d67bf74fcc26821537c814860dcaa6dc915dba9250489a806f"
+    },
+    "nemo/collections/asr/parts/submodules/rnnt_decoding.py": {
+      "bytes": 100538,
+      "sha256": "7d10acca5d721d2a37a303b70c3c1b70fd5aed5cde9fbe68385e67541242cd5c"
+    },
+    "nemo/collections/asr/parts/submodules/rnnt_greedy_decoding.py": {
+      "bytes": 147461,
+      "sha256": "2684ad07f189b1ce98abfa4d405720018351d7242ac6d14a3029218e2fda9b8e"
+    },
+    "nemo/collections/asr/parts/submodules/rnnt_maes_batched_computer.py": {
+      "bytes": 25597,
+      "sha256": "3e0fb969b71c73f650eca8119580e32d0a013751e1a1107f844b6cf449526fa6"
+    },
+    "nemo/collections/asr/parts/submodules/rnnt_malsd_batched_computer.py": {
+      "bytes": 89283,
+      "sha256": "1c4829f0d28adb46e052661fc8647e320680c2551818965b9df102842060daf1"
+    },
+    "nemo/collections/asr/parts/submodules/spectr_augment.py": {
+      "bytes": 18662,
+      "sha256": "436b6f9a8e3158404f7ffd9d9e2de3420cdd2b2562abaa33789870c30204d0b8"
+    },
+    "nemo/collections/asr/parts/submodules/ssl_quantizers.py": {
+      "bytes": 7778,
+      "sha256": "62bcfbfe7d49f697a491ffa5b31c423a34755fd75c766ae374ac8be03758522f"
+    },
+    "nemo/collections/asr/parts/submodules/stateless_net.py": {
+      "bytes": 5752,
+      "sha256": "67253ab89b97e2e85e9e7a5517d53f4a632f3f9de94fd4b24da86e9c80a55b4b"
+    },
+    "nemo/collections/asr/parts/submodules/streaming_encoder_cuda_graphs.py": {
+      "bytes": 16041,
+      "sha256": "4a2b2b63ae8fe811709a9eb4d44dd2c4d6b9f67e500cc87feec66e0ef9206268"
+    },
+    "nemo/collections/asr/parts/submodules/subsampling.py": {
+      "bytes": 39724,
+      "sha256": "ad9cdbff181ded2f896849317a975c3839c60e02a72c2cc19994b28ba56701d4"
+    },
+    "nemo/collections/asr/parts/submodules/tdnn_attention.py": {
+      "bytes": 12087,
+      "sha256": "aa7f8dabe0df12f3a74f0fd970f278c6509014864e05bced974f029f1254eb90"
+    },
+    "nemo/collections/asr/parts/submodules/tdt_beam_decoding.py": {
+      "bytes": 47911,
+      "sha256": "f07cb57cb849fc966b9a1faf4f75882e6cb56eb21e12f3ded178c6cf0ff078b7"
+    },
+    "nemo/collections/asr/parts/submodules/tdt_malsd_batched_computer.py": {
+      "bytes": 81846,
+      "sha256": "dc4531fd4458f7c13725c0f06df19e5612eae300f426c73cda2b2a5a293e336f"
+    },
+    "nemo/collections/asr/parts/submodules/token_classifier.py": {
+      "bytes": 7205,
+      "sha256": "3fc77e3e39ac84cdf7789dd6646c44f14331daedc8ddba4b7b44d6b62ffdf147"
+    },
+    "nemo/collections/asr/parts/submodules/wfst_decoder.py": {
+      "bytes": 28154,
+      "sha256": "9b584429e42b909231d35a36bb1138b33e0621599f93b8b0f95487d82bf56300"
+    },
+    "nemo/collections/asr/parts/submodules/adapters/__init__.py": {
+      "bytes": 1495,
+      "sha256": "98aec331d0621c37d5a15bf5b00e7fc5a769f34b5af02ba5b6dfef5f0e3b122c"
+    },
+    "nemo/collections/asr/parts/submodules/adapters/attention_adapter_mixin.py": {
+      "bytes": 6026,
+      "sha256": "1d12d1a3c1cbcb24b8488bac2bada4d1b95713c9b16652935fa687bc8274fa9e"
+    },
+    "nemo/collections/asr/parts/submodules/adapters/multi_head_attention_adapter_module.py": {
+      "bytes": 17462,
+      "sha256": "ed19387d3b0c6ce7b3f79af52bdeed6891858387032cb8754c42eec8287e2d5b"
+    },
+    "nemo/collections/asr/parts/submodules/adapters/transformer_multi_head_attention_adapter_module.py": {
+      "bytes": 5366,
+      "sha256": "baaaf0be58dc2057ae2f6f90c9eb36ca94057922770667d3c03c4c16e185be5a"
+    },
+    "nemo/collections/asr/parts/submodules/aed_decoding/__init__.py": {
+      "bytes": 932,
+      "sha256": "83932a73d91f2b67ba8a1ef742732f259b52120daae925caceef2dc9d771cb83"
+    },
+    "nemo/collections/asr/parts/submodules/aed_decoding/aed_batched_streaming.py": {
+      "bytes": 26993,
+      "sha256": "6de1dc7abe6134045640822ffb6fc97b686b27dd4af3d8c71c546fbb4800417d"
+    },
+    "nemo/collections/asr/parts/submodules/ngram_lm/__init__.py": {
+      "bytes": 980,
+      "sha256": "0d04ea118cbb82d4e6bb6341b869df9877823a02f908247cfe1c79ab6a451710"
+    },
+    "nemo/collections/asr/parts/submodules/ngram_lm/constants.py": {
+      "bytes": 758,
+      "sha256": "3f1c4f6e7cc1055639b3bf344b3f6f6f771ac9bf4300164ae13eabafd36c8264"
+    },
+    "nemo/collections/asr/parts/submodules/ngram_lm/kenlm_utils.py": {
+      "bytes": 9095,
+      "sha256": "390da44e234ed1beb030b1f5baea67827ab6f1e04c9cdad25dabb4d2f0704880"
+    },
+    "nemo/collections/asr/parts/submodules/ngram_lm/ngram_lm_batched.py": {
+      "bytes": 43769,
+      "sha256": "608de8257b6764f0f00ccf352c1e01e0d89bddb85efd6f3a4f97cf4c8cd79d49"
+    },
+    "nemo/collections/asr/parts/submodules/ngram_lm/ngram_lm_triton.py": {
+      "bytes": 8044,
+      "sha256": "ac96f4d1ea661afd7429c66b396187430576f8f8717fd1536cfbd48c53fa84a6"
+    },
+    "nemo/collections/asr/parts/submodules/transducer_decoding/__init__.py": {
+      "bytes": 1464,
+      "sha256": "7a1e0a819712fd18e85a338002c002deb738743110224f22ca9b6db558ff1845"
+    },
+    "nemo/collections/asr/parts/submodules/transducer_decoding/batched_hyps.py": {
+      "bytes": 16429,
+      "sha256": "acf0e98d790008e26214bd67c589689eb333fde680c9f114957ffa6a7f1ec6cb"
+    },
+    "nemo/collections/asr/parts/submodules/transducer_decoding/label_looping_base.py": {
+      "bytes": 14723,
+      "sha256": "29c49224feddf13ee9aa862adba8f9f507a8f4562a4648dda81df6e75d9a61fa"
+    },
+    "nemo/collections/asr/parts/submodules/transducer_decoding/rnnt_label_looping.py": {
+      "bytes": 65118,
+      "sha256": "2293c517ad018590e2587cb10dee72434040a012d1c854273c87cd1d444e491e"
+    },
+    "nemo/collections/asr/parts/submodules/transducer_decoding/tdt_label_looping.py": {
+      "bytes": 72153,
+      "sha256": "7dafaff4e93ab249612e4fe34914da7fdf3e625379109bce712c3dd7df036401"
+    },
+    "nemo/collections/asr/parts/triton/__init__.py": {
+      "bytes": 610,
+      "sha256": "442bc1426c6364aed50d9fba733c53a23022bc92555b71f8a597b7b9f0b1343c"
+    },
+    "nemo/collections/asr/parts/triton/depthwise_conv.py": {
+      "bytes": 19958,
+      "sha256": "635e1d45cb92f9e9ff9596564d275d401bbe97954c3d26ceeaa2d2f9e9b05053"
+    },
+    "nemo/collections/asr/parts/triton/subsampling.py": {
+      "bytes": 24257,
+      "sha256": "cd1e5ff4a4879d008c0e6434a26627c6fc202ca48b82ea9bf371027a6fa9e0d3"
+    },
+    "nemo/collections/asr/parts/utils/__init__.py": {
+      "bytes": 826,
+      "sha256": "073c135d4d6451353840b6bc6d4814cd6d214e5e44aee5466247a90c3d9a733e"
+    },
+    "nemo/collections/asr/parts/utils/activations.py": {
+      "bytes": 1660,
+      "sha256": "7f5f1c5440911dbb61f0f2f07fb38670219af03a5c7a53572fdddb6ad41592fe"
+    },
+    "nemo/collections/asr/parts/utils/adapter_utils.py": {
+      "bytes": 3269,
+      "sha256": "28c89c412380a201807f509677c5a5311b18338874452887a57150f94d4e0b42"
+    },
+    "nemo/collections/asr/parts/utils/aligner_utils.py": {
+      "bytes": 50266,
+      "sha256": "9d963f8a09a722ff118326de25a7c61dee496aef6321a7d6141506917fb91fb5"
+    },
+    "nemo/collections/asr/parts/utils/asr_batching.py": {
+      "bytes": 10151,
+      "sha256": "af54ab312a44fad73573ba57889dc94b3044ccc64a2fc7ac02f9df50df11df47"
+    },
+    "nemo/collections/asr/parts/utils/asr_confidence_benchmarking_utils.py": {
+      "bytes": 6671,
+      "sha256": "71935251081ab910942e815f4d7f5e22c520d647fdc92da12408c5b685e42058"
+    },
+    "nemo/collections/asr/parts/utils/asr_confidence_utils.py": {
+      "bytes": 22927,
+      "sha256": "e3fd28dcf818cd94712812172d865b2a498b2195c11b6f8f4e890f7bc0d22736"
+    },
+    "nemo/collections/asr/parts/utils/asr_module_utils.py": {
+      "bytes": 3464,
+      "sha256": "85d7c919266a1b13559155969f445fc02e309784010db339b61eaee014f2ce51"
+    },
+    "nemo/collections/asr/parts/utils/asr_multispeaker_utils.py": {
+      "bytes": 41898,
+      "sha256": "cfe4b1fcd9ccdb9e5b7295b93a91737acbfbb07ac811d2b40c5deda49370ece6"
+    },
+    "nemo/collections/asr/parts/utils/batched_beam_decoding_utils.py": {
+      "bytes": 51439,
+      "sha256": "17856d7c524e1a612761a9b2d312f21214d2f6f38ea7fea97102b390069fc0a5"
+    },
+    "nemo/collections/asr/parts/utils/chunking_utils.py": {
+      "bytes": 19596,
+      "sha256": "615cd982be26edf228b50ff340696cf5c4726ca1cf3763c104c23466b8e79ee6"
+    },
+    "nemo/collections/asr/parts/utils/confidence_metrics.py": {
+      "bytes": 9897,
+      "sha256": "703dc290ac1c1efe9298a351f869d52fafe6737b80e8b1972453b62a635745a8"
+    },
+    "nemo/collections/asr/parts/utils/data_simulation_utils.py": {
+      "bytes": 54692,
+      "sha256": "98e98bdd14ec2ade6fb9c90a19072db66f38f5156203924ac38c53a7846c1e06"
+    },
+    "nemo/collections/asr/parts/utils/decoder_timestamps_utils.py": {
+      "bytes": 31029,
+      "sha256": "d21e78badd594316567d50c576b4c8b2557e08477df7e925d665f10e47e2884d"
+    },
+    "nemo/collections/asr/parts/utils/diarization_utils.py": {
+      "bytes": 70722,
+      "sha256": "afa6f4651b13d42fa5c43d58bc702f1ec7bddc2f66664e1c1f689467ce0ad1db"
+    },
+    "nemo/collections/asr/parts/utils/eou_utils.py": {
+      "bytes": 11332,
+      "sha256": "2b0417c351eb56758bc13db390407649c1d68ceb4089da23b2c9a973d8e57dae"
+    },
+    "nemo/collections/asr/parts/utils/eval_utils.py": {
+      "bytes": 12234,
+      "sha256": "a69b63006c64856ffb6383752a9b7b6ac6e7e0700e3e5b753571f0b1bb6a9d8f"
+    },
+    "nemo/collections/asr/parts/utils/longform_clustering.py": {
+      "bytes": 21606,
+      "sha256": "c5468eaa96d026802220b91736a3e8813e72b8db6633fbce6ab91d956924657e"
+    },
+    "nemo/collections/asr/parts/utils/manifest_utils.py": {
+      "bytes": 21211,
+      "sha256": "1d2c4f7c68b5b547d430625b159913653c9a74a9ac841dd8f34c51339c845324"
+    },
+    "nemo/collections/asr/parts/utils/multispk_transcribe_utils.py": {
+      "bytes": 102160,
+      "sha256": "7489b81a4e6db680942e7a08d0e8c775675602a1f1fd2cc62bcff6d7c704fb5c"
+    },
+    "nemo/collections/asr/parts/utils/numba_utils.py": {
+      "bytes": 3461,
+      "sha256": "13f67f5080a967de0397067637775baf983fca4146bfb1eae58c2bdb7e4907aa"
+    },
+    "nemo/collections/asr/parts/utils/offline_clustering.py": {
+      "bytes": 61172,
+      "sha256": "c2fcc816454612ae12f22230385d8d34de58c9ee8f650629d4936d54e0d3d515"
+    },
+    "nemo/collections/asr/parts/utils/online_clustering.py": {
+      "bytes": 54965,
+      "sha256": "d89987da266021d5d9d4ba59ca57532ee653a0844ce0e1e46890baee907cb677"
+    },
+    "nemo/collections/asr/parts/utils/optimization_utils.py": {
+      "bytes": 13873,
+      "sha256": "54586cd69919060080a5da8190108a369728902c24dcd8010a4041acca6fa452"
+    },
+    "nemo/collections/asr/parts/utils/regularization_utils.py": {
+      "bytes": 3181,
+      "sha256": "e37ee2ac1e31aa4ca6baf0addd85aafba17913faab3c418c867ce4722bec3eec"
+    },
+    "nemo/collections/asr/parts/utils/rnnt_utils.py": {
+      "bytes": 15455,
+      "sha256": "4265f8a34f70109a441ef607e378c9e2fc2a25fe219d361ff5aa2a4cb85f24a3"
+    },
+    "nemo/collections/asr/parts/utils/slu_utils.py": {
+      "bytes": 7455,
+      "sha256": "fe1ee53e8a62fed0f81819849a012ff0f364eabc7c0c0b770ebf49ccd17a42a1"
+    },
+    "nemo/collections/asr/parts/utils/sortformer_utils.py": {
+      "bytes": 18168,
+      "sha256": "832bb8c287f736b6680b903343961ed1581fb8773b703847df43a8c40e68acc4"
+    },
+    "nemo/collections/asr/parts/utils/sot_speaker_alignment.py": {
+      "bytes": 27222,
+      "sha256": "3ddbd21bd09a7914dab57ade5d5513e3ef722c31796d5da8a139455b63fec152"
+    },
+    "nemo/collections/asr/parts/utils/speaker_utils.py": {
+      "bytes": 63154,
+      "sha256": "c6f9f8ba41412a132986f1e876748869abe35f1727097b0b33cbd8273279cbfb"
+    },
+    "nemo/collections/asr/parts/utils/streaming_utils.py": {
+      "bytes": 112180,
+      "sha256": "e90bf75cb44106906c001bb52b039d3cbf370e8c33bb5c77ef800bf415864f15"
+    },
+    "nemo/collections/asr/parts/utils/timestamp_utils.py": {
+      "bytes": 30559,
+      "sha256": "85330256c0e8c9208cad17aeef16935d1c897205b4ae295774d0a6d2e004d12d"
+    },
+    "nemo/collections/asr/parts/utils/tokenizer_utils.py": {
+      "bytes": 2128,
+      "sha256": "9635e84b71793da17a6e4a0ded41004de3d7d66e1746ec762fd62ffc3794eeba"
+    },
+    "nemo/collections/asr/parts/utils/transcribe_utils.py": {
+      "bytes": 31206,
+      "sha256": "1023b5d782bf9fd7e593bc2281c2a85748bd5b4a517b2ac5d05210da5f937467"
+    },
+    "nemo/collections/asr/parts/utils/vad_utils.py": {
+      "bytes": 85809,
+      "sha256": "c1a1d385307e34f7b1eb7deb949f00dcebec15b83f191df55a0951449a0dd27f"
+    },
+    "nemo/collections/asr/parts/utils/wfst_utils.py": {
+      "bytes": 49690,
+      "sha256": "375c32ada0bc48720615ea660a6e34e250d991f96314f600e3be8a38b73d8dcc"
+    },
+    "nemo/collections/audio/__init__.py": {
+      "bytes": 996,
+      "sha256": "bb405641bb2ecd4ab5b3f7255a3d7f1ec6a75096be09048c62ed686c0304d595"
+    },
+    "nemo/collections/audio/data/__init__.py": {
+      "bytes": 685,
+      "sha256": "520249b30035d7a2a6c3bb0f03ec8d2553ad9adfbaea4e3fec1d98700247fa5e"
+    },
+    "nemo/collections/audio/data/audio_to_audio.py": {
+      "bytes": 48587,
+      "sha256": "7cb467b1f13d33eb828705a242cce0957c397af28011fa5e600fc982e137bb01"
+    },
+    "nemo/collections/audio/data/audio_to_audio_dataset.py": {
+      "bytes": 4224,
+      "sha256": "ae371a9f323f3335588db45ee84f3607d335a623efe92a85f4fc1f4b2c1db622"
+    },
+    "nemo/collections/audio/data/audio_to_audio_lhotse.py": {
+      "bytes": 10443,
+      "sha256": "40c03c1f83e36c07b4d806c50c667492e89f7fd7a510f128f7fc2ac0f5b53cbe"
+    },
+    "nemo/collections/audio/data/data_simulation.py": {
+      "bytes": 90776,
+      "sha256": "7b7cac0d92765d6255654b837f0b999781cb4d24fde3f7d55cc16e46e6706438"
+    },
+    "nemo/collections/audio/losses/__init__.py": {
+      "bytes": 805,
+      "sha256": "57ce9a1aeca0f36b02003d426a8ea114e25c28f6810dbf9bdacf467244c9cdd2"
+    },
+    "nemo/collections/audio/losses/audio.py": {
+      "bytes": 25863,
+      "sha256": "756e999b87630bd2f28fc3f78817cc7983b657b7e29daba97f5f9843e185f2e9"
+    },
+    "nemo/collections/audio/losses/maxine/__init__.py": {
+      "bytes": 799,
+      "sha256": "78661318a670ddd40d4cbfff8fc571bc403c4782e2228aaefbfaffa99f9ebabe"
+    },
+    "nemo/collections/audio/losses/maxine/losses_combined.py": {
+      "bytes": 7984,
+      "sha256": "a972185c659df0084bed9f84dfd0a8c474cef50db591d92a414e7b8d588fba80"
+    },
+    "nemo/collections/audio/losses/maxine/sisnr_loss.py": {
+      "bytes": 6062,
+      "sha256": "0752b8812fc57b1204446197b4c3a7ab2b9801fe123387dc45b8d5194043f104"
+    },
+    "nemo/collections/audio/metrics/__init__.py": {
+      "bytes": 840,
+      "sha256": "ebcd40e031eed54a2db6bc4965f087019c54762292957ff6758101c07ec853e9"
+    },
+    "nemo/collections/audio/metrics/audio.py": {
+      "bytes": 8600,
+      "sha256": "6f345ca8f47fd52dfb2e381e2f39fe10a1f1a124979b66f02f701ead35af4abc"
+    },
+    "nemo/collections/audio/metrics/squim.py": {
+      "bytes": 7498,
+      "sha256": "b6d0a0bf14db4214782f408a24dd356fc4a904f080a45d161e3264af55c7b018"
+    },
+    "nemo/collections/audio/models/__init__.py": {
+      "bytes": 1239,
+      "sha256": "474388a01526de0923355f9c36e33b2e95696bd4086f83bffcf2a62fb78a3129"
+    },
+    "nemo/collections/audio/models/audio_to_audio.py": {
+      "bytes": 25409,
+      "sha256": "d2bbe78586504abd9fa07740708e59381b9466860048a66075f199a7e79db03f"
+    },
+    "nemo/collections/audio/models/enhancement.py": {
+      "bytes": 46961,
+      "sha256": "4bce0efa4ee9edb674329b28341485f5b851f71527607868987ab04738186716"
+    },
+    "nemo/collections/audio/models/maxine/__init__.py": {
+      "bytes": 771,
+      "sha256": "f41b29d886ac78686b00236555ce6ecfa9ac5c2d9b862159acd467a8adc23a45"
+    },
+    "nemo/collections/audio/models/maxine/bnr.py": {
+      "bytes": 9881,
+      "sha256": "4089fb7047e895e400f5322013205febc8500f8673755e8b1a770199deadea7e"
+    },
+    "nemo/collections/audio/modules/__init__.py": {
+      "bytes": 685,
+      "sha256": "520249b30035d7a2a6c3bb0f03ec8d2553ad9adfbaea4e3fec1d98700247fa5e"
+    },
+    "nemo/collections/audio/modules/features.py": {
+      "bytes": 11616,
+      "sha256": "aa5dc9034cf57c63b6d043e1e294d76b443758f00c88624697dfda28a980fc92"
+    },
+    "nemo/collections/audio/modules/masking.py": {
+      "bytes": 44561,
+      "sha256": "1965830fc2f9e5c64fd47d6dc1eba4dc86beeec019277ce25e3f83bf1c2a325c"
+    },
+    "nemo/collections/audio/modules/projections.py": {
+      "bytes": 3500,
+      "sha256": "1a28b6a924114cb74c343764d7e01c7e530b50ea84594ef7242c928f8c51ad36"
+    },
+    "nemo/collections/audio/modules/ssl_pretrain_masking.py": {
+      "bytes": 4694,
+      "sha256": "cbbabe4abc1f5a1657a5a61fb565c9c1a8f39ca34cce15891d4e1f164c50b8bc"
+    },
+    "nemo/collections/audio/modules/transforms.py": {
+      "bytes": 19487,
+      "sha256": "8a0b69ffe4c7eca7a2d00bef7361af86f0f09b35aed862aacafc660d56eadb27"
+    },
+    "nemo/collections/audio/parts/__init__.py": {
+      "bytes": 685,
+      "sha256": "520249b30035d7a2a6c3bb0f03ec8d2553ad9adfbaea4e3fec1d98700247fa5e"
+    },
+    "nemo/collections/audio/parts/submodules/__init__.py": {
+      "bytes": 685,
+      "sha256": "520249b30035d7a2a6c3bb0f03ec8d2553ad9adfbaea4e3fec1d98700247fa5e"
+    },
+    "nemo/collections/audio/parts/submodules/conformer.py": {
+      "bytes": 7405,
+      "sha256": "03f575371f5e280ad4b9ff7e1e30451676fac49fa9dfc18abf0595b5c647d15a"
+    },
+    "nemo/collections/audio/parts/submodules/conformer_unet.py": {
+      "bytes": 18752,
+      "sha256": "5f527e712ab53a47eefa22bcb47340ec633bb6653d8efc0a569acabf751291ea"
+    },
+    "nemo/collections/audio/parts/submodules/diffusion.py": {
+      "bytes": 29870,
+      "sha256": "e26a4723c474a3b173ab9ca6e85d174e88ad8b97c248be3be29e371f8523bce2"
+    },
+    "nemo/collections/audio/parts/submodules/flow.py": {
+      "bytes": 10124,
+      "sha256": "3fb377eeb01aabc011695fbffdf8bfa8842d5511edabd6560856a0dc9b37136d"
+    },
+    "nemo/collections/audio/parts/submodules/multichannel.py": {
+      "bytes": 39823,
+      "sha256": "4c541b148fb66accbe6285dcfe824177bbcddfa668b5f284eb2af6868b8edef9"
+    },
+    "nemo/collections/audio/parts/submodules/ncsnpp.py": {
+      "bytes": 21268,
+      "sha256": "1e06d3e26893a8b32dac385619e3bc17d3bbc34424af962ba9bf60040e47dbd3"
+    },
+    "nemo/collections/audio/parts/submodules/schroedinger_bridge.py": {
+      "bytes": 21847,
+      "sha256": "186f52b67f75f9d545fa15c5d848a099b9512e5fd717631bf223bda3755859d7"
+    },
+    "nemo/collections/audio/parts/submodules/transformerunet.py": {
+      "bytes": 19272,
+      "sha256": "6b78e167b9e4e5ed4c169418474f02793fbb5e1247a4964ffb2ef294a21e6e27"
+    },
+    "nemo/collections/audio/parts/utils/__init__.py": {
+      "bytes": 685,
+      "sha256": "520249b30035d7a2a6c3bb0f03ec8d2553ad9adfbaea4e3fec1d98700247fa5e"
+    },
+    "nemo/collections/audio/parts/utils/audio.py": {
+      "bytes": 19912,
+      "sha256": "02bcfbb4543d047b6d37bb240747854240deb968255b719b492795abfde4c9bf"
+    },
+    "nemo/collections/audio/parts/utils/callbacks.py": {
+      "bytes": 7238,
+      "sha256": "bb6155ab0185db7a0e409fc4e2c1be7b4a88bc8f7382c948867fdb9026ba0874"
+    },
+    "nemo/collections/audio/parts/utils/maxine.py": {
+      "bytes": 1514,
+      "sha256": "d1e3220476c4b75d25dbbabc20fa4d2d443a3629950c8a7139dd7c06fdd85de0"
+    },
+    "nemo/collections/audio/parts/utils/transforms.py": {
+      "bytes": 44126,
+      "sha256": "b551d959eb78a5576743bb05d8daa57c4a8bd14d2c436fc02fb9207a166a08c5"
+    },
+    "nemo/collections/common/__init__.py": {
+      "bytes": 1021,
+      "sha256": "5ff960236e533f6b7da5ffd6a5003c5444a1de40f6344d80a97bf3229785dc3b"
+    },
+    "nemo/collections/common/callbacks/__init__.py": {
+      "bytes": 817,
+      "sha256": "94ebc4ede24207aa725aa8c4e5e4322d3d421f275b3cb502b667d3bddcfaef48"
+    },
+    "nemo/collections/common/callbacks/callbacks.py": {
+      "bytes": 1379,
+      "sha256": "a2307c6d6222d6ce13e999b1f73a03408dbde7f43162089e7ec71d1c316b5dac"
+    },
+    "nemo/collections/common/callbacks/ema.py": {
+      "bytes": 13160,
+      "sha256": "190a62caf3658f41ee7f9af23787ca4f222cfa067dbe5dd79812274aedebc3eb"
+    },
+    "nemo/collections/common/callbacks/ipl_epoch_stopper.py": {
+      "bytes": 2385,
+      "sha256": "57bcbb77d9d9fd8bc3411fa64c0328025d2842508c697cb3bdc598ab7a4acf64"
+    },
+    "nemo/collections/common/data/__init__.py": {
+      "bytes": 884,
+      "sha256": "a64174c60696133a76b066ca3f4beb610bd9197c3a40c4883012c4ecd31787a9"
+    },
+    "nemo/collections/common/data/dataset.py": {
+      "bytes": 30518,
+      "sha256": "5e93a3104a1975cb110c74ef0bf2604cdfe7dcb4427c0d7b98a64a30757e5d96"
+    },
+    "nemo/collections/common/data/fallback.py": {
+      "bytes": 1950,
+      "sha256": "0f48549deaca98e1a15ffa91b46881b20aba729726c1c803b507578f2328d99d"
+    },
+    "nemo/collections/common/data/prompt_fn.py": {
+      "bytes": 3847,
+      "sha256": "a1cfbde5923bbec0ddda890e1b45ce26416bd315a9d634d018c5cf2f7121b7e8"
+    },
+    "nemo/collections/common/data/utils.py": {
+      "bytes": 1918,
+      "sha256": "0ac81a258b852ce04135bf32b2ff6e2c90ccfc0d706c14f29d41a0129b165bf5"
+    },
+    "nemo/collections/common/data/lhotse/__init__.py": {
+      "bytes": 1317,
+      "sha256": "2e43926e3ba294799cd75398f74007323f5f2f71c57a5ca0dc589c92555478e9"
+    },
+    "nemo/collections/common/data/lhotse/_compat.py": {
+      "bytes": 7483,
+      "sha256": "4d8adea24167aefbfc78e138c8a5385181f3064b5582c6fce24db43fb55c89b1"
+    },
+    "nemo/collections/common/data/lhotse/audio_loading.py": {
+      "bytes": 2249,
+      "sha256": "e8803bbcdd176c24c92e2e9b758595b7b5e090a41c23772656f83bd39014b952"
+    },
+    "nemo/collections/common/data/lhotse/audio_path_resolver.py": {
+      "bytes": 6917,
+      "sha256": "21e10ca7a35ee5421122c5b6d3b0b18c99c062bdb7325d01a6b46a5d21011c16"
+    },
+    "nemo/collections/common/data/lhotse/audio_token_estimator.py": {
+      "bytes": 8658,
+      "sha256": "c723082ba724802ed25d9ac55eb2b597bf887a02aef76952c8111dbed52f181f"
+    },
+    "nemo/collections/common/data/lhotse/broadcasting.py": {
+      "bytes": 9119,
+      "sha256": "a8c17fb2ba6e3bc9efb1ff559b664c3a5c69cb69829bf298aec851fd3b8bf1d8"
+    },
+    "nemo/collections/common/data/lhotse/cutset.py": {
+      "bytes": 91773,
+      "sha256": "9f464c8be633f65ac71800b9117131ecd09526e5e5d58717837ee9d8e8841e60"
+    },
+    "nemo/collections/common/data/lhotse/dataloader.py": {
+      "bytes": 69688,
+      "sha256": "473e50e2e332b3c338759d7cc9ab26ea80554d13e3c8c094273e0ad62a05aa48"
+    },
+    "nemo/collections/common/data/lhotse/indexed_adapters.py": {
+      "bytes": 61946,
+      "sha256": "34d571d10504aa46310a47dc8e1f61af436444043a78befb58d98ace1e0e802d"
+    },
+    "nemo/collections/common/data/lhotse/nemo_adapters.py": {
+      "bytes": 73344,
+      "sha256": "8662c69c99d92daef9d33ce30fcf14afd153329dd0da56a9dadd8eaa512f6ac8"
+    },
+    "nemo/collections/common/data/lhotse/nemo_tar_routing.py": {
+      "bytes": 27555,
+      "sha256": "e36b879818712277e599c404a2425f194d0d7af0322d07e59d1fe8fb88d95bc1"
+    },
+    "nemo/collections/common/data/lhotse/packed_sequence_sampler.py": {
+      "bytes": 29895,
+      "sha256": "f9718a6650b973bc7fd676c799ea0d4a6fb369dceba2f066798f92148bc13608"
+    },
+    "nemo/collections/common/data/lhotse/sampling.py": {
+      "bytes": 33233,
+      "sha256": "f66664e416668b0a393292cef07ed2bc6fd9a0f87fca4b4f1b09f43214af6c80"
+    },
+    "nemo/collections/common/data/lhotse/sharegpt_tar_routing.py": {
+      "bytes": 42118,
+      "sha256": "0624a0bbe1f2a59ecbede1708ea680d87a553cc2d8458aa0e9b26e91f4200ed3"
+    },
+    "nemo/collections/common/data/lhotse/text_adapters.py": {
+      "bytes": 139956,
+      "sha256": "579ddcb76b632c110fa24f06fc33c1e26f78a30ae6b8585db563eeafeab109fd"
+    },
+    "nemo/collections/common/data/lhotse/wds_catalog.py": {
+      "bytes": 11101,
+      "sha256": "b2b65c436b4d2f82d03c120a15613ef1987a8916203b0df9423f61ad0a69f7a0"
+    },
+    "nemo/collections/common/losses/__init__.py": {
+      "bytes": 1238,
+      "sha256": "90cc9e6f54e75e2324c6911c334184eca9cb0c406aea4acf0c16876d2a2c38f0"
+    },
+    "nemo/collections/common/losses/aggregator.py": {
+      "bytes": 2254,
+      "sha256": "291f69089c3b1d01acf2eda7ca54b58a1c288261fa47f8e34d0c6d60450c5ebf"
+    },
+    "nemo/collections/common/losses/bce_logits_loss.py": {
+      "bytes": 2776,
+      "sha256": "6c09b922e44b88903fe341751e4afd2951a733b9f372bd7a0171f7ce4785db6c"
+    },
+    "nemo/collections/common/losses/cross_entropy.py": {
+      "bytes": 5517,
+      "sha256": "c62bc9b521e91724542d59fb505682243b0d1dd0b22f889d59dcf18f0bcbcd4b"
+    },
+    "nemo/collections/common/losses/latent_speaker_supervision_loss.py": {
+      "bytes": 14058,
+      "sha256": "43694cd9531e4d1f61defd628b76d89eb15494b970dd0a270ec8a413c6e30f5e"
+    },
+    "nemo/collections/common/losses/mse_loss.py": {
+      "bytes": 1834,
+      "sha256": "fbc4dd6073758c012bbb8e04ac063dd1d6abe22958efdb2d77bc4032be6705f2"
+    },
+    "nemo/collections/common/losses/multi_similarity_loss.py": {
+      "bytes": 3679,
+      "sha256": "6b221f5495ec9897abeb4b455d2ef92dd99ceafb21ed60699d963229066314f8"
+    },
+    "nemo/collections/common/losses/smoothed_cross_entropy.py": {
+      "bytes": 7509,
+      "sha256": "dd1d3e81c6ed0bc1a5af04b7d291b04c784206f03fa024faf9c2a8673b528dc8"
+    },
+    "nemo/collections/common/losses/spanning_loss.py": {
+      "bytes": 3179,
+      "sha256": "ebfc5b780ed5b0fca6283974148cf51489e3d1ae768cdbdca1f2b5df3defe581"
+    },
+    "nemo/collections/common/metrics/__init__.py": {
+      "bytes": 1285,
+      "sha256": "49cf14b6593345a0ed4d9431c9121f18a34bade879b6251ef6582129f2d76edd"
+    },
+    "nemo/collections/common/metrics/classification_accuracy.py": {
+      "bytes": 10280,
+      "sha256": "8dc3fd3483564c4c6157a3f91205dca14498c3945a799f81b7964b8e2e35faaf"
+    },
+    "nemo/collections/common/metrics/global_average_loss_metric.py": {
+      "bytes": 3378,
+      "sha256": "fa4ba1279a6f9e8255f5adcdb2bd672f13be4ba1279f3a1e62195f49306c3d20"
+    },
+    "nemo/collections/common/metrics/metric_string_to_torchmetric.py": {
+      "bytes": 1771,
+      "sha256": "008ef9473987f53598a4714b122b444ea6e15873ed22b6e24e098f78cae331df"
+    },
+    "nemo/collections/common/metrics/perplexity.py": {
+      "bytes": 3486,
+      "sha256": "b135b7d3e8c863569095060a69eb173790862484119457e4a5a2c0185e4e8cf5"
+    },
+    "nemo/collections/common/metrics/punct_er.py": {
+      "bytes": 20417,
+      "sha256": "5a960b9ab4e785fd4fda910d95fd97cfc251b1e8265325b08bfbb257363f8e88"
+    },
+    "nemo/collections/common/parts/__init__.py": {
+      "bytes": 1040,
+      "sha256": "b29dc19faee35629ed0f7c9177d5de101fb0ba2035764e9066a155faa74a1f62"
+    },
+    "nemo/collections/common/parts/adapter_modules.py": {
+      "bytes": 6624,
+      "sha256": "09bf5128ed3cc8d224c417a6e49395898925dab30233e7dc34d83c6813541a5d"
+    },
+    "nemo/collections/common/parts/mlm_scorer.py": {
+      "bytes": 3365,
+      "sha256": "bea7f24002884317b9fcee8c5c33ffc91e4862f0285ea79f801717507952e746"
+    },
+    "nemo/collections/common/parts/multi_layer_perceptron.py": {
+      "bytes": 3270,
+      "sha256": "322694ebc55886de62237f09ece4e9b6797bd988ac3145b1eb0d71cf86277c0a"
+    },
+    "nemo/collections/common/parts/optional_cuda_graphs.py": {
+      "bytes": 3807,
+      "sha256": "732f72268e12c560dc6c62dbc1e278b459d285ca28d83c9dfbe36a60cda38872"
+    },
+    "nemo/collections/common/parts/perf_metrics_utils.py": {
+      "bytes": 2044,
+      "sha256": "6f84b71222416c550c19b139a5c8a5ee87a2511fc7fc8a7ab52637e7659906d9"
+    },
+    "nemo/collections/common/parts/rnn.py": {
+      "bytes": 20970,
+      "sha256": "b6ef926e6b79938c6f52370a1a620fc830f24a8c6d63b0e81c4fcca683f10a69"
+    },
+    "nemo/collections/common/parts/transformer_utils.py": {
+      "bytes": 3101,
+      "sha256": "d9495fbeeca8cb51f32f1a343e2d4e145c3ade16035f6b1dc20b23e8f3b69bcb"
+    },
+    "nemo/collections/common/parts/utils.py": {
+      "bytes": 6890,
+      "sha256": "4b9dd2438d80077fd34f2b56f7b531fa3e4a218cfe63daf48177f2cc0678b35f"
+    },
+    "nemo/collections/common/parts/preprocessing/__init__.py": {
+      "bytes": 685,
+      "sha256": "2c9b92264bea52d3cf909e7f27e2913bd3c310500510e72aa8e705ff6191af22"
+    },
+    "nemo/collections/common/parts/preprocessing/cleaners.py": {
+      "bytes": 8572,
+      "sha256": "16c3d1d187fb8440788657d57a6c9863ce1c53735915da1e513e7a29c26e89e2"
+    },
+    "nemo/collections/common/parts/preprocessing/collections.py": {
+      "bytes": 76682,
+      "sha256": "2f7e38370a62b39001d885ce82d0265c2c5c1b6f779df23e7a556cd41647f8ea"
+    },
+    "nemo/collections/common/parts/preprocessing/manifest.py": {
+      "bytes": 12657,
+      "sha256": "09b6147eba0e06e781ef0f06fc5146f8c92693a0758372f4d866603e6d49dcb2"
+    },
+    "nemo/collections/common/parts/preprocessing/parsers.py": {
+      "bytes": 7963,
+      "sha256": "24ca14343151ef5424caa103a74d6333b77d31193d1abb21e81900347ecd5733"
+    },
+    "nemo/collections/common/prompts/__init__.py": {
+      "bytes": 1762,
+      "sha256": "5a07f5ee6bfbdde2081d098697464120e589cdb385d23319dcc92bf2e2689406"
+    },
+    "nemo/collections/common/prompts/canary.py": {
+      "bytes": 7886,
+      "sha256": "e313ab5944d7003efbd94a6dcc39c666b687b46416290930f93f6bae9d86d7c9"
+    },
+    "nemo/collections/common/prompts/canary2.py": {
+      "bytes": 9622,
+      "sha256": "75f04f8f7d06e5ccfe5e382d947baf8e4b5735a9770462a56e8528f79c0b17d3"
+    },
+    "nemo/collections/common/prompts/example.py": {
+      "bytes": 1563,
+      "sha256": "072c9347813392b8eb82a2c4758188bb1520aae23ec27b481674f71daa7d089a"
+    },
+    "nemo/collections/common/prompts/formatter.py": {
+      "bytes": 18889,
+      "sha256": "06993a49b5f501f526e2bc3c3a6ea44f4e19a02d1b081a77a460b008583361ad"
+    },
+    "nemo/collections/common/prompts/gemma.py": {
+      "bytes": 2321,
+      "sha256": "bbae74a3119d77614f8d0c7a2b6fe0d288c9d1acaec189944372ee42724c9686"
+    },
+    "nemo/collections/common/prompts/llama.py": {
+      "bytes": 6239,
+      "sha256": "414523013ca5f9c875cdd8ce07607f5ac660e8cada009f411e5225404d13381c"
+    },
+    "nemo/collections/common/prompts/mistral.py": {
+      "bytes": 1587,
+      "sha256": "e3aa112aaa1edb98c2f37d44c1fe2096a7120222c05e74c228897d00809be6bc"
+    },
+    "nemo/collections/common/prompts/nemotron3p5.py": {
+      "bytes": 1768,
+      "sha256": "756158c7906fbc6fde988052ecfba2d189a7741617441e91912ec1af037f47a6"
+    },
+    "nemo/collections/common/prompts/nemotron_h.py": {
+      "bytes": 2348,
+      "sha256": "42468468e46cdb7e71cb4ad3f6d2413dc127c9fa0aedc4cc521b37e7735f0c51"
+    },
+    "nemo/collections/common/prompts/nemotron_nano_v3.py": {
+      "bytes": 9443,
+      "sha256": "62377f180fbe9eeef0eaa5e969c6f4b4c9eea94f39227f91e0e87bade743fe25"
+    },
+    "nemo/collections/common/prompts/phi2.py": {
+      "bytes": 2165,
+      "sha256": "18a157833d2cd0a14e7efc1d99456c10ad375277ecbede3cf70e8763fa12ff07"
+    },
+    "nemo/collections/common/prompts/plain.py": {
+      "bytes": 1953,
+      "sha256": "6a8c5647b7d34ab22f12fc8ea5b69f8649479c757ead6ab0e4b2258ddd877db4"
+    },
+    "nemo/collections/common/prompts/qwen.py": {
+      "bytes": 10342,
+      "sha256": "f223f658acb0369b87983344f4cbc85cc7ea9f83672955fdcbd9db8a4991d399"
+    },
+    "nemo/collections/common/prompts/t5nmt.py": {
+      "bytes": 4197,
+      "sha256": "21ca7b07a75d42991cdd20580730a2457771c7a63f64bddd0ad37952a7b6bc22"
+    },
+    "nemo/collections/common/tokenizers/__init__.py": {
+      "bytes": 1654,
+      "sha256": "f310334259c1dad3d90cf8bfe265f7e25077a217c7ab17b3c49e1ef585643f2f"
+    },
+    "nemo/collections/common/tokenizers/aggregate_tokenizer.py": {
+      "bytes": 11758,
+      "sha256": "abcdcc44c87208295da0d4152f2fcaac14e4708be4a1e4e71ffbe12962d085ff"
+    },
+    "nemo/collections/common/tokenizers/bytelevel_tokenizers.py": {
+      "bytes": 5942,
+      "sha256": "95be6097d179baa78e36b0ae6ee805e80c7848fd63377fe99e3ff5e99dca9336"
+    },
+    "nemo/collections/common/tokenizers/canary_tokenizer.py": {
+      "bytes": 9178,
+      "sha256": "5c39866bbe23cc92366d5afa258a756efc7cda8acbf5563cea119d09fbd14f49"
+    },
+    "nemo/collections/common/tokenizers/char_tokenizer.py": {
+      "bytes": 26299,
+      "sha256": "4f5be8b520f2cf201abe669fb902c06caaf10f86ced36e1b18a4a33259eed7f2"
+    },
+    "nemo/collections/common/tokenizers/chat_template_mixin.py": {
+      "bytes": 7412,
+      "sha256": "d50a103212039233f9bcb7d8796d596e71e49bc18d547c37d8492347167e57fe"
+    },
+    "nemo/collections/common/tokenizers/chinese_tokenizers.py": {
+      "bytes": 2831,
+      "sha256": "02b0d712f5b0151dc9fc47c7d5d7bec895b0698b190ddf68533dd8a61d8bf236"
+    },
+    "nemo/collections/common/tokenizers/en_ja_tokenizers.py": {
+      "bytes": 3739,
+      "sha256": "646727421c2e0d725e423cc058e48719e60d437c3da3e199945cc0db9fec345b"
+    },
+    "nemo/collections/common/tokenizers/fairseq_tokenizer.py": {
+      "bytes": 4289,
+      "sha256": "82ad5bc04eca12d83bbe83d4df8b668824f958fd38f212c91f4426946a6d57ca"
+    },
+    "nemo/collections/common/tokenizers/indic_tokenizers.py": {
+      "bytes": 1825,
+      "sha256": "ab11a4973d979c688806bdf7f67e6337a4aec06500396536c438c49971f99706"
+    },
+    "nemo/collections/common/tokenizers/megatron_utils.py": {
+      "bytes": 9507,
+      "sha256": "11cc508f76f840477e78f1f0bcc820efef2a1eadf8f5dca5e434c13de9496263"
+    },
+    "nemo/collections/common/tokenizers/moses_tokenizers.py": {
+      "bytes": 1878,
+      "sha256": "184356b54c8dcb82025251111538bf7a65dd2f8f88aa463f0b2d79896a1392fd"
+    },
+    "nemo/collections/common/tokenizers/null_tokenizer.py": {
+      "bytes": 2107,
+      "sha256": "bc2e080ac611d376cee68f0fc661a2e828f57f9b0030374c9fa009e439381a60"
+    },
+    "nemo/collections/common/tokenizers/regex_tokenizer.py": {
+      "bytes": 10076,
+      "sha256": "5e83bf3422cb1a34c2cafc2c7d45041612dab8a6e85849a2af400809ab49a1e7"
+    },
+    "nemo/collections/common/tokenizers/sentencepiece_tokenizer.py": {
+      "bytes": 30612,
+      "sha256": "4e914ca72a8ff26d8f16f4d4f123c0c0665f1c6d59f9aeab2a9b6ce3f33a1cd0"
+    },
+    "nemo/collections/common/tokenizers/tiktoken_tokenizer.py": {
+      "bytes": 11023,
+      "sha256": "1ccb2483efa810fed1a586b0f67ec546892782630bb09c3455e22240349ccc5a"
+    },
+    "nemo/collections/common/tokenizers/tokenizer_spec.py": {
+      "bytes": 5411,
+      "sha256": "acb892ac5ab4b60ce9b73376c98487741465e821d72f82b83643daec7ff548f9"
+    },
+    "nemo/collections/common/tokenizers/tokenizer_utils.py": {
+      "bytes": 10951,
+      "sha256": "6697d9742b683397df3090396c56b68ffabdf1cceda709629cd4e03887435143"
+    },
+    "nemo/collections/common/tokenizers/word_tokenizer.py": {
+      "bytes": 2577,
+      "sha256": "05e88e891eb5c99e951b4232eeed20a4dc4aa23ebf6975b5e1d8cd377546f6e0"
+    },
+    "nemo/collections/common/tokenizers/youtokentome_tokenizer.py": {
+      "bytes": 2733,
+      "sha256": "4159d3f062a93b5b603b605872c00cc4a32d8c95a1856dfb031b92659593a23b"
+    },
+    "nemo/collections/common/tokenizers/huggingface/__init__.py": {
+      "bytes": 774,
+      "sha256": "c2cd1d5ca906e2a040d48016a552273925195051b5eeab531ea6aa7c74fadffd"
+    },
+    "nemo/collections/common/tokenizers/huggingface/auto_tokenizer.py": {
+      "bytes": 19554,
+      "sha256": "790edf48744d26fb85691aa50fdaa6ffd9dce4ad3f34859406a423e1df353888"
+    },
+    "nemo/collections/common/tokenizers/text_to_speech/__init__.py": {
+      "bytes": 685,
+      "sha256": "97f1b0ead8fd29160c98da485176c934ed2f7e4d2ed6e186bdfb39fa294d23c3"
+    },
+    "nemo/collections/common/tokenizers/text_to_speech/ipa_lexicon.py": {
+      "bytes": 16397,
+      "sha256": "75137c41e16d85d1f3a99c6af6ded0fa444bd6c2166163837d464e129d847b2c"
+    },
+    "nemo/collections/common/tokenizers/text_to_speech/tokenizer_utils.py": {
+      "bytes": 9151,
+      "sha256": "3be2e521296eeb0afb1ceb5c335e450e56dc4ea92553646321d611d805e77182"
+    },
+    "nemo/collections/common/tokenizers/text_to_speech/tokenizer_wrapper.py": {
+      "bytes": 1965,
+      "sha256": "724f513e90e943a609a59528f115200366cbb022ae254168ac58ae649526e5b3"
+    },
+    "nemo/collections/common/tokenizers/text_to_speech/tts_tokenizers.py": {
+      "bytes": 65225,
+      "sha256": "a118ed54db7af25dc4fa1c94b72c1dbbb01d58ae53448804ba8276e0c4b81674"
+    },
+    "nemo/collections/speechlm2/__init__.py": {
+      "bytes": 1285,
+      "sha256": "f29ec68144be64fe8302724f887f46824fc4d2cd9643c243d828b3434e5b7669"
+    },
+    "nemo/collections/speechlm2/data/__init__.py": {
+      "bytes": 1032,
+      "sha256": "a3b40713a7cd73e25a0114d876c8d411907ade36ee9ca6ef13ca7ba14d0ce15e"
+    },
+    "nemo/collections/speechlm2/data/datamodule.py": {
+      "bytes": 13130,
+      "sha256": "6f1dd0e777ede799f7a4b614c84eb191001ad3fcb91c3e31693410e923345319"
+    },
+    "nemo/collections/speechlm2/data/duplex_ear_tts_dataset.py": {
+      "bytes": 40093,
+      "sha256": "81e77098606fe2ac434a11aa806afc685eba0804733d588806a043356701faa1"
+    },
+    "nemo/collections/speechlm2/data/duplex_stt_dataset.py": {
+      "bytes": 29360,
+      "sha256": "152b1b98cb786ab82b2eec1154e2309c6075924f214ba39bfdba195aa01c0927"
+    },
+    "nemo/collections/speechlm2/data/force_align.py": {
+      "bytes": 13682,
+      "sha256": "66eed96c9c85a873747c747c82424cbacf4ad5fc05e4e5a2fae1925b2c312903"
+    },
+    "nemo/collections/speechlm2/data/s2s_dataset.py": {
+      "bytes": 9362,
+      "sha256": "310ed4044542338727d6a82ab8c5ff7cb79ea4a84db9e849c0724be99a132787"
+    },
+    "nemo/collections/speechlm2/data/salm_dataset.py": {
+      "bytes": 25918,
+      "sha256": "f44b1fae5bac826062905fe3e4b61072bb04c80ae4a0eec6c68d037b697d4a89"
+    },
+    "nemo/collections/speechlm2/data/utils.py": {
+      "bytes": 1054,
+      "sha256": "15d21e99c84a65262d1c0fcba8e99bffd86dfe9957549342c172d1866f63538a"
+    },
+    "nemo/collections/speechlm2/models/__init__.py": {
+      "bytes": 1251,
+      "sha256": "3d47eaf6f28d6e95828c4b2b244a3360bc5a79f7b84243b631ab7865015362fc"
+    },
+    "nemo/collections/speechlm2/models/duplex_ear_tts.py": {
+      "bytes": 75385,
+      "sha256": "781f5c1fa50d645ba3f4c2e6baa469bf63c02f96444c6793999a549f93d3efc7"
+    },
+    "nemo/collections/speechlm2/models/duplex_s2s_model.py": {
+      "bytes": 27644,
+      "sha256": "6f9dbff5564bec8e6461f3b2abcf30400068ef81a095b03e4c0c7af980f0a5f0"
+    },
+    "nemo/collections/speechlm2/models/duplex_s2s_speech_decoder_model.py": {
+      "bytes": 24922,
+      "sha256": "a8b94c886dc80479ddba0e41a23529a9b83830405a53a2fee90714be5ad520b8"
+    },
+    "nemo/collections/speechlm2/models/duplex_stt_model.py": {
+      "bytes": 30660,
+      "sha256": "1ee1b5c2e1b5d984e5a5db798a40ca6588d71dd109763117d891bcd205645b0e"
+    },
+    "nemo/collections/speechlm2/models/nemotron_voicechat.py": {
+      "bytes": 25168,
+      "sha256": "4a51d82798a3925efc2231c2bb5e21f24ee2372cbce9905a14f01b31f0a1f943"
+    },
+    "nemo/collections/speechlm2/models/salm.py": {
+      "bytes": 33019,
+      "sha256": "e4a1421c6602fc5fa5233ca2f43f6684fe1cf7409841f033832b066f9538e1a1"
+    },
+    "nemo/collections/speechlm2/models/salm_asr_decoder.py": {
+      "bytes": 33211,
+      "sha256": "0d9d3abfc25f9ea6483e5b5504401015d398bc537782b5e5b95d8928be21ce31"
+    },
+    "nemo/collections/speechlm2/models/salm_automodel.py": {
+      "bytes": 86577,
+      "sha256": "3e7b2c1708aca80e705cdde80a72b802269e83cc576fb6de5ba28529c997205e"
+    },
+    "nemo/collections/speechlm2/modules/__init__.py": {
+      "bytes": 921,
+      "sha256": "e0e220a01786c8201df848d2783b0e80e10d75d1d539195251cf1806d7eae0c7"
+    },
+    "nemo/collections/speechlm2/modules/ear_tts_model.py": {
+      "bytes": 66547,
+      "sha256": "d2c9af9c6b03ba84e18450ea839c2562215a370f9721afff4dda9441bb45b0fa"
+    },
+    "nemo/collections/speechlm2/modules/ear_tts_vae_codec.py": {
+      "bytes": 42163,
+      "sha256": "a2630f5a1f79e5ad8cfca7c7e7d3af4b6644c95dddad2d9db658d0a4fcbbb64d"
+    },
+    "nemo/collections/speechlm2/modules/perception.py": {
+      "bytes": 34814,
+      "sha256": "64da48b57d5eef5c37315a178dacb65152e5eedb4461789f829668194b6e3604"
+    },
+    "nemo/collections/speechlm2/modules/rote.py": {
+      "bytes": 4501,
+      "sha256": "0022d699a85abd42b0beb5a3888d35931cdd792d7cd5d2befa849b26fec598a9"
+    },
+    "nemo/collections/speechlm2/modules/speech_generation.py": {
+      "bytes": 10492,
+      "sha256": "8b02c986af181bb11ecc81809d6446afc2c1ed4c78e37393e8ef1fa0b869757b"
+    },
+    "nemo/collections/speechlm2/parts/__init__.py": {
+      "bytes": 685,
+      "sha256": "520249b30035d7a2a6c3bb0f03ec8d2553ad9adfbaea4e3fec1d98700247fa5e"
+    },
+    "nemo/collections/speechlm2/parts/augmentation.py": {
+      "bytes": 20740,
+      "sha256": "7f0979de137247301f4148fffb145f62118eaa8496f63fdbc816ff97b048b684"
+    },
+    "nemo/collections/speechlm2/parts/automodel_compat.py": {
+      "bytes": 2626,
+      "sha256": "ff169da2fef74a30d7e369cadf0bef7e7a7ba6f471f00306e90c6ae36948d476"
+    },
+    "nemo/collections/speechlm2/parts/automodel_lora.py": {
+      "bytes": 3183,
+      "sha256": "82f30ce9beda9d10ca8880644399add96d03da579ee922cf3d457efd83f8ca92"
+    },
+    "nemo/collections/speechlm2/parts/cp_helpers.py": {
+      "bytes": 15403,
+      "sha256": "3c84b0f1d58334b7704ae420fb79ef7038cf33a4d63985099e2fe011adaa232f"
+    },
+    "nemo/collections/speechlm2/parts/ctc_timestamp_utils.py": {
+      "bytes": 105626,
+      "sha256": "40fe378bbfbc97d4c7e9b19731b9a231fd8535a4527501ef721466d89423e048"
+    },
+    "nemo/collections/speechlm2/parts/encoder_chunking.py": {
+      "bytes": 32276,
+      "sha256": "35f3a82bf082121a7a693e104c7a2bc43ef6b74d0208dbb3557b6143f88e9e2b"
+    },
+    "nemo/collections/speechlm2/parts/gc.py": {
+      "bytes": 2281,
+      "sha256": "05dc876aa6dea5b6bdf89fd9790e72e0da10d6a20af453c01b3dcb2b15bcd453"
+    },
+    "nemo/collections/speechlm2/parts/hf_hub.py": {
+      "bytes": 14869,
+      "sha256": "2231fc4e46c6aa7df495d8b014d828ef10af3465708802b789911d1952e042f9"
+    },
+    "nemo/collections/speechlm2/parts/input_utils.py": {
+      "bytes": 1673,
+      "sha256": "e2a334a3410bc120c0848f89111979901fa19045758cb4812693669f34ce152a"
+    },
+    "nemo/collections/speechlm2/parts/label_prep.py": {
+      "bytes": 14288,
+      "sha256": "3d15118e0242d9b10307311355747bc4cc3cd21dd33a591d4e4db3c8f8df7527"
+    },
+    "nemo/collections/speechlm2/parts/lora.py": {
+      "bytes": 1793,
+      "sha256": "fb179a1018a8be67e012f037b2896f54e4e5aad037807f9d310186a53cc39246"
+    },
+    "nemo/collections/speechlm2/parts/lr_only_resume.py": {
+      "bytes": 4143,
+      "sha256": "87431995ac3b9817e1fb29a93bd620fb92d56ddc8e502cb973812c8f72a0e5dc"
+    },
+    "nemo/collections/speechlm2/parts/model_loading.py": {
+      "bytes": 2236,
+      "sha256": "ee77c825c6bdfcfa6642d4269b53d217c2916d11550de09146ed536b0d3af795"
+    },
+    "nemo/collections/speechlm2/parts/mtp.py": {
+      "bytes": 10150,
+      "sha256": "95d6109348021b268c3748778b3737549231a55a4aa51f4c2eae05861cbda7c3"
+    },
+    "nemo/collections/speechlm2/parts/multispeaker.py": {
+      "bytes": 4144,
+      "sha256": "47458e63600368d21164b2d3635a399bd29b3c88fa1c4e00727828d7cbe5118e"
+    },
+    "nemo/collections/speechlm2/parts/nsight.py": {
+      "bytes": 2528,
+      "sha256": "742ebc235a05bbc6a2f087f04988c790937a678d2e266c1030505963fbdbdb56"
+    },
+    "nemo/collections/speechlm2/parts/optim_setup.py": {
+      "bytes": 14743,
+      "sha256": "7f5e33ae873d964ab29bcae1040d7164f82d892c32e4e641f0268c7ebf322199"
+    },
+    "nemo/collections/speechlm2/parts/packed_sequences.py": {
+      "bytes": 26623,
+      "sha256": "524341649211cffa68c1530ad7fafd1b023e0ea5f18fe2e528f7c317f13fb337"
+    },
+    "nemo/collections/speechlm2/parts/parallel.py": {
+      "bytes": 21875,
+      "sha256": "8454c52afe9d17221ebe48071ad8fe47d28a839c47081800862ce40f637b55ee"
+    },
+    "nemo/collections/speechlm2/parts/precision.py": {
+      "bytes": 1416,
+      "sha256": "70dc592a822a1d02afb0d89cd912d0aacf9bf11ec748cc24b66c634a869e726b"
+    },
+    "nemo/collections/speechlm2/parts/pretrained.py": {
+      "bytes": 43863,
+      "sha256": "326c33a7292be6c5d67af02a799b1fccc1e4342ae1716bf589015ac861a6d029"
+    },
+    "nemo/collections/speechlm2/parts/text_utils.py": {
+      "bytes": 4650,
+      "sha256": "aa8a20c2c40532ee136999a5e211dcca69da94a72fa34f786ca49a9e6f6e1814"
+    },
+    "nemo/collections/speechlm2/parts/metrics/__init__.py": {
+      "bytes": 1182,
+      "sha256": "275346dd49146463ff85327ca549c74d87b37095fa576a008b3f18fb7d547524"
+    },
+    "nemo/collections/speechlm2/parts/metrics/asr_bleu.py": {
+      "bytes": 4146,
+      "sha256": "36ed23fafe89f13f63e0b8e18fbcca16f235f40244b02823225343e182cd084c"
+    },
+    "nemo/collections/speechlm2/parts/metrics/asr_cer_wer.py": {
+      "bytes": 4735,
+      "sha256": "cfdb03c90c66055069c93a4d95d9d215d97b2680f3e32358dd0c2c12d2d22be0"
+    },
+    "nemo/collections/speechlm2/parts/metrics/bleu.py": {
+      "bytes": 2371,
+      "sha256": "860dd8d01d96e13cef86fb6fe61dea66f74bf2b80f3b0f2a70b7c05a1bee3fc2"
+    },
+    "nemo/collections/speechlm2/parts/metrics/empty_text.py": {
+      "bytes": 4448,
+      "sha256": "00e6829738d486c9de7cbe375fa004cfde0d42abd11de9e1f53676368a2b8981"
+    },
+    "nemo/collections/speechlm2/parts/metrics/mcq_evaluator.py": {
+      "bytes": 11028,
+      "sha256": "62b33ab3ef1fd55f58899fc32787fd976a9285798f936e0cd649028ee8d2bf65"
+    },
+    "nemo/collections/speechlm2/parts/metrics/perplexity.py": {
+      "bytes": 6346,
+      "sha256": "473c94e0c45c6a184fde571974ee885e9814cd87007321e9a8ce936d4ef93c2b"
+    },
+    "nemo/collections/speechlm2/parts/metrics/results_logger.py": {
+      "bytes": 20582,
+      "sha256": "68e60245ebd1a66835c28b7726a51c252f091bd57e8c99baeef3fce7c9fd5d5d"
+    },
+    "nemo/collections/speechlm2/parts/metrics/secs.py": {
+      "bytes": 2946,
+      "sha256": "16afb170627f07472ce72d4ecd2128531119431155ab3ae23ab6a840c0480323"
+    },
+    "nemo/collections/speechlm2/parts/metrics/token_accuracy.py": {
+      "bytes": 3273,
+      "sha256": "58a66e53e955599bb98e66af0c012a6ca06fb3757f73b3f6cd99dba567dacc8f"
+    },
+    "nemo/collections/speechlm2/parts/metrics/turn_taking.py": {
+      "bytes": 6544,
+      "sha256": "e5f948d3dfb22e22c0796e3b129be7cf7b350b826a5ec558581c1e20b55050c1"
+    },
+    "nemo/collections/speechlm2/parts/metrics/wer.py": {
+      "bytes": 2322,
+      "sha256": "fbc9675be4c42b43ecde29f2918adcd61f6ee363cb2922948ca51d1b7792ba4f"
+    },
+    "nemo/collections/speechlm2/streaming/__init__.py": {
+      "bytes": 827,
+      "sha256": "763f6b3996661411e9a393fdf932e7007fcbf7944961905fe1ce7c0a5c698cba"
+    },
+    "nemo/collections/speechlm2/streaming/duplex_stt_inference.py": {
+      "bytes": 16792,
+      "sha256": "2cce3a8433426f75d86b68ae2fa19f6d1ed256905e53eb98f237f4bc7dcf7aaa"
+    },
+    "nemo/collections/speechlm2/vllm/__init__.py": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "nemo/collections/speechlm2/vllm/salm/__init__.py": {
+      "bytes": 10668,
+      "sha256": "acd55a277ea96ebb113c658f66168328df5e199d0741a6bd885a57e5e8ccb5f3"
+    },
+    "nemo/collections/speechlm2/vllm/salm/audio.py": {
+      "bytes": 30462,
+      "sha256": "a816062736ac60d976be4e77809d69739b0f952a25902eb617c94f2810f366ab"
+    },
+    "nemo/collections/speechlm2/vllm/salm/backends.py": {
+      "bytes": 15428,
+      "sha256": "0cf795d1098c3b82c4813d8c07f170d979798423f2071493868c4233263332c2"
+    },
+    "nemo/collections/speechlm2/vllm/salm/config.py": {
+      "bytes": 22199,
+      "sha256": "c286e718942cee6bea472e2d3b0ea4ff87923f65e402c2af0c39279ff97dda46"
+    },
+    "nemo/collections/speechlm2/vllm/salm/config_hook.py": {
+      "bytes": 1312,
+      "sha256": "1dff1555f45b6afb2179583ff951ca9875cd26b59ec2c85b75680f60b86772e9"
+    },
+    "nemo/collections/speechlm2/vllm/salm/ctc_serving.py": {
+      "bytes": 18000,
+      "sha256": "3828d40423568175c9592f10798768fc1aafbfdd9ce64ac168e7eadab9863523"
+    },
+    "nemo/collections/speechlm2/vllm/salm/ctc_timestamps.py": {
+      "bytes": 64038,
+      "sha256": "4f666cb6cb6f09c9825a087ca99a1170ee6c18cd4ae54d4c8a0f688b483bdfc7"
+    },
+    "nemo/collections/speechlm2/vllm/salm/fp8_encoder.py": {
+      "bytes": 12655,
+      "sha256": "89a32e495831a4d2ea726d84e41e631f717dd75c8f8f03b7902a55a9c188a837"
+    },
+    "nemo/collections/speechlm2/vllm/salm/model.py": {
+      "bytes": 23703,
+      "sha256": "01ac7cfb9f7c30328f266c35601e1342fbe873de2bfafe67d14a61bddac9f011"
+    },
+    "nemo/collections/speechlm2/vllm/salm/mtp.py": {
+      "bytes": 9444,
+      "sha256": "aa660dec1b3a4d4b502bd80c67c253a157acc41f859fb8b05f4ee2054033708b"
+    },
+    "nemo/collections/speechlm2/vllm/salm/precision.py": {
+      "bytes": 2341,
+      "sha256": "721e1ae03c1135b393090e9564e0f13ce21c43f21d53c6f47522ff9e60fd3cac"
+    },
+    "nemo/collections/speechlm2/vllm/salm/runtime_compat.py": {
+      "bytes": 7022,
+      "sha256": "654c83adeff69cc9f09b9163a600796540f40e3118591f354f991238e91ae72e"
+    },
+    "nemo/collections/tts/__init__.py": {
+      "bytes": 983,
+      "sha256": "8c92260badab7808301ca67cd003114d9b47872acc72e62199dea88c88c39b2f"
+    },
+    "nemo/collections/tts/data/__init__.py": {
+      "bytes": 685,
+      "sha256": "e9bd44c73940ebcaaa941b89b2edab03eaa291e4156781580d591f2c990c56db"
+    },
+    "nemo/collections/tts/data/audio_codec_dataset_lhotse.py": {
+      "bytes": 6602,
+      "sha256": "0c6299835863b863291637ee01a99b4319d6b719e87085ce20bc0d0118dd4631"
+    },
+    "nemo/collections/tts/data/dataset.py": {
+      "bytes": 70454,
+      "sha256": "0fd5f551344ed0c23b5c7b8e5550ae18309f3801734b1ad921c48ee074aedf3e"
+    },
+    "nemo/collections/tts/data/text_to_speech_dataset.py": {
+      "bytes": 51322,
+      "sha256": "251916ba36a1f45f42830fe60ebdfb7a162ab377dcf8dbe4c05d1a35823624cf"
+    },
+    "nemo/collections/tts/data/text_to_speech_dataset_lhotse.py": {
+      "bytes": 37314,
+      "sha256": "bcb3b1abaa05980f54c58d9f8755d136504f57543b1550c6823c535fd600b884"
+    },
+    "nemo/collections/tts/data/text_to_speech_dataset_lhotse_multiturn.py": {
+      "bytes": 51442,
+      "sha256": "2cfb0029f16be181c83a89ae9342bbd85aa255bd5afe261d89269385502889a5"
+    },
+    "nemo/collections/tts/data/vocoder_dataset.py": {
+      "bytes": 8578,
+      "sha256": "6b335c55c5f279d742d8629532387f4221b5400f62332ad92fa2872f625c935c"
+    },
+    "nemo/collections/tts/g2p/__init__.py": {
+      "bytes": 685,
+      "sha256": "e9bd44c73940ebcaaa941b89b2edab03eaa291e4156781580d591f2c990c56db"
+    },
+    "nemo/collections/tts/g2p/modules.py": {
+      "bytes": 1268,
+      "sha256": "4ab0f8b2005f693b9c439aa3fe46a4c092057b76867dc0461d7441d16336164d"
+    },
+    "nemo/collections/tts/g2p/utils.py": {
+      "bytes": 5767,
+      "sha256": "67c319fea55b89075646f9111ac5dee6a5854d8caed4b61dc82376d445e1c5f1"
+    },
+    "nemo/collections/tts/g2p/data/__init__.py": {
+      "bytes": 685,
+      "sha256": "e9bd44c73940ebcaaa941b89b2edab03eaa291e4156781580d591f2c990c56db"
+    },
+    "nemo/collections/tts/g2p/data/ctc.py": {
+      "bytes": 7277,
+      "sha256": "ab07e8af075976fd93e73378c21456e5badd429e84b17d1dd55fcafa6d3c065a"
+    },
+    "nemo/collections/tts/g2p/data/heteronym_classification.py": {
+      "bytes": 10946,
+      "sha256": "60b9d09a6af187f60eddda7c20803cae15ddbc5595eb318c8f3eaa37b0f70232"
+    },
+    "nemo/collections/tts/g2p/data/t5.py": {
+      "bytes": 5826,
+      "sha256": "c079b3f4b7f8d00dbc8ec18d952b5c8ac127e1979e07d79b0008f6c4b740a7a7"
+    },
+    "nemo/collections/tts/g2p/models/__init__.py": {
+      "bytes": 685,
+      "sha256": "e9bd44c73940ebcaaa941b89b2edab03eaa291e4156781580d591f2c990c56db"
+    },
+    "nemo/collections/tts/g2p/models/base.py": {
+      "bytes": 1665,
+      "sha256": "f0c7fc07f7bb06988b8220ca562fccd45d2c2471574d2a79fc010666f290fbfb"
+    },
+    "nemo/collections/tts/g2p/models/ctc.py": {
+      "bytes": 20425,
+      "sha256": "b423da3077468eadc7280f9fe1bd14c82ad581802d9616a45b3bc9115db11ee2"
+    },
+    "nemo/collections/tts/g2p/models/en_us_arpabet.py": {
+      "bytes": 10050,
+      "sha256": "5655482610a6335a95c78fd7227f1a36e9e6024ff47081191bc7e06decadc7d9"
+    },
+    "nemo/collections/tts/g2p/models/i18n_ipa.py": {
+      "bytes": 26425,
+      "sha256": "7dda75c166dfd22dff8525e23aa73bfa60be6211c26dd8ac0a4a2d9db441bd39"
+    },
+    "nemo/collections/tts/g2p/models/ja_jp_ipa.py": {
+      "bytes": 15240,
+      "sha256": "27314cd93cb0a3ae7b0e74b763b2f29d1c13dece16467e1f9292f7c00109a6c3"
+    },
+    "nemo/collections/tts/g2p/models/t5.py": {
+      "bytes": 12882,
+      "sha256": "83663b0e345ef115adc2400a02b19e42445fa26b29f1791c7d79db50db40a767"
+    },
+    "nemo/collections/tts/g2p/models/token_classifier.py": {
+      "bytes": 5307,
+      "sha256": "e5f430360a7e9475a5435fa1d51ae7853668900990e07e73fe1c4f05aa4fa512"
+    },
+    "nemo/collections/tts/g2p/models/zh_cn_pinyin.py": {
+      "bytes": 11322,
+      "sha256": "ab0ba2a44f65c0188428c6e7c3b8171797b88cf376c7939cd3b612034fc779c6"
+    },
+    "nemo/collections/tts/losses/__init__.py": {
+      "bytes": 730,
+      "sha256": "640ec29c1deeb5ef1b6bf1876426a4f5c7c8b3cc0264bc36aa7ba0e1362ee46b"
+    },
+    "nemo/collections/tts/losses/aligner_loss.py": {
+      "bytes": 3572,
+      "sha256": "280d467695033eba64ad88cb4e900d8f70a746180c28af8704c1275b3a0f1f31"
+    },
+    "nemo/collections/tts/losses/audio_codec_loss.py": {
+      "bytes": 21682,
+      "sha256": "8801d6ad2df166655ff6c1fd9b91d3d0f072bbe029b825a1a7475458910ffe15"
+    },
+    "nemo/collections/tts/losses/fastpitchloss.py": {
+      "bytes": 6593,
+      "sha256": "a15bd430708c944ba761f32c3827943744e4ae8fc5ecb1fae03c6dc1d2e1721c"
+    },
+    "nemo/collections/tts/losses/hifigan_losses.py": {
+      "bytes": 4479,
+      "sha256": "0c038ec05e777784a57de5aec3d4c6c207cab925e0f86db4bd38787029662d49"
+    },
+    "nemo/collections/tts/losses/magpietts_cfg_distillation.py": {
+      "bytes": 13879,
+      "sha256": "c649296c68e49b4a57b8073b06b5fdb5b3b6deb27116b095a365d81d617e01e1"
+    },
+    "nemo/collections/tts/losses/moe_loss.py": {
+      "bytes": 8501,
+      "sha256": "b96766434e63cb95dc5a165c68edb86ab0a473e43eefbf3dffead50a98238843"
+    },
+    "nemo/collections/tts/losses/stftlosses.py": {
+      "bytes": 9959,
+      "sha256": "8b342e7a35475288bb13a128930c70621bd2acf9d7a8fff21ad37a0edcbd8739"
+    },
+    "nemo/collections/tts/metrics/__init__.py": {
+      "bytes": 731,
+      "sha256": "0ae3730710561cacc37c1d5939834fc8a818d312cd90558912e8777feacec990"
+    },
+    "nemo/collections/tts/metrics/classification_report.py": {
+      "bytes": 7881,
+      "sha256": "4a7047f44086200903959e6231b7e4b5f00131cf9b0edc41ddda4bedeb9c0b60"
+    },
+    "nemo/collections/tts/metrics/emotion_encoder.py": {
+      "bytes": 38246,
+      "sha256": "d26a66e404d3e2f54fded462943c18d9185bcc802df6209a26b487eab2bf0f12"
+    },
+    "nemo/collections/tts/metrics/eou_classifier.py": {
+      "bytes": 19373,
+      "sha256": "fb1f69a99465b995da3d584c2793617e8dae296d79f023a004101ddcd3c81f4f"
+    },
+    "nemo/collections/tts/metrics/frechet_codec_distance.py": {
+      "bytes": 8193,
+      "sha256": "fe90c7557f8ae1574ce9c26173be2159efe23f0e29e8db0a625aca782def0107"
+    },
+    "nemo/collections/tts/metrics/prosody.py": {
+      "bytes": 12065,
+      "sha256": "247d221f8ba248c73889cd0f65385f4dbc33302a0f33b92bd30bad09cef7a129"
+    },
+    "nemo/collections/tts/metrics/score_metrics.py": {
+      "bytes": 2641,
+      "sha256": "71e1f422ea54137a7e35b63063c5c119ecf73de9b3d25464acdd0518b2a05d03"
+    },
+    "nemo/collections/tts/models/__init__.py": {
+      "bytes": 2243,
+      "sha256": "2799eeb0ec37a39a16eb8610936bb2e356b5c3f5056eae8fc08b437cb3510a04"
+    },
+    "nemo/collections/tts/models/aligner.py": {
+      "bytes": 9598,
+      "sha256": "51398abb6c3f72bd61dd479b398df35a47bf346b001b5f587070e009d7980dc3"
+    },
+    "nemo/collections/tts/models/audio_codec.py": {
+      "bytes": 48009,
+      "sha256": "3d008c322732f345a29daa21d852e59702a01174378ce420ffbe2adb8bc6b949"
+    },
+    "nemo/collections/tts/models/base.py": {
+      "bytes": 15406,
+      "sha256": "1930ae1091af6875f2df3927a15eba4de9a14d6b6c54d2f24e06cfe461352e9d"
+    },
+    "nemo/collections/tts/models/easy_magpietts.py": {
+      "bytes": 104017,
+      "sha256": "44aeed22779666cb6a25740810da5f1e9741c8e2cee51819bc29bb57f6fd70f8"
+    },
+    "nemo/collections/tts/models/easy_magpietts_cfg_distillation.py": {
+      "bytes": 165822,
+      "sha256": "a8972517f512059b7be4958fa6cee7d0ca1c0fb5f7f94701607251ed0a6d03cf"
+    },
+    "nemo/collections/tts/models/easy_magpietts_inference.py": {
+      "bytes": 135109,
+      "sha256": "eefd26eb282c24332d830b6e6dec63742b14abc51d56259cf42c48e39a685d74"
+    },
+    "nemo/collections/tts/models/easy_magpietts_preference_optimization.py": {
+      "bytes": 61455,
+      "sha256": "2d32430eb9cf49b71ca13bb55822a59f537b2bdee932737ce3e32acb9cf28b23"
+    },
+    "nemo/collections/tts/models/fastpitch.py": {
+      "bytes": 39483,
+      "sha256": "d8df4cde433c709f1f6f9c59649626821e4062e3401bff36a42db73239976457"
+    },
+    "nemo/collections/tts/models/fastpitch_ssl.py": {
+      "bytes": 16806,
+      "sha256": "736f438808bba59bc3986c10a49c177f539c7687a68d22640f5caeac72dc2344"
+    },
+    "nemo/collections/tts/models/hifigan.py": {
+      "bytes": 26107,
+      "sha256": "1bd95182e9effd31611485732f37e57f6b4688f1de3a231c5b50403dd84adf21"
+    },
+    "nemo/collections/tts/models/magpietts.py": {
+      "bytes": 240219,
+      "sha256": "349eaef8a2710a7cd2853940c28ce35db2547106521f8454c1619a73c9e6a262"
+    },
+    "nemo/collections/tts/models/magpietts_cfg_distillation.py": {
+      "bytes": 49184,
+      "sha256": "fe9ddd6c498e4f3d33ef1b87b24b18ff3661c718434e098264be3333e3a50b3d"
+    },
+    "nemo/collections/tts/models/magpietts_preference_optimization.py": {
+      "bytes": 53770,
+      "sha256": "fb9ade3db48a29c1329814d5b5a6a7637ec0c6a89e444a6420ede983be1c52f4"
+    },
+    "nemo/collections/tts/models/ssl_tts.py": {
+      "bytes": 23379,
+      "sha256": "52487597881d32b8d59a56eaa7e292d27f90f80f10b47da6f6787a8d23ede229"
+    },
+    "nemo/collections/tts/modules/__init__.py": {
+      "bytes": 827,
+      "sha256": "cdacc5ee4a3c9a7563c80699e9e9587f7b6cd82c3836d719c1726809312245b3"
+    },
+    "nemo/collections/tts/modules/adapters.py": {
+      "bytes": 6460,
+      "sha256": "24057159d3a95004fd71326e9e167d61178a989d2938938e0c76a5643eb8f2e4"
+    },
+    "nemo/collections/tts/modules/aligner.py": {
+      "bytes": 9700,
+      "sha256": "d4c046c3c7a89c7bbee77a9e444a1c2466660df1b880d1b216b04637d7169af0"
+    },
+    "nemo/collections/tts/modules/audio_codec_modules.py": {
+      "bytes": 120887,
+      "sha256": "2da7857e760a18bc71b6d7c6f3a8906a7f37e290513275cf667c51b2a96ea03c"
+    },
+    "nemo/collections/tts/modules/common.py": {
+      "bytes": 1646,
+      "sha256": "70d383d8a84af04a6a04516103b864e1623a1ec2c3556d0ed99daa862d79fb30"
+    },
+    "nemo/collections/tts/modules/encodec_modules.py": {
+      "bytes": 36509,
+      "sha256": "f6f72987518997934a289e32aff01f1d38a044eb849a427c1f75c712d691c6dc"
+    },
+    "nemo/collections/tts/modules/fastpitch.py": {
+      "bytes": 22649,
+      "sha256": "2ecb4200b6c1df23f57b274336cf41bdfdd35b5f1ea385df523b074c1aaab575"
+    },
+    "nemo/collections/tts/modules/ffn_modules.py": {
+      "bytes": 5854,
+      "sha256": "51833199922d9b42ab52796e30346986ef73abaf25dc8accfb0d7f75f34790a4"
+    },
+    "nemo/collections/tts/modules/hifigan_modules.py": {
+      "bytes": 16030,
+      "sha256": "0d808f43f1c114918c9ec0d0eb597d709af8764fbed4150f18d10d400ccccf17"
+    },
+    "nemo/collections/tts/modules/magpietts_modules.py": {
+      "bytes": 41671,
+      "sha256": "adb23c9896b95b53cf056437de7f137efa08917fc97ca7d0d48e01cd8cac6f5a"
+    },
+    "nemo/collections/tts/modules/moe_modules.py": {
+      "bytes": 17825,
+      "sha256": "0e4e4abf779d1eeefdd33f2caa30e36db32aeeeb6c56f8c222e37f06d8b29a0b"
+    },
+    "nemo/collections/tts/modules/nemotron_h_decoder.py": {
+      "bytes": 72878,
+      "sha256": "c9988fcc5507bc7fc018bb5438ca0339868d5c219ebe5f50902f163511feee39"
+    },
+    "nemo/collections/tts/modules/ssl_tts.py": {
+      "bytes": 1403,
+      "sha256": "b922ec4dacae3c1fff6d6dc97bad0fca7e70ff48f81924fe4a9c101164c951d7"
+    },
+    "nemo/collections/tts/modules/submodules.py": {
+      "bytes": 23570,
+      "sha256": "50f8283f3bc43c208bac1588386d25d72b0fdece2b530901b59b29822793e0b2"
+    },
+    "nemo/collections/tts/modules/transformer.py": {
+      "bytes": 11992,
+      "sha256": "ca4ab43b1e4b0f81ede521eee7753e79347baaeff9c87473149b6092f26711bc"
+    },
+    "nemo/collections/tts/modules/transformer_2501.py": {
+      "bytes": 32020,
+      "sha256": "1944651df1c22291d8edd71f0004d87d8b12dffb4a5ea1e584b2ee5126780ebd"
+    },
+    "nemo/collections/tts/modules/utmosv2.py": {
+      "bytes": 4533,
+      "sha256": "af0e0b838a209bb0fa14d8e3f3ac39c798b3b4ad8c288072d6f6bfb949033ff2"
+    },
+    "nemo/collections/tts/modules/magpietts_inference/__init__.py": {
+      "bytes": 3562,
+      "sha256": "97821975f661b3428e71caa4860ad63740fd38db7a3ae84626f8845562239c84"
+    },
+    "nemo/collections/tts/modules/magpietts_inference/evaluate_generated_audio.py": {
+      "bytes": 49326,
+      "sha256": "df15483120701df5f0b71f92984483da14f0e55e1cec765bd4df45a759b67356"
+    },
+    "nemo/collections/tts/modules/magpietts_inference/evaluation.py": {
+      "bytes": 3988,
+      "sha256": "8f7f64bdce1f510cb00ba007a525f708b18eebddaf3de08abfb293d53ff13427"
+    },
+    "nemo/collections/tts/modules/magpietts_inference/evaluation_config.py": {
+      "bytes": 10422,
+      "sha256": "8a4766e435940ad6076db2a6e21fd50c1103e40a6ddec48ae388a7d0e6124313"
+    },
+    "nemo/collections/tts/modules/magpietts_inference/inference.py": {
+      "bytes": 95876,
+      "sha256": "0422d9e273171048fed506a6b8ce1c50f4ac1606cc6e077e42315509b3a17d56"
+    },
+    "nemo/collections/tts/modules/magpietts_inference/utils.py": {
+      "bytes": 61309,
+      "sha256": "43d4bbbab2f58e1e5a49da0088bbfd350b25d9977314f3c041118858339197a8"
+    },
+    "nemo/collections/tts/modules/magpietts_inference/visualization.py": {
+      "bytes": 6258,
+      "sha256": "5e86b55cc3dec77676f63bdda3cfe79a23455e803aaf9afbbdb7d229bee736ce"
+    },
+    "nemo/collections/tts/parts/__init__.py": {
+      "bytes": 685,
+      "sha256": "e9bd44c73940ebcaaa941b89b2edab03eaa291e4156781580d591f2c990c56db"
+    },
+    "nemo/collections/tts/parts/mixins/__init__.py": {
+      "bytes": 784,
+      "sha256": "43fe629b6d762e3c85448b4fea7c02e54a42ce62aec2f92696943efc7f3fa3a8"
+    },
+    "nemo/collections/tts/parts/mixins/fastpitch_adapter_mixins.py": {
+      "bytes": 18303,
+      "sha256": "3dcb8224b7929bcf2d0c7fbe9af2c5b66d97e986a67784550550a64039c412b0"
+    },
+    "nemo/collections/tts/parts/preprocessing/__init__.py": {
+      "bytes": 685,
+      "sha256": "e9bd44c73940ebcaaa941b89b2edab03eaa291e4156781580d591f2c990c56db"
+    },
+    "nemo/collections/tts/parts/preprocessing/audio_trimming.py": {
+      "bytes": 13938,
+      "sha256": "84d0757387eaa3c9d8b90c9d83b3291bb4adb1677b3f6e71afbe9fcf23721c4f"
+    },
+    "nemo/collections/tts/parts/preprocessing/feature_processors.py": {
+      "bytes": 7614,
+      "sha256": "e398d51460ee7824a92869e16e0eb566d85478da4c443b68f91959d52e60d459"
+    },
+    "nemo/collections/tts/parts/preprocessing/features.py": {
+      "bytes": 21436,
+      "sha256": "1f4f0d6b221c908ab0ac7adea2cae8ef25ad73fa2a0a7d8f6b90ab321c746a2d"
+    },
+    "nemo/collections/tts/parts/utils/__init__.py": {
+      "bytes": 685,
+      "sha256": "e9bd44c73940ebcaaa941b89b2edab03eaa291e4156781580d591f2c990c56db"
+    },
+    "nemo/collections/tts/parts/utils/callbacks.py": {
+      "bytes": 27772,
+      "sha256": "dbf5d5edc51ae71bf704b059f25cfb903e23cdb1f37f0c279b0dcde5e7dbd985"
+    },
+    "nemo/collections/tts/parts/utils/distributed.py": {
+      "bytes": 2644,
+      "sha256": "af342c9a4e8f357fd0476fabcd4722e15f2b653f485a981832cf5a50da6019a2"
+    },
+    "nemo/collections/tts/parts/utils/helpers.py": {
+      "bytes": 34528,
+      "sha256": "4fec66801b4b962780e2ebc88b88c60a8b96df4bc94f902f5fe99ac9a5647946"
+    },
+    "nemo/collections/tts/parts/utils/tts_dataset_utils.py": {
+      "bytes": 52579,
+      "sha256": "c6607c89d90dc0623d18ef18d97d9bf8a9099450506ed73e8642e11cc2cb9f80"
+    },
+    "nemo/collections/tts/torch/__init__.py": {
+      "bytes": 685,
+      "sha256": "2c9b92264bea52d3cf909e7f27e2913bd3c310500510e72aa8e705ff6191af22"
+    },
+    "nemo/collections/tts/torch/g2ps.py": {
+      "bytes": 1268,
+      "sha256": "c476c29ba73a9d4ab5afc0bc21f7862b1ee0047a0d9030497d34239fa19fff16"
+    },
+    "nemo/collections/tts/torch/tts_data_types.py": {
+      "bytes": 1872,
+      "sha256": "bf403340594e79e06a57e5ed366e2d885236bb458f4d2230b894a41895c8347e"
+    },
+    "nemo/collections/tts/torch/tts_tokenizers.py": {
+      "bytes": 1355,
+      "sha256": "b41391e4ba322b9a3d98289926d3df3da72fae761a4e21522bed63880a61ff0f"
+    },
+    "nemo/core/__init__.py": {
+      "bytes": 748,
+      "sha256": "688999c7593d23d79ffed029cf7890e83d1efc20ab41af3b4bbd4b75ad85f1d7"
+    },
+    "nemo/core/classes/__init__.py": {
+      "bytes": 1283,
+      "sha256": "f2eda1c674d90062702ec50805f59e4463af9a9837e07f24dc6bd0d118e1a04c"
+    },
+    "nemo/core/classes/common.py": {
+      "bytes": 62110,
+      "sha256": "d82f53b74a03f8699d021dcbf15dea2e014ea1b359b78bd93bdd203af26e5f51"
+    },
+    "nemo/core/classes/dataset.py": {
+      "bytes": 3469,
+      "sha256": "aec0234404488a7cd2ab6381307fee4cb05eb1e3c80992a5e2be23d26a4dba25"
+    },
+    "nemo/core/classes/exportable.py": {
+      "bytes": 16522,
+      "sha256": "9fa77b1a0d60f6a4b27bf9092cc19e8b9291662f1807fc783b3a32525b9201bf"
+    },
+    "nemo/core/classes/loss.py": {
+      "bytes": 980,
+      "sha256": "685426ecc7316441f590085b951885cb5ab8641c796707dd701a9267580e17e3"
+    },
+    "nemo/core/classes/modelPT.py": {
+      "bytes": 92645,
+      "sha256": "657c68c97a124959d95d4a4b99a379c8bc159b3f05f88aba14a755951e219679"
+    },
+    "nemo/core/classes/module.py": {
+      "bytes": 5054,
+      "sha256": "57ddd73a82e89476bf607b79efc3a49fd38abb3ad9147de4dc899591dfbf54ca"
+    },
+    "nemo/core/classes/mixins/__init__.py": {
+      "bytes": 1195,
+      "sha256": "37ba456257ae257d3bc040bee16c2c9afc8fd71f54ac7dad68fe478667424598"
+    },
+    "nemo/core/classes/mixins/access_mixins.py": {
+      "bytes": 5349,
+      "sha256": "a9754345d74deff87e234c6cb58b0c45d473ab3800a55e9c46c19069c2e52674"
+    },
+    "nemo/core/classes/mixins/adapter_mixin_strategies.py": {
+      "bytes": 12050,
+      "sha256": "132c69e63281941f6388a4b23419de61c8c3b1ff184e420f612332edfb91a642"
+    },
+    "nemo/core/classes/mixins/adapter_mixins.py": {
+      "bytes": 49653,
+      "sha256": "717098085072e76f31df929c61355e37ebcd791870ed7fd8040730db9dbbc016"
+    },
+    "nemo/core/classes/mixins/hf_io_mixin.py": {
+      "bytes": 11384,
+      "sha256": "8d7675a460d33bfcff2d75850f7c12599a8a0033b163fa734d6e23ca092fe2d3"
+    },
+    "nemo/core/config/__init__.py": {
+      "bytes": 1657,
+      "sha256": "6e46b1c9083d6bf42335df5904305391cd6b42ebdcb41274b2de44540548c277"
+    },
+    "nemo/core/config/base_config.py": {
+      "bytes": 993,
+      "sha256": "802bdd663cfd5d81fb6c1236e99d438390774e921417a6bbc34d566abf8a4705"
+    },
+    "nemo/core/config/hydra_runner.py": {
+      "bytes": 6052,
+      "sha256": "d2bcdf330be0ed5cff362738518c86ee29ffbd812e424761e6f43ef80bc0f4c8"
+    },
+    "nemo/core/config/modelPT.py": {
+      "bytes": 7234,
+      "sha256": "34dc786e7eec3db030f497cf657b1fa9ccf7293605e5c0b5c0f085ca12f50e46"
+    },
+    "nemo/core/config/optimizers.py": {
+      "bytes": 9469,
+      "sha256": "5790a55295851d8895eb874c199e5964ece2b5da16054ab85783594a1ebda884"
+    },
+    "nemo/core/config/pytorch.py": {
+      "bytes": 1553,
+      "sha256": "b729670e3af595cb8746ad60442548e5f657bb14a683b03c10cc21ec82007c3b"
+    },
+    "nemo/core/config/pytorch_lightning.py": {
+      "bytes": 2850,
+      "sha256": "36fa7e7632877d64c327d5aa713f065a87564eb416ce496f89ed4f5ab8d319c2"
+    },
+    "nemo/core/config/schedulers.py": {
+      "bytes": 8610,
+      "sha256": "d16482588125c24b95f2e919b75bf1dda4b586ad69f0a69d2602bff6f4437260"
+    },
+    "nemo/core/config/templates/__init__.py": {
+      "bytes": 685,
+      "sha256": "520249b30035d7a2a6c3bb0f03ec8d2553ad9adfbaea4e3fec1d98700247fa5e"
+    },
+    "nemo/core/config/templates/model_card.py": {
+      "bytes": 7610,
+      "sha256": "32da771423a69cebd5446d6f45852696e7b830f8df726c2559ce450b371048a9"
+    },
+    "nemo/core/connectors/__init__.py": {
+      "bytes": 727,
+      "sha256": "46e7f3078d660d6bb93605ed5336551bdc7b14c7226f0d818904fd8dd9c3475d"
+    },
+    "nemo/core/connectors/save_restore_connector.py": {
+      "bytes": 37360,
+      "sha256": "c1be8c23078a6fb6272a0cb68ad36c602ad1bb74dbe25f01c578b26cf19f7d51"
+    },
+    "nemo/core/neural_types/__init__.py": {
+      "bytes": 872,
+      "sha256": "2aae62a22c674d9effdd0fae02a953af7684e5c07ac9d0e7f0dfcfc295a26547"
+    },
+    "nemo/core/neural_types/axes.py": {
+      "bytes": 4118,
+      "sha256": "83ec17488a56e64b11065a9b9d4cb0e8abde11d76cb5d72b69a58b9772f6bc95"
+    },
+    "nemo/core/neural_types/comparison.py": {
+      "bytes": 1418,
+      "sha256": "8642f02f65038e3528e142a1d579a39e2906d463ce0d465e91dc51a279abad60"
+    },
+    "nemo/core/neural_types/elements.py": {
+      "bytes": 19271,
+      "sha256": "37bbadebf7fa173217929972c4a997134330de81de42d9049391a1003fc30814"
+    },
+    "nemo/core/neural_types/neural_type.py": {
+      "bytes": 10822,
+      "sha256": "d543ed324b5c35bc313e72090581a7d4b8121866065fb6384169060b389bfca7"
+    },
+    "nemo/core/optim/__init__.py": {
+      "bytes": 1505,
+      "sha256": "df6bcc5ba81c6f830bc188dd4bac9d4df63a5b26b9d14074ef77170e4a7fb635"
+    },
+    "nemo/core/optim/adafactor.py": {
+      "bytes": 8944,
+      "sha256": "14c8fd1ca7fd805f54638879685968338acc92693fb606febb84a84895e4b58e"
+    },
+    "nemo/core/optim/adan.py": {
+      "bytes": 15610,
+      "sha256": "eee45eb0f71ce2b1a4f31ef6412cd80c57dbc22d7104523309fbcc7551deadb2"
+    },
+    "nemo/core/optim/distributed_adam.py": {
+      "bytes": 33671,
+      "sha256": "2c3c3e7aa4a92b369021b4ac0478707e01e0c30e6b367af1579c027f9e039d28"
+    },
+    "nemo/core/optim/flash_optim.py": {
+      "bytes": 2542,
+      "sha256": "9cd97f73bf9b7d6163a613f3bcde74b5373a5d34e7c420d2a399e6b052033c6e"
+    },
+    "nemo/core/optim/lr_scheduler.py": {
+      "bytes": 41995,
+      "sha256": "fbde3062e23506303d70d431b3d3dbf50c9a3e4f0b5a21fe6e8b0eb239df4c42"
+    },
+    "nemo/core/optim/novograd.py": {
+      "bytes": 5849,
+      "sha256": "8d443de40c07829767080b3195a60bdba0e375e1338b96bb0884b63de9e456a7"
+    },
+    "nemo/core/optim/optimizer_with_main_params.py": {
+      "bytes": 24668,
+      "sha256": "9702af63c0762ecf9a855f14a6b2ff7a2eaeb3daab79c8e4983144f05a1b985f"
+    },
+    "nemo/core/optim/optimizers.py": {
+      "bytes": 8966,
+      "sha256": "a8ac18244478b31a20d3b42962e5710b840fffefc7094bfab4089cf502bdaa26"
+    },
+    "nemo/core/optim/radam.py": {
+      "bytes": 4990,
+      "sha256": "fd8eedf76a0a584f0501b17bf6aaed6663db634a54abf41ae823746cbb48e8ff"
+    },
+    "nemo/core/utils/__init__.py": {
+      "bytes": 744,
+      "sha256": "67443f8c306ddc12c612737e9861b2a29a5b8b546969bd03b9ff89dddf32a8ba"
+    },
+    "nemo/core/utils/cuda_python_utils.py": {
+      "bytes": 11081,
+      "sha256": "47117860da761d1b729cb2e9af4063e6d9bf3ea466090cfc39f8dfcdde308af2"
+    },
+    "nemo/core/utils/k2_guard.py": {
+      "bytes": 1853,
+      "sha256": "d6958ff6cb1a9e208e3f9ad7e5118607efa3acab87e487a9c3dee9307ebed787"
+    },
+    "nemo/core/utils/k2_utils.py": {
+      "bytes": 1165,
+      "sha256": "0af3ebabeabb68153a6aafe7470dc3623da8fc6b099ea61fa74fd2f44c4e1974"
+    },
+    "nemo/core/utils/lightning_utils.py": {
+      "bytes": 7058,
+      "sha256": "7075a1dfbc8b7eba9b14ee662b4defa625ceb1e951a3b4fa3bab165bea4f6c62"
+    },
+    "nemo/core/utils/neural_type_utils.py": {
+      "bytes": 3086,
+      "sha256": "4f9417cec43765f40962afb71c3e88348b188a1860326451f58141566493cbb7"
+    },
+    "nemo/core/utils/numba_utils.py": {
+      "bytes": 6904,
+      "sha256": "fdb4f7dfc1528db5a9502b493c1cbe397c1306ce5b5e15e771d0fc48a244f674"
+    },
+    "nemo/core/utils/optional_libs.py": {
+      "bytes": 5380,
+      "sha256": "4e8f4afdfa9c6484f36a2133a8535dfc8219b0959919097a0f976af26fae6280"
+    },
+    "nemo/core/utils/process_launcher/__init__.py": {
+      "bytes": 779,
+      "sha256": "ccb55ea9e11ebe192e2856baa9629c14444011fe815bc3ec3c3add05b9294d8f"
+    },
+    "nemo/core/utils/process_launcher/launcher.py": {
+      "bytes": 14963,
+      "sha256": "c9e6ae363441e36eb1092d817da74319c7a83d53bf8c6ba126f074a1e5d32737"
+    },
+    "nemo/lightning/__init__.py": {
+      "bytes": 1343,
+      "sha256": "47f1ad6749b2242f9ebd2d26073e66c420ebb940c742529c74053e3fbcff91c0"
+    },
+    "nemo/lightning/base.py": {
+      "bytes": 2565,
+      "sha256": "8b1c540547ab86d3482bda450fd4d14b2fc139b9a0d22c677a88edead78f7bd5"
+    },
+    "nemo/lightning/base_callback.py": {
+      "bytes": 3010,
+      "sha256": "ce061828318b02d0ab8410cc96ea317ac3e8d452a69f95f9d790e30efffb4248"
+    },
+    "nemo/lightning/callback_group.py": {
+      "bytes": 7298,
+      "sha256": "16d042b0c83bf6daa852a3c446a1b3fcc9480d780728496b8149f1d4ed177e28"
+    },
+    "nemo/lightning/one_logger_callback.py": {
+      "bytes": 10578,
+      "sha256": "45b384fe13f43f7cd104afab7115fde1148d06be735bbbd34e86b1dfd2030c15"
+    },
+    "nemo/utils/__init__.py": {
+      "bytes": 1444,
+      "sha256": "c9c812623bd855b3a46c2a889409a49afce6c93e0bf7bfd842b06c9396617866"
+    },
+    "nemo/utils/app_state.py": {
+      "bytes": 29678,
+      "sha256": "8d372a423d2be5d34fba6b261239aae6b4df6f8b8865d8874f23f77b44f5e4aa"
+    },
+    "nemo/utils/arguments.py": {
+      "bytes": 5689,
+      "sha256": "52c592ec14e66828df7919a076b39ac98604cda596922ab54b72b34a4eaea7a8"
+    },
+    "nemo/utils/cast_utils.py": {
+      "bytes": 4234,
+      "sha256": "3b02b97cce34b829b6d5017f44021f44af91308d5a94559711e9bce066095023"
+    },
+    "nemo/utils/cloud.py": {
+      "bytes": 6815,
+      "sha256": "4c71302d7044ef7d38d769b4a457f1f40006877656ddf17f09dedc593bb02c56"
+    },
+    "nemo/utils/compat.py": {
+      "bytes": 1741,
+      "sha256": "c9e12c40b9ff8af5985185711cc04150256a50341677527a794ccff520133c56"
+    },
+    "nemo/utils/config_utils.py": {
+      "bytes": 12055,
+      "sha256": "56d6df222f76753ef367a22d198717716692682b1b6a341f0f55cd8e035e4d0f"
+    },
+    "nemo/utils/data_utils.py": {
+      "bytes": 13507,
+      "sha256": "d554d5f080c0268c6c6a6d0a5c3215280dc0deadf3fe3e950b5e600f00ab6eee"
+    },
+    "nemo/utils/debug_hook.py": {
+      "bytes": 8022,
+      "sha256": "3f37f4d1132b447bdb867fe72bc92e66ca0077bfac158f1d3cab34caff1e36e0"
+    },
+    "nemo/utils/dependency.py": {
+      "bytes": 3422,
+      "sha256": "b0fe7484bc312abeb334144e1bf7f6d379b723f82ce632726d780e4393c9b005"
+    },
+    "nemo/utils/distributed.py": {
+      "bytes": 4917,
+      "sha256": "e107d2f4dcaeea62ae389e6cd5f24b992e5681cd006306a0b707421364d1128c"
+    },
+    "nemo/utils/dtype.py": {
+      "bytes": 1733,
+      "sha256": "e0dda539e06e8d262976e8538c7b11b130b40d34c9c96f4bd797638c9be3271e"
+    },
+    "nemo/utils/enum.py": {
+      "bytes": 1640,
+      "sha256": "9e8710abda46ad2fabafdba857a500999fdfc1054e34e1971b634ef7fde93d66"
+    },
+    "nemo/utils/env_var_parsing.py": {
+      "bytes": 7698,
+      "sha256": "d200fee9a89bfb29be679078cf0777553ae313a6899589d4328f4c663eeaca11"
+    },
+    "nemo/utils/exceptions.py": {
+      "bytes": 1629,
+      "sha256": "19ed5bdaff0d8529c3cec06ec79ec986815a061e68842f584382d529321d968b"
+    },
+    "nemo/utils/exp_manager.py": {
+      "bytes": 79196,
+      "sha256": "5959c8f9b704eba59124b0d9fb761537a268028287c60ad94880df2584fcd5a9"
+    },
+    "nemo/utils/export_utils.py": {
+      "bytes": 20341,
+      "sha256": "f3d945868719152b9a2b901e698150b0da64f77292b54d5e507a97e221367212"
+    },
+    "nemo/utils/file_utils.py": {
+      "bytes": 1289,
+      "sha256": "956e26866cb0d1a38955f553e9c14dd9a48bf91df4f4892eab09a363150ba863"
+    },
+    "nemo/utils/get_rank.py": {
+      "bytes": 2164,
+      "sha256": "3b4b759768ddf90aeda723679ced2211a2258d4bf3b80872be868fefc8d11b60"
+    },
+    "nemo/utils/import_utils.py": {
+      "bytes": 13202,
+      "sha256": "32f8a7ca02629eee774644416da05cf4d1c42d6aa02cd62bfa365491cc820e5c"
+    },
+    "nemo/utils/lightning_logger_patch.py": {
+      "bytes": 2564,
+      "sha256": "e99394e06c9cc2c786d3f0528f1335cf82535ceddd9665b5de20773e13f9f7e9"
+    },
+    "nemo/utils/mcore_logger.py": {
+      "bytes": 1318,
+      "sha256": "a444937285bbcdd0badc873dbeaedd46963a556421902d3ecccfa387115eaef6"
+    },
+    "nemo/utils/megatron_utils.py": {
+      "bytes": 12040,
+      "sha256": "10c2369fdec7fa886379911aff98b5f253877f9a7d14c1faa910fb9352fbad8f"
+    },
+    "nemo/utils/metaclasses.py": {
+      "bytes": 1519,
+      "sha256": "c46d131e24d9e4b94cf237ffe455999e747dad2b219cfdba0cb441bf9bd67a19"
+    },
+    "nemo/utils/model_utils.py": {
+      "bytes": 29034,
+      "sha256": "80d2825b4a7c1ea895676b460fb1fd5aa01b3ee364761811e0f9d265c3a7ec36"
+    },
+    "nemo/utils/msc_utils.py": {
+      "bytes": 1889,
+      "sha256": "4fed6e53bf453531aecc9f36a1a070a079a9d1e2797582d75028075331233ba3"
+    },
+    "nemo/utils/nemo_logging.py": {
+      "bytes": 17469,
+      "sha256": "a849d03b3f568778756176553ee3c2099a5766df53b40d8101380f86393302f9"
+    },
+    "nemo/utils/notebook_utils.py": {
+      "bytes": 4644,
+      "sha256": "b7db346d86cf33a912ab9981044170b38664a0c0cd2f2b4c0d372e388f36a0af"
+    },
+    "nemo/utils/nvtx.py": {
+      "bytes": 1952,
+      "sha256": "5c1a91b4ace3bb944fc0572fcb169cc4771d890b36548f609d4a8fed0a21d452"
+    },
+    "nemo/utils/oomptimizer.py": {
+      "bytes": 4999,
+      "sha256": "c24ec1d36426d9f33147b627aeebc9e02cc742ba7f0c3e6b3c8ff943415b4292"
+    },
+    "nemo/utils/s3_dirpath_utils.py": {
+      "bytes": 1368,
+      "sha256": "dd1cee2e244eeb234353f5819925d3b2663b5d2e7bee45a8c57a80b1d79ee3db"
+    },
+    "nemo/utils/s3_utils.py": {
+      "bytes": 13649,
+      "sha256": "d3c73b9a1379947fb6d21415de27a64056ab493c12925aa3d33782b033bc80d9"
+    },
+    "nemo/utils/sequence_packing_utils.py": {
+      "bytes": 11627,
+      "sha256": "1d53bc260be881c9688acce5409ce324d909ca57fe81e1e0e82b4f50a54886b1"
+    },
+    "nemo/utils/tar_utils.py": {
+      "bytes": 2300,
+      "sha256": "5b24217dfb8204297669501e39f87d7aeafbbf902c35efda8a700d08eb603c22"
+    },
+    "nemo/utils/te_utils.py": {
+      "bytes": 1698,
+      "sha256": "7e459d5809bedde04a36a61eafe5b34eb54c33cbc6389b8b11c846be4e603ae4"
+    },
+    "nemo/utils/timers.py": {
+      "bytes": 6669,
+      "sha256": "e9d5f62bbb56d1689e8ef659c0e1f4c3e6740d97f1acb4b7f49449ff9c59aacc"
+    },
+    "nemo/utils/trainer_utils.py": {
+      "bytes": 10450,
+      "sha256": "6bc492c5bf887fb8f5b2ce64a3bace06ca777304bac8f4702ce98532358cf28d"
+    },
+    "nemo/utils/trt_utils.py": {
+      "bytes": 2159,
+      "sha256": "2352dd7855a04d46f525a2499edd28a395bff505ee8cb3b6144ac46d8af1ae4e"
+    },
+    "nemo/utils/callbacks/__init__.py": {
+      "bytes": 886,
+      "sha256": "ba15b4035e15765f728f9da568dce22fa018d86653f6cc54bdd799da35c2fba4"
+    },
+    "nemo/utils/callbacks/checkpointing_context.py": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "nemo/utils/callbacks/cuda_graph.py": {
+      "bytes": 19445,
+      "sha256": "070ed7c25e4026f8de27a72a45c48f2a379f8187770a58ad4a9911a352d4f0a7"
+    },
+    "nemo/utils/callbacks/dist_ckpt_io.py": {
+      "bytes": 22019,
+      "sha256": "487a1a4a2e072fc72e7372c1b486efa513bc9177b1a29d117f4d6c8d07e89358"
+    },
+    "nemo/utils/callbacks/nemo_model_checkpoint.py": {
+      "bytes": 35518,
+      "sha256": "53cf44397d4063205df1b8d24e4b09ae9e6b48d591629f1e204254c0df6e41dc"
+    },
+    "nemo/utils/callbacks/preemption.py": {
+      "bytes": 5184,
+      "sha256": "4e5d3297830147a58778fad5d55ce13160b936e7f2a9b024f73e5b9721fd6508"
+    },
+    "nemo/utils/callbacks/s3_checkpoint_io.py": {
+      "bytes": 12865,
+      "sha256": "5e9434df256317a722a7aa308d5bfd318b00c5b2269a9e067afe3b9643c01fff"
+    },
+    "nemo/utils/callbacks/training_stats.py": {
+      "bytes": 9226,
+      "sha256": "710eeca5438f002d9a33fdfe452a9c71e5049fb962a6ae97ccb49fb8c5c5bf7d"
+    },
+    "nemo/utils/decorators/__init__.py": {
+      "bytes": 881,
+      "sha256": "7ac92c3338b8e82e80110ccbf1d03c2204ce52444bae3557bcaa9509bec2c79f"
+    },
+    "nemo/utils/decorators/deprecated.py": {
+      "bytes": 3723,
+      "sha256": "799d3174df98b62a9144f4b98da029992654334549c5e07d9102cf7d3573cf0d"
+    },
+    "nemo/utils/decorators/experimental.py": {
+      "bytes": 975,
+      "sha256": "b45245df335e133528242aa2d925f2998a6a9d6e2a52aae3c2dfcf5d90619cbf"
+    },
+    "nemo/utils/decorators/port_docs.py": {
+      "bytes": 3022,
+      "sha256": "676b957ac9c99726d8678c7cf7f29ea7410f69c139c1aae2e540bc230d55634d"
+    },
+    "nemo/utils/formatters/__init__.py": {
+      "bytes": 685,
+      "sha256": "702e69ecbdb6a2a88da82ef22343d4ad372d2e30f0a09f02bb1152932058500d"
+    },
+    "nemo/utils/formatters/base.py": {
+      "bytes": 5414,
+      "sha256": "a29720fd486dd806260e7389965b8b51c489865d2930faf806d6455b646c9826"
+    },
+    "nemo/utils/formatters/colors.py": {
+      "bytes": 3086,
+      "sha256": "3f7dbcaca2a74846453414082afac73571b1cd68db5f7d07d896305bb20d3f56"
+    },
+    "nemo/utils/formatters/utils.py": {
+      "bytes": 1612,
+      "sha256": "1bc6ca0302871bb1d33ddb7208b8d6aba1fe5a4d695f257e2f65022f86ba378e"
+    },
+    "nemo/utils/loggers/__init__.py": {
+      "bytes": 884,
+      "sha256": "69788cac19ed76581d773fc84383cfd68bc2e2f9292bd2b18b40fe3bea0720a2"
+    },
+    "nemo/utils/loggers/clearml_logger.py": {
+      "bytes": 7546,
+      "sha256": "34156f6729f4efd4a4a634167b38bbc0d97ab40f5144a5a5858465512a139c6a"
+    },
+    "nemo/utils/loggers/dllogger.py": {
+      "bytes": 3723,
+      "sha256": "30741d6f4cf12243943a08cfdeb3262ec21838e3646e469b6556137656735f3e"
+    },
+    "nemo/utils/loggers/mlflow_logger.py": {
+      "bytes": 1510,
+      "sha256": "ec015d78cb09f25a97a614d727768c8008829c00d0c35e226564c8d9197c628b"
+    }
+  },
+  "packages": {
+    "shellingham": "1.5.4",
+    "narwhals": "2.27.1",
+    "opentelemetry-sdk": "1.45.1",
+    "audioread": "3.1.0",
+    "pytorch-lightning": "2.6.6",
+    "transformers": "5.20.1",
+    "scikit-learn": "1.9.1",
+    "text-unidecode": "1.3",
+    "soundfile": "0.14.0",
+    "cloudpickle": "3.1.2",
+    "intervaltree": "3.2.1",
+    "numpy": "2.2.6",
+    "torchmetrics": "1.9.0",
+    "msgspec": "0.22.0",
+    "lightning-utilities": "0.15.3",
+    "wandb": "0.31.0",
+    "text2num": "3.1.0",
+    "lxml": "6.1.3",
+    "click": "8.5.0",
+    "einops": "0.8.2",
+    "tensorboard": "2.21.0",
+    "networkx": "3.7",
+    "joblib": "1.6.0",
+    "protobuf": "7.36.2",
+    "nv-one-logger-pytorch-lightning-integration": "2.3.1",
+    "tokenizers": "0.23.3",
+    "smart_open": "8.0.3",
+    "toml": "0.10.2",
+    "overrides": "7.7.0",
+    "colorama": "0.4.6",
+    "Pygments": "2.21.0",
+    "pyarrow": "26.0.0",
+    "requests": "2.34.2",
+    "rich": "15.0.0",
+    "yarl": "1.25.1",
+    "torch": "2.8.0",
+    "opentelemetry-proto": "1.45.1",
+    "nv-one-logger-training-telemetry": "2.3.1",
+    "opentelemetry-api": "1.45.1",
+    "lightning": "2.4.0",
+    "portalocker": "4.4.1",
+    "datasets": "5.1.0",
+    "sentencepiece": "0.2.2",
+    "kaldialign": "0.12.0",
+    "propcache": "0.5.4",
+    "onnx": "1.23.2",
+    "whisper_normalizer": "0.1.15",
+    "httpcore": "1.0.9",
+    "toolz": "1.2.0",
+    "webdataset": "1.0.2",
+    "aiohappyeyeballs": "2.7.1",
+    "wrapt": "2.5.1",
+    "cytoolz": "1.2.0",
+    "sympy": "1.14.0",
+    "StrEnum": "0.4.15",
+    "grpcio": "1.84.0",
+    "hf-xet": "1.7.0",
+    "safetensors": "0.8.0",
+    "msgpack": "1.2.3",
+    "lazy-loader": "0.6",
+    "googleapis-common-protos": "1.75.5",
+    "Markdown": "3.11.1",
+    "tqdm": "4.70.1",
+    "setuptools": "84.0.0",
+    "pooch": "1.9.0",
+    "urllib3": "2.8.0",
+    "h11": "0.16.0",
+    "sniffio": "1.3.1",
+    "pydantic_core": "2.50.1",
+    "soxr": "1.1.0",
+    "humanize": "4.16.0",
+    "lhotse": "2.0.0a6",
+    "mdurl": "0.1.2",
+    "python-dateutil": "2.9.0.post0",
+    "mpmath": "1.3.0",
+    "PyYAML": "6.0.3",
+    "sacrebleu": "2.6.0",
+    "indic_numtowords": "1.1.0",
+    "sortedcontainers": "2.4.0",
+    "packaging": "24.2",
+    "huggingface_hub": "2.2.0",
+    "truststore": "0.10.5",
+    "antlr4-python3-runtime": "4.9.3",
+    "frozenlist": "1.8.0",
+    "cffi": "2.1.1",
+    "filelock": "4.2.0",
+    "llvmlite": "0.50.0",
+    "braceexpand": "0.1.7",
+    "aiosignal": "1.4.0",
+    "certifi": "2026.7.22",
+    "opentelemetry-exporter-http-transport": "0.66b1",
+    "typer": "0.27.3",
+    "opentelemetry-semantic-conventions": "0.66b1",
+    "Jinja2": "3.1.6",
+    "annotated-types": "0.8.0",
+    "fsspec": "2025.12.0",
+    "regex": "2026.9.29",
+    "pycparser": "3.11",
+    "markdown-it-py": "4.2.0",
+    "aistore": "2.0.0",
+    "annotated-doc": "0.0.5",
+    "opentelemetry-exporter-otlp-proto-http": "1.45.1",
+    "threadpoolctl": "3.7.0",
+    "typing-inspection": "0.4.4",
+    "distro": "1.9.0",
+    "numba": "0.68.0",
+    "tabulate": "0.10.0",
+    "pandas": "3.0.6",
+    "absl-py": "2.5.1",
+    "aiohttp": "3.14.5",
+    "attrs": "26.1.0",
+    "opentelemetry-exporter-otlp-common": "0.66b1",
+    "more-itertools": "11.2.1",
+    "xxhash": "4.0.1",
+    "httpx": "0.28.1",
+    "typing_extensions": "4.16.0",
+    "httpx2": "2.13.1",
+    "MarkupSafe": "3.0.4",
+    "nemo-toolkit": "3.1.0",
+    "decorator": "5.3.1",
+    "platformdirs": "4.13.3",
+    "tensorboard-data-server": "0.7.2",
+    "cwevals": "0.0.1b1",
+    "pydantic": "2.14.1",
+    "ml_dtypes": "0.6.0",
+    "opentelemetry-exporter-otlp-proto-common": "1.45.1",
+    "multiprocess": "0.70.19",
+    "hydra-core": "1.3.2",
+    "charset-normalizer": "3.5.2",
+    "pillow": "12.3.0",
+    "httpcore2": "2.13.1",
+    "anyio": "4.15.1",
+    "omegaconf": "2.3.0",
+    "tenacity": "9.2.1",
+    "six": "1.17.0",
+    "nv-one-logger-core": "2.3.1",
+    "multidict": "7.1.0",
+    "scipy": "1.18.1",
+    "dill": "0.4.1",
+    "idna": "3.20",
+    "librosa": "1.0.0",
+    "Werkzeug": "3.1.9"
+  },
+  "tools": {
+    "artifacts.py": {
+      "bytes": 2869,
+      "sha256": "17df6411ab0394b4d9bb30a099915badf357af26050b6cd08bfd44887688ff42"
+    },
+    "build_valid_mel_candidate.py": {
+      "bytes": 12180,
+      "sha256": "5bfb3ec59548ae0b56e8e3eaded10201933f574b0b04ca12384eb35795dd546b"
+    },
+    "compare.py": {
+      "bytes": 4165,
+      "sha256": "a53fccc162ead3b488a3880950d4dbf244897fd837f3b8e0898235029e559282"
+    },
+    "frontend_metrics.py": {
+      "bytes": 2059,
+      "sha256": "6e0fe650decac087915d517e76f71dd7462fb9195ff81393ec93818edf7546dc"
+    },
+    "macos_auxiliary_loaded_libraries.py": {
+      "bytes": 1402,
+      "sha256": "446119644a6a9769f92602bc1f8b0b8d8eaf5bd3590e1b98a12079eebdb0dfbe"
+    },
+    "macos_loaded_libraries.py": {
+      "bytes": 1805,
+      "sha256": "69c2dfcc6d2cf8e2966b929ff997b337c6c4e3a62fd8ada110b36ba27da4833b"
+    },
+    "original_nemo_calibration.py": {
+      "bytes": 7012,
+      "sha256": "9552bab4a4e49a1164eb8d30193adbb10f07089d3c3805d55fad16bca0469922"
+    },
+    "original_nemo_metrics.py": {
+      "bytes": 672,
+      "sha256": "5191ba6f9aa96eab574e38cf64ce007376b7530171064443a9067b1e427dd11c"
+    },
+    "package_macos.py": {
+      "bytes": 18168,
+      "sha256": "301cf904fa444a3a655f38b5a40e365d6bc0e1f348f5bbede8962d6352fffda3"
+    },
+    "qualification_storage.py": {
+      "bytes": 3914,
+      "sha256": "8bbb4dfe53797d8d03c3ba18f24acce8458878602c1c85f28a4f816d6f4416f6"
+    },
+    "qualify_original_nemo_ami.py": {
+      "bytes": 7008,
+      "sha256": "787733037a7a805e7003943e26aacd5da8f889c028e6a94af393a0ed6a3b38ab"
+    },
+    "qualify_valid_mel_pnola.py": {
+      "bytes": 13787,
+      "sha256": "4628f4b6242a7cd0985ba5b20a7ac8f38bbec4dc5042b786e34e488ed738e423"
+    },
+    "runtime_profiles.py": {
+      "bytes": 7345,
+      "sha256": "f99c8c33a3a64005ef477319c8bc7f1d6c32180c44665c2fe189a54a4b31ac7d"
+    },
+    "score.py": {
+      "bytes": 3294,
+      "sha256": "32aea92676133e42e2c30a914f8729d1c31c0c96e02faf9b7cab42911b389eb8"
+    }
+  },
+  "inputs": {
+    "/Users/victor/.cache/gen2-nemotron3-n0/research/native-f32-control/Nemotron-3-Diarization.nemo": {
+      "bytes": 198676480,
+      "sha256": "867c53f552998f772e5b5e5c082962ae85ee7ca5669c2bc17d7f615133d4e96d"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/research/native-f32-control/acquisition.lock.json": {
+      "bytes": 635,
+      "sha256": "358b2c1c08ff5d428e02e7e7cfa495aa875d4f9218928ef3445a10b71c3a5921"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-env-v1/venv/bin/python": {
+      "bytes": 18073936,
+      "sha256": "96793b100c947cdc81a38e8fb8c9c1889abccda9840ce1bef58d372bf3f2c263"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-original-nemo-environment/collection.json": {
+      "bytes": 5083,
+      "sha256": "7b764de7861f1a7038455aedb9d11ef35e6c8b966eb8adbc720e6409df679467"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-original-nemo-environment/qualification.json": {
+      "bytes": 1719,
+      "sha256": "953af5fda99bc30a130a448d458aef6ac7b158c71b94a1d1756dccbc93dbf963"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-env-v1/venv/lib/python3.12/site-packages/torch/__init__.py": {
+      "bytes": 102960,
+      "sha256": "2f0deb66d5dff6b9c02a62832c3bf3824c2ee031c462a3afeb9ca170466da5bf"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-env-v1/venv/lib/python3.12/site-packages/torch/nn/attention/flex_attention.py": {
+      "bytes": 58217,
+      "sha256": "4a83aaed88b0817e40c3b1f50d0a46b5fc6502ea491e7a729664d4ddfa493e16"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-env-v1/venv/lib/python3.12/site-packages/torch/lib/libtorch_cpu.dylib": {
+      "bytes": 213290816,
+      "sha256": "5630bd318812b8d11d5eaad407930cd1486586fc4155b6ce16449380a9c03565"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-env-v1/venv/lib/python3.12/site-packages/torch/lib/libtorch_python.dylib": {
+      "bytes": 26824440,
+      "sha256": "cd4ee6a13f42a6c2ab2ce9c7568270b06916ba4637b9e81749c83bde1cdfce8a"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-env-v1/venv/lib/python3.12/site-packages/numpy/__init__.py": {
+      "bytes": 22147,
+      "sha256": "6ae17b070c0f70a8e3cad89a510a256942e5a1f37ea5feb120cec167ed2a6236"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/tail-framing-v1/ami-close/audio.f32": {
+      "bytes": 7680000,
+      "sha256": "224b67a6ea4b758d769fd9e1b94de4b29bd62e14969a685cd1c3cc9adc03f4aa"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-ami-inputs-v1/ami-close.f32": {
+      "bytes": 7680000,
+      "sha256": "224b67a6ea4b758d769fd9e1b94de4b29bd62e14969a685cd1c3cc9adc03f4aa"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/ami-ES2004a-Mix-Headset-fp32.json": {
+      "bytes": 2882,
+      "sha256": "abce7ad36c1c1eb249ace5d6aa01388b43fa8356fb040858496cc9339ded5876"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/ami-ES2004a-Mix-Headset-fp32.npy": {
+      "bytes": 384128,
+      "sha256": "2db1197c259343daf67f6a4497cd3b7d91cfde2214afb2bdea19917d640c3a4d"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality-corpus-v1/ami-ES2004a-Mix-Headset.reference.json": {
+      "bytes": 2364,
+      "sha256": "70fc7b37f302987ed309e8db3c805f4222fc8d499408d95cb474a70e91fcc4cf"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/tail-framing-v1/ami-close/framing.json": {
+      "bytes": 57072,
+      "sha256": "19dfe8bead662a6afdca7abbd4cadffbc7527d9df4f13169e9942150cca1ac15"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/tail-framing-v1/ami-distant/audio.f32": {
+      "bytes": 7680000,
+      "sha256": "d6c21c075519cb3c9888bb86abd4a1d50924fe94fdfba41f7911da9e9b646ca6"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-ami-inputs-v1/ami-distant.f32": {
+      "bytes": 7680000,
+      "sha256": "d6c21c075519cb3c9888bb86abd4a1d50924fe94fdfba41f7911da9e9b646ca6"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/ami-ES2004a-Array1-01-fp32.json": {
+      "bytes": 2881,
+      "sha256": "d7a2e4f84bf60a679654f41c8e949c87241dc5fea347d9be132ce807c5326309"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/ami-ES2004a-Array1-01-fp32.npy": {
+      "bytes": 384128,
+      "sha256": "177854edb832800fa4364e4d1382f44f10f64433036f7b0b4d50110ba6918273"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality-corpus-v1/ami-ES2004a-Array1-01.reference.json": {
+      "bytes": 2364,
+      "sha256": "70fc7b37f302987ed309e8db3c805f4222fc8d499408d95cb474a70e91fcc4cf"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/tail-framing-v1/ami-distant/framing.json": {
+      "bytes": 57079,
+      "sha256": "7bbc8f62d7139a7eda869faa5a9e66ac22da30948c32c9c4bf5541ec78ff3223"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality-corpus-v1/manifest.json": {
+      "bytes": 19089,
+      "sha256": "c514152766948139ed21a496b1b81661c2e06d647004901fa4683bea4b423ece"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-original-nemo-calibration/collection.json": {
+      "bytes": 6154,
+      "sha256": "a1018ae47be423b6e27aaccd32ad7660c52ec30889908dd8df40d45833204ed8"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-original-nemo-calibration/receiver-qualification.json": {
+      "bytes": 1400,
+      "sha256": "7a73a34f247d5b4d85c00ca4ab60468b8ff6bff6840814ff42bc9d397e40857e"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-original-nemo-calibration/qualification.json": {
+      "bytes": 3502,
+      "sha256": "fc2d9d8a9035f46c9b1b1c621faa7c9ce735da7f242e7b6f4571f2fc9c8bf12f"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-ami-inputs-v1/preparation.json": {
+      "bytes": 967,
+      "sha256": "ba2dea202dd806c61864ad9edff65162d8fbe83fd3cbfa5bfb2dc04606da971c"
+    }
+  },
+  "checkpoint_path": "/Users/victor/.cache/gen2-nemotron3-n0/research/native-f32-control/Nemotron-3-Diarization.nemo",
+  "checkpoint": {
+    "bytes": 198676480,
+    "sha256": "867c53f552998f772e5b5e5c082962ae85ee7ca5669c2bc17d7f615133d4e96d"
+  },
+  "output_path": "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-ami-runtime-v1",
+  "denied_paths": [
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality-corpus-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/tail-framing-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/calibration-graph-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/calibration-graph-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/frontend-diagnostic-ec88564",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/python-reference",
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches",
+    "/Users/victor/.cache/huggingface",
+    "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-calibration-runtime-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/release CPU qualification d01ef80",
+    "/Users/victor/.cache/gen2-nemotron3-n0/release Metal qualification d01ef80"
+  ],
+  "readonly_paths": [
+    "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-env-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-calibration-inputs-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/research/native-f32-control",
+    "/Users/victor/workspace/gen2-nemotron3-n0",
+    "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-ami-inputs-v1"
+  ],
+  "storage_policy": {
+    "start_minimum_bytes": 5368709120,
+    "running_minimum_bytes": 1073741824,
+    "reserve_bytes": 268435456,
+    "timeout_seconds": 600
+  },
+  "comparison_policy": "All12000valid/eight learned channels without permutation/row removal. Abs1e-3 descriptive differences and exact unchanged10ms/zero-collar/overlap-inclusive full120sUEM/shared>.5DER against original references; preserve failures. The original20%gate is reported diagnostically and never replaces currentQ8/HF failures.",
+  "limits": [
+    "Two previously observed failed crops; not new held-out evaluation or corpus qualification.",
+    "Later official3.1 source and independently resolved environment, not identified3.0 training source.",
+    "Original whole-wave frontend and cachedHFchunked frontend are different; do not assume bitwise or full-corpus model equivalence.",
+    "Both fixed calls run even if descriptive disagreement or quality failures occur. Stop on execution/geometry/shape/finite-range/source/storage failure. No relaxed-key retries.",
+    "No original-NeMo forward on eitherAMIcrop has run at preparation.",
+    "OriginalQ8/HF gates, label policy and every historical result remain unchanged. No public signing,GUI/microphone,clean performance,fresh-machine or release claim."
+  ],
+  "cases": [
+    {
+      "id": "ami-close",
+      "samples": 1920000,
+      "pcm_path": "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-ami-inputs-v1/ami-close.f32",
+      "pcm": {
+        "bytes": 7680000,
+        "sha256": "224b67a6ea4b758d769fd9e1b94de4b29bd62e14969a685cd1c3cc9adc03f4aa"
+      },
+      "reference_path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/ami-ES2004a-Mix-Headset-fp32.npy",
+      "reference_metadata_path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/ami-ES2004a-Mix-Headset-fp32.json",
+      "labels_path": "/Users/victor/.cache/gen2-nemotron3-n0/quality-corpus-v1/ami-ES2004a-Mix-Headset.reference.json",
+      "original_cached_hf_shared_der": 0.414447315,
+      "uem_seconds": [
+        0,
+        120
+      ]
+    },
+    {
+      "id": "ami-distant",
+      "samples": 1920000,
+      "pcm_path": "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-ami-inputs-v1/ami-distant.f32",
+      "pcm": {
+        "bytes": 7680000,
+        "sha256": "d6c21c075519cb3c9888bb86abd4a1d50924fe94fdfba41f7911da9e9b646ca6"
+      },
+      "reference_path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/ami-ES2004a-Array1-01-fp32.npy",
+      "reference_metadata_path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/ami-ES2004a-Array1-01-fp32.json",
+      "labels_path": "/Users/victor/.cache/gen2-nemotron3-n0/quality-corpus-v1/ami-ES2004a-Array1-01.reference.json",
+      "original_cached_hf_shared_der": 0.500222677,
+      "uem_seconds": [
+        0,
+        120
+      ]
+    }
+  ]
+}

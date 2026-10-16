@@ -1,4 +1,4 @@
-"""One original-NeMo CPU forward on the excluded fixed calibration PCM.
+"""One original-NeMo CPU forward on protocol-bound PCM.
 
 The parent admits all source/environment/checkpoint identities before launch.
 This process cannot read saved reference probabilities or target corpus data.
@@ -17,6 +17,10 @@ def main():
     args = parser.parse_args()
     protocol = json.loads(args.protocol.read_text())
     output = args.output
+    samples = protocol.get('samples', 17872)
+    if type(samples) is not int or not 320 <= samples <= 600 * 16000:
+        raise ValueError('invalid fixed original-NeMo sample count')
+    frames = samples // 160
     write = lambda name, value: (output / name).write_text(json.dumps(value, indent=2) + '\n')
 
     import numpy as np
@@ -28,9 +32,9 @@ def main():
     torch.set_num_interop_threads(1)
     torch.manual_seed(0)
     pcm = np.fromfile(protocol['pcm_path'], dtype='<f4')
-    if (pcm.shape != (17872,) or not np.isfinite(pcm).all()
+    if (pcm.shape != (samples,) or not np.isfinite(pcm).all()
             or hashlib.sha256(pcm.tobytes()).hexdigest() != protocol['pcm']['sha256']):
-        raise ValueError('fixed original-NeMo calibration PCM differs')
+        raise ValueError('fixed original-NeMo PCM differs')
     write('restore-started.json', {'strict': True, 'map_location': 'cpu', 'checkpoint': protocol['checkpoint']})
     started = time.monotonic()
     model = SortformerEncLabelModel.restore_from(protocol['checkpoint_path'],
@@ -99,21 +103,21 @@ def main():
         shapes[name] = list(values.shape)
         dtypes[name] = str(values.dtype)
     write('output-shapes.json', {'shapes': shapes, 'dtypes': dtypes})
-    if len(frontends) != 1 or frontends[0][1].tolist() != [111]:
+    if len(frontends) != 1 or frontends[0][1].tolist() != [frames]:
         raise ValueError('original-NeMo frontend valid length differs')
     mel = frontends[0][0]
-    if mel.ndim != 3 or mel.shape[:2] != (1, 128) or mel.shape[2] < 111 or not np.isfinite(mel).all():
+    if mel.ndim != 3 or mel.shape[:2] != (1, 128) or mel.shape[2] < frames or not np.isfinite(mel).all():
         raise ValueError('original-NeMo frontend shape differs')
     mel.astype('<f4').tofile(output / 'frontend-physical.f32')
-    mel[0, :, :111].T.copy().astype('<f4').tofile(output / 'frontend-valid.f32')
+    mel[0, :, :frames].T.copy().astype('<f4').tofile(output / 'frontend-valid.f32')
     for name, values in arrays.items():
-        if values.shape != ((1, 111, 3) if name == 'activity' else (1, 111, 8)) or not np.isfinite(values).all():
+        if values.shape != ((1, frames, 3) if name == 'activity' else (1, frames, 8)) or not np.isfinite(values).all():
             raise ValueError('original-NeMo output shape/finiteness differs: ' + name)
         if name == 'probabilities' and not ((0 <= values) & (values <= 1)).all():
             raise ValueError('original-NeMo probabilities outside unit interval')
     write('forward-completed.json', {'passed': True, 'calls': 1, 'seconds': elapsed,
                                     'shapes': shapes, 'frontend_physical_shape': list(mel.shape),
-                                    'frontend_valid_lengths': [111], 'geometry': geometry,
+                                    'frontend_valid_lengths': [frames], 'geometry': geometry,
                                     'strict_restore': True, 'device': 'cpu', 'dtype': 'float32',
                                     'official_source_commit': protocol['nemo_source_commit'],
                                     'quality_qualified': False, 'release_qualified': False})
