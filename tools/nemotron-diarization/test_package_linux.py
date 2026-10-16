@@ -4,10 +4,33 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from package_linux import apt_provenance, check_source_bundle, discover, inspect_elf, parse_ldd, qualified_entry, validate_library
+from package_linux import apt_provenance, check_source_bundle, discover, inspect_elf, parse_ldd, qualified_entry, validate_library, validate_sdk_library_mapping
 
 
 class LinuxPackageTests(unittest.TestCase):
+    def test_relabelled_sdk_libraries_cannot_borrow_current_provenance(self):
+        import copy
+        files = {'lib/libnemo_speech_asr_c.so.0.2.0': {'sha256': '1' * 64, 'bytes': 10},
+                 'lib/libggml-base.so.0.25.1': {'sha256': '2' * 64, 'bytes': 20}}
+        libraries = {}
+        for relative, record in files.items():
+            base = Path(relative).name
+            libraries['libgen2_nemo_linux_' + base.removeprefix('lib')] = {
+                'source': '/sdk/' + relative, 'source_sha256': record['sha256'], 'source_bytes': record['bytes']}
+        entry = 'libgen2_nemo_linux_nemo_speech_asr_c.so.0.2.0'
+        manifest = {'libraries': libraries, 'entry_library': entry}
+        validate_sdk_library_mapping(manifest, {'installed_files': files})
+        changed = copy.deepcopy(manifest)
+        changed['libraries'][entry]['source_sha256'] = '3' * 64
+        with self.assertRaisesRegex(ValueError, 'differs from qualified SDK'):
+            validate_sdk_library_mapping(changed, {'installed_files': files})
+        changed = copy.deepcopy(manifest)
+        del changed['libraries']['libgen2_nemo_linux_ggml-base.so.0.25.1']
+        with self.assertRaisesRegex(ValueError, 'omits qualified SDK'):
+            validate_sdk_library_mapping(changed, {'installed_files': files})
+        with self.assertRaisesRegex(ValueError, 'qualified C ABI'):
+            validate_sdk_library_mapping({**manifest, 'entry_library': 'libgen2_nemo_linux_ggml-base.so.0.25.1'}, {'installed_files': files})
+
     def test_only_pinned_real_sdk_files_can_back_entry_alias(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary).resolve()

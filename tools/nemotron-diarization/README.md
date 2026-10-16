@@ -54,6 +54,14 @@ all 157 model-free tool tests pass. Fresh Linux/Windows builds and runtime
 qualification are pending. The separate workflow preserves failed evidence;
 this stage does not establish offline packages, coexistence or release support.
 
+The Linux constructor now requires the completed tagged SDK receipt and emits
+v2 packages with exact SDK-library source mappings and retained profile, patch,
+protocol and compiler-audit provenance. Offline and CPU chat qualifiers use the
+complete 6,000-row comparator; a fresh consumer builds its own public helper
+and acquires omitted pinned assets on the host before offline testing. These
+source changes pass 161 model-free tests. Current-profile Linux construction,
+offline execution and chat coexistence remain unqualified until actual runs.
+
 # Nemotron 3 — N0 qualification
 
 This directory implements the first milestone of the

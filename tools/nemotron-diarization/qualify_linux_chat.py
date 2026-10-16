@@ -11,7 +11,8 @@ import shutil
 import subprocess
 
 from artifacts import acquire, matches
-from compare_stream import compare
+from platform_valid_mel_native import compare_complete_60s as compare
+from runtime_profiles import load_profile, profile_provenance, validate_provenance
 from evidence_commands import CommandRunner
 from linux_chat_audit import audit_results, ggml_bindings
 from package_linux import (PLATFORM_LIBRARIES, check_source_bundle, digest, inspect_elf,
@@ -28,7 +29,8 @@ class Qualification(CommandRunner):
         self.tools = Path(__file__).resolve().parent
         super().__init__(args.output.resolve(), self.tools.parents[1])
         self.work, self.results = self.output / 'inputs', self.output / 'results'
-        self.receipt = {'schema_version': 1, 'release_qualified': False,
+        lock_path, lock = load_profile()
+        self.receipt = {**profile_provenance(lock_path, lock), 'schema_version': 2, 'release_qualified': False,
                         'chat_diarization_gates_passed': False,
                         'scope': 'Actual CPU Gen2 chat/OpenMP plus packaged diarization, both load orders, repeated/reloaded/concurrent calls and GGML bindings in fresh offline Ubuntu 24.04 containers.',
                         'limits': ['No Bark/Laya coexistence, other Linux baseline, GPU or physical-machine qualification.',
@@ -38,6 +40,7 @@ class Qualification(CommandRunner):
     def prepare(self):
         base = self.args.container_evidence.resolve()
         prior = json.loads((base / 'receipt.json').read_text())
+        validate_provenance(prior)
         frozen = json.loads((base / 'frozen-inputs.json').read_text())
         current = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=self.repo, text=True).strip()
         if prior.get('offline_container_gates_passed') is not True or prior['source_commit'] != current or frozen['source_commit'] != current:
@@ -135,7 +138,7 @@ class Qualification(CommandRunner):
                   'native_probabilities_sha256': digest(self.output / 'independent-native.f32'),
                   'tools': {name: digest(self.tools / name) for name in ['qualify_linux_chat.py', 'linux_chat_audit.py',
                             'qualify_linux_package.py', 'evidence_commands.py', 'package_linux.py', 'sdk_archive.py',
-                            'compare_stream.py', 'runtime.lock.json', 'linux-chat.lock.json']},
+                            'compare_stream_valid_mel.py', 'platform_valid_mel_native.py', 'platform_valid_mel_sources.py', 'platform_native.py', 'platform_sdk_receipt.py', 'runtime_profiles.py', 'build_valid_mel_candidate.py', 'qualification_storage.py', 'runtime-valid-mel.lock.json', 'runtime.lock.json', 'valid-mel-platform-native.protocol.json', 'linux-chat.lock.json']},
                   'example_sha256': digest(self.repo / 'examples/nemotron_chat_coexistence.rs')}
         (self.output / 'frozen-inputs.json').write_text(json.dumps(inputs, indent=2) + '\n')
         self.receipt.update(source_commit=current, frozen_inputs_sha256=digest(self.output / 'frozen-inputs.json'),
@@ -150,7 +153,7 @@ class Qualification(CommandRunner):
                        '/work/assets', library, '/work/assets/ami_en2002d_2132.wav', '/results/' + order]
             self.run(order, container_command(self.image, mounts, self.results, command,
                      {'LD_DEBUG': 'libs,bindings', 'LD_BIND_NOW': '1', 'OMP_NUM_THREADS': '2'}))
-        results = audit_results(self.results, self.reference, self.raw, self.fingerprints)
+        results = audit_results(self.results, self.reference, self.raw, self.fingerprints, comparator=compare)
         loaded, bindings = {}, {}
         gcc = {RUNTIME_PATH + '/lib/libstdc++.so.6', RUNTIME_PATH + '/lib/libgcc_s.so.1'}
         for order in ['isolated', 'chat-first', 'diar-first']:

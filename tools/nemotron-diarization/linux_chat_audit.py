@@ -25,7 +25,7 @@ def ggml_bindings(trace, libraries):
     return [{'source': a, 'target': b, 'symbol': c} for a, b, c in sorted(bindings)]
 
 
-def audit_results(results, native, raw, fingerprints):
+def audit_results(results, native, raw, fingerprints, *, comparator=compare):
     isolated = json.loads((results / 'isolated/summary.json').read_text())
     baseline = isolated['chat_outputs']['isolated']['text']
     if not isinstance(baseline, str) or not baseline:
@@ -67,5 +67,5 @@ def audit_results(results, native, raw, fingerprints):
                 raise ValueError('concurrent diarization interval differs from actual API observation')
             if public['input_pcm_f32le_sha256'] != native['input_pcm_f32le_sha256'] or public['input_repeats'] != 1:
                 raise ValueError('mixed-model actual diarization PCM identity differs')
-            comparisons[order + '/' + stage] = compare(public, native, raw, path.with_suffix('.f32').read_bytes())
+            comparisons[order + '/' + stage] = comparator(public, native, raw, path.with_suffix('.f32').read_bytes())
     return {'isolated_chat_text': baseline, 'comparisons': comparisons}

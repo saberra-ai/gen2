@@ -10,6 +10,7 @@ import sys
 
 from package_linux import digest, verify
 from sdk_archive import write_archive
+from runtime_profiles import load_profile, profile_provenance
 
 
 def main():
@@ -23,7 +24,8 @@ def main():
     output = args.output.resolve()
     output.mkdir(parents=True)
     package = output / 'runtime'
-    receipt = {'schema_version': 1, 'release_qualified': False,
+    lock_path, lock = load_profile()
+    receipt = {**profile_provenance(lock_path, lock), 'schema_version': 2, 'release_qualified': False,
                'scope': 'Linux development runtime package construction, source/notice provenance, ELF closure and archive identity only.',
                'source_commit': subprocess.check_output(['git', 'rev-parse', 'HEAD'], text=True).strip(),
                'native_receipt_sha256': digest(args.native_receipt),

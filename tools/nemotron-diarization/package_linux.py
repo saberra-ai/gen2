@@ -9,7 +9,7 @@ from email.parser import Parser
 import hashlib
 import json
 import os
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 import platform
 import re
 import shutil
@@ -18,6 +18,8 @@ import subprocess
 import tempfile
 
 from sdk_archive import inventory
+from platform_sdk_receipt import copy_provenance, validate_native_receipt, verify_provenance
+from runtime_profiles import profile_provenance
 
 PLATFORM_LIBRARIES = {'libc.so.6', 'libm.so.6', 'libdl.so.2', 'libpthread.so.0',
                       'librt.so.1', 'ld-linux-x86-64.so.2'}
@@ -293,10 +295,34 @@ def validate_library(info, names):
         raise ValueError('package ELF dependency escapes the declared closure')
 
 
+
+def validate_sdk_library_mapping(manifest, build):
+    expected = {name: record for name, record in build['installed_files'].items()
+                if re.fullmatch(r'lib/lib[^/]+\.so(?:\.[0-9]+)*', name)}
+    if not expected:
+        raise ValueError('qualified Linux SDK has no shared library inventory')
+    mapped = {}
+    for name, record in manifest['libraries'].items():
+        relative = 'lib/' + PurePosixPath(record['source']).name
+        if relative not in expected:
+            continue
+        if (relative in mapped or name != PREFIX + PurePosixPath(relative).name.removeprefix('lib')
+                or {'sha256': record['source_sha256'], 'bytes': record['source_bytes']} != expected[relative]):
+            raise ValueError('Linux package library differs from qualified SDK: ' + name)
+        mapped[relative] = name
+    if set(mapped) != set(expected):
+        raise ValueError('Linux package omits qualified SDK libraries')
+    entries = [name for name in expected if PurePosixPath(name).name.startswith('libnemo_speech_asr_c.so.')]
+    if len(entries) != 1 or manifest['entry_library'] != mapped[entries[0]]:
+        raise ValueError('Linux package entry differs from qualified C ABI')
+
+
 def verify(package):
     manifest = json.loads((package / 'package.json').read_text())
-    if manifest['format'] != 'gen2-nemo-linux-cpu-v1' or manifest['architecture'] != 'x86_64' or manifest['backend'] != 'cpu' or manifest['platform_baseline'] != 'Ubuntu 24.04 / glibc 2.39 / AVX2 FMA F16C':
+    if manifest['format'] != 'gen2-nemo-linux-cpu-v2' or manifest['architecture'] != 'x86_64' or manifest['backend'] != 'cpu' or manifest['platform_baseline'] != 'Ubuntu 24.04 / glibc 2.39 / AVX2 FMA F16C':
         raise ValueError('unsupported Linux package contract')
+    build = verify_provenance(package, manifest)
+    validate_sdk_library_mapping(manifest, build)
     files = inventory(package)
     files.pop('package.json')
     if files != manifest['files']:
@@ -321,11 +347,8 @@ def package_sdk(sdk, build_path, destination):
     if destination.exists():
         raise FileExistsError('refusing to replace an existing runtime package')
     sdk = sdk.resolve(strict=True)
-    lock_path = Path(__file__).with_name('runtime.lock.json')
-    lock = json.loads(lock_path.read_text())
     build = json.loads(build_path.read_text())
-    if not build['development_native_gates_passed'] or build['lock_sha256'] != digest(lock_path) or build['runtime_revision'] != lock['runtime']['revision'] or build['llama_revision'] != lock['runtime']['llama_revision']:
-        raise ValueError('native SDK receipt does not establish the pinned native gates')
+    lock_path, lock = validate_native_receipt(build)
     commands = [x['command'] for x in build['commands'] if x['name'] == 'sdk-configure']
     required = {'-DGGML_NATIVE=OFF', '-DGGML_AVX=ON', '-DGGML_AVX2=ON', '-DGGML_AVX512=OFF', '-DGGML_AVX_VNNI=OFF', '-DGGML_FMA=ON', '-DGGML_F16C=ON'}
     if len(commands) != 1 or not required <= set(commands[0]):
@@ -342,6 +365,7 @@ def package_sdk(sdk, build_path, destination):
         staged = Path(temporary) / 'package'
         (staged / 'lib').mkdir(parents=True)
         components = copy_notices_and_sources(sdk, libraries, staged, lock)
+        copy_provenance(build_path, staged / 'provenance')
         records = {}
         for path, info in libraries.items():
             if digest(path) != info['source_sha256']:
@@ -360,10 +384,10 @@ def package_sdk(sdk, build_path, destination):
                                     'source_bytes': info['source_bytes'], 'original_soname': info['soname'],
                                     'platform_dependencies': info['platform_dependencies'], 'final_elf': final}
         (staged / 'lib/libnemo_speech_asr_c.so').symlink_to(names[entry])
-        manifest = {'format': 'gen2-nemo-linux-cpu-v1', 'release_qualified': False,
+        manifest = {'format': 'gen2-nemo-linux-cpu-v2', 'release_qualified': False,
                     'architecture': 'x86_64', 'backend': 'cpu',
                     'platform_baseline': 'Ubuntu 24.04 / glibc 2.39 / AVX2 FMA F16C',
-                    'runtime_revision': lock['runtime']['revision'], 'lock_sha256': digest(lock_path),
+                    **profile_provenance(lock_path, lock),
                     'build_receipt_sha256': digest(build_path), 'entry_library': names[entry],
                     'components': components, 'libraries': records,
                     'apt_provenance': apt,

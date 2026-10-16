@@ -14,9 +14,11 @@ import re
 import shutil
 import subprocess
 
-from artifacts import matches
+from artifacts import acquire, matches
 from evidence_commands import CommandRunner
-from compare_stream import compare
+from platform_valid_mel_native import compare_complete_60s as compare
+from platform_sdk_receipt import validate_native_receipt
+from runtime_profiles import load_profile, profile_provenance, validate_provenance
 from package_linux import PLATFORM_LIBRARIES, digest, inspect_elf, verify
 from sdk_archive import inventory, restore_archive
 
@@ -88,7 +90,8 @@ class Qualification(CommandRunner):
         self.work = self.output / 'inputs'
         self.results = self.output / 'results'
         super().__init__(self.output, self.repo)
-        self.receipt = {'schema_version': 1, 'release_qualified': False,
+        lock_path, lock = load_profile()
+        self.receipt = {**profile_provenance(lock_path, lock), 'schema_version': 2, 'release_qualified': False,
                         'offline_container_gates_passed': False,
                         'scope': 'Delivered Ubuntu 24.04 x86_64 CPU runtime relocation, native/public parity and lifecycle in fresh offline containers.',
                         'limits': ['No chat/Bark/Laya namespace coexistence qualification.',
@@ -106,6 +109,7 @@ class Qualification(CommandRunner):
         self.results.mkdir()
         evidence = self.args.package_evidence.resolve()
         build = json.loads((evidence / 'receipt.json').read_text())
+        validate_provenance(build)
         if build.get('package_construction_passed') is not True:
             raise ValueError('runtime construction prerequisite has not passed')
         archive = json.loads((evidence / 'development-runtime-files.json').read_text())
@@ -118,21 +122,28 @@ class Qualification(CommandRunner):
         self.package = verify(self.runtime)
         native = self.args.native_evidence.resolve()
         native_receipt = json.loads((native / 'receipt.json').read_text())
+        validate_native_receipt(native_receipt)
         if digest(native / 'receipt.json') != build['native_receipt_sha256'] or native_receipt.get('development_native_gates_passed') is not True:
             raise ValueError('package does not bind a successful native prerequisite')
         current = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=self.repo, text=True).strip()
-        if build['source_commit'] != current or native_receipt['source_commit'] != current:
-            raise ValueError('build helpers and package must come from the same source revision')
-        lock = json.loads((self.tools / 'runtime.lock.json').read_text())
+        if build['source_commit'] != current:
+            raise ValueError('package construction and helper checkout must share a revision')
+        _, lock = load_profile()
         assets = self.work / 'assets'
         assets.mkdir()
         for entry in lock['artifacts']:
             if entry['role'] == 'reference':
                 continue
             source = native / 'assets' / entry['name']
-            if not matches(source, entry):
-                raise ValueError('locked asset differs: ' + entry['name'])
-            shutil.copy2(source, assets / entry['name'])
+            if source.exists():
+                if not matches(source, entry):
+                    raise ValueError('locked asset differs: ' + entry['name'])
+                shutil.copy2(source, assets / entry['name'])
+            else:
+                # CI artifacts omit models; acquisition is host-side only.
+                acquire(entry, assets)
+            if not matches(assets / entry['name'], entry):
+                raise ValueError('staged locked asset differs: ' + entry['name'])
         shutil.copytree(native / 'reference', self.work / 'reference')
         # Bind the expected lifecycle reference to the same-host native result.
         source_native = json.loads((native / 'native-ami.json').read_text())
@@ -144,6 +155,9 @@ class Qualification(CommandRunner):
         binaries = self.work / 'bin'
         binaries.mkdir()
         target = Path(os.environ.get('CARGO_TARGET_DIR', self.repo / 'target')).resolve()
+        self.run('build-public-helper', ['cargo', 'build', '--locked', '--release',
+                 '--no-default-features', '--features', 'backend-diar-nemo',
+                 '--example', 'nemotron_valid_mel_stream'])
         metadata = self.run('discover-lifecycle-binary', ['cargo', 'test', '--locked', '--release',
                             '--no-default-features', '--features', 'backend-diar-nemo', '--test',
                             'diarization_native', '--no-run', '--message-format=json'])
@@ -151,10 +165,10 @@ class Qualification(CommandRunner):
                        and item['target']['name'] == 'diarization_native' and item.get('executable')]
         if len(executables) != 1:
             raise ValueError('expected one compiled native lifecycle executable')
-        probe = self.args.sdk_prefix.resolve() / 'bin/gen2_native_stream_probe'
-        if {'sha256': digest(probe), 'bytes': probe.stat().st_size} != native_receipt['installed_files']['bin/gen2_native_stream_probe']:
+        probe = self.args.sdk_prefix.resolve() / 'bin/gen2_native_stream_probe_valid_mel'
+        if {'sha256': digest(probe), 'bytes': probe.stat().st_size} != native_receipt['installed_files']['bin/gen2_native_stream_probe_valid_mel']:
             raise ValueError('independent probe differs from qualified SDK')
-        helper_sources = {'native-probe': probe, 'public-stream': target / 'release/examples/nemotron_stream',
+        helper_sources = {'native-probe': probe, 'public-stream': target / 'release/examples/nemotron_valid_mel_stream',
                           'native-lifecycle': Path(executables[0])}
         helpers = {}
         for name, source in helper_sources.items():
@@ -175,11 +189,11 @@ class Qualification(CommandRunner):
         if len(image) != 1 or image[0]['Architecture'] != 'amd64' or image[0]['Os'] != 'linux' or not image[0]['RepoDigests']:
             raise ValueError('runtime image lacks content-bound amd64 Linux provenance')
         self.image = image[0]['Id']
-        inputs = {'source_commit': current, 'construction_receipt_sha256': digest(evidence / 'receipt.json'),
+        inputs = {'source_commit': current, 'native_source_commit': native_receipt['source_commit'], 'construction_receipt_sha256': digest(evidence / 'receipt.json'),
                   'native_receipt_sha256': digest(native / 'receipt.json'), 'archive': build['archive'],
                   'package_manifest_sha256': build['package_manifest_sha256'], 'image': image[0],
                   'helpers': helpers, 'inputs': inventory(self.work),
-                  'tools': {name: digest(self.tools / name) for name in ['qualify_linux_package.py', 'package_linux.py', 'sdk_archive.py', 'compare_stream.py', 'runtime.lock.json', 'evidence_commands.py']},
+                  'tools': {name: digest(self.tools / name) for name in ['qualify_linux_package.py', 'package_linux.py', 'sdk_archive.py', 'compare_stream_valid_mel.py', 'platform_valid_mel_native.py', 'platform_valid_mel_sources.py', 'platform_native.py', 'platform_sdk_receipt.py', 'runtime_profiles.py', 'build_valid_mel_candidate.py', 'qualification_storage.py', 'runtime-valid-mel.lock.json', 'runtime.lock.json', 'valid-mel-platform-native.protocol.json', 'evidence_commands.py']},
                   'geometry': {'chunk': 9, 'right': 4, 'left': 0, 'fifo': 264, 'cache': 264, 'update': 222},
                   'negative_control': 'Remove private ggml-base; mount that copy at the identical runtime path so helper RPATH cannot see the good package.'}
         (self.output / 'frozen-inputs.json').write_text(json.dumps(inputs, indent=2) + '\n')
@@ -219,7 +233,8 @@ printenv
         public, native = json.loads(public_text), json.loads((self.results / 'native.json').read_text())
         (self.results / 'public.json').write_text(json.dumps(public, indent=2) + '\n')
         comparison = compare(public, native, (self.results / 'native.json.f32').read_bytes(), (self.results / 'public.f32').read_bytes())
-        if public['input_pcm_f32le_sha256'] != native['input_pcm_f32le_sha256'] or public['input_repeats'] != native['input_repeats'] or native['input_repeats'] != 1:
+        expected_pcm = json.loads((self.tools / 'valid-mel-platform-native.protocol.json').read_text())['cases']['actual_pcm_sha256']
+        if public['input_pcm_f32le_sha256'] != expected_pcm or native['input_pcm_f32le_sha256'] != expected_pcm or public['input_repeats'] != native['input_repeats'] or native['input_repeats'] != 1:
             raise ValueError('packaged native/public actual PCM identity differs')
         (self.output / 'comparison.json').write_text(json.dumps(comparison, indent=2) + '\n')
         lifecycle_env = {**environment, 'GEN2_NEMOTRON_ASSETS': '/work/assets', 'GEN2_NEMO_LIBRARY': library,
