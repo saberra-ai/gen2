@@ -1,0 +1,38 @@
+[
+  {
+    "name": "nested-controller",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-package-qualification-v1.outer.sb",
+      "/Users/victor/.cache/gen2-nemotron3-n0/evidence-tools-env/bin/python",
+      "-c",
+      "import subprocess,sys,json; r=subprocess.run(json.loads(sys.argv[1]),env=json.loads(sys.argv[2]));sys.exit(r.returncode)",
+      "[\"/usr/bin/sandbox-exec\", \"-f\", \"/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-package-qualification-v1/runtime.sb\", \"/usr/bin/true\"]",
+      "{\"PATH\": \"/usr/bin:/bin\", \"LC_ALL\": \"C\", \"TMPDIR\": \"/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-package-qualification-v1/tmp/\"}"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-package-qualification-v1/tmp/"
+    },
+    "returncode": 71,
+    "elapsed_seconds": 0.03150879195891321
+  },
+  {
+    "name": "single-native-sandbox",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-package-qualification-v1/runtime.sb",
+      "/usr/bin/true"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-package-qualification-v1/tmp/"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.007333165965974331
+  }
+]

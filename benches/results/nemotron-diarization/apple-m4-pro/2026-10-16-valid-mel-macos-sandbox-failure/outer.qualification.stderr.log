@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/qualify_valid_mel_macos_package.py", line 175, in <module>
+    main()
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/qualify_valid_mel_macos_package.py", line 124, in main
+    version = run('version-only', [p['load_probe_path'], package / 'lib/libnemo_speech_asr_c.dylib', p['runtime_version']])
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/qualify_valid_mel_macos_package.py", line 116, in run
+    raise ValueError('packaged command failed: ' + name)
+ValueError: packaged command failed: version-only

@@ -1,0 +1,22 @@
+{
+  "source_commit": "0aa0b692902c62c7dd4eda488e9c808b986472ec",
+  "protocol_sha256": "6c1f2b1801040c56a7d4c44d0be773e71a01631c65a6f40adf1c93bad2d6a46c",
+  "preflight_tests_passed": 29,
+  "outer_qualification_returncode": 1,
+  "first_native_command_returncode": 71,
+  "failure": "sandbox_apply: Operation not permitted, before target exec",
+  "native_target_started": false,
+  "native_runtime_loaded": false,
+  "models_instantiated": 0,
+  "neural_calls": 0,
+  "criteria_changed": false,
+  "release_qualified": false,
+  "model_free_diagnosis": {
+    "exact_nested_profile_python_controller_true_returncode": 71,
+    "same_inner_profile_single_true_returncode": 0
+  },
+  "limits": [
+    "Failed admission preserved unchanged. No version probe, missing-library, speech or lifecycle target ran.",
+    "Separate source-pinned controller without its outer sandbox may retain the exact strict sandbox on every nativechild and model-free preflight. It requires a new protocol/output attempt before execution; no numerical or release gate changes."
+  ]
+}

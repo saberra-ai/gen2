@@ -424,3 +424,20 @@ retained ranges to be exactly[0,6000) and both raw arrays192000bytes before
 comparison. Three synthetic regression tests reject matching truncated tails,
 shorter recordings, raw truncation and last-valid-row corruption. This closes an
 evidence-admission gap before neural execution; numerical tolerances are unchanged.
+
+
+The first frozen runtime attempt at `0aa0b69` stopped before any target execution.
+All29preflights passed, but the first version-only child returned71 with
+`sandbox_apply: Operation not permitted`. Its stdout is empty and no native,
+public, lifecycle, probability, reference or result output exists. The
+[retained failure receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-macos-sandbox-failure/qualification.json)
+records zero native runtime loads, model instantiations and neural calls.
+
+Model-free minimization with the exact profiles and environment reproduces71
+for nested Python-controller/inner-sandbox `/usr/bin/true`, while the same inner
+profile alone returns0. The earlier minimal-profile nesting control did not
+exercise this restrictive transition. The next attempt must use a versioned
+controller/protocol/output: a source-pinned Python controller without an outer
+sandbox, keeping the same strict sandbox on every native child and keeping
+model-free preflights network-denied. No numerical, loader, lifecycle or release
+criterion changes; the failed attempt remains intact.

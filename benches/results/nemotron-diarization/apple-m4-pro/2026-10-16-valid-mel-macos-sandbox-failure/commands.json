@@ -1,0 +1,24 @@
+[
+  {
+    "name": "version-only",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-package-qualification-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-load-probe-v1/load-probe",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-runtime-inputs-v1/work/nemo/lib/libnemo_speech_asr_c.dylib",
+      "nemo-speech-asr 0.2.0+gen2-valid-mel-v1"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-package-qualification-v1/tmp/"
+    },
+    "expected_returncode": 0,
+    "timeout_seconds": 300,
+    "returncode": 71,
+    "elapsed_seconds": 0.012366833980195224
+  }
+]
