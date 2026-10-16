@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "gen2_base_commit": "e2ba4df",
+  "scope": "Metal lifecycle gate, stricter long-reference parity and repaired release example calibration",
+  "source_hashes": {
+    "tests/diarization_native.rs": "cb3a6da5b46859ef1180a9817359024d8b15358d12e0e8da27d7e4e810bd2336",
+    "examples/nemotron_stream.rs": "0058212d31a15d1194c567f3af194b633cecc19b3a3628243ddea1f35207f874",
+    "tools/nemotron-diarization/native_stream_probe.cpp": "cbc3dd6a16a725168d7712c576c7fe7f39a073b1cda426e08851bf5371f4eb2e",
+    "tools/nemotron-diarization/compare_stream.py": "6d6a80a3b9710d0d2d0705225653935d40cd69aac9abe50454c0609631c6daa4",
+    "tools/nemotron-diarization/test_stream_comparison.py": "b8cc5956b9d5c1d7d40ebd4c45942617012c2d687bf5be79328923e2389a245c"
+  },
+  "functional_metal_suite_commit": "7320bc1",
+  "functional_metal_native_cases_passed": 8,
+  "actual_reload_iterations": 100,
+  "functional_suite_seconds": 100.07,
+  "feature_ci": {
+    "head_sha": "4892de8544b64f5fe1b7f1584c2c7640402e5099",
+    "run_url": "https://github.com/saberra-ai/gen2/actions/runs/38854056138",
+    "all_13_jobs_succeeded": true,
+    "scope": "12OS/feature combinations plus evidence-tools. No native model support inferred."
+  },
+  "initial_release_soak": "Failed before stream input; Result<Vec> collect allocated capacity past public16640per-push cap. No completed long run claimed. Source now reserves a bounded block explicitly.",
+  "padding_regression_reproduced_and_fixed": true,
+  "gen2_retained_probability_export_added": true,
+  "sixty_second_actual_release_calibration": {
+    "passed": true,
+    "speaker_turns": 26,
+    "max_boundary_error_seconds": 0,
+    "max_retained_probability_error": 0,
+    "sample_values_compared": 48008,
+    "raw_file_sha256": "50da6a139a5f048a36ab105c6c70b0ec636356cc3324b342aea06404616a8280"
+  },
+  "python_tool_tests_passed": 20,
+  "notes": [
+    "Functional/test metadata, not full release qualification.",
+    "Long30m/1h runs must be repeated from the repaired committed release example and require both raw probability files.",
+    "Native padding is bounded to final native frame plus1e-4rounding tolerance, matching public Native::results, before presentation clipping.",
+    "Timing here is max-speed transport, not actual capture/GUI end-to-end label delay.",
+    "Original FP32/quality/platform/GUI/fresh-machine gates remain open."
+  ],
+  "artifacts": {
+    "failed-attempt-gen2-30m.command.json": "623bddeb76819b4e33ea1e54d0e78874654e91d03a4bc5991e10c6e100af5154",
+    "failed-attempt-gen2-30m.time.log": "3de6a1fec673389d08217104458c004f18eeb1aca7464cf529a58a07dc6cdb9f",
+    "failed-attempt-manifest.json": "b4796f1829704e950efdf0bfb8499ef1f13428946481ae0c93f2000d2b119cdb",
+    "n5-feature-ci-4892de8.json": "ee8ee3abdeb83b27ab7132435a21a9e16fb770265a00bb0c446d0a63a7be4f07",
+    "n5-metal-lifecycle-clippy.log": "240cecccaab7fc45e1bf582fc48f6e69b12fa83311355b31c329eadc0f360d32",
+    "n5-metal-lifecycle-model-free.log": "d5ed910de42500e1b6444264ade5f82d6bed585e4123424218c43c52fde52c3e",
+    "n5-metal-native-lifecycle.log": "e00c9bd2d6016e95b8e45466a60e6a380c591ee2c0e64b40da3ab41959cf7c12",
+    "n5-native-stream-calibration-v2.json": "cc572b8009f13e50bdd89276a02d693fe1a590d8c215e172646b995ae980e80d",
+    "n5-native-stream-calibration-v2.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "n5-stream-export-calibration-comparison-v2.json": "0482e5914489f28ee6812044d8a3f2aca248b5180422a1595320f0d0f056d83b",
+    "n5-stream-export-calibration-v2.json": "8295b0d6394567b11da3bb9e9ec2c0189429414a2f97351e2119c0770ba37ec7",
+    "n5-stream-export-calibration-v2.log": "4c9a437ec98a6e7cd5683bfc0ad9931fe041128ab973c929f79db39f24dac807",
+    "n5-stream-export-final-build.log": "a628821f3a89f824fb7fc3131e51b1a4e0c206695fdd40a385cdfb8cc7a14f5a",
+    "n5-stream-export-final-clippy.log": "06265b0da173e49abf46d6dbcedc762417f10a744d20cd2e7e5d4e15b720530d",
+    "n5-stream-padding-red.log": "c3bf6619626783fd05763f5c9cd542b64f79a6cb4bb2b8ea79302eede0ddc742",
+    "n5-stream-parity-green.log": "3e4399713b4e1417a3167814fdfbb8f1510b275c270e80004f319814a0e2d3e2"
+  }
+}

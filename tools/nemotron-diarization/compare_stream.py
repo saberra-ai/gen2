@@ -19,7 +19,7 @@ def finite(value, name):
     return value
 
 
-def compare(gen2, native, raw):
+def compare(gen2, native, raw, actual_raw):
     samples = integer(gen2['accepted_samples'], 'accepted samples', 320)
     if samples > 3600 * 16000 or gen2['complete'] is not True:
         raise ValueError('incomplete or oversized Gen2 session')
@@ -59,9 +59,17 @@ def compare(gen2, native, raw):
         raise ValueError('long-session probability compaction did not occur')
     if len(raw) != rows * 8 * 4:
         raise ValueError('retained native probability length differs')
-    for (value,) in struct.iter_unpack('<f', raw):
-        if not math.isfinite(value) or not 0 <= value <= 1:
-            raise ValueError('invalid native probabilities')
+    if len(actual_raw) != len(raw):
+        raise ValueError('Gen2 probability length differs')
+    if gen2.get('retained_probability_sha256') != hashlib.sha256(actual_raw).hexdigest():
+        raise ValueError('Gen2 probability digest differs')
+    probability_error = 0.0
+    for (expected,), (actual,) in zip(struct.iter_unpack('<f', raw), struct.iter_unpack('<f', actual_raw)):
+        if not all(math.isfinite(value) and 0 <= value <= 1 for value in [expected, actual]):
+            raise ValueError('invalid native/Gen2 probabilities')
+        probability_error = max(probability_error, abs(expected-actual))
+    if probability_error > 1e-6:
+        raise ValueError('native/Gen2 retained probability values differ')
 
     def turns(result, clip):
         values = result['turns']
@@ -72,7 +80,7 @@ def compare(gen2, native, raw):
             start = finite(turn['start_seconds'], 'turn start')
             end = finite(turn['end_seconds'], 'turn end')
             speaker = integer(turn['speaker'], 'speaker', 1)
-            if start < 0 or end < start or (not clip and end == start) or speaker > 8 or end > duration + (1 if clip else 0):
+            if start < 0 or end < start or (not clip and end == start) or speaker > 8 or end > (frames * .01 + 1e-4 if clip else duration):
                 raise ValueError('invalid speaker turn')
             if clip:
                 start, end = min(start, duration), min(end, duration)
@@ -95,7 +103,8 @@ def compare(gen2, native, raw):
             'audio_duration_seconds': duration, 'backend': backend, 'device': gen2.get('device'),
             'native_frame_count': frames, 'retained_first_frame': first, 'retained_rows': rows,
             'turns': len(actual), 'maximum_turn_error_seconds': maximum, 'turn_tolerance_seconds': 1e-6,
-            'raw_native_probabilities_finite_and_bounded': True,
+            'raw_native_and_gen2_probabilities_finite_and_bounded': True,
+            'retained_probabilities_match': True, 'maximum_probability_error': probability_error, 'probability_tolerance': 1e-6,
             'gen2_rtf': elapsed / 1e6 / duration, 'native_rtf': native_elapsed / 1e6 / duration}
 
 
@@ -107,15 +116,16 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--gen2', type=Path, required=True)
     parser.add_argument('--native', type=Path, required=True)
+    parser.add_argument('--gen2-probabilities', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
     args = parser.parse_args()
     raw = Path(str(args.native) + '.f32')
     try:
-        result = compare(json.loads(args.gen2.read_text()), json.loads(args.native.read_text()), raw.read_bytes())
+        result = compare(json.loads(args.gen2.read_text()), json.loads(args.native.read_text()), raw.read_bytes(), args.gen2_probabilities.read_bytes())
     except (OSError, ValueError, KeyError, TypeError, OverflowError) as error:
         args.output.write_text(json.dumps({'passed': False, 'error': str(error)}, indent=2) + '\n')
         raise SystemExit(str(error))
-    result['sha256'] = {str(p): digest(p) for p in [args.gen2, args.native, raw, Path(__file__)]}
+    result['sha256'] = {str(p): digest(p) for p in [args.gen2, args.native, raw, args.gen2_probabilities, Path(__file__)]}
     args.output.write_text(json.dumps(result, indent=2) + '\n')
     print(args.output)
 

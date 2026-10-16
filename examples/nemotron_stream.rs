@@ -5,6 +5,8 @@ use gen2::{
         DiarizationError, DiarizeOptions, LoadOptions, MAX_PUSH_SAMPLES, MAX_SESSION_SAMPLES,
     },
 };
+use sha2::{Digest, Sha256};
+use std::io::Write;
 use std::time::{Duration, Instant};
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -13,9 +15,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     if metal {
         args.remove(1);
     }
-    if args.len() != 5 {
+    if !(5..=6).contains(&args.len()) {
         return Err(
-            "usage: nemotron_stream [--metal] MODEL_DIRECTORY NATIVE_C_LIBRARY AUDIO.wav REPEATS"
+            "usage: nemotron_stream [--metal] MODEL_DIRECTORY NATIVE_C_LIBRARY AUDIO.wav REPEATS [PROBABILITIES.f32]"
                 .into(),
         );
     }
@@ -57,11 +59,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let mut reader = hound::WavReader::open(&args[3])?;
         let mut samples = reader.samples::<i16>();
         loop {
-            let mut block = samples
-                .by_ref()
-                .take(MAX_PUSH_SAMPLES)
-                .map(|x| x.map(|x| x as f32 / 32768.))
-                .collect::<Result<Vec<_>, _>>()?;
+            // A Result iterator does not promise an exact allocation size;
+            // collect can grow capacity past the public per-push admission cap.
+            let mut block = Vec::with_capacity(MAX_PUSH_SAMPLES);
+            for sample in samples.by_ref().take(MAX_PUSH_SAMPLES) {
+                block.push(sample? as f32 / 32768.);
+            }
             if block.is_empty() {
                 break;
             }
@@ -92,11 +95,33 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .frame_probabilities
         .as_ref()
         .map(|f| serde_json::json!({"first_frame": f.first_frame, "rows": f.values.len()}));
-    // Raw probabilities stay diagnostic and bounded; avoid dumping megabytes to stdout.
+    // Export the already bounded native tail separately from the JSON receipt.
+    let probability_sha256 = if let Some(path) = args.get(5) {
+        let frames = result
+            .frame_probabilities
+            .as_ref()
+            .ok_or("missing diagnostic probabilities")?;
+        let file = std::fs::OpenOptions::new()
+            .write(true)
+            .create_new(true)
+            .open(path)?;
+        let mut output = std::io::BufWriter::new(file);
+        let mut digest = Sha256::new();
+        for value in frames.values.iter().flatten() {
+            let bytes = value.to_le_bytes();
+            output.write_all(&bytes)?;
+            digest.update(bytes);
+        }
+        output.flush()?;
+        Some(hex::encode(digest.finalize()))
+    } else {
+        None
+    };
+    // Raw probabilities stay diagnostic and bounded; avoid megabytes on stdout.
     println!(
         "{}",
         serde_json::to_string(
-            &serde_json::json!({"session_id": stream.session_id(), "complete": stream.snapshot().is_some_and(|s| s.complete), "accepted_samples": stream.accepted_samples(), "audio_duration_seconds": result.audio_duration_seconds, "native_frame_count": result.native_frame_count, "retained_probabilities": retained, "model_revision": result.model_revision, "runtime_version": result.runtime_version, "backend": result.backend, "device": result.device, "geometry": result.geometry, "turns": result.turns, "cold_load_micros": cold_load_micros, "native_compute_micros": result.native_compute_micros, "finish_micros": finish_micros, "elapsed_micros": elapsed_micros, "backpressure_count": backpressure_count, "snapshots": snapshots})
+            &serde_json::json!({"session_id": stream.session_id(), "complete": stream.snapshot().is_some_and(|s| s.complete), "accepted_samples": stream.accepted_samples(), "audio_duration_seconds": result.audio_duration_seconds, "native_frame_count": result.native_frame_count, "retained_probabilities": retained, "retained_probability_file": args.get(5), "retained_probability_sha256": probability_sha256, "model_revision": result.model_revision, "runtime_version": result.runtime_version, "backend": result.backend, "device": result.device, "geometry": result.geometry, "turns": result.turns, "cold_load_micros": cold_load_micros, "native_compute_micros": result.native_compute_micros, "finish_micros": finish_micros, "elapsed_micros": elapsed_micros, "backpressure_count": backpressure_count, "snapshots": snapshots})
         )?
     );
     model.shutdown();

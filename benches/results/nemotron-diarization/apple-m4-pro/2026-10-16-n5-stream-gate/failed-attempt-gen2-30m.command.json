@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/usr/bin/time",
+    "-l",
+    "/usr/bin/sandbox-exec",
+    "-f",
+    "/Users/victor/.cache/gen2-nemotron3-n0/release Metal qualification e2ba4df/offline.sb",
+    "/Users/victor/.cache/gen2-nemotron3-n0/release Metal qualification e2ba4df/nemotron_stream",
+    "--metal",
+    "/Users/victor/.cache/gen2-nemotron3-n0/release Metal qualification e2ba4df/assets",
+    "/Users/victor/.cache/gen2-nemotron3-n0/release Metal qualification e2ba4df/nemo/lib/libnemo_speech_asr_c.dylib",
+    "/Users/victor/.cache/gen2-nemotron3-n0/release Metal qualification e2ba4df/assets/ami_en2002d_2132.wav",
+    "30"
+  ],
+  "environment": {
+    "PATH": "/usr/bin:/bin"
+  }
+}

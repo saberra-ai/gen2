@@ -1,0 +1,43 @@
+{
+  "gen2_commit": "e2ba4df",
+  "execution": "release optimized public example; independent O2 C-header reference; each process sequential, no concurrent build or native qualification",
+  "host": "macOS-26.3-arm64-arm-64bit-Mach-O",
+  "cpu_threads": "4 per pinned BackendManager::Params default; GPU driver/Accelerate internal thread counts not exposed",
+  "environment": {
+    "PATH": "/usr/bin:/bin"
+  },
+  "source_hashes": {
+    "src/diarization/ffi.rs": "c41264d29a84830021f4ff0ab1913be0bfceeaec5bc37c716c9133fe3561304f",
+    "src/diarization/nemo.rs": "c12d26133d2e8c5e11e70fe62064eb6d116ebfa93f0996e4221cb7f6e8471ab8",
+    "src/diarization/types.rs": "543fb439f15a3c2ab18638d6cd489afd9209268b8258eecb71362296d80276a3",
+    "examples/nemotron_stream.rs": "969c92f7962c4b844d2bb28e9cc266373cbf6650bcf2e0f5f08b686cf526af7f",
+    "tools/nemotron-diarization/native_stream_probe.cpp": "cbc3dd6a16a725168d7712c576c7fe7f39a073b1cda426e08851bf5371f4eb2e",
+    "tools/nemotron-diarization/compare_stream.py": "4de8c69644bb8dfd0f9c69adf40c98b961825b0488079b2f5e3d2d3de5ec2e6e"
+  },
+  "files": {
+    "nemotron_stream": "6e110a4a75d46c9b9657b849616985ae34656039a7515b1150fd14464a8ab365",
+    "native_stream_probe": "f9ab96507471dcc2b00c56a0c9a333bdd1020d6de0d315ad06016255b07ea375",
+    "offline.sb": "0ac13c9f8912703e54b255f95b31d3ac19522a5b246856baddbb2d09c59c1e89",
+    "nemo/package.json": "3cbbaf711262d871053b0f76e10ddfa46c5a2d5362e4b15167a16433d8df5f68",
+    "assets/Nemotron-3-Diarization.q8_0.gguf": "08456d9e22cd9a323c0364d98375f3746d6e68507ebb705cd46438c534c7a3a1",
+    "assets/README.md": "5fe88ca4020d2ee134f806a0a02c52c19855b73047bc2e6f25b9171e1abeebfd",
+    "assets/ami_en2002d_2132.wav": "f00f92e53115a4a6724aec0ddaf9c675df6d5fabd3a489b43fffe56ba52a3ae9"
+  },
+  "native_reference_compile_command": [
+    "clang++",
+    "-std=c++17",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "-Werror",
+    "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/native_stream_probe.cpp",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/sdk-metal/include",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/examples",
+    "-L/Users/victor/.cache/gen2-nemotron3-n0/release Metal qualification e2ba4df/nemo/lib",
+    "-lnemo_speech_asr_c",
+    "-Wl,-rpath,/Users/victor/.cache/gen2-nemotron3-n0/release Metal qualification e2ba4df/nemo/lib",
+    "-o",
+    "/Users/victor/.cache/gen2-nemotron3-n0/release Metal qualification e2ba4df/native_stream_probe"
+  ],
+  "cold_scope": "New model/process on this host; OS file/shader caches are not cleared. Ordinary OS/browser background processes remain running. No inference/build jobs run concurrently."
+}

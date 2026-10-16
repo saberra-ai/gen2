@@ -315,7 +315,12 @@ most one hour, and explicit CPU(-1)/GPU ordinal. A20MiB source-file cap, retaine
 probability/turn caps, finite-value checks and no-overwrite evidence paths bound
 qualification input/output. Gen2's `nemotron_stream` example separately reports
 public load time, queue backpressure, snapshots and native compute time.
-`compare_stream.py` checks final native/wrapper speaker identities, boundaries,
-geometry, frame retention/compaction and finite probability evidence. It clips
-only presentation padding and reports timings separately from correctness.
+The optional trailing `PROBABILITIES.f32` path on `nemotron_stream` exports its
+bounded retained tail as little-endian float32 and records its SHA256; an
+existing destination is refused. `compare_stream.py --gen2-probabilities PATH`
+requires that export and checks every retained native/wrapper probability with
+1e-6 tolerance, in addition to speaker identities, boundaries, geometry and
+retention/compaction. It rejects nonfinite/out-of-range values and excess native
+padding before clipping, using the same terminal-frame bound as Gen2. Timings
+remain separate from correctness.
 The independent probe's successful compile/calibration is not a completed soak.

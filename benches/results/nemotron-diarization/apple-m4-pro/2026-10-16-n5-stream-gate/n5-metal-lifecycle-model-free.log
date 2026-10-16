@@ -1,0 +1,39 @@
+   Compiling gen2 v0.1.0 (/Users/victor/workspace/gen2-nemotron3-n0)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.95s
+     Running tests/diarization_alignment.rs (/Users/victor/.cache/gen2-bark-onnx/build/debug/deps/diarization_alignment-b70ed30e5eedfa1d)
+
+running 5 tests
+test overlap_transitions_gaps_and_zero_duration_stay_explicit ... ok
+test edited_or_invalid_timing_is_rejected_without_retiming_text ... ok
+test overlap_counts_cumulative_common_activity ... ok
+test pairwise_overlap_does_not_include_a_sequential_third_speaker ... ok
+test words_use_whole_token_evidence_and_recording_offsets ... ok
+
+test result: ok. 5 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/diarization_api.rs (/Users/victor/.cache/gen2-bark-onnx/build/debug/deps/diarization_api-bc04b6f761a8e84d)
+
+running 4 tests
+test placement_requires_an_explicit_backend_without_implicit_gpu_fallback ... ok
+test input_requires_bounded_finite_mono_pcm ... ok
+test unavailable_runtime_does_not_reserve_memory ... ok
+test uncached_provisioning_requires_download_feature ... ok
+
+test result: ok. 4 passed; 0 failed; 0 ignored; 0 measured; 0 filtered out; finished in 0.00s
+
+     Running tests/diarization_native.rs (/Users/victor/.cache/gen2-bark-onnx/build/debug/deps/diarization_native-67e66d94dcbed435)
+
+running 10 tests
+test dropping_a_diarization_child_keeps_the_parent_pipeline_active ... ignored, requires pinned N0 assets and SDK; checks scoped pipeline cancellation
+test explicit_metal_matches_native_reference_and_cpu_sdk_cannot_silently_fallback ... ignored, requires pinned assets, CPU SDK, Metal SDK and matched independent Metal reference
+test native_admission_cancellation_and_failed_load_release_reservations ... ignored, requires the pinned N0 model and CPU SDK
+test real_diarizer_matches_native_reference_and_resets_recordings ... ignored, requires the pinned N0 model, CPU SDK and reference outputs
+test repeated_reload_full_queue_cancel_and_dropped_stream_release_resources ... ignored, requires pinned N0 assets and SDK; 100 actual model reloads
+test silence_short_tail_and_idle_deadline_have_explicit_terminal_results ... ignored, requires pinned N0 assets and SDK; silence, short tail and idle deadline
+test streamed_uneven_pcm_matches_recording_and_finish_is_idempotent ... ignored, requires the pinned N0 model and CPU SDK; tests streaming transport parity
+test unsupported_abi_and_missing_symbols_fail_before_ready ... ignored, requires the pinned N0 assets and a C compiler for ABI failure fixtures
+test verified_provisioned_cache_is_reused_offline ... ignored, requires the pinned N0 assets; checks warm cache without any network feature
+test corrupt_metal_probability_evidence_cannot_pass_native_parity ... ok
+
+test result: ok. 1 passed; 0 failed; 9 ignored; 0 measured; 0 filtered out; finished in 0.00s
+

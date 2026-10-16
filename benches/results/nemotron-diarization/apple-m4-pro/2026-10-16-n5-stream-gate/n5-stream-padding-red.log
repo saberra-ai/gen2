@@ -1,0 +1,14 @@
+F...
+======================================================================
+FAIL: test_excessive_padding_and_turns_outside_terminal_frame_cannot_disappear (test_stream_comparison.LongSessionReference.test_excessive_padding_and_turns_outside_terminal_frame_cannot_disappear)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/test_stream_comparison.py", line 36, in test_excessive_padding_and_turns_outside_terminal_frame_cannot_disappear
+    with self.assertRaises(ValueError):
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.001s
+
+FAILED (failures=1)

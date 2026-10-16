@@ -1,0 +1,54 @@
+ggml_metal_device_init: tensor API disabled for pre-M5 and pre-A19 devices
+ggml_metal_library_init: using embedded metal library
+ggml_metal_library_compile_all: compiled 'fa' library in 14.097 sec
+ggml_metal_library_compile_all: compiled 'mul_mv' library in 1.643 sec
+ggml_metal_library_compile_all: compiled 'mul_mm' library in 0.965 sec
+ggml_metal_library_compile_all: compiled 'quantize' library in 1.866 sec
+ggml_metal_library_compile_all: compiled 'softmax' library in 0.047 sec
+ggml_metal_library_compile_all: compiled 'norm' library in 0.059 sec
+ggml_metal_library_compile_all: compiled 'unary' library in 1.905 sec
+ggml_metal_library_compile_all: compiled 'binbcast' library in 2.002 sec
+ggml_metal_library_compile_all: compiled 'reduce' library in 1.685 sec
+ggml_metal_library_compile_all: compiled 'tri' library in 0.061 sec
+ggml_metal_library_compile_all: compiled 'ssm' library in 0.996 sec
+ggml_metal_library_compile_all: compiled 'wkv' library in 0.082 sec
+ggml_metal_library_compile_all: compiled 'gated_delta_net' library in 1.924 sec
+ggml_metal_library_compile_all: compiled 'solve_tri' library in 0.070 sec
+ggml_metal_library_compile_all: compiled 'rope' library in 1.671 sec
+ggml_metal_library_compile_all: compiled 'conv' library in 1.971 sec
+ggml_metal_library_compile_all: compiled 'upscale' library in 0.096 sec
+ggml_metal_library_compile_all: compiled 'argsort' library in 2.030 sec
+ggml_metal_library_compile_all: compiled 'pool' library in 0.964 sec
+ggml_metal_library_compile_all: compiled 'misc' library in 0.097 sec
+ggml_metal_library_compile_all: loaded 20 libraries from embedded data in 14.097 sec (max single = 14.097 sec)
+ggml_metal_rsets_init: creating a residency set collection (keep_alive = 180 s)
+ggml_metal_device_init: GPU name:   MTL0 (Apple M4 Pro)
+ggml_metal_device_init: GPU family: MTLGPUFamilyApple9  (1009)
+ggml_metal_device_init: GPU family: MTLGPUFamilyMetal4  (5002)
+ggml_metal_device_init: simdgroup reduction   = true
+ggml_metal_device_init: simdgroup matrix mul. = true
+ggml_metal_device_init: has unified memory    = true
+ggml_metal_device_init: has bfloat            = true
+ggml_metal_device_init: has tensor            = false
+ggml_metal_device_init: use residency sets    = true
+ggml_metal_device_init: use shared buffers    = true
+ggml_metal_device_init: recommendedMaxWorkingSetSize  = 55662.79 MB
+Error: ResourceLimit("PCM allocation capacity exceeds the per-push limit")
+       25.21 real         0.13 user         0.14 sys
+           214302720  maximum resident set size
+                   0  average shared memory size
+                   0  average unshared data size
+                   0  average unshared stack size
+               14291  page reclaims
+                1442  page faults
+                   0  swaps
+                   0  block input operations
+                   0  block output operations
+                   0  messages sent
+                   0  messages received
+                   0  signals received
+                   5  voluntary context switches
+                 904  involuntary context switches
+          1047554855  instructions retired
+           674254761  cycles elapsed
+           256033584  peak memory footprint

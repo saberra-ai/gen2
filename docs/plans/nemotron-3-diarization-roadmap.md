@@ -462,7 +462,13 @@ Metal additionally passed the existing eight real native lifecycle gates,
 including100actual reloads, streaming transport parity, cancellation, deadlines,
 ABI failures and warm-cache reuse. These are development functional receipts;
 committed release long-session timings/independent long-reference comparisons
-are now being collected. The examples accept explicit `--metal` selection.
+are now being collected. The examples accept explicit `--metal` selection. Feature CI passed all12
+OS/feature combinations plus evidence-tools at4892de8. The first release soak
+found an example allocation-cap bug before stream input; explicit bounded block
+allocation fixes it. A60s actual release calibration now matches all26turns and
+48008probability values exactly. The long comparator now requires the exported
+Gen2 probability tail and rejects excess native padding; long gates await the
+repaired runs. See the [stream-gate development receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-n5-stream-gate/receipt.json).
 
 The [corpus investigation](../research/nemotron-heldout-corpus.md) freezes eight
 local tuning-held-out target slices from seven recordings before model output,
