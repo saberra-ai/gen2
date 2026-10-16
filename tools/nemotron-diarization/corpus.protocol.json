@@ -1,0 +1,53 @@
+{
+  "schema_version": 1,
+  "frozen_before_inference": true,
+  "corpus_manifest_sha256": "c514152766948139ed21a496b1b81661c2e06d647004901fa4683bea4b423ece",
+  "slice_ids": [
+    "vox-bjruf",
+    "vox-bxcfq",
+    "vox-aepyx",
+    "vox-cqfmj",
+    "vox-auzru",
+    "ami-ES2004a-Mix-Headset",
+    "ami-ES2004a-Array1-01",
+    "icsi-Bmr005-interaction"
+  ],
+  "model_revision": "f667ed73aee57d40cc39428eb768b4fd87a0a29e",
+  "geometry": {
+    "chunk": 9,
+    "right": 4,
+    "left": 0,
+    "fifo": 264,
+    "cache": 264,
+    "update": 222
+  },
+  "scoring": {
+    "frame_seconds": 0.01,
+    "frame_decision": "midpoint within full audio UEM, final partial frame weighted by duration",
+    "collar_seconds": 0,
+    "overlap_included": true,
+    "speaker_mapping": "optimal global permutation, at most8identities",
+    "shared_postprocessing": "probability >0.5, no hysteresis, padding or minimum duration",
+    "production_postprocessing": "pinned native default, separately scored; no tuning from this corpus",
+    "native_frame_rule": "floor(N/160)+1; retain raw terminal frame and clip scoring to full-WAV UEM",
+    "fp32_frame_rule": "floor(N/160); original pinned processor attention mask, including partial10ms input",
+    "per_slice_gates": {
+      "q8_shared_der_maximum": 0.2,
+      "q8_production_default_der_maximum": 0.2,
+      "q8_minus_fp32_absolute_der_maximum": 0.02,
+      "wrapper_turn_tolerance_seconds": 1e-06,
+      "wrapper_probability_tolerance": 1e-06
+    }
+  },
+  "exposure": "Local tuning-heldout; ICSI Full/Vox dev+test declared training; AMI conditional official evaluation split only.",
+  "failure_policy": "Retain every result. No threshold tuning, deletion, recording/channel/crop substitution after inference.",
+  "tool_sha256": {
+    "qualify_corpus.py": "ac1b54cd59121ea1bc1910a558407072117c36093d92bb2b17510412857e4649",
+    "reference.py": "1977ddd747add5ca8a30f99f9c8ef166d6b9af2f7655dfbd28916151b84e9f7b",
+    "score.py": "32aea92676133e42e2c30a914f8729d1c31c0c96e02faf9b7cab42911b389eb8",
+    "compare.py": "a53fccc162ead3b488a3880950d4dbf244897fd837f3b8e0898235029e559282",
+    "compare_stream.py": "6d6a80a3b9710d0d2d0705225653935d40cd69aac9abe50454c0609631c6daa4",
+    "runtime.lock.json": "e66e5651608636bbb04528fed7944ab8972a778d1141b36fef3fb391eefd0dcc",
+    "reference/uv.lock": "104834dd9a3904a763dfd5270b92821b5a209b2289f00f0c6f2d3cd55ddb673f"
+  }
+}

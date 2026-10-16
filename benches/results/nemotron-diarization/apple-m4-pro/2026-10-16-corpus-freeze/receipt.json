@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "inference_performed": false,
+  "scope": "Eight model-blind local tuning-heldout slices acquired and references frozen before model output",
+  "corpus_manifest_sha256": "c514152766948139ed21a496b1b81661c2e06d647004901fa4683bea4b423ece",
+  "corpus_directory": "/Users/victor/.cache/gen2-nemotron3-n0/quality-corpus-v1",
+  "audio_seconds": 1896.992,
+  "speakers": [
+    2,
+    2,
+    4,
+    4,
+    8,
+    4,
+    4,
+    8
+  ],
+  "acquisition_command": [
+    "python3",
+    "tools/nemotron-diarization/corpus.py",
+    "--output",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality-corpus-v1",
+    "--ami-annotations",
+    "/Users/victor/.cache/gen2-nemotron3-n0/ami_public_manual_1.6.2.zip"
+  ],
+  "tests": "31 model-free evidence-tool tests passed",
+  "source_policy": "Provided reference intervals clipped to actual full-WAV/crop UEM; no model outputs used",
+  "limits": [
+    "Six of seven recordings explicitly within checkpoint training inventory; no guaranteed unseen-data claim.",
+    "Paired AMI inputs represent one meeting.",
+    "ICSI eight-person crop predominantly digit reading; incidental noise only.",
+    "Vox auzru final reference exceeds WAV by26ms; original RTTM retained, scoring clips to515.904s.",
+    "No quality/attribution outcome established by acquisition."
+  ]
+}

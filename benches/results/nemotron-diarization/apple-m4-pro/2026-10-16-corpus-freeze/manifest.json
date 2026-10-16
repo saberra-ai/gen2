@@ -1,0 +1,523 @@
+{
+  "schema_version": 1,
+  "scope": "local tuning-heldout, not guaranteed checkpoint-unseen",
+  "selection": "docs/research/nemotron-heldout-corpus.md",
+  "inference_performed": false,
+  "sources_sha256": "361ded0cf9b7e46ad040a1179a3339bd0d180e68429f363bae52d6ff2f3e73a4",
+  "extractor_sha256": "0ce5a78dcde955fc7201a375161a90d68a423f1f9706896789225c0dce1468bd",
+  "slices": [
+    {
+      "id": "vox-bjruf",
+      "wav": "vox-bjruf.wav",
+      "audio_samples": 5768192,
+      "uem_seconds": [
+        0,
+        360.512
+      ],
+      "reference": "vox-bjruf.reference.json",
+      "statistics": {
+        "speakers": 2,
+        "speaker_seconds": {
+          "spk00": 185.5,
+          "spk01": 186.83
+        },
+        "speech_union_seconds": 328.47,
+        "overlap_seconds": 43.86,
+        "intervals": 99,
+        "short_intervals_at_most_1s": 31
+      },
+      "provenance": {
+        "audio_archive": {
+          "url": "https://www.robots.ox.ac.uk/~vgg/data/voxconverse/data/voxconverse_test_wav.zip",
+          "bytes": 4272764397,
+          "etag": "\"fead35ed-5c7a1fc24ca4c\""
+        },
+        "member": {
+          "id": "bjruf",
+          "speakers": 2,
+          "offset": 2889360004,
+          "compressed_bytes": 10289398,
+          "bytes": 11536462,
+          "crc32": "c0b1b68b",
+          "annotation": {
+            "url": "https://raw.githubusercontent.com/joonson/voxconverse/24bf60be297701cd7e4ef18550c6d390c1b87365/test/bjruf.rttm",
+            "bytes": 5906,
+            "sha256": "5af1e0b5a0517f2698881ffb6afa869788e9e4626d5632217c00bbd88100e64a"
+          }
+        },
+        "reference_policy": "provided RTTM clipped to complete decoded WAV UEM; original RTTM retained unchanged",
+        "original_reference_last_endpoint_seconds": 351.36,
+        "training_exposure": "VoxConverse v0.3 dev/test explicitly declared training"
+      }
+    },
+    {
+      "id": "vox-bxcfq",
+      "wav": "vox-bxcfq.wav",
+      "audio_samples": 3143680,
+      "uem_seconds": [
+        0,
+        196.48
+      ],
+      "reference": "vox-bxcfq.reference.json",
+      "statistics": {
+        "speakers": 2,
+        "speaker_seconds": {
+          "spk00": 54.06,
+          "spk01": 147.32
+        },
+        "speech_union_seconds": 196.33,
+        "overlap_seconds": 5.05,
+        "intervals": 14,
+        "short_intervals_at_most_1s": 6
+      },
+      "provenance": {
+        "audio_archive": {
+          "url": "https://www.robots.ox.ac.uk/~vgg/data/voxconverse/data/voxconverse_test_wav.zip",
+          "bytes": 4272764397,
+          "etag": "\"fead35ed-5c7a1fc24ca4c\""
+        },
+        "member": {
+          "id": "bxcfq",
+          "speakers": 2,
+          "offset": 2042970517,
+          "compressed_bytes": 5303849,
+          "bytes": 6287438,
+          "crc32": "a19107dd",
+          "annotation": {
+            "url": "https://raw.githubusercontent.com/joonson/voxconverse/24bf60be297701cd7e4ef18550c6d390c1b87365/test/bxcfq.rttm",
+            "bytes": 839,
+            "sha256": "1b1d0809df792475e5ef67b11c5c6f8e08bdb7acbcd72a4e831fc1218b85a9fd"
+          }
+        },
+        "reference_policy": "provided RTTM clipped to complete decoded WAV UEM; original RTTM retained unchanged",
+        "original_reference_last_endpoint_seconds": 196.44,
+        "training_exposure": "VoxConverse v0.3 dev/test explicitly declared training"
+      }
+    },
+    {
+      "id": "vox-aepyx",
+      "wav": "vox-aepyx.wav",
+      "audio_samples": 2706432,
+      "uem_seconds": [
+        0,
+        169.152
+      ],
+      "reference": "vox-aepyx.reference.json",
+      "statistics": {
+        "speakers": 4,
+        "speaker_seconds": {
+          "spk00": 64.67,
+          "spk01": 43.18,
+          "spk02": 18.18,
+          "spk03": 22.26
+        },
+        "speech_union_seconds": 144.9,
+        "overlap_seconds": 3.39,
+        "intervals": 30,
+        "short_intervals_at_most_1s": 2
+      },
+      "provenance": {
+        "audio_archive": {
+          "url": "https://www.robots.ox.ac.uk/~vgg/data/voxconverse/data/voxconverse_test_wav.zip",
+          "bytes": 4272764397,
+          "etag": "\"fead35ed-5c7a1fc24ca4c\""
+        },
+        "member": {
+          "id": "aepyx",
+          "speakers": 4,
+          "offset": 2623721036,
+          "compressed_bytes": 4458980,
+          "bytes": 5412942,
+          "crc32": "d77c6b11",
+          "annotation": {
+            "url": "https://raw.githubusercontent.com/joonson/voxconverse/24bf60be297701cd7e4ef18550c6d390c1b87365/test/aepyx.rttm",
+            "bytes": 1783,
+            "sha256": "fd5bf3e0ecfacaba66d749e75f39574162b8cb472e7910ecadf0fc949d00e9c9"
+          }
+        },
+        "reference_policy": "provided RTTM clipped to complete decoded WAV UEM; original RTTM retained unchanged",
+        "original_reference_last_endpoint_seconds": 168.27,
+        "training_exposure": "VoxConverse v0.3 dev/test explicitly declared training"
+      }
+    },
+    {
+      "id": "vox-cqfmj",
+      "wav": "vox-cqfmj.wav",
+      "audio_samples": 1839104,
+      "uem_seconds": [
+        0,
+        114.944
+      ],
+      "reference": "vox-cqfmj.reference.json",
+      "statistics": {
+        "speakers": 4,
+        "speaker_seconds": {
+          "spk00": 20.03,
+          "spk01": 81.21,
+          "spk02": 5.06,
+          "spk03": 2.34
+        },
+        "speech_union_seconds": 103.53,
+        "overlap_seconds": 5.11,
+        "intervals": 18,
+        "short_intervals_at_most_1s": 2
+      },
+      "provenance": {
+        "audio_archive": {
+          "url": "https://www.robots.ox.ac.uk/~vgg/data/voxconverse/data/voxconverse_test_wav.zip",
+          "bytes": 4272764397,
+          "etag": "\"fead35ed-5c7a1fc24ca4c\""
+        },
+        "member": {
+          "id": "cqfmj",
+          "speakers": 4,
+          "offset": 1534141565,
+          "compressed_bytes": 3037871,
+          "bytes": 3678286,
+          "crc32": "86526190",
+          "annotation": {
+            "url": "https://raw.githubusercontent.com/joonson/voxconverse/24bf60be297701cd7e4ef18550c6d390c1b87365/test/cqfmj.rttm",
+            "bytes": 1068,
+            "sha256": "f16678a00cefa5592ac96ea2dc5d31917c1e3e5070d80cb7e319f966e63ce10a"
+          }
+        },
+        "reference_policy": "provided RTTM clipped to complete decoded WAV UEM; original RTTM retained unchanged",
+        "original_reference_last_endpoint_seconds": 113.95,
+        "training_exposure": "VoxConverse v0.3 dev/test explicitly declared training"
+      }
+    },
+    {
+      "id": "vox-auzru",
+      "wav": "vox-auzru.wav",
+      "audio_samples": 8254464,
+      "uem_seconds": [
+        0,
+        515.904
+      ],
+      "reference": "vox-auzru.reference.json",
+      "statistics": {
+        "speakers": 8,
+        "speaker_seconds": {
+          "spk00": 61.85,
+          "spk01": 82.49,
+          "spk02": 119.13,
+          "spk03": 94.96,
+          "spk04": 9.48,
+          "spk05": 23.6,
+          "spk06": 54.92,
+          "spk07": 62.314
+        },
+        "speech_union_seconds": 505.714,
+        "overlap_seconds": 3.03,
+        "intervals": 30,
+        "short_intervals_at_most_1s": 4
+      },
+      "provenance": {
+        "audio_archive": {
+          "url": "https://www.robots.ox.ac.uk/~vgg/data/voxconverse/data/voxconverse_test_wav.zip",
+          "bytes": 4272764397,
+          "etag": "\"fead35ed-5c7a1fc24ca4c\""
+        },
+        "member": {
+          "id": "auzru",
+          "speakers": 8,
+          "offset": 2807818362,
+          "compressed_bytes": 13209217,
+          "bytes": 16509006,
+          "crc32": "6fed260d",
+          "annotation": {
+            "url": "https://raw.githubusercontent.com/joonson/voxconverse/24bf60be297701cd7e4ef18550c6d390c1b87365/test/auzru.rttm",
+            "bytes": 1808,
+            "sha256": "7df2ff9dc5aa114a25d5fe9f2b5a9a86641a639dee9431f4609dfeb0fa86a8f4"
+          }
+        },
+        "reference_policy": "provided RTTM clipped to complete decoded WAV UEM; original RTTM retained unchanged",
+        "original_reference_last_endpoint_seconds": 515.93,
+        "training_exposure": "VoxConverse v0.3 dev/test explicitly declared training"
+      }
+    },
+    {
+      "id": "ami-ES2004a-Mix-Headset",
+      "wav": "ami-ES2004a-Mix-Headset.wav",
+      "audio_samples": 1920000,
+      "uem_seconds": [
+        0,
+        120.0
+      ],
+      "reference": "ami-ES2004a-Mix-Headset.reference.json",
+      "statistics": {
+        "speakers": 4,
+        "speaker_seconds": {
+          "A": 46.595,
+          "B": 11.577,
+          "C": 39.891,
+          "D": 14.215
+        },
+        "speech_union_seconds": 84.321,
+        "overlap_seconds": 24.223,
+        "intervals": 27,
+        "short_intervals_at_most_1s": 6
+      },
+      "provenance": {
+        "source": {
+          "id": "ami-ES2004a-Mix-Headset",
+          "url": "https://groups.inf.ed.ac.uk/ami/AMICorpusMirror/amicorpus/ES2004a/audio/ES2004a.Mix-Headset.wav",
+          "bytes": 33579394,
+          "etag": "\"2006182-3f24a94bc44c0\"",
+          "crop_seconds": [
+            300,
+            420
+          ]
+        },
+        "metadata": {
+          "source_pcm_samples": 16789675,
+          "data_offset": 44,
+          "source_header_sha256": "b0fc17b0ef62974120b27caf51ca6d77b85302d60836620c52d6fe068da2480f",
+          "downloaded_pcm_sha256": "5cdc7347f9641c2ce057c7a470d241c248a11903f71f1d03d9c995b57cf6e21a"
+        },
+        "annotation_members": {
+          "words/ES2004a.A.words.xml": "3b91765c8985e7c2652f1004832c00840e88bad4c3213296192b9fd741d675cc",
+          "segments/ES2004a.A.segments.xml": "fdba87577fb6f36139a0f62d5c249921635b53bec92ed127cdfee959f6a8cb2c",
+          "words/ES2004a.B.words.xml": "0e24646b84f2772bb3ca28e666df5f7ba48cde647589f7ae8f85e2724ff5cbc3",
+          "segments/ES2004a.B.segments.xml": "130b464da1979e2b269c6b860eb046ac26e2d13b7482752d9befe3146bfc17f4",
+          "words/ES2004a.C.words.xml": "07c25c4831fdc91cdff736ebf27c1380d0a7ef98e9835e33b15d44797fed7fd1",
+          "segments/ES2004a.C.segments.xml": "fc1cdb6c1fd673d35caa84190a85c827db08da60bdcb2a856eca785f4a3b8bde",
+          "words/ES2004a.D.words.xml": "e085188b2f4855808911934c309ba965c283e54371044c9086185f27913d44f8",
+          "segments/ES2004a.D.segments.xml": "1ecca19454d5c92b92c8c1825935b24262a355778c7138492dbacf10db9aa83d"
+        },
+        "reference_policy": "human-reviewed lexical transcriber segments, clipped; word timing is forced aligned",
+        "training_exposure": "outside declared AMI train/dev under official partition, not guaranteed zero exposure"
+      }
+    },
+    {
+      "id": "ami-ES2004a-Array1-01",
+      "wav": "ami-ES2004a-Array1-01.wav",
+      "audio_samples": 1920000,
+      "uem_seconds": [
+        0,
+        120.0
+      ],
+      "reference": "ami-ES2004a-Array1-01.reference.json",
+      "statistics": {
+        "speakers": 4,
+        "speaker_seconds": {
+          "A": 46.595,
+          "B": 11.577,
+          "C": 39.891,
+          "D": 14.215
+        },
+        "speech_union_seconds": 84.321,
+        "overlap_seconds": 24.223,
+        "intervals": 27,
+        "short_intervals_at_most_1s": 6
+      },
+      "provenance": {
+        "source": {
+          "id": "ami-ES2004a-Array1-01",
+          "url": "https://groups.inf.ed.ac.uk/ami/AMICorpusMirror/amicorpus/ES2004a/audio/ES2004a.Array1-01.wav",
+          "bytes": 33579394,
+          "etag": "\"2006182-3f2068f1e86c0\"",
+          "crop_seconds": [
+            300,
+            420
+          ]
+        },
+        "metadata": {
+          "source_pcm_samples": 16789675,
+          "data_offset": 44,
+          "source_header_sha256": "722223d9348b00e52778c0eec381bb4e70a27191698723365fe87e0d6494982e",
+          "downloaded_pcm_sha256": "7702532a3c64d7c7e7cfeef7a4229cf26bc9fde5340268ac33db675340d541d9"
+        },
+        "annotation_members": {
+          "words/ES2004a.A.words.xml": "3b91765c8985e7c2652f1004832c00840e88bad4c3213296192b9fd741d675cc",
+          "segments/ES2004a.A.segments.xml": "fdba87577fb6f36139a0f62d5c249921635b53bec92ed127cdfee959f6a8cb2c",
+          "words/ES2004a.B.words.xml": "0e24646b84f2772bb3ca28e666df5f7ba48cde647589f7ae8f85e2724ff5cbc3",
+          "segments/ES2004a.B.segments.xml": "130b464da1979e2b269c6b860eb046ac26e2d13b7482752d9befe3146bfc17f4",
+          "words/ES2004a.C.words.xml": "07c25c4831fdc91cdff736ebf27c1380d0a7ef98e9835e33b15d44797fed7fd1",
+          "segments/ES2004a.C.segments.xml": "fc1cdb6c1fd673d35caa84190a85c827db08da60bdcb2a856eca785f4a3b8bde",
+          "words/ES2004a.D.words.xml": "e085188b2f4855808911934c309ba965c283e54371044c9086185f27913d44f8",
+          "segments/ES2004a.D.segments.xml": "1ecca19454d5c92b92c8c1825935b24262a355778c7138492dbacf10db9aa83d"
+        },
+        "reference_policy": "human-reviewed lexical transcriber segments, clipped; word timing is forced aligned",
+        "training_exposure": "outside declared AMI train/dev under official partition, not guaranteed zero exposure"
+      }
+    },
+    {
+      "id": "icsi-Bmr005-interaction",
+      "wav": "icsi-Bmr005-interaction.wav",
+      "audio_samples": 4800000,
+      "uem_seconds": [
+        0,
+        300.0
+      ],
+      "reference": "icsi-Bmr005-interaction.reference.json",
+      "statistics": {
+        "speakers": 8,
+        "speaker_seconds": {
+          "fe008": 26.983,
+          "fe016": 24.039,
+          "me001": 36.556,
+          "me011": 14.493,
+          "me013": 36.361,
+          "me018": 46.071,
+          "mn005": 35.545,
+          "mn017": 31.509
+        },
+        "speech_union_seconds": 248.273,
+        "overlap_seconds": 3.284,
+        "intervals": 165,
+        "short_intervals_at_most_1s": 55
+      },
+      "provenance": {
+        "source": {
+          "id": "icsi-Bmr005-interaction",
+          "url": "https://groups.inf.ed.ac.uk/ami/ICSIsignals/NXT/Bmr005.interaction.wav",
+          "bytes": 136402136,
+          "etag": "\"82154d8-53837057d2e80\"",
+          "crop_seconds": [
+            60,
+            360
+          ],
+          "condition": "Eight participants, predominantly real digit-reading task, two incidental noise annotations; not a severe-noise or spontaneous-only claim."
+        },
+        "metadata": {
+          "source_pcm_samples": 68201046,
+          "data_offset": 44,
+          "source_header_sha256": "81091ab2c10a9fdd726f642f1ed1c30be3ec43165e002715c3d76b32efc18cdc",
+          "downloaded_pcm_sha256": "286762a9d6e353c5646ca572b9c567f0759dad00efb77393372764aebbaa89b2"
+        },
+        "annotation_members": {
+          "transcripts/Bmr005.mrt": "1c2d8bf5cc937195de4d0cb369f17338fff7ae5c88fba2ef9a38d5f12a048f1f"
+        },
+        "reference_policy": "positive-duration participant MRT segments containing alphabetic transcript text",
+        "training_exposure": "ICSI Full explicitly declared training",
+        "incident_noise_annotations": [
+          {
+            "source_start": "140.033",
+            "source_end": "140.913",
+            "attributes": {
+              "Description": "squeak"
+            }
+          },
+          {
+            "source_start": "161.510",
+            "source_end": "162.430",
+            "attributes": {
+              "Description": "mike noise"
+            }
+          }
+        ]
+      }
+    }
+  ],
+  "files": {
+    "AMI-annotation-source.zip": {
+      "sha256": "b56e5babb2496b8795deeeda7e71178d7fbc9963f94276cf2a3f4b56ebbc9f9d",
+      "bytes": 22887865
+    },
+    "ICSI-annotation-source.zip": {
+      "sha256": "9db98ebdd61a085b4f45f24f46e9c9f6c6f26c3c9cd41643a3b9e74362c85de7",
+      "bytes": 3720243
+    },
+    "NOTICE.md": {
+      "sha256": "a16809c1da6f3db4c6f94932a22481f39eccdbe0228aff718e292cfa4b7f6b8d",
+      "bytes": 1491
+    },
+    "aepyx.rttm": {
+      "sha256": "fd5bf3e0ecfacaba66d749e75f39574162b8cb472e7910ecadf0fc949d00e9c9",
+      "bytes": 1783
+    },
+    "ami-ES2004a-Array1-01.reference.json": {
+      "sha256": "70fc7b37f302987ed309e8db3c805f4222fc8d499408d95cb474a70e91fcc4cf",
+      "bytes": 2364
+    },
+    "ami-ES2004a-Array1-01.transcript.json": {
+      "sha256": "150b098277df46c9a7fa52784fe9793a87927853c34c7ed2811a4577922df73d",
+      "bytes": 43438
+    },
+    "ami-ES2004a-Array1-01.wav": {
+      "sha256": "740626182eddec2734523426cdcbcd6cff926a1c9224250e20e7bd922f7365f4",
+      "bytes": 3840044
+    },
+    "ami-ES2004a-Mix-Headset.reference.json": {
+      "sha256": "70fc7b37f302987ed309e8db3c805f4222fc8d499408d95cb474a70e91fcc4cf",
+      "bytes": 2364
+    },
+    "ami-ES2004a-Mix-Headset.transcript.json": {
+      "sha256": "150b098277df46c9a7fa52784fe9793a87927853c34c7ed2811a4577922df73d",
+      "bytes": 43438
+    },
+    "ami-ES2004a-Mix-Headset.wav": {
+      "sha256": "b041781e759ef18a56096913c09c9539c8afd3d06f44c938be4d6b1179dbf205",
+      "bytes": 3840044
+    },
+    "auzru.rttm": {
+      "sha256": "7df2ff9dc5aa114a25d5fe9f2b5a9a86641a639dee9431f4609dfeb0fa86a8f4",
+      "bytes": 1808
+    },
+    "bjruf.rttm": {
+      "sha256": "5af1e0b5a0517f2698881ffb6afa869788e9e4626d5632217c00bbd88100e64a",
+      "bytes": 5906
+    },
+    "bxcfq.rttm": {
+      "sha256": "1b1d0809df792475e5ef67b11c5c6f8e08bdb7acbcd72a4e831fc1218b85a9fd",
+      "bytes": 839
+    },
+    "cqfmj.rttm": {
+      "sha256": "f16678a00cefa5592ac96ea2dc5d31917c1e3e5070d80cb7e319f966e63ce10a",
+      "bytes": 1068
+    },
+    "icsi-Bmr005-interaction.reference.json": {
+      "sha256": "703af581b7677d6ab04cc1093502db64e38b443b67991f22bffe803b6ec3e12d",
+      "bytes": 13309
+    },
+    "icsi-Bmr005-interaction.transcript.json": {
+      "sha256": "b7aa548bb143e0352bb242c90728a334c7bb177548a2c8a072c379e0e04243b7",
+      "bytes": 20859
+    },
+    "icsi-Bmr005-interaction.wav": {
+      "sha256": "8052cb8ab482a0529e7d2f3d5c6c73e8e98e295147aed937e921290c092d68c6",
+      "bytes": 9600044
+    },
+    "vox-aepyx.reference.json": {
+      "sha256": "324ecbddc62ea62575b9c22b58e25579ba6c525f33aafdc5bdb6ffab4b82cd56",
+      "bytes": 2240
+    },
+    "vox-aepyx.wav": {
+      "sha256": "d6aed597425ea4ce852db919912906e45471acd74e18ed3046360cbc3f06c27b",
+      "bytes": 5412942
+    },
+    "vox-auzru.reference.json": {
+      "sha256": "fd18f1c50d71e6eacc3505d24a353a4c7b990cecb429b832bcde09e7c1c205d8",
+      "bytes": 2194
+    },
+    "vox-auzru.wav": {
+      "sha256": "b47a113a184a6105665a4d6f4e90282fe2a27b823ae3e27b89eb8f08478f1af8",
+      "bytes": 16509006
+    },
+    "vox-bjruf.reference.json": {
+      "sha256": "d305d942ded55c541131862349bbf7f463450e82446eebb62f44117bbd4ac77d",
+      "bytes": 7301
+    },
+    "vox-bjruf.wav": {
+      "sha256": "24047b068f221fc14f64e035000f1c07b0258fcca5592424e0f7f16eec0645ab",
+      "bytes": 11536462
+    },
+    "vox-bxcfq.reference.json": {
+      "sha256": "a0dc3eb7cd98f12fcad369f1fb3f970b5bd30db1539b2c5bc0115681c6ba6d1e",
+      "bytes": 1013
+    },
+    "vox-bxcfq.wav": {
+      "sha256": "9b928831c6f37e22dc055b7c732a75511c610a59ec0c275193f14d9f9842a8c1",
+      "bytes": 6287438
+    },
+    "vox-cqfmj.reference.json": {
+      "sha256": "5e4a16c3f0ea353f3e32c934c32f8775d5523bd4af164cde659952794b77d3fe",
+      "bytes": 1314
+    },
+    "vox-cqfmj.wav": {
+      "sha256": "d0c81a22937ab33cdfc3297cfa23f34fa8faa2180f2e6762cbe557a6c8ae68cc",
+      "bytes": 3678286
+    }
+  }
+}

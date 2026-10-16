@@ -33,6 +33,15 @@ Pinned Vox references: [bjruf](https://github.com/joonson/voxconverse/blob/24bf6
 
 The eight Vox auzru reference speaker totals are spk00:61.85, spk01:82.49, spk02:119.13, spk03:94.96, spk04:9.48, spk05:23.60, spk06:54.92, spk07:62.34 seconds. This proves eight annotated identities, **not eight simultaneous speakers**. Bmr005 totals are me011:14.493, me013:36.361, me001:36.556, mn017:31.509, me018:46.071, mn005:35.545, fe008:26.983, fe016:24.039 seconds under the lexical-segment filter. [Vox pinned reference](https://github.com/joonson/voxconverse/blob/24bf60be297701cd7e4ef18550c6d390c1b87365/test/auzru.rttm), [ICSI original archive](https://groups.inf.ed.ac.uk/ami/ICSICorpusAnnotations/ICSI_original_transcripts.zip).
 
+Acquisition clarification before inference: complete decoded auzru audio is
+515.904 seconds; its provided final reference ends at515.930 seconds. Applying
+the already frozen full-WAV UEM clips26ms from spk07, yielding62.314seconds.
+The original pinned RTTM is retained unchanged. No audio or reference-based
+selection changed. The ICSI crop contains substantial annotated digit reading
+(161 selected segments have a Digits comment), alongside the two incidental
+noise events. It supplies real eight-participant audio, not an exclusively
+spontaneous-conversation or severe-noise claim.
+
 AMI transcript content is manual, but its word timings are automatically forced-aligned. AMI also supplies transcriber segment boundaries; these are the recommended primary DER reference below. ICSI has manual utterance boundaries; do not invent word-level timing inside them. Document each reference policy in the receipt rather than implying the corpora have identical silence conventions. Existing `tools/nemotron-diarization/qualify_alignment.py` verifies the AMI archive and reads lexical words, but its whole-word-containment behavior is designed for alignment diagnostics; the DER extractor should clip valid positive-duration intervals at crop boundaries, preserve speaker identity and emit UEM explicitly.
 
 ## Downloadability verified against actual first-party endpoints

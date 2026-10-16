@@ -27,9 +27,14 @@ def main():
             parser.error(f"missing/corrupt oracle asset: {entry['name']}")
     torch.set_num_threads(4)
     torch.manual_seed(0)
-    audio, rate = sf.read(args.wav, dtype="float32")
-    if rate != 16000 or audio.ndim != 1 or not 0 < audio.size <= 16000 * 120 or not np.isfinite(audio).all():
-        parser.error("oracle accepts finite mono 16 kHz audio, up to 120 seconds")
+    info = sf.info(args.wav)
+    if info.samplerate != 16000 or info.channels != 1 or not 320 <= info.frames <= 16000 * 600:
+        parser.error("oracle accepts finite mono 16 kHz audio, from 20 ms to 600 seconds")
+    if args.output.with_suffix('.npy').exists() or args.output.with_suffix('.json').exists():
+        parser.error("refusing to overwrite existing reference evidence")
+    audio, rate = sf.read(args.wav, dtype="float32", frames=info.frames + 1)
+    if rate != 16000 or audio.ndim != 1 or audio.size != info.frames or not np.isfinite(audio).all():
+        parser.error("audio changed or contains invalid samples")
     processor = AutoProcessor.from_pretrained(args.assets, local_files_only=True)
     model = AutoModelForAudioFrameClassification.from_pretrained(
         args.assets, local_files_only=True, dtype=torch.float32).to("cpu").eval()
@@ -65,7 +70,9 @@ def main():
                 break
             cursor += processor.num_mel_frames_per_step
     probabilities = torch.cat(parts, dim=1).sigmoid().squeeze(0).cpu().numpy().astype(np.float32)
-    if probabilities.ndim != 2 or probabilities.shape[1] != 8 or not np.isfinite(probabilities).all():
+    # The pinned processor's centered first chunk and uncentered padded final
+    # chunk both mask to floor(N/160) real frames, including partial 10 ms tails.
+    if probabilities.shape != (len(audio) // 160, 8) or not np.isfinite(probabilities).all() or not ((0 <= probabilities) & (probabilities <= 1)).all():
         raise ValueError("invalid FP32 reference output")
     args.output.parent.mkdir(parents=True, exist_ok=True)
     np.save(args.output.with_suffix(".npy"), probabilities)
@@ -84,6 +91,7 @@ def main():
                 "torch": torch.__version__, "transformers": transformers.__version__,
                 "python": platform.python_version(), "platform": platform.platform(),
                 "audio_samples": len(audio), "shape": list(probabilities.shape),
+                "valid_frame_rule": "floor(audio_samples/160); pinned processor attention mask; native extra terminal frame retained separately",
                 "seconds": time.perf_counter() - started, "cadence_seconds": .01}
     args.output.with_suffix(".json").write_text(json.dumps(metadata, indent=2) + "\n")
     print(json.dumps(metadata))

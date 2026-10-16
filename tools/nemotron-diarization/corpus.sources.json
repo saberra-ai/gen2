@@ -1,0 +1,121 @@
+{
+  "schema_version": 1,
+  "selection_frozen_before_inference": true,
+  "vox_commit": "24bf60be297701cd7e4ef18550c6d390c1b87365",
+  "vox_archive": {
+    "url": "https://www.robots.ox.ac.uk/~vgg/data/voxconverse/data/voxconverse_test_wav.zip",
+    "bytes": 4272764397,
+    "etag": "\"fead35ed-5c7a1fc24ca4c\""
+  },
+  "vox_members": [
+    {
+      "id": "bjruf",
+      "speakers": 2,
+      "offset": 2889360004,
+      "compressed_bytes": 10289398,
+      "bytes": 11536462,
+      "crc32": "c0b1b68b",
+      "annotation": {
+        "url": "https://raw.githubusercontent.com/joonson/voxconverse/24bf60be297701cd7e4ef18550c6d390c1b87365/test/bjruf.rttm",
+        "bytes": 5906,
+        "sha256": "5af1e0b5a0517f2698881ffb6afa869788e9e4626d5632217c00bbd88100e64a"
+      }
+    },
+    {
+      "id": "bxcfq",
+      "speakers": 2,
+      "offset": 2042970517,
+      "compressed_bytes": 5303849,
+      "bytes": 6287438,
+      "crc32": "a19107dd",
+      "annotation": {
+        "url": "https://raw.githubusercontent.com/joonson/voxconverse/24bf60be297701cd7e4ef18550c6d390c1b87365/test/bxcfq.rttm",
+        "bytes": 839,
+        "sha256": "1b1d0809df792475e5ef67b11c5c6f8e08bdb7acbcd72a4e831fc1218b85a9fd"
+      }
+    },
+    {
+      "id": "aepyx",
+      "speakers": 4,
+      "offset": 2623721036,
+      "compressed_bytes": 4458980,
+      "bytes": 5412942,
+      "crc32": "d77c6b11",
+      "annotation": {
+        "url": "https://raw.githubusercontent.com/joonson/voxconverse/24bf60be297701cd7e4ef18550c6d390c1b87365/test/aepyx.rttm",
+        "bytes": 1783,
+        "sha256": "fd5bf3e0ecfacaba66d749e75f39574162b8cb472e7910ecadf0fc949d00e9c9"
+      }
+    },
+    {
+      "id": "cqfmj",
+      "speakers": 4,
+      "offset": 1534141565,
+      "compressed_bytes": 3037871,
+      "bytes": 3678286,
+      "crc32": "86526190",
+      "annotation": {
+        "url": "https://raw.githubusercontent.com/joonson/voxconverse/24bf60be297701cd7e4ef18550c6d390c1b87365/test/cqfmj.rttm",
+        "bytes": 1068,
+        "sha256": "f16678a00cefa5592ac96ea2dc5d31917c1e3e5070d80cb7e319f966e63ce10a"
+      }
+    },
+    {
+      "id": "auzru",
+      "speakers": 8,
+      "offset": 2807818362,
+      "compressed_bytes": 13209217,
+      "bytes": 16509006,
+      "crc32": "6fed260d",
+      "annotation": {
+        "url": "https://raw.githubusercontent.com/joonson/voxconverse/24bf60be297701cd7e4ef18550c6d390c1b87365/test/auzru.rttm",
+        "bytes": 1808,
+        "sha256": "7df2ff9dc5aa114a25d5fe9f2b5a9a86641a639dee9431f4609dfeb0fa86a8f4"
+      }
+    }
+  ],
+  "ami_annotations": {
+    "url": "https://groups.inf.ed.ac.uk/ami/AMICorpusAnnotations/ami_public_manual_1.6.2.zip",
+    "bytes": 22887865,
+    "sha256": "b56e5babb2496b8795deeeda7e71178d7fbc9963f94276cf2a3f4b56ebbc9f9d"
+  },
+  "icsi_annotations": {
+    "url": "https://groups.inf.ed.ac.uk/ami/ICSICorpusAnnotations/ICSI_original_transcripts.zip",
+    "bytes": 3720243,
+    "sha256": "9db98ebdd61a085b4f45f24f46e9c9f6c6f26c3c9cd41643a3b9e74362c85de7"
+  },
+  "ami_audio": [
+    {
+      "id": "ami-ES2004a-Mix-Headset",
+      "url": "https://groups.inf.ed.ac.uk/ami/AMICorpusMirror/amicorpus/ES2004a/audio/ES2004a.Mix-Headset.wav",
+      "bytes": 33579394,
+      "etag": "\"2006182-3f24a94bc44c0\"",
+      "crop_seconds": [
+        300,
+        420
+      ]
+    },
+    {
+      "id": "ami-ES2004a-Array1-01",
+      "url": "https://groups.inf.ed.ac.uk/ami/AMICorpusMirror/amicorpus/ES2004a/audio/ES2004a.Array1-01.wav",
+      "bytes": 33579394,
+      "etag": "\"2006182-3f2068f1e86c0\"",
+      "crop_seconds": [
+        300,
+        420
+      ]
+    }
+  ],
+  "icsi_audio": {
+    "id": "icsi-Bmr005-interaction",
+    "url": "https://groups.inf.ed.ac.uk/ami/ICSIsignals/NXT/Bmr005.interaction.wav",
+    "bytes": 136402136,
+    "etag": "\"82154d8-53837057d2e80\"",
+    "crop_seconds": [
+      60,
+      360
+    ],
+    "condition": "Eight participants, predominantly real digit-reading task, two incidental noise annotations; not a severe-noise or spontaneous-only claim."
+  },
+  "notice": "# Frozen evaluation audio provenance\n\nAMI Meeting Corpus ES2004a and ICSI Meeting Corpus Bmr005 signals/transcripts: CC BY 4.0, https://creativecommons.org/licenses/by/4.0/. Sources: https://groups.inf.ed.ac.uk/ami/download/ and https://groups.inf.ed.ac.uk/ami/icsi/download/. Cropped source PCM to the exact intervals in manifest.json; generated PCM16 WAV headers. AMI: Carletta et al., The AMI Meeting Corpus: A Pre-announcement (2005). ICSI: Janin et al., The ICSI Meeting Corpus (ICASSP 2003). Keep source archive credits.\n\nVoxConverse: original author research-purpose distribution under CC BY 4.0; original video owners retain copyright. Source/license/citation: https://github.com/joonson/voxconverse/blob/24bf60be297701cd7e4ef18550c6d390c1b87365/README.md. Chung, Huh, Nagrani, Afouras, Zisserman, Spot the Conversation: Speaker Diarisation in the Wild (Interspeech 2020). Complete original WAV members, no audio crop or sample conversion.\n\nAMI transcriber boundaries are human-reviewed, initialized automatically; word times are forced-aligned human text. ICSI references use lexical MRT utterances, not invented word times. Vox references are author-manually-checked semi-automatic annotations.\n\nLocal tuning-heldout only: ICSI Full and VoxConverse v0.3 dev/test explicitly appear in checkpoint training inventory. ES2004 is outside declared AMI train/dev under official partition; no guarantee of zero exposure through other sources. See docs/research/nemotron-heldout-corpus.md.\n"
+}

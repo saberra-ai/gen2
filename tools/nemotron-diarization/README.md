@@ -44,6 +44,35 @@ their respective notices in the host package installation.
 
 ## Build and run real native/reference inference
 
+### Frozen quality corpus
+
+`corpus.py` acquires only the fixed Vox ZIP members and AMI/ICSI PCM ranges in
+`corpus.sources.json`. It requires exact HTTP206 ranges/ETags and annotation
+SHA256s, verifies ZIP CRC/size and mono16kPCM16 headers, retains original labels,
+and publishes a complete new directory atomically. Existing frozen directories
+are never replaced. See `docs/research/nemotron-heldout-corpus.md` for selection,
+training exposure, licenses and reference semantics.
+
+```sh
+python3 tools/nemotron-diarization/corpus.py \
+  --output "$task_cache/quality-corpus-v1" \
+  --ami-annotations "$task_cache/ami_public_manual_1.6.2.zip"
+```
+
+The committed acquisition receipt freezes eight slices (1896.992audio seconds;
+paired AMI channels are one meeting). `corpus.protocol.json` pins that manifest,
+scorer and reference scripts before inference. `qualify_corpus.py` checks the
+frozen inputs, original CPUFP32 reference and exact public/native Q8 parity,
+then reports every per-slice gate. Shared thresholding is probability>0.5,
+zero collar, overlap included, full-audio UEM; native default segmentation is
+also scored against the20% target. A quality failure is saved and does not
+permit replacing a slice. Raw native terminal frames remain in diagnostics;
+scoring clips their padding to the UEM. This set is local tuning-heldout,
+not guaranteed checkpoint-unseen. No quality outcome is established by
+acquisition alone.
+
+### Original smoke experiment
+
 ```sh
 python3 tools/nemotron-diarization/build_sdk.py \
   --source "$task_cache/NeMo-Speech.cpp" --prefix "$task_cache/sdk-cpu" \
