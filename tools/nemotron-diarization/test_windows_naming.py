@@ -22,7 +22,10 @@ class PrivateOutputTests(unittest.TestCase):
             encoded = name.encode() + b'\0'
             data[0x800:0x800 + len(encoded)] = encoded
             (root / 'bin' / name).write_bytes(data)
-            (root / 'lib' / name.replace('.dll', '.lib')).write_bytes(b'import fixture')
+            # Upstream installs only the public C ABI import library. Internal
+            # target import libraries remain build artifacts.
+            if name == NAMES['nemo_speech_asr_c.dll']:
+                (root / 'lib' / name.replace('.dll', '.lib')).write_bytes(b'import fixture')
 
     def test_accepts_private_outputs_but_rejects_generic_imports_aliases_and_missing_libraries(self):
         for mutation in ['none', 'generic-import', 'generic-alias', 'missing-import-library']:
@@ -34,7 +37,7 @@ class PrivateOutputTests(unittest.TestCase):
                 elif mutation == 'generic-alias':
                     (root / 'bin/ggml.dll').write_bytes(fixture())
                 elif mutation == 'missing-import-library':
-                    (root / 'lib' / NAMES['ggml.dll'].replace('.dll', '.lib')).unlink()
+                    (root / 'lib' / NAMES['nemo_speech_asr_c.dll'].replace('.dll', '.lib')).unlink()
                 if mutation == 'none':
                     self.assertTrue(verify_private_outputs(root, root)['generic_imports_absent'])
                 else:

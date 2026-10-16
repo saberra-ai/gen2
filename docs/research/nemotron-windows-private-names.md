@@ -106,8 +106,8 @@ checks AMD64/PE32+, ordinary imports, RVA delay imports and ordinal/named
 export forwarders; unsupported legacy delay pointers and malformed or ambiguous
 file mappings fail. Bound imports are reported and rejected by this qualification.
 Every delivered native DLL and qualification executable is checked for residual
-generic NeMo imports; all five private export-directory identities and import
-libraries are required. Actual runtime calls and chat coexistence remain separate.
+generic NeMo imports; all five private export-directory identities and the installed public C ABI
+import library are required. Actual runtime calls and chat coexistence remain separate.
 
 A real CMake target/install generation test on macOS and synthetic malformed-PE
 regressions pass. The [read-only inspection](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-pe-inspection/static-inspection.json) of the earlier `4bd34aa` Windows payload also
@@ -137,3 +137,15 @@ candidate result requires kernel build 20348 and an x64 Windows engine;
 `runtime_qualified` remains false. Actual preflight execution is pending. Even a
 positive result establishes only prerequisites for a later fresh offline container
 run, not desktop support or usable nested Hyper-V.
+
+The first actual private build at `564dcc7` linked and installed all five private
+DLLs and linked the independent probe successfully. Its checker then incorrectly
+required all five internal target import libraries to be installed; upstream
+installs only the public C ABI import library. The [retained failed gate](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-private-import-library-control/qualification.json)
+stops before provenance capture, Gen2/model execution or lifecycle checks. The
+corrected checker now requires only the installed public C ABI library while
+retaining all five DLL/import/export checks. Its new fixture fails the old check
+and passes the correction. A read-only macOS receiver rehashed all 66 delivered
+files, checked all fifteen PE files and confirmed all five native export sets
+are unchanged from `4bd34aa`, with no generic native imports. That receiver did
+not execute Windows code; actual Windows requalification is pending.

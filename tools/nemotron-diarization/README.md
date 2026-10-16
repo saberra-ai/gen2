@@ -437,6 +437,7 @@ It uses an exact-source-guarded CMake hook to relink all five owned DLLs under
 `gen2_nemo_windows_` names while retaining logical CMake targets and C ABI symbols.
 The probe import library and public entry follow the new names. A bounded PE
 scan rejects remaining generic native imports and bound/legacy delay forms;
-private export-directory identities and installed import libraries are required.
+private export-directory identities and the installed public C ABI import
+library are required.
 Source tests do not establish actual Windows private-DLL qualification, packaged
 VC runtime provenance, offline operation or coexistence.

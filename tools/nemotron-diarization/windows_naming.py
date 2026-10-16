@@ -52,8 +52,9 @@ def verify_private_outputs(prefix, output):
     for name in NAMES.values():
         if name not in reports or not reports[name]['is_dll'] or reports[name]['export_name'] != name:
             raise ValueError('private NeMo DLL output/export identity differs: ' + name)
-        if not (prefix / 'lib' / name.replace('.dll', '.lib')).is_file():
-            raise ValueError('private NeMo import library missing: ' + name)
+    entry = NAMES['nemo_speech_asr_c.dll']
+    if not (prefix / 'lib' / entry.replace('.dll', '.lib')).is_file():
+        raise ValueError('public private-name C ABI import library missing: ' + entry)
     (output / 'windows-private-pe.json').write_text(json.dumps(reports, indent=2) + '\n')
     return {'pe_report_sha256': digest(output / 'windows-private-pe.json'),
             'private_dlls_verified': sorted(NAMES.values()), 'generic_imports_absent': True,

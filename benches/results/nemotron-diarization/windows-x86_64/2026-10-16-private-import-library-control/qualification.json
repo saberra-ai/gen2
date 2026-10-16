@@ -1,0 +1,39 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "development_native_gates_passed": false,
+  "scope": "Actual Windows private SDK/probe link, followed by an overstrict installed-import-library assertion; no model execution.",
+  "source_commit": "564dcc79d7835fb0c44b09ccb92e86fceb0929b9",
+  "ci_run_id": 38882077202,
+  "ci_job_id": 116910950239,
+  "failure": "private NeMo import library missing: gen2_nemo_windows_nemo_speech_asr.dll",
+  "actual_completed_steps": [
+    "Guarded private DLL SDK configure/build/install",
+    "Independent native probe linked against installed private C ABI import library"
+  ],
+  "stopped_before": [
+    "Windows redist provenance capture",
+    "Gen2 build",
+    "Native/public model parity",
+    "Default-loader negative control",
+    "Seven lifecycle tests"
+  ],
+  "receiver_check": {
+    "scope": "Read-only macOS reparse of downloaded Windows binaries, not actual Windows execution.",
+    "release_qualified": false,
+    "all_installed_files_verified": 66,
+    "all_five_native_export_sets_unchanged_from_4bd34aa": true,
+    "pe_report_sha256": "601728f29cd1c4c2685d08c81154dfc438405e8c329fe95a538e0d4e900aa710",
+    "private_dlls_verified": [
+      "gen2_nemo_windows_ggml-base.dll",
+      "gen2_nemo_windows_ggml-cpu.dll",
+      "gen2_nemo_windows_ggml.dll",
+      "gen2_nemo_windows_nemo_speech_asr.dll",
+      "gen2_nemo_windows_nemo_speech_asr_c.dll"
+    ],
+    "generic_imports_absent": true,
+    "limits": "Static ordinary/delay/forwarded imports only; dynamic loads, offline closure and coexistence remain separate."
+  },
+  "remedy": "Require five private DLL identities/import graphs, but only the installed public C ABI import library; upstream retains internal target import libraries in its build tree.",
+  "regression": "SDK fixture now installs only the public C ABI import library; original checker fails and corrected checker passes. Missing public import library remains rejected."
+}
