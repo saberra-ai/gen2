@@ -680,7 +680,12 @@ the F32 rebuild comparison and both public/native probability arrays are
 byte-identical; final row counts are2and111. Fifteen model-free preflights passed.
 This is short CPU calibration/silence qualification only. Package/platform/Pnola,
 full lifecycle/long-session/coexistence, Metal, AMI quality and original release
-gates remain open.
+gates remain open. The subsequent [macOS v2 construction/relocation receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-macos-package/qualification.json)
+binds92private libraries and all6SDK identities to the current patch/profile.
+Relocated structural verification passes with original libraries denied; no
+native library or model was loaded. Actual packaged runtime behavior is pending.
+Pnola's updated staging overlay is applied with18model-free Rust tests passing
+and5real-model tests still ignored.
 The 13-job feature matrix also passed at `4974318`. Later source `cf64214`
 passed12 jobs; its macOS mixed-feature job failed before compilation when GitHub
 submodule fetch could not connect to port443. A failed-job rerun was denied by

@@ -1,0 +1,73 @@
+{
+  "source_commit": "0b3d0d6b83765e3f49b6eb1eff3eaf9660d72bc6",
+  "package_format": "gen2-nemo-macos-cpu-v2",
+  "runtime_profile": "gen2-valid-mel-v1",
+  "package_manifest": {
+    "bytes": 167628,
+    "sha256": "d80dcdef06854459af906515bb2d0a19c139fc89effaa38d6f73ee93b7495367"
+  },
+  "libraries": 92,
+  "qualified_sdk_libraries": 6,
+  "commands": [
+    {
+      "name": "construct",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-package-v1/construct.sb",
+        "/Users/victor/.cache/gen2-nemotron3-n0/evidence-tools-env/bin/python",
+        "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/package_macos.py",
+        "--sdk-prefix",
+        "/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-tagged-cpu-v1",
+        "--build-receipt",
+        "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-metadata-v1/recovered-build.json",
+        "--output",
+        "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-package-v1/package"
+      ],
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "LC_ALL": "C",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "returncode": 0,
+      "elapsed_seconds": 8.778160542016849
+    },
+    {
+      "name": "relocated-verify",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-package-v1/relocated-verify.sb",
+        "/Users/victor/.cache/gen2-nemotron3-n0/evidence-tools-env/bin/python",
+        "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/package_macos.py",
+        "--verify",
+        "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-package-v1/relocated/nemo"
+      ],
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "LC_ALL": "C",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "returncode": 0,
+      "elapsed_seconds": 3.7021342500229366
+    }
+  ],
+  "sdk_unchanged": true,
+  "relocated_package_bytes_and_aliases_identical": true,
+  "relocated_structural_verification_with_original_libraries_denied": true,
+  "neural_calls": 0,
+  "native_library_loaded": false,
+  "production_qualified": false,
+  "release_qualified": false,
+  "limits": [
+    "Construction and offline structural/signature/provenance verification only. No native version query, model execution, actual loaded-path telemetry, lifecycle/coexistence, desktop or release qualification."
+  ],
+  "pnola_overlay_applied_files": 2,
+  "pnola_overlay_reapplication_is_noop": true,
+  "pnola_model_free_rust_tests_passed": 18,
+  "pnola_external_integration_tests_ignored": 5,
+  "model_free_evidence_tests_passed": 131,
+  "pnola_python_overlay_tests_passed": 2,
+  "pnola_desktop_asset_tests_passed": 4,
+  "test_limits": "Model-free test outcomes are separate local validation, not neural lifecycle/desktop qualification. No native binaries, model weights or audio are included in this receipt."
+}

@@ -372,3 +372,20 @@ explicitly admitted by their exact hashes; unrelated local changes still fail.
 All131 model-free evidence tests, two overlay-application tests and four desktop
 asset tests pass. Actual package construction and runtime/desktop qualification
 are separate next steps.
+
+
+The [32-member model-free package receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-macos-package/qualification.json)
+now records actual construction at `0b3d0d6`: 92 private libraries, including all
+six SDK libraries, plus notices and the bound construction receipt. A byte-for-byte
+relocated copy passed structural, signature and provenance verification with the
+original SDK, source, original package and source dependency binaries denied.
+Construction took8.778161seconds; relocated verification3.702134seconds. The source
+SDK and its construction metadata are unchanged. No native library was loaded
+and no model ran. This establishes relocation of the package structure only;
+actual loaded paths, public/native parity, lifecycle/coexistence and desktop
+behavior against the relocated package remain open.
+
+The updated two-file overlay was applied safely to the local Pnola checkout;
+reapplication reports zero changes. Its model-free Rust suite passes18tests with
+five real-model tests explicitly ignored. These outcomes do not replace those
+ignored integration gates.

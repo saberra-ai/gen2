@@ -1,0 +1,104 @@
+{
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "spdxVersion": "SPDX-2.3",
+  "name": "SBOM-SPDX-abseil-20260817.0",
+  "creationInfo": {
+    "created": "2026-10-16T01:46:08Z",
+    "creators": [
+      "Tool: https://github.com/Homebrew/brew@7.0.9"
+    ]
+  },
+  "dataLicense": "CC0-1.0",
+  "documentNamespace": "https://formulae.brew.sh/spdx/abseil-20260817.0.json",
+  "documentDescribes": [
+    "SPDXRef-Archive-abseil-src",
+    "SPDXRef-Compiler",
+    "SPDXRef-Bottle-abseil"
+  ],
+  "files": [
+    {
+      "SPDXID": "SPDXRef-File-abseil",
+      "fileName": "20260817.0.tar.gz",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f7e05179df39c45434cad433f5783840bb3788ef322976f9138bc6b72b3a107d"
+        }
+      ]
+    }
+  ],
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Archive-abseil-src",
+      "name": "abseil",
+      "versionInfo": "20260817.0",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "builtDate": "2026-08-18T12:53:30Z",
+      "licenseConcluded": "Apache-2.0",
+      "downloadLocation": "https://github.com/abseil/abseil-cpp/archive/refs/tags/20260817.0.tar.gz",
+      "copyrightText": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:brew/homebrew/core/abseil@20260817.0",
+          "referenceType": "purl"
+        }
+      ],
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f7e05179df39c45434cad433f5783840bb3788ef322976f9138bc6b72b3a107d"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Compiler",
+      "name": "clang",
+      "versionInfo": "26.6",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "downloadLocation": "NOASSERTION",
+      "checksums": [],
+      "externalRefs": []
+    },
+    {
+      "SPDXID": "SPDXRef-Bottle-abseil",
+      "name": "abseil",
+      "versionInfo": "20260817.0",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "builtDate": "2026-08-24T15:10:26Z",
+      "licenseConcluded": "Apache-2.0",
+      "downloadLocation": "https://ghcr.io/v2/homebrew/core/abseil/blobs/sha256:ba58c7ded7fbf67a9bcd508055ad1ebd2b3503bf20e0153a92386cc9459d6568",
+      "copyrightText": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:brew/abseil@20260817.0",
+          "referenceType": "purl"
+        }
+      ],
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ba58c7ded7fbf67a9bcd508055ad1ebd2b3503bf20e0153a92386cc9459d6568"
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-File-abseil",
+      "relationshipType": "PACKAGE_OF",
+      "relatedSpdxElement": "SPDXRef-Archive-abseil-src"
+    },
+    {
+      "spdxElementId": "SPDXRef-Compiler",
+      "relationshipType": "BUILD_TOOL_OF",
+      "relatedSpdxElement": "SPDXRef-Archive-abseil-src"
+    }
+  ]
+}

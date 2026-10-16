@@ -1,0 +1,133 @@
+{
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "spdxVersion": "SPDX-2.3",
+  "name": "SBOM-SPDX-protobuf-36.2",
+  "creationInfo": {
+    "created": "2026-10-16T01:46:09Z",
+    "creators": [
+      "Tool: https://github.com/Homebrew/brew@7.0.9"
+    ]
+  },
+  "dataLicense": "CC0-1.0",
+  "documentNamespace": "https://formulae.brew.sh/spdx/protobuf-36.2.json",
+  "documentDescribes": [
+    "SPDXRef-Archive-protobuf-src",
+    "SPDXRef-Package-SPDXRef-abseil-20260817.0",
+    "SPDXRef-Compiler",
+    "SPDXRef-Bottle-protobuf"
+  ],
+  "files": [
+    {
+      "SPDXID": "SPDXRef-File-protobuf",
+      "fileName": "protobuf-36.2.tar.gz",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "3d9642a662d10e68ebae5e53f14dcce5105684212d5078f8e0d47d1ab3ae6b64"
+        }
+      ]
+    }
+  ],
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Archive-protobuf-src",
+      "name": "protobuf",
+      "versionInfo": "36.2",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "builtDate": "2026-09-17T08:03:37Z",
+      "licenseConcluded": "BSD-3-Clause",
+      "downloadLocation": "https://github.com/protocolbuffers/protobuf/releases/download/v36.2/protobuf-36.2.tar.gz",
+      "copyrightText": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:brew/homebrew/core/protobuf@36.2",
+          "referenceType": "purl"
+        }
+      ],
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "3d9642a662d10e68ebae5e53f14dcce5105684212d5078f8e0d47d1ab3ae6b64"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Package-SPDXRef-abseil-20260817.0",
+      "name": "abseil",
+      "versionInfo": "20260817.0",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "licenseConcluded": "Apache-2.0",
+      "downloadLocation": "https://ghcr.io/v2/homebrew/core/abseil/blobs/sha256:ba58c7ded7fbf67a9bcd508055ad1ebd2b3503bf20e0153a92386cc9459d6568",
+      "copyrightText": "NOASSERTION",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ba58c7ded7fbf67a9bcd508055ad1ebd2b3503bf20e0153a92386cc9459d6568"
+        }
+      ],
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:brew/abseil@20260817.0",
+          "referenceType": "purl"
+        }
+      ]
+    },
+    {
+      "SPDXID": "SPDXRef-Compiler",
+      "name": "clang",
+      "versionInfo": "27.0",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION",
+      "downloadLocation": "NOASSERTION",
+      "checksums": [],
+      "externalRefs": []
+    },
+    {
+      "SPDXID": "SPDXRef-Bottle-protobuf",
+      "name": "protobuf",
+      "versionInfo": "36.2",
+      "filesAnalyzed": false,
+      "licenseDeclared": "NOASSERTION",
+      "builtDate": "2026-09-17T20:38:21Z",
+      "licenseConcluded": "BSD-3-Clause",
+      "downloadLocation": "https://ghcr.io/v2/homebrew/core/protobuf/blobs/sha256:573d5907842eba3930afbac15f7fbab91df421acc610d9c79278062c1c70c33c",
+      "copyrightText": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceLocator": "pkg:brew/protobuf@36.2",
+          "referenceType": "purl"
+        }
+      ],
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "573d5907842eba3930afbac15f7fbab91df421acc610d9c79278062c1c70c33c"
+        }
+      ]
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-File-protobuf",
+      "relationshipType": "PACKAGE_OF",
+      "relatedSpdxElement": "SPDXRef-Archive-protobuf-src"
+    },
+    {
+      "spdxElementId": "SPDXRef-Package-SPDXRef-abseil-20260817.0",
+      "relationshipType": "RUNTIME_DEPENDENCY_OF",
+      "relatedSpdxElement": "SPDXRef-Bottle-protobuf"
+    },
+    {
+      "spdxElementId": "SPDXRef-Compiler",
+      "relationshipType": "BUILD_TOOL_OF",
+      "relatedSpdxElement": "SPDXRef-Archive-protobuf-src"
+    }
+  ]
+}
