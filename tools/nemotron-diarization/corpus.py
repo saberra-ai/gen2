@@ -59,7 +59,11 @@ def fetch(url, limit, *, start=None, end=None, total=None, etag=None):
 
 
 def pinned_download(entry, local=None):
-    data = Path(local).read_bytes() if local else fetch(entry['url'], entry['bytes'])
+    if local:
+        with Path(local).open('rb') as source:
+            data = source.read(entry['bytes'] + 1)
+    else:
+        data = fetch(entry['url'], entry['bytes'])
     if len(data) != entry['bytes'] or sha(data) != entry['sha256']:
         raise ValueError('annotation source digest/length differs')
     return data
@@ -167,7 +171,7 @@ def xml_root(data):
     # The pinned ICSI MRT declares this external DTD. Never fetch it, and reject
     # internal subsets/entities; core XML syntax is sufficient for extraction.
     data = data.replace(b'<!DOCTYPE Meeting SYSTEM "http://www.icsi.berkeley.edu/Speech/mr/Meeting1.dtd">', b'')
-    if len(data) > MAX_MEMBER or b'<!DOCTYPE' in data.upper() or b'<!ENTITY' in data.upper():
+    if len(data) > MAX_MEMBER or b'\0' in data or b'<!DOCTYPE' in data.upper() or b'<!ENTITY' in data.upper():
         raise ValueError('oversized or entity-bearing annotation XML')
     return ET.fromstring(data)
 
@@ -215,7 +219,11 @@ def annotation_member(archive, name):
     info = archive.getinfo(name)
     if not 0 < info.file_size <= MAX_MEMBER:
         raise ValueError('oversized annotation member')
-    return archive.read(info)
+    with archive.open(info) as source:
+        data = source.read(MAX_MEMBER + 1)
+        if len(data) != info.file_size or source.read(1):
+            raise ValueError('annotation member length differs')
+    return data
 
 
 def icsi_reference(archive, crop):
@@ -225,7 +233,10 @@ def icsi_reference(archive, crop):
     for segment in xml_root(data).iter('Segment'):
         text = ' '.join(''.join(segment.itertext()).split())
         speaker = segment.get('Participant')
-        if speaker and re.search('[A-Za-z]', text) and float(segment.get('EndTime')) > float(segment.get('StartTime')):
+        start, end = float(segment.get('StartTime')), float(segment.get('EndTime'))
+        if not math.isfinite(start) or not math.isfinite(end) or start < 0 or end < start:
+            raise ValueError('invalid ICSI source interval')
+        if speaker and re.search('[A-Za-z]', text) and end > start:
             item = interval(segment.get('StartTime'), segment.get('EndTime'), speaker, crop)
             if item:
                 result.append(item)

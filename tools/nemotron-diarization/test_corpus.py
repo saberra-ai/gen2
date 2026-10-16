@@ -1,6 +1,7 @@
 """Downloader bounds and human-reference semantics, without network/models."""
 import io
 import struct
+from types import SimpleNamespace
 import unittest
 from unittest.mock import patch
 import wave
@@ -15,9 +16,11 @@ class Response(io.BytesIO):
         self.status = status
         self.headers = headers
         self.read_called = False
+        self.read_sizes = []
 
     def read(self, *args):
         self.read_called = True
+        self.read_sizes.append(args[0] if args else -1)
         return super().read(*args)
 
 
@@ -132,6 +135,23 @@ class CorpusTests(unittest.TestCase):
         self.assertEqual(len(noises), 1)
         with self.assertRaises(ValueError):
             corpus.xml_root(b'<!DOCTYPE x [<!ENTITY x "boom">]><x>&x;</x>')
+        for encoding in ['utf-16', 'utf-16-le', 'utf-16-be', 'utf-32']:
+            hostile = '<?xml version="1.0" encoding="UTF-16"?><!DOCTYPE x [<!ENTITY e "expanded">]><x>&e;</x>'
+            with self.subTest(encoding=encoding), self.assertRaises(ValueError):
+                corpus.xml_root(hostile.encode(encoding))
+
+    def test_annotation_reads_are_bounded_before_validation(self):
+        source = Response(b'far-too-large', status=200)
+        with patch('corpus.Path.open', return_value=source):
+            with self.assertRaisesRegex(ValueError, 'digest/length'):
+                corpus.pinned_download({'bytes': 2, 'sha256': 'wrong'}, local='fixture.zip')
+        # A bounded read leaves unread bytes, instead of allocating all input.
+        self.assertEqual(source.read_sizes, [3])
+        member = Response(b'larger-than-claimed')
+        fake = SimpleNamespace(getinfo=lambda name: SimpleNamespace(file_size=2), open=lambda info: member)
+        with patch('corpus.MAX_MEMBER', 4), self.assertRaisesRegex(ValueError, 'length'):
+            corpus.annotation_member(fake, 'fixture.xml')
+        self.assertEqual(member.read_sizes, [5])
 
     def test_reference_union_and_overlap_count_distinct_speakers(self):
         values = [{'start': 0, 'end': 2, 'speaker': 'a'}, {'start': 1, 'end': 3, 'speaker': 'a'},

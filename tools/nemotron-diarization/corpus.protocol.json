@@ -42,12 +42,16 @@
   "exposure": "Local tuning-heldout; ICSI Full/Vox dev+test declared training; AMI conditional official evaluation split only.",
   "failure_policy": "Retain every result. No threshold tuning, deletion, recording/channel/crop substitution after inference.",
   "tool_sha256": {
-    "qualify_corpus.py": "ac1b54cd59121ea1bc1910a558407072117c36093d92bb2b17510412857e4649",
-    "reference.py": "1977ddd747add5ca8a30f99f9c8ef166d6b9af2f7655dfbd28916151b84e9f7b",
+    "qualify_corpus.py": "51fdf6ba5201d02bd55762fa449727c5aa5507aa640aa27394cb9439dd19619e",
+    "reference.py": "65dd8681ce91476761f75d97ead3617032e550768edf481728b5551b78a0bd18",
     "score.py": "32aea92676133e42e2c30a914f8729d1c31c0c96e02faf9b7cab42911b389eb8",
     "compare.py": "a53fccc162ead3b488a3880950d4dbf244897fd837f3b8e0898235029e559282",
     "compare_stream.py": "6d6a80a3b9710d0d2d0705225653935d40cd69aac9abe50454c0609631c6daa4",
+    "corpus.py": "caf0aecbc041873ea9acd433c4cd68b6f257caea62dd9221512922b32cf4920e",
+    "native_stream_probe.cpp": "d45c4b4c3a3368b4039d4b585c3935b8bc5958c3b9e5a2a62b20620880a21713",
+    "../../examples/nemotron_stream.rs": "736a4f63c20bdd5f243c9c1243571b262a663a87104de82a48924f0a7a6f24da",
     "runtime.lock.json": "e66e5651608636bbb04528fed7944ab8972a778d1141b36fef3fb391eefd0dcc",
     "reference/uv.lock": "104834dd9a3904a763dfd5270b92821b5a209b2289f00f0c6f2d3cd55ddb673f"
-  }
+  },
+  "input_binding": "Both Q8 processes hash actual normalized float32 little-endian PCM supplied to inference; one pass, checked against frozen WAV. FP32 metadata WAV SHA256 and installed environment/source commit are verified."
 }

@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "inference_performed": false,
+  "release_qualified": false,
+  "scope": "Pre-inference review repairs; original acquisition evidence preserved",
+  "historical_extractor_sha256": "0ce5a78dcde955fc7201a375161a90d68a423f1f9706896789225c0dce1468bd",
+  "current_extractor_sha256": "caf0aecbc041873ea9acd433c4cd68b6f257caea62dd9221512922b32cf4920e",
+  "protocol_sha256": "3b4780afa4bc80eb84e6e630301cbb1e652d5d682cab897b4db0a0a7b17cc25d",
+  "tests": "33 model-free evidence-tool tests; package format check passed",
+  "checks": [
+    "Current bounded XML extractor reproduces both frozen AMI/ICSI references exactly.",
+    "Actual existing pinned FP32 environment passes installed-version and Transformers source validation.",
+    "Equal-duration wrong-PCM Q8 output rejected by new model-free regression.",
+    "UTF16/32 entity declarations and bounded local/ZIP reads covered."
+  ],
+  "pending": [
+    "New Rust example and independent C++ probe compilation and real input-digest calibration after CPU timed runs; no new-binary result claimed.",
+    "Corpus inference starts only after source/protocol review clears."
+  ]
+}

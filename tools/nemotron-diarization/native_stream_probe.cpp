@@ -2,16 +2,19 @@
 // Qualification only: bounded licensed WAV repeated through one native session.
 #include "nemo_speech/diar.h"
 #include "wav_reader.h"
+#include "sha256/sha256.h"
 #include <algorithm>
 #include <charconv>
 #include <chrono>
 #include <cmath>
+#include <cstring>
 #include <filesystem>
 #include <fstream>
 #include <iomanip>
 #include <iostream>
 #include <memory>
 #include <stdexcept>
+#include <sstream>
 #include <string_view>
 #include <vector>
 
@@ -27,6 +30,22 @@ static int number(std::string_view text) {
     const auto result=std::from_chars(text.data(),text.data()+text.size(),value);
     if(result.ec!=std::errc{} || result.ptr!=text.data()+text.size()) throw std::runtime_error("invalid integer argument");
     return value;
+}
+// Use the SHA256 source from the pinned llama.cpp/vendor/hash tree. Hash the
+// actual normalized float vector supplied to the C API, in portable LE order.
+static std::string input_digest(const std::vector<float>& audio,int repeats) {
+    static_assert(sizeof(float)==4);
+    sha256_t state;sha256_init(&state);
+    for(int repeat=0;repeat<repeats;repeat++)for(float value:audio) {
+        uint32_t bits;std::memcpy(&bits,&value,4);
+        const unsigned char bytes[]={static_cast<unsigned char>(bits),static_cast<unsigned char>(bits>>8),
+            static_cast<unsigned char>(bits>>16),static_cast<unsigned char>(bits>>24)};
+        sha256_update(&state,bytes,4);
+    }
+    unsigned char hash[SHA256_DIGEST_SIZE];sha256_final(&state,hash);
+    std::ostringstream result;result<<std::hex<<std::setfill('0');
+    for(unsigned char byte:hash)result<<std::setw(2)<<static_cast<unsigned>(byte);
+    return result.str();
 }
 int main(int argc,char** argv) {
     try {
@@ -44,6 +63,7 @@ int main(int argc,char** argv) {
         if(audio.size()<320 || audio.size()>600*16000 || samples>3600ULL*16000
             || !std::all_of(audio.begin(),audio.end(),[](float x){return std::isfinite(x);}))
             throw std::runtime_error("use finite 20 ms–600 s mono 16 kHz audio totaling at most one hour");
+        const auto input_sha256=input_digest(audio,repeats);
         nemo_speech_diar_model_config config{};
         config.size=sizeof(config);config.model_path=argv[1];config.gpu=gpu;
         config.preset="v3-streaming";config.chunk_frames=9;config.right_context_frames=4;
@@ -89,6 +109,7 @@ int main(int argc,char** argv) {
         probability_output.close();
         std::ofstream output(argv[5]);output.exceptions(std::ios::failbit|std::ios::badbit);
         output<<std::setprecision(17)<<"{\"audio_samples\":"<<samples<<",\"audio_duration_seconds\":"<<samples/16000.
+          <<",\"input_pcm_f32le_sha256\":\""<<input_sha256<<"\",\"input_repeats\":"<<repeats
           <<",\"geometry\":{\"chunk\":9,\"right\":4,\"left\":0,\"fifo\":264,\"cache\":264,\"update\":222}"
           <<",\"requested_gpu_index\":"<<gpu<<",\"cold_native_load_micros\":"<<load_micros
           <<",\"push_count\":"<<push_times.size()<<",\"native_push_median_micros\":"<<percentile(.5)

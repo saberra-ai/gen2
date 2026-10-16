@@ -3,18 +3,21 @@ import argparse
 import hashlib
 import json
 from pathlib import Path
+import re
+import tomllib
 
 import numpy as np
 
 from compare import segments
 from compare_stream import compare
+from corpus import pcm_header
 from score import der
 
 
 GEOMETRY = {'chunk': 9, 'right': 4, 'left': 0, 'fifo': 264, 'cache': 264, 'update': 222}
 MODEL_REVISION = 'f667ed73aee57d40cc39428eb768b4fd87a0a29e'
-PROTOCOL_TOOLS = ['qualify_corpus.py', 'reference.py', 'score.py', 'compare.py', 'compare_stream.py',
-                  'runtime.lock.json', 'reference/uv.lock']
+PROTOCOL_TOOLS = ['qualify_corpus.py', 'reference.py', 'score.py', 'compare.py', 'compare_stream.py', 'corpus.py',
+                  'native_stream_probe.cpp', '../../examples/nemotron_stream.rs', 'runtime.lock.json', 'reference/uv.lock']
 
 
 def digest(path):
@@ -46,13 +49,31 @@ def validate_protocol(protocol_path, corpus_root):
     return protocol
 
 
-def score_slice(item, gen2, native, q8_raw, native_raw, fp32, metadata, reference):
+def validate_oracle_environment(metadata):
+    direct = metadata['transformers_direct_url']
+    if direct['vcs_info']['commit_id'] != '683b721971417b3b2c64fba9001f525607547e5a':
+        raise ValueError('wrong actual Transformers source commit')
+    frozen = tomllib.loads(Path(__file__).with_name('reference').joinpath('uv.lock').read_text())
+    normalize = lambda name: re.sub('[-_.]+', '-', name.lower())
+    packages = {normalize(p['name']): p['version'] for p in frozen['package']}
+    installed = {normalize(k): v for k, v in metadata['installed_packages'].items()}
+    if not {'torch', 'transformers', 'numpy', 'soundfile', 'librosa', 'scipy'} <= installed.keys():
+        raise ValueError('incomplete actual oracle environment')
+    for name, version in installed.items():
+        if packages.get(name) != version:
+            raise ValueError('unlocked actual oracle package: ' + name)
+
+
+def score_slice(item, gen2, native, q8_raw, native_raw, fp32, metadata, reference, expected_pcm_digest):
     samples = item['audio_samples']
     duration = samples / 16000
     if type(samples) is not int or not 320 <= samples <= 600 * 16000 or item['uem_seconds'] != [0, duration]:
         raise ValueError('invalid frozen UEM')
     if gen2['accepted_samples'] != samples or metadata['audio_samples'] != samples:
         raise ValueError('inference input differs from frozen slice')
+    for output in [gen2, native, metadata]:
+        if output.get('input_pcm_f32le_sha256') != expected_pcm_digest or output.get('input_repeats') != 1:
+            raise ValueError('actual input PCM digest/repeat semantics differ from frozen slice')
     if metadata['geometry'] != GEOMETRY or metadata['model_revision'] != MODEL_REVISION:
         raise ValueError('FP32 reference identity/geometry differs')
     if metadata['device'] != 'cpu' or metadata['dtype'] != 'float32':
@@ -117,13 +138,21 @@ def main():
     metadata = json.loads(metadata_path.read_text())
     if metadata['script_sha256'] != protocol['tool_sha256']['reference.py'] or metadata['lock_sha256'] != protocol['tool_sha256']['runtime.lock.json'] or metadata['environment_lock_sha256'] != protocol['tool_sha256']['reference/uv.lock']:
         raise ValueError('FP32 reference used a different frozen script/asset/environment lock')
+    validate_oracle_environment(metadata)
     if metadata['wav_sha256'] != manifest['files'][item['wav']]['sha256']:
         raise ValueError('FP32 audio digest differs')
+    audio = (args.corpus / item['wav']).read_bytes()
+    offset, samples = pcm_header(audio[:65536], len(audio))
+    if samples != item['audio_samples']:
+        raise ValueError('frozen PCM sample count differs')
+    normalized = np.frombuffer(audio, dtype='<i2', offset=offset, count=samples).astype(np.float32) / np.float32(32768)
+    pcm_digest = hashlib.sha256(normalized.astype('<f4').tobytes()).hexdigest()
     native_path = Path(str(args.native) + '.f32')
     q8_path = args.gen2.with_suffix('.f32')
     fp32_path = args.reference.with_suffix('.npy')
     result = score_slice(item, gen2, json.loads(args.native.read_text()), q8_path.read_bytes(), native_path.read_bytes(),
-                         np.load(fp32_path, allow_pickle=False), metadata, json.loads(reference_path.read_text()))
+                         np.load(fp32_path, allow_pickle=False), metadata, json.loads(reference_path.read_text()), pcm_digest)
+    result['input_pcm_f32le_sha256'] = pcm_digest
     result['all_slice_gates_passed'] = all(result['gates'].values())
     result['sha256'] = {str(p): digest(p) for p in [args.protocol, args.corpus / 'manifest.json', reference_path, args.gen2, q8_path,
                                                 args.native, native_path, fp32_path, metadata_path, Path(__file__),

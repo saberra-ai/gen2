@@ -71,6 +71,20 @@ scoring clips their padding to the UEM. This set is local tuning-heldout,
 not guaranteed checkpoint-unseen. No quality outcome is established by
 acquisition alone.
 
+Both Q8 runners include a SHA256 of the actual normalized float32 little-endian
+PCM supplied to inference. The corpus gate checks it against the selected WAV,
+including one-pass semantics, so equal-duration AMI channels cannot be swapped.
+It also validates the FP32 interpreter's installed package versions and actual
+Transformers source commit against the frozen environment.
+
+The independent C++ stream probe links the public-domain SHA256 implementation
+already present in the pinned runtime's llama.cpp tree. In addition to the
+installed SDK includes/library and upstream `examples` include, compile with
+`-I "$task_cache/NeMo-Speech.cpp/llama.cpp/vendor/hash"` and explicitly compile
+`sha256/sha256.c` from that directory as C++ (`-x c++`). Preserve hashes of that
+source, its header and `rotate-bits/rotate-bits.h` in the build receipt. This is
+an evidence-tool dependency, not an additional production runtime dependency.
+
 ### Original smoke experiment
 
 ```sh

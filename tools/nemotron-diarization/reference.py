@@ -1,5 +1,6 @@
 """Independent CPU/FP32 oracle using the official original safetensors and Transformers."""
 import argparse
+import hashlib
 import json
 from pathlib import Path
 import platform
@@ -77,6 +78,7 @@ def main():
     args.output.parent.mkdir(parents=True, exist_ok=True)
     np.save(args.output.with_suffix(".npy"), probabilities)
     metadata = {"model_revision": lock["model"]["revision"], "wav_sha256": digest(args.wav),
+                "input_pcm_f32le_sha256": hashlib.sha256(audio.astype('<f4').tobytes()).hexdigest(), "input_repeats": 1,
                 "script_sha256": digest(Path(__file__)),
                 "lock_sha256": digest(Path(__file__).with_name("runtime.lock.json")),
                 "environment_lock_sha256": digest(Path(__file__).with_name("reference") / "uv.lock"),

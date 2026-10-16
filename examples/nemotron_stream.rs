@@ -55,6 +55,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let mut backpressure_count = 0u64;
     let mut snapshots = Vec::new();
     let mut latest_revision = 0;
+    let mut input_digest = Sha256::new();
     for _ in 0..repeats {
         let mut reader = hound::WavReader::open(&args[3])?;
         let mut samples = reader.samples::<i16>();
@@ -63,7 +64,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             // collect can grow capacity past the public per-push admission cap.
             let mut block = Vec::with_capacity(MAX_PUSH_SAMPLES);
             for sample in samples.by_ref().take(MAX_PUSH_SAMPLES) {
-                block.push(sample? as f32 / 32768.);
+                let value = sample? as f32 / 32768.;
+                input_digest.update(value.to_le_bytes());
+                block.push(value);
             }
             if block.is_empty() {
                 break;
@@ -91,6 +94,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let result = stream.finish()?;
     let finish_micros = before_finish.elapsed().as_micros();
     let elapsed_micros = started.elapsed().as_micros();
+    let input_pcm_f32le_sha256 = hex::encode(input_digest.finalize());
     let retained = result
         .frame_probabilities
         .as_ref()
@@ -121,7 +125,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     println!(
         "{}",
         serde_json::to_string(
-            &serde_json::json!({"session_id": stream.session_id(), "complete": stream.snapshot().is_some_and(|s| s.complete), "accepted_samples": stream.accepted_samples(), "audio_duration_seconds": result.audio_duration_seconds, "native_frame_count": result.native_frame_count, "retained_probabilities": retained, "retained_probability_file": args.get(5), "retained_probability_sha256": probability_sha256, "model_revision": result.model_revision, "runtime_version": result.runtime_version, "backend": result.backend, "device": result.device, "geometry": result.geometry, "turns": result.turns, "cold_load_micros": cold_load_micros, "native_compute_micros": result.native_compute_micros, "finish_micros": finish_micros, "elapsed_micros": elapsed_micros, "backpressure_count": backpressure_count, "snapshots": snapshots})
+            &serde_json::json!({"session_id": stream.session_id(), "complete": stream.snapshot().is_some_and(|s| s.complete), "accepted_samples": stream.accepted_samples(), "input_pcm_f32le_sha256": input_pcm_f32le_sha256, "input_repeats": repeats, "audio_duration_seconds": result.audio_duration_seconds, "native_frame_count": result.native_frame_count, "retained_probabilities": retained, "retained_probability_file": args.get(5), "retained_probability_sha256": probability_sha256, "model_revision": result.model_revision, "runtime_version": result.runtime_version, "backend": result.backend, "device": result.device, "geometry": result.geometry, "turns": result.turns, "cold_load_micros": cold_load_micros, "native_compute_micros": result.native_compute_micros, "finish_micros": finish_micros, "elapsed_micros": elapsed_micros, "backpressure_count": backpressure_count, "snapshots": snapshots})
         )?
     );
     model.shutdown();
