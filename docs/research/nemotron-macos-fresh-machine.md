@@ -244,34 +244,64 @@ passes all13jobs at0770aaaa. Its Linux evidence step reports203tests,
 
 The [private pool helper control](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pool-helper-model-free/collection-qualification.json)
 links against the unchanged portable SDK/package. Its model-free sandbox run
-passes20backend lifetimes, including10persistent-pool lifetimes at four threads;
-no model or frontend executes. The receipt verifies all84SDK and123runtime
+passes 20 backend lifetimes, including 10 persistent-pool lifetimes at four threads;
+no model or frontend executes. The receipt verifies all 84 SDK and 123 runtime
 inventory entries against manifests bound to the prior committed receiver
 protocol. It retains the initial inherited-warning compile failure, initial
 missing-registry-library link failure, successful object reuse/link continuation,
-117compiler inputs and strict92-image audit.
+117 compiler inputs and strict 92-image audit.
 
 The helper uses private C++ headers and two unchanged upstream helper-local
 backend/logging implementation files because the SDK hides those constructors.
-Its successful control establishes lifecycle preparation only. Neural private-ABI
-compatibility and whole-output parity are still unproven. The proposed same-input
-four-process disposable/persistent/persistent/disposable comparison is unexecuted.
+Its successful control establishes lifecycle preparation only. At that checkpoint,
+neural private-ABI compatibility and whole-output parity remained unproven. The same-input
+four-process disposable/persistent/persistent/disposable comparison was then
+prepared and executed as recorded below.
 The model-constructor clock excludes backend/pool setup; external process timing
 must include it. Neither this control nor the source profile establishes a
 performance fix, live qualification or a production runtime change.
 
 The [pool comparison protocol](../../tools/nemotron-diarization/macos-cpu-pools.protocol.json)
-now freezes the diagnostic source,111native source/patch inputs,15transitive
-tool inputs, the original construction artifact and the qualified12-second
-probability artifact. A fresh M1 workflow will compile the helper, require actual
-format/network/read-only controls and all20model-free lifetimes, then run four
+now freezes the diagnostic source, 111 native source/patch inputs, 15 transitive
+tool inputs, the original construction artifact and the qualified 12-second
+probability artifact. The M1 workflow compiles the helper, requires actual
+format/network/read-only controls and all 20 model-free lifetimes, then runs four
 fresh processes in fixed disposable/persistent/persistent/disposable order.
-Each complete1,200-by8probability history must match the qualified C ABI output
-within the established1e-6wrapper tolerance before timing interpretation.
+Each complete 1,200-by-8 probability history must match the qualified C ABI output
+within the established 1e-6 wrapper tolerance before timing interpretation.
 Native children cannot read source, SDK, reference artifacts or prior results.
-The original package is checked unchanged between runs. All207local model-free
-tests pass; actual controller header replay matches all22qualified headers.
-This four-call comparison is prepared and remains unexecuted at this checkpoint.
+The original package is checked unchanged between runs. All 207 local model-free
+tests pass; actual controller header replay matches all 22 qualified headers.
+The [actual M1 comparison receipt](../../benches/results/nemotron-diarization/macos-arm64/2026-10-16-cpu-pool-comparison/collection-qualification.json)
+now completes run 38982552508 at `643377e`. All 31 commands pass, including 19 header
+patch replays, compilation/linking, sandbox controls and 20 backend/10 pool lifetimes
+before the four neural processes. Every 38,400-byte probability history is
+bit-for-bit identical to the previously qualified C ABI result. All five loaded
+image traces contain exactly the same 92 private libraries.
+
+| Process order | Pool | Warm RTF | Whole-process real seconds |
+| --- | --- | ---: | ---: |
+| 1 | Disposable | 5.94547 | 71.55 |
+| 2 | Persistent | 1.99964 | 24.17 |
+| 3 | Persistent | 1.78461 | 21.50 |
+| 4 | Disposable | 5.96922 | 71.71 |
+
+The ratio of disposable/persistent mean warm RTF is 3.14850; mean whole-process
+time improves by 3.13685. This is a measured improvement for this fixed input and
+shared three-CPU M1 VM. The load averages change from 7.09/15.02/11.28 to
+32.67/23.99/15.88; this is not uncontended hardware qualification. Persistent
+RTF 1.78–2.00 still fails the below-1 live gate. No original SDK/package/profile or
+production path changed. The next implementation is a separately identified
+runtime candidate that owns its CPU pool, followed by production API/lifecycle,
+quality, mixed-model and packaging requalification.
+
+The 78 delivered files preserve all results and logs. The helper executable was
+not delivered; its payload hash remains a CI observation. Collection rechecks
+all delivered bytes, source bindings, exact trace paths and all 92 private-library
+payload hashes per trace, rather than claiming to rehash the absent executable.
+Acquired model/audio payloads are recorded descriptors rather than delivered
+inputs. Storage stays above 100,641,947,648 bytes over 216 checks, and the 256 MiB
+reserve is released; the 5 GiB/1 GiB admission/running floors are unchanged.
 
 ## Portable CPU complete-app construction
 

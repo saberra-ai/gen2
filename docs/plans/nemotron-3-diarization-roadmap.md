@@ -920,11 +920,15 @@ closure; the missing-library control fails before model creation. An earlier
 sandbox admission failure is retained with zero neural calls. Long-session,
 coexistence, Metal, other platforms, Pnola and quality/release gates remain open.
 The latest [203-test feature matrix](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-203/qualification.json)
-passes all13jobs at0770aaaa, with199Linux evidence tests passing and four platform
-skips. All207current model-free tests pass locally on macOS. A private diagnostic
-helper also passes20backend lifetimes,10with persistent pools, against the exact
+passes all 13 jobs at `0770aaaa`, with 199 Linux evidence tests passing and four platform
+skips. All 207 current model-free tests pass locally on macOS. A private diagnostic
+helper also passes 20 backend lifetimes, 10 with persistent pools, against the exact
 unchanged portable SDK/package. Its [same-input four-process pool experiment](../research/nemotron-macos-fresh-machine.md)
-is prepared but unexecuted; no runtime fix, speedup or below1liveRTF is claimed.
+now completes on M1 at `643377e`: all four full probability histories are bit-exact
+with the qualified C ABI reference. Persistent-pool warm RTF 1.99964/1.78461
+improves on disposable 5.94547/5.96922, a 3.14850 ratio of means. This private helper
+experiment changes no production runtime; below-1 live RTF still fails. Integrating
+the pool under a new runtime identity and production requalification remain open.
 
 The 13-job feature matrix also passed at `4974318`. Later source `cf64214`
 passed12 jobs; its macOS mixed-feature job failed before compilation when GitHub

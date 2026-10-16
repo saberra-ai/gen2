@@ -1,0 +1,166 @@
+{
+  "schema_version": 1,
+  "source_commit": "643377e8917778a1be0361db8f5e2f63071bc075",
+  "ci_url": "https://github.com/saberra-ai/gen2/actions/runs/38982552508",
+  "artifact": {
+    "id": 12082035831,
+    "node_id": "MDg6QXJ0aWZhY3QxMjA4MjAzNTgzMQ==",
+    "name": "nemotron-macos-cpu-pools",
+    "size_in_bytes": 338699,
+    "url": "https://api.github.com/repos/saberra-ai/gen2/actions/artifacts/12082035831",
+    "archive_download_url": "https://api.github.com/repos/saberra-ai/gen2/actions/artifacts/12082035831/zip",
+    "expired": false,
+    "digest": "sha256:3062077c8e5bca7e6e8683544f6923d0360335b43579ec01c5956df0e5d0faae",
+    "created_at": "2026-10-16T23:43:09Z",
+    "updated_at": "2026-10-16T23:43:09Z",
+    "expires_at": "2026-11-15T23:43:08Z",
+    "workflow_run": {
+      "id": 38982552508,
+      "repository_id": 1353161693,
+      "head_repository_id": 1353161693,
+      "head_branch": "codex/nemotron3-n0",
+      "head_sha": "643377e8917778a1be0361db8f5e2f63071bc075"
+    }
+  },
+  "opaque_zip": {
+    "bytes": 338699,
+    "sha256": "3062077c8e5bca7e6e8683544f6923d0360335b43579ec01c5956df0e5d0faae"
+  },
+  "delivered_members": 78,
+  "experiment_completed": true,
+  "release_qualified": false,
+  "helper_binary_delivered": false,
+  "helper_payload_hash_is_ci_observation": true,
+  "acquired_audio_and_model_are_saved_descriptors_not_delivered_payloads": true,
+  "exact_private_paths_and_92_library_payload_hashes_rechecked_per_case": true,
+  "rows": [
+    {
+      "name": "1-disposable",
+      "persistent_pool": false,
+      "warm_rtf": 5.945474083333333,
+      "warm_seconds": 71.345689,
+      "model_constructor_seconds_excluding_backend_and_pool_setup": 0.13384,
+      "whole_process": {
+        "real_seconds": 71.55,
+        "user_seconds": 199.36,
+        "system_seconds": 1.87,
+        "maximum_rss_bytes": 153288704
+      },
+      "full_history_parity": {
+        "values_compared": 9600,
+        "max_absolute_error": 0.0,
+        "tolerance": 1e-06,
+        "bit_exact": true
+      }
+    },
+    {
+      "name": "2-persistent",
+      "persistent_pool": true,
+      "warm_rtf": 1.9996378333333333,
+      "warm_seconds": 23.995654,
+      "model_constructor_seconds_excluding_backend_and_pool_setup": 0.084675,
+      "whole_process": {
+        "real_seconds": 24.17,
+        "user_seconds": 63.26,
+        "system_seconds": 1.19,
+        "maximum_rss_bytes": 153501696
+      },
+      "full_history_parity": {
+        "values_compared": 9600,
+        "max_absolute_error": 0.0,
+        "tolerance": 1e-06,
+        "bit_exact": true
+      }
+    },
+    {
+      "name": "3-persistent",
+      "persistent_pool": true,
+      "warm_rtf": 1.78460625,
+      "warm_seconds": 21.415275,
+      "model_constructor_seconds_excluding_backend_and_pool_setup": 0.026412,
+      "whole_process": {
+        "real_seconds": 21.5,
+        "user_seconds": 59.99,
+        "system_seconds": 0.71,
+        "maximum_rss_bytes": 153387008
+      },
+      "full_history_parity": {
+        "values_compared": 9600,
+        "max_absolute_error": 0.0,
+        "tolerance": 1e-06,
+        "bit_exact": true
+      }
+    },
+    {
+      "name": "4-disposable",
+      "persistent_pool": false,
+      "warm_rtf": 5.969215,
+      "warm_seconds": 71.63058,
+      "model_constructor_seconds_excluding_backend_and_pool_setup": 0.025478,
+      "whole_process": {
+        "real_seconds": 71.71,
+        "user_seconds": 201.0,
+        "system_seconds": 1.73,
+        "maximum_rss_bytes": 153337856
+      },
+      "full_history_parity": {
+        "values_compared": 9600,
+        "max_absolute_error": 0.0,
+        "tolerance": 1e-06,
+        "bit_exact": true
+      }
+    }
+  ],
+  "means": {
+    "disposable": {
+      "warm_rtf": 5.957344541666666,
+      "whole_process_real_seconds": 71.63
+    },
+    "persistent": {
+      "warm_rtf": 1.8921220416666666,
+      "whole_process_real_seconds": 22.835
+    }
+  },
+  "ratio_of_disposable_to_persistent_mean_warm_rtf": 3.1484990980915626,
+  "ratio_of_disposable_to_persistent_mean_whole_process_time": 3.136851324720823,
+  "all_four_38400_byte_histories_bit_exact_with_qualified_C_ABI": true,
+  "live_below_one_gate_passed": false,
+  "host": {
+    "cpu": "Apple M1 (Virtual)",
+    "cpu_counts": "hw.ncpu: 3\nhw.logicalcpu: 3\nhw.physicalcpu: 3\n",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "os": "ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n",
+    "load_before": [
+      7.08837890625,
+      15.02099609375,
+      11.2802734375
+    ]
+  },
+  "load_after": [
+    32.67138671875,
+    23.98974609375,
+    15.880859375
+  ],
+  "storage": {
+    "start_minimum_bytes": 5368709120,
+    "running_minimum_bytes": 1073741824,
+    "reserve_requested_bytes": 268435456,
+    "checks": 216,
+    "released": true,
+    "minimum_observed_free_bytes": 100641947648,
+    "last_observed_free_bytes": 100643201024,
+    "reserve_reported_allocated_bytes": 268435456
+  },
+  "scope": "Controlled private-C++ CPU pool-lifetime experiment, not a production runtime patch or release qualification. Four fresh processes with unchanged qualified SDK/package, four threads, identical12sPCM; require whole-output parity before timing interpretation.",
+  "limits": [
+    "Private C++ headers and two helper-local unchanged backend/logging translation units are version-bound diagnostic code; full raw probability parity against the prior qualified C ABI output must precede timing interpretation.",
+    "Model-free control must pass20backend/10persistent-pool lifetimes under actual weight-format and network denial before four fixed neural commands. No extra neural retries on failure.",
+    "Whole38400byte histories compare all9600finite bounded values with established1e-6wrapper tolerance; no labels or reference outputs are readable by native children.",
+    "Internal load_micros times model construction only and excludes earlier backend/pool setup. External /usr/bin/time -l includes process startup/setup/inference/cleanup. Warm RTF is feed+finish only.",
+    "Fixed ABBA reduces order bias but cannot establish an uncontended baseline or whole-hardware generality. Report all four timings and host load. No new performance criterion is derived from observations.",
+    "The qualified SDK/package/profile and old failed quality/performance receipts remain unchanged. Any production pool patch requires a distinct runtime identity and requalification.",
+    "Physical microphone/nativeGUI, complete fresh-machine app, public signing/notarization, held-out quality, human word-time and below1liveRTF gates remain open.",
+    "Helper executable was not delivered. Its hash is a CI observation; independent collection verifies all delivered bytes and private-library trace closure, not the absent helper payload.",
+    "This is measured diagnostic evidence for integrating a persistent pool under a new runtime identity and requalifying it, not an already deployed optimization."
+  ]
+}

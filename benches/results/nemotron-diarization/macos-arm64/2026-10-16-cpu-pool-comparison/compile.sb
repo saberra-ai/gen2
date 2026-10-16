@@ -1,0 +1,5 @@
+(version 1)
+(allow default)
+(deny network*)
+(deny file-read* (subpath "/Users/runner/work/_temp/cpu-pools/work/assets") (subpath "/Users/runner/work/_temp/cpu-pools/reference"))
+(deny file-write* (subpath "/Users/runner/work/gen2/gen2") (subpath "/Users/runner/work/_temp/pool-native-source") (subpath "/Users/runner/work/_temp/cpu-pools/sdk") (subpath "/Users/runner/work/_temp/cpu-pools/work/nemo") (subpath "/Users/runner/work/_temp/cpu-pools/construction"))
