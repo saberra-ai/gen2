@@ -5,13 +5,16 @@ Current runtime migration: the tagged valid-Mel CPU v2 package passes
 [60-second parity and seven lifecycle gates](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-macos-runtime/qualification.json).
 The [30-minute and one-hour CPU qualification](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-cpu-long/qualification.json)
 now passes exact retained-tail parity after compaction, provisional revisions and
-peak RSS below 249 MB on repeated smoke audio. Historical Metal inference,
+peak RSS below 249 MB on repeated smoke audio. Metal long sessions,
 other-platform and Pnola receipts still require requalification for this profile;
 original quality and release criteria stay open.
 The [tagged Metal SDK construction](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-metal-construction/qualification.json)
-passes source/shader provenance and model-free state/version checks. Actual Metal
-inference and application qualification remain pending; the
-[Metal package construction and relocation](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-metal-macos-package/qualification.json)
+passes source/shader provenance and model-free state/version checks. The
+[fixed Metal runtime qualification](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-metal-runtime/qualification.json)
+passes exact 6,000-row/26-turn parity, seven lifecycle gates including 100 reloads,
+CPU-only SDK rejection, and sequential CPU rejection followed by Metal parity
+in one process. Simultaneous residency and desktop application qualification
+remain pending. The [Metal package construction and relocation](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-metal-macos-package/qualification.json)
 passes with all 93 private libraries.
 
 Prepared: 2026-10-14.

@@ -1,0 +1,363 @@
+[
+  {
+    "name": "version-only",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-load-probe-v1/load-probe",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/nemo/lib/libnemo_speech_asr_c.dylib",
+      "nemo-speech-asr 0.2.0+gen2-valid-mel-v1"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/tmp/"
+    },
+    "expected_returncode": 0,
+    "timeout_seconds": 180,
+    "process_group_id": 77599,
+    "returncode": 0,
+    "elapsed_seconds": 11.434405667008832
+  },
+  {
+    "name": "missing-library",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-load-probe-v1/load-probe",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-load-control-v1/missing/nemo/lib/libnemo_speech_asr_c.dylib",
+      "nemo-speech-asr 0.2.0+gen2-valid-mel-v1"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/tmp/"
+    },
+    "expected_returncode": 1,
+    "timeout_seconds": 180,
+    "process_group_id": 77641,
+    "returncode": 1,
+    "elapsed_seconds": 0.6610182920121588
+  },
+  {
+    "name": "native",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/bin/native-stream",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/assets/Nemotron-3-Diarization.q8_0.gguf",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/assets/ami_en2002d_2132.wav",
+      "1",
+      "0",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/native.json"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/tmp/"
+    },
+    "expected_returncode": 0,
+    "timeout_seconds": 180,
+    "process_group_id": 77642,
+    "returncode": 0,
+    "elapsed_seconds": 17.83844320900971
+  },
+  {
+    "name": "public",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/bin/public-stream",
+      "--metal",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/assets",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/nemo/lib/libnemo_speech_asr_c.dylib",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/assets/ami_en2002d_2132.wav",
+      "1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/public.f32"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/tmp/"
+    },
+    "expected_returncode": 0,
+    "timeout_seconds": 180,
+    "process_group_id": 77736,
+    "returncode": 0,
+    "elapsed_seconds": 2.180558749998454
+  },
+  {
+    "name": "lifecycle-0",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/bin/native-lifecycle",
+      "--ignored",
+      "--exact",
+      "dropping_a_diarization_child_keeps_the_parent_pipeline_active",
+      "--test-threads=1"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/tmp/",
+      "GEN2_NEMOTRON_ASSETS": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/assets",
+      "GEN2_NEMO_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/nemo/lib/libnemo_speech_asr_c.dylib",
+      "GEN2_NEMOTRON_REFERENCE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/reference",
+      "GEN2_NEMO_EXECUTION": "metal"
+    },
+    "expected_returncode": 0,
+    "timeout_seconds": 180,
+    "process_group_id": 77750,
+    "returncode": 0,
+    "elapsed_seconds": 0.25878816604381427
+  },
+  {
+    "name": "lifecycle-1",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/bin/native-lifecycle",
+      "--ignored",
+      "--exact",
+      "silence_short_tail_and_idle_deadline_have_explicit_terminal_results",
+      "--test-threads=1"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/tmp/",
+      "GEN2_NEMOTRON_ASSETS": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/assets",
+      "GEN2_NEMO_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/nemo/lib/libnemo_speech_asr_c.dylib",
+      "GEN2_NEMOTRON_REFERENCE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/reference",
+      "GEN2_NEMO_EXECUTION": "metal"
+    },
+    "expected_returncode": 0,
+    "timeout_seconds": 180,
+    "process_group_id": 77752,
+    "returncode": 0,
+    "elapsed_seconds": 2.1233804159564897
+  },
+  {
+    "name": "lifecycle-2",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/bin/native-lifecycle",
+      "--ignored",
+      "--exact",
+      "repeated_reload_full_queue_cancel_and_dropped_stream_release_resources",
+      "--test-threads=1"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/tmp/",
+      "GEN2_NEMOTRON_ASSETS": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/assets",
+      "GEN2_NEMO_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/nemo/lib/libnemo_speech_asr_c.dylib",
+      "GEN2_NEMOTRON_REFERENCE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/reference",
+      "GEN2_NEMO_EXECUTION": "metal"
+    },
+    "expected_returncode": 0,
+    "timeout_seconds": 180,
+    "process_group_id": 77754,
+    "returncode": 0,
+    "elapsed_seconds": 9.156870957987849
+  },
+  {
+    "name": "lifecycle-3",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/bin/native-lifecycle",
+      "--ignored",
+      "--exact",
+      "streamed_uneven_pcm_matches_recording_and_finish_is_idempotent",
+      "--test-threads=1"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/tmp/",
+      "GEN2_NEMOTRON_ASSETS": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/assets",
+      "GEN2_NEMO_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/nemo/lib/libnemo_speech_asr_c.dylib",
+      "GEN2_NEMOTRON_REFERENCE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/reference",
+      "GEN2_NEMO_EXECUTION": "metal"
+    },
+    "expected_returncode": 0,
+    "timeout_seconds": 180,
+    "process_group_id": 77778,
+    "returncode": 0,
+    "elapsed_seconds": 3.9238255840027705
+  },
+  {
+    "name": "lifecycle-4",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/bin/native-lifecycle",
+      "--ignored",
+      "--exact",
+      "native_admission_cancellation_and_failed_load_release_reservations",
+      "--test-threads=1"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/tmp/",
+      "GEN2_NEMOTRON_ASSETS": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/assets",
+      "GEN2_NEMO_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/nemo/lib/libnemo_speech_asr_c.dylib",
+      "GEN2_NEMOTRON_REFERENCE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/reference",
+      "GEN2_NEMO_EXECUTION": "metal"
+    },
+    "expected_returncode": 0,
+    "timeout_seconds": 180,
+    "process_group_id": 77780,
+    "returncode": 0,
+    "elapsed_seconds": 0.3244505840120837
+  },
+  {
+    "name": "lifecycle-5",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/bin/native-lifecycle",
+      "--ignored",
+      "--exact",
+      "verified_provisioned_cache_is_reused_offline",
+      "--test-threads=1"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/tmp/",
+      "GEN2_NEMOTRON_ASSETS": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/assets",
+      "GEN2_NEMO_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/nemo/lib/libnemo_speech_asr_c.dylib",
+      "GEN2_NEMOTRON_REFERENCE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/reference",
+      "GEN2_NEMO_EXECUTION": "metal"
+    },
+    "expected_returncode": 0,
+    "timeout_seconds": 180,
+    "process_group_id": 77781,
+    "returncode": 0,
+    "elapsed_seconds": 0.08688945800531656
+  },
+  {
+    "name": "lifecycle-6",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/bin/native-lifecycle",
+      "--ignored",
+      "--exact",
+      "real_diarizer_matches_native_reference_and_resets_recordings",
+      "--test-threads=1"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/tmp/",
+      "GEN2_NEMOTRON_ASSETS": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/assets",
+      "GEN2_NEMO_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/nemo/lib/libnemo_speech_asr_c.dylib",
+      "GEN2_NEMOTRON_REFERENCE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/reference",
+      "GEN2_NEMO_EXECUTION": "metal"
+    },
+    "expected_returncode": 0,
+    "timeout_seconds": 180,
+    "process_group_id": 77782,
+    "returncode": 0,
+    "elapsed_seconds": 3.912809750007
+  },
+  {
+    "name": "cpu-metal-unavailable",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/bin/public-stream",
+      "--metal",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/assets",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-runtime-inputs-v1/work/nemo/lib/libnemo_speech_asr_c.dylib",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/assets/ami_en2002d_2132.wav",
+      "1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/unexpected-cpu.f32"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/tmp/"
+    },
+    "expected_returncode": 1,
+    "timeout_seconds": 180,
+    "process_group_id": 77790,
+    "returncode": 1,
+    "elapsed_seconds": 0.13904149999143556
+  },
+  {
+    "name": "combined-cpu-metal",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/bin/native-lifecycle",
+      "--ignored",
+      "--exact",
+      "explicit_metal_matches_native_reference_and_cpu_sdk_cannot_silently_fallback",
+      "--test-threads=1"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/tmp/",
+      "GEN2_NEMOTRON_ASSETS": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/assets",
+      "GEN2_NEMO_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-runtime-inputs-v1/work/nemo/lib/libnemo_speech_asr_c.dylib",
+      "GEN2_NEMOTRON_REFERENCE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/reference",
+      "GEN2_NEMO_EXECUTION": "metal",
+      "GEN2_NEMO_METAL_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1/work/nemo/lib/libnemo_speech_asr_c.dylib",
+      "GEN2_NEMO_METAL_REFERENCE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1/reference/metal.json",
+      "GEN2_NEMO_METAL_DEVICE": "Apple M4 Pro"
+    },
+    "expected_returncode": 0,
+    "timeout_seconds": 180,
+    "process_group_id": 77791,
+    "returncode": 0,
+    "elapsed_seconds": 2.114857790991664
+  }
+]

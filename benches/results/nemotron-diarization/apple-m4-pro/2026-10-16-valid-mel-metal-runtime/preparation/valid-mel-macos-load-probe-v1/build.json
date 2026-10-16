@@ -1,0 +1,33 @@
+{
+  "source": {
+    "bytes": 684,
+    "sha256": "e32c833d9511b5106bd1bcc9593fa952eac616cb16adfea8d86197d368b1c199"
+  },
+  "binary": {
+    "bytes": 36232,
+    "sha256": "6a5288ca8f04fa0d990c4b0bb69ee6d8b1adc1e1551dcf1a428e94f0e264dbbb"
+  },
+  "command": {
+    "argv": [
+      "/usr/bin/c++",
+      "-std=c++17",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/macos_runtime_load_probe.cpp",
+      "-o",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-load-probe-v1/load-probe"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.3907473330036737
+  },
+  "missing_library": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-load-probe-v1/missing-library/nemo/lib/libgen2_nemo_ggml-base.0.25.1.dylib",
+  "models_loaded": false,
+  "probe_executed": false,
+  "neural_calls": 0
+}

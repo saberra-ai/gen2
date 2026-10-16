@@ -9,7 +9,8 @@ gates and actual 92-library loader closure checks on the named M4 Pro.
 The [30-minute and one-hour CPU qualification](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-cpu-long/qualification.json)
 passes retained-tail parity, compaction, bounded provisional revisions and peak
 process RSS below 249 MB. It repeats the named smoke fixture; diverse long-audio
-quality, coexistence, Metal, other platforms and desktop qualification remain open.
+quality, coexistence, Metal long sessions, other platforms and desktop
+qualification remain open.
 See the [migration and current evidence](../../docs/research/nemotron-v3-finish-valid-mel-patch.md).
 
 The separate [Metal construction protocol](valid-mel-metal-build.protocol.json)
@@ -25,8 +26,11 @@ The [Metal v2 package](../../benches/results/nemotron-diarization/apple-m4-pro/2
 also passes construction and relocation with 93 private libraries. Its
 [fixed runtime protocol](valid-mel-metal-package.protocol.json) separately admits
 60-second native/public Metal parity, seven lifecycle tests and explicit CPU-SDK
-Metal rejection. The combined test checks sequential CPU rejection followed by
-Metal parity in one process; simultaneous model residency is a separate gate.
+Metal rejection. The [actual Metal runtime receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-metal-runtime/qualification.json)
+passes all 13 commands, exact 6,000-row/26-turn parity, 100 reloads and actual
+private loader closure on the named M4 Pro. The combined test checks sequential
+CPU rejection followed by Metal parity in one process; simultaneous model
+residency is a separate gate.
 
 # Nemotron 3 — N0 qualification
 
