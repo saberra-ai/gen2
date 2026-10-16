@@ -15,6 +15,7 @@ import subprocess
 import sys
 
 from artifacts import acquire, digest, matches
+from sdk_archive import write_archive
 from windows_compat import apply_windows_lf_compat
 
 
@@ -74,6 +75,7 @@ class Qualification:
         self.environment = pinned_git_environment(environment)
         self.commands = []
         self.compatibility = None
+        self.archive = None
         self.lock_path = self.tools / 'runtime.lock.json'
         self.lock = json.loads(self.lock_path.read_text())
 
@@ -244,6 +246,7 @@ else:
                 'runtime_revision': self.lock['runtime']['revision'], 'llama_revision': self.lock['runtime']['llama_revision'],
                 'lock_sha256': digest(self.lock_path), 'runner_sha256': digest(Path(__file__)), 'commands': self.commands,
                 'installed_files': files, 'build_compatibility': self.compatibility,
+                'development_sdk_archive': self.archive,
                 'limits': ['No offline/fresh-machine relocation claim.',
                 'No chat/Bark/Laya coexistence or heldout quality claim.', 'CPU baseline explicitly requires AVX2/FMA/F16C.']}
 
@@ -265,6 +268,8 @@ def main():
         runner.verify_source()
         runner.build()
         runner.infer()
+        if not runner.windows:
+            runner.archive = write_archive(runner.prefix, runner.output)
     except Exception as error:
         (args.output / 'receipt.json').write_text(json.dumps(runner.receipt(False, str(error)), indent=2) + '\n')
         raise

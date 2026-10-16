@@ -27,6 +27,14 @@ The current [receipt writer](../../tools/nemotron-diarization/platform_native.py
 
 Licenses are component-specific. Gen2 is MIT in [Cargo.toml](../../Cargo.toml). NeMo is [Apache-2.0](https://github.com/NVIDIA/NeMo-Speech.cpp/blob/083861c241061562b8ec29eb06d7f6cdc3af8775/LICENSE); retain its NOTICE and full [third-party notices](https://github.com/NVIDIA/NeMo-Speech.cpp/blob/083861c241061562b8ec29eb06d7f6cdc3af8775/THIRD_PARTY_NOTICES.md), including MIT ggml and Apache NVIDIA patches. SentencePiece's top-level license is [Apache-2.0](https://github.com/google/sentencepiece/blob/master/LICENSE), but capture the actual shipped version's bundled notices too. GCC's [libstdc++ licensing page](https://gcc.gnu.org/onlinedocs/libstdc++/manual/license.html) specifies GPLv3 plus Runtime Library Exception 3.1; use the actual GCC package copyright/license set for both libstdc++ and libgcc_s rather than labeling the bundle MIT/Apache. glibc remains a host dependency in the proposed archive; a distributed container image has its own additional OS-library/source/license inventory. Models remain separately licensed OpenMDW-1.1 at the locked revision; including model or corpus bytes requires their notices/attributions as well. Packaging tools need build provenance; do not include their executables accidentally.
 
+An initial metadata-preservation implementation now exists in
+[sdk_archive.py](../../tools/nemotron-diarization/sdk_archive.py): successful Linux
+native development runs emit a deterministic SDK tar and complete lstat
+inventory, rejecting escaping aliases and unsupported metadata. Model-free
+roundtrip/determinism and alias-rejection tests pass. Actual native CI archive
+creation/roundtrip is still pending, and this snapshot does not implement the
+runtime dependency closure or relocation gates above.
+
 ## Private GGML and chat gate
 
 Private names prevent accidental same-SONAME reuse but are insufficient evidence of ELF symbol isolation. The [current Unix loader](../../src/diarization/ffi.rs:80) uses `Library::new`, with no separate namespace requested. ELF lookup can resolve imports to the main executable or previously global objects before the newly loaded object's definitions; RTLD_LOCAL alone is not complete isolation. [dlopen/dlmopen specification](https://man7.org/linux/man-pages/man3/dlopen.3.html).

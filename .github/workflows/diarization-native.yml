@@ -2,8 +2,8 @@ name: Diarization native CPU qualification
 on:
   workflow_dispatch:
   push:
-    branches: [codex/nemotron3-platforms]
-    paths: ['tools/nemotron-diarization/platform_native.py', 'tools/nemotron-diarization/windows_compat.py', '.github/workflows/diarization-native.yml', 'src/diarization/**', 'tests/diarization_native.rs']
+    branches: [codex/nemotron3-platforms, codex/nemotron3-linux]
+    paths: ['tools/nemotron-diarization/platform_native.py', 'tools/nemotron-diarization/windows_compat.py', 'tools/nemotron-diarization/sdk_archive.py', '.github/workflows/diarization-native.yml', 'src/diarization/**', 'tests/diarization_native.rs']
 permissions:
   contents: read
 jobs:
@@ -11,7 +11,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-24.04, windows-2022]
+        # Linux packaging iteration need not repeat Windows dependency builds.
+        os: ${{ fromJSON(github.event_name == 'push' && github.ref_name == 'codex/nemotron3-linux' && '["ubuntu-24.04"]' || '["ubuntu-24.04", "windows-2022"]') }}
     runs-on: ${{ matrix.os }}
     timeout-minutes: 120
     steps:
@@ -62,6 +63,7 @@ jobs:
             ${{ runner.temp }}/nemo-evidence/*.json
             ${{ runner.temp }}/nemo-evidence/*.log
             ${{ runner.temp }}/nemo-evidence/*.f32
+            ${{ runner.temp }}/nemo-evidence/*.tar.gz
             ${{ runner.temp }}/nemo-evidence/reference/
             ${{ runner.temp }}/nemo-sdk/
           retention-days: 7
