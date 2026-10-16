@@ -3,7 +3,7 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from platform_native import msvc_environment, powershell_literal
+from platform_native import msvc_environment, pinned_git_environment, powershell_literal
 
 
 class PlatformToolTests(unittest.TestCase):
@@ -26,6 +26,18 @@ class PlatformToolTests(unittest.TestCase):
 
     def test_powershell_literal_preserves_metacharacters(self):
         self.assertEqual(powershell_literal("C:/a'b/$(literal)"), "'C:/a''b/$(literal)'")
+
+    def test_pinned_git_configuration_preserves_existing_entries(self):
+        original = {'GIT_CONFIG_COUNT': '1', 'GIT_CONFIG_KEY_0': 'safe.directory',
+                    'GIT_CONFIG_VALUE_0': '/existing'}
+        result = pinned_git_environment(original)
+        self.assertEqual(result['GIT_CONFIG_COUNT'], '3')
+        self.assertEqual(result['GIT_CONFIG_VALUE_0'], '/existing')
+        self.assertEqual(result['GIT_CONFIG_KEY_1'], 'core.autocrlf')
+        self.assertEqual(result['GIT_CONFIG_VALUE_1'], 'false')
+        self.assertEqual(result['GIT_CONFIG_KEY_2'], 'core.eol')
+        self.assertEqual(result['GIT_CONFIG_VALUE_2'], 'lf')
+        self.assertEqual(original['GIT_CONFIG_COUNT'], '1')
 
 
 if __name__ == '__main__':

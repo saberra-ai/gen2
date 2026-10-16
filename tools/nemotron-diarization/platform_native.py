@@ -47,6 +47,20 @@ def powershell_literal(value):
     return "'" + str(value).replace("'", "''") + "'"
 
 
+def pinned_git_environment(environment):
+    """Keep archive/apply byte semantics consistent in all build descendants."""
+    env = environment.copy()
+    count = int(env.get('GIT_CONFIG_COUNT', '0'))
+    if count < 0:
+        raise ValueError('invalid Git environment configuration count')
+    for name, value in [('core.autocrlf', 'false'), ('core.eol', 'lf')]:
+        env[f'GIT_CONFIG_KEY_{count}'] = name
+        env[f'GIT_CONFIG_VALUE_{count}'] = value
+        count += 1
+    env['GIT_CONFIG_COUNT'] = str(count)
+    return env
+
+
 class Qualification:
     def __init__(self, source, prefix, output, jobs):
         self.repo = Path(__file__).resolve().parents[2]
@@ -54,7 +68,8 @@ class Qualification:
         self.source, self.prefix, self.output = source.resolve(), prefix.resolve(), output.resolve()
         self.jobs = jobs
         self.windows = platform.system() == 'Windows'
-        self.environment = msvc_environment(dict(os.environ)) if self.windows else dict(os.environ)
+        environment = msvc_environment(dict(os.environ)) if self.windows else dict(os.environ)
+        self.environment = pinned_git_environment(environment)
         self.commands = []
         self.lock_path = self.tools / 'runtime.lock.json'
         self.lock = json.loads(self.lock_path.read_text())
@@ -98,7 +113,25 @@ class Qualification:
             flags += ['-DNEMO_SPEECH_BUILD_ASR=OFF', '-DNEMO_SPEECH_BUILD_TTS=OFF']
             script = self.source / 'scripts/windows/build.ps1'
             command = f'& {powershell_literal(script)} -Backend cpu -Profile asr -Jobs {self.jobs} -BuildDir {powershell_literal(build)} -CMakeArgs @({",".join(map(powershell_literal, flags))})'
-            self.run('sdk-build', ['pwsh', '-NoProfile', '-NonInteractive', '-Command', command])
+            self.run('git-line-ending-config', ['git', '-C', self.source / 'llama.cpp', 'config', '--show-origin', '--get-regexp', r'^core\.(autocrlf|eol)$'])
+            try:
+                self.run('sdk-build', ['pwsh', '-NoProfile', '-NonInteractive', '-Command', command])
+            finally:
+                # Preserve the actual patch and exported context when upstream
+                # configuration fails, rather than guessing from Git globals.
+                staging = build / '_deps/llama.cpp.staging'
+                diagnostic = {}
+                for relative in ['ggml/include/ggml.h', 'ggml/src/ggml.c']:
+                    path = staging / relative
+                    if path.is_file():
+                        raw = path.read_bytes()
+                        diagnostic[relative] = {'bytes': len(raw), 'sha256': digest(path),
+                                                'crlf_count': raw.count(b'\r\n'),
+                                                'head': raw[:256].decode('utf-8', errors='replace')}
+                patch = build / '_deps/llama.cpp.staging.patch'
+                if patch.is_file():
+                    shutil.copy2(patch, self.output / 'failed-upstream.patch.log')
+                (self.output / 'upstream-patch-diagnostic.json').write_text(json.dumps(diagnostic, indent=2) + '\n')
         else:
             build = self.source / 'build/cpu-diar'
             self.run('sdk-configure', ['cmake', '--preset', 'cpu-diar', *flags], self.source)
