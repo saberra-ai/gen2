@@ -15,6 +15,18 @@ Close-mic FP32 errors are45.67missed speaker-seconds,0.02false-alarm seconds and
 
 The five frozen Vox cases pass their current gates, according to the existing qualification results. Those recordings are explicitly inside the checkpoint's reported Vox development/test training inventory; their success is useful integration evidence, not proof of unseen-meeting generalization. [Frozen corpus research](nemotron-heldout-corpus.md), [checkpoint training inventory](https://huggingface.co/nvidia/Nemotron-3-Diarization/raw/f667ed73aee57d40cc39428eb768b4fd87a0a29e/README.md#training-datasets).
 
+## Current valid-Mel profile requalification
+
+The separate [current-profile receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-frozen-corpus/receiver-qualification.json)
+retains 32 fresh native/public processes at the fixed 9/4 geometry, comparing
+all valid rows with the exact eight original hash-locked FP32 oracles. All 16
+wrapper comparisons are byte-exact and all Q8 degradation bounds pass, while
+four AMI backend pairs still fail the unchanged quality gates. CPU production
+DER is 33.214572% close / 43.8407411% distant; Metal is 33.2234791% / 43.8229269%.
+The five Vox slices and ICSI pass on both backends. These results confirm that
+removing the extra terminal frame does not resolve the frozen AMI quality gap.
+They neither change reference policy nor establish a new untouched test set.
+
 ## Concrete protocol discrepancy: transcriber segments versus published AMI labels
 
 The immutable model card's **Performance Evaluation** warning explicitly identifies broad AMI transcription segments as a source of inflated missed speech: internal silence can be labeled as speaker activity. Its published AMI results use separately linked forced-alignment RTTMs and warn that different references are not directly comparable. This matches the *kind* of error above; it does not establish that every missed second is annotation error. [Pinned evaluation warning and label inventory](https://huggingface.co/nvidia/Nemotron-3-Diarization/raw/f667ed73aee57d40cc39428eb768b4fd87a0a29e/README.md#performance-evaluation).

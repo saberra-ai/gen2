@@ -1,0 +1,810 @@
+[
+  {
+    "name": "vox-bjruf-cpu-native",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/cpu/bin/native-stream",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/assets/Nemotron-3-Diarization.q8_0.gguf",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/corpus/vox-bjruf.wav",
+      "1",
+      "-1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/vox-bjruf-cpu-native.json"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/tmp/"
+    },
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "pid": 34199,
+    "returncode": 0,
+    "elapsed_seconds": 75.89210983301746
+  },
+  {
+    "name": "vox-bjruf-cpu-public",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/cpu/bin/public-stream",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/assets",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/cpu/nemo/lib/libnemo_speech_asr_c.dylib",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/corpus/vox-bjruf.wav",
+      "1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/vox-bjruf-cpu-public.f32"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/tmp/"
+    },
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "pid": 35173,
+    "returncode": 0,
+    "elapsed_seconds": 66.07348000002094
+  },
+  {
+    "name": "vox-bjruf-metal-native",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/metal/bin/native-stream",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/assets/Nemotron-3-Diarization.q8_0.gguf",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/corpus/vox-bjruf.wav",
+      "1",
+      "0",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/vox-bjruf-metal-native.json"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/tmp/"
+    },
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "pid": 35458,
+    "returncode": 0,
+    "elapsed_seconds": 40.968468167004175
+  },
+  {
+    "name": "vox-bjruf-metal-public",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/metal/bin/public-stream",
+      "--metal",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/assets",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/metal/nemo/lib/libnemo_speech_asr_c.dylib",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/corpus/vox-bjruf.wav",
+      "1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/vox-bjruf-metal-public.f32"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/tmp/"
+    },
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "pid": 35574,
+    "returncode": 0,
+    "elapsed_seconds": 13.68324741703691
+  },
+  {
+    "name": "vox-bxcfq-cpu-native",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/cpu/bin/native-stream",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/assets/Nemotron-3-Diarization.q8_0.gguf",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/corpus/vox-bxcfq.wav",
+      "1",
+      "-1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/vox-bxcfq-cpu-native.json"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/tmp/"
+    },
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "pid": 35621,
+    "returncode": 0,
+    "elapsed_seconds": 33.61038304195972
+  },
+  {
+    "name": "vox-bxcfq-cpu-public",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/cpu/bin/public-stream",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/assets",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/cpu/nemo/lib/libnemo_speech_asr_c.dylib",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/corpus/vox-bxcfq.wav",
+      "1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/vox-bxcfq-cpu-public.f32"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/tmp/"
+    },
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "pid": 35682,
+    "returncode": 0,
+    "elapsed_seconds": 33.68765374994837
+  },
+  {
+    "name": "vox-bxcfq-metal-native",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/metal/bin/native-stream",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/assets/Nemotron-3-Diarization.q8_0.gguf",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/corpus/vox-bxcfq.wav",
+      "1",
+      "0",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/vox-bxcfq-metal-native.json"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/tmp/"
+    },
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "pid": 35752,
+    "returncode": 0,
+    "elapsed_seconds": 7.247762957995292
+  },
+  {
+    "name": "vox-bxcfq-metal-public",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/metal/bin/public-stream",
+      "--metal",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/assets",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/metal/nemo/lib/libnemo_speech_asr_c.dylib",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/corpus/vox-bxcfq.wav",
+      "1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/vox-bxcfq-metal-public.f32"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/tmp/"
+    },
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "pid": 35760,
+    "returncode": 0,
+    "elapsed_seconds": 7.23939258401515
+  },
+  {
+    "name": "vox-aepyx-cpu-native",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/cpu/bin/native-stream",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/assets/Nemotron-3-Diarization.q8_0.gguf",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/corpus/vox-aepyx.wav",
+      "1",
+      "-1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/vox-aepyx-cpu-native.json"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/tmp/"
+    },
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "pid": 35768,
+    "returncode": 0,
+    "elapsed_seconds": 28.22927225002786
+  },
+  {
+    "name": "vox-aepyx-cpu-public",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/cpu/bin/public-stream",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/assets",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/cpu/nemo/lib/libnemo_speech_asr_c.dylib",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/corpus/vox-aepyx.wav",
+      "1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/vox-aepyx-cpu-public.f32"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/tmp/"
+    },
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "pid": 35808,
+    "returncode": 0,
+    "elapsed_seconds": 28.486069374950603
+  },
+  {
+    "name": "vox-aepyx-metal-native",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/metal/bin/native-stream",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/assets/Nemotron-3-Diarization.q8_0.gguf",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/corpus/vox-aepyx.wav",
+      "1",
+      "0",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/vox-aepyx-metal-native.json"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/tmp/"
+    },
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "pid": 35845,
+    "returncode": 0,
+    "elapsed_seconds": 6.180410958011635
+  },
+  {
+    "name": "vox-aepyx-metal-public",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/metal/bin/public-stream",
+      "--metal",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/assets",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/metal/nemo/lib/libnemo_speech_asr_c.dylib",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/corpus/vox-aepyx.wav",
+      "1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/vox-aepyx-metal-public.f32"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/tmp/"
+    },
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "pid": 35859,
+    "returncode": 0,
+    "elapsed_seconds": 6.1579037079936825
+  },
+  {
+    "name": "vox-cqfmj-cpu-native",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/cpu/bin/native-stream",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/assets/Nemotron-3-Diarization.q8_0.gguf",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/corpus/vox-cqfmj.wav",
+      "1",
+      "-1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/vox-cqfmj-cpu-native.json"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/tmp/"
+    },
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "pid": 35877,
+    "returncode": 0,
+    "elapsed_seconds": 18.517015959019773
+  },
+  {
+    "name": "vox-cqfmj-cpu-public",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/cpu/bin/public-stream",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/assets",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/cpu/nemo/lib/libnemo_speech_asr_c.dylib",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/corpus/vox-cqfmj.wav",
+      "1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/vox-cqfmj-cpu-public.f32"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/tmp/"
+    },
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "pid": 35961,
+    "returncode": 0,
+    "elapsed_seconds": 18.580693416995928
+  },
+  {
+    "name": "vox-cqfmj-metal-native",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/metal/bin/native-stream",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/assets/Nemotron-3-Diarization.q8_0.gguf",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/corpus/vox-cqfmj.wav",
+      "1",
+      "0",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/vox-cqfmj-metal-native.json"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/tmp/"
+    },
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "pid": 36010,
+    "returncode": 0,
+    "elapsed_seconds": 4.0931029580533504
+  },
+  {
+    "name": "vox-cqfmj-metal-public",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/metal/bin/public-stream",
+      "--metal",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/assets",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/metal/nemo/lib/libnemo_speech_asr_c.dylib",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/corpus/vox-cqfmj.wav",
+      "1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/vox-cqfmj-metal-public.f32"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/tmp/"
+    },
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "pid": 36021,
+    "returncode": 0,
+    "elapsed_seconds": 4.147367750003468
+  },
+  {
+    "name": "vox-auzru-cpu-native",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/cpu/bin/native-stream",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/assets/Nemotron-3-Diarization.q8_0.gguf",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/corpus/vox-auzru.wav",
+      "1",
+      "-1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/vox-auzru-cpu-native.json"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/tmp/"
+    },
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "pid": 36023,
+    "returncode": 0,
+    "elapsed_seconds": 92.76339641597588
+  },
+  {
+    "name": "vox-auzru-cpu-public",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/cpu/bin/public-stream",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/assets",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/cpu/nemo/lib/libnemo_speech_asr_c.dylib",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/corpus/vox-auzru.wav",
+      "1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/vox-auzru-cpu-public.f32"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/tmp/"
+    },
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "pid": 36188,
+    "returncode": 0,
+    "elapsed_seconds": 93.02517220802838
+  },
+  {
+    "name": "vox-auzru-metal-native",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/metal/bin/native-stream",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/assets/Nemotron-3-Diarization.q8_0.gguf",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/corpus/vox-auzru.wav",
+      "1",
+      "0",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/vox-auzru-metal-native.json"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/tmp/"
+    },
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "pid": 36347,
+    "returncode": 0,
+    "elapsed_seconds": 19.575638083042577
+  },
+  {
+    "name": "vox-auzru-metal-public",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/metal/bin/public-stream",
+      "--metal",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/assets",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/metal/nemo/lib/libnemo_speech_asr_c.dylib",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/corpus/vox-auzru.wav",
+      "1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/vox-auzru-metal-public.f32"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/tmp/"
+    },
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "pid": 36383,
+    "returncode": 0,
+    "elapsed_seconds": 19.68021195899928
+  },
+  {
+    "name": "ami-ES2004a-Mix-Headset-cpu-native",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/cpu/bin/native-stream",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/assets/Nemotron-3-Diarization.q8_0.gguf",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/corpus/ami-ES2004a-Mix-Headset.wav",
+      "1",
+      "-1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/ami-ES2004a-Mix-Headset-cpu-native.json"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/tmp/"
+    },
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "pid": 36435,
+    "returncode": 0,
+    "elapsed_seconds": 19.261713666957803
+  },
+  {
+    "name": "ami-ES2004a-Mix-Headset-cpu-public",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/cpu/bin/public-stream",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/assets",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/cpu/nemo/lib/libnemo_speech_asr_c.dylib",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/corpus/ami-ES2004a-Mix-Headset.wav",
+      "1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/ami-ES2004a-Mix-Headset-cpu-public.f32"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/tmp/"
+    },
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "pid": 36450,
+    "returncode": 0,
+    "elapsed_seconds": 19.38544229202671
+  },
+  {
+    "name": "ami-ES2004a-Mix-Headset-metal-native",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/metal/bin/native-stream",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/assets/Nemotron-3-Diarization.q8_0.gguf",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/corpus/ami-ES2004a-Mix-Headset.wav",
+      "1",
+      "0",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/ami-ES2004a-Mix-Headset-metal-native.json"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/tmp/"
+    },
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "pid": 36487,
+    "returncode": 0,
+    "elapsed_seconds": 4.2841177500085905
+  },
+  {
+    "name": "ami-ES2004a-Mix-Headset-metal-public",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/metal/bin/public-stream",
+      "--metal",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/assets",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/metal/nemo/lib/libnemo_speech_asr_c.dylib",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/corpus/ami-ES2004a-Mix-Headset.wav",
+      "1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/ami-ES2004a-Mix-Headset-metal-public.f32"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/tmp/"
+    },
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "pid": 36493,
+    "returncode": 0,
+    "elapsed_seconds": 4.329611458000727
+  },
+  {
+    "name": "ami-ES2004a-Array1-01-cpu-native",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/cpu/bin/native-stream",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/assets/Nemotron-3-Diarization.q8_0.gguf",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/corpus/ami-ES2004a-Array1-01.wav",
+      "1",
+      "-1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/ami-ES2004a-Array1-01-cpu-native.json"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/tmp/"
+    },
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "pid": 36495,
+    "returncode": 0,
+    "elapsed_seconds": 19.490945999976248
+  },
+  {
+    "name": "ami-ES2004a-Array1-01-cpu-public",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/cpu/bin/public-stream",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/assets",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/cpu/nemo/lib/libnemo_speech_asr_c.dylib",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/corpus/ami-ES2004a-Array1-01.wav",
+      "1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/ami-ES2004a-Array1-01-cpu-public.f32"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/tmp/"
+    },
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "pid": 36553,
+    "returncode": 0,
+    "elapsed_seconds": 19.51991704199463
+  },
+  {
+    "name": "ami-ES2004a-Array1-01-metal-native",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/metal/bin/native-stream",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/assets/Nemotron-3-Diarization.q8_0.gguf",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/corpus/ami-ES2004a-Array1-01.wav",
+      "1",
+      "0",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/ami-ES2004a-Array1-01-metal-native.json"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/tmp/"
+    },
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "pid": 36582,
+    "returncode": 0,
+    "elapsed_seconds": 4.269130000029691
+  },
+  {
+    "name": "ami-ES2004a-Array1-01-metal-public",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/metal/bin/public-stream",
+      "--metal",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/assets",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/metal/nemo/lib/libnemo_speech_asr_c.dylib",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/corpus/ami-ES2004a-Array1-01.wav",
+      "1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/ami-ES2004a-Array1-01-metal-public.f32"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/tmp/"
+    },
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "pid": 36589,
+    "returncode": 0,
+    "elapsed_seconds": 4.291701165959239
+  },
+  {
+    "name": "icsi-Bmr005-interaction-cpu-native",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/cpu/bin/native-stream",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/assets/Nemotron-3-Diarization.q8_0.gguf",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/corpus/icsi-Bmr005-interaction.wav",
+      "1",
+      "-1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/icsi-Bmr005-interaction-cpu-native.json"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/tmp/"
+    },
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "pid": 36590,
+    "returncode": 0,
+    "elapsed_seconds": 52.8476952080382
+  },
+  {
+    "name": "icsi-Bmr005-interaction-cpu-public",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/cpu/bin/public-stream",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/assets",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/cpu/nemo/lib/libnemo_speech_asr_c.dylib",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/corpus/icsi-Bmr005-interaction.wav",
+      "1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/icsi-Bmr005-interaction-cpu-public.f32"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/tmp/"
+    },
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "pid": 36734,
+    "returncode": 0,
+    "elapsed_seconds": 52.67912437499035
+  },
+  {
+    "name": "icsi-Bmr005-interaction-metal-native",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/metal/bin/native-stream",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/assets/Nemotron-3-Diarization.q8_0.gguf",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/corpus/icsi-Bmr005-interaction.wav",
+      "1",
+      "0",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/icsi-Bmr005-interaction-metal-native.json"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/tmp/"
+    },
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "pid": 36845,
+    "returncode": 0,
+    "elapsed_seconds": 11.165487250022124
+  },
+  {
+    "name": "icsi-Bmr005-interaction-metal-public",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/metal/bin/public-stream",
+      "--metal",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/assets",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/metal/nemo/lib/libnemo_speech_asr_c.dylib",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1/work/corpus/icsi-Bmr005-interaction.wav",
+      "1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/icsi-Bmr005-interaction-metal-public.f32"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "LC_ALL": "C",
+      "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/tmp/"
+    },
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "pid": 36880,
+    "returncode": 0,
+    "elapsed_seconds": 11.202038541028742
+  }
+]

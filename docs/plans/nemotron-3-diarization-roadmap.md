@@ -128,12 +128,19 @@ It schedules 32 fresh native/public CPU/Metal processes across the same eight
 slices, reusing only the exact eight original hash-locked CPU FP32 oracles.
 Native children cannot read staged oracles or labels. Scoring retains all
 quality failures and uses the unchanged original gates, with every valid row
-included. The fixed corpus sequence is running separately after app-model
-qualification finished; historical failures remain unchanged and unwaived.
+included. The [completed current-profile corpus qualification](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-frozen-corpus/receiver-qualification.json)
+now retains all 32 successful processes and 16 byte-exact native/public pairs.
+All Q8-versus-FP32 degradation bounds pass, but only 12 of 16 pairs meet every
+quality gate. Both AMI channels fail the unchanged shared and production DER
+thresholds on CPU and Metal. CPU production DER is 33.2146%/43.8407%; Metal is
+33.2235%/43.8229%. This reuses the previously observed fixed corpus and exact
+original FP32 arrays, so it is not a fresh held-out evaluation. All valid rows
+are scored; historical failures remain unchanged and unwaived.
 All 182 model-free tools tests pass locally;
-[CI at the 157-test source](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-157/qualification.json)
-passes all 13 jobs. Later package/qualifier changes are outside that CI source;
-release criteria remain open.
+[CI at the current 182-test source](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-182/qualification.json)
+passes all 13 jobs, including fmt, clippy and tests across 12 OS/feature pairs.
+This model-free CI does not execute app/model/corpus qualification. Quality,
+GUI, physical microphone and the remaining release criteria stay open.
 
 Prepared: 2026-10-14.
 Updated: 2026-10-16.

@@ -1,0 +1,99 @@
+{
+  "slice": "vox-cqfmj",
+  "backend": "cpu",
+  "device": null,
+  "scope": "local tuning-heldout integration and quality, not guaranteed checkpoint-unseen",
+  "wrapper_parity": {
+    "passed": true,
+    "scope": "wrapper/reference correctness at the recorded duration; not held-out quality or full release qualification",
+    "runtime_profile": "gen2-valid-mel-v1",
+    "frame_contract": "v3-streaming-valid-mel-v1",
+    "audio_duration_seconds": 114.944,
+    "backend": "cpu",
+    "device": null,
+    "native_frame_count": 11494,
+    "retained_first_frame": 0,
+    "retained_rows": 11494,
+    "turns": 11,
+    "maximum_turn_error_seconds": 0.0,
+    "turn_tolerance_seconds": 1e-06,
+    "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+    "retained_probabilities_match": true,
+    "maximum_probability_error": 0.0,
+    "probability_tolerance": 1e-06,
+    "gen2_rtf": 0.16029358644209354,
+    "native_rtf": 0.16028533894766148
+  },
+  "fp32": {
+    "der": 0.0865243,
+    "missed_speaker_seconds": 7.54,
+    "false_alarm_speaker_seconds": 1.76,
+    "confusion_speaker_seconds": 0.1,
+    "reference_speaker_seconds": 108.64,
+    "reference_speakers": 4,
+    "hypothesis_speakers": 2,
+    "frame_seconds": 0.01,
+    "collar_seconds": 0,
+    "overlap_included": true,
+    "scoring_duration_seconds": 114.944
+  },
+  "q8_shared_threshold": {
+    "der": 0.083302651,
+    "missed_speaker_seconds": 7.53,
+    "false_alarm_speaker_seconds": 1.41,
+    "confusion_speaker_seconds": 0.11,
+    "reference_speaker_seconds": 108.64,
+    "reference_speakers": 4,
+    "hypothesis_speakers": 2,
+    "frame_seconds": 0.01,
+    "collar_seconds": 0,
+    "overlap_included": true,
+    "scoring_duration_seconds": 114.944
+  },
+  "q8_production_default": {
+    "der": 0.108523564,
+    "missed_speaker_seconds": 6.76,
+    "false_alarm_speaker_seconds": 4.37,
+    "confusion_speaker_seconds": 0.66,
+    "reference_speaker_seconds": 108.64,
+    "reference_speakers": 4,
+    "hypothesis_speakers": 2,
+    "frame_seconds": 0.01,
+    "collar_seconds": 0,
+    "overlap_included": true,
+    "scoring_duration_seconds": 114.944
+  },
+  "q8_minus_fp32_absolute_der": -0.003221648999999993,
+  "gates": {
+    "wrapper_parity": true,
+    "q8_degradation_at_most_0_02": true,
+    "q8_shared_der_at_most_0_20": true,
+    "q8_production_der_at_most_0_20": true
+  },
+  "postprocessing": "shared probability >0.5, no hysteresis/padding/minimum-duration; production default reported separately",
+  "shape_difference": {
+    "native": [
+      11494,
+      8
+    ],
+    "fp32": [
+      11494,
+      8
+    ],
+    "native_extra_terminal_frame": 0,
+    "frame_seconds": 0.01,
+    "rule": "native and FP32 floor(N/160); every valid row retained; full audio UEM"
+  },
+  "channel_mae_common_frames": 0.000430647109169513,
+  "channel_max_error_common_frames": 0.14747163653373718,
+  "all_slice_gates_passed": true,
+  "input_pcm_f32le_sha256": "4b4bce9bd7e2b7ecf0e122f921df0b9aa95195c650a8a8661b651e79e034a3c5",
+  "oracle_array": {
+    "bytes": 367936,
+    "sha256": "2efa9635847440a79860e5f95196926154dc28aba2b183f4aed75559ab2b764a"
+  },
+  "oracle_metadata": {
+    "bytes": 2882,
+    "sha256": "8e85dff46c0e14c9dcd17ffb4b8302829ab925e2fd1a33536b2813d291f0fea6"
+  }
+}
