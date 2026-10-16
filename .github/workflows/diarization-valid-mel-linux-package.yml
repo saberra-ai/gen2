@@ -1,0 +1,53 @@
+name: Diarization valid-Mel Linux package construction
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/nemotron3-n0]
+    paths:
+      - .github/workflows/diarization-valid-mel-linux-package.yml
+      - tools/nemotron-diarization/construct_valid_mel_linux_package.py
+      - tools/nemotron-diarization/valid-mel-linux-construction.protocol.json
+permissions:
+  contents: read
+  actions: read
+jobs:
+  construct:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Retrieve exact successful tagged Linux SDK artifact
+        uses: actions/download-artifact@v4
+        with:
+          artifact-ids: '12063127655'
+          run-id: 38940008466
+          github-token: ${{ github.token }}
+          merge-multiple: true
+          path: ${{ runner.temp }}/qualified-linux-native
+      - name: Record producer provenance
+        env:
+          GH_TOKEN: ${{ github.token }}
+          GH_REPO: ${{ github.repository }}
+        run: gh api repos/saberra-ai/gen2/actions/runs/38940008466 > "${{ runner.temp }}/linux-sdk-producer.json"
+      - name: Install package introspection and authenticated source prerequisites
+        run: |
+          sudo sed -i 's/^Types: deb$/Types: deb deb-src/' /etc/apt/sources.list.d/ubuntu.sources
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends patchelf binutils libsentencepiece0
+      - name: Construct frozen Linux v2 package without model execution
+        run: python tools/nemotron-diarization/construct_valid_mel_linux_package.py --native-evidence "${{ runner.temp }}/qualified-linux-native/nemo-valid-mel-evidence" --producer-metadata "${{ runner.temp }}/linux-sdk-producer.json" --output "${{ runner.temp }}/linux-valid-mel-construction"
+      - name: Preserve successful or failed construction evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nemotron-valid-mel-linux-package
+          path: |
+            ${{ runner.temp }}/linux-valid-mel-construction/
+            ${{ runner.temp }}/linux-sdk-producer.json
+          include-hidden-files: true
+          retention-days: 30

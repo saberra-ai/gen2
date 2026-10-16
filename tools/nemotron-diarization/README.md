@@ -81,6 +81,13 @@ modes and aliases before packaging, including executable helpers. It refuses an
 existing destination, including a dangling symlink. All 166 model-free tool
 tests pass. This restoration is metadata/byte verification and runs no SDK code.
 
+The [Linux construction protocol](valid-mel-linux-construction.protocol.json)
+now freezes the successful SDK receipt, exact producer artifact and current
+constructor sources. `construct_valid_mel_linux_package.py` restores that archive
+and invokes package construction with retained command/failure records. It does
+not rebuild the SDK, query its version or load a model. Actual construction is
+pending; offline inference and coexistence require later separate gates.
+
 # Nemotron 3 — N0 qualification
 
 This directory implements the first milestone of the
