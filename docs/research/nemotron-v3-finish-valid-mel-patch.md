@@ -468,3 +468,33 @@ Bark/chat/Laya coexistence, Pnola recorded/live/native GUI/physical microphone,
 clean performance, signing/notarization or the unchanged AMI quality gate.
 The original zero-neural sandbox failure and separate admission correction remain
 retained; no failed neural result or acceptance threshold was replaced.
+
+
+## Tagged CPU long-session admission
+
+The separate `valid-mel-cpu-long.protocol.json` freezes four fresh model/stream
+runs, in order: independent native then public Rust at 30 minutes, followed by
+independent native then public Rust at one hour. These reuse the exact relocated
+CPU v2 package, compiled probes and 60-second smoke PCM already qualified above,
+repeating that PCM 30/60 times through continuous state. No model has run in this
+new attempt. Thirty model-free preflight tests precede execution.
+
+The final totals must be 180000 and 360000 valid rows. Compaction must occur;
+all retained rows through the last and every final turn must match within the
+unchanged 1e-6 policies, with identical actual repeated-input hashes. Retention
+must preserve at least the source-prescribed ten-minute tail. Provisional
+revisions must be bounded, increasing and observed through the session, with
+actual backpressure. Each process must load the exact 92-image private closure,
+report measured peak RSS at most 1024 MiB, and compute faster than real time.
+`/usr/bin/time -l` supplies RSS; absent/ambiguous measurements fail admission.
+
+The fixed sources, input identities and per-command 1800-second limit bound this
+qualification; internal forward counts and asynchronous queue scheduling are
+not instrumented. A timeout kills the complete qualification process group and
+fails the case, without implying hard interruption in the product API. Failure
+stops the remaining cases and retains logs and available arrays. Native children
+retain the same strict sandbox, while the Python controller has no outer sandbox.
+These are ordinary OS/background and warm-cache observations; non-neural builds
+may overlap. They do not establish uncontended performance, capture/UI latency,
+diverse long-recording quality, mixed-model coexistence, Metal, other platforms,
+Pnola, desktop release or a change to the original AMI quality requirement.
