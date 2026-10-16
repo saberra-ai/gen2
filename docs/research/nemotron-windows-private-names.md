@@ -167,3 +167,18 @@ package payload and keeps runtime qualification false. It is separate from deskt
 machine qualification. The next workflow preserves LF before checkout, and Docker
 JSON is explicitly decoded as UTF-8 so the Unicode relocation path is preserved
 under Windows legacy locales.
+
+The actual `e3a89b1` [Server Core controls receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-container-controls/qualification.json)
+now passes [run 38883550230](https://github.com/saberra-ai/gen2/actions/runs/38883550230).
+The frozen preloaded image ran under process isolation with network none; its
+Unicode input mount was actually readable and rejected writes with native error
+5, while results were writable. No operational non-loopback interface or expected
+development commands/Visual Studio directory was present. Actual Docker inspect
+confirmed image, isolation, both source paths/read flags and exit zero; removal
+of the same managed container ID succeeded. All delivered input bytes and
+historical source/tool/prerequisite hashes were independently checked on macOS,
+without recreating Windows permission modes or executing Windows binaries there.
+This closes infrastructure controls only: no Gen2/native/model/runtime package
+payload ran, and `runtime_qualified` remains false. The result supplies a viable
+Server Core test environment while Windows desktop, closed-runtime, license and
+coexistence gates remain open.

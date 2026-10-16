@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "runtime_qualified": false,
+  "container_controls_passed": true,
+  "scope": "Actual Server Core process-container controls only; no Gen2/model/package payload, desktop VM or nested Hyper-V claim.",
+  "source_commit": "e3a89b153b5d8e28ca60533a39a73788e7e4e510",
+  "image_id": "sha256:76e6f57c103004c102b102281f3e6c750a1aa80cef8c5267d6fc2435408c87fc",
+  "controls": {
+    "schema_version": 1,
+    "input_read": true,
+    "input_write_denied": true,
+    "input_write_win32_error": 5,
+    "development_tools_absent_from_path": true,
+    "visual_studio_directory_absent": true,
+    "operational_non_loopback_interfaces": [],
+    "os_version": "10.0.20348.0",
+    "process_architecture": "AMD64",
+    "input_sha256": "557070be9798d55927586be814cf91a76b741e8a1a61cfe540dfd49ce0314201"
+  },
+  "frozen_inputs_sha256": "0f3e344b253c1e5d492727f750a0666ccff0277da2b253c0f859d253bce1fbcf",
+  "receiver_verification": {
+    "historical_source_tool_hashes_verified": true,
+    "image_and_actual_container_controls_reparsed": true,
+    "all_delivered_input_file_bytes_verified": true,
+    "actual_read_and_access_denied_5_and_network_controls_verified": true,
+    "managed_id_removal_command_succeeded": true,
+    "scope": "Read-only macOS evidence/byte verification only; actual Windows container execution occurred in the named CI run. Windows filesystem permission modes were not recreated on macOS."
+  }
+}

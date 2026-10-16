@@ -643,8 +643,13 @@ is retained; the checker now matches upstream's single installed public C ABI
 import library, and its actual model/provenance retry is pending. The separate
 [read-only Windows prerequisites](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-container-prerequisites/qualification.json)
 confirm an available process-container engine and preloaded Server Core image.
-No container/model payload ran in that prerequisite check. Offline packaging,
-licensing, coexistence and desktop machine gates remain open.
+No container/model payload ran in that prerequisite check. The subsequent
+[Server Core controls receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-container-controls/qualification.json)
+passes actual process isolation, network none, read-only Unicode input access
+denial (Win32 error 5), writable results, absence of expected build tools and
+managed-container cleanup. That controls test contains no Gen2/native/model
+payload and keeps runtime qualification false. Offline packaging, licensing,
+coexistence and desktop machine gates remain open.
 
 The actual Linux SDK archive job now passes native/public parity and all seven
 lifecycle tests, then preserves all 82 filesystem records, including seven

@@ -1,0 +1,87 @@
+[
+  {
+    "name": "image-inspect",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "image",
+      "inspect",
+      "mcr.microsoft.com/windows/servercore@sha256:76cf422c98ca437b308374d0498280541fa42ac7061bb44015a6c8b70cf4db6a"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.03200000000001069
+  },
+  {
+    "name": "create",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "create",
+      "--name",
+      "gen2-nemo-controls-e50322e6f2294f5482b6960fb9b57ac6",
+      "--pull",
+      "never",
+      "--isolation",
+      "process",
+      "--network",
+      "none",
+      "--mount",
+      "type=bind,source=D:\\a\\_temp\\windows-container-controls\\inputs \u00fc,target=C:\\inputs,readonly",
+      "--mount",
+      "type=bind,source=D:\\a\\_temp\\windows-container-controls\\results,target=C:\\results",
+      "--env",
+      "PATH=C:\\Windows\\System32;C:\\Windows",
+      "sha256:76e6f57c103004c102b102281f3e6c750a1aa80cef8c5267d6fc2435408c87fc",
+      "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\inputs\\controls.ps1"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.7970000000000255
+  },
+  {
+    "name": "start",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "start",
+      "--attach",
+      "750c3ea5ef1c13853bcb99277471ca4a9f64c25606baffef25f47f096cd5c1ad"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 19.593999999999994
+  },
+  {
+    "name": "container-inspect",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "inspect",
+      "750c3ea5ef1c13853bcb99277471ca4a9f64c25606baffef25f47f096cd5c1ad"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.03100000000000591
+  },
+  {
+    "name": "remove-managed-container",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "rm",
+      "--force",
+      "750c3ea5ef1c13853bcb99277471ca4a9f64c25606baffef25f47f096cd5c1ad"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.04699999999996862
+  }
+]

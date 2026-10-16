@@ -1,0 +1,73 @@
+{
+  "source_commit": "e3a89b153b5d8e28ca60533a39a73788e7e4e510",
+  "lock": {
+    "schema_version": 1,
+    "scope": "Server 2022 process-container qualification fixture, not Windows desktop support",
+    "repository": "mcr.microsoft.com/windows/servercore",
+    "digest": "sha256:76cf422c98ca437b308374d0498280541fa42ac7061bb44015a6c8b70cf4db6a",
+    "image_id": "sha256:76e6f57c103004c102b102281f3e6c750a1aa80cef8c5267d6fc2435408c87fc",
+    "architecture": "amd64",
+    "host_kernel_build": "20348",
+    "source": "Actual read-only hosted Windows preflight run 38882586356; no tag resolution or image pull permitted during qualification"
+  },
+  "image": {
+    "Id": "sha256:76e6f57c103004c102b102281f3e6c750a1aa80cef8c5267d6fc2435408c87fc",
+    "RepoTags": [
+      "mcr.microsoft.com/windows/servercore:ltsc2022"
+    ],
+    "RepoDigests": [
+      "mcr.microsoft.com/windows/servercore@sha256:76cf422c98ca437b308374d0498280541fa42ac7061bb44015a6c8b70cf4db6a"
+    ],
+    "Created": "2026-09-05T23:48:54.9626747Z",
+    "Config": {
+      "Cmd": [
+        "c:\\windows\\system32\\cmd.exe"
+      ]
+    },
+    "Architecture": "amd64",
+    "Os": "windows",
+    "OsVersion": "10.0.20348.5622",
+    "Size": 4921471209,
+    "GraphDriver": {
+      "Data": {
+        "dir": "C:\\ProgramData\\docker\\windowsfilter\\9f09c89f5b7791f76287f46b78504a976c6d4d6bf0085fcac9240948304a631c"
+      },
+      "Name": "windowsfilter"
+    },
+    "RootFS": {
+      "Type": "layers",
+      "Layers": [
+        "sha256:636e121f90b0401f3bff3d93ff78cc731b1e7e852c0e4699a3688b8cb14aa7e5",
+        "sha256:9d326ee8ececd167cd369db833c224c0f8918552bcfe9c6180d5d7a325e84703"
+      ]
+    },
+    "Metadata": {
+      "LastTagTime": "0001-01-01T00:00:00Z"
+    }
+  },
+  "prerequisites_sha256": "38142d6d05ea81d47f918a24de4d754f827c1fbee63e4a071e0ab013b4eb3db2",
+  "inputs": {
+    ".": {
+      "mode": 511,
+      "type": "directory"
+    },
+    "control.txt": {
+      "mode": 438,
+      "type": "file",
+      "bytes": 36,
+      "sha256": "557070be9798d55927586be814cf91a76b741e8a1a61cfe540dfd49ce0314201"
+    },
+    "controls.ps1": {
+      "mode": 438,
+      "type": "file",
+      "bytes": 1920,
+      "sha256": "1a3ac3078c9a0f3afbc4ded1233b72c9c2bf3e3add325a2c276480790159b913"
+    }
+  },
+  "tools": {
+    "windows_container_smoke.py": "14f17a459765ec7878bf74ba27a1bb6f944379379839a094c1907228b97a1724",
+    "windows_smoke_controls.ps1": "1a3ac3078c9a0f3afbc4ded1233b72c9c2bf3e3add325a2c276480790159b913",
+    "evidence_commands.py": "a3dca1aae8ea35887fdf1426f44ab343e5222e004fb8d6e4b04a6561f4f3ed0e",
+    "sdk_archive.py": "0b1d80768d15c2818afc82efcc1f3ddf253360b99c16c623e170073e020cb3cd"
+  }
+}
