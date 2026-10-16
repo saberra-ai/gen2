@@ -1,7 +1,7 @@
 # Local Nemotron 3 speaker timelines
 
-Implementation qualification is in progress. macOS arm64 CPU has real-model
-wrapper parity; quality, attribution and desktop release gates remain open.
+Implementation qualification is in progress. macOS arm64 CPU/Metal have
+real-model wrapper parity; quality, attribution and desktop release gates remain open.
 See [the roadmap](plans/nemotron-3-diarization-roadmap.md).
 
 Build with `backend-diar-nemo`. This adds no build-time model downloads or C++
@@ -13,11 +13,14 @@ CPU constructor reports `backend: "cpu"`. On macOS, `LoadOptions::metal(library)
 explicitly selects a Metal device from a separately built SDK and reports
 `backend: "metal"` plus its device description. An unavailable Metal device
 fails loading; it never silently falls back to CPU. Native GPU execution can
-still partition unsupported operations onto CPU. Metal is under development
-qualification; the app package remains CPU until its own Metal gate passes.
-Use the relocated packages rather than mixing raw SDKs: their generic ggml
+still partition unsupported operations onto CPU. The ad-hoc Pnola CPU/Metal
+packages have recorded/live CLI receipts on the named M4 Pro. Fresh-machine,
+native GUI, physical microphone, signing and accuracy gates remain open.
+On macOS, use the relocated packages: raw SDKs' generic ggml
 loader identities can collide inside one process. CPU and Metal packages use
 distinct private loader names.
+Linux runtime construction and Windows native model execution have separate
+development receipts; neither platform has completed release qualification.
 
 ```rust,no_run
 use gen2::{Runtime, diarization::{Audio, DiarizeOptions, LoadOptions}};

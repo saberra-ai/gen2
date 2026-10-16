@@ -1,0 +1,188 @@
+==> nemo-speech Windows build
+    backend=cpu profile=asr asr=True diar=True tts=False nmt=False http=False grpc=False flashlight=False tts-ja=False tts-zh=False tests=False examples=False tools=False
+    config=Release compiler=msvc host=AMD64 target=x64 build=D:\a\gen2\gen2\native-source\build\gen2-cpu-diar jobs=2 cublas-shim=False
+    vcpkg=asr triplet=x64-windows-static-md
+==> importing MSVC env from C:\Program Files\Microsoft Visual Studio\2022\Enterprise (vcvars64.bat)
+==> bootstrapping vcpkg 2026.07.29 in C:\Users\runneradmin\AppData\Local\NeMoSpeech\vcpkg-2026.07.29
+==> building vcpkg
+Downloading https://github.com/microsoft/vcpkg-tool/releases/download/2026-07-27/vcpkg.exe -> C:\Users\runneradmin\AppData\Local\NeMoSpeech\vcpkg-2026.07.29\vcpkg.exe... done.
+Validating signature... done.
+
+vcpkg package management program version 2026-07-27-98d7cb0cf1f4686a3e43aa5672b6230c1d56bce8
+
+See LICENSE.txt for license information.
+==> vcpkg features: asr (x64-windows-static-md)
+==> cmake -S D:\a\gen2\gen2\native-source -B D:\a\gen2\gen2\native-source\build\gen2-cpu-diar -G Ninja -DCMAKE_BUILD_TYPE=Release -DNEMO_SPEECH_BUILD_ASR=ON -DNEMO_SPEECH_BUILD_DIAR=ON -DNEMO_SPEECH_BUILD_TTS=OFF -DNEMO_SPEECH_BUILD_NMT=OFF -DNEMO_SPEECH_BUILD_HTTP=OFF -DNEMO_SPEECH_HTTP_TLS=OFF -DNEMO_SPEECH_BUILD_GRPC=OFF -DNEMO_SPEECH_WITH_FLASHLIGHT=OFF -DNEMO_SPEECH_WITH_NORM=OFF -DNEMO_SPEECH_TTS_WITH_JA=OFF -DNEMO_SPEECH_TTS_WITH_ZH=OFF -DNEMO_SPEECH_BUILD_TESTS=OFF -DBUILD_TESTING=OFF -DNEMO_SPEECH_BUILD_EXAMPLES=OFF -DNEMO_SPEECH_BUILD_TOOLS=OFF -DCMAKE_TOOLCHAIN_FILE=C:\Users\runneradmin\AppData\Local\NeMoSpeech\vcpkg-2026.07.29\scripts\buildsystems\vcpkg.cmake -DVCPKG_TARGET_TRIPLET=x64-windows-static-md -DVCPKG_MANIFEST_FEATURES=asr -DVCPKG_INSTALLED_DIR=D:\a\gen2\gen2\native-source\build\gen2-cpu-diar\vcpkg_installed -DGGML_CUDA=OFF -DGGML_VULKAN=OFF -DNEMO_SPEECH_BUILD_EXAMPLES=ON -DNEMO_SPEECH_BUILD_CLI=OFF -DNEMO_SPEECH_BUILD_MIC_CAPTURE=OFF -DGGML_OPENMP=OFF -DGGML_NATIVE=OFF -DGGML_AVX=ON -DGGML_AVX2=ON -DGGML_AVX512=OFF -DGGML_AVX_VNNI=OFF -DGGML_FMA=ON -DGGML_F16C=ON -DNEMO_SPEECH_WITH_NORM=OFF -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_INSTALL_PREFIX=D:\a\_temp\nemo-sdk -DCMAKE_C_COMPILER=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\Hostx64\x64\cl.exe -DCMAKE_CXX_COMPILER=C:\Program Files\Microsoft Visual Studio\2022\Enterprise\VC\Tools\MSVC\14.44.35207\bin\Hostx64\x64\cl.exe -DNEMO_SPEECH_BUILD_ASR=OFF -DNEMO_SPEECH_BUILD_TTS=OFF
+-- Running vcpkg install
+A suitable version of cmake was not found (required v4.4.0).
+Downloading https://github.com/Kitware/CMake/releases/download/v4.4.0/cmake-4.4.0-windows-x86_64.zip -> cmake-4.4.0-windows-x86_64.zip
+Successfully downloaded cmake-4.4.0-windows-x86_64.zip
+Extracting cmake...
+Detecting compiler hash for triplet x64-windows...
+Compiler found: C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe
+Detecting compiler hash for triplet x64-windows-static-md...
+Compiler found: C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe
+The following packages will be built and installed:
+  * abseil:x64-windows-static-md@20260107.1#3
+  * abseil:x64-windows@20260107.1#3
+  * protobuf:x64-windows@6.33.4#2
+  * protobuf:x64-windows-static-md@6.33.4#2
+    sentencepiece:x64-windows-static-md@0.2.1
+  * utf8-range:x64-windows-static-md@6.33.4
+  * utf8-range:x64-windows@6.33.4
+  * vcpkg-cmake:x64-windows@2024-04-23
+  * vcpkg-cmake-config:x64-windows@2026-07-21
+Additional packages (*) will be modified to complete this operation.
+Restored 9 package(s) from C:\Users\runneradmin\AppData\Local\vcpkg\archives in 5 s. Use --debug to see more details.
+Installing 1/9 vcpkg-cmake:x64-windows@2024-04-23...
+vcpkg-cmake:x64-windows@2024-04-23 package ABI: 09c130905edcb7e9be99065665de8cf0fca09a344c3415634c6211024dc42bdd
+Elapsed time to handle vcpkg-cmake:x64-windows: 2.98 ms
+Installing 2/9 vcpkg-cmake-config:x64-windows@2026-07-21...
+vcpkg-cmake-config:x64-windows@2026-07-21 package ABI: e0f3d04f0a682716bb22adf54363f309f16004f952e580cbec7f64b098dbcf26
+Elapsed time to handle vcpkg-cmake-config:x64-windows: 1.65 ms
+Installing 3/9 abseil:x64-windows-static-md@20260107.1#3...
+abseil:x64-windows-static-md@20260107.1#3 package ABI: 20ec1fc01b2a19cfae2c28caf7709026a73019f99be790ffe5931f4ae0ce3ee2
+Elapsed time to handle abseil:x64-windows-static-md: 181 ms
+Installing 4/9 utf8-range:x64-windows-static-md@6.33.4...
+utf8-range:x64-windows-static-md@6.33.4 package ABI: ace053ed5cbc7abc3fa11d0438ed63ebf5828c3d93316161ee492ba5373601c7
+Elapsed time to handle utf8-range:x64-windows-static-md: 3.72 ms
+Installing 5/9 abseil:x64-windows@20260107.1#3...
+abseil:x64-windows@20260107.1#3 package ABI: 25bc6b1d107f9e70bdb64c74195ded07e0b52a51e04ed51eb17aa31391b761b7
+Elapsed time to handle abseil:x64-windows: 287 ms
+Installing 6/9 utf8-range:x64-windows@6.33.4...
+utf8-range:x64-windows@6.33.4 package ABI: 3257d95315e22ba8ccd74f52b723d7fc376a58b8add373bf1d70d1dece437a6c
+Elapsed time to handle utf8-range:x64-windows: 3.77 ms
+Installing 7/9 protobuf:x64-windows@6.33.4#2...
+protobuf:x64-windows@6.33.4#2 package ABI: ea2b589777f6d3c4679784738c6e41fefa466aeb8ba222bf4f8f05a2ffd4e689
+Elapsed time to handle protobuf:x64-windows: 158 ms
+Installing 8/9 protobuf:x64-windows-static-md@6.33.4#2...
+protobuf:x64-windows-static-md@6.33.4#2 package ABI: 31d9662c5b7194528672414b73d9b2afa588d0db8b4c1097dc96c01c0f1528db
+Elapsed time to handle protobuf:x64-windows-static-md: 140 ms
+Installing 9/9 sentencepiece:x64-windows-static-md@0.2.1...
+sentencepiece:x64-windows-static-md@0.2.1 package ABI: a189a5e1d02764911a95003c50f457ec8be0767a8ede96ef9f4f187cba793377
+Elapsed time to handle sentencepiece:x64-windows-static-md: 52 ms
+Installed contents are licensed to you by owners. Microsoft is not responsible for, nor does it grant any licenses to, third-party packages.
+Packages installed in this vcpkg installation declare the following licenses:
+Apache-2.0
+BSD-3-Clause
+MIT
+All requested installations completed successfully in: 831 ms
+-- Running vcpkg install - done
+-- The C compiler identification is MSVC 19.44.35229.0
+-- The CXX compiler identification is MSVC 19.44.35229.0
+-- Detecting C compiler ABI info
+-- Detecting C compiler ABI info - done
+-- Check for working C compiler: C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting C compile features
+-- Detecting C compile features - done
+-- Detecting CXX compiler ABI info
+-- Detecting CXX compiler ABI info - done
+-- Check for working CXX compiler: C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe - skipped
+-- Detecting CXX compile features
+-- Detecting CXX compile features - done
+-- Diarization currently shares the ASR runtime library; building that library without the transcribe CLI/API surface
+-- Applying 19 patches from D:/a/gen2/gen2/native-source/patches to llama.cpp in D:/a/gen2/gen2/native-source/build/gen2-cpu-diar/_deps/llama.cpp
+-- ggml and llama.cpp source: D:/a/gen2/gen2/native-source/build/gen2-cpu-diar/_deps/llama.cpp
+-- The ASM compiler identification is MSVC
+-- Found assembler: C:/Program Files/Microsoft Visual Studio/2022/Enterprise/VC/Tools/MSVC/14.44.35207/bin/Hostx64/x64/cl.exe
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD
+-- Performing Test CMAKE_HAVE_LIBC_PTHREAD - Failed
+-- Looking for pthread_create in pthreads
+-- Looking for pthread_create in pthreads - not found
+-- Looking for pthread_create in pthread
+-- Looking for pthread_create in pthread - not found
+-- Found Threads: TRUE
+-- Warning: ccache not found - consider installing it for faster compilation or disable this warning with GGML_CCACHE=OFF
+-- CMAKE_SYSTEM_PROCESSOR: AMD64
+-- CMAKE_GENERATOR_PLATFORM: 
+-- GGML_SYSTEM_ARCH: x86
+-- Including CPU backend
+-- x86 detected
+-- Adding CPU backend variant ggml-cpu: /arch:AVX2 GGML_AVX2;GGML_FMA;GGML_F16C;__BMI2__;GGML_BMI2
+-- ggml version: 0.25.1
+-- ggml commit:  083861c
+-- Configuring done (37.2s)
+-- Generating done (0.1s)
+-- Build files have been written to: D:/a/gen2/gen2/native-source/build/gen2-cpu-diar
+==> building
+[0/2] Re-checking globbed directories...
+[1/80] Building CXX object ggml\src\CMakeFiles\ggml-base.dir\ggml.cpp.obj
+[2/80] Building C object ggml\src\CMakeFiles\ggml-base.dir\ggml-alloc.c.obj
+[3/80] Building C object ggml\src\CMakeFiles\ggml-base.dir\ggml.c.obj
+[4/80] Building CXX object ggml\src\CMakeFiles\ggml-base.dir\ggml-backend.cpp.obj
+[5/80] Building CXX object ggml\src\CMakeFiles\ggml-base.dir\ggml-opt.cpp.obj
+[6/80] Building CXX object ggml\src\CMakeFiles\ggml-base.dir\ggml-backend-meta.cpp.obj
+[7/80] Building CXX object ggml\src\CMakeFiles\ggml-base.dir\ggml-threading.cpp.obj
+[8/80] Building C object ggml\src\CMakeFiles\ggml-base.dir\ggml-quants.c.obj
+[9/80] Building CXX object ggml\src\CMakeFiles\ggml-base.dir\gguf.cpp.obj
+[10/80] Building C object ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\ggml-cpu.c.obj
+[11/80] Linking CXX shared library bin\ggml-base.dll
+[12/80] Building CXX object ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\ggml-cpu.cpp.obj
+[13/80] Building CXX object ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\iqp.cpp.obj
+[14/80] Building CXX object ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\repack.cpp.obj
+[15/80] Building CXX object ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\hbm.cpp.obj
+[16/80] Building CXX object ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\traits.cpp.obj
+[17/80] Building C object ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\quants.c.obj
+[18/80] Building CXX object ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\amx\amx.cpp.obj
+[19/80] Building CXX object ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\amx\mmq.cpp.obj
+[20/80] Building CXX object ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\binary-ops.cpp.obj
+[21/80] Building CXX object ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\unary-ops.cpp.obj
+[22/80] Building CXX object ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\vec.cpp.obj
+[23/80] Building CXX object ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\llamafile\sgemm.cpp.obj
+[24/80] Building CXX object ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\ops.cpp.obj
+[25/80] Building C object ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\arch\x86\quants.c.obj
+[26/80] Building CXX object ggml\src\CMakeFiles\ggml.dir\ggml-backend-dl.cpp.obj
+[27/80] Building CXX object ggml\src\CMakeFiles\ggml-cpu.dir\ggml-cpu\arch\x86\repack.cpp.obj
+[28/80] Linking CXX shared library bin\ggml-cpu.dll
+[29/80] Building CXX object src\runtime\ggml\CMakeFiles\nemo_speech_runtime_ggml.dir\backend.cpp.obj
+[30/80] Building CXX object ggml\src\CMakeFiles\ggml.dir\ggml-backend-reg.cpp.obj
+[31/80] Linking CXX shared library bin\ggml.dll
+[32/80] Building CXX object src\runtime\ggml\CMakeFiles\nemo_speech_runtime_ggml.dir\logging.cpp.obj
+[33/80] Building CXX object src\runtime\ggml\CMakeFiles\nemo_speech_runtime_ggml.dir\loader.cpp.obj
+[34/80] Building CXX object src\runtime\ggml\CMakeFiles\nemo_speech_runtime_ggml.dir\nn.cpp.obj
+[35/80] Building CXX object src\runtime\ggml\CMakeFiles\nemo_speech_runtime_ggml.dir\tensor_container.cpp.obj
+[36/80] Building CXX object src\runtime\ggml\CMakeFiles\nemo_speech_runtime_ggml.dir\session.cpp.obj
+[37/80] Building CXX object src\common\CMakeFiles\nemo_speech_common.dir\audio_decoder.cpp.obj
+[38/80] Building CXX object src\common\CMakeFiles\nemo_speech_common.dir\audio_file.cpp.obj
+[39/80] Building CXX object src\common\CMakeFiles\nemo_speech_common.dir\audio_resampler.cpp.obj
+[40/80] Building CXX object src\common\CMakeFiles\nemo_speech_common.dir\parameter_parser.cpp.obj
+[41/80] Building CXX object src\common\CMakeFiles\nemo_speech_common.dir\json.cpp.obj
+[42/80] Linking CXX static library src\runtime\ggml\nemo_speech_runtime_ggml.lib
+[43/80] Building CXX object src\common\CMakeFiles\nemo_speech_common.dir\subtitles.cpp.obj
+[44/80] Linking CXX static library src\common\nemo_speech_common.lib
+[45/80] Building CXX object src\asr\CMakeFiles\nemo_speech_asr.dir\decoders\flashlight_decoder.cpp.obj
+[46/80] Building CXX object src\asr\CMakeFiles\nemo_speech_asr.dir\decoders\context_biasing.cpp.obj
+[47/80] Building CXX object src\asr\CMakeFiles\nemo_speech_asr.dir\decoders\greedy_ctc_decoder.cpp.obj
+[48/80] Building CXX object src\asr\CMakeFiles\nemo_speech_asr.dir\decoders\rnnt_greedy_decoder.cpp.obj
+[49/80] Building CXX object src\asr\CMakeFiles\nemo_speech_asr.dir\decoders\rnnt_modules.cpp.obj
+[50/80] Building CXX object src\asr\CMakeFiles\nemo_speech_asr.dir\diar\aosc_state.cpp.obj
+[51/80] Building CXX object src\asr\CMakeFiles\nemo_speech_asr.dir\diar\diar_pipeline.cpp.obj
+[52/80] Building CXX object src\asr\CMakeFiles\nemo_speech_asr.dir\diar\diarizer.cpp.obj
+[53/80] Building CXX object src\asr\CMakeFiles\nemo_speech_asr.dir\diar\sortformer_model.cpp.obj
+[54/80] Building CXX object src\asr\CMakeFiles\nemo_speech_asr.dir\encoder\cache_aware_encoder.cpp.obj
+[55/80] Building CXX object src\asr\CMakeFiles\nemo_speech_asr.dir\encoder\fastconformer.cpp.obj
+[56/80] Building CXX object src\asr\CMakeFiles\nemo_speech_asr.dir\encoder\rel_pos_attention.cpp.obj
+[57/80] Building CXX object src\asr\CMakeFiles\nemo_speech_asr.dir\encoder\rope_transformer.cpp.obj
+[58/80] Building CXX object src\asr\CMakeFiles\nemo_speech_asr.dir\encoder\transformer_encoder.cpp.obj
+[59/80] Building CXX object src\asr\CMakeFiles\nemo_speech_asr.dir\features\fe.cpp.obj
+[60/80] Building CXX object src\asr\CMakeFiles\nemo_speech_asr.dir\pnc\pnc_model.cpp.obj
+[61/80] Building CXX object src\asr\CMakeFiles\nemo_speech_asr.dir\model.cpp.obj
+[62/80] Building CXX object src\asr\CMakeFiles\nemo_speech_asr.dir\pnc\pnc_runner.cpp.obj
+[63/80] Building CXX object src\asr\CMakeFiles\nemo_speech_asr.dir\pnc\wordpiece.cpp.obj
+[64/80] Building CXX object src\asr\CMakeFiles\nemo_speech_asr.dir\postproc\itn.cpp.obj
+[65/80] Building CXX object src\asr\CMakeFiles\nemo_speech_asr.dir\postproc\itn_align.cpp.obj
+[66/80] Building CXX object src\asr\CMakeFiles\nemo_speech_asr.dir\postproc\pipeline.cpp.obj
+[67/80] Building CXX object src\asr\CMakeFiles\nemo_speech_asr.dir\postproc\profanity.cpp.obj
+[68/80] Building CXX object src\asr\CMakeFiles\nemo_speech_asr.dir\recognizer.cpp.obj
+[69/80] Building CXX object src\asr\CMakeFiles\nemo_speech_asr.dir\runner.cpp.obj
+[70/80] Building CXX object src\asr\CMakeFiles\nemo_speech_asr.dir\vad\vad_endpointer.cpp.obj
+[71/80] Building CXX object src\asr\CMakeFiles\nemo_speech_asr.dir\vad\vad_masker.cpp.obj
+[72/80] Building CXX object src\asr\CMakeFiles\nemo_speech_asr.dir\vad\silero_vad.cpp.obj
+[73/80] Linking CXX shared library bin\nemo_speech_asr.dll
+[74/80] Building CXX object src\asr\CMakeFiles\nemo_speech_asr_c.dir\c_api.cpp.obj
+[75/80] Linking CXX shared library bin\nemo_speech_asr_c.dll
+[76/80] Building CXX object src\core\CMakeFiles\nemo_speech_engine_registry.dir\engine_registry.cpp.obj
+[77/80] Linking CXX static library src\core\nemo_speech_engine_registry.lib
+[78/80] Building CXX object examples\CMakeFiles\diarize_file.dir\diarize_file.cpp.obj
+[79/80] Linking CXX executable bin\diarize_file.exe
+==> done. Binaries in D:\a\gen2\gen2\native-source\build\gen2-cpu-diar\bin

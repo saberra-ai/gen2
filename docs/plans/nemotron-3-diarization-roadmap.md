@@ -608,9 +608,15 @@ successfully built and installed the SDK (65 delivered regular files verified),
 then failed launching the standalone probe because its bare `cl.exe` was not
 resolved from the child process environment. Absolute tool resolution fixed
 launch; the next retry exposed global `/TP` parsing the import archive as C++.
-The reviewed command now passes that archive after `/link`; actual probe/model
-qualification remains pending. Both failures and SDK byte checks are retained
+The reviewed command now passes that archive after `/link`. Both failures and SDK byte checks are retained
 in the [probe-build diagnostics](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-probe-build/collection.json).
+The next actual MSVC retry builds the probe and Rust helpers and runs the locked
+Q8 model successfully (27 native turns, 6,001 frames). It then stops at the
+loader negative control: CPython rewrites error 126 without preserving
+`winerror`. The control now reads the typed Win32 API directly and still
+requires exactly error 126. Raw native outputs, 66 verified installed files,
+and the failed control remain in the [native loader-control receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-native-loader-control/qualification.json).
+Actual Windows public/native parity and lifecycle qualification remain pending.
 These jobs do not establish closed portable
 packages, fresh-machine offline operation or mixed-model coexistence on those
 platforms. The [Linux packaging investigation](../research/nemotron-linux-packaging.md)

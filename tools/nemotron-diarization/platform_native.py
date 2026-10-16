@@ -207,17 +207,10 @@ class Qualification:
         native = self.output / 'native-ami.json'
         self.run('native-inference', [self.probe, model, wav, '1', '-1', native])
         if self.windows:
-            control = '''import ctypes, sys
-try:
-    ctypes.CDLL(sys.argv[1], winmode=0)
-except OSError as error:
-    if error.winerror != 126:
-        raise
-    print('Confirmed default Windows loader cannot resolve sibling SDK DLLs:', error)
-else:
-    raise RuntimeError('Default Windows loader unexpectedly resolved SDK dependencies; control invalid')
-'''
-            self.run('windows-default-loader-control', [sys.executable, '-c', control, self.library])
+            # CPython's CDLL constructor replaces ERROR_MOD_NOT_FOUND with a
+            # FileNotFoundError lacking winerror. Read the native code directly.
+            self.run('windows-default-loader-control', [sys.executable,
+                     self.tools / 'windows_loader_control.py', self.library])
         target = Path(self.environment.get('CARGO_TARGET_DIR', self.repo / 'target'))
         if not target.is_absolute():
             target = self.repo / target
@@ -266,6 +259,7 @@ else:
                 'source_commit': capture(['git', 'rev-parse', 'HEAD'], cwd=self.repo),
                 'runtime_revision': self.lock['runtime']['revision'], 'llama_revision': self.lock['runtime']['llama_revision'],
                 'lock_sha256': digest(self.lock_path), 'runner_sha256': digest(Path(__file__)), 'commands': self.commands,
+                'windows_loader_control_sha256': digest(self.tools / 'windows_loader_control.py') if self.windows else None,
                 'installed_files': files, 'build_compatibility': self.compatibility,
                 'development_sdk_archive': self.archive,
                 'limits': ['No offline/fresh-machine relocation claim.',

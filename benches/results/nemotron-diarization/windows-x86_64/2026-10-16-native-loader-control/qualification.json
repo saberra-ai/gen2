@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "source_commit": "ad9e1e6eff22d1437d3f63873e451d10f3eb7186",
+  "run_url": "https://github.com/saberra-ai/gen2/actions/runs/38874742702",
+  "sdk_and_probe_built": true,
+  "downloaded_sdk_regular_files_verified": 66,
+  "native_cpu_model_executed": true,
+  "native_turns": 27,
+  "native_frames": 6001,
+  "input_pcm_f32le_sha256": "96858fdcf0c8854f8fc659403c11ddc7565f538a7402803e4235e9e354d87ae6",
+  "native_probabilities_sha256": "acf98f9a01d441acb687bb22187b6a0fc766166c1868445459d987275e00424d",
+  "native_probabilities_finite_bounded": true,
+  "diagnosis": "The default-loader negative control reaches CPython ctypes ERROR_MOD_NOT_FOUND path, which raises FileNotFoundError without a winerror value. Inline error.winerror !=126 reraises, so public inference/lifecycle never run. This is a control-harness failure after successful independent native model execution.",
+  "control_fix": "Read LoadLibraryExW NULL handle and exact GetLastError126 directly, with explicit ctypes handle signatures, instead of inspecting the rewritten CDLL exception.",
+  "limits": [
+    "No public API/native parity, loader-control pass, lifecycle, closed runtime, coexistence or release qualification at this source.",
+    "No cross-OS bitwise identity claim; 27 native Windows turns differ from Linux26 but same-host public comparison has not yet run.",
+    "SDK files and native probability bytes rechecked on macOS, without executing Windows binaries."
+  ]
+}
