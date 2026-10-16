@@ -123,6 +123,17 @@ ORT provider records, with initial/restored chat on all 29 Metal layers. The
 compiled helper's 314 repository inputs match the later execution source.
 Storage guards complete normally. All 169 model-free tool tests pass.
 
+The [Pnola adapter protocol](valid-mel-pnola.protocol.json) freezes current debug
+test/CLI helpers, 314 Gen2 and 87 app compilation inputs, and relocated artifacts
+for ten fresh cases. These cover recorded text/turn preservation, both partial
+success directions, CPU/Metal paced capture-output and live ASR/speaker paths,
+and retained-handle Metal shutdown. Helpers compile offline with model reads
+denied and Tauri resource staging explicitly disabled; execution uses explicit
+artifact overrides. Signed bundles, automatic bundled resolution, GUI, physical
+microphone and held-out attribution quality remain separate. A regression also
+checks that PID-metadata failure kills and reaps the child before releasing disk
+reserve. All 172 model-free tests pass; actual adapter execution is pending.
+
 # Nemotron 3 — N0 qualification
 
 This directory implements the first milestone of the
