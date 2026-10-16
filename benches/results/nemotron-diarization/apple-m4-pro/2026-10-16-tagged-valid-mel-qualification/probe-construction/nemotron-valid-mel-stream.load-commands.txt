@@ -1,0 +1,368 @@
+/Users/victor/.cache/gen2-nemotron3-n0/tagged-valid-mel-probes-v1/nemotron-valid-mel-stream:
+Load command 0
+      cmd LC_SEGMENT_64
+  cmdsize 72
+  segname __PAGEZERO
+   vmaddr 0x0000000000000000
+   vmsize 0x0000000100000000
+  fileoff 0
+ filesize 0
+  maxprot 0x00000000
+ initprot 0x00000000
+   nsects 0
+    flags 0x0
+Load command 1
+      cmd LC_SEGMENT_64
+  cmdsize 712
+  segname __TEXT
+   vmaddr 0x0000000100000000
+   vmsize 0x00000000000a4000
+  fileoff 0
+ filesize 671744
+  maxprot 0x00000005
+ initprot 0x00000005
+   nsects 8
+    flags 0x0
+Section
+  sectname __text
+   segname __TEXT
+      addr 0x0000000100000930
+      size 0x0000000000075504
+    offset 2352
+     align 2^2 (4)
+    reloff 0
+    nreloc 0
+     flags 0x80000400
+ reserved1 0
+ reserved2 0
+Section
+  sectname __stubs
+   segname __TEXT
+      addr 0x0000000100075e34
+      size 0x000000000000048c
+    offset 482868
+     align 2^2 (4)
+    reloff 0
+    nreloc 0
+     flags 0x80000408
+ reserved1 0 (index into indirect symbol table)
+ reserved2 12 (size of stubs)
+Section
+  sectname __stub_helper
+   segname __TEXT
+      addr 0x00000001000762c0
+      size 0x00000000000004a4
+    offset 484032
+     align 2^2 (4)
+    reloff 0
+    nreloc 0
+     flags 0x80000400
+ reserved1 0
+ reserved2 0
+Section
+  sectname __gcc_except_tab
+   segname __TEXT
+      addr 0x0000000100076764
+      size 0x00000000000058d4
+    offset 485220
+     align 2^2 (4)
+    reloff 0
+    nreloc 0
+     flags 0x00000000
+ reserved1 0
+ reserved2 0
+Section
+  sectname __const
+   segname __TEXT
+      addr 0x000000010007c040
+      size 0x000000000000b0c0
+    offset 507968
+     align 2^6 (64)
+    reloff 0
+    nreloc 0
+     flags 0x00000000
+ reserved1 0
+ reserved2 0
+Section
+  sectname __cstring
+   segname __TEXT
+      addr 0x0000000100087100
+      size 0x0000000000003382
+    offset 553216
+     align 2^2 (4)
+    reloff 0
+    nreloc 0
+     flags 0x00000002
+ reserved1 0
+ reserved2 0
+Section
+  sectname __unwind_info
+   segname __TEXT
+      addr 0x000000010008a484
+      size 0x0000000000003538
+    offset 566404
+     align 2^2 (4)
+    reloff 0
+    nreloc 0
+     flags 0x00000000
+ reserved1 0
+ reserved2 0
+Section
+  sectname __eh_frame
+   segname __TEXT
+      addr 0x000000010008d9c0
+      size 0x000000000001335c
+    offset 580032
+     align 2^3 (8)
+    reloff 0
+    nreloc 0
+     flags 0x6800000b
+ reserved1 0
+ reserved2 0
+Load command 2
+      cmd LC_SEGMENT_64
+  cmdsize 232
+  segname __DATA_CONST
+   vmaddr 0x00000001000a4000
+   vmsize 0x0000000000004000
+  fileoff 671744
+ filesize 16384
+  maxprot 0x00000003
+ initprot 0x00000003
+   nsects 2
+    flags 0x10
+Section
+  sectname __got
+   segname __DATA_CONST
+      addr 0x00000001000a4000
+      size 0x0000000000000010
+    offset 671744
+     align 2^3 (8)
+    reloff 0
+    nreloc 0
+     flags 0x00000006
+ reserved1 97 (index into indirect symbol table)
+ reserved2 0
+Section
+  sectname __const
+   segname __DATA_CONST
+      addr 0x00000001000a4010
+      size 0x0000000000003908
+    offset 671760
+     align 2^3 (8)
+    reloff 0
+    nreloc 0
+     flags 0x00000000
+ reserved1 0
+ reserved2 0
+Load command 3
+      cmd LC_SEGMENT_64
+  cmdsize 632
+  segname __DATA
+   vmaddr 0x00000001000a8000
+   vmsize 0x0000000000004000
+  fileoff 688128
+ filesize 16384
+  maxprot 0x00000003
+ initprot 0x00000003
+   nsects 7
+    flags 0x0
+Section
+  sectname __la_symbol_ptr
+   segname __DATA
+      addr 0x00000001000a8000
+      size 0x0000000000000308
+    offset 688128
+     align 2^3 (8)
+    reloff 0
+    nreloc 0
+     flags 0x00000007
+ reserved1 99 (index into indirect symbol table)
+ reserved2 0
+Section
+  sectname __data
+   segname __DATA
+      addr 0x00000001000a8308
+      size 0x00000000000009c8
+    offset 688904
+     align 2^3 (8)
+    reloff 0
+    nreloc 0
+     flags 0x00000000
+ reserved1 0
+ reserved2 0
+Section
+  sectname __thread_vars
+   segname __DATA
+      addr 0x00000001000a8cd0
+      size 0x00000000000000f0
+    offset 691408
+     align 2^3 (8)
+    reloff 0
+    nreloc 0
+     flags 0x00000013
+ reserved1 0
+ reserved2 0
+Section
+  sectname __thread_data
+   segname __DATA
+      addr 0x00000001000a8dc0
+      size 0x0000000000000048
+    offset 691648
+     align 2^3 (8)
+    reloff 0
+    nreloc 0
+     flags 0x00000011
+ reserved1 0
+ reserved2 0
+Section
+  sectname __thread_bss
+   segname __DATA
+      addr 0x00000001000a8e08
+      size 0x0000000000000050
+    offset 0
+     align 2^3 (8)
+    reloff 0
+    nreloc 0
+     flags 0x00000012
+ reserved1 0
+ reserved2 0
+Section
+  sectname __common
+   segname __DATA
+      addr 0x00000001000a8e58
+      size 0x0000000000000050
+    offset 0
+     align 2^3 (8)
+    reloff 0
+    nreloc 0
+     flags 0x00000001
+ reserved1 0
+ reserved2 0
+Section
+  sectname __bss
+   segname __DATA
+      addr 0x00000001000a8ea8
+      size 0x0000000000000088
+    offset 0
+     align 2^3 (8)
+    reloff 0
+    nreloc 0
+     flags 0x00000001
+ reserved1 0
+ reserved2 0
+Load command 4
+      cmd LC_SEGMENT_64
+  cmdsize 72
+  segname __LINKEDIT
+   vmaddr 0x00000001000ac000
+   vmsize 0x0000000000048000
+  fileoff 704512
+ filesize 280800
+  maxprot 0x00000001
+ initprot 0x00000001
+   nsects 0
+    flags 0x0
+Load command 5
+            cmd LC_DYLD_INFO_ONLY
+        cmdsize 48
+     rebase_off 704512
+    rebase_size 416
+       bind_off 704928
+      bind_size 48
+  weak_bind_off 0
+ weak_bind_size 0
+  lazy_bind_off 704976
+ lazy_bind_size 2112
+     export_off 707088
+    export_size 36352
+Load command 6
+     cmd LC_SYMTAB
+ cmdsize 24
+  symoff 745704
+   nsyms 2241
+  stroff 782344
+ strsize 195160
+Load command 7
+            cmd LC_DYSYMTAB
+        cmdsize 80
+      ilocalsym 0
+      nlocalsym 1672
+     iextdefsym 1672
+     nextdefsym 470
+      iundefsym 2142
+      nundefsym 99
+         tocoff 0
+           ntoc 0
+      modtaboff 0
+        nmodtab 0
+   extrefsymoff 0
+    nextrefsyms 0
+ indirectsymoff 781560
+  nindirectsyms 196
+      extreloff 0
+        nextrel 0
+      locreloff 0
+        nlocrel 0
+Load command 8
+          cmd LC_LOAD_DYLINKER
+      cmdsize 32
+         name /usr/lib/dyld (offset 12)
+Load command 9
+     cmd LC_UUID
+ cmdsize 24
+    uuid BC514188-ADDA-3330-BD15-98A96A50922D
+Load command 10
+      cmd LC_BUILD_VERSION
+  cmdsize 32
+ platform 1
+    minos 11.0
+      sdk 26.5
+   ntools 1
+     tool 3
+  version 1267.0
+Load command 11
+      cmd LC_SOURCE_VERSION
+  cmdsize 16
+  version 0.0
+Load command 12
+       cmd LC_MAIN
+   cmdsize 24
+  entryoff 20180
+ stacksize 0
+Load command 13
+          cmd LC_LOAD_DYLIB
+      cmdsize 104
+         name /System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation (offset 24)
+   time stamp 2 Wed Dec 31 19:00:02 1969
+      current version 5026.5.4
+compatibility version 150.0.0
+Load command 14
+          cmd LC_LOAD_DYLIB
+      cmdsize 56
+         name /usr/lib/libiconv.2.dylib (offset 24)
+   time stamp 2 Wed Dec 31 19:00:02 1969
+      current version 7.0.0
+compatibility version 7.0.0
+Load command 15
+          cmd LC_LOAD_DYLIB
+      cmdsize 56
+         name /usr/lib/libSystem.B.dylib (offset 24)
+   time stamp 2 Wed Dec 31 19:00:02 1969
+      current version 1356.0.0
+compatibility version 1.0.0
+Load command 16
+      cmd LC_FUNCTION_STARTS
+  cmdsize 16
+  dataoff 743440
+ datasize 2264
+Load command 17
+      cmd LC_DATA_IN_CODE
+  cmdsize 16
+  dataoff 745704
+ datasize 0
+Load command 18
+      cmd LC_CODE_SIGNATURE
+  cmdsize 16
+  dataoff 977504
+ datasize 7808

@@ -330,3 +330,24 @@ Complete Rust lifecycle/reload/cancellation gates, long sessions, other platform
 Metal, packages/coexistence/desktop/physical microphone and unchanged AMI quality
 remain separate requirements. Started/completed commands and available tensors
 persist on failure; there are no automatic retries under the same attempt.
+
+
+## Tagged fixed-case qualification result
+
+The [789-member receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-tagged-valid-mel-qualification/qualification.json)
+records the admitted run at `b569371`: both 28-case native suites passed, with
+eight explicit direct graph calls across F32 and Q8. All twelve pipeline/direct
+comparisons were byte-identical. The tagged F32 calibration also exactly matched
+the saved untagged candidate. Independent installed-C-API and public Rust output
+matched exactly on both inputs: two rows and no turns at 320 samples; 111 rows
+and one turn at 17872 samples. Every valid row, actual normalized PCM identity,
+repeat-finish behavior and saved stable-prefix/reset/provisional assertion passed.
+The fixed run completed in 3.255484458 seconds after all 15 model-free preflights.
+
+This closes only the preregistered tagged CPU F32/Q8/calibration/silence gate.
+It does not qualify long sessions, all Rust lifecycle paths, packages, Metal,
+Linux/Windows, coexistence, desktop or physical microphone behavior. The static
+92-library closure is provenance, not actual loaded-path telemetry. No HF/original
+NeMo or AMI target ran, no DER was scored, and the original quality gate remains
+unchanged. The Rust helper's successful shutdown and zero reservation checks
+apply only to these two short runs. Reported timing is descriptive.

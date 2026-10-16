@@ -1,0 +1,41 @@
+{
+  "case": "calibration",
+  "passed": true,
+  "scope": "wrapper/reference correctness at the recorded duration; not held-out quality or full release qualification",
+  "runtime_profile": "gen2-valid-mel-v1",
+  "frame_contract": "v3-streaming-valid-mel-v1",
+  "audio_duration_seconds": 1.117,
+  "backend": "cpu",
+  "device": null,
+  "native_frame_count": 111,
+  "retained_first_frame": 0,
+  "retained_rows": 111,
+  "turns": 1,
+  "maximum_turn_error_seconds": 0.0,
+  "turn_tolerance_seconds": 1e-06,
+  "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+  "retained_probabilities_match": true,
+  "maximum_probability_error": 0.0,
+  "probability_tolerance": 1e-06,
+  "gen2_rtf": 0.016350044762757386,
+  "native_rtf": 0.016112802148612354,
+  "c_api_vs_cpp_pipeline": {
+    "shape": [
+      111,
+      8
+    ],
+    "bitwise_equal": true,
+    "maximum_absolute_error": 0.0,
+    "mean_absolute_error": 0.0,
+    "root_mean_square_error": 0.0,
+    "p95_absolute_error": 0.0,
+    "p99_absolute_error": 0.0,
+    "worst_frame_feature": [
+      0,
+      0
+    ],
+    "first_frame_feature_over_tolerance": null,
+    "values_over_tolerance": 0,
+    "absolute_tolerance": 1e-06
+  }
+}

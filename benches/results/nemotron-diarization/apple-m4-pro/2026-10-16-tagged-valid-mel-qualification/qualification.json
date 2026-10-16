@@ -1,0 +1,45 @@
+{
+  "schema_version": 1,
+  "source_commit": "b5693710a14853bfe9a23444bbb93a79d488dc49",
+  "scope": "Fixed macOS arm64 taggedCPU neural qualification on excluded calibration and fixedsilence only. F32/Q8 native finish regressions, independent installed-C-ABI vs publicRust parity at111calibration rows and2minimum20msrows. No AMItarget/DER/quality/desktop/allplatform/longsession/release change.",
+  "fixed_tagged_cpu_f32_q8_and_public_rust_qualified": true,
+  "f32_and_q8_native_finish_logical_cases": 56,
+  "explicit_direct_graph_calls": 8,
+  "models_instantiated": 6,
+  "all_twelve_native_pipeline_direct_comparisons_bitwise_equal": true,
+  "tagged_vs_untagged_f32_calibration_bitwise_equal": true,
+  "both_public_rust_vs_c_api_and_cpp_probabilities_bitwise_equal": true,
+  "public_frames": {
+    "minimum320": 2,
+    "calibration17872": 111
+  },
+  "public_turn_counts": {
+    "minimum320": 0,
+    "calibration17872": 1
+  },
+  "wrapper_native_turns_exact": true,
+  "all_saved_stable_prefixes_reset_and_provisional_checks_passed": true,
+  "preflight_model_free_tests": 15,
+  "static_non_system_loader_libraries_bound": 92,
+  "sdk_alias_paths_bound": 15,
+  "materialized_headers_bound": 22,
+  "rust_source_manifest_files_bound": 257,
+  "neural_inference_performed": true,
+  "hf_original_nemo_or_ami_target_executed": false,
+  "der_scoring_performed": false,
+  "original_quality_gate_changed": false,
+  "all_platform_or_release_qualified": false,
+  "raw_calibration_silence_tensors_retained_in_git": true,
+  "weights_audio_sdk_and_probe_binaries_not_in_git": true,
+  "limits": [
+    "The taggedsourceSDK has independently reviewed construction+metadata recovery only. This separateprotocol admits exactly its fixedCPU F32/Q8 calibration/silence qualification, contingent on15model-free preflights. No extra cases or retries.",
+    "In order: one28case/eightchannel nativeDiarStream suite per F32/Q8model, eachwithfourdirectgraphcalls; compare taggedF32 calibration to saveduntaggedcandidate result; then independentCAPI+publicRust streams on320silence and17872excludedcalibration. Six modelinstantiations,56logicalnativefinishcases andfourCAPI/publicstreamruns. InternalstreamNNforwardcounts are bounded byfixedinputs/schedules butnotinstrumented.",
+    "The two28case suites retain all per-push/final tensors anddirectvalidMel/FIFO references; cover21boundarycounts, reset/repeatfinish/latepush, actualprovisional output, nonzero-leftgeometry and source-definedPCM/Melfront erasure. No probability-history compaction/longsession test is implied.",
+    "All numerical acceptance policies are declared before taggedneuraloutputs: samecandidateCPP/direct andF32rebuild maxabs1e-4; CAPI/CPP andRust/CAPI probabilities1e-6, wrapper/native turnboundaries1e-6seconds. Historicalquality/quantization/HF/DER thresholds remain unchanged.",
+    "Calibration WAV is a lossless PCM16 container of retainedf32PCM: all17872values roundtrip exactly. Minimum WAV is320PCM16zeros. NativeandRust actual normalizedPCM hashes must match the declaredf32 source; everyfloor-valid row iscompared, includingthelast.",
+    "The Rust executable uses a distinctCargo exampleartifact name with the unchangednemotron_stream.rs source, preservinghistoricalbinaries and reusingcacheddependencies under limiteddisk space. Cargo duplicate-source warning isretained; standalonecopiedbinary andactualCargoJSON/build/source identities arebound.",
+    "Staticloader discovery binds92non-system dependencybinary identities plus15SDKaliases, sourceheaders/archive andallRustsourcefiles; thisisexpectedclosureprovenance, notactualprocess-loaded-path telemetry orportable/offlinedeployment qualification. EachNNcommandruns inafreshprocess with strippedenv, network/target/HFweights/oldSDKdenials.",
+    "Available rawoutputs, commandstarted/status/stdout/stderr and completedcase reports persist before checks/nextcase. Failures stop the fixedrun andremain intact. No weights/audio/SDK/probe binaries are committedinreceipts.",
+    "No HF/originalNeMo model, AMItarget, DER, quantizationquality orrelease criterion is changed. No Metal/Linux/Windows, completeRustlifecycle/reload/cancellation, longstream/coexistence, packageddeployment, desktop/physicalmic or uncontendedperformance qualification is claimed."
+  ]
+}

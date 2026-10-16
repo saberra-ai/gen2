@@ -1,0 +1,256 @@
+{
+  "source_commit_at_build": "c15a0b93a534b0b82bff4dc9afaf2621b11ecdcc",
+  "sdk_construction_metadata": {
+    "bytes": 145455,
+    "sha256": "a2b39b05f250befc89cb2d59a8feb717fc1ec166737d8acaf42eea8903ff9eda"
+  },
+  "runtime_archive": {
+    "path": "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/src/runtime/ggml/libnemo_speech_runtime_ggml.a",
+    "bytes": 235384,
+    "sha256": "11f4dddf04cf0b3ee81e52a4e79a576c55e277c71e053393c9fc2770f7266c63"
+  },
+  "commands": [
+    {
+      "name": "finish-probe",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/tagged-valid-mel-probes-v1/compile-only.sb",
+        "/usr/bin/c++",
+        "-std=c++17",
+        "-O2",
+        "-fvisibility=hidden",
+        "-DNEMO_SPEECH_GGML_PATCHED=1",
+        "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/valid_mel_finish_probe.cpp",
+        "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr",
+        "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/features",
+        "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/encoder",
+        "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/decoders",
+        "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/vad",
+        "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/diar",
+        "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/postproc",
+        "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/asr/pnc",
+        "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/common",
+        "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/src/runtime/ggml",
+        "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/_deps/llama.cpp/ggml/include",
+        "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/build/cpu-diar/src/runtime/ggml/libnemo_speech_runtime_ggml.a",
+        "-L/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-tagged-cpu-v1/lib",
+        "-lnemo_speech_asr",
+        "-lggml",
+        "-lggml-base",
+        "-lggml-cpu",
+        "-Wl,-rpath,/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-tagged-cpu-v1/lib",
+        "-o",
+        "/Users/victor/.cache/gen2-nemotron3-n0/tagged-valid-mel-probes-v1/valid-mel-finish-probe"
+      ],
+      "environment": {
+        "PATH": "/Users/victor/.cargo/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LC_ALL": "C",
+        "HOME": "/Users/victor",
+        "CARGO_TARGET_DIR": "/Users/victor/.cache/gen2-bark-onnx/build",
+        "CARGO_NET_OFFLINE": "true",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "cwd": "/Users/victor/workspace/gen2-nemotron3-n0",
+      "returncode": 0,
+      "elapsed_seconds": 0.8290194169967435
+    },
+    {
+      "name": "c-api-probe",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/tagged-valid-mel-probes-v1/compile-only.sb",
+        "/usr/bin/c++",
+        "-std=c++17",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-x",
+        "c++",
+        "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/native_stream_probe_valid_mel.cpp",
+        "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/llama.cpp/vendor/hash/sha256/sha256.c",
+        "-I/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-tagged-cpu-v1/include",
+        "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/examples",
+        "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1/llama.cpp/vendor/hash",
+        "-L/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-tagged-cpu-v1/lib",
+        "-lnemo_speech_asr_c",
+        "-Wl,-rpath,/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-tagged-cpu-v1/lib",
+        "-o",
+        "/Users/victor/.cache/gen2-nemotron3-n0/tagged-valid-mel-probes-v1/native-stream-probe-valid-mel"
+      ],
+      "environment": {
+        "PATH": "/Users/victor/.cargo/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LC_ALL": "C",
+        "HOME": "/Users/victor",
+        "CARGO_TARGET_DIR": "/Users/victor/.cache/gen2-bark-onnx/build",
+        "CARGO_NET_OFFLINE": "true",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "cwd": "/Users/victor/workspace/gen2-nemotron3-n0",
+      "returncode": 0,
+      "elapsed_seconds": 0.5577014170121402
+    },
+    {
+      "name": "rust-release",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/tagged-valid-mel-probes-v1/compile-only.sb",
+        "/Users/victor/.cargo/bin/cargo",
+        "build",
+        "--offline",
+        "--locked",
+        "--release",
+        "--no-default-features",
+        "--features",
+        "backend-diar-nemo",
+        "--example",
+        "nemotron_valid_mel_stream",
+        "--message-format=json"
+      ],
+      "environment": {
+        "PATH": "/Users/victor/.cargo/bin:/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "LC_ALL": "C",
+        "HOME": "/Users/victor",
+        "CARGO_TARGET_DIR": "/Users/victor/.cache/gen2-bark-onnx/build",
+        "CARGO_NET_OFFLINE": "true",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "cwd": "/Users/victor/workspace/gen2-nemotron3-n0",
+      "returncode": 0,
+      "elapsed_seconds": 10.577054875029717
+    }
+  ],
+  "input_pcm": {
+    "bytes": 71488,
+    "sha256": "547f9157d1484b1e0b955c899cbbc1c4b888bb0feda9c4f48a67dd751c91f436"
+  },
+  "lossless_pcm16_wav": {
+    "bytes": 35788,
+    "sha256": "1a6fcc5758334348397ceb8e5975589508a65d4d47ff3bf2bdd3a5ed183634c8"
+  },
+  "rust_artifact": {
+    "reason": "compiler-artifact",
+    "package_id": "path+file:///Users/victor/workspace/gen2-nemotron3-n0#gen2@0.1.0",
+    "manifest_path": "/Users/victor/workspace/gen2-nemotron3-n0/Cargo.toml",
+    "target": {
+      "kind": [
+        "example"
+      ],
+      "crate_types": [
+        "bin"
+      ],
+      "name": "nemotron_valid_mel_stream",
+      "src_path": "/Users/victor/workspace/gen2-nemotron3-n0/examples/nemotron_stream.rs",
+      "edition": "2024",
+      "required-features": [
+        "backend-diar-nemo"
+      ],
+      "doc": false,
+      "doctest": false,
+      "test": false
+    },
+    "profile": {
+      "opt_level": "3",
+      "debuginfo": 0,
+      "debug_assertions": false,
+      "overflow_checks": false,
+      "test": false
+    },
+    "features": [
+      "backend-diar-nemo"
+    ],
+    "filenames": [
+      "/Users/victor/.cache/gen2-bark-onnx/build/release/examples/nemotron_valid_mel_stream"
+    ],
+    "executable": "/Users/victor/.cache/gen2-bark-onnx/build/release/examples/nemotron_valid_mel_stream",
+    "fresh": false
+  },
+  "binaries": {
+    "valid-mel-finish-probe": {
+      "bytes": 101912,
+      "sha256": "3b9f8f88480e51c1200d148d3526348bd23d12a0bc29fb3e076006d9c2f9b037"
+    },
+    "native-stream-probe-valid-mel": {
+      "bytes": 62320,
+      "sha256": "0763dd07d23128c47adbf5465e8eb857cdb92a99e1ec34df25bc158fb27879bf"
+    },
+    "nemotron-valid-mel-stream": {
+      "bytes": 985312,
+      "sha256": "1928a7b3a15cf290c287de9611df0140202b26fe476ea6b78e3b9cc26ef437ce"
+    }
+  },
+  "source_files": {
+    "Cargo.toml": {
+      "bytes": 15378,
+      "sha256": "36967d6f64f51c9d5a21d8f61cdaf7edea8e2ed6bc15a3edcf59c11e1198bbec"
+    },
+    "Cargo.lock": {
+      "bytes": 228117,
+      "sha256": "ed20b7cb36240e4302d2faab44393665e967b26d7c0efbeb43667ef577c2cf4b"
+    },
+    "examples/nemotron_stream.rs": {
+      "bytes": 6028,
+      "sha256": "736a4f63c20bdd5f243c9c1243571b262a663a87104de82a48924f0a7a6f24da"
+    },
+    "tools/nemotron-diarization/valid_mel_finish_probe.cpp": {
+      "bytes": 14157,
+      "sha256": "118b5836ec4b557d216ac2e1041bf9561d8f14e066fb1df1fdfc934e734155d8"
+    },
+    "tools/nemotron-diarization/native_stream_probe_valid_mel.cpp": {
+      "bytes": 8690,
+      "sha256": "00c558ca1453dc99dd5beaef20816ccdffdda0f9e0cef4a2ccff04ac315efcfb"
+    },
+    "src/diarization/stream.rs": {
+      "bytes": 7411,
+      "sha256": "74d095fd34046d2a079899f370a0a67c704e2abcffe4edee104cb25ec321454e"
+    },
+    "src/diarization/types.rs": {
+      "bytes": 5264,
+      "sha256": "7d64ed39ec5e0e506124d25ea22d47a65d3d5756822c0752d009acf567d7862b"
+    },
+    "src/diarization/error.rs": {
+      "bytes": 1886,
+      "sha256": "770b05089479a23f0c065695d2dde5847e6da979a7e59320fa60c24e965f5499"
+    },
+    "src/diarization/alignment.rs": {
+      "bytes": 9977,
+      "sha256": "f7ee54bcc0e3531255103bc3fe245dd54d85f27d5ae3947ad81d39232c6b30e4"
+    },
+    "src/diarization/bundle.rs": {
+      "bytes": 1977,
+      "sha256": "8509a19c075fd30e9c95161cf3446606500d80d6818f490d140fac8d367aeb49"
+    },
+    "src/diarization/nemo.rs": {
+      "bytes": 13008,
+      "sha256": "c516d043255010af6527b6070b11163bc4c920dae9d04b65c8f253c56a69bb15"
+    },
+    "src/diarization/worker.rs": {
+      "bytes": 11217,
+      "sha256": "d598a93e23dd92adc575cb5ac2d9456554d6a9a2fae68d0d29be50437d587825"
+    },
+    "src/diarization/ffi.rs": {
+      "bytes": 13072,
+      "sha256": "ee681df86d8c00fd4d90d04e0a1923fae60da8da576a997d7935e3e02ce90c75"
+    },
+    "src/diarization/mod.rs": {
+      "bytes": 1080,
+      "sha256": "c01c8e61b6b1d07a371e32da94c1e6c6a2a1ba30f67ba04da924584255dfc3f5"
+    },
+    "src/diarization/audio.rs": {
+      "bytes": 2004,
+      "sha256": "e362feaa4656ed739db4161ed7fe18532b91306f79242e00021d1eda92f8584f"
+    },
+    "src/diarization/provision.rs": {
+      "bytes": 3951,
+      "sha256": "84f05a85df837c52e1293e73660b1f52c83262c3533e96c2a5be111aa0f0ea10"
+    }
+  },
+  "compiler": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.3.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "rustc": "rustc 1.98.0 (88d9e12ae 2026-08-18)\nbinary: rustc\ncommit-hash: 88d9e12ae178fab0fb5cc050a94da85685d449ea\ncommit-date: 2026-08-18\nhost: aarch64-apple-darwin\nrelease: 1.98.0\nLLVM version: 22.1.8\n",
+  "neural_calls": 0,
+  "probes_executed": false,
+  "pcm_container_conversion_lossless": true
+}

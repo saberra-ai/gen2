@@ -673,8 +673,14 @@ and floor-valid final counts, with 1030 library and11targeted model-free tests
 passing. The [tagged CPU construction receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-tagged-valid-mel-construction/qualification.json)
 retains a late Homebrew metadata failure and its separately reviewed read-only
 recovery; compile, install, actual state-test and actual version-query phases
-passed. This SDK is not yet admitted for Q8/F32 or public Rust neural runs.
-Package/comparison/platform/Pnola migration and original release gates stay open.
+passed. The separate [tagged fixed-case qualification](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-tagged-valid-mel-qualification/qualification.json)
+now passes both28-case F32/Q8 suites and independent C-API/public Rust parity on
+320silent samples and17872calibration samples. All12native/direct comparisons,
+the F32 rebuild comparison and both public/native probability arrays are
+byte-identical; final row counts are2and111. Fifteen model-free preflights passed.
+This is short CPU calibration/silence qualification only. Package/platform/Pnola,
+full lifecycle/long-session/coexistence, Metal, AMI quality and original release
+gates remain open.
 The 13-job feature matrix also passed at `4974318`. Later source `cf64214`
 passed12 jobs; its macOS mixed-feature job failed before compilation when GitHub
 submodule fetch could not connect to port443. A failed-job rerun was denied by
@@ -686,7 +692,10 @@ fetch failure remains retained; no build gate is waived. The later
 including108evidence-tool tests. Subsequent calibration tools and114local tests
 are outside that CI source. The subsequent [114-test matrix](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-114/qualification.json)
 at `9e98003`, run38912826242, now passes all13jobs. The later valid-Mel
-candidate tools remain outside that CI source.
+candidate tools remain outside that CI source. The later [121-test matrix](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-121/qualification.json)
+at `c15a0b9`, run38920681529, passes all13jobs and covers strict tagged-runtime
+Rust admission plus construction/recovery tools. The subsequent fixed-case
+qualification tools are outside that CI source.
 
 Linux/Windows CPU development jobs now build the pinned source SDK with an
 explicit x86_64AVX2/FMA/F16C baseline, retain installed dependency discovery,

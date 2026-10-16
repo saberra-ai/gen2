@@ -1,8 +1,9 @@
 Current runtime migration: Gen2 now requires the explicit
 `nemo-speech-asr 0.2.0+gen2-valid-mel-v1` profile and floor-valid final rows.
 The original N0 SDK/lock and historical recipes below remain controls for their
-recorded source versions. A fresh tagged CPU SDK has construction evidence;
-its Q8/public Rust inference, packaging and platform qualification remain pending.
+recorded source versions. A fresh tagged CPU SDK passes the fixed F32/Q8 finish suites and public Rust
+parity on short calibration/silence. Packaging, full lifecycle/long-session,
+Metal and other platform qualification remain pending.
 See the [migration and current evidence](../../docs/research/nemotron-v3-finish-valid-mel-patch.md).
 
 # Nemotron 3 — N0 qualification
