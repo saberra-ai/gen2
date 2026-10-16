@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "source_commit": "ec88564ec7f7b62e92b73156481630413b9928a9",
+  "ci_url": "https://github.com/saberra-ai/gen2/actions/runs/38903243271",
+  "all_thirteen_feature_jobs_passed": true,
+  "model_free_evidence_tests_passed": 102,
+  "platforms": [
+    "ubuntu-latest",
+    "windows-latest",
+    "macos-latest"
+  ],
+  "feature_sets": [
+    "",
+    "backend-diar-nemo",
+    "asr-dynamic,backend-diar-nemo",
+    "backend-llamacpp,asr-dynamic,backend-diar-nemo"
+  ],
+  "original_failed_run": "https://github.com/saberra-ai/gen2/actions/runs/38901164547",
+  "original_failed_source": "cf64214f0cfd67e7f395ec4db06cf00351fe89db",
+  "original_run_twelve_jobs_passed": true,
+  "original_macos_checkout_failed_before_compilation_due_to_github_connectivity": true,
+  "failed_job_rerun_attempt": {
+    "exit_code": 1,
+    "reason": "Resource not accessible by personal access token"
+  },
+  "successful_control": "Fresh authorized working-branch source push triggered the full matrix; the formerly blocked macOS mixed job and every other job passed.",
+  "combined_success_log_retained_outside_git": {
+    "bytes": 10012442,
+    "sha256": "f51f4c0f6a0f3b06e8131069cbff9a580ea8f6fd9697d74d394c1b583dc45b89"
+  },
+  "release_qualified": false,
+  "limits": [
+    "Feature compatibility and model-free tests only. Does not replace actual model/native platform receipts, held-out-quality, desktop, distribution or performance gates.",
+    "CI source is ec88564. Subsequent committed changes are protocol/artifact evidence and documentation; no completion or main push is inferred from this matrix."
+  ]
+}

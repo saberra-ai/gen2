@@ -619,7 +619,9 @@ The 13-job feature matrix also passed at `4974318`. Later source `cf64214`
 passed12 jobs; its macOS mixed-feature job failed before compilation when GitHub
 submodule fetch could not connect to port443. A failed-job rerun was denied by
 the token's Actions permissions. Fresh source `ec88564` triggered a new full
-matrix; no build gate is waived.
+matrix, and [all13 jobs now pass](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix/qualification.json),
+including the formerly blocked macOS job and102 evidence-tool tests. The original
+fetch failure remains retained; no build gate is waived.
 
 Linux/Windows CPU development jobs now build the pinned source SDK with an
 explicit x86_64AVX2/FMA/F16C baseline, retain installed dependency discovery,
@@ -824,7 +826,8 @@ this CI host, not a live/uncontended-performance claim. Microsoft distribution
 rights, physical Windows desktop, Bark/Laya coexistence, universal namespace and
 held-out-quality gates remain open. The separate AMI diagnostic raises the
 model-free regression total to96 at that point. The frontend diagnostic
-subsequently raises it to102; the new full feature matrix is running.
+subsequently raises it to102; all13 jobs in source `ec88564`
+run `38903243271` now pass.
 
 A guarded [Windows private-DLL build](../research/nemotron-windows-private-names.md)
 now relinks the five owned DLLs through an external CMake naming hook, updates
