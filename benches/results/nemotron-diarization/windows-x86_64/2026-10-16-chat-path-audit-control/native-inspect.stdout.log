@@ -1,0 +1,207 @@
+[
+    {
+        "Id": "3d3a4553dabe3bc71da98d16e225dae55001d5ee5d562db4c3d06ef3967a815a",
+        "Created": "2026-10-16T11:35:50.5008092Z",
+        "Path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+        "Args": [
+            "-NoLogo",
+            "-NoProfile",
+            "-NonInteractive",
+            "-ExecutionPolicy",
+            "Bypass",
+            "-File",
+            "C:\\inputs\\launch.ps1"
+        ],
+        "State": {
+            "Status": "exited",
+            "Running": false,
+            "Paused": false,
+            "Restarting": false,
+            "OOMKilled": false,
+            "Dead": false,
+            "Pid": 0,
+            "ExitCode": 0,
+            "Error": "",
+            "StartedAt": "2026-10-16T11:35:54.1845168Z",
+            "FinishedAt": "2026-10-16T11:36:54.3355638Z"
+        },
+        "Image": "sha256:76e6f57c103004c102b102281f3e6c750a1aa80cef8c5267d6fc2435408c87fc",
+        "ResolvConfPath": "",
+        "HostnamePath": "",
+        "HostsPath": "",
+        "LogPath": "C:\\ProgramData\\docker\\containers\\3d3a4553dabe3bc71da98d16e225dae55001d5ee5d562db4c3d06ef3967a815a\\3d3a4553dabe3bc71da98d16e225dae55001d5ee5d562db4c3d06ef3967a815a-json.log",
+        "Name": "/gen2-nemo-runtime-7c23d8d9c2d5448db6a3c00cb5b85a2f",
+        "RestartCount": 0,
+        "Driver": "windowsfilter",
+        "Platform": "windows",
+        "MountLabel": "",
+        "ProcessLabel": "",
+        "AppArmorProfile": "",
+        "ExecIDs": null,
+        "HostConfig": {
+            "Binds": null,
+            "ContainerIDFile": "",
+            "LogConfig": {
+                "Type": "json-file",
+                "Config": {}
+            },
+            "NetworkMode": "none",
+            "PortBindings": {},
+            "RestartPolicy": {
+                "Name": "no",
+                "MaximumRetryCount": 0
+            },
+            "AutoRemove": false,
+            "VolumeDriver": "",
+            "VolumesFrom": null,
+            "ConsoleSize": [
+                0,
+                0
+            ],
+            "CapAdd": null,
+            "CapDrop": null,
+            "CgroupnsMode": "",
+            "Dns": null,
+            "DnsOptions": [],
+            "DnsSearch": [],
+            "ExtraHosts": null,
+            "GroupAdd": null,
+            "IpcMode": "",
+            "Cgroup": "",
+            "Links": null,
+            "OomScoreAdj": 0,
+            "PidMode": "",
+            "Privileged": false,
+            "PublishAllPorts": false,
+            "ReadonlyRootfs": false,
+            "SecurityOpt": null,
+            "UTSMode": "",
+            "UsernsMode": "",
+            "ShmSize": 0,
+            "Runtime": "io.containerd.runhcs.v1",
+            "Isolation": "process",
+            "CpuShares": 0,
+            "Memory": 0,
+            "NanoCpus": 0,
+            "CgroupParent": "",
+            "BlkioWeight": 0,
+            "BlkioWeightDevice": [],
+            "BlkioDeviceReadBps": [],
+            "BlkioDeviceWriteBps": [],
+            "BlkioDeviceReadIOps": [],
+            "BlkioDeviceWriteIOps": [],
+            "CpuPeriod": 0,
+            "CpuQuota": 0,
+            "CpuRealtimePeriod": 0,
+            "CpuRealtimeRuntime": 0,
+            "CpusetCpus": "",
+            "CpusetMems": "",
+            "Devices": [],
+            "DeviceCgroupRules": null,
+            "DeviceRequests": null,
+            "MemoryReservation": 0,
+            "MemorySwap": 0,
+            "MemorySwappiness": null,
+            "OomKillDisable": false,
+            "PidsLimit": null,
+            "Ulimits": [],
+            "CpuCount": 0,
+            "CpuPercent": 0,
+            "IOMaximumIOps": 0,
+            "IOMaximumBandwidth": 0,
+            "Mounts": [
+                {
+                    "Type": "bind",
+                    "Source": "D:\\a\\_temp\\windows-runtime-offline\\native\\inputs ü",
+                    "Target": "C:\\inputs",
+                    "ReadOnly": true
+                },
+                {
+                    "Type": "bind",
+                    "Source": "D:\\a\\_temp\\windows-runtime-offline\\native\\results",
+                    "Target": "C:\\results"
+                }
+            ],
+            "MaskedPaths": null,
+            "ReadonlyPaths": null
+        },
+        "GraphDriver": {
+            "Data": {
+                "ID": "3d3a4553dabe3bc71da98d16e225dae55001d5ee5d562db4c3d06ef3967a815a",
+                "dir": "C:\\ProgramData\\docker\\windowsfilter\\3d3a4553dabe3bc71da98d16e225dae55001d5ee5d562db4c3d06ef3967a815a"
+            },
+            "Name": "windowsfilter"
+        },
+        "Mounts": [
+            {
+                "Type": "bind",
+                "Source": "D:\\a\\_temp\\windows-runtime-offline\\native\\inputs ü",
+                "Destination": "C:\\inputs",
+                "Mode": "",
+                "RW": false,
+                "Propagation": ""
+            },
+            {
+                "Type": "bind",
+                "Source": "D:\\a\\_temp\\windows-runtime-offline\\native\\results",
+                "Destination": "C:\\results",
+                "Mode": "",
+                "RW": true,
+                "Propagation": ""
+            }
+        ],
+        "Config": {
+            "Hostname": "3d3a4553dabe",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": true,
+            "AttachStderr": true,
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "PATH=C:\\Windows\\System32;C:\\Windows"
+            ],
+            "Cmd": [
+                "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+                "-NoLogo",
+                "-NoProfile",
+                "-NonInteractive",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "C:\\inputs\\launch.ps1"
+            ],
+            "Image": "sha256:76e6f57c103004c102b102281f3e6c750a1aa80cef8c5267d6fc2435408c87fc",
+            "Volumes": null,
+            "WorkingDir": "",
+            "Entrypoint": null,
+            "Labels": {}
+        },
+        "NetworkSettings": {
+            "SandboxID": "",
+            "SandboxKey": "",
+            "Ports": {},
+            "Networks": {
+                "none": {
+                    "IPAMConfig": null,
+                    "Links": null,
+                    "Aliases": null,
+                    "DriverOpts": null,
+                    "GwPriority": 0,
+                    "NetworkID": "06938ec588af0d8b52ad8eb5313f4432998d631b60e6334d7b6ee759178fa8ed",
+                    "EndpointID": "",
+                    "Gateway": "",
+                    "IPAddress": "",
+                    "MacAddress": "",
+                    "IPPrefixLen": 0,
+                    "IPv6Gateway": "",
+                    "GlobalIPv6Address": "",
+                    "GlobalIPv6PrefixLen": 0,
+                    "DNSNames": null
+                }
+            }
+        }
+    }
+]

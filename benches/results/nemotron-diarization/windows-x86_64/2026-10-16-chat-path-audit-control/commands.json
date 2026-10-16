@@ -1,0 +1,630 @@
+[
+  {
+    "name": "image-inspect",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "image",
+      "inspect",
+      "mcr.microsoft.com/windows/servercore@sha256:76cf422c98ca437b308374d0498280541fa42ac7061bb44015a6c8b70cf4db6a"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.03099999999994907
+  },
+  {
+    "name": "build-public-helper",
+    "argv": [
+      "cargo",
+      "build",
+      "--locked",
+      "--release",
+      "--no-default-features",
+      "--features",
+      "backend-diar-nemo",
+      "--example",
+      "nemotron_stream"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 62.906000000000176
+  },
+  {
+    "name": "cargo-metadata",
+    "argv": [
+      "cargo",
+      "metadata",
+      "--locked",
+      "--no-deps",
+      "--format-version",
+      "1"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.03099999999994907
+  },
+  {
+    "name": "build-lifecycle-helper",
+    "argv": [
+      "cargo",
+      "test",
+      "--locked",
+      "--release",
+      "--no-default-features",
+      "--features",
+      "backend-diar-nemo",
+      "--test",
+      "diarization_native",
+      "--no-run",
+      "--message-format=json"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 2.140999999999849
+  },
+  {
+    "name": "initialize-chat-source",
+    "argv": [
+      "git",
+      "submodule",
+      "update",
+      "--init",
+      "--depth",
+      "1",
+      "vendor/llama-cpp-sys-2/llama.cpp"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 8.140999999999849
+  },
+  {
+    "name": "build-chat-helper",
+    "argv": [
+      "cargo",
+      "build",
+      "--locked",
+      "--release",
+      "--no-default-features",
+      "--features",
+      "backend-llamacpp,backend-diar-nemo",
+      "--example",
+      "nemotron_chat_coexistence"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 374.71900000000005
+  },
+  {
+    "name": "chat-cargo-metadata",
+    "argv": [
+      "cargo",
+      "metadata",
+      "--locked",
+      "--no-deps",
+      "--format-version",
+      "1"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.03099999999994907
+  },
+  {
+    "name": "chat-openmp-provenance",
+    "argv": [
+      "pwsh",
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-File",
+      "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\windows_chat_openmp.ps1",
+      "-NativeProvenance",
+      "D:\\a\\_temp\\qualified-windows-native\\nemo-evidence\\windows-provenance.json",
+      "-Output",
+      "D:\\a\\_temp\\windows-runtime-offline\\chat-openmp-provenance.json"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.4680000000000746
+  },
+  {
+    "name": "native-create",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "create",
+      "--name",
+      "gen2-nemo-runtime-7c23d8d9c2d5448db6a3c00cb5b85a2f",
+      "--pull",
+      "never",
+      "--isolation",
+      "process",
+      "--network",
+      "none",
+      "--mount",
+      "type=bind,source=D:\\a\\_temp\\windows-runtime-offline\\native\\inputs \u00fc,target=C:\\inputs,readonly",
+      "--mount",
+      "type=bind,source=D:\\a\\_temp\\windows-runtime-offline\\native\\results,target=C:\\results",
+      "--env",
+      "PATH=C:\\Windows\\System32;C:\\Windows",
+      "sha256:76e6f57c103004c102b102281f3e6c750a1aa80cef8c5267d6fc2435408c87fc",
+      "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\inputs\\launch.ps1"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 1.9210000000000491
+  },
+  {
+    "name": "native-start",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "start",
+      "--attach",
+      "3d3a4553dabe3bc71da98d16e225dae55001d5ee5d562db4c3d06ef3967a815a"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 63.406999999999925
+  },
+  {
+    "name": "native-inspect",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "inspect",
+      "3d3a4553dabe3bc71da98d16e225dae55001d5ee5d562db4c3d06ef3967a815a"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.03099999999994907
+  },
+  {
+    "name": "native-remove",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "rm",
+      "--force",
+      "3d3a4553dabe3bc71da98d16e225dae55001d5ee5d562db4c3d06ef3967a815a"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.15599999999994907
+  },
+  {
+    "name": "public-create",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "create",
+      "--name",
+      "gen2-nemo-runtime-9383be8c434c4d7ea5df15c6103153a1",
+      "--pull",
+      "never",
+      "--isolation",
+      "process",
+      "--network",
+      "none",
+      "--mount",
+      "type=bind,source=D:\\a\\_temp\\windows-runtime-offline\\public\\inputs \u00fc,target=C:\\inputs,readonly",
+      "--mount",
+      "type=bind,source=D:\\a\\_temp\\windows-runtime-offline\\public\\results,target=C:\\results",
+      "--env",
+      "PATH=C:\\Windows\\System32;C:\\Windows",
+      "sha256:76e6f57c103004c102b102281f3e6c750a1aa80cef8c5267d6fc2435408c87fc",
+      "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\inputs\\launch.ps1"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.8279999999999745
+  },
+  {
+    "name": "public-start",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "start",
+      "--attach",
+      "9d0bef5313cb9f9c72ae157e16ee6674879b6c3e63073cbf52d1093f9595990e"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 58.281999999999925
+  },
+  {
+    "name": "public-inspect",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "inspect",
+      "9d0bef5313cb9f9c72ae157e16ee6674879b6c3e63073cbf52d1093f9595990e"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.06200000000012551
+  },
+  {
+    "name": "public-remove",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "rm",
+      "--force",
+      "9d0bef5313cb9f9c72ae157e16ee6674879b6c3e63073cbf52d1093f9595990e"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.04699999999979809
+  },
+  {
+    "name": "lifecycle-list-create",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "create",
+      "--name",
+      "gen2-nemo-runtime-f925eaa3f09e4b8ca6575576564f2eee",
+      "--pull",
+      "never",
+      "--isolation",
+      "process",
+      "--network",
+      "none",
+      "--mount",
+      "type=bind,source=D:\\a\\_temp\\windows-runtime-offline\\lifecycle-list\\inputs \u00fc,target=C:\\inputs,readonly",
+      "--mount",
+      "type=bind,source=D:\\a\\_temp\\windows-runtime-offline\\lifecycle-list\\results,target=C:\\results",
+      "--env",
+      "PATH=C:\\Windows\\System32;C:\\Windows",
+      "sha256:76e6f57c103004c102b102281f3e6c750a1aa80cef8c5267d6fc2435408c87fc",
+      "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\inputs\\launch.ps1"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 1.4849999999999
+  },
+  {
+    "name": "lifecycle-list-start",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "start",
+      "--attach",
+      "502b5bccc665f8250744d650bfa6286aff7d69c125d15634e08cbce1b135d78d"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 11.452999999999975
+  },
+  {
+    "name": "lifecycle-list-inspect",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "inspect",
+      "502b5bccc665f8250744d650bfa6286aff7d69c125d15634e08cbce1b135d78d"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.016000000000076398
+  },
+  {
+    "name": "lifecycle-list-remove",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "rm",
+      "--force",
+      "502b5bccc665f8250744d650bfa6286aff7d69c125d15634e08cbce1b135d78d"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.03099999999994907
+  },
+  {
+    "name": "lifecycle-create",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "create",
+      "--name",
+      "gen2-nemo-runtime-a6a7615110aa4d179ebc3cd35181ef98",
+      "--pull",
+      "never",
+      "--isolation",
+      "process",
+      "--network",
+      "none",
+      "--mount",
+      "type=bind,source=D:\\a\\_temp\\windows-runtime-offline\\lifecycle\\inputs \u00fc,target=C:\\inputs,readonly",
+      "--mount",
+      "type=bind,source=D:\\a\\_temp\\windows-runtime-offline\\lifecycle\\results,target=C:\\results",
+      "--env",
+      "PATH=C:\\Windows\\System32;C:\\Windows",
+      "sha256:76e6f57c103004c102b102281f3e6c750a1aa80cef8c5267d6fc2435408c87fc",
+      "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\inputs\\launch.ps1"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 1.469000000000051
+  },
+  {
+    "name": "lifecycle-start",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "start",
+      "--attach",
+      "5db43df85517507edc6920bddc81e7727dd90681b884fb0d97fa7f2413315a85"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 283.875
+  },
+  {
+    "name": "lifecycle-inspect",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "inspect",
+      "5db43df85517507edc6920bddc81e7727dd90681b884fb0d97fa7f2413315a85"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.03099999999994907
+  },
+  {
+    "name": "lifecycle-remove",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "rm",
+      "--force",
+      "5db43df85517507edc6920bddc81e7727dd90681b884fb0d97fa7f2413315a85"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.031000000000176442
+  },
+  {
+    "name": "missing-private-library-create",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "create",
+      "--name",
+      "gen2-nemo-runtime-4f092260999648789f254fad7160f436",
+      "--pull",
+      "never",
+      "--isolation",
+      "process",
+      "--network",
+      "none",
+      "--mount",
+      "type=bind,source=D:\\a\\_temp\\windows-runtime-offline\\missing-private-library\\inputs \u00fc,target=C:\\inputs,readonly",
+      "--mount",
+      "type=bind,source=D:\\a\\_temp\\windows-runtime-offline\\missing-private-library\\results,target=C:\\results",
+      "--env",
+      "PATH=C:\\Windows\\System32;C:\\Windows",
+      "sha256:76e6f57c103004c102b102281f3e6c750a1aa80cef8c5267d6fc2435408c87fc",
+      "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\inputs\\launch.ps1"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 1.1099999999999
+  },
+  {
+    "name": "missing-private-library-start",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "start",
+      "--attach",
+      "74758fde55b240d85e533719039d1e746a4e30377e4a02bd1f3efa7c2f55d020"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 9.468000000000075
+  },
+  {
+    "name": "missing-private-library-inspect",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "inspect",
+      "74758fde55b240d85e533719039d1e746a4e30377e4a02bd1f3efa7c2f55d020"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.03199999999992542
+  },
+  {
+    "name": "missing-private-library-remove",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "rm",
+      "--force",
+      "74758fde55b240d85e533719039d1e746a4e30377e4a02bd1f3efa7c2f55d020"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.03199999999992542
+  },
+  {
+    "name": "isolated-create",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "create",
+      "--name",
+      "gen2-nemo-runtime-65d8aaddf76e45118f0c526930241371",
+      "--pull",
+      "never",
+      "--isolation",
+      "process",
+      "--network",
+      "none",
+      "--mount",
+      "type=bind,source=D:\\a\\_temp\\windows-runtime-offline\\isolated\\inputs \u00fc,target=C:\\inputs,readonly",
+      "--mount",
+      "type=bind,source=D:\\a\\_temp\\windows-runtime-offline\\isolated\\results,target=C:\\results",
+      "--mount",
+      "type=bind,source=D:\\a\\_temp\\windows-runtime-offline\\locked chat fixture \u00fc,target=C:\\chat,readonly",
+      "--env",
+      "PATH=C:\\Windows\\System32;C:\\Windows",
+      "sha256:76e6f57c103004c102b102281f3e6c750a1aa80cef8c5267d6fc2435408c87fc",
+      "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\inputs\\launch.ps1"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.46900000000005093
+  },
+  {
+    "name": "isolated-start",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "start",
+      "--attach",
+      "573af5ac279f5fb49539a186c7216002b3668317f4fbf3dac701947e39102135"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 10.547000000000025
+  },
+  {
+    "name": "isolated-inspect",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "inspect",
+      "573af5ac279f5fb49539a186c7216002b3668317f4fbf3dac701947e39102135"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.015000000000100044
+  },
+  {
+    "name": "isolated-remove",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "rm",
+      "--force",
+      "573af5ac279f5fb49539a186c7216002b3668317f4fbf3dac701947e39102135"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.047000000000025466
+  },
+  {
+    "name": "chat-first-create",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "create",
+      "--name",
+      "gen2-nemo-runtime-a9f2a42405414cac8b0655adf5454387",
+      "--pull",
+      "never",
+      "--isolation",
+      "process",
+      "--network",
+      "none",
+      "--mount",
+      "type=bind,source=D:\\a\\_temp\\windows-runtime-offline\\chat-first\\inputs \u00fc,target=C:\\inputs,readonly",
+      "--mount",
+      "type=bind,source=D:\\a\\_temp\\windows-runtime-offline\\chat-first\\results,target=C:\\results",
+      "--mount",
+      "type=bind,source=D:\\a\\_temp\\windows-runtime-offline\\locked chat fixture \u00fc,target=C:\\chat,readonly",
+      "--env",
+      "PATH=C:\\Windows\\System32;C:\\Windows",
+      "sha256:76e6f57c103004c102b102281f3e6c750a1aa80cef8c5267d6fc2435408c87fc",
+      "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+      "-NoLogo",
+      "-NoProfile",
+      "-NonInteractive",
+      "-ExecutionPolicy",
+      "Bypass",
+      "-File",
+      "C:\\inputs\\launch.ps1"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.7180000000000746
+  },
+  {
+    "name": "chat-first-start",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "start",
+      "--attach",
+      "9dd2aae47aebe68b8c5a7c66740273e47a4186878b5cf3033bbc72cbdd291eb2"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 163.51599999999985
+  },
+  {
+    "name": "chat-first-inspect",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "inspect",
+      "9dd2aae47aebe68b8c5a7c66740273e47a4186878b5cf3033bbc72cbdd291eb2"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.03099999999994907
+  },
+  {
+    "name": "chat-first-remove",
+    "argv": [
+      "C:\\Windows\\system32\\docker.EXE",
+      "--context",
+      "default",
+      "rm",
+      "--force",
+      "9dd2aae47aebe68b8c5a7c66740273e47a4186878b5cf3033bbc72cbdd291eb2"
+    ],
+    "returncode": 0,
+    "elapsed_seconds": 0.047000000000025466
+  }
+]

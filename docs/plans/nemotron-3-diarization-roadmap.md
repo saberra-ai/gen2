@@ -698,6 +698,18 @@ license/release qualification. Actual Windows CPU chat coexistence is being
 qualified separately using the normal OpenMP backend and fresh offline
 containers for isolated chat and both load orders.
 
+The first [chat path-audit control receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-chat-path-audit-control/qualification.json),
+source `826f62f`/run `38893676099`, preserves the failed full gate. Native/public
+parity and all seven lifecycle tests passed again; isolated chat and chat-first
+execution produced six identical `Hello!` outputs, three exact native
+diarization comparisons and 28.639463 seconds of actual API-call overlap.
+The stage auditor then rejected the valid extended DOS `\\?\C:\...` spelling
+reported by Rust's Win32 module snapshots. A strict C-drive spelling normalizer
+fixes that observed issue without changing module locations, hashes or allowed
+basenames; tests and all three recorded stage snapshots now pass. Diar-first
+was not executed in that attempt, so full chat qualification remains false.
+A new complete both-order run uses source `d47bdeb` and the supplemented runtime.
+
 The separate [central prerequisite investigation](../research/nemotron-windows-central-prerequisite.md)
 has now acquired and hash-verified the fixed Microsoft 14.51.36247 installer,
 24 static bundle payloads, its actual selected terms document and nine AMD64
@@ -712,6 +724,12 @@ retains 39 archive entries/five unchanged DLLs; the
 [static prerequisite receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-central-prerequisite-static/qualification.json)
 retains metadata and independent extraction checks. These are separate byte/data
 results, not central-runtime deployment qualification.
+The setup-only workflow now validates the actual Windows publisher signature
+before any installer execution, provisions only a disposable process image,
+requires exit 0/no pending restart, checks exact System32 DLL bytes/versions/
+signatures and both registry views, then re-observes a fresh committed image.
+Its first actual run uses source `9c277fc`; no setup pass is claimed in advance.
+All 92 current model-free tool regressions pass.
 
 A guarded [Windows private-DLL build](../research/nemotron-windows-private-names.md)
 now relinks the five owned DLLs through an external CMake naming hook, updates
