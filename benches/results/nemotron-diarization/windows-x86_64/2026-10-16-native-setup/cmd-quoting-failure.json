@@ -1,0 +1,13 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "inference_performed": false,
+  "source_commit": "807a334ec2cfbcf5ef33e2ad5b34bcc546ae8fb2",
+  "workflow_run": 38859823722,
+  "job_id": 116839337056,
+  "full_log_sha256": "79a3b24dd470b1c11e17cdb610d5f7c57c9025f992dec6c0e35d5541b05681a9",
+  "error": "Python list2cmdline quoting prevented vcvars64 batch invocation; setup process exited1",
+  "fix_commit": "74c663e",
+  "fix": "Pass an explicitly double-quoted cmd /d /u /s /c command string; retain scoped compiler environment",
+  "status": "Subsequent Windows run has progressed into native SDK build; final qualification pending."
+}

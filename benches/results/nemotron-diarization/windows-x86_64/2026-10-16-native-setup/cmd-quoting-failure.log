@@ -1,0 +1,21 @@
+2026-10-16T06:12:30.9114010Z Traceback (most recent call last):
+2026-10-16T06:12:30.9119635Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\platform_native.py", line 220, in <module>
+2026-10-16T06:12:30.9120040Z     main()
+2026-10-16T06:12:30.9200191Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\platform_native.py", line 208, in main
+2026-10-16T06:12:30.9201899Z     runner = Qualification(args.source, args.prefix, args.output, args.jobs)
+2026-10-16T06:12:30.9245280Z              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-10-16T06:12:30.9245804Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\platform_native.py", line 56, in __init__
+2026-10-16T06:12:30.9247045Z     self.environment = msvc_environment(dict(os.environ)) if self.windows else dict(os.environ)
+2026-10-16T06:12:30.9247582Z                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-10-16T06:12:30.9247979Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\platform_native.py", line 32, in msvc_environment
+2026-10-16T06:12:30.9248675Z     result = subprocess.check_output(['cmd.exe', '/u', '/c', f'"{vcvars}" >NUL 2>&1 && set'], env=env)
+2026-10-16T06:12:30.9249251Z              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-10-16T06:12:30.9249726Z   File "C:\hostedtoolcache\windows\Python\3.12.10\x64\Lib\subprocess.py", line 466, in check_output
+2026-10-16T06:12:30.9293989Z     return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+2026-10-16T06:12:30.9294397Z            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+2026-10-16T06:12:30.9294769Z   File "C:\hostedtoolcache\windows\Python\3.12.10\x64\Lib\subprocess.py", line 571, in run
+2026-10-16T06:12:30.9339161Z     raise CalledProcessError(retcode, process.args,
+2026-10-16T06:12:30.9339899Z subprocess.CalledProcessError: Command '['cmd.exe', '/u', '/c', '"C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Auxiliary\\Build\\vcvars64.bat" >NUL 2>&1 && set']' returned non-zero exit status 1.
+2026-10-16T06:12:31.0324594Z ##[error]Process completed with exit code 1.
+2026-10-16T06:12:31.0455129Z ##[group]Run actions/upload-artifact@v4
+2026-10-16T06:12:31.0455401Z with:
