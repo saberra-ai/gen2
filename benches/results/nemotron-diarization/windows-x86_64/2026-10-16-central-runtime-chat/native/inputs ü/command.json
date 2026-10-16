@@ -1,0 +1,26 @@
+{
+  "executable": "C:\\inputs\\bin\\native-probe.exe",
+  "argv": [
+    "C:\\inputs\\assets\\Nemotron-3-Diarization.q8_0.gguf",
+    "C:\\inputs\\assets\\ami_en2002d_2132.wav",
+    "1",
+    "-1",
+    "C:\\results\\native.json"
+  ],
+  "command_line": "C:\\inputs\\assets\\Nemotron-3-Diarization.q8_0.gguf C:\\inputs\\assets\\ami_en2002d_2132.wav 1 -1 C:\\results\\native.json",
+  "capture_modules": true,
+  "expected_failure": false,
+  "environment": {
+    "SystemRoot": "C:\\Windows",
+    "WINDIR": "C:\\Windows",
+    "PATH": "C:\\inputs\\relocated runtime \u00fc\\lib;C:\\Windows\\System32;C:\\Windows",
+    "TEMP": "C:\\results\\tmp",
+    "TMP": "C:\\results\\tmp",
+    "USERPROFILE": "C:\\results",
+    "LOCALAPPDATA": "C:\\results\\local",
+    "GEN2_NEMOTRON_ASSETS": "C:\\inputs\\assets",
+    "GEN2_NEMO_LIBRARY": "C:\\inputs\\relocated runtime \u00fc\\lib\\gen2_nemo_windows_nemo_speech_asr_c.dll",
+    "GEN2_NEMOTRON_REFERENCE": "C:\\inputs\\reference",
+    "GEN2_NEMO_EXECUTION": "cpu"
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "executable": "C:\\inputs\\bin\\chat-coexistence.exe",
+  "argv": [
+    "diar-first",
+    "C:\\chat\\Qwen3-0.6B-Q4_K_M.gguf",
+    "C:\\inputs\\assets",
+    "C:\\inputs\\relocated runtime \u00fc\\lib\\gen2_nemo_windows_nemo_speech_asr_c.dll",
+    "C:\\inputs\\assets\\ami_en2002d_2132.wav",
+    "C:\\results\\diar-first"
+  ],
+  "command_line": "diar-first C:\\chat\\Qwen3-0.6B-Q4_K_M.gguf C:\\inputs\\assets \"C:\\inputs\\relocated runtime \u00fc\\lib\\gen2_nemo_windows_nemo_speech_asr_c.dll\" C:\\inputs\\assets\\ami_en2002d_2132.wav C:\\results\\diar-first",
+  "capture_modules": true,
+  "expected_failure": false,
+  "environment": {
+    "SystemRoot": "C:\\Windows",
+    "WINDIR": "C:\\Windows",
+    "PATH": "C:\\Windows\\System32;C:\\Windows",
+    "TEMP": "C:\\results\\tmp",
+    "TMP": "C:\\results\\tmp",
+    "USERPROFILE": "C:\\results",
+    "LOCALAPPDATA": "C:\\results\\local",
+    "GEN2_NEMOTRON_ASSETS": "C:\\inputs\\assets",
+    "GEN2_NEMO_LIBRARY": "C:\\inputs\\relocated runtime \u00fc\\lib\\gen2_nemo_windows_nemo_speech_asr_c.dll",
+    "GEN2_NEMOTRON_REFERENCE": "C:\\inputs\\reference",
+    "GEN2_NEMO_EXECUTION": "cpu"
+  }
+}

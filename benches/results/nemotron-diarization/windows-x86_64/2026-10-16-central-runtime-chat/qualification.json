@@ -1,0 +1,240 @@
+{
+  "schema_version": 1,
+  "source_commit": "76952a92ffafbbdb22243e01c4b187ce76c9d468",
+  "run_url": "https://github.com/saberra-ai/gen2/actions/runs/38898592596",
+  "ci_job_id": 116964975382,
+  "offline_container_gates_passed": true,
+  "release_qualified": false,
+  "redistribution_qualified": false,
+  "native_source_commit": "24ad9271ef2b46c86a554b61da5395b9bf42404a",
+  "image_id": "sha256:f5d00415a199a61f9e80bd389b28b9265fc78ef8fa6b63c69e44474f6f2600ec",
+  "chat_diarization_gates_passed": true,
+  "chat_comparisons_recomputed": {
+    "isolated_chat_text": "Hello!",
+    "comparisons": {
+      "chat-first/first": {
+        "passed": true,
+        "scope": "long-session wrapper/reference correctness, not held-out quality or full release qualification",
+        "audio_duration_seconds": 60.0,
+        "backend": "cpu",
+        "device": null,
+        "native_frame_count": 6001,
+        "retained_first_frame": 0,
+        "retained_rows": 6001,
+        "turns": 27,
+        "maximum_turn_error_seconds": 0.0,
+        "turn_tolerance_seconds": 1e-06,
+        "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+        "retained_probabilities_match": true,
+        "maximum_probability_error": 0.0,
+        "probability_tolerance": 1e-06,
+        "gen2_rtf": 0.8481655333333333,
+        "native_rtf": 0.8470615166666666
+      },
+      "chat-first/concurrent": {
+        "passed": true,
+        "scope": "long-session wrapper/reference correctness, not held-out quality or full release qualification",
+        "audio_duration_seconds": 60.0,
+        "backend": "cpu",
+        "device": null,
+        "native_frame_count": 6001,
+        "retained_first_frame": 0,
+        "retained_rows": 6001,
+        "turns": 27,
+        "maximum_turn_error_seconds": 0.0,
+        "turn_tolerance_seconds": 1e-06,
+        "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+        "retained_probabilities_match": true,
+        "maximum_probability_error": 0.0,
+        "probability_tolerance": 1e-06,
+        "gen2_rtf": 0.8501655333333333,
+        "native_rtf": 0.8470615166666666
+      },
+      "chat-first/reloaded": {
+        "passed": true,
+        "scope": "long-session wrapper/reference correctness, not held-out quality or full release qualification",
+        "audio_duration_seconds": 60.0,
+        "backend": "cpu",
+        "device": null,
+        "native_frame_count": 6001,
+        "retained_first_frame": 0,
+        "retained_rows": 6001,
+        "turns": 27,
+        "maximum_turn_error_seconds": 0.0,
+        "turn_tolerance_seconds": 1e-06,
+        "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+        "retained_probabilities_match": true,
+        "maximum_probability_error": 0.0,
+        "probability_tolerance": 1e-06,
+        "gen2_rtf": 0.8577636333333333,
+        "native_rtf": 0.8470615166666666
+      },
+      "diar-first/first": {
+        "passed": true,
+        "scope": "long-session wrapper/reference correctness, not held-out quality or full release qualification",
+        "audio_duration_seconds": 60.0,
+        "backend": "cpu",
+        "device": null,
+        "native_frame_count": 6001,
+        "retained_first_frame": 0,
+        "retained_rows": 6001,
+        "turns": 27,
+        "maximum_turn_error_seconds": 0.0,
+        "turn_tolerance_seconds": 1e-06,
+        "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+        "retained_probabilities_match": true,
+        "maximum_probability_error": 0.0,
+        "probability_tolerance": 1e-06,
+        "gen2_rtf": 0.8526997833333334,
+        "native_rtf": 0.8470615166666666
+      },
+      "diar-first/concurrent": {
+        "passed": true,
+        "scope": "long-session wrapper/reference correctness, not held-out quality or full release qualification",
+        "audio_duration_seconds": 60.0,
+        "backend": "cpu",
+        "device": null,
+        "native_frame_count": 6001,
+        "retained_first_frame": 0,
+        "retained_rows": 6001,
+        "turns": 27,
+        "maximum_turn_error_seconds": 0.0,
+        "turn_tolerance_seconds": 1e-06,
+        "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+        "retained_probabilities_match": true,
+        "maximum_probability_error": 0.0,
+        "probability_tolerance": 1e-06,
+        "gen2_rtf": 0.8519479166666667,
+        "native_rtf": 0.8470615166666666
+      },
+      "diar-first/reloaded": {
+        "passed": true,
+        "scope": "long-session wrapper/reference correctness, not held-out quality or full release qualification",
+        "audio_duration_seconds": 60.0,
+        "backend": "cpu",
+        "device": null,
+        "native_frame_count": 6001,
+        "retained_first_frame": 0,
+        "retained_rows": 6001,
+        "turns": 27,
+        "maximum_turn_error_seconds": 0.0,
+        "turn_tolerance_seconds": 1e-06,
+        "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+        "retained_probabilities_match": true,
+        "maximum_probability_error": 0.0,
+        "probability_tolerance": 1e-06,
+        "gen2_rtf": 0.8490462333333333,
+        "native_rtf": 0.8470615166666666
+      }
+    }
+  },
+  "chat_model_bytes_checked_by_receiver": false,
+  "openmp_installed_observation_matches_independently_retained_publisher_CAB": {
+    "bytes": 212920,
+    "sha256": "95d4ce4a6802d1e18b5e0e1722cc30ea72ca7e033f83828f05c0b7b993fe7cbf"
+  },
+  "central_system32_runtime_model_calls_passed": true,
+  "central_setup_receipt_sha256": "d214673e514036aa500aee5a2cdf0242b92b128e7c006705951bd13ce76b7a4e",
+  "no_app_local_crt_or_openmp_payloads": true,
+  "chat_helper_archive": {
+    "schema_version": 1,
+    "release_qualified": false,
+    "archive": "development-windows-chat-helpers.zip",
+    "scope": "Exact portable file bytes/directory names; no Windows ACL or runtime qualification.",
+    "archive_bytes": 7245267,
+    "archive_sha256": "e829f97deb8e95b5a78c1f723c66628b21d84f940ed9162e42b75fa803a2dd21"
+  },
+  "native_public_comparison_recomputed": {
+    "passed": true,
+    "scope": "long-session wrapper/reference correctness, not held-out quality or full release qualification",
+    "audio_duration_seconds": 60.0,
+    "backend": "cpu",
+    "device": null,
+    "native_frame_count": 6001,
+    "retained_first_frame": 0,
+    "retained_rows": 6001,
+    "turns": 27,
+    "maximum_turn_error_seconds": 0.0,
+    "turn_tolerance_seconds": 1e-06,
+    "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+    "retained_probabilities_match": true,
+    "maximum_probability_error": 0.0,
+    "probability_tolerance": 1e-06,
+    "gen2_rtf": 0.85235045,
+    "native_rtf": 0.8470615166666666
+  },
+  "actual_pcm_sha256": "96858fdcf0c8854f8fc659403c11ddc7565f538a7402803e4235e9e354d87ae6",
+  "all_seven_lifecycle_tests_reparsed": true,
+  "all_nine_containers_controls_reparsed": true,
+  "all_nine_original_command_specs_reparsed_exact_frozen_bytes": true,
+  "all_nine_distinct_canonical_container_id_chains_reparsed": true,
+  "runtime_archive_entries_reverified": 39,
+  "helper_archive_entries_reverified": 4,
+  "private_dlls_observed_per_helper": {
+    "native": 5,
+    "public": 5,
+    "lifecycle": 5,
+    "isolated": 0,
+    "chat-first": 5,
+    "diar-first": 5
+  },
+  "crt_paths_observed_per_helper": {
+    "native": [
+      "C:\\Windows\\SYSTEM32\\MSVCP140.dll",
+      "C:\\Windows\\SYSTEM32\\VCRUNTIME140.dll",
+      "C:\\Windows\\SYSTEM32\\VCRUNTIME140_1.dll"
+    ],
+    "public": [
+      "C:\\Windows\\SYSTEM32\\MSVCP140.dll",
+      "C:\\Windows\\SYSTEM32\\VCRUNTIME140.dll",
+      "C:\\Windows\\SYSTEM32\\VCRUNTIME140_1.dll"
+    ],
+    "lifecycle": [
+      "C:\\Windows\\SYSTEM32\\MSVCP140.dll",
+      "C:\\Windows\\SYSTEM32\\VCRUNTIME140.dll",
+      "C:\\Windows\\SYSTEM32\\VCRUNTIME140_1.dll"
+    ],
+    "isolated": [
+      "C:\\Windows\\SYSTEM32\\MSVCP140.dll",
+      "C:\\Windows\\SYSTEM32\\VCRUNTIME140.dll",
+      "C:\\Windows\\SYSTEM32\\VCRUNTIME140_1.dll"
+    ],
+    "chat-first": [
+      "C:\\Windows\\SYSTEM32\\MSVCP140.dll",
+      "C:\\Windows\\SYSTEM32\\VCRUNTIME140.dll",
+      "C:\\Windows\\SYSTEM32\\VCRUNTIME140_1.dll"
+    ],
+    "diar-first": [
+      "C:\\Windows\\SYSTEM32\\MSVCP140.dll",
+      "C:\\Windows\\SYSTEM32\\VCRUNTIME140.dll",
+      "C:\\Windows\\SYSTEM32\\VCRUNTIME140_1.dll"
+    ]
+  },
+  "negative_missing_private_library_error126_no_output": true,
+  "negative_missing_central_runtime_status_dll_not_found_no_output": true,
+  "runtime_archive": {
+    "schema_version": 1,
+    "release_qualified": false,
+    "archive": "development-windows-runtime.zip",
+    "scope": "Exact portable file bytes/directory names; no Windows ACL or runtime qualification.",
+    "archive_bytes": 1908631,
+    "archive_sha256": "ca20f0e4bcb7ddf43346af60d3838d0004267ad0eb3883a1bfc349a65df1ca9c"
+  },
+  "test_helper_archive": {
+    "schema_version": 1,
+    "release_qualified": false,
+    "archive": "development-windows-test-helpers.zip",
+    "scope": "Exact portable file bytes/directory names; no Windows ACL or runtime qualification.",
+    "archive_bytes": 1286141,
+    "archive_sha256": "51917b100903dcff5a7d3aa4b9aa0589d34f8fdd7346416342a01d84ca3f2ece"
+  },
+  "limits": [
+    "No Windows desktop/physical-machine, Bark/Laya coexistence or universal namespace guarantee.",
+    "No held-out quality, live/uncontended-performance or Microsoft redistribution qualification.",
+    "No CRT/OpenMP copies beside test executables or in the five-DLL runtime; exact central System32 bytes come from the separately qualified publisher installer.",
+    "The independent native probe alone uses the relocated runtime directory on PATH for its static private C ABI import. Gen2 uses its explicit library loader with system-only PATH.",
+    "Chat uses the exact central System32 OpenMP bytes supplied by the qualified publisher-installer image; no app-local CRT/OpenMP copies or universal namespace claim.",
+    "macOS receiver rehashed opaque five-DLL runtime/helper bytes, replayed setup-input/static-publisher binding, and reparsed nine recorded calls, actual stage modules, ten chat outcomes and six native comparisons; large model bytes, actual Windows calls, immutability and system-module disk hashes remain CI observations.",
+    "Observed module closure applies to recorded helpers/calls, not every potential dynamic load or process namespace."
+  ]
+}

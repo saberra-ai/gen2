@@ -745,8 +745,9 @@ isolation remain unqualified.
 The separate [central prerequisite investigation](../research/nemotron-windows-central-prerequisite.md)
 has now acquired and hash-verified the fixed Microsoft 14.51.36247 installer,
 24 static bundle payloads, its actual selected terms document and nine AMD64
-CRT/OpenMP DLL identities. Signature trust, MSI destinations, setup and central
-runtime execution remain pending. `package_windows.py --central-runtime`
+CRT/OpenMP DLL identities. That static inspection alone does not prove Windows
+signature trust, MSI destinations, setup or central-runtime execution; subsequent
+actual receipts below cover those contracts. `package_windows.py --central-runtime`
 constructs a distinct five-private-DLL format with a pinned publisher-hosted
 prerequisite; it excludes Microsoft installer/runtime DLL payloads, retains the
 source notices and preserves the app-local development contract. Local
@@ -767,18 +768,34 @@ DLLs were absent before setup and now match exact 14.51.36247 System32 payload
 bytes/versions/signatures. Both registry views report the installed version,
 no restart indicators are present, and a fresh offline Observe-only container
 from the exact base-plus-one-layer image repeats the contracts. All 40 receipt
-members and frozen inputs were independently reverified. Actual Gen2/native/
-lifecycle/chat loading against this central variant remains pending; no image
-or Microsoft binary bytes are published or added to Git.
-All 92 current model-free tool regressions pass.
+members and frozen inputs were independently reverified. This setup-only receipt
+does not exercise Gen2/native/lifecycle/chat; no image or Microsoft binary bytes
+are published or added to Git. Its 92 model-free tool regressions passed.
 The subsequent same-job central model workflow now constructs the five-DLL
 runtime, re-provisions the publisher prerequisite, builds regular CPU chat and
 requires native/public/lifecycle/both-order comparisons with exact observed
 System32 CRT/OpenMP bytes and no app-local copies. Its additional fresh-base
 negative keeps all five private DLLs present and requires startup failure with
 `STATUS_DLL_NOT_FOUND` and no output when the central prerequisite is absent.
-Source `76952a9` is the first actual full central-model attempt; it is still
-pending, and 93 current model-free tool regressions pass.
+The actual source `76952a9`/run `38898592596` now passes. Its
+[265-file central runtime/chat receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-central-runtime-chat/qualification.json)
+reverifies the delivered39-entry archive with exactly five private DLLs, the
+three-/four-EXE test archives with no app-local CRT/OpenMP bytes, same-source
+publisher setup and nine fresh offline model containers. Native/public output
+matches all27 turns,6001 rows and48008 probabilities exactly; all seven lifecycle
+tests including100 reloads pass. Both chat load orders retain six exact native
+comparisons, ten `Hello!` chat observations, actual API overlap of29.473080 and
+29.409753 seconds, and zero reservation after shutdown. Every observed CRT/OpenMP
+module matches its declared publisher payload under System32; isolated chat
+observes zero private DLLs and mixed/reloaded stages observe all five. The
+missing-private control returns error126 without output; the fresh original-base
+control retains all five private DLLs but fails with `STATUS_DLL_NOT_FOUND` and
+no output. All11 model/setup container ID chains, mounts, network-none controls
+and cleanup are retained. Native/public RTF0.84706/0.85235 is an observation on
+this CI host, not a live/uncontended-performance claim. Microsoft distribution
+rights, physical Windows desktop, Bark/Laya coexistence, universal namespace and
+held-out-quality gates remain open. The separate AMI diagnostic raises the
+current model-free regression total to96; the full feature matrix is running.
 
 A guarded [Windows private-DLL build](../research/nemotron-windows-private-names.md)
 now relinks the five owned DLLs through an external CMake naming hook, updates

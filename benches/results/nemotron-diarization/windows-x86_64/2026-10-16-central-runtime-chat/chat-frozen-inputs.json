@@ -1,0 +1,318 @@
+{
+  "source_commit": "76952a92ffafbbdb22243e01c4b187ce76c9d468",
+  "chat_llama_revision": "847f447c310a3784d623a953e6f0bb07f04c0f27",
+  "chat_features": [
+    "backend-llamacpp",
+    "backend-diar-nemo"
+  ],
+  "fingerprints": {
+    "executable": "004dd0acf74cc2708111d31e8efedf930bc5f0c6a98326aba369e68716233f8b",
+    "chat_model": "ac2d97712095a558e31573f62f466a3f9d93990898b0ec79d7c974c1780d524a",
+    "diarization_model": "08456d9e22cd9a323c0364d98375f3746d6e68507ebb705cd46438c534c7a3a1",
+    "library": "cc9f20cba7fb1804fd0bb5ff7cb105776540598d76b8538b288c9af97d926c4c",
+    "wav": "f00f92e53115a4a6724aec0ddaf9c675df6d5fabd3a489b43fffe56ba52a3ae9"
+  },
+  "chat_fixture_files": {
+    "Qwen3-0.6B-Q4_K_M.gguf": {
+      "bytes": 396705472,
+      "sha256": "ac2d97712095a558e31573f62f466a3f9d93990898b0ec79d7c974c1780d524a"
+    },
+    "README.md": {
+      "bytes": 17082,
+      "sha256": "03994ad190e9e314ae0bff6f2cf780528f09ea70e0f22a267e287c8748a850f5"
+    },
+    "Qwen-APACHE-2.0.txt": {
+      "bytes": 11343,
+      "sha256": "832dd9e00a68dd83b3c3fb9f5588dad7dcf337a0db50f7d9483f310cd292e92e"
+    }
+  },
+  "files": {
+    ".": {
+      "type": "directory"
+    },
+    "assets": {
+      "type": "directory"
+    },
+    "assets/Nemotron-3-Diarization.q8_0.gguf": {
+      "type": "file",
+      "bytes": 107012128,
+      "sha256": "08456d9e22cd9a323c0364d98375f3746d6e68507ebb705cd46438c534c7a3a1"
+    },
+    "assets/README.md": {
+      "type": "file",
+      "bytes": 43239,
+      "sha256": "5fe88ca4020d2ee134f806a0a02c52c19855b73047bc2e6f25b9171e1abeebfd"
+    },
+    "assets/ami_en2002d_2132.json": {
+      "type": "file",
+      "bytes": 2979,
+      "sha256": "8a77aab95e65e301f3cb23cfd0a0641b3295a9da5686ff30f2ab12d0f282e229"
+    },
+    "assets/ami_en2002d_2132.rttm": {
+      "type": "file",
+      "bytes": 1472,
+      "sha256": "40751c9fc0bb934f741789ce3fafccd2c1f9d7c112585b8b40ac177a9de13b2d"
+    },
+    "assets/ami_en2002d_2132.wav": {
+      "type": "file",
+      "bytes": 1920044,
+      "sha256": "f00f92e53115a4a6724aec0ddaf9c675df6d5fabd3a489b43fffe56ba52a3ae9"
+    },
+    "assets/fixture-README.md": {
+      "type": "file",
+      "bytes": 741,
+      "sha256": "e44c191f59cecdeba6dd82acce9fee820938d41487b7423809d02b4e140426ed"
+    },
+    "bin": {
+      "type": "directory"
+    },
+    "bin/chat-coexistence.exe": {
+      "type": "file",
+      "bytes": 15309312,
+      "sha256": "004dd0acf74cc2708111d31e8efedf930bc5f0c6a98326aba369e68716233f8b"
+    },
+    "bin/native-lifecycle.exe": {
+      "type": "file",
+      "bytes": 1755648,
+      "sha256": "49496fb2772ba537c8ebe16c6859a7aacfd657d8b8c712660f195ba0455c8c4d"
+    },
+    "bin/native-probe.exe": {
+      "type": "file",
+      "bytes": 313856,
+      "sha256": "11a7da9663e2f545892670ea16029d81a4ada3d973aa70b9b138858bfc31bbb6"
+    },
+    "bin/public-stream.exe": {
+      "type": "file",
+      "bytes": 1138176,
+      "sha256": "9d5383b62dc51a017614a76dbe5daba062b7cf5838b8e0b473f183b1c92975e1"
+    },
+    "control.txt": {
+      "type": "file",
+      "bytes": 36,
+      "sha256": "557070be9798d55927586be814cf91a76b741e8a1a61cfe540dfd49ce0314201"
+    },
+    "controls.ps1": {
+      "type": "file",
+      "bytes": 1920,
+      "sha256": "1a3ac3078c9a0f3afbc4ded1233b72c9c2bf3e3add325a2c276480790159b913"
+    },
+    "launch.ps1": {
+      "type": "file",
+      "bytes": 3510,
+      "sha256": "6843d031dcc24bae34bba936552598e3271150f5bc1c8be8ae2194baf524e5bb"
+    },
+    "relocated runtime \u00fc": {
+      "type": "directory"
+    },
+    "relocated runtime \u00fc/lib": {
+      "type": "directory"
+    },
+    "relocated runtime \u00fc/lib/gen2_nemo_windows_ggml-base.dll": {
+      "type": "file",
+      "bytes": 678912,
+      "sha256": "b8c51da772faa79c67a3cd60d57bedd4e343b436377e604fa03c0d7b511200e9"
+    },
+    "relocated runtime \u00fc/lib/gen2_nemo_windows_ggml-cpu.dll": {
+      "type": "file",
+      "bytes": 948224,
+      "sha256": "7185e2f50061140cfa127807a3f6f27b799097a94916c823d72105799631c00e"
+    },
+    "relocated runtime \u00fc/lib/gen2_nemo_windows_ggml.dll": {
+      "type": "file",
+      "bytes": 61952,
+      "sha256": "27fcdb8b56df07571223c62f257c1d7e106e862b44d0f35ceb1a4f560be89317"
+    },
+    "relocated runtime \u00fc/lib/gen2_nemo_windows_nemo_speech_asr.dll": {
+      "type": "file",
+      "bytes": 4200960,
+      "sha256": "03f5a5bd9d29b205c2433c53df16d785e0969124d9373dbb86f64e9b2303f2a8"
+    },
+    "relocated runtime \u00fc/lib/gen2_nemo_windows_nemo_speech_asr_c.dll": {
+      "type": "file",
+      "bytes": 56320,
+      "sha256": "cc9f20cba7fb1804fd0bb5ff7cb105776540598d76b8538b288c9af97d926c4c"
+    },
+    "relocated runtime \u00fc/metadata": {
+      "type": "directory"
+    },
+    "relocated runtime \u00fc/metadata/cmake-cache.log": {
+      "type": "file",
+      "bytes": 36141,
+      "sha256": "3d41fea5736cffd1387414b82a12689bab85310dde72f94594f534ef29f325a5"
+    },
+    "relocated runtime \u00fc/metadata/receipt.json": {
+      "type": "file",
+      "bytes": 23798,
+      "sha256": "18fcacac2b79a31a9ff1791ae62c09defb43a70bbf2c9cf173bdbc3991af26d3"
+    },
+    "relocated runtime \u00fc/metadata/windows-compat.json": {
+      "type": "file",
+      "bytes": 3067,
+      "sha256": "f847cfbe66b8793c0b8dba2790573ec16a4daf3da0d1812e41700ba757af7453"
+    },
+    "relocated runtime \u00fc/metadata/windows-private-names.json": {
+      "type": "file",
+      "bytes": 1536,
+      "sha256": "ab3b7a7fbc9aba020ed73ae762fb768034b7768444f1a4cb18841f66ef207f4e"
+    },
+    "relocated runtime \u00fc/metadata/windows-private-pe.json": {
+      "type": "file",
+      "bytes": 2629012,
+      "sha256": "fbaba6c29e0c0313f1604031b581f209153689aad1cbe1ab7e394105966e0a81"
+    },
+    "relocated runtime \u00fc/metadata/windows-provenance.json": {
+      "type": "file",
+      "bytes": 21106,
+      "sha256": "0cd02b2c78f325485b6a05c3925c4d29be49ad7a070a7fdc939cf64941de4a32"
+    },
+    "relocated runtime \u00fc/metadata/windows-vcpkg-status.log": {
+      "type": "file",
+      "bytes": 4346,
+      "sha256": "aa85bcc183d2163072bdee4a245ce2c400f4a3d7aa68fac1ec59efb56d4f2061"
+    },
+    "relocated runtime \u00fc/notices": {
+      "type": "directory"
+    },
+    "relocated runtime \u00fc/notices/gen2": {
+      "type": "directory"
+    },
+    "relocated runtime \u00fc/notices/gen2/LICENSE": {
+      "type": "file",
+      "bytes": 1067,
+      "sha256": "85cd59858b9b0cf647a1631e4104c9e6dcc21f0eeec3ae65b77018b415e829a8"
+    },
+    "relocated runtime \u00fc/notices/nemo-speech": {
+      "type": "directory"
+    },
+    "relocated runtime \u00fc/notices/nemo-speech/LICENSE": {
+      "type": "file",
+      "bytes": 12238,
+      "sha256": "eaaca34b26b27c7be5a5099a0b9ddf9913f2db0aa96f6d5854435f2916d6fdc3"
+    },
+    "relocated runtime \u00fc/notices/nemo-speech/NOTICE": {
+      "type": "file",
+      "bytes": 233,
+      "sha256": "d5ea773d67035e676503579ecf7d5836a124649d7fe99d59ec3c50cd101e1a80"
+    },
+    "relocated runtime \u00fc/notices/nemo-speech/THIRD_PARTY_NOTICES.md": {
+      "type": "file",
+      "bytes": 10277,
+      "sha256": "fd8fcc0c71abde95b1b742a74c70aa27d2b4f2811fc19f64378b6845d8f3254a"
+    },
+    "relocated runtime \u00fc/notices/nemo-speech/third_party": {
+      "type": "directory"
+    },
+    "relocated runtime \u00fc/notices/nemo-speech/third_party/ggml": {
+      "type": "directory"
+    },
+    "relocated runtime \u00fc/notices/nemo-speech/third_party/ggml/LICENSE": {
+      "type": "file",
+      "bytes": 1078,
+      "sha256": "94f29bbed6a22c35b992c5c6ebf0e7c92f13b836b90f36f461c9cf2f0f1d010d"
+    },
+    "relocated runtime \u00fc/notices/nemo-speech/third_party/vcpkg": {
+      "type": "directory"
+    },
+    "relocated runtime \u00fc/notices/nemo-speech/third_party/vcpkg/abseil": {
+      "type": "directory"
+    },
+    "relocated runtime \u00fc/notices/nemo-speech/third_party/vcpkg/abseil/LICENSE": {
+      "type": "file",
+      "bytes": 11361,
+      "sha256": "c79a7fea0e3cac04cd43f20e7b648e5a0ff8fa5344e644b0ee09ca1162b62747"
+    },
+    "relocated runtime \u00fc/notices/nemo-speech/third_party/vcpkg/protobuf": {
+      "type": "directory"
+    },
+    "relocated runtime \u00fc/notices/nemo-speech/third_party/vcpkg/protobuf/LICENSE": {
+      "type": "file",
+      "bytes": 1732,
+      "sha256": "6e5e117324afd944dcf67f36cf329843bc1a92229a8cd9bb573d7a83130fea7d"
+    },
+    "relocated runtime \u00fc/notices/nemo-speech/third_party/vcpkg/sentencepiece": {
+      "type": "directory"
+    },
+    "relocated runtime \u00fc/notices/nemo-speech/third_party/vcpkg/sentencepiece/LICENSE": {
+      "type": "file",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    "relocated runtime \u00fc/notices/nemo-speech/third_party/vcpkg/sentencepiece/darts-clone-LICENSE": {
+      "type": "file",
+      "bytes": 1481,
+      "sha256": "155f59997298ee336602c49f9c1110f268ac394ca2197eb02647a3555935ad52"
+    },
+    "relocated runtime \u00fc/notices/nemo-speech/third_party/vcpkg/sentencepiece/esaxx-LICENSE": {
+      "type": "file",
+      "bytes": 1112,
+      "sha256": "7c28553d1d3312d65fe309f76a22ebaf33a3d76c8c1e3b98a88ee4654ecb53db"
+    },
+    "relocated runtime \u00fc/notices/nemo-speech/third_party/vcpkg/sentencepiece/gen2-supplement-provenance.json": {
+      "type": "file",
+      "bytes": 1936,
+      "sha256": "d9324e93667b3b34a372279b8ce6dee0a85e511dac02898804724deaf0b5ee92"
+    },
+    "relocated runtime \u00fc/notices/nemo-speech/third_party/vcpkg/sentencepiece/sais-lite-NOTICE.txt": {
+      "type": "file",
+      "bytes": 1174,
+      "sha256": "162a72e52ad69921a67676af4fb59911233566dce1637e2e33db27659fcac523"
+    },
+    "relocated runtime \u00fc/notices/nemo-speech/third_party/vcpkg/utf8-range": {
+      "type": "directory"
+    },
+    "relocated runtime \u00fc/notices/nemo-speech/third_party/vcpkg/utf8-range/LICENSE": {
+      "type": "file",
+      "bytes": 1091,
+      "sha256": "02de69b64fc36d9e938f418e52723e42f0b2b226d58a9cb3c8dcbdf7059f5074"
+    },
+    "relocated runtime \u00fc/package.json": {
+      "type": "file",
+      "bytes": 18060,
+      "sha256": "89dbb805d2ead60bf0ac68316068306346082220ae4e85fd686c7bcbb15de40e"
+    }
+  },
+  "chat_helper_archive": {
+    "schema_version": 1,
+    "release_qualified": false,
+    "archive": "development-windows-chat-helpers.zip",
+    "scope": "Exact portable file bytes/directory names; no Windows ACL or runtime qualification.",
+    "archive_bytes": 7245267,
+    "archive_sha256": "e829f97deb8e95b5a78c1f723c66628b21d84f940ed9162e42b75fa803a2dd21",
+    "files": {
+      ".": {
+        "type": "directory"
+      },
+      "chat-coexistence.exe": {
+        "type": "file",
+        "bytes": 15309312,
+        "sha256": "004dd0acf74cc2708111d31e8efedf930bc5f0c6a98326aba369e68716233f8b"
+      },
+      "native-lifecycle.exe": {
+        "type": "file",
+        "bytes": 1755648,
+        "sha256": "49496fb2772ba537c8ebe16c6859a7aacfd657d8b8c712660f195ba0455c8c4d"
+      },
+      "native-probe.exe": {
+        "type": "file",
+        "bytes": 313856,
+        "sha256": "11a7da9663e2f545892670ea16029d81a4ada3d973aa70b9b138858bfc31bbb6"
+      },
+      "public-stream.exe": {
+        "type": "file",
+        "bytes": 1138176,
+        "sha256": "9d5383b62dc51a017614a76dbe5daba062b7cf5838b8e0b473f183b1c92975e1"
+      }
+    }
+  },
+  "openmp_provenance_sha256": "cf1564f83320863db9ed14ff9eccff4132fe44298eefd8658a0a053fa937d846",
+  "example_sha256": "7c3d363862994d2b4976fbada624ae9d2a047ebd8cb551ead780b80ad8afc3ab",
+  "tools": {
+    "qualify_windows_chat.py": "1b5fb1342aca2f3587f9e866ef8b00d52acb579b9d81966b4072d18407e30490",
+    "windows_chat_inputs.py": "8383662d0ca1770f75016b7d1480c03a2234db1ff80342df18c45fc6fac09733",
+    "windows_chat_openmp.ps1": "b1937fa88b9e3ec72d478f8a70c56874e8f487cf5b9d487f9eb1546273157b4b",
+    "windows_runtime_audit.py": "f92a9694d4adcb4e64432d1552c61dac54e7fa42a8d55495410225e7eeb20b5e",
+    "qualify_windows_package.py": "f8bffa473f548aefb07bcd51f9b89930cfb9a5b97def0fc4419c50d85ce40c62",
+    "linux_chat_audit.py": "ed29e9750fc44de8d120bf09f8406574d6e3d9a1c13dadd4eef61d2861f6b3b0",
+    "linux-chat.lock.json": "5ee5454597d650b2ddfc9153e92e6277ec0e90ff0d1e61ec56cd73a953a0a158"
+  }
+}
