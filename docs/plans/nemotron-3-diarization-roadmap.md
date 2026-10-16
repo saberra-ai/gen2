@@ -57,7 +57,11 @@ The [actual mixed receipt](../../benches/results/nemotron-diarization/apple-m4-p
 passes all four cases, complete runtime/provider image audits and initial/restored
 29-layer Metal chat placement. The [Pnola adapter protocol](../../tools/nemotron-diarization/valid-mel-pnola.protocol.json)
 now freezes ten recorded/partial-success/capture/live/shutdown cases against
-explicit relocated artifacts; actual adapter execution remains pending.
+explicit relocated artifacts. The [actual adapter qualification](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-pnola-adapter/qualification.json)
+passes all ten cases, six exact turn comparisons and complete library audits.
+Both 80.04-second live runs retain 11 ASR sections, 152 words and 15 provisional
+revisions. This is debug CLI/test evidence; signed-bundle resolution, GUI,
+physical microphone and quality criteria remain open.
 All 173 model-free tools tests pass locally;
 [CI at the 157-test source](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-157/qualification.json)
 passes all 13 jobs. Later package/qualifier changes are outside that CI source;

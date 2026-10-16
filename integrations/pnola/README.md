@@ -35,6 +35,14 @@ build receipt and original SDK library identities. Historical v1 packages are
 rejected by current staging tools. Model bytes are unchanged; full desktop
 qualification of the new runtime remains pending.
 
+The [current-profile adapter receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-pnola-adapter/qualification.json)
+passes ten debug test/CLI cases with explicit relocated artifacts: recorded
+text/turn preservation, both partial-success directions, CPU/Metal paced
+capture/live paths and retained-handle Metal shutdown. Both live runs cover
+80.04 seconds, 11 ASR sections, 152 words and 15 provisional revisions. Complete
+loader audits pass. This does not qualify automatic bundled resolution,
+signed release artifacts, GUI, physical microphone or attribution accuracy.
+
 The bundled `nemo/package.json` selects CPU or Metal execution. Supplying an
 external `GEN2_NEMO_LIBRARY` defaults to CPU; set `GEN2_NEMO_EXECUTION=metal`
 explicitly to qualify an external Metal SDK, or `cpu` to request CPU. Unsupported

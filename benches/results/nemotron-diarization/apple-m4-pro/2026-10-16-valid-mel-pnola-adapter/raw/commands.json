@@ -1,0 +1,340 @@
+[
+  {
+    "name": "list",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-runtime-v2/list.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/bin/pnola-tests",
+      "--ignored",
+      "--list"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "HOME": "/Users/victor",
+      "TMPDIR": "/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/",
+      "LC_ALL": "C"
+    },
+    "pid": 56467,
+    "returncode": 0,
+    "elapsed_seconds": 0.023686875007115304
+  },
+  {
+    "name": "cpu-recorded-test",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-runtime-v2/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/bin/pnola-tests",
+      "--ignored",
+      "--exact",
+      "transcription::integration_tests::real_transcript_and_speaker_timeline_preserve_measured_text",
+      "--nocapture"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "HOME": "/Users/victor",
+      "TMPDIR": "/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/",
+      "LC_ALL": "C",
+      "GEN2_NEMO_EXECUTION": "cpu",
+      "GEN2_NEMOTRON_ASSETS": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/models/nemotron",
+      "GEN2_NEMO_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/cpu/nemo/lib/libnemo_speech_asr_c.dylib",
+      "GEN2_BARK_BUNDLE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/models/bark",
+      "GEN2_ORT_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/providers/libonnxruntime.dylib",
+      "PNOLA_VERIFY_AUDIO": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/assets/ami.wav",
+      "PNOLA_BARK_REFERENCE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/assets/bark-reference.json",
+      "PNOLA_VERIFY_OUTPUT": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-runtime-v2/cpu-recorded-test.result.json"
+    },
+    "pid": 56469,
+    "returncode": 0,
+    "elapsed_seconds": 19.045850041962694
+  },
+  {
+    "name": "cpu-asr-unavailable",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-runtime-v2/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/bin/pnola-tests",
+      "--ignored",
+      "--exact",
+      "transcription::integration_tests::unavailable_asr_preserves_a_standalone_timeline",
+      "--nocapture"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "HOME": "/Users/victor",
+      "TMPDIR": "/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/",
+      "LC_ALL": "C",
+      "GEN2_NEMO_EXECUTION": "cpu",
+      "GEN2_NEMOTRON_ASSETS": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/models/nemotron",
+      "GEN2_NEMO_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/cpu/nemo/lib/libnemo_speech_asr_c.dylib",
+      "GEN2_BARK_BUNDLE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/missing-unavailable-control",
+      "GEN2_ORT_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/providers/libonnxruntime.dylib",
+      "PNOLA_VERIFY_AUDIO": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/assets/ami.wav",
+      "PNOLA_BARK_REFERENCE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/assets/bark-reference.json",
+      "PNOLA_VERIFY_OUTPUT": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-runtime-v2/cpu-asr-unavailable.result.json"
+    },
+    "pid": 56521,
+    "returncode": 0,
+    "elapsed_seconds": 9.669455666968133
+  },
+  {
+    "name": "cpu-diar-unavailable",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-runtime-v2/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/bin/pnola-tests",
+      "--ignored",
+      "--exact",
+      "transcription::integration_tests::unavailable_diarization_preserves_a_successful_transcript",
+      "--nocapture"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "HOME": "/Users/victor",
+      "TMPDIR": "/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/",
+      "LC_ALL": "C",
+      "GEN2_NEMO_EXECUTION": "cpu",
+      "GEN2_NEMOTRON_ASSETS": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/models/nemotron",
+      "GEN2_NEMO_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/missing-unavailable-control",
+      "GEN2_BARK_BUNDLE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/models/bark",
+      "GEN2_ORT_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/providers/libonnxruntime.dylib",
+      "PNOLA_VERIFY_AUDIO": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/assets/ami.wav",
+      "PNOLA_BARK_REFERENCE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/assets/bark-reference.json",
+      "PNOLA_VERIFY_OUTPUT": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-runtime-v2/cpu-diar-unavailable.result.json"
+    },
+    "pid": 56581,
+    "returncode": 0,
+    "elapsed_seconds": 9.921722583007067
+  },
+  {
+    "name": "cpu-capture",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-runtime-v2/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/bin/pnola-tests",
+      "--ignored",
+      "--exact",
+      "capture::tests::real_live_pcm_tee_preserves_audio_and_speaker_session",
+      "--nocapture"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "HOME": "/Users/victor",
+      "TMPDIR": "/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/",
+      "LC_ALL": "C",
+      "GEN2_NEMO_EXECUTION": "cpu",
+      "GEN2_NEMOTRON_ASSETS": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/models/nemotron",
+      "GEN2_NEMO_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/cpu/nemo/lib/libnemo_speech_asr_c.dylib",
+      "GEN2_BARK_BUNDLE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/models/bark",
+      "GEN2_ORT_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/providers/libonnxruntime.dylib",
+      "PNOLA_VERIFY_AUDIO": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/assets/ami.wav",
+      "PNOLA_BARK_REFERENCE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/assets/bark-reference.json",
+      "PNOLA_VERIFY_OUTPUT": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-runtime-v2/cpu-capture.result.json"
+    },
+    "pid": 56591,
+    "returncode": 0,
+    "elapsed_seconds": 74.23061712499475
+  },
+  {
+    "name": "cpu-recorded-cli",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-runtime-v2/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/cli/Contents/MacOS/pnola-cli",
+      "--verify-bundle",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/assets/ami.wav",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-runtime-v2/cpu-recorded-cli.result.json"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "HOME": "/Users/victor",
+      "TMPDIR": "/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/",
+      "LC_ALL": "C",
+      "GEN2_NEMO_EXECUTION": "cpu",
+      "GEN2_NEMOTRON_ASSETS": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/models/nemotron",
+      "GEN2_NEMO_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/cpu/nemo/lib/libnemo_speech_asr_c.dylib",
+      "GEN2_BARK_BUNDLE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/models/bark",
+      "GEN2_ORT_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/cli/Contents/Frameworks/libonnxruntime.dylib",
+      "PNOLA_VERIFY_AUDIO": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/assets/ami.wav",
+      "PNOLA_BARK_REFERENCE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/assets/bark-reference.json",
+      "PNOLA_VERIFY_OUTPUT": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-runtime-v2/cpu-recorded-cli.result.json"
+    },
+    "pid": 56780,
+    "returncode": 0,
+    "elapsed_seconds": 20.302666332980152
+  },
+  {
+    "name": "cpu-live-cli",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-runtime-v2/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/cli/Contents/MacOS/pnola-cli",
+      "--verify-live-speakers",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/assets/live.wav",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-runtime-v2/cpu-live-cli.result.json"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "HOME": "/Users/victor",
+      "TMPDIR": "/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/",
+      "LC_ALL": "C",
+      "GEN2_NEMO_EXECUTION": "cpu",
+      "GEN2_NEMOTRON_ASSETS": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/models/nemotron",
+      "GEN2_NEMO_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/cpu/nemo/lib/libnemo_speech_asr_c.dylib",
+      "GEN2_BARK_BUNDLE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/models/bark",
+      "GEN2_ORT_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/cli/Contents/Frameworks/libonnxruntime.dylib",
+      "PNOLA_VERIFY_AUDIO": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/assets/ami.wav",
+      "PNOLA_BARK_REFERENCE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/assets/bark-reference.json",
+      "PNOLA_VERIFY_OUTPUT": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-runtime-v2/cpu-live-cli.result.json"
+    },
+    "pid": 56859,
+    "returncode": 0,
+    "elapsed_seconds": 98.22478024999145
+  },
+  {
+    "name": "metal-capture",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-runtime-v2/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/bin/pnola-tests",
+      "--ignored",
+      "--exact",
+      "capture::tests::real_live_pcm_tee_preserves_audio_and_speaker_session",
+      "--nocapture"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "HOME": "/Users/victor",
+      "TMPDIR": "/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/",
+      "LC_ALL": "C",
+      "GEN2_NEMO_EXECUTION": "metal",
+      "GEN2_NEMOTRON_ASSETS": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/models/nemotron",
+      "GEN2_NEMO_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/metal/nemo/lib/libnemo_speech_asr_c.dylib",
+      "GEN2_BARK_BUNDLE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/models/bark",
+      "GEN2_ORT_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/providers/libonnxruntime.dylib",
+      "PNOLA_VERIFY_AUDIO": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/assets/ami.wav",
+      "PNOLA_BARK_REFERENCE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/assets/bark-reference.json",
+      "PNOLA_VERIFY_OUTPUT": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-runtime-v2/metal-capture.result.json"
+    },
+    "pid": 57065,
+    "returncode": 0,
+    "elapsed_seconds": 79.32935216696933
+  },
+  {
+    "name": "metal-recorded-cli",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-runtime-v2/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/cli/Contents/MacOS/pnola-cli",
+      "--verify-bundle",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/assets/ami.wav",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-runtime-v2/metal-recorded-cli.result.json"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "HOME": "/Users/victor",
+      "TMPDIR": "/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/",
+      "LC_ALL": "C",
+      "GEN2_NEMO_EXECUTION": "metal",
+      "GEN2_NEMOTRON_ASSETS": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/models/nemotron",
+      "GEN2_NEMO_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/metal/nemo/lib/libnemo_speech_asr_c.dylib",
+      "GEN2_BARK_BUNDLE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/models/bark",
+      "GEN2_ORT_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/cli/Contents/Frameworks/libonnxruntime.dylib",
+      "PNOLA_VERIFY_AUDIO": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/assets/ami.wav",
+      "PNOLA_BARK_REFERENCE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/assets/bark-reference.json",
+      "PNOLA_VERIFY_OUTPUT": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-runtime-v2/metal-recorded-cli.result.json"
+    },
+    "pid": 57473,
+    "returncode": 0,
+    "elapsed_seconds": 27.177131125004962
+  },
+  {
+    "name": "metal-live-cli",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-runtime-v2/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/cli/Contents/MacOS/pnola-cli",
+      "--verify-live-speakers",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/assets/live.wav",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-runtime-v2/metal-live-cli.result.json"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "HOME": "/Users/victor",
+      "TMPDIR": "/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/",
+      "LC_ALL": "C",
+      "GEN2_NEMO_EXECUTION": "metal",
+      "GEN2_NEMOTRON_ASSETS": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/models/nemotron",
+      "GEN2_NEMO_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/metal/nemo/lib/libnemo_speech_asr_c.dylib",
+      "GEN2_BARK_BUNDLE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/models/bark",
+      "GEN2_ORT_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/cli/Contents/Frameworks/libonnxruntime.dylib",
+      "PNOLA_VERIFY_AUDIO": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/assets/ami.wav",
+      "PNOLA_BARK_REFERENCE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/assets/bark-reference.json",
+      "PNOLA_VERIFY_OUTPUT": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-runtime-v2/metal-live-cli.result.json"
+    },
+    "pid": 57525,
+    "returncode": 0,
+    "elapsed_seconds": 88.83402050001314
+  },
+  {
+    "name": "metal-shutdown",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-runtime-v2/runtime.sb",
+      "/usr/bin/env",
+      "DYLD_PRINT_LIBRARIES=1",
+      "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/bin/pnola-tests",
+      "--ignored",
+      "--exact",
+      "engine::tests::shutdown_waits_for_native_workers_even_with_retained_job_handles",
+      "--nocapture"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "HOME": "/Users/victor",
+      "TMPDIR": "/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/",
+      "LC_ALL": "C",
+      "GEN2_NEMO_EXECUTION": "metal",
+      "GEN2_NEMOTRON_ASSETS": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/models/nemotron",
+      "GEN2_NEMO_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/metal/nemo/lib/libnemo_speech_asr_c.dylib",
+      "GEN2_BARK_BUNDLE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/models/bark",
+      "GEN2_ORT_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/providers/libonnxruntime.dylib",
+      "PNOLA_VERIFY_AUDIO": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/assets/ami.wav",
+      "PNOLA_BARK_REFERENCE": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2/work/assets/bark-reference.json",
+      "PNOLA_VERIFY_OUTPUT": "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-runtime-v2/metal-shutdown.result.json"
+    },
+    "pid": 57837,
+    "returncode": 0,
+    "elapsed_seconds": 5.571250542008784
+  }
+]

@@ -1,0 +1,377 @@
+{
+  "schema_version": 1,
+  "adapter_gates_passed": true,
+  "release_qualified": false,
+  "scope": "Current-profile Pnola debug adapter qualification with explicit relocated model/runtime overrides: recorded text+turn preservation, both partial-success directions, CPU/Metal paced capture-output and80.04s concurrentASR/live-speaker CLI, retained-handle Metalshutdown. No signedbundle/automaticbundledresolver/GUI/physicalmicrophone/heldoutattributionquality/performance/release claim.",
+  "helper_build_source_commit": "997ab557e2e4ee24f8b925b67e12f6afc358d184",
+  "neural_run_source_commit": "c42df0f8d6e168b7157b4e9f72182f76e14d6585",
+  "collection_source_commit": "c42df0f8d6e168b7157b4e9f72182f76e14d6585",
+  "protocol": {
+    "bytes": 111839,
+    "sha256": "cf410232f5a4e6f43fb5c065062aafa93f782d03d10d38803a445633a715307e"
+  },
+  "frozen_gen2_compilation_inputs": 314,
+  "frozen_pnola_compilation_inputs": 87,
+  "frozen_staged_regular_files": 245,
+  "staged_aliases": 2,
+  "commands_passed": 11,
+  "model_cases_passed": 10,
+  "native_turn_comparisons": {
+    "cpu-recorded-test": {
+      "turns": 27,
+      "frames": 6000,
+      "native_frame_count_observed": true,
+      "maximum_turn_error_seconds": 0.0
+    },
+    "cpu-asr-unavailable": {
+      "turns": 27,
+      "frames": 6000,
+      "native_frame_count_observed": true,
+      "maximum_turn_error_seconds": 0.0
+    },
+    "cpu-capture": {
+      "turns": 27,
+      "frames": null,
+      "native_frame_count_observed": false,
+      "maximum_turn_error_seconds": 0.0
+    },
+    "cpu-recorded-cli": {
+      "turns": 27,
+      "frames": 6000,
+      "native_frame_count_observed": true,
+      "maximum_turn_error_seconds": 0.0
+    },
+    "metal-capture": {
+      "turns": 26,
+      "frames": null,
+      "native_frame_count_observed": false,
+      "maximum_turn_error_seconds": 0.0
+    },
+    "metal-recorded-cli": {
+      "turns": 26,
+      "frames": 6000,
+      "native_frame_count_observed": true,
+      "maximum_turn_error_seconds": 0.0
+    }
+  },
+  "actual_loaded_private_image_counts": {
+    "cpu-recorded-test": 92,
+    "cpu-asr-unavailable": 92,
+    "cpu-diar-unavailable": 0,
+    "cpu-capture": 92,
+    "cpu-recorded-cli": 92,
+    "cpu-live-cli": 92,
+    "metal-capture": 93,
+    "metal-recorded-cli": 93,
+    "metal-live-cli": 93,
+    "metal-shutdown": 93
+  },
+  "total_private_runtime_image_records": 832,
+  "actual_auxiliary_provider_counts": {
+    "cpu-recorded-test": 1,
+    "cpu-asr-unavailable": 0,
+    "cpu-diar-unavailable": 1,
+    "cpu-capture": 1,
+    "cpu-recorded-cli": 1,
+    "cpu-live-cli": 1,
+    "metal-capture": 1,
+    "metal-recorded-cli": 1,
+    "metal-live-cli": 1,
+    "metal-shutdown": 1
+  },
+  "total_auxiliary_provider_image_records": 9,
+  "paced_live_results": {
+    "cpu": {
+      "sections": 11,
+      "words": 152,
+      "duration_seconds": 80.04,
+      "provisional_revisions": 15,
+      "final_turns": 35,
+      "persisted_turn_tolerance_seconds": 1e-06,
+      "export_bytes": 803
+    },
+    "metal": {
+      "sections": 11,
+      "words": 152,
+      "duration_seconds": 80.04,
+      "provisional_revisions": 15,
+      "final_turns": 34,
+      "persisted_turn_tolerance_seconds": 1e-06,
+      "export_bytes": 803
+    }
+  },
+  "microphone_used": false,
+  "storage": {
+    "start_minimum_bytes": 5368709120,
+    "running_minimum_bytes": 1073741824,
+    "reserve_requested_bytes": 268435456,
+    "checks": 437,
+    "released": true,
+    "minimum_observed_free_bytes": 7973658624,
+    "last_observed_free_bytes": 7997112320,
+    "reserve_reported_allocated_bytes": 268435456
+  },
+  "new_native_or_neural_calls_during_collection": 0,
+  "preparation_and_interruption_receipt": "../2026-10-16-valid-mel-pnola-interruption/qualification.json",
+  "limits": [
+    "Explicit relocated artifact overrides in debug CLI/test helpers. Tauri resource staging was disabled at compilation. No signed bundle, automatic bundled resolver, GUI, physical microphone, generic Mac or release qualification.",
+    "Recorded timelines match the separately qualified same-backend reference turns. Pnola compact capture timelines do not expose raw frame counts; their comparison explicitly leaves frames unobserved. No Pnola frame-probability parity claim.",
+    "Live80.04s parity/export/recovery checks execute inside the pinned Rust helper against a separate recording API call. Saved receipt contains its final snapshot and revisions; that separate recording tensor is not delivered.",
+    "Original quality failures remain unchanged. No heldout attribution accuracy or uncontended live-performance claim.",
+    "Original interrupted attempt remains failed. This collection reuses saved successful outputs and invokes no helper or neural call."
+  ],
+  "files": {
+    "collect-valid-mel-pnola.py": {
+      "bytes": 9408,
+      "sha256": "36f4cccb23d07dd7ad73473ba2568bacc455890398bc0385ca6ec7d947626d9a"
+    },
+    "execution-tools/artifacts.py": {
+      "bytes": 2869,
+      "sha256": "17df6411ab0394b4d9bb30a099915badf357af26050b6cd08bfd44887688ff42"
+    },
+    "execution-tools/build_valid_mel_candidate.py": {
+      "bytes": 12180,
+      "sha256": "5bfb3ec59548ae0b56e8e3eaded10201933f574b0b04ca12384eb35795dd546b"
+    },
+    "execution-tools/macos_auxiliary_loaded_libraries.py": {
+      "bytes": 1402,
+      "sha256": "446119644a6a9769f92602bc1f8b0b8d8eaf5bd3590e1b98a12079eebdb0dfbe"
+    },
+    "execution-tools/macos_loaded_libraries.py": {
+      "bytes": 1805,
+      "sha256": "69c2dfcc6d2cf8e2966b929ff997b337c6c4e3a62fd8ada110b36ba27da4833b"
+    },
+    "execution-tools/package_macos.py": {
+      "bytes": 18168,
+      "sha256": "301cf904fa444a3a655f38b5a40e365d6bc0e1f348f5bbede8962d6352fffda3"
+    },
+    "execution-tools/patches/v3-finish-valid-mel.patch": {
+      "bytes": 1194,
+      "sha256": "8c1434c14f63ebeb2515c719a90594124fd4f75af85b80451fd145b5caef3c36"
+    },
+    "execution-tools/qualification_storage.py": {
+      "bytes": 3914,
+      "sha256": "8bbb4dfe53797d8d03c3ba18f24acce8458878602c1c85f28a4f816d6f4416f6"
+    },
+    "execution-tools/qualify_valid_mel_mixed.py": {
+      "bytes": 8454,
+      "sha256": "ad56982cd1d6cc4e668d67b30c4ff6f4284ad8c6d3442fb0d79031c50b1c5d6b"
+    },
+    "execution-tools/qualify_valid_mel_pnola.py": {
+      "bytes": 13787,
+      "sha256": "4628f4b6242a7cd0985ba5b20a7ac8f38bbec4dc5042b786e34e488ed738e423"
+    },
+    "execution-tools/runtime-valid-mel.lock.json": {
+      "bytes": 6339,
+      "sha256": "af40e586994f223390fcac59936e3781d967c03080350f4b5df141b1bdaf51be"
+    },
+    "execution-tools/runtime.lock.json": {
+      "bytes": 4917,
+      "sha256": "e66e5651608636bbb04528fed7944ab8972a778d1141b36fef3fb391eefd0dcc"
+    },
+    "execution-tools/runtime_profiles.py": {
+      "bytes": 7345,
+      "sha256": "f99c8c33a3a64005ef477319c8bc7f1d6c32180c44665c2fe189a54a4b31ac7d"
+    },
+    "execution-tools/test_macos_auxiliary_loaded_libraries.py": {
+      "bytes": 3000,
+      "sha256": "562150666ede4ba72c9822fd5b5d50cca5695d9a65572f5eeb87d5adf7c3e08b"
+    },
+    "execution-tools/test_qualification_storage.py": {
+      "bytes": 4417,
+      "sha256": "e6c8a567be86f2d614868e96f10dd6e682077aa3b3cd03b8347aab95fad20332"
+    },
+    "raw/cases.json": {
+      "bytes": 4029,
+      "sha256": "756c471814f9af5e6cea699390cffc3058ce3636bcd401443c68d93317ec9f47"
+    },
+    "raw/commands.json": {
+      "bytes": 17601,
+      "sha256": "63cae370fad3ee29761ffde6fca344025bcfe7a0875228d15e482f82f73335fd"
+    },
+    "raw/cpu-asr-unavailable.images.json": {
+      "bytes": 36865,
+      "sha256": "7bf7c851154729ca56cde69c08a9ce26ac55946323e78aeeb6beb4dfecc99ae0"
+    },
+    "raw/cpu-asr-unavailable.result.json": {
+      "bytes": 4842,
+      "sha256": "8b0606d9def0a25bf4d4d27d5adfb4fe38dd8d6398db80a879a9b80e719dd680"
+    },
+    "raw/cpu-asr-unavailable.stderr.log": {
+      "bytes": 108557,
+      "sha256": "d60014b6fcd0e45c3f5a35ce0e518031ff4625e9335fd43010dbbc86d2887a46"
+    },
+    "raw/cpu-asr-unavailable.stdout.log": {
+      "bytes": 207,
+      "sha256": "fd1cb0b701379331915a8221c1175180440aff2b0a7316617c46774ad24ae9f1"
+    },
+    "raw/cpu-capture.images.json": {
+      "bytes": 37219,
+      "sha256": "f10260bce838c31b0b42ba994a8af815f5762269b2fd69f218d275b577d67843"
+    },
+    "raw/cpu-capture.result.json": {
+      "bytes": 6466,
+      "sha256": "d29d6b4dd907d39d6adf66fde05ae16ba30686298f2638b447abaa721043ac13"
+    },
+    "raw/cpu-capture.stderr.log": {
+      "bytes": 108710,
+      "sha256": "dbf7a67e778c934353638cec291329bf3a355ebda0c7990663fe85a0a6ce0d9e"
+    },
+    "raw/cpu-capture.stdout.log": {
+      "bytes": 308,
+      "sha256": "9245290c59ebcf003830074d0f6d5779358766eac506fc44099ceaafa0697e8f"
+    },
+    "raw/cpu-diar-unavailable.images.json": {
+      "bytes": 770,
+      "sha256": "fd7aed452857bad2696bc33dc1ef86576cfabae9c4ff51a470c0360e623b2549"
+    },
+    "raw/cpu-diar-unavailable.result.json": {
+      "bytes": 1069,
+      "sha256": "1a9c9764be04b6a94cc48488caa81d692a7a3443e7487f65208a55182a2612d8"
+    },
+    "raw/cpu-diar-unavailable.stderr.log": {
+      "bytes": 87479,
+      "sha256": "0cf93cbca13be222cac40af6dde552662fc571ff3c5c037211738c7791b104d9"
+    },
+    "raw/cpu-diar-unavailable.stdout.log": {
+      "bytes": 217,
+      "sha256": "9f645028bcd5d43bf30d7e694a7455ee355871a5e030fc61c1db2cbd389161d2"
+    },
+    "raw/cpu-live-cli.images.json": {
+      "bytes": 37260,
+      "sha256": "517b682d280ec62c89b82b70a5cbc67a80d0b1309f8337af957581e65a5e75bd"
+    },
+    "raw/cpu-live-cli.result.json": {
+      "bytes": 7373,
+      "sha256": "81c450af2a09d5c789d3ff516a791cd435e911f9a99f2b534131e82c42566fc9"
+    },
+    "raw/cpu-live-cli.stderr.log": {
+      "bytes": 108737,
+      "sha256": "91b5a7645fa09ffdd5ba7ed63a4246224656a12f27c63914bc0ed688a9ae1193"
+    },
+    "raw/cpu-live-cli.stdout.log": {
+      "bytes": 4740,
+      "sha256": "2f9bb48a2fab1db3784344c981befeef64fe018f69a8c08e6b48c30677563262"
+    },
+    "raw/cpu-recorded-cli.images.json": {
+      "bytes": 37260,
+      "sha256": "517b682d280ec62c89b82b70a5cbc67a80d0b1309f8337af957581e65a5e75bd"
+    },
+    "raw/cpu-recorded-cli.result.json": {
+      "bytes": 42904,
+      "sha256": "a0e3a4eb88062d0979d10468c7b30e53c618c6eec847347f7f862d08d799749f"
+    },
+    "raw/cpu-recorded-cli.stderr.log": {
+      "bytes": 108737,
+      "sha256": "3cb6e99cb1f927939c768c57b3bc9fe92cae124e276383ae4af793cf56fc7741"
+    },
+    "raw/cpu-recorded-cli.stdout.log": {
+      "bytes": 100,
+      "sha256": "45f3d175da132b1db662ed4eed37f9f24369ec7638bce605144f4bb65b4f5c1e"
+    },
+    "raw/cpu-recorded-test.images.json": {
+      "bytes": 37219,
+      "sha256": "f10260bce838c31b0b42ba994a8af815f5762269b2fd69f218d275b577d67843"
+    },
+    "raw/cpu-recorded-test.result.json": {
+      "bytes": 42904,
+      "sha256": "f951b81afc1096ba39f621bdc0ff04922a10a0b210bfb6cc5ecf230ce1a22611"
+    },
+    "raw/cpu-recorded-test.stderr.log": {
+      "bytes": 108710,
+      "sha256": "9b71f2d97f0c4ee637adb4073af6eb50dee62916dbf7dc96b63448564ae7b9bd"
+    },
+    "raw/cpu-recorded-test.stdout.log": {
+      "bytes": 220,
+      "sha256": "88d4ff8522c0fd8aa2227d6d40fa15f8fd388935b4934e12b4100dc9c236fa83"
+    },
+    "raw/list-images.json": {
+      "bytes": 325,
+      "sha256": "e85cbfa0b742a835996fada30546788bb10d9872805a18c189de3e6cb0eff637"
+    },
+    "raw/list.sb": {
+      "bytes": 2106,
+      "sha256": "40397c7dd02084316c9dc06ad907e275fcfa83e9ad77f3d412190a14c9f10338"
+    },
+    "raw/list.stderr.log": {
+      "bytes": 87326,
+      "sha256": "63c21f0d4167a522bfd36227f477a4ac82b54d5453f8b505774584db9cfbfa83"
+    },
+    "raw/list.stdout.log": {
+      "bytes": 471,
+      "sha256": "06956d3bd99220c294c07ba795fecc49dd0f8a9f9f6c324d0d491a44fdbd7d57"
+    },
+    "raw/metal-capture.images.json": {
+      "bytes": 39080,
+      "sha256": "fb98f86854f80f11007444621aea5b58dd4d32c69c81ea9044a424cb736e610d"
+    },
+    "raw/metal-capture.result.json": {
+      "bytes": 6357,
+      "sha256": "3d60aa59b5d0f1ca9250afca917c5b6eaeb7a064d7fa81f759af8ff758963d84"
+    },
+    "raw/metal-capture.stderr.log": {
+      "bytes": 112527,
+      "sha256": "926a5003f7dfc62a59006431872f6119916757830fc059201a1b3e1b6009170a"
+    },
+    "raw/metal-capture.stdout.log": {
+      "bytes": 308,
+      "sha256": "9d338ac4fbd71f7b1bf3dbacae03ac658f2e6f0615e5c4c759130666cd4685b3"
+    },
+    "raw/metal-live-cli.images.json": {
+      "bytes": 39121,
+      "sha256": "a2219664a8ee932ec976e7bf65e6925be39b9e0d91394aa65585280fbac8e5b5"
+    },
+    "raw/metal-live-cli.result.json": {
+      "bytes": 7248,
+      "sha256": "9ab8198b2e11e3863584915133eb70028898816c5e864e54b6b54f72eb6530f6"
+    },
+    "raw/metal-live-cli.stderr.log": {
+      "bytes": 112554,
+      "sha256": "29c6911fad19ab6312bd093deb408b7cea807437c6aba591183c95801bd5c518"
+    },
+    "raw/metal-live-cli.stdout.log": {
+      "bytes": 4669,
+      "sha256": "30f359a437dc1e4baa16eeec3a353f28e81b39d975e30bbea448a25421663837"
+    },
+    "raw/metal-recorded-cli.images.json": {
+      "bytes": 39121,
+      "sha256": "a2219664a8ee932ec976e7bf65e6925be39b9e0d91394aa65585280fbac8e5b5"
+    },
+    "raw/metal-recorded-cli.result.json": {
+      "bytes": 42859,
+      "sha256": "67373a441a860278bcf759f6049aa901fb4de6fb96b4c8581a2bd9503599ac32"
+    },
+    "raw/metal-recorded-cli.stderr.log": {
+      "bytes": 112569,
+      "sha256": "a04e6798a4c23fcc79e54461b7a2ecc4dfc86c403b0e86154407dd12a83e61d8"
+    },
+    "raw/metal-recorded-cli.stdout.log": {
+      "bytes": 100,
+      "sha256": "306cc41c52538d85de3112a1d0d907ef9724b770f1c494f35491cdc493619f96"
+    },
+    "raw/metal-shutdown.images.json": {
+      "bytes": 39080,
+      "sha256": "fb98f86854f80f11007444621aea5b58dd4d32c69c81ea9044a424cb736e610d"
+    },
+    "raw/metal-shutdown.stderr.log": {
+      "bytes": 112527,
+      "sha256": "9511ac1214fcec33aeebf16f34d892b4322c952c66d1c6216c1e0be04adcdaf2"
+    },
+    "raw/metal-shutdown.stdout.log": {
+      "bytes": 205,
+      "sha256": "fefcadb345982d18fe11c7d8a81a8ce033217351eddc04891f6e4f6e2ecb9914"
+    },
+    "raw/protocol.json": {
+      "bytes": 111839,
+      "sha256": "cf410232f5a4e6f43fb5c065062aafa93f782d03d10d38803a445633a715307e"
+    },
+    "raw/qualification.json": {
+      "bytes": 5373,
+      "sha256": "f8e4fbad5001a3667c868f82ac177e486c62c48c855d6a559cc18c516ef6bb98"
+    },
+    "raw/runtime.sb": {
+      "bytes": 1465,
+      "sha256": "3b333bf96c1c55656727309d769d3ac66e87e1e687e5f178511fd62177e548d1"
+    }
+  }
+}

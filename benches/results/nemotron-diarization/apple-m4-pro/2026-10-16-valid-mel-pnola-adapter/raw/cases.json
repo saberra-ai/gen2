@@ -1,0 +1,154 @@
+[
+  {
+    "name": "cpu-recorded-test",
+    "passed": true,
+    "loaded_images": {
+      "bytes": 37219,
+      "sha256": "f10260bce838c31b0b42ba994a8af815f5762269b2fd69f218d275b577d67843"
+    },
+    "turn_comparison": {
+      "turns": 27,
+      "frames": 6000,
+      "native_frame_count_observed": true,
+      "maximum_turn_error_seconds": 0.0
+    },
+    "result": {
+      "bytes": 42904,
+      "sha256": "f951b81afc1096ba39f621bdc0ff04922a10a0b210bfb6cc5ecf230ce1a22611"
+    }
+  },
+  {
+    "name": "cpu-asr-unavailable",
+    "passed": true,
+    "loaded_images": {
+      "bytes": 36865,
+      "sha256": "7bf7c851154729ca56cde69c08a9ce26ac55946323e78aeeb6beb4dfecc99ae0"
+    },
+    "turn_comparison": {
+      "turns": 27,
+      "frames": 6000,
+      "native_frame_count_observed": true,
+      "maximum_turn_error_seconds": 0.0
+    },
+    "result": {
+      "bytes": 4842,
+      "sha256": "8b0606d9def0a25bf4d4d27d5adfb4fe38dd8d6398db80a879a9b80e719dd680"
+    }
+  },
+  {
+    "name": "cpu-diar-unavailable",
+    "passed": true,
+    "loaded_images": {
+      "bytes": 770,
+      "sha256": "fd7aed452857bad2696bc33dc1ef86576cfabae9c4ff51a470c0360e623b2549"
+    },
+    "result": {
+      "bytes": 1069,
+      "sha256": "1a9c9764be04b6a94cc48488caa81d692a7a3443e7487f65208a55182a2612d8"
+    }
+  },
+  {
+    "name": "cpu-capture",
+    "passed": true,
+    "loaded_images": {
+      "bytes": 37219,
+      "sha256": "f10260bce838c31b0b42ba994a8af815f5762269b2fd69f218d275b577d67843"
+    },
+    "turn_comparison": {
+      "turns": 27,
+      "frames": null,
+      "native_frame_count_observed": false,
+      "maximum_turn_error_seconds": 0.0
+    },
+    "result": {
+      "bytes": 6466,
+      "sha256": "d29d6b4dd907d39d6adf66fde05ae16ba30686298f2638b447abaa721043ac13"
+    }
+  },
+  {
+    "name": "cpu-recorded-cli",
+    "passed": true,
+    "loaded_images": {
+      "bytes": 37260,
+      "sha256": "517b682d280ec62c89b82b70a5cbc67a80d0b1309f8337af957581e65a5e75bd"
+    },
+    "turn_comparison": {
+      "turns": 27,
+      "frames": 6000,
+      "native_frame_count_observed": true,
+      "maximum_turn_error_seconds": 0.0
+    },
+    "result": {
+      "bytes": 42904,
+      "sha256": "a0e3a4eb88062d0979d10468c7b30e53c618c6eec847347f7f862d08d799749f"
+    }
+  },
+  {
+    "name": "cpu-live-cli",
+    "passed": true,
+    "loaded_images": {
+      "bytes": 37260,
+      "sha256": "517b682d280ec62c89b82b70a5cbc67a80d0b1309f8337af957581e65a5e75bd"
+    },
+    "result": {
+      "bytes": 7373,
+      "sha256": "81c450af2a09d5c789d3ff516a791cd435e911f9a99f2b534131e82c42566fc9"
+    }
+  },
+  {
+    "name": "metal-capture",
+    "passed": true,
+    "loaded_images": {
+      "bytes": 39080,
+      "sha256": "fb98f86854f80f11007444621aea5b58dd4d32c69c81ea9044a424cb736e610d"
+    },
+    "turn_comparison": {
+      "turns": 26,
+      "frames": null,
+      "native_frame_count_observed": false,
+      "maximum_turn_error_seconds": 0.0
+    },
+    "result": {
+      "bytes": 6357,
+      "sha256": "3d60aa59b5d0f1ca9250afca917c5b6eaeb7a064d7fa81f759af8ff758963d84"
+    }
+  },
+  {
+    "name": "metal-recorded-cli",
+    "passed": true,
+    "loaded_images": {
+      "bytes": 39121,
+      "sha256": "a2219664a8ee932ec976e7bf65e6925be39b9e0d91394aa65585280fbac8e5b5"
+    },
+    "turn_comparison": {
+      "turns": 26,
+      "frames": 6000,
+      "native_frame_count_observed": true,
+      "maximum_turn_error_seconds": 0.0
+    },
+    "result": {
+      "bytes": 42859,
+      "sha256": "67373a441a860278bcf759f6049aa901fb4de6fb96b4c8581a2bd9503599ac32"
+    }
+  },
+  {
+    "name": "metal-live-cli",
+    "passed": true,
+    "loaded_images": {
+      "bytes": 39121,
+      "sha256": "a2219664a8ee932ec976e7bf65e6925be39b9e0d91394aa65585280fbac8e5b5"
+    },
+    "result": {
+      "bytes": 7248,
+      "sha256": "9ab8198b2e11e3863584915133eb70028898816c5e864e54b6b54f72eb6530f6"
+    }
+  },
+  {
+    "name": "metal-shutdown",
+    "passed": true,
+    "loaded_images": {
+      "bytes": 39080,
+      "sha256": "fb98f86854f80f11007444621aea5b58dd4d32c69c81ea9044a424cb736e610d"
+    }
+  }
+]

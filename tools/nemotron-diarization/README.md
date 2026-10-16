@@ -138,7 +138,14 @@ case after finding a validator mismatch with the compact live snapshot schema;
 the child process group was killed/reaped and reserve released. No adapter case
 passes from that attempt. The corrected protocol uses a fresh output directory,
 validates compact geometry explicitly and leaves unexposed raw frame counts
-unclaimed. All 173 model-free tests pass; actual adapter qualification is pending.
+unclaimed. The [actual adapter receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-pnola-adapter/qualification.json)
+now passes all ten cases at `c42df0f`: six exact same-backend turn comparisons,
+both partial-success paths, paced capture/live and retained-handle shutdown.
+CPU and Metal live runs each retain 11 ASR sections, 152 words and 15 provisional
+revisions over 80.04 seconds, with final turns matching the helper's separate
+recording call. Actual loader audits retain 832 private images and nine ORT
+records. This remains debug adapter evidence with explicit artifact overrides.
+All 173 model-free tests pass; signed-bundle/GUI/microphone gates remain open.
 
 # Nemotron 3 — N0 qualification
 
