@@ -1,6 +1,6 @@
 # Nemotron 3 Diarization support in Gen2
 
-Status: N0 implementation in final verification; N1–N5 pending.
+Status: N0 implemented and qualified on macOS arm64 CPU; N1–N5 pending.
 Prepared: 2026-10-14.
 Updated: 2026-10-15.
 
