@@ -1,0 +1,1055 @@
+﻿2026-10-16T09:25:30.3687959Z Current runner version: '2.337.0'
+2026-10-16T09:25:30.3727222Z ##[group]Runner Image Provisioner
+2026-10-16T09:25:30.3728698Z Hosted Compute Agent
+2026-10-16T09:25:30.3729914Z Version: 20261012.601
+2026-10-16T09:25:30.3731175Z Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+2026-10-16T09:25:30.3732551Z Build Date: 2026-10-12T17:48:21Z
+2026-10-16T09:25:30.3734272Z Worker ID: {86ce8f89-0ad4-4505-8d07-135f0a9915bd}
+2026-10-16T09:25:30.3735629Z Region: centralus
+2026-10-16T09:25:30.3736744Z Cloud: Azure
+2026-10-16T09:25:30.3737853Z ##[endgroup]
+2026-10-16T09:25:30.3740253Z ##[group]Operating System
+2026-10-16T09:25:30.3741576Z Ubuntu
+2026-10-16T09:25:30.3742621Z 24.04.5
+2026-10-16T09:25:30.3743809Z LTS
+2026-10-16T09:25:30.3744873Z ##[endgroup]
+2026-10-16T09:25:30.3745952Z ##[group]Runner Image
+2026-10-16T09:25:30.3747237Z Image: ubuntu-24.04
+2026-10-16T09:25:30.3748568Z Version: 20261012.334.1
+2026-10-16T09:25:30.3751074Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md
+2026-10-16T09:25:30.3754252Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+2026-10-16T09:25:30.3756251Z ##[endgroup]
+2026-10-16T09:25:30.3758219Z ##[group]GITHUB_TOKEN Permissions
+2026-10-16T09:25:30.3761425Z Contents: read
+2026-10-16T09:25:30.3762479Z Metadata: read
+2026-10-16T09:25:30.3763740Z ##[endgroup]
+2026-10-16T09:25:30.3766781Z Secret source: Actions
+2026-10-16T09:25:30.3768426Z Cache mode: write
+2026-10-16T09:25:30.3770279Z Prepare workflow directory
+2026-10-16T09:25:30.4166333Z Prepare all required actions
+2026-10-16T09:25:30.4241297Z Getting action download info
+2026-10-16T09:25:30.7193162Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+2026-10-16T09:25:30.8287914Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+2026-10-16T09:25:30.9093159Z Download action repository 'dtolnay/rust-toolchain@stable' (SHA:b725eda525362e7cf34af9a7243cac1e3f01a7ec)
+2026-10-16T09:25:31.0749053Z Download action repository 'Swatinem/rust-cache@v2' (SHA:6323deb102c322ba6fcbdcafc7e3dddab59af2b6)
+2026-10-16T09:25:31.6499506Z Download action repository 'actions/cache@v4' (SHA:0057852bfaa89a56745cba8c7296529d2fc39830)
+2026-10-16T09:25:31.7439209Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+2026-10-16T09:25:32.0835364Z Complete job name: native (ubuntu-24.04)
+2026-10-16T09:25:32.1729944Z ##[group]Run git config --global core.autocrlf false
+2026-10-16T09:25:32.1731390Z [36;1mgit config --global core.autocrlf false[0m
+2026-10-16T09:25:32.2017885Z shell: /usr/bin/bash -e {0}
+2026-10-16T09:25:32.2019254Z ##[endgroup]
+2026-10-16T09:25:32.2578949Z ##[group]Run actions/checkout@v4
+2026-10-16T09:25:32.2580014Z with:
+2026-10-16T09:25:32.2580840Z   persist-credentials: false
+2026-10-16T09:25:32.2581837Z   repository: saberra-ai/gen2
+2026-10-16T09:25:32.2591587Z   token: ***
+2026-10-16T09:25:32.2592491Z   ssh-strict: true
+2026-10-16T09:25:32.2593626Z   ssh-user: git
+2026-10-16T09:25:32.2594462Z   clean: true
+2026-10-16T09:25:32.2595325Z   sparse-checkout-cone-mode: true
+2026-10-16T09:25:32.2596322Z   fetch-depth: 1
+2026-10-16T09:25:32.2597126Z   fetch-tags: false
+2026-10-16T09:25:32.2597957Z   show-progress: true
+2026-10-16T09:25:32.2598804Z   lfs: false
+2026-10-16T09:25:32.2599590Z   submodules: false
+2026-10-16T09:25:32.2600432Z   set-safe-directory: true
+2026-10-16T09:25:32.2601393Z   allow-unsafe-pr-checkout: false
+2026-10-16T09:25:32.2602371Z ##[endgroup]
+2026-10-16T09:25:32.3657982Z Syncing repository: saberra-ai/gen2
+2026-10-16T09:25:32.3661990Z ##[group]Getting Git version info
+2026-10-16T09:25:32.3664321Z Working directory is '/home/runner/work/gen2/gen2'
+2026-10-16T09:25:32.3667293Z [command]/usr/bin/git version
+2026-10-16T09:25:32.3668870Z git version 2.55.0
+2026-10-16T09:25:32.3673966Z ##[endgroup]
+2026-10-16T09:25:32.3682140Z Copying '/home/runner/.gitconfig' to '/home/runner/work/_temp/c0562ab8-7d67-433d-9397-b4a41dd20d6a/.gitconfig'
+2026-10-16T09:25:32.3691016Z Temporarily overriding HOME='/home/runner/work/_temp/c0562ab8-7d67-433d-9397-b4a41dd20d6a' before making global git config changes
+2026-10-16T09:25:32.3695379Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-16T09:25:32.3698780Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/gen2/gen2
+2026-10-16T09:25:32.3731380Z Deleting the contents of '/home/runner/work/gen2/gen2'
+2026-10-16T09:25:32.3737799Z ##[group]Initializing the repository
+2026-10-16T09:25:32.3742362Z [command]/usr/bin/git init /home/runner/work/gen2/gen2
+2026-10-16T09:25:32.3875856Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-16T09:25:32.3879254Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-16T09:25:32.3882584Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-16T09:25:32.3895884Z hint: call:
+2026-10-16T09:25:32.3897159Z hint:
+2026-10-16T09:25:32.3898678Z hint: 	git config --global init.defaultBranch <name>
+2026-10-16T09:25:32.3900579Z hint:
+2026-10-16T09:25:32.3902351Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-16T09:25:32.3905535Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-16T09:25:32.3907924Z hint:
+2026-10-16T09:25:32.3909171Z hint: 	git branch -m <name>
+2026-10-16T09:25:32.3910618Z hint:
+2026-10-16T09:25:32.3912570Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-16T09:25:32.3936322Z Initialized empty Git repository in /home/runner/work/gen2/gen2/.git/
+2026-10-16T09:25:32.3941847Z [command]/usr/bin/git remote add origin https://github.com/saberra-ai/gen2
+2026-10-16T09:25:32.3957412Z ##[endgroup]
+2026-10-16T09:25:32.3959785Z ##[group]Disabling automatic garbage collection
+2026-10-16T09:25:32.3961885Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-16T09:25:32.4000094Z ##[endgroup]
+2026-10-16T09:25:32.4003424Z ##[group]Setting up auth
+2026-10-16T09:25:32.4006700Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-16T09:25:32.4038533Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-16T09:25:32.4533779Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-16T09:25:32.4606572Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-16T09:25:32.4874775Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-16T09:25:32.4915487Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-16T09:25:32.5154062Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-16T09:25:32.5198198Z ##[endgroup]
+2026-10-16T09:25:32.5199678Z ##[group]Fetching the repository
+2026-10-16T09:25:32.5210982Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +3364fd7ee122f0231246af5cd9618cf7f0073294:refs/remotes/origin/codex/nemotron3-linux
+2026-10-16T09:25:33.5625949Z From https://github.com/saberra-ai/gen2
+2026-10-16T09:25:33.5627807Z  * [new ref]         3364fd7ee122f0231246af5cd9618cf7f0073294 -> origin/codex/nemotron3-linux
+2026-10-16T09:25:33.5631878Z ##[endgroup]
+2026-10-16T09:25:33.5633196Z ##[group]Determining the checkout info
+2026-10-16T09:25:33.5634385Z ##[endgroup]
+2026-10-16T09:25:33.5641262Z [command]/usr/bin/git sparse-checkout disable
+2026-10-16T09:25:33.5713084Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-16T09:25:33.5747032Z ##[group]Checking out the ref
+2026-10-16T09:25:33.5763076Z [command]/usr/bin/git checkout --progress --force -B codex/nemotron3-linux refs/remotes/origin/codex/nemotron3-linux
+2026-10-16T09:25:33.7307183Z Switched to a new branch 'codex/nemotron3-linux'
+2026-10-16T09:25:33.7310778Z branch 'codex/nemotron3-linux' set up to track 'origin/codex/nemotron3-linux'.
+2026-10-16T09:25:33.7324124Z ##[endgroup]
+2026-10-16T09:25:33.7371609Z [command]/usr/bin/git log -1 --format=%H
+2026-10-16T09:25:33.7399652Z 3364fd7ee122f0231246af5cd9618cf7f0073294
+2026-10-16T09:25:33.7411415Z ##[group]Removing auth
+2026-10-16T09:25:33.7416598Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-16T09:25:33.7452047Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-16T09:25:33.7697788Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-16T09:25:33.7732314Z http.https://github.com/.extraheader
+2026-10-16T09:25:33.7741203Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-16T09:25:33.7781579Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-16T09:25:33.8036594Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-16T09:25:33.8073077Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-16T09:25:33.8321145Z ##[endgroup]
+2026-10-16T09:25:33.8566911Z ##[group]Run actions/checkout@v4
+2026-10-16T09:25:33.8567495Z with:
+2026-10-16T09:25:33.8567983Z   repository: NVIDIA/NeMo-Speech.cpp
+2026-10-16T09:25:33.8568589Z   ref: 083861c241061562b8ec29eb06d7f6cdc3af8775
+2026-10-16T09:25:33.8569187Z   path: native-source
+2026-10-16T09:25:33.8569707Z   persist-credentials: false
+2026-10-16T09:25:33.8572999Z   token: ***
+2026-10-16T09:25:33.8573989Z   ssh-strict: true
+2026-10-16T09:25:33.8574474Z   ssh-user: git
+2026-10-16T09:25:33.8574922Z   clean: true
+2026-10-16T09:25:33.8575405Z   sparse-checkout-cone-mode: true
+2026-10-16T09:25:33.8575932Z   fetch-depth: 1
+2026-10-16T09:25:33.8576393Z   fetch-tags: false
+2026-10-16T09:25:33.8576867Z   show-progress: true
+2026-10-16T09:25:33.8577349Z   lfs: false
+2026-10-16T09:25:33.8577790Z   submodules: false
+2026-10-16T09:25:33.8578268Z   set-safe-directory: true
+2026-10-16T09:25:33.8578799Z   allow-unsafe-pr-checkout: false
+2026-10-16T09:25:33.8579320Z ##[endgroup]
+2026-10-16T09:25:33.9435535Z Syncing repository: NVIDIA/NeMo-Speech.cpp
+2026-10-16T09:25:33.9437422Z ##[group]Getting Git version info
+2026-10-16T09:25:33.9438749Z Working directory is '/home/runner/work/gen2/gen2/native-source'
+2026-10-16T09:25:33.9486747Z [command]/usr/bin/git version
+2026-10-16T09:25:33.9530417Z git version 2.55.0
+2026-10-16T09:25:33.9552581Z ##[endgroup]
+2026-10-16T09:25:33.9561537Z Copying '/home/runner/.gitconfig' to '/home/runner/work/_temp/7efc9299-ea3e-46a0-8432-88ac7275dc51/.gitconfig'
+2026-10-16T09:25:33.9572383Z Temporarily overriding HOME='/home/runner/work/_temp/7efc9299-ea3e-46a0-8432-88ac7275dc51' before making global git config changes
+2026-10-16T09:25:33.9574720Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-16T09:25:33.9577509Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/gen2/gen2/native-source
+2026-10-16T09:25:33.9617084Z ##[group]Initializing the repository
+2026-10-16T09:25:33.9622192Z [command]/usr/bin/git init /home/runner/work/gen2/gen2/native-source
+2026-10-16T09:25:33.9670330Z hint: Using 'master' as the name for the initial branch. This default branch name
+2026-10-16T09:25:33.9672200Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+2026-10-16T09:25:33.9674958Z hint: to use in all of your new repositories, which will suppress this warning,
+2026-10-16T09:25:33.9676583Z hint: call:
+2026-10-16T09:25:33.9677618Z hint:
+2026-10-16T09:25:33.9678732Z hint: 	git config --global init.defaultBranch <name>
+2026-10-16T09:25:33.9679731Z hint:
+2026-10-16T09:25:33.9680791Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+2026-10-16T09:25:33.9682252Z hint: 'development'. The just-created branch can be renamed via this command:
+2026-10-16T09:25:33.9683653Z hint:
+2026-10-16T09:25:33.9684418Z hint: 	git branch -m <name>
+2026-10-16T09:25:33.9685214Z hint:
+2026-10-16T09:25:33.9686268Z hint: Disable this message with "git config set advice.defaultBranchName false"
+2026-10-16T09:25:33.9687392Z Initialized empty Git repository in /home/runner/work/gen2/gen2/native-source/.git/
+2026-10-16T09:25:33.9689194Z [command]/usr/bin/git remote add origin https://github.com/NVIDIA/NeMo-Speech.cpp
+2026-10-16T09:25:33.9727220Z ##[endgroup]
+2026-10-16T09:25:33.9728559Z ##[group]Disabling automatic garbage collection
+2026-10-16T09:25:33.9731254Z [command]/usr/bin/git config --local gc.auto 0
+2026-10-16T09:25:33.9765933Z ##[endgroup]
+2026-10-16T09:25:33.9767173Z ##[group]Setting up auth
+2026-10-16T09:25:33.9773946Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-16T09:25:33.9807691Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-16T09:25:34.0070498Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-16T09:25:34.0114016Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-16T09:25:34.0390707Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-16T09:25:34.0439256Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-16T09:25:34.0691338Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+2026-10-16T09:25:34.0768897Z ##[endgroup]
+2026-10-16T09:25:34.0772407Z ##[group]Fetching the repository
+2026-10-16T09:25:34.0774628Z [command]/usr/bin/git -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin 083861c241061562b8ec29eb06d7f6cdc3af8775
+2026-10-16T09:25:34.9698655Z From https://github.com/NVIDIA/NeMo-Speech.cpp
+2026-10-16T09:25:34.9711400Z  * branch            083861c241061562b8ec29eb06d7f6cdc3af8775 -> FETCH_HEAD
+2026-10-16T09:25:34.9713126Z ##[endgroup]
+2026-10-16T09:25:34.9713888Z ##[group]Determining the checkout info
+2026-10-16T09:25:34.9714375Z ##[endgroup]
+2026-10-16T09:25:34.9714891Z [command]/usr/bin/git sparse-checkout disable
+2026-10-16T09:25:34.9759490Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+2026-10-16T09:25:34.9794256Z ##[group]Checking out the ref
+2026-10-16T09:25:34.9800026Z [command]/usr/bin/git checkout --progress --force 083861c241061562b8ec29eb06d7f6cdc3af8775
+2026-10-16T09:25:35.1016761Z Note: switching to '083861c241061562b8ec29eb06d7f6cdc3af8775'.
+2026-10-16T09:25:35.1017391Z 
+2026-10-16T09:25:35.1017768Z You are in 'detached HEAD' state. You can look around, make experimental
+2026-10-16T09:25:35.1018645Z changes and commit them, and you can discard any commits you make in this
+2026-10-16T09:25:35.1019491Z state without impacting any branches by switching back to a branch.
+2026-10-16T09:25:35.1020007Z 
+2026-10-16T09:25:35.1020438Z If you want to create a new branch to retain commits you create, you may
+2026-10-16T09:25:35.1021277Z do so (now or later) by using -c with the switch command. Example:
+2026-10-16T09:25:35.1021740Z 
+2026-10-16T09:25:35.1021942Z   git switch -c <new-branch-name>
+2026-10-16T09:25:35.1023020Z 
+2026-10-16T09:25:35.1023238Z Or undo this operation with:
+2026-10-16T09:25:35.1023821Z 
+2026-10-16T09:25:35.1023991Z   git switch -
+2026-10-16T09:25:35.1024257Z 
+2026-10-16T09:25:35.1025034Z Turn off this advice by setting config variable advice.detachedHead to false
+2026-10-16T09:25:35.1025751Z 
+2026-10-16T09:25:35.1026318Z HEAD is now at 083861c Fix issue with magpie v2607 speakers being mapped to wrong id (#66)
+2026-10-16T09:25:35.1296928Z ##[endgroup]
+2026-10-16T09:25:35.1339370Z [command]/usr/bin/git log -1 --format=%H
+2026-10-16T09:25:35.1366519Z 083861c241061562b8ec29eb06d7f6cdc3af8775
+2026-10-16T09:25:35.1376625Z ##[group]Removing auth
+2026-10-16T09:25:35.1380441Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-16T09:25:35.1412912Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-16T09:25:35.1640138Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-16T09:25:35.1667219Z http.https://github.com/.extraheader
+2026-10-16T09:25:35.1675294Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+2026-10-16T09:25:35.1710324Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-16T09:25:35.1934213Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-16T09:25:35.1967466Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-16T09:25:35.2186971Z ##[endgroup]
+2026-10-16T09:25:35.2311349Z ##[group]Run git -C native-source submodule update --init --depth 1 llama.cpp
+2026-10-16T09:25:35.2311961Z [36;1mgit -C native-source submodule update --init --depth 1 llama.cpp[0m
+2026-10-16T09:25:35.2378876Z shell: /usr/bin/bash -e {0}
+2026-10-16T09:25:35.2379150Z ##[endgroup]
+2026-10-16T09:25:35.2671217Z Submodule 'llama.cpp' (https://github.com/ggml-org/llama.cpp.git) registered for path 'llama.cpp'
+2026-10-16T09:25:35.2697099Z Cloning into '/home/runner/work/gen2/gen2/native-source/llama.cpp'...
+2026-10-16T09:25:39.9367073Z From https://github.com/ggml-org/llama.cpp
+2026-10-16T09:25:39.9367551Z  * branch            bd4f514db14d87fded667787a7a963bfbaa98e89 -> FETCH_HEAD
+2026-10-16T09:25:40.6178667Z Submodule path 'llama.cpp': checked out 'bd4f514db14d87fded667787a7a963bfbaa98e89'
+2026-10-16T09:25:40.6283852Z ##[group]Run actions/setup-python@v5
+2026-10-16T09:25:40.6284174Z with:
+2026-10-16T09:25:40.6284377Z   python-version: 3.12
+2026-10-16T09:25:40.6284604Z   check-latest: false
+2026-10-16T09:25:40.6287095Z   token: ***
+2026-10-16T09:25:40.6287312Z   update-environment: true
+2026-10-16T09:25:40.6287559Z   allow-prereleases: false
+2026-10-16T09:25:40.6287805Z   freethreaded: false
+2026-10-16T09:25:40.6288009Z ##[endgroup]
+2026-10-16T09:25:40.7625115Z ##[group]Installed versions
+2026-10-16T09:25:40.7733889Z (node:2672) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-16T09:25:40.7734739Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-16T09:25:40.7735405Z Successfully set up CPython (3.12.15)
+2026-10-16T09:25:40.7736053Z ##[endgroup]
+2026-10-16T09:25:40.8078739Z ##[group]Run dtolnay/rust-toolchain@stable
+2026-10-16T09:25:40.8079247Z with:
+2026-10-16T09:25:40.8079590Z   toolchain: stable
+2026-10-16T09:25:40.8079963Z env:
+2026-10-16T09:25:40.8080384Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:40.8081181Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+2026-10-16T09:25:40.8081929Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:40.8082579Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:40.8083545Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:40.8083954Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+2026-10-16T09:25:40.8084277Z ##[endgroup]
+2026-10-16T09:25:40.8162043Z ##[start-action display=Parse toolchain version;id=__dtolnay_rust-toolchain.parse]
+2026-10-16T09:25:40.8207666Z ##[group]Run if [[ -z $toolchain ]]; then
+2026-10-16T09:25:40.8208047Z [36;1mif [[ -z $toolchain ]]; then[0m
+2026-10-16T09:25:40.8208578Z [36;1m  # GitHub does not enforce `required: true` inputs itself. https://github.com/actions/runner/issues/1070[0m
+2026-10-16T09:25:40.8209150Z [36;1m  echo "'toolchain' is a required input" >&2[0m
+2026-10-16T09:25:40.8209439Z [36;1m  exit 1[0m
+2026-10-16T09:25:40.8209766Z [36;1melif [[ $toolchain =~ ^stable' '[0-9]+' '(year|month|week|day)s?' 'ago$ ]]; then[0m
+2026-10-16T09:25:40.8210174Z [36;1m  if [[ Linux == macOS ]]; then[0m
+2026-10-16T09:25:40.8210704Z [36;1m    echo "toolchain=1.$((($(date -v-$(sed 's/stable \([0-9]*\) \(.\).*/\1\2/' <<< $toolchain) +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT[0m
+2026-10-16T09:25:40.8211229Z [36;1m  else[0m
+2026-10-16T09:25:40.8211620Z [36;1m    echo "toolchain=1.$((($(date --date "${toolchain#stable }" +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT[0m
+2026-10-16T09:25:40.8212071Z [36;1m  fi[0m
+2026-10-16T09:25:40.8212360Z [36;1melif [[ $toolchain =~ ^stable' 'minus' '[0-9]+' 'releases?$ ]]; then[0m
+2026-10-16T09:25:40.8212897Z [36;1m  echo "toolchain=1.$((($(date +%s)/60/60/24-16569)/7/6-${toolchain//[^0-9]/}))" >> $GITHUB_OUTPUT[0m
+2026-10-16T09:25:40.8213608Z [36;1melif [[ $toolchain =~ ^1\.[0-9]+$ ]]; then[0m
+2026-10-16T09:25:40.8214137Z [36;1m  echo "toolchain=1.$((i=${toolchain#1.}, c=($(date +%s)/60/60/24-16569)/7/6, i+9*i*(10*i<=c)+90*i*(100*i<=c)))" >> $GITHUB_OUTPUT[0m
+2026-10-16T09:25:40.8214626Z [36;1melse[0m
+2026-10-16T09:25:40.8214818Z [36;1m  delimiter=EOF[0m
+2026-10-16T09:25:40.8215120Z [36;1m  while [[ $toolchain == *$delimiter* ]]; do delimiter+=_; done[0m
+2026-10-16T09:25:40.8215625Z [36;1m  printf 'toolchain<<%s\n%s\n%s\n' "$delimiter" "$toolchain" "$delimiter" >> $GITHUB_OUTPUT[0m
+2026-10-16T09:25:40.8216035Z [36;1mfi[0m
+2026-10-16T09:25:40.8292010Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-16T09:25:40.8292352Z env:
+2026-10-16T09:25:40.8292624Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:40.8293070Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+2026-10-16T09:25:40.8293685Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:40.8294079Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:40.8294457Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:40.8294837Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+2026-10-16T09:25:40.8295157Z   toolchain: stable
+2026-10-16T09:25:40.8295358Z ##[endgroup]
+2026-10-16T09:25:40.8417057Z ##[end-action id=__dtolnay_rust-toolchain.parse;outcome=success;conclusion=success;duration_ms=25]
+2026-10-16T09:25:40.8421528Z ##[start-action display=Set $CARGO_HOME;id=__dtolnay_rust-toolchain.__run]
+2026-10-16T09:25:40.8439875Z ##[group]Run echo CARGO_HOME=${CARGO_HOME:-"$HOME/.cargo"} >> $GITHUB_ENV
+2026-10-16T09:25:40.8440352Z [36;1mecho CARGO_HOME=${CARGO_HOME:-"$HOME/.cargo"} >> $GITHUB_ENV[0m
+2026-10-16T09:25:40.8502479Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-16T09:25:40.8503025Z env:
+2026-10-16T09:25:40.8503531Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:40.8504001Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+2026-10-16T09:25:40.8504426Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:40.8504803Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:40.8505179Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:40.8505556Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+2026-10-16T09:25:40.8506022Z ##[endgroup]
+2026-10-16T09:25:40.8599252Z ##[end-action id=__dtolnay_rust-toolchain.__run;outcome=success;conclusion=success;duration_ms=17]
+2026-10-16T09:25:40.8601594Z ##[start-action display=Install rustup if needed;id=__dtolnay_rust-toolchain.__run_2]
+2026-10-16T09:25:40.8624682Z ##[group]Run if ! command -v rustup &>/dev/null; then
+2026-10-16T09:25:40.8625062Z [36;1mif ! command -v rustup &>/dev/null; then[0m
+2026-10-16T09:25:40.8625821Z [36;1m  curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused --location --silent --show-error --fail https://sh.rustup.rs | sh -s -- --default-toolchain none -y[0m
+2026-10-16T09:25:40.8626648Z [36;1m  echo "$CARGO_HOME/bin" >> $GITHUB_PATH[0m
+2026-10-16T09:25:40.8626961Z [36;1mfi[0m
+2026-10-16T09:25:40.8689308Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-16T09:25:40.8689649Z env:
+2026-10-16T09:25:40.8689917Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:40.8690352Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+2026-10-16T09:25:40.8690770Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:40.8691142Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:40.8691518Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:40.8691902Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+2026-10-16T09:25:40.8692243Z   CARGO_HOME: /home/runner/.cargo
+2026-10-16T09:25:40.8692485Z ##[endgroup]
+2026-10-16T09:25:40.8804391Z ##[end-action id=__dtolnay_rust-toolchain.__run_2;outcome=success;conclusion=success;duration_ms=20]
+2026-10-16T09:25:40.8806846Z ##[start-action display=Install rustup if needed on windows;id=__dtolnay_rust-toolchain.__run_3]
+2026-10-16T09:25:40.8813663Z ##[end-action id=__dtolnay_rust-toolchain.__run_3;outcome=skipped;conclusion=skipped;duration_ms=0]
+2026-10-16T09:25:40.8826767Z ##[start-action display=rustup toolchain install stable;id=__dtolnay_rust-toolchain.__run_4]
+2026-10-16T09:25:40.8844233Z ##[group]Run set -f  # split targets and components on commas and whitespace, without glob expansion
+2026-10-16T09:25:40.8844912Z [36;1mset -f  # split targets and components on commas and whitespace, without glob expansion[0m
+2026-10-16T09:25:40.8845349Z [36;1mflags=()[0m
+2026-10-16T09:25:40.8845622Z [36;1mfor t in ${targets//,/ }; do flags+=(--target "$t"); done[0m
+2026-10-16T09:25:40.8846065Z [36;1mfor c in ${components//,/ }; do flags+=(--component "$c"); done[0m
+2026-10-16T09:25:40.8846560Z [36;1mif [[ $toolchain == nightly && -n $components ]]; then flags+=(--allow-downgrade); fi[0m
+2026-10-16T09:25:40.8846974Z [36;1mlog=$(mktemp)[0m
+2026-10-16T09:25:40.8847206Z [36;1mtrap 'rm -f "$log"' EXIT[0m
+2026-10-16T09:25:40.8847464Z [36;1mfor attempt in 1 2 3 4 5; do[0m
+2026-10-16T09:25:40.8848025Z [36;1m  if rustup toolchain install "$toolchain" "${flags[@]}" --profile minimal --no-self-update --force-non-host 2>&1 | tee "$log"; then[0m
+2026-10-16T09:25:40.8848598Z [36;1m    break[0m
+2026-10-16T09:25:40.8848795Z [36;1m  else[0m
+2026-10-16T09:25:40.8848993Z [36;1m    status=$?[0m
+2026-10-16T09:25:40.8849208Z [36;1m  fi[0m
+2026-10-16T09:25:40.8849490Z [36;1m  if [[ $attempt == 5 ]] || ! grep -Fq 'checksum failed for ' "$log" \[0m
+2026-10-16T09:25:40.8850037Z [36;1m      || ! grep -Fq 'this is likely due to an ongoing update of the official release server' "$log"; then[0m
+2026-10-16T09:25:40.8850692Z [36;1m    exit "$status"[0m
+2026-10-16T09:25:40.8850924Z [36;1m  fi[0m
+2026-10-16T09:25:40.8851282Z [36;1m  echo "Retrying rustup toolchain install in 30 seconds (retry $attempt of 4)" >&2[0m
+2026-10-16T09:25:40.8851707Z [36;1m  sleep 30[0m
+2026-10-16T09:25:40.8851907Z [36;1mdone[0m
+2026-10-16T09:25:40.8914943Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-16T09:25:40.8915281Z env:
+2026-10-16T09:25:40.8915549Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:40.8916139Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+2026-10-16T09:25:40.8916560Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:40.8916936Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:40.8917312Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:40.8917698Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+2026-10-16T09:25:40.8918047Z   CARGO_HOME: /home/runner/.cargo
+2026-10-16T09:25:40.8918290Z   toolchain: stable
+2026-10-16T09:25:40.8918485Z   targets: 
+2026-10-16T09:25:40.8918666Z   components: 
+2026-10-16T09:25:40.8918878Z   RUSTUP_PERMIT_COPY_RENAME: 1
+2026-10-16T09:25:40.8919118Z ##[endgroup]
+2026-10-16T09:25:41.2877134Z info: syncing channel updates for stable-x86_64-unknown-linux-gnu
+2026-10-16T09:25:42.6247223Z info: latest update on 2026-10-15 for version 1.99.1 (58cf8f9c3 2026-10-13)
+2026-10-16T09:25:42.6409109Z info: removing previous version of component rustfmt
+2026-10-16T09:25:42.6528093Z info: removing previous version of component clippy
+2026-10-16T09:25:42.6539359Z info: removing previous version of component cargo
+2026-10-16T09:25:42.7645487Z info: removing previous version of component rust-std
+2026-10-16T09:25:42.7693902Z info: removing previous version of component rustc
+2026-10-16T09:25:42.7746808Z info: downloading 5 components
+2026-10-16T09:25:51.1125143Z 
+2026-10-16T09:25:51.1196506Z   stable-x86_64-unknown-linux-gnu updated - rustc 1.99.1 (58cf8f9c3 2026-10-13) (from rustc 1.99.0 (b940084d7 2026-09-28))
+2026-10-16T09:25:51.1197036Z 
+2026-10-16T09:25:51.1262673Z ##[end-action id=__dtolnay_rust-toolchain.__run_4;outcome=success;conclusion=success;duration_ms=10243]
+2026-10-16T09:25:51.1269583Z ##[start-action display=rustup default stable;id=__dtolnay_rust-toolchain.__run_5]
+2026-10-16T09:25:51.1289592Z ##[group]Run rustup default "$toolchain" --force-non-host
+2026-10-16T09:25:51.1290007Z [36;1mrustup default "$toolchain" --force-non-host[0m
+2026-10-16T09:25:51.1352836Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-16T09:25:51.1353180Z env:
+2026-10-16T09:25:51.1353736Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:51.1354181Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+2026-10-16T09:25:51.1354632Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:51.1355035Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:51.1355450Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:51.1355855Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+2026-10-16T09:25:51.1356213Z   CARGO_HOME: /home/runner/.cargo
+2026-10-16T09:25:51.1356466Z   toolchain: stable
+2026-10-16T09:25:51.1356673Z ##[endgroup]
+2026-10-16T09:25:51.1480600Z info: using existing install for stable-x86_64-unknown-linux-gnu
+2026-10-16T09:25:51.1488633Z info: default toolchain set to stable-x86_64-unknown-linux-gnu
+2026-10-16T09:25:51.1489021Z 
+2026-10-16T09:25:51.1553045Z   stable-x86_64-unknown-linux-gnu unchanged - rustc 1.99.1 (58cf8f9c3 2026-10-13)
+2026-10-16T09:25:51.1553904Z 
+2026-10-16T09:25:51.1570639Z ##[end-action id=__dtolnay_rust-toolchain.__run_5;outcome=success;conclusion=success;duration_ms=30]
+2026-10-16T09:25:51.1574859Z ##[start-action display=Create cachekey;id=__dtolnay_rust-toolchain.rustc-version]
+2026-10-16T09:25:51.1591946Z ##[group]Run DATE=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')
+2026-10-16T09:25:51.1592811Z [36;1mDATE=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')[0m
+2026-10-16T09:25:51.1593893Z [36;1mHASH=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-hash: //p')[0m
+2026-10-16T09:25:51.1594403Z [36;1mecho "cachekey=$(echo $DATE$HASH | head -c12)" >> $GITHUB_OUTPUT[0m
+2026-10-16T09:25:51.1656939Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-16T09:25:51.1657448Z env:
+2026-10-16T09:25:51.1657715Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:51.1658154Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+2026-10-16T09:25:51.1658582Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:51.1658959Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:51.1659354Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:51.1659738Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+2026-10-16T09:25:51.1660077Z   CARGO_HOME: /home/runner/.cargo
+2026-10-16T09:25:51.1660317Z   toolchain: stable
+2026-10-16T09:25:51.1660520Z ##[endgroup]
+2026-10-16T09:25:51.2008203Z ##[end-action id=__dtolnay_rust-toolchain.rustc-version;outcome=success;conclusion=success;duration_ms=43]
+2026-10-16T09:25:51.2010863Z ##[start-action display=Disable incremental compilation;id=__dtolnay_rust-toolchain.__run_6]
+2026-10-16T09:25:51.2028577Z ##[group]Run if [ -z "${CARGO_INCREMENTAL+set}" ]; then
+2026-10-16T09:25:51.2028939Z [36;1mif [ -z "${CARGO_INCREMENTAL+set}" ]; then[0m
+2026-10-16T09:25:51.2029262Z [36;1m  echo CARGO_INCREMENTAL=0 >> $GITHUB_ENV[0m
+2026-10-16T09:25:51.2029538Z [36;1mfi[0m
+2026-10-16T09:25:51.2092565Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-16T09:25:51.2092923Z env:
+2026-10-16T09:25:51.2093220Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:51.2093924Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+2026-10-16T09:25:51.2094393Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:51.2094796Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:51.2095196Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:51.2095605Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+2026-10-16T09:25:51.2095960Z   CARGO_HOME: /home/runner/.cargo
+2026-10-16T09:25:51.2096224Z ##[endgroup]
+2026-10-16T09:25:51.2182925Z ##[end-action id=__dtolnay_rust-toolchain.__run_6;outcome=success;conclusion=success;duration_ms=17]
+2026-10-16T09:25:51.2185344Z ##[start-action display=Enable colors in Cargo output;id=__dtolnay_rust-toolchain.__run_7]
+2026-10-16T09:25:51.2201565Z ##[group]Run if [ -z "${CARGO_TERM_COLOR+set}" ]; then
+2026-10-16T09:25:51.2201929Z [36;1mif [ -z "${CARGO_TERM_COLOR+set}" ]; then[0m
+2026-10-16T09:25:51.2202275Z [36;1m  echo CARGO_TERM_COLOR=always >> $GITHUB_ENV[0m
+2026-10-16T09:25:51.2202562Z [36;1mfi[0m
+2026-10-16T09:25:51.2258739Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-16T09:25:51.2259077Z env:
+2026-10-16T09:25:51.2259345Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:51.2259788Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+2026-10-16T09:25:51.2260218Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:51.2260598Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:51.2261000Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:51.2261386Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+2026-10-16T09:25:51.2261725Z   CARGO_HOME: /home/runner/.cargo
+2026-10-16T09:25:51.2261979Z   CARGO_INCREMENTAL: 0
+2026-10-16T09:25:51.2262194Z ##[endgroup]
+2026-10-16T09:25:51.2348030Z ##[end-action id=__dtolnay_rust-toolchain.__run_7;outcome=success;conclusion=success;duration_ms=16]
+2026-10-16T09:25:51.2351394Z ##[start-action display=Enable Cargo sparse registry;id=__dtolnay_rust-toolchain.__run_8]
+2026-10-16T09:25:51.2369540Z ##[group]Run # implemented in 1.66, stabilized in 1.68, made default in 1.70
+2026-10-16T09:25:51.2370071Z [36;1m# implemented in 1.66, stabilized in 1.68, made default in 1.70[0m
+2026-10-16T09:25:51.2370797Z [36;1mif [ -z "${CARGO_REGISTRIES_CRATES_IO_PROTOCOL+set}" -o -f "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol ]; then[0m
+2026-10-16T09:25:51.2371736Z [36;1m  if rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.6[89]\.'; then[0m
+2026-10-16T09:25:51.2372336Z [36;1m    touch "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol || true[0m
+2026-10-16T09:25:51.2372899Z [36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse >> $GITHUB_ENV[0m
+2026-10-16T09:25:51.2373733Z [36;1m  elif rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.6[67]\.'; then[0m
+2026-10-16T09:25:51.2374344Z [36;1m    touch "/home/runner/work/_temp"/.implicit_cargo_registries_crates_io_protocol || true[0m
+2026-10-16T09:25:51.2374875Z [36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=git >> $GITHUB_ENV[0m
+2026-10-16T09:25:51.2375229Z [36;1m  fi[0m
+2026-10-16T09:25:51.2375420Z [36;1mfi[0m
+2026-10-16T09:25:51.2431262Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-16T09:25:51.2431606Z env:
+2026-10-16T09:25:51.2431879Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:51.2432325Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+2026-10-16T09:25:51.2432749Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:51.2433128Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:51.2433806Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:51.2434203Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+2026-10-16T09:25:51.2434548Z   CARGO_HOME: /home/runner/.cargo
+2026-10-16T09:25:51.2434798Z   CARGO_INCREMENTAL: 0
+2026-10-16T09:25:51.2435019Z   CARGO_TERM_COLOR: always
+2026-10-16T09:25:51.2435235Z   toolchain: stable
+2026-10-16T09:25:51.2435433Z ##[endgroup]
+2026-10-16T09:25:51.2753141Z ##[end-action id=__dtolnay_rust-toolchain.__run_8;outcome=success;conclusion=success;duration_ms=40]
+2026-10-16T09:25:51.2757496Z ##[start-action display=Work around spurious network errors in curl 8.0;id=__dtolnay_rust-toolchain.__run_9]
+2026-10-16T09:25:51.2775221Z ##[group]Run # https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation
+2026-10-16T09:25:51.2776031Z [36;1m# https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation[0m
+2026-10-16T09:25:51.2776707Z [36;1mif rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.7[01]\.'; then[0m
+2026-10-16T09:25:51.2777214Z [36;1m  echo CARGO_HTTP_MULTIPLEXING=false >> $GITHUB_ENV[0m
+2026-10-16T09:25:51.2777546Z [36;1mfi[0m
+2026-10-16T09:25:51.2840917Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-16T09:25:51.2841319Z env:
+2026-10-16T09:25:51.2841626Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:51.2842159Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+2026-10-16T09:25:51.2842691Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:51.2843149Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:51.2843862Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:51.2844336Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+2026-10-16T09:25:51.2844742Z   CARGO_HOME: /home/runner/.cargo
+2026-10-16T09:25:51.2845037Z   CARGO_INCREMENTAL: 0
+2026-10-16T09:25:51.2845294Z   CARGO_TERM_COLOR: always
+2026-10-16T09:25:51.2845560Z   toolchain: stable
+2026-10-16T09:25:51.2845806Z ##[endgroup]
+2026-10-16T09:25:51.3052549Z ##[end-action id=__dtolnay_rust-toolchain.__run_9;outcome=success;conclusion=success;duration_ms=29]
+2026-10-16T09:25:51.3058990Z ##[start-action display=rustc +stable --version --verbose;id=__dtolnay_rust-toolchain.__run_10]
+2026-10-16T09:25:51.3097735Z ##[group]Run rustc +"$toolchain" --version --verbose
+2026-10-16T09:25:51.3098126Z [36;1mrustc +"$toolchain" --version --verbose[0m
+2026-10-16T09:25:51.3163113Z shell: /usr/bin/bash --noprofile --norc -e -o pipefail {0}
+2026-10-16T09:25:51.3163750Z env:
+2026-10-16T09:25:51.3164046Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:51.3164723Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+2026-10-16T09:25:51.3165201Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:51.3165623Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:51.3166057Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:51.3166490Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+2026-10-16T09:25:51.3166869Z   CARGO_HOME: /home/runner/.cargo
+2026-10-16T09:25:51.3167148Z   CARGO_INCREMENTAL: 0
+2026-10-16T09:25:51.3167390Z   CARGO_TERM_COLOR: always
+2026-10-16T09:25:51.3167636Z   toolchain: stable
+2026-10-16T09:25:51.3167857Z ##[endgroup]
+2026-10-16T09:25:51.3363178Z rustc 1.99.1 (58cf8f9c3 2026-10-13)
+2026-10-16T09:25:51.3364327Z binary: rustc
+2026-10-16T09:25:51.3365035Z commit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67
+2026-10-16T09:25:51.3365685Z commit-date: 2026-10-13
+2026-10-16T09:25:51.3366146Z host: x86_64-unknown-linux-gnu
+2026-10-16T09:25:51.3366505Z release: 1.99.1
+2026-10-16T09:25:51.3366768Z LLVM version: 23.1.1
+2026-10-16T09:25:51.3382514Z ##[end-action id=__dtolnay_rust-toolchain.__run_10;outcome=success;conclusion=success;duration_ms=32]
+2026-10-16T09:25:51.3475896Z ##[group]Run Swatinem/rust-cache@v2
+2026-10-16T09:25:51.3476201Z with:
+2026-10-16T09:25:51.3476403Z   prefix-key: v0-rust
+2026-10-16T09:25:51.3476629Z   add-job-id-key: true
+2026-10-16T09:25:51.3476868Z   add-rust-environment-hash-key: true
+2026-10-16T09:25:51.3477140Z   cache-targets: true
+2026-10-16T09:25:51.3477358Z   cache-all-crates: false
+2026-10-16T09:25:51.3477596Z   cache-workspace-crates: false
+2026-10-16T09:25:51.3477833Z   save-if: true
+2026-10-16T09:25:51.3478035Z   cache-provider: github
+2026-10-16T09:25:51.3478250Z   cache-bin: true
+2026-10-16T09:25:51.3478445Z   lookup-only: false
+2026-10-16T09:25:51.3478649Z   cmd-format: {0}
+2026-10-16T09:25:51.3478835Z env:
+2026-10-16T09:25:51.3479083Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:51.3479534Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+2026-10-16T09:25:51.3479959Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:51.3480361Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:51.3480742Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:51.3481123Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+2026-10-16T09:25:51.3481458Z   CARGO_HOME: /home/runner/.cargo
+2026-10-16T09:25:51.3481700Z   CARGO_INCREMENTAL: 0
+2026-10-16T09:25:51.3481910Z   CARGO_TERM_COLOR: always
+2026-10-16T09:25:51.3482125Z ##[endgroup]
+2026-10-16T09:25:52.1600691Z ##[group]Cache Configuration
+2026-10-16T09:25:52.1601591Z Cache Provider:
+2026-10-16T09:25:52.1602317Z     github
+2026-10-16T09:25:52.1602654Z Workspaces:
+2026-10-16T09:25:52.1603041Z     /home/runner/work/gen2/gen2
+2026-10-16T09:25:52.1603698Z Cache Paths:
+2026-10-16T09:25:52.1604050Z     /home/runner/.cargo/bin
+2026-10-16T09:25:52.1604501Z     /home/runner/.cargo/.crates.toml
+2026-10-16T09:25:52.1604960Z     /home/runner/.cargo/.crates2.json
+2026-10-16T09:25:52.1605415Z     /home/runner/.cargo/registry
+2026-10-16T09:25:52.1605846Z     /home/runner/.cargo/git
+2026-10-16T09:25:52.1606256Z     /home/runner/work/gen2/gen2/target
+2026-10-16T09:25:52.1606691Z Restore Key:
+2026-10-16T09:25:52.1607054Z     v0-rust-native-Linux-x64-01b81e85
+2026-10-16T09:25:52.1607487Z Cache Key:
+2026-10-16T09:25:52.1607881Z     v0-rust-native-Linux-x64-01b81e85-0beb53fd
+2026-10-16T09:25:52.1608367Z .. Prefix:
+2026-10-16T09:25:52.1608701Z   - v0-rust-native-Linux-x64
+2026-10-16T09:25:52.1609124Z .. Environment considered:
+2026-10-16T09:25:52.1609499Z   - Rust Versions:
+2026-10-16T09:25:52.1610049Z     - 1.99.1 x86_64-unknown-linux-gnu 58cf8f9c35b355199727627d07ae34a4e2846d67
+2026-10-16T09:25:52.1610730Z   - CARGO_HOME
+2026-10-16T09:25:52.1611071Z   - CARGO_INCREMENTAL
+2026-10-16T09:25:52.1611422Z   - CARGO_TERM_COLOR
+2026-10-16T09:25:52.1611772Z .. Lockfiles considered:
+2026-10-16T09:25:52.1612737Z   - /home/runner/work/gen2/gen2/Cargo.lock
+2026-10-16T09:25:52.1613238Z   - /home/runner/work/gen2/gen2/Cargo.toml
+2026-10-16T09:25:52.1614033Z   - /home/runner/work/gen2/gen2/crates/gen2-mlxcel/Cargo.toml
+2026-10-16T09:25:52.1614761Z   - /home/runner/work/gen2/gen2/examples/laya-mobile/Cargo.toml
+2026-10-16T09:25:52.1615668Z ##[endgroup]
+2026-10-16T09:25:52.1615864Z 
+2026-10-16T09:25:52.1616019Z ... Restoring cache ...
+2026-10-16T09:25:52.2863112Z Cache hit for restore-key: v0-rust-native-Linux-x64-01b81e85-8a03a485
+2026-10-16T09:25:53.4394469Z Received 92274688 of 422423583 (21.8%), 87.8 MBs/sec
+2026-10-16T09:25:54.4344454Z Received 281018368 of 422423583 (66.5%), 133.9 MBs/sec
+2026-10-16T09:25:55.0996266Z Received 422423583 of 422423583 (100.0%), 151.0 MBs/sec
+2026-10-16T09:25:55.0997475Z Cache Size: ~403 MB (422423583 B)
+2026-10-16T09:25:55.1034930Z [command]/usr/bin/tar -xf /home/runner/work/_temp/dfdf3041-e93a-49ad-acc6-64905fddc678/cache.tzst -P -C /home/runner/work/gen2/gen2 --use-compress-program unzstd
+2026-10-16T09:25:57.4619377Z Cache restored successfully
+2026-10-16T09:25:57.5157183Z Restored from cache key "v0-rust-native-Linux-x64-01b81e85-8a03a485" full match: false.
+2026-10-16T09:25:57.5365550Z ##[group]Run sudo apt-get update
+2026-10-16T09:25:57.5365878Z [36;1msudo apt-get update[0m
+2026-10-16T09:25:57.5366448Z [36;1msudo apt-get install -y --no-install-recommends build-essential cmake ninja-build pkg-config libsentencepiece-dev[0m
+2026-10-16T09:25:57.5431621Z shell: /usr/bin/bash -e {0}
+2026-10-16T09:25:57.5431883Z env:
+2026-10-16T09:25:57.5432171Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:57.5432620Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+2026-10-16T09:25:57.5433057Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:57.5433772Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:57.5434170Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:25:57.5434585Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+2026-10-16T09:25:57.5434954Z   CARGO_HOME: /home/runner/.cargo
+2026-10-16T09:25:57.5435258Z   CARGO_INCREMENTAL: 0
+2026-10-16T09:25:57.5435495Z   CARGO_TERM_COLOR: always
+2026-10-16T09:25:57.5435740Z   CACHE_ON_FAILURE: false
+2026-10-16T09:25:57.5435978Z ##[endgroup]
+2026-10-16T09:25:57.6268062Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-16T09:25:57.6590034Z Hit:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+2026-10-16T09:25:57.6591968Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease [126 kB]
+2026-10-16T09:25:57.6664795Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease [126 kB]
+2026-10-16T09:25:57.6684401Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease [126 kB]
+2026-10-16T09:25:57.6697865Z Get:6 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease [3600 B]
+2026-10-16T09:25:57.7991443Z Get:7 http://azure.archive.ubuntu.com/ubuntu noble-updates/main amd64 Packages [1397 kB]
+2026-10-16T09:25:57.8126221Z Get:8 http://azure.archive.ubuntu.com/ubuntu noble-updates/main Translation-en [308 kB]
+2026-10-16T09:25:57.8155236Z Get:9 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe amd64 Packages [1704 kB]
+2026-10-16T09:25:57.8256097Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe Translation-en [342 kB]
+2026-10-16T09:25:57.8275877Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted amd64 Packages [1805 kB]
+2026-10-16T09:25:57.8377385Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted Translation-en [411 kB]
+2026-10-16T09:25:57.9259605Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble-security/main amd64 Packages [1144 kB]
+2026-10-16T09:25:57.9321013Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble-security/main Translation-en [231 kB]
+2026-10-16T09:25:57.9333025Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble-security/universe amd64 Packages [1222 kB]
+2026-10-16T09:25:57.9395412Z Get:16 http://azure.archive.ubuntu.com/ubuntu noble-security/universe Translation-en [246 kB]
+2026-10-16T09:25:57.9837972Z Get:17 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted amd64 Packages [1713 kB]
+2026-10-16T09:25:57.9917726Z Get:18 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted Translation-en [392 kB]
+2026-10-16T09:25:58.0133504Z Get:19 https://packages.microsoft.com/ubuntu/24.04/prod noble/main arm64 Packages [523 kB]
+2026-10-16T09:25:58.0235426Z Get:20 https://packages.microsoft.com/ubuntu/24.04/prod noble/main amd64 Packages [581 kB]
+2026-10-16T09:25:58.0316241Z Get:21 https://packages.microsoft.com/ubuntu/24.04/prod noble/main armhf Packages [12.4 kB]
+2026-10-16T09:26:01.0687510Z Fetched 12.4 MB in 1s (9796 kB/s)
+2026-10-16T09:26:02.0055754Z Reading package lists...
+2026-10-16T09:26:02.0362533Z Reading package lists...
+2026-10-16T09:26:02.2489224Z Building dependency tree...
+2026-10-16T09:26:02.2496612Z Reading state information...
+2026-10-16T09:26:02.4002964Z pkg-config is already the newest version (1.8.1-2build1).
+2026-10-16T09:26:02.4004175Z The following additional packages will be installed:
+2026-10-16T09:26:02.4011125Z   cmake-data libjsoncpp25 librhash0 libsentencepiece0
+2026-10-16T09:26:02.4016880Z Suggested packages:
+2026-10-16T09:26:02.4017364Z   cmake-doc cmake-format elpa-cmake-mode
+2026-10-16T09:26:02.4203162Z The following NEW packages will be installed:
+2026-10-16T09:26:02.4207367Z   build-essential cmake cmake-data libjsoncpp25 librhash0 libsentencepiece-dev
+2026-10-16T09:26:02.4210182Z   libsentencepiece0 ninja-build
+2026-10-16T09:26:02.4381178Z 0 upgraded, 8 newly installed, 0 to remove and 44 not upgraded.
+2026-10-16T09:26:02.4381860Z Need to get 14.5 MB of archives.
+2026-10-16T09:26:02.4382489Z After this operation, 52.2 MB of additional disk space will be used.
+2026-10-16T09:26:02.4383234Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-16T09:26:02.4850105Z Get:2 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 build-essential amd64 12.10ubuntu1 [4928 B]
+2026-10-16T09:26:02.5214096Z Get:3 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 libjsoncpp25 amd64 1.9.5-6build1 [82.8 kB]
+2026-10-16T09:26:02.5589939Z Get:4 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 librhash0 amd64 1.4.3-3build1 [129 kB]
+2026-10-16T09:26:02.5982180Z Get:5 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 cmake-data all 3.28.3-1build7 [2155 kB]
+2026-10-16T09:26:02.6619495Z Get:6 http://azure.archive.ubuntu.com/ubuntu noble/main amd64 cmake amd64 3.28.3-1build7 [11.2 MB]
+2026-10-16T09:26:02.8419602Z Get:7 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libsentencepiece0 amd64 0.2.0-1build1 [848 kB]
+2026-10-16T09:26:02.8834130Z Get:8 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 libsentencepiece-dev amd64 0.2.0-1build1 [11.1 kB]
+2026-10-16T09:26:02.9181874Z Get:9 http://azure.archive.ubuntu.com/ubuntu noble/universe amd64 ninja-build amd64 1.11.1-2 [129 kB]
+2026-10-16T09:26:03.5714631Z Fetched 14.5 MB in 0s (29.6 MB/s)
+2026-10-16T09:26:03.8136304Z Selecting previously unselected package build-essential.
+2026-10-16T09:26:04.3349619Z (Reading database ... 
+2026-10-16T09:26:04.3349974Z (Reading database ... 5%
+2026-10-16T09:26:04.3350243Z (Reading database ... 10%
+2026-10-16T09:26:04.3350507Z (Reading database ... 15%
+2026-10-16T09:26:04.3350750Z (Reading database ... 20%
+2026-10-16T09:26:04.3350992Z (Reading database ... 25%
+2026-10-16T09:26:04.3351231Z (Reading database ... 30%
+2026-10-16T09:26:04.3351477Z (Reading database ... 35%
+2026-10-16T09:26:04.3351718Z (Reading database ... 40%
+2026-10-16T09:26:04.3352082Z (Reading database ... 45%
+2026-10-16T09:26:04.3352564Z (Reading database ... 50%
+2026-10-16T09:26:04.3402440Z (Reading database ... 55%
+2026-10-16T09:26:04.4118580Z (Reading database ... 60%
+2026-10-16T09:26:04.5715802Z (Reading database ... 65%
+2026-10-16T09:26:04.7552154Z (Reading database ... 70%
+2026-10-16T09:26:04.9253056Z (Reading database ... 75%
+2026-10-16T09:26:05.0255210Z (Reading database ... 80%
+2026-10-16T09:26:05.1654270Z (Reading database ... 85%
+2026-10-16T09:26:05.2471695Z (Reading database ... 90%
+2026-10-16T09:26:05.3715582Z (Reading database ... 95%
+2026-10-16T09:26:05.3716061Z (Reading database ... 100%
+2026-10-16T09:26:05.3716625Z (Reading database ... 203540 files and directories currently installed.)
+2026-10-16T09:26:05.3759407Z Preparing to unpack .../0-build-essential_12.10ubuntu1_amd64.deb ...
+2026-10-16T09:26:05.3785621Z Unpacking build-essential (12.10ubuntu1) ...
+2026-10-16T09:26:05.4015509Z Selecting previously unselected package libjsoncpp25:amd64.
+2026-10-16T09:26:05.4141671Z Preparing to unpack .../1-libjsoncpp25_1.9.5-6build1_amd64.deb ...
+2026-10-16T09:26:05.4157673Z Unpacking libjsoncpp25:amd64 (1.9.5-6build1) ...
+2026-10-16T09:26:05.4372772Z Selecting previously unselected package librhash0:amd64.
+2026-10-16T09:26:05.4504480Z Preparing to unpack .../2-librhash0_1.4.3-3build1_amd64.deb ...
+2026-10-16T09:26:05.4513995Z Unpacking librhash0:amd64 (1.4.3-3build1) ...
+2026-10-16T09:26:05.4741884Z Selecting previously unselected package cmake-data.
+2026-10-16T09:26:05.4876567Z Preparing to unpack .../3-cmake-data_3.28.3-1build7_all.deb ...
+2026-10-16T09:26:05.4945039Z Unpacking cmake-data (3.28.3-1build7) ...
+2026-10-16T09:26:06.0380063Z Selecting previously unselected package cmake.
+2026-10-16T09:26:06.0519726Z Preparing to unpack .../4-cmake_3.28.3-1build7_amd64.deb ...
+2026-10-16T09:26:06.0526948Z Unpacking cmake (3.28.3-1build7) ...
+2026-10-16T09:26:06.2052705Z Selecting previously unselected package libsentencepiece0.
+2026-10-16T09:26:06.2184127Z Preparing to unpack .../5-libsentencepiece0_0.2.0-1build1_amd64.deb ...
+2026-10-16T09:26:06.2191927Z Unpacking libsentencepiece0 (0.2.0-1build1) ...
+2026-10-16T09:26:06.2489323Z Selecting previously unselected package libsentencepiece-dev.
+2026-10-16T09:26:06.2621489Z Preparing to unpack .../6-libsentencepiece-dev_0.2.0-1build1_amd64.deb ...
+2026-10-16T09:26:06.2629741Z Unpacking libsentencepiece-dev (0.2.0-1build1) ...
+2026-10-16T09:26:06.2866427Z Selecting previously unselected package ninja-build.
+2026-10-16T09:26:06.2996421Z Preparing to unpack .../7-ninja-build_1.11.1-2_amd64.deb ...
+2026-10-16T09:26:06.3003586Z Unpacking ninja-build (1.11.1-2) ...
+2026-10-16T09:26:06.3439589Z Setting up ninja-build (1.11.1-2) ...
+2026-10-16T09:26:06.3458844Z Setting up libsentencepiece0 (0.2.0-1build1) ...
+2026-10-16T09:26:06.3476984Z Setting up libjsoncpp25:amd64 (1.9.5-6build1) ...
+2026-10-16T09:26:06.3494432Z Setting up librhash0:amd64 (1.4.3-3build1) ...
+2026-10-16T09:26:06.3512298Z Setting up build-essential (12.10ubuntu1) ...
+2026-10-16T09:26:06.3530383Z Setting up cmake-data (3.28.3-1build7) ...
+2026-10-16T09:26:06.3594773Z Setting up libsentencepiece-dev (0.2.0-1build1) ...
+2026-10-16T09:26:06.3612868Z Setting up cmake (3.28.3-1build7) ...
+2026-10-16T09:26:06.3639403Z Processing triggers for man-db (2.12.0-4build2) ...
+2026-10-16T09:26:06.3659325Z Not building database; man-db/auto-update is not 'true'.
+2026-10-16T09:26:06.3670363Z Processing triggers for libc-bin (2.39-0ubuntu8.9) ...
+2026-10-16T09:26:07.0441524Z 
+2026-10-16T09:26:07.0442090Z Running kernel seems to be up-to-date.
+2026-10-16T09:26:07.0442412Z 
+2026-10-16T09:26:07.0442548Z No services need to be restarted.
+2026-10-16T09:26:07.0442774Z 
+2026-10-16T09:26:07.0442999Z No containers need to be restarted.
+2026-10-16T09:26:07.0443679Z 
+2026-10-16T09:26:07.0444002Z No user sessions are running outdated binaries.
+2026-10-16T09:26:07.0444504Z 
+2026-10-16T09:26:07.0444943Z No VM guests are running outdated hypervisor (qemu) binaries on this host.
+2026-10-16T09:26:08.0374746Z ##[group]Run python tools/nemotron-diarization/platform_native.py --source native-source --prefix "/home/runner/work/_temp/nemo-sdk" --output "/home/runner/work/_temp/nemo-evidence" --jobs 2
+2026-10-16T09:26:08.0376135Z [36;1mpython tools/nemotron-diarization/platform_native.py --source native-source --prefix "/home/runner/work/_temp/nemo-sdk" --output "/home/runner/work/_temp/nemo-evidence" --jobs 2[0m
+2026-10-16T09:26:08.0439533Z shell: /usr/bin/bash -e {0}
+2026-10-16T09:26:08.0439789Z env:
+2026-10-16T09:26:08.0440059Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:26:08.0440527Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+2026-10-16T09:26:08.0440964Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:26:08.0441377Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:26:08.0441782Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:26:08.0442207Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+2026-10-16T09:26:08.0442549Z   CARGO_HOME: /home/runner/.cargo
+2026-10-16T09:26:08.0442806Z   CARGO_INCREMENTAL: 0
+2026-10-16T09:26:08.0443027Z   CARGO_TERM_COLOR: always
+2026-10-16T09:26:08.0443467Z   CACHE_ON_FAILURE: false
+2026-10-16T09:26:08.0443736Z ##[endgroup]
+2026-10-16T09:26:08.7148284Z START sdk-configure
+2026-10-16T09:26:10.7575876Z PASS sdk-configure
+2026-10-16T09:26:10.7578100Z START sdk-build
+2026-10-16T09:27:10.9387453Z PASS sdk-build
+2026-10-16T09:27:10.9390581Z START sdk-install
+2026-10-16T09:27:10.9587285Z PASS sdk-install
+2026-10-16T09:27:10.9592167Z START native-probe-build
+2026-10-16T09:27:12.2184409Z PASS native-probe-build
+2026-10-16T09:27:12.2187666Z START gen2-build
+2026-10-16T09:27:38.8034818Z PASS gen2-build
+2026-10-16T09:27:38.8039397Z START loader-dependencies
+2026-10-16T09:27:38.8136837Z PASS loader-dependencies
+2026-10-16T09:27:41.1543845Z START native-inference
+2026-10-16T09:28:37.5065851Z PASS native-inference
+2026-10-16T09:28:37.5070224Z START public-inference
+2026-10-16T09:29:33.8897565Z PASS public-inference
+2026-10-16T09:29:33.9376677Z START native-lifecycle-list
+2026-10-16T09:29:34.2120412Z PASS native-lifecycle-list
+2026-10-16T09:29:34.2125132Z START native-lifecycle
+2026-10-16T09:34:26.0637269Z PASS native-lifecycle
+2026-10-16T09:34:26.7361471Z ##[group]Run sudo sed -i 's/^Types: deb$/Types: deb deb-src/' /etc/apt/sources.list.d/ubuntu.sources
+2026-10-16T09:34:26.7362301Z [36;1msudo sed -i 's/^Types: deb$/Types: deb deb-src/' /etc/apt/sources.list.d/ubuntu.sources[0m
+2026-10-16T09:34:26.7362869Z [36;1msudo apt-get update[0m
+2026-10-16T09:34:26.7363762Z [36;1msudo apt-get install -y --no-install-recommends patchelf binutils[0m
+2026-10-16T09:34:26.7427086Z shell: /usr/bin/bash -e {0}
+2026-10-16T09:34:26.7427482Z env:
+2026-10-16T09:34:26.7427830Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:34:26.7428493Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+2026-10-16T09:34:26.7429038Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:34:26.7429574Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:34:26.7430133Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:34:26.7430815Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+2026-10-16T09:34:26.7431274Z   CARGO_HOME: /home/runner/.cargo
+2026-10-16T09:34:26.7431673Z   CARGO_INCREMENTAL: 0
+2026-10-16T09:34:26.7432039Z   CARGO_TERM_COLOR: always
+2026-10-16T09:34:26.7432398Z   CACHE_ON_FAILURE: false
+2026-10-16T09:34:26.7432773Z ##[endgroup]
+2026-10-16T09:34:26.8229244Z Get:1 file:/etc/apt/apt-mirrors.txt Mirrorlist [144 B]
+2026-10-16T09:34:26.8550436Z Hit:2 http://azure.archive.ubuntu.com/ubuntu noble InRelease
+2026-10-16T09:34:26.8561765Z Hit:3 http://azure.archive.ubuntu.com/ubuntu noble-updates InRelease
+2026-10-16T09:34:26.8577075Z Hit:4 http://azure.archive.ubuntu.com/ubuntu noble-backports InRelease
+2026-10-16T09:34:26.8582111Z Hit:5 http://azure.archive.ubuntu.com/ubuntu noble-security InRelease
+2026-10-16T09:34:26.8677534Z Hit:6 https://packages.microsoft.com/ubuntu/24.04/prod noble InRelease
+2026-10-16T09:34:26.9401380Z Get:7 http://azure.archive.ubuntu.com/ubuntu noble/multiverse Sources [299 kB]
+2026-10-16T09:34:26.9595424Z Get:8 http://azure.archive.ubuntu.com/ubuntu noble/restricted Sources [18.7 kB]
+2026-10-16T09:34:26.9614517Z Get:9 http://azure.archive.ubuntu.com/ubuntu noble/main Sources [1384 kB]
+2026-10-16T09:34:26.9814496Z Get:10 http://azure.archive.ubuntu.com/ubuntu noble/universe Sources [19.8 MB]
+2026-10-16T09:34:27.0938205Z Get:11 http://azure.archive.ubuntu.com/ubuntu noble-updates/restricted Sources [79.7 kB]
+2026-10-16T09:34:27.0961547Z Get:12 http://azure.archive.ubuntu.com/ubuntu noble-updates/universe Sources [456 kB]
+2026-10-16T09:34:27.1004573Z Get:13 http://azure.archive.ubuntu.com/ubuntu noble-updates/multiverse Sources [32.9 kB]
+2026-10-16T09:34:27.1020914Z Get:14 http://azure.archive.ubuntu.com/ubuntu noble-updates/main Sources [553 kB]
+2026-10-16T09:34:27.1054469Z Get:15 http://azure.archive.ubuntu.com/ubuntu noble-backports/multiverse Sources [1036 B]
+2026-10-16T09:34:27.1056089Z Get:16 http://azure.archive.ubuntu.com/ubuntu noble-backports/main Sources [5828 B]
+2026-10-16T09:34:27.1485174Z Get:17 http://azure.archive.ubuntu.com/ubuntu noble-backports/universe Sources [14.1 kB]
+2026-10-16T09:34:27.1505313Z Get:18 http://azure.archive.ubuntu.com/ubuntu noble-security/multiverse Sources [29.1 kB]
+2026-10-16T09:34:27.1514504Z Get:19 http://azure.archive.ubuntu.com/ubuntu noble-security/restricted Sources [77.1 kB]
+2026-10-16T09:34:27.1528093Z Get:20 http://azure.archive.ubuntu.com/ubuntu noble-security/main Sources [300 kB]
+2026-10-16T09:34:27.1553144Z Get:21 http://azure.archive.ubuntu.com/ubuntu noble-security/universe Sources [300 kB]
+2026-10-16T09:34:28.9970674Z Fetched 23.4 MB in 2s (11.4 MB/s)
+2026-10-16T09:34:29.9153288Z Reading package lists...
+2026-10-16T09:34:29.9453862Z Reading package lists...
+2026-10-16T09:34:30.1551811Z Building dependency tree...
+2026-10-16T09:34:30.1559658Z Reading state information...
+2026-10-16T09:34:30.3220375Z patchelf is already the newest version (0.18.0-1.1build1).
+2026-10-16T09:34:30.3221066Z binutils is already the newest version (2.42-4ubuntu2.10).
+2026-10-16T09:34:30.3222053Z 0 upgraded, 0 newly installed, 0 to remove and 44 not upgraded.
+2026-10-16T09:34:30.3285428Z ##[group]Run python tools/nemotron-diarization/platform_linux_package.py --sdk-prefix "/home/runner/work/_temp/nemo-sdk" --native-receipt "/home/runner/work/_temp/nemo-evidence/receipt.json" --output "/home/runner/work/_temp/nemo-package-evidence"
+2026-10-16T09:34:30.3288589Z [36;1mpython tools/nemotron-diarization/platform_linux_package.py --sdk-prefix "/home/runner/work/_temp/nemo-sdk" --native-receipt "/home/runner/work/_temp/nemo-evidence/receipt.json" --output "/home/runner/work/_temp/nemo-package-evidence"[0m
+2026-10-16T09:34:30.3353971Z shell: /usr/bin/bash -e {0}
+2026-10-16T09:34:30.3354233Z env:
+2026-10-16T09:34:30.3354514Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:34:30.3354966Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+2026-10-16T09:34:30.3355398Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:34:30.3355782Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:34:30.3356209Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:34:30.3356595Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+2026-10-16T09:34:30.3356931Z   CARGO_HOME: /home/runner/.cargo
+2026-10-16T09:34:30.3357178Z   CARGO_INCREMENTAL: 0
+2026-10-16T09:34:30.3357397Z   CARGO_TERM_COLOR: always
+2026-10-16T09:34:30.3357627Z   CACHE_ON_FAILURE: false
+2026-10-16T09:34:30.3357845Z ##[endgroup]
+2026-10-16T09:34:38.3078467Z {
+2026-10-16T09:34:38.3078971Z   "schema_version": 1,
+2026-10-16T09:34:38.3079342Z   "release_qualified": false,
+2026-10-16T09:34:38.3080092Z   "scope": "Linux development runtime package construction, source/notice provenance, ELF closure and archive identity only.",
+2026-10-16T09:34:38.3080927Z   "source_commit": "3364fd7ee122f0231246af5cd9618cf7f0073294",
+2026-10-16T09:34:38.3081602Z   "native_receipt_sha256": "eed0597b0a3d75c00f550872680191cc8f80f9d039dae13fe10307154d22f555",
+2026-10-16T09:34:38.3082441Z   "packager_sha256": "020153b452cfd80bd8ba3a255c7e485cca820803554ccb2fa9ab0263b22d010d",
+2026-10-16T09:34:38.3083869Z   "archive_tool_sha256": "0b1d80768d15c2818afc82efcc1f3ddf253360b99c16c623e170073e020cb3cd",
+2026-10-16T09:34:38.3084654Z   "runner_sha256": "32287db854fd3b93b6301f1cec5e2cf1e33e34209c93ce20fe1437d99155cf9a",
+2026-10-16T09:34:38.3085261Z   "package_construction_passed": true,
+2026-10-16T09:34:38.3085610Z   "limits": [
+2026-10-16T09:34:38.3086159Z     "No fresh-container, host namespace isolation, chat/Bark/Laya coexistence or quality qualification."
+2026-10-16T09:34:38.3086793Z   ],
+2026-10-16T09:34:38.3087022Z   "archive": {
+2026-10-16T09:34:38.3087285Z     "schema_version": 1,
+2026-10-16T09:34:38.3087593Z     "release_qualified": false,
+2026-10-16T09:34:38.3088372Z     "scope": "Development filesystem snapshot; preserves aliases/modes, does not by itself close dependencies or establish relocation.",
+2026-10-16T09:34:38.3089233Z     "archive": "development-runtime.tar.gz",
+2026-10-16T09:34:38.3089585Z     "archive_bytes": 110126346,
+2026-10-16T09:34:38.3090063Z     "archive_sha256": "39c72005cd88414042d9808d3e6b2915d5a3033a823d25e788298dc90a5cf632"
+2026-10-16T09:34:38.3090570Z   },
+2026-10-16T09:34:38.3091019Z   "package_manifest_sha256": "ba8b0359deb8238b0c407a9ef9a832b65e727164323b5fb0cd034161cabac02b"
+2026-10-16T09:34:38.3091565Z }
+2026-10-16T09:34:38.3202380Z ##[group]Run python tools/nemotron-diarization/qualify_linux_package.py --sdk-prefix "/home/runner/work/_temp/nemo-sdk" --native-evidence "/home/runner/work/_temp/nemo-evidence" --package-evidence "/home/runner/work/_temp/nemo-package-evidence" --output "/home/runner/work/_temp/nemo-container-evidence"
+2026-10-16T09:34:38.3205052Z [36;1mpython tools/nemotron-diarization/qualify_linux_package.py --sdk-prefix "/home/runner/work/_temp/nemo-sdk" --native-evidence "/home/runner/work/_temp/nemo-evidence" --package-evidence "/home/runner/work/_temp/nemo-package-evidence" --output "/home/runner/work/_temp/nemo-container-evidence"[0m
+2026-10-16T09:34:38.3268767Z shell: /usr/bin/bash -e {0}
+2026-10-16T09:34:38.3269032Z env:
+2026-10-16T09:34:38.3269301Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:34:38.3269743Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+2026-10-16T09:34:38.3270309Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:34:38.3270698Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:34:38.3271075Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:34:38.3271456Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+2026-10-16T09:34:38.3271799Z   CARGO_HOME: /home/runner/.cargo
+2026-10-16T09:34:38.3272054Z   CARGO_INCREMENTAL: 0
+2026-10-16T09:34:38.3272271Z   CARGO_TERM_COLOR: always
+2026-10-16T09:34:38.3272498Z   CACHE_ON_FAILURE: false
+2026-10-16T09:34:38.3272724Z ##[endgroup]
+2026-10-16T09:34:39.3400321Z START discover-lifecycle-binary
+2026-10-16T09:34:39.6564715Z PASS discover-lifecycle-binary
+2026-10-16T09:34:39.6595155Z START probe-private-dependency
+2026-10-16T09:34:39.6636457Z PASS probe-private-dependency
+2026-10-16T09:34:39.6639487Z START native-probe-rpath
+2026-10-16T09:34:39.6679309Z PASS native-probe-rpath
+2026-10-16T09:34:39.6741914Z START public-stream-rpath
+2026-10-16T09:34:39.6824390Z PASS public-stream-rpath
+2026-10-16T09:34:39.6910153Z START native-lifecycle-rpath
+2026-10-16T09:34:39.6990227Z PASS native-lifecycle-rpath
+2026-10-16T09:34:39.7048555Z START pull-runtime-image
+2026-10-16T09:34:40.6721751Z PASS pull-runtime-image
+2026-10-16T09:34:40.6725818Z START inspect-runtime-image
+2026-10-16T09:34:40.6888570Z PASS inspect-runtime-image
+2026-10-16T09:34:40.8747462Z START container-controls
+2026-10-16T09:34:42.3434382Z PASS container-controls
+2026-10-16T09:34:42.3441433Z START packaged-native
+2026-10-16T09:35:38.7906196Z PASS packaged-native
+2026-10-16T09:35:38.7913996Z START packaged-public
+2026-10-16T09:36:35.4837168Z PASS packaged-public
+2026-10-16T09:36:35.5288722Z START packaged-lifecycle-list
+2026-10-16T09:36:35.6947620Z PASS packaged-lifecycle-list
+2026-10-16T09:36:35.6956221Z START packaged-lifecycle
+2026-10-16T09:41:27.7789596Z PASS packaged-lifecycle
+2026-10-16T09:41:27.7807883Z START platform-library-hashes
+2026-10-16T09:41:28.1967206Z PASS platform-library-hashes
+2026-10-16T09:41:28.2391358Z START missing-library-control
+2026-10-16T09:41:28.5047481Z PASS missing-library-control
+2026-10-16T09:41:28.9362725Z ##[group]Run python tools/nemotron-diarization/qualify_linux_chat.py --container-evidence "/home/runner/work/_temp/nemo-container-evidence" --output "/home/runner/work/_temp/nemo-chat-evidence"
+2026-10-16T09:41:28.9364868Z [36;1mpython tools/nemotron-diarization/qualify_linux_chat.py --container-evidence "/home/runner/work/_temp/nemo-container-evidence" --output "/home/runner/work/_temp/nemo-chat-evidence"[0m
+2026-10-16T09:41:28.9428279Z shell: /usr/bin/bash -e {0}
+2026-10-16T09:41:28.9428533Z env:
+2026-10-16T09:41:28.9428808Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:41:28.9429254Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+2026-10-16T09:41:28.9429708Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:41:28.9430089Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:41:28.9430482Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:41:28.9430891Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+2026-10-16T09:41:28.9431249Z   CARGO_HOME: /home/runner/.cargo
+2026-10-16T09:41:28.9431504Z   CARGO_INCREMENTAL: 0
+2026-10-16T09:41:28.9431723Z   CARGO_TERM_COLOR: always
+2026-10-16T09:41:28.9431955Z   CACHE_ON_FAILURE: false
+2026-10-16T09:41:28.9432172Z ##[endgroup]
+2026-10-16T09:41:29.5896306Z START initialize-chat-source
+2026-10-16T09:41:34.0656354Z PASS initialize-chat-source
+2026-10-16T09:41:34.0936787Z START build-chat-diagnostic
+2026-10-16T09:45:38.5057125Z PASS build-chat-diagnostic
+2026-10-16T09:45:38.5060075Z START cargo-metadata
+2026-10-16T09:45:38.5384529Z PASS cargo-metadata
+2026-10-16T09:45:41.9622806Z START chat-private-rpath
+2026-10-16T09:45:41.9966259Z PASS chat-private-rpath
+2026-10-16T09:45:42.0044908Z START chat-dynamic-symbols
+2026-10-16T09:45:42.0695276Z PASS chat-dynamic-symbols
+2026-10-16T09:45:42.0698801Z START chat-static-ggml-symbols
+2026-10-16T09:45:42.1346683Z PASS chat-static-ggml-symbols
+2026-10-16T09:45:42.1355255Z START rust-version
+2026-10-16T09:45:42.1518833Z PASS rust-version
+2026-10-16T09:45:42.1521824Z START cargo-version
+2026-10-16T09:45:42.1686337Z PASS cargo-version
+2026-10-16T09:45:42.1689631Z START docker-version
+2026-10-16T09:45:42.2016460Z PASS docker-version
+2026-10-16T09:45:43.1159175Z START isolated
+2026-10-16T09:45:44.6365013Z PASS isolated
+2026-10-16T09:45:44.6371898Z START chat-first
+2026-10-16T09:48:36.6449277Z PASS chat-first
+2026-10-16T09:48:36.6457594Z START diar-first
+2026-10-16T09:51:28.7590996Z PASS diar-first
+2026-10-16T09:51:29.8357490Z ##[group]Run actions/upload-artifact@v4
+2026-10-16T09:51:29.8357854Z with:
+2026-10-16T09:51:29.8358085Z   name: nemotron-native-ubuntu-24.04
+2026-10-16T09:51:29.8360885Z   path: /home/runner/work/_temp/nemo-evidence/*.json
+/home/runner/work/_temp/nemo-evidence/*.log
+/home/runner/work/_temp/nemo-evidence/*.f32
+/home/runner/work/_temp/nemo-evidence/*.tar.gz
+/home/runner/work/_temp/nemo-evidence/reference/
+/home/runner/work/_temp/nemo-sdk/
+/home/runner/work/_temp/nemo-package-evidence/*.json
+/home/runner/work/_temp/nemo-package-evidence/*.log
+/home/runner/work/_temp/nemo-package-evidence/*.tar.gz
+/home/runner/work/_temp/nemo-container-evidence/*.json
+/home/runner/work/_temp/nemo-container-evidence/*.log
+/home/runner/work/_temp/nemo-container-evidence/results/
+/home/runner/work/_temp/nemo-chat-evidence/*.json
+/home/runner/work/_temp/nemo-chat-evidence/*.log
+/home/runner/work/_temp/nemo-chat-evidence/*.f32
+/home/runner/work/_temp/nemo-chat-evidence/results/
+
+2026-10-16T09:51:29.8363835Z   retention-days: 7
+2026-10-16T09:51:29.8364060Z   if-no-files-found: warn
+2026-10-16T09:51:29.8364291Z   compression-level: 6
+2026-10-16T09:51:29.8364701Z   overwrite: false
+2026-10-16T09:51:29.8364914Z   include-hidden-files: false
+2026-10-16T09:51:29.8365153Z env:
+2026-10-16T09:51:29.8365399Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:51:29.8365822Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+2026-10-16T09:51:29.8366246Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:51:29.8366634Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:51:29.8367014Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+2026-10-16T09:51:29.8367401Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+2026-10-16T09:51:29.8367736Z   CARGO_HOME: /home/runner/.cargo
+2026-10-16T09:51:29.8367989Z   CARGO_INCREMENTAL: 0
+2026-10-16T09:51:29.8368209Z   CARGO_TERM_COLOR: always
+2026-10-16T09:51:29.8368447Z   CACHE_ON_FAILURE: false
+2026-10-16T09:51:29.8368667Z ##[endgroup]
+2026-10-16T09:51:30.0042562Z (node:13595) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-16T09:51:30.0044163Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-16T09:51:30.0723638Z Multiple search paths detected. Calculating the least common ancestor of all paths
+2026-10-16T09:51:30.0779890Z The least common ancestor is /home/runner/work/_temp. This will be the root directory of the artifact
+2026-10-16T09:51:30.0780980Z With the provided path, there will be 186 files uploaded
+2026-10-16T09:51:30.0782328Z Artifact name is valid!
+2026-10-16T09:51:30.0782983Z Root directory input is valid!
+2026-10-16T09:51:30.3571997Z Beginning upload of artifact content to blob storage
+2026-10-16T09:51:30.9097790Z (node:13595) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+2026-10-16T09:51:31.5854128Z Uploaded bytes 8388608
+2026-10-16T09:51:31.7256971Z Uploaded bytes 16777216
+2026-10-16T09:51:31.9023794Z Uploaded bytes 25165824
+2026-10-16T09:51:31.9865643Z Uploaded bytes 33554432
+2026-10-16T09:51:32.1595764Z Uploaded bytes 41943040
+2026-10-16T09:51:32.3874257Z Uploaded bytes 50331648
+2026-10-16T09:51:32.6263073Z Uploaded bytes 58720256
+2026-10-16T09:51:33.1737300Z Uploaded bytes 67108864
+2026-10-16T09:51:33.4971797Z Uploaded bytes 75497472
+2026-10-16T09:51:33.5815624Z Uploaded bytes 83886080
+2026-10-16T09:51:33.6339411Z Uploaded bytes 92274688
+2026-10-16T09:51:33.8643672Z Uploaded bytes 100663296
+2026-10-16T09:51:34.0863202Z Uploaded bytes 109051904
+2026-10-16T09:51:34.4903542Z Uploaded bytes 117440512
+2026-10-16T09:51:34.5427093Z Uploaded bytes 117986542
+2026-10-16T09:51:34.5923228Z Finished uploading artifact content to blob storage!
+2026-10-16T09:51:34.5927338Z SHA256 digest of uploaded artifact zip is 353a897fbfa68f5ffe8c54fd9725fcf85eab9228e798ce55ca1d8b8403f5a957
+2026-10-16T09:51:34.5929363Z Finalizing artifact upload
+2026-10-16T09:51:34.8312176Z Artifact nemotron-native-ubuntu-24.04.zip successfully finalized. Artifact ID 12038154119
+2026-10-16T09:51:34.8313884Z Artifact nemotron-native-ubuntu-24.04 has been successfully uploaded! Final size is 117986542 bytes. Artifact ID is 12038154119
+2026-10-16T09:51:34.8320323Z Artifact download URL: https://github.com/saberra-ai/gen2/actions/runs/38880349072/artifacts/12038154119
+2026-10-16T09:51:34.8539358Z Post job cleanup.
+2026-10-16T09:51:34.9843742Z ##[group]Cache Configuration
+2026-10-16T09:51:34.9844571Z Cache Provider:
+2026-10-16T09:51:34.9844977Z     github
+2026-10-16T09:51:34.9845310Z Workspaces:
+2026-10-16T09:51:34.9847251Z     /home/runner/work/gen2/gen2
+2026-10-16T09:51:34.9847885Z Cache Paths:
+2026-10-16T09:51:34.9848278Z     /home/runner/.cargo/bin
+2026-10-16T09:51:34.9848760Z     /home/runner/.cargo/.crates.toml
+2026-10-16T09:51:34.9849296Z     /home/runner/.cargo/.crates2.json
+2026-10-16T09:51:34.9849775Z     /home/runner/.cargo/registry
+2026-10-16T09:51:34.9850254Z     /home/runner/.cargo/git
+2026-10-16T09:51:34.9851181Z     /home/runner/work/gen2/gen2/target
+2026-10-16T09:51:34.9851657Z Restore Key:
+2026-10-16T09:51:34.9852042Z     v0-rust-native-Linux-x64-01b81e85
+2026-10-16T09:51:34.9852556Z Cache Key:
+2026-10-16T09:51:34.9852985Z     v0-rust-native-Linux-x64-01b81e85-0beb53fd
+2026-10-16T09:51:34.9853671Z .. Prefix:
+2026-10-16T09:51:34.9854060Z   - v0-rust-native-Linux-x64
+2026-10-16T09:51:34.9854492Z .. Environment considered:
+2026-10-16T09:51:34.9854893Z   - Rust Versions:
+2026-10-16T09:51:34.9855433Z     - 1.99.1 x86_64-unknown-linux-gnu 58cf8f9c35b355199727627d07ae34a4e2846d67
+2026-10-16T09:51:34.9856071Z   - CARGO_HOME
+2026-10-16T09:51:34.9856414Z   - CARGO_INCREMENTAL
+2026-10-16T09:51:34.9856778Z   - CARGO_TERM_COLOR
+2026-10-16T09:51:34.9857145Z .. Lockfiles considered:
+2026-10-16T09:51:34.9857566Z   - /home/runner/work/gen2/gen2/Cargo.lock
+2026-10-16T09:51:34.9858066Z   - /home/runner/work/gen2/gen2/Cargo.toml
+2026-10-16T09:51:34.9858655Z   - /home/runner/work/gen2/gen2/crates/gen2-mlxcel/Cargo.toml
+2026-10-16T09:51:34.9859363Z   - /home/runner/work/gen2/gen2/examples/laya-mobile/Cargo.toml
+2026-10-16T09:51:34.9860202Z ##[endgroup]
+2026-10-16T09:51:34.9860397Z 
+2026-10-16T09:51:38.2605631Z ... Cleaning /home/runner/work/gen2/gen2/target ...
+2026-10-16T09:51:38.3413569Z ... Cleaning cargo registry (cache-all-crates: false) ...
+2026-10-16T09:51:40.2897077Z ... Cleaning cargo/bin ...
+2026-10-16T09:51:40.2917866Z ... Cleaning cargo git cache ...
+2026-10-16T09:51:40.2928578Z ... Saving cache ...
+2026-10-16T09:51:40.3107678Z [command]/usr/bin/tar --posix -cf cache.tzst --exclude cache.tzst -P -C /home/runner/work/gen2/gen2 --files-from manifest.txt --use-compress-program zstdmt
+2026-10-16T09:51:44.6492362Z Sent 0 of 459404124 (0.0%), 0.0 MBs/sec
+2026-10-16T09:51:45.5631108Z Sent 459404124 of 459404124 (100.0%), 228.4 MBs/sec
+2026-10-16T09:51:45.7930188Z Post job cleanup.
+2026-10-16T09:51:45.9139889Z (node:13641) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+2026-10-16T09:51:45.9141254Z (Use `node --trace-deprecation ...` to show where the warning was created)
+2026-10-16T09:51:45.9308981Z Post job cleanup.
+2026-10-16T09:51:46.0242760Z [command]/usr/bin/git version
+2026-10-16T09:51:46.0286789Z git version 2.55.0
+2026-10-16T09:51:46.0321894Z Copying '/home/runner/.gitconfig' to '/home/runner/work/_temp/6efcd865-7470-479b-b454-c93c0c12180d/.gitconfig'
+2026-10-16T09:51:46.0332788Z Temporarily overriding HOME='/home/runner/work/_temp/6efcd865-7470-479b-b454-c93c0c12180d' before making global git config changes
+2026-10-16T09:51:46.0339045Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-16T09:51:46.0343961Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/gen2/gen2/native-source
+2026-10-16T09:51:46.0385764Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-16T09:51:46.0429384Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-16T09:51:46.0679101Z Entering 'llama.cpp'
+2026-10-16T09:51:46.0751905Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-16T09:51:46.0814592Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-16T09:51:46.1117783Z Entering 'llama.cpp'
+2026-10-16T09:51:46.1196261Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-16T09:51:46.1268337Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-16T09:51:46.1499054Z Entering 'llama.cpp'
+2026-10-16T09:51:46.1517338Z file:/home/runner/work/gen2/gen2/native-source/.git/modules/llama.cpp/config	remote.origin.url
+2026-10-16T09:51:46.1565721Z [command]/usr/bin/git config --file /home/runner/work/gen2/gen2/native-source/.git/modules/llama.cpp/config --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-16T09:51:46.1765226Z Post job cleanup.
+2026-10-16T09:51:46.2634445Z [command]/usr/bin/git version
+2026-10-16T09:51:46.2676217Z git version 2.55.0
+2026-10-16T09:51:46.2715123Z Copying '/home/runner/.gitconfig' to '/home/runner/work/_temp/0211ae4a-5b3f-4773-998c-6017a3af6c71/.gitconfig'
+2026-10-16T09:51:46.2725418Z Temporarily overriding HOME='/home/runner/work/_temp/0211ae4a-5b3f-4773-998c-6017a3af6c71' before making global git config changes
+2026-10-16T09:51:46.2727107Z Adding repository directory to the temporary git global config as a safe directory
+2026-10-16T09:51:46.2732168Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/gen2/gen2
+2026-10-16T09:51:46.2775284Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+2026-10-16T09:51:46.2812654Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+2026-10-16T09:51:46.3055928Z Entering 'vendor/llama-cpp-sys-2/llama.cpp'
+2026-10-16T09:51:46.3126505Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+2026-10-16T09:51:46.3166445Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+2026-10-16T09:51:46.3417259Z Entering 'vendor/llama-cpp-sys-2/llama.cpp'
+2026-10-16T09:51:46.3484096Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-16T09:51:46.3556614Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+2026-10-16T09:51:46.3796712Z Entering 'vendor/llama-cpp-sys-2/llama.cpp'
+2026-10-16T09:51:46.3814903Z file:/home/runner/work/gen2/gen2/.git/modules/vendor/llama-cpp-sys-2/llama.cpp/config	remote.origin.url
+2026-10-16T09:51:46.3856898Z [command]/usr/bin/git config --file /home/runner/work/gen2/gen2/.git/modules/vendor/llama-cpp-sys-2/llama.cpp/config --name-only --get-regexp ^includeIf\.gitdir:
+2026-10-16T09:51:46.4026013Z Cleaning up orphan processes
+2026-10-16T09:51:46.4455749Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

@@ -101,7 +101,7 @@ missing-private-GGML control with its exact OS cause. The delivered archive
 and all 45 filesystem entries, corresponding-source bundles and frozen tools
 were independently checked on macOS. Actual Linux execution occurred only in
 the named CI run. This passes the selected Ubuntu/glibc/CPU container scope;
-the separate ELF chat/GGML interposition and physical-machine gates remain open.
+that source does not close the separate ELF chat/GGML interposition or physical-machine gates.
 
 The separate `qualify_linux_chat.py`/`nemotron_chat_coexistence` implementation
 now covers an isolated chat baseline and both load orders in fresh offline
@@ -115,6 +115,20 @@ excluding WAV preparation and output serialization. The audit cross-checks
 those exported windows, unchanged isolated chat output and zero released
 reservations. Loader traces must show all declared files, and every observed
 GGML binding originating in the diarization package must target that package;
-critical graph-construction/scheduler bindings are required. Source review and
-model-free tests do not establish an actual passing coexistence result. The
-implementation retains the separate Bark/Laya, other-baseline and release gates.
+critical graph-construction/scheduler bindings are required.
+
+The actual `3364fd7` [coexistence receipt](../../benches/results/nemotron-diarization/linux-x86_64/2026-10-16-chat-coexistence/qualification.json)
+now passes [run 38880349072](https://github.com/saberra-ai/gen2/actions/runs/38880349072).
+All ten chat observations return the isolated `Hello!`; all six diarization
+outputs match 26 turns/6,001 frames/48,008 probabilities exactly. Actual call
+overlap is 1.043754 seconds in chat-first order and 1.509064 seconds in diar-first
+order. Both shutdown paths release reservations, and each mixed loader trace
+contains 720 native GGML bindings, all to the private delivered package. The
+OpenMP runtime remains enabled and uses the exact delivered GCC14 source bundle.
+The macOS receiver independently rechecked the delivered runtime/source bytes,
+historical tools/example/gitlink and all comparisons/loader/binding traces.
+Separate helper/model/OpenMP test-payload binaries were not uploaded, so their
+frozen identity hashes remain CI observations rather than receiver-rehashed bytes.
+The result covers these binaries/calls on the selected Ubuntu/glibc/ISA fixture;
+it is not a general ELF namespace guarantee. Bark/Laya, other baselines,
+physical machines, quality, clean performance and release gates remain open.

@@ -1,0 +1,66 @@
+{
+  "order": "isolated",
+  "settings": {
+    "sampling": {
+      "temperature": null,
+      "top_p": null,
+      "min_p": null,
+      "top_k": null,
+      "seed": null,
+      "penalty_last_n": null,
+      "penalty_repeat": null,
+      "penalty_freq": null,
+      "penalty_present": null
+    },
+    "stopping": {
+      "stopwords": [],
+      "max_tokens": null
+    },
+    "system": {
+      "threads": 2,
+      "threads_batch": 2,
+      "batch_size": null,
+      "gpu_layers": 0,
+      "ctx_size": 1024,
+      "flash_attn": null,
+      "dflash2": null,
+      "kv_cache_type": null
+    },
+    "prompt": {
+      "system_prompt": null,
+      "include_meta": null
+    },
+    "mm": {
+      "image_size": null,
+      "audio_sample_rate": null
+    }
+  },
+  "prompt": "Reply with the single word hello.",
+  "generation": {
+    "max_tokens": 8,
+    "temperature": 0.0,
+    "seed": 0
+  },
+  "fingerprints": {
+    "executable": "3d0b0a937bf327930e9698368d3ae403fc6901562e9235afebacad9a7fdd9f7d",
+    "chat_model": "ac2d97712095a558e31573f62f466a3f9d93990898b0ec79d7c974c1780d524a",
+    "diarization_model": "08456d9e22cd9a323c0364d98375f3746d6e68507ebb705cd46438c534c7a3a1",
+    "library": "2875135bb86b5f682e2f12712c5f7e0944d92f7b4042f8661f68444d7c44efde",
+    "wav": "f00f92e53115a4a6724aec0ddaf9c675df6d5fabd3a489b43fffe56ba52a3ae9"
+  },
+  "chat_outputs": {
+    "isolated": {
+      "text": "Hello!",
+      "offload": {
+        "layers": 0,
+        "total": 29,
+        "backend": null,
+        "device": null
+      },
+      "api_call_micros": [
+        844365,
+        1262289
+      ]
+    }
+  }
+}

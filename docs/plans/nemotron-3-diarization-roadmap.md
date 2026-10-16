@@ -687,10 +687,20 @@ hashes to `83ef52fed709501d7aa57110cc74d125b1835dba83e48cc737fda40d6dd0515a`;
 all 45 entries, corresponding-source bundles and frozen tool hashes were
 independently rechecked on macOS, without executing Linux code there. This
 closes this Ubuntu/glibc/ISA container scope only; physical-machine, other
-baseline, quality and chat/Bark/Laya coexistence gates remain open. The
-[pinned chat fixture](../research/nemotron-linux-chat-fixture.md) matches the Mac
-fixture bytes. Its reviewed actual CPU chat coexistence implementation is
-dispatched at `3364fd7`; no passing chat result is claimed yet.
+baseline and quality gates remain open. The actual `3364fd7`
+[Linux chat coexistence receipt](../../benches/results/nemotron-diarization/linux-x86_64/2026-10-16-chat-coexistence/qualification.json)
+now passes run 38880349072, including the same-source offline prerequisite.
+Both load orders return the isolated `Hello!` text at all ten chat observations.
+All six diarization calls match the independent 26-turn/6,001-frame native
+reference with zero probability error. Actual API calls overlap by 1.043754 and
+1.509064 seconds, shutdown releases reservations, and both loader traces show
+720 native GGML bindings confined to the delivered package. The CPU chat backend
+retains OpenMP, with its test runtime tied to the exact delivered GCC source.
+The receiver independently rechecked delivered runtime/source bytes and all
+comparisons/traces; separate helper/model/OpenMP test-payload hashes are CI
+observations because those test binaries/assets were not delivered for rehashing.
+Bark/Laya coexistence, other baselines, physical machines and complete release
+qualification remain open.
 
 - [ ] Run Mac CPU first; compare Metal against the same Q8 reference and real
   annotated audio. Record device placement/fallback rather than treating a

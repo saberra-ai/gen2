@@ -441,3 +441,11 @@ private export-directory identities and the installed public C ABI import
 library are required.
 Source tests do not establish actual Windows private-DLL qualification, packaged
 VC runtime provenance, offline operation or coexistence.
+
+The actual `3364fd7` [Linux chat receipt](../../benches/results/nemotron-diarization/linux-x86_64/2026-10-16-chat-coexistence/qualification.json)
+passes both load orders, repeated/reloaded/concurrent calls and recorded GGML
+bindings in fresh offline containers. All six diarization outputs are numerically
+identical to the independent native reference; all ten chat observations match
+`Hello!`, with positive actual-call overlap and zero released reservations.
+This qualifies only the selected Ubuntu/glibc/CPU binaries and calls, with
+Bark/Laya, other machines/baselines, accuracy/performance and release gates open.
