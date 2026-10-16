@@ -1,0 +1,22 @@
+{
+  "schema_version": 1,
+  "vcpkg_baseline": "9e593bb18ea69cc5095e012465dcd675a822ed0d",
+  "recipe_source_bytes_verified": true,
+  "release_qualified": false,
+  "complete_source_notice_closure": false,
+  "native_link_membership_qualified": false,
+  "raw_port_files_verified": 34,
+  "package_spdx_and_abi_port_fields_verified": 53,
+  "source_archives_verified": 3,
+  "source_archive_bytes_verified": 22676219,
+  "source_notices_retained": 9,
+  "receiver_harness_note": "Initial receiver incorrectly assumed acquisition copied package metadata; it only retained GitHub directory responses. Corrected to read the already-verified committed recovery metadata directly, then reran byte checks before collection.",
+  "acquisition_manifest_sha256": "7f96b57e68aa2aed798e483bb92a3ab541f7d6a332299b655dd7347af27b5b1d",
+  "limits": [
+    "Recipe identity and source-byte checks only; no source/cached tool execution, installs, native builds or model runs.",
+    "Not every toolchain/helper ABI field or final native linker member is established.",
+    "Recipe-selected copyright equality does not establish full downstream attribution. Darts-clone distinct BSD and esaxx scope remain explicit packaging checks.",
+    "Raw source archives remain in the external acquisition cache; pinned recipes, manifest and selected source notices are retained here.",
+    "Existing Windows runtime and metadata qualification receipts remain unchanged."
+  ]
+}

@@ -529,5 +529,9 @@ native linker membership remain separate. The actual `9be6a4b`
 now revalidates all nine opaque archives (304,920,284 bytes), 45 metadata files
 and four target notices on the receiver. The receiver also reproduced all nine
 installed-list bodies with exact historical size/SHA matches; the producer's
-original no-reconstruction flag is preserved. Source recipes/archives and actual
-linker membership remain open. See the [recovery design](../../docs/research/nemotron-windows-static-provenance.md).
+original no-reconstruction flag is preserved. The subsequent
+[source-recipe receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-source-recipes/qualification.json)
+verifies 34 pinned port files, 53 SPDX/53 ABI comparisons and three actual source
+archive SHA512s. Complete downstream notice/source closure and actual linker
+membership remain open, including the separate Darts-clone BSD notice and esaxx
+scope. See the [recovery design](../../docs/research/nemotron-windows-static-provenance.md).

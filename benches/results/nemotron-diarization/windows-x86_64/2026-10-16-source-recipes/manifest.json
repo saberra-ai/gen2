@@ -1,0 +1,1239 @@
+{
+  "schema_version": 1,
+  "retrieved_at_utc": "2026-10-16T11:06:30.300508+00:00",
+  "vcpkg_baseline": "9e593bb18ea69cc5095e012465dcd675a822ed0d",
+  "ports": [
+    {
+      "port": "sentencepiece",
+      "directory_api_url": "https://api.github.com/repos/microsoft/vcpkg/contents/ports/sentencepiece?ref=9e593bb18ea69cc5095e012465dcd675a822ed0d",
+      "files": [
+        {
+          "path": "ports/sentencepiece/abseil.diff",
+          "bytes": 1178,
+          "sha256": "4b637abf7bbb4dcdc17832d37d75f17fa6ec9aaeb3dd920978803be63ebb069a",
+          "git_blob_sha1": "781afae87d4459abd0089ed6688380ee34cb3e28",
+          "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/sentencepiece/abseil.diff",
+          "resolved_url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/sentencepiece/abseil.diff"
+        },
+        {
+          "path": "ports/sentencepiece/linkage.diff",
+          "bytes": 671,
+          "sha256": "97e2ea9369c40963d36a1b8e750651a1410e5174b53fc5d5e9ddaeaf35a0c6ad",
+          "git_blob_sha1": "60c81f200052413ca28f759ec34653002087ff39",
+          "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/sentencepiece/linkage.diff",
+          "resolved_url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/sentencepiece/linkage.diff"
+        },
+        {
+          "path": "ports/sentencepiece/portfile.cmake",
+          "bytes": 1095,
+          "sha256": "c1f88f73e3ba79b9bf65af0aeceb56b16f3746b642cbee58281251c596e527ea",
+          "git_blob_sha1": "bde53b3a46c33822571c4a8575f3bb69cb3a76a2",
+          "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/sentencepiece/portfile.cmake",
+          "resolved_url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/sentencepiece/portfile.cmake"
+        },
+        {
+          "path": "ports/sentencepiece/vcpkg.json",
+          "bytes": 469,
+          "sha256": "4e01afb2417b905fb1ad65fca276bd3b6ad4ce9c99258a8bb68d6afccbba6683",
+          "git_blob_sha1": "0750a8cedee4efffb20d8c7db0e28898ad5bdf61",
+          "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/sentencepiece/vcpkg.json",
+          "resolved_url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/sentencepiece/vcpkg.json"
+        }
+      ]
+    },
+    {
+      "port": "abseil",
+      "directory_api_url": "https://api.github.com/repos/microsoft/vcpkg/contents/ports/abseil?ref=9e593bb18ea69cc5095e012465dcd675a822ed0d",
+      "files": [
+        {
+          "path": "ports/abseil/003-force-cxx-17.patch",
+          "bytes": 572,
+          "sha256": "6481fcaa774212d1453396c26c5240bdbd3cbb25784a94ffa077651b718cf367",
+          "git_blob_sha1": "317af2768afefefd0a0ac12bce57293673753161",
+          "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/abseil/003-force-cxx-17.patch",
+          "resolved_url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/abseil/003-force-cxx-17.patch"
+        },
+        {
+          "path": "ports/abseil/fix-gcc13-constexpr-function-pointer.patch",
+          "bytes": 1223,
+          "sha256": "4ea325ea617d3b6ed9dc29e09f4d22b9836c99c114d8c4b09e181e8cbae51e6c",
+          "git_blob_sha1": "9f1e40c787209828bad0de666e2c3c4ebafa27ab",
+          "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/abseil/fix-gcc13-constexpr-function-pointer.patch",
+          "resolved_url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/abseil/fix-gcc13-constexpr-function-pointer.patch"
+        },
+        {
+          "path": "ports/abseil/fix-heterogeneous_lookup_testing-target.patch",
+          "bytes": 320,
+          "sha256": "fc84e3f929674dd0f0dfd84e267f7ed431b95417bf69a61149b69c5e40c4ab6c",
+          "git_blob_sha1": "dea5cec607b4d8e691e3e6fff58de4cf48c4d2ae",
+          "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/abseil/fix-heterogeneous_lookup_testing-target.patch",
+          "resolved_url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/abseil/fix-heterogeneous_lookup_testing-target.patch"
+        },
+        {
+          "path": "ports/abseil/fix-mingw-dll.patch",
+          "bytes": 508,
+          "sha256": "da10bf980900c2b8c2bde9028419999a8cfa1ec3c3d77707239459a078231a5c",
+          "git_blob_sha1": "3958ce374a58b6e26d8b200390439409f7cb3635",
+          "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/abseil/fix-mingw-dll.patch",
+          "resolved_url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/abseil/fix-mingw-dll.patch"
+        },
+        {
+          "path": "ports/abseil/portfile.cmake",
+          "bytes": 2936,
+          "sha256": "eaff26e978506f46faf87082698ed9db1e5612cc5ba1c7e7d3ee977048cf305c",
+          "git_blob_sha1": "ff47e9114e06435b17f529078c2cbfcab6dc033e",
+          "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/abseil/portfile.cmake",
+          "resolved_url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/abseil/portfile.cmake"
+        },
+        {
+          "path": "ports/abseil/vcpkg.json",
+          "bytes": 1122,
+          "sha256": "4b144f80f2a186a1546944af2fa8dd3fbd050b2348faa23fabb3c0f62dbebe12",
+          "git_blob_sha1": "03df6a26f24fca79499bd85a84aaa9b9134d30fd",
+          "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/abseil/vcpkg.json",
+          "resolved_url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/abseil/vcpkg.json"
+        }
+      ]
+    },
+    {
+      "port": "protobuf",
+      "directory_api_url": "https://api.github.com/repos/microsoft/vcpkg/contents/ports/protobuf?ref=9e593bb18ea69cc5095e012465dcd675a822ed0d",
+      "files": [
+        {
+          "path": "ports/protobuf/fix-constinit-with-clang-cl.patch",
+          "bytes": 558,
+          "sha256": "44d38cd5e71ac40876c4362333f3acf39c149963955fd9f27fd015b2d3297192",
+          "git_blob_sha1": "cb15101300af2bcbdb71dc5763d20e9696cb652a",
+          "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/protobuf/fix-constinit-with-clang-cl.patch",
+          "resolved_url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/protobuf/fix-constinit-with-clang-cl.patch"
+        },
+        {
+          "path": "ports/protobuf/fix-default-proto-file-path.patch",
+          "bytes": 913,
+          "sha256": "b3d0a1c6f0b82a864c6507dd072d4e0d8e2d8d100a09456c8716074cc00e109a",
+          "git_blob_sha1": "b7a8c88dc1902506688801a912295e5c641d86f4",
+          "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/protobuf/fix-default-proto-file-path.patch",
+          "resolved_url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/protobuf/fix-default-proto-file-path.patch"
+        },
+        {
+          "path": "ports/protobuf/fix-install-dirs.patch",
+          "bytes": 350,
+          "sha256": "95c5ca6b16abf70b9d01437e26e1ff7e3c35606a968a97ce42a58faddb4725a3",
+          "git_blob_sha1": "cd3f546a5d526a30f1f0d25d4dd61f2555585aa1",
+          "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/protobuf/fix-install-dirs.patch",
+          "resolved_url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/protobuf/fix-install-dirs.patch"
+        },
+        {
+          "path": "ports/protobuf/fix-static-build.patch",
+          "bytes": 806,
+          "sha256": "a4a59977f9c229a13aa6a2f75005f9fc8216fa9a77d499d23e19637dba79cab5",
+          "git_blob_sha1": "4e75b4b2f07006e2f5ee0bcc7982ca19d10360fa",
+          "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/protobuf/fix-static-build.patch",
+          "resolved_url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/protobuf/fix-static-build.patch"
+        },
+        {
+          "path": "ports/protobuf/fix-upb.patch",
+          "bytes": 870,
+          "sha256": "06128eeba4fd6271c423cbb2167c0442c1cd46e6fbff59a9a87c325979af86d2",
+          "git_blob_sha1": "f8dace8b31d32f5cc85324a129783b40f86aab6c",
+          "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/protobuf/fix-upb.patch",
+          "resolved_url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/protobuf/fix-upb.patch"
+        },
+        {
+          "path": "ports/protobuf/fix-utf8-range.patch",
+          "bytes": 2935,
+          "sha256": "28b3cd5a56819250371551c3c066f19466dd3defe045d408a0b1beb7a44b5344",
+          "git_blob_sha1": "4b0509f43cea77d502e14ae6023bae57da91d585",
+          "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/protobuf/fix-utf8-range.patch",
+          "resolved_url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/protobuf/fix-utf8-range.patch"
+        },
+        {
+          "path": "ports/protobuf/portfile.cmake",
+          "bytes": 5319,
+          "sha256": "7282d9bd03ba2517e394e08666d03ab58477f9459c8a676d322523fa0a6c2b77",
+          "git_blob_sha1": "b4ccf9fced440e9d84dda2e86e18ff2f89e5b2c5",
+          "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/protobuf/portfile.cmake",
+          "resolved_url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/protobuf/portfile.cmake"
+        },
+        {
+          "path": "ports/protobuf/protobuf-targets-vcpkg-protoc.cmake",
+          "bytes": 356,
+          "sha256": "f1cb32a8e19a263b6fc7e275d4a31bd724320394b1991b56772dd769feec20ad",
+          "git_blob_sha1": "245adf56083899b5dac5d6d6e30dc60db4d68696",
+          "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/protobuf/protobuf-targets-vcpkg-protoc.cmake",
+          "resolved_url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/protobuf/protobuf-targets-vcpkg-protoc.cmake"
+        },
+        {
+          "path": "ports/protobuf/vcpkg-cmake-wrapper.cmake",
+          "bytes": 177,
+          "sha256": "18480720d08ef5a87ce6744174cbe8cc451e3ffb857f2cbe2c8a6bbf385dce8a",
+          "git_blob_sha1": "17d787370b03bb095905a14133aa70bf6a846f64",
+          "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/protobuf/vcpkg-cmake-wrapper.cmake",
+          "resolved_url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/protobuf/vcpkg-cmake-wrapper.cmake"
+        },
+        {
+          "path": "ports/protobuf/vcpkg.json",
+          "bytes": 802,
+          "sha256": "f4eb3461adefe500bd42d2414f6de6051231497b33ec1e8469674100f8c71ed7",
+          "git_blob_sha1": "85a3ce6f4776ca6c7b355f852b1e0fc4ba1e1544",
+          "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/protobuf/vcpkg.json",
+          "resolved_url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/protobuf/vcpkg.json"
+        }
+      ]
+    },
+    {
+      "port": "utf8-range",
+      "directory_api_url": "https://api.github.com/repos/microsoft/vcpkg/contents/ports/utf8-range?ref=9e593bb18ea69cc5095e012465dcd675a822ed0d",
+      "files": [
+        {
+          "path": "ports/utf8-range/fix-cmake.patch",
+          "bytes": 532,
+          "sha256": "4616671728b9bb0726da0818652339c06a271823a83a6188b5f775bb6f61ce03",
+          "git_blob_sha1": "d006c70f1713d76a03e98934b22d88c7ffc91a0b",
+          "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/utf8-range/fix-cmake.patch",
+          "resolved_url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/utf8-range/fix-cmake.patch"
+        },
+        {
+          "path": "ports/utf8-range/portfile.cmake",
+          "bytes": 941,
+          "sha256": "f15e3484a38c8c6d2cffa29dcb2f59c01837d6e293ad154f37acd6df3e87852e",
+          "git_blob_sha1": "ca8c308ec50ba2700544fe98da576fd68bc1bc05",
+          "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/utf8-range/portfile.cmake",
+          "resolved_url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/utf8-range/portfile.cmake"
+        },
+        {
+          "path": "ports/utf8-range/vcpkg.json",
+          "bytes": 378,
+          "sha256": "8e4e5dc66c94ac6faef54b7329cc92da5db2ac695afa3cac6a660e694059e04f",
+          "git_blob_sha1": "5f5862427351823905e1bfcd86ee7182131aa9bb",
+          "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/utf8-range/vcpkg.json",
+          "resolved_url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/utf8-range/vcpkg.json"
+        }
+      ]
+    },
+    {
+      "port": "vcpkg-cmake",
+      "directory_api_url": "https://api.github.com/repos/microsoft/vcpkg/contents/ports/vcpkg-cmake?ref=9e593bb18ea69cc5095e012465dcd675a822ed0d",
+      "files": [
+        {
+          "path": "ports/vcpkg-cmake/portfile.cmake",
+          "bytes": 655,
+          "sha256": "a711531b7f13b7da16fa1f25d7c5737a423d4a126465dc9e6689a0f043fcc1aa",
+          "git_blob_sha1": "0b7dd502017ef7ccffa2638e29f203fee7b3d964",
+          "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/vcpkg-cmake/portfile.cmake",
+          "resolved_url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/vcpkg-cmake/portfile.cmake"
+        },
+        {
+          "path": "ports/vcpkg-cmake/vcpkg-port-config.cmake",
+          "bytes": 189,
+          "sha256": "f0a30f77c8f5e3ac40436fe2518a61ad067f2955c7ef3be6d6a0ca4b81cd2a45",
+          "git_blob_sha1": "f2a973d4ebcba6e628422e9a7d56cec1ba55285b",
+          "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/vcpkg-cmake/vcpkg-port-config.cmake",
+          "resolved_url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/vcpkg-cmake/vcpkg-port-config.cmake"
+        },
+        {
+          "path": "ports/vcpkg-cmake/vcpkg.json",
+          "bytes": 180,
+          "sha256": "6fd546b781a1aa5df572bdd31672cf222e55698aa5bf7d3e5c11abf1ae56a45b",
+          "git_blob_sha1": "fa484eafc5a76aead90876e9d3aff0a2d023be8d",
+          "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/vcpkg-cmake/vcpkg.json",
+          "resolved_url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/vcpkg-cmake/vcpkg.json"
+        },
+        {
+          "path": "ports/vcpkg-cmake/vcpkg_cmake_build.cmake",
+          "bytes": 3858,
+          "sha256": "6d1c27080fe3e768b5e7b968d6a28a37db154ebcb214297de25f10b6713511e1",
+          "git_blob_sha1": "47933b3fe9f89c801eb570a9b8655fda88914cba",
+          "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/vcpkg-cmake/vcpkg_cmake_build.cmake",
+          "resolved_url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/vcpkg-cmake/vcpkg_cmake_build.cmake"
+        },
+        {
+          "path": "ports/vcpkg-cmake/vcpkg_cmake_configure.cmake",
+          "bytes": 15511,
+          "sha256": "a8bc92be2faf621d6183ed1f3eb2ac3b103f4418b95f8695cf0dc7f7c5e8f724",
+          "git_blob_sha1": "acd510f5145ba02c7b07de513048bf7450520dba",
+          "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/vcpkg-cmake/vcpkg_cmake_configure.cmake",
+          "resolved_url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/vcpkg-cmake/vcpkg_cmake_configure.cmake"
+        },
+        {
+          "path": "ports/vcpkg-cmake/vcpkg_cmake_install.cmake",
+          "bytes": 577,
+          "sha256": "3ae7886dc8434fac6f1e61190cc355fdec5fbd4f60758e2de20423cf49c91369",
+          "git_blob_sha1": "2bd8b4ea75ff35e7f5b4b1775f561cb224c42060",
+          "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/vcpkg-cmake/vcpkg_cmake_install.cmake",
+          "resolved_url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/vcpkg-cmake/vcpkg_cmake_install.cmake"
+        }
+      ]
+    },
+    {
+      "port": "vcpkg-cmake-config",
+      "directory_api_url": "https://api.github.com/repos/microsoft/vcpkg/contents/ports/vcpkg-cmake-config?ref=9e593bb18ea69cc5095e012465dcd675a822ed0d",
+      "files": [
+        {
+          "path": "ports/vcpkg-cmake-config/copyright",
+          "bytes": 1096,
+          "sha256": "04b60f99a43bfd7fefdc8364b24aac704a2160cef969b75ba6a38b62dc4c4b70",
+          "git_blob_sha1": "2e4eac8264fa4c34ce9b676ffdedf5444b84fac1",
+          "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/vcpkg-cmake-config/copyright",
+          "resolved_url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/vcpkg-cmake-config/copyright"
+        },
+        {
+          "path": "ports/vcpkg-cmake-config/portfile.cmake",
+          "bytes": 495,
+          "sha256": "832b34e63f5af41ad1b2e4aa79c5bfa507a005b120b51548e674accc706837d7",
+          "git_blob_sha1": "fc3dbafd51847b5a4d427455c73a7f77527cd676",
+          "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/vcpkg-cmake-config/portfile.cmake",
+          "resolved_url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/vcpkg-cmake-config/portfile.cmake"
+        },
+        {
+          "path": "ports/vcpkg-cmake-config/vcpkg-port-config.cmake",
+          "bytes": 68,
+          "sha256": "72bc3093337e633bdd19fe5d4dd1f38ca1918def49608d676a9c98c686d38b1e",
+          "git_blob_sha1": "980d411315c71709ca25c619776a128165022bf1",
+          "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/vcpkg-cmake-config/vcpkg-port-config.cmake",
+          "resolved_url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/vcpkg-cmake-config/vcpkg-port-config.cmake"
+        },
+        {
+          "path": "ports/vcpkg-cmake-config/vcpkg.json",
+          "bytes": 190,
+          "sha256": "480420178eb38f67a7825d5e6776776ea072bcd14b1839e0f495344a529d9f58",
+          "git_blob_sha1": "d9c6b6dc1819f7a287f3d3cc03ab580ead8a2d01",
+          "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/vcpkg-cmake-config/vcpkg.json",
+          "resolved_url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/vcpkg-cmake-config/vcpkg.json"
+        },
+        {
+          "path": "ports/vcpkg-cmake-config/vcpkg_cmake_config_fixup.cmake",
+          "bytes": 14654,
+          "sha256": "4866f6e995abcde8f9d7add69a3206205158119dbd0547be13076ae3c1456f6b",
+          "git_blob_sha1": "1cf6e6a1559636ecbd51430ffd31f7a2fd2c2327",
+          "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/vcpkg-cmake-config/vcpkg_cmake_config_fixup.cmake",
+          "resolved_url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/vcpkg-cmake-config/vcpkg_cmake_config_fixup.cmake"
+        }
+      ]
+    }
+  ],
+  "scope": "Six pinned port directories: Git blob SHA1, raw SHA256, all nine SPDX port-file and ABI port fields checked. Three upstream archive raw SHA512s checked. No source extracted or executed; no native-link membership claim.",
+  "package_port_verification": [
+    {
+      "package": "abseil-x64-windows",
+      "abi_info_sha256": "25bc6b1d107f9e70bdb64c74195ded07e0b52a51e04ed51eb17aa31391b761b7",
+      "spdx_port_files": [
+        {
+          "path": "ports/abseil/003-force-cxx-17.patch",
+          "sha256": "6481fcaa774212d1453396c26c5240bdbd3cbb25784a94ffa077651b718cf367",
+          "match": true
+        },
+        {
+          "path": "ports/abseil/fix-gcc13-constexpr-function-pointer.patch",
+          "sha256": "4ea325ea617d3b6ed9dc29e09f4d22b9836c99c114d8c4b09e181e8cbae51e6c",
+          "match": true
+        },
+        {
+          "path": "ports/abseil/fix-heterogeneous_lookup_testing-target.patch",
+          "sha256": "fc84e3f929674dd0f0dfd84e267f7ed431b95417bf69a61149b69c5e40c4ab6c",
+          "match": true
+        },
+        {
+          "path": "ports/abseil/fix-mingw-dll.patch",
+          "sha256": "da10bf980900c2b8c2bde9028419999a8cfa1ec3c3d77707239459a078231a5c",
+          "match": true
+        },
+        {
+          "path": "ports/abseil/portfile.cmake",
+          "sha256": "eaff26e978506f46faf87082698ed9db1e5612cc5ba1c7e7d3ee977048cf305c",
+          "match": true
+        },
+        {
+          "path": "ports/abseil/vcpkg.json",
+          "sha256": "4b144f80f2a186a1546944af2fa8dd3fbd050b2348faa23fabb3c0f62dbebe12",
+          "match": true
+        }
+      ],
+      "abi_port_fields": [
+        {
+          "field": "003-force-cxx-17.patch",
+          "sha256": "6481fcaa774212d1453396c26c5240bdbd3cbb25784a94ffa077651b718cf367",
+          "match": true
+        },
+        {
+          "field": "fix-gcc13-constexpr-function-pointer.patch",
+          "sha256": "4ea325ea617d3b6ed9dc29e09f4d22b9836c99c114d8c4b09e181e8cbae51e6c",
+          "match": true
+        },
+        {
+          "field": "fix-heterogeneous_lookup_testing-target.patch",
+          "sha256": "fc84e3f929674dd0f0dfd84e267f7ed431b95417bf69a61149b69c5e40c4ab6c",
+          "match": true
+        },
+        {
+          "field": "fix-mingw-dll.patch",
+          "sha256": "da10bf980900c2b8c2bde9028419999a8cfa1ec3c3d77707239459a078231a5c",
+          "match": true
+        },
+        {
+          "field": "portfile.cmake",
+          "sha256": "eaff26e978506f46faf87082698ed9db1e5612cc5ba1c7e7d3ee977048cf305c",
+          "match": true
+        },
+        {
+          "field": "vcpkg.json",
+          "sha256": "4b144f80f2a186a1546944af2fa8dd3fbd050b2348faa23fabb3c0f62dbebe12",
+          "match": true
+        }
+      ],
+      "raw_abi_matches_recovered_status": true
+    },
+    {
+      "package": "abseil-x64-windows-static-md",
+      "abi_info_sha256": "20ec1fc01b2a19cfae2c28caf7709026a73019f99be790ffe5931f4ae0ce3ee2",
+      "spdx_port_files": [
+        {
+          "path": "ports/abseil/003-force-cxx-17.patch",
+          "sha256": "6481fcaa774212d1453396c26c5240bdbd3cbb25784a94ffa077651b718cf367",
+          "match": true
+        },
+        {
+          "path": "ports/abseil/fix-gcc13-constexpr-function-pointer.patch",
+          "sha256": "4ea325ea617d3b6ed9dc29e09f4d22b9836c99c114d8c4b09e181e8cbae51e6c",
+          "match": true
+        },
+        {
+          "path": "ports/abseil/fix-heterogeneous_lookup_testing-target.patch",
+          "sha256": "fc84e3f929674dd0f0dfd84e267f7ed431b95417bf69a61149b69c5e40c4ab6c",
+          "match": true
+        },
+        {
+          "path": "ports/abseil/fix-mingw-dll.patch",
+          "sha256": "da10bf980900c2b8c2bde9028419999a8cfa1ec3c3d77707239459a078231a5c",
+          "match": true
+        },
+        {
+          "path": "ports/abseil/portfile.cmake",
+          "sha256": "eaff26e978506f46faf87082698ed9db1e5612cc5ba1c7e7d3ee977048cf305c",
+          "match": true
+        },
+        {
+          "path": "ports/abseil/vcpkg.json",
+          "sha256": "4b144f80f2a186a1546944af2fa8dd3fbd050b2348faa23fabb3c0f62dbebe12",
+          "match": true
+        }
+      ],
+      "abi_port_fields": [
+        {
+          "field": "003-force-cxx-17.patch",
+          "sha256": "6481fcaa774212d1453396c26c5240bdbd3cbb25784a94ffa077651b718cf367",
+          "match": true
+        },
+        {
+          "field": "fix-gcc13-constexpr-function-pointer.patch",
+          "sha256": "4ea325ea617d3b6ed9dc29e09f4d22b9836c99c114d8c4b09e181e8cbae51e6c",
+          "match": true
+        },
+        {
+          "field": "fix-heterogeneous_lookup_testing-target.patch",
+          "sha256": "fc84e3f929674dd0f0dfd84e267f7ed431b95417bf69a61149b69c5e40c4ab6c",
+          "match": true
+        },
+        {
+          "field": "fix-mingw-dll.patch",
+          "sha256": "da10bf980900c2b8c2bde9028419999a8cfa1ec3c3d77707239459a078231a5c",
+          "match": true
+        },
+        {
+          "field": "portfile.cmake",
+          "sha256": "eaff26e978506f46faf87082698ed9db1e5612cc5ba1c7e7d3ee977048cf305c",
+          "match": true
+        },
+        {
+          "field": "vcpkg.json",
+          "sha256": "4b144f80f2a186a1546944af2fa8dd3fbd050b2348faa23fabb3c0f62dbebe12",
+          "match": true
+        }
+      ],
+      "raw_abi_matches_recovered_status": true
+    },
+    {
+      "package": "protobuf-x64-windows",
+      "abi_info_sha256": "ea2b589777f6d3c4679784738c6e41fefa466aeb8ba222bf4f8f05a2ffd4e689",
+      "spdx_port_files": [
+        {
+          "path": "ports/protobuf/fix-constinit-with-clang-cl.patch",
+          "sha256": "44d38cd5e71ac40876c4362333f3acf39c149963955fd9f27fd015b2d3297192",
+          "match": true
+        },
+        {
+          "path": "ports/protobuf/fix-default-proto-file-path.patch",
+          "sha256": "b3d0a1c6f0b82a864c6507dd072d4e0d8e2d8d100a09456c8716074cc00e109a",
+          "match": true
+        },
+        {
+          "path": "ports/protobuf/fix-install-dirs.patch",
+          "sha256": "95c5ca6b16abf70b9d01437e26e1ff7e3c35606a968a97ce42a58faddb4725a3",
+          "match": true
+        },
+        {
+          "path": "ports/protobuf/fix-static-build.patch",
+          "sha256": "a4a59977f9c229a13aa6a2f75005f9fc8216fa9a77d499d23e19637dba79cab5",
+          "match": true
+        },
+        {
+          "path": "ports/protobuf/fix-upb.patch",
+          "sha256": "06128eeba4fd6271c423cbb2167c0442c1cd46e6fbff59a9a87c325979af86d2",
+          "match": true
+        },
+        {
+          "path": "ports/protobuf/fix-utf8-range.patch",
+          "sha256": "28b3cd5a56819250371551c3c066f19466dd3defe045d408a0b1beb7a44b5344",
+          "match": true
+        },
+        {
+          "path": "ports/protobuf/portfile.cmake",
+          "sha256": "7282d9bd03ba2517e394e08666d03ab58477f9459c8a676d322523fa0a6c2b77",
+          "match": true
+        },
+        {
+          "path": "ports/protobuf/protobuf-targets-vcpkg-protoc.cmake",
+          "sha256": "f1cb32a8e19a263b6fc7e275d4a31bd724320394b1991b56772dd769feec20ad",
+          "match": true
+        },
+        {
+          "path": "ports/protobuf/vcpkg-cmake-wrapper.cmake",
+          "sha256": "18480720d08ef5a87ce6744174cbe8cc451e3ffb857f2cbe2c8a6bbf385dce8a",
+          "match": true
+        },
+        {
+          "path": "ports/protobuf/vcpkg.json",
+          "sha256": "f4eb3461adefe500bd42d2414f6de6051231497b33ec1e8469674100f8c71ed7",
+          "match": true
+        }
+      ],
+      "abi_port_fields": [
+        {
+          "field": "fix-constinit-with-clang-cl.patch",
+          "sha256": "44d38cd5e71ac40876c4362333f3acf39c149963955fd9f27fd015b2d3297192",
+          "match": true
+        },
+        {
+          "field": "fix-default-proto-file-path.patch",
+          "sha256": "b3d0a1c6f0b82a864c6507dd072d4e0d8e2d8d100a09456c8716074cc00e109a",
+          "match": true
+        },
+        {
+          "field": "fix-install-dirs.patch",
+          "sha256": "95c5ca6b16abf70b9d01437e26e1ff7e3c35606a968a97ce42a58faddb4725a3",
+          "match": true
+        },
+        {
+          "field": "fix-static-build.patch",
+          "sha256": "a4a59977f9c229a13aa6a2f75005f9fc8216fa9a77d499d23e19637dba79cab5",
+          "match": true
+        },
+        {
+          "field": "fix-upb.patch",
+          "sha256": "06128eeba4fd6271c423cbb2167c0442c1cd46e6fbff59a9a87c325979af86d2",
+          "match": true
+        },
+        {
+          "field": "fix-utf8-range.patch",
+          "sha256": "28b3cd5a56819250371551c3c066f19466dd3defe045d408a0b1beb7a44b5344",
+          "match": true
+        },
+        {
+          "field": "portfile.cmake",
+          "sha256": "7282d9bd03ba2517e394e08666d03ab58477f9459c8a676d322523fa0a6c2b77",
+          "match": true
+        },
+        {
+          "field": "protobuf-targets-vcpkg-protoc.cmake",
+          "sha256": "f1cb32a8e19a263b6fc7e275d4a31bd724320394b1991b56772dd769feec20ad",
+          "match": true
+        },
+        {
+          "field": "vcpkg-cmake-wrapper.cmake",
+          "sha256": "18480720d08ef5a87ce6744174cbe8cc451e3ffb857f2cbe2c8a6bbf385dce8a",
+          "match": true
+        },
+        {
+          "field": "vcpkg.json",
+          "sha256": "f4eb3461adefe500bd42d2414f6de6051231497b33ec1e8469674100f8c71ed7",
+          "match": true
+        }
+      ],
+      "raw_abi_matches_recovered_status": true
+    },
+    {
+      "package": "protobuf-x64-windows-static-md",
+      "abi_info_sha256": "31d9662c5b7194528672414b73d9b2afa588d0db8b4c1097dc96c01c0f1528db",
+      "spdx_port_files": [
+        {
+          "path": "ports/protobuf/fix-constinit-with-clang-cl.patch",
+          "sha256": "44d38cd5e71ac40876c4362333f3acf39c149963955fd9f27fd015b2d3297192",
+          "match": true
+        },
+        {
+          "path": "ports/protobuf/fix-default-proto-file-path.patch",
+          "sha256": "b3d0a1c6f0b82a864c6507dd072d4e0d8e2d8d100a09456c8716074cc00e109a",
+          "match": true
+        },
+        {
+          "path": "ports/protobuf/fix-install-dirs.patch",
+          "sha256": "95c5ca6b16abf70b9d01437e26e1ff7e3c35606a968a97ce42a58faddb4725a3",
+          "match": true
+        },
+        {
+          "path": "ports/protobuf/fix-static-build.patch",
+          "sha256": "a4a59977f9c229a13aa6a2f75005f9fc8216fa9a77d499d23e19637dba79cab5",
+          "match": true
+        },
+        {
+          "path": "ports/protobuf/fix-upb.patch",
+          "sha256": "06128eeba4fd6271c423cbb2167c0442c1cd46e6fbff59a9a87c325979af86d2",
+          "match": true
+        },
+        {
+          "path": "ports/protobuf/fix-utf8-range.patch",
+          "sha256": "28b3cd5a56819250371551c3c066f19466dd3defe045d408a0b1beb7a44b5344",
+          "match": true
+        },
+        {
+          "path": "ports/protobuf/portfile.cmake",
+          "sha256": "7282d9bd03ba2517e394e08666d03ab58477f9459c8a676d322523fa0a6c2b77",
+          "match": true
+        },
+        {
+          "path": "ports/protobuf/protobuf-targets-vcpkg-protoc.cmake",
+          "sha256": "f1cb32a8e19a263b6fc7e275d4a31bd724320394b1991b56772dd769feec20ad",
+          "match": true
+        },
+        {
+          "path": "ports/protobuf/vcpkg-cmake-wrapper.cmake",
+          "sha256": "18480720d08ef5a87ce6744174cbe8cc451e3ffb857f2cbe2c8a6bbf385dce8a",
+          "match": true
+        },
+        {
+          "path": "ports/protobuf/vcpkg.json",
+          "sha256": "f4eb3461adefe500bd42d2414f6de6051231497b33ec1e8469674100f8c71ed7",
+          "match": true
+        }
+      ],
+      "abi_port_fields": [
+        {
+          "field": "fix-constinit-with-clang-cl.patch",
+          "sha256": "44d38cd5e71ac40876c4362333f3acf39c149963955fd9f27fd015b2d3297192",
+          "match": true
+        },
+        {
+          "field": "fix-default-proto-file-path.patch",
+          "sha256": "b3d0a1c6f0b82a864c6507dd072d4e0d8e2d8d100a09456c8716074cc00e109a",
+          "match": true
+        },
+        {
+          "field": "fix-install-dirs.patch",
+          "sha256": "95c5ca6b16abf70b9d01437e26e1ff7e3c35606a968a97ce42a58faddb4725a3",
+          "match": true
+        },
+        {
+          "field": "fix-static-build.patch",
+          "sha256": "a4a59977f9c229a13aa6a2f75005f9fc8216fa9a77d499d23e19637dba79cab5",
+          "match": true
+        },
+        {
+          "field": "fix-upb.patch",
+          "sha256": "06128eeba4fd6271c423cbb2167c0442c1cd46e6fbff59a9a87c325979af86d2",
+          "match": true
+        },
+        {
+          "field": "fix-utf8-range.patch",
+          "sha256": "28b3cd5a56819250371551c3c066f19466dd3defe045d408a0b1beb7a44b5344",
+          "match": true
+        },
+        {
+          "field": "portfile.cmake",
+          "sha256": "7282d9bd03ba2517e394e08666d03ab58477f9459c8a676d322523fa0a6c2b77",
+          "match": true
+        },
+        {
+          "field": "protobuf-targets-vcpkg-protoc.cmake",
+          "sha256": "f1cb32a8e19a263b6fc7e275d4a31bd724320394b1991b56772dd769feec20ad",
+          "match": true
+        },
+        {
+          "field": "vcpkg-cmake-wrapper.cmake",
+          "sha256": "18480720d08ef5a87ce6744174cbe8cc451e3ffb857f2cbe2c8a6bbf385dce8a",
+          "match": true
+        },
+        {
+          "field": "vcpkg.json",
+          "sha256": "f4eb3461adefe500bd42d2414f6de6051231497b33ec1e8469674100f8c71ed7",
+          "match": true
+        }
+      ],
+      "raw_abi_matches_recovered_status": true
+    },
+    {
+      "package": "sentencepiece-x64-windows-static-md",
+      "abi_info_sha256": "a189a5e1d02764911a95003c50f457ec8be0767a8ede96ef9f4f187cba793377",
+      "spdx_port_files": [
+        {
+          "path": "ports/sentencepiece/abseil.diff",
+          "sha256": "4b637abf7bbb4dcdc17832d37d75f17fa6ec9aaeb3dd920978803be63ebb069a",
+          "match": true
+        },
+        {
+          "path": "ports/sentencepiece/linkage.diff",
+          "sha256": "97e2ea9369c40963d36a1b8e750651a1410e5174b53fc5d5e9ddaeaf35a0c6ad",
+          "match": true
+        },
+        {
+          "path": "ports/sentencepiece/portfile.cmake",
+          "sha256": "c1f88f73e3ba79b9bf65af0aeceb56b16f3746b642cbee58281251c596e527ea",
+          "match": true
+        },
+        {
+          "path": "ports/sentencepiece/vcpkg.json",
+          "sha256": "4e01afb2417b905fb1ad65fca276bd3b6ad4ce9c99258a8bb68d6afccbba6683",
+          "match": true
+        }
+      ],
+      "abi_port_fields": [
+        {
+          "field": "abseil.diff",
+          "sha256": "4b637abf7bbb4dcdc17832d37d75f17fa6ec9aaeb3dd920978803be63ebb069a",
+          "match": true
+        },
+        {
+          "field": "linkage.diff",
+          "sha256": "97e2ea9369c40963d36a1b8e750651a1410e5174b53fc5d5e9ddaeaf35a0c6ad",
+          "match": true
+        },
+        {
+          "field": "portfile.cmake",
+          "sha256": "c1f88f73e3ba79b9bf65af0aeceb56b16f3746b642cbee58281251c596e527ea",
+          "match": true
+        },
+        {
+          "field": "vcpkg.json",
+          "sha256": "4e01afb2417b905fb1ad65fca276bd3b6ad4ce9c99258a8bb68d6afccbba6683",
+          "match": true
+        }
+      ],
+      "raw_abi_matches_recovered_status": true
+    },
+    {
+      "package": "utf8-range-x64-windows",
+      "abi_info_sha256": "3257d95315e22ba8ccd74f52b723d7fc376a58b8add373bf1d70d1dece437a6c",
+      "spdx_port_files": [
+        {
+          "path": "ports/utf8-range/fix-cmake.patch",
+          "sha256": "4616671728b9bb0726da0818652339c06a271823a83a6188b5f775bb6f61ce03",
+          "match": true
+        },
+        {
+          "path": "ports/utf8-range/portfile.cmake",
+          "sha256": "f15e3484a38c8c6d2cffa29dcb2f59c01837d6e293ad154f37acd6df3e87852e",
+          "match": true
+        },
+        {
+          "path": "ports/utf8-range/vcpkg.json",
+          "sha256": "8e4e5dc66c94ac6faef54b7329cc92da5db2ac695afa3cac6a660e694059e04f",
+          "match": true
+        }
+      ],
+      "abi_port_fields": [
+        {
+          "field": "fix-cmake.patch",
+          "sha256": "4616671728b9bb0726da0818652339c06a271823a83a6188b5f775bb6f61ce03",
+          "match": true
+        },
+        {
+          "field": "portfile.cmake",
+          "sha256": "f15e3484a38c8c6d2cffa29dcb2f59c01837d6e293ad154f37acd6df3e87852e",
+          "match": true
+        },
+        {
+          "field": "vcpkg.json",
+          "sha256": "8e4e5dc66c94ac6faef54b7329cc92da5db2ac695afa3cac6a660e694059e04f",
+          "match": true
+        }
+      ],
+      "raw_abi_matches_recovered_status": true
+    },
+    {
+      "package": "utf8-range-x64-windows-static-md",
+      "abi_info_sha256": "ace053ed5cbc7abc3fa11d0438ed63ebf5828c3d93316161ee492ba5373601c7",
+      "spdx_port_files": [
+        {
+          "path": "ports/utf8-range/fix-cmake.patch",
+          "sha256": "4616671728b9bb0726da0818652339c06a271823a83a6188b5f775bb6f61ce03",
+          "match": true
+        },
+        {
+          "path": "ports/utf8-range/portfile.cmake",
+          "sha256": "f15e3484a38c8c6d2cffa29dcb2f59c01837d6e293ad154f37acd6df3e87852e",
+          "match": true
+        },
+        {
+          "path": "ports/utf8-range/vcpkg.json",
+          "sha256": "8e4e5dc66c94ac6faef54b7329cc92da5db2ac695afa3cac6a660e694059e04f",
+          "match": true
+        }
+      ],
+      "abi_port_fields": [
+        {
+          "field": "fix-cmake.patch",
+          "sha256": "4616671728b9bb0726da0818652339c06a271823a83a6188b5f775bb6f61ce03",
+          "match": true
+        },
+        {
+          "field": "portfile.cmake",
+          "sha256": "f15e3484a38c8c6d2cffa29dcb2f59c01837d6e293ad154f37acd6df3e87852e",
+          "match": true
+        },
+        {
+          "field": "vcpkg.json",
+          "sha256": "8e4e5dc66c94ac6faef54b7329cc92da5db2ac695afa3cac6a660e694059e04f",
+          "match": true
+        }
+      ],
+      "raw_abi_matches_recovered_status": true
+    },
+    {
+      "package": "vcpkg-cmake-config-x64-windows",
+      "abi_info_sha256": "e0f3d04f0a682716bb22adf54363f309f16004f952e580cbec7f64b098dbcf26",
+      "spdx_port_files": [
+        {
+          "path": "ports/vcpkg-cmake-config/copyright",
+          "sha256": "04b60f99a43bfd7fefdc8364b24aac704a2160cef969b75ba6a38b62dc4c4b70",
+          "match": true
+        },
+        {
+          "path": "ports/vcpkg-cmake-config/portfile.cmake",
+          "sha256": "832b34e63f5af41ad1b2e4aa79c5bfa507a005b120b51548e674accc706837d7",
+          "match": true
+        },
+        {
+          "path": "ports/vcpkg-cmake-config/vcpkg-port-config.cmake",
+          "sha256": "72bc3093337e633bdd19fe5d4dd1f38ca1918def49608d676a9c98c686d38b1e",
+          "match": true
+        },
+        {
+          "path": "ports/vcpkg-cmake-config/vcpkg.json",
+          "sha256": "480420178eb38f67a7825d5e6776776ea072bcd14b1839e0f495344a529d9f58",
+          "match": true
+        },
+        {
+          "path": "ports/vcpkg-cmake-config/vcpkg_cmake_config_fixup.cmake",
+          "sha256": "4866f6e995abcde8f9d7add69a3206205158119dbd0547be13076ae3c1456f6b",
+          "match": true
+        }
+      ],
+      "abi_port_fields": [
+        {
+          "field": "copyright",
+          "sha256": "04b60f99a43bfd7fefdc8364b24aac704a2160cef969b75ba6a38b62dc4c4b70",
+          "match": true
+        },
+        {
+          "field": "portfile.cmake",
+          "sha256": "832b34e63f5af41ad1b2e4aa79c5bfa507a005b120b51548e674accc706837d7",
+          "match": true
+        },
+        {
+          "field": "vcpkg-port-config.cmake",
+          "sha256": "72bc3093337e633bdd19fe5d4dd1f38ca1918def49608d676a9c98c686d38b1e",
+          "match": true
+        },
+        {
+          "field": "vcpkg.json",
+          "sha256": "480420178eb38f67a7825d5e6776776ea072bcd14b1839e0f495344a529d9f58",
+          "match": true
+        },
+        {
+          "field": "vcpkg_cmake_config_fixup.cmake",
+          "sha256": "4866f6e995abcde8f9d7add69a3206205158119dbd0547be13076ae3c1456f6b",
+          "match": true
+        }
+      ],
+      "raw_abi_matches_recovered_status": true
+    },
+    {
+      "package": "vcpkg-cmake-x64-windows",
+      "abi_info_sha256": "09c130905edcb7e9be99065665de8cf0fca09a344c3415634c6211024dc42bdd",
+      "spdx_port_files": [
+        {
+          "path": "ports/vcpkg-cmake/portfile.cmake",
+          "sha256": "a711531b7f13b7da16fa1f25d7c5737a423d4a126465dc9e6689a0f043fcc1aa",
+          "match": true
+        },
+        {
+          "path": "ports/vcpkg-cmake/vcpkg-port-config.cmake",
+          "sha256": "f0a30f77c8f5e3ac40436fe2518a61ad067f2955c7ef3be6d6a0ca4b81cd2a45",
+          "match": true
+        },
+        {
+          "path": "ports/vcpkg-cmake/vcpkg.json",
+          "sha256": "6fd546b781a1aa5df572bdd31672cf222e55698aa5bf7d3e5c11abf1ae56a45b",
+          "match": true
+        },
+        {
+          "path": "ports/vcpkg-cmake/vcpkg_cmake_build.cmake",
+          "sha256": "6d1c27080fe3e768b5e7b968d6a28a37db154ebcb214297de25f10b6713511e1",
+          "match": true
+        },
+        {
+          "path": "ports/vcpkg-cmake/vcpkg_cmake_configure.cmake",
+          "sha256": "a8bc92be2faf621d6183ed1f3eb2ac3b103f4418b95f8695cf0dc7f7c5e8f724",
+          "match": true
+        },
+        {
+          "path": "ports/vcpkg-cmake/vcpkg_cmake_install.cmake",
+          "sha256": "3ae7886dc8434fac6f1e61190cc355fdec5fbd4f60758e2de20423cf49c91369",
+          "match": true
+        }
+      ],
+      "abi_port_fields": [
+        {
+          "field": "portfile.cmake",
+          "sha256": "a711531b7f13b7da16fa1f25d7c5737a423d4a126465dc9e6689a0f043fcc1aa",
+          "match": true
+        },
+        {
+          "field": "vcpkg-port-config.cmake",
+          "sha256": "f0a30f77c8f5e3ac40436fe2518a61ad067f2955c7ef3be6d6a0ca4b81cd2a45",
+          "match": true
+        },
+        {
+          "field": "vcpkg.json",
+          "sha256": "6fd546b781a1aa5df572bdd31672cf222e55698aa5bf7d3e5c11abf1ae56a45b",
+          "match": true
+        },
+        {
+          "field": "vcpkg_cmake_build.cmake",
+          "sha256": "6d1c27080fe3e768b5e7b968d6a28a37db154ebcb214297de25f10b6713511e1",
+          "match": true
+        },
+        {
+          "field": "vcpkg_cmake_configure.cmake",
+          "sha256": "a8bc92be2faf621d6183ed1f3eb2ac3b103f4418b95f8695cf0dc7f7c5e8f724",
+          "match": true
+        },
+        {
+          "field": "vcpkg_cmake_install.cmake",
+          "sha256": "3ae7886dc8434fac6f1e61190cc355fdec5fbd4f60758e2de20423cf49c91369",
+          "match": true
+        }
+      ],
+      "raw_abi_matches_recovered_status": true
+    }
+  ],
+  "upstream_sources": [
+    {
+      "ports": [
+        "sentencepiece"
+      ],
+      "repository": "google/sentencepiece",
+      "ref": "v0.2.1",
+      "recipe_url": "https://github.com/microsoft/vcpkg/blob/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/sentencepiece/portfile.cmake",
+      "recipe_download_url": "https://github.com/google/sentencepiece/archive/v0.2.1.tar.gz",
+      "requested_url": "https://github.com/google/sentencepiece/archive/v0.2.1.tar.gz",
+      "resolved_url": "https://codeload.github.com/google/sentencepiece/tar.gz/refs/tags/v0.2.1",
+      "path": "sources/google-sentencepiece-v0.2.1.tar.gz",
+      "bytes": 13485527,
+      "sha512": "012850b63b2323e16acc5dacc0a494ad3f6375425ee86274f0946032e47c088a3b307758b99d752fcf54acf76c82d7d13d0c14bbf07aa9b612c4f1fbd30cf1cf",
+      "sha256": "c1a59e9259c9653ad0ade653dadff074cd31f0a6ff2a11316f67bee4189a8f1b",
+      "recipe_sha512_match": true
+    },
+    {
+      "ports": [
+        "abseil"
+      ],
+      "repository": "abseil/abseil-cpp",
+      "ref": "20260107.1",
+      "recipe_url": "https://github.com/microsoft/vcpkg/blob/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/abseil/portfile.cmake",
+      "recipe_download_url": "https://github.com/abseil/abseil-cpp/archive/20260107.1.tar.gz",
+      "requested_url": "https://github.com/abseil/abseil-cpp/archive/20260107.1.tar.gz",
+      "resolved_url": "https://codeload.github.com/abseil/abseil-cpp/tar.gz/refs/tags/20260107.1",
+      "path": "sources/abseil-abseil-cpp-20260107.1.tar.gz",
+      "bytes": 2301097,
+      "sha512": "f5012885d6b6844a9cf5ed92ad5468b8757db33dfe1364bfb232fff928e06c550c7eb4557f45186a8ac4d18b178df9be267681abab4a6de40823b574afbe9960",
+      "sha256": "4314e2a7cbac89cac25a2f2322870f343d81579756ceff7f431803c2c9090195",
+      "recipe_sha512_match": true
+    },
+    {
+      "ports": [
+        "protobuf",
+        "utf8-range"
+      ],
+      "repository": "protocolbuffers/protobuf",
+      "ref": "v33.4",
+      "recipe_url": "https://github.com/microsoft/vcpkg/blob/9e593bb18ea69cc5095e012465dcd675a822ed0d/ports/protobuf/portfile.cmake",
+      "recipe_download_url": "https://github.com/protocolbuffers/protobuf/archive/v33.4.tar.gz",
+      "requested_url": "https://github.com/protocolbuffers/protobuf/archive/v33.4.tar.gz",
+      "resolved_url": "https://codeload.github.com/protocolbuffers/protobuf/tar.gz/refs/tags/v33.4",
+      "path": "sources/protocolbuffers-protobuf-v33.4.tar.gz",
+      "bytes": 6889595,
+      "sha512": "540059a93721447cf4723bcca06e91c43a4399cb366c05bf84e9d8e2c439f3107ba17803f9d912549b54c471f2dcc4c9fc834145ec441dff31ca24f9a3543aa9",
+      "sha256": "136a07aad488cc502b11c4416fe4a7df2dfdea1d0833a7a8211000bf952728ba",
+      "recipe_sha512_match": true
+    }
+  ],
+  "vcpkg_root_license": {
+    "url": "https://raw.githubusercontent.com/microsoft/vcpkg/9e593bb18ea69cc5095e012465dcd675a822ed0d/LICENSE.txt",
+    "path": "vcpkg-LICENSE.txt",
+    "bytes": 1073,
+    "sha256": "1ee376fc340e0aa6ad6a3581c94126e741468705096ac92263048a21daa86460"
+  },
+  "verified_at_utc": "2026-10-16T11:07:05.724422+00:00",
+  "notice_source_comparisons": [
+    {
+      "port": "sentencepiece",
+      "source_archive": "sources/google-sentencepiece-v0.2.1.tar.gz",
+      "source_member": "sentencepiece-0.2.1/LICENSE",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+      "cached_copyright_comparisons": [
+        {
+          "package": "sentencepiece-x64-windows-static-md",
+          "copyright_bytes": 11358,
+          "copyright_sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30",
+          "source_notice_exact_match": true
+        }
+      ]
+    },
+    {
+      "port": "abseil",
+      "source_archive": "sources/abseil-abseil-cpp-20260107.1.tar.gz",
+      "source_member": "abseil-cpp-20260107.1/LICENSE",
+      "bytes": 11361,
+      "sha256": "c79a7fea0e3cac04cd43f20e7b648e5a0ff8fa5344e644b0ee09ca1162b62747",
+      "cached_copyright_comparisons": [
+        {
+          "package": "abseil-x64-windows",
+          "copyright_bytes": 11361,
+          "copyright_sha256": "c79a7fea0e3cac04cd43f20e7b648e5a0ff8fa5344e644b0ee09ca1162b62747",
+          "source_notice_exact_match": true
+        },
+        {
+          "package": "abseil-x64-windows-static-md",
+          "copyright_bytes": 11361,
+          "copyright_sha256": "c79a7fea0e3cac04cd43f20e7b648e5a0ff8fa5344e644b0ee09ca1162b62747",
+          "source_notice_exact_match": true
+        }
+      ]
+    },
+    {
+      "port": "protobuf",
+      "source_archive": "sources/protocolbuffers-protobuf-v33.4.tar.gz",
+      "source_member": "protobuf-33.4/LICENSE",
+      "bytes": 1732,
+      "sha256": "6e5e117324afd944dcf67f36cf329843bc1a92229a8cd9bb573d7a83130fea7d",
+      "cached_copyright_comparisons": [
+        {
+          "package": "protobuf-x64-windows-static-md",
+          "copyright_bytes": 1732,
+          "copyright_sha256": "6e5e117324afd944dcf67f36cf329843bc1a92229a8cd9bb573d7a83130fea7d",
+          "source_notice_exact_match": true
+        },
+        {
+          "package": "protobuf-x64-windows",
+          "copyright_bytes": 1732,
+          "copyright_sha256": "6e5e117324afd944dcf67f36cf329843bc1a92229a8cd9bb573d7a83130fea7d",
+          "source_notice_exact_match": true
+        }
+      ]
+    },
+    {
+      "port": "utf8-range",
+      "source_archive": "sources/protocolbuffers-protobuf-v33.4.tar.gz",
+      "source_member": "protobuf-33.4/third_party/utf8_range/LICENSE",
+      "bytes": 1091,
+      "sha256": "02de69b64fc36d9e938f418e52723e42f0b2b226d58a9cb3c8dcbdf7059f5074",
+      "cached_copyright_comparisons": [
+        {
+          "package": "utf8-range-x64-windows-static-md",
+          "copyright_bytes": 1091,
+          "copyright_sha256": "02de69b64fc36d9e938f418e52723e42f0b2b226d58a9cb3c8dcbdf7059f5074",
+          "source_notice_exact_match": true
+        },
+        {
+          "package": "utf8-range-x64-windows",
+          "copyright_bytes": 1091,
+          "copyright_sha256": "02de69b64fc36d9e938f418e52723e42f0b2b226d58a9cb3c8dcbdf7059f5074",
+          "source_notice_exact_match": true
+        }
+      ]
+    },
+    {
+      "port": "vcpkg-cmake",
+      "source_file": "vcpkg-LICENSE.txt",
+      "bytes": 1073,
+      "sha256": "1ee376fc340e0aa6ad6a3581c94126e741468705096ac92263048a21daa86460",
+      "cached_copyright_comparisons": [
+        {
+          "package": "vcpkg-cmake-x64-windows",
+          "copyright_bytes": 1073,
+          "copyright_sha256": "1ee376fc340e0aa6ad6a3581c94126e741468705096ac92263048a21daa86460",
+          "source_notice_exact_match": true
+        }
+      ]
+    },
+    {
+      "port": "vcpkg-cmake-config",
+      "source_file": "ports/vcpkg-cmake-config/copyright",
+      "bytes": 1096,
+      "sha256": "04b60f99a43bfd7fefdc8364b24aac704a2160cef969b75ba6a38b62dc4c4b70",
+      "cached_copyright_comparisons": [
+        {
+          "package": "vcpkg-cmake-config-x64-windows",
+          "copyright_bytes": 1096,
+          "copyright_sha256": "04b60f99a43bfd7fefdc8364b24aac704a2160cef969b75ba6a38b62dc4c4b70",
+          "source_notice_exact_match": true
+        }
+      ]
+    }
+  ],
+  "source_license_notice_inventory": [
+    {
+      "archive": "sources/google-sentencepiece-v0.2.1.tar.gz",
+      "license_notice_named_files": [
+        {
+          "path": "LICENSE",
+          "bytes": 11358
+        },
+        {
+          "path": "third_party/absl/LICENSE",
+          "bytes": 11365
+        },
+        {
+          "path": "third_party/darts_clone/LICENSE",
+          "bytes": 1481
+        },
+        {
+          "path": "third_party/esaxx/LICENSE",
+          "bytes": 1112
+        },
+        {
+          "path": "third_party/protobuf-lite/LICENSE",
+          "bytes": 1732
+        }
+      ]
+    },
+    {
+      "archive": "sources/abseil-abseil-cpp-20260107.1.tar.gz",
+      "license_notice_named_files": [
+        {
+          "path": "AUTHORS",
+          "bytes": 295
+        },
+        {
+          "path": "LICENSE",
+          "bytes": 11361
+        }
+      ]
+    },
+    {
+      "archive": "sources/protocolbuffers-protobuf-v33.4.tar.gz",
+      "license_notice_named_files": [
+        {
+          "path": "LICENSE",
+          "bytes": 1732
+        },
+        {
+          "path": "src/google/protobuf/compiler/notices.h",
+          "bytes": 12928
+        },
+        {
+          "path": "third_party/utf8_range/LICENSE",
+          "bytes": 1091
+        }
+      ]
+    }
+  ],
+  "notice_scope": "Only recipe-selected notices were byte-compared; license/notice-named file inventory is discovery metadata, not complete attribution audit or native-link membership proof. Tar entries were read without extraction to filesystem. Selected LICENSE/AUTHORS members were subsequently copied verbatim as notice text only; source code was never extracted or executed.",
+  "retained_source_notices": [
+    {
+      "source_archive": "sources/google-sentencepiece-v0.2.1.tar.gz",
+      "member": "sentencepiece-0.2.1/LICENSE",
+      "retained_path": "notices/sentencepiece/LICENSE",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    {
+      "source_archive": "sources/google-sentencepiece-v0.2.1.tar.gz",
+      "member": "sentencepiece-0.2.1/third_party/absl/LICENSE",
+      "retained_path": "notices/sentencepiece/third_party/absl/LICENSE",
+      "bytes": 11365,
+      "sha256": "d3e2f59e1d71176dfdb555ece6a41f7a5aa0f52ff21211010ace314f57695f6b"
+    },
+    {
+      "source_archive": "sources/google-sentencepiece-v0.2.1.tar.gz",
+      "member": "sentencepiece-0.2.1/third_party/darts_clone/LICENSE",
+      "retained_path": "notices/sentencepiece/third_party/darts_clone/LICENSE",
+      "bytes": 1481,
+      "sha256": "155f59997298ee336602c49f9c1110f268ac394ca2197eb02647a3555935ad52"
+    },
+    {
+      "source_archive": "sources/google-sentencepiece-v0.2.1.tar.gz",
+      "member": "sentencepiece-0.2.1/third_party/esaxx/LICENSE",
+      "retained_path": "notices/sentencepiece/third_party/esaxx/LICENSE",
+      "bytes": 1112,
+      "sha256": "7c28553d1d3312d65fe309f76a22ebaf33a3d76c8c1e3b98a88ee4654ecb53db"
+    },
+    {
+      "source_archive": "sources/google-sentencepiece-v0.2.1.tar.gz",
+      "member": "sentencepiece-0.2.1/third_party/protobuf-lite/LICENSE",
+      "retained_path": "notices/sentencepiece/third_party/protobuf-lite/LICENSE",
+      "bytes": 1732,
+      "sha256": "6e5e117324afd944dcf67f36cf329843bc1a92229a8cd9bb573d7a83130fea7d"
+    },
+    {
+      "source_archive": "sources/abseil-abseil-cpp-20260107.1.tar.gz",
+      "member": "abseil-cpp-20260107.1/AUTHORS",
+      "retained_path": "notices/abseil/AUTHORS",
+      "bytes": 295,
+      "sha256": "1fd39030c119b4c97014f59e0ad0ed65f23475bbdf55a52740f31eb82b34b4ee"
+    },
+    {
+      "source_archive": "sources/abseil-abseil-cpp-20260107.1.tar.gz",
+      "member": "abseil-cpp-20260107.1/LICENSE",
+      "retained_path": "notices/abseil/LICENSE",
+      "bytes": 11361,
+      "sha256": "c79a7fea0e3cac04cd43f20e7b648e5a0ff8fa5344e644b0ee09ca1162b62747"
+    },
+    {
+      "source_archive": "sources/protocolbuffers-protobuf-v33.4.tar.gz",
+      "member": "protobuf-33.4/LICENSE",
+      "retained_path": "notices/protobuf/LICENSE",
+      "bytes": 1732,
+      "sha256": "6e5e117324afd944dcf67f36cf329843bc1a92229a8cd9bb573d7a83130fea7d"
+    },
+    {
+      "source_archive": "sources/protocolbuffers-protobuf-v33.4.tar.gz",
+      "member": "protobuf-33.4/third_party/utf8_range/LICENSE",
+      "retained_path": "notices/protobuf/third_party/utf8_range/LICENSE",
+      "bytes": 1091,
+      "sha256": "02de69b64fc36d9e938f418e52723e42f0b2b226d58a9cb3c8dcbdf7059f5074"
+    }
+  ],
+  "recovery_receipt": {
+    "path": "/Users/victor/.cache/gen2-nemotron3-n0/platform-ci/windows-vcpkg-38890986137/receipt.json",
+    "sha256": "0fdd502c85f94c4cfc4aaada922e31ad6e481303d6520772d85897aabbf43976"
+  },
+  "research_scripts": [
+    {
+      "path": "research_acquire.py",
+      "bytes": 1875,
+      "sha256": "22200b3814d7d817613b4823508408537d227286c2b5690d3c00da13b3f225ed"
+    },
+    {
+      "path": "research_notices.py",
+      "bytes": 2574,
+      "sha256": "10917f54ffa4a89892ec85554771d04aba0340a744ce0d6ecaa0c9d60afb8afc"
+    },
+    {
+      "path": "research_verify.py",
+      "bytes": 4501,
+      "sha256": "fb7d182fb9b86843dcc487c0adc386dcfb5b30ae2b8c9fec8297726a2fa75742"
+    }
+  ]
+}

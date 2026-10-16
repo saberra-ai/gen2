@@ -677,6 +677,13 @@ files and four target SDK notices. All nine installed-list bodies were then
 reconstructed with exact historical size/SHA matches. The original producer
 record remains unchanged; source-recipe/archive closure and native linker
 membership are separate open checks. All 85 model-free tool regressions pass.
+The later [source-recipe receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-source-recipes/qualification.json)
+now verifies six complete port directories/34 Git blobs, all 53 SPDX and 53 ABI
+port-file checks, three source archive SHA512s (22,676,219 bytes) and retained
+source notices. Full attribution remains open: the qualified SDK's vcpkg
+SentencePiece root license omits Darts-clone's distinct BSD notice; esaxx scope
+also needs review. Source identity does not establish final native linker-member
+selection or complete release qualification.
 
 A guarded [Windows private-DLL build](../research/nemotron-windows-private-names.md)
 now relinks the five owned DLLs through an external CMake naming hook, updates
