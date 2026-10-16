@@ -3,10 +3,25 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
-from platform_native import msvc_environment, pinned_git_environment, powershell_literal
+from platform_native import msvc_compiler_definitions, msvc_environment, pinned_git_environment, powershell_literal
 
 
 class PlatformToolTests(unittest.TestCase):
+    def test_windows_compiler_selection_is_explicit_and_case_insensitive(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            compiler = Path(temporary) / 'cl.exe'
+            compiler.write_bytes(b'compiler fixture')
+            environment = {'Path': 'active MSVC path'}
+            with patch('platform_native.shutil.which', return_value=str(compiler)) as which:
+                definitions = msvc_compiler_definitions(environment)
+            which.assert_called_once_with('cl.exe', path='active MSVC path')
+            self.assertEqual(definitions, ['-DCMAKE_C_COMPILER=' + str(compiler.resolve()),
+                                           '-DCMAKE_CXX_COMPILER=' + str(compiler.resolve())])
+            self.assertEqual(environment, {'Path': 'active MSVC path'})
+        with patch('platform_native.shutil.which', return_value=None):
+            with self.assertRaisesRegex(ValueError, 'MSVC compiler'):
+                msvc_compiler_definitions({'PATH': 'missing'})
+
     def test_windows_environment_lookup_and_merge_are_case_insensitive(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

@@ -50,6 +50,17 @@ def powershell_literal(value):
     return "'" + str(value).replace("'", "''") + "'"
 
 
+def msvc_compiler_definitions(environment):
+    variables = {name.upper(): value for name, value in environment.items()}
+    compiler = shutil.which('cl.exe', path=variables.get('PATH', ''))
+    if not compiler:
+        raise ValueError('MSVC compiler is unavailable in the active developer environment')
+    compiler = Path(compiler).resolve(strict=True)
+    # Ninja otherwise prefers an ambient cc/c++ (MinGW on hosted Windows),
+    # even after vcvars has provided a valid MSVC include/library environment.
+    return [f'-DCMAKE_C_COMPILER={compiler}', f'-DCMAKE_CXX_COMPILER={compiler}']
+
+
 def pinned_git_environment(environment):
     """Keep archive/apply byte semantics consistent in all build descendants."""
     env = environment.copy()
@@ -114,6 +125,7 @@ class Qualification:
                   '-DNEMO_SPEECH_WITH_NORM=OFF', '-DCMAKE_INSTALL_LIBDIR=lib',
                   f'-DCMAKE_INSTALL_PREFIX={self.prefix}']
         if self.windows:
+            flags += msvc_compiler_definitions(self.environment)
             self.compatibility = apply_windows_lf_compat(self.source, self.output)
             self.run('cmake-version', ['cmake', '--version'])
             build = self.source / 'build/gen2-cpu-diar'
