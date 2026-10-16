@@ -1,0 +1,1453 @@
+{
+  "source_commit": "5113a30161b3592479b460b129a6d21f78ffdabe",
+  "release_qualified": false,
+  "original_gate_status_changed": false,
+  "inference_performed": false,
+  "reference_changed": false,
+  "protocol_sha256": "03197268a3dc0d5c31044e3b157624e6a09fe3f4a1cbc1390289e08811cc7da9",
+  "purpose": "Post-failure localization of fixed existing AMI published-reference errors. No inference, retuning, reference replacement or fresh heldout/release qualification.",
+  "independent_scorer_calibrations": [
+    {
+      "case": "overlap_and_mapping",
+      "expected_der": 0,
+      "official": {
+        "der": 0.0,
+        "missed_speaker_seconds": 0.0,
+        "false_alarm_speaker_seconds": 0.0,
+        "confusion_speaker_seconds": 0.0,
+        "reference_speaker_seconds": 1.2,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 1
+      },
+      "frame": {
+        "der": 0.0,
+        "missed_speaker_seconds": 0.0,
+        "false_alarm_speaker_seconds": 0.0,
+        "confusion_speaker_seconds": 0.0,
+        "reference_speaker_seconds": 1.2,
+        "reference_speakers": 2,
+        "hypothesis_speakers": 2,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 1
+      }
+    },
+    {
+      "case": "missed_overlap",
+      "expected_der": 0.5,
+      "official": {
+        "der": 0.5,
+        "missed_speaker_seconds": 0.6,
+        "false_alarm_speaker_seconds": 0.0,
+        "confusion_speaker_seconds": 0.0,
+        "reference_speaker_seconds": 1.2,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 1
+      },
+      "frame": {
+        "der": 0.5,
+        "missed_speaker_seconds": 0.6,
+        "false_alarm_speaker_seconds": 0.0,
+        "confusion_speaker_seconds": 0.0,
+        "reference_speaker_seconds": 1.2,
+        "reference_speakers": 2,
+        "hypothesis_speakers": 1,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 1
+      }
+    },
+    {
+      "case": "false_alarm",
+      "expected_der": 0.5,
+      "official": {
+        "der": 0.4999999999999999,
+        "missed_speaker_seconds": 0.0,
+        "false_alarm_speaker_seconds": 0.19999999999999996,
+        "confusion_speaker_seconds": 0.0,
+        "reference_speaker_seconds": 0.4,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 1
+      },
+      "frame": {
+        "der": 0.5,
+        "missed_speaker_seconds": 0.0,
+        "false_alarm_speaker_seconds": 0.2,
+        "confusion_speaker_seconds": 0.0,
+        "reference_speaker_seconds": 0.4,
+        "reference_speakers": 1,
+        "hypothesis_speakers": 1,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 1
+      }
+    },
+    {
+      "case": "global_confusion",
+      "expected_der": 0.5,
+      "official": {
+        "der": 0.5,
+        "missed_speaker_seconds": 0.0,
+        "false_alarm_speaker_seconds": 0.0,
+        "confusion_speaker_seconds": 0.5,
+        "reference_speaker_seconds": 1.0,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 1
+      },
+      "frame": {
+        "der": 0.5,
+        "missed_speaker_seconds": 0.0,
+        "false_alarm_speaker_seconds": 0.0,
+        "confusion_speaker_seconds": 0.5,
+        "reference_speaker_seconds": 1.0,
+        "reference_speakers": 2,
+        "hypothesis_speakers": 1,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 1
+      }
+    }
+  ],
+  "mapping_rule": "One optimal reference-to-system speaker map per full 120-second UEM/profile/backend/channel from the pinned official continuous scorer; retain it for every bin. No per-bin remapping.",
+  "bin_definitions": {
+    "occupancy": {
+      "silence": "Zero reference speakers",
+      "single": "Exactly one reference speaker",
+      "overlap": "At least two reference speakers"
+    },
+    "reference_span": {
+      "silence": "No active input reference RTTM span",
+      "short_only": "Only clipped input reference spans of duration <=1 second active",
+      "long_only": "Only clipped input reference spans of duration >1 second active",
+      "mixed": "Both short and long input reference spans active"
+    },
+    "crop_time": {
+      "first_30_seconds": "[0,30) local seconds",
+      "remaining_90_seconds": "[30,120) local seconds"
+    }
+  },
+  "limitations": [
+    "Already-seen 120-second cold-start crops; no new untouched-heldout validation or full meeting/model-card reproduction.",
+    "Input clipped RTTM span length defines timeline strata; these are collective reference-occupancy bins, not causal attribution to individual replies. Crop-edge spans retain clipping. No span merging, label-driven hypothesis filtering, threshold/context tuning or changed original gate.",
+    "FP32 is the already executed official HF/PyTorch CPU run, repeated for both backend comparisons; native Q8 outputs are existing CPU/Metal results.",
+    "Published lexical references are diagnostic only. Frozen transcription-reference failures and all release gates remain unchanged."
+  ],
+  "results": [
+    {
+      "slice": "ami-ES2004a-Mix-Headset",
+      "backend": "cpu",
+      "profile": "fp32_shared_threshold",
+      "total": {
+        "SCORED_TIME": 120.0,
+        "SCORED_SPEAKER": 69.81899999999996,
+        "MISSED_SPEAKER": 7.34800000000012,
+        "FALARM_SPEAKER": 4.149000000000184,
+        "SPEAKER_ERROR": 0.19200000000001793,
+        "der": 0.16741861097982394,
+        "whole_uem_der_contribution": 0.16741861097982394
+      },
+      "partitions": {
+        "occupancy": {
+          "silence": {
+            "SCORED_TIME": 58.65799999999996,
+            "SCORED_SPEAKER": 0.0,
+            "MISSED_SPEAKER": 0.0,
+            "FALARM_SPEAKER": 2.569000000000157,
+            "SPEAKER_ERROR": 0.0,
+            "der": null,
+            "whole_uem_der_contribution": 0.03679514172360186
+          },
+          "single": {
+            "SCORED_TIME": 53.465000000000146,
+            "SCORED_SPEAKER": 53.465000000000146,
+            "MISSED_SPEAKER": 4.56900000000017,
+            "FALARM_SPEAKER": 1.4860000000000042,
+            "SPEAKER_ERROR": 0.054000000000012705,
+            "der": 0.11426166651080463,
+            "whole_uem_der_contribution": 0.08749767255331915
+          },
+          "overlap": {
+            "SCORED_TIME": 7.876999999999896,
+            "SCORED_SPEAKER": 16.353999999999814,
+            "MISSED_SPEAKER": 2.77899999999995,
+            "FALARM_SPEAKER": 0.09400000000002251,
+            "SPEAKER_ERROR": 0.13800000000000523,
+            "der": 0.18411397823162604,
+            "whole_uem_der_contribution": 0.04312579670290293
+          }
+        },
+        "reference_span": {
+          "silence": {
+            "SCORED_TIME": 58.65799999999996,
+            "SCORED_SPEAKER": 0.0,
+            "MISSED_SPEAKER": 0.0,
+            "FALARM_SPEAKER": 2.569000000000157,
+            "SPEAKER_ERROR": 0.0,
+            "der": null,
+            "whole_uem_der_contribution": 0.03679514172360186
+          },
+          "short_only": {
+            "SCORED_TIME": 11.601000000000056,
+            "SCORED_SPEAKER": 11.878000000000043,
+            "MISSED_SPEAKER": 2.800000000000086,
+            "FALARM_SPEAKER": 0.011999999999986244,
+            "SPEAKER_ERROR": 0.0690000000000417,
+            "der": 0.2425492507156174,
+            "whole_uem_der_contribution": 0.041263839356050866
+          },
+          "long_only": {
+            "SCORED_TIME": 44.811000000000035,
+            "SCORED_SPEAKER": 47.480999999999995,
+            "MISSED_SPEAKER": 2.515000000000043,
+            "FALARM_SPEAKER": 1.474000000000018,
+            "SPEAKER_ERROR": 0.0030000000000001137,
+            "der": 0.08407573555738215,
+            "whole_uem_der_contribution": 0.057176413297240915
+          },
+          "mixed": {
+            "SCORED_TIME": 4.92999999999995,
+            "SCORED_SPEAKER": 10.459999999999923,
+            "MISSED_SPEAKER": 2.0329999999999906,
+            "FALARM_SPEAKER": 0.09400000000002251,
+            "SPEAKER_ERROR": 0.11999999999997613,
+            "der": 0.21481835564053592,
+            "whole_uem_der_contribution": 0.0321832166029303
+          }
+        },
+        "crop_time": {
+          "first_30_seconds": {
+            "SCORED_TIME": 30.0,
+            "SCORED_SPEAKER": 13.346000000000004,
+            "MISSED_SPEAKER": 1.5509999999999842,
+            "FALARM_SPEAKER": 0.7949999999999857,
+            "SPEAKER_ERROR": 0.03700000000003101,
+            "der": 0.1785553723962236,
+            "whole_uem_der_contribution": 0.034131110442716196
+          },
+          "remaining_90_seconds": {
+            "SCORED_TIME": 90.0,
+            "SCORED_SPEAKER": 56.472999999999956,
+            "MISSED_SPEAKER": 5.797000000000136,
+            "FALARM_SPEAKER": 3.354000000000198,
+            "SPEAKER_ERROR": 0.15499999999998693,
+            "der": 0.1647867122341708,
+            "whole_uem_der_contribution": 0.13328750053710775
+          }
+        }
+      },
+      "global_reference_to_system_mapping": {
+        "ES2004a.A": "2",
+        "ES2004a.B": "4",
+        "ES2004a.C": "3",
+        "ES2004a.D": "1"
+      }
+    },
+    {
+      "slice": "ami-ES2004a-Mix-Headset",
+      "backend": "cpu",
+      "profile": "q8_shared_threshold",
+      "total": {
+        "SCORED_TIME": 120.0,
+        "SCORED_SPEAKER": 69.81899999999996,
+        "MISSED_SPEAKER": 7.388000000000115,
+        "FALARM_SPEAKER": 4.149000000000205,
+        "SPEAKER_ERROR": 0.20200000000002305,
+        "der": 0.16813474842092196,
+        "whole_uem_der_contribution": 0.16813474842092196
+      },
+      "partitions": {
+        "occupancy": {
+          "silence": {
+            "SCORED_TIME": 58.65799999999996,
+            "SCORED_SPEAKER": 0.0,
+            "MISSED_SPEAKER": 0.0,
+            "FALARM_SPEAKER": 2.4390000000001617,
+            "SPEAKER_ERROR": 0.0,
+            "der": null,
+            "whole_uem_der_contribution": 0.034933184376747924
+          },
+          "single": {
+            "SCORED_TIME": 53.465000000000146,
+            "SCORED_SPEAKER": 53.465000000000146,
+            "MISSED_SPEAKER": 4.559000000000161,
+            "FALARM_SPEAKER": 1.626000000000026,
+            "SPEAKER_ERROR": 0.054000000000012705,
+            "der": 0.1166931637519907,
+            "whole_uem_der_contribution": 0.08935962990017335
+          },
+          "overlap": {
+            "SCORED_TIME": 7.876999999999896,
+            "SCORED_SPEAKER": 16.353999999999814,
+            "MISSED_SPEAKER": 2.8289999999999544,
+            "FALARM_SPEAKER": 0.0840000000000174,
+            "SPEAKER_ERROR": 0.14800000000001035,
+            "der": 0.1871713342301588,
+            "whole_uem_der_contribution": 0.043841934144000685
+          }
+        },
+        "reference_span": {
+          "silence": {
+            "SCORED_TIME": 58.65799999999996,
+            "SCORED_SPEAKER": 0.0,
+            "MISSED_SPEAKER": 0.0,
+            "FALARM_SPEAKER": 2.4390000000001617,
+            "SPEAKER_ERROR": 0.0,
+            "der": null,
+            "whole_uem_der_contribution": 0.034933184376747924
+          },
+          "short_only": {
+            "SCORED_TIME": 11.601000000000056,
+            "SCORED_SPEAKER": 11.878000000000043,
+            "MISSED_SPEAKER": 2.7700000000000813,
+            "FALARM_SPEAKER": 0.011999999999986244,
+            "SPEAKER_ERROR": 0.0690000000000417,
+            "der": 0.24002357299209454,
+            "whole_uem_der_contribution": 0.040834156891392186
+          },
+          "long_only": {
+            "SCORED_TIME": 44.811000000000035,
+            "SCORED_SPEAKER": 47.480999999999995,
+            "MISSED_SPEAKER": 2.5650000000000404,
+            "FALARM_SPEAKER": 1.6140000000000398,
+            "SPEAKER_ERROR": 0.0030000000000001137,
+            "der": 0.08807733619763865,
+            "whole_uem_der_contribution": 0.059897735573412436
+          },
+          "mixed": {
+            "SCORED_TIME": 4.92999999999995,
+            "SCORED_SPEAKER": 10.459999999999923,
+            "MISSED_SPEAKER": 2.0529999999999937,
+            "FALARM_SPEAKER": 0.0840000000000174,
+            "SPEAKER_ERROR": 0.12999999999998124,
+            "der": 0.21673040152963757,
+            "whole_uem_der_contribution": 0.03246967157936942
+          }
+        },
+        "crop_time": {
+          "first_30_seconds": {
+            "SCORED_TIME": 30.0,
+            "SCORED_SPEAKER": 13.346000000000004,
+            "MISSED_SPEAKER": 1.5409999999999826,
+            "FALARM_SPEAKER": 0.7949999999999857,
+            "SPEAKER_ERROR": 0.03700000000003101,
+            "der": 0.17780608421999092,
+            "whole_uem_der_contribution": 0.03398788295449664
+          },
+          "remaining_90_seconds": {
+            "SCORED_TIME": 90.0,
+            "SCORED_SPEAKER": 56.472999999999956,
+            "MISSED_SPEAKER": 5.847000000000133,
+            "FALARM_SPEAKER": 3.3540000000002195,
+            "SPEAKER_ERROR": 0.16499999999999204,
+            "der": 0.16584916685850498,
+            "whole_uem_der_contribution": 0.13414686546642532
+          }
+        }
+      },
+      "global_reference_to_system_mapping": {
+        "ES2004a.A": "2",
+        "ES2004a.B": "4",
+        "ES2004a.C": "3",
+        "ES2004a.D": "1"
+      }
+    },
+    {
+      "slice": "ami-ES2004a-Mix-Headset",
+      "backend": "cpu",
+      "profile": "q8_production_default",
+      "total": {
+        "SCORED_TIME": 120.0,
+        "SCORED_SPEAKER": 69.81899999999996,
+        "MISSED_SPEAKER": 4.592001211911494,
+        "FALARM_SPEAKER": 13.404999722838383,
+        "SPEAKER_ERROR": 1.285000643953623,
+        "der": 0.27617126539628917,
+        "whole_uem_der_contribution": 0.27617126539628917
+      },
+      "partitions": {
+        "occupancy": {
+          "silence": {
+            "SCORED_TIME": 58.65799999999996,
+            "SCORED_SPEAKER": 0.0,
+            "MISSED_SPEAKER": 0.0,
+            "FALARM_SPEAKER": 9.03699863184994,
+            "SPEAKER_ERROR": 0.0,
+            "der": null,
+            "whole_uem_der_contribution": 0.1294346615083279
+          },
+          "single": {
+            "SCORED_TIME": 53.465000000000146,
+            "SCORED_SPEAKER": 53.465000000000146,
+            "MISSED_SPEAKER": 2.3699995337427566,
+            "FALARM_SPEAKER": 4.368001090988443,
+            "SPEAKER_ERROR": 0.8580019287317384,
+            "der": 0.1420743019445042,
+            "whole_uem_der_contribution": 0.10879563662417024
+          },
+          "overlap": {
+            "SCORED_TIME": 7.876999999999896,
+            "SCORED_SPEAKER": 16.353999999999814,
+            "MISSED_SPEAKER": 2.2220016781687377,
+            "FALARM_SPEAKER": 0.0,
+            "SPEAKER_ERROR": 0.4269987152218846,
+            "der": 0.16197874485695563,
+            "whole_uem_der_contribution": 0.037940967263791
+          }
+        },
+        "reference_span": {
+          "silence": {
+            "SCORED_TIME": 58.65799999999996,
+            "SCORED_SPEAKER": 0.0,
+            "MISSED_SPEAKER": 0.0,
+            "FALARM_SPEAKER": 9.03699863184994,
+            "SPEAKER_ERROR": 0.0,
+            "der": null,
+            "whole_uem_der_contribution": 0.1294346615083279
+          },
+          "short_only": {
+            "SCORED_TIME": 11.601000000000056,
+            "SCORED_SPEAKER": 11.878000000000043,
+            "MISSED_SPEAKER": 2.0849987543374837,
+            "FALARM_SPEAKER": 0.4140013145058816,
+            "SPEAKER_ERROR": 0.8760019287317675,
+            "der": 0.28413891207064496,
+            "whole_uem_der_contribution": 0.04833930588486135
+          },
+          "long_only": {
+            "SCORED_TIME": 44.811000000000035,
+            "SCORED_SPEAKER": 47.480999999999995,
+            "MISSED_SPEAKER": 0.6840007697940109,
+            "FALARM_SPEAKER": 3.9539997764825614,
+            "SPEAKER_ERROR": 0.03500039987262937,
+            "der": 0.0984183346212001,
+            "whole_uem_der_contribution": 0.06693021879644802
+          },
+          "mixed": {
+            "SCORED_TIME": 4.92999999999995,
+            "SCORED_SPEAKER": 10.459999999999923,
+            "MISSED_SPEAKER": 1.8230016877799997,
+            "FALARM_SPEAKER": 0.0,
+            "SPEAKER_ERROR": 0.3739983153492261,
+            "der": 0.21003824121694475,
+            "whole_uem_der_contribution": 0.03146707920665187
+          }
+        },
+        "crop_time": {
+          "first_30_seconds": {
+            "SCORED_TIME": 30.0,
+            "SCORED_SPEAKER": 13.346000000000004,
+            "MISSED_SPEAKER": 0.5730007349252446,
+            "FALARM_SPEAKER": 3.34600111915168,
+            "SPEAKER_ERROR": 0.3340004068017137,
+            "der": 0.31867243075667895,
+            "whole_uem_der_contribution": 0.060914683121766865
+          },
+          "remaining_90_seconds": {
+            "SCORED_TIME": 90.0,
+            "SCORED_SPEAKER": 56.472999999999956,
+            "MISSED_SPEAKER": 4.01900047698625,
+            "FALARM_SPEAKER": 10.058998603686703,
+            "SPEAKER_ERROR": 0.9510002371519093,
+            "der": 0.26612716373886414,
+            "whole_uem_der_contribution": 0.21525658227452227
+          }
+        }
+      },
+      "global_reference_to_system_mapping": {
+        "ES2004a.A": "2",
+        "ES2004a.B": "4",
+        "ES2004a.C": "3",
+        "ES2004a.D": "1"
+      }
+    },
+    {
+      "slice": "ami-ES2004a-Mix-Headset",
+      "backend": "metal",
+      "profile": "fp32_shared_threshold",
+      "total": {
+        "SCORED_TIME": 120.0,
+        "SCORED_SPEAKER": 69.81899999999996,
+        "MISSED_SPEAKER": 7.34800000000012,
+        "FALARM_SPEAKER": 4.149000000000184,
+        "SPEAKER_ERROR": 0.19200000000001793,
+        "der": 0.16741861097982394,
+        "whole_uem_der_contribution": 0.16741861097982394
+      },
+      "partitions": {
+        "occupancy": {
+          "silence": {
+            "SCORED_TIME": 58.65799999999996,
+            "SCORED_SPEAKER": 0.0,
+            "MISSED_SPEAKER": 0.0,
+            "FALARM_SPEAKER": 2.569000000000157,
+            "SPEAKER_ERROR": 0.0,
+            "der": null,
+            "whole_uem_der_contribution": 0.03679514172360186
+          },
+          "single": {
+            "SCORED_TIME": 53.465000000000146,
+            "SCORED_SPEAKER": 53.465000000000146,
+            "MISSED_SPEAKER": 4.56900000000017,
+            "FALARM_SPEAKER": 1.4860000000000042,
+            "SPEAKER_ERROR": 0.054000000000012705,
+            "der": 0.11426166651080463,
+            "whole_uem_der_contribution": 0.08749767255331915
+          },
+          "overlap": {
+            "SCORED_TIME": 7.876999999999896,
+            "SCORED_SPEAKER": 16.353999999999814,
+            "MISSED_SPEAKER": 2.77899999999995,
+            "FALARM_SPEAKER": 0.09400000000002251,
+            "SPEAKER_ERROR": 0.13800000000000523,
+            "der": 0.18411397823162604,
+            "whole_uem_der_contribution": 0.04312579670290293
+          }
+        },
+        "reference_span": {
+          "silence": {
+            "SCORED_TIME": 58.65799999999996,
+            "SCORED_SPEAKER": 0.0,
+            "MISSED_SPEAKER": 0.0,
+            "FALARM_SPEAKER": 2.569000000000157,
+            "SPEAKER_ERROR": 0.0,
+            "der": null,
+            "whole_uem_der_contribution": 0.03679514172360186
+          },
+          "short_only": {
+            "SCORED_TIME": 11.601000000000056,
+            "SCORED_SPEAKER": 11.878000000000043,
+            "MISSED_SPEAKER": 2.800000000000086,
+            "FALARM_SPEAKER": 0.011999999999986244,
+            "SPEAKER_ERROR": 0.0690000000000417,
+            "der": 0.2425492507156174,
+            "whole_uem_der_contribution": 0.041263839356050866
+          },
+          "long_only": {
+            "SCORED_TIME": 44.811000000000035,
+            "SCORED_SPEAKER": 47.480999999999995,
+            "MISSED_SPEAKER": 2.515000000000043,
+            "FALARM_SPEAKER": 1.474000000000018,
+            "SPEAKER_ERROR": 0.0030000000000001137,
+            "der": 0.08407573555738215,
+            "whole_uem_der_contribution": 0.057176413297240915
+          },
+          "mixed": {
+            "SCORED_TIME": 4.92999999999995,
+            "SCORED_SPEAKER": 10.459999999999923,
+            "MISSED_SPEAKER": 2.0329999999999906,
+            "FALARM_SPEAKER": 0.09400000000002251,
+            "SPEAKER_ERROR": 0.11999999999997613,
+            "der": 0.21481835564053592,
+            "whole_uem_der_contribution": 0.0321832166029303
+          }
+        },
+        "crop_time": {
+          "first_30_seconds": {
+            "SCORED_TIME": 30.0,
+            "SCORED_SPEAKER": 13.346000000000004,
+            "MISSED_SPEAKER": 1.5509999999999842,
+            "FALARM_SPEAKER": 0.7949999999999857,
+            "SPEAKER_ERROR": 0.03700000000003101,
+            "der": 0.1785553723962236,
+            "whole_uem_der_contribution": 0.034131110442716196
+          },
+          "remaining_90_seconds": {
+            "SCORED_TIME": 90.0,
+            "SCORED_SPEAKER": 56.472999999999956,
+            "MISSED_SPEAKER": 5.797000000000136,
+            "FALARM_SPEAKER": 3.354000000000198,
+            "SPEAKER_ERROR": 0.15499999999998693,
+            "der": 0.1647867122341708,
+            "whole_uem_der_contribution": 0.13328750053710775
+          }
+        }
+      },
+      "global_reference_to_system_mapping": {
+        "ES2004a.A": "2",
+        "ES2004a.B": "4",
+        "ES2004a.C": "3",
+        "ES2004a.D": "1"
+      }
+    },
+    {
+      "slice": "ami-ES2004a-Mix-Headset",
+      "backend": "metal",
+      "profile": "q8_shared_threshold",
+      "total": {
+        "SCORED_TIME": 120.0,
+        "SCORED_SPEAKER": 69.81899999999996,
+        "MISSED_SPEAKER": 7.390000000000114,
+        "FALARM_SPEAKER": 4.081000000000179,
+        "SPEAKER_ERROR": 0.2420000000000151,
+        "der": 0.16776235695155065,
+        "whole_uem_der_contribution": 0.16776235695155065
+      },
+      "partitions": {
+        "occupancy": {
+          "silence": {
+            "SCORED_TIME": 58.65799999999996,
+            "SCORED_SPEAKER": 0.0,
+            "MISSED_SPEAKER": 0.0,
+            "FALARM_SPEAKER": 2.479000000000168,
+            "SPEAKER_ERROR": 0.0,
+            "der": null,
+            "whole_uem_der_contribution": 0.03550609432962617
+          },
+          "single": {
+            "SCORED_TIME": 53.465000000000146,
+            "SCORED_SPEAKER": 53.465000000000146,
+            "MISSED_SPEAKER": 4.579000000000157,
+            "FALARM_SPEAKER": 1.5479999999999947,
+            "SPEAKER_ERROR": 0.054000000000012705,
+            "der": 0.11560834190592252,
+            "whole_uem_der_contribution": 0.08852891046849952
+          },
+          "overlap": {
+            "SCORED_TIME": 7.876999999999896,
+            "SCORED_SPEAKER": 16.353999999999814,
+            "MISSED_SPEAKER": 2.8109999999999573,
+            "FALARM_SPEAKER": 0.05400000000001626,
+            "SPEAKER_ERROR": 0.1880000000000024,
+            "der": 0.18668215727039322,
+            "whole_uem_der_contribution": 0.043727352153424964
+          }
+        },
+        "reference_span": {
+          "silence": {
+            "SCORED_TIME": 58.65799999999996,
+            "SCORED_SPEAKER": 0.0,
+            "MISSED_SPEAKER": 0.0,
+            "FALARM_SPEAKER": 2.479000000000168,
+            "SPEAKER_ERROR": 0.0,
+            "der": null,
+            "whole_uem_der_contribution": 0.03550609432962617
+          },
+          "short_only": {
+            "SCORED_TIME": 11.601000000000056,
+            "SCORED_SPEAKER": 11.878000000000043,
+            "MISSED_SPEAKER": 2.8000000000000824,
+            "FALARM_SPEAKER": 0.011999999999986244,
+            "SPEAKER_ERROR": 0.0690000000000417,
+            "der": 0.24254925071561712,
+            "whole_uem_der_contribution": 0.04126383935605082
+          },
+          "long_only": {
+            "SCORED_TIME": 44.811000000000035,
+            "SCORED_SPEAKER": 47.480999999999995,
+            "MISSED_SPEAKER": 2.5550000000000352,
+            "FALARM_SPEAKER": 1.5360000000000085,
+            "SPEAKER_ERROR": 0.0030000000000001137,
+            "der": 0.08622396326951927,
+            "whole_uem_der_contribution": 0.05863733367707997
+          },
+          "mixed": {
+            "SCORED_TIME": 4.92999999999995,
+            "SCORED_SPEAKER": 10.459999999999923,
+            "MISSED_SPEAKER": 2.0349999999999966,
+            "FALARM_SPEAKER": 0.05400000000001626,
+            "SPEAKER_ERROR": 0.16999999999997328,
+            "der": 0.21596558317399644,
+            "whole_uem_der_contribution": 0.0323550895887937
+          }
+        },
+        "crop_time": {
+          "first_30_seconds": {
+            "SCORED_TIME": 30.0,
+            "SCORED_SPEAKER": 13.346000000000004,
+            "MISSED_SPEAKER": 1.5429999999999744,
+            "FALARM_SPEAKER": 0.7869999999999759,
+            "SPEAKER_ERROR": 0.03700000000003101,
+            "der": 0.17735651131425,
+            "whole_uem_der_contribution": 0.03390194646156466
+          },
+          "remaining_90_seconds": {
+            "SCORED_TIME": 90.0,
+            "SCORED_SPEAKER": 56.472999999999956,
+            "MISSED_SPEAKER": 5.84700000000014,
+            "FALARM_SPEAKER": 3.294000000000203,
+            "SPEAKER_ERROR": 0.20499999999998408,
+            "der": 0.1654950153170601,
+            "whole_uem_der_contribution": 0.133860410489986
+          }
+        }
+      },
+      "global_reference_to_system_mapping": {
+        "ES2004a.A": "2",
+        "ES2004a.B": "4",
+        "ES2004a.C": "3",
+        "ES2004a.D": "1"
+      }
+    },
+    {
+      "slice": "ami-ES2004a-Mix-Headset",
+      "backend": "metal",
+      "profile": "q8_production_default",
+      "total": {
+        "SCORED_TIME": 120.0,
+        "SCORED_SPEAKER": 69.81899999999996,
+        "MISSED_SPEAKER": 4.562001212582047,
+        "FALARM_SPEAKER": 13.384999723285418,
+        "SPEAKER_ERROR": 1.3150006432830708,
+        "der": 0.27588481042625285,
+        "whole_uem_der_contribution": 0.27588481042625285
+      },
+      "partitions": {
+        "occupancy": {
+          "silence": {
+            "SCORED_TIME": 58.65799999999996,
+            "SCORED_SPEAKER": 0.0,
+            "MISSED_SPEAKER": 0.0,
+            "FALARM_SPEAKER": 9.056998631402905,
+            "SPEAKER_ERROR": 0.0,
+            "der": null,
+            "whole_uem_der_contribution": 0.1297211164783642
+          },
+          "single": {
+            "SCORED_TIME": 53.465000000000146,
+            "SCORED_SPEAKER": 53.465000000000146,
+            "MISSED_SPEAKER": 2.3699995337427566,
+            "FALARM_SPEAKER": 4.328001091882513,
+            "SPEAKER_ERROR": 0.8580019287317384,
+            "der": 0.14132614896393877,
+            "whole_uem_der_contribution": 0.10822272668409763
+          },
+          "overlap": {
+            "SCORED_TIME": 7.876999999999896,
+            "SCORED_SPEAKER": 16.353999999999814,
+            "MISSED_SPEAKER": 2.19200167883929,
+            "FALARM_SPEAKER": 0.0,
+            "SPEAKER_ERROR": 0.45699871455133234,
+            "der": 0.16197874485695563,
+            "whole_uem_der_contribution": 0.037940967263791
+          }
+        },
+        "reference_span": {
+          "silence": {
+            "SCORED_TIME": 58.65799999999996,
+            "SCORED_SPEAKER": 0.0,
+            "MISSED_SPEAKER": 0.0,
+            "FALARM_SPEAKER": 9.056998631402905,
+            "SPEAKER_ERROR": 0.0,
+            "der": null,
+            "whole_uem_der_contribution": 0.1297211164783642
+          },
+          "short_only": {
+            "SCORED_TIME": 11.601000000000056,
+            "SCORED_SPEAKER": 11.878000000000043,
+            "MISSED_SPEAKER": 2.0849987543374837,
+            "FALARM_SPEAKER": 0.4140013145058816,
+            "SPEAKER_ERROR": 0.8760019287317675,
+            "der": 0.28413891207064496,
+            "whole_uem_der_contribution": 0.04833930588486135
+          },
+          "long_only": {
+            "SCORED_TIME": 44.811000000000035,
+            "SCORED_SPEAKER": 47.480999999999995,
+            "MISSED_SPEAKER": 0.6840007697940109,
+            "FALARM_SPEAKER": 3.913999777376631,
+            "SPEAKER_ERROR": 0.03500039987262937,
+            "der": 0.09757589239997624,
+            "whole_uem_der_contribution": 0.0663573088563754
+          },
+          "mixed": {
+            "SCORED_TIME": 4.92999999999995,
+            "SCORED_SPEAKER": 10.459999999999923,
+            "MISSED_SPEAKER": 1.793001688450552,
+            "FALARM_SPEAKER": 0.0,
+            "SPEAKER_ERROR": 0.40399831467867386,
+            "der": 0.21003824121694475,
+            "whole_uem_der_contribution": 0.03146707920665187
+          }
+        },
+        "crop_time": {
+          "first_30_seconds": {
+            "SCORED_TIME": 30.0,
+            "SCORED_SPEAKER": 13.346000000000004,
+            "MISSED_SPEAKER": 0.5730007349252446,
+            "FALARM_SPEAKER": 3.34600111915168,
+            "SPEAKER_ERROR": 0.3340004068017137,
+            "der": 0.31867243075667895,
+            "whole_uem_der_contribution": 0.060914683121766865
+          },
+          "remaining_90_seconds": {
+            "SCORED_TIME": 90.0,
+            "SCORED_SPEAKER": 56.472999999999956,
+            "MISSED_SPEAKER": 3.989000477656802,
+            "FALARM_SPEAKER": 10.038998604133738,
+            "SPEAKER_ERROR": 0.981000236481357,
+            "der": 0.26577301220533545,
+            "whole_uem_der_contribution": 0.21497012730448598
+          }
+        }
+      },
+      "global_reference_to_system_mapping": {
+        "ES2004a.A": "2",
+        "ES2004a.B": "4",
+        "ES2004a.C": "3",
+        "ES2004a.D": "1"
+      }
+    },
+    {
+      "slice": "ami-ES2004a-Array1-01",
+      "backend": "cpu",
+      "profile": "fp32_shared_threshold",
+      "total": {
+        "SCORED_TIME": 120.0,
+        "SCORED_SPEAKER": 69.81899999999996,
+        "MISSED_SPEAKER": 12.138000000000003,
+        "FALARM_SPEAKER": 3.229000000000071,
+        "SPEAKER_ERROR": 3.9079999999999835,
+        "der": 0.2760709835431626,
+        "whole_uem_der_contribution": 0.2760709835431626
+      },
+      "partitions": {
+        "occupancy": {
+          "silence": {
+            "SCORED_TIME": 58.65799999999996,
+            "SCORED_SPEAKER": 0.0,
+            "MISSED_SPEAKER": 0.0,
+            "FALARM_SPEAKER": 2.4510000000000653,
+            "SPEAKER_ERROR": 0.0,
+            "der": null,
+            "whole_uem_der_contribution": 0.035105057362609986
+          },
+          "single": {
+            "SCORED_TIME": 53.465000000000146,
+            "SCORED_SPEAKER": 53.465000000000146,
+            "MISSED_SPEAKER": 6.993000000000139,
+            "FALARM_SPEAKER": 0.7780000000000058,
+            "SPEAKER_ERROR": 2.342999999999968,
+            "der": 0.1891704853642586,
+            "whole_uem_der_contribution": 0.14486028158524353
+          },
+          "overlap": {
+            "SCORED_TIME": 7.876999999999896,
+            "SCORED_SPEAKER": 16.353999999999814,
+            "MISSED_SPEAKER": 5.144999999999865,
+            "FALARM_SPEAKER": 0.0,
+            "SPEAKER_ERROR": 1.5650000000000155,
+            "der": 0.4102971750030547,
+            "whole_uem_der_contribution": 0.09610564459530907
+          }
+        },
+        "reference_span": {
+          "silence": {
+            "SCORED_TIME": 58.65799999999996,
+            "SCORED_SPEAKER": 0.0,
+            "MISSED_SPEAKER": 0.0,
+            "FALARM_SPEAKER": 2.4510000000000653,
+            "SPEAKER_ERROR": 0.0,
+            "der": null,
+            "whole_uem_der_contribution": 0.035105057362609986
+          },
+          "short_only": {
+            "SCORED_TIME": 11.601000000000056,
+            "SCORED_SPEAKER": 11.878000000000043,
+            "MISSED_SPEAKER": 3.606000000000085,
+            "FALARM_SPEAKER": 0.20000000000000284,
+            "SPEAKER_ERROR": 2.231999999999992,
+            "der": 0.5083347364876291,
+            "whole_uem_der_contribution": 0.0864807573869589
+          },
+          "long_only": {
+            "SCORED_TIME": 44.811000000000035,
+            "SCORED_SPEAKER": 47.480999999999995,
+            "MISSED_SPEAKER": 5.058999999999973,
+            "FALARM_SPEAKER": 0.578000000000003,
+            "SPEAKER_ERROR": 0.3749999999999929,
+            "der": 0.12661906868010298,
+            "whole_uem_der_contribution": 0.0861083659175865
+          },
+          "mixed": {
+            "SCORED_TIME": 4.92999999999995,
+            "SCORED_SPEAKER": 10.459999999999923,
+            "MISSED_SPEAKER": 3.4729999999999457,
+            "FALARM_SPEAKER": 0.0,
+            "SPEAKER_ERROR": 1.3009999999999984,
+            "der": 0.4564053537284875,
+            "whole_uem_der_contribution": 0.0683768028760072
+          }
+        },
+        "crop_time": {
+          "first_30_seconds": {
+            "SCORED_TIME": 30.0,
+            "SCORED_SPEAKER": 13.346000000000004,
+            "MISSED_SPEAKER": 1.5049999999999333,
+            "FALARM_SPEAKER": 0.9389999999999299,
+            "SPEAKER_ERROR": 1.5670000000000393,
+            "der": 0.3005394874868801,
+            "whole_uem_der_contribution": 0.05744854552485577
+          },
+          "remaining_90_seconds": {
+            "SCORED_TIME": 90.0,
+            "SCORED_SPEAKER": 56.472999999999956,
+            "MISSED_SPEAKER": 10.63300000000007,
+            "FALARM_SPEAKER": 2.2900000000001413,
+            "SPEAKER_ERROR": 2.3409999999999442,
+            "der": 0.2702884564305096,
+            "whole_uem_der_contribution": 0.21862243801830683
+          }
+        }
+      },
+      "global_reference_to_system_mapping": {
+        "ES2004a.A": "2",
+        "ES2004a.B": "1",
+        "ES2004a.C": "3",
+        "ES2004a.D": "4"
+      }
+    },
+    {
+      "slice": "ami-ES2004a-Array1-01",
+      "backend": "cpu",
+      "profile": "q8_shared_threshold",
+      "total": {
+        "SCORED_TIME": 120.0,
+        "SCORED_SPEAKER": 69.81899999999996,
+        "MISSED_SPEAKER": 12.18599999999999,
+        "FALARM_SPEAKER": 3.2170000000000707,
+        "SPEAKER_ERROR": 3.7900000000000045,
+        "der": 0.27489651813976246,
+        "whole_uem_der_contribution": 0.27489651813976246
+      },
+      "partitions": {
+        "occupancy": {
+          "silence": {
+            "SCORED_TIME": 58.65799999999996,
+            "SCORED_SPEAKER": 0.0,
+            "MISSED_SPEAKER": 0.0,
+            "FALARM_SPEAKER": 2.429000000000067,
+            "SPEAKER_ERROR": 0.0,
+            "der": null,
+            "whole_uem_der_contribution": 0.03478995688852703
+          },
+          "single": {
+            "SCORED_TIME": 53.465000000000146,
+            "SCORED_SPEAKER": 53.465000000000146,
+            "MISSED_SPEAKER": 7.151000000000121,
+            "FALARM_SPEAKER": 0.7880000000000038,
+            "SPEAKER_ERROR": 2.1649999999999903,
+            "der": 0.18898344711493664,
+            "whole_uem_der_contribution": 0.14471705409702404
+          },
+          "overlap": {
+            "SCORED_TIME": 7.876999999999896,
+            "SCORED_SPEAKER": 16.353999999999814,
+            "MISSED_SPEAKER": 5.034999999999869,
+            "FALARM_SPEAKER": 0.0,
+            "SPEAKER_ERROR": 1.6250000000000142,
+            "der": 0.40723981900452233,
+            "whole_uem_der_contribution": 0.09538950715421142
+          }
+        },
+        "reference_span": {
+          "silence": {
+            "SCORED_TIME": 58.65799999999996,
+            "SCORED_SPEAKER": 0.0,
+            "MISSED_SPEAKER": 0.0,
+            "FALARM_SPEAKER": 2.429000000000067,
+            "SPEAKER_ERROR": 0.0,
+            "der": null,
+            "whole_uem_der_contribution": 0.03478995688852703
+          },
+          "short_only": {
+            "SCORED_TIME": 11.601000000000056,
+            "SCORED_SPEAKER": 11.878000000000043,
+            "MISSED_SPEAKER": 3.774000000000072,
+            "FALARM_SPEAKER": 0.21000000000000085,
+            "SPEAKER_ERROR": 2.0440000000000094,
+            "der": 0.5074928439131218,
+            "whole_uem_der_contribution": 0.0863375298987394
+          },
+          "long_only": {
+            "SCORED_TIME": 44.811000000000035,
+            "SCORED_SPEAKER": 47.480999999999995,
+            "MISSED_SPEAKER": 5.058999999999973,
+            "FALARM_SPEAKER": 0.578000000000003,
+            "SPEAKER_ERROR": 0.384999999999998,
+            "der": 0.12682967924011657,
+            "whole_uem_der_contribution": 0.08625159340580611
+          },
+          "mixed": {
+            "SCORED_TIME": 4.92999999999995,
+            "SCORED_SPEAKER": 10.459999999999923,
+            "MISSED_SPEAKER": 3.3529999999999447,
+            "FALARM_SPEAKER": 0.0,
+            "SPEAKER_ERROR": 1.360999999999997,
+            "der": 0.4506692160611832,
+            "whole_uem_der_contribution": 0.06751743794668993
+          }
+        },
+        "crop_time": {
+          "first_30_seconds": {
+            "SCORED_TIME": 30.0,
+            "SCORED_SPEAKER": 13.346000000000004,
+            "MISSED_SPEAKER": 1.502999999999922,
+            "FALARM_SPEAKER": 0.9369999999999203,
+            "SPEAKER_ERROR": 1.5690000000000506,
+            "der": 0.3003896298516328,
+            "whole_uem_der_contribution": 0.05741990002721172
+          },
+          "remaining_90_seconds": {
+            "SCORED_TIME": 90.0,
+            "SCORED_SPEAKER": 56.472999999999956,
+            "MISSED_SPEAKER": 10.683000000000067,
+            "FALARM_SPEAKER": 2.2800000000001504,
+            "SPEAKER_ERROR": 2.220999999999954,
+            "der": 0.26887185026473154,
+            "whole_uem_der_contribution": 0.21747661811255073
+          }
+        }
+      },
+      "global_reference_to_system_mapping": {
+        "ES2004a.A": "2",
+        "ES2004a.B": "1",
+        "ES2004a.C": "3",
+        "ES2004a.D": "4"
+      }
+    },
+    {
+      "slice": "ami-ES2004a-Array1-01",
+      "backend": "cpu",
+      "profile": "q8_production_default",
+      "total": {
+        "SCORED_TIME": 120.0,
+        "SCORED_SPEAKER": 69.81899999999996,
+        "MISSED_SPEAKER": 9.303003458037935,
+        "FALARM_SPEAKER": 10.532002117827446,
+        "SPEAKER_ERROR": 4.907998297467792,
+        "der": 0.35438782957838394,
+        "whole_uem_der_contribution": 0.35438782957838394
+      },
+      "partitions": {
+        "occupancy": {
+          "silence": {
+            "SCORED_TIME": 58.65799999999996,
+            "SCORED_SPEAKER": 0.0,
+            "MISSED_SPEAKER": 0.0,
+            "FALARM_SPEAKER": 8.189999008476711,
+            "SPEAKER_ERROR": 0.0,
+            "der": null,
+            "whole_uem_der_contribution": 0.11730329865046357
+          },
+          "single": {
+            "SCORED_TIME": 53.465000000000146,
+            "SCORED_SPEAKER": 53.465000000000146,
+            "MISSED_SPEAKER": 5.430003498941694,
+            "FALARM_SPEAKER": 2.336001725330881,
+            "SPEAKER_ERROR": 2.729000560134658,
+            "der": 0.19629675085396436,
+            "whole_uem_der_contribution": 0.15031733173501824
+          },
+          "overlap": {
+            "SCORED_TIME": 7.876999999999896,
+            "SCORED_SPEAKER": 16.353999999999814,
+            "MISSED_SPEAKER": 3.8729999590962407,
+            "FALARM_SPEAKER": 0.006001384019853617,
+            "SPEAKER_ERROR": 2.178997737333134,
+            "der": 0.37042919655431683,
+            "whole_uem_der_contribution": 0.0867671991929021
+          }
+        },
+        "reference_span": {
+          "silence": {
+            "SCORED_TIME": 58.65799999999996,
+            "SCORED_SPEAKER": 0.0,
+            "MISSED_SPEAKER": 0.0,
+            "FALARM_SPEAKER": 8.189999008476711,
+            "SPEAKER_ERROR": 0.0,
+            "der": null,
+            "whole_uem_der_contribution": 0.11730329865046357
+          },
+          "short_only": {
+            "SCORED_TIME": 11.601000000000056,
+            "SCORED_SPEAKER": 11.878000000000043,
+            "MISSED_SPEAKER": 3.4279987820536135,
+            "FALARM_SPEAKER": 0.23700137865542104,
+            "SPEAKER_ERROR": 2.775001901462673,
+            "der": 0.5421789915955282,
+            "whole_uem_der_contribution": 0.09223853194935062
+          },
+          "long_only": {
+            "SCORED_TIME": 44.811000000000035,
+            "SCORED_SPEAKER": 47.480999999999995,
+            "MISSED_SPEAKER": 2.818003397464743,
+            "FALARM_SPEAKER": 2.09900034667546,
+            "SPEAKER_ERROR": 0.26599905854460104,
+            "der": 0.10915951228248783,
+            "whole_uem_der_contribution": 0.07423484728633763
+          },
+          "mixed": {
+            "SCORED_TIME": 4.92999999999995,
+            "SCORED_SPEAKER": 10.459999999999923,
+            "MISSED_SPEAKER": 3.0570012785195786,
+            "FALARM_SPEAKER": 0.006001384019853617,
+            "SPEAKER_ERROR": 1.8669973374605178,
+            "der": 0.4713193116634786,
+            "whole_uem_der_contribution": 0.0706111516922321
+          }
+        },
+        "crop_time": {
+          "first_30_seconds": {
+            "SCORED_TIME": 30.0,
+            "SCORED_SPEAKER": 13.346000000000004,
+            "MISSED_SPEAKER": 0.5730007349252446,
+            "FALARM_SPEAKER": 3.38600111825761,
+            "SPEAKER_ERROR": 1.9240004079192872,
+            "der": 0.44080640349933614,
+            "whole_uem_der_contribution": 0.08426076370475294
+          },
+          "remaining_90_seconds": {
+            "SCORED_TIME": 90.0,
+            "SCORED_SPEAKER": 56.472999999999956,
+            "MISSED_SPEAKER": 8.73000272311269,
+            "FALARM_SPEAKER": 7.146000999569836,
+            "SPEAKER_ERROR": 2.9839978895485046,
+            "der": 0.33396493213094836,
+            "whole_uem_der_contribution": 0.270127065873631
+          }
+        }
+      },
+      "global_reference_to_system_mapping": {
+        "ES2004a.A": "2",
+        "ES2004a.B": "1",
+        "ES2004a.C": "3",
+        "ES2004a.D": "4"
+      }
+    },
+    {
+      "slice": "ami-ES2004a-Array1-01",
+      "backend": "metal",
+      "profile": "fp32_shared_threshold",
+      "total": {
+        "SCORED_TIME": 120.0,
+        "SCORED_SPEAKER": 69.81899999999996,
+        "MISSED_SPEAKER": 12.138000000000003,
+        "FALARM_SPEAKER": 3.229000000000071,
+        "SPEAKER_ERROR": 3.9079999999999835,
+        "der": 0.2760709835431626,
+        "whole_uem_der_contribution": 0.2760709835431626
+      },
+      "partitions": {
+        "occupancy": {
+          "silence": {
+            "SCORED_TIME": 58.65799999999996,
+            "SCORED_SPEAKER": 0.0,
+            "MISSED_SPEAKER": 0.0,
+            "FALARM_SPEAKER": 2.4510000000000653,
+            "SPEAKER_ERROR": 0.0,
+            "der": null,
+            "whole_uem_der_contribution": 0.035105057362609986
+          },
+          "single": {
+            "SCORED_TIME": 53.465000000000146,
+            "SCORED_SPEAKER": 53.465000000000146,
+            "MISSED_SPEAKER": 6.993000000000139,
+            "FALARM_SPEAKER": 0.7780000000000058,
+            "SPEAKER_ERROR": 2.342999999999968,
+            "der": 0.1891704853642586,
+            "whole_uem_der_contribution": 0.14486028158524353
+          },
+          "overlap": {
+            "SCORED_TIME": 7.876999999999896,
+            "SCORED_SPEAKER": 16.353999999999814,
+            "MISSED_SPEAKER": 5.144999999999865,
+            "FALARM_SPEAKER": 0.0,
+            "SPEAKER_ERROR": 1.5650000000000155,
+            "der": 0.4102971750030547,
+            "whole_uem_der_contribution": 0.09610564459530907
+          }
+        },
+        "reference_span": {
+          "silence": {
+            "SCORED_TIME": 58.65799999999996,
+            "SCORED_SPEAKER": 0.0,
+            "MISSED_SPEAKER": 0.0,
+            "FALARM_SPEAKER": 2.4510000000000653,
+            "SPEAKER_ERROR": 0.0,
+            "der": null,
+            "whole_uem_der_contribution": 0.035105057362609986
+          },
+          "short_only": {
+            "SCORED_TIME": 11.601000000000056,
+            "SCORED_SPEAKER": 11.878000000000043,
+            "MISSED_SPEAKER": 3.606000000000085,
+            "FALARM_SPEAKER": 0.20000000000000284,
+            "SPEAKER_ERROR": 2.231999999999992,
+            "der": 0.5083347364876291,
+            "whole_uem_der_contribution": 0.0864807573869589
+          },
+          "long_only": {
+            "SCORED_TIME": 44.811000000000035,
+            "SCORED_SPEAKER": 47.480999999999995,
+            "MISSED_SPEAKER": 5.058999999999973,
+            "FALARM_SPEAKER": 0.578000000000003,
+            "SPEAKER_ERROR": 0.3749999999999929,
+            "der": 0.12661906868010298,
+            "whole_uem_der_contribution": 0.0861083659175865
+          },
+          "mixed": {
+            "SCORED_TIME": 4.92999999999995,
+            "SCORED_SPEAKER": 10.459999999999923,
+            "MISSED_SPEAKER": 3.4729999999999457,
+            "FALARM_SPEAKER": 0.0,
+            "SPEAKER_ERROR": 1.3009999999999984,
+            "der": 0.4564053537284875,
+            "whole_uem_der_contribution": 0.0683768028760072
+          }
+        },
+        "crop_time": {
+          "first_30_seconds": {
+            "SCORED_TIME": 30.0,
+            "SCORED_SPEAKER": 13.346000000000004,
+            "MISSED_SPEAKER": 1.5049999999999333,
+            "FALARM_SPEAKER": 0.9389999999999299,
+            "SPEAKER_ERROR": 1.5670000000000393,
+            "der": 0.3005394874868801,
+            "whole_uem_der_contribution": 0.05744854552485577
+          },
+          "remaining_90_seconds": {
+            "SCORED_TIME": 90.0,
+            "SCORED_SPEAKER": 56.472999999999956,
+            "MISSED_SPEAKER": 10.63300000000007,
+            "FALARM_SPEAKER": 2.2900000000001413,
+            "SPEAKER_ERROR": 2.3409999999999442,
+            "der": 0.2702884564305096,
+            "whole_uem_der_contribution": 0.21862243801830683
+          }
+        }
+      },
+      "global_reference_to_system_mapping": {
+        "ES2004a.A": "2",
+        "ES2004a.B": "1",
+        "ES2004a.C": "3",
+        "ES2004a.D": "4"
+      }
+    },
+    {
+      "slice": "ami-ES2004a-Array1-01",
+      "backend": "metal",
+      "profile": "q8_shared_threshold",
+      "total": {
+        "SCORED_TIME": 120.0,
+        "SCORED_SPEAKER": 69.81899999999996,
+        "MISSED_SPEAKER": 12.125999999999998,
+        "FALARM_SPEAKER": 3.1970000000000534,
+        "SPEAKER_ERROR": 3.8530000000000033,
+        "der": 0.27465303140978914,
+        "whole_uem_der_contribution": 0.27465303140978914
+      },
+      "partitions": {
+        "occupancy": {
+          "silence": {
+            "SCORED_TIME": 58.65799999999996,
+            "SCORED_SPEAKER": 0.0,
+            "MISSED_SPEAKER": 0.0,
+            "FALARM_SPEAKER": 2.4190000000000476,
+            "SPEAKER_ERROR": 0.0,
+            "der": null,
+            "whole_uem_der_contribution": 0.034646729400307205
+          },
+          "single": {
+            "SCORED_TIME": 53.465000000000146,
+            "SCORED_SPEAKER": 53.465000000000146,
+            "MISSED_SPEAKER": 7.0610000000001385,
+            "FALARM_SPEAKER": 0.7780000000000058,
+            "SPEAKER_ERROR": 2.2749999999999684,
+            "der": 0.1891704853642586,
+            "whole_uem_der_contribution": 0.14486028158524353
+          },
+          "overlap": {
+            "SCORED_TIME": 7.876999999999896,
+            "SCORED_SPEAKER": 16.353999999999814,
+            "MISSED_SPEAKER": 5.064999999999859,
+            "FALARM_SPEAKER": 0.0,
+            "SPEAKER_ERROR": 1.578000000000035,
+            "der": 0.406200317965022,
+            "whole_uem_der_contribution": 0.09514602042423836
+          }
+        },
+        "reference_span": {
+          "silence": {
+            "SCORED_TIME": 58.65799999999996,
+            "SCORED_SPEAKER": 0.0,
+            "MISSED_SPEAKER": 0.0,
+            "FALARM_SPEAKER": 2.4190000000000476,
+            "SPEAKER_ERROR": 0.0,
+            "der": null,
+            "whole_uem_der_contribution": 0.034646729400307205
+          },
+          "short_only": {
+            "SCORED_TIME": 11.601000000000056,
+            "SCORED_SPEAKER": 11.878000000000043,
+            "MISSED_SPEAKER": 3.68400000000009,
+            "FALARM_SPEAKER": 0.20000000000000284,
+            "SPEAKER_ERROR": 2.1539999999999875,
+            "der": 0.5083347364876291,
+            "whole_uem_der_contribution": 0.0864807573869589
+          },
+          "long_only": {
+            "SCORED_TIME": 44.811000000000035,
+            "SCORED_SPEAKER": 47.480999999999995,
+            "MISSED_SPEAKER": 5.038999999999962,
+            "FALARM_SPEAKER": 0.578000000000003,
+            "SPEAKER_ERROR": 0.384999999999998,
+            "der": 0.12640845812008938,
+            "whole_uem_der_contribution": 0.08596513842936689
+          },
+          "mixed": {
+            "SCORED_TIME": 4.92999999999995,
+            "SCORED_SPEAKER": 10.459999999999923,
+            "MISSED_SPEAKER": 3.4029999999999454,
+            "FALARM_SPEAKER": 0.0,
+            "SPEAKER_ERROR": 1.3140000000000178,
+            "der": 0.4509560229445505,
+            "whole_uem_der_contribution": 0.0675604061931561
+          }
+        },
+        "crop_time": {
+          "first_30_seconds": {
+            "SCORED_TIME": 30.0,
+            "SCORED_SPEAKER": 13.346000000000004,
+            "MISSED_SPEAKER": 1.5129999999999235,
+            "FALARM_SPEAKER": 0.9369999999999203,
+            "SPEAKER_ERROR": 1.559000000000049,
+            "der": 0.3003896298516328,
+            "whole_uem_der_contribution": 0.05741990002721172
+          },
+          "remaining_90_seconds": {
+            "SCORED_TIME": 90.0,
+            "SCORED_SPEAKER": 56.472999999999956,
+            "MISSED_SPEAKER": 10.613000000000074,
+            "FALARM_SPEAKER": 2.260000000000133,
+            "SPEAKER_ERROR": 2.2939999999999543,
+            "der": 0.26857082145450345,
+            "whole_uem_der_contribution": 0.21723313138257738
+          }
+        }
+      },
+      "global_reference_to_system_mapping": {
+        "ES2004a.A": "2",
+        "ES2004a.B": "1",
+        "ES2004a.C": "3",
+        "ES2004a.D": "4"
+      }
+    },
+    {
+      "slice": "ami-ES2004a-Array1-01",
+      "backend": "metal",
+      "profile": "q8_production_default",
+      "total": {
+        "SCORED_TIME": 120.0,
+        "SCORED_SPEAKER": 69.81899999999996,
+        "MISSED_SPEAKER": 9.303003458037935,
+        "FALARM_SPEAKER": 10.532002117827446,
+        "SPEAKER_ERROR": 4.897998297691309,
+        "der": 0.3542446020933658,
+        "whole_uem_der_contribution": 0.3542446020933658
+      },
+      "partitions": {
+        "occupancy": {
+          "silence": {
+            "SCORED_TIME": 58.65799999999996,
+            "SCORED_SPEAKER": 0.0,
+            "MISSED_SPEAKER": 0.0,
+            "FALARM_SPEAKER": 8.199999008253194,
+            "SPEAKER_ERROR": 0.0,
+            "der": null,
+            "whole_uem_der_contribution": 0.11744652613548172
+          },
+          "single": {
+            "SCORED_TIME": 53.465000000000146,
+            "SCORED_SPEAKER": 53.465000000000146,
+            "MISSED_SPEAKER": 5.430003498941694,
+            "FALARM_SPEAKER": 2.3260017255543985,
+            "SPEAKER_ERROR": 2.729000560134658,
+            "der": 0.196109712608823,
+            "whole_uem_der_contribution": 0.1501741042500001
+          },
+          "overlap": {
+            "SCORED_TIME": 7.876999999999896,
+            "SCORED_SPEAKER": 16.353999999999814,
+            "MISSED_SPEAKER": 3.8729999590962407,
+            "FALARM_SPEAKER": 0.006001384019853617,
+            "SPEAKER_ERROR": 2.1689977375566514,
+            "der": 0.3698177253682777,
+            "whole_uem_der_contribution": 0.08662397170788394
+          }
+        },
+        "reference_span": {
+          "silence": {
+            "SCORED_TIME": 58.65799999999996,
+            "SCORED_SPEAKER": 0.0,
+            "MISSED_SPEAKER": 0.0,
+            "FALARM_SPEAKER": 8.199999008253194,
+            "SPEAKER_ERROR": 0.0,
+            "der": null,
+            "whole_uem_der_contribution": 0.11744652613548172
+          },
+          "short_only": {
+            "SCORED_TIME": 11.601000000000056,
+            "SCORED_SPEAKER": 11.878000000000043,
+            "MISSED_SPEAKER": 3.4279987820536135,
+            "FALARM_SPEAKER": 0.23700137865542104,
+            "SPEAKER_ERROR": 2.775001901462673,
+            "der": 0.5421789915955282,
+            "whole_uem_der_contribution": 0.09223853194935062
+          },
+          "long_only": {
+            "SCORED_TIME": 44.811000000000035,
+            "SCORED_SPEAKER": 47.480999999999995,
+            "MISSED_SPEAKER": 2.818003397464743,
+            "FALARM_SPEAKER": 2.0890003468989775,
+            "SPEAKER_ERROR": 0.25599905876811846,
+            "der": 0.1087382911718759,
+            "whole_uem_der_contribution": 0.07394839231630132
+          },
+          "mixed": {
+            "SCORED_TIME": 4.92999999999995,
+            "SCORED_SPEAKER": 10.459999999999923,
+            "MISSED_SPEAKER": 3.0570012785195786,
+            "FALARM_SPEAKER": 0.006001384019853617,
+            "SPEAKER_ERROR": 1.8669973374605178,
+            "der": 0.4713193116634786,
+            "whole_uem_der_contribution": 0.0706111516922321
+          }
+        },
+        "crop_time": {
+          "first_30_seconds": {
+            "SCORED_TIME": 30.0,
+            "SCORED_SPEAKER": 13.346000000000004,
+            "MISSED_SPEAKER": 0.5830007347017272,
+            "FALARM_SPEAKER": 3.3960011180340928,
+            "SPEAKER_ERROR": 1.9140004081428046,
+            "der": 0.44155569165882086,
+            "whole_uem_der_contribution": 0.0844039911897711
+          },
+          "remaining_90_seconds": {
+            "SCORED_TIME": 90.0,
+            "SCORED_SPEAKER": 56.472999999999956,
+            "MISSED_SPEAKER": 8.720002723336208,
+            "FALARM_SPEAKER": 7.136000999793353,
+            "SPEAKER_ERROR": 2.9839978895485046,
+            "der": 0.33361078059741966,
+            "whole_uem_der_contribution": 0.2698406109035947
+          }
+        }
+      },
+      "global_reference_to_system_mapping": {
+        "ES2004a.A": "2",
+        "ES2004a.B": "1",
+        "ES2004a.C": "3",
+        "ES2004a.D": "4"
+      }
+    }
+  ]
+}

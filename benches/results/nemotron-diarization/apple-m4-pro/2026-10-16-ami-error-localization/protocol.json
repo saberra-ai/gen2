@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "name": "AMI saved-output error localization v1",
+  "release_qualified": false,
+  "purpose": "Post-failure localization of fixed existing AMI published-reference errors. No inference, retuning, reference replacement or fresh heldout/release qualification.",
+  "prior_reference_protocol_sha256": "190b73dac9cbdfc16e9e298d5c3892227514dd8ddfe45bb67f149388cff51c2d",
+  "channels": [
+    "Mix-Headset",
+    "Array1-01"
+  ],
+  "backends": [
+    "cpu",
+    "metal"
+  ],
+  "profiles": [
+    "fp32_shared_threshold",
+    "q8_shared_threshold",
+    "q8_production_default"
+  ],
+  "local_uem_seconds": [
+    0,
+    120
+  ],
+  "source_interval_seconds": [
+    300,
+    420
+  ],
+  "collar_seconds": 0,
+  "overlap_included": true,
+  "mapping_rule": "One optimal reference-to-system speaker map per full 120-second UEM/profile/backend/channel from the pinned official continuous scorer; retain it for every bin. No per-bin remapping.",
+  "bin_definitions": {
+    "occupancy": {
+      "silence": "Zero reference speakers",
+      "single": "Exactly one reference speaker",
+      "overlap": "At least two reference speakers"
+    },
+    "reference_span": {
+      "silence": "No active input reference RTTM span",
+      "short_only": "Only clipped input reference spans of duration <=1 second active",
+      "long_only": "Only clipped input reference spans of duration >1 second active",
+      "mixed": "Both short and long input reference spans active"
+    },
+    "crop_time": {
+      "first_30_seconds": "[0,30) local seconds",
+      "remaining_90_seconds": "[30,120) local seconds"
+    }
+  },
+  "aggregation": "Each axis partitions the full UEM exhaustively; retain empty bins and silence false alarms. Report wall time, reference speaker-seconds and all three error components. Assert exact additive agreement to 1e-8 seconds with official whole-UEM components; bin DER is null for zero reference denominator, whole-UEM DER contribution always uses the full reference denominator.",
+  "independent_scorer": {
+    "url": "https://raw.githubusercontent.com/NVIDIA-NeMo/Speech/218d0b443441b7d8aa1c832f47df310f186cf0a4/nemo/collections/asr/metrics/md_eval.py",
+    "revision": "218d0b443441b7d8aa1c832f47df310f186cf0a4",
+    "bytes": 54914,
+    "sha256": "c34af6eeec07e1df795c6820f36cb05459c28ac8d5d84fb0efea433035546de3",
+    "license": "Apache-2.0 with retained original BSD-2-Clause notice",
+    "numpy_version": "2.2.6",
+    "scipy_version": "1.18.1",
+    "invocation": "Unmodified md_eval.py get_rttm_data/get_uem_data/evaluate(collar=0,opt_1=False,verbose=False); standard Python logging shim only for nemo.utils.logging. These NumPy/SciPy pins match our original oracle environment, not the full official NeMo lock.",
+    "calibrations": "Before reading target labels: synthetic overlap/mapping, missed overlap, false alarm and global confusion cases on exact10ms boundaries, expected DER0/.5/.5/.5."
+  },
+  "inference_inputs": {
+    "ami-ES2004a-Array1-01-cpu-gen2.json": {
+      "sha256": "f86a92cee2dc63aafddefd998636c0635a0bbf4d4ac96a63212990ece38eae2a",
+      "bytes": 5774
+    },
+    "ami-ES2004a-Array1-01-metal-gen2.f32": {
+      "sha256": "491d1c0150b3b9ea7924dbc0762ff2e16c8e948e5b7bd060439c7369efcea28b",
+      "bytes": 384032
+    },
+    "ami-ES2004a-Mix-Headset-metal-gen2.f32": {
+      "sha256": "36573e340860310a8ed142087c4562c1dba5264589753db917714955a5c7941f",
+      "bytes": 384032
+    },
+    "ami-ES2004a-Array1-01-metal-gen2.json": {
+      "sha256": "99cb0353c26792c296ed92ea1856170f2d8ee23e9e91f425f13f54d2c37e4db6",
+      "bytes": 5775
+    },
+    "ami-ES2004a-Mix-Headset-metal-gen2.json": {
+      "sha256": "a2ad15a98b9c67712ec0b10e5b27382d5954a3fb5b641820ac3967feec0e375f",
+      "bytes": 6012
+    },
+    "ami-ES2004a-Mix-Headset-fp32.npy": {
+      "sha256": "2db1197c259343daf67f6a4497cd3b7d91cfde2214afb2bdea19917d640c3a4d",
+      "bytes": 384128
+    },
+    "ami-ES2004a-Array1-01-fp32.npy": {
+      "sha256": "177854edb832800fa4364e4d1382f44f10f64433036f7b0b4d50110ba6918273",
+      "bytes": 384128
+    },
+    "ami-ES2004a-Array1-01-cpu-gen2.f32": {
+      "sha256": "4bab53c38c28104fc634b1997b98e437962d18faf4170ab409c10a1c7a5a6e39",
+      "bytes": 384032
+    },
+    "ami-ES2004a-Mix-Headset-cpu-gen2.json": {
+      "sha256": "4da7657dfa0fe0b7013850bab2c4519da6ee012a9ef0a242d0c4c999dec11225",
+      "bytes": 6014
+    },
+    "ami-ES2004a-Mix-Headset-cpu-gen2.f32": {
+      "sha256": "0421979bbec6d868afce1e99f1f72fe19b4d30a40e66d1cddfc4dbbcac74a1f1",
+      "bytes": 384032
+    }
+  },
+  "reference_diagnostic_inputs": {
+    "result.json": {
+      "bytes": 28458,
+      "sha256": "9647542f9a9221dfd5e89b851f6d7e20d93585eb2442d5cd80cfef856fa7ffdd"
+    },
+    "cropped-reference.json": {
+      "bytes": 5289,
+      "sha256": "3bb4ce616b73e3028fe6ee2a95ded32880dd4db31affe86f1d671ed678b26742"
+    },
+    "md_eval.py": {
+      "bytes": 54914,
+      "sha256": "c34af6eeec07e1df795c6820f36cb05459c28ac8d5d84fb0efea433035546de3"
+    }
+  },
+  "limitations": [
+    "Already-seen 120-second cold-start crops; no new untouched-heldout validation or full meeting/model-card reproduction.",
+    "Input clipped RTTM span length defines timeline strata; these are collective reference-occupancy bins, not causal attribution to individual replies. Crop-edge spans retain clipping. No span merging, label-driven hypothesis filtering, threshold/context tuning or changed original gate.",
+    "FP32 is the already executed official HF/PyTorch CPU run, repeated for both backend comparisons; native Q8 outputs are existing CPU/Metal results.",
+    "Published lexical references are diagnostic only. Frozen transcription-reference failures and all release gates remain unchanged."
+  ],
+  "tools": {
+    "diagnose_ami_errors.py": "ee5aadf90546af3b6dc0adee71c84e79a9bc4428169ca75d782c764a717b2f98",
+    "test_ami_error_localization.py": "66c3309eb32924aacfe2a7ff0ffa25a8bffc362189be93400a67c1a60adcc01e",
+    "diagnose_ami_reference.py": "5df4b4999f1868460472538c36bd08a77258b4585257d7b4d37ca49e5f346a03",
+    "compare.py": "a53fccc162ead3b488a3880950d4dbf244897fd837f3b8e0898235029e559282",
+    "score.py": "32aea92676133e42e2c30a914f8729d1c31c0c96e02faf9b7cab42911b389eb8"
+  }
+}

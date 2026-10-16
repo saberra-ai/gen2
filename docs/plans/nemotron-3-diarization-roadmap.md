@@ -578,8 +578,20 @@ execution at the recommended 9/4/0/264/264/222 geometry. It distinguishes the
 legacy native postprocessor from that geometry and proposes saved-output error
 localization, frontend/model numerical controls, one fixed session-prefix
 contrast and a canonical context comparison on separate development data. These
-are unrun diagnostics; neither a native F32 control nor original-NeMo execution
-is claimed. The 13-job feature matrix also passed at `4974318`.
+were proposals at that source audit; neither a native F32 control nor
+original-NeMo execution is claimed. The first proposed saved-output localization is now complete at
+`5113a30`: all12 channel/backend/profile scores and four official synthetic
+controls reproduce, with exhaustive additive bins using each full-UEM speaker
+map. Distant CPU shared Q8 error is40.7240% within reference-overlap bins and
+50.7493% within short-only reference-span bins, versus18.8983% in single-speaker
+bins and12.6830% in long-only span bins. These use different conditional
+denominators and do not exclude silence false alarms from the full total.
+The distant remaining90s still has26.8872% shared Q8 DER, so the failure is not
+confined to initial30s. Production false activity in reference silence is
+9.037 close /8.190 distant speaker-seconds, versus2.439 /2.429 for shared Q8.
+See the [11-file localization receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-ami-error-localization/qualification.json).
+This diagnoses already-seen inputs, not a new release setting or passed gate.
+The 13-job feature matrix also passed at `4974318`.
 
 Linux/Windows CPU development jobs now build the pinned source SDK with an
 explicit x86_64AVX2/FMA/F16C baseline, retain installed dependency discovery,

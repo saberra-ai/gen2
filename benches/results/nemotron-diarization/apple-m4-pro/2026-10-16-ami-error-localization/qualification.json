@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "source_commit": "5113a30161b3592479b460b129a6d21f78ffdabe",
+  "release_qualified": false,
+  "original_gate_status_changed": false,
+  "inference_performed": false,
+  "reference_changed": false,
+  "results": 12,
+  "official_synthetic_controls": 4,
+  "all_previous_official_results_reproduced": true,
+  "all_partitions_exhaustive_and_additive": true,
+  "maximum_partition_component_rounding_seconds": 0.0,
+  "independent_receiver_replay_exact": true,
+  "execution_argv": [
+    "/Users/victor/.cache/gen2-nemotron3-n0/python-reference/bin/python",
+    "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/diagnose_ami_errors.py",
+    "--evidence",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907",
+    "--reference-diagnostic",
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-ami-reference-diagnostic",
+    "--output",
+    "/Users/victor/.cache/gen2-nemotron3-n0/ami-error-localization-5113a30"
+  ],
+  "receiver_replay_returncode": 0,
+  "limits": [
+    "Already-seen 120-second cold-start crops; no new untouched-heldout validation or full meeting/model-card reproduction.",
+    "Input clipped RTTM span length defines timeline strata; these are collective reference-occupancy bins, not causal attribution to individual replies. Crop-edge spans retain clipping. No span merging, label-driven hypothesis filtering, threshold/context tuning or changed original gate.",
+    "FP32 is the already executed official HF/PyTorch CPU run, repeated for both backend comparisons; native Q8 outputs are existing CPU/Metal results.",
+    "Published lexical references are diagnostic only. Frozen transcription-reference failures and all release gates remain unchanged."
+  ]
+}
