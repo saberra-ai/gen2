@@ -1,6 +1,6 @@
 # Nemotron 3 Diarization support in Gen2
 
-Status: N0 implemented and qualified on macOS arm64 CPU; N1–N5 pending.
+Status: N0 implementation in final verification; N1–N5 pending.
 Prepared: 2026-10-14.
 Updated: 2026-10-15.
 
@@ -390,10 +390,13 @@ and [measured receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2
   concurrent Gen2 chat/diarization calls passed with unchanged results. The
   selected route is an optional in-process, host-supplied dynamic SDK. macOS
   loader/namespace evidence supports this decision only for the tested stack.
-- Native default segmentation DER is 25.22% on this one excerpt. Identical
-  external thresholding gives Q8 29.86% and FP32 33.45%; these are a smoke
-  comparison, not a model ranking. The brief fourth reference speaker is missed
-  by the native output. The two-point Q8 degradation bound passes on this clip.
+- With explicitly matched low-latency geometry (chunk 9/right 4/FIFO 264/cache
+  264/update 222), native default segmentation DER is 30.38% on this excerpt.
+  Identical external thresholding gives Q8 33.38% and FP32 33.45%, with four
+  speakers in each output. These are a smoke comparison, not a model ranking.
+  The two-point Q8 degradation bound passes on this clip. The SDK's differently
+  configured V3 default yields 25.22% DER and three speakers; it is a separate
+  configuration, not evidence about quantization quality.
 
 N0 also establishes two constraints for N1: retain the padded final raw frame
 in diagnostics but clip presented intervals to actual audio duration; package

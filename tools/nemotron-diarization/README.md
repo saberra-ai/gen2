@@ -62,7 +62,11 @@ HF_HUB_OFFLINE=1 "$task_cache/python-reference/bin/python" tools/nemotron-diariz
 `native_probe.cpp` is an N0 experiment compiled against the real installed
 public header. It retains eight-speaker probabilities and final segments after
 160 ms pushes, then tests real audio → silence → a 1.117-second tail → real audio
-again. CPU is explicit (`gpu=-1`); left context `-1` preserves the V3 preset.
+again. CPU is explicit (`gpu=-1`). Geometry is explicitly matched to the official
+reference: chunk 9, right context 4, left context 0, FIFO 264, cache 264 and
+update period 222 (all on the coarse 80 ms grid). The SDK's similarly named V3
+preset instead uses chunk 13/right 1/FIFO 80/update 40, so names alone are not
+evidence of matched settings.
 The independent Transformers reference uses official original FP32 weights on
 CPU with matched low-latency geometry. It does not load the native SDK.
 
@@ -80,8 +84,8 @@ neither is the native stateless full-attention operation.
 
 ## Compare against the unmodified upstream C example
 
-The upstream example zero-initializes `left_context_frames`, so match it
-explicitly for this comparison instead of assuming zero preserves defaults:
+Use a separate SDK-default geometry run to match the unmodified upstream
+example; do not compare that run against the official Python low-latency mode:
 
 ```sh
 "$task_cache/sdk-cpu/bin/diarize_file" "$task_cache/assets/Nemotron-3-Diarization.q8_0.gguf" \
@@ -89,7 +93,7 @@ explicitly for this comparison instead of assuming zero preserves defaults:
   > "$task_cache/receipts/upstream-ami.rttm" 2> "$task_cache/receipts/upstream-ami.log"
 python3 tools/nemotron-diarization/run_native.py \
   --shim "$task_cache/receipts/build/n0_probe.dylib" --assets "$task_cache/assets" \
-  --left-context 0 --output "$task_cache/receipts/native-example-settings"
+  --geometry upstream-example --output "$task_cache/receipts/native-example-settings"
 ```
 
 ## Prove coexistence in real Gen2
@@ -127,7 +131,7 @@ in-process C ABI route on this specific Mac, not a universal dual-ggml guarantee
 ## Verification
 
 ```sh
-python3 -m unittest discover -s tools/nemotron-diarization -p 'test_*.py' -v
+"$task_cache/python-reference/bin/python" -m unittest discover -s tools/nemotron-diarization -p 'test_*.py' -v
 cargo test --locked
 cargo clippy --locked --manifest-path tools/nemotron-diarization/coexistence/Cargo.toml -- -D warnings
 ```

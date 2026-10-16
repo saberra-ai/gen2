@@ -40,6 +40,8 @@ def main():
     if not np.isfinite(q8).all() or not np.isfinite(fp32).all():
         raise ValueError("non-finite frame probabilities")
     duration = samples / 16000
+    if native["geometry"] != metadata["geometry"]:
+        raise ValueError("native/reference streaming geometry differs")
     if abs(native["audio_seconds"] - duration) > 1e-9:
         raise ValueError("native/reference audio durations differ")
     reference = read_rttm(a.rttm)
@@ -50,6 +52,8 @@ def main():
     output = {"scope": "one licensed 60-second AMI smoke fixture; not release qualification",
               "native_sha256": digest(a.native), "reference_sha256": digest(a.reference.with_suffix('.npy')),
               "native_probabilities_sha256": digest(Path(str(a.native) + ".f32")),
+              "reference_metadata_sha256": digest(a.reference.with_suffix(".json")),
+              "geometry": metadata["geometry"],
               "rttm_sha256": digest(a.rttm),
               "shape_difference": {"native": list(q8.shape), "reference": list(fp32.shape),
                                    "extra_native_tail_frames": 1, "frame_seconds": .01,

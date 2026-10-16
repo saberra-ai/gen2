@@ -13,8 +13,7 @@ def main():
     p.add_argument("--shim", type=Path, required=True)
     p.add_argument("--assets", type=Path, required=True)
     p.add_argument("--output", type=Path, required=True)
-    p.add_argument("--left-context", type=int, default=-1,
-                   help="-1 keeps V3 preset; 0 matches upstream example's zero initialization")
+    p.add_argument("--geometry", choices=["official", "upstream-example"], default="official")
     a = p.parse_args()
     lock = json.loads(Path(__file__).with_name("runtime.lock.json").read_text())
     for entry in lock["artifacts"]:
@@ -37,7 +36,8 @@ def main():
     library.n0_run.restype = ctypes.c_int
     library.n0_last_error.argtypes = []
     library.n0_last_error.restype = ctypes.c_char_p
-    model = library.n0_open(str(a.assets / "Nemotron-3-Diarization.q8_0.gguf").encode(), a.left_context)
+    model = library.n0_open(str(a.assets / "Nemotron-3-Diarization.q8_0.gguf").encode(),
+                            int(a.geometry == "official"))
     if not model:
         raise RuntimeError(library.n0_last_error().decode())
     records = []
@@ -57,8 +57,9 @@ def main():
         library.n0_close(model)
     if records[0]["segments"] != records[-1]["segments"]:
         raise ValueError("A–B–A native state contamination")
-    receipt = {"records": records, "left_context_frames": a.left_context,
-               "preset": "v3-streaming", "push_samples": 2560,
+    receipt = {"records": records, "geometry": records[0]["geometry"], "push_samples": 2560,
+               "runner_sha256": digest(Path(__file__)),
+               "lock_sha256": digest(Path(__file__).with_name("runtime.lock.json")),
                "shim_sha256": digest(a.shim), "model_revision": lock["model"]["revision"]}
     (a.output / "native.json").write_text(json.dumps(receipt, indent=2) + "\n")
     print(a.output / "native.json")

@@ -19,35 +19,48 @@ void check(nemo_speech_asr_status status) {
 }
 using Model = std::unique_ptr<nemo_speech_diar_model, decltype(&nemo_speech_diar_destroy)>;
 using Stream = std::unique_ptr<nemo_speech_diar_stream, decltype(&nemo_speech_diar_stream_close)>;
+struct ProbeModel { Model model; bool official_geometry; };
 }
 
 extern "C" const char* n0_last_error() { return error.c_str(); }
 extern "C" void n0_close(void* model) {
-    nemo_speech_diar_destroy(static_cast<nemo_speech_diar_model*>(model));
+    delete static_cast<ProbeModel*>(model);
 }
-extern "C" void* n0_open(const char* path, int left_context_frames) noexcept {
+extern "C" void* n0_open(const char* path, int official_geometry) noexcept {
     try {
         nemo_speech_diar_model_config cfg{};
         cfg.size = sizeof(cfg);
         cfg.model_path = path;
         cfg.gpu = -1;
         cfg.preset = "v3-streaming";
-        cfg.left_context_frames = left_context_frames;
+        if (official_geometry != 0 && official_geometry != 1)
+            throw std::runtime_error("unknown qualification geometry");
+        cfg.left_context_frames = 0;
+        if (official_geometry) {
+            // Official Transformers low_latency geometry, explicitly matched.
+            // The SDK's v3-streaming default is 13/1, FIFO80, update40 instead.
+            cfg.chunk_frames = 9;
+            cfg.right_context_frames = 4;
+            cfg.fifo_frames = 264;
+            cfg.spkcache_frames = 264;
+            cfg.update_period_frames = 222;
+        }
         nemo_speech_diar_model* model = nullptr;
         check(nemo_speech_diar_create(&cfg, &model));
         Model owned(model, nemo_speech_diar_destroy);
         if (nemo_speech_diar_num_speakers(model) != 8 ||
             std::abs(nemo_speech_diar_seconds_per_frame(model) - .01) > 1e-9)
             throw std::runtime_error("not the locked V3 eight-speaker model");
-        return owned.release();
+        return new ProbeModel{std::move(owned), official_geometry == 1};
     } catch (const std::exception& e) { error = e.what(); return nullptr; }
     catch (...) { error = "unknown native failure"; return nullptr; }
 }
 
 extern "C" int n0_run(void* pointer, const char* wav, const char* output_path) noexcept {
     try {
-        auto* model = static_cast<nemo_speech_diar_model*>(pointer);
-        if (!model) throw std::runtime_error("null model");
+        auto* owner = static_cast<ProbeModel*>(pointer);
+        if (!owner) throw std::runtime_error("null model");
+        auto* model = owner->model.get();
         std::vector<float> audio;
         std::string message;
         if (!examples::read_wav_mono_16k(wav, audio, message)) throw std::runtime_error(message);
@@ -82,7 +95,12 @@ extern "C" int n0_run(void* pointer, const char* wav, const char* output_path) n
         output.exceptions(std::ios::failbit | std::ios::badbit);
         output << std::setprecision(17) << "{\"seconds\":" << seconds
                << ",\"frames\":" << nemo_speech_diar_frame_count(raw)
-               << ",\"audio_seconds\":" << audio.size() / 16000.0 << ",\"segments\":[";
+               << ",\"audio_seconds\":" << audio.size() / 16000.0
+               << ",\"geometry\":{\"chunk\":" << (owner->official_geometry ? 9 : 13)
+               << ",\"right\":" << (owner->official_geometry ? 4 : 1)
+               << ",\"left\":0,\"fifo\":" << (owner->official_geometry ? 264 : 80)
+               << ",\"cache\":264,\"update\":" << (owner->official_geometry ? 222 : 40)
+               << "},\"segments\":[";
         for (size_t i = 0; i < count; ++i) {
             const auto& s = segments[i];
             if (!std::isfinite(s.start_time) || !std::isfinite(s.end_time) ||

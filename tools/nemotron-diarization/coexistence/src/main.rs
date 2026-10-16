@@ -1,7 +1,9 @@
 //! N0 diagnostic, not the Gen2 diarization API. Run in a fresh process per order.
 use libloading::Library;
+use sha2::{Digest, Sha256};
 use std::{
     ffi::{CStr, CString, c_char, c_void},
+    io::Read,
     path::Path,
     sync::{Arc, Barrier, mpsc},
 };
@@ -26,7 +28,7 @@ impl Diarizer {
             let close = *library.get(b"n0_close\0")?;
             let error: unsafe extern "C" fn() -> *const c_char =
                 *library.get(b"n0_last_error\0")?;
-            let pointer = open(model.as_ptr(), -1);
+            let pointer = open(model.as_ptr(), 1);
             if pointer.is_null() {
                 return Err(CStr::from_ptr(error())
                     .to_string_lossy()
@@ -77,6 +79,20 @@ fn chat(model: &gen2::Model) -> gen2::Result<String> {
         .text())
 }
 
+fn hash_file(path: impl AsRef<Path>) -> std::io::Result<String> {
+    let mut file = std::fs::File::open(path)?;
+    let mut hash = Sha256::new();
+    let mut buffer = [0; 65536];
+    loop {
+        let count = file.read(&mut buffer)?;
+        if count == 0 {
+            break;
+        }
+        hash.update(&buffer[..count]);
+    }
+    Ok(format!("{:x}", hash.finalize()))
+}
+
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = std::env::args().collect();
     if args.len() != 7 || !["chat-first", "diar-first"].contains(&args[1].as_str()) {
@@ -86,6 +102,12 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     }
     let output = Path::new(&args[6]);
     std::fs::create_dir_all(output)?;
+    let fingerprints = serde_json::json!({
+        "probe":hash_file(std::env::current_exe()?)?, "shim":hash_file(&args[2])?,
+        "diarization_model":hash_file(&args[3])?, "wav":hash_file(&args[4])?,
+        "chat_model":hash_file(&args[5])?,
+        "probe_source":format!("{:x}",Sha256::digest(include_bytes!("main.rs"))),
+    });
     let runtime = gen2::Runtime::builder()
         .resident_memory_budget_mb(8192)
         .build()?;
@@ -145,7 +167,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         serde_json::json!({"order":args[1], "chat_before":chat_before,
         "chat_after":chat_after, "isolated_chat":isolated_chat,
         "chat_after_unload":chat_after_unload, "repeated_and_reloaded_segments_equal":true,
-        "concurrent_chat_and_diarization_equal":true})
+        "concurrent_chat_and_diarization_equal":true, "fingerprints":fingerprints})
     );
     Ok(())
 }

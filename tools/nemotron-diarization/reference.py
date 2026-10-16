@@ -4,6 +4,7 @@ import json
 from pathlib import Path
 import platform
 import time
+import importlib.metadata
 
 import numpy as np
 import soundfile as sf
@@ -69,6 +70,16 @@ def main():
     args.output.parent.mkdir(parents=True, exist_ok=True)
     np.save(args.output.with_suffix(".npy"), probabilities)
     metadata = {"model_revision": lock["model"]["revision"], "wav_sha256": digest(args.wav),
+                "script_sha256": digest(Path(__file__)),
+                "lock_sha256": digest(Path(__file__).with_name("runtime.lock.json")),
+                "environment_lock_sha256": digest(Path(__file__).with_name("reference") / "uv.lock"),
+                "transformers_direct_url": json.loads(importlib.metadata.distribution("transformers").read_text("direct_url.json")),
+                "installed_packages": {d.metadata["Name"]: d.version for d in importlib.metadata.distributions()},
+                "geometry": {"chunk": processor.streaming_modes[processor.streaming_mode][0],
+                             "right": processor.streaming_modes[processor.streaming_mode][1], "left": 0,
+                             "fifo": model.config.streaming_config.fifo_length,
+                             "cache": model.config.streaming_config.speaker_cache_length,
+                             "update": model.config.streaming_config.speaker_cache_update_period},
                 "mode": "low_latency", "device": "cpu", "dtype": "float32", "threads": 4,
                 "torch": torch.__version__, "transformers": transformers.__version__,
                 "python": platform.python_version(), "platform": platform.platform(),
