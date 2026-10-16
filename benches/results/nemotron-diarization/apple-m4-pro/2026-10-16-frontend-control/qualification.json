@@ -1,0 +1,49 @@
+{
+  "schema_version": 1,
+  "source_commit": "ec88564ec7f7b62e92b73156481630413b9928a9",
+  "release_qualified": false,
+  "original_gate_status_changed": false,
+  "neural_model_inference_performed": false,
+  "checkpoint_deserialization_performed": false,
+  "frontend_execution_passed": true,
+  "all_synthetic_same_bank_prerequisites_passed": true,
+  "all_four_cases_twelve_comparisons_recomputed": true,
+  "all_raw_features_masks_banks_rehashed": true,
+  "native_probe_bound_to_exact_frozen_sdk_path": true,
+  "raw_tensor_files_retained_outside_git": 30,
+  "native_probe_commands_reparsed": 8,
+  "valid_frames_per_meeting": 12000,
+  "extra_native_raw_terminal_rows_per_case": 1,
+  "same_bank_close_mic_values_above_fixed_absolute_tolerance": 1,
+  "same_bank_close_mic_worst_absolute_error": 0.0011262893676757812,
+  "own_bank_difference_measured_not_selected_as_a_model_fix": true,
+  "execution_returncode": 0,
+  "execution_elapsed_seconds": 6.009234083001502,
+  "comparisons_recomputed": [
+    {
+      "case": "silence",
+      "comparisons_recomputed": true
+    },
+    {
+      "case": "fixed_tones_and_impulses",
+      "comparisons_recomputed": true
+    },
+    {
+      "case": "ami-ES2004a-Mix-Headset",
+      "comparisons_recomputed": true
+    },
+    {
+      "case": "ami-ES2004a-Array1-01",
+      "comparisons_recomputed": true
+    }
+  ],
+  "limitations": [
+    "Previously seen frozen targets; no new heldout validation. Original quality gate/reference/scorer and all frozen outputs remain unchanged.",
+    "Whole centered CPU frontend comparison only. Does not establish streaming chunk/frame readiness, final padding, neural model/conversion/cache equivalence or original-NeMo reproduction.",
+    "Same-bank substitutions isolate frontend arithmetic; they do not select or replace a release filterbank or model. Small differences alone do not explain DER failure.",
+    "Native raw extra terminal row is retained and reported separately; HF mask-valid prefix defines the comparison. No truncation beyond that declared mask.",
+    "Raw feature/bank tensors remain local evidence outside Git; committed metadata and source pins allow replay.",
+    "Receiver rehashed all local raw arrays and recomputed recorded metrics without rerunning frontend computation. Repository receipt includes metadata/logs/source, not probe/SDK/model/PCM/feature/bank binary payloads.",
+    "Synthetic same-bank controls pass. Close-mic same-bank comparison retains one over-tolerance feature value under each bank; no claim all target values pass the fixed numeric flag or that frontend equivalence/quality gates are proven."
+  ]
+}

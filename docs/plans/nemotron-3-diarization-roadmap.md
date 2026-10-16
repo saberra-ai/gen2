@@ -591,7 +591,26 @@ confined to initial30s. Production false activity in reference silence is
 9.037 close /8.190 distant speaker-seconds, versus2.439 /2.429 for shared Q8.
 See the [11-file localization receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-ami-error-localization/qualification.json).
 This diagnoses already-seen inputs, not a new release setting or passed gate.
-The 13-job feature matrix also passed at `4974318`.
+The [CPU golden-control recipe](../research/nemotron-cpu-golden-control.md)
+subsequently identifies the frontend bank, frame-mask and aligned V3 tensor
+boundaries. Its first whole-centered frontend-only comparison is now complete
+at `ec88564`, with no neural-model load/inference or checkpoint deserialization:
+two synthetic controls pass before both unchanged AMI targets, four frontend/bank
+combinations per input preserve all raw features/masks, and all12 comparisons
+were independently recomputed from retained local arrays. Native and HF banks
+differ in504 of32896 F32 values (maximum0.000117321). Using the same bank reduces
+target mean feature error to approximately1.15–1.62e-6; close-mic retains one
+value above the fixed0.001 absolute flag under each bank, maximum0.00112629.
+The [42-file metadata receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-frontend-control/qualification.json)
+retains that outlier, all source/input/library/loader bindings and the numeric
+limits; raw tensors remain outside Git. This neither selects a replacement bank
+nor proves streaming/model/cache equivalence or a quality fix. Native F32,
+original-NeMo and persistent-prefix controls remain open.
+The 13-job feature matrix also passed at `4974318`. Later source `cf64214`
+passed12 jobs; its macOS mixed-feature job failed before compilation when GitHub
+submodule fetch could not connect to port443. A failed-job rerun was denied by
+the token's Actions permissions. Fresh source `ec88564` triggered a new full
+matrix; no build gate is waived.
 
 Linux/Windows CPU development jobs now build the pinned source SDK with an
 explicit x86_64AVX2/FMA/F16C baseline, retain installed dependency discovery,
@@ -795,7 +814,8 @@ and cleanup are retained. Native/public RTF0.84706/0.85235 is an observation on
 this CI host, not a live/uncontended-performance claim. Microsoft distribution
 rights, physical Windows desktop, Bark/Laya coexistence, universal namespace and
 held-out-quality gates remain open. The separate AMI diagnostic raises the
-current model-free regression total to96; the full feature matrix is running.
+model-free regression total to96 at that point. The frontend diagnostic
+subsequently raises it to102; the new full feature matrix is running.
 
 A guarded [Windows private-DLL build](../research/nemotron-windows-private-names.md)
 now relinks the five owned DLLs through an external CMake naming hook, updates

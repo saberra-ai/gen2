@@ -1,0 +1,735 @@
+{
+  "source_commit": "ec88564ec7f7b62e92b73156481630413b9928a9",
+  "scope": "Post-failure source-pinned CPU frontend-only numerical control on synthetic signals and the two unchanged AMI120s crops. No neural model load/inference, checkpoint deserialization, parameter selection or changed quality gate.",
+  "release_qualified": false,
+  "original_gate_status_changed": false,
+  "neural_model_inference_performed": false,
+  "checkpoint_deserialization_performed": false,
+  "protocol_sha256": "3509917a6d1682da94e440b5c7cbe6a44dd291042d78731bdf31aa23296c6a94",
+  "bank_comparison": {
+    "shape": [
+      128,
+      257
+    ],
+    "bitwise_equal": false,
+    "maximum_absolute_error": 0.00011732056736946106,
+    "mean_absolute_error": 1.7606119090947537e-07,
+    "root_mean_square_error": 2.4743104647995115e-06,
+    "p95_absolute_error": 0.0,
+    "p99_absolute_error": 3.2900366932153546e-06,
+    "worst_frame_feature": [
+      42,
+      32
+    ],
+    "first_frame_feature_over_tolerance": [
+      0,
+      1
+    ],
+    "values_over_tolerance": 504,
+    "absolute_tolerance": 0
+  },
+  "transformers_direct_url": {
+    "url": "https://github.com/huggingface/transformers.git",
+    "vcs_info": {
+      "vcs": "git",
+      "commit_id": "683b721971417b3b2c64fba9001f525607547e5a",
+      "requested_revision": "683b721971417b3b2c64fba9001f525607547e5a"
+    }
+  },
+  "results": [
+    {
+      "case": "silence",
+      "origin": {
+        "synthetic": true
+      },
+      "pcm": {
+        "bytes": 64000,
+        "sha256": "4f7988030a00d082fe445e00a2ac5dab502300ff1b80e8592dd569867b60ef74"
+      },
+      "native_observations": {
+        "native": {
+          "audio_samples": 16000,
+          "frames": 101,
+          "mel_bins": 128,
+          "center": true,
+          "normalize": false,
+          "uses_gpu": false,
+          "argv": [
+            "/Users/victor/.cache/gen2-nemotron3-n0/frontend-control-build/frontend-probe",
+            "/Users/victor/.cache/gen2-nemotron3-n0/frontend-diagnostic-ec88564/silence/audio.f32",
+            "/Users/victor/.cache/gen2-nemotron3-n0/frontend-diagnostic-ec88564/native-bank.f32",
+            "/Users/victor/.cache/gen2-nemotron3-n0/frontend-diagnostic-ec88564/silence/native-native.f32"
+          ]
+        },
+        "hf": {
+          "audio_samples": 16000,
+          "frames": 101,
+          "mel_bins": 128,
+          "center": true,
+          "normalize": false,
+          "uses_gpu": false,
+          "argv": [
+            "/Users/victor/.cache/gen2-nemotron3-n0/frontend-control-build/frontend-probe",
+            "/Users/victor/.cache/gen2-nemotron3-n0/frontend-diagnostic-ec88564/silence/audio.f32",
+            "/Users/victor/.cache/gen2-nemotron3-n0/frontend-diagnostic-ec88564/hf-bank.f32",
+            "/Users/victor/.cache/gen2-nemotron3-n0/frontend-diagnostic-ec88564/silence/native-hf.f32"
+          ]
+        }
+      },
+      "masks": {
+        "native": {
+          "valid": 100,
+          "raw": 101,
+          "masked": 1
+        },
+        "hf": {
+          "valid": 100,
+          "raw": 101,
+          "masked": 1
+        }
+      },
+      "comparisons": {
+        "own_banks": {
+          "shape": [
+            100,
+            128
+          ],
+          "bitwise_equal": true,
+          "maximum_absolute_error": 0.0,
+          "mean_absolute_error": 0.0,
+          "root_mean_square_error": 0.0,
+          "p95_absolute_error": 0.0,
+          "p99_absolute_error": 0.0,
+          "worst_frame_feature": [
+            0,
+            0
+          ],
+          "first_frame_feature_over_tolerance": null,
+          "values_over_tolerance": 0,
+          "absolute_tolerance": 0.001
+        },
+        "same_native_bank": {
+          "shape": [
+            100,
+            128
+          ],
+          "bitwise_equal": true,
+          "maximum_absolute_error": 0.0,
+          "mean_absolute_error": 0.0,
+          "root_mean_square_error": 0.0,
+          "p95_absolute_error": 0.0,
+          "p99_absolute_error": 0.0,
+          "worst_frame_feature": [
+            0,
+            0
+          ],
+          "first_frame_feature_over_tolerance": null,
+          "values_over_tolerance": 0,
+          "absolute_tolerance": 0.001
+        },
+        "same_hf_bank": {
+          "shape": [
+            100,
+            128
+          ],
+          "bitwise_equal": true,
+          "maximum_absolute_error": 0.0,
+          "mean_absolute_error": 0.0,
+          "root_mean_square_error": 0.0,
+          "p95_absolute_error": 0.0,
+          "p99_absolute_error": 0.0,
+          "worst_frame_feature": [
+            0,
+            0
+          ],
+          "first_frame_feature_over_tolerance": null,
+          "values_over_tolerance": 0,
+          "absolute_tolerance": 0.001
+        }
+      }
+    },
+    {
+      "case": "fixed_tones_and_impulses",
+      "origin": {
+        "synthetic": true
+      },
+      "pcm": {
+        "bytes": 128012,
+        "sha256": "0e56ad92f7117c9dbaa5d2f00c755d7d37528e17e0a60b30256089f140233cdc"
+      },
+      "native_observations": {
+        "native": {
+          "audio_samples": 32003,
+          "frames": 201,
+          "mel_bins": 128,
+          "center": true,
+          "normalize": false,
+          "uses_gpu": false,
+          "argv": [
+            "/Users/victor/.cache/gen2-nemotron3-n0/frontend-control-build/frontend-probe",
+            "/Users/victor/.cache/gen2-nemotron3-n0/frontend-diagnostic-ec88564/fixed_tones_and_impulses/audio.f32",
+            "/Users/victor/.cache/gen2-nemotron3-n0/frontend-diagnostic-ec88564/native-bank.f32",
+            "/Users/victor/.cache/gen2-nemotron3-n0/frontend-diagnostic-ec88564/fixed_tones_and_impulses/native-native.f32"
+          ]
+        },
+        "hf": {
+          "audio_samples": 32003,
+          "frames": 201,
+          "mel_bins": 128,
+          "center": true,
+          "normalize": false,
+          "uses_gpu": false,
+          "argv": [
+            "/Users/victor/.cache/gen2-nemotron3-n0/frontend-control-build/frontend-probe",
+            "/Users/victor/.cache/gen2-nemotron3-n0/frontend-diagnostic-ec88564/fixed_tones_and_impulses/audio.f32",
+            "/Users/victor/.cache/gen2-nemotron3-n0/frontend-diagnostic-ec88564/hf-bank.f32",
+            "/Users/victor/.cache/gen2-nemotron3-n0/frontend-diagnostic-ec88564/fixed_tones_and_impulses/native-hf.f32"
+          ]
+        }
+      },
+      "masks": {
+        "native": {
+          "valid": 200,
+          "raw": 201,
+          "masked": 1
+        },
+        "hf": {
+          "valid": 200,
+          "raw": 201,
+          "masked": 1
+        }
+      },
+      "comparisons": {
+        "own_banks": {
+          "shape": [
+            200,
+            128
+          ],
+          "bitwise_equal": false,
+          "maximum_absolute_error": 0.0037202835083007812,
+          "mean_absolute_error": 0.000500337383709848,
+          "root_mean_square_error": 0.0008864271494178735,
+          "p95_absolute_error": 0.002070903778076172,
+          "p99_absolute_error": 0.0026025772094726562,
+          "worst_frame_feature": [
+            100,
+            42
+          ],
+          "first_frame_feature_over_tolerance": [
+            0,
+            0
+          ],
+          "values_over_tolerance": 5634,
+          "absolute_tolerance": 0.001
+        },
+        "same_native_bank": {
+          "shape": [
+            200,
+            128
+          ],
+          "bitwise_equal": false,
+          "maximum_absolute_error": 0.0005550384521484375,
+          "mean_absolute_error": 2.307394752278924e-05,
+          "root_mean_square_error": 5.687029990975533e-05,
+          "p95_absolute_error": 0.0001316070556640625,
+          "p99_absolute_error": 0.00024509429931640625,
+          "worst_frame_feature": [
+            9,
+            31
+          ],
+          "first_frame_feature_over_tolerance": null,
+          "values_over_tolerance": 0,
+          "absolute_tolerance": 0.001
+        },
+        "same_hf_bank": {
+          "shape": [
+            200,
+            128
+          ],
+          "bitwise_equal": false,
+          "maximum_absolute_error": 0.0005550384521484375,
+          "mean_absolute_error": 2.3080786922946574e-05,
+          "root_mean_square_error": 5.688543786824936e-05,
+          "p95_absolute_error": 0.0001316070556640625,
+          "p99_absolute_error": 0.000244140625,
+          "worst_frame_feature": [
+            9,
+            31
+          ],
+          "first_frame_feature_over_tolerance": null,
+          "values_over_tolerance": 0,
+          "absolute_tolerance": 0.001
+        }
+      }
+    },
+    {
+      "case": "ami-ES2004a-Mix-Headset",
+      "origin": {
+        "wav": "ami-ES2004a-Mix-Headset.wav",
+        "sha256": "b041781e759ef18a56096913c09c9539c8afd3d06f44c938be4d6b1179dbf205",
+        "bytes": 3840044,
+        "pcm_sha256": "224b67a6ea4b758d769fd9e1b94de4b29bd62e14969a685cd1c3cc9adc03f4aa"
+      },
+      "pcm": {
+        "bytes": 7680000,
+        "sha256": "224b67a6ea4b758d769fd9e1b94de4b29bd62e14969a685cd1c3cc9adc03f4aa"
+      },
+      "native_observations": {
+        "native": {
+          "audio_samples": 1920000,
+          "frames": 12001,
+          "mel_bins": 128,
+          "center": true,
+          "normalize": false,
+          "uses_gpu": false,
+          "argv": [
+            "/Users/victor/.cache/gen2-nemotron3-n0/frontend-control-build/frontend-probe",
+            "/Users/victor/.cache/gen2-nemotron3-n0/frontend-diagnostic-ec88564/ami-ES2004a-Mix-Headset/audio.f32",
+            "/Users/victor/.cache/gen2-nemotron3-n0/frontend-diagnostic-ec88564/native-bank.f32",
+            "/Users/victor/.cache/gen2-nemotron3-n0/frontend-diagnostic-ec88564/ami-ES2004a-Mix-Headset/native-native.f32"
+          ]
+        },
+        "hf": {
+          "audio_samples": 1920000,
+          "frames": 12001,
+          "mel_bins": 128,
+          "center": true,
+          "normalize": false,
+          "uses_gpu": false,
+          "argv": [
+            "/Users/victor/.cache/gen2-nemotron3-n0/frontend-control-build/frontend-probe",
+            "/Users/victor/.cache/gen2-nemotron3-n0/frontend-diagnostic-ec88564/ami-ES2004a-Mix-Headset/audio.f32",
+            "/Users/victor/.cache/gen2-nemotron3-n0/frontend-diagnostic-ec88564/hf-bank.f32",
+            "/Users/victor/.cache/gen2-nemotron3-n0/frontend-diagnostic-ec88564/ami-ES2004a-Mix-Headset/native-hf.f32"
+          ]
+        }
+      },
+      "masks": {
+        "native": {
+          "valid": 12000,
+          "raw": 12001,
+          "masked": 1
+        },
+        "hf": {
+          "valid": 12000,
+          "raw": 12001,
+          "masked": 1
+        }
+      },
+      "comparisons": {
+        "own_banks": {
+          "shape": [
+            12000,
+            128
+          ],
+          "bitwise_equal": false,
+          "maximum_absolute_error": 0.003718852996826172,
+          "mean_absolute_error": 0.0005366036578003938,
+          "root_mean_square_error": 0.0008447333408247335,
+          "p95_absolute_error": 0.0019712448120117188,
+          "p99_absolute_error": 0.0026960372924804688,
+          "worst_frame_feature": [
+            9766,
+            42
+          ],
+          "first_frame_feature_over_tolerance": [
+            5,
+            15
+          ],
+          "values_over_tolerance": 292946,
+          "absolute_tolerance": 0.001
+        },
+        "same_native_bank": {
+          "shape": [
+            12000,
+            128
+          ],
+          "bitwise_equal": false,
+          "maximum_absolute_error": 0.001125335693359375,
+          "mean_absolute_error": 1.6115280256296198e-06,
+          "root_mean_square_error": 7.704588717924109e-06,
+          "p95_absolute_error": 4.76837158203125e-06,
+          "p99_absolute_error": 1.9073486328125e-05,
+          "worst_frame_feature": [
+            9749,
+            123
+          ],
+          "first_frame_feature_over_tolerance": [
+            9749,
+            123
+          ],
+          "values_over_tolerance": 1,
+          "absolute_tolerance": 0.001
+        },
+        "same_hf_bank": {
+          "shape": [
+            12000,
+            128
+          ],
+          "bitwise_equal": false,
+          "maximum_absolute_error": 0.0011262893676757812,
+          "mean_absolute_error": 1.6115933346251646e-06,
+          "root_mean_square_error": 7.703295088274717e-06,
+          "p95_absolute_error": 4.76837158203125e-06,
+          "p99_absolute_error": 1.9073486328125e-05,
+          "worst_frame_feature": [
+            9749,
+            123
+          ],
+          "first_frame_feature_over_tolerance": [
+            9749,
+            123
+          ],
+          "values_over_tolerance": 1,
+          "absolute_tolerance": 0.001
+        }
+      }
+    },
+    {
+      "case": "ami-ES2004a-Array1-01",
+      "origin": {
+        "wav": "ami-ES2004a-Array1-01.wav",
+        "sha256": "740626182eddec2734523426cdcbcd6cff926a1c9224250e20e7bd922f7365f4",
+        "bytes": 3840044,
+        "pcm_sha256": "d6c21c075519cb3c9888bb86abd4a1d50924fe94fdfba41f7911da9e9b646ca6"
+      },
+      "pcm": {
+        "bytes": 7680000,
+        "sha256": "d6c21c075519cb3c9888bb86abd4a1d50924fe94fdfba41f7911da9e9b646ca6"
+      },
+      "native_observations": {
+        "native": {
+          "audio_samples": 1920000,
+          "frames": 12001,
+          "mel_bins": 128,
+          "center": true,
+          "normalize": false,
+          "uses_gpu": false,
+          "argv": [
+            "/Users/victor/.cache/gen2-nemotron3-n0/frontend-control-build/frontend-probe",
+            "/Users/victor/.cache/gen2-nemotron3-n0/frontend-diagnostic-ec88564/ami-ES2004a-Array1-01/audio.f32",
+            "/Users/victor/.cache/gen2-nemotron3-n0/frontend-diagnostic-ec88564/native-bank.f32",
+            "/Users/victor/.cache/gen2-nemotron3-n0/frontend-diagnostic-ec88564/ami-ES2004a-Array1-01/native-native.f32"
+          ]
+        },
+        "hf": {
+          "audio_samples": 1920000,
+          "frames": 12001,
+          "mel_bins": 128,
+          "center": true,
+          "normalize": false,
+          "uses_gpu": false,
+          "argv": [
+            "/Users/victor/.cache/gen2-nemotron3-n0/frontend-control-build/frontend-probe",
+            "/Users/victor/.cache/gen2-nemotron3-n0/frontend-diagnostic-ec88564/ami-ES2004a-Array1-01/audio.f32",
+            "/Users/victor/.cache/gen2-nemotron3-n0/frontend-diagnostic-ec88564/hf-bank.f32",
+            "/Users/victor/.cache/gen2-nemotron3-n0/frontend-diagnostic-ec88564/ami-ES2004a-Array1-01/native-hf.f32"
+          ]
+        }
+      },
+      "masks": {
+        "native": {
+          "valid": 12000,
+          "raw": 12001,
+          "masked": 1
+        },
+        "hf": {
+          "valid": 12000,
+          "raw": 12001,
+          "masked": 1
+        }
+      },
+      "comparisons": {
+        "own_banks": {
+          "shape": [
+            12000,
+            128
+          ],
+          "bitwise_equal": false,
+          "maximum_absolute_error": 0.003718852996826172,
+          "mean_absolute_error": 0.0007840358543908224,
+          "root_mean_square_error": 0.0010535975312663587,
+          "p95_absolute_error": 0.0022382736206054688,
+          "p99_absolute_error": 0.0027256011962890625,
+          "worst_frame_feature": [
+            9732,
+            42
+          ],
+          "first_frame_feature_over_tolerance": [
+            0,
+            0
+          ],
+          "values_over_tolerance": 471588,
+          "absolute_tolerance": 0.001
+        },
+        "same_native_bank": {
+          "shape": [
+            12000,
+            128
+          ],
+          "bitwise_equal": false,
+          "maximum_absolute_error": 0.0005054473876953125,
+          "mean_absolute_error": 1.152644739098226e-06,
+          "root_mean_square_error": 3.045308062534728e-06,
+          "p95_absolute_error": 3.814697265625e-06,
+          "p99_absolute_error": 8.58306884765625e-06,
+          "worst_frame_feature": [
+            9798,
+            118
+          ],
+          "first_frame_feature_over_tolerance": null,
+          "values_over_tolerance": 0,
+          "absolute_tolerance": 0.001
+        },
+        "same_hf_bank": {
+          "shape": [
+            12000,
+            128
+          ],
+          "bitwise_equal": false,
+          "maximum_absolute_error": 0.0005044937133789062,
+          "mean_absolute_error": 1.1532165905615935e-06,
+          "root_mean_square_error": 3.0464951753025237e-06,
+          "p95_absolute_error": 3.814697265625e-06,
+          "p99_absolute_error": 8.58306884765625e-06,
+          "worst_frame_feature": [
+            9798,
+            118
+          ],
+          "first_frame_feature_over_tolerance": null,
+          "values_over_tolerance": 0,
+          "absolute_tolerance": 0.001
+        }
+      }
+    }
+  ],
+  "files": {
+    "native-bank.f32": {
+      "bytes": 131584,
+      "sha256": "eb5cf9eb93b8038062ebc849b14ec85098abe1c915bc22262be8ad336bcf563a"
+    },
+    "hf-bank.f32": {
+      "bytes": 131584,
+      "sha256": "bce5ec5f194a5913f6508cee5a85512e7bad2352db8fc28f5c6ff75af8b09137"
+    },
+    "protocol.json": {
+      "bytes": 15191,
+      "sha256": "3509917a6d1682da94e440b5c7cbe6a44dd291042d78731bdf31aa23296c6a94"
+    },
+    "silence/hf-native.f32": {
+      "bytes": 51712,
+      "sha256": "2583a6d14050b4f77493ab157010834c7e3a03b55a17710bb9c1eff3a2fff64e"
+    },
+    "silence/hf-hf.f32": {
+      "bytes": 51712,
+      "sha256": "2583a6d14050b4f77493ab157010834c7e3a03b55a17710bb9c1eff3a2fff64e"
+    },
+    "silence/native-hf.command.json": {
+      "bytes": 467,
+      "sha256": "5a1c6d5641d4f14759b51bdc57faf4cb4f33fb88413b517170077e74c13ced66"
+    },
+    "silence/hf-hf.mask.u8": {
+      "bytes": 101,
+      "sha256": "e55929abbae37950456560657419c1e8ced12f0bddcdd0313bb6702eeb5c6e9c"
+    },
+    "silence/hf-native.mask.u8": {
+      "bytes": 101,
+      "sha256": "e55929abbae37950456560657419c1e8ced12f0bddcdd0313bb6702eeb5c6e9c"
+    },
+    "silence/native-native.f32": {
+      "bytes": 51712,
+      "sha256": "811ed3d77809559a7aab11f849ea6970f5b2a73e05ad0640cd202f5c56a7cab2"
+    },
+    "silence/native-hf.f32": {
+      "bytes": 51712,
+      "sha256": "811ed3d77809559a7aab11f849ea6970f5b2a73e05ad0640cd202f5c56a7cab2"
+    },
+    "silence/native-native.command.json": {
+      "bytes": 475,
+      "sha256": "87bd04d63c2e681fb59030cae85e499e05e993d7301a9d6a367e11b4ce0ef6d6"
+    },
+    "silence/native-native.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "silence/native-hf.stdout.log": {
+      "bytes": 101,
+      "sha256": "1f791e668c0ff5bf2bfeb24fddb07178328dabff06571497119a3729d6abdd9d"
+    },
+    "silence/audio.f32": {
+      "bytes": 64000,
+      "sha256": "4f7988030a00d082fe445e00a2ac5dab502300ff1b80e8592dd569867b60ef74"
+    },
+    "silence/native-native.stdout.log": {
+      "bytes": 101,
+      "sha256": "1f791e668c0ff5bf2bfeb24fddb07178328dabff06571497119a3729d6abdd9d"
+    },
+    "silence/native-hf.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "ami-ES2004a-Array1-01/hf-native.f32": {
+      "bytes": 6144512,
+      "sha256": "04d42c0c33ddab7a12a175f8a4e2092f2af7531b44b71c35d9981ae6d373a684"
+    },
+    "ami-ES2004a-Array1-01/hf-hf.f32": {
+      "bytes": 6144512,
+      "sha256": "9bbd5d8fbb390f47fd616ff05cae59bb174c29438a7c362e9628dfe7347520e2"
+    },
+    "ami-ES2004a-Array1-01/native-hf.command.json": {
+      "bytes": 495,
+      "sha256": "62251ef6a1224d812f7c8d6fa420a63e1a4c21f8007c2dcb719648d6cbcbf383"
+    },
+    "ami-ES2004a-Array1-01/hf-hf.mask.u8": {
+      "bytes": 12001,
+      "sha256": "ac1796333f9b7a1ed83603e932c71933579cd504981e0f4c8c75c53550d07d8e"
+    },
+    "ami-ES2004a-Array1-01/hf-native.mask.u8": {
+      "bytes": 12001,
+      "sha256": "ac1796333f9b7a1ed83603e932c71933579cd504981e0f4c8c75c53550d07d8e"
+    },
+    "ami-ES2004a-Array1-01/native-native.f32": {
+      "bytes": 6144512,
+      "sha256": "11d7d90bd3e8971f0e62697b231bd1563f98a53b1c0f3e60d0d63d469b82cad1"
+    },
+    "ami-ES2004a-Array1-01/native-hf.f32": {
+      "bytes": 6144512,
+      "sha256": "44e72e442948c3a05fbbedfa3e218f4c67b8d7316e7a29cb46ee854af8134f11"
+    },
+    "ami-ES2004a-Array1-01/native-native.command.json": {
+      "bytes": 503,
+      "sha256": "bfdc7e72718224d205f1ece18c69ac6736c2ae74f8b1ad882df267bc0b115fb9"
+    },
+    "ami-ES2004a-Array1-01/native-native.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "ami-ES2004a-Array1-01/native-hf.stdout.log": {
+      "bytes": 105,
+      "sha256": "d6ae2fb10c26e4f6b1450fa845a15d230fb75543c2f5bbb234c0e9a1556eb285"
+    },
+    "ami-ES2004a-Array1-01/audio.f32": {
+      "bytes": 7680000,
+      "sha256": "d6c21c075519cb3c9888bb86abd4a1d50924fe94fdfba41f7911da9e9b646ca6"
+    },
+    "ami-ES2004a-Array1-01/native-native.stdout.log": {
+      "bytes": 105,
+      "sha256": "d6ae2fb10c26e4f6b1450fa845a15d230fb75543c2f5bbb234c0e9a1556eb285"
+    },
+    "ami-ES2004a-Array1-01/native-hf.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "fixed_tones_and_impulses/hf-native.f32": {
+      "bytes": 102912,
+      "sha256": "7e9cf7b5d20b064579677175a43beb3c418fcc36a5197acabc9644fa85c63e3a"
+    },
+    "fixed_tones_and_impulses/hf-hf.f32": {
+      "bytes": 102912,
+      "sha256": "e4ee159efacec8090d0b9c8ecb5635f40e688325324f70f970375eb90f21a5a2"
+    },
+    "fixed_tones_and_impulses/native-hf.command.json": {
+      "bytes": 501,
+      "sha256": "512738106ca9125be49082748aaea372391a4012945c5c4b2bc7bcd5be35cced"
+    },
+    "fixed_tones_and_impulses/hf-hf.mask.u8": {
+      "bytes": 201,
+      "sha256": "dd978f92ed3367fbc5176e659d823faa96502ab79b6c88e1d1be83eb1d399e8b"
+    },
+    "fixed_tones_and_impulses/hf-native.mask.u8": {
+      "bytes": 201,
+      "sha256": "dd978f92ed3367fbc5176e659d823faa96502ab79b6c88e1d1be83eb1d399e8b"
+    },
+    "fixed_tones_and_impulses/native-native.f32": {
+      "bytes": 102912,
+      "sha256": "b357548ce36972c1fa99186d4fc5e8c3d8951e75706d142a006468952f531d7b"
+    },
+    "fixed_tones_and_impulses/native-hf.f32": {
+      "bytes": 102912,
+      "sha256": "cf7a9e6145b992e907f96c7b9423ecf33985b2c6cba41e1381c77b6cc7063f43"
+    },
+    "fixed_tones_and_impulses/native-native.command.json": {
+      "bytes": 509,
+      "sha256": "d5a8db10eddfb38e3e0bcb214f6af542c64bee69705977337994779ac1ea5cc9"
+    },
+    "fixed_tones_and_impulses/native-native.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "fixed_tones_and_impulses/native-hf.stdout.log": {
+      "bytes": 101,
+      "sha256": "420f16246b4e9983b9ce7af4554696d50af86d32231ba509f6ae616127e40e50"
+    },
+    "fixed_tones_and_impulses/audio.f32": {
+      "bytes": 128012,
+      "sha256": "0e56ad92f7117c9dbaa5d2f00c755d7d37528e17e0a60b30256089f140233cdc"
+    },
+    "fixed_tones_and_impulses/native-native.stdout.log": {
+      "bytes": 101,
+      "sha256": "420f16246b4e9983b9ce7af4554696d50af86d32231ba509f6ae616127e40e50"
+    },
+    "fixed_tones_and_impulses/native-hf.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "ami-ES2004a-Mix-Headset/hf-native.f32": {
+      "bytes": 6144512,
+      "sha256": "de37e285b480fd7ad6f7cd1ac518ae245853f05d5142b814bec8277fc13e5b07"
+    },
+    "ami-ES2004a-Mix-Headset/hf-hf.f32": {
+      "bytes": 6144512,
+      "sha256": "026111aef68f95819cffc10af431a08e90b84d4c7f837dd07338dd74b991c3cd"
+    },
+    "ami-ES2004a-Mix-Headset/native-hf.command.json": {
+      "bytes": 499,
+      "sha256": "9023a40957ea3a5ab1d1d313ac729a0f1dd94752e410f0f75a0c65859f1b81b1"
+    },
+    "ami-ES2004a-Mix-Headset/hf-hf.mask.u8": {
+      "bytes": 12001,
+      "sha256": "ac1796333f9b7a1ed83603e932c71933579cd504981e0f4c8c75c53550d07d8e"
+    },
+    "ami-ES2004a-Mix-Headset/hf-native.mask.u8": {
+      "bytes": 12001,
+      "sha256": "ac1796333f9b7a1ed83603e932c71933579cd504981e0f4c8c75c53550d07d8e"
+    },
+    "ami-ES2004a-Mix-Headset/native-native.f32": {
+      "bytes": 6144512,
+      "sha256": "9efa473553445bd78f7b076fb1f74e618367b6b4ed65cf39e332633f15e5a94b"
+    },
+    "ami-ES2004a-Mix-Headset/native-hf.f32": {
+      "bytes": 6144512,
+      "sha256": "06a05c1a935708e0fbe7482e351bc2c16e00760392ccb9faae58d979b8581e61"
+    },
+    "ami-ES2004a-Mix-Headset/native-native.command.json": {
+      "bytes": 507,
+      "sha256": "e41e1681a399d850de894215e74b95db8ea161cc89a614810589e982e648b336"
+    },
+    "ami-ES2004a-Mix-Headset/native-native.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "ami-ES2004a-Mix-Headset/native-hf.stdout.log": {
+      "bytes": 105,
+      "sha256": "d6ae2fb10c26e4f6b1450fa845a15d230fb75543c2f5bbb234c0e9a1556eb285"
+    },
+    "ami-ES2004a-Mix-Headset/audio.f32": {
+      "bytes": 7680000,
+      "sha256": "224b67a6ea4b758d769fd9e1b94de4b29bd62e14969a685cd1c3cc9adc03f4aa"
+    },
+    "ami-ES2004a-Mix-Headset/native-native.stdout.log": {
+      "bytes": 105,
+      "sha256": "d6ae2fb10c26e4f6b1450fa845a15d230fb75543c2f5bbb234c0e9a1556eb285"
+    },
+    "ami-ES2004a-Mix-Headset/native-hf.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  },
+  "limitations": [
+    "Previously seen frozen targets; no new heldout validation. Original quality gate/reference/scorer and all frozen outputs remain unchanged.",
+    "Whole centered CPU frontend comparison only. Does not establish streaming chunk/frame readiness, final padding, neural model/conversion/cache equivalence or original-NeMo reproduction.",
+    "Same-bank substitutions isolate frontend arithmetic; they do not select or replace a release filterbank or model. Small differences alone do not explain DER failure.",
+    "Native raw extra terminal row is retained and reported separately; HF mask-valid prefix defines the comparison. No truncation beyond that declared mask.",
+    "Raw feature/bank tensors remain local evidence outside Git; committed metadata and source pins allow replay."
+  ]
+}

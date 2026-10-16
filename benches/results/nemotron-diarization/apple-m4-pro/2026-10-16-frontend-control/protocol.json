@@ -1,0 +1,366 @@
+{
+  "schema_version": 1,
+  "name": "CPU centered frontend and filterbank diagnostic v1",
+  "scope": "Post-failure source-pinned CPU frontend-only numerical control on synthetic signals and the two unchanged AMI120s crops. No neural model load/inference, checkpoint deserialization, parameter selection or changed quality gate.",
+  "native_revision": "083861c241061562b8ec29eb06d7f6cdc3af8775",
+  "gguf_revision": "bd4f514db14d87fded667787a7a963bfbaa98e89",
+  "transformers_revision": "683b721971417b3b2c64fba9001f525607547e5a",
+  "probe": {
+    "bytes": 40880,
+    "sha256": "cc92c8480088bbe0f35e39df3ce3bbdb4895c0052c9f3de7879f7844778583c2"
+  },
+  "build_argv": [
+    "c++",
+    "-std=c++17",
+    "-O2",
+    "-Wall",
+    "-Wextra",
+    "tools/nemotron-diarization/frontend_probe.cpp",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/asr/features",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/asr",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/src/common",
+    "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/llama.cpp/ggml/include",
+    "-L/Users/victor/.cache/gen2-nemotron3-n0/sdk-cpu/lib",
+    "-lnemo_speech_asr",
+    "-Wl,-rpath,/Users/victor/.cache/gen2-nemotron3-n0/sdk-cpu/lib",
+    "-o",
+    "/Users/victor/.cache/gen2-nemotron3-n0/frontend-control-build/frontend-probe"
+  ],
+  "compiler_version": "Apple clang version 21.0.0 (clang-2100.1.1.101)\nTarget: arm64-apple-darwin25.3.0\nThread model: posix\nInstalledDir: /Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin\n",
+  "native_source_files": {
+    "src/asr/features/fe.h": {
+      "bytes": 7817,
+      "sha256": "8b2a01bd955160d3ebf3de64e172244f842d4d994d80ff5f674c99107fe3e3b3"
+    },
+    "src/asr/features/fe.cpp": {
+      "bytes": 34869,
+      "sha256": "c2cbd1630ac2e2417f863aead766fdee47f3f96868c79b942571dae7804596b9"
+    },
+    "src/asr/batching.h": {
+      "bytes": 17278,
+      "sha256": "d5933c7db797a7722fbe8bdba445ef82093b38bdeb0da36afeb88c0b985c5857"
+    },
+    "src/common/parameter_parser.h": {
+      "bytes": 5856,
+      "sha256": "2165ea6e0afeb77b7509a5f92a1dc4bc2ec1d590841a0780c40243f73927d9f4"
+    },
+    "src/asr/diar/diar_pipeline.cpp": {
+      "bytes": 18928,
+      "sha256": "4143ca8e6d6f14ee454263702510cb163fe8e170aa928f236c0b4b540a7a7da9"
+    },
+    "llama.cpp/ggml/include/ggml-alloc.h": {
+      "bytes": 3753,
+      "sha256": "94e4cd069b9313b2ceb35dacec901981e0bb478d8bb31035b7126be091998c23"
+    },
+    "llama.cpp/ggml/include/ggml-backend.h": {
+      "bytes": 25374,
+      "sha256": "46d84cb998105f871240864fd0f55446939a2fe86c5c281afa63a010fb1f65a2"
+    },
+    "llama.cpp/ggml/include/ggml-blas.h": {
+      "bytes": 586,
+      "sha256": "e76cb8594dc9866d99e7d63191b9fff6ab8b50244b4a28ce3af0f962964a6b5b"
+    },
+    "llama.cpp/ggml/include/ggml-cann.h": {
+      "bytes": 4553,
+      "sha256": "2cdb134f27fe5c4ec19d52f1eb58f5355aa42b8f54bf385f0e487501c5df7362"
+    },
+    "llama.cpp/ggml/include/ggml-cpp.h": {
+      "bytes": 1652,
+      "sha256": "bc15ba002c68685df23faae42df0d2b3d58032011f88b649021ab92485862c72"
+    },
+    "llama.cpp/ggml/include/ggml-cpu.h": {
+      "bytes": 7753,
+      "sha256": "316279e004cdeb8e6ef78599acb602bf79a8abdf897fed9fd1914808c1518c6e"
+    },
+    "llama.cpp/ggml/include/ggml-cuda.h": {
+      "bytes": 1565,
+      "sha256": "9cbfcea49f6da4d07f41dc22fa8dbf870825faaa2a68e34e65fe30ea6c41e042"
+    },
+    "llama.cpp/ggml/include/ggml-et.h": {
+      "bytes": 887,
+      "sha256": "33118c0642b8059a99ea930fd4e4a045e78ccb41760b173ede221f1297c35977"
+    },
+    "llama.cpp/ggml/include/ggml-hexagon.h": {
+      "bytes": 351,
+      "sha256": "b2c12bac390f14707b16bdd27c8c75ce4f075ed509c729ee28fd4f03b17e7375"
+    },
+    "llama.cpp/ggml/include/ggml-metal.h": {
+      "bytes": 2141,
+      "sha256": "322f36cd30f3e9e7aad7b5b9bc63078012fd0b7706ac4e24f5721b604f3d8980"
+    },
+    "llama.cpp/ggml/include/ggml-opencl.h": {
+      "bytes": 581,
+      "sha256": "8e443e1aa9c8bc6e0cf116c4cc3f42f4858938fa15e65b06bc07b26686e1233a"
+    },
+    "llama.cpp/ggml/include/ggml-openvino.h": {
+      "bytes": 1034,
+      "sha256": "c2e3f301e28ad815b4285888aad6130808a77e6acb4e8b558de63a648cf9743e"
+    },
+    "llama.cpp/ggml/include/ggml-opt.h": {
+      "bytes": 14040,
+      "sha256": "3586de1bc8a934b5c72339e2b6937b0641e8f149b512231e666f67de0736eea2"
+    },
+    "llama.cpp/ggml/include/ggml-rpc.h": {
+      "bytes": 1184,
+      "sha256": "196d2a7434f0abdb01f13c5360e0b118b9f2d66c6452e3a7a844fbecc890205c"
+    },
+    "llama.cpp/ggml/include/ggml-sycl.h": {
+      "bytes": 2492,
+      "sha256": "728e4f15d0853d63feb95dd596821c750181c26995fff57fe035e964e70fd85f"
+    },
+    "llama.cpp/ggml/include/ggml-virtgpu.h": {
+      "bytes": 194,
+      "sha256": "ed231e7db3f0f58b84073f5ee67f9ec9d63046d1a7ed091c36a6cfe9f685a463"
+    },
+    "llama.cpp/ggml/include/ggml-vulkan.h": {
+      "bytes": 952,
+      "sha256": "7eae5dad2cc7bb4d3eca828539f441816d5fd59fdc7b224d49aa229fc7b7248c"
+    },
+    "llama.cpp/ggml/include/ggml-webgpu.h": {
+      "bytes": 328,
+      "sha256": "a91d855313a9e85e75ba597ff869a267247dea936a2c0faef03aeb7f1ea6e79c"
+    },
+    "llama.cpp/ggml/include/ggml-zdnn.h": {
+      "bytes": 292,
+      "sha256": "ee1d79c95ade45ba195a6b71f59a05c18617de4a596d2b2b03ecf38975a9a448"
+    },
+    "llama.cpp/ggml/include/ggml-zendnn.h": {
+      "bytes": 498,
+      "sha256": "2cb034b842438281616ce647232d922fb224450323f0d422d2af567c334aa8ff"
+    },
+    "llama.cpp/ggml/include/ggml.h": {
+      "bytes": 116144,
+      "sha256": "12ee71f99db7db9b353bc02b1fbb57c344ee17c01ac5fb7952b41a637a747ea9"
+    },
+    "llama.cpp/ggml/include/gguf.h": {
+      "bytes": 11355,
+      "sha256": "e56714aab702e5ce62ee587a409643c08f7e93e8fbb77f48ef7cc85075f96fa4"
+    }
+  },
+  "sdk_libraries": {
+    "libggml-base.0.25.1.dylib": {
+      "bytes": 752856,
+      "sha256": "ff3e456eef699578f066916f2c55b2a61686869e3e86644236abaabbb9266942"
+    },
+    "libggml-base.0.dylib": {
+      "bytes": 752856,
+      "sha256": "ff3e456eef699578f066916f2c55b2a61686869e3e86644236abaabbb9266942"
+    },
+    "libggml-base.dylib": {
+      "bytes": 752856,
+      "sha256": "ff3e456eef699578f066916f2c55b2a61686869e3e86644236abaabbb9266942"
+    },
+    "libggml-blas.0.25.1.dylib": {
+      "bytes": 58776,
+      "sha256": "fd67df313686fe19d217853c334ba6229760d79dfc52bd4e6540bfd4e01857fb"
+    },
+    "libggml-blas.0.dylib": {
+      "bytes": 58776,
+      "sha256": "fd67df313686fe19d217853c334ba6229760d79dfc52bd4e6540bfd4e01857fb"
+    },
+    "libggml-blas.dylib": {
+      "bytes": 58776,
+      "sha256": "fd67df313686fe19d217853c334ba6229760d79dfc52bd4e6540bfd4e01857fb"
+    },
+    "libggml-cpu.0.25.1.dylib": {
+      "bytes": 1022488,
+      "sha256": "f665d05ab1fcd9961c7170f0345db783f17d5a113f0cc6014c21a6e7be70a635"
+    },
+    "libggml-cpu.0.dylib": {
+      "bytes": 1022488,
+      "sha256": "f665d05ab1fcd9961c7170f0345db783f17d5a113f0cc6014c21a6e7be70a635"
+    },
+    "libggml-cpu.dylib": {
+      "bytes": 1022488,
+      "sha256": "f665d05ab1fcd9961c7170f0345db783f17d5a113f0cc6014c21a6e7be70a635"
+    },
+    "libggml.0.25.1.dylib": {
+      "bytes": 59992,
+      "sha256": "3a48195f4fd94667dc1377cc7aad80e5e307b38b509f4b11558edfa40c4154bc"
+    },
+    "libggml.0.dylib": {
+      "bytes": 59992,
+      "sha256": "3a48195f4fd94667dc1377cc7aad80e5e307b38b509f4b11558edfa40c4154bc"
+    },
+    "libggml.dylib": {
+      "bytes": 59992,
+      "sha256": "3a48195f4fd94667dc1377cc7aad80e5e307b38b509f4b11558edfa40c4154bc"
+    },
+    "libnemo_speech_asr.dylib": {
+      "bytes": 1226872,
+      "sha256": "ed4e41d2d90fbf25b58aa624ee3e80bd65d597b3a81dbba8a7a7df69e34aeb2b"
+    },
+    "libnemo_speech_asr_c.1.dylib": {
+      "bytes": 96224,
+      "sha256": "b0bbb5e6dc22c32a08e552d7181733337fa5760b8a635c462d62bbc3180509c0"
+    },
+    "libnemo_speech_asr_c.dylib": {
+      "bytes": 96224,
+      "sha256": "b0bbb5e6dc22c32a08e552d7181733337fa5760b8a635c462d62bbc3180509c0"
+    }
+  },
+  "assets": {
+    "Nemotron-3-Diarization.q8_0.gguf": {
+      "bytes": 107012128,
+      "sha256": "08456d9e22cd9a323c0364d98375f3746d6e68507ebb705cd46438c534c7a3a1"
+    },
+    "config.json": {
+      "bytes": 1458,
+      "sha256": "dd795ec07ffa09acf18d231aa3fa8642aa5c521760953754e02559a7413b6873"
+    },
+    "processor_config.json": {
+      "bytes": 623,
+      "sha256": "91726746788a024a2f0f2f699a6c3667f0d74e6a0e9288fc44fe3018e23af68e"
+    }
+  },
+  "corpus_manifest": {
+    "bytes": 19089,
+    "sha256": "c514152766948139ed21a496b1b81661c2e06d647004901fa4683bea4b423ece"
+  },
+  "target_wavs": {
+    "ami-ES2004a-Mix-Headset.wav": {
+      "sha256": "b041781e759ef18a56096913c09c9539c8afd3d06f44c938be4d6b1179dbf205",
+      "bytes": 3840044,
+      "pcm_sha256": "224b67a6ea4b758d769fd9e1b94de4b29bd62e14969a685cd1c3cc9adc03f4aa"
+    },
+    "ami-ES2004a-Array1-01.wav": {
+      "sha256": "740626182eddec2734523426cdcbcd6cff926a1c9224250e20e7bd922f7365f4",
+      "bytes": 3840044,
+      "pcm_sha256": "d6c21c075519cb3c9888bb86abd4a1d50924fe94fdfba41f7911da9e9b646ca6"
+    }
+  },
+  "packages": {
+    "torch": "2.8.0",
+    "numpy": "2.2.6",
+    "librosa": "0.11.0",
+    "soundfile": "0.13.1",
+    "PyYAML": "6.0.3",
+    "scipy": "1.18.1",
+    "transformers": "5.21.0.dev0"
+  },
+  "python_version": "Python 3.12.13",
+  "gguf_files": {
+    "gguf/__init__.py": {
+      "bytes": 219,
+      "sha256": "3ccfc0104cd7ea88c6028743b7bf3f2c89b5f474425de03a217a6072320d7c2f"
+    },
+    "gguf/constants.py": {
+      "bytes": 233858,
+      "sha256": "462ef1a793adacb60ffc5e35c4dd5da41583fd7745b13eebcaa1c236e3f2b687"
+    },
+    "gguf/gguf.py": {
+      "bytes": 478,
+      "sha256": "f0c0eeedad0911784b52ffed8e162a0eb5ae6d535ce35705bc16196e46597a72"
+    },
+    "gguf/gguf_reader.py": {
+      "bytes": 16321,
+      "sha256": "d0ea743200e19d7ef0a4c969edcc4a6dba8e3656a790b217e3bdc7b31170718e"
+    },
+    "gguf/gguf_writer.py": {
+      "bytes": 70929,
+      "sha256": "7e3ff8d04b290dde083ae30d1091b67c95299f6865958fe1cdcb7e35dd201766"
+    },
+    "gguf/lazy.py": {
+      "bytes": 12015,
+      "sha256": "dbc98e3ee9ef8606df34e9d91f98ab29c2697e6824995f1dd8952938c135ad85"
+    },
+    "gguf/metadata.py": {
+      "bytes": 39318,
+      "sha256": "7cedac3b8457271a3f58e5531a7e6958fdecb9ea072f7895ba5d7f6693c9db29"
+    },
+    "gguf/quants.py": {
+      "bytes": 64946,
+      "sha256": "2c927a1b3d9f0920dcf4007fb686e1b0999333e9f65ce43dcc689900c0beae8b"
+    },
+    "gguf/scripts/gguf_convert_endian.py": {
+      "bytes": 7681,
+      "sha256": "6be91de3af4d9b3fc2c90dafb3d1d8eed7e9dd72b3d6b52d245f005c76ece280"
+    },
+    "gguf/scripts/gguf_dump.py": {
+      "bytes": 23104,
+      "sha256": "d8b8fc28e96d15d8a4d6f05cdff4a747f5a06f31172efee9dfc971998ed0203f"
+    },
+    "gguf/scripts/gguf_editor_gui.py": {
+      "bytes": 64438,
+      "sha256": "6e9d70e850268fff5d4108d9ecbc2b4d90e70b61f08e71f7d37ac20916d854bb"
+    },
+    "gguf/scripts/gguf_hash.py": {
+      "bytes": 3725,
+      "sha256": "9f277c9338d12a73857a4e54683d7da4d5de01531751f14401267c9289e4197f"
+    },
+    "gguf/scripts/gguf_new_metadata.py": {
+      "bytes": 10231,
+      "sha256": "972499d35957b4721b9243828d5547d1c84def8d4e6fc641887c6578bf765255"
+    },
+    "gguf/scripts/gguf_set_metadata.py": {
+      "bytes": 4145,
+      "sha256": "c8612a7109428a677ea55976dd5eeed6088934ddef7ef01246a5bc7a6e585b3b"
+    },
+    "gguf/tensor_mapping.py": {
+      "bytes": 134036,
+      "sha256": "df97c2291dc1d8e8992ae91b800e0cf139f94d5173b9ed4705f5ef75a371d924"
+    },
+    "gguf/utility.py": {
+      "bytes": 13534,
+      "sha256": "da920e2c62166ec9f30e407e9fb35ec29fda671310ffbf0f8ce856b62f1c70d7"
+    },
+    "gguf/vocab.py": {
+      "bytes": 42431,
+      "sha256": "16cddd93700f86c8b72e6f9e741e2362189155b9f96aa9e3bbb0995060095f1a"
+    }
+  },
+  "transformers_files": {
+    "transformers/models/auto/processing_auto.py": {
+      "bytes": 18565,
+      "sha256": "3f29c881f41abe7b271112eed82300c3577a01b72ba8a464467830ea66d64321"
+    },
+    "transformers/models/nemotron3_diarization/processing_nemotron3_diarization.py": {
+      "bytes": 13787,
+      "sha256": "37d700fd8a041c80cc8a792fbbdc67764e291cfe111928c10e5d266ab5ebad7c"
+    },
+    "transformers/models/nemotron_asr_streaming/feature_extraction_nemotron_asr_streaming.py": {
+      "bytes": 14333,
+      "sha256": "8d2df13e251dcd8315654495b9768138d6e61a359e4f8166f623d890c132dc3d"
+    }
+  },
+  "frontend_config": {
+    "sample_rate": 16000,
+    "n_fft": 512,
+    "n_mels": 128,
+    "window_size_seconds": 0.025,
+    "window_stride_seconds": 0.01,
+    "preemphasis": 0.97,
+    "log_zero_guard": 5.960464477539063e-08,
+    "hann_periodic": false,
+    "stft_center_window": true,
+    "center": true,
+    "normalize": false,
+    "mask_invalid_frames": false,
+    "cpu_only": true
+  },
+  "bank_matrix": "Retain native GGUF F32 bank and official HF/librosa bank unchanged. Compute native/native-bank, native/HF-bank, HF/native-bank and HF/HF-bank for each fixed PCM. Compare own banks, same native bank and same HF bank on exact common mask-valid rows; retain every raw/padded row and mask.",
+  "controls": [
+    "16000 samples exact zero",
+    "32003 samples:0.2sin(2pi440t)+0.1cos(2pi1234t), t=arange(N)/16000 in float64 then castF32; add F32 impulses0.125,-0.125,0.0625 at indices0,16000,32002"
+  ],
+  "absolute_tolerance": 0.001,
+  "mean_absolute_tolerance": 0.0001,
+  "tolerance_purpose": "Synthetic same-bank prerequisite and descriptive numerical flags only, not DER/model or release gates. Fixed before controls/target features. Absolute1e-3 is ten times upstream CPU FE dense-reference unit-test tolerance1e-4; mean1e-4. Preserve any control failure and do not execute target WAVs when a prerequisite fails.",
+  "limitations": [
+    "Previously seen frozen targets; no new heldout validation. Original quality gate/reference/scorer and all frozen outputs remain unchanged.",
+    "Whole centered CPU frontend comparison only. Does not establish streaming chunk/frame readiness, final padding, neural model/conversion/cache equivalence or original-NeMo reproduction.",
+    "Same-bank substitutions isolate frontend arithmetic; they do not select or replace a release filterbank or model. Small differences alone do not explain DER failure.",
+    "Native raw extra terminal row is retained and reported separately; HF mask-valid prefix defines the comparison. No truncation beyond that declared mask.",
+    "Raw feature/bank tensors remain local evidence outside Git; committed metadata and source pins allow replay."
+  ],
+  "tools": {
+    "diagnose_frontend.py": "0697145d4a47156ba2e2c838b506780e15fd27087edba05ca08221f3dba82017",
+    "frontend_metrics.py": "6e0fe650decac087915d517e76f71dd7462fb9195ff81393ec93818edf7546dc",
+    "test_frontend_metrics.py": "2c313fb60135dc623224dca31a0e9764b96a3fcb7a86d9358f4bd0f382c62961",
+    "frontend_probe.cpp": "83d24c73e3e89ad42569509825aabd5cf8ebd1b348ebf06736b9f76a7b6b43ff",
+    "artifacts.py": "17df6411ab0394b4d9bb30a099915badf357af26050b6cd08bfd44887688ff42",
+    "frontend_admission.py": "54b977cbca1074e083b8c8880839d9f2d618b2e5c43da9d89dd641e99b397a8d",
+    "test_frontend_admission.py": "0f2fbd60e527c43b0a28b857e2922d16b3c03d562fcf4582fb809f72c36e2278"
+  },
+  "linked_sdk_path": "/Users/victor/.cache/gen2-nemotron3-n0/sdk-cpu"
+}

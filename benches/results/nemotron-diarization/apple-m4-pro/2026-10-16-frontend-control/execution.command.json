@@ -1,0 +1,33 @@
+{
+  "argv": [
+    "/usr/bin/sandbox-exec",
+    "-f",
+    "/Users/victor/.cache/gen2-nemotron3-n0/frontend-diagnostic-ec88564.sb",
+    "/Users/victor/.cache/gen2-nemotron3-n0/python-reference/bin/python",
+    "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/diagnose_frontend.py",
+    "--assets",
+    "/Users/victor/.cache/gen2-nemotron3-n0/assets",
+    "--corpus",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality-corpus-v1",
+    "--native-source",
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp",
+    "--sdk",
+    "/Users/victor/.cache/gen2-nemotron3-n0/sdk-cpu",
+    "--probe",
+    "/Users/victor/.cache/gen2-nemotron3-n0/frontend-control-build/frontend-probe",
+    "--output",
+    "/Users/victor/.cache/gen2-nemotron3-n0/frontend-diagnostic-ec88564"
+  ],
+  "environment": {
+    "PATH": "/usr/bin:/bin",
+    "HF_HUB_OFFLINE": "1",
+    "TRANSFORMERS_OFFLINE": "1",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "OMP_NUM_THREADS": "4",
+    "MKL_NUM_THREADS": "4"
+  },
+  "source_commit": "ec88564ec7f7b62e92b73156481630413b9928a9",
+  "sandbox_sha256": "0ce79941f969eb198269dbfe2957f85476865af64d3e6f00b1c11dccd41e1b3d",
+  "returncode": 0,
+  "elapsed_seconds": 6.009234083001502
+}
