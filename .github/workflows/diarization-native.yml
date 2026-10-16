@@ -1,0 +1,58 @@
+name: Diarization native CPU qualification
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/nemotron3-platforms]
+    paths: ['tools/nemotron-diarization/platform_native.py', '.github/workflows/diarization-native.yml', 'src/diarization/**', 'tests/diarization_native.rs']
+permissions:
+  contents: read
+jobs:
+  native:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: NVIDIA/NeMo-Speech.cpp
+          ref: 083861c241061562b8ec29eb06d7f6cdc3af8775
+          path: native-source
+          persist-credentials: false
+      - name: Initialize pinned ggml source
+        run: git -C native-source submodule update --init --depth 1 llama.cpp
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Linux build dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends build-essential cmake ninja-build pkg-config libsentencepiece-dev
+      - name: Windows vcpkg binary cache
+        if: runner.os == 'Windows'
+        uses: actions/cache@v4
+        with:
+          path: ~\AppData\Local\vcpkg\archives
+          key: nemo-diar-vcpkg-9e593bb18ea69cc5095e012465dcd675a822ed0d-x64-static-md
+      - name: Build and exercise actual CPU SDK
+        run: python tools/nemotron-diarization/platform_native.py --source native-source --prefix "${{ runner.temp }}/nemo-sdk" --output "${{ runner.temp }}/nemo-evidence" --jobs 2
+      - name: Preserve successful or failed evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nemotron-native-${{ matrix.os }}
+          path: |
+            ${{ runner.temp }}/nemo-evidence/*.json
+            ${{ runner.temp }}/nemo-evidence/*.log
+            ${{ runner.temp }}/nemo-evidence/*.f32
+            ${{ runner.temp }}/nemo-evidence/reference/
+            ${{ runner.temp }}/nemo-sdk/
+          retention-days: 7
