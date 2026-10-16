@@ -24,7 +24,7 @@ jobs:
       - uses: Swatinem/rust-cache@v2
       - run: cargo fmt --package gen2 -- --check
       - run: cargo clippy --locked --no-default-features --features '${{ matrix.features }}' --lib --tests -- -D warnings
-      - run: cargo test --locked --no-default-features --features '${{ matrix.features }}' --lib --test diarization_api --test diarization_alignment --test speech_cancellation
+      - run: cargo test --locked --no-default-features --features '${{ matrix.features }}' --lib --test diarization_api --test diarization_alignment --test diarization_native --test speech_cancellation
       # Feature compatibility only. No model or native SDK is required here;
       # these jobs never stand in for platform real-model receipts.
 
