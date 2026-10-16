@@ -97,6 +97,15 @@ commit and records all source identities. These runtime gates remain pending;
 all 167 model-free tool tests pass. The [157-test CI source](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-157/qualification.json)
 also passes all 13 jobs; later package migrations are outside that CI source.
 
+The [Mac mixed-model protocol](valid-mel-mixed.protocol.json) freezes a freshly
+compiled helper, both relocated v2 runtimes and actual Bark, Laya and chat
+assets before execution. Four fresh processes cover CPU/Metal diarization and
+both real-Laya load orders, with exact private-library and ONNX Runtime traces.
+This is a sequential residency/admission smoke test with short silence inputs
+and nonempty chat generations; it does not establish real-speech parity,
+concurrent inference, unchanged isolated chat output or held-out quality.
+All 169 model-free tool tests pass. Actual mixed execution remains pending.
+
 # Nemotron 3 — N0 qualification
 
 This directory implements the first milestone of the
