@@ -45,6 +45,27 @@ class WindowsRuntimeAuditTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             loaded_modules(observed, libraries, 'public.exe', {'bytes': 7, 'sha256': 'b' * 64})
 
+    def test_isolated_chat_forbids_private_dlls_and_requires_exact_declared_openmp(self):
+        libraries, observed = self.fixture()
+        observed['modules'] = [row for row in observed['modules']
+                               if row['path'].rsplit('\\', 1)[-1] not in NAMES.values()]
+        openmp = {'bytes': 8, 'sha256': 'd' * 64}
+        row = {'path': 'C:\\inputs\\bin\\vcomp140.dll', **openmp}
+        observed['modules'].append(row)
+        helper = {'bytes': 7, 'sha256': 'b' * 64}
+        result = loaded_modules(observed, libraries, 'public.exe', helper, private_required=False, openmp=openmp)
+        self.assertEqual(result['private_native'], [])
+        self.assertEqual(result['chat_openmp'], [row])
+        for mutation in [lambda rows: rows.pop(),
+                         lambda rows: rows[-1].update(path='C:\\Windows\\System32\\vcomp140.dll'),
+                         lambda rows: rows[-1].update(sha256='e' * 64),
+                         lambda rows: rows.append({'path': 'C:\\inputs\\relocated runtime ü\\lib\\' + NAMES['ggml.dll'],
+                                                  'bytes': 3, 'sha256': 'a' * 64})]:
+            invalid = copy.deepcopy(observed)
+            mutation(invalid['modules'])
+            with self.assertRaises(ValueError):
+                loaded_modules(invalid, libraries, 'public.exe', helper, private_required=False, openmp=openmp)
+
 
 if __name__ == '__main__':
     unittest.main()

@@ -122,7 +122,10 @@ class Qualification(Smoke):
                             frozen_inputs_sha256=digest(self.output / 'frozen-inputs.json'),
                             package_manifest_sha256=construction['package_manifest_sha256'])
 
-    def container(self, name, executable, arguments, capture=True, negative=False):
+    def audit_modules(self, observation, executable):
+        return loaded_modules(observation, self.package['libraries'], executable, self.helpers[executable])
+
+    def container(self, name, executable, arguments, capture=True, negative=False, readonly_mounts=()):
         run = self.output / name
         run.mkdir()
         inputs, results = run / 'inputs ü', run / 'results'
@@ -147,13 +150,22 @@ class Qualification(Smoke):
         (inputs / 'command.json').write_text(json.dumps(spec, indent=2) + '\n', encoding='utf-8')
         before = byte_inventory(inputs)
         (run / 'frozen-inputs.json').write_text(json.dumps(before, indent=2) + '\n', encoding='utf-8')
-        if any(',' in str(path) for path in [inputs, results]):
+        readonly_mounts = [(Path(source).resolve(strict=True), target) for source, target in readonly_mounts]
+        if any(',' in str(path) for path in [inputs, results, *[source for source, _ in readonly_mounts]]):
             raise ValueError('Windows bind mount paths cannot contain commas')
+        expected_mounts = {'c:\\inputs': (inputs, False), 'c:\\results': (results, True)}
+        extra = []
+        for source, target in readonly_mounts:
+            if target.lower() in expected_mounts or target != 'C:\\chat':
+                raise ValueError('unsupported additional Windows qualification mount')
+            expected_mounts[target.lower()] = (source, False)
+            extra += ['--mount', f'type=bind,source={source},target={target},readonly']
         try:
             self.run(name + '-create', [*self.docker, 'create', '--name', 'gen2-nemo-runtime-' + uuid.uuid4().hex,
                      '--pull', 'never', '--isolation', 'process', '--network', 'none',
                      '--mount', f'type=bind,source={inputs},target=C:\\inputs,readonly',
                      '--mount', f'type=bind,source={results},target=C:\\results',
+                     *extra,
                      '--env', 'PATH=C:\\Windows\\System32;C:\\Windows', self.image['Id'],
                      'C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe',
                      '-NoLogo', '-NoProfile', '-NonInteractive', '-ExecutionPolicy', 'Bypass', '-File', 'C:\\inputs\\launch.ps1'])
@@ -167,9 +179,10 @@ class Qualification(Smoke):
             mounts = {row['Destination'].lower(): row for row in actual['Mounts']}
             if (actual['Image'] != self.image['Id'] or actual['HostConfig']['Isolation'] != 'process'
                     or actual['HostConfig']['NetworkMode'] != 'none' or actual['State']['ExitCode'] != 0 or actual['State']['Running']
-                    or set(mounts) != {'c:\\inputs', 'c:\\results'} or mounts['c:\\inputs']['RW'] or not mounts['c:\\results']['RW']
-                    or Path(mounts['c:\\inputs']['Source']).resolve(strict=True) != inputs
-                    or Path(mounts['c:\\results']['Source']).resolve(strict=True) != results):
+                    or set(mounts) != set(expected_mounts)
+                    or any(row['RW'] != expected_mounts[target][1]
+                           or Path(row['Source']).resolve(strict=True) != expected_mounts[target][0]
+                           for target, row in mounts.items())):
                 raise ValueError('actual Windows runtime container controls differ')
             control = json.loads((results / 'controls.json').read_text(encoding='utf-8-sig'))
             if (not control['input_read'] or control['input_sha256'] != before['control.txt']['sha256']
@@ -182,7 +195,7 @@ class Qualification(Smoke):
             if child['completed'] is not True or child.get('error') or ((child['returncode'] == 0) == negative):
                 raise ValueError('actual Windows helper result differs from contract')
             if capture:
-                audited = loaded_modules(child, self.package['libraries'], executable, self.helpers[executable])
+                audited = self.audit_modules(child, executable)
                 (run / 'loaded-modules.json').write_text(json.dumps(audited, indent=2) + '\n', encoding='utf-8')
             return results
         finally:

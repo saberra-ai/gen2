@@ -9,12 +9,12 @@ BIN = PureWindowsPath('C:/inputs/bin')
 SYSTEM = PureWindowsPath('C:/Windows/System32')
 
 
-def loaded_modules(observation, libraries, helper_name, helper):
+def loaded_modules(observation, libraries, helper_name, helper, *, private_required=True, openmp=None):
     rows = observation['modules']
     if (type(observation['stable_snapshots']) is not int or observation['stable_snapshots'] < 1
             or not isinstance(rows, list) or not 1 <= len(rows) <= 512):
         raise ValueError('actual stable bounded Windows module observations required')
-    seen, private, crt, platform, executable = set(), [], [], [], False
+    seen, private, crt, platform, extra, executable = set(), [], [], [], [], False
     for row in rows:
         path = PureWindowsPath(row['path'])
         name = path.name.lower()
@@ -33,6 +33,10 @@ def loaded_modules(observation, libraries, helper_name, helper):
                 private.append(row)
             else:
                 raise ValueError('actual Windows native/CRT module escaped packaged directories')
+        elif name == 'vcomp140.dll':
+            if openmp is None or path.parent != BIN or record != openmp:
+                raise ValueError('observed chat OpenMP runtime differs from declared test payload')
+            extra.append(row)
         elif name == helper_name and path.parent == BIN and record == helper:
             executable = True
         elif (path.parent == SYSTEM and path.suffix.lower() == '.dll'
@@ -40,8 +44,14 @@ def loaded_modules(observation, libraries, helper_name, helper):
             platform.append(row)
         else:
             raise ValueError('unexpected Windows module outside declared helper/runtime/OS: ' + str(path))
-    if {PureWindowsPath(row['path']).name.lower() for row in private} != set(NAMES.values()) or not executable:
-        raise ValueError('actual helper and all five private Windows DLLs must be observed')
-    return {'private_native': private, 'crt': crt, 'platform': platform,
+    expected = set(NAMES.values()) if private_required else set()
+    if {PureWindowsPath(row['path']).name.lower() for row in private} != expected or not executable:
+        raise ValueError('actual helper/private Windows DLL observations differ from required load order')
+    if openmp is not None and len(extra) != 1:
+        raise ValueError('declared chat OpenMP runtime was not observed')
+    result = {'private_native': private, 'crt': crt, 'platform': platform,
             'stable_snapshots': observation['stable_snapshots'],
             'scope': 'Observed modules during the recorded helper execution; no universal dynamic-load/namespace claim.'}
+    if openmp is not None:
+        result['chat_openmp'] = extra
+    return result
