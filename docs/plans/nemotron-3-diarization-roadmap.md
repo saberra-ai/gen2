@@ -5,9 +5,9 @@ Current runtime migration: the tagged valid-Mel CPU v2 package passes
 [60-second parity and seven lifecycle gates](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-macos-runtime/qualification.json).
 The [30-minute and one-hour CPU qualification](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-cpu-long/qualification.json)
 now passes exact retained-tail parity after compaction, provisional revisions and
-peak RSS below 249 MB on repeated smoke audio. Other-platform and Pnola
-receipts still require requalification for this profile;
-original quality and release criteria stay open.
+peak RSS below 249 MB on repeated smoke audio. The platform and debug Pnola
+receipts below cover this profile; full application, original quality and
+release criteria stay open.
 The [tagged Metal SDK construction](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-metal-construction/qualification.json)
 passes source/shader provenance and model-free state/version checks. The
 [fixed Metal runtime qualification](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-metal-runtime/qualification.json)
@@ -49,7 +49,15 @@ passes 43 commands, exact 6,000-row/27-turn parity and all seven lifecycle gates
 66 delivered SDK files and private PE/CRT provenance verify. Its fresh
 [runtime protocol](../../tools/nemotron-diarization/valid-mel-windows-runtime.protocol.json)
 binds five-DLL v2 construction, disposable central-VC setup and offline/chat
-execution; actual Windows package/runtime evidence remains pending.
+execution. The separate [actual Windows runtime receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-valid-mel-offline-chat/receiver-qualification.json)
+now passes v2 five-private-DLL construction, publisher VC installation and fresh
+System32 observation, offline native/public parity, all seven lifecycle tests,
+both missing-dependency controls and CPU chat coexistence in nine disposable
+Windows Server 2022 containers. All 6000 rows and 27 turns match exactly across
+native/public and six chat comparisons. Receiver collection checks the actual
+artifact digest, opaque runtime/helper archive bytes, frozen command specs and
+source pins. Observed RTF around 1.06 is descriptive; Windows live performance,
+physical desktop, Bark/Laya, quality, redistribution and release remain open.
 The [Mac mixed-model protocol](../../tools/nemotron-diarization/valid-mel-mixed.protocol.json)
 separately freezes CPU/Metal residency and admission smoke tests with actual
 Bark/Laya/chat. It does not establish concurrent inference or real-speech quality.
@@ -62,7 +70,11 @@ passes all ten cases, six exact turn comparisons and complete library audits.
 Both 80.04-second live runs retain 11 ASR sections, 152 words and 15 provisional
 revisions. This is debug CLI/test evidence; signed-bundle resolution, GUI,
 physical microphone and quality criteria remain open.
-All 173 model-free tools tests pass locally;
+The complete-app static verifier now checks exact framework siblings, signed
+payload mapping and packaged model/license/Bark identities; its saved-trace
+auditor counts the public entry copy as one native component. These metadata
+checks do not establish application inference or GUI behavior.
+All 175 model-free tools tests pass locally;
 [CI at the 157-test source](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-157/qualification.json)
 passes all 13 jobs. Later package/qualifier changes are outside that CI source;
 release criteria remain open.

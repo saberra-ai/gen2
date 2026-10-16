@@ -1,0 +1,284 @@
+{
+  "schema_version": 1,
+  "setup_and_fresh_image_state_passed": true,
+  "central_runtime_qualified": false,
+  "release_qualified": false,
+  "redistribution_qualified": false,
+  "limits": [
+    "Disposable CI image only; no host installation, image publication or Microsoft bytes in Gen2 runtime archive.",
+    "Installer/setup/registry/file/signature observations only; actual Gen2/native/public/lifecycle/chat loading remains separate.",
+    "Exit 3010 or any observed pending restart stays unqualified; container recreation is not an actual Windows reboot.",
+    "Observed publisher-selected terms are not a distribution grant or evidence of individual assent."
+  ],
+  "source_commit": "0fa21aa36f9904b5f4e6270348b970e0dfed5491",
+  "frozen_inputs_sha256": "a016a6da5494d13c93b12db9ccd6930528d443bd975aeb85556974724e41b306",
+  "base_image_id": "sha256:76e6f57c103004c102b102281f3e6c750a1aa80cef8c5267d6fc2435408c87fc",
+  "installer_sha256": "843068991daaa1f73ad9f6239bce4d0f6a07a51f18c37ea2a867e9beca71295c",
+  "provisioned_image_id": "sha256:a29fce21e560bf4ae18d734e9840995701ba7c681567b9ad408d8adafaed5ee3",
+  "installed_state_sha256": "e19ffb61eef87c3ddc35f2dfb3d83cb171cae1993fcc033f9122653281135717",
+  "fresh_state_sha256": "4d779d9719e8bac221f2d597db66c720a67b0a14e96d4f58be5204eb8b64aaf0",
+  "actual_installer_exit_code": 0,
+  "actual_central_files": [
+    {
+      "name": "concrt140.dll",
+      "path": "C:\\Windows\\System32\\concrt140.dll",
+      "present": true,
+      "bytes": 374200,
+      "sha256": "54716f0738af891f283d213b5c8d11b25896bb8ee3097d301eae718560cf974e",
+      "file_version": "14.51.36247.0",
+      "product_version": "14.51.36247.0",
+      "signature": {
+        "status": "Valid",
+        "status_message": "Signature verified.",
+        "signer": {
+          "subject": "CN=Microsoft Windows Software Compatibility Publisher, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "issuer": "CN=Microsoft Windows Third Party Component CA 2013, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "thumbprint": "2650247AC56048BC7928663C02733D25898A1D6E",
+          "serial_number": "330000012A9AB109DE647902EC00000000012A",
+          "not_before_utc": "2026-03-05T19:05:21.0000000Z",
+          "not_after_utc": "2027-03-03T19:05:21.0000000Z"
+        },
+        "timestamp_signer": {
+          "subject": "CN=Microsoft Time-Stamp Service, OU=nShield TSS ESN:591A-05E0-D947, OU=Microsoft Ireland Operations Limited, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "issuer": "CN=Microsoft Time-Stamp PCA 2010, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "thumbprint": "D91CAC5F5F7A4572D3C00FCFF111567544E952C6",
+          "serial_number": "33000002148DCD2344EE06DF72000100000214",
+          "not_before_utc": "2025-08-14T18:48:18.0000000Z",
+          "not_after_utc": "2026-11-13T18:48:18.0000000Z"
+        }
+      }
+    },
+    {
+      "name": "msvcp140.dll",
+      "path": "C:\\Windows\\System32\\msvcp140.dll",
+      "present": true,
+      "bytes": 643512,
+      "sha256": "7c26614e1d733892c2deac7e245ce115504b1d80592dd0a01b08e3e5a55f89ca",
+      "file_version": "14.51.36247.0",
+      "product_version": "14.51.36247.0",
+      "signature": {
+        "status": "Valid",
+        "status_message": "Signature verified.",
+        "signer": {
+          "subject": "CN=Microsoft Windows Software Compatibility Publisher, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "issuer": "CN=Microsoft Windows Third Party Component CA 2013, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "thumbprint": "2650247AC56048BC7928663C02733D25898A1D6E",
+          "serial_number": "330000012A9AB109DE647902EC00000000012A",
+          "not_before_utc": "2026-03-05T19:05:21.0000000Z",
+          "not_after_utc": "2027-03-03T19:05:21.0000000Z"
+        },
+        "timestamp_signer": {
+          "subject": "CN=Microsoft Time-Stamp Service, OU=nShield TSS ESN:6F1A-05E0-D947, OU=Microsoft Ireland Operations Limited, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "issuer": "CN=Microsoft Time-Stamp PCA 2010, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "thumbprint": "5A64E2034D6EE66C6AFE757189124B30EB245467",
+          "serial_number": "330000021C095515D7C35907D100010000021C",
+          "not_before_utc": "2025-08-14T18:48:31.0000000Z",
+          "not_after_utc": "2026-11-13T18:48:31.0000000Z"
+        }
+      }
+    },
+    {
+      "name": "msvcp140_1.dll",
+      "path": "C:\\Windows\\System32\\msvcp140_1.dll",
+      "present": true,
+      "bytes": 35768,
+      "sha256": "206c931bf90fdad8816de3b5e2ef80b2bcaa9406c89ecc05fe6fddffe251e982",
+      "file_version": "14.51.36247.0",
+      "product_version": "14.51.36247.0",
+      "signature": {
+        "status": "Valid",
+        "status_message": "Signature verified.",
+        "signer": {
+          "subject": "CN=Microsoft Windows Software Compatibility Publisher, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "issuer": "CN=Microsoft Windows Third Party Component CA 2013, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "thumbprint": "2650247AC56048BC7928663C02733D25898A1D6E",
+          "serial_number": "330000012A9AB109DE647902EC00000000012A",
+          "not_before_utc": "2026-03-05T19:05:21.0000000Z",
+          "not_after_utc": "2027-03-03T19:05:21.0000000Z"
+        },
+        "timestamp_signer": {
+          "subject": "CN=Microsoft Time-Stamp Service, OU=nShield TSS ESN:521A-05E0-D947, OU=Microsoft Ireland Operations Limited, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "issuer": "CN=Microsoft Time-Stamp PCA 2010, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "thumbprint": "69B28015A2ADDA169476A9077C56330337E048CB",
+          "serial_number": "330000021771FB2EA5AF011DEA000100000217",
+          "not_before_utc": "2025-08-14T18:48:23.0000000Z",
+          "not_after_utc": "2026-11-13T18:48:23.0000000Z"
+        }
+      }
+    },
+    {
+      "name": "msvcp140_2.dll",
+      "path": "C:\\Windows\\System32\\msvcp140_2.dll",
+      "present": true,
+      "bytes": 274872,
+      "sha256": "d50d7883f20d1dc6191768d3746f52dd9cac89c346ffaed5be1f110c2f34a838",
+      "file_version": "14.51.36247.0",
+      "product_version": "14.51.36247.0",
+      "signature": {
+        "status": "Valid",
+        "status_message": "Signature verified.",
+        "signer": {
+          "subject": "CN=Microsoft Windows Software Compatibility Publisher, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "issuer": "CN=Microsoft Windows Third Party Component CA 2013, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "thumbprint": "2650247AC56048BC7928663C02733D25898A1D6E",
+          "serial_number": "330000012A9AB109DE647902EC00000000012A",
+          "not_before_utc": "2026-03-05T19:05:21.0000000Z",
+          "not_after_utc": "2027-03-03T19:05:21.0000000Z"
+        },
+        "timestamp_signer": {
+          "subject": "CN=Microsoft Time-Stamp Service, OU=nShield TSS ESN:591A-05E0-D947, OU=Microsoft Ireland Operations Limited, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "issuer": "CN=Microsoft Time-Stamp PCA 2010, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "thumbprint": "D91CAC5F5F7A4572D3C00FCFF111567544E952C6",
+          "serial_number": "33000002148DCD2344EE06DF72000100000214",
+          "not_before_utc": "2025-08-14T18:48:18.0000000Z",
+          "not_after_utc": "2026-11-13T18:48:18.0000000Z"
+        }
+      }
+    },
+    {
+      "name": "msvcp140_atomic_wait.dll",
+      "path": "C:\\Windows\\System32\\msvcp140_atomic_wait.dll",
+      "present": true,
+      "bytes": 57792,
+      "sha256": "3d0cbfaa1bf3eecf5a3f4491d2960ee803cb994f30292c6adc4a07c498f60e2b",
+      "file_version": "14.51.36247.0",
+      "product_version": "14.51.36247.0",
+      "signature": {
+        "status": "Valid",
+        "status_message": "Signature verified.",
+        "signer": {
+          "subject": "CN=Microsoft Windows Software Compatibility Publisher, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "issuer": "CN=Microsoft Windows Third Party Component CA 2013, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "thumbprint": "2650247AC56048BC7928663C02733D25898A1D6E",
+          "serial_number": "330000012A9AB109DE647902EC00000000012A",
+          "not_before_utc": "2026-03-05T19:05:21.0000000Z",
+          "not_after_utc": "2027-03-03T19:05:21.0000000Z"
+        },
+        "timestamp_signer": {
+          "subject": "CN=Microsoft Time-Stamp Service, OU=nShield TSS ESN:2D1A-05E0-D947, OU=Microsoft Ireland Operations Limited, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "issuer": "CN=Microsoft Time-Stamp PCA 2010, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "thumbprint": "E551C1AF8874D0437B8D4750DF7484FAA6E4FFC0",
+          "serial_number": "3300000212D108063CCA184FAA000100000212",
+          "not_before_utc": "2025-08-14T18:48:15.0000000Z",
+          "not_after_utc": "2026-11-13T18:48:15.0000000Z"
+        }
+      }
+    },
+    {
+      "name": "msvcp140_codecvt_ids.dll",
+      "path": "C:\\Windows\\System32\\msvcp140_codecvt_ids.dll",
+      "present": true,
+      "bytes": 31160,
+      "sha256": "8a65c7596ef2e6938731f5a1058e7e40145b6d97967cc649231a076b9a608d78",
+      "file_version": "14.51.36247.0",
+      "product_version": "14.51.36247.0",
+      "signature": {
+        "status": "Valid",
+        "status_message": "Signature verified.",
+        "signer": {
+          "subject": "CN=Microsoft Windows Software Compatibility Publisher, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "issuer": "CN=Microsoft Windows Third Party Component CA 2013, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "thumbprint": "2650247AC56048BC7928663C02733D25898A1D6E",
+          "serial_number": "330000012A9AB109DE647902EC00000000012A",
+          "not_before_utc": "2026-03-05T19:05:21.0000000Z",
+          "not_after_utc": "2027-03-03T19:05:21.0000000Z"
+        },
+        "timestamp_signer": {
+          "subject": "CN=Microsoft Time-Stamp Service, OU=nShield TSS ESN:651A-05E0-D947, OU=Microsoft Ireland Operations Limited, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "issuer": "CN=Microsoft Time-Stamp PCA 2010, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "thumbprint": "8FA7937A36EE604D487E36DFAEDEAD5DEBC25120",
+          "serial_number": "33000002151803D38107267C53000100000215",
+          "not_before_utc": "2025-08-14T18:48:20.0000000Z",
+          "not_after_utc": "2026-11-13T18:48:20.0000000Z"
+        }
+      }
+    },
+    {
+      "name": "vcomp140.dll",
+      "path": "C:\\Windows\\System32\\vcomp140.dll",
+      "present": true,
+      "bytes": 212920,
+      "sha256": "95d4ce4a6802d1e18b5e0e1722cc30ea72ca7e033f83828f05c0b7b993fe7cbf",
+      "file_version": "14.51.36247.0",
+      "product_version": "14.51.36247.0",
+      "signature": {
+        "status": "Valid",
+        "status_message": "Signature verified.",
+        "signer": {
+          "subject": "CN=Microsoft Windows Software Compatibility Publisher, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "issuer": "CN=Microsoft Windows Third Party Component CA 2013, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "thumbprint": "2650247AC56048BC7928663C02733D25898A1D6E",
+          "serial_number": "330000012A9AB109DE647902EC00000000012A",
+          "not_before_utc": "2026-03-05T19:05:21.0000000Z",
+          "not_after_utc": "2027-03-03T19:05:21.0000000Z"
+        },
+        "timestamp_signer": {
+          "subject": "CN=Microsoft Time-Stamp Service, OU=nShield TSS ESN:3605-05E0-D947, OU=Microsoft Ireland Operations Limited, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "issuer": "CN=Microsoft Time-Stamp PCA 2010, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "thumbprint": "98113C4828F182369C9B2F3F544764ECDC6947A6",
+          "serial_number": "3300000213B0433566CFAF95E8000100000213",
+          "not_before_utc": "2025-08-14T18:48:17.0000000Z",
+          "not_after_utc": "2026-11-13T18:48:17.0000000Z"
+        }
+      }
+    },
+    {
+      "name": "vcruntime140.dll",
+      "path": "C:\\Windows\\System32\\vcruntime140.dll",
+      "present": true,
+      "bytes": 178616,
+      "sha256": "d1f4225df2cd877dbf130d5668a021dce3f94118455ff5ec952061c30afc9ce7",
+      "file_version": "14.51.36247.0",
+      "product_version": "14.51.36247.0",
+      "signature": {
+        "status": "Valid",
+        "status_message": "Signature verified.",
+        "signer": {
+          "subject": "CN=Microsoft Windows Software Compatibility Publisher, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "issuer": "CN=Microsoft Windows Third Party Component CA 2013, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "thumbprint": "2650247AC56048BC7928663C02733D25898A1D6E",
+          "serial_number": "330000012A9AB109DE647902EC00000000012A",
+          "not_before_utc": "2026-03-05T19:05:21.0000000Z",
+          "not_after_utc": "2027-03-03T19:05:21.0000000Z"
+        },
+        "timestamp_signer": {
+          "subject": "CN=Microsoft Time-Stamp Service, OU=nShield TSS ESN:321A-05E0-D947, OU=Microsoft Ireland Operations Limited, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "issuer": "CN=Microsoft Time-Stamp PCA 2010, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "thumbprint": "F18AEEB662A94ABB9B09A018B14E29B7516DF036",
+          "serial_number": "330000021AA9A01D06A00F43AA00010000021A",
+          "not_before_utc": "2025-08-14T18:48:28.0000000Z",
+          "not_after_utc": "2026-11-13T18:48:28.0000000Z"
+        }
+      }
+    },
+    {
+      "name": "vcruntime140_1.dll",
+      "path": "C:\\Windows\\System32\\vcruntime140_1.dll",
+      "present": true,
+      "bytes": 50112,
+      "sha256": "a7146c08f89fe5b04541ab507cdb59ff7b44534d4ba3c668a426c6450a03434e",
+      "file_version": "14.51.36247.0",
+      "product_version": "14.51.36247.0",
+      "signature": {
+        "status": "Valid",
+        "status_message": "Signature verified.",
+        "signer": {
+          "subject": "CN=Microsoft Windows Software Compatibility Publisher, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "issuer": "CN=Microsoft Windows Third Party Component CA 2013, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "thumbprint": "2650247AC56048BC7928663C02733D25898A1D6E",
+          "serial_number": "330000012A9AB109DE647902EC00000000012A",
+          "not_before_utc": "2026-03-05T19:05:21.0000000Z",
+          "not_after_utc": "2027-03-03T19:05:21.0000000Z"
+        },
+        "timestamp_signer": {
+          "subject": "CN=Microsoft Time-Stamp Service, OU=nShield TSS ESN:591A-05E0-D947, OU=Microsoft Ireland Operations Limited, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "issuer": "CN=Microsoft Time-Stamp PCA 2010, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "thumbprint": "D91CAC5F5F7A4572D3C00FCFF111567544E952C6",
+          "serial_number": "33000002148DCD2344EE06DF72000100000214",
+          "not_before_utc": "2025-08-14T18:48:18.0000000Z",
+          "not_after_utc": "2026-11-13T18:48:18.0000000Z"
+        }
+      }
+    }
+  ]
+}

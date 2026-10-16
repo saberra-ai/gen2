@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "runtime_qualified": false,
+  "scope": "Read-only prerequisites on the named hosted build VM; no isolated container or model execution.",
+  "source_commit": "0fa21aa36f9904b5f4e6270348b970e0dfed5491",
+  "tool_sha256": "7e70c0910c3665c934207b672cf30865dd75801da07c051775ee5d8e700ee718",
+  "host": {
+    "caption": "Microsoft Windows Server 2022 Datacenter",
+    "version": "10.0.20348",
+    "build": "20348",
+    "architecture": "64-bit",
+    "cpu": [
+      {
+        "Name": "AMD EPYC 7763 64-Core Processor                ",
+        "VMMonitorModeExtensions": false,
+        "SecondLevelAddressTranslationExtensions": false,
+        "VirtualizationFirmwareEnabled": true
+      }
+    ],
+    "services": [
+      {
+        "Name": "docker",
+        "Status": 4
+      },
+      {
+        "Name": "hns",
+        "Status": 4
+      },
+      {
+        "Name": "vmcompute",
+        "Status": 4
+      }
+    ]
+  },
+  "docker_environment_override_names": [],
+  "docker_executable": {
+    "path": "C:\\Windows\\system32\\docker.EXE",
+    "sha256": "5cfa9955e94110f82e0d2a4787f29409101f3e23debfe0e07176e92e4ab3de71"
+  },
+  "docker_version": {
+    "Client": {
+      "Version": "29.7.2",
+      "ApiVersion": "1.55",
+      "Os": "windows",
+      "Arch": "amd64",
+      "GitCommit": "a7dcaa6"
+    },
+    "Server": {
+      "Version": "29.7.2",
+      "ApiVersion": "1.55",
+      "MinAPIVersion": "1.40",
+      "Os": "windows",
+      "Arch": "amd64",
+      "KernelVersion": "10.0 20348 (20348.1.amd64fre.fe_release.210507-1500)",
+      "GitCommit": "6a43e3d"
+    }
+  },
+  "docker_info": {
+    "OSType": "windows",
+    "Architecture": "x86_64",
+    "OperatingSystem": "Microsoft Windows Server Version 21H2 (OS Build 20348.5622)",
+    "OSVersion": "10.0.20348",
+    "KernelVersion": "10.0 20348 (20348.1.amd64fre.fe_release.210507-1500)",
+    "ServerVersion": "29.7.2",
+    "Isolation": "process",
+    "Driver": "windowsfilter",
+    "SecurityOptions": null
+  },
+  "local_images": [
+    {
+      "Repository": "mcr.microsoft.com/windows/servercore",
+      "Tag": "ltsc2022",
+      "Digest": "sha256:76cf422c98ca437b308374d0498280541fa42ac7061bb44015a6c8b70cf4db6a",
+      "ID": "sha256:76e6f57c103004c102b102281f3e6c750a1aa80cef8c5267d6fc2435408c87fc",
+      "Size": "4.92GB"
+    },
+    {
+      "Repository": "mcr.microsoft.com/windows/nanoserver",
+      "Tag": "ltsc2022",
+      "Digest": "sha256:8e17c72fbf586d21e7e5a4edf51d97d05ce2c095cbbd345246c69d151fb3ddb3",
+      "ID": "sha256:695789cdc38828bab483b3d68669e0ab72cc3917165bc636cf43f8cad40ca588",
+      "Size": "300MB"
+    },
+    {
+      "Repository": "mcr.microsoft.com/dotnet/framework/aspnet",
+      "Tag": "4.8-windowsservercore-ltsc2022",
+      "Digest": "sha256:ec04e733695f49a0dc9132184f6b06704866b34f422004093c1972512c86259e",
+      "ID": "sha256:cf13a3d571f2d2acb9e6618737b6c57c1d5dead19071490169c79e9f75fd9c97",
+      "Size": "5.79GB"
+    },
+    {
+      "Repository": "mcr.microsoft.com/dotnet/framework/sdk",
+      "Tag": "4.8-windowsservercore-ltsc2022",
+      "Digest": "sha256:460dedaed73224f73ff10dc3ad754d0ed250aa57bcdf6c5052a811b4b7e29345",
+      "ID": "sha256:cb6d998b4a6e4d8e68ea2d570b007c2bc7d9d3bd671b1805c5f05d16436582da",
+      "Size": "9.4GB"
+    },
+    {
+      "Repository": "mcr.microsoft.com/dotnet/framework/runtime",
+      "Tag": "4.8-windowsservercore-ltsc2022",
+      "Digest": "sha256:3983348680840ca6e53ad641e314c3c9184ca2fd19f88bc467600f7d9f6e9d73",
+      "ID": "sha256:1de25184142eb601f1298aa772f56ec0a8f95a2b5e1e0adbc8d02bde70aac941",
+      "Size": "5.46GB"
+    }
+  ],
+  "server2022_process_container_candidate": true,
+  "limits": [
+    "Fresh build VM contains Visual Studio/vcpkg; it is not a clean runtime machine.",
+    "No image identity, isolated operation, offline controls, actual DLL paths or desktop compatibility is qualified.",
+    "Reported CPU virtualization flags do not establish parent-hypervisor configuration or usable nested Hyper-V."
+  ],
+  "commands": [
+    {
+      "name": "host",
+      "argv": [
+        "pwsh",
+        "-NoProfile",
+        "-NonInteractive",
+        "-Command",
+        "\n$ErrorActionPreference='Stop'\n$os=Get-CimInstance Win32_OperatingSystem\n$cpu=@(Get-CimInstance Win32_Processor | Select-Object Name,VMMonitorModeExtensions,SecondLevelAddressTranslationExtensions,VirtualizationFirmwareEnabled)\n$services=@(Get-Service docker,vmcompute,hns -ErrorAction SilentlyContinue | Select-Object Name,Status)\n[ordered]@{caption=$os.Caption;version=$os.Version;build=$os.BuildNumber;architecture=$os.OSArchitecture;cpu=$cpu;services=$services} | ConvertTo-Json -Depth 5\n"
+      ],
+      "returncode": 0,
+      "seconds": 2.407000000000039
+    },
+    {
+      "name": "docker-version",
+      "argv": [
+        "C:\\Windows\\system32\\docker.EXE",
+        "--context",
+        "default",
+        "version",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "seconds": 3.2970000000000255
+    },
+    {
+      "name": "docker-info",
+      "argv": [
+        "C:\\Windows\\system32\\docker.EXE",
+        "--context",
+        "default",
+        "info",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "seconds": 6.405999999999949
+    },
+    {
+      "name": "local-images",
+      "argv": [
+        "C:\\Windows\\system32\\docker.EXE",
+        "--context",
+        "default",
+        "image",
+        "ls",
+        "--digests",
+        "--no-trunc",
+        "--format",
+        "{{json .}}"
+      ],
+      "returncode": 0,
+      "seconds": 0.18799999999998818
+    }
+  ]
+}

@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "redistribution_qualified": false,
+  "package_construction_passed": true,
+  "setup_and_fresh_image_state_passed": true,
+  "offline_container_gates_passed": true,
+  "chat_diarization_gates_passed": true,
+  "protocol": {
+    "bytes": 71820,
+    "sha256": "9b8ef701a74a6c0478c9f15c0437a136fbf309e91ed41c0260bf0068ed69b131"
+  },
+  "commands": [
+    {
+      "name": "construction",
+      "argv": [
+        "C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\python.exe",
+        "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\package_windows.py",
+        "--central-runtime",
+        "--sdk-prefix",
+        "D:\\a\\_temp\\qualified-windows-native\\nemo-valid-mel-sdk",
+        "--native-evidence",
+        "D:\\a\\_temp\\qualified-windows-native\\nemo-valid-mel-evidence",
+        "--output",
+        "D:\\a\\_temp\\windows-valid-mel-runtime\\construction"
+      ],
+      "cwd": "D:\\a\\gen2\\gen2",
+      "returncode": 0,
+      "elapsed_seconds": 6.0470000000000255
+    },
+    {
+      "name": "preflight",
+      "argv": [
+        "C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\python.exe",
+        "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\windows_container_preflight.py",
+        "--output",
+        "D:\\a\\_temp\\windows-valid-mel-runtime\\prerequisites"
+      ],
+      "cwd": "D:\\a\\gen2\\gen2",
+      "returncode": 0,
+      "elapsed_seconds": 12.719000000000051
+    },
+    {
+      "name": "central-setup",
+      "argv": [
+        "C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\python.exe",
+        "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\windows_central_setup.py",
+        "--prerequisites",
+        "D:\\a\\_temp\\windows-valid-mel-runtime\\prerequisites\\preflight.json",
+        "--output",
+        "D:\\a\\_temp\\windows-valid-mel-runtime\\central-setup"
+      ],
+      "cwd": "D:\\a\\gen2\\gen2",
+      "returncode": 0,
+      "elapsed_seconds": 44.5
+    },
+    {
+      "name": "offline-chat",
+      "argv": [
+        "C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\python.exe",
+        "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\qualify_windows_chat.py",
+        "--sdk-prefix",
+        "D:\\a\\_temp\\qualified-windows-native\\nemo-valid-mel-sdk",
+        "--native-evidence",
+        "D:\\a\\_temp\\qualified-windows-native\\nemo-valid-mel-evidence",
+        "--package-evidence",
+        "D:\\a\\_temp\\windows-valid-mel-runtime\\construction",
+        "--central-setup",
+        "D:\\a\\_temp\\windows-valid-mel-runtime\\central-setup",
+        "--prerequisites",
+        "D:\\a\\_temp\\windows-valid-mel-runtime\\prerequisites\\preflight.json",
+        "--output",
+        "D:\\a\\_temp\\windows-valid-mel-runtime\\runtime"
+      ],
+      "cwd": "D:\\a\\gen2\\gen2",
+      "returncode": 0,
+      "elapsed_seconds": 1680.781
+    }
+  ],
+  "scope": "Tagged five-private-DLL v2 package, disposable publisher-VC image and actual offline native/public/lifecycle/CPU-chat gates on Windows Server 2022 AMD64. No physical desktop, Bark/Laya, heldout quality, uncontended performance or release qualification.",
+  "source_commit": "0fa21aa36f9904b5f4e6270348b970e0dfed5491",
+  "construction_receipt": {
+    "bytes": 2193,
+    "sha256": "ff96b4b393939e0d93e5ce7164faa2c196f821d52537b7f36adb30b06ef6aa5f"
+  },
+  "setup_receipt": {
+    "bytes": 15739,
+    "sha256": "e9004a319c9b60fd93411c514251367893e93473982877a7c8e6963b00198c1e"
+  },
+  "runtime_receipt": {
+    "bytes": 9541,
+    "sha256": "f3f8994e6fc8754faf455a0df8c1af75dbf1bf737483757aba8fa16aefd29e10"
+  }
+}
