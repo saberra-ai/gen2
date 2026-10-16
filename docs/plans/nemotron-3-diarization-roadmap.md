@@ -698,6 +698,17 @@ license/release qualification. Actual Windows CPU chat coexistence is being
 qualified separately using the normal OpenMP backend and fresh offline
 containers for isolated chat and both load orders.
 
+The separate [central prerequisite investigation](../research/nemotron-windows-central-prerequisite.md)
+has now acquired and hash-verified the fixed Microsoft 14.51.36247 installer,
+24 static bundle payloads, its actual selected terms document and nine AMD64
+CRT/OpenMP DLL identities. Signature trust, MSI destinations, setup and central
+runtime execution remain pending. `package_windows.py --central-runtime`
+constructs a distinct five-private-DLL format with a pinned publisher-hosted
+prerequisite; it excludes Microsoft installer/runtime DLL payloads, retains the
+source notices and preserves the app-local development contract. Local
+construction/Unicode restoration and 90 model-free tool tests pass. This is a
+separate byte-construction result, not central-runtime deployment qualification.
+
 A guarded [Windows private-DLL build](../research/nemotron-windows-private-names.md)
 now relinks the five owned DLLs through an external CMake naming hook, updates
 probe/entry paths and rejects residual generic ordinary/delay/forwarded native

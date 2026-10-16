@@ -32,18 +32,18 @@ def summary(info):
     return result
 
 
-def validate_libraries(libraries):
-    names = set(NAMES.values()) | CRT
+def validate_libraries(libraries, *, central=False):
+    names = set(NAMES.values()) | (set() if central else CRT)
     if set(libraries) != names:
-        raise ValueError('Windows runtime must retain exactly five private native and eight qualified CRT DLLs')
+        raise ValueError('Windows runtime DLL set differs from the selected app-local/central contract')
     for name, info in libraries.items():
         if (info['machine'] != 'AMD64' or info['format'] != 'PE32+' or not info['is_dll']
                 or info['export_name'] != name or info['bound_imports_present']):
             raise ValueError('unsupported Windows DLL identity/binding form: ' + name)
         dependencies = info['imports'] + info['delay_imports'] + info['forwarder_dependencies']
-        if any(dep not in names | PLATFORM for dep in dependencies):
+        if any(dep not in names | PLATFORM | (CRT if central else set()) for dep in dependencies):
             raise ValueError('Windows DLL dependency escapes declared closure: ' + name)
-    reached, pending, platform_names = set(), [NAMES['nemo_speech_asr_c.dll']], set()
+    reached, pending, platform_names, external = set(), [NAMES['nemo_speech_asr_c.dll']], set(), set()
     while pending:
         name = pending.pop()
         if name in reached:
@@ -53,9 +53,15 @@ def validate_libraries(libraries):
         for dep in info['imports'] + info['delay_imports'] + info['forwarder_dependencies']:
             if dep in names:
                 pending.append(dep)
+            elif central and dep in CRT:
+                external.add(dep)
             else:
                 platform_names.add(dep)
-    return {'static_entry_closure': sorted(reached), 'platform_imports': sorted(platform_names)}
+    result = {'static_entry_closure': sorted(reached), 'platform_imports': sorted(platform_names)}
+    if central:
+        result.update(external_vc_imports=sorted(external),
+                      scope='Static private-PE import closure only; installed central VC runtime closure requires separate execution qualification.')
+    return result
 
 
 def qualified_sdk(sdk, evidence, lock):
@@ -127,7 +133,8 @@ def qualified_sdk(sdk, evidence, lock):
 
 def verify(root):
     manifest = json.loads((root / 'package.json').read_text(encoding='utf-8-sig'))
-    if (manifest['format'] != 'gen2-nemo-windows-cpu-v1' or manifest['platform_baseline'] != BASELINE
+    central = manifest['format'] == 'gen2-nemo-windows-cpu-central-v1'
+    if (manifest['format'] not in {'gen2-nemo-windows-cpu-v1', 'gen2-nemo-windows-cpu-central-v1'} or manifest['platform_baseline'] != BASELINE
             or manifest['architecture'] != 'AMD64' or manifest['backend'] != 'cpu'
             or manifest['release_qualified'] is not False or manifest['redistribution_qualified'] is not False):
         raise ValueError('unsupported Windows development runtime contract')
@@ -138,8 +145,16 @@ def verify(root):
     # Earlier development receipts predate this additive notice supplement.
     if 'source_notice_supplement' in manifest:
         verify_supplement(root, manifest['source_notice_supplement'])
-    if set(manifest['libraries']) != set(NAMES.values()) | CRT:
+    names = set(NAMES.values()) | (set() if central else CRT)
+    if set(manifest['libraries']) != names:
         raise ValueError('Windows library names escape the declared set')
+    if central:
+        requirement = json.loads(Path(__file__).with_name('windows-vc-runtime.lock.json').read_text())
+        dlls = {name for name, row in files.items() if row['type'] == 'file' and name.lower().endswith('.dll')}
+        if (manifest['microsoft_payload_included'] is not False or manifest['required_vc_runtime'] != requirement
+                or 'source_notice_supplement' not in manifest or dlls != {'lib/' + name for name in names}
+                or any(name.lower().endswith(('.exe', '.msi', '.cab')) for name in files)):
+            raise ValueError('central Windows contract must retain exactly five private DLLs and the pinned external prerequisite')
     metadata = root / 'metadata'
     native = json.loads((metadata / 'receipt.json').read_text(encoding='utf-8-sig'))
     lock_path = Path(__file__).with_name('runtime.lock.json')
@@ -157,14 +172,14 @@ def verify(root):
     for name, info in libraries.items():
         if any(info[field] != installed['bin/' + name][field] for field in ['sha256', 'bytes']):
             raise ValueError('Windows DLL bytes differ from qualified native SDK')
-    if libraries != manifest['libraries'] or validate_libraries(libraries) != manifest['dependency_closure']:
+    if libraries != manifest['libraries'] or validate_libraries(libraries, central=central) != manifest['dependency_closure']:
         raise ValueError('Windows PE closure differs from manifest')
     if manifest['entry_library'] != NAMES['nemo_speech_asr_c.dll']:
         raise ValueError('Windows C ABI entry differs')
     return manifest
 
 
-def package_sdk(sdk, evidence, destination):
+def package_sdk(sdk, evidence, destination, *, central=False):
     sdk, evidence, destination = Path(sdk).resolve(strict=True), Path(evidence).resolve(strict=True), Path(destination)
     if destination.exists() or destination.is_symlink():
         raise FileExistsError('refusing to replace a Windows runtime')
@@ -176,7 +191,8 @@ def package_sdk(sdk, evidence, destination):
     with tempfile.TemporaryDirectory(dir=destination.parent, prefix='.package-windows-') as temporary:
         staged = Path(temporary) / 'runtime'
         (staged / 'lib').mkdir(parents=True)
-        for name in sorted(set(NAMES.values()) | CRT):
+        names = set(NAMES.values()) | (set() if central else CRT)
+        for name in sorted(names):
             shutil.copy2(sdk / 'bin' / name, staged / 'lib' / name)
         notices = sdk / 'share/licenses/nemo-speech'
         for name in ['LICENSE', 'NOTICE', 'THIRD_PARTY_NOTICES.md']:
@@ -192,13 +208,13 @@ def package_sdk(sdk, evidence, destination):
             shutil.copy2(evidence / name, metadata / name)
             if digest(metadata / name) != evidence_before[name]:
                 raise ValueError('qualification evidence changed during copying')
-        libraries = {name: summary(inspect_pe(staged / 'lib' / name)) for name in sorted(set(NAMES.values()) | CRT)}
-        manifest = {'format': 'gen2-nemo-windows-cpu-v1', 'release_qualified': False, 'redistribution_qualified': False,
+        libraries = {name: summary(inspect_pe(staged / 'lib' / name)) for name in sorted(names)}
+        manifest = {'format': 'gen2-nemo-windows-cpu-central-v1' if central else 'gen2-nemo-windows-cpu-v1', 'release_qualified': False, 'redistribution_qualified': False,
                     'architecture': 'AMD64', 'backend': 'cpu', 'platform_baseline': BASELINE,
                     'runtime_revision': build['runtime_revision'], 'llama_revision': build['llama_revision'],
                     'native_source_commit': build['source_commit'], 'native_receipt_sha256': digest(evidence / 'receipt.json'),
                     'lock_sha256': digest(tools / 'runtime.lock.json'), 'entry_library': NAMES['nemo_speech_asr_c.dll'],
-                    'libraries': libraries, 'dependency_closure': validate_libraries(libraries),
+                    'libraries': libraries, 'dependency_closure': validate_libraries(libraries, central=central),
                     'msvc_provenance_sha256': digest(evidence / 'windows-provenance.json'),
                     'source_notice_supplement': supplement,
                     'packaging_host': {'platform': platform.platform(), 'python': platform.python_version()},
@@ -209,6 +225,15 @@ def package_sdk(sdk, evidence, destination):
                                'Applicable Microsoft distribution terms/entitlement and complete static-dependency source provenance remain open.',
                                'No Windows desktop, fresh-machine, accuracy or live/uncontended-performance qualification.'],
                     'files': byte_inventory(staged)}
+        if central:
+            manifest['microsoft_payload_included'] = False
+            manifest['required_vc_runtime'] = json.loads((tools / 'windows-vc-runtime.lock.json').read_text())
+            manifest['tools']['windows-vc-runtime.lock.json'] = digest(tools / 'windows-vc-runtime.lock.json')
+            manifest['limits'] = [
+                'Five unchanged private native DLLs only; user/administrator acquires the exact pinned VC prerequisite directly from Microsoft.',
+                'Microsoft installer and runtime DLLs are excluded. Retained build-provenance metadata describes original inputs, not included Microsoft payload.',
+                'No central installer/signature/runtime execution qualification, complete component attribution, Windows desktop or release qualification.',
+                'No held-out accuracy, live/uncontended-performance or Bark/Laya/chat coexistence qualification for this variant.']
         with (staged / 'package.json').open('x', encoding='utf-8', newline='\n') as stream:
             stream.write(json.dumps(manifest, indent=2) + '\n')
         verify(staged)
@@ -225,18 +250,19 @@ def main():
     parser.add_argument('--sdk-prefix', type=Path, required=True)
     parser.add_argument('--native-evidence', type=Path, required=True)
     parser.add_argument('--output', type=Path, required=True)
+    parser.add_argument('--central-runtime', action='store_true', help='Exclude Microsoft bytes; declare the exact publisher-hosted VC prerequisite (execution qualification remains separate).')
     args = parser.parse_args()
     args.output.mkdir(parents=True, exist_ok=False)
     receipt = {'schema_version': 1, 'package_construction_passed': False, 'release_qualified': False,
                'redistribution_qualified': False, 'runtime_qualified': False}
     try:
         package = args.output / 'runtime'
-        manifest = package_sdk(args.sdk_prefix, args.native_evidence, package)
+        manifest = package_sdk(args.sdk_prefix, args.native_evidence, package, central=args.central_runtime)
         archive = write_archive(package, args.output)
         restored = restore_archive(args.output / archive['archive'], archive, args.output / 'relocated runtime ü')
         if verify(restored) != manifest:
             raise ValueError('delivered Windows archive verification differs')
-        receipt.update(package_construction_passed=True, native_source_commit=manifest['native_source_commit'],
+        receipt.update(package_construction_passed=True, central_runtime_variant=args.central_runtime, native_source_commit=manifest['native_source_commit'],
                        native_receipt_sha256=manifest['native_receipt_sha256'], package_manifest_sha256=digest(package / 'package.json'),
                        archive={key: value for key, value in archive.items() if key != 'files'},
                        scope='Development runtime construction and exact ZIP restoration on the named packaging host; no model/native execution.',
