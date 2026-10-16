@@ -1,0 +1,27 @@
+{
+  "command": [
+    "/usr/bin/sandbox-exec",
+    "-f",
+    "/Users/victor/.cache/gen2-nemotron3-n0/n5-offline-v2.sb",
+    "/usr/bin/env",
+    "DYLD_PRINT_LIBRARIES=1",
+    "/Users/victor/.cache/gen2-bark-onnx/build/debug/deps/diarization_native-67e66d94dcbed435",
+    "--ignored",
+    "--nocapture",
+    "--test-threads=1"
+  ],
+  "environment": {
+    "PATH": "/usr/bin:/bin",
+    "GEN2_NEMOTRON_ASSETS": "/Users/victor/.cache/gen2-nemotron3-n0/assets",
+    "GEN2_NEMOTRON_REFERENCE": "/Users/victor/.cache/gen2-nemotron3-n0/receipts/native",
+    "GEN2_NEMO_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/relocated CPU candidate/nemo/lib/libnemo_speech_asr_c.dylib"
+  },
+  "denied_read_roots": [
+    "/opt/homebrew",
+    "/Users/victor/.cache/gen2-nemotron3-n0/sdk-cpu",
+    "/Users/victor/.cache/gen2-nemotron3-n0/package-cpu-n5",
+    "/Users/victor/.cache/gen2-nemotron3-n0/package-cpu-n5-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/relocated package n5"
+  ],
+  "network_denied": true
+}

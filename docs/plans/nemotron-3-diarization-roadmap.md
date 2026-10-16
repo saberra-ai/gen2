@@ -2,7 +2,7 @@
 
 Status: N0–N3 implemented and verified on macOS arm64 CPU; N4/N5 remain open. Development receipts do not establish a supported desktop release.
 Prepared: 2026-10-14.
-Updated: 2026-10-15.
+Updated: 2026-10-16.
 
 ## Outcome
 
@@ -399,6 +399,22 @@ speaker timeline contracts; Pnola owns capture, file conversion, history,
 playback, names and user-facing failure recovery.
 
 ### N5: qualify and release only supported combinations
+
+Mac CPU packaging development now has an explicit offline relocation tool. It
+verifies the pinned SDK build receipt, copies the complete 92-library closure
+(about 11 MiB), gives every non-system dependency a private loader-relative name,
+includes runtime/component notices, removes source runpaths and verifies ad-hoc
+signatures. Minimum-deployment metadata requires macOS 26.0 for these artifacts;
+the measured host is 26.3. A relocated copy ran real native-reference parity with
+Homebrew, original SDK/package reads and networking denied. The full eight-test
+native lifecycle suite also passed in that sandbox, including 100 actual reloads,
+stream parity/cancellation, ABI rejection and offline warm provisioning. Loader
+traces account for all 92 private libraries. Twelve model-free tool tests pass.
+The [CPU packaging development receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-n5-cpu-package/receipt.json)
+retains manifests, controls, policy and executed output. This is local
+relocation evidence, not a fresh-machine, app bundle, Metal, notarization or
+cross-platform release receipt. N5 remains open.
+
 
 - [ ] Run Mac CPU first; compare Metal against the same Q8 reference and real
   annotated audio. Record device placement/fallback rather than treating a

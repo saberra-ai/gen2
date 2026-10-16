@@ -1,0 +1,20 @@
+{
+  "denied_reads": [
+    {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/sdk-cpu/lib/libnemo_speech_asr.dylib",
+      "exit_code": 1,
+      "stderr": "head: /Users/victor/.cache/gen2-nemotron3-n0/sdk-cpu/lib/libnemo_speech_asr.dylib: Operation not permitted"
+    },
+    {
+      "path": "/opt/homebrew/Cellar/sentencepiece/0.2.2/LICENSE",
+      "exit_code": 1,
+      "stderr": "head: /opt/homebrew/Cellar/sentencepiece/0.2.2/LICENSE: Operation not permitted"
+    }
+  ],
+  "network_control": {
+    "host": "127.0.0.1",
+    "unsandboxed_exit_code": 0,
+    "sandboxed_exit_code": 1,
+    "sandboxed_stderr": ""
+  }
+}

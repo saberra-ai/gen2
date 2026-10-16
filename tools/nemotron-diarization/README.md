@@ -206,3 +206,50 @@ chronological merged WER includes cleanup omissions and overlapping reference
 speech; it is diagnostic, not speaker-attributed WER. Initial word-end errors
 show that Bark's next-token intervals can span silence. This experiment does
 not qualify precise word timing or the Pnola attribution product claim.
+
+
+## Relocatable macOS CPU runtime package
+
+`package_macos.py` consumes the pinned SDK and its actual `build.json` receipt.
+It checks the SDK hashes, discovers the complete dylib dependency closure,
+requires the qualified Homebrew package versions, copies runtime and component
+notices, and relocates every non-system dependency to a private
+`@loader_path/libgen2_nemo_…` name. It removes source runpaths and signs each
+library ad hoc. A stable `lib/libnemo_speech_asr_c.dylib` relative alias is the
+public loader entry. Neither model weights nor a Python inference runtime are
+included. Packaging and verification run offline.
+
+```sh
+python3 tools/nemotron-diarization/package_macos.py \
+  --sdk-prefix /absolute/sdk-cpu \
+  --build-receipt /absolute/receipts/build/build.json \
+  --output /absolute/nemo-cpu-package
+python3 tools/nemotron-diarization/package_macos.py \
+  --verify /absolute/nemo-cpu-package
+```
+
+The output must not already exist. Source SDK/Homebrew files are never edited.
+`package.json` records original/relocated hashes, component provenance, minimum
+macOS version, dependency names and every distributed file. Verification checks
+the complete file set, checksums, private identities, closed loader paths,
+architecture, deployment metadata, signatures and entry alias. Preserve relative
+symlinks when copying the package. Do not modify it while loaded.
+
+The measured M4 Pro package has 92 libraries and is approximately 11 MiB. Its
+actual deployment minimum is macOS 26.0; the tested host is macOS 26.3. This
+metadata is not evidence for every Mac model or an older macOS version. Signatures
+are ad hoc local signatures, not a Developer ID/notarization receipt. Runtime
+and model terms remain separate; `notices/openmdw-1.1/` stores an immutable copy
+of the [model agreement](https://openmdw.ai/license/1-1/) for model packaging.
+SentencePiece's bundled Darts/protobuf license sources are pinned in
+`notices/sentencepiece-0.2.2/sources.json`; installed native component licenses
+and package metadata are also retained.
+
+Local qualification copies the finished package to a different path containing
+spaces, then runs the real public API tests with network and reads from
+Homebrew, the source SDK and original package locations denied. Separate sandbox
+controls prove those denials against a reachable local socket and existing source
+files. Loader traces show the private libraries resolving inside the relocated
+copy. This establishes relocation/offline behavior on the named host; a fresh
+machine, app bundle, relocated mixed-model coexistence, Metal and other OS
+qualification remain separate N5 gates.
