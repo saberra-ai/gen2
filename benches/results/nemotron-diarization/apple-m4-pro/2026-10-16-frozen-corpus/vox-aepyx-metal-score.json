@@ -1,0 +1,104 @@
+{
+  "slice": "vox-aepyx",
+  "backend": "metal",
+  "device": "Apple M4 Pro",
+  "scope": "local tuning-heldout integration and quality, not guaranteed checkpoint-unseen",
+  "wrapper_parity": {
+    "passed": true,
+    "scope": "long-session wrapper/reference correctness, not held-out quality or full release qualification",
+    "audio_duration_seconds": 169.152,
+    "backend": "metal",
+    "device": "Apple M4 Pro",
+    "native_frame_count": 16916,
+    "retained_first_frame": 0,
+    "retained_rows": 16916,
+    "turns": 29,
+    "maximum_turn_error_seconds": 0.0,
+    "turn_tolerance_seconds": 1e-06,
+    "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+    "retained_probabilities_match": true,
+    "maximum_probability_error": 0.0,
+    "probability_tolerance": 1e-06,
+    "gen2_rtf": 0.03542657491486947,
+    "native_rtf": 0.03533027691070753
+  },
+  "fp32": {
+    "der": 0.06345674,
+    "missed_speaker_seconds": 3.88,
+    "false_alarm_speaker_seconds": 2.95,
+    "confusion_speaker_seconds": 2.58,
+    "reference_speaker_seconds": 148.29,
+    "reference_speakers": 4,
+    "hypothesis_speakers": 4,
+    "frame_seconds": 0.01,
+    "collar_seconds": 0,
+    "overlap_included": true,
+    "scoring_duration_seconds": 169.152
+  },
+  "q8_shared_threshold": {
+    "der": 0.063524176,
+    "missed_speaker_seconds": 4.36,
+    "false_alarm_speaker_seconds": 2.89,
+    "confusion_speaker_seconds": 2.17,
+    "reference_speaker_seconds": 148.29,
+    "reference_speakers": 4,
+    "hypothesis_speakers": 4,
+    "frame_seconds": 0.01,
+    "collar_seconds": 0,
+    "overlap_included": true,
+    "scoring_duration_seconds": 169.152
+  },
+  "q8_production_default": {
+    "der": 0.113561265,
+    "missed_speaker_seconds": 4.58,
+    "false_alarm_speaker_seconds": 10.56,
+    "confusion_speaker_seconds": 1.7,
+    "reference_speaker_seconds": 148.29,
+    "reference_speakers": 4,
+    "hypothesis_speakers": 4,
+    "frame_seconds": 0.01,
+    "collar_seconds": 0,
+    "overlap_included": true,
+    "scoring_duration_seconds": 169.152
+  },
+  "q8_minus_fp32_absolute_der": 6.743600000000405e-05,
+  "gates": {
+    "wrapper_parity": true,
+    "q8_degradation_at_most_0_02": true,
+    "q8_shared_der_at_most_0_20": true,
+    "q8_production_der_at_most_0_20": true
+  },
+  "postprocessing": "shared probability >0.5, no hysteresis/padding/minimum-duration; production default reported separately",
+  "shape_difference": {
+    "native": [
+      16916,
+      8
+    ],
+    "fp32": [
+      16915,
+      8
+    ],
+    "native_extra_terminal_frame": 1,
+    "frame_seconds": 0.01,
+    "rule": "native floor(N/160)+1; FP32 mask floor(N/160); full audio UEM clips final padding"
+  },
+  "channel_mae_common_frames": 0.001087827025912702,
+  "channel_max_error_common_frames": 0.1476222276687622,
+  "input_pcm_f32le_sha256": "cd3e75316acc30775c52699a481c0cc7560096332009c8911cdeb45581d0d797",
+  "all_slice_gates_passed": true,
+  "sha256": {
+    "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/corpus.protocol.json": "3b4780afa4bc80eb84e6e630301cbb1e652d5d682cab897b4db0a0a7b17cc25d",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality-corpus-v1/manifest.json": "c514152766948139ed21a496b1b81661c2e06d647004901fa4683bea4b423ece",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality-corpus-v1/vox-aepyx.reference.json": "324ecbddc62ea62575b9c22b58e25579ba6c525f33aafdc5bdb6ffab4b82cd56",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/vox-aepyx-metal-gen2.json": "c17d8d9fdbf2b5861888bbef939cce202119efca6d0372877b0e3c677a1cf87d",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/vox-aepyx-metal-gen2.f32": "784adf1d5a9b0104d06b2095bf3e1d283a4f8da305e23cf6f54c457a4d1f3f32",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/vox-aepyx-metal-native.json": "1131ffeb6f3de8a083605685641d74adde50f9f06e5e868e7050f866faeeb04b",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/vox-aepyx-metal-native.json.f32": "784adf1d5a9b0104d06b2095bf3e1d283a4f8da305e23cf6f54c457a4d1f3f32",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/vox-aepyx-fp32.npy": "32d85ec0aabaf303362718f64d42b5e93f58613796d2ab2d6d2626174d96406b",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/vox-aepyx-fp32.json": "711b61fb28d8f172b5daa284d7b550b9e53a72e27a98305f10cd9101a857c42e",
+    "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/qualify_corpus.py": "51fdf6ba5201d02bd55762fa449727c5aa5507aa640aa27394cb9439dd19619e",
+    "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/score.py": "32aea92676133e42e2c30a914f8729d1c31c0c96e02faf9b7cab42911b389eb8",
+    "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/compare.py": "a53fccc162ead3b488a3880950d4dbf244897fd837f3b8e0898235029e559282",
+    "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/compare_stream.py": "6d6a80a3b9710d0d2d0705225653935d40cd69aac9abe50454c0609631c6daa4"
+  }
+}

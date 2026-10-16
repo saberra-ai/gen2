@@ -1,0 +1,674 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "scope": "frozen local tuning-heldout CPU/Metal per-slice quality; no general unseen-data or complete release claim",
+  "source_commit": "125f907d05df8c0084ce350e2261d3bb5198562c",
+  "frozen_protocol_sha256": "3b4780afa4bc80eb84e6e630301cbb1e652d5d682cab897b4db0a0a7b17cc25d",
+  "corpus_manifest_sha256": "c514152766948139ed21a496b1b81661c2e06d647004901fa4683bea4b423ece",
+  "audio_slices": 8,
+  "distinct_recordings": 7,
+  "cpu_metal_comparisons": 16,
+  "all_wrapper_comparisons_exact": true,
+  "all_q8_degradation_bounds_passed": true,
+  "all_slice_quality_gates_passed": false,
+  "passed_slice_backend_pairs": 12,
+  "failed_slice_backend_pairs": [
+    {
+      "slice": "ami-ES2004a-Mix-Headset",
+      "backend": "cpu",
+      "gates": {
+        "wrapper_parity": true,
+        "q8_degradation_at_most_0_02": true,
+        "q8_shared_der_at_most_0_20": false,
+        "q8_production_der_at_most_0_20": false
+      }
+    },
+    {
+      "slice": "ami-ES2004a-Mix-Headset",
+      "backend": "metal",
+      "gates": {
+        "wrapper_parity": true,
+        "q8_degradation_at_most_0_02": true,
+        "q8_shared_der_at_most_0_20": false,
+        "q8_production_der_at_most_0_20": false
+      }
+    },
+    {
+      "slice": "ami-ES2004a-Array1-01",
+      "backend": "cpu",
+      "gates": {
+        "wrapper_parity": true,
+        "q8_degradation_at_most_0_02": true,
+        "q8_shared_der_at_most_0_20": false,
+        "q8_production_der_at_most_0_20": false
+      }
+    },
+    {
+      "slice": "ami-ES2004a-Array1-01",
+      "backend": "metal",
+      "gates": {
+        "wrapper_parity": true,
+        "q8_degradation_at_most_0_02": true,
+        "q8_shared_der_at_most_0_20": false,
+        "q8_production_der_at_most_0_20": false
+      }
+    }
+  ],
+  "per_slice_metrics": [
+    {
+      "slice": "vox-bjruf",
+      "backend": "cpu",
+      "fp32_der": 0.091048264,
+      "q8_shared_der": 0.094271211,
+      "q8_production_der": 0.110815674,
+      "q8_minus_fp32": 0.00322294699999999,
+      "all_gates_passed": true
+    },
+    {
+      "slice": "vox-bjruf",
+      "backend": "metal",
+      "fp32_der": 0.091048264,
+      "q8_shared_der": 0.094969516,
+      "q8_production_der": 0.111540837,
+      "q8_minus_fp32": 0.003921252,
+      "all_gates_passed": true
+    },
+    {
+      "slice": "vox-bxcfq",
+      "backend": "cpu",
+      "fp32_der": 0.007249975,
+      "q8_shared_der": 0.007299633,
+      "q8_production_der": 0.019118085,
+      "q8_minus_fp32": 4.965800000000017e-05,
+      "all_gates_passed": true
+    },
+    {
+      "slice": "vox-bxcfq",
+      "backend": "metal",
+      "fp32_der": 0.007249975,
+      "q8_shared_der": 0.00734929,
+      "q8_production_der": 0.01901877,
+      "q8_minus_fp32": 9.9315e-05,
+      "all_gates_passed": true
+    },
+    {
+      "slice": "vox-aepyx",
+      "backend": "cpu",
+      "fp32_der": 0.06345674,
+      "q8_shared_der": 0.053678603,
+      "q8_production_der": 0.114437926,
+      "q8_minus_fp32": -0.009778137,
+      "all_gates_passed": true
+    },
+    {
+      "slice": "vox-aepyx",
+      "backend": "metal",
+      "fp32_der": 0.06345674,
+      "q8_shared_der": 0.063524176,
+      "q8_production_der": 0.113561265,
+      "q8_minus_fp32": 6.743600000000405e-05,
+      "all_gates_passed": true
+    },
+    {
+      "slice": "vox-cqfmj",
+      "backend": "cpu",
+      "fp32_der": 0.0865243,
+      "q8_shared_der": 0.083302651,
+      "q8_production_der": 0.108523564,
+      "q8_minus_fp32": -0.003221648999999993,
+      "all_gates_passed": true
+    },
+    {
+      "slice": "vox-cqfmj",
+      "backend": "metal",
+      "fp32_der": 0.0865243,
+      "q8_shared_der": 0.084407216,
+      "q8_production_der": 0.108523564,
+      "q8_minus_fp32": -0.002117084000000005,
+      "all_gates_passed": true
+    },
+    {
+      "slice": "vox-auzru",
+      "backend": "cpu",
+      "fp32_der": 0.039772459,
+      "q8_shared_der": 0.054939223,
+      "q8_production_der": 0.062605161,
+      "q8_minus_fp32": 0.015166764,
+      "all_gates_passed": true
+    },
+    {
+      "slice": "vox-auzru",
+      "backend": "metal",
+      "fp32_der": 0.039772459,
+      "q8_shared_der": 0.053740192,
+      "q8_production_der": 0.063057255,
+      "q8_minus_fp32": 0.013967732999999996,
+      "all_gates_passed": true
+    },
+    {
+      "slice": "ami-ES2004a-Mix-Headset",
+      "backend": "cpu",
+      "fp32_der": 0.414447315,
+      "q8_shared_der": 0.414714527,
+      "q8_production_der": 0.33214572,
+      "q8_minus_fp32": 0.00026721200000001666,
+      "all_gates_passed": false
+    },
+    {
+      "slice": "ami-ES2004a-Mix-Headset",
+      "backend": "metal",
+      "fp32_der": 0.414447315,
+      "q8_shared_der": 0.415427095,
+      "q8_production_der": 0.332234791,
+      "q8_minus_fp32": 0.0009797800000000412,
+      "all_gates_passed": false
+    },
+    {
+      "slice": "ami-ES2004a-Array1-01",
+      "backend": "cpu",
+      "fp32_der": 0.500222677,
+      "q8_shared_der": 0.499599181,
+      "q8_production_der": 0.438407411,
+      "q8_minus_fp32": -0.0006234960000000012,
+      "all_gates_passed": false
+    },
+    {
+      "slice": "ami-ES2004a-Array1-01",
+      "backend": "metal",
+      "fp32_der": 0.500222677,
+      "q8_shared_der": 0.499599181,
+      "q8_production_der": 0.438229269,
+      "q8_minus_fp32": -0.0006234960000000012,
+      "all_gates_passed": false
+    },
+    {
+      "slice": "icsi-Bmr005-interaction",
+      "backend": "cpu",
+      "fp32_der": 0.103259141,
+      "q8_shared_der": 0.099960254,
+      "q8_production_der": 0.19336248,
+      "q8_minus_fp32": -0.0032988870000000003,
+      "all_gates_passed": true
+    },
+    {
+      "slice": "icsi-Bmr005-interaction",
+      "backend": "metal",
+      "fp32_der": 0.103259141,
+      "q8_shared_der": 0.105643879,
+      "q8_production_der": 0.199880763,
+      "q8_minus_fp32": 0.0023847379999999974,
+      "all_gates_passed": true
+    }
+  ],
+  "execution": "Sequential fresh native CPU/Metal and original FP32 processes with network denied; no model-output selection, threshold/profile tuning or reference replacement. Fixed 9/4 low-latency geometry. All failed outcomes retained.",
+  "timing_scope": "Quality and wrapper parity only. Editing, artifact collection, CI inspection and OS background activity occurred; no clean throughput or capture/UI-delay claim.",
+  "reference_caveat": "AMI transcriber segment protocol differs from NVIDIA published forced-alignment RTTMs. Frozen failures remain authoritative under this protocol; no direct reproduction-discrepancy claim. See docs/research/nemotron-quality-gaps.md.",
+  "limitations": [
+    "Vox and ICSI are reported in checkpoint training inventory; local tuning-heldout does not imply checkpoint-unseen.",
+    "Two AMI channels share one meeting and both fail 20% gates.",
+    "ICSI native production default is close to the 20% boundary; no generalization margin claimed.",
+    "Full release, broader Bark attribution and platform/deployment gates remain open."
+  ],
+  "feature_ci": {
+    "run_id": 38860761229,
+    "head_sha": "49743186f6e86c2ddf59470461a6357c7b15e18a",
+    "all_13_jobs_passed": true
+  },
+  "artifacts": {
+    "ami-ES2004a-Array1-01-cpu-gen2.command.json": "d750b9d5ff7798f451e6e0c97d7a26d87b11c5bd34de835280e936e513e6cc4d",
+    "ami-ES2004a-Array1-01-cpu-gen2.json": "f86a92cee2dc63aafddefd998636c0635a0bbf4d4ac96a63212990ece38eae2a",
+    "ami-ES2004a-Array1-01-cpu-gen2.time.log": "0f536f42c641552047a3a6ed7a3db7614ceeff6afd875c7c83a934f6b56a915c",
+    "ami-ES2004a-Array1-01-cpu-native.command.json": "a3862276ee685c948df230edf63a7b84af1be410750f538c503be75006ecd8f5",
+    "ami-ES2004a-Array1-01-cpu-native.json": "e509d1ce717079dc98599a1e84b0255b4e1cbfa2dfa76493e6d76d9f628b8095",
+    "ami-ES2004a-Array1-01-cpu-native.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ami-ES2004a-Array1-01-cpu-native.time.log": "d888e402e30eb061ae3827a021321ea225f929daadc6ab760cb7e83d6111fcd8",
+    "ami-ES2004a-Array1-01-cpu-score.command.json": "fd2ab6d57b46c5fdc68d2f0d497bc0812572661dd8837a706c198fa2fd23d2f3",
+    "ami-ES2004a-Array1-01-cpu-score.json": "3ecd12dc3dce66e59692f5d31e567dd63083aa3804d0ca48e3ad6bd25b914f47",
+    "ami-ES2004a-Array1-01-fp32.command.json": "dce9a4909d8c6059806c241033b8a86058c04e606e59a0fa6700734530840abb",
+    "ami-ES2004a-Array1-01-fp32.json": "d7a2e4f84bf60a679654f41c8e949c87241dc5fea347d9be132ce807c5326309",
+    "ami-ES2004a-Array1-01-fp32.stdout.log": "fb9ebb4f26a8da28e715fa429be337c3026c7b9676d42641b4340368560d1e3c",
+    "ami-ES2004a-Array1-01-fp32.time.log": "63a5cda4f1fce34a2452b63518027c72fb8bc7068fb5bd2172592aaf6f8d345a",
+    "ami-ES2004a-Array1-01-metal-gen2.command.json": "f5ff98b82dae3fd0b91a628e194b5db264c43749a0f395ee4f2f3bed1a06eb90",
+    "ami-ES2004a-Array1-01-metal-gen2.json": "99cb0353c26792c296ed92ea1856170f2d8ee23e9e91f425f13f54d2c37e4db6",
+    "ami-ES2004a-Array1-01-metal-gen2.time.log": "a964dee6e8a09876e07fc174c2c01ef9e0e2f78fd5e2506c06f0c9de6b83afb8",
+    "ami-ES2004a-Array1-01-metal-native.command.json": "18e6351e011f239e9d05fc8fa33a5aca5db76355268471bd08bf5c782c0800f6",
+    "ami-ES2004a-Array1-01-metal-native.json": "0c157bbe940f6851015ffd7533365ab066851990c78f429808328b5ca105c36e",
+    "ami-ES2004a-Array1-01-metal-native.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ami-ES2004a-Array1-01-metal-native.time.log": "65b8d34464d76e4aff5f496dcce4b47299656cb469f633f7b4ee0c7f42efb6b7",
+    "ami-ES2004a-Array1-01-metal-score.command.json": "4a92e6d1cb19c34b585091fc6d44f4969d894c2f9fcdecc37b8a8aefc5f0eaf1",
+    "ami-ES2004a-Array1-01-metal-score.json": "1bf1a84360750ef42009e1a16e40bf1518c4d3f6d8d58986f2cdf3bda2f5ca84",
+    "ami-ES2004a-Mix-Headset-cpu-gen2.command.json": "0af844043982ad28e3f74caed2172566916a99c935e43203ef176cbae154cfab",
+    "ami-ES2004a-Mix-Headset-cpu-gen2.json": "4da7657dfa0fe0b7013850bab2c4519da6ee012a9ef0a242d0c4c999dec11225",
+    "ami-ES2004a-Mix-Headset-cpu-gen2.time.log": "4353936cd42fc11d90eb3bb2869d3700cc664cf5cd872ff2a7bea7ada138749c",
+    "ami-ES2004a-Mix-Headset-cpu-native.command.json": "c011d2c3181fa716c5f2174bea2cb88541ee56b4b5eec6280eb230559ac69b1c",
+    "ami-ES2004a-Mix-Headset-cpu-native.json": "3f19ef1ebbaa5b2d4971ddfc8691919502109a1abd42cb91f69a4cd84ed98f29",
+    "ami-ES2004a-Mix-Headset-cpu-native.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ami-ES2004a-Mix-Headset-cpu-native.time.log": "a1e5479a8dc8c58e11216aefb3350ad754872dd747510b38e438bbad7ea11044",
+    "ami-ES2004a-Mix-Headset-cpu-score.command.json": "3390c16be483caca4438563f62034fcc38c114614ef09dc5c29d7c48bc1b0ee9",
+    "ami-ES2004a-Mix-Headset-cpu-score.json": "3156eae317889c38e773da9621092192d0c0a4e6203321955ba612d0ee35a436",
+    "ami-ES2004a-Mix-Headset-fp32.command.json": "ebb512deb08f5df23d90b017b6571af48ee55829f84eec58e617b431c1ce57f4",
+    "ami-ES2004a-Mix-Headset-fp32.json": "abce7ad36c1c1eb249ace5d6aa01388b43fa8356fb040858496cc9339ded5876",
+    "ami-ES2004a-Mix-Headset-fp32.stdout.log": "1b879aa4b05cb09bcb8db2bca6e39178ea04b4076e8014bfea6072e3ec82ac14",
+    "ami-ES2004a-Mix-Headset-fp32.time.log": "7c3892deb09a0362d7cd853786e2652b6672f4409fbdba9bfd1e92f4df812df2",
+    "ami-ES2004a-Mix-Headset-metal-gen2.command.json": "eb09d9317566a37ae24de5f107d91c4f0146e47c170483e8bf3e309ea6304bb6",
+    "ami-ES2004a-Mix-Headset-metal-gen2.json": "a2ad15a98b9c67712ec0b10e5b27382d5954a3fb5b641820ac3967feec0e375f",
+    "ami-ES2004a-Mix-Headset-metal-gen2.time.log": "ec68dc8379faa243f834dd4f8f8f285bce4a66046bf2759c426103d67e6bd0cd",
+    "ami-ES2004a-Mix-Headset-metal-native.command.json": "f2cb2e7a518d7f37ed99e11687e118b7dc06ea814872ad2ea946087a0724d4c9",
+    "ami-ES2004a-Mix-Headset-metal-native.json": "144df81c350661a75e4b7eaa6829af3c78bad9aa487a1224e24fbdd19f0ab658",
+    "ami-ES2004a-Mix-Headset-metal-native.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "ami-ES2004a-Mix-Headset-metal-native.time.log": "c59b4ed63c959a2b07477ac6d76ea38b9715c9753601cdb8ebb991c16889f4a6",
+    "ami-ES2004a-Mix-Headset-metal-score.command.json": "6640ed96061c72cbaece4677a41412b94a2d3f6f2aa441d9af5224941235cf92",
+    "ami-ES2004a-Mix-Headset-metal-score.json": "b739e8a86acbf1ecd10f2afc6d0814b6f9460e9f5062877f17bbff7cddcca01a",
+    "build-manifest.json": "3ec6baee1d7f408203bfe23f4e42d302edca9078fa2a987f043f6eb017d7e8c7",
+    "calibration-cpu-gen2.command.json": "7fd75ca04791cafafe369e8b172922919feafba1f44f3135bf53d09a331f6fed",
+    "calibration-cpu-gen2.json": "d04462e816dd25ca32e6f6ec3c2ab96eb778c76b927608c56820593733634ee1",
+    "calibration-cpu-gen2.time.log": "ed0318bfcd73ce918a849a2c7d1ee91e49c747165e14575b603bbca06eaac85d",
+    "calibration-cpu-native.command.json": "b9ee68d87ee46c470b213ae96a5b792a2327cf56af1fcd33945720a517e07579",
+    "calibration-cpu-native.json": "ceae688f322b88e1442b01d7489361a6535e8273be69f712c1f0b8777acedafb",
+    "calibration-cpu-native.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "calibration-cpu-native.time.log": "9b0311a8a54f7e3d97904ac9be3c8fa1ea87a948fd7a30101806311e30ba9be4",
+    "calibration-metal-gen2.command.json": "9a5fdce44b4af760a1433124f64508152cec9b5bf7ad5d3a280f5f3874ae3f87",
+    "calibration-metal-gen2.json": "5b98c3ba0f70622c12ef553c6d055c5a49a27dafb913304b86c2dd4cb6c2c466",
+    "calibration-metal-gen2.time.log": "05d71baeab7d2be85f92799b66554058c828f74ed21eb2189e6095d8ca19fa4d",
+    "calibration-metal-native.command.json": "6b633590bbffc087564d492585f8d1b56877aa2fac4f5c6493bd249c7a68dcc1",
+    "calibration-metal-native.json": "1a22783cafd7f2853ba0f2897f73281b7cad8802b9ac2dd5b0c2fc1b160ab6d5",
+    "calibration-metal-native.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "calibration-metal-native.time.log": "7f69cdee121a04aea24ed2a5b52d68779b0bd96941b459bf0d5a20cf188efbf1",
+    "calibration-reference.command.json": "5d9a363331fbf00b9f330dae54192432b6e205c662b9ae20b8111b28637b5717",
+    "calibration-reference.json": "209e525facf305c893282546e55b988adf073983182f3da78d810d57dc3c2a3f",
+    "calibration-reference.stdout.log": "79bcbf2177c7f176d91009e04b704f6295cbbd811ebe532111e5f8eebd07975a",
+    "calibration-reference.time.log": "3a964aa0e0249181e2b7500d6a6cff49f8ebfc2f5179c1dad3258e05df6ca297",
+    "calibration.json": "c8d7974b5491d39f785412e2fc87aa5ffe477a82a10aad815034dfe17c07b606",
+    "cpp-cpu-build.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "cpp-metal-build.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "frozen-protocol.json": "3b4780afa4bc80eb84e6e630301cbb1e652d5d682cab897b4db0a0a7b17cc25d",
+    "icsi-Bmr005-interaction-cpu-gen2.command.json": "5aec63a79769dc7228d715acaafcc2edfca0a08956541019b6e071140a685f7c",
+    "icsi-Bmr005-interaction-cpu-gen2.json": "7cc684e1618e626809f3b802a34e0846f7cb89c8ac8c3d7bdea6da3a36e0e523",
+    "icsi-Bmr005-interaction-cpu-gen2.time.log": "cbb44dc375b3b70da6f68cb3cc9ead48bc22c52075eb628f0436df00dedcafb9",
+    "icsi-Bmr005-interaction-cpu-native.command.json": "3fee1ab6f558edf96d0e69f9d2a21ca27764e81699826889aea43c91b4e1b970",
+    "icsi-Bmr005-interaction-cpu-native.json": "582b3b6fbdcb1de6d01ade1196b18ad68c4eccd1863c791d12c10b9b576ccdec",
+    "icsi-Bmr005-interaction-cpu-native.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "icsi-Bmr005-interaction-cpu-native.time.log": "6c767cc7f45b597b7bbfd9987b9e6db2d3ac6c1ee6ac0c2b2124f240c3d4b2d7",
+    "icsi-Bmr005-interaction-cpu-score.command.json": "cfc576e39b664f527803a238a07bac25185e4e728489500aadf5d74ff2fe32f0",
+    "icsi-Bmr005-interaction-cpu-score.json": "5b550e2cfa660e8db258d0522dace5c3655d2ef23589a773788929e73dbb6b54",
+    "icsi-Bmr005-interaction-fp32.command.json": "d38cd81f5109862bdfd53c29e391568d343e457b09e20e29762885547084a205",
+    "icsi-Bmr005-interaction-fp32.json": "f238eee011ccda8975205c4d06f02ebd14446bf1247f7bc1bbacf9ea336af047",
+    "icsi-Bmr005-interaction-fp32.stdout.log": "53177d9b4b44a1eec5897188046e840087f2374416c88f304fd80b1ab54fc3b1",
+    "icsi-Bmr005-interaction-fp32.time.log": "619bffbbe74a8e4cea742d61f2a92d45ee85f67f5c6f69c5bda025b24c6a60ff",
+    "icsi-Bmr005-interaction-metal-gen2.command.json": "a9f5eb03008955e25f613fdfa4c795837508b90b548b6aa1d07b4e925f333967",
+    "icsi-Bmr005-interaction-metal-gen2.json": "dcbb8f6cf163bfff0fcdf726afba3fe24ffab6f8745ed14f882e80654beed345",
+    "icsi-Bmr005-interaction-metal-gen2.time.log": "319e58c3741e82b40c2b223ae54d5ed5af9d7f98a8d9265d2ec4cb94dc33bff8",
+    "icsi-Bmr005-interaction-metal-native.command.json": "d1854b2472337163a9986b09f786416ce3a37e3dcdd112672c7e2ce00264a6f1",
+    "icsi-Bmr005-interaction-metal-native.json": "9b3e5c76a06c1d4d442a56fe5c8508ac3f8a591b6395dff4f1b3f7b472601e9b",
+    "icsi-Bmr005-interaction-metal-native.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "icsi-Bmr005-interaction-metal-native.time.log": "0e4c99210395f077b818b93321a1f106044f5e01a8c40d62bd804c1bf273aff8",
+    "icsi-Bmr005-interaction-metal-score.command.json": "a7d20b82dd858aabbb93bb303a7a54d2b130ea2cace05f8ad2181e6594c8c5ab",
+    "icsi-Bmr005-interaction-metal-score.json": "df4708169e7f7e2cbebfc17aea0f9413fafff51f85562e15e99c384ab45cfb69",
+    "offline.sb": "0ac13c9f8912703e54b255f95b31d3ac19522a5b246856baddbb2d09c59c1e89",
+    "prepare.py": "32c571a4ae46baa8d5fc971912e3fcfbb544b0dd24a8a34452c93e8490c9324d",
+    "reference-offline.sb": "5c358b8d847211333e7ba22df82d84f796b5f30a41a2682209a949d783adbd08",
+    "run.py": "3a6f22dcd1483a183a20a1357c0a6c30d6ec8e72b76f6ed18a1d20cb2c686786",
+    "rust-build.log": "719d63c8828700a0d3ef03f854b301e50f09a5c0ac50cafc15541a30eac248b4",
+    "summary.json": "20a59f89d5ad827a0f6a0b0db9a39a3dc448228160a7f97215533b2f2b5b9335",
+    "vox-aepyx-cpu-gen2.command.json": "7e5bd64d42ac8ab3f57f9f104754c4977e694f994169c02ef63053a2faa3d461",
+    "vox-aepyx-cpu-gen2.json": "076995ab3f8d70959c61680001ef8ff2cc24c1c9f76977583eb36d39ed3ff992",
+    "vox-aepyx-cpu-gen2.time.log": "c3ffddf16d5ca3809818373714c13674d3a348544c2f4dd3854ab8184bc7b1f7",
+    "vox-aepyx-cpu-native.command.json": "697349d5b38fa6a6669d911da7225970e1bca96a461416bf7dedd276073f35ec",
+    "vox-aepyx-cpu-native.json": "1cbb352b6f20bcadfde7ebe9cd0548aea3952c7a86ca5b2f7ffe3f36777f88e2",
+    "vox-aepyx-cpu-native.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "vox-aepyx-cpu-native.time.log": "201b349e0a9a5ccb1cdab1a25bf674975ac0db635e4b790bfc58bef21d201585",
+    "vox-aepyx-cpu-score.command.json": "fc323b14caa92a236d787f11f9cb05cafc949aad6506643cac508cd835d7807f",
+    "vox-aepyx-cpu-score.json": "11ca1ddd15562a647c19246b1aa6cfb2dab7ffe34b060b762b475cfa82967780",
+    "vox-aepyx-fp32.command.json": "fcd6ac427adb6fae77465df6d8b898a0511f7bb462ed116020d2cc0b7889924a",
+    "vox-aepyx-fp32.json": "711b61fb28d8f172b5daa284d7b550b9e53a72e27a98305f10cd9101a857c42e",
+    "vox-aepyx-fp32.stdout.log": "59cf06cef4392b2054f11133ebe1e3c8db2513aee7d6640fdf7f84e5d2637529",
+    "vox-aepyx-fp32.time.log": "cf8090562e37d7624637b48204c57a7a7b9683f79ff5253d120fefb01d7ed1eb",
+    "vox-aepyx-metal-gen2.command.json": "b47cf85f82355899febc442ce4f629bbf915eaa8de76283480b9cc0590201f98",
+    "vox-aepyx-metal-gen2.json": "c17d8d9fdbf2b5861888bbef939cce202119efca6d0372877b0e3c677a1cf87d",
+    "vox-aepyx-metal-gen2.time.log": "a8c4b39e535e011c479949d9f883e14efb842666d77b27b02b79ab7cc97b9564",
+    "vox-aepyx-metal-native.command.json": "744d73f153c96f0d944919bdd8c4b20564a3f316e2ab048fd7624e180221bef9",
+    "vox-aepyx-metal-native.json": "1131ffeb6f3de8a083605685641d74adde50f9f06e5e868e7050f866faeeb04b",
+    "vox-aepyx-metal-native.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "vox-aepyx-metal-native.time.log": "1d720c591e47b809e989b0b8bccbadcbd75aec5d440c30220dcedac6a0c562aa",
+    "vox-aepyx-metal-score.command.json": "79e40155fd1b918da7e2decb04665339d80e0ac93397b73648747e9825bacb28",
+    "vox-aepyx-metal-score.json": "0c7333bd35fe3f30fbdfbb6290daea75106458a512408acdb995cbfe6bd824db",
+    "vox-auzru-cpu-gen2.command.json": "fe6210a0a8d592cf6d168968d5cbd0348412d2fb21a2682fc5e9624e6e863b76",
+    "vox-auzru-cpu-gen2.json": "1a070464c8ce4e15ac76b3639db43f54d06af5b27514e2bdf21d97b3e9d4966a",
+    "vox-auzru-cpu-gen2.time.log": "97caff99837fb6ccdfa4b154c134c96ca02835d58d4cc432fc9ef008cc5347cd",
+    "vox-auzru-cpu-native.command.json": "8607697a96bdfdb68f2a7a7e4ef3de07b2fc09e92fbf191680f60180d3446624",
+    "vox-auzru-cpu-native.json": "4c673a96e8bbff2ddef2a21214284315f2cb5b1201533df57213c8c750770b37",
+    "vox-auzru-cpu-native.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "vox-auzru-cpu-native.time.log": "4dada5010e6989e34a340234127c5b0932b411f7903b4963a7ec45ac747da965",
+    "vox-auzru-cpu-score.command.json": "84465913d32c9b02eaab28d8b4e86f401c4b76b019da5cacfe34520209db4b62",
+    "vox-auzru-cpu-score.json": "8abe97b447bba4b420e0b87cfa30fd05ae2419ce87a3f074bcf678668e8e8df4",
+    "vox-auzru-fp32.command.json": "d63ef35f3fe8502ec6be0ac0006d3b119ebca3fad19929ea1380ef3a56af7293",
+    "vox-auzru-fp32.json": "035669fee5e6c42f53b60dcda57f0133a15e981b26c76a74a3d1549a5e944c5b",
+    "vox-auzru-fp32.stdout.log": "aafefe326931fb11f3f32143ac25dfb14ef3f87aaf3b121d847e37ba8feccac6",
+    "vox-auzru-fp32.time.log": "da58834582198b40cfbff7fdd7f6457aaf4e59cb9d4d264056f05104bc9cc6e6",
+    "vox-auzru-metal-gen2.command.json": "0c950db00f7839de0d3ec0d15484bd366655a7ee9a13bc44c54b23e9a9612a6f",
+    "vox-auzru-metal-gen2.json": "79ca70478026a5eca27fcb256a723adf7afdfe133ce7bd47c04097ffd1276dfd",
+    "vox-auzru-metal-gen2.time.log": "46d8d9ab20164e1fb40e1b3420c23bc897e8fdb75ab4d8a74be098cde861f804",
+    "vox-auzru-metal-native.command.json": "dad7fb544fead447f29333375eccc98809441d52aeb08da38be7d6e80345d6fd",
+    "vox-auzru-metal-native.json": "f847cc18d49e4bb4d5c7a5dd72059b8202e03ed2e64fd627ba225bb294d2ddfe",
+    "vox-auzru-metal-native.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "vox-auzru-metal-native.time.log": "54e214ae5b51e17f419750f75e2923ae1188bccf64fd2aa3f856e5bf69e47069",
+    "vox-auzru-metal-score.command.json": "84d579b6443353a759ec0b88ccece4bb09a5a9ac903b235d7856646f1e08bcca",
+    "vox-auzru-metal-score.json": "0f6b78f8c10cd82a62ed3dc48b07f028d10ac09253f073be92a2b3d7102dc223",
+    "vox-bjruf-cpu-gen2.command.json": "a08ca9a9eb6453f5cac0789e1a710cb9450a9a1291f864d9d83adf08fd037599",
+    "vox-bjruf-cpu-gen2.json": "22fe1257cc91e50e3706930c2882899e5c2fd1aa3b20fcfd9e33d295ec4be569",
+    "vox-bjruf-cpu-gen2.time.log": "ccbc08d018389cc500debf78b18c336dfb61b2fc0c8ce3a4d137904d314d9c5f",
+    "vox-bjruf-cpu-native.command.json": "18ff620ff6adac19513411733d1544d5cf728405ae18543e9648e97903924e09",
+    "vox-bjruf-cpu-native.json": "4d28f3c96ee447a0da09987579b41aa18d313c1ca0305c6fea2af432e806623f",
+    "vox-bjruf-cpu-native.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "vox-bjruf-cpu-native.time.log": "8cf19f97051ba6144f219bec1a697d9575079d41dd024717c258e89986a87af6",
+    "vox-bjruf-cpu-score.command.json": "696ef9b44d11633aa62e265312dd8769c2bd06a4c8f0582763a459615928555d",
+    "vox-bjruf-cpu-score.json": "c88647a39351e1fe04ce4be14f6cd165b2441d13dbbaf4af88a540454f65105c",
+    "vox-bjruf-fp32.command.json": "1e003ac4de6911b76a0dcfb9a016173a2b4f11f6b090fe06219cc06dbba0a82b",
+    "vox-bjruf-fp32.json": "c05dc3537454e90c5d286faf1c50d30db2ecebc0bbe52238cd0071f1d889bd08",
+    "vox-bjruf-fp32.stdout.log": "928650c1c5643ae5be150a6d8c58c595f252effc68befa02b542f37f3efd8361",
+    "vox-bjruf-fp32.time.log": "c8785d0559af914c9c1c35cf35788f2707f496b7f9705dc8cd6ccac4b59c6ee2",
+    "vox-bjruf-metal-gen2.command.json": "2e681b88e6fb45df7c2ce044a8245510e20f110dee1194d8137464aa68440fb8",
+    "vox-bjruf-metal-gen2.json": "0bfb342e6ccd257d4336b1afefb864e68bd2d1505372fcd2fe7ce0ee7d5e897d",
+    "vox-bjruf-metal-gen2.time.log": "436af93d40efa49ab44102e3a80a36f1f190074ebce32a700badc99dc40a4559",
+    "vox-bjruf-metal-native.command.json": "27e6dcdd9e9338073f578412b5032215351489f262b4102eb6756d1ee0034f96",
+    "vox-bjruf-metal-native.json": "10cdda7c7de257c68e0cee1ab84a43872c27316c029a854f70f162eba1ca7318",
+    "vox-bjruf-metal-native.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "vox-bjruf-metal-native.time.log": "1400563a19c62d2e3a5d4ce79e10b10fe55dbad8c6fd9d529496a56b1684d98b",
+    "vox-bjruf-metal-score.command.json": "53d5d85b59102d14ecfb2c25dfe49d00fdc0aa0e1fd2f848a672eb35dd3dfbb4",
+    "vox-bjruf-metal-score.json": "1046d8f64b33bf37c34df0ab7fca74fb5aa34bb646dc33754d402df1c6cca107",
+    "vox-bxcfq-cpu-gen2.command.json": "35ae4af3d4bce08360f8142b148f7c2e4037f9c08d374da32fc6e19bfa37330f",
+    "vox-bxcfq-cpu-gen2.json": "5ef578b805945f30f155f7f0af392b094bbc9e49f673442c3ffd3b3b4b9b582b",
+    "vox-bxcfq-cpu-gen2.time.log": "98fce77697c0b829725212e515d0743930dce31aecbe921de2e0f30a9b35969b",
+    "vox-bxcfq-cpu-native.command.json": "2bf59a700e3c87c2620552dbb7d56d88a176b36e019d97cd144e041c93745b8a",
+    "vox-bxcfq-cpu-native.json": "22c75900ba6f07b4c201a7d0c604ec162a503caed9c76ee54441832e9ce9407b",
+    "vox-bxcfq-cpu-native.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "vox-bxcfq-cpu-native.time.log": "9c8e5367d5f46ea6701715209415ce669086ef8f35ec05d1aec97c7b9eee232f",
+    "vox-bxcfq-cpu-score.command.json": "5f566dd909be81ba3d1d9f935feb35bf681c348f1564d361a3c9fc68d82261a9",
+    "vox-bxcfq-cpu-score.json": "2189db1ff0e269b01114422ba4094e7e30fe19abf68289283fb584e2a82c28e8",
+    "vox-bxcfq-fp32.command.json": "e648b7d9620854a2d120347742e3629806febdce76eec9063094b79094ac90fe",
+    "vox-bxcfq-fp32.json": "70be03e7fb0116c8bce50c3fdc2721627e68ca840b380b7587f1f430c401fc7e",
+    "vox-bxcfq-fp32.stdout.log": "f8d2f71f99f0e0d92a1e561e9ab9655ab2f8eb1ff89dd5c7f81af52bef807711",
+    "vox-bxcfq-fp32.time.log": "f2f80b1ad4fb20b8f35347a191c734f373de27a97b4cda4dcccb3b9899e24ef7",
+    "vox-bxcfq-metal-gen2.command.json": "83d3f5b0934f93e36466358271e5758de93c20184b9d686036a887dae0a38a64",
+    "vox-bxcfq-metal-gen2.json": "fda6f59a51d91b62fa889adc25b9ead8fcfa1e7f65c4865b3bdcf48a4e6d00bc",
+    "vox-bxcfq-metal-gen2.time.log": "3eb28088c6adc4a121eeebbcf731f7fbe06552305adc8868fb973aa77cf6687a",
+    "vox-bxcfq-metal-native.command.json": "b167f0f73c67f7bc8f7c913a435d10a5fea17b762867fdd4352724bad5f43919",
+    "vox-bxcfq-metal-native.json": "5edfe5a6c826c9da3391366e91bfcf117b227678724f0bea086f29fd42ccdd99",
+    "vox-bxcfq-metal-native.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "vox-bxcfq-metal-native.time.log": "2acabe9e5487fc9b185715560a1ad395533288082839944c7fbb4bb98326bd86",
+    "vox-bxcfq-metal-score.command.json": "1b9092a33889e71c246f26d43a8994e6b033af3b6786b7cd68612f16759d11c2",
+    "vox-bxcfq-metal-score.json": "f8ab51fba35bdb9a7e4aca419fb6f236c85d4b25d685bb0613770164727ea52c",
+    "vox-cqfmj-cpu-gen2.command.json": "f995617533ba259d2d3f8e009adafe2aeaad65fec574f84f53f5ca1da94553c9",
+    "vox-cqfmj-cpu-gen2.json": "dc26aaba8ba2b96d2b37df4248b315ce78961799472ca053354e598357201c13",
+    "vox-cqfmj-cpu-gen2.time.log": "2a370caaa01ff91654e28126719727af33dfb56d1a7e3d35ec3bc0bb88aa0de6",
+    "vox-cqfmj-cpu-native.command.json": "9509f0d56506cfafa586083d42e8c31cd8a51faa6e0ace23829b1b53dce73290",
+    "vox-cqfmj-cpu-native.json": "d15a7db97b29dd846f0e931df681f3dd12ccbb4a239bc934d7a349e6b4ba4e15",
+    "vox-cqfmj-cpu-native.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "vox-cqfmj-cpu-native.time.log": "6c5fe59f853bf0a82cb8bc66d44929eed9ec33f182c970f2bbeb5382fea27350",
+    "vox-cqfmj-cpu-score.command.json": "aba37d58633ce4d14d5ee38b7fdd8a32873db693854c3a4df8ef590effe69a3e",
+    "vox-cqfmj-cpu-score.json": "f03b9e2edc5653e23587dd1bd18db8c0a6c5463c11479d6c1ce628dcd01c632f",
+    "vox-cqfmj-fp32.command.json": "93dc76bc380dc13c695057a19de81442fcd2f0111c950b070c535bb4d79116e8",
+    "vox-cqfmj-fp32.json": "8e85dff46c0e14c9dcd17ffb4b8302829ab925e2fd1a33536b2813d291f0fea6",
+    "vox-cqfmj-fp32.stdout.log": "c9cf058677ee744677683ff3d12fa26877a27e5ef50440ec7ac3e784c8265796",
+    "vox-cqfmj-fp32.time.log": "a3a0cc3315eb8b42c744a57b4a104bf0706d59ef5995750724bd4738b50da2ca",
+    "vox-cqfmj-metal-gen2.command.json": "c56802647ec13d34136ba5569367b61bc7f59ea64e011dd7150215c24d307854",
+    "vox-cqfmj-metal-gen2.json": "b1fd3257b1c298ee4df0f4524dd7f7590e6169342a73c9dfede940a5d0a6886c",
+    "vox-cqfmj-metal-gen2.time.log": "5c7f9ded1dbf450829f1b8ac18b8fd0275eca39461803e54c1e1b73f462023fa",
+    "vox-cqfmj-metal-native.command.json": "e964ab77c700f3be4098f5028008ef785d0964add18bb5aba4d02f53bbfe1493",
+    "vox-cqfmj-metal-native.json": "af0a0306abe306ca9f71f79e3c4a045ae9d2aedfe13ebdd6330f0d6e8cb630f6",
+    "vox-cqfmj-metal-native.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "vox-cqfmj-metal-native.time.log": "c5e278567df648110dfc977753ef9426b59f4ce930412223daf624013c62f515",
+    "vox-cqfmj-metal-score.command.json": "e6b3c322454834923da0237578511c5ea000ceff5294537c281781e937290fc7",
+    "vox-cqfmj-metal-score.json": "77d4e5981aee2216b3be2ab0885343a0f09f21de335ce4302a050db68a22b9e3",
+    "collect.py": "2f44a22cb9dca09372bd6679773746b3d706887cde6cef31a2f5b82716630954",
+    "feature-ci.json": "eefdafe7253cf8be77194776449d56f90baeab417e5a3854184f58d5611e498d"
+  },
+  "raw_artifacts": {
+    "ami-ES2004a-Array1-01-cpu-gen2.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/ami-ES2004a-Array1-01-cpu-gen2.f32",
+      "bytes": 384032,
+      "sha256": "4bab53c38c28104fc634b1997b98e437962d18faf4170ab409c10a1c7a5a6e39"
+    },
+    "ami-ES2004a-Array1-01-cpu-native.json.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/ami-ES2004a-Array1-01-cpu-native.json.f32",
+      "bytes": 384032,
+      "sha256": "4bab53c38c28104fc634b1997b98e437962d18faf4170ab409c10a1c7a5a6e39"
+    },
+    "ami-ES2004a-Array1-01-fp32.npy": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/ami-ES2004a-Array1-01-fp32.npy",
+      "bytes": 384128,
+      "sha256": "177854edb832800fa4364e4d1382f44f10f64433036f7b0b4d50110ba6918273"
+    },
+    "ami-ES2004a-Array1-01-metal-gen2.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/ami-ES2004a-Array1-01-metal-gen2.f32",
+      "bytes": 384032,
+      "sha256": "491d1c0150b3b9ea7924dbc0762ff2e16c8e948e5b7bd060439c7369efcea28b"
+    },
+    "ami-ES2004a-Array1-01-metal-native.json.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/ami-ES2004a-Array1-01-metal-native.json.f32",
+      "bytes": 384032,
+      "sha256": "491d1c0150b3b9ea7924dbc0762ff2e16c8e948e5b7bd060439c7369efcea28b"
+    },
+    "ami-ES2004a-Mix-Headset-cpu-gen2.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/ami-ES2004a-Mix-Headset-cpu-gen2.f32",
+      "bytes": 384032,
+      "sha256": "0421979bbec6d868afce1e99f1f72fe19b4d30a40e66d1cddfc4dbbcac74a1f1"
+    },
+    "ami-ES2004a-Mix-Headset-cpu-native.json.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/ami-ES2004a-Mix-Headset-cpu-native.json.f32",
+      "bytes": 384032,
+      "sha256": "0421979bbec6d868afce1e99f1f72fe19b4d30a40e66d1cddfc4dbbcac74a1f1"
+    },
+    "ami-ES2004a-Mix-Headset-fp32.npy": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/ami-ES2004a-Mix-Headset-fp32.npy",
+      "bytes": 384128,
+      "sha256": "2db1197c259343daf67f6a4497cd3b7d91cfde2214afb2bdea19917d640c3a4d"
+    },
+    "ami-ES2004a-Mix-Headset-metal-gen2.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/ami-ES2004a-Mix-Headset-metal-gen2.f32",
+      "bytes": 384032,
+      "sha256": "36573e340860310a8ed142087c4562c1dba5264589753db917714955a5c7941f"
+    },
+    "ami-ES2004a-Mix-Headset-metal-native.json.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/ami-ES2004a-Mix-Headset-metal-native.json.f32",
+      "bytes": 384032,
+      "sha256": "36573e340860310a8ed142087c4562c1dba5264589753db917714955a5c7941f"
+    },
+    "calibration-cpu-gen2.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/calibration-cpu-gen2.f32",
+      "bytes": 3584,
+      "sha256": "e5f377b032413e8ea3a8304f0fefa07321652fba5e8f537c82b1622a59b07d63"
+    },
+    "calibration-cpu-native.json.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/calibration-cpu-native.json.f32",
+      "bytes": 3584,
+      "sha256": "e5f377b032413e8ea3a8304f0fefa07321652fba5e8f537c82b1622a59b07d63"
+    },
+    "calibration-metal-gen2.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/calibration-metal-gen2.f32",
+      "bytes": 3584,
+      "sha256": "dbf47f52950e880f2d349489b26fae3b68771f8f6c507ee2fb3eb68b5085dd06"
+    },
+    "calibration-metal-native.json.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/calibration-metal-native.json.f32",
+      "bytes": 3584,
+      "sha256": "dbf47f52950e880f2d349489b26fae3b68771f8f6c507ee2fb3eb68b5085dd06"
+    },
+    "calibration-reference.npy": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/calibration-reference.npy",
+      "bytes": 3680,
+      "sha256": "8b396c775d81c8173cd87fe3333bdb4a1337f459b522990c91457e4dd9d318b7"
+    },
+    "icsi-Bmr005-interaction-cpu-gen2.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/icsi-Bmr005-interaction-cpu-gen2.f32",
+      "bytes": 960032,
+      "sha256": "b2bcca8cc710efd733c5badff4ac2b32e288f6df07f6217cfa171ac37a800454"
+    },
+    "icsi-Bmr005-interaction-cpu-native.json.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/icsi-Bmr005-interaction-cpu-native.json.f32",
+      "bytes": 960032,
+      "sha256": "b2bcca8cc710efd733c5badff4ac2b32e288f6df07f6217cfa171ac37a800454"
+    },
+    "icsi-Bmr005-interaction-fp32.npy": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/icsi-Bmr005-interaction-fp32.npy",
+      "bytes": 960128,
+      "sha256": "1b5943e0f1a24699e6b35ad2f4f211d8f4b59b2fae8486fe597626bce72139b9"
+    },
+    "icsi-Bmr005-interaction-metal-gen2.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/icsi-Bmr005-interaction-metal-gen2.f32",
+      "bytes": 960032,
+      "sha256": "7aa87a587efd1a98c5550adb2c1dd5a911293eb334fe5fa1f32ca125a6794841"
+    },
+    "icsi-Bmr005-interaction-metal-native.json.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/icsi-Bmr005-interaction-metal-native.json.f32",
+      "bytes": 960032,
+      "sha256": "7aa87a587efd1a98c5550adb2c1dd5a911293eb334fe5fa1f32ca125a6794841"
+    },
+    "native-cpu": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/native-cpu",
+      "bytes": 62168,
+      "sha256": "81d1782f1a339914356fc810a7905e7ce31aa11a625824d3ce9f8c32901f836e"
+    },
+    "native-metal": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/native-metal",
+      "bytes": 62176,
+      "sha256": "db5cbf2949fc05baa09adfd4cdbf5fae78112036f3b4aa19bf74cf9969dccec0"
+    },
+    "nemotron_stream": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/nemotron_stream",
+      "bytes": 967680,
+      "sha256": "22ea5750e7b33a3700b02b6c6e53720e50f87cf3f98b15ca3155e88b689d17e5"
+    },
+    "partial-1.117s-smoke.wav": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/partial-1.117s-smoke.wav",
+      "bytes": 35788,
+      "sha256": "1a6fcc5758334348397ceb8e5975589508a65d4d47ff3bf2bdd3a5ed183634c8"
+    },
+    "vox-aepyx-cpu-gen2.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/vox-aepyx-cpu-gen2.f32",
+      "bytes": 541312,
+      "sha256": "96851c9cc3d84aaecbf25ad99bc19d7cd25c8ec9c490938bbe088bba2e8f0939"
+    },
+    "vox-aepyx-cpu-native.json.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/vox-aepyx-cpu-native.json.f32",
+      "bytes": 541312,
+      "sha256": "96851c9cc3d84aaecbf25ad99bc19d7cd25c8ec9c490938bbe088bba2e8f0939"
+    },
+    "vox-aepyx-fp32.npy": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/vox-aepyx-fp32.npy",
+      "bytes": 541408,
+      "sha256": "32d85ec0aabaf303362718f64d42b5e93f58613796d2ab2d6d2626174d96406b"
+    },
+    "vox-aepyx-metal-gen2.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/vox-aepyx-metal-gen2.f32",
+      "bytes": 541312,
+      "sha256": "784adf1d5a9b0104d06b2095bf3e1d283a4f8da305e23cf6f54c457a4d1f3f32"
+    },
+    "vox-aepyx-metal-native.json.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/vox-aepyx-metal-native.json.f32",
+      "bytes": 541312,
+      "sha256": "784adf1d5a9b0104d06b2095bf3e1d283a4f8da305e23cf6f54c457a4d1f3f32"
+    },
+    "vox-auzru-cpu-gen2.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/vox-auzru-cpu-gen2.f32",
+      "bytes": 1650912,
+      "sha256": "5c1b3e98b56c732aa9525331fedc6d2940c42e8dcb2668ec000864cfb1c7f4c6"
+    },
+    "vox-auzru-cpu-native.json.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/vox-auzru-cpu-native.json.f32",
+      "bytes": 1650912,
+      "sha256": "5c1b3e98b56c732aa9525331fedc6d2940c42e8dcb2668ec000864cfb1c7f4c6"
+    },
+    "vox-auzru-fp32.npy": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/vox-auzru-fp32.npy",
+      "bytes": 1651008,
+      "sha256": "0e312020f4a633627da853756555cb6d5f746d4aae30de2c87a3410ffea5fb6b"
+    },
+    "vox-auzru-metal-gen2.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/vox-auzru-metal-gen2.f32",
+      "bytes": 1650912,
+      "sha256": "a1eb3a84bddbadd8f4d8ce234d3d32bceca7840211d446c40f9336c6cdd2d7a5"
+    },
+    "vox-auzru-metal-native.json.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/vox-auzru-metal-native.json.f32",
+      "bytes": 1650912,
+      "sha256": "a1eb3a84bddbadd8f4d8ce234d3d32bceca7840211d446c40f9336c6cdd2d7a5"
+    },
+    "vox-bjruf-cpu-gen2.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/vox-bjruf-cpu-gen2.f32",
+      "bytes": 1153664,
+      "sha256": "18c255b741059e85ba7819aadc938c1582680d113d6f55cc09c249c259f01eb2"
+    },
+    "vox-bjruf-cpu-native.json.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/vox-bjruf-cpu-native.json.f32",
+      "bytes": 1153664,
+      "sha256": "18c255b741059e85ba7819aadc938c1582680d113d6f55cc09c249c259f01eb2"
+    },
+    "vox-bjruf-fp32.npy": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/vox-bjruf-fp32.npy",
+      "bytes": 1153760,
+      "sha256": "fff0e1970c858a99fc3485ce91163b35a3fea7ec3d61dd4a67c8c7601b7d86c6"
+    },
+    "vox-bjruf-metal-gen2.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/vox-bjruf-metal-gen2.f32",
+      "bytes": 1153664,
+      "sha256": "312baffce59cd0399a781f978f5bf589cad7535b39b2583678ec3d2a7c3e0f5f"
+    },
+    "vox-bjruf-metal-native.json.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/vox-bjruf-metal-native.json.f32",
+      "bytes": 1153664,
+      "sha256": "312baffce59cd0399a781f978f5bf589cad7535b39b2583678ec3d2a7c3e0f5f"
+    },
+    "vox-bxcfq-cpu-gen2.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/vox-bxcfq-cpu-gen2.f32",
+      "bytes": 628768,
+      "sha256": "6ca0250f1643b5dec5abbb868d57f55a5d6cf7f0014248a2815937f063cf04b4"
+    },
+    "vox-bxcfq-cpu-native.json.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/vox-bxcfq-cpu-native.json.f32",
+      "bytes": 628768,
+      "sha256": "6ca0250f1643b5dec5abbb868d57f55a5d6cf7f0014248a2815937f063cf04b4"
+    },
+    "vox-bxcfq-fp32.npy": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/vox-bxcfq-fp32.npy",
+      "bytes": 628864,
+      "sha256": "86822aac50b6587710684da54b2b8db325ec56432f8e3a738f8bffd5063c1bf3"
+    },
+    "vox-bxcfq-metal-gen2.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/vox-bxcfq-metal-gen2.f32",
+      "bytes": 628768,
+      "sha256": "a5d9f01598ce669c4060546cbf40f9118d39006bbb4929e5a30c254fc0eaceb7"
+    },
+    "vox-bxcfq-metal-native.json.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/vox-bxcfq-metal-native.json.f32",
+      "bytes": 628768,
+      "sha256": "a5d9f01598ce669c4060546cbf40f9118d39006bbb4929e5a30c254fc0eaceb7"
+    },
+    "vox-cqfmj-cpu-gen2.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/vox-cqfmj-cpu-gen2.f32",
+      "bytes": 367840,
+      "sha256": "ef9645509fcd7d15be24de9606614d8e615d962a5b011aa3ed3bcce1ee24309c"
+    },
+    "vox-cqfmj-cpu-native.json.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/vox-cqfmj-cpu-native.json.f32",
+      "bytes": 367840,
+      "sha256": "ef9645509fcd7d15be24de9606614d8e615d962a5b011aa3ed3bcce1ee24309c"
+    },
+    "vox-cqfmj-fp32.npy": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/vox-cqfmj-fp32.npy",
+      "bytes": 367936,
+      "sha256": "2efa9635847440a79860e5f95196926154dc28aba2b183f4aed75559ab2b764a"
+    },
+    "vox-cqfmj-metal-gen2.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/vox-cqfmj-metal-gen2.f32",
+      "bytes": 367840,
+      "sha256": "06ee9384d35b0eecd4836a9b4cb159c68bfe932ecbbbc7e487e5307f270e8040"
+    },
+    "vox-cqfmj-metal-native.json.f32": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/vox-cqfmj-metal-native.json.f32",
+      "bytes": 367840,
+      "sha256": "06ee9384d35b0eecd4836a9b4cb159c68bfe932ecbbbc7e487e5307f270e8040"
+    }
+  },
+  "turn_parity_semantics": "Exact after frozen comparator clips native terminal padding to actual audio duration; raw native final endpoints can exceed WAV duration by a partial frame."
+}

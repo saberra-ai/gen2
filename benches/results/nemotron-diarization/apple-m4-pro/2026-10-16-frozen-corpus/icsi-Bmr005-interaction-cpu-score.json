@@ -1,0 +1,104 @@
+{
+  "slice": "icsi-Bmr005-interaction",
+  "backend": "cpu",
+  "device": null,
+  "scope": "local tuning-heldout integration and quality, not guaranteed checkpoint-unseen",
+  "wrapper_parity": {
+    "passed": true,
+    "scope": "long-session wrapper/reference correctness, not held-out quality or full release qualification",
+    "audio_duration_seconds": 300.0,
+    "backend": "cpu",
+    "device": null,
+    "native_frame_count": 30001,
+    "retained_first_frame": 0,
+    "retained_rows": 30001,
+    "turns": 27,
+    "maximum_turn_error_seconds": 0.0,
+    "turn_tolerance_seconds": 1e-06,
+    "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+    "retained_probabilities_match": true,
+    "maximum_probability_error": 0.0,
+    "probability_tolerance": 1e-06,
+    "gen2_rtf": 0.17363504666666665,
+    "native_rtf": 0.17461318666666667
+  },
+  "fp32": {
+    "der": 0.103259141,
+    "missed_speaker_seconds": 10.68,
+    "false_alarm_speaker_seconds": 5.97,
+    "confusion_speaker_seconds": 9.33,
+    "reference_speaker_seconds": 251.6,
+    "reference_speakers": 8,
+    "hypothesis_speakers": 8,
+    "frame_seconds": 0.01,
+    "collar_seconds": 0,
+    "overlap_included": true,
+    "scoring_duration_seconds": 300.0
+  },
+  "q8_shared_threshold": {
+    "der": 0.099960254,
+    "missed_speaker_seconds": 10.51,
+    "false_alarm_speaker_seconds": 5.5,
+    "confusion_speaker_seconds": 9.14,
+    "reference_speaker_seconds": 251.6,
+    "reference_speakers": 8,
+    "hypothesis_speakers": 8,
+    "frame_seconds": 0.01,
+    "collar_seconds": 0,
+    "overlap_included": true,
+    "scoring_duration_seconds": 300.0
+  },
+  "q8_production_default": {
+    "der": 0.19336248,
+    "missed_speaker_seconds": 2.25,
+    "false_alarm_speaker_seconds": 36.11,
+    "confusion_speaker_seconds": 10.29,
+    "reference_speaker_seconds": 251.6,
+    "reference_speakers": 8,
+    "hypothesis_speakers": 8,
+    "frame_seconds": 0.01,
+    "collar_seconds": 0,
+    "overlap_included": true,
+    "scoring_duration_seconds": 300.0
+  },
+  "q8_minus_fp32_absolute_der": -0.0032988870000000003,
+  "gates": {
+    "wrapper_parity": true,
+    "q8_degradation_at_most_0_02": true,
+    "q8_shared_der_at_most_0_20": true,
+    "q8_production_der_at_most_0_20": true
+  },
+  "postprocessing": "shared probability >0.5, no hysteresis/padding/minimum-duration; production default reported separately",
+  "shape_difference": {
+    "native": [
+      30001,
+      8
+    ],
+    "fp32": [
+      30000,
+      8
+    ],
+    "native_extra_terminal_frame": 1,
+    "frame_seconds": 0.01,
+    "rule": "native floor(N/160)+1; FP32 mask floor(N/160); full audio UEM clips final padding"
+  },
+  "channel_mae_common_frames": 0.0020504568237811327,
+  "channel_max_error_common_frames": 0.38399726152420044,
+  "input_pcm_f32le_sha256": "35e6a424696f7ae874ab505a3b66c70750d8ee6c523107abdcaaaa04d37cc68a",
+  "all_slice_gates_passed": true,
+  "sha256": {
+    "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/corpus.protocol.json": "3b4780afa4bc80eb84e6e630301cbb1e652d5d682cab897b4db0a0a7b17cc25d",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality-corpus-v1/manifest.json": "c514152766948139ed21a496b1b81661c2e06d647004901fa4683bea4b423ece",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality-corpus-v1/icsi-Bmr005-interaction.reference.json": "703af581b7677d6ab04cc1093502db64e38b443b67991f22bffe803b6ec3e12d",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/icsi-Bmr005-interaction-cpu-gen2.json": "7cc684e1618e626809f3b802a34e0846f7cb89c8ac8c3d7bdea6da3a36e0e523",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/icsi-Bmr005-interaction-cpu-gen2.f32": "b2bcca8cc710efd733c5badff4ac2b32e288f6df07f6217cfa171ac37a800454",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/icsi-Bmr005-interaction-cpu-native.json": "582b3b6fbdcb1de6d01ade1196b18ad68c4eccd1863c791d12c10b9b576ccdec",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/icsi-Bmr005-interaction-cpu-native.json.f32": "b2bcca8cc710efd733c5badff4ac2b32e288f6df07f6217cfa171ac37a800454",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/icsi-Bmr005-interaction-fp32.npy": "1b5943e0f1a24699e6b35ad2f4f211d8f4b59b2fae8486fe597626bce72139b9",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/icsi-Bmr005-interaction-fp32.json": "f238eee011ccda8975205c4d06f02ebd14446bf1247f7bc1bbacf9ea336af047",
+    "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/qualify_corpus.py": "51fdf6ba5201d02bd55762fa449727c5aa5507aa640aa27394cb9439dd19619e",
+    "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/score.py": "32aea92676133e42e2c30a914f8729d1c31c0c96e02faf9b7cab42911b389eb8",
+    "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/compare.py": "a53fccc162ead3b488a3880950d4dbf244897fd837f3b8e0898235029e559282",
+    "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/compare_stream.py": "6d6a80a3b9710d0d2d0705225653935d40cd69aac9abe50454c0609631c6daa4"
+  }
+}

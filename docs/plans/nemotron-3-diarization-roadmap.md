@@ -509,8 +509,20 @@ PCM digest and verify installed oracle package versions and Transformers commit.
 Rebuilt release runners passed an excluded1.117s smoke calibration: native112
 frames, FP32mask111frames, actual PCM identity and exact native/public parity.
 See the [calibration receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-quality-calibration/receipt.json).
-The13-job feature matrix passed at125f907. Frozen corpus scoring is in progress;
-no held-out quality outcome is inferred from acquisition or calibration.
+The frozen set is complete at125f907: all16CPU/Metal wrapper comparisons match
+native turns after required terminal clipping and probabilities exactly; every
+Q8-minus-FP32 bound is at most2pp.
+Twelve of16slice/backend pairs pass all quality gates (all five Vox cases and
+ICSI). Both AMI channels fail the20%target on both backends: CPU production DER
+is33.2146%close-mic and43.8407%distant-mic. ICSI production DER is19.3362%CPU /
+19.9881%Metal, close to the boundary. Failed slices remain in the unchanged
+protocol. See the [full corpus receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-frozen-corpus/receipt.json).
+The [quality-gap investigation](../research/nemotron-quality-gaps.md) corrects an
+earlier reference-policy recommendation: NVIDIA publishes AMI scores against
+specific forced-alignment RTTMs, not the broader transcriber segments used here.
+That mismatch may inflate missed-speech error; no rescore has established its
+size or cured the frozen failure. A separate published-reference reproduction
+must retain these outcomes. The13-job feature matrix also passed at4974318.
 
 Linux/Windows CPU development jobs now build the pinned source SDK with an
 explicit x86_64AVX2/FMA/F16C baseline, retain installed dependency discovery,
@@ -524,8 +536,11 @@ the60s smoke input:26turns and48008probability values match exactly, with actual
 PCM identity checked. All seven required lifecycle tests execute and pass,
 including100reloads; uploaded SDK file hashes were verified. See the
 [Linux development receipt](../../benches/results/nemotron-diarization/linux-x86_64/2026-10-16-native-development/collection.json).
-System SentencePiece remains an installed dependency. Windows SDK/public reruns
-are pending. These jobs do not establish closed portable packages, fresh-machine
+System SentencePiece remains an installed dependency. The Windows rerun at74c663e
+passed compiler setup and dependency provisioning but failed upstream CMake's
+first patch application; no model execution occurred. Its [failure receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-native-configure/collection.json)
+is retained. A controlled retry pins Git LF settings in build descendants and
+retains actual staging diagnostics; neither cause nor repair is yet confirmed. These jobs do not establish closed portable packages, fresh-machine
 offline operation or mixed-model coexistence on those platforms.
 
 - [ ] Run Mac CPU first; compare Metal against the same Q8 reference and real

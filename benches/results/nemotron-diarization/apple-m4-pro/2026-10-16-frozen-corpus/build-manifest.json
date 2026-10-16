@@ -1,0 +1,84 @@
+{
+  "source_commit": "125f907d05df8c0084ce350e2261d3bb5198562c",
+  "protocol_sha256": "3b4780afa4bc80eb84e6e630301cbb1e652d5d682cab897b4db0a0a7b17cc25d",
+  "corpus_manifest_sha256": "c514152766948139ed21a496b1b81661c2e06d647004901fa4683bea4b423ece",
+  "source_sha256": {
+    "qualify_corpus.py": "51fdf6ba5201d02bd55762fa449727c5aa5507aa640aa27394cb9439dd19619e",
+    "reference.py": "65dd8681ce91476761f75d97ead3617032e550768edf481728b5551b78a0bd18",
+    "score.py": "32aea92676133e42e2c30a914f8729d1c31c0c96e02faf9b7cab42911b389eb8",
+    "compare.py": "a53fccc162ead3b488a3880950d4dbf244897fd837f3b8e0898235029e559282",
+    "compare_stream.py": "6d6a80a3b9710d0d2d0705225653935d40cd69aac9abe50454c0609631c6daa4",
+    "corpus.py": "caf0aecbc041873ea9acd433c4cd68b6f257caea62dd9221512922b32cf4920e",
+    "native_stream_probe.cpp": "d45c4b4c3a3368b4039d4b585c3935b8bc5958c3b9e5a2a62b20620880a21713",
+    "../../examples/nemotron_stream.rs": "736a4f63c20bdd5f243c9c1243571b262a663a87104de82a48924f0a7a6f24da",
+    "runtime.lock.json": "e66e5651608636bbb04528fed7944ab8972a778d1141b36fef3fb391eefd0dcc",
+    "reference/uv.lock": "104834dd9a3904a763dfd5270b92821b5a209b2289f00f0c6f2d3cd55ddb673f"
+  },
+  "compile_commands": [
+    [
+      "cargo",
+      "build",
+      "--locked",
+      "--release",
+      "--no-default-features",
+      "--features",
+      "backend-diar-nemo",
+      "--example",
+      "nemotron_stream"
+    ],
+    [
+      "clang++",
+      "-std=c++17",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-x",
+      "c++",
+      "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/native_stream_probe.cpp",
+      "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/llama.cpp/vendor/hash/sha256/sha256.c",
+      "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/llama.cpp/vendor/hash",
+      "-I/Users/victor/.cache/gen2-nemotron3-n0/sdk-cpu/include",
+      "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/examples",
+      "-L/Users/victor/.cache/gen2-nemotron3-n0/release CPU qualification d01ef80/nemo/lib",
+      "-lnemo_speech_asr_c",
+      "-Wl,-rpath,/Users/victor/.cache/gen2-nemotron3-n0/release CPU qualification d01ef80/nemo/lib",
+      "-o",
+      "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/native-cpu"
+    ],
+    [
+      "clang++",
+      "-std=c++17",
+      "-O2",
+      "-Wall",
+      "-Wextra",
+      "-Werror",
+      "-x",
+      "c++",
+      "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/native_stream_probe.cpp",
+      "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/llama.cpp/vendor/hash/sha256/sha256.c",
+      "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/llama.cpp/vendor/hash",
+      "-I/Users/victor/.cache/gen2-nemotron3-n0/sdk-metal/include",
+      "-I/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/examples",
+      "-L/Users/victor/.cache/gen2-nemotron3-n0/release Metal qualification d01ef80/nemo/lib",
+      "-lnemo_speech_asr_c",
+      "-Wl,-rpath,/Users/victor/.cache/gen2-nemotron3-n0/release Metal qualification d01ef80/nemo/lib",
+      "-o",
+      "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/native-metal"
+    ]
+  ],
+  "pinned_llama_sha256_sources": {
+    "sha256/sha256.c": "ba7a8ea69ad125385db28ef17e77be4a09dfdc30bb9532c30b259baaf670129c",
+    "sha256/sha256.h": "6086b0330eafe9ddef74072738290bc268b2dcccae16bc6d6cde84dc7585ca07",
+    "rotate-bits/rotate-bits.h": "4a100f5e9b6bdc3e780bec38caeaec7f0edc87cf06b69b5bc1f87c2c867bdf23"
+  },
+  "binaries": {
+    "nemotron_stream": "22ea5750e7b33a3700b02b6c6e53720e50f87cf3f98b15ca3155e88b689d17e5",
+    "native-cpu": "81d1782f1a339914356fc810a7905e7ce31aa11a625824d3ce9f8c32901f836e",
+    "native-metal": "db5cbf2949fc05baa09adfd4cdbf5fae78112036f3b4aa19bf74cf9969dccec0"
+  },
+  "package_manifests": {
+    "cpu": "ae6e0e551f2c4a30a1f18c7543f42ad704018137042517930de3b0d17d699db8",
+    "metal": "3cbbaf711262d871053b0f76e10ddfa46c5a2d5362e4b15167a16433d8df5f68"
+  }
+}

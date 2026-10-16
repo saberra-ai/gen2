@@ -1,0 +1,34 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "development_native_gates_passed": false,
+  "error": "Command '['pwsh', '-NoProfile', '-NonInteractive', '-Command', \"& 'D:\\\\a\\\\gen2\\\\gen2\\\\native-source\\\\scripts\\\\windows\\\\build.ps1' -Backend cpu -Profile asr -Jobs 2 -BuildDir 'D:\\\\a\\\\gen2\\\\gen2\\\\native-source\\\\build\\\\gen2-cpu-diar' -CMakeArgs @('-DNEMO_SPEECH_BUILD_EXAMPLES=ON','-DNEMO_SPEECH_BUILD_CLI=OFF','-DNEMO_SPEECH_BUILD_MIC_CAPTURE=OFF','-DGGML_OPENMP=OFF','-DGGML_NATIVE=OFF','-DGGML_AVX=ON','-DGGML_AVX2=ON','-DGGML_AVX512=OFF','-DGGML_AVX_VNNI=OFF','-DGGML_FMA=ON','-DGGML_F16C=ON','-DNEMO_SPEECH_WITH_NORM=OFF','-DCMAKE_INSTALL_LIBDIR=lib','-DCMAKE_INSTALL_PREFIX=D:\\\\a\\\\_temp\\\\nemo-sdk','-DNEMO_SPEECH_BUILD_ASR=OFF','-DNEMO_SPEECH_BUILD_TTS=OFF')\"]' returned non-zero exit status 1.",
+  "scope": "Linux/Windows x86_64 AVX2 CPU source SDK and same-host actual native/public lifecycle; not offline packaging",
+  "platform": "Windows-2022Server-10.0.20348-SP0",
+  "machine": "AMD64",
+  "python": "3.12.10",
+  "source_commit": "74c663ef0f5054b2087d1eb0689ec8ebd7dfb8bd",
+  "runtime_revision": "083861c241061562b8ec29eb06d7f6cdc3af8775",
+  "llama_revision": "bd4f514db14d87fded667787a7a963bfbaa98e89",
+  "lock_sha256": "e66e5651608636bbb04528fed7944ab8972a778d1141b36fef3fb391eefd0dcc",
+  "runner_sha256": "8ecd6b8de555047e8035fa290de07ab226bbaeae605d0312ef5a5a697bb37851",
+  "commands": [
+    {
+      "name": "sdk-build",
+      "command": [
+        "pwsh",
+        "-NoProfile",
+        "-NonInteractive",
+        "-Command",
+        "& 'D:\\a\\gen2\\gen2\\native-source\\scripts\\windows\\build.ps1' -Backend cpu -Profile asr -Jobs 2 -BuildDir 'D:\\a\\gen2\\gen2\\native-source\\build\\gen2-cpu-diar' -CMakeArgs @('-DNEMO_SPEECH_BUILD_EXAMPLES=ON','-DNEMO_SPEECH_BUILD_CLI=OFF','-DNEMO_SPEECH_BUILD_MIC_CAPTURE=OFF','-DGGML_OPENMP=OFF','-DGGML_NATIVE=OFF','-DGGML_AVX=ON','-DGGML_AVX2=ON','-DGGML_AVX512=OFF','-DGGML_AVX_VNNI=OFF','-DGGML_FMA=ON','-DGGML_F16C=ON','-DNEMO_SPEECH_WITH_NORM=OFF','-DCMAKE_INSTALL_LIBDIR=lib','-DCMAKE_INSTALL_PREFIX=D:\\a\\_temp\\nemo-sdk','-DNEMO_SPEECH_BUILD_ASR=OFF','-DNEMO_SPEECH_BUILD_TTS=OFF')"
+      ],
+      "cwd": "D:\\a\\gen2\\gen2"
+    }
+  ],
+  "installed_files": {},
+  "limits": [
+    "No offline/fresh-machine relocation claim.",
+    "No chat/Bark/Laya coexistence or heldout quality claim.",
+    "CPU baseline explicitly requires AVX2/FMA/F16C."
+  ]
+}

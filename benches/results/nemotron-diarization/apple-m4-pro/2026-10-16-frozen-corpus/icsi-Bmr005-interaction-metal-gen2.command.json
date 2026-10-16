@@ -1,0 +1,19 @@
+{
+  "command": [
+    "/usr/bin/time",
+    "-l",
+    "/usr/bin/sandbox-exec",
+    "-f",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/offline.sb",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/nemotron_stream",
+    "--metal",
+    "/Users/victor/.cache/gen2-nemotron3-n0/release Metal qualification d01ef80/assets",
+    "/Users/victor/.cache/gen2-nemotron3-n0/release Metal qualification d01ef80/nemo/lib/libnemo_speech_asr_c.dylib",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality-corpus-v1/icsi-Bmr005-interaction.wav",
+    "1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/icsi-Bmr005-interaction-metal-gen2.f32"
+  ],
+  "environment": {
+    "PATH": "/usr/bin:/bin"
+  }
+}

@@ -1,0 +1,48 @@
+{
+  "passed": true,
+  "scope": "excluded smoke1.117s partial-frame and actual-input-digest calibration before corpus inference",
+  "reference_shape": [
+    111,
+    8
+  ],
+  "results": [
+    {
+      "passed": true,
+      "scope": "long-session wrapper/reference correctness, not held-out quality or full release qualification",
+      "audio_duration_seconds": 1.117,
+      "backend": "cpu",
+      "device": null,
+      "native_frame_count": 112,
+      "retained_first_frame": 0,
+      "retained_rows": 112,
+      "turns": 1,
+      "maximum_turn_error_seconds": 0.0,
+      "turn_tolerance_seconds": 1e-06,
+      "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+      "retained_probabilities_match": true,
+      "maximum_probability_error": 0.0,
+      "probability_tolerance": 1e-06,
+      "gen2_rtf": 0.016502238137869295,
+      "native_rtf": 0.01727484333034915
+    },
+    {
+      "passed": true,
+      "scope": "long-session wrapper/reference correctness, not held-out quality or full release qualification",
+      "audio_duration_seconds": 1.117,
+      "backend": "metal",
+      "device": "Apple M4 Pro",
+      "native_frame_count": 112,
+      "retained_first_frame": 0,
+      "retained_rows": 112,
+      "turns": 1,
+      "maximum_turn_error_seconds": 0.0,
+      "turn_tolerance_seconds": 1e-06,
+      "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+      "retained_probabilities_match": true,
+      "maximum_probability_error": 0.0,
+      "probability_tolerance": 1e-06,
+      "gen2_rtf": 0.05781289167412712,
+      "native_rtf": 0.019702775290957923
+    }
+  ]
+}

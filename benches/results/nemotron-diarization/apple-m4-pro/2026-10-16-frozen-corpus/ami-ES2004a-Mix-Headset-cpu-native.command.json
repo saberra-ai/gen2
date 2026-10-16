@@ -1,0 +1,18 @@
+{
+  "command": [
+    "/usr/bin/time",
+    "-l",
+    "/usr/bin/sandbox-exec",
+    "-f",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/offline.sb",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/native-cpu",
+    "/Users/victor/.cache/gen2-nemotron3-n0/release CPU qualification d01ef80/assets/Nemotron-3-Diarization.q8_0.gguf",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality-corpus-v1/ami-ES2004a-Mix-Headset.wav",
+    "1",
+    "-1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907/ami-ES2004a-Mix-Headset-cpu-native.json"
+  ],
+  "environment": {
+    "PATH": "/usr/bin:/bin"
+  }
+}
