@@ -1,0 +1,58 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "development_native_gates_passed": true,
+  "private_static_dll_names_verified": true,
+  "receiver_harness_note": "Initial receiver used an incorrect loader-control log basename and stopped before collection; corrected to the retained windows-default-loader-control.stdout.log without any native/model rerun.",
+  "source_commit": "24ad9271ef2b46c86a554b61da5395b9bf42404a",
+  "run_url": "https://github.com/saberra-ai/gen2/actions/runs/38882923286",
+  "ci_job_id": 116913698734,
+  "sdk_regular_files_verified": 66,
+  "native_public_comparison_recomputed": {
+    "passed": true,
+    "scope": "long-session wrapper/reference correctness, not held-out quality or full release qualification",
+    "audio_duration_seconds": 60.0,
+    "backend": "cpu",
+    "device": null,
+    "native_frame_count": 6001,
+    "retained_first_frame": 0,
+    "retained_rows": 6001,
+    "turns": 27,
+    "maximum_turn_error_seconds": 0.0,
+    "turn_tolerance_seconds": 1e-06,
+    "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+    "retained_probabilities_match": true,
+    "maximum_probability_error": 0.0,
+    "probability_tolerance": 1e-06,
+    "gen2_rtf": 1.0749777833333334,
+    "native_rtf": 1.0503219
+  },
+  "actual_pcm_sha256": "96858fdcf0c8854f8fc659403c11ddc7565f538a7402803e4235e9e354d87ae6",
+  "default_loader_control": {
+    "passed": true,
+    "library": "D:\\a\\_temp\\nemo-sdk\\bin\\gen2_nemo_windows_nemo_speech_asr_c.dll",
+    "load_flags": 0,
+    "native_win32_error": 126,
+    "default_loader_resolves_siblings": false
+  },
+  "all_seven_lifecycle_passes_reparsed": true,
+  "all_five_native_export_sets_unchanged_from_4bd34aa": true,
+  "redist_provenance": {
+    "eight_installed_dll_bytes_match_recorded_source": true,
+    "observed_authenticode_status": "All8Valid/Microsoft on connected Windows build host; not independently revalidated on macOS.",
+    "actual_runtime_file_product_version": [
+      "14.44.35211.0"
+    ],
+    "actual_compiler_file_version": "19.44.35229.0",
+    "actual_compiler_product_version": "14.44.35229.0",
+    "actual_redist_license_candidates": [],
+    "redistribution_qualified": false
+  },
+  "limits": [
+    "Same-host Windows Server2022 development SDK only; no closed runtime package, offline relocation, desktop machine or chat/Bark/Laya coexistence qualification.",
+    "Static private DLL imports/exports do not by themselves establish dynamic-load or mixed-model isolation.",
+    "No applicable Microsoft distribution terms/entitlement or complete vcpkg source provenance established; only retained status bytes were independently rehashed among vcpkg metadata.",
+    "Observed CI RTF exceeds1; no live/uncontended performance or held-out accuracy claim.",
+    "Actual Windows execution occurred only in the named CI job. macOS receiver rehashed66SDKfiles, notices and outputs, reparsed PE/lifecycle/comparison evidence; source/signature observations remain CI evidence."
+  ]
+}

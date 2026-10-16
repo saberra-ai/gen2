@@ -640,7 +640,16 @@ origin, versions/signers and vcpkg metadata without claiming distribution
 qualification. The first private build linked all five DLLs and the probe, then stopped at an
 overstrict installed-import-library assertion. Its [failed receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-private-import-library-control/qualification.json)
 is retained; the checker now matches upstream's single installed public C ABI
-import library, and its actual model/provenance retry is pending. The separate
+import library. The actual `24ad927` [private Windows development receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-private-native-development/qualification.json)
+now passes exact native/public parity (27 turns/6,001 frames), all seven lifecycle
+tests including 100 reloads and the direct Win32 error126 control. All five
+private DLL/export identities and import graphs pass, and all 66 delivered SDK
+files were independently rehashed. Actual provenance records all eight CRT DLLs
+as identical to the recorded redist source, with Valid/Microsoft signatures
+observed on the build host; runtime file/product version is 14.44.35211.0 and
+compiler file/product versions are 19.44.35229.0/14.44.35229.0. No accompanying
+license candidates were found, so redistribution remains unqualified. Observed
+RTF is 1.07498 public/1.05032 native, without a live-performance claim. The separate
 [read-only Windows prerequisites](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-container-prerequisites/qualification.json)
 confirm an available process-container engine and preloaded Server Core image.
 No container/model payload ran in that prerequisite check. The subsequent

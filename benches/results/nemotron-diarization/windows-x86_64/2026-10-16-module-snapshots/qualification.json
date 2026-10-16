@@ -1,0 +1,47 @@
+{
+  "schema_version": 1,
+  "runtime_qualified": false,
+  "module_snapshot_tests_passed": true,
+  "source_commit": "62cffbe1f43814fe5f44c929be658f0d54708e56",
+  "run_url": "https://github.com/saberra-ai/gen2/actions/runs/38884739743",
+  "ci_job_id": 116919634589,
+  "scope": "Actual std-only Win32 module snapshot/Unicode relocation tests on the Windows Server2022 build VM; no Gen2/native/model/coexistence payload.",
+  "source_sha256": {
+    "examples/support/windows_modules.rs": "30fe3b670e820f142097c69211c45405596d948005f96020e79f6f8287a308b9",
+    ".github/workflows/diarization-windows-preflight.yml": "1e62022386360b19e0ff01a1508ba850473856a52e00fd3c52e327231f9e873e"
+  },
+  "rust_compiler_observed": "rustc 1.99.1 (58cf8f9c3 2026-10-13), stable-x86_64-pc-windows-msvc",
+  "parent_tests_passed": 2,
+  "unicode_relocated_child_tests_passed": 1,
+  "actual_module_snapshots": [
+    [
+      "D:\\a\\_temp\\windows-module-evidence.exe",
+      "C:\\Windows\\SYSTEM32\\VCRUNTIME140.dll",
+      "C:\\Windows\\SYSTEM32\\apphelp.dll",
+      "C:\\Windows\\SYSTEM32\\USERENV.dll",
+      "C:\\Windows\\System32\\ucrtbase.dll",
+      "C:\\Windows\\System32\\bcryptprimitives.dll",
+      "C:\\Windows\\System32\\KERNELBASE.dll",
+      "C:\\Windows\\System32\\KERNEL32.DLL",
+      "C:\\Windows\\System32\\RPCRT4.dll",
+      "C:\\Windows\\SYSTEM32\\ntdll.dll"
+    ],
+    [
+      "C:\\Users\\RUNNER~1\\AppData\\Local\\Temp\\gen2 module \u00fc 4920 1792145086657330300\\module evidence \u00fc.exe",
+      "C:\\Windows\\SYSTEM32\\VCRUNTIME140.dll",
+      "C:\\Windows\\SYSTEM32\\apphelp.dll",
+      "C:\\Windows\\SYSTEM32\\USERENV.dll",
+      "C:\\Windows\\System32\\ucrtbase.dll",
+      "C:\\Windows\\System32\\bcryptprimitives.dll",
+      "C:\\Windows\\System32\\KERNELBASE.dll",
+      "C:\\Windows\\System32\\KERNEL32.DLL",
+      "C:\\Windows\\System32\\RPCRT4.dll",
+      "C:\\Windows\\SYSTEM32\\ntdll.dll"
+    ]
+  ],
+  "limits": [
+    "Not an isolated runtime/module-closure test; system VCRUNTIME140.dll is observed in this build-host unit-test process.",
+    "No native GGML/model/chat/Bark/Laya coexistence or Windows desktop qualification.",
+    "Receiver verified source hashes, exact CI success and test/log evidence on macOS; compiled test binary was not delivered for independent rehash or execution."
+  ]
+}

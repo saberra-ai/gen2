@@ -1,0 +1,180 @@
+[
+  {
+    "name": "cmake-version",
+    "command": [
+      "cmake",
+      "--version"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2"
+  },
+  {
+    "name": "git-line-ending-config",
+    "command": [
+      "git",
+      "-C",
+      "D:\\a\\gen2\\gen2\\native-source\\llama.cpp",
+      "config",
+      "--show-origin",
+      "--get-regexp",
+      "^core\\.(autocrlf|eol)$"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2"
+  },
+  {
+    "name": "sdk-build",
+    "command": [
+      "pwsh",
+      "-NoProfile",
+      "-NonInteractive",
+      "-Command",
+      "& 'D:\\a\\gen2\\gen2\\native-source\\scripts\\windows\\build.ps1' -Backend cpu -Profile asr -Jobs 2 -BuildDir 'D:\\a\\gen2\\gen2\\native-source\\build\\gen2-cpu-diar' -CMakeArgs @('-DNEMO_SPEECH_BUILD_EXAMPLES=ON','-DNEMO_SPEECH_BUILD_CLI=OFF','-DNEMO_SPEECH_BUILD_MIC_CAPTURE=OFF','-DGGML_OPENMP=OFF','-DGGML_NATIVE=OFF','-DGGML_AVX=ON','-DGGML_AVX2=ON','-DGGML_AVX512=OFF','-DGGML_AVX_VNNI=OFF','-DGGML_FMA=ON','-DGGML_F16C=ON','-DNEMO_SPEECH_WITH_NORM=OFF','-DCMAKE_INSTALL_LIBDIR=lib','-DCMAKE_INSTALL_PREFIX=D:\\a\\_temp\\nemo-sdk','-DCMAKE_C_COMPILER=C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe','-DCMAKE_CXX_COMPILER=C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe','-DCMAKE_PROJECT_TOP_LEVEL_INCLUDES:FILEPATH=D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\windows_private_dlls.cmake','-DNEMO_SPEECH_BUILD_ASR=OFF','-DNEMO_SPEECH_BUILD_TTS=OFF')"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2"
+  },
+  {
+    "name": "sdk-install",
+    "command": [
+      "cmake",
+      "--install",
+      "D:\\a\\gen2\\gen2\\native-source\\build\\gen2-cpu-diar",
+      "--config",
+      "Release"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2"
+  },
+  {
+    "name": "native-probe-build",
+    "command": [
+      "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+      "/nologo",
+      "/std:c++17",
+      "/O2",
+      "/EHsc",
+      "/TP",
+      "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\native_stream_probe.cpp",
+      "D:\\a\\gen2\\gen2\\native-source\\llama.cpp\\vendor\\hash\\sha256\\sha256.c",
+      "/ID:\\a\\_temp\\nemo-sdk\\include",
+      "/ID:\\a\\gen2\\gen2\\native-source\\examples",
+      "/ID:\\a\\gen2\\gen2\\native-source\\llama.cpp\\vendor\\hash",
+      "/link",
+      "D:\\a\\_temp\\nemo-sdk\\lib\\gen2_nemo_windows_nemo_speech_asr_c.lib",
+      "/OUT:D:\\a\\_temp\\nemo-sdk\\bin\\gen2_native_stream_probe.exe"
+    ],
+    "cwd": "D:\\a\\_temp\\nemo-evidence"
+  },
+  {
+    "name": "windows-provenance",
+    "command": [
+      "pwsh",
+      "-NoProfile",
+      "-NonInteractive",
+      "-File",
+      "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\windows_provenance.ps1",
+      "-SdkRoot",
+      "D:\\a\\_temp\\nemo-sdk",
+      "-CMakeCache",
+      "D:\\a\\gen2\\gen2\\native-source\\build\\gen2-cpu-diar\\CMakeCache.txt",
+      "-Compiler",
+      "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+      "-Output",
+      "D:\\a\\_temp\\nemo-evidence"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2"
+  },
+  {
+    "name": "gen2-build",
+    "command": [
+      "cargo",
+      "build",
+      "--locked",
+      "--release",
+      "--no-default-features",
+      "--features",
+      "backend-diar-nemo",
+      "--example",
+      "nemotron_stream",
+      "--test",
+      "diarization_native"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2"
+  },
+  {
+    "name": "loader-dependencies",
+    "command": [
+      "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\dumpbin.exe",
+      "/nologo",
+      "/dependents",
+      "D:\\a\\_temp\\nemo-sdk\\bin\\gen2_nemo_windows_nemo_speech_asr_c.dll"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2"
+  },
+  {
+    "name": "native-inference",
+    "command": [
+      "D:\\a\\_temp\\nemo-sdk\\bin\\gen2_native_stream_probe.exe",
+      "D:\\a\\_temp\\nemo-evidence\\assets\\Nemotron-3-Diarization.q8_0.gguf",
+      "D:\\a\\_temp\\nemo-evidence\\assets\\ami_en2002d_2132.wav",
+      "1",
+      "-1",
+      "D:\\a\\_temp\\nemo-evidence\\native-ami.json"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2"
+  },
+  {
+    "name": "windows-default-loader-control",
+    "command": [
+      "C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\python.exe",
+      "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\windows_loader_control.py",
+      "D:\\a\\_temp\\nemo-sdk\\bin\\gen2_nemo_windows_nemo_speech_asr_c.dll"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2"
+  },
+  {
+    "name": "public-inference",
+    "command": [
+      "D:\\a\\gen2\\gen2\\target\\release\\examples\\nemotron_stream.exe",
+      "D:\\a\\_temp\\nemo-evidence\\assets",
+      "D:\\a\\_temp\\nemo-sdk\\bin\\gen2_nemo_windows_nemo_speech_asr_c.dll",
+      "D:\\a\\_temp\\nemo-evidence\\assets\\ami_en2002d_2132.wav",
+      "1",
+      "D:\\a\\_temp\\nemo-evidence\\public.f32"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2"
+  },
+  {
+    "name": "native-lifecycle-list",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--release",
+      "--no-default-features",
+      "--features",
+      "backend-diar-nemo",
+      "--test",
+      "diarization_native",
+      "--",
+      "--ignored",
+      "--list"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2"
+  },
+  {
+    "name": "native-lifecycle",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--release",
+      "--no-default-features",
+      "--features",
+      "backend-diar-nemo",
+      "--test",
+      "diarization_native",
+      "--",
+      "--ignored",
+      "--test-threads=1"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2"
+  }
+]

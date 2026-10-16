@@ -449,3 +449,12 @@ identical to the independent native reference; all ten chat observations match
 `Hello!`, with positive actual-call overlap and zero released reservations.
 This qualifies only the selected Ubuntu/glibc/CPU binaries and calls, with
 Bark/Laya, other machines/baselines, accuracy/performance and release gates open.
+
+The actual `24ad927` [Windows private-SDK receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-private-native-development/qualification.json)
+passes private PE identities/imports, native/public parity, seven lifecycle tests
+and the default-loader control. Runtime provenance captures exact eight-DLL
+source/install equality and Microsoft signature observations; absent accompanying
+license candidates keep redistribution unqualified. Closed/offline runtime,
+actual mixed-model calls, desktop machine and live performance gates remain open.
+The Windows module snapshot diagnostic separately passes two Win32 tests,
+including Unicode executable relocation, without a packaged-runtime claim.

@@ -195,3 +195,27 @@ copy/run the test executable in a Unicode path and verify the exact child test
 ran. Source review and macOS compilation pass; actual Windows module tests are
 pending. This adds evidence capture for a future coexistence run, not a passing
 Windows coexistence result.
+
+The actual `24ad927` [private SDK receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-private-native-development/qualification.json)
+now passes [run 38882923286](https://github.com/saberra-ai/gen2/actions/runs/38882923286):
+five private DLL identities/import graphs, unchanged native export sets, exact
+native/public parity (27 turns/6,001 frames/48,008 probabilities), all seven
+lifecycle tests including 100 reloads, and flags0/default-loader error126 control.
+The receiver rehashed all 66 SDK files and eight notice files and reparsed all
+fifteen PE images. Actual redist provenance observes all eight installed DLLs
+matching recorded source bytes, all signatures Valid/Microsoft, file/product
+version 14.44.35211.0. Compiler file/product versions are 19.44.35229.0 and
+14.44.35229.0. No accompanying redist license candidates were found; the
+[terms/version investigation](nemotron-windows-runtime-terms.md) preserves the
+separate compatibility/applicability questions rather than deriving a verdict
+from patch suffixes. Redistribution, closed-package/offline relocation,
+Windows desktop and chat/Bark/Laya coexistence remain unqualified. Observed
+CI RTF exceeds1; this is not live performance qualification.
+
+The actual `62cffbe` [module snapshot receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-module-snapshots/qualification.json)
+passes both standalone Win32 tests, including an actually executed child test
+from a Unicode executable path. The source-only pending statement above records
+the implementation's earlier state. This is build-host diagnostic evidence;
+it observes the host's system VCRUNTIME140.dll and does not qualify any packaged
+module closure or mixed-model call. The test binary was not delivered for
+receiver rehashing; exact source, CI execution and output logs are retained.
