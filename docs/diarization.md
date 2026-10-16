@@ -93,8 +93,9 @@ measured token intervals into words and applies temporal speaker coverage.
 Presentation text stays separate from timing evidence. The API rejects stale
 edited text, invalid offsets and malformed intervals. A word receives a single
 speaker only with at least 50% interval coverage and no competitor covering 20%.
-Intervals over 800 ms and zero-duration tokens remain uncertain; simultaneous
-speakers remain overlap candidates and speaker transitions remain unknown.
+Intervals over 800 ms and zero-duration tokens remain uncertain. Overlap requires
+at least 20 ms of cumulative activity common to all reported speaker candidates;
+speaker transitions and ambiguous pairwise combinations remain unknown.
 Temporal coverage is not calibrated confidence or precise forced alignment.
 
 The versioned [Pnola overlay](../integrations/pnola/README.md) implements final

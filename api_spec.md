@@ -2208,9 +2208,10 @@ single-speaker, overlap or unknown attribution. Per-speaker coverage measures
 temporal overlap with the union of native turns; it is not calibrated confidence.
 
 The initial conservative policy requires at least 50% coverage for a single
-speaker and no competitor with at least 20%. Competing speakers with at least
-20 ms of simultaneous activity remain overlap candidates; sequential competing
-speakers remain uncertain. Zero-length words and intervals over 800 ms remain
+speaker and no competitor with at least 20%. Competing speakers remain overlap
+candidates only when their common simultaneous activity totals at least 20 ms
+within the word interval. Sequential or mixed pairwise combinations without
+that common activity remain uncertain. Zero-length words and intervals over 800 ms remain
 uncertain rather than stretching a word through silence. The method is named
 `bark_token_intervals_v1`; corpus qualification and uncertainty rates must be
 reported separately. These boundaries are not precise forced alignment.

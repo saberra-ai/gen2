@@ -113,6 +113,52 @@ fn overlap_transitions_gaps_and_zero_duration_stay_explicit() {
 }
 
 #[test]
+fn overlap_counts_cumulative_common_activity() {
+    let speech = transcript(&[(0, 40, "Both")], 1.);
+    let result = attribute_bark(
+        &speech,
+        &timeline(vec![
+            turn(0., 0.04, 1),
+            turn(0., 0.01, 2),
+            turn(0.02, 0.03, 2),
+        ]),
+        0.,
+    )
+    .unwrap();
+    assert_eq!(
+        result.words[0].attribution,
+        Attribution::Overlap {
+            speakers: vec![1, 2]
+        }
+    );
+}
+
+#[test]
+fn pairwise_overlap_does_not_include_a_sequential_third_speaker() {
+    let speech = transcript(&[(0, 400, "Ambiguous")], 1.);
+    let result = attribute_bark(
+        &speech,
+        &timeline(vec![turn(0., 0.2, 1), turn(0., 0.2, 2), turn(0.2, 0.4, 3)]),
+        0.,
+    )
+    .unwrap();
+    assert_eq!(
+        result.words[0].attribution,
+        Attribution::Unknown {
+            reason: AttributionUncertainty::SpeakerTransition
+        }
+    );
+    assert_eq!(
+        result.words[0]
+            .candidates
+            .iter()
+            .map(|candidate| candidate.speaker)
+            .collect::<Vec<_>>(),
+        vec![1, 2, 3]
+    );
+}
+
+#[test]
 fn edited_or_invalid_timing_is_rejected_without_retiming_text() {
     let mut speech = transcript(&[(0, 400, "Original")], 1.);
     speech.fulltext = "Edited text".into();

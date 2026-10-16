@@ -219,15 +219,30 @@ fn attribute_word(
     } else if duration > 0.8 + 1e-9 {
         unknown(AttributionUncertainty::TimingGap)
     } else if relevant.len() > 1 {
-        let simultaneous = relevant.iter().enumerate().any(|(index, a)| {
-            relevant[index + 1..].iter().any(|b| {
-                clipped[usize::from(*a - 1)].iter().any(|a| {
-                    clipped[usize::from(*b - 1)]
-                        .iter()
-                        .any(|b| a.1.min(b.1) - a.0.max(b.0) >= 0.02 - 1e-9)
-                })
-            })
-        });
+        // Every reported ID must share the same activity. A qualifying pair
+        // cannot establish overlap with another, sequential speaker. Sum the
+        // intersection union so brief, separated coactivity still counts.
+        let mut common = clipped[usize::from(relevant[0] - 1)].clone();
+        for speaker in &relevant[1..] {
+            let intervals = &clipped[usize::from(*speaker - 1)];
+            let mut intersection = Vec::new();
+            let (mut left, mut right) = (0, 0);
+            while left < common.len() && right < intervals.len() {
+                let start = common[left].0.max(intervals[right].0);
+                let end = common[left].1.min(intervals[right].1);
+                if end > start {
+                    intersection.push((start, end));
+                }
+                if common[left].1 <= intervals[right].1 {
+                    left += 1;
+                } else {
+                    right += 1;
+                }
+            }
+            common = intersection;
+        }
+        let simultaneous =
+            common.iter().map(|(start, end)| end - start).sum::<f64>() >= 0.02 - 1e-9;
         if simultaneous {
             Attribution::Overlap { speakers: relevant }
         } else {
