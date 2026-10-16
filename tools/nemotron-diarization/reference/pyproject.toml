@@ -1,0 +1,11 @@
+[project]
+name = "gen2-nemotron-n0-reference"
+version = "0.1.0"
+requires-python = ">=3.12,<3.13"
+dependencies = [
+  "torch==2.8.0",
+  "numpy==2.2.6",
+  "librosa==0.11.0",
+  "soundfile==0.13.1",
+  "transformers @ git+https://github.com/huggingface/transformers.git@683b721971417b3b2c64fba9001f525607547e5a",
+]

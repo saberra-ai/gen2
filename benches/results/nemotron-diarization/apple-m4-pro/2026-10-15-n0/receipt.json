@@ -1,0 +1,167 @@
+{
+  "scope": "N0 macOS arm64 CPU, one real AMI clip plus silence and tail; not N1\u2013N5",
+  "packaging_decision": "in-process host-supplied SDK via dynamic C ABI; qualify other platforms separately",
+  "passed": true,
+  "model": {
+    "repository": "nvidia/Nemotron-3-Diarization",
+    "revision": "f667ed73aee57d40cc39428eb768b4fd87a0a29e",
+    "license": "OpenMDW-1.1"
+  },
+  "runtime_revision": "083861c241061562b8ec29eb06d7f6cdc3af8775",
+  "lock_sha256": "e66e5651608636bbb04528fed7944ab8972a778d1141b36fef3fb391eefd0dcc",
+  "tools_sha256": {
+    "native_probe.cpp": "90e878daa190bd9e181fc3892790e44feae70949f042abdf512a0ad57e41682d",
+    "test_artifacts.py": "a2c0e55bacbf64772b1736df1cb8e9d363511d3c69d48c8cd19bd5934e7214aa",
+    "test_score.py": "5c8094da10b6513cd05c15d938076703bd5336f700aa31a9a4cf6acb69e17288",
+    "runtime.lock.json": "e66e5651608636bbb04528fed7944ab8972a778d1141b36fef3fb391eefd0dcc",
+    "README.md": "cba404cca03c6b707ee77e64e39c02c1c128f054597bf43a6faf7ad54a2bfa4e",
+    "run_native.py": "5d3172884c55cbc4cda49f54fdc4d671c42935102b422b6de6cc3b25841fc951",
+    "reference.py": "79336524c506f4efc34423a6f65d9feed98bf7a22e7d6ee04f8b3f0066730577",
+    "artifacts.py": "17df6411ab0394b4d9bb30a099915badf357af26050b6cd08bfd44887688ff42",
+    "collect_receipt.py": "f5ca3f46065d6cf7e7e5ab91758f7681ae2566a7bb4441456dc895d809e3bac6",
+    "compare.py": "73d366b17d05ed5cbda477c94c7dbf3ebfac8d181f3dad817685d54958e1a845",
+    "score.py": "32aea92676133e42e2c30a914f8729d1c31c0c96e02faf9b7cab42911b389eb8",
+    "build_sdk.py": "670f501dc9df7f9c4683ab9d184bd09ee947ac47f86ebf898200ab10ca7aeaa5",
+    "coexistence/Cargo.toml": "18d0981a2a1b0d597da49f1ebcb93cf0cb53ae78ebfecc4f43407b26ff4b460f",
+    "coexistence/Cargo.lock": "5c8ec10439aaca691a92659fdc5fc2aa85d83f5f2adec67ea7b374a71d2a5762",
+    "reference/uv.lock": "104834dd9a3904a763dfd5270b92821b5a209b2289f00f0c6f2d3cd55ddb673f",
+    "reference/pyproject.toml": "8394b5f49001cc2e7235d2f3dbf954a41ad9a5d01bbbf9045289ea7cb057b360",
+    "coexistence/src/main.rs": "a4f1dcc1edbab1ea14cefc7aaf0650967dc60c961af8ff192abd324670f08a04"
+  },
+  "probe_sha256": "9f45d1fce143c2e251150fcd5b6aa1f643ca94a54f548f8b2d54bee9b6f85604",
+  "chat_model_sha256": "ac2d97712095a558e31573f62f466a3f9d93990898b0ec79d7c974c1780d524a",
+  "toolchain": {
+    "cmake": "cmake version 4.3.1",
+    "ninja": "1.13.2",
+    "clang++": "Apple clang version 21.0.0 (clang-2100.1.1.101)",
+    "sdk": "26.5",
+    "packages": "abseil 20260817.0\nprotobuf 36.2\nsentencepiece 0.2.2"
+  },
+  "macho_header": "/Users/victor/.cache/gen2-bark-onnx/build/release/gen2-nemotron-n0-probe:\nMach header\n      magic  cputype cpusubtype  caps    filetype ncmds sizeofcmds      flags\nMH_MAGIC_64    ARM64        ALL  0x00     EXECUTE    25       3464   NOUNDEFS DYLDLINK TWOLEVEL WEAK_DEFINES BINDS_TO_WEAK PIE MH_HAS_TLV_DESCRIPTORS\n",
+  "coexistence": {
+    "chat-first": {
+      "order": "chat-first",
+      "chat_before": "Hello!",
+      "chat_after": "Hello!",
+      "isolated_chat": "Hello!",
+      "chat_after_unload": "Hello!",
+      "repeated_and_reloaded_segments_equal": true,
+      "concurrent_chat_and_diarization_equal": true
+    },
+    "diar-first": {
+      "order": "diar-first",
+      "chat_before": "Hello!",
+      "chat_after": "Hello!",
+      "isolated_chat": null,
+      "chat_after_unload": "Hello!",
+      "repeated_and_reloaded_segments_equal": true,
+      "concurrent_chat_and_diarization_equal": true
+    }
+  },
+  "quality": {
+    "scope": "one licensed 60-second AMI smoke fixture; not release qualification",
+    "native_sha256": "07ac8c3d812ac1cc80232db972f5d51c945353c5157e5e93fc81722678e37403",
+    "reference_sha256": "1c8be74c5c117b9f557ca79d2b5fe46797b7f2317d0627590c7b8b474020c417",
+    "native_probabilities_sha256": "ac8eb81c3610d88ec5d393d0603f407907b2bc3a367b53a4020be0968b6832bf",
+    "rttm_sha256": "40751c9fc0bb934f741789ce3fafccd2c1f9d7c112585b8b40ac177a9de13b2d",
+    "shape_difference": {
+      "native": [
+        6001,
+        8
+      ],
+      "reference": [
+        6000,
+        8
+      ],
+      "extra_native_tail_frames": 1,
+      "frame_seconds": 0.01,
+      "scoring_uem_seconds": [
+        0,
+        60.0
+      ],
+      "interpretation": "native finish emits a padded terminal frame; retain it in raw evidence, clip presentation to audio duration"
+    },
+    "channel_mae_on_common_real_frames": 0.008423415943980217,
+    "channel_max_error_on_common_real_frames": 0.8278788924217224,
+    "shared_postprocessing": "sigmoid probability > 0.5; no hysteresis/padding/min-duration",
+    "fp32": {
+      "der": 0.334479055,
+      "missed_speaker_seconds": 13.5,
+      "false_alarm_speaker_seconds": 0.42,
+      "confusion_speaker_seconds": 1.65,
+      "reference_speaker_seconds": 46.55,
+      "reference_speakers": 4,
+      "hypothesis_speakers": 4,
+      "frame_seconds": 0.01,
+      "collar_seconds": 0,
+      "overlap_included": true,
+      "scoring_duration_seconds": 60.0
+    },
+    "q8": {
+      "der": 0.298603652,
+      "missed_speaker_seconds": 13.16,
+      "false_alarm_speaker_seconds": 0.42,
+      "confusion_speaker_seconds": 0.32,
+      "reference_speaker_seconds": 46.55,
+      "reference_speakers": 4,
+      "hypothesis_speakers": 3,
+      "frame_seconds": 0.01,
+      "collar_seconds": 0,
+      "overlap_included": true,
+      "scoring_duration_seconds": 60.0
+    },
+    "native_default_postprocessing": {
+      "der": 0.252201933,
+      "missed_speaker_seconds": 6.17,
+      "false_alarm_speaker_seconds": 4.33,
+      "confusion_speaker_seconds": 1.24,
+      "reference_speaker_seconds": 46.55,
+      "reference_speakers": 4,
+      "hypothesis_speakers": 3,
+      "frame_seconds": 0.01,
+      "collar_seconds": 0,
+      "overlap_included": true,
+      "scoring_duration_seconds": 60.0
+    },
+    "q8_minus_fp32_absolute_der": -0.03587540300000003,
+    "q8_degradation_limit": 0.02,
+    "smoke_quality_passed": true
+  },
+  "native_records": [
+    {
+      "name": "ami",
+      "frames": 6001,
+      "audio_seconds": 60,
+      "seconds": 4.931863833,
+      "wav_sha256": "f00f92e53115a4a6724aec0ddaf9c675df6d5fabd3a489b43fffe56ba52a3ae9"
+    },
+    {
+      "name": "silence",
+      "frames": 201,
+      "audio_seconds": 2,
+      "seconds": 0.0271565,
+      "wav_sha256": "20eaebffe1816e0ffa6f7f854f5ef4ea80d5349faaf0ce1fec1b713e7fde58fa"
+    },
+    {
+      "name": "tail",
+      "frames": 112,
+      "audio_seconds": 1.117,
+      "seconds": 0.017501166,
+      "wav_sha256": "1a6fcc5758334348397ceb8e5975589508a65d4d47ff3bf2bdd3a5ed183634c8"
+    },
+    {
+      "name": "ami-repeat",
+      "frames": 6001,
+      "audio_seconds": 60,
+      "seconds": 5.044550709,
+      "wav_sha256": "f00f92e53115a4a6724aec0ddaf9c675df6d5fabd3a489b43fffe56ba52a3ae9"
+    }
+  ],
+  "evidence_directory": "/Users/victor/.cache/gen2-nemotron3-n0/receipts",
+  "limits": [
+    "single fixture is not broad quality evidence",
+    "host Homebrew dependency closure is not a self-contained redistributable SDK",
+    "native output includes a padded terminal frame",
+    "public Gen2 diarization API and admission are not implemented"
+  ]
+}
