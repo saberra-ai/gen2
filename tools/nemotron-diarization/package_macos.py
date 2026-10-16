@@ -73,14 +73,41 @@ def inspect_library(path):
             "minimum_macos": deployment[0]}
 
 
+def qualified_entry(sdk, build):
+    root = (sdk / "lib").resolve()
+    entry = (root / "libnemo_speech_asr_c.dylib").resolve(strict=True)
+    if entry.parent != root or entry.name != "libnemo_speech_asr_c.1.dylib":
+        raise ValueError("native entry must resolve inside the qualified SDK lib directory")
+    expected = build["libraries"].get(entry.name)
+    if not expected or digest(entry) != expected["sha256"]:
+        raise ValueError("native entry differs from the qualified build receipt")
+    return entry
+
+
 def discover(entry, sdk, build):
+    # Validate the complete SDK records before following aliases. An SDK alias
+    # must not turn a locked ggml/NeMo dependency into an unrelated system one.
+    sdk_root = (sdk / "lib").resolve()
+    qualified = {}
+    identities = {}
+    for name, expected in build["libraries"].items():
+        if Path(name).name != name:
+            raise ValueError(f"invalid SDK library name: {name}")
+        path = (sdk_root / name).resolve(strict=True)
+        if path.parent != sdk_root or path.name != name or digest(path) != expected["sha256"]:
+            raise ValueError(f"SDK library differs from the native build receipt: {name}")
+        info = inspect_library(path)
+        if info["identity"] in identities:
+            raise ValueError(f"duplicate SDK library identity: {info['identity']}")
+        identities[info["identity"]] = path
+        qualified[path] = info
     pending = [entry.resolve()]
     libraries = {}
     while pending:
         path = pending.pop()
         if path in libraries:
             continue
-        info = inspect_library(path)
+        info = qualified.get(path) or inspect_library(path)
         # The qualified SDK's runpaths are loader-relative; the explicit SDK
         # search path also resolves a dependency inherited from its parent.
         edges = {}
@@ -88,14 +115,14 @@ def discover(entry, sdk, build):
             if system_dependency(name):
                 continue
             resolved = resolve_dependency(name, path, [*info["rpaths"], str(sdk / "lib")])
+            if name in identities and resolved != identities[name]:
+                raise ValueError(f"SDK dependency alias escapes its qualified record: {name}")
             edges[name] = resolved
             pending.append(resolved)
         info["edges"] = edges
         info["source_sha256"] = digest(path)
-        if path.is_relative_to((sdk / "lib").resolve()):
-            expected = build["libraries"].get(path.name)
-            if not expected or info["source_sha256"] != expected["sha256"]:
-                raise ValueError(f"SDK library differs from the native build receipt: {path}")
+        if path.is_relative_to(sdk_root) and path not in qualified:
+            raise ValueError(f"unqualified library inside the SDK: {path}")
         libraries[path] = info
     return libraries
 
@@ -213,7 +240,7 @@ def package_sdk(sdk, build_path, destination):
         raise ValueError("native build receipt does not match the immutable lock")
     if build["commands"][0][1] != "cpu-diar":
         raise ValueError("only the qualified CPU build preset can be packaged")
-    entry = (sdk / "lib/libnemo_speech_asr_c.dylib").resolve()
+    entry = qualified_entry(sdk, build)
     libraries = discover(entry, sdk, build)
     names = {path: "libgen2_nemo_" + path.name.removeprefix("lib") for path in libraries}
     if len(set(names.values())) != len(names):

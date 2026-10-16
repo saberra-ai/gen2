@@ -5,8 +5,8 @@
   "host": "macOS-26.3-arm64-arm-64bit-Mach-O",
   "gen2_commit_at_collection": "421d415310f79cbc5c5187681343ec992e242ff1",
   "source_hashes": {
-    "tools/nemotron-diarization/package_macos.py": "bba9e304382985d9349de0a4a11a89632a74589d6b090d55d064a8550c6ec163",
-    "tools/nemotron-diarization/test_package_macos.py": "515a79c0aabccb16325f201e7774744ed9452ca9f339eefbe1e0dded8379ac26"
+    "tools/nemotron-diarization/package_macos.py": "5d6d8817836ca8866871dabdd67004fa12e3e321ca431f143aa361c96a03ef27",
+    "tools/nemotron-diarization/test_package_macos.py": "17ea44f7d7642e765728eeae0b7695b2f1a944bcaefaf1e98f4df1ec94f7c80e"
   },
   "architecture": "arm64",
   "minimum_macos": "26.0",
@@ -23,7 +23,7 @@
     "elapsed_seconds": 150.64,
     "actual_model_reloads": 100
   },
-  "tools_tests_passed": 12,
+  "tools_tests_passed": 13,
   "loader_trace": {
     "private_libraries_loaded": [
       "libgen2_nemo_absl_base.2608.0.0.dylib",
@@ -154,7 +154,11 @@
     "n5-relocated-all-command.json": "9679740ba5ecfdfdedac831d5ed20bad7d9680c21d01392752ede2aada0b7c20",
     "n5-offline-v2.sb": "9c9d505d21e773dd010793c19be87d4a0bd079852044f267d181b0a36d79f432",
     "n5-sandbox-controls.json": "0b6fde4c7a48078bdf5a73af53982414c906cd7d1ae5ef5027f8c1cfd3400851",
-    "package.json": "ae6e0e551f2c4a30a1f18c7543f42ad704018137042517930de3b0d17d699db8"
+    "package.json": "ae6e0e551f2c4a30a1f18c7543f42ad704018137042517930de3b0d17d699db8",
+    "n5-package-final.log": "7b8e78df42035e5c9d77f9498fb89eee0bc3b4a23c0aa79b670f4f2a5ce634b5",
+    "n5-package-entry-rejected.log": "47923414c0cfd3a90f274c1346678558eff3d18d30326f59af4ef10aaa367b4e",
+    "n5-tools-tests-final.log": "d7057cef473e4f67f8cc7a51b085f59f153bcb243e187596f0589f9df92abaf8",
+    "entry-admission.json": "3dced846b1ffeb50097684ebae6bd842800d56fb05994d911dda9a8954a4b56c"
   },
   "unmet_gates": [
     "fresh-machine and complete application bundle deployment",
@@ -165,5 +169,17 @@
     "physical capture and native visual verification",
     "clean committed release performance, soaks and reload receipts",
     "Developer ID/notarization if advertised for public macOS distribution"
-  ]
+  ],
+  "source_hashes_before_entry_review": {
+    "tools/nemotron-diarization/package_macos.py": "bba9e304382985d9349de0a4a11a89632a74589d6b090d55d064a8550c6ec163",
+    "tools/nemotron-diarization/test_package_macos.py": "515a79c0aabccb16325f201e7774744ed9452ca9f339eefbe1e0dded8379ac26"
+  },
+  "entry_admission_review": {
+    "external_entry_symlink_rejected_before_publication": true,
+    "native_entry_hash_checked_before_discovery": true,
+    "all_sdk_build_records_checked_before_alias_resolution": true,
+    "final_package_manifest_equals_executed_package_manifest": true,
+    "equal_manifest_file_count": 109,
+    "final_package_manifest_sha256": "ae6e0e551f2c4a30a1f18c7543f42ad704018137042517930de3b0d17d699db8"
+  }
 }

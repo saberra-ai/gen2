@@ -409,7 +409,7 @@ the measured host is 26.3. A relocated copy ran real native-reference parity wit
 Homebrew, original SDK/package reads and networking denied. The full eight-test
 native lifecycle suite also passed in that sandbox, including 100 actual reloads,
 stream parity/cancellation, ABI rejection and offline warm provisioning. Loader
-traces account for all 92 private libraries. Twelve model-free tool tests pass.
+traces account for all 92 private libraries. Thirteen model-free tool tests pass.
 The [CPU packaging development receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-n5-cpu-package/receipt.json)
 retains manifests, controls, policy and executed output. This is local
 relocation evidence, not a fresh-machine, app bundle, Metal, notarization or

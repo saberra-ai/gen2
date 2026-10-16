@@ -211,7 +211,8 @@ not qualify precise word timing or the Pnola attribution product claim.
 ## Relocatable macOS CPU runtime package
 
 `package_macos.py` consumes the pinned SDK and its actual `build.json` receipt.
-It checks the SDK hashes, discovers the complete dylib dependency closure,
+It requires the qualified native entry, checks every SDK build-record hash and
+identity before resolving aliases, discovers the complete dylib dependency closure,
 requires the qualified Homebrew package versions, copies runtime and component
 notices, and relocates every non-system dependency to a private
 `@loader_path/libgen2_nemo_…` name. It removes source runpaths and signs each

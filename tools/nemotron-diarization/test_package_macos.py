@@ -4,10 +4,33 @@ import tempfile
 import unittest
 
 import hashlib
-from package_macos import resolve_dependency, verify_files
+from package_macos import resolve_dependency, verify_files, qualified_entry
 
 
 class LoaderResolution(unittest.TestCase):
+    def test_external_entry_symlink_cannot_bypass_the_native_build_receipt(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory).resolve()
+            sdk = root / "sdk"
+            (sdk / "lib").mkdir(parents=True)
+            native = sdk / "lib/libnemo_speech_asr_c.1.dylib"
+            native.write_bytes(b"qualified native library")
+            alias = sdk / "lib/libnemo_speech_asr_c.dylib"
+            alias.symlink_to(native.name)
+            build = {"libraries": {native.name: {"sha256": hashlib.sha256(native.read_bytes()).hexdigest()}}}
+            self.assertEqual(qualified_entry(sdk, build), native)
+            alias.unlink()
+            unrelated = root / native.name
+            unrelated.write_bytes(native.read_bytes())
+            alias.symlink_to(unrelated)
+            with self.assertRaisesRegex(ValueError, "entry.*SDK"):
+                qualified_entry(sdk, build)
+            alias.unlink()
+            alias.symlink_to(native.name)
+            native.write_bytes(b"different library")
+            with self.assertRaisesRegex(ValueError, "entry.*receipt"):
+                qualified_entry(sdk, build)
+
     def test_unlisted_native_code_and_mutated_notices_fail_verification(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory).resolve()

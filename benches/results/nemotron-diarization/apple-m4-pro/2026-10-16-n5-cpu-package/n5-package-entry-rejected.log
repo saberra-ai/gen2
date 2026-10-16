@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/package_macos.py", line 303, in <module>
+    main()
+    ~~~~^^
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/package_macos.py", line 297, in main
+    manifest = package_sdk(args.sdk_prefix, args.build_receipt, args.output.resolve())
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/package_macos.py", line 243, in package_sdk
+    entry = qualified_entry(sdk, build)
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/package_macos.py", line 80, in qualified_entry
+    raise ValueError("native entry must resolve inside the qualified SDK lib directory")
+ValueError: native entry must resolve inside the qualified SDK lib directory
