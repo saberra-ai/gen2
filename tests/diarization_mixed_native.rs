@@ -14,24 +14,47 @@ use std::path::PathBuf;
 #[test]
 #[ignore = "requires GEN2_NEMOTRON_ASSETS, GEN2_NEMO_LIBRARY, GEN2_BARK_BUNDLE, GEN2_ORT_LIBRARY, GEN2_CHAT_GGUF; fresh process"]
 fn mixed_chat_first() {
-    mixed(true);
+    mixed(true, false);
 }
 
 #[test]
 #[ignore = "requires GEN2_NEMOTRON_ASSETS, GEN2_NEMO_LIBRARY, GEN2_BARK_BUNDLE, GEN2_ORT_LIBRARY, GEN2_CHAT_GGUF; fresh process"]
 fn mixed_diarization_first() {
-    mixed(false);
+    mixed(false, false);
 }
 
-fn mixed(chat_first: bool) {
+#[test]
+#[ignore = "same native variables plus GEN2_LAYA_BUNDLE for actual Laya weights; fresh process"]
+fn mixed_real_laya_chat_first() {
+    mixed(true, true);
+}
+
+#[test]
+#[ignore = "same native variables plus GEN2_LAYA_BUNDLE for actual Laya weights; fresh process"]
+fn mixed_real_laya_diarization_first() {
+    mixed(false, true);
+}
+
+fn mixed(chat_first: bool, real_laya: bool) {
     let assets = std::env::var("GEN2_NEMOTRON_ASSETS").unwrap();
     let library = std::env::var("GEN2_NEMO_LIBRARY").unwrap();
     let bark = std::env::var("GEN2_BARK_BUNDLE").unwrap();
     let ort = PathBuf::from(std::env::var("GEN2_ORT_LIBRARY").unwrap());
     let chat_path = std::env::var("GEN2_CHAT_GGUF").unwrap();
-    // Exact auxiliary budget: 4096 MiB Bark + 1024 diarization + 1 smoke Laya.
+    let laya_bundle = if real_laya {
+        PathBuf::from(std::env::var("GEN2_LAYA_BUNDLE").expect("actual Laya bundle required"))
+    } else {
+        PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/laya/smoke")
+    };
+    let laya_mb = gen2::decision::LayaBundle::open(&laya_bundle)
+        .unwrap()
+        .manifest()
+        .envelope
+        .reservation_mb;
+    // Fill the exact aggregate budget so chat restoration must be refused.
+    let budget = 4096 + 1024 + laya_mb;
     let runtime = Runtime::builder()
-        .resident_memory_budget_mb(5121)
+        .resident_memory_budget_mb(budget)
         .build()
         .unwrap();
     let (chat, diarizer) = if chat_first {
@@ -57,7 +80,7 @@ fn mixed(chat_first: bool) {
     assert!(!generate().unwrap().text().is_empty());
     let laya = runtime
         .load_decider(
-            PathBuf::from(env!("CARGO_MANIFEST_DIR")).join("tests/fixtures/laya/smoke"),
+            &laya_bundle,
             gen2::decision::LoadOptions {
                 native_library: Some(ort.clone()),
                 ..Default::default()
@@ -73,7 +96,7 @@ fn mixed(chat_first: bool) {
             },
         )
         .unwrap();
-    assert_eq!(runtime.stats().estimated_resident_mb, 5121);
+    assert_eq!(runtime.stats().estimated_resident_mb, budget);
     assert!(!runtime.residency().is_resident(chat.id()));
     assert!(matches!(
         generate(),

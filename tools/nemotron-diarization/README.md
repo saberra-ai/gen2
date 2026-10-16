@@ -139,4 +139,70 @@ cargo clippy --locked --manifest-path tools/nemotron-diarization/coexistence/Car
 Missing real assets fail the qualification commands. Unit-test success alone
 does not establish native compatibility. N0's one fixture is a smoke test;
 larger held-out quality, long-session behavior, admission, cancellation and the
-public API remain subsequent roadmap gates.
+public API require their own subsequent roadmap evidence.
+
+## Public Rust API and integration evidence
+
+The optional `backend-diar-nemo` feature adds the CPU Rust wrapper and bounded
+streaming worker. See [contracts and setup](../../docs/diarization.md). Real
+tests are ignored by ordinary CI and fail if explicitly run without assets:
+
+```sh
+export GEN2_NEMOTRON_ASSETS="$task_cache/assets"
+export GEN2_NEMO_LIBRARY="$task_cache/sdk-cpu/lib/libnemo_speech_asr_c.dylib"
+export GEN2_NEMOTRON_REFERENCE="$task_cache/receipts/native"
+cargo test --no-default-features --features backend-diar-nemo \
+  --test diarization_api --test diarization_native -- --include-ignored --test-threads=1
+cargo build --no-default-features --features backend-diar-nemo,hf \
+  --example nemotron_diarize --example nemotron_stream
+python3 tools/nemotron-diarization/qualify_provisioning.py \
+  --executable target/debug/examples/nemotron_diarize \
+  --cache /absolute/fresh/qualification-cache --output "$task_cache/n2-provision-receipt.json"
+for minutes in 30 60; do
+  /usr/bin/time -l target/debug/examples/nemotron_stream \
+    "$task_cache/assets" "$GEN2_NEMO_LIBRARY" "$task_cache/assets/ami_en2002d_2132.wav" "$minutes" \
+    > "$task_cache/n3-soak-${minutes}m.json" 2> "$task_cache/n3-soak-${minutes}m.time"
+done
+```
+
+The repeated clip establishes continuous cache/transport/compaction behavior,
+not quality on a long meeting. The development evidence collector
+`capture_integration.py` checks actual passing real-test names, complete 30/60
+minute streams, retained probability ranges, revision ordering and measured
+RSS below the reservation. Its output explicitly leaves N4/N5 and clean-build
+release gates open. Keep the executed binary and its hash unchanged while
+capturing those experiments.
+
+Mixed-model tests are in `diarization_mixed_native.rs` with
+`backend-llamacpp,asr-dynamic,laya-dynamic,backend-diar-nemo` enabled. Supply
+`GEN2_BARK_BUNDLE`, `GEN2_ORT_LIBRARY` (the qualified 1.24.4 runtime),
+`GEN2_CHAT_GGUF` and the diarization variables above. Execute `mixed_chat_first`
+and `mixed_diarization_first` in separate processes with `--ignored`. These
+tests use real Bark/chat/diarization weights and the synthetic Laya smoke graph;
+they qualify admission/coexistence, not Laya checkpoint quality. The corresponding
+`mixed_real_laya_chat_first` / `mixed_real_laya_diarization_first` cases additionally
+require `GEN2_LAYA_BUNDLE` and repeat the checks with the full checkpoint
+and its manifest reservation; both cases have passed locally.
+
+## Alignment investigation
+
+AMI manual word annotations 1.6.2 are available under CC-BY-4.0 from
+[the corpus maintainers](https://groups.inf.ed.ac.uk/ami/download/). Download
+the manual annotation archive explicitly; `qualify_alignment.py` validates its
+frozen SHA-256 before reading only the selected meeting's word XML files.
+
+```sh
+GEN2_ORT_LIBRARY=/absolute/path/to/libonnxruntime.1.24.4.dylib \
+  cargo run --no-default-features --features asr-dynamic --example bark_transcribe -- \
+  /absolute/path/to/bark/onnx "$task_cache/assets/ami_en2002d_2132.wav" \
+  > "$task_cache/n4-bark-ami.json"
+python3 tools/nemotron-diarization/qualify_alignment.py \
+  --annotations "$task_cache/ami_public_manual_1.6.2.zip" \
+  --transcription "$task_cache/n4-bark-ami.json" --output "$task_cache/n4-alignment-receipt.json"
+```
+
+The tool groups whole token intervals without proportional text timing. Its
+chronological merged WER includes cleanup omissions and overlapping reference
+speech; it is diagnostic, not speaker-attributed WER. Initial word-end errors
+show that Bark's next-token intervals can span silence. This experiment does
+not qualify precise word timing or the Pnola attribution product claim.

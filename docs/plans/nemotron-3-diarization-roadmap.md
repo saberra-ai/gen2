@@ -1,6 +1,6 @@
 # Nemotron 3 Diarization support in Gen2
 
-Status: N0 qualified; N1 implemented with macOS arm64 CPU parity; N2/N3 in qualification; N4/N5 pending.
+Status: N0–N3 implemented and verified on macOS arm64 CPU; N4/N5 remain open. Development receipts do not establish a supported desktop release.
 Prepared: 2026-10-14.
 Updated: 2026-10-15.
 
@@ -158,16 +158,43 @@ repair, abandoned staging and offline warm reuse verified), shared admission,
 failed-load rollback, cancellation and shutdown. Actual Bark + chat + native
 diarization + synthetic Laya smoke-graph tests pass in both load orders,
 including chat eviction, rejected restore at the budget ceiling and successful
-restore after speech shutdown. The synthetic Laya graph establishes admission
-and native-runtime coexistence, not real-checkpoint Laya quality. Conservative
-peak-memory evidence and complete milestone review remain in progress.
+restore after speech shutdown. One hundred actual model reloads also passed,
+including a full-queue cancellation and dropped consumers. The same budget/eviction/restore checks also passed in both orders with
+the full 1.6 GiB English Laya checkpoint (4096 MiB reservation), alongside
+real Bark, chat and diarization weights. This establishes native execution and
+admission coexistence; separate existing Laya receipts cover checkpoint quality. The one-hour run peaked at 248889344 RSS bytes (237.36 MiB), below the
+conservative 1024 MiB reservation. Both review axes found only the transferred
+allocation-capacity bound and CI submodule initialization issues; both were
+fixed and the capacity regression passed. The [development receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-15-n1-n3/receipt.json) captures executed tests and both soaks. A real process was killed with 88958883 bytes in its incomplete GGUF; three subsequent processes recovered the cache, and corrupt-entry repair/offline reuse passed.
 
 N3 now has a two-block queue, returned PCM on saturation, separate finish and
 cancel controls, session UUIDs/replacement revisions, coalesced five-second
 segment snapshots, cached finish, and a one-hour/100000-turn hard safety cap.
 Uneven transport including one-sample splits matches the recording result
-exactly. Long-session measurements, silence/rapid-turn coverage and release
-limits remain under qualification. No N4 or N5 completion is claimed.
+exactly. A 3600-second repeated-AMI stream completed in 777.77 seconds (RTF 0.2161),
+with 360001 frames, 1501 turns, 683 observed provisional revisions, and a final
+retained probability range starting at frame 296627 (63374 rows). This crosses
+the native compaction horizon without losing the full timeline. The separate 1800-second run completed in 350.53 seconds (RTF 0.1947),
+peaked at 248201216 RSS bytes, and retained 62825 probability rows starting at
+frame 117176. Seven real-model public API tests, three model-free API tests,
+and eight Python evidence/tool regressions passed. The combined default +
+ASR/Laya/diarization/Metal suite passed 1348 tests; 43 real-environment tests
+remained ignored in that ordinary run, and are not counted as executed evidence.
+The soak ran alongside development builds/tests and is not a clean-machine
+release performance receipt. No N4 or N5 completion is claimed.
+
+Initial N4 evidence uses the AMI manual 1.6.2 word annotations (CC-BY-4.0,
+archive SHA-256 `b56e5babb2496b8795deeeda7e71178d7fbc9963f94276cf2a3f4b56ebbc9f9d`)
+for the same 60-second EN2002d window. Grouping whole Bark token intervals gives
+108 exact matched words of 147 reference / 117 predicted normalized words;
+chronologically merged WER is 27.21% (31 deletions, 8 substitutions, 1 insertion).
+Matched start error is median 80 ms / p95 210 ms, while matched end error is
+median 100 ms / p95 1150 ms. These diagnostic word-end intervals span silence
+and do not qualify as precise word boundaries. Attribution must preserve this
+uncertainty or add a validated alignment path; proportionally distributing text
+is not justified. Reproduce with `tools/nemotron-diarization/qualify_alignment.py`.
+This single clip is an investigation fixture, not the held-out attribution corpus.
+Source: [AMI annotation downloads](https://groups.inf.ed.ac.uk/ami/download/).
 
 ### N0: freeze dependencies and resolve native coexistence
 
@@ -229,58 +256,58 @@ boundaries, not a requirement for one file per trivial helper.
 
 ### N2: integrate provisioning, scheduling and resource lifetime
 
-- [ ] Add an optional `backend-diar-nemo` feature and native library path option.
+- [x] Add an optional `backend-diar-nemo` feature and native library path option.
   Feature-only/default-off builds must not require model weights or a C++ SDK.
   Keep GPU selection independent of Gen2's existing `metal`/`cuda` features,
   which currently enable chat backends. Unavailable requested devices fail
   explicitly; record actual execution placement.
-- [ ] Add revision-pinned provisioning under `hf`, following staging → size/hash
+- [x] Add revision-pinned provisioning under `hf`, following staging → size/hash
   validation → atomic publish. Keep runtime binaries and model cache identities
   separate. Exercise offline load, interrupted/corrupt downloads and concurrent
   provisioning; no inference-time network requests.
-- [ ] Add runtime reservations for loaded weights, native workspaces, active
+- [x] Add runtime reservations for loaded weights, native workspaces, active
   stream state, bounded audio and copied outputs. Use measured conservative
   peak usage, not the 107 MB artifact size. Hold the reservation through native
   destruction and shutdown; cover failed load and registry insertion cleanup.
-- [ ] Keep native calls on one owning worker. Reuse existing cancellation and
+- [x] Keep native calls on one owning worker. Reuse existing cancellation and
   deadline conventions where compatible, without generalizing Bark's worker
   into an unneeded public plugin system. Dropping a caller stops admission;
   an explicit wait operation observes actual native teardown.
-- [ ] Make `Busy`, invalid input/state, bundle mismatch, unavailable native
+- [x] Make `Busy`, invalid input/state, bundle mismatch, unavailable native
   runtime/backend, resource limit, cancellation and deadline failures typed.
   Success must not hide truncated audio or partially completed output.
-- [ ] Verify mixed Bark + diarization + chat + Laya load/restore/unload ordering
+- [x] Verify mixed Bark + diarization + chat + Laya load/restore/unload ordering
   against the shared budget. Account for GPU/unified memory and worker-process
   memory if N0 selected process isolation.
 
 ### N3: qualify continuous streams and long recordings
 
-- [ ] Keep a single cache/FIFO for the recording; transport blocks and Bark's
+- [x] Keep a single cache/FIFO for the recording; transport blocks and Bark's
   60-second windows are not session boundaries. Validate sample counts and
   monotonic time positions. Reject changing stream rate rather than silently
   restarting state.
-- [ ] Provide bounded `try_push` admission with no dropped audio on saturation.
+- [x] Provide bounded `try_push` admission with no dropped audio on saturation.
   Reserve a control path for finish/cancel so a full data queue cannot deadlock
   teardown. Slow consumers may coalesce provisional snapshots, never input
   audio or the terminal event.
-- [ ] Define revisions, cancellation/failed-stream terminal states, and final
+- [x] Define revisions, cancellation/failed-stream terminal states, and final
   tail flushing. Snapshots have no invented stable-prefix guarantee. Include
   client reconnection/replacement semantics in the Pnola transport contract.
-- [ ] Measure memory past the native probability compaction horizon, around
+- [x] Measure memory past the native probability compaction horizon, around
   20 minutes, on at least a 30-minute session and a one-hour soak. Native
   segments still grow with the recording: cap session duration, result count
   and snapshot copies, and establish the supported envelope from measurements.
-- [ ] Bound result polling cadence and account for copy cost. The current ABI
+- [x] Bound result polling cadence and account for copy cost. The current ABI
   copies the entire retained probability history rather than a requested range;
   polling after every tiny push can create quadratic copying before compaction.
   Prefer segment snapshots initially; add a ranged native accessor only if a
   measured use case needs incremental raw probabilities. [Implementation][native]
-- [ ] Initially use native default segmentation settings for long sessions.
+- [x] Initially use native default segmentation settings for long sessions.
   The pinned API finalizes older probabilities with default postprocessing;
   custom settings apply only to the retained tail. Do not expose apparently
   uniform custom thresholds until that inconsistency is fixed or the feature
   is explicitly bounded to pre-compaction sessions. [Implementation][native]
-- [ ] Test uneven and one-sample transport splits, short final blocks, long
+- [x] Test uneven and one-sample transport splits, short final blocks, long
   silence, rapid turns and returning speakers. Under the same effective
   stream geometry, transport splitting must not change the final result beyond
   measured numerical tolerance.

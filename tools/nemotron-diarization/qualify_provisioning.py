@@ -29,6 +29,33 @@ def main():
     stale.mkdir()
     (stale / "Nemotron-3-Diarization.q8_0.gguf").write_bytes(b"partial")
     command = [str(args.executable.resolve()), "--download", str(args.cache.resolve())]
+    interrupted = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+    observed = None
+    deadline = time.monotonic() + 60
+    try:
+        while time.monotonic() < deadline:
+            for path in args.cache.rglob("*.incomplete"):
+                try:
+                    with path.open("rb") as source:
+                        prefix = source.read(4)
+                    if prefix == b"GGUF":
+                        observed = {"path": str(path.relative_to(args.cache)), "bytes": path.stat().st_size}
+                        break
+                except FileNotFoundError:
+                    continue
+            if observed:
+                break
+            if interrupted.poll() is not None:
+                raise RuntimeError("download completed before interruption could be observed")
+            time.sleep(.01)
+        if not observed:
+            raise RuntimeError("no partially downloaded GGUF observed within 60 seconds")
+    finally:
+        if interrupted.poll() is None:
+            interrupted.kill()
+        interrupted.communicate(timeout=10)
+    assert interrupted.returncode != 0
+    assert not destination.exists(), "interrupted download published an entry"
     started = time.monotonic()
     processes = [subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True) for _ in range(3)]
     concurrent = []
@@ -53,7 +80,7 @@ def main():
     warm = subprocess.run(command, env=offline, check=True, capture_output=True, text=True, timeout=30)
     assert Path(warm.stdout.strip()) == destination.resolve()
     assert (stale / "Nemotron-3-Diarization.q8_0.gguf").read_bytes() == b"partial"
-    result = {"schema_version": 1, "executable_sha256": digest(args.executable), "model_revision": lock["model"]["revision"], "concurrent_cold_processes": concurrent, "cold_seconds": cold_seconds, "corrupt_entry_quarantined_and_repaired": True, "interrupted_staging_ignored": True, "offline_warm_reuse": True, "published": {artifact["name"]: digest(destination / artifact["name"]) for artifact in lock["artifacts"] if artifact["role"] in ("model", "notice")}}
+    result = {"schema_version": 1, "executable_sha256": digest(args.executable), "model_revision": lock["model"]["revision"], "concurrent_cold_processes": concurrent, "cold_seconds": cold_seconds, "corrupt_entry_quarantined_and_repaired": True, "interrupted_staging_ignored": True, "interrupted_download": observed, "interrupted_process_exit_code": interrupted.returncode, "resumed_after_process_termination": True, "offline_warm_reuse": True, "published": {artifact["name"]: digest(destination / artifact["name"]) for artifact in lock["artifacts"] if artifact["role"] in ("model", "notice")}}
     args.output.write_text(json.dumps(result, indent=2) + "\n")
     print(args.output)
 
