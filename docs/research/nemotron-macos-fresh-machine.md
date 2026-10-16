@@ -160,11 +160,33 @@ system images and the exact private closure. The standalone C regression
 fails with the old placement and passes with the correction; all 198 local
 model-free tools tests pass. No SDK or pretrained model runs in that regression.
 
-The v2 receiver has no completed passing qualification yet. It preserves the 5 GiB neural
-admission floor, 1 GiB running floor and 256 MiB reserve. It changes no reference
-policy, quality criterion or held-out claim. GUI/microphone, app distribution,
-mixed-model coexistence, uncontended performance, signing/notarization and
-the original accuracy failures remain separate.
+The [actual v2 receiver](../../benches/results/nemotron-diarization/macos-arm64/2026-10-16-portable-cpu-offline-runtime-v2/qualification.json)
+now passes run 38972811283 at source `7db170d0c8f17b3aea670769577d2d3cd2deaf5b`
+on a fresh Apple M1 virtual machine, macOS 26.6.2, Xcode 26.6. All 19 named commands
+return their expected statuses, including missing-library and CPU-package Metal
+rejection. Native/public outputs match all 6,000 valid probability rows and
+27 turns exactly. All seven lifecycle tests execute and pass. The 12 strict image
+histories include 10 complete 92-library closures and two runtime-free cases;
+no launcher or foreign library is admitted.
+
+Byte-only collection independently verifies artifact 12080325210, its exact
+2,128,651 bytes and API SHA256
+`76edbc485fd8223b7419188e189eac5d62642455555c72761aebeddf10fd3296`,
+all 56 delivered files, 287 current/historical source pins, seven recorded
+acquisition descriptors and all four archived helpers. The 60-file receipt includes the raw saved outputs,
+traces, command records, protocol and collector. Opaque archives/helper binaries
+remain in cache/CI. Collection executes no native code or model. All 3,158 storage
+checks pass, observing at least 98,122,481,664 free bytes; the 256 MiB reserve is
+released. The 5 GiB neural admission and 1 GiB running floors are unchanged.
+
+Observed native/public RTF is 6.8817/7.1871 for this 60-second smoke recording.
+The VM therefore does not meet the below-1.0 live performance gate. This is a
+single functional receiver result, with no causal performance diagnosis or
+uncontended/live qualification. The first receiver failure remains failed.
+No reference policy, quality criterion or held-out claim changes.
+GUI/microphone, complete-app delivery/execution, mixed-model coexistence,
+uncontended performance, signing/notarization and the original accuracy failures
+remain separate.
 
 ## Portable CPU complete-app construction
 

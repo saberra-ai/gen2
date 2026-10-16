@@ -4,9 +4,11 @@ Current Rust requires exactly `nemo-speech-asr 0.2.0+gen2-valid-mel-v1` and
 floor-valid final probability rows. On the named M4 Pro, CPU and Metal v2
 packages pass 60-second native/public parity and seven lifecycle gates, including
 100 reloads. Both pass repeated-fixture 30-minute and one-hour compaction,
-retained-tail parity, provisional revision and process-RSS checks. Other platforms,
-simultaneous mixed-model residency, Pnola and quality/desktop release gates remain
-open for this profile.
+retained-tail parity, provisional revision and process-RSS checks. Separate Linux
+and Windows CPU receipts cover offline parity, lifecycle and chat coexistence.
+The exact portable CPU package also passes offline parity and lifecycle on a
+fresh M1 virtual machine; observed public RTF 7.1871 does not meet the live
+performance gate. Quality and complete desktop release gates remain open.
 See [the roadmap](plans/nemotron-3-diarization-roadmap.md).
 
 Build with `backend-diar-nemo`. This adds no build-time model downloads or C++
@@ -18,11 +20,11 @@ CPU constructor reports `backend: "cpu"`. On macOS, `LoadOptions::metal(library)
 explicitly selects a Metal device from a separately built SDK and reports
 `backend: "metal"` plus its device description. An unavailable Metal device
 fails loading; it never silently falls back to CPU. Native GPU execution can
-still partition unsupported operations onto CPU. Earlier ad-hoc Pnola CPU/Metal
-packages have recorded/live CLI receipts on the named M4 Pro at their recorded
-historical runtime versions. Current staging rejects those v1 packages; the new
-profile's Pnola recorded/live receipts remain pending. Fresh-machine,
-native GUI, physical microphone, signing and accuracy gates remain open.
+still partition unsupported operations onto CPU. Complete hardened ad-hoc Pnola
+CPU/Metal apps using the current profile pass automatic recorded/live CLI
+resolution and parity checks on the named M4 Pro. Current staging rejects
+historical v1 packages. Fresh-machine complete-app execution, native GUI,
+physical microphone, signing and accuracy gates remain open.
 On macOS, use the relocated packages: raw SDKs' generic ggml
 loader identities can collide inside one process. CPU and Metal packages use
 distinct private loader names.
@@ -54,8 +56,9 @@ input limit is independent. Hosts handle microphone capture, conversion and
 resampling. Speaker IDs are 1–8, anonymous and scoped to each recording;
 overlapping turns remain overlapping. Silence can return an empty timeline.
 Output cadence is 10 ms, which does not imply 10 ms boundary accuracy. The
-native centered STFT produces one padded terminal frame; diagnostics retain it
-and presentation turns are clipped to real audio duration.
+current V3 profile removes padded frontend-tail rows before final scheduling;
+the final frame count is floor(audio_samples / 160).
+Presentation turns are clipped to real audio duration.
 
 For continuous input, `start_stream(options)` holds one native cache across all
 transport blocks and ASR cuts. `try_push(Vec<f32>, 16000)` accepts 1–16640

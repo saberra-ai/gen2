@@ -1,0 +1,5 @@
+(version 1)
+(allow default)
+(deny network*)
+(deny file-read* (subpath "/Users/runner/work/_temp/portable-receiver/work/assets"))
+(deny file-write* (subpath "/Users/runner/work/_temp/portable-receiver/sdk") (subpath "/Users/runner/work/_temp/portable-receiver/work/nemo") (subpath "/Users/runner/work/_temp/portable-receiver/producer") (subpath "/Users/runner/work/gen2/gen2") (subpath "/opt/homebrew"))

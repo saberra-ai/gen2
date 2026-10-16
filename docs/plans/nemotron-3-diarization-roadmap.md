@@ -190,9 +190,18 @@ failed before model admission: all helper builds and controls passed, then the
 strict image auditor rejected the sandbox launcher included by misplaced
 tracing. No inference or lifecycle case ran. A separate v2 protocol fixes
 child-only tracing, retaining the unchanged package, cases and strict image
-closure. Its model-free C regression fails before and passes after the fix;
-the fresh v2 receiver has no completed passing qualification yet. All quality and release criteria remain
-unchanged.
+closure. Its model-free C regression fails before and passes after the fix.
+The [actual v2 receiver](../../benches/results/nemotron-diarization/macos-arm64/2026-10-16-portable-cpu-offline-runtime-v2/qualification.json)
+now passes all 19 commands on a fresh M1 virtual machine, including both
+expected negative controls, exact 6,000-row/27-turn native/public parity and
+all seven lifecycle tests. Independent byte-only collection verifies the
+2,128,651-byte artifact, all 56 delivered members, 287 source pins, four
+compiled helpers and 12 strict image histories containing 920 private-library
+records. The receipt contains 60 files; the first attempt remains failed.
+Observed native/public RTF is 6.8817/7.1871; this VM does not meet the below-1.0
+live performance gate. This closes the frozen offline runtime check only;
+complete-app delivery/execution, GUI/microphone, quality, uncontended performance
+and public release criteria remain open.
 
 A separate [portable CPU complete-app candidate](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-portable-cpu-pnola-app-construction/qualification.json)
 also passes local model-free construction: 100 static/clone/signing commands,

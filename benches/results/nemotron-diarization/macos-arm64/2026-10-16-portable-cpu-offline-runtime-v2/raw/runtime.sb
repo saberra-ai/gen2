@@ -1,0 +1,5 @@
+(version 1)
+(allow default)
+(deny network*)
+(deny file-read* (subpath "/Users/runner/work/_temp/portable-receiver/sdk") (subpath "/Users/runner/work/_temp/portable-receiver/producer") (subpath "/Users/runner/work/gen2/gen2") (subpath "/Users/runner/work/_temp/portable-receiver/cargo-target") (subpath "/Users/runner/work/_temp/portable-receiver/helper-source") (subpath "/opt/homebrew") (subpath "/Users/runner/.cargo") (subpath "/Users/runner/.rustup") (subpath "/Users/runner/work/_temp/portable-delivery"))
+(deny file-write* (subpath "/Users/runner/work/_temp/portable-receiver/work") (subpath "/Users/runner/work/_temp/portable-receiver/sdk") (subpath "/Users/runner/work/_temp/portable-receiver/producer") (subpath "/Users/runner/work/gen2/gen2"))

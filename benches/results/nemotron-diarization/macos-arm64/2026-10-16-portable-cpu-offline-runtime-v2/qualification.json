@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "source_commit": "7db170d0c8f17b3aea670769577d2d3cd2deaf5b",
+  "ci_url": "https://github.com/saberra-ai/gen2/actions/runs/38972811283",
+  "artifact": {
+    "id": 12080325210,
+    "node_id": "MDg6QXJ0aWZhY3QxMjA4MDMyNTIxMA==",
+    "name": "nemotron-macos-portable-runtime",
+    "size_in_bytes": 2128651,
+    "url": "https://api.github.com/repos/saberra-ai/gen2/actions/artifacts/12080325210",
+    "archive_download_url": "https://api.github.com/repos/saberra-ai/gen2/actions/artifacts/12080325210/zip",
+    "expired": false,
+    "digest": "sha256:76edbc485fd8223b7419188e189eac5d62642455555c72761aebeddf10fd3296",
+    "created_at": "2026-10-16T22:54:16Z",
+    "updated_at": "2026-10-16T22:54:16Z",
+    "expires_at": "2026-11-15T22:54:15Z",
+    "workflow_run": {
+      "id": 38972811283,
+      "repository_id": 1353161693,
+      "head_repository_id": 1353161693,
+      "head_branch": "codex/nemotron3-n0",
+      "head_sha": "7db170d0c8f17b3aea670769577d2d3cd2deaf5b"
+    }
+  },
+  "opaque_download": {
+    "bytes": 2128651,
+    "sha256": "76edbc485fd8223b7419188e189eac5d62642455555c72761aebeddf10fd3296"
+  },
+  "all_delivered_files_match_opaque_zip": true,
+  "fixed_receiver_runtime_passed": true,
+  "producer_reported_runtime_passed": true,
+  "ci_conclusion": "success",
+  "model_execution_admitted": true,
+  "inference_commands_started": [
+    "cpu-rejects-metal",
+    "native",
+    "public",
+    "lifecycle-0",
+    "lifecycle-1",
+    "lifecycle-2",
+    "lifecycle-3",
+    "lifecycle-4",
+    "lifecycle-6"
+  ],
+  "underlying_forward_count_instrumented": false,
+  "release_qualified": false,
+  "scope": "Fresh M1 virtual offline receiver attempt plus byte-only collection, not an app, accuracy or release qualification.",
+  "limits": [
+    "All previous AMI original-NeMo/HF/native quality failures and20%/2pp criteria remain unchanged.",
+    "Previously observed60s smoke fixture, not a new heldout meeting or quality evaluation.",
+    "Actual M1 virtual runtime of this exact portableCPU package only; no universal CPU/OS guarantee.",
+    "Native children cannot read source SDK/checkout/producer artifacts/build target/helper sources/Cargo/Rustup/Homebrew, and network is denied.",
+    "Preparation downloads and dependency bootstrap precede offline native admission. Compiler subprocesses deny model reads/network and writes to package/SDK/source.",
+    "Model execution admission includes the public CPU-Metal rejection command; no claim of an exact underlying neural-forward count is made.",
+    "Measured RTF/load/push metrics are descriptive shared-VM observations, not uncontended live performance qualification.",
+    "No Pnola app/GUI/physical microphone, public signing/notarization, Bark/Laya/chat coexistence or release qualification.",
+    "Collection executes only Python byte/hash/trace comparisons and git reads. No model/native library/version/state/app is executed."
+  ],
+  "comparison": {
+    "passed": true,
+    "scope": "wrapper/reference correctness at the recorded duration; not held-out quality or full release qualification",
+    "runtime_profile": "gen2-valid-mel-v1",
+    "frame_contract": "v3-streaming-valid-mel-v1",
+    "audio_duration_seconds": 60.0,
+    "backend": "cpu",
+    "device": null,
+    "native_frame_count": 6000,
+    "retained_first_frame": 0,
+    "retained_rows": 6000,
+    "turns": 27,
+    "maximum_turn_error_seconds": 0.0,
+    "turn_tolerance_seconds": 1e-06,
+    "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+    "retained_probabilities_match": true,
+    "maximum_probability_error": 0.0,
+    "probability_tolerance": 1e-06,
+    "gen2_rtf": 7.18710895,
+    "native_rtf": 6.881720883333333
+  },
+  "lifecycle_tests_passed": [
+    "dropping_a_diarization_child_keeps_the_parent_pipeline_active",
+    "silence_short_tail_and_idle_deadline_have_explicit_terminal_results",
+    "repeated_reload_full_queue_cancel_and_dropped_stream_release_resources",
+    "streamed_uneven_pcm_matches_recording_and_finish_is_idempotent",
+    "native_admission_cancellation_and_failed_load_release_reservations",
+    "verified_provisioned_cache_is_reused_offline",
+    "real_diarizer_matches_native_reference_and_resets_recordings"
+  ],
+  "private_image_records": 920,
+  "audited_processes": 12,
+  "host": {
+    "cpu": "Apple M1 (Virtual)",
+    "platform": "macOS-26.6.2-arm64-arm-64bit",
+    "machine": "arm64",
+    "python": "3.12.10 (v3.12.10:0cc81280367, Apr  8 2025, 08:46:59) [Clang 13.0.0 (clang-1300.0.29.30)]",
+    "os": "ProductName:\t\tmacOS\nProductVersion:\t\t26.6.2\nBuildVersion:\t\t25G83\n",
+    "xcode": "Xcode 26.6\nBuild version 17F113\n"
+  },
+  "storage": {
+    "start_minimum_bytes": 5368709120,
+    "running_minimum_bytes": 1073741824,
+    "reserve_requested_bytes": 268435456,
+    "checks": 3158,
+    "released": true,
+    "minimum_observed_free_bytes": 98122481664,
+    "last_observed_free_bytes": 98122674176,
+    "reserve_reported_allocated_bytes": 268435456
+  },
+  "helper_archive": {
+    "schema_version": 1,
+    "release_qualified": false,
+    "scope": "Development filesystem snapshot; preserves aliases/modes, does not by itself close dependencies or establish relocation.",
+    "archive": "receiver-helpers.tar.gz",
+    "archive_bytes": 1016048,
+    "archive_sha256": "b9cbce4f6a68c53125b35cd58487afa2a0646d6f16ad69111b921c33a48458c2"
+  }
+}
