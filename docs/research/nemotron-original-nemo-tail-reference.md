@@ -60,3 +60,19 @@ cached HF output without new HF/native calls. Numerical differences are a
 diagnostic, with no changed quality threshold, selected preset or release claim.
 Immediate frontend persistence and hook cleanup preserve evidence on failure.
 No original-NeMo restore or forward has run at protocol preparation.
+
+
+## Executed original CPU calibration
+
+The [actual calibration receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-original-nemo-calibration/receiver-qualification.json)
+now retains one successful strict CPU restore and one0.297-second forward.
+All361parameter tensors are finite CPU FP32; strict restore reports no missing
+or unexpected keys. Physical frontend width is112with111valid Mel frames.
+All111valid probability rows/eight learned channels compare with the exact
+saved HF calibration: max absolute difference0.000250578, mean0.00000375322;
+no value exceeds the preregistered descriptive0.001comparison level.
+The original whole-wave and HF chunked frontend are not identical: max Mel
+error0.0297585. Raw frontend, logits, three-class activity outputs, probability
+arrays, config and parameter hashes are retained. This short excluded case
+qualifies CPU execution and close calibration agreement only. It does not
+establish original-NeMo corpus parity or cure the unchanged AMI quality failures.

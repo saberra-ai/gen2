@@ -145,8 +145,11 @@ The separate [original-NeMo environment receipt](../../benches/results/nemotron-
 passes source/wheel/installation checks and offline class imports without model
 or frontend execution. A [one-forward excluded CPU calibration protocol](../../tools/nemotron-diarization/original-nemo-calibration.protocol.json)
 now binds that environment and strict local checkpoint restore; it is a separate
-numerical diagnostic, not a quality-gate replacement. Original-NeMo execution
-and numerical agreement remain unqualified.
+numerical diagnostic, not a quality-gate replacement. The [actual short calibration](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-original-nemo-calibration/receiver-qualification.json)
+now passes strict restore and one CPU forward, retaining all111valid rows.
+Maximum probability difference from the saved official HF output is0.000250578;
+frontend values differ and are retained. Original-NeMo corpus parity and all
+original quality/release criteria remain unqualified.
 
 Prepared: 2026-10-14.
 Updated: 2026-10-16.

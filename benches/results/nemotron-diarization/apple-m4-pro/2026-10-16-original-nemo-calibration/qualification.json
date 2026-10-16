@@ -1,0 +1,111 @@
+{
+  "argv": [
+    "/usr/bin/sandbox-exec",
+    "-f",
+    "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-calibration-runtime-v1/runtime.sb",
+    "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-env-v1/venv/bin/python",
+    "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/original_nemo_calibration.py",
+    "--protocol",
+    "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-calibration-runtime-v1/protocol.json",
+    "--output",
+    "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-calibration-runtime-v1"
+  ],
+  "environment": {
+    "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-calibration-runtime-v1/home",
+    "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-calibration-runtime-v1/tmp/",
+    "PATH": "/usr/bin:/bin",
+    "HF_HUB_OFFLINE": "1",
+    "TRANSFORMERS_OFFLINE": "1",
+    "HF_DATASETS_OFFLINE": "1",
+    "WANDB_MODE": "disabled",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "TOKENIZERS_PARALLELISM": "false"
+  },
+  "source_commit": "af4cfdbe75d0c031115076a65a081fd2f6d9631f",
+  "protocol": {
+    "bytes": 145853,
+    "sha256": "0d112d5d5374956074fdd86831665599bd06980e3e477fcdbfcc1451a96a1de2"
+  },
+  "release_qualified": false,
+  "quality_qualified": false,
+  "pid": 42242,
+  "returncode": 0,
+  "full_valid_probability_comparison": {
+    "shape": [
+      111,
+      8
+    ],
+    "bitwise_equal": false,
+    "maximum_absolute_error": 0.0002505779266357422,
+    "mean_absolute_error": 3.7532213198183756e-06,
+    "root_mean_square_error": 2.167104520307774e-05,
+    "p95_absolute_error": 6.100907921791072e-06,
+    "p99_absolute_error": 0.00014122009277343748,
+    "worst_frame_feature": [
+      106,
+      0
+    ],
+    "first_frame_feature_over_tolerance": null,
+    "values_over_tolerance": 0,
+    "absolute_tolerance": 0.001
+  },
+  "frontend_comparisons": {
+    "first_chunk_104_valid_rows": {
+      "shape": [
+        104,
+        128
+      ],
+      "bitwise_equal": false,
+      "maximum_absolute_error": 0.029758453369140625,
+      "mean_absolute_error": 0.0009623970836400986,
+      "root_mean_square_error": 0.001996372423526794,
+      "p95_absolute_error": 0.004265499114990228,
+      "p99_absolute_error": 0.008258628845214833,
+      "worst_frame_feature": [
+        96,
+        0
+      ],
+      "first_frame_feature_over_tolerance": [
+        0,
+        29
+      ],
+      "values_over_tolerance": 3610,
+      "absolute_tolerance": 0.001
+    },
+    "final_chunk_39_valid_rows": {
+      "shape": [
+        39,
+        128
+      ],
+      "bitwise_equal": false,
+      "maximum_absolute_error": 0.029758453369140625,
+      "mean_absolute_error": 0.0014591234234663157,
+      "root_mean_square_error": 0.0027002460135968167,
+      "p95_absolute_error": 0.005866909027099609,
+      "p99_absolute_error": 0.01034261703491212,
+      "worst_frame_feature": [
+        24,
+        0
+      ],
+      "first_frame_feature_over_tolerance": [
+        10,
+        11
+      ],
+      "values_over_tolerance": 1942,
+      "absolute_tolerance": 0.001
+    }
+  },
+  "fixed_calibration_execution_passed": true,
+  "numerical_agreement_promoted_to_quality_gate": false,
+  "elapsed_seconds": 10.967232041992247,
+  "storage": {
+    "start_minimum_bytes": 5368709120,
+    "running_minimum_bytes": 1073741824,
+    "reserve_requested_bytes": 268435456,
+    "checks": 13,
+    "released": true,
+    "minimum_observed_free_bytes": 5223149568,
+    "last_observed_free_bytes": 5421301760,
+    "reserve_reported_allocated_bytes": 268435456
+  }
+}

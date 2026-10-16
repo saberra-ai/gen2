@@ -1,0 +1,54 @@
+OneLogger: Setting error_handling_strategy to DISABLE_QUIETLY_AND_REPORT_METRIC_ERROR for rank (rank=0) with OneLogger disabled. To override: explicitly set error_handling_strategy parameter.
+No exporters were provided. This means that no telemetry data will be collected.
+[NeMo W 2026-10-16 16:30:39 modelPT:176] If you intend to do training or fine-tuning, please call the ModelPT.setup_training_data() method and provide a valid configuration file to setup the train data loader.
+    Train config : 
+    manifest_filepath: null
+    validate_manifest_paths: false
+    sample_rate: 16000
+    num_spks: 8
+    session_len_sec: 105
+    soft_targets: false
+    batch_size: 42
+    shuffle: true
+    num_workers: 18
+    pin_memory: true
+    use_lhotse: false
+    subsegment_mode: true
+    subsegment_single_chunk_min_len_sec: 45
+    subsegment_two_chunks_rate: 0.5
+    subsegment_two_chunk_min_len_sec: 22
+    subsegment_nspk_bias: 1.5
+    subsegment_start_guard_sec: 0.25
+    subsegment_min_first_spk_sec: 0.5
+    subsegment_splice_silence_sec: 0.1
+    
+[NeMo W 2026-10-16 16:30:39 modelPT:183] If you intend to do validation, please call the ModelPT.setup_validation_data() or ModelPT.setup_multiple_validation_data() method and provide a valid configuration file to setup the validation data loader(s). 
+    Validation config : 
+    manifest_filepath: null
+    sample_rate: 16000
+    num_spks: 8
+    session_len_sec: -1
+    soft_targets: false
+    batch_size: 32
+    shuffle: false
+    num_workers: 18
+    drop_last: false
+    pin_memory: true
+    use_lhotse: false
+    
+[NeMo W 2026-10-16 16:30:39 modelPT:190] Please call the ModelPT.setup_test_data() or ModelPT.setup_multiple_test_data() method and provide a valid configuration file to setup the test data loader(s).
+    Test config : 
+    manifest_filepath: null
+    sample_rate: 16000
+    num_spks: 8
+    session_len_sec: -1
+    soft_targets: false
+    batch_size: 32
+    shuffle: false
+    num_workers: 18
+    drop_last: false
+    pin_memory: true
+    use_lhotse: false
+    
+[NeMo W 2026-10-16 16:30:39 experimental:27] `<class 'nemo.collections.asr.modules.transformer_encoder.TransformerEncoder'>` is experimental and not ready for production yet. Use at your own risk.
+Streaming Steps:   0%|          | 0/2 [00:00<?, ?it/s]Streaming Steps:  50%|█████     | 1/2 [00:00<00:00,  8.38it/s]Streaming Steps: 100%|██████████| 2/2 [00:00<00:00,  6.95it/s]Streaming Steps: 100%|██████████| 2/2 [00:00<00:00,  7.13it/s]
