@@ -38,6 +38,11 @@ there is no automatic CPU fallback. Recorded and live timelines retain the
 selected backend and optional device description, including saved live history.
 This selection behavior alone is not a Metal app release receipt.
 
+App shutdown rejects new jobs, fences startup loading, cancels active work and
+waits for both native workers to release their models and reservations. CLI
+verification uses the same cleanup barrier on success and early errors. Merely
+requesting asynchronous unload can leave Metal resources alive at process exit.
+
 Recorded audio uses one continuous native diarization stream, independently of
 Bark's completed 60-second windows. Speaker labels have a one-hour cap; longer
 ASR recordings remain supported with attribution explicitly unavailable.

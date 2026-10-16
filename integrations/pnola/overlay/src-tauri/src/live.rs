@@ -544,6 +544,7 @@ pub fn verify(with_speakers: bool) -> Result<(), String> {
     let directory = temporary.path().join("native-live-verification");
     let mut writer = crate::live_audio::Sections::new(&directory)?;
     let engine = Engine::new();
+    let _shutdown = engine.shutdown_guard();
     engine.load(&resources);
     let job = engine
         .claim("native-live-verification".into())

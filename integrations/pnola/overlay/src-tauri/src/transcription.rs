@@ -129,6 +129,7 @@ pub fn verify_bundle() -> Result<(), String> {
         drop(loaded);
     }
     let engine = crate::engine::Engine::new();
+    let _shutdown = engine.shutdown_guard();
     engine.load(&resources);
     let job = engine
         .claim("bundle-verification".into())

@@ -7,7 +7,10 @@ use serde::{Deserialize, Serialize};
 use std::{
     ffi::OsStr,
     path::{Path, PathBuf},
-    sync::{Arc, Mutex},
+    sync::{
+        Arc, Mutex,
+        atomic::{AtomicBool, Ordering},
+    },
 };
 
 fn diarization_options(
@@ -93,19 +96,35 @@ struct Models {
     diarization_error: Option<String>,
 }
 pub struct Engine {
+    lifecycle: Mutex<()>,
+    stopping: AtomicBool,
     model: Mutex<Option<Models>>,
     message: Mutex<String>,
     active: Mutex<Option<(String, Cancellation)>>,
 }
+pub struct ShutdownGuard(Arc<Engine>);
+impl Drop for ShutdownGuard {
+    fn drop(&mut self) {
+        self.0.shutdown();
+    }
+}
 impl Engine {
     pub fn new() -> Arc<Self> {
         Arc::new(Self {
+            lifecycle: Mutex::new(()),
+            stopping: AtomicBool::new(false),
             model: Mutex::new(None),
             message: Mutex::new("Loading local speech models…".into()),
             active: Mutex::new(None),
         })
     }
     pub fn load(&self, resources: &Path) {
+        // Shutdown waits for an in-flight load; a loader scheduled after
+        // shutdown cannot create native workers during process teardown.
+        let _lifecycle = self.lifecycle.lock().unwrap();
+        if self.stopping.load(Ordering::Acquire) {
+            return;
+        }
         let result = (|| {
             let runtime = Runtime::builder().build().map_err(|e| e.to_string())?;
             let name = if cfg!(target_os = "macos") {
@@ -192,6 +211,10 @@ impl Engine {
             Err(error) => *self.message.lock().unwrap() = error,
         }
     }
+    /// Also wait for native cleanup when a CLI operation returns an error.
+    pub fn shutdown_guard(self: &Arc<Self>) -> ShutdownGuard {
+        ShutdownGuard(self.clone())
+    }
     pub fn status(&self, sample: bool) -> Status {
         let model = self.model.lock().unwrap();
         let transcription_available = model.as_ref().is_some_and(|m| m.speech.is_some());
@@ -222,6 +245,9 @@ impl Engine {
             return Err("Local speech models are unavailable.".into());
         }
         let mut active = self.active.lock().unwrap();
+        if self.stopping.load(Ordering::Acquire) {
+            return Err("Local speech models are shutting down.".into());
+        }
         if active.is_some() {
             return Err("Another transcription is already running.".into());
         }
@@ -245,15 +271,25 @@ impl Engine {
         }
     }
     pub fn shutdown(&self) {
+        self.stopping.store(true, Ordering::Release);
         if let Some((_, token)) = self.active.lock().unwrap().as_ref() {
             token.cancel();
         }
+        let _lifecycle = self.lifecycle.lock().unwrap();
         if let Some(model) = self.model.lock().unwrap().as_ref() {
             if let Some(speech) = &model.speech {
                 speech.unload();
             }
             if let Some(diarizer) = &model.diarizer {
                 diarizer.unload();
+            }
+            // Request both stops before waiting. Process exit must not race
+            // native Metal destruction while a job still holds cloned handles.
+            if let Some(speech) = &model.speech {
+                speech.shutdown();
+            }
+            if let Some(diarizer) = &model.diarizer {
+                diarizer.shutdown();
             }
         }
     }
@@ -338,5 +374,45 @@ mod tests {
         assert!(diarization_options(root.path(), None, Some(OsStr::new("auto"))).is_err());
         std::fs::write(root.path().join("nemo/package.json"), b"not-json").unwrap();
         assert!(diarization_options(root.path(), None, None).is_err());
+    }
+
+    #[test]
+    fn shutdown_fences_a_loader_that_has_not_started() {
+        let engine = Engine::new();
+        drop(engine.shutdown_guard());
+        engine.load(Path::new("/missing-packaged-resources"));
+        assert!(engine.model.lock().unwrap().is_none());
+        assert!(engine.claim("late-job".into()).is_err());
+    }
+
+    #[test]
+    #[ignore = "requires real Bark/ORT and Metal Nemotron environment; fresh process"]
+    fn shutdown_waits_for_native_workers_even_with_retained_job_handles() {
+        assert_eq!(std::env::var("GEN2_NEMO_EXECUTION").unwrap(), "metal");
+        let engine = Engine::new();
+        let shutdown = engine.shutdown_guard();
+        engine.load(Path::new("/missing-packaged-resources"));
+        let job = engine.claim("shutdown-regression".into()).unwrap();
+        job.diarizer
+            .as_ref()
+            .unwrap()
+            .diarize(
+                gen2::diarization::Audio::mono_16khz(vec![0.; 16000]).unwrap(),
+                Default::default(),
+            )
+            .unwrap();
+        drop(shutdown);
+        assert_eq!(
+            job.diarizer.as_ref().unwrap().status(),
+            gen2::diarization::Status::Unloaded
+        );
+        assert_eq!(
+            job.speech.as_ref().unwrap().status(),
+            gen2::speech::SpeechStatus::Unloaded
+        );
+        let guard = engine.model.lock().unwrap();
+        let models = guard.as_ref().unwrap();
+        assert_eq!(models._runtime.diarization_reserved_mb(), 0);
+        assert_eq!(models._runtime.speech_reserved_mb(), 0);
     }
 }
