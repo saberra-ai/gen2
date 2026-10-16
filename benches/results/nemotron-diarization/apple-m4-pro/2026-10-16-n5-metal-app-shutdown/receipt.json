@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "app_source_commit": "024a88f",
+  "protocol_commits": [
+    "4473f01",
+    "9e7edab",
+    "0e5bce9"
+  ],
+  "scope": "Same-host M4 Pro/macOS26.3 signed relocated Metal app CLI shutdown regression; clean recorded/live exit, unchanged native output, unavailable-Metal ASR preservation; no GUI, microphone, fresh-machine, quality or throughput qualification. Earlier mixed-model evidence is retained with exact native/model tree identity, not rerun.",
+  "original_failures": {
+    "sandbox_controls": {
+      "passed": true,
+      "outside_network_exit": 0,
+      "inside_network_exit": 7,
+      "outside_source_exit": 0,
+      "inside_source_exit": 1
+    },
+    "mixed_real_laya_chat_first": {
+      "passed": true,
+      "exit_code": 0,
+      "scope": "Actual chat (Metal-enabled build), full Laya, Bark and Metal diarizer; admission/unload/reload, short text/silence only; no new model quality or latency claim."
+    },
+    "mixed_real_laya_diarization_first": {
+      "passed": true,
+      "exit_code": 0,
+      "scope": "Actual chat (Metal-enabled build), full Laya, Bark and Metal diarizer; admission/unload/reload, short text/silence only; no new model quality or latency claim."
+    },
+    "native_reference": {
+      "passed": true
+    },
+    "app_recorded": {
+      "passed": false,
+      "exit_code": -6
+    },
+    "requested_metal_does_not_fallback": {
+      "passed": true,
+      "asr_parts": 1,
+      "speaker_reason": "diarization backend unavailable: requested Metal device is unavailable in the native SDK"
+    },
+    "app_live": {
+      "passed": false,
+      "exit_code": -6
+    }
+  },
+  "rebuilt_verification": {
+    "release_qualified": false,
+    "scope": "Same-host M4 Pro/macOS26.3 signed relocated Metal app CLI shutdown regression; clean recorded/live exit, unchanged native output, unavailable-Metal ASR preservation; no GUI, microphone, fresh-machine, quality or throughput qualification. Earlier mixed-model evidence is retained with exact native/model tree identity, not rerun.",
+    "all_requested_checks_passed": true,
+    "results": {
+      "signature": {
+        "passed": true,
+        "exit_code": 0
+      },
+      "sandbox_controls": {
+        "passed": true,
+        "network_allowed": 0,
+        "network_denied": 7,
+        "source_allowed": 0,
+        "source_denied": 1,
+        "predecessor_denied": 1
+      },
+      "shutdown-1s": {
+        "passed": true,
+        "exit_code": 0,
+        "backend": "metal",
+        "device": "Apple M4 Pro",
+        "asr_parts": 1,
+        "words": 0,
+        "turns": 0
+      },
+      "app-recorded": {
+        "passed": true,
+        "exit_code": 0,
+        "backend": "metal",
+        "device": "Apple M4 Pro",
+        "asr_parts": 1,
+        "words": 117,
+        "turns": 26,
+        "maximum_native_turn_error_seconds": 0.0
+      },
+      "requested_metal_does_not_fallback": {
+        "passed": true,
+        "exit_code": 0,
+        "asr_parts": 1,
+        "speaker_reason": "diarization backend unavailable: requested Metal device is unavailable in the native SDK",
+        "result_reused_without_model_rerun": true
+      },
+      "app_live": {
+        "passed": true,
+        "exit_code": 0,
+        "backend": "metal",
+        "device": "Apple M4 Pro",
+        "audio_seconds": 80.04,
+        "asr_sections": 11,
+        "words": 152,
+        "turns": 34,
+        "observed_provisional_revisions": 15,
+        "final_revision": 16,
+        "persisted_turn_tolerance_seconds": 1e-06,
+        "export_bytes": 803,
+        "microphone_used": false
+      },
+      "missing_input_error": {
+        "passed": true,
+        "exit_code": 1,
+        "scope": "Controlled error exit; predecessor also exited1, no original crash claimed."
+      }
+    }
+  },
+  "fix": "Pnola Engine shutdown waits for both native workers; lifecycle lock/stopping state fences late model publication; CLI shutdown guard covers early returns while job handles still exist. Gen2 native/inference payload is unchanged.",
+  "test_evidence": "Real native regression first failed Stopping versusUnloaded, then passed with both reservations zero. Loader-fence regression first admitted models aftershutdown, then passed. Actual rebuilt signed release app passes original record/live process-exit reproducers under source/network denial.",
+  "harness_failure": "Original fixed-app runner raised KeyError while accessing words on intentionally unavailable attribution after the app had exited0. Retained failure log/interruptedverification; separatelycommitted resume validates saved result and executes remaining checks without repeating successfulinference.",
+  "unchanged_native_and_model_trees": {
+    "Contents/Frameworks": {
+      "identical": true,
+      "files": 95,
+      "tree_sha256": "3e9d52f789b30ff6ce8a313a8cae2c7339593b0c8fc5c55998cc6ba137ce955d"
+    },
+    "Contents/Resources/nemotron": {
+      "identical": true,
+      "files": 4,
+      "tree_sha256": "a229ae67eb3f0a3c4215fa8eb04a2819acd22d0cabf22371c6901acdbeb7d053"
+    },
+    "Contents/Resources/bark": {
+      "identical": true,
+      "files": 9,
+      "tree_sha256": "86d5473c9bdf29b6633afedec4c80ae9621bf4b476a4048df995de2cf0ebc2ad"
+    },
+    "Contents/Resources/nemo": {
+      "identical": true,
+      "files": 112,
+      "tree_sha256": "d9ad7aafdc27775cac4098025af324def5486f3ef5e006351e81ca8cb60dc5a7"
+    }
+  },
+  "limits": [
+    "Same-host M4Pro/macOS26.3 development qualification; no fresh-machine/native GUI/microphone/notarization claim.",
+    "Old mixed tests passed with chat Metal-enabled build; actual chat GPU placement was not recorded, so no both-GPU claim.",
+    "No new model-quality, throughput, clean latency or default-enablement claim; frozen AMI quality failures remain.",
+    "Build/manifest includes mutable local cache paths as provenance, not remotely available downloadable artifacts. Binary/model contents are bound by hashes; no binary/model weights committed."
+  ]
+}

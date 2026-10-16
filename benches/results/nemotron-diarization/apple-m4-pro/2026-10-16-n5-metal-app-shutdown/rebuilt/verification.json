@@ -1,0 +1,65 @@
+{
+  "release_qualified": false,
+  "scope": "Same-host M4 Pro/macOS26.3 signed relocated Metal app CLI shutdown regression; clean recorded/live exit, unchanged native output, unavailable-Metal ASR preservation; no GUI, microphone, fresh-machine, quality or throughput qualification. Earlier mixed-model evidence is retained with exact native/model tree identity, not rerun.",
+  "all_requested_checks_passed": true,
+  "results": {
+    "signature": {
+      "passed": true,
+      "exit_code": 0
+    },
+    "sandbox_controls": {
+      "passed": true,
+      "network_allowed": 0,
+      "network_denied": 7,
+      "source_allowed": 0,
+      "source_denied": 1,
+      "predecessor_denied": 1
+    },
+    "shutdown-1s": {
+      "passed": true,
+      "exit_code": 0,
+      "backend": "metal",
+      "device": "Apple M4 Pro",
+      "asr_parts": 1,
+      "words": 0,
+      "turns": 0
+    },
+    "app-recorded": {
+      "passed": true,
+      "exit_code": 0,
+      "backend": "metal",
+      "device": "Apple M4 Pro",
+      "asr_parts": 1,
+      "words": 117,
+      "turns": 26,
+      "maximum_native_turn_error_seconds": 0.0
+    },
+    "requested_metal_does_not_fallback": {
+      "passed": true,
+      "exit_code": 0,
+      "asr_parts": 1,
+      "speaker_reason": "diarization backend unavailable: requested Metal device is unavailable in the native SDK",
+      "result_reused_without_model_rerun": true
+    },
+    "app_live": {
+      "passed": true,
+      "exit_code": 0,
+      "backend": "metal",
+      "device": "Apple M4 Pro",
+      "audio_seconds": 80.04,
+      "asr_sections": 11,
+      "words": 152,
+      "turns": 34,
+      "observed_provisional_revisions": 15,
+      "final_revision": 16,
+      "persisted_turn_tolerance_seconds": 1e-06,
+      "export_bytes": 803,
+      "microphone_used": false
+    },
+    "missing_input_error": {
+      "passed": true,
+      "exit_code": 1,
+      "scope": "Controlled error exit; predecessor also exited1, no original crash claimed."
+    }
+  }
+}

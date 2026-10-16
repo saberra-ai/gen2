@@ -1,0 +1,49 @@
+ggml_metal_device_init: tensor API disabled for pre-M5 and pre-A19 devices
+ggml_metal_library_init: using embedded metal library
+ggml_metal_library_compile_all: compiled 'fa' library in 0.011 sec
+ggml_metal_library_compile_all: compiled 'mul_mv' library in 0.003 sec
+ggml_metal_library_compile_all: compiled 'mul_mm' library in 0.002 sec
+ggml_metal_library_compile_all: compiled 'quantize' library in 0.003 sec
+ggml_metal_library_compile_all: compiled 'softmax' library in 0.001 sec
+ggml_metal_library_compile_all: compiled 'norm' library in 0.001 sec
+ggml_metal_library_compile_all: compiled 'unary' library in 0.001 sec
+ggml_metal_library_compile_all: compiled 'binbcast' library in 0.002 sec
+ggml_metal_library_compile_all: compiled 'reduce' library in 0.001 sec
+ggml_metal_library_compile_all: compiled 'tri' library in 0.001 sec
+ggml_metal_library_compile_all: compiled 'ssm' library in 0.001 sec
+ggml_metal_library_compile_all: compiled 'wkv' library in 0.001 sec
+ggml_metal_library_compile_all: compiled 'gated_delta_net' library in 0.011 sec
+ggml_metal_library_compile_all: compiled 'solve_tri' library in 0.003 sec
+ggml_metal_library_compile_all: compiled 'rope' library in 0.003 sec
+ggml_metal_library_compile_all: compiled 'conv' library in 0.003 sec
+ggml_metal_library_compile_all: compiled 'upscale' library in 0.001 sec
+ggml_metal_library_compile_all: compiled 'argsort' library in 0.001 sec
+ggml_metal_library_compile_all: compiled 'pool' library in 0.001 sec
+ggml_metal_library_compile_all: compiled 'misc' library in 0.001 sec
+ggml_metal_library_compile_all: loaded 20 libraries from embedded data in 0.011 sec (max single = 0.011 sec)
+ggml_metal_rsets_init: creating a residency set collection (keep_alive = 180 s)
+ggml_metal_device_init: GPU name:   MTL0 (Apple M4 Pro)
+ggml_metal_device_init: GPU family: MTLGPUFamilyApple9  (1009)
+ggml_metal_device_init: GPU family: MTLGPUFamilyMetal4  (5002)
+ggml_metal_device_init: simdgroup reduction   = true
+ggml_metal_device_init: simdgroup matrix mul. = true
+ggml_metal_device_init: has unified memory    = true
+ggml_metal_device_init: has bfloat            = true
+ggml_metal_device_init: has tensor            = false
+ggml_metal_device_init: use residency sets    = true
+ggml_metal_device_init: use shared buffers    = true
+ggml_metal_device_init: recommendedMaxWorkingSetSize  = 55662.79 MB
+/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/llama.cpp/ggml/src/ggml-metal/ggml-metal-device.m:1025: GGML_ASSERT([rsets->data count] == 0) failed
+WARNING: Using native backtrace. Set GGML_BACKTRACE_LLDB for more info.
+WARNING: GGML_BACKTRACE_LLDB may cause native MacOS Terminal.app to crash.
+See: https://github.com/ggml-org/llama.cpp/pull/17869
+0   libgen2_nemo_metal_ggml-base.0.25.1 0x0000000108ef53d0 ggml_print_backtrace + 276
+1   libgen2_nemo_metal_ggml-base.0.25.1 0x0000000108f64fe8 ggml_abort + 156
+2   libgen2_nemo_metal_ggml-metal.0.25. 0x000000010c54ac9c ggml_metal_device_id_token + 0
+3   libgen2_nemo_metal_ggml-metal.0.25. 0x000000010c54b8c8 ggml_metal_device_free + 40
+4   libgen2_nemo_metal_ggml-metal.0.25. 0x000000010c54d9d8 _ZNSt3__16vectorINS_10unique_ptrI17ggml_metal_device25ggml_metal_device_deleterEENS_9allocatorIS4_EEED1B9nqe210106Ev + 72
+5   libsystem_c.dylib                   0x000000018f34342c __cxa_finalize_ranges + 480
+6   libsystem_c.dylib                   0x000000018f3431ec exit + 44
+7   libdyld.dylib                       0x000000018f08ffc8 _ZNK5dyld416LibSystemHelpers6getenvEPKc + 0
+8   dyld                                0x000000018f0c5f04 _ZNK5dyld423LibSystemHelpersWrapper4exitEi + 172
+9   dyld                                0x000000018f0c5d84 start + 7232

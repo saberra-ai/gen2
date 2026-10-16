@@ -1,0 +1,23 @@
+START app-signature
+END app-signature 0
+START network-allowed
+END network-allowed 0
+START network-denied
+END network-denied 7
+START source-allowed
+END source-allowed 0
+START source-denied
+END source-denied 1
+START predecessor-app-denied
+END predecessor-app-denied 1
+START shutdown-1s
+END shutdown-1s 0
+START app-recorded
+END app-recorded 0
+START metal-unavailable
+END metal-unavailable 0
+Traceback (most recent call last):
+  File "/Users/victor/.cache/gen2-nemotron3-n0/run-metal-app-024.py", line 43, in <module>
+    x=json.loads(negative.read_text());assert x['attribution']['status']=='unavailable' and x['text'] and x['asr_error'] is None and x['parts']==x['parts_completed'] and 'Metal' in x['attribution']['reason'];r.update(passed=True,asr_parts=x['parts_completed'],words=len(x['attribution']['words']),speaker_reason=x['attribution']['reason']);save()
+                                                                                                                                                                                                                                                                              ~~~~~~~~~~~~~~~~^^^^^^^^^
+KeyError: 'words'

@@ -1,0 +1,42 @@
+{
+  "release_qualified": false,
+  "scope": "Same-host M4 Pro/macOS26.3 signed relocated Metal app CLI shutdown regression; clean recorded/live exit, unchanged native output, unavailable-Metal ASR preservation; no GUI, microphone, fresh-machine, quality or throughput qualification. Earlier mixed-model evidence is retained with exact native/model tree identity, not rerun.",
+  "all_requested_checks_passed": false,
+  "results": {
+    "signature": {
+      "passed": true,
+      "exit_code": 0
+    },
+    "sandbox_controls": {
+      "passed": true,
+      "network_allowed": 0,
+      "network_denied": 7,
+      "source_allowed": 0,
+      "source_denied": 1,
+      "predecessor_denied": 1
+    },
+    "shutdown-1s": {
+      "passed": true,
+      "exit_code": 0,
+      "backend": "metal",
+      "device": "Apple M4 Pro",
+      "asr_parts": 1,
+      "words": 0,
+      "turns": 0
+    },
+    "app-recorded": {
+      "passed": true,
+      "exit_code": 0,
+      "backend": "metal",
+      "device": "Apple M4 Pro",
+      "asr_parts": 1,
+      "words": 117,
+      "turns": 26,
+      "maximum_native_turn_error_seconds": 0.0
+    },
+    "requested_metal_does_not_fallback": {
+      "passed": false,
+      "exit_code": 0
+    }
+  }
+}

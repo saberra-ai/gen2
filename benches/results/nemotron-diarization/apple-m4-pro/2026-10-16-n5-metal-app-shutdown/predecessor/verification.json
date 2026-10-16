@@ -1,0 +1,40 @@
+{
+  "release_qualified": false,
+  "scope": "same-host M4 Pro/macOS26.3 Metal app/backend selection, saved device, offline relocation and actual mixed chat/Bark/Laya admission; no accuracy/default/fresh-machine or physical GUI/mic claim",
+  "all_requested_checks_passed": false,
+  "results": {
+    "sandbox_controls": {
+      "passed": true,
+      "outside_network_exit": 0,
+      "inside_network_exit": 7,
+      "outside_source_exit": 0,
+      "inside_source_exit": 1
+    },
+    "mixed_real_laya_chat_first": {
+      "passed": true,
+      "exit_code": 0,
+      "scope": "Actual chat (Metal-enabled build), full Laya, Bark and Metal diarizer; admission/unload/reload, short text/silence only; no new model quality or latency claim."
+    },
+    "mixed_real_laya_diarization_first": {
+      "passed": true,
+      "exit_code": 0,
+      "scope": "Actual chat (Metal-enabled build), full Laya, Bark and Metal diarizer; admission/unload/reload, short text/silence only; no new model quality or latency claim."
+    },
+    "native_reference": {
+      "passed": true
+    },
+    "app_recorded": {
+      "passed": false,
+      "exit_code": -6
+    },
+    "requested_metal_does_not_fallback": {
+      "passed": true,
+      "asr_parts": 1,
+      "speaker_reason": "diarization backend unavailable: requested Metal device is unavailable in the native SDK"
+    },
+    "app_live": {
+      "passed": false,
+      "exit_code": -6
+    }
+  }
+}

@@ -1,0 +1,190 @@
+[
+  {
+    "name": "app-signature",
+    "argv": [
+      "/usr/bin/codesign",
+      "--verify",
+      "--deep",
+      "--strict",
+      "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a/Pnola.app"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin"
+    },
+    "expected_failure": false
+  },
+  {
+    "name": "network-allowed",
+    "argv": [
+      "/usr/bin/curl",
+      "--silent",
+      "--show-error",
+      "--max-time",
+      "3",
+      "http://127.0.0.1:49813"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin"
+    },
+    "expected_failure": false
+  },
+  {
+    "name": "network-denied",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a/offline.sb",
+      "/usr/bin/curl",
+      "--silent",
+      "--show-error",
+      "--max-time",
+      "3",
+      "http://127.0.0.1:49813"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin"
+    },
+    "expected_failure": true
+  },
+  {
+    "name": "source-allowed",
+    "argv": [
+      "/bin/cat",
+      "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/LICENSE"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin"
+    },
+    "expected_failure": false
+  },
+  {
+    "name": "source-denied",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a/offline.sb",
+      "/bin/cat",
+      "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp/LICENSE"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin"
+    },
+    "expected_failure": true
+  },
+  {
+    "name": "mixed_real_laya_chat_first",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a/offline.sb",
+      "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a/mixed-native-tests",
+      "--ignored",
+      "--exact",
+      "mixed_real_laya_chat_first",
+      "--nocapture"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "GEN2_NEMO_EXECUTION": "metal",
+      "GEN2_NEMOTRON_ASSETS": "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a/Pnola.app/Contents/Resources/nemotron",
+      "GEN2_NEMO_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a/Pnola.app/Contents/Frameworks/libnemo_speech_asr_c.dylib",
+      "GEN2_BARK_BUNDLE": "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a/Pnola.app/Contents/Resources/bark",
+      "GEN2_ORT_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a/Pnola.app/Contents/Frameworks/libonnxruntime.dylib",
+      "GEN2_CHAT_GGUF": "/Users/victor/.cache/gen2-nemotron3-n0/relocated mixed models/chat.gguf",
+      "GEN2_LAYA_BUNDLE": "/Users/victor/.cache/gen2-nemotron3-n0/relocated mixed models/laya"
+    },
+    "expected_failure": false
+  },
+  {
+    "name": "mixed_real_laya_diarization_first",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a/offline.sb",
+      "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a/mixed-native-tests",
+      "--ignored",
+      "--exact",
+      "mixed_real_laya_diarization_first",
+      "--nocapture"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "GEN2_NEMO_EXECUTION": "metal",
+      "GEN2_NEMOTRON_ASSETS": "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a/Pnola.app/Contents/Resources/nemotron",
+      "GEN2_NEMO_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a/Pnola.app/Contents/Frameworks/libnemo_speech_asr_c.dylib",
+      "GEN2_BARK_BUNDLE": "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a/Pnola.app/Contents/Resources/bark",
+      "GEN2_ORT_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a/Pnola.app/Contents/Frameworks/libonnxruntime.dylib",
+      "GEN2_CHAT_GGUF": "/Users/victor/.cache/gen2-nemotron3-n0/relocated mixed models/chat.gguf",
+      "GEN2_LAYA_BUNDLE": "/Users/victor/.cache/gen2-nemotron3-n0/relocated mixed models/laya"
+    },
+    "expected_failure": false
+  },
+  {
+    "name": "native-ami",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a/offline.sb",
+      "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a/native-metal",
+      "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a/Pnola.app/Contents/Resources/nemotron/Nemotron-3-Diarization.q8_0.gguf",
+      "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a/ami-60s.wav",
+      "1",
+      "0",
+      "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a/native-ami.json"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin"
+    },
+    "expected_failure": false
+  },
+  {
+    "name": "app-recorded",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a/offline.sb",
+      "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a/Pnola.app/Contents/MacOS/pnola-desktop",
+      "--verify-bundle",
+      "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a/ami-60s.wav",
+      "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a/recorded.json"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin"
+    },
+    "expected_failure": false
+  },
+  {
+    "name": "metal-unavailable",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a/offline.sb",
+      "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a/Pnola.app/Contents/MacOS/pnola-desktop",
+      "--verify-bundle",
+      "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a/ami-60s.wav",
+      "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a/unavailable-metal.json"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "GEN2_NEMO_EXECUTION": "metal",
+      "GEN2_NEMO_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a/control-cpu/lib/libnemo_speech_asr_c.dylib"
+    },
+    "expected_failure": false
+  },
+  {
+    "name": "app-live",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a/offline.sb",
+      "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a/Pnola.app/Contents/MacOS/pnola-desktop",
+      "--verify-live-speakers",
+      "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a/live-source-60s.wav",
+      "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a/live.json"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin"
+    },
+    "expected_failure": false
+  }
+]

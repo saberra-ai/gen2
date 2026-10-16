@@ -1,0 +1,21 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "source_commit": "ef1fc1a",
+  "root": "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a",
+  "manifest_sha256": "939258ac9e96947ed34d36b26951f1854c5864488cd8bc5ac0671a8a4d3ecac7",
+  "runner_sha256": "b826c08051181de5a556f1878796a73f4cd4ae5329e8e5ff179c8464992a07c9",
+  "selected_checks": [
+    "Signed relocated actual Metal app with no native/model environment override",
+    "Independent C++ reference versus actual recorded app turns on same60s PCM source",
+    "Unavailable Metal SDK negative control preserves ASR and returns unavailable speaker state",
+    "Actual80.04s paced live capture-output path with11Barksections and persisteddevice/timeline parity",
+    "Both actual fullLaya/Bark/chat/Metaldiarization loadorders, sharedbudget refusal andunload/reload"
+  ],
+  "limits": [
+    "Samehost M4Pro/macOS26.3; not freshmachine/nativeGUI/physicalmicrophone qualification.",
+    "No new quality, clean throughput, full backend/model or defaultenablement claim.",
+    "Mixedbuild enables chatMetal; actual device/offload evidence must be inspected in logs rather than inferred from featureflag.",
+    "Any failures retained; no reference/preset/threshold/model changes or selecting successfulsubset."
+  ]
+}

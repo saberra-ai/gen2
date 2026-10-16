@@ -1,0 +1,50 @@
+[
+  {
+    "name": "mixed_real_laya_chat_first",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/release Metal mixed placement 8572cc8/offline.sb",
+      "/Users/victor/.cache/gen2-nemotron3-n0/release Metal mixed placement 8572cc8/mixed-native-tests",
+      "--ignored",
+      "--exact",
+      "mixed_real_laya_chat_first",
+      "--nocapture"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "GEN2_NEMO_EXECUTION": "metal",
+      "GEN2_NEMOTRON_ASSETS": "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification 024a88f/Pnola.app/Contents/Resources/nemotron",
+      "GEN2_NEMO_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification 024a88f/Pnola.app/Contents/Frameworks/libnemo_speech_asr_c.dylib",
+      "GEN2_BARK_BUNDLE": "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification 024a88f/Pnola.app/Contents/Resources/bark",
+      "GEN2_ORT_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification 024a88f/Pnola.app/Contents/Frameworks/libonnxruntime.dylib",
+      "GEN2_CHAT_GGUF": "/Users/victor/.cache/gen2-nemotron3-n0/relocated mixed models/chat.gguf",
+      "GEN2_LAYA_BUNDLE": "/Users/victor/.cache/gen2-nemotron3-n0/relocated mixed models/laya",
+      "GEN2_CHAT_EXPECT_BACKEND": "MTL"
+    }
+  },
+  {
+    "name": "mixed_real_laya_diarization_first",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/release Metal mixed placement 8572cc8/offline.sb",
+      "/Users/victor/.cache/gen2-nemotron3-n0/release Metal mixed placement 8572cc8/mixed-native-tests",
+      "--ignored",
+      "--exact",
+      "mixed_real_laya_diarization_first",
+      "--nocapture"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "GEN2_NEMO_EXECUTION": "metal",
+      "GEN2_NEMOTRON_ASSETS": "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification 024a88f/Pnola.app/Contents/Resources/nemotron",
+      "GEN2_NEMO_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification 024a88f/Pnola.app/Contents/Frameworks/libnemo_speech_asr_c.dylib",
+      "GEN2_BARK_BUNDLE": "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification 024a88f/Pnola.app/Contents/Resources/bark",
+      "GEN2_ORT_LIBRARY": "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification 024a88f/Pnola.app/Contents/Frameworks/libonnxruntime.dylib",
+      "GEN2_CHAT_GGUF": "/Users/victor/.cache/gen2-nemotron3-n0/relocated mixed models/chat.gguf",
+      "GEN2_LAYA_BUNDLE": "/Users/victor/.cache/gen2-nemotron3-n0/relocated mixed models/laya",
+      "GEN2_CHAT_EXPECT_BACKEND": "MTL"
+    }
+  }
+]

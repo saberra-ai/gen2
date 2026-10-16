@@ -1,0 +1,23 @@
+   Compiling gen2 v0.1.0 (/Users/victor/workspace/gen2-nemotron3-n0)
+   Compiling pnola-desktop v0.2.0 (/Users/victor/workspace/pnola/src-tauri)
+    Finished `test` profile [unoptimized + debuginfo] target(s) in 1.95s
+     Running unittests src/main.rs (/Users/victor/.cache/pnola-nemotron-build/debug/deps/pnola_desktop-04cc9504316114a8)
+
+running 1 test
+test engine::tests::shutdown_fences_a_loader_that_has_not_started ... FAILED
+
+failures:
+
+---- engine::tests::shutdown_fences_a_loader_that_has_not_started stdout ----
+
+thread 'engine::tests::shutdown_fences_a_loader_that_has_not_started' (33974450) panicked at src/engine.rs:356:9:
+assertion failed: engine.model.lock().unwrap().is_none()
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace
+
+
+failures:
+    engine::tests::shutdown_fences_a_loader_that_has_not_started
+
+test result: FAILED. 0 passed; 1 failed; 0 ignored; 0 measured; 22 filtered out; finished in 0.00s
+
+error: test failed, to rerun pass `--bin pnola-desktop`

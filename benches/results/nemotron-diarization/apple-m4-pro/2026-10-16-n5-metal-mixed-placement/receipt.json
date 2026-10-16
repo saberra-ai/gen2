@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "source_commit": "8572cc8",
+  "protocol_commit": "a66a6aa",
+  "scope": "Samehost offline full Laya/Bark/chat/Metal Nemotron coexistence in both loadorders, sharedbudget refusal andeviction/restore. Public chat placement must report nonzeroGPUlayers/backendMTL/device atinitial/restored generation. Metadata mirrors native loader parameters/registry; no pertensor orkerneltelemetry, quality, latency or freshmachine claim.",
+  "verification": {
+    "release_qualified": false,
+    "scope": "Samehost offline full Laya/Bark/chat/Metal Nemotron coexistence in both loadorders, sharedbudget refusal andeviction/restore. Public chat placement must report nonzeroGPUlayers/backendMTL/device atinitial/restored generation. Metadata mirrors native loader parameters/registry; no pertensor orkerneltelemetry, quality, latency or freshmachine claim.",
+    "all_requested_checks_passed": true,
+    "results": [
+      {
+        "name": "mixed_real_laya_chat_first",
+        "exit_code": 0,
+        "passed": true,
+        "public_reported_chat_placement": {
+          "initial": {
+            "layers": 29,
+            "total": 29,
+            "backend": "MTL",
+            "device": "Apple M4 Pro"
+          },
+          "restored": {
+            "layers": 29,
+            "total": 29,
+            "backend": "MTL",
+            "device": "Apple M4 Pro"
+          }
+        }
+      },
+      {
+        "name": "mixed_real_laya_diarization_first",
+        "exit_code": 0,
+        "passed": true,
+        "public_reported_chat_placement": {
+          "initial": {
+            "layers": 29,
+            "total": 29,
+            "backend": "MTL",
+            "device": "Apple M4 Pro"
+          },
+          "restored": {
+            "layers": 29,
+            "total": 29,
+            "backend": "MTL",
+            "device": "Apple M4 Pro"
+          }
+        }
+      }
+    ]
+  },
+  "placement_evidence": "Initial and restored generation succeeded in each load order; public chat metadata reports29/29 layers on MTL, Apple M4Pro. This mirrors native loader settings and GPUregistry, not per-tensor/kernel telemetry. Diarizer output independently requiresmetal backend andnonemptyactualdevice.",
+  "limits": [
+    "Samehost offline functional co-residency/admission only, no freshmachine,quality,clean performance orcomplete release qualification.",
+    "FullLaya/Bark execute short text/silence paths, not furtherASR/decisionaccuracy qualification."
+  ]
+}
