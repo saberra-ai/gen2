@@ -519,9 +519,14 @@ to be compiled and executed. Windows public loading now searches the selected
 absolute DLL directory for its imported siblings without changing process PATH;
 a separate default-loader negative control exercises the original failure route.
 Two actual Windows compiler-environment setup failures are retained as diagnostic
-evidence, not qualification. Real SDK/public reruns are pending. These jobs do
-not establish closed portable packages, fresh-machine offline operation or
-mixed-model coexistence on those platforms.
+evidence, not qualification. Linux now passes actual public/native parity on
+the60s smoke input:26turns and48008probability values match exactly, with actual
+PCM identity checked. All seven required lifecycle tests execute and pass,
+including100reloads; uploaded SDK file hashes were verified. See the
+[Linux development receipt](../../benches/results/nemotron-diarization/linux-x86_64/2026-10-16-native-development/collection.json).
+System SentencePiece remains an installed dependency. Windows SDK/public reruns
+are pending. These jobs do not establish closed portable packages, fresh-machine
+offline operation or mixed-model coexistence on those platforms.
 
 - [ ] Run Mac CPU first; compare Metal against the same Q8 reference and real
   annotated audio. Record device placement/fallback rather than treating a

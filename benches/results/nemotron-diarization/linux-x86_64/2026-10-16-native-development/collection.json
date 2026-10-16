@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "release_qualified": false,
+  "development_native_gates_passed": true,
+  "source_commit": "74c663ef0f5054b2087d1eb0689ec8ebd7dfb8bd",
+  "workflow_run": 38860039757,
+  "job_id": 116840008830,
+  "job_url": "https://github.com/saberra-ai/gen2/actions/runs/38860039757/job/116840008830",
+  "scope": "Actual Linux x86_64AVX2 CPU same-host sourceSDK, exact60s native/public parity and7lifecycle gates including100reloads",
+  "required_passed_tests": [
+    "dropping_a_diarization_child_keeps_the_parent_pipeline_active",
+    "native_admission_cancellation_and_failed_load_release_reservations",
+    "real_diarizer_matches_native_reference_and_resets_recordings",
+    "repeated_reload_full_queue_cancel_and_dropped_stream_release_resources",
+    "silence_short_tail_and_idle_deadline_have_explicit_terminal_results",
+    "streamed_uneven_pcm_matches_recording_and_finish_is_idempotent",
+    "verified_provisioned_cache_is_reused_offline"
+  ],
+  "compiled_required_tests_verified": true,
+  "exact_probability_values_compared": 48008,
+  "matched_turns": 26,
+  "maximum_probability_error": 0,
+  "maximum_turn_error_seconds": 0,
+  "actual_input_pcm_f32le_sha256": "96858fdcf0c8854f8fc659403c11ddc7565f538a7402803e4235e9e354d87ae6",
+  "installed_file_hashes_verified": 53,
+  "raw_probability_artifacts": {
+    "public.f32": {
+      "bytes": 192032,
+      "sha256": "946443332adcb04c651c18d656691dd39d01ece5831db4c014d40fadab33cf71",
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/platform-ci/linux-38860039757/nemo-evidence/public.f32"
+    },
+    "native-ami.json.f32": {
+      "bytes": 192032,
+      "sha256": "946443332adcb04c651c18d656691dd39d01ece5831db4c014d40fadab33cf71",
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/platform-ci/linux-38860039757/nemo-evidence/native-ami.json.f32"
+    }
+  },
+  "limits": [
+    "Installed SDK still requires system SentencePiece; no closed portable package or offline/fresh-machine relocation claim.",
+    "No Windows, mixed chat/Bark/Laya, heldout quality or live-latency claim.",
+    "CI throughput is descriptive; no named desktop live performance qualification."
+  ],
+  "artifacts": {
+    "commands.json": "bb416f99b71525ccf453dbffcf0229812810f917a6c85ab7ff5e3ed8a691a331",
+    "comparison.json": "1c754b201a317800e243795e613fe4f2d09c92d4f16d5b72e04ad59319f1e493",
+    "gen2-build.log": "f6aa592543d29502dfa32b95fc473c4331025fe61568820aef5017b784b0391e",
+    "gen2-build.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "loader-dependencies.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "loader-dependencies.stdout.log": "c7e5118239225f592d38347b2bdc695ffab76c3870f536fef8a9e18a5c072772",
+    "native-ami.json": "87b7b5ab5017be49ddf8d0aa932a00df6956f59a2c8f75905fe36e6aafdd0952",
+    "native-inference.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "native-inference.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "native-lifecycle-list.log": "30eeff1ce2f7024a2ec2893bb0b67676cf36b8998421136ea559910002125b4d",
+    "native-lifecycle-list.stdout.log": "10e7854f7bcf7a787a867b11d6ea2b364950cba66d352d90ee98e1b0622fbf92",
+    "native-lifecycle.log": "5b1179b87e114f963f1f74b9a8885dadb7aebd9be604aa6b5ce8369974a3c083",
+    "native-lifecycle.stdout.log": "299edf61153b47e9f5dd0cf9134c7a2aca2bde068210260559381bdba4524de7",
+    "native-probe-build.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "native-probe-build.stdout.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public-inference.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "public-inference.stdout.log": "19c110adff5713b8d3876685aba4069298a47b4ba39ea071e6d41eafbdfca3ac",
+    "public.json": "883fb236893f65e6e10d3d23ed8b58032c7eb105fafe9935795b2591602f6770",
+    "receipt.json": "80e7a4cf5efa7dca6d167fc35db87b183382b9df74d3056d472b92655b8877cb",
+    "sdk-build.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "sdk-build.stdout.log": "401c82d892a5eb85abdf80a55869ff887ee2ffaa7790c81d161e2eb79795d33c",
+    "sdk-configure.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "sdk-configure.stdout.log": "16c0124abac9a274adb302bc33c26a30c101cd1d64c40d1f12b37d46fc2b0bce",
+    "sdk-install.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "sdk-install.stdout.log": "8efc2231118d8f52966672c1cb4c926438dbc5416d3d5c30391a9478eb90b47c"
+  }
+}
