@@ -22,7 +22,7 @@ jobs:
       - uses: dtolnay/rust-toolchain@stable
       - uses: Swatinem/rust-cache@v2
         with:
-          shared-key: nemotron-windows-offline
+          shared-key: nemotron-windows-chat-openmp
           cache-on-failure: true
       - name: Run packaging and evidence regressions
         working-directory: tools/nemotron-diarization

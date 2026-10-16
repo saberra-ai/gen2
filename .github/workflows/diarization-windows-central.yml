@@ -3,13 +3,14 @@ on:
   workflow_dispatch:
   push:
     branches: [codex/nemotron3-windows-central]
-    paths: ['.github/workflows/diarization-windows-central.yml', 'tools/nemotron-diarization/**', 'benches/results/nemotron-diarization/windows-x86_64/2026-10-16-central-prerequisite-static/**']
+    paths: ['.github/workflows/diarization-windows-central.yml', 'tools/nemotron-diarization/**', 'benches/results/nemotron-diarization/windows-x86_64/2026-10-16-central-prerequisite-static/**', 'src/**', 'tests/diarization_native.rs', 'examples/nemotron_stream.rs', 'examples/nemotron_chat_coexistence.rs', 'examples/support/windows_modules.rs', 'Cargo.*', 'build.rs', '.cargo/**', 'vendor/**']
 permissions:
   contents: read
+  actions: read
 jobs:
   setup:
     runs-on: windows-2022
-    timeout-minutes: 20
+    timeout-minutes: 60
     steps:
       - name: Preserve exact source line endings
         run: git config --global core.autocrlf false
@@ -19,13 +20,52 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          shared-key: nemotron-windows-chat-openmp
+          cache-on-failure: true
       - name: Run prerequisite admission regressions
         working-directory: tools/nemotron-diarization
-        run: python -m unittest test_windows_central_state test_package_windows test_windows_notices
+        run: python -m unittest test_windows_central_state test_package_windows test_windows_notices test_windows_runtime_audit test_windows_chat_inputs test_linux_chat_audit
+      - name: Retrieve exact qualified private native SDK
+        uses: actions/download-artifact@v4
+        with:
+          name: nemotron-native-windows-2022
+          run-id: 38882923286
+          github-token: ${{ github.token }}
+          path: ${{ runner.temp }}/qualified-windows-native
+      - name: Construct five-DLL archive with pinned publisher prerequisite
+        run: python tools/nemotron-diarization/package_windows.py --central-runtime --sdk-prefix "${{ runner.temp }}/qualified-windows-native/nemo-sdk" --native-evidence "${{ runner.temp }}/qualified-windows-native/nemo-evidence" --output "${{ runner.temp }}/windows-central-runtime-package"
       - name: Observe actual host and frozen local image prerequisites
         run: python tools/nemotron-diarization/windows_container_preflight.py --output "${{ runner.temp }}/windows-central-prerequisites"
       - name: Verify publisher signature and provision disposable image only
         run: python tools/nemotron-diarization/windows_central_setup.py --prerequisites "${{ runner.temp }}/windows-central-prerequisites/preflight.json" --output "${{ runner.temp }}/windows-central-setup"
+      - name: Exercise real native public lifecycle and both chat load orders without app-local CRT
+        run: python tools/nemotron-diarization/qualify_windows_chat.py --sdk-prefix "${{ runner.temp }}/qualified-windows-native/nemo-sdk" --native-evidence "${{ runner.temp }}/qualified-windows-native/nemo-evidence" --package-evidence "${{ runner.temp }}/windows-central-runtime-package" --central-setup "${{ runner.temp }}/windows-central-setup" --prerequisites "${{ runner.temp }}/windows-central-prerequisites/preflight.json" --output "${{ runner.temp }}/windows-central-runtime-offline"
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: windows-central-runtime-package
+          path: ${{ runner.temp }}/windows-central-runtime-package/
+          retention-days: 7
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: windows-central-runtime-offline
+          path: |
+            ${{ runner.temp }}/windows-central-runtime-offline/*.json
+            ${{ runner.temp }}/windows-central-runtime-offline/*.log
+            ${{ runner.temp }}/windows-central-runtime-offline/*.zip
+            ${{ runner.temp }}/windows-central-runtime-offline/*/frozen-inputs.json
+            ${{ runner.temp }}/windows-central-runtime-offline/*/loaded-modules.json
+            ${{ runner.temp }}/windows-central-runtime-offline/*/inputs ü/command.json
+            ${{ runner.temp }}/windows-central-runtime-offline/*/results/*.json
+            ${{ runner.temp }}/windows-central-runtime-offline/*/results/*.log
+            ${{ runner.temp }}/windows-central-runtime-offline/*/results/*.f32
+            ${{ runner.temp }}/windows-central-runtime-offline/*/results/*/*.json
+            ${{ runner.temp }}/windows-central-runtime-offline/*/results/*/*.f32
+          retention-days: 7
       - uses: actions/upload-artifact@v4
         if: always()
         with:

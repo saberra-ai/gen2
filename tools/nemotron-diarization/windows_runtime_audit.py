@@ -19,7 +19,9 @@ def module_path(value):
     return PureWindowsPath(value)
 
 
-def loaded_modules(observation, libraries, helper_name, helper, *, private_required=True, openmp=None):
+def loaded_modules(observation, libraries, helper_name, helper, *, private_required=True, openmp=None, central_crt=None):
+    if central_crt is not None and (set(central_crt) != CRT | {'vcomp140.dll'} or set(libraries) != set(NAMES.values())):
+        raise ValueError('exact verified central CRT/OpenMP identities required')
     rows = observation['modules']
     if (type(observation['stable_snapshots']) is not int or observation['stable_snapshots'] < 1
             or not isinstance(rows, list) or not 1 <= len(rows) <= 512):
@@ -34,7 +36,11 @@ def loaded_modules(observation, libraries, helper_name, helper, *, private_requi
             raise ValueError('unsafe, duplicate or incomplete observed Windows module')
         seen.add(name)
         record = {'bytes': row['bytes'], 'sha256': row['sha256']}
-        if name in libraries:
+        if name in CRT and central_crt is not None:
+            if path.parent != SYSTEM or record != central_crt[name]:
+                raise ValueError('observed central CRT differs from verified System32 state')
+            crt.append(row)
+        elif name in libraries:
             if record != {field: libraries[name][field] for field in record}:
                 raise ValueError('actual Windows native/CRT bytes differ from qualified payload')
             if name in CRT and path.parent in {BIN, RUNTIME}:
@@ -44,13 +50,15 @@ def loaded_modules(observation, libraries, helper_name, helper, *, private_requi
             else:
                 raise ValueError('actual Windows native/CRT module escaped packaged directories')
         elif name == 'vcomp140.dll':
-            if openmp is None or path.parent != BIN or record != openmp:
+            if (openmp is None or path.parent != (SYSTEM if central_crt is not None else BIN) or record != openmp
+                    or (central_crt is not None and record != central_crt[name])):
                 raise ValueError('observed chat OpenMP runtime differs from declared test payload')
             extra.append(row)
         elif name == helper_name and path.parent == BIN and record == helper:
             executable = True
         elif (path.parent == SYSTEM and path.suffix.lower() == '.dll'
-              and not name.startswith(('ggml', 'nemo_', 'gen2_nemo_'))):
+              and not name.startswith(('ggml', 'nemo_', 'gen2_nemo_'))
+              and not re.fullmatch(r'(?:msvcp|msvcr|vcruntime|concrt|vcamp|vcomp|vccorlib|mfc|mfcm)\d+[a-z0-9_]*\.dll', name)):
             platform.append(row)
         else:
             raise ValueError('unexpected Windows module outside declared helper/runtime/OS: ' + str(path))
@@ -64,4 +72,6 @@ def loaded_modules(observation, libraries, helper_name, helper, *, private_requi
             'scope': 'Observed modules during the recorded helper execution; no universal dynamic-load/namespace claim.'}
     if openmp is not None:
         result['chat_openmp'] = extra
+    if central_crt is not None:
+        result['crt_deployment'] = 'verified-central-system32'
     return result

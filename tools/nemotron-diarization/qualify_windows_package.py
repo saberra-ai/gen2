@@ -19,12 +19,15 @@ from windows_archive import byte_inventory, digest, restore_archive, write_archi
 from windows_container_smoke import Smoke
 from windows_pe import inspect_pe
 from windows_runtime_audit import loaded_modules
+from windows_central_state import audit_state
+from windows_central_setup import MINIMUM
 
 
 class Qualification(Smoke):
     def __init__(self, args):
         super().__init__(args.output)
         self.args = args
+        self.central_crt = None
         self.work = self.output / 'base inputs ü'
         self.receipt = {'schema_version': 1, 'release_qualified': False, 'redistribution_qualified': False,
                         'offline_container_gates_passed': False,
@@ -57,6 +60,10 @@ class Qualification(Smoke):
         self.work.mkdir()
         self.runtime = restore_archive(evidence / archive['archive'], archive, self.work / 'relocated runtime ü')
         self.package = verify(self.runtime)
+        if self.package['format'] == 'gen2-nemo-windows-cpu-central-v1':
+            self.use_central_image()
+        elif getattr(self.args, 'central_setup', None) is not None:
+            raise ValueError('central setup evidence requires the five-DLL central runtime format')
         if digest(self.runtime / 'package.json') != construction['package_manifest_sha256']:
             raise ValueError('delivered Windows package manifest differs')
         native = self.args.native_evidence.resolve(strict=True)
@@ -103,7 +110,7 @@ class Qualification(Smoke):
                 raise ValueError('unsupported qualification executable')
             self.helpers[name] = {'bytes': pe['bytes'], 'sha256': pe['sha256']}
             (self.output / (name + '-pe.json')).write_text(json.dumps(pe, indent=2) + '\n', encoding='utf-8')
-        for name in CRT:
+        for name in (CRT if self.central_crt is None else set()):
             shutil.copy2(self.runtime / 'lib' / name, binaries / name)
         helper_archive = write_archive(binaries, self.output, 'development-windows-test-helpers')
         self.base_inventory = byte_inventory(self.work)
@@ -117,15 +124,52 @@ class Qualification(Smoke):
                     'windows_runtime_audit.py', 'windows_smoke_controls.ps1', 'windows_container_smoke.py',
                     'windows_archive.py', 'package_windows.py', 'windows_pe.py', 'windows_naming.py',
                     'runtime.lock.json', 'windows-container.lock.json', 'evidence_commands.py', 'compare_stream.py', 'qualify_linux_package.py']}}
+        if self.central_crt is not None:
+            frozen['central_setup'] = {'receipt_sha256': digest(self.args.central_setup / 'receipt.json'),
+                'frozen_inputs_sha256': digest(self.args.central_setup / 'frozen-inputs.json'),
+                'base_image': self.base_image, 'central_crt': self.central_crt}
+            frozen['tools'].update({name: digest(self.tools / name) for name in
+                ['windows_central_state.py', 'windows_central_setup.py', 'windows-vc-runtime.lock.json']})
         (self.output / 'frozen-inputs.json').write_text(json.dumps(frozen, indent=2) + '\n', encoding='utf-8')
         self.receipt.update(source_commit=self.source, native_source_commit=build['source_commit'], image_id=self.image['Id'],
                             frozen_inputs_sha256=digest(self.output / 'frozen-inputs.json'),
                             package_manifest_sha256=construction['package_manifest_sha256'])
 
-    def audit_modules(self, observation, executable):
-        return loaded_modules(observation, self.package['libraries'], executable, self.helpers[executable])
+    def use_central_image(self):
+        directory = getattr(self.args, 'central_setup', None)
+        if directory is None:
+            raise ValueError('five-DLL runtime requires same-source successful central setup evidence')
+        read = lambda path: json.loads(path.read_text(encoding='utf-8-sig'))
+        setup, frozen = read(directory / 'receipt.json'), read(directory / 'frozen-inputs.json')
+        if (setup['setup_and_fresh_image_state_passed'] is not True or setup['source_commit'] != self.source
+                or frozen['source_commit'] != self.source or setup['base_image_id'] != self.image['Id']
+                or digest(directory / 'frozen-inputs.json') != setup['frozen_inputs_sha256']
+                or digest(directory / 'fresh-state/state.json') != setup['fresh_state_sha256']
+                or any(digest(self.tools / name) != sha256 for name, sha256 in frozen['tools'].items())):
+            raise ValueError('central setup source/image/provenance differs')
+        minimum = read(self.repo / MINIMUM)
+        lock = read(self.tools / 'windows-vc-runtime.lock.json')
+        if (digest(self.repo / MINIMUM) != frozen['minimum_static_receipt_sha256']
+                or minimum['installer_sha256'] != setup['installer_sha256'] or setup['installer_sha256'] != lock['installer']['sha256']):
+            raise ValueError('central prerequisite differs from pinned publisher bytes')
+        expected = {row['runtime_name']: {key: row[key] for key in ['bytes', 'sha256']} for row in minimum['selected_dlls']}
+        fresh = read(directory / 'fresh-state/state.json')
+        if fresh['mode'] != 'Observe' or fresh['installer_executed'] is not False or not fresh['completed'] or fresh.get('error'):
+            raise ValueError('fresh central state was not observed independently of installation')
+        audit_state(fresh['after'], expected, lock['version'])
+        self.run('central-image-inspect', [*self.docker, 'image', 'inspect', setup['provisioned_image_id']])
+        image, = read(self.output / 'central-image-inspect.stdout.log')
+        if (image['Id'] != setup['provisioned_image_id'] or image['Architecture'] != 'amd64' or image['Os'] != 'windows'
+                or image['RootFS']['Layers'][:-1] != self.image['RootFS']['Layers']):
+            raise ValueError('actual central image does not extend frozen base')
+        self.base_image, self.image, self.central_crt = self.image, image, expected
+        self.central_state = fresh['after']
+        self.receipt['limits'][2] = 'No CRT/OpenMP copies beside test executables or in the five-DLL runtime; exact central System32 bytes come from the separately qualified publisher installer.'
 
-    def container(self, name, executable, arguments, capture=True, negative=False, readonly_mounts=()):
+    def audit_modules(self, observation, executable):
+        return loaded_modules(observation, self.package['libraries'], executable, self.helpers[executable], central_crt=self.central_crt)
+
+    def container(self, name, executable, arguments, capture=True, negative=False, readonly_mounts=(), remove_private=True):
         run = self.output / name
         run.mkdir()
         inputs, results = run / 'inputs ü', run / 'results'
@@ -133,7 +177,7 @@ class Qualification(Smoke):
         results.mkdir()
         (results / 'tmp').mkdir()
         (results / 'local').mkdir()
-        if negative:
+        if negative and remove_private:
             (inputs / 'relocated runtime ü/lib/gen2_nemo_windows_ggml-base.dll').unlink()
         environment = {'SystemRoot': 'C:\\Windows', 'WINDIR': 'C:\\Windows',
                        'PATH': 'C:\\Windows\\System32;C:\\Windows',
@@ -228,6 +272,18 @@ class Qualification(Smoke):
         error = (negative / 'child.stderr.log').read_text(encoding='utf-8-sig')
         if 'os error 126' not in error or (negative / 'negative.f32').exists():
             raise ValueError('missing private Windows library did not fail closed with native missing-module cause')
+        if self.central_crt is not None:
+            installed_image = self.image
+            try:
+                self.image = self.base_image
+                absent = self.container('missing-central-runtime', 'public-stream.exe',
+                    [assets, library, wav, '1', 'C:\\results\\absent.f32'], capture=False, negative=True, remove_private=False)
+            finally:
+                self.image = installed_image
+            child = json.loads((absent / 'child.json').read_text(encoding='utf-8-sig'))
+            if child['returncode'] != -1073741515 or (absent / 'absent.f32').exists():
+                raise ValueError('missing central runtime did not fail with Windows STATUS_DLL_NOT_FOUND and no output')
+            self.receipt['missing_central_runtime_control_passed'] = True
         if byte_inventory(self.work) != self.with_reference_inventory or verify(self.runtime) != self.package:
             raise ValueError('base Windows runtime inputs changed during qualification')
         self.receipt.update(offline_container_gates_passed=True, native_public_comparison=comparison,
@@ -248,6 +304,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ['sdk-prefix', 'native-evidence', 'package-evidence', 'prerequisites', 'output']:
         parser.add_argument('--' + name, type=Path, required=True)
+    parser.add_argument('--central-setup', type=Path, help='Successful same-source setup evidence for a five-DLL central runtime only.')
     args = parser.parse_args()
     if platform.system() != 'Windows':
         parser.error('requires actual Windows Docker host')

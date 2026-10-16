@@ -6,6 +6,27 @@ from windows_runtime_audit import loaded_modules
 
 
 class WindowsRuntimeAuditTests(unittest.TestCase):
+    def test_central_crt_and_openmp_must_match_the_verified_system32_state(self):
+        libraries, observed = self.fixture()
+        central = {name: {'bytes': 3, 'sha256': 'a' * 64} for name in CRT | {'vcomp140.dll'}}
+        for row in observed['modules']:
+            if row['path'].rsplit('\\', 1)[-1] in CRT:
+                row['path'] = 'C:\\Windows\\System32\\' + row['path'].rsplit('\\', 1)[-1]
+        observed['modules'].append({'path': 'C:\\Windows\\System32\\vcomp140.dll', **central['vcomp140.dll']})
+        private = {name: record for name, record in libraries.items() if name in NAMES.values()}
+        helper = {'bytes': 7, 'sha256': 'b' * 64}
+        result = loaded_modules(observed, private, 'public.exe', helper, central_crt=central, openmp=central['vcomp140.dll'])
+        self.assertEqual(len(result['crt']), 8)
+        for name in ['vcruntime140_threads.dll', 'vcamp140.dll', 'vccorlib140.dll', 'mfc140u.dll']:
+            invalid = copy.deepcopy(observed)
+            invalid['modules'].append({'path': 'C:\\Windows\\System32\\' + name, 'bytes': 99, 'sha256': 'f' * 64})
+            with self.subTest(name=name), self.assertRaises(ValueError):
+                loaded_modules(invalid, private, 'public.exe', helper, central_crt=central, openmp=central['vcomp140.dll'])
+        row = next(row for row in observed['modules'] if row['path'].endswith('vcruntime140.dll'))
+        row['path'] = 'C:\\inputs\\bin\\vcruntime140.dll'
+        with self.assertRaises(ValueError):
+            loaded_modules(observed, private, 'public.exe', helper, central_crt=central, openmp=central['vcomp140.dll'])
+
     def test_extended_dos_module_paths_admit_only_the_same_c_drive_package_locations(self):
         libraries, observed = self.fixture()
         for row in observed['modules']:

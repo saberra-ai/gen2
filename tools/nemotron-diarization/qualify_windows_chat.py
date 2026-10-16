@@ -13,6 +13,7 @@ import subprocess
 from artifacts import acquire
 from linux_chat_audit import audit_results
 from qualify_windows_package import Qualification as OfflineQualification
+from windows_central_setup import MINIMUM
 from windows_archive import byte_inventory, digest, write_archive
 from windows_chat_inputs import model_inventory
 from windows_pe import inspect_pe
@@ -54,22 +55,35 @@ class Qualification(OfflineQualification):
             raise ValueError('normal CPU chat helper must import MSVC OpenMP')
         self.helpers[self.chat_helper] = {key: pe[key] for key in ['bytes', 'sha256']}
         (self.output / 'chat-helper-pe.json').write_text(json.dumps(pe, indent=2) + '\n', encoding='utf-8')
-        self.run('chat-openmp-provenance', ['pwsh', '-NoLogo', '-NoProfile', '-NonInteractive', '-File',
-                 self.tools / 'windows_chat_openmp.ps1', '-NativeProvenance', self.args.native_evidence / 'windows-provenance.json',
-                 '-Output', self.output / 'chat-openmp-provenance.json'])
-        provenance = json.loads((self.output / 'chat-openmp-provenance.json').read_text(encoding='utf-8-sig'))
-        origin = Path(provenance['path']).resolve(strict=True)
-        if (provenance['signature_status'] != 'Valid' or 'O=Microsoft Corporation,' not in provenance['signer_subject']
-                or origin.name.lower() != 'vcomp140.dll'
-                or [part.lower() for part in origin.parts[-3:-1]] != ['x64', 'microsoft.vc143.openmp']):
-            raise ValueError('actual signed OpenMP source differs from expected VS redist tree')
-        self.openmp = {key: provenance[key] for key in ['bytes', 'sha256']}
-        if {'bytes': origin.stat().st_size, 'sha256': digest(origin)} != self.openmp:
-            raise ValueError('OpenMP source bytes differ from connected-host observation')
-        shutil.copy2(origin, self.work / 'bin/vcomp140.dll')
-        openmp_pe = inspect_pe(self.work / 'bin/vcomp140.dll')
-        if openmp_pe['machine'] != 'AMD64' or not openmp_pe['is_dll'] or openmp_pe['bound_imports_present']:
-            raise ValueError('unsupported OpenMP test image')
+        if self.central_crt is None:
+            self.run('chat-openmp-provenance', ['pwsh', '-NoLogo', '-NoProfile', '-NonInteractive', '-File',
+                     self.tools / 'windows_chat_openmp.ps1', '-NativeProvenance', self.args.native_evidence / 'windows-provenance.json',
+                     '-Output', self.output / 'chat-openmp-provenance.json'])
+            provenance = json.loads((self.output / 'chat-openmp-provenance.json').read_text(encoding='utf-8-sig'))
+            origin = Path(provenance['path']).resolve(strict=True)
+            if (provenance['signature_status'] != 'Valid' or 'O=Microsoft Corporation,' not in provenance['signer_subject']
+                    or origin.name.lower() != 'vcomp140.dll'
+                    or [part.lower() for part in origin.parts[-3:-1]] != ['x64', 'microsoft.vc143.openmp']):
+                raise ValueError('actual signed OpenMP source differs from expected VS redist tree')
+            self.openmp = {key: provenance[key] for key in ['bytes', 'sha256']}
+            if {'bytes': origin.stat().st_size, 'sha256': digest(origin)} != self.openmp:
+                raise ValueError('OpenMP source bytes differ from connected-host observation')
+            shutil.copy2(origin, self.work / 'bin/vcomp140.dll')
+            openmp_pe = inspect_pe(self.work / 'bin/vcomp140.dll')
+            if openmp_pe['machine'] != 'AMD64' or not openmp_pe['is_dll'] or openmp_pe['bound_imports_present']:
+                raise ValueError('unsupported OpenMP test image')
+        else:
+            row, = [row for row in self.central_state['files'] if row['name'] == 'vcomp140.dll']
+            self.openmp = self.central_crt['vcomp140.dll']
+            provenance = {**row, 'signature_status': row['signature']['status'],
+                          'signer_subject': row['signature']['signer']['subject'],
+                          'source': 'Exact central System32 observation from the qualified publisher-installer image.',
+                          'central_setup_receipt_sha256': digest(self.args.central_setup / 'receipt.json')}
+            (self.output / 'chat-openmp-provenance.json').write_text(json.dumps(provenance, indent=2) + '\n', encoding='utf-8')
+            minimum = json.loads((self.repo / MINIMUM).read_text())
+            openmp_pe, = [row for row in minimum['selected_dlls'] if row['runtime_name'] == 'vcomp140.dll']
+            openmp_pe = {**openmp_pe, 'scope': 'Pinned CAB static PE metadata for bytes matching the actual installed System32 observation; no app-local OpenMP payload.'}
+            self.receipt['limits'][-1] = 'Chat uses the exact central System32 OpenMP bytes supplied by the qualified publisher-installer image; no app-local CRT/OpenMP copies or universal namespace claim.'
         (self.output / 'chat-openmp-pe.json').write_text(json.dumps(openmp_pe, indent=2) + '\n', encoding='utf-8')
         archive = write_archive(self.work / 'bin', self.output, 'development-windows-chat-helpers')
         self.fingerprints = {'executable': digest(destination),
@@ -93,7 +107,7 @@ class Qualification(OfflineQualification):
         if executable != self.chat_helper:
             return super().audit_modules(observation, executable)
         return loaded_modules(observation, self.package['libraries'], executable, self.helpers[executable],
-                              private_required=self.current_order != 'isolated', openmp=self.openmp)
+                              private_required=self.current_order != 'isolated', openmp=self.openmp, central_crt=self.central_crt)
 
     def exercise(self):
         super().exercise()
@@ -127,6 +141,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ['sdk-prefix', 'native-evidence', 'package-evidence', 'prerequisites', 'output']:
         parser.add_argument('--' + name, type=Path, required=True)
+    parser.add_argument('--central-setup', type=Path, help='Successful same-source central prerequisite setup evidence.')
     args = parser.parse_args()
     if platform.system() != 'Windows':
         parser.error('requires actual Windows Docker host')
