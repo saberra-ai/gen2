@@ -93,6 +93,14 @@ dyld trace. The remaining four commands never started. A model-free signed C
 probe independently reproduces the suppression. A future versioned attempt
 requires process-local image diagnostics while retaining hardened signing;
 no full-app inference gate is promoted. GUI and microphone remain separate.
+The [model-free callback proof](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-process-image-callback/qualification.json)
+now verifies the actual Rust diagnostic module under hardened signing:
+47 unique images, idempotent registration and a future load/unload are observed
+while the environment trace remains suppressed. Only explicit verification
+commands register this callback. Parsing rejects malformed reserved records;
+the future qualifier requires callback history and the same complete closure.
+The original app builds and failed neural attempt remain immutable. New
+instrumented builds and a separately frozen runtime attempt are still needed.
 The separate current-profile corpus scorer preserves every valid row and all
 original quality criteria. A new frozen runner and fresh native/public corpus
 outputs are still required; historical quality failures remain unchanged.

@@ -2,6 +2,7 @@
 
 CLI recording and paced live paths only; no GUI or physical microphone.
 """
+import argparse
 import json
 import math
 import os
@@ -78,7 +79,9 @@ def recorded_matches(value, reference, bark_text, backend, wav_sha256, *, unavai
 
 def main():
     tools = Path(__file__).resolve().parent; repo = tools.parents[1]
-    protocol_path = tools / 'valid-mel-pnola-app.protocol.json'
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('--protocol', type=Path, default=tools / 'valid-mel-pnola-app.protocol.json')
+    protocol_path = parser.parse_args().protocol
     protocol_bytes = protocol_path.read_bytes(); p = json.loads(protocol_bytes)
     output = Path(p['output_path']); work = Path(p['work_path'])
     if output.exists() or output.is_symlink():
@@ -122,7 +125,7 @@ def main():
             result = output / (name + '.result.json'); executable = app / 'Contents/MacOS/pnola-desktop'
             arguments = ['--verify-live-speakers' if case['kind'] == 'live' else '--verify-bundle', str(work / 'ami.wav'), str(result)]
             variables = {**env, **({'GEN2_NEMO_EXECUTION': 'metal'} if case.get('unsupported_metal') else {})}
-            argv = ['/usr/bin/sandbox-exec', '-f', str(policy), '/usr/bin/env', 'DYLD_PRINT_LIBRARIES=1', str(executable), *arguments]
+            argv = ['/usr/bin/sandbox-exec', '-f', str(policy), str(executable), *arguments]
             command = {'name': name, 'argv': argv, 'cwd': str(output), 'environment': variables}
             commands.append(command); atomic_json(output / 'commands.json', commands); started = time.monotonic()
             try:
@@ -134,6 +137,8 @@ def main():
             if command['returncode'] != 0:
                 raise RuntimeError('complete-app command failed: ' + name)
             images = audit_app_images((output / (name + '.stderr.log')).read_text(), app, verified[backend])
+            if not images['process_local_add_image_history_observed']:
+                raise ValueError('complete app process-local image history is required')
             atomic_json(output / (name + '.images.json'), images)
             value = json.loads(result.read_text())
             if case['kind'] == 'live':

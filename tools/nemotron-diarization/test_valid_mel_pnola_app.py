@@ -32,6 +32,13 @@ class AppImageTest(unittest.TestCase):
             result = audit_app_images(trace(positive), app, verified)
             self.assertEqual(result['logical_runtime_library_count'], 2)
             self.assertEqual(result['entry_image'], ENTRY_ALIAS)
+            callback_trace = '\n'.join('PNOLA_LOADED_IMAGE_HEX ' + str(path).encode().hex() for path in positive)
+            self.assertTrue(audit_app_images(callback_trace, app, verified)['process_local_add_image_history_observed'])
+            for bad in ['PNOLA_LOADED_IMAGE_HEX zz', 'PNOLA_LOADED_IMAGE_HEX 72656c6174697665', 'PNOLA_LOADED_IMAGE_ERROR',
+                        'PNOLA_LOADED_IMAGE_HEX', 'PNOLA_LOADED_IMAGE_HEXzz', 'PNOLA_LOADED_IMAGE_HEX 2f 61',
+                        'PNOLA_LOADED_IMAGE_HEX 2F61', 'PNOLA_LOADED_IMAGE_HEX 2f6']:
+                with self.subTest(bad=bad), self.assertRaises(ValueError):
+                    audit_app_images(callback_trace + '\n' + bad, app, verified)
             for paths in [positive + [frameworks / private], positive[:-1], positive[:-2]]:
                 with self.assertRaises(ValueError):
                     audit_app_images(trace(paths), app, verified)

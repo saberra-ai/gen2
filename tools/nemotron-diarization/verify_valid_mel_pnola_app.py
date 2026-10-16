@@ -108,6 +108,20 @@ def audit_app_images(trace, app, verified):
         raise ValueError('app executable differs from static verification')
     expected = verified['frameworks']; observed = {}; saw_executable = False
     paths = set(re.findall(r'dyld\[\d+\]: <[A-Fa-f0-9-]+> (/[^\r\n]+)', trace))
+    callback_paths = set()
+    for line in trace.splitlines():
+        if line.startswith('PNOLA_LOADED_IMAGE'):
+            match = re.fullmatch(r'PNOLA_LOADED_IMAGE_HEX ((?:[0-9a-f]{2})+)', line)
+            if not match:
+                raise ValueError('invalid or failed process-local app image record')
+            try:
+                path = bytes.fromhex(match[1]).decode('utf-8')
+            except (ValueError, UnicodeDecodeError) as error:
+                raise ValueError('invalid process-local app image path') from error
+            if not path.startswith('/') or '\x00' in path:
+                raise ValueError('invalid process-local app image path')
+            callback_paths.add(path)
+    paths.update(callback_paths)
     if not paths:
         raise ValueError('missing app dyld telemetry')
     for reported in sorted(paths):
@@ -124,7 +138,8 @@ def audit_app_images(trace, app, verified):
     if not saw_executable or len(entry_choices) != 1 or set(observed) - entry_choices != required:
         raise ValueError('actual app component/provider image set differs')
     return {'executable': str(executable), 'images': observed, 'entry_image': next(iter(entry_choices)),
-            'logical_runtime_library_count': len(observed) - 1, 'ort_provider_count': 1}
+            'logical_runtime_library_count': len(observed) - 1, 'ort_provider_count': 1,
+            'process_local_add_image_history_observed': bool(callback_paths)}
 
 
 if __name__ == '__main__':

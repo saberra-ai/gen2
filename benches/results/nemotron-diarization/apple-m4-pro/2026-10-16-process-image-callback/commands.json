@@ -1,0 +1,63 @@
+[
+  {
+    "name": "compile",
+    "argv": [
+      "/Users/victor/.cargo/bin/rustc",
+      "--edition=2024",
+      "-Dwarnings",
+      "/Users/victor/.cache/gen2-nemotron3-n0/process-image-callback-v1/probe.rs",
+      "-o",
+      "/Users/victor/.cache/gen2-nemotron3-n0/process-image-callback-v1/probe"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "HOME": "/Users/victor",
+      "DYLD_PRINT_LIBRARIES": "1"
+    },
+    "returncode": 0
+  },
+  {
+    "name": "sign",
+    "argv": [
+      "/usr/bin/codesign",
+      "--sign",
+      "-",
+      "--options",
+      "runtime",
+      "/Users/victor/.cache/gen2-nemotron3-n0/process-image-callback-v1/probe"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "HOME": "/Users/victor",
+      "DYLD_PRINT_LIBRARIES": "1"
+    },
+    "returncode": 0
+  },
+  {
+    "name": "signature",
+    "argv": [
+      "/usr/bin/codesign",
+      "--display",
+      "--verbose=4",
+      "/Users/victor/.cache/gen2-nemotron3-n0/process-image-callback-v1/probe"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "HOME": "/Users/victor",
+      "DYLD_PRINT_LIBRARIES": "1"
+    },
+    "returncode": 0
+  },
+  {
+    "name": "run",
+    "argv": [
+      "/Users/victor/.cache/gen2-nemotron3-n0/process-image-callback-v1/probe"
+    ],
+    "environment": {
+      "PATH": "/usr/bin:/bin",
+      "HOME": "/Users/victor",
+      "DYLD_PRINT_LIBRARIES": "1"
+    },
+    "returncode": 0
+  }
+]

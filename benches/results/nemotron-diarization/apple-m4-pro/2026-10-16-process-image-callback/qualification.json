@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "model_free_hardened_process_image_callback_passed": true,
+  "release_qualified": false,
+  "scope": "Actual verification module compiled into a standalone model-free Rust probe, ad-hoc signed with hardened runtime, and executed once. No Pnola app, native diarization library, model or version query.",
+  "source_commit_before_delta": "31b1477b2c59d82867e96955bb00cc7c933c75c2",
+  "module": {
+    "bytes": 2575,
+    "sha256": "3eee7a80ff001df58e2b013575583facba1132c8dbc997db12b8aceb0153d350"
+  },
+  "observed_images": 47,
+  "loaded_and_unloaded_future_library": "/usr/lib/libiconv.2.dylib",
+  "dyld_environment_still_suppressed": true,
+  "registration_idempotent": true,
+  "sdk_headers": {
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/mach-o/dyld.h": {
+      "bytes": 18233,
+      "sha256": "7c8583f2b4edcfcde7da60ffe02c75974ec87f885fecc4e8d40761fe0b553a80"
+    },
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/dlfcn.h": {
+      "bytes": 3218,
+      "sha256": "04294faa7f4d8f08cef5b11c0813595ba0e87aa345677576ff62423aefa77e33"
+    }
+  },
+  "limits": [
+    "This verifies the callback mechanism under hardened signing only. Newly instrumented complete app builds and all5 prospective app-model cases still require qualification.",
+    "Actual probe executable remains local and hash-described, not included in Git. No release-signing entitlement is weakened."
+  ],
+  "files": {
+    "commands.json": {
+      "bytes": 1438,
+      "sha256": "093c2f407f31fbda49ff0d8e1176fe41e0d84221aeaed2ef3aa13426a1fb7d4d"
+    },
+    "compile.stderr.log": {
+      "bytes": 172900,
+      "sha256": "f0eda0f39e3fa4e7aada49e5f0b9c90a77398099d4f7fc615d586efc1bb177cd"
+    },
+    "compile.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "probe.rs": {
+      "bytes": 672,
+      "sha256": "e61106af6444bf5806cb7747ae803b4d8de27f4e0553759c3f3591e478c4a46c"
+    },
+    "qualify_valid_mel_pnola_app.py": {
+      "bytes": 10497,
+      "sha256": "38e73c24f438b083e13c29e4a5a12178051b7841b2b13420f53f4ed93ea68a62"
+    },
+    "result.json": {
+      "bytes": 578,
+      "sha256": "f5622ceebcac7adebc9f71e9c0fe74afd569e413e3a6d2fb1f767b31969430fc"
+    },
+    "run.stderr.log": {
+      "bytes": 4568,
+      "sha256": "53d9e17b753d21f610328e93f7ef931a06f878566f73affd37469887cae51ba9"
+    },
+    "run.stdout.log": {
+      "bytes": 30,
+      "sha256": "26bf934e23a0e7c86ebca75d3b88a8977aae522746a61d27e760bed53be67013"
+    },
+    "sign.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "sign.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "signature.stderr.log": {
+      "bytes": 899,
+      "sha256": "3b912f0d15925693dc5f2bc81d90e562a41d448b2b1fb8918e251b12136ee6c0"
+    },
+    "signature.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "test_valid_mel_pnola_app.py": {
+      "bytes": 3593,
+      "sha256": "dd429261e2bd81de2d164496edbbdee50e7034728ba1052df14f4b01ff05d053"
+    },
+    "test_valid_mel_pnola_complete_app.py": {
+      "bytes": 3406,
+      "sha256": "7d7e97551e2f12cdcf0857baa98a2f1838b8e964a6ff4b1eddd2086713d8f272"
+    },
+    "verification_images.rs": {
+      "bytes": 2575,
+      "sha256": "3eee7a80ff001df58e2b013575583facba1132c8dbc997db12b8aceb0153d350"
+    },
+    "verify-process-image-callback-v1.py": {
+      "bytes": 3292,
+      "sha256": "a74c6b5386681cfd1988dc04159391104013e5df6ebff958cdf75f8f4104c85a"
+    },
+    "verify_valid_mel_pnola_app.py": {
+      "bytes": 9794,
+      "sha256": "fc5bd7c4223169d1b020f568326872035d4c552af207e93b742498b47490d272"
+    }
+  }
+}

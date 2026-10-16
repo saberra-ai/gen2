@@ -8,6 +8,7 @@ mod live_audio;
 mod live_speakers;
 mod store;
 mod transcription;
+mod verification_images;
 use std::{path::PathBuf, sync::Arc};
 use tauri::{Manager, State, ipc::Channel};
 use transcription::Transcript;
@@ -204,6 +205,12 @@ async fn delete_live(state: State<'_, AppState>, id: String) -> Result<(), Strin
 }
 
 fn main() {
+    if matches!(
+        std::env::args().nth(1).as_deref(),
+        Some("--verify-bundle" | "--verify-live" | "--verify-live-speakers")
+    ) {
+        verification_images::start();
+    }
     if matches!(
         std::env::args().nth(1).as_deref(),
         Some("--verify-live" | "--verify-live-speakers")
