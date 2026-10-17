@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.20)
+project(gen2_cpu_profile_control LANGUAGES C CXX)
+set(CMAKE_CXX_STANDARD 17)
+add_subdirectory(source/ggml ggml-build)
+add_executable(profile-control control.cpp)
+target_link_libraries(profile-control PRIVATE ggml ggml-cpu)

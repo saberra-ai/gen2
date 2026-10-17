@@ -1,0 +1,31 @@
+{
+  "scope": "Model-free development test on macOS arm64 only; no SDK/model/Windows/release qualification",
+  "collection_completed": true,
+  "collector": {
+    "bytes": 6979,
+    "sha256": "691dab59efb3dbf322bcf0da35d1dd7e7ca7c6201acd8db2b2204a7729fb63aa"
+  },
+  "native_processes": 12,
+  "graph_evaluations": 36,
+  "canonical_source_files": 3425,
+  "compiler_sources": 27,
+  "probability_or_model_calls": 0,
+  "raw_output_bytes_each": 8192,
+  "all_outputs_bit_exact": true,
+  "full_python_tests": 407,
+  "skipped_windows_tests": 7,
+  "canonical_operation_names": 103,
+  "canonical_ggml_c_sha256": "c642c7ab0b3684717cd8ae5c1803e923b1a24736a1fc07b38b6db68744575c86",
+  "profiled_cpu_source": {
+    "bytes": 136705,
+    "sha256": "dbd58cbf43f80728ea4bdc75337aee4adb8e9651c0327af7316d70d3e949049a"
+  },
+  "production_qualified": false,
+  "windows_or_model_qualified": false,
+  "limits": [
+    "Working-tree development test; compilation subjects and corrected execution decoder are separately recorded.",
+    "CPU wall timings include internal waits, OS scheduling and observer effects; they do not establish uninstrumented kernel cost.",
+    "No actual Windows graph profile, neural inference, SDK construction or release performance result is established.",
+    "Native binaries remain in the local development cache; Git retains hashes, compile inputs, logs and all synthetic output arrays."
+  ]
+}

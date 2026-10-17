@@ -1,0 +1,1840 @@
+{
+  "scope": "Model-free development test on macOS arm64 only; no SDK/model/Windows/release qualification",
+  "completed": true,
+  "runner": {
+    "bytes": 6150,
+    "sha256": "2c9b5b7bc16b514cd96b00d66c1cd5b92d47eb2deff69eb9f2d3cbe35d4e8ecc"
+  },
+  "binary": {
+    "bytes": 1511248,
+    "sha256": "ba0c386a28929cc3ef3c3046996e4ee28c8e1b319bc43f676c9f614c89050184"
+  },
+  "execution_inputs": {
+    "bytes": 862,
+    "sha256": "d67381704dc376dcc4e06719d3eb5939e92e176d3c8ab081cce106a99697bbea"
+  },
+  "compiler_sources": {
+    "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/control.cpp": {
+      "bytes": 3127,
+      "sha256": "83e8d1d21d946561b309ac3c58247ab6de5193ee3a0a4ddd2046d62e6a9daf84"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/source/ggml/src/ggml.c": {
+      "bytes": 271747,
+      "sha256": "c642c7ab0b3684717cd8ae5c1803e923b1a24736a1fc07b38b6db68744575c86"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/source/ggml/src/ggml.cpp": {
+      "bytes": 738,
+      "sha256": "64e6b5c8d716ae8697e45481a7153540be01f721be2dc7e753aa47b36a69c753"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/source/ggml/src/ggml-alloc.c": {
+      "bytes": 47847,
+      "sha256": "213b48d6ef6d6ffef55c438db837116105de72cdae3dd152673035e61508d384"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/source/ggml/src/ggml-backend.cpp": {
+      "bytes": 99321,
+      "sha256": "2dd6a572f087a1fddaa52dbf2378b777cd21752f4b2a1292c8da3bcb05fbcfd9"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/source/ggml/src/ggml-backend-meta.cpp": {
+      "bytes": 119131,
+      "sha256": "46454efd6467cc5cca7583266acfd0484b42a09692ca3b815f4bf24de8d98519"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/source/ggml/src/ggml-opt.cpp": {
+      "bytes": 42081,
+      "sha256": "e35fd27856e37f3611d3bc6f17ee963be51bfe92bec96fad0a9fa2c7ebbe9c46"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/source/ggml/src/ggml-threading.cpp": {
+      "bytes": 250,
+      "sha256": "13a18d885393722b7c9f42d4cf8575a4d41699926d656f78a867fa4fac9dad20"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/source/ggml/src/ggml-quants.c": {
+      "bytes": 226703,
+      "sha256": "7878680cc60493f98469a116e9b14af8b84789292ccf891c249230b2fa3d157f"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/source/ggml/src/gguf.cpp": {
+      "bytes": 58330,
+      "sha256": "2293c7bd9009154da9de075c8ea49be291a9086a5d1a06984b80b80bf7a9cea9"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/source/ggml/src/ggml-cpu/ggml-cpu.c": {
+      "bytes": 136705,
+      "sha256": "dbd58cbf43f80728ea4bdc75337aee4adb8e9651c0327af7316d70d3e949049a"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/source/ggml/src/ggml-cpu/ggml-cpu.cpp": {
+      "bytes": 24943,
+      "sha256": "0a48134cecf8cefa2d10348ad6f93987272b81b9013a4fd39d8c9d089776d9c5"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/source/ggml/src/ggml-cpu/repack.cpp": {
+      "bytes": 213451,
+      "sha256": "0d604f463513bc796ffd7031f770c1706300990c0a8670a0e9000949667155c3"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/source/ggml/src/ggml-cpu/iqp.cpp": {
+      "bytes": 48342,
+      "sha256": "0e2ab5a4be4bea1dbce740a5ff436ddeac0bcfdaff6fd9edfa367dc75c069126"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/source/ggml/src/ggml-cpu/hbm.cpp": {
+      "bytes": 2003,
+      "sha256": "3c75b5aaf9b51d17060ecfb93cb5f8b22ce3974d7eff3d76dec2156d2f194b80"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/source/ggml/src/ggml-cpu/quants.c": {
+      "bytes": 45124,
+      "sha256": "a61f1011e49d05b5f99d352b158d5b8e36cf008294bb0db309f72bdd7f1d4e35"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/source/ggml/src/ggml-cpu/traits.cpp": {
+      "bytes": 1231,
+      "sha256": "a85bd3ff50c91cb67d14221988544664dfe5975db0811b330dc4a2f385239de4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/source/ggml/src/ggml-cpu/amx/amx.cpp": {
+      "bytes": 8265,
+      "sha256": "636d1e4b858a86ad6568100bbdb4bf9715d9dfb25d3831415d55e04e39acad86"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/source/ggml/src/ggml-cpu/amx/mmq.cpp": {
+      "bytes": 108216,
+      "sha256": "0f95c80e0300eca3b3a3df07272042fee708425e19cd5f2c4cba7b253b26d226"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/source/ggml/src/ggml-cpu/binary-ops.cpp": {
+      "bytes": 6709,
+      "sha256": "2df261aadce36a20f5e3bf6961d4ca27b8c2d461afc41488361ee6ad09c1730d"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/source/ggml/src/ggml-cpu/unary-ops.cpp": {
+      "bytes": 11555,
+      "sha256": "e63b382766f1b8c5ded1577be9704e85cb4e9cd24584f3e1474911a40146df33"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/source/ggml/src/ggml-cpu/vec.cpp": {
+      "bytes": 25309,
+      "sha256": "cda0babb53f9c8ff1faa7459b2c49019d15e5970dfe0c613d58e2659e919f524"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/source/ggml/src/ggml-cpu/ops.cpp": {
+      "bytes": 422746,
+      "sha256": "695e87a0a22a130b3ccd5b0aa2efb9e27062ffc4a6aace6a80f75d672980a290"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/source/ggml/src/ggml-cpu/arch/arm/quants.c": {
+      "bytes": 216963,
+      "sha256": "9fccd3897db24c9df89b8431b588175894e5f54697cf45768d0c6e6c5544093e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/source/ggml/src/ggml-cpu/arch/arm/repack.cpp": {
+      "bytes": 269785,
+      "sha256": "6a96da05d38f693bcf259ef063c0e4adf762c006a92252fd83133f7cf626b76d"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/source/ggml/src/ggml-backend-dl.cpp": {
+      "bytes": 1051,
+      "sha256": "acd76df8b83bcdef6807bc7b0520f57b379d61b4ff1027c04aa4d140d16ad07f"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/source/ggml/src/ggml-backend-reg.cpp": {
+      "bytes": 18555,
+      "sha256": "0f63c69ad083e0744872f57d59d049b069283303f5bbc646222907d779afe4d1"
+    }
+  },
+  "cases": [
+    {
+      "threads": 1,
+      "index": 0,
+      "enabled": false,
+      "argv": [
+        "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/build/profile-control",
+        "1",
+        "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/workers-1-case-0"
+      ],
+      "returncode": 0,
+      "wall_ns": 266816292,
+      "profile": {
+        "enabled": false,
+        "graphs": []
+      },
+      "outputs": {
+        "workers-1-case-0.0.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        },
+        "workers-1-case-0.1.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        },
+        "workers-1-case-0.2.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        }
+      }
+    },
+    {
+      "threads": 1,
+      "index": 1,
+      "enabled": true,
+      "argv": [
+        "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/build/profile-control",
+        "1",
+        "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/workers-1-case-1"
+      ],
+      "returncode": 0,
+      "wall_ns": 6715750,
+      "profile": {
+        "enabled": true,
+        "graph_count": 3,
+        "threads": 1,
+        "graphs": [
+          {
+            "pool": 4337549312,
+            "generation": 65537,
+            "workers": [
+              {
+                "thread": 0,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 27,
+                "final_wait_us": 0,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 5,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 22,
+                    "barrier_us": 0
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "pool": 4337549312,
+            "generation": 131073,
+            "workers": [
+              {
+                "thread": 0,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 21,
+                "final_wait_us": 0,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 2,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 18,
+                    "barrier_us": 0
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "pool": 4337549312,
+            "generation": 196609,
+            "workers": [
+              {
+                "thread": 0,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 22,
+                "final_wait_us": 0,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 2,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 20,
+                    "barrier_us": 0
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "limits": "Worker wall intervals overlap. Kernel calls include internal synchronization and OS scheduling; outer barriers and final wait are separate. Do not sum workers into graph wall time or infer arithmetic cost."
+      },
+      "outputs": {
+        "workers-1-case-1.0.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        },
+        "workers-1-case-1.1.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        },
+        "workers-1-case-1.2.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        }
+      }
+    },
+    {
+      "threads": 1,
+      "index": 2,
+      "enabled": true,
+      "argv": [
+        "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/build/profile-control",
+        "1",
+        "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/workers-1-case-2"
+      ],
+      "returncode": 0,
+      "wall_ns": 6265000,
+      "profile": {
+        "enabled": true,
+        "graph_count": 3,
+        "threads": 1,
+        "graphs": [
+          {
+            "pool": 4342595584,
+            "generation": 65537,
+            "workers": [
+              {
+                "thread": 0,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 22,
+                "final_wait_us": 0,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 4,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 18,
+                    "barrier_us": 0
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "pool": 4342595584,
+            "generation": 131073,
+            "workers": [
+              {
+                "thread": 0,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 18,
+                "final_wait_us": 1,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 1,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 16,
+                    "barrier_us": 0
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "pool": 4342595584,
+            "generation": 196609,
+            "workers": [
+              {
+                "thread": 0,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 17,
+                "final_wait_us": 0,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 1,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 16,
+                    "barrier_us": 0
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "limits": "Worker wall intervals overlap. Kernel calls include internal synchronization and OS scheduling; outer barriers and final wait are separate. Do not sum workers into graph wall time or infer arithmetic cost."
+      },
+      "outputs": {
+        "workers-1-case-2.0.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        },
+        "workers-1-case-2.1.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        },
+        "workers-1-case-2.2.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        }
+      }
+    },
+    {
+      "threads": 1,
+      "index": 3,
+      "enabled": false,
+      "argv": [
+        "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/build/profile-control",
+        "1",
+        "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/workers-1-case-3"
+      ],
+      "returncode": 0,
+      "wall_ns": 6318416,
+      "profile": {
+        "enabled": false,
+        "graphs": []
+      },
+      "outputs": {
+        "workers-1-case-3.0.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        },
+        "workers-1-case-3.1.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        },
+        "workers-1-case-3.2.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        }
+      }
+    },
+    {
+      "threads": 2,
+      "index": 0,
+      "enabled": false,
+      "argv": [
+        "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/build/profile-control",
+        "2",
+        "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/workers-2-case-0"
+      ],
+      "returncode": 0,
+      "wall_ns": 5599334,
+      "profile": {
+        "enabled": false,
+        "graphs": []
+      },
+      "outputs": {
+        "workers-2-case-0.0.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        },
+        "workers-2-case-0.1.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        },
+        "workers-2-case-0.2.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        }
+      }
+    },
+    {
+      "threads": 2,
+      "index": 1,
+      "enabled": true,
+      "argv": [
+        "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/build/profile-control",
+        "2",
+        "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/workers-2-case-1"
+      ],
+      "returncode": 0,
+      "wall_ns": 5886500,
+      "profile": {
+        "enabled": true,
+        "graph_count": 3,
+        "threads": 2,
+        "graphs": [
+          {
+            "pool": 4335927296,
+            "generation": 65538,
+            "workers": [
+              {
+                "thread": 0,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 14,
+                "final_wait_us": 1,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 2,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 10,
+                    "barrier_us": 1
+                  }
+                ]
+              },
+              {
+                "thread": 1,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 14,
+                "final_wait_us": 0,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 3,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 11,
+                    "barrier_us": 0
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "pool": 4335927296,
+            "generation": 131074,
+            "workers": [
+              {
+                "thread": 0,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 8,
+                "final_wait_us": 0,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 1,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 7,
+                    "barrier_us": 0
+                  }
+                ]
+              },
+              {
+                "thread": 1,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 8,
+                "final_wait_us": 0,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 1,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 7,
+                    "barrier_us": 0
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "pool": 4335927296,
+            "generation": 196610,
+            "workers": [
+              {
+                "thread": 0,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 8,
+                "final_wait_us": 0,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 0,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 7,
+                    "barrier_us": 1
+                  }
+                ]
+              },
+              {
+                "thread": 1,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 8,
+                "final_wait_us": 0,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 0,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 7,
+                    "barrier_us": 1
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "limits": "Worker wall intervals overlap. Kernel calls include internal synchronization and OS scheduling; outer barriers and final wait are separate. Do not sum workers into graph wall time or infer arithmetic cost."
+      },
+      "outputs": {
+        "workers-2-case-1.0.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        },
+        "workers-2-case-1.1.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        },
+        "workers-2-case-1.2.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        }
+      }
+    },
+    {
+      "threads": 2,
+      "index": 2,
+      "enabled": true,
+      "argv": [
+        "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/build/profile-control",
+        "2",
+        "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/workers-2-case-2"
+      ],
+      "returncode": 0,
+      "wall_ns": 5880333,
+      "profile": {
+        "enabled": true,
+        "graph_count": 3,
+        "threads": 2,
+        "graphs": [
+          {
+            "pool": 4330831872,
+            "generation": 65538,
+            "workers": [
+              {
+                "thread": 0,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 14,
+                "final_wait_us": 2,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 2,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 10,
+                    "barrier_us": 0
+                  }
+                ]
+              },
+              {
+                "thread": 1,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 13,
+                "final_wait_us": 0,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 4,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 9,
+                    "barrier_us": 0
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "pool": 4330831872,
+            "generation": 131074,
+            "workers": [
+              {
+                "thread": 0,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 10,
+                "final_wait_us": 0,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 1,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 9,
+                    "barrier_us": 0
+                  }
+                ]
+              },
+              {
+                "thread": 1,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 10,
+                "final_wait_us": 0,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 1,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 9,
+                    "barrier_us": 0
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "pool": 4330831872,
+            "generation": 196610,
+            "workers": [
+              {
+                "thread": 0,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 12,
+                "final_wait_us": 1,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 0,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 11,
+                    "barrier_us": 0
+                  }
+                ]
+              },
+              {
+                "thread": 1,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 7,
+                "final_wait_us": 0,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 0,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 6,
+                    "barrier_us": 0
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "limits": "Worker wall intervals overlap. Kernel calls include internal synchronization and OS scheduling; outer barriers and final wait are separate. Do not sum workers into graph wall time or infer arithmetic cost."
+      },
+      "outputs": {
+        "workers-2-case-2.0.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        },
+        "workers-2-case-2.1.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        },
+        "workers-2-case-2.2.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        }
+      }
+    },
+    {
+      "threads": 2,
+      "index": 3,
+      "enabled": false,
+      "argv": [
+        "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/build/profile-control",
+        "2",
+        "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/workers-2-case-3"
+      ],
+      "returncode": 0,
+      "wall_ns": 5794417,
+      "profile": {
+        "enabled": false,
+        "graphs": []
+      },
+      "outputs": {
+        "workers-2-case-3.0.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        },
+        "workers-2-case-3.1.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        },
+        "workers-2-case-3.2.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        }
+      }
+    },
+    {
+      "threads": 4,
+      "index": 0,
+      "enabled": false,
+      "argv": [
+        "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/build/profile-control",
+        "4",
+        "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/workers-4-case-0"
+      ],
+      "returncode": 0,
+      "wall_ns": 5674250,
+      "profile": {
+        "enabled": false,
+        "graphs": []
+      },
+      "outputs": {
+        "workers-4-case-0.0.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        },
+        "workers-4-case-0.1.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        },
+        "workers-4-case-0.2.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        }
+      }
+    },
+    {
+      "threads": 4,
+      "index": 1,
+      "enabled": true,
+      "argv": [
+        "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/build/profile-control",
+        "4",
+        "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/workers-4-case-1"
+      ],
+      "returncode": 0,
+      "wall_ns": 5682875,
+      "profile": {
+        "enabled": true,
+        "graph_count": 3,
+        "threads": 4,
+        "graphs": [
+          {
+            "pool": 4311285760,
+            "generation": 65540,
+            "workers": [
+              {
+                "thread": 0,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 13,
+                "final_wait_us": 2,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 2,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 8,
+                    "barrier_us": 1
+                  }
+                ]
+              },
+              {
+                "thread": 1,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 11,
+                "final_wait_us": 2,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 2,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 6,
+                    "barrier_us": 1
+                  }
+                ]
+              },
+              {
+                "thread": 2,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 12,
+                "final_wait_us": 2,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 2,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 8,
+                    "barrier_us": 0
+                  }
+                ]
+              },
+              {
+                "thread": 3,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 11,
+                "final_wait_us": 0,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 4,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 6,
+                    "barrier_us": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "pool": 4311285760,
+            "generation": 131076,
+            "workers": [
+              {
+                "thread": 0,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 5,
+                "final_wait_us": 0,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 1,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 4,
+                    "barrier_us": 0
+                  }
+                ]
+              },
+              {
+                "thread": 1,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 4,
+                "final_wait_us": 0,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 1,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 3,
+                    "barrier_us": 0
+                  }
+                ]
+              },
+              {
+                "thread": 2,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 6,
+                "final_wait_us": 0,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 1,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 4,
+                    "barrier_us": 0
+                  }
+                ]
+              },
+              {
+                "thread": 3,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 5,
+                "final_wait_us": 0,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 1,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 4,
+                    "barrier_us": 0
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "pool": 4311285760,
+            "generation": 196612,
+            "workers": [
+              {
+                "thread": 0,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 5,
+                "final_wait_us": 0,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 0,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 5,
+                    "barrier_us": 0
+                  }
+                ]
+              },
+              {
+                "thread": 1,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 4,
+                "final_wait_us": 0,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 0,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 4,
+                    "barrier_us": 0
+                  }
+                ]
+              },
+              {
+                "thread": 2,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 5,
+                "final_wait_us": 0,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 0,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 5,
+                    "barrier_us": 0
+                  }
+                ]
+              },
+              {
+                "thread": 3,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 5,
+                "final_wait_us": 0,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 0,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 5,
+                    "barrier_us": 0
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "limits": "Worker wall intervals overlap. Kernel calls include internal synchronization and OS scheduling; outer barriers and final wait are separate. Do not sum workers into graph wall time or infer arithmetic cost."
+      },
+      "outputs": {
+        "workers-4-case-1.0.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        },
+        "workers-4-case-1.1.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        },
+        "workers-4-case-1.2.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        }
+      }
+    },
+    {
+      "threads": 4,
+      "index": 2,
+      "enabled": true,
+      "argv": [
+        "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/build/profile-control",
+        "4",
+        "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/workers-4-case-2"
+      ],
+      "returncode": 0,
+      "wall_ns": 5749292,
+      "profile": {
+        "enabled": true,
+        "graph_count": 3,
+        "threads": 4,
+        "graphs": [
+          {
+            "pool": 4368760832,
+            "generation": 65540,
+            "workers": [
+              {
+                "thread": 0,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 12,
+                "final_wait_us": 3,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 1,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 7,
+                    "barrier_us": 1
+                  }
+                ]
+              },
+              {
+                "thread": 1,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 10,
+                "final_wait_us": 2,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 2,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 6,
+                    "barrier_us": 0
+                  }
+                ]
+              },
+              {
+                "thread": 2,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 11,
+                "final_wait_us": 1,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 3,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 6,
+                    "barrier_us": 1
+                  }
+                ]
+              },
+              {
+                "thread": 3,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 11,
+                "final_wait_us": 1,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 3,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 6,
+                    "barrier_us": 1
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "pool": 4368760832,
+            "generation": 131076,
+            "workers": [
+              {
+                "thread": 0,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 5,
+                "final_wait_us": 0,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 1,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 4,
+                    "barrier_us": 0
+                  }
+                ]
+              },
+              {
+                "thread": 1,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 5,
+                "final_wait_us": 0,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 1,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 3,
+                    "barrier_us": 0
+                  }
+                ]
+              },
+              {
+                "thread": 2,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 4,
+                "final_wait_us": 0,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 1,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 3,
+                    "barrier_us": 0
+                  }
+                ]
+              },
+              {
+                "thread": 3,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 4,
+                "final_wait_us": 0,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 1,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 3,
+                    "barrier_us": 0
+                  }
+                ]
+              }
+            ]
+          },
+          {
+            "pool": 4368760832,
+            "generation": 196612,
+            "workers": [
+              {
+                "thread": 0,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 8,
+                "final_wait_us": 0,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 1,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 7,
+                    "barrier_us": 0
+                  }
+                ]
+              },
+              {
+                "thread": 1,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 4,
+                "final_wait_us": 0,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 1,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 3,
+                    "barrier_us": 0
+                  }
+                ]
+              },
+              {
+                "thread": 2,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 8,
+                "final_wait_us": 0,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 1,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 6,
+                    "barrier_us": 0
+                  }
+                ]
+              },
+              {
+                "thread": 3,
+                "nodes": 3,
+                "roots": 2,
+                "fused": 1,
+                "skipped": 0,
+                "topology": "49af58d9b0001634",
+                "execution": "70d68729fc9a9a83",
+                "elapsed_us": 7,
+                "final_wait_us": 0,
+                "operations": [
+                  {
+                    "id": 25,
+                    "name": "RMS_NORM",
+                    "roots": 1,
+                    "fused": 1,
+                    "kernel_us": 1,
+                    "barrier_us": 0
+                  },
+                  {
+                    "id": 29,
+                    "name": "MUL_MAT",
+                    "roots": 1,
+                    "fused": 0,
+                    "kernel_us": 6,
+                    "barrier_us": 0
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "limits": "Worker wall intervals overlap. Kernel calls include internal synchronization and OS scheduling; outer barriers and final wait are separate. Do not sum workers into graph wall time or infer arithmetic cost."
+      },
+      "outputs": {
+        "workers-4-case-2.0.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        },
+        "workers-4-case-2.1.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        },
+        "workers-4-case-2.2.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        }
+      }
+    },
+    {
+      "threads": 4,
+      "index": 3,
+      "enabled": false,
+      "argv": [
+        "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/build/profile-control",
+        "4",
+        "/Users/victor/.cache/gen2-nemotron3-n0/ggml-cpu-profile-control-local-v2/workers-4-case-3"
+      ],
+      "returncode": 0,
+      "wall_ns": 5730875,
+      "profile": {
+        "enabled": false,
+        "graphs": []
+      },
+      "outputs": {
+        "workers-4-case-3.0.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        },
+        "workers-4-case-3.1.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        },
+        "workers-4-case-3.2.f32": {
+          "bytes": 8192,
+          "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+        }
+      }
+    }
+  ],
+  "production_qualified": false,
+  "all_36_outputs_bit_exact_across_worker_counts": true
+}

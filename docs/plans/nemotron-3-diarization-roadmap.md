@@ -132,6 +132,12 @@ Remaining release work as of 2026-10-17:
   1.067797/1.086572; every case exceeds one and the 10% speedup prediction fails.
   Numerical parity is restored for this configuration, but performance,
   production/public/lifecycle and package gates remain open.
+  The next [CPU operation timing diagnostic](../research/nemotron-windows-cpu-ops-profile.md)
+  now implements timers around existing fused-kernel/barrier boundaries without
+  changing graph splitting or fusion. Its Mac model-free controls pass twelve
+  processes and all 36 byte-identical synthetic outputs across one/two/four
+  workers. All 407 Python tests pass. The actual Windows model profile and its
+  frozen orchestration remain pending; these controls supply no release pass.
   Then merge and
   push the completed feature to main; no main promotion is justified yet.
 
