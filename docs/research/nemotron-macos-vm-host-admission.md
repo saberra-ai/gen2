@@ -124,3 +124,13 @@ All 288 model-free tests pass in 11.670 seconds. Original v1/v2 files and failed
 receipts remain unchanged. All other signing, no-guest, offline, storage,
 cleanup and deadline gates remain unchanged. Review and commit before actual
 v3 invocation; no v3 helper or image operation has run at preregistration.
+
+The [actual v3 attempt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-host-mounted-key-failure/collection-qualification.json)
+at `a8700acec1a714adbb24c56b23ebfd41aeb2c174` passes all 22 children, including
+the observed physical-store/container/volume bridge and explicit mount. The
+reported mountpoint, device and APFS filesystem agree. It remains failed:
+`diskutil info -plist` omits the assumed `Mounted` key, so validation raises
+before `Path.is_mount()` or the dummy write. Cleanup detaches the exact image,
+confirms absence and releases the reserve. The 67-member receipt preserves all
+evidence and current/historical sources. Reported mount success is not a passed
+filesystem stat/write, root-owned Data-volume or VM/fresh-machine gate.

@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "source_commit": "a8700acec1a714adbb24c56b23ebfd41aeb2c174",
+  "host_prerequisites_passed": false,
+  "fresh_machine_qualified": false,
+  "release_qualified": false,
+  "actual_commands": 22,
+  "zero_status_commands": 22,
+  "failure": "mounted-info has no Mounted boolean; checker fails before filesystem stat/write control",
+  "actual_virtualization_support_query_passed": true,
+  "four_cpu_eight_gib_within_host_limits": true,
+  "one_entitlement_adhoc_hardened_helper_executed": true,
+  "blank_image_create_attach_and_mount_commands_passed": true,
+  "observed_store_container_volume_bridge_verified": true,
+  "mountpoint_and_device_reported": true,
+  "filesystem_stat_or_write_control_passed": false,
+  "exact_image_detached": true,
+  "storage_reserve_released": true,
+  "actual_physical_partition": "/dev/disk12s1",
+  "actual_container": "disk13",
+  "actual_volume": "/dev/disk13s1",
+  "mounted_global_permissions_enabled": false,
+  "helper": {
+    "bytes": 86272,
+    "sha256": "fad65660177c7d66176277c303b5486af118a9afa8c89f5d988a8d10f86043b6"
+  },
+  "detached_blank_image": {
+    "bytes": 268435456,
+    "sha256": "d7500a3b01cfbb328f932b7b47bf0a8d95cfda2406ed4660a22e38d630312c2f"
+  },
+  "current_historical_source_pins_verified": 13,
+  "external_descriptors_verified": 30,
+  "model_free_tests_passed": 288,
+  "new_helper_or_model_or_vm_or_image_calls_during_collection": 0,
+  "local_only_global_inventory_stdout": {
+    "after-image.stdout.log": {
+      "bytes": 7269,
+      "sha256": "38575c04a11a7fe42ce0bb5873ed5937acbb632f8d924f37bd7a85d577de40b7"
+    },
+    "attached-image.stdout.log": {
+      "bytes": 8722,
+      "sha256": "fbe9c9dedf8eb7944d6d2579c3daa348c0c2f3b1156e7a485924428e3eab1c27"
+    },
+    "before-image.stdout.log": {
+      "bytes": 7269,
+      "sha256": "38575c04a11a7fe42ce0bb5873ed5937acbb632f8d924f37bd7a85d577de40b7"
+    },
+    "before-mount.stdout.log": {
+      "bytes": 8722,
+      "sha256": "fbe9c9dedf8eb7944d6d2579c3daa348c0c2f3b1156e7a485924428e3eab1c27"
+    },
+    "cleanup-image.stdout.log": {
+      "bytes": 8850,
+      "sha256": "7078c14dc8fdf6c179611a91a043de437462036afe7ab1d9e19d48598f18d135"
+    }
+  },
+  "limits": [
+    "Original V3 remains failed. Actual mount command/metadata and safe image bridge verify, but absent Mounted key stops before independent stat or file write.",
+    "No blank-volume write permission, root-owned Data permission, OS acquisition/restore, VM creation/boot, guest/app/model, GUI/microphone, fresh-machine or release qualification.",
+    "Exact owned image is detached and mount absent. Global inventory, image/executable remain local by hash."
+  ]
+}

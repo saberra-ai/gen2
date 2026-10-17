@@ -27,6 +27,10 @@ Remaining release work as of 2026-10-17:
   failed before mount/write because a fixed `s2` query differs from the observed
   unique physical `s1` partition. The new image is detached and reserve released;
   VM/guest/fresh-machine qualification remains open.
+  The [actual v3 attempt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-host-mounted-key-failure/collection-qualification.json)
+  passes the observed store/container/volume bridge and mount command, then
+  fails before filesystem stat/write because diskutil omits an assumed
+  `Mounted` key. Cleanup succeeds; write permission and VM gates remain open.
 - Finish each advertised platform/backend's performance, deployment and public
   signing/notarization requirements before promotion. Windows CPU functional
   evidence passes but its observed live RTF remains above one. Then merge and
