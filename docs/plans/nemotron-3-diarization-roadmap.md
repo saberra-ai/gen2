@@ -89,6 +89,12 @@ passes at `00b067f6`: 123 package entries retain exact bytes/modes/aliases and
 model/card/license/bundle provenance matches. All 107 private source files remain
 unchanged; 15 Node and three overlay tests pass. This is isolated resource staging,
 not bounded-profile complete-app construction, signing or execution.
+The [bounded complete-app construction protocol](../research/nemotron-bounded-pnola-construction.md)
+now prepares an isolated private-source snapshot and exact dependency clone,
+guarded overlay/Cargo relocation, fresh offline build and unchanged hardened
+ad-hoc/static checks. All 277 model-free tests pass. Actual artifact admission
+must pass after reviewed commit before source copying or building; no complete
+bounded app has yet been constructed or executed by this new controller.
 
 Latest pooled CPU verification passes [30m/1h streams](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-long/collection-qualification.json),
 [mixed-model residency](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-mixed/collection-qualification.json)
