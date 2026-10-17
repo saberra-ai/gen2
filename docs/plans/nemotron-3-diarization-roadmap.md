@@ -173,8 +173,13 @@ Remaining release work as of 2026-10-17:
   the standalone harness because the original half-conversion table is missing.
   All 44 command cleanups pass; no benchmark case, SDK or model runs. Preserve the
   failure and version the harness correction, including valid unsupported-path
-  controls and explicit OpenMP exclusion. A kernel result cannot establish model
-  RTF or release qualification. Then merge and
+  controls and explicit OpenMP exclusion. The separately versioned
+  [corrected harness](../research/nemotron-windows-q8-tile-v2.md) now implements
+  the original half table with complete independent finite-value checks, explicit
+  process-exit rejection controls and OpenMP exclusion. All 437 local Python
+  tests pass with seven Windows-only skips; actual corrected Windows construction
+  and execution remain unperformed. A kernel result cannot establish model RTF
+  or release qualification. Then merge and
   push the completed feature to main; no main promotion is justified yet.
 
 The [bounded CPU public Rust protocol](../research/nemotron-bounded-public-runtime.md)

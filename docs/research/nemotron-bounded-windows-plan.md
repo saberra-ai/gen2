@@ -113,9 +113,13 @@ all 32 Python/Job controls, exact source admission and 44 command cleanups, then
 fails linking the standalone harness: the original half-conversion table is
 missing. No benchmark case, SDK or model runs. Preserve that failure and version
 the harness correction, including valid unsupported-path controls and explicit
-OpenMP exclusion. This model-free experiment cannot establish model RTF, qualify
-a production SDK or close the remaining package, quality, human-review or desktop
-gates.
+OpenMP exclusion. The [separately versioned correction](nemotron-windows-q8-tile-v2.md)
+now supplies the original half table with complete independent finite-value
+checks, explicit process-exit guards and OpenMP exclusion. All 437 local tests
+pass with seven Windows-only skips; actual corrected Windows construction and
+execution remain unperformed. This model-free experiment cannot establish model
+RTF, qualify a production SDK or close the remaining package, quality,
+human-review or desktop gates.
 
 The new [producer](../../tools/nemotron-diarization/platform_bounded_windows_native.py),
 [composed-source verifier](../../tools/nemotron-diarization/platform_bounded_sources.py)
