@@ -2,6 +2,26 @@
 
 Status: N0–N3 implemented and verified on macOS arm64 CPU; N4/N5 remain open. Development receipts do not establish a supported desktop release.
 
+Remaining release work as of 2026-10-17:
+
+- Finish the bounded CPU runtime's mixed Bark/Laya/Metal-chat qualification and
+  carry the selected runtime through complete-app verification. Its 30-minute
+  and one-hour native/public checks now pass; earlier complete-app results use
+  the separately identified pooled runtime.
+- Meet the original 20% DER target on every required meeting slice. The two AMI
+  channels still fail despite exact native/public parity and passing Q8 bounds.
+- Obtain manually checked word boundaries and independent review for attribution
+  validation. This human work is documented and deferred at the user's request;
+  no human reference or passing N4 quality result is claimed.
+- Verify actual Pnola GUI, microphone, playback/IPC timing and fresh-machine
+  operation. Same-host complete-app CLI evidence does not close these checks.
+  GitHub private-app transfer/authentication was skipped; a local VM route is
+  [researched only](../research/nemotron-local-vm-receiver.md).
+- Finish each advertised platform/backend's performance, deployment and public
+  signing/notarization requirements before promotion. Windows CPU functional
+  evidence passes but its observed live RTF remains above one. Then merge and
+  push the completed feature to main; no main promotion is justified yet.
+
 The [bounded CPU public Rust protocol](../research/nemotron-bounded-public-runtime.md)
 adds exact-tag admission and now passes M1 public/lifecycle qualification.
 Its native SDK also passes full 12/60-second C ABI parity and observed warm RTF
