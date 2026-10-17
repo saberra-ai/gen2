@@ -8,7 +8,11 @@ Its native SDK already passes full 12/60-second C ABI parity and observed warm
 RTF below one. Public Rust execution under this identity remains pending; the
 new protocol requires actual local admission of both complete deliveries before
 the M1 run. Original quality, human-word, GUI/microphone and release gates remain
-open. Feature CI at `05c5ac15` completed successfully in all 13 jobs.
+open. Feature CI at `05c5ac15` completed successfully in all 13 jobs. The
+[actual local public preflight](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-bounded-public-admission/collection-qualification.json)
+now admits all 200/44 delivery members at `c4e3ceac` without SDK restoration,
+helper construction, asset acquisition or model execution. The 13-member
+receipt retains the exact artifact identities and passing model-free checks.
 
 Latest pooled CPU verification passes [30m/1h streams](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-long/collection-qualification.json),
 [mixed-model residency](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-mixed/collection-qualification.json)

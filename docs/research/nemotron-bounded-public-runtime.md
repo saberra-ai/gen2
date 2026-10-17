@@ -55,3 +55,13 @@ Actual public qualification, long/mixed-model and app/platform checks under
 this runtime identity remain pending. The original 20% per-slice DER, human word
 gold, GUI/microphone, fresh-machine, public signing and release gates remain
 open; main remains unchanged.
+
+The [actual local admission receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-bounded-public-admission/collection-qualification.json)
+now passes at committed source `c4e3ceac`. All 200 construction and 44 native
+members, both opaque ZIPs, full API identity contracts and successful native
+origin qualify. The 13-member collection includes the loader regression's
+red/green logs, all Rust/Python test results and Clippy result. No SDK is restored,
+no work/build/helper/result tree is created, and no asset or model execution
+starts. The actual controller returns zero and releases its physical reserve.
+Both review axes independently verify the preregistration; the separate M1
+public Rust numerical/realtime/lifecycle execution remains pending.
