@@ -104,6 +104,11 @@ Remaining release work as of 2026-10-17:
   Its114-member failure receipt preserves that uncertainty. No SDK installation,
   Clang build or model case is reached. Version process cleanup before retrying
   the unchanged compiler experiment; no performance optimization is qualified.
+  The separate [ownership correction](../research/nemotron-windows-compiler-diagnostic-v2.md)
+  now preregisters exact controller-only derivation, retained wrapped status and
+  membership-scoped process snapshots, normal-background cleanup and actual
+  Windows regressions before the unchanged compiler experiment. Execution is
+  pending; original producer inputs and all acceptance requirements are preserved.
   Then merge and
   push the completed feature to main; no main promotion is justified yet.
 

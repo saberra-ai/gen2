@@ -42,6 +42,13 @@ identities. No SDK installation, Clang build or model case is reached. A version
 owned-background-process cleanup correction is required before the unchanged
 experiment can complete; no compiler speed improvement is established.
 
+The separate [versioned ownership correction](nemotron-windows-compiler-diagnostic-v2.md)
+adds retained wrapped status and membership-scoped PID/image observations, drains
+owned background descendants on normal exit and retains verified-empty cleanup
+before returning status. New Windows regression gates precede the original
+compiler experiment; actual execution remains pending. Every original inference,
+portable ISA, numerical and production acceptance requirement stays unchanged.
+
 The new [producer](../../tools/nemotron-diarization/platform_bounded_windows_native.py),
 [composed-source verifier](../../tools/nemotron-diarization/platform_bounded_sources.py)
 and [workflow](../../.github/workflows/diarization-bounded-windows-native.yml) use a
