@@ -1,0 +1,848 @@
+{
+  "schema_version": 1,
+  "scope": "Metadata-only parent-relative inspection of known guest directories on a fresh paired clone and DataRO mount. No permission repair, account content, enumeration, provisioning, VM/network/SSH/private app/model or release qualification.",
+  "output_parent": "/Users/victor/.cache/gen2-nemotron3-n0",
+  "output_name": "macos-vm-permissions-inspect-local-v1",
+  "expected_cpu": "Apple M4 Pro",
+  "tools": {
+    "qualify_macos_vm_restore.py": {
+      "bytes": 9694,
+      "sha256": "22e6e29f62b74ab8df762144e817a4c351a6bd4c15f978b81fec6f313d313ae0"
+    },
+    "macos_restore_download.py": {
+      "bytes": 6665,
+      "sha256": "1b7279233cd2c1d3fa60f6c146b7fbf59e8938c60db1195956e44c29951a610f"
+    },
+    "macos_vm_restore_metrics.py": {
+      "bytes": 4075,
+      "sha256": "71a596ab78eef843c59e7dd24340cc0e92eea9758769041ca9c039ec9966b57b"
+    },
+    "macos_vm_restore_probe.swift": {
+      "bytes": 6810,
+      "sha256": "791f3ad964d8d46aa906a221098737ce02a177dd986f05f2639a86cb41ef1fee"
+    },
+    "test_macos_restore_download.py": {
+      "bytes": 4373,
+      "sha256": "7ee8e45f1c0e6f2e8f83d234b93f95a9669df7bf98ce46cb5b0c2da712b8b33d"
+    },
+    "test_macos_vm_restore_metrics.py": {
+      "bytes": 4791,
+      "sha256": "c85f2d67058e3d095e34a60c49ec0c88398123da94244071dab7aa1df468364e"
+    },
+    "qualify_macos_vm_host_v4.py": {
+      "bytes": 14901,
+      "sha256": "b473ee4228e7239551e4dc3a9176709883872b63dea2415d96c8a6bae6cccb8f"
+    },
+    "qualification_storage.py": {
+      "bytes": 3914,
+      "sha256": "8bbb4dfe53797d8d03c3ba18f24acce8458878602c1c85f28a4f816d6f4416f6"
+    },
+    "frozen_git_sources.py": {
+      "bytes": 2468,
+      "sha256": "ceb594332b9112fb75b708dff53628630443b52d600d470ccb0e44b777a14bc5"
+    },
+    "macos_vm_host.entitlements": {
+      "bytes": 243,
+      "sha256": "5d95521eb14d3cce9af386b484a3c01d767df8681e56d277d999a8f2fa1aa85b"
+    },
+    "macos_vm_apple_LICENSE.txt": {
+      "bytes": 1054,
+      "sha256": "1579cf4277a10cfda67566cbd6e2feea6dc29d5d358ff63fac24d7de9c7d7b82"
+    },
+    "test_macos_vm_host_cleanup.py": {
+      "bytes": 2694,
+      "sha256": "b8cbc8d3757a15d0934572364cb6e95c42a8fa4ea949975b41bfb89c64d7827b"
+    },
+    "qualify_macos_vm_install.py": {
+      "bytes": 13746,
+      "sha256": "38f6f015330d66bfaacea20cae18fa9b61071092d5a54e5dae7f952734325feb"
+    },
+    "macos_vm_install_owner.swift": {
+      "bytes": 14805,
+      "sha256": "3f08aae9fb9d85757cf1dfa37b07091b824f44df585c666da727dbad66b09387"
+    },
+    "macos_vm_seed_clone.py": {
+      "bytes": 3269,
+      "sha256": "2227fcd67cd66231753f586d437cf5ff8a1989f5bf30a4010d458bd2ee9ad93c"
+    },
+    "macos_vm_install_supervision.py": {
+      "bytes": 2792,
+      "sha256": "4630d46c76db8897539df7f886581115f5c037efcde43416ab3357c1bb6d68b0"
+    },
+    "macos_vm_install_metrics.py": {
+      "bytes": 5409,
+      "sha256": "bd278b446ced02f240a8a7ce2059a6d049b9bfbe04a2169546cf91728b8656ef"
+    },
+    "test_macos_vm_install_controls.py": {
+      "bytes": 4196,
+      "sha256": "ac780a2d8d816c9ebadfe27254e7b3b4065e13b3cc1f841de66f490051450962"
+    },
+    "test_macos_vm_install_metrics.py": {
+      "bytes": 5810,
+      "sha256": "9c156f0b7615b3475309cde3dd799641ef49d2d58484afb45d2c2b5e7ee048df"
+    },
+    "qualify_macos_vm_boot.py": {
+      "bytes": 21933,
+      "sha256": "49c2c29196d66775e60b14afc6230eb03d213c97db770b5872052f2ca67fab96"
+    },
+    "macos_vm_boot_owner.swift": {
+      "bytes": 15995,
+      "sha256": "65dff18eb4ce72a7864a44c315944fd6852feee0c0d3c162791a6b4ffbafe163"
+    },
+    "macos_vm_boot_metrics.py": {
+      "bytes": 6193,
+      "sha256": "7f59d061ef86743f73085aa966f7866b94c4b7a58f82ca8431dd9e3545ab6efd"
+    },
+    "test_macos_vm_boot_metrics.py": {
+      "bytes": 4970,
+      "sha256": "774d83d1cfee8fb8bcaba6ee76fe669162b88bfcd257d1119f3ad55c8e2bf8ee"
+    },
+    "macos_vm_host_metrics.py": {
+      "bytes": 2862,
+      "sha256": "4cd96239eebc3aa51888f01719c879f4aea767052084fd5902325ae277121425"
+    },
+    "qualify_macos_vm_data.py": {
+      "bytes": 23734,
+      "sha256": "acd7c31f4308f9a61936780cd5e2ecf44cce8a40a92b9d877e9d7692e638583f"
+    },
+    "macos_vm_data_metrics.py": {
+      "bytes": 4804,
+      "sha256": "47b019f400d7e3caf2dab4bb31687f8750b71c631fc1d776df86142a67dd3d41"
+    },
+    "macos_vm_data_probe.py": {
+      "bytes": 9651,
+      "sha256": "3c6c9f01b5141ffc1f0db0a8e25538cd3adcb8407eaf366a128083578a7efafb"
+    },
+    "test_macos_vm_data_metrics.py": {
+      "bytes": 4339,
+      "sha256": "0ea53e620040dc86befb1c5263a6afa73d01e98d491dc1ea71f35397e46efeb7"
+    },
+    "test_macos_vm_data_probe.py": {
+      "bytes": 3424,
+      "sha256": "788f5a1aef7d9e9daf4c5c738b62fb9272240f947154022c386e5557b3ff03e0"
+    },
+    "qualify_macos_vm_permissions_inspect.py": {
+      "bytes": 24439,
+      "sha256": "5c49d7542cd0dae4b0a76051be79741bf269914a94917d185068cbebdf8c3fcd"
+    },
+    "macos_vm_permissions_probe.py": {
+      "bytes": 9468,
+      "sha256": "22b1a69b124c0366200e5c293ddb42eb38b6f72f215c64454bf29ec311ba011b"
+    },
+    "test_macos_vm_permissions_probe.py": {
+      "bytes": 5547,
+      "sha256": "9390dc5861a35292e1b7f70ea15a7862a25268b5f7819e65367fe4cba38b1cf8"
+    }
+  },
+  "external_files": {
+    "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc": {
+      "bytes": 171036592,
+      "sha256": "2ed38571e92c0283091838c1649e27650ad9c99950288e883c7b2dc6c4ce89fb"
+    },
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/SDKSettings.json": {
+      "bytes": 7774,
+      "sha256": "f8d005f09381389167f9e0aeaa169bc9e7dff162ef22ca2fd8e98df7ff1acafe"
+    },
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Virtualization.framework/Headers/VZVirtualMachine.h": {
+      "bytes": 16444,
+      "sha256": "c0930c82624081b69e967bccafa6cd01e9c3b87eb4e168b9a0bb6b525fa035a9"
+    },
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Virtualization.framework/Headers/VZVirtualMachineConfiguration.h": {
+      "bytes": 9153,
+      "sha256": "9986ada4806b74ee0d4084646778a4c29f8917e72870477ab4ae5cd78f413253"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/research/local-vm-receiver/alternative/manifest.json": {
+      "bytes": 6444,
+      "sha256": "0bab2f296d4d0d8b8360c10500c29f2a36e41f4130a8cf9b91849b7e653c8c3f"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/research/local-vm-receiver/alternative/sample_LICENSE.txt": {
+      "bytes": 1054,
+      "sha256": "1579cf4277a10cfda67566cbd6e2feea6dc29d5d358ff63fac24d7de9c7d7b82"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/research/local-vm-receiver/alternative/sample_InstallationTool.entitlements": {
+      "bytes": 243,
+      "sha256": "5d95521eb14d3cce9af386b484a3c01d767df8681e56d277d999a8f2fa1aa85b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/research/local-vm-receiver/alternative/sample_Swift_Common_MacOSVirtualMachineConfigurationHelper.swift": {
+      "bytes": 4576,
+      "sha256": "c87025e1c1cbfeafa9a41147335d23ff9999cd0a7dcae23ee0a7eefd5b4cc3e2"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/research/local-vm-receiver/alternative/sample_Swift_InstallationTool_MacOSVirtualMachineInstaller.swift": {
+      "bytes": 8386,
+      "sha256": "db8c85b4455385d9c0a609c1c8ca469c443a6cb86d64efd73e9475237d3e2a18"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/prepare-macos-vm-host-v1.py": {
+      "bytes": 5674,
+      "sha256": "5fe5005be99230412d965e4f7720fc983d9604dca6678fe92f219326762b9b03"
+    },
+    "/usr/bin/codesign": {
+      "bytes": 459536,
+      "sha256": "9755ad3afc25a3ce6f8c281425ff732a5819f0b973846b7641a11892a2081abc"
+    },
+    "/usr/bin/hdiutil": {
+      "bytes": 732864,
+      "sha256": "bb4193c195bfb04160f13001dd64746db3e64c42f8be711d3d91c193749efc6f"
+    },
+    "/usr/sbin/diskutil": {
+      "bytes": 1942832,
+      "sha256": "ee2993c9acea94db3f8a42136597dff46709ba59783fe574fd5580839bbf1766"
+    },
+    "/usr/bin/otool": {
+      "bytes": 118880,
+      "sha256": "506cb2ddd061e2992c8ee7c53853340688b53d9fcec94c3aa936524cea5b40cb"
+    },
+    "/usr/bin/lipo": {
+      "bytes": 118880,
+      "sha256": "506cb2ddd061e2992c8ee7c53853340688b53d9fcec94c3aa936524cea5b40cb"
+    },
+    "/usr/bin/sandbox-exec": {
+      "bytes": 102560,
+      "sha256": "2f447acfae7a954ccb5a1bcf3a1955f69b1a8549c434ddff643df98fd3cb33ba"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/prepare-macos-vm-host-v2.py": {
+      "bytes": 3112,
+      "sha256": "9ef1ebeede957e77d2061683ea6d7bf070b0598f56a8b3a1c813dd183b4bbb46"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/qualification.json": {
+      "bytes": 9241,
+      "sha256": "0ccbb1fb20bd63818bbb0d342ce7133ba5910b00a0d19b641bce901a7c84bee5"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/protocol.json": {
+      "bytes": 24107,
+      "sha256": "04a260ccb84aa64f190e7b0e333c94b1fbc8fc522b0e18644dcb3e450d05ccaf"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-host-entitlements-format-failure/collection.json": {
+      "bytes": 5514,
+      "sha256": "38995319cb191883a577a37b8168b4a5b83b3c7e76f2c22c3e8dbc0797611611"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-host-entitlements-format-failure/collection-qualification.json": {
+      "bytes": 1763,
+      "sha256": "cd01e3e2b05fd9bb44f6fd7b485e3c9c86839c38e2ca3d991e99f17abfccf499"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/vm-host-entitlements-xml-control-v1.json": {
+      "bytes": 943,
+      "sha256": "ad5dbc08c659c81a670ed3cb8bd45aad58687f771b96eabb5226cd19b70d5fd9"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/vm-host-entitlements-xml-control-v1.stdout.log": {
+      "bytes": 235,
+      "sha256": "ca3c678fb76c21598af231adc0b839d2a776804a3b4dba93575776a6278651e7"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/vm-host-entitlements-xml-control-v1.stderr.log": {
+      "bytes": 97,
+      "sha256": "77af8278a6229937e6421fdb357b550661b53d68f1d683e2b8416f77a40b9e9a"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/prepare-macos-vm-host-v3.py": {
+      "bytes": 4377,
+      "sha256": "4497c13298dac2d791c1644b4e93e88148b224b705e4d5660c71e31c633413e4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v2/qualification.json": {
+      "bytes": 18196,
+      "sha256": "593348f3694b64b05da1a4e438575e54cc7099d25dd591858208f59d1c716730"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v2/protocol.json": {
+      "bytes": 26523,
+      "sha256": "cda59fc8d5237951ca572bc7ec5e054d76b510ee41b8470adefe7b9f69d78a43"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v2/attached-image.own-image.json": {
+      "bytes": 1178,
+      "sha256": "5f167516bea40c82c35eb2b20e69716fd9cf7db0fe95094d7788e0b5d6d3e2c8"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-host-partition-failure/collection.json": {
+      "bytes": 8038,
+      "sha256": "df9b765a8c1428202fc4594dbeaec00020d119aed76435fbba4438cd4b376477"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-host-partition-failure/collection-qualification.json": {
+      "bytes": 2376,
+      "sha256": "1bb77716f7d6bca9a46a478e4d9775b17deb40ab0b90fa1055a534e400204f3f"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/prepare-macos-vm-host-v4.py": {
+      "bytes": 3900,
+      "sha256": "e7835e136d5ec2de781772ac4a6ca782ed43284e175bb15f034e3d633325df9a"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v3/qualification.json": {
+      "bytes": 21316,
+      "sha256": "66073db29c49ee64a28369556629ef90185cd1410a3e5e03a0c6d7a42c5bce33"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v3/protocol.json": {
+      "bytes": 28891,
+      "sha256": "0085c336fba32f56d2ef474ba08f45345718813a31bea87b3f12c90f4d75aaaf"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v3/mounted-info.stdout.log": {
+      "bytes": 3064,
+      "sha256": "1214a8804e12a363ea3c1f677f50b9ee1e369211988fd06c1479237584c1b1e5"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-host-mounted-key-failure/collection.json": {
+      "bytes": 9651,
+      "sha256": "fd03f1b806ba47bd61e18a655e38c26e3786a76498d0aaa41d9b922dd0d8e345"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-host-mounted-key-failure/collection-qualification.json": {
+      "bytes": 2652,
+      "sha256": "4033b31160875e03bb131835b0056071897fae083ddb844dcf7b07d482039ec9"
+    },
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Virtualization.framework/Headers/VZMacOSRestoreImage.h": {
+      "bytes": 4545,
+      "sha256": "cdabc7ccba448bec052b0c6170b1607edc897d976b50857512c86205bf31a3c1"
+    },
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Virtualization.framework/Headers/VZMacOSConfigurationRequirements.h": {
+      "bytes": 2386,
+      "sha256": "70ebcf0b6b82af77a4db7d9e860f408342bbe9116a55a96a132d39d5be0c104b"
+    },
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Virtualization.framework/Headers/VZMacHardwareModel.h": {
+      "bytes": 2913,
+      "sha256": "43e8f2bdd0e5a636350188713a06bc66711ab431f2af6f80873a5258309b2890"
+    },
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Virtualization.framework/Headers/VZMacMachineIdentifier.h": {
+      "bytes": 1859,
+      "sha256": "666350820cb68c77961134d3e1648f3ffb448929d7414074eda63a6972267bb6"
+    },
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Virtualization.framework/Headers/VZMacAuxiliaryStorage.h": {
+      "bytes": 4104,
+      "sha256": "b677aebc40056eac288aedf3cee2016716dde8cbec2c9eb46e4ddb69915207c0"
+    },
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Virtualization.framework/Headers/VZMacPlatformConfiguration.h": {
+      "bytes": 2221,
+      "sha256": "e2526c9938f6b2464e4d70798e7e164c377d6f78b5216fcdf00ac37e448878cf"
+    },
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Virtualization.framework/Headers/VZMacOSBootLoader.h": {
+      "bytes": 737,
+      "sha256": "c691070de56eff83b35811dfcd3a2ce5b948a5badffffe106d54e233d4aba47b"
+    },
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Virtualization.framework/Headers/VZMacGraphicsDeviceConfiguration.h": {
+      "bytes": 772,
+      "sha256": "eff7d17ec619bea75fed53542e5f9380f50a8562b03b48e80a627d396a7d315b"
+    },
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Virtualization.framework/Headers/VZMacGraphicsDisplayConfiguration.h": {
+      "bytes": 1941,
+      "sha256": "dc1876168df871750055da3e789b39681e62c1af74b5219af1e8d9bd18ab5b12"
+    },
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Virtualization.framework/Headers/VZUSBKeyboardConfiguration.h": {
+      "bytes": 534,
+      "sha256": "f67fb295a68bc1faadf89ddcd9d287f0a20479ed8045d94314cac5d13a4c9d83"
+    },
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Virtualization.framework/Headers/VZUSBScreenCoordinatePointingDeviceConfiguration.h": {
+      "bytes": 635,
+      "sha256": "4b902d33db56e338206ba112340be2cc15ef7d7059fdc5dae2a71ab950afec43"
+    },
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Virtualization.framework/Headers/VZVirtioNetworkDeviceConfiguration.h": {
+      "bytes": 794,
+      "sha256": "0f1d004353558c9db6e274e68fe1ec4856a75235d81414533f70d46ce5f5f4c7"
+    },
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Virtualization.framework/Headers/VZMACAddress.h": {
+      "bytes": 2909,
+      "sha256": "fccf17029e38f0add4f413941da974f31baa1a8e6279cdf89c23a67405e1a7f1"
+    },
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Virtualization.framework/Headers/VZNATNetworkDeviceAttachment.h": {
+      "bytes": 719,
+      "sha256": "84a2a66bad86b3e0251920fc4a72831be461fec6e591609465da2d49b2311e0c"
+    },
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Virtualization.framework/Headers/VZVirtioBlockDeviceConfiguration.h": {
+      "bytes": 2160,
+      "sha256": "9b780eb4a3e2e100adb38dfdac3f4bfb1ec990a7a9f7b8ac1d675794ab4d4737"
+    },
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Virtualization.framework/Headers/VZDiskImageStorageDeviceAttachment.h": {
+      "bytes": 4876,
+      "sha256": "70d1d99ce2f698b04dc4a65f865f0e44d1f65cf501b2f9ae698215c8a478cbb2"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/prepare-macos-vm-restore-v1.py": {
+      "bytes": 6908,
+      "sha256": "730d1306495d8d78705de9d72494df7b6f89145037d65194ed2a55f0c670c47b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/python-reference/bin/python": {
+      "bytes": 18073936,
+      "sha256": "96793b100c947cdc81a38e8fb8c9c1889abccda9840ce1bef58d372bf3f2c263"
+    },
+    "/usr/bin/python3": {
+      "bytes": 118880,
+      "sha256": "506cb2ddd061e2992c8ee7c53853340688b53d9fcec94c3aa936524cea5b40cb"
+    },
+    "/usr/sbin/sysctl": {
+      "bytes": 119280,
+      "sha256": "9d5d4e70c0c228d366a48149771c652962efaf2d22b96731ff653ae45194bb16"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-host-prerequisites/collection.json": {
+      "bytes": 10425,
+      "sha256": "85ed67f048784847f5f650467500ba5012c4d33666cc384236524ff20000c66f"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-host-prerequisites/collection-qualification.json": {
+      "bytes": 2849,
+      "sha256": "ded901f7dbeb7f56744e7b72bd3262c3cf5c850394caa3390a7cfed4489d6068"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-host-prerequisites/qualification.json": {
+      "bytes": 21997,
+      "sha256": "cc227e6be42c71764e72615ea3b209b98ec31ae4fdeb6277db6d29f07daa3e91"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v4/qualification.json": {
+      "bytes": 21997,
+      "sha256": "cc227e6be42c71764e72615ea3b209b98ec31ae4fdeb6277db6d29f07daa3e91"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/research/local-vm-receiver/lifecycle/manifest.json": {
+      "bytes": 3577,
+      "sha256": "a485d02690807b8114826daa9d22610cb97c5655d2e89303589926328800429b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/research/local-vm-receiver/lifecycle/sdk-headers.json": {
+      "bytes": 3816,
+      "sha256": "badaf143e874898f855543487d8eed841c30dc2d421cb03890f6efd2a413585d"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/prepare-macos-vm-install-v1.py": {
+      "bytes": 8248,
+      "sha256": "5094effb0cd180d060980cb3c4dd7de971e436881b848b747a45ab11b6e8b6dc"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-restore-no-boot/collection.json": {
+      "bytes": 6720,
+      "sha256": "a263d5d650760973d4a887d0e5887cb068e3828da6463a9a212f21a2e6af818a"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-restore-no-boot/collection-qualification.json": {
+      "bytes": 2670,
+      "sha256": "cd9f5fc4ba49d6f8e83348097ea900bb1bea9c93c31133ac32a76ec747b3946f"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-restore-no-boot/qualification.json": {
+      "bytes": 16676,
+      "sha256": "7dd6969063cc7ff39e48714a48f90445a7bcfe1a4d78665663088d53abab4594"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/qualification.json": {
+      "bytes": 16676,
+      "sha256": "7dd6969063cc7ff39e48714a48f90445a7bcfe1a4d78665663088d53abab4594"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/protocol.json": {
+      "bytes": 37148,
+      "sha256": "295b99634fa5e0d460e8b5ad97433559d8cc1841056da880864e08c9ea8d1aa4"
+    },
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/clonefile.h": {
+      "bytes": 2490,
+      "sha256": "1efe4ef4241c360905ecc40092245334725a9f1b208be8886ce87e2538b89cbd"
+    },
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Foundation.framework/Headers/NSError.h": {
+      "bytes": 13397,
+      "sha256": "38eb1743d3fe217c51c438de7d1ba4b8dd87d928e31948d7511147eee80ca9ee"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/research/local-vm-receiver/installer-seed/manifest.json": {
+      "bytes": 1289,
+      "sha256": "1fe912b685ce577ca7d3feb411df7d561739f5a7d98f6bf9059f22a47b380751"
+    },
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Virtualization.framework/Modules/Virtualization.swiftmodule/arm64e-apple-macos.swiftinterface": {
+      "bytes": 2660,
+      "sha256": "6b29ddfba3041365b1ae7e0c3fdf5911a19c49696da307760352fe884ba26c5f"
+    },
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Virtualization.framework/Headers/VZMacOSInstaller.h": {
+      "bytes": 5863,
+      "sha256": "849d357e1f17885b17ec649f329a36050f472f29e1e952b291399d49ba6c6cfd"
+    },
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Virtualization.framework/Headers/VZVirtualMachineDelegate.h": {
+      "bytes": 1851,
+      "sha256": "8e238811b3bb2feb9f0e06355db44afc522639619d7b58d11e6f5921d8e2ed8f"
+    },
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/System/Library/Frameworks/Virtualization.framework/Headers/VZError.h": {
+      "bytes": 4481,
+      "sha256": "6cda7bb0920d0a872b1c5a2afe6a43b47ea96512ff51c523350cf27fcd8749c5"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/prepare-macos-vm-boot-v1.py": {
+      "bytes": 8403,
+      "sha256": "2bdc826f0c1dddc7231cfcec2d5763770dc88e51ff78db7806fac2b91bdaae55"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-install-stopped/collection.json": {
+      "bytes": 8135,
+      "sha256": "94da9d91ce08372fd19803b4fe4db76894e57e01f2d41cf8d76f43550ab340e8"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-install-stopped/collection-qualification.json": {
+      "bytes": 3399,
+      "sha256": "4c3843a1c9ab063815312c87d4abf85dbc905ba5079994f861998cad773711c8"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-install-stopped/qualification.json": {
+      "bytes": 23100,
+      "sha256": "44b602ad11f4b377d6f8daa49151eb3a327e66f5823f6a2d0a9d03dff0399f71"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/qualification.json": {
+      "bytes": 23100,
+      "sha256": "44b602ad11f4b377d6f8daa49151eb3a327e66f5823f6a2d0a9d03dff0399f71"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/protocol.json": {
+      "bytes": 43435,
+      "sha256": "17492869193fe933a8b8e2279820759ccd49d8acf5bd2589566e4c618aa748f9"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/owner.lock": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/usr/share/man/man1/hdiutil.1": {
+      "bytes": 77981,
+      "sha256": "ad8a8a5b2bb3b35b68adbdabb26a46fc7bd52bbdcb5a20054603968f098b8a85"
+    },
+    "/usr/share/man/man8/diskutil.8": {
+      "bytes": 102667,
+      "sha256": "49cb89da31420099bfb871e889cc72bde69606ca3a8abac1b4a4f2a87f84889e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/prepare-macos-vm-data-v1.py": {
+      "bytes": 9106,
+      "sha256": "4251a881f305226e999e7cb8f32ddf701a9df7973ab3cd45564ad9fd30129025"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-boot-stopped-readonly/collection.json": {
+      "bytes": 14538,
+      "sha256": "bec01406ff247365bdda51a780513228418a71cc79315bda0c4689a5e0c2852f"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-boot-stopped-readonly/collection-qualification.json": {
+      "bytes": 4402,
+      "sha256": "d5cc815b58618b62662c523b117e0c93e7f703daf57d489707741ddca45a8ad9"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-boot-stopped-readonly/qualification.json": {
+      "bytes": 60216,
+      "sha256": "8bfed5af3b47a4394a9cd2131d37324e7262368a3b92e25d966afb29b7ad5e89"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-boot-local-v1/qualification.json": {
+      "bytes": 60216,
+      "sha256": "8bfed5af3b47a4394a9cd2131d37324e7262368a3b92e25d966afb29b7ad5e89"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-boot-local-v1/protocol.json": {
+      "bytes": 47014,
+      "sha256": "7987614a1d9e7533a405d0a1bb9ee6d729c8861a9d836b43a34572cf7c88acfe"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-boot-local-v1/owner.lock": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/usr/share/man/man8/mount.8": {
+      "bytes": 9473,
+      "sha256": "f5e446f1c7938511ff03ca22da0b0cffbad9e6a101be5b14277d195682cfb29e"
+    },
+    "/usr/share/man/man1/sw_vers.1": {
+      "bytes": 2681,
+      "sha256": "54ff76cfaf39b8822a8f711e07503605dcbdaf56785fd46ff45cfbb94dd3f3b5"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/prepare-macos-vm-permissions-inspect-v1.py": {
+      "bytes": 9311,
+      "sha256": "d32b5b8ad1087e373055e4aecb03f911ad5c916f4da30bca826cb02e2a093d8a"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-data-failure/collection.json": {
+      "bytes": 15339,
+      "sha256": "25dcfa01b80c8dac006d77537dccd1f65df143feb52967f10abee5e765139e22"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-data-failure/qualification.json": {
+      "bytes": 67235,
+      "sha256": "3ad132e8f70b9e5615b2bb70f30c68de8c131c6cb5248903938964d6d314deaa"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-data-failure/collection-qualification.json": {
+      "bytes": 4877,
+      "sha256": "5ae1d75bee0405cca4b7acbea00b5aada4d5e6126e91440a69082cf3a38af5ba"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-data-local-v1/qualification.json": {
+      "bytes": 67235,
+      "sha256": "3ad132e8f70b9e5615b2bb70f30c68de8c131c6cb5248903938964d6d314deaa"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-data-local-v1/protocol.json": {
+      "bytes": 49945,
+      "sha256": "dce55dbba080b3e3c457b0277cb42a56e38b4e894d4e56658b58ef0572d9b072"
+    },
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/attr.h": {
+      "bytes": 27496,
+      "sha256": "5118b9245bc932bc32dcc60084b1e40d70bb5479a360b31cdbf188ef866deefe"
+    },
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/include/sys/kauth.h": {
+      "bytes": 16639,
+      "sha256": "9c8808c918bb6fb8c4f9854f7c34d7d51b2017de8e19f4bfc67cf82b7553d0b4"
+    },
+    "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk/usr/share/man/man2/getattrlist.2": {
+      "bytes": 64312,
+      "sha256": "7245ddb55249fdd758a7687118d095a0e6277fc63cf287a6d4bdcd6a583fc0bd"
+    }
+  },
+  "boot_prerequisite": {
+    "receipt": "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-boot-stopped-readonly",
+    "local_root": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-boot-local-v1",
+    "source_commit": "8c76eb8ad9764f134ea74432d54df8a72a46bc91",
+    "seed_identity": {
+      "disk.img": {
+        "device": 16777233,
+        "inode": 72431188,
+        "bytes": 107374182400,
+        "allocated_bytes": 22359080960,
+        "mode": 384,
+        "uid": 502,
+        "links": 1,
+        "mtime_ns": 1792227309899557422,
+        "ctime_ns": 1792227309899557422
+      },
+      "auxiliary-storage.bin": {
+        "device": 16777233,
+        "inode": 72431186,
+        "bytes": 33579164,
+        "allocated_bytes": 1421312,
+        "mode": 384,
+        "uid": 502,
+        "links": 1,
+        "mtime_ns": 1792227175822583097,
+        "ctime_ns": 1792227175822583097
+      },
+      "hardware-model.bin": {
+        "device": 16777233,
+        "inode": 72431190,
+        "bytes": 132,
+        "allocated_bytes": 4096,
+        "mode": 384,
+        "uid": 502,
+        "links": 1,
+        "mtime_ns": 1792224584261275851,
+        "ctime_ns": 1792227161337998848
+      },
+      "machine-id.bin": {
+        "device": 16777233,
+        "inode": 72431192,
+        "bytes": 68,
+        "allocated_bytes": 4096,
+        "mode": 384,
+        "uid": 502,
+        "links": 1,
+        "mtime_ns": 1792224584266412771,
+        "ctime_ns": 1792227161338488891
+      }
+    }
+  },
+  "failed_access_prerequisite": {
+    "receipt": "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-data-failure",
+    "source_commit": "ec80cca155b7d214c42922f0fc88d3182f9658ed"
+  },
+  "denied_paths": [
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-metal-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp",
+    "/Users/victor/.cache/gen2-nemotron3-n0/__pycache__",
+    "/Users/victor/.cache/gen2-nemotron3-n0/ami-error-localization-5113a30",
+    "/Users/victor/.cache/gen2-nemotron3-n0/ami-prefix-diagnostic-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/ami-prefix-diagnostic-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/ami-prefix-inputs-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/ami-reference-diagnostic-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/assets",
+    "/Users/victor/.cache/gen2-nemotron3-n0/bounded-cpu-policy-work-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/bounded-long-admission-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/bounded-long-empty-assets-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/bounded-long-inputs-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/bounded-long-local-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/bounded-macos-construction-ci-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/bounded-mixed-admission-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/bounded-mixed-empty-models-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/bounded-mixed-inputs-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/bounded-mixed-local-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/bounded-native-admission-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/bounded-native-ci-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/bounded-native-ci-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/bounded-native-inputs-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/bounded-pnola-complete-app-inputs-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/bounded-pnola-complete-app-runtime-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/bounded-pnola-complete-app-runtime-v1-admission",
+    "/Users/victor/.cache/gen2-nemotron3-n0/bounded-pnola-construction-admission-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/bounded-pnola-construction-local-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/bounded-pnola-staging-local-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/bounded-pnola-staging-test-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/bounded-public-admission-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/bounded-public-ci-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/bounded-public-empty-assets-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/bounded-public-inputs-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/bounded-public-rust-target-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/calibration-graph-probe-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/calibration-graph-probe-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/calibration-graph-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/calibration-graph-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/context-development-diagnostic-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/context-development-diagnostic-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/context-development-execution-inputs-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/context-development-execution-inputs-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/context-development-inputs-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/context-diagnostic-collection-v2-unadmitted",
+    "/Users/victor/.cache/gen2-nemotron3-n0/context-preparation-collection-v1-unadmitted",
+    "/Users/victor/.cache/gen2-nemotron3-n0/context-probe-construction-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/cpu-threads-ci-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/cpu-threads-inputs-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/cpu-threads-prepare-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/cpu-threads-prepare-v1-replayed-helpers",
+    "/Users/victor/.cache/gen2-nemotron3-n0/current-valid-mel-linux-runtime-ci-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/current-valid-mel-windows-restored-runtime-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/current-valid-mel-windows-runtime-ci-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/current-valid-mel-windows-runtime-collection-tools-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/current-valid-mel-windows-runtime-collection-tools-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/current-valid-mel-windows-runtime-collection-tools-v3",
+    "/Users/victor/.cache/gen2-nemotron3-n0/development-segmentation-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/evidence-tools-env",
+    "/Users/victor/.cache/gen2-nemotron3-n0/failed-c-api-load-control-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/frontend-control-build",
+    "/Users/victor/.cache/gen2-nemotron3-n0/frontend-diagnostic-ec88564",
+    "/Users/victor/.cache/gen2-nemotron3-n0/frontend-tail-probe-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/hardened-dyld-diagnostics-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/hcrc-word-review-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/linux-chat-fixture-metadata",
+    "/Users/victor/.cache/gen2-nemotron3-n0/live-frontier-analysis-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/macos-sandbox-regex-control-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-boot-collection-before-provenance-review-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-data-local-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v3",
+    "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v4",
+    "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/n4-frozen-ami-app-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/native-f32-conversion-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/native-f32-execution-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/native-pool-patch-source-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-ami-inputs-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-ami-runtime-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-calibration-inputs-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-calibration-runtime-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-env-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/paced-public-inputs-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/paced-public-probe-construction-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/paced-public-runtime-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/package-cpu-n5",
+    "/Users/victor/.cache/gen2-nemotron3-n0/package-cpu-n5-final",
+    "/Users/victor/.cache/gen2-nemotron3-n0/package-cpu-n5-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/package-metal-n5",
+    "/Users/victor/.cache/gen2-nemotron3-n0/platform-ci",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pnola-n4-base",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pnola-n4-live-ui-qa",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pnola-n4-qa",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pnola-n5-base",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pool-comparison-ci-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pool-header-controller-replay-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pool-header-replay-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cleanup-diagnostic-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cleanup-final-control-v3",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cleanup-settled-control-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-profile-ci-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-long-local-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-macos-construction-ci-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-macos-construction-ci-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-mixed-build-tools-preflight-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-mixed-local-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-mixed-local-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-mixed-local-v3",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-native-ci-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-native-local-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-native-local-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-build-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-inputs-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-inputs-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-runtime-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-runtime-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-profile-staging-green-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-profile-staging-legacy-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-profile-staging-red-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-public-ci-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-public-local-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable desktop preparation",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-cpu-pnola-app-build-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-cpu-pnola-app-delivery-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-cpu-profile-ci-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-runtime-ci-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-runtime-ci-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-pool-probe-build-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-pool-probe-build-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-pool-probe-link-v3",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-pool-selftest-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-receiver-admission-preflight-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/process-image-callback-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/python-reference",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality-corpus-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/receipts",
+    "/Users/victor/.cache/gen2-nemotron3-n0/release CPU qualification d01ef80",
+    "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification 024a88f",
+    "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a",
+    "/Users/victor/.cache/gen2-nemotron3-n0/release Metal mixed placement 8572cc8",
+    "/Users/victor/.cache/gen2-nemotron3-n0/release Metal qualification d01ef80",
+    "/Users/victor/.cache/gen2-nemotron3-n0/release Metal qualification e2ba4df",
+    "/Users/victor/.cache/gen2-nemotron3-n0/relocated CPU candidate",
+    "/Users/victor/.cache/gen2-nemotron3-n0/relocated Metal candidate",
+    "/Users/victor/.cache/gen2-nemotron3-n0/relocated Pnola candidate",
+    "/Users/victor/.cache/gen2-nemotron3-n0/relocated Pnola frameworks candidate",
+    "/Users/victor/.cache/gen2-nemotron3-n0/relocated mixed models",
+    "/Users/victor/.cache/gen2-nemotron3-n0/relocated package n5",
+    "/Users/victor/.cache/gen2-nemotron3-n0/research",
+    "/Users/victor/.cache/gen2-nemotron3-n0/sampler-control-path-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/sdk-cpu",
+    "/Users/victor/.cache/gen2-nemotron3-n0/sdk-metal",
+    "/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-cpu-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-tagged-cpu-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-tagged-metal-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/tagged-valid-mel-probes-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/tagged-valid-mel-public-inputs-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/tagged-valid-mel-qualification-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/tail-framing-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-candidate-build-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-cpu-long-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-finish-probe-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-finish-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-linux-delivered-runtime-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-linux-package-ci-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-linux-runtime-ci-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-load-probe-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-loader-preflight-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-package-qualification-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-package-qualification-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-package-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-runtime-inputs-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-sandbox-diagnosis-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-load-control-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-long-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-long-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-macos-package-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-preparation-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-pristine-preflight-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-static-preflight-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-helper-build-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-runtime-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-ci-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-app-build-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-app-cpu-snapshot-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-inputs-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-runtime-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-runtime-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-debug-source-snapshot-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-helper-build-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-helper-build-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-instrumented-app-build-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-metal-app-build-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-metal-app-build-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-runtime-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-runtime-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-source-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-metadata-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-metal-build-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-windows-restored-runtime-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-windows-runtime-ci-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-windows-runtime-collection-tools-v1",
+    "/Users/victor/.ssh",
+    "/Users/victor/Library/Keychains",
+    "/Users/victor/workspace/gen2",
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results",
+    "/Users/victor/workspace/pnola"
+  ],
+  "storage": {
+    "start_minimum": 128849018880,
+    "running_minimum": 85899345920,
+    "reserve_bytes": 268435456
+  },
+  "command_timeout_seconds": 120,
+  "limits": [
+    "Reviewed committed source/protocol required before invocation. Preserve passing100-member boot receipt and104-member failed-access receipt; do not touch/remount/read the failed clone. One fresh output/pairedclone from qualified stopped booted source, physical M4Pro only, no retry. Source/new exclusive locks held through clone/attachment/mount/metadata/cleanup.",
+    "Exactly four descriptor-anchored fclonefileat(CLONE_NOFOLLOW) calls with no fallback, fresh600 owned single-link regular distinct-inode destinations under700. Original stopped seed identities and bounded metadata remain unchanged. Never read/hash100GiB disk; OSclone and stat provenance only. Source remains operationally frozen, not protected from its owner/privileged processes.",
+    "Initial120GiB/running80GiB/physical256MiB reserve. All children offline/model/private-read denied and original/repositorywrite denied; actual negative controls precede clone. New fresh host scratchdir only for a bounded getattrlistat ABI control before any guest attachment. No VM/build/sign, hostsudo/credentials/Keychain/security/settings/ownershipDB/listeners, guestaccount/SSH/privateapp/model or permission repair.",
+    "Actual control and guest queries request only ATTR_CMN_EXTENDED_SECURITY using pinned Xcode26.5 attrlist24B/bitmapcount5/common0x00400000/FSOPT_NOFOLLOW1, nativeDarwinarm64/c_ulong8, 65536B zeroed buffer, explicit errno. Validate uint32length and relative int32offset/uint32length including zero-length references, bounds/alignment/truncation; retain rawbytes/base64/hash plus status/errno. Host scratch success qualifies syscall path only, never guestACL support.",
+    "Native kauth_filesec recognized only for magic0x012cc16d and exact44+24*N layout with N<=128 (NOACL0xffffffff useszeroentries). Count0 is distinct fromNOACL. Canonical one-attribute zero length is12/offset8/length0; null0/0 retained as unknown/unparsed, never recognized or an access verdict. All ACL policy qualification flags remainfalse. Unsupported/denied/unparsed metadata is not emptyACL or permission to change modes.",
+    "Attach only exact freshRAW readonly/nomount/nobrowse/plist, verifywriteablefalse. Discover ownGUIDwhole/physicalchildren/scopedcontainers and strict uniqueSystem/Data group with physicalstoreUUID/containerUUID/groupUUID/allvolumeUUIDs/roles agreeing. No fixed disk/index/name/firstData selection. Mount only selected Data readOnly/nobrowse/noowners at privatepoint; validate currentUUID/group/store/path/APFS/WritableVolumefalse/OSreadonly/distinctstdev/permissionsfalse. System remainsunmounted.",
+    "Probe verifies its openedrootfd against independentlyvalidatedactualDataRO. Literal known provisioning directory prefixes only, at mostsix target paths/sharedancestors; no directoryenumeration or account/file/hostkeycontents. Before every open: parent-relative stat NOFOLLOW captures fullmode/type/inode/device/links/flags/size/times/apparentUIDGID, rejectsymlink/crossfilesystem; query boundedsecurity metadata, re-stat sameidentity, then attempt normal readonlydirectoryopen and comparefstat. Preserve EACCES/ENOENT as observations and markunreacheddescendants explicitly; unexpectedexceptions retainpartialrows andcloseallfds.",
+    "Inspection PASS requires actual users-entry stat reached and completeprobezeroexit with zero permissionchanges and all account/enumeration/access/provisioning/ownershipclaimsfalse, plus strictpair/mount/sourcepreservation andteardown. It does not require a successful usersopen or supported ACL; those remain explicit rawoutcomes. data_access_passed andprepared_guest remainfalse evenifinspectionpasses. Missing usersmetadata isfailedinspection, never guesswhy.",
+    "Free reserve before cleanup, ignoreSIGTERM/INT during boundedcleanup; admission/persist failures cannot veto teardown. Bindcurrentownimageentities+UUID/store before normalunmount, verify noMountPoint/is_mount, continue exactcurrentown-image detach evenif memberquery/unmountfails, verifyabsence, releasebothlocksafterward. No force/silent retry. Failurequarantinesclone; do not inferguestreadiness from metadata or successfulteardown.",
+    "Keep paired binaries/disk and globalHDIinventorieslocal. Publicreceipt contains only scopedmetadata/rawACL buffers/generatedscratchcontrol and globalinventoryhashes/ownfilteredrecords. No fullOS/kernel/runtimeclosure claim. No chmod/chown/ACL/flags repair, storedguestownership, authenticatedSSH, freshmachinecompleteapp, GUI/mic/playback/IPC, originalquality/humantiming, platformperformance or publicsigning/release/main promotion. Any later boundedguestchange needs separate declaredadmission andactualverification."
+  ]
+}

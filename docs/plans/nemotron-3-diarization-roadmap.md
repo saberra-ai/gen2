@@ -46,10 +46,13 @@ Remaining release work as of 2026-10-17:
   a separately declared fresh-clone permission investigation precedes provisioning.
   No account/SSH configuration or private payload transfer is established.
   The [parent-relative metadata diagnostic](../research/nemotron-macos-vm-permissions-inspect.md)
-  is prepared but unexecuted: it uses another fresh clone/DataRO mount to capture
-  mode/flags/ACL metadata before opening the denied directory, with no repair or
-  directory enumeration. Its result cannot substitute for DataRW access or guest
-  provisioning, and a zero-length ACL attribute is not an absence/policy verdict.
+  now retains a96-member failed inspection at `af3055c8`: the fresh clone/DataRO
+  pair and parent metadata pass, but `Default` is mode0600 and users/groups stat
+  returns EACCES before child metadata. This supports a search-bit hypothesis;
+  no permission change or repair is demonstrated. Cleanup/source preservation
+  and all326 model-free tests pass. The clone stays quarantined. DataRW access,
+  stored ownership and guest provisioning remain open; canonical zero-length
+  security attributes do not establish ACL absence or policy.
 - Finish each advertised platform/backend's performance, deployment and public
   signing/notarization requirements before promotion. Windows CPU functional
   evidence passes but its observed live RTF remains above one; the

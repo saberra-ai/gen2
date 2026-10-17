@@ -1,6 +1,7 @@
 # Parent-relative stopped-guest permission inspection
 
-Status on 2026-10-17: prepared, not executed. The
+Status on 2026-10-17: executed at committed source `af3055c82a9c6e988c39642a26097243a2390c16`;
+inspection fails before users metadata, with partial parent metadata retained. The
 [failed Data access receipt](nemotron-macos-vm-data.md) validates the pair and
 mounts but stops at users-directory EACCES before writes. This diagnostic uses a
 fresh paired clone of the original qualified stopped booted seed, not that failed
@@ -16,7 +17,52 @@ canonical/null security references, distinct empty/NOACL layouts, truncation and
 offset hazards, denied-open metadata retention, symlink confinement and partial
 failure descriptor cleanup. Tests do not establish actual guest permissions.
 All326 model-free tests pass; both review axes cleared the current source before
-committed invocation. Actual metadata/ABI behavior remains unverified here.
+committed invocation. Actual metadata/ABI observations are recorded below.
+
+## Actual result
+
+The [96-member failure receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-permissions-failure/collection-qualification.json)
+preserves all27 actual command results:26 return zero; only the permission probe
+returns1. Four enforced clones preserve the original stopped booted seed. The
+strict System/Data UUID pairing and selected DataRO mount pass, as does the
+task-owned host ABI control. No VM or installer runs in this attempt.
+
+Parent-relative stat and ordinary directory open succeed for
+`private/var/db/dslocal/nodes/Default`. Its observed mode is `0600`, flags0,
+inode17958, filesystem device16777269. Both child lookups (`users` and `groups`)
+then fail at stat with EACCES13, before their own metadata/security query or open.
+The parent has no search bit; this is evidence supporting a search-permission
+hypothesis, not an actual repair result or proof that adding a bit suffices.
+The mounted noowners UID502/GID20 does not establish stored guest ownership.
+
+All11 accessible directory security queries and the host control return the
+canonical12-byte `12/8/0` packed response, retained with raw bytes and SHA256.
+The ABI shape is recognized, but ACL policy qualification stays false: this
+response alone cannot distinguish absent from unsupported ACL metadata. The
+users/groups ACLs remain unreached. No directory enumeration, account content,
+permission change or provisioning occurs.
+
+Normal unmount, no-MountPoint observation, exact image detach/absence, original
+seed preservation and both exclusive-lock releases pass. All22 storage checks
+stay above the80GiB running floor; minimum observed free space is131442155520B.
+The physically allocated256MiB reserve is released. The failed clone remains
+quarantined and must not be reused. Six raw global image inventories stay local;
+only their hashes and scoped own-image records enter the receipt.
+
+The saved-data collector rechecks32 current/copied/historical sources,102 external
+descriptors,99 prior boot members and103 failed-access members without another
+attachment, mount, clone or native query. The inherited pre-attach disk evidence
+label refers to earlier installation; no inspected-seed success is claimed here.
+All326 model-free tests pass. Inspection, Data access, stored ownership, prepared
+guest, readiness, fresh-machine app and release flags remain false.
+
+A future fresh-clone experiment may test a separately declared temporary owner
+search-bit change on the observed parent, with exact identity checks and mode
+restoration on every exit. It must first qualify that operation in the selected
+runtime and inspect child metadata before considering any child change. This
+receipt authorizes no mode/ACL/flag fallback and does not satisfy DataRW access.
+
+## Frozen protocol
 
 The controller keeps source/new exclusive locks through four enforced paired
 `fclonefileat` operations, attachment/mount/probe and exact teardown. Source

@@ -1,0 +1,2115 @@
+{
+  "schema_version": 1,
+  "source_commit": "af3055c82a9c6e988c39642a26097243a2390c16",
+  "protocol": {
+    "bytes": 52644,
+    "sha256": "8d1a44ea24dfd487cc00a122002374594afc7353b9e85dc848b624308a56ee54"
+  },
+  "inspection_passed": false,
+  "data_access_passed": false,
+  "prepared_guest": false,
+  "system_data_group_verified": true,
+  "stored_guest_ownership_verified": false,
+  "fresh_machine_qualified": false,
+  "release_qualified": false,
+  "guest_os_ready_qualified": false,
+  "virtual_machine_created": false,
+  "guest_boot_started": false,
+  "provisioning_performed": false,
+  "ssh_or_private_app_or_models_executed": false,
+  "networking_permitted": false,
+  "clone_quarantined": true,
+  "owned_image_detached": true,
+  "commands": [
+    {
+      "name": "offline-controls",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/offline.sb",
+        "/usr/bin/python3",
+        "-B",
+        "-c",
+        "import pathlib,socket,sys,os\nfor name in sys.argv[2:]:\n try:pathlib.Path(name).read_bytes()\n except PermissionError:pass\n else:raise RuntimeError(\"model read allowed\")\ntry:fd=os.open(sys.argv[1],os.O_WRONLY|os.O_NOFOLLOW)\nexcept PermissionError:pass\nelse:os.close(fd);raise RuntimeError(\"original seed write-open allowed\")\ns=socket.socket()\ntry:s.connect((\"127.0.0.1\",9))\nexcept PermissionError:pass\nelse:raise RuntimeError(\"network allowed\")\n",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-boot-local-v1/vm-seed/hardware-model.bin",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/denied.nemo",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/denied.gguf",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/denied.safetensors",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/denied.onnx",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/denied.npy",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/denied.f32"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/tmp/",
+        "LC_ALL": "C",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "pid": 70761,
+      "returncode": 0,
+      "wall_seconds": 0.3121480830013752
+    },
+    {
+      "name": "acl-abi-control",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/offline.sb",
+        "/usr/bin/python3",
+        "-B",
+        "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/macos_vm_permissions_probe.py",
+        "--control",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/acl-control"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/tmp/",
+        "LC_ALL": "C",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "pid": 70768,
+      "returncode": 0,
+      "wall_seconds": 0.1463580409763381
+    },
+    {
+      "name": "before-image",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/offline.sb",
+        "/usr/bin/hdiutil",
+        "info",
+        "-plist"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/tmp/",
+        "LC_ALL": "C",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "pid": 70778,
+      "returncode": 0,
+      "wall_seconds": 0.07930958300130442
+    },
+    {
+      "name": "attach-readonly",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/offline.sb",
+        "/usr/bin/hdiutil",
+        "attach",
+        "-imagekey",
+        "diskimage-class=CRawDiskImage",
+        "-readonly",
+        "-nomount",
+        "-nobrowse",
+        "-plist",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/vm-seed/disk.img"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/tmp/",
+        "LC_ALL": "C",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "pid": 70788,
+      "returncode": 0,
+      "wall_seconds": 0.3749953749938868
+    },
+    {
+      "name": "attached-image",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/offline.sb",
+        "/usr/bin/hdiutil",
+        "info",
+        "-plist"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/tmp/",
+        "LC_ALL": "C",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "pid": 70828,
+      "returncode": 0,
+      "wall_seconds": 0.08684900001389906
+    },
+    {
+      "name": "partition-0-info",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/offline.sb",
+        "/usr/sbin/diskutil",
+        "info",
+        "-plist",
+        "/dev/disk12s1"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/tmp/",
+        "LC_ALL": "C",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "pid": 70829,
+      "returncode": 0,
+      "wall_seconds": 0.2572062920080498
+    },
+    {
+      "name": "partition-1-info",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/offline.sb",
+        "/usr/sbin/diskutil",
+        "info",
+        "-plist",
+        "/dev/disk12s2"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/tmp/",
+        "LC_ALL": "C",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "pid": 70839,
+      "returncode": 0,
+      "wall_seconds": 0.1901508750161156
+    },
+    {
+      "name": "container-1-list",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/offline.sb",
+        "/usr/sbin/diskutil",
+        "apfs",
+        "list",
+        "-plist",
+        "disk15"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/tmp/",
+        "LC_ALL": "C",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "pid": 70842,
+      "returncode": 0,
+      "wall_seconds": 0.14344233402516693
+    },
+    {
+      "name": "container-1-groups",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/offline.sb",
+        "/usr/sbin/diskutil",
+        "apfs",
+        "listVolumeGroups",
+        "-plist",
+        "disk15"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/tmp/",
+        "LC_ALL": "C",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "pid": 70843,
+      "returncode": 0,
+      "wall_seconds": 0.09159712499240413
+    },
+    {
+      "name": "volume-1-0-info",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/offline.sb",
+        "/usr/sbin/diskutil",
+        "info",
+        "-plist",
+        "/dev/disk15s1"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/tmp/",
+        "LC_ALL": "C",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "pid": 70844,
+      "returncode": 0,
+      "wall_seconds": 0.14030708401696756
+    },
+    {
+      "name": "volume-1-1-info",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/offline.sb",
+        "/usr/sbin/diskutil",
+        "info",
+        "-plist",
+        "/dev/disk15s2"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/tmp/",
+        "LC_ALL": "C",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "pid": 70845,
+      "returncode": 0,
+      "wall_seconds": 0.14632583304774016
+    },
+    {
+      "name": "volume-1-2-info",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/offline.sb",
+        "/usr/sbin/diskutil",
+        "info",
+        "-plist",
+        "/dev/disk15s3"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/tmp/",
+        "LC_ALL": "C",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "pid": 70856,
+      "returncode": 0,
+      "wall_seconds": 0.14160041703144088
+    },
+    {
+      "name": "volume-1-3-info",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/offline.sb",
+        "/usr/sbin/diskutil",
+        "info",
+        "-plist",
+        "/dev/disk15s4"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/tmp/",
+        "LC_ALL": "C",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "pid": 70867,
+      "returncode": 0,
+      "wall_seconds": 0.1480345840100199
+    },
+    {
+      "name": "volume-1-4-info",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/offline.sb",
+        "/usr/sbin/diskutil",
+        "info",
+        "-plist",
+        "/dev/disk15s5"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/tmp/",
+        "LC_ALL": "C",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "pid": 70885,
+      "returncode": 0,
+      "wall_seconds": 0.19729275000281632
+    },
+    {
+      "name": "volume-1-5-info",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/offline.sb",
+        "/usr/sbin/diskutil",
+        "info",
+        "-plist",
+        "/dev/disk15s6"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/tmp/",
+        "LC_ALL": "C",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "pid": 70896,
+      "returncode": 0,
+      "wall_seconds": 0.14775779098272324
+    },
+    {
+      "name": "partition-2-info",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/offline.sb",
+        "/usr/sbin/diskutil",
+        "info",
+        "-plist",
+        "/dev/disk12s3"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/tmp/",
+        "LC_ALL": "C",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "pid": 70913,
+      "returncode": 0,
+      "wall_seconds": 0.2048762499471195
+    },
+    {
+      "name": "before-data-mount",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/offline.sb",
+        "/usr/bin/hdiutil",
+        "info",
+        "-plist"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/tmp/",
+        "LC_ALL": "C",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "pid": 70914,
+      "returncode": 0,
+      "wall_seconds": 0.08328770799562335
+    },
+    {
+      "name": "mount-data",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/offline.sb",
+        "/usr/sbin/diskutil",
+        "mount",
+        "readOnly",
+        "nobrowse",
+        "-mountOptions",
+        "noowners",
+        "-mountPoint",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/data-mount",
+        "/dev/disk15s5"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/tmp/",
+        "LC_ALL": "C",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "pid": 70918,
+      "returncode": 0,
+      "wall_seconds": 0.3748470830032602
+    },
+    {
+      "name": "mounted-data-info",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/offline.sb",
+        "/usr/sbin/diskutil",
+        "info",
+        "-plist",
+        "/dev/disk15s5"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/tmp/",
+        "LC_ALL": "C",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "pid": 70933,
+      "returncode": 0,
+      "wall_seconds": 0.19836691702948883
+    },
+    {
+      "name": "permissions-probe",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/offline.sb",
+        "/usr/bin/python3",
+        "-B",
+        "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/macos_vm_permissions_probe.py",
+        "--config",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/probe-config.json"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/tmp/",
+        "LC_ALL": "C",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "pid": 70934,
+      "returncode": 1,
+      "wall_seconds": 0.21615066699450836
+    },
+    {
+      "name": "cleanup-image",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/offline.sb",
+        "/usr/bin/hdiutil",
+        "info",
+        "-plist"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/tmp/",
+        "LC_ALL": "C",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "pid": 70935,
+      "returncode": 0,
+      "wall_seconds": 0.05832579097477719
+    },
+    {
+      "name": "cleanup-data-info",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/offline.sb",
+        "/usr/sbin/diskutil",
+        "info",
+        "-plist",
+        "/dev/disk15s5"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/tmp/",
+        "LC_ALL": "C",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "pid": 70936,
+      "returncode": 0,
+      "wall_seconds": 0.1577093749656342
+    },
+    {
+      "name": "unmount-data",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/offline.sb",
+        "/usr/sbin/diskutil",
+        "unmount",
+        "/dev/disk15s5"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/tmp/",
+        "LC_ALL": "C",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "pid": 70938,
+      "returncode": 0,
+      "wall_seconds": 10.933075583016034
+    },
+    {
+      "name": "unmounted-data-info",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/offline.sb",
+        "/usr/sbin/diskutil",
+        "info",
+        "-plist",
+        "/dev/disk15s5"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/tmp/",
+        "LC_ALL": "C",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "pid": 71002,
+      "returncode": 0,
+      "wall_seconds": 0.14337583299493417
+    },
+    {
+      "name": "before-detach-image",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/offline.sb",
+        "/usr/bin/hdiutil",
+        "info",
+        "-plist"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/tmp/",
+        "LC_ALL": "C",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "pid": 71003,
+      "returncode": 0,
+      "wall_seconds": 0.049869374954141676
+    },
+    {
+      "name": "detach-image",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/offline.sb",
+        "/usr/bin/hdiutil",
+        "detach",
+        "/dev/disk12"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/tmp/",
+        "LC_ALL": "C",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "pid": 71004,
+      "returncode": 0,
+      "wall_seconds": 0.07981108297826722
+    },
+    {
+      "name": "after-image",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/offline.sb",
+        "/usr/bin/hdiutil",
+        "info",
+        "-plist"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/tmp/",
+        "LC_ALL": "C",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "pid": 71005,
+      "returncode": 0,
+      "wall_seconds": 0.05134379200171679
+    }
+  ],
+  "scope": "Inspect directory mode/ACL metadata on a fresh stopped paired DataRO clone.\n\nNo VM/network/SSH/account/private app/model execution, host sudo or ownership DB\nchanges. No access/permission repair, account content or stored guest UID/GID proof.\n",
+  "prior_boot_receipt_members_verified": 99,
+  "prior_failed_access_receipt_members_verified": 103,
+  "original_seed_identity": {
+    "disk.img": {
+      "device": 16777233,
+      "inode": 72431188,
+      "bytes": 107374182400,
+      "allocated_bytes": 22359080960,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "mtime_ns": 1792227309899557422,
+      "ctime_ns": 1792227309899557422
+    },
+    "auxiliary-storage.bin": {
+      "device": 16777233,
+      "inode": 72431186,
+      "bytes": 33579164,
+      "allocated_bytes": 1421312,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "mtime_ns": 1792227175822583097,
+      "ctime_ns": 1792227175822583097
+    },
+    "hardware-model.bin": {
+      "device": 16777233,
+      "inode": 72431190,
+      "bytes": 132,
+      "allocated_bytes": 4096,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "mtime_ns": 1792224584261275851,
+      "ctime_ns": 1792227161337998848
+    },
+    "machine-id.bin": {
+      "device": 16777233,
+      "inode": 72431192,
+      "bytes": 68,
+      "allocated_bytes": 4096,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "mtime_ns": 1792224584266412771,
+      "ctime_ns": 1792227161338488891
+    }
+  },
+  "storage": {
+    "start_minimum_bytes": 128849018880,
+    "running_minimum_bytes": 85899345920,
+    "reserve_requested_bytes": 268435456,
+    "checks": 22,
+    "released": true,
+    "minimum_observed_free_bytes": 131442155520,
+    "last_observed_free_bytes": 131442155520,
+    "reserve_reported_allocated_bytes": 268435456
+  },
+  "host": {
+    "cpu": "Apple M4 Pro",
+    "platform": "macOS-26.3-arm64-arm-64bit",
+    "uid": 502
+  },
+  "acl_abi_control": {
+    "attrlist_bytes": 24,
+    "capacity": 65536,
+    "result": {
+      "abi_shape_qualified": true,
+      "acl_policy_qualified": false,
+      "attribute_bytes": 0,
+      "attribute_offset": 12,
+      "bytes": 12,
+      "canonical_empty": true,
+      "null_reference": false,
+      "raw_base64": "DAAAAAgAAAAAAAAA",
+      "recognized_filesec": false,
+      "returncode": 0,
+      "sha256": "0f38e56a1a16881d0a94612ea9af7bf78f80523a679660f56bfcc35d67be6a59",
+      "status": "ok"
+    }
+  },
+  "source_exclusive_lock_path": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-boot-local-v1/owner.lock",
+  "exclusive_lock_path": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/owner.lock",
+  "clones": {
+    "auxiliary-storage.bin": {
+      "operation": "fclonefileat",
+      "returncode": 0,
+      "fallback_copy": false,
+      "source_before": {
+        "device": 16777233,
+        "inode": 72431186,
+        "bytes": 33579164,
+        "allocated_bytes": 1421312,
+        "mode": 384,
+        "uid": 502,
+        "links": 1,
+        "mtime_ns": 1792227175822583097,
+        "ctime_ns": 1792227175822583097
+      },
+      "source_after": {
+        "device": 16777233,
+        "inode": 72431186,
+        "bytes": 33579164,
+        "allocated_bytes": 1421312,
+        "mode": 384,
+        "uid": 502,
+        "links": 1,
+        "mtime_ns": 1792227175822583097,
+        "ctime_ns": 1792227175822583097
+      },
+      "destination": {
+        "device": 16777233,
+        "inode": 72485422,
+        "bytes": 33579164,
+        "allocated_bytes": 1421312,
+        "mode": 384,
+        "uid": 502,
+        "links": 1,
+        "mtime_ns": 1792227175822583097,
+        "ctime_ns": 1792229620158781164
+      },
+      "content_evidence": "OS enforced copy-on-write clone; no whole-file SHA256 claim."
+    },
+    "disk.img": {
+      "operation": "fclonefileat",
+      "returncode": 0,
+      "fallback_copy": false,
+      "source_before": {
+        "device": 16777233,
+        "inode": 72431188,
+        "bytes": 107374182400,
+        "allocated_bytes": 22359080960,
+        "mode": 384,
+        "uid": 502,
+        "links": 1,
+        "mtime_ns": 1792227309899557422,
+        "ctime_ns": 1792227309899557422
+      },
+      "source_after": {
+        "device": 16777233,
+        "inode": 72431188,
+        "bytes": 107374182400,
+        "allocated_bytes": 22359080960,
+        "mode": 384,
+        "uid": 502,
+        "links": 1,
+        "mtime_ns": 1792227309899557422,
+        "ctime_ns": 1792227309899557422
+      },
+      "destination": {
+        "device": 16777233,
+        "inode": 72485424,
+        "bytes": 107374182400,
+        "allocated_bytes": 22359080960,
+        "mode": 384,
+        "uid": 502,
+        "links": 1,
+        "mtime_ns": 1792227309899557422,
+        "ctime_ns": 1792229620159372415
+      },
+      "content_evidence": "OS enforced copy-on-write clone; no whole-file SHA256 claim."
+    },
+    "hardware-model.bin": {
+      "operation": "fclonefileat",
+      "returncode": 0,
+      "fallback_copy": false,
+      "source_before": {
+        "device": 16777233,
+        "inode": 72431190,
+        "bytes": 132,
+        "allocated_bytes": 4096,
+        "mode": 384,
+        "uid": 502,
+        "links": 1,
+        "mtime_ns": 1792224584261275851,
+        "ctime_ns": 1792227161337998848
+      },
+      "source_after": {
+        "device": 16777233,
+        "inode": 72431190,
+        "bytes": 132,
+        "allocated_bytes": 4096,
+        "mode": 384,
+        "uid": 502,
+        "links": 1,
+        "mtime_ns": 1792224584261275851,
+        "ctime_ns": 1792227161337998848
+      },
+      "destination": {
+        "device": 16777233,
+        "inode": 72485426,
+        "bytes": 132,
+        "allocated_bytes": 4096,
+        "mode": 384,
+        "uid": 502,
+        "links": 1,
+        "mtime_ns": 1792224584261275851,
+        "ctime_ns": 1792229620159811041
+      },
+      "content_evidence": "OS enforced copy-on-write clone; no whole-file SHA256 claim."
+    },
+    "machine-id.bin": {
+      "operation": "fclonefileat",
+      "returncode": 0,
+      "fallback_copy": false,
+      "source_before": {
+        "device": 16777233,
+        "inode": 72431192,
+        "bytes": 68,
+        "allocated_bytes": 4096,
+        "mode": 384,
+        "uid": 502,
+        "links": 1,
+        "mtime_ns": 1792224584266412771,
+        "ctime_ns": 1792227161338488891
+      },
+      "source_after": {
+        "device": 16777233,
+        "inode": 72431192,
+        "bytes": 68,
+        "allocated_bytes": 4096,
+        "mode": 384,
+        "uid": 502,
+        "links": 1,
+        "mtime_ns": 1792224584266412771,
+        "ctime_ns": 1792227161338488891
+      },
+      "destination": {
+        "device": 16777233,
+        "inode": 72485428,
+        "bytes": 68,
+        "allocated_bytes": 4096,
+        "mode": 384,
+        "uid": 502,
+        "links": 1,
+        "mtime_ns": 1792224584266412771,
+        "ctime_ns": 1792229620160179167
+      },
+      "content_evidence": "OS enforced copy-on-write clone; no whole-file SHA256 claim."
+    }
+  },
+  "cloned_seed_before_attach": {
+    "auxiliary-storage.bin": {
+      "bytes": 33579164,
+      "allocated_bytes": 1421312,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "sha256": "591e364520e123c192ae1f2e60f61a659b33d71023cb7496f7fe33031a6c7f17"
+    },
+    "disk.img": {
+      "bytes": 107374182400,
+      "allocated_bytes": 22359080960,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "sha256": null,
+      "content_evidence": "OS clone followed by successful installer callback and observed stopped state; no whole-disk hash."
+    },
+    "hardware-model.bin": {
+      "bytes": 132,
+      "allocated_bytes": 4096,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "sha256": "976e66740c64041cf9f127588f93eabf7efb9e7d3cbaee9582bcded88ba5e8d3"
+    },
+    "machine-id.bin": {
+      "bytes": 68,
+      "allocated_bytes": 4096,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "sha256": "4106f98e3f5ee925c4593cc9d7dcea106bbb3a519f8f40219ffc2fc3750db959"
+    }
+  },
+  "layout": {
+    "whole": "/dev/disk12",
+    "partitions": [
+      {
+        "device": "/dev/disk12s1",
+        "info": {
+          "Bootable": false,
+          "BusProtocol": "Disk Image",
+          "CanBeMadeBootable": false,
+          "CanBeMadeBootableRequiresDestroy": false,
+          "Content": "Apple_APFS_ISC",
+          "DeviceBlockSize": 512,
+          "DeviceIdentifier": "disk12s1",
+          "DeviceNode": "/dev/disk12s1",
+          "DeviceTreePath": "IODeviceTree:/",
+          "DiskUUID": "5CD84B5F-CAA3-4C75-82B6-6B9421D1E57A",
+          "Ejectable": true,
+          "EjectableMediaAutomaticUnderSoftwareControl": true,
+          "EjectableOnly": true,
+          "FreeSpace": 0,
+          "GlobalPermissionsEnabled": false,
+          "IOKitSize": 524288000,
+          "IORegistryEntryName": "iBootSystemContainer",
+          "Internal": false,
+          "MediaName": "",
+          "MediaType": "Generic",
+          "MountPoint": "",
+          "OSInternalMedia": false,
+          "ParentWholeDisk": "disk12",
+          "PartitionMapPartition": true,
+          "PartitionMapPartitionOffset": 20480,
+          "RAIDMaster": false,
+          "RAIDSlice": false,
+          "Removable": true,
+          "RemovableMedia": true,
+          "RemovableMediaOrExternalDevice": true,
+          "SMARTDeviceSpecificKeysMayVaryNotGuaranteed": {},
+          "SMARTStatus": "Not Supported",
+          "Size": 524288000,
+          "SupportsGlobalPermissionsDisable": false,
+          "SystemImage": false,
+          "TotalSize": 524288000,
+          "VolumeName": "",
+          "VolumeSize": 0,
+          "WholeDisk": false,
+          "Writable": false,
+          "WritableMedia": false,
+          "WritableVolume": false
+        }
+      },
+      {
+        "device": "/dev/disk12s2",
+        "info": {
+          "APFSContainerReference": "disk15",
+          "Bootable": true,
+          "BusProtocol": "Disk Image",
+          "CanBeMadeBootable": false,
+          "CanBeMadeBootableRequiresDestroy": false,
+          "Content": "Apple_APFS",
+          "DeviceBlockSize": 512,
+          "DeviceIdentifier": "disk12s2",
+          "DeviceNode": "/dev/disk12s2",
+          "DeviceTreePath": "IODeviceTree:/",
+          "DiskUUID": "62436700-1959-4932-A61C-81A04B55BDE6",
+          "Ejectable": true,
+          "EjectableMediaAutomaticUnderSoftwareControl": true,
+          "EjectableOnly": true,
+          "FreeSpace": 0,
+          "GlobalPermissionsEnabled": false,
+          "IOKitSize": 101481185280,
+          "IORegistryEntryName": "Container",
+          "Internal": false,
+          "MediaName": "",
+          "MediaType": "Generic",
+          "MountPoint": "",
+          "OSInternalMedia": false,
+          "ParentWholeDisk": "disk12",
+          "PartitionMapPartition": true,
+          "PartitionMapPartitionOffset": 524308480,
+          "RAIDMaster": false,
+          "RAIDSlice": false,
+          "Removable": true,
+          "RemovableMedia": true,
+          "RemovableMediaOrExternalDevice": true,
+          "SMARTDeviceSpecificKeysMayVaryNotGuaranteed": {},
+          "SMARTStatus": "Not Supported",
+          "Size": 101481185280,
+          "SupportsGlobalPermissionsDisable": false,
+          "SystemImage": false,
+          "TotalSize": 101481185280,
+          "VolumeName": "",
+          "VolumeSize": 0,
+          "WholeDisk": false,
+          "Writable": false,
+          "WritableMedia": false,
+          "WritableVolume": false
+        }
+      },
+      {
+        "device": "/dev/disk12s3",
+        "info": {
+          "Bootable": false,
+          "BusProtocol": "Disk Image",
+          "CanBeMadeBootable": false,
+          "CanBeMadeBootableRequiresDestroy": false,
+          "Content": "Apple_APFS_Recovery",
+          "DeviceBlockSize": 512,
+          "DeviceIdentifier": "disk12s3",
+          "DeviceNode": "/dev/disk12s3",
+          "DeviceTreePath": "IODeviceTree:/",
+          "DiskUUID": "B0CDEC9B-3B5F-4357-BBD4-7BF586CB3ADD",
+          "Ejectable": true,
+          "EjectableMediaAutomaticUnderSoftwareControl": true,
+          "EjectableOnly": true,
+          "FreeSpace": 0,
+          "GlobalPermissionsEnabled": false,
+          "IOKitSize": 5368668160,
+          "IORegistryEntryName": "RecoveryOSContainer",
+          "Internal": false,
+          "MediaName": "",
+          "MediaType": "Generic",
+          "MountPoint": "",
+          "OSInternalMedia": false,
+          "ParentWholeDisk": "disk12",
+          "PartitionMapPartition": true,
+          "PartitionMapPartitionOffset": 102005493760,
+          "RAIDMaster": false,
+          "RAIDSlice": false,
+          "Removable": true,
+          "RemovableMedia": true,
+          "RemovableMediaOrExternalDevice": true,
+          "SMARTDeviceSpecificKeysMayVaryNotGuaranteed": {},
+          "SMARTStatus": "Not Supported",
+          "Size": 5368668160,
+          "SupportsGlobalPermissionsDisable": false,
+          "SystemImage": false,
+          "TotalSize": 5368668160,
+          "VolumeName": "",
+          "VolumeSize": 0,
+          "WholeDisk": false,
+          "Writable": false,
+          "WritableMedia": false,
+          "WritableVolume": false
+        }
+      }
+    ],
+    "containers": [
+      {
+        "device": "disk15",
+        "physical_store": "/dev/disk12s2",
+        "listing": {
+          "Containers": [
+            {
+              "APFSContainerUUID": "536C64C7-38FB-4DCC-B7D7-026813B23781",
+              "CapacityCeiling": 101481185280,
+              "CapacityFree": 80215396352,
+              "ContainerReference": "disk15",
+              "DesignatedPhysicalStore": "disk12s2",
+              "PhysicalStores": [
+                {
+                  "DeviceIdentifier": "disk12s2",
+                  "DiskUUID": "62436700-1959-4932-A61C-81A04B55BDE6",
+                  "Size": 101481185280
+                }
+              ],
+              "Volumes": [
+                {
+                  "APFSVolumeUUID": "6EFA0AB6-666F-45EF-8FE6-6DE6304AE494",
+                  "CapacityInUse": 12299341824,
+                  "CapacityQuota": 0,
+                  "CapacityReserve": 0,
+                  "CryptoMigrationOn": false,
+                  "DeviceIdentifier": "disk15s1",
+                  "Encryption": false,
+                  "FileVault": false,
+                  "Locked": false,
+                  "Name": "Macintosh HD",
+                  "Roles": [
+                    "System"
+                  ]
+                },
+                {
+                  "APFSVolumeUUID": "C9F53F69-AEBA-440E-97A5-6C412C8021FB",
+                  "CapacityInUse": 6887170048,
+                  "CapacityQuota": 0,
+                  "CapacityReserve": 0,
+                  "CryptoMigrationOn": false,
+                  "DeviceIdentifier": "disk15s2",
+                  "Encryption": false,
+                  "FileVault": false,
+                  "Locked": false,
+                  "Name": "Preboot",
+                  "Roles": [
+                    "Preboot"
+                  ]
+                },
+                {
+                  "APFSVolumeUUID": "47A435DE-7513-49FC-8E74-41E62842A87A",
+                  "CapacityInUse": 1202790400,
+                  "CapacityQuota": 0,
+                  "CapacityReserve": 0,
+                  "CryptoMigrationOn": false,
+                  "DeviceIdentifier": "disk15s3",
+                  "Encryption": false,
+                  "FileVault": false,
+                  "Locked": false,
+                  "Name": "Recovery",
+                  "Roles": [
+                    "Recovery"
+                  ]
+                },
+                {
+                  "APFSVolumeUUID": "9D65A2EE-FECA-491D-B49B-32C375BC1AA4",
+                  "CapacityInUse": 69632,
+                  "CapacityQuota": 0,
+                  "CapacityReserve": 0,
+                  "CryptoMigrationOn": false,
+                  "DeviceIdentifier": "disk15s4",
+                  "Encryption": false,
+                  "FileVault": false,
+                  "Locked": false,
+                  "Name": "Update",
+                  "Roles": [
+                    "Update"
+                  ]
+                },
+                {
+                  "APFSVolumeUUID": "F3BC5BEA-3D05-45B2-940C-6EB51C65A411",
+                  "CapacityInUse": 752410624,
+                  "CapacityQuota": 0,
+                  "CapacityReserve": 0,
+                  "CryptoMigrationOn": false,
+                  "DeviceIdentifier": "disk15s5",
+                  "Encryption": false,
+                  "FileVault": false,
+                  "Locked": false,
+                  "Name": "Data",
+                  "Roles": [
+                    "Data"
+                  ]
+                },
+                {
+                  "APFSVolumeUUID": "F5E59CC8-A77F-420B-9FED-4656478FC4DC",
+                  "CapacityInUse": 20480,
+                  "CapacityQuota": 0,
+                  "CapacityReserve": 0,
+                  "CryptoMigrationOn": false,
+                  "DeviceIdentifier": "disk15s6",
+                  "Encryption": false,
+                  "FileVault": false,
+                  "Locked": false,
+                  "Name": "VM",
+                  "Roles": [
+                    "VM"
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "groups": {
+          "Containers": [
+            {
+              "APFSContainerUUID": "536C64C7-38FB-4DCC-B7D7-026813B23781",
+              "ContainerReference": "disk15",
+              "VolumeGroups": [
+                {
+                  "APFSVolumeGroupUUID": "F3BC5BEA-3D05-45B2-940C-6EB51C65A411",
+                  "Volumes": [
+                    {
+                      "DeviceIdentifier": "disk15s1",
+                      "DiskUUID": "6EFA0AB6-666F-45EF-8FE6-6DE6304AE494",
+                      "NoBrowseRole": false,
+                      "Role": "System"
+                    },
+                    {
+                      "DeviceIdentifier": "disk15s5",
+                      "DiskUUID": "F3BC5BEA-3D05-45B2-940C-6EB51C65A411",
+                      "NoBrowseRole": false,
+                      "Role": "Data"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        "infos": {
+          "disk15s1": {
+            "APFSContainerFree": 80215396352,
+            "APFSContainerReference": "disk15",
+            "APFSContainerSize": 101481185280,
+            "APFSPhysicalStores": [
+              {
+                "APFSPhysicalStore": "disk12s2"
+              }
+            ],
+            "APFSSnapshot": false,
+            "APFSVolumeGroupID": "F3BC5BEA-3D05-45B2-940C-6EB51C65A411",
+            "Bootable": true,
+            "BooterDeviceIdentifier": "disk15s2",
+            "BusProtocol": "Disk Image",
+            "CanBeMadeBootable": false,
+            "CanBeMadeBootableRequiresDestroy": false,
+            "CapacityInUse": 12299341824,
+            "Content": "41504653-0000-11AA-AA11-00306543ECAC",
+            "DeviceBlockSize": 4096,
+            "DeviceIdentifier": "disk15s1",
+            "DeviceNode": "/dev/disk15s1",
+            "DeviceTreePath": "IODeviceTree:/",
+            "DiskUUID": "6EFA0AB6-666F-45EF-8FE6-6DE6304AE494",
+            "Ejectable": true,
+            "EjectableMediaAutomaticUnderSoftwareControl": true,
+            "EjectableOnly": true,
+            "Encryption": false,
+            "EncryptionThisVolumeProper": false,
+            "FileVault": false,
+            "FilesystemName": "APFS",
+            "FilesystemType": "apfs",
+            "FilesystemUserVisibleName": "APFS",
+            "FreeSpace": 0,
+            "GlobalPermissionsEnabled": false,
+            "IOKitSize": 101481185280,
+            "IORegistryEntryName": "Macintosh HD",
+            "Internal": false,
+            "Locked": false,
+            "MediaName": "",
+            "MediaType": "Generic",
+            "MountPoint": "",
+            "OSInternalMedia": false,
+            "ParentWholeDisk": "disk15",
+            "PartitionMapPartition": false,
+            "RAIDMaster": false,
+            "RAIDSlice": false,
+            "RecoveryDeviceIdentifier": "disk15s3",
+            "Removable": true,
+            "RemovableMedia": true,
+            "RemovableMediaOrExternalDevice": true,
+            "SMARTDeviceSpecificKeysMayVaryNotGuaranteed": {},
+            "SMARTStatus": "Not Supported",
+            "Sealed": "Yes",
+            "Size": 101481185280,
+            "SupportsGlobalPermissionsDisable": true,
+            "SystemImage": false,
+            "TotalSize": 101481185280,
+            "VolumeName": "Macintosh HD",
+            "VolumeSize": 0,
+            "VolumeUUID": "6EFA0AB6-666F-45EF-8FE6-6DE6304AE494",
+            "WholeDisk": false,
+            "Writable": false,
+            "WritableMedia": false,
+            "WritableVolume": false
+          },
+          "disk15s2": {
+            "APFSContainerFree": 80215396352,
+            "APFSContainerReference": "disk15",
+            "APFSContainerSize": 101481185280,
+            "APFSPhysicalStores": [
+              {
+                "APFSPhysicalStore": "disk12s2"
+              }
+            ],
+            "APFSSnapshot": false,
+            "Bootable": false,
+            "BooterDeviceIdentifier": "disk15s2",
+            "BusProtocol": "Disk Image",
+            "CanBeMadeBootable": false,
+            "CanBeMadeBootableRequiresDestroy": false,
+            "CapacityInUse": 6887170048,
+            "Content": "41504653-0000-11AA-AA11-00306543ECAC",
+            "DeviceBlockSize": 4096,
+            "DeviceIdentifier": "disk15s2",
+            "DeviceNode": "/dev/disk15s2",
+            "DeviceTreePath": "IODeviceTree:/",
+            "DiskUUID": "C9F53F69-AEBA-440E-97A5-6C412C8021FB",
+            "Ejectable": true,
+            "EjectableMediaAutomaticUnderSoftwareControl": true,
+            "EjectableOnly": true,
+            "Encryption": false,
+            "EncryptionThisVolumeProper": false,
+            "FileVault": false,
+            "FilesystemName": "APFS",
+            "FilesystemType": "apfs",
+            "FilesystemUserVisibleName": "APFS",
+            "FreeSpace": 0,
+            "GlobalPermissionsEnabled": false,
+            "IOKitSize": 101481185280,
+            "IORegistryEntryName": "Preboot",
+            "Internal": false,
+            "Locked": false,
+            "MediaName": "",
+            "MediaType": "Generic",
+            "MountPoint": "",
+            "OSInternalMedia": false,
+            "ParentWholeDisk": "disk15",
+            "PartitionMapPartition": false,
+            "RAIDMaster": false,
+            "RAIDSlice": false,
+            "RecoveryDeviceIdentifier": "disk15s3",
+            "Removable": true,
+            "RemovableMedia": true,
+            "RemovableMediaOrExternalDevice": true,
+            "SMARTDeviceSpecificKeysMayVaryNotGuaranteed": {},
+            "SMARTStatus": "Not Supported",
+            "Sealed": "No",
+            "Size": 101481185280,
+            "SupportsGlobalPermissionsDisable": true,
+            "SystemImage": false,
+            "TotalSize": 101481185280,
+            "VolumeName": "Preboot",
+            "VolumeSize": 0,
+            "VolumeUUID": "C9F53F69-AEBA-440E-97A5-6C412C8021FB",
+            "WholeDisk": false,
+            "Writable": false,
+            "WritableMedia": false,
+            "WritableVolume": false
+          },
+          "disk15s3": {
+            "APFSContainerFree": 80215396352,
+            "APFSContainerReference": "disk15",
+            "APFSContainerSize": 101481185280,
+            "APFSPhysicalStores": [
+              {
+                "APFSPhysicalStore": "disk12s2"
+              }
+            ],
+            "APFSSnapshot": false,
+            "Bootable": false,
+            "BooterDeviceIdentifier": "disk15s2",
+            "BusProtocol": "Disk Image",
+            "CanBeMadeBootable": false,
+            "CanBeMadeBootableRequiresDestroy": false,
+            "CapacityInUse": 1202790400,
+            "Content": "41504653-0000-11AA-AA11-00306543ECAC",
+            "DeviceBlockSize": 4096,
+            "DeviceIdentifier": "disk15s3",
+            "DeviceNode": "/dev/disk15s3",
+            "DeviceTreePath": "IODeviceTree:/",
+            "DiskUUID": "47A435DE-7513-49FC-8E74-41E62842A87A",
+            "Ejectable": true,
+            "EjectableMediaAutomaticUnderSoftwareControl": true,
+            "EjectableOnly": true,
+            "Encryption": false,
+            "EncryptionThisVolumeProper": false,
+            "FileVault": false,
+            "FilesystemName": "APFS",
+            "FilesystemType": "apfs",
+            "FilesystemUserVisibleName": "APFS",
+            "FreeSpace": 0,
+            "GlobalPermissionsEnabled": false,
+            "IOKitSize": 101481185280,
+            "IORegistryEntryName": "Recovery",
+            "Internal": false,
+            "Locked": false,
+            "MediaName": "",
+            "MediaType": "Generic",
+            "MountPoint": "",
+            "OSInternalMedia": false,
+            "ParentWholeDisk": "disk15",
+            "PartitionMapPartition": false,
+            "RAIDMaster": false,
+            "RAIDSlice": false,
+            "RecoveryDeviceIdentifier": "disk15s3",
+            "Removable": true,
+            "RemovableMedia": true,
+            "RemovableMediaOrExternalDevice": true,
+            "SMARTDeviceSpecificKeysMayVaryNotGuaranteed": {},
+            "SMARTStatus": "Not Supported",
+            "Sealed": "No",
+            "Size": 101481185280,
+            "SupportsGlobalPermissionsDisable": true,
+            "SystemImage": false,
+            "TotalSize": 101481185280,
+            "VolumeName": "Recovery",
+            "VolumeSize": 0,
+            "VolumeUUID": "47A435DE-7513-49FC-8E74-41E62842A87A",
+            "WholeDisk": false,
+            "Writable": false,
+            "WritableMedia": false,
+            "WritableVolume": false
+          },
+          "disk15s4": {
+            "APFSContainerFree": 80215396352,
+            "APFSContainerReference": "disk15",
+            "APFSContainerSize": 101481185280,
+            "APFSPhysicalStores": [
+              {
+                "APFSPhysicalStore": "disk12s2"
+              }
+            ],
+            "APFSSnapshot": false,
+            "Bootable": false,
+            "BooterDeviceIdentifier": "disk15s2",
+            "BusProtocol": "Disk Image",
+            "CanBeMadeBootable": false,
+            "CanBeMadeBootableRequiresDestroy": false,
+            "CapacityInUse": 69632,
+            "Content": "41504653-0000-11AA-AA11-00306543ECAC",
+            "DeviceBlockSize": 4096,
+            "DeviceIdentifier": "disk15s4",
+            "DeviceNode": "/dev/disk15s4",
+            "DeviceTreePath": "IODeviceTree:/",
+            "DiskUUID": "9D65A2EE-FECA-491D-B49B-32C375BC1AA4",
+            "Ejectable": true,
+            "EjectableMediaAutomaticUnderSoftwareControl": true,
+            "EjectableOnly": true,
+            "Encryption": false,
+            "EncryptionThisVolumeProper": false,
+            "FileVault": false,
+            "FilesystemName": "APFS",
+            "FilesystemType": "apfs",
+            "FilesystemUserVisibleName": "APFS",
+            "FreeSpace": 0,
+            "GlobalPermissionsEnabled": false,
+            "IOKitSize": 101481185280,
+            "IORegistryEntryName": "Update",
+            "Internal": false,
+            "Locked": false,
+            "MediaName": "",
+            "MediaType": "Generic",
+            "MountPoint": "",
+            "OSInternalMedia": true,
+            "ParentWholeDisk": "disk15",
+            "PartitionMapPartition": false,
+            "RAIDMaster": false,
+            "RAIDSlice": false,
+            "RecoveryDeviceIdentifier": "disk15s3",
+            "Removable": true,
+            "RemovableMedia": true,
+            "RemovableMediaOrExternalDevice": true,
+            "SMARTDeviceSpecificKeysMayVaryNotGuaranteed": {},
+            "SMARTStatus": "Not Supported",
+            "Sealed": "No",
+            "Size": 101481185280,
+            "SupportsGlobalPermissionsDisable": true,
+            "SystemImage": false,
+            "TotalSize": 101481185280,
+            "VolumeName": "Update",
+            "VolumeSize": 0,
+            "VolumeUUID": "9D65A2EE-FECA-491D-B49B-32C375BC1AA4",
+            "WholeDisk": false,
+            "Writable": false,
+            "WritableMedia": false,
+            "WritableVolume": false
+          },
+          "disk15s5": {
+            "APFSContainerFree": 80215396352,
+            "APFSContainerReference": "disk15",
+            "APFSContainerSize": 101481185280,
+            "APFSPhysicalStores": [
+              {
+                "APFSPhysicalStore": "disk12s2"
+              }
+            ],
+            "APFSSnapshot": false,
+            "APFSVolumeGroupID": "F3BC5BEA-3D05-45B2-940C-6EB51C65A411",
+            "Bootable": true,
+            "BooterDeviceIdentifier": "disk15s2",
+            "BusProtocol": "Disk Image",
+            "CanBeMadeBootable": false,
+            "CanBeMadeBootableRequiresDestroy": false,
+            "CapacityInUse": 752410624,
+            "Content": "41504653-0000-11AA-AA11-00306543ECAC",
+            "DeviceBlockSize": 4096,
+            "DeviceIdentifier": "disk15s5",
+            "DeviceNode": "/dev/disk15s5",
+            "DeviceTreePath": "IODeviceTree:/",
+            "DiskUUID": "F3BC5BEA-3D05-45B2-940C-6EB51C65A411",
+            "Ejectable": true,
+            "EjectableMediaAutomaticUnderSoftwareControl": true,
+            "EjectableOnly": true,
+            "Encryption": false,
+            "EncryptionThisVolumeProper": false,
+            "FileVault": false,
+            "FilesystemName": "APFS",
+            "FilesystemType": "apfs",
+            "FilesystemUserVisibleName": "APFS",
+            "FreeSpace": 0,
+            "GlobalPermissionsEnabled": false,
+            "IOKitSize": 101481185280,
+            "IORegistryEntryName": "Data",
+            "Internal": false,
+            "Locked": false,
+            "MediaName": "",
+            "MediaType": "Generic",
+            "MountPoint": "",
+            "OSInternalMedia": false,
+            "ParentWholeDisk": "disk15",
+            "PartitionMapPartition": false,
+            "RAIDMaster": false,
+            "RAIDSlice": false,
+            "RecoveryDeviceIdentifier": "disk15s3",
+            "Removable": true,
+            "RemovableMedia": true,
+            "RemovableMediaOrExternalDevice": true,
+            "SMARTDeviceSpecificKeysMayVaryNotGuaranteed": {},
+            "SMARTStatus": "Not Supported",
+            "Sealed": "No",
+            "Size": 101481185280,
+            "SupportsGlobalPermissionsDisable": true,
+            "SystemImage": false,
+            "TotalSize": 101481185280,
+            "VolumeName": "Data",
+            "VolumeSize": 0,
+            "VolumeUUID": "F3BC5BEA-3D05-45B2-940C-6EB51C65A411",
+            "WholeDisk": false,
+            "Writable": false,
+            "WritableMedia": false,
+            "WritableVolume": false
+          },
+          "disk15s6": {
+            "APFSContainerFree": 80215396352,
+            "APFSContainerReference": "disk15",
+            "APFSContainerSize": 101481185280,
+            "APFSPhysicalStores": [
+              {
+                "APFSPhysicalStore": "disk12s2"
+              }
+            ],
+            "APFSSnapshot": false,
+            "Bootable": false,
+            "BooterDeviceIdentifier": "disk15s2",
+            "BusProtocol": "Disk Image",
+            "CanBeMadeBootable": false,
+            "CanBeMadeBootableRequiresDestroy": false,
+            "CapacityInUse": 20480,
+            "Content": "41504653-0000-11AA-AA11-00306543ECAC",
+            "DeviceBlockSize": 4096,
+            "DeviceIdentifier": "disk15s6",
+            "DeviceNode": "/dev/disk15s6",
+            "DeviceTreePath": "IODeviceTree:/",
+            "DiskUUID": "F5E59CC8-A77F-420B-9FED-4656478FC4DC",
+            "Ejectable": true,
+            "EjectableMediaAutomaticUnderSoftwareControl": true,
+            "EjectableOnly": true,
+            "Encryption": false,
+            "EncryptionThisVolumeProper": false,
+            "FileVault": false,
+            "FilesystemName": "APFS",
+            "FilesystemType": "apfs",
+            "FilesystemUserVisibleName": "APFS",
+            "FreeSpace": 0,
+            "GlobalPermissionsEnabled": false,
+            "IOKitSize": 101481185280,
+            "IORegistryEntryName": "VM",
+            "Internal": false,
+            "Locked": false,
+            "MediaName": "",
+            "MediaType": "Generic",
+            "MountPoint": "",
+            "OSInternalMedia": false,
+            "ParentWholeDisk": "disk15",
+            "PartitionMapPartition": false,
+            "RAIDMaster": false,
+            "RAIDSlice": false,
+            "RecoveryDeviceIdentifier": "disk15s3",
+            "Removable": true,
+            "RemovableMedia": true,
+            "RemovableMediaOrExternalDevice": true,
+            "SMARTDeviceSpecificKeysMayVaryNotGuaranteed": {},
+            "SMARTStatus": "Not Supported",
+            "Sealed": "No",
+            "Size": 101481185280,
+            "SupportsGlobalPermissionsDisable": true,
+            "SystemImage": false,
+            "TotalSize": 101481185280,
+            "VolumeName": "VM",
+            "VolumeSize": 0,
+            "VolumeUUID": "F5E59CC8-A77F-420B-9FED-4656478FC4DC",
+            "WholeDisk": false,
+            "Writable": false,
+            "WritableMedia": false,
+            "WritableVolume": false
+          }
+        }
+      }
+    ]
+  },
+  "system_data_pair": {
+    "container": "disk15",
+    "physical_store": "/dev/disk12s2",
+    "container_uuid": "536C64C7-38FB-4DCC-B7D7-026813B23781",
+    "group_uuid": "F3BC5BEA-3D05-45B2-940C-6EB51C65A411",
+    "system": {
+      "device": "/dev/disk15s1",
+      "uuid": "6EFA0AB6-666F-45EF-8FE6-6DE6304AE494"
+    },
+    "data": {
+      "device": "/dev/disk15s5",
+      "uuid": "F3BC5BEA-3D05-45B2-940C-6EB51C65A411"
+    }
+  },
+  "mounts": {
+    "data": {
+      "info": {
+        "APFSContainerFree": 80215396352,
+        "APFSContainerReference": "disk15",
+        "APFSContainerSize": 101481185280,
+        "APFSPhysicalStores": [
+          {
+            "APFSPhysicalStore": "disk12s2"
+          }
+        ],
+        "APFSSnapshot": false,
+        "APFSVolumeGroupID": "F3BC5BEA-3D05-45B2-940C-6EB51C65A411",
+        "Bootable": true,
+        "BooterDeviceIdentifier": "disk15s2",
+        "BusProtocol": "Disk Image",
+        "CanBeMadeBootable": false,
+        "CanBeMadeBootableRequiresDestroy": false,
+        "CapacityInUse": 752410624,
+        "Content": "41504653-0000-11AA-AA11-00306543ECAC",
+        "DeviceBlockSize": 4096,
+        "DeviceIdentifier": "disk15s5",
+        "DeviceNode": "/dev/disk15s5",
+        "DeviceTreePath": "IODeviceTree:/",
+        "DiskUUID": "F3BC5BEA-3D05-45B2-940C-6EB51C65A411",
+        "Ejectable": true,
+        "EjectableMediaAutomaticUnderSoftwareControl": true,
+        "EjectableOnly": true,
+        "Encryption": false,
+        "EncryptionThisVolumeProper": false,
+        "FileVault": false,
+        "FilesystemName": "APFS",
+        "FilesystemType": "apfs",
+        "FilesystemUserVisibleName": "APFS",
+        "FreeSpace": 0,
+        "GlobalPermissionsEnabled": false,
+        "IOKitSize": 101481185280,
+        "IORegistryEntryName": "Data",
+        "Internal": false,
+        "Locked": false,
+        "MediaName": "",
+        "MediaType": "Generic",
+        "MountPoint": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-permissions-inspect-local-v1/data-mount",
+        "OSInternalMedia": false,
+        "ParentWholeDisk": "disk15",
+        "PartitionMapPartition": false,
+        "RAIDMaster": false,
+        "RAIDSlice": false,
+        "RecoveryDeviceIdentifier": "disk15s3",
+        "Removable": true,
+        "RemovableMedia": true,
+        "RemovableMediaOrExternalDevice": true,
+        "SMARTDeviceSpecificKeysMayVaryNotGuaranteed": {},
+        "SMARTStatus": "Not Supported",
+        "Sealed": "No",
+        "Size": 101481185280,
+        "SupportsGlobalPermissionsDisable": true,
+        "SystemImage": false,
+        "TotalSize": 101481185280,
+        "VolumeAllocationBlockSize": 4096,
+        "VolumeName": "Data",
+        "VolumeSize": 0,
+        "VolumeUUID": "F3BC5BEA-3D05-45B2-940C-6EB51C65A411",
+        "WholeDisk": false,
+        "Writable": false,
+        "WritableMedia": false,
+        "WritableVolume": false
+      },
+      "status": {
+        "is_mount": true,
+        "stat_device": 16777269,
+        "parent_stat_device": 16777233,
+        "readonly": true
+      },
+      "validated": {
+        "is_mount": true,
+        "stat_device": 16777269,
+        "parent_stat_device": 16777233,
+        "readonly": true,
+        "device": "/dev/disk15s5",
+        "volume_uuid": "F3BC5BEA-3D05-45B2-940C-6EB51C65A411",
+        "group_uuid": "F3BC5BEA-3D05-45B2-940C-6EB51C65A411",
+        "global_permissions_enabled": false
+      }
+    }
+  },
+  "permissions_probe": {
+    "account_content_read": false,
+    "data_access_passed": false,
+    "directory_contents_read": false,
+    "error": "ValueError('parent-relative users metadata not reached; retain earlier denial')",
+    "inspection_passed": false,
+    "nodes": {
+      "Library": {
+        "open": {
+          "success": true
+        },
+        "security": {
+          "abi_shape_qualified": true,
+          "acl_policy_qualified": false,
+          "attribute_bytes": 0,
+          "attribute_offset": 12,
+          "bytes": 12,
+          "canonical_empty": true,
+          "null_reference": false,
+          "raw_base64": "DAAAAAgAAAAAAAAA",
+          "recognized_filesec": false,
+          "returncode": 0,
+          "sha256": "0f38e56a1a16881d0a94612ea9af7bf78f80523a679660f56bfcc35d67be6a59",
+          "status": "ok"
+        },
+        "stat": {
+          "bytes": 2048,
+          "ctime_ns": 1792227179363456037,
+          "device": 16777269,
+          "file_type": 16384,
+          "flags": 1048576,
+          "full_mode": 16877,
+          "inode": 471,
+          "links": 64,
+          "mtime_ns": 1792227179363456037,
+          "observed_gid": 20,
+          "observed_uid": 502,
+          "permissions": 493
+        },
+        "status": "metadata_observed"
+      },
+      "Library/Preferences": {
+        "open": {
+          "success": true
+        },
+        "security": {
+          "abi_shape_qualified": true,
+          "acl_policy_qualified": false,
+          "attribute_bytes": 0,
+          "attribute_offset": 12,
+          "bytes": 12,
+          "canonical_empty": true,
+          "null_reference": false,
+          "raw_base64": "DAAAAAgAAAAAAAAA",
+          "recognized_filesec": false,
+          "returncode": 0,
+          "sha256": "0f38e56a1a16881d0a94612ea9af7bf78f80523a679660f56bfcc35d67be6a59",
+          "status": "ok"
+        },
+        "stat": {
+          "bytes": 1088,
+          "ctime_ns": 1792227206726001978,
+          "device": 16777269,
+          "file_type": 16384,
+          "flags": 1048576,
+          "full_mode": 16877,
+          "inode": 6699,
+          "links": 34,
+          "mtime_ns": 1792227206726001978,
+          "observed_gid": 20,
+          "observed_uid": 502,
+          "permissions": 493
+        },
+        "status": "metadata_observed"
+      },
+      "Users": {
+        "open": {
+          "success": true
+        },
+        "security": {
+          "abi_shape_qualified": true,
+          "acl_policy_qualified": false,
+          "attribute_bytes": 0,
+          "attribute_offset": 12,
+          "bytes": 12,
+          "canonical_empty": true,
+          "null_reference": false,
+          "raw_base64": "DAAAAAgAAAAAAAAA",
+          "recognized_filesec": false,
+          "returncode": 0,
+          "sha256": "0f38e56a1a16881d0a94612ea9af7bf78f80523a679660f56bfcc35d67be6a59",
+          "status": "ok"
+        },
+        "stat": {
+          "bytes": 128,
+          "ctime_ns": 1792225779267788374,
+          "device": 16777269,
+          "file_type": 16384,
+          "flags": 1048576,
+          "full_mode": 16877,
+          "inode": 18336,
+          "links": 4,
+          "mtime_ns": 1770271069702455277,
+          "observed_gid": 20,
+          "observed_uid": 502,
+          "permissions": 493
+        },
+        "status": "metadata_observed"
+      },
+      "private": {
+        "open": {
+          "success": true
+        },
+        "security": {
+          "abi_shape_qualified": true,
+          "acl_policy_qualified": false,
+          "attribute_bytes": 0,
+          "attribute_offset": 12,
+          "bytes": 12,
+          "canonical_empty": true,
+          "null_reference": false,
+          "raw_base64": "DAAAAAgAAAAAAAAA",
+          "recognized_filesec": false,
+          "returncode": 0,
+          "sha256": "0f38e56a1a16881d0a94612ea9af7bf78f80523a679660f56bfcc35d67be6a59",
+          "status": "ok"
+        },
+        "stat": {
+          "bytes": 192,
+          "ctime_ns": 1792227164051484624,
+          "device": 16777269,
+          "file_type": 16384,
+          "flags": 1081344,
+          "full_mode": 16877,
+          "inode": 17360,
+          "links": 6,
+          "mtime_ns": 1792227164051484624,
+          "observed_gid": 20,
+          "observed_uid": 502,
+          "permissions": 493
+        },
+        "status": "metadata_observed"
+      },
+      "private/etc": {
+        "open": {
+          "success": true
+        },
+        "security": {
+          "abi_shape_qualified": true,
+          "acl_policy_qualified": false,
+          "attribute_bytes": 0,
+          "attribute_offset": 12,
+          "bytes": 12,
+          "canonical_empty": true,
+          "null_reference": false,
+          "raw_base64": "DAAAAAgAAAAAAAAA",
+          "recognized_filesec": false,
+          "returncode": 0,
+          "sha256": "0f38e56a1a16881d0a94612ea9af7bf78f80523a679660f56bfcc35d67be6a59",
+          "status": "ok"
+        },
+        "stat": {
+          "bytes": 2432,
+          "ctime_ns": 1792227172804459958,
+          "device": 16777269,
+          "file_type": 16384,
+          "flags": 0,
+          "full_mode": 16877,
+          "inode": 17361,
+          "links": 76,
+          "mtime_ns": 1792227172804459958,
+          "observed_gid": 20,
+          "observed_uid": 502,
+          "permissions": 493
+        },
+        "status": "metadata_observed"
+      },
+      "private/var": {
+        "open": {
+          "success": true
+        },
+        "security": {
+          "abi_shape_qualified": true,
+          "acl_policy_qualified": false,
+          "attribute_bytes": 0,
+          "attribute_offset": 12,
+          "bytes": 12,
+          "canonical_empty": true,
+          "null_reference": false,
+          "raw_base64": "DAAAAAgAAAAAAAAA",
+          "recognized_filesec": false,
+          "returncode": 0,
+          "sha256": "0f38e56a1a16881d0a94612ea9af7bf78f80523a679660f56bfcc35d67be6a59",
+          "status": "ok"
+        },
+        "stat": {
+          "bytes": 1088,
+          "ctime_ns": 1792227165808932916,
+          "device": 16777269,
+          "file_type": 16384,
+          "flags": 1048576,
+          "full_mode": 16877,
+          "inode": 17781,
+          "links": 34,
+          "mtime_ns": 1792227165808932916,
+          "observed_gid": 20,
+          "observed_uid": 502,
+          "permissions": 493
+        },
+        "status": "metadata_observed"
+      },
+      "private/var/db": {
+        "open": {
+          "success": true
+        },
+        "security": {
+          "abi_shape_qualified": true,
+          "acl_policy_qualified": false,
+          "attribute_bytes": 0,
+          "attribute_offset": 12,
+          "bytes": 12,
+          "canonical_empty": true,
+          "null_reference": false,
+          "raw_base64": "DAAAAAgAAAAAAAAA",
+          "recognized_filesec": false,
+          "returncode": 0,
+          "sha256": "0f38e56a1a16881d0a94612ea9af7bf78f80523a679660f56bfcc35d67be6a59",
+          "status": "ok"
+        },
+        "stat": {
+          "bytes": 3424,
+          "ctime_ns": 1792227189362919713,
+          "device": 16777269,
+          "file_type": 16384,
+          "flags": 1048576,
+          "full_mode": 16877,
+          "inode": 17833,
+          "links": 107,
+          "mtime_ns": 1792227189362919713,
+          "observed_gid": 20,
+          "observed_uid": 502,
+          "permissions": 493
+        },
+        "status": "metadata_observed"
+      },
+      "private/var/db/com.apple.xpc.launchd": {
+        "open": {
+          "success": true
+        },
+        "security": {
+          "abi_shape_qualified": true,
+          "acl_policy_qualified": false,
+          "attribute_bytes": 0,
+          "attribute_offset": 12,
+          "bytes": 12,
+          "canonical_empty": true,
+          "null_reference": false,
+          "raw_base64": "DAAAAAgAAAAAAAAA",
+          "recognized_filesec": false,
+          "returncode": 0,
+          "sha256": "0f38e56a1a16881d0a94612ea9af7bf78f80523a679660f56bfcc35d67be6a59",
+          "status": "ok"
+        },
+        "stat": {
+          "bytes": 160,
+          "ctime_ns": 1792227170707751083,
+          "device": 16777269,
+          "file_type": 16384,
+          "flags": 0,
+          "full_mode": 16877,
+          "inode": 17935,
+          "links": 5,
+          "mtime_ns": 1792227170707751083,
+          "observed_gid": 20,
+          "observed_uid": 502,
+          "permissions": 493
+        },
+        "status": "metadata_observed"
+      },
+      "private/var/db/dslocal": {
+        "open": {
+          "success": true
+        },
+        "security": {
+          "abi_shape_qualified": true,
+          "acl_policy_qualified": false,
+          "attribute_bytes": 0,
+          "attribute_offset": 12,
+          "bytes": 12,
+          "canonical_empty": true,
+          "null_reference": false,
+          "raw_base64": "DAAAAAgAAAAAAAAA",
+          "recognized_filesec": false,
+          "returncode": 0,
+          "sha256": "0f38e56a1a16881d0a94612ea9af7bf78f80523a679660f56bfcc35d67be6a59",
+          "status": "ok"
+        },
+        "stat": {
+          "bytes": 96,
+          "ctime_ns": 1792225779260384958,
+          "device": 16777269,
+          "file_type": 16384,
+          "flags": 0,
+          "full_mode": 16877,
+          "inode": 17956,
+          "links": 3,
+          "mtime_ns": 1770271070258132678,
+          "observed_gid": 20,
+          "observed_uid": 502,
+          "permissions": 493
+        },
+        "status": "metadata_observed"
+      },
+      "private/var/db/dslocal/nodes": {
+        "open": {
+          "success": true
+        },
+        "security": {
+          "abi_shape_qualified": true,
+          "acl_policy_qualified": false,
+          "attribute_bytes": 0,
+          "attribute_offset": 12,
+          "bytes": 12,
+          "canonical_empty": true,
+          "null_reference": false,
+          "raw_base64": "DAAAAAgAAAAAAAAA",
+          "recognized_filesec": false,
+          "returncode": 0,
+          "sha256": "0f38e56a1a16881d0a94612ea9af7bf78f80523a679660f56bfcc35d67be6a59",
+          "status": "ok"
+        },
+        "stat": {
+          "bytes": 96,
+          "ctime_ns": 1792225779260340249,
+          "device": 16777269,
+          "file_type": 16384,
+          "flags": 0,
+          "full_mode": 16877,
+          "inode": 17957,
+          "links": 3,
+          "mtime_ns": 1770271070258562254,
+          "observed_gid": 20,
+          "observed_uid": 502,
+          "permissions": 493
+        },
+        "status": "metadata_observed"
+      },
+      "private/var/db/dslocal/nodes/Default": {
+        "open": {
+          "success": true
+        },
+        "security": {
+          "abi_shape_qualified": true,
+          "acl_policy_qualified": false,
+          "attribute_bytes": 0,
+          "attribute_offset": 12,
+          "bytes": 12,
+          "canonical_empty": true,
+          "null_reference": false,
+          "raw_base64": "DAAAAAgAAAAAAAAA",
+          "recognized_filesec": false,
+          "returncode": 0,
+          "sha256": "0f38e56a1a16881d0a94612ea9af7bf78f80523a679660f56bfcc35d67be6a59",
+          "status": "ok"
+        },
+        "stat": {
+          "bytes": 384,
+          "ctime_ns": 1792227169136455874,
+          "device": 16777269,
+          "file_type": 16384,
+          "flags": 0,
+          "full_mode": 16768,
+          "inode": 17958,
+          "links": 12,
+          "mtime_ns": 1792227169136455874,
+          "observed_gid": 20,
+          "observed_uid": 502,
+          "permissions": 384
+        },
+        "status": "metadata_observed"
+      },
+      "private/var/db/dslocal/nodes/Default/groups": {
+        "errno": 13,
+        "message": "[Errno 13] Permission denied: 'groups'",
+        "status": "stat_error"
+      },
+      "private/var/db/dslocal/nodes/Default/users": {
+        "errno": 13,
+        "message": "[Errno 13] Permission denied: 'users'",
+        "status": "stat_error"
+      }
+    },
+    "permission_changes": 0,
+    "provisioning_performed": false,
+    "schema_version": 1,
+    "stored_guest_ownership_verified": false
+  },
+  "error": "ValueError('Data-access command failed: permissions-probe')",
+  "original_seed_unchanged_after_cleanup": true,
+  "exclusive_lock_released": true,
+  "source_exclusive_lock_released": true
+}

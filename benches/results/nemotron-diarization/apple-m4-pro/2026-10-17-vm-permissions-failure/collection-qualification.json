@@ -1,0 +1,458 @@
+{
+  "schema_version": 1,
+  "source_commit": "af3055c82a9c6e988c39642a26097243a2390c16",
+  "inspection_passed": false,
+  "data_access_passed": false,
+  "prepared_guest": false,
+  "stored_guest_ownership_verified": false,
+  "fresh_machine_qualified": false,
+  "release_qualified": false,
+  "guest_os_ready_qualified": false,
+  "provisioning_performed": false,
+  "permission_changes": 0,
+  "actual_commands": 27,
+  "zero_status_commands": 26,
+  "source_preservation": {
+    "unchanged": true
+  },
+  "sandbox_status": "verified",
+  "prior_boot_members_verified": 99,
+  "prior_failed_access_members_verified": 103,
+  "current_historical_source_pins_verified": 32,
+  "external_descriptors_verified": 102,
+  "model_free_tests_passed": 326,
+  "clone_quarantined": true,
+  "owned_image_detached": true,
+  "permissions_probe": {
+    "account_content_read": false,
+    "data_access_passed": false,
+    "directory_contents_read": false,
+    "error": "ValueError('parent-relative users metadata not reached; retain earlier denial')",
+    "inspection_passed": false,
+    "nodes": {
+      "Library": {
+        "open": {
+          "success": true
+        },
+        "security": {
+          "abi_shape_qualified": true,
+          "acl_policy_qualified": false,
+          "attribute_bytes": 0,
+          "attribute_offset": 12,
+          "bytes": 12,
+          "canonical_empty": true,
+          "null_reference": false,
+          "raw_base64": "DAAAAAgAAAAAAAAA",
+          "recognized_filesec": false,
+          "returncode": 0,
+          "sha256": "0f38e56a1a16881d0a94612ea9af7bf78f80523a679660f56bfcc35d67be6a59",
+          "status": "ok"
+        },
+        "stat": {
+          "bytes": 2048,
+          "ctime_ns": 1792227179363456037,
+          "device": 16777269,
+          "file_type": 16384,
+          "flags": 1048576,
+          "full_mode": 16877,
+          "inode": 471,
+          "links": 64,
+          "mtime_ns": 1792227179363456037,
+          "observed_gid": 20,
+          "observed_uid": 502,
+          "permissions": 493
+        },
+        "status": "metadata_observed"
+      },
+      "Library/Preferences": {
+        "open": {
+          "success": true
+        },
+        "security": {
+          "abi_shape_qualified": true,
+          "acl_policy_qualified": false,
+          "attribute_bytes": 0,
+          "attribute_offset": 12,
+          "bytes": 12,
+          "canonical_empty": true,
+          "null_reference": false,
+          "raw_base64": "DAAAAAgAAAAAAAAA",
+          "recognized_filesec": false,
+          "returncode": 0,
+          "sha256": "0f38e56a1a16881d0a94612ea9af7bf78f80523a679660f56bfcc35d67be6a59",
+          "status": "ok"
+        },
+        "stat": {
+          "bytes": 1088,
+          "ctime_ns": 1792227206726001978,
+          "device": 16777269,
+          "file_type": 16384,
+          "flags": 1048576,
+          "full_mode": 16877,
+          "inode": 6699,
+          "links": 34,
+          "mtime_ns": 1792227206726001978,
+          "observed_gid": 20,
+          "observed_uid": 502,
+          "permissions": 493
+        },
+        "status": "metadata_observed"
+      },
+      "Users": {
+        "open": {
+          "success": true
+        },
+        "security": {
+          "abi_shape_qualified": true,
+          "acl_policy_qualified": false,
+          "attribute_bytes": 0,
+          "attribute_offset": 12,
+          "bytes": 12,
+          "canonical_empty": true,
+          "null_reference": false,
+          "raw_base64": "DAAAAAgAAAAAAAAA",
+          "recognized_filesec": false,
+          "returncode": 0,
+          "sha256": "0f38e56a1a16881d0a94612ea9af7bf78f80523a679660f56bfcc35d67be6a59",
+          "status": "ok"
+        },
+        "stat": {
+          "bytes": 128,
+          "ctime_ns": 1792225779267788374,
+          "device": 16777269,
+          "file_type": 16384,
+          "flags": 1048576,
+          "full_mode": 16877,
+          "inode": 18336,
+          "links": 4,
+          "mtime_ns": 1770271069702455277,
+          "observed_gid": 20,
+          "observed_uid": 502,
+          "permissions": 493
+        },
+        "status": "metadata_observed"
+      },
+      "private": {
+        "open": {
+          "success": true
+        },
+        "security": {
+          "abi_shape_qualified": true,
+          "acl_policy_qualified": false,
+          "attribute_bytes": 0,
+          "attribute_offset": 12,
+          "bytes": 12,
+          "canonical_empty": true,
+          "null_reference": false,
+          "raw_base64": "DAAAAAgAAAAAAAAA",
+          "recognized_filesec": false,
+          "returncode": 0,
+          "sha256": "0f38e56a1a16881d0a94612ea9af7bf78f80523a679660f56bfcc35d67be6a59",
+          "status": "ok"
+        },
+        "stat": {
+          "bytes": 192,
+          "ctime_ns": 1792227164051484624,
+          "device": 16777269,
+          "file_type": 16384,
+          "flags": 1081344,
+          "full_mode": 16877,
+          "inode": 17360,
+          "links": 6,
+          "mtime_ns": 1792227164051484624,
+          "observed_gid": 20,
+          "observed_uid": 502,
+          "permissions": 493
+        },
+        "status": "metadata_observed"
+      },
+      "private/etc": {
+        "open": {
+          "success": true
+        },
+        "security": {
+          "abi_shape_qualified": true,
+          "acl_policy_qualified": false,
+          "attribute_bytes": 0,
+          "attribute_offset": 12,
+          "bytes": 12,
+          "canonical_empty": true,
+          "null_reference": false,
+          "raw_base64": "DAAAAAgAAAAAAAAA",
+          "recognized_filesec": false,
+          "returncode": 0,
+          "sha256": "0f38e56a1a16881d0a94612ea9af7bf78f80523a679660f56bfcc35d67be6a59",
+          "status": "ok"
+        },
+        "stat": {
+          "bytes": 2432,
+          "ctime_ns": 1792227172804459958,
+          "device": 16777269,
+          "file_type": 16384,
+          "flags": 0,
+          "full_mode": 16877,
+          "inode": 17361,
+          "links": 76,
+          "mtime_ns": 1792227172804459958,
+          "observed_gid": 20,
+          "observed_uid": 502,
+          "permissions": 493
+        },
+        "status": "metadata_observed"
+      },
+      "private/var": {
+        "open": {
+          "success": true
+        },
+        "security": {
+          "abi_shape_qualified": true,
+          "acl_policy_qualified": false,
+          "attribute_bytes": 0,
+          "attribute_offset": 12,
+          "bytes": 12,
+          "canonical_empty": true,
+          "null_reference": false,
+          "raw_base64": "DAAAAAgAAAAAAAAA",
+          "recognized_filesec": false,
+          "returncode": 0,
+          "sha256": "0f38e56a1a16881d0a94612ea9af7bf78f80523a679660f56bfcc35d67be6a59",
+          "status": "ok"
+        },
+        "stat": {
+          "bytes": 1088,
+          "ctime_ns": 1792227165808932916,
+          "device": 16777269,
+          "file_type": 16384,
+          "flags": 1048576,
+          "full_mode": 16877,
+          "inode": 17781,
+          "links": 34,
+          "mtime_ns": 1792227165808932916,
+          "observed_gid": 20,
+          "observed_uid": 502,
+          "permissions": 493
+        },
+        "status": "metadata_observed"
+      },
+      "private/var/db": {
+        "open": {
+          "success": true
+        },
+        "security": {
+          "abi_shape_qualified": true,
+          "acl_policy_qualified": false,
+          "attribute_bytes": 0,
+          "attribute_offset": 12,
+          "bytes": 12,
+          "canonical_empty": true,
+          "null_reference": false,
+          "raw_base64": "DAAAAAgAAAAAAAAA",
+          "recognized_filesec": false,
+          "returncode": 0,
+          "sha256": "0f38e56a1a16881d0a94612ea9af7bf78f80523a679660f56bfcc35d67be6a59",
+          "status": "ok"
+        },
+        "stat": {
+          "bytes": 3424,
+          "ctime_ns": 1792227189362919713,
+          "device": 16777269,
+          "file_type": 16384,
+          "flags": 1048576,
+          "full_mode": 16877,
+          "inode": 17833,
+          "links": 107,
+          "mtime_ns": 1792227189362919713,
+          "observed_gid": 20,
+          "observed_uid": 502,
+          "permissions": 493
+        },
+        "status": "metadata_observed"
+      },
+      "private/var/db/com.apple.xpc.launchd": {
+        "open": {
+          "success": true
+        },
+        "security": {
+          "abi_shape_qualified": true,
+          "acl_policy_qualified": false,
+          "attribute_bytes": 0,
+          "attribute_offset": 12,
+          "bytes": 12,
+          "canonical_empty": true,
+          "null_reference": false,
+          "raw_base64": "DAAAAAgAAAAAAAAA",
+          "recognized_filesec": false,
+          "returncode": 0,
+          "sha256": "0f38e56a1a16881d0a94612ea9af7bf78f80523a679660f56bfcc35d67be6a59",
+          "status": "ok"
+        },
+        "stat": {
+          "bytes": 160,
+          "ctime_ns": 1792227170707751083,
+          "device": 16777269,
+          "file_type": 16384,
+          "flags": 0,
+          "full_mode": 16877,
+          "inode": 17935,
+          "links": 5,
+          "mtime_ns": 1792227170707751083,
+          "observed_gid": 20,
+          "observed_uid": 502,
+          "permissions": 493
+        },
+        "status": "metadata_observed"
+      },
+      "private/var/db/dslocal": {
+        "open": {
+          "success": true
+        },
+        "security": {
+          "abi_shape_qualified": true,
+          "acl_policy_qualified": false,
+          "attribute_bytes": 0,
+          "attribute_offset": 12,
+          "bytes": 12,
+          "canonical_empty": true,
+          "null_reference": false,
+          "raw_base64": "DAAAAAgAAAAAAAAA",
+          "recognized_filesec": false,
+          "returncode": 0,
+          "sha256": "0f38e56a1a16881d0a94612ea9af7bf78f80523a679660f56bfcc35d67be6a59",
+          "status": "ok"
+        },
+        "stat": {
+          "bytes": 96,
+          "ctime_ns": 1792225779260384958,
+          "device": 16777269,
+          "file_type": 16384,
+          "flags": 0,
+          "full_mode": 16877,
+          "inode": 17956,
+          "links": 3,
+          "mtime_ns": 1770271070258132678,
+          "observed_gid": 20,
+          "observed_uid": 502,
+          "permissions": 493
+        },
+        "status": "metadata_observed"
+      },
+      "private/var/db/dslocal/nodes": {
+        "open": {
+          "success": true
+        },
+        "security": {
+          "abi_shape_qualified": true,
+          "acl_policy_qualified": false,
+          "attribute_bytes": 0,
+          "attribute_offset": 12,
+          "bytes": 12,
+          "canonical_empty": true,
+          "null_reference": false,
+          "raw_base64": "DAAAAAgAAAAAAAAA",
+          "recognized_filesec": false,
+          "returncode": 0,
+          "sha256": "0f38e56a1a16881d0a94612ea9af7bf78f80523a679660f56bfcc35d67be6a59",
+          "status": "ok"
+        },
+        "stat": {
+          "bytes": 96,
+          "ctime_ns": 1792225779260340249,
+          "device": 16777269,
+          "file_type": 16384,
+          "flags": 0,
+          "full_mode": 16877,
+          "inode": 17957,
+          "links": 3,
+          "mtime_ns": 1770271070258562254,
+          "observed_gid": 20,
+          "observed_uid": 502,
+          "permissions": 493
+        },
+        "status": "metadata_observed"
+      },
+      "private/var/db/dslocal/nodes/Default": {
+        "open": {
+          "success": true
+        },
+        "security": {
+          "abi_shape_qualified": true,
+          "acl_policy_qualified": false,
+          "attribute_bytes": 0,
+          "attribute_offset": 12,
+          "bytes": 12,
+          "canonical_empty": true,
+          "null_reference": false,
+          "raw_base64": "DAAAAAgAAAAAAAAA",
+          "recognized_filesec": false,
+          "returncode": 0,
+          "sha256": "0f38e56a1a16881d0a94612ea9af7bf78f80523a679660f56bfcc35d67be6a59",
+          "status": "ok"
+        },
+        "stat": {
+          "bytes": 384,
+          "ctime_ns": 1792227169136455874,
+          "device": 16777269,
+          "file_type": 16384,
+          "flags": 0,
+          "full_mode": 16768,
+          "inode": 17958,
+          "links": 12,
+          "mtime_ns": 1792227169136455874,
+          "observed_gid": 20,
+          "observed_uid": 502,
+          "permissions": 384
+        },
+        "status": "metadata_observed"
+      },
+      "private/var/db/dslocal/nodes/Default/groups": {
+        "errno": 13,
+        "message": "[Errno 13] Permission denied: 'groups'",
+        "status": "stat_error"
+      },
+      "private/var/db/dslocal/nodes/Default/users": {
+        "errno": 13,
+        "message": "[Errno 13] Permission denied: 'users'",
+        "status": "stat_error"
+      }
+    },
+    "permission_changes": 0,
+    "provisioning_performed": false,
+    "schema_version": 1,
+    "stored_guest_ownership_verified": false
+  },
+  "global_image_inventory_retained_local_only": {
+    "attached-image.stdout.log": {
+      "bytes": 11324,
+      "sha256": "a1a61fa1e182774b2d2e6366f43baf3052b9b2c8430531ae46d23a6a45ac50c0"
+    },
+    "before-detach-image.stdout.log": {
+      "bytes": 11324,
+      "sha256": "a1a61fa1e182774b2d2e6366f43baf3052b9b2c8430531ae46d23a6a45ac50c0"
+    },
+    "cleanup-image.stdout.log": {
+      "bytes": 11462,
+      "sha256": "0ac150f6d61bf5aa62304008e630d757893baf00fb4523e606d1db57b3310693"
+    },
+    "before-image.stdout.log": {
+      "bytes": 7269,
+      "sha256": "38575c04a11a7fe42ce0bb5873ed5937acbb632f8d924f37bd7a85d577de40b7"
+    },
+    "before-data-mount.stdout.log": {
+      "bytes": 11324,
+      "sha256": "a1a61fa1e182774b2d2e6366f43baf3052b9b2c8430531ae46d23a6a45ac50c0"
+    },
+    "after-image.stdout.log": {
+      "bytes": 7269,
+      "sha256": "38575c04a11a7fe42ce0bb5873ed5937acbb632f8d924f37bd7a85d577de40b7"
+    }
+  },
+  "physical_reserve_released": true,
+  "inherited_pre_attach_disk_evidence_label_limit": "The inherited clone-helper installer label describes the earlier prerequisite; this attempt has no VM/installer. Current readonly-inspection provenance is separate in inspected_seed.",
+  "new_helper_vm_network_model_mount_clone_calls_during_collection": 0,
+  "limits": [
+    "Read-only metadata diagnosis only. Earlier DataRW access remains failed; no repair, access acceptance, stored ownership, prepared guest or provisioning is established.",
+    "Zero-length/unparsed/denied security metadata is not ACL absence or policy. Apparent UID/GID is not persisted guest ownership. No host keys, account content or directory enumeration.",
+    "No whole100GiB disk read/hash. Paired disk/binaries and rawglobalimage inventories stay local; scopedrawACLmetadata is retained without an access-policy conclusion.",
+    "No failureclone reuse or automatic privilege/permission/security/ownershipDB fallback. Guest readiness/SSH/freshapp, originalquality/humantiming, GUI/microphone/IPC/playback, platformperformance and publicrelease/main gates remain open."
+  ]
+}
