@@ -22,7 +22,6 @@ jobs:
       GIT_CONFIG_KEY_1: core.eol
       GIT_CONFIG_VALUE_1: lf
       GIT_LFS_SKIP_SMUDGE: '1'
-      CARGO_TARGET_DIR: ${{ runner.temp }}/windows-q8-candidate-target
     steps:
       - uses: actions/checkout@v4
         with:
@@ -51,6 +50,8 @@ jobs:
       - name: Actual owned-background timeout and assignment controls
         run: python -m unittest discover -s tools/nemotron-diarization -p test_windows_job_v2.py
       - name: Build admitted SDK and run native/public and lifecycle gates
+        env:
+          CARGO_TARGET_DIR: ${{ runner.temp }}/windows-q8-candidate-target
         run: python tools/nemotron-diarization/windows_q8_candidate.py --source native-source --output "${{ runner.temp }}/windows-q8-candidate" --jobs 2
       - name: Preserve successful or failed production candidate evidence
         if: always()
