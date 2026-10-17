@@ -1,0 +1,20 @@
+/Users/victor/.cache/gen2-nemotron3-n0/cpu-threads-prepare-v1/probe.o: \
+  /Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/native_thread_probe.cpp \
+  /Users/victor/.cache/gen2-nemotron3-n0/cpu-threads-prepare-v1/helper-native/src/asr/diar/diar_pipeline.h \
+  /Users/victor/.cache/gen2-nemotron3-n0/cpu-threads-prepare-v1/helper-native/src/asr/diar/aosc_state.h \
+  /Users/victor/.cache/gen2-nemotron3-n0/cpu-threads-prepare-v1/helper-native/src/asr/diar/sortformer_model.h \
+  /Users/victor/.cache/gen2-nemotron3-n0/cpu-threads-prepare-v1/helper-native/src/asr/batching.h \
+  /Users/victor/.cache/gen2-nemotron3-n0/cpu-threads-prepare-v1/helper-native/src/common/parameter_parser.h \
+  /Users/victor/.cache/gen2-nemotron3-n0/cpu-threads-prepare-v1/helper-native/src/asr/encoder/fastconformer.h \
+  /Users/victor/.cache/gen2-nemotron3-n0/cpu-threads-prepare-v1/helper-native/src/runtime/ggml/nn.h \
+  /Users/victor/.cache/gen2-nemotron3-n0/cpu-threads-prepare-v1/helper-native/src/runtime/ggml/runtime.h \
+  /Users/victor/.cache/gen2-nemotron3-n0/cpu-threads-prepare-v1/ggml-headers/ggml/include/ggml-alloc.h \
+  /Users/victor/.cache/gen2-nemotron3-n0/cpu-threads-prepare-v1/ggml-headers/ggml/include/ggml.h \
+  /Users/victor/.cache/gen2-nemotron3-n0/cpu-threads-prepare-v1/ggml-headers/ggml/include/ggml-backend.h \
+  /Users/victor/.cache/gen2-nemotron3-n0/cpu-threads-prepare-v1/ggml-headers/ggml/include/ggml-cpp.h \
+  /Users/victor/.cache/gen2-nemotron3-n0/cpu-threads-prepare-v1/ggml-headers/ggml/include/gguf.h \
+  /Users/victor/.cache/gen2-nemotron3-n0/cpu-threads-prepare-v1/helper-native/src/asr/encoder/rel_pos_attention.h \
+  /Users/victor/.cache/gen2-nemotron3-n0/cpu-threads-prepare-v1/helper-native/src/asr/encoder/rope_transformer.h \
+  /Users/victor/.cache/gen2-nemotron3-n0/cpu-threads-prepare-v1/helper-native/src/asr/encoder/transformer_encoder.h \
+  /Users/victor/.cache/gen2-nemotron3-n0/cpu-threads-prepare-v1/helper-native/src/asr/features/fe.h \
+  /Users/victor/.cache/gen2-nemotron3-n0/cpu-threads-prepare-v1/sdk/include/nemo_speech/asr.h

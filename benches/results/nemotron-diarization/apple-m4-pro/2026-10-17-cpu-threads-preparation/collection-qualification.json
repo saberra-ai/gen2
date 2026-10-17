@@ -1,0 +1,79 @@
+{
+  "schema_version": 1,
+  "source_commit": "53d98e1a82c700ab55a5faa03403c1260a5f1804",
+  "preparation_completed": true,
+  "model_acquisitions": 0,
+  "model_calls": 0,
+  "model_denied_commands": 28,
+  "backend_lifetimes_per_control": 22,
+  "strict_private_library_counts": [
+    92,
+    92
+  ],
+  "compiler_dependencies_verified": 23,
+  "partial_failure_evidence_verified": true,
+  "success_settled_counts": [
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ],
+    [
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1
+    ]
+  ],
+  "opaque_helper_archive": {
+    "schema_version": 1,
+    "release_qualified": false,
+    "scope": "Development filesystem snapshot; preserves aliases/modes, does not by itself close dependencies or establish relocation.",
+    "archive": "thread-helpers.tar.gz",
+    "archive_bytes": 19858,
+    "archive_sha256": "09950deb1ae7d6e96bde64fa41c8d50a10620caceb2e500275a5652ee9442ba1"
+  },
+  "archive_replayed_and_inventory_verified": true,
+  "protected_inputs_independently_rechecked": [
+    "/Users/victor/.cache/gen2-nemotron3-n0/cpu-threads-prepare-v1/producer",
+    "/Users/victor/.cache/gen2-nemotron3-n0/cpu-threads-prepare-v1/native_reference",
+    "/Users/victor/.cache/gen2-nemotron3-n0/cpu-threads-prepare-v1/sdk",
+    "/Users/victor/.cache/gen2-nemotron3-n0/cpu-threads-prepare-v1/work/nemo",
+    "/Users/victor/.cache/gen2-nemotron3-n0/cpu-threads-prepare-v1/helper-native",
+    "/Users/victor/.cache/gen2-nemotron3-n0/cpu-threads-prepare-v1/ggml-headers",
+    "/Users/victor/.cache/gen2-nemotron3-n0/cpu-threads-prepare-v1/work/bin"
+  ],
+  "host": {
+    "cpu": "Apple M4 Pro",
+    "cpu_counts": "hw.ncpu: 14\nhw.logicalcpu: 14\nhw.physicalcpu: 14\n",
+    "platform": "macOS-26.3-arm64-arm-64bit",
+    "python": "3.12.13 (main, Jun 11 2026, 03:55:21) [Clang 22.1.3 ]",
+    "load_before": [
+      2.7734375,
+      2.15478515625,
+      1.861328125
+    ]
+  },
+  "new_collection_helper_or_model_calls": 0,
+  "release_qualified": false,
+  "limits": [
+    "Four fresh private-helper processes in fixed4,3,3,4 order on the same three-CPU M1 VM. Change only requested CPU thread count across calls; keep identical SDK/model/PCM/geometry/segmentation/cadence/helper. Retain all outcomes and full1200x8 probabilities/turns; exact pooled reference identities and unchanged1e-6 bounds precede timing interpretation. No selection or retry.",
+    "Build a NEW matched private C++ helper. Recompile exactownedpool backend/logging source with111boundprivate/native inputs and declaredpatch; runtime.h must match pool-v1 layout. Reconstruct22GGMLheaders from admittedM1archive/19patches; audit allcompiler .d dependencies. Existing SDK payloads remain unchanged. Do not use old-layout private helper or attach another pool. This is not a public API/runtime qualification.",
+    "Model-denied preparation before acquisition/admission: source/write/runtime denial controls,two model-free controls of22backend lifetimes each (two warmups plus10each at4/3threads); first injects a known late failure to verify retention of all observations, second succeeds, bounded10\u2013100ms settling andtwo incidentalworker allowance, strict92-image audit. Local prepare-only stops before model acquisition/NN; actual M1 job rebuilds/repeats allcontrols. Retain5GiB/1GiB/256MiB/600s groupcleanup/failure-stop protections.",
+    "Bind currentlocaltools beforeimports, historicalGit/protocol, bothopaqueZIP/memberinventories, allusedcompilerinputs, protectedsource/header/SDK/package/helper/assets before eachcommand andfinal, and everyresultJSON/rawdescriptor. Deny source/reference/priorresult payloadreads, protectedwrites andnetwork to modelchildren. Delivery includes exactnewhelper payload and .d records.",
+    "SharedVM descriptive comparison only; fullprocess time includes backend/pool setup while model-load excludes it. A gain does not establish uncontended live performance or production policy. Original accuracy/humanwordgold/GUI/microphone/freshapp/signing/release gates remain open. Production change would require explicit newprovenance and public/lifecycle/long/mixed/quality/package requalification."
+  ]
+}

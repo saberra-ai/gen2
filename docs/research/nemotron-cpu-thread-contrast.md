@@ -60,3 +60,14 @@ will describe this shared VM only. Even a gain would need a separately identifie
 production implementation and public/lifecycle/long/mixed/quality/package
 requalification. Original quality, human timing gold, physical desktop and
 release requirements remain unchanged.
+
+The [local preparation receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-cpu-threads-preparation/collection-qualification.json)
+now passes at `53d98e1a` on the Apple M4 Pro. All 28 model-denied commands return
+their required statuses, including the deliberate failure with all 20 retained
+observations, followed by the successful lifetime control. Each control audits
+exactly 92 private images; all 20 successful settled counts return to one thread.
+The 75-member receipt rechecks protected inventories, 23 compiler dependencies,
+and the exact archived helper payload through independent restoration. All 256
+Python tests pass. No asset is acquired and no model/frontend inference occurs.
+The three-CPU M1 comparison remains pending; this local result establishes only
+that its preparation and evidence controls work on the current physical host.

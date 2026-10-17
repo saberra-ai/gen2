@@ -1578,6 +1578,14 @@ sample counts cannot be assigned wholly to that loop or treated as CPU usage.
 This supports a controlled four-versus-three-thread contrast, not a proven
 oversubscription cause, selected policy, performance fix or release promotion.
 
+The [fixed CPU thread contrast](../research/nemotron-cpu-thread-contrast.md)
+now passes local model-denied preparation: 28 commands, two 22-lifetime controls,
+strict 92-image audits, retained synthetic-failure observations and all successful
+settled counts back to one thread. Its 75-member receipt verifies the compiled
+helper and 23 used dependencies; all 256 Python tests pass. The fixed M1
+four-process 4/3/3/4 comparison is pending. No model is acquired or executed by
+this local preparation and no production thread policy changes.
+
 Use public Gen2 calls for lifecycle and user-visible behavior; use the FFI seam
 for ownership/status failures, and a pinned upstream executable for independent
 native-output comparison. Stub-only tests do not establish model support.
