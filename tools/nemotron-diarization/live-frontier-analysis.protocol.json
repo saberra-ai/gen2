@@ -1,0 +1,102 @@
+{
+  "schema_version": 1,
+  "scope": "Post-hoc descriptive analysis of already-qualified saved CLI traces; no new execution or release gate.",
+  "cases": [
+    {
+      "name": "valid-mel-cpu",
+      "result": "benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-complete-pnola-apps/cpu-live.result.json",
+      "receipt": "benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-complete-pnola-apps/receiver-qualification.json",
+      "construction": "benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-instrumented-pnola-apps/protocol.json",
+      "backend": "cpu",
+      "runtime_version": "nemo-speech-asr 0.2.0+gen2-valid-mel-v1",
+      "source_commit": "0a9c42c9eeefc0c0f61259ab7f1b53f294abcaed",
+      "success_field": "automatic_packaged_resolution_gates_passed"
+    },
+    {
+      "name": "valid-mel-metal",
+      "result": "benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-complete-pnola-apps/metal-live.result.json",
+      "receipt": "benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-complete-pnola-apps/receiver-qualification.json",
+      "construction": "benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-instrumented-pnola-apps/protocol.json",
+      "backend": "metal",
+      "runtime_version": "nemo-speech-asr 0.2.0+gen2-valid-mel-v1",
+      "source_commit": "0a9c42c9eeefc0c0f61259ab7f1b53f294abcaed",
+      "success_field": "automatic_packaged_resolution_gates_passed"
+    },
+    {
+      "name": "pooled-cpu",
+      "result": "benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-pnola-app-runtime/results/cpu-live.json",
+      "receipt": "benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-pnola-app-runtime/qualification.json",
+      "construction": "benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-pnola-app-construction/protocol.json",
+      "backend": "cpu",
+      "runtime_version": "nemo-speech-asr 0.2.0+gen2-valid-mel-pool-v1",
+      "source_commit": "d3adaf379778bbb54dafbc7abe48fc9661bc2acf",
+      "success_field": "automatic_packaged_resolution_gates_passed"
+    }
+  ],
+  "inputs": {
+    "benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-complete-pnola-apps/cpu-live.result.json": {
+      "bytes": 7373,
+      "sha256": "3ce908a5ba6a8a78464c02ca994f01dab7390aff9189bcc3580185ccfa56650a"
+    },
+    "benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-complete-pnola-apps/receiver-qualification.json": {
+      "bytes": 10214,
+      "sha256": "f17dc7c74b84700073d9fcc8cca67f763e3f3f7a0d072012de95be1de81ae494"
+    },
+    "benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-instrumented-pnola-apps/protocol.json": {
+      "bytes": 195785,
+      "sha256": "c4641b8298179b9c830eef6efeb971f71766eef4696307bd7033ffcfb67224c8"
+    },
+    "benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-complete-pnola-apps/metal-live.result.json": {
+      "bytes": 7248,
+      "sha256": "617e7587c03c2f0fdd11cf84f8225852db29f6770d8a5cca52c914e4449b14f5"
+    },
+    "benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-pnola-app-runtime/results/cpu-live.json": {
+      "bytes": 7377,
+      "sha256": "2309303efb04360be0a4822ca3a9df05f4e90a8bedaeb850dc9abe1f19f689ba"
+    },
+    "benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-pnola-app-runtime/qualification.json": {
+      "bytes": 231309,
+      "sha256": "8d04534ddbfb569635dbb9b5c205c692049ddf960f7bb9ce9abc7771e9df6f6c"
+    },
+    "benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-pnola-app-construction/protocol.json": {
+      "bytes": 798189,
+      "sha256": "5f157f39aaa8487e3d9af3cb2c2c23212cd2eceb300849fa014543fdd7e72e32"
+    },
+    "integrations/pnola/overlay/src-tauri/src/live.rs": {
+      "bytes": 30577,
+      "sha256": "380933edfebc6731fb777e6f0e842d1615abd81b8c3599eb034ff037df03a27d"
+    }
+  },
+  "observer_source": {
+    "bytes": 30577,
+    "sha256": "380933edfebc6731fb777e6f0e842d1615abd81b8c3599eb034ff037df03a27d"
+  },
+  "tools": {
+    "analyze_live_frontier.py": {
+      "bytes": 3240,
+      "sha256": "b4b118d3a74f37e328421aac8f76d9e02f527690964b7a4f986d4d779748adbf"
+    },
+    "live_frontier_metrics.py": {
+      "bytes": 2715,
+      "sha256": "cac8d169a160a1b9d1757c467f1c93f9b27e56c6e5a86f47644df7ddfd9be52e"
+    },
+    "test_live_frontier_metrics.py": {
+      "bytes": 2188,
+      "sha256": "6a072ef1a328dd126267858e46995a8b56f86f9c65ad46942d473fe7bfeae0c4"
+    }
+  },
+  "formulas": {
+    "signed_frontier_age": "elapsed_seconds - processed_audio_seconds",
+    "observation_gap": "elapsed[i] - elapsed[i-1]",
+    "previous_observed_frontier_age_at_next_observation": "elapsed[i] - processed[i-1]",
+    "p95": "nearest rank on these retained samples, not population latency"
+  },
+  "limits": [
+    "These are the same existing repeated80.04s recordings on one M4 Pro with ordinary background activity, not new captures, physical microphone, untouched held-out data or an uncontended performance comparison.",
+    "The CLI observer starts its clock before feeding320sample blocks at20ms cadence and polls after each push, before scheduled sleep. A block can lead its nominal real-time endpoint by20ms; signed ages are retained.",
+    "A processed-audio frontier is not an acoustic word/speaker onset, first visible label, finality watermark or stable prefix. Intermediate turn contents and actual GUI/IPC/render timestamps were not retained.",
+    "This trace cannot separate capture/file-writing, queueing, native lookahead/compute, snapshot policy or polling costs. Exact actual finalization delay is also unobserved. No actual end-to-end label-latency gate closes.",
+    "The previous-observed-frontier statistic describes this saved polling trace only; it is not a GUI staleness bound. Profiles were run at different times/builds, so their descriptive values do not establish a pooling performance effect.",
+    "All three traces, including every retained revision, must be reported. No parameter/cadence/reference/quality gate changes or new model/app/native execution are performed."
+  ]
+}

@@ -1495,6 +1495,14 @@ degradation without a matched FP32 oracle. See the
 
 ## Verification and release criteria
 
+A [saved live-frontier analysis](../research/nemotron-live-frontier-freshness.md)
+now freezes all three completed CPU/Metal/pooled-CPU CLI observation traces and
+their construction/source identities. It will describe elapsed-clock versus
+processed-frontier ages using every retained revision, with no further model
+call or parameter selection. All242 local tools tests pass. Actual GUI/IPC
+render time, acoustic label latency, separate queue/compute/poll contributions
+and finalization delay remain unmeasured; this analysis cannot close those gates.
+
 Use public Gen2 calls for lifecycle and user-visible behavior; use the FFI seam
 for ownership/status failures, and a pinned upstream executable for independent
 native-output comparison. Stub-only tests do not establish model support.

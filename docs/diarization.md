@@ -1,13 +1,16 @@
 # Local Nemotron 3 speaker timelines
 
-Current Rust requires exactly `nemo-speech-asr 0.2.0+gen2-valid-mel-v1` and
-floor-valid final probability rows. On the named M4 Pro, CPU and Metal v2
+Current Rust admits the exact `nemo-speech-asr 0.2.0+gen2-valid-mel-v1` and
+`nemo-speech-asr 0.2.0+gen2-valid-mel-pool-v1` versions, both with floor-valid
+final probability rows. The pooled profile is a CPU package with a bounded
+four-thread pool; Metal uses the non-pooled profile. On the named M4 Pro, CPU and Metal v2
 packages pass 60-second native/public parity and seven lifecycle gates, including
 100 reloads. Both pass repeated-fixture 30-minute and one-hour compaction,
 retained-tail parity, provisional revision and process-RSS checks. Separate Linux
 and Windows CPU receipts cover offline parity, lifecycle and chat coexistence.
-The exact portable CPU package also passes offline parity and lifecycle on a
-fresh M1 virtual machine; observed public RTF 7.1871 does not meet the live
+The [pooled CPU package](../benches/results/nemotron-diarization/macos-arm64/2026-10-16-pooled-public/collection-qualification.json)
+also passes offline parity and lifecycle on a fresh M1 virtual machine;
+observed public RTF 2.1098284 does not meet the live
 performance gate. Quality and complete desktop release gates remain open.
 See [the roadmap](plans/nemotron-3-diarization-roadmap.md).
 
