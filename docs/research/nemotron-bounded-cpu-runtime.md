@@ -1,0 +1,44 @@
+# Available-CPU-bounded pooled runtime candidate
+
+The [fixed M1 thread contrast](nemotron-cpu-thread-contrast.md) preserves all
+outputs and observes RTF 0.181545/0.202791 at three threads, versus
+1.98405/1.77253 at four threads on the same three-CPU virtual receiver. Implement
+a separately identified native candidate before making a public performance
+claim: `gen2-valid-mel-pool-cpu-v2`.
+
+The candidate changes only CPU `Diarizer::backend_params`: request the smaller
+of its existing default and `std::thread::hardware_concurrency()`. An unknown
+zero count has a defined one-worker fallback. GPU requests retain their current
+settings. Larger hosts retain the existing four-thread request. The owned-pool
+implementation, private object layout, frame contract, weights, segmentation,
+geometry and audio transport remain the same. Compile-time policy assertions
+cover 0/1/2/3/4/14 reported CPUs and a requested count below available capacity.
+
+The [new lock](../../tools/nemotron-diarization/runtime-valid-mel-pool-cpu.lock.json)
+binds the complete original pooled parent and the exact additional patch/source
+hashes. Its three patches are in canonical source-diff order. Profile admission
+must reject changed parents, reordered/changed patches, missing source hashes,
+and unrelated CMake/frame/model changes. Existing profile IDs and default
+selection remain unchanged. Rust's exact version allowlist still rejects this
+candidate; no public loader or release admission is claimed here.
+
+The [construction protocol](../../tools/nemotron-diarization/macos-bounded-construction.protocol.json)
+binds current local modules before import and the committed source/protocol
+before preparation. Construct a new portable armv8.2-a+dotprod+fp16 SDK and
+relocated package with all source/compiler/GGML/dependency/notice provenance,
+native model-free state test and exact new C ABI version. Then require the
+existing 101 missing-model constructor cleanup attempts, their immediate and
+settled thread counts, bounded waits, strict runtime image audit, and opaque
+SDK/package/control archives. Retain the established storage reserve, free-space
+floors, process-group cleanup, failure logs and timeout protections. The new
+controller keeps this frozen construction separate from historical producers.
+
+No weights are acquired or admitted by construction. At preregistration the
+new SDK has not been built, the new source has not been prepared by its
+controller, and no new native/helper/model execution has occurred. Model-free
+Python profile checks are separate from actual native behavior. Successful
+construction would still require an explicitly frozen native/public numerical
+and lifecycle qualification on the three-CPU M1 receiver, followed by long,
+mixed-model, quality and desktop package/platform qualification under this
+identity. Original 20% DER, human word gold, GUI/microphone, fresh-machine,
+signing and release gates remain unchanged; main remains unchanged.

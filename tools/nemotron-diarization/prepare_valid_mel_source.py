@@ -4,14 +4,14 @@ import json
 from pathlib import Path
 import subprocess
 
-from pooled_runtime import PROFILE, POOLED_PROFILE, load_profile, verify_source
+from pooled_runtime import PROFILE, POOLED_PROFILE, BOUNDED_PROFILE, load_profile, verify_source
 
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ['upstream', 'destination', 'output']:
         parser.add_argument('--' + name, type=Path, required=True)
-    parser.add_argument('--runtime-profile', choices=[PROFILE, POOLED_PROFILE], default=PROFILE)
+    parser.add_argument('--runtime-profile', choices=[PROFILE, POOLED_PROFILE, BOUNDED_PROFILE], default=PROFILE)
     args = parser.parse_args()
     destination, output = args.destination.resolve(), args.output.resolve()
     if destination.is_relative_to(output) or output.is_relative_to(destination):

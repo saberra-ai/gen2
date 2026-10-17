@@ -11,7 +11,7 @@ from artifacts import digest
 from build_valid_mel_candidate import capture, descriptor, source_inventory
 from ctest_output import require_single_test_pass
 from macos_cpu_architecture import PORTABLE_ARM64, audit_portable_commands, portable_definitions
-from pooled_runtime import (PROFILE, POOLED_PROFILE, compatibility_patch_bytes,
+from pooled_runtime import (PROFILE, POOLED_PROFILE, BOUNDED_PROFILE, compatibility_patch_bytes,
                             load_profile, verify_completed_source, verify_source)
 from runtime_profiles import audit_cpu_compiler_tree
 
@@ -21,7 +21,7 @@ def main():
     for name in ['source', 'prefix', 'output']:
         parser.add_argument('--' + name, type=Path, required=True)
     parser.add_argument('--jobs', type=int, default=6)
-    parser.add_argument('--runtime-profile', choices=[PROFILE, POOLED_PROFILE], default=PROFILE)
+    parser.add_argument('--runtime-profile', choices=[PROFILE, POOLED_PROFILE, BOUNDED_PROFILE], default=PROFILE)
     parser.add_argument('--cpu-arch', choices=['native', PORTABLE_ARM64], default='native',
                         help='explicit portable candidate, or the unchanged build-host native default')
     parser.add_argument('--sandbox-profile', type=Path, help='optional stricter child profile retained with evidence')

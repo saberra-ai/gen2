@@ -12,12 +12,16 @@ from runtime_profiles import PROFILE, profile_provenance
 
 
 POOLED_PROFILE = 'gen2-valid-mel-pool-v1'
+BOUNDED_PROFILE = 'gen2-valid-mel-pool-cpu-v2'
+BOUNDED_FILES = {'src/asr/diar/diarizer.cpp'}
 POOL_FILES = {'src/runtime/ggml/backend.cpp', 'src/runtime/ggml/runtime.h'}
 
 
 def load_profile(profile=PROFILE):
     if profile == PROFILE:
         return original.load_profile()
+    if profile == BOUNDED_PROFILE:
+        return _load_bounded_profile()
     if profile != POOLED_PROFILE:
         raise ValueError('unsupported native runtime profile')
     tools = Path(__file__).resolve().parent
@@ -45,6 +49,35 @@ def load_profile(profile=PROFILE):
     runtime['source_sha256'].update(patch['source_sha256_after'])
     if lock != expected:
         raise ValueError('pool profile changes unrelated runtime settings')
+    return path, lock
+
+
+def _load_bounded_profile():
+    tools = Path(__file__).resolve().parent
+    path = tools / 'runtime-valid-mel-pool-cpu.lock.json'
+    lock = json.loads(path.read_text())
+    parent_path, parent = load_profile(POOLED_PROFILE)
+    if lock.get('parent_runtime_profile') != {'path': parent_path.name, **descriptor(parent_path)}:
+        raise ValueError('bounded CPU profile parent differs')
+    patches = lock['runtime']['compatibility_patches']
+    if (len(patches) != 3 or [patches[0], patches[2]] != parent['runtime']['compatibility_patches']
+            or patches[1].get('path') != 'patches/cpu-thread-cap.patch'):
+        raise ValueError('unexpected bounded CPU patch series')
+    patch = patches[1]
+    if descriptor(tools / patch['path']) != {key:patch[key] for key in ['bytes','sha256']}:
+        raise ValueError('bounded CPU patch bytes differ')
+    if any(set(patch.get(key,{})) != BOUNDED_FILES for key in ['source_sha256_before','source_sha256_after']):
+        raise ValueError('bounded CPU source provenance is incomplete')
+    expected = copy.deepcopy(parent)
+    expected.update(profile=BOUNDED_PROFILE, profile_status=lock['profile_status'],
+                    parent_runtime_profile=lock['parent_runtime_profile'])
+    runtime = expected['runtime']
+    runtime['cmake_definitions']['NEMO_SPEECH_VERSION_METADATA'] = BOUNDED_PROFILE
+    runtime['reported_version'] = 'nemo-speech-asr 0.2.0+' + BOUNDED_PROFILE
+    runtime['compatibility_patches'] = patches
+    runtime['source_sha256'].update(patch['source_sha256_after'])
+    if lock != expected:
+        raise ValueError('bounded CPU profile changes unrelated runtime settings')
     return path, lock
 
 

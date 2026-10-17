@@ -1595,6 +1595,15 @@ for undersized hosts, but the diagnostic helper does not qualify a production
 runtime change. Public/lifecycle/long/mixed/quality/package requalification and
 the original release gates remain required.
 
+The [bounded CPU runtime candidate](../research/nemotron-bounded-cpu-runtime.md)
+now has a separate `gen2-valid-mel-pool-cpu-v2` source/patch identity. CPU
+diarization caps its default request to the reported CPU count, with a one-worker
+fallback for unknown counts; GPU requests and the larger-host default remain
+unchanged. The model-denied construction protocol is drafted, and all 258 Python
+tests pass. No new SDK has been prepared or compiled, no new inference has run,
+and Rust's exact version allowlist still rejects this candidate. Construction
+and all subsequent public/runtime/release qualification remain pending.
+
 Use public Gen2 calls for lifecycle and user-visible behavior; use the FFI seam
 for ownership/status failures, and a pinned upstream executable for independent
 native-output comparison. Stub-only tests do not establish model support.
