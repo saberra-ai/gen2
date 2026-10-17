@@ -1,0 +1,604 @@
+kernels	Set up job	﻿2026-10-17T15:05:59.5729666Z Current runner version: '2.337.0'
+kernels	Set up job	2026-10-17T15:05:59.5789124Z ##[group]Runner Image Provisioner
+kernels	Set up job	2026-10-17T15:05:59.5789918Z Hosted Compute Agent
+kernels	Set up job	2026-10-17T15:05:59.5790504Z Version: 20261012.601
+kernels	Set up job	2026-10-17T15:05:59.5791183Z Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+kernels	Set up job	2026-10-17T15:05:59.5791855Z Build Date: 2026-10-12T17:48:21Z
+kernels	Set up job	2026-10-17T15:05:59.5792474Z Worker ID: {fd368978-6ba3-44ec-b3c0-9fdfe39ed78b}
+kernels	Set up job	2026-10-17T15:05:59.5793147Z Region: centralus
+kernels	Set up job	2026-10-17T15:05:59.5793648Z Cloud: Azure
+kernels	Set up job	2026-10-17T15:05:59.5794188Z ##[endgroup]
+kernels	Set up job	2026-10-17T15:05:59.5795550Z ##[group]Operating System
+kernels	Set up job	2026-10-17T15:05:59.5796209Z Microsoft Windows Server 2022
+kernels	Set up job	2026-10-17T15:05:59.5796793Z 10.0.20348
+kernels	Set up job	2026-10-17T15:05:59.5797281Z Datacenter
+kernels	Set up job	2026-10-17T15:05:59.5797758Z ##[endgroup]
+kernels	Set up job	2026-10-17T15:05:59.5798262Z ##[group]Runner Image
+kernels	Set up job	2026-10-17T15:05:59.5798873Z Image: windows-2022
+kernels	Set up job	2026-10-17T15:05:59.5799369Z Version: 20261012.333.1
+kernels	Set up job	2026-10-17T15:05:59.5800341Z Included Software: https://github.com/actions/runner-images/blob/win22/20261012.333/images/windows/Windows2022-Readme.md
+kernels	Set up job	2026-10-17T15:05:59.5802519Z Image Release: https://github.com/actions/runner-images/releases/tag/win22%2F20261012.333
+kernels	Set up job	2026-10-17T15:05:59.5803435Z ##[endgroup]
+kernels	Set up job	2026-10-17T15:05:59.5804436Z ##[group]GITHUB_TOKEN Permissions
+kernels	Set up job	2026-10-17T15:05:59.5806965Z Contents: read
+kernels	Set up job	2026-10-17T15:05:59.5807536Z Metadata: read
+kernels	Set up job	2026-10-17T15:05:59.5808046Z ##[endgroup]
+kernels	Set up job	2026-10-17T15:05:59.5810182Z Secret source: Actions
+kernels	Set up job	2026-10-17T15:05:59.5811107Z Cache mode: write
+kernels	Set up job	2026-10-17T15:05:59.5811773Z Prepare workflow directory
+kernels	Set up job	2026-10-17T15:05:59.6202856Z Prepare all required actions
+kernels	Set up job	2026-10-17T15:05:59.6250499Z Getting action download info
+kernels	Set up job	2026-10-17T15:05:59.8893506Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+kernels	Set up job	2026-10-17T15:06:00.0198763Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+kernels	Set up job	2026-10-17T15:06:00.1507365Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+kernels	Set up job	2026-10-17T15:06:00.4786721Z Complete job name: kernels
+kernels	Run actions/checkout@v4	﻿2026-10-17T15:06:00.6441544Z ##[group]Run actions/checkout@v4
+kernels	Run actions/checkout@v4	2026-10-17T15:06:00.6442584Z with:
+kernels	Run actions/checkout@v4	2026-10-17T15:06:00.6443000Z   persist-credentials: false
+kernels	Run actions/checkout@v4	2026-10-17T15:06:00.6443499Z   repository: saberra-ai/gen2
+kernels	Run actions/checkout@v4	2026-10-17T15:06:00.6447117Z   token: ***
+kernels	Run actions/checkout@v4	2026-10-17T15:06:00.6447507Z   ssh-strict: true
+kernels	Run actions/checkout@v4	2026-10-17T15:06:00.6447899Z   ssh-user: git
+kernels	Run actions/checkout@v4	2026-10-17T15:06:00.6448275Z   clean: true
+kernels	Run actions/checkout@v4	2026-10-17T15:06:00.6448669Z   sparse-checkout-cone-mode: true
+kernels	Run actions/checkout@v4	2026-10-17T15:06:00.6449152Z   fetch-depth: 1
+kernels	Run actions/checkout@v4	2026-10-17T15:06:00.6449545Z   fetch-tags: false
+kernels	Run actions/checkout@v4	2026-10-17T15:06:00.6449950Z   show-progress: true
+kernels	Run actions/checkout@v4	2026-10-17T15:06:00.6450352Z   lfs: false
+kernels	Run actions/checkout@v4	2026-10-17T15:06:00.6450721Z   submodules: false
+kernels	Run actions/checkout@v4	2026-10-17T15:06:00.6451142Z   set-safe-directory: true
+kernels	Run actions/checkout@v4	2026-10-17T15:06:00.6451606Z   allow-unsafe-pr-checkout: false
+kernels	Run actions/checkout@v4	2026-10-17T15:06:00.6452502Z env:
+kernels	Run actions/checkout@v4	2026-10-17T15:06:00.6453155Z   GIT_CONFIG_COUNT: 2
+kernels	Run actions/checkout@v4	2026-10-17T15:06:00.6453789Z   GIT_CONFIG_KEY_0: core.autocrlf
+kernels	Run actions/checkout@v4	2026-10-17T15:06:00.6454297Z   GIT_CONFIG_VALUE_0: false
+kernels	Run actions/checkout@v4	2026-10-17T15:06:00.6454873Z   GIT_CONFIG_KEY_1: core.eol
+kernels	Run actions/checkout@v4	2026-10-17T15:06:00.6455686Z   GIT_CONFIG_VALUE_1: lf
+kernels	Run actions/checkout@v4	2026-10-17T15:06:00.6456407Z   GIT_LFS_SKIP_SMUDGE: 1
+kernels	Run actions/checkout@v4	2026-10-17T15:06:00.6457113Z ##[endgroup]
+kernels	Run actions/checkout@v4	2026-10-17T15:06:00.7856138Z Syncing repository: saberra-ai/gen2
+kernels	Run actions/checkout@v4	2026-10-17T15:06:00.7857837Z ##[group]Getting Git version info
+kernels	Run actions/checkout@v4	2026-10-17T15:06:00.7858430Z Working directory is 'D:\a\gen2\gen2'
+kernels	Run actions/checkout@v4	2026-10-17T15:06:00.8996061Z [command]"C:\Program Files\Git\bin\git.exe" version
+kernels	Run actions/checkout@v4	2026-10-17T15:06:01.2410445Z git version 2.56.0.windows.2
+kernels	Run actions/checkout@v4	2026-10-17T15:06:01.2448687Z ##[endgroup]
+kernels	Run actions/checkout@v4	2026-10-17T15:06:01.2466991Z Temporarily overriding HOME='D:\a\_temp\7460fa9a-f47d-496e-9c6e-45ad7069b08a' before making global git config changes
+kernels	Run actions/checkout@v4	2026-10-17T15:06:01.2468953Z Adding repository directory to the temporary git global config as a safe directory
+kernels	Run actions/checkout@v4	2026-10-17T15:06:01.2477941Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\gen2\gen2
+kernels	Run actions/checkout@v4	2026-10-17T15:06:01.3006053Z Deleting the contents of 'D:\a\gen2\gen2'
+kernels	Run actions/checkout@v4	2026-10-17T15:06:01.3011051Z ##[group]Initializing the repository
+kernels	Run actions/checkout@v4	2026-10-17T15:06:01.3019404Z [command]"C:\Program Files\Git\bin\git.exe" init D:\a\gen2\gen2
+kernels	Run actions/checkout@v4	2026-10-17T15:06:01.3948439Z Initialized empty Git repository in D:/a/gen2/gen2/.git/
+kernels	Run actions/checkout@v4	2026-10-17T15:06:01.3982693Z [command]"C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/saberra-ai/gen2
+kernels	Run actions/checkout@v4	2026-10-17T15:06:01.4546458Z ##[endgroup]
+kernels	Run actions/checkout@v4	2026-10-17T15:06:01.4547889Z ##[group]Disabling automatic garbage collection
+kernels	Run actions/checkout@v4	2026-10-17T15:06:01.4554258Z [command]"C:\Program Files\Git\bin\git.exe" config --local gc.auto 0
+kernels	Run actions/checkout@v4	2026-10-17T15:06:01.4824558Z ##[endgroup]
+kernels	Run actions/checkout@v4	2026-10-17T15:06:01.4826085Z ##[group]Setting up auth
+kernels	Run actions/checkout@v4	2026-10-17T15:06:01.4835724Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+kernels	Run actions/checkout@v4	2026-10-17T15:06:01.5110992Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+kernels	Run actions/checkout@v4	2026-10-17T15:06:02.7782938Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+kernels	Run actions/checkout@v4	2026-10-17T15:06:02.8057087Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+kernels	Run actions/checkout@v4	2026-10-17T15:06:03.2640390Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+kernels	Run actions/checkout@v4	2026-10-17T15:06:03.2918182Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+kernels	Run actions/checkout@v4	2026-10-17T15:06:03.7326640Z [command]"C:\Program Files\Git\bin\git.exe" config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+kernels	Run actions/checkout@v4	2026-10-17T15:06:03.7623148Z ##[endgroup]
+kernels	Run actions/checkout@v4	2026-10-17T15:06:03.7625979Z ##[group]Fetching the repository
+kernels	Run actions/checkout@v4	2026-10-17T15:06:03.7643191Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +72bcb3d28487d803048122af03501895fe384871:refs/remotes/origin/codex/nemotron3-n0
+kernels	Run actions/checkout@v4	2026-10-17T15:06:08.4035593Z From https://github.com/saberra-ai/gen2
+kernels	Run actions/checkout@v4	2026-10-17T15:06:08.4036903Z  * [new ref]         72bcb3d28487d803048122af03501895fe384871 -> origin/codex/nemotron3-n0
+kernels	Run actions/checkout@v4	2026-10-17T15:06:08.4065084Z ##[endgroup]
+kernels	Run actions/checkout@v4	2026-10-17T15:06:08.4065568Z ##[group]Determining the checkout info
+kernels	Run actions/checkout@v4	2026-10-17T15:06:08.4067638Z ##[endgroup]
+kernels	Run actions/checkout@v4	2026-10-17T15:06:08.4078098Z [command]"C:\Program Files\Git\bin\git.exe" sparse-checkout disable
+kernels	Run actions/checkout@v4	2026-10-17T15:06:08.4462833Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all extensions.worktreeConfig
+kernels	Run actions/checkout@v4	2026-10-17T15:06:08.4730538Z ##[group]Checking out the ref
+kernels	Run actions/checkout@v4	2026-10-17T15:06:08.4738157Z [command]"C:\Program Files\Git\bin\git.exe" checkout --progress --force -B codex/nemotron3-n0 refs/remotes/origin/codex/nemotron3-n0
+kernels	Run actions/checkout@v4	2026-10-17T15:06:09.5380169Z Updating files:  26% (3585/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:09.5721940Z Updating files:  27% (3687/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:09.6745755Z Updating files:  28% (3824/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:09.7350785Z Updating files:  29% (3960/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:09.7662913Z Updating files:  30% (4097/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:09.8287734Z Updating files:  31% (4233/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:09.8619492Z Updating files:  32% (4370/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:09.8919170Z Updating files:  33% (4506/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:09.9202620Z Updating files:  34% (4643/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.0082304Z Updating files:  35% (4779/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.0382662Z Updating files:  36% (4916/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.0630640Z Updating files:  37% (5052/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.0857531Z Updating files:  38% (5189/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.1078723Z Updating files:  39% (5326/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.1288286Z Updating files:  40% (5462/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.1557314Z Updating files:  41% (5599/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.1704876Z Updating files:  42% (5735/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.1929509Z Updating files:  43% (5872/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.2360816Z Updating files:  44% (6008/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.2647008Z Updating files:  45% (6145/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.3009764Z Updating files:  46% (6281/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.3273781Z Updating files:  47% (6418/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.3525786Z Updating files:  48% (6554/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.3787270Z Updating files:  49% (6691/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.4152684Z Updating files:  50% (6827/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.4387491Z Updating files:  51% (6964/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.4606381Z Updating files:  52% (7101/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.4862237Z Updating files:  53% (7237/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.5088393Z Updating files:  54% (7374/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.5258413Z Updating files:  55% (7510/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.5369830Z Updating files:  55% (7584/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.5608976Z Updating files:  56% (7647/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.5873332Z Updating files:  57% (7783/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.6212352Z Updating files:  58% (7920/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.6482286Z Updating files:  59% (8056/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.6788833Z Updating files:  60% (8193/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.7093372Z Updating files:  61% (8329/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.7360789Z Updating files:  62% (8466/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.7623265Z Updating files:  63% (8603/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.7934113Z Updating files:  64% (8739/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.8237556Z Updating files:  65% (8876/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.8561997Z Updating files:  66% (9012/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.8935369Z Updating files:  67% (9149/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.9176486Z Updating files:  68% (9285/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.9426218Z Updating files:  69% (9422/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:10.9758495Z Updating files:  70% (9558/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.0051802Z Updating files:  71% (9695/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.0320157Z Updating files:  72% (9831/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.0615426Z Updating files:  73% (9968/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.0894204Z Updating files:  74% (10104/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.1269916Z Updating files:  75% (10241/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.1544858Z Updating files:  76% (10378/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.1786418Z Updating files:  77% (10514/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.2190961Z Updating files:  78% (10651/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.2459196Z Updating files:  79% (10787/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.2710381Z Updating files:  80% (10924/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.3010678Z Updating files:  81% (11060/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.3235214Z Updating files:  82% (11197/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.3922871Z Updating files:  83% (11333/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.4255027Z Updating files:  84% (11470/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.4503835Z Updating files:  85% (11606/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.4814711Z Updating files:  86% (11743/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.5090331Z Updating files:  87% (11879/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.5262125Z Updating files:  88% (12016/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.5378318Z Updating files:  88% (12092/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.5578126Z Updating files:  89% (12153/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.5778464Z Updating files:  90% (12289/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.6084031Z Updating files:  91% (12426/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.6386099Z Updating files:  92% (12562/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.6713096Z Updating files:  93% (12699/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.7033117Z Updating files:  94% (12835/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.7326212Z Updating files:  95% (12972/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.7668358Z Updating files:  96% (13108/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.7945088Z Updating files:  97% (13245/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.8189020Z Updating files:  98% (13381/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.8464753Z Updating files:  99% (13518/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.8465785Z Updating files: 100% (13654/13654)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.8466252Z Updating files: 100% (13654/13654), done.
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.8752347Z Switched to a new branch 'codex/nemotron3-n0'
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.8775906Z branch 'codex/nemotron3-n0' set up to track 'origin/codex/nemotron3-n0'.
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.8894867Z ##[endgroup]
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.9257673Z [command]"C:\Program Files\Git\bin\git.exe" log -1 --format=%H
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.9510083Z 72bcb3d28487d803048122af03501895fe384871
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.9539374Z ##[group]Removing auth
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.9547006Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+kernels	Run actions/checkout@v4	2026-10-17T15:06:11.9816872Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+kernels	Run actions/checkout@v4	2026-10-17T15:06:12.4129414Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+kernels	Run actions/checkout@v4	2026-10-17T15:06:12.4377476Z http.https://github.com/.extraheader
+kernels	Run actions/checkout@v4	2026-10-17T15:06:12.4408204Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all http.https://github.com/.extraheader
+kernels	Run actions/checkout@v4	2026-10-17T15:06:12.4687662Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+kernels	Run actions/checkout@v4	2026-10-17T15:06:12.9600758Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+kernels	Run actions/checkout@v4	2026-10-17T15:06:12.9873633Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.4281792Z ##[endgroup]
+kernels	Run actions/checkout@v4	﻿2026-10-17T15:06:13.4642640Z ##[group]Run actions/checkout@v4
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.4642966Z with:
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.4643195Z   repository: NVIDIA/NeMo-Speech.cpp
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.4643487Z   ref: 083861c241061562b8ec29eb06d7f6cdc3af8775
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.4643770Z   path: native-source
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.4643987Z   persist-credentials: false
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.4646424Z   token: ***
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.4646614Z   ssh-strict: true
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.4646798Z   ssh-user: git
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.4646970Z   clean: true
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.4647155Z   sparse-checkout-cone-mode: true
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.4647389Z   fetch-depth: 1
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.4647561Z   fetch-tags: false
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.4647748Z   show-progress: true
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.4647929Z   lfs: false
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.4648098Z   submodules: false
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.4648286Z   set-safe-directory: true
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.4648519Z   allow-unsafe-pr-checkout: false
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.4648746Z env:
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.4648910Z   GIT_CONFIG_COUNT: 2
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.4649137Z   GIT_CONFIG_KEY_0: core.autocrlf
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.4649378Z   GIT_CONFIG_VALUE_0: false
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.4649587Z   GIT_CONFIG_KEY_1: core.eol
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.4649795Z   GIT_CONFIG_VALUE_1: lf
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.4649991Z   GIT_LFS_SKIP_SMUDGE: 1
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.4650186Z ##[endgroup]
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.5815695Z Syncing repository: NVIDIA/NeMo-Speech.cpp
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.5823509Z ##[group]Getting Git version info
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.5824304Z Working directory is 'D:\a\gen2\gen2\native-source'
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.6779027Z [command]"C:\Program Files\Git\bin\git.exe" version
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.7060646Z git version 2.56.0.windows.2
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.7098684Z ##[endgroup]
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.7116525Z Temporarily overriding HOME='D:\a\_temp\fb8b6e7f-4bf5-4b73-9805-12a05f2224c0' before making global git config changes
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.7117858Z Adding repository directory to the temporary git global config as a safe directory
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.7127602Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\gen2\gen2\native-source
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.7422785Z ##[group]Initializing the repository
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.7431450Z [command]"C:\Program Files\Git\bin\git.exe" init D:\a\gen2\gen2\native-source
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.7755277Z Initialized empty Git repository in D:/a/gen2/gen2/native-source/.git/
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.7792501Z [command]"C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/NVIDIA/NeMo-Speech.cpp
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.8104362Z ##[endgroup]
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.8104954Z ##[group]Disabling automatic garbage collection
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.8114745Z [command]"C:\Program Files\Git\bin\git.exe" config --local gc.auto 0
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.8388706Z ##[endgroup]
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.8389129Z ##[group]Setting up auth
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.8399939Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+kernels	Run actions/checkout@v4	2026-10-17T15:06:13.8670597Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+kernels	Run actions/checkout@v4	2026-10-17T15:06:14.3333344Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+kernels	Run actions/checkout@v4	2026-10-17T15:06:14.3606835Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+kernels	Run actions/checkout@v4	2026-10-17T15:06:14.7869495Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+kernels	Run actions/checkout@v4	2026-10-17T15:06:14.8151059Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+kernels	Run actions/checkout@v4	2026-10-17T15:06:15.2403012Z [command]"C:\Program Files\Git\bin\git.exe" config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+kernels	Run actions/checkout@v4	2026-10-17T15:06:15.2682938Z ##[endgroup]
+kernels	Run actions/checkout@v4	2026-10-17T15:06:15.2683409Z ##[group]Fetching the repository
+kernels	Run actions/checkout@v4	2026-10-17T15:06:15.2694719Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin 083861c241061562b8ec29eb06d7f6cdc3af8775
+kernels	Run actions/checkout@v4	2026-10-17T15:06:15.9741490Z From https://github.com/NVIDIA/NeMo-Speech.cpp
+kernels	Run actions/checkout@v4	2026-10-17T15:06:15.9742296Z  * branch            083861c241061562b8ec29eb06d7f6cdc3af8775 -> FETCH_HEAD
+kernels	Run actions/checkout@v4	2026-10-17T15:06:15.9769024Z ##[endgroup]
+kernels	Run actions/checkout@v4	2026-10-17T15:06:15.9769458Z ##[group]Determining the checkout info
+kernels	Run actions/checkout@v4	2026-10-17T15:06:15.9771841Z ##[endgroup]
+kernels	Run actions/checkout@v4	2026-10-17T15:06:15.9780825Z [command]"C:\Program Files\Git\bin\git.exe" sparse-checkout disable
+kernels	Run actions/checkout@v4	2026-10-17T15:06:16.0079134Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all extensions.worktreeConfig
+kernels	Run actions/checkout@v4	2026-10-17T15:06:16.0344801Z ##[group]Checking out the ref
+kernels	Run actions/checkout@v4	2026-10-17T15:06:16.0352772Z [command]"C:\Program Files\Git\bin\git.exe" checkout --progress --force 083861c241061562b8ec29eb06d7f6cdc3af8775
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3435191Z Updating files:  79% (373/471)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3449652Z Updating files:  80% (377/471)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3570527Z Updating files:  81% (382/471)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3578065Z Updating files:  82% (387/471)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3588801Z Updating files:  83% (391/471)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3601010Z Updating files:  84% (396/471)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3611414Z Updating files:  85% (401/471)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3621839Z Updating files:  86% (406/471)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3634637Z Updating files:  87% (410/471)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3646502Z Updating files:  88% (415/471)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3655444Z Updating files:  89% (420/471)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3666152Z Updating files:  90% (424/471)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3675396Z Updating files:  91% (429/471)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3684954Z Updating files:  92% (434/471)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3698261Z Updating files:  93% (439/471)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3707712Z Updating files:  94% (443/471)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3726036Z Updating files:  95% (448/471)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3733710Z Updating files:  96% (453/471)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3743115Z Updating files:  97% (457/471)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3749969Z Updating files:  98% (462/471)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3758488Z Updating files:  99% (467/471)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3759108Z Updating files: 100% (471/471)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3759493Z Updating files: 100% (471/471), done.
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3831046Z Note: switching to '083861c241061562b8ec29eb06d7f6cdc3af8775'.
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3831563Z 
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3831907Z You are in 'detached HEAD' state. You can look around, make experimental
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3832769Z changes and commit them, and you can discard any commits you make in this
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3833624Z state without impacting any branches by switching back to a branch.
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3834141Z 
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3834470Z If you want to create a new branch to retain commits you create, you may
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3835274Z do so (now or later) by using -c with the switch command. Example:
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3835750Z 
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3835981Z   git switch -c <new-branch-name>
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3836294Z 
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3836457Z Or undo this operation with:
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3836734Z 
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3836865Z   git switch -
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3837066Z 
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3837421Z Turn off this advice by setting config variable advice.detachedHead to false
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3838346Z 
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.3838808Z HEAD is now at 083861c Fix issue with magpie v2607 speakers being mapped to wrong id (#66)
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.6281839Z ##[endgroup]
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.6575765Z [command]"C:\Program Files\Git\bin\git.exe" log -1 --format=%H
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.6821415Z 083861c241061562b8ec29eb06d7f6cdc3af8775
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.6851959Z ##[group]Removing auth
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.6859238Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+kernels	Run actions/checkout@v4	2026-10-17T15:06:17.7131531Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+kernels	Run actions/checkout@v4	2026-10-17T15:06:18.1516142Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+kernels	Run actions/checkout@v4	2026-10-17T15:06:18.1762872Z http.https://github.com/.extraheader
+kernels	Run actions/checkout@v4	2026-10-17T15:06:18.1792534Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all http.https://github.com/.extraheader
+kernels	Run actions/checkout@v4	2026-10-17T15:06:18.2073289Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+kernels	Run actions/checkout@v4	2026-10-17T15:06:18.6517250Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+kernels	Run actions/checkout@v4	2026-10-17T15:06:18.6795322Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+kernels	Run actions/checkout@v4	2026-10-17T15:06:19.1207002Z ##[endgroup]
+kernels	Initialize pinned GGML source	﻿2026-10-17T15:06:19.1460184Z ##[group]Run git -C native-source submodule update --init --depth 1 llama.cpp
+kernels	Initialize pinned GGML source	2026-10-17T15:06:19.1460888Z [36;1mgit -C native-source submodule update --init --depth 1 llama.cpp[0m
+kernels	Initialize pinned GGML source	2026-10-17T15:06:19.1580026Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+kernels	Initialize pinned GGML source	2026-10-17T15:06:19.1580389Z env:
+kernels	Initialize pinned GGML source	2026-10-17T15:06:19.1580555Z   GIT_CONFIG_COUNT: 2
+kernels	Initialize pinned GGML source	2026-10-17T15:06:19.1580762Z   GIT_CONFIG_KEY_0: core.autocrlf
+kernels	Initialize pinned GGML source	2026-10-17T15:06:19.1580999Z   GIT_CONFIG_VALUE_0: false
+kernels	Initialize pinned GGML source	2026-10-17T15:06:19.1581213Z   GIT_CONFIG_KEY_1: core.eol
+kernels	Initialize pinned GGML source	2026-10-17T15:06:19.1581429Z   GIT_CONFIG_VALUE_1: lf
+kernels	Initialize pinned GGML source	2026-10-17T15:06:19.1581631Z   GIT_LFS_SKIP_SMUDGE: 1
+kernels	Initialize pinned GGML source	2026-10-17T15:06:19.1581822Z ##[endgroup]
+kernels	Initialize pinned GGML source	2026-10-17T15:06:19.8823703Z Submodule 'llama.cpp' (https://github.com/ggml-org/llama.cpp.git) registered for path 'llama.cpp'
+kernels	Initialize pinned GGML source	2026-10-17T15:06:19.9140591Z Cloning into 'D:/a/gen2/gen2/native-source/llama.cpp'...
+kernels	Initialize pinned GGML source	2026-10-17T15:06:24.5280346Z From https://github.com/ggml-org/llama.cpp
+kernels	Initialize pinned GGML source	2026-10-17T15:06:24.5280896Z  * branch            bd4f514db14d87fded667787a7a963bfbaa98e89 -> FETCH_HEAD
+kernels	Initialize pinned GGML source	2026-10-17T15:06:25.7921586Z Submodule path 'llama.cpp': checked out 'bd4f514db14d87fded667787a7a963bfbaa98e89'
+kernels	Run actions/setup-python@v5	﻿2026-10-17T15:06:25.9313443Z ##[group]Run actions/setup-python@v5
+kernels	Run actions/setup-python@v5	2026-10-17T15:06:25.9313793Z with:
+kernels	Run actions/setup-python@v5	2026-10-17T15:06:25.9313991Z   python-version: 3.12
+kernels	Run actions/setup-python@v5	2026-10-17T15:06:25.9314219Z   check-latest: false
+kernels	Run actions/setup-python@v5	2026-10-17T15:06:25.9316605Z   token: ***
+kernels	Run actions/setup-python@v5	2026-10-17T15:06:25.9316812Z   update-environment: true
+kernels	Run actions/setup-python@v5	2026-10-17T15:06:25.9317046Z   allow-prereleases: false
+kernels	Run actions/setup-python@v5	2026-10-17T15:06:25.9317265Z   freethreaded: false
+kernels	Run actions/setup-python@v5	2026-10-17T15:06:25.9317454Z env:
+kernels	Run actions/setup-python@v5	2026-10-17T15:06:25.9317614Z   GIT_CONFIG_COUNT: 2
+kernels	Run actions/setup-python@v5	2026-10-17T15:06:25.9317814Z   GIT_CONFIG_KEY_0: core.autocrlf
+kernels	Run actions/setup-python@v5	2026-10-17T15:06:25.9318043Z   GIT_CONFIG_VALUE_0: false
+kernels	Run actions/setup-python@v5	2026-10-17T15:06:25.9318270Z   GIT_CONFIG_KEY_1: core.eol
+kernels	Run actions/setup-python@v5	2026-10-17T15:06:25.9318485Z   GIT_CONFIG_VALUE_1: lf
+kernels	Run actions/setup-python@v5	2026-10-17T15:06:25.9318683Z   GIT_LFS_SKIP_SMUDGE: 1
+kernels	Run actions/setup-python@v5	2026-10-17T15:06:25.9318878Z ##[endgroup]
+kernels	Run actions/setup-python@v5	2026-10-17T15:06:26.0783645Z ##[group]Installed versions
+kernels	Run actions/setup-python@v5	2026-10-17T15:06:26.0933226Z (node:4524) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+kernels	Run actions/setup-python@v5	2026-10-17T15:06:26.0934040Z (Use `node --trace-deprecation ...` to show where the warning was created)
+kernels	Run actions/setup-python@v5	2026-10-17T15:06:26.0934885Z Successfully set up CPython (3.12.10)
+kernels	Run actions/setup-python@v5	2026-10-17T15:06:26.0935556Z ##[endgroup]
+kernels	Original and contraction compiler controls	﻿2026-10-17T15:06:26.1150030Z ##[group]Run python -m unittest discover -s tools/nemotron-diarization -p 'test_windows_compiler*.py'
+kernels	Original and contraction compiler controls	2026-10-17T15:06:26.1150851Z [36;1mpython -m unittest discover -s tools/nemotron-diarization -p 'test_windows_compiler*.py'[0m
+kernels	Original and contraction compiler controls	2026-10-17T15:06:26.1191765Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+kernels	Original and contraction compiler controls	2026-10-17T15:06:26.1192129Z env:
+kernels	Original and contraction compiler controls	2026-10-17T15:06:26.1192295Z   GIT_CONFIG_COUNT: 2
+kernels	Original and contraction compiler controls	2026-10-17T15:06:26.1192496Z   GIT_CONFIG_KEY_0: core.autocrlf
+kernels	Original and contraction compiler controls	2026-10-17T15:06:26.1192724Z   GIT_CONFIG_VALUE_0: false
+kernels	Original and contraction compiler controls	2026-10-17T15:06:26.1192937Z   GIT_CONFIG_KEY_1: core.eol
+kernels	Original and contraction compiler controls	2026-10-17T15:06:26.1193142Z   GIT_CONFIG_VALUE_1: lf
+kernels	Original and contraction compiler controls	2026-10-17T15:06:26.1193337Z   GIT_LFS_SKIP_SMUDGE: 1
+kernels	Original and contraction compiler controls	2026-10-17T15:06:26.1193612Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+kernels	Original and contraction compiler controls	2026-10-17T15:06:26.1194097Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+kernels	Original and contraction compiler controls	2026-10-17T15:06:26.1194541Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+kernels	Original and contraction compiler controls	2026-10-17T15:06:26.1194985Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+kernels	Original and contraction compiler controls	2026-10-17T15:06:26.1195388Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+kernels	Original and contraction compiler controls	2026-10-17T15:06:26.1195699Z ##[endgroup]
+kernels	Original and contraction compiler controls	2026-10-17T15:06:28.2345806Z START msvc fixture-command
+kernels	Original and contraction compiler controls	2026-10-17T15:06:28.2510878Z START msvc fixture-command
+kernels	Original and contraction compiler controls	2026-10-17T15:06:28.2636682Z START msvc fixture-command
+kernels	Original and contraction compiler controls	2026-10-17T15:06:28.2757235Z START msvc fixture-command
+kernels	Original and contraction compiler controls	2026-10-17T15:06:28.2878272Z START msvc fixture-command
+kernels	Original and contraction compiler controls	2026-10-17T15:06:28.2983760Z START msvc fixture-command
+kernels	Original and contraction compiler controls	2026-10-17T15:06:28.6071141Z ...............
+kernels	Original and contraction compiler controls	2026-10-17T15:06:28.6071682Z ----------------------------------------------------------------------
+kernels	Original and contraction compiler controls	2026-10-17T15:06:28.6072187Z Ran 15 tests in 0.415s
+kernels	Original and contraction compiler controls	2026-10-17T15:06:28.6072423Z 
+kernels	Original and contraction compiler controls	2026-10-17T15:06:28.6072498Z OK
+kernels	Tile source vector and timing controls	﻿2026-10-17T15:06:28.7269659Z ##[group]Run python -m unittest discover -s tools/nemotron-diarization -p test_windows_q8_tile.py
+kernels	Tile source vector and timing controls	2026-10-17T15:06:28.7270463Z [36;1mpython -m unittest discover -s tools/nemotron-diarization -p test_windows_q8_tile.py[0m
+kernels	Tile source vector and timing controls	2026-10-17T15:06:28.7309884Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+kernels	Tile source vector and timing controls	2026-10-17T15:06:28.7310239Z env:
+kernels	Tile source vector and timing controls	2026-10-17T15:06:28.7310412Z   GIT_CONFIG_COUNT: 2
+kernels	Tile source vector and timing controls	2026-10-17T15:06:28.7310629Z   GIT_CONFIG_KEY_0: core.autocrlf
+kernels	Tile source vector and timing controls	2026-10-17T15:06:28.7310863Z   GIT_CONFIG_VALUE_0: false
+kernels	Tile source vector and timing controls	2026-10-17T15:06:28.7311230Z   GIT_CONFIG_KEY_1: core.eol
+kernels	Tile source vector and timing controls	2026-10-17T15:06:28.7311445Z   GIT_CONFIG_VALUE_1: lf
+kernels	Tile source vector and timing controls	2026-10-17T15:06:28.7311643Z   GIT_LFS_SKIP_SMUDGE: 1
+kernels	Tile source vector and timing controls	2026-10-17T15:06:28.7311948Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+kernels	Tile source vector and timing controls	2026-10-17T15:06:28.7312421Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+kernels	Tile source vector and timing controls	2026-10-17T15:06:28.7312879Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+kernels	Tile source vector and timing controls	2026-10-17T15:06:28.7313318Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+kernels	Tile source vector and timing controls	2026-10-17T15:06:28.7313710Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+kernels	Tile source vector and timing controls	2026-10-17T15:06:28.7314021Z ##[endgroup]
+kernels	Tile source vector and timing controls	2026-10-17T15:06:29.5141711Z .......
+kernels	Tile source vector and timing controls	2026-10-17T15:06:29.5142154Z ----------------------------------------------------------------------
+kernels	Tile source vector and timing controls	2026-10-17T15:06:29.5142579Z Ran 7 tests in 0.483s
+kernels	Tile source vector and timing controls	2026-10-17T15:06:29.5142741Z 
+kernels	Tile source vector and timing controls	2026-10-17T15:06:29.5142830Z OK
+kernels	Actual owned-background timeout and assignment controls	﻿2026-10-17T15:06:29.6243757Z ##[group]Run python -m unittest discover -s tools/nemotron-diarization -p test_windows_job_v2.py
+kernels	Actual owned-background timeout and assignment controls	2026-10-17T15:06:29.6244548Z [36;1mpython -m unittest discover -s tools/nemotron-diarization -p test_windows_job_v2.py[0m
+kernels	Actual owned-background timeout and assignment controls	2026-10-17T15:06:29.6284842Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+kernels	Actual owned-background timeout and assignment controls	2026-10-17T15:06:29.6285200Z env:
+kernels	Actual owned-background timeout and assignment controls	2026-10-17T15:06:29.6285378Z   GIT_CONFIG_COUNT: 2
+kernels	Actual owned-background timeout and assignment controls	2026-10-17T15:06:29.6285593Z   GIT_CONFIG_KEY_0: core.autocrlf
+kernels	Actual owned-background timeout and assignment controls	2026-10-17T15:06:29.6285832Z   GIT_CONFIG_VALUE_0: false
+kernels	Actual owned-background timeout and assignment controls	2026-10-17T15:06:29.6286048Z   GIT_CONFIG_KEY_1: core.eol
+kernels	Actual owned-background timeout and assignment controls	2026-10-17T15:06:29.6286260Z   GIT_CONFIG_VALUE_1: lf
+kernels	Actual owned-background timeout and assignment controls	2026-10-17T15:06:29.6286460Z   GIT_LFS_SKIP_SMUDGE: 1
+kernels	Actual owned-background timeout and assignment controls	2026-10-17T15:06:29.6286739Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+kernels	Actual owned-background timeout and assignment controls	2026-10-17T15:06:29.6287188Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+kernels	Actual owned-background timeout and assignment controls	2026-10-17T15:06:29.6287632Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+kernels	Actual owned-background timeout and assignment controls	2026-10-17T15:06:29.6288022Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+kernels	Actual owned-background timeout and assignment controls	2026-10-17T15:06:29.6288461Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+kernels	Actual owned-background timeout and assignment controls	2026-10-17T15:06:29.6288771Z ##[endgroup]
+kernels	Actual owned-background timeout and assignment controls	2026-10-17T15:06:41.3811542Z ..........
+kernels	Actual owned-background timeout and assignment controls	2026-10-17T15:06:41.3812619Z ----------------------------------------------------------------------
+kernels	Actual owned-background timeout and assignment controls	2026-10-17T15:06:41.3813108Z Ran 10 tests in 11.339s
+kernels	Actual owned-background timeout and assignment controls	2026-10-17T15:06:41.3813286Z 
+kernels	Actual owned-background timeout and assignment controls	2026-10-17T15:06:41.3813369Z OK
+kernels	Build and run exact-source Q8 tile control	﻿2026-10-17T15:06:41.4947495Z ##[group]Run python tools/nemotron-diarization/windows_q8_tile_probe.py --source native-source --output "D:\a\_temp/windows-q8-tile"
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:06:41.4948549Z [36;1mpython tools/nemotron-diarization/windows_q8_tile_probe.py --source native-source --output "D:\a\_temp/windows-q8-tile"[0m
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:06:41.4991518Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:06:41.4991878Z env:
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:06:41.4992057Z   GIT_CONFIG_COUNT: 2
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:06:41.4992274Z   GIT_CONFIG_KEY_0: core.autocrlf
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:06:41.4992539Z   GIT_CONFIG_VALUE_0: false
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:06:41.4992762Z   GIT_CONFIG_KEY_1: core.eol
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:06:41.4992979Z   GIT_CONFIG_VALUE_1: lf
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:06:41.4993182Z   GIT_LFS_SKIP_SMUDGE: 1
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:06:41.4993470Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:06:41.4993953Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:06:41.4994436Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:06:41.4994874Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:06:41.4995277Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:06:41.4995593Z ##[endgroup]
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:00.1437848Z START receiver-host
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:01.8677708Z PASS receiver-host
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:02.7271678Z START native-revision
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:02.8453665Z PASS native-revision
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:03.6960006Z START llama-revision
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:03.8154179Z PASS llama-revision
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:04.7079469Z START pristine-archive
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:05.0924589Z PASS pristine-archive
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:08.2174007Z START patch-0-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:08.3427465Z PASS patch-0-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:09.1974844Z START patch-0-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:09.3301062Z PASS patch-0-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:10.2245834Z START patch-1-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:10.3415497Z PASS patch-1-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:11.2281659Z START patch-1-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:11.3551427Z PASS patch-1-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:12.2569876Z START patch-2-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:12.3762884Z PASS patch-2-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:13.2571317Z START patch-2-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:13.3760754Z PASS patch-2-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:14.2901443Z START patch-3-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:14.4166404Z PASS patch-3-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:15.3424148Z START patch-3-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:15.4632890Z PASS patch-3-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:16.3453068Z START patch-4-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:16.4633870Z PASS patch-4-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:17.3276376Z START patch-4-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:17.4500860Z PASS patch-4-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:18.3122547Z START patch-5-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:18.4391235Z PASS patch-5-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:19.3280920Z START patch-5-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:19.4435401Z PASS patch-5-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:20.2768445Z START patch-6-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:20.3901870Z PASS patch-6-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:21.2537089Z START patch-6-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:21.3686301Z PASS patch-6-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:22.2482263Z START patch-7-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:22.3769569Z PASS patch-7-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:23.2563652Z START patch-7-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:23.3758903Z PASS patch-7-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:24.2450023Z START patch-8-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:24.3661619Z PASS patch-8-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:25.2579530Z START patch-8-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:25.3917916Z PASS patch-8-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:26.2496916Z START patch-9-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:26.3708980Z PASS patch-9-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:27.2456175Z START patch-9-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:27.3684048Z PASS patch-9-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:28.2464005Z START patch-10-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:28.3670412Z PASS patch-10-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:29.2271214Z START patch-10-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:29.3403847Z PASS patch-10-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:30.1599583Z START patch-11-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:30.2828959Z PASS patch-11-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:31.3246791Z START patch-11-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:31.5103570Z PASS patch-11-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:32.4760977Z START patch-12-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:32.6049081Z PASS patch-12-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:33.4289100Z START patch-12-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:33.5486118Z PASS patch-12-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:34.3816003Z START patch-13-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:34.5056091Z PASS patch-13-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:35.3694535Z START patch-13-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:35.4922052Z PASS patch-13-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:36.3809984Z START patch-14-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:36.5216718Z PASS patch-14-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:37.3258054Z START patch-14-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:37.4543476Z PASS patch-14-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:38.2562871Z START patch-15-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:38.3729571Z PASS patch-15-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:39.1879048Z START patch-15-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:39.3151377Z PASS patch-15-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:40.1478628Z START patch-16-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:40.2874752Z PASS patch-16-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:41.1634392Z START patch-16-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:41.2906633Z PASS patch-16-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:42.1382691Z START patch-17-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:42.2539619Z PASS patch-17-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:43.1181313Z START patch-17-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:43.2891218Z PASS patch-17-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:44.2200904Z START patch-18-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:44.3700299Z PASS patch-18-read
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:45.3018571Z START patch-18-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:45.4324360Z PASS patch-18-apply
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:07:48.8056955Z START configure
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:08:02.2356658Z PASS configure
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:08:03.0565612Z START build
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:08:15.8378039Z Traceback (most recent call last):
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:08:15.8385761Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\windows_q8_tile_probe.py", line 271, in <module>
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:08:15.8386468Z     if __name__=='__main__': main()
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:08:15.8422088Z                              ^^^^^^
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:08:15.8422854Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\windows_q8_tile_probe.py", line 172, in main
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:08:15.8424626Z     run('build',[cmake,'--build',build,'--parallel','2','--verbose'],timeout=1800)
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:08:15.8425968Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\windows_q8_tile_probe.py", line 88, in run
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:08:15.8426830Z     result.check_returncode()
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:08:15.8427730Z   File "C:\hostedtoolcache\windows\Python\3.12.10\x64\Lib\subprocess.py", line 502, in check_returncode
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:08:15.8512454Z     raise CalledProcessError(self.returncode, self.args, self.stdout,
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:08:15.8513866Z subprocess.CalledProcessError: Command '['C:\\Program Files\\CMake\\bin\\cmake.exe', '--build', 'D:\\a\\_temp\\windows-q8-tile\\build', '--parallel', '2', '--verbose']' returned non-zero exit status 4294967295.
+kernels	Build and run exact-source Q8 tile control	2026-10-17T15:08:15.9490537Z ##[error]Process completed with exit code 1.
+kernels	Preserve successful or failed tile evidence	﻿2026-10-17T15:08:15.9650070Z ##[group]Run actions/upload-artifact@v4
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:15.9650423Z with:
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:15.9650624Z   name: nemotron-windows-q8-tile
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:15.9651482Z   path: D:\a\_temp/windows-q8-tile/qualification.json
+kernels	Preserve successful or failed tile evidence	D:\a\_temp/windows-q8-tile/protocol.json
+kernels	Preserve successful or failed tile evidence	D:\a\_temp/windows-q8-tile/pristine.tar
+kernels	Preserve successful or failed tile evidence	D:\a\_temp/windows-q8-tile/canonical/
+kernels	Preserve successful or failed tile evidence	D:\a\_temp/windows-q8-tile/evidence/
+kernels	Preserve successful or failed tile evidence	
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:15.9652337Z   include-hidden-files: true
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:15.9652569Z   retention-days: 30
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:15.9652775Z   if-no-files-found: warn
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:15.9652993Z   compression-level: 6
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:15.9653201Z   overwrite: false
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:15.9653379Z env:
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:15.9653540Z   GIT_CONFIG_COUNT: 2
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:15.9653740Z   GIT_CONFIG_KEY_0: core.autocrlf
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:15.9653991Z   GIT_CONFIG_VALUE_0: false
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:15.9654207Z   GIT_CONFIG_KEY_1: core.eol
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:15.9654414Z   GIT_CONFIG_VALUE_1: lf
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:15.9654613Z   GIT_LFS_SKIP_SMUDGE: 1
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:15.9654934Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:15.9655387Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:15.9655840Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:15.9656248Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:15.9656642Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:15.9656950Z ##[endgroup]
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:16.1483039Z (node:6252) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:16.1483851Z (Use `node --trace-deprecation ...` to show where the warning was created)
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:17.3562705Z Multiple search paths detected. Calculating the least common ancestor of all paths
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:17.3566585Z The least common ancestor is D:\a\_temp\windows-q8-tile. This will be the root directory of the artifact
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:17.3567532Z With the provided path, there will be 3519 files uploaded
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:17.3573653Z Artifact name is valid!
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:17.3576258Z Root directory input is valid!
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:17.7311915Z Beginning upload of artifact content to blob storage
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:18.7239161Z (node:6252) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:19.2512334Z Uploaded bytes 8388608
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:20.6444156Z Uploaded bytes 16777216
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:22.3511099Z Uploaded bytes 25165824
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:22.3867028Z Uploaded bytes 25328962
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:22.4235534Z Finished uploading artifact content to blob storage!
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:22.4240645Z SHA256 digest of uploaded artifact zip is 67a4fbb97a6320015a46703768f324652f2a93890167df73f35b04c7269d4ea6
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:22.4243497Z Finalizing artifact upload
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:22.6539371Z Artifact nemotron-windows-q8-tile.zip successfully finalized. Artifact ID 12104713750
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:22.6540712Z Artifact nemotron-windows-q8-tile has been successfully uploaded! Final size is 25328962 bytes. Artifact ID is 12104713750
+kernels	Preserve successful or failed tile evidence	2026-10-17T15:08:22.6552689Z Artifact download URL: https://github.com/saberra-ai/gen2/actions/runs/39043559355/artifacts/12104713750
+kernels	Post Run actions/checkout@v4	﻿2026-10-17T15:08:22.6978371Z Post job cleanup.
+kernels	Post Run actions/checkout@v4	2026-10-17T15:08:22.9377808Z [command]"C:\Program Files\Git\bin\git.exe" version
+kernels	Post Run actions/checkout@v4	2026-10-17T15:08:22.9692507Z git version 2.56.0.windows.2
+kernels	Post Run actions/checkout@v4	2026-10-17T15:08:22.9764164Z Temporarily overriding HOME='D:\a\_temp\06bacc1e-9a3e-4485-a786-61f0edd712be' before making global git config changes
+kernels	Post Run actions/checkout@v4	2026-10-17T15:08:22.9766820Z Adding repository directory to the temporary git global config as a safe directory
+kernels	Post Run actions/checkout@v4	2026-10-17T15:08:22.9778932Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\gen2\gen2\native-source
+kernels	Post Run actions/checkout@v4	2026-10-17T15:08:23.0094747Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+kernels	Post Run actions/checkout@v4	2026-10-17T15:08:23.0460043Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+kernels	Post Run actions/checkout@v4	2026-10-17T15:08:23.4953920Z Entering 'llama.cpp'
+kernels	Post Run actions/checkout@v4	2026-10-17T15:08:23.5818808Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+kernels	Post Run actions/checkout@v4	2026-10-17T15:08:23.6149378Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+kernels	Post Run actions/checkout@v4	2026-10-17T15:08:24.1907402Z Entering 'llama.cpp'
+kernels	Post Run actions/checkout@v4	2026-10-17T15:08:24.2694344Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+kernels	Post Run actions/checkout@v4	2026-10-17T15:08:24.2986906Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+kernels	Post Run actions/checkout@v4	2026-10-17T15:08:24.7516205Z Entering 'llama.cpp'
+kernels	Post Run actions/checkout@v4	2026-10-17T15:08:24.7802255Z file:D:/a/gen2/gen2/native-source/.git/modules/llama.cpp/config	remote.origin.url
+kernels	Post Run actions/checkout@v4	2026-10-17T15:08:24.8033640Z [command]"C:\Program Files\Git\bin\git.exe" config --file D:/a/gen2/gen2/native-source/.git/modules/llama.cpp/config --name-only --get-regexp ^includeIf\.gitdir:
+kernels	Post Run actions/checkout@v4	﻿2026-10-17T15:08:24.8644727Z Post job cleanup.
+kernels	Post Run actions/checkout@v4	2026-10-17T15:08:25.0698846Z [command]"C:\Program Files\Git\bin\git.exe" version
+kernels	Post Run actions/checkout@v4	2026-10-17T15:08:25.0981585Z git version 2.56.0.windows.2
+kernels	Post Run actions/checkout@v4	2026-10-17T15:08:25.1037597Z Temporarily overriding HOME='D:\a\_temp\d43a1f12-4ae7-4465-a1f7-c70055016862' before making global git config changes
+kernels	Post Run actions/checkout@v4	2026-10-17T15:08:25.1038493Z Adding repository directory to the temporary git global config as a safe directory
+kernels	Post Run actions/checkout@v4	2026-10-17T15:08:25.1048981Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\gen2\gen2
+kernels	Post Run actions/checkout@v4	2026-10-17T15:08:25.1336834Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+kernels	Post Run actions/checkout@v4	2026-10-17T15:08:25.1619282Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+kernels	Post Run actions/checkout@v4	2026-10-17T15:08:25.6535347Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+kernels	Post Run actions/checkout@v4	2026-10-17T15:08:25.6814805Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+kernels	Post Run actions/checkout@v4	2026-10-17T15:08:26.1583965Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+kernels	Post Run actions/checkout@v4	2026-10-17T15:08:26.1863519Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+kernels	Complete job	﻿2026-10-17T15:08:26.6596634Z Cleaning up orphan processes
+kernels	Complete job	2026-10-17T15:08:26.7026456Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

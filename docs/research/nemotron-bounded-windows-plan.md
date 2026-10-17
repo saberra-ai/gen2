@@ -108,9 +108,14 @@ release promotion. Matrix and detailed unary execution remain investigation targ
 The [Q8 tile kernel control](nemotron-windows-q8-tile-probe.md) now implements a
 Q8-only Windows AVX2 2×2 dispatch candidate and guarded synthetic comparisons with
 one/two/four workers. All 430 local tests pass with seven Windows-only skips.
-Actual Windows construction and execution remain unperformed. This model-free
-experiment cannot establish model RTF, qualify a production SDK or close the
-remaining package, quality, human-review or desktop gates.
+The [first actual Windows attempt](nemotron-windows-q8-tile-build-failure.md) passes
+all 32 Python/Job controls, exact source admission and 44 command cleanups, then
+fails linking the standalone harness: the original half-conversion table is
+missing. No benchmark case, SDK or model runs. Preserve that failure and version
+the harness correction, including valid unsupported-path controls and explicit
+OpenMP exclusion. This model-free experiment cannot establish model RTF, qualify
+a production SDK or close the remaining package, quality, human-review or desktop
+gates.
 
 The new [producer](../../tools/nemotron-diarization/platform_bounded_windows_native.py),
 [composed-source verifier](../../tools/nemotron-diarization/platform_bounded_sources.py)

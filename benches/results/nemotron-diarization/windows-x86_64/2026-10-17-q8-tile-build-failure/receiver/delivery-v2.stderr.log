@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/Users/victor/.cache/gen2-nemotron3-n0/admit-windows-q8-tile-delivery-v2.py", line 124, in <module>
+    extract_delivery(root / 'artifact.zip', archive_identity, members, delivered)
+  File "/Users/victor/.cache/gen2-nemotron3-n0/admit-windows-q8-tile-delivery-v2.py", line 118, in extract_delivery
+    assert descriptor(archive) == expected and file_inventory(destination) == bound_members
+                                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/windows_session_timing.py", line 91, in file_inventory
+    for name, record in byte_inventory(root).items() if record['type'] == 'file'}
+                        ^^^^^^^^^^^^^^^^^^^^
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/windows_archive.py", line 54, in byte_inventory
+    raise ValueError('colliding or excessive Windows runtime entries')
+ValueError: colliding or excessive Windows runtime entries

@@ -167,9 +167,14 @@ Remaining release work as of 2026-10-17:
   The [Q8 tile kernel control](../research/nemotron-windows-q8-tile-probe.md)
   is implemented with a Q8-only Windows AVX2 2×2 dispatch candidate, guarded
   synthetic matrices and one/two/four-worker comparisons. All 430 local tests
-  pass with seven Windows-only skips. Actual Windows construction and execution
-  remain unperformed; a kernel result cannot establish model RTF or release
-  qualification. Then merge and
+  pass with seven Windows-only skips. The
+  [first actual Windows attempt](../research/nemotron-windows-q8-tile-build-failure.md)
+  passes all 32 Python/Job controls and exact source admission, then fails linking
+  the standalone harness because the original half-conversion table is missing.
+  All 44 command cleanups pass; no benchmark case, SDK or model runs. Preserve the
+  failure and version the harness correction, including valid unsupported-path
+  controls and explicit OpenMP exclusion. A kernel result cannot establish model
+  RTF or release qualification. Then merge and
   push the completed feature to main; no main promotion is justified yet.
 
 The [bounded CPU public Rust protocol](../research/nemotron-bounded-public-runtime.md)
