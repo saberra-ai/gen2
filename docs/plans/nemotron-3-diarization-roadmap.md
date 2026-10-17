@@ -1614,8 +1614,14 @@ required artifact identity fields; its eight-member failure receipt is retained.
 The separate V2 protocol fixes those fields and passes actual local admission
 of both complete 200/33-member archives at `0e5080da`, with no SDK restoration,
 helper or model execution. Its eleven-member receipt includes the red/green
-manifest regression and passing 262-test log. Corrected M1 numerical/performance
-qualification remains pending; original gates and main remain unchanged.
+manifest regression and passing 262-test log. The corrected M1 C ABI run now
+passes at `05c5ac15`: all 1,200/6,000 rows and five/27 turns match the pooled
+reference byte-for-byte, with warm RTF 0.0931337/0.282602 and peak RSS below
+220 MB. Its 47-member receipt verifies all 44 delivered files, eight public-only
+compiler dependencies and three strict 92-library audits. This qualifies the
+bounded SDK's C ABI parity and observed M1 realtime behavior, with no private
+helper thread override. Rust admission and public/lifecycle/long/mixed/quality/
+platform/app/release gates remain pending; main remains unchanged.
 
 Use public Gen2 calls for lifecycle and user-visible behavior; use the FFI seam
 for ownership/status failures, and a pinned upstream executable for independent

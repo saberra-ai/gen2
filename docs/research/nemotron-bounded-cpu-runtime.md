@@ -107,3 +107,23 @@ The SDK is not restored, work remains empty, and no helper, asset acquisition,
 command or inference starts. The storage reserve is released normally. This
 closes the manifest preflight requirement; the corrected M1 numerical/performance
 run remains pending.
+
+The [corrected M1 C ABI run](https://github.com/saberra-ai/gen2/actions/runs/39004916708)
+now passes at `05c5ac15`. Its [47-member receipt](../../benches/results/nemotron-diarization/macos-arm64/2026-10-17-bounded-native/collection-qualification.json)
+verifies all 44 delivered files, both exact helper payloads, eight compiler
+dependencies restricted to public SDK headers/admitted helper sources, all ten
+commands and three strict 92-library audits. Source text bytes/topology are
+verified; original text modes remain recorded declarations because ZIP delivery
+does not preserve them. Opaque helper/SDK/runtime archives preserve and verify
+payload modes independently. Acquired weight/audio bytes remain recorded
+descriptors, rather than delivered payloads.
+
+Both fresh processes match the independent pooled reference byte-for-byte:
+1,200 rows/eight channels/five turns for twelve seconds, and 6,000 rows/eight
+channels/27 turns for sixty seconds. Warm RTF is 0.0931337/0.282602, below one
+for both. Full-process wall time is 1.26/17.03 seconds and peak RSS is
+154,828,800/219,447,296 bytes. Storage/reserve cleanup completes normally.
+These are actual bounded-SDK C ABI results with no private helper thread
+override. Shared-VM timing does not establish uncontended desktop latency.
+Rust admission, public/lifecycle/long/mixed/quality/platform/app/signing and
+release qualification remain pending; the original failed attempt stays failed.
