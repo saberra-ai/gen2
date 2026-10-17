@@ -9,6 +9,12 @@ post-barrier row emission changes; all 24 owned command groups are reaped.
 This prepares a new Windows full-model observer experiment and supplies no
 observer-overhead or production/release pass. Original failed timing/quality
 results and deferred human review remain unchanged.
+The [Windows batched observer producer](../research/nemotron-windows-matrix-batch-profile.md)
+now freezes a distinct diagnostic SDK, unchanged compiler/ABI/state checks,
+actual Windows graph controls and complete raw/compact model profiles. All 473
+local tool tests pass with seven Windows-only skips. Its eleven-command
+source-only replay admits all 3,425 source descriptors and only the declared
+CPU emission change. Actual Windows/model timing remains unqualified.
 
 Remaining release work as of 2026-10-17:
 
