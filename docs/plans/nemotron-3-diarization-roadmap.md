@@ -24,6 +24,9 @@ Remaining release work as of 2026-10-17:
   now passes all 12 commands, the complete Apple body hash and supported fixed
   configuration, with 297 passing model-free tests. No VM/installer/guest ran;
   installation, provisioning and fresh-machine app qualification remain open.
+  The [paired-clone/install-owner protocol](../research/nemotron-macos-vm-install.md)
+  is prepared with 307 passing model-free tests. Review and commit are required
+  before its first clone/VM/installer call; actual installation remains pending.
 - Finish each advertised platform/backend's performance, deployment and public
   signing/notarization requirements before promotion. Windows CPU functional
   evidence passes but its observed live RTF remains above one; the
