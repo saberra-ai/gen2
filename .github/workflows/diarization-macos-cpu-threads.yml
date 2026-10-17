@@ -1,0 +1,66 @@
+name: Diarization owned-pool CPU thread contrast
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/nemotron3-n0]
+    paths:
+      - .github/workflows/diarization-macos-cpu-threads.yml
+      - tools/nemotron-diarization/compare_macos_cpu_threads.py
+      - tools/nemotron-diarization/cpu_thread_metrics.py
+      - tools/nemotron-diarization/native_thread_probe.cpp
+      - tools/nemotron-diarization/macos-cpu-threads.protocol.json
+permissions:
+  contents: read
+  actions: read
+jobs:
+  thread-contrast:
+    runs-on: macos-26
+    timeout-minutes: 25
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: NVIDIA/NeMo-Speech.cpp
+          ref: 083861c241061562b8ec29eb06d7f6cdc3af8775
+          path: native-upstream
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download exact owned-pool construction and native reference
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p "${{ runner.temp }}/thread-delivery"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12082417995 > "${{ runner.temp }}/thread-delivery/producer.json"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12082417995/zip > "${{ runner.temp }}/thread-delivery/producer.zip"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12083481818 > "${{ runner.temp }}/thread-delivery/native-reference.json"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12083481818/zip > "${{ runner.temp }}/thread-delivery/native-reference.zip"
+      - name: Require matched private headers and model-free controls then run fixed ABBA
+        run: |
+          python tools/nemotron-diarization/compare_macos_cpu_threads.py \
+            --protocol tools/nemotron-diarization/macos-cpu-threads.protocol.json \
+            --producer-zip "${{ runner.temp }}/thread-delivery/producer.zip" \
+            --producer-metadata "${{ runner.temp }}/thread-delivery/producer.json" \
+            --native-reference-zip "${{ runner.temp }}/thread-delivery/native-reference.zip" \
+            --native-reference-metadata "${{ runner.temp }}/thread-delivery/native-reference.json" \
+            --native-source native-upstream \
+            --output "${{ runner.temp }}/thread-contrast"
+      - name: Preserve passing or failed evidence and exact helper payload
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nemotron-macos-cpu-threads
+          path: |
+            ${{ runner.temp }}/thread-contrast/*.json
+            ${{ runner.temp }}/thread-contrast/*.log
+            ${{ runner.temp }}/thread-contrast/*.sb
+            ${{ runner.temp }}/thread-contrast/*.d
+            ${{ runner.temp }}/thread-contrast/*.tar.gz
+            ${{ runner.temp }}/thread-contrast/results/
+          include-hidden-files: true
+          retention-days: 30
