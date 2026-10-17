@@ -14,29 +14,14 @@ Remaining release work as of 2026-10-17:
   GitHub private-app transfer/authentication was skipped. The local VM route
   now passes [helper and blank-volume prerequisites](../research/nemotron-macos-vm-host-admission.md);
   actual OS restore/guest boot/provisioning and fresh-guest app checks remain open.
-  A separately reviewed [host prerequisite protocol](../research/nemotron-macos-vm-host-admission.md)
-  now freezes a no-guest VZ helper build/API query and one task-owned blank APFS
-  mount/write/detach control. All 286 model-free tests pass; actual invocation
-  remains pending. This cannot qualify a restored guest or complete app.
-  Its [first actual attempt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-host-entitlements-format-failure/collection-qualification.json)
-  built and strictly verified the new ad-hoc helper but remains failed on
-  entitlement display-format parsing, before helper execution or any image
-  operation. A read-only explicit-XML control diagnoses the mismatch; no host
-  support, volume, VM or fresh-machine gate is passed.
-  The [actual v2 retry](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-host-partition-failure/collection-qualification.json)
-  executes the helper and verifies virtualization support/geometry, but remains
-  failed before mount/write because a fixed `s2` query differs from the observed
-  unique physical `s1` partition. The new image is detached and reserve released;
-  VM/guest/fresh-machine qualification remains open.
-  The [actual v3 attempt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-host-mounted-key-failure/collection-qualification.json)
-  passes the observed store/container/volume bridge and mount command, then
-  fails before filesystem stat/write because diskutil omits an assumed
-  `Mounted` key. Cleanup succeeds; write permission and VM gates remain open.
   The [actual v4 result](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-host-prerequisites/collection-qualification.json)
-  now passes all 22 children, actual OS mount/device provenance, 52-byte
+  passes all 22 children, actual OS mount/device provenance, 52-byte
   write/read/mode600 and exact-image detach/reserve release. This qualifies only
   host and blank-user-volume prerequisites; restored Data-volume permission,
-  real VM/guest and fresh-machine complete-app gates remain open.
+  real VM/guest and fresh-machine complete-app gates remain open. Earlier failed
+  attempts remain preserved in the host-admission history. The next
+  [pinned IPSW/no-boot configuration protocol](../research/nemotron-macos-vm-restore.md)
+  is prepared with 297 passing model-free tests; actual invocation is pending.
 - Finish each advertised platform/backend's performance, deployment and public
   signing/notarization requirements before promotion. Windows CPU functional
   evidence passes but its observed live RTF remains above one. Then merge and
