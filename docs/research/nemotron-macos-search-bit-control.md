@@ -111,3 +111,9 @@ controls; both spawn-window termination controls also pass. The original CI
 failure and deterministic worker-delivery red/green logs are preserved.
 Actual admission has11,122,368,512bytes available, below the unchanged VM
 reserve. Guest access, ACL policy and every original release gate remain open.
+
+The revised producer's [feature CI](https://github.com/saberra-ai/gen2/actions/runs/39069873270)
+now completes all thirteen jobs successfully. Linux evidence checks pass557
+tests with seventeen platform skips, three Pnola integration tests and five
+frontend asset tests. This closes the earlier CI cleanup regression; feature
+compatibility does not establish guest operation or platform model qualification.

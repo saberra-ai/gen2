@@ -237,6 +237,9 @@ Remaining release work as of 2026-10-17:
   tests pass with seven Windows-only skips, including the deterministic
   worker-delivery regression. This remains a host prerequisite, with no guest
   or release qualification.
+  The repaired producer's [feature CI](https://github.com/saberra-ai/gen2/actions/runs/39069873270)
+  completes all thirteen jobs successfully; the original failed run remains
+  retained. Feature compatibility supplies no guest or model release evidence.
 - Finish each advertised platform/backend's performance, deployment and public
   signing/notarization requirements before promotion. Windows CPU functional
   evidence passes but its observed live RTF remains above one; the
