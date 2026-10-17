@@ -1,0 +1,188 @@
+{
+  "schema_version": 1,
+  "meeting": "ES2011a",
+  "crop_seconds": [
+    0,
+    300
+  ],
+  "channels": [
+    "Mix-Headset",
+    "Array1-01"
+  ],
+  "selection": "First lexicographic publisher-linked NTT Full-corpus-ASR dev recording after excluding entire EN2002/ES2004 groups; first300s independent of predictions.",
+  "ntt_revision": "9527b7c64846fb38316a610f32e9d3466bd6d8b7",
+  "development_ids": [
+    "ES2011a",
+    "ES2011b",
+    "ES2011c",
+    "ES2011d",
+    "IB4001",
+    "IB4002",
+    "IB4003",
+    "IB4004",
+    "IB4010",
+    "IB4011",
+    "IS1008a",
+    "IS1008b",
+    "IS1008c",
+    "IS1008d",
+    "TS3004a",
+    "TS3004b",
+    "TS3004c",
+    "TS3004d"
+  ],
+  "sources": {
+    "ami_archive": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/quality-corpus-v1/AMI-annotation-source.zip",
+      "bytes": 22887865,
+      "sha256": "b56e5babb2496b8795deeeda7e71178d7fbc9963f94276cf2a3f4b56ebbc9f9d"
+    },
+    "ntt_rttm": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/research/large-context-development/nttcslab-sp-diar-forced-alignment.AMI_dev_ES2011a.rttm",
+      "bytes": 33395,
+      "sha256": "1ea587676a2082947f08370c5a49fe7890badcc62a7fb1377cd37f383b198d3b"
+    },
+    "ntt_license": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/research/large-context-development/nttcslab-sp-diar-forced-alignment.LICENSE",
+      "bytes": 781,
+      "sha256": "41c689784902f8341b8e8766bf43167d748218d336012e4582575e67502a9619"
+    },
+    "ntt_tree": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/research/large-context-development/nttcslab-sp-diar-forced-alignment.tree.json",
+      "bytes": 107942,
+      "sha256": "4d19cdd73f10c91b571e770cd2a3301b9e9dd018a1baf9de539d4b832d4b24ff"
+    },
+    "ntt_readme": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/research/large-context-development/nttcslab-sp-diar-forced-alignment.README.md",
+      "bytes": 3006,
+      "sha256": "e5789507cbf40438109cdc52e6a4c3203f9ccfcc90376b865ae967a96a9bf176"
+    },
+    "official_split_html": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/research/large-context-development/datasets.shtml",
+      "bytes": 14560,
+      "sha256": "30d038f540a91ba6e68133e8fdfaa1d2b4c1b7291f871b0d4821ea04f4c776ed"
+    },
+    "research_manifest": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/research/large-context-development/manifest.json",
+      "bytes": 6486,
+      "sha256": "440ffea2ef8b3ef4b3af1225305416124c0b966aa09145515fadf9de17c582c1"
+    },
+    "legacy_reference_equivalence": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/context-reference-legacy-equivalence-v1.json",
+      "bytes": 254,
+      "sha256": "9c89020554d13d1eb06223f90d98bdf879ff155bf1d1d52f0a47e76d9a21176d"
+    }
+  },
+  "numpy_version": "2.2.6",
+  "audio": {
+    "Mix-Headset": {
+      "url": "https://groups.inf.ed.ac.uk/ami/AMICorpusMirror/amicorpus/ES2011a/audio/ES2011a.Mix-Headset.wav",
+      "bytes": 35643096,
+      "etag": "\"21fded8-3fc2cda65d7c0\"",
+      "header": {
+        "bytes": 64,
+        "sha256": "c424e5b2e6c074eda8b42a7c7f989b616fc97d873230404f4c1daff2670e8333"
+      }
+    },
+    "Array1-01": {
+      "url": "https://groups.inf.ed.ac.uk/ami/AMICorpusMirror/amicorpus/ES2011a/audio/ES2011a.Array1-01.wav",
+      "bytes": 35643096,
+      "etag": "\"21fded8-3fa87bc5ef280\"",
+      "header": {
+        "bytes": 64,
+        "sha256": "c3b4b55d947150273061328adf6b065f6187aca290f2ad90914fb18a7599f375"
+      }
+    }
+  },
+  "annotation_members": {
+    "words/ES2011a.A.words.xml": "72637a4c320deba1650ad8b887f8e322f7ea5fcb846d66018118a9fae1ab743a",
+    "segments/ES2011a.A.segments.xml": "eb1b2d4ed0c66dd74e277ad9a36f6b7009bb611cfa91fb8e8795cdb2f5ada076",
+    "words/ES2011a.B.words.xml": "fdfb497aaa7db5209d32c988b11b8446a4d1635bd49ac3ba6324bfc8cd42bf5f",
+    "segments/ES2011a.B.segments.xml": "33107bc562a9bbcaba8fe83b8679907a5bfb2432370ff6e323b44893fb39ff1a",
+    "words/ES2011a.C.words.xml": "3adbd7754000fd413bccd6bfd720309a853947211ee364f7c5757562ccd2f57e",
+    "segments/ES2011a.C.segments.xml": "98697cdb564e8ee82a3f334d627d48c0b8d1604e617a48f1e9677006e647b119",
+    "words/ES2011a.D.words.xml": "396af803f2a9ceedd41f17104f01659d97dd38473f46c55935f879ff1e0c1830",
+    "segments/ES2011a.D.segments.xml": "c9409aeb9af716a6b81869d7f860c1e6e73abf126c6ad88e0a96a19834a2c4d0"
+  },
+  "transcriber_summary": {
+    "speakers": 4,
+    "speaker_seconds": {
+      "A": 126.673,
+      "B": 1.792,
+      "C": 54.511,
+      "D": 23.963
+    },
+    "speech_union_seconds": 185.84,
+    "overlap_seconds": 20.023,
+    "intervals": 37,
+    "short_intervals_at_most_1s": 7
+  },
+  "reference_file_sha256": {
+    "transcriber": "4f2780d97f01a557f52e72a78a1881f4abd4fec5c2cc58a50f2ff3f7ea6bb537",
+    "published-ntt-mfa": "a5f823369e7fa796e3587949aa8c3e8d08c5a82979db22e0d4a662ce28253f7d"
+  },
+  "tools": {
+    "prepare_context_development.py": {
+      "bytes": 6641,
+      "sha256": "49938d1a8f38c671302e7c421cfb2c9951069f601a5636a33ad091f1df723689"
+    },
+    "context_development_reference.py": {
+      "bytes": 3871,
+      "sha256": "26184c941c2d32a0a64a72e3f389c09cc7f3dd540ac2b792db6d39c728a1ac23"
+    },
+    "test_context_development_reference.py": {
+      "bytes": 2701,
+      "sha256": "6e142ba2323fa16563aabc85fdf9849b3e604caa442d6ef6000c5adf46579cd8"
+    },
+    "native_context_probe.cpp": {
+      "bytes": 9215,
+      "sha256": "1ccd8691f88796f7042bde480210062c49c0bbc515beb10cdc6ed4548414ad6b"
+    },
+    "corpus.py": {
+      "bytes": 18358,
+      "sha256": "caf0aecbc041873ea9acd433c4cd68b6f257caea62dd9221512922b32cf4920e"
+    },
+    "diagnose_ami_reference.py": {
+      "bytes": 10060,
+      "sha256": "5df4b4999f1868460472538c36bd08a77258b4585257d7b4d37ca49e5f346a03"
+    },
+    "compare.py": {
+      "bytes": 4165,
+      "sha256": "a53fccc162ead3b488a3880950d4dbf244897fd837f3b8e0898235029e559282"
+    },
+    "score.py": {
+      "bytes": 3294,
+      "sha256": "32aea92676133e42e2c30a914f8729d1c31c0c96e02faf9b7cab42911b389eb8"
+    },
+    "artifacts.py": {
+      "bytes": 2869,
+      "sha256": "17df6411ab0394b4d9bb30a099915badf357af26050b6cd08bfd44887688ff42"
+    }
+  },
+  "proposed_native_geometries": {
+    "low_latency": {
+      "chunk": 9,
+      "right": 4,
+      "left": 0,
+      "fifo": 264,
+      "cache": 264,
+      "update": 222
+    },
+    "large_context": {
+      "chunk": 340,
+      "right": 40,
+      "left": 0,
+      "fifo": 40,
+      "cache": 264,
+      "update": 300
+    }
+  },
+  "notice": "AMI Corpus, ES2011a, Mix-Headset and Array1-01, first300seconds cropped without resampling; core audio/manual annotations CC BY4.0: https://groups.inf.ed.ac.uk/ami/corpus/license.shtml . Original source URLs are retained in protocol.json. Cite Carletta et al., The AMI Meeting Corpus: A Pre-announcement (2005). NTT diar-forced-alignment AMI references are MFA-derived, component-specific CC BY4.0; original reference and license are retained unchanged at revision9527b7c64846fb38316a610f32e9d3466bd6d8b7. Primary human-reviewed lexical transcriber segments and NTT MFA intervals are separate reference policies; neither supplies human word-boundary gold.",
+  "limits": [
+    "Training-exposed AMI development, one recording with paired microphone views, not two independent meetings or a fresh heldout acceptance set. Fixedfirst300s has only1.792reference seconds for speakerB; retainweakcoverage without moving the crop.",
+    "Original ES2004 test cases, references,20percent DER gate and2pointQ8 bound remain unchanged and failed. This acquisition selects no production geometry, threshold or postprocessing.",
+    "Exactly two planned native CPU geometries, both on one continuousstream perchannel. Large340/40/0/40/264/300 has30.4s nominal buffering, not a low-latency live setting. Native v3-offline/statelessfullattention are not substitutes.",
+    "No new native/model/FP32/app calls occur during preparation. Planned large-context memory/speed/publicRustAPI parity/quantization degradation remain unqualified; no heldout, wordgold, GUI/mic, freshmachine, signing or release claim.",
+    "Audio and complete source annotations stay outsideGit. Exact originalETags/ranges, archive/member/reference hashes, all outcomes and any partial acquisition failure are retained. Noautomaticretry or recording/channel/crop substitution."
+  ]
+}
