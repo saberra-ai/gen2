@@ -190,6 +190,19 @@ SDK/model, production or release result is claimed by preparation.
 All570 local tool tests pass with seven Windows-only skips. The frozen protocol
 binds150 tools,3,763 repository references and40 local import modules; both
 source reviews are clear.
+The [actual A-scale result](../research/nemotron-windows-q8-scale-results.md)
+now independently admits4,709 delivered members,95 owned/reaped commands,
+1,056 full byte-exact vectors, twelve original half tables and twelve complete
+65,536-input/four-lane candidate broadcast tables. All finite/infinity bits and
+NaN classifications pass independent reference checks. None of48 required
+four-worker comparisons meets the original5% speedup predicate;44/48 observer
+comparisons meet both original bounds. All three prediction/observer flags remain false.
+Generated loop instructions increase95→100 and explicit vector stack operand
+widths192→256bytes, without establishing measured traffic or a runtime cause.
+The1,460-member result and separate17-member static/CI receipt preserve every
+failure; all thirteen feature CI jobs succeed. This supplies no qualifying
+full-model/SDK or production promotion. Original quality, human-review,
+desktop, fresh-machine, platform and signing/release gates remain open.
 
 Remaining release work as of 2026-10-17:
 

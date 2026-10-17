@@ -1,0 +1,68 @@
+{
+  "parents": {
+    "fetch-windows-q8-scale-artifact-v1.py": {
+      "bytes": 5695,
+      "sha256": "b82616b3f93660afb18a8bd1978c0c31ec4db86e740d62d44a299ed093bb48f5"
+    },
+    "admit-windows-q8-scale-delivery-v1.py": {
+      "bytes": 9164,
+      "sha256": "4f354dfc5cc29054e821fecb5c353770fef54967586c580aed0b8c437ec1d45b"
+    },
+    "replay-windows-q8-scale-supervision-v1.py": {
+      "bytes": 8197,
+      "sha256": "c33ff210505d0cdddeeb39200cb459d6ac9c72e31554791095b177ea96949cf0"
+    },
+    "collect-windows-q8-scale-v1.py": {
+      "bytes": 16202,
+      "sha256": "c0fcee9a61b63edabc8d52cc3afb77e6bc5f995a667a479aa64a61d096bedf8a"
+    },
+    "publish-windows-q8-scale-v1.py": {
+      "bytes": 8381,
+      "sha256": "1cd7f1b9d07de91b41e2a54d3c8be5b4297a654eaa9b5da7c66e9076ffad4bfb"
+    },
+    "test-q8-scale-receiver-controls-v1.py": {
+      "bytes": 7446,
+      "sha256": "58ba467942d34587ead5de404e801b4ce0cba5833d839691be9dc50712bdd2c4"
+    }
+  },
+  "parent_preexecution": {
+    "bytes": 2109,
+    "sha256": "1c35c91529e52480d35ec9f3e4560af22cbb76ece35cb12308e41ca3b02590ee"
+  },
+  "outputs": {
+    "fetch-windows-q8-scale-artifact-v3.py": {
+      "bytes": 5695,
+      "sha256": "b82616b3f93660afb18a8bd1978c0c31ec4db86e740d62d44a299ed093bb48f5"
+    },
+    "admit-windows-q8-scale-delivery-v3.py": {
+      "bytes": 9164,
+      "sha256": "4ff0674c64dbd9efbc1265c4377583e1b0813cdd39fa2b7c2b09c062e322451f"
+    },
+    "replay-windows-q8-scale-supervision-v3.py": {
+      "bytes": 8197,
+      "sha256": "96ddd2269cf369ceeb254a702ffdc86879ce7cb88634c9ddda2b5531a91219a8"
+    },
+    "collect-windows-q8-scale-v3.py": {
+      "bytes": 16202,
+      "sha256": "6e29d8eb0ff0ad5b1ef75818f3add37d0dcb5f80bb17ffb2b8d32134a6b7241e"
+    },
+    "publish-windows-q8-scale-v3.py": {
+      "bytes": 8381,
+      "sha256": "60fc5e64869664536abeed187c208ccde135cd4a1a01b24966acfce410bdd15d"
+    },
+    "test-q8-scale-receiver-controls-v3.py": {
+      "bytes": 7446,
+      "sha256": "35a465047ff9def2f82aedc4ed5a02d716323e9cec8153fa596a7f1a098e2202"
+    }
+  },
+  "preparer": {
+    "bytes": 2556,
+    "sha256": "23b1cc41115d63187d93d5895fefb87d958404d8bf0b523a25e28bb161cbc74a"
+  },
+  "receivers_invoked": false,
+  "artifact_consumed": false,
+  "source_commit": "4c72846674d373915fec72fbb0fccbc5a8a1e068",
+  "run_id": 39072824849,
+  "job_id": 117513788511,
+  "change": "Only actual_scale_control_tests6-to-7 plus versioned source/control/preparation filename bindings. Data root and stage output names stay V1. V1 receivers never invoked."
+}
