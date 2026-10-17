@@ -1493,6 +1493,21 @@ cache-only cause, and cannot replace the failed cold gate or establish warm Q8
 degradation without a matched FP32 oracle. See the
 [diagnostic design](../research/nemotron-quality-next-diagnostics.md).
 
+A separate [publisher large-context development contrast](../research/nemotron-large-context-development.md)
+now has actual frozen inputs and a model-free public-C-ABI helper construction
+at `3d40e166`. The [30-member preparation receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-context-development-preparation/collection-qualification.json)
+replays both first300s ES2011a microphone views,4,800,000 samples per channel,
+both reference policies, seven exact staged compiler dependencies and the
+unchanged123-entry qualified CPU package. Six construction commands return their
+expected status and the rejected-profile process matches all92 private images
+without a model call. All244 local tools tests pass. This is training-exposed
+development with only1.792s of speaker B, not a replacement test. Native
+low9/4/0/264/264/222 versus large340/40/0/40/264/300 inference, actual memory/speed,
+large-context public Rust parity and matched FP32/Q8 bounds remain unperformed.
+Large context has30.4s nominal buffering and cannot establish low-latency live
+behavior. Every original quality, human-word, GUI/microphone and release gate
+remains open as recorded above.
+
 ## Verification and release criteria
 
 A [saved live-frontier analysis](../research/nemotron-live-frontier-freshness.md)

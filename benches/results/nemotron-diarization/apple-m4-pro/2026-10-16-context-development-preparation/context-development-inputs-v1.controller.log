@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "source_commit": "3d40e1667e59a9bdcaf339a615b3a5547cd07ca3",
+  "prepared": true,
+  "meeting": "ES2011a",
+  "crop_seconds": [
+    0,
+    300
+  ],
+  "training_exposed_development": true,
+  "model_calls": 0,
+  "release_qualified": false,
+  "reference_summaries": {
+    "transcriber": {
+      "speakers": 4,
+      "speaker_seconds": {
+        "A": 126.673,
+        "B": 1.792,
+        "C": 54.511,
+        "D": 23.963
+      },
+      "speech_union_seconds": 185.84,
+      "overlap_seconds": 20.023,
+      "intervals": 37,
+      "short_intervals_at_most_1s": 7
+    },
+    "published_ntt_mfa": {
+      "speakers": 4,
+      "speaker_seconds": {
+        "ES2011a.A": 73.632,
+        "ES2011a.B": 1.76,
+        "ES2011a.C": 32.907,
+        "ES2011a.D": 18.225
+      },
+      "speech_union_seconds": 121.487,
+      "overlap_seconds": 5.037,
+      "intervals": 104,
+      "short_intervals_at_most_1s": 60
+    }
+  },
+  "channels": {
+    "Mix-Headset": {
+      "wav": {
+        "bytes": 9600044,
+        "sha256": "69ec357686ee26208c0931608c26e88a847bd46d0065f0112782c495c9921688"
+      },
+      "samples": 4800000,
+      "source_pcm_sha256": "f69b12f6d6b5a2e230149aacb65a813826ed8e3c733513ad355f031849bb5a77",
+      "input_pcm_f32le_sha256": "ceaa332efb5324dc6c47bad6c8cdcd2bcfce4d6544a21e0a1780b3379ab0cfdb",
+      "source_samples": 17821526,
+      "downloaded_pcm_bytes": 9600000
+    },
+    "Array1-01": {
+      "wav": {
+        "bytes": 9600044,
+        "sha256": "207e1f984141e82783b99f4c277fef20e6dfa2b8227890539796cc8e092d0adb"
+      },
+      "samples": 4800000,
+      "source_pcm_sha256": "db22c028c6a079fc2bc808a2db292db48b839fe3bcec800f8519b11912bd42b6",
+      "input_pcm_f32le_sha256": "5c7f3ff83edbd30b39abf42add41ade1b7b44976bbcb1acf60eb4b1ec87a7459",
+      "source_samples": 17821526,
+      "downloaded_pcm_bytes": 9600000
+    }
+  },
+  "limits": [
+    "Training-exposed AMI development, one recording with paired microphone views, not two independent meetings or a fresh heldout acceptance set. Fixedfirst300s has only1.792reference seconds for speakerB; retainweakcoverage without moving the crop.",
+    "Original ES2004 test cases, references,20percent DER gate and2pointQ8 bound remain unchanged and failed. This acquisition selects no production geometry, threshold or postprocessing.",
+    "Exactly two planned native CPU geometries, both on one continuousstream perchannel. Large340/40/0/40/264/300 has30.4s nominal buffering, not a low-latency live setting. Native v3-offline/statelessfullattention are not substitutes.",
+    "No new native/model/FP32/app calls occur during preparation. Planned large-context memory/speed/publicRustAPI parity/quantization degradation remain unqualified; no heldout, wordgold, GUI/mic, freshmachine, signing or release claim.",
+    "Audio and complete source annotations stay outsideGit. Exact originalETags/ranges, archive/member/reference hashes, all outcomes and any partial acquisition failure are retained. Noautomaticretry or recording/channel/crop substitution."
+  ]
+}

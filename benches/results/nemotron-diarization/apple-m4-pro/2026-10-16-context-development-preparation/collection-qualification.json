@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "source_commit": "3d40e1667e59a9bdcaf339a615b3a5547cd07ca3",
+  "prepared": true,
+  "constructed": true,
+  "current_tools_verified_before_import": 14,
+  "historical_verifier_identity": {
+    "bytes": 2468,
+    "sha256": "ceb594332b9112fb75b708dff53628630443b52d600d470ccb0e44b777a14bc5"
+  },
+  "all_saved_files_rehashed": true,
+  "exact_reference_policies_replayed": 2,
+  "canonical_audio_samples_replayed_per_channel": 4800000,
+  "channels": 2,
+  "staged_public_source_and_header_inputs": 7,
+  "runtime_inventory_entries": 123,
+  "actual_invalid_profile_private_images": 92,
+  "new_neural_calls": 0,
+  "training_exposed_development": true,
+  "weak_speaker_B_coverage_seconds": 1.792,
+  "large_context_inference_performed": false,
+  "release_qualified": false,
+  "limits": [
+    "Training-exposed AMI development, one recording with paired microphone views, not two independent meetings or a fresh heldout acceptance set. Fixedfirst300s has only1.792reference seconds for speakerB; retainweakcoverage without moving the crop.",
+    "Original ES2004 test cases, references,20percent DER gate and2pointQ8 bound remain unchanged and failed. This acquisition selects no production geometry, threshold or postprocessing.",
+    "Exactly two planned native CPU geometries, both on one continuousstream perchannel. Large340/40/0/40/264/300 has30.4s nominal buffering, not a low-latency live setting. Native v3-offline/statelessfullattention are not substitutes.",
+    "No new native/model/FP32/app calls occur during preparation. Planned large-context memory/speed/publicRustAPI parity/quantization degradation remain unqualified; no heldout, wordgold, GUI/mic, freshmachine, signing or release claim.",
+    "Audio and complete source annotations stay outsideGit. Exact originalETags/ranges, archive/member/reference hashes, all outcomes and any partial acquisition failure are retained. Noautomaticretry or recording/channel/crop substitution.",
+    "Model-free construction only, no audio or model assets staged and no neural execution. Invalid profile rejects before file checks or runtime version call; dynamic initialization loads the unchanged package and its entire92image closure is audited.",
+    "Runtime is byte/mode/alias-identical to the prior qualified CPU gen2-valid-mel-v1 package. Seven source/header inputs are copied, original checkout/SDK/package/Homebrew reads are denied to children; separate .d files must cover exactly the seven non-system inputs. System compiler/SDK dependencies are observed, not a hermetic complete toolchain attestation.",
+    "No compiler or geometry result closes accuracy, publicRustlarge-contextparity, FP32/Q8bound, lowlatency, wordgold, GUI, microphone, freshmachine, signing or release gates. Neural experiment needs a separate frozen execution protocol with unchanged5GiBstart/1GiBrunning/256MiBreserve/600stimeout protections."
+  ]
+}

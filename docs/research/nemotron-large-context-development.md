@@ -1,6 +1,6 @@
 # Publisher large-context development contrast
 
-Research only, 2026-10-16 local / metadata retrieved 2026-10-17 UTC. No model, native helper, build or inference was executed; no complete audio was acquired. This proposes a separately frozen development experiment. It does not replace the failed ES2004 test, its references, or the roadmap’s proposed ≤20% DER gate.
+Initial source audit, 2026-10-16 local / metadata retrieved 2026-10-17 UTC. The audit executed no model, native helper, build or inference and acquired no complete audio. The subsequent input preparation and model-free helper construction are recorded below; inference remains unperformed. This separately frozen development experiment does not replace the failed ES2004 test, its references, or the roadmap’s proposed ≤20% DER gate.
 
 ## Exact geometry and native applicability
 
@@ -73,3 +73,30 @@ parity. Before inference, a separate execution protocol must bind the acquired
 audio, constructed helper, exact Q8 artifact, reused public low-latency binary,
 scorers, command sequence and failure/resource policy. The four native
 geometry/channel cells require two additional public low-latency controls.
+
+## Actual preparation and construction
+
+The [30-member receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-context-development-preparation/collection-qualification.json)
+records successful acquisition and construction at `3d40e166`. Both channels
+contain exactly4,800,000 samples /300s, with9,600,044-byte WAVs. Actual normalized
+F32LE SHA256 is `ceaa332efb5324dc6c47bad6c8cdcd2bcfce4d6544a21e0a1780b3379ab0cfdb`
+for Mix-Headset and `5c7f3ff83edbd30b39abf42add41ade1b7b44976bbcb1acf60eb4b1ec87a7459`
+for Array1-01. Independent collection replays all samples and both reference
+policies. Primary37 intervals remain distinct from104 published MFA intervals.
+
+All six construction commands return their expected status, including invalid
+profile1. The actual compiler dependency files cover exactly seven staged inputs;
+their final identities and all123 package filesystem entries remain unchanged.
+The constructed62,304-byte helper has SHA256
+`3207eb7a1a5ba3f61361c7246f5a56550840495a7631679ffd93d981aed3e840`.
+Its invalid-profile process matches all92 private runtime images and makes no
+version/model call. Sandbox denial controls pass and the256MiB reserve is released.
+All244 local tools tests pass. Corpus audio, annotations and executable payloads
+remain outside Git; the receipt contains metadata and logs only.
+
+Review strengthened collection to verify14 current replay-tool identities and
+the historical verifier bytes before importing them. The initial unadmitted
+collection is retained unchanged in external cache; V2 repeats metadata/sample
+replay only, without acquisition, compilation or native calls. No large-context
+inference, performance, FP32 comparison, production selection or release gate has
+been completed by this preparation.
