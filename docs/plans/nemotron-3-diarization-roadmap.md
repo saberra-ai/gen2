@@ -1582,9 +1582,18 @@ The [fixed CPU thread contrast](../research/nemotron-cpu-thread-contrast.md)
 now passes local model-denied preparation: 28 commands, two 22-lifetime controls,
 strict 92-image audits, retained synthetic-failure observations and all successful
 settled counts back to one thread. Its 75-member receipt verifies the compiled
-helper and 23 used dependencies; all 256 Python tests pass. The fixed M1
-four-process 4/3/3/4 comparison is pending. No model is acquired or executed by
-this local preparation and no production thread policy changes.
+helper and 23 used dependencies; all 256 Python tests pass. No model is acquired
+or executed by this local preparation and no production thread policy changes.
+
+The subsequent [M1 four-process 4/3/3/4 comparison](../research/nemotron-cpu-thread-contrast.md)
+now passes at `2995f0e0`: every 1,200-row/eight-channel output and all five turns
+are byte-exact to the saved independent pooled reference. Its 89-member receipt
+verifies all 86 delivered members, 32 required statuses and six strict 92-image
+audits. Four threads take 1.98405/1.77253 times audio duration; three threads take
+0.181545/0.202791, with peak RSS below 156 MB. This supports an available-CPU cap
+for undersized hosts, but the diagnostic helper does not qualify a production
+runtime change. Public/lifecycle/long/mixed/quality/package requalification and
+the original release gates remain required.
 
 Use public Gen2 calls for lifecycle and user-visible behavior; use the FFI seam
 for ownership/status failures, and a pinned upstream executable for independent

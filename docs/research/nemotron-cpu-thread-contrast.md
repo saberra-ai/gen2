@@ -69,5 +69,33 @@ exactly 92 private images; all 20 successful settled counts return to one thread
 The 75-member receipt rechecks protected inventories, 23 compiler dependencies,
 and the exact archived helper payload through independent restoration. All 256
 Python tests pass. No asset is acquired and no model/frontend inference occurs.
-The three-CPU M1 comparison remains pending; this local result establishes only
-that its preparation and evidence controls work on the current physical host.
+At that preparation checkpoint the M1 comparison had not run; the local result
+establishes only that its controls work on the current physical host.
+
+The [actual M1 run](https://github.com/saberra-ai/gen2/actions/runs/39003266888)
+now passes at `2995f0e0`. Its [89-member receipt](../../benches/results/nemotron-diarization/macos-arm64/2026-10-17-cpu-threads/collection-qualification.json)
+checks all 86 delivered files, helper archive bytes/modes, 23 used compiler
+dependencies, all 32 required command statuses and six strict 92-image audits.
+All four processes retain all 1,200 rows/eight channels and five final turns,
+byte-exact to the independent pooled C ABI reference. No tolerance changes,
+retries, output selection or additional neural calls occur.
+
+| Process | Requested threads | Compute/audio duration | Full process wall time |
+| --- | ---: | ---: | ---: |
+| 1 | 4 | 1.984046 | 23.88 s |
+| 2 | 3 | 0.181545 | 2.30 s |
+| 3 | 3 | 0.202791 | 2.58 s |
+| 4 | 4 | 1.772526 | 21.41 s |
+
+Both four-thread processes miss real time; both three-thread processes process
+the same twelve seconds in under 2.5 compute seconds. Peak RSS across all four
+is 155,041,792 bytes. These observations support bounding the CPU default to the
+available CPUs on this undersized host. A production change still needs a new
+runtime identity and independent public, lifecycle, long-session, mixed-model,
+quality and package qualification. No production default or release gate changes
+in this experiment. Shared-VM timing does not establish physical-desktop latency.
+
+The first independent collector stopped at an asset-inventory assertion because
+it omitted the explicit root-directory entry. Its script and failure log remain
+in the receipt. The corrected collector admits that exact directory and restores
+the same delivered helper again; no helper or model is executed by collection.
