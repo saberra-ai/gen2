@@ -76,6 +76,15 @@ control drift passes at 0.5796085%, but the 10% speedup prediction fails. This
 isolates a useful numerical setting for this configuration while leaving the
 below-one performance and all production/public/package requirements open.
 
+The next [CPU graph profile experiment](nemotron-windows-cpu-ops-experiment.md)
+now implements timing around existing fused-kernel and barrier boundaries in a
+separately identified diagnostic SDK. It requires exact twenty-patch/3425-file
+source admission, the original compiler/flags plus diagnostic metadata, actual
+Windows model-free controls before asset acquisition, and four full-output
+off/on/on/off cases. Local source composition and 415 Python tests pass; actual
+Windows measurement remains pending. Observer effects, overlapping worker times
+and all original production/release limits remain explicit.
+
 The new [producer](../../tools/nemotron-diarization/platform_bounded_windows_native.py),
 [composed-source verifier](../../tools/nemotron-diarization/platform_bounded_sources.py)
 and [workflow](../../.github/workflows/diarization-bounded-windows-native.yml) use a

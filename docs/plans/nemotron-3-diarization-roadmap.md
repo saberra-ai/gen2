@@ -136,8 +136,12 @@ Remaining release work as of 2026-10-17:
   now implements timers around existing fused-kernel/barrier boundaries without
   changing graph splitting or fusion. Its Mac model-free controls pass twelve
   processes and all 36 byte-identical synthetic outputs across one/two/four
-  workers. All 407 Python tests pass. The actual Windows model profile and its
-  frozen orchestration remain pending; these controls supply no release pass.
+  workers. Its [Windows experiment](../research/nemotron-windows-cpu-ops-experiment.md)
+  now implements distinct diagnostic identity, exact twenty-patch source
+  admission, actual Windows controls before model acquisition and full off/on/on/off
+  measurement. Local source-only reconstruction passes all 3425 files with just
+  the declared timing file changed; 415 Python tests pass. Actual Windows model
+  evidence remains pending, and no release gate is qualified by these controls.
   Then merge and
   push the completed feature to main; no main promotion is justified yet.
 
