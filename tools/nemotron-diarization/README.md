@@ -714,6 +714,19 @@ construction artifacts for a separately frozen receiver evaluation, with no
 real-model execution or runtime qualification yet.
 Existing M4 packages, model outputs and quality failures remain unchanged.
 
+`qualify_pooled_native.py` and `macos-pooled-native.protocol.json` separately
+qualify the owned-pool CPU candidate using the immutable construction delivery
+and old-profile 12s/60s public C ABI references. The original native helper stays
+frozen; a separate derived source changes its one expected-version literal.
+Both helper binaries are delivered, and actual model-free/network/failed-load
+controls precede the two fresh audio processes. Every probability and raw turn
+is compared at the existing 1e-6 tolerance, with bit-exactness also reported.
+The result sandbox permits metadata and writes but denies reading prior output
+payloads. Timing is descriptive because the historical reference is not a
+matched performance trial. Rust admission, lifecycle/long-session, quality,
+app and release qualification remain separate. The workflow is
+`diarization-macos-pooled-native.yml`; no first execution is claimed yet.
+
 `qualify_macos_portable_runtime.py` and `macos-portable-runtime-v2.protocol.json`
 freeze a separate fresh M1 receiver for the exact constructed artifacts. The
 controller verifies the API/opaque ZIP and complete member set before restoring

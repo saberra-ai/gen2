@@ -942,6 +942,16 @@ correction passes 101 later attempts against the unchanged SDK, and fault
 injection verifies failure-history preservation. No candidate model inference
 or Rust admission has executed. See the [candidate construction notes](../research/nemotron-macos-fresh-machine.md).
 
+The first candidate public C ABI audio check is now prepared in
+`macos-pooled-native.protocol.json`: exactly two fresh 12s/60s CPU calls,
+complete probability histories and raw turns against the immutable qualified
+old-profile references. It preserves the frozen native helper and derives only
+its exact expected-version literal. All 216 local model-free tests pass,
+including an actual macOS sandbox check that permits output metadata/writes
+but denies prior output payload reads. The initial `/var` alias failure and
+canonical-path correction are retained. Real-audio execution remains pending;
+this protocol does not admit the candidate into Rust or close release gates.
+
 The 13-job feature matrix also passed at `4974318`. Later source `cf64214`
 passed12 jobs; its macOS mixed-feature job failed before compilation when GitHub
 submodule fetch could not connect to port443. A failed-job rerun was denied by

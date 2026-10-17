@@ -1,0 +1,88 @@
+name: Diarization pooled macOS CPU native parity
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/nemotron3-n0]
+    paths:
+      - .github/workflows/diarization-macos-pooled-native.yml
+      - tools/nemotron-diarization/qualify_pooled_native.py
+      - tools/nemotron-diarization/macos-pooled-native.protocol.json
+permissions:
+  contents: read
+  actions: read
+jobs:
+  native-parity:
+    runs-on: macos-26
+    timeout-minutes: 30
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: NVIDIA/NeMo-Speech.cpp
+          ref: 083861c241061562b8ec29eb06d7f6cdc3af8775
+          path: native-upstream
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download immutable construction and two qualified references
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p "${{ runner.temp }}/pooled-delivery"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12082417995 > "${{ runner.temp }}/pooled-delivery/construction.json"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12082417995/zip > "${{ runner.temp }}/pooled-delivery/construction.zip"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12080083616 > "${{ runner.temp }}/pooled-delivery/short-reference.json"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12080083616/zip > "${{ runner.temp }}/pooled-delivery/short-reference.zip"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12080325210 > "${{ runner.temp }}/pooled-delivery/long-reference.json"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12080325210/zip > "${{ runner.temp }}/pooled-delivery/long-reference.zip"
+      - name: Acquire pinned model and four helper source inputs
+        env:
+          POOLED_INPUTS: ${{ runner.temp }}/pooled-inputs
+        run: |
+          python - <<'PY'
+          import json, os, sys
+          from pathlib import Path
+          sys.path.insert(0, 'tools/nemotron-diarization')
+          from artifacts import acquire
+          p = json.loads(Path('tools/nemotron-diarization/macos-pooled-native.protocol.json').read_text())
+          inputs = Path(os.environ['POOLED_INPUTS'])
+          inputs.mkdir()
+          acquire(next(a for a in p['assets'] if a['role'] == 'model'), inputs)
+          for name, entry in p['helper_inputs'].items():
+              relative = Path('examples/wav_reader.h' if name == 'wav_reader.h' else 'llama.cpp/vendor/hash/' + name)
+              destination = Path('native-upstream') / relative.parent
+              destination.mkdir(parents=True, exist_ok=True)
+              acquire(dict(entry, name=relative.name), destination)
+          PY
+      - name: Run model-free controls then public C ABI parity on 12 and 60 seconds
+        run: |
+          python tools/nemotron-diarization/qualify_pooled_native.py \
+            --protocol tools/nemotron-diarization/macos-pooled-native.protocol.json \
+            --construction-zip "${{ runner.temp }}/pooled-delivery/construction.zip" \
+            --construction-metadata "${{ runner.temp }}/pooled-delivery/construction.json" \
+            --short-reference-zip "${{ runner.temp }}/pooled-delivery/short-reference.zip" \
+            --short-reference-metadata "${{ runner.temp }}/pooled-delivery/short-reference.json" \
+            --long-reference-zip "${{ runner.temp }}/pooled-delivery/long-reference.zip" \
+            --long-reference-metadata "${{ runner.temp }}/pooled-delivery/long-reference.json" \
+            --upstream native-upstream \
+            --model "${{ runner.temp }}/pooled-inputs/Nemotron-3-Diarization.q8_0.gguf" \
+            --output "${{ runner.temp }}/pooled-native"
+      - name: Preserve passing or failed parity evidence and both helper binaries
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nemotron-macos-pooled-native
+          path: |
+            ${{ runner.temp }}/pooled-native/*.json
+            ${{ runner.temp }}/pooled-native/*.log
+            ${{ runner.temp }}/pooled-native/*.sb
+            ${{ runner.temp }}/pooled-native/*.tar.gz
+            ${{ runner.temp }}/pooled-native/helper-source/
+            ${{ runner.temp }}/pooled-native/results/
+          include-hidden-files: true
+          retention-days: 30
