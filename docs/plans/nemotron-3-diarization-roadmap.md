@@ -28,8 +28,15 @@ now freezes the existing helper dispatch, 22 fixed shapes selected from captured
 model geometry and boundary cases, 264 byte-exact output checks and the original
 integer predicates on all twelve primary shapes. All 479 local tool tests pass
 with seven Windows-only skips; source-map composition verifies all 3,425 files
-and only the declared SGEMM dispatch change. Actual Windows timing and full
-model/production qualification remain pending.
+and only the declared SGEMM dispatch change. The
+[actual Windows 2×4 result](../research/nemotron-windows-q8-mx4-results.md)
+now independently admits all 95 command cleanups, 264 byte-exact vectors,
+twelve complete half tables and 36 support rejections. Every one of the twelve
+primary shapes fails the original speedup predicate; five also exceed the 10%
+control-drift bound. The Xeon8370C host differs from the bounded model-profile
+EPYC7763. Preserve the existing production kernel and inspect actual generated
+loops and worker scheduling before selecting another implementation. No
+SDK/model/production qualification or main promotion is established.
 
 Remaining release work as of 2026-10-17:
 

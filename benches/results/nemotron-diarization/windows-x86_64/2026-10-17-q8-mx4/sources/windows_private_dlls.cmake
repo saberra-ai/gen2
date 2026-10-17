@@ -1,0 +1,43 @@
+# Build-only naming hook for the pinned CPU-only NeMo source. No C/C++ edits.
+# Run after all upstream target/install declarations have been evaluated.
+include_guard(GLOBAL)
+if(NOT CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
+    message(FATAL_ERROR "Gen2 private DLL hook must enter at the root")
+endif()
+function(gen2_private_nemo_dlls)
+    if(NOT WIN32 OR NOT CMAKE_SIZEOF_VOID_P EQUAL 8 OR
+       NOT CMAKE_GENERATOR STREQUAL "Ninja" OR NOT CMAKE_BUILD_TYPE STREQUAL "Release" OR
+       NOT BUILD_SHARED_LIBS OR GGML_BACKEND_DL OR GGML_OPENMP OR
+       GGML_CUDA OR GGML_VULKAN OR GGML_METAL OR GGML_BLAS)
+        message(FATAL_ERROR "Gen2 private DLL naming requires the Windows x64 CPU Release profile")
+    endif()
+    foreach(target IN ITEMS nemo_speech_asr_c nemo_speech_asr ggml ggml-base ggml-cpu)
+        if(NOT TARGET "${target}")
+            message(FATAL_ERROR "Missing pinned NeMo target: ${target}")
+        endif()
+        get_target_property(kind "${target}" TYPE)
+        get_target_property(imported "${target}" IMPORTED)
+        get_target_property(alias "${target}" ALIASED_TARGET)
+        if(imported OR alias OR NOT kind STREQUAL "SHARED_LIBRARY")
+            message(FATAL_ERROR "Expected owned shared NeMo target: ${target}")
+        endif()
+        foreach(property IN ITEMS OUTPUT_NAME ARCHIVE_OUTPUT_NAME LIBRARY_OUTPUT_NAME RUNTIME_OUTPUT_NAME)
+            get_property(overridden TARGET "${target}" PROPERTY "${property}" SET)
+            if(overridden)
+                message(FATAL_ERROR "Unexpected NeMo output override: ${target} ${property}")
+            endif()
+            foreach(config IN ITEMS DEBUG RELEASE RELWITHDEBINFO MINSIZEREL ${CMAKE_CONFIGURATION_TYPES} ${CMAKE_BUILD_TYPE})
+                string(TOUPPER "${config}" config)
+                get_property(overridden TARGET "${target}" PROPERTY "${property}_${config}" SET)
+                if(overridden)
+                    message(FATAL_ERROR "Unexpected NeMo configuration output override: ${target} ${property}_${config}")
+                endif()
+            endforeach()
+        endforeach()
+        set_target_properties("${target}" PROPERTIES OUTPUT_NAME "gen2_nemo_windows_${target}")
+    endforeach()
+    file(GENERATE OUTPUT "${CMAKE_BINARY_DIR}/gen2-private-paths-$<CONFIG>.txt"
+         CONTENT "entry=$<TARGET_FILE:nemo_speech_asr_c>\nimport=$<TARGET_LINKER_FILE:nemo_speech_asr_c>\n")
+endfunction()
+
+cmake_language(DEFER CALL gen2_private_nemo_dlls)
