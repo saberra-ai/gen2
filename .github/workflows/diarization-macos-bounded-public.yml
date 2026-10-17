@@ -1,0 +1,84 @@
+name: Diarization bounded-thread macOS CPU public Rust runtime
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/nemotron3-n0]
+    paths:
+      - .github/workflows/diarization-macos-bounded-public.yml
+      - tools/nemotron-diarization/qualify_macos_bounded_public.py
+      - tools/nemotron-diarization/compare_stream_bounded.py
+      - tools/nemotron-diarization/macos-bounded-public.protocol.json
+permissions:
+  contents: read
+  actions: read
+jobs:
+  public-runtime:
+    runs-on: macos-26
+    timeout-minutes: 90
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          submodules: recursive
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Bootstrap locked Rust sources without building
+        run: cargo fetch --locked
+      - name: Download exact bounded construction and successful native parity deliveries
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p "${{ runner.temp }}/bounded-public-delivery"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12089814731 > "${{ runner.temp }}/bounded-public-delivery/construction.json"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12089814731/zip > "${{ runner.temp }}/bounded-public-delivery/construction.zip"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12090213937 > "${{ runner.temp }}/bounded-public-delivery/native-reference.json"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12090213937/zip > "${{ runner.temp }}/bounded-public-delivery/native-reference.zip"
+      - name: Acquire pinned assets before offline build and model admission
+        env:
+          BOUNDED_PUBLIC_ASSETS: ${{ runner.temp }}/bounded-public-assets
+        run: |
+          python - <<'PY'
+          import json, os, sys
+          from pathlib import Path
+          sys.path.insert(0, 'tools/nemotron-diarization')
+          import hashlib
+          p = json.loads(Path('tools/nemotron-diarization/macos-bounded-public.protocol.json').read_text())
+          for name, expected in p['tools'].items():
+              raw = (Path('tools/nemotron-diarization') / name).read_bytes()
+              assert {'bytes': len(raw), 'sha256': hashlib.sha256(raw).hexdigest()} == expected, name
+          from artifacts import acquire
+          destination = Path(os.environ['BOUNDED_PUBLIC_ASSETS'])
+          destination.mkdir()
+          for entry in p['assets']:
+              acquire(entry, destination)
+          PY
+      - name: Qualify current public Rust consumer and seven real lifecycle cases offline
+        run: |
+          python tools/nemotron-diarization/qualify_macos_bounded_public.py \
+            --protocol tools/nemotron-diarization/macos-bounded-public.protocol.json \
+            --producer-zip "${{ runner.temp }}/bounded-public-delivery/construction.zip" \
+            --producer-metadata "${{ runner.temp }}/bounded-public-delivery/construction.json" \
+            --native-reference-zip "${{ runner.temp }}/bounded-public-delivery/native-reference.zip" \
+            --native-reference-metadata "${{ runner.temp }}/bounded-public-delivery/native-reference.json" \
+            --assets "${{ runner.temp }}/bounded-public-assets" \
+            --output "${{ runner.temp }}/bounded-public"
+      - name: Preserve passing or failed public runtime evidence and helper binaries
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nemotron-macos-bounded-public
+          path: |
+            ${{ runner.temp }}/bounded-public/*.json
+            ${{ runner.temp }}/bounded-public/*.log
+            ${{ runner.temp }}/bounded-public/*.sb
+            ${{ runner.temp }}/bounded-public/*.tar.gz
+            ${{ runner.temp }}/bounded-public/helper-source/
+            ${{ runner.temp }}/bounded-public/results/
+            ${{ runner.temp }}/bounded-public/reference/
+          include-hidden-files: true
+          retention-days: 30

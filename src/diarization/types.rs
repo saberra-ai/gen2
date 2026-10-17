@@ -50,8 +50,9 @@ pub enum ExecutionDevice {
     Metal,
 }
 /// Native loading and admitted peak residency. No runtime/model auto-download.
-/// The supplied SDK must be qualified for the `gen2-valid-mel-v1` or
-/// `gen2-valid-mel-pool-v1` runtime profile on the selected host/backend.
+/// The supplied SDK must be qualified for the `gen2-valid-mel-v1`,
+/// `gen2-valid-mel-pool-v1`, or CPU `gen2-valid-mel-pool-cpu-v2` runtime profile
+/// on the selected host/backend.
 #[derive(Debug, Clone)]
 pub struct LoadOptions {
     pub native_library: PathBuf,

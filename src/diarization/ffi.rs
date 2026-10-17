@@ -9,6 +9,7 @@ use std::{
 /// Semantic compatibility guard; host package qualification still binds the closure.
 const RUNTIME_VERSION: &str = "nemo-speech-asr 0.2.0+gen2-valid-mel-v1";
 const POOLED_RUNTIME_VERSION: &str = "nemo-speech-asr 0.2.0+gen2-valid-mel-pool-v1";
+const BOUNDED_CPU_RUNTIME_VERSION: &str = "nemo-speech-asr 0.2.0+gen2-valid-mel-pool-cpu-v2";
 
 #[repr(C)]
 pub(super) struct ModelConfig {
@@ -105,9 +106,15 @@ impl Api {
                 .map_err(|e| bad(e.to_string()))?
                 .to_owned();
             // The upstream ABI version alone cannot identify final-frame semantics.
-            if ![RUNTIME_VERSION, POOLED_RUNTIME_VERSION].contains(&version.as_str()) {
+            if ![
+                RUNTIME_VERSION,
+                POOLED_RUNTIME_VERSION,
+                BOUNDED_CPU_RUNTIME_VERSION,
+            ]
+            .contains(&version.as_str())
+            {
                 return Err(bad(format!(
-                    "unqualified NeMo runtime version: {version}; expected {RUNTIME_VERSION} or {POOLED_RUNTIME_VERSION}"
+                    "unqualified NeMo runtime version: {version}; expected {RUNTIME_VERSION}, {POOLED_RUNTIME_VERSION}, or {BOUNDED_CPU_RUNTIME_VERSION}"
                 )));
             }
             Ok(Self {
@@ -265,6 +272,12 @@ mod tests {
             ("nemo-speech-asr 0.2.0+gen2-valid-mel-pool-v1", true),
             ("nemo-speech-asr 0.2.0+gen2-valid-mel-pool-v1.extra", false),
             ("nemo-speech-asr 0.2.0+gen2-valid-mel-pool-v2", false),
+            (BOUNDED_CPU_RUNTIME_VERSION, true),
+            (
+                "nemo-speech-asr 0.2.0+gen2-valid-mel-pool-cpu-v2.extra",
+                false,
+            ),
+            ("nemo-speech-asr 0.2.0+gen2-valid-mel-pool-cpu-v3", false),
         ]
         .into_iter()
         .enumerate()

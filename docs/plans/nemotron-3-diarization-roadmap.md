@@ -2,6 +2,14 @@
 
 Status: N0–N3 implemented and verified on macOS arm64 CPU; N4/N5 remain open. Development receipts do not establish a supported desktop release.
 
+The [bounded CPU public Rust protocol](../research/nemotron-bounded-public-runtime.md)
+now prepares exact-tag admission and the next M1 public/lifecycle qualification.
+Its native SDK already passes full 12/60-second C ABI parity and observed warm
+RTF below one. Public Rust execution under this identity remains pending; the
+new protocol requires actual local admission of both complete deliveries before
+the M1 run. Original quality, human-word, GUI/microphone and release gates remain
+open. Feature CI at `05c5ac15` completed successfully in all 13 jobs.
+
 Latest pooled CPU verification passes [30m/1h streams](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-long/collection-qualification.json),
 [mixed-model residency](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-mixed/collection-qualification.json)
 and [complete-app recording/live CLI](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-pnola-app-runtime/collection-qualification.json).
