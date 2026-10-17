@@ -1,0 +1,70 @@
+{
+  "schema_version": 1,
+  "source_commit": "5a9dcbd97bfc29ffe4e6b2113d3b13b24cb6f2be",
+  "host_prerequisites_passed": true,
+  "fresh_machine_qualified": false,
+  "release_qualified": false,
+  "actual_commands": 22,
+  "zero_status_commands": 22,
+  "actual_virtualization_support_query_passed": true,
+  "four_cpu_eight_gib_within_host_limits": true,
+  "one_entitlement_adhoc_hardened_helper_executed": true,
+  "blank_image_create_attach_mount_write_read_mode_passed": true,
+  "observed_store_container_volume_bridge_verified": true,
+  "os_mount_stat_and_exact_device_metadata_verified": true,
+  "write_control": {
+    "bytes": 52,
+    "sha256": "605b0c15bd995890ef08a9b388e496b8cca852184cdc804a96f056f8d0c4825d"
+  },
+  "mode": 384,
+  "mount_evidence": {
+    "is_mount": true,
+    "stat_device": 16777257,
+    "parent_stat_device": 16777233,
+    "device": "/dev/disk13s1",
+    "physical_store": "/dev/disk12s1",
+    "global_permissions_enabled": false
+  },
+  "exact_image_detached": true,
+  "storage_reserve_released": true,
+  "helper": {
+    "bytes": 86272,
+    "sha256": "fad65660177c7d66176277c303b5486af118a9afa8c89f5d988a8d10f86043b6"
+  },
+  "detached_blank_image": {
+    "bytes": 268435456,
+    "sha256": "e89f2ea9201c890c53744eb5661c76cfee6eff47cd340ffdf4dfa52d6172c3b6"
+  },
+  "current_historical_source_pins_verified": 16,
+  "external_descriptors_verified": 36,
+  "model_free_tests_passed": 289,
+  "new_helper_or_model_or_vm_or_image_calls_during_collection": 0,
+  "local_only_global_inventory_stdout": {
+    "after-image.stdout.log": {
+      "bytes": 7269,
+      "sha256": "38575c04a11a7fe42ce0bb5873ed5937acbb632f8d924f37bd7a85d577de40b7"
+    },
+    "attached-image.stdout.log": {
+      "bytes": 8722,
+      "sha256": "0a878a070eaa67ed94d69d0dfc7754d28984ce61fc6674d109ef8c5339a456b8"
+    },
+    "before-image.stdout.log": {
+      "bytes": 7269,
+      "sha256": "38575c04a11a7fe42ce0bb5873ed5937acbb632f8d924f37bd7a85d577de40b7"
+    },
+    "before-mount.stdout.log": {
+      "bytes": 8722,
+      "sha256": "0a878a070eaa67ed94d69d0dfc7754d28984ce61fc6674d109ef8c5339a456b8"
+    },
+    "cleanup-image.stdout.log": {
+      "bytes": 8850,
+      "sha256": "9dfec40ba07260f845214711ae19c1d89292111c03a0b150bd81f5d48c318450"
+    }
+  },
+  "limits": [
+    "Actual local host support query, one-entitlement new ad-hoc hardened artifact and task-owned blank APFS write/read/mode600/detach prerequisites only.",
+    "GlobalPermissionsEnabled is observed unchanged; blank user-created volume does not establish root-owned restored Data-volume permission.",
+    "No OS acquisition/restore, VM creation/boot, guest provisioning/SSH, complete app/model, GUI/microphone, fresh-machine, quality, platform or public-signing/release qualification.",
+    "All prior failed attempts remain failed. Global inventory, image/executable remain local by hash."
+  ]
+}

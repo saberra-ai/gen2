@@ -11,8 +11,9 @@ Remaining release work as of 2026-10-17:
   no human reference or passing N4 quality result is claimed.
 - Verify actual Pnola GUI, microphone, playback/IPC timing and fresh-machine
   operation. Same-host complete-app CLI evidence does not close these checks.
-  GitHub private-app transfer/authentication was skipped; a local VM route is
-  [researched only](../research/nemotron-local-vm-receiver.md).
+  GitHub private-app transfer/authentication was skipped. The local VM route
+  now passes [helper and blank-volume prerequisites](../research/nemotron-macos-vm-host-admission.md);
+  actual OS restore/guest boot/provisioning and fresh-guest app checks remain open.
   A separately reviewed [host prerequisite protocol](../research/nemotron-macos-vm-host-admission.md)
   now freezes a no-guest VZ helper build/API query and one task-owned blank APFS
   mount/write/detach control. All 286 model-free tests pass; actual invocation
@@ -31,6 +32,11 @@ Remaining release work as of 2026-10-17:
   passes the observed store/container/volume bridge and mount command, then
   fails before filesystem stat/write because diskutil omits an assumed
   `Mounted` key. Cleanup succeeds; write permission and VM gates remain open.
+  The [actual v4 result](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-host-prerequisites/collection-qualification.json)
+  now passes all 22 children, actual OS mount/device provenance, 52-byte
+  write/read/mode600 and exact-image detach/reserve release. This qualifies only
+  host and blank-user-volume prerequisites; restored Data-volume permission,
+  real VM/guest and fresh-machine complete-app gates remain open.
 - Finish each advertised platform/backend's performance, deployment and public
   signing/notarization requirements before promotion. Windows CPU functional
   evidence passes but its observed live RTF remains above one. Then merge and
@@ -145,6 +151,8 @@ image audits, all immutable inputs and storage/reserve checks pass. The
 controller was observed terminal before independent collection of all raw
 results. This closes same-host bounded complete-app CLI qualification; original
 quality/human/GUI/microphone/fresh-machine/platform/public-release gates stay open.
+The runtime preregistration at `74d19a3` also passes
+[all 13 feature CI jobs](https://github.com/saberra-ai/gen2/actions/runs/39012351278).
 
 Latest pooled CPU verification passes [30m/1h streams](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-long/collection-qualification.json),
 [mixed-model residency](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-mixed/collection-qualification.json)

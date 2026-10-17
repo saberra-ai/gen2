@@ -151,3 +151,29 @@ pass in 11.213 seconds. Earlier source/protocol/failure records remain unchanged
 All no-guest, signing, offline, own-image, storage, cleanup and deadline criteria
 remain required. Review and commit before actual v4 invocation; no v4 helper or
 image operation has run at preregistration.
+
+The [actual v4 prerequisite receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-host-prerequisites/collection-qualification.json)
+now passes at `5a9dcbd97bfc29ffe4e6b2113d3b13b24cb6f2be`. The controller was
+observed terminal with exit 0 before independent saved-data collection. All
+22 children return zero, including offline controls, helper build/signature/
+execution and exact-image create/attach/mount/detach. Actual OS mount evidence
+has distinct device IDs, and the exact APFS device/container/observed-store
+metadata agrees. The 52-byte dummy file passes fsync/read/mode600 checks; its
+payload also remains independently observable in the detached image bytes.
+`GlobalPermissionsEnabled=false` is recorded without an ownership override.
+
+The exact image and task mount are absent after detach; the physical reserve is
+released and all storage floors pass. The 72-member receipt binds 16 current/
+historical source files, 36 external records, actual commands/metadata, filtered
+owned-image observations, OS-stat/write results, collectors/preparation and the
+passing 289-test suite. The executable, 256-MiB blank image, module cache and
+unrelated global disk inventories remain local by hash. Collection executes no
+helper/compiler/signing/image/VM/model operation. All earlier attempts remain
+failed with their original evidence.
+
+This establishes the local helper and blank-volume prerequisites only. It does
+not establish permission to patch a restored root-owned Data volume, support for
+the pinned restore image, actual VM creation/boot, guest provisioning/SSH or
+fresh-guest complete-app operation. No OS restore body has been acquired and no
+guest or private app has run in this stage. Those checks, real GUI/microphone,
+quality/deferred human review, other platforms and public release remain open.
