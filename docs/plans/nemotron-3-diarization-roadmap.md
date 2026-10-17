@@ -99,6 +99,17 @@ subsequent package/offline/coexistence/desktop/release gates remain open.
 The final local producer suite passes517 tests with seven Windows-only skips.
 Fresh source-only preparation v5 completes eleven owned/reaped commands and
 admits all3,425 files/97 compiler inputs without invoking a compiler or model.
+The [first actual producer run](https://github.com/saberra-ai/gen2/actions/runs/39063343479)
+stopped at a fixture Git commit before SDK construction or model acquisition.
+The fixture now supplies its own author identity through the existing isolated
+Git helper. A regression with an empty host identity and `user.useConfigOnly`
+reproduces exit128 before the fix and passes afterward; no host Git setting
+changes. The execution protocol is regenerated for those test bytes, preserving
+all source, performance and lifecycle requirements. Actual SDK execution remains
+pending the repaired producer; the failed run is retained.
+The final repaired producer suite passes518 tests with seven Windows-only skips;
+source-only preparation v7 again admits3,425 files/97 compiler inputs through
+eleven zero-exit, reaped commands, with no compiler/SDK/model invocation.
 
 Remaining release work as of 2026-10-17:
 

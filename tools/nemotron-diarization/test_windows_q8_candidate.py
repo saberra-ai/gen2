@@ -3,7 +3,6 @@ import copy
 import hashlib
 import json
 from pathlib import Path, PureWindowsPath
-import subprocess
 import tempfile
 from types import SimpleNamespace
 import unittest
@@ -36,10 +35,10 @@ class Q8CandidateTest(unittest.TestCase):
             (source / 'patches/series').write_bytes((TOOLS / 'fixtures/q8-model-original-series.txt').read_bytes())
             for item in metrics.bounded_audit()['patch_series']:
                 (source / 'patches' / item['name']).write_text('controlled ' + item['name'] + '\n')
-            subprocess.run(['git', 'add', 'patches'], cwd=source, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
-            subprocess.run(['git', 'commit', '-q', '-m', 'controlled original patch series'], cwd=source,
-                           check=True, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE)
-            lock['runtime']['revision'] = subprocess.check_output(['git', 'rev-parse', 'HEAD'], cwd=source).decode().strip()
+            bounded_fixtures.git(source, 'add', 'patches')
+            bounded_fixtures.git(source, '-c', 'user.name=QualificationFixture', '-c',
+                'user.email=fixture@example.invalid', 'commit', '-qm', 'controlled original patch series')
+            lock['runtime']['revision'] = bounded_fixtures.git(source, 'rev-parse', 'HEAD').decode().strip()
             lock['runtime']['source_sha256']['patches/series'] = real_descriptor(source / 'patches/series')['sha256']
             output = root / 'evidence'; output.mkdir()
             install_q8_patch(source, output, 'mx4')

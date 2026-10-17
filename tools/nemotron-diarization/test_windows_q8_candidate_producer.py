@@ -1,6 +1,7 @@
 """Execution-order, failure preservation and source-freeze controls; no SDK/model."""
 import copy
 import json
+import os
 from pathlib import Path
 import subprocess
 import tempfile
@@ -14,6 +15,7 @@ from windows_q8_candidate import (Qualification, ORDER, LIFECYCLE, require_host,
 from windows_q8_candidate_producer_sources import derive_build
 from windows_q8_candidate_metrics import BOUNDED_RESULT, both_pairs_realtime
 from windows_q8_model_controls import verify_bindings
+import test_windows_q8_candidate as candidate_fixtures
 
 TOOLS = Path(__file__).resolve().parent
 REPO = TOOLS.parents[1]
@@ -65,6 +67,16 @@ class HistoryFixture:
 
 
 class Q8CandidateProducerTest(unittest.TestCase):
+    def test_candidate_source_fixture_does_not_need_host_git_identity(self):
+        with tempfile.TemporaryDirectory() as folder:
+            config = Path(folder) / 'empty-identity.gitconfig'
+            config.write_text('[user]\n    useConfigOnly = true\n')
+            environment = {name: value for name, value in os.environ.items()
+                           if not name.startswith(('GIT_AUTHOR_', 'GIT_COMMITTER_', 'GIT_CONFIG_'))}
+            environment.update(GIT_CONFIG_GLOBAL=str(config), GIT_CONFIG_NOSYSTEM='1')
+            with patch.dict(os.environ, environment, clear=True):
+                candidate_fixtures.Q8CandidateTest().test_composed_candidate_source_admits_only_bounded_inference_and_appended_patch()
+
     def test_build_is_exact_original_method_with_candidate_verifier(self):
         raw = (TOOLS / 'platform_bounded_windows_native.py').read_bytes()
         derived = derive_build(raw)
