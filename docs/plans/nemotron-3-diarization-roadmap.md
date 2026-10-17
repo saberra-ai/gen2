@@ -193,7 +193,13 @@ Remaining release work as of 2026-10-17:
   both controller failures and all 24 byte-identical per-shape output arrays;
   the planned 144-output control is not passed. A separate explicit-LLAMAFILE
   control must qualify both SGEMM stages before Windows SDK/model profiling.
-  All 444 local Python tests pass with seven Windows-only skips. Then merge and
+  All 444 local Python tests pass with seven Windows-only skips. The separate
+  [explicit-LLAMAFILE local control](../research/nemotron-matrix-path-sgemm-results.md)
+  now passes all twelve processes and 144 byte-identical per-shape outputs,
+  including both SGEMM stages and both fallback cases. Its complete 168 worker
+  records and 28 compiler/object inputs qualify the local observer control;
+  Windows SDK/model profiling and original performance gates remain open.
+  Then merge and
   push the completed feature to main; no main promotion is justified yet.
 
 The [bounded CPU public Rust protocol](../research/nemotron-bounded-public-runtime.md)

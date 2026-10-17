@@ -1,0 +1,67 @@
+{
+  "completed": true,
+  "scope": "Admit saved explicit-LLAMAFILE macOS observer controls; no native/compiler/model calls.",
+  "collector": {
+    "bytes": 10628,
+    "sha256": "6c3c7121e159761b9f0b9afe2eedcfeb8211ff7ca883b52959a08557059b825a"
+  },
+  "build_attempts": 1,
+  "prior_failed_control_remains_preserved": true,
+  "native_configure_build_and_dependency_commands": 12,
+  "native_graph_processes": 12,
+  "graph_evaluations": 144,
+  "profiled_graph_evaluations": 72,
+  "profiled_worker_matrix_records": 168,
+  "canonical_source_files": 3425,
+  "compiler_inputs": 28,
+  "raw_outputs": 144,
+  "raw_output_bytes_by_shape": [
+    8192,
+    8192,
+    256,
+    256
+  ],
+  "all_outputs_bit_exact_per_shape": true,
+  "instrumented_cpu_source": {
+    "bytes": 142477,
+    "sha256": "93551fb37e0ec9ced9c4f3f0adfe87c4d04a873aec8fb23338417296bbb3f8f2"
+  },
+  "compiler_and_runtime_binaries_retained_in_cache": true,
+  "sgemm_construction": {
+    "cache": {
+      "GGML_LLAMAFILE:BOOL": "ON",
+      "GGML_NATIVE:BOOL": "OFF",
+      "GGML_METAL:BOOL": "OFF",
+      "GGML_ACCELERATE:BOOL": "OFF",
+      "GGML_BLAS:BOOL": "OFF",
+      "GGML_OPENMP:BOOL": "OFF",
+      "GGML_BACKEND_DL:BOOL": "OFF",
+      "HAVE_DOTPROD:INTERNAL": "1",
+      "HAVE_SVE:INTERNAL": "",
+      "HAVE_MATMUL_INT8:INTERNAL": ""
+    },
+    "compiler_inputs": {
+      "ggml/src/ggml-cpu/ggml-cpu.c": {
+        "directory": "/Users/victor/.cache/gen2-nemotron3-n0/ggml-matrix-path-sgemm-control-local-v3/build/ggml-build/src",
+        "command": "/usr/bin/cc -DGGML_BACKEND_BUILD -DGGML_BACKEND_SHARED -DGGML_SCHED_MAX_COPIES=4 -DGGML_SHARED -DGGML_USE_CPU_REPACK -DGGML_USE_LLAMAFILE -D_DARWIN_C_SOURCE -D_XOPEN_SOURCE=600 -Dggml_cpu_EXPORTS -I/Users/victor/.cache/gen2-nemotron3-n0/ggml-matrix-path-sgemm-control-local-v3/source/ggml/src/.. -I/Users/victor/.cache/gen2-nemotron3-n0/ggml-matrix-path-sgemm-control-local-v3/source/ggml/src/. -I/Users/victor/.cache/gen2-nemotron3-n0/ggml-matrix-path-sgemm-control-local-v3/source/ggml/src/ggml-cpu -I/Users/victor/.cache/gen2-nemotron3-n0/ggml-matrix-path-sgemm-control-local-v3/source/ggml/src/../include -O3 -DNDEBUG -std=gnu11 -arch arm64 -fPIC -Wshadow -Wstrict-prototypes -Wpointer-arith -Wmissing-prototypes -Werror=implicit-int -Werror=implicit-function-declaration -Wall -Wextra -Wpedantic -Wcast-qual -Wno-unused-function -Wunreachable-code-break -Wunreachable-code-return -Wdouble-promotion -o CMakeFiles/ggml-cpu.dir/ggml-cpu/ggml-cpu.c.o -c /Users/victor/.cache/gen2-nemotron3-n0/ggml-matrix-path-sgemm-control-local-v3/source/ggml/src/ggml-cpu/ggml-cpu.c",
+        "file": "/Users/victor/.cache/gen2-nemotron3-n0/ggml-matrix-path-sgemm-control-local-v3/source/ggml/src/ggml-cpu/ggml-cpu.c",
+        "output": "ggml-build/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/ggml-cpu.c.o"
+      },
+      "ggml/src/ggml-cpu/llamafile/sgemm.cpp": {
+        "directory": "/Users/victor/.cache/gen2-nemotron3-n0/ggml-matrix-path-sgemm-control-local-v3/build/ggml-build/src",
+        "command": "/usr/bin/c++ -DGGML_BACKEND_BUILD -DGGML_BACKEND_SHARED -DGGML_SCHED_MAX_COPIES=4 -DGGML_SHARED -DGGML_USE_CPU_REPACK -DGGML_USE_LLAMAFILE -D_DARWIN_C_SOURCE -D_XOPEN_SOURCE=600 -Dggml_cpu_EXPORTS -I/Users/victor/.cache/gen2-nemotron3-n0/ggml-matrix-path-sgemm-control-local-v3/source/ggml/src/.. -I/Users/victor/.cache/gen2-nemotron3-n0/ggml-matrix-path-sgemm-control-local-v3/source/ggml/src/. -I/Users/victor/.cache/gen2-nemotron3-n0/ggml-matrix-path-sgemm-control-local-v3/source/ggml/src/ggml-cpu -I/Users/victor/.cache/gen2-nemotron3-n0/ggml-matrix-path-sgemm-control-local-v3/source/ggml/src/../include -O3 -DNDEBUG -std=gnu++17 -arch arm64 -fPIC -Wmissing-declarations -Wmissing-noreturn -Wall -Wextra -Wpedantic -Wcast-qual -Wno-unused-function -Wunreachable-code-break -Wunreachable-code-return -Wmissing-prototypes -Wextra-semi -o CMakeFiles/ggml-cpu.dir/ggml-cpu/llamafile/sgemm.cpp.o -c /Users/victor/.cache/gen2-nemotron3-n0/ggml-matrix-path-sgemm-control-local-v3/source/ggml/src/ggml-cpu/llamafile/sgemm.cpp",
+        "file": "/Users/victor/.cache/gen2-nemotron3-n0/ggml-matrix-path-sgemm-control-local-v3/source/ggml/src/ggml-cpu/llamafile/sgemm.cpp",
+        "output": "ggml-build/src/CMakeFiles/ggml-cpu.dir/ggml-cpu/llamafile/sgemm.cpp.o"
+      }
+    }
+  },
+  "probability_or_model_calls": 0,
+  "windows_or_model_qualified": false,
+  "production_qualified": false,
+  "limits": [
+    "Only macOS arm64 standalone GGML CPU graphs were executed.",
+    "LLAMAFILE explicitly enabled; the earlier disabled-build and object-admission failures remain separate historical evidence.",
+    "Worker wall regions overlap and include scheduling, internal waits and observer effects; no pure arithmetic or release performance claim.",
+    "Windows full-model paths, observer overhead, numerical parity and original quality/performance/package gates remain open."
+  ]
+}
