@@ -771,8 +771,19 @@ with the same private runtime. The old long-session acceptance criteria are
 checked verbatim at every command; output payload reads are denied to both
 helpers, with actual network/model/read-only controls before inference.
 All 227 tools tests pass. Review caught and corrected a missing field binding
-the seven completed public lifecycle prerequisites before execution. These
-streams remain unrun; M1 performance and all other release gates stay open.
+the seven completed public lifecycle prerequisites before execution. The
+30-minute pair now passes 62,824 retained rows and 753 turns bit-exact.
+The one-hour runs and final independent collection remain pending; M1
+performance and all other release gates stay open.
+
+`qualify_macos_pooled_mixed.py` prepares the two unchanged real-Laya CPU
+load-order tests with actual Bark and Metal chat. Its separate protocol binds
+the full current source/vendor set and original model/provider payloads before
+offline generic compilation. Three model-free regressions verify UTF-8 sandbox
+paths, the exact read-only mel-table build exception and rejection of ignored
+extra vendor sources. All 230 tools tests pass. Mixed model execution remains
+unrun; the tests' tiny-silence residency scope does not prove speech quality or
+simultaneous neural execution.
 
 `qualify_macos_portable_runtime.py` and `macos-portable-runtime-v2.protocol.json`
 freeze a separate fresh M1 receiver for the exact constructed artifacts. The

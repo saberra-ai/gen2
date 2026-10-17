@@ -1006,7 +1006,22 @@ probability/turn tolerance, bounded progressive revisions, peak RSS at most
 1 GiB and compute RTF strictly below 1. All 227 model-free tools tests pass.
 Pre-execution review caught a missing lifecycle-prerequisite field; the exact
 seven completed test names are now frozen before execution. The long streams
-remain unrun; no long-session or release gate is claimed from preparation.
+are executing: the 30-minute pair passes all retained 62,824 rows and 753 turns
+bit-exact, with public RTF 0.17721 and native/public RSS below 248 MB. The
+one-hour runs and independent final collection remain pending, so the four-run
+long-session gate is not yet complete.
+
+`macos-pooled-mixed.protocol.json` separately freezes the next two existing
+CPU load-order tests with actual Bark, full Laya and Metal chat. It binds 54
+tools, 312 repository inputs, 3,703 vendored source files and the original 27
+model/provider files. The current generic Rust helper must compile offline
+under model-read denial; only the pinned built-in mel coefficient table is
+readable. Three actual sandbox/real-Git regressions now pass: UTF-8 paths keep
+read-only/model/output boundaries, and an ignored extra C++ source is rejected
+even when ordinary Git status is clean. Review found the ignored-source gap;
+the failing and corrected checks are retained. All 230 tools tests pass. These
+two mixed cases remain unrun, and do not transfer the old Metal results or
+establish simultaneous inference, speech quality, GUI or release qualification.
 
 The 13-job feature matrix also passed at `4974318`. Later source `cf64214`
 passed12 jobs; its macOS mixed-feature job failed before compilation when GitHub
