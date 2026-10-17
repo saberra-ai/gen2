@@ -29,6 +29,12 @@ Investigate graph execution next without presuming a hot operator or compiler
 cause. The34-member collection supplies diagnostic evidence; no new runtime,
 public/lifecycle or package gate is qualified.
 
+The separate [compiler comparison](nemotron-windows-compiler-diagnostic.md) now
+preregisters fresh MSVC/clang-cl SDKs with identical admitted inference source,
+the same MSVC probe source/compiler and an MSVC/Clang/Clang/MSVC process sequence.
+Actual compiler/ABI/ISA/source admission precedes any model use; original full
+output and performance criteria remain unchanged. Actual execution is pending.
+
 The new [producer](../../tools/nemotron-diarization/platform_bounded_windows_native.py),
 [composed-source verifier](../../tools/nemotron-diarization/platform_bounded_sources.py)
 and [workflow](../../.github/workflows/diarization-bounded-windows-native.yml) use a

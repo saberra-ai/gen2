@@ -93,6 +93,11 @@ Remaining release work as of 2026-10-17:
   and34.15% drift between controls limits causal timing conclusions. Investigate
   graph execution without attributing a kernel/compiler cause yet; no package
   or release gate is closed by the34-member diagnostic receipt.
+  A separate [compiler comparison](../research/nemotron-windows-compiler-diagnostic.md)
+  now preregisters fresh MSVC/clang-cl SDKs from identical admitted inference
+  source and an MSVC/Clang/Clang/MSVC process sequence, preserving the portable
+  ISA, four-worker policy and complete-output limits. Actual execution remains
+  pending; compiler selection is a hypothesis, not a qualified optimization.
   Then merge and
   push the completed feature to main; no main promotion is justified yet.
 
