@@ -134,3 +134,20 @@ before `Path.is_mount()` or the dummy write. Cleanup detaches the exact image,
 confirms absence and releases the reserve. The 67-member receipt preserves all
 evidence and current/historical sources. Reported mount success is not a passed
 filesystem stat/write, root-owned Data-volume or VM/fresh-machine gate.
+
+The separate [v4 protocol](../../tools/nemotron-diarization/macos-vm-host-v4.protocol.json)
+binds that failed attempt and its actual mounted-info bytes, with 16 source and
+36 external descriptors. Before writing, the new controller requires actual
+`Path.is_mount()` and distinct mount/parent `st_dev`, plus exact reported device,
+mountpoint, filesystem, container and sole physical store. A writable volume is
+required. An absent undocumented `Mounted` key is not used as a mount signal; a
+present contradictory value still rejects. Record the actual
+`GlobalPermissionsEnabled` observation without changing it.
+
+The new regression accepts the observed plist shape only with the OS mount
+evidence, and rejects false/same-device mounts, wrong paths/devices/stores/
+containers, read-only volume and contradictory metadata. All 289 model-free tests
+pass in 11.213 seconds. Earlier source/protocol/failure records remain unchanged.
+All no-guest, signing, offline, own-image, storage, cleanup and deadline criteria
+remain required. Review and commit before actual v4 invocation; no v4 helper or
+image operation has run at preregistration.
