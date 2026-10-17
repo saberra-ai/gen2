@@ -1,0 +1,346 @@
+--- a/ggml/src/ggml-cpu/ggml-cpu.c
++++ b/ggml/src/ggml-cpu/ggml-cpu.c
+@@ -1252,6 +1252,38 @@
+     }
+ }
+ 
++
++// Diagnostic matrix-path state belongs only to the executing worker/graph.
++struct gen2_matrix_stage { int calls, ok, failed; int64_t us; };
++struct gen2_matrix_record {
++    int node, types[3], dot, route, converted;
++    const char * names[3];
++    int64_t ne[3][4];
++    uint64_t nb[3][4];
++    struct gen2_matrix_stage stage[2];
++    int64_t conversion_us, inner_wait_us, chunk_us, kernel_us;
++    uint64_t chunks;
++};
++static _Thread_local struct gen2_matrix_record * gen2_matrix_current;
++
++#if GGML_USE_LLAMAFILE
++static bool gen2_matrix_sgemm(int stage, const struct ggml_compute_params * params,
++        int64_t m, int64_t n, int64_t k, const void * a, int64_t lda,
++        const void * b, int64_t ldb, void * c, int64_t ldc, int at, int bt, int ct) {
++    struct gen2_matrix_record * record = gen2_matrix_current;
++    const int64_t start = record ? ggml_time_us() : 0;
++    const bool result = llamafile_sgemm(params, m, n, k, a, lda, b, ldb, c, ldc, at, bt, ct);
++    if (record) {
++        struct gen2_matrix_stage * value = &record->stage[stage];
++        value->calls++;
++        value->ok += result;
++        value->failed += !result;
++        value->us += ggml_time_us() - start;
++    }
++    return result;
++}
++#endif
++
+ void ggml_compute_forward_mul_mat(
+         const struct ggml_compute_params * params,
+               struct ggml_tensor * dst) {
+@@ -1261,6 +1293,7 @@
+ 
+     const int32_t hint = ggml_get_op_params_i32(dst, 1);
+     if (hint == GGML_HINT_SRC0_IS_HADAMARD && !params->use_ref) {
++        if (gen2_matrix_current) gen2_matrix_current->route = 1;
+         ggml_compute_forward_fwht(params, dst);
+         return;
+     }
+@@ -1271,6 +1304,7 @@
+     const int nth = params->nth;
+ 
+     enum ggml_type           const vec_dot_type         = type_traits_cpu[src0->type].vec_dot_type;
++    if (gen2_matrix_current) gen2_matrix_current->dot = vec_dot_type;
+     ggml_from_float_t        const from_float           = type_traits_cpu[vec_dot_type].from_float;
+     int64_t                  const vec_dot_num_rows     = type_traits_cpu[src0->type].nrows;
+ 
+@@ -1303,7 +1337,7 @@
+     if (src1_cont) {
+         for (int64_t i13 = 0; i13 < ne13; i13++)
+             for (int64_t i12 = 0; i12 < ne12; i12++)
+-                if (!llamafile_sgemm(params,
++                if (!gen2_matrix_sgemm(0, params,
+                                      ne01, ne11, ne00/ggml_blck_size(src0->type),
+                                      (const char *)src0->data + i12/r2*nb02 + i13/r3*nb03,
+                                      nb01/ggml_type_size(src0->type),
+@@ -1315,12 +1349,15 @@
+                                      src1->type,
+                                      dst->type))
+                     goto UseGgmlGemm1;
++        if (gen2_matrix_current) gen2_matrix_current->route = 2;
+         return;
+     }
+ UseGgmlGemm1:;
+ #endif
+ 
++    int64_t gen2_conversion_start = 0;
+     if (src1->type != vec_dot_type) {
++        if (gen2_matrix_current) { gen2_matrix_current->converted = 1; gen2_conversion_start = ggml_time_us(); }
+         char * wdata = params->wdata;
+ 
+         const size_t nbw0 = ggml_type_size(vec_dot_type);
+@@ -1365,16 +1402,21 @@
+     #endif
+     }
+ 
++    if (gen2_matrix_current && gen2_matrix_current->converted) gen2_matrix_current->conversion_us = ggml_time_us() - gen2_conversion_start;
++
+     if (ith == 0) {
+         // Every thread starts at ith, so the first unprocessed chunk is nth.  This save a bit of coordination right at the start.
+         atomic_store_explicit(&params->threadpool->current_chunk, nth, memory_order_relaxed);
+     }
+ 
++    const int64_t gen2_wait_start = gen2_matrix_current ? ggml_time_us() : 0;
+     ggml_barrier(params->threadpool);
++    if (gen2_matrix_current) gen2_matrix_current->inner_wait_us = ggml_time_us() - gen2_wait_start;
+ 
+     // IQ panel gemm (see iqp.h) - must come after the barrier above, it consumes the q8_K rows
+     // of src1 from the work buffer
+     if (ggml_cpu_iqp_supports_mul_mat(dst) && !params->use_ref) {
++        if (gen2_matrix_current) gen2_matrix_current->route = 3;
+         ggml_compute_forward_mul_mat_iqp(params, dst);
+         return;
+     }
+@@ -1386,7 +1428,7 @@
+ 
+         for (int64_t i13 = 0; i13 < ne13; i13++)
+             for (int64_t i12 = 0; i12 < ne12; i12++)
+-                if (!llamafile_sgemm(params,
++                if (!gen2_matrix_sgemm(1, params,
+                                      ne01, ne11, ne00/ggml_blck_size(src0->type),
+                                      (const char *)src0->data + i12/r2*nb02 + i13/r3*nb03,
+                                      nb01/ggml_type_size(src0->type),
+@@ -1398,10 +1440,13 @@
+                                      vec_dot_type,
+                                      dst->type))
+                     goto UseGgmlGemm2;
++        if (gen2_matrix_current) gen2_matrix_current->route = 4;
+         return;
+     }
+ UseGgmlGemm2:;
+ #endif
++
++    if (gen2_matrix_current) gen2_matrix_current->route = 5;
+ 
+     // This is the size of the first dimension of the result, so we can iterate that way. (see the ASSERT above, these are the same numbers)
+     const int64_t nr0 = ne0;
+@@ -1457,7 +1502,9 @@
+         if ((nr0 % 2 != 0) || (ne11 % 2 != 0) || ((ir0_end - ir0_start) % 2 != 0) || ((ir1_end - ir1_start) % 2 != 0)) {
+             num_rows_per_vec_dot = 1;
+         }
++        const int64_t gen2_chunk_start = gen2_matrix_current ? ggml_time_us() : 0;
+         ggml_compute_forward_mul_mat_one_chunk(params, dst, src0->type, num_rows_per_vec_dot, ir0_start, ir0_end, ir1_start, ir1_end);
++        if (gen2_matrix_current) { gen2_matrix_current->chunks++; gen2_matrix_current->chunk_us += ggml_time_us() - gen2_chunk_start; }
+ 
+         if (nth >= nchunk0 * nchunk1) {
+             break;
+@@ -1749,7 +1796,12 @@
+     }
+ 
+     // extra_buffer op?
+-    if (ggml_cpu_extra_compute_forward(params, tensor)) {
++    struct gen2_matrix_record * gen2_saved_matrix = gen2_matrix_current;
++    gen2_matrix_current = NULL;
++    const bool gen2_extra = ggml_cpu_extra_compute_forward(params, tensor);
++    gen2_matrix_current = gen2_saved_matrix;
++    if (gen2_extra) {
++        if (tensor->op == GGML_OP_MUL_MAT && gen2_matrix_current) gen2_matrix_current->route = 6;
+         return;
+     }
+ 
+@@ -3115,12 +3167,60 @@
+     return 0;
+ }
+ 
++// Diagnostic-only: do not change graph planning, fusion or barriers.
++struct gen2_cpu_op_timing {
++    int roots;
++    int fused;
++    int64_t kernel_us;
++    int64_t barrier_us;
++};
++
++static uint64_t gen2_cpu_profile_mix(uint64_t h, uint64_t value) {
++    return (h ^ value) * UINT64_C(1099511628211);
++}
++
++static uint64_t gen2_cpu_profile_topology(const struct ggml_cgraph * graph) {
++    uint64_t h = UINT64_C(14695981039346656037);
++    for (int i = 0; i < graph->n_nodes; ++i) {
++        const struct ggml_tensor * node = graph->nodes[i];
++        h = gen2_cpu_profile_mix(h, (uint64_t) node->op);
++        h = gen2_cpu_profile_mix(h, (uint64_t) node->type);
++        for (int d = 0; d < GGML_MAX_DIMS; ++d) {
++            h = gen2_cpu_profile_mix(h, (uint64_t) node->ne[d]);
++        }
++    }
++    return h;
++}
++
+ static thread_ret_t ggml_graph_compute_thread(void * data) {
+     struct ggml_compute_state * state = (struct ggml_compute_state *) data;
+     struct ggml_threadpool    * tp    = state->threadpool;
+ 
+     const struct ggml_cgraph * cgraph = tp->cgraph;
+     const struct ggml_cplan  * cplan  = tp->cplan;
++
++    const char * gen2_profile_env = getenv("GEN2_DIAR_MATRIX_PROFILE");
++    const bool gen2_profile = gen2_profile_env && strcmp(gen2_profile_env, "1") == 0;
++    struct gen2_cpu_op_timing gen2_ops[GGML_OP_COUNT];
++
++    struct gen2_matrix_record gen2_matrices[256];
++    int gen2_matrix_count = 0;
++    bool gen2_matrix_overflow = false;
++    gen2_matrix_current = NULL;
++    int gen2_roots = 0;
++    int gen2_fused = 0;
++    int gen2_skipped = 0;
++    int gen2_generation = 0;
++    const int gen2_nodes = cgraph->n_nodes;
++    int64_t gen2_started = 0;
++    uint64_t gen2_topology = 0;
++    uint64_t gen2_execution = UINT64_C(14695981039346656037);
++    if (gen2_profile) {
++        memset(gen2_ops, 0, sizeof(gen2_ops));
++        gen2_generation = atomic_load_explicit(&tp->n_graph, memory_order_relaxed);
++        gen2_started = ggml_time_us();
++        gen2_topology = gen2_cpu_profile_topology(cgraph);
++    }
+ 
+ #ifdef GGML_USE_CPU_RISCV64_SPACEMIT
+     ggml_backend_cpu_riscv64_spacemit_set_numa_thread_affinity(state->ith);
+@@ -3147,32 +3247,85 @@
+         struct ggml_tensor * node = cgraph->nodes[node_n];
+ 
+         if (ggml_op_is_empty(node->op)) {
++            if (gen2_profile) { gen2_skipped++; }
+             // skip NOPs
+             continue;
+         }
+ 
+         if ((node->flags & GGML_TENSOR_FLAG_COMPUTE) == 0) {
++            if (gen2_profile) { gen2_skipped++; }
+             continue;
+         }
+ 
++        const int gen2_root_index = node_n;
++
++        gen2_matrix_current = NULL;
++        if (gen2_profile && node->op == GGML_OP_MUL_MAT) {
++            if (gen2_matrix_count == 256) {
++                gen2_matrix_overflow = true;
++            } else {
++                struct gen2_matrix_record * value = &gen2_matrices[gen2_matrix_count++];
++                memset(value, 0, sizeof(*value));
++                value->node = gen2_root_index;
++                value->dot = -1;
++                const struct ggml_tensor * tensors[3] = { node->src[0], node->src[1], node };
++                for (int t = 0; t < 3; ++t) {
++                    value->types[t] = tensors[t]->type;
++                    value->names[t] = ggml_type_name(tensors[t]->type);
++                    for (int d = 0; d < 4; ++d) {
++                        value->ne[t][d] = tensors[t]->ne[d];
++                        value->nb[t][d] = tensors[t]->nb[d];
++                    }
++                }
++                gen2_matrix_current = value;
++            }
++        }
++        const int64_t gen2_before_kernel = gen2_profile ? ggml_time_us() : 0;
++
+         // TODO: move fused-op detection into ggml_graph_plan so fusion decisions are made once at planning time
+         // Try fused ops, fall back to normal compute
++        struct gen2_matrix_record * gen2_saved_matrix = gen2_matrix_current;
++        gen2_matrix_current = NULL;
+         const int n_fused = ggml_cpu_try_fuse_ops(cgraph, node_n, &params, cplan);
++        gen2_matrix_current = gen2_saved_matrix;
+         if (n_fused > 0) {
+             node_n += n_fused;
+         } else {
+             ggml_compute_forward(&params, node);
+         }
+ 
++
++        const int64_t gen2_after_kernel = gen2_profile ? ggml_time_us() : 0;
++
++        if (gen2_matrix_current) {
++            if (gen2_matrix_current->route == 0 && n_fused > 0) gen2_matrix_current->route = 7;
++            gen2_matrix_current->kernel_us = gen2_after_kernel - gen2_before_kernel;
++            gen2_matrix_current = NULL;
++        }
++        if (gen2_profile) {
++            gen2_ops[node->op].roots++;
++            gen2_ops[node->op].fused += n_fused;
++            gen2_ops[node->op].kernel_us += gen2_after_kernel - gen2_before_kernel;
++            gen2_roots++;
++            gen2_fused += n_fused;
++            gen2_execution = gen2_cpu_profile_mix(gen2_execution, (uint64_t) gen2_root_index);
++            gen2_execution = gen2_cpu_profile_mix(gen2_execution, (uint64_t) node->op);
++            gen2_execution = gen2_cpu_profile_mix(gen2_execution, (uint64_t) n_fused);
++        }
++
+         if (state->ith == 0 && cplan->abort_callback &&
+                 cplan->abort_callback(cplan->abort_callback_data)) {
+             atomic_store_explicit(&tp->abort, node_n + 1, memory_order_relaxed);
+             tp->ec    = GGML_STATUS_ABORTED;
+         }
+ 
++        const int64_t gen2_before_outer = gen2_profile ? ggml_time_us() : 0;
+         if (node_n + 1 < cgraph->n_nodes) {
+             ggml_barrier(state->threadpool);
+         }
++        if (gen2_profile) {
++            gen2_ops[node->op].barrier_us += ggml_time_us() - gen2_before_outer;
++        }
+     }
+ 
+ #ifdef GGML_USE_OPENMP
+@@ -3181,7 +3334,47 @@
+     GGML_PRINT_DEBUG("thread #%d compute-done cplan %p last-graph %d\n", state->ith, (const void *)cplan, state->last_graph);
+ #endif
+ 
++    const int64_t gen2_before_final = gen2_profile ? ggml_time_us() : 0;
+     ggml_barrier(state->threadpool);
++
++    if (gen2_profile) {
++        const int64_t gen2_finished = ggml_time_us();
++        fprintf(stderr, "[DEBUG-cpu-ops-v1] graph pool=%p generation=%d thread=%d threads=%d nodes=%d roots=%d fused=%d skipped=%d topology=%016" PRIx64 " execution=%016" PRIx64 " elapsed_us=%" PRId64 " final_wait_us=%" PRId64 "\n",
++                (void *) tp, gen2_generation, state->ith, params.nth, gen2_nodes,
++                gen2_roots, gen2_fused, gen2_skipped, gen2_topology, gen2_execution,
++                gen2_finished - gen2_started, gen2_finished - gen2_before_final);
++        for (int op = 0; op < GGML_OP_COUNT; ++op) {
++            const struct gen2_cpu_op_timing * value = &gen2_ops[op];
++            if (value->roots != 0) {
++                fprintf(stderr, "[DEBUG-cpu-ops-v1] op pool=%p generation=%d thread=%d id=%d name=%s roots=%d fused=%d kernel_us=%" PRId64 " barrier_us=%" PRId64 "\n",
++                        (void *) tp, gen2_generation, state->ith, op,
++                        ggml_op_name((enum ggml_op) op), value->roots, value->fused,
++                        value->kernel_us, value->barrier_us);
++            }
++        }
++    }
++
++
++    if (gen2_profile) {
++        if (gen2_matrix_overflow) fprintf(stderr, "[DEBUG-matrix-paths-v1] overflow\n");
++        for (int i = 0; i < gen2_matrix_count; ++i) {
++            const struct gen2_matrix_record * v = &gen2_matrices[i];
++            char shape[3][128], stride[3][128];
++            for (int t = 0; t < 3; ++t) {
++                snprintf(shape[t], sizeof(shape[t]), "%" PRId64 ",%" PRId64 ",%" PRId64 ",%" PRId64,
++                         v->ne[t][0], v->ne[t][1], v->ne[t][2], v->ne[t][3]);
++                snprintf(stride[t], sizeof(stride[t]), "%" PRIu64 ",%" PRIu64 ",%" PRIu64 ",%" PRIu64,
++                         v->nb[t][0], v->nb[t][1], v->nb[t][2], v->nb[t][3]);
++            }
++            fprintf(stderr, "[DEBUG-matrix-paths-v1] matrix pool=%p generation=%d thread=%d node=%d types=%d,%d,%d names=%s,%s,%s a=%s b=%s c=%s sa=%s sb=%s sc=%s dot=%d route=%d first=%d,%d,%d,%" PRId64 " second=%d,%d,%d,%" PRId64 " conversion=%d,%" PRId64 " inner_wait_us=%" PRId64 " chunks=%" PRIu64 ",%" PRId64 " kernel_us=%" PRId64 "\n",
++                    (void *) tp, gen2_generation, state->ith, v->node,
++                    v->types[0], v->types[1], v->types[2], v->names[0], v->names[1], v->names[2],
++                    shape[0], shape[1], shape[2], stride[0], stride[1], stride[2], v->dot, v->route,
++                    v->stage[0].calls, v->stage[0].ok, v->stage[0].failed, v->stage[0].us,
++                    v->stage[1].calls, v->stage[1].ok, v->stage[1].failed, v->stage[1].us,
++                    v->converted, v->conversion_us, v->inner_wait_us, v->chunks, v->chunk_us, v->kernel_us);
++        }
++    }
+ 
+ #ifdef GGML_USE_CPU_RISCV64_SPACEMIT
+     ggml_backend_cpu_riscv64_spacemit_clear_numa_thread_affinity_threaded(state->ith);

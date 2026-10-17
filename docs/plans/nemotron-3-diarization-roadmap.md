@@ -205,8 +205,15 @@ Remaining release work as of 2026-10-17:
   coverage. Compact saved profiles retain all records once beside raw traces.
   All 458 Python tests pass with seven Windows-only skips; the source-only
   eleven-command replay matches all 3,425 canonical files with only the declared
-  CPU observer change. Actual Windows compilation/model observations remain
-  pending; no optimization or release gate is qualified by this implementation.
+  CPU observer change. The [actual Windows result](../research/nemotron-windows-matrix-results.md)
+  now passes all59 command cleanups,144 per-shape identical graph-control vectors
+  and four byte-exact full model histories. Both enabled traces cover all43,344
+  worker matrix roots and matching signatures. Converted Q8 SGEMM accounts for
+  10,584 of10,836 roots per worker. Control drift passes, but the observer overhead
+  bound fails; preserve both enabled cases and reduce measurement perturbation
+  before treating timings as validated costs. Native off controls are below one
+  on this EPYC9V74 host, which differs from earlier EPYC7763 receivers. No code
+  speedup, production/public/package or release qualification is established.
   Then merge and
   push the completed feature to main; no main promotion is justified yet.
 
