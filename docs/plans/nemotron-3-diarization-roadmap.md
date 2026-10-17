@@ -980,8 +980,14 @@ to the admitted construction and successful M1 native reference. It requires
 one complete 60s/6000-row public stream and seven unchanged lifecycle tests,
 including 100 actual reloads. All 224 model-free tools tests pass, with actual
 standalone/lifecycle/premodel sandbox boundaries and exact candidate identity
-checks. First execution remains pending; long/mixed/quality/app/release gates
-remain separate.
+checks. The [actual M4 public runtime receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-public/collection-qualification.json)
+now passes all 20 commands with expected rejection statuses, full 6000-row and
+27-turn bit-exact parity, and all seven lifecycle tests including 100 reloads.
+Nine full 92-library audits and two no-runtime audits pass. The public stream
+records warm RTF 0.12841, external 7.82s and peak RSS 224,706,560 bytes; the
+100-reload process peaks at 199,442,432 bytes. These are descriptive M4 results,
+not a matched speedup or uncontended performance gate. The fresh M1 public job
+remains pending; long/mixed/quality/app/release gates remain separate.
 
 The 13-job feature matrix also passed at `4974318`. Later source `cf64214`
 passed12 jobs; its macOS mixed-feature job failed before compilation when GitHub

@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "source_commit": "f72176c51f39b595b8ac9ea243a46a9390c24f13",
+  "pooled_public_runtime_passed": true,
+  "historical_source_pins_verified": 309,
+  "public_frames_compared": 6000,
+  "public_probabilities_compared": 48000,
+  "public_and_native_probabilities_bit_exact": true,
+  "turns_compared": 27,
+  "maximum_turn_error_seconds": 0.0,
+  "seven_real_lifecycle_tests_passed": [
+    "dropping_a_diarization_child_keeps_the_parent_pipeline_active",
+    "silence_short_tail_and_idle_deadline_have_explicit_terminal_results",
+    "repeated_reload_full_queue_cancel_and_dropped_stream_release_resources",
+    "streamed_uneven_pcm_matches_recording_and_finish_is_idempotent",
+    "native_admission_cancellation_and_failed_load_release_reservations",
+    "verified_provisioned_cache_is_reused_offline",
+    "real_diarizer_matches_native_reference_and_resets_recordings"
+  ],
+  "actual_model_reloads_in_existing_lifecycle_test": 100,
+  "strict_private_library_audits": {
+    "full92": 9,
+    "no_private_runtime": 2
+  },
+  "helper_archive_payloads_independently_restored_and_rehashed": true,
+  "sdk_package_helper_inventories_unchanged": true,
+  "release_qualified": false,
+  "limits": [
+    "Actual M4 CPU execution of the current Rust consumer with the immutable M1-built candidate. Native60s reference is reused from a separately successful M1 C ABI delivery; no redundant native neural run.",
+    "Exactly20commands with expected failure statuses retained for missing-private-library and CPU-Metal rejection. Eight inference-admitted commands include the CPU-Metal rejection; no exact neural-forward count is claimed.",
+    "All7unchanged lifecycle tests run once, including100reloads, queue/cancellation/drop, short-tail/idle, unevenPCM/reset/admission and offline cache. No inference retry.",
+    "Timing/RSS are descriptive and not matched speedup or uncontended live qualification. M1sharedVM native RTFacross1remainsfailed.",
+    "No new long-session/Metal/other-platform/mixed/quality/word-attribution/app/GUI/physicalmicrophone/freshcompleteapp/signing/notary/release gate. No default profile promotion. Opaque helper binaries remain outsideGit with exact archive/member descriptors."
+  ]
+}

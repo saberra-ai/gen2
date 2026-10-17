@@ -750,8 +750,14 @@ CPU identity before reusing the unchanged valid-Mel mathematical checks on
 copies. All 224 local tools tests pass, including actual sandbox checks proving
 standalone inference cannot read native/assertion/prior-result payloads while
 lifecycle assertions can read only their frozen copies. The workflow is
-`diarization-macos-pooled-public.yml`; first execution remains pending. No
-long-session, mixed-model, quality, app or release gate is promoted.
+`diarization-macos-pooled-public.yml`. The [first M4 public runtime receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-public/collection-qualification.json)
+passes all 20 commands with expected rejection statuses, full 6000-row/27-turn
+bit-exact public/native parity and all seven lifecycle tests including 100
+reloads. Nine full 92-library audits and two no-runtime audits pass. Public
+warm RTF 0.12841 and 7.82s whole-process time are descriptive M4 observations;
+the native reference came from a different M1 host. The fresh M1 public run
+remains pending. No long-session, mixed-model, quality, app or release gate is
+promoted.
 
 `qualify_macos_portable_runtime.py` and `macos-portable-runtime-v2.protocol.json`
 freeze a separate fresh M1 receiver for the exact constructed artifacts. The
