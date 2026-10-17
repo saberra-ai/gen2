@@ -1,0 +1,25 @@
+test_promisor_repository_cannot_fetch_missing_payloads_during_admission (test_frozen_git_sources.FrozenGitSourceTests.test_promisor_repository_cannot_fetch_missing_payloads_during_admission) ... FAIL
+test_recorded_bytes_survive_checkout_changes_but_other_revisions_cannot_replace_them (test_frozen_git_sources.FrozenGitSourceTests.test_recorded_bytes_survive_checkout_changes_but_other_revisions_cannot_replace_them) ... FAIL
+
+======================================================================
+FAIL: test_promisor_repository_cannot_fetch_missing_payloads_during_admission (test_frozen_git_sources.FrozenGitSourceTests.test_promisor_repository_cannot_fetch_missing_payloads_during_admission)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/test_frozen_git_sources.py", line 61, in test_promisor_repository_cannot_fetch_missing_payloads_during_admission
+    with self.assertRaisesRegex(ValueError, 'size/type differs'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_recorded_bytes_survive_checkout_changes_but_other_revisions_cannot_replace_them (test_frozen_git_sources.FrozenGitSourceTests.test_recorded_bytes_survive_checkout_changes_but_other_revisions_cannot_replace_them)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/test_frozen_git_sources.py", line 39, in test_recorded_bytes_survive_checkout_changes_but_other_revisions_cannot_replace_them
+    with self.assertRaisesRegex(ValueError, 'bytes differ'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.485s
+
+FAILED (failures=2)

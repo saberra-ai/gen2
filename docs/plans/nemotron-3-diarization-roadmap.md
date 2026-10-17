@@ -939,18 +939,41 @@ on fresh M1 at `eeae443`, with the delivered helper and 92 private libraries
 independently rehashed. The M4 SDK build passes but its first immediate thread
 snapshot guard fails; that result is retained. A bounded-settling observation
 correction passes 101 later attempts against the unchanged SDK, and fault
-injection verifies failure-history preservation. No candidate model inference
-or Rust admission has executed. See the [candidate construction notes](../research/nemotron-macos-fresh-machine.md).
+injection verifies failure-history preservation. These construction/control
+runs execute no candidate model inference or Rust admission. See the
+[candidate construction notes](../research/nemotron-macos-fresh-machine.md).
 
-The first candidate public C ABI audio check is now prepared in
+The first candidate public C ABI audio check is frozen in
 `macos-pooled-native.protocol.json`: exactly two fresh 12s/60s CPU calls,
 complete probability histories and raw turns against the immutable qualified
 old-profile references. It preserves the frozen native helper and derives only
 its exact expected-version literal. All 216 local model-free tests pass,
 including an actual macOS sandbox check that permits output metadata/writes
 but denies prior output payload reads. The initial `/var` alias failure and
-canonical-path correction are retained. Real-audio execution remains pending;
-this protocol does not admit the candidate into Rust or close release gates.
+canonical-path correction are retained. The first [actual M4 audio receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-native/collection-qualification.json)
+now passes both cases: all 57,600 probabilities are bit-exact and all 32 raw
+turns exact, with three strict 92-library audits. An initial local metadata
+input mistake failed during artifact admission with zero native/neural commands;
+that result is retained separately from the unchanged protocol's successful run.
+Warm RTF 0.04465/0.12847 is descriptive, not a matched speedup or supported-live
+claim. Public Rust inference and lifecycle,
+long/mixed/quality/app/release gates remain open. The separate [fresh M1 audio receipt](../../benches/results/nemotron-diarization/macos-arm64/2026-10-16-pooled-native/collection-qualification.json)
+also passes both full histories and raw turns exactly. Shared-VM warm RTF
+1.86610/2.01168 remains above 1. The [Rust admission regression](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-rust-admission/qualification.json)
+passes exact old/pool-v1 acceptance and suffix/future-version rejection before
+model symbols, 1,041 model-free Rust tests, fmt and warning-denied clippy.
+The 13 ignored real-model/platform tests remain ignored in those commands;
+public Rust model/lifecycle qualification is the next separate step.
+Changing the current FFI exposed an old SDK validator comparing historical
+producer pins with the later checkout. It now verifies all original pinned
+Git blobs and the protocol at the recorded producer commit, with local-only
+lookups and replacement objects disabled. The actual Linux/Windows valid-Mel
+receipts still admit at their original `8fbef3e` source. All 218 local tools
+tests pass, including real promisor-clone and replacement-ref regressions;
+the initial six failing checks and both hardening failures are retained.
+New platform consumer qualification must fetch its actual producer revision
+before offline admission and retain its own current-source freeze. No old
+protocol, receipt, quality threshold or platform-release result is relabelled.
 
 The 13-job feature matrix also passed at `4974318`. Later source `cf64214`
 passed12 jobs; its macOS mixed-feature job failed before compilation when GitHub

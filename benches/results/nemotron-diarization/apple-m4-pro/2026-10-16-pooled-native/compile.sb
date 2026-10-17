@@ -1,0 +1,6 @@
+(version 1)
+(allow default)
+(deny network*)
+(deny file-read* (subpath "/Users/victor/.cache/gen2-nemotron3-n0/pooled-native-local-v2/work/assets") (subpath "/Users/victor/.cache/gen2-nemotron3-n0/pooled-native-local-v2/construction") (subpath "/Users/victor/.cache/gen2-nemotron3-n0/pooled-native-local-v2/short_reference") (subpath "/Users/victor/.cache/gen2-nemotron3-n0/pooled-native-local-v2/long_reference"))
+(deny file-write* (subpath "/Users/victor/workspace/gen2-nemotron3-n0") (subpath "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1") (subpath "/Users/victor/.cache/gen2-nemotron3-n0/pooled-native-local-v2/sdk") (subpath "/Users/victor/.cache/gen2-nemotron3-n0/pooled-native-local-v2/work/nemo") (subpath "/Users/victor/.cache/gen2-nemotron3-n0/pooled-native-local-v2/helper-source"))
+(deny file-read* (regex #".*\.(nemo|gguf|safetensors|onnx|npy|f32)$"))

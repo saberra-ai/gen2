@@ -6,6 +6,7 @@ import re
 import shutil
 
 from build_valid_mel_candidate import descriptor
+from frozen_git_sources import verify_git_sources
 from runtime_profiles import load_profile, validate_provenance
 
 
@@ -23,10 +24,12 @@ def validate_native_receipt(build):
             or build.get('completed_lifecycle_tests') != protocol['required_lifecycle_tests']
             or not re.fullmatch('[0-9a-f]{40}', build.get('source_commit', ''))):
         raise ValueError('completed tagged platform SDK qualification required')
-    for key, root in [('tools', tools), ('repository_files', tools.parents[1])]:
-        for name, expected in protocol[key].items():
-            if descriptor(root / name) != expected:
-                raise ValueError('SDK consumer source differs from frozen input: ' + name)
+    # A historical SDK is bound to its producer's source, independently of
+    # later consumer changes in this checkout. Keep every original byte pin.
+    pins = {'tools/nemotron-diarization/' + name: value for name, value in protocol['tools'].items()}
+    pins.update(protocol['repository_files'])
+    pins['tools/nemotron-diarization/valid-mel-platform-native.protocol.json'] = descriptor(protocol_path)
+    verify_git_sources(tools.parents[1], build['source_commit'], pins)
     commands = build.get('commands', [])
     required = {'sdk-build', 'sdk-install', 'model-free-state-test', 'version-only',
                 'native-inference', 'public-inference', 'native-lifecycle-list'} | {

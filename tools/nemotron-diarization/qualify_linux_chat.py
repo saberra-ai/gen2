@@ -138,7 +138,7 @@ class Qualification(CommandRunner):
                   'native_probabilities_sha256': digest(self.output / 'independent-native.f32'),
                   'tools': {name: digest(self.tools / name) for name in ['qualify_linux_chat.py', 'linux_chat_audit.py',
                             'qualify_linux_package.py', 'evidence_commands.py', 'package_linux.py', 'sdk_archive.py',
-                            'compare_stream_valid_mel.py', 'platform_valid_mel_native.py', 'platform_valid_mel_sources.py', 'platform_native.py', 'platform_sdk_receipt.py', 'runtime_profiles.py', 'build_valid_mel_candidate.py', 'qualification_storage.py', 'runtime-valid-mel.lock.json', 'runtime.lock.json', 'valid-mel-platform-native.protocol.json', 'linux-chat.lock.json']},
+                            'compare_stream_valid_mel.py', 'platform_valid_mel_native.py', 'platform_valid_mel_sources.py', 'platform_native.py', 'platform_sdk_receipt.py', 'frozen_git_sources.py', 'runtime_profiles.py', 'build_valid_mel_candidate.py', 'qualification_storage.py', 'runtime-valid-mel.lock.json', 'runtime.lock.json', 'valid-mel-platform-native.protocol.json', 'linux-chat.lock.json']},
                   'example_sha256': digest(self.repo / 'examples/nemotron_chat_coexistence.rs')}
         (self.output / 'frozen-inputs.json').write_text(json.dumps(inputs, indent=2) + '\n')
         self.receipt.update(source_commit=current, frozen_inputs_sha256=digest(self.output / 'frozen-inputs.json'),

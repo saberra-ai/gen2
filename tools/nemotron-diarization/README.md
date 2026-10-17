@@ -725,7 +725,22 @@ The result sandbox permits metadata and writes but denies reading prior output
 payloads. Timing is descriptive because the historical reference is not a
 matched performance trial. Rust admission, lifecycle/long-session, quality,
 app and release qualification remain separate. The workflow is
-`diarization-macos-pooled-native.yml`; no first execution is claimed yet.
+`diarization-macos-pooled-native.yml`. The [first M4 execution](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-native/collection-qualification.json)
+passes both full histories bit-exact and all raw turns exact. The initial
+metadata-input failure is retained with zero native/neural commands. This is
+public C ABI qualification; public Rust and lifecycle checks remain separate.
+
+Historical Linux/Windows SDK admission verifies every original source pin and
+the native protocol at the receipt's recorded producer commit. It reads Git
+objects locally, with lazy fetching and replacement objects disabled; it does
+not compare producer bytes with a later consumer checkout. Fetch that exact
+`source_commit` before offline admission (`git fetch --no-tags --depth=1 origin
+<source_commit>`). Admitting historical SDK metadata does not qualify a newly
+compiled Rust consumer. Its source freeze, parity and lifecycle checks remain
+separate. The feature-test fixture fetches `618d796`; the next freshly frozen
+Linux construction/runtime and Windows runtime consumer stages must fetch
+their actual producer `8fbef3e8a46a034b8e0ffa8f096409db683a923e` as well.
+Existing historical workflows/protocols and receipts remain unchanged.
 
 `qualify_macos_portable_runtime.py` and `macos-portable-runtime-v2.protocol.json`
 freeze a separate fresh M1 receiver for the exact constructed artifacts. The

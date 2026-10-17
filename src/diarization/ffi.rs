@@ -8,6 +8,7 @@ use std::{
 
 /// Semantic compatibility guard; host package qualification still binds the closure.
 const RUNTIME_VERSION: &str = "nemo-speech-asr 0.2.0+gen2-valid-mel-v1";
+const POOLED_RUNTIME_VERSION: &str = "nemo-speech-asr 0.2.0+gen2-valid-mel-pool-v1";
 
 #[repr(C)]
 pub(super) struct ModelConfig {
@@ -104,9 +105,9 @@ impl Api {
                 .map_err(|e| bad(e.to_string()))?
                 .to_owned();
             // The upstream ABI version alone cannot identify final-frame semantics.
-            if version != RUNTIME_VERSION {
+            if ![RUNTIME_VERSION, POOLED_RUNTIME_VERSION].contains(&version.as_str()) {
                 return Err(bad(format!(
-                    "unqualified NeMo runtime version: {version}; expected {RUNTIME_VERSION}"
+                    "unqualified NeMo runtime version: {version}; expected {RUNTIME_VERSION} or {POOLED_RUNTIME_VERSION}"
                 )));
             }
             Ok(Self {
@@ -255,12 +256,15 @@ mod tests {
     #[test]
     fn runtime_profile_is_checked_before_model_symbols() {
         let directory = tempfile::tempdir().unwrap();
-        for (index, version) in [
-            "nemo-speech-asr 0.2.0",
-            "nemo-speech-asr 0.2.0+nightly.083861",
-            "nemo-speech-asr 0.2.0+gen2-valid-mel-v1.extra",
-            "nemo-speech-asr 0.3.0+gen2-valid-mel-v1",
-            RUNTIME_VERSION,
+        for (index, (version, admitted)) in [
+            ("nemo-speech-asr 0.2.0", false),
+            ("nemo-speech-asr 0.2.0+nightly.083861", false),
+            ("nemo-speech-asr 0.2.0+gen2-valid-mel-v1.extra", false),
+            ("nemo-speech-asr 0.3.0+gen2-valid-mel-v1", false),
+            (RUNTIME_VERSION, true),
+            ("nemo-speech-asr 0.2.0+gen2-valid-mel-pool-v1", true),
+            ("nemo-speech-asr 0.2.0+gen2-valid-mel-pool-v1.extra", false),
+            ("nemo-speech-asr 0.2.0+gen2-valid-mel-pool-v2", false),
         ]
         .into_iter()
         .enumerate()
@@ -293,7 +297,7 @@ mod tests {
             let Err(DiarizationError::BackendUnavailable(message)) = Api::load(&library) else {
                 panic!("version-only fixture must not load a complete native API");
             };
-            if version == RUNTIME_VERSION {
+            if admitted {
                 assert!(
                     message.contains("missing native symbol nemo_speech_diar_create"),
                     "{message}"

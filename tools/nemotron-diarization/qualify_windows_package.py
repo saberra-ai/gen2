@@ -126,7 +126,7 @@ class Qualification(Smoke):
                   'tools': {name: digest(self.tools / name) for name in ['qualify_windows_package.py', 'windows_package_commands.ps1',
                     'windows_runtime_audit.py', 'windows_smoke_controls.ps1', 'windows_container_smoke.py',
                     'windows_archive.py', 'package_windows.py', 'windows_pe.py', 'windows_naming.py',
-                    'runtime.lock.json', 'windows-container.lock.json', 'evidence_commands.py', 'compare_stream_valid_mel.py', 'platform_valid_mel_native.py', 'platform_valid_mel_sources.py', 'platform_native.py', 'platform_sdk_receipt.py', 'runtime_profiles.py', 'build_valid_mel_candidate.py', 'qualification_storage.py', 'runtime-valid-mel.lock.json', 'valid-mel-platform-native.protocol.json', 'qualify_linux_package.py']}}
+                    'runtime.lock.json', 'windows-container.lock.json', 'evidence_commands.py', 'compare_stream_valid_mel.py', 'platform_valid_mel_native.py', 'platform_valid_mel_sources.py', 'platform_native.py', 'platform_sdk_receipt.py', 'frozen_git_sources.py', 'runtime_profiles.py', 'build_valid_mel_candidate.py', 'qualification_storage.py', 'runtime-valid-mel.lock.json', 'valid-mel-platform-native.protocol.json', 'qualify_linux_package.py']}}
         if self.central_crt is not None:
             frozen['central_setup'] = {'receipt_sha256': digest(self.args.central_setup / 'receipt.json'),
                 'frozen_inputs_sha256': digest(self.args.central_setup / 'frozen-inputs.json'),

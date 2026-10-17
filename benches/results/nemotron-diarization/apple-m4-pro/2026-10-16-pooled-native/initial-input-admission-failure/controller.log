@@ -1,0 +1,13 @@
+Traceback (most recent call last):
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/qualify_pooled_native.py", line 301, in <module>
+    main()
+    ~~~~^^
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/qualify_pooled_native.py", line 158, in main
+    r['deliveries'][name] = admit_delivery(getattr(args, name + '_zip'),
+                            ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        getattr(args, name + '_metadata'), p[name], output / name)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/macos_portable_delivery.py", line 19, in admit_delivery
+    if (api['id'] != expected['id'] or api['name'] != expected['name']
+        ~~~^^^^^^
+KeyError: 'id'

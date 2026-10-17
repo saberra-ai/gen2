@@ -204,7 +204,7 @@ class Qualification(CommandRunner):
                   'native_receipt_sha256': digest(native / 'receipt.json'), 'archive': build['archive'],
                   'package_manifest_sha256': build['package_manifest_sha256'], 'image': image[0],
                   'helpers': helpers, 'inputs': inventory(self.work),
-                  'tools': {name: digest(self.tools / name) for name in ['qualify_linux_package.py', 'package_linux.py', 'sdk_archive.py', 'compare_stream_valid_mel.py', 'platform_valid_mel_native.py', 'platform_valid_mel_sources.py', 'platform_native.py', 'platform_sdk_receipt.py', 'runtime_profiles.py', 'build_valid_mel_candidate.py', 'qualification_storage.py', 'runtime-valid-mel.lock.json', 'runtime.lock.json', 'valid-mel-platform-native.protocol.json', 'evidence_commands.py']},
+                  'tools': {name: digest(self.tools / name) for name in ['qualify_linux_package.py', 'package_linux.py', 'sdk_archive.py', 'compare_stream_valid_mel.py', 'platform_valid_mel_native.py', 'platform_valid_mel_sources.py', 'platform_native.py', 'platform_sdk_receipt.py', 'frozen_git_sources.py', 'runtime_profiles.py', 'build_valid_mel_candidate.py', 'qualification_storage.py', 'runtime-valid-mel.lock.json', 'runtime.lock.json', 'valid-mel-platform-native.protocol.json', 'evidence_commands.py']},
                   'geometry': {'chunk': 9, 'right': 4, 'left': 0, 'fifo': 264, 'cache': 264, 'update': 222},
                   'negative_control': 'Remove private ggml-base; mount that copy at the identical runtime path so helper RPATH cannot see the good package.'}
         (self.output / 'frozen-inputs.json').write_text(json.dumps(inputs, indent=2) + '\n')

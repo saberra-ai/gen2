@@ -24,7 +24,8 @@ class PlatformSdkReceiptTests(unittest.TestCase):
                 'protocol_sha256': descriptor(tools / 'valid-mel-platform-native.protocol.json')['sha256'],
                 'model_free_state_test_completed': True,
                 'completed_lifecycle_tests': protocol['required_lifecycle_tests'],
-                'source_commit': '1' * 40, 'commands': [{'name': n, 'returncode': 0} for n in phases],
+                'source_commit': '618d7969b112d1e923e15db19fe81eb2c0b892f4',
+                'commands': [{'name': n, 'returncode': 0} for n in phases],
                 'compiler_audit': {'bytes': 2, 'sha256': '0' * 64}}
 
     def test_historical_or_partial_runtime_cannot_be_relabelled_as_current(self):
@@ -33,7 +34,8 @@ class PlatformSdkReceiptTests(unittest.TestCase):
         for delta in [{'schema_version': 1}, {'actual_reported_version': 'nemo-speech-asr 0.2.0'},
                       {'lock_sha256': '0' * 64}, {'protocol_sha256': '0' * 64},
                       {'model_free_state_test_completed': False}, {'completed_lifecycle_tests': []},
-                      {'source_commit': ''}, {'development_native_gates_passed': False}]:
+                      {'source_commit': ''}, {'source_commit': '0' * 40},
+                      {'development_native_gates_passed': False}]:
             with self.subTest(delta=delta), self.assertRaises(ValueError):
                 validate_native_receipt({**fixture, **delta})
 

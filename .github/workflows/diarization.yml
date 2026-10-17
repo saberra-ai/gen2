@@ -32,6 +32,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Fetch frozen SDK producer source for offline historical admission tests
+        run: git fetch --no-tags --depth=1 origin 618d7969b112d1e923e15db19fe81eb2c0b892f4
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'

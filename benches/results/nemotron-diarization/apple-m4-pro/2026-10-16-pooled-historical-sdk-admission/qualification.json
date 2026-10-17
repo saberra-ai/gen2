@@ -1,0 +1,56 @@
+{
+  "schema_version": 1,
+  "base_commit": "618d7969b112d1e923e15db19fe81eb2c0b892f4",
+  "implementation_sources": {
+    "tools/nemotron-diarization/frozen_git_sources.py": {
+      "bytes": 2468,
+      "sha256": "ceb594332b9112fb75b708dff53628630443b52d600d470ccb0e44b777a14bc5"
+    },
+    "tools/nemotron-diarization/test_frozen_git_sources.py": {
+      "bytes": 3261,
+      "sha256": "4c45d5e182a445087de0458ea093ab95b9932c6594ac435351eeb5ad5251ae30"
+    },
+    "tools/nemotron-diarization/platform_sdk_receipt.py": {
+      "bytes": 4365,
+      "sha256": "ebf8dcedaf41cebad0f3cc28769c75c083f7c597ac75a3eec6beebe995e1b3d6"
+    },
+    "tools/nemotron-diarization/test_platform_sdk_receipt.py": {
+      "bytes": 4376,
+      "sha256": "be7f433fa84d755dce0b16549a0af6600e4fe35d22ad5287e35681178351519e"
+    },
+    "tools/nemotron-diarization/qualify_linux_chat.py": {
+      "bytes": 14573,
+      "sha256": "dee198d1f1f06a205549b25e046f5b1c861415514e7ae570f5c76ff6a6b6c26f"
+    },
+    "tools/nemotron-diarization/qualify_linux_package.py": {
+      "bytes": 19435,
+      "sha256": "8b3758fdf2c4423e703e2f2d8839e0f919ed28d33f0fdf14a2f02304bbdca665"
+    },
+    "tools/nemotron-diarization/qualify_windows_package.py": {
+      "bytes": 24509,
+      "sha256": "0703cd29b9144104a0bb5f1d9d7d6b646f86a02807c4ec6b8a92590fbcf59603"
+    },
+    ".github/workflows/diarization.yml": {
+      "bytes": 2539,
+      "sha256": "0cd9752940a0e45cc1927be25a802661fd95581e767805b94c203ac401c59698"
+    }
+  },
+  "historical_native_protocol": {
+    "bytes": 49143,
+    "sha256": "9887e4fb94950fa53c28f6ff3ff4a60b8f3d46ef037cf141ba1eea04738216e4"
+  },
+  "original_producer_pins_per_receipt_verified": 293,
+  "real_linux_and_windows_producer": "8fbef3e8a46a034b8e0ffa8f096409db683a923e",
+  "model_free_tests_passed": 218,
+  "actual_partial_clone_and_replacement_ref_regressions_passed": true,
+  "git_lazy_fetch_and_replacement_objects_disabled_for_all_calls": true,
+  "native_execution_performed": false,
+  "release_qualified": false,
+  "limits": [
+    "Initial216-suite result (3failures/3errors) is retained. It diagnosed historicalproducer bytes being compared to currentconsumer source, not a failed model/numerical test.",
+    "The first new Git helper admitted replacementrefs and lazily fetched a missing promisorblob; both real regressions fail before fixedenv controls and pass after. No old source pins/protocol/locks/patches are edited.",
+    "No network or checkout/object replacement fallback inside verification; missing recordedobjects require an explicit preparatory fetch. The feature workflow fetches only its exact618d796fixture.",
+    "The next freshly frozen Linux construction/runtime and Windows runtime consumers must fetch their actual8fbef3eproducer before offline verification. Existing historical workflows are not relabelled as newconsumer qualifications.",
+    "HistoricalSDK metadata admission does not qualify newRust model/lifecycle/long/platform/app/quality/release behavior."
+  ]
+}

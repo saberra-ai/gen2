@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "base_commit": "618d7969b112d1e923e15db19fe81eb2c0b892f4",
+  "implementation_sources": {
+    "src/diarization/ffi.rs": {
+      "bytes": 13479,
+      "sha256": "be46eab42c908094dec3bc7101e52a9520ee752e067e2a41759d65a96efacc21"
+    },
+    "src/diarization/types.rs": {
+      "bytes": 5325,
+      "sha256": "5918ca35d8196823c07146fe7f6d9f7e707b22ac71fb751db309f77a11eb5b77"
+    }
+  },
+  "exact_legacy_and_pool_v1_versions_admitted": true,
+  "suffix_and_future_pool_v2_rejected": true,
+  "version_fixture_failed_before_fix_and_passed_after": true,
+  "model_free_rust_tests_passed": 1041,
+  "expected_ignored_tests": 13,
+  "rust_fmt_passed": true,
+  "clippy_warnings_denied_passed": true,
+  "public_rust_real_model_or_lifecycle_qualification_passed": false,
+  "release_qualified": false,
+  "limits": [
+    "C-stub version fixture reaches missing-model-symbol error only for the two exact admitted identities. No model is loaded in this regression.",
+    "The full model-free Rust commands ran without enabling ignored real-model cases. Native C ABI numerical parity is separately established by the M4 and M1 receipts.",
+    "No runtime/build default changed. Public Rust probability/turn and seven real-model lifecycle cases, including100reloads, still require separate frozen qualification."
+  ]
+}

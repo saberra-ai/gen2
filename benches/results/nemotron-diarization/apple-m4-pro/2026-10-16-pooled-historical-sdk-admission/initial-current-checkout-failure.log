@@ -1,0 +1,81 @@
+................................START docker-json
+PASS docker-json
+.......................................................................EFE..........................FFE.................................................................................
+======================================================================
+ERROR: test_historical_or_partial_runtime_cannot_be_relabelled_as_current (test_platform_sdk_receipt.PlatformSdkReceiptTests.test_historical_or_partial_runtime_cannot_be_relabelled_as_current)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/test_platform_sdk_receipt.py", line 32, in test_historical_or_partial_runtime_cannot_be_relabelled_as_current
+    validate_native_receipt(fixture)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/platform_sdk_receipt.py", line 29, in validate_native_receipt
+    raise ValueError('SDK consumer source differs from frozen input: ' + name)
+ValueError: SDK consumer source differs from frozen input: src/diarization/ffi.rs
+
+======================================================================
+ERROR: test_package_retains_exact_receipt_patch_profile_protocol_and_audit (test_platform_sdk_receipt.PlatformSdkReceiptTests.test_package_retains_exact_receipt_patch_profile_protocol_and_audit)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/test_platform_sdk_receipt.py", line 58, in test_package_retains_exact_receipt_patch_profile_protocol_and_audit
+    copy_provenance(receipt, package / 'provenance')
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/platform_sdk_receipt.py", line 46, in copy_provenance
+    lock_path, lock = validate_native_receipt(build)
+                      ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/platform_sdk_receipt.py", line 29, in validate_native_receipt
+    raise ValueError('SDK consumer source differs from frozen input: ' + name)
+ValueError: SDK consumer source differs from frozen input: src/diarization/ffi.rs
+
+======================================================================
+ERROR: test_modes_aliases_and_all_delivered_bytes_are_restored (test_restore_valid_mel_linux_sdk.RestorePlatformSdkTests.test_modes_aliases_and_all_delivered_bytes_are_restored)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/test_restore_valid_mel_linux_sdk.py", line 32, in test_modes_aliases_and_all_delivered_bytes_are_restored
+    restored = restore(evidence, root / 'delivered SDK ü')
+               ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/restore_valid_mel_linux_sdk.py", line 13, in restore
+    validate_native_receipt(build)
+    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/platform_sdk_receipt.py", line 29, in validate_native_receipt
+    raise ValueError('SDK consumer source differs from frozen input: ' + name)
+ValueError: SDK consumer source differs from frozen input: src/diarization/ffi.rs
+
+======================================================================
+FAIL: test_missing_failed_or_duplicate_commands_cannot_establish_completion (test_platform_sdk_receipt.PlatformSdkReceiptTests.test_missing_failed_or_duplicate_commands_cannot_establish_completion)
+----------------------------------------------------------------------
+ValueError: SDK consumer source differs from frozen input: src/diarization/ffi.rs
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/test_platform_sdk_receipt.py", line 46, in test_missing_failed_or_duplicate_commands_cannot_establish_completion
+    with self.assertRaisesRegex(ValueError, 'command/source-audit'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "command/source-audit" does not match "SDK consumer source differs from frozen input: src/diarization/ffi.rs"
+
+======================================================================
+FAIL: test_another_archive_manifest_cannot_replace_the_receipt_bound_snapshot (test_restore_valid_mel_linux_sdk.RestorePlatformSdkTests.test_another_archive_manifest_cannot_replace_the_receipt_bound_snapshot)
+----------------------------------------------------------------------
+ValueError: SDK consumer source differs from frozen input: src/diarization/ffi.rs
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/test_restore_valid_mel_linux_sdk.py", line 59, in test_another_archive_manifest_cannot_replace_the_receipt_bound_snapshot
+    with self.assertRaisesRegex(ValueError, 'archive identity differs'):
+         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: "archive identity differs" does not match "SDK consumer source differs from frozen input: src/diarization/ffi.rs"
+
+======================================================================
+FAIL: test_cli_refuses_dangling_output_symlink_without_creating_its_target (test_restore_valid_mel_linux_sdk.RestorePlatformSdkTests.test_cli_refuses_dangling_output_symlink_without_creating_its_target)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/test_restore_valid_mel_linux_sdk.py", line 49, in test_cli_refuses_dangling_output_symlink_without_creating_its_target
+    self.assertIn('refusing to replace an extracted snapshot', result.stderr)
+    ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: 'refusing to replace an extracted snapshot' not found in 'Traceback (most recent call last):\n  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/restore_valid_mel_linux_sdk.py", line 32, in <module>\n    main()\n    ~~~~^^\n  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/restore_valid_mel_linux_sdk.py", line 28, in main\n    print(restore(args.native_evidence.resolve(strict=True), args.output.absolute()))\n          ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/restore_valid_mel_linux_sdk.py", line 13, in restore\n    validate_native_receipt(build)\n    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^\n  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/platform_sdk_receipt.py", line 29, in validate_native_receipt\n    raise ValueError(\'SDK consumer source differs from frozen input: \' + name)\nValueError: SDK consumer source differs from frozen input: src/diarization/ffi.rs\n'
+
+----------------------------------------------------------------------
+Ran 216 tests in 7.311s
+
+FAILED (failures=3, errors=3)
