@@ -42,3 +42,17 @@ and lifecycle qualification on the three-CPU M1 receiver, followed by long,
 mixed-model, quality and desktop package/platform qualification under this
 identity. Original 20% DER, human word gold, GUI/microphone, fresh-machine,
 signing and release gates remain unchanged; main remains unchanged.
+
+The [actual model-denied M1 construction](https://github.com/saberra-ai/gen2/actions/runs/39003880853)
+now passes at `aa066573`. The [112-member collection](../../benches/results/nemotron-diarization/macos-arm64/2026-10-17-bounded-cpu-construction/collection-qualification.json)
+independently verifies all 200 delivered files, 98 compiler units, the same
+3,425-file GGML inventory/19 patches/pristine archive, and original versus
+relocated library sections. SDK/runtime/control archives restore with exactly
+84/123/2 inventory entries. The actual package reports the new exact version,
+passes the model-free native state test, and loads precisely 92 private libraries
+in the saved failed-load control. All 101 settled thread counts return to one;
+immediate counts range from one to three. Storage floors and the physical reserve
+remain satisfied and released. No model/frontend inference or native execution
+occurs during independent collection. Native/public numerical parity, real-time
+behavior, full lifecycle, long/mixed/quality/app/platform and release
+qualification under this identity remain pending.

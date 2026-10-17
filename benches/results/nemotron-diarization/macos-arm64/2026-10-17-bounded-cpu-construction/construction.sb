@@ -1,0 +1,5 @@
+(version 1)
+(allow default)
+(deny network*)
+(deny file-read* (regex #".*\.(nemo|gguf|safetensors|onnx|npy|f32)$"))
+(deny file-write* (subpath "/Users/runner/work/gen2/gen2/native-upstream") (subpath "/Users/runner/work/gen2/gen2"))

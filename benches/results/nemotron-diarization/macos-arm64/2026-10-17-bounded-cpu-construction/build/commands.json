@@ -1,0 +1,568 @@
+[
+  {
+    "phase": "configure",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/bounded-evidence/build/offline.sb",
+      "/bin/bash",
+      "scripts/configure.sh",
+      "cpu-diar",
+      "-DNEMO_SPEECH_BUILD_EXAMPLES=ON",
+      "-DNEMO_SPEECH_BUILD_CLI=OFF",
+      "-DNEMO_SPEECH_BUILD_MIC_CAPTURE=OFF",
+      "-DGGML_OPENMP=OFF",
+      "-DNEMO_SPEECH_VERSION_METADATA=gen2-valid-mel-pool-cpu-v2",
+      "-DNEMO_SPEECH_BUILD_TESTS=ON",
+      "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+      "-DCMAKE_INSTALL_PREFIX=/Users/runner/work/_temp/bounded-sdk",
+      "-DGGML_NATIVE=OFF",
+      "-DGGML_CPU_ARM_ARCH=armv8.2-a+dotprod+fp16",
+      "-DCMAKE_C_FLAGS=-march=armv8.2-a+dotprod+fp16",
+      "-DCMAKE_CXX_FLAGS=-march=armv8.2-a+dotprod+fp16",
+      "-DCMAKE_OSX_ARCHITECTURES=arm64",
+      "-DCMAKE_OSX_DEPLOYMENT_TARGET=26.0"
+    ],
+    "cwd": "/Users/runner/work/_temp/bounded-source",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 8.596552207999991
+  },
+  {
+    "phase": "llama-archive",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/bounded-evidence/build/offline.sb",
+      "git",
+      "archive",
+      "--format=tar",
+      "-o",
+      "/Users/runner/work/_temp/bounded-evidence/build/pristine-llama.tar",
+      "bd4f514db14d87fded667787a7a963bfbaa98e89",
+      "--",
+      ".",
+      ":(exclude)models",
+      ":(exclude)docs",
+      ":(exclude)media"
+    ],
+    "cwd": "/Users/runner/work/_temp/bounded-source/llama.cpp",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.151080042000018
+  },
+  {
+    "phase": "llama-patch-0",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/bounded-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/bounded-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/bounded-evidence/build/llama-replay-y2m7807e",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/bounded-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.01915908300000524
+  },
+  {
+    "phase": "llama-patch-1",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/bounded-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/bounded-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/bounded-evidence/build/llama-replay-y2m7807e",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/bounded-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.017122666000005893
+  },
+  {
+    "phase": "llama-patch-2",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/bounded-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/bounded-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/bounded-evidence/build/llama-replay-y2m7807e",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/bounded-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.016649333000003708
+  },
+  {
+    "phase": "llama-patch-3",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/bounded-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/bounded-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/bounded-evidence/build/llama-replay-y2m7807e",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/bounded-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.019203499999974838
+  },
+  {
+    "phase": "llama-patch-4",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/bounded-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/bounded-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/bounded-evidence/build/llama-replay-y2m7807e",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/bounded-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.018104291000014427
+  },
+  {
+    "phase": "llama-patch-5",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/bounded-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/bounded-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/bounded-evidence/build/llama-replay-y2m7807e",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/bounded-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.01721420800001283
+  },
+  {
+    "phase": "llama-patch-6",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/bounded-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/bounded-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/bounded-evidence/build/llama-replay-y2m7807e",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/bounded-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.017652708000014172
+  },
+  {
+    "phase": "llama-patch-7",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/bounded-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/bounded-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/bounded-evidence/build/llama-replay-y2m7807e",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/bounded-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.01800162500001079
+  },
+  {
+    "phase": "llama-patch-8",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/bounded-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/bounded-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/bounded-evidence/build/llama-replay-y2m7807e",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/bounded-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.022183832999985498
+  },
+  {
+    "phase": "llama-patch-9",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/bounded-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/bounded-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/bounded-evidence/build/llama-replay-y2m7807e",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/bounded-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.016214334000011377
+  },
+  {
+    "phase": "llama-patch-10",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/bounded-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/bounded-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/bounded-evidence/build/llama-replay-y2m7807e",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/bounded-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.016253083999998807
+  },
+  {
+    "phase": "llama-patch-11",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/bounded-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/bounded-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/bounded-evidence/build/llama-replay-y2m7807e",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/bounded-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.017791958999993085
+  },
+  {
+    "phase": "llama-patch-12",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/bounded-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/bounded-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/bounded-evidence/build/llama-replay-y2m7807e",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/bounded-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.01767674999999258
+  },
+  {
+    "phase": "llama-patch-13",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/bounded-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/bounded-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/bounded-evidence/build/llama-replay-y2m7807e",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/bounded-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.01773237500000846
+  },
+  {
+    "phase": "llama-patch-14",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/bounded-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/bounded-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/bounded-evidence/build/llama-replay-y2m7807e",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/bounded-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.020183416000008947
+  },
+  {
+    "phase": "llama-patch-15",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/bounded-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/bounded-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/bounded-evidence/build/llama-replay-y2m7807e",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/bounded-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.018920415999986062
+  },
+  {
+    "phase": "llama-patch-16",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/bounded-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/bounded-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/bounded-evidence/build/llama-replay-y2m7807e",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/bounded-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.01729166699999496
+  },
+  {
+    "phase": "llama-patch-17",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/bounded-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/bounded-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/bounded-evidence/build/llama-replay-y2m7807e",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/bounded-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.016946584000010034
+  },
+  {
+    "phase": "llama-patch-18",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/bounded-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/bounded-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/bounded-evidence/build/llama-replay-y2m7807e",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/bounded-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.01620449999998641
+  },
+  {
+    "phase": "build",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/bounded-evidence/build/offline.sb",
+      "/opt/homebrew/bin/cmake",
+      "--build",
+      "--preset",
+      "cpu-diar",
+      "--parallel",
+      "2"
+    ],
+    "cwd": "/Users/runner/work/_temp/bounded-source",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 79.39629704200001
+  },
+  {
+    "phase": "install",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/bounded-evidence/build/offline.sb",
+      "/opt/homebrew/bin/cmake",
+      "--install",
+      "build/cpu-diar"
+    ],
+    "cwd": "/Users/runner/work/_temp/bounded-source",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 1.1770294579999927
+  },
+  {
+    "phase": "model-free-state-test",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/bounded-evidence/build/offline.sb",
+      "/opt/homebrew/bin/ctest",
+      "--test-dir",
+      "build/cpu-diar",
+      "--output-on-failure",
+      "-R",
+      "^diar_state$"
+    ],
+    "cwd": "/Users/runner/work/_temp/bounded-source",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.24919458300001907
+  },
+  {
+    "phase": "version-only",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/bounded-evidence/build/offline.sb",
+      "/Library/Frameworks/Python.framework/Versions/3.12/bin/python",
+      "-c",
+      "import ctypes,sys; library=ctypes.CDLL(sys.argv[1]); version=library.nemo_speech_asr_version; version.restype=ctypes.c_char_p; print(version().decode(\"utf-8\"))",
+      "/Users/runner/work/_temp/bounded-sdk/lib/libnemo_speech_asr_c.dylib"
+    ],
+    "cwd": "/Users/runner/work/_temp/bounded-source",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.13515354200001184
+  },
+  {
+    "phase": "brew-packages",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/bounded-evidence/build/offline.sb",
+      "/opt/homebrew/bin/brew",
+      "list",
+      "--versions",
+      "sentencepiece",
+      "abseil",
+      "protobuf"
+    ],
+    "cwd": "/Users/runner/work/_temp/bounded-source",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "HOME": "/Users/runner",
+      "HOMEBREW_NO_AUTO_UPDATE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.6201305830000479
+  }
+]

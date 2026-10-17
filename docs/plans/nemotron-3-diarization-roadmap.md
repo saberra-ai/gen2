@@ -1599,10 +1599,14 @@ The [bounded CPU runtime candidate](../research/nemotron-bounded-cpu-runtime.md)
 now has a separate `gen2-valid-mel-pool-cpu-v2` source/patch identity. CPU
 diarization caps its default request to the reported CPU count, with a one-worker
 fallback for unknown counts; GPU requests and the larger-host default remain
-unchanged. The model-denied construction protocol is drafted, and all 258 Python
-tests pass. No new SDK has been prepared or compiled, no new inference has run,
-and Rust's exact version allowlist still rejects this candidate. Construction
-and all subsequent public/runtime/release qualification remain pending.
+unchanged. All 258 Python tests pass. The actual M1 model-denied construction now
+passes at `aa066573`: the 112-member receipt verifies all 200 delivered files,
+98 compiler units, the unchanged 3,425-file GGML composition, all relocated
+library sections and exact 84/123/2 SDK/runtime/control inventories. All 101
+failed-load observations settle to one thread and their trace verifies the
+92-library closure. No new inference has run, and Rust's exact version allowlist
+still rejects the candidate. Native/public numerical, real-time, lifecycle,
+long/mixed/quality/app/platform and release qualification remain pending.
 
 Use public Gen2 calls for lifecycle and user-visible behavior; use the FFI seam
 for ownership/status failures, and a pinned upstream executable for independent
