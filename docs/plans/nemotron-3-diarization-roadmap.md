@@ -605,6 +605,14 @@ was adopted. TIMIT's acquired demo also contains overlapping word labels that
 must remain visible. This research changes no DER reference, quality criterion,
 held-out status or existing N4 result.
 
+A [model-blind timing-calibration recipe](../research/nemotron-word-timing-calibration.md)
+now freezes HCRC `q1ec1` [0,60), with exact source/member/notice identities and a
+deterministic mono16k conversion. Its preparer preserves the125 source timed
+units as unreviewed hints and emits an empty human annotation template. All240
+local tools tests pass; actual acquisition and two-person human review remain
+unrun at preregistration. This prepares calibration work, not human gold,
+representative held-out validation or an attribution-quality claim.
+
 The live capture path now tees normalized PCM into a bounded continuous native
 speaker session beside the durable eight-second ASR sections. Four adapter
 blocks plus the Gen2 queue bound transport; saturation and the one-hour speaker
