@@ -1,0 +1,735 @@
+
+/Users/victor/.cache/gen2-nemotron3-n0/pooled-macos-construction-ci-v1/restored-pooled-cpu-runtime/lib/libgen2_nemo_ggml-cpu.0.25.1.dylib:	file format mach-o arm64
+
+Disassembly of section __TEXT,__text:
+
+000000000000610c <_ggml_graph_compute_thread>:
+    610c: d10243ff     	sub	sp, sp, #0x90
+    6110: a9036ffc     	stp	x28, x27, [sp, #0x30]
+    6114: a90467fa     	stp	x26, x25, [sp, #0x40]
+    6118: a9055ff8     	stp	x24, x23, [sp, #0x50]
+    611c: a90657f6     	stp	x22, x21, [sp, #0x60]
+    6120: a9074ff4     	stp	x20, x19, [sp, #0x70]
+    6124: a9087bfd     	stp	x29, x30, [sp, #0x80]
+    6128: 910203fd     	add	x29, sp, #0x80
+    612c: aa0003f3     	mov	x19, x0
+    6130: f9410815     	ldr	x21, [x0, #0x210]
+    6134: a9475eb6     	ldp	x22, x23, [x21, #0x70]
+    6138: b9421809     	ldr	w9, [x0, #0x218]
+    613c: b94082a8     	ldr	w8, [x21, #0x80]
+    6140: 12003d08     	and	w8, w8, #0xffff
+    6144: 290123e9     	stp	w9, w8, [sp, #0x8]
+    6148: a94026e8     	ldp	x8, x9, [x23]
+    614c: a90127e8     	stp	x8, x9, [sp, #0x10]
+    6150: f90013f5     	str	x21, [sp, #0x20]
+    6154: 3940c2e8     	ldrb	w8, [x23, #0x30]
+    6158: 3900a3e8     	strb	w8, [sp, #0x28]
+    615c: b80293ff     	stur	wzr, [sp, #0x29]
+    6160: b9002fff     	str	wzr, [sp, #0x2c]
+    6164: b94006ca     	ldr	w10, [x22, #0x4]
+    6168: 7100055f     	cmp	w10, #0x1
+    616c: 5400444b     	b.lt	0x69f4 <_ggml_graph_compute_thread+0x8e8>
+    6170: 52800018     	mov	w24, #0x0               ; =0
+    6174: d0000ad9     	adrp	x25, 0x160000 <_ggml_table_f32_f16+0x3fb2c>
+    6178: 5280003a     	mov	w26, #0x1               ; =1
+    617c: 9000001b     	adrp	x27, 0x6000 <_ggml_cpu_init+0x69c>
+    6180: 912b537b     	add	x27, x27, #0xad4
+    6184: 14000006     	b	0x619c <_ggml_graph_compute_thread+0x90>
+    6188: d5033bbf     	dmb	ish
+    618c: 11000718     	add	w24, w24, #0x1
+    6190: b94006ca     	ldr	w10, [x22, #0x4]
+    6194: 6b0a031f     	cmp	w24, w10
+    6198: 540042ea     	b.ge	0x69f4 <_ggml_graph_compute_thread+0x8e8>
+    619c: b9414aa8     	ldr	w8, [x21, #0x148]
+    61a0: 6b18011f     	cmp	w8, w24
+    61a4: 54004280     	b.eq	0x69f4 <_ggml_graph_compute_thread+0x8e8>
+    61a8: f9400ac8     	ldr	x8, [x22, #0x10]
+    61ac: 8b38cd08     	add	x8, x8, w24, sxtw #3
+    61b0: f9400114     	ldr	x20, [x8]
+    61b4: b940528b     	ldr	w11, [x20, #0x50]
+    61b8: 51009169     	sub	w9, w11, #0x24
+    61bc: 7100113f     	cmp	w9, #0x4
+    61c0: 7a402964     	ccmp	w11, #0x0, #0x4, hs
+    61c4: 54fffe40     	b.eq	0x618c <_ggml_graph_compute_thread+0x80>
+    61c8: b9409689     	ldr	w9, [x20, #0x94]
+    61cc: 3627fe09     	tbz	w9, #0x4, 0x618c <_ggml_graph_compute_thread+0x80>
+    61d0: 3963672c     	ldrb	w12, [x25, #0x8d9]
+    61d4: 3600046c     	tbz	w12, #0x0, 0x6260 <_ggml_graph_compute_thread+0x154>
+    61d8: b9405288     	ldr	w8, [x20, #0x50]
+    61dc: 34000108     	cbz	w8, 0x61fc <_ggml_graph_compute_thread+0xf0>
+    61e0: aa1403e0     	mov	x0, x20
+    61e4: 9402ce0a     	bl	0xb9a0c <_vDSP_vsub+0xb9a0c>
+    61e8: 370000a0     	tbnz	w0, #0x0, 0x61fc <_ggml_graph_compute_thread+0xf0>
+    61ec: 910023e0     	add	x0, sp, #0x8
+    61f0: aa1403e1     	mov	x1, x20
+    61f4: 9400d546     	bl	0x3b70c <_ggml_cpu_extra_compute_forward>
+    61f8: 36000e40     	tbz	w0, #0x0, 0x63c0 <_ggml_graph_compute_thread+0x2b4>
+    61fc: b9421a68     	ldr	w8, [x19, #0x218]
+    6200: 34000ce8     	cbz	w8, 0x639c <_ggml_graph_compute_thread+0x290>
+    6204: 11000708     	add	w8, w24, #0x1
+    6208: b94006c9     	ldr	w9, [x22, #0x4]
+    620c: 6b09011f     	cmp	w8, w9
+    6210: 54fffbea     	b.ge	0x618c <_ggml_graph_compute_thread+0x80>
+    6214: f9410a68     	ldr	x8, [x19, #0x210]
+    6218: b9408109     	ldr	w9, [x8, #0x80]
+    621c: 12003d29     	and	w9, w9, #0xffff
+    6220: 7100052a     	subs	w10, w9, #0x1
+    6224: 54fffb40     	b.eq	0x618c <_ggml_graph_compute_thread+0x80>
+    6228: b9410109     	ldr	w9, [x8, #0x100]
+    622c: 9103010b     	add	x11, x8, #0xc0
+    6230: b8fa016b     	ldaddal	w26, w11, [x11]
+    6234: 6b0a017f     	cmp	w11, w10
+    6238: 540000a1     	b.ne	0x624c <_ggml_graph_compute_thread+0x140>
+    623c: b900c11f     	str	wzr, [x8, #0xc0]
+    6240: 91040108     	add	x8, x8, #0x100
+    6244: b8fa0108     	ldaddal	w26, w8, [x8]
+    6248: 17ffffd1     	b	0x618c <_ggml_graph_compute_thread+0x80>
+    624c: b941010a     	ldr	w10, [x8, #0x100]
+    6250: 6b09015f     	cmp	w10, w9
+    6254: 54fff9a1     	b.ne	0x6188 <_ggml_graph_compute_thread+0x7c>
+    6258: d503203f     	yield
+    625c: 17fffffc     	b	0x624c <_ggml_graph_compute_thread+0x140>
+    6260: 7100657f     	cmp	w11, #0x19
+    6264: 54fffba1     	b.ne	0x61d8 <_ggml_graph_compute_thread+0xcc>
+    6268: 3940c2eb     	ldrb	w11, [x23, #0x30]
+    626c: 3707fb6b     	tbnz	w11, #0x0, 0x61d8 <_ggml_graph_compute_thread+0xcc>
+    6270: 11000b0b     	add	w11, w24, #0x2
+    6274: 6b0a017f     	cmp	w11, w10
+    6278: 54fffb0c     	b.gt	0x61d8 <_ggml_graph_compute_thread+0xcc>
+    627c: 93407f1c     	sxtw	x28, w24
+    6280: d344fe8a     	lsr	x10, x20, #4
+    6284: a943aecc     	ldp	x12, x11, [x22, #0x38]
+    6288: 9acc094d     	udiv	x13, x10, x12
+    628c: 9b0ca9ad     	msub	x13, x13, x12, x10
+    6290: aa0d03ea     	mov	x10, x13
+    6294: d345fd4e     	lsr	x14, x10, #5
+    6298: b86e796e     	ldr	w14, [x11, x14, lsl #2]
+    629c: 1aca25ce     	lsr	w14, w14, w10
+    62a0: 3600016e     	tbz	w14, #0x0, 0x62cc <_ggml_graph_compute_thread+0x1c0>
+    62a4: f94026ce     	ldr	x14, [x22, #0x48]
+    62a8: f86a79ce     	ldr	x14, [x14, x10, lsl #3]
+    62ac: eb1401df     	cmp	x14, x20
+    62b0: 540000e0     	b.eq	0x62cc <_ggml_graph_compute_thread+0x1c0>
+    62b4: 9100054e     	add	x14, x10, #0x1
+    62b8: eb0c01df     	cmp	x14, x12
+    62bc: 9a8a07ea     	csinc	x10, xzr, x10, eq
+    62c0: eb0d015f     	cmp	x10, x13
+    62c4: 54fffe81     	b.ne	0x6294 <_ggml_graph_compute_thread+0x188>
+    62c8: 9280000a     	mov	x10, #-0x1              ; =-1
+    62cc: d345fd4c     	lsr	x12, x10, #5
+    62d0: b86c796b     	ldr	w11, [x11, x12, lsl #2]
+    62d4: 1aca256b     	lsr	w11, w11, w10
+    62d8: 3607f80b     	tbz	w11, #0x0, 0x61d8 <_ggml_graph_compute_thread+0xcc>
+    62dc: f9401acb     	ldr	x11, [x22, #0x30]
+    62e0: b86a796a     	ldr	w10, [x11, x10, lsl #2]
+    62e4: 7100055f     	cmp	w10, #0x1
+    62e8: 54fff781     	b.ne	0x61d8 <_ggml_graph_compute_thread+0xcc>
+    62ec: 370ff769     	tbnz	w9, #0x1, 0x61d8 <_ggml_graph_compute_thread+0xcc>
+    62f0: f9407689     	ldr	x9, [x20, #0xe8]
+    62f4: b5fff729     	cbnz	x9, 0x61d8 <_ggml_graph_compute_thread+0xcc>
+    62f8: f9400500     	ldr	x0, [x8, #0x8]
+    62fc: b9405008     	ldr	w8, [x0, #0x50]
+    6300: 71001d1f     	cmp	w8, #0x7
+    6304: 54fff6a1     	b.ne	0x61d8 <_ggml_graph_compute_thread+0xcc>
+    6308: 39425008     	ldrb	w8, [x0, #0x94]
+    630c: 3627f668     	tbz	w8, #0x4, 0x61d8 <_ggml_graph_compute_thread+0xcc>
+    6310: f9404c08     	ldr	x8, [x0, #0x98]
+    6314: eb14011f     	cmp	x8, x20
+    6318: 54000080     	b.eq	0x6328 <_ggml_graph_compute_thread+0x21c>
+    631c: f9405008     	ldr	x8, [x0, #0xa0]
+    6320: eb14011f     	cmp	x8, x20
+    6324: 54fff5a1     	b.ne	0x61d8 <_ggml_graph_compute_thread+0xcc>
+    6328: aa1403e1     	mov	x1, x20
+    632c: 9402cd6d     	bl	0xb98e0 <_vDSP_vsub+0xb98e0>
+    6330: 34fff540     	cbz	w0, 0x61d8 <_ggml_graph_compute_thread+0xcc>
+    6334: f9400ac8     	ldr	x8, [x22, #0x10]
+    6338: 8b1c0d08     	add	x8, x8, x28, lsl #3
+    633c: f9400502     	ldr	x2, [x8, #0x8]
+    6340: f9404c48     	ldr	x8, [x2, #0x98]
+    6344: eb14011f     	cmp	x8, x20
+    6348: 54000041     	b.ne	0x6350 <_ggml_graph_compute_thread+0x244>
+    634c: f9405048     	ldr	x8, [x2, #0xa0]
+    6350: f9404e89     	ldr	x9, [x20, #0x98]
+    6354: b9400129     	ldr	w9, [x9]
+    6358: 35fff409     	cbnz	w9, 0x61d8 <_ggml_graph_compute_thread+0xcc>
+    635c: b9400049     	ldr	w9, [x2]
+    6360: 35fff3c9     	cbnz	w9, 0x61d8 <_ggml_graph_compute_thread+0xcc>
+    6364: b9400109     	ldr	w9, [x8]
+    6368: 35fff389     	cbnz	w9, 0x61d8 <_ggml_graph_compute_thread+0xcc>
+    636c: f9400909     	ldr	x9, [x8, #0x10]
+    6370: f9400a8a     	ldr	x10, [x20, #0x10]
+    6374: eb0a013f     	cmp	x9, x10
+    6378: 54fff301     	b.ne	0x61d8 <_ggml_graph_compute_thread+0xcc>
+    637c: f9401908     	ldr	x8, [x8, #0x30]
+    6380: f100111f     	cmp	x8, #0x4
+    6384: 54fff2a1     	b.ne	0x61d8 <_ggml_graph_compute_thread+0xcc>
+    6388: 910023e0     	add	x0, sp, #0x8
+    638c: aa1403e1     	mov	x1, x20
+    6390: 9401a625     	bl	0x6fc24 <_ggml_compute_forward_rms_norm_mul_fused>
+    6394: 11000718     	add	w24, w24, #0x1
+    6398: 17ffff99     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    639c: f94012e8     	ldr	x8, [x23, #0x20]
+    63a0: b4fff328     	cbz	x8, 0x6204 <_ggml_graph_compute_thread+0xf8>
+    63a4: f94016e0     	ldr	x0, [x23, #0x28]
+    63a8: d63f0100     	blr	x8
+    63ac: 34fff2c0     	cbz	w0, 0x6204 <_ggml_graph_compute_thread+0xf8>
+    63b0: 11000708     	add	w8, w24, #0x1
+    63b4: b9014aa8     	str	w8, [x21, #0x148]
+    63b8: b90166ba     	str	w26, [x21, #0x164]
+    63bc: 17ffff92     	b	0x6204 <_ggml_graph_compute_thread+0xf8>
+    63c0: b9405288     	ldr	w8, [x20, #0x50]
+    63c4: 51000508     	sub	w8, w8, #0x1
+    63c8: 7101991f     	cmp	w8, #0x66
+    63cc: 54fff188     	b.hi	0x61fc <_ggml_graph_compute_thread+0xf0>
+    63d0: 10000009     	adr	x9, 0x63d0 <_ggml_graph_compute_thread+0x2c4>
+    63d4: b8a87b6a     	ldrsw	x10, [x27, x8, lsl #2]
+    63d8: 8b0a0129     	add	x9, x9, x10
+    63dc: d61f0120     	br	x9
+    63e0: 910023e0     	add	x0, sp, #0x8
+    63e4: aa1403e1     	mov	x1, x20
+    63e8: 94016069     	bl	0x5e58c <_ggml_compute_forward_dup>
+    63ec: 17ffff84     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    63f0: 910023e0     	add	x0, sp, #0x8
+    63f4: aa1403e1     	mov	x1, x20
+    63f8: 94021d9c     	bl	0x8da68 <_ggml_compute_forward_glu>
+    63fc: 17ffff80     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6400: 910023e0     	add	x0, sp, #0x8
+    6404: aa1403e1     	mov	x1, x20
+    6408: 94023e6a     	bl	0x95db0 <_ggml_compute_forward_cross_entropy_loss_back>
+    640c: 17ffff7c     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6410: 910023e0     	add	x0, sp, #0x8
+    6414: aa1403e1     	mov	x1, x20
+    6418: 94023aa8     	bl	0x94eb8 <_ggml_compute_forward_dsv4_hc_post>
+    641c: 17ffff78     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6420: 910023e0     	add	x0, sp, #0x8
+    6424: aa1403e1     	mov	x1, x20
+    6428: 94023bd5     	bl	0x9537c <_ggml_compute_forward_rwkv_wkv7>
+    642c: 17ffff74     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6430: 910023e0     	add	x0, sp, #0x8
+    6434: aa1403e1     	mov	x1, x20
+    6438: 94023cec     	bl	0x957e8 <_ggml_compute_forward_custom>
+    643c: 17ffff70     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6440: 910023e0     	add	x0, sp, #0x8
+    6444: aa1403e1     	mov	x1, x20
+    6448: 94023285     	bl	0x92e5c <_ggml_compute_forward_solve_tri>
+    644c: 17ffff6c     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6450: 910023e0     	add	x0, sp, #0x8
+    6454: aa1403e1     	mov	x1, x20
+    6458: 94023f84     	bl	0x96268 <_ggml_compute_forward_opt_step_adamw>
+    645c: 17ffff68     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6460: 910023e0     	add	x0, sp, #0x8
+    6464: aa1403e1     	mov	x1, x20
+    6468: 94022c83     	bl	0x91674 <_ggml_compute_forward_rwkv_wkv6>
+    646c: 17ffff64     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6470: 910023e0     	add	x0, sp, #0x8
+    6474: aa1403e1     	mov	x1, x20
+    6478: 9401a00c     	bl	0x6e4a8 <_ggml_compute_forward_leaky_relu>
+    647c: 17ffff60     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6480: 910023e0     	add	x0, sp, #0x8
+    6484: aa1403e1     	mov	x1, x20
+    6488: 9402371c     	bl	0x940f8 <_ggml_compute_forward_dsv4_hc_comb>
+    648c: 17ffff5c     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6490: 910023e0     	add	x0, sp, #0x8
+    6494: aa1403e1     	mov	x1, x20
+    6498: 940210b0     	bl	0x8a758 <_ggml_compute_forward_ssm_scan>
+    649c: 17ffff58     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    64a0: 910023e0     	add	x0, sp, #0x8
+    64a4: aa1403e1     	mov	x1, x20
+    64a8: 94023cc0     	bl	0x957a8 <_ggml_compute_forward_map_custom2>
+    64ac: 17ffff54     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    64b0: 910023e0     	add	x0, sp, #0x8
+    64b4: aa1403e1     	mov	x1, x20
+    64b8: 94022b41     	bl	0x911bc <_ggml_compute_forward_get_rel_pos>
+    64bc: 17ffff50     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    64c0: 910023e0     	add	x0, sp, #0x8
+    64c4: aa1403e1     	mov	x1, x20
+    64c8: 940240aa     	bl	0x96770 <_ggml_compute_forward_opt_step_sgd>
+    64cc: 17ffff4c     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    64d0: 910023e0     	add	x0, sp, #0x8
+    64d4: aa1403e1     	mov	x1, x20
+    64d8: 9401c938     	bl	0x789b8 <_ggml_compute_forward_rope>
+    64dc: 17ffff48     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    64e0: 910023e0     	add	x0, sp, #0x8
+    64e4: aa1403e1     	mov	x1, x20
+    64e8: 9401ddb2     	bl	0x7dbb0 <_ggml_compute_forward_col2im_1d>
+    64ec: 17ffff44     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    64f0: 910023e0     	add	x0, sp, #0x8
+    64f4: aa1403e1     	mov	x1, x20
+    64f8: 9401eea7     	bl	0x81f94 <_ggml_compute_forward_pool_2d>
+    64fc: 17ffff40     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6500: 910023e0     	add	x0, sp, #0x8
+    6504: aa1403e1     	mov	x1, x20
+    6508: 9401eb2f     	bl	0x811c4 <_ggml_compute_forward_conv_2d_dw>
+    650c: 17ffff3c     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6510: 910023e0     	add	x0, sp, #0x8
+    6514: aa1403e1     	mov	x1, x20
+    6518: 9401daf6     	bl	0x7d0f0 <_ggml_compute_forward_im2col_3d>
+    651c: 17ffff38     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6520: 910023e0     	add	x0, sp, #0x8
+    6524: aa1403e1     	mov	x1, x20
+    6528: 94023952     	bl	0x94a70 <_ggml_compute_forward_dsv4_hc_pre>
+    652c: 17ffff34     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6530: 910023e0     	add	x0, sp, #0x8
+    6534: aa1403e1     	mov	x1, x20
+    6538: 9401c34f     	bl	0x77274 <_ggml_compute_forward_diag_mask_inf>
+    653c: 17ffff30     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6540: 910023e0     	add	x0, sp, #0x8
+    6544: aa1403e1     	mov	x1, x20
+    6548: 94023393     	bl	0x93394 <_ggml_compute_forward_gated_delta_net>
+    654c: 17ffff2c     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6550: 910023e0     	add	x0, sp, #0x8
+    6554: aa1403e1     	mov	x1, x20
+    6558: 9401c246     	bl	0x76e70 <_ggml_compute_forward_diag>
+    655c: 17ffff28     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6560: 910023e0     	add	x0, sp, #0x8
+    6564: aa1403e1     	mov	x1, x20
+    6568: 9401c0e6     	bl	0x76900 <_ggml_compute_forward_get_rows_back>
+    656c: 17ffff24     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6570: 910023e0     	add	x0, sp, #0x8
+    6574: aa1403e1     	mov	x1, x20
+    6578: 9401d3d3     	bl	0x7b4c4 <_ggml_compute_forward_rope_back>
+    657c: 17ffff20     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6580: 910023e0     	add	x0, sp, #0x8
+    6584: aa1403e1     	mov	x1, x20
+    6588: 9402163e     	bl	0x8be80 <_ggml_compute_forward_win_part>
+    658c: 17ffff1c     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6590: 910023e0     	add	x0, sp, #0x8
+    6594: aa1403e1     	mov	x1, x20
+    6598: 94019334     	bl	0x6b268 <_ggml_compute_forward_count_equal>
+    659c: 17ffff18     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    65a0: 910023e0     	add	x0, sp, #0x8
+    65a4: aa1403e1     	mov	x1, x20
+    65a8: 940198f5     	bl	0x6c97c <_ggml_compute_forward_concat>
+    65ac: 17ffff14     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    65b0: 910023e0     	add	x0, sp, #0x8
+    65b4: aa1403e1     	mov	x1, x20
+    65b8: 94018ed5     	bl	0x6a10c <_ggml_compute_forward_sum>
+    65bc: 17ffff10     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    65c0: 910023e0     	add	x0, sp, #0x8
+    65c4: aa1403e1     	mov	x1, x20
+    65c8: 9401a746     	bl	0x702e0 <_ggml_compute_forward_rms_norm_back>
+    65cc: 17ffff0c     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    65d0: 910023e0     	add	x0, sp, #0x8
+    65d4: aa1403e1     	mov	x1, x20
+    65d8: 9401fe77     	bl	0x85fb4 <_ggml_compute_forward_argsort>
+    65dc: 17ffff08     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    65e0: 910023e0     	add	x0, sp, #0x8
+    65e4: aa1403e1     	mov	x1, x20
+    65e8: 9401a310     	bl	0x6f228 <_ggml_compute_forward_norm>
+    65ec: 17ffff04     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    65f0: 910023e0     	add	x0, sp, #0x8
+    65f4: aa1403e1     	mov	x1, x20
+    65f8: 94013eb5     	bl	0x560cc <_ggml_compute_forward_log>
+    65fc: 17ffff00     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6600: 910023e0     	add	x0, sp, #0x8
+    6604: aa1403e1     	mov	x1, x20
+    6608: 9401bc80     	bl	0x75808 <_ggml_compute_forward_cpy>
+    660c: 17fffefc     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6610: 910023e0     	add	x0, sp, #0x8
+    6614: aa1403e1     	mov	x1, x20
+    6618: 94023c5d     	bl	0x9578c <_ggml_compute_forward_map_custom1>
+    661c: 17fffef8     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6620: 910023e0     	add	x0, sp, #0x8
+    6624: aa1403e1     	mov	x1, x20
+    6628: 94022efa     	bl	0x92210 <_ggml_compute_forward_gla>
+    662c: 17fffef4     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6630: 910023e0     	add	x0, sp, #0x8
+    6634: aa1403e1     	mov	x1, x20
+    6638: 97fff4b0     	bl	0x38f8 <_ggml_compute_forward_mul_mat>
+    663c: 17fffef0     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6640: 910023e0     	add	x0, sp, #0x8
+    6644: aa1403e1     	mov	x1, x20
+    6648: 9401c3a7     	bl	0x774e4 <_ggml_compute_forward_diag_mask_zero>
+    664c: 17fffeec     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6650: 910023e0     	add	x0, sp, #0x8
+    6654: aa1403e1     	mov	x1, x20
+    6658: 9401a11c     	bl	0x6eac8 <_ggml_compute_forward_silu_back>
+    665c: 17fffee8     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6660: 910023e0     	add	x0, sp, #0x8
+    6664: aa1403e1     	mov	x1, x20
+    6668: 94013a86     	bl	0x55080 <_ggml_compute_forward_cos>
+    666c: 17fffee4     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6670: 910023e0     	add	x0, sp, #0x8
+    6674: aa1403e1     	mov	x1, x20
+    6678: 94019414     	bl	0x6b6c8 <_ggml_compute_forward_repeat>
+    667c: 17fffee0     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6680: 910023e0     	add	x0, sp, #0x8
+    6684: aa1403e1     	mov	x1, x20
+    6688: 940185d4     	bl	0x67dd8 <_ggml_compute_forward_add_id>
+    668c: 17fffedc     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6690: 910023e0     	add	x0, sp, #0x8
+    6694: aa1403e1     	mov	x1, x20
+    6698: 9400036e     	bl	0x7450 <_ggml_compute_forward_mul_mat_id>
+    669c: 17fffed8     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    66a0: 910023e0     	add	x0, sp, #0x8
+    66a4: aa1403e1     	mov	x1, x20
+    66a8: 9401b9a3     	bl	0x74d34 <_ggml_compute_forward_scale>
+    66ac: 17fffed4     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    66b0: 910023e0     	add	x0, sp, #0x8
+    66b4: aa1403e1     	mov	x1, x20
+    66b8: 9400e12a     	bl	0x3eb60 <_ggml_compute_forward_sub>
+    66bc: 17fffed0     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    66c0: 910023e0     	add	x0, sp, #0x8
+    66c4: aa1403e1     	mov	x1, x20
+    66c8: 9401365b     	bl	0x54034 <_ggml_compute_forward_sin>
+    66cc: 17fffecc     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    66d0: 910023e0     	add	x0, sp, #0x8
+    66d4: aa1403e1     	mov	x1, x20
+    66d8: 940200ef     	bl	0x86a94 <_ggml_compute_forward_flash_attn_ext>
+    66dc: 17fffec8     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    66e0: 910023e0     	add	x0, sp, #0x8
+    66e4: aa1403e1     	mov	x1, x20
+    66e8: 9401a3b6     	bl	0x6f5c0 <_ggml_compute_forward_rms_norm>
+    66ec: 17fffec4     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    66f0: 910023e0     	add	x0, sp, #0x8
+    66f4: aa1403e1     	mov	x1, x20
+    66f8: 9401c388     	bl	0x77518 <_ggml_compute_forward_soft_max>
+    66fc: 17fffec0     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6700: 910023e0     	add	x0, sp, #0x8
+    6704: aa1403e1     	mov	x1, x20
+    6708: 94018328     	bl	0x673a8 <_ggml_compute_forward_add>
+    670c: 17fffebc     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6710: 910023e0     	add	x0, sp, #0x8
+    6714: aa1403e1     	mov	x1, x20
+    6718: 9400edd8     	bl	0x41e78 <_ggml_compute_forward_mul>
+    671c: 17fffeb8     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6720: 910023e0     	add	x0, sp, #0x8
+    6724: aa1403e1     	mov	x1, x20
+    6728: 9400fa95     	bl	0x4517c <_ggml_compute_forward_div>
+    672c: 17fffeb4     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6730: 910023e0     	add	x0, sp, #0x8
+    6734: aa1403e1     	mov	x1, x20
+    6738: 9401c6f8     	bl	0x78318 <_ggml_compute_forward_clamp>
+    673c: 17fffeb0     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6740: 910023e0     	add	x0, sp, #0x8
+    6744: aa1403e1     	mov	x1, x20
+    6748: 94019185     	bl	0x6ad5c <_ggml_compute_forward_sum_rows>
+    674c: 17fffeac     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6750: 910023e0     	add	x0, sp, #0x8
+    6754: aa1403e1     	mov	x1, x20
+    6758: 940190c5     	bl	0x6aa6c <_ggml_compute_forward_cumsum>
+    675c: 17fffea8     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6760: 910023e0     	add	x0, sp, #0x8
+    6764: aa1403e1     	mov	x1, x20
+    6768: 9401d907     	bl	0x7cb84 <_ggml_compute_forward_im2col_back_f32>
+    676c: 17fffea4     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6770: 910023e0     	add	x0, sp, #0x8
+    6774: aa1403e1     	mov	x1, x20
+    6778: 9401ad85     	bl	0x71d8c <_ggml_compute_forward_out_prod>
+    677c: 17fffea0     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6780: 910023e0     	add	x0, sp, #0x8
+    6784: aa1403e1     	mov	x1, x20
+    6788: 94018715     	bl	0x683dc <_ggml_compute_forward_add1>
+    678c: 17fffe9c     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6790: 910023e0     	add	x0, sp, #0x8
+    6794: aa1403e1     	mov	x1, x20
+    6798: 9401d35c     	bl	0x7b508 <_ggml_compute_forward_conv_transpose_1d>
+    679c: 17fffe98     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    67a0: 910023e0     	add	x0, sp, #0x8
+    67a4: aa1403e1     	mov	x1, x20
+    67a8: 94018d7c     	bl	0x69d98 <_ggml_compute_forward_acc>
+    67ac: 17fffe94     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    67b0: 910023e0     	add	x0, sp, #0x8
+    67b4: aa1403e1     	mov	x1, x20
+    67b8: 9401be01     	bl	0x75fbc <_ggml_compute_forward_set_rows>
+    67bc: 17fffe90     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    67c0: 910023e0     	add	x0, sp, #0x8
+    67c4: aa1403e1     	mov	x1, x20
+    67c8: 940132a3     	bl	0x53254 <_ggml_compute_forward_sqrt>
+    67cc: 17fffe8c     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    67d0: 910023e0     	add	x0, sp, #0x8
+    67d4: aa1403e1     	mov	x1, x20
+    67d8: 9401e491     	bl	0x7fa1c <_ggml_compute_forward_conv_transpose_2d>
+    67dc: 17fffe88     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    67e0: 910023e0     	add	x0, sp, #0x8
+    67e4: aa1403e1     	mov	x1, x20
+    67e8: 94021731     	bl	0x8c4ac <_ggml_compute_forward_win_unpart>
+    67ec: 17fffe84     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    67f0: 910023e0     	add	x0, sp, #0x8
+    67f4: aa1403e1     	mov	x1, x20
+    67f8: 940243ed     	bl	0x977ac <_ggml_compute_forward_lightning_indexer>
+    67fc: 17fffe80     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6800: 910023e0     	add	x0, sp, #0x8
+    6804: aa1403e1     	mov	x1, x20
+    6808: 94012f11     	bl	0x5244c <_ggml_compute_forward_sqr>
+    680c: 17fffe7c     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6810: 910023e0     	add	x0, sp, #0x8
+    6814: aa1403e1     	mov	x1, x20
+    6818: 9401924f     	bl	0x6b154 <_ggml_compute_forward_argmax>
+    681c: 17fffe78     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6820: 910023e0     	add	x0, sp, #0x8
+    6824: aa1403e1     	mov	x1, x20
+    6828: 9401bbf9     	bl	0x7580c <_ggml_compute_forward_cont>
+    682c: 17fffe74     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6830: 910023e0     	add	x0, sp, #0x8
+    6834: aa1403e1     	mov	x1, x20
+    6838: 940191ec     	bl	0x6afe8 <_ggml_compute_forward_mean>
+    683c: 17fffe70     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6840: 910023e0     	add	x0, sp, #0x8
+    6844: aa1403e1     	mov	x1, x20
+    6848: 94023be0     	bl	0x957c8 <_ggml_compute_forward_map_custom3>
+    684c: 17fffe6c     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6850: 910023e0     	add	x0, sp, #0x8
+    6854: aa1403e1     	mov	x1, x20
+    6858: 9401ed21     	bl	0x81cdc <_ggml_compute_forward_pool_1d>
+    685c: 17fffe68     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6860: 910023e0     	add	x0, sp, #0x8
+    6864: aa1403e1     	mov	x1, x20
+    6868: 9401c527     	bl	0x77d04 <_ggml_compute_forward_soft_max_ext_back>
+    686c: 17fffe64     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6870: 910023e0     	add	x0, sp, #0x8
+    6874: aa1403e1     	mov	x1, x20
+    6878: 9401965e     	bl	0x6c1f0 <_ggml_compute_forward_repeat_back>
+    687c: 17fffe60     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6880: 910023e0     	add	x0, sp, #0x8
+    6884: aa1403e1     	mov	x1, x20
+    6888: 9401f0ea     	bl	0x82c30 <_ggml_compute_forward_upscale>
+    688c: 17fffe5c     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6890: 910023e0     	add	x0, sp, #0x8
+    6894: aa1403e1     	mov	x1, x20
+    6898: 9401fcc6     	bl	0x85bb0 <_ggml_compute_forward_arange>
+    689c: 17fffe58     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    68a0: 910023e0     	add	x0, sp, #0x8
+    68a4: aa1403e1     	mov	x1, x20
+    68a8: 9401fd32     	bl	0x85d70 <_ggml_compute_forward_timestep_embedding>
+    68ac: 17fffe54     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    68b0: 910023e0     	add	x0, sp, #0x8
+    68b4: aa1403e1     	mov	x1, x20
+    68b8: 94020e87     	bl	0x8a2d4 <_ggml_compute_forward_ssm_conv>
+    68bc: 17fffe50     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    68c0: 910023e0     	add	x0, sp, #0x8
+    68c4: aa1403e1     	mov	x1, x20
+    68c8: 9401efb1     	bl	0x8278c <_ggml_compute_forward_pool_2d_back>
+    68cc: 17fffe4c     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    68d0: 910023e0     	add	x0, sp, #0x8
+    68d4: aa1403e1     	mov	x1, x20
+    68d8: 9401ab62     	bl	0x71660 <_ggml_compute_forward_l2_norm>
+    68dc: 17fffe48     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    68e0: 910023e0     	add	x0, sp, #0x8
+    68e4: aa1403e1     	mov	x1, x20
+    68e8: 9401a834     	bl	0x709b8 <_ggml_compute_forward_group_norm>
+    68ec: 17fffe44     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    68f0: 910023e0     	add	x0, sp, #0x8
+    68f4: aa1403e1     	mov	x1, x20
+    68f8: 9401feb5     	bl	0x863cc <_ggml_compute_forward_top_k>
+    68fc: 17fffe40     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6900: 910023e0     	add	x0, sp, #0x8
+    6904: aa1403e1     	mov	x1, x20
+    6908: 9401e0b7     	bl	0x7ebe4 <_ggml_compute_forward_conv_3d>
+    690c: 17fffe3c     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6910: 910023e0     	add	x0, sp, #0x8
+    6914: aa1403e1     	mov	x1, x20
+    6918: 9401bbbe     	bl	0x75810 <_ggml_compute_forward_get_rows>
+    691c: 17fffe38     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6920: 910023e0     	add	x0, sp, #0x8
+    6924: aa1403e1     	mov	x1, x20
+    6928: 9401b986     	bl	0x74f40 <_ggml_compute_forward_set>
+    692c: 17fffe34     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6930: 910023e0     	add	x0, sp, #0x8
+    6934: aa1403e1     	mov	x1, x20
+    6938: 9401d658     	bl	0x7c298 <_ggml_compute_forward_im2col>
+    693c: 17fffe30     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6940: 910023e0     	add	x0, sp, #0x8
+    6944: aa1403e1     	mov	x1, x20
+    6948: 94019e60     	bl	0x6e2c8 <_ggml_compute_forward_tri>
+    694c: 17fffe2c     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6950: 910023e0     	add	x0, sp, #0x8
+    6954: aa1403e1     	mov	x1, x20
+    6958: 9401f547     	bl	0x83e74 <_ggml_compute_forward_pad_reflect_1d>
+    695c: 17fffe28     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6960: 910023e0     	add	x0, sp, #0x8
+    6964: aa1403e1     	mov	x1, x20
+    6968: 94019d3a     	bl	0x6de50 <_ggml_compute_forward_fill>
+    696c: 17fffe24     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6970: 910023e0     	add	x0, sp, #0x8
+    6974: aa1403e1     	mov	x1, x20
+    6978: 94021779     	bl	0x8c75c <_ggml_compute_forward_unary>
+    697c: 17fffe20     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6980: 910023e0     	add	x0, sp, #0x8
+    6984: aa1403e1     	mov	x1, x20
+    6988: 9401ddd2     	bl	0x7e0d0 <_ggml_compute_forward_conv_2d>
+    698c: 17fffe1c     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    6990: 910023e0     	add	x0, sp, #0x8
+    6994: aa1403e1     	mov	x1, x20
+    6998: 9401fb78     	bl	0x85778 <_ggml_compute_forward_roll>
+    699c: 17fffe18     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    69a0: b9405688     	ldr	w8, [x20, #0x54]
+    69a4: 7100091f     	cmp	w8, #0x2
+    69a8: 54000842     	b.hs	0x6ab0 <_ggml_graph_compute_thread+0x9a4>
+    69ac: 7100011f     	cmp	w8, #0x0
+    69b0: 1a9f07e1     	cset	w1, ne
+    69b4: 910023e0     	add	x0, sp, #0x8
+    69b8: aa1403e2     	mov	x2, x20
+    69bc: 94020959     	bl	0x88f20 <_ggml_compute_forward_flash_attn_back>
+    69c0: 17fffe0f     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    69c4: 910023e0     	add	x0, sp, #0x8
+    69c8: aa1403e1     	mov	x1, x20
+    69cc: 9401f32a     	bl	0x83674 <_ggml_compute_forward_pad>
+    69d0: 17fffe0b     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    69d4: 910023e0     	add	x0, sp, #0x8
+    69d8: aa1403e1     	mov	x1, x20
+    69dc: 94022ab8     	bl	0x914bc <_ggml_compute_forward_add_rel_pos>
+    69e0: 17fffe07     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    69e4: 910023e0     	add	x0, sp, #0x8
+    69e8: aa1403e1     	mov	x1, x20
+    69ec: 94023b85     	bl	0x95800 <_ggml_compute_forward_cross_entropy_loss>
+    69f0: 17fffe03     	b	0x61fc <_ggml_graph_compute_thread+0xf0>
+    69f4: f9410a68     	ldr	x8, [x19, #0x210]
+    69f8: b9408109     	ldr	w9, [x8, #0x80]
+    69fc: 12003d29     	and	w9, w9, #0xffff
+    6a00: 7100052a     	subs	w10, w9, #0x1
+    6a04: 54000220     	b.eq	0x6a48 <_ggml_graph_compute_thread+0x93c>
+    6a08: b9410109     	ldr	w9, [x8, #0x100]
+    6a0c: 9103010c     	add	x12, x8, #0xc0
+    6a10: 5280002b     	mov	w11, #0x1               ; =1
+    6a14: b8eb018c     	ldaddal	w11, w12, [x12]
+    6a18: 6b0a019f     	cmp	w12, w10
+    6a1c: 540000a1     	b.ne	0x6a30 <_ggml_graph_compute_thread+0x924>
+    6a20: b900c11f     	str	wzr, [x8, #0xc0]
+    6a24: 91040108     	add	x8, x8, #0x100
+    6a28: b8eb0108     	ldaddal	w11, w8, [x8]
+    6a2c: 14000007     	b	0x6a48 <_ggml_graph_compute_thread+0x93c>
+    6a30: b941010a     	ldr	w10, [x8, #0x100]
+    6a34: 6b09015f     	cmp	w10, w9
+    6a38: 54000061     	b.ne	0x6a44 <_ggml_graph_compute_thread+0x938>
+    6a3c: d503203f     	yield
+    6a40: 17fffffc     	b	0x6a30 <_ggml_graph_compute_thread+0x924>
+    6a44: d5033bbf     	dmb	ish
+    6a48: a9487bfd     	ldp	x29, x30, [sp, #0x80]
+    6a4c: a9474ff4     	ldp	x20, x19, [sp, #0x70]
+    6a50: a94657f6     	ldp	x22, x21, [sp, #0x60]
+    6a54: a9455ff8     	ldp	x24, x23, [sp, #0x50]
+    6a58: a94467fa     	ldp	x26, x25, [sp, #0x40]
+    6a5c: a9436ffc     	ldp	x28, x27, [sp, #0x30]
+    6a60: 910243ff     	add	sp, sp, #0x90
+    6a64: d65f03c0     	ret
+    6a68: f0000660     	adrp	x0, 0xd5000 <__ZL14table_q1_signs+0xf8>
+    6a6c: 911c2000     	add	x0, x0, #0x708
+    6a70: f0000662     	adrp	x2, 0xd5000 <__ZL14table_q1_signs+0xf8>
+    6a74: 912e2842     	add	x2, x2, #0xb8a
+    6a78: 5280fee1     	mov	w1, #0x7f7              ; =2039
+    6a7c: 9402cb90     	bl	0xb98bc <_vDSP_vsub+0xb98bc>
+    6a80: f0000660     	adrp	x0, 0xd5000 <__ZL14table_q1_signs+0xf8>
+    6a84: 911c2000     	add	x0, x0, #0x708
+    6a88: f0000662     	adrp	x2, 0xd5000 <__ZL14table_q1_signs+0xf8>
+    6a8c: 912ec442     	add	x2, x2, #0xbb1
+    6a90: 5280ff61     	mov	w1, #0x7fb              ; =2043
+    6a94: 9402cb8a     	bl	0xb98bc <_vDSP_vsub+0xb98bc>
+    6a98: f0000660     	adrp	x0, 0xd5000 <__ZL14table_q1_signs+0xf8>
+    6a9c: 911c2000     	add	x0, x0, #0x708
+    6aa0: f0000662     	adrp	x2, 0xd5000 <__ZL14table_q1_signs+0xf8>
+    6aa4: 911e6842     	add	x2, x2, #0x79a
+    6aa8: 528110c1     	mov	w1, #0x886              ; =2182
+    6aac: 9402cb84     	bl	0xb98bc <_vDSP_vsub+0xb98bc>
+    6ab0: f0000668     	adrp	x8, 0xd5000 <__ZL14table_q1_signs+0xf8>
+    6ab4: 912f6908     	add	x8, x8, #0xbda
+    6ab8: f0000660     	adrp	x0, 0xd5000 <__ZL14table_q1_signs+0xf8>
+    6abc: 911c2000     	add	x0, x0, #0x708
+    6ac0: f90003e8     	str	x8, [sp]
+    6ac4: f0000662     	adrp	x2, 0xd5000 <__ZL14table_q1_signs+0xf8>
+    6ac8: 911dac42     	add	x2, x2, #0x76b
+    6acc: 52810001     	mov	w1, #0x800              ; =2048
+    6ad0: 9402cb7b     	bl	0xb98bc <_vDSP_vsub+0xb98bc>
+    6ad4: 00000010     	udf	#0x10
+    6ad8: 00000330     	udf	#0x330
+    6adc: 000002b0     	udf	#0x2b0
+    6ae0: 000003b0     	udf	#0x3b0
+    6ae4: 000003d0     	udf	#0x3d0
+    6ae8: 000002e0     	udf	#0x2e0
+    6aec: 00000340     	udf	#0x340
+    6af0: 00000350     	udf	#0x350
+    6af4: 00000430     	udf	#0x430
+    6af8: 000003f0     	udf	#0x3f0
+    6afc: 00000220     	udf	#0x220
+    6b00: 000002f0     	udf	#0x2f0
+    6b04: 00000290     	udf	#0x290
+    6b08: 000001e0     	udf	#0x1e0
+    6b0c: 00000370     	udf	#0x370
+    6b10: 00000380     	udf	#0x380
+    6b14: 00000460     	udf	#0x460
+    6b18: 00000440     	udf	#0x440
+    6b1c: 000001c0     	udf	#0x1c0
+    6b20: 000002a0     	udf	#0x2a0
+    6b24: 000004a0     	udf	#0x4a0
+    6b28: 000001d0     	udf	#0x1d0
+    6b2c: 00000280     	udf	#0x280
+    6b30: 00000210     	udf	#0x210
+    6b34: 00000310     	udf	#0x310
+    6b38: 000001f0     	udf	#0x1f0
+    6b3c: 00000510     	udf	#0x510
+    6b40: 00000500     	udf	#0x500
+    6b44: 00000260     	udf	#0x260
+    6b48: 000002c0     	udf	#0x2c0
+    6b4c: 000003a0     	udf	#0x3a0
+    6b50: 000002d0     	udf	#0x2d0
+    6b54: 00000550     	udf	#0x550
+    6b58: 00000230     	udf	#0x230
+    6b5c: 00000450     	udf	#0x450
+    6b60: fffffe2c     	<unknown>
+    6b64: fffffe2c     	<unknown>
+    6b68: fffffe2c     	<unknown>
+    6b6c: fffffe2c     	<unknown>
+    6b70: 00000540     	udf	#0x540
+    6b74: 00000190     	udf	#0x190
+    6b78: 000003e0     	udf	#0x3e0
+    6b7c: 00000180     	udf	#0x180
+    6b80: 00000160     	udf	#0x160
+    6b84: 00000270     	udf	#0x270
+    6b88: 00000320     	udf	#0x320
+    6b8c: 00000490     	udf	#0x490
+    6b90: 00000100     	udf	#0x100
+    6b94: 000001a0     	udf	#0x1a0
+    6b98: 00000360     	udf	#0x360
+    6b9c: 000003c0     	udf	#0x3c0
+    6ba0: 00000560     	udf	#0x560
+    6ba4: 00000390     	udf	#0x390
+    6ba8: 00000140     	udf	#0x140
+    6bac: 00000110     	udf	#0x110
+    6bb0: 000005b0     	udf	#0x5b0
+    6bb4: 00000530     	udf	#0x530
+    6bb8: 00000130     	udf	#0x130
+    6bbc: 00000400     	udf	#0x400
+    6bc0: 00000480     	udf	#0x480
+    6bc4: 00000120     	udf	#0x120
+    6bc8: 000004f0     	udf	#0x4f0
+    6bcc: 000004b0     	udf	#0x4b0
+    6bd0: 000005f4     	udf	#0x5f4
+    6bd4: 00000580     	udf	#0x580
+    6bd8: 000005c0     	udf	#0x5c0
+    6bdc: 000004c0     	udf	#0x4c0
+    6be0: 000004d0     	udf	#0x4d0
+    6be4: 00000200     	udf	#0x200
+    6be8: 00000520     	udf	#0x520
+    6bec: 000000a0     	udf	#0xa0
+    6bf0: 00000570     	udf	#0x570
+    6bf4: 00000590     	udf	#0x590
+    6bf8: 00000300     	udf	#0x300
+    6bfc: 000005d0     	udf	#0x5d0
+    6c00: 000004e0     	udf	#0x4e0
+    6c04: 000000c0     	udf	#0xc0
+    6c08: 000001b0     	udf	#0x1b0
+    6c0c: 00000410     	udf	#0x410
+    6c10: 000000e0     	udf	#0xe0
+    6c14: 00000604     	udf	#0x604
+    6c18: 00000090     	udf	#0x90
+    6c1c: 00000250     	udf	#0x250
+    6c20: 00000050     	udf	#0x50
+    6c24: 00000070     	udf	#0x70
+    6c28: 00000170     	udf	#0x170
+    6c2c: 00000420     	udf	#0x420
+    6c30: 000000b0     	udf	#0xb0
+    6c34: 00000150     	udf	#0x150
+    6c38: 00000040     	udf	#0x40
+    6c3c: 000005a0     	udf	#0x5a0
+    6c40: 00000240     	udf	#0x240
+    6c44: 000000d0     	udf	#0xd0
+    6c48: 00000470     	udf	#0x470
+    6c4c: 00000060     	udf	#0x60
+    6c50: 00000614     	udf	#0x614
+    6c54: 00000030     	udf	#0x30
+    6c58: 00000080     	udf	#0x80
+    6c5c: 000000f0     	udf	#0xf0
+    6c60: 00000020     	udf	#0x20
+    6c64: 00000698     	udf	#0x698
+    6c68: 000006b0     	udf	#0x6b0
+    6c6c: 000006c8     	udf	#0x6c8

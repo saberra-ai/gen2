@@ -1566,6 +1566,18 @@ policy, original quality-gate pass, acoustic boundary gold or release status is
 established. Product-appropriate manual acoustic review and separate validation
 remain necessary before choosing a replacement segmentation policy.
 
+The [current owned-pool M1 sample](../research/nemotron-pooled-cpu-profile.md)
+completes one unchanged 12-second C ABI process at `761c9ca1`, with strict zero/92
+private-image audits and all 1,200 rows/five turns bit-exact to the saved pooled
+reference. The 35-member receipt independently checks both sampled executable
+payloads and complete delivered bytes. Observed RTF 2.37116 still fails real time;
+the three-CPU VM reports 28.78 real/69.82 user/1.31 system seconds and peak RSS
+151,617,536 bytes. Stacks and read-only decoding of the admitted library identify
+reported graph-thread offsets within a barrier counter/yield loop. Coalesced
+sample counts cannot be assigned wholly to that loop or treated as CPU usage.
+This supports a controlled four-versus-three-thread contrast, not a proven
+oversubscription cause, selected policy, performance fix or release promotion.
+
 Use public Gen2 calls for lifecycle and user-visible behavior; use the FFI seam
 for ownership/status failures, and a pinned upstream executable for independent
 native-output comparison. Stub-only tests do not establish model support.
