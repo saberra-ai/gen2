@@ -117,8 +117,24 @@ missing/reordered commands, incomplete Job cleanup and changed SDK/public/Cargo
 execution arguments. Six synthetic tests cover that boundary; final local tests
 total524 with seven Windows-only skips. Full payload replay, package consumer,
 actual construction/offline/coexistence/desktop and original release gates remain
-required. The exact producer job continues independently; no new SDK/model run
-or package admission is claimed by this metadata-only increment.
+required. These metadata-only checks do not execute a new SDK/model or admit
+a package.
+
+The [actual production-candidate result](../research/nemotron-windows-q8-candidate-results.md)
+now completes all61 owned/reaped commands, four byte-exact native/public
+histories and seven lifecycle tests. Complete payload retention independently
+passes for97 compiler objects, three graph libraries and36 full graph vectors.
+All four original RTFs fail at1.06304/1.04653/1.06233/1.05580 on a Xeon8573C;
+this differs from the earlier EPYC diagnostic host. The321-member result retains
+the original failure; no production SDK, package or release gate closes.
+The [package payload replay](../research/nemotron-windows-q8-package-admission.md)
+now validates the actual368-file delivery without Windows execution and rejects
+that unchanged failed SDK before package construction. Complete functional
+observation replay preserves false timing flags; strict package admission still
+requires all four RTFs below one. Subsequent performance work needs a separately
+justified frozen change; an identical timing retry supplies no implementation fix.
+All539 local tool tests pass with seven Windows-only skips, plus all three Pnola
+integration tests; no main promotion is established.
 
 Remaining release work as of 2026-10-17:
 

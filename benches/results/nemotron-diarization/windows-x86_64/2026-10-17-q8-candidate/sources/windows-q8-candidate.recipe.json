@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "recipe_id": "gen2-windows-cpu-q8-mx4-clang-v1",
+  "status": "production candidate; actual native/public/lifecycle/package qualification required",
+  "runtime_profile": "gen2-valid-mel-pool-cpu-v2",
+  "runtime_reported_version": "nemo-speech-asr 0.2.0+gen2-valid-mel-pool-cpu-v2",
+  "parent_runtime_profile": {
+    "path": "runtime-valid-mel-pool-cpu.lock.json",
+    "bytes": 8017,
+    "sha256": "d1c93689f41a21159b2266b5483b727da0493029b324e0badde910c7777e0e38"
+  },
+  "native_revision": "083861c241061562b8ec29eb06d7f6cdc3af8775",
+  "llama_revision": "bd4f514db14d87fded667787a7a963bfbaa98e89",
+  "platform": {
+    "os": "Windows",
+    "architecture": "x86_64",
+    "isa": [
+      "AVX2",
+      "FMA",
+      "F16C"
+    ]
+  },
+  "compiler": {
+    "kind": "clang-cl",
+    "contraction_flag": "/clang:-ffp-contract=off",
+    "binary": {
+      "bytes": 87168080,
+      "sha256": "93faf6d0a9e66ed1629eb1c9ca638a070aa1839b9490a87ff89b9cb39eeae36b"
+    },
+    "linker_binary": {
+      "bytes": 52877384,
+      "sha256": "b24601b51e04b2ef371c2809ad33e3b35dff5cb7e166e26a1d2ddb74148c212c"
+    },
+    "probe_compiler_binary": {
+      "bytes": 677776,
+      "sha256": "fe251ef50a1545b1b0835ee17b1e785459712b38d79e45b5c1d3d28970a36619"
+    }
+  },
+  "ggml": {
+    "original_patch_count": 19,
+    "candidate_patch_count": 20,
+    "appended_patch_name": "gen2-q8-model-mx4.patch",
+    "patch": {
+      "path": "patches/q8-model-mx4.patch",
+      "bytes": 1115,
+      "sha256": "97789b4693ff257579bf2188f8543cbfa9972cf87f0077eba3a57d67ceac99ef"
+    },
+    "original_sgemm": {
+      "bytes": 162829,
+      "sha256": "e226380b05393302ba91b38d22718d9521700ee2cb7943f83ad316a7a9dcd597"
+    },
+    "candidate_sgemm": {
+      "bytes": 163596,
+      "sha256": "470a3798cc6a9243a17519bd741e4cde01b1f6afe2aefeb8df0c700223614375"
+    }
+  },
+  "source_sha256_after": {
+    "include/nemo_speech/diar.h": "4839f70ccab30af3ed9949751792a547f3a8a4129848f64c8cd69889bd433afd",
+    "include/nemo_speech/asr.h": "12f3e017391ae19daabe59d2d50541f0aabb010228d075426b4a9834337422fa",
+    "models/index.json": "4d5d88c93b006b33b2e02e5c214e97e6c28e96f8673b0d744ccfa1e8f4a255b7",
+    "CMakePresets.json": "2e1e02ba92865d283ac52682b993152c7d60801c00350146b7d022efb0a44cd6",
+    "patches/series": "64bef75117d17639061ed7fb4b5470503df6c04a97646cb48be8aab11d712714",
+    "LICENSE": "eaaca34b26b27c7be5a5099a0b9ddf9913f2db0aa96f6d5854435f2916d6fdc3",
+    "NOTICE": "d5ea773d67035e676503579ecf7d5836a124649d7fe99d59ec3c50cd101e1a80",
+    "THIRD_PARTY_NOTICES.md": "fd8fcc0c71abde95b1b742a74c70aa27d2b4f2811fc19f64378b6845d8f3254a",
+    "examples/wav_reader.h": "0af593f097a1ce49078ef363feb244690598f5a53dc6a34cf208d441a52fe726",
+    "examples/diarize_file.cpp": "486332c36080906f65b37c0086b6b2ee55bc6e882f1edfcb9fe7b044894ada4d",
+    "src/asr/c_api.cpp": "d031ee096eefc0d5ed597bd8897fe05d0fe538fbe4f2119d2533a606400862fe",
+    "src/asr/diar/diar_pipeline.cpp": "fe00ae415f4741d7e07579acdc77c60f5d7327be024cf7f8aff8f52142ae9af2",
+    "CMakeLists.txt": "e79e24832e52b440808dd59a4b274ad657ed6e7bb42df992dcaf0ee87f9d39fa",
+    "VERSION": "89485a2b4d9e36147093207a87e8a9fee14396aa877f1647b2a0d53190f229f5",
+    "src/runtime/ggml/backend.cpp": "fb4624dd278f6f8feff7d0583c10a19a05946fdd733426ece29be4e51a68ae26",
+    "src/runtime/ggml/runtime.h": "338a1e1b1f1eec4f80a2460c0941fc4176e3d46682f4c3d61d8389ca32353a69",
+    "src/asr/diar/diarizer.cpp": "050676cb46dce1e2be126d163041671022bfe465ad21dc3ca5bc2ae47296ac51"
+  },
+  "parent_native_diagnostic": {
+    "path": "benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-model",
+    "manifest": {
+      "bytes": 69353,
+      "sha256": "ef01e3c6ba330b48fbfcbb36b2714862324fc2c6779c9033a95aaee8c3fc203e"
+    },
+    "qualification": {
+      "bytes": 98935,
+      "sha256": "e3659a1a0b2f45cc038ed48187afe74ef625626dc14976eccd2e02521c5738e8"
+    },
+    "source_commit": "919ddf1fcf20f7b16d2e5143cffda14f83fb48df"
+  },
+  "limits": [
+    "Build recipe identity is separate from the unchanged bounded V3 semantic runtime tag.",
+    "No diagnostic worker telemetry or forced worker override; retain the original bounded four-worker policy.",
+    "The earlier 5-percent prediction remains failed; missing graph-library retention is repaired in this producer.",
+    "A recipe is not native/public/lifecycle/package/offline/coexistence or release qualification."
+  ]
+}

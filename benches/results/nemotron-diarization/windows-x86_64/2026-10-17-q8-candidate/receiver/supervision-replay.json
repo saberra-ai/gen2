@@ -1,0 +1,3136 @@
+{
+  "schema_version": 1,
+  "source_commit": "fee2177adcd7b75b488c67bea5a593ea17df65de",
+  "run_id": 39063644421,
+  "artifact_id": 12113415778,
+  "archive": {
+    "bytes": 21683920,
+    "sha256": "30e4a56c0e56996a9558a1b1fdb198c42435490bdeefd7fae8c0648a11a06e18"
+  },
+  "delivery_admission": {
+    "bytes": 1459,
+    "sha256": "08636d52ec2aacb9e75ce8008b6b0df419e574d66dc71b69eb5438d31b1205bc"
+  },
+  "collector": {
+    "bytes": 6342,
+    "sha256": "12d73348a42d9b8853d15225abb22c5ce39fae75d5683e0864ce413160a910e9"
+  },
+  "commands_verified": 61,
+  "commands": [
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "clone-native",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.859000000000151,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "clone-native",
+        "command": [
+          "git",
+          "clone",
+          "--no-hardlinks",
+          "--no-checkout",
+          "D:\\a\\gen2\\gen2\\native-source",
+          "D:\\a\\_temp\\windows-q8-candidate\\source"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 3620,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.859000000000151
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "checkout-native",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.7180000000000746,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "checkout-native",
+        "command": [
+          "git",
+          "-C",
+          "D:\\a\\_temp\\windows-q8-candidate\\source",
+          "checkout",
+          "--detach",
+          "083861c241061562b8ec29eb06d7f6cdc3af8775"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 1384,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.7180000000000746
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "clone-llama",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 9.625,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "clone-llama",
+        "command": [
+          "git",
+          "clone",
+          "--no-hardlinks",
+          "--no-checkout",
+          "D:\\a\\gen2\\gen2\\native-source\\llama.cpp",
+          "D:\\a\\_temp\\windows-q8-candidate\\source\\llama.cpp"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 5556,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 9.625
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "checkout-llama",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 1.3120000000001255,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "checkout-llama",
+        "command": [
+          "git",
+          "-C",
+          "D:\\a\\_temp\\windows-q8-candidate\\source\\llama.cpp",
+          "checkout",
+          "--detach",
+          "bd4f514db14d87fded667787a7a963bfbaa98e89"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 7900,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 1.3120000000001255
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "inference-patch-check-0",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "inference-patch-check-0",
+        "command": [
+          "git",
+          "apply",
+          "--check",
+          "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\patches\\v3-finish-valid-mel.patch"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-candidate\\source",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 2484,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "inference-patch-0",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.1089999999999236,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "inference-patch-0",
+        "command": [
+          "git",
+          "apply",
+          "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\patches\\v3-finish-valid-mel.patch"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-candidate\\source",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 2540,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.1089999999999236
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "inference-patch-check-1",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10900000000015098,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "inference-patch-check-1",
+        "command": [
+          "git",
+          "apply",
+          "--check",
+          "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\patches\\cpu-thread-cap.patch"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-candidate\\source",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 2184,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.10900000000015098
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "inference-patch-1",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "inference-patch-1",
+        "command": [
+          "git",
+          "apply",
+          "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\patches\\cpu-thread-cap.patch"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-candidate\\source",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 8036,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "inference-patch-check-2",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10999999999989996,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "inference-patch-check-2",
+        "command": [
+          "git",
+          "apply",
+          "--check",
+          "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\patches\\persistent-cpu-pool.patch"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-candidate\\source",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 6844,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.10999999999989996
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "inference-patch-2",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10900000000015098,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "inference-patch-2",
+        "command": [
+          "git",
+          "apply",
+          "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\patches\\persistent-cpu-pool.patch"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-candidate\\source",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 6500,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.10900000000015098
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "compiler-version",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "compiler-version",
+        "command": [
+          "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+          "--version"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 5124,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "cmake-version",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.7180000000000746,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "cmake-version",
+        "command": [
+          "cmake",
+          "--version"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 2860,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.7180000000000746
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "git-line-ending-config",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10900000000015098,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "git-line-ending-config",
+        "command": [
+          "git",
+          "-C",
+          "D:\\a\\_temp\\windows-q8-candidate\\source\\llama.cpp",
+          "config",
+          "--show-origin",
+          "--get-regexp",
+          "^core\\.(autocrlf|eol)$"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 5652,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.10900000000015098
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "sdk-build",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 162.17200000000003,
+      "remaining_before_cleanup": {
+        "assigned_count": 1,
+        "processes": [
+          {
+            "pid": 2484,
+            "membership_confirmed": true,
+            "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\vctip.exe"
+          }
+        ],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "sdk-build",
+        "command": [
+          "pwsh",
+          "-NoProfile",
+          "-NonInteractive",
+          "-Command",
+          "& 'D:\\a\\_temp\\windows-q8-candidate\\source\\scripts\\windows\\build.ps1' -Backend cpu -Compiler clang-cl -Profile asr -Jobs 2 -BuildDir 'D:\\a\\_temp\\windows-q8-candidate\\source\\build\\gen2-cpu-diar' -CMakeArgs @('-DCMAKE_C_FLAGS_INIT:STRING=/clang:-ffp-contract=off','-DCMAKE_CXX_FLAGS_INIT:STRING=/clang:-ffp-contract=off','-DNEMO_SPEECH_BUILD_EXAMPLES=ON','-DNEMO_SPEECH_BUILD_CLI=OFF','-DNEMO_SPEECH_BUILD_MIC_CAPTURE=OFF','-DGGML_OPENMP=OFF','-DNEMO_SPEECH_VERSION_METADATA=gen2-valid-mel-pool-cpu-v2','-DGGML_NATIVE=OFF','-DGGML_AVX=ON','-DGGML_AVX2=ON','-DGGML_AVX512=OFF','-DGGML_AVX_VNNI=OFF','-DGGML_FMA=ON','-DGGML_F16C=ON','-DNEMO_SPEECH_WITH_NORM=OFF','-DCMAKE_INSTALL_LIBDIR=lib','-DNEMO_SPEECH_BUILD_TESTS=ON','-DBUILD_TESTING=ON','-DCMAKE_EXPORT_COMPILE_COMMANDS=ON','-DNEMO_SPEECH_GGML_PATCHED=ON','-DNEMO_SPEECH_LLAMA_CPP_SOURCE_DIR:PATH=','-DGGML_BACKEND_DL=OFF','-DGGML_METAL=OFF','-DGGML_CUDA=OFF','-DGGML_VULKAN=OFF','-DCMAKE_INSTALL_PREFIX=D:\\a\\_temp\\windows-q8-candidate\\sdk','-DCMAKE_C_COMPILER=C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe','-DCMAKE_CXX_COMPILER=C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe','-DCMAKE_PROJECT_TOP_LEVEL_INCLUDES:FILEPATH=D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\windows_private_dlls.cmake','-DNEMO_SPEECH_BUILD_ASR=OFF','-DNEMO_SPEECH_BUILD_TTS=OFF')"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 564,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 1,
+            "processes": [
+              {
+                "pid": 2484,
+                "membership_confirmed": true,
+                "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\vctip.exe"
+              }
+            ],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 162.17200000000003
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "sdk-install",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.375,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "sdk-install",
+        "command": [
+          "cmake",
+          "--install",
+          "D:\\a\\_temp\\windows-q8-candidate\\source\\build\\gen2-cpu-diar",
+          "--config",
+          "Release"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 6256,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.375
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "compiler-llama-archive",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.38999999999987267,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "compiler-llama-archive",
+        "command": [
+          "git",
+          "archive",
+          "--format=tar",
+          "-o",
+          "D:\\a\\_temp\\windows-q8-candidate\\evidence\\platform-pristine-llama.tar",
+          "bd4f514db14d87fded667787a7a963bfbaa98e89",
+          "--",
+          ".",
+          ":(exclude)models",
+          ":(exclude)docs",
+          ":(exclude)media"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-candidate\\source\\llama.cpp",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 5224,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.38999999999987267
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "compiler-llama-patch-0",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "compiler-llama-patch-0",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-candidate\\evidence\\current-platform-llama.patch"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-candidate\\evidence\\platform-llama-replay-isrcwajc",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 6360,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "compiler-llama-patch-1",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "compiler-llama-patch-1",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-candidate\\evidence\\current-platform-llama.patch"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-candidate\\evidence\\platform-llama-replay-isrcwajc",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 5532,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "compiler-llama-patch-2",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.0929999999998472,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "compiler-llama-patch-2",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-candidate\\evidence\\current-platform-llama.patch"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-candidate\\evidence\\platform-llama-replay-isrcwajc",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 996,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.0929999999998472
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "compiler-llama-patch-3",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "compiler-llama-patch-3",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-candidate\\evidence\\current-platform-llama.patch"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-candidate\\evidence\\platform-llama-replay-isrcwajc",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 1316,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "compiler-llama-patch-4",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "compiler-llama-patch-4",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-candidate\\evidence\\current-platform-llama.patch"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-candidate\\evidence\\platform-llama-replay-isrcwajc",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 2044,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "compiler-llama-patch-5",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.1089999999999236,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "compiler-llama-patch-5",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-candidate\\evidence\\current-platform-llama.patch"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-candidate\\evidence\\platform-llama-replay-isrcwajc",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 728,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.1089999999999236
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "compiler-llama-patch-6",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "compiler-llama-patch-6",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-candidate\\evidence\\current-platform-llama.patch"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-candidate\\evidence\\platform-llama-replay-isrcwajc",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 2308,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "compiler-llama-patch-7",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.1089999999999236,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "compiler-llama-patch-7",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-candidate\\evidence\\current-platform-llama.patch"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-candidate\\evidence\\platform-llama-replay-isrcwajc",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 7252,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.1089999999999236
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "compiler-llama-patch-8",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.1089999999999236,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "compiler-llama-patch-8",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-candidate\\evidence\\current-platform-llama.patch"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-candidate\\evidence\\platform-llama-replay-isrcwajc",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 7304,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.1089999999999236
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "compiler-llama-patch-9",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.1089999999999236,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "compiler-llama-patch-9",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-candidate\\evidence\\current-platform-llama.patch"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-candidate\\evidence\\platform-llama-replay-isrcwajc",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 2544,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.1089999999999236
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "compiler-llama-patch-10",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "compiler-llama-patch-10",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-candidate\\evidence\\current-platform-llama.patch"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-candidate\\evidence\\platform-llama-replay-isrcwajc",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 2596,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "compiler-llama-patch-11",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "compiler-llama-patch-11",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-candidate\\evidence\\current-platform-llama.patch"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-candidate\\evidence\\platform-llama-replay-isrcwajc",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 7504,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "compiler-llama-patch-12",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.1089999999999236,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "compiler-llama-patch-12",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-candidate\\evidence\\current-platform-llama.patch"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-candidate\\evidence\\platform-llama-replay-isrcwajc",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 4824,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.1089999999999236
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "compiler-llama-patch-13",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "compiler-llama-patch-13",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-candidate\\evidence\\current-platform-llama.patch"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-candidate\\evidence\\platform-llama-replay-isrcwajc",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 5204,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "compiler-llama-patch-14",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "compiler-llama-patch-14",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-candidate\\evidence\\current-platform-llama.patch"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-candidate\\evidence\\platform-llama-replay-isrcwajc",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 2948,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "compiler-llama-patch-15",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "compiler-llama-patch-15",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-candidate\\evidence\\current-platform-llama.patch"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-candidate\\evidence\\platform-llama-replay-isrcwajc",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 7944,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "compiler-llama-patch-16",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "compiler-llama-patch-16",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-candidate\\evidence\\current-platform-llama.patch"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-candidate\\evidence\\platform-llama-replay-isrcwajc",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 6444,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "compiler-llama-patch-17",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.1089999999999236,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "compiler-llama-patch-17",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-candidate\\evidence\\current-platform-llama.patch"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-candidate\\evidence\\platform-llama-replay-isrcwajc",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 624,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.1089999999999236
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "compiler-llama-patch-18",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.1089999999999236,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "compiler-llama-patch-18",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-candidate\\evidence\\current-platform-llama.patch"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-candidate\\evidence\\platform-llama-replay-isrcwajc",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 2492,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.1089999999999236
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "compiler-llama-patch-19",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "compiler-llama-patch-19",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-candidate\\evidence\\current-platform-llama.patch"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-candidate\\evidence\\platform-llama-replay-isrcwajc",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 6380,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "model-free-state-test",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.7809999999999491,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "model-free-state-test",
+        "command": [
+          "ctest",
+          "--test-dir",
+          "D:\\a\\_temp\\windows-q8-candidate\\source\\build\\gen2-cpu-diar",
+          "--output-on-failure",
+          "-R",
+          "^diar_state$"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 7116,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.7809999999999491
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "native-probe-build",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 4.030999999999949,
+      "remaining_before_cleanup": {
+        "assigned_count": 1,
+        "processes": [
+          {
+            "pid": 5732,
+            "membership_confirmed": true,
+            "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\vctip.exe"
+          }
+        ],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "native-probe-build",
+        "command": [
+          "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+          "/nologo",
+          "/std:c++17",
+          "/O2",
+          "/EHsc",
+          "/TP",
+          "D:\\a\\_temp\\windows-q8-candidate\\evidence\\native_stream_probe_bounded.cpp",
+          "D:\\a\\_temp\\windows-q8-candidate\\source\\llama.cpp\\vendor\\hash\\sha256\\sha256.c",
+          "/ID:\\a\\_temp\\windows-q8-candidate\\sdk\\include",
+          "/ID:\\a\\_temp\\windows-q8-candidate\\source\\examples",
+          "/ID:\\a\\_temp\\windows-q8-candidate\\source\\llama.cpp\\vendor\\hash",
+          "/link",
+          "D:\\a\\_temp\\windows-q8-candidate\\sdk\\lib\\gen2_nemo_windows_nemo_speech_asr_c.lib",
+          "/OUT:D:\\a\\_temp\\windows-q8-candidate\\sdk\\bin\\gen2_native_stream_probe_valid_mel.exe"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-candidate\\evidence",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 332,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 1,
+            "processes": [
+              {
+                "pid": 5732,
+                "membership_confirmed": true,
+                "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\vctip.exe"
+              }
+            ],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 4.030999999999949
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "windows-provenance",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 2.6720000000000255,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "windows-provenance",
+        "command": [
+          "pwsh",
+          "-NoProfile",
+          "-NonInteractive",
+          "-File",
+          "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\windows_provenance.ps1",
+          "-SdkRoot",
+          "D:\\a\\_temp\\windows-q8-candidate\\sdk",
+          "-CMakeCache",
+          "D:\\a\\_temp\\windows-q8-candidate\\source\\build\\gen2-cpu-diar\\CMakeCache.txt",
+          "-Compiler",
+          "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+          "-Output",
+          "D:\\a\\_temp\\windows-q8-candidate\\evidence"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 7136,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 2.6720000000000255
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "gen2-build",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 305.9850000000001,
+      "remaining_before_cleanup": {
+        "assigned_count": 1,
+        "processes": [
+          {
+            "pid": 2004,
+            "membership_confirmed": true,
+            "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\vctip.exe"
+          }
+        ],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "gen2-build",
+        "command": [
+          "cargo",
+          "build",
+          "--locked",
+          "--release",
+          "--no-default-features",
+          "--features",
+          "backend-diar-nemo",
+          "--example",
+          "nemotron_valid_mel_stream",
+          "--test",
+          "diarization_native"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 1412,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 1,
+            "processes": [
+              {
+                "pid": 2004,
+                "membership_confirmed": true,
+                "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\vctip.exe"
+              }
+            ],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 305.9850000000001
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "loader-dependencies",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.13999999999987267,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "loader-dependencies",
+        "command": [
+          "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\dumpbin.exe",
+          "/nologo",
+          "/dependents",
+          "D:\\a\\_temp\\windows-q8-candidate\\sdk\\bin\\gen2_nemo_windows_nemo_speech_asr_c.dll"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 5052,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.13999999999987267
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "version-only",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.1089999999999236,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "version-only",
+        "command": [
+          "C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\python.exe",
+          "-c",
+          "import ctypes,os,sys; directory=os.add_dll_directory(sys.argv[2]) if os.name==\"nt\" else None; library=ctypes.CDLL(sys.argv[1]); function=library.nemo_speech_asr_version; function.restype=ctypes.c_char_p; print(function().decode(\"utf-8\"))",
+          "D:\\a\\_temp\\windows-q8-candidate\\sdk\\bin\\gen2_nemo_windows_nemo_speech_asr_c.dll",
+          "D:\\a\\_temp\\windows-q8-candidate\\sdk\\bin"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 1628,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.1089999999999236
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "receiver-host",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 1.6089999999999236,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "receiver-host",
+        "command": [
+          "pwsh",
+          "-NoProfile",
+          "-NonInteractive",
+          "-Command",
+          "$ErrorActionPreference='Stop'\n$os=Get-CimInstance Win32_OperatingSystem\n$cpu=@(Get-CimInstance Win32_Processor | Select-Object Name,Manufacturer,Architecture,NumberOfCores,NumberOfLogicalProcessors,ProcessorId)\n@{os=@{caption=$os.Caption;version=$os.Version;build=$os.BuildNumber};cpu=$cpu;\navx2=[System.Runtime.Intrinsics.X86.Avx2]::IsSupported;fma=[System.Runtime.Intrinsics.X86.Fma]::IsSupported} | ConvertTo-Json -Depth 8\n"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 1224,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 1.6089999999999236
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "kernel-disassembly",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 5.9220000000000255,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "kernel-disassembly",
+        "command": [
+          "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\dumpbin.exe",
+          "/nologo",
+          "/disasm",
+          "/symbols",
+          "D:\\a\\_temp\\windows-q8-candidate\\evidence\\kernel.obj"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 1236,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 5.9220000000000255
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "matrix-control-build",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 7.2029999999999745,
+      "remaining_before_cleanup": {
+        "assigned_count": 1,
+        "processes": [
+          {
+            "pid": 7328,
+            "membership_confirmed": true,
+            "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\vctip.exe"
+          }
+        ],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "matrix-control-build",
+        "command": [
+          "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+          "/nologo",
+          "/std:c++17",
+          "/O2",
+          "/EHsc",
+          "/TP",
+          "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\ggml_matrix_profile_control.cpp",
+          "/ID:\\a\\_temp\\windows-q8-candidate\\source\\build\\gen2-cpu-diar\\_deps\\llama.cpp\\ggml\\include",
+          "/link",
+          "D:\\a\\_temp\\windows-q8-candidate\\source\\build\\gen2-cpu-diar\\ggml\\src\\gen2_nemo_windows_ggml.lib",
+          "/OUT:D:\\a\\_temp\\windows-q8-candidate\\evidence\\matrix-profile-control.exe",
+          "D:\\a\\_temp\\windows-q8-candidate\\source\\build\\gen2-cpu-diar\\ggml\\src\\gen2_nemo_windows_ggml-base.lib",
+          "D:\\a\\_temp\\windows-q8-candidate\\source\\build\\gen2-cpu-diar\\ggml\\src\\gen2_nemo_windows_ggml-cpu.lib"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-candidate\\evidence",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 7888,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 1,
+            "processes": [
+              {
+                "pid": 7328,
+                "membership_confirmed": true,
+                "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\vctip.exe"
+              }
+            ],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 7.2029999999999745
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "matrix-control-1",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 6.0470000000000255,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "matrix-control-1",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-candidate\\evidence\\matrix-profile-control.exe",
+          "1",
+          "D:\\a\\_temp\\windows-q8-candidate\\evidence\\matrix-control-1"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 7660,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 6.0470000000000255
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "matrix-control-2",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 6.141000000000076,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "matrix-control-2",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-candidate\\evidence\\matrix-profile-control.exe",
+          "2",
+          "D:\\a\\_temp\\windows-q8-candidate\\evidence\\matrix-control-2"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 6052,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 6.141000000000076
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "matrix-control-4",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 6.1720000000000255,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "matrix-control-4",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-candidate\\evidence\\matrix-profile-control.exe",
+          "4",
+          "D:\\a\\_temp\\windows-q8-candidate\\evidence\\matrix-control-4"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 2604,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 6.1720000000000255
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "windows-default-loader-control",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 6.483999999999924,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "windows-default-loader-control",
+        "command": [
+          "C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\python.exe",
+          "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\windows_loader_control.py",
+          "D:\\a\\_temp\\windows-q8-candidate\\sdk\\bin\\gen2_nemo_windows_nemo_speech_asr_c.dll"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 2172,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 6.483999999999924
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "case-0-native",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 70.29700000000003,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "case-0-native",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-candidate\\sdk\\bin\\gen2_native_stream_probe_valid_mel.exe",
+          "D:\\a\\_temp\\windows-q8-candidate\\assets\\Nemotron-3-Diarization.q8_0.gguf",
+          "D:\\a\\_temp\\windows-q8-candidate\\assets\\ami_en2002d_2132.wav",
+          "1",
+          "-1",
+          "D:\\a\\_temp\\windows-q8-candidate\\evidence\\case-0-native.json"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 6760,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 70.29700000000003
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "case-1-public",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 69.42200000000003,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "case-1-public",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-candidate-target\\release\\examples\\nemotron_valid_mel_stream.exe",
+          "D:\\a\\_temp\\windows-q8-candidate\\assets",
+          "D:\\a\\_temp\\windows-q8-candidate\\sdk\\bin\\gen2_nemo_windows_nemo_speech_asr_c.dll",
+          "D:\\a\\_temp\\windows-q8-candidate\\assets\\ami_en2002d_2132.wav",
+          "1",
+          "D:\\a\\_temp\\windows-q8-candidate\\evidence\\case-1-public.json.f32"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 2932,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 69.42200000000003
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "case-2-public",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 70.4369999999999,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "case-2-public",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-candidate-target\\release\\examples\\nemotron_valid_mel_stream.exe",
+          "D:\\a\\_temp\\windows-q8-candidate\\assets",
+          "D:\\a\\_temp\\windows-q8-candidate\\sdk\\bin\\gen2_nemo_windows_nemo_speech_asr_c.dll",
+          "D:\\a\\_temp\\windows-q8-candidate\\assets\\ami_en2002d_2132.wav",
+          "1",
+          "D:\\a\\_temp\\windows-q8-candidate\\evidence\\case-2-public.json.f32"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 1528,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 70.4369999999999
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "case-3-native",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 69.90599999999995,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "case-3-native",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-candidate\\sdk\\bin\\gen2_native_stream_probe_valid_mel.exe",
+          "D:\\a\\_temp\\windows-q8-candidate\\assets\\Nemotron-3-Diarization.q8_0.gguf",
+          "D:\\a\\_temp\\windows-q8-candidate\\assets\\ami_en2002d_2132.wav",
+          "1",
+          "-1",
+          "D:\\a\\_temp\\windows-q8-candidate\\evidence\\case-3-native.json"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 80,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 69.90599999999995
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "native-lifecycle-list",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 7.516000000000076,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "native-lifecycle-list",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--release",
+          "--no-default-features",
+          "--features",
+          "backend-diar-nemo",
+          "--test",
+          "diarization_native",
+          "--",
+          "--ignored",
+          "--list"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 4900,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 7.516000000000076
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "native-lifecycle-0",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 7.6720000000000255,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "native-lifecycle-0",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--release",
+          "--no-default-features",
+          "--features",
+          "backend-diar-nemo",
+          "--test",
+          "diarization_native",
+          "--",
+          "--ignored",
+          "--exact",
+          "dropping_a_diarization_child_keeps_the_parent_pipeline_active",
+          "--test-threads=1"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 5796,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 7.6720000000000255
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "native-lifecycle-1",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 7.8279999999999745,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "native-lifecycle-1",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--release",
+          "--no-default-features",
+          "--features",
+          "backend-diar-nemo",
+          "--test",
+          "diarization_native",
+          "--",
+          "--ignored",
+          "--exact",
+          "native_admission_cancellation_and_failed_load_release_reservations",
+          "--test-threads=1"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 2492,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 7.8279999999999745
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "native-lifecycle-2",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 135.78099999999995,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "native-lifecycle-2",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--release",
+          "--no-default-features",
+          "--features",
+          "backend-diar-nemo",
+          "--test",
+          "diarization_native",
+          "--",
+          "--ignored",
+          "--exact",
+          "real_diarizer_matches_native_reference_and_resets_recordings",
+          "--test-threads=1"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 5160,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 135.78099999999995
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "native-lifecycle-3",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 27.766000000000076,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "native-lifecycle-3",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--release",
+          "--no-default-features",
+          "--features",
+          "backend-diar-nemo",
+          "--test",
+          "diarization_native",
+          "--",
+          "--ignored",
+          "--exact",
+          "repeated_reload_full_queue_cancel_and_dropped_stream_release_resources",
+          "--test-threads=1"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 5824,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 27.766000000000076
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "native-lifecycle-4",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 71.21799999999985,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "native-lifecycle-4",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--release",
+          "--no-default-features",
+          "--features",
+          "backend-diar-nemo",
+          "--test",
+          "diarization_native",
+          "--",
+          "--ignored",
+          "--exact",
+          "silence_short_tail_and_idle_deadline_have_explicit_terminal_results",
+          "--test-threads=1"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 6100,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 71.21799999999985
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "native-lifecycle-5",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 135.76600000000008,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "native-lifecycle-5",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--release",
+          "--no-default-features",
+          "--features",
+          "backend-diar-nemo",
+          "--test",
+          "diarization_native",
+          "--",
+          "--ignored",
+          "--exact",
+          "streamed_uneven_pcm_matches_recording_and_finish_is_idempotent",
+          "--test-threads=1"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 6844,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 135.76600000000008
+      }
+    },
+    {
+      "variant": "candidate",
+      "sdk_compiler": "clang-cl",
+      "name": "native-lifecycle-6",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 7.639999999999873,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true,
+      "saved_command": {
+        "name": "native-lifecycle-6",
+        "command": [
+          "cargo",
+          "test",
+          "--locked",
+          "--release",
+          "--no-default-features",
+          "--features",
+          "backend-diar-nemo",
+          "--test",
+          "diarization_native",
+          "--",
+          "--ignored",
+          "--exact",
+          "verified_provisioned_cache_is_reused_offline",
+          "--test-threads=1"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 240,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 7.639999999999873
+      }
+    }
+  ],
+  "supervision_observed": true,
+  "all_observed_commands_cleanup_admitted": true,
+  "new_compiler_sdk_model_calls": 0,
+  "scope": "Saved command-supervision replay only; compiler/source/numerical/timing admission remains separate."
+}

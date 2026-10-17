@@ -1,0 +1,280 @@
+{
+  "schema_version": 1,
+  "collection_completed": true,
+  "source_commit": "fee2177adcd7b75b488c67bea5a593ea17df65de",
+  "run_id": 39063644421,
+  "job_id": 117486629205,
+  "artifact_id": 12113415778,
+  "archive": {
+    "bytes": 21683920,
+    "sha256": "30e4a56c0e56996a9558a1b1fdb198c42435490bdeefd7fae8c0648a11a06e18"
+  },
+  "protocol": {
+    "bytes": 190779,
+    "sha256": "8d22329d34a58422ffde3fc2067ea3ebfa2e9928d3845e16fb07f91e58ec18ff"
+  },
+  "collector": {
+    "bytes": 21038,
+    "sha256": "f50a8178176307ed870bf934330d7e29971cf650f6713a3b2791bf96c70f571c"
+  },
+  "delivery_admission": {
+    "bytes": 1459,
+    "sha256": "08636d52ec2aacb9e75ce8008b6b0df419e574d66dc71b69eb5438d31b1205bc"
+  },
+  "supervision_replay": {
+    "bytes": 112084,
+    "sha256": "ad21ae602d6bc56fad2352aad008138cb8451c1cde76868c58b8cc0b91590b29"
+  },
+  "receiver_inputs": {
+    "producer-run.json": {
+      "bytes": 11857,
+      "sha256": "b78e1668e18d898c125b55830aeddbb8bd43f8259cd766d471a381f704e7c62a"
+    },
+    "artifacts.json": {
+      "bytes": 735,
+      "sha256": "a54decaeefb7d335b19e315d051cb369ef7500117bd4041fc572f8eebd423507"
+    },
+    "job.json": {
+      "bytes": 3729,
+      "sha256": "d3ae8300386e364a1cd6e7c542751ce752f776401bba39ca492fc16049febc46"
+    },
+    "job.log": {
+      "bytes": 79555,
+      "sha256": "423c68b901f918ca488845f1963c2ddf102746ceb0d051b652492f8d94007412"
+    },
+    "delivery-admission.json": {
+      "bytes": 1459,
+      "sha256": "08636d52ec2aacb9e75ce8008b6b0df419e574d66dc71b69eb5438d31b1205bc"
+    },
+    "artifact-members.json": {
+      "bytes": 60110,
+      "sha256": "f3a2fe3d9f19e9fa91305ed4ad5217ac52fde53df82dfea0081e9b4963a14788"
+    },
+    "supervision-replay.json": {
+      "bytes": 112084,
+      "sha256": "ad21ae602d6bc56fad2352aad008138cb8451c1cde76868c58b8cc0b91590b29"
+    },
+    "delivery-helper.py": {
+      "bytes": 6881,
+      "sha256": "5d20392131a8ce3cb50814f9146b825b411ff829be823652a30d94cc2eb00b05"
+    },
+    "supervision-helper.py": {
+      "bytes": 6342,
+      "sha256": "12d73348a42d9b8853d15225abb22c5ce39fae75d5683e0864ce413160a910e9"
+    }
+  },
+  "independent_source_only_proof": {
+    "path": "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-candidate-source-admission-v7/qualification.json",
+    "bytes": 806957,
+    "sha256": "480a080cf8a73373533fa6ec040a245157de9442a6c39556e1236a6919978d22"
+  },
+  "tools_verified": 105,
+  "repository_files_verified": 818,
+  "artifact_members_verified": 368,
+  "supervised_zero_exit_and_reaped_commands": 61,
+  "host": {
+    "os": {
+      "caption": "Microsoft Windows Server 2022 Datacenter",
+      "version": "10.0.20348",
+      "build": "20348"
+    },
+    "fma": true,
+    "cpu": [
+      {
+        "Name": "INTEL(R) XEON(R) PLATINUM 8573C",
+        "Manufacturer": "GenuineIntel",
+        "Architecture": 9,
+        "NumberOfCores": 2,
+        "NumberOfLogicalProcessors": 4,
+        "ProcessorId": "0000000000000000"
+      }
+    ],
+    "avx2": true
+  },
+  "sdk_files": 66,
+  "ggml_files": 3425,
+  "compiler_inputs": 97,
+  "retained_compiler_objects_verified": 97,
+  "graph_vectors_verified": 36,
+  "retained_graph_import_libraries_verified": 3,
+  "graph_input_payloads_fully_rehashed": true,
+  "all_preregistered_evidence_retained": true,
+  "full_sequence_bit_exact": true,
+  "cases": [
+    {
+      "index": 0,
+      "kind": "native",
+      "elapsed_micros": 63782456,
+      "rtf": 1.0630409333333333,
+      "turns": 27,
+      "probabilities": {
+        "bytes": 192000,
+        "sha256": "6b08c607371bab2b7965faebe88d8ee31ae39c41c377043d137cbbf424f3af7d"
+      }
+    },
+    {
+      "index": 1,
+      "kind": "public",
+      "elapsed_micros": 62791514,
+      "rtf": 1.0465252333333332,
+      "turns": 27,
+      "probabilities": {
+        "bytes": 192000,
+        "sha256": "6b08c607371bab2b7965faebe88d8ee31ae39c41c377043d137cbbf424f3af7d"
+      }
+    },
+    {
+      "index": 2,
+      "kind": "public",
+      "elapsed_micros": 63739538,
+      "rtf": 1.0623256333333333,
+      "turns": 27,
+      "probabilities": {
+        "bytes": 192000,
+        "sha256": "6b08c607371bab2b7965faebe88d8ee31ae39c41c377043d137cbbf424f3af7d"
+      }
+    },
+    {
+      "index": 3,
+      "kind": "native",
+      "elapsed_micros": 63348272,
+      "rtf": 1.0558045333333332,
+      "turns": 27,
+      "probabilities": {
+        "bytes": 192000,
+        "sha256": "6b08c607371bab2b7965faebe88d8ee31ae39c41c377043d137cbbf424f3af7d"
+      }
+    }
+  ],
+  "comparisons": [
+    {
+      "passed": true,
+      "scope": "wrapper/reference correctness at the recorded duration; not held-out quality or full release qualification",
+      "runtime_profile": "gen2-valid-mel-pool-cpu-v2",
+      "frame_contract": "v3-streaming-valid-mel-v1",
+      "audio_duration_seconds": 60.0,
+      "backend": "cpu",
+      "device": null,
+      "native_frame_count": 6000,
+      "retained_first_frame": 0,
+      "retained_rows": 6000,
+      "turns": 27,
+      "maximum_turn_error_seconds": 0.0,
+      "turn_tolerance_seconds": 1e-06,
+      "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+      "retained_probabilities_match": true,
+      "maximum_probability_error": 0.0,
+      "probability_tolerance": 1e-06,
+      "gen2_rtf": 1.0465252333333332,
+      "native_rtf": 1.0630409333333335,
+      "runtime_version": "nemo-speech-asr 0.2.0+gen2-valid-mel-pool-cpu-v2",
+      "probabilities_bit_exact": true,
+      "realtime_gate_passed": false,
+      "rtf_limit_exclusive": 1.0,
+      "frozen_reference_comparison": {
+        "passed": true,
+        "scope": "native diagnostic parity only; no public/lifecycle/package qualification",
+        "runtime_profile": "diagnostic-worker-matrix-v1",
+        "frame_contract": "v3-streaming-valid-mel-v1",
+        "audio_duration_seconds": 60.0,
+        "backend": "cpu",
+        "device": null,
+        "native_frame_count": 6000,
+        "retained_first_frame": 0,
+        "retained_rows": 6000,
+        "turns": 27,
+        "maximum_turn_error_seconds": 0.0,
+        "turn_tolerance_seconds": 1e-06,
+        "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+        "retained_probabilities_match": true,
+        "maximum_probability_error": 0.0,
+        "probability_tolerance": 1e-06,
+        "reference_runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-4",
+        "actual_runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-4",
+        "reference_cap": 4,
+        "actual_cap": 4,
+        "probabilities_bit_exact": true,
+        "reference_rtf": 1.0473386833333334,
+        "actual_rtf": 1.0630409333333335
+      },
+      "build_recipe_id": "gen2-windows-cpu-q8-mx4-clang-v1"
+    },
+    {
+      "passed": true,
+      "scope": "wrapper/reference correctness at the recorded duration; not held-out quality or full release qualification",
+      "runtime_profile": "gen2-valid-mel-pool-cpu-v2",
+      "frame_contract": "v3-streaming-valid-mel-v1",
+      "audio_duration_seconds": 60.0,
+      "backend": "cpu",
+      "device": null,
+      "native_frame_count": 6000,
+      "retained_first_frame": 0,
+      "retained_rows": 6000,
+      "turns": 27,
+      "maximum_turn_error_seconds": 0.0,
+      "turn_tolerance_seconds": 1e-06,
+      "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+      "retained_probabilities_match": true,
+      "maximum_probability_error": 0.0,
+      "probability_tolerance": 1e-06,
+      "gen2_rtf": 1.0623256333333333,
+      "native_rtf": 1.0558045333333335,
+      "runtime_version": "nemo-speech-asr 0.2.0+gen2-valid-mel-pool-cpu-v2",
+      "probabilities_bit_exact": true,
+      "realtime_gate_passed": false,
+      "rtf_limit_exclusive": 1.0,
+      "frozen_reference_comparison": {
+        "passed": true,
+        "scope": "native diagnostic parity only; no public/lifecycle/package qualification",
+        "runtime_profile": "diagnostic-worker-matrix-v1",
+        "frame_contract": "v3-streaming-valid-mel-v1",
+        "audio_duration_seconds": 60.0,
+        "backend": "cpu",
+        "device": null,
+        "native_frame_count": 6000,
+        "retained_first_frame": 0,
+        "retained_rows": 6000,
+        "turns": 27,
+        "maximum_turn_error_seconds": 0.0,
+        "turn_tolerance_seconds": 1e-06,
+        "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+        "retained_probabilities_match": true,
+        "maximum_probability_error": 0.0,
+        "probability_tolerance": 1e-06,
+        "reference_runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-4",
+        "actual_runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-4",
+        "reference_cap": 4,
+        "actual_cap": 4,
+        "probabilities_bit_exact": true,
+        "reference_rtf": 1.0473386833333334,
+        "actual_rtf": 1.0558045333333335
+      },
+      "build_recipe_id": "gen2-windows-cpu-q8-mx4-clang-v1"
+    }
+  ],
+  "completed_lifecycle_tests": [
+    "dropping_a_diarization_child_keeps_the_parent_pipeline_active",
+    "native_admission_cancellation_and_failed_load_release_reservations",
+    "real_diarizer_matches_native_reference_and_resets_recordings",
+    "repeated_reload_full_queue_cancel_and_dropped_stream_release_resources",
+    "silence_short_tail_and_idle_deadline_have_explicit_terminal_results",
+    "streamed_uneven_pcm_matches_recording_and_finish_is_idempotent",
+    "verified_provisioned_cache_is_reused_offline"
+  ],
+  "execution_command_admission": {
+    "history_commands": 4,
+    "lifecycle_commands": 8
+  },
+  "functional_lifecycle_gates_passed": true,
+  "realtime_gate_passed": false,
+  "production_candidate_sdk_gates_passed": false,
+  "release_qualified": false,
+  "package_qualified": false,
+  "new_compiler_sdk_model_calls_during_collection": 0,
+  "limits": [
+    "Source SDK and same-host public/lifecycle qualification only; package/offline/coexistence/desktop, accuracy and deferred human word-time/release gates remain.",
+    "Compiler/linker/MSVC aliases and execution are CI observations; receiver rehashes retained source/object/library/SDK/public binaries without executing Windows tools.",
+    "Independent source-only reconstruction admits bounded inference, all3425 materialized files and97 actual compiler sources.",
+    "Earlier failed5percent diagnostic prediction remains failed; allfour original strict RTFs are evaluated independently."
+  ]
+}

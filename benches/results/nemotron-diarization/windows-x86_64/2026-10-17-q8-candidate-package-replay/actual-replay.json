@@ -1,0 +1,169 @@
+{
+  "schema_version": 1,
+  "run_id": 39063644421,
+  "job_id": 117486629205,
+  "artifact_id": 12113415778,
+  "archive": {
+    "bytes": 21683920,
+    "sha256": "30e4a56c0e56996a9558a1b1fdb198c42435490bdeefd7fae8c0648a11a06e18"
+  },
+  "inputs": {
+    "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/candidate_windows_compiler_receipt.py": {
+      "bytes": 3941,
+      "sha256": "559b2fb64a3f1cc079615b9b5122dd4faf2fc510e972cf67f4f17e4348d86ce2"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/candidate_windows_payloads.py": {
+      "bytes": 19600,
+      "sha256": "0732803598ea830769763f89c8cf6f3dcad4107ff12b63167799fd31f6504684"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/candidate_windows_sdk_receipt.py": {
+      "bytes": 10351,
+      "sha256": "303b52f90d57fcbe11c1f3a4350ff321d9aee025c8570ab689d683c4270c3a0c"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/run-q8-candidate-package-payload-replay-v2.py": {
+      "bytes": 2483,
+      "sha256": "3c4e6d4b7f2e8053e47b3bed1337b8b22dd67bbecafc52fd33838d4d40b952b1"
+    }
+  },
+  "payload_replay": {
+    "producer_receipt": {
+      "bytes": 489948,
+      "sha256": "91cda5dd038e2c151aa327f270f68018738dcbcb9d46f8a954867fb480f10393"
+    },
+    "source_commit": "fee2177adcd7b75b488c67bea5a593ea17df65de",
+    "protocol": {
+      "bytes": 190779,
+      "sha256": "8d22329d34a58422ffde3fc2067ea3ebfa2e9928d3845e16fb07f91e58ec18ff"
+    },
+    "retained_compiler_objects_verified": 97,
+    "retained_graph_libraries_verified": 3,
+    "graph_vectors_verified": 36,
+    "comparisons": [
+      {
+        "passed": true,
+        "scope": "wrapper/reference correctness at the recorded duration; not held-out quality or full release qualification",
+        "runtime_profile": "gen2-valid-mel-pool-cpu-v2",
+        "frame_contract": "v3-streaming-valid-mel-v1",
+        "audio_duration_seconds": 60.0,
+        "backend": "cpu",
+        "device": null,
+        "native_frame_count": 6000,
+        "retained_first_frame": 0,
+        "retained_rows": 6000,
+        "turns": 27,
+        "maximum_turn_error_seconds": 0.0,
+        "turn_tolerance_seconds": 1e-06,
+        "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+        "retained_probabilities_match": true,
+        "maximum_probability_error": 0.0,
+        "probability_tolerance": 1e-06,
+        "gen2_rtf": 1.0465252333333332,
+        "native_rtf": 1.0630409333333335,
+        "runtime_version": "nemo-speech-asr 0.2.0+gen2-valid-mel-pool-cpu-v2",
+        "probabilities_bit_exact": true,
+        "realtime_gate_passed": false,
+        "rtf_limit_exclusive": 1.0,
+        "frozen_reference_comparison": {
+          "passed": true,
+          "scope": "native diagnostic parity only; no public/lifecycle/package qualification",
+          "runtime_profile": "diagnostic-worker-matrix-v1",
+          "frame_contract": "v3-streaming-valid-mel-v1",
+          "audio_duration_seconds": 60.0,
+          "backend": "cpu",
+          "device": null,
+          "native_frame_count": 6000,
+          "retained_first_frame": 0,
+          "retained_rows": 6000,
+          "turns": 27,
+          "maximum_turn_error_seconds": 0.0,
+          "turn_tolerance_seconds": 1e-06,
+          "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+          "retained_probabilities_match": true,
+          "maximum_probability_error": 0.0,
+          "probability_tolerance": 1e-06,
+          "reference_runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-4",
+          "actual_runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-4",
+          "reference_cap": 4,
+          "actual_cap": 4,
+          "probabilities_bit_exact": true,
+          "reference_rtf": 1.0473386833333334,
+          "actual_rtf": 1.0630409333333335
+        },
+        "build_recipe_id": "gen2-windows-cpu-q8-mx4-clang-v1"
+      },
+      {
+        "passed": true,
+        "scope": "wrapper/reference correctness at the recorded duration; not held-out quality or full release qualification",
+        "runtime_profile": "gen2-valid-mel-pool-cpu-v2",
+        "frame_contract": "v3-streaming-valid-mel-v1",
+        "audio_duration_seconds": 60.0,
+        "backend": "cpu",
+        "device": null,
+        "native_frame_count": 6000,
+        "retained_first_frame": 0,
+        "retained_rows": 6000,
+        "turns": 27,
+        "maximum_turn_error_seconds": 0.0,
+        "turn_tolerance_seconds": 1e-06,
+        "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+        "retained_probabilities_match": true,
+        "maximum_probability_error": 0.0,
+        "probability_tolerance": 1e-06,
+        "gen2_rtf": 1.0623256333333333,
+        "native_rtf": 1.0558045333333335,
+        "runtime_version": "nemo-speech-asr 0.2.0+gen2-valid-mel-pool-cpu-v2",
+        "probabilities_bit_exact": true,
+        "realtime_gate_passed": false,
+        "rtf_limit_exclusive": 1.0,
+        "frozen_reference_comparison": {
+          "passed": true,
+          "scope": "native diagnostic parity only; no public/lifecycle/package qualification",
+          "runtime_profile": "diagnostic-worker-matrix-v1",
+          "frame_contract": "v3-streaming-valid-mel-v1",
+          "audio_duration_seconds": 60.0,
+          "backend": "cpu",
+          "device": null,
+          "native_frame_count": 6000,
+          "retained_first_frame": 0,
+          "retained_rows": 6000,
+          "turns": 27,
+          "maximum_turn_error_seconds": 0.0,
+          "turn_tolerance_seconds": 1e-06,
+          "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+          "retained_probabilities_match": true,
+          "maximum_probability_error": 0.0,
+          "probability_tolerance": 1e-06,
+          "reference_runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-4",
+          "actual_runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-4",
+          "reference_cap": 4,
+          "actual_cap": 4,
+          "probabilities_bit_exact": true,
+          "reference_rtf": 1.0473386833333334,
+          "actual_rtf": 1.0558045333333335
+        },
+        "build_recipe_id": "gen2-windows-cpu-q8-mx4-clang-v1"
+      }
+    ],
+    "lifecycle_tests_verified": [
+      "dropping_a_diarization_child_keeps_the_parent_pipeline_active",
+      "native_admission_cancellation_and_failed_load_release_reservations",
+      "real_diarizer_matches_native_reference_and_resets_recordings",
+      "repeated_reload_full_queue_cancel_and_dropped_stream_release_resources",
+      "silence_short_tail_and_idle_deadline_have_explicit_terminal_results",
+      "streamed_uneven_pcm_matches_recording_and_finish_is_idempotent",
+      "verified_provisioned_cache_is_reused_offline"
+    ],
+    "payload_replay_passed": true,
+    "package_qualified": false,
+    "functional_lifecycle_gates_passed": true,
+    "realtime_gate_passed": false,
+    "production_candidate_sdk_gates_passed": false,
+    "release_qualified": false,
+    "limits": "Retained producer SDK payload replay only. Compiler binaries/aliases are CI observations. Package construction, offline/coexistence/desktop, quality and release remain separate."
+  },
+  "strict_package_admission_rejected": true,
+  "rejection": "completed exact Windows Q8 SDK/public/lifecycle qualification required",
+  "new_compiler_sdk_model_calls": 0,
+  "package_constructed": false,
+  "release_qualified": false
+}

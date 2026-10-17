@@ -1,0 +1,146 @@
+{
+  "controls": [
+    {
+      "name": "empty-failure",
+      "passed": true,
+      "expected_acceptance": true,
+      "observed_error": null
+    },
+    {
+      "name": "partial-failure",
+      "passed": true,
+      "expected_acceptance": true,
+      "observed_error": null
+    },
+    {
+      "name": "nonzero-failure",
+      "passed": true,
+      "expected_acceptance": true,
+      "observed_error": null
+    },
+    {
+      "name": "complete-zero",
+      "passed": true,
+      "expected_acceptance": true,
+      "observed_error": null
+    },
+    {
+      "name": "complete-partial-reject",
+      "passed": true,
+      "expected_acceptance": false,
+      "observed_error": "AssertionError"
+    },
+    {
+      "name": "complete-nonzero-reject",
+      "passed": true,
+      "expected_acceptance": false,
+      "observed_error": "AssertionError"
+    },
+    {
+      "name": "execution-clean",
+      "passed": true,
+      "expected_acceptance": true,
+      "observed_error": null
+    },
+    {
+      "name": "execution-history-order",
+      "passed": true,
+      "expected_acceptance": false,
+      "observed_error": "AssertionError"
+    },
+    {
+      "name": "execution-lifecycle-before-history",
+      "passed": true,
+      "expected_acceptance": false,
+      "observed_error": "AssertionError"
+    },
+    {
+      "name": "execution-native-executable",
+      "passed": true,
+      "expected_acceptance": false,
+      "observed_error": "AssertionError"
+    },
+    {
+      "name": "execution-public-executable",
+      "passed": true,
+      "expected_acceptance": false,
+      "observed_error": "AssertionError"
+    },
+    {
+      "name": "execution-other-sdk",
+      "passed": true,
+      "expected_acceptance": false,
+      "observed_error": "AssertionError"
+    },
+    {
+      "name": "execution-other-audio",
+      "passed": true,
+      "expected_acceptance": false,
+      "observed_error": "AssertionError"
+    },
+    {
+      "name": "execution-other-model",
+      "passed": true,
+      "expected_acceptance": false,
+      "observed_error": "AssertionError"
+    },
+    {
+      "name": "execution-repeat-count",
+      "passed": true,
+      "expected_acceptance": false,
+      "observed_error": "AssertionError"
+    },
+    {
+      "name": "execution-lifecycle-features",
+      "passed": true,
+      "expected_acceptance": false,
+      "observed_error": "AssertionError"
+    },
+    {
+      "name": "execution-lifecycle-test",
+      "passed": true,
+      "expected_acceptance": false,
+      "observed_error": "AssertionError"
+    },
+    {
+      "name": "execution-extra-argument",
+      "passed": true,
+      "expected_acceptance": false,
+      "observed_error": "AssertionError"
+    },
+    {
+      "name": "execution-other-cwd",
+      "passed": true,
+      "expected_acceptance": false,
+      "observed_error": "AssertionError"
+    },
+    {
+      "name": "execution-duplicate-history",
+      "passed": true,
+      "expected_acceptance": false,
+      "observed_error": "AssertionError"
+    }
+  ],
+  "all_passed": true,
+  "bounded_download_body_equals_prior_six_control_receiver": true,
+  "helpers": {
+    "fetch-windows-q8-candidate-artifact-v2.py": {
+      "bytes": 5703,
+      "sha256": "36091c3b0db2c6f4b9cf28ba20a1916f0b9b1042b100177e2cd5858a17dbb053"
+    },
+    "admit-windows-q8-candidate-delivery-v2.py": {
+      "bytes": 6881,
+      "sha256": "5d20392131a8ce3cb50814f9146b825b411ff829be823652a30d94cc2eb00b05"
+    },
+    "replay-windows-q8-candidate-supervision-v1.py": {
+      "bytes": 6342,
+      "sha256": "12d73348a42d9b8853d15225abb22c5ce39fae75d5683e0864ce413160a910e9"
+    },
+    "replay-windows-q8-candidate-result-v2.py": {
+      "bytes": 21038,
+      "sha256": "f50a8178176307ed870bf934330d7e29971cf650f6713a3b2791bf96c70f571c"
+    }
+  },
+  "new_compiler_sdk_model_calls": 0,
+  "scope": "Pure receiver branch controls; no actual collector, native tool or model runs."
+}

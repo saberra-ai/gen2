@@ -1,0 +1,414 @@
+{
+  "schema_version": 1,
+  "scope": "Read-only actual build, source/installed redist bytes, versions and Authenticode observations.",
+  "redistribution_qualified": false,
+  "limits": [
+    "No distribution entitlement or applicable license selection established.",
+    "Signature status is an observation on the connected build host, not an offline trust validation.",
+    "vcpkg installed metadata does not by itself preserve complete source/build provenance.",
+    "No fresh-machine, runtime closure or coexistence qualification."
+  ],
+  "os": {
+    "caption": "Microsoft Windows Server 2022 Datacenter",
+    "version": "10.0.20348",
+    "build": "20348",
+    "architecture": "64-bit"
+  },
+  "cpu": [
+    {
+      "Name": "INTEL(R) XEON(R) PLATINUM 8573C",
+      "Manufacturer": "GenuineIntel",
+      "Architecture": 9,
+      "NumberOfCores": 2,
+      "NumberOfLogicalProcessors": 4,
+      "ProcessorId": "0000000000000000"
+    }
+  ],
+  "compiler": {
+    "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+    "bytes": 87168080,
+    "sha256": "93faf6d0a9e66ed1629eb1c9ca638a070aa1839b9490a87ff89b9cb39eeae36b",
+    "file_version": "19.1.5",
+    "product_version": "19.1.5"
+  },
+  "cmake_cache": {
+    "path": "D:\\a\\_temp\\windows-q8-candidate\\source\\build\\gen2-cpu-diar\\CMakeCache.txt",
+    "bytes": 39839,
+    "sha256": "94edfc1f343c252a27c9e640cbdb9f7882cbc742126755caca56bdf8ce094c3d",
+    "file_version": null,
+    "product_version": null
+  },
+  "redist_root": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Redist\\MSVC\\14.44.35112",
+  "redistributables": [
+    {
+      "name": "concrt140.dll",
+      "source": {
+        "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Redist\\MSVC\\14.44.35112\\x64\\Microsoft.VC143.CRT\\concrt140.dll",
+        "bytes": 324208,
+        "sha256": "2405355f0a58067b258f8df33c327e3a3d716eaac5a3a5aebb757842d85bd376",
+        "file_version": "14.44.35211.0",
+        "product_version": "14.44.35211.0"
+      },
+      "installed": {
+        "path": "D:\\a\\_temp\\windows-q8-candidate\\sdk\\bin\\concrt140.dll",
+        "bytes": 324208,
+        "sha256": "2405355f0a58067b258f8df33c327e3a3d716eaac5a3a5aebb757842d85bd376",
+        "file_version": "14.44.35211.0",
+        "product_version": "14.44.35211.0"
+      },
+      "signature": {
+        "status": "Valid",
+        "status_message": "Signature verified.",
+        "signer": {
+          "subject": "CN=Microsoft Windows Software Compatibility Publisher, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "issuer": "CN=Microsoft Windows Third Party Component CA 2013, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "thumbprint": "81915C173D7FFCBF49EAA8CF7594696B29A035E1",
+          "serial_number": "330000010CD7495B8B1CBC5EEA00000000010C",
+          "not_before_utc": "2025-05-15T18:26:06.0000000Z",
+          "not_after_utc": "2026-05-15T18:26:06.0000000Z"
+        },
+        "timestamp_signer": {
+          "subject": "CN=Microsoft Time-Stamp Service, OU=nShield TSS ESN:8900-05E0-D947, OU=Microsoft America Operations, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "issuer": "CN=Microsoft Time-Stamp PCA 2010, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "thumbprint": "4AE8763F6562E739C30442C8E40C0A01FC965608",
+          "serial_number": "330000020E2CCB287D9520756300010000020E",
+          "not_before_utc": "2025-01-30T19:43:03.0000000Z",
+          "not_after_utc": "2026-04-22T19:43:03.0000000Z"
+        }
+      }
+    },
+    {
+      "name": "msvcp140.dll",
+      "source": {
+        "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Redist\\MSVC\\14.44.35112\\x64\\Microsoft.VC143.CRT\\msvcp140.dll",
+        "bytes": 557728,
+        "sha256": "0f885b509a685d2bbfa652fed26b5fb31d88fbdab0a978c641d1c7b8aa460aa9",
+        "file_version": "14.44.35211.0",
+        "product_version": "14.44.35211.0"
+      },
+      "installed": {
+        "path": "D:\\a\\_temp\\windows-q8-candidate\\sdk\\bin\\msvcp140.dll",
+        "bytes": 557728,
+        "sha256": "0f885b509a685d2bbfa652fed26b5fb31d88fbdab0a978c641d1c7b8aa460aa9",
+        "file_version": "14.44.35211.0",
+        "product_version": "14.44.35211.0"
+      },
+      "signature": {
+        "status": "Valid",
+        "status_message": "Signature verified.",
+        "signer": {
+          "subject": "CN=Microsoft Windows Software Compatibility Publisher, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "issuer": "CN=Microsoft Windows Third Party Component CA 2013, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "thumbprint": "81915C173D7FFCBF49EAA8CF7594696B29A035E1",
+          "serial_number": "330000010CD7495B8B1CBC5EEA00000000010C",
+          "not_before_utc": "2025-05-15T18:26:06.0000000Z",
+          "not_after_utc": "2026-05-15T18:26:06.0000000Z"
+        },
+        "timestamp_signer": {
+          "subject": "CN=Microsoft Time-Stamp Service, OU=nShield TSS ESN:6F1A-05E0-D947, OU=Microsoft Ireland Operations Limited, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "issuer": "CN=Microsoft Time-Stamp PCA 2010, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "thumbprint": "4E412925739AA88DB07EA06CC3834B570A98AAAA",
+          "serial_number": "33000001FC18A0AFCC695A873A0001000001FC",
+          "not_before_utc": "2024-07-25T18:31:14.0000000Z",
+          "not_after_utc": "2025-10-22T18:31:14.0000000Z"
+        }
+      }
+    },
+    {
+      "name": "msvcp140_1.dll",
+      "source": {
+        "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Redist\\MSVC\\14.44.35112\\x64\\Microsoft.VC143.CRT\\msvcp140_1.dll",
+        "bytes": 35952,
+        "sha256": "bfad5aef4c63a669e3c140655cdfdf395b6c979b400a447bd5dcb65ed8826c3d",
+        "file_version": "14.44.35211.0",
+        "product_version": "14.44.35211.0"
+      },
+      "installed": {
+        "path": "D:\\a\\_temp\\windows-q8-candidate\\sdk\\bin\\msvcp140_1.dll",
+        "bytes": 35952,
+        "sha256": "bfad5aef4c63a669e3c140655cdfdf395b6c979b400a447bd5dcb65ed8826c3d",
+        "file_version": "14.44.35211.0",
+        "product_version": "14.44.35211.0"
+      },
+      "signature": {
+        "status": "Valid",
+        "status_message": "Signature verified.",
+        "signer": {
+          "subject": "CN=Microsoft Windows Software Compatibility Publisher, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "issuer": "CN=Microsoft Windows Third Party Component CA 2013, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "thumbprint": "81915C173D7FFCBF49EAA8CF7594696B29A035E1",
+          "serial_number": "330000010CD7495B8B1CBC5EEA00000000010C",
+          "not_before_utc": "2025-05-15T18:26:06.0000000Z",
+          "not_after_utc": "2026-05-15T18:26:06.0000000Z"
+        },
+        "timestamp_signer": {
+          "subject": "CN=Microsoft Time-Stamp Service, OU=nShield TSS ESN:A935-03E0-D947, OU=Microsoft America Operations, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "issuer": "CN=Microsoft Time-Stamp PCA 2010, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "thumbprint": "EFBBC86484432DE59F0B75E7E5B3BCF52D553CA6",
+          "serial_number": "330000020CB964E3359CECF4AE00010000020C",
+          "not_before_utc": "2025-01-30T19:43:00.0000000Z",
+          "not_after_utc": "2026-04-22T19:43:00.0000000Z"
+        }
+      }
+    },
+    {
+      "name": "msvcp140_2.dll",
+      "source": {
+        "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Redist\\MSVC\\14.44.35112\\x64\\Microsoft.VC143.CRT\\msvcp140_2.dll",
+        "bytes": 280200,
+        "sha256": "3ea06f0ee098b4823cb79599df3780e7f23cce52c19aac31d2a0d47efe33a5e9",
+        "file_version": "14.44.35211.0",
+        "product_version": "14.44.35211.0"
+      },
+      "installed": {
+        "path": "D:\\a\\_temp\\windows-q8-candidate\\sdk\\bin\\msvcp140_2.dll",
+        "bytes": 280200,
+        "sha256": "3ea06f0ee098b4823cb79599df3780e7f23cce52c19aac31d2a0d47efe33a5e9",
+        "file_version": "14.44.35211.0",
+        "product_version": "14.44.35211.0"
+      },
+      "signature": {
+        "status": "Valid",
+        "status_message": "Signature verified.",
+        "signer": {
+          "subject": "CN=Microsoft Windows Software Compatibility Publisher, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "issuer": "CN=Microsoft Windows Third Party Component CA 2013, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "thumbprint": "EC5F0D7EE2327688384B4FDF5D7633553A0D055F",
+          "serial_number": "330000010DC4E7BBF4AFF8F09000000000010D",
+          "not_before_utc": "2025-05-15T18:26:07.0000000Z",
+          "not_after_utc": "2026-05-15T18:26:07.0000000Z"
+        },
+        "timestamp_signer": {
+          "subject": "CN=Microsoft Time-Stamp Service, OU=nShield TSS ESN:431A-05E0-D947, OU=Microsoft Ireland Operations Limited, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "issuer": "CN=Microsoft Time-Stamp PCA 2010, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "thumbprint": "F7867E6D4267FA72B006F208EAC834372EDA3C36",
+          "serial_number": "33000001FAFB3B44D37733C6D30001000001FA",
+          "not_before_utc": "2024-07-25T18:31:11.0000000Z",
+          "not_after_utc": "2025-10-22T18:31:11.0000000Z"
+        }
+      }
+    },
+    {
+      "name": "msvcp140_atomic_wait.dll",
+      "source": {
+        "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Redist\\MSVC\\14.44.35112\\x64\\Microsoft.VC143.CRT\\msvcp140_atomic_wait.dll",
+        "bytes": 50304,
+        "sha256": "640b2aefced484d0368eea5bdd06addd0658a3a70a49256e560d6923b404a479",
+        "file_version": "14.44.35211.0",
+        "product_version": "14.44.35211.0"
+      },
+      "installed": {
+        "path": "D:\\a\\_temp\\windows-q8-candidate\\sdk\\bin\\msvcp140_atomic_wait.dll",
+        "bytes": 50304,
+        "sha256": "640b2aefced484d0368eea5bdd06addd0658a3a70a49256e560d6923b404a479",
+        "file_version": "14.44.35211.0",
+        "product_version": "14.44.35211.0"
+      },
+      "signature": {
+        "status": "Valid",
+        "status_message": "Signature verified.",
+        "signer": {
+          "subject": "CN=Microsoft Windows Software Compatibility Publisher, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "issuer": "CN=Microsoft Windows Third Party Component CA 2013, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "thumbprint": "EC5F0D7EE2327688384B4FDF5D7633553A0D055F",
+          "serial_number": "330000010DC4E7BBF4AFF8F09000000000010D",
+          "not_before_utc": "2025-05-15T18:26:07.0000000Z",
+          "not_after_utc": "2026-05-15T18:26:07.0000000Z"
+        },
+        "timestamp_signer": {
+          "subject": "CN=Microsoft Time-Stamp Service, OU=nShield TSS ESN:591A-05E0-D947, OU=Microsoft Ireland Operations Limited, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "issuer": "CN=Microsoft Time-Stamp PCA 2010, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "thumbprint": "BFE2D9FD5834B35ED77A4E221BD47D73FEFE008E",
+          "serial_number": "33000001F4174685C0CB3F39E50001000001F4",
+          "not_before_utc": "2024-07-25T18:30:59.0000000Z",
+          "not_after_utc": "2025-10-22T18:30:59.0000000Z"
+        }
+      }
+    },
+    {
+      "name": "msvcp140_codecvt_ids.dll",
+      "source": {
+        "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Redist\\MSVC\\14.44.35112\\x64\\Microsoft.VC143.CRT\\msvcp140_codecvt_ids.dll",
+        "bytes": 31872,
+        "sha256": "f2069a52880ec885ee7f0511186100eb7fada0411a2b4948fafea7735b878a18",
+        "file_version": "14.44.35211.0",
+        "product_version": "14.44.35211.0"
+      },
+      "installed": {
+        "path": "D:\\a\\_temp\\windows-q8-candidate\\sdk\\bin\\msvcp140_codecvt_ids.dll",
+        "bytes": 31872,
+        "sha256": "f2069a52880ec885ee7f0511186100eb7fada0411a2b4948fafea7735b878a18",
+        "file_version": "14.44.35211.0",
+        "product_version": "14.44.35211.0"
+      },
+      "signature": {
+        "status": "Valid",
+        "status_message": "Signature verified.",
+        "signer": {
+          "subject": "CN=Microsoft Windows Software Compatibility Publisher, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "issuer": "CN=Microsoft Windows Third Party Component CA 2013, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "thumbprint": "EC5F0D7EE2327688384B4FDF5D7633553A0D055F",
+          "serial_number": "330000010DC4E7BBF4AFF8F09000000000010D",
+          "not_before_utc": "2025-05-15T18:26:07.0000000Z",
+          "not_after_utc": "2026-05-15T18:26:07.0000000Z"
+        },
+        "timestamp_signer": {
+          "subject": "CN=Microsoft Time-Stamp Service, OU=nShield TSS ESN:4C1A-05E0-D947, OU=Microsoft Ireland Operations Limited, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "issuer": "CN=Microsoft Time-Stamp PCA 2010, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "thumbprint": "A9138C6CC4BC25C5257273E4C112C544F5C5B299",
+          "serial_number": "33000001FF12387CF7C165D6A10001000001FF",
+          "not_before_utc": "2024-07-25T18:31:19.0000000Z",
+          "not_after_utc": "2025-10-22T18:31:19.0000000Z"
+        }
+      }
+    },
+    {
+      "name": "vcruntime140.dll",
+      "source": {
+        "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Redist\\MSVC\\14.44.35112\\x64\\Microsoft.VC143.CRT\\vcruntime140.dll",
+        "bytes": 124544,
+        "sha256": "d5e4d9a3e835fa679450145d6a7d94e36573a509317111904d9b3712c30d9066",
+        "file_version": "14.44.35211.0",
+        "product_version": "14.44.35211.0"
+      },
+      "installed": {
+        "path": "D:\\a\\_temp\\windows-q8-candidate\\sdk\\bin\\vcruntime140.dll",
+        "bytes": 124544,
+        "sha256": "d5e4d9a3e835fa679450145d6a7d94e36573a509317111904d9b3712c30d9066",
+        "file_version": "14.44.35211.0",
+        "product_version": "14.44.35211.0"
+      },
+      "signature": {
+        "status": "Valid",
+        "status_message": "Signature verified.",
+        "signer": {
+          "subject": "CN=Microsoft Windows Software Compatibility Publisher, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "issuer": "CN=Microsoft Windows Third Party Component CA 2013, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "thumbprint": "EC5F0D7EE2327688384B4FDF5D7633553A0D055F",
+          "serial_number": "330000010DC4E7BBF4AFF8F09000000000010D",
+          "not_before_utc": "2025-05-15T18:26:07.0000000Z",
+          "not_after_utc": "2026-05-15T18:26:07.0000000Z"
+        },
+        "timestamp_signer": {
+          "subject": "CN=Microsoft Time-Stamp Service, OU=nShield TSS ESN:6F1A-05E0-D947, OU=Microsoft Ireland Operations Limited, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "issuer": "CN=Microsoft Time-Stamp PCA 2010, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "thumbprint": "4E412925739AA88DB07EA06CC3834B570A98AAAA",
+          "serial_number": "33000001FC18A0AFCC695A873A0001000001FC",
+          "not_before_utc": "2024-07-25T18:31:14.0000000Z",
+          "not_after_utc": "2025-10-22T18:31:14.0000000Z"
+        }
+      }
+    },
+    {
+      "name": "vcruntime140_1.dll",
+      "source": {
+        "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Redist\\MSVC\\14.44.35112\\x64\\Microsoft.VC143.CRT\\vcruntime140_1.dll",
+        "bytes": 49792,
+        "sha256": "1f2d41c4aa5db0bc33ebf7b66d72943a817d7ce6cbe880502a9403823633093f",
+        "file_version": "14.44.35211.0",
+        "product_version": "14.44.35211.0"
+      },
+      "installed": {
+        "path": "D:\\a\\_temp\\windows-q8-candidate\\sdk\\bin\\vcruntime140_1.dll",
+        "bytes": 49792,
+        "sha256": "1f2d41c4aa5db0bc33ebf7b66d72943a817d7ce6cbe880502a9403823633093f",
+        "file_version": "14.44.35211.0",
+        "product_version": "14.44.35211.0"
+      },
+      "signature": {
+        "status": "Valid",
+        "status_message": "Signature verified.",
+        "signer": {
+          "subject": "CN=Microsoft Windows Software Compatibility Publisher, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "issuer": "CN=Microsoft Windows Third Party Component CA 2013, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "thumbprint": "EC5F0D7EE2327688384B4FDF5D7633553A0D055F",
+          "serial_number": "330000010DC4E7BBF4AFF8F09000000000010D",
+          "not_before_utc": "2025-05-15T18:26:07.0000000Z",
+          "not_after_utc": "2026-05-15T18:26:07.0000000Z"
+        },
+        "timestamp_signer": {
+          "subject": "CN=Microsoft Time-Stamp Service, OU=nShield TSS ESN:401A-05E0-D947, OU=Microsoft Ireland Operations Limited, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "issuer": "CN=Microsoft Time-Stamp PCA 2010, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+          "thumbprint": "8463470FF6BB4346D02D6546F49B86C602D15EC7",
+          "serial_number": "33000001FED0A8C27B34210B010001000001FE",
+          "not_before_utc": "2024-07-25T18:31:18.0000000Z",
+          "not_after_utc": "2025-10-22T18:31:18.0000000Z"
+        }
+      }
+    }
+  ],
+  "redist_license_candidates": [],
+  "vcpkg_installed_root": "D:\\a\\_temp\\windows-q8-candidate\\source\\build\\gen2-cpu-diar\\vcpkg_installed",
+  "vcpkg_metadata": [
+    {
+      "path": "D:\\a\\_temp\\windows-q8-candidate\\evidence\\windows-vcpkg-status.log",
+      "bytes": 4346,
+      "sha256": "aa85bcc183d2163072bdee4a245ce2c400f4a3d7aa68fac1ec59efb56d4f2061",
+      "file_version": null,
+      "product_version": null
+    },
+    {
+      "path": "D:\\a\\_temp\\windows-q8-candidate\\source\\build\\gen2-cpu-diar\\vcpkg_installed\\vcpkg\\info\\abseil_20260107.1_x64-windows-static-md.list",
+      "bytes": 65573,
+      "sha256": "44634e5795c5c975aa71d5da6d30cacb9cd6e7580c8a01f764fa5cdbb67278c0",
+      "file_version": null,
+      "product_version": null
+    },
+    {
+      "path": "D:\\a\\_temp\\windows-q8-candidate\\source\\build\\gen2-cpu-diar\\vcpkg_installed\\vcpkg\\info\\abseil_20260107.1_x64-windows.list",
+      "bytes": 49279,
+      "sha256": "74960be0dec8198c5e5a8ee285ca8743a42e8d4e16f2250a1b4b17413edff993",
+      "file_version": null,
+      "product_version": null
+    },
+    {
+      "path": "D:\\a\\_temp\\windows-q8-candidate\\source\\build\\gen2-cpu-diar\\vcpkg_installed\\vcpkg\\info\\protobuf_6.33.4_x64-windows-static-md.list",
+      "bytes": 13682,
+      "sha256": "e3e34d78eaec2edf8480590e0debccc4276a7fe82edc37871ee9a92234c3a54d",
+      "file_version": null,
+      "product_version": null
+    },
+    {
+      "path": "D:\\a\\_temp\\windows-q8-candidate\\source\\build\\gen2-cpu-diar\\vcpkg_installed\\vcpkg\\info\\protobuf_6.33.4_x64-windows.list",
+      "bytes": 12117,
+      "sha256": "2d935b9dd03ddbc03b88b6f5bf48b1d8030be4db06ba6628233cf88ce682ddcb",
+      "file_version": null,
+      "product_version": null
+    },
+    {
+      "path": "D:\\a\\_temp\\windows-q8-candidate\\source\\build\\gen2-cpu-diar\\vcpkg_installed\\vcpkg\\info\\sentencepiece_0.2.1_x64-windows-static-md.list",
+      "bytes": 1178,
+      "sha256": "73cf6e03fc65a973757b4346e4169a417331c0509ba092f8f338dec0c120d238",
+      "file_version": null,
+      "product_version": null
+    },
+    {
+      "path": "D:\\a\\_temp\\windows-q8-candidate\\source\\build\\gen2-cpu-diar\\vcpkg_installed\\vcpkg\\info\\utf8-range_6.33.4_x64-windows-static-md.list",
+      "bytes": 1205,
+      "sha256": "60ddef9edbcb9521ff0488da901930bdd40b1f34b1bdedc8b15b2d849629bb60",
+      "file_version": null,
+      "product_version": null
+    },
+    {
+      "path": "D:\\a\\_temp\\windows-q8-candidate\\source\\build\\gen2-cpu-diar\\vcpkg_installed\\vcpkg\\info\\utf8-range_6.33.4_x64-windows.list",
+      "bytes": 945,
+      "sha256": "fb7e5b939003dc7b1303bc00f9d813bd18051ccb84c56db58a890c641c72ac05",
+      "file_version": null,
+      "product_version": null
+    },
+    {
+      "path": "D:\\a\\_temp\\windows-q8-candidate\\source\\build\\gen2-cpu-diar\\vcpkg_installed\\vcpkg\\info\\vcpkg-cmake_2024-04-23_x64-windows.list",
+      "bytes": 420,
+      "sha256": "c6e412bc967c160e890fcd791ab7d07e6cf2325d3fed4f3d731ac8e268d0f335",
+      "file_version": null,
+      "product_version": null
+    },
+    {
+      "path": "D:\\a\\_temp\\windows-q8-candidate\\source\\build\\gen2-cpu-diar\\vcpkg_installed\\vcpkg\\info\\vcpkg-cmake-config_2026-07-21_x64-windows.list",
+      "bytes": 355,
+      "sha256": "69e0644c7bb61ef1acf15e336db105a5b11e5756bc379cf07d2e89a1b486e033",
+      "file_version": null,
+      "product_version": null
+    }
+  ]
+}

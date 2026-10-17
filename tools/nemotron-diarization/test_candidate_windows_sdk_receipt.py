@@ -8,7 +8,7 @@ from pooled_runtime import BOUNDED_PROFILE, load_profile, profile_provenance
 from windows_q8_candidate import ORDER, LIFECYCLE, PROTOCOL
 from windows_q8_candidate_sources import load_recipe, RECIPE_ID
 from candidate_windows_sdk_receipt import (PRODUCER, PROTOCOL_IDENTITY, SUPERVISION,
-    validate_producer_metadata, admit_command_sequence, admit_supervision)
+    REALTIME_FAILURE, validate_observation_metadata, validate_producer_metadata, admit_command_sequence, admit_supervision)
 
 TOOLS = Path(__file__).resolve().parent
 
@@ -69,6 +69,22 @@ class Q8CandidateSdkReceiptTest(unittest.TestCase):
         lock_path, lock = validate_producer_metadata(self.fixture())
         self.assertEqual(lock['profile'], BOUNDED_PROFILE)
         self.assertTrue(lock_path.is_file())
+
+    def test_complete_failed_timing_can_be_replayed_but_cannot_admit_a_package(self):
+        record = self.fixture()
+        record['comparisons'] = [dict(row) for row in record['comparisons']]
+        record['comparisons'][1]['native_rtf'] = 1.05
+        record.update(realtime_gate_passed=False, development_native_gates_passed=False, error=REALTIME_FAILURE)
+        self.assertEqual(validate_observation_metadata(record)[1]['profile'], BOUNDED_PROFILE)
+        with self.assertRaises(ValueError): validate_producer_metadata(record)
+        for delta in ({'error': 'unrelated failure'}, {'functional_lifecycle_gates_passed': False},
+                      {'realtime_gate_passed': True}, {'development_native_gates_passed': True}):
+            with self.subTest(delta=delta), self.assertRaises(ValueError):
+                validate_observation_metadata({**record, **delta})
+        for bad in (0, True, float('nan'), float('inf')):
+            changed = copy.deepcopy(record)
+            changed['comparisons'][1]['native_rtf'] = bad
+            with self.subTest(timing=bad), self.assertRaises(ValueError): validate_observation_metadata(changed)
 
     def test_failed_or_relabelled_producer_does_not_admit(self):
         fixture = self.fixture()

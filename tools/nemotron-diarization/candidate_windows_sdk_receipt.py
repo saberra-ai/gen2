@@ -1,5 +1,6 @@
 """Package prerequisites for the exact Windows Q8 candidate; no runtime execution."""
 import json
+import math
 from pathlib import Path, PureWindowsPath
 
 from build_valid_mel_candidate import descriptor
@@ -12,6 +13,7 @@ from windows_q8_candidate_sources import load_recipe, RECIPE_ID
 PRODUCER = 'fee2177adcd7b75b488c67bea5a593ea17df65de'
 PROTOCOL_IDENTITY = {'bytes': 190779, 'sha256': '8d22329d34a58422ffde3fc2067ea3ebfa2e9928d3845e16fb07f91e58ec18ff'}
 SUPERVISION = 'Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup'
+REALTIME_FAILURE = "ValueError('all four original native/public RTFs must be below one and all lifecycle gates pass')"
 
 
 def admit_supervision(command):
@@ -101,8 +103,8 @@ def admit_execution_commands(commands, public_bindings):
         raise ValueError('original ordered history/lifecycle commands and exact SDK/assets required')
 
 
-def validate_producer_metadata(record):
-    """Admit producer identity and mandatory observations; payload replay is separate."""
+def validate_observation_metadata(record):
+    """Replay complete functional observations, preserving a failed timing gate."""
     tools = Path(__file__).resolve().parent
     lock_path, lock = load_profile(BOUNDED_PROFILE)
     _, recipe = load_recipe()
@@ -113,12 +115,11 @@ def validate_producer_metadata(record):
     for key, value in profile_provenance(lock_path, lock).items():
         if record.get(key) != value:
             raise ValueError('candidate runtime provenance differs: ' + key)
-    flags = ('qualification_completed', 'development_native_gates_passed', 'functional_lifecycle_gates_passed',
-             'realtime_gate_passed', 'graph_input_payloads_fully_retained')
+    flags = ('qualification_completed', 'functional_lifecycle_gates_passed', 'graph_input_payloads_fully_retained')
     if (any(record.get(key) is not True for key in flags)
             or type(record.get('schema_version')) is not int or record['schema_version'] != 1
             or record.get('release_qualified') is not False
-            or record.get('package_qualified') is not False or 'error' in record
+            or record.get('package_qualified') is not False
             or record.get('source_commit') != PRODUCER or record.get('protocol') != PROTOCOL_IDENTITY
             or record.get('build_recipe_id') != RECIPE_ID or record.get('build_recipe') != recipe
             or record.get('order') != ORDER or record.get('completed_lifecycle_tests') != LIFECYCLE
@@ -126,8 +127,15 @@ def validate_producer_metadata(record):
             or record.get('build', {}).get('reported_version') != lock['runtime']['reported_version']):
         raise ValueError('completed exact Windows Q8 SDK/public/lifecycle qualification required')
     comparisons = record.get('comparisons', [])
-    if not both_pairs_realtime(comparisons):
-        raise ValueError('all four original below-one native/public RTFs required')
+    realtime = both_pairs_realtime(comparisons)
+    if any(type(row.get(field)) not in (int, float) or not math.isfinite(row[field]) or row[field] <= 0
+           for row in comparisons for field in ('native_rtf', 'gen2_rtf')):
+        raise ValueError('finite positive actual native/public timings required')
+    if (any(row.get('passed') is not True or row.get('probabilities_bit_exact') is not True for row in comparisons)
+            or record.get('realtime_gate_passed') is not realtime
+            or record.get('development_native_gates_passed') is not realtime
+            or (('error' in record) if realtime else record.get('error') != REALTIME_FAILURE)):
+        raise ValueError('original functional and actual timing outcomes must be preserved')
     cases = record.get('cases', [])
     if len(cases) != 4 or [case.get('kind') for case in cases] != ORDER:
         raise ValueError('four ordered candidate observations required')
@@ -144,3 +152,11 @@ def validate_producer_metadata(record):
     pins['tools/nemotron-diarization/' + PROTOCOL] = PROTOCOL_IDENTITY
     verify_git_sources(tools.parents[1], PRODUCER, pins)
     return lock_path, lock
+
+
+def validate_producer_metadata(record):
+    """Require a passing producer before any package payload can be admitted."""
+    if (record.get('development_native_gates_passed') is not True
+            or record.get('realtime_gate_passed') is not True or 'error' in record):
+        raise ValueError('completed exact Windows Q8 SDK/public/lifecycle qualification required')
+    return validate_observation_metadata(record)
