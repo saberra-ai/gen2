@@ -47,6 +47,20 @@ def relocate(raw, repo, cache):
     return output
 
 
+def raw_api_transport(raw):
+    """Opt in to faithful bytes at exactly the fetcher's two gh API lists."""
+    tree=ast.parse(raw);changed=0
+    for node in ast.walk(tree):
+        if (isinstance(node,ast.List)and len(node.elts)>=2
+                and all(isinstance(x,ast.Constant)for x in node.elts[:2])
+                and [x.value for x in node.elts[:2]]==['gh','api']):
+            if len(node.elts)!=3:raise ValueError('unexpected fetcher API command shape')
+            node.elts.insert(2,ast.Constant('--allow-escape-sequences'));changed+=1
+    if changed!=2:raise ValueError('exactly two original fetcher API commands required')
+    output=(ast.unparse(ast.fix_missing_locations(tree))+'\n').encode()
+    return output
+
+
 def bounded_process(command, stdout_path, stderr_path, *, cwd, env, timeout=900, limit=8*1024**2):
     """Bound both output streams and own the complete POSIX process group."""
     if (os.name!='posix' or threading.current_thread()is not threading.main_thread()
@@ -192,11 +206,13 @@ def main():
     if free<8*1024**3:parser.error('original 8GiB start floor unmet')
     protocol_path=tools/'remote-q8-apack-replay.protocol.json'
     raw_protocol=protocol_path.read_bytes(); protocol=json.loads(raw_protocol)
-    if (protocol['schema_version']!=1 or protocol['native_source']!=SOURCE or protocol['native_run_id']!=RUN
+    if (protocol['schema_version']!=2 or protocol['native_source']!=SOURCE or protocol['native_run_id']!=RUN
             or protocol['native_job_id']!=JOB or protocol['native_feature_run_id']!=FEATURE
             or protocol['artifact_id']!=ARTIFACT or protocol['archive']!=ARCHIVE
             or protocol['original_start_floor_bytes']!=8*1024**3 or protocol['archive_cap_bytes']!=1024**3
-            or protocol['bundle_cap_bytes']!=128*1024**2):raise ValueError('exact unchanged replay protocol required')
+            or protocol['bundle_cap_bytes']!=128*1024**2
+            or protocol['raw_api_transport']!={'flag':'--allow-escape-sequences','when':'advertised-by-gh-api-help',
+                'exact_fetcher_command_lists':2,'raw_bytes_only':True}):raise ValueError('exact unchanged replay protocol required')
     native_path=tools/'windows-q8-apack.protocol.json'
     if descriptor(native_path)!=protocol['native_protocol']:raise ValueError('native protocol changed')
     native=json.loads(native_path.read_bytes())
@@ -224,6 +240,8 @@ def main():
             raise ValueError('uncommitted receiver source: '+name)
     run('native-git-source',['git','cat-file','-e',SOURCE+'^{commit}'])
     parent=repo/PARENT
+    run('gh-version',['gh','version'])
+    raw_api_flag_supported=b'--allow-escape-sequences'in run('gh-api-help',['gh','api','--help'])
     if descriptor(parent/'collection.json')!=protocol['parent_manifest']:raise ValueError('reviewed preparation changed')
     for name,wanted in json.loads((parent/'collection.json').read_bytes())['files'].items():
         if descriptor(parent/name)!=wanted:raise ValueError('preparation member changed')
@@ -234,6 +252,8 @@ def main():
         'publish-windows-q8-apack-v1.py','test-q8-apack-receiver-controls-v1.py',
         'inspect-q8-apack-loops-v1.py','publish-q8-apack-static-v1.py']
     for name in executed:(cache/name).write_bytes(relocate((cache/name).read_bytes(),repo,cache))
+    if raw_api_flag_supported:
+        fetcher=cache/executed[0];fetcher.write_bytes(raw_api_transport(fetcher.read_bytes()))
     (cache/Path(__file__).name).write_bytes(Path(__file__).read_bytes())
     (cache/protocol_path.name).write_bytes(raw_protocol)
     def dump(path,value):
@@ -241,8 +261,10 @@ def main():
     preparation={'source_commit':SOURCE,'run_id':RUN,'job_id':JOB,'verifier_source_commit':base,
         'verifier_run_id':os.environ['GITHUB_RUN_ID'],'preparer':descriptor(Path(__file__)),
         'parent_manifest':protocol['parent_manifest'],'outputs':{n:descriptor(cache/n)for n in executed},
+        'raw_api_transport':{'flag_supported':raw_api_flag_supported,'changed_command_lists':2 if raw_api_flag_supported else 0,
+            'scope':'Only raw log/ZIP transport opt-in; complete bytes, all original admission gates retained'},
         'receivers_invoked':False,'artifact_consumed':False,'new_compiler_sdk_model_calls':0,
-        'scope':'Only Python literal path prefixes relocated; original receiver AST/gates retained. Original Mac preparations preserved in Git.'}
+        'scope':'Literal path prefixes relocated; two raw-transport arguments added only if advertised by CLI help. Original validation AST/gates retained. Original Mac preparations preserved in Git.'}
     dump(cache/'windows-q8-apack-receivers-preparation-v1.json',preparation)
     python=[sys.executable,'-B']
     run('receiver-controls',python+[cache/'test-q8-apack-receiver-controls-v1.py'])
@@ -253,7 +275,8 @@ def main():
     # The original publisher retains these conventional log paths as well.
     for stem,command in [('q8-apack-receiver-controls-local-v1','receiver-controls'),
             ('q8-apack-publication-green-v1','publication-controls'),
-            ('q8-apack-static-publication-green-v1','static-publication-controls')]:
+            ('q8-apack-static-publication-green-v1','static-publication-controls'),
+            ('raw-api-cli-version','gh-version'),('raw-api-cli-help','gh-api-help')]:
         for channel in ['stdout','stderr']:
             shutil.copyfile(logs/(command+'.'+channel+'.log'),cache/(stem+'.'+channel+'.log'))
     receiver_names=executed[:6]+['prepare-windows-q8-apack-receivers-v1.py',
@@ -271,7 +294,9 @@ def main():
         'inspect-q8-apack-loops-v1.py','inspect-q8-row-loops-v1.py','q8-apack-loop-inspector-pre-execution-v1.json',
         'publish-q8-apack-static-v1.py','test-q8-scale-static-publication-v1.py',
         'q8-apack-static-publication-green-v1.json','q8-apack-static-publication-green-v1.stdout.log',
-        'q8-apack-static-publication-green-v1.stderr.log',Path(__file__).name,protocol_path.name]
+        'q8-apack-static-publication-green-v1.stderr.log','raw-api-cli-version.stdout.log',
+        'raw-api-cli-version.stderr.log','raw-api-cli-help.stdout.log','raw-api-cli-help.stderr.log',
+        Path(__file__).name,protocol_path.name]
     dump(cache/'windows-q8-apack-publication-pre-execution-v1.json',{'files':{str(cache/n):descriptor(cache/n)for n in publication_names},
         'source_commit':SOURCE,'run_id':RUN,'job_id':JOB,'artifact_consumed':False,'publisher_invoked':False})
     api={}

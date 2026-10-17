@@ -20,6 +20,28 @@ import remote_q8_apack_replay as replay
 
 
 class RemoteReplayTest(unittest.TestCase):
+    def test_actual_fetcher_preserves_raw_job_log_bytes_on_guarded_cli(self):
+        source=Path(replay.__file__).resolve().parents[2]/PARENT/'prepared/fetch-windows-q8-apack-artifact-v1.py'
+        raw=source.read_bytes();changed=replay.raw_api_transport(raw)
+        def guarded(command,**kwargs):
+            if '--allow-escape-sequences'not in command:
+                raise ValueError('the response contains terminal escape sequences')
+            self.assertEqual(command[:3],['gh','api','--allow-escape-sequences'])
+            return b'compiler output\x1b[32m\r\n'
+        tree=ast.parse(changed);get=next(n for n in tree.body if isinstance(n,ast.FunctionDef)and n.name=='get')
+        env={'subprocess':mock.Mock(check_output=guarded),'api':'repos/saberra-ai/gen2/actions/'}
+        exec(compile(ast.Module(body=[get],type_ignores=[]),'actual-fetcher-get','exec'),env)
+        self.assertEqual(env['get']('jobs/117527216794/logs'),b'compiler output\x1b[32m\r\n')
+        calls=[n for n in ast.walk(tree)if isinstance(n,ast.List)and len(n.elts)>=2
+            and all(isinstance(x,ast.Constant)for x in n.elts[:2])
+            and [x.value for x in n.elts[:2]]==['gh','api']]
+        self.assertEqual(len(calls),2)
+        for node in calls:
+            self.assertEqual(node.elts[2].value,'--allow-escape-sequences');del node.elts[2]
+        self.assertEqual(ast.dump(tree,include_attributes=False),ast.dump(ast.parse(raw),include_attributes=False))
+        with self.assertRaises(ValueError):replay.raw_api_transport(b"x=['gh','api','only-one']\n")
+        with self.assertRaises(ValueError):replay.raw_api_transport(changed)
+
     @unittest.skipUnless(os.name=='posix','real receiver preparation controls')
     def test_fresh_preparation_controls_and_retained_pins_before_api_access(self):
         # Execute the actual preparation stage through its first API boundary.
@@ -30,27 +52,41 @@ class RemoteReplayTest(unittest.TestCase):
             return isinstance(node,ast.Assign)and any(isinstance(t,ast.Name)and t.id==name for t in node.targets)
         start=next(i for i,node in enumerate(body)if assignment(node,'parent'))
         stop=next(i for i,node in enumerate(body)if assignment(node,'api'))
-        with tempfile.TemporaryDirectory()as directory:
-            root=Path(directory);cache=root/'cache';cache.mkdir();logs=root/'logs';logs.mkdir()
-            repo=root/'repo';repo.symlink_to(Path(replay.__file__).resolve().parents[2],target_is_directory=True)
-            protocol_path=repo/'tools/nemotron-diarization/remote-q8-apack-replay.protocol.json'
-            raw_protocol=protocol_path.read_bytes();protocol=json.loads(raw_protocol);commands=[]
-            def run(name,command):
-                commands.append(name)
-                bounded_process(list(map(str,command)),logs/(name+'.stdout.log'),logs/(name+'.stderr.log'),
-                    cwd=repo,env=dict(os.environ),timeout=30)
-            env={**vars(replay),'repo':repo,'cache':cache,'logs':logs,'run':run,'base':'fixture',
-                'protocol_path':protocol_path,'raw_protocol':raw_protocol,'protocol':protocol}
-            with mock.patch.dict(os.environ,{'GITHUB_RUN_ID':'fixture'}):
-                exec(compile(ast.Module(body=body[start:stop],type_ignores=[]),'actual-preparation','exec'),env)
-            self.assertEqual(set(commands),{'receiver-controls','publication-controls','static-publication-controls'})
-            pins=json.loads((cache/'windows-q8-apack-publication-pre-execution-v1.json').read_bytes())['files']
-            for path,wanted in pins.items():self.assertEqual(descriptor(Path(path)),wanted)
-            for name in ['q8-apack-loop-inspector-pre-execution-v1.json',
-                    'q8-apack-static-publication-green-v1.json',
-                    'q8-apack-static-publication-green-v1.stdout.log',
-                    'q8-apack-static-publication-green-v1.stderr.log']:
-                self.assertIn(str(cache/name),pins)
+        for supported in (False,True):
+            with self.subTest(raw_flag_supported=supported),tempfile.TemporaryDirectory()as directory:
+                root=Path(directory);cache=root/'cache';cache.mkdir();logs=root/'logs';logs.mkdir()
+                repo=root/'repo';repo.symlink_to(Path(replay.__file__).resolve().parents[2],target_is_directory=True)
+                protocol_path=repo/'tools/nemotron-diarization/remote-q8-apack-replay.protocol.json'
+                raw_protocol=protocol_path.read_bytes();protocol=json.loads(raw_protocol);commands=[]
+                def run(name,command):
+                    commands.append(name)
+                    if name in ('gh-version','gh-api-help'):
+                        # Capability fixtures keep both CLI branches reproducible
+                        # on hosts with either the legacy or guarded release.
+                        raw=(b'--allow-escape-sequences'if supported else b'legacy CLI')
+                        (logs/(name+'.stdout.log')).write_bytes(raw)
+                        (logs/(name+'.stderr.log')).write_bytes(b'')
+                        return raw
+                    bounded_process(list(map(str,command)),logs/(name+'.stdout.log'),logs/(name+'.stderr.log'),
+                        cwd=repo,env=dict(os.environ),timeout=30)
+                    return(logs/(name+'.stdout.log')).read_bytes()
+                env={**vars(replay),'repo':repo,'cache':cache,'logs':logs,'run':run,'base':'fixture',
+                    'protocol_path':protocol_path,'raw_protocol':raw_protocol,'protocol':protocol}
+                with mock.patch.dict(os.environ,{'GITHUB_RUN_ID':'fixture'}):
+                    exec(compile(ast.Module(body=body[start:stop],type_ignores=[]),'actual-preparation','exec'),env)
+                self.assertEqual(set(commands),{'gh-version','gh-api-help','receiver-controls','publication-controls','static-publication-controls'})
+                pins=json.loads((cache/'windows-q8-apack-publication-pre-execution-v1.json').read_bytes())['files']
+                for path,wanted in pins.items():self.assertEqual(descriptor(Path(path)),wanted)
+                for name in ['q8-apack-loop-inspector-pre-execution-v1.json',
+                        'q8-apack-static-publication-green-v1.json',
+                        'q8-apack-static-publication-green-v1.stdout.log',
+                        'q8-apack-static-publication-green-v1.stderr.log',
+                        'raw-api-cli-version.stdout.log','raw-api-cli-help.stdout.log']:
+                    self.assertIn(str(cache/name),pins)
+                preparation=json.loads((cache/'windows-q8-apack-receivers-preparation-v1.json').read_bytes())
+                self.assertEqual(preparation['raw_api_transport']['changed_command_lists'],2 if supported else 0)
+                fetcher=(cache/'fetch-windows-q8-apack-artifact-v1.py').read_bytes()
+                self.assertEqual(b'--allow-escape-sequences'in fetcher,supported)
 
     def test_actual_eight_reviewed_receiver_asts_relocate(self):
         repo=Path(__file__).resolve().parents[2]

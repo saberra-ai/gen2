@@ -18,14 +18,23 @@ def main():
     for name,wanted in json.loads((parent/'collection.json').read_bytes())['files'].items():
         if descriptor(parent/name)!=wanted:raise ValueError('reviewed preparation changed: '+name)
         names.add(PARENT+'/'+name)
+    failed_name='benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-remote-failure'
+    failed=repo/failed_name
+    if descriptor(failed/'collection.json')!={'bytes':3375,'sha256':'6f90c48a44bb19bcc074b8411bf762ac6833f76136138857552edcaf2f1abbc1'}:
+        raise ValueError('retained first remote failure required')
+    names.add(failed_name+'/collection.json')
+    for name,wanted in json.loads((failed/'collection.json').read_bytes())['files'].items():
+        if descriptor(failed/name)!=wanted:raise ValueError('failure evidence changed: '+name)
+        names.add(failed_name+'/'+name)
     native=tools/'windows-q8-apack.protocol.json'
     if descriptor(native)!={'bytes':885307,'sha256':'329e0afea3c8e4f05d6158e58e801519a0dfb3d76fa0e1b27afa9d00eb7e5c2f'}:
         raise ValueError('unchanged native protocol required')
-    result={'schema_version':1,'native_source':SOURCE,'native_run_id':RUN,'native_job_id':JOB,
+    result={'schema_version':2,'native_source':SOURCE,'native_run_id':RUN,'native_job_id':JOB,
         'native_feature_run_id':FEATURE,'artifact_id':ARTIFACT,'archive':ARCHIVE,'native_protocol':descriptor(native),
         'parent_manifest':expected,'files':{n:descriptor(repo/n)for n in sorted(names)},
         'original_start_floor_bytes':8*1024**3,'archive_cap_bytes':1024**3,'bundle_cap_bytes':128*1024**2,
-        'limits':['Full unchanged original archive admission, source/command/vector/half/packing/timing/observer replay on Linux receiver. Only literal path prefixes relocate; no kernel/compiler/SDK/model rerun.',
+        'raw_api_transport':{'flag':'--allow-escape-sequences','when':'advertised-by-gh-api-help','exact_fetcher_command_lists':2,'raw_bytes_only':True},
+        'limits':['Full unchanged original archive admission, source/command/vector/half/packing/timing/observer replay on Linux receiver. Literal path prefixes relocate; only two fetcher gh API lists add raw-byte opt-in if advertised by CLI help. No kernel/compiler/SDK/model rerun.',
             'Original8GiBreceiver start floor and1GiBarchive bound remain in the fetched receiver itself. Remote API archive identity is fixed before download and completeZIPdigest rechecked before admission.',
             'Owned POSIX processgroups, boundedstdout/stderr and deadlines apply to every receiver command. Original95nativeWindowsJob observations remain independently replayed.',
             'Only two closed result directories are staged into one ephemeral result-only commit. Bounded incremental Gitbundle is returned; no remote branch write/push and no originalarchive ZIP copied intoGit.',

@@ -257,12 +257,17 @@ quality, attribution, desktop/platform and release gates remain open.
 
 The [independent A-packing replay route](../research/nemotron-windows-q8-apack-remote-replay.md)
 prepares the same full saved-artifact admission on fresh Linux CI with the
-original8GiB floor. Eleven focused controls pass, including actual relocated
-preparation, real signal/spawn cleanup and incremental Git bundle transfer.
+original8GiB floor. Its first run failed before native ZIP download because
+the new GitHub CLI refused escape bytes in the raw Windows job log; the
+24-member failure receipt preserves this negative result and reaped process.
+The separately frozen V2 adds raw-byte opt-in to exactly two fetcher command
+lists if advertised by CLI help, preserving the original validation AST.
+Twelve focused controls pass, including actual relocated preparation, real
+signal/spawn cleanup, raw transport and incremental Git bundle transfer.
 All8/4/3 receiver/publication/static controls and pins precede archive access.
 Only the two closed result directories can enter a bounded128MiB result bundle;
 no kernel/model is rerun and no remote branch is written by the receiver.
-Remote execution, bounded return/local import, full result replay and review
+V2 remote execution, bounded return/local import, full result replay and review
 remain pending. Neither CI success nor bundle creation substitutes for the
 original numerical, timing, observer or release gates.
 

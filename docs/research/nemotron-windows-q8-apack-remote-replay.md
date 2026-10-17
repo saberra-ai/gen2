@@ -14,6 +14,10 @@ original8GiB start floor,1GiB size cap, deadline and child-reaping checks.
 
 Eight previously reviewed receiver/inspection sources relocate only literal
 repository/cache path prefixes. AST comparison enforces that restriction.
+V2 additionally inserts `--allow-escape-sequences` in exactly the fetcher's two
+`gh api` command lists when the installed CLI advertises it. This preserves raw
+job-log/ZIP bytes; no validation expression changes. CLI version/help and the
+adapted fetcher are pinned and retained. Older CLIs keep their original calls.
 Supporting original source bytes stay in the preparation receipt. Fresh pure
 controls and pre-execution pins are generated for relocated bytes before any
 archive access; the executed adapter and its protocol are retained with results.
@@ -29,9 +33,11 @@ Every receiver command has bounded stdout/stderr, a deadline and an owned POSIX
 process group. Failure stops the route and retains its output/process report.
 SIGINT/SIGTERM stay deferred until child ownership is established and through
 cleanup/report creation; a self-pipe wakes blocked stream reads. Both original
-handlers are restored before signal redelivery. Eleven focused controls pass,
+handlers are restored before signal redelivery. Twelve focused controls pass,
 including real SIGTERM, both post-spawn signal seams, report-write failure,
-actual fresh8/4/3 preparation controls, and incremental Git bundle prerequisites.
+actual fresh8/4/3 preparation controls, incremental Git bundle prerequisites and
+the actual fetcher's raw-log call against a guarded CLI fixture. Removing the
+two transport flags reconstructs the original full AST exactly.
 These are receiver subprocess controls; the original Windows native Job
 observations remain independently replayed, without relabeling them as Linux
 measurements. No compiler, kernel, SDK or model is invoked by the receiver.
@@ -57,7 +63,20 @@ or signing identity changes. The pending local storage question remains useful
 for local/fresh-machine work, but is not a permission dependency for this
 authorized independent CI replay.
 
-At preregistration no remote replay, original archive admission or bundle
-delivery has executed. Successful workflow or packaging status cannot replace
+V1 at74c56438 ran as39079815299/job117534292370 and failed before the native ZIP
+download. Checkout and all eleven controls passed; the runner admitted
+86,923,927,552 free bytes. Its current GitHub CLI refused terminal escape bytes
+in the saved Windows job log. The failed command was reaped and its group gone.
+The [24-member failure receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-apack-remote-failure/qualification.json)
+retains the exact failure archive/API/process records and diagnosis. Official
+GitHub CLI2.100.0, downloaded into task cache from asset542974295 with its pinned
+14,212,224-byte SHA256 archive, reproduces exit1 without the flag and exit0
+with it. All63,578 returned bytes match the already retained native job log.
+The [CLI manual](https://cli.github.com/manual/gh_api) documents the opt-in.
+The new actual-get regression fails without the fix and passes with it.
+
+V2 is separately frozen before another remote run. No original native archive
+admission, numerical/timing result or bundle delivery has completed.
+Successful workflow or packaging status cannot replace
 the original numerical, speed, drift or observer gates. All original quality,
 human-review, desktop, fresh-machine, platform and release gates remain open.

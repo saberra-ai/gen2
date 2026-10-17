@@ -1,0 +1,17 @@
+.E..........
+======================================================================
+ERROR: test_actual_fetcher_preserves_raw_job_log_bytes_on_guarded_cli (test_remote_q8_apack_replay.RemoteReplayTest.test_actual_fetcher_preserves_raw_job_log_bytes_on_guarded_cli)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/test_remote_q8_apack_replay.py", line 34, in test_actual_fetcher_preserves_raw_job_log_bytes_on_guarded_cli
+    self.assertEqual(env['get']('jobs/117527216794/logs'),b'compiler output\x1b[32m\r\n')
+                     ~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "actual-fetcher-get", line 17, in get
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/test_remote_q8_apack_replay.py", line 28, in guarded
+    raise ValueError('the response contains terminal escape sequences')
+ValueError: the response contains terminal escape sequences
+
+----------------------------------------------------------------------
+Ran 12 tests in 1.513s
+
+FAILED (errors=1)
