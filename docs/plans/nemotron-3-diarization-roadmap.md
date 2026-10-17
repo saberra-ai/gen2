@@ -37,6 +37,11 @@ Remaining release work as of 2026-10-17:
   exact image detach/absence plus both lock releases pass. All 312 model-free
   tests pass. This qualifies lifecycle/discovery only; guest OS readiness,
   strict System/Data group validation, provisioning and fresh-app checks stay open.
+  The [strict-group/stopped-Data-access protocol](../research/nemotron-macos-vm-data.md)
+  is now prepared but unexecuted: it validates actual group/volume UUIDs before
+  private DataRW/SystemRO mounts on a fresh clone and bounded provisioning-path
+  probes. Apparent noowners UIDs do not establish stored guest ownership, and
+  this stage creates no account/SSH configuration or private payload transfer.
 - Finish each advertised platform/backend's performance, deployment and public
   signing/notarization requirements before promotion. Windows CPU functional
   evidence passes but its observed live RTF remains above one; the
