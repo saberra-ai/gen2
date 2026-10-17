@@ -136,6 +136,16 @@ justified frozen change; an identical timing retry supplies no implementation fi
 All539 local tool tests pass with seven Windows-only skips, plus all three Pnola
 integration tests; no main promotion is established.
 
+The separate [two-row Q8 consumption experiment](../research/nemotron-windows-q8-pair.md)
+now compares the exact current Mx4 control against a private full-tile helper
+that consumes each B vector across both A rows. Tile ownership, tails, per-output
+arithmetic and original compiler/ISA/contraction requirements remain unchanged.
+Exact producer/benchmark/metrics derivations preserve all1,056 full vectors,
+half/support/cleanup checks and original speed/drift/observer predicates.
+All545 local tests pass with seven Windows-only skips; the separate protocol
+binds131 tools/3,745 references/39 imports. Actual Windows numerical/performance
+execution remains pending; this is no SDK/model/RTF or release qualification.
+
 Remaining release work as of 2026-10-17:
 
 - Meet the original 20% DER target on every required meeting slice. The two AMI
