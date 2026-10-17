@@ -58,3 +58,13 @@ independent held-out quality and public signing/notarization remain separate
 open gates. Human word annotation/review is deferred at the user's request. The
 original 20% per-slice DER gate remains unchanged. No default package, production
 release or main-branch promotion is justified by this stage alone.
+
+The [actual static-only admission receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-bounded-pnola-runtime-admission/collection-qualification.json)
+now passes at `74d19a3c2d04d00cb4c36624040cf0c5dc9b890c`. The controller was
+observed terminal with exit 0 before independent collection. Its output contains
+only protocol and qualification, with empty commands/cases/neural/image records
+and a false runtime gate. All source, preparation, 132 work and 246 app entries
+verify; static package/signature inspection passes and the reserve is released.
+The nine-member receipt includes the collector/preparer and passing test logs.
+No SDK/app/helper/model function executes during admission or collection. Full
+runtime and all original quality/desktop/release gates remain pending.

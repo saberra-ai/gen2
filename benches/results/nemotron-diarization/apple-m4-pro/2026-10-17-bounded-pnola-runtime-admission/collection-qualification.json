@@ -1,0 +1,29 @@
+{
+  "schema_version": 1,
+  "controller_source_commit": "74d19a3c2d04d00cb4c36624040cf0c5dc9b890c",
+  "app_construction_source_commit": "edf7b898b00df89d868761bfc80487d7c3bdf097",
+  "input_admission_passed": true,
+  "admit_only": true,
+  "automatic_packaged_resolution_gates_passed": false,
+  "release_qualified": false,
+  "source_pins_verified": 469,
+  "work_entries_verified": 132,
+  "app_entries_verified": 246,
+  "preparation_records_verified": 8,
+  "actual_commands": 0,
+  "fresh_neural_processes": 0,
+  "independent_native_reference_frames": {},
+  "comparisons_replayed": {},
+  "native_private_image_audits": 0,
+  "hardened_app_callback_image_audits": 0,
+  "all_protected_app_and_work_entries_rehashed": true,
+  "storage_reserve_released": true,
+  "model_free_tests_passed": 280,
+  "new_native_or_app_or_neural_calls_during_collection": 0,
+  "limits": [
+    "Actual static-only admission.",
+    "Static collection may inspect signatures and temporary unsigned copies; no app/SDK/helper/model code executes.",
+    "Native references retain all frames/probabilities. Live app has compact turns; independent final-turn comparison remains1e-6, not observed app probability arrays.",
+    "No GUI, physical microphone, fresh machine, other-platform app, acoustic timing, held-out accuracy, human word gold, public signing/notarization, default promotion or release claim."
+  ]
+}

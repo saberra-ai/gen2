@@ -115,6 +115,11 @@ committed controller must first pass separate static-only admission before its
 five fresh neural processes; no bounded complete-app runtime call has run at
 preregistration. Construction feature CI at `edf7b898` passes
 [all 13 jobs](https://github.com/saberra-ai/gen2/actions/runs/39011128566).
+The [actual bounded runtime admission](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-bounded-pnola-runtime-admission/collection-qualification.json)
+now passes at `74d19a3c`: all source/preparation/work/app entries and static
+package/signature checks verify, with empty commands/cases/neural/images and
+released reserve. Its separate output preserves the fresh full-runtime path;
+no app/helper/SDK/model function ran. Full runtime remains pending.
 
 Latest pooled CPU verification passes [30m/1h streams](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-long/collection-qualification.json),
 [mixed-model residency](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-mixed/collection-qualification.json)
