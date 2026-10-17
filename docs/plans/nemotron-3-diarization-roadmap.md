@@ -35,13 +35,16 @@ Remaining release work as of 2026-10-17:
   installed source, 120.799614 seconds Running is followed by supported fallback
   stop/callback/exit0, scoped metadata is acquired read-only with no mount, and
   exact image detach/absence plus both lock releases pass. All 312 model-free
-  tests pass. This qualifies lifecycle/discovery only; guest OS readiness,
-  strict System/Data group validation, provisioning and fresh-app checks stay open.
-  The [strict-group/stopped-Data-access protocol](../research/nemotron-macos-vm-data.md)
-  is now prepared but unexecuted: it validates actual group/volume UUIDs before
-  private DataRW/SystemRO mounts on a fresh clone and bounded provisioning-path
-  probes. Apparent noowners UIDs do not establish stored guest ownership, and
-  this stage creates no account/SSH configuration or private payload transfer.
+  tests pass. This qualifies lifecycle/discovery only; subsequent group/access
+  work is qualified separately below. Guest readiness/provisioning/app gates remain.
+  The [strict-group/stopped-Data-access result](../research/nemotron-macos-vm-data.md)
+  at `ec80cca1` now validates the unique System/Data UUID pair and actual private
+  DataRW/SystemRO mounts, but **fails** on users-directory EACCES before any probe
+  write or account operation. Both unmounts/exact detach/source preservation and
+  lock/reserve releases pass; the clone stays quarantined. All 320 model-free
+  tests pass. Apparent noowners UIDs do not establish stored guest ownership;
+  a separately declared fresh-clone permission investigation precedes provisioning.
+  No account/SSH configuration or private payload transfer is established.
 - Finish each advertised platform/backend's performance, deployment and public
   signing/notarization requirements before promotion. Windows CPU functional
   evidence passes but its observed live RTF remains above one; the

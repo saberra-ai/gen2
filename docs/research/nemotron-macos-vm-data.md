@@ -1,6 +1,9 @@
 # Strict volume group and stopped-guest Data access
 
-Status on 2026-10-17: prepared, not executed. The passing
+Status on 2026-10-17: actual strict pairing and mounts pass, but bounded Data
+access **fails** at `ec80cca155b7d214c42922f0fc88d3182f9658ed`; see the
+[104-member failed-access receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-data-failure/collection-qualification.json).
+The passing
 [boot/stopped/read-only discovery](nemotron-macos-vm-boot.md) provides actual raw
 volume-group schema. This next stage validates the System/Data pair and tests
 bounded access on another disposable paired clone. It supplies no account,
@@ -76,7 +79,52 @@ There is no force, silent retry or automatic reuse after failure. A failed acces
 or cleanup attempt quarantines the clone. Raw global image inventories and seed
 binaries/disk stay local; only scoped records and global-log hashes enter Git.
 
-Even a passing result would establish strict group validation and stopped-volume
+The actual controller was observed terminal with exit1; saved-data collection
+returns exit0 while preserving `data_access_passed=false` and
+`clone_quarantined=true`. Of 32 children, 31 return zero and only `data-probe`
+fails. All four enforced clones preserve the original stopped booted seed's
+identities and bounded metadata. The actual UUID bridge qualifies the unique
+System/Data pair in sole-store container `disk15` on observed `disk12s2`.
+
+Both private mounts succeed: Data is writable with filesystem device16777270,
+System is read-only with device16777267, and their host parent device is16777233.
+Exact device/UUID/group/store/path, OS access flags and APFS metadata agree.
+Global permissions remain false; no ownership-database operation occurs. These
+are this attempt's observations, never future device-selection constants.
+
+The probe saves the actual 600-byte SystemVersion plist, SHA256
+`aaecfe6f3b00111a7d23b868013798eba4d09c886fe1b3324388f8290d32f3d1`.
+It identifies guest26.3/build25D125, matching the restored numeric components.
+Traversal then fails with `PermissionError(13, 'Permission denied')` opening
+`users` during metadata inspection of
+`private/var/db/dslocal/nodes/Default/users`. Only the preceding db directory's
+metadata is observed. **No probe file, existing account write-open or account
+content read occurs.** No existing guest file or directory mode is changed.
+The public-host-key step is never reached: the partial report's initial
+`present=false` field does not establish actual key absence.
+
+Both normal unmounts and their no-MountPoint checks succeed, followed by exact
+image detach and verified absence. Source preservation, both lock releases and
+reserve release pass. All 24 parent storage observations stay above the running
+floor; minimum free is131,509,043,200bytes. The failed clone remains quarantined
+and is not mounted/read/reused by collection. Collection replays all99 prior
+receipt members, 29 current/copied/historical sources and93 external descriptors,
+plus raw group/mount/unmount/filtered image records. All seven global image
+inventory logs stay local with hashes only. No VM, network, provisioning,
+credentials, private app/model or host sudo/security/settings call occurs.
+
+Next, use another fresh paired clone to localize the failed entry's mode/ACL and
+access policy through an already accessible parent descriptor. The current
+failure does not establish that the missing permission is an execute bit. The
+pinned patcher explicitly adds owner execute (`current | 0o100`) to Default/users
+directories before provisioning; that is source evidence for a separately
+declared guest-only bootstrap, not authorization to infer its success here.
+Inspect first, then freeze any exact bounded mode change and restoration before
+another access attempt. Do not remount this failed clone, escalate on the host,
+or change ownership settings to force a pass. Stored guest UID/GID, provisioning,
+authenticated SSH and complete-app admission remain unproved.
+
+Even a passing complete access result would establish strict group validation and stopped-volume
 access only. Guest provisioning/readiness/SSH, complete fresh-machine Pnola,
 GUI/microphone/playback/IPC, quality/human timing, other platform performance and
 public signing/release/main promotion remain open.

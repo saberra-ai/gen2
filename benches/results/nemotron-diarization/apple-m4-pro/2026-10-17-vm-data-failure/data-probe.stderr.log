@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/macos_vm_data_probe.py", line 198, in <module>
+    main()
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/macos_vm_data_probe.py", line 160, in main
+    fd = directory(roots['data'], relative)
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/macos_vm_data_probe.py", line 23, in directory
+    following = os.open(component, os.O_RDONLY | os.O_DIRECTORY | os.O_NOFOLLOW, dir_fd=current)
+PermissionError: [Errno 13] Permission denied: 'users'

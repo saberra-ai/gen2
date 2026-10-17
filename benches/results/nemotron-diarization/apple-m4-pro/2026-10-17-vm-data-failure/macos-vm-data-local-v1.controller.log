@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/qualify_macos_vm_data.py", line 389, in <module>
+    main()
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/qualify_macos_vm_data.py", line 278, in main
+    result = run('data-probe', ['/usr/bin/python3', '-B', tools / 'macos_vm_data_probe.py', '--config', output / 'probe-config.json'])
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/qualify_macos_vm_data.py", line 145, in run
+    raise ValueError('Data-access command failed: ' + name)
+ValueError: Data-access command failed: data-probe

@@ -18,6 +18,8 @@ full running interval, callback/stop/exit evidence and foreign/ambiguous layout
 rejection. These tests do not establish actual boot or cancellation behavior.
 Both review axes cleared before committed invocation. All 312 model-free tests
 pass; the actual results below qualify only their observed successful path.
+The [feature run](https://github.com/saberra-ai/gen2/actions/runs/39019003838)
+at `8c76eb8a` now completes successfully in all 13 jobs.
 
 The controller reacquires the installed source's exclusive lock and holds it
 with a fresh output lock through clone, VM execution and disk cleanup. All four

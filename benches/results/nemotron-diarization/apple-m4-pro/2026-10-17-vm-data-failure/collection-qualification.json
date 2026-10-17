@@ -1,0 +1,124 @@
+{
+  "schema_version": 1,
+  "source_commit": "ec80cca155b7d214c42922f0fc88d3182f9658ed",
+  "data_access_passed": false,
+  "system_data_group_verified": true,
+  "stored_guest_ownership_verified": false,
+  "fresh_machine_qualified": false,
+  "release_qualified": false,
+  "guest_os_ready_qualified": false,
+  "provisioning_performed": false,
+  "actual_commands": 32,
+  "zero_status_commands": 31,
+  "original_booted_seed_identity_unchanged": true,
+  "source_preservation": {
+    "unchanged": true
+  },
+  "sandbox_status": "verified",
+  "partial_phase_verification": {
+    "system_data_pair": true,
+    "mounts": {
+      "data": true,
+      "system": true
+    },
+    "unmounts": {
+      "data": true,
+      "system": true
+    },
+    "attachment_absence": true
+  },
+  "prior_boot_members_verified": 99,
+  "current_historical_source_pins_verified": 29,
+  "external_descriptors_verified": 93,
+  "model_free_tests_passed": 320,
+  "clone_quarantined": true,
+  "owned_image_detached": true,
+  "system_data_pair": {
+    "container": "disk15",
+    "physical_store": "/dev/disk12s2",
+    "container_uuid": "536C64C7-38FB-4DCC-B7D7-026813B23781",
+    "group_uuid": "F3BC5BEA-3D05-45B2-940C-6EB51C65A411",
+    "system": {
+      "device": "/dev/disk15s1",
+      "uuid": "6EFA0AB6-666F-45EF-8FE6-6DE6304AE494"
+    },
+    "data": {
+      "device": "/dev/disk15s5",
+      "uuid": "F3BC5BEA-3D05-45B2-940C-6EB51C65A411"
+    }
+  },
+  "data_probe": {
+    "access_passed": false,
+    "directory_metadata": {
+      "private/var/db": {
+        "bytes": 3424,
+        "ctime_ns": 1792227189362919713,
+        "device": 16777270,
+        "inode": 17833,
+        "mode": 493,
+        "mtime_ns": 1792227189362919713,
+        "observed_gid": 20,
+        "observed_uid": 502
+      }
+    },
+    "error": "PermissionError(13, 'Permission denied')",
+    "existing_write_opens": [],
+    "product_build": "25D125",
+    "product_version": "26.3",
+    "provisioning_performed": false,
+    "public_host_key": {
+      "present": false
+    },
+    "schema_version": 1,
+    "step": "directory metadata: private/var/db/dslocal/nodes/Default/users",
+    "stored_guest_ownership_verified": false,
+    "system_version_file": {
+      "bytes": 600,
+      "sha256": "aaecfe6f3b00111a7d23b868013798eba4d09c886fe1b3324388f8290d32f3d1"
+    },
+    "writes": []
+  },
+  "accessed_seed": null,
+  "public_host_key_check_reached": false,
+  "public_host_key_default_limit": "A false present field in a partial probe report is an initial placeholder unless the public-host-key step was reached; it does not establish actual key absence.",
+  "global_image_inventory_retained_local_only": {
+    "attached-image.stdout.log": {
+      "bytes": 11308,
+      "sha256": "5863d6bb7ebda288b1d82bd69080c209bd273e244e60fdc954c5c69795597339"
+    },
+    "before-system-mount.stdout.log": {
+      "bytes": 11431,
+      "sha256": "af6727c4d3b0764142a8362038765ded9488b55b669fcc8f89503931ee56304b"
+    },
+    "before-detach-image.stdout.log": {
+      "bytes": 11308,
+      "sha256": "5863d6bb7ebda288b1d82bd69080c209bd273e244e60fdc954c5c69795597339"
+    },
+    "cleanup-image.stdout.log": {
+      "bytes": 11556,
+      "sha256": "0b029173267fe6d1a9bcf031f0bdc6b630a2a4d8c9ba7ac30c751a91ef07e5d4"
+    },
+    "after-image.stdout.log": {
+      "bytes": 7269,
+      "sha256": "38575c04a11a7fe42ce0bb5873ed5937acbb632f8d924f37bd7a85d577de40b7"
+    },
+    "before-image.stdout.log": {
+      "bytes": 7269,
+      "sha256": "38575c04a11a7fe42ce0bb5873ed5937acbb632f8d924f37bd7a85d577de40b7"
+    },
+    "before-data-mount.stdout.log": {
+      "bytes": 11308,
+      "sha256": "5863d6bb7ebda288b1d82bd69080c209bd273e244e60fdc954c5c69795597339"
+    }
+  },
+  "inherited_pre_attach_disk_evidence_label_limit": "The helper label in cloned_seed_before_attach describes the earlier installed-seed prerequisite, not an installer after this clone. This attempt has no VM or installer; successful current disk provenance is recorded separately in accessed_seed.",
+  "physical_reserve_released": true,
+  "new_helper_vm_network_model_mount_clone_calls_during_collection": 0,
+  "limits": [
+    "Strict group and bounded stopped-volume access only; no guest account/SSH/provisioning, OS readiness or private complete-app/model execution.",
+    "Noowners observedUID/GID is not storedguestownershipproof. Future authenticated guest repair/verification remains required before payload use.",
+    "Raw100GiB disk stat/OSclone provenance only; no whole-disk read/hash. Mount/fsck/probes may change disposable clone metadata; original booted seed preserved.",
+    "Failure quarantines clone; no silent retry/force/automatic reuse. No new mount/helper/device/network/VM operation during saved-data collection.",
+    "Human timing deferred. Quality, GUI/microphone/playback/IPC, fresh-machine app, otherplatform performance and publicsigning/release/main promotion remain open."
+  ]
+}
