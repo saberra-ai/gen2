@@ -4,6 +4,7 @@ use llama_cpp_2::model::LlamaModel;
 use llama_cpp_2::mtmd::MtmdContext;
 
 pub struct ModelBundle {
+    pub(crate) grammar: crate::backend::common::grammar::GrammarOwner,
     #[cfg(feature = "llama-dflash2")]
     pub(crate) draft: Option<super::dflash2::DraftModel>,
     pub model: LlamaModel,

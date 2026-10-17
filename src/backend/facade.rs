@@ -690,6 +690,11 @@ impl Engine {
         self.as_backend().and_then(|b| b.context_window())
     }
 
+    /// Prepared grammar ownership for the active logical backend engine.
+    pub fn grammar_ownership(&self) -> Option<crate::model::GrammarOwnership> {
+        self.as_backend().and_then(|b| b.grammar_ownership())
+    }
+
     /// Where the loaded model's weights are, when the backend can say. See
     /// [`Backend::gpu_offload`].
     pub fn gpu_offload(&self) -> Option<crate::engine::GpuOffload> {

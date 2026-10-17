@@ -217,9 +217,8 @@ pub(crate) struct DecodeState {
 /// grammar-constrained decoding works without a `tokenizer.json`. Mirrors
 /// `llama_cpp_2::llguidance_sampler::build_tok_env`: a token's normal byte
 /// form, else its special form prefixed with the `0xFF` toktrie marker,
-/// else an empty entry. Walks the full vocab once per generation (acceptable
-/// for one-shot tasks like summaries; cache per-model if it ever shows up
-/// in a hot path).
+/// else an empty entry. Called lazily once per loaded model bundle; temporary
+/// token-byte vectors are discarded after preparing its immutable token trie.
 fn grammar_vocab_from_model(model: &LlamaModel) -> GrammarVocab {
     let n_vocab = model.n_vocab();
     let mut words: Vec<Vec<u8>> = Vec::with_capacity(n_vocab.max(0) as usize);
@@ -391,7 +390,10 @@ impl Session {
         let Some(spec) = gen_spec.grammar.clone() else {
             return Ok((Self::sampler_from_settings(settings, bundle), None));
         };
-        match GrammarMatcher::from_vocab(&grammar_vocab_from_model(&bundle.model), spec) {
+        match bundle
+            .grammar
+            .matcher(|| grammar_vocab_from_model(&bundle.model), spec)
+        {
             Ok(matcher) => {
                 // Grammar masking forces *structural* validity but the schema
                 // still permits arbitrary inter-token whitespace, and a small

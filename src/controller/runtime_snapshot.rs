@@ -41,6 +41,9 @@ pub struct ControllerRuntimeSnapshot {
     /// model is loaded or the backend cannot say.
     #[serde(default)]
     pub loaded_model_offload: Option<crate::engine::GpuOffload>,
+    /// Logical backend-engine grammar ownership, readable after eviction.
+    #[serde(default)]
+    pub grammar_ownership: Option<crate::model::GrammarOwnership>,
 }
 
 /// Observable fields for a single `ChatRuntime`.
@@ -97,6 +100,7 @@ pub(super) fn build_runtime_snapshot(state: &ControllerState) -> ControllerRunti
         loaded_model_file_bytes: state.loaded_model_file_bytes,
         loaded_model_context,
         loaded_model_offload,
+        grammar_ownership: state.engine.grammar_ownership(),
     }
 }
 
@@ -130,6 +134,7 @@ mod tests {
                     lifecycle: RuntimeLifecycleSnapshot::Completed(CompletionReason::Eos),
                 },
             ],
+            grammar_ownership: None,
             loaded_model_architecture: Some("gemma4".into()),
             loaded_model_file_bytes: Some(8 << 30),
             loaded_model_context: Some(8192),

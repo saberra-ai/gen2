@@ -327,15 +327,19 @@ impl ArPuller {
         .with_dry(dry_params)
         .with_xtc(xtc_params);
 
-        let grammar: Option<GrammarMatcher> = gen_spec.grammar.clone().and_then(|spec| {
-            match GrammarMatcher::new(&bundle.tokenizer, spec) {
-                Ok(g) => Some(g),
-                Err(e) => {
-                    tracing::warn!("grammar build failed, continuing unconstrained: {e:?}");
-                    None
+        let grammar: Option<GrammarMatcher> =
+            gen_spec.grammar.clone().and_then(|spec| {
+                match bundle
+                    .grammar
+                    .matcher_for_tokenizer(&bundle.tokenizer, spec)
+                {
+                    Ok(g) => Some(g),
+                    Err(e) => {
+                        tracing::warn!("grammar build failed, continuing unconstrained: {e:?}");
+                        None
+                    }
                 }
-            }
-        });
+            });
 
         // Resolve speculative mode: explicit `GenSpec.speculative` wins,
         // else the `PIO_MLX_SPEC_MODE` env override, else default (Lookahead).

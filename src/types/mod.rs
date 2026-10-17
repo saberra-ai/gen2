@@ -5,6 +5,7 @@
 //! record it was asked to load), with no dependency on any host application.
 
 pub mod execution_stats;
+pub mod grammar_ownership;
 pub mod message;
 pub mod model;
 pub mod persona;

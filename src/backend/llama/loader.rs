@@ -27,6 +27,7 @@ pub(crate) fn build_bundle(
     backend: &Arc<LlamaBackend>,
     req: &LoadRequest,
     settings: &crate::engine::Settings,
+    grammar_tracker: Arc<crate::backend::common::grammar::GrammarOwnershipTracker>,
 ) -> Result<ModelBundle, ExecError> {
     // Validate model file before passing to llama-cpp (prevents C FFI hang on empty/corrupt files)
     crate::engine::validate_model_file(&req.model_path)?;
@@ -194,6 +195,7 @@ pub(crate) fn build_bundle(
     }
 
     Ok(ModelBundle {
+        grammar: crate::backend::common::grammar::GrammarOwner::new(grammar_tracker),
         #[cfg(feature = "llama-dflash2")]
         draft,
         model,
@@ -416,7 +418,13 @@ mod kv_geometry_tests {
             },
             ..Default::default()
         };
-        let bundle = build_bundle(&backend, &request, &crate::engine::Settings::default()).unwrap();
+        let bundle = build_bundle(
+            &backend,
+            &request,
+            &crate::engine::Settings::default(),
+            Arc::new(crate::backend::common::grammar::GrammarOwnershipTracker::default()),
+        )
+        .unwrap();
         assert_eq!(bundle.context_kv_bytes_per_token, 114_688);
         assert_eq!(
             bundle.model.attention_kv_layer_geometry(0),

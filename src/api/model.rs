@@ -109,6 +109,17 @@ impl Model {
         }
     }
 
+    /// Observe grammar object ownership without loading or restoring the model.
+    /// Available after eviction on supported backends. Counts are not measured
+    /// bytes, total native allocation, RSS or extra admission capacity.
+    pub fn grammar_ownership(&self) -> super::Result<Option<crate::model::GrammarOwnership>> {
+        self.engine()
+            .controller()
+            .get_controller_runtime_snapshot()
+            .map(|snapshot| snapshot.grammar_ownership)
+            .map_err(|_| super::Error::ControllerGone)
+    }
+
     /// What this model can be asked to do.
     pub fn capabilities(&self) -> ModelCapabilities {
         let engine = self.engine();
@@ -318,6 +329,12 @@ mod tests {
     fn model_is_clone_send_and_sync() {
         fn assert_all<T: Clone + Send + Sync + 'static>() {}
         assert_all::<Model>();
+    }
+
+    #[test]
+    fn unsupported_grammar_ownership_is_unavailable_rather_than_zero() {
+        let model = Runtime::scripted(crate::test_support::Script::default());
+        assert_eq!(model.grammar_ownership().unwrap(), None);
     }
 
     #[test]

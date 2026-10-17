@@ -38,6 +38,7 @@ pub(crate) fn get_backend() -> Result<Arc<LlamaBackend>, ExecError> {
 
 pub struct Engine {
     bundle: ArcSwapOption<ModelBundle>,
+    grammar_tracker: Arc<crate::backend::common::grammar::GrammarOwnershipTracker>,
     // Keep a lightweight registry to track IDs without holding non-Send Session types.
     sessions: DashMap<SessionId, ()>,
     settings: ArcSwap<Settings>,
@@ -71,6 +72,9 @@ impl Engine {
         send_logs_to_tracing(LogOptions::default().with_logs_enabled(true));
         Self {
             bundle: ArcSwapOption::from(None),
+            grammar_tracker: Arc::new(
+                crate::backend::common::grammar::GrammarOwnershipTracker::default(),
+            ),
             sessions: DashMap::new(),
             settings: ArcSwap::from_pointee(Settings::default()),
             last_load: RwLock::new(None),
@@ -89,7 +93,12 @@ impl Engine {
         // self.hooks.emit(HookEvent::EngineLoadStart { path: req.model_path.display().to_string() });
         let backend = get_backend()?;
 
-        let bundle = super::loader::build_bundle(&backend, &req, &self.settings())?;
+        let bundle = super::loader::build_bundle(
+            &backend,
+            &req,
+            &self.settings(),
+            self.grammar_tracker.clone(),
+        )?;
         let caps = bundle.capabilities;
         let meta = bundle.meta.clone();
         // Drop session registry so callers can't keep using stale sessions after a reload.
@@ -311,6 +320,9 @@ impl Backend for Engine {
             .load_full()
             .map(|b| b.meta.n_ctx)
             .filter(|n| *n > 0)
+    }
+    fn grammar_ownership(&self) -> Option<crate::model::GrammarOwnership> {
+        Some(self.grammar_tracker.snapshot())
     }
     fn gpu_offload(&self) -> Option<crate::engine::GpuOffload> {
         self.bundle.load_full().map(|b| b.offload.clone())

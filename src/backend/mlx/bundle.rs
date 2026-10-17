@@ -7,6 +7,7 @@ use crate::bundle::ModelMeta;
 use crate::engine::Capabilities;
 
 pub struct ModelBundle {
+    pub(crate) grammar: crate::backend::common::grammar::GrammarOwner,
     pub model: Model,
     pub rope: RotaryEmbedding,
     pub tokenizer: HfTokenizer,

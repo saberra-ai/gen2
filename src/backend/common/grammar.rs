@@ -11,9 +11,7 @@
 //! grammar that works against the llama backend also works in MLX /
 //! ONNX mode — output constraint semantics are backend-agnostic.
 
-use std::collections::HashMap;
-use std::hash::{Hash, Hasher};
-use std::sync::{Arc, LazyLock, Mutex};
+use std::sync::Arc;
 
 use anyhow::{Context, Result};
 use llguidance::api::TopLevelGrammar;
@@ -78,13 +76,96 @@ pub struct GrammarVocab {
     pub bos: Option<u32>,
 }
 
+/// Lifetime accounting follows the actual retained vocabulary and matcher.
+#[derive(Default)]
+pub(crate) struct GrammarOwnershipTracker(parking_lot::Mutex<crate::model::GrammarOwnership>);
+impl GrammarOwnershipTracker {
+    pub(crate) fn snapshot(&self) -> crate::model::GrammarOwnership {
+        *self.0.lock()
+    }
+}
+struct VocabularyLifetime(Arc<GrammarOwnershipTracker>);
+impl Drop for VocabularyLifetime {
+    fn drop(&mut self) {
+        let mut counts = self.0.0.lock();
+        counts.vocabulary_releases += 1;
+        counts.live_vocabularies -= 1;
+    }
+}
+struct MatcherLifetime(Arc<GrammarOwnershipTracker>);
+impl Drop for MatcherLifetime {
+    fn drop(&mut self) {
+        self.0.0.lock().active_matchers -= 1;
+    }
+}
+struct PreparedVocabulary {
+    // Fields drop in order: release is observed only after the TokEnv drops.
+    tok_env: TokEnv,
+    _lifetime: VocabularyLifetime,
+}
+impl PreparedVocabulary {
+    fn build(vocab: &GrammarVocab, tracker: Arc<GrammarOwnershipTracker>) -> Result<Arc<Self>> {
+        let tok_env = build_tok_env(vocab)?;
+        {
+            let mut counts = tracker.0.lock();
+            counts.vocabulary_builds += 1;
+            counts.live_vocabularies += 1;
+        }
+        Ok(Arc::new(Self {
+            tok_env,
+            _lifetime: VocabularyLifetime(tracker),
+        }))
+    }
+}
+/// A loaded model's grammar vocabulary owner. Requests have separate matchers.
+pub(crate) struct GrammarOwner {
+    tracker: Arc<GrammarOwnershipTracker>,
+    vocabulary: parking_lot::Mutex<Option<Arc<PreparedVocabulary>>>,
+}
+impl GrammarOwner {
+    pub(crate) fn new(tracker: Arc<GrammarOwnershipTracker>) -> Self {
+        Self {
+            tracker,
+            vocabulary: parking_lot::Mutex::new(None),
+        }
+    }
+    #[cfg(feature = "backend-mlx")]
+    pub(crate) fn matcher_for_tokenizer(
+        &self,
+        tokenizer: &HfTokenizer,
+        spec: GrammarSpec,
+    ) -> Result<GrammarMatcher> {
+        self.matcher(|| vocab_from_hf(tokenizer), spec)
+    }
+    pub(crate) fn matcher(
+        &self,
+        vocab: impl FnOnce() -> GrammarVocab,
+        spec: GrammarSpec,
+    ) -> Result<GrammarMatcher> {
+        let prepared = {
+            // One successful preparation per loaded bundle. The temporary
+            // token-byte vectors are discarded before parsing the request.
+            let mut cached = self.vocabulary.lock();
+            if cached.is_none() {
+                *cached = Some(PreparedVocabulary::build(&vocab(), self.tracker.clone())?);
+            }
+            cached.as_ref().expect("prepared vocabulary").clone()
+        };
+        GrammarMatcher::from_prepared(prepared, spec)
+    }
+}
+
 /// Per-session grammar matcher. Holds an `llguidance::Matcher` tied to
-/// the session's tokenizer + the chosen [`GrammarSpec`]. Cheap to `new`
-/// (grammar parsing is eager but fast); expensive to `apply_mask` on
+/// the session's tokenizer + the chosen [`GrammarSpec`]. Public constructors
+/// prepare a vocabulary; model backends reuse their loaded bundle's owner.
+/// Expensive to `apply_mask` on
 /// wide vocabs — mask computation touches the full token trie.
 pub struct GrammarMatcher {
     matcher: Matcher,
     vocab_size: usize,
+    // Parser/matcher drops before its guards, then the vocabulary owner.
+    _matcher_lifetime: MatcherLifetime,
+    _vocabulary: Arc<PreparedVocabulary>,
 }
 
 impl GrammarMatcher {
@@ -96,26 +177,35 @@ impl GrammarMatcher {
     }
 
     /// Build a matcher from a raw [`GrammarVocab`]. The backend-agnostic
-    /// constructor — used directly by the llama backend (GGUF vocab) and
-    /// indirectly by [`Self::new`] (HF tokenizer). Builds a toktrie from
+    /// constructor for callers with a raw vocab; also used indirectly by
+    /// [`Self::new`] (HF tokenizer). Builds an owned toktrie from
     /// every token's byte form so llguidance can compute exact per-step
     /// masks.
     pub fn from_vocab(vocab: &GrammarVocab, spec: GrammarSpec) -> Result<Self> {
-        // Reuse a cached toktrie for this vocab — the build is per-generation
-        // and the trie is identical across every generation on the same model.
-        let tok_env = cached_tok_env(vocab)?;
+        Self::from_prepared(
+            PreparedVocabulary::build(vocab, Arc::new(GrammarOwnershipTracker::default()))?,
+            spec,
+        )
+    }
+
+    fn from_prepared(vocabulary: Arc<PreparedVocabulary>, spec: GrammarSpec) -> Result<Self> {
+        let tok_env = &vocabulary.tok_env;
         let vocab_size = tok_env.tok_trie().vocab_size();
         let mut factory =
-            ParserFactory::new_simple(&tok_env).context("build llguidance ParserFactory")?;
+            ParserFactory::new_simple(tok_env).context("build llguidance ParserFactory")?;
         factory.quiet();
         let top = spec.into_top_level()?;
         let parser = factory
             .create_parser(top)
             .context("create grammar parser")?;
         let matcher = Matcher::new(Ok(parser));
+        let tracker = vocabulary._lifetime.0.clone();
+        tracker.0.lock().active_matchers += 1;
         Ok(Self {
             matcher,
             vocab_size,
+            _matcher_lifetime: MatcherLifetime(tracker),
+            _vocabulary: vocabulary,
         })
     }
 
@@ -221,55 +311,6 @@ fn build_tok_env(vocab: &GrammarVocab) -> Result<TokEnv> {
     let tok_env: TokEnv = Arc::new(approx);
     let _ = InferenceCapabilities::default(); // touch to ensure import stays
     Ok(tok_env)
-}
-
-/// Cache of built [`TokEnv`]s keyed by vocab identity. Building the toktrie
-/// over a wide vocab (Gemma-4 ships ~262K tokens) costs hundreds of ms, and
-/// [`GrammarMatcher::new`]/[`from_vocab`] runs **once per generation** — so an
-/// agent that grammar-constrains every step (every Bird tool call) would
-/// otherwise rebuild the *identical* trie on every step. A `TokEnv` is
-/// `Arc`-shared and immutable for a given vocab, so reusing it across
-/// generations is a pure speedup with byte-identical masks.
-static TOK_ENV_CACHE: LazyLock<Mutex<HashMap<VocabKey, TokEnv>>> =
-    LazyLock::new(|| Mutex::new(HashMap::new()));
-
-/// Correctness-safe cache key: vocab size + eos/bos + a content hash over every
-/// token's bytes. A wrong hit would need identical len/eos/bos AND a 64-bit
-/// content-hash collision across two *distinct* vocabs — negligible; distinct
-/// models therefore never share a trie.
-#[derive(PartialEq, Eq, Hash, Clone)]
-struct VocabKey {
-    len: usize,
-    eos: u32,
-    bos: Option<u32>,
-    content: u64,
-}
-
-fn vocab_key(vocab: &GrammarVocab) -> VocabKey {
-    let mut h = std::collections::hash_map::DefaultHasher::new();
-    for w in &vocab.words {
-        w.hash(&mut h);
-    }
-    VocabKey {
-        len: vocab.words.len(),
-        eos: vocab.eos,
-        bos: vocab.bos,
-        content: h.finish(),
-    }
-}
-
-/// Get-or-build the [`TokEnv`] for `vocab`, reusing a cached trie across
-/// generations. The expensive [`build_tok_env`] runs OUTSIDE the lock, so a
-/// concurrent double-build is possible but harmless — the tries are identical
-/// and the last insert wins.
-fn cached_tok_env(vocab: &GrammarVocab) -> Result<TokEnv> {
-    let key = vocab_key(vocab);
-    if let Some(te) = TOK_ENV_CACHE.lock().unwrap().get(&key) {
-        return Ok(te.clone());
-    }
-    let te = build_tok_env(vocab)?;
-    TOK_ENV_CACHE.lock().unwrap().insert(key, te.clone());
-    Ok(te)
 }
 
 #[cfg(test)]

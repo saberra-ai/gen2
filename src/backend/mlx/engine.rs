@@ -87,6 +87,7 @@ struct WarmSlot {
 
 pub struct Engine {
     bundle: ArcSwapOption<ModelBundle>,
+    grammar_tracker: Arc<crate::backend::common::grammar::GrammarOwnershipTracker>,
     /// Pre-loaded bundle for the next `load_model` call.
     warm_slot: Arc<RwLock<Option<WarmSlot>>>,
     /// Cached KV state for recently seen system prompt + persona combinations.
@@ -120,7 +121,10 @@ impl std::fmt::Debug for Engine {
 /// Build a [`ModelBundle`] from a model directory (config + safetensors).
 ///
 /// Used by both `load_model` (cold path) and the `warm_model` background thread.
-fn build_bundle_from_dir(model_dir: &Path) -> Result<ModelBundle, ExecError> {
+fn build_bundle_from_dir(
+    model_dir: &Path,
+    grammar_tracker: Arc<crate::backend::common::grammar::GrammarOwnershipTracker>,
+) -> Result<ModelBundle, ExecError> {
     // Read `model_type` BEFORE constructing the model so it can flow into
     // `ModelMeta.architecture` — parity with the GGUF loader, which pulls
     // `general.architecture` via `meta_val_str`. Without this, MLX bundles
@@ -194,6 +198,7 @@ fn build_bundle_from_dir(model_dir: &Path) -> Result<ModelBundle, ExecError> {
     );
 
     Ok(ModelBundle {
+        grammar: crate::backend::common::grammar::GrammarOwner::new(grammar_tracker),
         model,
         rope,
         tokenizer,
@@ -221,6 +226,9 @@ impl Engine {
     pub fn new() -> Self {
         Self {
             bundle: ArcSwapOption::from(None),
+            grammar_tracker: Arc::new(
+                crate::backend::common::grammar::GrammarOwnershipTracker::default(),
+            ),
             warm_slot: Arc::new(RwLock::new(None)),
             prefix_cache: parking_lot::Mutex::new(PrefixCacheLru::new()),
             sessions: DashMap::new(),
@@ -255,9 +263,10 @@ impl Engine {
         }
 
         let slot_arc = Arc::clone(&self.warm_slot);
+        let grammar_tracker = self.grammar_tracker.clone();
         std::thread::spawn(move || {
             tracing::info!(path = %model_dir.display(), "mlx warm_model: starting background load");
-            match build_bundle_from_dir(&model_dir) {
+            match build_bundle_from_dir(&model_dir, grammar_tracker) {
                 Ok(bundle) => {
                     *slot_arc.write() = Some(WarmSlot {
                         model_dir: model_dir.clone(),
@@ -294,7 +303,7 @@ impl Engine {
         let bundle = match bundle {
             Some(b) => b,
             None => {
-                let raw = build_bundle_from_dir(model_dir)?;
+                let raw = build_bundle_from_dir(model_dir, self.grammar_tracker.clone())?;
                 Arc::new(raw)
             }
         };
@@ -515,6 +524,9 @@ impl Backend for Engine {
     }
     fn first_token_tier(&self) -> LatencyTier {
         LatencyTier::Medium
+    }
+    fn grammar_ownership(&self) -> Option<crate::model::GrammarOwnership> {
+        Some(self.grammar_tracker.snapshot())
     }
     fn bundle_architecture(&self) -> Option<String> {
         self.bundle

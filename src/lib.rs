@@ -252,6 +252,7 @@ pub mod model {
     pub use crate::api::model::{ModelCapabilities, ModelId, ModelInfo, ModelSourceKind};
     pub use crate::api::{Embedder, Generation, RemoteModelBuilder, Reranker};
     pub use crate::generation::ThinkingMode;
+    pub use crate::types::grammar_ownership::GrammarOwnership;
     pub use crate::utilities::RerankResult;
 }
 

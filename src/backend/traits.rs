@@ -74,6 +74,12 @@ pub trait Backend: std::fmt::Debug {
         None
     }
 
+    /// Prepared grammar object ownership, including after model eviction.
+    /// None means this backend does not report it, rather than zero objects.
+    fn grammar_ownership(&self) -> Option<crate::model::GrammarOwnership> {
+        None
+    }
+
     fn start_session(&self, spec: SessionSpec) -> Result<Arc<dyn BackendSession>, ExecError>;
     fn end_session(&self, id: SessionId) -> Result<(), ExecError>;
 
