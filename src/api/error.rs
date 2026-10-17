@@ -8,6 +8,9 @@ use thiserror::Error;
 #[derive(Debug, Error)]
 #[non_exhaustive]
 pub enum Error {
+    /// Image validation, native execution, cancellation or memory admission.
+    #[error(transparent)]
+    Image(#[from] crate::image::ImageError),
     /// Typed decision validation, admission, lifecycle or native execution error.
     #[error(transparent)]
     Decision(#[from] crate::decision::DecisionError),
@@ -100,6 +103,7 @@ impl Error {
     /// Callers route on this rather than matching error text.
     pub fn code(&self) -> Option<&str> {
         match self {
+            Self::Image(e) => Some(e.code()),
             Self::Decision(e) => Some(e.code()),
             Self::Generation { code, .. } => Some(code),
             Self::WontFit(_) => Some("wont_fit"),
@@ -136,6 +140,7 @@ impl Error {
     /// like a `Generation` threw that distinction away at the API boundary.
     pub fn is_retryable(&self) -> bool {
         match self {
+            Self::Image(crate::image::ImageError::Busy) => true,
             Self::Decision(crate::decision::DecisionError::Busy) => true,
             Self::Generation { code, .. } => !NOT_WORTH_RETRYING.contains(&code.as_str()),
             _ => false,

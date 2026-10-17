@@ -2094,3 +2094,28 @@ uses application linkage. Neither feature downloads a runtime during builds or
 inference. The current qualification evidence and commands are maintained in
 [the Laya integration guide](tools/laya/README.md). Mobile compilation and
 physical-device execution remain distinct qualification gates.
+
+## Image generation
+
+`Runtime::load_image_model(ImageBundle, ImageLoadOptions)` returns an
+`image::ImageModel`. This typed handle is separate from token-based `Model` and
+`Session`. `generate(prompt).size(width, height).seed(seed).run()` returns owned
+RGB/RGBA pixels. `stream()` yields denoising progress and a terminal image or
+typed error; `finish()` returns the same result. Cloned handles share one
+context and permit one active request. Stream dropping requests cancellation;
+memory and busy state remain held until the native call completes.
+
+The runtime accounts for the image model's full peak envelope, including all
+component weights, workspace and retained caches. Image entries share the
+language model registry's IDs, residency snapshots, aggregate memory ledger and
+LRU eviction policy. Busy image entries cannot be evicted. Idle entries release
+their reservation only after native destruction; the same handle restores its
+source under admission on next use. Explicit image eviction/preloading are
+`evict_image_model` and `preload_image_model`. Failed validation or pre-start
+cancellation performs no restoration. Changed source files are refused on reload.
+
+The `backend-stable-diffusion` feature loads the host-supplied ABI-2 bridge at
+runtime. Its GGML remains private alongside llama.cpp. The initially supported
+profile is Qwen-Image-2.1-Turbo text-to-image on Apple silicon macOS/Metal, with
+eight Euler steps, CFG 1, and the checkpoint's sigma schedule. Platform support,
+input limits, setup and evidence are maintained in [the image guide](docs/image-generation.md).

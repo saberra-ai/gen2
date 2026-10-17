@@ -33,7 +33,7 @@ pub mod input;
 pub mod model;
 pub mod output;
 mod response;
-mod runtime;
+pub(crate) mod runtime;
 pub mod session;
 mod spawned;
 mod stream;

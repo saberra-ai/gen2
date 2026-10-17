@@ -1,5 +1,9 @@
 # Qwen-Image-2.1-Turbo Metal qualification
 
+The supported Runtime API now lives in [the image generation guide](../../docs/image-generation.md).
+This ABI-1 harness remains a record of the first low-level milestone; new
+applications should use `Runtime::load_image_model` and the ABI-2 bridge.
+
 Standalone first-milestone harness for gen2. It loads the Unsloth Q4_K_M
 denoiser, Qwen3-VL-8B UD-Q4_K_XL text encoder and matching BF16 VAE through a
 pinned stable-diffusion.cpp build, then generates a 1024 × 1024 PNG with seed
