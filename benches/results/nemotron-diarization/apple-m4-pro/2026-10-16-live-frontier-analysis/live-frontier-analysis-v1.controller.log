@@ -1,0 +1,392 @@
+{
+  "schema_version": 1,
+  "source_commit": "87c542b9937b71632c1ce5debf21456c03f53aa7",
+  "analysis_completed": true,
+  "release_qualified": false,
+  "new_model_or_native_calls": 0,
+  "cases": {
+    "valid-mel-cpu": {
+      "observations": [
+        {
+          "revision": 1,
+          "observed_elapsed_seconds": 5.305559125,
+          "processed_audio_seconds": 4.32,
+          "signed_frontier_age_seconds": 0.985559125
+        },
+        {
+          "revision": 2,
+          "observed_elapsed_seconds": 10.507422666,
+          "processed_audio_seconds": 9.36,
+          "signed_frontier_age_seconds": 1.1474226660000006
+        },
+        {
+          "revision": 3,
+          "observed_elapsed_seconds": 15.766759,
+          "processed_audio_seconds": 15.120000000000001,
+          "signed_frontier_age_seconds": 0.6467589999999994
+        },
+        {
+          "revision": 4,
+          "observed_elapsed_seconds": 21.026152916,
+          "processed_audio_seconds": 20.16,
+          "signed_frontier_age_seconds": 0.8661529160000008
+        },
+        {
+          "revision": 5,
+          "observed_elapsed_seconds": 26.167780791,
+          "processed_audio_seconds": 25.2,
+          "signed_frontier_age_seconds": 0.9677807909999991
+        },
+        {
+          "revision": 6,
+          "observed_elapsed_seconds": 31.3246755,
+          "processed_audio_seconds": 30.240000000000002,
+          "signed_frontier_age_seconds": 1.0846754999999995
+        },
+        {
+          "revision": 7,
+          "observed_elapsed_seconds": 36.726396625,
+          "processed_audio_seconds": 36.0,
+          "signed_frontier_age_seconds": 0.7263966249999996
+        },
+        {
+          "revision": 8,
+          "observed_elapsed_seconds": 41.883272458,
+          "processed_audio_seconds": 41.04,
+          "signed_frontier_age_seconds": 0.8432724580000013
+        },
+        {
+          "revision": 9,
+          "observed_elapsed_seconds": 46.965287000000004,
+          "processed_audio_seconds": 46.08,
+          "signed_frontier_age_seconds": 0.8852870000000053
+        },
+        {
+          "revision": 10,
+          "observed_elapsed_seconds": 52.226550916,
+          "processed_audio_seconds": 51.120000000000005,
+          "signed_frontier_age_seconds": 1.1065509159999962
+        },
+        {
+          "revision": 11,
+          "observed_elapsed_seconds": 57.545452458,
+          "processed_audio_seconds": 56.160000000000004,
+          "signed_frontier_age_seconds": 1.385452457999996
+        },
+        {
+          "revision": 12,
+          "observed_elapsed_seconds": 62.626340583,
+          "processed_audio_seconds": 61.92,
+          "signed_frontier_age_seconds": 0.7063405829999994
+        },
+        {
+          "revision": 13,
+          "observed_elapsed_seconds": 67.925574291,
+          "processed_audio_seconds": 66.96000000000001,
+          "signed_frontier_age_seconds": 0.9655742909999958
+        },
+        {
+          "revision": 14,
+          "observed_elapsed_seconds": 72.964479541,
+          "processed_audio_seconds": 72.0,
+          "signed_frontier_age_seconds": 0.9644795410000029
+        },
+        {
+          "revision": 15,
+          "observed_elapsed_seconds": 78.1633645,
+          "processed_audio_seconds": 77.04,
+          "signed_frontier_age_seconds": 1.1233644999999939
+        }
+      ],
+      "first_observed_revision_elapsed_seconds": 5.305559125,
+      "frontier_age_at_observation_seconds": {
+        "samples": 15,
+        "minimum": 0.6467589999999994,
+        "median": 0.9655742909999958,
+        "p95_nearest_rank": 1.385452457999996,
+        "maximum": 1.385452457999996
+      },
+      "inter_observation_seconds": {
+        "samples": 14,
+        "minimum": 5.038905249999999,
+        "median": 5.2003742499999985,
+        "p95_nearest_rank": 5.401721124999998,
+        "maximum": 5.401721124999998
+      },
+      "previous_observed_frontier_age_at_next_observation_seconds": {
+        "samples": 14,
+        "minimum": 5.883272458,
+        "median": 6.135613208000002,
+        "p95_nearest_rank": 6.486396624999998,
+        "maximum": 6.486396624999998
+      },
+      "quantile_method": "nearest-rank descriptive sample p95; not a population estimate",
+      "nominal_feed_block_seconds": 0.02,
+      "scope": "CLI observation clock minus reported processed-audio frontier; full consecutive revision trace only",
+      "actual_speaker_or_word_label_latency_measured": false,
+      "gui_delivery_measured": false,
+      "physical_microphone_measured": false,
+      "finalization_delay_measured": false,
+      "input_queue_native_compute_and_poll_delay_separated": false,
+      "stable_prefix_or_label_finality_inferred": false
+    },
+    "valid-mel-metal": {
+      "observations": [
+        {
+          "revision": 1,
+          "observed_elapsed_seconds": 5.24511525,
+          "processed_audio_seconds": 4.32,
+          "signed_frontier_age_seconds": 0.9251152499999993
+        },
+        {
+          "revision": 2,
+          "observed_elapsed_seconds": 10.46625,
+          "processed_audio_seconds": 9.36,
+          "signed_frontier_age_seconds": 1.106250000000001
+        },
+        {
+          "revision": 3,
+          "observed_elapsed_seconds": 15.641718707999999,
+          "processed_audio_seconds": 15.120000000000001,
+          "signed_frontier_age_seconds": 0.5217187079999981
+        },
+        {
+          "revision": 4,
+          "observed_elapsed_seconds": 20.848397833,
+          "processed_audio_seconds": 20.16,
+          "signed_frontier_age_seconds": 0.6883978329999998
+        },
+        {
+          "revision": 5,
+          "observed_elapsed_seconds": 26.063542291,
+          "processed_audio_seconds": 25.2,
+          "signed_frontier_age_seconds": 0.8635422910000017
+        },
+        {
+          "revision": 6,
+          "observed_elapsed_seconds": 31.245880833,
+          "processed_audio_seconds": 30.240000000000002,
+          "signed_frontier_age_seconds": 1.005880832999999
+        },
+        {
+          "revision": 7,
+          "observed_elapsed_seconds": 36.506382125,
+          "processed_audio_seconds": 36.0,
+          "signed_frontier_age_seconds": 0.5063821250000018
+        },
+        {
+          "revision": 8,
+          "observed_elapsed_seconds": 41.644712416,
+          "processed_audio_seconds": 41.04,
+          "signed_frontier_age_seconds": 0.6047124159999981
+        },
+        {
+          "revision": 9,
+          "observed_elapsed_seconds": 46.846083958,
+          "processed_audio_seconds": 46.08,
+          "signed_frontier_age_seconds": 0.766083958000003
+        },
+        {
+          "revision": 10,
+          "observed_elapsed_seconds": 52.049142291,
+          "processed_audio_seconds": 51.120000000000005,
+          "signed_frontier_age_seconds": 0.929142290999998
+        },
+        {
+          "revision": 11,
+          "observed_elapsed_seconds": 57.248660708,
+          "processed_audio_seconds": 56.160000000000004,
+          "signed_frontier_age_seconds": 1.088660707999999
+        },
+        {
+          "revision": 12,
+          "observed_elapsed_seconds": 62.506976541,
+          "processed_audio_seconds": 61.92,
+          "signed_frontier_age_seconds": 0.5869765409999985
+        },
+        {
+          "revision": 13,
+          "observed_elapsed_seconds": 67.642408416,
+          "processed_audio_seconds": 66.96000000000001,
+          "signed_frontier_age_seconds": 0.682408415999987
+        },
+        {
+          "revision": 14,
+          "observed_elapsed_seconds": 72.841283333,
+          "processed_audio_seconds": 72.0,
+          "signed_frontier_age_seconds": 0.8412833330000069
+        },
+        {
+          "revision": 15,
+          "observed_elapsed_seconds": 78.04118,
+          "processed_audio_seconds": 77.04,
+          "signed_frontier_age_seconds": 1.0011799999999909
+        }
+      ],
+      "first_observed_revision_elapsed_seconds": 5.24511525,
+      "frontier_age_at_observation_seconds": {
+        "samples": 15,
+        "minimum": 0.5063821250000018,
+        "median": 0.8412833330000069,
+        "p95_nearest_rank": 1.106250000000001,
+        "maximum": 1.106250000000001
+      },
+      "inter_observation_seconds": {
+        "samples": 14,
+        "minimum": 5.135431874999995,
+        "median": 5.200634104499997,
+        "p95_nearest_rank": 5.260501292000001,
+        "maximum": 5.260501292000001
+      },
+      "previous_observed_frontier_age_at_next_observation_seconds": {
+        "samples": 14,
+        "minimum": 5.644712415999997,
+        "median": 6.005161145500001,
+        "p95_nearest_rank": 6.3469765409999965,
+        "maximum": 6.3469765409999965
+      },
+      "quantile_method": "nearest-rank descriptive sample p95; not a population estimate",
+      "nominal_feed_block_seconds": 0.02,
+      "scope": "CLI observation clock minus reported processed-audio frontier; full consecutive revision trace only",
+      "actual_speaker_or_word_label_latency_measured": false,
+      "gui_delivery_measured": false,
+      "physical_microphone_measured": false,
+      "finalization_delay_measured": false,
+      "input_queue_native_compute_and_poll_delay_separated": false,
+      "stable_prefix_or_label_finality_inferred": false
+    },
+    "pooled-cpu": {
+      "observations": [
+        {
+          "revision": 1,
+          "observed_elapsed_seconds": 5.245789375,
+          "processed_audio_seconds": 4.32,
+          "signed_frontier_age_seconds": 0.9257893749999999
+        },
+        {
+          "revision": 2,
+          "observed_elapsed_seconds": 10.466311042,
+          "processed_audio_seconds": 9.36,
+          "signed_frontier_age_seconds": 1.1063110419999997
+        },
+        {
+          "revision": 3,
+          "observed_elapsed_seconds": 15.706776583,
+          "processed_audio_seconds": 15.120000000000001,
+          "signed_frontier_age_seconds": 0.5867765829999989
+        },
+        {
+          "revision": 4,
+          "observed_elapsed_seconds": 20.962419208,
+          "processed_audio_seconds": 20.16,
+          "signed_frontier_age_seconds": 0.8024192079999999
+        },
+        {
+          "revision": 5,
+          "observed_elapsed_seconds": 26.120920208,
+          "processed_audio_seconds": 25.2,
+          "signed_frontier_age_seconds": 0.9209202080000018
+        },
+        {
+          "revision": 6,
+          "observed_elapsed_seconds": 31.306251292,
+          "processed_audio_seconds": 30.240000000000002,
+          "signed_frontier_age_seconds": 1.066251291999997
+        },
+        {
+          "revision": 7,
+          "observed_elapsed_seconds": 36.687094583,
+          "processed_audio_seconds": 36.0,
+          "signed_frontier_age_seconds": 0.6870945829999968
+        },
+        {
+          "revision": 8,
+          "observed_elapsed_seconds": 41.844811583,
+          "processed_audio_seconds": 41.04,
+          "signed_frontier_age_seconds": 0.8048115830000029
+        },
+        {
+          "revision": 9,
+          "observed_elapsed_seconds": 46.9667145,
+          "processed_audio_seconds": 46.08,
+          "signed_frontier_age_seconds": 0.8867145000000036
+        },
+        {
+          "revision": 10,
+          "observed_elapsed_seconds": 52.169079375,
+          "processed_audio_seconds": 51.120000000000005,
+          "signed_frontier_age_seconds": 1.049079374999998
+        },
+        {
+          "revision": 11,
+          "observed_elapsed_seconds": 57.366479375,
+          "processed_audio_seconds": 56.160000000000004,
+          "signed_frontier_age_seconds": 1.2064793749999936
+        },
+        {
+          "revision": 12,
+          "observed_elapsed_seconds": 62.646608458,
+          "processed_audio_seconds": 61.92,
+          "signed_frontier_age_seconds": 0.7266084580000012
+        },
+        {
+          "revision": 13,
+          "observed_elapsed_seconds": 67.885129333,
+          "processed_audio_seconds": 66.96000000000001,
+          "signed_frontier_age_seconds": 0.9251293329999868
+        },
+        {
+          "revision": 14,
+          "observed_elapsed_seconds": 72.962902958,
+          "processed_audio_seconds": 72.0,
+          "signed_frontier_age_seconds": 0.9629029580000008
+        },
+        {
+          "revision": 15,
+          "observed_elapsed_seconds": 78.106492875,
+          "processed_audio_seconds": 77.04,
+          "signed_frontier_age_seconds": 1.0664928749999945
+        }
+      ],
+      "first_observed_revision_elapsed_seconds": 5.245789375,
+      "frontier_age_at_observation_seconds": {
+        "samples": 15,
+        "minimum": 0.5867765829999989,
+        "median": 0.9251293329999868,
+        "p95_nearest_rank": 1.2064793749999936,
+        "maximum": 1.2064793749999936
+      },
+      "inter_observation_seconds": {
+        "samples": 14,
+        "minimum": 5.077773625000006,
+        "median": 5.199882437499998,
+        "p95_nearest_rank": 5.380843290999998,
+        "maximum": 5.380843290999998
+      },
+      "previous_observed_frontier_age_at_next_observation_seconds": {
+        "samples": 14,
+        "minimum": 5.842419207999999,
+        "median": 6.097665333500002,
+        "p95_nearest_rank": 6.486608457999999,
+        "maximum": 6.486608457999999
+      },
+      "quantile_method": "nearest-rank descriptive sample p95; not a population estimate",
+      "nominal_feed_block_seconds": 0.02,
+      "scope": "CLI observation clock minus reported processed-audio frontier; full consecutive revision trace only",
+      "actual_speaker_or_word_label_latency_measured": false,
+      "gui_delivery_measured": false,
+      "physical_microphone_measured": false,
+      "finalization_delay_measured": false,
+      "input_queue_native_compute_and_poll_delay_separated": false,
+      "stable_prefix_or_label_finality_inferred": false
+    }
+  },
+  "limits": [
+    "These are the same existing repeated80.04s recordings on one M4 Pro with ordinary background activity, not new captures, physical microphone, untouched held-out data or an uncontended performance comparison.",
+    "The CLI observer starts its clock before feeding320sample blocks at20ms cadence and polls after each push, before scheduled sleep. A block can lead its nominal real-time endpoint by20ms; signed ages are retained.",
+    "A processed-audio frontier is not an acoustic word/speaker onset, first visible label, finality watermark or stable prefix. Intermediate turn contents and actual GUI/IPC/render timestamps were not retained.",
+    "This trace cannot separate capture/file-writing, queueing, native lookahead/compute, snapshot policy or polling costs. Exact actual finalization delay is also unobserved. No actual end-to-end label-latency gate closes.",
+    "The previous-observed-frontier statistic describes this saved polling trace only; it is not a GUI staleness bound. Profiles were run at different times/builds, so their descriptive values do not establish a pooling performance effect.",
+    "All three traces, including every retained revision, must be reported. No parameter/cadence/reference/quality gate changes or new model/app/native execution are performed."
+  ]
+}

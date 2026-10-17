@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "source_commit": "87c542b9937b71632c1ce5debf21456c03f53aa7",
+  "analysis_completed": true,
+  "historical_and_current_input_source_pins_verified": 11,
+  "all_three_complete_retained_observer_traces_replayed": true,
+  "retained_observations": {
+    "valid-mel-cpu": 15,
+    "valid-mel-metal": 15,
+    "pooled-cpu": 15
+  },
+  "new_model_app_or_native_runtime_calls": 0,
+  "actual_end_to_end_label_latency_measured": false,
+  "release_qualified": false,
+  "limits": [
+    "These are the same existing repeated80.04s recordings on one M4 Pro with ordinary background activity, not new captures, physical microphone, untouched held-out data or an uncontended performance comparison.",
+    "The CLI observer starts its clock before feeding320sample blocks at20ms cadence and polls after each push, before scheduled sleep. A block can lead its nominal real-time endpoint by20ms; signed ages are retained.",
+    "A processed-audio frontier is not an acoustic word/speaker onset, first visible label, finality watermark or stable prefix. Intermediate turn contents and actual GUI/IPC/render timestamps were not retained.",
+    "This trace cannot separate capture/file-writing, queueing, native lookahead/compute, snapshot policy or polling costs. Exact actual finalization delay is also unobserved. No actual end-to-end label-latency gate closes.",
+    "The previous-observed-frontier statistic describes this saved polling trace only; it is not a GUI staleness bound. Profiles were run at different times/builds, so their descriptive values do not establish a pooling performance effect.",
+    "All three traces, including every retained revision, must be reported. No parameter/cadence/reference/quality gate changes or new model/app/native execution are performed."
+  ]
+}

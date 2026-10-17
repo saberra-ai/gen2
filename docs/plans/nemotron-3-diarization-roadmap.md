@@ -1496,10 +1496,13 @@ degradation without a matched FP32 oracle. See the
 ## Verification and release criteria
 
 A [saved live-frontier analysis](../research/nemotron-live-frontier-freshness.md)
-now freezes all three completed CPU/Metal/pooled-CPU CLI observation traces and
-their construction/source identities. It will describe elapsed-clock versus
-processed-frontier ages using every retained revision, with no further model
-call or parameter selection. All242 local tools tests pass. Actual GUI/IPC
+now completes all three saved CPU/Metal/pooled-CPU CLI observation traces and
+their construction/source identities. All45 retained observations replay exactly
+under11 current/historical source/input pins, with no further model call or
+parameter selection. Median observation gaps are about5.2s; pooled median
+frontier age at a poll is0.925s, while a previously observed frontier is as old
+as6.487s at the next poll. These describe the saved CLI trace only. All242 local
+tools tests pass. Actual GUI/IPC
 render time, acoustic label latency, separate queue/compute/poll contributions
 and finalization delay remain unmeasured; this analysis cannot close those gates.
 

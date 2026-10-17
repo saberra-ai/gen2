@@ -82,6 +82,11 @@ probabilities are copied only on finalization when explicitly requested;
 native history compaction can discard older diagnostic frames while retaining
 the full segment timeline. Only native default segmentation is exposed.
 
+[Saved complete-app CLI observations](research/nemotron-live-frontier-freshness.md)
+have roughly5.2seconds between provisional observations. Processed-frontier ages
+describe that observer trace; acoustic word/speaker label delay, actual GUI
+delivery and label finality remain unmeasured.
+
 `finish()` stops admission, drains accepted PCM, flushes once, and returns a
 cached `Arc<Diarization>`. Repeated finish returns the same result or failure.
 Pushes after finish fail in Rust. Cancellation and deadlines cooperate between
