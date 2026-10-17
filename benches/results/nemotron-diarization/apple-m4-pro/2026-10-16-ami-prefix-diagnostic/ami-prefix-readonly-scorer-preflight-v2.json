@@ -1,0 +1,119 @@
+{
+  "actual_unmodified_scorer_import_and_four_calibrations_passed": true,
+  "work_inventory_unchanged_after_actual_import": true,
+  "scorer": {
+    "bytes": 54914,
+    "sha256": "c34af6eeec07e1df795c6820f36cb05459c28ac8d5d84fb0efea433035546de3"
+  },
+  "controls": [
+    {
+      "case": "overlap_and_mapping",
+      "expected_der": 0,
+      "official": {
+        "der": 0.0,
+        "missed_speaker_seconds": 0.0,
+        "false_alarm_speaker_seconds": 0.0,
+        "confusion_speaker_seconds": 0.0,
+        "reference_speaker_seconds": 1.2,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 1
+      },
+      "frame": {
+        "der": 0.0,
+        "missed_speaker_seconds": 0.0,
+        "false_alarm_speaker_seconds": 0.0,
+        "confusion_speaker_seconds": 0.0,
+        "reference_speaker_seconds": 1.2,
+        "reference_speakers": 2,
+        "hypothesis_speakers": 2,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 1
+      }
+    },
+    {
+      "case": "missed_overlap",
+      "expected_der": 0.5,
+      "official": {
+        "der": 0.5,
+        "missed_speaker_seconds": 0.6,
+        "false_alarm_speaker_seconds": 0.0,
+        "confusion_speaker_seconds": 0.0,
+        "reference_speaker_seconds": 1.2,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 1
+      },
+      "frame": {
+        "der": 0.5,
+        "missed_speaker_seconds": 0.6,
+        "false_alarm_speaker_seconds": 0.0,
+        "confusion_speaker_seconds": 0.0,
+        "reference_speaker_seconds": 1.2,
+        "reference_speakers": 2,
+        "hypothesis_speakers": 1,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 1
+      }
+    },
+    {
+      "case": "false_alarm",
+      "expected_der": 0.5,
+      "official": {
+        "der": 0.4999999999999999,
+        "missed_speaker_seconds": 0.0,
+        "false_alarm_speaker_seconds": 0.19999999999999996,
+        "confusion_speaker_seconds": 0.0,
+        "reference_speaker_seconds": 0.4,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 1
+      },
+      "frame": {
+        "der": 0.5,
+        "missed_speaker_seconds": 0.0,
+        "false_alarm_speaker_seconds": 0.2,
+        "confusion_speaker_seconds": 0.0,
+        "reference_speaker_seconds": 0.4,
+        "reference_speakers": 1,
+        "hypothesis_speakers": 1,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 1
+      }
+    },
+    {
+      "case": "global_confusion",
+      "expected_der": 0.5,
+      "official": {
+        "der": 0.5,
+        "missed_speaker_seconds": 0.0,
+        "false_alarm_speaker_seconds": 0.0,
+        "confusion_speaker_seconds": 0.5,
+        "reference_speaker_seconds": 1.0,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 1
+      },
+      "frame": {
+        "der": 0.5,
+        "missed_speaker_seconds": 0.0,
+        "false_alarm_speaker_seconds": 0.0,
+        "confusion_speaker_seconds": 0.5,
+        "reference_speaker_seconds": 1.0,
+        "reference_speakers": 2,
+        "hypothesis_speakers": 1,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 1
+      }
+    }
+  ],
+  "native_or_neural_calls": 0
+}

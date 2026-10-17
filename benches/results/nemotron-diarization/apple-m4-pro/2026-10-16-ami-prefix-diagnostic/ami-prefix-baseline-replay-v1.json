@@ -1,0 +1,63 @@
+{
+  "no_native_or_model_calls": true,
+  "unchanged_frozen_failures_reproduced": {
+    "ami-ES2004a-Mix-Headset": {
+      "production": {
+        "der": 0.33214572,
+        "missed_speaker_seconds": 34.76,
+        "false_alarm_speaker_seconds": 1.2,
+        "confusion_speaker_seconds": 1.33,
+        "reference_speaker_seconds": 112.27,
+        "reference_speakers": 4,
+        "hypothesis_speakers": 4,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120.0
+      },
+      "files": {
+        "reference": {
+          "bytes": 2364,
+          "sha256": "70fc7b37f302987ed309e8db3c805f4222fc8d499408d95cb474a70e91fcc4cf"
+        },
+        "native": {
+          "bytes": 3837,
+          "sha256": "140baec1a3991bc12b302a3b52897ffec029580781f61d53d8b12bdf588d8e3f"
+        },
+        "score": {
+          "bytes": 3240,
+          "sha256": "8ace53d15d0566a25e8e5023b80778837b3f62d945d50f78a58803216c016945"
+        }
+      }
+    },
+    "ami-ES2004a-Array1-01": {
+      "production": {
+        "der": 0.438407411,
+        "missed_speaker_seconds": 42.32,
+        "false_alarm_speaker_seconds": 1.17,
+        "confusion_speaker_seconds": 5.73,
+        "reference_speaker_seconds": 112.27,
+        "reference_speakers": 4,
+        "hypothesis_speakers": 4,
+        "frame_seconds": 0.01,
+        "collar_seconds": 0,
+        "overlap_included": true,
+        "scoring_duration_seconds": 120.0
+      },
+      "files": {
+        "reference": {
+          "bytes": 2364,
+          "sha256": "70fc7b37f302987ed309e8db3c805f4222fc8d499408d95cb474a70e91fcc4cf"
+        },
+        "native": {
+          "bytes": 3590,
+          "sha256": "be3eb74983dfac2d3854a5acb5f11e12f7fde88b0442316b45a26f4a9d8fefb5"
+        },
+        "score": {
+          "bytes": 3240,
+          "sha256": "451ed1b9e6b45d72176852fa4aab48f3e6c1371e510c2157b0483af1a349a54d"
+        }
+      }
+    }
+  }
+}

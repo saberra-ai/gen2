@@ -1469,10 +1469,18 @@ cache inside protected staging; the unchanged inventory guard rejected it.
 The failure receipt records the extra cache-file hash, with its bytes retained
 in the failed staging. A separately frozen V2 protocol
 uses fresh staging/output and a scoped bytecode-free import of the unchanged
-scorer, verified by an actual scorer/calibration preflight. Four fresh neural processes
-remain unrun. This tests session context (including cache/frontend/chunk phase),
-not a cache-only cause, and cannot replace the failed cold gate or establish
-warm Q8 degradation without a matched FP32 oracle. See the
+scorer, verified by an actual scorer/calibration preflight. The
+[actual V2 receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-ami-prefix-diagnostic/collection-qualification.json)
+now completes all seven commands and four fresh neural processes at `e2b0267`.
+Both channels match native/public output exactly across all 42,000 probability
+rows and production turns; all five strict runtime-image audits pass. Independent
+collection replays all scores and four scorer controls with unchanged inputs.
+Production frame DER on the same target worsens from 33.2146% to 34.2211% close
+and 43.8407% to 53.0596% distant. Earlier context does not fix these failures.
+Both reference policies and shared-threshold results remain in the receipt.
+This tests session context (including cache/frontend/chunk phase), not a
+cache-only cause, and cannot replace the failed cold gate or establish warm Q8
+degradation without a matched FP32 oracle. See the
 [diagnostic design](../research/nemotron-quality-next-diagnostics.md).
 
 ## Verification and release criteria

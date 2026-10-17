@@ -111,3 +111,43 @@ verifies accessible HCRC annotations and current publisher licensing, but finds
 no explicit primary-source confirmation of human acoustic boundary correction.
 It therefore supplies a possible source for new manual calibration, not an
 admitted human-gold reference or closure of the attribution gate.
+
+## Actual fixed prefix contrast
+
+V2 was committed before execution at `e2b026791d55274d5c54147309c3b46e0b5749c6`.
+Its [36-member receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-ami-prefix-diagnostic/collection-qualification.json)
+records all seven successful commands, four fresh neural processes and five
+strict private-runtime image audits. Both native/public pairs retain all
+42,000 rows and match probabilities and production turns exactly. The original
+151 staged entries and preparation records remain unchanged. A separate
+collector admits the replay module bytes before import, verifies historical
+source, and recomputes all contrasts and four official scorer controls from
+saved outputs without further native or neural calls.
+
+The following percentages use the unchanged 10 ms frame scorer on only the
+original [300,420) target. The receipt also retains the independent official
+scorer, whose continuous-time boundary arithmetic gives slightly different
+numbers, and every MISS/FA/confusion contribution.
+
+| Reference policy | Channel | Cold shared | Prefix shared | Cold production | Prefix production |
+| --- | --- | ---: | ---: | ---: | ---: |
+| Transcriber | Close | 41.4715% | 42.4245% | 33.2146% | 34.2211% |
+| Transcriber | Distant | 49.9599% | 58.4395% | 43.8407% | 53.0596% |
+| Published lexical | Close | 16.8147% | 16.1129% | 27.6568% | 27.9146% |
+| Published lexical | Distant | 27.4850% | 39.3011% | 35.4626% | 46.5769% |
+
+Earlier context worsens production DER on both channels under both reference
+policies. The small close/shared lexical improvement does not generalize to the
+distant channel or production output. Under the official transcriber scorer,
+distant production misses increase by 9.703 speaker-seconds and confusion by
+1.825, while false activity decreases by 1.161. This is evidence against the
+specific prediction that this fixed prefix would repair the failed targets;
+it neither isolates a cache-only mechanism nor proves that context can never
+help another recording/configuration. Native/public equality rules out a
+wrapper discrepancy for these actual calls.
+
+The original cold gate remains failed. No warm FP32 bound, fresh held-out
+generalization, production profile selection, pooled-runtime quality,
+human-word-boundary calibration or desktop release claim follows. Further
+context/postprocessing development must use separately frozen development
+audio, retain a distinct test set and preserve the original failures.
