@@ -1,0 +1,61 @@
+{
+  "schema_version": 1,
+  "source_commit": "614aaa0dc5998a219806702e9a82128714b6fcd2",
+  "protocol": {
+    "bytes": 52076,
+    "sha256": "cd17ad6e34badda1fc3a7852c708d06f0848c502d857b4bcffe3de0f1846b662"
+  },
+  "diagnostic_completed": false,
+  "release_qualified": false,
+  "package_qualified": false,
+  "development_native_gates_passed": false,
+  "order": [
+    4,
+    2,
+    1,
+    4
+  ],
+  "builds": {},
+  "cases": [],
+  "limits": [
+    "Diagnostic-only native C ABI worker-budget comparison; no supported release or package.",
+    "No public API/lifecycle/failed-load/offline/coexistence/quality/signing admission.",
+    "Fixed4,2,1,4 fresh-process sequence; preserve every observation without timing promotion.",
+    "Telemetry is configured persistent-pool size, not independent OS thread enumeration."
+  ],
+  "error": "CalledProcessError(128, ['git', '-C', 'D:\\\\a\\\\_temp\\\\windows-worker-diagnostic\\\\source-4', 'checkout', '--detach', '083861c241061562b8ec29eb06d7f6cdc3af8775'], None, None)",
+  "commands": {
+    "4": [
+      {
+        "name": "clone-native",
+        "command": [
+          "git",
+          "clone",
+          "--no-hardlinks",
+          "--no-checkout",
+          "D:\\a\\gen2\\gen2\\native-source",
+          "D:\\a\\_temp\\windows-worker-diagnostic\\source-4"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "environment_overrides": {},
+        "returncode": 0,
+        "elapsed_seconds": 0.7809999999999775
+      },
+      {
+        "name": "checkout-native",
+        "command": [
+          "git",
+          "-C",
+          "D:\\a\\_temp\\windows-worker-diagnostic\\source-4",
+          "checkout",
+          "--detach",
+          "083861c241061562b8ec29eb06d7f6cdc3af8775"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "environment_overrides": {},
+        "returncode": 128,
+        "elapsed_seconds": 1.203000000000003
+      }
+    ]
+  }
+}

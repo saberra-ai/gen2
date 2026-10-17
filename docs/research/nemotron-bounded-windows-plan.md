@@ -4,8 +4,11 @@ Status on 2026-10-17: actual bounded Windows MSVC construction, complete native/
 parity and all seven lifecycle tests pass; native/public RTF1.03335105/1.0005604167
 fails the unchanged below-one performance gate. The SDK remains inadmissible for
 bounded packaging. A separate [worker-budget diagnostic](nemotron-windows-worker-diagnostic.md)
-now preregisters the fixed4/2/1/4 same-host experiment. All354 model-free tests
-and all three source-only/LF compositions pass; the actual matrix is pending.
+preregisters the fixed4/2/1/4 same-host experiment. The first diagnostic fails
+before compilation/inference on unrelated TTS Git-LFS smudging. The separately
+versioned [checkout correction](nemotron-windows-worker-diagnostic-v2.md) passes
+the actual Git-LFS regression; all359 model-free tests and all three source-only/LF
+compositions pass. The corrected actual matrix is pending.
 
 The new [producer](../../tools/nemotron-diarization/platform_bounded_windows_native.py),
 [composed-source verifier](../../tools/nemotron-diarization/platform_bounded_sources.py)

@@ -1,0 +1,23 @@
+{
+  "schema_version": 1,
+  "source_commit": "614aaa0dc5998a219806702e9a82128714b6fcd2",
+  "run_id": 39024922313,
+  "artifact_id": 12097908311,
+  "artifact": {
+    "bytes": 19910,
+    "sha256": "7f35c57ef3b663dfb270c8313393c457c9f4b6a9914e03f9f6aae7f7427c606e"
+  },
+  "artifact_members_rebound": 7,
+  "tool_sources_verified_against_git_and_current": 48,
+  "repository_sources_verified_against_git_and_current": 266,
+  "commands": 2,
+  "clone_returncode": 0,
+  "checkout_returncode": 128,
+  "diagnostic_completed": false,
+  "compiler_or_neural_calls": 0,
+  "release_qualified": false,
+  "observed_failure": "Fresh local native checkout attempted unavailable unrelated TTS Git LFS payload.",
+  "fix_candidate": "Set GIT_LFS_SKIP_SMUDGE=1 in diagnostic child mappings, as the existing source preparer does.",
+  "collection_local_module_imports": 0,
+  "collection_neural_or_binary_execution": 0
+}

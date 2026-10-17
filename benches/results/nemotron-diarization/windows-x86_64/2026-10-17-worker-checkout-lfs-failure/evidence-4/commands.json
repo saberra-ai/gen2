@@ -1,0 +1,32 @@
+[
+  {
+    "name": "clone-native",
+    "command": [
+      "git",
+      "clone",
+      "--no-hardlinks",
+      "--no-checkout",
+      "D:\\a\\gen2\\gen2\\native-source",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\source-4"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 0.7809999999999775
+  },
+  {
+    "name": "checkout-native",
+    "command": [
+      "git",
+      "-C",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\source-4",
+      "checkout",
+      "--detach",
+      "083861c241061562b8ec29eb06d7f6cdc3af8775"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {},
+    "returncode": 128,
+    "elapsed_seconds": 1.203000000000003
+  }
+]

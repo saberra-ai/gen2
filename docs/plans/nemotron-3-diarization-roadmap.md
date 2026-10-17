@@ -71,10 +71,13 @@ Remaining release work as of 2026-10-17:
   actual Windows cleanup/receiver execution and the new orchestration protocol
   remain open. The separately versioned [worker-budget diagnostic](../research/nemotron-windows-worker-diagnostic.md)
   now preregisters4/2/1/4 fresh native processes, actual configured-pool telemetry,
-  distinct diagnostic identities and full-output parity. All354 model-free tests
-  and all three actual source-only/LF compositions pass; actual Windows matrix
-  execution remains pending. It must measure rather than assume whether a smaller
-  worker budget helps the observed2-core/4-logical host.
+  distinct diagnostic identities and full-output parity. All three source-only/LF
+  compositions pass. The first Windows diagnostic fails at checkout of an unrelated
+  unavailable TTS LFS object, before any compilation or inference. Its failure is
+  retained; the [versioned checkout correction](../research/nemotron-windows-worker-diagnostic-v2.md)
+  uses a child-only LFS-skip policy and actual Git-LFS regression. All359 model-free
+  tests pass; corrected actual matrix execution remains pending. It must measure
+  rather than assume whether fewer workers help the observed2-core/4-logical host.
   Then merge and
   push the completed feature to main; no main promotion is justified yet.
 

@@ -1,0 +1,55 @@
+name: Diarization Windows CPU worker diagnostic v2
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/nemotron3-n0]
+    paths:
+      - .github/workflows/diarization-windows-worker-diagnostic-v2.yml
+      - tools/nemotron-diarization/windows_worker_diagnostic_v2.py
+      - tools/nemotron-diarization/windows_worker_sources_v2.py
+      - tools/nemotron-diarization/windows_worker_metrics.py
+      - tools/nemotron-diarization/windows-worker-diagnostic-v2.protocol.json
+permissions:
+  contents: read
+jobs:
+  workers:
+    runs-on: windows-2022
+    timeout-minutes: 90
+    steps:
+      - name: Preserve pinned line endings
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: NVIDIA/NeMo-Speech.cpp
+          ref: 083861c241061562b8ec29eb06d7f6cdc3af8775
+          path: native-source
+          persist-credentials: false
+      - name: Initialize pinned GGML source
+        run: git -C native-source submodule update --init --depth 1 llama.cpp
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Restore Windows dependency cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ~\AppData\Local\vcpkg\archives
+          key: nemo-diar-vcpkg-9e593bb18ea69cc5095e012465dcd675a822ed0d-x64-static-md
+      - name: Model-free diagnostic controls
+        run: python -m unittest discover -s tools/nemotron-diarization -p test_windows_worker_diagnostic_v2.py
+      - name: Build three private diagnostic SDKs and execute fixed worker sequence
+        run: python tools/nemotron-diarization/windows_worker_diagnostic_v2.py --source native-source --output "${{ runner.temp }}/windows-worker-diagnostic" --jobs 2
+      - name: Preserve successful or failed diagnostic evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nemotron-windows-worker-diagnostic
+          path: |
+            ${{ runner.temp }}/windows-worker-diagnostic/qualification.json
+            ${{ runner.temp }}/windows-worker-diagnostic/protocol.json
+            ${{ runner.temp }}/windows-worker-diagnostic/evidence-*/
+            ${{ runner.temp }}/windows-worker-diagnostic/sdk-*/
+          include-hidden-files: true
+          retention-days: 30
