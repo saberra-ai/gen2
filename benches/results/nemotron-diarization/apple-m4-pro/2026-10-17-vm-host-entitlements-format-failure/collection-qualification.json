@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "source_commit": "7a5f3da930fd6d1e516d035bd7b7820c6b72e7b3",
+  "host_prerequisites_passed": false,
+  "fresh_machine_qualified": false,
+  "release_qualified": false,
+  "actual_commands": 8,
+  "all_child_returncodes_zero": true,
+  "failure": "codesign abstract entitlement output is not a plist; parser stopped before helper execution or image creation",
+  "helper_built_and_strict_signature_verified": true,
+  "helper_executable": {
+    "bytes": 86272,
+    "sha256": "fad65660177c7d66176277c303b5486af118a9afa8c89f5d988a8d10f86043b6"
+  },
+  "helper_execution_started": false,
+  "blank_image_created": false,
+  "image_attached_or_mounted": false,
+  "cleanup_exact_image_absent": true,
+  "storage_reserve_released": true,
+  "current_and_historical_source_pins_verified": 9,
+  "external_descriptors_verified": 16,
+  "model_free_tests_passed": 286,
+  "format_control_uses_read_only_codesign_xml": true,
+  "new_helper_or_model_or_vm_calls_during_collection": 0,
+  "local_only_global_inventory_stdout": {
+    "after-image.stdout.log": {
+      "bytes": 7269,
+      "sha256": "38575c04a11a7fe42ce0bb5873ed5937acbb632f8d924f37bd7a85d577de40b7"
+    },
+    "cleanup-image.stdout.log": {
+      "bytes": 7269,
+      "sha256": "38575c04a11a7fe42ce0bb5873ed5937acbb632f8d924f37bd7a85d577de40b7"
+    }
+  },
+  "limits": [
+    "Failed attempt retained. No host API result, OS image acquisition, VM creation/boot, APFS creation/mount/write, guest/app/model or fresh-machine qualification.",
+    "Only a new local ad-hoc helper artifact was built/signed; no host signing identity/Keychain/security change.",
+    "Read-only XML-format control extracts exactly the one declared entitlement without executing or altering the helper. No gate was waived."
+  ]
+}

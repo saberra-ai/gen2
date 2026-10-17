@@ -17,6 +17,11 @@ Remaining release work as of 2026-10-17:
   now freezes a no-guest VZ helper build/API query and one task-owned blank APFS
   mount/write/detach control. All 286 model-free tests pass; actual invocation
   remains pending. This cannot qualify a restored guest or complete app.
+  Its [first actual attempt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-host-entitlements-format-failure/collection-qualification.json)
+  built and strictly verified the new ad-hoc helper but remains failed on
+  entitlement display-format parsing, before helper execution or any image
+  operation. A read-only explicit-XML control diagnoses the mismatch; no host
+  support, volume, VM or fresh-machine gate is passed.
 - Finish each advertised platform/backend's performance, deployment and public
   signing/notarization requirements before promotion. Windows CPU functional
   evidence passes but its observed live RTF remains above one. Then merge and

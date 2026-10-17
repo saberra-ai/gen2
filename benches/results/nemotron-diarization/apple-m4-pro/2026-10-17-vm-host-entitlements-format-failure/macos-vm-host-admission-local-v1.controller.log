@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/qualify_macos_vm_host.py", line 283, in <module>
+    main()
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/qualify_macos_vm_host.py", line 200, in main
+    entitlements = plistlib.loads(run('entitlements', ['/usr/bin/codesign', '--display', '--entitlements', '-', executable]))
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/victor/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/plistlib.py", line 901, in loads
+    return load(fp, fmt=fmt, dict_type=dict_type)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/victor/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/plistlib.py", line 887, in load
+    raise InvalidFileException()
+plistlib.InvalidFileException: Invalid file

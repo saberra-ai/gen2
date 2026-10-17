@@ -1,0 +1,231 @@
+{
+  "schema_version": 1,
+  "source_commit": "7a5f3da930fd6d1e516d035bd7b7820c6b72e7b3",
+  "protocol": {
+    "bytes": 24107,
+    "sha256": "04a260ccb84aa64f190e7b0e333c94b1fbc8fc522b0e18644dcb3e450d05ccaf"
+  },
+  "host_prerequisites_passed": false,
+  "fresh_machine_qualified": false,
+  "release_qualified": false,
+  "restore_image_downloaded": false,
+  "virtual_machine_created": false,
+  "guest_booted": false,
+  "models_or_applications_executed": false,
+  "commands": [
+    {
+      "name": "offline-controls",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/offline.sb",
+        "/usr/bin/python3",
+        "-c",
+        "import pathlib,socket,sys\nfor name in sys.argv[1:]:\n try:pathlib.Path(name).read_bytes()\n except PermissionError:pass\n else:raise RuntimeError(\"model read allowed\")\ns=socket.socket()\ntry:s.connect((\"127.0.0.1\",9))\nexcept PermissionError:pass\nelse:raise RuntimeError(\"network allowed\")\n",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/denied.nemo",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/denied.gguf",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/denied.safetensors",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/denied.onnx",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/denied.npy",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/denied.f32"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "pid": 27277,
+      "returncode": 0,
+      "wall_seconds": 0.19865495897829533
+    },
+    {
+      "name": "build",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/offline.sb",
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+        "-sdk",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk",
+        "-target",
+        "arm64-apple-macosx26.0",
+        "-warnings-as-errors",
+        "-j",
+        "2",
+        "-module-cache-path",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/module-cache",
+        "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/macos_vm_host_probe.swift",
+        "-o",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/vm-host-probe"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "pid": 27289,
+      "returncode": 0,
+      "wall_seconds": 3.2292250000173226
+    },
+    {
+      "name": "sign",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/offline.sb",
+        "/usr/bin/codesign",
+        "--force",
+        "--sign",
+        "-",
+        "--timestamp=none",
+        "--options",
+        "runtime",
+        "--entitlements",
+        "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/macos_vm_host.entitlements",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/vm-host-probe"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "pid": 27348,
+      "returncode": 0,
+      "wall_seconds": 0.08952766697620973
+    },
+    {
+      "name": "signature-verify",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/offline.sb",
+        "/usr/bin/codesign",
+        "--verify",
+        "--strict",
+        "--deep",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/vm-host-probe"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "pid": 27349,
+      "returncode": 0,
+      "wall_seconds": 0.0875393750029616
+    },
+    {
+      "name": "signature-metadata",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/offline.sb",
+        "/usr/bin/codesign",
+        "--display",
+        "--verbose=4",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/vm-host-probe"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "pid": 27358,
+      "returncode": 0,
+      "wall_seconds": 0.08433304203208536
+    },
+    {
+      "name": "entitlements",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/offline.sb",
+        "/usr/bin/codesign",
+        "--display",
+        "--entitlements",
+        "-",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/vm-host-probe"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "pid": 27359,
+      "returncode": 0,
+      "wall_seconds": 0.049457334040198475
+    },
+    {
+      "name": "cleanup-image",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/offline.sb",
+        "/usr/bin/hdiutil",
+        "info",
+        "-plist"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "pid": 27360,
+      "returncode": 0,
+      "wall_seconds": 0.05112545797601342
+    },
+    {
+      "name": "after-image",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/offline.sb",
+        "/usr/bin/hdiutil",
+        "info",
+        "-plist"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-host-admission-local-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "pid": 27361,
+      "returncode": 0,
+      "wall_seconds": 0.05054541694698855
+    }
+  ],
+  "scope": "Build/run a host-only Apple VZ probe and mount one fresh blank APFS image.\n\nNo restore download, VM creation/boot, guest provisioning or app/model execution.\n",
+  "host": {
+    "cpu": "Apple M4 Pro",
+    "platform": "macOS-26.3-arm64-arm-64bit",
+    "uid": 502
+  },
+  "error": "InvalidFileException('Invalid file')",
+  "owned_image_detached": true,
+  "storage": {
+    "start_minimum_bytes": 5368709120,
+    "running_minimum_bytes": 1073741824,
+    "reserve_requested_bytes": 268435456,
+    "checks": 11,
+    "released": true,
+    "minimum_observed_free_bytes": 197142892544,
+    "last_observed_free_bytes": 197142892544,
+    "reserve_reported_allocated_bytes": 268435456
+  }
+}

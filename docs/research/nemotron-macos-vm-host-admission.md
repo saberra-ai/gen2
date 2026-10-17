@@ -67,3 +67,20 @@ macOS Data volume. Restore-image acquisition/hash/support, real VM installation,
 headless boot, guest provisioning/SSH, cleanup and fresh-guest complete-app
 offline checks remain required. GUI/microphone, other platforms/performance,
 public signing, original 20% DER and deferred human-word review remain open.
+
+The [actual first attempt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-host-entitlements-format-failure/collection-qualification.json)
+at `7a5f3da930fd6d1e516d035bd7b7820c6b72e7b3` remains failed. Offline controls,
+Swift compilation, ad-hoc signing and strict signature inspection return zero,
+but default `codesign --display --entitlements -` emits an abstract dictionary,
+not an XML plist. Parsing stops before helper execution or any image operation.
+All eight actual children return zero; both exact-image cleanup inventories
+confirm absence, no mount remains, and the reserve is released.
+
+The 38-member receipt retains the original protocol, all source copies, command
+and failure logs, filtered exact-image inventories, binary descriptor and passing
+six/286-test logs. Unrelated global disk inventory remains local by hash. A
+separate read-only `codesign --display --xml --entitlements -` control on the
+same artifact extracts exactly the one declared virtualization entitlement; no
+helper executes or changes. The actual local codesign manual explicitly defines
+abstract output as the default and `--xml` as its XML-format selector. This
+diagnoses the format mismatch without qualifying host support, a mount or a VM.
