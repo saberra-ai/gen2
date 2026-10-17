@@ -13,6 +13,10 @@ Remaining release work as of 2026-10-17:
   operation. Same-host complete-app CLI evidence does not close these checks.
   GitHub private-app transfer/authentication was skipped; a local VM route is
   [researched only](../research/nemotron-local-vm-receiver.md).
+  A separately reviewed [host prerequisite protocol](../research/nemotron-macos-vm-host-admission.md)
+  now freezes a no-guest VZ helper build/API query and one task-owned blank APFS
+  mount/write/detach control. All 286 model-free tests pass; actual invocation
+  remains pending. This cannot qualify a restored guest or complete app.
 - Finish each advertised platform/backend's performance, deployment and public
   signing/notarization requirements before promotion. Windows CPU functional
   evidence passes but its observed live RTF remains above one. Then merge and
