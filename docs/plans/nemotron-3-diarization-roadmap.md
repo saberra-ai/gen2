@@ -76,6 +76,17 @@ complete retained inputs and no diagnostic telemetry; actual native/public,
 lifecycle/package/offline/coexistence and original quality/desktop/release gates
 remain open. No production/main promotion is established.
 
+
+The [production-candidate admission layer](../research/nemotron-windows-q8-candidate.md)
+now pins a separate compiler/kernel recipe while retaining the bounded V3
+semantic tag and unchanged public Rust loader. It removes the diagnostic-source
+assumption: fresh source-only replay admits the original bounded inference,
+all3,425 GGML files and97 compiler source identities, with only SGEMM changed.
+Three graph import libraries must be copied and bound before graph controls.
+All507 local tests complete with seven Windows-only skips. The execution
+controller/protocol and actual fresh native/public/public/native, lifecycle and
+production SDK qualification remain pending; no production/release gate closes.
+
 Remaining release work as of 2026-10-17:
 
 - Meet the original 20% DER target on every required meeting slice. The two AMI
