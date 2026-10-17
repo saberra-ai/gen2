@@ -56,6 +56,7 @@ export async function readSpeakerRuntimeLock(gen2Root,manifest){
   const filename=new Map([
     ['gen2-valid-mel-v1','runtime-valid-mel.lock.json'],
     ['gen2-valid-mel-pool-v1','runtime-valid-mel-pool.lock.json'],
+    ['gen2-valid-mel-pool-cpu-v2','runtime-valid-mel-pool-cpu.lock.json'],
   ]).get(manifest.runtime_profile);
   if(!filename)throw new Error(`Unsupported native runtime profile: ${manifest.runtime_profile}`);
   const lock=await loadJson(join(gen2Root,'tools/nemotron-diarization',filename));

@@ -14,6 +14,7 @@ test('speaker staging selects the exact native profile lock and rejects identity
     for(const [profile,filename,version] of [
       ['gen2-valid-mel-v1','runtime-valid-mel.lock.json','nemo-speech-asr 0.2.0+gen2-valid-mel-v1'],
       ['gen2-valid-mel-pool-v1','runtime-valid-mel-pool.lock.json','nemo-speech-asr 0.2.0+gen2-valid-mel-pool-v1'],
+      ['gen2-valid-mel-pool-cpu-v2','runtime-valid-mel-pool-cpu.lock.json','nemo-speech-asr 0.2.0+gen2-valid-mel-pool-cpu-v2'],
     ]){
       await writeFile(join(directory,filename),JSON.stringify({profile,model:{selected:profile},runtime:{reported_version:version}}));
       const manifest={runtime_profile:profile,runtime_reported_version:version};
@@ -21,7 +22,7 @@ test('speaker staging selects the exact native profile lock and rejects identity
       await assert.rejects(readSpeakerRuntimeLock(root,{...manifest,runtime_reported_version:version+'.extra'}),/profile\/version/);
       await assert.rejects(readSpeakerRuntimeLock(root,{runtime_profile:profile}),/profile\/version/);
     }
-    for(const profile of ['../runtime','gen2-valid-mel-pool-v2','gen2-valid-mel-pool-v1.extra','__proto__'])await assert.rejects(readSpeakerRuntimeLock(root,{runtime_profile:profile}),/Unsupported/);
+    for(const profile of ['../runtime','gen2-valid-mel-pool-v2','gen2-valid-mel-pool-v1.extra','gen2-valid-mel-pool-cpu-v3','gen2-valid-mel-pool-cpu-v2.extra','__proto__'])await assert.rejects(readSpeakerRuntimeLock(root,{runtime_profile:profile}),/Unsupported/);
     await writeFile(join(directory,'runtime-valid-mel-pool.lock.json'),JSON.stringify({profile:'gen2-valid-mel-v1',runtime:{reported_version:'nemo-speech-asr 0.2.0+gen2-valid-mel-pool-v1'}}));
     await assert.rejects(readSpeakerRuntimeLock(root,{runtime_profile:'gen2-valid-mel-pool-v1',runtime_reported_version:'nemo-speech-asr 0.2.0+gen2-valid-mel-pool-v1'}),/profile\/version/);
   }finally{await rm(root,{recursive:true,force:true});}

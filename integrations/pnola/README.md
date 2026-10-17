@@ -31,12 +31,12 @@ qualification remains N5 work. No inference-time downloads occur.
 
 Speaker staging requires a v2 macOS package, whose verifier binds the selected
 profile, patches and floor-valid frame contract to its build receipt and original
-SDK library identities. Staging selects the exact `gen2-valid-mel-v1` or
-`gen2-valid-mel-pool-v1` lock from that verified package and rejects unknown or
+SDK library identities. Staging selects the exact `gen2-valid-mel-v1`,
+`gen2-valid-mel-pool-v1` or `gen2-valid-mel-pool-cpu-v2` lock from that verified package and rejects unknown or
 mismatched profile/version identities. Historical v1 packages remain rejected.
 The [static pooled staging regression](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-pnola-profile-staging/qualification.json)
 retains the initial incorrect old-profile label and corrected result. Both
-supported profiles stage successfully; only the candidate bundle's profile field
+historical profiles stage successfully; only the candidate bundle's profile field
 changes, with all other staged model/native bytes and modes identical. Five Node
 and two overlay tests pass. The two known overlay files are upgraded with hash
 guards and backups. This model-free staging is followed by the
@@ -44,6 +44,15 @@ guards and backups. This model-free staging is followed by the
 automatic packaged CPU recording/live execution and explicit Metal rejection
 pass without artifact-path environment overrides. Native GUI, microphone,
 fresh-machine, quality and release qualification remain open.
+
+The bounded CPU profile now selects `runtime-valid-mel-pool-cpu.lock.json`
+explicitly, preserving exact manifest-to-lock profile/version checks and rejecting
+future or suffix identities. Its initial unsupported-profile regression is fixed;
+all 15 overlay Node tests and three apply/reapply tests pass. The real qualified
+package selects the real bounded lock in a metadata-only check. The manifest
+admits the two known previous overlay hashes, and a read-only check of the actual
+private checkout reports exactly two file upgrades. No private source is changed.
+Complete bounded-profile app construction and execution remain unqualified.
 
 The [current-profile adapter receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-pnola-adapter/qualification.json)
 passes ten debug test/CLI cases with explicit relocated artifacts: recorded

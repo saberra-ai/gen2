@@ -1,12 +1,23 @@
 import hashlib
 import json
 from pathlib import Path
+import shutil
 import tempfile
 import unittest
 from apply import plan
 
 
 class OverlayTest(unittest.TestCase):
+    def test_repository_overlay_can_be_applied_and_reapplied(self):
+        bundle = Path(__file__).resolve().parent
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory)
+            app = root / "app"
+            shutil.copytree(bundle / "overlay", app)
+            for target, _, content in plan(app, root / "gen2", bundle):
+                target.write_bytes(content)
+            self.assertEqual(plan(app, root / "gen2", bundle), [])
+
     def test_applied_overlay_is_idempotent_and_can_relocate_gen2(self):
         with tempfile.TemporaryDirectory() as directory:
             root = Path(directory)
