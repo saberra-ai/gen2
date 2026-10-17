@@ -140,8 +140,16 @@ Remaining release work as of 2026-10-17:
   now implements distinct diagnostic identity, exact twenty-patch source
   admission, actual Windows controls before model acquisition and full off/on/on/off
   measurement. Local source-only reconstruction passes all 3425 files with just
-  the declared timing file changed; 415 Python tests pass. Actual Windows model
-  evidence remains pending, and no release gate is qualified by these controls.
+  the declared timing file changed; 415 Python tests pass. The
+  [actual Windows result](../research/nemotron-windows-cpu-ops-results.md) now
+  passes all 59 command cleanups, the twelve model-free processes/36 identical
+  vectors and all four byte-exact model histories. Both enabled cases have
+  complete 84-graph/four-worker coverage and matching topology/fusion signatures.
+  Control drift is 0.2902212% and the observer bounds pass. MUL_MAT, UNARY and
+  FLASH_ATTN_EXT dominate the separate per-worker kernel wall observations;
+  internal waits and scheduling remain included. Native RTF 1.013520/1.020798/
+  1.015328/1.016462 still fails below one. Preserve the 292-file receipt and
+  investigate those paths separately; no production or release gate is closed.
   Then merge and
   push the completed feature to main; no main promotion is justified yet.
 

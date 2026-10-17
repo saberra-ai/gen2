@@ -1,0 +1,188 @@
+diff --git a/patches/series b/patches/series
+index b0e418a..9c3d01f 100644
+--- a/patches/series
++++ b/patches/series
+@@ -18,3 +18,4 @@ ggml-cpu-f16c-scalar-fp32-fp16-and-row-split-f16-im2col.patch
+ llama-keep-equal-length-recurrent-sequences-in-one-ubatch.patch
+ llama-enable-nvfp4-in-llama-quantize.patch
+ llama-read-the-gemma-3-attention-scale-from-gguf.patch
++gen2-cpu-operations-profile.patch
+diff --git a/src/asr/diar/diar_pipeline.cpp b/src/asr/diar/diar_pipeline.cpp
+index 0d3894e..13a0f4e 100644
+--- a/src/asr/diar/diar_pipeline.cpp
++++ b/src/asr/diar/diar_pipeline.cpp
+@@ -142,6 +142,7 @@ void
+ DiarStream::finish() {
+     if (finished_)
+         return;
++    const size_t original_audio_end = audio_base_ + audio_buf_.size();
+     finished_ = true;
+     // Release the tail frames the streaming FE held back (their windows run
+     // past the last real sample). NeMo's torch.stft(center=True,
+@@ -161,6 +162,16 @@ DiarStream::finish() {
+         }
+         ensure_mel();
+     }
++    if (m_.cfg().is_v3()) {
++        // NeMo masks the extra centered-STFT row before feature stacking.
++        const int64_t valid_mel_end = static_cast<int64_t>(
++            original_audio_end / static_cast<size_t>(m_.fe().hop_length()));
++        if (valid_mel_end < mel_base_ || valid_mel_end < mel_consumed_ ||
++            valid_mel_end > mel_produced()) {
++            throw std::runtime_error("DiarStream: invalid v3 final mel bounds");
++        }
++        mel_buf_.resize(static_cast<size_t>(valid_mel_end - mel_base_) * n_mels_);
++    }
+     run_ready_chunks(/*end_of_stream=*/true);
+ }
+ 
+diff --git a/src/asr/diar/diarizer.cpp b/src/asr/diar/diarizer.cpp
+index 610812c..f63ce33 100644
+--- a/src/asr/diar/diarizer.cpp
++++ b/src/asr/diar/diarizer.cpp
+@@ -3,7 +3,10 @@
+ 
+ #include "diarizer.h"
+ 
++#include <algorithm>
++#include <cstdio>
+ #include <stdexcept>
++#include <thread>
+ #include <utility>
+ 
+ #include "audio_resampler.h"
+@@ -12,9 +15,27 @@
+ namespace nemo_speech::asr {
+ namespace {
+ 
++// Keep small CPU hosts within their reported capacity. A zero report means the
++// implementation cannot determine its concurrency; one worker is then defined.
++constexpr int bounded_cpu_threads(int requested, unsigned available) {
++    return available ? static_cast<int>(std::min(static_cast<unsigned>(requested), available)) : 1;
++}
++static_assert(bounded_cpu_threads(4, 0) == 1);
++static_assert(bounded_cpu_threads(4, 1) == 1);
++static_assert(bounded_cpu_threads(4, 2) == 2);
++static_assert(bounded_cpu_threads(4, 3) == 3);
++static_assert(bounded_cpu_threads(4, 4) == 4);
++static_assert(bounded_cpu_threads(4, 14) == 4);
++static_assert(bounded_cpu_threads(2, 3) == 2);
++
+ ggml_runtime::Params
+ backend_params(int gpu) {
+     ggml_runtime::Params params;
++    if (gpu < 0) {
++        const unsigned available = std::thread::hardware_concurrency();
++        params.n_threads = bounded_cpu_threads(4, available);
++        std::fprintf(stderr, "[DEBUG-worker-v1] cap=4 available=%u effective=%d\n", available, params.n_threads);
++    }
+     params.use_gpu = gpu >= 0;
+     params.gpu_device_idx = gpu < 0 ? 0 : gpu;
+     params.pe_bin_path = const_cast<char*>("");
+diff --git a/src/runtime/ggml/backend.cpp b/src/runtime/ggml/backend.cpp
+index c57fad9..4396d8c 100644
+--- a/src/runtime/ggml/backend.cpp
++++ b/src/runtime/ggml/backend.cpp
+@@ -6,8 +6,11 @@
+ // Licensed under the MIT License. See THIRD_PARTY_NOTICES.md.
+ #include <algorithm>
+ #include <cstdlib>
++#include <cstdio>
+ #include <mutex>
+ 
++#include <ggml-cpu.h>
++
+ #include "model_logging.h"
+ #include "runtime.h"
+ 
+@@ -37,6 +40,44 @@ keep_skinny_q8_weights_separate() {
+     set_environment_default("GGML_SKINNY_Q8_INPLACE", "0");
+ }
+ 
++// Each manager serializes its Sessions through compute_mutex(). One pool can
++// therefore serve their CPU graphs without sharing workers across managers.
++struct BackendManager::CpuThreadpool {
++    using New = ggml_threadpool_t (*)(ggml_threadpool_params*);
++    using Free = void (*)(ggml_threadpool_t);
++    using Set = void (*)(ggml_backend_t, ggml_threadpool_t);
++
++    ggml_threadpool_t pool = nullptr;
++    Free free_pool = nullptr;
++    Set set_pool = nullptr;
++    ggml_backend_t backend = nullptr;  // Borrowed; BackendManager detaches first.
++
++    CpuThreadpool(ggml_backend_t cpu, int threads) : backend(cpu) {
++        if (threads < 1 || threads > GGML_MAX_N_THREADS) {
++            throw std::invalid_argument("CPU thread count is out of range");
++        }
++        auto reg = ggml_backend_dev_backend_reg(ggml_backend_get_device(cpu));
++        auto create = reinterpret_cast<New>(ggml_backend_reg_get_proc_address(reg, "ggml_threadpool_new"));
++        free_pool = reinterpret_cast<Free>(ggml_backend_reg_get_proc_address(reg, "ggml_threadpool_free"));
++        set_pool = reinterpret_cast<Set>(ggml_backend_reg_get_proc_address(reg, "ggml_backend_cpu_set_threadpool"));
++        if (!create || !free_pool || !set_pool) {
++            throw std::runtime_error("CPU thread-pool registry functions are unavailable");
++        }
++        auto settings = ggml_threadpool_params_default(threads);
++        pool = create(&settings);
++        if (!pool) {
++            throw std::runtime_error("failed to create CPU thread pool");
++        }
++        set_pool(backend, pool);
++        std::fprintf(stderr, "[DEBUG-worker-v1] attached_pool_threads=%d\n", threads);
++    }
++
++    void detach() { set_pool(backend, nullptr); }
++    ~CpuThreadpool() { if (pool) free_pool(pool); }
++    CpuThreadpool(const CpuThreadpool&) = delete;
++    CpuThreadpool& operator=(const CpuThreadpool&) = delete;
++};
++
+ BackendManager::BackendManager(Params params) {
+     nemo_speech::common::ensure_ggml_logging();
+     this->params = params;
+@@ -52,6 +93,9 @@ BackendManager::BackendManager(Params params, ggml_backend_t borrowed_gpu_backen
+ 
+ void
+ BackendManager::init_backends() {
++    if (!backends.empty() || cpu_threadpool_) {
++        throw std::logic_error("backend manager is already initialized");
++    }
+ #if defined(GGML_USE_VULKAN)
+     // Graph optimization is incompatible with in-place persistent cache tensors.
+     // Vulkan reads this setting during device initialization.
+@@ -141,6 +185,7 @@ BackendManager::init_backends() {
+     }
+     GGMLF_LOG_INFO("Using CPU backend\n");
+     backends.emplace_back(backend_cpu);
++    cpu_threadpool_ = std::make_unique<CpuThreadpool>(backend_cpu, params.n_threads);
+ 
+     auto* cpu_dev = ggml_backend_dev_by_type(GGML_BACKEND_DEVICE_TYPE_CPU);
+     auto* cpu_reg = ggml_backend_dev_backend_reg(cpu_dev);
+@@ -172,7 +217,12 @@ BackendManager::get_backends() {
+     return handles;
+ }
+ 
+-BackendManager::~BackendManager() = default;
++BackendManager::~BackendManager() {
++    // Pause/detach while the backend is alive; member destruction then destroys
++    // the handles before freeing and joining the pool. Constructor exceptions
++    // also destroy handles before the pool, without any graph having run.
++    if (cpu_threadpool_) cpu_threadpool_->detach();
++}
+ 
+ buft_list_t
+ BackendManager::get_buft_list() {
+diff --git a/src/runtime/ggml/runtime.h b/src/runtime/ggml/runtime.h
+index fe736c8..5cb45c3 100644
+--- a/src/runtime/ggml/runtime.h
++++ b/src/runtime/ggml/runtime.h
+@@ -238,6 +238,9 @@ class BackendManager {
+    private:
+     Params params;
+     ggml_backend_t borrowed_gpu_backend_ = nullptr;
++    struct CpuThreadpool;
++    // Backend handles are destroyed before the pool they borrow.
++    std::unique_ptr<CpuThreadpool> cpu_threadpool_;
+     std::vector<ggml_backend_ptr> backends;
+     // Non-owning alias into `backends`.
+     ggml_backend_t gpu_backend = nullptr;

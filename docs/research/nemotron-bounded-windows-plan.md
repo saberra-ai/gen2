@@ -81,9 +81,15 @@ now implements timing around existing fused-kernel and barrier boundaries in a
 separately identified diagnostic SDK. It requires exact twenty-patch/3425-file
 source admission, the original compiler/flags plus diagnostic metadata, actual
 Windows model-free controls before asset acquisition, and four full-output
-off/on/on/off cases. Local source composition and 415 Python tests pass; actual
-Windows measurement remains pending. Observer effects, overlapping worker times
-and all original production/release limits remain explicit.
+off/on/on/off cases. Local source composition and 415 Python tests pass. The
+[actual measurement](nemotron-windows-cpu-ops-results.md) now passes all 59 commands,
+twelve synthetic processes/36 identical vectors, four byte-exact model outputs
+and both complete 84-graph/four-worker traces. Observer bounds pass with 0.2902212%
+control drift; native RTF 1.013520/1.020798/1.015328/1.016462 still fails below one.
+MUL_MAT, UNARY and FLASH_ATTN_EXT lead each separate worker's kernel wall totals.
+Internal waits, scheduling, observer effects and overlapping workers limit
+interpretation. The 292-file receipt qualifies measurement only; original
+production/public/package and release gates remain open.
 
 The new [producer](../../tools/nemotron-diarization/platform_bounded_windows_native.py),
 [composed-source verifier](../../tools/nemotron-diarization/platform_bounded_sources.py)
