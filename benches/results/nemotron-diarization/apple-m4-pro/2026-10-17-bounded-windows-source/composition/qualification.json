@@ -1,0 +1,140 @@
+{
+  "schema_version": 1,
+  "runtime_revision": "083861c241061562b8ec29eb06d7f6cdc3af8775",
+  "llama_revision": "bd4f514db14d87fded667787a7a963bfbaa98e89",
+  "lock_sha256": "d1c93689f41a21159b2266b5483b727da0493029b324e0badde910c7777e0e38",
+  "runtime_profile": "gen2-valid-mel-pool-cpu-v2",
+  "runtime_reported_version": "nemo-speech-asr 0.2.0+gen2-valid-mel-pool-cpu-v2",
+  "compatibility_patches": [
+    {
+      "path": "patches/v3-finish-valid-mel.patch",
+      "bytes": 1194,
+      "sha256": "8c1434c14f63ebeb2515c719a90594124fd4f75af85b80451fd145b5caef3c36",
+      "source_sha256_before": {
+        "src/asr/diar/diar_pipeline.cpp": "4143ca8e6d6f14ee454263702510cb163fe8e170aa928f236c0b4b540a7a7da9"
+      },
+      "source_sha256_after": {
+        "src/asr/diar/diar_pipeline.cpp": "fe00ae415f4741d7e07579acdc77c60f5d7327be024cf7f8aff8f52142ae9af2"
+      }
+    },
+    {
+      "path": "patches/cpu-thread-cap.patch",
+      "bytes": 1403,
+      "sha256": "c18ccb86ff02825899db2ed7b0df0c44e7db69ed38e4fca64e42b14c84f16186",
+      "source_sha256_before": {
+        "src/asr/diar/diarizer.cpp": "1536bc044bc17fcc4c7913f983c5314ebef6fd2df14649cef4024832424f2b82"
+      },
+      "source_sha256_after": {
+        "src/asr/diar/diarizer.cpp": "050676cb46dce1e2be126d163041671022bfe465ad21dc3ca5bc2ae47296ac51"
+      }
+    },
+    {
+      "path": "patches/persistent-cpu-pool.patch",
+      "bytes": 4275,
+      "sha256": "ab485ae1b441f4428db49f6b4d1b955e123966d053c4735567e9bdc3825656d9",
+      "source_sha256_before": {
+        "src/runtime/ggml/backend.cpp": "92ea19f833c9ba132c81cfe33693ab1090d436e25c2aaea7e6186315f5265394",
+        "src/runtime/ggml/runtime.h": "8b16754a48bc69a9d0f9d2bc29913e9cf4a7e9b5321bd118780093010c5c0f25"
+      },
+      "source_sha256_after": {
+        "src/runtime/ggml/backend.cpp": "fb4624dd278f6f8feff7d0583c10a19a05946fdd733426ece29be4e51a68ae26",
+        "src/runtime/ggml/runtime.h": "338a1e1b1f1eec4f80a2460c0941fc4176e3d46682f4c3d61d8389ca32353a69"
+      }
+    }
+  ],
+  "frame_contract": {
+    "name": "v3-streaming-valid-mel-v1",
+    "scope": "V3 streaming finish only; offline and V2 semantics unchanged",
+    "sample_rate": 16000,
+    "hop_samples": 160,
+    "final_frames": "floor(real_input_samples / 160)",
+    "output_channels": 8
+  },
+  "actual_local_source_composition_passed": true,
+  "windows_compiler_or_native_behavior_qualified": false,
+  "release_qualified": false,
+  "new_native_or_neural_calls": 0,
+  "inference_patch": {
+    "bytes": 6872,
+    "sha256": "c7b78d6de7dba28e6284c965d0fc2c9e6fea8f26d5d5ab21b09999206af1046b"
+  },
+  "source_files": {
+    "cmake/llama_cpp.cmake": {
+      "bytes": 9732,
+      "sha256": "0a3f2c3f3357373db799338cd5a5ed3095f900599fdc18d86f0c25be04a50bf6"
+    },
+    "src/asr/diar/diar_pipeline.cpp": {
+      "bytes": 19539,
+      "sha256": "fe00ae415f4741d7e07579acdc77c60f5d7327be024cf7f8aff8f52142ae9af2"
+    },
+    "src/asr/diar/diarizer.cpp": {
+      "bytes": 7594,
+      "sha256": "050676cb46dce1e2be126d163041671022bfe465ad21dc3ca5bc2ae47296ac51"
+    },
+    "src/runtime/ggml/backend.cpp": {
+      "bytes": 8678,
+      "sha256": "fb4624dd278f6f8feff7d0583c10a19a05946fdd733426ece29be4e51a68ae26"
+    },
+    "src/runtime/ggml/runtime.h": {
+      "bytes": 19374,
+      "sha256": "338a1e1b1f1eec4f80a2460c0941fc4176e3d46682f4c3d61d8389ca32353a69"
+    }
+  },
+  "private_naming_prepared_before_lf_overlay": true,
+  "naming": {
+    "scope": "Build-only output/import-library names; logical targets and inference source unchanged.",
+    "source_sha256": {
+      "CMakeLists.txt": "e79e24832e52b440808dd59a4b274ad657ed6e7bb42df992dcaf0ee87f9d39fa",
+      "src/asr/CMakeLists.txt": "7cf799a2a8f98de94e749bbdf72bab5cabba8dd61921b78ac9be6fa2f8850e48",
+      "scripts/windows/build.ps1": "068c58cceea80cc6b021ec09e60f0caea1241ab2963ba3ffe1a5f7e3b547c68f",
+      "vcpkg.json": "3ba4dc4a35bd4cd7958eaa5525714f231ab1729515d05600fee94fcb037b1992",
+      "cmake/llama_cpp.cmake": "22357d4a5d8a67716daa8b4e374abd63120432bd57540f97d572a525d5354c7b",
+      "llama.cpp/ggml/CMakeLists.txt": "c118116572c8e5bc8d9302d44cc6806ce69a31face60f2cefdb36801fdf72fd3",
+      "llama.cpp/ggml/src/CMakeLists.txt": "38ddf053a1adfc14bb84b7722e3c4ec01909694f7e51e32013f36e7a324fa4f0",
+      "llama.cpp/ggml/src/ggml-cpu/CMakeLists.txt": "ed4d3cf43377accac79bd09b4b93c10725e66f189e1ddfcd528c7c29508cf3d0"
+    },
+    "hook_sha256": "d5fb3bcc2582a3420819ecab797aa3dd0a0a64ee9e1cf979f4ce8df5168033b7",
+    "names": {
+      "nemo_speech_asr_c.dll": "gen2_nemo_windows_nemo_speech_asr_c.dll",
+      "nemo_speech_asr.dll": "gen2_nemo_windows_nemo_speech_asr.dll",
+      "ggml.dll": "gen2_nemo_windows_ggml.dll",
+      "ggml-base.dll": "gen2_nemo_windows_ggml-base.dll",
+      "ggml-cpu.dll": "gen2_nemo_windows_ggml-cpu.dll"
+    },
+    "inspector_sha256": "d194378b4a666444c350f4f4896debcee649568714ae51fc7797844f1cf4d52c",
+    "controller_sha256": "756b8f24d1ee84c4da479f63fb0ba1e2f2ee2f2bed4d2407b9f37cb7af871efa"
+  },
+  "build_compatibility": {
+    "scope": "Pinned upstream plus explicit Windows build-only compatibility overlay; no inference or patch-payload edits",
+    "path": "cmake/llama_cpp.cmake",
+    "upstream_sha256": "22357d4a5d8a67716daa8b4e374abd63120432bd57540f97d572a525d5354c7b",
+    "updated_sha256": "0a3f2c3f3357373db799338cd5a5ed3095f900599fdc18d86f0c25be04a50bf6",
+    "overlay_sha256": "57e108f3cd4fcc42efa8d5b6e373a3663d49e2d36d96f67dfcaf59d166b7e300",
+    "upstream_patch_sha256": {
+      "ggml-add-fused-attention-op-for-fastconformer-and-magpietts.patch": "58a43285e49f3ab9569bfb98a459979c062084b87da8d54cdbdc377ee1724152",
+      "ggml-cpu-f16c-scalar-fp32-fp16-and-row-split-f16-im2col.patch": "037071a6b36a1494fad43f40f61777f8a2292832a669365a7a83138ecaf1e568",
+      "ggml-cuda-bf16-depthwise-conv-and-bias-round-epilogue.patch": "57c3d7034825672d395b2c3fd8281aeb56e25f6c19ab81910a55add1a2af6025",
+      "ggml-cuda-cuda-graph-cache-keys-replay-updates-and-eviction-knobs.patch": "f6411ba27f9f95609a9fb62e2ef72e21b776926dca2dd094fcb2dc252dd66a97",
+      "ggml-cuda-expose-the-backend-stream-and-cuda-graph-controls.patch": "a0ff7b7ea2e224badeebd702b52756978f32b42bb2076148a9f63eeaaf0c03ef",
+      "ggml-cuda-flatten-pad-launches-for-large-batches.patch": "6dc7d08b28357dc18f0d6cc12bed34fd7551319e6726cd06f5284bf3e5872f36",
+      "ggml-cuda-flatten-shared-weight-cublas-gemms-fuse-silu-to-bf16.patch": "d5eca4bf276988baecb694019075884d4ed54e375b2f9291aeb942b3b6b18c81",
+      "ggml-cuda-fuse-layernorm-with-row-vector-scale-and-bias.patch": "dfa1ca84e18382c48acb9aaf2ace571fd73c10470e0b190c1b8f71625d0036c4",
+      "ggml-cuda-skinny-q8_0-gemm-with-planar-weights.patch": "d64681f5ba3295afe9e0189214f2e8d915b8ca443d15a8b51c045ebec62678c3",
+      "ggml-cuda-support-f16-weights-in-direct-depthwise-conv.patch": "4041c7a7e46b1f2a7327514e80391fc663c1fe7f3fdec198ffbb9a83cc9b773a",
+      "ggml-cuda-target-jetson-thor-sm110.patch": "faab19b99c099f92575211a83ba74a1f0be9cb3f55e3577ba3265c9f2bbe2dad",
+      "ggml-cuda-tiled-1d-im2col.patch": "b967590c58b9bd75af3d15ae9339c49cd6d778fed16b7b492f02adc94fbaadf6",
+      "ggml-cuda-two-column-mmvf-epilogue.patch": "23a0c7db1f1c5a1a2e79b3e26cc637d78f6294d6f803a3eae1c654e22a4e6b73",
+      "ggml-cuda-vectorized-contiguous-set_rows.patch": "2d596ef6ed3b3652f9ba90e65f087bc739c6db359040e7825af27b1644c26fe4",
+      "ggml-fastconformer-cuda-fusions-and-sigmoid-glu.patch": "8c6509fe4b03be406e5e082fcecb3cf2af5f09dfef85f4d751ed5ba7e44ff21c",
+      "ggml-nanocodec-convolution-kernels.patch": "0bcf7bd18c116d81afbcc491186ebbfcdf07a0fc68d1f07fc66b2260ba4b0a57",
+      "llama-enable-nvfp4-in-llama-quantize.patch": "71e50251b8e03958aa30f098b7b6ac65ccd0c38c5ee1d4eb8bc8bf34c461f44f",
+      "llama-keep-equal-length-recurrent-sequences-in-one-ubatch.patch": "297fe611e0e4eccccf6eaeb780b751ed2a8116e42b084dd7a113c0db24aac5fd",
+      "llama-read-the-gemma-3-attention-scale-from-gguf.patch": "a490a952a84e5bd3d0ff8df728d95431badef21c89d345506b522a56d3a2f9c1"
+    },
+    "guard": "Each generated LF patch must hash exactly like its normalized upstream content before git apply."
+  },
+  "limits": [
+    "Actual Git composition and pinned source hashes only on macOS; no SDK/build/version query/native helper/model/Windows API/workflow run.",
+    "MSVC construction, actual compiler tree, negative-load thread cleanup, RTF, lifecycle, packaging, offline chat and fresh desktop remain unqualified."
+  ]
+}

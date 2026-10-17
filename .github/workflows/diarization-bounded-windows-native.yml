@@ -1,0 +1,63 @@
+name: Diarization bounded Windows native CPU qualification
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/nemotron3-n0]
+    paths:
+      - .github/workflows/diarization-bounded-windows-native.yml
+      - tools/nemotron-diarization/platform_bounded_windows_native.py
+      - tools/nemotron-diarization/platform_bounded_sources.py
+      - tools/nemotron-diarization/platform_bounded_metrics.py
+      - tools/nemotron-diarization/bounded-windows-native.protocol.json
+permissions:
+  contents: read
+jobs:
+  native:
+    runs-on: windows-2022
+    timeout-minutes: 120
+    steps:
+      - name: Preserve byte-pinned source line endings
+        run: git config --global core.autocrlf false
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: NVIDIA/NeMo-Speech.cpp
+          ref: 083861c241061562b8ec29eb06d7f6cdc3af8775
+          path: native-source
+          persist-credentials: false
+      - name: Initialize pinned ggml source
+        run: git -C native-source submodule update --init --depth 1 llama.cpp
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Windows vcpkg binary cache
+        id: vcpkg-cache
+        uses: actions/cache/restore@v4
+        with:
+          path: ~\AppData\Local\vcpkg\archives
+          key: nemo-diar-vcpkg-9e593bb18ea69cc5095e012465dcd675a822ed0d-x64-static-md
+      - name: Model-free bounded source and performance admission tests
+        run: python -m unittest discover -s tools/nemotron-diarization -p test_platform_bounded_windows.py
+      - name: Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates
+        run: python tools/nemotron-diarization/platform_bounded_windows_native.py --source native-source --prefix "${{ runner.temp }}/nemo-bounded-sdk" --output "${{ runner.temp }}/nemo-bounded-evidence" --jobs 2 --windows-private-dlls
+      - name: Preserve Windows dependency cache after build failure
+        if: always() && steps.vcpkg-cache.outcome == 'success' && steps.vcpkg-cache.outputs.cache-hit != 'true'
+        uses: actions/cache/save@v4
+        with:
+          path: ~\AppData\Local\vcpkg\archives
+          key: nemo-diar-vcpkg-9e593bb18ea69cc5095e012465dcd675a822ed0d-x64-static-md
+      - name: Preserve successful or failed qualification evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nemotron-bounded-native-windows-2022
+          path: |
+            ${{ runner.temp }}/nemo-bounded-evidence/
+            !${{ runner.temp }}/nemo-bounded-evidence/assets/
+            ${{ runner.temp }}/nemo-bounded-sdk/
+          include-hidden-files: true
+          retention-days: 30

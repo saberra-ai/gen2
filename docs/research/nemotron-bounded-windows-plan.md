@@ -1,6 +1,37 @@
 # Bounded CPU Windows qualification plan
 
-Research only, 2026-10-17. No Windows bounded SDK has been built or qualified by this investigation. Platform-neutral C++ does not establish MSVC construction, Windows lifecycle correctness or realtime performance.
+Status on 2026-10-17: bounded Windows producer implemented and locally tested;
+actual Windows SDK execution remains unperformed. Platform-neutral C++ and source
+admission do not establish MSVC construction, lifecycle correctness or realtime performance.
+
+The new [producer](../../tools/nemotron-diarization/platform_bounded_windows_native.py),
+[composed-source verifier](../../tools/nemotron-diarization/platform_bounded_sources.py)
+and [workflow](../../.github/workflows/diarization-bounded-windows-native.yml) use a
+separate [frozen protocol](../../tools/nemotron-diarization/bounded-windows-native.protocol.json)
+binding42 tool files and264 repository files. They preserve the historical
+producer and profile. The new producer applies all three ordered patches, checks
+their original/post-patch hashes and exact four-file inference diff, prepares
+private DLL names before the exact LF overlay, and rechecks the composed source
+after construction and neural qualification. Independent19-patch GGML replay,
+actual compiler-source auditing, state test, version query, PE/private imports,
+complete6000-row native/public histories and all seven exact lifecycle tests
+remain mandatory. Native and public observed RTF must each be strictly below1;
+functional/lifecycle observations are retained separately if performance fails.
+The workflow retains failed evidence and never automatically retries.
+It derives the native probe by replacing exactly one quoted historical version
+literal, retains original/derived source hashes and checks the derived bytes
+before model admission and after qualification. The frozen probe stays unchanged.
+The existing strict CTest validator admits both observed summary formats while
+requiring exactly one actually passed `diar_state` case.
+
+All333 model-free tools tests pass, including seven new tests for source composition,
+missing edits, foreign/staged/submodule changes, exact identity, complete history
+finite positive below-one performance and exact real-helper version derivation. The
+[actual local source receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-bounded-windows-source/composition/qualification.json)
+also admits a fresh local clone with the real three patches and exact five-file
+composition after naming/LF preparation. That run performs no compiler, native
+helper, version query, model or Windows API call; it cannot close Windows gates.
+Two-axis review and a commit precede the first workflow execution.
 
 The [bounded lock](../../tools/nemotron-diarization/runtime-valid-mel-pool-cpu.lock.json) pins upstream `083861c241061562b8ec29eb06d7f6cdc3af8775`, llama `bd4f514db14d87fded667787a7a963bfbaa98e89`, and exact runtime `nemo-speech-asr 0.2.0+gen2-valid-mel-pool-cpu-v2`. Its ordered inference patches are valid-Mel finish, CPU thread cap, then persistent pool. [The cap](../../tools/nemotron-diarization/patches/cpu-thread-cap.patch) uses standard C++ concurrency: `min(existing 4, hardware_concurrency())`, falling back to one. [The pool](../../tools/nemotron-diarization/patches/persistent-cpu-pool.patch) uses GGML registry procedures and manager-owned cleanup. Neither patch contains Apple-specific calls; private DLL filenames do not change the registry procedure strings.
 

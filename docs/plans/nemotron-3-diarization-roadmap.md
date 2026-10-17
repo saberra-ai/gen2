@@ -57,7 +57,11 @@ Remaining release work as of 2026-10-17:
   signing/notarization requirements before promotion. Windows CPU functional
   evidence passes but its observed live RTF remains above one; the
   [bounded Windows plan](../research/nemotron-bounded-windows-plan.md) maps the
-  still-unperformed construction and qualification work. Then merge and
+  construction and qualification work. A separately versioned bounded Windows
+  producer/protocol/workflow is now implemented, with333 passing model-free tests
+  and actual local four-inference-file plus LF-overlay source admission. Actual
+  MSVC/native/public/lifecycle/RTF execution, negative-load thread cleanup and
+  subsequent packaging remain unqualified. Then merge and
   push the completed feature to main; no main promotion is justified yet.
 
 The [bounded CPU public Rust protocol](../research/nemotron-bounded-public-runtime.md)
