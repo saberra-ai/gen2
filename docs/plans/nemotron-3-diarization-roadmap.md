@@ -42,7 +42,13 @@ finds fewer explicit vector stack operand bytes in the existing 2×4 loop than
 4×2 (192 versus 352 per block iteration), despite the failed timing prediction.
 This does not identify a measured spill bottleneck. A separately frozen
 same-process/worker timing diagnostic is the next prerequisite before another
-kernel choice; it has not yet been implemented or executed.
+kernel choice. The [separate worker timing producer](../research/nemotron-windows-q8-worker-timing.md)
+now implements twelve off/on/on/off processes, both kernels within each
+persistent pool, 1,056 independently retained phase vectors and complete enabled
+worker intervals. Its separate observer bound and every original kernel/release
+predicate remain mandatory. All 485 local tool tests pass with seven Windows-only
+skips; the protocol binds 120 tools, 3,420 repository references and 33 local
+import modules. Actual Windows execution remains pending.
 
 Remaining release work as of 2026-10-17:
 
