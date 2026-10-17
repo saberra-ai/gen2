@@ -95,6 +95,10 @@ guarded overlay/Cargo relocation, fresh offline build and unchanged hardened
 ad-hoc/static checks. All 277 model-free tests pass. Actual artifact admission
 must pass after reviewed commit before source copying or building; no complete
 bounded app has yet been constructed or executed by this new controller.
+Its [actual artifact-only admission](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-bounded-pnola-construction-admission/collection-qualification.json)
+now passes all 200 producer members and original API/source/run/ZIP identities at
+`23ddbc3f`, with no package/source/npm restoration, build, signing or SDK/app/model
+execution. The reserve is released; full construction stays pending.
 
 Latest pooled CPU verification passes [30m/1h streams](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-long/collection-qualification.json),
 [mixed-model residency](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-mixed/collection-qualification.json)

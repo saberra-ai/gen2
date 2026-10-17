@@ -61,3 +61,12 @@ qualify app inference, automatic packaged recorded/live resolution, GUI,
 microphone, fresh-machine operation, public signing/notarization, other platform
 apps, quality or release. The original 20% DER and deferred human-word gates
 remain open. No default or production package is promoted.
+
+The [actual local admission receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-bounded-pnola-construction-admission/collection-qualification.json)
+now passes at `23ddbc3fe8a751a27cf55d213124e4194d502f6c`. All 200 delivery
+members and the exact raw API/ZIP/run/source contract verify, alongside current
+and historical source pins. The nine-member receipt retains the actual protocol,
+qualification, API metadata, collector and passing two-test/277-test logs. No host
+record, restored package, private-source snapshot, cloned npm tree, build target
+or app is created; commands remain empty and the reserve is released. Full
+construction and all app runtime/release gates remain pending.
