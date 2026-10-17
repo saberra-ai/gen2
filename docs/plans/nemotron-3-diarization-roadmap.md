@@ -244,7 +244,16 @@ C++ compiled with portable memcpy shims; this does not establish Windows AVX
 behavior. The separate protocol binds161 tools,3,826 repository references and
 40 local imports. The full local suite passes583 tests with seven Windows-only
 skips; both source reviews are clear. Original vector, speed, drift, observer
-and release gates remain unchanged; actual Windows execution is still required.
+and release gates remain unchanged; actual Windows execution is recorded below.
+
+The [A-packing delivery status](../research/nemotron-windows-q8-apack-delivery-status.md)
+now retains successful terminal producer metadata and the reviewed replay tools;
+all thirteen producer feature-CI jobs also pass. The artifact remains unconsumed:
+the recorded7,057,727,488 free bytes are below the unchanged8GiB fetch floor.
+API-reported archive size/digest are not independent delivery or numerical/timing
+admission. A storage question is pending; no evidence/model/VM data is deleted
+and no admission bound is weakened. Actual result replay and all original
+quality, attribution, desktop/platform and release gates remain open.
 
 Remaining release work as of 2026-10-17:
 
