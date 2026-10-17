@@ -122,6 +122,11 @@ Remaining release work as of 2026-10-17:
   confirms MSVC separate rounding versus Clang default FMA; explicit Clang
   contraction-off restores separate rounding in all three fresh observations.
   No SDK/model ran; full numerical/performance/production gates remain open.
+  The separately frozen [full contraction diagnostic](../research/nemotron-windows-compiler-fp.md)
+  now preregisters a single Clang flag addition, exact original compiler/linker
+  identities and all97 compiler commands otherwise matching saved baselines.
+  Full output limits and the surrounding MSVC controls stay unchanged. Execution
+  is pending; the scalar observation supplies no model/runtime qualification.
   Then merge and
   push the completed feature to main; no main promotion is justified yet.
 

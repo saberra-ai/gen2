@@ -65,6 +65,12 @@ MSVC/Clang default contraction difference and restores separate rounding with
 Clang contraction-off, with all three repetitions/explicit controls passing.
 No SDK/model ran; model causality and every runtime/package gate remain open.
 
+The separately versioned [full contraction diagnostic](nemotron-windows-compiler-fp.md)
+now adds only the Clang contraction-off initializer, preserving platform defaults
+and requiring every compiler command otherwise match its saved baseline. Both
+SDK admissions precede the original full-output/fixed-order experiment. Execution
+is pending; no model, performance or production requirement changes.
+
 The new [producer](../../tools/nemotron-diarization/platform_bounded_windows_native.py),
 [composed-source verifier](../../tools/nemotron-diarization/platform_bounded_sources.py)
 and [workflow](../../.github/workflows/diarization-bounded-windows-native.yml) use a
