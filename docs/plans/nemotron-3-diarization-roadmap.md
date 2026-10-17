@@ -125,8 +125,13 @@ Remaining release work as of 2026-10-17:
   The separately frozen [full contraction diagnostic](../research/nemotron-windows-compiler-fp.md)
   now preregisters a single Clang flag addition, exact original compiler/linker
   identities and all97 compiler commands otherwise matching saved baselines.
-  Full output limits and the surrounding MSVC controls stay unchanged. Execution
-  is pending; the scalar observation supplies no model/runtime qualification.
+  Full output limits and the surrounding MSVC controls stay unchanged. Its
+  [actual full result](../research/nemotron-windows-compiler-fp-results.md) now
+  passes all four byte-exact 6000x8 histories and 27 turns, with 84 zero-exit/reaped
+  commands and both complete compiler/SDK admissions. Clang native RTF is
+  1.067797/1.086572; every case exceeds one and the 10% speedup prediction fails.
+  Numerical parity is restored for this configuration, but performance,
+  production/public/lifecycle and package gates remain open.
   Then merge and
   push the completed feature to main; no main promotion is justified yet.
 

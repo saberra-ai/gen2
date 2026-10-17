@@ -68,8 +68,13 @@ No SDK/model ran; model causality and every runtime/package gate remain open.
 The separately versioned [full contraction diagnostic](nemotron-windows-compiler-fp.md)
 now adds only the Clang contraction-off initializer, preserving platform defaults
 and requiring every compiler command otherwise match its saved baseline. Both
-SDK admissions precede the original full-output/fixed-order experiment. Execution
-is pending; no model, performance or production requirement changes.
+SDK admissions precede the original full-output/fixed-order experiment. The
+[actual full result](nemotron-windows-compiler-fp-results.md) now retains all four
+byte-exact histories and 27 matching turns, both complete SDK/compiler admissions
+and 84 zero-exit/reaped commands. Native RTF is 1.183428/1.067797/1.086572/1.190287;
+control drift passes at 0.5796085%, but the 10% speedup prediction fails. This
+isolates a useful numerical setting for this configuration while leaving the
+below-one performance and all production/public/package requirements open.
 
 The new [producer](../../tools/nemotron-diarization/platform_bounded_windows_native.py),
 [composed-source verifier](../../tools/nemotron-diarization/platform_bounded_sources.py)

@@ -1,0 +1,423 @@
+{
+  "schema_version": 1,
+  "collection_completed": true,
+  "source_commit": "65d6afcdcc979318932e96d01b721b2116a58f36",
+  "run_id": 39033952288,
+  "job_id": 117399906774,
+  "artifact_id": 12101294542,
+  "archive": {
+    "bytes": 31038980,
+    "sha256": "58dc50651e1cfea1b6c6a86cba8e76f2eb8771f9cd0e5e19fd0b9b9a8abb8e59"
+  },
+  "protocol": {
+    "bytes": 179909,
+    "sha256": "59d8b60f961ef91fe391f92b1b56440e397d6cb806125d88993c9242c615b87d"
+  },
+  "tools_verified": 79,
+  "repository_files_verified": 804,
+  "artifact_members_verified": 360,
+  "artifact_evidence_files_copied": 222,
+  "supervised_zero_exit_and_reaped_commands": 84,
+  "host": {
+    "cpu": [
+      {
+        "Name": "Intel(R) Xeon(R) Platinum 8370C CPU @ 2.80GHz",
+        "Manufacturer": "GenuineIntel",
+        "Architecture": 9,
+        "NumberOfCores": 2,
+        "NumberOfLogicalProcessors": 4,
+        "ProcessorId": "0000000000000000"
+      }
+    ],
+    "fma": true,
+    "os": {
+      "build": "20348",
+      "caption": "Microsoft Windows Server 2022 Datacenter",
+      "version": "10.0.20348"
+    },
+    "avx2": true
+  },
+  "builds": {
+    "msvc": {
+      "sdk_files": 66,
+      "commands": 42,
+      "compiler": {
+        "kind": "msvc",
+        "compiler": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+        "linker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\link.exe",
+        "languages": {
+          "C": {
+            "id": "MSVC",
+            "version": "19.44.35229.0"
+          },
+          "CXX": {
+            "id": "MSVC",
+            "version": "19.44.35229.0"
+          }
+        },
+        "compiler_entries": 97,
+        "ggml_cpu_entries": 16,
+        "limits": "Compiler/toolchain diagnostic only; no ISA widening, public runtime or package qualification.",
+        "implicit_contraction_admission": {
+          "policy": "MSVC default",
+          "added_flag": null,
+          "compiler_commands_matching_original": 97,
+          "normalization": "Selected compiler path alias and isolated source root only; remove exactly one candidate flag."
+        },
+        "compiler_binary": {
+          "bytes": 677776,
+          "sha256": "fe251ef50a1545b1b0835ee17b1e785459712b38d79e45b5c1d3d28970a36619"
+        },
+        "compiler_path_aliases": {
+          "C:\\PROGRA~1\\MICROS~2\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\cl.exe": {
+            "bytes": 677776,
+            "sha256": "fe251ef50a1545b1b0835ee17b1e785459712b38d79e45b5c1d3d28970a36619"
+          }
+        },
+        "linker_binary": {
+          "bytes": 3252616,
+          "sha256": "a364af801a8539e4324d9489313dbf001d959128451fc99a27b24676bbac058f"
+        }
+      },
+      "ggml_files": 3425,
+      "compiler_inputs": 97
+    },
+    "clang-cl": {
+      "sdk_files": 66,
+      "commands": 42,
+      "compiler": {
+        "kind": "clang-cl",
+        "compiler": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+        "linker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\Llvm\\x64\\bin\\lld-link.exe",
+        "languages": {
+          "C": {
+            "id": "Clang",
+            "version": "19.1.5"
+          },
+          "CXX": {
+            "id": "Clang",
+            "version": "19.1.5"
+          }
+        },
+        "compiler_entries": 97,
+        "ggml_cpu_entries": 16,
+        "limits": "Compiler/toolchain diagnostic only; no ISA widening, public runtime or package qualification.",
+        "implicit_contraction_admission": {
+          "policy": "Clang explicit contraction off",
+          "added_flag": "/clang:-ffp-contract=off",
+          "compiler_commands_matching_original": 97,
+          "normalization": "Selected compiler path alias and isolated source root only; remove exactly one candidate flag."
+        },
+        "compiler_binary": {
+          "bytes": 87168080,
+          "sha256": "93faf6d0a9e66ed1629eb1c9ca638a070aa1839b9490a87ff89b9cb39eeae36b"
+        },
+        "compiler_path_aliases": {
+          "C:\\PROGRA~1\\MICROS~2\\2022\\ENTERP~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe": {
+            "bytes": 87168080,
+            "sha256": "93faf6d0a9e66ed1629eb1c9ca638a070aa1839b9490a87ff89b9cb39eeae36b"
+          }
+        },
+        "linker_binary": {
+          "bytes": 52877384,
+          "sha256": "b24601b51e04b2ef371c2809ad33e3b35dff5cb7e166e26a1d2ddb74148c212c"
+        }
+      },
+      "ggml_files": 3425,
+      "compiler_inputs": 97
+    }
+  },
+  "cases": [
+    {
+      "index": 0,
+      "compiler": "msvc",
+      "elapsed_micros": 71005684,
+      "native_rtf": 1.1834280666666666,
+      "turns": 27,
+      "raw_probabilities": {
+        "bytes": 192000,
+        "sha256": "6b08c607371bab2b7965faebe88d8ee31ae39c41c377043d137cbbf424f3af7d"
+      },
+      "parity_passed": true
+    },
+    {
+      "index": 1,
+      "compiler": "clang-cl",
+      "elapsed_micros": 64067791,
+      "native_rtf": 1.0677965166666668,
+      "turns": 27,
+      "raw_probabilities": {
+        "bytes": 192000,
+        "sha256": "6b08c607371bab2b7965faebe88d8ee31ae39c41c377043d137cbbf424f3af7d"
+      },
+      "parity_passed": true
+    },
+    {
+      "index": 2,
+      "compiler": "clang-cl",
+      "elapsed_micros": 65194315,
+      "native_rtf": 1.0865719166666667,
+      "turns": 27,
+      "raw_probabilities": {
+        "bytes": 192000,
+        "sha256": "6b08c607371bab2b7965faebe88d8ee31ae39c41c377043d137cbbf424f3af7d"
+      },
+      "parity_passed": true
+    },
+    {
+      "index": 3,
+      "compiler": "msvc",
+      "elapsed_micros": 71417239,
+      "native_rtf": 1.1902873166666668,
+      "turns": 27,
+      "raw_probabilities": {
+        "bytes": 192000,
+        "sha256": "6b08c607371bab2b7965faebe88d8ee31ae39c41c377043d137cbbf424f3af7d"
+      },
+      "parity_passed": true
+    }
+  ],
+  "full_sequence_bit_exact": true,
+  "timing_comparison": {
+    "elapsed_micros": [
+      71005684,
+      64067791,
+      65194315,
+      71417239
+    ],
+    "native_rtfs": [
+      1.1834280666666666,
+      1.0677965166666668,
+      1.0865719166666667,
+      1.1902873166666668
+    ],
+    "control_drift_fraction": 0.005796085282412039,
+    "control_drift_at_most_10_percent": true,
+    "both_candidates_at_least_10_percent_faster_than_both_controls": false,
+    "compiler_speedup_prediction_supported": false,
+    "limits": "Small same-host diagnostic only; no timing average, release pass or causal operator attribution."
+  },
+  "numerical_difference": {
+    "values_compared": 48000,
+    "maximum_absolute_probability_error": 0.0,
+    "maximum_error_frame": 0,
+    "maximum_error_slot": 0,
+    "maximum_error_values": [
+      0.9947465062141418,
+      0.9947465062141418,
+      0.9947465062141418,
+      0.9947465062141418
+    ],
+    "values_above_original_1e_6_tolerance": 0,
+    "nonidentical_values": 0,
+    "mean_absolute_error": 0.0,
+    "half_probability_threshold_disagreements": 0
+  },
+  "independent_pristine_archive": {
+    "bytes": 57466880,
+    "sha256": "1f4d4730ac53c669d6c7247bc0bcf02453f2427901af3cf989bd33a37f943a76"
+  },
+  "ggml_replay_commands": [
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/patch-0.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/patch-1.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/patch-2.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/patch-3.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/patch-4.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/patch-5.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/patch-6.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/patch-7.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/patch-8.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/patch-9.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/patch-10.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/patch-11.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/patch-12.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/patch-13.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/patch-14.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/patch-15.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/patch-16.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/patch-17.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/patch-18.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-fp-ci-v1/compiler-fp-replay-v1/ggml",
+      "returncode": 0
+    }
+  ],
+  "release_qualified": false,
+  "package_qualified": false,
+  "public_or_lifecycle_qualified": false,
+  "new_compiler_sdk_model_calls_during_collection": 0,
+  "limits": [
+    "The contraction-off candidate restores full-array parity for this fixed clip and toolchain; broader quality/lifecycle qualification remains open.",
+    "All four native RTFs exceed one and the preregistered 10-percent compiler speedup prediction is unsupported; no release performance pass.",
+    "CI bound physical compiler aliases to selected binaries; saved replay verifies recorded hashes/paths but does not rerun Windows samefile.",
+    "SDK binaries and pristine archives remain local; Git retains full raw arrays, source/compiler evidence and all payload descriptors.",
+    "The runner CPU differs from prior full/scalar runs; timing comparisons are limited to this same-host sequence."
+  ]
+}

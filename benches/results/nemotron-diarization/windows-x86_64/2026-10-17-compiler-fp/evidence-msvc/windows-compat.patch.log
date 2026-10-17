@@ -1,0 +1,16 @@
+--- a/cmake/llama_cpp.cmake
++++ b/cmake/llama_cpp.cmake
+@@ -123,7 +123,12 @@
+         # Windows checkouts may carry CRLF line endings.
+         file(READ "${patch}" content)
+         string(REPLACE "\r\n" "\n" content "${content}")
+-        file(WRITE "${normalized}" "${content}")
++        string(SHA256 normalized_expected "${content}")
++        file(CONFIGURE OUTPUT "${normalized}" CONTENT "${content}" @ONLY NEWLINE_STYLE UNIX)
++        file(SHA256 "${normalized}" normalized_actual)
++        if(NOT "${normalized_actual}" STREQUAL "${normalized_expected}")
++            message(FATAL_ERROR "materialized patch bytes differ from upstream normalized content")
++        endif()
+         execute_process(
+             COMMAND "${CMAKE_COMMAND}" -E env "GIT_CEILING_DIRECTORIES=${dest_parent}"
+                     "${GIT_EXECUTABLE}" apply --whitespace=nowarn "${normalized}"

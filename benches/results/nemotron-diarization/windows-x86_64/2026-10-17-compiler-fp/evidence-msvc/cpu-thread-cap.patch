@@ -1,0 +1,40 @@
+diff --git a/src/asr/diar/diarizer.cpp b/src/asr/diar/diarizer.cpp
+index 610812c..54a3551 100644
+--- a/src/asr/diar/diarizer.cpp
++++ b/src/asr/diar/diarizer.cpp
+@@ -3,7 +3,9 @@
+ 
+ #include "diarizer.h"
+ 
++#include <algorithm>
+ #include <stdexcept>
++#include <thread>
+ #include <utility>
+ 
+ #include "audio_resampler.h"
+@@ -12,9 +14,25 @@
+ namespace nemo_speech::asr {
+ namespace {
+ 
++// Keep small CPU hosts within their reported capacity. A zero report means the
++// implementation cannot determine its concurrency; one worker is then defined.
++constexpr int bounded_cpu_threads(int requested, unsigned available) {
++    return available ? static_cast<int>(std::min(static_cast<unsigned>(requested), available)) : 1;
++}
++static_assert(bounded_cpu_threads(4, 0) == 1);
++static_assert(bounded_cpu_threads(4, 1) == 1);
++static_assert(bounded_cpu_threads(4, 2) == 2);
++static_assert(bounded_cpu_threads(4, 3) == 3);
++static_assert(bounded_cpu_threads(4, 4) == 4);
++static_assert(bounded_cpu_threads(4, 14) == 4);
++static_assert(bounded_cpu_threads(2, 3) == 2);
++
+ ggml_runtime::Params
+ backend_params(int gpu) {
+     ggml_runtime::Params params;
++    if (gpu < 0) {
++        params.n_threads = bounded_cpu_threads(params.n_threads, std::thread::hardware_concurrency());
++    }
+     params.use_gpu = gpu >= 0;
+     params.gpu_device_idx = gpu < 0 ? 0 : gpu;
+     params.pe_bin_path = const_cast<char*>("");
