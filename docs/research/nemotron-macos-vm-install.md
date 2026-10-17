@@ -16,6 +16,8 @@ no compiler, clone, helper, VM, installer or mount call. Both reviews and a comm
 must precede actual invocation. Ten targeted controls and all 307 model-free tests
 pass; tests do not assert runtime cancellation or installation. Both review axes
 cleared before the actual committed invocation described below.
+The [feature run](https://github.com/saberra-ai/gen2/actions/runs/39017410026)
+at `550905e4` now completes successfully in all 13 jobs.
 
 The controller verifies the full local Apple image and unchanged original
 four-file seed. It admits 140GiB initial free space, maintains an 80GiB running

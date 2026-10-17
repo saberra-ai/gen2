@@ -30,6 +30,10 @@ Remaining release work as of 2026-10-17:
   with observed stopped state and owner exit0. All 307 model-free tests pass.
   This establishes an installed stopped seed, not a subsequent normal boot,
   guest account/SSH/provisioning or fresh-machine app qualification.
+  The next [normal-boot/read-only-discovery protocol](../research/nemotron-macos-vm-boot.md)
+  is prepared but unexecuted: it preserves the installed source seed, qualifies
+  a bounded normal-start/stopped owner on an enforced clone and acquires scoped
+  raw APFS metadata without mounting or inferring a System/Data group.
 - Finish each advertised platform/backend's performance, deployment and public
   signing/notarization requirements before promotion. Windows CPU functional
   evidence passes but its observed live RTF remains above one; the
