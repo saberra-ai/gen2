@@ -24,6 +24,15 @@ This fixes the observed M1 public realtime miss for this separately identified
 runtime. The historical pooled failure, Windows performance and all original
 quality/human/app/release gates remain recorded and open.
 
+The [bounded long-session protocol](../research/nemotron-bounded-long-runtime.md)
+now prepares the same runtime's 30-minute/one-hour native/public checks on the
+named physical M4 Pro. It admits the complete 200/44/60-member construction,
+native and public artifacts and reuses their exact qualified helpers. Original
+compaction/history, all retained values/turns, RSS, real-time, snapshot, storage
+and deadline criteria remain unchanged. Actual local artifact preflight must
+pass after reviewed commit before any helper/model execution; neither that new
+controller nor bounded long-session inference has run at preregistration.
+
 Latest pooled CPU verification passes [30m/1h streams](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-long/collection-qualification.json),
 [mixed-model residency](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-mixed/collection-qualification.json)
 and [complete-app recording/live CLI](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-pnola-app-runtime/collection-qualification.json).
