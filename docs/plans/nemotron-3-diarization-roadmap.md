@@ -1608,6 +1608,15 @@ failed-load observations settle to one thread and their trace verifies the
 still rejects the candidate. Native/public numerical, real-time, lifecycle,
 long/mixed/quality/app/platform and release qualification remain pending.
 
+The [first bounded C ABI qualifier](../research/nemotron-bounded-cpu-runtime.md)
+stops before any command/inference because its producer declaration omitted
+required artifact identity fields; its eight-member failure receipt is retained.
+The separate V2 protocol fixes those fields and passes actual local admission
+of both complete 200/33-member archives at `0e5080da`, with no SDK restoration,
+helper or model execution. Its eleven-member receipt includes the red/green
+manifest regression and passing 262-test log. Corrected M1 numerical/performance
+qualification remains pending; original gates and main remain unchanged.
+
 Use public Gen2 calls for lifecycle and user-visible behavior; use the FFI seam
 for ownership/status failures, and a pinned upstream executable for independent
 native-output comparison. Stub-only tests do not establish model support.

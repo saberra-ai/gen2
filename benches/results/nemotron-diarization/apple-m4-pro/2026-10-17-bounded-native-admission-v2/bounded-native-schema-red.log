@@ -1,0 +1,16 @@
+test_each_real_delivery_has_the_complete_external_admission_contract (test_bounded_native_protocol.BoundedNativeProtocolTests.test_each_real_delivery_has_the_complete_external_admission_contract) ... 
+  test_each_real_delivery_has_the_complete_external_admission_contract (test_bounded_native_protocol.BoundedNativeProtocolTests.test_each_real_delivery_has_the_complete_external_admission_contract) (delivery='producer') ... ERROR
+
+======================================================================
+ERROR: test_each_real_delivery_has_the_complete_external_admission_contract (test_bounded_native_protocol.BoundedNativeProtocolTests.test_each_real_delivery_has_the_complete_external_admission_contract) (delivery='producer')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/test_bounded_native_protocol.py", line 18, in test_each_real_delivery_has_the_complete_external_admission_contract
+    contract = {key:declared[key] for key in ['id','name','run_id','source_commit']}
+                    ~~~~~~~~^^^^^
+KeyError: 'name'
+
+----------------------------------------------------------------------
+Ran 1 test in 0.003s
+
+FAILED (errors=1)

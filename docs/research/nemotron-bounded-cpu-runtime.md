@@ -98,3 +98,12 @@ Commit the V2 protocol before that admission check and retain its evidence;
 the original failed protocol/receipt remains unchanged. This is a versioned
 correction of a pre-inference manifest error, with no repeated neural calls or
 relaxed numerical/performance gates.
+
+The [actual local V2 admission receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-bounded-native-admission-v2/collection-qualification.json)
+now passes at committed source `0e5080da`. Its eleven members retain the complete
+protocol, real API metadata, red/green regression and 262-test log. Both actual
+archives and all 200/33 members pass delivery/qualification/origin admission.
+The SDK is not restored, work remains empty, and no helper, asset acquisition,
+command or inference starts. The storage reserve is released normally. This
+closes the manifest preflight requirement; the corrected M1 numerical/performance
+run remains pending.
