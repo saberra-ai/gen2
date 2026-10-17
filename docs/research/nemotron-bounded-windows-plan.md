@@ -45,9 +45,17 @@ experiment can complete; no compiler speed improvement is established.
 The separate [versioned ownership correction](nemotron-windows-compiler-diagnostic-v2.md)
 adds retained wrapped status and membership-scoped PID/image observations, drains
 owned background descendants on normal exit and retains verified-empty cleanup
-before returning status. New Windows regression gates precede the original
-compiler experiment; actual execution remains pending. Every original inference,
+before returning status. Its Windows regression gates precede the original
+compiler experiment. Every original inference,
 portable ISA, numerical and production acceptance requirement stays unchanged.
+
+The [actual corrected compiler result](nemotron-windows-compiler-results.md) now
+passes both SDK admissions and all82 supervised zero-exit/reaped commands. It
+stops at the first Clang probability comparison: max error0.27158,13975 values
+above1e-6 and26 versus27 turns. Native RTF1.036746/0.990393 describes only the first
+MSVC/Clang pair; the second candidate and closing control never execute. Preserve
+the failure and investigate numerical divergence; no tolerance, performance or
+production/package requirement is relaxed and no candidate is qualified.
 
 The new [producer](../../tools/nemotron-diarization/platform_bounded_windows_native.py),
 [composed-source verifier](../../tools/nemotron-diarization/platform_bounded_sources.py)

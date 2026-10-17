@@ -1,0 +1,1200 @@
+{
+  "schema_version": 1,
+  "source_commit": "dd4a107e13b1f63a0cd796fd45511621fdba08cd",
+  "run_id": 39031011256,
+  "artifact_id": 12100258999,
+  "archive": {
+    "bytes": 30675366,
+    "sha256": "ae52aa11901185175fbe755e66f20fa7d7b28a54d0810fbbe032216edc6fce1f"
+  },
+  "delivery_admission": {
+    "bytes": 1407,
+    "sha256": "b6517170fc73685f6e40f642ee302907e59c78f474da6e088411df73f8df25eb"
+  },
+  "collector": {
+    "bytes": 5445,
+    "sha256": "d49a6008558c25d6be23c7fa7c5de2eb88fd788868828a6b61cb730d9776f859"
+  },
+  "commands_verified": 82,
+  "commands": [
+    {
+      "compiler": "msvc",
+      "name": "clone-native",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.8129999999998745,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "checkout-native",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.6870000000001255,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "clone-llama",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 9.82899999999995,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "checkout-llama",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 1.2180000000000746,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "inference-patch-check-0",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "inference-patch-0",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.1089999999999236,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "inference-patch-check-1",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10900000000015098,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "inference-patch-1",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10900000000015098,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "inference-patch-check-2",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10999999999989996,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "inference-patch-2",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10999999999989996,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "cmake-version",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.7039999999999509,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "git-line-ending-config",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10999999999989996,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "sdk-build",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 181.25,
+      "remaining_before_cleanup": {
+        "assigned_count": 2,
+        "processes": [
+          {
+            "pid": 3328,
+            "membership_confirmed": true,
+            "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\vctip.exe"
+          },
+          {
+            "pid": 7916,
+            "membership_confirmed": true,
+            "image": "C:\\PROGRA~1\\MICROS~2\\2022\\ENTERP~1\\VC\\Tools\\MSVC\\1444~1.352\\bin\\Hostx64\\x64\\mspdbsrv.exe"
+          }
+        ],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "sdk-install",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.34400000000005093,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "compiler-llama-archive",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.35999999999989996,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "compiler-llama-patch-0",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10999999999989996,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "compiler-llama-patch-1",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10900000000015098,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "compiler-llama-patch-2",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10900000000015098,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "compiler-llama-patch-3",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10900000000015098,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "compiler-llama-patch-4",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "compiler-llama-patch-5",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.09399999999982356,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "compiler-llama-patch-6",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10999999999989996,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "compiler-llama-patch-7",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10999999999989996,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "compiler-llama-patch-8",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "compiler-llama-patch-9",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.1089999999999236,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "compiler-llama-patch-10",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10900000000015098,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "compiler-llama-patch-11",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10900000000015098,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "compiler-llama-patch-12",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10999999999989996,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "compiler-llama-patch-13",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10900000000015098,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "compiler-llama-patch-14",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10999999999989996,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "compiler-llama-patch-15",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.1089999999999236,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "compiler-llama-patch-16",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10900000000015098,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "compiler-llama-patch-17",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10999999999989996,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "compiler-llama-patch-18",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.1089999999999236,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "model-free-state-test",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.7819999999999254,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "native-probe-build",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 3.2339999999999236,
+      "remaining_before_cleanup": {
+        "assigned_count": 1,
+        "processes": [
+          {
+            "pid": 6924,
+            "membership_confirmed": true,
+            "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\vctip.exe"
+          }
+        ],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "windows-provenance",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 2.4060000000001764,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "loader-dependencies",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.09399999999982356,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "version-only",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10900000000015098,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "receiver-host",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 1.5,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "msvc",
+      "name": "case-0-msvc",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 62.5,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "clone-native",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.8120000000001255,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "checkout-native",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.6870000000001255,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "clone-llama",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 9.608999999999924,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "checkout-llama",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 1.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "inference-patch-check-0",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10900000000015098,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "inference-patch-0",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10999999999989996,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "inference-patch-check-1",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.1089999999999236,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "inference-patch-1",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10900000000015098,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "inference-patch-check-2",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10999999999989996,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "inference-patch-2",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10900000000015098,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "compiler-version",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "cmake-version",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10999999999989996,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "git-line-ending-config",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.09399999999982356,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "sdk-build",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 116.96900000000005,
+      "remaining_before_cleanup": {
+        "assigned_count": 1,
+        "processes": [
+          {
+            "pid": 6992,
+            "membership_confirmed": true,
+            "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\vctip.exe"
+          }
+        ],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "sdk-install",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.1410000000000764,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "compiler-llama-archive",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.3589999999999236,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "compiler-llama-patch-0",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10999999999989996,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "compiler-llama-patch-1",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10999999999989996,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "compiler-llama-patch-2",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10900000000015098,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "compiler-llama-patch-3",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.1089999999999236,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "compiler-llama-patch-4",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10900000000015098,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "compiler-llama-patch-5",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.1089999999999236,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "compiler-llama-patch-6",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "compiler-llama-patch-7",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10900000000015098,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "compiler-llama-patch-8",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "compiler-llama-patch-9",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.1089999999999236,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "compiler-llama-patch-10",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10900000000015098,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "compiler-llama-patch-11",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "compiler-llama-patch-12",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10900000000015098,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "compiler-llama-patch-13",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.1089999999999236,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "compiler-llama-patch-14",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10900000000015098,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "compiler-llama-patch-15",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10900000000015098,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "compiler-llama-patch-16",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10900000000015098,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "compiler-llama-patch-17",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.1089999999999236,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "compiler-llama-patch-18",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.1089999999999236,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "model-free-state-test",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.15599999999994907,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "native-probe-build",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 2.2819999999999254,
+      "remaining_before_cleanup": {
+        "assigned_count": 1,
+        "processes": [
+          {
+            "pid": 3756,
+            "membership_confirmed": true,
+            "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\vctip.exe"
+          }
+        ],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "windows-provenance",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 2.0,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "loader-dependencies",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.09399999999982356,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "version-only",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10900000000015098,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    },
+    {
+      "compiler": "clang-cl",
+      "name": "case-1-clang-cl",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 59.625,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "observed_exit_preserved": true,
+      "owned_tree_reaped_and_job_closed": true
+    }
+  ],
+  "new_compiler_sdk_model_calls": 0,
+  "scope": "Saved command-supervision replay only; compiler/source/numerical/timing admission remains separate."
+}

@@ -1,0 +1,364 @@
+{
+  "schema_version": 1,
+  "collector": {
+    "bytes": 18632,
+    "sha256": "15875296e28119db7e50f6c6f5527127e0df26dbc1fc5aeefe9d4e8cd1c73b41"
+  },
+  "observed_exit_code": 1,
+  "error": "AssertionError: evidence includes compiler-generated .obj files excluded by publication assertion",
+  "failed_line": 254,
+  "partial_receipt_files": {
+    "evidence-clang-cl/CMakeCache.txt": {
+      "bytes": 39958,
+      "sha256": "a5bbd6f04328365feea0a79d738ace3fef9e5a6843f61088090a25cdb284a1c9"
+    },
+    "evidence-clang-cl/bounded-inference.patch": {
+      "bytes": 6872,
+      "sha256": "c7b78d6de7dba28e6284c965d0fc2c9e6fea8f26d5d5ab21b09999206af1046b"
+    },
+    "evidence-clang-cl/case-1-clang-cl.json": {
+      "bytes": 2767,
+      "sha256": "6d606be8d95f19d6a4c71d9103702f2863099b906b42ec646bb5c6c041048a43"
+    },
+    "evidence-clang-cl/case-1-clang-cl.json.f32": {
+      "bytes": 192000,
+      "sha256": "60f7d9542bf60e5d24b793bc56056e02d4f1668c1ae9a51f7da36267d6abc0be"
+    },
+    "evidence-clang-cl/case-1-clang-cl.log": {
+      "bytes": 92,
+      "sha256": "08c10f01163007ff71356328f6439e4ddcfd63dff4db4cfcb315434a83f4e3f3"
+    },
+    "evidence-clang-cl/case-1-clang-cl.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/checkout-llama.log": {
+      "bytes": 80,
+      "sha256": "71f388019a597baee8a90f3a82d2e51ce2b948186f5ca21f7b44ac7e747bbd5f"
+    },
+    "evidence-clang-cl/checkout-llama.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/checkout-native.log": {
+      "bytes": 91,
+      "sha256": "2a09d6dd2800ece4b9ea45bb7804a49b0a7d59066f7eaa90bdf1a300b8d52b40"
+    },
+    "evidence-clang-cl/checkout-native.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/clone-llama.log": {
+      "bytes": 86,
+      "sha256": "45e28c764dc7d9445d8b45b6709183cca3358a6c9c227ad5e814186d939aea47"
+    },
+    "evidence-clang-cl/clone-llama.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/clone-native.log": {
+      "bytes": 76,
+      "sha256": "78b0b614bbb211e117d7cc7c8c85fd1166c133fca5c80bcb14e3cbc7cb035130"
+    },
+    "evidence-clang-cl/clone-native.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/cmake-cache.log": {
+      "bytes": 39958,
+      "sha256": "a5bbd6f04328365feea0a79d738ace3fef9e5a6843f61088090a25cdb284a1c9"
+    },
+    "evidence-clang-cl/cmake-version.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/cmake-version.stdout.log": {
+      "bytes": 91,
+      "sha256": "f6e81c2559f3ce00c5fdad01d7b226c301f5d6b07ee04f65db6dbfdc1cc5970b"
+    },
+    "evidence-clang-cl/commands.json": {
+      "bytes": 46340,
+      "sha256": "3ab5b2d40b30a068beeb7e0bb79682b031b5c55636a26578be58a87ea6bd843c"
+    },
+    "evidence-clang-cl/compile_commands.json": {
+      "bytes": 156992,
+      "sha256": "bda4db15728e27945eb97788d1af4c8aeefb9f0660d285add64654b2d4d8d66a"
+    },
+    "evidence-clang-cl/compiler-C.cmake": {
+      "bytes": 3328,
+      "sha256": "09b635b65613e22213984341275c0ab4aecdffa75ba7e0cf73b77bcd8db7f13d"
+    },
+    "evidence-clang-cl/compiler-CXX.cmake": {
+      "bytes": 6601,
+      "sha256": "b7ed7e08a2612095c5e1bd7bfba38af1f0d8fb9fdce0aeb33763ca85f3047309"
+    },
+    "evidence-clang-cl/compiler-admission.json": {
+      "bytes": 1106,
+      "sha256": "aafcf6948f6792d18676be7b3db80d19d3d834698e7cb88c043debd4ed3b729c"
+    },
+    "evidence-clang-cl/compiler-llama-archive.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-archive.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-0.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-0.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-1.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-1.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-10.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-10.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-11.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-11.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-12.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-12.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-13.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-13.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-14.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-14.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-15.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-15.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-16.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-16.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-17.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-17.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-18.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-18.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-2.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-2.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-3.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-3.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-4.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-4.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-5.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-5.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-6.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-6.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-7.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-7.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-8.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-8.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-9.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-9.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-version.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-version.stdout.log": {
+      "bytes": 165,
+      "sha256": "3b79f7af64789ad14ec54a3340cab2a32843c0d3c909dd3d928d289e37799f03"
+    },
+    "evidence-clang-cl/cpu-thread-cap.patch": {
+      "bytes": 1403,
+      "sha256": "c18ccb86ff02825899db2ed7b0df0c44e7db69ed38e4fca64e42b14c84f16186"
+    },
+    "evidence-clang-cl/diagnostic-inference.diff": {
+      "bytes": 7233,
+      "sha256": "ce4bb2293533aeb96492eac1758ca83f2a4051f1f69d7e2b5c4e0a2c55dde17b"
+    },
+    "evidence-clang-cl/git-line-ending-config.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/git-line-ending-config.stdout.log": {
+      "bytes": 179,
+      "sha256": "e366542a223709584a35bead050c2d53196efc15fc46a9fe498ca1e29b271cb4"
+    },
+    "evidence-clang-cl/inference-patch-0.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/inference-patch-0.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/inference-patch-1.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/inference-patch-1.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/inference-patch-2.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/inference-patch-2.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/inference-patch-check-0.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/inference-patch-check-0.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/inference-patch-check-1.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/inference-patch-check-1.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/inference-patch-check-2.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/inference-patch-check-2.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/loader-dependencies.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/loader-dependencies.stdout.log": {
+      "bytes": 573,
+      "sha256": "3daa9a93d5b12c298e46c3d4f8b9581796abd3c90ea7dd347618944798f90355"
+    },
+    "evidence-clang-cl/model-free-state-test.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/model-free-state-test.stdout.log": {
+      "bytes": 383,
+      "sha256": "acebe83c1f02fa3e2eeddd18777e8e51ad6590aa22c314d007b0a3944139cbdf"
+    },
+    "evidence-clang-cl/native-probe-build.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/native-probe-build.stdout.log": {
+      "bytes": 63,
+      "sha256": "1c32230c3ea67115be9610282de1ad9e1cb083e7f4390ac0daf549f3da1fd4ce"
+    },
+    "evidence-clang-cl/native_stream_probe_bounded.cpp": {
+      "bytes": 8702,
+      "sha256": "af214f7c2e4430dce87dec4d64d79e5081720c2c5d8b7441758aab89ec791589"
+    }
+  },
+  "partial_receipt_preserved_at": "/Users/victor/.cache/gen2-nemotron3-n0/windows-compiler-diagnostic-ci-v2/failed-collection-publication-v1",
+  "manifest_published": false,
+  "runtime_or_compiler_or_model_calls": 0,
+  "correction": "Explicitly omit .obj build objects alongside archives and other native payload types; preserve all artifact member hashes."
+}

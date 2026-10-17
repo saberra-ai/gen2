@@ -1,0 +1,1205 @@
+{
+  "schema_version": 1,
+  "files": {
+    "admit-windows-compiler-v2-delivery-v1.py": {
+      "bytes": 6286,
+      "sha256": "b676a811ee463a61fe7566007e8f410edfd5362dd94d2dca7f1d91466950b8cc"
+    },
+    "artifact-members.json": {
+      "bytes": 55215,
+      "sha256": "e18ed5221f462600989f2820191c4b820204792185d21007661b6b83f788482b"
+    },
+    "artifacts.json": {
+      "bytes": 745,
+      "sha256": "cc211041b7ba96a27bdbbd2ae4eaee43cf6e79ec909b4bd76d82ba80ae051e40"
+    },
+    "collection-failure-v1.json": {
+      "bytes": 14903,
+      "sha256": "02993bd39b1dfe478c32df4774db765a982284606f60ab7c31c452dcc28d9578"
+    },
+    "collection-qualification.json": {
+      "bytes": 13576,
+      "sha256": "bab5ed73b47691598f0431afb0c20c47c72bcb1f44e05f26280187955c8d12d4"
+    },
+    "collector-v1.py": {
+      "bytes": 18632,
+      "sha256": "15875296e28119db7e50f6c6f5527127e0df26dbc1fc5aeefe9d4e8cd1c73b41"
+    },
+    "collector.py": {
+      "bytes": 19545,
+      "sha256": "d1cd83db9961a5146739797b9526de75066c8466c7c5845b6fc2ab53f06be0fd"
+    },
+    "delivery-admission.json": {
+      "bytes": 1407,
+      "sha256": "b6517170fc73685f6e40f642ee302907e59c78f474da6e088411df73f8df25eb"
+    },
+    "evidence-clang-cl/CMakeCache.txt": {
+      "bytes": 39958,
+      "sha256": "a5bbd6f04328365feea0a79d738ace3fef9e5a6843f61088090a25cdb284a1c9"
+    },
+    "evidence-clang-cl/bounded-inference.patch": {
+      "bytes": 6872,
+      "sha256": "c7b78d6de7dba28e6284c965d0fc2c9e6fea8f26d5d5ab21b09999206af1046b"
+    },
+    "evidence-clang-cl/case-1-clang-cl.json": {
+      "bytes": 2767,
+      "sha256": "6d606be8d95f19d6a4c71d9103702f2863099b906b42ec646bb5c6c041048a43"
+    },
+    "evidence-clang-cl/case-1-clang-cl.json.f32": {
+      "bytes": 192000,
+      "sha256": "60f7d9542bf60e5d24b793bc56056e02d4f1668c1ae9a51f7da36267d6abc0be"
+    },
+    "evidence-clang-cl/case-1-clang-cl.log": {
+      "bytes": 92,
+      "sha256": "08c10f01163007ff71356328f6439e4ddcfd63dff4db4cfcb315434a83f4e3f3"
+    },
+    "evidence-clang-cl/case-1-clang-cl.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/checkout-llama.log": {
+      "bytes": 80,
+      "sha256": "71f388019a597baee8a90f3a82d2e51ce2b948186f5ca21f7b44ac7e747bbd5f"
+    },
+    "evidence-clang-cl/checkout-llama.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/checkout-native.log": {
+      "bytes": 91,
+      "sha256": "2a09d6dd2800ece4b9ea45bb7804a49b0a7d59066f7eaa90bdf1a300b8d52b40"
+    },
+    "evidence-clang-cl/checkout-native.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/clone-llama.log": {
+      "bytes": 86,
+      "sha256": "45e28c764dc7d9445d8b45b6709183cca3358a6c9c227ad5e814186d939aea47"
+    },
+    "evidence-clang-cl/clone-llama.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/clone-native.log": {
+      "bytes": 76,
+      "sha256": "78b0b614bbb211e117d7cc7c8c85fd1166c133fca5c80bcb14e3cbc7cb035130"
+    },
+    "evidence-clang-cl/clone-native.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/cmake-cache.log": {
+      "bytes": 39958,
+      "sha256": "a5bbd6f04328365feea0a79d738ace3fef9e5a6843f61088090a25cdb284a1c9"
+    },
+    "evidence-clang-cl/cmake-version.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/cmake-version.stdout.log": {
+      "bytes": 91,
+      "sha256": "f6e81c2559f3ce00c5fdad01d7b226c301f5d6b07ee04f65db6dbfdc1cc5970b"
+    },
+    "evidence-clang-cl/commands.json": {
+      "bytes": 46340,
+      "sha256": "3ab5b2d40b30a068beeb7e0bb79682b031b5c55636a26578be58a87ea6bd843c"
+    },
+    "evidence-clang-cl/compile_commands.json": {
+      "bytes": 156992,
+      "sha256": "bda4db15728e27945eb97788d1af4c8aeefb9f0660d285add64654b2d4d8d66a"
+    },
+    "evidence-clang-cl/compiler-C.cmake": {
+      "bytes": 3328,
+      "sha256": "09b635b65613e22213984341275c0ab4aecdffa75ba7e0cf73b77bcd8db7f13d"
+    },
+    "evidence-clang-cl/compiler-CXX.cmake": {
+      "bytes": 6601,
+      "sha256": "b7ed7e08a2612095c5e1bd7bfba38af1f0d8fb9fdce0aeb33763ca85f3047309"
+    },
+    "evidence-clang-cl/compiler-admission.json": {
+      "bytes": 1106,
+      "sha256": "aafcf6948f6792d18676be7b3db80d19d3d834698e7cb88c043debd4ed3b729c"
+    },
+    "evidence-clang-cl/compiler-llama-archive.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-archive.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-0.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-0.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-1.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-1.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-10.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-10.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-11.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-11.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-12.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-12.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-13.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-13.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-14.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-14.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-15.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-15.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-16.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-16.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-17.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-17.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-18.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-18.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-2.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-2.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-3.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-3.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-4.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-4.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-5.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-5.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-6.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-6.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-7.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-7.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-8.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-8.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-9.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-llama-patch-9.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-version.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/compiler-version.stdout.log": {
+      "bytes": 165,
+      "sha256": "3b79f7af64789ad14ec54a3340cab2a32843c0d3c909dd3d928d289e37799f03"
+    },
+    "evidence-clang-cl/cpu-thread-cap.patch": {
+      "bytes": 1403,
+      "sha256": "c18ccb86ff02825899db2ed7b0df0c44e7db69ed38e4fca64e42b14c84f16186"
+    },
+    "evidence-clang-cl/diagnostic-inference.diff": {
+      "bytes": 7233,
+      "sha256": "ce4bb2293533aeb96492eac1758ca83f2a4051f1f69d7e2b5c4e0a2c55dde17b"
+    },
+    "evidence-clang-cl/git-line-ending-config.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/git-line-ending-config.stdout.log": {
+      "bytes": 179,
+      "sha256": "e366542a223709584a35bead050c2d53196efc15fc46a9fe498ca1e29b271cb4"
+    },
+    "evidence-clang-cl/inference-patch-0.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/inference-patch-0.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/inference-patch-1.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/inference-patch-1.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/inference-patch-2.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/inference-patch-2.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/inference-patch-check-0.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/inference-patch-check-0.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/inference-patch-check-1.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/inference-patch-check-1.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/inference-patch-check-2.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/inference-patch-check-2.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/loader-dependencies.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/loader-dependencies.stdout.log": {
+      "bytes": 573,
+      "sha256": "3daa9a93d5b12c298e46c3d4f8b9581796abd3c90ea7dd347618944798f90355"
+    },
+    "evidence-clang-cl/model-free-state-test.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/model-free-state-test.stdout.log": {
+      "bytes": 383,
+      "sha256": "acebe83c1f02fa3e2eeddd18777e8e51ad6590aa22c314d007b0a3944139cbdf"
+    },
+    "evidence-clang-cl/native-probe-build.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/native-probe-build.stdout.log": {
+      "bytes": 63,
+      "sha256": "1c32230c3ea67115be9610282de1ad9e1cb083e7f4390ac0daf549f3da1fd4ce"
+    },
+    "evidence-clang-cl/native_stream_probe_bounded.cpp": {
+      "bytes": 8702,
+      "sha256": "af214f7c2e4430dce87dec4d64d79e5081720c2c5d8b7441758aab89ec791589"
+    },
+    "evidence-clang-cl/persistent-cpu-pool.patch": {
+      "bytes": 4275,
+      "sha256": "ab485ae1b441f4428db49f6b4d1b955e123966d053c4735567e9bdc3825656d9"
+    },
+    "evidence-clang-cl/platform-llama-materialized-audit.json": {
+      "bytes": 604816,
+      "sha256": "f95626f89edb324126b1d49a48d0bb023a0d12aef5494dc41c8fe7d5cb69c3bf"
+    },
+    "evidence-clang-cl/sdk-build.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/sdk-build.stdout.log": {
+      "bytes": 9245423,
+      "sha256": "bb69da202598712ecf86cd4bd0469038b0398efc44d1943b8b28440e490d1017"
+    },
+    "evidence-clang-cl/sdk-install.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/sdk-install.stdout.log": {
+      "bytes": 7952,
+      "sha256": "9bc8f2a42f6b85c18b27d330da24cbd8581b6edf9d0b5ba331bdebbd8e9c2bfb"
+    },
+    "evidence-clang-cl/upstream-patch-diagnostic.json": {
+      "bytes": 4,
+      "sha256": "e3566b3a06430868d71e9287dfd6c6c520a3da027aabea01951d407ee131dc2f"
+    },
+    "evidence-clang-cl/v3-finish-valid-mel.patch": {
+      "bytes": 1194,
+      "sha256": "8c1434c14f63ebeb2515c719a90594124fd4f75af85b80451fd145b5caef3c36"
+    },
+    "evidence-clang-cl/version-only.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/version-only.stdout.log": {
+      "bytes": 53,
+      "sha256": "d6dd6cc105b1c2035f87aeffc3af366275c6f72c334ffbf6e158e74d98c401b6"
+    },
+    "evidence-clang-cl/windows-compat.json": {
+      "bytes": 3067,
+      "sha256": "f847cfbe66b8793c0b8dba2790573ec16a4daf3da0d1812e41700ba757af7453"
+    },
+    "evidence-clang-cl/windows-compat.patch.log": {
+      "bytes": 878,
+      "sha256": "57e108f3cd4fcc42efa8d5b6e373a3663d49e2d36d96f67dfcaf59d166b7e300"
+    },
+    "evidence-clang-cl/windows-private-names.json": {
+      "bytes": 1536,
+      "sha256": "04287ba65d4cb5ea210a07685a0eb1d337fbc5b76e8d28c63159992df63d77a8"
+    },
+    "evidence-clang-cl/windows-private-paths.log": {
+      "bytes": 263,
+      "sha256": "c9a9a09eb6f0e9fbfd179af827a9d113d43071a883e82860d58b0e7b26f33760"
+    },
+    "evidence-clang-cl/windows-private-pe.json": {
+      "bytes": 476853,
+      "sha256": "a49384eba8e8d9e5ff01ae8ec1044e8cd205550cc8277925a101aaf2f97c7c50"
+    },
+    "evidence-clang-cl/windows-provenance.json": {
+      "bytes": 21705,
+      "sha256": "962b54bd2dfe58e8d6f801fb7e22c564953d2f8d3bfe075184507b6ce174c422"
+    },
+    "evidence-clang-cl/windows-provenance.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/windows-provenance.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-clang-cl/windows-vcpkg-status.log": {
+      "bytes": 4346,
+      "sha256": "aa85bcc183d2163072bdee4a245ce2c400f4a3d7aa68fac1ec59efb56d4f2061"
+    },
+    "evidence-msvc/CMakeCache.txt": {
+      "bytes": 37335,
+      "sha256": "6f29e0308f1c06681b617e8be70229877aa265020f117569b1f1f6f04b6f75db"
+    },
+    "evidence-msvc/bounded-inference.patch": {
+      "bytes": 6872,
+      "sha256": "c7b78d6de7dba28e6284c965d0fc2c9e6fea8f26d5d5ab21b09999206af1046b"
+    },
+    "evidence-msvc/case-0-msvc.json": {
+      "bytes": 2850,
+      "sha256": "44a18c2010a0285291f7d23ffd05e2f14867a3f1cbba823540ba668fe03818a2"
+    },
+    "evidence-msvc/case-0-msvc.json.f32": {
+      "bytes": 192000,
+      "sha256": "6b08c607371bab2b7965faebe88d8ee31ae39c41c377043d137cbbf424f3af7d"
+    },
+    "evidence-msvc/case-0-msvc.log": {
+      "bytes": 92,
+      "sha256": "08c10f01163007ff71356328f6439e4ddcfd63dff4db4cfcb315434a83f4e3f3"
+    },
+    "evidence-msvc/case-0-msvc.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/checkout-llama.log": {
+      "bytes": 80,
+      "sha256": "71f388019a597baee8a90f3a82d2e51ce2b948186f5ca21f7b44ac7e747bbd5f"
+    },
+    "evidence-msvc/checkout-llama.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/checkout-native.log": {
+      "bytes": 91,
+      "sha256": "2a09d6dd2800ece4b9ea45bb7804a49b0a7d59066f7eaa90bdf1a300b8d52b40"
+    },
+    "evidence-msvc/checkout-native.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/clone-llama.log": {
+      "bytes": 82,
+      "sha256": "e095d6c10038fce5405f3ebade81497649c07f68c80c596e11cece00fa6d07b9"
+    },
+    "evidence-msvc/clone-llama.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/clone-native.log": {
+      "bytes": 72,
+      "sha256": "249344bc9ad578d40bad3e3e49bcf896b40dd7d3ba23f014edb9bbe8b9d32059"
+    },
+    "evidence-msvc/clone-native.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/cmake-cache.log": {
+      "bytes": 37335,
+      "sha256": "6f29e0308f1c06681b617e8be70229877aa265020f117569b1f1f6f04b6f75db"
+    },
+    "evidence-msvc/cmake-version.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/cmake-version.stdout.log": {
+      "bytes": 91,
+      "sha256": "f6e81c2559f3ce00c5fdad01d7b226c301f5d6b07ee04f65db6dbfdc1cc5970b"
+    },
+    "evidence-msvc/commands.json": {
+      "bytes": 46714,
+      "sha256": "243afb82b304c212429adac98f64211a6fba135185472caf23b929dc43f8fcb8"
+    },
+    "evidence-msvc/compile_commands.json": {
+      "bytes": 154024,
+      "sha256": "89d8c86e2c0a03f7d27854f78f7ae867ecef6aa3a78c0c8d859c8bb40de86bfa"
+    },
+    "evidence-msvc/compiler-C.cmake": {
+      "bytes": 3203,
+      "sha256": "0126108ce6206b6e119125b3d7d95ce3774227db00307fcb9446e09431f50ff9"
+    },
+    "evidence-msvc/compiler-CXX.cmake": {
+      "bytes": 6550,
+      "sha256": "d87af32c0d38fa387c3cbb813904b1c318e53c9a3a2cb21485aca51428531c53"
+    },
+    "evidence-msvc/compiler-admission.json": {
+      "bytes": 1158,
+      "sha256": "200eac3995f7f6fcae4650af4f92c87b2c449adc09ff19c8bc4e23271932024c"
+    },
+    "evidence-msvc/compiler-llama-archive.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-archive.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-0.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-0.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-1.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-1.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-10.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-10.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-11.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-11.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-12.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-12.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-13.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-13.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-14.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-14.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-15.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-15.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-16.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-16.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-17.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-17.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-18.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-18.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-2.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-2.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-3.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-3.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-4.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-4.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-5.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-5.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-6.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-6.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-7.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-7.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-8.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-8.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-9.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/compiler-llama-patch-9.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/cpu-thread-cap.patch": {
+      "bytes": 1403,
+      "sha256": "c18ccb86ff02825899db2ed7b0df0c44e7db69ed38e4fca64e42b14c84f16186"
+    },
+    "evidence-msvc/diagnostic-inference.diff": {
+      "bytes": 7233,
+      "sha256": "ce4bb2293533aeb96492eac1758ca83f2a4051f1f69d7e2b5c4e0a2c55dde17b"
+    },
+    "evidence-msvc/git-line-ending-config.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/git-line-ending-config.stdout.log": {
+      "bytes": 179,
+      "sha256": "e366542a223709584a35bead050c2d53196efc15fc46a9fe498ca1e29b271cb4"
+    },
+    "evidence-msvc/inference-patch-0.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/inference-patch-0.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/inference-patch-1.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/inference-patch-1.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/inference-patch-2.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/inference-patch-2.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/inference-patch-check-0.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/inference-patch-check-0.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/inference-patch-check-1.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/inference-patch-check-1.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/inference-patch-check-2.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/inference-patch-check-2.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/loader-dependencies.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/loader-dependencies.stdout.log": {
+      "bytes": 550,
+      "sha256": "73b1e7e94902f9bc21e21a435f914bbd0ce7e586331d4fd8523a06bd358f8390"
+    },
+    "evidence-msvc/model-free-state-test.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/model-free-state-test.stdout.log": {
+      "bytes": 375,
+      "sha256": "7b2ec9a1392d30e3e632c7828732ddb8eb20e677839a19103403183610714bad"
+    },
+    "evidence-msvc/native-probe-build.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/native-probe-build.stdout.log": {
+      "bytes": 63,
+      "sha256": "1c32230c3ea67115be9610282de1ad9e1cb083e7f4390ac0daf549f3da1fd4ce"
+    },
+    "evidence-msvc/native_stream_probe_bounded.cpp": {
+      "bytes": 8702,
+      "sha256": "af214f7c2e4430dce87dec4d64d79e5081720c2c5d8b7441758aab89ec791589"
+    },
+    "evidence-msvc/persistent-cpu-pool.patch": {
+      "bytes": 4275,
+      "sha256": "ab485ae1b441f4428db49f6b4d1b955e123966d053c4735567e9bdc3825656d9"
+    },
+    "evidence-msvc/platform-llama-materialized-audit.json": {
+      "bytes": 604424,
+      "sha256": "d8114650f917f5e13b5194c020956d55f5743a52a9d957f3aa4e17828e00833c"
+    },
+    "evidence-msvc/receiver-host.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/receiver-host.stdout.log": {
+      "bytes": 421,
+      "sha256": "6e64fd3659c1e146de7de09ce120a3fca9256aa7914b55bf84ff8da749875f60"
+    },
+    "evidence-msvc/sdk-build.log": {
+      "bytes": 4703,
+      "sha256": "54ac59cb79a7c0011bbb649cb17bae764721c3e82642581e154d199a4ecc490c"
+    },
+    "evidence-msvc/sdk-build.stdout.log": {
+      "bytes": 20405,
+      "sha256": "b40c6125853586784e62c79655d032c0c15e2d60718615059a756c28532910c6"
+    },
+    "evidence-msvc/sdk-install.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/sdk-install.stdout.log": {
+      "bytes": 7660,
+      "sha256": "b03582fe0df0c2fa78e47704f6b54add6b7d645a70a3ae02d61ef53aad680d7f"
+    },
+    "evidence-msvc/upstream-patch-diagnostic.json": {
+      "bytes": 4,
+      "sha256": "e3566b3a06430868d71e9287dfd6c6c520a3da027aabea01951d407ee131dc2f"
+    },
+    "evidence-msvc/v3-finish-valid-mel.patch": {
+      "bytes": 1194,
+      "sha256": "8c1434c14f63ebeb2515c719a90594124fd4f75af85b80451fd145b5caef3c36"
+    },
+    "evidence-msvc/version-only.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/version-only.stdout.log": {
+      "bytes": 53,
+      "sha256": "d6dd6cc105b1c2035f87aeffc3af366275c6f72c334ffbf6e158e74d98c401b6"
+    },
+    "evidence-msvc/windows-compat.json": {
+      "bytes": 3067,
+      "sha256": "f847cfbe66b8793c0b8dba2790573ec16a4daf3da0d1812e41700ba757af7453"
+    },
+    "evidence-msvc/windows-compat.patch.log": {
+      "bytes": 878,
+      "sha256": "57e108f3cd4fcc42efa8d5b6e373a3663d49e2d36d96f67dfcaf59d166b7e300"
+    },
+    "evidence-msvc/windows-private-names.json": {
+      "bytes": 1536,
+      "sha256": "04287ba65d4cb5ea210a07685a0eb1d337fbc5b76e8d28c63159992df63d77a8"
+    },
+    "evidence-msvc/windows-private-paths.log": {
+      "bytes": 255,
+      "sha256": "a7a0e73552047bae971c57f09750993cb904cfef6b7f8bb2278ccd82e0dc9932"
+    },
+    "evidence-msvc/windows-private-pe.json": {
+      "bytes": 2629060,
+      "sha256": "f64de0da9806ddacaf3fe437167a34d762cf8608ee2b1ba9069036242b804019"
+    },
+    "evidence-msvc/windows-provenance.json": {
+      "bytes": 21653,
+      "sha256": "4b3e7b70ca50ebf30c640ae5f0264bdb931724864eca509b9a82de41b1b24d1f"
+    },
+    "evidence-msvc/windows-provenance.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/windows-provenance.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "evidence-msvc/windows-vcpkg-status.log": {
+      "bytes": 4346,
+      "sha256": "aa85bcc183d2163072bdee4a245ce2c400f4a3d7aa68fac1ec59efb56d4f2061"
+    },
+    "job.json": {
+      "bytes": 3369,
+      "sha256": "d6ef44de8c484fca2e5715ff4a1347019af2be0519a9a3aa4b5267dbae6a3002"
+    },
+    "job.log": {
+      "bytes": 52866,
+      "sha256": "effaa3858860b63e8b7242abb7ae28ada49696845ab2d9206b8a1fdde9106bdc"
+    },
+    "producer-run.json": {
+      "bytes": 11884,
+      "sha256": "7150fd4d06894c0427ce8cf1a1ccf2bf3506558dc44def66b1011b835acdaf26"
+    },
+    "protocol.json": {
+      "bytes": 175946,
+      "sha256": "5d9ee9bb39879fbde36707beb8f27cec6592417a491a9124384b49b19611a627"
+    },
+    "qualification.json": {
+      "bytes": 161174,
+      "sha256": "008be2040d4649eedc8f0435ed40c18b0fd1553c032d84b7eeb0cd38431e7d3c"
+    },
+    "replay-windows-compiler-v2-supervision-v1.py": {
+      "bytes": 5445,
+      "sha256": "d49a6008558c25d6be23c7fa7c5de2eb88fd788868828a6b61cb730d9776f859"
+    },
+    "sources/artifacts.py": {
+      "bytes": 2869,
+      "sha256": "17df6411ab0394b4d9bb30a099915badf357af26050b6cd08bfd44887688ff42"
+    },
+    "sources/bounded-windows-native.protocol.json": {
+      "bytes": 53049,
+      "sha256": "43eb4668be189754abbb7efc021dbfe5b44b9b6bde199a9b44b30167da7be45f"
+    },
+    "sources/build_valid_mel_candidate.py": {
+      "bytes": 12180,
+      "sha256": "5bfb3ec59548ae0b56e8e3eaded10201933f574b0b04ca12384eb35795dd546b"
+    },
+    "sources/compare_stream.py": {
+      "bytes": 6774,
+      "sha256": "6d6a80a3b9710d0d2d0705225653935d40cd69aac9abe50454c0609631c6daa4"
+    },
+    "sources/compare_stream_valid_mel.py": {
+      "bytes": 6928,
+      "sha256": "67164da5abee447b987e1274b487cf764fbc3073971930fc87f92f35b127f1bc"
+    },
+    "sources/ctest_output.py": {
+      "bytes": 764,
+      "sha256": "c109310d25f114993d6f969de7cf39ed2bc4136f28bc046c475b309a8841c6bf"
+    },
+    "sources/freeze_windows_compiler_diagnostic.py": {
+      "bytes": 3373,
+      "sha256": "a7a2d384ddd8557066576c8aa693f58cfecd826e6fd8b398eff644c9200cc206"
+    },
+    "sources/freeze_windows_compiler_diagnostic_v2.py": {
+      "bytes": 3150,
+      "sha256": "5b01e78bc11f950f0f2fd33c168143f6aefb96a6a21f430d6b5321a9ef24a78e"
+    },
+    "sources/freeze_windows_session_profile.py": {
+      "bytes": 2678,
+      "sha256": "3bce71d123f13e681d9041de627fe8222f796e476dc35306cb7835f32d0d306a"
+    },
+    "sources/freeze_windows_worker_diagnostic.py": {
+      "bytes": 2683,
+      "sha256": "2884aebe2292b21ace6ed56b85e0694a5e8a0dbe740d1a1e38e7b5725ed1cf8d"
+    },
+    "sources/freeze_windows_worker_diagnostic_v2.py": {
+      "bytes": 2862,
+      "sha256": "df9058de7ffb4b5f10224dbd7c289b4164b3d38bd92673dd22a0b31a3c910f71"
+    },
+    "sources/frozen_git_sources.py": {
+      "bytes": 2468,
+      "sha256": "ceb594332b9112fb75b708dff53628630443b52d600d470ccb0e44b777a14bc5"
+    },
+    "sources/native_stream_probe_valid_mel.cpp": {
+      "bytes": 8690,
+      "sha256": "00c558ca1453dc99dd5beaef20816ccdffdda0f9e0cef4a2ccff04ac315efcfb"
+    },
+    "sources/patches/cpu-thread-cap.patch": {
+      "bytes": 1403,
+      "sha256": "c18ccb86ff02825899db2ed7b0df0c44e7db69ed38e4fca64e42b14c84f16186"
+    },
+    "sources/patches/persistent-cpu-pool.patch": {
+      "bytes": 4275,
+      "sha256": "ab485ae1b441f4428db49f6b4d1b955e123966d053c4735567e9bdc3825656d9"
+    },
+    "sources/patches/v3-finish-valid-mel.patch": {
+      "bytes": 1194,
+      "sha256": "8c1434c14f63ebeb2515c719a90594124fd4f75af85b80451fd145b5caef3c36"
+    },
+    "sources/platform_bounded_metrics.py": {
+      "bytes": 1941,
+      "sha256": "936b44dd8cfad36bef37bc4cb074a0d73383426e04688e8c50426478ff391b1d"
+    },
+    "sources/platform_bounded_sources.py": {
+      "bytes": 3718,
+      "sha256": "e4acb38809d569e440e5c96c39056bf0953ef4f6c5a0dce215040b236d40bc9c"
+    },
+    "sources/platform_bounded_windows_native.py": {
+      "bytes": 23603,
+      "sha256": "8f3c42e2c55ec2fa1ed659706b847ad9e37bf68b8a513c5d25a9d458dca0f63a"
+    },
+    "sources/platform_native.py": {
+      "bytes": 19472,
+      "sha256": "e5803b27098015109053ce077674b1f5c56cb153caa571de90ad4101c8d2a813"
+    },
+    "sources/platform_valid_mel_native.py": {
+      "bytes": 22617,
+      "sha256": "3c843baca7c01c35c3624f762e542ef802d5000458a266a7402d96057fb13367"
+    },
+    "sources/platform_valid_mel_sources.py": {
+      "bytes": 6446,
+      "sha256": "90337aec582be7cc94cf6381a9f0dd9b6b3e12a61503f5bb168db8a510740867"
+    },
+    "sources/pooled_runtime.py": {
+      "bytes": 7378,
+      "sha256": "64d24af4effb99e068dbfa7d0085eef1e2f144500cc8d1956fa2cc520b023ed9"
+    },
+    "sources/profile_windows_sessions.py": {
+      "bytes": 10501,
+      "sha256": "964ab399e9724763a3121c4d9baf67a5fb6dd388af0f49ed0824016192c4e43f"
+    },
+    "sources/qualification_storage.py": {
+      "bytes": 3914,
+      "sha256": "8bbb4dfe53797d8d03c3ba18f24acce8458878602c1c85f28a4f816d6f4416f6"
+    },
+    "sources/runtime-valid-mel-pool-cpu.lock.json": {
+      "bytes": 8017,
+      "sha256": "d1c93689f41a21159b2266b5483b727da0493029b324e0badde910c7777e0e38"
+    },
+    "sources/runtime-valid-mel-pool.lock.json": {
+      "bytes": 7521,
+      "sha256": "fdfbcd97283b235f20adb2c8ff5f8f813ee706fa1b90d3f9989b4effae7e47e5"
+    },
+    "sources/runtime-valid-mel.lock.json": {
+      "bytes": 6339,
+      "sha256": "af40e586994f223390fcac59936e3781d967c03080350f4b5df141b1bdaf51be"
+    },
+    "sources/runtime.lock.json": {
+      "bytes": 4917,
+      "sha256": "e66e5651608636bbb04528fed7944ab8972a778d1141b36fef3fb391eefd0dcc"
+    },
+    "sources/runtime_profiles.py": {
+      "bytes": 7345,
+      "sha256": "f99c8c33a3a64005ef477319c8bc7f1d6c32180c44665c2fe189a54a4b31ac7d"
+    },
+    "sources/sdk_archive.py": {
+      "bytes": 7022,
+      "sha256": "0b1d80768d15c2818afc82efcc1f3ddf253360b99c16c623e170073e020cb3cd"
+    },
+    "sources/test_ctest_output.py": {
+      "bytes": 1455,
+      "sha256": "1993547c912626d6e4190ca2f6c911829e0b8abf25f3cd5a182de1bc0c197807"
+    },
+    "sources/test_platform_bounded_windows.py": {
+      "bytes": 9557,
+      "sha256": "420cb2e5300ea1fc7c812bedd9368e3e7f4339b56bf9c48ba0d652cbe4eeac6c"
+    },
+    "sources/test_platform_native.py": {
+      "bytes": 4860,
+      "sha256": "8636b15a6ecb6c5935ac3ccb8489ddb8a1f5f48b34ae780f93b7562e7986f0e6"
+    },
+    "sources/test_platform_valid_mel.py": {
+      "bytes": 7679,
+      "sha256": "c18afd7cff36ac6dba79c103cb436679ebeeddeba8e3df5d4fec8415198f5d49"
+    },
+    "sources/test_qualification_storage.py": {
+      "bytes": 4417,
+      "sha256": "e6c8a567be86f2d614868e96f10dd6e682077aa3b3cd03b8347aab95fad20332"
+    },
+    "sources/test_runtime_profiles.py": {
+      "bytes": 3659,
+      "sha256": "60b39d8ba2e5edf374d424e865bf019056e88ec8d3f57a63772ecef55f83a3a6"
+    },
+    "sources/test_sdk_archive.py": {
+      "bytes": 4216,
+      "sha256": "4407f90b1d5cc33eb1438401a77f0673ccf7a7c665f2f955c5b5a1180433da0f"
+    },
+    "sources/test_stream_comparison_valid_mel.py": {
+      "bytes": 5048,
+      "sha256": "9b1a8cba62969c38df4b71bc16b9f14ddc513f376d48b7784f472a9de49c56d9"
+    },
+    "sources/test_windows_compat.py": {
+      "bytes": 2347,
+      "sha256": "869776429bdf20e5fc6d1eaa94225f14c77f022e50d17fec31bf319a71a4d81d"
+    },
+    "sources/test_windows_compiler_diagnostic.py": {
+      "bytes": 9623,
+      "sha256": "db9f1c5651290ef3c4b492d31245b70c9babab2492bbaf3bfdacbbd95a873cf4"
+    },
+    "sources/test_windows_compiler_diagnostic_v2.py": {
+      "bytes": 2773,
+      "sha256": "ebf7b42dbaca1c9e3933a52e1a594ef68a48bb29d6e5b9242c442da27e0e9d1e"
+    },
+    "sources/test_windows_job.py": {
+      "bytes": 4224,
+      "sha256": "66ee80fa1300083b06840686cc7af89896f8f6d6bbc27b97c006f73b0304647a"
+    },
+    "sources/test_windows_job_v2.py": {
+      "bytes": 5441,
+      "sha256": "3295275f0bbcc48cd6932b9116a76dce80611b673ef96e2d01bc6caafd4f5f43"
+    },
+    "sources/test_windows_loader_control.py": {
+      "bytes": 2317,
+      "sha256": "56aad0abc2f0c3eb76678f4758138e7b54a823c902ae704b9ac29247b6c626e4"
+    },
+    "sources/test_windows_naming.py": {
+      "bytes": 5213,
+      "sha256": "3660792b5abef2c6111aba7b63a4bd921fca5a4ff83f77ae699ad8570ac3ea4a"
+    },
+    "sources/test_windows_pe.py": {
+      "bytes": 5240,
+      "sha256": "6ccf8d0cda11d5a8081af662fba4ce03756eb88352f1e50d4ed87ef6b7f4348f"
+    },
+    "sources/test_windows_session_profile.py": {
+      "bytes": 6819,
+      "sha256": "ec61f51d5098b2156b1c2bcd8e11e426f79d414d97715108ddeb7a5139b99b0e"
+    },
+    "sources/test_windows_worker_diagnostic.py": {
+      "bytes": 4840,
+      "sha256": "e8e207714f77572eac6c87a371083d1981dc758fc8fb913e3bc2ee144c9e01d9"
+    },
+    "sources/test_windows_worker_diagnostic_v2.py": {
+      "bytes": 7591,
+      "sha256": "f06b99e19c91b1391d9d9811ac36815a7d41f685b532bb0cc42a4332b17b2c7a"
+    },
+    "sources/windows-compiler-diagnostic.protocol.json": {
+      "bytes": 146296,
+      "sha256": "0022a22a8400ee789e496d975d4da2b4e8415ca2ed9ac2eedff7b1779a3a3fef"
+    },
+    "sources/windows-session-profile.protocol.json": {
+      "bytes": 134942,
+      "sha256": "89d1841ece0f137cebcb5635275ede08e42839eb57aacd60d17a62614aaadb76"
+    },
+    "sources/windows-worker-diagnostic-v2.protocol.json": {
+      "bytes": 53213,
+      "sha256": "d7c0e0d0d2a24e3738c3b372cec99629e8fdcf83b1adf4db2cf466d2da8292e6"
+    },
+    "sources/windows-worker-diagnostic.protocol.json": {
+      "bytes": 52076,
+      "sha256": "cd17ad6e34badda1fc3a7852c708d06f0848c502d857b4bcffe3de0f1846b662"
+    },
+    "sources/windows_archive.py": {
+      "bytes": 10884,
+      "sha256": "a7defa6349c62fb6f2146796e238e56efbf474571abc04c58258ffe570f4cdd8"
+    },
+    "sources/windows_compat.py": {
+      "bytes": 2393,
+      "sha256": "091eb520c5171f0f598182acada97549415191eb5ff20801040be30ec43e43ea"
+    },
+    "sources/windows_compiler_diagnostic.py": {
+      "bytes": 14110,
+      "sha256": "e29319ad48359bebd975adca08946076be0c3d617a5f3d609c85f12e105e51bb"
+    },
+    "sources/windows_compiler_diagnostic_v2.py": {
+      "bytes": 14319,
+      "sha256": "ddde740ca1561e3209a739e32eaea8b87d744507bcba8c5222c5688d0d8405ea"
+    },
+    "sources/windows_compiler_metrics.py": {
+      "bytes": 7322,
+      "sha256": "535d9f35b22b4bc2b5293bf2113cac67af8434a1caaf5831e581bf8b2f0fb297"
+    },
+    "sources/windows_compiler_v2_sources.py": {
+      "bytes": 1343,
+      "sha256": "763cec6b41eb8bbe73004530baf0e66afa396f0c915ddf604937ebd0fd767057"
+    },
+    "sources/windows_job.py": {
+      "bytes": 7208,
+      "sha256": "e7511baf74413a810fc9f99986141719540faebd65efc47303ba99b05c43e100"
+    },
+    "sources/windows_job_v2.py": {
+      "bytes": 8674,
+      "sha256": "bebabc74d0f1dba59d158c9a79d18e67f316c1b5b2a4227bd0ee82ae57390048"
+    },
+    "sources/windows_loader_control.py": {
+      "bytes": 1516,
+      "sha256": "04f63b8b69e736df0dcd69990e00a48e9cdfd68bbfaa0c792d4e606745db3aca"
+    },
+    "sources/windows_naming.py": {
+      "bytes": 3538,
+      "sha256": "756b8f24d1ee84c4da479f63fb0ba1e2f2ee2f2bed4d2407b9f37cb7af871efa"
+    },
+    "sources/windows_pe.py": {
+      "bytes": 8676,
+      "sha256": "d194378b4a666444c350f4f4896debcee649568714ae51fc7797844f1cf4d52c"
+    },
+    "sources/windows_private_dlls.cmake": {
+      "bytes": 2471,
+      "sha256": "d5fb3bcc2582a3420819ecab797aa3dd0a0a64ee9e1cf979f4ce8df5168033b7"
+    },
+    "sources/windows_provenance.ps1": {
+      "bytes": 5101,
+      "sha256": "fc2cc488c4101e9762b55314612e0be99210842a38f92c17f050194e771075a3"
+    },
+    "sources/windows_session_timing.py": {
+      "bytes": 7739,
+      "sha256": "e6f1411b046f65e0bdf5cc840c05b49fc776baeb6f4fd9f5f7eb4527f261293e"
+    },
+    "sources/windows_worker_diagnostic.py": {
+      "bytes": 19497,
+      "sha256": "6d6cfdbb3f5592a4493132a44237a17ad88d2a85d3c95d5013d29fd5e2e5da8e"
+    },
+    "sources/windows_worker_diagnostic_v2.py": {
+      "bytes": 19667,
+      "sha256": "233f8777cee19e0518fdf0708fa8d1c84671fd9371b54e00a2db72ad6392be43"
+    },
+    "sources/windows_worker_metrics.py": {
+      "bytes": 5287,
+      "sha256": "119c15f6260b509c0ec27883250fe6c8b7dd20519f78d29cb3af88ff0332c0f9"
+    },
+    "sources/windows_worker_sources.py": {
+      "bytes": 3733,
+      "sha256": "449cfd0c00a8e79f95dca587c64dd538676461bd3b97096e414614bdf1088857"
+    },
+    "sources/windows_worker_sources_v2.py": {
+      "bytes": 3984,
+      "sha256": "0240e79569630959ee0ae75c24f0246c282e63d106026ee8bd1a2ba21bb423c6"
+    },
+    "supervision-replay.json": {
+      "bytes": 38950,
+      "sha256": "cc30c2b798cf2ba93f4189b86ce2f9fe0dd967b37e606f01d80d58b2d8bd3396"
+    }
+  }
+}

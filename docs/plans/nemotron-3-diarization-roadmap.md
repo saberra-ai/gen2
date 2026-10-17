@@ -105,10 +105,15 @@ Remaining release work as of 2026-10-17:
   Clang build or model case is reached. Version process cleanup before retrying
   the unchanged compiler experiment; no performance optimization is qualified.
   The separate [ownership correction](../research/nemotron-windows-compiler-diagnostic-v2.md)
-  now preregisters exact controller-only derivation, retained wrapped status and
+  preregistered exact controller-only derivation, retained wrapped status and
   membership-scoped process snapshots, normal-background cleanup and actual
-  Windows regressions before the unchanged compiler experiment. Execution is
-  pending; original producer inputs and all acceptance requirements are preserved.
+  Windows regressions before the unchanged compiler experiment. Original producer
+  inputs and all acceptance requirements remain preserved after execution.
+  The [actual corrected compiler experiment](../research/nemotron-windows-compiler-results.md)
+  now passes both SDK admissions and all82 command cleanup/status checks, then
+  stops at first Clang probability failure: max error0.27158 and26 versus27 turns.
+  MSVC/Clang native RTF is1.036746/0.990393, but only two cases execute; neither
+  numerical acceptance nor a complete timing comparison supports promotion.
   Then merge and
   push the completed feature to main; no main promotion is justified yet.
 
