@@ -1,0 +1,127 @@
+{
+  "schema_version": 1,
+  "source_commit": "1bc54c85d694fd3a15983dc7d6bc2554578ae441",
+  "trial_completed": true,
+  "current_tools_checked_before_import": 12,
+  "staged_inventory_entries": 135,
+  "historical_and_current_construction_source_files": 261,
+  "used_gen2_dependencies_covered": 142,
+  "original_neural_processes": 1,
+  "collection_model_calls": 0,
+  "private_images_replayed": [
+    92,
+    0,
+    92
+  ],
+  "input_pcm_independently_normalized": true,
+  "input_pcm_f32le_sha256": "dc94f3f490576f50d11e23728f8fa8bb129ff78b4af41eff3d4961a776b45858",
+  "comparison_replayed": {
+    "passed": true,
+    "scope": "wrapper/reference correctness at the recorded duration; not held-out quality or full release qualification",
+    "runtime_profile": "gen2-valid-mel-pool-v1",
+    "frame_contract": "v3-streaming-valid-mel-v1",
+    "audio_duration_seconds": 80.04,
+    "backend": "cpu",
+    "device": null,
+    "native_frame_count": 8004,
+    "retained_first_frame": 0,
+    "retained_rows": 8004,
+    "turns": 35,
+    "maximum_turn_error_seconds": 0.0,
+    "turn_tolerance_seconds": 1e-06,
+    "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+    "retained_probabilities_match": true,
+    "maximum_probability_error": 0.0,
+    "probability_tolerance": 1e-06,
+    "gen2_rtf": 1.0029273863068466,
+    "native_rtf": 0.1395485132433783,
+    "runtime_version": "nemo-speech-asr 0.2.0+gen2-valid-mel-pool-v1",
+    "probabilities_bit_exact": true
+  },
+  "timing_replayed": {
+    "scope": "Endpoint-paced public API replay; timing components overlap and must not be summed.",
+    "pushes": 4002,
+    "provisional_observations": 16,
+    "final_revision": 17,
+    "unobserved_revision_before_final": 0,
+    "scheduling_overrun_seconds": {
+      "samples": 4002,
+      "minimum": 2e-05,
+      "median": 0.005944,
+      "p95_nearest_rank": 0.021156,
+      "maximum": 0.12747
+    },
+    "normalization_hashing_and_admission_seconds": {
+      "samples": 4002,
+      "minimum": 0.0,
+      "median": 7e-06,
+      "p95_nearest_rank": 0.000215,
+      "maximum": 0.139224
+    },
+    "busy_retries": 2166,
+    "snapshot_lookup_calls": 6169,
+    "snapshot_lookup_wall_seconds": 0.001749,
+    "native_compute_seconds": 12.956117,
+    "paced_public_wall_seconds": 80.274308,
+    "public_finish_drain_flush_delivery_seconds": 0.229687,
+    "final_observed_after_finish_return_seconds": 2e-06,
+    "provisional_frontier_age_seconds": {
+      "samples": 16,
+      "minimum": 0.4457749999999976,
+      "median": 0.6834989999999999,
+      "p95_nearest_rank": 1.0651329999999959,
+      "maximum": 1.0651329999999959
+    },
+    "provisional_observation_gap_seconds": {
+      "samples": 15,
+      "minimum": 4.939358,
+      "median": 4.99962,
+      "p95_nearest_rank": 5.060948,
+      "maximum": 5.060948
+    },
+    "previous_observed_frontier_age_at_next_provisional_seconds": {
+      "samples": 15,
+      "minimum": 5.385132999999996,
+      "median": 5.667571000000001,
+      "p95_nearest_rank": 6.063870000000001,
+      "maximum": 6.063870000000001
+    },
+    "cold_load_seconds": 0.070916,
+    "stream_open_seconds": 2.4e-05,
+    "actual_speaker_or_word_label_latency_measured": false,
+    "gui_delivery_measured": false,
+    "physical_microphone_measured": false,
+    "native_queue_lookahead_and_publication_delay_separated": false,
+    "stable_prefix_or_label_finality_inferred": false
+  },
+  "outside_git_outputs_bound_before_and_after": {
+    "prior-output.txt": {
+      "bytes": 11,
+      "sha256": "708811ccb1510c6d6c6e6379ef09be39bdbb0e7edcf44fefcca21c6228ee6d89"
+    },
+    "paced-public.json.f32": {
+      "bytes": 256128,
+      "sha256": "c9b0df9f7e8bb6428885d9219cfa8ab55bc4fceee3745bb4f6bdd00bd434cda9"
+    },
+    "paced-public.json": {
+      "bytes": 777053,
+      "sha256": "925811702226f35828f0f2f43c7d6ddfcedd6b3b508bb1cc6bd8192da25682eb"
+    },
+    "error-before-model.json": {
+      "bytes": 134,
+      "sha256": "0c3bfedee7e00fc455209bac48eb446ade6637882805be13dfbb817e2a997ef9"
+    }
+  },
+  "physical_microphone_used": false,
+  "gui_used": false,
+  "original_quality_gate_status_changed": false,
+  "release_qualified": false,
+  "limits": [
+    "One new endpoint-paced 80.04s public Gen2 CPU process on the existing licensed AMI cyclic fixture. No physical microphone, GUI, new audio, quality test or default policy change. Match the saved independent C ABI normalized PCM hash, all 8004 rows/eight channels and all turns within the established 1e-6 bounds; report byte equality separately.",
+    "Model and runtime remain byte-identical to the previously qualified pooled CPU package. Freeze the saved independent 80.04s native reference before execution and deny it to the helper. This reuses prior neural evidence; it is neither a new native process nor a clean performance comparison.",
+    "Runtime/premodel denial and libc canonicalization controls precede execution. The version process requires 92 private images. A compiled helper premodel failure must persist complete:false with empty rows/checkpoints, return 1 and load zero private images. The one paced neural process requires all 92 images. Deny source/reference/provenance/prior-output data reads, protected input writes and network access.",
+    "Retain 4002 endpoint/readiness/admission/Busy rows, 15 or 16 consecutive provisional turn observations and final revision 17. Provisional revision 16 may coalesce before finish returns; never invent its observation time. Measure public finish drain/flush/delivery and caller observation. These do not isolate native queue/lookahead/publication delay or establish acoustic correct-label delay.",
+    "Paced public elapsed time includes deliberate capture-clock waits and is not compute RTF; report the native compute wall ratio separately. Scheduling, admission and native compute overlap and must not be summed. No stable-prefix/finality inference, intentional future sample delivery or post-hoc channel selection.",
+    "Keep the original 5GiB start floor, 1GiB running floor, 256MiB physical reserve, 600s command deadline, process-group termination and failure-stop behavior. The helper has a 180s soft session deadline; retain returned-error partial JSON. No automatic retry. All original quality, human word-gold, GUI/microphone, fresh-machine, signing and release gates remain open."
+  ]
+}

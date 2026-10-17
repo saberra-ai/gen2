@@ -89,3 +89,49 @@ private runtime images. Protected data/writes/network are denied, and original
 5GiB/1GiB/256MiB/600s protections remain. No runtime command has executed at this
 preregistration. Deliberate pacing means public elapsed/audio ratio is not a
 compute-speed benchmark, even though the inherited comparator retains that field.
+
+## Actual paced replay
+
+The [20-member runtime receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-paced-public-runtime/collection-qualification.json)
+records the frozen trial at `1bc54c85`. All five command statuses match
+`0, 0, 0, 1, 0`; the expected failure persisted its incomplete error JSON.
+Loader audits independently replay as 92, zero and 92 private libraries for
+version, premodel failure and paced inference. Exactly one fresh neural process
+ran. The reserve was released and the controller completed successfully.
+
+All 8,004 rows, eight probability channels and 35 final turns match the prior
+independent native reference exactly, including probability bytes. The collector
+independently recomputes normalized PCM from the WAV and binds every result JSON
+and raw probability file before and after comparison. Its saved-output replay
+performs no inference. Audio, model, binary and raw arrays remain outside Git.
+
+| Observed quantity | Result |
+| --- | ---: |
+| Input blocks / Busy retries | 4,002 / 2,166 |
+| Provisional observations / final revision | 16 / 17 |
+| First provisional observation after clock start | 5.020736 s |
+| Provisional observation gap, median / maximum | 4.999620 / 5.060948 s |
+| Provisional frontier age, median / maximum | 0.683499 / 1.065133 s |
+| Previous frontier age at next provisional observation, maximum | 6.063870 s |
+| Endpoint scheduling overrun, median / p95 / maximum | 5.944 / 21.156 / 127.470 ms |
+| Normalization, hashing and admission, median / p95 / maximum | 0.007 / 0.215 / 139.224 ms |
+| Public finish drain, flush and delivery | 229.687 ms |
+| Final observation after finish return | 0.002 ms |
+| Cumulative native compute / paced public wall | 12.956117 / 80.274308 s |
+| Cold load / stream open | 70.916 / 0.024 ms |
+| Process peak RSS | 250,544,128 bytes |
+
+Every scheduled endpoint was supplied no earlier than its nominal time and all
+samples were accepted. No provisional revision was missed. The public queue
+returned Busy without dropping the caller's PCM; retry time is included in
+admission, and pacing overrun also includes earlier caller work. Snapshot lookups
+total 6,169 and consume 1.749 ms cumulatively. These components overlap.
+
+Native compute divided by audio duration is approximately 0.162 for this paced
+run. The inherited comparator's 1.002927 public elapsed/audio ratio includes
+intentional waits. Neither is an uncontended throughput comparison with the
+earlier native reference. Five-second provisional coalescing remains unchanged;
+frontier age does not measure when the correct speaker label became available.
+This closes the missing endpoint-paced API timing observation only. Actual GUI,
+physical microphone, acoustic label delay, human word gold, original quality,
+fresh-machine delivery and public release gates remain open.

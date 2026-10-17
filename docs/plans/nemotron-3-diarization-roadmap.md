@@ -1533,7 +1533,25 @@ frontier age at a poll is0.925s, while a previously observed frontier is as old
 as6.487s at the next poll. These describe the saved CLI trace only. All242 local
 tools tests pass. Actual GUI/IPC
 render time, acoustic label latency, separate queue/compute/poll contributions
-and finalization delay remain unmeasured; this analysis cannot close those gates.
+and finalization delay remain unmeasured in those saved app traces; this analysis
+cannot close those gates.
+
+The separate [endpoint-paced public API receipt](../research/nemotron-paced-public-timing.md)
+now records an actual 80.04-second replay at `1bc54c85`: all 8,004 probability
+rows and 35 final turns match the saved independent C ABI reference exactly.
+All 4,002 input endpoints were accepted, with 2,166 Busy retries and no dropped
+PCM. Sixteen provisional observations precede final revision 17, with median
+4.999620-second spacing; the first arrives at 5.020736 seconds. Provisional
+frontier age is median 0.683499 seconds and maximum 1.065133 seconds, while the
+previous frontier is up to 6.063870 seconds old at the next observation. Public
+finish drain/flush/delivery takes 229.687 ms; final observation follows 0.002 ms
+later. Native compute is 12.956117 seconds inside an intentionally paced
+80.274308-second public wall interval, with peak process RSS 250,544,128 bytes.
+The 20-member receipt replays strict 92/zero/92 loader audits and binds all
+saved JSON/raw outputs before and after comparison without another model call.
+These API observations do not establish GUI/microphone or correct acoustic-label
+latency, pure queue/lookahead/publication delay, stable label finality, original
+quality, human word gold, fresh-machine delivery or release qualification.
 
 Use public Gen2 calls for lifecycle and user-visible behavior; use the FFI seam
 for ownership/status failures, and a pinned upstream executable for independent
