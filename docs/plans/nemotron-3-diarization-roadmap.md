@@ -23,6 +23,13 @@ still exceeds one (1.0169–1.0261), and the EPYC7763 differs from the prior
 EPYC9V74 receiver; no causal batching speedup or production/public/release pass
 is established. Use captured geometries for the next separately frozen kernel
 control while preserving the failed earlier 2×2 candidate and original gates.
+The [separate Windows 2×4 kernel control](../research/nemotron-windows-q8-mx4.md)
+now freezes the existing helper dispatch, 22 fixed shapes selected from captured
+model geometry and boundary cases, 264 byte-exact output checks and the original
+integer predicates on all twelve primary shapes. All 479 local tool tests pass
+with seven Windows-only skips; source-map composition verifies all 3,425 files
+and only the declared SGEMM dispatch change. Actual Windows timing and full
+model/production qualification remain pending.
 
 Remaining release work as of 2026-10-17:
 
