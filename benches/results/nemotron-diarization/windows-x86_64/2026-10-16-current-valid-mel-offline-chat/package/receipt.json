@@ -1,0 +1,50 @@
+{
+  "runtime_revision": "083861c241061562b8ec29eb06d7f6cdc3af8775",
+  "llama_revision": "bd4f514db14d87fded667787a7a963bfbaa98e89",
+  "lock_sha256": "af40e586994f223390fcac59936e3781d967c03080350f4b5df141b1bdaf51be",
+  "runtime_profile": "gen2-valid-mel-v1",
+  "runtime_reported_version": "nemo-speech-asr 0.2.0+gen2-valid-mel-v1",
+  "compatibility_patches": [
+    {
+      "path": "patches/v3-finish-valid-mel.patch",
+      "bytes": 1194,
+      "sha256": "8c1434c14f63ebeb2515c719a90594124fd4f75af85b80451fd145b5caef3c36",
+      "source_sha256_before": {
+        "src/asr/diar/diar_pipeline.cpp": "4143ca8e6d6f14ee454263702510cb163fe8e170aa928f236c0b4b540a7a7da9"
+      },
+      "source_sha256_after": {
+        "src/asr/diar/diar_pipeline.cpp": "fe00ae415f4741d7e07579acdc77c60f5d7327be024cf7f8aff8f52142ae9af2"
+      }
+    }
+  ],
+  "frame_contract": {
+    "name": "v3-streaming-valid-mel-v1",
+    "scope": "V3 streaming finish only; offline and V2 semantics unchanged",
+    "sample_rate": 16000,
+    "hop_samples": 160,
+    "final_frames": "floor(real_input_samples / 160)",
+    "output_channels": 8
+  },
+  "schema_version": 2,
+  "package_construction_passed": true,
+  "release_qualified": false,
+  "redistribution_qualified": false,
+  "runtime_qualified": false,
+  "central_runtime_variant": true,
+  "native_source_commit": "8fbef3e8a46a034b8e0ffa8f096409db683a923e",
+  "native_receipt_sha256": "a14d978c9a6022b20fb9333dcad4738b6aaaa7c9ac3ceb14c6a2b22cd0b393bd",
+  "package_manifest_sha256": "3957c0dacc94a24001886aa49a2e73595494f540cb76da4a7ee4e5677767749f",
+  "archive": {
+    "schema_version": 1,
+    "release_qualified": false,
+    "archive": "development-windows-runtime.zip",
+    "scope": "Exact portable file bytes/directory names; no Windows ACL or runtime qualification.",
+    "archive_bytes": 2132698,
+    "archive_sha256": "0d345ef1f1bdb732a2319d35214af8b7d39b77d6923636c4fe62de19d33de883"
+  },
+  "scope": "Development runtime construction and exact ZIP restoration on the named packaging host; no model/native execution.",
+  "packaging_host": {
+    "platform": "Windows-2022Server-10.0.20348-SP0",
+    "python": "3.12.10"
+  }
+}

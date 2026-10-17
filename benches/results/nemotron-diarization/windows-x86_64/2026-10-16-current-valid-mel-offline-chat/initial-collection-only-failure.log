@@ -1,0 +1,21 @@
+/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/Resources/Python.app/Contents/MacOS/Python: can't open file '/Users/victor/.cache/gen2-nemotron3-n0/current-valid-mel-windows-runtime-collection-tools-v1/collect-windows-central-setup-full.py': [Errno 2] No such file or directory
+Traceback (most recent call last):
+  File "/Users/victor/.cache/gen2-nemotron3-n0/current-valid-mel-windows-runtime-collection-tools-v1/collect-windows-central-chat.py", line 233, in <module>
+    subprocess.run([sys.executable, str(Path(__file__).with_name('collect-windows-central-setup-full.py')),
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                    str(setup_base), str(base) + '-ci.json', str(audited_setup)], check=True)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py", line 578, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['/opt/homebrew/opt/python@3.14/bin/python3.14', '/Users/victor/.cache/gen2-nemotron3-n0/current-valid-mel-windows-runtime-collection-tools-v1/collect-windows-central-setup-full.py', '/Users/victor/.cache/gen2-nemotron3-n0/current-valid-mel-windows-runtime-ci-v1/evidence/central-setup', '/Users/victor/.cache/gen2-nemotron3-n0/current-valid-mel-windows-runtime-ci-v1/evidence/runtime-ci.json', '/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/tmpk1n06t4c/setup-receipt']' returned non-zero exit status 2.
+Traceback (most recent call last):
+  File "/Users/victor/.cache/gen2-nemotron3-n0/collect-current-valid-mel-windows-runtime-v1.py", line 68, in <module>
+    subprocess.run([sys.executable, str(collector / 'collect-windows-central-chat.py'), str(base / 'runtime'),
+    ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                    str(base / 'construction'), str(out), str(base / 'central-setup')], check=True)
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/homebrew/Cellar/python@3.14/3.14.7/Frameworks/Python.framework/Versions/3.14/lib/python3.14/subprocess.py", line 578, in run
+    raise CalledProcessError(retcode, process.args,
+                             output=stdout, stderr=stderr)
+subprocess.CalledProcessError: Command '['/opt/homebrew/opt/python@3.14/bin/python3.14', '/Users/victor/.cache/gen2-nemotron3-n0/current-valid-mel-windows-runtime-collection-tools-v1/collect-windows-central-chat.py', '/Users/victor/.cache/gen2-nemotron3-n0/current-valid-mel-windows-runtime-ci-v1/evidence/runtime', '/Users/victor/.cache/gen2-nemotron3-n0/current-valid-mel-windows-runtime-ci-v1/evidence/construction', '/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/windows-x86_64/2026-10-16-current-valid-mel-offline-chat', '/Users/victor/.cache/gen2-nemotron3-n0/current-valid-mel-windows-runtime-ci-v1/evidence/central-setup']' returned non-zero exit status 1.

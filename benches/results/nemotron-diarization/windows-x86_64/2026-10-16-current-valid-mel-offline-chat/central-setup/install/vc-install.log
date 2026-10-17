@@ -1,0 +1,76 @@
+[1CE4:1AC4][2026-10-17T01:28:59]i001: Burn v3.14.1.8722, Windows v10.0 (Build 20348: Service Pack 0), path: C:\Windows\Temp\{632B0064-5872-47AA-BE68-A04E1962ED8F}\.cr\VC_redist.x64.exe
+[1CE4:1AC4][2026-10-17T01:28:59]i009: Command Line: '-burn.clean.room=C:\inputs\VC_redist.x64.exe -burn.filehandle.attached=584 -burn.filehandle.self=580 /install /quiet /norestart /log C:\results\vc-install.log'
+[1CE4:1AC4][2026-10-17T01:28:59]i000: Setting string variable 'WixBundleOriginalSource' to value 'C:\inputs\VC_redist.x64.exe'
+[1CE4:1AC4][2026-10-17T01:28:59]i000: Setting string variable 'WixBundleOriginalSourceFolder' to value 'C:\inputs\'
+[1CE4:1AC4][2026-10-17T01:28:59]i000: Setting string variable 'WixBundleLog' to value 'C:\results\vc-install.log'
+[1CE4:1AC4][2026-10-17T01:28:59]i000: Setting string variable 'WixBundleName' to value 'Microsoft Visual C++ v14 Redistributable (x64) - 14.51.36247'
+[1CE4:1AC4][2026-10-17T01:28:59]i000: Setting string variable 'WixBundleManufacturer' to value 'Microsoft Corporation'
+[1CE4:14F4][2026-10-17T01:28:59]i000: Setting version variable 'WixBundleFileVersion' to value '14.51.36247.0'
+[1CE4:1AC4][2026-10-17T01:28:59]i100: Detect begin, 3 packages
+[1CE4:1AC4][2026-10-17T01:28:59]i000: Setting string variable 'Arm64_Check' to value 'AMD64'
+[1CE4:1AC4][2026-10-17T01:28:59]i101: Detected package: vcRuntimeMinimum_x64, state: Absent, cached: None
+[1CE4:1AC4][2026-10-17T01:28:59]i101: Detected package: vcRuntimeAdditional_x64, state: Absent, cached: None
+[1CE4:1AC4][2026-10-17T01:28:59]i101: Detected package: vcRuntime_arm64, state: Absent, cached: None
+[1CE4:1AC4][2026-10-17T01:28:59]i052: Condition 'VersionNT >= v6.3' evaluates to true.
+[1CE4:1AC4][2026-10-17T01:28:59]i199: Detect complete, result: 0x0
+[1CE4:1AC4][2026-10-17T01:28:59]i200: Plan begin, 3 packages, action: Install
+[1CE4:1AC4][2026-10-17T01:28:59]i052: Condition '(VersionNT64) AND NOT (Arm64_Check = "ARM64")' evaluates to true.
+[1CE4:1AC4][2026-10-17T01:28:59]i000: Setting string variable 'WixBundleRollbackLog_vcRuntimeMinimum_x64' to value 'C:\results\vc-install_000_vcRuntimeMinimum_x64_rollback.log'
+[1CE4:1AC4][2026-10-17T01:28:59]i000: Setting string variable 'WixBundleLog_vcRuntimeMinimum_x64' to value 'C:\results\vc-install_000_vcRuntimeMinimum_x64.log'
+[1CE4:1AC4][2026-10-17T01:28:59]i052: Condition '(VersionNT64) AND NOT (Arm64_Check = "ARM64")' evaluates to true.
+[1CE4:1AC4][2026-10-17T01:28:59]i000: Setting string variable 'WixBundleRollbackLog_vcRuntimeAdditional_x64' to value 'C:\results\vc-install_001_vcRuntimeAdditional_x64_rollback.log'
+[1CE4:1AC4][2026-10-17T01:28:59]i000: Setting string variable 'WixBundleLog_vcRuntimeAdditional_x64' to value 'C:\results\vc-install_001_vcRuntimeAdditional_x64.log'
+[1CE4:1AC4][2026-10-17T01:28:59]i052: Condition 'Arm64_Check = "ARM64"' evaluates to false.
+[1CE4:1AC4][2026-10-17T01:28:59]i201: Planned package: vcRuntimeMinimum_x64, state: Absent, default requested: Present, ba requested: Present, execute: Install, rollback: Uninstall, cache: Yes, uncache: No, dependency: Register
+[1CE4:1AC4][2026-10-17T01:28:59]i201: Planned package: vcRuntimeAdditional_x64, state: Absent, default requested: Present, ba requested: Present, execute: Install, rollback: Uninstall, cache: Yes, uncache: No, dependency: Register
+[1CE4:1AC4][2026-10-17T01:28:59]i201: Planned package: vcRuntime_arm64, state: Absent, default requested: Absent, ba requested: Absent, execute: None, rollback: None, cache: No, uncache: No, dependency: None
+[1CE4:1AC4][2026-10-17T01:28:59]i299: Plan complete, result: 0x0
+[1CE4:1AC4][2026-10-17T01:28:59]i300: Apply begin
+[1CE4:1AC4][2026-10-17T01:28:59]i010: Launching elevated engine process.
+[1CE4:1AC4][2026-10-17T01:29:00]i011: Launched elevated engine process.
+[1CE4:1AC4][2026-10-17T01:29:00]i012: Connected to elevated engine.
+[1EBC:0EE0][2026-10-17T01:29:00]i358: Pausing automatic updates.
+[1EBC:0EE0][2026-10-17T01:29:00]w308: Automatic updates could not be paused due to error: 0x80040154. Continuing...
+[1EBC:0EE0][2026-10-17T01:29:00]i360: Creating a system restore point.
+[1EBC:0EE0][2026-10-17T01:29:00]i362: System restore disabled, system restore point not created.
+[1EBC:0EE0][2026-10-17T01:29:00]i370: Session begin, registration key: SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{0e3bb569-69d6-4c34-bff9-c2f81db5e5f0}, options: 0x7, disable resume: No
+[1EBC:0EE0][2026-10-17T01:29:00]i000: Caching bundle from: 'C:\Windows\Temp\{26BDC185-1A2F-4A93-9F97-E90C0AB72D20}\.be\VC_redist.x64.exe' to: 'C:\ProgramData\Package Cache\{0e3bb569-69d6-4c34-bff9-c2f81db5e5f0}\VC_redist.x64.exe'
+[1EBC:0EE0][2026-10-17T01:29:00]i320: Registering bundle dependency provider: VC,redist.x64,amd64,14.51,bundle, version: 14.51.36247.0
+[1EBC:0EE0][2026-10-17T01:29:00]i371: Updating session, registration key: SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{0e3bb569-69d6-4c34-bff9-c2f81db5e5f0}, resume: Active, restart initiated: No, disable resume: No
+[1EBC:04D8][2026-10-17T01:29:00]i305: Verified acquired payload: vcRuntimeMinimum_x64 at path: C:\ProgramData\Package Cache\.unverified\vcRuntimeMinimum_x64, moving to: C:\ProgramData\Package Cache\{931A2CF0-2404-45EA-82F5-345735AE6A90}v14.51.36247\packages\vcRuntimeMinimum_amd64\vc_runtimeMinimum_x64.msi.
+[1EBC:04D8][2026-10-17T01:29:00]i305: Verified acquired payload: cab5046A8AB272BF37297BB7928664C9503 at path: C:\ProgramData\Package Cache\.unverified\cab5046A8AB272BF37297BB7928664C9503, moving to: C:\ProgramData\Package Cache\{931A2CF0-2404-45EA-82F5-345735AE6A90}v14.51.36247\packages\vcRuntimeMinimum_amd64\cab1.cab.
+[1EBC:04D8][2026-10-17T01:29:00]i305: Verified acquired payload: vcRuntimeAdditional_x64 at path: C:\ProgramData\Package Cache\.unverified\vcRuntimeAdditional_x64, moving to: C:\ProgramData\Package Cache\{6FA797CF-6B76-4B6D-87EE-768F92008720}v14.51.36247\packages\vcRuntimeAdditional_amd64\vc_runtimeAdditional_x64.msi.
+[1EBC:04D8][2026-10-17T01:29:00]i305: Verified acquired payload: cab2C04DDC374BD96EB5C8EB8208F2C7C92 at path: C:\ProgramData\Package Cache\.unverified\cab2C04DDC374BD96EB5C8EB8208F2C7C92, moving to: C:\ProgramData\Package Cache\{6FA797CF-6B76-4B6D-87EE-768F92008720}v14.51.36247\packages\vcRuntimeAdditional_amd64\cab1.cab.
+[1EBC:0EE0][2026-10-17T01:29:00]i301: Applying execute package: vcRuntimeMinimum_x64, action: Install, path: C:\ProgramData\Package Cache\{931A2CF0-2404-45EA-82F5-345735AE6A90}v14.51.36247\packages\vcRuntimeMinimum_amd64\vc_runtimeMinimum_x64.msi, arguments: ' MSIFASTINSTALL="7" NOVSUI="1"'
+[1CE4:1AC4][2026-10-17T01:29:02]i319: Applied execute package: vcRuntimeMinimum_x64, result: 0x0, restart: None
+[1EBC:0EE0][2026-10-17T01:29:02]i325: Registering dependency: {0e3bb569-69d6-4c34-bff9-c2f81db5e5f0} on package provider: Microsoft.VS.VC_RuntimeMinimumVSU_amd64,v14, package: vcRuntimeMinimum_x64
+[1EBC:0EE0][2026-10-17T01:29:02]i301: Applying execute package: vcRuntimeAdditional_x64, action: Install, path: C:\ProgramData\Package Cache\{6FA797CF-6B76-4B6D-87EE-768F92008720}v14.51.36247\packages\vcRuntimeAdditional_amd64\vc_runtimeAdditional_x64.msi, arguments: ' MSIFASTINSTALL="7" NOVSUI="1"'
+[1CE4:1AC4][2026-10-17T01:29:02]i319: Applied execute package: vcRuntimeAdditional_x64, result: 0x0, restart: None
+[1EBC:0EE0][2026-10-17T01:29:02]i325: Registering dependency: {0e3bb569-69d6-4c34-bff9-c2f81db5e5f0} on package provider: Microsoft.VS.VC_RuntimeAdditionalVSU_amd64,v14, package: vcRuntimeAdditional_x64
+[1EBC:0EE0][2026-10-17T01:29:02]i372: Session end, registration key: SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{0e3bb569-69d6-4c34-bff9-c2f81db5e5f0}, resume: ARP, restart: None, disable resume: No
+[1EBC:0EE0][2026-10-17T01:29:02]i371: Updating session, registration key: SOFTWARE\Microsoft\Windows\CurrentVersion\Uninstall\{0e3bb569-69d6-4c34-bff9-c2f81db5e5f0}, resume: ARP, restart initiated: No, disable resume: No
+[1CE4:1AC4][2026-10-17T01:29:02]i399: Apply complete, result: 0x0, restart: None, ba requested restart:  No
+[1CE4:1AC4][2026-10-17T01:29:02]i500: Shutting down, exit code: 0x0
+[1CE4:1AC4][2026-10-17T01:29:02]i410: Variable: Arm64_Check = AMD64
+[1CE4:1AC4][2026-10-17T01:29:02]i410: Variable: VersionNT = 10.0.0.0
+[1CE4:1AC4][2026-10-17T01:29:02]i410: Variable: VersionNT64 = 10.0.0.0
+[1CE4:1AC4][2026-10-17T01:29:02]i410: Variable: WixBundleAction = 5
+[1CE4:1AC4][2026-10-17T01:29:02]i410: Variable: WixBundleElevated = 1
+[1CE4:1AC4][2026-10-17T01:29:02]i410: Variable: WixBundleFileVersion = 14.51.36247.0
+[1CE4:1AC4][2026-10-17T01:29:02]i410: Variable: WixBundleInstalled = 0
+[1CE4:1AC4][2026-10-17T01:29:02]i410: Variable: WixBundleLog = C:\results\vc-install.log
+[1CE4:1AC4][2026-10-17T01:29:02]i410: Variable: WixBundleLog_vcRuntimeAdditional_x64 = C:\results\vc-install_001_vcRuntimeAdditional_x64.log
+[1CE4:1AC4][2026-10-17T01:29:02]i410: Variable: WixBundleLog_vcRuntimeMinimum_x64 = C:\results\vc-install_000_vcRuntimeMinimum_x64.log
+[1CE4:1AC4][2026-10-17T01:29:02]i410: Variable: WixBundleManufacturer = Microsoft Corporation
+[1CE4:1AC4][2026-10-17T01:29:02]i410: Variable: WixBundleName = Microsoft Visual C++ v14 Redistributable (x64) - 14.51.36247
+[1CE4:1AC4][2026-10-17T01:29:02]i410: Variable: WixBundleOriginalSource = C:\inputs\VC_redist.x64.exe
+[1CE4:1AC4][2026-10-17T01:29:02]i410: Variable: WixBundleOriginalSourceFolder = C:\inputs\
+[1CE4:1AC4][2026-10-17T01:29:02]i410: Variable: WixBundleProviderKey = VC,redist.x64,amd64,14.51,bundle
+[1CE4:1AC4][2026-10-17T01:29:02]i410: Variable: WixBundleRollbackLog_vcRuntimeAdditional_x64 = C:\results\vc-install_001_vcRuntimeAdditional_x64_rollback.log
+[1CE4:1AC4][2026-10-17T01:29:02]i410: Variable: WixBundleRollbackLog_vcRuntimeMinimum_x64 = C:\results\vc-install_000_vcRuntimeMinimum_x64_rollback.log
+[1CE4:1AC4][2026-10-17T01:29:02]i410: Variable: WixBundleSourceProcessFolder = C:\inputs\
+[1CE4:1AC4][2026-10-17T01:29:02]i410: Variable: WixBundleSourceProcessPath = C:\inputs\VC_redist.x64.exe
+[1CE4:1AC4][2026-10-17T01:29:02]i410: Variable: WixBundleTag = 
+[1CE4:1AC4][2026-10-17T01:29:02]i410: Variable: WixBundleUILevel = 2
+[1CE4:1AC4][2026-10-17T01:29:02]i410: Variable: WixBundleVersion = 14.51.36247.0
+[1CE4:1AC4][2026-10-17T01:29:02]i007: Exit code: 0x0, restarting: No

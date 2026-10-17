@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "source_archive": {
+    "url": "https://github.com/google/sentencepiece/archive/refs/tags/v0.2.1.tar.gz",
+    "bytes": 13485527,
+    "sha256": "c1a59e9259c9653ad0ade653dadff074cd31f0a6ff2a11316f67bee4189a8f1b",
+    "sha512": "012850b63b2323e16acc5dacc0a494ad3f6375425ee86274f0946032e47c088a3b307758b99d752fcf54acf76c82d7d13d0c14bbf07aa9b612c4f1fbd30cf1cf"
+  },
+  "sentencepiece_version": "0.2.1",
+  "vcpkg_baseline": "9e593bb18ea69cc5095e012465dcd675a822ed0d",
+  "scope": "Darts-clone runtime-source notice plus conservative esaxx/sais-lite source/trainer attribution. Supplements the unmodified installed external-provider notices. No exact native linker-member, complete license compliance or release qualification claim.",
+  "files": {
+    "darts-clone-LICENSE": {
+      "bytes": 1481,
+      "sha256": "155f59997298ee336602c49f9c1110f268ac394ca2197eb02647a3555935ad52",
+      "source_member": "sentencepiece-0.2.1/third_party/darts_clone/LICENSE",
+      "source_full_bytes": 1481,
+      "source_full_sha256": "155f59997298ee336602c49f9c1110f268ac394ca2197eb02647a3555935ad52",
+      "selection": "full source file"
+    },
+    "esaxx-LICENSE": {
+      "bytes": 1112,
+      "sha256": "7c28553d1d3312d65fe309f76a22ebaf33a3d76c8c1e3b98a88ee4654ecb53db",
+      "source_member": "sentencepiece-0.2.1/third_party/esaxx/LICENSE",
+      "source_full_bytes": 1112,
+      "source_full_sha256": "7c28553d1d3312d65fe309f76a22ebaf33a3d76c8c1e3b98a88ee4654ecb53db",
+      "selection": "full source file"
+    },
+    "sais-lite-NOTICE.txt": {
+      "bytes": 1174,
+      "sha256": "162a72e52ad69921a67676af4fb59911233566dce1637e2e33db27659fcac523",
+      "source_member": "sentencepiece-0.2.1/third_party/esaxx/sais.hxx",
+      "source_full_bytes": 12385,
+      "source_full_sha256": "6c750f6cf098d346c9d1723291a062bc9154657d5be2c3833601c5a33a5b4d1d",
+      "selection": "initial block comment through first */"
+    }
+  }
+}

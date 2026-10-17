@@ -1,0 +1,67 @@
+[
+  {
+    "name": "construction",
+    "argv": [
+      "C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\python.exe",
+      "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\package_windows.py",
+      "--central-runtime",
+      "--sdk-prefix",
+      "D:\\a\\_temp\\qualified-windows-native\\nemo-valid-mel-sdk",
+      "--native-evidence",
+      "D:\\a\\_temp\\qualified-windows-native\\nemo-valid-mel-evidence",
+      "--output",
+      "D:\\a\\_temp\\windows-valid-mel-runtime\\construction"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "returncode": 0,
+    "elapsed_seconds": 6.421999999999969
+  },
+  {
+    "name": "preflight",
+    "argv": [
+      "C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\python.exe",
+      "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\windows_container_preflight.py",
+      "--output",
+      "D:\\a\\_temp\\windows-valid-mel-runtime\\prerequisites"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "returncode": 0,
+    "elapsed_seconds": 9.26600000000002
+  },
+  {
+    "name": "central-setup",
+    "argv": [
+      "C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\python.exe",
+      "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\windows_central_setup.py",
+      "--prerequisites",
+      "D:\\a\\_temp\\windows-valid-mel-runtime\\prerequisites\\preflight.json",
+      "--output",
+      "D:\\a\\_temp\\windows-valid-mel-runtime\\central-setup"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "returncode": 0,
+    "elapsed_seconds": 36.968999999999994
+  },
+  {
+    "name": "offline-chat",
+    "argv": [
+      "C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\python.exe",
+      "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\qualify_windows_chat.py",
+      "--sdk-prefix",
+      "D:\\a\\_temp\\qualified-windows-native\\nemo-valid-mel-sdk",
+      "--native-evidence",
+      "D:\\a\\_temp\\qualified-windows-native\\nemo-valid-mel-evidence",
+      "--package-evidence",
+      "D:\\a\\_temp\\windows-valid-mel-runtime\\construction",
+      "--central-setup",
+      "D:\\a\\_temp\\windows-valid-mel-runtime\\central-setup",
+      "--prerequisites",
+      "D:\\a\\_temp\\windows-valid-mel-runtime\\prerequisites\\preflight.json",
+      "--output",
+      "D:\\a\\_temp\\windows-valid-mel-runtime\\runtime"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "returncode": 0,
+    "elapsed_seconds": 1385.688
+  }
+]

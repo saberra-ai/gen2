@@ -1,0 +1,47 @@
+[
+    {
+        "Architecture": "amd64",
+        "Config": {
+            "Cmd": [
+                "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+                "-NoLogo",
+                "-NoProfile",
+                "-NonInteractive",
+                "-ExecutionPolicy",
+                "Bypass",
+                "-File",
+                "C:\\inputs\\setup.ps1",
+                "-Mode",
+                "Install"
+            ],
+            "Env": [
+                "PATH=C:\\Windows\\System32;C:\\Windows"
+            ]
+        },
+        "Created": "2026-10-17T01:29:08.3009651Z",
+        "GraphDriver": {
+            "Data": {
+                "dir": "C:\\ProgramData\\docker\\windowsfilter\\5992fe5a0c0b1bbc22c87967fe2f4a63fe994cdae79d29fb04c3ccff8b96c7aa"
+            },
+            "Name": "windowsfilter"
+        },
+        "Id": "sha256:49a954b7951b24849ec4a4b8ff3873d5f75ae720712b73216fc9f71b1494d939",
+        "Metadata": {
+            "LastTagTime": "0001-01-01T00:00:00Z"
+        },
+        "Os": "windows",
+        "OsVersion": "10.0.20348.5622",
+        "Parent": "sha256:76e6f57c103004c102b102281f3e6c750a1aa80cef8c5267d6fc2435408c87fc",
+        "RepoDigests": [],
+        "RepoTags": [],
+        "RootFS": {
+            "Layers": [
+                "sha256:636e121f90b0401f3bff3d93ff78cc731b1e7e852c0e4699a3688b8cb14aa7e5",
+                "sha256:9d326ee8ececd167cd369db833c224c0f8918552bcfe9c6180d5d7a325e84703",
+                "sha256:dfb97631eaf45879bc1488c63bc8f1c292882c96ce183ca61d398eed4648741e"
+            ],
+            "Type": "layers"
+        },
+        "Size": 4953439270
+    }
+]

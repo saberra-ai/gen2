@@ -1,0 +1,88 @@
+{
+  "source_commit": "4083013d56c59f67ad766ade1c331c3dd274eb67",
+  "base_image": {
+    "Id": "sha256:76e6f57c103004c102b102281f3e6c750a1aa80cef8c5267d6fc2435408c87fc",
+    "RepoTags": [
+      "mcr.microsoft.com/windows/servercore:ltsc2022"
+    ],
+    "RepoDigests": [
+      "mcr.microsoft.com/windows/servercore@sha256:76cf422c98ca437b308374d0498280541fa42ac7061bb44015a6c8b70cf4db6a"
+    ],
+    "Created": "2026-09-05T23:48:54.9626747Z",
+    "Config": {
+      "Cmd": [
+        "c:\\windows\\system32\\cmd.exe"
+      ]
+    },
+    "Architecture": "amd64",
+    "Os": "windows",
+    "OsVersion": "10.0.20348.5622",
+    "Size": 4921471209,
+    "GraphDriver": {
+      "Data": {
+        "dir": "C:\\ProgramData\\docker\\windowsfilter\\9f09c89f5b7791f76287f46b78504a976c6d4d6bf0085fcac9240948304a631c"
+      },
+      "Name": "windowsfilter"
+    },
+    "RootFS": {
+      "Type": "layers",
+      "Layers": [
+        "sha256:636e121f90b0401f3bff3d93ff78cc731b1e7e852c0e4699a3688b8cb14aa7e5",
+        "sha256:9d326ee8ececd167cd369db833c224c0f8918552bcfe9c6180d5d7a325e84703"
+      ]
+    },
+    "Metadata": {
+      "LastTagTime": "0001-01-01T00:00:00Z"
+    }
+  },
+  "installer_host_signature_sha256": "6ebc54df338d3b09e85857e763114edf9d541cc9b0628f6106b8472f5a014d38",
+  "minimum_static_receipt_sha256": "af370d9bcd0aad52eab06e459b5e310ae75a740888f0819cba47c149217ceade",
+  "inputs": {
+    ".": {
+      "type": "directory"
+    },
+    "VC_redist.x64.exe": {
+      "type": "file",
+      "bytes": 18731856,
+      "sha256": "843068991daaa1f73ad9f6239bce4d0f6a07a51f18c37ea2a867e9beca71295c"
+    },
+    "control.txt": {
+      "type": "file",
+      "bytes": 36,
+      "sha256": "557070be9798d55927586be814cf91a76b741e8a1a61cfe540dfd49ce0314201"
+    },
+    "controls.ps1": {
+      "type": "file",
+      "bytes": 1920,
+      "sha256": "1a3ac3078c9a0f3afbc4ded1233b72c9c2bf3e3add325a2c276480790159b913"
+    },
+    "expected.json": {
+      "type": "file",
+      "bytes": 1765,
+      "sha256": "ee69fee9309b9de9cb1da0042f587bc60fce3d8051e98736584f815c76e8c911"
+    },
+    "setup.ps1": {
+      "type": "file",
+      "bytes": 4365,
+      "sha256": "400def2864d1cc28c2b89965acde7dab326a37a2818d0a027d43169d6ffd495f"
+    }
+  },
+  "tools": {
+    "windows_central_setup.py": "6396d5e1a66cc67218e09cc3262a8d5e545457a13c04e9aed850301d651cd528",
+    "windows_central_setup.ps1": "400def2864d1cc28c2b89965acde7dab326a37a2818d0a027d43169d6ffd495f",
+    "windows_central_state.py": "38c3af431f80b4f9f408a8f92bbcc87a3cf1b8f675e159cbd9fa1ebfbe14ce05",
+    "windows_vc_signature.ps1": "f61186631a6653f967de82b6eedad10e1c3d2a63ee387d0b2e4bff0de5885e92",
+    "windows_smoke_controls.ps1": "1a3ac3078c9a0f3afbc4ded1233b72c9c2bf3e3add325a2c276480790159b913",
+    "windows_archive.py": "a7defa6349c62fb6f2146796e238e56efbf474571abc04c58258ffe570f4cdd8",
+    "windows_container_smoke.py": "14f17a459765ec7878bf74ba27a1bb6f944379379839a094c1907228b97a1724",
+    "windows_container_preflight.py": "7e70c0910c3665c934207b672cf30865dd75801da07c051775ee5d8e700ee718",
+    "evidence_commands.py": "a3dca1aae8ea35887fdf1426f44ab343e5222e004fb8d6e4b04a6561f4f3ed0e",
+    "artifacts.py": "17df6411ab0394b4d9bb30a099915badf357af26050b6cd08bfd44887688ff42",
+    "package_windows.py": "c8b33b5a94d104cecb1b553cff013944f013d372a4e9a73f678f09a515d3c0dc",
+    "windows_notices.py": "099c1788d8d0aede0361e0e16202dfcac8215e90ee72b89ec806a9d1867508fe",
+    "windows_pe.py": "d194378b4a666444c350f4f4896debcee649568714ae51fc7797844f1cf4d52c",
+    "windows_naming.py": "756b8f24d1ee84c4da479f63fb0ba1e2f2ee2f2bed4d2407b9f37cb7af871efa",
+    "windows-vc-runtime.lock.json": "b0e244165b81946d639aed7d8821a73ff300d6654ad667decc326a6b77a0a7e0",
+    "windows-container.lock.json": "a402e610bf6eb26c681b49fe3a1bea43a6d8adfc265fbda5770ee5c56390b00f"
+  }
+}

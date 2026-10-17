@@ -1,6 +1,15 @@
 # Nemotron 3 Diarization support in Gen2
 
 Status: N0–N3 implemented and verified on macOS arm64 CPU; N4/N5 remain open. Development receipts do not establish a supported desktop release.
+
+Latest pooled CPU verification passes [30m/1h streams](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-long/collection-qualification.json),
+[mixed-model residency](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-mixed/collection-qualification.json)
+and [complete-app recording/live CLI](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-pnola-app-runtime/collection-qualification.json).
+Fresh Linux/Windows functional receipts below use the unchanged non-pooled
+profile. Quality/human word gold, real GUI/microphone, fresh-machine delivery
+and public signing remain open; M1 and Windows CI observations miss real time.
+Main remains unchanged while full roadmap release requirements are unmet.
+
 Current runtime migration: the tagged valid-Mel CPU v2 package passes
 [60-second parity and seven lifecycle gates](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-macos-runtime/qualification.json).
 The [30-minute and one-hour CPU qualification](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-cpu-long/qualification.json)
@@ -1058,8 +1067,15 @@ Full 6000-row/26-turn native-public parity, seven lifecycle tests, isolated chat
 and both CPU-chat load orders pass. Actual API overlaps are 1.432718/1.451059s,
 with 720 private GGML bindings per order. This is the unchanged non-pooled
 `gen2-valid-mel-v1` Linux package; no pooled Linux or broad ELF isolation claim.
-Windows run 38990890737 also completes successfully, with independent collection
-pending. Neither job closes generic-platform, quality or release gates.
+The [fresh Windows receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-current-valid-mel-offline-chat/receiver-qualification.json)
+now independently collects 445 delivered artifact members into 540 evidence
+members, rechecks opaque runtime/helper archives and preserves two receiver-only
+collection errors without rerunning CI/models. Five private DLLs, verified
+central-VC setup, offline native/public parity (6000 rows/27 turns), seven
+lifecycle cases and both CPU-chat load orders pass. Observed public RTF 1.06112
+and native RTF 1.05516 exceed 1 on this CI host; functional checks do not close
+live-performance gates. Both jobs use the non-pooled profile and leave generic
+platform, physical desktop, quality, redistribution and release gates open.
 
 Reviewing complete-app inputs reproduced a separate Pnola staging error: the
 verified pooled package was copied correctly, but `nemotron/bundle.json` still
@@ -1422,8 +1438,18 @@ copy; the canonical private entry remains in the package manifest. A separate
 `macos-pooled-pnola-app-v2.protocol.json` selects that canonical entry for the
 reference version probe, preserves the unchanged strict auditor and all app/
 helper/PCM/acceptance inputs, denies prior output and requires a fresh output.
-V2 inference is unrun; GUI, physical microphone, fresh-machine, signing, quality
-and word-gold gates stay open.
+The [actual V2 complete-app receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-pnola-app-runtime/collection-qualification.json)
+now passes all eight commands and five fresh neural processes. Independent
+native references cover all 6000/8004 frames and bounded probabilities. Automatic
+packaged recording preserves 117 Bark words and matches 27 native turns exactly;
+paced live recovers 11 sections/152 words, exports 803 bytes and matches 35
+independent native turns within 3.56e-15s (the gate remains 1e-6). CPU-Metal
+rejection preserves exact Bark text and the explicit unavailable cause. Three
+strict 92-library native audits and three hardened-app callback closure audits
+pass; protected work/app inventories remain unchanged. The 32-member independent
+collection replays all comparisons without model calls. This is same-host ad-hoc
+CLI evidence; GUI, physical microphone, fresh-machine, public signing, quality
+and word-gold gates remain open. Original V1 remains failed.
 
 ## Verification and release criteria
 

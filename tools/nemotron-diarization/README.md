@@ -824,8 +824,27 @@ passes controls/version process but fails strict image audit on the materialized
 unprefixed entry alias; no app or model ran. V2's separate protocol selects the
 manifest canonical entry for the version probe without widening the auditor.
 App/work/helpers/PCM/cases/criteria stay unchanged, with fresh output and prior
-output denied. V2 is unrun; GUI/microphone/fresh-machine/public-signing/quality/
-word-gold release gates stay open.
+output denied. The [actual V2 app receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-pnola-app-runtime/collection-qualification.json)
+now passes eight commands/five fresh neural processes. Fresh references cover
+6000/8004 frames; packaged recording has exact 27-turn parity and 117 Bark words.
+Paced live recovers 11 sections/152 words, exports 803 bytes and compares 35 turns
+to the independent 80.04s reference with 3.56e-15s maximum error (gate 1e-6).
+CPU-Metal rejection preserves exact Bark text/cause. Three strict 92-library
+native and three hardened-app callback audits pass, with unchanged protected
+inputs and all 32 receipt members independently collected. This same-host ad-hoc CLI result
+leaves GUI/microphone/fresh-machine/public-signing/quality/word-gold release
+gates open. The original V1 remains failed.
+
+Fresh current-consumer Linux and Windows runs now pass functional checks on the
+unchanged non-pooled profile. The [Linux receipt](../../benches/results/nemotron-diarization/linux-x86_64/2026-10-16-current-valid-mel-offline-chat/qualification.json)
+verifies full 6000-row/26-turn parity, seven lifecycle tests and both CPU-chat
+load orders, with positive actual API overlaps and 720 private bindings/order.
+The [Windows receiver receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-16-current-valid-mel-offline-chat/receiver-qualification.json)
+replays full 6000-row/27-turn parity, lifecycle/CPU-chat, five-private-DLL and
+central-VC/OpenMP setup audits. Windows public RTF 1.06112 misses real time.
+Two receiver-only collection failures are preserved; no model run was repeated.
+Neither receipt qualifies pooled platform packages, physical desktops, generic
+OS/CPU baselines, held-out quality, redistribution or release.
 
 `qualify_macos_portable_runtime.py` and `macos-portable-runtime-v2.protocol.json`
 freeze a separate fresh M1 receiver for the exact constructed artifacts. The

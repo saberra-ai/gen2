@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "automatic_packaged_resolution_gates_passed": true,
+  "release_qualified": false,
+  "controller_source_commit": "d3adaf379778bbb54dafbc7abe48fc9661bc2acf",
+  "app_construction_source_commit": "f21c5616d51d6f20600ccee51489ca8178ec13f3",
+  "source_pins_verified": 379,
+  "independent_native_reference_frames": {
+    "native-60s": 6000,
+    "native-80s": 8004
+  },
+  "all_protected_app_and_work_entries_rehashed": true,
+  "actual_commands": 8,
+  "fresh_neural_processes": 5,
+  "comparisons_replayed": {
+    "cpu-recorded": {
+      "turns": 27,
+      "frames": 6000,
+      "native_frame_count_observed": true,
+      "maximum_turn_error_seconds": 0.0
+    },
+    "cpu-live": {
+      "turns": 35,
+      "frames": null,
+      "native_frame_count_observed": false,
+      "maximum_turn_error_seconds": 3.552713678800501e-15,
+      "native_reference_frame_count": 8004,
+      "reference": "Independent pinned public C ABI on the exact 80.04s repeated PCM; app final timeline compared within 1e-6. Internal public API parity also required by the app helper."
+    },
+    "cpu-rejects-metal": {
+      "unsupported_metal_preserves_exact_bark_text": true
+    }
+  },
+  "three_full_private_native_image_audits": true,
+  "three_hardened_app_callback_image_audits": true,
+  "new_native_or_app_or_neural_calls_during_collection": 0,
+  "limits": [
+    "Actual same-host ad-hoc complete CPU app automatic packaged recording/live/recovery/export and explicit Metal rejection only; no artifact environment path overrides.",
+    "Native references expose full frame/probability coverage. App live timeline is compact and its probability rows/native frame count are not observed; turn comparison against the exact independent80.04s CABI reference stays1e-6.",
+    "No physical microphone, GUI, fresh-machine, held-out accuracy, human word gold, uncontended performance, Developer ID/notarization or release claim. Private app binary/source/weights remain local."
+  ]
+}

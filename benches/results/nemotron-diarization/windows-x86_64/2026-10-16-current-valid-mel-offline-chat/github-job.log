@@ -1,0 +1,669 @@
+qualify	Set up job	﻿2026-10-17T01:26:56.8188761Z Current runner version: '2.337.0'
+qualify	Set up job	2026-10-17T01:26:56.8232829Z ##[group]Runner Image Provisioner
+qualify	Set up job	2026-10-17T01:26:56.8233679Z Hosted Compute Agent
+qualify	Set up job	2026-10-17T01:26:56.8234236Z Version: 20261012.601
+qualify	Set up job	2026-10-17T01:26:56.8234836Z Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+qualify	Set up job	2026-10-17T01:26:56.8235499Z Build Date: 2026-10-12T17:48:21Z
+qualify	Set up job	2026-10-17T01:26:56.8236135Z Worker ID: {c3cd1671-d313-4aec-9712-5b3f3ecf3fc3}
+qualify	Set up job	2026-10-17T01:26:56.8236762Z Region: eastus
+qualify	Set up job	2026-10-17T01:26:56.8237691Z Cloud: Azure
+qualify	Set up job	2026-10-17T01:26:56.8238529Z ##[endgroup]
+qualify	Set up job	2026-10-17T01:26:56.8240112Z ##[group]Operating System
+qualify	Set up job	2026-10-17T01:26:56.8240808Z Microsoft Windows Server 2022
+qualify	Set up job	2026-10-17T01:26:56.8241363Z 10.0.20348
+qualify	Set up job	2026-10-17T01:26:56.8241807Z Datacenter
+qualify	Set up job	2026-10-17T01:26:56.8242287Z ##[endgroup]
+qualify	Set up job	2026-10-17T01:26:56.8242754Z ##[group]Runner Image
+qualify	Set up job	2026-10-17T01:26:56.8243314Z Image: windows-2022
+qualify	Set up job	2026-10-17T01:26:56.8243810Z Version: 20261012.333.1
+qualify	Set up job	2026-10-17T01:26:56.8245252Z Included Software: https://github.com/actions/runner-images/blob/win22/20261012.333/images/windows/Windows2022-Readme.md
+qualify	Set up job	2026-10-17T01:26:56.8248566Z Image Release: https://github.com/actions/runner-images/releases/tag/win22%2F20261012.333
+qualify	Set up job	2026-10-17T01:26:56.8249786Z ##[endgroup]
+qualify	Set up job	2026-10-17T01:26:56.8250916Z ##[group]GITHUB_TOKEN Permissions
+qualify	Set up job	2026-10-17T01:26:56.8252995Z Actions: read
+qualify	Set up job	2026-10-17T01:26:56.8253562Z Contents: read
+qualify	Set up job	2026-10-17T01:26:56.8254044Z Metadata: read
+qualify	Set up job	2026-10-17T01:26:56.8254541Z ##[endgroup]
+qualify	Set up job	2026-10-17T01:26:56.8256584Z Secret source: Actions
+qualify	Set up job	2026-10-17T01:26:56.8257568Z Cache mode: write
+qualify	Set up job	2026-10-17T01:26:56.8258207Z Prepare workflow directory
+qualify	Set up job	2026-10-17T01:26:56.8604264Z Prepare all required actions
+qualify	Set up job	2026-10-17T01:26:56.8650944Z Getting action download info
+qualify	Set up job	2026-10-17T01:26:57.0190543Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+qualify	Set up job	2026-10-17T01:26:57.1492930Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+qualify	Set up job	2026-10-17T01:26:57.2902635Z Download action repository 'dtolnay/rust-toolchain@stable' (SHA:b725eda525362e7cf34af9a7243cac1e3f01a7ec)
+qualify	Set up job	2026-10-17T01:26:57.3757475Z Download action repository 'Swatinem/rust-cache@v2' (SHA:6323deb102c322ba6fcbdcafc7e3dddab59af2b6)
+qualify	Set up job	2026-10-17T01:26:57.5154842Z Download action repository 'actions/download-artifact@v4' (SHA:d3f86a106a0bac45b974a628896c90dbdf5c8093)
+qualify	Set up job	2026-10-17T01:26:57.7159188Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+qualify	Set up job	2026-10-17T01:26:58.1288759Z Complete job name: qualify
+qualify	Preserve frozen source line endings	﻿2026-10-17T01:26:58.2856808Z ##[group]Run git config --global core.autocrlf false
+qualify	Preserve frozen source line endings	2026-10-17T01:26:58.2858591Z [36;1mgit config --global core.autocrlf false[0m
+qualify	Preserve frozen source line endings	2026-10-17T01:26:58.2968973Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+qualify	Preserve frozen source line endings	2026-10-17T01:26:58.2970635Z ##[endgroup]
+qualify	Run actions/checkout@v4	﻿2026-10-17T01:26:59.0482323Z ##[group]Run actions/checkout@v4
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.0483691Z with:
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.0484644Z   submodules: recursive
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.0485768Z   repository: saberra-ai/gen2
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.0494284Z   token: ***
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.0495123Z   ssh-strict: true
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.0496009Z   ssh-user: git
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.0496885Z   persist-credentials: true
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.0497846Z   clean: true
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.0498730Z   sparse-checkout-cone-mode: true
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.0499771Z   fetch-depth: 1
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.0500568Z   fetch-tags: false
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.0501371Z   show-progress: true
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.0502171Z   lfs: false
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.0502940Z   set-safe-directory: true
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.0503851Z   allow-unsafe-pr-checkout: false
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.0504789Z ##[endgroup]
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.1893106Z Syncing repository: saberra-ai/gen2
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.1895748Z ##[group]Getting Git version info
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.1896894Z Working directory is 'D:\a\gen2\gen2'
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.2905478Z [command]"C:\Program Files\Git\bin\git.exe" version
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.3189001Z git version 2.56.0.windows.2
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.3224234Z ##[endgroup]
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.3237354Z Copying 'C:\Users\runneradmin\.gitconfig' to 'D:\a\_temp\d8fbe7d2-fb84-4e74-af33-9dd0cd67a40a\.gitconfig'
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.3256599Z Temporarily overriding HOME='D:\a\_temp\d8fbe7d2-fb84-4e74-af33-9dd0cd67a40a' before making global git config changes
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.3258903Z Adding repository directory to the temporary git global config as a safe directory
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.3266348Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\gen2\gen2
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.3536121Z Deleting the contents of 'D:\a\gen2\gen2'
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.3541598Z ##[group]Initializing the repository
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.3549535Z [command]"C:\Program Files\Git\bin\git.exe" init D:\a\gen2\gen2
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.4416503Z Initialized empty Git repository in D:/a/gen2/gen2/.git/
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.4459283Z [command]"C:\Program Files\Git\bin\git.exe" remote add origin https://github.com/saberra-ai/gen2
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.5033406Z ##[endgroup]
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.5035667Z ##[group]Disabling automatic garbage collection
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.5041401Z [command]"C:\Program Files\Git\bin\git.exe" config --local gc.auto 0
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.5335102Z ##[endgroup]
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.5337144Z ##[group]Setting up auth
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.5346050Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+qualify	Run actions/checkout@v4	2026-10-17T01:26:59.5648017Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+qualify	Run actions/checkout@v4	2026-10-17T01:27:00.8241440Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+qualify	Run actions/checkout@v4	2026-10-17T01:27:00.8539093Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+qualify	Run actions/checkout@v4	2026-10-17T01:27:01.3241368Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+qualify	Run actions/checkout@v4	2026-10-17T01:27:01.3521057Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+qualify	Run actions/checkout@v4	2026-10-17T01:27:01.8094314Z [command]"C:\Program Files\Git\bin\git.exe" config --local http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+qualify	Run actions/checkout@v4	2026-10-17T01:27:01.8397248Z ##[endgroup]
+qualify	Run actions/checkout@v4	2026-10-17T01:27:01.8397907Z ##[group]Fetching the repository
+qualify	Run actions/checkout@v4	2026-10-17T01:27:01.8415906Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 fetch --no-tags --prune --no-recurse-submodules --depth=1 origin +4083013d56c59f67ad766ade1c331c3dd274eb67:refs/remotes/origin/codex/nemotron3-n0
+qualify	Run actions/checkout@v4	2026-10-17T01:27:05.5142440Z From https://github.com/saberra-ai/gen2
+qualify	Run actions/checkout@v4	2026-10-17T01:27:05.5143399Z  * [new ref]         4083013d56c59f67ad766ade1c331c3dd274eb67 -> origin/codex/nemotron3-n0
+qualify	Run actions/checkout@v4	2026-10-17T01:27:05.5172063Z ##[endgroup]
+qualify	Run actions/checkout@v4	2026-10-17T01:27:05.5172786Z ##[group]Determining the checkout info
+qualify	Run actions/checkout@v4	2026-10-17T01:27:05.5175289Z ##[endgroup]
+qualify	Run actions/checkout@v4	2026-10-17T01:27:05.5184651Z [command]"C:\Program Files\Git\bin\git.exe" sparse-checkout disable
+qualify	Run actions/checkout@v4	2026-10-17T01:27:05.5580025Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all extensions.worktreeConfig
+qualify	Run actions/checkout@v4	2026-10-17T01:27:05.5880441Z ##[group]Checking out the ref
+qualify	Run actions/checkout@v4	2026-10-17T01:27:05.5881169Z [command]"C:\Program Files\Git\bin\git.exe" checkout --progress --force -B codex/nemotron3-n0 refs/remotes/origin/codex/nemotron3-n0
+qualify	Run actions/checkout@v4	2026-10-17T01:27:06.6832182Z Updating files:  40% (3547/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:06.7034791Z Updating files:  41% (3620/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:06.7247394Z Updating files:  42% (3708/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:06.7606075Z Updating files:  43% (3796/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:06.7955826Z Updating files:  44% (3884/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:06.8145469Z Updating files:  45% (3973/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:06.8398317Z Updating files:  46% (4061/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:06.8595312Z Updating files:  47% (4149/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:06.8779280Z Updating files:  48% (4237/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:06.9033752Z Updating files:  49% (4326/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:06.9228345Z Updating files:  50% (4414/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:06.9484541Z Updating files:  51% (4502/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:06.9732591Z Updating files:  52% (4591/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:06.9925190Z Updating files:  53% (4679/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.0074964Z Updating files:  54% (4767/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.0271571Z Updating files:  55% (4855/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.0444466Z Updating files:  56% (4944/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.0586858Z Updating files:  57% (5032/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.0807422Z Updating files:  58% (5120/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.1051496Z Updating files:  59% (5208/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.1243808Z Updating files:  60% (5297/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.1380947Z Updating files:  61% (5385/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.1500349Z Updating files:  62% (5473/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.1720057Z Updating files:  63% (5562/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.1876960Z Updating files:  64% (5650/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.2024908Z Updating files:  65% (5738/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.2205033Z Updating files:  66% (5826/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.2466781Z Updating files:  67% (5915/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.2652519Z Updating files:  68% (6003/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.2822744Z Updating files:  69% (6091/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.3047679Z Updating files:  70% (6179/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.3255965Z Updating files:  71% (6268/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.3454039Z Updating files:  72% (6356/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.3621152Z Updating files:  73% (6444/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.3817732Z Updating files:  74% (6532/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.3984465Z Updating files:  75% (6621/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.4155341Z Updating files:  76% (6709/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.4336806Z Updating files:  77% (6797/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.4517558Z Updating files:  78% (6886/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.4742357Z Updating files:  79% (6974/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.4963200Z Updating files:  80% (7062/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.5161494Z Updating files:  81% (7150/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.5326551Z Updating files:  82% (7239/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.5487390Z Updating files:  83% (7327/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.5693402Z Updating files:  84% (7415/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.6010871Z Updating files:  85% (7503/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.6337328Z Updating files:  86% (7592/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.6407823Z Updating files:  86% (7667/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.6900922Z Updating files:  87% (7680/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.7164570Z Updating files:  88% (7768/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.7394312Z Updating files:  89% (7857/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.7609615Z Updating files:  90% (7945/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.7805555Z Updating files:  91% (8033/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.8023238Z Updating files:  92% (8121/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.8218489Z Updating files:  93% (8210/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.8429250Z Updating files:  94% (8298/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.8602652Z Updating files:  95% (8386/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.8829467Z Updating files:  96% (8474/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.9040918Z Updating files:  97% (8563/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.9196613Z Updating files:  98% (8651/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.9373827Z Updating files:  99% (8739/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.9374540Z Updating files: 100% (8827/8827)
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.9374835Z Updating files: 100% (8827/8827), done.
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.9601247Z Switched to a new branch 'codex/nemotron3-n0'
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.9623360Z branch 'codex/nemotron3-n0' set up to track 'origin/codex/nemotron3-n0'.
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.9724275Z ##[endgroup]
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.9724665Z ##[group]Setting up auth for fetching submodules
+qualify	Run actions/checkout@v4	2026-10-17T01:27:07.9734416Z [command]"C:\Program Files\Git\bin\git.exe" config --global http.https://github.com/.extraheader "AUTHORIZATION: basic ***"
+qualify	Run actions/checkout@v4	2026-10-17T01:27:08.0021929Z [command]"C:\Program Files\Git\bin\git.exe" config --global --unset-all url.https://github.com/.insteadOf
+qualify	Run actions/checkout@v4	2026-10-17T01:27:08.0305421Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add url.https://github.com/.insteadOf git@github.com:
+qualify	Run actions/checkout@v4	2026-10-17T01:27:08.0602214Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add url.https://github.com/.insteadOf org-199855678@github.com:
+qualify	Run actions/checkout@v4	2026-10-17T01:27:08.0883375Z ##[endgroup]
+qualify	Run actions/checkout@v4	2026-10-17T01:27:08.0883861Z ##[group]Fetching submodules
+qualify	Run actions/checkout@v4	2026-10-17T01:27:08.0898339Z [command]"C:\Program Files\Git\bin\git.exe" submodule sync --recursive
+qualify	Run actions/checkout@v4	2026-10-17T01:27:08.5182711Z [command]"C:\Program Files\Git\bin\git.exe" -c protocol.version=2 submodule update --init --force --depth=1 --recursive
+qualify	Run actions/checkout@v4	2026-10-17T01:27:08.9824631Z Submodule 'vendor/llama-cpp-sys-2/llama.cpp' (https://github.com/ggml-org/llama.cpp.git) registered for path 'vendor/llama-cpp-sys-2/llama.cpp'
+qualify	Run actions/checkout@v4	2026-10-17T01:27:09.0243489Z Cloning into 'D:/a/gen2/gen2/vendor/llama-cpp-sys-2/llama.cpp'...
+qualify	Run actions/checkout@v4	2026-10-17T01:27:14.2158687Z From https://github.com/ggml-org/llama.cpp
+qualify	Run actions/checkout@v4	2026-10-17T01:27:14.2159478Z  * branch            847f447c310a3784d623a953e6f0bb07f04c0f27 -> FETCH_HEAD
+qualify	Run actions/checkout@v4	2026-10-17T01:27:15.5221347Z Submodule path 'vendor/llama-cpp-sys-2/llama.cpp': checked out '847f447c310a3784d623a953e6f0bb07f04c0f27'
+qualify	Run actions/checkout@v4	2026-10-17T01:27:15.5411821Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local gc.auto 0"
+qualify	Run actions/checkout@v4	2026-10-17T01:27:16.0034369Z Entering 'vendor/llama-cpp-sys-2/llama.cpp'
+qualify	Run actions/checkout@v4	2026-10-17T01:27:16.0623332Z ##[endgroup]
+qualify	Run actions/checkout@v4	2026-10-17T01:27:16.0623735Z ##[group]Persisting credentials for submodules
+qualify	Run actions/checkout@v4	2026-10-17T01:27:16.0635226Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'url\.https\:\/\/github\.com\/\.insteadOf' && git config --local --unset-all 'url.https://github.com/.insteadOf' || :\""
+qualify	Run actions/checkout@v4	2026-10-17T01:27:16.5978989Z Entering 'vendor/llama-cpp-sys-2/llama.cpp'
+qualify	Run actions/checkout@v4	2026-10-17T01:27:16.6925472Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local 'http.https://github.com/.extraheader' 'AUTHORIZATION: basic ***' && git config --local --show-origin --name-only --get-regexp remote.origin.url\""
+qualify	Run actions/checkout@v4	2026-10-17T01:27:17.1449043Z Entering 'vendor/llama-cpp-sys-2/llama.cpp'
+qualify	Run actions/checkout@v4	2026-10-17T01:27:17.2076711Z file:D:/a/gen2/gen2/.git/modules/vendor/llama-cpp-sys-2/llama.cpp/config	remote.origin.url
+qualify	Run actions/checkout@v4	2026-10-17T01:27:17.2294412Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --add 'url.https://github.com/.insteadOf' 'git@github.com:'"
+qualify	Run actions/checkout@v4	2026-10-17T01:27:17.6767263Z Entering 'vendor/llama-cpp-sys-2/llama.cpp'
+qualify	Run actions/checkout@v4	2026-10-17T01:27:17.7244805Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --add 'url.https://github.com/.insteadOf' 'org-199855678@github.com:'"
+qualify	Run actions/checkout@v4	2026-10-17T01:27:18.1614020Z Entering 'vendor/llama-cpp-sys-2/llama.cpp'
+qualify	Run actions/checkout@v4	2026-10-17T01:27:18.2084665Z ##[endgroup]
+qualify	Run actions/checkout@v4	2026-10-17T01:27:18.2441653Z [command]"C:\Program Files\Git\bin\git.exe" log -1 --format=%H
+qualify	Run actions/checkout@v4	2026-10-17T01:27:18.2694035Z 4083013d56c59f67ad766ade1c331c3dd274eb67
+qualify	Fetch exact historical SDK source before offline admission	﻿2026-10-17T01:27:18.2965411Z ##[group]Run git fetch --no-tags --depth=1 origin 8fbef3e8a46a034b8e0ffa8f096409db683a923e
+qualify	Fetch exact historical SDK source before offline admission	2026-10-17T01:27:18.2966118Z [36;1mgit fetch --no-tags --depth=1 origin 8fbef3e8a46a034b8e0ffa8f096409db683a923e[0m
+qualify	Fetch exact historical SDK source before offline admission	2026-10-17T01:27:18.3009948Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+qualify	Fetch exact historical SDK source before offline admission	2026-10-17T01:27:18.3010293Z env:
+qualify	Fetch exact historical SDK source before offline admission	2026-10-17T01:27:18.3010473Z   GIT_TERMINAL_PROMPT: 0
+qualify	Fetch exact historical SDK source before offline admission	2026-10-17T01:27:18.3010680Z ##[endgroup]
+qualify	Fetch exact historical SDK source before offline admission	2026-10-17T01:27:18.8777890Z From https://github.com/saberra-ai/gen2
+qualify	Fetch exact historical SDK source before offline admission	2026-10-17T01:27:18.8778388Z  * branch            8fbef3e8a46a034b8e0ffa8f096409db683a923e -> FETCH_HEAD
+qualify	Run actions/setup-python@v5	﻿2026-10-17T01:27:18.9965660Z ##[group]Run actions/setup-python@v5
+qualify	Run actions/setup-python@v5	2026-10-17T01:27:18.9966033Z with:
+qualify	Run actions/setup-python@v5	2026-10-17T01:27:18.9966228Z   python-version: 3.12
+qualify	Run actions/setup-python@v5	2026-10-17T01:27:18.9966659Z   check-latest: false
+qualify	Run actions/setup-python@v5	2026-10-17T01:27:18.9969012Z   token: ***
+qualify	Run actions/setup-python@v5	2026-10-17T01:27:18.9969214Z   update-environment: true
+qualify	Run actions/setup-python@v5	2026-10-17T01:27:18.9969442Z   allow-prereleases: false
+qualify	Run actions/setup-python@v5	2026-10-17T01:27:18.9969653Z   freethreaded: false
+qualify	Run actions/setup-python@v5	2026-10-17T01:27:18.9969848Z ##[endgroup]
+qualify	Run actions/setup-python@v5	2026-10-17T01:27:19.1518741Z ##[group]Installed versions
+qualify	Run actions/setup-python@v5	2026-10-17T01:27:19.1657014Z (node:1556) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+qualify	Run actions/setup-python@v5	2026-10-17T01:27:19.1658011Z (Use `node --trace-deprecation ...` to show where the warning was created)
+qualify	Run actions/setup-python@v5	2026-10-17T01:27:19.1658756Z Successfully set up CPython (3.12.10)
+qualify	Run actions/setup-python@v5	2026-10-17T01:27:19.1676040Z ##[endgroup]
+qualify	Run dtolnay/rust-toolchain@stable	﻿2026-10-17T01:27:19.2050350Z ##[group]Run dtolnay/rust-toolchain@stable
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2050805Z with:
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2051051Z   toolchain: stable
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2051314Z env:
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2051678Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2052372Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2053028Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2053616Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2054196Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2054654Z ##[endgroup]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2117478Z ##[start-action display=Parse toolchain version;id=__dtolnay_rust-toolchain.parse]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2240218Z ##[group]Run if [[ -z $toolchain ]]; then
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2240525Z [36;1mif [[ -z $toolchain ]]; then[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2241024Z [36;1m  # GitHub does not enforce `required: true` inputs itself. https://github.com/actions/runner/issues/1070[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2241598Z [36;1m  echo "'toolchain' is a required input" >&2[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2241917Z [36;1m  exit 1[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2242226Z [36;1melif [[ $toolchain =~ ^stable' '[0-9]+' '(year|month|week|day)s?' 'ago$ ]]; then[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2242635Z [36;1m  if [[ Windows == macOS ]]; then[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2243160Z [36;1m    echo "toolchain=1.$((($(date -v-$(sed 's/stable \([0-9]*\) \(.\).*/\1\2/' <<< $toolchain) +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2243664Z [36;1m  else[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2244045Z [36;1m    echo "toolchain=1.$((($(date --date "${toolchain#stable }" +%s)/60/60/24-16569)/7/6))" >> $GITHUB_OUTPUT[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2244491Z [36;1m  fi[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2244771Z [36;1melif [[ $toolchain =~ ^stable' 'minus' '[0-9]+' 'releases?$ ]]; then[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2245284Z [36;1m  echo "toolchain=1.$((($(date +%s)/60/60/24-16569)/7/6-${toolchain//[^0-9]/}))" >> $GITHUB_OUTPUT[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2245733Z [36;1melif [[ $toolchain =~ ^1\.[0-9]+$ ]]; then[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2246234Z [36;1m  echo "toolchain=1.$((i=${toolchain#1.}, c=($(date +%s)/60/60/24-16569)/7/6, i+9*i*(10*i<=c)+90*i*(100*i<=c)))" >> $GITHUB_OUTPUT[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2246722Z [36;1melse[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2246899Z [36;1m  delimiter=EOF[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2247188Z [36;1m  while [[ $toolchain == *$delimiter* ]]; do delimiter+=_; done[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2247766Z [36;1m  printf 'toolchain<<%s\n%s\n%s\n' "$delimiter" "$toolchain" "$delimiter" >> $GITHUB_OUTPUT[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2248190Z [36;1mfi[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2264221Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2264630Z env:
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2264898Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2265347Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2265788Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2266176Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2266566Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2267599Z   toolchain: stable
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.2267786Z ##[endgroup]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.3816646Z ##[end-action id=__dtolnay_rust-toolchain.parse;outcome=success;conclusion=success;duration_ms=169]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.3821418Z ##[start-action display=Set $CARGO_HOME;id=__dtolnay_rust-toolchain.__run]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.3919812Z ##[group]Run echo CARGO_HOME=${CARGO_HOME:-"$USERPROFILE\.cargo"} >> $GITHUB_ENV
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.3920369Z [36;1mecho CARGO_HOME=${CARGO_HOME:-"$USERPROFILE\.cargo"} >> $GITHUB_ENV[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.3933829Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.3934220Z env:
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.3936131Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.3936604Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.3937051Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.3937467Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.3937856Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.3938159Z ##[endgroup]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4233831Z ##[end-action id=__dtolnay_rust-toolchain.__run;outcome=success;conclusion=success;duration_ms=41]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4235985Z ##[start-action display=Install rustup if needed;id=__dtolnay_rust-toolchain.__run_2]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4245258Z ##[end-action id=__dtolnay_rust-toolchain.__run_2;outcome=skipped;conclusion=skipped;duration_ms=0]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4247389Z ##[start-action display=Install rustup if needed on windows;id=__dtolnay_rust-toolchain.__run_3]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4344956Z ##[group]Run if ! command -v rustup &>/dev/null; then
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4345302Z [36;1mif ! command -v rustup &>/dev/null; then[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4346058Z [36;1m  curl --proto '=https' --tlsv1.2 --retry 10 --retry-connrefused --location --silent --show-error --fail https://win.rustup.rs/x86_64 --output 'D:\a\_temp\rustup-init.exe'[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4346953Z [36;1m  'D:\a\_temp\rustup-init.exe' --default-toolchain none --no-modify-path -y[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4347379Z [36;1m  echo "$CARGO_HOME\bin" >> $GITHUB_PATH[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4347638Z [36;1mfi[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4360354Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4360732Z env:
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4360992Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4361447Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4361886Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4362292Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4362681Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4363004Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4363249Z ##[endgroup]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4769411Z ##[end-action id=__dtolnay_rust-toolchain.__run_3;outcome=success;conclusion=success;duration_ms=52]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4781899Z ##[start-action display=rustup toolchain install stable;id=__dtolnay_rust-toolchain.__run_4]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4872558Z ##[group]Run set -f  # split targets and components on commas and whitespace, without glob expansion
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4873207Z [36;1mset -f  # split targets and components on commas and whitespace, without glob expansion[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4873626Z [36;1mflags=()[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4873882Z [36;1mfor t in ${targets//,/ }; do flags+=(--target "$t"); done[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4874280Z [36;1mfor c in ${components//,/ }; do flags+=(--component "$c"); done[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4874754Z [36;1mif [[ $toolchain == nightly && -n $components ]]; then flags+=(--allow-downgrade); fi[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4875147Z [36;1mlog=$(mktemp)[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4875514Z [36;1mtrap 'rm -f "$log"' EXIT[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4875745Z [36;1mfor attempt in 1 2 3 4 5; do[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4876285Z [36;1m  if rustup toolchain install "$toolchain" "${flags[@]}" --profile minimal --no-self-update --force-non-host 2>&1 | tee "$log"; then[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4876825Z [36;1m    break[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4876995Z [36;1m  else[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4877164Z [36;1m    status=$?[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4877343Z [36;1m  fi[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4877604Z [36;1m  if [[ $attempt == 5 ]] || ! grep -Fq 'checksum failed for ' "$log" \[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4878140Z [36;1m      || ! grep -Fq 'this is likely due to an ongoing update of the official release server' "$log"; then[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4879218Z [36;1m    exit "$status"[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4879420Z [36;1m  fi[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4879748Z [36;1m  echo "Retrying rustup toolchain install in 30 seconds (retry $attempt of 4)" >&2[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4880150Z [36;1m  sleep 30[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4880327Z [36;1mdone[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4892943Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4893332Z env:
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4893604Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4894057Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4894497Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4894892Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4895278Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4895608Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4895864Z   toolchain: stable
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4896044Z   targets: 
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4896202Z   components: 
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4896390Z   RUSTUP_PERMIT_COPY_RENAME: 1
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:19.4896599Z ##[endgroup]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:23.0201339Z info: syncing channel updates for stable-x86_64-pc-windows-msvc
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:23.4424722Z info: latest update on 2026-10-15 for version 1.99.1 (58cf8f9c3 2026-10-13)
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:23.4736126Z info: removing previous version of component rustfmt
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:23.4892174Z info: removing previous version of component clippy
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:23.5048981Z info: removing previous version of component rust-std for target x86_64-pc-windows-gnu
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:23.5986200Z info: removing previous version of component rust-std for target i686-pc-windows-msvc
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:23.6777717Z info: removing previous version of component cargo
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:23.7402123Z info: removing previous version of component rust-std
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:23.8340433Z info: removing previous version of component rustc
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:23.8965282Z info: downloading 7 components
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:35.5474118Z 
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:36.9869613Z   stable-x86_64-pc-windows-msvc updated - rustc 1.99.1 (58cf8f9c3 2026-10-13) (from rustc 1.99.0 (b940084d7 2026-09-28))
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:36.9870280Z 
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.0265140Z ##[end-action id=__dtolnay_rust-toolchain.__run_4;outcome=success;conclusion=success;duration_ms=17548]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.0272078Z ##[start-action display=rustup default stable;id=__dtolnay_rust-toolchain.__run_5]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.0365929Z ##[group]Run rustup default "$toolchain" --force-non-host
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.0366312Z [36;1mrustup default "$toolchain" --force-non-host[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.0379595Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.0379987Z env:
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.0380249Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.0380730Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.0381169Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.0381559Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.0382097Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.0382419Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.0382661Z   toolchain: stable
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.0382839Z ##[endgroup]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.0908442Z info: using existing install for stable-x86_64-pc-windows-msvc
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.0951115Z info: default toolchain set to stable-x86_64-pc-windows-msvc
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.0951527Z 
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.1101691Z   stable-x86_64-pc-windows-msvc unchanged - rustc 1.99.1 (58cf8f9c3 2026-10-13)
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.1102096Z 
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.1160179Z ##[end-action id=__dtolnay_rust-toolchain.__run_5;outcome=success;conclusion=success;duration_ms=88]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.1163703Z ##[start-action display=Create cachekey;id=__dtolnay_rust-toolchain.rustc-version]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.1253766Z ##[group]Run DATE=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.1254622Z [36;1mDATE=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-date: \(20[0-9][0-9]\)-\([01][0-9]\)-\([0-3][0-9]\)$/\1\2\3/p')[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.1255290Z [36;1mHASH=$(rustc +"$toolchain" --version --verbose | sed -ne 's/^commit-hash: //p')[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.1255786Z [36;1mecho "cachekey=$(echo $DATE$HASH | head -c12)" >> $GITHUB_OUTPUT[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.1268956Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.1269332Z env:
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.1269589Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.1270037Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.1270488Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.1270872Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.1271258Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.1271589Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.1271829Z   toolchain: stable
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.1272006Z ##[endgroup]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.8350604Z ##[end-action id=__dtolnay_rust-toolchain.rustc-version;outcome=success;conclusion=success;duration_ms=718]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.8353172Z ##[start-action display=Disable incremental compilation;id=__dtolnay_rust-toolchain.__run_6]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.8446331Z ##[group]Run if [ -z "${CARGO_INCREMENTAL+set}" ]; then
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.8446712Z [36;1mif [ -z "${CARGO_INCREMENTAL+set}" ]; then[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.8447025Z [36;1m  echo CARGO_INCREMENTAL=0 >> $GITHUB_ENV[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.8447283Z [36;1mfi[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.8460446Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.8460839Z env:
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.8461105Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.8461601Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.8462341Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.8462847Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.8463251Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.8463580Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.8463839Z ##[endgroup]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.8764023Z ##[end-action id=__dtolnay_rust-toolchain.__run_6;outcome=success;conclusion=success;duration_ms=41]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.8766401Z ##[start-action display=Enable colors in Cargo output;id=__dtolnay_rust-toolchain.__run_7]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.8860816Z ##[group]Run if [ -z "${CARGO_TERM_COLOR+set}" ]; then
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.8861173Z [36;1mif [ -z "${CARGO_TERM_COLOR+set}" ]; then[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.8861487Z [36;1m  echo CARGO_TERM_COLOR=always >> $GITHUB_ENV[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.8861890Z [36;1mfi[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.8874902Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.8875288Z env:
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.8875552Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.8876018Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.8876473Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.8876883Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.8877275Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.8877613Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.8877864Z   CARGO_INCREMENTAL: 0
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:37.8878202Z ##[endgroup]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.0714243Z ##[end-action id=__dtolnay_rust-toolchain.__run_7;outcome=success;conclusion=success;duration_ms=194]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.0717498Z ##[start-action display=Enable Cargo sparse registry;id=__dtolnay_rust-toolchain.__run_8]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.0811993Z ##[group]Run # implemented in 1.66, stabilized in 1.68, made default in 1.70
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.0812501Z [36;1m# implemented in 1.66, stabilized in 1.68, made default in 1.70[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.0813142Z [36;1mif [ -z "${CARGO_REGISTRIES_CRATES_IO_PROTOCOL+set}" -o -f "D:\a\_temp"/.implicit_cargo_registries_crates_io_protocol ]; then[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.0813820Z [36;1m  if rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.6[89]\.'; then[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.0814390Z [36;1m    touch "D:\a\_temp"/.implicit_cargo_registries_crates_io_protocol || true[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.0814914Z [36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=sparse >> $GITHUB_ENV[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.0815420Z [36;1m  elif rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.6[67]\.'; then[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.0815955Z [36;1m    touch "D:\a\_temp"/.implicit_cargo_registries_crates_io_protocol || true[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.0816430Z [36;1m    echo CARGO_REGISTRIES_CRATES_IO_PROTOCOL=git >> $GITHUB_ENV[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.0816760Z [36;1m  fi[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.0816934Z [36;1mfi[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.0829813Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.0830211Z env:
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.0830476Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.0830988Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.0831445Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.0831856Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.0832261Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.0832591Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.0832840Z   CARGO_INCREMENTAL: 0
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.0833042Z   CARGO_TERM_COLOR: always
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.0833257Z   toolchain: stable
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.0833439Z ##[endgroup]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.2611940Z ##[end-action id=__dtolnay_rust-toolchain.__run_8;outcome=success;conclusion=success;duration_ms=189]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.2615951Z ##[start-action display=Work around spurious network errors in curl 8.0;id=__dtolnay_rust-toolchain.__run_9]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.2708428Z ##[group]Run # https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.2709178Z [36;1m# https://rust-lang.zulipchat.com/#narrow/stream/246057-t-cargo/topic/timeout.20investigation[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.2709823Z [36;1mif rustc +"$toolchain" --version --verbose | grep -q '^release: 1\.7[01]\.'; then[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.2710305Z [36;1m  echo CARGO_HTTP_MULTIPLEXING=false >> $GITHUB_ENV[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.2710600Z [36;1mfi[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.2723691Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.2724903Z env:
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.2725172Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.2725650Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.2726108Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.2726505Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.2726897Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.2727237Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.2727489Z   CARGO_INCREMENTAL: 0
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.2727692Z   CARGO_TERM_COLOR: always
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.2727893Z   toolchain: stable
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.2728074Z ##[endgroup]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.3766578Z ##[end-action id=__dtolnay_rust-toolchain.__run_9;outcome=success;conclusion=success;duration_ms=114]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.3770841Z ##[start-action display=rustc +stable --version --verbose;id=__dtolnay_rust-toolchain.__run_10]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.3862787Z ##[group]Run rustc +"$toolchain" --version --verbose
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.3863128Z [36;1mrustc +"$toolchain" --version --verbose[0m
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.3876499Z shell: C:\Program Files\Git\bin\bash.EXE --noprofile --norc -e -o pipefail {0}
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.3876896Z env:
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.3877151Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.3877616Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.3878060Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.3878448Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.3878830Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.3879161Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.3879405Z   CARGO_INCREMENTAL: 0
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.3879605Z   CARGO_TERM_COLOR: always
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.3879804Z   toolchain: stable
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.3879985Z ##[endgroup]
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.4525167Z rustc 1.99.1 (58cf8f9c3 2026-10-13)
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.4525653Z binary: rustc
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.4525990Z commit-hash: 58cf8f9c35b355199727627d07ae34a4e2846d67
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.4526362Z commit-date: 2026-10-13
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.4526629Z host: x86_64-pc-windows-msvc
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.4526892Z release: 1.99.1
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.4527271Z LLVM version: 23.1.1
+qualify	Run dtolnay/rust-toolchain@stable	2026-10-17T01:27:38.4612063Z ##[end-action id=__dtolnay_rust-toolchain.__run_10;outcome=success;conclusion=success;duration_ms=84]
+qualify	Run Swatinem/rust-cache@v2	﻿2026-10-17T01:27:38.4777987Z ##[group]Run Swatinem/rust-cache@v2
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:38.4778306Z with:
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:38.4778515Z   shared-key: nemotron-windows-chat-openmp
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:38.4778794Z   cache-on-failure: true
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:38.4779001Z   prefix-key: v0-rust
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:38.4779190Z   add-job-id-key: true
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:38.4779401Z   add-rust-environment-hash-key: true
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:38.4779664Z   cache-targets: true
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:38.4779861Z   cache-all-crates: false
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:38.4780073Z   cache-workspace-crates: false
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:38.4780284Z   save-if: true
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:38.4780460Z   cache-provider: github
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:38.4780663Z   cache-bin: true
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:38.4780893Z   lookup-only: false
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:38.4781078Z   cmd-format: {0}
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:38.4781242Z env:
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:38.4781483Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:38.4781945Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:38.4782416Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:38.4782802Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:38.4783189Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:38.4783515Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:38.4783780Z   CARGO_INCREMENTAL: 0
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:38.4784171Z   CARGO_TERM_COLOR: always
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:38.4784372Z ##[endgroup]
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:41.4977112Z ##[group]Cache Configuration
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:41.4977642Z Cache Provider:
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:41.4977938Z     github
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:41.4978208Z Workspaces:
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:41.4978484Z     D:\a\gen2\gen2
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:41.4978782Z Cache Paths:
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:41.4979105Z     C:\Users\runneradmin\.cargo\bin
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:41.4979558Z     C:\Users\runneradmin\.cargo\.crates.toml
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:41.4980047Z     C:\Users\runneradmin\.cargo\.crates2.json
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:41.4980576Z     C:\Users\runneradmin\.cargo\registry
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:41.4981018Z     C:\Users\runneradmin\.cargo\git
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:41.4981416Z     D:\a\gen2\gen2\target
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:41.4981748Z Restore Key:
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:41.4982225Z     v0-rust-nemotron-windows-chat-openmp-Windows_NT-x64-e70cdc14
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:41.4982799Z Cache Key:
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:41.4983282Z     v0-rust-nemotron-windows-chat-openmp-Windows_NT-x64-e70cdc14-7786e3a2
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:41.4983928Z .. Prefix:
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:41.4984331Z   - v0-rust-nemotron-windows-chat-openmp-Windows_NT-x64
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:41.4984883Z .. Environment considered:
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:41.4986253Z   - Rust Versions:
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:41.4986777Z     - 1.99.1 x86_64-pc-windows-msvc 58cf8f9c35b355199727627d07ae34a4e2846d67
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:41.4987376Z   - CARGO_HOME
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:41.4987671Z   - CARGO_INCREMENTAL
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:41.4987974Z   - CARGO_TERM_COLOR
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:41.4988494Z .. Lockfiles considered:
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:41.4988870Z   - D:\a\gen2\gen2\Cargo.lock
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:41.4989776Z   - D:\a\gen2\gen2\Cargo.toml
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:41.4990290Z   - D:\a\gen2\gen2\crates\gen2-mlxcel\Cargo.toml
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:41.4991301Z   - D:\a\gen2\gen2\examples\laya-mobile\Cargo.toml
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:41.4992067Z ##[endgroup]
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:41.4992266Z 
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:41.4992409Z ... Restoring cache ...
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:41.7005643Z Cache hit for: v0-rust-nemotron-windows-chat-openmp-Windows_NT-x64-e70cdc14-7786e3a2
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:42.7520355Z Received 171966464 of 548990211 (31.3%), 163.8 MBs/sec
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:43.7675890Z Received 348127232 of 548990211 (63.4%), 165.1 MBs/sec
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:44.7617528Z Received 520093696 of 548990211 (94.7%), 164.7 MBs/sec
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:45.1106172Z Received 548990211 of 548990211 (100.0%), 155.8 MBs/sec
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:45.1109269Z Cache Size: ~524 MB (548990211 B)
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:45.1188118Z [command]"C:\Program Files\Git\usr\bin\tar.exe" -xf D:/a/_temp/e6c66a70-f840-4c2c-9292-0254ba75c947/cache.tzst -P -C D:/a/gen2/gen2 --force-local --use-compress-program "zstd -d"
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:59.1592004Z Cache restored successfully
+qualify	Run Swatinem/rust-cache@v2	2026-10-17T01:27:59.1837912Z Restored from cache key "v0-rust-nemotron-windows-chat-openmp-Windows_NT-x64-e70cdc14-7786e3a2" full match: true.
+qualify	Retrieve exact successful tagged SDK artifact	﻿2026-10-17T01:27:59.2115841Z ##[group]Run actions/download-artifact@v4
+qualify	Retrieve exact successful tagged SDK artifact	2026-10-17T01:27:59.2116216Z with:
+qualify	Retrieve exact successful tagged SDK artifact	2026-10-17T01:27:59.2116403Z   artifact-ids: 12065431951
+qualify	Retrieve exact successful tagged SDK artifact	2026-10-17T01:27:59.2116626Z   merge-multiple: true
+qualify	Retrieve exact successful tagged SDK artifact	2026-10-17T01:27:59.2116826Z   run-id: 38940008466
+qualify	Retrieve exact successful tagged SDK artifact	2026-10-17T01:27:59.2119192Z   github-token: ***
+qualify	Retrieve exact successful tagged SDK artifact	2026-10-17T01:27:59.2119437Z   path: D:\a\_temp/qualified-windows-native
+qualify	Retrieve exact successful tagged SDK artifact	2026-10-17T01:27:59.2119731Z   repository: saberra-ai/gen2
+qualify	Retrieve exact successful tagged SDK artifact	2026-10-17T01:27:59.2119946Z env:
+qualify	Retrieve exact successful tagged SDK artifact	2026-10-17T01:27:59.2120198Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Retrieve exact successful tagged SDK artifact	2026-10-17T01:27:59.2120646Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+qualify	Retrieve exact successful tagged SDK artifact	2026-10-17T01:27:59.2121102Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Retrieve exact successful tagged SDK artifact	2026-10-17T01:27:59.2121509Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Retrieve exact successful tagged SDK artifact	2026-10-17T01:27:59.2121901Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Retrieve exact successful tagged SDK artifact	2026-10-17T01:27:59.2122229Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+qualify	Retrieve exact successful tagged SDK artifact	2026-10-17T01:27:59.2122513Z   CARGO_INCREMENTAL: 0
+qualify	Retrieve exact successful tagged SDK artifact	2026-10-17T01:27:59.2122899Z   CARGO_TERM_COLOR: always
+qualify	Retrieve exact successful tagged SDK artifact	2026-10-17T01:27:59.2123109Z   CACHE_ON_FAILURE: true
+qualify	Retrieve exact successful tagged SDK artifact	2026-10-17T01:27:59.2123310Z ##[endgroup]
+qualify	Retrieve exact successful tagged SDK artifact	2026-10-17T01:27:59.4015194Z Downloading artifacts by ID
+qualify	Retrieve exact successful tagged SDK artifact	2026-10-17T01:27:59.4020938Z Fetching artifact list for workflow run 38940008466 in repository saberra-ai/gen2
+qualify	Retrieve exact successful tagged SDK artifact	2026-10-17T01:27:59.4085834Z (node:7684) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+qualify	Retrieve exact successful tagged SDK artifact	2026-10-17T01:27:59.4086555Z (Use `node --trace-deprecation ...` to show where the warning was created)
+qualify	Retrieve exact successful tagged SDK artifact	2026-10-17T01:27:59.4751416Z (node:7684) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+qualify	Retrieve exact successful tagged SDK artifact	2026-10-17T01:27:59.6145840Z Found 2 artifact(s)
+qualify	Retrieve exact successful tagged SDK artifact	2026-10-17T01:27:59.6146973Z Preparing to download the following artifacts:
+qualify	Retrieve exact successful tagged SDK artifact	2026-10-17T01:27:59.6148090Z - nemotron-valid-mel-native-windows-2022 (ID: 12065431951, Size: 15482265, Expected Digest: sha256:2cd6c4f1ab1f3183e235612890bea36526622027934e31c9e17ea5b855a5506e)
+qualify	Retrieve exact successful tagged SDK artifact	2026-10-17T01:27:59.6185659Z Downloading artifact '12065431951' from 'saberra-ai/gen2'
+qualify	Retrieve exact successful tagged SDK artifact	2026-10-17T01:27:59.7492046Z Redirecting to blob download url: https://productionresultssa12.blob.core.windows.net/actions-results/b2b2ebf5-799b-8926-8e33-c787f31045f4/workflow-job-run-6d23f15d-d0f6-5619-b549-f9b59108ca1b/artifacts/a1f97088789a482a36f6c0f2cfedd61fc9a4645f3df879293f2fed84b35658d1.zip
+qualify	Retrieve exact successful tagged SDK artifact	2026-10-17T01:27:59.7493869Z Starting download of artifact to: D:\a\_temp\qualified-windows-native
+qualify	Retrieve exact successful tagged SDK artifact	2026-10-17T01:27:59.8246488Z (node:7684) [DEP0005] DeprecationWarning: Buffer() is deprecated due to security and usability issues. Please use the Buffer.alloc(), Buffer.allocUnsafe(), or Buffer.from() methods instead.
+qualify	Retrieve exact successful tagged SDK artifact	2026-10-17T01:28:00.5551844Z SHA256 digest of downloaded artifact is 2cd6c4f1ab1f3183e235612890bea36526622027934e31c9e17ea5b855a5506e
+qualify	Retrieve exact successful tagged SDK artifact	2026-10-17T01:28:00.5552661Z Artifact download completed successfully.
+qualify	Retrieve exact successful tagged SDK artifact	2026-10-17T01:28:00.5553107Z Total of 1 artifact(s) downloaded
+qualify	Retrieve exact successful tagged SDK artifact	2026-10-17T01:28:00.5562701Z Download artifact has finished successfully
+qualify	Retain actual SDK producer identity	﻿2026-10-17T01:28:00.5797688Z ##[group]Run gh api repos/saberra-ai/gen2/actions/runs/38940008466 | Out-File -FilePath "D:\a\_temp/windows-native-producer.json" -Encoding utf8
+qualify	Retain actual SDK producer identity	2026-10-17T01:28:00.5799205Z [36;1mgh api repos/saberra-ai/gen2/actions/runs/38940008466 | Out-File -FilePath "D:\a\_temp/windows-native-producer.json" -Encoding utf8[0m
+qualify	Retain actual SDK producer identity	2026-10-17T01:28:00.5846123Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+qualify	Retain actual SDK producer identity	2026-10-17T01:28:00.5846808Z env:
+qualify	Retain actual SDK producer identity	2026-10-17T01:28:00.5847125Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Retain actual SDK producer identity	2026-10-17T01:28:00.5847589Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+qualify	Retain actual SDK producer identity	2026-10-17T01:28:00.5848051Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Retain actual SDK producer identity	2026-10-17T01:28:00.5848664Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Retain actual SDK producer identity	2026-10-17T01:28:00.5849249Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Retain actual SDK producer identity	2026-10-17T01:28:00.5849788Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+qualify	Retain actual SDK producer identity	2026-10-17T01:28:00.5850112Z   CARGO_INCREMENTAL: 0
+qualify	Retain actual SDK producer identity	2026-10-17T01:28:00.5850313Z   CARGO_TERM_COLOR: always
+qualify	Retain actual SDK producer identity	2026-10-17T01:28:00.5850703Z   CACHE_ON_FAILURE: true
+qualify	Retain actual SDK producer identity	2026-10-17T01:28:00.5854450Z   GH_TOKEN: ***
+qualify	Retain actual SDK producer identity	2026-10-17T01:28:00.5854688Z ##[endgroup]
+qualify	Construct and qualify frozen central-runtime package	﻿2026-10-17T01:28:05.4586792Z ##[group]Run python tools/nemotron-diarization/qualify_current_valid_mel_windows_runtime.py --native-input "D:\a\_temp/qualified-windows-native" --producer-metadata "D:\a\_temp/windows-native-producer.json" --output "D:\a\_temp/windows-valid-mel-runtime"
+qualify	Construct and qualify frozen central-runtime package	2026-10-17T01:28:05.4588711Z [36;1mpython tools/nemotron-diarization/qualify_current_valid_mel_windows_runtime.py --native-input "D:\a\_temp/qualified-windows-native" --producer-metadata "D:\a\_temp/windows-native-producer.json" --output "D:\a\_temp/windows-valid-mel-runtime"[0m
+qualify	Construct and qualify frozen central-runtime package	2026-10-17T01:28:05.4628163Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+qualify	Construct and qualify frozen central-runtime package	2026-10-17T01:28:05.4628675Z env:
+qualify	Construct and qualify frozen central-runtime package	2026-10-17T01:28:05.4628939Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Construct and qualify frozen central-runtime package	2026-10-17T01:28:05.4629412Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+qualify	Construct and qualify frozen central-runtime package	2026-10-17T01:28:05.4629857Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Construct and qualify frozen central-runtime package	2026-10-17T01:28:05.4630267Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Construct and qualify frozen central-runtime package	2026-10-17T01:28:05.4630704Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Construct and qualify frozen central-runtime package	2026-10-17T01:28:05.4631044Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+qualify	Construct and qualify frozen central-runtime package	2026-10-17T01:28:05.4631299Z   CARGO_INCREMENTAL: 0
+qualify	Construct and qualify frozen central-runtime package	2026-10-17T01:28:05.4631503Z   CARGO_TERM_COLOR: always
+qualify	Construct and qualify frozen central-runtime package	2026-10-17T01:28:05.4631716Z   CACHE_ON_FAILURE: true
+qualify	Construct and qualify frozen central-runtime package	2026-10-17T01:28:05.4631909Z ##[endgroup]
+qualify	Run actions/upload-artifact@v4	﻿2026-10-17T01:52:28.9179254Z ##[group]Run actions/upload-artifact@v4
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:28.9179743Z with:
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:28.9180044Z   name: nemotron-current-valid-mel-windows-runtime
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:28.9181247Z   path: D:\a\_temp/windows-valid-mel-runtime/**/*.json
+qualify	Run actions/upload-artifact@v4	D:\a\_temp/windows-valid-mel-runtime/**/*.log
+qualify	Run actions/upload-artifact@v4	D:\a\_temp/windows-valid-mel-runtime/**/*.f32
+qualify	Run actions/upload-artifact@v4	D:\a\_temp/windows-valid-mel-runtime/construction/*.zip
+qualify	Run actions/upload-artifact@v4	D:\a\_temp/windows-valid-mel-runtime/runtime/*.zip
+qualify	Run actions/upload-artifact@v4	
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:28.9182297Z   retention-days: 30
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:28.9182561Z   if-no-files-found: warn
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:28.9182839Z   compression-level: 6
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:28.9183088Z   overwrite: false
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:28.9183366Z   include-hidden-files: false
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:28.9183642Z env:
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:28.9183956Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:28.9184460Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:28.9185004Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:28.9185530Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:28.9185984Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:28.9186375Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:28.9186710Z   CARGO_INCREMENTAL: 0
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:28.9186964Z   CARGO_TERM_COLOR: always
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:28.9187286Z   CACHE_ON_FAILURE: true
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:28.9187552Z ##[endgroup]
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:29.1017246Z (node:7356) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:29.1018259Z (Use `node --trace-deprecation ...` to show where the warning was created)
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:29.4558176Z With the provided path, there will be 445 files uploaded
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:29.4565392Z Artifact name is valid!
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:29.4567667Z Root directory input is valid!
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:29.6954833Z Beginning upload of artifact content to blob storage
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:30.2654662Z (node:7356) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:30.4051752Z Uploaded bytes 8388608
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:30.9098746Z Uploaded bytes 16777216
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:31.2102229Z Uploaded bytes 20172677
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:31.2259992Z Finished uploading artifact content to blob storage!
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:31.2263749Z SHA256 digest of uploaded artifact zip is d373f08497e4c1c0ad43654584629cc3ffcb0e41d7b2429c6921a467dd352e95
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:31.2266038Z Finalizing artifact upload
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:31.4143503Z Artifact nemotron-current-valid-mel-windows-runtime.zip successfully finalized. Artifact ID 12085543613
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:31.4144719Z Artifact nemotron-current-valid-mel-windows-runtime has been successfully uploaded! Final size is 20172677 bytes. Artifact ID is 12085543613
+qualify	Run actions/upload-artifact@v4	2026-10-17T01:52:31.4154996Z Artifact download URL: https://github.com/saberra-ai/gen2/actions/runs/38990890737/artifacts/12085543613
+qualify	Post Run Swatinem/rust-cache@v2	﻿2026-10-17T01:52:31.4469190Z Post job cleanup.
+qualify	Post Run Swatinem/rust-cache@v2	2026-10-17T01:52:31.5870763Z Cache up-to-date.
+qualify	Post Run actions/setup-python@v5	﻿2026-10-17T01:52:31.6113505Z Post job cleanup.
+qualify	Post Run actions/setup-python@v5	2026-10-17T01:52:31.7492439Z (node:7500) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+qualify	Post Run actions/setup-python@v5	2026-10-17T01:52:31.7493392Z (Use `node --trace-deprecation ...` to show where the warning was created)
+qualify	Post Run actions/checkout@v4	﻿2026-10-17T01:52:31.7763073Z Post job cleanup.
+qualify	Post Run actions/checkout@v4	2026-10-17T01:52:31.9634014Z [command]"C:\Program Files\Git\bin\git.exe" version
+qualify	Post Run actions/checkout@v4	2026-10-17T01:52:31.9899768Z git version 2.56.0.windows.2
+qualify	Post Run actions/checkout@v4	2026-10-17T01:52:31.9950141Z Copying 'C:\Users\runneradmin\.gitconfig' to 'D:\a\_temp\d6037ecb-b662-4900-920a-4603249d0f76\.gitconfig'
+qualify	Post Run actions/checkout@v4	2026-10-17T01:52:31.9969465Z Temporarily overriding HOME='D:\a\_temp\d6037ecb-b662-4900-920a-4603249d0f76' before making global git config changes
+qualify	Post Run actions/checkout@v4	2026-10-17T01:52:31.9970588Z Adding repository directory to the temporary git global config as a safe directory
+qualify	Post Run actions/checkout@v4	2026-10-17T01:52:31.9981005Z [command]"C:\Program Files\Git\bin\git.exe" config --global --add safe.directory D:\a\gen2\gen2
+qualify	Post Run actions/checkout@v4	2026-10-17T01:52:32.0265699Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp core\.sshCommand
+qualify	Post Run actions/checkout@v4	2026-10-17T01:52:32.0546614Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :\""
+qualify	Post Run actions/checkout@v4	2026-10-17T01:52:32.5307102Z Entering 'vendor/llama-cpp-sys-2/llama.cpp'
+qualify	Post Run actions/checkout@v4	2026-10-17T01:52:32.6130684Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+qualify	Post Run actions/checkout@v4	2026-10-17T01:52:32.6387769Z http.https://github.com/.extraheader
+qualify	Post Run actions/checkout@v4	2026-10-17T01:52:32.6421907Z [command]"C:\Program Files\Git\bin\git.exe" config --local --unset-all http.https://github.com/.extraheader
+qualify	Post Run actions/checkout@v4	2026-10-17T01:52:32.6707745Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "sh -c \"git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :\""
+qualify	Post Run actions/checkout@v4	2026-10-17T01:52:33.1088465Z Entering 'vendor/llama-cpp-sys-2/llama.cpp'
+qualify	Post Run actions/checkout@v4	2026-10-17T01:52:33.1589429Z http.https://github.com/.extraheader
+qualify	Post Run actions/checkout@v4	2026-10-17T01:52:33.2066647Z [command]"C:\Program Files\Git\bin\git.exe" config --local --name-only --get-regexp ^includeIf\.gitdir:
+qualify	Post Run actions/checkout@v4	2026-10-17T01:52:33.2350775Z [command]"C:\Program Files\Git\bin\git.exe" submodule foreach --recursive "git config --local --show-origin --name-only --get-regexp remote.origin.url"
+qualify	Post Run actions/checkout@v4	2026-10-17T01:52:33.6774745Z Entering 'vendor/llama-cpp-sys-2/llama.cpp'
+qualify	Post Run actions/checkout@v4	2026-10-17T01:52:33.7058111Z file:D:/a/gen2/gen2/.git/modules/vendor/llama-cpp-sys-2/llama.cpp/config	remote.origin.url
+qualify	Post Run actions/checkout@v4	2026-10-17T01:52:33.7279303Z [command]"C:\Program Files\Git\bin\git.exe" config --file D:/a/gen2/gen2/.git/modules/vendor/llama-cpp-sys-2/llama.cpp/config --name-only --get-regexp ^includeIf\.gitdir:
+qualify	Complete job	﻿2026-10-17T01:52:33.7744242Z Cleaning up orphan processes
+qualify	Complete job	2026-10-17T01:52:33.7874665Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/download-artifact@v4, actions/setup-python@v5, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/
