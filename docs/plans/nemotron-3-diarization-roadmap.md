@@ -164,7 +164,12 @@ Remaining release work as of 2026-10-17:
   RTF 1.083064/1.023811/1.022393/1.022017 remains above one; 5.6365119% control
   drift passes, but the 5% speedup prediction fails. Preserve the 326-file receipt
   and investigate matrix/detailed unary execution; no production fix is qualified.
-  Then merge and
+  The [Q8 tile kernel control](../research/nemotron-windows-q8-tile-probe.md)
+  is implemented with a Q8-only Windows AVX2 2×2 dispatch candidate, guarded
+  synthetic matrices and one/two/four-worker comparisons. All 430 local tests
+  pass with seven Windows-only skips. Actual Windows construction and execution
+  remain unperformed; a kernel result cannot establish model RTF or release
+  qualification. Then merge and
   push the completed feature to main; no main promotion is justified yet.
 
 The [bounded CPU public Rust protocol](../research/nemotron-bounded-public-runtime.md)
