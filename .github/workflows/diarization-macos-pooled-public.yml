@@ -1,0 +1,80 @@
+name: Diarization pooled macOS CPU public Rust runtime
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/nemotron3-n0]
+    paths:
+      - .github/workflows/diarization-macos-pooled-public.yml
+      - tools/nemotron-diarization/qualify_macos_pooled_public.py
+      - tools/nemotron-diarization/compare_stream_pooled.py
+      - tools/nemotron-diarization/macos-pooled-public.protocol.json
+permissions:
+  contents: read
+  actions: read
+jobs:
+  public-runtime:
+    runs-on: macos-26
+    timeout-minutes: 90
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          submodules: recursive
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+      - name: Bootstrap locked Rust sources without building
+        run: cargo fetch --locked
+      - name: Download exact pooled construction and successful native parity deliveries
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p "${{ runner.temp }}/pooled-public-delivery"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12082417995 > "${{ runner.temp }}/pooled-public-delivery/construction.json"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12082417995/zip > "${{ runner.temp }}/pooled-public-delivery/construction.zip"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12083481818 > "${{ runner.temp }}/pooled-public-delivery/native-reference.json"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12083481818/zip > "${{ runner.temp }}/pooled-public-delivery/native-reference.zip"
+      - name: Acquire pinned assets before offline build and model admission
+        env:
+          POOLED_PUBLIC_ASSETS: ${{ runner.temp }}/pooled-public-assets
+        run: |
+          python - <<'PY'
+          import json, os, sys
+          from pathlib import Path
+          sys.path.insert(0, 'tools/nemotron-diarization')
+          from artifacts import acquire
+          p = json.loads(Path('tools/nemotron-diarization/macos-pooled-public.protocol.json').read_text())
+          destination = Path(os.environ['POOLED_PUBLIC_ASSETS'])
+          destination.mkdir()
+          for entry in p['assets']:
+              acquire(entry, destination)
+          PY
+      - name: Qualify current public Rust consumer and seven real lifecycle cases offline
+        run: |
+          python tools/nemotron-diarization/qualify_macos_pooled_public.py \
+            --protocol tools/nemotron-diarization/macos-pooled-public.protocol.json \
+            --producer-zip "${{ runner.temp }}/pooled-public-delivery/construction.zip" \
+            --producer-metadata "${{ runner.temp }}/pooled-public-delivery/construction.json" \
+            --native-reference-zip "${{ runner.temp }}/pooled-public-delivery/native-reference.zip" \
+            --native-reference-metadata "${{ runner.temp }}/pooled-public-delivery/native-reference.json" \
+            --assets "${{ runner.temp }}/pooled-public-assets" \
+            --output "${{ runner.temp }}/pooled-public"
+      - name: Preserve passing or failed public runtime evidence and helper binaries
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nemotron-macos-pooled-public
+          path: |
+            ${{ runner.temp }}/pooled-public/*.json
+            ${{ runner.temp }}/pooled-public/*.log
+            ${{ runner.temp }}/pooled-public/*.sb
+            ${{ runner.temp }}/pooled-public/*.tar.gz
+            ${{ runner.temp }}/pooled-public/helper-source/
+            ${{ runner.temp }}/pooled-public/results/
+            ${{ runner.temp }}/pooled-public/reference/
+          include-hidden-files: true
+          retention-days: 30

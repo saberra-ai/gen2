@@ -974,6 +974,14 @@ the initial six failing checks and both hardening failures are retained.
 New platform consumer qualification must fetch its actual producer revision
 before offline admission and retain its own current-source freeze. No old
 protocol, receipt, quality threshold or platform-release result is relabelled.
+The first pooled public Rust qualification is now frozen separately in
+`macos-pooled-public.protocol.json`, binding 45 tools and 264 repository files
+to the admitted construction and successful M1 native reference. It requires
+one complete 60s/6000-row public stream and seven unchanged lifecycle tests,
+including 100 actual reloads. All 224 model-free tools tests pass, with actual
+standalone/lifecycle/premodel sandbox boundaries and exact candidate identity
+checks. First execution remains pending; long/mixed/quality/app/release gates
+remain separate.
 
 The 13-job feature matrix also passed at `4974318`. Later source `cf64214`
 passed12 jobs; its macOS mixed-feature job failed before compilation when GitHub

@@ -742,6 +742,17 @@ Linux construction/runtime and Windows runtime consumer stages must fetch
 their actual producer `8fbef3e8a46a034b8e0ffa8f096409db683a923e` as well.
 Existing historical workflows/protocols and receipts remain unchanged.
 
+`qualify_macos_pooled_public.py` and `macos-pooled-public.protocol.json` freeze
+the next current Rust consumer: the exact pooled construction and successful
+M1 C ABI artifacts, one full 60s public stream, and the seven existing lifecycle
+tests including 100 reloads. The separate comparator requires the exact pooled
+CPU identity before reusing the unchanged valid-Mel mathematical checks on
+copies. All 224 local tools tests pass, including actual sandbox checks proving
+standalone inference cannot read native/assertion/prior-result payloads while
+lifecycle assertions can read only their frozen copies. The workflow is
+`diarization-macos-pooled-public.yml`; first execution remains pending. No
+long-session, mixed-model, quality, app or release gate is promoted.
+
 `qualify_macos_portable_runtime.py` and `macos-portable-runtime-v2.protocol.json`
 freeze a separate fresh M1 receiver for the exact constructed artifacts. The
 controller verifies the API/opaque ZIP and complete member set before restoring
