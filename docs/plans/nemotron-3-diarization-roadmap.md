@@ -1508,8 +1508,16 @@ native loading. The [28-member failure receipt](../../benches/results/nemotron-d
 retains the partial results and model-free libc diagnosis. A separately frozen
 V2 permits required ancestor metadata while still denying outside cache data,
 uses fresh identical staging and adds a libc control before neural admission.
-The complete contrast, large-context public Rust parity and matched FP32/Q8
-bounds remain unqualified.
+The [actual V2 contrast](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-context-development-diagnostic/collection-qualification.json)
+now completes all11 commands and six fresh neural processes at `5ee5badec`.
+Both low-context native/public pairs match all30,000 rows and turns exactly;
+eight92-image audits and independent replay of all32 score reports pass. The
+37-member receipt binds all six raw F32 output hashes; no model is rerun during
+collection. Primary development production frame DER improves33.8391%→29.4032%
+close and34.3320%→32.2155% distant with larger context, but still exceeds20%.
+Native large RTF is0.00828/0.00843 with207–214MB peak RSS on this run; these
+recorded-audio observations do not establish uncontended or live latency.
+Large-context public Rust parity and matched FP32/Q8 bounds remain unqualified.
 Large context has30.4s nominal buffering and cannot establish low-latency live
 behavior. Every original quality, human-word, GUI/microphone and release gate
 remains open as recorded above.

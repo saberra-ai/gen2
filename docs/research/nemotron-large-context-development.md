@@ -1,6 +1,6 @@
 # Publisher large-context development contrast
 
-Initial source audit, 2026-10-16 local / metadata retrieved 2026-10-17 UTC. The audit executed no model, native helper, build or inference and acquired no complete audio. Subsequent input preparation, model-free helper construction and the incomplete first inference attempt are recorded below. This separately frozen development experiment does not replace the failed ES2004 test, its references, or the roadmap’s proposed ≤20% DER gate.
+Initial source audit, 2026-10-16 local / metadata retrieved 2026-10-17 UTC. The audit executed no model, native helper, build or inference and acquired no complete audio. Subsequent preparation, the incomplete first inference attempt and completed V2 contrast are recorded below. Larger context improves this development recording but still exceeds20% primary production DER. It does not replace the failed ES2004 test, its references, or the roadmap’s proposed ≤20% DER gate.
 
 ## Exact geometry and native applicability
 
@@ -124,8 +124,8 @@ RTF are retained;30.4s large-context nominal buffering is not measured acoustic
 label delay. The5GiB start floor,1GiB running floor,256MiB reserve,600s deadlines
 and process-group cleanup remain unchanged. Inputs are read-only, child reads of
 references/scorer/provenance/prior results are denied, and any failure stops the
-trial without automatic retry. V1 stopped as recorded below; the complete contrast
-remains unqualified.
+trial without automatic retry. V1 stopped as recorded below; the later V2 receipt
+completes this fixed development contrast.
 
 ## V1 canonicalization failure and separate V2 admission
 
@@ -153,3 +153,44 @@ denial and adds an actual libc canonicalization control before native version or
 neural admission. Model bytes, geometry, channels/crop, references, postprocessors,
 scorers, six neural cases, eight image audits and all resource/gate criteria remain
 unchanged. V2 has not executed at preregistration.
+
+## Actual V2 contrast
+
+The [37-member receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-context-development-diagnostic/collection-qualification.json)
+completes all11 commands at `5ee5badec`, including the libc control, six fresh
+neural processes and eight strict92-image audits. Both public low-context controls
+match all30,000 native probability rows byte-for-byte and every production turn
+exactly. All140 staged input entries remain unchanged; the reserve is released.
+Independent collection replays all32 frame/continuous score reports and four
+scorer controls without another model call, and binds every one of the six raw
+F32 outputs by byte count/SHA256. Their payloads remain outside Git.
+
+Frame DER percentages on the fixed300s development window:
+
+| Reference / channel | Low shared | Large shared | Low production | Large production |
+| --- | ---: | ---: | ---: | ---: |
+| Transcriber / Mix-Headset |43.2955|39.6714|33.8391|29.4032|
+| Transcriber / Array1-01 |45.4264|42.3726|34.3320|32.2155|
+| Published NTT MFA / Mix-Headset |15.0569|8.9630|33.8524|28.4698|
+| Published NTT MFA / Array1-01 |16.3927|12.4328|32.4771|28.8966|
+
+Continuous-score values and MISS/FA/confusion components remain in the receipt;
+they support the same direction. Larger context improves both views under both
+reference policies and postprocessors, but primary production remains above20%.
+Published MFA shared-threshold results must not be promoted into the primary
+human-reviewed transcriber gate or human word-timing gold.
+
+Observed native RTF is0.1741/0.1755 low versus0.00828/0.00843 large for
+close/distant audio. Peak native process RSS is265,945,088/266,207,232B low versus
+214,056,960/207,257,600B large. These are observed recorded-audio runs, without an
+uncontended performance claim. Many large-profile pushes only buffer samples;
+their small median/p95 times do not measure acoustic-label latency. Its30.4s
+nominal buffering remains unsuitable for a low-latency live claim.
+
+No production profile or threshold is selected. There is no matched large-context
+FP32 comparison, public Rust large preset/parity, unseen-recording claim or change
+to original ES2004 failures. Human timing review, GUI/physical microphone,
+fresh-machine app delivery, signing and the original release gates remain open.
+The first unadmitted success collection lacked explicit native-array hashes;
+its complete contents are preserved in external cache. V3 adds all six descriptors
+and checks their stability across saved-output replay; it makes no new neural call.

@@ -1,0 +1,181 @@
+{
+  "schema_version": 1,
+  "source_commit": "5ee5badecbf51f77d79af8264f524a7c76d892bf",
+  "diagnostic_completed": true,
+  "current_tool_pins_checked_before_import": 16,
+  "staged_input_inventory_entries": 140,
+  "historical_public_rust_source_blobs_verified": 258,
+  "original_neural_processes": 6,
+  "new_collection_neural_calls": 0,
+  "strict_runtime_image_audits_replayed": 8,
+  "native_public_exact_rows_per_channel": 30000,
+  "all4native_cells_replayed": true,
+  "all32scores_replayed_exactly": true,
+  "scorer_controls_replayed": 4,
+  "large_minus_low": {
+    "Mix-Headset": {
+      "transcriber": {
+        "shared": {
+          "frame": {
+            "der": -0.03624063799999999,
+            "missed_speaker_seconds": -2.1099999999999994,
+            "false_alarm_speaker_seconds": -5.03,
+            "confusion_speaker_seconds": -0.36
+          },
+          "official": {
+            "der": -0.03624256423390415,
+            "missed_speaker_seconds": -2.1099999999999284,
+            "false_alarm_speaker_seconds": -5.029999999999973,
+            "confusion_speaker_seconds": -0.35999999999999943
+          }
+        },
+        "production": {
+          "frame": {
+            "der": -0.044358540999999974,
+            "missed_speaker_seconds": -3.230000000000004,
+            "false_alarm_speaker_seconds": -5.789999999999999,
+            "confusion_speaker_seconds": -0.16000000000000014
+          },
+          "official": {
+            "der": -0.04435605515308155,
+            "missed_speaker_seconds": -3.2359999070167405,
+            "false_alarm_speaker_seconds": -5.783999891370506,
+            "confusion_speaker_seconds": -0.1589978989362919
+          }
+        }
+      },
+      "published-ntt-mfa": {
+        "shared": {
+          "frame": {
+            "der": -0.06093898199999999,
+            "missed_speaker_seconds": -1.8899999999999997,
+            "false_alarm_speaker_seconds": -4.8100000000000005,
+            "confusion_speaker_seconds": -1.01
+          },
+          "official": {
+            "der": -0.061047706364010565,
+            "missed_speaker_seconds": -1.8969999999999843,
+            "false_alarm_speaker_seconds": -4.81700000000005,
+            "confusion_speaker_seconds": -1.0100000000000335
+          }
+        },
+        "production": {
+          "frame": {
+            "der": -0.05382548300000001,
+            "missed_speaker_seconds": -1.7799999999999998,
+            "false_alarm_speaker_seconds": -4.340000000000003,
+            "confusion_speaker_seconds": -0.6900000000000001
+          },
+          "official": {
+            "der": -0.05352358251919753,
+            "missed_speaker_seconds": -1.7680121135264102,
+            "false_alarm_speaker_seconds": -4.316012097880176,
+            "confusion_speaker_seconds": -0.687993543252361
+          }
+        }
+      }
+    },
+    "Array1-01": {
+      "transcriber": {
+        "shared": {
+          "frame": {
+            "der": -0.03053877699999996,
+            "missed_speaker_seconds": -0.5600000000000023,
+            "false_alarm_speaker_seconds": -5.71,
+            "confusion_speaker_seconds": -0.04999999999999999
+          },
+          "official": {
+            "der": -0.030540400794437872,
+            "missed_speaker_seconds": -0.5600000000001728,
+            "false_alarm_speaker_seconds": -5.709999999999999,
+            "confusion_speaker_seconds": -0.04999999999999716
+          }
+        },
+        "production": {
+          "frame": {
+            "der": -0.021164531999999958,
+            "missed_speaker_seconds": 0.7899999999999991,
+            "false_alarm_speaker_seconds": -5.379999999999999,
+            "confusion_speaker_seconds": 0.20999999999999996
+          },
+          "official": {
+            "der": -0.02118017359904084,
+            "missed_speaker_seconds": 0.7829959538876707,
+            "false_alarm_speaker_seconds": -5.381003928989188,
+            "confusion_speaker_seconds": 0.21500403068961305
+          }
+        }
+      },
+      "published-ntt-mfa": {
+        "shared": {
+          "frame": {
+            "der": -0.039598483000000004,
+            "missed_speaker_seconds": 0.10999999999999943,
+            "false_alarm_speaker_seconds": -5.040000000000001,
+            "confusion_speaker_seconds": -0.08000000000000007
+          },
+          "official": {
+            "der": -0.039676266953305867,
+            "missed_speaker_seconds": 0.10599999999985243,
+            "false_alarm_speaker_seconds": -5.043999999999967,
+            "confusion_speaker_seconds": -0.081999999999951
+          }
+        },
+        "production": {
+          "frame": {
+            "der": -0.03580461600000001,
+            "missed_speaker_seconds": 0.7999999999999998,
+            "false_alarm_speaker_seconds": -5.370000000000001,
+            "confusion_speaker_seconds": 0.039999999999999813
+          },
+          "official": {
+            "der": -0.035724510090985095,
+            "missed_speaker_seconds": 0.801995984509567,
+            "false_alarm_speaker_seconds": -5.362003898367291,
+            "confusion_speaker_seconds": 0.03999999910593033
+          }
+        }
+      }
+    }
+  },
+  "outside_git_probability_arrays": {
+    "Mix-Headset-public-low.f32": {
+      "bytes": 960000,
+      "sha256": "e209155aeb613a3ccfa9e3812731bb280500b44c0c9b492bf5da02fac36644df"
+    },
+    "Array1-01-low_latency.json.f32": {
+      "bytes": 960000,
+      "sha256": "6a5a58ba58971e589102e854d948e8e394e2f0db58658f12b7f065173c1b6796"
+    },
+    "Mix-Headset-large_context.json.f32": {
+      "bytes": 960000,
+      "sha256": "9da459d0def62cec3443cba0c9405bd489c58ef0241a055531f315cd00472e47"
+    },
+    "Array1-01-large_context.json.f32": {
+      "bytes": 960000,
+      "sha256": "4c44aa4beae72c9db8c0485efd0e7d0d076256e48ba39aa6c83bca17694be22b"
+    },
+    "Mix-Headset-low_latency.json.f32": {
+      "bytes": 960000,
+      "sha256": "e209155aeb613a3ccfa9e3812731bb280500b44c0c9b492bf5da02fac36644df"
+    },
+    "Array1-01-public-low.f32": {
+      "bytes": 960000,
+      "sha256": "6a5a58ba58971e589102e854d948e8e394e2f0db58658f12b7f065173c1b6796"
+    }
+  },
+  "arrays_and_audio_outside_git": true,
+  "large_context_public_rust_parity_evaluated": false,
+  "matched_fp32_q8_bound_evaluated": false,
+  "original_gate_status_changed": false,
+  "release_qualified": false,
+  "limits": [
+    "One training-exposed AMI development recording, paired microphone views not independent meetings; fixedfirst300s and speakerB1.792s coverage retained. Exactly6freshCPUQ8processes; no parameter/threshold/postprocess sweep or recording substitution.",
+    "Use unchanged non-pooled gen2-valid-mel-v1 runtime and exact previously qualified Q8 artifact. Native low9/4/0/264/264/222 and large340/40/0/40/264/300 each retain all30000rows. Reused publicRustlowbinary matches allrows/turns; no large-contextpublicpreset/parity or matchedFP32Q8degradationbound is established.",
+    "Full300sUEM, zero collar, overlap included, separate primary transcriber and publishedNTTMFA references, identical frozen shared and nativeproductionpostprocessors. Independentcontinuousand10msframescorers and4syntheticcontrols retained. No reference replacement or thresholdselection.",
+    "Original failedES2004tests/references/20percentDER/2pointQ8gate remain unchanged. Developmentgain cannot close release quality or broad unseen-generalization. Largecontext30.4snominalbuffering is not live-label qualification.",
+    "Every neuralcall freshprocess and audited92privateimages. Retain allcommands/logs/arrays/scores/failures, actualpeakRSS/time. Offline sandbox denies sources, scorer/reference/provenance/priorresults reads and protectedwrites.5GiBstart/1GiBrunning/256MiBphysicalreserve/600scommandtimeout and processgroupkill unchanged. Stop on anyfailure, no automaticretry.",
+    "No new app/microphone/GUI/humanwordgold/freshmachine/signing/releaseclaim. Audio/model/runtime/helper payloads stay outsideGit; commitmetadataandlogs only.",
+    "V1 stopped after two nativecells when publicbundle libc realpath was denied at a cacheancestor. V1failure/protocol/arrays remain unchanged. V2usesfreshbyteidenticalstaging/output and changesonlycachewideoutside-data denial to file-read-data, permitting requiredancestor metadata while denyingothermodels/references/provenance/prioroutputdata. Explicitlibccanonicalizationcontrol beforeversion/neuralcalls. Nootherinput/geometry/postprocessor/reference/scorer/gatechange."
+  ]
+}
