@@ -32,6 +32,10 @@ compaction/history, all retained values/turns, RSS, real-time, snapshot, storage
 and deadline criteria remain unchanged. Actual local artifact preflight must
 pass after reviewed commit before any helper/model execution; neither that new
 controller nor bounded long-session inference has run at preregistration.
+The [actual local bounded-long preflight](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-bounded-long-admission/collection-qualification.json)
+now passes all three complete delivery/origin contracts at `04f6a553`, before
+package/helper restoration, assets, probes or inference. Its eleven-member
+receipt retains 274 passing model-free tests; the four long streams stay pending.
 
 Latest pooled CPU verification passes [30m/1h streams](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-long/collection-qualification.json),
 [mixed-model residency](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-mixed/collection-qualification.json)

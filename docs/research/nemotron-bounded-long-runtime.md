@@ -51,3 +51,12 @@ repeated-fixture transport/compaction qualification on the named M4, not varied
 hour-long audio quality or M1 performance. Mixed-model/app/platform, original
 20% per-slice DER, human word gold, GUI/microphone, fresh-machine, signing and
 release gates remain open. No production/default package is promoted.
+
+The [actual local admission receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-bounded-long-admission/collection-qualification.json)
+now passes at committed source `04f6a553`. All 200/44/60 members and three exact
+opaque ZIP/API identity contracts qualify, including the same producer/native
+origin and required public lifecycle/realtime gates. Its eleven members retain
+the actual protocol/result, metadata, six-test and 274-test logs and independent
+collector. No work/home/tmp/helper/result tree is created, no package/helper is
+restored, no asset is copied, and no command, version probe or model executes.
+The physical reserve is released. Four fresh long streams remain pending.
