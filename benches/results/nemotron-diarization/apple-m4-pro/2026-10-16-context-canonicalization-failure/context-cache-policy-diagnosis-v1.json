@@ -1,0 +1,71 @@
+{
+  "model_calls": 0,
+  "records": {
+    "original": {
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/context-development-diagnostic-v1/runtime.sb",
+        "/usr/bin/python3",
+        "-B",
+        "-c",
+        "import ctypes,json\nfrom pathlib import Path\nbase=Path(\"/Users/victor/.cache/gen2-nemotron3-n0/context-development-execution-inputs-v1/work/assets\")\nlib=ctypes.CDLL(None,use_errno=True)\nlib.realpath.argtypes=[ctypes.c_char_p,ctypes.c_void_p];lib.realpath.restype=ctypes.c_void_p\nresult={}\nfor name,path in [('directory',base),('model_path',base/'Nemotron-3-Diarization.q8_0.gguf')]:\n buffer=ctypes.create_string_buffer(4096);ctypes.set_errno(0)\n value=lib.realpath(str(path).encode(),buffer)\n result[name]={'success':bool(value),'errno':ctypes.get_errno(),'resolved':buffer.value.decode()}\nfor name,path in [('outside_model',Path(\"/Users/victor/.cache/gen2-nemotron3-n0/ami-prefix-inputs-v1/work-v2/assets/Nemotron-3-Diarization.q8_0.gguf\")),('staged_reference',base.parent/'references/transcriber.json')]:\n try:\n  with path.open('rb') as stream:stream.read(1)\n except PermissionError:\n  result[name]='denied'\n else:raise RuntimeError('protected data became readable')\nprint(json.dumps(result))\n"
+      ],
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/context-development-diagnostic-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/context-development-diagnostic-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "returncode": 0,
+      "stdout": {
+        "directory": {
+          "success": false,
+          "errno": 1,
+          "resolved": "/Users/victor/.cache/gen2-nemotron3-n0"
+        },
+        "model_path": {
+          "success": false,
+          "errno": 1,
+          "resolved": "/Users/victor/.cache/gen2-nemotron3-n0"
+        },
+        "outside_model": "denied",
+        "staged_reference": "denied"
+      },
+      "stderr": "python3: error: couldn't create cache file '/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/xcrun_db-ExYJlU2x' (errno=Operation not permitted)\n"
+    },
+    "data_only": {
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/context-cache-metadata-control.sb",
+        "/usr/bin/python3",
+        "-B",
+        "-c",
+        "import ctypes,json\nfrom pathlib import Path\nbase=Path(\"/Users/victor/.cache/gen2-nemotron3-n0/context-development-execution-inputs-v1/work/assets\")\nlib=ctypes.CDLL(None,use_errno=True)\nlib.realpath.argtypes=[ctypes.c_char_p,ctypes.c_void_p];lib.realpath.restype=ctypes.c_void_p\nresult={}\nfor name,path in [('directory',base),('model_path',base/'Nemotron-3-Diarization.q8_0.gguf')]:\n buffer=ctypes.create_string_buffer(4096);ctypes.set_errno(0)\n value=lib.realpath(str(path).encode(),buffer)\n result[name]={'success':bool(value),'errno':ctypes.get_errno(),'resolved':buffer.value.decode()}\nfor name,path in [('outside_model',Path(\"/Users/victor/.cache/gen2-nemotron3-n0/ami-prefix-inputs-v1/work-v2/assets/Nemotron-3-Diarization.q8_0.gguf\")),('staged_reference',base.parent/'references/transcriber.json')]:\n try:\n  with path.open('rb') as stream:stream.read(1)\n except PermissionError:\n  result[name]='denied'\n else:raise RuntimeError('protected data became readable')\nprint(json.dumps(result))\n"
+      ],
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/context-development-diagnostic-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/context-development-diagnostic-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "returncode": 0,
+      "stdout": {
+        "directory": {
+          "success": true,
+          "errno": 0,
+          "resolved": "/Users/victor/.cache/gen2-nemotron3-n0/context-development-execution-inputs-v1/work/assets"
+        },
+        "model_path": {
+          "success": true,
+          "errno": 0,
+          "resolved": "/Users/victor/.cache/gen2-nemotron3-n0/context-development-execution-inputs-v1/work/assets/Nemotron-3-Diarization.q8_0.gguf"
+        },
+        "outside_model": "denied",
+        "staged_reference": "denied"
+      },
+      "stderr": "python3: error: couldn't create cache file '/var/folders/2l/t903m7cj5xlcjhcpwykkdhr40000gp/T/xcrun_db-tx2Ok0GD' (errno=Operation not permitted)\n"
+    }
+  }
+}

@@ -1,6 +1,6 @@
 # Publisher large-context development contrast
 
-Initial source audit, 2026-10-16 local / metadata retrieved 2026-10-17 UTC. The audit executed no model, native helper, build or inference and acquired no complete audio. The subsequent input preparation and model-free helper construction are recorded below; inference remains unperformed. This separately frozen development experiment does not replace the failed ES2004 test, its references, or the roadmap’s proposed ≤20% DER gate.
+Initial source audit, 2026-10-16 local / metadata retrieved 2026-10-17 UTC. The audit executed no model, native helper, build or inference and acquired no complete audio. Subsequent input preparation, model-free helper construction and the incomplete first inference attempt are recorded below. This separately frozen development experiment does not replace the failed ES2004 test, its references, or the roadmap’s proposed ≤20% DER gate.
 
 ## Exact geometry and native applicability
 
@@ -124,4 +124,32 @@ RTF are retained;30.4s large-context nominal buffering is not measured acoustic
 label delay. The5GiB start floor,1GiB running floor,256MiB reserve,600s deadlines
 and process-group cleanup remain unchanged. Inputs are read-only, child reads of
 references/scorer/provenance/prior results are denied, and any failure stops the
-trial without automatic retry. No inference receipt exists yet.
+trial without automatic retry. V1 stopped as recorded below; the complete contrast
+remains unqualified.
+
+## V1 canonicalization failure and separate V2 admission
+
+The [28-member failure receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-context-canonicalization-failure/collection-qualification.json)
+retains V1 at `aaa97b587`: runtime/premodel/version/invalid-profile controls pass,
+then both Mix-Headset native profiles complete30,000 rows each. The public
+low-context process exits1 with `InvalidBundle(Operation not permitted)` before
+loading any private runtime image. Four completed native controls/runs have
+strict92-image audits. The controller stops; no distant-microphone process runs,
+and the reserve is released. Partial scores/arrays remain diagnostics, without a
+completed public/native comparison or gate promotion.
+
+A saved model-free ctypes reproduction calls libc `realpath`, matching Rust
+canonicalization, rather than Python's different path resolver. V1 denies cache
+ancestor metadata, returning errno1 before bundle verification. Changing only
+the cache-wide outside-work denial from `file-read*` to `file-read-data` permits
+the required directory/model path canonicalization while reads of the actual
+outside model and staged reference remain denied. No neural call is needed for
+this diagnosis.
+
+The separately frozen [V2 protocol](../../tools/nemotron-diarization/context-development-diagnostic-v2.protocol.json)
+binds16 tools,11 prerequisite records and fresh byte-identical140-entry staging.
+Its versioned controller preserves V1 unchanged, narrows only that cache data
+denial and adds an actual libc canonicalization control before native version or
+neural admission. Model bytes, geometry, channels/crop, references, postprocessors,
+scorers, six neural cases, eight image audits and all resource/gate criteria remain
+unchanged. V2 has not executed at preregistration.

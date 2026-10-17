@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/diagnose_context_development.py", line 226, in <module>
+    main()
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/diagnose_context_development.py", line 201, in main
+    public = json.loads(run(name, [executable, work / 'assets', package / 'lib' / manifest['entry_library'],
+                        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/diagnose_context_development.py", line 139, in run
+    raise ValueError('development command failed: ' + name)
+ValueError: development command failed: Mix-Headset-public-low

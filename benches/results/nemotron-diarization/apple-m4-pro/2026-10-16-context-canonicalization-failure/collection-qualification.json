@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "source_commit": "aaa97b587852439e5cb932e7c7aedf498c2deeae",
+  "diagnostic_completed": false,
+  "inference_commands_admitted": 3,
+  "completed_native_neural_processes": 2,
+  "public_failed_before_native_loading": true,
+  "failed_public_private_images": {
+    "executable": "/Users/victor/.cache/gen2-nemotron3-n0/context-development-execution-inputs-v1/work/bin/public-stream",
+    "executable_sha256": "1928a7b3a15cf290c287de9611df0140202b26fe476ea6b78e3b9cc26ef437ce",
+    "unique_reported_images": 591,
+    "private_libraries": {},
+    "private_library_count": 0,
+    "entire_runtime_required": false
+  },
+  "strict92image_audits_replayed": 4,
+  "all16_partial_scores_replayed": true,
+  "original_staged_inputs_unchanged": true,
+  "new_collection_model_calls": 0,
+  "model_free_libc_diagnosis_verified": true,
+  "arrays": {
+    "Mix-Headset-large_context.json.f32": {
+      "bytes": 960000,
+      "sha256": "9da459d0def62cec3443cba0c9405bd489c58ef0241a055531f315cd00472e47"
+    },
+    "Mix-Headset-low_latency.json.f32": {
+      "bytes": 960000,
+      "sha256": "e209155aeb613a3ccfa9e3812731bb280500b44c0c9b492bf5da02fac36644df"
+    }
+  },
+  "release_qualified": false,
+  "original_gate_status_changed": false,
+  "limits": [
+    "Partialfirstchannelresults only; no completed publicparity or distantcell. Failurestop respected, reserve released. OriginalV1outputs/protocol/tools unchanged. SeparatepreregisteredV2required; no automaticretry or qualitypromotion."
+  ]
+}
