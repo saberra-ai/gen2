@@ -57,6 +57,16 @@ bounded-observer interpretation remain false. All thirteen feature-CI jobs pass
 at the producer. Preserve production and the failed predictions; no model RTF,
 causal scheduling/spill conclusion or release/main promotion is established.
 
+
+The separate [full-model Q8 comparison](../research/nemotron-windows-q8-model.md)
+now implements two diagnostic SDKs with the same original contraction-off
+compiler and four-worker policy, six graph processes and a fixed
+control/candidate/candidate/control model sequence. Local source-only replay
+passes22 owned commands and both complete3,425-file maps; only candidate SGEMM
+changes. The original5% speedup,10% drift and strict below-one RTF checks remain
+separate, and all prior failed predictions remain failed. Actual Windows SDK,
+graph and model execution is pending; no production/public/release gate closes.
+
 Remaining release work as of 2026-10-17:
 
 - Meet the original 20% DER target on every required meeting slice. The two AMI
