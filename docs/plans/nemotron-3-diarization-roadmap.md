@@ -1028,10 +1028,15 @@ executables, their compiler PATH and two-job CMake cap. Admission checks those
 exact executable paths/hashes before preparing output. A real tiny C/C++ static
 library configures and builds under the restricted compiler sandbox with model
 access denied; its logs are retained separately from failed mixed qualification.
-All 232 local tools tests pass. V3 retains the same runtime, two real-Laya CPU
-load-order tests, Bark/Metal chat payloads and acceptance rules. It remains
-unrun; no mixed runtime, simultaneous inference, speech quality, GUI or release
-pass is claimed.
+The [actual V3 mixed receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-mixed/collection-qualification.json)
+now passes all ten commands and both unchanged real-Laya CPU load orders. Bark,
+full Laya and actual Metal chat exercise shared-budget refusal, eviction,
+restoration and cleanup with the pooled diarizer. Chat placement initially and
+after restoration is 29 layers on Apple M4 Pro/MTL. Three strict full-runtime
+image audits (plus ORT in both model cases) and a no-runtime listing audit pass;
+all protected inputs remain unchanged and helpers restore independently. Tiny
+silence establishes residency behavior, not speech quality or simultaneous
+neural performance. Earlier failed attempts remain failed.
 
 The [227-test feature matrix](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-227/qualification.json)
 at `aeb6ba8`, run 38989434879, passes all 13 jobs: all twelve OS/feature
@@ -1046,9 +1051,15 @@ SDK/package inputs and all original runtime, lifecycle, CPU-chat and central-CRT
 gates while binding the current consumer and complete vendored source tree.
 Both new workflows explicitly fetch actual SDK producer `8fbef3e` before
 local-only source admission; ordinary and ignored vendor additions are rejected.
-Saved historical receipts admit against that producer and every new source pin
-matches. Both reviews pass. Actual fresh platform runtime execution remains
-pending; these preparations establish no additional platform or release pass.
+Saved historical receipts admit against that producer. The [fresh Linux
+receipt](../../benches/results/nemotron-diarization/linux-x86_64/2026-10-16-current-valid-mel-offline-chat/qualification.json)
+now independently verifies all 98 delivered members and historical source pins.
+Full 6000-row/26-turn native-public parity, seven lifecycle tests, isolated chat
+and both CPU-chat load orders pass. Actual API overlaps are 1.432718/1.451059s,
+with 720 private GGML bindings per order. This is the unchanged non-pooled
+`gen2-valid-mel-v1` Linux package; no pooled Linux or broad ELF isolation claim.
+Windows run 38990890737 also completes successfully, with independent collection
+pending. Neither job closes generic-platform, quality or release gates.
 
 Reviewing complete-app inputs reproduced a separate Pnola staging error: the
 verified pooled package was copied correctly, but `nemotron/bundle.json` still
@@ -1386,6 +1397,25 @@ qualification remain open.
   runtime setup, offline provisioning, cancellation limits, provisional labels,
   known quality weaknesses and model/runtime notices. Update `api_spec.md` when
   the public contract is finalized.
+
+The [complete pooled CPU app construction receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-pnola-app-construction/collection-qualification.json)
+now passes offline construction, clone and deep strict ad-hoc signature checks.
+Independent static replay rehashes all 246 app inventory entries, verifies 94
+framework files/92 logical Nemo libraries and preserves model/license/Bark/
+unsigned-payload/deployment/dependency gates. No app process, native version
+query or model inference ran during construction. The private app and source
+remain local; only metadata and build logs are retained in Git.
+
+`macos-pooled-pnola-app.protocol.json` separately freezes the next five neural
+processes: fresh independent public-C-ABI references for the exact 60s recording
+and 80.04s repeated paced input, then automatic packaged app recording, live
+recovery/export and explicit CPU-Metal rejection preserving Bark. It binds 64
+tools, 314 repository sources, 132 staged input and 246 app inventory entries.
+All original complete-app session/revision/export criteria and 1e-6 turn bounds
+remain unchanged. App live timelines expose compact turns, so native reference
+frames/probabilities are verified separately without claiming app frame-row
+observation. All 234 local tools tests pass. App inference remains unrun; GUI,
+physical microphone, fresh-machine, signing, quality and word-gold gates stay open.
 
 ## Verification and release criteria
 

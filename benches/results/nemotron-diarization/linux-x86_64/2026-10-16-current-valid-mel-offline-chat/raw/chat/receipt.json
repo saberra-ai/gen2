@@ -1,0 +1,178 @@
+{
+  "runtime_revision": "083861c241061562b8ec29eb06d7f6cdc3af8775",
+  "llama_revision": "bd4f514db14d87fded667787a7a963bfbaa98e89",
+  "lock_sha256": "af40e586994f223390fcac59936e3781d967c03080350f4b5df141b1bdaf51be",
+  "runtime_profile": "gen2-valid-mel-v1",
+  "runtime_reported_version": "nemo-speech-asr 0.2.0+gen2-valid-mel-v1",
+  "compatibility_patches": [
+    {
+      "path": "patches/v3-finish-valid-mel.patch",
+      "bytes": 1194,
+      "sha256": "8c1434c14f63ebeb2515c719a90594124fd4f75af85b80451fd145b5caef3c36",
+      "source_sha256_before": {
+        "src/asr/diar/diar_pipeline.cpp": "4143ca8e6d6f14ee454263702510cb163fe8e170aa928f236c0b4b540a7a7da9"
+      },
+      "source_sha256_after": {
+        "src/asr/diar/diar_pipeline.cpp": "fe00ae415f4741d7e07579acdc77c60f5d7327be024cf7f8aff8f52142ae9af2"
+      }
+    }
+  ],
+  "frame_contract": {
+    "name": "v3-streaming-valid-mel-v1",
+    "scope": "V3 streaming finish only; offline and V2 semantics unchanged",
+    "sample_rate": 16000,
+    "hop_samples": 160,
+    "final_frames": "floor(real_input_samples / 160)",
+    "output_channels": 8
+  },
+  "schema_version": 2,
+  "release_qualified": false,
+  "chat_diarization_gates_passed": true,
+  "scope": "Actual CPU Gen2 chat/OpenMP plus packaged diarization, both load orders, repeated/reloaded/concurrent calls and GGML bindings in fresh offline Ubuntu 24.04 containers.",
+  "limits": [
+    "No Bark/Laya coexistence, other Linux baseline, GPU or physical-machine qualification.",
+    "No independent chat runtime distribution, held-out quality or uncontended performance claim.",
+    "Binding observations cover the recorded binaries/calls, not a general ELF namespace isolation guarantee."
+  ],
+  "source_commit": "4083013d56c59f67ad766ade1c331c3dd274eb67",
+  "frozen_inputs_sha256": "e66e0c45c083088417faf0b524c21e0536bb3b3b8a044ad29a33791b403089d5",
+  "image_id": "sha256:6277ab668b2ad3c3ab851d370faa1690d324b30db29d342527f61fed28f20f36",
+  "image_repo_digests": [
+    "ubuntu@sha256:ac3a3d13e90c660a1cb3e89ec695533399f7378dc1ae5fbdc28eb5781d561594"
+  ],
+  "comparisons": {
+    "isolated_chat_text": "Hello!",
+    "comparisons": {
+      "chat-first/first": {
+        "passed": true,
+        "scope": "wrapper/reference correctness at the recorded duration; not held-out quality or full release qualification",
+        "runtime_profile": "gen2-valid-mel-v1",
+        "frame_contract": "v3-streaming-valid-mel-v1",
+        "audio_duration_seconds": 60.0,
+        "backend": "cpu",
+        "device": null,
+        "native_frame_count": 6000,
+        "retained_first_frame": 0,
+        "retained_rows": 6000,
+        "turns": 26,
+        "maximum_turn_error_seconds": 0.0,
+        "turn_tolerance_seconds": 1e-06,
+        "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+        "retained_probabilities_match": true,
+        "maximum_probability_error": 0.0,
+        "probability_tolerance": 1e-06,
+        "gen2_rtf": 1.0748473333333335,
+        "native_rtf": 1.06919915
+      },
+      "chat-first/concurrent": {
+        "passed": true,
+        "scope": "wrapper/reference correctness at the recorded duration; not held-out quality or full release qualification",
+        "runtime_profile": "gen2-valid-mel-v1",
+        "frame_contract": "v3-streaming-valid-mel-v1",
+        "audio_duration_seconds": 60.0,
+        "backend": "cpu",
+        "device": null,
+        "native_frame_count": 6000,
+        "retained_first_frame": 0,
+        "retained_rows": 6000,
+        "turns": 26,
+        "maximum_turn_error_seconds": 0.0,
+        "turn_tolerance_seconds": 1e-06,
+        "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+        "retained_probabilities_match": true,
+        "maximum_probability_error": 0.0,
+        "probability_tolerance": 1e-06,
+        "gen2_rtf": 1.0904107166666668,
+        "native_rtf": 1.06919915
+      },
+      "chat-first/reloaded": {
+        "passed": true,
+        "scope": "wrapper/reference correctness at the recorded duration; not held-out quality or full release qualification",
+        "runtime_profile": "gen2-valid-mel-v1",
+        "frame_contract": "v3-streaming-valid-mel-v1",
+        "audio_duration_seconds": 60.0,
+        "backend": "cpu",
+        "device": null,
+        "native_frame_count": 6000,
+        "retained_first_frame": 0,
+        "retained_rows": 6000,
+        "turns": 26,
+        "maximum_turn_error_seconds": 0.0,
+        "turn_tolerance_seconds": 1e-06,
+        "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+        "retained_probabilities_match": true,
+        "maximum_probability_error": 0.0,
+        "probability_tolerance": 1e-06,
+        "gen2_rtf": 1.0654116833333334,
+        "native_rtf": 1.06919915
+      },
+      "diar-first/first": {
+        "passed": true,
+        "scope": "wrapper/reference correctness at the recorded duration; not held-out quality or full release qualification",
+        "runtime_profile": "gen2-valid-mel-v1",
+        "frame_contract": "v3-streaming-valid-mel-v1",
+        "audio_duration_seconds": 60.0,
+        "backend": "cpu",
+        "device": null,
+        "native_frame_count": 6000,
+        "retained_first_frame": 0,
+        "retained_rows": 6000,
+        "turns": 26,
+        "maximum_turn_error_seconds": 0.0,
+        "turn_tolerance_seconds": 1e-06,
+        "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+        "retained_probabilities_match": true,
+        "maximum_probability_error": 0.0,
+        "probability_tolerance": 1e-06,
+        "gen2_rtf": 1.0632380833333335,
+        "native_rtf": 1.06919915
+      },
+      "diar-first/concurrent": {
+        "passed": true,
+        "scope": "wrapper/reference correctness at the recorded duration; not held-out quality or full release qualification",
+        "runtime_profile": "gen2-valid-mel-v1",
+        "frame_contract": "v3-streaming-valid-mel-v1",
+        "audio_duration_seconds": 60.0,
+        "backend": "cpu",
+        "device": null,
+        "native_frame_count": 6000,
+        "retained_first_frame": 0,
+        "retained_rows": 6000,
+        "turns": 26,
+        "maximum_turn_error_seconds": 0.0,
+        "turn_tolerance_seconds": 1e-06,
+        "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+        "retained_probabilities_match": true,
+        "maximum_probability_error": 0.0,
+        "probability_tolerance": 1e-06,
+        "gen2_rtf": 1.0865547666666666,
+        "native_rtf": 1.06919915
+      },
+      "diar-first/reloaded": {
+        "passed": true,
+        "scope": "wrapper/reference correctness at the recorded duration; not held-out quality or full release qualification",
+        "runtime_profile": "gen2-valid-mel-v1",
+        "frame_contract": "v3-streaming-valid-mel-v1",
+        "audio_duration_seconds": 60.0,
+        "backend": "cpu",
+        "device": null,
+        "native_frame_count": 6000,
+        "retained_first_frame": 0,
+        "retained_rows": 6000,
+        "turns": 26,
+        "maximum_turn_error_seconds": 0.0,
+        "turn_tolerance_seconds": 1e-06,
+        "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+        "retained_probabilities_match": true,
+        "maximum_probability_error": 0.0,
+        "probability_tolerance": 1e-06,
+        "gen2_rtf": 1.0604622833333335,
+        "native_rtf": 1.06919915
+      }
+    }
+  },
+  "native_ggml_binding_counts": {
+    "chat-first": 720,
+    "diar-first": 720
+  }
+}

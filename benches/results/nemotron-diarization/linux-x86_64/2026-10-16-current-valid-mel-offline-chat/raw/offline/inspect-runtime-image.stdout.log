@@ -1,0 +1,61 @@
+[
+    {
+        "Id": "sha256:6277ab668b2ad3c3ab851d370faa1690d324b30db29d342527f61fed28f20f36",
+        "RepoTags": [
+            "ubuntu:24.04"
+        ],
+        "RepoDigests": [
+            "ubuntu@sha256:ac3a3d13e90c660a1cb3e89ec695533399f7378dc1ae5fbdc28eb5781d561594"
+        ],
+        "Parent": "",
+        "Comment": "",
+        "Created": "2026-10-02T08:10:55.064306818Z",
+        "DockerVersion": "26.1.3",
+        "Author": "",
+        "Config": {
+            "Hostname": "",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+            ],
+            "Cmd": [
+                "/bin/bash"
+            ],
+            "Image": "sha256:292faec0c628ec3701dc345510b438ff90163f9988b4107d130ba314b9475f96",
+            "Volumes": null,
+            "WorkingDir": "",
+            "Entrypoint": null,
+            "OnBuild": null,
+            "Labels": {
+                "org.opencontainers.image.version": "24.04"
+            }
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 78177487,
+        "GraphDriver": {
+            "Data": {
+                "MergedDir": "/var/lib/docker/overlay2/d0918bd2747fb0b9312bdee322370308efb8156824267b7f5939feb5bb4fb19b/merged",
+                "UpperDir": "/var/lib/docker/overlay2/d0918bd2747fb0b9312bdee322370308efb8156824267b7f5939feb5bb4fb19b/diff",
+                "WorkDir": "/var/lib/docker/overlay2/d0918bd2747fb0b9312bdee322370308efb8156824267b7f5939feb5bb4fb19b/work"
+            },
+            "Name": "overlay2"
+        },
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:32ab39660fd51c6dc3aae486b42d42bbe8fe4c1db78eaf57bb9c21198de48a16"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "0001-01-01T00:00:00Z"
+        }
+    }
+]

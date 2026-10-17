@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "pooled_cpu_mixed_residency_passed": true,
+  "release_qualified": false,
+  "source_commit": "f21c5616d51d6f20600ccee51489ca8178ec13f3",
+  "parent_source_pins_verified": 369,
+  "vendor_source_pins_verified": 3703,
+  "actual_commands": 10,
+  "neural_load_order_cases": [
+    "mixed_real_laya_chat_first",
+    "mixed_real_laya_diarization_first"
+  ],
+  "cases": [
+    {
+      "name": "mixed_real_laya_chat_first",
+      "passed": true,
+      "diarization_backend": "cpu",
+      "chat_placement": {
+        "initial": {
+          "layers": 29,
+          "total": 29,
+          "backend": "MTL",
+          "device": "Apple M4 Pro"
+        },
+        "restored": {
+          "layers": 29,
+          "total": 29,
+          "backend": "MTL",
+          "device": "Apple M4 Pro"
+        }
+      }
+    },
+    {
+      "name": "mixed_real_laya_diarization_first",
+      "passed": true,
+      "diarization_backend": "cpu",
+      "chat_placement": {
+        "initial": {
+          "layers": 29,
+          "total": 29,
+          "backend": "MTL",
+          "device": "Apple M4 Pro"
+        },
+        "restored": {
+          "layers": 29,
+          "total": 29,
+          "backend": "MTL",
+          "device": "Apple M4 Pro"
+        }
+      }
+    }
+  ],
+  "all_protected_inputs_unchanged": true,
+  "helper_archive_independently_restored": true,
+  "loaded_images_replayed": [
+    "version-only",
+    "list",
+    "mixed_real_laya_chat_first",
+    "mixed_real_laya_diarization_first"
+  ],
+  "new_model_calls_during_collection": 0,
+  "limits": [
+    "Same named-M4 mixed residency/refusal/eviction/restoration/shutdown smoke with tiny silence only. No simultaneous neural, speech accuracy, app, GUI, fresh-machine, uncontended performance or release claim.",
+    "Full weight/provider/helper payloads remain local and are independently rehashed; Git retains descriptors and observed process results."
+  ]
+}

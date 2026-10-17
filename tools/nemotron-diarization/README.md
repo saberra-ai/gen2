@@ -799,9 +799,28 @@ command ran. Parent and vendor pins verify at their respective original commits.
 CMake/Ninja/pkg-config executables and binds their compiler environment before
 output preparation. Actual tool versions and a tiny C/C++ static library pass
 under the restricted compiler sandbox, with models denied. All 232 local tools
-tests pass. V3 is unrun; all original mixed assets, tests and acceptance rules
-remain unchanged. Tiny-silence residency checks cannot establish speech quality
-or simultaneous neural execution.
+tests pass. The [actual V3 receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-mixed/collection-qualification.json)
+now passes all ten commands and both unchanged Bark/full-Laya/Metal-chat CPU
+load orders, including budget refusal/eviction/restoration/cleanup. Initial and
+restored chat placement is 29 layers on MTL/Apple M4 Pro. Protected input and
+helper inventories, three full runtime audits (plus ORT in both cases), and a
+no-runtime listing audit pass. Tiny silence establishes residency, not speech
+quality or simultaneous neural execution. Both earlier failures remain failed.
+
+The [complete pooled app construction](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-pnola-app-construction/collection-qualification.json)
+passes offline build/clone/deep strict ad-hoc verification: 246 app entries,
+94 framework files and 92 logical Nemo libraries. Static replay preserves
+model/license/Bark, unsigned payload, deployment and closed-dependency checks.
+No app/native-version/model call ran. Private app source/binaries remain local.
+
+`qualify_pooled_pnola_app.py` and `macos-pooled-pnola-app.protocol.json` freeze
+five fresh neural processes: independent C ABI60s/80.04s references, automatic
+packaged recording/live CLI and CPU-Metal rejection preserving Bark. Exact PCM,
+helper/app/source inventories and prior-output isolation are required before
+inference. Full original app session/export/revision gates and 1e-6 turn checks
+remain unchanged; live compact timelines do not expose frame probabilities.
+All 234 local tools tests pass. App inference is unrun, with GUI/microphone/
+fresh-machine/public-signing/quality/word-gold release gates still open.
 
 `qualify_macos_portable_runtime.py` and `macos-portable-runtime-v2.protocol.json`
 freeze a separate fresh M1 receiver for the exact constructed artifacts. The
