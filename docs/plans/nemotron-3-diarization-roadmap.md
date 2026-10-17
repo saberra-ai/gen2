@@ -198,7 +198,15 @@ Remaining release work as of 2026-10-17:
   now passes all twelve processes and 144 byte-identical per-shape outputs,
   including both SGEMM stages and both fallback cases. Its complete 168 worker
   records and 28 compiler/object inputs qualify the local observer control;
-  Windows SDK/model profiling and original performance gates remain open.
+  Windows SDK/model profiling and original performance gates remain open. The
+  separate [Windows matrix-path producer](../research/nemotron-windows-matrix-profile.md)
+  now implements the exact twenty-patch diagnostic SDK, actual Windows graph
+  controls before assets and complete 84-graph/four-worker/129-root model
+  coverage. Compact saved profiles retain all records once beside raw traces.
+  All 458 Python tests pass with seven Windows-only skips; the source-only
+  eleven-command replay matches all 3,425 canonical files with only the declared
+  CPU observer change. Actual Windows compilation/model observations remain
+  pending; no optimization or release gate is qualified by this implementation.
   Then merge and
   push the completed feature to main; no main promotion is justified yet.
 
