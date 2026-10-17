@@ -1,0 +1,236 @@
+
+Dump of file D:\a\_temp\fp-contract-probe\msvc-default\probe.obj
+
+File Type: COFF OBJECT
+
+?bits@@YAIM@Z (unsigned int __cdecl bits(float)):
+  0000000000000000: C5 FA 11 44 24 08  vmovss      dword ptr [rsp+8],xmm0
+  0000000000000006: 8B 44 24 08        mov         eax,dword ptr [rsp+8]
+  000000000000000A: C3                 ret
+
+__local_stdio_printf_options:
+  0000000000000000: 48 8D 05 00 00 00  lea         rax,[?_OptionsStorage@?1??__local_stdio_printf_options@@9@4_KA]
+                    00
+  0000000000000007: C3                 ret
+
+_vfprintf_l:
+  0000000000000000: 48 89 5C 24 08     mov         qword ptr [rsp+8],rbx
+  0000000000000005: 48 89 6C 24 10     mov         qword ptr [rsp+10h],rbp
+  000000000000000A: 48 89 74 24 18     mov         qword ptr [rsp+18h],rsi
+  000000000000000F: 57                 push        rdi
+  0000000000000010: 48 83 EC 30        sub         rsp,30h
+  0000000000000014: 49 8B D9           mov         rbx,r9
+  0000000000000017: 49 8B F8           mov         rdi,r8
+  000000000000001A: 48 8B F2           mov         rsi,rdx
+  000000000000001D: 48 8B E9           mov         rbp,rcx
+  0000000000000020: E8 00 00 00 00     call        __local_stdio_printf_options
+  0000000000000025: 4C 8B CF           mov         r9,rdi
+  0000000000000028: 48 89 5C 24 20     mov         qword ptr [rsp+20h],rbx
+  000000000000002D: 4C 8B C6           mov         r8,rsi
+  0000000000000030: 48 8B D5           mov         rdx,rbp
+  0000000000000033: 48 8B 08           mov         rcx,qword ptr [rax]
+  0000000000000036: FF 15 00 00 00 00  call        qword ptr [__imp___stdio_common_vfprintf]
+  000000000000003C: 48 8B 5C 24 40     mov         rbx,qword ptr [rsp+40h]
+  0000000000000041: 48 8B 6C 24 48     mov         rbp,qword ptr [rsp+48h]
+  0000000000000046: 48 8B 74 24 50     mov         rsi,qword ptr [rsp+50h]
+  000000000000004B: 48 83 C4 30        add         rsp,30h
+  000000000000004F: 5F                 pop         rdi
+  0000000000000050: C3                 ret
+
+contract_intrinsic:
+  0000000000000000: C4 E2 71 A9 C2     vfmadd213ss xmm0,xmm1,xmm2
+  0000000000000005: C3                 ret
+
+contract_ordinary:
+  0000000000000000: C5 FA 59 C9        vmulss      xmm1,xmm0,xmm1
+  0000000000000004: C5 F2 58 C2        vaddss      xmm0,xmm1,xmm2
+  0000000000000008: C3                 ret
+
+contract_separate:
+  0000000000000000: C5 FA 59 C9        vmulss      xmm1,xmm0,xmm1
+  0000000000000004: C5 FA 11 4C 24 08  vmovss      dword ptr [rsp+8],xmm1
+  000000000000000A: C5 EA 58 44 24 08  vaddss      xmm0,xmm2,dword ptr [rsp+8]
+  0000000000000010: C3                 ret
+
+main:
+  0000000000000000: 48 8B C4           mov         rax,rsp
+  0000000000000003: 53                 push        rbx
+  0000000000000004: 48 81 EC D0 00 00  sub         rsp,0D0h
+                    00
+  000000000000000B: C5 F8 29 70 E8     vmovaps     xmmword ptr [rax-18h],xmm6
+  0000000000000010: C5 F8 29 78 D8     vmovaps     xmmword ptr [rax-28h],xmm7
+  0000000000000015: C5 78 29 40 C8     vmovaps     xmmword ptr [rax-38h],xmm8
+  000000000000001A: C5 78 29 48 B8     vmovaps     xmmword ptr [rax-48h],xmm9
+  000000000000001F: C5 78 29 50 A8     vmovaps     xmmword ptr [rax-58h],xmm10
+  0000000000000024: C7 40 88 01 00 80  mov         dword ptr [rax-78h],3F800001h
+                    3F
+  000000000000002B: 33 C9              xor         ecx,ecx
+  000000000000002D: C7 40 8C FE FF 7F  mov         dword ptr [rax-74h],3F7FFFFEh
+                    3F
+  0000000000000034: C7 40 90 00 00 80  mov         dword ptr [rax-70h],0BF800000h
+                    BF
+  000000000000003B: 0F 1F 44 00 00     nop         dword ptr [rax+rax]
+  0000000000000040: 8B 44 0C 60        mov         eax,dword ptr [rsp+rcx+60h]
+  0000000000000044: 89 44 0C 70        mov         dword ptr [rsp+rcx+70h],eax
+  0000000000000048: 48 83 C1 04        add         rcx,4
+  000000000000004C: 48 83 F9 0C        cmp         rcx,0Ch
+  0000000000000050: 7C EE              jl          0000000000000040
+  0000000000000052: C5 F8 AE 9C 24 E0  vstmxcsr    dword ptr [rsp+0E0h]
+                    00 00 00
+  000000000000005B: C5 7A 10 44 24 78  vmovss      xmm8,dword ptr [rsp+78h]
+  0000000000000061: C5 7A 10 4C 24 74  vmovss      xmm9,dword ptr [rsp+74h]
+  0000000000000067: C5 7A 10 54 24 70  vmovss      xmm10,dword ptr [rsp+70h]
+  000000000000006D: 8B 9C 24 E0 00 00  mov         ebx,dword ptr [rsp+0E0h]
+                    00
+  0000000000000074: C4 C1 78 28 D0     vmovaps     xmm2,xmm8
+  0000000000000079: C4 C1 78 28 C9     vmovaps     xmm1,xmm9
+  000000000000007E: C4 C1 78 28 C2     vmovaps     xmm0,xmm10
+  0000000000000083: E8 00 00 00 00     call        contract_ordinary
+  0000000000000088: C5 F8 28 F8        vmovaps     xmm7,xmm0
+  000000000000008C: C4 C1 78 28 C2     vmovaps     xmm0,xmm10
+  0000000000000091: C4 C1 78 28 D0     vmovaps     xmm2,xmm8
+  0000000000000096: C4 C1 78 28 C9     vmovaps     xmm1,xmm9
+  000000000000009B: E8 00 00 00 00     call        contract_separate
+  00000000000000A0: C5 F8 28 F0        vmovaps     xmm6,xmm0
+  00000000000000A4: C4 C1 78 28 C2     vmovaps     xmm0,xmm10
+  00000000000000A9: C4 C1 78 28 D0     vmovaps     xmm2,xmm8
+  00000000000000AE: C4 C1 78 28 C9     vmovaps     xmm1,xmm9
+  00000000000000B3: E8 00 00 00 00     call        contract_intrinsic
+  00000000000000B8: C7 44 24 58 01 00  mov         dword ptr [rsp+58h],1
+                    00 00
+  00000000000000C0: 48 8D 0D 00 00 00  lea         rcx,[??_C@_0IK@PDCJMPDJ@?$HL?$CCinputs?$CC?3?$FL?$CFu?0?$CFu?0?$CFu?$FN?0?$CCordinary?$CC@]
+                    00
+  00000000000000C7: 48 C7 44 24 50 00  mov         qword ptr [rsp+50h],0
+                    00 00 00
+  00000000000000D0: 48 C7 44 24 48 00  mov         qword ptr [rsp+48h],0
+                    00 00 00
+  00000000000000D9: C7 44 24 40 98 07  mov         dword ptr [rsp+40h],798h
+                    00 00
+  00000000000000E1: 89 5C 24 38        mov         dword ptr [rsp+38h],ebx
+  00000000000000E5: C5 FA 11 44 24 30  vmovss      dword ptr [rsp+30h],xmm0
+  00000000000000EB: C5 FA 11 74 24 28  vmovss      dword ptr [rsp+28h],xmm6
+  00000000000000F1: C4 41 79 7E C1     vmovd       r9d,xmm8
+  00000000000000F6: C4 41 79 7E C8     vmovd       r8d,xmm9
+  00000000000000FB: C5 79 7E D2        vmovd       edx,xmm10
+  00000000000000FF: C5 FA 11 7C 24 20  vmovss      dword ptr [rsp+20h],xmm7
+  0000000000000105: E8 00 00 00 00     call        printf
+  000000000000010A: 4C 8D 9C 24 D0 00  lea         r11,[rsp+0D0h]
+                    00 00
+  0000000000000112: 33 C0              xor         eax,eax
+  0000000000000114: C4 C1 78 28 73 F0  vmovaps     xmm6,xmmword ptr [r11-10h]
+  000000000000011A: C4 C1 78 28 7B E0  vmovaps     xmm7,xmmword ptr [r11-20h]
+  0000000000000120: C4 41 78 28 43 D0  vmovaps     xmm8,xmmword ptr [r11-30h]
+  0000000000000126: C4 41 78 28 4B C0  vmovaps     xmm9,xmmword ptr [r11-40h]
+  000000000000012C: C4 41 78 28 53 B0  vmovaps     xmm10,xmmword ptr [r11-50h]
+  0000000000000132: 49 8B E3           mov         rsp,r11
+  0000000000000135: 5B                 pop         rbx
+  0000000000000136: C3                 ret
+
+printf:
+  0000000000000000: 48 89 4C 24 08     mov         qword ptr [rsp+8],rcx
+  0000000000000005: 48 89 54 24 10     mov         qword ptr [rsp+10h],rdx
+  000000000000000A: 4C 89 44 24 18     mov         qword ptr [rsp+18h],r8
+  000000000000000F: 4C 89 4C 24 20     mov         qword ptr [rsp+20h],r9
+  0000000000000014: 53                 push        rbx
+  0000000000000015: 57                 push        rdi
+  0000000000000016: 48 83 EC 38        sub         rsp,38h
+  000000000000001A: B9 01 00 00 00     mov         ecx,1
+  000000000000001F: 48 8D 7C 24 58     lea         rdi,[rsp+58h]
+  0000000000000024: FF 15 00 00 00 00  call        qword ptr [__imp___acrt_iob_func]
+  000000000000002A: 48 8B D8           mov         rbx,rax
+  000000000000002D: E8 00 00 00 00     call        __local_stdio_printf_options
+  0000000000000032: 4C 8B 44 24 50     mov         r8,qword ptr [rsp+50h]
+  0000000000000037: 45 33 C9           xor         r9d,r9d
+  000000000000003A: 48 8B D3           mov         rdx,rbx
+  000000000000003D: 48 89 7C 24 20     mov         qword ptr [rsp+20h],rdi
+  0000000000000042: 48 8B 08           mov         rcx,qword ptr [rax]
+  0000000000000045: FF 15 00 00 00 00  call        qword ptr [__imp___stdio_common_vfprintf]
+  000000000000004B: 48 83 C4 38        add         rsp,38h
+  000000000000004F: 5F                 pop         rdi
+  0000000000000050: 5B                 pop         rbx
+  0000000000000051: C3                 ret
+
+COFF SYMBOL TABLE
+000 0105899D ABS    notype       Static       | @comp.id
+001 80010190 ABS    notype       Static       | @feat.00
+002 00000003 ABS    notype       Static       | @vol.md
+003 00000000 SECT1  notype       Static       | .drectve
+    Section length   62, #relocs    0, #linenums    0, checksum        0
+005 00000000 SECT2  notype       Static       | .debug$S
+    Section length   84, #relocs    0, #linenums    0, checksum        0
+007 00000000 SECT3  notype       Static       | .text$mn
+    Section length    B, #relocs    0, #linenums    0, checksum 31ED2072, selection    1 (pick no duplicates)
+009 00000000 SECT4  notype       Static       | .text$mn
+    Section length    8, #relocs    1, #linenums    0, checksum 411950D3, selection    2 (pick any)
+00B 00000000 SECT5  notype       Static       | .text$mn
+    Section length   51, #relocs    2, #linenums    0, checksum 3C64F25A, selection    2 (pick any)
+00D 00000000 SECT6  notype       Static       | .text$mn
+    Section length    6, #relocs    0, #linenums    0, checksum 26E64FCD, selection    1 (pick no duplicates)
+00F 00000000 SECT7  notype       Static       | .text$mn
+    Section length    9, #relocs    0, #linenums    0, checksum 88C54DD4, selection    1 (pick no duplicates)
+011 00000000 SECT8  notype       Static       | .text$mn
+    Section length   11, #relocs    0, #linenums    0, checksum 7950B32C, selection    1 (pick no duplicates)
+013 00000000 SECT9  notype       Static       | .text$mn
+    Section length  137, #relocs    5, #linenums    0, checksum BDC902F7, selection    1 (pick no duplicates)
+015 00000000 SECTA  notype       Static       | .text$mn
+    Section length   52, #relocs    3, #linenums    0, checksum 8C4FE7EE, selection    2 (pick any)
+017 00000000 SECT4  notype ()    External     | __local_stdio_printf_options
+018 00000000 UNDEF  notype       External     | __imp___acrt_iob_func
+019 00000000 UNDEF  notype       External     | __imp___stdio_common_vfprintf
+01A 00000000 SECT5  notype ()    External     | _vfprintf_l
+01B 00000000 SECTA  notype ()    External     | printf
+01C 00000000 SECT7  notype ()    External     | contract_ordinary
+01D 00000000 SECT8  notype ()    External     | contract_separate
+01E 00000000 SECT6  notype ()    External     | contract_intrinsic
+01F 00000000 SECT3  notype ()    Static       | ?bits@@YAIM@Z (unsigned int __cdecl bits(float))
+020 00000000 SECT9  notype ()    External     | main
+021 00000000 SECT5  notype       Label        | $LN4
+022 00000000 SECTA  notype       Label        | $LN6
+023 00000000 SECT9  notype       Label        | $LN25
+024 00000000 SECTB  notype       Static       | .xdata
+    Section length   14, #relocs    0, #linenums    0, checksum 79191DC9, selection    5 (pick associative Section 0x5)
+026 00000000 SECTB  notype       Static       | $unwind$_vfprintf_l
+027 00000000 SECTC  notype       Static       | .pdata
+    Section length    C, #relocs    3, #linenums    0, checksum 998CF358, selection    5 (pick associative Section 0x5)
+029 00000000 SECTC  notype       Static       | $pdata$_vfprintf_l
+02A 00000000 SECTD  notype       Static       | .xdata
+    Section length    C, #relocs    0, #linenums    0, checksum A2685878, selection    5 (pick associative Section 0xA)
+02C 00000000 SECTD  notype       Static       | $unwind$printf
+02D 00000000 SECTE  notype       Static       | .pdata
+    Section length    C, #relocs    3, #linenums    0, checksum 1703F4BB, selection    5 (pick associative Section 0xA)
+02F 00000000 SECTE  notype       Static       | $pdata$printf
+030 00000000 SECTF  notype       Static       | .voltbl
+    Section length    2, #relocs    0, #linenums    0, checksum 84B92C1A, selection    5 (pick associative Section 0x8)
+032 00000000 SECTF  notype       Static       | _volmd
+033 00000000 SECT10 notype       Static       | .xdata
+    Section length   20, #relocs    0, #linenums    0, checksum A7155B63, selection    5 (pick associative Section 0x9)
+035 00000000 SECT10 notype       Static       | $unwind$main
+036 00000000 SECT11 notype       Static       | .pdata
+    Section length    C, #relocs    3, #linenums    0, checksum 297F51D0, selection    5 (pick associative Section 0x9)
+038 00000000 SECT11 notype       Static       | $pdata$main
+039 00000000 SECT12 notype       Static       | .voltbl
+    Section length    1, #relocs    0, #linenums    0, checksum 76DC4190, selection    5 (pick associative Section 0x9)
+03B 00000000 SECT12 notype       Static       | _volmd
+03C 00000000 SECT13 notype       Static       | .bss
+    Section length    8, #relocs    0, #linenums    0, checksum        0, selection    2 (pick any)
+03E 00000000 SECT13 notype       External     | ?_OptionsStorage@?1??__local_stdio_printf_options@@9@4_KA (unsigned __int64 `__local_stdio_printf_options'::`2'::_OptionsStorage)
+03F 00000000 SECT14 notype       Static       | .rdata
+    Section length   8A, #relocs    0, #linenums    0, checksum FAFB6076, selection    2 (pick any)
+041 00000000 SECT14 notype       External     | ??_C@_0IK@PDCJMPDJ@?$HL?$CCinputs?$CC?3?$FL?$CFu?0?$CFu?0?$CFu?$FN?0?$CCordinary?$CC@ (`string')
+042 00000000 UNDEF  notype       External     | _fltused
+043 00000000 SECT15 notype       Static       | .chks64
+    Section length   A8, #relocs    0, #linenums    0, checksum        0
+
+String Table Size = 0x193 bytes
+
+  Summary
+
+           8 .bss
+          A8 .chks64
+          84 .debug$S
+          62 .drectve
+          24 .pdata
+          8A .rdata
+         20D .text$mn
+           3 .voltbl
+          40 .xdata

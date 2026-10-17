@@ -1,0 +1,227 @@
+
+Dump of file D:\a\_temp\fp-contract-probe\clang-default\probe.obj
+
+File Type: COFF OBJECT
+
+contract_ordinary:
+  0000000000000000: C4 E2 71 A9 C2     vfmadd213ss xmm0,xmm1,xmm2
+  0000000000000005: C3                 ret
+
+contract_separate:
+  0000000000000000: 50                 push        rax
+  0000000000000001: C5 FA 59 C1        vmulss      xmm0,xmm0,xmm1
+  0000000000000005: C5 FA 11 44 24 04  vmovss      dword ptr [rsp+4],xmm0
+  000000000000000B: C5 EA 58 44 24 04  vaddss      xmm0,xmm2,dword ptr [rsp+4]
+  0000000000000011: 58                 pop         rax
+  0000000000000012: C3                 ret
+
+contract_intrinsic:
+  0000000000000000: C4 E2 71 A9 C2     vfmadd213ss xmm0,xmm1,xmm2
+  0000000000000005: C3                 ret
+
+main:
+  0000000000000000: 56                 push        rsi
+  0000000000000001: 57                 push        rdi
+  0000000000000002: 55                 push        rbp
+  0000000000000003: 53                 push        rbx
+  0000000000000004: 48 81 EC D8 00 00  sub         rsp,0D8h
+                    00
+  000000000000000B: C5 78 29 94 24 C0  vmovaps     xmmword ptr [rsp+0C0h],xmm10
+                    00 00 00
+  0000000000000014: C5 78 29 8C 24 B0  vmovaps     xmmword ptr [rsp+0B0h],xmm9
+                    00 00 00
+  000000000000001D: C5 78 29 84 24 A0  vmovaps     xmmword ptr [rsp+0A0h],xmm8
+                    00 00 00
+  0000000000000026: C5 F8 29 BC 24 90  vmovaps     xmmword ptr [rsp+90h],xmm7
+                    00 00 00
+  000000000000002F: C5 F8 29 B4 24 80  vmovaps     xmmword ptr [rsp+80h],xmm6
+                    00 00 00
+  0000000000000038: 48 8B 05 00 00 00  mov         rax,qword ptr [__security_cookie]
+                    00
+  000000000000003F: 48 31 E0           xor         rax,rsp
+  0000000000000042: 48 89 44 24 78     mov         qword ptr [rsp+78h],rax
+  0000000000000047: 8B 05 00 00 00 00  mov         eax,dword ptr [.rdata]
+  000000000000004D: 89 44 24 70        mov         dword ptr [rsp+70h],eax
+  0000000000000051: 8B 05 04 00 00 00  mov         eax,dword ptr [.rdata+4]
+  0000000000000057: 89 44 24 6C        mov         dword ptr [rsp+6Ch],eax
+  000000000000005B: 8B 05 08 00 00 00  mov         eax,dword ptr [.rdata+8]
+  0000000000000061: 89 44 24 68        mov         dword ptr [rsp+68h],eax
+  0000000000000065: 8B 74 24 70        mov         esi,dword ptr [rsp+70h]
+  0000000000000069: 8B 7C 24 6C        mov         edi,dword ptr [rsp+6Ch]
+  000000000000006D: 8B 5C 24 68        mov         ebx,dword ptr [rsp+68h]
+  0000000000000071: C5 F8 AE 5C 24 74  vstmxcsr    dword ptr [rsp+74h]
+  0000000000000077: C5 F9 6E F6        vmovd       xmm6,esi
+  000000000000007B: C5 F9 6E FF        vmovd       xmm7,edi
+  000000000000007F: C5 79 6E C3        vmovd       xmm8,ebx
+  0000000000000083: 8B 6C 24 74        mov         ebp,dword ptr [rsp+74h]
+  0000000000000087: C5 F9 6F C6        vmovdqa     xmm0,xmm6
+  000000000000008B: C5 F9 6F CF        vmovdqa     xmm1,xmm7
+  000000000000008F: C5 79 7F C2        vmovdqa     xmm2,xmm8
+  0000000000000093: E8 00 00 00 00     call        contract_ordinary
+  0000000000000098: C5 79 6F C8        vmovdqa     xmm9,xmm0
+  000000000000009C: C5 F9 6F C6        vmovdqa     xmm0,xmm6
+  00000000000000A0: C5 F9 6F CF        vmovdqa     xmm1,xmm7
+  00000000000000A4: C5 79 7F C2        vmovdqa     xmm2,xmm8
+  00000000000000A8: E8 00 00 00 00     call        contract_separate
+  00000000000000AD: C5 79 6F D0        vmovdqa     xmm10,xmm0
+  00000000000000B1: C5 F9 6F C6        vmovdqa     xmm0,xmm6
+  00000000000000B5: C5 F9 6F CF        vmovdqa     xmm1,xmm7
+  00000000000000B9: C5 79 7F C2        vmovdqa     xmm2,xmm8
+  00000000000000BD: E8 00 00 00 00     call        contract_intrinsic
+  00000000000000C2: 89 6C 24 38        mov         dword ptr [rsp+38h],ebp
+  00000000000000C6: C5 F9 7E 44 24 30  vmovd       dword ptr [rsp+30h],xmm0
+  00000000000000CC: C5 79 7E 54 24 28  vmovd       dword ptr [rsp+28h],xmm10
+  00000000000000D2: C5 79 7E 4C 24 20  vmovd       dword ptr [rsp+20h],xmm9
+  00000000000000D8: C7 44 24 58 01 00  mov         dword ptr [rsp+58h],1
+                    00 00
+  00000000000000E0: C7 44 24 50 01 00  mov         dword ptr [rsp+50h],1
+                    00 00
+  00000000000000E8: C7 44 24 48 13 00  mov         dword ptr [rsp+48h],13h
+                    00 00
+  00000000000000F0: C7 44 24 40 98 07  mov         dword ptr [rsp+40h],798h
+                    00 00
+  00000000000000F8: 48 8D 0D 00 00 00  lea         rcx,[??_C@_0IK@PDCJMPDJ@?$HL?$CCinputs?$CC?3?$FL?$CFu?0?$CFu?0?$CFu?$FN?0?$CCordinary?$CC?3@]
+                    00
+  00000000000000FF: 89 F2              mov         edx,esi
+  0000000000000101: 41 89 F8           mov         r8d,edi
+  0000000000000104: 41 89 D9           mov         r9d,ebx
+  0000000000000107: E8 00 00 00 00     call        printf
+  000000000000010C: 48 8B 4C 24 78     mov         rcx,qword ptr [rsp+78h]
+  0000000000000111: 48 31 E1           xor         rcx,rsp
+  0000000000000114: 48 3B 0D 00 00 00  cmp         rcx,qword ptr [__security_cookie]
+                    00
+  000000000000011B: 75 3B              jne         0000000000000158
+  000000000000011D: 31 C0              xor         eax,eax
+  000000000000011F: C5 F8 28 B4 24 80  vmovaps     xmm6,xmmword ptr [rsp+80h]
+                    00 00 00
+  0000000000000128: C5 F8 28 BC 24 90  vmovaps     xmm7,xmmword ptr [rsp+90h]
+                    00 00 00
+  0000000000000131: C5 78 28 84 24 A0  vmovaps     xmm8,xmmword ptr [rsp+0A0h]
+                    00 00 00
+  000000000000013A: C5 78 28 8C 24 B0  vmovaps     xmm9,xmmword ptr [rsp+0B0h]
+                    00 00 00
+  0000000000000143: C5 78 28 94 24 C0  vmovaps     xmm10,xmmword ptr [rsp+0C0h]
+                    00 00 00
+  000000000000014C: 48 81 C4 D8 00 00  add         rsp,0D8h
+                    00
+  0000000000000153: 5B                 pop         rbx
+  0000000000000154: 5D                 pop         rbp
+  0000000000000155: 5F                 pop         rdi
+  0000000000000156: 5E                 pop         rsi
+  0000000000000157: C3                 ret
+  0000000000000158: E8 00 00 00 00     call        __security_check_cookie
+  000000000000015D: CC                 int         3
+
+printf:
+  0000000000000000: 56                 push        rsi
+  0000000000000001: 57                 push        rdi
+  0000000000000002: 53                 push        rbx
+  0000000000000003: 48 83 EC 40        sub         rsp,40h
+  0000000000000007: 48 89 CE           mov         rsi,rcx
+  000000000000000A: 48 89 54 24 68     mov         qword ptr [rsp+68h],rdx
+  000000000000000F: 4C 89 44 24 70     mov         qword ptr [rsp+70h],r8
+  0000000000000014: 4C 89 4C 24 78     mov         qword ptr [rsp+78h],r9
+  0000000000000019: 48 8B 05 00 00 00  mov         rax,qword ptr [__security_cookie]
+                    00
+  0000000000000020: 48 31 E0           xor         rax,rsp
+  0000000000000023: 48 89 44 24 38     mov         qword ptr [rsp+38h],rax
+  0000000000000028: 48 8D 5C 24 68     lea         rbx,[rsp+68h]
+  000000000000002D: 48 89 5C 24 30     mov         qword ptr [rsp+30h],rbx
+  0000000000000032: B9 01 00 00 00     mov         ecx,1
+  0000000000000037: FF 15 00 00 00 00  call        qword ptr [__imp___acrt_iob_func]
+  000000000000003D: 48 89 C7           mov         rdi,rax
+  0000000000000040: E8 00 00 00 00     call        __local_stdio_printf_options
+  0000000000000045: 48 8B 08           mov         rcx,qword ptr [rax]
+  0000000000000048: 48 89 5C 24 20     mov         qword ptr [rsp+20h],rbx
+  000000000000004D: 48 89 FA           mov         rdx,rdi
+  0000000000000050: 49 89 F0           mov         r8,rsi
+  0000000000000053: 45 31 C9           xor         r9d,r9d
+  0000000000000056: FF 15 00 00 00 00  call        qword ptr [__imp___stdio_common_vfprintf]
+  000000000000005C: 48 8B 4C 24 38     mov         rcx,qword ptr [rsp+38h]
+  0000000000000061: 48 31 E1           xor         rcx,rsp
+  0000000000000064: 48 3B 0D 00 00 00  cmp         rcx,qword ptr [__security_cookie]
+                    00
+  000000000000006B: 75 08              jne         0000000000000075
+  000000000000006D: 48 83 C4 40        add         rsp,40h
+  0000000000000071: 5B                 pop         rbx
+  0000000000000072: 5F                 pop         rdi
+  0000000000000073: 5E                 pop         rsi
+  0000000000000074: C3                 ret
+  0000000000000075: E8 00 00 00 00     call        __security_check_cookie
+  000000000000007A: CC                 int         3
+
+__local_stdio_printf_options:
+  0000000000000000: 48 8D 05 00 00 00  lea         rax,[?_OptionsStorage@?1??__local_stdio_printf_options@@9@4_KA]
+                    00
+  0000000000000007: C3                 ret
+
+COFF SYMBOL TABLE
+000 00000000 SECT1  notype       Static       | .text
+    Section length    0, #relocs    0, #linenums    0, checksum        0
+002 00000000 SECT2  notype       Static       | .data
+    Section length    0, #relocs    0, #linenums    0, checksum        0
+004 00000000 SECT3  notype       Static       | .bss
+    Section length    0, #relocs    0, #linenums    0, checksum        0
+006 00000000 SECT4  notype       Static       | .text
+    Section length    6, #relocs    0, #linenums    0, checksum 26E64FCD, selection    1 (pick no duplicates)
+008 00000000 SECT4  notype ()    External     | contract_ordinary
+009 00000000 SECT5  notype       Static       | .text
+    Section length   13, #relocs    0, #linenums    0, checksum 66570C1B, selection    1 (pick no duplicates)
+00B 00000000 SECT5  notype ()    External     | contract_separate
+00C 00000000 SECTF  notype       Static       | .xdata
+    Section length    8, #relocs    0, #linenums    0, checksum 1AB96B84, selection    5 (pick associative Section 0x5)
+00E 00000000 SECT6  notype       Static       | .text
+    Section length    6, #relocs    0, #linenums    0, checksum 26E64FCD, selection    1 (pick no duplicates)
+010 00000000 SECT6  notype ()    External     | contract_intrinsic
+011 00000000 SECT7  notype       Static       | .text
+    Section length  15E, #relocs    B, #linenums    0, checksum 1B5DAEC5, selection    1 (pick no duplicates)
+013 00000000 SECT7  notype ()    External     | main
+014 00000000 SECT10 notype       Static       | .xdata
+    Section length   24, #relocs    0, #linenums    0, checksum 99DCFC66, selection    5 (pick associative Section 0x7)
+016 00000000 SECT8  notype       Static       | .text
+    Section length   7B, #relocs    6, #linenums    0, checksum 61A272F6, selection    2 (pick any)
+018 00000000 SECT8  notype ()    External     | printf
+019 00000000 SECT11 notype       Static       | .xdata
+    Section length    C, #relocs    0, #linenums    0, checksum 47A30B67, selection    5 (pick associative Section 0x8)
+01B 00000000 SECT9  notype       Static       | .text
+    Section length    8, #relocs    1, #linenums    0, checksum 411950D3, selection    2 (pick any)
+01D 00000000 SECT9  notype ()    External     | __local_stdio_printf_options
+01E 00000000 SECTA  notype       Static       | .rdata
+    Section length    C, #relocs    0, #linenums    0, checksum 4DA7A030
+020 00000000 SECTB  notype       Static       | .rdata
+    Section length   8A, #relocs    0, #linenums    0, checksum FAFB6076, selection    2 (pick any)
+022 00000000 SECTB  notype       External     | ??_C@_0IK@PDCJMPDJ@?$HL?$CCinputs?$CC?3?$FL?$CFu?0?$CFu?0?$CFu?$FN?0?$CCordinary?$CC?3@ (`string')
+023 00000000 SECTC  notype       Static       | .bss
+    Section length    8, #relocs    0, #linenums    0, checksum        0, selection    2 (pick any)
+025 00000000 SECTC  notype       External     | ?_OptionsStorage@?1??__local_stdio_printf_options@@9@4_KA (unsigned __int64 `__local_stdio_printf_options'::`2'::_OptionsStorage)
+026 00000000 SECTD  notype       Static       | .drectve
+    Section length   63, #relocs    0, #linenums    0, checksum 1916E188
+028 00000000 SECT12 notype       Static       | .pdata
+    Section length    C, #relocs    3, #linenums    0, checksum F23436C8, selection    5 (pick associative Section 0x5)
+02A 00000000 SECT13 notype       Static       | .pdata
+    Section length    C, #relocs    3, #linenums    0, checksum E6DBEA40, selection    5 (pick associative Section 0x7)
+02C 00000000 SECT14 notype       Static       | .pdata
+    Section length    C, #relocs    3, #linenums    0, checksum F13A8DC6, selection    5 (pick associative Section 0x8)
+02E 00000000 SECTE  notype       Static       | .llvm_addrsig
+    Section length    1, #relocs    0, #linenums    0, checksum 4B04D447
+030 00000000 ABS    notype       Static       | @feat.00
+031 00000000 UNDEF  notype       External     | __security_cookie
+032 00000000 UNDEF  notype       External     | __security_check_cookie
+033 00000000 UNDEF  notype       External     | __imp___acrt_iob_func
+034 00000000 UNDEF  notype       External     | __imp___stdio_common_vfprintf
+035 00000000 UNDEF  notype       External     | _fltused
+036 00000000 DEBUG  notype       Filename     | .file
+    fp_contract_probe.cpp
+
+String Table Size = 0x156 bytes
+
+  Summary
+
+           8 .bss
+           0 .data
+          63 .drectve
+           1 .llvm_addrsig
+          24 .pdata
+          96 .rdata
+         200 .text
+          38 .xdata

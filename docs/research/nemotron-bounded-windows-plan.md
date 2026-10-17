@@ -59,8 +59,11 @@ production/package requirement is relaxed and no candidate is qualified.
 
 The [scalar contraction probe](nemotron-windows-fp-contract-probe.md) next isolates
 ordinary multiply-add, forced separate rounding and explicit FMA using the exact
-two compiler binaries, before any new SDK/model execution. It is preregistered,
-not executed, and cannot establish model causality or qualify a runtime/package.
+two compiler binaries, before any new SDK/model execution. The
+[actual scalar result](nemotron-windows-fp-contract-results.md) now confirms the
+MSVC/Clang default contraction difference and restores separate rounding with
+Clang contraction-off, with all three repetitions/explicit controls passing.
+No SDK/model ran; model causality and every runtime/package gate remain open.
 
 The new [producer](../../tools/nemotron-diarization/platform_bounded_windows_native.py),
 [composed-source verifier](../../tools/nemotron-diarization/platform_bounded_sources.py)

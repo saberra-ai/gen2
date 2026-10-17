@@ -115,9 +115,13 @@ Remaining release work as of 2026-10-17:
   MSVC/Clang native RTF is1.036746/0.990393, but only two cases execute; neither
   numerical acceptance nor a complete timing comparison supports promotion.
   A separate [scalar contraction probe](../research/nemotron-windows-fp-contract-probe.md)
-  now preregisters exact-compiler arithmetic controls before another SDK/model
+  preregistered exact-compiler arithmetic controls before another SDK/model
   run. It tests a compiler-default hypothesis only and cannot qualify a runtime
-  or establish the cause of the full model divergence. Execution is pending.
+  or establish the cause of the full model divergence. The
+  [actual scalar result](../research/nemotron-windows-fp-contract-results.md) now
+  confirms MSVC separate rounding versus Clang default FMA; explicit Clang
+  contraction-off restores separate rounding in all three fresh observations.
+  No SDK/model ran; full numerical/performance/production gates remain open.
   Then merge and
   push the completed feature to main; no main promotion is justified yet.
 

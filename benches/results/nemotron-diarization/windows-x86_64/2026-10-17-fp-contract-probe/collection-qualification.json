@@ -1,0 +1,91 @@
+{
+  "schema_version": 1,
+  "collection_completed": true,
+  "source_commit": "aa70983a0ad741d92c9b29c3326ab2846da6e6af",
+  "run_id": 39032867461,
+  "job_id": 117396700802,
+  "artifact_id": 12100149564,
+  "archive": {
+    "bytes": 41444,
+    "sha256": "db9a4ffe9f57105d8437cba39bb548831bca65835b73e0d26b8e6aadf48f67bc"
+  },
+  "protocol": {
+    "bytes": 3174,
+    "sha256": "9f35f7de9a93aaf95b6dfc07d9067c938e0a6ef34dc5242b3357d124540beff7"
+  },
+  "tools_verified": 17,
+  "repository_files_verified": 3,
+  "artifact_members_verified": 44,
+  "zero_status_and_reaped_commands": 19,
+  "observations": {
+    "msvc-default": {
+      "inputs": [
+        1065353217,
+        1065353214,
+        3212836864
+      ],
+      "ordinary": 0,
+      "separate": 0,
+      "intrinsic": 2826960896,
+      "mxcsr": 8064,
+      "msc_ver": 1944,
+      "clang_major": 0,
+      "fma_macro": 0,
+      "avx2_macro": 1
+    },
+    "clang-default": {
+      "inputs": [
+        1065353217,
+        1065353214,
+        3212836864
+      ],
+      "ordinary": 2826960896,
+      "separate": 0,
+      "intrinsic": 2826960896,
+      "mxcsr": 8064,
+      "msc_ver": 1944,
+      "clang_major": 19,
+      "fma_macro": 1,
+      "avx2_macro": 1
+    },
+    "clang-no-contract": {
+      "inputs": [
+        1065353217,
+        1065353214,
+        3212836864
+      ],
+      "ordinary": 0,
+      "separate": 0,
+      "intrinsic": 2826960896,
+      "mxcsr": 8064,
+      "msc_ver": 1944,
+      "clang_major": 19,
+      "fma_macro": 1,
+      "avx2_macro": 1
+    }
+  },
+  "ordinary_function_mnemonics": {
+    "msvc-default": [
+      "vmulss",
+      "vaddss"
+    ],
+    "clang-default": [
+      "vfmadd213ss"
+    ],
+    "clang-no-contract": [
+      "vmulss",
+      "vaddss"
+    ]
+  },
+  "scalar_contraction_difference_observed": true,
+  "new_compiler_sdk_model_calls_during_collection": 0,
+  "release_qualified": false,
+  "package_qualified": false,
+  "public_or_lifecycle_qualified": false,
+  "limits": [
+    "Scalar expression result only; no speech-model causality or fix established.",
+    "No SDK/model execution or timing comparison occurred in this experiment.",
+    "Exact same compiler hashes as prior failed diagnostic; host CPU differs, so no cross-run timing comparison.",
+    "Private environment output is absent; probe executables/objects remain local, with all hashes retained."
+  ]
+}
