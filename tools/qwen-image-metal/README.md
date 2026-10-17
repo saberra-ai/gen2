@@ -28,6 +28,17 @@ the process ID, and the PNG SHA-256. Use a fresh output directory for each run.
 
 ## Run
 
+After building and downloading once, generate from your own prompt:
+
+```sh
+target/qwen-image-metal/cargo/debug/gen2-qwen-image-metal-probe \
+  --prompt "A tiny lighthouse on a floating island above the clouds, watercolor"
+```
+
+This uses the current checkout's bridge and the default model locations below.
+`--output DIR` selects a fresh directory for `image.png` and `report.json`.
+The full positional form remains available for custom component locations.
+
 Needs Apple silicon macOS, Xcode (including its Metal toolchain), CMake, Ninja,
 Rust, and the Hugging Face `hf` CLI. Model downloads occupy about 10 GB; build
 artifacts need additional disk space. Run from the gen2 repository root:

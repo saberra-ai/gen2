@@ -129,8 +129,8 @@ impl<'a> ImageModel<'a> {
         Ok(Self { api, ctx })
     }
 
-    fn generate(&self, progress: &Progress) -> Result<(Vec<u8>, u32)> {
-        let prompt = CString::new(PROMPT)?;
+    fn generate(&self, prompt: &str, progress: &Progress) -> Result<(Vec<u8>, u32)> {
+        let prompt = CString::new(prompt)?;
         let mut error = [0 as c_char; 2048];
         let mut image = OwnedImage {
             api: self.api,
@@ -257,17 +257,67 @@ fn main() -> Result<()> {
         cfg!(all(target_os = "macos", target_arch = "aarch64")),
         "requires Apple silicon macOS"
     );
-    let args: Vec<_> = std::env::args_os().skip(1).collect();
+    let mut args = Vec::new();
+    let mut prompt = PROMPT.to_owned();
+    let mut output_override = None;
+    let mut cli = std::env::args_os().skip(1);
+    while let Some(arg) = cli.next() {
+        match arg.to_str() {
+            Some("--help" | "-h") => {
+                println!(
+                    "Usage: gen2-qwen-image-metal-probe [--prompt TEXT] [--output DIR] [BRIDGE_DYLIB IMAGE_WEIGHTS_DIR LLAMA_GGUF [OUTPUT_DIR]]\n\nWith no paths, uses the bridge built in this checkout and models under $HOME/models.\nGenerates a 1024x1024 image.png and report.json in a fresh output directory."
+                );
+                return Ok(());
+            }
+            Some("--prompt") => {
+                prompt = cli
+                    .next()
+                    .context("--prompt needs text")?
+                    .into_string()
+                    .map_err(|_| anyhow::anyhow!("prompt must be UTF-8"))?;
+                ensure!(!prompt.trim().is_empty(), "prompt must not be empty");
+                CString::new(prompt.as_str()).context("prompt contains a NUL byte")?;
+            }
+            Some("--output") => {
+                output_override = Some(PathBuf::from(
+                    cli.next().context("--output needs a directory")?,
+                ));
+            }
+            Some(flag) if flag.starts_with('-') => anyhow::bail!("unknown option: {flag}"),
+            _ => args.push(arg),
+        }
+    }
     ensure!(
-        (3..=4).contains(&args.len()),
-        "usage: gen2-qwen-image-metal-probe BRIDGE_DYLIB IMAGE_WEIGHTS_DIR LLAMA_GGUF [OUTPUT_DIR]"
+        args.is_empty() || (3..=4).contains(&args.len()),
+        "provide all three model/bridge paths or none; see --help"
     );
-    let bridge = PathBuf::from(&args[0]).canonicalize()?;
-    let weights = PathBuf::from(&args[1]).canonicalize()?;
-    let llama = PathBuf::from(&args[2]).canonicalize()?;
+    ensure!(
+        args.len() != 4 || output_override.is_none(),
+        "specify the output directory only once"
+    );
     let root = Path::new(env!("CARGO_MANIFEST_DIR"))
         .join("../..")
         .canonicalize()?;
+    if args.is_empty() {
+        let user_home = PathBuf::from(
+            std::env::var_os("HOME").context("HOME is not set; provide explicit model paths")?,
+        );
+        args = vec![
+            root.join("target/qwen-image-metal/build/bin/libgen2_qwen_probe.dylib")
+                .into_os_string(),
+            std::env::var_os("GEN2_QWEN_MODELS_DIR").unwrap_or_else(|| {
+                user_home
+                    .join("models/qwen-image-2.1-turbo")
+                    .into_os_string()
+            }),
+            user_home
+                .join("models/qwen3-0.6b-gguf/Qwen3-0.6B-Q4_K_M.gguf")
+                .into_os_string(),
+        ];
+    }
+    let bridge = PathBuf::from(&args[0]).canonicalize()?;
+    let weights = PathBuf::from(&args[1]).canonicalize()?;
+    let llama = PathBuf::from(&args[2]).canonicalize()?;
     let revision = std::process::Command::new("git")
         .arg("-C")
         .arg(&root)
@@ -279,9 +329,8 @@ fn main() -> Result<()> {
     );
     let revision = String::from_utf8(revision.stdout)?.trim().to_owned();
     let timestamp = SystemTime::now().duration_since(UNIX_EPOCH)?.as_secs();
-    let output = args
-        .get(3)
-        .map(PathBuf::from)
+    let output = output_override
+        .or_else(|| args.get(3).map(PathBuf::from))
         .unwrap_or_else(|| root.join(format!("target/qwen-image-metal/run-{timestamp}")));
     std::fs::create_dir_all(&output)?;
     ensure!(
@@ -356,7 +405,7 @@ fn main() -> Result<()> {
             eprintln!("llama during denoising: {result}");
             Ok((session, result))
         });
-        let generated = image_model.generate(&progress);
+        let generated = image_model.generate(&prompt, &progress);
         let generation_seconds = started.elapsed().as_secs_f64();
         let steps = progress.steps.load(Ordering::Relaxed);
         drop(progress); // Wake the receiver on failures before the first step.
@@ -412,7 +461,7 @@ fn main() -> Result<()> {
         "hardware": runtime.hardware(), "runtime_evictions": runtime.stats().evictions,
         "bridge": bridge, "weights": weights, "llama_model": llama,
         "sd_devices": devices, "llama_placement": offload.to_string(),
-        "prompt": PROMPT, "seed": 42, "width": 1024, "height": 1024, "channels": channels,
+        "prompt": prompt, "seed": 42, "width": 1024, "height": 1024, "channels": channels,
         "steps": steps, "cfg": 1.0, "sampler": "euler",
         "sigmas": [1.0,0.978453,0.95418,0.926626,0.89508,0.845148,0.704534,0.414568,0.0],
         "load_seconds": load_seconds, "generation_seconds": generation_seconds,
