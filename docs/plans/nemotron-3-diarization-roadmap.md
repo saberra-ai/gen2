@@ -2,6 +2,14 @@
 
 Status: N0–N3 implemented and verified on macOS arm64 CPU; N4/N5 remain open. Development receipts do not establish a supported desktop release.
 
+The separate [batched matrix observer control](../research/nemotron-matrix-batch-results.md)
+now passes all twelve fresh native Mac graph processes, 144 byte-exact vectors
+against the earlier observer, and complete dispatch/fusion coverage. Only
+post-barrier row emission changes; all 24 owned command groups are reaped.
+This prepares a new Windows full-model observer experiment and supplies no
+observer-overhead or production/release pass. Original failed timing/quality
+results and deferred human review remain unchanged.
+
 Remaining release work as of 2026-10-17:
 
 - Meet the original 20% DER target on every required meeting slice. The two AMI
