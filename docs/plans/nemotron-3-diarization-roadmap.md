@@ -69,8 +69,12 @@ Remaining release work as of 2026-10-17:
   No actual bounded package is constructed yet. Versioned offline/chat receivers
   and an own-process negative-load observer/probe now pass350 model-free tests;
   actual Windows cleanup/receiver execution and the new orchestration protocol
-  remain open. The next performance diagnostic must measure rather than assume
-  whether a smaller worker budget helps the observed2-core/4-logical host.
+  remain open. The separately versioned [worker-budget diagnostic](../research/nemotron-windows-worker-diagnostic.md)
+  now preregisters4/2/1/4 fresh native processes, actual configured-pool telemetry,
+  distinct diagnostic identities and full-output parity. All354 model-free tests
+  and all three actual source-only/LF compositions pass; actual Windows matrix
+  execution remains pending. It must measure rather than assume whether a smaller
+  worker budget helps the observed2-core/4-logical host.
   Then merge and
   push the completed feature to main; no main promotion is justified yet.
 
