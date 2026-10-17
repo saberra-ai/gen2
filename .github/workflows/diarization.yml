@@ -36,6 +36,7 @@ jobs:
         run: |
           git fetch --no-tags --depth=1 origin 618d7969b112d1e923e15db19fe81eb2c0b892f4
           git fetch --no-tags --depth=1 origin dfdede8e74709a0c89be01d53aad92d346b50b99
+          git fetch --no-tags --depth=1 origin fee2177adcd7b75b488c67bea5a593ea17df65de
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
