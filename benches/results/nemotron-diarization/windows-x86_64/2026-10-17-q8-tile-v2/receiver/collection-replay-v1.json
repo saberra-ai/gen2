@@ -1,0 +1,182 @@
+{
+  "schema_version": 1,
+  "source_commit": "4390e16a73bd4e12f3c703c2b75d8c52c16d2e26",
+  "run_id": 39045070426,
+  "job_id": 117432055187,
+  "artifact_id": 12104769570,
+  "archive": {
+    "bytes": 37776813,
+    "sha256": "9abdc2a7f198bd4e3210cca92d9c81e45fc1013f408ac638b56d727d8253723b"
+  },
+  "collector": {
+    "bytes": 12949,
+    "sha256": "23eaf8d21b20e379f7c1fc8622698f67e3dd357f584d09b9b0da00cbca3abd9a"
+  },
+  "delivery_admission": {
+    "bytes": 1504,
+    "sha256": "98290fc9cfa2570807cd872e11b8c016d5073f8d0cfb751e6e28e6fa7cc5750e"
+  },
+  "supervision_replay": {
+    "bytes": 145825,
+    "sha256": "59c91cecf284084cab42c573485c4b9a0ac079ec2eaedb0ed280601080460750"
+  },
+  "diagnostic_completed": true,
+  "canonical_files_verified": 3425,
+  "source_checks": {
+    "canonical_complete_and_exact": true,
+    "pristine_archive_matches": true,
+    "original_sgemm_matches": true,
+    "candidate_sgemm_matches": true,
+    "original_patch_reads_matching": [
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true,
+      true
+    ],
+    "observed_canonical_files": 3425
+  },
+  "new_compiler_sdk_model_calls": 0,
+  "release_qualified": false,
+  "model_rtf_qualified": false,
+  "all_84_outputs_bit_exact": true,
+  "all_12_half_tables_bit_exact": true,
+  "all_36_support_rejections_verified": true,
+  "timing_comparison": {
+    "shapes": [
+      {
+        "shape": 0,
+        "eight_call_totals_ns": [
+          584300,
+          602400,
+          618500,
+          592600
+        ],
+        "control_drift_fraction": 0.014205031661817559,
+        "control_drift_at_most_10_percent": true,
+        "both_candidates_at_least_5_percent_faster_than_both_controls": false,
+        "prediction_supported": false
+      },
+      {
+        "shape": 1,
+        "eight_call_totals_ns": [
+          597100,
+          617700,
+          641500,
+          588200
+        ],
+        "control_drift_fraction": 0.014905375983922291,
+        "control_drift_at_most_10_percent": true,
+        "both_candidates_at_least_5_percent_faster_than_both_controls": false,
+        "prediction_supported": false
+      },
+      {
+        "shape": 2,
+        "eight_call_totals_ns": [
+          616500,
+          603400,
+          525300,
+          592100
+        ],
+        "control_drift_fraction": 0.039578264395782645,
+        "control_drift_at_most_10_percent": true,
+        "both_candidates_at_least_5_percent_faster_than_both_controls": false,
+        "prediction_supported": false
+      },
+      {
+        "shape": 3,
+        "eight_call_totals_ns": [
+          622900,
+          649900,
+          626400,
+          640800
+        ],
+        "control_drift_fraction": 0.028736554824209344,
+        "control_drift_at_most_10_percent": true,
+        "both_candidates_at_least_5_percent_faster_than_both_controls": false,
+        "prediction_supported": false
+      },
+      {
+        "shape": 4,
+        "eight_call_totals_ns": [
+          1756700,
+          1998500,
+          1857700,
+          1723100
+        ],
+        "control_drift_fraction": 0.01912677178801161,
+        "control_drift_at_most_10_percent": true,
+        "both_candidates_at_least_5_percent_faster_than_both_controls": false,
+        "prediction_supported": false
+      },
+      {
+        "shape": 5,
+        "eight_call_totals_ns": [
+          5088800,
+          5583300,
+          5533800,
+          5075800
+        ],
+        "control_drift_fraction": 0.00255462977519258,
+        "control_drift_at_most_10_percent": true,
+        "both_candidates_at_least_5_percent_faster_than_both_controls": false,
+        "prediction_supported": false
+      },
+      {
+        "shape": 6,
+        "eight_call_totals_ns": [
+          9779300,
+          10375600,
+          10590900,
+          9707800
+        ],
+        "control_drift_fraction": 0.007311361753908767,
+        "control_drift_at_most_10_percent": true,
+        "both_candidates_at_least_5_percent_faster_than_both_controls": false,
+        "prediction_supported": false
+      }
+    ],
+    "primary_shapes": [
+      4,
+      5,
+      6
+    ],
+    "kernel_speedup_prediction_supported": false,
+    "limits": "Model-free fixed Q8 matrices and harness dispatch only; no model, RTF, public runtime or release qualification. Retain all timings; no outlier removal."
+  },
+  "compiler_inputs_verified": 14,
+  "host": {
+    "avx2": true,
+    "fma": true,
+    "os": {
+      "caption": "Microsoft Windows Server 2022 Datacenter",
+      "build": "20348",
+      "version": "10.0.20348"
+    },
+    "cpu": [
+      {
+        "Name": "AMD EPYC 7763 64-Core Processor                ",
+        "Manufacturer": "AuthenticAMD",
+        "Architecture": 9,
+        "NumberOfCores": 2,
+        "NumberOfLogicalProcessors": 4,
+        "ProcessorId": "0000000000000000"
+      }
+    ]
+  },
+  "commands_verified": 95
+}

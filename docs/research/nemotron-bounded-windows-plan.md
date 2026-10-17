@@ -116,10 +116,16 @@ the harness correction, including valid unsupported-path controls and explicit
 OpenMP exclusion. The [separately versioned correction](nemotron-windows-q8-tile-v2.md)
 now supplies the original half table with complete independent finite-value
 checks, explicit process-exit guards and OpenMP exclusion. All 437 local tests
-pass with seven Windows-only skips; actual corrected Windows construction and
-execution remain unperformed. This model-free experiment cannot establish model
-RTF, qualify a production SDK or close the remaining package, quality,
-human-review or desktop gates.
+pass with seven Windows-only skips. The
+[actual corrected result](nemotron-windows-q8-tile-v2-results.md) passes all 95
+command cleanups, 36 exact-exit support controls, twelve independently checked
+half tables and all 84 per-shape identical vectors. The corrected build excludes
+OpenMP and the invalid exception contract. Every primary shape passes the 10%
+drift bound, but both candidates are slower than both controls on all three;
+the 5% speedup prediction fails. Retain the production kernel and investigate
+actual model matrix shapes, types and dispatch before another candidate. This
+model-free experiment cannot establish model RTF, qualify a production SDK or
+close the remaining package, quality, human-review or desktop gates.
 
 The new [producer](../../tools/nemotron-diarization/platform_bounded_windows_native.py),
 [composed-source verifier](../../tools/nemotron-diarization/platform_bounded_sources.py)

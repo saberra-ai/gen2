@@ -177,9 +177,16 @@ Remaining release work as of 2026-10-17:
   [corrected harness](../research/nemotron-windows-q8-tile-v2.md) now implements
   the original half table with complete independent finite-value checks, explicit
   process-exit rejection controls and OpenMP exclusion. All 437 local Python
-  tests pass with seven Windows-only skips; actual corrected Windows construction
-  and execution remain unperformed. A kernel result cannot establish model RTF
-  or release qualification. Then merge and
+  tests pass with seven Windows-only skips. The
+  [actual corrected result](../research/nemotron-windows-q8-tile-v2-results.md)
+  passes all 95 command cleanups, 36 exact-exit rejection controls, twelve
+  independently checked half tables and all 84 per-shape identical output
+  vectors. OpenMP exclusion and the corrected support contract are verified.
+  Every primary shape passes the 10% drift bound, but both candidates are slower
+  than both controls on all three shapes; the 5% speedup prediction fails.
+  Preserve the existing production kernel and investigate actual model matrix
+  shapes/types/dispatch before choosing another candidate. A kernel result cannot
+  establish model RTF or release qualification. Then merge and
   push the completed feature to main; no main promotion is justified yet.
 
 The [bounded CPU public Rust protocol](../research/nemotron-bounded-public-runtime.md)
