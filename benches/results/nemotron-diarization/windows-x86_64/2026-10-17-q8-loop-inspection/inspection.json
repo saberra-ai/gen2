@@ -1,0 +1,278 @@
+{
+  "source_commit": "934bb2734ffd1aadfe3596d3f00a6b47d7948f3f",
+  "method": "Unique Q8/Q8/F32 function header and unique backward jne; explicit RSP-relative vector memory instructions only. Static instruction widths, not measured traffic or a causal speed model.",
+  "inputs": {
+    "evidence/disasm-control.stdout.log": {
+      "bytes": 1922731,
+      "sha256": "b5f0feeee40fcf0bb74c016673f961bc8c7ab6f4d675af520934db28611bf3c8"
+    },
+    "evidence/disasm-mx4.stdout.log": {
+      "bytes": 1924752,
+      "sha256": "e1ee1704c722fece87bc20884746b521066315fed236cc048b445c61f339083e"
+    }
+  },
+  "functions": {
+    "control/gemm4xN": {
+      "instruction_count": 347,
+      "loop_instructions_sha256": "0d392978a6d54e21481c6f2505a057d9945ca155116e26042b4ee9e6ee4bdd80",
+      "loop_start": "0x3c0",
+      "backedge": "0x5b1",
+      "loop_instruction_count": 94,
+      "fma_instructions": 8,
+      "stack_accesses": [
+        {
+          "offset": "0x3c0",
+          "instruction": "vmovups ymmword ptr [rsp+0C0h],ymm3",
+          "bytes": 32,
+          "access": "store"
+        },
+        {
+          "offset": "0x3f1",
+          "instruction": "vmovaps xmmword ptr [rsp+30h],xmm1",
+          "bytes": 16,
+          "access": "store"
+        },
+        {
+          "offset": "0x454",
+          "instruction": "vmovups ymmword ptr [rsp+80h],ymm12",
+          "bytes": 32,
+          "access": "store"
+        },
+        {
+          "offset": "0x478",
+          "instruction": "vmovups ymm12,ymmword ptr [rsp+40h]",
+          "bytes": 32,
+          "access": "load"
+        },
+        {
+          "offset": "0x483",
+          "instruction": "vmovups ymmword ptr [rsp+40h],ymm12",
+          "bytes": 32,
+          "access": "store"
+        },
+        {
+          "offset": "0x4aa",
+          "instruction": "vmovups ymmword ptr [rsp+0A0h],ymm10",
+          "bytes": 32,
+          "access": "store"
+        },
+        {
+          "offset": "0x4da",
+          "instruction": "vmovups ymm10,ymmword ptr [rsp+60h]",
+          "bytes": 32,
+          "access": "load"
+        },
+        {
+          "offset": "0x4e5",
+          "instruction": "vmovups ymmword ptr [rsp+60h],ymm10",
+          "bytes": 32,
+          "access": "store"
+        },
+        {
+          "offset": "0x4f7",
+          "instruction": "vmulps xmm2,xmm2,xmmword ptr [rsp+30h]",
+          "bytes": 16,
+          "access": "load"
+        },
+        {
+          "offset": "0x543",
+          "instruction": "vmovups ymm12,ymmword ptr [rsp+80h]",
+          "bytes": 32,
+          "access": "load"
+        },
+        {
+          "offset": "0x573",
+          "instruction": "vmovups ymm10,ymmword ptr [rsp+0A0h]",
+          "bytes": 32,
+          "access": "load"
+        },
+        {
+          "offset": "0x585",
+          "instruction": "vmovups ymm3,ymmword ptr [rsp+0C0h]",
+          "bytes": 32,
+          "access": "load"
+        }
+      ],
+      "static_vector_stack_bytes_per_loop": 352
+    },
+    "control/gemmMx4": {
+      "instruction_count": 351,
+      "loop_instructions_sha256": "d3f1994cb32185c0b15b5fdda5fd1a542c21adbb4ac4747b2210ecfe9e029819",
+      "loop_start": "0x3d0",
+      "backedge": "0x5a7",
+      "loop_instruction_count": 95,
+      "fma_instructions": 8,
+      "stack_accesses": [
+        {
+          "offset": "0x3d0",
+          "instruction": "vmovups ymmword ptr [rsp+70h],ymm7",
+          "bytes": 32,
+          "access": "store"
+        },
+        {
+          "offset": "0x458",
+          "instruction": "vmovups ymm9,ymmword ptr [rsp+30h]",
+          "bytes": 32,
+          "access": "load"
+        },
+        {
+          "offset": "0x463",
+          "instruction": "vmovups ymmword ptr [rsp+30h],ymm9",
+          "bytes": 32,
+          "access": "store"
+        },
+        {
+          "offset": "0x4b4",
+          "instruction": "vmovups ymm10,ymmword ptr [rsp+50h]",
+          "bytes": 32,
+          "access": "load"
+        },
+        {
+          "offset": "0x4bf",
+          "instruction": "vmovups ymmword ptr [rsp+50h],ymm10",
+          "bytes": 32,
+          "access": "store"
+        },
+        {
+          "offset": "0x4d9",
+          "instruction": "vmovups ymm7,ymmword ptr [rsp+70h]",
+          "bytes": 32,
+          "access": "load"
+        }
+      ],
+      "static_vector_stack_bytes_per_loop": 192
+    },
+    "mx4/gemm4xN": {
+      "instruction_count": 347,
+      "loop_instructions_sha256": "0d392978a6d54e21481c6f2505a057d9945ca155116e26042b4ee9e6ee4bdd80",
+      "loop_start": "0x3c0",
+      "backedge": "0x5b1",
+      "loop_instruction_count": 94,
+      "fma_instructions": 8,
+      "stack_accesses": [
+        {
+          "offset": "0x3c0",
+          "instruction": "vmovups ymmword ptr [rsp+0C0h],ymm3",
+          "bytes": 32,
+          "access": "store"
+        },
+        {
+          "offset": "0x3f1",
+          "instruction": "vmovaps xmmword ptr [rsp+30h],xmm1",
+          "bytes": 16,
+          "access": "store"
+        },
+        {
+          "offset": "0x454",
+          "instruction": "vmovups ymmword ptr [rsp+80h],ymm12",
+          "bytes": 32,
+          "access": "store"
+        },
+        {
+          "offset": "0x478",
+          "instruction": "vmovups ymm12,ymmword ptr [rsp+40h]",
+          "bytes": 32,
+          "access": "load"
+        },
+        {
+          "offset": "0x483",
+          "instruction": "vmovups ymmword ptr [rsp+40h],ymm12",
+          "bytes": 32,
+          "access": "store"
+        },
+        {
+          "offset": "0x4aa",
+          "instruction": "vmovups ymmword ptr [rsp+0A0h],ymm10",
+          "bytes": 32,
+          "access": "store"
+        },
+        {
+          "offset": "0x4da",
+          "instruction": "vmovups ymm10,ymmword ptr [rsp+60h]",
+          "bytes": 32,
+          "access": "load"
+        },
+        {
+          "offset": "0x4e5",
+          "instruction": "vmovups ymmword ptr [rsp+60h],ymm10",
+          "bytes": 32,
+          "access": "store"
+        },
+        {
+          "offset": "0x4f7",
+          "instruction": "vmulps xmm2,xmm2,xmmword ptr [rsp+30h]",
+          "bytes": 16,
+          "access": "load"
+        },
+        {
+          "offset": "0x543",
+          "instruction": "vmovups ymm12,ymmword ptr [rsp+80h]",
+          "bytes": 32,
+          "access": "load"
+        },
+        {
+          "offset": "0x573",
+          "instruction": "vmovups ymm10,ymmword ptr [rsp+0A0h]",
+          "bytes": 32,
+          "access": "load"
+        },
+        {
+          "offset": "0x585",
+          "instruction": "vmovups ymm3,ymmword ptr [rsp+0C0h]",
+          "bytes": 32,
+          "access": "load"
+        }
+      ],
+      "static_vector_stack_bytes_per_loop": 352
+    },
+    "mx4/gemmMx4": {
+      "instruction_count": 351,
+      "loop_instructions_sha256": "d3f1994cb32185c0b15b5fdda5fd1a542c21adbb4ac4747b2210ecfe9e029819",
+      "loop_start": "0x3d0",
+      "backedge": "0x5a7",
+      "loop_instruction_count": 95,
+      "fma_instructions": 8,
+      "stack_accesses": [
+        {
+          "offset": "0x3d0",
+          "instruction": "vmovups ymmword ptr [rsp+70h],ymm7",
+          "bytes": 32,
+          "access": "store"
+        },
+        {
+          "offset": "0x458",
+          "instruction": "vmovups ymm9,ymmword ptr [rsp+30h]",
+          "bytes": 32,
+          "access": "load"
+        },
+        {
+          "offset": "0x463",
+          "instruction": "vmovups ymmword ptr [rsp+30h],ymm9",
+          "bytes": 32,
+          "access": "store"
+        },
+        {
+          "offset": "0x4b4",
+          "instruction": "vmovups ymm10,ymmword ptr [rsp+50h]",
+          "bytes": 32,
+          "access": "load"
+        },
+        {
+          "offset": "0x4bf",
+          "instruction": "vmovups ymmword ptr [rsp+50h],ymm10",
+          "bytes": 32,
+          "access": "store"
+        },
+        {
+          "offset": "0x4d9",
+          "instruction": "vmovups ymm7,ymmword ptr [rsp+70h]",
+          "bytes": 32,
+          "access": "load"
+        }
+      ],
+      "static_vector_stack_bytes_per_loop": 192
+    }
+  },
+  "native_calls": 0,
+  "release_qualified": false
+}

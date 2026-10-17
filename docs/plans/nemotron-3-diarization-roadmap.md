@@ -37,6 +37,12 @@ control-drift bound. The Xeon8370C host differs from the bounded model-profile
 EPYC7763. Preserve the existing production kernel and inspect actual generated
 loops and worker scheduling before selecting another implementation. No
 SDK/model/production qualification or main promotion is established.
+The subsequent [saved generated-loop inspection](../research/nemotron-windows-q8-loop-inspection.md)
+finds fewer explicit vector stack operand bytes in the existing 2×4 loop than
+4×2 (192 versus 352 per block iteration), despite the failed timing prediction.
+This does not identify a measured spill bottleneck. A separately frozen
+same-process/worker timing diagnostic is the next prerequisite before another
+kernel choice; it has not yet been implemented or executed.
 
 Remaining release work as of 2026-10-17:
 
