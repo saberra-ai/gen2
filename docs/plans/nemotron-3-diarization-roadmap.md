@@ -22,6 +22,11 @@ Remaining release work as of 2026-10-17:
   entitlement display-format parsing, before helper execution or any image
   operation. A read-only explicit-XML control diagnoses the mismatch; no host
   support, volume, VM or fresh-machine gate is passed.
+  The [actual v2 retry](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-host-partition-failure/collection-qualification.json)
+  executes the helper and verifies virtualization support/geometry, but remains
+  failed before mount/write because a fixed `s2` query differs from the observed
+  unique physical `s1` partition. The new image is detached and reserve released;
+  VM/guest/fresh-machine qualification remains open.
 - Finish each advertised platform/backend's performance, deployment and public
   signing/notarization requirements before promotion. Windows CPU functional
   evidence passes but its observed live RTF remains above one. Then merge and

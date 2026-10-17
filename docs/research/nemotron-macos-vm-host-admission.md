@@ -94,3 +94,18 @@ all signing, host-support/geometry, blank-image identity/mount/write/cleanup,
 offline, storage and no-guest gates remain unchanged. Review and commit this
 retry before invoking it; no v2 controller or helper has run at preregistration.
 The full 286-test model-free suite also passes for this retry in 10.117 seconds.
+
+The [actual v2 attempt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-host-partition-failure/collection-qualification.json)
+at `0d585141b56546464028f7f4c79f85fc9cdf31f1` now proves helper execution,
+host virtualization support and valid four-CPU/eight-GiB proposed geometry.
+Measured host bounds are 1–64 CPUs and 4 MiB–64 GiB memory. Its exact one-key
+XML entitlement, strict ad-hoc hardened signature, arm64 and minimum26.0 verify.
+
+The attempt remains failed: the fresh 256-MiB image creates and attaches, but
+its actual unique physical partition is `s1`, while the checker queries fixed
+`s2`. That read-only query returns not found. No APFS-list, mount or write starts.
+Cleanup re-identifies the exact task image, detaches it successfully and confirms
+absence; the reserve is released. The 56-member receipt retains all raw command
+and failure evidence, source copies and filtered owned-image mappings. The
+detached image/helper/global inventories stay local by hash. This proves neither
+blank-volume write permission nor VM creation/boot or fresh-machine operation.

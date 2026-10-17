@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/qualify_macos_vm_host_v2.py", line 283, in <module>
+    main()
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/qualify_macos_vm_host_v2.py", line 225, in main
+    partition = plistlib.loads(run('partition-info', ['/usr/sbin/diskutil', 'info', '-plist', whole + 's2']))
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/qualify_macos_vm_host_v2.py", line 156, in run
+    raise ValueError('host admission child failed: ' + name)
+ValueError: host admission child failed: partition-info
