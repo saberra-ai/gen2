@@ -108,6 +108,13 @@ apps/assets remain unchanged. The controller was observed terminal before
 independent collection. This is construction/static evidence; SDK/app inference,
 automatic recorded/live resolution and original quality/desktop/release gates
 stay pending.
+The [bounded complete-app runtime protocol](../research/nemotron-bounded-pnola-runtime.md)
+now binds that constructed app and stages qualified independent C ABI references
+for exact 60/80.04-second PCM. All 280 model-free tests pass. The reviewed
+committed controller must first pass separate static-only admission before its
+five fresh neural processes; no bounded complete-app runtime call has run at
+preregistration. Construction feature CI at `edf7b898` passes
+[all 13 jobs](https://github.com/saberra-ai/gen2/actions/runs/39011128566).
 
 Latest pooled CPU verification passes [30m/1h streams](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-long/collection-qualification.json),
 [mixed-model residency](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-mixed/collection-qualification.json)
