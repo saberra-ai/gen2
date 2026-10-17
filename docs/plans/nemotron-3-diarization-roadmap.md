@@ -14,7 +14,15 @@ now freezes a distinct diagnostic SDK, unchanged compiler/ABI/state checks,
 actual Windows graph controls and complete raw/compact model profiles. All 473
 local tool tests pass with seven Windows-only skips. Its eleven-command
 source-only replay admits all 3,425 source descriptors and only the declared
-CPU emission change. Actual Windows/model timing remains unqualified.
+CPU emission change. The [actual Windows batched result](../research/nemotron-windows-matrix-batch-results.md)
+now independently passes all 59 command cleanups, 144 control vectors, four
+byte-exact model histories and complete 43,344-record enabled traces. Both
+original observer bounds pass (control drift 0.2349048%). Converted Q8 SGEMM
+accounts for 98.61–98.63% of each worker's matrix kernel wall. Every native RTF
+still exceeds one (1.0169–1.0261), and the EPYC7763 differs from the prior
+EPYC9V74 receiver; no causal batching speedup or production/public/release pass
+is established. Use captured geometries for the next separately frozen kernel
+control while preserving the failed earlier 2×2 candidate and original gates.
 
 Remaining release work as of 2026-10-17:
 
