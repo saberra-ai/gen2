@@ -1,0 +1,668 @@
+{
+  "schema_version": 1,
+  "source_commit": "550905e469c95e1373f75f330f68d32acfebf2bc",
+  "protocol": {
+    "bytes": 43435,
+    "sha256": "17492869193fe933a8b8e2279820759ccd49d8acf5bd2589566e4c618aa748f9"
+  },
+  "installation_passed": true,
+  "fresh_machine_qualified": false,
+  "release_qualified": false,
+  "virtual_machine_created": true,
+  "installation_started": true,
+  "normal_guest_boot_started": false,
+  "private_app_or_models_executed": false,
+  "setup_networking_permitted": true,
+  "installed_disk_quarantined": false,
+  "commands": [
+    {
+      "name": "offline-controls",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/offline.sb",
+        "/usr/bin/python3",
+        "-c",
+        "import pathlib,socket,sys,os\nfor name in sys.argv[2:]:\n try:pathlib.Path(name).read_bytes()\n except PermissionError:pass\n else:raise RuntimeError(\"model read allowed\")\ntry:fd=os.open(sys.argv[1],os.O_WRONLY|os.O_NOFOLLOW)\nexcept PermissionError:pass\nelse:os.close(fd);raise RuntimeError(\"original seed write-open allowed\")\ns=socket.socket()\ntry:s.connect((\"127.0.0.1\",9))\nexcept PermissionError:pass\nelse:raise RuntimeError(\"network allowed\")\n",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/vm-seed/hardware-model.bin",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/denied.nemo",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/denied.gguf",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/denied.safetensors",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/denied.onnx",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/denied.npy",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/denied.f32"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "pid": 22748,
+      "returncode": 0,
+      "wall_seconds": 0.19606645801104605
+    },
+    {
+      "name": "setup-controls",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/setup.sb",
+        "/usr/bin/python3",
+        "-c",
+        "import pathlib,socket,sys,os\nfor name in sys.argv[2:]:\n try:pathlib.Path(name).read_bytes()\n except PermissionError:pass\n else:raise RuntimeError(\"model read allowed\")\ntry:fd=os.open(sys.argv[1],os.O_WRONLY|os.O_NOFOLLOW)\nexcept PermissionError:pass\nelse:os.close(fd);raise RuntimeError(\"original seed write-open allowed\")\n",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/vm-seed/hardware-model.bin",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/denied.nemo",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/denied.gguf",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/denied.safetensors",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/denied.onnx",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/denied.npy",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/denied.f32"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "pid": 22750,
+      "returncode": 0,
+      "wall_seconds": 0.08763929200358689
+    },
+    {
+      "name": "build",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/offline.sb",
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+        "-sdk",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk",
+        "-target",
+        "arm64-apple-macosx26.0",
+        "-swift-version",
+        "5",
+        "-warnings-as-errors",
+        "-j",
+        "2",
+        "-module-cache-path",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/module-cache",
+        "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/macos_vm_install_owner.swift",
+        "-o",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/vm-install-owner"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "pid": 22751,
+      "returncode": 0,
+      "wall_seconds": 3.3817068749922328
+    },
+    {
+      "name": "sign",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/offline.sb",
+        "/usr/bin/codesign",
+        "--force",
+        "--sign",
+        "-",
+        "--timestamp=none",
+        "--options",
+        "runtime",
+        "--entitlements",
+        "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/macos_vm_host.entitlements",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/vm-install-owner"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "pid": 22756,
+      "returncode": 0,
+      "wall_seconds": 0.08658116700826213
+    },
+    {
+      "name": "signature-verify",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/offline.sb",
+        "/usr/bin/codesign",
+        "--verify",
+        "--strict",
+        "--deep",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/vm-install-owner"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "pid": 22757,
+      "returncode": 0,
+      "wall_seconds": 0.04543304198887199
+    },
+    {
+      "name": "signature-metadata",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/offline.sb",
+        "/usr/bin/codesign",
+        "--display",
+        "--verbose=4",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/vm-install-owner"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "pid": 22758,
+      "returncode": 0,
+      "wall_seconds": 0.04847004101611674
+    },
+    {
+      "name": "entitlements",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/offline.sb",
+        "/usr/bin/codesign",
+        "--display",
+        "--xml",
+        "--entitlements",
+        "-",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/vm-install-owner"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "pid": 22759,
+      "returncode": 0,
+      "wall_seconds": 0.048412000003736466
+    },
+    {
+      "name": "architecture",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/offline.sb",
+        "/usr/bin/lipo",
+        "-archs",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/vm-install-owner"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "pid": 22760,
+      "returncode": 0,
+      "wall_seconds": 0.08061458304291591
+    },
+    {
+      "name": "deployment",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/offline.sb",
+        "/usr/bin/otool",
+        "-l",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/vm-install-owner"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "pid": 22761,
+      "returncode": 0,
+      "wall_seconds": 0.09047454199753702
+    },
+    {
+      "name": "dependencies",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/offline.sb",
+        "/usr/bin/otool",
+        "-L",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/vm-install-owner"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "pid": 22763,
+      "returncode": 0,
+      "wall_seconds": 0.08246908301953226
+    },
+    {
+      "name": "error-control",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/offline.sb",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/vm-install-owner",
+        "error-control"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "pid": 22765,
+      "returncode": 0,
+      "wall_seconds": 0.3210229999967851
+    },
+    {
+      "name": "install-owner",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/setup.sb",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/vm-install-owner",
+        "install",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/owner-config.json"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "pid": 22766,
+      "returncode": 0,
+      "wall_seconds": 169.99971862498205
+    }
+  ],
+  "scope": "Install the pinned macOS restore image onto an enforced clone of the seed.\n\nExplicit setup networking is permitted. No normal guest boot, mount/provisioning,\nprivate app/model invocation or host privilege/settings/identity change.\n",
+  "prior_restore_receipt_members_verified": 46,
+  "original_seed_identity": {
+    "disk.img": {
+      "device": 16777233,
+      "inode": 72354874,
+      "bytes": 107374182400,
+      "allocated_bytes": 0,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "mtime_ns": 1792224584280207112,
+      "ctime_ns": 1792224584293850911
+    },
+    "auxiliary-storage.bin": {
+      "device": 16777233,
+      "inode": 72354873,
+      "bytes": 33570816,
+      "allocated_bytes": 16384,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "mtime_ns": 1792224584273851275,
+      "ctime_ns": 1792224584293824911
+    },
+    "hardware-model.bin": {
+      "device": 16777233,
+      "inode": 72354864,
+      "bytes": 132,
+      "allocated_bytes": 4096,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "mtime_ns": 1792224584261275851,
+      "ctime_ns": 1792224584293518036
+    },
+    "machine-id.bin": {
+      "device": 16777233,
+      "inode": 72354868,
+      "bytes": 68,
+      "allocated_bytes": 4096,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "mtime_ns": 1792224584266412771,
+      "ctime_ns": 1792224584293596870
+    }
+  },
+  "storage": {
+    "start_minimum_bytes": 150323855360,
+    "running_minimum_bytes": 85899345920,
+    "reserve_requested_bytes": 268435456,
+    "checks": 186,
+    "released": true,
+    "minimum_observed_free_bytes": 138644246528,
+    "last_observed_free_bytes": 138644246528,
+    "reserve_reported_allocated_bytes": 268435456
+  },
+  "host": {
+    "cpu": "Apple M4 Pro",
+    "platform": "macOS-26.3-arm64-arm-64bit",
+    "uid": 502
+  },
+  "entitlements": {
+    "com.apple.security.virtualization": true
+  },
+  "owner_executable": {
+    "bytes": 227232,
+    "sha256": "b484717c022323b79d96525afd374bc326177fdfccd29d928df1e92eb17bcbe2"
+  },
+  "error_graph_control": [
+    {
+      "code": 1,
+      "description": "The operation couldn\u2019t be completed. (Gen2OwnerControl error 1.)",
+      "domain": "Gen2OwnerControl",
+      "parent_node": -1,
+      "relation": "root"
+    },
+    {
+      "code": 4,
+      "description": "The operation couldn\u2019t be completed. (Gen2OwnerControl error 4.)",
+      "domain": "Gen2OwnerControl",
+      "parent_node": 0,
+      "relation": "multiple[1]"
+    },
+    {
+      "code": 3,
+      "description": "The operation couldn\u2019t be completed. (Gen2OwnerControl error 3.)",
+      "domain": "Gen2OwnerControl",
+      "parent_node": 0,
+      "relation": "multiple[0]"
+    },
+    {
+      "code": 2,
+      "description": "The operation couldn\u2019t be completed. (Gen2OwnerControl error 2.)",
+      "domain": "Gen2OwnerControl",
+      "parent_node": 0,
+      "relation": "underlying"
+    },
+    {
+      "parent_node": 3,
+      "reference_node": 2,
+      "relation": "underlying"
+    }
+  ],
+  "exclusive_lock_path": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-install-local-v1/owner.lock",
+  "clones": {
+    "auxiliary-storage.bin": {
+      "operation": "fclonefileat",
+      "returncode": 0,
+      "fallback_copy": false,
+      "source_before": {
+        "device": 16777233,
+        "inode": 72354873,
+        "bytes": 33570816,
+        "allocated_bytes": 16384,
+        "mode": 384,
+        "uid": 502,
+        "links": 1,
+        "mtime_ns": 1792224584273851275,
+        "ctime_ns": 1792224584293824911
+      },
+      "source_after": {
+        "device": 16777233,
+        "inode": 72354873,
+        "bytes": 33570816,
+        "allocated_bytes": 16384,
+        "mode": 384,
+        "uid": 502,
+        "links": 1,
+        "mtime_ns": 1792224584273851275,
+        "ctime_ns": 1792224584293824911
+      },
+      "destination": {
+        "device": 16777233,
+        "inode": 72391705,
+        "bytes": 33570816,
+        "allocated_bytes": 16384,
+        "mode": 384,
+        "uid": 502,
+        "links": 1,
+        "mtime_ns": 1792224584273851275,
+        "ctime_ns": 1792225644735600986
+      },
+      "content_evidence": "OS enforced copy-on-write clone; no whole-file SHA256 claim."
+    },
+    "disk.img": {
+      "operation": "fclonefileat",
+      "returncode": 0,
+      "fallback_copy": false,
+      "source_before": {
+        "device": 16777233,
+        "inode": 72354874,
+        "bytes": 107374182400,
+        "allocated_bytes": 0,
+        "mode": 384,
+        "uid": 502,
+        "links": 1,
+        "mtime_ns": 1792224584280207112,
+        "ctime_ns": 1792224584293850911
+      },
+      "source_after": {
+        "device": 16777233,
+        "inode": 72354874,
+        "bytes": 107374182400,
+        "allocated_bytes": 0,
+        "mode": 384,
+        "uid": 502,
+        "links": 1,
+        "mtime_ns": 1792224584280207112,
+        "ctime_ns": 1792224584293850911
+      },
+      "destination": {
+        "device": 16777233,
+        "inode": 72391707,
+        "bytes": 107374182400,
+        "allocated_bytes": 0,
+        "mode": 384,
+        "uid": 502,
+        "links": 1,
+        "mtime_ns": 1792224584280207112,
+        "ctime_ns": 1792225644736797198
+      },
+      "content_evidence": "OS enforced copy-on-write clone; no whole-file SHA256 claim."
+    },
+    "hardware-model.bin": {
+      "operation": "fclonefileat",
+      "returncode": 0,
+      "fallback_copy": false,
+      "source_before": {
+        "device": 16777233,
+        "inode": 72354864,
+        "bytes": 132,
+        "allocated_bytes": 4096,
+        "mode": 384,
+        "uid": 502,
+        "links": 1,
+        "mtime_ns": 1792224584261275851,
+        "ctime_ns": 1792224584293518036
+      },
+      "source_after": {
+        "device": 16777233,
+        "inode": 72354864,
+        "bytes": 132,
+        "allocated_bytes": 4096,
+        "mode": 384,
+        "uid": 502,
+        "links": 1,
+        "mtime_ns": 1792224584261275851,
+        "ctime_ns": 1792224584293518036
+      },
+      "destination": {
+        "device": 16777233,
+        "inode": 72391709,
+        "bytes": 132,
+        "allocated_bytes": 4096,
+        "mode": 384,
+        "uid": 502,
+        "links": 1,
+        "mtime_ns": 1792224584261275851,
+        "ctime_ns": 1792225644737899701
+      },
+      "content_evidence": "OS enforced copy-on-write clone; no whole-file SHA256 claim."
+    },
+    "machine-id.bin": {
+      "operation": "fclonefileat",
+      "returncode": 0,
+      "fallback_copy": false,
+      "source_before": {
+        "device": 16777233,
+        "inode": 72354868,
+        "bytes": 68,
+        "allocated_bytes": 4096,
+        "mode": 384,
+        "uid": 502,
+        "links": 1,
+        "mtime_ns": 1792224584266412771,
+        "ctime_ns": 1792224584293596870
+      },
+      "source_after": {
+        "device": 16777233,
+        "inode": 72354868,
+        "bytes": 68,
+        "allocated_bytes": 4096,
+        "mode": 384,
+        "uid": 502,
+        "links": 1,
+        "mtime_ns": 1792224584266412771,
+        "ctime_ns": 1792224584293596870
+      },
+      "destination": {
+        "device": 16777233,
+        "inode": 72391711,
+        "bytes": 68,
+        "allocated_bytes": 4096,
+        "mode": 384,
+        "uid": 502,
+        "links": 1,
+        "mtime_ns": 1792224584266412771,
+        "ctime_ns": 1792225644738972536
+      },
+      "content_evidence": "OS enforced copy-on-write clone; no whole-file SHA256 claim."
+    }
+  },
+  "cloned_seed_before_install": {
+    "auxiliary-storage.bin": {
+      "bytes": 33570816,
+      "allocated_bytes": 16384,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "sha256": "2e70ae4d902dce8b96fe495d01d986432034e44f51a760f6a348360c77e1cd0d"
+    },
+    "disk.img": {
+      "bytes": 107374182400,
+      "allocated_bytes": 0,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "sha256": null,
+      "content_evidence": "Fresh O_EXCL/ftruncate-only creation; zero allocated blocks; no whole-disk hash."
+    },
+    "hardware-model.bin": {
+      "bytes": 132,
+      "allocated_bytes": 4096,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "sha256": "976e66740c64041cf9f127588f93eabf7efb9e7d3cbaee9582bcded88ba5e8d3"
+    },
+    "machine-id.bin": {
+      "bytes": 68,
+      "allocated_bytes": 4096,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "sha256": "4106f98e3f5ee925c4593cc9d7dcea106bbb3a519f8f40219ffc2fc3750db959"
+    }
+  },
+  "owner_result": {
+    "cancellation_requested": false,
+    "cleanup_confirmed": true,
+    "configuration_validated": true,
+    "cpu_count": 4,
+    "custom_listener_created": false,
+    "display_window_created": false,
+    "elapsed_seconds": 169.936453958333,
+    "errors": [],
+    "event_count": 65,
+    "final_state": 0,
+    "installation_qualified": true,
+    "installation_started": true,
+    "installer_callback_received": true,
+    "installer_callback_success": true,
+    "logging_failed": false,
+    "memory_bytes": 8589934592,
+    "normal_start_called": false,
+    "schema_version": 1,
+    "stop_callback_received": true,
+    "stop_callback_success": true,
+    "stop_requested_after_installer_callback": true,
+    "virtual_machine_created": true
+  },
+  "installed_seed": {
+    "auxiliary-storage.bin": {
+      "bytes": 33579164,
+      "allocated_bytes": 1421312,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "sha256": "93e04d8e691ca9cd958a962ba940e6ee58af5bf5225a37dc56a4201827752d0a"
+    },
+    "disk.img": {
+      "bytes": 107374182400,
+      "allocated_bytes": 22080176128,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "sha256": null,
+      "content_evidence": "OS clone followed by successful installer callback and observed stopped state; no whole-disk hash."
+    },
+    "hardware-model.bin": {
+      "bytes": 132,
+      "allocated_bytes": 4096,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "sha256": "976e66740c64041cf9f127588f93eabf7efb9e7d3cbaee9582bcded88ba5e8d3"
+    },
+    "machine-id.bin": {
+      "bytes": 68,
+      "allocated_bytes": 4096,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "sha256": "4106f98e3f5ee925c4593cc9d7dcea106bbb3a519f8f40219ffc2fc3750db959"
+    }
+  },
+  "exclusive_lock_released": true
+}

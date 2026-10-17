@@ -13,20 +13,23 @@ Remaining release work as of 2026-10-17:
   operation. Same-host complete-app CLI evidence does not close these checks.
   GitHub private-app transfer/authentication was skipped. The local VM route
   now passes [helper and blank-volume prerequisites](../research/nemotron-macos-vm-host-admission.md);
-  actual OS restore/guest boot/provisioning and fresh-guest app checks remain open.
+  normal guest boot/provisioning and fresh-guest app checks remain open.
   The [actual v4 result](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-host-prerequisites/collection-qualification.json)
   passes all 22 children, actual OS mount/device provenance, 52-byte
   write/read/mode600 and exact-image detach/reserve release. This qualifies only
   host and blank-user-volume prerequisites; restored Data-volume permission,
-  real VM/guest and fresh-machine complete-app gates remain open. Earlier failed
+  operational guest and fresh-machine complete-app gates remain open. Earlier failed
   attempts remain preserved in the host-admission history. The next
   [pinned IPSW/no-boot configuration result](../research/nemotron-macos-vm-restore.md)
   now passes all 12 commands, the complete Apple body hash and supported fixed
-  configuration, with 297 passing model-free tests. No VM/installer/guest ran;
-  installation, provisioning and fresh-machine app qualification remain open.
+  configuration, with 297 passing model-free tests. That stage invokes no
+  VM/installer/guest; subsequent installation is qualified separately below.
   The [paired-clone/install-owner protocol](../research/nemotron-macos-vm-install.md)
-  is prepared with 307 passing model-free tests. Review and commit are required
-  before its first clone/VM/installer call; actual installation remains pending.
+  now passes all 12 actual children and four enforced clones at `550905e4`:
+  installer callback succeeds, then the declared post-callback stop completes
+  with observed stopped state and owner exit0. All 307 model-free tests pass.
+  This establishes an installed stopped seed, not a subsequent normal boot,
+  guest account/SSH/provisioning or fresh-machine app qualification.
 - Finish each advertised platform/backend's performance, deployment and public
   signing/notarization requirements before promotion. Windows CPU functional
   evidence passes but its observed live RTF remains above one; the

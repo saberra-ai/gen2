@@ -1,7 +1,10 @@
 # Paired clone and install-only VM owner
 
-Status on 2026-10-17: prepared, not yet invoked. The actual
-[pinned-image/no-boot stage](nemotron-macos-vm-restore.md) passes; installation,
+Status on 2026-10-17: actual install-only qualification passes at
+`550905e469c95e1373f75f330f68d32acfebf2bc`; see the
+[56-member receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-install-stopped/collection-qualification.json).
+The actual
+[pinned-image/no-boot stage](nemotron-macos-vm-restore.md) passes; normal
 guest boot/provisioning and fresh-machine complete-app qualification remain open.
 This is the next step toward those original gates, with unchanged quality,
 human-word, desktop, platform and public-release requirements.
@@ -11,7 +14,8 @@ binds 19 current/committed tool sources, 75 external tool/selected SDK/prerequis
 descriptors and all 47 prior receipt members. Metadata-only preparation performs
 no compiler, clone, helper, VM, installer or mount call. Both reviews and a commit
 must precede actual invocation. Ten targeted controls and all 307 model-free tests
-pass; no runtime cancellation or successful installation is asserted by tests.
+pass; tests do not assert runtime cancellation or installation. Both review axes
+cleared before the actual committed invocation described below.
 
 The controller verifies the full local Apple image and unchanged original
 four-file seed. It admits 140GiB initial free space, maintains an 80GiB running
@@ -84,3 +88,37 @@ only an installed stopped seed; normal boot, disposable guest account/SSH,
 provisioning, private app execution and every original release gate remain open.
 The [primary-source lifecycle/clone audit](nemotron-local-vm-receiver.md) explains
 the API contracts and the explicit uncertainty retained by this design.
+
+The actual controller and independent saved-data collector were each observed
+terminal with exit0. All 12 children return zero, including both sandbox controls,
+the build/signature/architecture/deployment checks, Foundation error-graph
+control and installer owner. All four `fclonefileat` calls return0 without copy
+fallback; source identities remain unchanged and the cloned seed passes exact
+content/ownership checks before installation. The owner records 65 ordered events.
+
+The installer callback succeeds after 169.773970 seconds while state is Running.
+Only then does the owner request the declared destructive stop; its completion
+succeeds at 169.936335 seconds with observed Stopped state. The final uncancelled,
+error-free report and successful owner exit close this stage's stopped-seed gate.
+This is not a graceful guest-shutdown observation, normal boot or an operational
+fresh-machine app result. No guest account, SSH, offline patch, host mount or
+private app/model call occurs.
+
+The installed RAW disk remains 107,374,182,400 logical bytes and reports
+22,080,176,128 allocated bytes; this is stat/provenance evidence, not a full-disk
+hash or exact physical CoW sharing measurement. The 132-byte model and 68-byte
+machine identifier retain their original hashes. Auxiliary storage is fully
+hashed at 33,579,164 bytes. All four files remain owned regular single-link600,
+under directory700. Original no-boot seed and the full pinned image are unchanged;
+collection independently rehashes the image without reading the sparse disks.
+
+All 186 parent storage observations stay above the 80GiB running floor; minimum
+free space is 138,644,246,528 bytes. The 256MiB physical reserve and exclusive
+lock are released after the terminal owner wait. Collection verifies 46 prior
+receipt members, 19 current/historical source pins and 75 external descriptors.
+The image/seed binaries/disks, helper and module cache remain local. Collection
+performs no new clone/helper/VM/network/model/mount call. Runtime cancellation
+and killed-owner behavior were not exercised by this successful attempt;
+their unconfirmed-cleanup limits remain explicit. Normal boot, restored Data
+permissions/provisioning, authenticated SSH, complete app and all original
+quality/human/desktop/platform/public-release gates remain open.

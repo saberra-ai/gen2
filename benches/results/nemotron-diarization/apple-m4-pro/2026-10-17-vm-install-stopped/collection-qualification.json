@@ -1,0 +1,88 @@
+{
+  "schema_version": 1,
+  "source_commit": "550905e469c95e1373f75f330f68d32acfebf2bc",
+  "installation_passed": true,
+  "fresh_machine_qualified": false,
+  "release_qualified": false,
+  "actual_commands": 12,
+  "zero_status_commands": 12,
+  "original_image_independently_hashed": {
+    "bytes": 18877622182,
+    "sha256": "7d22296ca6ab46f255bed8f5fc80845edab14fb781f845d7cae9427a22970b53"
+  },
+  "original_seed_identity_unchanged": true,
+  "prior_restore_members_verified": 46,
+  "current_historical_source_pins_verified": 19,
+  "external_descriptors_verified": 75,
+  "model_free_tests_passed": 307,
+  "setup_networking_permitted": true,
+  "installed_disk_quarantined": false,
+  "owner_result": {
+    "cancellation_requested": false,
+    "cleanup_confirmed": true,
+    "configuration_validated": true,
+    "cpu_count": 4,
+    "custom_listener_created": false,
+    "display_window_created": false,
+    "elapsed_seconds": 169.936453958333,
+    "errors": [],
+    "event_count": 65,
+    "final_state": 0,
+    "installation_qualified": true,
+    "installation_started": true,
+    "installer_callback_received": true,
+    "installer_callback_success": true,
+    "logging_failed": false,
+    "memory_bytes": 8589934592,
+    "normal_start_called": false,
+    "schema_version": 1,
+    "stop_callback_received": true,
+    "stop_callback_success": true,
+    "stop_requested_after_installer_callback": true,
+    "virtual_machine_created": true
+  },
+  "installed_seed": {
+    "auxiliary-storage.bin": {
+      "bytes": 33579164,
+      "allocated_bytes": 1421312,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "sha256": "93e04d8e691ca9cd958a962ba940e6ee58af5bf5225a37dc56a4201827752d0a"
+    },
+    "disk.img": {
+      "bytes": 107374182400,
+      "allocated_bytes": 22080176128,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "sha256": null,
+      "content_evidence": "OS clone followed by successful installer callback and observed stopped state; no whole-disk hash."
+    },
+    "hardware-model.bin": {
+      "bytes": 132,
+      "allocated_bytes": 4096,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "sha256": "976e66740c64041cf9f127588f93eabf7efb9e7d3cbaee9582bcded88ba5e8d3"
+    },
+    "machine-id.bin": {
+      "bytes": 68,
+      "allocated_bytes": 4096,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "sha256": "4106f98e3f5ee925c4593cc9d7dcea106bbb3a519f8f40219ffc2fc3750db959"
+    }
+  },
+  "physical_reserve_released": true,
+  "new_helper_vm_network_model_mount_clone_calls_during_collection": 0,
+  "limits": [
+    "Installation executes guest code; no subsequent normal guest boot/account/SSH/provisioning or private complete-app/model qualification.",
+    "Only successful callback plus observed stopped state, supported post-callback stop if needed and successful owner exit can admit the installed seed.",
+    "Owner kill/exit and lock release are not independent framework-teardown proof. Any failed/unconfirmed disk remains quarantined, never mounted/read/cloned in collection.",
+    "Image/seed binaries and sparse disk/helper/modulecache stay local. Disk stat and OSclone/installer provenance only; never a full100GiB hash.",
+    "Setup networking is permitted, not offline installation or a complete endpoint/Apple-helper sandbox claim. GUI/microphone/IPC/playback, quality/human gold, platform and public release gates remain open."
+  ]
+}
