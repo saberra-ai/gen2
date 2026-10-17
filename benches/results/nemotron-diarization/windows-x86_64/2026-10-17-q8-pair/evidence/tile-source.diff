@@ -1,0 +1,97 @@
+--- ggml/src/ggml-cpu/llamafile/sgemm.cpp
++++ candidate/ggml/src/ggml-cpu/llamafile/sgemm.cpp
+@@ -1369,10 +1369,94 @@
+     }
+ 
+     void matmul(int64_t m, int64_t n) {
++#if defined(GEN2_Q8_PAIR_EXPECTED) && (!defined(_WIN32) || !defined(__AVX2__) || !defined(__F16C__) || defined(__AVX512F__))
++#error exact Windows AVX2/F16C candidate compilation required
++#endif
++#if defined(_WIN32) && defined(__AVX2__) && defined(__F16C__) && !defined(__AVX512F__)
++        if constexpr (std::is_same<TA, block_q8_0>::value &&
++                      std::is_same<TB, block_q8_0>::value && std::is_same<TC, float>::value) {
++            if (m >= 2 && n >= 4) {
++                const int64_t me = m / 2 * 2;
++                const int64_t ne = n / 4 * 4;
++                gemmPair2x4(0, me, 0, ne);
++                mnpack(me, m, 0, ne);
++                mnpack(0, m, ne, n);
++                return;
++            }
++        }
++#endif
+         mnpack(0, m, 0, n);
+     }
+ 
+   private:
++#if defined(_WIN32) && defined(__AVX2__) && defined(__F16C__) && !defined(__AVX512F__)
++    NOINLINE void gemmPair2x4(int64_t m0, int64_t m, int64_t n0, int64_t n) {
++        int64_t ytiles = (m - m0) / 2;
++        int64_t xtiles = (n - n0) / 4;
++        int64_t tiles = xtiles * ytiles;
++        int64_t duty = (tiles + nth - 1) / nth;
++        int64_t start = duty * ith;
++        int64_t end = start + duty;
++        if (end > tiles)
++            end = tiles;
++        for (int64_t job = start; job < end; ++job) {
++            int64_t ii = m0 + job / xtiles * 2;
++            int64_t jj = n0 + job % xtiles * 4;
++            __m256 Cv[4][2] = {};
++            for (int64_t l = 0; l < k; ++l) {
++                uint64_t b_delta = ((uint64_t)B[ldb * (jj + 3) + l].d << 48) | ((uint64_t)B[ldb * (jj + 2) + l].d << 32) | ((uint64_t)B[ldb * (jj + 1) + l].d << 16) | (B[ldb * (jj + 0) + l].d);
++                __m128 db = _mm_cvtph_ps(_mm_set_epi64x(0, b_delta));
++                const float a0 = unhalf(A[lda * (ii + 0) + l].d);
++                const float a1 = unhalf(A[lda * (ii + 1) + l].d);
++                __m128 da = _mm_setr_ps(a0, a1, a0, a1);
++                __m256i avec0 = load(A + lda * (ii + 0) + l);
++                __m256i avec1 = load(A + lda * (ii + 1) + l);
++                __m256i abs0 = _mm256_sign_epi8(avec0, avec0);
++                __m256i abs1 = _mm256_sign_epi8(avec1, avec1);
++                {
++                    __m256i bvec = load(B + ldb * (jj + 0) + l);
++                    __m256 dvec = _mm256_castps128_ps256(_mm_mul_ps(da, _mm_shuffle_ps(db, db, 0)));
++                    dvec = _mm256_permute2f128_ps(dvec, dvec, 0);
++                    Cv[0][0] = madd(_mm256_shuffle_ps(dvec, dvec, 0),
++                                         updot(abs0, _mm256_sign_epi8(bvec, avec0)), Cv[0][0]);
++                    Cv[0][1] = madd(_mm256_shuffle_ps(dvec, dvec, 85),
++                                         updot(abs1, _mm256_sign_epi8(bvec, avec1)), Cv[0][1]);
++                }
++                {
++                    __m256i bvec = load(B + ldb * (jj + 1) + l);
++                    __m256 dvec = _mm256_castps128_ps256(_mm_mul_ps(da, _mm_shuffle_ps(db, db, 85)));
++                    dvec = _mm256_permute2f128_ps(dvec, dvec, 0);
++                    Cv[1][0] = madd(_mm256_shuffle_ps(dvec, dvec, 0),
++                                         updot(abs0, _mm256_sign_epi8(bvec, avec0)), Cv[1][0]);
++                    Cv[1][1] = madd(_mm256_shuffle_ps(dvec, dvec, 85),
++                                         updot(abs1, _mm256_sign_epi8(bvec, avec1)), Cv[1][1]);
++                }
++                {
++                    __m256i bvec = load(B + ldb * (jj + 2) + l);
++                    __m256 dvec = _mm256_castps128_ps256(_mm_mul_ps(da, _mm_shuffle_ps(db, db, 170)));
++                    dvec = _mm256_permute2f128_ps(dvec, dvec, 0);
++                    Cv[2][0] = madd(_mm256_shuffle_ps(dvec, dvec, 0),
++                                         updot(abs0, _mm256_sign_epi8(bvec, avec0)), Cv[2][0]);
++                    Cv[2][1] = madd(_mm256_shuffle_ps(dvec, dvec, 85),
++                                         updot(abs1, _mm256_sign_epi8(bvec, avec1)), Cv[2][1]);
++                }
++                {
++                    __m256i bvec = load(B + ldb * (jj + 3) + l);
++                    __m256 dvec = _mm256_castps128_ps256(_mm_mul_ps(da, _mm_shuffle_ps(db, db, 255)));
++                    dvec = _mm256_permute2f128_ps(dvec, dvec, 0);
++                    Cv[3][0] = madd(_mm256_shuffle_ps(dvec, dvec, 0),
++                                         updot(abs0, _mm256_sign_epi8(bvec, avec0)), Cv[3][0]);
++                    Cv[3][1] = madd(_mm256_shuffle_ps(dvec, dvec, 85),
++                                         updot(abs1, _mm256_sign_epi8(bvec, avec1)), Cv[3][1]);
++                }
++            }
++            for (int64_t j = 0; j < 4; ++j)
++                for (int64_t i = 0; i < 2; ++i)
++                    C[ldc * (jj + j) + (ii + i)] = hsum(Cv[j][i]);
++        }
++    }
++#endif
++
+     void mnpack(int64_t m0, int64_t m, int64_t n0, int64_t n) {
+         int64_t mc, nc, mp, np;
+         switch ((MIN(m - m0, 4) << 4) | MIN(n - n0, 4)) {

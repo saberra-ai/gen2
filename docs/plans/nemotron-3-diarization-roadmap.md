@@ -143,8 +143,20 @@ arithmetic and original compiler/ISA/contraction requirements remain unchanged.
 Exact producer/benchmark/metrics derivations preserve all1,056 full vectors,
 half/support/cleanup checks and original speed/drift/observer predicates.
 All545 local tests pass with seven Windows-only skips; the separate protocol
-binds131 tools/3,745 references/39 imports. Actual Windows numerical/performance
-execution remains pending; this is no SDK/model/RTF or release qualification.
+binds131 tools/3,745 references/39 imports. This preparation supplies no
+SDK/model/RTF or release qualification; actual execution is recorded below.
+The [actual two-row result](../research/nemotron-windows-q8-pair-results.md)
+now independently admits all4,697 delivered members,95 owned command cleanups,
+1,056 complete byte-exact phase vectors, twelve half tables and36 support
+rejections. None of48 four-worker primary comparisons meets the original5%
+speedup requirement;45/48 observer comparisons meet both original bounds.
+Both prediction/observer flags stay false. Static loop vector stack operand
+widths increase from192 to256bytes; that is not measured traffic or a cause.
+The1,428-member result and separate eight-member static receipt retain these
+failures. Production remains unchanged; no model/RTF/package/release pass follows.
+The producer's [feature CI](https://github.com/saberra-ai/gen2/actions/runs/39066832281)
+also completes all thirteen jobs successfully; those checks do not close the
+failed timing or original release gates.
 
 Remaining release work as of 2026-10-17:
 
