@@ -1,0 +1,138 @@
+{
+  "schema_version": 2,
+  "runtime": {
+    "repository": "https://github.com/NVIDIA/NeMo-Speech.cpp.git",
+    "revision": "083861c241061562b8ec29eb06d7f6cdc3af8775",
+    "llama_revision": "bd4f514db14d87fded667787a7a963bfbaa98e89",
+    "source_sha256": {
+      "include/nemo_speech/diar.h": "4839f70ccab30af3ed9949751792a547f3a8a4129848f64c8cd69889bd433afd",
+      "include/nemo_speech/asr.h": "12f3e017391ae19daabe59d2d50541f0aabb010228d075426b4a9834337422fa",
+      "models/index.json": "4d5d88c93b006b33b2e02e5c214e97e6c28e96f8673b0d744ccfa1e8f4a255b7",
+      "CMakePresets.json": "2e1e02ba92865d283ac52682b993152c7d60801c00350146b7d022efb0a44cd6",
+      "patches/series": "35e50f5c92e37c10f6e6dded26f51dd290196104990224918b455c1d828b76b8",
+      "LICENSE": "eaaca34b26b27c7be5a5099a0b9ddf9913f2db0aa96f6d5854435f2916d6fdc3",
+      "NOTICE": "d5ea773d67035e676503579ecf7d5836a124649d7fe99d59ec3c50cd101e1a80",
+      "THIRD_PARTY_NOTICES.md": "fd8fcc0c71abde95b1b742a74c70aa27d2b4f2811fc19f64378b6845d8f3254a",
+      "examples/wav_reader.h": "0af593f097a1ce49078ef363feb244690598f5a53dc6a34cf208d441a52fe726",
+      "examples/diarize_file.cpp": "486332c36080906f65b37c0086b6b2ee55bc6e882f1edfcb9fe7b044894ada4d",
+      "src/asr/c_api.cpp": "d031ee096eefc0d5ed597bd8897fe05d0fe538fbe4f2119d2533a606400862fe",
+      "src/asr/diar/diar_pipeline.cpp": "fe00ae415f4741d7e07579acdc77c60f5d7327be024cf7f8aff8f52142ae9af2",
+      "CMakeLists.txt": "e79e24832e52b440808dd59a4b274ad657ed6e7bb42df992dcaf0ee87f9d39fa",
+      "VERSION": "89485a2b4d9e36147093207a87e8a9fee14396aa877f1647b2a0d53190f229f5"
+    },
+    "preset": "cpu-diar",
+    "cmake_definitions": {
+      "NEMO_SPEECH_BUILD_EXAMPLES": "ON",
+      "NEMO_SPEECH_BUILD_CLI": "OFF",
+      "NEMO_SPEECH_BUILD_MIC_CAPTURE": "OFF",
+      "GGML_OPENMP": "OFF",
+      "NEMO_SPEECH_VERSION_METADATA": "gen2-valid-mel-v1"
+    },
+    "reported_version": "nemo-speech-asr 0.2.0+gen2-valid-mel-v1",
+    "compatibility_patches": [
+      {
+        "path": "patches/v3-finish-valid-mel.patch",
+        "bytes": 1194,
+        "sha256": "8c1434c14f63ebeb2515c719a90594124fd4f75af85b80451fd145b5caef3c36",
+        "source_sha256_before": {
+          "src/asr/diar/diar_pipeline.cpp": "4143ca8e6d6f14ee454263702510cb163fe8e170aa928f236c0b4b540a7a7da9"
+        },
+        "source_sha256_after": {
+          "src/asr/diar/diar_pipeline.cpp": "fe00ae415f4741d7e07579acdc77c60f5d7327be024cf7f8aff8f52142ae9af2"
+        }
+      }
+    ],
+    "frame_contract": {
+      "name": "v3-streaming-valid-mel-v1",
+      "scope": "V3 streaming finish only; offline and V2 semantics unchanged",
+      "sample_rate": 16000,
+      "hop_samples": 160,
+      "final_frames": "floor(real_input_samples / 160)",
+      "output_channels": 8
+    }
+  },
+  "model": {
+    "repository": "nvidia/Nemotron-3-Diarization",
+    "revision": "f667ed73aee57d40cc39428eb768b4fd87a0a29e",
+    "license": "OpenMDW-1.1"
+  },
+  "fixture": {
+    "source": "AMI EN2002d Mix-Headset 2132.5\u20132192.5 seconds",
+    "audio_license": "CC-BY-4.0",
+    "rttm_license": "Apache-2.0",
+    "sample_rate": 16000,
+    "seconds": 60
+  },
+  "artifacts": [
+    {
+      "name": "Nemotron-3-Diarization.q8_0.gguf",
+      "size": 107012128,
+      "sha256": "08456d9e22cd9a323c0364d98375f3746d6e68507ebb705cd46438c534c7a3a1",
+      "role": "model",
+      "url": "https://huggingface.co/nvidia/Nemotron-3-Diarization/resolve/f667ed73aee57d40cc39428eb768b4fd87a0a29e/Nemotron-3-Diarization.q8_0.gguf"
+    },
+    {
+      "name": "model.safetensors",
+      "size": 396954592,
+      "sha256": "c074d86335b3b794f8fa5edc25594558f128bdb3914d27806a3a5a2e44963cb6",
+      "role": "reference",
+      "url": "https://huggingface.co/nvidia/Nemotron-3-Diarization/resolve/f667ed73aee57d40cc39428eb768b4fd87a0a29e/model.safetensors"
+    },
+    {
+      "name": "config.json",
+      "size": 1458,
+      "sha256": "dd795ec07ffa09acf18d231aa3fa8642aa5c521760953754e02559a7413b6873",
+      "role": "reference",
+      "url": "https://huggingface.co/nvidia/Nemotron-3-Diarization/resolve/f667ed73aee57d40cc39428eb768b4fd87a0a29e/config.json"
+    },
+    {
+      "name": "processor_config.json",
+      "size": 623,
+      "sha256": "91726746788a024a2f0f2f699a6c3667f0d74e6a0e9288fc44fe3018e23af68e",
+      "role": "reference",
+      "url": "https://huggingface.co/nvidia/Nemotron-3-Diarization/resolve/f667ed73aee57d40cc39428eb768b4fd87a0a29e/processor_config.json"
+    },
+    {
+      "name": "README.md",
+      "size": 43239,
+      "sha256": "5fe88ca4020d2ee134f806a0a02c52c19855b73047bc2e6f25b9171e1abeebfd",
+      "role": "notice",
+      "url": "https://huggingface.co/nvidia/Nemotron-3-Diarization/resolve/f667ed73aee57d40cc39428eb768b4fd87a0a29e/README.md"
+    },
+    {
+      "name": "ami_en2002d_2132.wav",
+      "size": 1920044,
+      "sha256": "f00f92e53115a4a6724aec0ddaf9c675df6d5fabd3a489b43fffe56ba52a3ae9",
+      "role": "fixture",
+      "url": "https://raw.githubusercontent.com/NVIDIA/NeMo-Speech.cpp/083861c241061562b8ec29eb06d7f6cdc3af8775/test_files/diar/ami_en2002d_2132.wav"
+    },
+    {
+      "name": "ami_en2002d_2132.rttm",
+      "size": 1472,
+      "sha256": "40751c9fc0bb934f741789ce3fafccd2c1f9d7c112585b8b40ac177a9de13b2d",
+      "role": "fixture",
+      "url": "https://raw.githubusercontent.com/NVIDIA/NeMo-Speech.cpp/083861c241061562b8ec29eb06d7f6cdc3af8775/test_files/diar/ami_en2002d_2132.rttm"
+    },
+    {
+      "name": "ami_en2002d_2132.json",
+      "size": 2979,
+      "sha256": "8a77aab95e65e301f3cb23cfd0a0641b3295a9da5686ff30f2ab12d0f282e229",
+      "role": "fixture",
+      "url": "https://raw.githubusercontent.com/NVIDIA/NeMo-Speech.cpp/083861c241061562b8ec29eb06d7f6cdc3af8775/test_files/diar/ami_en2002d_2132.json"
+    },
+    {
+      "name": "fixture-README.md",
+      "size": 741,
+      "sha256": "e44c191f59cecdeba6dd82acce9fee820938d41487b7423809d02b4e140426ed",
+      "role": "fixture",
+      "url": "https://raw.githubusercontent.com/NVIDIA/NeMo-Speech.cpp/083861c241061562b8ec29eb06d7f6cdc3af8775/test_files/diar/README.md"
+    }
+  ],
+  "profile": "gen2-valid-mel-v1",
+  "profile_status": "implementation input only; not an artifact qualification or release receipt",
+  "historical_runtime_lock": {
+    "path": "runtime.lock.json",
+    "bytes": 4917,
+    "sha256": "e66e5651608636bbb04528fed7944ab8972a778d1141b36fef3fb391eefd0dcc"
+  }
+}

@@ -156,8 +156,14 @@ Remaining release work as of 2026-10-17:
   source, all97 command checks and byte-exact full histories in a surrounding
   control/candidate/candidate/control sequence. Actual driver expansion must
   prove the intended math policy; effective O3 already exists in the baseline.
-  All423 local model-free tests pass, with seven Windows-only skips. Actual
-  Windows execution and any optimization result remain pending.
+  All 423 local model-free tests pass, with seven Windows-only skips. The
+  [actual Windows result](../research/nemotron-windows-math-errno-results.md) now
+  passes all 87 command cleanups, both complete source/compiler/SDK admissions and
+  all four byte-exact 6000x8 histories/27 turns. Driver logs prove the intended
+  errno difference with contraction off and effective O3 in both SDKs. Native
+  RTF 1.083064/1.023811/1.022393/1.022017 remains above one; 5.6365119% control
+  drift passes, but the 5% speedup prediction fails. Preserve the 326-file receipt
+  and investigate matrix/detailed unary execution; no production fix is qualified.
   Then merge and
   push the completed feature to main; no main promotion is justified yet.
 

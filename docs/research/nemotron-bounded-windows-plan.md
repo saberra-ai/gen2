@@ -96,8 +96,14 @@ single candidate compiler-policy change on the unchanged nineteen-patch tree.
 Both fresh SDKs use the original Clang/linker and identical MSVC probe compiler,
 explicit contraction off, exact97-command checks and original four-worker/58-push
 geometry. Full outputs must be byte-identical. The driver expansion must show
-the intended errno policy and existing effective O3. All423 local tests pass
-with seven Windows-only skips; actual Windows measurement remains pending.
+the intended errno policy and existing effective O3. All 423 local tests pass
+with seven Windows-only skips. The
+[actual result](nemotron-windows-math-errno-results.md) passes 87 command cleanups,
+both source/compiler/SDK audits, intended driver policies and four full byte-exact
+histories. Native RTF 1.083064/1.023811/1.022393/1.022017 still fails below one.
+Control drift 5.6365119% passes; the 5% speedup prediction fails, with both candidates
+slower than the final control. The 326-file receipt supports no production fix or
+release promotion. Matrix and detailed unary execution remain investigation targets.
 
 The new [producer](../../tools/nemotron-diarization/platform_bounded_windows_native.py),
 [composed-source verifier](../../tools/nemotron-diarization/platform_bounded_sources.py)

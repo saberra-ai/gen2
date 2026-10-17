@@ -1,0 +1,451 @@
+{
+  "schema_version": 1,
+  "collection_completed": true,
+  "source_commit": "e76a3199a468f9207c8bc70ab861f2fe918c39c1",
+  "run_id": 39039873138,
+  "job_id": 117416985932,
+  "artifact_id": 12103753072,
+  "archive": {
+    "bytes": 31530786,
+    "sha256": "2d2064547651367d6f56efc31a6175dcb867f74f16c524e2974f3a75679de19c"
+  },
+  "protocol": {
+    "bytes": 319875,
+    "sha256": "290b3f890eb8a5ce413b0d7daa798baf542bed5149d648fb6cce63eb1dd3c4af"
+  },
+  "tools_verified": 86,
+  "repository_files_verified": 1411,
+  "artifact_members_verified": 366,
+  "artifact_evidence_files_copied": 228,
+  "supervised_zero_exit_and_reaped_commands": 87,
+  "host": {
+    "fma": true,
+    "cpu": [
+      {
+        "Name": "AMD EPYC 7763 64-Core Processor                ",
+        "Manufacturer": "AuthenticAMD",
+        "Architecture": 9,
+        "NumberOfCores": 2,
+        "NumberOfLogicalProcessors": 4,
+        "ProcessorId": "0000000000000000"
+      }
+    ],
+    "avx2": true,
+    "os": {
+      "version": "10.0.20348",
+      "caption": "Microsoft Windows Server 2022 Datacenter",
+      "build": "20348"
+    }
+  },
+  "builds": {
+    "control": {
+      "sdk_compiler": "clang-cl",
+      "sdk_files": 66,
+      "commands": 44,
+      "compiler": {
+        "kind": "clang-cl",
+        "compiler": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+        "linker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\Llvm\\x64\\bin\\lld-link.exe",
+        "languages": {
+          "C": {
+            "id": "Clang",
+            "version": "19.1.5"
+          },
+          "CXX": {
+            "id": "Clang",
+            "version": "19.1.5"
+          }
+        },
+        "compiler_entries": 97,
+        "ggml_cpu_entries": 16,
+        "limits": "Compiler/toolchain diagnostic only; no ISA widening, public runtime or package qualification.",
+        "math_errno_admission": {
+          "variant": "control",
+          "flags": [
+            "/clang:-ffp-contract=off"
+          ],
+          "compiler_commands_matching_original": 97,
+          "normalization": "Selected compiler alias, isolated source root, one contraction flag and candidate math-errno flag only."
+        },
+        "compiler_binary": {
+          "bytes": 87168080,
+          "sha256": "93faf6d0a9e66ed1629eb1c9ca638a070aa1839b9490a87ff89b9cb39eeae36b"
+        },
+        "compiler_path_aliases": {
+          "C:\\PROGRA~1\\MICROS~2\\2022\\ENTERP~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe": {
+            "bytes": 87168080,
+            "sha256": "93faf6d0a9e66ed1629eb1c9ca638a070aa1839b9490a87ff89b9cb39eeae36b"
+          }
+        },
+        "linker_binary": {
+          "bytes": 52877384,
+          "sha256": "b24601b51e04b2ef371c2809ad33e3b35dff5cb7e166e26a1d2ddb74148c212c"
+        }
+      },
+      "math_driver": {
+        "effective_optimization": "-O3",
+        "contraction": "off",
+        "target_cpu": "haswell",
+        "math_errno": true,
+        "loop_and_slp_vectorization": true,
+        "scope": "Driver observation for exact compiler/flags; no model or speedup evidence."
+      },
+      "ggml_files": 3425,
+      "compiler_inputs": 97
+    },
+    "no-errno": {
+      "sdk_compiler": "clang-cl",
+      "sdk_files": 66,
+      "commands": 43,
+      "compiler": {
+        "kind": "clang-cl",
+        "compiler": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+        "linker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\Llvm\\x64\\bin\\lld-link.exe",
+        "languages": {
+          "C": {
+            "id": "Clang",
+            "version": "19.1.5"
+          },
+          "CXX": {
+            "id": "Clang",
+            "version": "19.1.5"
+          }
+        },
+        "compiler_entries": 97,
+        "ggml_cpu_entries": 16,
+        "limits": "Compiler/toolchain diagnostic only; no ISA widening, public runtime or package qualification.",
+        "math_errno_admission": {
+          "variant": "no-errno",
+          "flags": [
+            "/clang:-ffp-contract=off",
+            "/clang:-fno-math-errno"
+          ],
+          "compiler_commands_matching_original": 97,
+          "normalization": "Selected compiler alias, isolated source root, one contraction flag and candidate math-errno flag only."
+        },
+        "compiler_binary": {
+          "bytes": 87168080,
+          "sha256": "93faf6d0a9e66ed1629eb1c9ca638a070aa1839b9490a87ff89b9cb39eeae36b"
+        },
+        "compiler_path_aliases": {
+          "C:\\PROGRA~1\\MICROS~2\\2022\\ENTERP~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe": {
+            "bytes": 87168080,
+            "sha256": "93faf6d0a9e66ed1629eb1c9ca638a070aa1839b9490a87ff89b9cb39eeae36b"
+          }
+        },
+        "linker_binary": {
+          "bytes": 52877384,
+          "sha256": "b24601b51e04b2ef371c2809ad33e3b35dff5cb7e166e26a1d2ddb74148c212c"
+        }
+      },
+      "math_driver": {
+        "effective_optimization": "-O3",
+        "contraction": "off",
+        "target_cpu": "haswell",
+        "math_errno": false,
+        "loop_and_slp_vectorization": true,
+        "scope": "Driver observation for exact compiler/flags; no model or speedup evidence."
+      },
+      "ggml_files": 3425,
+      "compiler_inputs": 97
+    }
+  },
+  "cases": [
+    {
+      "index": 0,
+      "variant": "control",
+      "sdk_compiler": "clang-cl",
+      "elapsed_micros": 64983824,
+      "native_rtf": 1.0830637333333333,
+      "turns": 27,
+      "raw_probabilities": {
+        "bytes": 192000,
+        "sha256": "6b08c607371bab2b7965faebe88d8ee31ae39c41c377043d137cbbf424f3af7d"
+      },
+      "parity_passed": true
+    },
+    {
+      "index": 1,
+      "variant": "no-errno",
+      "sdk_compiler": "clang-cl",
+      "elapsed_micros": 61428663,
+      "native_rtf": 1.02381105,
+      "turns": 27,
+      "raw_probabilities": {
+        "bytes": 192000,
+        "sha256": "6b08c607371bab2b7965faebe88d8ee31ae39c41c377043d137cbbf424f3af7d"
+      },
+      "parity_passed": true
+    },
+    {
+      "index": 2,
+      "variant": "no-errno",
+      "sdk_compiler": "clang-cl",
+      "elapsed_micros": 61343578,
+      "native_rtf": 1.0223929666666667,
+      "turns": 27,
+      "raw_probabilities": {
+        "bytes": 192000,
+        "sha256": "6b08c607371bab2b7965faebe88d8ee31ae39c41c377043d137cbbf424f3af7d"
+      },
+      "parity_passed": true
+    },
+    {
+      "index": 3,
+      "variant": "control",
+      "sdk_compiler": "clang-cl",
+      "elapsed_micros": 61321003,
+      "native_rtf": 1.0220167166666667,
+      "turns": 27,
+      "raw_probabilities": {
+        "bytes": 192000,
+        "sha256": "6b08c607371bab2b7965faebe88d8ee31ae39c41c377043d137cbbf424f3af7d"
+      },
+      "parity_passed": true
+    }
+  ],
+  "full_sequence_bit_exact": true,
+  "timing_comparison": {
+    "elapsed_micros": [
+      64983824,
+      61428663,
+      61343578,
+      61321003
+    ],
+    "native_rtfs": [
+      1.0830637333333333,
+      1.02381105,
+      1.0223929666666667,
+      1.0220167166666667
+    ],
+    "control_drift_fraction": 0.056365119418026244,
+    "control_drift_at_most_10_percent": true,
+    "both_candidates_at_least_5_percent_faster_than_both_controls": false,
+    "speedup_prediction_supported": false,
+    "both_candidates_strictly_real_time": false,
+    "limits": "Native diagnostic only; all original public/lifecycle/performance/quality/release gates remain."
+  },
+  "numerical_difference": {
+    "values_compared": 48000,
+    "maximum_absolute_probability_error": 0.0,
+    "maximum_error_frame": 0,
+    "maximum_error_slot": 0,
+    "maximum_error_values": [
+      0.9947465062141418,
+      0.9947465062141418,
+      0.9947465062141418,
+      0.9947465062141418
+    ],
+    "values_above_original_1e_6_tolerance": 0,
+    "nonidentical_values": 0,
+    "mean_absolute_error": 0.0,
+    "half_probability_threshold_disagreements": 0
+  },
+  "independent_pristine_archive": {
+    "bytes": 57466880,
+    "sha256": "1f4d4730ac53c669d6c7247bc0bcf02453f2427901af3cf989bd33a37f943a76"
+  },
+  "ggml_replay_commands": [
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/patch-0.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/patch-1.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/patch-2.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/patch-3.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/patch-4.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/patch-5.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/patch-6.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/patch-7.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/patch-8.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/patch-9.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/patch-10.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/patch-11.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/patch-12.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/patch-13.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/patch-14.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/patch-15.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/patch-16.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/patch-17.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/patch-18.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-math-errno-ci-v1/math-errno-replay-v1/ggml",
+      "returncode": 0
+    }
+  ],
+  "release_qualified": false,
+  "package_qualified": false,
+  "public_or_lifecycle_qualified": false,
+  "new_compiler_sdk_model_calls_during_collection": 0,
+  "limits": [
+    "Both full-output variants pass byte identity for this fixed clip; broader quality/lifecycle qualification remains open.",
+    "The 5-percent speedup and 10-percent drift predicates are diagnostic; strict native/public and all production requirements remain.",
+    "CI bound physical compiler aliases to selected binaries; saved replay verifies recorded hashes/paths but does not rerun Windows samefile.",
+    "SDK binaries and pristine archives remain local; Git retains full raw arrays, source/compiler evidence and all payload descriptors.",
+    "Timing comparisons are limited to this same-host sequence, without combining prior CPUs or instances."
+  ]
+}
