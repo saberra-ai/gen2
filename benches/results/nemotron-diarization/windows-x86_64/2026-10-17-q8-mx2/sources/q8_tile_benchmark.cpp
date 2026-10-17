@@ -1,0 +1,225 @@
+// Model-free comparison of two exact-source SGEMM translation units.
+#include "ggml-quants.h"
+#include "ggml-cpu-impl.h"
+#include "sgemm.h"
+#include <algorithm>
+#include <array>
+#include <windows.h>
+#include <chrono>
+#include <cmath>
+#include <condition_variable>
+#include <cstdint>
+#include <cstdio>
+#include <cstring>
+#include <exception>
+#include <limits>
+#include <mutex>
+#include <stdexcept>
+#include <string>
+#include <thread>
+#include <type_traits>
+#include <vector>
+
+extern "C" bool gen2_q8_tile_control_sgemm(const ggml_compute_params *, int64_t, int64_t, int64_t,
+    const void *, int64_t, const void *, int64_t, void *, int64_t, int, int, int);
+extern "C" bool gen2_q8_tile_candidate_sgemm(const ggml_compute_params *, int64_t, int64_t, int64_t,
+    const void *, int64_t, const void *, int64_t, void *, int64_t, int, int, int);
+using Kernel = decltype(&llamafile_sgemm);
+static_assert(std::is_same<Kernel, decltype(&gen2_q8_tile_control_sgemm)>::value, "exact original ABI");
+static_assert(std::is_same<Kernel, decltype(&gen2_q8_tile_candidate_sgemm)>::value, "exact original ABI");
+static_assert(sizeof(float) == 4 && std::numeric_limits<float>::is_iec559, "binary32 control");
+static_assert(sizeof(block_q8_0) == 34, "original Q8 block layout");
+
+// The complete frozen SGEMM units retain F32 paths that reference these symbols.
+// Q8 has its own static tile partition and must never use CPU-pool support.
+extern "C" void ggml_barrier(ggml_threadpool *) {
+    throw std::runtime_error("unsupported CPU support path");
+}
+extern "C" void ggml_threadpool_chunk_set(ggml_threadpool *, int) {
+    throw std::runtime_error("unsupported CPU support path");
+}
+extern "C" int ggml_threadpool_chunk_add(ggml_threadpool *, int) {
+    throw std::runtime_error("unsupported CPU support path");
+}
+
+static int check_unsupported_support() {
+    int rejected = 0;
+    for (int index = 0; index < 3; ++index) {
+        try {
+            if (index == 0) ggml_barrier(nullptr);
+            else if (index == 1) ggml_threadpool_chunk_set(nullptr, 1);
+            else (void)ggml_threadpool_chunk_add(nullptr, 1);
+        } catch (const std::runtime_error & error) {
+            if (std::strcmp(error.what(), "unsupported CPU support path")) throw;
+            ++rejected;
+        }
+    }
+    if (rejected != 3) throw std::runtime_error("CPU support rejection controls failed");
+    return rejected;
+}
+
+struct Shape { int m, n, k; };
+constexpr std::array<Shape, 7> shapes = {{{1,2,32},{2,3,64},{5,7,96},{7,5,160},
+    {512,33,512},{2048,33,512},{512,264,512}}};
+constexpr int repeats = 8;
+constexpr float guard = 0x1p80f;
+
+struct Work {
+    Kernel kernel;
+    const Shape * shape;
+    const block_q8_0 * a;
+    const block_q8_0 * b;
+    float * c;
+    int lda, ldb, ldc;
+    void operator()(int ith, int nth) const {
+        ggml_compute_params params{};
+        params.ith = ith;
+        params.nth = nth;
+        if (!kernel(&params, shape->m, shape->n, shape->k / 32, a, lda, b, ldb, c, ldc,
+                    GGML_TYPE_Q8_0, GGML_TYPE_Q8_0, GGML_TYPE_F32)) {
+            throw std::runtime_error("admitted Q8 kernel rejected dimensions");
+        }
+    }
+};
+
+class Pool {
+    std::mutex mutex;
+    std::condition_variable ready, complete;
+    std::vector<std::thread> workers;
+    const Work * task = nullptr;
+    uint64_t generation = 0;
+    int remaining = 0, started = 0;
+    bool stopping = false, failed = false;
+    void stop() {
+        { std::lock_guard<std::mutex> lock(mutex); stopping = true; }
+        ready.notify_all();
+        for (auto & worker : workers) { if (worker.joinable()) worker.join(); }
+    }
+public:
+    explicit Pool(int count) {
+        try {
+            for (int ith = 0; ith < count; ++ith) {
+                workers.emplace_back([this, ith, count] {
+                    std::unique_lock<std::mutex> lock(mutex);
+                    uint64_t observed = 0;
+                    ++started;
+                    complete.notify_one();
+                    for (;;) {
+                        ready.wait(lock, [&] { return stopping || generation != observed; });
+                        if (stopping) return;
+                        observed = generation;
+                        const Work * current = task;
+                        lock.unlock();
+                        bool bad = false;
+                        try { (*current)(ith, count); } catch (...) { bad = true; }
+                        lock.lock();
+                        failed = failed || bad;
+                        if (--remaining == 0) complete.notify_one();
+                    }
+                });
+            }
+            std::unique_lock<std::mutex> lock(mutex);
+            complete.wait(lock, [&] { return started == count; });
+        } catch (...) { stop(); throw; }
+    }
+    ~Pool() { stop(); }
+    Pool(const Pool &) = delete;
+    Pool & operator=(const Pool &) = delete;
+    void run(const Work & work) {
+        std::unique_lock<std::mutex> lock(mutex);
+        task = &work;
+        remaining = static_cast<int>(workers.size());
+        failed = false;
+        ++generation;
+        ready.notify_all();
+        complete.wait(lock, [&] { return remaining == 0; });
+        if (failed) throw std::runtime_error("worker kernel failure");
+    }
+    int size() const { return static_cast<int>(workers.size()); }
+};
+
+static uint32_t next(uint32_t & state) { state = state * 1664525u + 1013904223u; return state; }
+static void fill(std::vector<block_q8_0> & blocks, uint32_t & state) {
+    for (auto & block : blocks) {
+        block.d = static_cast<ggml_fp16_t>(0x2800 + ((next(state) >> 8) % 0x1800));
+        for (auto & value : block.qs) value = static_cast<int8_t>(static_cast<int>(next(state) % 255) - 127);
+    }
+}
+
+static std::vector<float> output(const Shape & s, const std::vector<float> & c, int ldc) {
+    if (c.size() != 32 + static_cast<size_t>(ldc) * s.n) throw std::runtime_error("C size changed");
+    for (size_t i = 0; i < c.size(); ++i) {
+        const bool logical = i >= 16 && i < c.size() - 16 && (i - 16) % ldc < static_cast<size_t>(s.m);
+        if (!logical && c[i] != guard) throw std::runtime_error("output guard overwritten");
+    }
+    std::vector<float> values;
+    bool nonzero = false;
+    for (int col = 0; col < s.n; ++col) for (int row = 0; row < s.m; ++row) {
+        const float value = c[16 + col * ldc + row];
+        if (!std::isfinite(value) || value == guard) throw std::runtime_error("invalid logical output");
+        nonzero = nonzero || value != 0;
+        values.push_back(value);
+    }
+    if (!nonzero) throw std::runtime_error("zero-only output");
+    return values;
+}
+
+int main(int argc, char ** argv) {
+    try {
+        if (argc != 4) throw std::runtime_error("variant, workers and fresh output prefix required");
+        const std::string variant = argv[1];
+        Kernel kernel = variant == "control" ? gen2_q8_tile_control_sgemm :
+                        variant == "tile2" ? gen2_q8_tile_candidate_sgemm : nullptr;
+        const int threads = std::strcmp(argv[2], "1") == 0 ? 1 : std::strcmp(argv[2], "2") == 0 ? 2 :
+                            std::strcmp(argv[2], "4") == 0 ? 4 : 0;
+        const uint32_t endian = 1;
+        if (!kernel || !threads || *reinterpret_cast<const unsigned char *>(&endian) != 1)
+            throw std::runtime_error("fixed variant/workers/little-endian control required");
+        const int support_controls = check_unsupported_support();
+        Pool pool(threads);
+        for (size_t index = 0; index < shapes.size(); ++index) {
+            const auto & s = shapes[index];
+            const int blocks = s.k / 32, lda = blocks + 2, ldb = blocks + 3, ldc = s.m + 3;
+            std::vector<block_q8_0> a(static_cast<size_t>(lda) * s.m), b(static_cast<size_t>(ldb) * s.n);
+            uint32_t state = 0xc0ffee11u ^ (static_cast<uint32_t>(index) * 0x9e3779b9u);
+            fill(a, state); fill(b, state);
+            const auto original_a = a, original_b = b;
+            const auto check_inputs = [&] {
+                if (std::memcmp(a.data(), original_a.data(), a.size() * sizeof(block_q8_0)) ||
+                    std::memcmp(b.data(), original_b.data(), b.size() * sizeof(block_q8_0)))
+                    throw std::runtime_error("kernel input changed");
+            };
+            std::vector<float> c(32 + static_cast<size_t>(ldc) * s.n, guard);
+            const Work work{kernel, &s, a.data(), b.data(), c.data() + 16, lda, ldb, ldc};
+            pool.run(work);
+            check_inputs();
+            const auto reference = output(s, c, ldc);
+            std::array<int64_t, repeats> times{};
+            for (int repeat = 0; repeat < repeats; ++repeat) {
+                std::fill(c.begin(), c.end(), guard);
+                const auto start = std::chrono::steady_clock::now();
+                pool.run(work);
+                times[repeat] = std::chrono::duration_cast<std::chrono::nanoseconds>(
+                    std::chrono::steady_clock::now() - start).count();
+                check_inputs();
+                const auto actual = output(s, c, ldc);
+                if (times[repeat] <= 0 || actual.size() != reference.size() ||
+                    std::memcmp(actual.data(), reference.data(), reference.size() * sizeof(float)) != 0)
+                    throw std::runtime_error("repeated kernel output changed");
+            }
+            const std::string name = std::string(argv[3]) + "." + std::to_string(index) + ".f32";
+            HANDLE file = CreateFileA(name.c_str(), GENERIC_WRITE, 0, nullptr, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, nullptr);
+            if (file == INVALID_HANDLE_VALUE) throw std::runtime_error("fresh kernel output required");
+            const DWORD bytes = static_cast<DWORD>(reference.size() * sizeof(float));
+            DWORD written = 0;
+            const BOOL wrote = WriteFile(file, reference.data(), bytes, &written, nullptr);
+            const BOOL closed = CloseHandle(file);
+            if (!wrote || !closed || written != bytes) throw std::runtime_error("complete kernel output write required");
+            std::printf("{\"shape\":%zu,\"m\":%d,\"n\":%d,\"k\":%d,\"workers\":%d,\"workers_started\":%d,\"unsupported_support_controls\":%d,\"variant\":\"%s\",\"bytes\":%zu,\"warmups\":1,\"repetitions\":%d,\"timed_ns\":[",
+                index, s.m, s.n, s.k, threads, pool.size(), support_controls, variant.c_str(), reference.size() * sizeof(float), repeats);
+            for (int i = 0; i < repeats; ++i) std::printf("%s%lld", i ? "," : "", static_cast<long long>(times[i]));
+            std::printf("]}\n");
+        }
+        return 0;
+    } catch (const std::exception & error) { std::fprintf(stderr, "%s\n", error.what()); return 2; }
+}

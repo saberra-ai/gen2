@@ -1,0 +1,36 @@
+test_metadata_changed_after_validation_before_copy_binding_rejects (__main__.PublicationSeamTest.test_metadata_changed_after_validation_before_copy_binding_rejects) ... FAIL
+test_tool_changed_after_frozen_source_admission_before_copy_binding_rejects (__main__.PublicationSeamTest.test_tool_changed_after_frozen_source_admission_before_copy_binding_rejects) ... FAIL
+test_unchanged_validated_metadata_copies (__main__.PublicationSeamTest.test_unchanged_validated_metadata_copies) ... ok
+test_vector_changed_after_member_admission_before_copy_binding_rejects (__main__.PublicationSeamTest.test_vector_changed_after_member_admission_before_copy_binding_rejects) ... FAIL
+
+======================================================================
+FAIL: test_metadata_changed_after_validation_before_copy_binding_rejects (__main__.PublicationSeamTest.test_metadata_changed_after_validation_before_copy_binding_rejects)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/victor/.cache/gen2-nemotron3-n0/test-q8-mx2-publication-v1.py", line 50, in test_metadata_changed_after_validation_before_copy_binding_rejects
+    with self.assertRaises(AssertionError):copy_check(env,path)
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_tool_changed_after_frozen_source_admission_before_copy_binding_rejects (__main__.PublicationSeamTest.test_tool_changed_after_frozen_source_admission_before_copy_binding_rejects)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/victor/.cache/gen2-nemotron3-n0/test-q8-mx2-publication-v1.py", line 67, in test_tool_changed_after_frozen_source_admission_before_copy_binding_rejects
+    with self.assertRaises(AssertionError):copy_check(env,path)
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+======================================================================
+FAIL: test_vector_changed_after_member_admission_before_copy_binding_rejects (__main__.PublicationSeamTest.test_vector_changed_after_member_admission_before_copy_binding_rejects)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/victor/.cache/gen2-nemotron3-n0/test-q8-mx2-publication-v1.py", line 58, in test_vector_changed_after_member_admission_before_copy_binding_rejects
+    with self.assertRaises(AssertionError):copy_check(env,path)
+         ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+AssertionError: AssertionError not raised
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.004s
+
+FAILED (failures=3)

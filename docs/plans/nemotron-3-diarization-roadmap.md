@@ -219,6 +219,20 @@ All576 local tool tests pass with seven Windows-only skips; both source reviews
 are clear. Its separate protocol binds149 tools,3,802 repository references and
 39 local import modules while preserving the original decisions.
 
+The [actual packed-B-scale2×2 result](../research/nemotron-windows-q8-mx2-results.md)
+now independently admits all4,697 delivered members,95 owned command cleanups,
+1,056 full byte-exact vectors, twelve half tables and36 support rejections.
+None of48 required four-worker primary comparisons meets the original5% speedup
+predicate;41/48 observer comparisons meet both original bounds. All three
+prediction/observer flags remain false. The candidate's selected loop has zero
+explicit vector stack operands and90 instructions per normalized eight outputs,
+versus production192bytes/95instructions. That static prediction passes without
+establishing measured traffic, runtime cause or a speed pass. The1,456-member
+result and separate19-member static/CI receipt retain these outcomes; all
+thirteen feature CI jobs pass. This supplies no qualifying full-model/SDK or
+production/main promotion. Original quality, deferred human-review, desktop,
+fresh-machine, platform and signing/release gates remain open.
+
 Remaining release work as of 2026-10-17:
 
 - Meet the original 20% DER target on every required meeting slice. The two AMI
