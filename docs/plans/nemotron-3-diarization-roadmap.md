@@ -179,6 +179,18 @@ preserves every result; all thirteen producer feature CI jobs also succeed.
 This supplies no qualifying full-model comparison or production promotion.
 Original quality, human-review, desktop, platform and release gates stay open.
 
+The separate [A-scale conversion comparison](../research/nemotron-windows-q8-scale.md)
+keeps the production2x4 helper geometry, ownership and tails while replacing
+only its A-scale table lookup with an F16C conversion/broadcast in a private
+helper clone. The actual candidate helper has an exhaustive65,536-input,
+four-lane saved-output control, in addition to all original complete matrix,
+half/support/cleanup/timing/observer checks. This is a distinct implementation
+hypothesis after the failed one-row comparison; no Windows numerical, speed,
+SDK/model, production or release result is claimed by preparation.
+All570 local tool tests pass with seven Windows-only skips. The frozen protocol
+binds150 tools,3,763 repository references and40 local import modules; both
+source reviews are clear.
+
 Remaining release work as of 2026-10-17:
 
 - Meet the original 20% DER target on every required meeting slice. The two AMI

@@ -1,0 +1,77 @@
+name: Diarization Windows Q8 F16C A-scale control
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/nemotron3-n0]
+    paths:
+      - .github/workflows/diarization-windows-q8-scale.yml
+      - tools/nemotron-diarization/q8_scale_half_metrics.py
+      - tools/nemotron-diarization/q8_scale_source.py
+      - tools/nemotron-diarization/q8_scale_experiment_source.py
+      - tools/nemotron-diarization/q8_scale_benchmark.cpp
+      - tools/nemotron-diarization/q8_scale_benchmark.cmake
+      - tools/nemotron-diarization/windows_q8_scale_probe.py
+      - tools/nemotron-diarization/windows_q8_scale_metrics.py
+      - tools/nemotron-diarization/test_windows_q8_scale.py
+      - tools/nemotron-diarization/freeze_windows_q8_scale.py
+      - tools/nemotron-diarization/windows-q8-scale.protocol.json
+      - tools/nemotron-diarization/q8_mx4_source.py
+      - tools/nemotron-diarization/q8_mx4_geometry.py
+      - tools/nemotron-diarization/fixtures/q8-tile-sgemm.cpp
+permissions:
+  contents: read
+jobs:
+  kernels:
+    runs-on: windows-2022
+    timeout-minutes: 90
+    env:
+      GIT_CONFIG_COUNT: '2'
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: 'false'
+      GIT_CONFIG_KEY_1: core.eol
+      GIT_CONFIG_VALUE_1: lf
+      GIT_LFS_SKIP_SMUDGE: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/checkout@v4
+        with:
+          repository: NVIDIA/NeMo-Speech.cpp
+          ref: 083861c241061562b8ec29eb06d7f6cdc3af8775
+          path: native-source
+          persist-credentials: false
+      - name: Initialize pinned GGML source
+        run: git -C native-source submodule update --init --depth 1 llama.cpp
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Original and contraction compiler controls
+        run: python -m unittest discover -s tools/nemotron-diarization -p 'test_windows_compiler*.py'
+      - name: Original tile source vector and timing controls
+        run: python -m unittest discover -s tools/nemotron-diarization -p test_windows_q8_tile.py
+      - name: Corrected half-table and support admission controls
+        run: python -m unittest discover -s tools/nemotron-diarization -p test_windows_q8_tile_v2.py
+      - name: Captured geometry, Mx4 source and timing controls
+        run: python -B -m unittest discover -s tools/nemotron-diarization -p test_windows_q8_mx4.py
+      - name: Same-process worker timing and observer controls
+        run: python -B -m unittest discover -s tools/nemotron-diarization -p test_windows_q8_worker_timing.py
+      - name: A-scale source, exhaustive half, full-vector and unchanged decision controls
+        run: python -B -m unittest discover -s tools/nemotron-diarization -p test_windows_q8_scale.py
+      - name: Actual owned-background timeout and assignment controls
+        run: python -m unittest discover -s tools/nemotron-diarization -p test_windows_job_v2.py
+      - name: Build and run exact-source paired kernels
+        run: python tools/nemotron-diarization/windows_q8_scale_probe.py --source native-source --output "${{ runner.temp }}/windows-q8-scale"
+      - name: Preserve successful or failed A-scale experiment evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nemotron-windows-q8-scale
+          path: |
+            ${{ runner.temp }}/windows-q8-scale/qualification.json
+            ${{ runner.temp }}/windows-q8-scale/protocol.json
+            ${{ runner.temp }}/windows-q8-scale/pristine.tar
+            ${{ runner.temp }}/windows-q8-scale/canonical/
+            ${{ runner.temp }}/windows-q8-scale/evidence/
+          include-hidden-files: true
+          retention-days: 30
