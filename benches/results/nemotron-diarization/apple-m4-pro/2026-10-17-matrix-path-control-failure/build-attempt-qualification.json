@@ -1,0 +1,52 @@
+{
+  "completed": false,
+  "scope": "Fresh macOS model-free development control, no SDK/model/Windows qualification.",
+  "controller": {
+    "bytes": 11990,
+    "sha256": "44486232ead1c48948a7fe29b485f9e6ad92228dd486a0b179d07e8a92e55f83"
+  },
+  "host": {
+    "system": "Darwin",
+    "node": "vibans-mac-mini.lan",
+    "release": "25.3.0",
+    "version": "Darwin Kernel Version 25.3.0: Wed Jan 28 20:48:41 PST 2026; root:xnu-12377.81.4~5/RELEASE_ARM64_T6041",
+    "machine": "arm64",
+    "processor": "arm"
+  },
+  "commands": [
+    {
+      "name": "configure",
+      "argv": [
+        "/opt/homebrew/Cellar/cmake/4.3.1/bin/cmake",
+        "-S",
+        "/Users/victor/.cache/gen2-nemotron3-n0/ggml-matrix-path-control-local-v1",
+        "-B",
+        "/Users/victor/.cache/gen2-nemotron3-n0/ggml-matrix-path-control-local-v1/build",
+        "-DCMAKE_BUILD_TYPE=Release",
+        "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
+      ],
+      "owned_process_group": true,
+      "process_tree_reaped": true,
+      "pid": 61401,
+      "returncode": 0
+    },
+    {
+      "name": "build",
+      "argv": [
+        "/opt/homebrew/Cellar/cmake/4.3.1/bin/cmake",
+        "--build",
+        "/Users/victor/.cache/gen2-nemotron3-n0/ggml-matrix-path-control-local-v1/build",
+        "--parallel",
+        "4",
+        "--verbose"
+      ],
+      "owned_process_group": true,
+      "process_tree_reaped": true,
+      "pid": 61875,
+      "returncode": 0
+    }
+  ],
+  "cases": [],
+  "production_qualified": false,
+  "error": "FileNotFoundError(2, 'No such file or directory')"
+}

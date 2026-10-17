@@ -1,0 +1,47 @@
+{
+  "collection_completed": true,
+  "control_completed": false,
+  "scope": "Saved-only admission of a failed macOS matrix observer control; no native/compiler/model calls.",
+  "collector": {
+    "bytes": 11168,
+    "sha256": "721e0209ab73e6a0b5ac97e840614640a45eaa08f741b5d3d273a8cf10dfffff"
+  },
+  "build_attempts": 1,
+  "preserved_post_build_admission_failures": 1,
+  "preserved_route_prediction_failures": 1,
+  "rebuilds": 0,
+  "native_graph_processes": 2,
+  "graph_evaluations": 24,
+  "profiled_graph_evaluations": 12,
+  "profiled_worker_matrix_records": 12,
+  "canonical_source_files": 3425,
+  "compiler_inputs": 27,
+  "raw_outputs": 24,
+  "raw_output_bytes_by_shape": [
+    8192,
+    8192,
+    256,
+    256
+  ],
+  "all_24_outputs_bit_exact_per_shape": true,
+  "planned_144_output_control_passed": false,
+  "actual_routes_all_vec_dot": true,
+  "sgemm_calls_observed": 0,
+  "ggml_llamafile": "OFF",
+  "instrumented_cpu_source": {
+    "bytes": 142477,
+    "sha256": "93551fb37e0ec9ced9c4f3f0adfe87c4d04a873aec8fb23338417296bbb3f8f2"
+  },
+  "compiler_and_runtime_binaries_retained_in_cache": true,
+  "probability_or_model_calls": 0,
+  "windows_or_model_qualified": false,
+  "production_qualified": false,
+  "limits": [
+    "Only two macOS arm64 standalone GGML CPU processes ran, at one worker: off then on.",
+    "V1 built successfully then failed object-path admission before graphs; V2 admits that same binary and performs its first graph runs.",
+    "V2 stopped after its first enabled process: actual routes were [5,5,5,5], contradicting expected [2,4,5,5].",
+    "The actual cache has GGML_LLAMAFILE=OFF and no compile command defines GGML_USE_LLAMAFILE; this run cannot validate either SGEMM stage.",
+    "Saved-only admission verifies all 24 raw outputs and complete enabled trace after failure, without native retries or claiming the original controller completed.",
+    "Worker walls include scheduling, internal waits and observer effects; no release performance, Windows, full-model or quality qualification."
+  ]
+}

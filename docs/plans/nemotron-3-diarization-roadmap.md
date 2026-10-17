@@ -186,7 +186,14 @@ Remaining release work as of 2026-10-17:
   than both controls on all three shapes; the 5% speedup prediction fails.
   Preserve the existing production kernel and investigate actual model matrix
   shapes/types/dispatch before choosing another candidate. A kernel result cannot
-  establish model RTF or release qualification. Then merge and
+  establish model RTF or release qualification. The first
+  [matrix observer control](../research/nemotron-matrix-path-control-failure.md)
+  now builds successfully but fails its route prediction: the actual standalone
+  cache has LLAMAFILE off, so all four shapes use vector-dot fallback. Preserve
+  both controller failures and all 24 byte-identical per-shape output arrays;
+  the planned 144-output control is not passed. A separate explicit-LLAMAFILE
+  control must qualify both SGEMM stages before Windows SDK/model profiling.
+  All 444 local Python tests pass with seven Windows-only skips. Then merge and
   push the completed feature to main; no main promotion is justified yet.
 
 The [bounded CPU public Rust protocol](../research/nemotron-bounded-public-runtime.md)

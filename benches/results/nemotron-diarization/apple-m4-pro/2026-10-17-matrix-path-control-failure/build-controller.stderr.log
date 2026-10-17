@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/Users/victor/.cache/gen2-nemotron3-n0/run-matrix-path-control-local-v1.py", line 123, in <module>
+    obj=obj.resolve(strict=True);assert obj.is_relative_to(root/'build');objects[str(obj)]=desc(obj)
+        ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/victor/.local/share/uv/python/cpython-3.12.13-macos-aarch64-none/lib/python3.12/pathlib.py", line 1240, in resolve
+    s = self._flavour.realpath(self, strict=strict)
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "<frozen posixpath>", line 424, in realpath
+  File "<frozen posixpath>", line 468, in _joinrealpath
+FileNotFoundError: [Errno 2] No such file or directory: '/Users/victor/.cache/gen2-nemotron3-n0/ggml-matrix-path-control-local-v1/build/ggml-build/src/ggml-build'
