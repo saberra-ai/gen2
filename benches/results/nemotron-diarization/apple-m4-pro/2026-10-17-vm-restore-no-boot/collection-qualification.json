@@ -1,0 +1,72 @@
+{
+  "schema_version": 1,
+  "source_commit": "4c9eb3612defd9c1ab6a8dfc982d489d23bb084b",
+  "no_boot_restore_passed": true,
+  "fresh_machine_qualified": false,
+  "release_qualified": false,
+  "actual_commands": 12,
+  "zero_status_commands": 12,
+  "complete_apple_restore_body_independently_hashed": {
+    "bytes": 18877622182,
+    "sha256": "7d22296ca6ab46f255bed8f5fc80845edab14fb781f845d7cae9427a22970b53"
+  },
+  "actual_image_support_version_model_requirements_verified": true,
+  "actual_no_boot_configuration_validation_passed": true,
+  "seed": {
+    "auxiliary-storage.bin": {
+      "bytes": 33570816,
+      "allocated_bytes": 16384,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "sha256": "2e70ae4d902dce8b96fe495d01d986432034e44f51a760f6a348360c77e1cd0d"
+    },
+    "disk.img": {
+      "bytes": 107374182400,
+      "allocated_bytes": 0,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "sha256": null,
+      "content_evidence": "Fresh O_EXCL/ftruncate-only creation; zero allocated blocks; no whole-disk hash."
+    },
+    "hardware-model.bin": {
+      "bytes": 132,
+      "allocated_bytes": 4096,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "sha256": "976e66740c64041cf9f127588f93eabf7efb9e7d3cbaee9582bcded88ba5e8d3"
+    },
+    "machine-id.bin": {
+      "bytes": 68,
+      "allocated_bytes": 4096,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "sha256": "4106f98e3f5ee925c4593cc9d7dcea106bbb3a519f8f40219ffc2fc3750db959"
+    }
+  },
+  "geometry": {
+    "cpu_count": 4,
+    "memory_bytes": 8589934592,
+    "disk_logical_bytes": 107374182400,
+    "network_attachment": "nat"
+  },
+  "one_entitlement_adhoc_hardened_helper": {
+    "bytes": 157344,
+    "sha256": "dfee210d41595d3c4ba9d2c0abed71b4008611285b9dd05838f10ff85d423f61"
+  },
+  "prior_host_receipt_members_verified": 71,
+  "current_historical_source_pins_verified": 12,
+  "external_descriptors_verified": 62,
+  "model_free_tests_passed": 297,
+  "reserve_released": true,
+  "new_compiler_helper_network_model_mount_vm_calls_during_collection": 0,
+  "limits": [
+    "No VM instance, installer/installation, boot, guest provisioning/SSH, app/model, GUI/microphone or fresh-machine qualification.",
+    "No complete SDK closure or module-cache hash. Selected source/tool/header inputs only. No public signing/release or quality/human-gold acceptance.",
+    "OS body, seed binaries and sparse disk, executable and module cache stay local. Sparse disk stat/provenance only; never read/hash whole disk.",
+    "Prepared NAT is not running networking or proof of offline installation. Immutable seed requires separately reviewed clone/install lifecycle."
+  ]
+}

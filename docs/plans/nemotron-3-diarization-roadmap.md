@@ -20,11 +20,15 @@ Remaining release work as of 2026-10-17:
   host and blank-user-volume prerequisites; restored Data-volume permission,
   real VM/guest and fresh-machine complete-app gates remain open. Earlier failed
   attempts remain preserved in the host-admission history. The next
-  [pinned IPSW/no-boot configuration protocol](../research/nemotron-macos-vm-restore.md)
-  is prepared with 297 passing model-free tests; actual invocation is pending.
+  [pinned IPSW/no-boot configuration result](../research/nemotron-macos-vm-restore.md)
+  now passes all 12 commands, the complete Apple body hash and supported fixed
+  configuration, with 297 passing model-free tests. No VM/installer/guest ran;
+  installation, provisioning and fresh-machine app qualification remain open.
 - Finish each advertised platform/backend's performance, deployment and public
   signing/notarization requirements before promotion. Windows CPU functional
-  evidence passes but its observed live RTF remains above one. Then merge and
+  evidence passes but its observed live RTF remains above one; the
+  [bounded Windows plan](../research/nemotron-bounded-windows-plan.md) maps the
+  still-unperformed construction and qualification work. Then merge and
   push the completed feature to main; no main promotion is justified yet.
 
 The [bounded CPU public Rust protocol](../research/nemotron-bounded-public-runtime.md)

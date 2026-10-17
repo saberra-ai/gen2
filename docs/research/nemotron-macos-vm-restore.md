@@ -1,6 +1,9 @@
 # Pinned restore image and no-boot VM seed
 
-Status on 2026-10-17: preregistered, not yet invoked. The actual
+Status on 2026-10-17: actual no-boot qualification passes at
+`4c9eb3612defd9c1ab6a8dfc982d489d23bb084b`; see the
+[47-member receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-restore-no-boot/collection-qualification.json).
+The actual
 [host/API and blank-APFS prerequisites](nemotron-macos-vm-host-admission.md)
 pass. This next stage acquires the exact public Apple restore image and validates
 a fresh configuration before any VM instance, installer or guest operation.
@@ -9,11 +12,11 @@ The frozen [protocol](../../tools/nemotron-diarization/macos-vm-restore.protocol
 binds 12 current/committed tool sources, 62 external compiler/tool/selected SDK
 header/metadata descriptors and the complete passing host receipt. It uses the
 named physical M4 Pro. This is selected-input provenance, not a full SDK closure.
-Both review axes must clear, and the source/protocol must be committed before
+Both review axes cleared, and the source/protocol was committed before
 actual invocation. All 297 model-free tests pass; eight targeted tests cover
 download integrity/deadlines and incompatible or altered seeds.
 
-The proposed order is:
+The frozen protocol order is:
 
 1. Admit 140GiB free space and physically allocate a 256MiB diagnostic reserve.
    Build the new helper offline with SDK26.5, Swift language mode5, two compiler
@@ -56,3 +59,27 @@ installation. Owner termination alone cannot prove bounded guest teardown.
 This stage cannot qualify installation, boot, provisioning/SSH, a fresh-machine
 app, real GUI/microphone/playback/IPC, accuracy/human gold, other platforms or
 public signing/release. Those original gates remain open.
+
+The actual controller was observed terminal with exit0 before saved-data-only
+collection, which also exited0. All 12 commands return zero. Acquisition takes
+800.403 seconds; the full 18,877,622,182-byte body matches the pinned SHA256,
+independently recomputed during collection. Actual image requirements are 2CPU
+and 4GiB; the selected 4CPU/8GiB configuration validates with the supported model.
+The exact four-file seed is owned, directory700/files600/single-link. Its raw disk
+has 100GiB logical capacity and zero allocated blocks; the three small metadata
+files are fully hashed. The auxiliary storage is 33,570,816 logical bytes with
+16,384 allocated bytes. No whole sparse-disk hash is claimed.
+
+All 813 parent storage observations stay above the 120GiB running floor; minimum
+free space is 162,454,814,720 bytes. The physically allocated 256MiB reserve is
+released. Collection verifies all 71 prior host receipt members, 12 current and
+historical tool sources, 62 external descriptors, helper/signature/entitlement
+metadata, image/seed results and raw logs. It performs no helper/compiler/network/
+image-mount/VM/model call. The OS body, all seed binary files/disk, helper and
+module cache stay local. This closes image acquisition/support and no-boot
+configuration validation only; installation/boot/provisioning and every original
+fresh-machine/app/quality/release gate remain open.
+
+Feature CI for the preregistered source also passes
+[all 13 jobs](https://github.com/saberra-ai/gen2/actions/runs/39015483440).
+Those jobs cover feature compatibility and model-free tools, not guest execution.

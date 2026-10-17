@@ -1,0 +1,441 @@
+{
+  "schema_version": 1,
+  "source_commit": "4c9eb3612defd9c1ab6a8dfc982d489d23bb084b",
+  "protocol": {
+    "bytes": 37148,
+    "sha256": "295b99634fa5e0d460e8b5ad97433559d8cc1841056da880864e08c9ea8d1aa4"
+  },
+  "no_boot_restore_passed": true,
+  "fresh_machine_qualified": false,
+  "release_qualified": false,
+  "virtual_machine_created": false,
+  "installation_started": false,
+  "guest_booted": false,
+  "models_or_applications_executed": false,
+  "commands": [
+    {
+      "name": "offline-controls",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/offline.sb",
+        "/usr/bin/python3",
+        "-c",
+        "import pathlib,socket,sys\nfor name in sys.argv[1:]:\n try:pathlib.Path(name).read_bytes()\n except PermissionError:pass\n else:raise RuntimeError(\"model read allowed\")\ns=socket.socket()\ntry:s.connect((\"127.0.0.1\",9))\nexcept PermissionError:pass\nelse:raise RuntimeError(\"network allowed\")\n",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/denied.nemo",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/denied.gguf",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/denied.safetensors",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/denied.onnx",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/denied.npy",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/denied.f32"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "pid": 96870,
+      "returncode": 0,
+      "wall_seconds": 0.20560037501854822
+    },
+    {
+      "name": "build",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/offline.sb",
+        "/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin/swiftc",
+        "-sdk",
+        "/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer/SDKs/MacOSX.sdk",
+        "-target",
+        "arm64-apple-macosx26.0",
+        "-swift-version",
+        "5",
+        "-warnings-as-errors",
+        "-j",
+        "2",
+        "-module-cache-path",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/module-cache",
+        "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/macos_vm_restore_probe.swift",
+        "-o",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/vm-restore-probe"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "pid": 96872,
+      "returncode": 0,
+      "wall_seconds": 3.383413458999712
+    },
+    {
+      "name": "sign",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/offline.sb",
+        "/usr/bin/codesign",
+        "--force",
+        "--sign",
+        "-",
+        "--timestamp=none",
+        "--options",
+        "runtime",
+        "--entitlements",
+        "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/macos_vm_host.entitlements",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/vm-restore-probe"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "pid": 96879,
+      "returncode": 0,
+      "wall_seconds": 0.08821316598914564
+    },
+    {
+      "name": "signature-verify",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/offline.sb",
+        "/usr/bin/codesign",
+        "--verify",
+        "--strict",
+        "--deep",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/vm-restore-probe"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "pid": 96880,
+      "returncode": 0,
+      "wall_seconds": 0.08396716602146626
+    },
+    {
+      "name": "signature-metadata",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/offline.sb",
+        "/usr/bin/codesign",
+        "--display",
+        "--verbose=4",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/vm-restore-probe"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "pid": 96881,
+      "returncode": 0,
+      "wall_seconds": 0.04762037500040606
+    },
+    {
+      "name": "entitlements",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/offline.sb",
+        "/usr/bin/codesign",
+        "--display",
+        "--xml",
+        "--entitlements",
+        "-",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/vm-restore-probe"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "pid": 96882,
+      "returncode": 0,
+      "wall_seconds": 0.0749380830093287
+    },
+    {
+      "name": "architecture",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/offline.sb",
+        "/usr/bin/lipo",
+        "-archs",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/vm-restore-probe"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "pid": 96884,
+      "returncode": 0,
+      "wall_seconds": 0.09022641699993983
+    },
+    {
+      "name": "deployment",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/offline.sb",
+        "/usr/bin/otool",
+        "-l",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/vm-restore-probe"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "pid": 96885,
+      "returncode": 0,
+      "wall_seconds": 0.08703479199903086
+    },
+    {
+      "name": "dependencies",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/offline.sb",
+        "/usr/bin/otool",
+        "-L",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/vm-restore-probe"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "pid": 96887,
+      "returncode": 0,
+      "wall_seconds": 0.07727479096502066
+    },
+    {
+      "name": "download",
+      "argv": [
+        "/Users/victor/.cache/gen2-nemotron3-n0/python-reference/bin/python",
+        "-B",
+        "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/macos_restore_download.py",
+        "--protocol",
+        "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/macos-vm-restore.protocol.json",
+        "--output",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "pid": 96889,
+      "returncode": 0,
+      "wall_seconds": 800.4733800409595
+    },
+    {
+      "name": "inspect",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/offline.sb",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/vm-restore-probe",
+        "inspect",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/UniversalMac_26.3_25D125_Restore.ipsw"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "pid": 99592,
+      "returncode": 0,
+      "wall_seconds": 0.8174338330281898
+    },
+    {
+      "name": "prepare",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/offline.sb",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/vm-restore-probe",
+        "prepare",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/UniversalMac_26.3_25D125_Restore.ipsw",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/vm-seed"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "pid": 99594,
+      "returncode": 0,
+      "wall_seconds": 0.45621249999385327
+    }
+  ],
+  "download": {
+    "storage_checks": 2481790,
+    "url": "https://updates.cdn-apple.com/2026WinterFCS/fullrestores/047-60229/6D5DBEA5-75A0-4BEF-ACC9-5ACF9B8DF6B7/UniversalMac_26.3_25D125_Restore.ipsw",
+    "expected": {
+      "bytes": 18877622182,
+      "sha256": "7d22296ca6ab46f255bed8f5fc80845edab14fb781f845d7cae9427a22970b53"
+    },
+    "bytes_received": 18877622182,
+    "bytes_written": 18877622182,
+    "complete": true,
+    "partial": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/UniversalMac_26.3_25D125_Restore.ipsw.partial",
+    "minimum_observed_free_bytes": 162458198016,
+    "http_status": 200,
+    "headers": {
+      "Content-Length": "18877622182",
+      "Content-Type": "binary/octet-stream",
+      "Content-Encoding": null,
+      "ETag": "\"3a98206a636b870e784af44db850e3a1-2251\"",
+      "x-amz-meta-digest-sha256": "7d22296ca6ab46f255bed8f5fc80845edab14fb781f845d7cae9427a22970b53"
+    },
+    "actual": {
+      "bytes": 18877622182,
+      "sha256": "7d22296ca6ab46f255bed8f5fc80845edab14fb781f845d7cae9427a22970b53"
+    },
+    "path": "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-restore-local-v1/UniversalMac_26.3_25D125_Restore.ipsw",
+    "wall_seconds": 800.4033197499812
+  },
+  "scope": "Acquire a pinned public IPSW and validate a fresh sparse VM seed without a VM.\n\nNo installer, guest, mount, application/model invocation or custom listener.\n",
+  "prior_host_receipt_members_verified": 71,
+  "storage": {
+    "start_minimum_bytes": 150323855360,
+    "running_minimum_bytes": 128849018880,
+    "reserve_requested_bytes": 268435456,
+    "checks": 813,
+    "released": true,
+    "minimum_observed_free_bytes": 162454814720,
+    "last_observed_free_bytes": 162454814720,
+    "reserve_reported_allocated_bytes": 268435456
+  },
+  "host": {
+    "cpu": "Apple M4 Pro",
+    "platform": "macOS-26.3-arm64-arm-64bit",
+    "uid": 502
+  },
+  "entitlements": {
+    "com.apple.security.virtualization": true
+  },
+  "probe_executable": {
+    "bytes": 157344,
+    "sha256": "dfee210d41595d3c4ba9d2c0abed71b4008611285b9dd05838f10ff85d423f61"
+  },
+  "image": {
+    "build_version": "25D125",
+    "configuration_validated": false,
+    "guest_booted": false,
+    "hardware_model_sha256": "976e66740c64041cf9f127588f93eabf7efb9e7d3cbaee9582bcded88ba5e8d3",
+    "hardware_model_supported": true,
+    "image_supported": true,
+    "installation_started": false,
+    "minimum_cpu_count": 2,
+    "minimum_memory_bytes": 4294967296,
+    "operation": "inspect",
+    "os_version": [
+      26,
+      3,
+      0
+    ],
+    "restore_image_loaded": true,
+    "schema_version": 1,
+    "supported_configuration_available": true,
+    "virtual_machine_created": false
+  },
+  "prepared": {
+    "audio_devices": 0,
+    "build_version": "25D125",
+    "configuration_validated": true,
+    "cpu_count": 4,
+    "custom_listener_created": false,
+    "disk_logical_bytes": 107374182400,
+    "display_window_created": false,
+    "graphics_displays": 1,
+    "guest_booted": false,
+    "hardware_model_sha256": "976e66740c64041cf9f127588f93eabf7efb9e7d3cbaee9582bcded88ba5e8d3",
+    "hardware_model_supported": true,
+    "image_supported": true,
+    "installation_started": false,
+    "mac_address": "86:c2:3b:6a:02:57",
+    "machine_identifier_sha256": "4106f98e3f5ee925c4593cc9d7dcea106bbb3a519f8f40219ffc2fc3750db959",
+    "memory_bytes": 8589934592,
+    "minimum_cpu_count": 2,
+    "minimum_memory_bytes": 4294967296,
+    "network_attachment": "nat",
+    "operation": "prepare",
+    "os_version": [
+      26,
+      3,
+      0
+    ],
+    "restore_image_loaded": true,
+    "schema_version": 1,
+    "shared_directories": 0,
+    "supported_configuration_available": true,
+    "virtual_machine_created": false
+  },
+  "seed": {
+    "auxiliary-storage.bin": {
+      "bytes": 33570816,
+      "allocated_bytes": 16384,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "sha256": "2e70ae4d902dce8b96fe495d01d986432034e44f51a760f6a348360c77e1cd0d"
+    },
+    "disk.img": {
+      "bytes": 107374182400,
+      "allocated_bytes": 0,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "sha256": null,
+      "content_evidence": "Fresh O_EXCL/ftruncate-only creation; zero allocated blocks; no whole-disk hash."
+    },
+    "hardware-model.bin": {
+      "bytes": 132,
+      "allocated_bytes": 4096,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "sha256": "976e66740c64041cf9f127588f93eabf7efb9e7d3cbaee9582bcded88ba5e8d3"
+    },
+    "machine-id.bin": {
+      "bytes": 68,
+      "allocated_bytes": 4096,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "sha256": "4106f98e3f5ee925c4593cc9d7dcea106bbb3a519f8f40219ffc2fc3750db959"
+    }
+  }
+}
