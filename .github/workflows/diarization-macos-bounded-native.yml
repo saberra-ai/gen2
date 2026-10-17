@@ -1,0 +1,59 @@
+name: Diarization bounded-thread macOS CPU native parity
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/nemotron3-n0]
+    paths:
+      - .github/workflows/diarization-macos-bounded-native.yml
+      - tools/nemotron-diarization/qualify_macos_bounded_native.py
+      - tools/nemotron-diarization/bounded_cpu_metrics.py
+      - tools/nemotron-diarization/macos-bounded-native.protocol.json
+permissions:
+  contents: read
+  actions: read
+jobs:
+  native-parity:
+    runs-on: macos-26
+    timeout-minutes: 25
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download exact bounded construction and pooled reference
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p "${{ runner.temp }}/bounded-delivery"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12089814731 > "${{ runner.temp }}/bounded-delivery/producer.json"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12089814731/zip > "${{ runner.temp }}/bounded-delivery/producer.zip"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12083481818 > "${{ runner.temp }}/bounded-delivery/native-reference.json"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12083481818/zip > "${{ runner.temp }}/bounded-delivery/native-reference.zip"
+      - name: Require model-denied controls then fixed 12 and 60 second public C ABI parity
+        run: |
+          python tools/nemotron-diarization/qualify_macos_bounded_native.py \
+            --protocol tools/nemotron-diarization/macos-bounded-native.protocol.json \
+            --producer-zip "${{ runner.temp }}/bounded-delivery/producer.zip" \
+            --producer-metadata "${{ runner.temp }}/bounded-delivery/producer.json" \
+            --native-reference-zip "${{ runner.temp }}/bounded-delivery/native-reference.zip" \
+            --native-reference-metadata "${{ runner.temp }}/bounded-delivery/native-reference.json" \
+            --output "${{ runner.temp }}/bounded-native"
+      - name: Preserve passing or failed evidence and exact helper archive
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nemotron-macos-bounded-native
+          path: |
+            ${{ runner.temp }}/bounded-native/*.json
+            ${{ runner.temp }}/bounded-native/*.log
+            ${{ runner.temp }}/bounded-native/*.sb
+            ${{ runner.temp }}/bounded-native/*.d
+            ${{ runner.temp }}/bounded-native/*.tar.gz
+            ${{ runner.temp }}/bounded-native/helper-source/
+            ${{ runner.temp }}/bounded-native/results/
+          include-hidden-files: true
+          retention-days: 30

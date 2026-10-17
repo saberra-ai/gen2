@@ -56,3 +56,26 @@ remain satisfied and released. No model/frontend inference or native execution
 occurs during independent collection. Native/public numerical parity, real-time
 behavior, full lifecycle, long/mixed/quality/app/platform and release
 qualification under this identity remain pending.
+
+The [fixed C ABI qualification protocol](../../tools/nemotron-diarization/macos-bounded-native.protocol.json)
+now binds construction artifact `12089814731` and pooled reference artifact
+`12083481818`, including every ZIP member and the reference's original producer.
+Fifty tool/data inputs and the workflow are frozen before local imports;
+committed source/protocol admission precedes compilation. Derive the helper by
+changing one exact version literal in the existing public C ABI probe. Compile
+only public SDK headers and four pinned WAV/hash source inputs, retaining and
+checking all non-system compiler dependencies. No private C++ manager or explicit
+thread override enters this helper; parameter selection belongs to the SDK.
+
+Eight model-denied preparation commands include compile/runtime isolation,
+101 relocated missing-model failures and a strict 92-library audit. Only then
+acquire the pinned weights/audio and run exactly two fresh processes: the first
+twelve seconds, then the complete sixty-second fixture. Compare all 1,200/6,000
+rows, eight channels and every final turn with the saved independent pooled C ABI
+reference, preserving 1e-6 bounds and reporting byte equality. Require warm
+compute/audio below one for both on the fixed three-CPU M1 VM. Preserve complete
+process timings/RSS, all outcomes and arrays, storage/reserve/group cleanup,
+source/reference/prior-result isolation and failure-stop behavior. No retries
+or additional neural calls are planned. At this preregistration no new parity
+helper has been compiled or executed and no bounded-runtime inference has run.
+The Rust version allowlist and the remaining roadmap gates stay unchanged.
