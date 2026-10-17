@@ -59,3 +59,33 @@ public-C-ABI80.04s reference, bind exact actual PCM and all8004 output rows, and
 retain every clock/turn observation. A separate execution protocol is required
 after construction. No construction or inference has run at this preregistration.
 The original quality, word-gold, fresh-machine, signing and release gates remain.
+
+## Actual construction and runtime admission
+
+The [21-member construction receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-paced-public-construction/collection-qualification.json)
+records all five commands passing at `e658b0cd`, including the exact Rust
+error-evidence regression (one passed, zero filtered out). Cargo's dependency
+record identifies142 used Gen2 files, all covered by the261 source pins.
+The1,026,560-byte helper has SHA256
+`4405446b59a1a1c780144ed3b2532ead7af59a795270fe54131b6ffa3ed3303c`.
+No model or native helper inference occurs during construction; all247 Python
+tests also pass. Payloads stay outside Git.
+
+The separately frozen [runtime protocol](../../tools/nemotron-diarization/paced-public-runtime.protocol.json)
+binds12 tools,135 staged entries, seven preparation/reference records and the
+controller interpreter. It uses the same previously qualified pooled CPU package,
+exact80.04s WAV and saved independent native output; no new native-reference
+process is implied. The helper cannot read that reference. Actual input F32LE
+SHA256 must remain
+`dc94f3f490576f50d11e23728f8fa8bb129ff78b4af41eff3d4961a776b45858`.
+All8004 rows/eight channels and turns retain the established1e-6 comparison
+bounds; byte equality is reported separately.
+
+The five commands are runtime/libc denial controls, premodel denial controls,
+native version, a compiled helper failure before model load, and one fresh paced
+neural process. Version and neural calls require strict92-image audits; the
+premodel failure must return1, persist an incomplete error JSON and load zero
+private runtime images. Protected data/writes/network are denied, and original
+5GiB/1GiB/256MiB/600s protections remain. No runtime command has executed at this
+preregistration. Deliberate pacing means public elapsed/audio ratio is not a
+compute-speed benchmark, even though the inherited comparator retains that field.

@@ -1,0 +1,5 @@
+(version 1)
+(allow default)
+(deny network*)
+(deny file-write* (subpath "/Users/victor/workspace/gen2-nemotron3-n0"))
+(deny file-read* (require-all (regex #".*\.(gguf|nemo|onnx|safetensors|npy|f32)$") (require-not (literal "/Users/victor/workspace/gen2-nemotron3-n0/assets/bark/nemo128.f32"))))
