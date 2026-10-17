@@ -1,0 +1,49 @@
+name: Diarization Windows native session profile
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/nemotron3-n0]
+    paths:
+      - .github/workflows/diarization-windows-session-profile.yml
+      - tools/nemotron-diarization/profile_windows_sessions.py
+      - tools/nemotron-diarization/windows_session_timing.py
+      - tools/nemotron-diarization/windows-session-profile.protocol.json
+permissions:
+  contents: read
+  actions: read
+jobs:
+  profile:
+    runs-on: windows-2022
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+        env:
+          GIT_CONFIG_COUNT: '2'
+          GIT_CONFIG_KEY_0: core.autocrlf
+          GIT_CONFIG_VALUE_0: 'false'
+          GIT_CONFIG_KEY_1: core.eol
+          GIT_CONFIG_VALUE_1: lf
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Model-free timing and archive controls
+        run: python -m unittest discover -s tools/nemotron-diarization -p test_windows_session_profile.py
+      - name: Profile exact diagnostic SDK in fixed off-on-on-off order
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python tools/nemotron-diarization/profile_windows_sessions.py --output "${{ runner.temp }}/windows-session-profile"
+      - name: Preserve successful or failed profiling evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nemotron-windows-session-profile
+          path: |
+            ${{ runner.temp }}/windows-session-profile/
+            !${{ runner.temp }}/windows-session-profile/assets/
+            !${{ runner.temp }}/windows-session-profile/sdk/
+            !${{ runner.temp }}/windows-session-profile/delivered/
+            !${{ runner.temp }}/windows-session-profile/source-artifact.zip
+          include-hidden-files: true
+          retention-days: 30

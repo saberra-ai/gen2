@@ -83,6 +83,10 @@ Remaining release work as of 2026-10-17:
   stays unchanged and below-one performance still fails. The368-member collection
   replays all three SDK/compiler audits. Compiler/kernel investigation remains;
   this native-only diagnostic does not qualify the public runtime or packaging.
+  A separate [session-time profile](../research/nemotron-windows-session-profile.md)
+  now preregisters off/on/on/off fresh processes using the exact retained SDK
+  and existing upstream graph/frontend timers, with no rebuild. Actual profiling
+  is pending; full output and log-coverage checks remain mandatory.
   Then merge and
   push the completed feature to main; no main promotion is justified yet.
 

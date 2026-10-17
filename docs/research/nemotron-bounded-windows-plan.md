@@ -16,6 +16,12 @@ audits pass. Fewer workers do not solve the performance failure; retain the
 production policy and investigate computation/compiler behavior. No diagnostic
 SDK is admitted as a production/public/offline package.
 
+The next [session-time diagnostic](nemotron-windows-session-profile.md) reuses
+the exact reviewed four-worker SDK and upstream `NEMO_SPEECH_TIMING` switch,
+without rebuilding native code. Its fixed off/on/on/off receiver sequence must
+preserve all outputs and complete frontend/session timing coverage before phase
+interpretation. Actual profiling remains pending; no new runtime is qualified.
+
 The new [producer](../../tools/nemotron-diarization/platform_bounded_windows_native.py),
 [composed-source verifier](../../tools/nemotron-diarization/platform_bounded_sources.py)
 and [workflow](../../.github/workflows/diarization-bounded-windows-native.yml) use a
