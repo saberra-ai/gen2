@@ -1,0 +1,103 @@
+diff --git a/src/runtime/ggml/backend.cpp b/src/runtime/ggml/backend.cpp
+index c57fad9..f9adebd 100644
+--- a/src/runtime/ggml/backend.cpp
++++ b/src/runtime/ggml/backend.cpp
+@@ -8,6 +8,8 @@
+ #include <cstdlib>
+ #include <mutex>
+ 
++#include <ggml-cpu.h>
++
+ #include "model_logging.h"
+ #include "runtime.h"
+ 
+@@ -37,6 +39,43 @@ keep_skinny_q8_weights_separate() {
+     set_environment_default("GGML_SKINNY_Q8_INPLACE", "0");
+ }
+ 
++// Each manager serializes its Sessions through compute_mutex(). One pool can
++// therefore serve their CPU graphs without sharing workers across managers.
++struct BackendManager::CpuThreadpool {
++    using New = ggml_threadpool_t (*)(ggml_threadpool_params*);
++    using Free = void (*)(ggml_threadpool_t);
++    using Set = void (*)(ggml_backend_t, ggml_threadpool_t);
++
++    ggml_threadpool_t pool = nullptr;
++    Free free_pool = nullptr;
++    Set set_pool = nullptr;
++    ggml_backend_t backend = nullptr;  // Borrowed; BackendManager detaches first.
++
++    CpuThreadpool(ggml_backend_t cpu, int threads) : backend(cpu) {
++        if (threads < 1 || threads > GGML_MAX_N_THREADS) {
++            throw std::invalid_argument("CPU thread count is out of range");
++        }
++        auto reg = ggml_backend_dev_backend_reg(ggml_backend_get_device(cpu));
++        auto create = reinterpret_cast<New>(ggml_backend_reg_get_proc_address(reg, "ggml_threadpool_new"));
++        free_pool = reinterpret_cast<Free>(ggml_backend_reg_get_proc_address(reg, "ggml_threadpool_free"));
++        set_pool = reinterpret_cast<Set>(ggml_backend_reg_get_proc_address(reg, "ggml_backend_cpu_set_threadpool"));
++        if (!create || !free_pool || !set_pool) {
++            throw std::runtime_error("CPU thread-pool registry functions are unavailable");
++        }
++        auto settings = ggml_threadpool_params_default(threads);
++        pool = create(&settings);
++        if (!pool) {
++            throw std::runtime_error("failed to create CPU thread pool");
++        }
++        set_pool(backend, pool);
++    }
++
++    void detach() { set_pool(backend, nullptr); }
++    ~CpuThreadpool() { if (pool) free_pool(pool); }
++    CpuThreadpool(const CpuThreadpool&) = delete;
++    CpuThreadpool& operator=(const CpuThreadpool&) = delete;
++};
++
+ BackendManager::BackendManager(Params params) {
+     nemo_speech::common::ensure_ggml_logging();
+     this->params = params;
+@@ -52,6 +91,9 @@ BackendManager::BackendManager(Params params, ggml_backend_t borrowed_gpu_backen
+ 
+ void
+ BackendManager::init_backends() {
++    if (!backends.empty() || cpu_threadpool_) {
++        throw std::logic_error("backend manager is already initialized");
++    }
+ #if defined(GGML_USE_VULKAN)
+     // Graph optimization is incompatible with in-place persistent cache tensors.
+     // Vulkan reads this setting during device initialization.
+@@ -141,6 +183,7 @@ BackendManager::init_backends() {
+     }
+     GGMLF_LOG_INFO("Using CPU backend\n");
+     backends.emplace_back(backend_cpu);
++    cpu_threadpool_ = std::make_unique<CpuThreadpool>(backend_cpu, params.n_threads);
+ 
+     auto* cpu_dev = ggml_backend_dev_by_type(GGML_BACKEND_DEVICE_TYPE_CPU);
+     auto* cpu_reg = ggml_backend_dev_backend_reg(cpu_dev);
+@@ -172,7 +215,12 @@ BackendManager::get_backends() {
+     return handles;
+ }
+ 
+-BackendManager::~BackendManager() = default;
++BackendManager::~BackendManager() {
++    // Pause/detach while the backend is alive; member destruction then destroys
++    // the handles before freeing and joining the pool. Constructor exceptions
++    // also destroy handles before the pool, without any graph having run.
++    if (cpu_threadpool_) cpu_threadpool_->detach();
++}
+ 
+ buft_list_t
+ BackendManager::get_buft_list() {
+diff --git a/src/runtime/ggml/runtime.h b/src/runtime/ggml/runtime.h
+index fe736c8..5cb45c3 100644
+--- a/src/runtime/ggml/runtime.h
++++ b/src/runtime/ggml/runtime.h
+@@ -238,6 +238,9 @@ class BackendManager {
+    private:
+     Params params;
+     ggml_backend_t borrowed_gpu_backend_ = nullptr;
++    struct CpuThreadpool;
++    // Backend handles are destroyed before the pool they borrow.
++    std::unique_ptr<CpuThreadpool> cpu_threadpool_;
+     std::vector<ggml_backend_ptr> backends;
+     // Non-owning alias into `backends`.
+     ggml_backend_t gpu_backend = nullptr;

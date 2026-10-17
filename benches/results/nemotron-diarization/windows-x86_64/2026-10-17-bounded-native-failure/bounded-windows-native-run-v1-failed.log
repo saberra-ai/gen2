@@ -1,0 +1,117 @@
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	﻿2026-10-17T09:50:23.1802789Z ##[group]Run python tools/nemotron-diarization/platform_bounded_windows_native.py --source native-source --prefix "D:\a\_temp/nemo-bounded-sdk" --output "D:\a\_temp/nemo-bounded-evidence" --jobs 2 --windows-private-dlls
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:50:23.1803704Z [36;1mpython tools/nemotron-diarization/platform_bounded_windows_native.py --source native-source --prefix "D:\a\_temp/nemo-bounded-sdk" --output "D:\a\_temp/nemo-bounded-evidence" --jobs 2 --windows-private-dlls[0m
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:50:23.1828739Z shell: C:\Program Files\PowerShell\7\pwsh.EXE -command ". '{0}'"
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:50:23.1828933Z env:
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:50:23.1829094Z   pythonLocation: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:50:23.1829357Z   PKG_CONFIG_PATH: C:\hostedtoolcache\windows\Python\3.12.10\x64/lib/pkgconfig
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:50:23.1829610Z   Python_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:50:23.1829844Z   Python2_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:50:23.1830068Z   Python3_ROOT_DIR: C:\hostedtoolcache\windows\Python\3.12.10\x64
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:50:23.1830286Z   CARGO_HOME: C:\Users\runneradmin\.cargo
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:50:23.1830448Z   CARGO_INCREMENTAL: 0
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:50:23.1830576Z   CARGO_TERM_COLOR: always
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:50:23.1830705Z   CACHE_ON_FAILURE: false
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:50:23.1830831Z ##[endgroup]
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:50:35.3053232Z START inference-patch-check-0
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:50:35.3332831Z PASS inference-patch-check-0
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:50:35.3337060Z START inference-patch-0
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:50:35.3596286Z PASS inference-patch-0
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:50:35.3666311Z START inference-patch-check-1
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:50:35.3915645Z PASS inference-patch-check-1
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:50:35.3919520Z START inference-patch-1
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:50:35.4295096Z PASS inference-patch-1
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:50:35.4302254Z START inference-patch-check-2
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:50:35.4512774Z PASS inference-patch-check-2
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:50:35.4517284Z START inference-patch-2
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:50:35.4731624Z PASS inference-patch-2
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:50:35.9546021Z START cmake-version
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:50:36.7076087Z PASS cmake-version
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:50:36.7080415Z START git-line-ending-config
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:50:36.7332263Z PASS git-line-ending-config
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:50:36.7394920Z START sdk-build
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:07.7074826Z PASS sdk-build
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:07.7098870Z START sdk-install
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:07.9248848Z PASS sdk-install
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:08.8519960Z START compiler-llama-archive
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:09.0606381Z PASS compiler-llama-archive
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.2076716Z START compiler-llama-patch-0
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.2340576Z PASS compiler-llama-patch-0
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.2353158Z START compiler-llama-patch-1
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.2571186Z PASS compiler-llama-patch-1
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.2583405Z START compiler-llama-patch-2
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.2795483Z PASS compiler-llama-patch-2
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.2808633Z START compiler-llama-patch-3
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.3045820Z PASS compiler-llama-patch-3
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.3059796Z START compiler-llama-patch-4
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.3283477Z PASS compiler-llama-patch-4
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.3296822Z START compiler-llama-patch-5
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.3515025Z PASS compiler-llama-patch-5
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.3528752Z START compiler-llama-patch-6
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.3741313Z PASS compiler-llama-patch-6
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.3754711Z START compiler-llama-patch-7
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.3974307Z PASS compiler-llama-patch-7
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.3988996Z START compiler-llama-patch-8
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.4241990Z PASS compiler-llama-patch-8
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.4255926Z START compiler-llama-patch-9
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.4469056Z PASS compiler-llama-patch-9
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.4484139Z START compiler-llama-patch-10
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.4690947Z PASS compiler-llama-patch-10
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.4705630Z START compiler-llama-patch-11
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.4925704Z PASS compiler-llama-patch-11
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.4940374Z START compiler-llama-patch-12
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.5156664Z PASS compiler-llama-patch-12
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.5171760Z START compiler-llama-patch-13
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.5374371Z PASS compiler-llama-patch-13
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.5389600Z START compiler-llama-patch-14
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.5638020Z PASS compiler-llama-patch-14
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.5653749Z START compiler-llama-patch-15
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.5876275Z PASS compiler-llama-patch-15
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.5892066Z START compiler-llama-patch-16
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.6102592Z PASS compiler-llama-patch-16
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.6117977Z START compiler-llama-patch-17
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.6329519Z PASS compiler-llama-patch-17
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.6459192Z START compiler-llama-patch-18
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:10.6556248Z PASS compiler-llama-patch-18
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:13.6788819Z START model-free-state-test
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:14.3518785Z PASS model-free-state-test
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:14.3544757Z START native-probe-build
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:16.5828126Z PASS native-probe-build
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:17.1847963Z START windows-provenance
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:19.3063402Z PASS windows-provenance
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:19.3072985Z START gen2-build
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:59.9953193Z PASS gen2-build
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:53:59.9969262Z START loader-dependencies
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:54:00.0200218Z PASS loader-dependencies
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:54:00.0212686Z START version-only
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:54:00.0753789Z PASS version-only
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:54:04.7201874Z START native-inference
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:55:06.7908033Z PASS native-inference
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:55:06.7920720Z START windows-default-loader-control
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:55:06.8513787Z PASS windows-default-loader-control
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:55:06.8524147Z START public-inference
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:56:07.0127161Z PASS public-inference
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:56:07.0377741Z START native-lifecycle-list
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:56:07.6471755Z PASS native-lifecycle-list
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:56:07.6484385Z START native-lifecycle-0
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:56:08.3858443Z PASS native-lifecycle-0
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:56:08.3872650Z START native-lifecycle-1
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:56:09.4746832Z PASS native-lifecycle-1
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:56:09.4764097Z START native-lifecycle-2
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:59:07.9995706Z PASS native-lifecycle-2
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:59:08.0010977Z START native-lifecycle-3
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:59:26.3570868Z PASS native-lifecycle-3
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T09:59:26.3584499Z START native-lifecycle-4
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T10:00:51.5850814Z PASS native-lifecycle-4
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T10:00:51.5867489Z START native-lifecycle-5
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T10:03:51.3165534Z PASS native-lifecycle-5
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T10:03:51.3184178Z START native-lifecycle-6
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T10:03:52.1005732Z PASS native-lifecycle-6
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T10:03:54.7574120Z Traceback (most recent call last):
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T10:03:54.7582494Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\platform_bounded_windows_native.py", line 348, in <module>
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T10:03:54.7582944Z     main()
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T10:03:54.7583273Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\platform_bounded_windows_native.py", line 340, in main
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T10:03:54.7583602Z     runner.infer()
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T10:03:54.7583935Z   File "D:\a\gen2\gen2\tools\nemotron-diarization\platform_bounded_windows_native.py", line 284, in infer
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T10:03:54.7612212Z ##[error]    raise ValueError('bounded Windows native and public RTF must each be below one')
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T10:03:54.7619328Z ValueError: bounded Windows native and public RTF must each be below one
+native	Build bounded CPU SDK and execute frozen native/public lifecycle and RTF gates	2026-10-17T10:03:54.8544449Z ##[error]Process completed with exit code 1.

@@ -33,7 +33,29 @@ composition after naming/LF preparation. That run performs no compiler, native
 helper, version query, model or Windows API call; it cannot close Windows gates.
 Both review axes cleared the producer before commit `dfdede8e74709a0c89be01d53aad92d346b50b99`.
 Its first [Windows run](https://github.com/saberra-ai/gen2/actions/runs/39022551571)
-is building; no successful SDK, lifecycle or RTF result is claimed yet.
+has completed with a performance failure. The
+[171-member receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-17-bounded-native-failure/collection-qualification.json)
+verifies the exact artifact digest and66 SDK files. All47 child commands return0;
+the enclosing qualifier exits1 at the final unchanged RTF assertion. MSVC build,
+state test, exact version, private PE/imports, all6000 rows/48000 probabilities,
+all27 turns and all seven lifecycle tests pass. Probabilities and turn values are
+exactly equal. Public/native observed RTF is **1.0005604167 / 1.03335105**;
+both fail the strict below-one requirement. Functional success does not qualify
+this SDK, and bounded package admission rejects it.
+
+Saved-data replay independently verifies42 tool/264 repository pins at `dfdede8`,
+all three inference patches, derived helper bytes, all19 GGML patches against the
+saved pristine archive, materialized tree and recorded actual compiler inputs.
+It executes no delivered code or neural call. Downloaded binaries/ZIP and the
+57MB pristine archive stay local. The recorded CPU exposes2 cores/4 logical
+processors; the effective GGML worker count was not instrumented. Measuring a
+smaller worker budget is a prospective diagnostic, not a proven scheduling cause
+or fix. No timing allowance or automatic retry changes this result.
+The first unadmitted collection pass is preserved locally. The replacement
+admits producer and two additional evaluator sources using stdlib before local
+imports, binds every unpacked input back to the verified ZIP, retains both192000B
+raw vectors and their descriptors, then repeats saved-data replay. No inference
+or Windows execution is repeated.
 
 ## Bounded package admission
 
@@ -56,12 +78,21 @@ external Microsoft prerequisite; existing PE/import, ISA/cache, CRT provenance,
 source-notice, archive and relocation checks remain. Historical v2 tools and
 receipts stay unchanged. No package is constructed in this step.
 
-All343 model-free tests pass, including ten new SDK/package admission tests.
+All343 model-free tests passed for that slice, including ten new SDK/package admission tests.
 Their SDK/result records are explicitly synthetic controls, not actual Windows
 runtime evidence. Actual bounded package construction and receiver execution,
 own-process negative-load thread cleanup, central setup/offline System32 checks,
 chat load orders and realtime results remain open. The old receiver orchestration
 still binds the v1 producer and cannot qualify the new bounded package.
+
+The [Windows own-process cleanup and versioned receivers](nemotron-windows-thread-cleanup.md)
+are now implemented with350 passing model-free tests. The separate observer
+control must demonstrate a known live and retired worker before the101-failure
+probe can be used. The receiver removes model/reference inputs for that first
+stage, retains source/binary/module provenance, then performs the original
+offline/central/lifecycle/chat controls with the bounded comparator. None has
+executed on Windows yet. A new orchestration protocol and a producer meeting
+the unchanged performance gate are still required; this failed SDK is not admitted.
 
 The [bounded lock](../../tools/nemotron-diarization/runtime-valid-mel-pool-cpu.lock.json) pins upstream `083861c241061562b8ec29eb06d7f6cdc3af8775`, llama `bd4f514db14d87fded667787a7a963bfbaa98e89`, and exact runtime `nemo-speech-asr 0.2.0+gen2-valid-mel-pool-cpu-v2`. Its ordered inference patches are valid-Mel finish, CPU thread cap, then persistent pool. [The cap](../../tools/nemotron-diarization/patches/cpu-thread-cap.patch) uses standard C++ concurrency: `min(existing 4, hardware_concurrency())`, falling back to one. [The pool](../../tools/nemotron-diarization/patches/persistent-cpu-pool.patch) uses GGML registry procedures and manager-owned cleanup. Neither patch contains Apple-specific calls; private DLL filenames do not change the registry procedure strings.
 

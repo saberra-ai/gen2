@@ -1,0 +1,808 @@
+[
+  {
+    "name": "inference-patch-check-0",
+    "command": [
+      "git",
+      "apply",
+      "--check",
+      "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\patches\\v3-finish-valid-mel.patch"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2\\native-source",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 0.031000000000062755
+  },
+  {
+    "name": "inference-patch-0",
+    "command": [
+      "git",
+      "apply",
+      "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\patches\\v3-finish-valid-mel.patch"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2\\native-source",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 0.01599999999996271
+  },
+  {
+    "name": "inference-patch-check-1",
+    "command": [
+      "git",
+      "apply",
+      "--check",
+      "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\patches\\cpu-thread-cap.patch"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2\\native-source",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 0.016000000000076398
+  },
+  {
+    "name": "inference-patch-1",
+    "command": [
+      "git",
+      "apply",
+      "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\patches\\cpu-thread-cap.patch"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2\\native-source",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 0.04699999999991178
+  },
+  {
+    "name": "inference-patch-check-2",
+    "command": [
+      "git",
+      "apply",
+      "--check",
+      "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\patches\\persistent-cpu-pool.patch"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2\\native-source",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 0.015000000000100044
+  },
+  {
+    "name": "inference-patch-2",
+    "command": [
+      "git",
+      "apply",
+      "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\patches\\persistent-cpu-pool.patch"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2\\native-source",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 0.03199999999992542
+  },
+  {
+    "name": "cmake-version",
+    "command": [
+      "cmake",
+      "--version"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 0.75
+  },
+  {
+    "name": "git-line-ending-config",
+    "command": [
+      "git",
+      "-C",
+      "D:\\a\\gen2\\gen2\\native-source\\llama.cpp",
+      "config",
+      "--show-origin",
+      "--get-regexp",
+      "^core\\.(autocrlf|eol)$"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 0.014999999999986358
+  },
+  {
+    "name": "sdk-build",
+    "command": [
+      "pwsh",
+      "-NoProfile",
+      "-NonInteractive",
+      "-Command",
+      "& 'D:\\a\\gen2\\gen2\\native-source\\scripts\\windows\\build.ps1' -Backend cpu -Profile asr -Jobs 2 -BuildDir 'D:\\a\\gen2\\gen2\\native-source\\build\\gen2-cpu-diar' -CMakeArgs @('-DNEMO_SPEECH_BUILD_EXAMPLES=ON','-DNEMO_SPEECH_BUILD_CLI=OFF','-DNEMO_SPEECH_BUILD_MIC_CAPTURE=OFF','-DGGML_OPENMP=OFF','-DNEMO_SPEECH_VERSION_METADATA=gen2-valid-mel-pool-cpu-v2','-DGGML_NATIVE=OFF','-DGGML_AVX=ON','-DGGML_AVX2=ON','-DGGML_AVX512=OFF','-DGGML_AVX_VNNI=OFF','-DGGML_FMA=ON','-DGGML_F16C=ON','-DNEMO_SPEECH_WITH_NORM=OFF','-DCMAKE_INSTALL_LIBDIR=lib','-DNEMO_SPEECH_BUILD_TESTS=ON','-DBUILD_TESTING=ON','-DCMAKE_EXPORT_COMPILE_COMMANDS=ON','-DNEMO_SPEECH_GGML_PATCHED=ON','-DNEMO_SPEECH_LLAMA_CPP_SOURCE_DIR:PATH=','-DGGML_BACKEND_DL=OFF','-DGGML_METAL=OFF','-DGGML_CUDA=OFF','-DGGML_VULKAN=OFF','-DCMAKE_INSTALL_PREFIX=D:\\a\\_temp\\nemo-bounded-sdk','-DCMAKE_C_COMPILER=C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe','-DCMAKE_CXX_COMPILER=C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe','-DCMAKE_PROJECT_TOP_LEVEL_INCLUDES:FILEPATH=D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\windows_private_dlls.cmake','-DNEMO_SPEECH_BUILD_ASR=OFF','-DNEMO_SPEECH_BUILD_TTS=OFF')"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 150.95299999999997
+  },
+  {
+    "name": "sdk-install",
+    "command": [
+      "cmake",
+      "--install",
+      "D:\\a\\gen2\\gen2\\native-source\\build\\gen2-cpu-diar",
+      "--config",
+      "Release"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 0.21899999999993724
+  },
+  {
+    "name": "compiler-llama-archive",
+    "command": [
+      "git",
+      "archive",
+      "--format=tar",
+      "-o",
+      "D:\\a\\_temp\\nemo-bounded-evidence\\platform-pristine-llama.tar",
+      "bd4f514db14d87fded667787a7a963bfbaa98e89",
+      "--",
+      ".",
+      ":(exclude)models",
+      ":(exclude)docs",
+      ":(exclude)media"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2\\native-source\\llama.cpp",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 0.20299999999997453
+  },
+  {
+    "name": "compiler-llama-patch-0",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\nemo-bounded-evidence\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\nemo-bounded-evidence\\platform-llama-replay-upa1f8sa",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\nemo-bounded-evidence"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.03199999999992542
+  },
+  {
+    "name": "compiler-llama-patch-1",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\nemo-bounded-evidence\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\nemo-bounded-evidence\\platform-llama-replay-upa1f8sa",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\nemo-bounded-evidence"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.031000000000062755
+  },
+  {
+    "name": "compiler-llama-patch-2",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\nemo-bounded-evidence\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\nemo-bounded-evidence\\platform-llama-replay-upa1f8sa",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\nemo-bounded-evidence"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.01599999999996271
+  },
+  {
+    "name": "compiler-llama-patch-3",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\nemo-bounded-evidence\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\nemo-bounded-evidence\\platform-llama-replay-upa1f8sa",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\nemo-bounded-evidence"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.03099999999994907
+  },
+  {
+    "name": "compiler-llama-patch-4",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\nemo-bounded-evidence\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\nemo-bounded-evidence\\platform-llama-replay-upa1f8sa",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\nemo-bounded-evidence"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.031000000000062755
+  },
+  {
+    "name": "compiler-llama-patch-5",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\nemo-bounded-evidence\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\nemo-bounded-evidence\\platform-llama-replay-upa1f8sa",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\nemo-bounded-evidence"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.01599999999996271
+  },
+  {
+    "name": "compiler-llama-patch-6",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\nemo-bounded-evidence\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\nemo-bounded-evidence\\platform-llama-replay-upa1f8sa",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\nemo-bounded-evidence"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.016000000000076398
+  },
+  {
+    "name": "compiler-llama-patch-7",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\nemo-bounded-evidence\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\nemo-bounded-evidence\\platform-llama-replay-upa1f8sa",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\nemo-bounded-evidence"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.01599999999996271
+  },
+  {
+    "name": "compiler-llama-patch-8",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\nemo-bounded-evidence\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\nemo-bounded-evidence\\platform-llama-replay-upa1f8sa",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\nemo-bounded-evidence"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.01599999999996271
+  },
+  {
+    "name": "compiler-llama-patch-9",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\nemo-bounded-evidence\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\nemo-bounded-evidence\\platform-llama-replay-upa1f8sa",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\nemo-bounded-evidence"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.031000000000062755
+  },
+  {
+    "name": "compiler-llama-patch-10",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\nemo-bounded-evidence\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\nemo-bounded-evidence\\platform-llama-replay-upa1f8sa",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\nemo-bounded-evidence"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.01599999999996271
+  },
+  {
+    "name": "compiler-llama-patch-11",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\nemo-bounded-evidence\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\nemo-bounded-evidence\\platform-llama-replay-upa1f8sa",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\nemo-bounded-evidence"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.031000000000062755
+  },
+  {
+    "name": "compiler-llama-patch-12",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\nemo-bounded-evidence\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\nemo-bounded-evidence\\platform-llama-replay-upa1f8sa",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\nemo-bounded-evidence"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.01599999999996271
+  },
+  {
+    "name": "compiler-llama-patch-13",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\nemo-bounded-evidence\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\nemo-bounded-evidence\\platform-llama-replay-upa1f8sa",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\nemo-bounded-evidence"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.014999999999986358
+  },
+  {
+    "name": "compiler-llama-patch-14",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\nemo-bounded-evidence\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\nemo-bounded-evidence\\platform-llama-replay-upa1f8sa",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\nemo-bounded-evidence"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.015000000000100044
+  },
+  {
+    "name": "compiler-llama-patch-15",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\nemo-bounded-evidence\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\nemo-bounded-evidence\\platform-llama-replay-upa1f8sa",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\nemo-bounded-evidence"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.03199999999992542
+  },
+  {
+    "name": "compiler-llama-patch-16",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\nemo-bounded-evidence\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\nemo-bounded-evidence\\platform-llama-replay-upa1f8sa",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\nemo-bounded-evidence"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.014999999999986358
+  },
+  {
+    "name": "compiler-llama-patch-17",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\nemo-bounded-evidence\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\nemo-bounded-evidence\\platform-llama-replay-upa1f8sa",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\nemo-bounded-evidence"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.016000000000076398
+  },
+  {
+    "name": "compiler-llama-patch-18",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\nemo-bounded-evidence\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\nemo-bounded-evidence\\platform-llama-replay-upa1f8sa",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\nemo-bounded-evidence"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.014999999999986358
+  },
+  {
+    "name": "model-free-state-test",
+    "command": [
+      "ctest",
+      "--test-dir",
+      "D:\\a\\gen2\\gen2\\native-source\\build\\gen2-cpu-diar",
+      "--output-on-failure",
+      "-R",
+      "^diar_state$"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 0.6720000000000255
+  },
+  {
+    "name": "native-probe-build",
+    "command": [
+      "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+      "/nologo",
+      "/std:c++17",
+      "/O2",
+      "/EHsc",
+      "/TP",
+      "D:\\a\\_temp\\nemo-bounded-evidence\\native_stream_probe_bounded.cpp",
+      "D:\\a\\gen2\\gen2\\native-source\\llama.cpp\\vendor\\hash\\sha256\\sha256.c",
+      "/ID:\\a\\_temp\\nemo-bounded-sdk\\include",
+      "/ID:\\a\\gen2\\gen2\\native-source\\examples",
+      "/ID:\\a\\gen2\\gen2\\native-source\\llama.cpp\\vendor\\hash",
+      "/link",
+      "D:\\a\\_temp\\nemo-bounded-sdk\\lib\\gen2_nemo_windows_nemo_speech_asr_c.lib",
+      "/OUT:D:\\a\\_temp\\nemo-bounded-sdk\\bin\\gen2_native_stream_probe_valid_mel.exe"
+    ],
+    "cwd": "D:\\a\\_temp\\nemo-bounded-evidence",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 2.2340000000000373
+  },
+  {
+    "name": "windows-provenance",
+    "command": [
+      "pwsh",
+      "-NoProfile",
+      "-NonInteractive",
+      "-File",
+      "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\windows_provenance.ps1",
+      "-SdkRoot",
+      "D:\\a\\_temp\\nemo-bounded-sdk",
+      "-CMakeCache",
+      "D:\\a\\gen2\\gen2\\native-source\\build\\gen2-cpu-diar\\CMakeCache.txt",
+      "-Compiler",
+      "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+      "-Output",
+      "D:\\a\\_temp\\nemo-bounded-evidence"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 2.125
+  },
+  {
+    "name": "gen2-build",
+    "command": [
+      "cargo",
+      "build",
+      "--locked",
+      "--release",
+      "--no-default-features",
+      "--features",
+      "backend-diar-nemo",
+      "--example",
+      "nemotron_valid_mel_stream",
+      "--test",
+      "diarization_native"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 40.68700000000001
+  },
+  {
+    "name": "loader-dependencies",
+    "command": [
+      "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\dumpbin.exe",
+      "/nologo",
+      "/dependents",
+      "D:\\a\\_temp\\nemo-bounded-sdk\\bin\\gen2_nemo_windows_nemo_speech_asr_c.dll"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 0.01599999999996271
+  },
+  {
+    "name": "version-only",
+    "command": [
+      "C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\python.exe",
+      "-c",
+      "import ctypes,os,sys; directory=os.add_dll_directory(sys.argv[2]) if os.name==\"nt\" else None; library=ctypes.CDLL(sys.argv[1]); function=library.nemo_speech_asr_version; function.restype=ctypes.c_char_p; print(function().decode(\"utf-8\"))",
+      "D:\\a\\_temp\\nemo-bounded-sdk\\bin\\gen2_nemo_windows_nemo_speech_asr_c.dll",
+      "D:\\a\\_temp\\nemo-bounded-sdk\\bin"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 0.06200000000001182
+  },
+  {
+    "name": "native-inference",
+    "command": [
+      "D:\\a\\_temp\\nemo-bounded-sdk\\bin\\gen2_native_stream_probe_valid_mel.exe",
+      "D:\\a\\_temp\\nemo-bounded-evidence\\assets\\Nemotron-3-Diarization.q8_0.gguf",
+      "D:\\a\\_temp\\nemo-bounded-evidence\\assets\\ami_en2002d_2132.wav",
+      "1",
+      "-1",
+      "D:\\a\\_temp\\nemo-bounded-evidence\\native-ami.json"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 62.077999999999975
+  },
+  {
+    "name": "windows-default-loader-control",
+    "command": [
+      "C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\python.exe",
+      "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\windows_loader_control.py",
+      "D:\\a\\_temp\\nemo-bounded-sdk\\bin\\gen2_nemo_windows_nemo_speech_asr_c.dll"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 0.06299999999998818
+  },
+  {
+    "name": "public-inference",
+    "command": [
+      "D:\\a\\gen2\\gen2\\target\\release\\examples\\nemotron_valid_mel_stream.exe",
+      "D:\\a\\_temp\\nemo-bounded-evidence\\assets",
+      "D:\\a\\_temp\\nemo-bounded-sdk\\bin\\gen2_nemo_windows_nemo_speech_asr_c.dll",
+      "D:\\a\\_temp\\nemo-bounded-evidence\\assets\\ami_en2002d_2132.wav",
+      "1",
+      "D:\\a\\_temp\\nemo-bounded-evidence\\public.f32"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 60.15600000000006
+  },
+  {
+    "name": "native-lifecycle-list",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--release",
+      "--no-default-features",
+      "--features",
+      "backend-diar-nemo",
+      "--test",
+      "diarization_native",
+      "--",
+      "--ignored",
+      "--list"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {
+      "GEN2_NEMOTRON_ASSETS": "D:\\a\\_temp\\nemo-bounded-evidence\\assets",
+      "GEN2_NEMO_LIBRARY": "D:\\a\\_temp\\nemo-bounded-sdk\\bin\\gen2_nemo_windows_nemo_speech_asr_c.dll",
+      "GEN2_NEMOTRON_REFERENCE": "D:\\a\\_temp\\nemo-bounded-evidence\\reference",
+      "GEN2_NEMO_EXECUTION": "cpu"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.6100000000000136
+  },
+  {
+    "name": "native-lifecycle-0",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--release",
+      "--no-default-features",
+      "--features",
+      "backend-diar-nemo",
+      "--test",
+      "diarization_native",
+      "--",
+      "--ignored",
+      "--exact",
+      "dropping_a_diarization_child_keeps_the_parent_pipeline_active",
+      "--test-threads=1"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {
+      "GEN2_NEMOTRON_ASSETS": "D:\\a\\_temp\\nemo-bounded-evidence\\assets",
+      "GEN2_NEMO_LIBRARY": "D:\\a\\_temp\\nemo-bounded-sdk\\bin\\gen2_nemo_windows_nemo_speech_asr_c.dll",
+      "GEN2_NEMOTRON_REFERENCE": "D:\\a\\_temp\\nemo-bounded-evidence\\reference",
+      "GEN2_NEMO_EXECUTION": "cpu"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.7340000000000373
+  },
+  {
+    "name": "native-lifecycle-1",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--release",
+      "--no-default-features",
+      "--features",
+      "backend-diar-nemo",
+      "--test",
+      "diarization_native",
+      "--",
+      "--ignored",
+      "--exact",
+      "native_admission_cancellation_and_failed_load_release_reservations",
+      "--test-threads=1"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {
+      "GEN2_NEMOTRON_ASSETS": "D:\\a\\_temp\\nemo-bounded-evidence\\assets",
+      "GEN2_NEMO_LIBRARY": "D:\\a\\_temp\\nemo-bounded-sdk\\bin\\gen2_nemo_windows_nemo_speech_asr_c.dll",
+      "GEN2_NEMOTRON_REFERENCE": "D:\\a\\_temp\\nemo-bounded-evidence\\reference",
+      "GEN2_NEMO_EXECUTION": "cpu"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 1.0779999999999745
+  },
+  {
+    "name": "native-lifecycle-2",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--release",
+      "--no-default-features",
+      "--features",
+      "backend-diar-nemo",
+      "--test",
+      "diarization_native",
+      "--",
+      "--ignored",
+      "--exact",
+      "real_diarizer_matches_native_reference_and_resets_recordings",
+      "--test-threads=1"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {
+      "GEN2_NEMOTRON_ASSETS": "D:\\a\\_temp\\nemo-bounded-evidence\\assets",
+      "GEN2_NEMO_LIBRARY": "D:\\a\\_temp\\nemo-bounded-sdk\\bin\\gen2_nemo_windows_nemo_speech_asr_c.dll",
+      "GEN2_NEMOTRON_REFERENCE": "D:\\a\\_temp\\nemo-bounded-evidence\\reference",
+      "GEN2_NEMO_EXECUTION": "cpu"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 178.5150000000001
+  },
+  {
+    "name": "native-lifecycle-3",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--release",
+      "--no-default-features",
+      "--features",
+      "backend-diar-nemo",
+      "--test",
+      "diarization_native",
+      "--",
+      "--ignored",
+      "--exact",
+      "repeated_reload_full_queue_cancel_and_dropped_stream_release_resources",
+      "--test-threads=1"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {
+      "GEN2_NEMOTRON_ASSETS": "D:\\a\\_temp\\nemo-bounded-evidence\\assets",
+      "GEN2_NEMO_LIBRARY": "D:\\a\\_temp\\nemo-bounded-sdk\\bin\\gen2_nemo_windows_nemo_speech_asr_c.dll",
+      "GEN2_NEMOTRON_REFERENCE": "D:\\a\\_temp\\nemo-bounded-evidence\\reference",
+      "GEN2_NEMO_EXECUTION": "cpu"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 18.3599999999999
+  },
+  {
+    "name": "native-lifecycle-4",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--release",
+      "--no-default-features",
+      "--features",
+      "backend-diar-nemo",
+      "--test",
+      "diarization_native",
+      "--",
+      "--ignored",
+      "--exact",
+      "silence_short_tail_and_idle_deadline_have_explicit_terminal_results",
+      "--test-threads=1"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {
+      "GEN2_NEMOTRON_ASSETS": "D:\\a\\_temp\\nemo-bounded-evidence\\assets",
+      "GEN2_NEMO_LIBRARY": "D:\\a\\_temp\\nemo-bounded-sdk\\bin\\gen2_nemo_windows_nemo_speech_asr_c.dll",
+      "GEN2_NEMOTRON_REFERENCE": "D:\\a\\_temp\\nemo-bounded-evidence\\reference",
+      "GEN2_NEMO_EXECUTION": "cpu"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 85.21800000000007
+  },
+  {
+    "name": "native-lifecycle-5",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--release",
+      "--no-default-features",
+      "--features",
+      "backend-diar-nemo",
+      "--test",
+      "diarization_native",
+      "--",
+      "--ignored",
+      "--exact",
+      "streamed_uneven_pcm_matches_recording_and_finish_is_idempotent",
+      "--test-threads=1"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {
+      "GEN2_NEMOTRON_ASSETS": "D:\\a\\_temp\\nemo-bounded-evidence\\assets",
+      "GEN2_NEMO_LIBRARY": "D:\\a\\_temp\\nemo-bounded-sdk\\bin\\gen2_nemo_windows_nemo_speech_asr_c.dll",
+      "GEN2_NEMOTRON_REFERENCE": "D:\\a\\_temp\\nemo-bounded-evidence\\reference",
+      "GEN2_NEMO_EXECUTION": "cpu"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 179.7349999999999
+  },
+  {
+    "name": "native-lifecycle-6",
+    "command": [
+      "cargo",
+      "test",
+      "--locked",
+      "--release",
+      "--no-default-features",
+      "--features",
+      "backend-diar-nemo",
+      "--test",
+      "diarization_native",
+      "--",
+      "--ignored",
+      "--exact",
+      "verified_provisioned_cache_is_reused_offline",
+      "--test-threads=1"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {
+      "GEN2_NEMOTRON_ASSETS": "D:\\a\\_temp\\nemo-bounded-evidence\\assets",
+      "GEN2_NEMO_LIBRARY": "D:\\a\\_temp\\nemo-bounded-sdk\\bin\\gen2_nemo_windows_nemo_speech_asr_c.dll",
+      "GEN2_NEMOTRON_REFERENCE": "D:\\a\\_temp\\nemo-bounded-evidence\\reference",
+      "GEN2_NEMO_EXECUTION": "cpu"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.7809999999999491
+  }
+]

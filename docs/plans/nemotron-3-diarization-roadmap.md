@@ -60,11 +60,17 @@ Remaining release work as of 2026-10-17:
   construction and qualification work. A separately versioned bounded Windows
   producer/protocol/workflow is now implemented, with333 passing model-free tests
   and actual local four-inference-file plus LF-overlay source admission. Actual
-  MSVC/native/public/lifecycle/RTF qualification is now running at `dfdede8e`.
+  MSVC/native/public/lifecycle qualification now passes at `dfdede8e`, but observed
+  public/native RTF1.0005604167/1.03335105 fails the original below-one gate.
+  The171-member failure receipt preserves exact parity and all seven lifecycle
+  successes; the SDK remains inadmissible for bounded package construction.
   A separate bounded v3 SDK admission/packager also passes343 model-free tests:
   it replays full probability/PCM/RTF evidence and retains all three patches.
-  No actual bounded package is constructed yet; native negative-load thread
-  cleanup, receiver migration and subsequent offline/chat execution remain open.
+  No actual bounded package is constructed yet. Versioned offline/chat receivers
+  and an own-process negative-load observer/probe now pass350 model-free tests;
+  actual Windows cleanup/receiver execution and the new orchestration protocol
+  remain open. The next performance diagnostic must measure rather than assume
+  whether a smaller worker budget helps the observed2-core/4-logical host.
   Then merge and
   push the completed feature to main; no main promotion is justified yet.
 
