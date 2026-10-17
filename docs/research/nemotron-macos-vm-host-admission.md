@@ -109,3 +109,18 @@ absence; the reserve is released. The 56-member receipt retains all raw command
 and failure evidence, source copies and filtered owned-image mappings. The
 detached image/helper/global inventories stay local by hash. This proves neither
 blank-volume write permission nor VM creation/boot or fresh-machine operation.
+
+The separate [v3 protocol](../../tools/nemotron-diarization/macos-vm-host-v3.protocol.json)
+binds the actual v2 failure and exact owned-image mapping, with 13 source and
+30 external descriptors. The new controller derives the sole physical child
+partition from that current image observation, then requires the APFS container's
+sole store to equal it. Synthetic container/volume devices are excluded from
+physical-child selection. No partition index is assumed. Multiple physical
+children, wrong images, foreign stores and ambiguous volumes reject before mount.
+
+Two new regressions cover the actual single-`s1` layout, a single-`s2` layout and
+the unsafe mappings above; the unchanged earlier cleanup/host checks remain.
+All 288 model-free tests pass in 11.670 seconds. Original v1/v2 files and failed
+receipts remain unchanged. All other signing, no-guest, offline, storage,
+cleanup and deadline gates remain unchanged. Review and commit before actual
+v3 invocation; no v3 helper or image operation has run at preregistration.
