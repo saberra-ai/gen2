@@ -934,8 +934,13 @@ A separate `gen2-valid-mel-pool-v1` native ownership candidate is now prepared.
 It owns a CPU pool per backend manager and preserves the old frame/model/preset
 and four-thread setting. The original Rust/build defaults and frozen historical
 receipt consumers remain unchanged. All 211 current model-free tests pass;
-complete SDK/package construction and public failed-load cleanup are preregistered
-before any candidate neural qualification. See the [candidate construction notes](../research/nemotron-macos-fresh-machine.md).
+complete SDK/package construction and 101 public failed-load attempts now pass
+on fresh M1 at `eeae443`, with the delivered helper and 92 private libraries
+independently rehashed. The M4 SDK build passes but its first immediate thread
+snapshot guard fails; that result is retained. A bounded-settling observation
+correction passes 101 later attempts against the unchanged SDK, and fault
+injection verifies failure-history preservation. No candidate model inference
+or Rust admission has executed. See the [candidate construction notes](../research/nemotron-macos-fresh-machine.md).
 
 The 13-job feature matrix also passed at `4974318`. Later source `cf64214`
 passed12 jobs; its macOS mixed-feature job failed before compilation when GitHub

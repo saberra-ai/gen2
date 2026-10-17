@@ -1,0 +1,5 @@
+(version 1)
+(allow default)
+(deny network*)
+(deny file-read* (regex #".*\.(nemo|gguf|safetensors|onnx|npy|f32)$"))
+(deny file-write* (subpath "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1") (subpath "/Users/victor/workspace/gen2-nemotron3-n0"))

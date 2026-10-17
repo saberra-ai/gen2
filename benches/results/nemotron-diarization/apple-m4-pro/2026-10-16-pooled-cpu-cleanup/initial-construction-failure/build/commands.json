@@ -1,0 +1,568 @@
+[
+  {
+    "phase": "configure",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/offline.sb",
+      "/bin/bash",
+      "scripts/configure.sh",
+      "cpu-diar",
+      "-DNEMO_SPEECH_BUILD_EXAMPLES=ON",
+      "-DNEMO_SPEECH_BUILD_CLI=OFF",
+      "-DNEMO_SPEECH_BUILD_MIC_CAPTURE=OFF",
+      "-DGGML_OPENMP=OFF",
+      "-DNEMO_SPEECH_VERSION_METADATA=gen2-valid-mel-pool-v1",
+      "-DNEMO_SPEECH_BUILD_TESTS=ON",
+      "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+      "-DCMAKE_INSTALL_PREFIX=/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/sdk",
+      "-DGGML_NATIVE=OFF",
+      "-DGGML_CPU_ARM_ARCH=armv8.2-a+dotprod+fp16",
+      "-DCMAKE_C_FLAGS=-march=armv8.2-a+dotprod+fp16",
+      "-DCMAKE_CXX_FLAGS=-march=armv8.2-a+dotprod+fp16",
+      "-DCMAKE_OSX_ARCHITECTURES=arm64",
+      "-DCMAKE_OSX_DEPLOYMENT_TARGET=26.0"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/source",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 3.5646236250177026
+  },
+  {
+    "phase": "llama-archive",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/offline.sb",
+      "git",
+      "archive",
+      "--format=tar",
+      "-o",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/pristine-llama.tar",
+      "bd4f514db14d87fded667787a7a963bfbaa98e89",
+      "--",
+      ".",
+      ":(exclude)models",
+      ":(exclude)docs",
+      ":(exclude)media"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/source/llama.cpp",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.08570166694698855
+  },
+  {
+    "phase": "llama-patch-0",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/llama-replay-ezgmxfhz",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.018195042037405074
+  },
+  {
+    "phase": "llama-patch-1",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/llama-replay-ezgmxfhz",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.0161517079686746
+  },
+  {
+    "phase": "llama-patch-2",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/llama-replay-ezgmxfhz",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.015381749952211976
+  },
+  {
+    "phase": "llama-patch-3",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/llama-replay-ezgmxfhz",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.016742082952987403
+  },
+  {
+    "phase": "llama-patch-4",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/llama-replay-ezgmxfhz",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.016409792006015778
+  },
+  {
+    "phase": "llama-patch-5",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/llama-replay-ezgmxfhz",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.01618329103803262
+  },
+  {
+    "phase": "llama-patch-6",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/llama-replay-ezgmxfhz",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.015517916996032
+  },
+  {
+    "phase": "llama-patch-7",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/llama-replay-ezgmxfhz",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.015413334011100233
+  },
+  {
+    "phase": "llama-patch-8",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/llama-replay-ezgmxfhz",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.018416124978102744
+  },
+  {
+    "phase": "llama-patch-9",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/llama-replay-ezgmxfhz",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.015460875001735985
+  },
+  {
+    "phase": "llama-patch-10",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/llama-replay-ezgmxfhz",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.014562124968506396
+  },
+  {
+    "phase": "llama-patch-11",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/llama-replay-ezgmxfhz",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.016137583006639034
+  },
+  {
+    "phase": "llama-patch-12",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/llama-replay-ezgmxfhz",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.014895749976858497
+  },
+  {
+    "phase": "llama-patch-13",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/llama-replay-ezgmxfhz",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.01532479200977832
+  },
+  {
+    "phase": "llama-patch-14",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/llama-replay-ezgmxfhz",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.017514041042886674
+  },
+  {
+    "phase": "llama-patch-15",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/llama-replay-ezgmxfhz",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.016161499952431768
+  },
+  {
+    "phase": "llama-patch-16",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/llama-replay-ezgmxfhz",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.015329417015891522
+  },
+  {
+    "phase": "llama-patch-17",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/llama-replay-ezgmxfhz",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.015191667014732957
+  },
+  {
+    "phase": "llama-patch-18",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/llama-replay-ezgmxfhz",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.014553292014170438
+  },
+  {
+    "phase": "build",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/offline.sb",
+      "/opt/homebrew/bin/cmake",
+      "--build",
+      "--preset",
+      "cpu-diar",
+      "--parallel",
+      "2"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/source",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 27.836424665991217
+  },
+  {
+    "phase": "install",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/offline.sb",
+      "/opt/homebrew/bin/cmake",
+      "--install",
+      "build/cpu-diar"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/source",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.09540370799368247
+  },
+  {
+    "phase": "model-free-state-test",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/offline.sb",
+      "/opt/homebrew/bin/ctest",
+      "--test-dir",
+      "build/cpu-diar",
+      "--output-on-failure",
+      "-R",
+      "^diar_state$"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/source",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 1.1284357919939794
+  },
+  {
+    "phase": "version-only",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/offline.sb",
+      "/opt/homebrew/opt/python@3.14/bin/python3.14",
+      "-c",
+      "import ctypes,sys; library=ctypes.CDLL(sys.argv[1]); version=library.nemo_speech_asr_version; version.restype=ctypes.c_char_p; print(version().decode(\"utf-8\"))",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/sdk/lib/libnemo_speech_asr_c.dylib"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/source",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.8742386249941774
+  },
+  {
+    "phase": "brew-packages",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/offline.sb",
+      "/opt/homebrew/bin/brew",
+      "list",
+      "--versions",
+      "sentencepiece",
+      "abseil",
+      "protobuf"
+    ],
+    "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/source",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "HOME": "/Users/victor",
+      "HOMEBREW_NO_AUTO_UPDATE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.4065177910379134
+  }
+]

@@ -1,0 +1,12 @@
+{
+  "mode": "explicit-portable-arm64",
+  "arm_arch": "armv8.2-a+dotprod+fp16",
+  "all_compiler_units_have_explicit_target": true,
+  "compiler_units": 98,
+  "cpu_kernel_units_present": [
+    "arch/arm/quants.c",
+    "arch/arm/repack.cpp",
+    "ggml-cpu.cpp"
+  ],
+  "hardware_or_model_qualification": false
+}

@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "sdk_build_source_commit": "eeae443e18b03715c6fa1ebf577a0f69de51bedd",
+  "initial_full_sdk_and_package_build_passed": true,
+  "initial_full_construction_control_result": "failed; immediate task_threads growth guard after26missing-model attempts",
+  "initial_failure_relabelled": false,
+  "failure_diagnostic": {
+    "baseline": 1,
+    "immediate": 4,
+    "observation_index": 6,
+    "after10milliseconds": 1,
+    "through100milliseconds": 1,
+    "persistent_worker_leak_established": false
+  },
+  "corrected_final_control": {
+    "failed_model_attempts": 101,
+    "immediate_thread_counts": [
+      1,
+      2,
+      3,
+      4
+    ],
+    "settled_thread_counts": [
+      1
+    ],
+    "requested_wait_ms": [
+      10
+    ],
+    "growth_allowance": 2,
+    "maximum_requested_wait_ms": 100,
+    "five_observation_fault_diagnostic_retains_all_three_partial_histories": true
+  },
+  "same_original_sdk_and_package_inventories_verified_unchanged": true,
+  "final_control_source": {
+    "bytes": 4514,
+    "sha256": "e8f3565c920331e57fb74d25d043b8b73c5be23b916d8ea093cc0cb8ee27f85e"
+  },
+  "v2_protocol": {
+    "bytes": 9886,
+    "sha256": "01294be2711a9fd6020ef4bb8e22d1ac0838fad7d346930895cbace48f61b53a"
+  },
+  "valid_models_loaded": 0,
+  "frontend_or_neural_calls": 0,
+  "release_qualified": false,
+  "limits": [
+    "No SDK/ownership/runtime behavior changed to correct the observation guard. Final helper source/protocol are byte-bound independently of the earlierSDKbuild commit.",
+    "The immediate4-to-quiet1 observations are consistent with transient kernel-thread visibility after worker teardown, rather than persistent growth. Both immediate and settled observations are preserved; the unchanged warmup+2bound is checked after10..100msrequested sleep.",
+    "The first failed construction remains failed; subsequent controls reuse its successfullybuilt SDK/package. This is no neural/numerical/publicRust/long/quality/app/release qualification."
+  ]
+}

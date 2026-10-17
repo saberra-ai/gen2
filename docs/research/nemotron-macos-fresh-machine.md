@@ -328,9 +328,41 @@ valid weights, frontend or inference. The control permits at most two incidental
 system threads above the first warmed failure and retains every count. The
 probe first passed against the original qualified runtime, with one thread
 after every attempt; that is a probe control, not a pooled-candidate result.
-The candidate SDK and cleanup controls have not yet executed at this checkpoint.
-Production API, numerical, long-session, mixed-model, quality and release
-qualification remain pending.
+The [actual M1 construction receipt](../../benches/results/nemotron-diarization/macos-arm64/2026-10-16-pooled-cpu-construction-v1/collection-qualification.json)
+now completes run 38984207454 at `eeae443`. The 17,618,400-byte artifact contains
+196 independently verified files. All six construction/control commands pass;
+98 actual compiler units are audited, and the exact new C ABI version is
+observed. Restored SDK/runtime/control inventories contain 84/123/2 entries.
+The delivered helper executable and all 92 private-library payloads are rehashed,
+and its loaded-image trace replays against those bytes. All 101 original
+immediate thread observations are one or two on this VM. No valid weights,
+frontend or inference execute.
+
+The [local M4 cleanup investigation](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-cpu-cleanup/collection-qualification.json)
+retains a separate failed first control. SDK/state/version/package construction
+passes, but the immediate thread-count guard fails after 26 missing-model
+attempts. A failure-only diagnostic reproduces a count of four at observation
+index six from a baseline of one; it returns to one after 10 ms and stays there
+through 100 ms. These observations are consistent with transient OS thread
+visibility after teardown, rather than persistent worker growth. The original
+failed construction remains failed.
+
+The [V2 protocol](../../tools/nemotron-diarization/macos-pooled-construction-v2.protocol.json)
+keeps the SDK, ownership patch, version and growth allowance unchanged. The
+probe preserves immediate counts, waits 10 ms, and polls only excess growth for
+at most 100 ms of requested sleep before applying the same warmed-count-plus-two
+limit. It retains both histories and requested waits on success and failure.
+The final local continuation against the unchanged SDK passes 101 attempts:
+immediate counts range from one to four, every settled count is one, and every
+requested wait is 10 ms. A separately marked fault-injection helper throws after
+five observations and proves that all three partial histories are retained.
+This is a correction to the observation procedure, not a production runtime fix
+or a relabeling of the first failed control. Source and inventory bindings keep
+the original build, diagnostic and corrected checks distinct.
+
+Production API, neural numerical parity, long-session, mixed-model, quality and
+release qualification remain pending. The original Rust runtime gate still
+rejects this new candidate version until that integration is explicitly tested.
 
 ## Portable CPU complete-app construction
 

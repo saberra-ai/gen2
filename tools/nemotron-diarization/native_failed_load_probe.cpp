@@ -1,11 +1,13 @@
 // Public C ABI failure-path control. No weights or frontend/inference execute.
 #include <mach/mach.h>
+#include <chrono>
 #include <cstdint>
 #include <cstring>
 #include <filesystem>
 #include <iostream>
 #include <stdexcept>
 #include <string>
+#include <thread>
 #include <vector>
 #include "nemo_speech/asr.h"
 #include "nemo_speech/diar.h"
@@ -22,6 +24,7 @@ static unsigned thread_count() {
 }
 
 int main(int argc, char** argv) {
+    std::vector<unsigned> immediate_counts, counts, waits;
     try {
         if (argc != 3 || std::filesystem::exists(argv[2]))
             throw std::runtime_error("expected exact runtime version and missing model path");
@@ -32,7 +35,6 @@ int main(int argc, char** argv) {
         config.size = sizeof(config);
         config.model_path = argv[2];
         config.gpu = -1;
-        std::vector<unsigned> counts;
         unsigned baseline = 0;
         for (unsigned index = 0; index < 101; ++index) {
             auto* model = reinterpret_cast<nemo_speech_diar_model*>(uintptr_t{1});
@@ -41,20 +43,48 @@ int main(int argc, char** argv) {
             if (status == NEMO_SPEECH_ASR_OK || model || !error ||
                 std::string(error) != "Failed to load GGML file: " + std::string(argv[2]))
                 throw std::runtime_error("failed model load did not clear handle and report file error");
-            counts.push_back(thread_count());
+            immediate_counts.push_back(thread_count());
+            // pthread_join has returned, but task_threads can briefly include
+            // retiring kernel threads. Preserve the immediate observation and
+            // allow bounded settling before checking persistent worker growth.
+            unsigned requested_wait = 0;
+            unsigned observed = 0;
+            do {
+                std::this_thread::sleep_for(std::chrono::milliseconds(10));
+                requested_wait += 10;
+                observed = thread_count();
+            } while (index && observed > baseline + 2 && requested_wait < 100);
+            counts.push_back(observed);
+            waits.push_back(requested_wait);
             if (!index) baseline = counts.back();
             // Allow at most two incidental system workers, never a leaked
             // three-worker CPU pool across these100additional failures.
-            if (counts.back() > baseline + 2)
-                throw std::runtime_error("failed model loads accumulate native threads");
+            if (counts.back() > baseline + 2) {
+                throw std::runtime_error("failed model loads accumulate native threads after settling; baseline="
+                    + std::to_string(baseline) + " observed=" + std::to_string(counts.back()));
+            }
         }
         std::cout << "{\"failed_model_construction_attempts\":101,\"valid_models_loaded\":0,"
-                     "\"frontend_or_neural_calls\":0,\"thread_growth_allowance\":2,\"threads_after_each_failure\":[";
+                     "\"frontend_or_neural_calls\":0,\"thread_growth_allowance\":2,"
+                     "\"maximum_requested_settling_wait_milliseconds\":100,\"immediate_thread_counts\":[";
+        for (unsigned index = 0; index < immediate_counts.size(); ++index)
+            std::cout << (index ? "," : "") << immediate_counts[index];
+        std::cout << "],\"requested_settling_wait_milliseconds\":[";
+        for (unsigned index = 0; index < waits.size(); ++index)
+            std::cout << (index ? "," : "") << waits[index];
+        std::cout << "],\"threads_after_each_failure\":[";
         for (unsigned index = 0; index < counts.size(); ++index)
             std::cout << (index ? "," : "") << counts[index];
         std::cout << "]}\n";
         return 0;
     } catch (const std::exception& error) {
+        std::cerr << "failed_load_thread_observations: immediate=";
+        for (auto value : immediate_counts) std::cerr << value << ',';
+        std::cerr << " settled=";
+        for (auto value : counts) std::cerr << value << ',';
+        std::cerr << " requested_wait_ms=";
+        for (auto value : waits) std::cerr << value << ',';
+        std::cerr << '\n';
         std::cerr << error.what() << '\n';
         return 1;
     }

@@ -1,0 +1,6 @@
+(version 1)
+(allow default)
+(deny network*)
+(deny file-read* (subpath "/Users/runner/work/gen2/gen2") (subpath "/Users/runner/work/gen2/gen2/native-upstream") (subpath "/Users/runner/work/_temp/pooled-source") (subpath "/Users/runner/work/_temp/pooled-sdk"))
+(deny file-write* (subpath "/Users/runner/work/_temp/pooled-evidence/work") (subpath "/Users/runner/work/gen2/gen2") (subpath "/Users/runner/work/gen2/gen2/native-upstream") (subpath "/Users/runner/work/_temp/pooled-source") (subpath "/Users/runner/work/_temp/pooled-sdk") (subpath "/Users/runner/work/_temp/pooled-runtime"))
+(deny file-read* (regex #".*\.(nemo|gguf|safetensors|onnx|npy|f32)$"))

@@ -1,0 +1,6 @@
+(version 1)
+(allow default)
+(deny network*)
+(deny file-read* (subpath "/Users/victor/workspace/gen2-nemotron3-n0") (subpath "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/sdk") (subpath "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/source"))
+(deny file-write* (subpath "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cleanup-diagnostic-v1/work") (subpath "/Users/victor/workspace/gen2-nemotron3-n0") (subpath "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/sdk") (subpath "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/runtime"))
+(deny file-read* (regex #".*\.(nemo|gguf|safetensors|onnx|npy|f32)$"))

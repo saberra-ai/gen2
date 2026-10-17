@@ -131,6 +131,10 @@ def main():
         counts = result['threads_after_each_failure']
         if (result['failed_model_construction_attempts'] != 101 or result['valid_models_loaded'] != 0
                 or result['frontend_or_neural_calls'] != 0 or result['thread_growth_allowance'] != 2
+                or result['maximum_requested_settling_wait_milliseconds'] != 100
+                or len(result['immediate_thread_counts']) != 101
+                or len(result['requested_settling_wait_milliseconds']) != 101
+                or any(w < 10 or w > 100 or w % 10 for w in result['requested_settling_wait_milliseconds'])
                 or len(counts) != 101 or min(counts) < 1 or max(counts) > counts[0] + 2):
             raise ValueError('failed-load cleanup control differs')
         if (inventory(sdk) != protected['sdk'] or inventory(package) != protected['package']

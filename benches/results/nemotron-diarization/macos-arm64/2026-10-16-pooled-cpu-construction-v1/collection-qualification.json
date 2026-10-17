@@ -1,0 +1,48 @@
+{
+  "schema_version": 1,
+  "source_commit": "eeae443e18b03715c6fa1ebf577a0f69de51bedd",
+  "ci_url": "https://github.com/saberra-ai/gen2/actions/runs/38984207454",
+  "opaque_artifact": {
+    "id": 12082417995,
+    "node_id": "MDg6QXJ0aWZhY3QxMjA4MjQxNzk5NQ==",
+    "name": "nemotron-macos-pooled-construction",
+    "size_in_bytes": 17618400,
+    "url": "https://api.github.com/repos/saberra-ai/gen2/actions/artifacts/12082417995",
+    "archive_download_url": "https://api.github.com/repos/saberra-ai/gen2/actions/artifacts/12082417995/zip",
+    "expired": false,
+    "digest": "sha256:9f2833d05cbabc4d3272af67af8f5b192e3f88d418976b8ebade9f7bf9e5479c",
+    "created_at": "2026-10-17T00:01:26Z",
+    "updated_at": "2026-10-17T00:01:26Z",
+    "expires_at": "2026-11-16T00:01:23Z",
+    "workflow_run": {
+      "id": 38984207454,
+      "repository_id": 1353161693,
+      "head_repository_id": 1353161693,
+      "head_branch": "codex/nemotron3-n0",
+      "head_sha": "eeae443e18b03715c6fa1ebf577a0f69de51bedd"
+    }
+  },
+  "delivered_members_independently_verified": 196,
+  "all_39_historical_source_pins_verified": true,
+  "restored_inventory_entries": {
+    "sdk": 84,
+    "runtime": 123,
+    "controls": 2
+  },
+  "helper_binary_independently_rehashed": true,
+  "private_libraries_rehashed_and_trace_replayed": 92,
+  "actual_compiler_units": 98,
+  "failed_construction_attempts": 101,
+  "observed_immediate_thread_counts": [
+    1,
+    2
+  ],
+  "construction_and_negative_c_api_controls_passed": true,
+  "valid_models_loaded": 0,
+  "frontend_or_neural_calls": 0,
+  "release_qualified": false,
+  "limits": [
+    "Original immediate-snapshot control passed on this M1 VM. The separate M4 immediate-snapshot failure remains failed. Later V2 observes bounded settling; it does not retroactively relabel either result.",
+    "No candidate model inference, publicRust admission, numerical/quality/long/mixed/app/release qualification. SDK/runtime and helper opaque archives remain outsideGit and are bound by delivered manifests."
+  ]
+}

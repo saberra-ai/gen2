@@ -1,0 +1,160 @@
+{
+  "profile": "gen2-valid-mel-pool-v1",
+  "upstream": "/Users/runner/work/gen2/gen2/native-upstream",
+  "destination": "/Users/runner/work/_temp/pooled-source",
+  "commands": [
+    {
+      "argv": [
+        "git",
+        "clone",
+        "--no-hardlinks",
+        "--no-checkout",
+        "--",
+        "/Users/runner/work/gen2/gen2/native-upstream",
+        "/Users/runner/work/_temp/pooled-source"
+      ],
+      "cwd": "/Users/runner/work/gen2/gen2",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1"
+      },
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "git",
+        "checkout",
+        "--detach",
+        "083861c241061562b8ec29eb06d7f6cdc3af8775"
+      ],
+      "cwd": "/Users/runner/work/_temp/pooled-source",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1"
+      },
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "git",
+        "clone",
+        "--no-hardlinks",
+        "--no-checkout",
+        "--",
+        "/Users/runner/work/gen2/gen2/native-upstream/llama.cpp",
+        "/Users/runner/work/_temp/pooled-source/llama.cpp"
+      ],
+      "cwd": "/Users/runner/work/_temp/pooled-source",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1"
+      },
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "git",
+        "checkout",
+        "--detach",
+        "bd4f514db14d87fded667787a7a963bfbaa98e89"
+      ],
+      "cwd": "/Users/runner/work/_temp/pooled-source/llama.cpp",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1"
+      },
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "git",
+        "apply",
+        "--check",
+        "/Users/runner/work/gen2/gen2/tools/nemotron-diarization/patches/v3-finish-valid-mel.patch"
+      ],
+      "cwd": "/Users/runner/work/_temp/pooled-source",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1"
+      },
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "git",
+        "apply",
+        "/Users/runner/work/gen2/gen2/tools/nemotron-diarization/patches/v3-finish-valid-mel.patch"
+      ],
+      "cwd": "/Users/runner/work/_temp/pooled-source",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1"
+      },
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "git",
+        "apply",
+        "--check",
+        "/Users/runner/work/gen2/gen2/tools/nemotron-diarization/patches/persistent-cpu-pool.patch"
+      ],
+      "cwd": "/Users/runner/work/_temp/pooled-source",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1"
+      },
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "git",
+        "apply",
+        "/Users/runner/work/gen2/gen2/tools/nemotron-diarization/patches/persistent-cpu-pool.patch"
+      ],
+      "cwd": "/Users/runner/work/_temp/pooled-source",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "LC_ALL": "C",
+        "GIT_LFS_SKIP_SMUDGE": "1"
+      },
+      "returncode": 0
+    }
+  ],
+  "base_revision": "083861c241061562b8ec29eb06d7f6cdc3af8775",
+  "llama_revision": "bd4f514db14d87fded667787a7a963bfbaa98e89",
+  "compatibility_patches": [
+    {
+      "path": "patches/v3-finish-valid-mel.patch",
+      "bytes": 1194,
+      "sha256": "8c1434c14f63ebeb2515c719a90594124fd4f75af85b80451fd145b5caef3c36",
+      "source_sha256_before": {
+        "src/asr/diar/diar_pipeline.cpp": "4143ca8e6d6f14ee454263702510cb163fe8e170aa928f236c0b4b540a7a7da9"
+      },
+      "source_sha256_after": {
+        "src/asr/diar/diar_pipeline.cpp": "fe00ae415f4741d7e07579acdc77c60f5d7327be024cf7f8aff8f52142ae9af2"
+      }
+    },
+    {
+      "path": "patches/persistent-cpu-pool.patch",
+      "bytes": 4275,
+      "sha256": "ab485ae1b441f4428db49f6b4d1b955e123966d053c4735567e9bdc3825656d9",
+      "source_sha256_before": {
+        "src/runtime/ggml/backend.cpp": "92ea19f833c9ba132c81cfe33693ab1090d436e25c2aaea7e6186315f5265394",
+        "src/runtime/ggml/runtime.h": "8b16754a48bc69a9d0f9d2bc29913e9cf4a7e9b5321bd118780093010c5c0f25"
+      },
+      "source_sha256_after": {
+        "src/runtime/ggml/backend.cpp": "fb4624dd278f6f8feff7d0583c10a19a05946fdd733426ece29be4e51a68ae26",
+        "src/runtime/ggml/runtime.h": "338a1e1b1f1eec4f80a2460c0941fc4176e3d46682f4c3d61d8389ca32353a69"
+      }
+    }
+  ],
+  "network_or_model_execution": false
+}

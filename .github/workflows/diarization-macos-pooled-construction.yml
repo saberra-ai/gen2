@@ -8,6 +8,7 @@ on:
       - tools/nemotron-diarization/construct_macos_pooled_cpu.py
       - tools/nemotron-diarization/native_failed_load_probe.cpp
       - tools/nemotron-diarization/macos-pooled-construction.protocol.json
+      - tools/nemotron-diarization/macos-pooled-construction-v2.protocol.json
       - tools/nemotron-diarization/runtime-valid-mel-pool.lock.json
       - tools/nemotron-diarization/patches/persistent-cpu-pool.patch
 permissions:
@@ -40,7 +41,7 @@ jobs:
       - name: Construct pooled CPU SDK and package with failed-load cleanup controls
         run: |
           python tools/nemotron-diarization/construct_macos_pooled_cpu.py \
-            --protocol tools/nemotron-diarization/macos-pooled-construction.protocol.json \
+            --protocol tools/nemotron-diarization/macos-pooled-construction-v2.protocol.json \
             --upstream native-upstream \
             --source "${{ runner.temp }}/pooled-source" \
             --sdk "${{ runner.temp }}/pooled-sdk" \

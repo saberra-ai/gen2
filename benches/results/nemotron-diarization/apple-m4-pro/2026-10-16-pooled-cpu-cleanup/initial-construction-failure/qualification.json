@@ -1,0 +1,161 @@
+{
+  "schema_version": 1,
+  "source_commit": "eeae443e18b03715c6fa1ebf577a0f69de51bedd",
+  "protocol": {
+    "bytes": 9654,
+    "sha256": "4c8eb80c117d37623c181e7e6d9e549d53b8a4db5af5075368f2d7ef15772066"
+  },
+  "construction_and_negative_c_api_controls_passed": false,
+  "commands": [
+    {
+      "name": "sandbox-controls",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/construction.sb",
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "-c",
+        "import pathlib, socket, sys\ndef denied(operation):\n    try:\n        operation()\n    except PermissionError:\n        return\n    raise RuntimeError(\"sandbox operation unexpectedly permitted\")\nfor name in sys.argv[1:]:\n    denied(lambda name=name: pathlib.Path(name).read_bytes())\ndenied(lambda: socket.create_connection((\"127.0.0.1\", 9), timeout=1))\n",
+        "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/denied.nemo",
+        "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/denied.gguf",
+        "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/denied.safetensors",
+        "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/denied.onnx",
+        "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/denied.npy",
+        "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/denied.f32"
+      ],
+      "cwd": "/Users/victor/workspace/gen2-nemotron3-n0",
+      "pid": 5946,
+      "returncode": 0
+    },
+    {
+      "name": "prepare",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/construction.sb",
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/prepare_valid_mel_source.py",
+        "--runtime-profile",
+        "gen2-valid-mel-pool-v1",
+        "--upstream",
+        "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1",
+        "--destination",
+        "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/source",
+        "--output",
+        "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/preparation"
+      ],
+      "cwd": "/Users/victor/workspace/gen2-nemotron3-n0",
+      "pid": 5952,
+      "returncode": 0
+    },
+    {
+      "name": "build",
+      "argv": [
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/build_valid_mel_sdk.py",
+        "--runtime-profile",
+        "gen2-valid-mel-pool-v1",
+        "--source",
+        "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/source",
+        "--prefix",
+        "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/sdk",
+        "--output",
+        "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build",
+        "--jobs",
+        "2",
+        "--cpu-arch",
+        "armv8.2-a+dotprod+fp16",
+        "--sandbox-profile",
+        "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/construction.sb"
+      ],
+      "cwd": "/Users/victor/workspace/gen2-nemotron3-n0",
+      "pid": 5979,
+      "returncode": 0
+    },
+    {
+      "name": "package",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/construction.sb",
+        "/opt/homebrew/opt/python@3.14/bin/python3.14",
+        "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/package_macos.py",
+        "--sdk-prefix",
+        "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/sdk",
+        "--build-receipt",
+        "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/build/build.json",
+        "--output",
+        "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/runtime"
+      ],
+      "cwd": "/Users/victor/workspace/gen2-nemotron3-n0",
+      "pid": 6853,
+      "returncode": 0
+    },
+    {
+      "name": "failed-load-probe-build",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/construction.sb",
+        "/usr/bin/clang++",
+        "-std=c++17",
+        "-O2",
+        "-Wall",
+        "-Wextra",
+        "-Werror",
+        "-arch",
+        "arm64",
+        "-march=armv8.2-a+dotprod+fp16",
+        "-mmacosx-version-min=26.0",
+        "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/native_failed_load_probe.cpp",
+        "-I/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/sdk/include",
+        "-L/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/runtime/lib",
+        "-lnemo_speech_asr_c",
+        "-Wl,-rpath,@loader_path/../nemo/lib",
+        "-o",
+        "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/work/bin/failed-load-probe"
+      ],
+      "cwd": "/Users/victor/workspace/gen2-nemotron3-n0",
+      "pid": 8453,
+      "returncode": 0
+    },
+    {
+      "name": "failed-loads",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/failed-load.sb",
+        "/usr/bin/env",
+        "DYLD_PRINT_LIBRARIES=1",
+        "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/work/bin/failed-load-probe",
+        "nemo-speech-asr 0.2.0+gen2-valid-mel-pool-v1",
+        "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1/evidence/work/missing-model"
+      ],
+      "cwd": "/Users/victor/workspace/gen2-nemotron3-n0",
+      "pid": 8459,
+      "returncode": 1
+    }
+  ],
+  "valid_models_loaded": 0,
+  "frontend_or_neural_calls": 0,
+  "release_qualified": false,
+  "limits": [
+    "The candidate keeps the same upstream083861/llamabd4f bases, valid-Mel patch/frame contract, model, CPU target armv8.2-a+dotprod+fp16, preset and four-thread default. Only backend.cpp/runtime.h gain CPU pool ownership and a separate version identity.",
+    "Source/nativeGGML composition, actual compiler inputs and package payload closure must be audited. All build/test/control children deny weight-format reads and network access. Construction has no model acquisition.",
+    "Public C ABI control performs101failed model-construction attempts with a nonexistent readonly path. This exercises backend setup and destructor/exception cleanup; it is not successful model loading, frontend execution or neural inference.",
+    "After one warmup failed construction, no observation may exceed the warmup thread count by more than two incidental system workers. Retain all101counts, errors and loader trace; do not infer long-session/RSS/publicRust qualification.",
+    "Require the exact new version at the public C ABI, native diar_state CTest and strict private package loader audit. Deliver the failed-load helper binary in a safe filesystem archive so its payload can be independently rehashed.",
+    "Successful construction does not promote the candidate to the Rust default. Public/native numerical parity, all lifecycle/long/concurrent/quality/platform/app/release gates remain for separate qualification."
+  ],
+  "error": "ValueError('pooled construction command failed: failed-loads')",
+  "storage": {
+    "start_minimum_bytes": 3221225472,
+    "running_minimum_bytes": 1073741824,
+    "reserve_requested_bytes": 268435456,
+    "checks": 64,
+    "released": true,
+    "minimum_observed_free_bytes": 259149348864,
+    "last_observed_free_bytes": 259172335616,
+    "reserve_reported_allocated_bytes": 268435456
+  }
+}

@@ -1,0 +1,218 @@
+{
+  "schema_version": 1,
+  "scope": "Isolated portable CPU native pool ownership candidate construction and public C ABI missing-model cleanup only. No valid weights/frontend/inference, production admission or release qualification. Existing valid-Mel default and historical artifacts remain unchanged.",
+  "tools": {
+    "artifacts.py": {
+      "bytes": 2869,
+      "sha256": "17df6411ab0394b4d9bb30a099915badf357af26050b6cd08bfd44887688ff42"
+    },
+    "build_valid_mel_candidate.py": {
+      "bytes": 12180,
+      "sha256": "5bfb3ec59548ae0b56e8e3eaded10201933f574b0b04ca12384eb35795dd546b"
+    },
+    "build_valid_mel_sdk.py": {
+      "bytes": 9670,
+      "sha256": "0f7f1b46d24c6184ea3b5f9313b0825b283edbb881283f02f4a29b6565704581"
+    },
+    "compare_macos_cpu_pools.py": {
+      "bytes": 15876,
+      "sha256": "9e13a79d54dc34d00e23bb116f91fa7cb00332d22298b03703f141bd73cdd2fa"
+    },
+    "compare_stream_valid_mel.py": {
+      "bytes": 6928,
+      "sha256": "67164da5abee447b987e1274b487cf764fbc3073971930fc87f92f35b127f1bc"
+    },
+    "construct_macos_pooled_cpu.py": {
+      "bytes": 9434,
+      "sha256": "96e5547e2d1f6f77cf3a9b74d31a7f3af8384c65e9fda116423d753eabf1e032"
+    },
+    "ctest_output.py": {
+      "bytes": 764,
+      "sha256": "c109310d25f114993d6f969de7cf39ed2bc4136f28bc046c475b309a8841c6bf"
+    },
+    "macos_auxiliary_loaded_libraries.py": {
+      "bytes": 1402,
+      "sha256": "446119644a6a9769f92602bc1f8b0b8d8eaf5bd3590e1b98a12079eebdb0dfbe"
+    },
+    "macos_child_environment.py": {
+      "bytes": 422,
+      "sha256": "7446965f6c63a5e78f0e22720f90c11ada0e08f2543b597d43bc29b8a676590d"
+    },
+    "macos_cpu_architecture.py": {
+      "bytes": 2339,
+      "sha256": "c4ef246fde1d9c869bcb66fa2a8575dca1d9df244db11f83581b1162f75d3363"
+    },
+    "macos_loaded_libraries.py": {
+      "bytes": 1805,
+      "sha256": "69c2dfcc6d2cf8e2966b929ff997b337c6c4e3a62fd8ada110b36ba27da4833b"
+    },
+    "macos_portable_delivery.py": {
+      "bytes": 2771,
+      "sha256": "6579bb560de0d284a44874ba2480b51b265a90817aa864c2e2c68fce0659aabc"
+    },
+    "native_failed_load_probe.cpp": {
+      "bytes": 4514,
+      "sha256": "e8f3565c920331e57fb74d25d043b8b73c5be23b916d8ea093cc0cb8ee27f85e"
+    },
+    "notices/openmdw-1.1/LICENSE.OpenMDW-1.1": {
+      "bytes": 2619,
+      "sha256": "2ab44b68365473c112f5092211a38f231cb23e50de68b75a13369adbd76a74df"
+    },
+    "notices/openmdw-1.1/sources.json": {
+      "bytes": 332,
+      "sha256": "ff840c8c5559a4bed7d73e01828b83527a4606d6a446c7796c3dc27d7d41d436"
+    },
+    "notices/sentencepiece-0.2.2/DARTS_LICENSE": {
+      "bytes": 1481,
+      "sha256": "155f59997298ee336602c49f9c1110f268ac394ca2197eb02647a3555935ad52"
+    },
+    "notices/sentencepiece-0.2.2/PROTOBUF_LITE_LICENSE": {
+      "bytes": 1732,
+      "sha256": "6e5e117324afd944dcf67f36cf329843bc1a92229a8cd9bb573d7a83130fea7d"
+    },
+    "notices/sentencepiece-0.2.2/sources.json": {
+      "bytes": 689,
+      "sha256": "381710a6e88a366e60109e476182cb9fe02c0cea1392af7b8cd3dfb1a7a398be"
+    },
+    "notices/sentencepiece/darts-clone-LICENSE": {
+      "bytes": 1481,
+      "sha256": "155f59997298ee336602c49f9c1110f268ac394ca2197eb02647a3555935ad52"
+    },
+    "notices/sentencepiece/esaxx-LICENSE": {
+      "bytes": 1112,
+      "sha256": "7c28553d1d3312d65fe309f76a22ebaf33a3d76c8c1e3b98a88ee4654ecb53db"
+    },
+    "notices/sentencepiece/provenance.json": {
+      "bytes": 1936,
+      "sha256": "d9324e93667b3b34a372279b8ce6dee0a85e511dac02898804724deaf0b5ee92"
+    },
+    "notices/sentencepiece/sais-lite-NOTICE.txt": {
+      "bytes": 1174,
+      "sha256": "162a72e52ad69921a67676af4fb59911233566dce1637e2e33db27659fcac523"
+    },
+    "package_macos.py": {
+      "bytes": 18194,
+      "sha256": "e1c242aae1d707332b2b15161665acacaf1b45785e9687baea35ba53e20f474d"
+    },
+    "patches/persistent-cpu-pool.patch": {
+      "bytes": 4275,
+      "sha256": "ab485ae1b441f4428db49f6b4d1b955e123966d053c4735567e9bdc3825656d9"
+    },
+    "patches/v3-finish-valid-mel.patch": {
+      "bytes": 1194,
+      "sha256": "8c1434c14f63ebeb2515c719a90594124fd4f75af85b80451fd145b5caef3c36"
+    },
+    "platform_macos_portable.py": {
+      "bytes": 8652,
+      "sha256": "21dc51aa14f45fd3ad86c41daad7868ecabdc68e9ce931d59467b344aa3520c4"
+    },
+    "platform_valid_mel_sources.py": {
+      "bytes": 6446,
+      "sha256": "90337aec582be7cc94cf6381a9f0dd9b6b3e12a61503f5bb168db8a510740867"
+    },
+    "pooled_runtime.py": {
+      "bytes": 5537,
+      "sha256": "a8ba8fac43b5331b2a34b730638516d01df8e3df1d6bf65ffa0bc48c1ff091ee"
+    },
+    "prepare_valid_mel_source.py": {
+      "bytes": 3378,
+      "sha256": "41139cca04d85b306afb6c53007190782f22ad420f2a20be8302fc2fc9b0d98c"
+    },
+    "qualification_storage.py": {
+      "bytes": 3914,
+      "sha256": "8bbb4dfe53797d8d03c3ba18f24acce8458878602c1c85f28a4f816d6f4416f6"
+    },
+    "qualify_macos_portable_runtime.py": {
+      "bytes": 21021,
+      "sha256": "35deb87ff13992571671770b6c7652c4d47e4cc172429234f3391cdd08a36bca"
+    },
+    "qualify_valid_mel_pnola.py": {
+      "bytes": 13787,
+      "sha256": "4628f4b6242a7cd0985ba5b20a7ac8f38bbec4dc5042b786e34e488ed738e423"
+    },
+    "runtime-valid-mel-pool.lock.json": {
+      "bytes": 7521,
+      "sha256": "fdfbcd97283b235f20adb2c8ff5f8f813ee706fa1b90d3f9989b4effae7e47e5"
+    },
+    "runtime-valid-mel.lock.json": {
+      "bytes": 6339,
+      "sha256": "af40e586994f223390fcac59936e3781d967c03080350f4b5df141b1bdaf51be"
+    },
+    "runtime.lock.json": {
+      "bytes": 4917,
+      "sha256": "e66e5651608636bbb04528fed7944ab8972a778d1141b36fef3fb391eefd0dcc"
+    },
+    "runtime_profiles.py": {
+      "bytes": 7345,
+      "sha256": "f99c8c33a3a64005ef477319c8bc7f1d6c32180c44665c2fe189a54a4b31ac7d"
+    },
+    "sdk_archive.py": {
+      "bytes": 7022,
+      "sha256": "0b1d80768d15c2818afc82efcc1f3ddf253360b99c16c623e170073e020cb3cd"
+    },
+    "windows_compat.py": {
+      "bytes": 2393,
+      "sha256": "091eb520c5171f0f598182acada97549415191eb5ff20801040be30ec43e43ea"
+    }
+  },
+  "repository_files": {
+    ".github/workflows/diarization-macos-pooled-construction.yml": {
+      "bytes": 2719,
+      "sha256": "035ee87dad98ab8526776b11341ab0c7e15d0d2ec7112ac4fa9d4c63a687c5de"
+    }
+  },
+  "runtime_provenance": {
+    "runtime_revision": "083861c241061562b8ec29eb06d7f6cdc3af8775",
+    "llama_revision": "bd4f514db14d87fded667787a7a963bfbaa98e89",
+    "lock_sha256": "fdfbcd97283b235f20adb2c8ff5f8f813ee706fa1b90d3f9989b4effae7e47e5",
+    "runtime_profile": "gen2-valid-mel-pool-v1",
+    "runtime_reported_version": "nemo-speech-asr 0.2.0+gen2-valid-mel-pool-v1",
+    "compatibility_patches": [
+      {
+        "path": "patches/v3-finish-valid-mel.patch",
+        "bytes": 1194,
+        "sha256": "8c1434c14f63ebeb2515c719a90594124fd4f75af85b80451fd145b5caef3c36",
+        "source_sha256_before": {
+          "src/asr/diar/diar_pipeline.cpp": "4143ca8e6d6f14ee454263702510cb163fe8e170aa928f236c0b4b540a7a7da9"
+        },
+        "source_sha256_after": {
+          "src/asr/diar/diar_pipeline.cpp": "fe00ae415f4741d7e07579acdc77c60f5d7327be024cf7f8aff8f52142ae9af2"
+        }
+      },
+      {
+        "path": "patches/persistent-cpu-pool.patch",
+        "bytes": 4275,
+        "sha256": "ab485ae1b441f4428db49f6b4d1b955e123966d053c4735567e9bdc3825656d9",
+        "source_sha256_before": {
+          "src/runtime/ggml/backend.cpp": "92ea19f833c9ba132c81cfe33693ab1090d436e25c2aaea7e6186315f5265394",
+          "src/runtime/ggml/runtime.h": "8b16754a48bc69a9d0f9d2bc29913e9cf4a7e9b5321bd118780093010c5c0f25"
+        },
+        "source_sha256_after": {
+          "src/runtime/ggml/backend.cpp": "fb4624dd278f6f8feff7d0583c10a19a05946fdd733426ece29be4e51a68ae26",
+          "src/runtime/ggml/runtime.h": "338a1e1b1f1eec4f80a2460c0941fc4176e3d46682f4c3d61d8389ca32353a69"
+        }
+      }
+    ],
+    "frame_contract": {
+      "name": "v3-streaming-valid-mel-v1",
+      "scope": "V3 streaming finish only; offline and V2 semantics unchanged",
+      "sample_rate": 16000,
+      "hop_samples": 160,
+      "final_frames": "floor(real_input_samples / 160)",
+      "output_channels": 8
+    }
+  },
+  "storage": {
+    "start_minimum": 3221225472,
+    "running_minimum": 1073741824,
+    "reserve_bytes": 268435456
+  },
+  "limits": [
+    "The candidate keeps the same upstream083861/llamabd4f bases, valid-Mel patch/frame contract, model, CPU target armv8.2-a+dotprod+fp16, preset and four-thread default. Only backend.cpp/runtime.h gain CPU pool ownership and a separate version identity.",
+    "Source/nativeGGML composition, actual compiler inputs and package payload closure must be audited. All build/test/control children deny weight-format reads and network access. Construction has no model acquisition.",
+    "Public C ABI control performs101failed model-construction attempts with a nonexistent readonly path. This exercises backend setup and destructor/exception cleanup; it is not successful model loading, frontend execution or neural inference.",
+    "Keep the original failed immediate-snapshot result. pthread_join can return before task_threads retires kernel entries; preserve all101immediate counts, then wait10ms and at most100ms total requested sleep per observation before applying the unchanged warmup+2worker-growth guard. Retain all101settled counts/requested waits, errors and loader trace. This bounds persistent growth, not immediate kernel-port retirement; no long-session/RSS/publicRust qualification.",
+    "Require the exact new version at the public C ABI, native diar_state CTest and strict private package loader audit. Deliver the failed-load helper binary in a safe filesystem archive so its payload can be independently rehashed.",
+    "Successful construction does not promote the candidate to the Rust default. Public/native numerical parity, all lifecycle/long/concurrent/quality/platform/app/release gates remain for separate qualification."
+  ]
+}

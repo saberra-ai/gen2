@@ -1,0 +1,568 @@
+[
+  {
+    "phase": "configure",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/pooled-evidence/build/offline.sb",
+      "/bin/bash",
+      "scripts/configure.sh",
+      "cpu-diar",
+      "-DNEMO_SPEECH_BUILD_EXAMPLES=ON",
+      "-DNEMO_SPEECH_BUILD_CLI=OFF",
+      "-DNEMO_SPEECH_BUILD_MIC_CAPTURE=OFF",
+      "-DGGML_OPENMP=OFF",
+      "-DNEMO_SPEECH_VERSION_METADATA=gen2-valid-mel-pool-v1",
+      "-DNEMO_SPEECH_BUILD_TESTS=ON",
+      "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+      "-DCMAKE_INSTALL_PREFIX=/Users/runner/work/_temp/pooled-sdk",
+      "-DGGML_NATIVE=OFF",
+      "-DGGML_CPU_ARM_ARCH=armv8.2-a+dotprod+fp16",
+      "-DCMAKE_C_FLAGS=-march=armv8.2-a+dotprod+fp16",
+      "-DCMAKE_CXX_FLAGS=-march=armv8.2-a+dotprod+fp16",
+      "-DCMAKE_OSX_ARCHITECTURES=arm64",
+      "-DCMAKE_OSX_DEPLOYMENT_TARGET=26.0"
+    ],
+    "cwd": "/Users/runner/work/_temp/pooled-source",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 8.068319624999987
+  },
+  {
+    "phase": "llama-archive",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/pooled-evidence/build/offline.sb",
+      "git",
+      "archive",
+      "--format=tar",
+      "-o",
+      "/Users/runner/work/_temp/pooled-evidence/build/pristine-llama.tar",
+      "bd4f514db14d87fded667787a7a963bfbaa98e89",
+      "--",
+      ".",
+      ":(exclude)models",
+      ":(exclude)docs",
+      ":(exclude)media"
+    ],
+    "cwd": "/Users/runner/work/_temp/pooled-source/llama.cpp",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.26356941699998515
+  },
+  {
+    "phase": "llama-patch-0",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/pooled-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/pooled-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/pooled-evidence/build/llama-replay-2lmz7f44",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/pooled-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.02863420899998914
+  },
+  {
+    "phase": "llama-patch-1",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/pooled-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/pooled-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/pooled-evidence/build/llama-replay-2lmz7f44",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/pooled-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.024206332999995084
+  },
+  {
+    "phase": "llama-patch-2",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/pooled-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/pooled-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/pooled-evidence/build/llama-replay-2lmz7f44",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/pooled-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.01989933300001212
+  },
+  {
+    "phase": "llama-patch-3",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/pooled-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/pooled-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/pooled-evidence/build/llama-replay-2lmz7f44",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/pooled-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.02143595800001208
+  },
+  {
+    "phase": "llama-patch-4",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/pooled-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/pooled-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/pooled-evidence/build/llama-replay-2lmz7f44",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/pooled-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.022032999999993308
+  },
+  {
+    "phase": "llama-patch-5",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/pooled-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/pooled-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/pooled-evidence/build/llama-replay-2lmz7f44",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/pooled-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.017433165999989342
+  },
+  {
+    "phase": "llama-patch-6",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/pooled-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/pooled-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/pooled-evidence/build/llama-replay-2lmz7f44",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/pooled-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.0203010410000104
+  },
+  {
+    "phase": "llama-patch-7",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/pooled-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/pooled-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/pooled-evidence/build/llama-replay-2lmz7f44",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/pooled-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.030645624999976917
+  },
+  {
+    "phase": "llama-patch-8",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/pooled-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/pooled-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/pooled-evidence/build/llama-replay-2lmz7f44",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/pooled-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.0216085410000062
+  },
+  {
+    "phase": "llama-patch-9",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/pooled-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/pooled-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/pooled-evidence/build/llama-replay-2lmz7f44",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/pooled-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.019971457999986342
+  },
+  {
+    "phase": "llama-patch-10",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/pooled-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/pooled-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/pooled-evidence/build/llama-replay-2lmz7f44",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/pooled-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.01839741599999911
+  },
+  {
+    "phase": "llama-patch-11",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/pooled-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/pooled-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/pooled-evidence/build/llama-replay-2lmz7f44",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/pooled-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.01988975000000437
+  },
+  {
+    "phase": "llama-patch-12",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/pooled-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/pooled-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/pooled-evidence/build/llama-replay-2lmz7f44",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/pooled-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.017693207999997185
+  },
+  {
+    "phase": "llama-patch-13",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/pooled-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/pooled-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/pooled-evidence/build/llama-replay-2lmz7f44",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/pooled-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.016503000000000156
+  },
+  {
+    "phase": "llama-patch-14",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/pooled-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/pooled-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/pooled-evidence/build/llama-replay-2lmz7f44",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/pooled-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.021340541999990137
+  },
+  {
+    "phase": "llama-patch-15",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/pooled-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/pooled-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/pooled-evidence/build/llama-replay-2lmz7f44",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/pooled-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.019517540999999028
+  },
+  {
+    "phase": "llama-patch-16",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/pooled-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/pooled-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/pooled-evidence/build/llama-replay-2lmz7f44",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/pooled-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.017790082999994183
+  },
+  {
+    "phase": "llama-patch-17",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/pooled-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/pooled-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/pooled-evidence/build/llama-replay-2lmz7f44",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/pooled-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.02578337500000316
+  },
+  {
+    "phase": "llama-patch-18",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/pooled-evidence/build/offline.sb",
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "/Users/runner/work/_temp/pooled-evidence/build/current-llama.patch"
+    ],
+    "cwd": "/Users/runner/work/_temp/pooled-evidence/build/llama-replay-2lmz7f44",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "GIT_CEILING_DIRECTORIES": "/Users/runner/work/_temp/pooled-evidence/build"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.017416416999992634
+  },
+  {
+    "phase": "build",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/pooled-evidence/build/offline.sb",
+      "/opt/homebrew/bin/cmake",
+      "--build",
+      "--preset",
+      "cpu-diar",
+      "--parallel",
+      "2"
+    ],
+    "cwd": "/Users/runner/work/_temp/pooled-source",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 54.891418125
+  },
+  {
+    "phase": "install",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/pooled-evidence/build/offline.sb",
+      "/opt/homebrew/bin/cmake",
+      "--install",
+      "build/cpu-diar"
+    ],
+    "cwd": "/Users/runner/work/_temp/pooled-source",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.8295050829999866
+  },
+  {
+    "phase": "model-free-state-test",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/pooled-evidence/build/offline.sb",
+      "/opt/homebrew/bin/ctest",
+      "--test-dir",
+      "build/cpu-diar",
+      "--output-on-failure",
+      "-R",
+      "^diar_state$"
+    ],
+    "cwd": "/Users/runner/work/_temp/pooled-source",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.2601530420000131
+  },
+  {
+    "phase": "version-only",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/pooled-evidence/build/offline.sb",
+      "/Library/Frameworks/Python.framework/Versions/3.12/bin/python",
+      "-c",
+      "import ctypes,sys; library=ctypes.CDLL(sys.argv[1]); version=library.nemo_speech_asr_version; version.restype=ctypes.c_char_p; print(version().decode(\"utf-8\"))",
+      "/Users/runner/work/_temp/pooled-sdk/lib/libnemo_speech_asr_c.dylib"
+    ],
+    "cwd": "/Users/runner/work/_temp/pooled-source",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.13842879199998492
+  },
+  {
+    "phase": "brew-packages",
+    "argv": [
+      "/usr/bin/sandbox-exec",
+      "-f",
+      "/Users/runner/work/_temp/pooled-evidence/build/offline.sb",
+      "/opt/homebrew/bin/brew",
+      "list",
+      "--versions",
+      "sentencepiece",
+      "abseil",
+      "protobuf"
+    ],
+    "cwd": "/Users/runner/work/_temp/pooled-source",
+    "environment": {
+      "PATH": "/opt/homebrew/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+      "LC_ALL": "C",
+      "GIT_LFS_SKIP_SMUDGE": "1",
+      "HOME": "/Users/runner",
+      "HOMEBREW_NO_AUTO_UPDATE": "1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.48114591600000267
+  }
+]
