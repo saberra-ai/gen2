@@ -1,0 +1,108 @@
+{
+  "schema_version": 1,
+  "source_commit": "8c76eb8ad9764f134ea74432d54df8a72a46bc91",
+  "boot_discovery_passed": true,
+  "fresh_machine_qualified": false,
+  "release_qualified": false,
+  "guest_os_ready_qualified": false,
+  "system_data_group_verified": false,
+  "actual_commands": 32,
+  "zero_status_commands": 32,
+  "original_installed_seed_identity_unchanged": true,
+  "prior_install_members_verified": 55,
+  "current_historical_source_pins_verified": 24,
+  "external_descriptors_verified": 84,
+  "model_free_tests_passed": 312,
+  "setup_networking_permitted": true,
+  "installed_disk_quarantined": false,
+  "owner_result": {
+    "boot_owner_qualified": true,
+    "cancellation_requested": false,
+    "cleanup_confirmed": true,
+    "configured_run_seconds": 120,
+    "custom_listener_created": false,
+    "display_window_created": false,
+    "elapsed_seconds": 152.18983387504704,
+    "errors": [],
+    "event_count": 24,
+    "final_state": 0,
+    "forced_stop_completed": true,
+    "forced_stop_requested": true,
+    "forced_stop_success": true,
+    "graceful_stop_requested": true,
+    "guest_os_ready_qualified": false,
+    "guest_stop_observed": false,
+    "logging_failed": false,
+    "normal_start_called": true,
+    "run_window_completed": true,
+    "running_seconds": 120.79961429163814,
+    "schema_version": 1,
+    "start_callback_received": true,
+    "start_callback_success": true,
+    "virtual_machine_created": true
+  },
+  "booted_seed": {
+    "auxiliary-storage.bin": {
+      "bytes": 33579164,
+      "allocated_bytes": 1421312,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "sha256": "591e364520e123c192ae1f2e60f61a659b33d71023cb7496f7fe33031a6c7f17"
+    },
+    "disk.img": {
+      "bytes": 107374182400,
+      "allocated_bytes": 22359080960,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "sha256": null,
+      "content_evidence": "OS clone followed by successful installer callback and observed stopped state; no whole-disk hash."
+    },
+    "hardware-model.bin": {
+      "bytes": 132,
+      "allocated_bytes": 4096,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "sha256": "976e66740c64041cf9f127588f93eabf7efb9e7d3cbaee9582bcded88ba5e8d3"
+    },
+    "machine-id.bin": {
+      "bytes": 68,
+      "allocated_bytes": 4096,
+      "mode": 384,
+      "uid": 502,
+      "links": 1,
+      "sha256": "4106f98e3f5ee925c4593cc9d7dcea106bbb3a519f8f40219ffc2fc3750db959"
+    }
+  },
+  "owned_image_detached": true,
+  "physical_reserve_released": true,
+  "global_image_inventory_retained_local_only": {
+    "cleanup-image.stdout.log": {
+      "bytes": 11309,
+      "sha256": "ac7e5dfdd87c6d511ce32f7e65426776ec40f2882c1f74b6e71f77bcf73e0f7e"
+    },
+    "before-image.stdout.log": {
+      "bytes": 7269,
+      "sha256": "38575c04a11a7fe42ce0bb5873ed5937acbb632f8d924f37bd7a85d577de40b7"
+    },
+    "after-image.stdout.log": {
+      "bytes": 7269,
+      "sha256": "38575c04a11a7fe42ce0bb5873ed5937acbb632f8d924f37bd7a85d577de40b7"
+    },
+    "attached-image.stdout.log": {
+      "bytes": 11309,
+      "sha256": "ac7e5dfdd87c6d511ce32f7e65426776ec40f2882c1f74b6e71f77bcf73e0f7e"
+    }
+  },
+  "new_helper_vm_network_model_mount_clone_calls_during_collection": 0,
+  "limits": [
+    "Normal start plus120s Running and stopped owner exit proves public lifecycle, not macOS readiness or app operation.",
+    "Read-only no-mount metadata acquisition does not qualify System/Data group membership, ownership or guest provisioning.",
+    "No whole100GiB disk hash/read; paired disk/metadata binaries/helper/modulecache remain local. Source stats plus bounded metadata hashes and OSclone provenance only.",
+    "No cancellation/killed-owner actual qualification. Unknown/failed owner disks remain quarantined. No automatic replacement or inference from exit alone.",
+    "Human timing review deferred; accuracy, GUI/microphone/IPC/playback, fresh-machine complete app, platforms and public release/main promotion remain open."
+  ],
+  "inherited_disk_evidence_label_limit": "Raw booted_seed.disk.img.content_evidence comes from the installed-seed helper and describes the earlier installation prerequisite. This attempt cloned that already-installed source, then successfully normal-started, observed Running, stopped and exited; no installer callback occurred after this clone. The inherited label is not evidence of an installer invocation in this attempt."
+}

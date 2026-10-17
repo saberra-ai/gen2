@@ -13,7 +13,7 @@ Remaining release work as of 2026-10-17:
   operation. Same-host complete-app CLI evidence does not close these checks.
   GitHub private-app transfer/authentication was skipped. The local VM route
   now passes [helper and blank-volume prerequisites](../research/nemotron-macos-vm-host-admission.md);
-  normal guest boot/provisioning and fresh-guest app checks remain open.
+  guest readiness/provisioning and fresh-guest app checks remain open.
   The [actual v4 result](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-host-prerequisites/collection-qualification.json)
   passes all 22 children, actual OS mount/device provenance, 52-byte
   write/read/mode600 and exact-image detach/reserve release. This qualifies only
@@ -30,10 +30,13 @@ Remaining release work as of 2026-10-17:
   with observed stopped state and owner exit0. All 307 model-free tests pass.
   This establishes an installed stopped seed, not a subsequent normal boot,
   guest account/SSH/provisioning or fresh-machine app qualification.
-  The next [normal-boot/read-only-discovery protocol](../research/nemotron-macos-vm-boot.md)
-  is prepared but unexecuted: it preserves the installed source seed, qualifies
-  a bounded normal-start/stopped owner on an enforced clone and acquires scoped
-  raw APFS metadata without mounting or inferring a System/Data group.
+  The next [normal-boot/read-only-discovery result](../research/nemotron-macos-vm-boot.md)
+  now passes all 32 commands at `8c76eb8a`: four enforced clones preserve the
+  installed source, 120.799614 seconds Running is followed by supported fallback
+  stop/callback/exit0, scoped metadata is acquired read-only with no mount, and
+  exact image detach/absence plus both lock releases pass. All 312 model-free
+  tests pass. This qualifies lifecycle/discovery only; guest OS readiness,
+  strict System/Data group validation, provisioning and fresh-app checks stay open.
 - Finish each advertised platform/backend's performance, deployment and public
   signing/notarization requirements before promotion. Windows CPU functional
   evidence passes but its observed live RTF remains above one; the

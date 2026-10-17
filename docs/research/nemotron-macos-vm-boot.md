@@ -1,9 +1,11 @@
 # Normal boot and stopped read-only disk discovery
 
-Status on 2026-10-17: prepared, not executed. This follows the passing
-[installation/stopped-seed receipt](nemotron-macos-vm-install.md). It advances the
-fresh-machine prerequisite; it supplies no guest readiness, provisioning or app
-result. Human annotation remains documented and deferred at the user's request.
+Status on 2026-10-17: actual normal-start/stopped lifecycle and read-only discovery
+pass at `8c76eb8ad9764f134ea74432d54df8a72a46bc91`; see the
+[100-member receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-vm-boot-stopped-readonly/collection-qualification.json).
+This follows the passing [installation/stopped-seed receipt](nemotron-macos-vm-install.md).
+It advances the fresh-machine prerequisite; it supplies no guest readiness,
+provisioning or app result. Human annotation remains documented and deferred at the user's request.
 All original quality, desktop, platform and public-release gates remain open.
 
 The [protocol](../../tools/nemotron-diarization/macos-vm-boot.protocol.json) binds
@@ -14,6 +16,8 @@ clone, compiler, helper, VM, attachment or mount call. Two-axis review and a
 commit precede actual invocation. Five targeted model-free checks cover the
 full running interval, callback/stop/exit evidence and foreign/ambiguous layout
 rejection. These tests do not establish actual boot or cancellation behavior.
+Both review axes cleared before committed invocation. All 312 model-free tests
+pass; the actual results below qualify only their observed successful path.
 
 The controller reacquires the installed source's exclusive lock and holds it
 with a fresh output lock through clone, VM execution and disk cleanup. All four
@@ -73,3 +77,46 @@ stays local; only exact own-image filtered rows may enter Git. Paired
 seed binaries/disk, executable and module cache also stay local. No whole-disk
 hash or complete OS/runtime closure is claimed. Unknown teardown remains a
 failure, never a reason to infer safety from process exit alone.
+
+The actual controller and independent saved-data collector each return terminal
+exit0. All 32 commands succeed, including the offline build/signature controls,
+Foundation error graph, five shutdown-timing checks, VM owner and scoped disk
+queries/cleanup. All four enforced clone calls succeed without fallback and
+preserve the original installed seed's frozen identities and bounded metadata.
+
+Normal start succeeds at 0.222143 seconds. The owner observes Running for
+120.799614 seconds and requests graceful shutdown. No guest-stop delegate arrives;
+after 30.999066 seconds from successful request return, the declared destructive
+fallback runs. Its completion succeeds at 152.189704 seconds in Stopped state.
+The uncancelled, error-free 24-event terminal report and normal owner exit qualify
+the boot lifecycle. **This is not a successful graceful guest shutdown.**
+
+Only then does the exact clone attach read-only with no mount. The observed
+whole device is `/dev/disk12`, with physical children `s1`, `s2` and `s3`. Actual
+metadata binds `disk12s2` to sole-store APFS container `disk15`; its six observed
+volumes carry System, Preboot, Recovery, Update, Data and VM roles. These names
+are this attempt's observations, never identifiers for later selection. Every
+queried whole/partition/volume reports no mount point. Exact image detach succeeds,
+the final inventory has no matching image and both locks release afterward.
+
+The retained raw volume-group plist now exposes one container's `VolumeGroups`
+array, with `APFSVolumeGroupUUID` and each member's `DeviceIdentifier`, `DiskUUID`
+and singular `Role`. This is actual schema evidence for a later strict validator;
+this stage deliberately leaves `system_data_group_verified` false. No filesystem
+mount, account/SSH/ownership change, guest patch or private app/model call occurs.
+
+The booted disk is still 107,374,182,400 logical bytes, with 22,359,080,960
+reported allocated bytes; it is never read or hashed as a whole. The platform
+model/identifier hashes remain exact, and auxiliary storage is fully hashed.
+The raw seed helper's inherited `content_evidence` text describes the earlier
+installation prerequisite. The collection summary explicitly corrects its scope:
+this attempt clones an already-installed source and performs normal boot/stop;
+it does not invoke an installer after that clone. Raw records remain unchanged.
+All 185 parent storage checks pass, with minimum free 136,417,222,656 bytes;
+the physical 256MiB reserve is released. Collection independently checks all
+55 prior receipt members, 24 current/historical sources, 84 external descriptors,
+raw-to-filtered image inventories and raw-to-recorded scoped metadata. The four
+global inventory logs remain local with only their hashes and exact own-image
+records retained publicly. Collection makes no new VM/helper/device/network/model
+call. Guest readiness/provisioning, fresh-machine complete app and every original
+quality/human/GUI/microphone/platform/public-release gate remain open.
