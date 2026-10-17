@@ -5,6 +5,7 @@ import signal
 import stat
 import sys
 import tempfile
+import threading
 import unittest
 
 from macos_vm_search_bit_control import control
@@ -177,4 +178,43 @@ class SearchBitControlTests(unittest.TestCase):
                 signal.signal(signal.SIGTERM, previous)
             self.assertEqual(delivered, ['observe', 'cleanup', 'signal'])
             self.assertFalse(report['control_passed'])
+            self.assert_restored(root, report)
+
+    def test_worker_thread_signal_during_cleanup_cannot_interrupt_restoration(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root, report, phases = Path(temporary) / 'fresh', {}, []
+            ready, finish = threading.Event(), threading.Event()
+            def worker():
+                ready.set()
+                finish.wait(5)
+            thread = threading.Thread(target=worker)
+            thread.start()
+            self.assertTrue(ready.wait(2))
+            def handler(number, frame):
+                phases.append('signal')
+                raise InterruptedError('worker-delivered termination')
+            def changer(fd, mode):
+                if mode == 0o600:
+                    phases.append('restore entry')
+                    signal.pthread_kill(thread.ident, signal.SIGTERM)
+                    # Give CPython time to dispatch a worker-delivered signal;
+                    # masking only the main thread cannot prevent this.
+                    threading.Event().wait(0.02)
+                os.fchmod(fd, mode)
+                if mode == 0o600:
+                    phases.append('mode restored')
+            previous = signal.signal(signal.SIGTERM, handler)
+            try:
+                with self.assertRaisesRegex(InterruptedError, 'worker-delivered'):
+                    control(root, report, query=self.fixture_security, changer=changer)
+            finally:
+                self.assertIs(signal.getsignal(signal.SIGTERM), handler)
+                signal.signal(signal.SIGTERM, previous)
+                finish.set()
+                thread.join(2)
+                self.assertFalse(thread.is_alive())
+                # Recover only this unit-test fixture after demonstrating a bug.
+                if (root / 'Default').exists():
+                    os.chmod(root / 'Default', 0o600)
+            self.assertEqual(phases, ['restore entry', 'mode restored', 'signal'])
             self.assert_restored(root, report)

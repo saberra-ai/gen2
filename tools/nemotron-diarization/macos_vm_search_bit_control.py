@@ -1,7 +1,7 @@
 """Host-only ordinary-descriptor search-bit control on a fresh owned fixture.
 
-Never accepts an existing fixture, guest mount or VM path. No directory contents
-or account records are read. Success qualifies this runtime operation only.
+The frozen command selects a fresh host fixture; existing paths are rejected.
+No directory contents or account records are read. No guest operation is admitted.
 """
 import argparse
 import errno
@@ -31,7 +31,8 @@ def control(root, report, *, query=security_at, changer=os.fchmod, observe=None)
     root.mkdir(mode=0o700)
     parent = target = None
     attempted = False
-    original = security = mask = None
+    original = security = handlers = None
+    deferred_signals = []
     report.update(control_passed=False, restoration_confirmed=False,
         guest_access_qualified=False, acl_policy_qualified=False,
         directory_contents_read=False, account_content_read=False,
@@ -79,8 +80,13 @@ def control(root, report, *, query=security_at, changer=os.fchmod, observe=None)
                 raise ValueError('mode0600 must deny child lookup in selected runtime')
         if metadata(os.stat('Default', dir_fd=parent, follow_symlinks=False)) != original:
             raise ValueError('fixture changed before descriptor-bound operation')
-        # Defer ordinary termination before mutation, including entry to cleanup.
-        mask = signal.pthread_sigmask(signal.SIG_BLOCK, {signal.SIGTERM, signal.SIGINT})
+        # OS masks affect only this thread. Python can dispatch a handler for
+        # a signal delivered to a different thread, so defer in the handlers.
+        handlers = {number: signal.getsignal(number) for number in (signal.SIGINT, signal.SIGTERM)}
+        def defer(number, frame):
+            deferred_signals.append(number)
+        for number in handlers:
+            signal.signal(number, defer)
         attempted = True  # Restore even if the mutating call raises after changing mode.
         changer(target, 0o700)
         after = os.fstat(target)
@@ -130,8 +136,13 @@ def control(root, report, *, query=security_at, changer=os.fchmod, observe=None)
                     if fd is not None:
                         os.close(fd)
             finally:
-                if mask is not None:
-                    signal.pthread_sigmask(signal.SIG_SETMASK, mask)
+                if handlers is not None:
+                    try:
+                        signal.signal(signal.SIGINT, handlers[signal.SIGINT])
+                    finally:
+                        signal.signal(signal.SIGTERM, handlers[signal.SIGTERM])
+                    for number in deferred_signals:
+                        signal.raise_signal(number)
     report['control_passed'] = report['restoration_confirmed']
     return report
 

@@ -216,6 +216,11 @@ Remaining release work as of 2026-10-17:
   the selected-runtime operation prerequisite. Guest ACL/access, provisioning
   and fresh-machine app checks remain open; available storage stays below the
   unchanged VM reserve, so no guest operation was admitted.
+  Subsequent feature CI exposes an ordinary-signal cleanup gap when another
+  thread receives the signal; the initial execution does not qualify that
+  case. A deterministic Mac reproduction confirms it. The separate V2 repair
+  defers Python handlers through restoration/descriptor closure and preserves
+  the original failed CI and first receipt; actual V2 qualification is separate.
 - Finish each advertised platform/backend's performance, deployment and public
   signing/notarization requirements before promotion. Windows CPU functional
   evidence passes but its observed live RTF remains above one; the

@@ -24,9 +24,9 @@ that exact inspected descriptor, `fchmod` may add only owner search (0700).
 Both child metadata lookups must then succeed, retain mode0600 and stay on the
 same device. No directory enumeration, file contents or account records are read.
 
-The same descriptor restores0600 on success, failure, interruption and a
+The same descriptor must restore0600 on success, failure, interruption and a
 mutator that raises after changing the mode. Ordinary SIGINT/SIGTERM delivery
-is deferred before mutation through restoration and descriptor closure;
+must be deferred before mutation through restoration and descriptor closure;
 uncatchable termination remains outside this
 guarantee. Restore must retain exact inode/device/type, original permissions,
 links, flags, size, mtime and apparent ownership, and the original anchored path.
@@ -79,3 +79,24 @@ separate VM120GiB initial/80GiB running reserve. No cache or other project
 files were deleted in this investigation. No guest clone, mount, boot or
 permission change occurred. Actual guest ACL/access, stored ownership,
 provisioning and fresh-machine complete-app operation remain unqualified.
+
+## CI signal failure and V2 repair
+
+Feature CI39069334234 at `b91ea5d` fails two signal cleanup tests on Linux
+Python3.12. A new deterministic control also reproduces the defect on the
+selected Mac Python3.9: delivering SIGTERM directly to an unblocked worker
+thread while restoration starts dispatches the Python handler on the main
+thread before mode restoration. Masking only the main thread does not cover
+that case. The original host execution above remains retained, but supplies
+no general multithreaded termination guarantee.
+
+V2 installs nonraising Python handlers for SIGINT/SIGTERM before mutation,
+retains them through restoration and descriptor closure, restores both prior
+handlers, then redelivers queued signals. It does not change other threads'
+OS signal masks or widen the filesystem operation. The deterministic regression
+must retain `restore entry`, `mode restored`, `signal` in that order; both
+prior handlers and original mode must be restored. Existing failure controls
+remain required. The separate `macos-search-bit-control-v2.protocol.json`
+freezes a fresh host fixture and changed source; the original protocol and
+21-member receipt remain unchanged. Actual V2 host execution follows review
+and commit. This is no guest admission or permission-policy change.
