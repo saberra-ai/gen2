@@ -204,6 +204,21 @@ failure; all thirteen feature CI jobs succeed. This supplies no qualifying
 full-model/SDK or production promotion. Original quality, human-review,
 desktop, fresh-machine, platform and signing/release gates remain open.
 
+The subsequent [saved one-row loop inspection](../research/nemotron-windows-q8-row-loop-inspection.md)
+now finds45 instructions/four FMAs/zero explicit vector stack operands per
+four outputs. Normalized to eight outputs,90 instructions/zero bytes compare
+with production95/192bytes despite the original failed speed gate. This
+contradicts selecting a production change from static stack counts alone.
+The17-member receipt binds both actual objects/disassemblies, four negative
+selection controls and the original13 successful CI jobs without native calls.
+The distinct [packed-B-scale2×2 comparison](../research/nemotron-windows-q8-mx2.md)
+keeps the production full region/tails and two-row B reuse while narrowing its
+private helper to two columns. Repeated A work and changed ownership remain
+tradeoffs; no compiled numerical/timing or production qualification is claimed.
+All576 local tool tests pass with seven Windows-only skips; both source reviews
+are clear. Its separate protocol binds149 tools,3,802 repository references and
+39 local import modules while preserving the original decisions.
+
 Remaining release work as of 2026-10-17:
 
 - Meet the original 20% DER target on every required meeting slice. The two AMI

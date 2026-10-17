@@ -1,0 +1,112 @@
+{
+  "source_commit": "2dbf3a008bde6ad405dccd33bb7f015da1901b46",
+  "run_id": 39070438530,
+  "inputs": {
+    "/Users/victor/.cache/gen2-nemotron3-n0/inspect-q8-row-loops-v1.py": {
+      "bytes": 6730,
+      "sha256": "bd4894963398a45c04128d3e690e61f0604acd4083a9e7361a588026d2137dbb"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/windows-x86_64/2026-10-17-q8-row/collection.json": {
+      "bytes": 213899,
+      "sha256": "213cd26a9737f0c7ac55a44f76114ed6a4b910a143222d0772e65a2c42b31a2a"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-row-ci-v1/collection-replay-v1.json": {
+      "bytes": 1371515,
+      "sha256": "3d6ac742385193bb6c36a303584c864bd79a45c8c8bacbf63b104e4963f302e2"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-row-ci-v1/delivery-admission-v1/qualification.json": {
+      "bytes": 1614,
+      "sha256": "1e3ab7facd968a3837d01db13f5c61184adfc87d11731461b664528d3b9971f5"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-row-ci-v1/delivery-admission-v1/artifact-members.json": {
+      "bytes": 745142,
+      "sha256": "44c944b1865d747291ec8ff8122c7f1f41062345985aae2cc1bd2b29389acd68"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/inspect-q8-pair-loops-v1.py": {
+      "bytes": 5650,
+      "sha256": "54fe10286fe4fc683484fda772049089c3eeb2bd548c82a754f884a38c9ebe86"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-row-ci-v1/delivery-admission-v1/delivered/evidence/kernel-control.obj": {
+      "bytes": 165227,
+      "sha256": "78f8f430c545f1c0ec9c97eca091a44a4ec6c09398e70e8de679abba85e1ab3c"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-row-ci-v1/delivery-admission-v1/delivered/evidence/disasm-control.stdout.log": {
+      "bytes": 1924513,
+      "sha256": "d26b4c1c23bb20bc319fe32983377809cec57c64889a7a25ce98fc055f979f8e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-row-ci-v1/delivery-admission-v1/delivered/evidence/kernel-row1.obj": {
+      "bytes": 165305,
+      "sha256": "d030580fd6121eee8b22d6176ebdae338a2e5f56ef73c02d8b1aafa502f76424"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-row-ci-v1/delivery-admission-v1/delivered/evidence/disasm-row1.stdout.log": {
+      "bytes": 1924754,
+      "sha256": "0b30b5c40eabc34273dd931796701dedaa00c6abab895bdce1107a736fe01508"
+    }
+  },
+  "method": "Same original unique Q8/Q8/F32 signature and unique innermost backward conditional loop; only expected FMA count parameterized8or4. Explicit RSP vector operand widths only.",
+  "functions": {
+    "control": {
+      "function_header": "??$gemmMx4@$01@?$tinyBLAS_Q0_AVX@Ublock_q8_0@@U1@M@?A0x1F146D1@@AEAAX_J000@Z (private: void __cdecl `anonymous namespace'::tinyBLAS_Q0_AVX<struct block_q8_0,struct block_q8_0,float>::gemmMx4<2>(__int64,__int64,__int64,__int64)):",
+      "function_instructions": 351,
+      "loop_start": "0x3d0",
+      "backedge": "0x5a7",
+      "loop_instruction_count": 95,
+      "fma_instructions": 8,
+      "loop_instructions_sha256": "ae8c8dbc179fc7b2c1d37956e84a96c9ff72f3c381d3dd98af280adcae14872d",
+      "vector_stack_accesses": [
+        {
+          "offset": "0x3d0",
+          "instruction": "vmovups ymmword ptr [rsp+70h],ymm7",
+          "bytes": 32,
+          "access": "store"
+        },
+        {
+          "offset": "0x458",
+          "instruction": "vmovups ymm9,ymmword ptr [rsp+30h]",
+          "bytes": 32,
+          "access": "load"
+        },
+        {
+          "offset": "0x463",
+          "instruction": "vmovups ymmword ptr [rsp+30h],ymm9",
+          "bytes": 32,
+          "access": "store"
+        },
+        {
+          "offset": "0x4b4",
+          "instruction": "vmovups ymm10,ymmword ptr [rsp+50h]",
+          "bytes": 32,
+          "access": "load"
+        },
+        {
+          "offset": "0x4bf",
+          "instruction": "vmovups ymmword ptr [rsp+50h],ymm10",
+          "bytes": 32,
+          "access": "store"
+        },
+        {
+          "offset": "0x4d9",
+          "instruction": "vmovups ymm7,ymmword ptr [rsp+70h]",
+          "bytes": 32,
+          "access": "load"
+        }
+      ],
+      "static_vector_stack_operand_bytes": 192
+    },
+    "row1": {
+      "function_header": "??$gemmMx4@$00@?$tinyBLAS_Q0_AVX@Ublock_q8_0@@U1@M@?A0x2D0D535E@@AEAAX_J000@Z (private: void __cdecl `anonymous namespace'::tinyBLAS_Q0_AVX<struct block_q8_0,struct block_q8_0,float>::gemmMx4<1>(__int64,__int64,__int64,__int64)):",
+      "function_instructions": 228,
+      "loop_start": "0x290",
+      "backedge": "0x372",
+      "loop_instruction_count": 45,
+      "fma_instructions": 4,
+      "loop_instructions_sha256": "e81cbe421c424dc99432ec1b6e18ec4ba19300ba2725cf95b07948101f17b42a",
+      "vector_stack_accesses": [],
+      "static_vector_stack_operand_bytes": 0
+    }
+  },
+  "negative_selection_controls": 4,
+  "new_native_calls": 0,
+  "production_qualified": false,
+  "limits": "Different output counts per tile: control2x4 eight accumulators; row1x4 four. Normalize static counts by two for the same eight outputs when comparing. Static widths/instructions are not measured traffic/CPUtime/cause; original failed timing and observer flags remain false."
+}
