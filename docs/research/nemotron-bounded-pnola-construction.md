@@ -70,3 +70,22 @@ qualification, API metadata, collector and passing two-test/277-test logs. No ho
 record, restored package, private-source snapshot, cloned npm tree, build target
 or app is created; commands remain empty and the reserve is released. Full
 construction and all app runtime/release gates remain pending.
+
+The [actual complete-app construction receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-bounded-pnola-app-construction/collection-qualification.json)
+now passes at `edf7b898b00df89d868761bfc80487d7c3bdf097`. The existing controller
+was observed terminal with exit 0 before independent metadata-only collection.
+All six commands return 0. The isolated source has exactly the two known overlay
+upgrades and relocated Cargo path; all 109 private source files, original 6,455
+npm entries, model/provider inputs and both earlier apps remain unchanged.
+
+The new CPU app contains 246 entries and all 94 expected regular Frameworks.
+Static replay verifies the complete package origin, model/card/license/Bark,
+closed dependencies, unsigned framework payloads, arm64 and minimum macOS26.0.
+Deep strict signatures pass, runtime hardening/ad-hoc signing is observed, and
+entitlements equal the original local file. Storage floors pass and the reserve
+is released. The 23-member receipt preserves source/protocol, build and command
+logs, rendered source descriptors, app inventory, signing/entitlement/static
+results and the independent collector; private app/model payloads stay local.
+No SDK version, application or model function executes during construction or
+collection. Automatic packaged recorded/live behavior, GUI/microphone,
+fresh-machine, quality and public release gates remain open.

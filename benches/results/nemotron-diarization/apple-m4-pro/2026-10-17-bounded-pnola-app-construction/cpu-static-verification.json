@@ -1,0 +1,835 @@
+{
+  "schema_version": 1,
+  "app_structure_verified": true,
+  "release_qualified": false,
+  "scope": "Complete same-host ad-hoc app structure, current profile/model/license and unsigned framework payload mapping only. No inference, GUI, microphone, Developer ID or notarization claim.",
+  "app": "/Users/victor/.cache/gen2-nemotron3-n0/bounded-pnola-construction-local-v1/cpu/Pnola.app",
+  "backend": "cpu",
+  "runtime_profile": "gen2-valid-mel-pool-cpu-v2",
+  "minimum_macos": "26.0",
+  "executable": {
+    "bytes": 16233216,
+    "sha256": "de47c313a3b8620f6727ce941788c463862d1030390123c60784b951b936e9db"
+  },
+  "entry_library": "libgen2_nemo_nemo_speech_asr_c.1.dylib",
+  "startup_dependencies": [
+    "/System/Library/Frameworks/AppKit.framework/Versions/C/AppKit",
+    "/System/Library/Frameworks/AudioToolbox.framework/Versions/A/AudioToolbox",
+    "/System/Library/Frameworks/CoreAudio.framework/Versions/A/CoreAudio",
+    "/System/Library/Frameworks/WebKit.framework/Versions/A/WebKit",
+    "/System/Library/Frameworks/ApplicationServices.framework/Versions/A/ApplicationServices",
+    "/System/Library/Frameworks/CoreGraphics.framework/Versions/A/CoreGraphics",
+    "/System/Library/Frameworks/Carbon.framework/Versions/A/Carbon",
+    "/System/Library/Frameworks/CoreVideo.framework/Versions/A/CoreVideo",
+    "/System/Library/Frameworks/CoreFoundation.framework/Versions/A/CoreFoundation",
+    "/System/Library/Frameworks/QuartzCore.framework/Versions/A/QuartzCore",
+    "/System/Library/Frameworks/Foundation.framework/Versions/C/Foundation",
+    "/usr/lib/libSystem.B.dylib",
+    "/usr/lib/libobjc.A.dylib",
+    "/usr/lib/libiconv.2.dylib",
+    "/System/Library/Frameworks/ColorSync.framework/Versions/A/ColorSync",
+    "/System/Library/Frameworks/CoreServices.framework/Versions/A/CoreServices"
+  ],
+  "executable_rpaths": [
+    "@executable_path/../Frameworks"
+  ],
+  "frameworks": {
+    "libgen2_nemo_absl_base.2608.0.0.dylib": {
+      "bytes": 74784,
+      "sha256": "17211560eaed616ba06fc52b3f54dc066f691652e130fdd9ceba5c7d544a745f"
+    },
+    "libgen2_nemo_absl_base_cpu_detect.2608.0.0.dylib": {
+      "bytes": 52496,
+      "sha256": "c1567749e348c2964c9fa61ce068c53b9dc8a3eb5d66b5ffdb0564cea91a08a7"
+    },
+    "libgen2_nemo_absl_city.2608.0.0.dylib": {
+      "bytes": 35216,
+      "sha256": "a795ef514984e1327fdd3f6e9501a4e19e7fc7fe7072891dbf768c080d0dae9c"
+    },
+    "libgen2_nemo_absl_civil_time.2608.0.0.dylib": {
+      "bytes": 57648,
+      "sha256": "b9b224e4c1605f6d7f46ccf47aae827724e9291612d837e78427a63ea4289196"
+    },
+    "libgen2_nemo_absl_cord.2608.0.0.dylib": {
+      "bytes": 164368,
+      "sha256": "ca277b31e166449cfdcee4d3a2d2eb6a7e35ac298aa460aab90fde9c58767897"
+    },
+    "libgen2_nemo_absl_cord_internal.2608.0.0.dylib": {
+      "bytes": 118192,
+      "sha256": "b663d7db82ef9d2649e87e5ad55a5e17bc0ebffde86fa5d507360cfddadabe69"
+    },
+    "libgen2_nemo_absl_cordz_functions.2608.0.0.dylib": {
+      "bytes": 51568,
+      "sha256": "0eea689aedc868ac558d7934ee25f40cdf5608b1d77895a623047ed23e700ede"
+    },
+    "libgen2_nemo_absl_cordz_handle.2608.0.0.dylib": {
+      "bytes": 89120,
+      "sha256": "94ccc8275d3a6905a69c2beedc6ffd234d906298083f8528272ffe65abd94a69"
+    },
+    "libgen2_nemo_absl_cordz_info.2608.0.0.dylib": {
+      "bytes": 106624,
+      "sha256": "916c53720969ce254d6a3edbe82b15b2975614ba04bc1ea39a1d2283d1573d07"
+    },
+    "libgen2_nemo_absl_crc32c.2608.0.0.dylib": {
+      "bytes": 91680,
+      "sha256": "adc49d10460f991f5463b97e4ef6f480e8ef56e6b069cbfdc8e09f1437e4e363"
+    },
+    "libgen2_nemo_absl_crc_cord_state.2608.0.0.dylib": {
+      "bytes": 74544,
+      "sha256": "f8fa9c20bc89e78566b9c3603ca39824712b45f62663d2a2aa9e5a1098352041"
+    },
+    "libgen2_nemo_absl_crc_internal.2608.0.0.dylib": {
+      "bytes": 79376,
+      "sha256": "7b31ca0a5ce3d1d6422a3dfa93a553b5fd4a78c638de61fe95e76e31fee3307e"
+    },
+    "libgen2_nemo_absl_debugging_internal.2608.0.0.dylib": {
+      "bytes": 34928,
+      "sha256": "998012ff5d28eb28c0512e6ac43416b2c3d95a49e1cf86a1ea2d9d7a25b77121"
+    },
+    "libgen2_nemo_absl_decode_rust_punycode.2608.0.0.dylib": {
+      "bytes": 51824,
+      "sha256": "244b8f4e9279957a40bd15b4fecf2992510a19ae89e015ef10ef277d95cc4bbd"
+    },
+    "libgen2_nemo_absl_demangle_internal.2608.0.0.dylib": {
+      "bytes": 90992,
+      "sha256": "d936d6acc8a53d0732f08b3e52272cefcf41da0b066080fdd675054639af5879"
+    },
+    "libgen2_nemo_absl_demangle_rust.2608.0.0.dylib": {
+      "bytes": 69184,
+      "sha256": "7a36f168311985f35ab306a49b07e3cf88ad2c4cae290c225fe853d64e83e514"
+    },
+    "libgen2_nemo_absl_die_if_null.2608.0.0.dylib": {
+      "bytes": 102208,
+      "sha256": "cb26b0179d83c90df793fda37a5b2699e4aa4bd17633f47edf1f46505625e171"
+    },
+    "libgen2_nemo_absl_examine_stack.2608.0.0.dylib": {
+      "bytes": 69152,
+      "sha256": "f5a43318da223ad3ba7eea5cff037499c79c5ef8c22436b432af1555660c847c"
+    },
+    "libgen2_nemo_absl_exponential_biased.2608.0.0.dylib": {
+      "bytes": 51792,
+      "sha256": "20b88f5cf072d55e6f42005abc22e67ea27669c86b155609a6600656f543cea0"
+    },
+    "libgen2_nemo_absl_flags_commandlineflag.2608.0.0.dylib": {
+      "bytes": 68672,
+      "sha256": "7d57cfbe575da7c9406fb0234aae26be011b4e5583382b3b43e64a7b9d8f7e8f"
+    },
+    "libgen2_nemo_absl_flags_commandlineflag_internal.2608.0.0.dylib": {
+      "bytes": 52176,
+      "sha256": "5f5cbb4bd3802c2d19e3cfaf8d1527e9efb263d8f27be8abbbe23cca0a15f4dd"
+    },
+    "libgen2_nemo_absl_flags_config.2608.0.0.dylib": {
+      "bytes": 99664,
+      "sha256": "b90bebba3d0013f67929d8f8f1a588d2da07887f228785e95fa0449514a99e0c"
+    },
+    "libgen2_nemo_absl_flags_internal.2608.0.0.dylib": {
+      "bytes": 117792,
+      "sha256": "b44f2c3711e491f55df4bb6f1ed41153553052cc9b2a81da060100c49205d3cb"
+    },
+    "libgen2_nemo_absl_flags_marshalling.2608.0.0.dylib": {
+      "bytes": 89728,
+      "sha256": "80bc0ffd5d9e3d5594a7045bcb7a5b04d0b36877993787430e578ed9a714e11f"
+    },
+    "libgen2_nemo_absl_flags_parse.2608.0.0.dylib": {
+      "bytes": 183184,
+      "sha256": "72f162cc960ccb7fec9ab1a3174538177a64be7fab1927617a005897ed9cac70"
+    },
+    "libgen2_nemo_absl_flags_private_handle_accessor.2608.0.0.dylib": {
+      "bytes": 52848,
+      "sha256": "018f87b9683a5eb1b1d7350638dfefc81ec493c5e0293e8e12fce78f10525d1d"
+    },
+    "libgen2_nemo_absl_flags_program_name.2608.0.0.dylib": {
+      "bytes": 87584,
+      "sha256": "1aaa1959b6d742bb4ecd5ef44acf6c6199a8939cf25e96fe1a58b8b163a6aad3"
+    },
+    "libgen2_nemo_absl_flags_reflection.2608.0.0.dylib": {
+      "bytes": 139520,
+      "sha256": "277a71c0916b99ef4eb055c51375b4590645ad54ca7fa1990e64363edc73b69a"
+    },
+    "libgen2_nemo_absl_flags_usage.2608.0.0.dylib": {
+      "bytes": 103328,
+      "sha256": "ee36aa79701385a5c9d03e54d17fc5f3c3ab3a21d0bc23a15f158f6f59d6349d"
+    },
+    "libgen2_nemo_absl_flags_usage_internal.2608.0.0.dylib": {
+      "bytes": 167264,
+      "sha256": "b940be09c98d31ef153bea8cf2ac4b4e52e04596808569fd612c5b7d532c17da"
+    },
+    "libgen2_nemo_absl_graphcycles_internal.2608.0.0.dylib": {
+      "bytes": 74048,
+      "sha256": "67ecd60a446d405697ad9df8725b5785ed4e60a679aa1e6e586b1558a8117257"
+    },
+    "libgen2_nemo_absl_hardening.2608.0.0.dylib": {
+      "bytes": 34928,
+      "sha256": "70a691940da4b8a8d1b5bb760fadb2ecee5a8e2826f791e96f041b1c2af83686"
+    },
+    "libgen2_nemo_absl_hash.2608.0.0.dylib": {
+      "bytes": 68864,
+      "sha256": "ace9a9919c97c5548871d9070cdda85e64d5dff9f2ec2335442b3d07a12b6434"
+    },
+    "libgen2_nemo_absl_hashtablez_sampler.2608.0.0.dylib": {
+      "bytes": 107200,
+      "sha256": "34fdddb0ea686f992667111d4a8eabd66ea051909651fb6c04562106b7bd692a"
+    },
+    "libgen2_nemo_absl_int128.2608.0.0.dylib": {
+      "bytes": 58064,
+      "sha256": "80f398688853dd50278e6342b0cd912e55f943f5883a51b58dbae488fb6b572e"
+    },
+    "libgen2_nemo_absl_kernel_timeout_internal.2608.0.0.dylib": {
+      "bytes": 70928,
+      "sha256": "3e75ad98e4263e1729dabec6ad6fd655eef1bf6965551c575b29ac7266c2ced3"
+    },
+    "libgen2_nemo_absl_leak_check.2608.0.0.dylib": {
+      "bytes": 35616,
+      "sha256": "0db7820391a2f3a0c89c1415721aeda123548ff0fdb4b3d55e4ed619767cccde"
+    },
+    "libgen2_nemo_absl_log_entry.2608.0.0.dylib": {
+      "bytes": 72192,
+      "sha256": "9be7e37f9179ee6b1368720d365dbbdca89e86bfeabad93208b52b27f4969bad"
+    },
+    "libgen2_nemo_absl_log_globals.2608.0.0.dylib": {
+      "bytes": 106672,
+      "sha256": "97fa39924de06331f8af80ebbd993f960fdfa1fd1e72bd3f441858df2e4f5a14"
+    },
+    "libgen2_nemo_absl_log_initialize.2608.0.0.dylib": {
+      "bytes": 84608,
+      "sha256": "82d530f809bd067cbdc364c98f16ef56c4e7cd029de5d15b4d87269dad3b1e44"
+    },
+    "libgen2_nemo_absl_log_internal_check_op.2608.0.0.dylib": {
+      "bytes": 112544,
+      "sha256": "501acd676914b4a1a3d56fc3c45020d61fb19f8799bfb08e175ac44c8676f375"
+    },
+    "libgen2_nemo_absl_log_internal_conditions.2608.0.0.dylib": {
+      "bytes": 52032,
+      "sha256": "f9e8a16c6a1e147ea7b28590f3c707d75bd83ccfbb28eeaf679f203d3f48eddf"
+    },
+    "libgen2_nemo_absl_log_internal_fnmatch.2608.0.0.dylib": {
+      "bytes": 51776,
+      "sha256": "4752506e211ff5b2d22b63407a2b5f91ef1e18dff1affad2a93a25eacaa36084"
+    },
+    "libgen2_nemo_absl_log_internal_format.2608.0.0.dylib": {
+      "bytes": 71920,
+      "sha256": "4825216d98b9ae0d820747704f078ca31b73a79a07953518e95011a5ed72146d"
+    },
+    "libgen2_nemo_absl_log_internal_globals.2608.0.0.dylib": {
+      "bytes": 86640,
+      "sha256": "2794ec9e4f77a3d46fbc1e546bc09b926a433fe6173a71f37f926d9b9dfcbdb2"
+    },
+    "libgen2_nemo_absl_log_internal_log_sink_set.2608.0.0.dylib": {
+      "bytes": 109040,
+      "sha256": "2e84b405caf1a8dd9e1689d56e507bf21119dec3f291c23be89a7af03f760e20"
+    },
+    "libgen2_nemo_absl_log_internal_message.2608.0.0.dylib": {
+      "bytes": 148032,
+      "sha256": "1486907fe078ff96ce1fbf3037a2ad54f05a12655323219dca99dd43a3d96984"
+    },
+    "libgen2_nemo_absl_log_internal_nullguard.2608.0.0.dylib": {
+      "bytes": 35104,
+      "sha256": "2a1d6044cdb29e574302ecec21ecfc72654eca6e553cadedbee2094ea67eff2f"
+    },
+    "libgen2_nemo_absl_log_internal_proto.2608.0.0.dylib": {
+      "bytes": 68784,
+      "sha256": "47dc400015696ac52bffb81d898cdaac622632b5a607189e3ef49637ce6403bf"
+    },
+    "libgen2_nemo_absl_log_internal_structured_proto.2608.0.0.dylib": {
+      "bytes": 73248,
+      "sha256": "dc5f3aaa4d39dc1fdf296d26a543d5e16c693670d314ab5e828770841bcc68e5"
+    },
+    "libgen2_nemo_absl_log_severity.2608.0.0.dylib": {
+      "bytes": 54464,
+      "sha256": "870915a4f786097dff00d9cb6d95fe2a017847d7007c3c1b85c74ea343034ae6"
+    },
+    "libgen2_nemo_absl_log_sink.2608.0.0.dylib": {
+      "bytes": 68336,
+      "sha256": "7380bfbb1030a9c22f2e8e576869d914865210c41be5a5dcfe66cbb4c61b5b23"
+    },
+    "libgen2_nemo_absl_malloc_internal.2608.0.0.dylib": {
+      "bytes": 57728,
+      "sha256": "1e65d5c3766b0de2df4300337b6aa47a865d7324e9459db6c148d1c641ee0084"
+    },
+    "libgen2_nemo_absl_random_distributions.2608.0.0.dylib": {
+      "bytes": 70016,
+      "sha256": "58889be6c232e33736e646dcaaa0cbbe3f30bc8b73b35805286f9bd6d86cec97"
+    },
+    "libgen2_nemo_absl_random_internal_entropy_pool.2608.0.0.dylib": {
+      "bytes": 104736,
+      "sha256": "8b8c5b3feed88e1dcf06a9149ad7add38c79a6af3c7e149a7850f4787eb58de3"
+    },
+    "libgen2_nemo_absl_random_internal_platform.2608.0.0.dylib": {
+      "bytes": 35024,
+      "sha256": "4dd577b7da9b48f0749d2f64ced9c0837474645353150f7b38aecb7f32d51447"
+    },
+    "libgen2_nemo_absl_random_internal_randen.2608.0.0.dylib": {
+      "bytes": 52752,
+      "sha256": "4b6a5267f1829b8b6890cb3ece84dc8b3a17c88e403ed0920191131db89c1cab"
+    },
+    "libgen2_nemo_absl_random_internal_randen_hwaes.2608.0.0.dylib": {
+      "bytes": 52528,
+      "sha256": "325aa6fa8cf21628ac11584e74b1cf4ab5b9b182acc308f2fface64869cea508"
+    },
+    "libgen2_nemo_absl_random_internal_randen_hwaes_impl.2608.0.0.dylib": {
+      "bytes": 51888,
+      "sha256": "583d0daa8e3de33a3c15358a1a54ee81c88517ba8059c817ed1e2108b1325490"
+    },
+    "libgen2_nemo_absl_random_internal_randen_slow.2608.0.0.dylib": {
+      "bytes": 51920,
+      "sha256": "3be15a125ffcbf02d9c537cd460c397d94a2b723bc82574a3a11f1e5cd8352a3"
+    },
+    "libgen2_nemo_absl_random_internal_seed_material.2608.0.0.dylib": {
+      "bytes": 69152,
+      "sha256": "9b386db92b5aa7c2db9f9576eb0d50c5c425583d6eed4f524de87999bdda070b"
+    },
+    "libgen2_nemo_absl_random_seed_gen_exception.2608.0.0.dylib": {
+      "bytes": 52576,
+      "sha256": "4cecc55e94c7303c6c961dd795aa6ba29b9748af23d5e2cfed6ad1f9ce11b8bd"
+    },
+    "libgen2_nemo_absl_random_seed_sequences.2608.0.0.dylib": {
+      "bytes": 86240,
+      "sha256": "6f389cf71777376ffb914587a756678976b7d61e516c88da70ad9aae6f6ae9a7"
+    },
+    "libgen2_nemo_absl_raw_hash_set.2608.0.0.dylib": {
+      "bytes": 132512,
+      "sha256": "749537572e3ee20ab6a36c0e23c11e55e1148ae065e931db09ca4979ea7d52d3"
+    },
+    "libgen2_nemo_absl_raw_logging_internal.2608.0.0.dylib": {
+      "bytes": 70480,
+      "sha256": "866bb5a417168fa33f5a3618bffb1d5795625d7376f07490602eef760538a618"
+    },
+    "libgen2_nemo_absl_source_location.2608.0.0.dylib": {
+      "bytes": 34784,
+      "sha256": "8b42f8912d457fad0561d8c38b9bc978cfb1bfed167048855a8f675bbc042ead"
+    },
+    "libgen2_nemo_absl_spinlock_wait.2608.0.0.dylib": {
+      "bytes": 52432,
+      "sha256": "0275a85366293d7fb9c037d20f33066f6d6a7ec8b1e6add13e630f36b891c16a"
+    },
+    "libgen2_nemo_absl_stacktrace.2608.0.0.dylib": {
+      "bytes": 69808,
+      "sha256": "cbacdfca5c6e5b185aae352be11ae18b287b1f7911492b427ce715e4f6d2f562"
+    },
+    "libgen2_nemo_absl_status.2608.0.0.dylib": {
+      "bytes": 158784,
+      "sha256": "6aa97256a7393cc4d587ddbc1a2c07b8b0b31a2c2cb103c868e17565ef882bb0"
+    },
+    "libgen2_nemo_absl_status_builder.2608.0.0.dylib": {
+      "bytes": 113568,
+      "sha256": "0b3e7c4ccf837477574aa7414c6ac083b0d323421ad8e5eccb8e1b60ff398ee3"
+    },
+    "libgen2_nemo_absl_statusor.2608.0.0.dylib": {
+      "bytes": 106928,
+      "sha256": "ded7ab788bae20f60156fd48b1753210dfe039bc4fad86568c563787ab49f5b8"
+    },
+    "libgen2_nemo_absl_str_format_internal.2608.0.0.dylib": {
+      "bytes": 142128,
+      "sha256": "0ea7714b1b4a1e2853d7ac2211a91adfb599f4d75f6d1de70b4b888deb20f9a7"
+    },
+    "libgen2_nemo_absl_strerror.2608.0.0.dylib": {
+      "bytes": 53680,
+      "sha256": "b2745fcc36f90159aec6dd68c672848c73f3ace6d64a9d7fb2a53ce84ff25168"
+    },
+    "libgen2_nemo_absl_strings.2608.0.0.dylib": {
+      "bytes": 173168,
+      "sha256": "37a0b049f6fb17454febc191019ef39f3de9692894f2060cb2e17f53da6726a8"
+    },
+    "libgen2_nemo_absl_strings_internal.2608.0.0.dylib": {
+      "bytes": 56288,
+      "sha256": "934a1dc09b02384fc4f351f41af8c3fa2e4b98ef2a354a879c9666473104b245"
+    },
+    "libgen2_nemo_absl_symbolize.2608.0.0.dylib": {
+      "bytes": 70512,
+      "sha256": "c078f5d662d935d36bcac2b70169806c0722d49666e03b116154d871e8441d7f"
+    },
+    "libgen2_nemo_absl_synchronization.2608.0.0.dylib": {
+      "bytes": 141200,
+      "sha256": "98737d2effcd48b27a3c3709664faf9d9583c0ed88e20da64b033ff5f1854a38"
+    },
+    "libgen2_nemo_absl_throw_delegate.2608.0.0.dylib": {
+      "bytes": 60224,
+      "sha256": "7974e5da30e53288baa4154a3baee3d09b4365259816b1d944b57536451f0459"
+    },
+    "libgen2_nemo_absl_time.2608.0.0.dylib": {
+      "bytes": 111920,
+      "sha256": "d871e8f9cb6da12fcf6c5ad597d149c963a39b3b827a1c075f6f705fd49e87b1"
+    },
+    "libgen2_nemo_absl_time_zone.2608.0.0.dylib": {
+      "bytes": 165184,
+      "sha256": "3b7de44100e25d38f7a1e03f0274e5ae576a2cbe4053e3658144d254cc226512"
+    },
+    "libgen2_nemo_absl_tracing_internal.2608.0.0.dylib": {
+      "bytes": 35120,
+      "sha256": "98ffa8d287f8c564e47a3a72e5d3df268721ba2c00bb612194969410d8450a78"
+    },
+    "libgen2_nemo_absl_utf8_for_code_point.2608.0.0.dylib": {
+      "bytes": 35024,
+      "sha256": "11cd000783795ef4b576f5a28ad901a43308fcbe6d44bfbb06ea7746c30c58f6"
+    },
+    "libgen2_nemo_absl_vlog_config_internal.2608.0.0.dylib": {
+      "bytes": 94944,
+      "sha256": "e970ff010ad1216ce91279b77fdd421a5d185d558f7b7ce75b6439096599ba55"
+    },
+    "libgen2_nemo_ggml-base.0.25.1.dylib": {
+      "bytes": 766576,
+      "sha256": "74e91e6c7d0ff4debab5a4a4ff39c3150bd548ec5f139db881e3020d2d1f0f02"
+    },
+    "libgen2_nemo_ggml-blas.0.25.1.dylib": {
+      "bytes": 76528,
+      "sha256": "f2b6ca299edd84e401d8887707e7135126cdc5d06a26fa0524ebdb52a10a49bc"
+    },
+    "libgen2_nemo_ggml-cpu.0.25.1.dylib": {
+      "bytes": 1034640,
+      "sha256": "6e13b73730c3ef65af25ccfdc81990eea128a14570da0ae2fc3ee7d799d22405"
+    },
+    "libgen2_nemo_ggml.0.25.1.dylib": {
+      "bytes": 77744,
+      "sha256": "578cff3c203ba65a66b11aeb5b1f44047e1576ee398fe5043980f26b9a218529"
+    },
+    "libgen2_nemo_nemo_speech_asr.dylib": {
+      "bytes": 1238720,
+      "sha256": "a32500ad4cce329dbce3bebf8707d4dcb4d0779fe3cec4b398b26356e257b930"
+    },
+    "libgen2_nemo_nemo_speech_asr_c.1.dylib": {
+      "bytes": 113760,
+      "sha256": "373e60100569a5854f41e8d3ec0cc8d9f9eee677f864c6d9c277ab5771bdba01"
+    },
+    "libgen2_nemo_protobuf-lite.36.2.0.dylib": {
+      "bytes": 702512,
+      "sha256": "3047b2dce1dcbc8c40caeeff77fd03466c0c46977b97a06864a0cc9da7baa0b5"
+    },
+    "libgen2_nemo_sentencepiece.0.0.0.dylib": {
+      "bytes": 615136,
+      "sha256": "906ac433af5f760cf3c1924b65c211a837c3082bbac7b11590363e7221a84bcf"
+    },
+    "libgen2_nemo_utf8_validity.36.2.0.dylib": {
+      "bytes": 51504,
+      "sha256": "8359b292efcd43a11211da9e7c1bf2a31b5927a3619463951c132816b03be154"
+    },
+    "libnemo_speech_asr_c.dylib": {
+      "bytes": 113776,
+      "sha256": "95956aeb74f7123980c9b6f62c4223c96ba0567afbd99aa025782c60a9268fec"
+    },
+    "libonnxruntime.dylib": {
+      "bytes": 27565504,
+      "sha256": "cbdd320b28763539677a92214a33f37fcaaa34e291600e380ba8d2d587b9507e"
+    }
+  },
+  "unsigned_frameworks": {
+    "libgen2_nemo_absl_base.2608.0.0.dylib": {
+      "bytes": 56408,
+      "sha256": "4db4dbcf4d8462dd13c0b3dbb9ef3741b25c8b5cbcdca06fbee2fe650a41e0bc"
+    },
+    "libgen2_nemo_absl_base_cpu_detect.2608.0.0.dylib": {
+      "bytes": 34136,
+      "sha256": "cc1eb71d4c2f5b8d71733422f224b5c9bca4c3c61e07c3cbd3fcb4bfca6d0a13"
+    },
+    "libgen2_nemo_absl_city.2608.0.0.dylib": {
+      "bytes": 16912,
+      "sha256": "3455d5ffaed377432f61d9ad6ab71332788d012a35800c598160180beb54a360"
+    },
+    "libgen2_nemo_absl_civil_time.2608.0.0.dylib": {
+      "bytes": 39296,
+      "sha256": "0e7c2c5f1456eb7777879f8578a132a016e5ff1bed6d28187dff0305d33eb830"
+    },
+    "libgen2_nemo_absl_cord.2608.0.0.dylib": {
+      "bytes": 145840,
+      "sha256": "daeb6a6aff5353eceb3bbf9c853afbd030e4467115b8c54a50dcbf5c4a636e63"
+    },
+    "libgen2_nemo_absl_cord_internal.2608.0.0.dylib": {
+      "bytes": 99712,
+      "sha256": "7bc65a2905ab70de330718e0141fec915ad2b4929da9066f75e11b484eea1fce"
+    },
+    "libgen2_nemo_absl_cordz_functions.2608.0.0.dylib": {
+      "bytes": 33216,
+      "sha256": "4ef0df1bbaab9bd3a5e4a696ecdb4a06546207509d87e3b06a8c639ae0ed0b66"
+    },
+    "libgen2_nemo_absl_cordz_handle.2608.0.0.dylib": {
+      "bytes": 70704,
+      "sha256": "a4370550cfb336cb92cf60d26b181a16b04e56ac49a26af0a485423fce93180c"
+    },
+    "libgen2_nemo_absl_cordz_info.2608.0.0.dylib": {
+      "bytes": 88168,
+      "sha256": "e17e255730d9dc0b9bd1c222d4f1135a6f9f1d3f0911642a6435d52d1fa4a27e"
+    },
+    "libgen2_nemo_absl_crc32c.2608.0.0.dylib": {
+      "bytes": 73280,
+      "sha256": "18c5168cc8a5822eed3bf70878c01f5f74298956f98b0fdbf32bb606c00239f3"
+    },
+    "libgen2_nemo_absl_crc_cord_state.2608.0.0.dylib": {
+      "bytes": 56160,
+      "sha256": "8474e90a732b2084e884486664d3835a18ef1a3db4f8a7a8f8f800c9daa69019"
+    },
+    "libgen2_nemo_absl_crc_internal.2608.0.0.dylib": {
+      "bytes": 60984,
+      "sha256": "4d203a0d9b68cd7a9509648306c496c7b6ab5ce0b56485521689e9dddad9d444"
+    },
+    "libgen2_nemo_absl_debugging_internal.2608.0.0.dylib": {
+      "bytes": 16608,
+      "sha256": "67003b7c5510b2d888f92beb3b09ed0993bf7011e37bc2e73f10c1a24dbb1f9a"
+    },
+    "libgen2_nemo_absl_decode_rust_punycode.2608.0.0.dylib": {
+      "bytes": 33464,
+      "sha256": "140be038ea7086a7d68660117a375f72fd8c2cd87b87cd86d56056cc63216bb6"
+    },
+    "libgen2_nemo_absl_demangle_internal.2608.0.0.dylib": {
+      "bytes": 72576,
+      "sha256": "3e7161b11f1d753f25c4e7bd8e133581de68d9ecf17249fcdc2909494865ec25"
+    },
+    "libgen2_nemo_absl_demangle_rust.2608.0.0.dylib": {
+      "bytes": 50792,
+      "sha256": "a5fc74278c917cb84a6b736169881c72bf964858748e8687193442f7018c5bed"
+    },
+    "libgen2_nemo_absl_die_if_null.2608.0.0.dylib": {
+      "bytes": 83752,
+      "sha256": "9213447f57cdb3e7e6082b959edef0d332dcdb337bd0ff7adbdbe6967e7ef061"
+    },
+    "libgen2_nemo_absl_examine_stack.2608.0.0.dylib": {
+      "bytes": 50760,
+      "sha256": "846a39159f0a7c274bfaa5ed672a748014785c5cab54bdb41228d8025a3c55bf"
+    },
+    "libgen2_nemo_absl_exponential_biased.2608.0.0.dylib": {
+      "bytes": 33440,
+      "sha256": "ef163df29a17162d3507974b842650dfc64540edacb8526ce8097dda763cfd6f"
+    },
+    "libgen2_nemo_absl_flags_commandlineflag.2608.0.0.dylib": {
+      "bytes": 50280,
+      "sha256": "c937a967734911445e2b0ca978263ad15ac9cb75f07c6d47adae0136bad937e8"
+    },
+    "libgen2_nemo_absl_flags_commandlineflag_internal.2608.0.0.dylib": {
+      "bytes": 33808,
+      "sha256": "1551e73c2fd69c05508979fd25b65bee1b03bfa7db5766470cf15cc689071136"
+    },
+    "libgen2_nemo_absl_flags_config.2608.0.0.dylib": {
+      "bytes": 81248,
+      "sha256": "43a2ac74401a2c06cb3fb0b8889054c5527ad101b9e3c8564215de604438f1ce"
+    },
+    "libgen2_nemo_absl_flags_internal.2608.0.0.dylib": {
+      "bytes": 99312,
+      "sha256": "16ed8a75284865bad8f8771fa036de8705f47b9f4f6ca318f5b0ea5277a023c9"
+    },
+    "libgen2_nemo_absl_flags_marshalling.2608.0.0.dylib": {
+      "bytes": 71304,
+      "sha256": "046d02e32dfc838caf6538036b379b797df56718a6211698401d765ed590a542"
+    },
+    "libgen2_nemo_absl_flags_parse.2608.0.0.dylib": {
+      "bytes": 164576,
+      "sha256": "ecf2180b456066dab6d2c39565471da5f9c2170af20bf9de91eb7c83f733677d"
+    },
+    "libgen2_nemo_absl_flags_private_handle_accessor.2608.0.0.dylib": {
+      "bytes": 34472,
+      "sha256": "aba6f561dd242a996b45d49388ed020334c4ae269cadf3e4e9d68119f808f3e5"
+    },
+    "libgen2_nemo_absl_flags_program_name.2608.0.0.dylib": {
+      "bytes": 69160,
+      "sha256": "7c57e853bfa5cabccf3b83157a3f55a123b2d63f2882d595c447b7587b40bed0"
+    },
+    "libgen2_nemo_absl_flags_reflection.2608.0.0.dylib": {
+      "bytes": 121008,
+      "sha256": "c6ed09c319fe5301bcbb8ae31268344512dae5af61dbef9501efc2f9cef7a51e"
+    },
+    "libgen2_nemo_absl_flags_usage.2608.0.0.dylib": {
+      "bytes": 84872,
+      "sha256": "d3fca41e9c26d5a9835060b9e768b07731d7d0bf9c01e50f62a449918e57a83e"
+    },
+    "libgen2_nemo_absl_flags_usage_internal.2608.0.0.dylib": {
+      "bytes": 148680,
+      "sha256": "a918202de0095ff90e1fdf24f14c38e4e6c77aa36e9d96a54b9b3d9b717bfce8"
+    },
+    "libgen2_nemo_absl_graphcycles_internal.2608.0.0.dylib": {
+      "bytes": 55664,
+      "sha256": "66eff2d0752f927a74c2c5fb287cbfc999c8d054e3b351d6087709bbb2d5da13"
+    },
+    "libgen2_nemo_absl_hardening.2608.0.0.dylib": {
+      "bytes": 16608,
+      "sha256": "99bb9729925432c4d241b95af3906f1395261fd2b17b730f6a2f5a82fc74bd08"
+    },
+    "libgen2_nemo_absl_hash.2608.0.0.dylib": {
+      "bytes": 50488,
+      "sha256": "85688a5840be6c7243a0c8f49f41d3c5ca2932389513b3096337bc0a16cbdcb0"
+    },
+    "libgen2_nemo_absl_hashtablez_sampler.2608.0.0.dylib": {
+      "bytes": 88744,
+      "sha256": "737be84be2567f41f43135cb90002747aa4974a7daec4fdfa9b697afa01c14d0"
+    },
+    "libgen2_nemo_absl_int128.2608.0.0.dylib": {
+      "bytes": 39672,
+      "sha256": "3017fd09688cbef8f40fbbf7a988506c85cd56beb4add51037a3b7448679c9aa"
+    },
+    "libgen2_nemo_absl_kernel_timeout_internal.2608.0.0.dylib": {
+      "bytes": 52544,
+      "sha256": "e3b471738bc3513e3c668a86100179c51129ed21f597f174d8774825f1427217"
+    },
+    "libgen2_nemo_absl_leak_check.2608.0.0.dylib": {
+      "bytes": 17296,
+      "sha256": "ef3119bd72290172a0d4b9c5b0ab892f1d65bf7ed9ea250095ef23fed290122e"
+    },
+    "libgen2_nemo_absl_log_entry.2608.0.0.dylib": {
+      "bytes": 53800,
+      "sha256": "3df1d93f95d33b1ddf637854a7b69f64847052f96de723e8d34a1398eec24c3f"
+    },
+    "libgen2_nemo_absl_log_globals.2608.0.0.dylib": {
+      "bytes": 88224,
+      "sha256": "2ff6cb3419b69d1473e61ca1ef40903f149bf24d5c56b0a1f7a02231d351f912"
+    },
+    "libgen2_nemo_absl_log_initialize.2608.0.0.dylib": {
+      "bytes": 66192,
+      "sha256": "65cd82b49e585eb38fb6e548fc757330129c499d9240385f0b152deea5da4ba8"
+    },
+    "libgen2_nemo_absl_log_internal_check_op.2608.0.0.dylib": {
+      "bytes": 94088,
+      "sha256": "ec5c0412d5bc00f17f6b1e102a21839adc6da481663cfeac8d198f1c1840b7c4"
+    },
+    "libgen2_nemo_absl_log_internal_conditions.2608.0.0.dylib": {
+      "bytes": 33680,
+      "sha256": "ef0f01d13ab81a0770ac42e50d0a45af5183c4556cf4188330e0d5f740b82ed7"
+    },
+    "libgen2_nemo_absl_log_internal_fnmatch.2608.0.0.dylib": {
+      "bytes": 33416,
+      "sha256": "80388fb3187ad531d992345222051623a9ec1f332d050da1605b1cbb4e68dff1"
+    },
+    "libgen2_nemo_absl_log_internal_format.2608.0.0.dylib": {
+      "bytes": 53536,
+      "sha256": "eefcd72c197b259b34a2dcdf52abff16ee7db73d86131db9c2e088cddfea7d4c"
+    },
+    "libgen2_nemo_absl_log_internal_globals.2608.0.0.dylib": {
+      "bytes": 68216,
+      "sha256": "69fc1b7fc5eff9fc89b97724a8f48c2c2d02ba9ec29436e3816bc38f67665f72"
+    },
+    "libgen2_nemo_absl_log_internal_log_sink_set.2608.0.0.dylib": {
+      "bytes": 90576,
+      "sha256": "e951744e2e59a57e4f736ae701aefd7f97a912d34f779acefa04995cb8ba84a4"
+    },
+    "libgen2_nemo_absl_log_internal_message.2608.0.0.dylib": {
+      "bytes": 129512,
+      "sha256": "c2f5b8a42948527164f0b5cb4ce6643330f8d8edc9bedc375a444a3a80c42fb1"
+    },
+    "libgen2_nemo_absl_log_internal_nullguard.2608.0.0.dylib": {
+      "bytes": 16776,
+      "sha256": "41061d00f5ccd64fec570e771dbd9e0c67b78c3862d1f882a2818ae81ed2856f"
+    },
+    "libgen2_nemo_absl_log_internal_proto.2608.0.0.dylib": {
+      "bytes": 50400,
+      "sha256": "84dee3e248301a491a75573eff10cceb266940bdbcf234d393f80a775da0cb27"
+    },
+    "libgen2_nemo_absl_log_internal_structured_proto.2608.0.0.dylib": {
+      "bytes": 54848,
+      "sha256": "48f3d0e3d11b88174870c1ce9790956c668abcfec48c63494871fd2fcc973c66"
+    },
+    "libgen2_nemo_absl_log_severity.2608.0.0.dylib": {
+      "bytes": 36104,
+      "sha256": "72fee02f9348c703f917355b41f438e8e1ac7484c76e65cc7418ac64f5f6d7ac"
+    },
+    "libgen2_nemo_absl_log_sink.2608.0.0.dylib": {
+      "bytes": 49960,
+      "sha256": "39f34dcfb808069c56890963b5efd9be97803e45c9aef423900b901d855b774b"
+    },
+    "libgen2_nemo_absl_malloc_internal.2608.0.0.dylib": {
+      "bytes": 39376,
+      "sha256": "c5b20e0087dcc51eaabb16607c074d2926d0501dcfa441b3467f99bd79393c0f"
+    },
+    "libgen2_nemo_absl_random_distributions.2608.0.0.dylib": {
+      "bytes": 51632,
+      "sha256": "d6ba830291e8a9c72e34798ec48d03effe713970dcb489de217aee9528c5d1a4"
+    },
+    "libgen2_nemo_absl_random_internal_entropy_pool.2608.0.0.dylib": {
+      "bytes": 86272,
+      "sha256": "e7b21ce0ab799ce27e2ffc97fae2efed7ae846092cd332458a463caeca1994ff"
+    },
+    "libgen2_nemo_absl_random_internal_platform.2608.0.0.dylib": {
+      "bytes": 16704,
+      "sha256": "daa2d732f9a10ce306f86eb33797bb0ea7bdf617a7073d584169919fd4ddd821"
+    },
+    "libgen2_nemo_absl_random_internal_randen.2608.0.0.dylib": {
+      "bytes": 34400,
+      "sha256": "8d567d2df09ddeaca1263a731c60b3d210e1a1e7794bdf0ee5c4d5ce7f1f2772"
+    },
+    "libgen2_nemo_absl_random_internal_randen_hwaes.2608.0.0.dylib": {
+      "bytes": 34152,
+      "sha256": "8a50a8d110e57edf7f8a113e6cb6028584659a5bb72cd8ec4c9ca9f2d006f6f1"
+    },
+    "libgen2_nemo_absl_random_internal_randen_hwaes_impl.2608.0.0.dylib": {
+      "bytes": 33512,
+      "sha256": "b4d08b1da9d604a3af3581d9fc82bbb5a7e2f6d330727fca4e26d45584b180f7"
+    },
+    "libgen2_nemo_absl_random_internal_randen_slow.2608.0.0.dylib": {
+      "bytes": 33544,
+      "sha256": "54c9ac99da931c2632e3f919e958b97ae5879d4a010f8c652b6986cdb77af4ae"
+    },
+    "libgen2_nemo_absl_random_internal_seed_material.2608.0.0.dylib": {
+      "bytes": 50744,
+      "sha256": "9a9d92d55a4ca73a5da774f9047b1dc981b155906df8d38c3848624d0bcd0537"
+    },
+    "libgen2_nemo_absl_random_seed_gen_exception.2608.0.0.dylib": {
+      "bytes": 34200,
+      "sha256": "6c00c78c96f784f84e874ab67aaa9346165c85a52501febd3eabd4bb5de1e4b1"
+    },
+    "libgen2_nemo_absl_random_seed_sequences.2608.0.0.dylib": {
+      "bytes": 67824,
+      "sha256": "72392658f94fbd607b3c0217d3e1d3c1c50856357efb8a43e3ceda3f39245c49"
+    },
+    "libgen2_nemo_absl_raw_hash_set.2608.0.0.dylib": {
+      "bytes": 114024,
+      "sha256": "d0ad8b83deabf4a897f51694024e3592c492ad4b9733e876f9a92f99a5cb3c4a"
+    },
+    "libgen2_nemo_absl_raw_logging_internal.2608.0.0.dylib": {
+      "bytes": 52096,
+      "sha256": "bef7818002f2a735b9266cd04405b10939c82c6ecfa6a79d20f22a45b2df16cd"
+    },
+    "libgen2_nemo_absl_source_location.2608.0.0.dylib": {
+      "bytes": 16456,
+      "sha256": "1a98c58c421fb882734c4a781a6c6ee7e0a222d79cb53fce5a81db3760932127"
+    },
+    "libgen2_nemo_absl_spinlock_wait.2608.0.0.dylib": {
+      "bytes": 34072,
+      "sha256": "38ed95a8109a1baa3bc05d47553016d3e8b3d20931f38ef2ab60c9920f60c6b2"
+    },
+    "libgen2_nemo_absl_stacktrace.2608.0.0.dylib": {
+      "bytes": 51424,
+      "sha256": "aabdc004c758a274958b3f264b934d08c32e2aed3a3f43612d19268216b5483e"
+    },
+    "libgen2_nemo_absl_status.2608.0.0.dylib": {
+      "bytes": 140248,
+      "sha256": "d930766bfceb5579e5f6e1ec596bf2284d8435fb4caa1880ee2e0262c4663d55"
+    },
+    "libgen2_nemo_absl_status_builder.2608.0.0.dylib": {
+      "bytes": 95112,
+      "sha256": "6db0d39a35c72c9060480f0268d257a1948f204e88921097ee59057786d1078b"
+    },
+    "libgen2_nemo_absl_statusor.2608.0.0.dylib": {
+      "bytes": 88496,
+      "sha256": "4070b47b73d5aec7576b97447162b57346cc93d207b2ad171edf682a2b9d00bb"
+    },
+    "libgen2_nemo_absl_str_format_internal.2608.0.0.dylib": {
+      "bytes": 123616,
+      "sha256": "1155e6d866e08e9281bace58f168fe46653ad17dd81e7d338474a5c2981b16df"
+    },
+    "libgen2_nemo_absl_strerror.2608.0.0.dylib": {
+      "bytes": 35344,
+      "sha256": "453e565ecd2ce1b1601545fdac71d4a1f96f23f87e783b2182583a3bb96e58ab"
+    },
+    "libgen2_nemo_absl_strings.2608.0.0.dylib": {
+      "bytes": 154608,
+      "sha256": "3c8bc2140a9472b2d316f1c359b76ecf276dba8f82512a2801877984d7d70ee7"
+    },
+    "libgen2_nemo_absl_strings_internal.2608.0.0.dylib": {
+      "bytes": 37928,
+      "sha256": "efb99d3f84bb415b1c51a7d8a0874bdb21cc3a1d3899d4b35787fa715490412d"
+    },
+    "libgen2_nemo_absl_symbolize.2608.0.0.dylib": {
+      "bytes": 52128,
+      "sha256": "c60639d73077403dc426870bbe9849bda5884244467dc263adbfa15ae9e69d43"
+    },
+    "libgen2_nemo_absl_synchronization.2608.0.0.dylib": {
+      "bytes": 122680,
+      "sha256": "c24207603391bed54a3b21bc00782b67cf8c20cb1060636a5898916c88cd1f5e"
+    },
+    "libgen2_nemo_absl_throw_delegate.2608.0.0.dylib": {
+      "bytes": 41872,
+      "sha256": "531fc8f110d4f81d55161039ce879aa5c3e1eb381040e66d47a646a7367d02bb"
+    },
+    "libgen2_nemo_absl_time.2608.0.0.dylib": {
+      "bytes": 93488,
+      "sha256": "e1f00f03647efa33cee3d17abf940a8522924cbdd44c6d90440e665827eb4f64"
+    },
+    "libgen2_nemo_absl_time_zone.2608.0.0.dylib": {
+      "bytes": 146640,
+      "sha256": "7ecffe155277c351fb69c7efa5b113b2d836ea8dfd15bd5f95c95ff906d4fb8e"
+    },
+    "libgen2_nemo_absl_tracing_internal.2608.0.0.dylib": {
+      "bytes": 16800,
+      "sha256": "d379e1b2ddfa1ea08838c279e00828b58d61fb765c4e708299c668daff4a07e8"
+    },
+    "libgen2_nemo_absl_utf8_for_code_point.2608.0.0.dylib": {
+      "bytes": 16704,
+      "sha256": "f2f83bcf43c4eb2c4dfc73f07502e1f6c507b237ba672dcb2a6f84581cffcf08"
+    },
+    "libgen2_nemo_absl_vlog_config_internal.2608.0.0.dylib": {
+      "bytes": 76528,
+      "sha256": "2a73121d97006695ebdb524ddd52923ff77af436ef0b0d04394549555cb4ff78"
+    },
+    "libgen2_nemo_ggml-base.0.25.1.dylib": {
+      "bytes": 746856,
+      "sha256": "1534b978146d11c1c9f0faa139fab2d1cf1381b14cbebbfe2b189e2e65b905e1"
+    },
+    "libgen2_nemo_ggml-blas.0.25.1.dylib": {
+      "bytes": 58160,
+      "sha256": "3e5b5159d8ca6c9a416cc9785fd881b5af5cea60d23d814cbd67eb384e120802"
+    },
+    "libgen2_nemo_ggml-cpu.0.25.1.dylib": {
+      "bytes": 1014408,
+      "sha256": "3f4f90ec8f431c8ef02cd9463d7e40884a073d059e741b4c484b806ba051291a"
+    },
+    "libgen2_nemo_ggml.0.25.1.dylib": {
+      "bytes": 59368,
+      "sha256": "02e17f1116146d295ad09914cdb6fce5e536aee8fc78a93797ea4ef965327686"
+    },
+    "libgen2_nemo_nemo_speech_asr.dylib": {
+      "bytes": 1218024,
+      "sha256": "75db2250135bdb0682f3704c263c30e8cd64b939512e4568b00e4bec4f2b4ae2"
+    },
+    "libgen2_nemo_nemo_speech_asr_c.1.dylib": {
+      "bytes": 95312,
+      "sha256": "22003cfeafdbd68d90220457377954072bcf190883227654648a5c70c39d6cc4"
+    },
+    "libgen2_nemo_protobuf-lite.36.2.0.dylib": {
+      "bytes": 682928,
+      "sha256": "515094e8b828a2796efd97bf526bb8e7b333987c9e412e4eb9afd26a9c05515e"
+    },
+    "libgen2_nemo_sentencepiece.0.0.0.dylib": {
+      "bytes": 595704,
+      "sha256": "6b1c6715706fa58091ad0b139c0db3e88d643992421ed11113fb956805d3ea95"
+    },
+    "libgen2_nemo_utf8_validity.36.2.0.dylib": {
+      "bytes": 33168,
+      "sha256": "123d836c945fd4d44484f4ea646ec261fec452f0cecc69195075435e37dec6aa"
+    },
+    "libnemo_speech_asr_c.dylib": {
+      "bytes": 95312,
+      "sha256": "22003cfeafdbd68d90220457377954072bcf190883227654648a5c70c39d6cc4"
+    },
+    "libonnxruntime.dylib": {
+      "bytes": 27493496,
+      "sha256": "db9cc868c754550f498127ca132d408caedb4cdce7e98dd231fe5405e5268033"
+    }
+  },
+  "logical_runtime_library_count": 92,
+  "bark_manifest": {
+    "bytes": 1134,
+    "sha256": "8cd94f24f677b74f9e92306039491f23e3e22863205e59a5bdda322026f98f8c"
+  },
+  "bark_files": {
+    "LICENSE": {
+      "bytes": 18961,
+      "sha256": "55c4e781e615d75bc57145da5074f88a1bcd83c82dc04911ac71bf96b8662bca"
+    },
+    "config.json": {
+      "bytes": 121,
+      "sha256": "db59e29a3c1fde6a081bf04965e72bba26cd65be1aee65b064360df8aef468e5"
+    },
+    "decoder_joint-model.onnx": {
+      "bytes": 9981,
+      "sha256": "343342536805c59a213d257a17ba5f1c910bd50a7d0218949ecc6f064d14e031"
+    },
+    "decoder_joint-model.onnx.data": {
+      "bytes": 27036066,
+      "sha256": "4493b44b28b943bbcba5963277f5d7cbb4804975f1980a89cc6a8974c27cf9e6"
+    },
+    "encoder-model.onnx": {
+      "bytes": 973573,
+      "sha256": "e48a048b743343b8caf5c0dbf64ddcde01f0f2cc67ad2044c94e58b426c59ff5"
+    },
+    "encoder-model.onnx.data": {
+      "bytes": 459978240,
+      "sha256": "3bdec8016fac686e680e514b76fb80bb6bf99c9e189ae646f2720049e37e8da1"
+    },
+    "greyhound.json": {
+      "bytes": 173,
+      "sha256": "51bf4fbc9242c6fb704d4065c6eeb5d5ccee0a7b5bf660adde0ec92e763a459b"
+    },
+    "vocab.txt": {
+      "bytes": 93939,
+      "sha256": "d58544679ea4bc6ac563d1f545eb7d474bd6cfa467f0a6e2c1dc1c7d37e3c35d"
+    }
+  },
+  "package_manifest": {
+    "bytes": 168593,
+    "sha256": "960e16c22b8100916545c6d1b9d768d9bb6a6a2c64fac0030d21fc3cee8bf63e"
+  }
+}

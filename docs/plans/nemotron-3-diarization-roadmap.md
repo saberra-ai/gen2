@@ -99,6 +99,15 @@ Its [actual artifact-only admission](../../benches/results/nemotron-diarization/
 now passes all 200 producer members and original API/source/run/ZIP identities at
 `23ddbc3f`, with no package/source/npm restoration, build, signing or SDK/app/model
 execution. The reserve is released; full construction stays pending.
+The [actual bounded complete-app construction](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-bounded-pnola-app-construction/collection-qualification.json)
+now passes all six commands at `edf7b898`, with 246 app entries/94 Frameworks,
+closed unsigned-payload/source/package mappings, exact model/Bark/notices,
+arm64/minimum26.0 deployment and deep strict ad-hoc hardened signing with the
+original entitlements. All 109 private source files, 6,455 npm entries and prior
+apps/assets remain unchanged. The controller was observed terminal before
+independent collection. This is construction/static evidence; SDK/app inference,
+automatic recorded/live resolution and original quality/desktop/release gates
+stay pending.
 
 Latest pooled CPU verification passes [30m/1h streams](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-long/collection-qualification.json),
 [mixed-model residency](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-mixed/collection-qualification.json)
