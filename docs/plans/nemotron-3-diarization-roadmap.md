@@ -48,7 +48,14 @@ persistent pool, 1,056 independently retained phase vectors and complete enabled
 worker intervals. Its separate observer bound and every original kernel/release
 predicate remain mandatory. All 485 local tool tests pass with seven Windows-only
 skips; the protocol binds 120 tools, 3,420 repository references and 33 local
-import modules. Actual Windows execution remains pending.
+import modules. The [actual worker timing result](../research/nemotron-windows-q8-worker-timing-results.md)
+now independently admits all 1,056 vectors, 9,856 enabled worker intervals,
+twelve half tables, 36 support rejections and 95 owned command cleanups. Only
+8/48 four-worker primary kernel comparisons pass both original predicates;
+42/48 primary/position observer comparisons pass both bounds. Speedup and
+bounded-observer interpretation remain false. All thirteen feature-CI jobs pass
+at the producer. Preserve production and the failed predictions; no model RTF,
+causal scheduling/spill conclusion or release/main promotion is established.
 
 Remaining release work as of 2026-10-17:
 
