@@ -1,0 +1,240 @@
+{
+  "source_commit": "ceaf7590b5766387a0415d10f2d69bfb49133f36",
+  "scope": "V2 host-only fresh owned fixture with Python-handler signal deferral; no guest operations or release qualification.",
+  "host": {
+    "cpu": "Apple M4 Pro",
+    "platform": "macOS-26.3-arm64-arm-64bit",
+    "euid": 502
+  },
+  "commands": [
+    {
+      "name": "offline-controls",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-search-bit-control-local-v2/offline.sb",
+        "/usr/bin/python3",
+        "-B",
+        "-c",
+        "import os,socket,sys\nfor name in sys.argv[1:]:\n try: fd=os.open(name,os.O_WRONLY|os.O_CREAT,0o600) if not name.endswith('.gguf') else os.open(name,os.O_RDONLY)\n except PermissionError: pass\n else: os.close(fd); raise RuntimeError('sandbox boundary failed')\ns=socket.socket()\ntry:s.connect(('127.0.0.1',9))\nexcept PermissionError:pass\nelse:raise RuntimeError('network allowed')\ns.close()\n",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-search-bit-control-local-v2/denied-write.bin",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-search-bit-control-local-v2/denied.gguf"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-search-bit-control-local-v2",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-search-bit-control-local-v2",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-search-bit-control-local-v2/",
+        "LC_ALL": "C",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "pid": 30377,
+      "returncode": 0,
+      "reaped": true,
+      "wall_seconds": 0.18273612500000003
+    },
+    {
+      "name": "host-control",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-search-bit-control-local-v2/offline.sb",
+        "/usr/bin/python3",
+        "-B",
+        "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/macos_vm_search_bit_control.py",
+        "--control",
+        "/Users/victor/.cache/gen2-nemotron3-n0/macos-search-bit-control-local-v2/fixture"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/macos-search-bit-control-local-v2",
+      "environment": {
+        "PATH": "/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/macos-search-bit-control-local-v2",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/macos-search-bit-control-local-v2/",
+        "LC_ALL": "C",
+        "PYTHONDONTWRITEBYTECODE": "1"
+      },
+      "pid": 30394,
+      "returncode": 0,
+      "reaped": true,
+      "wall_seconds": 0.19798570799999998
+    }
+  ],
+  "host_control_qualified": true,
+  "guest_access_qualified": false,
+  "new_guest_operations": 0,
+  "storage": {
+    "available_bytes": 11122368512,
+    "vm_initial_required_bytes": 128849018880,
+    "vm_running_required_bytes": 85899345920
+  },
+  "pins": {
+    "protocol": {
+      "bytes": 1886,
+      "sha256": "4d99cd06a921aea1c98daba84e57d87636b9556fcb36b459762cf9f20b01c605"
+    },
+    "runner": {
+      "bytes": 7086,
+      "sha256": "cce9d0e50a95ac340c6f692b8ffcb3a70c900d865e706eab19594a1a42753f91"
+    }
+  },
+  "report": {
+    "account_content_read": false,
+    "acl_policy_qualified": false,
+    "before": {
+      "bytes": 128,
+      "ctime_ns": 1792271322011567501,
+      "device": 16777233,
+      "file_type": 16384,
+      "flags": 0,
+      "full_mode": 16768,
+      "inode": 73661506,
+      "links": 4,
+      "mtime_ns": 1792271322011540668,
+      "observed_gid": 20,
+      "observed_uid": 502,
+      "permissions": 384
+    },
+    "children": {
+      "groups": {
+        "bytes": 64,
+        "ctime_ns": 1792271322011552751,
+        "device": 16777233,
+        "file_type": 16384,
+        "flags": 0,
+        "full_mode": 16768,
+        "inode": 73661508,
+        "links": 2,
+        "mtime_ns": 1792271322011539751,
+        "observed_gid": 20,
+        "observed_uid": 502,
+        "permissions": 384
+      },
+      "users": {
+        "bytes": 64,
+        "ctime_ns": 1792271322011519460,
+        "device": 16777233,
+        "file_type": 16384,
+        "flags": 0,
+        "full_mode": 16768,
+        "inode": 73661507,
+        "links": 2,
+        "mtime_ns": 1792271322011505626,
+        "observed_gid": 20,
+        "observed_uid": 502,
+        "permissions": 384
+      }
+    },
+    "control_passed": true,
+    "ctime_changed": true,
+    "denials_before": {
+      "groups": 13,
+      "users": 13
+    },
+    "directory_contents_read": false,
+    "during": {
+      "bytes": 128,
+      "ctime_ns": 1792271322011784917,
+      "device": 16777233,
+      "file_type": 16384,
+      "flags": 0,
+      "full_mode": 16832,
+      "inode": 73661506,
+      "links": 4,
+      "mtime_ns": 1792271322011540668,
+      "observed_gid": 20,
+      "observed_uid": 502,
+      "permissions": 448
+    },
+    "guest_access_qualified": false,
+    "host_only": true,
+    "permission_operation": "ordinary O_RDONLY|O_DIRECTORY|O_NOFOLLOW descriptor; fchmod",
+    "python_version": "3.9.6",
+    "restoration_confirmed": true,
+    "restored": {
+      "bytes": 128,
+      "ctime_ns": 1792271322011855959,
+      "device": 16777233,
+      "file_type": 16384,
+      "flags": 0,
+      "full_mode": 16768,
+      "inode": 73661506,
+      "links": 4,
+      "mtime_ns": 1792271322011540668,
+      "observed_gid": 20,
+      "observed_uid": 502,
+      "permissions": 384
+    },
+    "root_before": {
+      "bytes": 96,
+      "ctime_ns": 1792271322011451543,
+      "device": 16777233,
+      "file_type": 16384,
+      "flags": 0,
+      "full_mode": 16832,
+      "inode": 73661505,
+      "links": 3,
+      "mtime_ns": 1792271322011451543,
+      "observed_gid": 20,
+      "observed_uid": 502,
+      "permissions": 448
+    },
+    "root_restored": {
+      "bytes": 96,
+      "ctime_ns": 1792271322011451543,
+      "device": 16777233,
+      "file_type": 16384,
+      "flags": 0,
+      "full_mode": 16832,
+      "inode": 73661505,
+      "links": 3,
+      "mtime_ns": 1792271322011451543,
+      "observed_gid": 20,
+      "observed_uid": 502,
+      "permissions": 448
+    },
+    "runtime": "/Applications/Xcode.app/Contents/Developer/usr/bin/python3",
+    "schema_version": 1,
+    "security_before": {
+      "abi_shape_qualified": true,
+      "acl_policy_qualified": false,
+      "attribute_bytes": 0,
+      "attribute_offset": 12,
+      "bytes": 12,
+      "canonical_empty": true,
+      "null_reference": false,
+      "raw_base64": "DAAAAAgAAAAAAAAA",
+      "recognized_filesec": false,
+      "returncode": 0,
+      "sha256": "0f38e56a1a16881d0a94612ea9af7bf78f80523a679660f56bfcc35d67be6a59",
+      "status": "ok"
+    },
+    "security_during": {
+      "abi_shape_qualified": true,
+      "acl_policy_qualified": false,
+      "attribute_bytes": 0,
+      "attribute_offset": 12,
+      "bytes": 12,
+      "canonical_empty": true,
+      "null_reference": false,
+      "raw_base64": "DAAAAAgAAAAAAAAA",
+      "recognized_filesec": false,
+      "returncode": 0,
+      "sha256": "0f38e56a1a16881d0a94612ea9af7bf78f80523a679660f56bfcc35d67be6a59",
+      "status": "ok"
+    },
+    "security_restored": {
+      "abi_shape_qualified": true,
+      "acl_policy_qualified": false,
+      "attribute_bytes": 0,
+      "attribute_offset": 12,
+      "bytes": 12,
+      "canonical_empty": true,
+      "null_reference": false,
+      "raw_base64": "DAAAAAgAAAAAAAAA",
+      "recognized_filesec": false,
+      "returncode": 0,
+      "sha256": "0f38e56a1a16881d0a94612ea9af7bf78f80523a679660f56bfcc35d67be6a59",
+      "status": "ok"
+    }
+  }
+}

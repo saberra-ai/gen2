@@ -98,5 +98,16 @@ must retain `restore entry`, `mode restored`, `signal` in that order; both
 prior handlers and original mode must be restored. Existing failure controls
 remain required. The separate `macos-search-bit-control-v2.protocol.json`
 freezes a fresh host fixture and changed source; the original protocol and
-21-member receipt remain unchanged. Actual V2 host execution follows review
-and commit. This is no guest admission or permission-policy change.
+21-member receipt remain unchanged. This is no guest admission or
+permission-policy change.
+
+Actual V2 execution at `ceaf7590b5766387a0415d10f2d69bfb49133f36` passes
+both zero-exit, reaped children in a separate fresh host fixture. The
+[V2 receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-search-bit-host-control-v2/collection-qualification.json)
+retains exact0600/0700/0600 restoration, unchanged root/path identity and
+identical12/8/0 security responses, with changed ctime. All557 tool tests
+pass with seven Windows-only skips, including twelve focused filesystem
+controls; both spawn-window termination controls also pass. The original CI
+failure and deterministic worker-delivery red/green logs are preserved.
+Actual admission has11,122,368,512bytes available, below the unchanged VM
+reserve. Guest access, ACL policy and every original release gate remain open.

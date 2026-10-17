@@ -220,7 +220,11 @@ Remaining release work as of 2026-10-17:
   thread receives the signal; the initial execution does not qualify that
   case. A deterministic Mac reproduction confirms it. The separate V2 repair
   defers Python handlers through restoration/descriptor closure and preserves
-  the original failed CI and first receipt; actual V2 qualification is separate.
+  the original failed CI and first receipt. Actual V2 host qualification now
+  passes both zero-exit/reaped children and exact restoration; all557 tool
+  tests pass with seven Windows-only skips, including the deterministic
+  worker-delivery regression. This remains a host prerequisite, with no guest
+  or release qualification.
 - Finish each advertised platform/backend's performance, deployment and public
   signing/notarization requirements before promotion. Windows CPU functional
   evidence passes but its observed live RTF remains above one; the

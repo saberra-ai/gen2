@@ -1,0 +1,17 @@
+test_actual_directory_lookup_changes_and_original_mode_restores (test_macos_vm_search_bit_control.SearchBitControlTests) ... ok
+test_base_exception_restores_and_closes_descriptor (test_macos_vm_search_bit_control.SearchBitControlTests) ... ok
+test_existing_directory_and_symlink_are_never_changed (test_macos_vm_search_bit_control.SearchBitControlTests) ... ok
+test_failed_restore_remains_failed_and_fixture_can_be_recovered (test_macos_vm_search_bit_control.SearchBitControlTests) ... ok
+test_metadata_change_does_not_skip_restoring_same_inode_mode (test_macos_vm_search_bit_control.SearchBitControlTests) ... ok
+test_mutator_failure_after_changing_mode_still_restores (test_macos_vm_search_bit_control.SearchBitControlTests) ... ok
+test_pending_signal_during_restore_cannot_skip_mode_restoration (test_macos_vm_search_bit_control.SearchBitControlTests) ... ok
+test_replaced_path_does_not_change_replacement_mode (test_macos_vm_search_bit_control.SearchBitControlTests) ... ok
+test_replaced_root_does_not_qualify_original_fixture_path (test_macos_vm_search_bit_control.SearchBitControlTests) ... ok
+test_security_change_is_retained_and_not_called_restored (test_macos_vm_search_bit_control.SearchBitControlTests) ... ok
+test_signal_at_cleanup_entry_is_deferred_until_after_restore (test_macos_vm_search_bit_control.SearchBitControlTests) ... ok
+test_worker_thread_signal_during_cleanup_cannot_interrupt_restoration (test_macos_vm_search_bit_control.SearchBitControlTests) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.044s
+
+OK
