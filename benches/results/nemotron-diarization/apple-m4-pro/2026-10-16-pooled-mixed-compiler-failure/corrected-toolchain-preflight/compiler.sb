@@ -1,0 +1,6 @@
+(version 1)
+(allow default)
+(deny network*)
+(deny file-read* (subpath "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/models") (subpath "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/providers"))
+(deny file-write* (subpath "/Users/victor/workspace/gen2-nemotron3-n0") (subpath "/Users/victor/.cache/gen2-nemotron3-n0/pooled-mixed-build-tools-preflight-v1/source") (subpath "/opt/homebrew"))
+(deny file-read* (require-all (regex #".*\.(nemo|gguf|safetensors|onnx|npy|f32)$") (require-not (literal "/Users/victor/workspace/gen2-nemotron3-n0/assets/bark/nemo128.f32"))))

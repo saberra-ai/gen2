@@ -5,12 +5,31 @@ import subprocess
 import tempfile
 import unittest
 
-from qualify_macos_pooled_mixed import admit_builtin_mel_table, compiler_policy, mixed_policy, mixed_runtime_policy, verify_vendor_worktree
+from qualify_macos_pooled_mixed import admit_builtin_mel_table, compiler_tools_environment, compiler_policy, mixed_policy, mixed_runtime_policy, verify_vendor_worktree
 from build_valid_mel_candidate import descriptor
 from qualify_macos_portable_runtime import CONTROL
 
 
 class PooledMixedPolicy(unittest.TestCase):
+    def test_compiler_tools_are_pinned_and_available_before_preparation(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary).resolve()
+            records = {}
+            for name in ['cmake', 'ninja', 'pkg-config']:
+                tool = root / name
+                tool.write_text('#!/bin/sh\nexit 0\n')
+                tool.chmod(0o755)
+                records[name] = {'path': str(tool), 'file': descriptor(tool)}
+            environment = compiler_tools_environment(root / 'cargo', records)
+            self.assertIn(str(root), environment['PATH'].split(':'))
+            self.assertEqual(environment['CMAKE'], str(root / 'cmake'))
+            self.assertEqual(environment['CMAKE_BUILD_PARALLEL_LEVEL'], '2')
+            with self.assertRaisesRegex(ValueError, 'compiler tool pins'):
+                compiler_tools_environment(root / 'cargo', {})
+            (root / 'cmake').write_text('changed')
+            with self.assertRaisesRegex(ValueError, 'compiler tool differs'):
+                compiler_tools_environment(root / 'cargo', records)
+
     def test_real_mel_table_requires_a_frozen_pin_before_any_preparation(self):
         repo = Path(__file__).resolve().parents[2]
         name = 'assets/bark/nemo128.f32'

@@ -65,6 +65,23 @@ def admit_builtin_mel_table(repo, protocol):
     return repo / name
 
 
+def compiler_tools_environment(cargo, records):
+    names = {'cmake', 'ninja', 'pkg-config'}
+    if set(records) != names:
+        raise ValueError('exact compiler tool pins required')
+    paths = {}
+    for name in sorted(names):
+        path = Path(records[name]['path'])
+        if (not path.is_absolute() or path.resolve(strict=True) != path
+                or descriptor(path) != records[name]['file'] or not os.access(path, os.X_OK)):
+            raise ValueError('frozen compiler tool differs: ' + name)
+        paths[name] = path
+    directories = dict.fromkeys([str(Path(cargo).resolve().parent),
+        *[str(paths[name].parent) for name in sorted(names)], '/usr/bin', '/bin', '/usr/sbin', '/sbin'])
+    return {'PATH': ':'.join(directories), 'CMAKE': str(paths['cmake']),
+            'PKG_CONFIG': str(paths['pkg-config']), 'CMAKE_BUILD_PARALLEL_LEVEL': '2'}
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ['protocol', 'producer-zip', 'producer-metadata', 'public-helpers',
@@ -87,6 +104,7 @@ def main():
 
     def frozen():
         admit_builtin_mel_table(repo, p)
+        compiler_tools_environment(shutil.which('cargo') or '/missing/cargo', p['compiler_tools'])
         original = json.loads((tools / 'valid-mel-mixed.protocol.json').read_text())
         vendor = repo / 'vendor/llama-cpp-sys-2/llama.cpp'
         if (args.protocol.read_bytes() != protocol_bytes
@@ -186,7 +204,7 @@ def main():
         cargo = shutil.which('cargo')
         if not cargo:
             raise ValueError('Cargo bootstrap missing')
-        compile_env = {**env, 'PATH': str(Path(cargo).parent) + ':/usr/bin:/bin:/usr/sbin:/sbin',
+        compile_env = {**env, **compiler_tools_environment(cargo, p['compiler_tools']),
             'HOME': str(Path.home()), 'CARGO_HOME': str(Path(os.environ.get('CARGO_HOME', str(Path.home() / '.cargo'))).resolve()),
             'RUSTUP_HOME': str(Path(os.environ.get('RUSTUP_HOME', str(Path.home() / '.rustup'))).resolve()),
             'CARGO_TARGET_DIR': str(output / 'cargo-target'), 'MACOSX_DEPLOYMENT_TARGET': '26.0',

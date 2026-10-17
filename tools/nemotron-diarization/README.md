@@ -789,11 +789,19 @@ original failed protocol/output and an initial collection-only submodule-path
 error are retained. Corrected offline collection verifies the parent and vendor
 sources in their respective repositories.
 
-The separately frozen `macos-pooled-mixed-v2.protocol.json` adds the mandatory
-source pin and rejects missing/changed pins before output preparation, retaining
-all original assets, tests and acceptance rules. All 231 local tools tests pass,
-including the missing-pin regression. V2 remains unrun. Tiny-silence residency
-checks cannot establish speech quality or simultaneous neural execution.
+V2 adds the mandatory source pin and rejects missing/changed pins before output
+preparation. Its [actual failed compiler receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-mixed-compiler-failure/collection-qualification.json)
+shows controls/mel readability/Rust version success, then Rust helper build101
+because CMake is absent from the restricted PATH. No native version or neural
+command ran. Parent and vendor pins verify at their respective original commits.
+
+`macos-pooled-mixed-v3.protocol.json` separately pins and admits the actual
+CMake/Ninja/pkg-config executables and binds their compiler environment before
+output preparation. Actual tool versions and a tiny C/C++ static library pass
+under the restricted compiler sandbox, with models denied. All 232 local tools
+tests pass. V3 is unrun; all original mixed assets, tests and acceptance rules
+remain unchanged. Tiny-silence residency checks cannot establish speech quality
+or simultaneous neural execution.
 
 `qualify_macos_portable_runtime.py` and `macos-portable-runtime-v2.protocol.json`
 freeze a separate fresh M1 receiver for the exact constructed artifacts. The

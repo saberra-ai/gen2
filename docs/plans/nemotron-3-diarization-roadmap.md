@@ -1016,13 +1016,22 @@ and failed output remain unchanged. An initial collection-only submodule-path
 error is also retained; corrected offline collection verifies parent sources at
 `cc1c644` and 3,703 vendor files at their declared vendor revision.
 
-`macos-pooled-mixed-v2.protocol.json` separately freezes the correction: require
-the exact built-in mel source pin before preparing output, and bind the original
-failure and protocol. It retains the same two real-Laya CPU load-order tests,
-Bark/Metal chat payloads, acceptance rules and sandbox boundaries. All 231 local
-tools tests pass, including the actual missing-pin regression. The second mixed
-attempt is prepared and unrun; it establishes no mixed runtime, simultaneous
-inference, speech quality, GUI or release pass.
+The separate V2 protocol corrects mandatory mel admission. Its [actual compiler
+failure receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-mixed-compiler-failure/collection-qualification.json)
+preserves the next attempt: controls, mel readability and Rust version checks
+pass, but the helper build exits 101 because its restricted PATH cannot find
+CMake. No native version query or neural test runs. All 368 parent and 3,703
+vendor source pins verify independently at their respective original commits.
+
+`macos-pooled-mixed-v3.protocol.json` freezes pinned CMake, Ninja and pkg-config
+executables, their compiler PATH and two-job CMake cap. Admission checks those
+exact executable paths/hashes before preparing output. A real tiny C/C++ static
+library configures and builds under the restricted compiler sandbox with model
+access denied; its logs are retained separately from failed mixed qualification.
+All 232 local tools tests pass. V3 retains the same runtime, two real-Laya CPU
+load-order tests, Bark/Metal chat payloads and acceptance rules. It remains
+unrun; no mixed runtime, simultaneous inference, speech quality, GUI or release
+pass is claimed.
 
 The [227-test feature matrix](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-227/qualification.json)
 at `aeb6ba8`, run 38989434879, passes all 13 jobs: all twelve OS/feature

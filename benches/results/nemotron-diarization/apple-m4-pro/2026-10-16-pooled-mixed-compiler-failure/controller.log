@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/qualify_macos_pooled_mixed.py", line 310, in <module>
+    main()
+    ~~~~^^
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/qualify_macos_pooled_mixed.py", line 214, in main
+    log = run('mixed-helper-build', [cargo, 'test', '--offline', '--locked', '--release', '--no-default-features',
+        '--features', 'backend-llamacpp,metal,asr-dynamic,laya-dynamic,backend-diar-nemo',
+        '--jobs', '2', '--message-format=json', '--manifest-path', repo / 'Cargo.toml',
+        '--test', 'diarization_mixed_native', '--no-run'], compile_sb, compile_env)
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/qualify_macos_pooled_mixed.py", line 136, in run
+    raise ValueError('mixed command failed: ' + name)
+ValueError: mixed command failed: mixed-helper-build

@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "source_commit": "36d39aa0ec98c143d517ede4fd242687f736bbc8",
+  "mixed_qualification_passed": false,
+  "declared_parent_source_pins_verified_at_original_commit": 368,
+  "declared_vendor_source_pins_verified_at_vendor_commit": 3703,
+  "vendor_revision": "847f447c310a3784d623a953e6f0bb07f04c0f27",
+  "source_admission": "Parent and vendor sources verified in their respective Git repositories at the declared revisions.",
+  "compiler_tool_resolution_failure": "Restricted PATH omits Homebrew CMake; CMake process never started.",
+  "actual_commands": [
+    {
+      "name": "compile-controls",
+      "returncode": 0
+    },
+    {
+      "name": "mel-build-input-readable",
+      "returncode": 0
+    },
+    {
+      "name": "rustc-version",
+      "returncode": 0
+    },
+    {
+      "name": "mixed-helper-build",
+      "returncode": 101
+    }
+  ],
+  "rust_helper_build_commands_started": 1,
+  "native_version_queries_started": 0,
+  "neural_commands_started": [],
+  "release_qualified": false,
+  "limits": [
+    "Actual compiler failure before CMake started. Rust helper build exited101; no native version query, neural or app command ran.",
+    "Original V2 protocol and outputs remain failed. Corrected tool discovery requires a new source/protocol freeze and fresh output with unchanged assets, tests and acceptance rules."
+  ],
+  "compiler_failure_preserved": true,
+  "corrected_toolchain_preflight_scope": "Pinned host tools and tiny C/C++ library configured/built under actual restricted compiler environment; zero models or native runtime queries. Separate from failed mixed qualification."
+}
