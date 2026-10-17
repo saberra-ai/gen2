@@ -4,8 +4,8 @@ Status: N0–N3 implemented and verified on macOS arm64 CPU; N4/N5 remain open. 
 
 Remaining release work as of 2026-10-17:
 
-- Finish the bounded CPU runtime's mixed Bark/Laya/Metal-chat qualification and
-  carry the selected runtime through complete-app verification. Its 30-minute
+- Carry the bounded CPU runtime through complete-app verification. Its mixed
+  Bark/Laya/Metal-chat checks and 30-minute
   and one-hour native/public checks now pass; earlier complete-app results use
   the separately identified pooled runtime.
 - Meet the original 20% DER target on every required meeting slice. The two AMI
@@ -71,7 +71,14 @@ now binds that exact completed long qualification before any full preparation.
 Its [actual artifact-only admission](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-bounded-mixed-admission/collection-qualification.json)
 passes the complete construction/public 200/60-member contracts at `29294bd1`,
 with no build, package/helper restoration, asset copying or native/model calls.
-The two unchanged Bark/actual-Laya/Metal-chat CPU load-order checks stay pending.
+The [actual bounded mixed result](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-bounded-mixed/collection-qualification.json)
+now passes all ten commands and both unchanged Bark/actual-Laya/Metal-chat CPU
+load orders at `38ec68da`. Both restore 29/29 Metal chat layers on the named M4,
+with unchanged budget/refusal/eviction/reload/shutdown assertions. All 27 asset/
+provider files, helper/package/source provenance, three exact 92-library audits,
+two ORT records, zero-runtime listing and storage/reserve checks verify. This
+qualifies tiny-silence residency/lifecycle only; complete-app, speech quality,
+GUI/microphone, fresh-machine and release gates remain open.
 
 Latest pooled CPU verification passes [30m/1h streams](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-long/collection-qualification.json),
 [mixed-model residency](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-mixed/collection-qualification.json)

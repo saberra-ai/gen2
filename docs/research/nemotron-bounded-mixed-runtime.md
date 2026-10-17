@@ -82,3 +82,23 @@ and passing one-test/275-test model-free logs. No work/home/tmp/build/helper/res
 tree or long-record copy is created; no package/helper/asset restoration,
 compiler, version probe or model executes. The reserve is released. Both actual
 mixed-model load-order processes remain pending.
+
+The [actual bounded mixed receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-bounded-mixed/collection-qualification.json)
+now passes at `38ec68da1d27ea32b19b2e17f4af6116d5be4a6a`. The existing controller
+handle was observed terminal with exit 0 before independent byte-only collection.
+All ten commands returned 0, including exactly the two preregistered fresh
+actual-Laya CPU load-order cases. Both retain all unchanged Bark/Laya/Nemotron
+budget, refusal, eviction, reload, restoration and zero-reservation shutdown
+assertions. Initial and restored chat placement is 29/29 layers on Metal,
+device `Apple M4 Pro`, in both processes.
+
+The 34-member receipt retains complete build/process logs, frozen source/protocol,
+long prerequisite, protected-input inventories, helper archive metadata and the
+independent collector. Both complete construction/public deliveries and exact
+native origin, all 27 asset/provider files, compiler-tool bytes, clean vendor
+sources, package provenance and helper payloads/modes verify independently.
+Three strict 92-library runtime audits, the two exact ORT auxiliary records and
+the zero-runtime/provider listing audit replay. The physical reserve is released
+and all original storage/deadline criteria pass. Tiny-silence residency checks
+do not establish simultaneous neural kernels, speech/attribution accuracy,
+complete-app behavior, physical microphone, fresh-machine or release support.
