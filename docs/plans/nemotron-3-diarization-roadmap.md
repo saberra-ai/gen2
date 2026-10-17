@@ -64,8 +64,17 @@ compiler and four-worker policy, six graph processes and a fixed
 control/candidate/candidate/control model sequence. Local source-only replay
 passes22 owned commands and both complete3,425-file maps; only candidate SGEMM
 changes. The original5% speedup,10% drift and strict below-one RTF checks remain
-separate, and all prior failed predictions remain failed. Actual Windows SDK,
-graph and model execution is pending; no production/public/release gate closes.
+separate, and all prior failed predictions remain failed. The [actual full-model result](../research/nemotron-windows-q8-model-results.md)
+now independently admits96 zero-exit/reaped commands,194 retained compiler
+objects,72 per-shape exact graph vectors and all four byte-exact model histories.
+Candidate native RTF0.98808/0.98741 is strictly below one; surrounding controls
+remain1.01307/1.03559. Control drift2.222563% passes, while the separate5% speedup
+prediction fails. Three build-only import libraries per SDK were recorded in CI
+but not delivered: complete-retention/payload-rehash claims stay false. All13
+feature-CI jobs pass. Prepare a separate production-candidate qualification with
+complete retained inputs and no diagnostic telemetry; actual native/public,
+lifecycle/package/offline/coexistence and original quality/desktop/release gates
+remain open. No production/main promotion is established.
 
 Remaining release work as of 2026-10-17:
 

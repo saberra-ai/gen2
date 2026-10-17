@@ -1,0 +1,1727 @@
+{
+  "schema_version": 1,
+  "collection_completed": true,
+  "source_commit": "919ddf1fcf20f7b16d2e5143cffda14f83fb48df",
+  "run_id": 39059902777,
+  "job_id": 117475526989,
+  "artifact_id": 12111526436,
+  "archive": {
+    "bytes": 39702390,
+    "sha256": "fd5cc7e4ca3a40f1146045967178e4bbf87c418f69f9767a1b55016cd345e60c"
+  },
+  "protocol": {
+    "bytes": 188965,
+    "sha256": "3867fd5651ad0aba829b223829ca977261d7652cbcaba37d22de85e37aef5d7f"
+  },
+  "collector": {
+    "bytes": 21983,
+    "sha256": "7f46265f29d85b5a90ada9d0436ceab26fac676cabfc76f479e304a586b9075a"
+  },
+  "delivery_admission": {
+    "bytes": 1448,
+    "sha256": "3f29f40f0af74732711fa6242be925fa205d948b9f70f17b7829f74e56fbfe2e"
+  },
+  "supervision_replay": {
+    "bytes": 174210,
+    "sha256": "300ec99378bb4f98b83e5caed841c24bfde5a2d10e1737b6d5cc13511e123a51"
+  },
+  "receiver_inputs": {
+    "producer-run.json": {
+      "bytes": 11820,
+      "sha256": "482e0d15126a6578f30445a241b8e2215eb2b283c311d930e1a47a3ede1cfa63"
+    },
+    "artifacts.json": {
+      "bytes": 731,
+      "sha256": "a843e3d734a2cbca0f75072775f7fd34226850d7d4849c6218470afe11954570"
+    },
+    "job.json": {
+      "bytes": 3532,
+      "sha256": "c865099f5e0e2c82b4658fe016e6565b031b5383f03353068a653f91576deb62"
+    },
+    "job.log": {
+      "bytes": 56437,
+      "sha256": "f9b8c0e623fb6101e6341b3e3e9d2c6c64282083d627c93756de6301ce1a779c"
+    },
+    "delivery-admission.json": {
+      "bytes": 1448,
+      "sha256": "3f29f40f0af74732711fa6242be925fa205d948b9f70f17b7829f74e56fbfe2e"
+    },
+    "artifact-members.json": {
+      "bytes": 112458,
+      "sha256": "85034cbebdfb3704ad11bf8b5cc1f572670e8d372a812624081052da6a1538ff"
+    },
+    "supervision-replay.json": {
+      "bytes": 174210,
+      "sha256": "300ec99378bb4f98b83e5caed841c24bfde5a2d10e1737b6d5cc13511e123a51"
+    },
+    "admit-windows-q8-model-delivery-v1.py": {
+      "bytes": 6421,
+      "sha256": "204b70fb9d460b5432f2cd69a570af99262fb16752be23240628048bbe6bd045"
+    },
+    "replay-windows-q8-model-supervision-v2.py": {
+      "bytes": 6460,
+      "sha256": "d0d528c00695de6ba153fc7cb47d9198a0b7f8b43590e943195628940aab2d5e"
+    }
+  },
+  "independent_source_only_proof": {
+    "path": "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-source-admission-v2/qualification.json",
+    "bytes": 1460290,
+    "sha256": "6ffa43ff1c0f79570aeab6856d97f4967f96900bc6cf77d009fa2aec2e033df3"
+  },
+  "tools_verified": 101,
+  "repository_files_verified": 821,
+  "artifact_members_verified": 657,
+  "supervised_zero_exit_and_reaped_commands": 96,
+  "host": {
+    "cpu": [
+      {
+        "Name": "AMD EPYC 7763 64-Core Processor                ",
+        "Manufacturer": "AuthenticAMD",
+        "Architecture": 9,
+        "NumberOfCores": 2,
+        "NumberOfLogicalProcessors": 4,
+        "ProcessorId": "0000000000000000"
+      }
+    ],
+    "os": {
+      "build": "20348",
+      "caption": "Microsoft Windows Server 2022 Datacenter",
+      "version": "10.0.20348"
+    },
+    "fma": true,
+    "avx2": true
+  },
+  "builds": {
+    "control": {
+      "sdk_compiler": "clang-cl",
+      "sdk_files": 66,
+      "commands": 48,
+      "compiler": {
+        "kind": "clang-cl",
+        "compiler": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+        "linker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\Llvm\\x64\\bin\\lld-link.exe",
+        "languages": {
+          "C": {
+            "id": "Clang",
+            "version": "19.1.5"
+          },
+          "CXX": {
+            "id": "Clang",
+            "version": "19.1.5"
+          }
+        },
+        "compiler_entries": 97,
+        "ggml_cpu_entries": 16,
+        "limits": "Compiler/toolchain diagnostic only; no ISA widening, public runtime or package qualification.",
+        "q8_model_admission": {
+          "contraction_flag": "/clang:-ffp-contract=off",
+          "compiler_commands": 97,
+          "version_tokens_changed": 97,
+          "normalization": "Selected compiler alias, isolated source root, one contraction flag and exact diagnostic version token only."
+        },
+        "compiler_binary": {
+          "bytes": 87168080,
+          "sha256": "93faf6d0a9e66ed1629eb1c9ca638a070aa1839b9490a87ff89b9cb39eeae36b"
+        },
+        "compiler_path_aliases": {
+          "C:\\PROGRA~1\\MICROS~2\\2022\\ENTERP~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe": {
+            "bytes": 87168080,
+            "sha256": "93faf6d0a9e66ed1629eb1c9ca638a070aa1839b9490a87ff89b9cb39eeae36b"
+          }
+        },
+        "linker_binary": {
+          "bytes": 52877384,
+          "sha256": "b24601b51e04b2ef371c2809ad33e3b35dff5cb7e166e26a1d2ddb74148c212c"
+        }
+      },
+      "ggml_files": 3425,
+      "compiler_inputs": 97,
+      "retained_compiler_objects": 97,
+      "model_free_graph_processes": 3,
+      "model_free_vectors": 36,
+      "source_admission": {
+        "variant": "control",
+        "canonical_files": 3425,
+        "changed_files": [],
+        "patches": 19,
+        "compiler_inputs": 97
+      },
+      "graph_import_library_payloads_unavailable": {
+        "D:\\a\\_temp\\windows-q8-model\\source-control\\build\\gen2-cpu-diar\\ggml\\src\\gen2_nemo_windows_ggml.lib": {
+          "bytes": 5448,
+          "sha256": "92b26482d853baa26488d1567fe0aef4e987c56870f5d1390cf85df83cc51b48"
+        },
+        "D:\\a\\_temp\\windows-q8-model\\source-control\\build\\gen2-cpu-diar\\ggml\\src\\gen2_nemo_windows_ggml-base.lib": {
+          "bytes": 167506,
+          "sha256": "0ad2bd5f237be19c9ffdc495846f3a9d09afaf8fb5804ef3bac785aa4a55e6ce"
+        },
+        "D:\\a\\_temp\\windows-q8-model\\source-control\\build\\gen2-cpu-diar\\ggml\\src\\gen2_nemo_windows_ggml-cpu.lib": {
+          "bytes": 16760,
+          "sha256": "25be0336e56ceb43431920f001d52177c6238c7eb50f1a7f7fb3a858dd2ba27a"
+        }
+      }
+    },
+    "mx4": {
+      "sdk_compiler": "clang-cl",
+      "sdk_files": 66,
+      "commands": 48,
+      "compiler": {
+        "kind": "clang-cl",
+        "compiler": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+        "linker": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\Llvm\\x64\\bin\\lld-link.exe",
+        "languages": {
+          "C": {
+            "id": "Clang",
+            "version": "19.1.5"
+          },
+          "CXX": {
+            "id": "Clang",
+            "version": "19.1.5"
+          }
+        },
+        "compiler_entries": 97,
+        "ggml_cpu_entries": 16,
+        "limits": "Compiler/toolchain diagnostic only; no ISA widening, public runtime or package qualification.",
+        "q8_model_admission": {
+          "contraction_flag": "/clang:-ffp-contract=off",
+          "compiler_commands": 97,
+          "version_tokens_changed": 97,
+          "normalization": "Selected compiler alias, isolated source root, one contraction flag and exact diagnostic version token only."
+        },
+        "compiler_binary": {
+          "bytes": 87168080,
+          "sha256": "93faf6d0a9e66ed1629eb1c9ca638a070aa1839b9490a87ff89b9cb39eeae36b"
+        },
+        "compiler_path_aliases": {
+          "C:\\PROGRA~1\\MICROS~2\\2022\\ENTERP~1\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe": {
+            "bytes": 87168080,
+            "sha256": "93faf6d0a9e66ed1629eb1c9ca638a070aa1839b9490a87ff89b9cb39eeae36b"
+          }
+        },
+        "linker_binary": {
+          "bytes": 52877384,
+          "sha256": "b24601b51e04b2ef371c2809ad33e3b35dff5cb7e166e26a1d2ddb74148c212c"
+        }
+      },
+      "ggml_files": 3425,
+      "compiler_inputs": 97,
+      "retained_compiler_objects": 97,
+      "model_free_graph_processes": 3,
+      "model_free_vectors": 36,
+      "source_admission": {
+        "variant": "mx4",
+        "canonical_files": 3425,
+        "changed_files": [
+          "ggml/src/ggml-cpu/llamafile/sgemm.cpp"
+        ],
+        "patches": 20,
+        "compiler_inputs": 97
+      },
+      "graph_import_library_payloads_unavailable": {
+        "D:\\a\\_temp\\windows-q8-model\\source-mx4\\build\\gen2-cpu-diar\\ggml\\src\\gen2_nemo_windows_ggml.lib": {
+          "bytes": 5448,
+          "sha256": "92b26482d853baa26488d1567fe0aef4e987c56870f5d1390cf85df83cc51b48"
+        },
+        "D:\\a\\_temp\\windows-q8-model\\source-mx4\\build\\gen2-cpu-diar\\ggml\\src\\gen2_nemo_windows_ggml-base.lib": {
+          "bytes": 167506,
+          "sha256": "0ad2bd5f237be19c9ffdc495846f3a9d09afaf8fb5804ef3bac785aa4a55e6ce"
+        },
+        "D:\\a\\_temp\\windows-q8-model\\source-mx4\\build\\gen2-cpu-diar\\ggml\\src\\gen2_nemo_windows_ggml-cpu.lib": {
+          "bytes": 16760,
+          "sha256": "25be0336e56ceb43431920f001d52177c6238c7eb50f1a7f7fb3a858dd2ba27a"
+        }
+      }
+    }
+  },
+  "cases": [
+    {
+      "index": 0,
+      "variant": "control",
+      "elapsed_micros": 60784238,
+      "native_rtf": 1.0130706333333332,
+      "turns": 27,
+      "raw_probabilities": {
+        "bytes": 192000,
+        "sha256": "6b08c607371bab2b7965faebe88d8ee31ae39c41c377043d137cbbf424f3af7d"
+      },
+      "parity_passed": true
+    },
+    {
+      "index": 1,
+      "variant": "mx4",
+      "elapsed_micros": 59284952,
+      "native_rtf": 0.9880825333333333,
+      "turns": 27,
+      "raw_probabilities": {
+        "bytes": 192000,
+        "sha256": "6b08c607371bab2b7965faebe88d8ee31ae39c41c377043d137cbbf424f3af7d"
+      },
+      "parity_passed": true
+    },
+    {
+      "index": 2,
+      "variant": "mx4",
+      "elapsed_micros": 59244753,
+      "native_rtf": 0.98741255,
+      "turns": 27,
+      "raw_probabilities": {
+        "bytes": 192000,
+        "sha256": "6b08c607371bab2b7965faebe88d8ee31ae39c41c377043d137cbbf424f3af7d"
+      },
+      "parity_passed": true
+    },
+    {
+      "index": 3,
+      "variant": "control",
+      "elapsed_micros": 62135206,
+      "native_rtf": 1.0355867666666667,
+      "turns": 27,
+      "raw_probabilities": {
+        "bytes": 192000,
+        "sha256": "6b08c607371bab2b7965faebe88d8ee31ae39c41c377043d137cbbf424f3af7d"
+      },
+      "parity_passed": true
+    }
+  ],
+  "per_shape_graph_vectors_bit_exact": true,
+  "graph_vectors_verified": 72,
+  "retained_compiler_objects_verified": 194,
+  "full_sequence_bit_exact": true,
+  "timing_comparison": {
+    "elapsed_micros": [
+      60784238,
+      59284952,
+      59244753,
+      62135206
+    ],
+    "native_rtfs": [
+      1.0130706333333332,
+      0.9880825333333333,
+      0.98741255,
+      1.0355867666666667
+    ],
+    "control_drift_fraction": 0.02222563026947874,
+    "control_drift_at_most_10_percent": true,
+    "both_candidates_at_least_5_percent_faster_than_both_controls": false,
+    "full_model_speedup_prediction_supported": false,
+    "both_candidates_strictly_real_time": true,
+    "limits": "Native diagnostic only. No production/public/lifecycle/package/release pass or repair of prior failed predictions."
+  },
+  "graph_input_payloads_fully_rehashed": false,
+  "all_preregistered_evidence_retained": false,
+  "unavailable_graph_import_library_payloads": {
+    "control": {
+      "D:\\a\\_temp\\windows-q8-model\\source-control\\build\\gen2-cpu-diar\\ggml\\src\\gen2_nemo_windows_ggml.lib": {
+        "bytes": 5448,
+        "sha256": "92b26482d853baa26488d1567fe0aef4e987c56870f5d1390cf85df83cc51b48"
+      },
+      "D:\\a\\_temp\\windows-q8-model\\source-control\\build\\gen2-cpu-diar\\ggml\\src\\gen2_nemo_windows_ggml-base.lib": {
+        "bytes": 167506,
+        "sha256": "0ad2bd5f237be19c9ffdc495846f3a9d09afaf8fb5804ef3bac785aa4a55e6ce"
+      },
+      "D:\\a\\_temp\\windows-q8-model\\source-control\\build\\gen2-cpu-diar\\ggml\\src\\gen2_nemo_windows_ggml-cpu.lib": {
+        "bytes": 16760,
+        "sha256": "25be0336e56ceb43431920f001d52177c6238c7eb50f1a7f7fb3a858dd2ba27a"
+      }
+    },
+    "mx4": {
+      "D:\\a\\_temp\\windows-q8-model\\source-mx4\\build\\gen2-cpu-diar\\ggml\\src\\gen2_nemo_windows_ggml.lib": {
+        "bytes": 5448,
+        "sha256": "92b26482d853baa26488d1567fe0aef4e987c56870f5d1390cf85df83cc51b48"
+      },
+      "D:\\a\\_temp\\windows-q8-model\\source-mx4\\build\\gen2-cpu-diar\\ggml\\src\\gen2_nemo_windows_ggml-base.lib": {
+        "bytes": 167506,
+        "sha256": "0ad2bd5f237be19c9ffdc495846f3a9d09afaf8fb5804ef3bac785aa4a55e6ce"
+      },
+      "D:\\a\\_temp\\windows-q8-model\\source-mx4\\build\\gen2-cpu-diar\\ggml\\src\\gen2_nemo_windows_ggml-cpu.lib": {
+        "bytes": 16760,
+        "sha256": "25be0336e56ceb43431920f001d52177c6238c7eb50f1a7f7fb3a858dd2ba27a"
+      }
+    }
+  },
+  "release_qualified": false,
+  "package_qualified": false,
+  "public_or_lifecycle_qualified": false,
+  "new_compiler_sdk_model_calls_during_collection": 0,
+  "limits": [
+    "Native diagnostic only; original quality/performance/production/public/release requirements remain.",
+    "Three build-only GGML import libraries per SDK were bound and rechecked by CI but not delivered. Their recorded hashes/command associations are preserved; no independent payload rehash or complete preregistered retention pass is claimed.",
+    "Physical compiler aliases/binary hashes and source/object execution were observed in CI; replay checks records and retained bytes without executing Windows tools.",
+    "Independent original19/candidate20 patch materializations were executed in the pinned local source-only preparation; complete current maps and inputs are re-admitted here.",
+    "Earlier failed microkernel and worker-observer predictions remain failed; no timing averaging, rerun or automatic promotion."
+  ],
+  "artifact_payloads_copied": 335,
+  "receiver_scripts": {
+    "admit-windows-q8-model-delivery-v1.py": {
+      "bytes": 6421,
+      "sha256": "204b70fb9d460b5432f2cd69a570af99262fb16752be23240628048bbe6bd045"
+    },
+    "replay-windows-q8-model-supervision-v2.py": {
+      "bytes": 6460,
+      "sha256": "d0d528c00695de6ba153fc7cb47d9198a0b7f8b43590e943195628940aab2d5e"
+    },
+    "fetch-windows-q8-model-artifact-v2.py": {
+      "bytes": 5695,
+      "sha256": "ac29e720d4610f05bb7cfdbc49a857745e5c6949012335feebb3f610b6957cf7"
+    },
+    "replay-windows-q8-model-result-v2.py": {
+      "bytes": 21983,
+      "sha256": "7f46265f29d85b5a90ada9d0436ceab26fac676cabfc76f479e304a586b9075a"
+    },
+    "publish-windows-q8-model-v2.py": {
+      "bytes": 6163,
+      "sha256": "87cf665a01eb5c9f07df4f112b3f7181c4c28f05b0d6ae57b99584e3545c9883"
+    }
+  },
+  "publication_collector": {
+    "bytes": 6163,
+    "sha256": "87cf665a01eb5c9f07df4f112b3f7181c4c28f05b0d6ae57b99584e3545c9883"
+  },
+  "result_replay": {
+    "bytes": 13515,
+    "sha256": "5921f34d177e860e827cc0de279f81043135b22ebe858963c6b25ecb6fa7a2b7"
+  },
+  "publication_inputs": {
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/bounded-inference.patch": {
+      "bytes": 6872,
+      "sha256": "c7b78d6de7dba28e6284c965d0fc2c9e6fea8f26d5d5ab21b09999206af1046b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/case-0-control.json": {
+      "bytes": 2855,
+      "sha256": "1a207ea827475a7f79c3815a5094959b31a17ba2626df3e4ac1509fe027da1de"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/case-0-control.json.f32": {
+      "bytes": 192000,
+      "sha256": "6b08c607371bab2b7965faebe88d8ee31ae39c41c377043d137cbbf424f3af7d"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/case-0-control.log": {
+      "bytes": 92,
+      "sha256": "08c10f01163007ff71356328f6439e4ddcfd63dff4db4cfcb315434a83f4e3f3"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/case-0-control.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/case-3-control.json": {
+      "bytes": 2855,
+      "sha256": "530104b5f0ae31a92ea2e0bd58ea1055de1005ab5e8413d5630238eeef352f52"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/case-3-control.json.f32": {
+      "bytes": 192000,
+      "sha256": "6b08c607371bab2b7965faebe88d8ee31ae39c41c377043d137cbbf424f3af7d"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/case-3-control.log": {
+      "bytes": 92,
+      "sha256": "08c10f01163007ff71356328f6439e4ddcfd63dff4db4cfcb315434a83f4e3f3"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/case-3-control.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/checkout-llama.log": {
+      "bytes": 80,
+      "sha256": "71f388019a597baee8a90f3a82d2e51ce2b948186f5ca21f7b44ac7e747bbd5f"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/checkout-llama.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/checkout-native.log": {
+      "bytes": 91,
+      "sha256": "2a09d6dd2800ece4b9ea45bb7804a49b0a7d59066f7eaa90bdf1a300b8d52b40"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/checkout-native.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/clone-llama.log": {
+      "bytes": 71,
+      "sha256": "32c231804a99ae7470b2ea2b7665a3198f73e07de3d9c48e821120dfff73fd10"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/clone-llama.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/clone-native.log": {
+      "bytes": 61,
+      "sha256": "bd10fd3978ec1862a7b9f03e545b9c96e0d9475a1a21aa45534b85ffca3a1865"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/clone-native.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/cmake-cache.log": {
+      "bytes": 39928,
+      "sha256": "5eab1e2c9b532b552f62290c91a1e09aab7bd054be752d0724ec7df3955a93c6"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/cmake-version.stdout.log": {
+      "bytes": 91,
+      "sha256": "f6e81c2559f3ce00c5fdad01d7b226c301f5d6b07ee04f65db6dbfdc1cc5970b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/cmake-version.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/CMakeCache.txt": {
+      "bytes": 39928,
+      "sha256": "5eab1e2c9b532b552f62290c91a1e09aab7bd054be752d0724ec7df3955a93c6"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/commands.json": {
+      "bytes": 53880,
+      "sha256": "55fe5b96c4ff71955e34441192b60c62c264ec280410b9e1774c80ff3b1c061f"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-admission.json": {
+      "bytes": 1390,
+      "sha256": "613456a52a6a44f5ad7cd99526b78f7fc06dd2e68c4f031b7c84ec6f9ea12a23"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-C.cmake": {
+      "bytes": 3328,
+      "sha256": "09b635b65613e22213984341275c0ab4aecdffa75ba7e0cf73b77bcd8db7f13d"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-CXX.cmake": {
+      "bytes": 6601,
+      "sha256": "b7ed7e08a2612095c5e1bd7bfba38af1f0d8fb9fdce0aeb33763ca85f3047309"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-archive.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-archive.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-0.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-0.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-1.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-1.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-10.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-10.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-11.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-11.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-12.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-12.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-13.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-13.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-14.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-14.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-15.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-15.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-16.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-16.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-17.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-17.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-18.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-18.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-2.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-2.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-3.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-3.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-4.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-4.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-5.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-5.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-6.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-6.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-7.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-7.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-8.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-8.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-9.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-llama-patch-9.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-version.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compiler-version.stdout.log": {
+      "bytes": 165,
+      "sha256": "3b79f7af64789ad14ec54a3340cab2a32843c0d3c909dd3d928d289e37799f03"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/compile_commands.json": {
+      "bytes": 144834,
+      "sha256": "16d8a968be39ba56da5bab4dbdef80edaaad5557bc228c4b501807982f756d5f"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/cpu-thread-cap.patch": {
+      "bytes": 1403,
+      "sha256": "c18ccb86ff02825899db2ed7b0df0c44e7db69ed38e4fca64e42b14c84f16186"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/diagnostic-inference.diff": {
+      "bytes": 7233,
+      "sha256": "ce4bb2293533aeb96492eac1758ca83f2a4051f1f69d7e2b5c4e0a2c55dde17b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/git-line-ending-config.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/git-line-ending-config.stdout.log": {
+      "bytes": 179,
+      "sha256": "e366542a223709584a35bead050c2d53196efc15fc46a9fe498ca1e29b271cb4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/inference-patch-0.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/inference-patch-0.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/inference-patch-1.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/inference-patch-1.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/inference-patch-2.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/inference-patch-2.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/inference-patch-check-0.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/inference-patch-check-0.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/inference-patch-check-1.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/inference-patch-check-1.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/inference-patch-check-2.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/inference-patch-check-2.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/kernel-disassembly.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/kernel-disassembly.stdout.log": {
+      "bytes": 1924217,
+      "sha256": "7a0cae24a48d4c79e9eea228caedc7c94b9a34ff31c4a69efed97f9ccc50d0b4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/loader-dependencies.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/loader-dependencies.stdout.log": {
+      "bytes": 558,
+      "sha256": "d4380684047a8435de08f475917314245ca676c1f342ec46a398a8b59131c610"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-1.0.0.f32": {
+      "bytes": 8192,
+      "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-1.0.1.f32": {
+      "bytes": 8192,
+      "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-1.0.2.f32": {
+      "bytes": 8192,
+      "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-1.1.1.f32": {
+      "bytes": 8192,
+      "sha256": "e1de221c515e10a147642580410f0692f04ff2769f7d29d9cf435c02c4a892af"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-1.1.0.f32": {
+      "bytes": 8192,
+      "sha256": "e1de221c515e10a147642580410f0692f04ff2769f7d29d9cf435c02c4a892af"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-1.1.2.f32": {
+      "bytes": 8192,
+      "sha256": "e1de221c515e10a147642580410f0692f04ff2769f7d29d9cf435c02c4a892af"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-1.2.0.f32": {
+      "bytes": 256,
+      "sha256": "c3117b2cf9a615ec07b2d3fbba7c20e4bc1fd355c95d40d4d57b32480c9c1ea4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-1.2.1.f32": {
+      "bytes": 256,
+      "sha256": "c3117b2cf9a615ec07b2d3fbba7c20e4bc1fd355c95d40d4d57b32480c9c1ea4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-1.2.2.f32": {
+      "bytes": 256,
+      "sha256": "c3117b2cf9a615ec07b2d3fbba7c20e4bc1fd355c95d40d4d57b32480c9c1ea4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-1.3.0.f32": {
+      "bytes": 256,
+      "sha256": "992c8a5d28234f4124195f4d01ea68252b87bbdf4db3f37b493f40db9334b513"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-1.3.1.f32": {
+      "bytes": 256,
+      "sha256": "992c8a5d28234f4124195f4d01ea68252b87bbdf4db3f37b493f40db9334b513"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-1.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-1.3.2.f32": {
+      "bytes": 256,
+      "sha256": "992c8a5d28234f4124195f4d01ea68252b87bbdf4db3f37b493f40db9334b513"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-1.stdout.log": {
+      "bytes": 912,
+      "sha256": "d8012ec25e6536c9b80f1b8c61df8582d940a0baa82e543b225689dbd1544785"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-2.0.0.f32": {
+      "bytes": 8192,
+      "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-2.0.1.f32": {
+      "bytes": 8192,
+      "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-2.0.2.f32": {
+      "bytes": 8192,
+      "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-2.1.0.f32": {
+      "bytes": 8192,
+      "sha256": "e1de221c515e10a147642580410f0692f04ff2769f7d29d9cf435c02c4a892af"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-2.1.1.f32": {
+      "bytes": 8192,
+      "sha256": "e1de221c515e10a147642580410f0692f04ff2769f7d29d9cf435c02c4a892af"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-2.1.2.f32": {
+      "bytes": 8192,
+      "sha256": "e1de221c515e10a147642580410f0692f04ff2769f7d29d9cf435c02c4a892af"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-2.2.0.f32": {
+      "bytes": 256,
+      "sha256": "c3117b2cf9a615ec07b2d3fbba7c20e4bc1fd355c95d40d4d57b32480c9c1ea4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-2.2.1.f32": {
+      "bytes": 256,
+      "sha256": "c3117b2cf9a615ec07b2d3fbba7c20e4bc1fd355c95d40d4d57b32480c9c1ea4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-2.2.2.f32": {
+      "bytes": 256,
+      "sha256": "c3117b2cf9a615ec07b2d3fbba7c20e4bc1fd355c95d40d4d57b32480c9c1ea4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-2.3.0.f32": {
+      "bytes": 256,
+      "sha256": "992c8a5d28234f4124195f4d01ea68252b87bbdf4db3f37b493f40db9334b513"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-2.3.1.f32": {
+      "bytes": 256,
+      "sha256": "992c8a5d28234f4124195f4d01ea68252b87bbdf4db3f37b493f40db9334b513"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-2.3.2.f32": {
+      "bytes": 256,
+      "sha256": "992c8a5d28234f4124195f4d01ea68252b87bbdf4db3f37b493f40db9334b513"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-2.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-2.stdout.log": {
+      "bytes": 912,
+      "sha256": "9d62b578062b2afe3e5c6d0257738306476e67e0a6a5d1e0e09c0732fe968e4a"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-4.0.0.f32": {
+      "bytes": 8192,
+      "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-4.0.1.f32": {
+      "bytes": 8192,
+      "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-4.0.2.f32": {
+      "bytes": 8192,
+      "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-4.1.0.f32": {
+      "bytes": 8192,
+      "sha256": "e1de221c515e10a147642580410f0692f04ff2769f7d29d9cf435c02c4a892af"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-4.1.1.f32": {
+      "bytes": 8192,
+      "sha256": "e1de221c515e10a147642580410f0692f04ff2769f7d29d9cf435c02c4a892af"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-4.1.2.f32": {
+      "bytes": 8192,
+      "sha256": "e1de221c515e10a147642580410f0692f04ff2769f7d29d9cf435c02c4a892af"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-4.2.0.f32": {
+      "bytes": 256,
+      "sha256": "c3117b2cf9a615ec07b2d3fbba7c20e4bc1fd355c95d40d4d57b32480c9c1ea4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-4.2.1.f32": {
+      "bytes": 256,
+      "sha256": "c3117b2cf9a615ec07b2d3fbba7c20e4bc1fd355c95d40d4d57b32480c9c1ea4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-4.2.2.f32": {
+      "bytes": 256,
+      "sha256": "c3117b2cf9a615ec07b2d3fbba7c20e4bc1fd355c95d40d4d57b32480c9c1ea4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-4.3.0.f32": {
+      "bytes": 256,
+      "sha256": "992c8a5d28234f4124195f4d01ea68252b87bbdf4db3f37b493f40db9334b513"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-4.3.1.f32": {
+      "bytes": 256,
+      "sha256": "992c8a5d28234f4124195f4d01ea68252b87bbdf4db3f37b493f40db9334b513"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-4.3.2.f32": {
+      "bytes": 256,
+      "sha256": "992c8a5d28234f4124195f4d01ea68252b87bbdf4db3f37b493f40db9334b513"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-4.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-4.stdout.log": {
+      "bytes": 912,
+      "sha256": "ba3b5caa7842878ecf30dbaf42953176da352025eff5f5d502b1f91620faf157"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-build.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/matrix-control-build.stdout.log": {
+      "bytes": 33,
+      "sha256": "e30fdaf22c1101b14f2d898d68cd2e33cb0cd1b6fe72ce065138758f5ece387e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/model-free-state-test.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/model-free-state-test.stdout.log": {
+      "bytes": 353,
+      "sha256": "24910422012a733f2d8d1809feed1e858b0b02c293a21a7d06054f18686ee85e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/native-probe-build.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/native-probe-build.stdout.log": {
+      "bytes": 63,
+      "sha256": "1c32230c3ea67115be9610282de1ad9e1cb083e7f4390ac0daf549f3da1fd4ce"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/native_stream_probe_bounded.cpp": {
+      "bytes": 8708,
+      "sha256": "e1cf6c805a111045cf477fa46413a206bd4ab101aa5b4a4d80f57fb0430267c6"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/persistent-cpu-pool.patch": {
+      "bytes": 4275,
+      "sha256": "ab485ae1b441f4428db49f6b4d1b955e123966d053c4735567e9bdc3825656d9"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/platform-llama-materialized-audit.json": {
+      "bytes": 603346,
+      "sha256": "544b94108777eb9df476fbbdeba993ccca0b74365ead627c8ac725df31914409"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/receiver-host.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/receiver-host.stdout.log": {
+      "bytes": 437,
+      "sha256": "0edf796cbe36ac51ff9e629ec7ae6e4c1279c7e7c60d925f41ae0f021e4e1ff2"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/sdk-build.log": {
+      "bytes": 4360,
+      "sha256": "db0da587cf91dc4fece258a907dbdef49fd5de60302503fc6abfec361cf28b42"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/sdk-build.stdout.log": {
+      "bytes": 8721156,
+      "sha256": "17daa9fb6e0a37789ee5853ff4c4f01c018d54dbd979518d72840f9104319b7f"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/sdk-install.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/sdk-install.stdout.log": {
+      "bytes": 6857,
+      "sha256": "df149fb51319c3e43c88ccfee14d19a5f1c2964347c2884ea5cd6f4a3d4fdf7d"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/upstream-patch-diagnostic.json": {
+      "bytes": 4,
+      "sha256": "e3566b3a06430868d71e9287dfd6c6c520a3da027aabea01951d407ee131dc2f"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/v3-finish-valid-mel.patch": {
+      "bytes": 1194,
+      "sha256": "8c1434c14f63ebeb2515c719a90594124fd4f75af85b80451fd145b5caef3c36"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/version-only.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/version-only.stdout.log": {
+      "bytes": 59,
+      "sha256": "862be12ee680b53a38991068c1ac974c378058cb0f0b7299823320dfeda4854a"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/windows-compat.json": {
+      "bytes": 3067,
+      "sha256": "f847cfbe66b8793c0b8dba2790573ec16a4daf3da0d1812e41700ba757af7453"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/windows-compat.patch.log": {
+      "bytes": 878,
+      "sha256": "57e108f3cd4fcc42efa8d5b6e373a3663d49e2d36d96f67dfcaf59d166b7e300"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/windows-private-names.json": {
+      "bytes": 1536,
+      "sha256": "04287ba65d4cb5ea210a07685a0eb1d337fbc5b76e8d28c63159992df63d77a8"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/windows-private-paths.log": {
+      "bytes": 233,
+      "sha256": "ccbfc1a70bb82505b52f978983af9a3a6f2feae57528560e83f190e171613409"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/windows-private-pe.json": {
+      "bytes": 476853,
+      "sha256": "d72bff09ba0d33cf66fa800e2aae4d8219145e5bd6fb6fbd0a216b4fd9be0e20"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/windows-provenance.json": {
+      "bytes": 21421,
+      "sha256": "24d99bc35a3fa928a3834407c2c2233aaddc2e62cdf763fc671422c59eab494b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/windows-provenance.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/windows-provenance.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-control/windows-vcpkg-status.log": {
+      "bytes": 4346,
+      "sha256": "aa85bcc183d2163072bdee4a245ce2c400f4a3d7aa68fac1ec59efb56d4f2061"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/bounded-inference.patch": {
+      "bytes": 6872,
+      "sha256": "c7b78d6de7dba28e6284c965d0fc2c9e6fea8f26d5d5ab21b09999206af1046b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/case-1-mx4.json": {
+      "bytes": 2851,
+      "sha256": "c724f97a7a9e3a9158302f369575e2fc545934a97a53cb9a74948dcaff2e382c"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/case-1-mx4.json.f32": {
+      "bytes": 192000,
+      "sha256": "6b08c607371bab2b7965faebe88d8ee31ae39c41c377043d137cbbf424f3af7d"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/case-1-mx4.log": {
+      "bytes": 92,
+      "sha256": "08c10f01163007ff71356328f6439e4ddcfd63dff4db4cfcb315434a83f4e3f3"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/case-1-mx4.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/case-2-mx4.json": {
+      "bytes": 2851,
+      "sha256": "4485e8cac596b7872488d0b659859763b7e7ace2b7a0538b80f78613008c0a27"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/case-2-mx4.json.f32": {
+      "bytes": 192000,
+      "sha256": "6b08c607371bab2b7965faebe88d8ee31ae39c41c377043d137cbbf424f3af7d"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/case-2-mx4.log": {
+      "bytes": 92,
+      "sha256": "08c10f01163007ff71356328f6439e4ddcfd63dff4db4cfcb315434a83f4e3f3"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/case-2-mx4.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/checkout-llama.log": {
+      "bytes": 80,
+      "sha256": "71f388019a597baee8a90f3a82d2e51ce2b948186f5ca21f7b44ac7e747bbd5f"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/checkout-llama.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/checkout-native.log": {
+      "bytes": 91,
+      "sha256": "2a09d6dd2800ece4b9ea45bb7804a49b0a7d59066f7eaa90bdf1a300b8d52b40"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/checkout-native.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/clone-llama.log": {
+      "bytes": 67,
+      "sha256": "b27f6c37298faea63589bc3d20661f86af705fded136cc5c46f964335c666057"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/clone-llama.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/clone-native.log": {
+      "bytes": 57,
+      "sha256": "a3ef3fa50c77f8c67b8234e6b021372dffccdd755d982ff22416613a2ba70f03"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/clone-native.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/cmake-cache.log": {
+      "bytes": 39844,
+      "sha256": "b2c758f4003caddf87096c8e0fe043cd8a1f86ea071c4d49757251b67835d90c"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/cmake-version.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/cmake-version.stdout.log": {
+      "bytes": 91,
+      "sha256": "f6e81c2559f3ce00c5fdad01d7b226c301f5d6b07ee04f65db6dbfdc1cc5970b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/CMakeCache.txt": {
+      "bytes": 39844,
+      "sha256": "b2c758f4003caddf87096c8e0fe043cd8a1f86ea071c4d49757251b67835d90c"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/commands.json": {
+      "bytes": 53267,
+      "sha256": "8234305a1a4a59cab6980565c7c5120b2e1c7430ef5cc19aadea7392fdf9ac13"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-admission.json": {
+      "bytes": 1390,
+      "sha256": "613456a52a6a44f5ad7cd99526b78f7fc06dd2e68c4f031b7c84ec6f9ea12a23"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-C.cmake": {
+      "bytes": 3328,
+      "sha256": "09b635b65613e22213984341275c0ab4aecdffa75ba7e0cf73b77bcd8db7f13d"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-CXX.cmake": {
+      "bytes": 6601,
+      "sha256": "b7ed7e08a2612095c5e1bd7bfba38af1f0d8fb9fdce0aeb33763ca85f3047309"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-archive.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-archive.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-0.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-0.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-1.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-1.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-10.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-10.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-11.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-11.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-12.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-12.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-13.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-13.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-14.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-14.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-15.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-15.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-16.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-16.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-17.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-17.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-18.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-18.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-19.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-19.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-2.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-3.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-2.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-3.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-4.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-4.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-5.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-5.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-6.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-6.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-7.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-7.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-8.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-8.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-9.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-llama-patch-9.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-version.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compiler-version.stdout.log": {
+      "bytes": 165,
+      "sha256": "3b79f7af64789ad14ec54a3340cab2a32843c0d3c909dd3d928d289e37799f03"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/compile_commands.json": {
+      "bytes": 140402,
+      "sha256": "dfef77ab3de5b21c81d8439e28bbca62e155ce5790b15eb1b792d659300242d4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/cpu-thread-cap.patch": {
+      "bytes": 1403,
+      "sha256": "c18ccb86ff02825899db2ed7b0df0c44e7db69ed38e4fca64e42b14c84f16186"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/diagnostic-inference.diff": {
+      "bytes": 7620,
+      "sha256": "0bd2794cd164fcecb3875af61bf81fa6d2ef4d70bbd423e8835efca131cadaf2"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/gen2-q8-model-mx4.patch": {
+      "bytes": 1115,
+      "sha256": "97789b4693ff257579bf2188f8543cbfa9972cf87f0077eba3a57d67ceac99ef"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/git-line-ending-config.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/git-line-ending-config.stdout.log": {
+      "bytes": 179,
+      "sha256": "e366542a223709584a35bead050c2d53196efc15fc46a9fe498ca1e29b271cb4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/inference-patch-0.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/inference-patch-0.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/inference-patch-1.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/inference-patch-1.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/inference-patch-2.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/inference-patch-2.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/inference-patch-check-0.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/inference-patch-check-0.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/inference-patch-check-1.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/inference-patch-check-1.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/inference-patch-check-2.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/inference-patch-check-2.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/kernel-disassembly.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/kernel-disassembly.stdout.log": {
+      "bytes": 1926230,
+      "sha256": "f045b19746182bcdac7c4f002a1d64ffa50ac649df0b50e303abb92c0f0a0bb1"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/loader-dependencies.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/loader-dependencies.stdout.log": {
+      "bytes": 554,
+      "sha256": "cc4150e0c17d1756205dfaebe34a49c8cc736a38f510d55556568421f371ccd2"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-1.0.1.f32": {
+      "bytes": 8192,
+      "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-1.0.2.f32": {
+      "bytes": 8192,
+      "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-1.0.0.f32": {
+      "bytes": 8192,
+      "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-1.1.0.f32": {
+      "bytes": 8192,
+      "sha256": "e1de221c515e10a147642580410f0692f04ff2769f7d29d9cf435c02c4a892af"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-1.1.1.f32": {
+      "bytes": 8192,
+      "sha256": "e1de221c515e10a147642580410f0692f04ff2769f7d29d9cf435c02c4a892af"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-1.2.0.f32": {
+      "bytes": 256,
+      "sha256": "c3117b2cf9a615ec07b2d3fbba7c20e4bc1fd355c95d40d4d57b32480c9c1ea4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-1.1.2.f32": {
+      "bytes": 8192,
+      "sha256": "e1de221c515e10a147642580410f0692f04ff2769f7d29d9cf435c02c4a892af"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-1.2.1.f32": {
+      "bytes": 256,
+      "sha256": "c3117b2cf9a615ec07b2d3fbba7c20e4bc1fd355c95d40d4d57b32480c9c1ea4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-1.2.2.f32": {
+      "bytes": 256,
+      "sha256": "c3117b2cf9a615ec07b2d3fbba7c20e4bc1fd355c95d40d4d57b32480c9c1ea4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-1.3.0.f32": {
+      "bytes": 256,
+      "sha256": "992c8a5d28234f4124195f4d01ea68252b87bbdf4db3f37b493f40db9334b513"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-1.3.1.f32": {
+      "bytes": 256,
+      "sha256": "992c8a5d28234f4124195f4d01ea68252b87bbdf4db3f37b493f40db9334b513"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-1.3.2.f32": {
+      "bytes": 256,
+      "sha256": "992c8a5d28234f4124195f4d01ea68252b87bbdf4db3f37b493f40db9334b513"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-1.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-2.0.0.f32": {
+      "bytes": 8192,
+      "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-1.stdout.log": {
+      "bytes": 912,
+      "sha256": "d8012ec25e6536c9b80f1b8c61df8582d940a0baa82e543b225689dbd1544785"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-2.0.1.f32": {
+      "bytes": 8192,
+      "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-2.0.2.f32": {
+      "bytes": 8192,
+      "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-2.1.0.f32": {
+      "bytes": 8192,
+      "sha256": "e1de221c515e10a147642580410f0692f04ff2769f7d29d9cf435c02c4a892af"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-2.1.1.f32": {
+      "bytes": 8192,
+      "sha256": "e1de221c515e10a147642580410f0692f04ff2769f7d29d9cf435c02c4a892af"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-2.1.2.f32": {
+      "bytes": 8192,
+      "sha256": "e1de221c515e10a147642580410f0692f04ff2769f7d29d9cf435c02c4a892af"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-2.2.0.f32": {
+      "bytes": 256,
+      "sha256": "c3117b2cf9a615ec07b2d3fbba7c20e4bc1fd355c95d40d4d57b32480c9c1ea4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-2.2.1.f32": {
+      "bytes": 256,
+      "sha256": "c3117b2cf9a615ec07b2d3fbba7c20e4bc1fd355c95d40d4d57b32480c9c1ea4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-2.2.2.f32": {
+      "bytes": 256,
+      "sha256": "c3117b2cf9a615ec07b2d3fbba7c20e4bc1fd355c95d40d4d57b32480c9c1ea4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-2.3.0.f32": {
+      "bytes": 256,
+      "sha256": "992c8a5d28234f4124195f4d01ea68252b87bbdf4db3f37b493f40db9334b513"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-2.3.1.f32": {
+      "bytes": 256,
+      "sha256": "992c8a5d28234f4124195f4d01ea68252b87bbdf4db3f37b493f40db9334b513"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-2.3.2.f32": {
+      "bytes": 256,
+      "sha256": "992c8a5d28234f4124195f4d01ea68252b87bbdf4db3f37b493f40db9334b513"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-2.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-2.stdout.log": {
+      "bytes": 912,
+      "sha256": "9d62b578062b2afe3e5c6d0257738306476e67e0a6a5d1e0e09c0732fe968e4a"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-4.0.1.f32": {
+      "bytes": 8192,
+      "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-4.0.0.f32": {
+      "bytes": 8192,
+      "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-4.0.2.f32": {
+      "bytes": 8192,
+      "sha256": "cb854dd5ea5316d24036d16d12db627bdbb441c755248c533b0f28916d8606d1"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-4.1.0.f32": {
+      "bytes": 8192,
+      "sha256": "e1de221c515e10a147642580410f0692f04ff2769f7d29d9cf435c02c4a892af"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-4.1.1.f32": {
+      "bytes": 8192,
+      "sha256": "e1de221c515e10a147642580410f0692f04ff2769f7d29d9cf435c02c4a892af"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-4.1.2.f32": {
+      "bytes": 8192,
+      "sha256": "e1de221c515e10a147642580410f0692f04ff2769f7d29d9cf435c02c4a892af"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-4.2.0.f32": {
+      "bytes": 256,
+      "sha256": "c3117b2cf9a615ec07b2d3fbba7c20e4bc1fd355c95d40d4d57b32480c9c1ea4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-4.2.1.f32": {
+      "bytes": 256,
+      "sha256": "c3117b2cf9a615ec07b2d3fbba7c20e4bc1fd355c95d40d4d57b32480c9c1ea4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-4.2.2.f32": {
+      "bytes": 256,
+      "sha256": "c3117b2cf9a615ec07b2d3fbba7c20e4bc1fd355c95d40d4d57b32480c9c1ea4"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-4.3.0.f32": {
+      "bytes": 256,
+      "sha256": "992c8a5d28234f4124195f4d01ea68252b87bbdf4db3f37b493f40db9334b513"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-4.3.1.f32": {
+      "bytes": 256,
+      "sha256": "992c8a5d28234f4124195f4d01ea68252b87bbdf4db3f37b493f40db9334b513"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-4.3.2.f32": {
+      "bytes": 256,
+      "sha256": "992c8a5d28234f4124195f4d01ea68252b87bbdf4db3f37b493f40db9334b513"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-4.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-4.stdout.log": {
+      "bytes": 912,
+      "sha256": "ba3b5caa7842878ecf30dbaf42953176da352025eff5f5d502b1f91620faf157"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-build.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/matrix-control-build.stdout.log": {
+      "bytes": 33,
+      "sha256": "e30fdaf22c1101b14f2d898d68cd2e33cb0cd1b6fe72ce065138758f5ece387e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/model-free-state-test.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/model-free-state-test.stdout.log": {
+      "bytes": 345,
+      "sha256": "6e5d71a7c07471503709c7858c5d6971db0977a656e00f3a963e9182faef390a"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/native-probe-build.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/native_stream_probe_bounded.cpp": {
+      "bytes": 8704,
+      "sha256": "c500c42eeea2923088856f1de23efd4fb4ac820b00823c3d7e6296ca6f440195"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/native-probe-build.stdout.log": {
+      "bytes": 63,
+      "sha256": "1c32230c3ea67115be9610282de1ad9e1cb083e7f4390ac0daf549f3da1fd4ce"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/persistent-cpu-pool.patch": {
+      "bytes": 4275,
+      "sha256": "ab485ae1b441f4428db49f6b4d1b955e123966d053c4735567e9bdc3825656d9"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/platform-llama-materialized-audit.json": {
+      "bytes": 603117,
+      "sha256": "2cc879b1b505721ccfb43b5736378365ef2065a90392b3178519bc951511cc0d"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/sdk-build.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/sdk-build.stdout.log": {
+      "bytes": 8580382,
+      "sha256": "3706f34a143d503fc66824bf2e4bf02c5baa4bd173cef9e797ded24a5f3acd11"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/sdk-install.stdout.log": {
+      "bytes": 6565,
+      "sha256": "047cd80138b75803d3097ac9d711826b2aed538aecc374a280f490c2cdc70de5"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/sdk-install.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/v3-finish-valid-mel.patch": {
+      "bytes": 1194,
+      "sha256": "8c1434c14f63ebeb2515c719a90594124fd4f75af85b80451fd145b5caef3c36"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/upstream-patch-diagnostic.json": {
+      "bytes": 4,
+      "sha256": "e3566b3a06430868d71e9287dfd6c6c520a3da027aabea01951d407ee131dc2f"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/version-only.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/version-only.stdout.log": {
+      "bytes": 55,
+      "sha256": "f20932c94033a838e6aea30c9b1d8b302bac9f6756474c41e5a5707dcde42863"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/windows-compat.json": {
+      "bytes": 3167,
+      "sha256": "25c42bfbb59cd38f8f9055d1b4ddf667106349d576d2c91ec6b224840307ddfc"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/windows-compat.patch.log": {
+      "bytes": 878,
+      "sha256": "57e108f3cd4fcc42efa8d5b6e373a3663d49e2d36d96f67dfcaf59d166b7e300"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/windows-private-names.json": {
+      "bytes": 1536,
+      "sha256": "04287ba65d4cb5ea210a07685a0eb1d337fbc5b76e8d28c63159992df63d77a8"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/windows-private-paths.log": {
+      "bytes": 225,
+      "sha256": "f1bdcd5ec6fdee2332257d2ed9edf1f30d6f32368b56b468d27457a0f6a627b2"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/windows-private-pe.json": {
+      "bytes": 476853,
+      "sha256": "78eeabdca337ebe9441eefb499c52ef5ab50fd3a7ef4ee01f26cd022a79b32e8"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/windows-provenance.json": {
+      "bytes": 21341,
+      "sha256": "7ddde66e86a8bdd90f7fb71f9e0996b679afb2cf4af8f2c6f245b62aad5be7c8"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/windows-provenance.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/windows-provenance.stdout.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/evidence-mx4/windows-vcpkg-status.log": {
+      "bytes": 4346,
+      "sha256": "aa85bcc183d2163072bdee4a245ce2c400f4a3d7aa68fac1ec59efb56d4f2061"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/protocol.json": {
+      "bytes": 188965,
+      "sha256": "3867fd5651ad0aba829b223829ca977261d7652cbcaba37d22de85e37aef5d7f"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/delivered/qualification.json": {
+      "bytes": 793664,
+      "sha256": "38465fd9bacf925d88470f9730a532884400fe2203f24f7a346e5251bb1f383c"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/producer-run.json": {
+      "bytes": 11820,
+      "sha256": "482e0d15126a6578f30445a241b8e2215eb2b283c311d930e1a47a3ede1cfa63"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/artifacts.json": {
+      "bytes": 731,
+      "sha256": "a843e3d734a2cbca0f75072775f7fd34226850d7d4849c6218470afe11954570"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/job.json": {
+      "bytes": 3532,
+      "sha256": "c865099f5e0e2c82b4658fe016e6565b031b5383f03353068a653f91576deb62"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/job.log": {
+      "bytes": 56437,
+      "sha256": "f9b8c0e623fb6101e6341b3e3e9d2c6c64282083d627c93756de6301ce1a779c"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/qualification.json": {
+      "bytes": 1448,
+      "sha256": "3f29f40f0af74732711fa6242be925fa205d948b9f70f17b7829f74e56fbfe2e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/delivery-admission-v1/artifact-members.json": {
+      "bytes": 112458,
+      "sha256": "85034cbebdfb3704ad11bf8b5cc1f572670e8d372a812624081052da6a1538ff"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/supervision-replay-v2.json": {
+      "bytes": 174210,
+      "sha256": "300ec99378bb4f98b83e5caed841c24bfde5a2d10e1737b6d5cc13511e123a51"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/result-replay-v2.json": {
+      "bytes": 13515,
+      "sha256": "5921f34d177e860e827cc0de279f81043135b22ebe858963c6b25ecb6fa7a2b7"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/artifact-download-v2.json": {
+      "bytes": 235,
+      "sha256": "c46c31cd9a6a75aec7637cce54350ea3ce4f5a2251c7fb13c79e8837c818b7e9"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-ci-v1/artifact-download-v2.stderr.log": {
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/admit-windows-q8-model-delivery-v1.py": {
+      "bytes": 6421,
+      "sha256": "204b70fb9d460b5432f2cd69a570af99262fb16752be23240628048bbe6bd045"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/replay-windows-q8-model-supervision-v2.py": {
+      "bytes": 6460,
+      "sha256": "d0d528c00695de6ba153fc7cb47d9198a0b7f8b43590e943195628940aab2d5e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/fetch-windows-q8-model-artifact-v2.py": {
+      "bytes": 5695,
+      "sha256": "ac29e720d4610f05bb7cfdbc49a857745e5c6949012335feebb3f610b6957cf7"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/replay-windows-q8-model-result-v2.py": {
+      "bytes": 21983,
+      "sha256": "7f46265f29d85b5a90ada9d0436ceab26fac676cabfc76f479e304a586b9075a"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/publish-windows-q8-model-v2.py": {
+      "bytes": 6163,
+      "sha256": "87cf665a01eb5c9f07df4f112b3f7181c4c28f05b0d6ae57b99584e3545c9883"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/windows-q8-model-source-admission-v2/qualification.json": {
+      "bytes": 1460290,
+      "sha256": "6ffa43ff1c0f79570aeab6856d97f4967f96900bc6cf77d009fa2aec2e033df3"
+    }
+  },
+  "publication_limits": "Git retains all raw graph/model arrays, text and source evidence. Native SDK/object/archive binaries remain local with complete payload descriptors."
+}

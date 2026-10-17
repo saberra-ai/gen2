@@ -1,0 +1,30 @@
+--- a/ggml/src/ggml-cpu/llamafile/sgemm.cpp
++++ b/ggml/src/ggml-cpu/llamafile/sgemm.cpp
+@@ -1,3 +1,4 @@
++#define GEN2_Q8_MX4_EXPECTED 1
+ // Copyright 2024 Mozilla Foundation
+ //
+ // Permission is hereby granted, free of charge, to any person obtaining
+@@ -1369,6 +1370,22 @@
+     }
+ 
+     void matmul(int64_t m, int64_t n) {
++#if defined(GEN2_Q8_MX4_EXPECTED) && (!defined(_WIN32) || !defined(__AVX2__) || !defined(__F16C__) || defined(__AVX512F__))
++#error exact Windows AVX2/F16C candidate compilation required
++#endif
++#if defined(_WIN32) && defined(__AVX2__) && defined(__F16C__) && !defined(__AVX512F__)
++        if constexpr (std::is_same<TA, block_q8_0>::value &&
++                      std::is_same<TB, block_q8_0>::value && std::is_same<TC, float>::value) {
++            if (m >= 2 && n >= 4) {
++                const int64_t me = m / 2 * 2;
++                const int64_t ne = n / 4 * 4;
++                gemmMx4<2>(0, me, 0, ne);
++                mnpack(me, m, 0, ne);
++                mnpack(0, m, ne, n);
++                return;
++            }
++        }
++#endif
+         mnpack(0, m, 0, n);
+     }
+ 
