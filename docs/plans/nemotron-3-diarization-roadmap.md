@@ -1451,6 +1451,17 @@ collection replays all comparisons without model calls. This is same-host ad-hoc
 CLI evidence; GUI, physical microphone, fresh-machine, public signing, quality
 and word-gold gates remain open. Original V1 remains failed.
 
+A separate fixed AMI prefix diagnostic is now prepared in
+`ami-prefix-diagnostic.protocol.json`: process [0,420), then score only the
+unchanged failed [300,420) target on both original channels. Acquired prefix PCM
+matches the frozen target bytes exactly. The same previously qualified CPU
+native/public helpers, runtime, geometry, thresholds and two named reference
+policies are frozen; 236 local tooling tests pass. Four fresh neural processes
+remain unrun. This tests session context (including cache/frontend/chunk phase),
+not a cache-only cause, and cannot replace the failed cold gate or establish
+warm Q8 degradation without a matched FP32 oracle. See the
+[diagnostic design](../research/nemotron-quality-next-diagnostics.md).
+
 ## Verification and release criteria
 
 Use public Gen2 calls for lifecycle and user-visible behavior; use the FFI seam

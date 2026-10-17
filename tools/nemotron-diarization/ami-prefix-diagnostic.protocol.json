@@ -1,0 +1,2544 @@
+{
+  "schema_version": 1,
+  "scope": "Post-failure fixed paired-channel session-context contrast on the same target[300,420), using original qualified non-pooled CPU helper/runtime. No parameter/reference/threshold selection, no fresh heldout or release qualification.",
+  "channels": [
+    "ami-ES2004a-Mix-Headset",
+    "ami-ES2004a-Array1-01"
+  ],
+  "source_interval_seconds": [
+    0,
+    420
+  ],
+  "scored_interval_seconds": [
+    300,
+    420
+  ],
+  "work_path": "/Users/victor/.cache/gen2-nemotron3-n0/ami-prefix-inputs-v1/work",
+  "output_path": "/Users/victor/.cache/gen2-nemotron3-n0/ami-prefix-diagnostic-v1",
+  "tools": {
+    "ami_prefix_metrics.py": {
+      "bytes": 3373,
+      "sha256": "4f86a07b71c9b6be506b352310ad20449a7636030239c1d26e5349cbf218e1e8"
+    },
+    "artifacts.py": {
+      "bytes": 2869,
+      "sha256": "17df6411ab0394b4d9bb30a099915badf357af26050b6cd08bfd44887688ff42"
+    },
+    "build_valid_mel_candidate.py": {
+      "bytes": 12180,
+      "sha256": "5bfb3ec59548ae0b56e8e3eaded10201933f574b0b04ca12384eb35795dd546b"
+    },
+    "build_valid_mel_sdk.py": {
+      "bytes": 9670,
+      "sha256": "0f7f1b46d24c6184ea3b5f9313b0825b283edbb881283f02f4a29b6565704581"
+    },
+    "compare.py": {
+      "bytes": 4165,
+      "sha256": "a53fccc162ead3b488a3880950d4dbf244897fd837f3b8e0898235029e559282"
+    },
+    "compare_macos_cpu_pools.py": {
+      "bytes": 15876,
+      "sha256": "9e13a79d54dc34d00e23bb116f91fa7cb00332d22298b03703f141bd73cdd2fa"
+    },
+    "compare_stream.py": {
+      "bytes": 6774,
+      "sha256": "6d6a80a3b9710d0d2d0705225653935d40cd69aac9abe50454c0609631c6daa4"
+    },
+    "compare_stream_pooled.py": {
+      "bytes": 1137,
+      "sha256": "df34d0a1d4fbf08f80ed04b5dca40c017c6a1ca6c5f0202a239d221af45e0482"
+    },
+    "compare_stream_valid_mel.py": {
+      "bytes": 6928,
+      "sha256": "67164da5abee447b987e1274b487cf764fbc3073971930fc87f92f35b127f1bc"
+    },
+    "construct_macos_pooled_cpu.py": {
+      "bytes": 9434,
+      "sha256": "96e5547e2d1f6f77cf3a9b74d31a7f3af8384c65e9fda116423d753eabf1e032"
+    },
+    "corpus.protocol.json": {
+      "bytes": 2912,
+      "sha256": "3b4780afa4bc80eb84e6e630301cbb1e652d5d682cab897b4db0a0a7b17cc25d"
+    },
+    "corpus.py": {
+      "bytes": 18358,
+      "sha256": "caf0aecbc041873ea9acd433c4cd68b6f257caea62dd9221512922b32cf4920e"
+    },
+    "corpus.sources.json": {
+      "bytes": 5506,
+      "sha256": "c9775955596381b96758825029e7831ad99d8aa8bfc2037d6dc3e4ae56230af8"
+    },
+    "ctest_output.py": {
+      "bytes": 764,
+      "sha256": "c109310d25f114993d6f969de7cf39ed2bc4136f28bc046c475b309a8841c6bf"
+    },
+    "diagnose_ami_prefix.py": {
+      "bytes": 10939,
+      "sha256": "a409e0bab7b65558bc78b6e4a63a0459cc17a4e208c6564aae88d1e27313dd6e"
+    },
+    "diagnose_ami_reference.py": {
+      "bytes": 10060,
+      "sha256": "5df4b4999f1868460472538c36bd08a77258b4585257d7b4d37ca49e5f346a03"
+    },
+    "macos-pooled-mixed-v2.protocol.json": {
+      "bytes": 705008,
+      "sha256": "5750715a4cb30adae8a2f67b0a601435c5a2d23bafe0bc5dfc0804821151ce33"
+    },
+    "macos-pooled-mixed.protocol.json": {
+      "bytes": 703727,
+      "sha256": "c40578e5fd6bc57003f6a556cd5838cbc5b12bede092437bb85b050bdfadf3ed"
+    },
+    "macos-pooled-pnola-app.protocol.json": {
+      "bytes": 153240,
+      "sha256": "5b695e0152afbaa9165e10d365f5c367732f1991626eabdbfa4abc037bb45439"
+    },
+    "macos_auxiliary_loaded_libraries.py": {
+      "bytes": 1402,
+      "sha256": "446119644a6a9769f92602bc1f8b0b8d8eaf5bd3590e1b98a12079eebdb0dfbe"
+    },
+    "macos_child_environment.py": {
+      "bytes": 422,
+      "sha256": "7446965f6c63a5e78f0e22720f90c11ada0e08f2543b597d43bc29b8a676590d"
+    },
+    "macos_cpu_architecture.py": {
+      "bytes": 2339,
+      "sha256": "c4ef246fde1d9c869bcb66fa2a8575dca1d9df244db11f83581b1162f75d3363"
+    },
+    "macos_loaded_libraries.py": {
+      "bytes": 1805,
+      "sha256": "69c2dfcc6d2cf8e2966b929ff997b337c6c4e3a62fd8ada110b36ba27da4833b"
+    },
+    "macos_portable_delivery.py": {
+      "bytes": 2771,
+      "sha256": "6579bb560de0d284a44874ba2480b51b265a90817aa864c2e2c68fce0659aabc"
+    },
+    "macos_runtime_load_probe.cpp": {
+      "bytes": 684,
+      "sha256": "e32c833d9511b5106bd1bcc9593fa952eac616cb16adfea8d86197d368b1c199"
+    },
+    "native_failed_load_probe.cpp": {
+      "bytes": 4514,
+      "sha256": "e8f3565c920331e57fb74d25d043b8b73c5be23b916d8ea093cc0cb8ee27f85e"
+    },
+    "notices/openmdw-1.1/LICENSE.OpenMDW-1.1": {
+      "bytes": 2619,
+      "sha256": "2ab44b68365473c112f5092211a38f231cb23e50de68b75a13369adbd76a74df"
+    },
+    "notices/openmdw-1.1/sources.json": {
+      "bytes": 332,
+      "sha256": "ff840c8c5559a4bed7d73e01828b83527a4606d6a446c7796c3dc27d7d41d436"
+    },
+    "notices/sentencepiece-0.2.2/DARTS_LICENSE": {
+      "bytes": 1481,
+      "sha256": "155f59997298ee336602c49f9c1110f268ac394ca2197eb02647a3555935ad52"
+    },
+    "notices/sentencepiece-0.2.2/PROTOBUF_LITE_LICENSE": {
+      "bytes": 1732,
+      "sha256": "6e5e117324afd944dcf67f36cf329843bc1a92229a8cd9bb573d7a83130fea7d"
+    },
+    "notices/sentencepiece-0.2.2/sources.json": {
+      "bytes": 689,
+      "sha256": "381710a6e88a366e60109e476182cb9fe02c0cea1392af7b8cd3dfb1a7a398be"
+    },
+    "notices/sentencepiece/darts-clone-LICENSE": {
+      "bytes": 1481,
+      "sha256": "155f59997298ee336602c49f9c1110f268ac394ca2197eb02647a3555935ad52"
+    },
+    "notices/sentencepiece/esaxx-LICENSE": {
+      "bytes": 1112,
+      "sha256": "7c28553d1d3312d65fe309f76a22ebaf33a3d76c8c1e3b98a88ee4654ecb53db"
+    },
+    "notices/sentencepiece/provenance.json": {
+      "bytes": 1936,
+      "sha256": "d9324e93667b3b34a372279b8ce6dee0a85e511dac02898804724deaf0b5ee92"
+    },
+    "notices/sentencepiece/sais-lite-NOTICE.txt": {
+      "bytes": 1174,
+      "sha256": "162a72e52ad69921a67676af4fb59911233566dce1637e2e33db27659fcac523"
+    },
+    "package_macos.py": {
+      "bytes": 18194,
+      "sha256": "e1c242aae1d707332b2b15161665acacaf1b45785e9687baea35ba53e20f474d"
+    },
+    "patches/persistent-cpu-pool.patch": {
+      "bytes": 4275,
+      "sha256": "ab485ae1b441f4428db49f6b4d1b955e123966d053c4735567e9bdc3825656d9"
+    },
+    "patches/v3-finish-valid-mel.patch": {
+      "bytes": 1194,
+      "sha256": "8c1434c14f63ebeb2515c719a90594124fd4f75af85b80451fd145b5caef3c36"
+    },
+    "platform_macos_portable.py": {
+      "bytes": 8652,
+      "sha256": "21dc51aa14f45fd3ad86c41daad7868ecabdc68e9ce931d59467b344aa3520c4"
+    },
+    "platform_valid_mel_sources.py": {
+      "bytes": 6446,
+      "sha256": "90337aec582be7cc94cf6381a9f0dd9b6b3e12a61503f5bb168db8a510740867"
+    },
+    "pooled_long_metrics.py": {
+      "bytes": 1016,
+      "sha256": "8a49802867d84fcfb01fc49bfd521397801ed21f8c03e09b420a38492f3572af"
+    },
+    "pooled_pnola_metrics.py": {
+      "bytes": 4290,
+      "sha256": "2111c1d02f6d6ee62ecfe1614a1c6cd6fdb8bf37f1ed1aa0c759387a1aafc943"
+    },
+    "pooled_runtime.py": {
+      "bytes": 5537,
+      "sha256": "a8ba8fac43b5331b2a34b730638516d01df8e3df1d6bf65ffa0bc48c1ff091ee"
+    },
+    "prepare_valid_mel_source.py": {
+      "bytes": 3378,
+      "sha256": "41139cca04d85b306afb6c53007190782f22ad420f2a20be8302fc2fc9b0d98c"
+    },
+    "qualification_storage.py": {
+      "bytes": 3914,
+      "sha256": "8bbb4dfe53797d8d03c3ba18f24acce8458878602c1c85f28a4f816d6f4416f6"
+    },
+    "qualify_corpus.py": {
+      "bytes": 9987,
+      "sha256": "51fdf6ba5201d02bd55762fa449727c5aa5507aa640aa27394cb9439dd19619e"
+    },
+    "qualify_macos_pooled_long.py": {
+      "bytes": 13828,
+      "sha256": "aedce56b770d388cefdf263830ed740744fedc61cdd15485d1120349810f70c7"
+    },
+    "qualify_macos_pooled_mixed.py": {
+      "bytes": 19732,
+      "sha256": "c70eac7db77a07e8957eab5fe7f49b399d8c8ae16a4d7f68c4d61c3830a2c766"
+    },
+    "qualify_macos_pooled_public.py": {
+      "bytes": 24551,
+      "sha256": "066e8830adb7699ee45994289648bc914711ee77da8ad49980653c672ee113b0"
+    },
+    "qualify_macos_portable_runtime.py": {
+      "bytes": 21021,
+      "sha256": "35deb87ff13992571671770b6c7652c4d47e4cc172429234f3391cdd08a36bca"
+    },
+    "qualify_pooled_native.py": {
+      "bytes": 17512,
+      "sha256": "14a6b235999f7113ecacdf461d25f029b932e4a7dd60a29df5225e124524bf72"
+    },
+    "qualify_pooled_pnola_app.py": {
+      "bytes": 9875,
+      "sha256": "8fbc9ea67f19c769b23c797c921fc22a078410f96aa657e3d71579711dc74a3d"
+    },
+    "qualify_valid_mel_corpus.py": {
+      "bytes": 10331,
+      "sha256": "eacb675efe97a7a2374642a39ee9ab04b83593bdc8069a0da6b8860ec7aaa8a5"
+    },
+    "qualify_valid_mel_mixed.py": {
+      "bytes": 8454,
+      "sha256": "ad56982cd1d6cc4e668d67b30c4ff6f4284ad8c6d3442fb0d79031c50b1c5d6b"
+    },
+    "qualify_valid_mel_pnola.py": {
+      "bytes": 13787,
+      "sha256": "4628f4b6242a7cd0985ba5b20a7ac8f38bbec4dc5042b786e34e488ed738e423"
+    },
+    "qualify_valid_mel_pnola_app.py": {
+      "bytes": 10497,
+      "sha256": "38e73c24f438b083e13c29e4a5a12178051b7841b2b13420f53f4ed93ea68a62"
+    },
+    "reference.py": {
+      "bytes": 5614,
+      "sha256": "65dd8681ce91476761f75d97ead3617032e550768edf481728b5551b78a0bd18"
+    },
+    "reference/uv.lock": {
+      "bytes": 109120,
+      "sha256": "104834dd9a3904a763dfd5270b92821b5a209b2289f00f0c6f2d3cd55ddb673f"
+    },
+    "runtime-valid-mel-pool.lock.json": {
+      "bytes": 7521,
+      "sha256": "fdfbcd97283b235f20adb2c8ff5f8f813ee706fa1b90d3f9989b4effae7e47e5"
+    },
+    "runtime-valid-mel.lock.json": {
+      "bytes": 6339,
+      "sha256": "af40e586994f223390fcac59936e3781d967c03080350f4b5df141b1bdaf51be"
+    },
+    "runtime.lock.json": {
+      "bytes": 4917,
+      "sha256": "e66e5651608636bbb04528fed7944ab8972a778d1141b36fef3fb391eefd0dcc"
+    },
+    "runtime_profiles.py": {
+      "bytes": 7345,
+      "sha256": "f99c8c33a3a64005ef477319c8bc7f1d6c32180c44665c2fe189a54a4b31ac7d"
+    },
+    "score.py": {
+      "bytes": 3294,
+      "sha256": "32aea92676133e42e2c30a914f8729d1c31c0c96e02faf9b7cab42911b389eb8"
+    },
+    "score_valid_mel_corpus.py": {
+      "bytes": 3848,
+      "sha256": "fc27bd6344e8c028d9e77efd977f962a1573b0f59d069c87949be8a350e6c42a"
+    },
+    "sdk_archive.py": {
+      "bytes": 7022,
+      "sha256": "0b1d80768d15c2818afc82efcc1f3ddf253360b99c16c623e170073e020cb3cd"
+    },
+    "test_ami_prefix_metrics.py": {
+      "bytes": 1728,
+      "sha256": "55f8adac23660baefce3bce5f0547c43e40f9c647e6040f8c95e13f18798146d"
+    },
+    "test_macos_auxiliary_loaded_libraries.py": {
+      "bytes": 3000,
+      "sha256": "562150666ede4ba72c9822fd5b5d50cca5695d9a65572f5eeb87d5adf7c3e08b"
+    },
+    "test_pooled_long_metrics.py": {
+      "bytes": 2927,
+      "sha256": "ea3e6b39786a3b68c3d3ea7eb710f2e8b5806452d780e0f4884db5bb7e8e34ab"
+    },
+    "test_pooled_mixed_policy.py": {
+      "bytes": 7063,
+      "sha256": "b2252710ad2b20608cc2f70791832c8ace6568027f776dbffd1819afbef7e82d"
+    },
+    "test_pooled_pnola_metrics.py": {
+      "bytes": 3236,
+      "sha256": "35027cfd84d1c11ca122e83a31534854e762a51de3c50af1d08f5cbd3dc59887"
+    },
+    "test_pooled_public_policy.py": {
+      "bytes": 2875,
+      "sha256": "7e16fa0fc2073cf7f8864ce375191807c7a7134730afb95ff83704e14856d5dd"
+    },
+    "test_qualification_storage.py": {
+      "bytes": 4417,
+      "sha256": "e6c8a567be86f2d614868e96f10dd6e682077aa3b3cd03b8347aab95fad20332"
+    },
+    "test_stream_comparison_pooled.py": {
+      "bytes": 3047,
+      "sha256": "ad0ef4b3b6b9c6c89b80a2bd2b2c22f24a50948c8ba547842327b004529e4d03"
+    },
+    "test_stream_comparison_valid_mel.py": {
+      "bytes": 5048,
+      "sha256": "9b1a8cba62969c38df4b71bc16b9f14ddc513f376d48b7784f472a9de49c56d9"
+    },
+    "test_valid_mel_corpus.py": {
+      "bytes": 2607,
+      "sha256": "6c291a6391ff1ce7b2aa54ad560d45dc66e67383f90316e4891528fafc405033"
+    },
+    "test_valid_mel_corpus_oracle.py": {
+      "bytes": 3345,
+      "sha256": "2f8d10b3e6ba4af78a21e10e35e25d135b4d76f10fac84855cf361a71f06c7ac"
+    },
+    "test_valid_mel_long_metrics.py": {
+      "bytes": 5326,
+      "sha256": "21558a09eda53988391322f9f43495315194de1a678a635c89c7b86a4d11d20c"
+    },
+    "test_valid_mel_pnola.py": {
+      "bytes": 3617,
+      "sha256": "098e574099e0eafd692b897555fd9b43fc4cb4f3642d029db916ee09c317fa0e"
+    },
+    "test_valid_mel_pnola_app.py": {
+      "bytes": 3593,
+      "sha256": "dd429261e2bd81de2d164496edbbdee50e7034728ba1052df14f4b01ff05d053"
+    },
+    "test_valid_mel_pnola_complete_app.py": {
+      "bytes": 3406,
+      "sha256": "7d7e97551e2f12cdcf0857baa98a2f1838b8e964a6ff4b1eddd2086713d8f272"
+    },
+    "valid-mel-corpus.protocol.json": {
+      "bytes": 125552,
+      "sha256": "992b19ae74f799467b43bd9ecf0eea92aec0fce2baf0fe5268e4300f4fb82647"
+    },
+    "valid-mel-cpu-long.protocol.json": {
+      "bytes": 168754,
+      "sha256": "126b18708d8be2b4bbaf7f20ca56e75cef0bc71ef814bd4f0b5c6eb942611cb6"
+    },
+    "valid-mel-mixed.protocol.json": {
+      "bytes": 97657,
+      "sha256": "e9fdeddecf93049f73ddc00492184bcf9d080dcac8b00a032ec5154918630f2d"
+    },
+    "valid_mel_long_metrics.py": {
+      "bytes": 3173,
+      "sha256": "3996a9f4072fcbc52e83c337aa97931374a84cf78299e05b045eb8152bf7526a"
+    },
+    "verify_pooled_pnola_app.py": {
+      "bytes": 7257,
+      "sha256": "2103246216da20749752063e4f00b98376b10c161fda09b84beb1ed664af49f0"
+    },
+    "verify_valid_mel_pnola_app.py": {
+      "bytes": 9794,
+      "sha256": "fc5bd7c4223169d1b020f568326872035d4c552af207e93b742498b47490d272"
+    },
+    "windows_compat.py": {
+      "bytes": 2393,
+      "sha256": "091eb520c5171f0f598182acada97549415191eb5ff20801040be30ec43e43ea"
+    }
+  },
+  "repository_files": {
+    "src/advanced/mod.rs": {
+      "bytes": 6502,
+      "sha256": "06642cdd4f8d126bac67304d9488939dac1abdc32161b73a9df1acd4aff22249"
+    },
+    "src/advanced/plugin.rs": {
+      "bytes": 11337,
+      "sha256": "d740b12c099438c8b46c01e46d849e489c8eccc9af1fded02a492930b8395866"
+    },
+    "src/agent.rs": {
+      "bytes": 3367,
+      "sha256": "0492a18c0c05d86275b0c9b3c1af4221f341edccf8eb2d1ecedb08546a4692d5"
+    },
+    "src/api/agent.rs": {
+      "bytes": 36628,
+      "sha256": "44a5547d1fa89ee088f486abf4e0be7de2f44b12b3e0ae80882531d8bcf48060"
+    },
+    "src/api/agent_config.rs": {
+      "bytes": 7746,
+      "sha256": "a1ba8d8168923af67dc641db5284404d3233bcfe6468ac307146ff20a8e718e3"
+    },
+    "src/api/agent_contract_tests.rs": {
+      "bytes": 15509,
+      "sha256": "4684348e34c7ac6f5f7f5c98e863d2d7210cf2386a76a58c181a912d48912c66"
+    },
+    "src/api/agent_spawned.rs": {
+      "bytes": 10994,
+      "sha256": "1757aae2b5de4547549bbe82a42c44d66679226352bcae3fb8ed2a2dea6e2d76"
+    },
+    "src/api/async_turn.rs": {
+      "bytes": 28914,
+      "sha256": "9caec9999063d6a6689db44f2d1581abe973655efd169ee003f5cfcd335e5530"
+    },
+    "src/api/asynchronous.rs": {
+      "bytes": 9520,
+      "sha256": "8015b741470db21f6af8b20c39ab82053479d13a3ebe1c67c75a4a83f2323730"
+    },
+    "src/api/chat.rs": {
+      "bytes": 25121,
+      "sha256": "db24d33b4b9fbcdd702ba656940604cff8204ad31d0c98e3b4b79a3d789dc5ff"
+    },
+    "src/api/classify.rs": {
+      "bytes": 14254,
+      "sha256": "3e657a982fc60a29a9cfbcdb9fcfa5cebec3ed2faf08941e24d6ddf4b168f278"
+    },
+    "src/api/composition_tests.rs": {
+      "bytes": 13325,
+      "sha256": "ada5c1ec941870ee79e3323ea16f801df00faf13245e82528ce2e6553608cc83"
+    },
+    "src/api/embed.rs": {
+      "bytes": 3961,
+      "sha256": "0df984dc8e9a87d5bad5bd7cff6ab89d69ecfedc4f5cccbd47ef191857a70191"
+    },
+    "src/api/engine.rs": {
+      "bytes": 40644,
+      "sha256": "031865b3ffca2664283d2a95cf0e98e321f58dad3543e2ec405f3fb8edafaf96"
+    },
+    "src/api/entrypoint_tests.rs": {
+      "bytes": 12651,
+      "sha256": "db66a53b2a54d5f5658528f60e98967f621ca1485eddca646e69e9ce7edccd54"
+    },
+    "src/api/error.rs": {
+      "bytes": 8764,
+      "sha256": "809ad47c46898bdc96c50eca31efba3dce6b6a12428e31db6bee678086102071"
+    },
+    "src/api/event.rs": {
+      "bytes": 34821,
+      "sha256": "27238c6def5e8e1fb847bcc7af83aa3cfbd0b9624f771e790bc5d3b02e1e4b92"
+    },
+    "src/api/extract.rs": {
+      "bytes": 9884,
+      "sha256": "41e8ce48db11c2c0dc1a70bd34e4a18b113c34469e8bf8e07287edb969f10748"
+    },
+    "src/api/fit.rs": {
+      "bytes": 13746,
+      "sha256": "16d8e779b747edd0ccc8d8cda265843f82ad8851a887d229be944aec547e9485"
+    },
+    "src/api/generation.rs": {
+      "bytes": 11521,
+      "sha256": "5e9ddf881f2fbe11c961319deb84942696b3756b9d1d79e48de401e026f8e88e"
+    },
+    "src/api/hf.rs": {
+      "bytes": 70843,
+      "sha256": "c131ad2bd43c43d9568395d6cc1d71e5e60c8dfa3f8c92185a7ebb30aa538fba"
+    },
+    "src/api/inference.rs": {
+      "bytes": 4346,
+      "sha256": "692da0c439f0fbba330ae2eb06b29b029f4dd7eb32275bf537c16a887a96dc5b"
+    },
+    "src/api/input.rs": {
+      "bytes": 9421,
+      "sha256": "6a1f0922ff9441150f2f5174b39635e024272a346f47572fcfb4e0bea88b52a9"
+    },
+    "src/api/lifecycle_tests.rs": {
+      "bytes": 8489,
+      "sha256": "bcc42746bb7992253932f2ef13c6eb610cf723ac115734063f0a5f9d4e883bb5"
+    },
+    "src/api/mod.rs": {
+      "bytes": 4434,
+      "sha256": "e1e7838b3892619a613324f3c868777f094d8e47e348a6337d5381f7eae78272"
+    },
+    "src/api/model.rs": {
+      "bytes": 11514,
+      "sha256": "8c0381c3666ab0cd92c42b6e52356c5091f57071297d5c2724c4469497ec5d7a"
+    },
+    "src/api/output.rs": {
+      "bytes": 8134,
+      "sha256": "7eddef7913859bf193c285c908f377a7a27fcf2e22709b6d0a6dbdfbd7ebdcc4"
+    },
+    "src/api/response.rs": {
+      "bytes": 4404,
+      "sha256": "631af237cda8a660f739221d6af1270d23b44eb462cbc4c376ad9461bcaa51e2"
+    },
+    "src/api/runtime.rs": {
+      "bytes": 54867,
+      "sha256": "913497ab88b277df4bcb98d8ae16850d0dc7fbf74e4b9dab83bdfe363c3e2afe"
+    },
+    "src/api/session.rs": {
+      "bytes": 96262,
+      "sha256": "cf1c527f35891fe70fa34f8ca409ac2a1cc1ed0c7b942fcc546bc487afdcc575"
+    },
+    "src/api/session_props.rs": {
+      "bytes": 23587,
+      "sha256": "c07af7b2714b614be3b24f01627348cd38332289bccb0e97378c6e92599c75cf"
+    },
+    "src/api/spawned.rs": {
+      "bytes": 11131,
+      "sha256": "dfd349ccf0253a0456cf99b420beb0faddd736b64db4b3408bda432f0e905780"
+    },
+    "src/api/spawned_tests.rs": {
+      "bytes": 19481,
+      "sha256": "1f1097f8c5f22c37a297811add1b0337cf9cd0bd0b7449305fb0d1af2f5a4783"
+    },
+    "src/api/spec_walkthrough_tests.rs": {
+      "bytes": 7176,
+      "sha256": "6d71ec2db50f4292a376f08871f945814da905e600e4cff0c614c64e5450f191"
+    },
+    "src/api/stream.rs": {
+      "bytes": 18107,
+      "sha256": "2967f50d8dc7c2ee6c0bc1573917acabdaf2a25d17447789a16ffa12b3971b76"
+    },
+    "src/api/switching_tests.rs": {
+      "bytes": 17581,
+      "sha256": "47908b947ff4a725a1f347fba0007ea931e729d5d4ef40ddf16db305d9cd571d"
+    },
+    "src/api/tool_defs.rs": {
+      "bytes": 12599,
+      "sha256": "886a294e185afec15b6e4b649631e9eca327c0787d12809ddf380d711b719047"
+    },
+    "src/api/tools/agent_tool.rs": {
+      "bytes": 6534,
+      "sha256": "b2f58ae00d50cc32bc8dda2031954e8e5b2ecc8217f0bc492f2a1f8fa816d2b9"
+    },
+    "src/api/tools/corpus_tests.rs": {
+      "bytes": 13279,
+      "sha256": "700857d970009c265b513687e8a037da5b0f6e08925a1a3b74219977ce9ca733"
+    },
+    "src/api/tools/function.rs": {
+      "bytes": 6297,
+      "sha256": "86ee3d1ac50276454b81d664daa29a0e0ffae3cafd1593c3d2665fc1f29595d8"
+    },
+    "src/api/tools/mod.rs": {
+      "bytes": 9000,
+      "sha256": "72050cf4b24618c4137e870b8ae0978f8941bcddeb1f1d833985ccb83229a5ed"
+    },
+    "src/api/tools/registry.rs": {
+      "bytes": 18421,
+      "sha256": "a539ae7a0c8d6823b85bace0edf57a3d8de039e2c267b4948841ac8873c63b9c"
+    },
+    "src/api/tools/search.rs": {
+      "bytes": 12076,
+      "sha256": "9e403d05c407d420ec18e3af7557f6f0a00f3dcd07a7b6dd511418068d568028"
+    },
+    "src/api/tools/set.rs": {
+      "bytes": 3320,
+      "sha256": "37702f946fd45abb1bc385dad3de313875e9d0b76fe797838c90cc9bbeb89c9e"
+    },
+    "src/api/tools/skill.rs": {
+      "bytes": 7393,
+      "sha256": "4b09f9abf83e2c32b5c5af3d712a93bbb63eca63b60d6cee01a501bac2d4c62d"
+    },
+    "src/api/tools/spec.rs": {
+      "bytes": 4340,
+      "sha256": "cd71cb6488f791517a298faf50250d0646954094d27a37482d81756679912706"
+    },
+    "src/api/turn.rs": {
+      "bytes": 40244,
+      "sha256": "fa6b402676c614e6bea1e422b69ea9be0ccda391efe6089ce82a6466c9586d17"
+    },
+    "src/backend/caps.rs": {
+      "bytes": 6753,
+      "sha256": "9e3d9313e074f4646a585f9c6d86a6ecedeab11bcb06ed2f3379dc54d5dad43f"
+    },
+    "src/backend/common/chat_template.rs": {
+      "bytes": 29250,
+      "sha256": "b7392c974cfa8e3e474908599f1bbf2ab44bddcd0ea177c2813be0fe55a6beea"
+    },
+    "src/backend/common/fingerprint.rs": {
+      "bytes": 5798,
+      "sha256": "424d94616c4187aed9f85a232b56c9bf0711bf260be2a412e3f87563fae98d57"
+    },
+    "src/backend/common/grammar.rs": {
+      "bytes": 17899,
+      "sha256": "208c8ae14b953994775d302c12d0267f8c12bcdd49e403fda4631e2f334dee12"
+    },
+    "src/backend/common/healing.rs": {
+      "bytes": 15903,
+      "sha256": "3ea392321238eeeb5dd7ff53fb0c053beba1665277c386fc280e9df50d2e8a6b"
+    },
+    "src/backend/common/hf_meta.rs": {
+      "bytes": 9061,
+      "sha256": "750f3fef5a1d79bd99ff7444ccdb8f5b2cd74d86994298f3c3c950acee649fe4"
+    },
+    "src/backend/common/mod.rs": {
+      "bytes": 2412,
+      "sha256": "3835fa4f36a9f31b01cba8acd3d20e543d02adab5102290a8509ae7011533fc5"
+    },
+    "src/backend/common/output_filter.rs": {
+      "bytes": 18461,
+      "sha256": "2c0f16f0073ea281582be9d6f11ab6db93a878ec0727d00d78fcc70c29ac2bab"
+    },
+    "src/backend/common/sampler.rs": {
+      "bytes": 29154,
+      "sha256": "0beaa1bd780212114058ac37b16b4b52b0e96ebd089d9ca3a41a1651c9173c63"
+    },
+    "src/backend/common/speculative.rs": {
+      "bytes": 19614,
+      "sha256": "cd383894b7e0a429ac59bcf956821d28c4c58a4ce68e1cd0e06ca0b330b18e86"
+    },
+    "src/backend/common/stop_matcher.rs": {
+      "bytes": 10752,
+      "sha256": "dca33ada28b58811a59410e7fda62c9684761aa04c2889c4bd8ae58829863bc2"
+    },
+    "src/backend/common/tokenizer.rs": {
+      "bytes": 6016,
+      "sha256": "9f8d6bfd2fa3e9be9eadbdba5f3f0c1a6bafd2728fb3e4e5eff6ccba3a960bc7"
+    },
+    "src/backend/common/tool_calls/tests.rs": {
+      "bytes": 18484,
+      "sha256": "bced89d7f4724ea8d64447b8977c8580d39e69d972f6ea4339ed2a36659bddc4"
+    },
+    "src/backend/common/tool_calls.rs": {
+      "bytes": 39508,
+      "sha256": "c550db21a092bd290f4c9b3b9ee3b447621b866ec4353325281b5fb29833ea80"
+    },
+    "src/backend/conformance.rs": {
+      "bytes": 20737,
+      "sha256": "68ba85d4cc4a1aa4029dcae66a1f1d69ef4e8ada1a011660887c424a08c4447a"
+    },
+    "src/backend/external_api/anthropic_puller.rs": {
+      "bytes": 7755,
+      "sha256": "8bf5dc250b2ed423f11cd334dcced4583efb4b10368b99637bbf0ea561630dd0"
+    },
+    "src/backend/external_api/engine.rs": {
+      "bytes": 19755,
+      "sha256": "545471d56b09166e261d0323a49b4907862302cd5d111a50e41873ca5dd008c0"
+    },
+    "src/backend/external_api/mod.rs": {
+      "bytes": 638,
+      "sha256": "12a3ee74385c5bd71aced82436aceb2349915bb2f5d6077adb21610ebcad2d8f"
+    },
+    "src/backend/external_api/puller.rs": {
+      "bytes": 10018,
+      "sha256": "cccdaff7cc281383f93ed42fbea1a2b0aff2fdc20661ed9ca269233335076ab5"
+    },
+    "src/backend/external_api/session.rs": {
+      "bytes": 13274,
+      "sha256": "a7ad07e466f0c5c0f8427bf3c41cfada842fdff44a6b6aa820607497f6e80022"
+    },
+    "src/backend/external_api/tests/anthropic_request.rs": {
+      "bytes": 7101,
+      "sha256": "dcf9d99473c0918a3c2d341cb2df2cfdfa70080347034c23d797ae56831f1617"
+    },
+    "src/backend/external_api/tests/anthropic_sse.rs": {
+      "bytes": 8553,
+      "sha256": "687acf359cc4c58ca66d990f98e66339a03ee2ec8d6df219aad85eb12139f732"
+    },
+    "src/backend/external_api/tests/harness.rs": {
+      "bytes": 13008,
+      "sha256": "6fbbe0246381745d0e506ddb0658bf62d8a4b09439895d027aabe82572f4d8ee"
+    },
+    "src/backend/external_api/tests/http_failures.rs": {
+      "bytes": 10801,
+      "sha256": "1d94f3099b84b77251fa1fc5d0059e5bdf489e94b089c60e1c99939ed38994df"
+    },
+    "src/backend/external_api/tests/mod.rs": {
+      "bytes": 525,
+      "sha256": "0ad89723d9da3359bf8cf7aed4d2db9bc868adec885419be88d02ded7ca5a2f7"
+    },
+    "src/backend/external_api/tests/openai_request.rs": {
+      "bytes": 12239,
+      "sha256": "1553390aebf5fa40f9821fe41206295b33b4717644501cf89cb8b255807403be"
+    },
+    "src/backend/external_api/tests/openai_sse.rs": {
+      "bytes": 10519,
+      "sha256": "0f259cc49ff346a8810d7715af231311b40a00825512f98b69a58a9c2a84d85e"
+    },
+    "src/backend/facade.rs": {
+      "bytes": 44266,
+      "sha256": "1ecb13799e8dcff9685b4482d3e7fd37b10e1b6ac8c4197170cbd8610bc7994e"
+    },
+    "src/backend/health.rs": {
+      "bytes": 2139,
+      "sha256": "a0557ea2409f949c75a0f0ba1de40b8d22267decefb395eb89b0c6c1913435c6"
+    },
+    "src/backend/litertlm/capabilities.rs": {
+      "bytes": 8552,
+      "sha256": "197c22d27e7d6a9c8e96ebb4ba54965b7ed28d594e678e8501fdbb4f42da114e"
+    },
+    "src/backend/litertlm/convert.rs": {
+      "bytes": 35543,
+      "sha256": "245611634bb17b0e4d80ecd1ab67a9c10795c678af1b602c7086cf4c5232f18c"
+    },
+    "src/backend/litertlm/engine.rs": {
+      "bytes": 15038,
+      "sha256": "17c797fc96c9b1405d11a33d52e1dec4107df7d227ffcd1026d24a09c76deb99"
+    },
+    "src/backend/litertlm/ffi.rs": {
+      "bytes": 45612,
+      "sha256": "7238d3098412ca77f1b146b2e628b18da175db4659e024f0d607abbb33e0bc9d"
+    },
+    "src/backend/litertlm/mod.rs": {
+      "bytes": 10793,
+      "sha256": "75573c52e0b2ba0e8bf653d5b2bcd9e7929c6f106a5b856eb5b2fe09ec006792"
+    },
+    "src/backend/litertlm/puller.rs": {
+      "bytes": 20817,
+      "sha256": "5b01289e9e24978f4c6126f4bcae9b4467a492a096d6a9f8db39328408bf2437"
+    },
+    "src/backend/litertlm/session.rs": {
+      "bytes": 11894,
+      "sha256": "623968a64ef307b3a8ad867fa2e6d16876a1c1f28d872a548e7c1aa3acc8371e"
+    },
+    "src/backend/llama/bundle.rs": {
+      "bytes": 955,
+      "sha256": "c2d6e36b6416e252823a31ba04dbdc366f40bb0fd5fbdd68cdba25015e851c36"
+    },
+    "src/backend/llama/dflash2.rs": {
+      "bytes": 1569,
+      "sha256": "4a021b0e5645da9723b9e05def6f6507e0a85a878b21e2fdc38ef166870d61a8"
+    },
+    "src/backend/llama/embedder.rs": {
+      "bytes": 36324,
+      "sha256": "4de129c3239264d10c352ae4a6a49d304d709b4e7adee8538344a9552b94ceac"
+    },
+    "src/backend/llama/engine.rs": {
+      "bytes": 37700,
+      "sha256": "3c99735a2ad356fb3dfc6b0a3c02f6e46ed6833b7cefd9ae56d8fed95dbf6686"
+    },
+    "src/backend/llama/ios_memory.rs": {
+      "bytes": 15575,
+      "sha256": "9a8a22a2dc21e9cdd41f6db00a09492c9389603d53ff8ffe36eb8d6c5b032dbc"
+    },
+    "src/backend/llama/llama_config.rs": {
+      "bytes": 1146,
+      "sha256": "79561740ba5a5507cdaede0942aed8548a3842573f6617791db4c6637f966d75"
+    },
+    "src/backend/llama/loader.rs": {
+      "bytes": 11152,
+      "sha256": "078bcd4eff2ecbcbebd63de4a618d5db9e457225b0ab274940de68085773a493"
+    },
+    "src/backend/llama/mod.rs": {
+      "bytes": 1010,
+      "sha256": "fe3d32937fdfea13ffc25ac3dac8bfcb948a8773f2bcca25546b7cedff4a038f"
+    },
+    "src/backend/llama/puller.rs": {
+      "bytes": 22297,
+      "sha256": "55f8a513aeaa158c86bf25ea0d45c51a9eff91a7b0de0a51be8730d2d4b2b323"
+    },
+    "src/backend/llama/session.rs": {
+      "bytes": 78365,
+      "sha256": "edd2150587921377e45e1359f9fb478f4f38b388f8cc08373be7052aac731039"
+    },
+    "src/backend/llama/tokenizer_adapter.rs": {
+      "bytes": 1113,
+      "sha256": "d77c3638591491296addeeef385be4d7d7b49e38cfdb542c6ed2cddb239b4270"
+    },
+    "src/backend/mistralrs/convert.rs": {
+      "bytes": 19954,
+      "sha256": "4625e1eb1c138235128d88280e3563b3b8c1a8703bb13db9973715255d54c5e5"
+    },
+    "src/backend/mistralrs/engine.rs": {
+      "bytes": 5321,
+      "sha256": "d55e7dc444fd46980d5b1e310c4d00ea257c52eac6b70068150f0f3cd2665866"
+    },
+    "src/backend/mistralrs/loader.rs": {
+      "bytes": 3000,
+      "sha256": "191066cbc4f58b96917854c9670d3242d6be2e3c0ae3ead69819a64dcda9bdba"
+    },
+    "src/backend/mistralrs/mod.rs": {
+      "bytes": 6073,
+      "sha256": "7bcb415ddc1462c3b231332649bfa621f7f8b0f8a60973429a871f4995005ca0"
+    },
+    "src/backend/mistralrs/puller.rs": {
+      "bytes": 16321,
+      "sha256": "63217b1db8fef9537a2fcd8c852e6755b82759642f97c2814cf078537b4b0a8c"
+    },
+    "src/backend/mistralrs/session.rs": {
+      "bytes": 4083,
+      "sha256": "ec5e3fb8888a73f8abfc264774f9e589cca74f8a667b99bd2172edb9ec2c5cdd"
+    },
+    "src/backend/mlx/bundle.rs": {
+      "bytes": 2034,
+      "sha256": "a530b1139fc0fc07c7e30c301a8c47f7ce107a5f8460329daf7a64b29de2ac70"
+    },
+    "src/backend/mlx/eagle3_loader.rs": {
+      "bytes": 6693,
+      "sha256": "b29100f2faafe9ec26a56cf3947a9ab2b8036df3e08a2a476f93025d4911e257"
+    },
+    "src/backend/mlx/eagle_predictor.rs": {
+      "bytes": 4305,
+      "sha256": "b00309a9eda5fdac2575aa7ff283b16499a67fa651dc11e767c164aa91f01707"
+    },
+    "src/backend/mlx/engine.rs": {
+      "bytes": 41427,
+      "sha256": "2c093fad445c09839e8af8bc8fbac18df6ac940493fbefc5b1a5c71bedfeb960"
+    },
+    "src/backend/mlx/golden.rs": {
+      "bytes": 62446,
+      "sha256": "d00ae7c151057e995f695dbfa954bfdd341b53a8bf8a9b7a5273d94af9ad3222"
+    },
+    "src/backend/mlx/kv_donation_probe.rs": {
+      "bytes": 4167,
+      "sha256": "7d0eac0a58c16e6ecc88304f9532c2111b1a7094095cb682a97dd71aeaac58e4"
+    },
+    "src/backend/mlx/loader.rs": {
+      "bytes": 48606,
+      "sha256": "80ddffc9fad8647798d238f1295cfb3d1ea7e428d8011f074c731bc576be5165"
+    },
+    "src/backend/mlx/mod.rs": {
+      "bytes": 5376,
+      "sha256": "2b32d8c245f4fe2a090804c492b78c48b45ea7e181326b9a91471994a3a5d083"
+    },
+    "src/backend/mlx/model/attention.rs": {
+      "bytes": 11615,
+      "sha256": "5a36d31fd60f570d457ca622eff6f2931fe272283a06ad554185ad51a2278ba7"
+    },
+    "src/backend/mlx/model/diffusion_gemma.rs": {
+      "bytes": 40636,
+      "sha256": "2f7eb4f546d2fe882d38d80cb4b22edaaf7da9e775e1feaa89aa20a8887ad019"
+    },
+    "src/backend/mlx/model/eagle3.rs": {
+      "bytes": 20409,
+      "sha256": "863f9e5be7ad6cb2d8251a4a869c1dec1e38d63aae51ef342864515f3b80912f"
+    },
+    "src/backend/mlx/model/ffn.rs": {
+      "bytes": 1734,
+      "sha256": "629c80c0680ffc0913d6fcfb504689b3ea5448d09146ca776e245caf4b1e14ce"
+    },
+    "src/backend/mlx/model/gemma4.rs": {
+      "bytes": 82349,
+      "sha256": "f9d6bec46f78b5e6c365c65f5c5629306808c5bdd8132cbf1506a5e1d05e6096"
+    },
+    "src/backend/mlx/model/gemma4_fast.rs": {
+      "bytes": 14185,
+      "sha256": "4c3ac41bafb53e650f6c4b18091ddc0dd47c2c51ec560e88821e89563b18b03a"
+    },
+    "src/backend/mlx/model/llama.rs": {
+      "bytes": 6925,
+      "sha256": "175b501731692e27774e6987e0e1d9c49d702ef6fc5c85876693d325da7dd18a"
+    },
+    "src/backend/mlx/model/mod.rs": {
+      "bytes": 10802,
+      "sha256": "f7086b03b77869b6e864c854b84ff3e8028987b36a0ab6fadc098482cb5cc9ca"
+    },
+    "src/backend/mlx/model/moe.rs": {
+      "bytes": 29347,
+      "sha256": "c3bbc5f87a9ce88a8494d9ef17a8bc7efa7367f2b1e94782b211aae442489588"
+    },
+    "src/backend/mlx/model/norm.rs": {
+      "bytes": 11241,
+      "sha256": "df5fc1169f052eb13aae56d47ddc719d8a8a64ef6cd8b583fd6ae16de835d185"
+    },
+    "src/backend/mlx/model/profile.rs": {
+      "bytes": 4321,
+      "sha256": "8fae35f1ff419524b35558d64348d1e4d6d7c6d3c8dd56ef79bece0d1a58578f"
+    },
+    "src/backend/mlx/model/quantized.rs": {
+      "bytes": 4150,
+      "sha256": "6fd819749af4a8623c015dc98f731604de635f4ce8f38bce0174744c596d6418"
+    },
+    "src/backend/mlx/model/rope.rs": {
+      "bytes": 8645,
+      "sha256": "e31d3627cfa8369b4a7d3b2aa35be1d996b5ddbdb01e5cfe48feb00fa1930c7b"
+    },
+    "src/backend/mlx/model/vision.rs": {
+      "bytes": 39679,
+      "sha256": "a8c4e7044fad80807222e446b372513a27ac1cc26f35bc8e54ffcf2b112ea7b6"
+    },
+    "src/backend/mlx/model/vision_preprocess.rs": {
+      "bytes": 22679,
+      "sha256": "5aae30a77b86ca8fb49e79dd131aafdd5b6343c954520d24124563aba4902f4d"
+    },
+    "src/backend/mlx/profile_decode.rs": {
+      "bytes": 9879,
+      "sha256": "ca03537776580ce0847f5968ad4c87753acbfd83a958258c5de8d8a578e3a2c1"
+    },
+    "src/backend/mlx/puller.rs": {
+      "bytes": 55051,
+      "sha256": "de2dd713610692ce9559f4d150abad643bddfb62fded933b8e79811da5d544d3"
+    },
+    "src/backend/mlx/sampler.rs": {
+      "bytes": 10561,
+      "sha256": "1ed5b2221c7c60ff427b78b109b58df75e9b2f907d405da76df0a44d10a87f79"
+    },
+    "src/backend/mlx/session.rs": {
+      "bytes": 46874,
+      "sha256": "5671038a93a5ee684370fb4db94af20f880f764966ee1f94414028ca40e76e71"
+    },
+    "src/backend/mlx/tokenizer.rs": {
+      "bytes": 104,
+      "sha256": "5c0ade714479526752fe6c74e7a4de2294241b5da4dfa65a3e3f680bd410019b"
+    },
+    "src/backend/mlx/vision_parity.rs": {
+      "bytes": 38624,
+      "sha256": "097fa32b4a1291a929e0e66c3b641422d97a3c1da5e88aec31ed3b66281e767c"
+    },
+    "src/backend/mod.rs": {
+      "bytes": 2149,
+      "sha256": "17775045dffba0b1f96aa3089d422cad0d3785f313fccd54f41d125d3bbfdab7"
+    },
+    "src/backend/onnx/config.rs": {
+      "bytes": 7765,
+      "sha256": "185425c4019ecdab8e0f70d549274b99c4c1ebe23fea72ca780de10ff77a259c"
+    },
+    "src/backend/onnx/engine.rs": {
+      "bytes": 6857,
+      "sha256": "4c18d2709efe33f13345849fbe5ef789039b79426503d4f9f49156c1ac86ab63"
+    },
+    "src/backend/onnx/ffi.rs": {
+      "bytes": 15017,
+      "sha256": "0c3967f8daa706472536ef5c099d9e87e36ade083b3cffad9898b7b12ef6fc25"
+    },
+    "src/backend/onnx/mod.rs": {
+      "bytes": 534,
+      "sha256": "08f3dfd9838b71b56bd12751ae4bd40ce794face0c6d5f4b783a823b49b0877f"
+    },
+    "src/backend/onnx/puller.rs": {
+      "bytes": 7936,
+      "sha256": "538c0fa8ff56de2d63c6560534f39f0fe85f727a0fb4ca30fc898523168fd2e3"
+    },
+    "src/backend/onnx/session.rs": {
+      "bytes": 6425,
+      "sha256": "86693d309b70f29c5f0441d0abc61f4bd6c59218db013adb9d9146e8a377fa6e"
+    },
+    "src/backend/traits.rs": {
+      "bytes": 9727,
+      "sha256": "6a5bd5dce56743f2355ac8aa75e2d43601203e57fe94ffe9899be3f19b2f075e"
+    },
+    "src/bundle/gguf.rs": {
+      "bytes": 75827,
+      "sha256": "bc4e58704cee9c1ea2117de8b89e4cb8570d08d7d6683b4e5604431060ff3902"
+    },
+    "src/bundle/meta.rs": {
+      "bytes": 682,
+      "sha256": "04884d5b4924411ca5336c19ea360dba7fa1202806094e58c7294a4acf6727bd"
+    },
+    "src/bundle/mod.rs": {
+      "bytes": 153,
+      "sha256": "450f5ede99087762b9425a5857c8ca0b83d1ae45c4d14889247d7c6b6ef5418d"
+    },
+    "src/compat.rs": {
+      "bytes": 25651,
+      "sha256": "8a8ae2fbe7034dff5792863e00707fe92ae71d506149827109db1037530f34ea"
+    },
+    "src/controller/commands.rs": {
+      "bytes": 58558,
+      "sha256": "eb083c594d7503b143108714cde514d56f3d23af93a5a028e4afe86fe6928f00"
+    },
+    "src/controller/config.rs": {
+      "bytes": 7203,
+      "sha256": "aeb67ae45d754620837ad616dc6c3d823165b39e0ed4f868508376bb73de169d"
+    },
+    "src/controller/lifecycle.rs": {
+      "bytes": 7498,
+      "sha256": "f091777593b1a1087691e04f330f3d1de802909d0decb13daa23b209cba1c298"
+    },
+    "src/controller/metrics.rs": {
+      "bytes": 6599,
+      "sha256": "69f620f62e0671d73c863388daca4509c22d32f4bb478fd630029b3b04cfcb82"
+    },
+    "src/controller/mod.rs": {
+      "bytes": 64665,
+      "sha256": "399e02b036cf05e4df71f4fb8354fd09e5b96ee59fccdaafd1d80b721f100915"
+    },
+    "src/controller/observability.rs": {
+      "bytes": 2114,
+      "sha256": "fdcac19bb4f7870fe9cf6e075d18725894f5ecb23fc79dc8f577f6826689a40e"
+    },
+    "src/controller/observability_snapshot.rs": {
+      "bytes": 4641,
+      "sha256": "417fa7d957ac8284630bee4d7dd4a44b2c24ac027f6ca9bb48520076efe8858c"
+    },
+    "src/controller/runtime_snapshot.rs": {
+      "bytes": 6824,
+      "sha256": "060aa93004ef7f610110bcd5290fe3049a29f267424a2d8431e4c338f5752d1d"
+    },
+    "src/controller/scheduler.rs": {
+      "bytes": 7535,
+      "sha256": "85c11122c6e1bdebda14d9f78b46b4150178dd2462f335d717acafa2152bed9a"
+    },
+    "src/controller/state.rs": {
+      "bytes": 5695,
+      "sha256": "c67bab6800445dad63e3a612faa121c7329932539281917f2c7cc2b870202211"
+    },
+    "src/controller/state_transitions.rs": {
+      "bytes": 2430,
+      "sha256": "d6067ec66f15ec1fe7e5d87e3887847ca430ec5956cebd3b95ade18ca4788a9e"
+    },
+    "src/controller/tests/lifecycle.rs": {
+      "bytes": 16693,
+      "sha256": "a9108f43243efcc0e735867f009845d107aad27169a405102af5e7f286008a30"
+    },
+    "src/controller/tests/mod.rs": {
+      "bytes": 165,
+      "sha256": "a04be3c3b6cd9c5761eedeb37fe4ea87a2f3d932d095cf4c47cb0eea596c82be"
+    },
+    "src/controller/tests/soak.rs": {
+      "bytes": 8574,
+      "sha256": "a42f50b7722caf13f57d854b4bbc7ba2b9ef62e77a6b1420862d9ea1081655e7"
+    },
+    "src/decision/bundle.rs": {
+      "bytes": 11703,
+      "sha256": "818d8555a54c378d9131115da140e739f5d145f81ba7d8a00dadeb92b058fc9d"
+    },
+    "src/decision/decode.rs": {
+      "bytes": 14430,
+      "sha256": "869dbaa0700d02133f8e792354c5af787c0e1886bc57346f8c94dad9f384de5c"
+    },
+    "src/decision/encode.rs": {
+      "bytes": 17890,
+      "sha256": "da0bb7619a747b4b9d53846aca1ee915e03aa654a288f72530de7c608daedd65"
+    },
+    "src/decision/graph.rs": {
+      "bytes": 9031,
+      "sha256": "f909190a15de5693bfe2c36f7c88d83bd4bb5bfa20409c26a83a8cd2d8af520c"
+    },
+    "src/decision/json.rs": {
+      "bytes": 9946,
+      "sha256": "2f26382489d08511f8c20d30efecfa3b5edc9f31f61af320e6e2143d40ddeb7f"
+    },
+    "src/decision/long.rs": {
+      "bytes": 5969,
+      "sha256": "3b2ef380e6979e9392f39f050cbc1b347574537dfc216cca91dedf506615e419"
+    },
+    "src/decision/mod.rs": {
+      "bytes": 3277,
+      "sha256": "3991df9d980aea79fb365334f07c9bf04b407a9860ff7b34c07f0b2f76061ebd"
+    },
+    "src/decision/onnx.rs": {
+      "bytes": 10292,
+      "sha256": "cd52f665b5db0ad08af2838af9db802959ca0aa2f9f3d7e3ad713db4f6a3f65f"
+    },
+    "src/decision/question.rs": {
+      "bytes": 12830,
+      "sha256": "3af2d9750aed8ef2ed0f98d291ffcf8a7f3f51f9d87acc91200588f6f8cc37c4"
+    },
+    "src/decision/router.rs": {
+      "bytes": 1930,
+      "sha256": "2b5d703974445a6f23f0b31ce3c8feb7cca49c9933e91da06b1a51fb02441cd5"
+    },
+    "src/decision/worker.rs": {
+      "bytes": 36248,
+      "sha256": "d45ac936120afa3ad96c5e92b2fee9dfe4459d7a3f0a1636f24aeebb2bcfd6e8"
+    },
+    "src/diarization/alignment.rs": {
+      "bytes": 9977,
+      "sha256": "f7ee54bcc0e3531255103bc3fe245dd54d85f27d5ae3947ad81d39232c6b30e4"
+    },
+    "src/diarization/audio.rs": {
+      "bytes": 2004,
+      "sha256": "e362feaa4656ed739db4161ed7fe18532b91306f79242e00021d1eda92f8584f"
+    },
+    "src/diarization/bundle.rs": {
+      "bytes": 1977,
+      "sha256": "8509a19c075fd30e9c95161cf3446606500d80d6818f490d140fac8d367aeb49"
+    },
+    "src/diarization/error.rs": {
+      "bytes": 1886,
+      "sha256": "770b05089479a23f0c065695d2dde5847e6da979a7e59320fa60c24e965f5499"
+    },
+    "src/diarization/ffi.rs": {
+      "bytes": 13479,
+      "sha256": "be46eab42c908094dec3bc7101e52a9520ee752e067e2a41759d65a96efacc21"
+    },
+    "src/diarization/mod.rs": {
+      "bytes": 1080,
+      "sha256": "c01c8e61b6b1d07a371e32da94c1e6c6a2a1ba30f67ba04da924584255dfc3f5"
+    },
+    "src/diarization/nemo.rs": {
+      "bytes": 13008,
+      "sha256": "c516d043255010af6527b6070b11163bc4c920dae9d04b65c8f253c56a69bb15"
+    },
+    "src/diarization/provision.rs": {
+      "bytes": 3951,
+      "sha256": "84f05a85df837c52e1293e73660b1f52c83262c3533e96c2a5be111aa0f0ea10"
+    },
+    "src/diarization/stream.rs": {
+      "bytes": 7411,
+      "sha256": "74d095fd34046d2a079899f370a0a67c704e2abcffe4edee104cb25ec321454e"
+    },
+    "src/diarization/types.rs": {
+      "bytes": 5325,
+      "sha256": "5918ca35d8196823c07146fe7f6d9f7e707b22ac71fb751db309f77a11eb5b77"
+    },
+    "src/diarization/worker.rs": {
+      "bytes": 11217,
+      "sha256": "d598a93e23dd92adc575cb5ac2d9456554d6a9a2fae68d0d29be50437d587825"
+    },
+    "src/engine/error.rs": {
+      "bytes": 2945,
+      "sha256": "0ed39252d1f45cc687ec9b838d2bef6bb570623381bdf062ef119d7197996491"
+    },
+    "src/engine/mod.rs": {
+      "bytes": 13518,
+      "sha256": "9787b752b991904ffc08fecdd910c309adbbe2b08351b5908aae69cbf2fd2e78"
+    },
+    "src/engine/telemetry.rs": {
+      "bytes": 3894,
+      "sha256": "2d9abbf8cb2bfb817bfa27430f89fb5dcba36ed89263dbc92aaca553609084df"
+    },
+    "src/engine/types.rs": {
+      "bytes": 38537,
+      "sha256": "4709d84ff99b16fac67e7c20e848fc4eda7c898aa9c2bf1eda040f76d4de4901"
+    },
+    "src/executor.rs": {
+      "bytes": 34452,
+      "sha256": "41cde1a47ad0f9ba5c5dc40304c911cb388f1c9d308f569264405337de498ffc"
+    },
+    "src/generation/events.rs": {
+      "bytes": 6785,
+      "sha256": "63a41b2aaf9df03e41bcb0efb8788cea11cea33d1b6c25f5b993da8149be539b"
+    },
+    "src/generation/mod.rs": {
+      "bytes": 547,
+      "sha256": "3d1f3f9c65c2c461b06b8c17039414f73ce1c01c12ee143924869e40eb4f7028"
+    },
+    "src/generation/reply_parts.rs": {
+      "bytes": 54036,
+      "sha256": "f4430e32113a19ebbb335eabae464467efa6d268e03366c09ba5cb5b4a95e685"
+    },
+    "src/generation/spec.rs": {
+      "bytes": 6676,
+      "sha256": "c56c37f47832da7dce9868f8f57f6e0e5367ef9b16aecc4487806febcd49ad56"
+    },
+    "src/generation/telemetry.rs": {
+      "bytes": 32228,
+      "sha256": "dfae7477075e0ea301ec3a141122b317db2e819b34321b90b12eddd48368b8e4"
+    },
+    "src/generation/thinking.rs": {
+      "bytes": 5818,
+      "sha256": "b411cef0f5ea2ba4fcc4ddc1f9aa4ea158446227228893d2fb33fdb81578d952"
+    },
+    "src/hardware.rs": {
+      "bytes": 58516,
+      "sha256": "4483fb3bf82bffe055a363b0845e90336f0642b2e8fcc0ef448d00b686bfb5a6"
+    },
+    "src/journal/entry.rs": {
+      "bytes": 6454,
+      "sha256": "c8dadc395d153cc8fe915da1b31d8c3c7d1f5d303a8b723bcf30a48cf55ed163"
+    },
+    "src/journal/mod.rs": {
+      "bytes": 2147,
+      "sha256": "8cef53165b829392997c386f430ee67af0974977560a975df70a4d8b751c4ffd"
+    },
+    "src/journal/projection.rs": {
+      "bytes": 13049,
+      "sha256": "f1f8f8506ff48a8d6046bf7e35bd8e0d873f6c18e1a26833c1a2811d508dff20"
+    },
+    "src/journal/resident.rs": {
+      "bytes": 14352,
+      "sha256": "f661856db7874eb0144818c17e61adcb60024867cf181f5ba6551ca310200d8f"
+    },
+    "src/journal/scratch.rs": {
+      "bytes": 8282,
+      "sha256": "cd8dce26b23ac40355bf4cddf17f2a8bb2ce15cd1fe800e7e01708ea765f2b47"
+    },
+    "src/journal/store.rs": {
+      "bytes": 13019,
+      "sha256": "8fff0bcc09a97f58aee73bac35d575eca21d9f7d048e852a50901c4357269a08"
+    },
+    "src/journal/turn.rs": {
+      "bytes": 11050,
+      "sha256": "bf89d3bb7a36d9b355a71d41cca11a3cc1d37f1f8fb32ced622cb1be835c3123"
+    },
+    "src/journal/wake.rs": {
+      "bytes": 12339,
+      "sha256": "09a151758c11b2be4a0566b34f23e83fa4d4d9a1acf476e112584afb3ab3bfe1"
+    },
+    "src/kv/codec.rs": {
+      "bytes": 24866,
+      "sha256": "91f834fda6d66028f02cc7d867cddcce4f2dfd3f10989ea9d1f1b0533ba49371"
+    },
+    "src/kv/mod.rs": {
+      "bytes": 463,
+      "sha256": "f1d998c248914ad15275e72577c5de7cb700c26164fae4521fcb2a1f4ad243b0"
+    },
+    "src/kv/store.rs": {
+      "bytes": 15931,
+      "sha256": "a917f8981deacc19b2f767daa1d567c34dfa447901734615fd850f2e51bd6f7a"
+    },
+    "src/kv/types.rs": {
+      "bytes": 1710,
+      "sha256": "3d086d2096024635bb17872a5b978ff3402b88cef768a117970f9f321a375f73"
+    },
+    "src/legacy.rs": {
+      "bytes": 7144,
+      "sha256": "2ff7705ecd93cfa0a1d5a4c475e81a96313697a22aca50d4ff9d080b45bd9a92"
+    },
+    "src/lib.rs": {
+      "bytes": 13063,
+      "sha256": "05e64a89917651c30eb37386f6a09217014620181a1298af2a3529d4a532fab3"
+    },
+    "src/mcp/client.rs": {
+      "bytes": 10978,
+      "sha256": "b21b6c69e6f9f01a63ca8f54310eaced81b3c9c53c8d555a730eff64a76f6e9d"
+    },
+    "src/mcp/mod.rs": {
+      "bytes": 1410,
+      "sha256": "4966da1fbf2238bec587b388288001aeb71dda99a9bf5bcf59c5fc0fd1716dfd"
+    },
+    "src/mcp/protocol.rs": {
+      "bytes": 5011,
+      "sha256": "d3416dc90b2a80e6e6a4df2821f8b4d5a56ae8f6214a9835d35a60c518751cd2"
+    },
+    "src/mcp/tests/client.rs": {
+      "bytes": 17919,
+      "sha256": "d4cef3532869a25e9b112dc6dbc98e940cfc2856c075e7e873774a4f2759f5ed"
+    },
+    "src/mcp/tests/mod.rs": {
+      "bytes": 4575,
+      "sha256": "43d7a73c0c7b3213b143f087b6d23ad600d8353c675a14da8cc47224e80300a9"
+    },
+    "src/mcp/tests/protocol.rs": {
+      "bytes": 7469,
+      "sha256": "ab73908df9f7bb711ea1b534e11f3716c451dd0e3b634493809cb12198cef3f8"
+    },
+    "src/mcp/tests/tool.rs": {
+      "bytes": 13130,
+      "sha256": "5a9f1a7c92b938496e5e9b80ee47d45faccd8bf43aa77baa6098fc21af2ab0bc"
+    },
+    "src/mcp/tool.rs": {
+      "bytes": 5582,
+      "sha256": "05f787497e73b3dc53d66c36f376770eaa978719bbbc83a5221f50a9f4b61ddf"
+    },
+    "src/media/mod.rs": {
+      "bytes": 281,
+      "sha256": "6e4e7e4edcfe76a430547e148a926ed9031db5e35c1860c8ce257688dc14b8cb"
+    },
+    "src/memory/memory_governor.rs": {
+      "bytes": 14737,
+      "sha256": "e6cfdecf1e4111ab8f4afc8ade0b23375d51eef9415c609061446065872045ed"
+    },
+    "src/memory/memory_policy.rs": {
+      "bytes": 24872,
+      "sha256": "e5807880b9934921d412dfea6568eef491336d03ce2aed2a5115d14528753221"
+    },
+    "src/memory/memory_pressure.rs": {
+      "bytes": 6435,
+      "sha256": "f757182e2508f724c925139a7fda69d0be9daa6a3e5eb911bb6779d6525c999f"
+    },
+    "src/memory/memory_snapshot.rs": {
+      "bytes": 11509,
+      "sha256": "984be6689d11442a19039f09af7c1c073112908860f9eafb787df64286351d3b"
+    },
+    "src/memory/memory_tier.rs": {
+      "bytes": 1584,
+      "sha256": "d6b1bb7d5f6c55d5c4d8dd1512cb9ca85c9eaf4d3c548e1b977ee296a3ad75c9"
+    },
+    "src/memory/mod.rs": {
+      "bytes": 1055,
+      "sha256": "8c9319f954c01888ef017462f817f3606cb31f43b3262b7f23cdfc7063e0cb0f"
+    },
+    "src/memory/runtime_memory.rs": {
+      "bytes": 9607,
+      "sha256": "ade4d854ce2a3953d43e54f2825ad0b6be72fc99b2891cd1fe284723ff8a8fcc"
+    },
+    "src/onnx_runtime.rs": {
+      "bytes": 2747,
+      "sha256": "eda82fddf6ed89243c793591cde0226cd90d98350e1a7ae1492e154f6c78cac2"
+    },
+    "src/residency.rs": {
+      "bytes": 10154,
+      "sha256": "98fd256a4b4d45cb9844d89f2ae357a247ef3eb587189465044df3a6e666ff49"
+    },
+    "src/residency_policy.rs": {
+      "bytes": 27136,
+      "sha256": "193dc8a5434eb47f12250a5846fdf79e09af65105d2dbe82fce89e75d7fdebc7"
+    },
+    "src/residency_stats.rs": {
+      "bytes": 1211,
+      "sha256": "756b2c3f6416f6d1b433736a0679b79de5ac092f35a434fa2cce6fb1f3da2d84"
+    },
+    "src/router.rs": {
+      "bytes": 19675,
+      "sha256": "c36f691cbe4a05c5d6ec8078c690c3511ca1cca1945a106e2905ff8eacd1c844"
+    },
+    "src/session_rt/compaction.rs": {
+      "bytes": 8207,
+      "sha256": "6c761d07aafcb92d3ebc7a1df58de2c99b9e26cae2b64582c762613e5fc81510"
+    },
+    "src/session_rt/media_util.rs": {
+      "bytes": 10805,
+      "sha256": "f5d159e2226925b793f8992d4d57b2673e16c34ee79861850073d704d440e547"
+    },
+    "src/session_rt/mod.rs": {
+      "bytes": 623,
+      "sha256": "7fe8219e210fb9c619dffc63a6678d09ff8f86d2dbc7d253abc9a1beb6175fde"
+    },
+    "src/session_rt/prompt.rs": {
+      "bytes": 6408,
+      "sha256": "302d32a90c66e55f5b54ba7435e62b5bfbe3bc6cb29b7e183397cab4e0ba674c"
+    },
+    "src/session_rt/spec.rs": {
+      "bytes": 3198,
+      "sha256": "da7c08823b4ac3718a8539e38227fa81bf97929b1f1a80b379b876195322c2dd"
+    },
+    "src/session_rt/truncate.rs": {
+      "bytes": 17528,
+      "sha256": "d0a1e7f4967ff3a8306c7d76963780732e68e77528d2c88d3ad51c9c7be21f88"
+    },
+    "src/speech/audio.rs": {
+      "bytes": 4870,
+      "sha256": "e05c6f884356e79dc335484e5ea910401ece06429a9fe8c2687350415edd03ff"
+    },
+    "src/speech/bundle.rs": {
+      "bytes": 3237,
+      "sha256": "0e0573858972b8e61662fd32a2c6e70a0f9b1ad51dec24d9bbe69d78f5ae85b4"
+    },
+    "src/speech/frontend.rs": {
+      "bytes": 8823,
+      "sha256": "85d08d67fdc1cf03982bfa32d0fe8cdf41dbb368e4de45d48522358a5b1b856b"
+    },
+    "src/speech/mod.rs": {
+      "bytes": 2305,
+      "sha256": "2bfb83874fee0042ca404b05fef207d9aabd02ab4dbbde7a2b3ed9bbf41a6771"
+    },
+    "src/speech/onnx.rs": {
+      "bytes": 15093,
+      "sha256": "89472bb817b0730e5563ec31bb3a5ba0c14b6ef80980a163eed72942c506b09a"
+    },
+    "src/speech/provision.rs": {
+      "bytes": 3593,
+      "sha256": "8a0a811c1cb52793d1a8cebd59298f8c1a1a92883f355df1b01d4b6e59e47055"
+    },
+    "src/speech/resample.rs": {
+      "bytes": 3038,
+      "sha256": "709cfc12226b90aa73e595e6fdbc04c8063a8310d297399b49e39e15619d7ebf"
+    },
+    "src/speech/worker.rs": {
+      "bytes": 14999,
+      "sha256": "8ef05ef2ad6944d1b401a6cb94e88e4fd10240ea7a0e78c1123fc43adb21365d"
+    },
+    "src/task_util.rs": {
+      "bytes": 3104,
+      "sha256": "6d334961ff9edff8674f161ff9a1659f27595e73326988c020ddcb4560d3b407"
+    },
+    "src/test_support/fake_backend.rs": {
+      "bytes": 25021,
+      "sha256": "661a3572f9e76419cd9aadeeb492f29662cc2fc4488420bbb1de5754f97abe2c"
+    },
+    "src/test_support/harness.rs": {
+      "bytes": 11132,
+      "sha256": "4d029e8b372178b2bf3ae9171972c55a78bd5963840e8d29d96546f6b5ed3ccb"
+    },
+    "src/test_support/mod.rs": {
+      "bytes": 580,
+      "sha256": "a48a22c3246ad76c390997bc2a9dd25c0e72f1f68e605e610928f79c2bb996f2"
+    },
+    "src/types/execution_stats.rs": {
+      "bytes": 2503,
+      "sha256": "58269f3d63d33fb2c9b482439d98a1fbdca67c024b7733322117e8110f14fb1a"
+    },
+    "src/types/message.rs": {
+      "bytes": 21542,
+      "sha256": "0589b5d08b2437dc95550bc5eb1d09af8de40e890ca736a4fb105e7ed0821cb6"
+    },
+    "src/types/mod.rs": {
+      "bytes": 481,
+      "sha256": "9c1ac4dc68fcf2ee67fe002e80e8259d0eb0938e4f99c990daf219415215a83d"
+    },
+    "src/types/model.rs": {
+      "bytes": 3337,
+      "sha256": "a22b996ccf7995baa3d260d622b805867bfc9d310940cad9ac33d5c448af7769"
+    },
+    "src/types/persona.rs": {
+      "bytes": 613,
+      "sha256": "49018b5bf9793f102e4c4ff8b0500307f1329803cacafa112a0741b77ef2c264"
+    },
+    "src/utilities/acceptance_tests.rs": {
+      "bytes": 14677,
+      "sha256": "2d6fe99db90053a257ddebef8cca42ffcd7862f840c5b626a39ca525ce17dec9"
+    },
+    "src/utilities/embedding.rs": {
+      "bytes": 4999,
+      "sha256": "4d054fd2b6b7f271a779926a2436be45fffa5a0e521b04d561dd4b36754d0751"
+    },
+    "src/utilities/mod.rs": {
+      "bytes": 2122,
+      "sha256": "c77ecf97ec44514b63cbee45c1d57b5912290117a594b6a973c8530385860724"
+    },
+    "src/utilities/rerank.rs": {
+      "bytes": 12829,
+      "sha256": "c6df79eebe7617da54384cc80e5b321d340d12aecc0288907f1f179de7f36f14"
+    },
+    "src/utilities/types.rs": {
+      "bytes": 1526,
+      "sha256": "db826cafa4284cdad4af9bd9faf7dbc7f637a85b4e8b9526864e853c860192f0"
+    },
+    "src/utilities/worker.rs": {
+      "bytes": 16279,
+      "sha256": "09a33f0a933a42c4c88e7971a25b172ee3f45bc1a863ac7f73355eab19ecadd5"
+    },
+    "src/zoo.rs": {
+      "bytes": 85314,
+      "sha256": "c9a4775b47970dfc1ad03041adc037b15b8bdc5fca765b3cb66ca2fc08c2891a"
+    },
+    "Cargo.toml": {
+      "bytes": 15378,
+      "sha256": "36967d6f64f51c9d5a21d8f61cdaf7edea8e2ed6bc15a3edcf59c11e1198bbec"
+    },
+    "Cargo.lock": {
+      "bytes": 228117,
+      "sha256": "ed20b7cb36240e4302d2faab44393665e967b26d7c0efbeb43667ef577c2cf4b"
+    },
+    "examples/nemotron_stream.rs": {
+      "bytes": 6028,
+      "sha256": "736a4f63c20bdd5f243c9c1243571b262a663a87104de82a48924f0a7a6f24da"
+    },
+    "tests/diarization_native.rs": {
+      "bytes": 22318,
+      "sha256": "d17e67bbb9341f7619b511b57a0171dd6fb86548529b7cde4b6e94f50b3732be"
+    }
+  },
+  "work_inventory": {
+    ".": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "NOTICE.md": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 514,
+      "sha256": "fc9a60c8a4f9600ef1c9b2e11802d92a062ae2f7118a696a66f1886d0c630d73"
+    },
+    "assets": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "assets/Nemotron-3-Diarization.q8_0.gguf": {
+      "mode": 384,
+      "type": "file",
+      "bytes": 107012128,
+      "sha256": "08456d9e22cd9a323c0364d98375f3746d6e68507ebb705cd46438c534c7a3a1"
+    },
+    "assets/README.md": {
+      "mode": 384,
+      "type": "file",
+      "bytes": 43239,
+      "sha256": "5fe88ca4020d2ee134f806a0a02c52c19855b73047bc2e6f25b9171e1abeebfd"
+    },
+    "assets/ami-ES2004a-Array1-01-prefix.wav": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 13440044,
+      "sha256": "cc26dd7cde2c252ba36825d5236984e7eb6535646e304a8ac7d3bad69ff0f530"
+    },
+    "assets/ami-ES2004a-Mix-Headset-prefix.wav": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 13440044,
+      "sha256": "e5226451b42c2361b286cfe2a7e1f433092bac55fc5a97e18b8506a58c7ffbe8"
+    },
+    "baseline": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "baseline/ami-ES2004a-Array1-01-cpu-native.json": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 3590,
+      "sha256": "be3eb74983dfac2d3854a5acb5f11e12f7fde88b0442316b45a26f4a9d8fefb5"
+    },
+    "baseline/ami-ES2004a-Array1-01-cpu-native.json.f32": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 384000,
+      "sha256": "e848ea82e264d7b3a8768a8f42a68d8eccaac3e3a43cdefe9514d536f948a8e0"
+    },
+    "baseline/ami-ES2004a-Array1-01-cpu-public.f32": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 384000,
+      "sha256": "e848ea82e264d7b3a8768a8f42a68d8eccaac3e3a43cdefe9514d536f948a8e0"
+    },
+    "baseline/ami-ES2004a-Array1-01-cpu-public.json": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 8089,
+      "sha256": "fed10eeaffeca33ca0057f181d3cf7b8b0fa4aefa016a3485e2ecbd1dcc603f0"
+    },
+    "baseline/ami-ES2004a-Array1-01-cpu-score.json": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 3240,
+      "sha256": "451ed1b9e6b45d72176852fa4aab48f3e6c1371e510c2157b0483af1a349a54d"
+    },
+    "baseline/ami-ES2004a-Mix-Headset-cpu-native.json": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 3837,
+      "sha256": "140baec1a3991bc12b302a3b52897ffec029580781f61d53d8b12bdf588d8e3f"
+    },
+    "baseline/ami-ES2004a-Mix-Headset-cpu-native.json.f32": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 384000,
+      "sha256": "be250508da06215ab6e5067584596952525ae27fb56ea9dc331cdea12e19bed3"
+    },
+    "baseline/ami-ES2004a-Mix-Headset-cpu-public.f32": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 384000,
+      "sha256": "be250508da06215ab6e5067584596952525ae27fb56ea9dc331cdea12e19bed3"
+    },
+    "baseline/ami-ES2004a-Mix-Headset-cpu-public.json": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 8431,
+      "sha256": "58605317d4360428bca26a4cff4c9cc212ff06f5054b2453b9a5c8f35d4033e7"
+    },
+    "baseline/ami-ES2004a-Mix-Headset-cpu-score.json": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 3240,
+      "sha256": "8ace53d15d0566a25e8e5023b80778837b3f62d945d50f78a58803216c016945"
+    },
+    "baseline/qualification.json": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 59302,
+      "sha256": "d455e724b9aa52f1797591f021b9fe4b2e2af3a7450796ab5603b7ec45f8d6eb"
+    },
+    "bin": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "bin/load-probe": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 36232,
+      "sha256": "6a5288ca8f04fa0d990c4b0bb69ee6d8b1adc1e1551dcf1a428e94f0e264dbbb"
+    },
+    "bin/native-stream": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 62304,
+      "sha256": "8ee9b3d00e1e0003a5dc99394de74dc13008bc54ffb0346765533a889ba2cf03"
+    },
+    "bin/public-stream": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 985312,
+      "sha256": "1928a7b3a15cf290c287de9611df0140202b26fe476ea6b78e3b9cc26ef437ce"
+    },
+    "nemo": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "nemo/lib": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "nemo/lib/libgen2_nemo_absl_base.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 74784,
+      "sha256": "17211560eaed616ba06fc52b3f54dc066f691652e130fdd9ceba5c7d544a745f"
+    },
+    "nemo/lib/libgen2_nemo_absl_base_cpu_detect.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 52496,
+      "sha256": "c1567749e348c2964c9fa61ce068c53b9dc8a3eb5d66b5ffdb0564cea91a08a7"
+    },
+    "nemo/lib/libgen2_nemo_absl_city.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 35216,
+      "sha256": "a795ef514984e1327fdd3f6e9501a4e19e7fc7fe7072891dbf768c080d0dae9c"
+    },
+    "nemo/lib/libgen2_nemo_absl_civil_time.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 57648,
+      "sha256": "b9b224e4c1605f6d7f46ccf47aae827724e9291612d837e78427a63ea4289196"
+    },
+    "nemo/lib/libgen2_nemo_absl_cord.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 164368,
+      "sha256": "ca277b31e166449cfdcee4d3a2d2eb6a7e35ac298aa460aab90fde9c58767897"
+    },
+    "nemo/lib/libgen2_nemo_absl_cord_internal.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 118192,
+      "sha256": "b663d7db82ef9d2649e87e5ad55a5e17bc0ebffde86fa5d507360cfddadabe69"
+    },
+    "nemo/lib/libgen2_nemo_absl_cordz_functions.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 51568,
+      "sha256": "0eea689aedc868ac558d7934ee25f40cdf5608b1d77895a623047ed23e700ede"
+    },
+    "nemo/lib/libgen2_nemo_absl_cordz_handle.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 89120,
+      "sha256": "94ccc8275d3a6905a69c2beedc6ffd234d906298083f8528272ffe65abd94a69"
+    },
+    "nemo/lib/libgen2_nemo_absl_cordz_info.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 106624,
+      "sha256": "916c53720969ce254d6a3edbe82b15b2975614ba04bc1ea39a1d2283d1573d07"
+    },
+    "nemo/lib/libgen2_nemo_absl_crc32c.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 91680,
+      "sha256": "adc49d10460f991f5463b97e4ef6f480e8ef56e6b069cbfdc8e09f1437e4e363"
+    },
+    "nemo/lib/libgen2_nemo_absl_crc_cord_state.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 74544,
+      "sha256": "f8fa9c20bc89e78566b9c3603ca39824712b45f62663d2a2aa9e5a1098352041"
+    },
+    "nemo/lib/libgen2_nemo_absl_crc_internal.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 79376,
+      "sha256": "7b31ca0a5ce3d1d6422a3dfa93a553b5fd4a78c638de61fe95e76e31fee3307e"
+    },
+    "nemo/lib/libgen2_nemo_absl_debugging_internal.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 34928,
+      "sha256": "998012ff5d28eb28c0512e6ac43416b2c3d95a49e1cf86a1ea2d9d7a25b77121"
+    },
+    "nemo/lib/libgen2_nemo_absl_decode_rust_punycode.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 51824,
+      "sha256": "244b8f4e9279957a40bd15b4fecf2992510a19ae89e015ef10ef277d95cc4bbd"
+    },
+    "nemo/lib/libgen2_nemo_absl_demangle_internal.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 90992,
+      "sha256": "d936d6acc8a53d0732f08b3e52272cefcf41da0b066080fdd675054639af5879"
+    },
+    "nemo/lib/libgen2_nemo_absl_demangle_rust.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 69184,
+      "sha256": "7a36f168311985f35ab306a49b07e3cf88ad2c4cae290c225fe853d64e83e514"
+    },
+    "nemo/lib/libgen2_nemo_absl_die_if_null.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 102208,
+      "sha256": "cb26b0179d83c90df793fda37a5b2699e4aa4bd17633f47edf1f46505625e171"
+    },
+    "nemo/lib/libgen2_nemo_absl_examine_stack.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 69152,
+      "sha256": "f5a43318da223ad3ba7eea5cff037499c79c5ef8c22436b432af1555660c847c"
+    },
+    "nemo/lib/libgen2_nemo_absl_exponential_biased.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 51792,
+      "sha256": "20b88f5cf072d55e6f42005abc22e67ea27669c86b155609a6600656f543cea0"
+    },
+    "nemo/lib/libgen2_nemo_absl_flags_commandlineflag.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 68672,
+      "sha256": "7d57cfbe575da7c9406fb0234aae26be011b4e5583382b3b43e64a7b9d8f7e8f"
+    },
+    "nemo/lib/libgen2_nemo_absl_flags_commandlineflag_internal.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 52176,
+      "sha256": "5f5cbb4bd3802c2d19e3cfaf8d1527e9efb263d8f27be8abbbe23cca0a15f4dd"
+    },
+    "nemo/lib/libgen2_nemo_absl_flags_config.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 99664,
+      "sha256": "b90bebba3d0013f67929d8f8f1a588d2da07887f228785e95fa0449514a99e0c"
+    },
+    "nemo/lib/libgen2_nemo_absl_flags_internal.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 117792,
+      "sha256": "b44f2c3711e491f55df4bb6f1ed41153553052cc9b2a81da060100c49205d3cb"
+    },
+    "nemo/lib/libgen2_nemo_absl_flags_marshalling.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 89728,
+      "sha256": "80bc0ffd5d9e3d5594a7045bcb7a5b04d0b36877993787430e578ed9a714e11f"
+    },
+    "nemo/lib/libgen2_nemo_absl_flags_parse.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 183184,
+      "sha256": "72f162cc960ccb7fec9ab1a3174538177a64be7fab1927617a005897ed9cac70"
+    },
+    "nemo/lib/libgen2_nemo_absl_flags_private_handle_accessor.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 52848,
+      "sha256": "018f87b9683a5eb1b1d7350638dfefc81ec493c5e0293e8e12fce78f10525d1d"
+    },
+    "nemo/lib/libgen2_nemo_absl_flags_program_name.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 87584,
+      "sha256": "1aaa1959b6d742bb4ecd5ef44acf6c6199a8939cf25e96fe1a58b8b163a6aad3"
+    },
+    "nemo/lib/libgen2_nemo_absl_flags_reflection.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 139520,
+      "sha256": "277a71c0916b99ef4eb055c51375b4590645ad54ca7fa1990e64363edc73b69a"
+    },
+    "nemo/lib/libgen2_nemo_absl_flags_usage.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 103328,
+      "sha256": "ee36aa79701385a5c9d03e54d17fc5f3c3ab3a21d0bc23a15f158f6f59d6349d"
+    },
+    "nemo/lib/libgen2_nemo_absl_flags_usage_internal.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 167264,
+      "sha256": "b940be09c98d31ef153bea8cf2ac4b4e52e04596808569fd612c5b7d532c17da"
+    },
+    "nemo/lib/libgen2_nemo_absl_graphcycles_internal.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 74048,
+      "sha256": "67ecd60a446d405697ad9df8725b5785ed4e60a679aa1e6e586b1558a8117257"
+    },
+    "nemo/lib/libgen2_nemo_absl_hardening.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 34928,
+      "sha256": "70a691940da4b8a8d1b5bb760fadb2ecee5a8e2826f791e96f041b1c2af83686"
+    },
+    "nemo/lib/libgen2_nemo_absl_hash.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 68864,
+      "sha256": "ace9a9919c97c5548871d9070cdda85e64d5dff9f2ec2335442b3d07a12b6434"
+    },
+    "nemo/lib/libgen2_nemo_absl_hashtablez_sampler.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 107200,
+      "sha256": "34fdddb0ea686f992667111d4a8eabd66ea051909651fb6c04562106b7bd692a"
+    },
+    "nemo/lib/libgen2_nemo_absl_int128.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 58064,
+      "sha256": "80f398688853dd50278e6342b0cd912e55f943f5883a51b58dbae488fb6b572e"
+    },
+    "nemo/lib/libgen2_nemo_absl_kernel_timeout_internal.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 70928,
+      "sha256": "3e75ad98e4263e1729dabec6ad6fd655eef1bf6965551c575b29ac7266c2ced3"
+    },
+    "nemo/lib/libgen2_nemo_absl_leak_check.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 35616,
+      "sha256": "0db7820391a2f3a0c89c1415721aeda123548ff0fdb4b3d55e4ed619767cccde"
+    },
+    "nemo/lib/libgen2_nemo_absl_log_entry.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 72192,
+      "sha256": "9be7e37f9179ee6b1368720d365dbbdca89e86bfeabad93208b52b27f4969bad"
+    },
+    "nemo/lib/libgen2_nemo_absl_log_globals.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 106672,
+      "sha256": "97fa39924de06331f8af80ebbd993f960fdfa1fd1e72bd3f441858df2e4f5a14"
+    },
+    "nemo/lib/libgen2_nemo_absl_log_initialize.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 84608,
+      "sha256": "82d530f809bd067cbdc364c98f16ef56c4e7cd029de5d15b4d87269dad3b1e44"
+    },
+    "nemo/lib/libgen2_nemo_absl_log_internal_check_op.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 112544,
+      "sha256": "501acd676914b4a1a3d56fc3c45020d61fb19f8799bfb08e175ac44c8676f375"
+    },
+    "nemo/lib/libgen2_nemo_absl_log_internal_conditions.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 52032,
+      "sha256": "f9e8a16c6a1e147ea7b28590f3c707d75bd83ccfbb28eeaf679f203d3f48eddf"
+    },
+    "nemo/lib/libgen2_nemo_absl_log_internal_fnmatch.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 51776,
+      "sha256": "4752506e211ff5b2d22b63407a2b5f91ef1e18dff1affad2a93a25eacaa36084"
+    },
+    "nemo/lib/libgen2_nemo_absl_log_internal_format.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 71920,
+      "sha256": "4825216d98b9ae0d820747704f078ca31b73a79a07953518e95011a5ed72146d"
+    },
+    "nemo/lib/libgen2_nemo_absl_log_internal_globals.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 86640,
+      "sha256": "2794ec9e4f77a3d46fbc1e546bc09b926a433fe6173a71f37f926d9b9dfcbdb2"
+    },
+    "nemo/lib/libgen2_nemo_absl_log_internal_log_sink_set.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 109040,
+      "sha256": "2e84b405caf1a8dd9e1689d56e507bf21119dec3f291c23be89a7af03f760e20"
+    },
+    "nemo/lib/libgen2_nemo_absl_log_internal_message.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 148032,
+      "sha256": "1486907fe078ff96ce1fbf3037a2ad54f05a12655323219dca99dd43a3d96984"
+    },
+    "nemo/lib/libgen2_nemo_absl_log_internal_nullguard.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 35104,
+      "sha256": "2a1d6044cdb29e574302ecec21ecfc72654eca6e553cadedbee2094ea67eff2f"
+    },
+    "nemo/lib/libgen2_nemo_absl_log_internal_proto.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 68784,
+      "sha256": "47dc400015696ac52bffb81d898cdaac622632b5a607189e3ef49637ce6403bf"
+    },
+    "nemo/lib/libgen2_nemo_absl_log_internal_structured_proto.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 73248,
+      "sha256": "dc5f3aaa4d39dc1fdf296d26a543d5e16c693670d314ab5e828770841bcc68e5"
+    },
+    "nemo/lib/libgen2_nemo_absl_log_severity.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 54464,
+      "sha256": "870915a4f786097dff00d9cb6d95fe2a017847d7007c3c1b85c74ea343034ae6"
+    },
+    "nemo/lib/libgen2_nemo_absl_log_sink.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 68336,
+      "sha256": "7380bfbb1030a9c22f2e8e576869d914865210c41be5a5dcfe66cbb4c61b5b23"
+    },
+    "nemo/lib/libgen2_nemo_absl_malloc_internal.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 57728,
+      "sha256": "1e65d5c3766b0de2df4300337b6aa47a865d7324e9459db6c148d1c641ee0084"
+    },
+    "nemo/lib/libgen2_nemo_absl_random_distributions.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 70016,
+      "sha256": "58889be6c232e33736e646dcaaa0cbbe3f30bc8b73b35805286f9bd6d86cec97"
+    },
+    "nemo/lib/libgen2_nemo_absl_random_internal_entropy_pool.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 104736,
+      "sha256": "8b8c5b3feed88e1dcf06a9149ad7add38c79a6af3c7e149a7850f4787eb58de3"
+    },
+    "nemo/lib/libgen2_nemo_absl_random_internal_platform.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 35024,
+      "sha256": "4dd577b7da9b48f0749d2f64ced9c0837474645353150f7b38aecb7f32d51447"
+    },
+    "nemo/lib/libgen2_nemo_absl_random_internal_randen.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 52752,
+      "sha256": "4b6a5267f1829b8b6890cb3ece84dc8b3a17c88e403ed0920191131db89c1cab"
+    },
+    "nemo/lib/libgen2_nemo_absl_random_internal_randen_hwaes.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 52528,
+      "sha256": "325aa6fa8cf21628ac11584e74b1cf4ab5b9b182acc308f2fface64869cea508"
+    },
+    "nemo/lib/libgen2_nemo_absl_random_internal_randen_hwaes_impl.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 51888,
+      "sha256": "583d0daa8e3de33a3c15358a1a54ee81c88517ba8059c817ed1e2108b1325490"
+    },
+    "nemo/lib/libgen2_nemo_absl_random_internal_randen_slow.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 51920,
+      "sha256": "3be15a125ffcbf02d9c537cd460c397d94a2b723bc82574a3a11f1e5cd8352a3"
+    },
+    "nemo/lib/libgen2_nemo_absl_random_internal_seed_material.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 69152,
+      "sha256": "9b386db92b5aa7c2db9f9576eb0d50c5c425583d6eed4f524de87999bdda070b"
+    },
+    "nemo/lib/libgen2_nemo_absl_random_seed_gen_exception.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 52576,
+      "sha256": "4cecc55e94c7303c6c961dd795aa6ba29b9748af23d5e2cfed6ad1f9ce11b8bd"
+    },
+    "nemo/lib/libgen2_nemo_absl_random_seed_sequences.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 86240,
+      "sha256": "6f389cf71777376ffb914587a756678976b7d61e516c88da70ad9aae6f6ae9a7"
+    },
+    "nemo/lib/libgen2_nemo_absl_raw_hash_set.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 132512,
+      "sha256": "749537572e3ee20ab6a36c0e23c11e55e1148ae065e931db09ca4979ea7d52d3"
+    },
+    "nemo/lib/libgen2_nemo_absl_raw_logging_internal.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 70480,
+      "sha256": "866bb5a417168fa33f5a3618bffb1d5795625d7376f07490602eef760538a618"
+    },
+    "nemo/lib/libgen2_nemo_absl_source_location.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 34784,
+      "sha256": "8b42f8912d457fad0561d8c38b9bc978cfb1bfed167048855a8f675bbc042ead"
+    },
+    "nemo/lib/libgen2_nemo_absl_spinlock_wait.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 52432,
+      "sha256": "0275a85366293d7fb9c037d20f33066f6d6a7ec8b1e6add13e630f36b891c16a"
+    },
+    "nemo/lib/libgen2_nemo_absl_stacktrace.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 69808,
+      "sha256": "cbacdfca5c6e5b185aae352be11ae18b287b1f7911492b427ce715e4f6d2f562"
+    },
+    "nemo/lib/libgen2_nemo_absl_status.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 158784,
+      "sha256": "6aa97256a7393cc4d587ddbc1a2c07b8b0b31a2c2cb103c868e17565ef882bb0"
+    },
+    "nemo/lib/libgen2_nemo_absl_status_builder.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 113568,
+      "sha256": "0b3e7c4ccf837477574aa7414c6ac083b0d323421ad8e5eccb8e1b60ff398ee3"
+    },
+    "nemo/lib/libgen2_nemo_absl_statusor.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 106928,
+      "sha256": "ded7ab788bae20f60156fd48b1753210dfe039bc4fad86568c563787ab49f5b8"
+    },
+    "nemo/lib/libgen2_nemo_absl_str_format_internal.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 142128,
+      "sha256": "0ea7714b1b4a1e2853d7ac2211a91adfb599f4d75f6d1de70b4b888deb20f9a7"
+    },
+    "nemo/lib/libgen2_nemo_absl_strerror.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 53680,
+      "sha256": "b2745fcc36f90159aec6dd68c672848c73f3ace6d64a9d7fb2a53ce84ff25168"
+    },
+    "nemo/lib/libgen2_nemo_absl_strings.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 173168,
+      "sha256": "37a0b049f6fb17454febc191019ef39f3de9692894f2060cb2e17f53da6726a8"
+    },
+    "nemo/lib/libgen2_nemo_absl_strings_internal.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 56288,
+      "sha256": "934a1dc09b02384fc4f351f41af8c3fa2e4b98ef2a354a879c9666473104b245"
+    },
+    "nemo/lib/libgen2_nemo_absl_symbolize.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 70512,
+      "sha256": "c078f5d662d935d36bcac2b70169806c0722d49666e03b116154d871e8441d7f"
+    },
+    "nemo/lib/libgen2_nemo_absl_synchronization.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 141200,
+      "sha256": "98737d2effcd48b27a3c3709664faf9d9583c0ed88e20da64b033ff5f1854a38"
+    },
+    "nemo/lib/libgen2_nemo_absl_throw_delegate.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 60224,
+      "sha256": "7974e5da30e53288baa4154a3baee3d09b4365259816b1d944b57536451f0459"
+    },
+    "nemo/lib/libgen2_nemo_absl_time.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 111920,
+      "sha256": "d871e8f9cb6da12fcf6c5ad597d149c963a39b3b827a1c075f6f705fd49e87b1"
+    },
+    "nemo/lib/libgen2_nemo_absl_time_zone.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 165184,
+      "sha256": "3b7de44100e25d38f7a1e03f0274e5ae576a2cbe4053e3658144d254cc226512"
+    },
+    "nemo/lib/libgen2_nemo_absl_tracing_internal.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 35120,
+      "sha256": "98ffa8d287f8c564e47a3a72e5d3df268721ba2c00bb612194969410d8450a78"
+    },
+    "nemo/lib/libgen2_nemo_absl_utf8_for_code_point.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 35024,
+      "sha256": "11cd000783795ef4b576f5a28ad901a43308fcbe6d44bfbb06ea7746c30c58f6"
+    },
+    "nemo/lib/libgen2_nemo_absl_vlog_config_internal.2608.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 94944,
+      "sha256": "e970ff010ad1216ce91279b77fdd421a5d185d558f7b7ce75b6439096599ba55"
+    },
+    "nemo/lib/libgen2_nemo_ggml-base.0.25.1.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 766576,
+      "sha256": "0676fc47098b60fbc374eb3f575587e5029a9b88bc0453f1693ddbac92b1cfad"
+    },
+    "nemo/lib/libgen2_nemo_ggml-blas.0.25.1.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 76528,
+      "sha256": "d733e79d4783a41922ea3e1cf11d0ae7cf1e44ba51a1020c79a3e41a3b3665ad"
+    },
+    "nemo/lib/libgen2_nemo_ggml-cpu.0.25.1.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 1051056,
+      "sha256": "f87280d0ec7ac88a000e734ba794a43920706a47f48f7ab8f8ee0dae10818c26"
+    },
+    "nemo/lib/libgen2_nemo_ggml.0.25.1.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 77744,
+      "sha256": "79b4bbcd3841d3e6afd80c4544e745e53071ace73907d3abf3325372ff89e623"
+    },
+    "nemo/lib/libgen2_nemo_nemo_speech_asr.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 1238032,
+      "sha256": "bcd38929d6ccac74467828664bc03c678fea89cf36124f236840fcc82ef665d3"
+    },
+    "nemo/lib/libgen2_nemo_nemo_speech_asr_c.1.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 113760,
+      "sha256": "2b7e93820a68be04471d4a8ae611e685784ef2fed49d222915e1965046ad35fd"
+    },
+    "nemo/lib/libgen2_nemo_protobuf-lite.36.2.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 702512,
+      "sha256": "3047b2dce1dcbc8c40caeeff77fd03466c0c46977b97a06864a0cc9da7baa0b5"
+    },
+    "nemo/lib/libgen2_nemo_sentencepiece.0.0.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 615136,
+      "sha256": "906ac433af5f760cf3c1924b65c211a837c3082bbac7b11590363e7221a84bcf"
+    },
+    "nemo/lib/libgen2_nemo_utf8_validity.36.2.0.dylib": {
+      "mode": 493,
+      "type": "file",
+      "bytes": 51504,
+      "sha256": "8359b292efcd43a11211da9e7c1bf2a31b5927a3619463951c132816b03be154"
+    },
+    "nemo/lib/libnemo_speech_asr_c.dylib": {
+      "mode": 493,
+      "type": "symlink",
+      "target": "libgen2_nemo_nemo_speech_asr_c.1.dylib"
+    },
+    "nemo/notices": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "nemo/notices/abseil": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "nemo/notices/abseil/AUTHORS": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 295,
+      "sha256": "1fd39030c119b4c97014f59e0ad0ed65f23475bbdf55a52740f31eb82b34b4ee"
+    },
+    "nemo/notices/abseil/INSTALL_RECEIPT.json": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 16157,
+      "sha256": "6466ae7881675e3df2590123ebaeb3860a41704034ee9a7fcab813d7608a1212"
+    },
+    "nemo/notices/abseil/LICENSE": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 11361,
+      "sha256": "c79a7fea0e3cac04cd43f20e7b648e5a0ff8fa5344e644b0ee09ca1162b62747"
+    },
+    "nemo/notices/abseil/sbom.spdx.json": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 3070,
+      "sha256": "d693d4b816d4dc5ddbcf2973ce6cf46b592e4d7a847368ca474a99b0d6c42063"
+    },
+    "nemo/notices/nemo-speech": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "nemo/notices/nemo-speech/LICENSE": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 12238,
+      "sha256": "eaaca34b26b27c7be5a5099a0b9ddf9913f2db0aa96f6d5854435f2916d6fdc3"
+    },
+    "nemo/notices/nemo-speech/NOTICE": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 233,
+      "sha256": "d5ea773d67035e676503579ecf7d5836a124649d7fe99d59ec3c50cd101e1a80"
+    },
+    "nemo/notices/nemo-speech/THIRD_PARTY_NOTICES.md": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 10277,
+      "sha256": "fd8fcc0c71abde95b1b742a74c70aa27d2b4f2811fc19f64378b6845d8f3254a"
+    },
+    "nemo/notices/nemo-speech/third_party": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "nemo/notices/nemo-speech/third_party/ggml": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "nemo/notices/nemo-speech/third_party/ggml/LICENSE": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 1078,
+      "sha256": "94f29bbed6a22c35b992c5c6ebf0e7c92f13b836b90f36f461c9cf2f0f1d010d"
+    },
+    "nemo/notices/protobuf": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "nemo/notices/protobuf/INSTALL_RECEIPT.json": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 1657,
+      "sha256": "698b77e182f9fc22ed25a022812c0b28145b0343a11ba64929e6d8a52696991a"
+    },
+    "nemo/notices/protobuf/LICENSE": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 1732,
+      "sha256": "6e5e117324afd944dcf67f36cf329843bc1a92229a8cd9bb573d7a83130fea7d"
+    },
+    "nemo/notices/protobuf/sbom.spdx.json": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 4123,
+      "sha256": "6f8b6348c3a948e8076d0e37af76a570bcf31b2bfdc75ca57d59b56679d5b1de"
+    },
+    "nemo/notices/sentencepiece": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "nemo/notices/sentencepiece/INSTALL_RECEIPT.json": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 1702,
+      "sha256": "d3e46964193859b05a2279c3616a595c62172ca09e0332161288d4b25e965814"
+    },
+    "nemo/notices/sentencepiece/LICENSE": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    "nemo/notices/sentencepiece/bundled": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "nemo/notices/sentencepiece/bundled/DARTS_LICENSE": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 1481,
+      "sha256": "155f59997298ee336602c49f9c1110f268ac394ca2197eb02647a3555935ad52"
+    },
+    "nemo/notices/sentencepiece/bundled/PROTOBUF_LITE_LICENSE": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 1732,
+      "sha256": "6e5e117324afd944dcf67f36cf329843bc1a92229a8cd9bb573d7a83130fea7d"
+    },
+    "nemo/notices/sentencepiece/bundled/sources.json": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 689,
+      "sha256": "381710a6e88a366e60109e476182cb9fe02c0cea1392af7b8cd3dfb1a7a398be"
+    },
+    "nemo/notices/sentencepiece/sbom.spdx.json": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 5224,
+      "sha256": "81dd64c66cf6b6b7aee51d6eac67a6be5751ed792dda1eec9dcfc607f94d2c2a"
+    },
+    "nemo/package.json": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 167628,
+      "sha256": "d80dcdef06854459af906515bb2d0a19c139fc89effaa38d6f73ee93b7495367"
+    },
+    "nemo/provenance": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "nemo/provenance/build.json": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 145455,
+      "sha256": "a2b39b05f250befc89cb2d59a8feb717fc1ec166737d8acaf42eea8903ff9eda"
+    },
+    "references": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "references/published_lexical.json": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 5289,
+      "sha256": "3bb4ce616b73e3028fe6ee2a95ded32880dd4db31affe86f1d671ed678b26742"
+    },
+    "references/transcriber.json": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 2364,
+      "sha256": "70fc7b37f302987ed309e8db3c805f4222fc8d499408d95cb474a70e91fcc4cf"
+    },
+    "scoring": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "scoring/md_eval.py": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 54914,
+      "sha256": "c34af6eeec07e1df795c6820f36cb05459c28ac8d5d84fb0efea433035546de3"
+    }
+  },
+  "cold_source_commit": "b21f42cb7e527ce7e56feab79a6cf1e822ada6f5",
+  "original_helper_compilation_source_commit": "e02a6cbfa0c237d4358b41d4abbf5108f3f39973",
+  "original_helper_sources_verified_at_compilation_commit": 258,
+  "preparation_records": {
+    "/Users/victor/.cache/gen2-nemotron3-n0/ami-prefix-inputs-v1/acquisition.json": {
+      "bytes": 2495,
+      "sha256": "8c5455a6d4662dfd3638aee9c8f7823abc3b0853fe2e5fcefd751a56622def1c"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/acquire-ami-prefix-v1.py": {
+      "bytes": 2459,
+      "sha256": "ef134da3f5decdd3d1068672a70a0a88574fd357deb12c843661774eb7fa31c3"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/prepare-ami-prefix-v1.py": {
+      "bytes": 8008,
+      "sha256": "c02f07f4bb1f1c2075fd700212517dc27e8e747ddd86678ad775a1cba6a76b68"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-runtime-inputs-v1/build.json": {
+      "bytes": 69177,
+      "sha256": "b288e5da4cdf57b2240115ffe779f8a23fb9805639b2b57961af86c4c06f4493"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/qualification.json": {
+      "bytes": 59302,
+      "sha256": "d455e724b9aa52f1797591f021b9fe4b2e2af3a7450796ab5603b7ec45f8d6eb"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1/protocol.json": {
+      "bytes": 125552,
+      "sha256": "992b19ae74f799467b43bd9ecf0eea92aec0fce2baf0fe5268e4300f4fb82647"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-long-local-v1/pooled-long-helpers-files.json": {
+      "bytes": 955,
+      "sha256": "2139f6200ef0f139893d931992045c64fdd5e97dd6590057b52c7f2566545499"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/ami-reference-diagnostic-v1/result.json": {
+      "bytes": 28458,
+      "sha256": "9647542f9a9221dfd5e89b851f6d7e20d93585eb2442d5cd80cfef856fa7ffdd"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/ami-prefix-baseline-replay-v1.json": {
+      "bytes": 1945,
+      "sha256": "d946c8286d1c63227191cd59c545beb04b735885dbfa5a96177907b5ea20a0ef"
+    }
+  },
+  "pcm_f32le_sha256": {
+    "ami-ES2004a-Mix-Headset": "e4b0a13b9b572197dec7a27f50c4596475614771270d3d55462cc1dc99537145",
+    "ami-ES2004a-Array1-01": "ba3efa15fa0496b9d86496dba1bd8ce8a8a40cd1ffebecd6123c686a9f72466e"
+  },
+  "independent_scorer": {
+    "url": "https://raw.githubusercontent.com/NVIDIA-NeMo/Speech/218d0b443441b7d8aa1c832f47df310f186cf0a4/nemo/collections/asr/metrics/md_eval.py",
+    "revision": "218d0b443441b7d8aa1c832f47df310f186cf0a4",
+    "bytes": 54914,
+    "sha256": "c34af6eeec07e1df795c6820f36cb05459c28ac8d5d84fb0efea433035546de3",
+    "license": "Apache-2.0 with retained original BSD-2-Clause notice",
+    "numpy_version": "2.2.6",
+    "scipy_version": "1.18.1",
+    "invocation": "Unmodified md_eval.py get_rttm_data/get_uem_data/evaluate(collar=0,opt_1=False,verbose=False); standard Python logging shim only for nemo.utils.logging. These NumPy/SciPy pins match our original oracle environment, not the full official NeMo lock.",
+    "calibrations": "Before reading target labels: synthetic overlap/mapping, missed overlap, false alarm and global confusion cases on exact10ms boundaries, expected DER0/.5/.5/.5."
+  },
+  "scoring_environment": {
+    "python": "3.12.13",
+    "numpy": "2.2.6",
+    "scipy": "1.18.1",
+    "interpreter": {
+      "bytes": 18073936,
+      "sha256": "96793b100c947cdc81a38e8fb8c9c1889abccda9840ce1bef58d372bf3f2c263"
+    }
+  },
+  "storage": {
+    "start_minimum": 5368709120,
+    "running_minimum": 1073741824,
+    "reserve_bytes": 268435456
+  },
+  "command_timeout_seconds": 600,
+  "denied_paths": [
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-metal-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-tagged-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech.cpp",
+    "/Users/victor/.cache/gen2-nemotron3-n0/__pycache__",
+    "/Users/victor/.cache/gen2-nemotron3-n0/ami-error-localization-5113a30",
+    "/Users/victor/.cache/gen2-nemotron3-n0/ami-prefix-inputs-v1/audio",
+    "/Users/victor/.cache/gen2-nemotron3-n0/ami-reference-diagnostic-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/assets",
+    "/Users/victor/.cache/gen2-nemotron3-n0/calibration-graph-probe-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/calibration-graph-probe-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/calibration-graph-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/calibration-graph-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/current-valid-mel-linux-runtime-ci-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/current-valid-mel-windows-restored-runtime-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/current-valid-mel-windows-runtime-ci-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/current-valid-mel-windows-runtime-collection-tools-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/current-valid-mel-windows-runtime-collection-tools-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/current-valid-mel-windows-runtime-collection-tools-v3",
+    "/Users/victor/.cache/gen2-nemotron3-n0/evidence-tools-env",
+    "/Users/victor/.cache/gen2-nemotron3-n0/failed-c-api-load-control-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/frontend-control-build",
+    "/Users/victor/.cache/gen2-nemotron3-n0/frontend-diagnostic-ec88564",
+    "/Users/victor/.cache/gen2-nemotron3-n0/frontend-tail-probe-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/hardened-dyld-diagnostics-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/linux-chat-fixture-metadata",
+    "/Users/victor/.cache/gen2-nemotron3-n0/macos-sandbox-regex-control-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/n4-frozen-ami-app-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/native-f32-conversion-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/native-f32-execution-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/native-pool-patch-source-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-ami-inputs-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-ami-runtime-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-calibration-inputs-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-calibration-runtime-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/original-nemo-env-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/package-cpu-n5",
+    "/Users/victor/.cache/gen2-nemotron3-n0/package-cpu-n5-final",
+    "/Users/victor/.cache/gen2-nemotron3-n0/package-cpu-n5-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/package-metal-n5",
+    "/Users/victor/.cache/gen2-nemotron3-n0/platform-ci",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pnola-n4-base",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pnola-n4-live-ui-qa",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pnola-n4-qa",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pnola-n5-base",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pool-comparison-ci-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pool-header-controller-replay-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pool-header-replay-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cleanup-diagnostic-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cleanup-final-control-v3",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cleanup-settled-control-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-cpu-construction-local-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-long-local-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-macos-construction-ci-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-macos-construction-ci-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-mixed-build-tools-preflight-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-mixed-local-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-mixed-local-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-mixed-local-v3",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-native-ci-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-native-local-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-native-local-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-build-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-inputs-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-inputs-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-runtime-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-runtime-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-profile-staging-green-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-profile-staging-legacy-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-profile-staging-red-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-public-ci-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-public-local-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable desktop preparation",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-cpu-pnola-app-build-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-cpu-pnola-app-delivery-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-cpu-profile-ci-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-construction-ci-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-runtime-ci-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-macos-runtime-ci-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-pool-probe-build-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-pool-probe-build-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-pool-probe-link-v3",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-pool-selftest-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/portable-receiver-admission-preflight-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/process-image-callback-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/python-reference",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality qualification 125f907",
+    "/Users/victor/.cache/gen2-nemotron3-n0/quality-corpus-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/receipts",
+    "/Users/victor/.cache/gen2-nemotron3-n0/release CPU qualification d01ef80",
+    "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification 024a88f",
+    "/Users/victor/.cache/gen2-nemotron3-n0/release Metal app qualification ef1fc1a",
+    "/Users/victor/.cache/gen2-nemotron3-n0/release Metal mixed placement 8572cc8",
+    "/Users/victor/.cache/gen2-nemotron3-n0/release Metal qualification d01ef80",
+    "/Users/victor/.cache/gen2-nemotron3-n0/release Metal qualification e2ba4df",
+    "/Users/victor/.cache/gen2-nemotron3-n0/relocated CPU candidate",
+    "/Users/victor/.cache/gen2-nemotron3-n0/relocated Metal candidate",
+    "/Users/victor/.cache/gen2-nemotron3-n0/relocated Pnola candidate",
+    "/Users/victor/.cache/gen2-nemotron3-n0/relocated Pnola frameworks candidate",
+    "/Users/victor/.cache/gen2-nemotron3-n0/relocated mixed models",
+    "/Users/victor/.cache/gen2-nemotron3-n0/relocated package n5",
+    "/Users/victor/.cache/gen2-nemotron3-n0/research",
+    "/Users/victor/.cache/gen2-nemotron3-n0/sampler-control-path-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/sdk-cpu",
+    "/Users/victor/.cache/gen2-nemotron3-n0/sdk-metal",
+    "/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-cpu-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-tagged-cpu-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/sdk-valid-mel-tagged-metal-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/tagged-valid-mel-probes-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/tagged-valid-mel-public-inputs-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/tagged-valid-mel-qualification-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/tail-framing-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-candidate-build-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-inputs-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-corpus-runtime-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-cpu-long-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-finish-probe-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-finish-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-linux-delivered-runtime-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-linux-package-ci-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-linux-runtime-ci-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-load-probe-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-loader-preflight-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-package-qualification-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-package-qualification-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-package-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-runtime-inputs-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-macos-sandbox-diagnosis-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-load-control-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-long-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-long-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-macos-package-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-package-qualification-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-preparation-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-pristine-preflight-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-runtime-inputs-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-metal-static-preflight-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-helper-build-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-runtime-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-ci-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-platform-source-preflight-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-app-build-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-app-cpu-snapshot-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-inputs-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-runtime-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-complete-app-runtime-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-debug-source-snapshot-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-helper-build-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-helper-build-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-inputs-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-instrumented-app-build-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-metal-app-build-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-metal-app-build-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-runtime-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-pnola-runtime-v2",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-source-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-build-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-metadata-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-tagged-metal-build-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-windows-restored-runtime-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-windows-runtime-ci-v1",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-windows-runtime-collection-tools-v1",
+    "/Users/victor/.cargo",
+    "/Users/victor/.rustup",
+    "/Users/victor/workspace",
+    "/opt/homebrew",
+    "/usr/local"
+  ],
+  "hypotheses_ranked": [
+    {
+      "hypothesis": "Missing previous session context",
+      "prediction": "Fixed prefix reduces same-target DER without changing target PCM, labels or parameters."
+    },
+    {
+      "hypothesis": "Reference boundary policy dominates missed activity",
+      "prediction": "Broad transcriber-reference gap persists after prefix and remains distinct from the published lexical reference."
+    },
+    {
+      "hypothesis": "Acoustic/overlap weakness",
+      "prediction": "Distant-channel residual error persists with unchanged reference and no loss of wrapper parity."
+    },
+    {
+      "hypothesis": "Runtime mismatch",
+      "prediction": "Longer-prefix native/public comparison fails despite identical full PCM and settings."
+    }
+  ],
+  "limits": [
+    "Original cold quality gate remains failed and unchanged regardless of prefix results. This uses already-seen targets, not a fresh heldout corpus. Both named reference policies and both channels/all outcomes must be retained.",
+    "One fixed context contrast is not a cache-only ablation: earlier audio changes cached speaker evidence, encoder/frontend context and streaming chunk phase under the same implementation. It cannot isolate their causal contributions.",
+    "Exactly four fresh neural processes, full42000-row native/public comparisons and five strict92-library histories including version-only. No new builds, parameter/threshold search, input substitution, prefix label conditioning, native F32, original-NeMo or FP32 model calls.",
+    "Full[0,420) outputs are retained; scores use only[300,420) with original zero-collar/overlap rules and unchanged references. Cached cold outputs use exact previously qualified helper/runtime. Warm quantization degradation is not evaluated without a matched warm FP32 oracle.",
+    "No pooled-profile corpus, speech-attribution word gold, GUI, physical microphone, fresh-machine, uncontended performance or release qualification."
+  ]
+}

@@ -67,3 +67,28 @@ The remaining90seconds still scores26.8872% distant shared Q8 DER (30.0390% in t
 An explicit production segmentation policy, selected on separate development audio and qualified with overlap/short-reply metrics, is a legitimate engineering change. Existing results show the current native CALLHOME smoothing trades missed speech for false activity under the published reference; they do not authorize selecting a new threshold/profile using these targets. A correctly pinned original-NeMo reproduction or verified frontend fix should precede claims that retraining is necessary.
 
 If distant-room error remains with equivalent original inference and a product-appropriate reference, a licensed development corpus reflecting room reverberation, noise, overlap and turn-taking is a supported ML route. [Mind the Gap](https://arxiv.org/html/2605.15442v1) finds noise+reverberation and combining simulated/real data useful for an older offline four-speaker Sortformer, and finds artificially increasing overlap can harm diarization even when it benefits ASR. This motivates controlled development experiments; it does not demonstrate a Nemotron-3 fine-tuning recipe, justify adding reverberation to test audio, or guarantee a20% result. Keep acoustic diarization and broad transcriber-utterance occupancy as explicit distinct objectives. Further source data, training and a fresh test would be needed for stronger meeting generalization claims.
+
+
+## Fixed prefix contrast prepared after current-runtime qualification
+
+The separate `ami-prefix-diagnostic.protocol.json` now freezes the third
+proposed contrast. Both original AMI URLs honored their recorded ETags and exact
+bounded ranges for [0,420). Each prefix has 6,720,000 mono PCM16 samples; its
+[300,420) PCM is byte-identical to the existing failed 120-second crop. Audio
+remains local. The original CPU native/public helpers and runtime are reused
+byte-for-byte, with their compilation source independently checked; this is not
+a pooled-profile or freshly rebuilt implementation experiment.
+
+All 236 local model-free tools tests pass, including exact frame-edge and
+cross-window turn tests. Four synthetic official-scoring controls precede target
+scoring, all 42,000 native/public rows must compare, and only rows 30,000–41,999
+and clipped production turns contribute to the unchanged 120-second UEM. Both
+fixed references and both channels are reported; no thresholds or geometry are
+selected from outcomes. All staged cold outputs also match the committed
+original receipt. Four fresh neural processes remain unrun before preregistration.
+
+The contrast changes session context under the unchanged implementation. Earlier
+audio affects speaker cache, frontend/encoder context and chunk phase together;
+it cannot isolate a cache-only cause. There is no matched warm FP32 oracle, so
+it establishes no warm Q8 degradation bound. The original cold quality failure,
+unseen-data, word-gold and desktop release gates remain unchanged.
