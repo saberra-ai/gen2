@@ -1,7 +1,7 @@
 # Bounded CPU Windows qualification plan
 
 Status on 2026-10-17: bounded Windows producer implemented and locally tested;
-actual Windows SDK execution remains unperformed. Platform-neutral C++ and source
+actual Windows SDK qualification remains pending. Platform-neutral C++ and source
 admission do not establish MSVC construction, lifecycle correctness or realtime performance.
 
 The new [producer](../../tools/nemotron-diarization/platform_bounded_windows_native.py),
@@ -31,7 +31,37 @@ finite positive below-one performance and exact real-helper version derivation. 
 also admits a fresh local clone with the real three patches and exact five-file
 composition after naming/LF preparation. That run performs no compiler, native
 helper, version query, model or Windows API call; it cannot close Windows gates.
-Two-axis review and a commit precede the first workflow execution.
+Both review axes cleared the producer before commit `dfdede8e74709a0c89be01d53aad92d346b50b99`.
+Its first [Windows run](https://github.com/saberra-ai/gen2/actions/runs/39022551571)
+is building; no successful SDK, lifecycle or RTF result is claimed yet.
+
+## Bounded package admission
+
+The separate [SDK admission module](../../tools/nemotron-diarization/bounded_platform_sdk_receipt.py)
+and [packager](../../tools/nemotron-diarization/package_bounded_windows.py) now
+implement the bounded profile's development package contract. They reject older
+profile/format identities, unsuccessful or slow producers, missing/reordered
+patch operations, incomplete lifecycle commands, a changed native probe and
+producer source/protocol mismatches. All original producer pins are verified at
+the recorded commit; the feature test workflow fetches that exact source before
+offline historical admission tests.
+
+The new v3 bounded package retains all three inference patches, compiler audit,
+original producer protocol/receipt, derived probe and complete native/public
+6000-row outputs. Admission replays the numerical comparison, exact PCM identity
+and strict below-one RTF requirement from retained values; pass flags alone do
+not suffice. Package copying checks the added evidence before and after copying.
+The central variant preserves the five-private-DLL-only contract and exact
+external Microsoft prerequisite; existing PE/import, ISA/cache, CRT provenance,
+source-notice, archive and relocation checks remain. Historical v2 tools and
+receipts stay unchanged. No package is constructed in this step.
+
+All343 model-free tests pass, including ten new SDK/package admission tests.
+Their SDK/result records are explicitly synthetic controls, not actual Windows
+runtime evidence. Actual bounded package construction and receiver execution,
+own-process negative-load thread cleanup, central setup/offline System32 checks,
+chat load orders and realtime results remain open. The old receiver orchestration
+still binds the v1 producer and cannot qualify the new bounded package.
 
 The [bounded lock](../../tools/nemotron-diarization/runtime-valid-mel-pool-cpu.lock.json) pins upstream `083861c241061562b8ec29eb06d7f6cdc3af8775`, llama `bd4f514db14d87fded667787a7a963bfbaa98e89`, and exact runtime `nemo-speech-asr 0.2.0+gen2-valid-mel-pool-cpu-v2`. Its ordered inference patches are valid-Mel finish, CPU thread cap, then persistent pool. [The cap](../../tools/nemotron-diarization/patches/cpu-thread-cap.patch) uses standard C++ concurrency: `min(existing 4, hardware_concurrency())`, falling back to one. [The pool](../../tools/nemotron-diarization/patches/persistent-cpu-pool.patch) uses GGML registry procedures and manager-owned cleanup. Neither patch contains Apple-specific calls; private DLL filenames do not change the registry procedure strings.
 
