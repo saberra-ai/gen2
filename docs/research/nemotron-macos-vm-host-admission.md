@@ -166,8 +166,9 @@ The exact image and task mount are absent after detach; the physical reserve is
 released and all storage floors pass. The 72-member receipt binds 16 current/
 historical source files, 36 external records, actual commands/metadata, filtered
 owned-image observations, OS-stat/write results, collectors/preparation and the
-passing 289-test suite. The executable, 256-MiB blank image, module cache and
-unrelated global disk inventories remain local by hash. Collection executes no
+passing 289-test suite. The executable, 256-MiB blank image and unrelated global
+disk inventories remain local with recorded hashes; module caches also stay
+local. Collection executes no
 helper/compiler/signing/image/VM/model operation. All earlier attempts remain
 failed with their original evidence.
 
