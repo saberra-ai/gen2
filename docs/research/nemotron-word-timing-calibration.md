@@ -4,6 +4,14 @@ This prepares the concrete human work needed for N4. It supplies no gold labels,
 model comparison, acceptance score or release qualification. The original DER,
 attribution, desktop and held-out criteria remain unchanged.
 
+Status on 2026-10-17: the user requested that the human annotation and independent
+review be documented for now. That work is deferred; no annotator or reviewer is
+assigned. Preserve the prepared package and original receipts. To resume, assign
+one acoustic annotator and a separate independent reviewer, follow the handoff
+below and freeze their adjudicated reference before model comparison. Human
+word-time gold and N4 attribution-quality acceptance remain open. This deferral
+does not change the original acceptance criteria or establish a passing result.
+
 ## Frozen selection
 
 Use HCRC Map Task `q1ec1` **[0,60)**, selected before any Bark, aligner or

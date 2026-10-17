@@ -650,6 +650,10 @@ now verifies all14 local package members and exact audio/unit/template replay,
 with no model or aligner call. Two-person human annotation/review and acoustic
 speaker-identity checking remain unperformed. This prepares calibration work,
 not human gold, representative held-out validation or an attribution-quality claim.
+On 2026-10-17 the user requested documentation only for this human step. Acoustic
+annotation, independent review and adjudication are deferred with the prepared
+handoff preserved; no reviewer is assigned. This leaves the human word-time/N4
+quality gate open while implementation and runtime qualification continue.
 
 The live capture path now tees normalized PCM into a bounded continuous native
 speaker session beside the durable eight-second ASR sections. Four adapter
