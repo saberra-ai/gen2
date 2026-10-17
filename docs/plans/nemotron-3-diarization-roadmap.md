@@ -4,10 +4,6 @@ Status: N0–N3 implemented and verified on macOS arm64 CPU; N4/N5 remain open. 
 
 Remaining release work as of 2026-10-17:
 
-- Carry the bounded CPU runtime through complete-app verification. Its mixed
-  Bark/Laya/Metal-chat checks and 30-minute
-  and one-hour native/public checks now pass; earlier complete-app results use
-  the separately identified pooled runtime.
 - Meet the original 20% DER target on every required meeting slice. The two AMI
   channels still fail despite exact native/public parity and passing Q8 bounds.
 - Obtain manually checked word boundaries and independent review for attribution
@@ -120,6 +116,17 @@ now passes at `74d19a3c`: all source/preparation/work/app entries and static
 package/signature checks verify, with empty commands/cases/neural/images and
 released reserve. Its separate output preserves the fresh full-runtime path;
 no app/helper/SDK/model function ran. Full runtime remains pending.
+The [actual bounded complete-app runtime](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-bounded-pnola-runtime/collection-qualification.json)
+now passes all eight commands and five fresh neural processes at `4e391235`.
+Independent native references retain 6,000/8,004 rows. Automatic recording
+preserves 117 words/27 exact turns; 80.04-second live completes 11 sections,
+152 words, 15 provisional revisions plus final revision 16 and an 803-byte
+export, with 35 final turns within 3.56e-15 seconds of the independent reference.
+Metal rejection preserves Bark. Three full native and three hardened callback
+image audits, all immutable inputs and storage/reserve checks pass. The
+controller was observed terminal before independent collection of all raw
+results. This closes same-host bounded complete-app CLI qualification; original
+quality/human/GUI/microphone/fresh-machine/platform/public-release gates stay open.
 
 Latest pooled CPU verification passes [30m/1h streams](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-long/collection-qualification.json),
 [mixed-model residency](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-mixed/collection-qualification.json)

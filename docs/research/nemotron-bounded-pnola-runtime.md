@@ -68,3 +68,26 @@ verify; static package/signature inspection passes and the reserve is released.
 The nine-member receipt includes the collector/preparer and passing test logs.
 No SDK/app/helper/model function executes during admission or collection. Full
 runtime and all original quality/desktop/release gates remain pending.
+
+The [actual bounded complete-app runtime receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-bounded-pnola-runtime/collection-qualification.json)
+now passes at `4e3912352da97f7fae9a31fb20b98c5603eba30c`. The controller was
+observed terminal with exit 0 before independent collection. All eight commands
+and exactly five fresh neural processes pass. Both independent native references
+retain all 6,000/8,004 rows and bounded probabilities. Automatic recording
+preserves 117 Bark words and matches all 27 final turns exactly. The 80.04-second
+live session completes 11 sections/152 words, 15 provisional revisions plus final
+revision 16, and an 803-byte export with no queued work. All 35 final speaker turns
+match the independent reference within 3.56e-15 seconds, below the unchanged
+1e-6 gate. Its compact app timeline does not expose native frame/probability
+arrays; the independent reference retains them.
+
+Explicit Metal selection preserves exact Bark text and reports speakers
+unavailable. All three exact 92-library native audits and three hardened-app
+process-local callback audits verify. All 469 unique source pins, eight
+preparation records, 132 work and 246 app entries remain unchanged. Storage floors
+pass and the physical reserve is released. The 37-member receipt retains the
+complete protocol, command logs, native arrays, app results, image audits,
+collector/preparer and test logs; no new neural code executes during collection.
+This closes this bounded runtime's same-host complete-app CLI gate. All original
+quality, deferred human-word, GUI/microphone, fresh-machine, other-platform and
+public release gates remain open.

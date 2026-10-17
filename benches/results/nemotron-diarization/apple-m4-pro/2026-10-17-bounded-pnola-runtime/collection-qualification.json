@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "controller_source_commit": "4e3912352da97f7fae9a31fb20b98c5603eba30c",
+  "app_construction_source_commit": "edf7b898b00df89d868761bfc80487d7c3bdf097",
+  "input_admission_passed": true,
+  "admit_only": false,
+  "automatic_packaged_resolution_gates_passed": true,
+  "release_qualified": false,
+  "source_pins_verified": 469,
+  "work_entries_verified": 132,
+  "app_entries_verified": 246,
+  "preparation_records_verified": 8,
+  "actual_commands": 8,
+  "fresh_neural_processes": 5,
+  "independent_native_reference_frames": {
+    "native-60s": 6000,
+    "native-80s": 8004
+  },
+  "comparisons_replayed": {
+    "cpu-recorded": {
+      "turns": 27,
+      "frames": 6000,
+      "native_frame_count_observed": true,
+      "maximum_turn_error_seconds": 0.0
+    },
+    "cpu-live": {
+      "turns": 35,
+      "frames": null,
+      "native_frame_count_observed": false,
+      "maximum_turn_error_seconds": 3.552713678800501e-15,
+      "native_reference_frame_count": 8004,
+      "reference": "Independent pinned public C ABI on the exact 80.04s repeated PCM; app final timeline compared within 1e-6. Internal public API parity also required by the app helper."
+    },
+    "cpu-rejects-metal": {
+      "unsupported_metal_preserves_exact_bark_text": true
+    }
+  },
+  "native_private_image_audits": 3,
+  "hardened_app_callback_image_audits": 3,
+  "all_protected_app_and_work_entries_rehashed": true,
+  "storage_reserve_released": true,
+  "model_free_tests_passed": 280,
+  "new_native_or_app_or_neural_calls_during_collection": 0,
+  "limits": [
+    "Actual same-host hardened ad-hoc CPU app automatic packaged recording/live/export and explicit Metal rejection. No artifact-path overrides.",
+    "Static collection may inspect signatures and temporary unsigned copies; no app/SDK/helper/model code executes.",
+    "Native references retain all frames/probabilities. Live app has compact turns; independent final-turn comparison remains1e-6, not observed app probability arrays.",
+    "No GUI, physical microphone, fresh machine, other-platform app, acoustic timing, held-out accuracy, human word gold, public signing/notarization, default promotion or release claim."
+  ]
+}
