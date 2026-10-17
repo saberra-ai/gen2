@@ -1,0 +1,4424 @@
+{
+  "schema_version": 1,
+  "source_commit": "2dbf3a008bde6ad405dccd33bb7f015da1901b46",
+  "run_id": 39070438530,
+  "artifact_id": 12114758099,
+  "archive": {
+    "bytes": 750522299,
+    "sha256": "e2e86f74522a50099a1bc5c3e7dbe279656eebaf9d46f56e56abc5be4fec732d"
+  },
+  "delivery_admission": {
+    "bytes": 1614,
+    "sha256": "1e3ab7facd968a3837d01db13f5c61184adfc87d11731461b664528d3b9971f5"
+  },
+  "collector": {
+    "bytes": 8190,
+    "sha256": "79750667f10ac632618bafa56a58f7b5fbf9f14cbfdd28e4c7780fe52b27f7c9"
+  },
+  "commands_verified": 95,
+  "commands": [
+    {
+      "name": "receiver-host",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 1.6879999999999882,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "receiver-host",
+        "command": [
+          "pwsh",
+          "-NoProfile",
+          "-NonInteractive",
+          "-Command",
+          "$ErrorActionPreference='Stop'\n$os=Get-CimInstance Win32_OperatingSystem\n$cpu=@(Get-CimInstance Win32_Processor | Select-Object Name,Manufacturer,Architecture,NumberOfCores,NumberOfLogicalProcessors,ProcessorId)\n@{os=@{caption=$os.Caption;version=$os.Version;build=$os.BuildNumber};cpu=$cpu;\navx2=[System.Runtime.Intrinsics.X86.Avx2]::IsSupported;fma=[System.Runtime.Intrinsics.X86.Fma]::IsSupported} | ConvertTo-Json -Depth 8\n"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 1552,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 1.6879999999999882
+      }
+    },
+    {
+      "name": "native-revision",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10999999999989996,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "native-revision",
+        "command": [
+          "git",
+          "-C",
+          "D:\\a\\gen2\\gen2\\native-source",
+          "rev-parse",
+          "HEAD"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 3868,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.10999999999989996
+      }
+    },
+    {
+      "name": "llama-revision",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10900000000003729,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "llama-revision",
+        "command": [
+          "git",
+          "-C",
+          "D:\\a\\gen2\\gen2\\native-source\\llama.cpp",
+          "rev-parse",
+          "HEAD"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 2972,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.10900000000003729
+      }
+    },
+    {
+      "name": "pristine-archive",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.36000000000001364,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "pristine-archive",
+        "command": [
+          "git",
+          "-C",
+          "D:\\a\\gen2\\gen2\\native-source\\llama.cpp",
+          "archive",
+          "--format=tar",
+          "-o",
+          "D:\\a\\_temp\\windows-q8-row\\pristine.tar",
+          "bd4f514db14d87fded667787a7a963bfbaa98e89",
+          "--",
+          ".",
+          ":(exclude)models",
+          ":(exclude)docs",
+          ":(exclude)media"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 5392,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.36000000000001364
+      }
+    },
+    {
+      "name": "patch-0-read",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10999999999989996,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-0-read",
+        "command": [
+          "git",
+          "-C",
+          "D:\\a\\gen2\\gen2\\native-source",
+          "show",
+          "083861c241061562b8ec29eb06d7f6cdc3af8775:patches/ggml-add-fused-attention-op-for-fastconformer-and-magpietts.patch"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 588,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.10999999999989996
+      }
+    },
+    {
+      "name": "patch-0-apply",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-0-apply",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\patch-0-read.stdout.log"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-row\\canonical",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 3140,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "name": "patch-1-read",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-1-read",
+        "command": [
+          "git",
+          "-C",
+          "D:\\a\\gen2\\gen2\\native-source",
+          "show",
+          "083861c241061562b8ec29eb06d7f6cdc3af8775:patches/ggml-cuda-fuse-layernorm-with-row-vector-scale-and-bias.patch"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 3412,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "name": "patch-1-apply",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-1-apply",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\patch-1-read.stdout.log"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-row\\canonical",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 4360,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "name": "patch-2-read",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.11000000000001364,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-2-read",
+        "command": [
+          "git",
+          "-C",
+          "D:\\a\\gen2\\gen2\\native-source",
+          "show",
+          "083861c241061562b8ec29eb06d7f6cdc3af8775:patches/ggml-cuda-support-f16-weights-in-direct-depthwise-conv.patch"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 8064,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.11000000000001364
+      }
+    },
+    {
+      "name": "patch-2-apply",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-2-apply",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\patch-2-read.stdout.log"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-row\\canonical",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 5944,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "name": "patch-3-read",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-3-read",
+        "command": [
+          "git",
+          "-C",
+          "D:\\a\\gen2\\gen2\\native-source",
+          "show",
+          "083861c241061562b8ec29eb06d7f6cdc3af8775:patches/ggml-cuda-skinny-q8_0-gemm-with-planar-weights.patch"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 7432,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "name": "patch-3-apply",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.1089999999999236,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-3-apply",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\patch-3-read.stdout.log"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-row\\canonical",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 4776,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.1089999999999236
+      }
+    },
+    {
+      "name": "patch-4-read",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.11000000000001364,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-4-read",
+        "command": [
+          "git",
+          "-C",
+          "D:\\a\\gen2\\gen2\\native-source",
+          "show",
+          "083861c241061562b8ec29eb06d7f6cdc3af8775:patches/ggml-cuda-target-jetson-thor-sm110.patch"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 6572,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.11000000000001364
+      }
+    },
+    {
+      "name": "patch-4-apply",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-4-apply",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\patch-4-read.stdout.log"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-row\\canonical",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 6564,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "name": "patch-5-read",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10999999999989996,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-5-read",
+        "command": [
+          "git",
+          "-C",
+          "D:\\a\\gen2\\gen2\\native-source",
+          "show",
+          "083861c241061562b8ec29eb06d7f6cdc3af8775:patches/ggml-cuda-cuda-graph-cache-keys-replay-updates-and-eviction-knobs.patch"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 2820,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.10999999999989996
+      }
+    },
+    {
+      "name": "patch-5-apply",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-5-apply",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\patch-5-read.stdout.log"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-row\\canonical",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 1796,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "name": "patch-6-read",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10900000000003729,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-6-read",
+        "command": [
+          "git",
+          "-C",
+          "D:\\a\\gen2\\gen2\\native-source",
+          "show",
+          "083861c241061562b8ec29eb06d7f6cdc3af8775:patches/ggml-cuda-two-column-mmvf-epilogue.patch"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 5584,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.10900000000003729
+      }
+    },
+    {
+      "name": "patch-6-apply",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-6-apply",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\patch-6-read.stdout.log"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-row\\canonical",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 2504,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "name": "patch-7-read",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-7-read",
+        "command": [
+          "git",
+          "-C",
+          "D:\\a\\gen2\\gen2\\native-source",
+          "show",
+          "083861c241061562b8ec29eb06d7f6cdc3af8775:patches/ggml-cuda-flatten-shared-weight-cublas-gemms-fuse-silu-to-bf16.patch"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 5628,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "name": "patch-7-apply",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10900000000003729,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-7-apply",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\patch-7-read.stdout.log"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-row\\canonical",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 6184,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.10900000000003729
+      }
+    },
+    {
+      "name": "patch-8-read",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-8-read",
+        "command": [
+          "git",
+          "-C",
+          "D:\\a\\gen2\\gen2\\native-source",
+          "show",
+          "083861c241061562b8ec29eb06d7f6cdc3af8775:patches/ggml-fastconformer-cuda-fusions-and-sigmoid-glu.patch"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 3492,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "name": "patch-8-apply",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10900000000003729,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-8-apply",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\patch-8-read.stdout.log"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-row\\canonical",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 2512,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.10900000000003729
+      }
+    },
+    {
+      "name": "patch-9-read",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.14000000000010004,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-9-read",
+        "command": [
+          "git",
+          "-C",
+          "D:\\a\\gen2\\gen2\\native-source",
+          "show",
+          "083861c241061562b8ec29eb06d7f6cdc3af8775:patches/ggml-cuda-flatten-pad-launches-for-large-batches.patch"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 856,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.14000000000010004
+      }
+    },
+    {
+      "name": "patch-9-apply",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-9-apply",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\patch-9-read.stdout.log"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-row\\canonical",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 2840,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "name": "patch-10-read",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-10-read",
+        "command": [
+          "git",
+          "-C",
+          "D:\\a\\gen2\\gen2\\native-source",
+          "show",
+          "083861c241061562b8ec29eb06d7f6cdc3af8775:patches/ggml-cuda-vectorized-contiguous-set_rows.patch"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 6896,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "name": "patch-10-apply",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10999999999989996,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-10-apply",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\patch-10-read.stdout.log"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-row\\canonical",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 7840,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.10999999999989996
+      }
+    },
+    {
+      "name": "patch-11-read",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-11-read",
+        "command": [
+          "git",
+          "-C",
+          "D:\\a\\gen2\\gen2\\native-source",
+          "show",
+          "083861c241061562b8ec29eb06d7f6cdc3af8775:patches/ggml-cuda-expose-the-backend-stream-and-cuda-graph-controls.patch"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 5216,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "name": "patch-11-apply",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-11-apply",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\patch-11-read.stdout.log"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-row\\canonical",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 1224,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "name": "patch-12-read",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-12-read",
+        "command": [
+          "git",
+          "-C",
+          "D:\\a\\gen2\\gen2\\native-source",
+          "show",
+          "083861c241061562b8ec29eb06d7f6cdc3af8775:patches/ggml-cuda-bf16-depthwise-conv-and-bias-round-epilogue.patch"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 3216,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "name": "patch-12-apply",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.11000000000001364,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-12-apply",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\patch-12-read.stdout.log"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-row\\canonical",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 4516,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.11000000000001364
+      }
+    },
+    {
+      "name": "patch-13-read",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.1409999999999627,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-13-read",
+        "command": [
+          "git",
+          "-C",
+          "D:\\a\\gen2\\gen2\\native-source",
+          "show",
+          "083861c241061562b8ec29eb06d7f6cdc3af8775:patches/ggml-cuda-tiled-1d-im2col.patch"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 7672,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.1409999999999627
+      }
+    },
+    {
+      "name": "patch-13-apply",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-13-apply",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\patch-13-read.stdout.log"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-row\\canonical",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 3472,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "name": "patch-14-read",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-14-read",
+        "command": [
+          "git",
+          "-C",
+          "D:\\a\\gen2\\gen2\\native-source",
+          "show",
+          "083861c241061562b8ec29eb06d7f6cdc3af8775:patches/ggml-nanocodec-convolution-kernels.patch"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 1800,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "name": "patch-14-apply",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-14-apply",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\patch-14-read.stdout.log"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-row\\canonical",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 824,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "name": "patch-15-read",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-15-read",
+        "command": [
+          "git",
+          "-C",
+          "D:\\a\\gen2\\gen2\\native-source",
+          "show",
+          "083861c241061562b8ec29eb06d7f6cdc3af8775:patches/ggml-cpu-f16c-scalar-fp32-fp16-and-row-split-f16-im2col.patch"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 1072,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "name": "patch-15-apply",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-15-apply",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\patch-15-read.stdout.log"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-row\\canonical",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 2584,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "name": "patch-16-read",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-16-read",
+        "command": [
+          "git",
+          "-C",
+          "D:\\a\\gen2\\gen2\\native-source",
+          "show",
+          "083861c241061562b8ec29eb06d7f6cdc3af8775:patches/llama-keep-equal-length-recurrent-sequences-in-one-ubatch.patch"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 5236,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "name": "patch-16-apply",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.1409999999999627,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-16-apply",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\patch-16-read.stdout.log"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-row\\canonical",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 4512,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.1409999999999627
+      }
+    },
+    {
+      "name": "patch-17-read",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10900000000003729,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-17-read",
+        "command": [
+          "git",
+          "-C",
+          "D:\\a\\gen2\\gen2\\native-source",
+          "show",
+          "083861c241061562b8ec29eb06d7f6cdc3af8775:patches/llama-enable-nvfp4-in-llama-quantize.patch"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 7140,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.10900000000003729
+      }
+    },
+    {
+      "name": "patch-17-apply",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.1410000000000764,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-17-apply",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\patch-17-read.stdout.log"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-row\\canonical",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 6048,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.1410000000000764
+      }
+    },
+    {
+      "name": "patch-18-read",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.10900000000003729,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-18-read",
+        "command": [
+          "git",
+          "-C",
+          "D:\\a\\gen2\\gen2\\native-source",
+          "show",
+          "083861c241061562b8ec29eb06d7f6cdc3af8775:patches/llama-read-the-gemma-3-attention-scale-from-gguf.patch"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 2532,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.10900000000003729
+      }
+    },
+    {
+      "name": "patch-18-apply",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "patch-18-apply",
+        "command": [
+          "git",
+          "apply",
+          "--whitespace=nowarn",
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\patch-18-read.stdout.log"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-q8-row\\canonical",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 5956,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.125
+      }
+    },
+    {
+      "name": "configure",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 8.016000000000076,
+      "remaining_before_cleanup": {
+        "assigned_count": 1,
+        "processes": [
+          {
+            "pid": 7928,
+            "membership_confirmed": true,
+            "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\vctip.exe"
+          }
+        ],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "configure",
+        "command": [
+          "C:\\Program Files\\CMake\\bin\\cmake.exe",
+          "-S",
+          "D:\\a\\_temp\\windows-q8-row\\project",
+          "-B",
+          "D:\\a\\_temp\\windows-q8-row\\build",
+          "-G",
+          "Ninja",
+          "-DCMAKE_BUILD_TYPE=Release",
+          "-DCMAKE_C_COMPILER=C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+          "-DCMAKE_CXX_COMPILER=C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\Llvm\\x64\\bin\\clang-cl.exe",
+          "-DCMAKE_LINKER=C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\Llvm\\x64\\bin\\lld-link.exe",
+          "-DCMAKE_AR=C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\lib.exe",
+          "-DCMAKE_MAKE_PROGRAM=C:\\ProgramData\\chocolatey\\bin\\ninja.exe",
+          "-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreadedDLL",
+          "-DCMAKE_EXPORT_COMPILE_COMMANDS=ON",
+          "-DCMAKE_C_FLAGS_INIT:STRING=/clang:-ffp-contract=off",
+          "-DCMAKE_CXX_FLAGS_INIT:STRING=/clang:-ffp-contract=off",
+          "-DGGML_SOURCE:PATH=D:\\a\\_temp\\windows-q8-row\\canonical",
+          "-DCONTROL_SOURCE:FILEPATH=D:\\a\\_temp\\windows-q8-row\\evidence\\sgemm-control.cpp",
+          "-DCANDIDATE_SOURCE:FILEPATH=D:\\a\\_temp\\windows-q8-row\\evidence\\sgemm-row1.cpp",
+          "-DBENCHMARK_SOURCE:FILEPATH=D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\q8_row_benchmark.cpp",
+          "-DGGML_CCACHE=OFF"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 1204,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 1,
+            "processes": [
+              {
+                "pid": 7928,
+                "membership_confirmed": true,
+                "image": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\vctip.exe"
+              }
+            ],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 8.016000000000076
+      }
+    },
+    {
+      "name": "build",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 14.422000000000025,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "build",
+        "command": [
+          "C:\\Program Files\\CMake\\bin\\cmake.exe",
+          "--build",
+          "D:\\a\\_temp\\windows-q8-row\\build",
+          "--parallel",
+          "2",
+          "--verbose"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 5856,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 14.422000000000025
+      }
+    },
+    {
+      "name": "disasm-control",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.26499999999998636,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "disasm-control",
+        "command": [
+          "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\dumpbin.exe",
+          "/nologo",
+          "/disasm",
+          "/symbols",
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\kernel-control.obj"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 5416,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.26499999999998636
+      }
+    },
+    {
+      "name": "disasm-row1",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.13999999999998636,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "disasm-row1",
+        "command": [
+          "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\dumpbin.exe",
+          "/nologo",
+          "/disasm",
+          "/symbols",
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\kernel-row1.obj"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 5732,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.13999999999998636
+      }
+    },
+    {
+      "name": "binary-dependencies",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 0.11000000000001364,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "binary-dependencies",
+        "command": [
+          "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\dumpbin.exe",
+          "/nologo",
+          "/dependents",
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 5300,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.11000000000001364
+      }
+    },
+    {
+      "name": "case-1-0-guard-barrier",
+      "returncode": 73,
+      "error": null,
+      "elapsed_seconds": 0.09300000000007458,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-1-0-guard-barrier",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "barrier"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 73,
+        "returncode": 73,
+        "job_observation": {
+          "worker_pid": 7912,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 73,
+          "reaped_worker_exit_code": 73,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.09300000000007458
+      }
+    },
+    {
+      "name": "case-1-0-guard-set",
+      "returncode": 74,
+      "error": null,
+      "elapsed_seconds": 0.09399999999993724,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-1-0-guard-set",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "set"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 74,
+        "returncode": 74,
+        "job_observation": {
+          "worker_pid": 7624,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 74,
+          "reaped_worker_exit_code": 74,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.09399999999993724
+      }
+    },
+    {
+      "name": "case-1-0-guard-add",
+      "returncode": 75,
+      "error": null,
+      "elapsed_seconds": 0.09400000000005093,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-1-0-guard-add",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "add"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 75,
+        "returncode": 75,
+        "job_observation": {
+          "worker_pid": 3548,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 75,
+          "reaped_worker_exit_code": 75,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.09400000000005093
+      }
+    },
+    {
+      "name": "case-1-0",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 4.687999999999988,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-1-0",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "off",
+          "1",
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\case-1-0"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 6876,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 4.687999999999988
+      }
+    },
+    {
+      "name": "case-1-1-guard-barrier",
+      "returncode": 73,
+      "error": null,
+      "elapsed_seconds": 0.09399999999993724,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-1-1-guard-barrier",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "barrier"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 73,
+        "returncode": 73,
+        "job_observation": {
+          "worker_pid": 7628,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 73,
+          "reaped_worker_exit_code": 73,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.09399999999993724
+      }
+    },
+    {
+      "name": "case-1-1-guard-set",
+      "returncode": 74,
+      "error": null,
+      "elapsed_seconds": 0.07800000000008822,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-1-1-guard-set",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "set"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 74,
+        "returncode": 74,
+        "job_observation": {
+          "worker_pid": 4224,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 74,
+          "reaped_worker_exit_code": 74,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.07800000000008822
+      }
+    },
+    {
+      "name": "case-1-1-guard-add",
+      "returncode": 75,
+      "error": null,
+      "elapsed_seconds": 0.09400000000005093,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-1-1-guard-add",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "add"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 75,
+        "returncode": 75,
+        "job_observation": {
+          "worker_pid": 3968,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 75,
+          "reaped_worker_exit_code": 75,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.09400000000005093
+      }
+    },
+    {
+      "name": "case-1-1",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 4.765999999999963,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-1-1",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "on",
+          "1",
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\case-1-1"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 8108,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 4.765999999999963
+      }
+    },
+    {
+      "name": "case-1-2-guard-barrier",
+      "returncode": 73,
+      "error": null,
+      "elapsed_seconds": 0.09399999999993724,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-1-2-guard-barrier",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "barrier"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 73,
+        "returncode": 73,
+        "job_observation": {
+          "worker_pid": 1780,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 73,
+          "reaped_worker_exit_code": 73,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.09399999999993724
+      }
+    },
+    {
+      "name": "case-1-2-guard-set",
+      "returncode": 74,
+      "error": null,
+      "elapsed_seconds": 0.09399999999993724,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-1-2-guard-set",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "set"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 74,
+        "returncode": 74,
+        "job_observation": {
+          "worker_pid": 1164,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 74,
+          "reaped_worker_exit_code": 74,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.09399999999993724
+      }
+    },
+    {
+      "name": "case-1-2-guard-add",
+      "returncode": 75,
+      "error": null,
+      "elapsed_seconds": 0.07800000000008822,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-1-2-guard-add",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "add"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 75,
+        "returncode": 75,
+        "job_observation": {
+          "worker_pid": 5924,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 75,
+          "reaped_worker_exit_code": 75,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.07800000000008822
+      }
+    },
+    {
+      "name": "case-1-2",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 4.75,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-1-2",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "on",
+          "1",
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\case-1-2"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 2488,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 4.75
+      }
+    },
+    {
+      "name": "case-1-3-guard-barrier",
+      "returncode": 73,
+      "error": null,
+      "elapsed_seconds": 0.09400000000005093,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-1-3-guard-barrier",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "barrier"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 73,
+        "returncode": 73,
+        "job_observation": {
+          "worker_pid": 7592,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 73,
+          "reaped_worker_exit_code": 73,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.09400000000005093
+      }
+    },
+    {
+      "name": "case-1-3-guard-set",
+      "returncode": 74,
+      "error": null,
+      "elapsed_seconds": 0.09400000000005093,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-1-3-guard-set",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "set"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 74,
+        "returncode": 74,
+        "job_observation": {
+          "worker_pid": 3232,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 74,
+          "reaped_worker_exit_code": 74,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.09400000000005093
+      }
+    },
+    {
+      "name": "case-1-3-guard-add",
+      "returncode": 75,
+      "error": null,
+      "elapsed_seconds": 0.09299999999996089,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-1-3-guard-add",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "add"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 75,
+        "returncode": 75,
+        "job_observation": {
+          "worker_pid": 3440,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 75,
+          "reaped_worker_exit_code": 75,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.09299999999996089
+      }
+    },
+    {
+      "name": "case-1-3",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 4.765999999999963,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-1-3",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "off",
+          "1",
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\case-1-3"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 6536,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 4.765999999999963
+      }
+    },
+    {
+      "name": "case-2-0-guard-barrier",
+      "returncode": 73,
+      "error": null,
+      "elapsed_seconds": 0.09400000000005093,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-2-0-guard-barrier",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "barrier"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 73,
+        "returncode": 73,
+        "job_observation": {
+          "worker_pid": 7852,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 73,
+          "reaped_worker_exit_code": 73,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.09400000000005093
+      }
+    },
+    {
+      "name": "case-2-0-guard-set",
+      "returncode": 74,
+      "error": null,
+      "elapsed_seconds": 0.07799999999997453,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-2-0-guard-set",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "set"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 74,
+        "returncode": 74,
+        "job_observation": {
+          "worker_pid": 4880,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 74,
+          "reaped_worker_exit_code": 74,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.07799999999997453
+      }
+    },
+    {
+      "name": "case-2-0-guard-add",
+      "returncode": 75,
+      "error": null,
+      "elapsed_seconds": 0.07800000000008822,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-2-0-guard-add",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "add"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 75,
+        "returncode": 75,
+        "job_observation": {
+          "worker_pid": 7276,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 75,
+          "reaped_worker_exit_code": 75,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.07800000000008822
+      }
+    },
+    {
+      "name": "case-2-0",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 3.217999999999961,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-2-0",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "off",
+          "2",
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\case-2-0"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 7600,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 3.217999999999961
+      }
+    },
+    {
+      "name": "case-2-1-guard-barrier",
+      "returncode": 73,
+      "error": null,
+      "elapsed_seconds": 0.09299999999996089,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-2-1-guard-barrier",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "barrier"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 73,
+        "returncode": 73,
+        "job_observation": {
+          "worker_pid": 6000,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 73,
+          "reaped_worker_exit_code": 73,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.09299999999996089
+      }
+    },
+    {
+      "name": "case-2-1-guard-set",
+      "returncode": 74,
+      "error": null,
+      "elapsed_seconds": 0.09399999999993724,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-2-1-guard-set",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "set"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 74,
+        "returncode": 74,
+        "job_observation": {
+          "worker_pid": 6192,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 74,
+          "reaped_worker_exit_code": 74,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.09399999999993724
+      }
+    },
+    {
+      "name": "case-2-1-guard-add",
+      "returncode": 75,
+      "error": null,
+      "elapsed_seconds": 0.07799999999997453,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-2-1-guard-add",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "add"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 75,
+        "returncode": 75,
+        "job_observation": {
+          "worker_pid": 6916,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 75,
+          "reaped_worker_exit_code": 75,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.07799999999997453
+      }
+    },
+    {
+      "name": "case-2-1",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 3.187999999999988,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-2-1",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "on",
+          "2",
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\case-2-1"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 976,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 3.187999999999988
+      }
+    },
+    {
+      "name": "case-2-2-guard-barrier",
+      "returncode": 73,
+      "error": null,
+      "elapsed_seconds": 0.09400000000005093,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-2-2-guard-barrier",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "barrier"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 73,
+        "returncode": 73,
+        "job_observation": {
+          "worker_pid": 6980,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 73,
+          "reaped_worker_exit_code": 73,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.09400000000005093
+      }
+    },
+    {
+      "name": "case-2-2-guard-set",
+      "returncode": 74,
+      "error": null,
+      "elapsed_seconds": 0.10999999999989996,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-2-2-guard-set",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "set"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 74,
+        "returncode": 74,
+        "job_observation": {
+          "worker_pid": 7360,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 74,
+          "reaped_worker_exit_code": 74,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.10999999999989996
+      }
+    },
+    {
+      "name": "case-2-2-guard-add",
+      "returncode": 75,
+      "error": null,
+      "elapsed_seconds": 0.09399999999993724,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-2-2-guard-add",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "add"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 75,
+        "returncode": 75,
+        "job_observation": {
+          "worker_pid": 5404,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 75,
+          "reaped_worker_exit_code": 75,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.09399999999993724
+      }
+    },
+    {
+      "name": "case-2-2",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 3.2819999999999254,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-2-2",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "on",
+          "2",
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\case-2-2"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 4704,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 3.2819999999999254
+      }
+    },
+    {
+      "name": "case-2-3-guard-barrier",
+      "returncode": 73,
+      "error": null,
+      "elapsed_seconds": 0.09400000000005093,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-2-3-guard-barrier",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "barrier"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 73,
+        "returncode": 73,
+        "job_observation": {
+          "worker_pid": 7940,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 73,
+          "reaped_worker_exit_code": 73,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.09400000000005093
+      }
+    },
+    {
+      "name": "case-2-3-guard-set",
+      "returncode": 74,
+      "error": null,
+      "elapsed_seconds": 0.07799999999997453,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-2-3-guard-set",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "set"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 74,
+        "returncode": 74,
+        "job_observation": {
+          "worker_pid": 6876,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 74,
+          "reaped_worker_exit_code": 74,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.07799999999997453
+      }
+    },
+    {
+      "name": "case-2-3-guard-add",
+      "returncode": 75,
+      "error": null,
+      "elapsed_seconds": 0.09400000000005093,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-2-3-guard-add",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "add"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 75,
+        "returncode": 75,
+        "job_observation": {
+          "worker_pid": 5264,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 75,
+          "reaped_worker_exit_code": 75,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.09400000000005093
+      }
+    },
+    {
+      "name": "case-2-3",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 3.125,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-2-3",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "off",
+          "2",
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\case-2-3"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 364,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 3.125
+      }
+    },
+    {
+      "name": "case-4-0-guard-barrier",
+      "returncode": 73,
+      "error": null,
+      "elapsed_seconds": 0.09300000000007458,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-4-0-guard-barrier",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "barrier"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 73,
+        "returncode": 73,
+        "job_observation": {
+          "worker_pid": 2932,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 73,
+          "reaped_worker_exit_code": 73,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.09300000000007458
+      }
+    },
+    {
+      "name": "case-4-0-guard-set",
+      "returncode": 74,
+      "error": null,
+      "elapsed_seconds": 0.09399999999982356,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-4-0-guard-set",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "set"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 74,
+        "returncode": 74,
+        "job_observation": {
+          "worker_pid": 4428,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 74,
+          "reaped_worker_exit_code": 74,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.09399999999982356
+      }
+    },
+    {
+      "name": "case-4-0-guard-add",
+      "returncode": 75,
+      "error": null,
+      "elapsed_seconds": 0.09300000000007458,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-4-0-guard-add",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "add"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 75,
+        "returncode": 75,
+        "job_observation": {
+          "worker_pid": 3048,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 75,
+          "reaped_worker_exit_code": 75,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.09300000000007458
+      }
+    },
+    {
+      "name": "case-4-0",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 2.9689999999998236,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-4-0",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "off",
+          "4",
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\case-4-0"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 3704,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 2.9689999999998236
+      }
+    },
+    {
+      "name": "case-4-1-guard-barrier",
+      "returncode": 73,
+      "error": null,
+      "elapsed_seconds": 0.09399999999982356,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-4-1-guard-barrier",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "barrier"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 73,
+        "returncode": 73,
+        "job_observation": {
+          "worker_pid": 1100,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 73,
+          "reaped_worker_exit_code": 73,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.09399999999982356
+      }
+    },
+    {
+      "name": "case-4-1-guard-set",
+      "returncode": 74,
+      "error": null,
+      "elapsed_seconds": 0.09300000000007458,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-4-1-guard-set",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "set"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 74,
+        "returncode": 74,
+        "job_observation": {
+          "worker_pid": 3572,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 74,
+          "reaped_worker_exit_code": 74,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.09300000000007458
+      }
+    },
+    {
+      "name": "case-4-1-guard-add",
+      "returncode": 75,
+      "error": null,
+      "elapsed_seconds": 0.09399999999982356,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-4-1-guard-add",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "add"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 75,
+        "returncode": 75,
+        "job_observation": {
+          "worker_pid": 7460,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 75,
+          "reaped_worker_exit_code": 75,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.09399999999982356
+      }
+    },
+    {
+      "name": "case-4-1",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 2.9529999999999745,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-4-1",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "on",
+          "4",
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\case-4-1"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 3308,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 2.9529999999999745
+      }
+    },
+    {
+      "name": "case-4-2-guard-barrier",
+      "returncode": 73,
+      "error": null,
+      "elapsed_seconds": 0.09300000000007458,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-4-2-guard-barrier",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "barrier"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 73,
+        "returncode": 73,
+        "job_observation": {
+          "worker_pid": 7400,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 73,
+          "reaped_worker_exit_code": 73,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.09300000000007458
+      }
+    },
+    {
+      "name": "case-4-2-guard-set",
+      "returncode": 74,
+      "error": null,
+      "elapsed_seconds": 0.07899999999995089,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-4-2-guard-set",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "set"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 74,
+        "returncode": 74,
+        "job_observation": {
+          "worker_pid": 1448,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 74,
+          "reaped_worker_exit_code": 74,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.07899999999995089
+      }
+    },
+    {
+      "name": "case-4-2-guard-add",
+      "returncode": 75,
+      "error": null,
+      "elapsed_seconds": 0.09300000000007458,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-4-2-guard-add",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "add"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 75,
+        "returncode": 75,
+        "job_observation": {
+          "worker_pid": 6500,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 75,
+          "reaped_worker_exit_code": 75,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.09300000000007458
+      }
+    },
+    {
+      "name": "case-4-2",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 2.9849999999999,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-4-2",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "on",
+          "4",
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\case-4-2"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 5908,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 2.9849999999999
+      }
+    },
+    {
+      "name": "case-4-3-guard-barrier",
+      "returncode": 73,
+      "error": null,
+      "elapsed_seconds": 0.09400000000005093,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-4-3-guard-barrier",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "barrier"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 73,
+        "returncode": 73,
+        "job_observation": {
+          "worker_pid": 2868,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 73,
+          "reaped_worker_exit_code": 73,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.09400000000005093
+      }
+    },
+    {
+      "name": "case-4-3-guard-set",
+      "returncode": 74,
+      "error": null,
+      "elapsed_seconds": 0.09400000000005093,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-4-3-guard-set",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "set"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 74,
+        "returncode": 74,
+        "job_observation": {
+          "worker_pid": 4072,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 74,
+          "reaped_worker_exit_code": 74,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.09400000000005093
+      }
+    },
+    {
+      "name": "case-4-3-guard-add",
+      "returncode": 75,
+      "error": null,
+      "elapsed_seconds": 0.10999999999989996,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-4-3-guard-add",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "--support-control",
+          "add"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 75,
+        "returncode": 75,
+        "job_observation": {
+          "worker_pid": 3688,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 75,
+          "reaped_worker_exit_code": 75,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 0.10999999999989996
+      }
+    },
+    {
+      "name": "case-4-3",
+      "returncode": 0,
+      "error": null,
+      "elapsed_seconds": 3.0150000000001,
+      "remaining_before_cleanup": {
+        "assigned_count": 0,
+        "processes": [],
+        "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+      },
+      "logs_available": {
+        ".stdout.log": true,
+        ".log": true
+      },
+      "normal_exit_and_cleanup_admitted": true,
+      "saved_command": {
+        "name": "case-4-3",
+        "command": [
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\q8_tile_benchmark.exe",
+          "off",
+          "4",
+          "D:\\a\\_temp\\windows-q8-row\\evidence\\case-4-3"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job v2 with scoped snapshot and owned-background cleanup",
+        "process_tree_reaped": true,
+        "expected_returncode": 0,
+        "returncode": 0,
+        "job_observation": {
+          "worker_pid": 5448,
+          "worker_assigned": true,
+          "normal_worker_exit_observed": true,
+          "observed_worker_exit_code": 0,
+          "reaped_worker_exit_code": 0,
+          "remaining_before_cleanup": {
+            "assigned_count": 0,
+            "processes": [],
+            "limits": "Job membership snapshot; processes can exit between enumeration and image query."
+          },
+          "process_tree_reaped": true,
+          "job_handle_closed": true,
+          "cleanup_errors": []
+        },
+        "elapsed_seconds": 3.0150000000001
+      }
+    }
+  ],
+  "supervision_observed": true,
+  "all_observed_commands_cleanup_admitted": true,
+  "new_compiler_sdk_model_calls": 0,
+  "scope": "Saved command-supervision replay only; compiler/source/numerical/timing admission remains separate."
+}

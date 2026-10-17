@@ -167,8 +167,17 @@ reloads and doubled tile count may outweigh any benefit. All563 local tools
 tests pass with seven Windows-only skips, including six new source/vector/
 timing controls. The separate protocol binds140 tools/3,758 references/39
 imports and preserves every original numerical/speed/drift/observer predicate.
-Actual Windows construction/performance remains pending. This preparation
-changes no production SDK or failed model/RTF/package/release result.
+This preparation supplies no SDK/model/RTF or release qualification; actual
+Windows execution is recorded below.
+The [actual one-row result](../research/nemotron-windows-q8-row-results.md)
+now completes all95 owned/reaped commands,1,056 full byte-exact vectors,
+twelve half tables and36 support rejections. None of48 four-worker primary
+comparisons meets the original5% speedup predicate despite48/48 control-drift
+passes. Only41/48 primary observer comparisons meet both original bounds.
+All three prediction/observer flags remain false. The1,436-member receipt
+preserves every result; all thirteen producer feature CI jobs also succeed.
+This supplies no qualifying full-model comparison or production promotion.
+Original quality, human-review, desktop, platform and release gates stay open.
 
 Remaining release work as of 2026-10-17:
 

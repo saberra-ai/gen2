@@ -1,0 +1,25 @@
+--- ggml/src/ggml-cpu/llamafile/sgemm.cpp
++++ candidate/ggml/src/ggml-cpu/llamafile/sgemm.cpp
+@@ -1369,6 +1369,22 @@
+     }
+ 
+     void matmul(int64_t m, int64_t n) {
++#if defined(GEN2_Q8_ROW_EXPECTED) && (!defined(_WIN32) || !defined(__AVX2__) || !defined(__F16C__) || defined(__AVX512F__))
++#error exact Windows AVX2/F16C candidate compilation required
++#endif
++#if defined(_WIN32) && defined(__AVX2__) && defined(__F16C__) && !defined(__AVX512F__)
++        if constexpr (std::is_same<TA, block_q8_0>::value &&
++                      std::is_same<TB, block_q8_0>::value && std::is_same<TC, float>::value) {
++            if (m >= 2 && n >= 4) {
++                const int64_t me = m / 2 * 2;
++                const int64_t ne = n / 4 * 4;
++                gemmMx4<1>(0, me, 0, ne);
++                mnpack(me, m, 0, ne);
++                mnpack(0, m, ne, n);
++                return;
++            }
++        }
++#endif
+         mnpack(0, m, 0, n);
+     }
+ 
