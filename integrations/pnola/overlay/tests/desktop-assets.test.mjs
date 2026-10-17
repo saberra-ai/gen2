@@ -4,7 +4,28 @@ import { mkdtemp, writeFile, readFile, rm, mkdir, cp } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { createHash } from 'node:crypto';
-import { checkModelBundle, speakerBuildConfiguration, speakerInputs } from '../scripts/speaker-assets.mjs';
+import { checkModelBundle, readSpeakerRuntimeLock, speakerBuildConfiguration, speakerInputs } from '../scripts/speaker-assets.mjs';
+
+test('speaker staging selects the exact native profile lock and rejects identity mismatches',async()=>{
+  const root=await mkdtemp(join(tmpdir(),'pnola-native-profile-'));
+  try{
+    const directory=join(root,'tools/nemotron-diarization');
+    await mkdir(directory,{recursive:true});
+    for(const [profile,filename,version] of [
+      ['gen2-valid-mel-v1','runtime-valid-mel.lock.json','nemo-speech-asr 0.2.0+gen2-valid-mel-v1'],
+      ['gen2-valid-mel-pool-v1','runtime-valid-mel-pool.lock.json','nemo-speech-asr 0.2.0+gen2-valid-mel-pool-v1'],
+    ]){
+      await writeFile(join(directory,filename),JSON.stringify({profile,model:{selected:profile},runtime:{reported_version:version}}));
+      const manifest={runtime_profile:profile,runtime_reported_version:version};
+      assert.equal((await readSpeakerRuntimeLock(root,manifest)).model.selected,profile);
+      await assert.rejects(readSpeakerRuntimeLock(root,{...manifest,runtime_reported_version:version+'.extra'}),/profile\/version/);
+      await assert.rejects(readSpeakerRuntimeLock(root,{runtime_profile:profile}),/profile\/version/);
+    }
+    for(const profile of ['../runtime','gen2-valid-mel-pool-v2','gen2-valid-mel-pool-v1.extra','__proto__'])await assert.rejects(readSpeakerRuntimeLock(root,{runtime_profile:profile}),/Unsupported/);
+    await writeFile(join(directory,'runtime-valid-mel-pool.lock.json'),JSON.stringify({profile:'gen2-valid-mel-v1',runtime:{reported_version:'nemo-speech-asr 0.2.0+gen2-valid-mel-pool-v1'}}));
+    await assert.rejects(readSpeakerRuntimeLock(root,{runtime_profile:'gen2-valid-mel-pool-v1',runtime_reported_version:'nemo-speech-asr 0.2.0+gen2-valid-mel-pool-v1'}),/profile\/version/);
+  }finally{await rm(root,{recursive:true,force:true});}
+});
 
 test('speaker tooling follows the actual Cargo checkout and requires an explicit ASR-only selection',async()=>{
   const root=await mkdtemp(join(tmpdir(),'pnola-build-path-'));

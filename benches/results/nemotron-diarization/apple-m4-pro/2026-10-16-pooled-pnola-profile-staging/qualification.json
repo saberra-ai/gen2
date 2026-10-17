@@ -1,0 +1,42 @@
+{
+  "schema_version": 1,
+  "source_base_commit": "4083013d56c59f67ad766ade1c331c3dd274eb67",
+  "model_free_staging_regression_passed": true,
+  "initial_real_staging_failed_profile_equality": true,
+  "changed_staged_files": [
+    "nemotron/bundle.json"
+  ],
+  "both_supported_profiles_staged_with_matching_identity": true,
+  "all_other_staged_payloads_byte_and_mode_identical": true,
+  "staged_inventory_entries_compared": 129,
+  "fixed_source_files": {
+    "scripts/speaker-assets.mjs": {
+      "bytes": 6782,
+      "sha256": "bd640b90b3c0e60130d669a00b24f074d629760b38a4e49064cc0dd9e2330456"
+    },
+    "tests/desktop-assets.test.mjs": {
+      "bytes": 7063,
+      "sha256": "1b8b5dccdc88ed980abc6c3c835e4e5a6b89aec08ffcc93b0b75fdc12017794f"
+    }
+  },
+  "overlay_manifest": {
+    "bytes": 9725,
+    "sha256": "3aea38dc63f4f7ad8f7a0cd05ee343e4b2cd6b299e3cb0a41822c3db1859fe32"
+  },
+  "overlay_upgrade_files": [
+    "scripts/speaker-assets.mjs",
+    "tests/desktop-assets.test.mjs"
+  ],
+  "overlay_upgrade_backups_verified_at_base_commit": true,
+  "node_tests_passed": 5,
+  "python_overlay_tests_passed": 2,
+  "models_loaded_for_inference": false,
+  "app_or_native_version_queries_executed": false,
+  "release_qualified": false,
+  "limits": [
+    "Initial real staging incorrectly labels the pooled runtime as the old profile. Exact profile/lock/version selection fixes only model-bundle provenance; no neural behavior is relabelled.",
+    "Both actual supported packages stage successfully; all other before/after candidate payload hashes/modes are unchanged. Fixture tests reject unknown, suffix, missing-version and mismatched identities.",
+    "Only the two known overlay files were upgraded with verified backups; unrelated Pnola files are protected by the existing complete-plan hash guard.",
+    "Static packaging/model checksum checks only. No complete app rebuild/execution, GUI, physical microphone, fresh-machine app, quality, public signing/notary, or release gate is established."
+  ]
+}

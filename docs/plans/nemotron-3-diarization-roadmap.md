@@ -1040,6 +1040,18 @@ Saved historical receipts admit against that producer and every new source pin
 matches. Both reviews pass. Actual fresh platform runtime execution remains
 pending; these preparations establish no additional platform or release pass.
 
+Reviewing complete-app inputs reproduced a separate Pnola staging error: the
+verified pooled package was copied correctly, but `nemotron/bundle.json` still
+named the old profile because staging always read the old lock. Exact supported
+profile-to-lock selection and profile/version equality now correct that metadata
+and reject unknown or mismatched identities before publication. The [static
+staging receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-pnola-profile-staging/qualification.json)
+preserves the real failed assertion, successful pooled and old-profile staging,
+and five Node/two overlay tests. All staged candidate files except that profile
+field remain byte/mode-identical. The two known Pnola overlay files were upgraded
+with verified backups and an idempotent hash-guarded apply. No model or app was
+executed; pooled complete-app and all remaining desktop/quality gates stay open.
+
 The 13-job feature matrix also passed at `4974318`. Later source `cf64214`
 passed12 jobs; its macOS mixed-feature job failed before compilation when GitHub
 submodule fetch could not connect to port443. A failed-job rerun was denied by

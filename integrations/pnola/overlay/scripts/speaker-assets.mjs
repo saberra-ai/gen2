@@ -52,6 +52,17 @@ export async function inspectSpeakerPackage(inputs){
   return loadJson(join(inputs.packageRoot,'package.json'));
 }
 
+export async function readSpeakerRuntimeLock(gen2Root,manifest){
+  const filename=new Map([
+    ['gen2-valid-mel-v1','runtime-valid-mel.lock.json'],
+    ['gen2-valid-mel-pool-v1','runtime-valid-mel-pool.lock.json'],
+  ]).get(manifest.runtime_profile);
+  if(!filename)throw new Error(`Unsupported native runtime profile: ${manifest.runtime_profile}`);
+  const lock=await loadJson(join(gen2Root,'tools/nemotron-diarization',filename));
+  if(lock.profile!==manifest.runtime_profile||typeof lock.runtime?.reported_version!=='string'||lock.runtime.reported_version!==manifest.runtime_reported_version)throw new Error('Native runtime profile/version does not match its selected lock.');
+  return lock;
+}
+
 export async function stageSpeakers(root,inputs){
   const assets=join(root,'.desktop-assets');
   await mkdir(assets,{recursive:true});
@@ -61,7 +72,7 @@ export async function stageSpeakers(root,inputs){
     return null;
   }
   const manifest=await inspectSpeakerPackage(inputs);
-  const lock=await loadJson(join(inputs.gen2Root,'tools/nemotron-diarization/runtime-valid-mel.lock.json'));
+  const lock=await readSpeakerRuntimeLock(inputs.gen2Root,manifest);
   const files=await checkModelBundle(inputs.modelRoot,lock);
   const licenseRoot=join(inputs.gen2Root,'tools/nemotron-diarization/notices/openmdw-1.1');
   const license=await loadJson(join(licenseRoot,'sources.json'));

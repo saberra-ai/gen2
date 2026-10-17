@@ -29,11 +29,18 @@ in [the Gen2 guide](../../docs/diarization.md). Packaged fallback locations are
 `Contents/Frameworks`. Same-host CPU relocation is verified; fresh-machine
 qualification remains N5 work. No inference-time downloads occur.
 
-Speaker staging now requires the current v2 macOS package, whose verifier binds
-`gen2-valid-mel-v1`, the patch and strict floor-valid frame contract to its bundled
-build receipt and original SDK library identities. Historical v1 packages are
-rejected by current staging tools. Model bytes are unchanged; full desktop
-qualification of the new runtime remains pending.
+Speaker staging requires a v2 macOS package, whose verifier binds the selected
+profile, patches and floor-valid frame contract to its build receipt and original
+SDK library identities. Staging selects the exact `gen2-valid-mel-v1` or
+`gen2-valid-mel-pool-v1` lock from that verified package and rejects unknown or
+mismatched profile/version identities. Historical v1 packages remain rejected.
+The [static pooled staging regression](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-pnola-profile-staging/qualification.json)
+retains the initial incorrect old-profile label and corrected result. Both
+supported profiles stage successfully; only the candidate bundle's profile field
+changes, with all other staged model/native bytes and modes identical. Five Node
+and two overlay tests pass. The two known overlay files are upgraded with hash
+guards and backups. This is model-free staging; pooled complete-app execution,
+native GUI, microphone, fresh-machine and release qualification remain open.
 
 The [current-profile adapter receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-pnola-adapter/qualification.json)
 passes ten debug test/CLI cases with explicit relocated artifacts: recorded

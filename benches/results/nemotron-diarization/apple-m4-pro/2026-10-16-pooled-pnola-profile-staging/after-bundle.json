@@ -1,0 +1,37 @@
+{
+  "model": {
+    "repository": "nvidia/Nemotron-3-Diarization",
+    "revision": "f667ed73aee57d40cc39428eb768b4fd87a0a29e",
+    "license": "OpenMDW-1.1"
+  },
+  "runtime_profile": "gen2-valid-mel-pool-v1",
+  "frame_contract": {
+    "name": "v3-streaming-valid-mel-v1",
+    "scope": "V3 streaming finish only; offline and V2 semantics unchanged",
+    "sample_rate": 16000,
+    "hop_samples": 160,
+    "final_frames": "floor(real_input_samples / 160)",
+    "output_channels": 8
+  },
+  "files": [
+    {
+      "name": "Nemotron-3-Diarization.q8_0.gguf",
+      "size": 107012128,
+      "sha256": "08456d9e22cd9a323c0364d98375f3746d6e68507ebb705cd46438c534c7a3a1",
+      "role": "model",
+      "url": "https://huggingface.co/nvidia/Nemotron-3-Diarization/resolve/f667ed73aee57d40cc39428eb768b4fd87a0a29e/Nemotron-3-Diarization.q8_0.gguf"
+    },
+    {
+      "name": "README.md",
+      "size": 43239,
+      "sha256": "5fe88ca4020d2ee134f806a0a02c52c19855b73047bc2e6f25b9171e1abeebfd",
+      "role": "notice",
+      "url": "https://huggingface.co/nvidia/Nemotron-3-Diarization/resolve/f667ed73aee57d40cc39428eb768b4fd87a0a29e/README.md"
+    }
+  ],
+  "license": {
+    "source": "https://raw.githubusercontent.com/OpenMDW/openmdw/b26b32b34ad2edcc29a7707abb68dcfb25a538c1/1.1/LICENSE.OpenMDW-1.1",
+    "sha256": "2ab44b68365473c112f5092211a38f231cb23e50de68b75a13369adbd76a74df",
+    "applicability": "Model terms referenced by the pinned NVIDIA model card. Runtime libraries retain separate terms."
+  }
+}

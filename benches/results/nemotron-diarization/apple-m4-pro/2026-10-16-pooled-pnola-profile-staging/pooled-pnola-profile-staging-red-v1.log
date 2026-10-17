@@ -1,0 +1,22 @@
+{"native_profile":"gen2-valid-mel-pool-v1","bundle_profile":"gen2-valid-mel-v1"}
+node:internal/modules/run_main:107
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
++ actual - expected
+
++ 'gen2-valid-mel-v1'
+- 'gen2-valid-mel-pool-v1'
+                  ^
+
+    at file:///Users/victor/workspace/gen2-nemotron3-n0/[eval1]:10:8 {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'gen2-valid-mel-v1',
+  expected: 'gen2-valid-mel-pool-v1',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v25.9.0
