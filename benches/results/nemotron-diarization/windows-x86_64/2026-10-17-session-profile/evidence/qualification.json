@@ -1,0 +1,3481 @@
+{
+  "schema_version": 1,
+  "source_commit": "c183c6cf3501c8b45992a53638ddbbd4b943e449",
+  "protocol": {
+    "bytes": 134942,
+    "sha256": "89d1841ece0f137cebcb5635275ede08e42839eb57aacd60d17a62614aaadb76"
+  },
+  "profile_completed": true,
+  "release_qualified": false,
+  "package_qualified": false,
+  "public_or_lifecycle_qualified": false,
+  "order": [
+    "control",
+    "timing",
+    "timing",
+    "control"
+  ],
+  "cases": [
+    {
+      "index": 0,
+      "mode": "control",
+      "command_started": true,
+      "timing_environment": null,
+      "result": {
+        "audio_samples": 960000,
+        "audio_duration_seconds": 60,
+        "runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-4",
+        "input_pcm_f32le_sha256": "96858fdcf0c8854f8fc659403c11ddc7565f538a7402803e4235e9e354d87ae6",
+        "input_repeats": 1,
+        "geometry": {
+          "chunk": 9,
+          "right": 4,
+          "left": 0,
+          "fifo": 264,
+          "cache": 264,
+          "update": 222
+        },
+        "requested_gpu_index": -1,
+        "cold_native_load_micros": 39422,
+        "push_count": 58,
+        "native_push_median_micros": 970024,
+        "native_push_p95_micros": 2349342,
+        "native_push_max_micros": 2424760,
+        "native_push_total_micros": 62020388,
+        "finish_micros": 1623621,
+        "elapsed_micros": 63644086,
+        "native_frame_count": 6000,
+        "retained_first_frame": 0,
+        "retained_rows": 6000,
+        "turns": [
+          {
+            "start_seconds": 0,
+            "end_seconds": 2.048999955967069,
+            "speaker": 1
+          },
+          {
+            "start_seconds": 2.2509999445676803,
+            "end_seconds": 2.9389999360740187,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 2.6509999356269836,
+            "end_seconds": 3.198999930262566,
+            "speaker": 3
+          },
+          {
+            "start_seconds": 2.8909999302625655,
+            "end_seconds": 10.798999760389329,
+            "speaker": 1
+          },
+          {
+            "start_seconds": 11.420999739602209,
+            "end_seconds": 13.66899969623983,
+            "speaker": 1
+          },
+          {
+            "start_seconds": 14.450999671876431,
+            "end_seconds": 14.968999667182565,
+            "speaker": 3
+          },
+          {
+            "start_seconds": 15.000999659582973,
+            "end_seconds": 15.638999652206898,
+            "speaker": 1
+          },
+          {
+            "start_seconds": 16.860999618008734,
+            "end_seconds": 19.578999564141036,
+            "speaker": 1
+          },
+          {
+            "start_seconds": 26.620999399855734,
+            "end_seconds": 27.14899939493835,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 30.05099932318926,
+            "end_seconds": 31.228999303743244,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 32.11099927714467,
+            "end_seconds": 33.52899925233424,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 33.61099924361706,
+            "end_seconds": 34.638999227523804,
+            "speaker": 4
+          },
+          {
+            "start_seconds": 34.330999227523805,
+            "end_seconds": 36.42899918751419,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 37.21099916315079,
+            "end_seconds": 38.238999147057534,
+            "speaker": 4
+          },
+          {
+            "start_seconds": 37.930999147057534,
+            "end_seconds": 39.58899911688268,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 40.62099908693135,
+            "end_seconds": 43.198999036192895,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 44.20099900691211,
+            "end_seconds": 44.748999001547695,
+            "speaker": 3
+          },
+          {
+            "start_seconds": 45.16099898545444,
+            "end_seconds": 46.08899897159636,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 46.530998954832555,
+            "end_seconds": 47.148998947903515,
+            "speaker": 3
+          },
+          {
+            "start_seconds": 47.150998940974475,
+            "end_seconds": 48.05899892756343,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 48.32099891482294,
+            "end_seconds": 50.95899886274338,
+            "speaker": 1
+          },
+          {
+            "start_seconds": 51.00099885492027,
+            "end_seconds": 53.3589988090992,
+            "speaker": 3
+          },
+          {
+            "start_seconds": 53.71099879434705,
+            "end_seconds": 56.10899874763191,
+            "speaker": 3
+          },
+          {
+            "start_seconds": 56.50099873198569,
+            "end_seconds": 57.418998718351126,
+            "speaker": 3
+          },
+          {
+            "start_seconds": 57.40099871186912,
+            "end_seconds": 59.98899866090715,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 57.610998707175256,
+            "end_seconds": 58.27899869912863,
+            "speaker": 1
+          },
+          {
+            "start_seconds": 59.4209986667186,
+            "end_seconds": 59.97899866113067,
+            "speaker": 3
+          }
+        ]
+      },
+      "workers": {
+        "requested_cap": 4,
+        "hardware_concurrency": 4,
+        "effective_threads": 4,
+        "attached_pool_threads": 4
+      },
+      "result_file": {
+        "bytes": 2849,
+        "sha256": "180632252f3c03d6ae127a8ff37af51fe72f08ff3c93e40c0f0a6317d48ef45a"
+      },
+      "probabilities": {
+        "bytes": 192000,
+        "sha256": "6b08c607371bab2b7965faebe88d8ee31ae39c41c377043d137cbbf424f3af7d"
+      },
+      "numerical_comparison": {
+        "passed": true,
+        "scope": "native diagnostic parity only; no public/lifecycle/package qualification",
+        "runtime_profile": "diagnostic-worker-matrix-v1",
+        "frame_contract": "v3-streaming-valid-mel-v1",
+        "audio_duration_seconds": 60.0,
+        "backend": "cpu",
+        "device": null,
+        "native_frame_count": 6000,
+        "retained_first_frame": 0,
+        "retained_rows": 6000,
+        "turns": 27,
+        "maximum_turn_error_seconds": 0.0,
+        "turn_tolerance_seconds": 1e-06,
+        "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+        "retained_probabilities_match": true,
+        "maximum_probability_error": 0.0,
+        "probability_tolerance": 1e-06,
+        "reference_runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-4",
+        "actual_runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-4",
+        "reference_cap": 4,
+        "actual_cap": 4,
+        "probabilities_bit_exact": true,
+        "reference_rtf": 1.0473386833333334,
+        "actual_rtf": 1.0607347666666667
+      },
+      "session_profile": {
+        "mode": "control",
+        "session_timing_rows": 0,
+        "native_rtf": 1.0607347666666667
+      }
+    },
+    {
+      "index": 1,
+      "mode": "timing",
+      "command_started": true,
+      "timing_environment": "1",
+      "result": {
+        "audio_samples": 960000,
+        "audio_duration_seconds": 60,
+        "runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-4",
+        "input_pcm_f32le_sha256": "96858fdcf0c8854f8fc659403c11ddc7565f538a7402803e4235e9e354d87ae6",
+        "input_repeats": 1,
+        "geometry": {
+          "chunk": 9,
+          "right": 4,
+          "left": 0,
+          "fifo": 264,
+          "cache": 264,
+          "update": 222
+        },
+        "requested_gpu_index": -1,
+        "cold_native_load_micros": 40329,
+        "push_count": 58,
+        "native_push_median_micros": 978810,
+        "native_push_p95_micros": 2329741,
+        "native_push_max_micros": 2442262,
+        "native_push_total_micros": 61828678,
+        "finish_micros": 1636843,
+        "elapsed_micros": 63465587,
+        "native_frame_count": 6000,
+        "retained_first_frame": 0,
+        "retained_rows": 6000,
+        "turns": [
+          {
+            "start_seconds": 0,
+            "end_seconds": 2.048999955967069,
+            "speaker": 1
+          },
+          {
+            "start_seconds": 2.2509999445676803,
+            "end_seconds": 2.9389999360740187,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 2.6509999356269836,
+            "end_seconds": 3.198999930262566,
+            "speaker": 3
+          },
+          {
+            "start_seconds": 2.8909999302625655,
+            "end_seconds": 10.798999760389329,
+            "speaker": 1
+          },
+          {
+            "start_seconds": 11.420999739602209,
+            "end_seconds": 13.66899969623983,
+            "speaker": 1
+          },
+          {
+            "start_seconds": 14.450999671876431,
+            "end_seconds": 14.968999667182565,
+            "speaker": 3
+          },
+          {
+            "start_seconds": 15.000999659582973,
+            "end_seconds": 15.638999652206898,
+            "speaker": 1
+          },
+          {
+            "start_seconds": 16.860999618008734,
+            "end_seconds": 19.578999564141036,
+            "speaker": 1
+          },
+          {
+            "start_seconds": 26.620999399855734,
+            "end_seconds": 27.14899939493835,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 30.05099932318926,
+            "end_seconds": 31.228999303743244,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 32.11099927714467,
+            "end_seconds": 33.52899925233424,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 33.61099924361706,
+            "end_seconds": 34.638999227523804,
+            "speaker": 4
+          },
+          {
+            "start_seconds": 34.330999227523805,
+            "end_seconds": 36.42899918751419,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 37.21099916315079,
+            "end_seconds": 38.238999147057534,
+            "speaker": 4
+          },
+          {
+            "start_seconds": 37.930999147057534,
+            "end_seconds": 39.58899911688268,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 40.62099908693135,
+            "end_seconds": 43.198999036192895,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 44.20099900691211,
+            "end_seconds": 44.748999001547695,
+            "speaker": 3
+          },
+          {
+            "start_seconds": 45.16099898545444,
+            "end_seconds": 46.08899897159636,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 46.530998954832555,
+            "end_seconds": 47.148998947903515,
+            "speaker": 3
+          },
+          {
+            "start_seconds": 47.150998940974475,
+            "end_seconds": 48.05899892756343,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 48.32099891482294,
+            "end_seconds": 50.95899886274338,
+            "speaker": 1
+          },
+          {
+            "start_seconds": 51.00099885492027,
+            "end_seconds": 53.3589988090992,
+            "speaker": 3
+          },
+          {
+            "start_seconds": 53.71099879434705,
+            "end_seconds": 56.10899874763191,
+            "speaker": 3
+          },
+          {
+            "start_seconds": 56.50099873198569,
+            "end_seconds": 57.418998718351126,
+            "speaker": 3
+          },
+          {
+            "start_seconds": 57.40099871186912,
+            "end_seconds": 59.98899866090715,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 57.610998707175256,
+            "end_seconds": 58.27899869912863,
+            "speaker": 1
+          },
+          {
+            "start_seconds": 59.4209986667186,
+            "end_seconds": 59.97899866113067,
+            "speaker": 3
+          }
+        ]
+      },
+      "workers": {
+        "requested_cap": 4,
+        "hardware_concurrency": 4,
+        "effective_threads": 4,
+        "attached_pool_threads": 4
+      },
+      "result_file": {
+        "bytes": 2849,
+        "sha256": "b690357dffc873b8cb2fb5b8c2cb25f63792fcc4d67b7b2569751481d0be8409"
+      },
+      "probabilities": {
+        "bytes": 192000,
+        "sha256": "6b08c607371bab2b7965faebe88d8ee31ae39c41c377043d137cbbf424f3af7d"
+      },
+      "numerical_comparison": {
+        "passed": true,
+        "scope": "native diagnostic parity only; no public/lifecycle/package qualification",
+        "runtime_profile": "diagnostic-worker-matrix-v1",
+        "frame_contract": "v3-streaming-valid-mel-v1",
+        "audio_duration_seconds": 60.0,
+        "backend": "cpu",
+        "device": null,
+        "native_frame_count": 6000,
+        "retained_first_frame": 0,
+        "retained_rows": 6000,
+        "turns": 27,
+        "maximum_turn_error_seconds": 0.0,
+        "turn_tolerance_seconds": 1e-06,
+        "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+        "retained_probabilities_match": true,
+        "maximum_probability_error": 0.0,
+        "probability_tolerance": 1e-06,
+        "reference_runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-4",
+        "actual_runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-4",
+        "reference_cap": 4,
+        "actual_cap": 4,
+        "probabilities_bit_exact": true,
+        "reference_rtf": 1.0473386833333334,
+        "actual_rtf": 1.0577597833333334
+      },
+      "session_profile": {
+        "mode": "timing",
+        "session_timing_rows": 84,
+        "rows": [
+          {
+            "output": "node_867",
+            "nodes": 868,
+            "input": 0.02,
+            "allocation": 0.63,
+            "compute": 34.85,
+            "output_and_sync": 0.01,
+            "total": 35.52
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.03,
+            "allocation": 0.53,
+            "compute": 49.39,
+            "output_and_sync": 0.01,
+            "total": 49.96
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.04,
+            "allocation": 0.52,
+            "compute": 69.73,
+            "output_and_sync": 0.01,
+            "total": 70.3
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.48,
+            "compute": 90.42,
+            "output_and_sync": 0.01,
+            "total": 90.95
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.06,
+            "allocation": 0.58,
+            "compute": 111.65,
+            "output_and_sync": 0.01,
+            "total": 112.3
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.07,
+            "allocation": 0.59,
+            "compute": 131.15,
+            "output_and_sync": 0.01,
+            "total": 131.81
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.08,
+            "allocation": 0.5,
+            "compute": 155.19,
+            "output_and_sync": 0.01,
+            "total": 155.79
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.09,
+            "allocation": 0.48,
+            "compute": 172.3,
+            "output_and_sync": 0.01,
+            "total": 172.88
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.11,
+            "allocation": 0.5,
+            "compute": 194.03,
+            "output_and_sync": 0.01,
+            "total": 194.65
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.12,
+            "allocation": 0.54,
+            "compute": 210.31,
+            "output_and_sync": 0.01,
+            "total": 210.98
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.1,
+            "allocation": 0.51,
+            "compute": 231.07,
+            "output_and_sync": 0.01,
+            "total": 231.7
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.13,
+            "allocation": 0.55,
+            "compute": 446.29,
+            "output_and_sync": 0.01,
+            "total": 446.99
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.12,
+            "allocation": 0.59,
+            "compute": 268.83,
+            "output_and_sync": 0.01,
+            "total": 269.55
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.12,
+            "allocation": 0.53,
+            "compute": 303.03,
+            "output_and_sync": 0.01,
+            "total": 303.7
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.14,
+            "allocation": 0.57,
+            "compute": 325.05,
+            "output_and_sync": 0.01,
+            "total": 325.77
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.14,
+            "allocation": 0.6,
+            "compute": 340.44,
+            "output_and_sync": 0.01,
+            "total": 341.2
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.17,
+            "allocation": 0.61,
+            "compute": 372.58,
+            "output_and_sync": 0.01,
+            "total": 373.37
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.15,
+            "allocation": 0.57,
+            "compute": 388.48,
+            "output_and_sync": 0.01,
+            "total": 389.21
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.17,
+            "allocation": 0.6,
+            "compute": 416.48,
+            "output_and_sync": 0.01,
+            "total": 417.27
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.17,
+            "allocation": 0.57,
+            "compute": 420.92,
+            "output_and_sync": 0.01,
+            "total": 421.68
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.18,
+            "allocation": 0.62,
+            "compute": 460.75,
+            "output_and_sync": 0.01,
+            "total": 461.56
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.2,
+            "allocation": 0.62,
+            "compute": 464.6,
+            "output_and_sync": 0.02,
+            "total": 465.44
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.2,
+            "allocation": 0.66,
+            "compute": 492.21,
+            "output_and_sync": 0.01,
+            "total": 493.08
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.02,
+            "allocation": 0.63,
+            "compute": 504.16,
+            "output_and_sync": 0.01,
+            "total": 504.83
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.21,
+            "allocation": 0.65,
+            "compute": 529.72,
+            "output_and_sync": 0.02,
+            "total": 530.6
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.22,
+            "allocation": 0.68,
+            "compute": 538.09,
+            "output_and_sync": 0.02,
+            "total": 539.0
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.26,
+            "allocation": 0.68,
+            "compute": 567.62,
+            "output_and_sync": 0.02,
+            "total": 568.58
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.27,
+            "allocation": 0.68,
+            "compute": 577.38,
+            "output_and_sync": 0.02,
+            "total": 578.33
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.28,
+            "allocation": 0.66,
+            "compute": 629.81,
+            "output_and_sync": 0.02,
+            "total": 630.76
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.28,
+            "allocation": 0.64,
+            "compute": 648.82,
+            "output_and_sync": 0.01,
+            "total": 649.76
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.3,
+            "allocation": 0.72,
+            "compute": 684.22,
+            "output_and_sync": 0.01,
+            "total": 685.25
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.26,
+            "allocation": 0.67,
+            "compute": 686.39,
+            "output_and_sync": 0.02,
+            "total": 687.34
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.3,
+            "allocation": 0.7,
+            "compute": 723.79,
+            "output_and_sync": 0.02,
+            "total": 724.8
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.3,
+            "allocation": 0.74,
+            "compute": 724.72,
+            "output_and_sync": 0.01,
+            "total": 725.77
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.31,
+            "allocation": 0.71,
+            "compute": 765.69,
+            "output_and_sync": 0.01,
+            "total": 766.73
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.3,
+            "allocation": 0.7,
+            "compute": 781.2,
+            "output_and_sync": 0.02,
+            "total": 782.22
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.32,
+            "allocation": 0.71,
+            "compute": 812.71,
+            "output_and_sync": 0.02,
+            "total": 813.76
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.31,
+            "allocation": 0.69,
+            "compute": 812.98,
+            "output_and_sync": 0.02,
+            "total": 814.0
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.34,
+            "allocation": 0.71,
+            "compute": 846.35,
+            "output_and_sync": 0.02,
+            "total": 847.42
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.36,
+            "allocation": 0.71,
+            "compute": 849.74,
+            "output_and_sync": 0.02,
+            "total": 850.83
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.4,
+            "allocation": 0.74,
+            "compute": 889.97,
+            "output_and_sync": 0.02,
+            "total": 891.13
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.39,
+            "allocation": 0.75,
+            "compute": 888.79,
+            "output_and_sync": 0.02,
+            "total": 889.95
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.39,
+            "allocation": 0.81,
+            "compute": 968.26,
+            "output_and_sync": 0.02,
+            "total": 969.47
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.39,
+            "allocation": 0.75,
+            "compute": 983.44,
+            "output_and_sync": 0.02,
+            "total": 984.6
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.39,
+            "allocation": 0.79,
+            "compute": 1200.4,
+            "output_and_sync": 0.02,
+            "total": 1201.59
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.41,
+            "allocation": 0.75,
+            "compute": 1014.31,
+            "output_and_sync": 0.02,
+            "total": 1015.49
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.4,
+            "allocation": 0.79,
+            "compute": 1049.91,
+            "output_and_sync": 0.02,
+            "total": 1051.12
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.4,
+            "allocation": 0.87,
+            "compute": 1051.74,
+            "output_and_sync": 0.02,
+            "total": 1053.04
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.43,
+            "allocation": 0.82,
+            "compute": 1086.06,
+            "output_and_sync": 0.02,
+            "total": 1087.32
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.44,
+            "allocation": 0.82,
+            "compute": 1109.94,
+            "output_and_sync": 0.02,
+            "total": 1111.22
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.07,
+            "allocation": 0.79,
+            "compute": 1149.65,
+            "output_and_sync": 0.02,
+            "total": 1150.53
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.51,
+            "allocation": 0.87,
+            "compute": 1151.79,
+            "output_and_sync": 0.02,
+            "total": 1153.19
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.46,
+            "allocation": 0.78,
+            "compute": 1181.04,
+            "output_and_sync": 0.02,
+            "total": 1182.3
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.5,
+            "allocation": 0.81,
+            "compute": 1178.99,
+            "output_and_sync": 0.02,
+            "total": 1180.32
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.23,
+            "allocation": 0.89,
+            "compute": 1216.98,
+            "output_and_sync": 0.02,
+            "total": 1218.12
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.25,
+            "compute": 813.63,
+            "output_and_sync": 0.02,
+            "total": 813.95
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.26,
+            "compute": 814.84,
+            "output_and_sync": 0.02,
+            "total": 815.17
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.27,
+            "compute": 812.6,
+            "output_and_sync": 0.02,
+            "total": 812.93
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.25,
+            "compute": 846.41,
+            "output_and_sync": 0.02,
+            "total": 846.73
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.26,
+            "compute": 852.63,
+            "output_and_sync": 0.02,
+            "total": 852.96
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.25,
+            "compute": 893.93,
+            "output_and_sync": 0.02,
+            "total": 894.25
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.06,
+            "allocation": 0.26,
+            "compute": 904.71,
+            "output_and_sync": 0.02,
+            "total": 905.05
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.06,
+            "allocation": 0.26,
+            "compute": 955.07,
+            "output_and_sync": 0.02,
+            "total": 955.41
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.06,
+            "allocation": 0.25,
+            "compute": 975.75,
+            "output_and_sync": 0.02,
+            "total": 976.08
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.06,
+            "allocation": 0.28,
+            "compute": 1009.53,
+            "output_and_sync": 0.02,
+            "total": 1009.89
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.38,
+            "allocation": 0.27,
+            "compute": 1047.53,
+            "output_and_sync": 0.02,
+            "total": 1048.2
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.4,
+            "allocation": 0.26,
+            "compute": 1049.8,
+            "output_and_sync": 0.02,
+            "total": 1050.47
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.38,
+            "allocation": 0.25,
+            "compute": 1067.7,
+            "output_and_sync": 0.02,
+            "total": 1068.35
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.06,
+            "allocation": 0.26,
+            "compute": 1081.74,
+            "output_and_sync": 0.02,
+            "total": 1082.07
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.06,
+            "allocation": 0.28,
+            "compute": 1103.27,
+            "output_and_sync": 0.02,
+            "total": 1103.63
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.07,
+            "allocation": 0.26,
+            "compute": 1142.56,
+            "output_and_sync": 0.02,
+            "total": 1142.91
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.42,
+            "allocation": 0.25,
+            "compute": 1146.0,
+            "output_and_sync": 0.02,
+            "total": 1146.69
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.07,
+            "allocation": 0.26,
+            "compute": 1178.25,
+            "output_and_sync": 0.02,
+            "total": 1178.6
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.42,
+            "allocation": 0.24,
+            "compute": 1175.86,
+            "output_and_sync": 0.02,
+            "total": 1176.55
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.07,
+            "allocation": 0.28,
+            "compute": 1216.3,
+            "output_and_sync": 0.02,
+            "total": 1216.66
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.26,
+            "allocation": 0.81,
+            "compute": 1221.07,
+            "output_and_sync": 0.02,
+            "total": 1222.17
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.2,
+            "allocation": 0.85,
+            "compute": 1300.04,
+            "output_and_sync": 0.02,
+            "total": 1301.11
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.21,
+            "allocation": 0.8,
+            "compute": 1308.66,
+            "output_and_sync": 0.02,
+            "total": 1309.69
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.25,
+            "allocation": 0.79,
+            "compute": 1353.57,
+            "output_and_sync": 0.02,
+            "total": 1354.63
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.25,
+            "compute": 761.89,
+            "output_and_sync": 0.02,
+            "total": 762.21
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.08,
+            "allocation": 0.25,
+            "compute": 794.39,
+            "output_and_sync": 0.02,
+            "total": 794.74
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.28,
+            "compute": 799.12,
+            "output_and_sync": 0.02,
+            "total": 799.46
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.32,
+            "allocation": 0.28,
+            "compute": 817.81,
+            "output_and_sync": 0.02,
+            "total": 818.42
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.26,
+            "compute": 815.15,
+            "output_and_sync": 0.01,
+            "total": 815.47
+          }
+        ],
+        "totals_ms": {
+          "input": 17.45,
+          "allocation": 46.43,
+          "compute": 63214.22,
+          "output_and_sync": 1.4000000000000001,
+          "total": 63279.48
+        },
+        "frontend_rows": [
+          {
+            "samples": 16640,
+            "frames": 105,
+            "elapsed_ms": 1.04
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.03
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.06
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.0
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.0
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.01
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.0
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.0
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.23
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.03
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.02
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.0
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.97
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.97
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 11936,
+            "frames": 74,
+            "elapsed_ms": 0.72
+          },
+          {
+            "samples": 672,
+            "frames": 3,
+            "elapsed_ms": 0.04
+          }
+        ],
+        "frontend_timing_rows": 59,
+        "frontend_total_ms": 57.44,
+        "native_elapsed_ms": 63465.587,
+        "native_rtf": 1.0577597833333334,
+        "total_rounding_bound_ms": 0.715,
+        "outside_timed_regions_ms": 128.666999999994,
+        "compute_and_output_fraction": 0.9960613773256364,
+        "frontend_fraction": 0.0009050574132403439,
+        "outside_timed_regions_fraction": 0.0020273506648570668,
+        "input_and_allocation_fraction": 0.0010065297276774577,
+        "limits": "Existing session timers exclude graph-cache construction and lock acquisition. CPU frontend is separately timed. Outside time also includes state work, queueing and logging. Output region includes synchronization. No per-operator attribution."
+      }
+    },
+    {
+      "index": 2,
+      "mode": "timing",
+      "command_started": true,
+      "timing_environment": "1",
+      "result": {
+        "audio_samples": 960000,
+        "audio_duration_seconds": 60,
+        "runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-4",
+        "input_pcm_f32le_sha256": "96858fdcf0c8854f8fc659403c11ddc7565f538a7402803e4235e9e354d87ae6",
+        "input_repeats": 1,
+        "geometry": {
+          "chunk": 9,
+          "right": 4,
+          "left": 0,
+          "fifo": 264,
+          "cache": 264,
+          "update": 222
+        },
+        "requested_gpu_index": -1,
+        "cold_native_load_micros": 39673,
+        "push_count": 58,
+        "native_push_median_micros": 1041916,
+        "native_push_p95_micros": 2425994,
+        "native_push_max_micros": 2523166,
+        "native_push_total_micros": 64245029,
+        "finish_micros": 1695997,
+        "elapsed_micros": 65941087,
+        "native_frame_count": 6000,
+        "retained_first_frame": 0,
+        "retained_rows": 6000,
+        "turns": [
+          {
+            "start_seconds": 0,
+            "end_seconds": 2.048999955967069,
+            "speaker": 1
+          },
+          {
+            "start_seconds": 2.2509999445676803,
+            "end_seconds": 2.9389999360740187,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 2.6509999356269836,
+            "end_seconds": 3.198999930262566,
+            "speaker": 3
+          },
+          {
+            "start_seconds": 2.8909999302625655,
+            "end_seconds": 10.798999760389329,
+            "speaker": 1
+          },
+          {
+            "start_seconds": 11.420999739602209,
+            "end_seconds": 13.66899969623983,
+            "speaker": 1
+          },
+          {
+            "start_seconds": 14.450999671876431,
+            "end_seconds": 14.968999667182565,
+            "speaker": 3
+          },
+          {
+            "start_seconds": 15.000999659582973,
+            "end_seconds": 15.638999652206898,
+            "speaker": 1
+          },
+          {
+            "start_seconds": 16.860999618008734,
+            "end_seconds": 19.578999564141036,
+            "speaker": 1
+          },
+          {
+            "start_seconds": 26.620999399855734,
+            "end_seconds": 27.14899939493835,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 30.05099932318926,
+            "end_seconds": 31.228999303743244,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 32.11099927714467,
+            "end_seconds": 33.52899925233424,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 33.61099924361706,
+            "end_seconds": 34.638999227523804,
+            "speaker": 4
+          },
+          {
+            "start_seconds": 34.330999227523805,
+            "end_seconds": 36.42899918751419,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 37.21099916315079,
+            "end_seconds": 38.238999147057534,
+            "speaker": 4
+          },
+          {
+            "start_seconds": 37.930999147057534,
+            "end_seconds": 39.58899911688268,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 40.62099908693135,
+            "end_seconds": 43.198999036192895,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 44.20099900691211,
+            "end_seconds": 44.748999001547695,
+            "speaker": 3
+          },
+          {
+            "start_seconds": 45.16099898545444,
+            "end_seconds": 46.08899897159636,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 46.530998954832555,
+            "end_seconds": 47.148998947903515,
+            "speaker": 3
+          },
+          {
+            "start_seconds": 47.150998940974475,
+            "end_seconds": 48.05899892756343,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 48.32099891482294,
+            "end_seconds": 50.95899886274338,
+            "speaker": 1
+          },
+          {
+            "start_seconds": 51.00099885492027,
+            "end_seconds": 53.3589988090992,
+            "speaker": 3
+          },
+          {
+            "start_seconds": 53.71099879434705,
+            "end_seconds": 56.10899874763191,
+            "speaker": 3
+          },
+          {
+            "start_seconds": 56.50099873198569,
+            "end_seconds": 57.418998718351126,
+            "speaker": 3
+          },
+          {
+            "start_seconds": 57.40099871186912,
+            "end_seconds": 59.98899866090715,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 57.610998707175256,
+            "end_seconds": 58.27899869912863,
+            "speaker": 1
+          },
+          {
+            "start_seconds": 59.4209986667186,
+            "end_seconds": 59.97899866113067,
+            "speaker": 3
+          }
+        ]
+      },
+      "workers": {
+        "requested_cap": 4,
+        "hardware_concurrency": 4,
+        "effective_threads": 4,
+        "attached_pool_threads": 4
+      },
+      "result_file": {
+        "bytes": 2850,
+        "sha256": "50884c20163c288633492f3a2a377d5099735b4c1eb51b3500aecbc12a488e28"
+      },
+      "probabilities": {
+        "bytes": 192000,
+        "sha256": "6b08c607371bab2b7965faebe88d8ee31ae39c41c377043d137cbbf424f3af7d"
+      },
+      "numerical_comparison": {
+        "passed": true,
+        "scope": "native diagnostic parity only; no public/lifecycle/package qualification",
+        "runtime_profile": "diagnostic-worker-matrix-v1",
+        "frame_contract": "v3-streaming-valid-mel-v1",
+        "audio_duration_seconds": 60.0,
+        "backend": "cpu",
+        "device": null,
+        "native_frame_count": 6000,
+        "retained_first_frame": 0,
+        "retained_rows": 6000,
+        "turns": 27,
+        "maximum_turn_error_seconds": 0.0,
+        "turn_tolerance_seconds": 1e-06,
+        "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+        "retained_probabilities_match": true,
+        "maximum_probability_error": 0.0,
+        "probability_tolerance": 1e-06,
+        "reference_runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-4",
+        "actual_runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-4",
+        "reference_cap": 4,
+        "actual_cap": 4,
+        "probabilities_bit_exact": true,
+        "reference_rtf": 1.0473386833333334,
+        "actual_rtf": 1.0990181166666666
+      },
+      "session_profile": {
+        "mode": "timing",
+        "session_timing_rows": 84,
+        "rows": [
+          {
+            "output": "node_867",
+            "nodes": 868,
+            "input": 0.02,
+            "allocation": 0.59,
+            "compute": 35.88,
+            "output_and_sync": 0.01,
+            "total": 36.5
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.03,
+            "allocation": 0.57,
+            "compute": 58.1,
+            "output_and_sync": 0.01,
+            "total": 58.71
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.01,
+            "allocation": 0.6,
+            "compute": 72.29,
+            "output_and_sync": 0.01,
+            "total": 72.9
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.54,
+            "compute": 92.6,
+            "output_and_sync": 0.01,
+            "total": 93.19
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.04,
+            "allocation": 0.53,
+            "compute": 133.28,
+            "output_and_sync": 0.01,
+            "total": 133.86
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.06,
+            "allocation": 0.56,
+            "compute": 138.56,
+            "output_and_sync": 0.01,
+            "total": 139.18
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.07,
+            "allocation": 0.55,
+            "compute": 160.84,
+            "output_and_sync": 0.01,
+            "total": 161.47
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.07,
+            "allocation": 0.48,
+            "compute": 381.51,
+            "output_and_sync": 0.01,
+            "total": 382.07
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.07,
+            "allocation": 0.52,
+            "compute": 203.37,
+            "output_and_sync": 0.01,
+            "total": 203.97
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.08,
+            "allocation": 0.51,
+            "compute": 216.24,
+            "output_and_sync": 0.01,
+            "total": 216.84
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.09,
+            "allocation": 0.54,
+            "compute": 240.2,
+            "output_and_sync": 0.01,
+            "total": 240.85
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.1,
+            "allocation": 0.55,
+            "compute": 255.97,
+            "output_and_sync": 0.01,
+            "total": 256.64
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.12,
+            "allocation": 0.57,
+            "compute": 279.56,
+            "output_and_sync": 0.01,
+            "total": 280.26
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.12,
+            "allocation": 0.58,
+            "compute": 313.0,
+            "output_and_sync": 0.01,
+            "total": 313.71
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.13,
+            "allocation": 0.58,
+            "compute": 339.74,
+            "output_and_sync": 0.01,
+            "total": 340.46
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.12,
+            "allocation": 0.6,
+            "compute": 353.47,
+            "output_and_sync": 0.01,
+            "total": 354.2
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.12,
+            "allocation": 0.6,
+            "compute": 379.64,
+            "output_and_sync": 0.01,
+            "total": 380.37
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.14,
+            "allocation": 0.61,
+            "compute": 394.5,
+            "output_and_sync": 0.01,
+            "total": 395.26
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.15,
+            "allocation": 0.68,
+            "compute": 419.35,
+            "output_and_sync": 0.01,
+            "total": 420.19
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.15,
+            "allocation": 0.67,
+            "compute": 433.57,
+            "output_and_sync": 0.01,
+            "total": 434.41
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.17,
+            "allocation": 0.68,
+            "compute": 475.73,
+            "output_and_sync": 0.01,
+            "total": 476.59
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.17,
+            "allocation": 0.67,
+            "compute": 482.53,
+            "output_and_sync": 0.02,
+            "total": 483.39
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.18,
+            "allocation": 0.69,
+            "compute": 512.93,
+            "output_and_sync": 0.01,
+            "total": 513.81
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.19,
+            "allocation": 0.64,
+            "compute": 523.59,
+            "output_and_sync": 0.01,
+            "total": 524.43
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.19,
+            "allocation": 0.68,
+            "compute": 549.55,
+            "output_and_sync": 0.01,
+            "total": 550.44
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.2,
+            "allocation": 0.66,
+            "compute": 558.08,
+            "output_and_sync": 0.01,
+            "total": 558.95
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.21,
+            "allocation": 0.65,
+            "compute": 589.65,
+            "output_and_sync": 0.01,
+            "total": 590.53
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.23,
+            "allocation": 0.69,
+            "compute": 609.86,
+            "output_and_sync": 0.01,
+            "total": 610.79
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.23,
+            "allocation": 0.68,
+            "compute": 671.17,
+            "output_and_sync": 0.01,
+            "total": 672.1
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.24,
+            "allocation": 0.65,
+            "compute": 672.12,
+            "output_and_sync": 0.01,
+            "total": 673.02
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.27,
+            "allocation": 0.85,
+            "compute": 705.68,
+            "output_and_sync": 0.02,
+            "total": 706.82
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.28,
+            "allocation": 0.72,
+            "compute": 712.29,
+            "output_and_sync": 0.02,
+            "total": 713.3
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.27,
+            "allocation": 0.69,
+            "compute": 743.77,
+            "output_and_sync": 0.02,
+            "total": 744.75
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.28,
+            "allocation": 0.68,
+            "compute": 746.9,
+            "output_and_sync": 0.02,
+            "total": 747.88
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.29,
+            "allocation": 0.72,
+            "compute": 780.29,
+            "output_and_sync": 0.01,
+            "total": 781.3
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.29,
+            "allocation": 1.33,
+            "compute": 808.93,
+            "output_and_sync": 0.02,
+            "total": 810.58
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.35,
+            "allocation": 0.75,
+            "compute": 838.33,
+            "output_and_sync": 0.02,
+            "total": 839.46
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.32,
+            "allocation": 0.69,
+            "compute": 841.04,
+            "output_and_sync": 0.02,
+            "total": 842.06
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.34,
+            "allocation": 0.76,
+            "compute": 1018.59,
+            "output_and_sync": 0.02,
+            "total": 1019.71
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.38,
+            "allocation": 0.78,
+            "compute": 881.46,
+            "output_and_sync": 0.02,
+            "total": 882.64
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.35,
+            "allocation": 0.74,
+            "compute": 911.35,
+            "output_and_sync": 0.02,
+            "total": 912.45
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.34,
+            "allocation": 0.76,
+            "compute": 919.84,
+            "output_and_sync": 0.02,
+            "total": 920.96
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.38,
+            "allocation": 0.75,
+            "compute": 992.55,
+            "output_and_sync": 0.02,
+            "total": 993.7
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.39,
+            "allocation": 0.78,
+            "compute": 1002.95,
+            "output_and_sync": 0.02,
+            "total": 1004.14
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.4,
+            "allocation": 0.77,
+            "compute": 1044.24,
+            "output_and_sync": 0.02,
+            "total": 1045.42
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.4,
+            "allocation": 0.79,
+            "compute": 1050.64,
+            "output_and_sync": 0.02,
+            "total": 1051.85
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.4,
+            "allocation": 0.81,
+            "compute": 1275.1,
+            "output_and_sync": 0.02,
+            "total": 1276.32
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.41,
+            "allocation": 0.81,
+            "compute": 1094.01,
+            "output_and_sync": 0.02,
+            "total": 1095.24
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.41,
+            "allocation": 0.74,
+            "compute": 1124.04,
+            "output_and_sync": 0.02,
+            "total": 1125.21
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.44,
+            "allocation": 0.78,
+            "compute": 1138.79,
+            "output_and_sync": 0.02,
+            "total": 1140.02
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.45,
+            "allocation": 0.85,
+            "compute": 1189.21,
+            "output_and_sync": 0.02,
+            "total": 1190.53
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.44,
+            "allocation": 0.78,
+            "compute": 1210.24,
+            "output_and_sync": 0.02,
+            "total": 1211.48
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.47,
+            "allocation": 1.07,
+            "compute": 1219.54,
+            "output_and_sync": 0.02,
+            "total": 1221.1
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.46,
+            "allocation": 0.85,
+            "compute": 1220.76,
+            "output_and_sync": 0.02,
+            "total": 1222.09
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.19,
+            "allocation": 0.83,
+            "compute": 1257.61,
+            "output_and_sync": 0.02,
+            "total": 1258.65
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.25,
+            "compute": 802.75,
+            "output_and_sync": 0.02,
+            "total": 803.06
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.25,
+            "compute": 836.86,
+            "output_and_sync": 0.02,
+            "total": 837.17
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.25,
+            "compute": 1041.41,
+            "output_and_sync": 0.02,
+            "total": 1041.72
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.25,
+            "compute": 876.88,
+            "output_and_sync": 0.02,
+            "total": 877.2
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.24,
+            "compute": 882.51,
+            "output_and_sync": 0.02,
+            "total": 882.82
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.06,
+            "allocation": 0.27,
+            "compute": 918.38,
+            "output_and_sync": 0.02,
+            "total": 918.72
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.06,
+            "allocation": 0.25,
+            "compute": 942.02,
+            "output_and_sync": 0.02,
+            "total": 942.34
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.24,
+            "compute": 986.68,
+            "output_and_sync": 0.02,
+            "total": 986.99
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.25,
+            "compute": 1003.63,
+            "output_and_sync": 0.02,
+            "total": 1003.95
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.06,
+            "allocation": 0.28,
+            "compute": 1040.85,
+            "output_and_sync": 0.02,
+            "total": 1041.21
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.06,
+            "allocation": 0.27,
+            "compute": 1045.41,
+            "output_and_sync": 0.02,
+            "total": 1045.76
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.39,
+            "allocation": 0.26,
+            "compute": 1079.09,
+            "output_and_sync": 0.02,
+            "total": 1079.77
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.4,
+            "allocation": 0.26,
+            "compute": 1084.8,
+            "output_and_sync": 0.02,
+            "total": 1085.48
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.06,
+            "allocation": 0.26,
+            "compute": 1120.94,
+            "output_and_sync": 0.02,
+            "total": 1121.29
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.42,
+            "allocation": 0.27,
+            "compute": 1136.77,
+            "output_and_sync": 0.02,
+            "total": 1137.48
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.42,
+            "allocation": 0.25,
+            "compute": 1183.28,
+            "output_and_sync": 0.02,
+            "total": 1183.97
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.4,
+            "allocation": 0.24,
+            "compute": 1178.58,
+            "output_and_sync": 0.02,
+            "total": 1179.25
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.07,
+            "allocation": 0.27,
+            "compute": 1241.8,
+            "output_and_sync": 0.02,
+            "total": 1242.15
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.07,
+            "allocation": 0.25,
+            "compute": 1215.07,
+            "output_and_sync": 0.02,
+            "total": 1215.41
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.06,
+            "allocation": 0.23,
+            "compute": 1258.33,
+            "output_and_sync": 0.02,
+            "total": 1258.64
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.23,
+            "allocation": 0.83,
+            "compute": 1260.07,
+            "output_and_sync": 0.02,
+            "total": 1261.14
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.19,
+            "allocation": 0.76,
+            "compute": 1340.86,
+            "output_and_sync": 0.02,
+            "total": 1341.84
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.2,
+            "allocation": 0.82,
+            "compute": 1362.35,
+            "output_and_sync": 0.02,
+            "total": 1363.38
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.19,
+            "allocation": 0.83,
+            "compute": 1397.12,
+            "output_and_sync": 0.02,
+            "total": 1398.16
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.08,
+            "allocation": 0.25,
+            "compute": 838.9,
+            "output_and_sync": 0.02,
+            "total": 839.25
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.08,
+            "allocation": 0.28,
+            "compute": 822.06,
+            "output_and_sync": 0.02,
+            "total": 822.44
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.08,
+            "allocation": 0.25,
+            "compute": 826.49,
+            "output_and_sync": 0.02,
+            "total": 826.84
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.33,
+            "allocation": 0.25,
+            "compute": 846.76,
+            "output_and_sync": 0.02,
+            "total": 847.36
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.08,
+            "allocation": 0.27,
+            "compute": 845.02,
+            "output_and_sync": 0.01,
+            "total": 845.38
+          }
+        ],
+        "totals_ms": {
+          "input": 17.09,
+          "allocation": 47.83,
+          "compute": 65690.7,
+          "output_and_sync": 1.37,
+          "total": 65756.92
+        },
+        "frontend_rows": [
+          {
+            "samples": 16640,
+            "frames": 105,
+            "elapsed_ms": 1.04
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.08
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.0
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.01
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.04
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.02
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.97
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.97
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.97
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.97
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.04
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.97
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.97
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.97
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.02
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.02
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.97
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.06
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.97
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.97
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.97
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.97
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.0
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.0
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.0
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 11936,
+            "frames": 74,
+            "elapsed_ms": 0.68
+          },
+          {
+            "samples": 672,
+            "frames": 3,
+            "elapsed_ms": 0.04
+          }
+        ],
+        "frontend_timing_rows": 59,
+        "frontend_total_ms": 57.13,
+        "native_elapsed_ms": 65941.087,
+        "native_rtf": 1.0990181166666666,
+        "total_rounding_bound_ms": 0.715,
+        "outside_timed_regions_ms": 127.03699999999662,
+        "compute_and_output_fraction": 0.9962236442963094,
+        "frontend_fraction": 0.0008663794092444974,
+        "outside_timed_regions_fraction": 0.0019265226853175262,
+        "input_and_allocation_fraction": 0.0009845151627542932,
+        "limits": "Existing session timers exclude graph-cache construction and lock acquisition. CPU frontend is separately timed. Outside time also includes state work, queueing and logging. Output region includes synchronization. No per-operator attribution."
+      }
+    },
+    {
+      "index": 3,
+      "mode": "control",
+      "command_started": true,
+      "timing_environment": null,
+      "result": {
+        "audio_samples": 960000,
+        "audio_duration_seconds": 60,
+        "runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-4",
+        "input_pcm_f32le_sha256": "96858fdcf0c8854f8fc659403c11ddc7565f538a7402803e4235e9e354d87ae6",
+        "input_repeats": 1,
+        "geometry": {
+          "chunk": 9,
+          "right": 4,
+          "left": 0,
+          "fifo": 264,
+          "cache": 264,
+          "update": 222
+        },
+        "requested_gpu_index": -1,
+        "cold_native_load_micros": 41399,
+        "push_count": 58,
+        "native_push_median_micros": 971509,
+        "native_push_p95_micros": 5422185,
+        "native_push_max_micros": 9036286,
+        "native_push_total_micros": 83558461,
+        "finish_micros": 1822427,
+        "elapsed_micros": 85380946,
+        "native_frame_count": 6000,
+        "retained_first_frame": 0,
+        "retained_rows": 6000,
+        "turns": [
+          {
+            "start_seconds": 0,
+            "end_seconds": 2.048999955967069,
+            "speaker": 1
+          },
+          {
+            "start_seconds": 2.2509999445676803,
+            "end_seconds": 2.9389999360740187,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 2.6509999356269836,
+            "end_seconds": 3.198999930262566,
+            "speaker": 3
+          },
+          {
+            "start_seconds": 2.8909999302625655,
+            "end_seconds": 10.798999760389329,
+            "speaker": 1
+          },
+          {
+            "start_seconds": 11.420999739602209,
+            "end_seconds": 13.66899969623983,
+            "speaker": 1
+          },
+          {
+            "start_seconds": 14.450999671876431,
+            "end_seconds": 14.968999667182565,
+            "speaker": 3
+          },
+          {
+            "start_seconds": 15.000999659582973,
+            "end_seconds": 15.638999652206898,
+            "speaker": 1
+          },
+          {
+            "start_seconds": 16.860999618008734,
+            "end_seconds": 19.578999564141036,
+            "speaker": 1
+          },
+          {
+            "start_seconds": 26.620999399855734,
+            "end_seconds": 27.14899939493835,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 30.05099932318926,
+            "end_seconds": 31.228999303743244,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 32.11099927714467,
+            "end_seconds": 33.52899925233424,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 33.61099924361706,
+            "end_seconds": 34.638999227523804,
+            "speaker": 4
+          },
+          {
+            "start_seconds": 34.330999227523805,
+            "end_seconds": 36.42899918751419,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 37.21099916315079,
+            "end_seconds": 38.238999147057534,
+            "speaker": 4
+          },
+          {
+            "start_seconds": 37.930999147057534,
+            "end_seconds": 39.58899911688268,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 40.62099908693135,
+            "end_seconds": 43.198999036192895,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 44.20099900691211,
+            "end_seconds": 44.748999001547695,
+            "speaker": 3
+          },
+          {
+            "start_seconds": 45.16099898545444,
+            "end_seconds": 46.08899897159636,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 46.530998954832555,
+            "end_seconds": 47.148998947903515,
+            "speaker": 3
+          },
+          {
+            "start_seconds": 47.150998940974475,
+            "end_seconds": 48.05899892756343,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 48.32099891482294,
+            "end_seconds": 50.95899886274338,
+            "speaker": 1
+          },
+          {
+            "start_seconds": 51.00099885492027,
+            "end_seconds": 53.3589988090992,
+            "speaker": 3
+          },
+          {
+            "start_seconds": 53.71099879434705,
+            "end_seconds": 56.10899874763191,
+            "speaker": 3
+          },
+          {
+            "start_seconds": 56.50099873198569,
+            "end_seconds": 57.418998718351126,
+            "speaker": 3
+          },
+          {
+            "start_seconds": 57.40099871186912,
+            "end_seconds": 59.98899866090715,
+            "speaker": 2
+          },
+          {
+            "start_seconds": 57.610998707175256,
+            "end_seconds": 58.27899869912863,
+            "speaker": 1
+          },
+          {
+            "start_seconds": 59.4209986667186,
+            "end_seconds": 59.97899866113067,
+            "speaker": 3
+          }
+        ]
+      },
+      "workers": {
+        "requested_cap": 4,
+        "hardware_concurrency": 4,
+        "effective_threads": 4,
+        "attached_pool_threads": 4
+      },
+      "result_file": {
+        "bytes": 2849,
+        "sha256": "536135de4acaf260f747b572316efbd7d8893e510893bf0716465cb1b35ecc72"
+      },
+      "probabilities": {
+        "bytes": 192000,
+        "sha256": "6b08c607371bab2b7965faebe88d8ee31ae39c41c377043d137cbbf424f3af7d"
+      },
+      "numerical_comparison": {
+        "passed": true,
+        "scope": "native diagnostic parity only; no public/lifecycle/package qualification",
+        "runtime_profile": "diagnostic-worker-matrix-v1",
+        "frame_contract": "v3-streaming-valid-mel-v1",
+        "audio_duration_seconds": 60.0,
+        "backend": "cpu",
+        "device": null,
+        "native_frame_count": 6000,
+        "retained_first_frame": 0,
+        "retained_rows": 6000,
+        "turns": 27,
+        "maximum_turn_error_seconds": 0.0,
+        "turn_tolerance_seconds": 1e-06,
+        "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+        "retained_probabilities_match": true,
+        "maximum_probability_error": 0.0,
+        "probability_tolerance": 1e-06,
+        "reference_runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-4",
+        "actual_runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-4",
+        "reference_cap": 4,
+        "actual_cap": 4,
+        "probabilities_bit_exact": true,
+        "reference_rtf": 1.0473386833333334,
+        "actual_rtf": 1.4230157666666665
+      },
+      "session_profile": {
+        "mode": "control",
+        "session_timing_rows": 0,
+        "native_rtf": 1.4230157666666667
+      }
+    }
+  ],
+  "commands": [
+    {
+      "name": "github-cli-version",
+      "argv": [
+        "gh",
+        "--version"
+      ],
+      "cwd": "D:\\a\\_temp\\windows-session-profile",
+      "returncode": 0,
+      "elapsed_seconds": 9.218999999999994
+    },
+    {
+      "name": "source-run",
+      "argv": [
+        "gh",
+        "api",
+        "repos/saberra-ai/gen2/actions/runs/39025306014"
+      ],
+      "cwd": "D:\\a\\_temp\\windows-session-profile",
+      "returncode": 0,
+      "elapsed_seconds": 0.4370000000000118
+    },
+    {
+      "name": "source-artifact",
+      "argv": [
+        "gh",
+        "api",
+        "repos/saberra-ai/gen2/actions/artifacts/12098214420"
+      ],
+      "cwd": "D:\\a\\_temp\\windows-session-profile",
+      "returncode": 0,
+      "elapsed_seconds": 0.26600000000001955
+    },
+    {
+      "name": "download-sdk-evidence",
+      "argv": [
+        "gh",
+        "api",
+        "repos/saberra-ai/gen2/actions/artifacts/12098214420/zip"
+      ],
+      "cwd": "D:\\a\\_temp\\windows-session-profile",
+      "returncode": 0,
+      "elapsed_seconds": 0.8129999999999882
+    },
+    {
+      "name": "receiver-host",
+      "argv": [
+        "pwsh",
+        "-NoProfile",
+        "-NonInteractive",
+        "-Command",
+        "$ErrorActionPreference='Stop'\n$os=Get-CimInstance Win32_OperatingSystem\n$cpu=@(Get-CimInstance Win32_Processor | Select-Object Name,Manufacturer,Architecture,NumberOfCores,NumberOfLogicalProcessors,ProcessorId)\n@{os=@{caption=$os.Caption;version=$os.Version;build=$os.BuildNumber};cpu=$cpu;\navx2=[System.Runtime.Intrinsics.X86.Avx2]::IsSupported;fma=[System.Runtime.Intrinsics.X86.Fma]::IsSupported} | ConvertTo-Json -Depth 8\n"
+      ],
+      "cwd": "D:\\a\\_temp\\windows-session-profile",
+      "returncode": 0,
+      "elapsed_seconds": 1.5620000000000118
+    },
+    {
+      "name": "case-0-control",
+      "argv": [
+        "D:\\a\\_temp\\windows-session-profile\\sdk\\bin\\gen2_native_stream_probe_valid_mel.exe",
+        "D:\\a\\_temp\\windows-session-profile\\assets\\Nemotron-3-Diarization.q8_0.gguf",
+        "D:\\a\\_temp\\windows-session-profile\\assets\\ami_en2002d_2132.wav",
+        "1",
+        "-1",
+        "D:\\a\\_temp\\windows-session-profile\\case-0-control.json"
+      ],
+      "cwd": "D:\\a\\_temp\\windows-session-profile",
+      "returncode": 0,
+      "elapsed_seconds": 63.735000000000014
+    },
+    {
+      "name": "case-1-timing",
+      "argv": [
+        "D:\\a\\_temp\\windows-session-profile\\sdk\\bin\\gen2_native_stream_probe_valid_mel.exe",
+        "D:\\a\\_temp\\windows-session-profile\\assets\\Nemotron-3-Diarization.q8_0.gguf",
+        "D:\\a\\_temp\\windows-session-profile\\assets\\ami_en2002d_2132.wav",
+        "1",
+        "-1",
+        "D:\\a\\_temp\\windows-session-profile\\case-1-timing.json"
+      ],
+      "cwd": "D:\\a\\_temp\\windows-session-profile",
+      "returncode": 0,
+      "elapsed_seconds": 63.56299999999999
+    },
+    {
+      "name": "case-2-timing",
+      "argv": [
+        "D:\\a\\_temp\\windows-session-profile\\sdk\\bin\\gen2_native_stream_probe_valid_mel.exe",
+        "D:\\a\\_temp\\windows-session-profile\\assets\\Nemotron-3-Diarization.q8_0.gguf",
+        "D:\\a\\_temp\\windows-session-profile\\assets\\ami_en2002d_2132.wav",
+        "1",
+        "-1",
+        "D:\\a\\_temp\\windows-session-profile\\case-2-timing.json"
+      ],
+      "cwd": "D:\\a\\_temp\\windows-session-profile",
+      "returncode": 0,
+      "elapsed_seconds": 66.01599999999996
+    },
+    {
+      "name": "case-3-control",
+      "argv": [
+        "D:\\a\\_temp\\windows-session-profile\\sdk\\bin\\gen2_native_stream_probe_valid_mel.exe",
+        "D:\\a\\_temp\\windows-session-profile\\assets\\Nemotron-3-Diarization.q8_0.gguf",
+        "D:\\a\\_temp\\windows-session-profile\\assets\\ami_en2002d_2132.wav",
+        "1",
+        "-1",
+        "D:\\a\\_temp\\windows-session-profile\\case-3-control.json"
+      ],
+      "cwd": "D:\\a\\_temp\\windows-session-profile",
+      "returncode": 0,
+      "elapsed_seconds": 85.4849999999999
+    }
+  ],
+  "source_delivery": {
+    "run_id": 39025306014,
+    "artifact_id": 12098214420,
+    "head_sha": "1745243b221368855381ea36879ccdc1bb731528",
+    "archive": {
+      "bytes": 45429953,
+      "sha256": "81433805f066deb99d449ceeab93a2ada0d1c50052b3d698eb117cc5f411c786"
+    }
+  },
+  "limits": [
+    "Native timing diagnostic only; no supported release, public API, lifecycle or package qualification.",
+    "Exact existing SDK; no source/compiler/geometry/model/worker-budget change.",
+    "Numerical reference is from the producer host; compare timing only within this new receiver sequence.",
+    "Upstream session timers exclude cache construction/locking; frontend is timed separately; residual is unattributed.",
+    "No timing averaging or relaxation of original below-one RTF and quality requirements."
+  ],
+  "sdk_files": {
+    "bin/concrt140.dll": {
+      "bytes": 324208,
+      "sha256": "2405355f0a58067b258f8df33c327e3a3d716eaac5a3a5aebb757842d85bd376"
+    },
+    "bin/diarize_file.exe": {
+      "bytes": 25600,
+      "sha256": "2b7530f7b175652a5b64952ba5ca61b5941f3ff8964e208a2590f32af4753846"
+    },
+    "bin/gen2_native_stream_probe_valid_mel.exe": {
+      "bytes": 314368,
+      "sha256": "0c5ba7e98b8a54306aac0d317d1593101b54cbc534de8a53cef4513832f9f2f1"
+    },
+    "bin/gen2_nemo_windows_ggml-base.dll": {
+      "bytes": 678912,
+      "sha256": "490d7cba16a5c25652feaf005df1499b6fbda48f06629d8f058891e2ebd38e6b"
+    },
+    "bin/gen2_nemo_windows_ggml-cpu.dll": {
+      "bytes": 948224,
+      "sha256": "0c06c5647cc9efb6816d15c027f315674ad3e5d2623585863f19b7873e8bdd6e"
+    },
+    "bin/gen2_nemo_windows_ggml.dll": {
+      "bytes": 61952,
+      "sha256": "718255d428c884762ebe8bc3ed7f20933ffce0664c0ce31e15f714aafabd13b9"
+    },
+    "bin/gen2_nemo_windows_nemo_speech_asr.dll": {
+      "bytes": 4203520,
+      "sha256": "ad303577657adaa52f56aafa4e5a7041ceea85d69921115cc311d533d56b42a4"
+    },
+    "bin/gen2_nemo_windows_nemo_speech_asr_c.dll": {
+      "bytes": 56320,
+      "sha256": "b7134b186dc23a4bb0f33dc495a652dcd3e418de6e0a15876d466dbb7deb254c"
+    },
+    "bin/msvcp140.dll": {
+      "bytes": 557728,
+      "sha256": "0f885b509a685d2bbfa652fed26b5fb31d88fbdab0a978c641d1c7b8aa460aa9"
+    },
+    "bin/msvcp140_1.dll": {
+      "bytes": 35952,
+      "sha256": "bfad5aef4c63a669e3c140655cdfdf395b6c979b400a447bd5dcb65ed8826c3d"
+    },
+    "bin/msvcp140_2.dll": {
+      "bytes": 280200,
+      "sha256": "3ea06f0ee098b4823cb79599df3780e7f23cce52c19aac31d2a0d47efe33a5e9"
+    },
+    "bin/msvcp140_atomic_wait.dll": {
+      "bytes": 50304,
+      "sha256": "640b2aefced484d0368eea5bdd06addd0658a3a70a49256e560d6923b404a479"
+    },
+    "bin/msvcp140_codecvt_ids.dll": {
+      "bytes": 31872,
+      "sha256": "f2069a52880ec885ee7f0511186100eb7fada0411a2b4948fafea7735b878a18"
+    },
+    "bin/vcruntime140.dll": {
+      "bytes": 124544,
+      "sha256": "d5e4d9a3e835fa679450145d6a7d94e36573a509317111904d9b3712c30d9066"
+    },
+    "bin/vcruntime140_1.dll": {
+      "bytes": 49792,
+      "sha256": "1f2d41c4aa5db0bc33ebf7b66d72943a817d7ce6cbe880502a9403823633093f"
+    },
+    "include/nemo_speech/asr.h": {
+      "bytes": 12718,
+      "sha256": "12f3e017391ae19daabe59d2d50541f0aabb010228d075426b4a9834337422fa"
+    },
+    "include/nemo_speech/diar.h": {
+      "bytes": 7606,
+      "sha256": "4839f70ccab30af3ed9949751792a547f3a8a4129848f64c8cd69889bd433afd"
+    },
+    "lib/cmake/NeMoSpeech/NeMoSpeechConfig.cmake": {
+      "bytes": 2529,
+      "sha256": "2c636e6dd73e6df561386e6dff4ce6e51126bb9af7268f6815bf70e51121c25a"
+    },
+    "lib/cmake/NeMoSpeech/NeMoSpeechConfigVersion.cmake": {
+      "bytes": 3760,
+      "sha256": "47f41ec43987a0d4fe23653504d4427dc1753b6a83167ba7dacf62e45487b6a4"
+    },
+    "lib/gen2_nemo_windows_nemo_speech_asr_c.lib": {
+      "bytes": 14350,
+      "sha256": "53f2e943e872f53e45b59f7ff0958a4e46f85b53e6833d4930bda0815fc2eee6"
+    },
+    "share/doc/nemo-speech/CONTRIBUTING.md": {
+      "bytes": 5328,
+      "sha256": "dab40307a65b606e687f7731273817794293c16e8d67ba7d836e83a96478c367"
+    },
+    "share/doc/nemo-speech/docs/api.md": {
+      "bytes": 11151,
+      "sha256": "eb23ac5107ffbd2fb797eefcb2ce6deb50c4560e526d08d3b39d7b0bc07fdef1"
+    },
+    "share/doc/nemo-speech/docs/asr/configuration.md": {
+      "bytes": 14812,
+      "sha256": "c4be8d65c0a4abcdf064d4124a767ae9626cdf5c3b476b124dd22651d02f9c73"
+    },
+    "share/doc/nemo-speech/docs/asr/customization.md": {
+      "bytes": 4494,
+      "sha256": "3849d88f25926a1196737b11420027ee1f451abbc9b7307f799190036b4c622d"
+    },
+    "share/doc/nemo-speech/docs/asr/models.md": {
+      "bytes": 7032,
+      "sha256": "dd89dde01f1b77a095750f4fadcf4762b971103e7026f52ef88096e19f9fe769"
+    },
+    "share/doc/nemo-speech/docs/build.md": {
+      "bytes": 11278,
+      "sha256": "1adaeccf203a4561be08fa0bd3effb46f6bc1fae07b4d6020449a9b1dde75c74"
+    },
+    "share/doc/nemo-speech/docs/cli.md": {
+      "bytes": 10849,
+      "sha256": "bbf0c8b54a67261e3f6dddadbbd7bcbbf915c9a157d068ca75cf189a3927614b"
+    },
+    "share/doc/nemo-speech/docs/clients.md": {
+      "bytes": 2948,
+      "sha256": "c4977349b3fed97eee0700543ef77e58d3ea2c07b1b89ba8510adb2e3476cd6c"
+    },
+    "share/doc/nemo-speech/docs/development/asr-batching.md": {
+      "bytes": 6192,
+      "sha256": "351e7cc131aa055a032aa2cb74b261320fab47793ace608b757abdce84b500a7"
+    },
+    "share/doc/nemo-speech/docs/development/cublas-shim.md": {
+      "bytes": 2312,
+      "sha256": "126b2e92e74451cb999932474ddabab44e9d1064607dbafd7e36b36cb6ae4679"
+    },
+    "share/doc/nemo-speech/docs/development/diagnostics.md": {
+      "bytes": 3747,
+      "sha256": "e82ced430db61edd107af84d2ac096bb6ddfa1c1d48c2a8a284469592cf7e97a"
+    },
+    "share/doc/nemo-speech/docs/development/README.md": {
+      "bytes": 997,
+      "sha256": "91b7eeb45247c5ccb86c728e100926f690bce39a13d7c2fe185ddf03eecc8847"
+    },
+    "share/doc/nemo-speech/docs/development/releasing.md": {
+      "bytes": 4865,
+      "sha256": "c4445d64f55519613c0e698b24c1a7f94ea10c5ba301cc8f483015f6b725370b"
+    },
+    "share/doc/nemo-speech/docs/development/windows-build.md": {
+      "bytes": 8299,
+      "sha256": "4b7f3efa6f8d3242edcef47a658d381c1d7800cd94d50e44738f60d3a075c278"
+    },
+    "share/doc/nemo-speech/docs/install.md": {
+      "bytes": 8249,
+      "sha256": "bec102a2ac4f4566db8f9be6d1c5143cd5345c6a199e018b3083ab48594afc64"
+    },
+    "share/doc/nemo-speech/docs/model-conversion.md": {
+      "bytes": 2571,
+      "sha256": "063a4651ac62559390241520d54d4ac47e9e952708205ce290304c7012d95f68"
+    },
+    "share/doc/nemo-speech/docs/nmt/configuration.md": {
+      "bytes": 3282,
+      "sha256": "fc32f28f71114b049382d850d8c91bdb4d2a7a8cd17e96e05cb8b17f61ecf875"
+    },
+    "share/doc/nemo-speech/docs/nmt/models.md": {
+      "bytes": 1575,
+      "sha256": "a0f5874b51448351ad36e2a572db16b8647e0b58a19043411e9303ac224a2451"
+    },
+    "share/doc/nemo-speech/docs/README.md": {
+      "bytes": 2363,
+      "sha256": "0bd53c4c04a1a6670d440a626b04e19ce3354006807882e9d5f8e36d37b4b936"
+    },
+    "share/doc/nemo-speech/docs/s2s/clients.md": {
+      "bytes": 4968,
+      "sha256": "a8c19f0b745b6ad6bdbfb3c9fee588f260d88b1f3036376a35cba507b5069ed9"
+    },
+    "share/doc/nemo-speech/docs/s2s/configuration.md": {
+      "bytes": 3470,
+      "sha256": "2178cb877efd78a344d646a479e117babb332e86ea68d116840a5ab6ee48e7ca"
+    },
+    "share/doc/nemo-speech/docs/s2s/docker.md": {
+      "bytes": 2475,
+      "sha256": "f430241ae0296304bac4fc20d6df04f7c8194021c282f06f486c8e7b36e2c750"
+    },
+    "share/doc/nemo-speech/docs/s2s/models.md": {
+      "bytes": 4537,
+      "sha256": "4e4a8089fd8f0b4c9d7fe7d07af5466dbe98b9e2531065374c20662a1f7d65a7"
+    },
+    "share/doc/nemo-speech/docs/s2s/README.md": {
+      "bytes": 2805,
+      "sha256": "b07a3b137188bc1a29ee21b071c78f01adc452bf22b7cb7307f6cc8290cd503e"
+    },
+    "share/doc/nemo-speech/docs/sdk.md": {
+      "bytes": 7652,
+      "sha256": "290466ffb5ca4064abaeecfab4d0b351ce6b983d434057a67782a834622c6def"
+    },
+    "share/doc/nemo-speech/docs/server.md": {
+      "bytes": 10509,
+      "sha256": "01b99ed2681cf2227ef525cbb5f22605411ee046bfc15f7a9fb40649a15fea19"
+    },
+    "share/doc/nemo-speech/docs/troubleshooting.md": {
+      "bytes": 2548,
+      "sha256": "50cc4f3c85e397c78e5ab77065f0d9ed44058de62d634fee6aab2ca532927063"
+    },
+    "share/doc/nemo-speech/docs/tts/configuration.md": {
+      "bytes": 9143,
+      "sha256": "5d60b9e3dc3b51b23622653b8a3463758c79e4386b1f5229b0d97ca3adf07532"
+    },
+    "share/doc/nemo-speech/docs/tts/models.md": {
+      "bytes": 7029,
+      "sha256": "969ded2e62a455b5df28094cf8fb6a4b284f3758856dfcfc380a21f5f3b15ffa"
+    },
+    "share/doc/nemo-speech/README.md": {
+      "bytes": 9445,
+      "sha256": "54f85f532a1bfe23324ced98b4ad0da675d8e98b4f3d4552644f74be23b1d6b2"
+    },
+    "share/licenses/nemo-speech/LICENSE": {
+      "bytes": 12238,
+      "sha256": "eaaca34b26b27c7be5a5099a0b9ddf9913f2db0aa96f6d5854435f2916d6fdc3"
+    },
+    "share/licenses/nemo-speech/NOTICE": {
+      "bytes": 233,
+      "sha256": "d5ea773d67035e676503579ecf7d5836a124649d7fe99d59ec3c50cd101e1a80"
+    },
+    "share/licenses/nemo-speech/third_party/ggml/LICENSE": {
+      "bytes": 1078,
+      "sha256": "94f29bbed6a22c35b992c5c6ebf0e7c92f13b836b90f36f461c9cf2f0f1d010d"
+    },
+    "share/licenses/nemo-speech/third_party/vcpkg/abseil/LICENSE": {
+      "bytes": 11361,
+      "sha256": "c79a7fea0e3cac04cd43f20e7b648e5a0ff8fa5344e644b0ee09ca1162b62747"
+    },
+    "share/licenses/nemo-speech/third_party/vcpkg/protobuf/LICENSE": {
+      "bytes": 1732,
+      "sha256": "6e5e117324afd944dcf67f36cf329843bc1a92229a8cd9bb573d7a83130fea7d"
+    },
+    "share/licenses/nemo-speech/third_party/vcpkg/sentencepiece/LICENSE": {
+      "bytes": 11358,
+      "sha256": "cfc7749b96f63bd31c3c42b5c471bf756814053e847c10f3eb003417bc523d30"
+    },
+    "share/licenses/nemo-speech/third_party/vcpkg/utf8-range/LICENSE": {
+      "bytes": 1091,
+      "sha256": "02de69b64fc36d9e938f418e52723e42f0b2b226d58a9cb3c8dcbdf7059f5074"
+    },
+    "share/licenses/nemo-speech/THIRD_PARTY_NOTICES.md": {
+      "bytes": 10277,
+      "sha256": "fd8fcc0c71abde95b1b742a74c70aa27d2b4f2811fc19f64378b6845d8f3254a"
+    },
+    "share/nemo-speech/config/asr.example.yaml": {
+      "bytes": 2903,
+      "sha256": "c406506f22ef5baa008138c28817dd18445407e404bfb507630469d203798716"
+    },
+    "share/nemo-speech/config/diar.example.yaml": {
+      "bytes": 505,
+      "sha256": "ac0e5d93af9fb37c9a03ab0039acd5af0790c36a2b12cc8d181212a1fbd01b5b"
+    },
+    "share/nemo-speech/config/nmt.example.yaml": {
+      "bytes": 998,
+      "sha256": "313214fe93f9f9f57897823d2d3fe20e7a9986fc18b1df37063985389874d46f"
+    },
+    "share/nemo-speech/config/README.md": {
+      "bytes": 881,
+      "sha256": "981118a586fa2cdaab5bed0f0775292002821007ee1da5740a8a77877db50c89"
+    },
+    "share/nemo-speech/config/server.example.yaml": {
+      "bytes": 3391,
+      "sha256": "afe8b2575c036156322a93aaf2f328f925e6685e3cddc9604c0fca37a9406d0c"
+    },
+    "share/nemo-speech/config/tts.example.yaml": {
+      "bytes": 1728,
+      "sha256": "a1ccdd6886f25d635aaffd4501c3b9626f7c7b264f280ca72273bb3b14bb651a"
+    },
+    "share/nemo-speech/config/voicechat.yaml": {
+      "bytes": 390,
+      "sha256": "9013c7a390fc3f8c68c6833400a55aadd91543e01a49db32e64a81a1b32ef17b"
+    },
+    "share/nemo-speech/model-index.json": {
+      "bytes": 7975,
+      "sha256": "4d5d88c93b006b33b2e02e5c214e97e6c28e96f8673b0d744ccfa1e8f4a255b7"
+    }
+  },
+  "private_pe": {
+    "pe_report_sha256": "5f71097ae56fef98dcc8a2fb12e4816229d7824838cc1437c47decf5453fb4e7",
+    "private_dlls_verified": [
+      "gen2_nemo_windows_ggml-base.dll",
+      "gen2_nemo_windows_ggml-cpu.dll",
+      "gen2_nemo_windows_ggml.dll",
+      "gen2_nemo_windows_nemo_speech_asr.dll",
+      "gen2_nemo_windows_nemo_speech_asr_c.dll"
+    ],
+    "generic_imports_absent": true,
+    "limits": "Static ordinary/delay/forwarded imports only; dynamic loads, offline closure and coexistence remain separate."
+  },
+  "native_probe": {
+    "bytes": 314368,
+    "sha256": "0c5ba7e98b8a54306aac0d317d1593101b54cbc534de8a53cef4513832f9f2f1"
+  },
+  "host": {
+    "fma": true,
+    "os": {
+      "build": "20348",
+      "caption": "Microsoft Windows Server 2022 Datacenter",
+      "version": "10.0.20348"
+    },
+    "avx2": true,
+    "cpu": [
+      {
+        "Name": "AMD EPYC 7763 64-Core Processor                ",
+        "Manufacturer": "AuthenticAMD",
+        "Architecture": 9,
+        "NumberOfCores": 2,
+        "NumberOfLogicalProcessors": 4,
+        "ProcessorId": "0000000000000000"
+      }
+    ]
+  },
+  "assets": {
+    "Nemotron-3-Diarization.q8_0.gguf": {
+      "bytes": 107012128,
+      "sha256": "08456d9e22cd9a323c0364d98375f3746d6e68507ebb705cd46438c534c7a3a1"
+    },
+    "README.md": {
+      "bytes": 43239,
+      "sha256": "5fe88ca4020d2ee134f806a0a02c52c19855b73047bc2e6f25b9171e1abeebfd"
+    },
+    "ami_en2002d_2132.json": {
+      "bytes": 2979,
+      "sha256": "8a77aab95e65e301f3cb23cfd0a0641b3295a9da5686ff30f2ab12d0f282e229"
+    },
+    "ami_en2002d_2132.rttm": {
+      "bytes": 1472,
+      "sha256": "40751c9fc0bb934f741789ce3fafccd2c1f9d7c112585b8b40ac177a9de13b2d"
+    },
+    "ami_en2002d_2132.wav": {
+      "bytes": 1920044,
+      "sha256": "f00f92e53115a4a6724aec0ddaf9c675df6d5fabd3a489b43fffe56ba52a3ae9"
+    },
+    "fixture-README.md": {
+      "bytes": 741,
+      "sha256": "e44c191f59cecdeba6dd82acce9fee820938d41487b7423809d02b4e140426ed"
+    }
+  }
+}

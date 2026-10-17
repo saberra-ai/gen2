@@ -85,8 +85,14 @@ Remaining release work as of 2026-10-17:
   this native-only diagnostic does not qualify the public runtime or packaging.
   A separate [session-time profile](../research/nemotron-windows-session-profile.md)
   now preregisters off/on/on/off fresh processes using the exact retained SDK
-  and existing upstream graph/frontend timers, with no rebuild. Actual profiling
-  is pending; full output and log-coverage checks remain mandatory.
+  and existing upstream graph/frontend timers, with no rebuild. The
+  [actual session result](../research/nemotron-windows-session-results.md) now
+  retains all four byte-exact histories and both complete143-row timing logs.
+  Graph compute/output occupies about99.6% of profiled elapsed time; surrounding
+  costs are small. Native RTF1.06073/1.05776/1.09902/1.42302 still fails below one,
+  and34.15% drift between controls limits causal timing conclusions. Investigate
+  graph execution without attributing a kernel/compiler cause yet; no package
+  or release gate is closed by the34-member diagnostic receipt.
   Then merge and
   push the completed feature to main; no main promotion is justified yet.
 

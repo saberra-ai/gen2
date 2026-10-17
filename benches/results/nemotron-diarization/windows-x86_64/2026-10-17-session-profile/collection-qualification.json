@@ -1,0 +1,2362 @@
+{
+  "schema_version": 1,
+  "collection_completed": true,
+  "source_commit": "c183c6cf3501c8b45992a53638ddbbd4b943e449",
+  "run_id": 39027810779,
+  "artifact_id": 12099018948,
+  "archive": {
+    "bytes": 963031,
+    "sha256": "2db162d7389b7f58ecbcdd416935ac8c0834cce2b648938b0b59f91ffe9d9e34"
+  },
+  "protocol": {
+    "bytes": 134942,
+    "sha256": "89d1841ece0f137cebcb5635275ede08e42839eb57aacd60d17a62614aaadb76"
+  },
+  "tools_verified": 59,
+  "repository_files_verified": 638,
+  "artifact_members_verified": 28,
+  "sdk_files": 66,
+  "successful_commands": 9,
+  "cases": [
+    {
+      "index": 0,
+      "mode": "control",
+      "elapsed_micros": 63644086,
+      "probabilities": {
+        "bytes": 192000,
+        "sha256": "6b08c607371bab2b7965faebe88d8ee31ae39c41c377043d137cbbf424f3af7d"
+      },
+      "workers": {
+        "requested_cap": 4,
+        "hardware_concurrency": 4,
+        "effective_threads": 4,
+        "attached_pool_threads": 4
+      },
+      "numerical_comparison": {
+        "passed": true,
+        "scope": "native diagnostic parity only; no public/lifecycle/package qualification",
+        "runtime_profile": "diagnostic-worker-matrix-v1",
+        "frame_contract": "v3-streaming-valid-mel-v1",
+        "audio_duration_seconds": 60.0,
+        "backend": "cpu",
+        "device": null,
+        "native_frame_count": 6000,
+        "retained_first_frame": 0,
+        "retained_rows": 6000,
+        "turns": 27,
+        "maximum_turn_error_seconds": 0.0,
+        "turn_tolerance_seconds": 1e-06,
+        "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+        "retained_probabilities_match": true,
+        "maximum_probability_error": 0.0,
+        "probability_tolerance": 1e-06,
+        "reference_runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-4",
+        "actual_runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-4",
+        "reference_cap": 4,
+        "actual_cap": 4,
+        "probabilities_bit_exact": true,
+        "reference_rtf": 1.0473386833333334,
+        "actual_rtf": 1.0607347666666667
+      },
+      "session_profile": {
+        "mode": "control",
+        "session_timing_rows": 0,
+        "native_rtf": 1.0607347666666667
+      }
+    },
+    {
+      "index": 1,
+      "mode": "timing",
+      "elapsed_micros": 63465587,
+      "probabilities": {
+        "bytes": 192000,
+        "sha256": "6b08c607371bab2b7965faebe88d8ee31ae39c41c377043d137cbbf424f3af7d"
+      },
+      "workers": {
+        "requested_cap": 4,
+        "hardware_concurrency": 4,
+        "effective_threads": 4,
+        "attached_pool_threads": 4
+      },
+      "numerical_comparison": {
+        "passed": true,
+        "scope": "native diagnostic parity only; no public/lifecycle/package qualification",
+        "runtime_profile": "diagnostic-worker-matrix-v1",
+        "frame_contract": "v3-streaming-valid-mel-v1",
+        "audio_duration_seconds": 60.0,
+        "backend": "cpu",
+        "device": null,
+        "native_frame_count": 6000,
+        "retained_first_frame": 0,
+        "retained_rows": 6000,
+        "turns": 27,
+        "maximum_turn_error_seconds": 0.0,
+        "turn_tolerance_seconds": 1e-06,
+        "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+        "retained_probabilities_match": true,
+        "maximum_probability_error": 0.0,
+        "probability_tolerance": 1e-06,
+        "reference_runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-4",
+        "actual_runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-4",
+        "reference_cap": 4,
+        "actual_cap": 4,
+        "probabilities_bit_exact": true,
+        "reference_rtf": 1.0473386833333334,
+        "actual_rtf": 1.0577597833333334
+      },
+      "session_profile": {
+        "mode": "timing",
+        "session_timing_rows": 84,
+        "rows": [
+          {
+            "output": "node_867",
+            "nodes": 868,
+            "input": 0.02,
+            "allocation": 0.63,
+            "compute": 34.85,
+            "output_and_sync": 0.01,
+            "total": 35.52
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.03,
+            "allocation": 0.53,
+            "compute": 49.39,
+            "output_and_sync": 0.01,
+            "total": 49.96
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.04,
+            "allocation": 0.52,
+            "compute": 69.73,
+            "output_and_sync": 0.01,
+            "total": 70.3
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.48,
+            "compute": 90.42,
+            "output_and_sync": 0.01,
+            "total": 90.95
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.06,
+            "allocation": 0.58,
+            "compute": 111.65,
+            "output_and_sync": 0.01,
+            "total": 112.3
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.07,
+            "allocation": 0.59,
+            "compute": 131.15,
+            "output_and_sync": 0.01,
+            "total": 131.81
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.08,
+            "allocation": 0.5,
+            "compute": 155.19,
+            "output_and_sync": 0.01,
+            "total": 155.79
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.09,
+            "allocation": 0.48,
+            "compute": 172.3,
+            "output_and_sync": 0.01,
+            "total": 172.88
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.11,
+            "allocation": 0.5,
+            "compute": 194.03,
+            "output_and_sync": 0.01,
+            "total": 194.65
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.12,
+            "allocation": 0.54,
+            "compute": 210.31,
+            "output_and_sync": 0.01,
+            "total": 210.98
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.1,
+            "allocation": 0.51,
+            "compute": 231.07,
+            "output_and_sync": 0.01,
+            "total": 231.7
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.13,
+            "allocation": 0.55,
+            "compute": 446.29,
+            "output_and_sync": 0.01,
+            "total": 446.99
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.12,
+            "allocation": 0.59,
+            "compute": 268.83,
+            "output_and_sync": 0.01,
+            "total": 269.55
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.12,
+            "allocation": 0.53,
+            "compute": 303.03,
+            "output_and_sync": 0.01,
+            "total": 303.7
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.14,
+            "allocation": 0.57,
+            "compute": 325.05,
+            "output_and_sync": 0.01,
+            "total": 325.77
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.14,
+            "allocation": 0.6,
+            "compute": 340.44,
+            "output_and_sync": 0.01,
+            "total": 341.2
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.17,
+            "allocation": 0.61,
+            "compute": 372.58,
+            "output_and_sync": 0.01,
+            "total": 373.37
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.15,
+            "allocation": 0.57,
+            "compute": 388.48,
+            "output_and_sync": 0.01,
+            "total": 389.21
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.17,
+            "allocation": 0.6,
+            "compute": 416.48,
+            "output_and_sync": 0.01,
+            "total": 417.27
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.17,
+            "allocation": 0.57,
+            "compute": 420.92,
+            "output_and_sync": 0.01,
+            "total": 421.68
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.18,
+            "allocation": 0.62,
+            "compute": 460.75,
+            "output_and_sync": 0.01,
+            "total": 461.56
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.2,
+            "allocation": 0.62,
+            "compute": 464.6,
+            "output_and_sync": 0.02,
+            "total": 465.44
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.2,
+            "allocation": 0.66,
+            "compute": 492.21,
+            "output_and_sync": 0.01,
+            "total": 493.08
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.02,
+            "allocation": 0.63,
+            "compute": 504.16,
+            "output_and_sync": 0.01,
+            "total": 504.83
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.21,
+            "allocation": 0.65,
+            "compute": 529.72,
+            "output_and_sync": 0.02,
+            "total": 530.6
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.22,
+            "allocation": 0.68,
+            "compute": 538.09,
+            "output_and_sync": 0.02,
+            "total": 539.0
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.26,
+            "allocation": 0.68,
+            "compute": 567.62,
+            "output_and_sync": 0.02,
+            "total": 568.58
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.27,
+            "allocation": 0.68,
+            "compute": 577.38,
+            "output_and_sync": 0.02,
+            "total": 578.33
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.28,
+            "allocation": 0.66,
+            "compute": 629.81,
+            "output_and_sync": 0.02,
+            "total": 630.76
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.28,
+            "allocation": 0.64,
+            "compute": 648.82,
+            "output_and_sync": 0.01,
+            "total": 649.76
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.3,
+            "allocation": 0.72,
+            "compute": 684.22,
+            "output_and_sync": 0.01,
+            "total": 685.25
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.26,
+            "allocation": 0.67,
+            "compute": 686.39,
+            "output_and_sync": 0.02,
+            "total": 687.34
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.3,
+            "allocation": 0.7,
+            "compute": 723.79,
+            "output_and_sync": 0.02,
+            "total": 724.8
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.3,
+            "allocation": 0.74,
+            "compute": 724.72,
+            "output_and_sync": 0.01,
+            "total": 725.77
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.31,
+            "allocation": 0.71,
+            "compute": 765.69,
+            "output_and_sync": 0.01,
+            "total": 766.73
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.3,
+            "allocation": 0.7,
+            "compute": 781.2,
+            "output_and_sync": 0.02,
+            "total": 782.22
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.32,
+            "allocation": 0.71,
+            "compute": 812.71,
+            "output_and_sync": 0.02,
+            "total": 813.76
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.31,
+            "allocation": 0.69,
+            "compute": 812.98,
+            "output_and_sync": 0.02,
+            "total": 814.0
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.34,
+            "allocation": 0.71,
+            "compute": 846.35,
+            "output_and_sync": 0.02,
+            "total": 847.42
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.36,
+            "allocation": 0.71,
+            "compute": 849.74,
+            "output_and_sync": 0.02,
+            "total": 850.83
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.4,
+            "allocation": 0.74,
+            "compute": 889.97,
+            "output_and_sync": 0.02,
+            "total": 891.13
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.39,
+            "allocation": 0.75,
+            "compute": 888.79,
+            "output_and_sync": 0.02,
+            "total": 889.95
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.39,
+            "allocation": 0.81,
+            "compute": 968.26,
+            "output_and_sync": 0.02,
+            "total": 969.47
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.39,
+            "allocation": 0.75,
+            "compute": 983.44,
+            "output_and_sync": 0.02,
+            "total": 984.6
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.39,
+            "allocation": 0.79,
+            "compute": 1200.4,
+            "output_and_sync": 0.02,
+            "total": 1201.59
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.41,
+            "allocation": 0.75,
+            "compute": 1014.31,
+            "output_and_sync": 0.02,
+            "total": 1015.49
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.4,
+            "allocation": 0.79,
+            "compute": 1049.91,
+            "output_and_sync": 0.02,
+            "total": 1051.12
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.4,
+            "allocation": 0.87,
+            "compute": 1051.74,
+            "output_and_sync": 0.02,
+            "total": 1053.04
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.43,
+            "allocation": 0.82,
+            "compute": 1086.06,
+            "output_and_sync": 0.02,
+            "total": 1087.32
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.44,
+            "allocation": 0.82,
+            "compute": 1109.94,
+            "output_and_sync": 0.02,
+            "total": 1111.22
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.07,
+            "allocation": 0.79,
+            "compute": 1149.65,
+            "output_and_sync": 0.02,
+            "total": 1150.53
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.51,
+            "allocation": 0.87,
+            "compute": 1151.79,
+            "output_and_sync": 0.02,
+            "total": 1153.19
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.46,
+            "allocation": 0.78,
+            "compute": 1181.04,
+            "output_and_sync": 0.02,
+            "total": 1182.3
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.5,
+            "allocation": 0.81,
+            "compute": 1178.99,
+            "output_and_sync": 0.02,
+            "total": 1180.32
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.23,
+            "allocation": 0.89,
+            "compute": 1216.98,
+            "output_and_sync": 0.02,
+            "total": 1218.12
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.25,
+            "compute": 813.63,
+            "output_and_sync": 0.02,
+            "total": 813.95
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.26,
+            "compute": 814.84,
+            "output_and_sync": 0.02,
+            "total": 815.17
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.27,
+            "compute": 812.6,
+            "output_and_sync": 0.02,
+            "total": 812.93
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.25,
+            "compute": 846.41,
+            "output_and_sync": 0.02,
+            "total": 846.73
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.26,
+            "compute": 852.63,
+            "output_and_sync": 0.02,
+            "total": 852.96
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.25,
+            "compute": 893.93,
+            "output_and_sync": 0.02,
+            "total": 894.25
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.06,
+            "allocation": 0.26,
+            "compute": 904.71,
+            "output_and_sync": 0.02,
+            "total": 905.05
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.06,
+            "allocation": 0.26,
+            "compute": 955.07,
+            "output_and_sync": 0.02,
+            "total": 955.41
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.06,
+            "allocation": 0.25,
+            "compute": 975.75,
+            "output_and_sync": 0.02,
+            "total": 976.08
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.06,
+            "allocation": 0.28,
+            "compute": 1009.53,
+            "output_and_sync": 0.02,
+            "total": 1009.89
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.38,
+            "allocation": 0.27,
+            "compute": 1047.53,
+            "output_and_sync": 0.02,
+            "total": 1048.2
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.4,
+            "allocation": 0.26,
+            "compute": 1049.8,
+            "output_and_sync": 0.02,
+            "total": 1050.47
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.38,
+            "allocation": 0.25,
+            "compute": 1067.7,
+            "output_and_sync": 0.02,
+            "total": 1068.35
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.06,
+            "allocation": 0.26,
+            "compute": 1081.74,
+            "output_and_sync": 0.02,
+            "total": 1082.07
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.06,
+            "allocation": 0.28,
+            "compute": 1103.27,
+            "output_and_sync": 0.02,
+            "total": 1103.63
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.07,
+            "allocation": 0.26,
+            "compute": 1142.56,
+            "output_and_sync": 0.02,
+            "total": 1142.91
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.42,
+            "allocation": 0.25,
+            "compute": 1146.0,
+            "output_and_sync": 0.02,
+            "total": 1146.69
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.07,
+            "allocation": 0.26,
+            "compute": 1178.25,
+            "output_and_sync": 0.02,
+            "total": 1178.6
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.42,
+            "allocation": 0.24,
+            "compute": 1175.86,
+            "output_and_sync": 0.02,
+            "total": 1176.55
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.07,
+            "allocation": 0.28,
+            "compute": 1216.3,
+            "output_and_sync": 0.02,
+            "total": 1216.66
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.26,
+            "allocation": 0.81,
+            "compute": 1221.07,
+            "output_and_sync": 0.02,
+            "total": 1222.17
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.2,
+            "allocation": 0.85,
+            "compute": 1300.04,
+            "output_and_sync": 0.02,
+            "total": 1301.11
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.21,
+            "allocation": 0.8,
+            "compute": 1308.66,
+            "output_and_sync": 0.02,
+            "total": 1309.69
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.25,
+            "allocation": 0.79,
+            "compute": 1353.57,
+            "output_and_sync": 0.02,
+            "total": 1354.63
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.25,
+            "compute": 761.89,
+            "output_and_sync": 0.02,
+            "total": 762.21
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.08,
+            "allocation": 0.25,
+            "compute": 794.39,
+            "output_and_sync": 0.02,
+            "total": 794.74
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.28,
+            "compute": 799.12,
+            "output_and_sync": 0.02,
+            "total": 799.46
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.32,
+            "allocation": 0.28,
+            "compute": 817.81,
+            "output_and_sync": 0.02,
+            "total": 818.42
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.26,
+            "compute": 815.15,
+            "output_and_sync": 0.01,
+            "total": 815.47
+          }
+        ],
+        "totals_ms": {
+          "input": 17.45,
+          "allocation": 46.43,
+          "compute": 63214.22,
+          "output_and_sync": 1.4000000000000001,
+          "total": 63279.48
+        },
+        "frontend_rows": [
+          {
+            "samples": 16640,
+            "frames": 105,
+            "elapsed_ms": 1.04
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.03
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.06
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.0
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.0
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.01
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.0
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.0
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.23
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.03
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.02
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.0
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.97
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.97
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 11936,
+            "frames": 74,
+            "elapsed_ms": 0.72
+          },
+          {
+            "samples": 672,
+            "frames": 3,
+            "elapsed_ms": 0.04
+          }
+        ],
+        "frontend_timing_rows": 59,
+        "frontend_total_ms": 57.44,
+        "native_elapsed_ms": 63465.587,
+        "native_rtf": 1.0577597833333334,
+        "total_rounding_bound_ms": 0.715,
+        "outside_timed_regions_ms": 128.666999999994,
+        "compute_and_output_fraction": 0.9960613773256364,
+        "frontend_fraction": 0.0009050574132403439,
+        "outside_timed_regions_fraction": 0.0020273506648570668,
+        "input_and_allocation_fraction": 0.0010065297276774577,
+        "limits": "Existing session timers exclude graph-cache construction and lock acquisition. CPU frontend is separately timed. Outside time also includes state work, queueing and logging. Output region includes synchronization. No per-operator attribution."
+      }
+    },
+    {
+      "index": 2,
+      "mode": "timing",
+      "elapsed_micros": 65941087,
+      "probabilities": {
+        "bytes": 192000,
+        "sha256": "6b08c607371bab2b7965faebe88d8ee31ae39c41c377043d137cbbf424f3af7d"
+      },
+      "workers": {
+        "requested_cap": 4,
+        "hardware_concurrency": 4,
+        "effective_threads": 4,
+        "attached_pool_threads": 4
+      },
+      "numerical_comparison": {
+        "passed": true,
+        "scope": "native diagnostic parity only; no public/lifecycle/package qualification",
+        "runtime_profile": "diagnostic-worker-matrix-v1",
+        "frame_contract": "v3-streaming-valid-mel-v1",
+        "audio_duration_seconds": 60.0,
+        "backend": "cpu",
+        "device": null,
+        "native_frame_count": 6000,
+        "retained_first_frame": 0,
+        "retained_rows": 6000,
+        "turns": 27,
+        "maximum_turn_error_seconds": 0.0,
+        "turn_tolerance_seconds": 1e-06,
+        "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+        "retained_probabilities_match": true,
+        "maximum_probability_error": 0.0,
+        "probability_tolerance": 1e-06,
+        "reference_runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-4",
+        "actual_runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-4",
+        "reference_cap": 4,
+        "actual_cap": 4,
+        "probabilities_bit_exact": true,
+        "reference_rtf": 1.0473386833333334,
+        "actual_rtf": 1.0990181166666666
+      },
+      "session_profile": {
+        "mode": "timing",
+        "session_timing_rows": 84,
+        "rows": [
+          {
+            "output": "node_867",
+            "nodes": 868,
+            "input": 0.02,
+            "allocation": 0.59,
+            "compute": 35.88,
+            "output_and_sync": 0.01,
+            "total": 36.5
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.03,
+            "allocation": 0.57,
+            "compute": 58.1,
+            "output_and_sync": 0.01,
+            "total": 58.71
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.01,
+            "allocation": 0.6,
+            "compute": 72.29,
+            "output_and_sync": 0.01,
+            "total": 72.9
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.54,
+            "compute": 92.6,
+            "output_and_sync": 0.01,
+            "total": 93.19
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.04,
+            "allocation": 0.53,
+            "compute": 133.28,
+            "output_and_sync": 0.01,
+            "total": 133.86
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.06,
+            "allocation": 0.56,
+            "compute": 138.56,
+            "output_and_sync": 0.01,
+            "total": 139.18
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.07,
+            "allocation": 0.55,
+            "compute": 160.84,
+            "output_and_sync": 0.01,
+            "total": 161.47
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.07,
+            "allocation": 0.48,
+            "compute": 381.51,
+            "output_and_sync": 0.01,
+            "total": 382.07
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.07,
+            "allocation": 0.52,
+            "compute": 203.37,
+            "output_and_sync": 0.01,
+            "total": 203.97
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.08,
+            "allocation": 0.51,
+            "compute": 216.24,
+            "output_and_sync": 0.01,
+            "total": 216.84
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.09,
+            "allocation": 0.54,
+            "compute": 240.2,
+            "output_and_sync": 0.01,
+            "total": 240.85
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.1,
+            "allocation": 0.55,
+            "compute": 255.97,
+            "output_and_sync": 0.01,
+            "total": 256.64
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.12,
+            "allocation": 0.57,
+            "compute": 279.56,
+            "output_and_sync": 0.01,
+            "total": 280.26
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.12,
+            "allocation": 0.58,
+            "compute": 313.0,
+            "output_and_sync": 0.01,
+            "total": 313.71
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.13,
+            "allocation": 0.58,
+            "compute": 339.74,
+            "output_and_sync": 0.01,
+            "total": 340.46
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.12,
+            "allocation": 0.6,
+            "compute": 353.47,
+            "output_and_sync": 0.01,
+            "total": 354.2
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.12,
+            "allocation": 0.6,
+            "compute": 379.64,
+            "output_and_sync": 0.01,
+            "total": 380.37
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.14,
+            "allocation": 0.61,
+            "compute": 394.5,
+            "output_and_sync": 0.01,
+            "total": 395.26
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.15,
+            "allocation": 0.68,
+            "compute": 419.35,
+            "output_and_sync": 0.01,
+            "total": 420.19
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.15,
+            "allocation": 0.67,
+            "compute": 433.57,
+            "output_and_sync": 0.01,
+            "total": 434.41
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.17,
+            "allocation": 0.68,
+            "compute": 475.73,
+            "output_and_sync": 0.01,
+            "total": 476.59
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.17,
+            "allocation": 0.67,
+            "compute": 482.53,
+            "output_and_sync": 0.02,
+            "total": 483.39
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.18,
+            "allocation": 0.69,
+            "compute": 512.93,
+            "output_and_sync": 0.01,
+            "total": 513.81
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.19,
+            "allocation": 0.64,
+            "compute": 523.59,
+            "output_and_sync": 0.01,
+            "total": 524.43
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.19,
+            "allocation": 0.68,
+            "compute": 549.55,
+            "output_and_sync": 0.01,
+            "total": 550.44
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.2,
+            "allocation": 0.66,
+            "compute": 558.08,
+            "output_and_sync": 0.01,
+            "total": 558.95
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.21,
+            "allocation": 0.65,
+            "compute": 589.65,
+            "output_and_sync": 0.01,
+            "total": 590.53
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.23,
+            "allocation": 0.69,
+            "compute": 609.86,
+            "output_and_sync": 0.01,
+            "total": 610.79
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.23,
+            "allocation": 0.68,
+            "compute": 671.17,
+            "output_and_sync": 0.01,
+            "total": 672.1
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.24,
+            "allocation": 0.65,
+            "compute": 672.12,
+            "output_and_sync": 0.01,
+            "total": 673.02
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.27,
+            "allocation": 0.85,
+            "compute": 705.68,
+            "output_and_sync": 0.02,
+            "total": 706.82
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.28,
+            "allocation": 0.72,
+            "compute": 712.29,
+            "output_and_sync": 0.02,
+            "total": 713.3
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.27,
+            "allocation": 0.69,
+            "compute": 743.77,
+            "output_and_sync": 0.02,
+            "total": 744.75
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.28,
+            "allocation": 0.68,
+            "compute": 746.9,
+            "output_and_sync": 0.02,
+            "total": 747.88
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.29,
+            "allocation": 0.72,
+            "compute": 780.29,
+            "output_and_sync": 0.01,
+            "total": 781.3
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.29,
+            "allocation": 1.33,
+            "compute": 808.93,
+            "output_and_sync": 0.02,
+            "total": 810.58
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.35,
+            "allocation": 0.75,
+            "compute": 838.33,
+            "output_and_sync": 0.02,
+            "total": 839.46
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.32,
+            "allocation": 0.69,
+            "compute": 841.04,
+            "output_and_sync": 0.02,
+            "total": 842.06
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.34,
+            "allocation": 0.76,
+            "compute": 1018.59,
+            "output_and_sync": 0.02,
+            "total": 1019.71
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.38,
+            "allocation": 0.78,
+            "compute": 881.46,
+            "output_and_sync": 0.02,
+            "total": 882.64
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.35,
+            "allocation": 0.74,
+            "compute": 911.35,
+            "output_and_sync": 0.02,
+            "total": 912.45
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.34,
+            "allocation": 0.76,
+            "compute": 919.84,
+            "output_and_sync": 0.02,
+            "total": 920.96
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.38,
+            "allocation": 0.75,
+            "compute": 992.55,
+            "output_and_sync": 0.02,
+            "total": 993.7
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.39,
+            "allocation": 0.78,
+            "compute": 1002.95,
+            "output_and_sync": 0.02,
+            "total": 1004.14
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.4,
+            "allocation": 0.77,
+            "compute": 1044.24,
+            "output_and_sync": 0.02,
+            "total": 1045.42
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.4,
+            "allocation": 0.79,
+            "compute": 1050.64,
+            "output_and_sync": 0.02,
+            "total": 1051.85
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.4,
+            "allocation": 0.81,
+            "compute": 1275.1,
+            "output_and_sync": 0.02,
+            "total": 1276.32
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.41,
+            "allocation": 0.81,
+            "compute": 1094.01,
+            "output_and_sync": 0.02,
+            "total": 1095.24
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.41,
+            "allocation": 0.74,
+            "compute": 1124.04,
+            "output_and_sync": 0.02,
+            "total": 1125.21
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.44,
+            "allocation": 0.78,
+            "compute": 1138.79,
+            "output_and_sync": 0.02,
+            "total": 1140.02
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.45,
+            "allocation": 0.85,
+            "compute": 1189.21,
+            "output_and_sync": 0.02,
+            "total": 1190.53
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.44,
+            "allocation": 0.78,
+            "compute": 1210.24,
+            "output_and_sync": 0.02,
+            "total": 1211.48
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.47,
+            "allocation": 1.07,
+            "compute": 1219.54,
+            "output_and_sync": 0.02,
+            "total": 1221.1
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.46,
+            "allocation": 0.85,
+            "compute": 1220.76,
+            "output_and_sync": 0.02,
+            "total": 1222.09
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.19,
+            "allocation": 0.83,
+            "compute": 1257.61,
+            "output_and_sync": 0.02,
+            "total": 1258.65
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.25,
+            "compute": 802.75,
+            "output_and_sync": 0.02,
+            "total": 803.06
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.25,
+            "compute": 836.86,
+            "output_and_sync": 0.02,
+            "total": 837.17
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.25,
+            "compute": 1041.41,
+            "output_and_sync": 0.02,
+            "total": 1041.72
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.25,
+            "compute": 876.88,
+            "output_and_sync": 0.02,
+            "total": 877.2
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.24,
+            "compute": 882.51,
+            "output_and_sync": 0.02,
+            "total": 882.82
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.06,
+            "allocation": 0.27,
+            "compute": 918.38,
+            "output_and_sync": 0.02,
+            "total": 918.72
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.06,
+            "allocation": 0.25,
+            "compute": 942.02,
+            "output_and_sync": 0.02,
+            "total": 942.34
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.24,
+            "compute": 986.68,
+            "output_and_sync": 0.02,
+            "total": 986.99
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.05,
+            "allocation": 0.25,
+            "compute": 1003.63,
+            "output_and_sync": 0.02,
+            "total": 1003.95
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.06,
+            "allocation": 0.28,
+            "compute": 1040.85,
+            "output_and_sync": 0.02,
+            "total": 1041.21
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.06,
+            "allocation": 0.27,
+            "compute": 1045.41,
+            "output_and_sync": 0.02,
+            "total": 1045.76
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.39,
+            "allocation": 0.26,
+            "compute": 1079.09,
+            "output_and_sync": 0.02,
+            "total": 1079.77
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.4,
+            "allocation": 0.26,
+            "compute": 1084.8,
+            "output_and_sync": 0.02,
+            "total": 1085.48
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.06,
+            "allocation": 0.26,
+            "compute": 1120.94,
+            "output_and_sync": 0.02,
+            "total": 1121.29
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.42,
+            "allocation": 0.27,
+            "compute": 1136.77,
+            "output_and_sync": 0.02,
+            "total": 1137.48
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.42,
+            "allocation": 0.25,
+            "compute": 1183.28,
+            "output_and_sync": 0.02,
+            "total": 1183.97
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.4,
+            "allocation": 0.24,
+            "compute": 1178.58,
+            "output_and_sync": 0.02,
+            "total": 1179.25
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.07,
+            "allocation": 0.27,
+            "compute": 1241.8,
+            "output_and_sync": 0.02,
+            "total": 1242.15
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.07,
+            "allocation": 0.25,
+            "compute": 1215.07,
+            "output_and_sync": 0.02,
+            "total": 1215.41
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.06,
+            "allocation": 0.23,
+            "compute": 1258.33,
+            "output_and_sync": 0.02,
+            "total": 1258.64
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.23,
+            "allocation": 0.83,
+            "compute": 1260.07,
+            "output_and_sync": 0.02,
+            "total": 1261.14
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.19,
+            "allocation": 0.76,
+            "compute": 1340.86,
+            "output_and_sync": 0.02,
+            "total": 1341.84
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.2,
+            "allocation": 0.82,
+            "compute": 1362.35,
+            "output_and_sync": 0.02,
+            "total": 1363.38
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.19,
+            "allocation": 0.83,
+            "compute": 1397.12,
+            "output_and_sync": 0.02,
+            "total": 1398.16
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.08,
+            "allocation": 0.25,
+            "compute": 838.9,
+            "output_and_sync": 0.02,
+            "total": 839.25
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.08,
+            "allocation": 0.28,
+            "compute": 822.06,
+            "output_and_sync": 0.02,
+            "total": 822.44
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.08,
+            "allocation": 0.25,
+            "compute": 826.49,
+            "output_and_sync": 0.02,
+            "total": 826.84
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.33,
+            "allocation": 0.25,
+            "compute": 846.76,
+            "output_and_sync": 0.02,
+            "total": 847.36
+          },
+          {
+            "output": "node_868",
+            "nodes": 869,
+            "input": 0.08,
+            "allocation": 0.27,
+            "compute": 845.02,
+            "output_and_sync": 0.01,
+            "total": 845.38
+          }
+        ],
+        "totals_ms": {
+          "input": 17.09,
+          "allocation": 47.83,
+          "compute": 65690.7,
+          "output_and_sync": 1.37,
+          "total": 65756.92
+        },
+        "frontend_rows": [
+          {
+            "samples": 16640,
+            "frames": 105,
+            "elapsed_ms": 1.04
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.08
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.0
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.01
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.04
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.02
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.97
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.97
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.97
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.97
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.04
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.97
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.97
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.97
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.02
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.02
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.97
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.98
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.06
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.97
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.97
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.97
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.97
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.0
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.0
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 1.0
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 17056,
+            "frames": 106,
+            "elapsed_ms": 0.99
+          },
+          {
+            "samples": 11936,
+            "frames": 74,
+            "elapsed_ms": 0.68
+          },
+          {
+            "samples": 672,
+            "frames": 3,
+            "elapsed_ms": 0.04
+          }
+        ],
+        "frontend_timing_rows": 59,
+        "frontend_total_ms": 57.13,
+        "native_elapsed_ms": 65941.087,
+        "native_rtf": 1.0990181166666666,
+        "total_rounding_bound_ms": 0.715,
+        "outside_timed_regions_ms": 127.03699999999662,
+        "compute_and_output_fraction": 0.9962236442963094,
+        "frontend_fraction": 0.0008663794092444974,
+        "outside_timed_regions_fraction": 0.0019265226853175262,
+        "input_and_allocation_fraction": 0.0009845151627542932,
+        "limits": "Existing session timers exclude graph-cache construction and lock acquisition. CPU frontend is separately timed. Outside time also includes state work, queueing and logging. Output region includes synchronization. No per-operator attribution."
+      }
+    },
+    {
+      "index": 3,
+      "mode": "control",
+      "elapsed_micros": 85380946,
+      "probabilities": {
+        "bytes": 192000,
+        "sha256": "6b08c607371bab2b7965faebe88d8ee31ae39c41c377043d137cbbf424f3af7d"
+      },
+      "workers": {
+        "requested_cap": 4,
+        "hardware_concurrency": 4,
+        "effective_threads": 4,
+        "attached_pool_threads": 4
+      },
+      "numerical_comparison": {
+        "passed": true,
+        "scope": "native diagnostic parity only; no public/lifecycle/package qualification",
+        "runtime_profile": "diagnostic-worker-matrix-v1",
+        "frame_contract": "v3-streaming-valid-mel-v1",
+        "audio_duration_seconds": 60.0,
+        "backend": "cpu",
+        "device": null,
+        "native_frame_count": 6000,
+        "retained_first_frame": 0,
+        "retained_rows": 6000,
+        "turns": 27,
+        "maximum_turn_error_seconds": 0.0,
+        "turn_tolerance_seconds": 1e-06,
+        "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+        "retained_probabilities_match": true,
+        "maximum_probability_error": 0.0,
+        "probability_tolerance": 1e-06,
+        "reference_runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-4",
+        "actual_runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-4",
+        "reference_cap": 4,
+        "actual_cap": 4,
+        "probabilities_bit_exact": true,
+        "reference_rtf": 1.0473386833333334,
+        "actual_rtf": 1.4230157666666665
+      },
+      "session_profile": {
+        "mode": "control",
+        "session_timing_rows": 0,
+        "native_rtf": 1.4230157666666667
+      }
+    }
+  ],
+  "sdk_payload_scope": "New CI producer rehashes its downloaded/copy SDK; collection compares its manifest and PE report with the prior receipt and rehashes the retained prior ZIP/66-file SDK. New profiling artifact excludes SDK payloads.",
+  "release_qualified": false,
+  "package_qualified": false,
+  "public_or_lifecycle_qualified": false,
+  "new_native_or_model_calls_during_collection": 0,
+  "limits": [
+    "Native timing diagnostic only; no supported release, public API, lifecycle or package qualification.",
+    "Exact existing SDK; no source/compiler/geometry/model/worker-budget change.",
+    "Numerical reference is from the producer host; compare timing only within this new receiver sequence.",
+    "Upstream session timers exclude cache construction/locking; frontend is timed separately; residual is unattributed.",
+    "No timing averaging or relaxation of original below-one RTF and quality requirements."
+  ]
+}
