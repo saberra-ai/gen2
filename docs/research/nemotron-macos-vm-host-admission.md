@@ -84,3 +84,13 @@ same artifact extracts exactly the one declared virtualization entitlement; no
 helper executes or changes. The actual local codesign manual explicitly defines
 abstract output as the default and `--xml` as its XML-format selector. This
 diagnoses the format mismatch without qualifying host support, a mount or a VM.
+
+The separate [v2 protocol](../../tools/nemotron-diarization/macos-vm-host-v2.protocol.json)
+binds that exact failed receipt and the read-only XML control, with ten source
+and 24 external descriptors. The new controller differs only in its committed
+protocol filename and explicit `--xml` display request. The original controller,
+protocol, failed output and all evidence remain unchanged. Use a fresh v2 output;
+all signing, host-support/geometry, blank-image identity/mount/write/cleanup,
+offline, storage and no-guest gates remain unchanged. Review and commit this
+retry before invoking it; no v2 controller or helper has run at preregistration.
+The full 286-test model-free suite also passes for this retry in 10.117 seconds.
