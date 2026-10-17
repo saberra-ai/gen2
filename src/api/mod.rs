@@ -32,6 +32,7 @@ mod inference;
 pub mod input;
 pub mod model;
 pub mod output;
+mod request_schema;
 mod response;
 mod runtime;
 pub mod session;
@@ -53,6 +54,7 @@ pub use event::{Event, EventStream};
 pub use generation::Generation;
 pub use input::Input;
 pub use model::Model;
+pub use request_schema::RequestSchema;
 pub use response::Response;
 pub use runtime::{
     ModelResidency, RemoteModelBuilder, ResidencySnapshot, Runtime, RuntimeBuilder, RuntimeStats,

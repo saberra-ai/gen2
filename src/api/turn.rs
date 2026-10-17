@@ -227,6 +227,8 @@ pub struct Turn<'a> {
     tools_override: Option<ToolSet>,
     grammar: Option<GrammarSpec>,
     require_full_context: bool,
+    request_schema: bool,
+    schema_prepared: bool,
     cancel: Arc<AtomicBool>,
 }
 
@@ -242,6 +244,8 @@ impl<'a> Turn<'a> {
             tools_override: None,
             grammar: None,
             require_full_context: false,
+            request_schema: false,
+            schema_prepared: false,
             cancel: Arc::new(AtomicBool::new(false)),
         }
     }
@@ -394,11 +398,23 @@ impl<'a> Turn<'a> {
     /// session it will settle into. What [`stream`](Turn::stream) is made of;
     /// the async surface bridges the two halves across a worker.
     pub(crate) fn begin(self) -> Result<(StreamCore, &'a mut Session)> {
+        if self.request_schema
+            && (!self.require_full_context || !self.options.max_tokens.is_some_and(|n| n > 0))
+        {
+            return Err(Error::InvalidRequest(
+                "request schemas require full context and a positive explicit output budget".into(),
+            ));
+        }
         let model = self.model.clone();
         // Weights first: a handle whose model was evicted restores it here,
         // transparently (api_spec.md §4.2). Before validation, so an
         // evicted model's capabilities are read from a loaded one.
         self.model.ensure_resident()?;
+        if self.request_schema && !self.model.supports_request_schema()? {
+            return Err(Error::Unsupported(
+                "strict request-scoped JSON schemas on this backend".into(),
+            ));
+        }
         let engine = self.model.engine();
         let session = self.session;
 
@@ -422,6 +438,11 @@ impl<'a> Turn<'a> {
         let suppress = matches!(self.tool_choice, ToolChoice::None)
             || (matches!(self.tool_choice, ToolChoice::Auto)
                 && self.tools_override.as_ref().is_some_and(ToolSet::is_empty));
+        if self.request_schema && !effective.is_empty() && !suppress {
+            return Err(Error::InvalidRequest(
+                "request schemas require tools to be suppressed".into(),
+            ));
+        }
         let tools: Option<(Vec<_>, String)> = match &self.tool_choice {
             ToolChoice::None => None,
             ToolChoice::Auto => self
@@ -552,7 +573,13 @@ impl<'a> Turn<'a> {
     /// Always decode/validate the result and inspect its finish reason. Combine
     /// with `full_context` for fail-closed local grammar/context enforcement.
     pub fn json_schema<T: schemars::JsonSchema>(mut self) -> Result<Self> {
+        if self.request_schema {
+            return Err(Error::InvalidRequest(
+                "a prepared request schema cannot be replaced".into(),
+            ));
+        }
         let schema = schema_of::<T>()?;
+        self.schema_prepared = true;
         if self.model.capabilities().structured_output {
             self.grammar = Some(GrammarSpec::JsonSchema(schema));
         } else if self.system_override.is_none() {
@@ -571,6 +598,33 @@ impl<'a> Turn<'a> {
         }
         if self.options.max_tokens.is_none() {
             self.options.max_tokens = Some(STRUCTURED_MAX_TOKENS);
+        }
+        Ok(self)
+    }
+
+    /// Install the exact immutable schema prepared for this request.
+    ///
+    /// Unlike the legacy static-schema helper, this never falls back to prompt
+    /// instructions. It requires `full_context`, a positive explicit output
+    /// budget and a qualified local strict backend (currently llama.cpp).
+    /// Tools must be absent or suppressed. Run/stream retain full response and
+    /// cancellation control; decode as the same `T` and validate application
+    /// membership/authority after normal completion. A later schema setter or
+    /// `structured` call is refused rather than replacing these constraints.
+    pub fn request_schema<T: schemars::JsonSchema>(
+        mut self,
+        schema: &super::RequestSchema<T>,
+    ) -> Result<Self> {
+        if self.schema_prepared || self.grammar.is_some() {
+            return Err(Error::InvalidRequest(
+                "a turn may install only one request schema".into(),
+            ));
+        }
+        self.grammar = Some(GrammarSpec::JsonSchema(schema.as_json().clone()));
+        self.request_schema = true;
+        self.schema_prepared = true;
+        if self.options.reasoning == ThinkingMode::Auto {
+            self.options.reasoning = ThinkingMode::Off;
         }
         Ok(self)
     }
@@ -1155,6 +1209,64 @@ mod tests {
             Sentiment::Positive
         );
         assert_eq!(script.count("pull"), 1);
+    }
+    #[test]
+    fn request_schema_refuses_unsupported_backend_before_staging_or_token_pull() {
+        let schema = crate::RequestSchema::<Verdict>::new().unwrap();
+        let model = Runtime::scripted(Script::new().say(["never"]));
+        let script = model.engine().script().clone();
+        let mut session = Session::new();
+        let result = model
+            .turn(&mut session)
+            .user("private source")
+            .max_tokens(20)
+            .request_schema(&schema)
+            .unwrap()
+            .full_context()
+            .run();
+        assert!(matches!(result, Err(Error::Unsupported(_))));
+        assert!(session.is_empty());
+        assert_eq!(script.count("pull"), 0);
+    }
+    #[test]
+    fn request_schema_cannot_be_overwritten_or_run_without_explicit_strict_budget() {
+        let schema = crate::RequestSchema::<Verdict>::new().unwrap();
+        let model = Runtime::scripted(Script::new().say(["never"]));
+        let mut session = Session::new();
+        assert!(matches!(
+            model
+                .turn(&mut session)
+                .request_schema(&schema)
+                .unwrap()
+                .json_schema::<Verdict>(),
+            Err(Error::InvalidRequest(_))
+        ));
+        assert!(matches!(
+            model
+                .turn(&mut session)
+                .json_schema::<Verdict>()
+                .unwrap()
+                .request_schema(&schema),
+            Err(Error::InvalidRequest(_))
+        ));
+        assert!(matches!(
+            model
+                .turn(&mut session)
+                .request_schema(&schema)
+                .unwrap()
+                .run(),
+            Err(Error::InvalidRequest(_))
+        ));
+        assert!(matches!(
+            model
+                .turn(&mut session)
+                .request_schema(&schema)
+                .unwrap()
+                .full_context()
+                .run(),
+            Err(Error::InvalidRequest(_))
+        ));
+        assert!(session.is_empty());
     }
     #[test]
     fn strict_context_rejects_implicit_output_budget_before_staging() {

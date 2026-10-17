@@ -29,6 +29,17 @@ pub struct Model {
 }
 
 impl Model {
+    pub(crate) fn supports_request_schema(&self) -> super::Result<bool> {
+        if !self.loaded.source.is_local() {
+            return Ok(false);
+        }
+        let (resp, rx) = std::sync::mpsc::channel();
+        self.engine()
+            .controller()
+            .send(crate::controller::ControllerCmd::GetActiveBackendName { resp })
+            .map_err(|_| super::Error::ControllerGone)?;
+        Ok(rx.recv().map_err(|_| super::Error::ControllerGone)? == "llamacpp")
+    }
     /// Actual GGUF context and estimated host allocation selected at load time.
     /// Other formats/backends may not provide a plan. This is an estimate, not
     /// measured peak RSS. Automatic context reductions are explicit here.

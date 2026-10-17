@@ -1,0 +1,52 @@
+{
+  "baseline": "30a1abb2b1432c283277263e6d95dc16ba11ecc3",
+  "scope": "RequestSchema public API and pinned native Runtime/Model/Turn; no Pnola product qualification",
+  "sources": {
+    "src/api/request_schema.rs": "92d014114fcae8e416dd7ebfcde403c31bebc65e8cbbc94271d2c43488185d3b",
+    "src/api/turn.rs": "11bb244339f387adad872b9809e8698e96a60d0e39471c9138c08cfdb08c0a40",
+    "src/api/model.rs": "e89042f93ea2a9f6deb7497499098d91bad2e563db00ba9478dbd87aac553faf",
+    "src/api/mod.rs": "b3672445b687706ef946e93538511ca71a2327b4ade22c64867a3e6ecd7c2520",
+    "src/lib.rs": "83ab23d62183fa76b5a530a7c21925d52268423dbb104d0de0284fefc76e6dc1",
+    "tests/request_schema.rs": "a2c96882fbf1f81485d0bcecba29e2dc59b18430ca4844a43adf9e02f209630b",
+    "docs/request-schemas.md": "e09728aa554ee3aefefc26c37b072eb1f73e3500b83648f1354689cc2b7b4c68"
+  },
+  "native": {
+    "command": [
+      "/Users/victor/workspace/gen2-pnola-baseline/target/debug/deps/request_schema-8dfeee12c46743d9",
+      "--include-ignored",
+      "--nocapture"
+    ],
+    "binarySha256": "82e23c43e09f6c16515135a8d60e6320e98aa007e2503477580d908bb76a86d2",
+    "modelSha256": "00fe7986ff5f6b463e62455821146049db6f9313603938a70800d1fb69ef11a4",
+    "exitCode": 0,
+    "peakOwnedTreeRssBytes": 3608641536,
+    "elapsedSeconds": 8.612764791992959,
+    "guard": null,
+    "passed": true
+  },
+  "checks": {
+    "nonNativeLibrary": "1047 passed, 5 ignored",
+    "publicApi": "3 passed",
+    "nativePublicApi": "4 passed, including explicit native qualification",
+    "strictClippy": "passed no-default lib and request_schema test",
+    "format": "explicit changed Rust files pass; vendor untouched",
+    "standardsReview": "0 remaining; literal-location and non-monotone refinement findings repaired",
+    "specReview": "0 remaining; literal-location and reference-work bound findings repaired"
+  },
+  "earlierFailures": [
+    "optional impossible referenced definition rejected by llguidance (required id false); repaired with proven-empty reference pruning",
+    "literal const/example target accepted; public regression red then repaired",
+    "non-monotone schema accepted; public regression red then repaired"
+  ],
+  "receipts": {
+    "request-native-final.stdout.log": "e9bb39c57c5482e69fbda673e3f592ef96fa641613ed519cc064dd6f73f25942",
+    "request-gen2-final-clippy.log": "74de99f6f895a80763757fc82a29d715fe4f1a9b7af601874919afa3822ebfbe",
+    "request-native-final-build.log": "72c7560157913d6bf6193231c460066f75c9add57957fdf7c4a992b7c0405db0",
+    "request-polarity-red.log": "2f53a7328ffd7c7e548ba3d0636f5ab20afd2b57368cdf40f0ba8943fae2c80d",
+    "request-location-red.log": "7699415a0ce9c2e12d865879ff0868605751fbb5208a33ef6aafdacc05088924",
+    "request-final-suite.log": "d64a35843fee5036421f59760fa2cd67c2bc7b261dd94a41d295ababd5681dbe",
+    "request-native-diagnostic.stderr.log": "210856d96dfc05fd0f34b54ac14a47363956c80a6e8c4225b0fd85e83abad6f3",
+    "request-native-final.stderr.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "request-native-final-resources.json": "f12c0202f4458acabe90b33baa4c802ff06b9348bfbe370b52cef1d4336ae707"
+  }
+}
