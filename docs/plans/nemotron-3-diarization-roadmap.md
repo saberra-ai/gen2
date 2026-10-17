@@ -3,23 +3,34 @@
 Status: N0–N3 implemented and verified on macOS arm64 CPU; N4/N5 remain open. Development receipts do not establish a supported desktop release.
 
 The [bounded CPU public Rust protocol](../research/nemotron-bounded-public-runtime.md)
-now prepares exact-tag admission and the next M1 public/lifecycle qualification.
-Its native SDK already passes full 12/60-second C ABI parity and observed warm
-RTF below one. Public Rust execution under this identity remains pending; the
-new protocol requires actual local admission of both complete deliveries before
-the M1 run. Original quality, human-word, GUI/microphone and release gates remain
-open. Feature CI at `05c5ac15` completed successfully in all 13 jobs. The
+adds exact-tag admission and now passes M1 public/lifecycle qualification.
+Its native SDK also passes full 12/60-second C ABI parity and observed warm RTF
+below one. The protocol required actual local admission of both complete
+deliveries before the M1 run. Original quality, human-word, GUI/microphone and
+release gates remain open. Feature CI at `9ddefaf9` completed successfully in
+all 13 jobs. The
 [actual local public preflight](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-bounded-public-admission/collection-qualification.json)
 now admits all 200/44 delivery members at `c4e3ceac` without SDK restoration,
 helper construction, asset acquisition or model execution. The 13-member
 receipt retains the exact artifact identities and passing model-free checks.
+
+The [bounded public Rust M1 receipt](../../benches/results/nemotron-diarization/macos-arm64/2026-10-17-bounded-public/collection-qualification.json)
+now verifies all 60 delivery members at `9ddefaf9`: all 6,000 rows/48,000 values
+and 27 final turns match the independent bounded C ABI output byte-for-byte,
+warm RTF 0.605346 passes the fixed below-one gate, and all seven unchanged
+lifecycle tests pass including 100 reloads. Nine full 92-library audits and two
+zero-runtime audits replay independently; peak process RSS is 216,530,944 bytes.
+This fixes the observed M1 public realtime miss for this separately identified
+runtime. The historical pooled failure, Windows performance and all original
+quality/human/app/release gates remain recorded and open.
 
 Latest pooled CPU verification passes [30m/1h streams](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-long/collection-qualification.json),
 [mixed-model residency](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-mixed/collection-qualification.json)
 and [complete-app recording/live CLI](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-pnola-app-runtime/collection-qualification.json).
 Fresh Linux/Windows functional receipts below use the unchanged non-pooled
 profile. Quality/human word gold, real GUI/microphone, fresh-machine delivery
-and public signing remain open; M1 and Windows CI observations miss real time.
+and public signing remain open; the earlier pooled M1 and current Windows CI
+observations miss real time. The bounded M1 result above passes separately.
 Main remains unchanged while full roadmap release requirements are unmet.
 
 Current runtime migration: the tagged valid-Mel CPU v2 package passes

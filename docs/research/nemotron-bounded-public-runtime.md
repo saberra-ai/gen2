@@ -65,3 +65,23 @@ no work/build/helper/result tree is created, and no asset or model execution
 starts. The actual controller returns zero and releases its physical reserve.
 Both review axes independently verify the preregistration; the separate M1
 public Rust numerical/realtime/lifecycle execution remains pending.
+
+The [actual M1 public Rust run](https://github.com/saberra-ai/gen2/actions/runs/39006112891)
+now completes successfully at `9ddefaf9`. Its [63-member collection](../../benches/results/nemotron-diarization/macos-arm64/2026-10-17-bounded-public/collection-qualification.json)
+independently admits all 60 delivered members and both prior complete artifacts,
+verifies 365 unique historical source/tool paths, restores and rehashes all three helper
+payloads, and replays the nine exact 92-library and two zero-runtime audits.
+All 20 commands return their expected statuses; all seven unchanged lifecycle
+tests pass, including 100 reloads. No native/helper/model execution occurs during
+independent collection. Acquired model/audio bytes remain recorded descriptors;
+ZIP source-text modes are declarations, while opaque helper archive modes verify.
+
+All 6,000 rows/48,000 probabilities and 27 final turns match the independent
+bounded C ABI output byte-for-byte. Public warm RTF is 0.605346, below one;
+full-process wall/user/system time is 36.72/96.78/2.71 seconds and peak RSS is
+216,530,944 bytes. The fixed three-CPU M1 virtual host and storage/reserve cleanup
+verify. This closes public Rust numerical/realtime/lifecycle qualification under
+the bounded identity on this receiver. It does not replace the historical pooled
+run's realtime failure or establish uncontended physical-desktop latency.
+Long/mixed-model, quality, word attribution, app/platform and release gates under
+this identity remain open; no production/default package is promoted.
