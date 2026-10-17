@@ -80,6 +80,16 @@ two ORT records, zero-runtime listing and storage/reserve checks verify. This
 qualifies tiny-silence residency/lifecycle only; complete-app, speech quality,
 GUI/microphone, fresh-machine and release gates remain open.
 
+The bounded profile's Pnola packaging gap is now fixed in the versioned overlay:
+its exact profile selects the bounded lock while unknown/suffix identities still
+reject. The guarded overlay manifest supports only the two known file upgrades;
+the private checkout remains untouched. The
+[actual static staging receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-bounded-pnola-profile-staging/collection-qualification.json)
+passes at `00b067f6`: 123 package entries retain exact bytes/modes/aliases and
+model/card/license/bundle provenance matches. All 107 private source files remain
+unchanged; 15 Node and three overlay tests pass. This is isolated resource staging,
+not bounded-profile complete-app construction, signing or execution.
+
 Latest pooled CPU verification passes [30m/1h streams](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-long/collection-qualification.json),
 [mixed-model residency](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-mixed/collection-qualification.json)
 and [complete-app recording/live CLI](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-pnola-app-runtime/collection-qualification.json).

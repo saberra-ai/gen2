@@ -53,6 +53,13 @@ package selects the real bounded lock in a metadata-only check. The manifest
 admits the two known previous overlay hashes, and a read-only check of the actual
 private checkout reports exactly two file upgrades. No private source is changed.
 Complete bounded-profile app construction and execution remain unqualified.
+The [actual bounded staging receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-bounded-pnola-profile-staging/collection-qualification.json)
+now verifies the real isolated staging path at `00b067f6`: all 123 package
+entries retain exact bytes/modes/aliases, and the model/card/license plus new
+bundle provenance match the bounded lock. All 107 private Pnola source files and
+the original package/model inventories remain unchanged. The 17-member receipt
+retains both initial regressions, passing 15/3-test logs and static staging
+commands/results. No app build, signing, SDK load or model inference occurs.
 
 The [current-profile adapter receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-pnola-adapter/qualification.json)
 passes ten debug test/CLI cases with explicit relocated artifacts: recorded

@@ -1,0 +1,23 @@
+✖ speaker staging selects the exact native profile lock and rejects identity mismatches (5.018083ms)
+✔ speaker tooling follows the actual Cargo checkout and requires an explicit ASR-only selection (1.323791ms)
+✔ desktop staging rejects changed model bytes and missing notice files (3.778959ms)
+✔ speaker bundle declares the actual native macOS floor and preserves base resources (0.910916ms)
+✔ desktop preparation uses explicit artifacts in an isolated checkout and preserves staged assets on invalid input (179.364458ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 4
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 258.243208
+
+✖ failing tests:
+
+test at integrations/pnola/overlay/tests/desktop-assets.test.mjs:9:1
+✖ speaker staging selects the exact native profile lock and rejects identity mismatches (5.018083ms)
+  Error: Unsupported native runtime profile: gen2-valid-mel-pool-cpu-v2
+      at readSpeakerRuntimeLock (file:///Users/victor/workspace/gen2-nemotron3-n0/integrations/pnola/overlay/scripts/speaker-assets.mjs:60:22)
+      at TestContext.<anonymous> (file:///Users/victor/workspace/gen2-nemotron3-n0/integrations/pnola/overlay/tests/desktop-assets.test.mjs:21:27)
+      at async Test.run (node:internal/test_runner/test:1208:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:385:3)

@@ -1,0 +1,19 @@
+test_applied_overlay_is_idempotent_and_can_relocate_gen2 (test_apply.OverlayTest.test_applied_overlay_is_idempotent_and_can_relocate_gen2) ... ok
+test_repository_overlay_can_be_applied_and_reapplied (test_apply.OverlayTest.test_repository_overlay_can_be_applied_and_reapplied) ... ERROR
+test_unrelated_file_prevents_any_update (test_apply.OverlayTest.test_unrelated_file_prevents_any_update) ... ok
+
+======================================================================
+ERROR: test_repository_overlay_can_be_applied_and_reapplied (test_apply.OverlayTest.test_repository_overlay_can_be_applied_and_reapplied)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/victor/workspace/gen2-nemotron3-n0/integrations/pnola/test_apply.py", line 17, in test_repository_overlay_can_be_applied_and_reapplied
+    for target, _, content in plan(app, root / "gen2", bundle):
+                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/victor/workspace/gen2-nemotron3-n0/integrations/pnola/apply.py", line 30, in plan
+    raise ValueError(f"overlay checksum mismatch: {name}")
+ValueError: overlay checksum mismatch: scripts/speaker-assets.mjs
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.013s
+
+FAILED (errors=1)
