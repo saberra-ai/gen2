@@ -120,7 +120,7 @@ def main():
             'reads': [str(repo / 'Cargo.toml'), str(prior)], 'writes': [str(work / 'assets/ami.wav')]})])
         run('premodel-controls', ['/usr/bin/python3', '-c', CONTROL, json.dumps({
             'reads': [*map(str, probes), str(work / 'assets/model.gguf')], 'writes': []})], sandbox=premodel)
-        version = run('version-only', [work / 'bin/load-probe', package / 'lib/libnemo_speech_asr_c.dylib', NEW_VERSION], sandbox=premodel, trace=True)
+        version = run('version-only', [work / 'bin/load-probe', package / 'lib' / manifest['entry_library'], NEW_VERSION], sandbox=premodel, trace=True)
         if version.strip() != NEW_VERSION:
             raise ValueError('pooled complete app native version differs')
         r['loaded_images']['version-only'] = audit_loaded_libraries((output / 'version-only.stderr.log').read_text(), package, manifest, work / 'bin/load-probe')

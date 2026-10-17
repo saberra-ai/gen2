@@ -819,8 +819,13 @@ packaged recording/live CLI and CPU-Metal rejection preserving Bark. Exact PCM,
 helper/app/source inventories and prior-output isolation are required before
 inference. Full original app session/export/revision gates and 1e-6 turn checks
 remain unchanged; live compact timelines do not expose frame probabilities.
-All 234 local tools tests pass. App inference is unrun, with GUI/microphone/
-fresh-machine/public-signing/quality/word-gold release gates still open.
+All 234 local tools tests pass. The [first app attempt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-pnola-version-failure/collection-qualification.json)
+passes controls/version process but fails strict image audit on the materialized
+unprefixed entry alias; no app or model ran. V2's separate protocol selects the
+manifest canonical entry for the version probe without widening the auditor.
+App/work/helpers/PCM/cases/criteria stay unchanged, with fresh output and prior
+output denied. V2 is unrun; GUI/microphone/fresh-machine/public-signing/quality/
+word-gold release gates stay open.
 
 `qualify_macos_portable_runtime.py` and `macos-portable-runtime-v2.protocol.json`
 freeze a separate fresh M1 receiver for the exact constructed artifacts. The

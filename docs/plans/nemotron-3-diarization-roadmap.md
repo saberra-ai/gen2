@@ -1414,8 +1414,16 @@ tools, 314 repository sources, 132 staged input and 246 app inventory entries.
 All original complete-app session/revision/export criteria and 1e-6 turn bounds
 remain unchanged. App live timelines expose compact turns, so native reference
 frames/probabilities are verified separately without claiming app frame-row
-observation. All 234 local tools tests pass. App inference remains unrun; GUI,
-physical microphone, fresh-machine, signing, quality and word-gold gates stay open.
+observation. All 234 local tools tests pass. The [first app attempt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-pnola-version-failure/collection-qualification.json)
+passes runtime/premodel controls and a version-only process, then the strict
+image audit rejects the package's materialized unprefixed entry alias. No app
+or neural process ran. Tauri resource staging permits this byte-identical alias
+copy; the canonical private entry remains in the package manifest. A separate
+`macos-pooled-pnola-app-v2.protocol.json` selects that canonical entry for the
+reference version probe, preserves the unchanged strict auditor and all app/
+helper/PCM/acceptance inputs, denies prior output and requires a fresh output.
+V2 inference is unrun; GUI, physical microphone, fresh-machine, signing, quality
+and word-gold gates stay open.
 
 ## Verification and release criteria
 

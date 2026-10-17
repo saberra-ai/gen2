@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "automatic_packaged_resolution_gates_passed": false,
+  "release_qualified": false,
+  "source_commit": "3f2047a2cbe38c79287707e84d61d84c968206ce",
+  "source_pins_verified": 378,
+  "native_version_queries_started": 1,
+  "app_or_neural_commands_started": 0,
+  "strict_alias_rejection_reproduced_without_native_calls": true,
+  "work_and_app_inventories_unchanged": true,
+  "limits": [
+    "Both controls and version-only process return0, then strict image audit rejects the materialized public entry alias. No app process or model inference ran.",
+    "Tauri resource staging permits a byte-identical regular-file alias. Native reference version probe must load the manifest canonical entry directly, without widening the image audit. Original failed protocol and output remain unchanged."
+  ]
+}

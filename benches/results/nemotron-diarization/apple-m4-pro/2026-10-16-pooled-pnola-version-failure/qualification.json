@@ -1,0 +1,98 @@
+{
+  "schema_version": 1,
+  "source_commit": "3f2047a2cbe38c79287707e84d61d84c968206ce",
+  "automatic_packaged_resolution_gates_passed": false,
+  "release_qualified": false,
+  "scope": "Offline complete pooled CPU app recording/live checks with fresh C ABI references.\n\nAutomatic packaged artifact resolution; CLI recording and paced live only.\nNo physical microphone, GUI, fresh machine, accuracy or public-signing claim.\n",
+  "protocol": {
+    "bytes": 153240,
+    "sha256": "5b695e0152afbaa9165e10d365f5c367732f1991626eabdbfa4abc037bb45439"
+  },
+  "commands": [
+    {
+      "name": "runtime-controls",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-runtime-v1/runtime.sb",
+        "/usr/bin/python3",
+        "-c",
+        "import json, pathlib, socket, sys\ndef denied(operation):\n    try:\n        operation()\n    except PermissionError:\n        return\n    raise RuntimeError(\"sandbox operation unexpectedly permitted\")\ncases = json.loads(sys.argv[1])\nfor name in cases[\"reads\"]:\n    denied(lambda name=name: pathlib.Path(name).read_bytes())\nfor name in cases[\"writes\"]:\n    denied(lambda name=name: pathlib.Path(name).write_bytes(b\"changed\"))\ndenied(lambda: socket.create_connection((\"127.0.0.1\", 9), timeout=1))\n",
+        "{\"reads\": [\"/Users/victor/workspace/gen2-nemotron3-n0/Cargo.toml\", \"/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-runtime-v1/results/prior-output-control.txt\"], \"writes\": [\"/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-inputs-v2/assets/ami.wav\"]}"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-runtime-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-runtime-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-runtime-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "inference_admitted": false,
+      "pid": 24985,
+      "returncode": 0
+    },
+    {
+      "name": "premodel-controls",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-runtime-v1/premodel.sb",
+        "/usr/bin/python3",
+        "-c",
+        "import json, pathlib, socket, sys\ndef denied(operation):\n    try:\n        operation()\n    except PermissionError:\n        return\n    raise RuntimeError(\"sandbox operation unexpectedly permitted\")\ncases = json.loads(sys.argv[1])\nfor name in cases[\"reads\"]:\n    denied(lambda name=name: pathlib.Path(name).read_bytes())\nfor name in cases[\"writes\"]:\n    denied(lambda name=name: pathlib.Path(name).write_bytes(b\"changed\"))\ndenied(lambda: socket.create_connection((\"127.0.0.1\", 9), timeout=1))\n",
+        "{\"reads\": [\"/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-runtime-v1/denied.nemo\", \"/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-runtime-v1/denied.gguf\", \"/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-runtime-v1/denied.safetensors\", \"/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-runtime-v1/denied.onnx\", \"/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-runtime-v1/denied.npy\", \"/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-runtime-v1/denied.f32\", \"/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-inputs-v2/assets/model.gguf\"], \"writes\": []}"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-runtime-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-runtime-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-runtime-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "inference_admitted": false,
+      "pid": 24988,
+      "returncode": 0
+    },
+    {
+      "name": "version-only",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-runtime-v1/premodel.sb",
+        "/usr/bin/time",
+        "-l",
+        "/usr/bin/env",
+        "DYLD_PRINT_LIBRARIES=1",
+        "/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-inputs-v2/bin/load-probe",
+        "/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-inputs-v2/nemo/lib/libnemo_speech_asr_c.dylib",
+        "nemo-speech-asr 0.2.0+gen2-valid-mel-pool-v1"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-runtime-v1",
+      "environment": {
+        "PATH": "/usr/bin:/bin",
+        "HOME": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-runtime-v1/home",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-runtime-v1/tmp/",
+        "LC_ALL": "C"
+      },
+      "inference_admitted": false,
+      "pid": 24998,
+      "returncode": 0
+    }
+  ],
+  "cases": [],
+  "neural_commands_started": [],
+  "loaded_images": {},
+  "microphone_used": false,
+  "artifact_environment_overrides_used": false,
+  "error": "ValueError('unexpected non-system dyld image: /Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-inputs-v2/nemo/lib/libnemo_speech_asr_c.dylib')",
+  "storage": {
+    "start_minimum_bytes": 5368709120,
+    "running_minimum_bytes": 1073741824,
+    "reserve_requested_bytes": 268435456,
+    "checks": 14,
+    "released": true,
+    "minimum_observed_free_bytes": 224952467456,
+    "last_observed_free_bytes": 224958525440,
+    "reserve_reported_allocated_bytes": 268435456
+  }
+}

@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/qualify_pooled_pnola_app.py", line 173, in <module>
+    main()
+    ~~~~^^
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/qualify_pooled_pnola_app.py", line 126, in main
+    r['loaded_images']['version-only'] = audit_loaded_libraries((output / 'version-only.stderr.log').read_text(), package, manifest, work / 'bin/load-probe')
+                                         ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/macos_loaded_libraries.py", line 26, in audit_loaded_libraries
+    raise ValueError('unexpected non-system dyld image: ' + image)
+ValueError: unexpected non-system dyld image: /Users/victor/.cache/gen2-nemotron3-n0/pooled-pnola-complete-app-inputs-v2/nemo/lib/libnemo_speech_asr_c.dylib
