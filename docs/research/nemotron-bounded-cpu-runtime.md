@@ -79,3 +79,22 @@ source/reference/prior-result isolation and failure-stop behavior. No retries
 or additional neural calls are planned. At this preregistration no new parity
 helper has been compiled or executed and no bounded-runtime inference has run.
 The Rust version allowlist and the remaining roadmap gates stay unchanged.
+
+The [first qualification attempt](../../benches/results/nemotron-diarization/macos-arm64/2026-10-17-bounded-native-admission-failure/collection-qualification.json)
+remains failed: its producer declaration omitted the artifact `name` and
+`run_id` required by the delivery validator. It stopped with `KeyError('name')`
+before publishing either delivery, compiling a helper or starting any command
+or inference. Its eight-member receipt verifies both delivered files, failed
+job metadata/log and released storage reserve. No numerical result exists.
+
+The [V2 protocol](../../tools/nemotron-diarization/macos-bounded-native-v2.protocol.json)
+adds those exact identity fields, retaining all SDK/model/helper/case/parity and
+performance settings. A regression using the actual frozen declarations fails
+on the original missing name and passes after correction. A new `--admit-only`
+mode must verify both complete actual archives and their qualification/origin
+records on the local host before the corrected M1 run. That mode returns before
+SDK restoration, helper compilation, asset acquisition or neural admission.
+Commit the V2 protocol before that admission check and retain its evidence;
+the original failed protocol/receipt remains unchanged. This is a versioned
+correction of a pre-inference manifest error, with no repeated neural calls or
+relaxed numerical/performance gates.

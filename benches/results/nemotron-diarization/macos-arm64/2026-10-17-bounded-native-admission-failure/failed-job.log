@@ -1,0 +1,29 @@
+native-parity	Require model-denied controls then fixed 12 and 60 second public C ABI parity	﻿2026-10-17T04:58:23.7194590Z ##[group]Run python tools/nemotron-diarization/qualify_macos_bounded_native.py \
+native-parity	Require model-denied controls then fixed 12 and 60 second public C ABI parity	2026-10-17T04:58:23.7195120Z [36;1mpython tools/nemotron-diarization/qualify_macos_bounded_native.py \[0m
+native-parity	Require model-denied controls then fixed 12 and 60 second public C ABI parity	2026-10-17T04:58:23.7195590Z [36;1m  --protocol tools/nemotron-diarization/macos-bounded-native.protocol.json \[0m
+native-parity	Require model-denied controls then fixed 12 and 60 second public C ABI parity	2026-10-17T04:58:23.7196130Z [36;1m  --producer-zip "/Users/runner/work/_temp/bounded-delivery/producer.zip" \[0m
+native-parity	Require model-denied controls then fixed 12 and 60 second public C ABI parity	2026-10-17T04:58:23.7196710Z [36;1m  --producer-metadata "/Users/runner/work/_temp/bounded-delivery/producer.json" \[0m
+native-parity	Require model-denied controls then fixed 12 and 60 second public C ABI parity	2026-10-17T04:58:23.7197330Z [36;1m  --native-reference-zip "/Users/runner/work/_temp/bounded-delivery/native-reference.zip" \[0m
+native-parity	Require model-denied controls then fixed 12 and 60 second public C ABI parity	2026-10-17T04:58:23.7197910Z [36;1m  --native-reference-metadata "/Users/runner/work/_temp/bounded-delivery/native-reference.json" \[0m
+native-parity	Require model-denied controls then fixed 12 and 60 second public C ABI parity	2026-10-17T04:58:23.7198370Z [36;1m  --output "/Users/runner/work/_temp/bounded-native"[0m
+native-parity	Require model-denied controls then fixed 12 and 60 second public C ABI parity	2026-10-17T04:58:23.7231920Z shell: /bin/bash -e {0}
+native-parity	Require model-denied controls then fixed 12 and 60 second public C ABI parity	2026-10-17T04:58:23.7232130Z env:
+native-parity	Require model-denied controls then fixed 12 and 60 second public C ABI parity	2026-10-17T04:58:23.7232320Z   PYTHONDONTWRITEBYTECODE: 1
+native-parity	Require model-denied controls then fixed 12 and 60 second public C ABI parity	2026-10-17T04:58:23.7232660Z   pythonLocation: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+native-parity	Require model-denied controls then fixed 12 and 60 second public C ABI parity	2026-10-17T04:58:23.7233080Z   PKG_CONFIG_PATH: /Users/runner/hostedtoolcache/Python/3.12.10/arm64/lib/pkgconfig
+native-parity	Require model-denied controls then fixed 12 and 60 second public C ABI parity	2026-10-17T04:58:23.7236230Z   Python_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+native-parity	Require model-denied controls then fixed 12 and 60 second public C ABI parity	2026-10-17T04:58:23.7236630Z   Python2_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+native-parity	Require model-denied controls then fixed 12 and 60 second public C ABI parity	2026-10-17T04:58:23.7236990Z   Python3_ROOT_DIR: /Users/runner/hostedtoolcache/Python/3.12.10/arm64
+native-parity	Require model-denied controls then fixed 12 and 60 second public C ABI parity	2026-10-17T04:58:23.7237310Z ##[endgroup]
+native-parity	Require model-denied controls then fixed 12 and 60 second public C ABI parity	2026-10-17T04:58:24.4158070Z Traceback (most recent call last):
+native-parity	Require model-denied controls then fixed 12 and 60 second public C ABI parity	2026-10-17T04:58:24.4163440Z   File "/Users/runner/work/gen2/gen2/tools/nemotron-diarization/qualify_macos_bounded_native.py", line 224, in <module>
+native-parity	Require model-denied controls then fixed 12 and 60 second public C ABI parity	2026-10-17T04:58:24.4163980Z     if __name__ == '__main__': main()
+native-parity	Require model-denied controls then fixed 12 and 60 second public C ABI parity	2026-10-17T04:58:24.4164210Z                                ^^^^^^
+native-parity	Require model-denied controls then fixed 12 and 60 second public C ABI parity	2026-10-17T04:58:24.4165180Z   File "/Users/runner/work/gen2/gen2/tools/nemotron-diarization/qualify_macos_bounded_native.py", line 92, in main
+native-parity	Require model-denied controls then fixed 12 and 60 second public C ABI parity	2026-10-17T04:58:24.4165920Z     r['deliveries'][name] = admit_delivery(getattr(args,name+'_zip'),getattr(args,name+'_metadata'),p[name],output / name)
+native-parity	Require model-denied controls then fixed 12 and 60 second public C ABI parity	2026-10-17T04:58:24.4166490Z                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+native-parity	Require model-denied controls then fixed 12 and 60 second public C ABI parity	2026-10-17T04:58:24.4167200Z   File "/Users/runner/work/gen2/gen2/tools/nemotron-diarization/macos_portable_delivery.py", line 19, in admit_delivery
+native-parity	Require model-denied controls then fixed 12 and 60 second public C ABI parity	2026-10-17T04:58:24.4167730Z     if (api['id'] != expected['id'] or api['name'] != expected['name']
+native-parity	Require model-denied controls then fixed 12 and 60 second public C ABI parity	2026-10-17T04:58:24.4168240Z                                                       ~~~~~~~~^^^^^^^^
+native-parity	Require model-denied controls then fixed 12 and 60 second public C ABI parity	2026-10-17T04:58:24.4168530Z KeyError: 'name'
+native-parity	Require model-denied controls then fixed 12 and 60 second public C ABI parity	2026-10-17T04:58:24.4285280Z ##[error]Process completed with exit code 1.

@@ -21,6 +21,7 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ['protocol','producer-zip','producer-metadata','native-reference-zip','native-reference-metadata','output']:
         parser.add_argument('--'+name,type=Path,required=True)
+    parser.add_argument('--admit-only',action='store_true')
     args = parser.parse_args()
     tools = Path(__file__).resolve().parent
     repo,output = tools.parents[1],args.output.resolve()
@@ -51,13 +52,13 @@ def main():
 
     source = subprocess.check_output(['git','rev-parse','HEAD'],cwd=repo,text=True).strip()
     verify_git_sources(repo,source,{**{'tools/nemotron-diarization/'+name:value for name,value in p['tools'].items()},**p['repository_files']})
-    if raw_protocol != subprocess.check_output(['git','show',source+':tools/nemotron-diarization/macos-bounded-native.protocol.json'],cwd=repo):
+    if raw_protocol != subprocess.check_output(['git','show',source+':tools/nemotron-diarization/macos-bounded-native-v2.protocol.json'],cwd=repo):
         raise ValueError('committed bounded native protocol required')
     lock_path,lock = load_profile(BOUNDED_PROFILE)
     if profile_provenance(lock_path,lock) != p['runtime_provenance']: raise ValueError('bounded runtime provenance differs')
     output.mkdir(parents=True)
     (output / 'protocol.json').write_bytes(raw_protocol)
-    r = {'schema_version':1,'source_commit':source,'native_parity_passed':False,'realtime_gate_passed':False,
+    r = {'schema_version':1,'source_commit':source,'admit_only':args.admit_only,'deliveries_admitted':False,'native_parity_passed':False,'realtime_gate_passed':False,
          'commands':[],'neural_commands_started':[],'loaded_images':{},'comparisons':{},'release_qualified':False,'limits':p['limits']}
     persist = lambda:atomic_json(output / 'qualification.json',r)
     protected,guard = {},None
@@ -102,6 +103,8 @@ def main():
         if (origin['id'] != p['reference_producer']['id'] or origin['workflow_run']['head_sha'] != p['reference_producer']['source_commit']
                 or origin['digest'] != 'sha256:'+p['reference_producer']['zip']['sha256']):
             raise ValueError('reference construction identity differs')
+        r['deliveries_admitted'] = True
+        if args.admit_only: return
         sdk,package = output / 'sdk',output / 'work/nemo'
         for stem,key,destination in [('pooled-cpu-sdk','sdk_archive',sdk),('pooled-cpu-runtime','package_archive',package)]:
             files = json.loads((producer / (stem+'-files.json')).read_text())

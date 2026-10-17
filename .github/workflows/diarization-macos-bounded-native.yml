@@ -7,7 +7,7 @@ on:
       - .github/workflows/diarization-macos-bounded-native.yml
       - tools/nemotron-diarization/qualify_macos_bounded_native.py
       - tools/nemotron-diarization/bounded_cpu_metrics.py
-      - tools/nemotron-diarization/macos-bounded-native.protocol.json
+      - tools/nemotron-diarization/macos-bounded-native-v2.protocol.json
 permissions:
   contents: read
   actions: read
@@ -36,7 +36,7 @@ jobs:
       - name: Require model-denied controls then fixed 12 and 60 second public C ABI parity
         run: |
           python tools/nemotron-diarization/qualify_macos_bounded_native.py \
-            --protocol tools/nemotron-diarization/macos-bounded-native.protocol.json \
+            --protocol tools/nemotron-diarization/macos-bounded-native-v2.protocol.json \
             --producer-zip "${{ runner.temp }}/bounded-delivery/producer.zip" \
             --producer-metadata "${{ runner.temp }}/bounded-delivery/producer.json" \
             --native-reference-zip "${{ runner.temp }}/bounded-delivery/native-reference.zip" \
