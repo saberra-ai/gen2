@@ -5,6 +5,11 @@ complete-pair validators are implemented. The production qualification controlle
 frozen execution protocol and actual SDK/public/lifecycle run remain pending.
 This is preparation toward N5; no production or release gate is closed.
 
+The subsequent [production producer](nemotron-windows-q8-candidate-producer.md)
+implements the controller/workflow and frozen execution protocol. The original
+admission-layer preparation above is retained as historical scope; actual
+production execution is reported separately.
+
 The [preceding full-model diagnostic](nemotron-windows-q8-model-results.md)
 records two byte-exact candidate histories below native real time. Its separate
 5% speedup prediction fails, and six build-only graph import-library payloads

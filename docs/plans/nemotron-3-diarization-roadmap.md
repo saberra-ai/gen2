@@ -87,6 +87,19 @@ All507 local tests complete with seven Windows-only skips. The execution
 controller/protocol and actual fresh native/public/public/native, lifecycle and
 production SDK qualification remain pending; no production/release gate closes.
 
+The subsequent [production-candidate producer](../research/nemotron-windows-q8-candidate-producer.md)
+now implements the uninstrumented SDK build, unchanged public Rust consumer,
+native/public/public/native execution, original seven lifecycle tests and owned
+Windows Job supervision. The frozen protocol binds the actual local import
+closure, source/compiler recipe, public sources and consumed parent receipts.
+It retains97 compiler objects, all three graph-library payloads before graph
+compilation, the public example/test binaries and completed output bindings.
+All four RTFs must remain strictly below one; actual Windows execution and
+subsequent package/offline/coexistence/desktop/release gates remain open.
+The final local producer suite passes517 tests with seven Windows-only skips.
+Fresh source-only preparation v5 completes eleven owned/reaped commands and
+admits all3,425 files/97 compiler inputs without invoking a compiler or model.
+
 Remaining release work as of 2026-10-17:
 
 - Meet the original 20% DER target on every required meeting slice. The two AMI
