@@ -72,3 +72,13 @@ diarization, other hosts/platforms, GUI/microphone, fresh-machine delivery,
 signing/notarization or release. Human word annotation/review remains deferred
 at the user's request and the original 20% DER gate remains open. No production
 or default package is promoted.
+
+The [actual local admission receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-bounded-mixed-admission/collection-qualification.json)
+now passes at `29294bd1b078447fedb11cf695f66b8d8ddd6c12`. All 200/60 members,
+both complete ZIP/API contracts, shared construction and exact native origin,
+public realtime and seven lifecycle prerequisites verify. Its ten-member receipt
+retains the actual protocol/result, external API metadata, independent collector
+and passing one-test/275-test model-free logs. No work/home/tmp/build/helper/result
+tree or long-record copy is created; no package/helper/asset restoration,
+compiler, version probe or model executes. The reserve is released. Both actual
+mixed-model load-order processes remain pending.

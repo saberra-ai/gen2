@@ -46,6 +46,13 @@ was observed terminal before independent collection of all raw arrays and five
 exact 92-library audits. This closes this runtime's repeated-fixture long-session
 gate on the physical M4; mixed-model/app/platform and quality/release gates remain.
 
+The [bounded mixed-model protocol](../research/nemotron-bounded-mixed-runtime.md)
+now binds that exact completed long qualification before any full preparation.
+Its [actual artifact-only admission](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-bounded-mixed-admission/collection-qualification.json)
+passes the complete construction/public 200/60-member contracts at `29294bd1`,
+with no build, package/helper restoration, asset copying or native/model calls.
+The two unchanged Bark/actual-Laya/Metal-chat CPU load-order checks stay pending.
+
 Latest pooled CPU verification passes [30m/1h streams](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-long/collection-qualification.json),
 [mixed-model residency](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-mixed/collection-qualification.json)
 and [complete-app recording/live CLI](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-pnola-app-runtime/collection-qualification.json).
