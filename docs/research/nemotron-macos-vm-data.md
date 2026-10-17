@@ -123,6 +123,9 @@ Inspect first, then freeze any exact bounded mode change and restoration before
 another access attempt. Do not remount this failed clone, escalate on the host,
 or change ownership settings to force a pass. Stored guest UID/GID, provisioning,
 authenticated SSH and complete-app admission remain unproved.
+The [permission diagnostic API audit](nemotron-macos-vm-data-permissions.md)
+identifies parent-relative metadata inspection, public API limits and a narrowly
+conditional future guest-only change. It performs no new experiment or repair.
 
 Even a passing complete access result would establish strict group validation and stopped-volume
 access only. Guest provisioning/readiness/SSH, complete fresh-machine Pnola,
