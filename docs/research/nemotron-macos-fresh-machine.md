@@ -360,9 +360,16 @@ This is a correction to the observation procedure, not a production runtime fix
 or a relabeling of the first failed control. Source and inventory bindings keep
 the original build, diagnostic and corrected checks distinct.
 
-Production API, neural numerical parity, long-session, mixed-model, quality and
-release qualification remain pending. The original Rust runtime gate still
-rejects this new candidate version until that integration is explicitly tested.
+Subsequent exact-version Rust admission and [fresh M1 public qualification](../../benches/results/nemotron-diarization/macos-arm64/2026-10-16-pooled-public/collection-qualification.json)
+now pass for this candidate. The 60 delivered members and 309 historical source
+pins are independently verified; full 6000-row/48000-value and 27-turn output
+is bit-exact, and all seven lifecycle tests pass including 100 reloads. Nine
+full 92-library traces and two no-runtime traces replay against independently
+restored helper bytes and the constructed package. The initial collector
+incorrectly equated 264 repository pins with all 309 repository/tool pins;
+that failed assertion and corrected collector are retained, with no neural
+rerun. Shared-VM warm RTF 2.10983 remains slower than real time. Long-session,
+mixed-model, quality, complete-app and release qualification remain open.
 
 ## Portable CPU complete-app construction
 

@@ -755,9 +755,14 @@ passes all 20 commands with expected rejection statuses, full 6000-row/27-turn
 bit-exact public/native parity and all seven lifecycle tests including 100
 reloads. Nine full 92-library audits and two no-runtime audits pass. Public
 warm RTF 0.12841 and 7.82s whole-process time are descriptive M4 observations;
-the native reference came from a different M1 host. The fresh M1 public run
-remains pending. No long-session, mixed-model, quality, app or release gate is
-promoted.
+the native reference came from a different M1 host. The [fresh M1 public
+receipt](../../benches/results/nemotron-diarization/macos-arm64/2026-10-16-pooled-public/collection-qualification.json)
+now passes the same full parity and seven lifecycle checks, all 20 expected
+command statuses and nine full/two no-runtime library audits. All 60 delivered
+members, 309 historical source pins and helper payloads are independently
+verified. Warm RTF 2.10983 still exceeds 1. An initial collection-only pin-count
+assertion failure is retained with the corrected collector; no model rerun was
+needed. Long-session, mixed-model, quality, app and release gates remain open.
 
 `qualify_macos_pooled_long.py` and `macos-pooled-long.protocol.json` prepare
 four fresh 30-minute/one-hour native/public CPU streams on the named M4 Pro.

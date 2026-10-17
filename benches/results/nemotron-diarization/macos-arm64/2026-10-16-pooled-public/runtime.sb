@@ -1,0 +1,6 @@
+(version 1)
+(allow default)
+(deny network*)
+(deny file-read* (subpath "/Users/runner/work/_temp/pooled-public/sdk") (subpath "/Users/runner/work/_temp/pooled-public/producer") (subpath "/Users/runner/work/_temp/pooled-public/native-reference") (subpath "/Users/runner/work/gen2/gen2") (subpath "/Users/runner/work/_temp/pooled-public/cargo-target") (subpath "/Users/runner/work/_temp/pooled-public/helper-source") (subpath "/opt/homebrew") (subpath "/Users/runner/.cargo") (subpath "/Users/runner/.rustup") (subpath "/Users/runner/work/_temp/pooled-public-delivery") (subpath "/Users/runner/work/_temp/pooled-public-delivery") (subpath "/Users/runner/work/_temp/pooled-public-assets") (subpath "/Users/runner/work/_temp/pooled-public/reference"))
+(deny file-write* (subpath "/Users/runner/work/_temp/pooled-public/work") (subpath "/Users/runner/work/_temp/pooled-public/sdk") (subpath "/Users/runner/work/_temp/pooled-public/producer") (subpath "/Users/runner/work/_temp/pooled-public/native-reference") (subpath "/Users/runner/work/gen2/gen2") (subpath "/Users/runner/work/_temp/pooled-public/helper-source") (subpath "/Users/runner/work/_temp/pooled-public/reference"))
+(deny file-read-data (subpath "/Users/runner/work/_temp/pooled-public/results"))

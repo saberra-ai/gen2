@@ -986,8 +986,15 @@ now passes all 20 commands with expected rejection statuses, full 6000-row and
 Nine full 92-library audits and two no-runtime audits pass. The public stream
 records warm RTF 0.12841, external 7.82s and peak RSS 224,706,560 bytes; the
 100-reload process peaks at 199,442,432 bytes. These are descriptive M4 results,
-not a matched speedup or uncontended performance gate. The fresh M1 public job
-remains pending; long/mixed/quality/app/release gates remain separate.
+not a matched speedup or uncontended performance gate. The [fresh M1 public
+receipt](../../benches/results/nemotron-diarization/macos-arm64/2026-10-16-pooled-public/collection-qualification.json)
+now independently verifies all 60 delivered members, 309 historical source
+pins and restored helper payloads. All 20 commands, full 6000-row/27-turn
+bit-exact parity and the same seven lifecycle tests pass, with nine full
+92-library and two no-runtime trace audits. Warm RTF 2.10983 remains above 1;
+this VM does not pass real-time performance. Its initial collection-only
+source-pin assertion failure and corrected collector are retained without
+repeating model execution. Long/mixed/quality/app/release gates remain separate.
 
 The next pooled CPU long-session protocol is prepared separately in
 `macos-pooled-long.protocol.json`: exactly four fresh native/public streams

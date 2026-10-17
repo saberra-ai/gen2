@@ -1,0 +1,6 @@
+(version 1)
+(allow default)
+(deny network*)
+(deny file-read* (subpath "/Users/runner/work/_temp/pooled-public/work/assets") (subpath "/Users/runner/work/_temp/pooled-public-assets") (subpath "/Users/runner/work/_temp/pooled-public/native-reference"))
+(deny file-write* (subpath "/Users/runner/work/_temp/pooled-public/sdk") (subpath "/Users/runner/work/_temp/pooled-public/work/nemo") (subpath "/Users/runner/work/_temp/pooled-public/producer") (subpath "/Users/runner/work/_temp/pooled-public/native-reference") (subpath "/Users/runner/work/gen2/gen2") (subpath "/Users/runner/work/_temp/pooled-public/helper-source") (subpath "/opt/homebrew"))
+(deny file-read* (regex #".*\.(nemo|gguf|safetensors|onnx|npy|f32)$"))

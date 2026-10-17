@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "source_commit": "f72176c51f39b595b8ac9ea243a46a9390c24f13",
+  "ci_url": "https://github.com/saberra-ai/gen2/actions/runs/38987912935",
+  "pooled_public_runtime_passed": true,
+  "delivered_members_verified": 60,
+  "historical_source_pins_verified": 309,
+  "probabilities_compared": 48000,
+  "all_probabilities_bit_exact": true,
+  "turns_compared": 27,
+  "all_raw_turns_exact": true,
+  "seven_real_lifecycle_tests_passed": [
+    "dropping_a_diarization_child_keeps_the_parent_pipeline_active",
+    "silence_short_tail_and_idle_deadline_have_explicit_terminal_results",
+    "repeated_reload_full_queue_cancel_and_dropped_stream_release_resources",
+    "streamed_uneven_pcm_matches_recording_and_finish_is_idempotent",
+    "native_admission_cancellation_and_failed_load_release_reservations",
+    "verified_provisioned_cache_is_reused_offline",
+    "real_diarizer_matches_native_reference_and_resets_recordings"
+  ],
+  "actual_model_reloads_in_existing_lifecycle_test": 100,
+  "strict_private_library_audits": {
+    "full92": 9,
+    "no_private_runtime": 2
+  },
+  "helper_payloads_independently_restored_and_rehashed": true,
+  "warm_rtf": 2.1098284,
+  "public_process_peak_rss_bytes": 215220224,
+  "release_qualified": false,
+  "limits": [
+    "Actual fresh M1 virtual CPU public Rust qualification. All20commands passed expectedstatuses; all7unchanged lifecycle tests passed including100reloads. No new inference during collection.",
+    "All6000frames/48000probabilities and27rawturns exact against independently admitted immutable CABI delivery. Ninefull92-library audits andtwozero-runtime audits independently replayed with allhelperpayloads restored/rehashed.",
+    "Shared-VM warmRTF2.1098284 exceeds1; this does not pass the real-time performance gate or establish a matched speedup.",
+    "No new long/mixed/Metal/otherOS/quality/word-attribution/app/GUI/physicalmicrophone/freshcompleteapp/signing/notary/release gate or defaultpromotion. Opaquehelperarchive stays outsideGit with complete descriptors."
+  ]
+}
