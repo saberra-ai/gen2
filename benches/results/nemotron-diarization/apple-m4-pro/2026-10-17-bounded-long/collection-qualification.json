@@ -1,0 +1,157 @@
+{
+  "schema_version": 1,
+  "source_commit": "ab090d275fa5cd9c833d748a3682d43b426ea52c",
+  "bounded_30m_1h_passed": true,
+  "historical_source_pins_verified": 378,
+  "four_fresh_neural_processes": [
+    "30m-native",
+    "30m-public",
+    "60m-native",
+    "60m-public"
+  ],
+  "five_strict_private_library_audits": 92,
+  "protected_input_inventories_unchanged": true,
+  "qualified_helper_payloads_independently_restored_and_rehashed": true,
+  "all_three_opaque_artifact_deliveries_verified": true,
+  "all_raw_and_json_result_bytes_bound_before_and_after": {
+    "60m-public.json": {
+      "bytes": 265904,
+      "sha256": "b556e048cd9720a768b5a17fbb2e57ce66cd9e212c3107d47e6350b1c7021803"
+    },
+    "30m-native.json": {
+      "bytes": 62215,
+      "sha256": "acfde0d3943574948a39a7fee3d1b4a40e6d80e82ca45c64fb15e2b5cdc651df"
+    },
+    "60m-public.f32": {
+      "bytes": 2027936,
+      "sha256": "fc68ef15ebd49d196b4e7c30941cd0887f44eba40d00d8654b47f96090d63be3"
+    },
+    "60m-native.json.f32": {
+      "bytes": 2027936,
+      "sha256": "fc68ef15ebd49d196b4e7c30941cd0887f44eba40d00d8654b47f96090d63be3"
+    },
+    "prior-output-control.txt": {
+      "bytes": 11,
+      "sha256": "708811ccb1510c6d6c6e6379ef09be39bdbb0e7edcf44fefcca21c6228ee6d89"
+    },
+    "30m-native.json.f32": {
+      "bytes": 2010368,
+      "sha256": "565e7d125a1964b3578c8944033203f6770aabd8af16580984e62fefb7af85d6"
+    },
+    "60m-native.json": {
+      "bytes": 123377,
+      "sha256": "9248fc7b2e4dce1b8e8d70bf5fa790984df7faa79f019c8e4e655e4ee4695b6e"
+    },
+    "30m-public.f32": {
+      "bytes": 2010368,
+      "sha256": "565e7d125a1964b3578c8944033203f6770aabd8af16580984e62fefb7af85d6"
+    },
+    "30m-public.json": {
+      "bytes": 133286,
+      "sha256": "fceb29fafb5ae74a9b2174cf7187051af16de46e9fb58ed759d67cdd7cf76544"
+    }
+  },
+  "new_collection_native_helper_or_model_calls": 0,
+  "comparisons": {
+    "30m": {
+      "passed": true,
+      "scope": "wrapper/reference correctness at the recorded duration; not held-out quality or full release qualification",
+      "runtime_profile": "gen2-valid-mel-pool-cpu-v2",
+      "frame_contract": "v3-streaming-valid-mel-v1",
+      "audio_duration_seconds": 1800.0,
+      "backend": "cpu",
+      "device": null,
+      "native_frame_count": 180000,
+      "retained_first_frame": 117176,
+      "retained_rows": 62824,
+      "turns": 753,
+      "maximum_turn_error_seconds": 0.0,
+      "turn_tolerance_seconds": 1e-06,
+      "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+      "retained_probabilities_match": true,
+      "maximum_probability_error": 0.0,
+      "probability_tolerance": 1e-06,
+      "gen2_rtf": 0.1763301488888889,
+      "native_rtf": 0.199928955,
+      "peak_rss_bytes": {
+        "native": 249643008,
+        "public": 242892800
+      },
+      "process_rss_within_1024_mib": true,
+      "provisional_snapshots": 341,
+      "first_provisional_audio_seconds": 4.32,
+      "last_provisional_audio_seconds": 1793.52,
+      "backpressure_count": 126169,
+      "runtime_version": "nemo-speech-asr 0.2.0+gen2-valid-mel-pool-cpu-v2",
+      "probabilities_bit_exact": true
+    },
+    "60m": {
+      "passed": true,
+      "scope": "wrapper/reference correctness at the recorded duration; not held-out quality or full release qualification",
+      "runtime_profile": "gen2-valid-mel-pool-cpu-v2",
+      "frame_contract": "v3-streaming-valid-mel-v1",
+      "audio_duration_seconds": 3600.0,
+      "backend": "cpu",
+      "device": null,
+      "native_frame_count": 360000,
+      "retained_first_frame": 296627,
+      "retained_rows": 63373,
+      "turns": 1501,
+      "maximum_turn_error_seconds": 0.0,
+      "turn_tolerance_seconds": 1e-06,
+      "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+      "retained_probabilities_match": true,
+      "maximum_probability_error": 0.0,
+      "probability_tolerance": 1e-06,
+      "gen2_rtf": 0.17679389472222223,
+      "native_rtf": 0.17718186,
+      "peak_rss_bytes": {
+        "native": 248381440,
+        "public": 244547584
+      },
+      "process_rss_within_1024_mib": true,
+      "provisional_snapshots": 683,
+      "first_provisional_audio_seconds": 4.32,
+      "last_provisional_audio_seconds": 3593.52,
+      "backpressure_count": 213837,
+      "runtime_version": "nemo-speech-asr 0.2.0+gen2-valid-mel-pool-cpu-v2",
+      "probabilities_bit_exact": true
+    }
+  },
+  "time_l": {
+    "30m-native": {
+      "real_seconds": 360.4,
+      "user_seconds": 1495.89,
+      "system_seconds": 31.48,
+      "peak_rss_bytes": 249643008
+    },
+    "30m-public": {
+      "real_seconds": 317.73,
+      "user_seconds": 1345.67,
+      "system_seconds": 26.84,
+      "peak_rss_bytes": 242892800
+    },
+    "60m-native": {
+      "real_seconds": 638.55,
+      "user_seconds": 2699.75,
+      "system_seconds": 49.77,
+      "peak_rss_bytes": 248381440
+    },
+    "60m-public": {
+      "real_seconds": 636.58,
+      "user_seconds": 2703.88,
+      "system_seconds": 49.59,
+      "peak_rss_bytes": 244547584
+    }
+  },
+  "release_qualified": false,
+  "limits": [
+    "Commit protocol and all current source/tool descriptors before local admission. Bind current local imports before import and historical Git inputs before controller work. Require complete exact API/run/source/ZIP/member contracts for the 200 construction, 44 native and 60 public files. --admit-only returns before SDK/package/helper restoration, asset copying or model execution.",
+    "Require model-free construction, both native numerical/realtime gates and public numerical/realtime/all-seven lifecycle gates under the bounded identity and same exact producer/native origin. Restore helper payloads from opaque archives and verify qualification summaries/inventories/modes; no compilation or private C++ helper is used.",
+    "Reuse exact default geometry, Q8 model and 60s WAV with 30/60 repeats and pinned repeated float-PCM digests. Run each native/public duration once in separate fresh processes. Keep every original valid-Mel long acceptance criterion, cases and 1800s child deadline exactly unchanged. No automatic neural retry.",
+    "Deny network, source, construction/native/public artifacts, original helpers, external asset caches and all prior result-body reads. Protect package/helper/model inputs read-only and rehash before/between/after trials. Test six weight-format denials, runtime reference/read/write denials and exact new C ABI version before inference.",
+    "Require all retained 8-channel probability values and final turns within original 1e-6 bounds, positive matching compacted first frame, at least 60000 and at most 130000 retained rows, fixed complete duration/frame/input accounting, warm native/public RTF<1, both RSS<=1GiB and bounded timely provisional snapshots with real backpressure. Record byte equality and full process timing/RSS.",
+    "Trace only target binaries after time/env launchers and require exact92 private loaded libraries for version plus all four streams. Preserve8GiB/1GiB storage floors,256MiBphysicalreserve,per-child1800sdeadline,process-group kill and durable partial-failure logs. Actual named M4 evidence is not an M1/otherhost performance claim.",
+    "Repeated fixture transport/compaction evidence does not establish varied-hour recording quality, unseen-corpus accuracy, live acoustic prefix validity, mixed-model residency, Metal/otherOS/app/GUI/microphone/fresh-machine/signing/notary/release qualification. Original20%per-sliceDER and human word-gold gates remain unchanged; no default package is promoted."
+  ]
+}

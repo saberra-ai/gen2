@@ -35,7 +35,16 @@ controller nor bounded long-session inference has run at preregistration.
 The [actual local bounded-long preflight](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-bounded-long-admission/collection-qualification.json)
 now passes all three complete delivery/origin contracts at `04f6a553`, before
 package/helper restoration, assets, probes or inference. Its eleven-member
-receipt retains 274 passing model-free tests; the four long streams stay pending.
+receipt retains 274 passing model-free tests without neural execution.
+The [actual bounded-long result](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-bounded-long/collection-qualification.json)
+now passes all four fresh native/public processes at `ab090d275`: complete
+180,000/360,000-frame histories retain 62,824/63,373 probability rows and
+753/1,501 final turns, all byte-exact after compaction. Public warm RTF is
+0.176330/0.176794, peak public RSS is 242,892,800/244,547,584 bytes, and all
+original snapshot/backpressure/storage/deadline criteria pass. The controller
+was observed terminal before independent collection of all raw arrays and five
+exact 92-library audits. This closes this runtime's repeated-fixture long-session
+gate on the physical M4; mixed-model/app/platform and quality/release gates remain.
 
 Latest pooled CPU verification passes [30m/1h streams](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-long/collection-qualification.json),
 [mixed-model residency](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-mixed/collection-qualification.json)

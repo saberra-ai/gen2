@@ -59,4 +59,27 @@ origin and required public lifecycle/realtime gates. Its eleven members retain
 the actual protocol/result, metadata, six-test and 274-test logs and independent
 collector. No work/home/tmp/helper/result tree is created, no package/helper is
 restored, no asset is copied, and no command, version probe or model executes.
-The physical reserve is released. Four fresh long streams remain pending.
+The physical reserve is released. No long-session claim comes from this preflight.
+
+The [actual bounded-long receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-bounded-long/collection-qualification.json)
+now passes at `ab090d275fa5cd9c833d748a3682d43b426ea52c`. The existing controller
+handle was observed terminal with exit 0 before independent byte-only collection.
+All seven commands returned 0, including exactly the four preregistered fresh
+native/public neural processes. All three complete deliveries, helper archive
+restoration/modes, protected input inventories, assets and five exact 92-library
+audits replay independently. The 36-member receipt includes all four raw retained
+probability arrays, JSON outputs, logs, source-bound protocol and collector.
+
+| Audio | Retained first frame / rows | Final turns | Native / public warm RTF | Native / public peak RSS (bytes) |
+| --- | --- | --- | --- | --- |
+| 30 minutes | 117,176 / 62,824 | 753 | 0.199929 / 0.176330 | 249,643,008 / 242,892,800 |
+| 60 minutes | 296,627 / 63,373 | 1,501 | 0.177182 / 0.176794 | 248,381,440 / 244,547,584 |
+
+Every retained value and final turn matches byte-for-byte, with zero probability
+and turn error after compaction. Complete native histories contain 180,000 and
+360,000 frames. Public streams deliver 341/683 bounded provisional snapshots,
+first at 4.32 seconds and last at 1793.52/3593.52 seconds, with positive observed
+backpressure. Original RTF/RSS/timeline/storage/deadline gates pass and the reserve
+is released. These are repeated-fixture transport/compaction results on this
+physical M4, not varied hour-long speech quality or a supported desktop release.
+The original quality, human-word, app, platform and signing gates remain open.
