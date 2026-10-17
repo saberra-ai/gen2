@@ -267,9 +267,18 @@ signal/spawn cleanup, raw transport and incremental Git bundle transfer.
 All8/4/3 receiver/publication/static controls and pins precede archive access.
 Only the two closed result directories can enter a bounded128MiB result bundle;
 no kernel/model is rerun and no remote branch is written by the receiver.
-V2 remote execution, bounded return/local import, full result replay and review
-remain pending. Neither CI success nor bundle creation substitutes for the
+At V2 preparation, remote execution, bounded return/local import, full result
+replay and review were pending. Neither CI success nor bundle creation substitutes for the
 original numerical, timing, observer or release gates.
+
+The repaired receiver atcc655ab9 now completed successfully in
+run39080172371/job117535343984. Its bounded result delivery is17,392,754bytes;
+the new [local bundle admission](../research/nemotron-windows-q8-apack-bundle-admission.md)
+pins terminal API identities and prepares quarantine-only Git inspection and
+complete retained collection materialization. Five focused controls cover real
+Git isolation plus mutated path/link/data rejection. Local transfer/admission,
+raw numerical/timing interpretation and review remain pending; no speed or
+production/release/main pass follows the workflow conclusion.
 
 Remaining release work as of 2026-10-17:
 
