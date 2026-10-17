@@ -111,6 +111,15 @@ The final repaired producer suite passes518 tests with seven Windows-only skips;
 source-only preparation v7 again admits3,425 files/97 compiler inputs through
 eleven zero-exit, reaped commands, with no compiler/SDK/model invocation.
 
+The [Windows Q8 package metadata prerequisite](../research/nemotron-windows-q8-package-admission.md)
+now rejects stale producers, failed flags, any individual slow/nonfinite RTF,
+missing/reordered commands, incomplete Job cleanup and changed SDK/public/Cargo
+execution arguments. Six synthetic tests cover that boundary; final local tests
+total524 with seven Windows-only skips. Full payload replay, package consumer,
+actual construction/offline/coexistence/desktop and original release gates remain
+required. The exact producer job continues independently; no new SDK/model run
+or package admission is claimed by this metadata-only increment.
+
 Remaining release work as of 2026-10-17:
 
 - Meet the original 20% DER target on every required meeting slice. The two AMI
