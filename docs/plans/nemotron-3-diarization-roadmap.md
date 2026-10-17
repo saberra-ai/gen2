@@ -233,6 +233,19 @@ thirteen feature CI jobs pass. This supplies no qualifying full-model/SDK or
 production/main promotion. Original quality, deferred human-review, desktop,
 fresh-machine, platform and signing/release gates remain open.
 
+The distinct [bounded A-packing comparison](../research/nemotron-windows-q8-apack.md)
+now keeps the production2×4 geometry/arithmetic/ownership while packing each
+worker's touched A rows once per dispatch. Allocation, packing and matching free
+remain inside every timed call; overflow-safe64MiB bounds and allocation failure
+use the original helper. Exhaustive transport controls retain every payload byte
+and all65,536 scale inputs, plus padded strides, source/destination guards and
+ten bound decisions. Seven focused tests pass, including actual packing/control
+C++ compiled with portable memcpy shims; this does not establish Windows AVX
+behavior. The separate protocol binds161 tools,3,826 repository references and
+40 local imports. The full local suite passes583 tests with seven Windows-only
+skips; both source reviews are clear. Original vector, speed, drift, observer
+and release gates remain unchanged; actual Windows execution is still required.
+
 Remaining release work as of 2026-10-17:
 
 - Meet the original 20% DER target on every required meeting slice. The two AMI
