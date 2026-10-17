@@ -1,0 +1,599 @@
+[
+  {
+    "name": "clone-native",
+    "command": [
+      "git",
+      "clone",
+      "--no-hardlinks",
+      "--no-checkout",
+      "D:\\a\\gen2\\gen2\\native-source",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\source-1"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 0.6870000000000118
+  },
+  {
+    "name": "checkout-native",
+    "command": [
+      "git",
+      "-C",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\source-1",
+      "checkout",
+      "--detach",
+      "083861c241061562b8ec29eb06d7f6cdc3af8775"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 0.625
+  },
+  {
+    "name": "clone-llama",
+    "command": [
+      "git",
+      "clone",
+      "--no-hardlinks",
+      "--no-checkout",
+      "D:\\a\\gen2\\gen2\\native-source\\llama.cpp",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\source-1\\llama.cpp"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 9.6400000000001
+  },
+  {
+    "name": "checkout-llama",
+    "command": [
+      "git",
+      "-C",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\source-1\\llama.cpp",
+      "checkout",
+      "--detach",
+      "bd4f514db14d87fded667787a7a963bfbaa98e89"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 1.2039999999999509
+  },
+  {
+    "name": "inference-patch-check-0",
+    "command": [
+      "git",
+      "apply",
+      "--check",
+      "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\patches\\v3-finish-valid-mel.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\windows-worker-diagnostic\\source-1",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 0.031000000000062755
+  },
+  {
+    "name": "inference-patch-0",
+    "command": [
+      "git",
+      "apply",
+      "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\patches\\v3-finish-valid-mel.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\windows-worker-diagnostic\\source-1",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 0.03200000000003911
+  },
+  {
+    "name": "inference-patch-check-1",
+    "command": [
+      "git",
+      "apply",
+      "--check",
+      "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\patches\\cpu-thread-cap.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\windows-worker-diagnostic\\source-1",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 0.04699999999991178
+  },
+  {
+    "name": "inference-patch-1",
+    "command": [
+      "git",
+      "apply",
+      "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\patches\\cpu-thread-cap.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\windows-worker-diagnostic\\source-1",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 0.031000000000062755
+  },
+  {
+    "name": "inference-patch-check-2",
+    "command": [
+      "git",
+      "apply",
+      "--check",
+      "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\patches\\persistent-cpu-pool.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\windows-worker-diagnostic\\source-1",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 0.01599999999996271
+  },
+  {
+    "name": "inference-patch-2",
+    "command": [
+      "git",
+      "apply",
+      "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\patches\\persistent-cpu-pool.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\windows-worker-diagnostic\\source-1",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 0.047000000000025466
+  },
+  {
+    "name": "cmake-version",
+    "command": [
+      "cmake",
+      "--version"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 0.031000000000062755
+  },
+  {
+    "name": "git-line-ending-config",
+    "command": [
+      "git",
+      "-C",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\source-1\\llama.cpp",
+      "config",
+      "--show-origin",
+      "--get-regexp",
+      "^core\\.(autocrlf|eol)$"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 0.03099999999994907
+  },
+  {
+    "name": "sdk-build",
+    "command": [
+      "pwsh",
+      "-NoProfile",
+      "-NonInteractive",
+      "-Command",
+      "& 'D:\\a\\_temp\\windows-worker-diagnostic\\source-1\\scripts\\windows\\build.ps1' -Backend cpu -Profile asr -Jobs 2 -BuildDir 'D:\\a\\_temp\\windows-worker-diagnostic\\source-1\\build\\gen2-cpu-diar' -CMakeArgs @('-DNEMO_SPEECH_BUILD_EXAMPLES=ON','-DNEMO_SPEECH_BUILD_CLI=OFF','-DNEMO_SPEECH_BUILD_MIC_CAPTURE=OFF','-DGGML_OPENMP=OFF','-DNEMO_SPEECH_VERSION_METADATA=gen2-diagnostic-cpu-threads-1','-DGGML_NATIVE=OFF','-DGGML_AVX=ON','-DGGML_AVX2=ON','-DGGML_AVX512=OFF','-DGGML_AVX_VNNI=OFF','-DGGML_FMA=ON','-DGGML_F16C=ON','-DNEMO_SPEECH_WITH_NORM=OFF','-DCMAKE_INSTALL_LIBDIR=lib','-DNEMO_SPEECH_BUILD_TESTS=ON','-DBUILD_TESTING=ON','-DCMAKE_EXPORT_COMPILE_COMMANDS=ON','-DNEMO_SPEECH_GGML_PATCHED=ON','-DNEMO_SPEECH_LLAMA_CPP_SOURCE_DIR:PATH=','-DGGML_BACKEND_DL=OFF','-DGGML_METAL=OFF','-DGGML_CUDA=OFF','-DGGML_VULKAN=OFF','-DCMAKE_INSTALL_PREFIX=D:\\a\\_temp\\windows-worker-diagnostic\\sdk-1','-DCMAKE_C_COMPILER=C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe','-DCMAKE_CXX_COMPILER=C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe','-DCMAKE_PROJECT_TOP_LEVEL_INCLUDES:FILEPATH=D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\windows_private_dlls.cmake','-DNEMO_SPEECH_BUILD_ASR=OFF','-DNEMO_SPEECH_BUILD_TTS=OFF')"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 105.95300000000009
+  },
+  {
+    "name": "sdk-install",
+    "command": [
+      "cmake",
+      "--install",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\source-1\\build\\gen2-cpu-diar",
+      "--config",
+      "Release"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 0.06299999999987449
+  },
+  {
+    "name": "compiler-llama-archive",
+    "command": [
+      "git",
+      "archive",
+      "--format=tar",
+      "-o",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\platform-pristine-llama.tar",
+      "bd4f514db14d87fded667787a7a963bfbaa98e89",
+      "--",
+      ".",
+      ":(exclude)models",
+      ":(exclude)docs",
+      ":(exclude)media"
+    ],
+    "cwd": "D:\\a\\_temp\\windows-worker-diagnostic\\source-1\\llama.cpp",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 0.25
+  },
+  {
+    "name": "compiler-llama-patch-0",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\platform-llama-replay-3i5q0yx1",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.03199999999992542
+  },
+  {
+    "name": "compiler-llama-patch-1",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\platform-llama-replay-3i5q0yx1",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.03199999999992542
+  },
+  {
+    "name": "compiler-llama-patch-2",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\platform-llama-replay-3i5q0yx1",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.03099999999994907
+  },
+  {
+    "name": "compiler-llama-patch-3",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\platform-llama-replay-3i5q0yx1",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.047000000000025466
+  },
+  {
+    "name": "compiler-llama-patch-4",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\platform-llama-replay-3i5q0yx1",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.03099999999994907
+  },
+  {
+    "name": "compiler-llama-patch-5",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\platform-llama-replay-3i5q0yx1",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.03199999999992542
+  },
+  {
+    "name": "compiler-llama-patch-6",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\platform-llama-replay-3i5q0yx1",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.031000000000176442
+  },
+  {
+    "name": "compiler-llama-patch-7",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\platform-llama-replay-3i5q0yx1",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.03099999999994907
+  },
+  {
+    "name": "compiler-llama-patch-8",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\platform-llama-replay-3i5q0yx1",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.047000000000025466
+  },
+  {
+    "name": "compiler-llama-patch-9",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\platform-llama-replay-3i5q0yx1",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.03099999999994907
+  },
+  {
+    "name": "compiler-llama-patch-10",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\platform-llama-replay-3i5q0yx1",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.031000000000176442
+  },
+  {
+    "name": "compiler-llama-patch-11",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\platform-llama-replay-3i5q0yx1",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.031000000000176442
+  },
+  {
+    "name": "compiler-llama-patch-12",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\platform-llama-replay-3i5q0yx1",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.03099999999994907
+  },
+  {
+    "name": "compiler-llama-patch-13",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\platform-llama-replay-3i5q0yx1",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.03099999999994907
+  },
+  {
+    "name": "compiler-llama-patch-14",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\platform-llama-replay-3i5q0yx1",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.04600000000004911
+  },
+  {
+    "name": "compiler-llama-patch-15",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\platform-llama-replay-3i5q0yx1",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.031000000000176442
+  },
+  {
+    "name": "compiler-llama-patch-16",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\platform-llama-replay-3i5q0yx1",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.03099999999994907
+  },
+  {
+    "name": "compiler-llama-patch-17",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\platform-llama-replay-3i5q0yx1",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.015999999999849024
+  },
+  {
+    "name": "compiler-llama-patch-18",
+    "command": [
+      "git",
+      "apply",
+      "--whitespace=nowarn",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\current-platform-llama.patch"
+    ],
+    "cwd": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\platform-llama-replay-3i5q0yx1",
+    "environment_overrides": {
+      "GIT_CEILING_DIRECTORIES": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1"
+    },
+    "returncode": 0,
+    "elapsed_seconds": 0.03099999999994907
+  },
+  {
+    "name": "model-free-state-test",
+    "command": [
+      "ctest",
+      "--test-dir",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\source-1\\build\\gen2-cpu-diar",
+      "--output-on-failure",
+      "-R",
+      "^diar_state$"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 0.07799999999997453
+  },
+  {
+    "name": "native-probe-build",
+    "command": [
+      "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+      "/nologo",
+      "/std:c++17",
+      "/O2",
+      "/EHsc",
+      "/TP",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\native_stream_probe_bounded.cpp",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\source-1\\llama.cpp\\vendor\\hash\\sha256\\sha256.c",
+      "/ID:\\a\\_temp\\windows-worker-diagnostic\\sdk-1\\include",
+      "/ID:\\a\\_temp\\windows-worker-diagnostic\\source-1\\examples",
+      "/ID:\\a\\_temp\\windows-worker-diagnostic\\source-1\\llama.cpp\\vendor\\hash",
+      "/link",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\sdk-1\\lib\\gen2_nemo_windows_nemo_speech_asr_c.lib",
+      "/OUT:D:\\a\\_temp\\windows-worker-diagnostic\\sdk-1\\bin\\gen2_native_stream_probe_valid_mel.exe"
+    ],
+    "cwd": "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 1.984000000000151
+  },
+  {
+    "name": "windows-provenance",
+    "command": [
+      "pwsh",
+      "-NoProfile",
+      "-NonInteractive",
+      "-File",
+      "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\windows_provenance.ps1",
+      "-SdkRoot",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\sdk-1",
+      "-CMakeCache",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\source-1\\build\\gen2-cpu-diar\\CMakeCache.txt",
+      "-Compiler",
+      "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+      "-Output",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 2.0
+  },
+  {
+    "name": "loader-dependencies",
+    "command": [
+      "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\dumpbin.exe",
+      "/nologo",
+      "/dependents",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\sdk-1\\bin\\gen2_nemo_windows_nemo_speech_asr_c.dll"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 0.015000000000100044
+  },
+  {
+    "name": "version-only",
+    "command": [
+      "C:\\hostedtoolcache\\windows\\Python\\3.12.10\\x64\\python.exe",
+      "-c",
+      "import ctypes,os,sys; directory=os.add_dll_directory(sys.argv[2]) if os.name==\"nt\" else None; library=ctypes.CDLL(sys.argv[1]); function=library.nemo_speech_asr_version; function.restype=ctypes.c_char_p; print(function().decode(\"utf-8\"))",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\sdk-1\\bin\\gen2_nemo_windows_nemo_speech_asr_c.dll",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\sdk-1\\bin"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 0.03099999999994907
+  },
+  {
+    "name": "case-2-cap-1",
+    "command": [
+      "D:\\a\\_temp\\windows-worker-diagnostic\\sdk-1\\bin\\gen2_native_stream_probe_valid_mel.exe",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\assets\\Nemotron-3-Diarization.q8_0.gguf",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\assets\\ami_en2002d_2132.wav",
+      "1",
+      "-1",
+      "D:\\a\\_temp\\windows-worker-diagnostic\\evidence-1\\case-2-cap-1.json"
+    ],
+    "cwd": "D:\\a\\gen2\\gen2",
+    "environment_overrides": {},
+    "returncode": 0,
+    "elapsed_seconds": 135.70299999999997
+  }
+]

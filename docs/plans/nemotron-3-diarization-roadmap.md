@@ -76,8 +76,13 @@ Remaining release work as of 2026-10-17:
   unavailable TTS LFS object, before any compilation or inference. Its failure is
   retained; the [versioned checkout correction](../research/nemotron-windows-worker-diagnostic-v2.md)
   uses a child-only LFS-skip policy and actual Git-LFS regression. All359 model-free
-  tests pass; corrected actual matrix execution remains pending. It must measure
-  rather than assume whether fewer workers help the observed2-core/4-logical host.
+  tests pass. The [actual corrected matrix](../research/nemotron-windows-worker-results.md)
+  now completes on one EPYC7763 host: native RTF1.04734/1.29618/2.26025/1.05379
+  for4/2/1/4 workers, with all four full histories byte-exact,27turns identical and121
+  successful child commands. Fewer workers are slower; the production policy
+  stays unchanged and below-one performance still fails. The368-member collection
+  replays all three SDK/compiler audits. Compiler/kernel investigation remains;
+  this native-only diagnostic does not qualify the public runtime or packaging.
   Then merge and
   push the completed feature to main; no main promotion is justified yet.
 

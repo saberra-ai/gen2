@@ -1,0 +1,457 @@
+{
+  "schema_version": 1,
+  "source_commit": "1745243b221368855381ea36879ccdc1bb731528",
+  "run_id": 39025306014,
+  "artifact_id": 12098214420,
+  "artifact": {
+    "bytes": 45429953,
+    "sha256": "81433805f066deb99d449ceeab93a2ada0d1c50052b3d698eb117cc5f411c786"
+  },
+  "artifact_members_rebound": 516,
+  "all_evaluator_sources_admitted_before_local_import": true,
+  "tools_verified": 53,
+  "repository_files_verified": 268,
+  "diagnostic_completed": true,
+  "release_qualified": false,
+  "package_qualified": false,
+  "public_or_lifecycle_qualified": false,
+  "builds": {
+    "4": {
+      "sdk_files": 66,
+      "commands": 41,
+      "materialized_ggml_files": 3425,
+      "actual_compiler_sources": 97,
+      "cpu": [
+        {
+          "Name": "AMD EPYC 7763 64-Core Processor                ",
+          "Manufacturer": "AuthenticAMD",
+          "Architecture": 9,
+          "NumberOfCores": 2,
+          "NumberOfLogicalProcessors": 4,
+          "ProcessorId": "0000000000000000"
+        }
+      ]
+    },
+    "2": {
+      "sdk_files": 66,
+      "commands": 40,
+      "materialized_ggml_files": 3425,
+      "actual_compiler_sources": 97,
+      "cpu": [
+        {
+          "Name": "AMD EPYC 7763 64-Core Processor                ",
+          "Manufacturer": "AuthenticAMD",
+          "Architecture": 9,
+          "NumberOfCores": 2,
+          "NumberOfLogicalProcessors": 4,
+          "ProcessorId": "0000000000000000"
+        }
+      ]
+    },
+    "1": {
+      "sdk_files": 66,
+      "commands": 40,
+      "materialized_ggml_files": 3425,
+      "actual_compiler_sources": 97,
+      "cpu": [
+        {
+          "Name": "AMD EPYC 7763 64-Core Processor                ",
+          "Manufacturer": "AuthenticAMD",
+          "Architecture": 9,
+          "NumberOfCores": 2,
+          "NumberOfLogicalProcessors": 4,
+          "ProcessorId": "0000000000000000"
+        }
+      ]
+    }
+  },
+  "cases": [
+    {
+      "index": 0,
+      "cap": 4,
+      "workers": {
+        "requested_cap": 4,
+        "hardware_concurrency": 4,
+        "effective_threads": 4,
+        "attached_pool_threads": 4
+      },
+      "comparison": {
+        "passed": true,
+        "scope": "native diagnostic parity only; no public/lifecycle/package qualification",
+        "runtime_profile": "diagnostic-worker-matrix-v1",
+        "frame_contract": "v3-streaming-valid-mel-v1",
+        "audio_duration_seconds": 60.0,
+        "backend": "cpu",
+        "device": null,
+        "native_frame_count": 6000,
+        "retained_first_frame": 0,
+        "retained_rows": 6000,
+        "turns": 27,
+        "maximum_turn_error_seconds": 0.0,
+        "turn_tolerance_seconds": 1e-06,
+        "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+        "retained_probabilities_match": true,
+        "maximum_probability_error": 0.0,
+        "probability_tolerance": 1e-06,
+        "reference_runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-4",
+        "actual_runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-4",
+        "reference_cap": 4,
+        "actual_cap": 4,
+        "probabilities_bit_exact": true,
+        "reference_rtf": 1.0473386833333334,
+        "actual_rtf": 1.0473386833333334
+      },
+      "raw_probabilities": {
+        "bytes": 192000,
+        "sha256": "6b08c607371bab2b7965faebe88d8ee31ae39c41c377043d137cbbf424f3af7d"
+      },
+      "native_push_median_micros": 971061,
+      "native_push_p95_micros": 2334638,
+      "native_push_max_micros": 2413347,
+      "cold_native_load_micros": 39417,
+      "finish_micros": 1617205
+    },
+    {
+      "index": 1,
+      "cap": 2,
+      "workers": {
+        "requested_cap": 2,
+        "hardware_concurrency": 4,
+        "effective_threads": 2,
+        "attached_pool_threads": 2
+      },
+      "comparison": {
+        "passed": true,
+        "scope": "native diagnostic parity only; no public/lifecycle/package qualification",
+        "runtime_profile": "diagnostic-worker-matrix-v1",
+        "frame_contract": "v3-streaming-valid-mel-v1",
+        "audio_duration_seconds": 60.0,
+        "backend": "cpu",
+        "device": null,
+        "native_frame_count": 6000,
+        "retained_first_frame": 0,
+        "retained_rows": 6000,
+        "turns": 27,
+        "maximum_turn_error_seconds": 0.0,
+        "turn_tolerance_seconds": 1e-06,
+        "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+        "retained_probabilities_match": true,
+        "maximum_probability_error": 0.0,
+        "probability_tolerance": 1e-06,
+        "reference_runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-4",
+        "actual_runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-2",
+        "reference_cap": 4,
+        "actual_cap": 2,
+        "probabilities_bit_exact": true,
+        "reference_rtf": 1.0473386833333334,
+        "actual_rtf": 1.2961786166666667
+      },
+      "raw_probabilities": {
+        "bytes": 192000,
+        "sha256": "6b08c607371bab2b7965faebe88d8ee31ae39c41c377043d137cbbf424f3af7d"
+      },
+      "native_push_median_micros": 1145197,
+      "native_push_p95_micros": 2843693,
+      "native_push_max_micros": 3077164,
+      "cold_native_load_micros": 34284,
+      "finish_micros": 1930058
+    },
+    {
+      "index": 2,
+      "cap": 1,
+      "workers": {
+        "requested_cap": 1,
+        "hardware_concurrency": 4,
+        "effective_threads": 1,
+        "attached_pool_threads": 1
+      },
+      "comparison": {
+        "passed": true,
+        "scope": "native diagnostic parity only; no public/lifecycle/package qualification",
+        "runtime_profile": "diagnostic-worker-matrix-v1",
+        "frame_contract": "v3-streaming-valid-mel-v1",
+        "audio_duration_seconds": 60.0,
+        "backend": "cpu",
+        "device": null,
+        "native_frame_count": 6000,
+        "retained_first_frame": 0,
+        "retained_rows": 6000,
+        "turns": 27,
+        "maximum_turn_error_seconds": 0.0,
+        "turn_tolerance_seconds": 1e-06,
+        "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+        "retained_probabilities_match": true,
+        "maximum_probability_error": 0.0,
+        "probability_tolerance": 1e-06,
+        "reference_runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-4",
+        "actual_runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-1",
+        "reference_cap": 4,
+        "actual_cap": 1,
+        "probabilities_bit_exact": true,
+        "reference_rtf": 1.0473386833333334,
+        "actual_rtf": 2.2602515000000003
+      },
+      "raw_probabilities": {
+        "bytes": 192000,
+        "sha256": "6b08c607371bab2b7965faebe88d8ee31ae39c41c377043d137cbbf424f3af7d"
+      },
+      "native_push_median_micros": 2100373,
+      "native_push_p95_micros": 5051270,
+      "native_push_max_micros": 5308733,
+      "cold_native_load_micros": 34489,
+      "finish_micros": 3585267
+    },
+    {
+      "index": 3,
+      "cap": 4,
+      "workers": {
+        "requested_cap": 4,
+        "hardware_concurrency": 4,
+        "effective_threads": 4,
+        "attached_pool_threads": 4
+      },
+      "comparison": {
+        "passed": true,
+        "scope": "native diagnostic parity only; no public/lifecycle/package qualification",
+        "runtime_profile": "diagnostic-worker-matrix-v1",
+        "frame_contract": "v3-streaming-valid-mel-v1",
+        "audio_duration_seconds": 60.0,
+        "backend": "cpu",
+        "device": null,
+        "native_frame_count": 6000,
+        "retained_first_frame": 0,
+        "retained_rows": 6000,
+        "turns": 27,
+        "maximum_turn_error_seconds": 0.0,
+        "turn_tolerance_seconds": 1e-06,
+        "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+        "retained_probabilities_match": true,
+        "maximum_probability_error": 0.0,
+        "probability_tolerance": 1e-06,
+        "reference_runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-4",
+        "actual_runtime_version": "nemo-speech-asr 0.2.0+gen2-diagnostic-cpu-threads-4",
+        "reference_cap": 4,
+        "actual_cap": 4,
+        "probabilities_bit_exact": true,
+        "reference_rtf": 1.0473386833333334,
+        "actual_rtf": 1.0537872333333334
+      },
+      "raw_probabilities": {
+        "bytes": 192000,
+        "sha256": "6b08c607371bab2b7965faebe88d8ee31ae39c41c377043d137cbbf424f3af7d"
+      },
+      "native_push_median_micros": 991998,
+      "native_push_p95_micros": 2305449,
+      "native_push_max_micros": 2415062,
+      "cold_native_load_micros": 38681,
+      "finish_micros": 1627105
+    }
+  ],
+  "independent_pristine_archive": {
+    "bytes": 57466880,
+    "sha256": "1f4d4730ac53c669d6c7247bc0bcf02453f2427901af3cf989bd33a37f943a76"
+  },
+  "ggml_replay_commands": [
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/patch-0.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/patch-1.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/patch-2.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/patch-3.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/patch-4.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/patch-5.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/patch-6.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/patch-7.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/patch-8.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/patch-9.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/patch-10.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/patch-11.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/patch-12.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/patch-13.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/patch-14.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/patch-15.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/patch-16.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/patch-17.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/ggml",
+      "returncode": 0
+    },
+    {
+      "argv": [
+        "/usr/bin/git",
+        "apply",
+        "--whitespace=nowarn",
+        "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/patch-18.diff"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/windows-worker-diagnostic-ci-v2/collection-replay-v2/ggml",
+      "returncode": 0
+    }
+  ],
+  "new_compiler_helper_binary_or_model_calls_during_collection": 0,
+  "canonical_upstream_patch_order_verified": true,
+  "msvc_avx2_fma_f16c_compiler_defines_verified": true,
+  "fma_f16c_cache_types": "UNINITIALIZED CLI values; effective definitions verified in every GGML CPU compiler command.",
+  "copied_artifact_evidence_rebound_before_manifest": true,
+  "limits": [
+    "All observations are native diagnostic timings; none is a supported live/public/package qualification.",
+    "Every case retains complete6000x8 probabilities and final turns with unchanged1e-6 tolerance.",
+    "No timing averaging/retry/promotion. Configured persistent-pool count is not an OS thread census.",
+    "Downloaded archives and native binaries remain local; Git retains hashes, scoped logs/sources and full raw arrays."
+  ]
+}

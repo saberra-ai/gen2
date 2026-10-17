@@ -8,7 +8,13 @@ preregisters the fixed4/2/1/4 same-host experiment. The first diagnostic fails
 before compilation/inference on unrelated TTS Git-LFS smudging. The separately
 versioned [checkout correction](nemotron-windows-worker-diagnostic-v2.md) passes
 the actual Git-LFS regression; all359 model-free tests and all three source-only/LF
-compositions pass. The corrected actual matrix is pending.
+compositions pass. The [actual corrected matrix](nemotron-windows-worker-results.md)
+now preserves a368-member result: four/two/one/four native RTF is
+1.04734/1.29618/2.26025/1.05379 on one EPYC7763 host, with all four complete
+histories byte-exact and27turns identical. All121 commands and all three compiler/SDK
+audits pass. Fewer workers do not solve the performance failure; retain the
+production policy and investigate computation/compiler behavior. No diagnostic
+SDK is admitted as a production/public/offline package.
 
 The new [producer](../../tools/nemotron-diarization/platform_bounded_windows_native.py),
 [composed-source verifier](../../tools/nemotron-diarization/platform_bounded_sources.py)
