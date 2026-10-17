@@ -150,6 +150,14 @@ Remaining release work as of 2026-10-17:
   internal waits and scheduling remain included. Native RTF 1.013520/1.020798/
   1.015328/1.016462 still fails below one. Preserve the 292-file receipt and
   investigate those paths separately; no production or release gate is closed.
+  The separately versioned [math errno experiment](../research/nemotron-windows-math-errno.md)
+  now implements two exact-Clang SDKs differing only in the candidate's errno
+  compiler flag. Both retain contraction off, unchanged nineteen-patch native
+  source, all97 command checks and byte-exact full histories in a surrounding
+  control/candidate/candidate/control sequence. Actual driver expansion must
+  prove the intended math policy; effective O3 already exists in the baseline.
+  All423 local model-free tests pass, with seven Windows-only skips. Actual
+  Windows execution and any optimization result remain pending.
   Then merge and
   push the completed feature to main; no main promotion is justified yet.
 

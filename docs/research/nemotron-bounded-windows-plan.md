@@ -91,6 +91,14 @@ Internal waits, scheduling, observer effects and overlapping workers limit
 interpretation. The 292-file receipt qualifies measurement only; original
 production/public/package and release gates remain open.
 
+The next [math errno comparison](nemotron-windows-math-errno.md) implements a
+single candidate compiler-policy change on the unchanged nineteen-patch tree.
+Both fresh SDKs use the original Clang/linker and identical MSVC probe compiler,
+explicit contraction off, exact97-command checks and original four-worker/58-push
+geometry. Full outputs must be byte-identical. The driver expansion must show
+the intended errno policy and existing effective O3. All423 local tests pass
+with seven Windows-only skips; actual Windows measurement remains pending.
+
 The new [producer](../../tools/nemotron-diarization/platform_bounded_windows_native.py),
 [composed-source verifier](../../tools/nemotron-diarization/platform_bounded_sources.py)
 and [workflow](../../.github/workflows/diarization-bounded-windows-native.yml) use a
