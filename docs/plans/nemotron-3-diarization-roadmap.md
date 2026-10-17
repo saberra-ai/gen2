@@ -45,6 +45,11 @@ Remaining release work as of 2026-10-17:
   tests pass. Apparent noowners UIDs do not establish stored guest ownership;
   a separately declared fresh-clone permission investigation precedes provisioning.
   No account/SSH configuration or private payload transfer is established.
+  The [parent-relative metadata diagnostic](../research/nemotron-macos-vm-permissions-inspect.md)
+  is prepared but unexecuted: it uses another fresh clone/DataRO mount to capture
+  mode/flags/ACL metadata before opening the denied directory, with no repair or
+  directory enumeration. Its result cannot substitute for DataRW access or guest
+  provisioning, and a zero-length ACL attribute is not an absence/policy verdict.
 - Finish each advertised platform/backend's performance, deployment and public
   signing/notarization requirements before promotion. Windows CPU functional
   evidence passes but its observed live RTF remains above one; the
