@@ -158,6 +158,18 @@ The producer's [feature CI](https://github.com/saberra-ai/gen2/actions/runs/3906
 also completes all thirteen jobs successfully; those checks do not close the
 failed timing or original release gates.
 
+The separate [fixed one-row comparison](../research/nemotron-windows-q8-row.md)
+now changes only the full-region `gemmMx4<2>` call to the existing
+`gemmMx4<1>` helper and its compilation guard. Helper arithmetic, full-region
+bounds and tails remain exact; worker tile ownership changes with the original
+duty formula. Four source accumulators may reduce register pressure, but B
+reloads and doubled tile count may outweigh any benefit. All563 local tools
+tests pass with seven Windows-only skips, including six new source/vector/
+timing controls. The separate protocol binds140 tools/3,758 references/39
+imports and preserves every original numerical/speed/drift/observer predicate.
+Actual Windows construction/performance remains pending. This preparation
+changes no production SDK or failed model/RTF/package/release result.
+
 Remaining release work as of 2026-10-17:
 
 - Meet the original 20% DER target on every required meeting slice. The two AMI
