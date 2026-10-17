@@ -1053,6 +1053,13 @@ combinations run fmt, clippy and tests, plus the tools/Pnola checks. Linux
 reports 220 passes and seven platform skips; the corresponding local Mac suite
 passes all 227. This source predates the later 230-test mixed tooling.
 
+The later [234-test feature matrix](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-234/qualification.json)
+at `c667b6a`, run 38993549928, also passes all 13 jobs. Its tools job reports
+225 passes and nine platform skips; the corresponding local Mac suite passes
+all 234. This includes pooled app-runtime tooling but predates the prefix
+diagnostic. These checks establish feature compatibility, not model quality,
+desktop capture or release qualification.
+
 Fresh current-consumer Linux/Windows protocols are prepared separately as
 `current-valid-mel-linux-runtime.protocol.json` and
 `current-valid-mel-windows-runtime.protocol.json`. They preserve the historical
@@ -1456,7 +1463,13 @@ A separate fixed AMI prefix diagnostic is now prepared in
 unchanged failed [300,420) target on both original channels. Acquired prefix PCM
 matches the frozen target bytes exactly. The same previously qualified CPU
 native/public helpers, runtime, geometry, thresholds and two named reference
-policies are frozen; 236 local tooling tests pass. Four fresh neural processes
+policies are frozen; 237 local tooling tests pass. The first attempt stopped
+before native or neural execution when scorer import generated a bytecode
+cache inside protected staging; the unchanged inventory guard rejected it.
+The failure receipt records the extra cache-file hash, with its bytes retained
+in the failed staging. A separately frozen V2 protocol
+uses fresh staging/output and a scoped bytecode-free import of the unchanged
+scorer, verified by an actual scorer/calibration preflight. Four fresh neural processes
 remain unrun. This tests session context (including cache/frontend/chunk phase),
 not a cache-only cause, and cannot replace the failed cold gate or establish
 warm Q8 degradation without a matched FP32 oracle. See the

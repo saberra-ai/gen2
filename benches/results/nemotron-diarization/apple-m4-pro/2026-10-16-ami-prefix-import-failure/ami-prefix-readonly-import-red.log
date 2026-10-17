@@ -1,0 +1,14 @@
+.F.
+======================================================================
+FAIL: test_real_source_import_keeps_protected_directory_unchanged (test_ami_prefix_metrics.PrefixMetricsTests.test_real_source_import_keeps_protected_directory_unchanged)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/test_ami_prefix_metrics.py", line 33, in test_real_source_import_keeps_protected_directory_unchanged
+    self.assertEqual(after, before)
+AssertionError: {'sco[18 chars] 7\n', '__pycache__/scorer.cpython-312.pyc': b[441 chars]x00'} != {'sco[18 chars] 7\n'}
+Diff is 1148 characters long. Set self.maxDiff to None to see it.
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.002s
+
+FAILED (failures=1)

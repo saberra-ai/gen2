@@ -1,0 +1,36 @@
+{
+  "schema_version": 1,
+  "source_commit": "c4e2071e9b937261b5d30f01c10ca7729ea2ba5d",
+  "diagnostic_completed": false,
+  "release_qualified": false,
+  "original_quality_gate_remains_failed": true,
+  "original_gate_status_changed": false,
+  "fresh_fp32_calls": 0,
+  "protocol": {
+    "bytes": 99337,
+    "sha256": "d9956d3ad48e4dd5bdc8abd5bd0690d6ba707c162d4b4b57cc4fee9808afd80a"
+  },
+  "commands": [],
+  "neural_commands_started": [],
+  "comparisons": {},
+  "results": {},
+  "loaded_images": {},
+  "limits": [
+    "Original cold quality gate remains failed and unchanged regardless of prefix results. This uses already-seen targets, not a fresh heldout corpus. Both named reference policies and both channels/all outcomes must be retained.",
+    "One fixed context contrast is not a cache-only ablation: earlier audio changes cached speaker evidence, encoder/frontend context and streaming chunk phase under the same implementation. It cannot isolate their causal contributions.",
+    "Exactly four fresh neural processes, full42000-row native/public comparisons and five strict92-library histories including version-only. No new builds, parameter/threshold search, input substitution, prefix label conditioning, native F32, original-NeMo or FP32 model calls.",
+    "Full[0,420) outputs are retained; scores use only[300,420) with original zero-collar/overlap rules and unchanged references. Cached cold outputs use exact previously qualified helper/runtime. Warm quantization degradation is not evaluated without a matched warm FP32 oracle.",
+    "No pooled-profile corpus, speech-attribution word gold, GUI, physical microphone, fresh-machine, uncontended performance or release qualification."
+  ],
+  "error": "ValueError('prefix input inventory changed')",
+  "storage": {
+    "start_minimum_bytes": 5368709120,
+    "running_minimum_bytes": 1073741824,
+    "reserve_requested_bytes": 268435456,
+    "checks": 2,
+    "released": true,
+    "minimum_observed_free_bytes": 225135722496,
+    "last_observed_free_bytes": 225135722496,
+    "reserve_reported_allocated_bytes": 268435456
+  }
+}

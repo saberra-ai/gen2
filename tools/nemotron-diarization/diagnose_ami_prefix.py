@@ -13,11 +13,11 @@ import sys
 import numpy as np
 import scipy
 
-from ami_prefix_metrics import contrast
+from ami_prefix_metrics import contrast, load_readonly_scorer
 from build_valid_mel_candidate import descriptor
 from compare_macos_cpu_pools import model_free_policy
 from compare_stream_valid_mel import compare
-from diagnose_ami_reference import calibrate_engine, official_engine
+from diagnose_ami_reference import calibrate_engine
 from macos_child_environment import sandboxed_command
 from macos_loaded_libraries import audit_loaded_libraries
 from package_macos import verify
@@ -73,7 +73,7 @@ def main():
     manifest = verify(package)
     if manifest['runtime_profile'] != 'gen2-valid-mel-v1' or manifest['backend'] != 'cpu':
         raise ValueError('exact previously qualified CPU runtime required')
-    engine = official_engine(work / 'scoring/md_eval.py', p['independent_scorer'])
+    engine = load_readonly_scorer(work / 'scoring/md_eval.py', p['independent_scorer'])
     calibrations = calibrate_engine(engine)
     cold = {}
     for name in IDS:

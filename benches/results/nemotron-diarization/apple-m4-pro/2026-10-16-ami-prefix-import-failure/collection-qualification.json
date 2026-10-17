@@ -1,0 +1,27 @@
+{
+  "schema_version": 1,
+  "diagnostic_completed": false,
+  "release_qualified": false,
+  "source_commit": "c4e2071e9b937261b5d30f01c10ca7729ea2ba5d",
+  "source_pins_verified": 345,
+  "native_or_model_commands_started": 0,
+  "all_original_151_input_entries_unchanged": true,
+  "unexpected_import_generated_entries": {
+    "scoring/__pycache__": {
+      "mode": 493,
+      "type": "directory"
+    },
+    "scoring/__pycache__/md_eval.cpython-312.pyc": {
+      "mode": 420,
+      "type": "file",
+      "bytes": 58667,
+      "sha256": "4671da4d33d68768ddbe263df1eec4f903a0bcfcacd1169e08eb98ca6a43e87e"
+    }
+  },
+  "official_synthetic_controls_completed": 4,
+  "original_quality_gate_remains_failed": true,
+  "limits": [
+    "The parent official-scorer import generated __pycache__ inside the protected staging tree. The first frozen() command guard rejects the added entries before any sandbox command, version query or model load.",
+    "Original protocol, output and changed staging remain preserved. Corrected execution requires fresh immutable staging and a separately frozen protocol; no inference retry occurred during collection."
+  ]
+}

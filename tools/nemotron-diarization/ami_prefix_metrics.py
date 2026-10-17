@@ -1,11 +1,22 @@
 """Fixed AMI prefix contrast; preserve the target, scorer and failed release gate."""
 import math
+import sys
 
 import numpy as np
 
 from compare import segments
-from diagnose_ami_reference import official_der
+from diagnose_ami_reference import official_der, official_engine
 from score import der
+
+
+def load_readonly_scorer(path, expected):
+    # importlib otherwise writes __pycache__ beside the immutable staged scorer.
+    previous = sys.dont_write_bytecode
+    sys.dont_write_bytecode = True
+    try:
+        return official_engine(path, expected)
+    finally:
+        sys.dont_write_bytecode = previous
 
 
 def clip_turns(turns, start, end):

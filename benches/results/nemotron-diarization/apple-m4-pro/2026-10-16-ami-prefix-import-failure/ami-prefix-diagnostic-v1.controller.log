@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/diagnose_ami_prefix.py", line 190, in <module>
+    main()
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/diagnose_ami_prefix.py", line 136, in main
+    run('runtime-controls', ['/usr/bin/python3', '-c', CONTROL, json.dumps({
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/diagnose_ami_prefix.py", line 113, in run
+    frozen()
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/diagnose_ami_prefix.py", line 58, in frozen
+    raise ValueError('prefix input inventory changed')
+ValueError: prefix input inventory changed

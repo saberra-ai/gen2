@@ -1,12 +1,44 @@
 """Test exact retained frame edges and turn intersections for the prefix contrast."""
+import importlib.util
+from pathlib import Path
+import sys
+import tempfile
 import unittest
+from unittest.mock import patch
 
 import numpy as np
 
-from ami_prefix_metrics import clip_turns, prefix_target
+from ami_prefix_metrics import clip_turns, load_readonly_scorer, prefix_target
 
 
 class PrefixMetricsTests(unittest.TestCase):
+    def test_real_source_import_keeps_protected_directory_unchanged(self):
+        def actual_import(path, _expected):
+            spec = importlib.util.spec_from_file_location('fixed_scorer_fixture', path)
+            module = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(module)
+            return module
+        previous = sys.dont_write_bytecode
+        try:
+            sys.dont_write_bytecode = False
+            with tempfile.TemporaryDirectory() as temporary:
+                source = Path(temporary) / 'scorer.py'
+                source.write_text('value = 7\n')
+                before = {p.relative_to(temporary).as_posix(): p.read_bytes()
+                          for p in Path(temporary).rglob('*') if p.is_file()}
+                with patch('ami_prefix_metrics.official_engine', side_effect=actual_import):
+                    self.assertEqual(load_readonly_scorer(source, {}).value, 7)
+                after = {p.relative_to(temporary).as_posix(): p.read_bytes()
+                         for p in Path(temporary).rglob('*') if p.is_file()}
+                self.assertEqual(after, before)
+                self.assertFalse(sys.dont_write_bytecode)
+                with patch('ami_prefix_metrics.official_engine', side_effect=ValueError('broken source')):
+                    with self.assertRaisesRegex(ValueError, 'broken source'):
+                        load_readonly_scorer(source, {})
+                self.assertFalse(sys.dont_write_bytecode)
+        finally:
+            sys.dont_write_bytecode = previous
+
     def test_target_keeps_first_and_last_valid_rows_without_prefix_leakage(self):
         values = np.zeros((42000, 8), dtype='<f4')
         values[29999, 0] = .9
