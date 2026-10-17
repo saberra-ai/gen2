@@ -1,0 +1,196 @@
+{
+  "schema_version": 1,
+  "meeting": "ES2011a",
+  "crop_seconds": [
+    0,
+    300
+  ],
+  "channels": [
+    "Mix-Headset",
+    "Array1-01"
+  ],
+  "profiles": [
+    "low_latency",
+    "large_context"
+  ],
+  "references": [
+    "transcriber",
+    "published-ntt-mfa"
+  ],
+  "contrasts": {
+    "native_default": {
+      "onset": 0.640999972820282,
+      "offset": 0.5609999895095825,
+      "pad_onset": 0.229,
+      "pad_offset": 0.079,
+      "min_duration_on": 0.511,
+      "min_duration_off": 0.296
+    },
+    "without_edge_padding": {
+      "onset": 0.640999972820282,
+      "offset": 0.5609999895095825,
+      "pad_onset": 0.0,
+      "pad_offset": 0.0,
+      "min_duration_on": 0.511,
+      "min_duration_off": 0.296
+    },
+    "without_gap_fill": {
+      "onset": 0.640999972820282,
+      "offset": 0.5609999895095825,
+      "pad_onset": 0.229,
+      "pad_offset": 0.079,
+      "min_duration_on": 0.511,
+      "min_duration_off": 0.0
+    },
+    "without_short_segment_filter": {
+      "onset": 0.640999972820282,
+      "offset": 0.5609999895095825,
+      "pad_onset": 0.229,
+      "pad_offset": 0.079,
+      "min_duration_on": 0.0,
+      "min_duration_off": 0.296
+    },
+    "shared_thresholds_only": {
+      "onset": 0.5,
+      "offset": 0.5,
+      "pad_onset": 0.229,
+      "pad_offset": 0.079,
+      "min_duration_on": 0.511,
+      "min_duration_off": 0.296
+    }
+  },
+  "prior_qualification": "/Users/victor/.cache/gen2-nemotron3-n0/context-development-diagnostic-v2/qualification.json",
+  "prior_collection": "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-context-development-diagnostic/collection-qualification.json",
+  "prior_work": "/Users/victor/.cache/gen2-nemotron3-n0/context-development-execution-inputs-v2/work",
+  "prior_results": "/Users/victor/.cache/gen2-nemotron3-n0/context-development-diagnostic-v2/results",
+  "independent_scorer": {
+    "url": "https://raw.githubusercontent.com/NVIDIA-NeMo/Speech/218d0b443441b7d8aa1c832f47df310f186cf0a4/nemo/collections/asr/metrics/md_eval.py",
+    "revision": "218d0b443441b7d8aa1c832f47df310f186cf0a4",
+    "bytes": 54914,
+    "sha256": "c34af6eeec07e1df795c6820f36cb05459c28ac8d5d84fb0efea433035546de3",
+    "license": "Apache-2.0 with retained original BSD-2-Clause notice",
+    "numpy_version": "2.2.6",
+    "scipy_version": "1.18.1",
+    "invocation": "Unmodified md_eval.py get_rttm_data/get_uem_data/evaluate(collar=0,opt_1=False,verbose=False); standard Python logging shim only for nemo.utils.logging. These NumPy/SciPy pins match our original oracle environment, not the full official NeMo lock.",
+    "calibrations": "Before reading target labels: synthetic overlap/mapping, missed overlap, false alarm and global confusion cases on exact10ms boundaries, expected DER0/.5/.5/.5."
+  },
+  "output_path": "/Users/victor/.cache/gen2-nemotron3-n0/development-segmentation-v1",
+  "tools": {
+    "diagnose_development_segmentation.py": {
+      "bytes": 6175,
+      "sha256": "c06ce5b84662dd374e21297f3865adf1c473551a05d7c908d04776d697692ff8"
+    },
+    "segmentation_ablation.py": {
+      "bytes": 3645,
+      "sha256": "8d09e4cddfdff18376691781fc883acf4ad770549fb1c293b0ed1fb2745e806c"
+    },
+    "test_segmentation_ablation.py": {
+      "bytes": 2088,
+      "sha256": "2c25835aca4c5b806d57a5fcb3caaae23fa3e5202f7d6486cff229334637a05f"
+    },
+    "ami_prefix_metrics.py": {
+      "bytes": 3712,
+      "sha256": "47cb924ee372b90af42598a0cfde36e031fa91d934faad49fe540c6552a927c1"
+    },
+    "diagnose_ami_reference.py": {
+      "bytes": 10060,
+      "sha256": "5df4b4999f1868460472538c36bd08a77258b4585257d7b4d37ca49e5f346a03"
+    },
+    "compare.py": {
+      "bytes": 4165,
+      "sha256": "a53fccc162ead3b488a3880950d4dbf244897fd837f3b8e0898235029e559282"
+    },
+    "score.py": {
+      "bytes": 3294,
+      "sha256": "32aea92676133e42e2c30a914f8729d1c31c0c96e02faf9b7cab42911b389eb8"
+    },
+    "artifacts.py": {
+      "bytes": 2869,
+      "sha256": "17df6411ab0394b4d9bb30a099915badf357af26050b6cd08bfd44887688ff42"
+    },
+    "frozen_git_sources.py": {
+      "bytes": 2468,
+      "sha256": "ceb594332b9112fb75b708dff53628630443b52d600d470ccb0e44b777a14bc5"
+    }
+  },
+  "inputs": {
+    "/Users/victor/.cache/gen2-nemotron3-n0/context-development-diagnostic-v2/qualification.json": {
+      "bytes": 351736,
+      "sha256": "1523620c9aeb06277c9b4e62cfe27f5ff729e0dd47d136f1470084aea0e31200"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/context-development-diagnostic-v2/protocol.json": {
+      "bytes": 37066,
+      "sha256": "b937117b5f51e1dc8289b2e11a266b30b4306d4a6a6710178888cde1576ca4ca"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-context-development-diagnostic/collection-qualification.json": {
+      "bytes": 8408,
+      "sha256": "7f65879a74b4a0485fd85d04216777409cb43b0f846eea05269737643f6ec01c"
+    },
+    "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-context-development-diagnostic/collection.json": {
+      "bytes": 5458,
+      "sha256": "f1a5564144031ddcee3c3526f6c3221567572da35f68ec240c5a13dbb69c4b8d"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/context-development-execution-inputs-v2/work/scoring/md_eval.py": {
+      "bytes": 54914,
+      "sha256": "c34af6eeec07e1df795c6820f36cb05459c28ac8d5d84fb0efea433035546de3"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/context-development-execution-inputs-v2/work/references/transcriber.json": {
+      "bytes": 2558,
+      "sha256": "4f2780d97f01a557f52e72a78a1881f4abd4fec5c2cc58a50f2ff3f7ea6bb537"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/context-development-execution-inputs-v2/work/references/published-ntt-mfa.json": {
+      "bytes": 8326,
+      "sha256": "a5f823369e7fa796e3587949aa8c3e8d08c5a82979db22e0d4a662ce28253f7d"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/context-development-diagnostic-v2/results/Mix-Headset-low_latency.json": {
+      "bytes": 6819,
+      "sha256": "5dc02323ef848d169e198bb9d3c7c8972b8d9aef57e0fba69d8e08e24e3837e3"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/context-development-diagnostic-v2/results/Mix-Headset-low_latency.json.f32": {
+      "bytes": 960000,
+      "sha256": "e209155aeb613a3ccfa9e3812731bb280500b44c0c9b492bf5da02fac36644df"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/context-development-diagnostic-v2/results/Mix-Headset-large_context.json": {
+      "bytes": 6323,
+      "sha256": "f923efddf20710f2ac3e5bf0e7fd1e47dd3a5f1eb18638944aac78839c11ec45"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/context-development-diagnostic-v2/results/Mix-Headset-large_context.json.f32": {
+      "bytes": 960000,
+      "sha256": "9da459d0def62cec3443cba0c9405bd489c58ef0241a055531f315cd00472e47"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/context-development-diagnostic-v2/results/Array1-01-low_latency.json": {
+      "bytes": 6165,
+      "sha256": "daf41d75990d53aab427df669745a66bce4890cd0cefe7e9630adebded5b156b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/context-development-diagnostic-v2/results/Array1-01-low_latency.json.f32": {
+      "bytes": 960000,
+      "sha256": "6a5a58ba58971e589102e854d948e8e394e2f0db58658f12b7f065173c1b6796"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/context-development-diagnostic-v2/results/Array1-01-large_context.json": {
+      "bytes": 5912,
+      "sha256": "e04026e73529a98a755c977c1e4cb4f6d7a796254d8492457d5e02aae9e92d6f"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/context-development-diagnostic-v2/results/Array1-01-large_context.json.f32": {
+      "bytes": 960000,
+      "sha256": "4c44aa4beae72c9db8c0485efd0e7d0d076256e48ba39aa6c83bca17694be22b"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/diar/diar_pipeline.cpp": {
+      "bytes": 19539,
+      "sha256": "fe00ae415f4741d7e07579acdc77c60f5d7327be024cf7f8aff8f52142ae9af2"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/diar/diar_pipeline.h": {
+      "bytes": 10483,
+      "sha256": "ed55fab4c14ae7c5618c1960a9872d036bca8dfce98e74d030fc903d38d6433e"
+    },
+    "/Users/victor/.cache/gen2-nemotron3-n0/NeMo-Speech-valid-mel-v1/src/asr/diar/sortformer_model.h": {
+      "bytes": 7325,
+      "sha256": "30a3daf3396d628294457ab9e2c8b1d8ab63829ab28f68dc1e8e96f11c635893"
+    }
+  },
+  "limits": [
+    "Saved-output operation ablations on four fixed ES2011a 300-second development cells only. Zero model/native calls, no audio acquisition, no new inference or threshold sweep. Every baseline turn/boundary/speaker and previous frame/official score must reproduce before reporting contrasts.",
+    "Remove one default operation per contrast, or change only the documented onset/offset pair to 0.5 while retaining all smoothing. Report every cell, reference policy, contrast and scorer, full error components and deltas. Operation interactions preclude monotonic or additive causal claims. No winner or production policy selected.",
+    "Preserve original failed ES2004 references/gates. This training-exposed development meeting has weak speaker-B coverage; MFA lexical labels are automatic and transcriber occupancy has a distinct scope. No human word gold, held-out generalization, new wrapper behavior, changed-policy streaming compaction, acoustic label timing, GUI/microphone, throughput or release claim.",
+    "Bind every imported local tool before import and all input JSON/raw/source/scorer descriptors before and after replay; verify committed protocol and historical tool blobs before scoring. Preserve exact native float32 threshold and cadence arithmetic, strict boundary comparisons and pad/merge/filter order. Equal-start ordering alone is canonicalized."
+  ]
+}

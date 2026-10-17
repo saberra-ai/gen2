@@ -1553,6 +1553,19 @@ These API observations do not establish GUI/microphone or correct acoustic-label
 latency, pure queue/lookahead/publication delay, stable label finality, original
 quality, human word gold, fresh-machine delivery or release qualification.
 
+The subsequent [fixed development segmentation ablations](../research/nemotron-development-segmentation.md)
+replay all 275 native baseline turns exactly and retain all 80 score reports for
+four ES2011a geometry/channel cells, five operation configurations, two references
+and two scorers. No inference or production change occurs. Removing padding
+reduces lexical false activity, but raises primary transcriber DER from roughly
+29–34% to 44–48%. Changing only onset/offset thresholds to 0.5 helps close audio
+and worsens distant audio; removing the short-segment filter has small mixed
+effects. The 10-member receipt rebinds all saved inputs and independently replays
+every score, turn and delta; all 251 model-free tests pass. No uniformly improving
+policy, original quality-gate pass, acoustic boundary gold or release status is
+established. Product-appropriate manual acoustic review and separate validation
+remain necessary before choosing a replacement segmentation policy.
+
 Use public Gen2 calls for lifecycle and user-visible behavior; use the FFI seam
 for ownership/status failures, and a pinned upstream executable for independent
 native-output comparison. Stub-only tests do not establish model support.
