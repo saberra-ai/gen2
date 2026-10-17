@@ -1,0 +1,29 @@
+diff --git a/src/asr/diar/diar_pipeline.cpp b/src/asr/diar/diar_pipeline.cpp
+index 0d3894e..13a0f4e 100644
+--- a/src/asr/diar/diar_pipeline.cpp
++++ b/src/asr/diar/diar_pipeline.cpp
+@@ -142,6 +142,7 @@ void
+ DiarStream::finish() {
+     if (finished_)
+         return;
++    const size_t original_audio_end = audio_base_ + audio_buf_.size();
+     finished_ = true;
+     // Release the tail frames the streaming FE held back (their windows run
+     // past the last real sample). NeMo's torch.stft(center=True,
+@@ -161,6 +162,16 @@ DiarStream::finish() {
+         }
+         ensure_mel();
+     }
++    if (m_.cfg().is_v3()) {
++        // NeMo masks the extra centered-STFT row before feature stacking.
++        const int64_t valid_mel_end = static_cast<int64_t>(
++            original_audio_end / static_cast<size_t>(m_.fe().hop_length()));
++        if (valid_mel_end < mel_base_ || valid_mel_end < mel_consumed_ ||
++            valid_mel_end > mel_produced()) {
++            throw std::runtime_error("DiarStream: invalid v3 final mel bounds");
++        }
++        mel_buf_.resize(static_cast<size_t>(valid_mel_end - mel_base_) * n_mels_);
++    }
+     run_ready_chunks(/*end_of_stream=*/true);
+ }
+ 

@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "collection_completed": true,
+  "source_commit": "8f9ad71cfe9045e17135c4be1bd3633fc1a1a37c",
+  "run_id": 39029556195,
+  "job_id": 117387093060,
+  "artifact_id": 12100021994,
+  "archive": {
+    "bytes": 63248,
+    "sha256": "caf4c9142794d28540ee600bf922ca714274691b84bf9ba80b2a34053f0945c2"
+  },
+  "protocol": {
+    "bytes": 146296,
+    "sha256": "0022a22a8400ee789e496d975d4da2b4e8415ca2ed9ac2eedff7b1779a3a3fef"
+  },
+  "tools_verified": 66,
+  "repository_files_verified": 675,
+  "artifact_members_verified": 40,
+  "supervised_commands": 13,
+  "successful_returncodes_recorded": 12,
+  "verified_reaped_commands": 13,
+  "failure": "RuntimeError('owned command left live descendant processes')",
+  "actual_windows_job_control_tests": 5,
+  "actual_compiler_control_tests": 8,
+  "native_inference_cases_started": 0,
+  "clang_build_started": false,
+  "installed_sdk_delivered": false,
+  "release_qualified": false,
+  "package_qualified": false,
+  "public_or_lifecycle_qualified": false,
+  "new_native_or_compiler_or_model_calls_during_collection": 0,
+  "limits": [
+    "Build output contains completion marker, but failed supervisor did not retain the wrapped SDK command exit code.",
+    "Top-level worker exited with descendants still active; original helper terminated/reaped them before failure persistence.",
+    "First SDK installation/admission and all Clang/model work were never reached. No compiler speed comparison is established.",
+    "Remaining process identities were not recorded; do not attribute them to a named tool from this evidence."
+  ]
+}

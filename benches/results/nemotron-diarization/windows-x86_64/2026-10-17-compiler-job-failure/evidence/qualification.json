@@ -1,0 +1,237 @@
+{
+  "schema_version": 1,
+  "source_commit": "8f9ad71cfe9045e17135c4be1bd3633fc1a1a37c",
+  "protocol": {
+    "bytes": 146296,
+    "sha256": "0022a22a8400ee789e496d975d4da2b4e8415ca2ed9ac2eedff7b1779a3a3fef"
+  },
+  "diagnostic_completed": false,
+  "release_qualified": false,
+  "package_qualified": false,
+  "public_or_lifecycle_qualified": false,
+  "order": [
+    "msvc",
+    "clang-cl",
+    "clang-cl",
+    "msvc"
+  ],
+  "builds": {
+    "msvc": {
+      "construction_completed": false,
+      "compiler": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+      "compiler_binary": {
+        "bytes": 677776,
+        "sha256": "fe251ef50a1545b1b0835ee17b1e785459712b38d79e45b5c1d3d28970a36619"
+      },
+      "probe_compiler": {
+        "path": "C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe",
+        "bytes": 677776,
+        "sha256": "fe251ef50a1545b1b0835ee17b1e785459712b38d79e45b5c1d3d28970a36619"
+      }
+    }
+  },
+  "cases": [],
+  "limits": [
+    "Diagnostic native compiler/toolchain comparison only; no supported release/public/lifecycle/package qualification.",
+    "Identical admitted cap4 diagnostic inference sources and MSVC-built probe source/compiler; only SDK compiler selection differs.",
+    "Fresh MSVC/clang-cl SDKs; fixed MSVC,clang-cl,clang-cl,MSVC fresh-process order on one host.",
+    "Portable AVX2/FMA/F16C baseline, four-worker policy, original geometry/PCM/model/full-output1e-6 limits unchanged.",
+    "Keep individual timings and control drift; no averaging, new RTF tolerance, cross-host timing promotion or release gate changes.",
+    "Every child runs in a gated Windows kill-on-close Job; terminal success requires the entire process tree reaped.",
+    "1800s SDK-build timeout;600s other-child timeout. Ambient compiler overrides,NEMO_SPEECH_TIMING,GH_TOKEN,GITHUB_TOKEN removed from child mappings."
+  ],
+  "commands": {
+    "msvc": [
+      {
+        "name": "clone-native",
+        "command": [
+          "git",
+          "clone",
+          "--no-hardlinks",
+          "--no-checkout",
+          "D:\\a\\gen2\\gen2\\native-source",
+          "D:\\a\\_temp\\windows-compiler-diagnostic\\source-msvc"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job with gated worker",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "elapsed_seconds": 0.8599999999999
+      },
+      {
+        "name": "checkout-native",
+        "command": [
+          "git",
+          "-C",
+          "D:\\a\\_temp\\windows-compiler-diagnostic\\source-msvc",
+          "checkout",
+          "--detach",
+          "083861c241061562b8ec29eb06d7f6cdc3af8775"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job with gated worker",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "elapsed_seconds": 0.7970000000000255
+      },
+      {
+        "name": "clone-llama",
+        "command": [
+          "git",
+          "clone",
+          "--no-hardlinks",
+          "--no-checkout",
+          "D:\\a\\gen2\\gen2\\native-source\\llama.cpp",
+          "D:\\a\\_temp\\windows-compiler-diagnostic\\source-msvc\\llama.cpp"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job with gated worker",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "elapsed_seconds": 9.702999999999975
+      },
+      {
+        "name": "checkout-llama",
+        "command": [
+          "git",
+          "-C",
+          "D:\\a\\_temp\\windows-compiler-diagnostic\\source-msvc\\llama.cpp",
+          "checkout",
+          "--detach",
+          "bd4f514db14d87fded667787a7a963bfbaa98e89"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job with gated worker",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "elapsed_seconds": 1.375
+      },
+      {
+        "name": "inference-patch-check-0",
+        "command": [
+          "git",
+          "apply",
+          "--check",
+          "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\patches\\v3-finish-valid-mel.patch"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-compiler-diagnostic\\source-msvc",
+        "process_supervision": "Windows kill-on-close Job with gated worker",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "elapsed_seconds": 0.125
+      },
+      {
+        "name": "inference-patch-0",
+        "command": [
+          "git",
+          "apply",
+          "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\patches\\v3-finish-valid-mel.patch"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-compiler-diagnostic\\source-msvc",
+        "process_supervision": "Windows kill-on-close Job with gated worker",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "elapsed_seconds": 0.125
+      },
+      {
+        "name": "inference-patch-check-1",
+        "command": [
+          "git",
+          "apply",
+          "--check",
+          "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\patches\\cpu-thread-cap.patch"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-compiler-diagnostic\\source-msvc",
+        "process_supervision": "Windows kill-on-close Job with gated worker",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "elapsed_seconds": 0.10900000000015098
+      },
+      {
+        "name": "inference-patch-1",
+        "command": [
+          "git",
+          "apply",
+          "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\patches\\cpu-thread-cap.patch"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-compiler-diagnostic\\source-msvc",
+        "process_supervision": "Windows kill-on-close Job with gated worker",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "elapsed_seconds": 0.1089999999999236
+      },
+      {
+        "name": "inference-patch-check-2",
+        "command": [
+          "git",
+          "apply",
+          "--check",
+          "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\patches\\persistent-cpu-pool.patch"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-compiler-diagnostic\\source-msvc",
+        "process_supervision": "Windows kill-on-close Job with gated worker",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "elapsed_seconds": 0.1089999999999236
+      },
+      {
+        "name": "inference-patch-2",
+        "command": [
+          "git",
+          "apply",
+          "D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\patches\\persistent-cpu-pool.patch"
+        ],
+        "cwd": "D:\\a\\_temp\\windows-compiler-diagnostic\\source-msvc",
+        "process_supervision": "Windows kill-on-close Job with gated worker",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "elapsed_seconds": 0.10999999999989996
+      },
+      {
+        "name": "cmake-version",
+        "command": [
+          "cmake",
+          "--version"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job with gated worker",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "elapsed_seconds": 0.7970000000000255
+      },
+      {
+        "name": "git-line-ending-config",
+        "command": [
+          "git",
+          "-C",
+          "D:\\a\\_temp\\windows-compiler-diagnostic\\source-msvc\\llama.cpp",
+          "config",
+          "--show-origin",
+          "--get-regexp",
+          "^core\\.(autocrlf|eol)$"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job with gated worker",
+        "process_tree_reaped": true,
+        "returncode": 0,
+        "elapsed_seconds": 0.1089999999999236
+      },
+      {
+        "name": "sdk-build",
+        "command": [
+          "pwsh",
+          "-NoProfile",
+          "-NonInteractive",
+          "-Command",
+          "& 'D:\\a\\_temp\\windows-compiler-diagnostic\\source-msvc\\scripts\\windows\\build.ps1' -Backend cpu -Compiler msvc -Profile asr -Jobs 2 -BuildDir 'D:\\a\\_temp\\windows-compiler-diagnostic\\source-msvc\\build\\gen2-cpu-diar' -CMakeArgs @('-DNEMO_SPEECH_BUILD_EXAMPLES=ON','-DNEMO_SPEECH_BUILD_CLI=OFF','-DNEMO_SPEECH_BUILD_MIC_CAPTURE=OFF','-DGGML_OPENMP=OFF','-DNEMO_SPEECH_VERSION_METADATA=gen2-diagnostic-cpu-threads-4','-DGGML_NATIVE=OFF','-DGGML_AVX=ON','-DGGML_AVX2=ON','-DGGML_AVX512=OFF','-DGGML_AVX_VNNI=OFF','-DGGML_FMA=ON','-DGGML_F16C=ON','-DNEMO_SPEECH_WITH_NORM=OFF','-DCMAKE_INSTALL_LIBDIR=lib','-DNEMO_SPEECH_BUILD_TESTS=ON','-DBUILD_TESTING=ON','-DCMAKE_EXPORT_COMPILE_COMMANDS=ON','-DNEMO_SPEECH_GGML_PATCHED=ON','-DNEMO_SPEECH_LLAMA_CPP_SOURCE_DIR:PATH=','-DGGML_BACKEND_DL=OFF','-DGGML_METAL=OFF','-DGGML_CUDA=OFF','-DGGML_VULKAN=OFF','-DCMAKE_INSTALL_PREFIX=D:\\a\\_temp\\windows-compiler-diagnostic\\sdk-msvc','-DCMAKE_C_COMPILER=C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe','-DCMAKE_CXX_COMPILER=C:\\Program Files\\Microsoft Visual Studio\\2022\\Enterprise\\VC\\Tools\\MSVC\\14.44.35207\\bin\\Hostx64\\x64\\cl.exe','-DCMAKE_PROJECT_TOP_LEVEL_INCLUDES:FILEPATH=D:\\a\\gen2\\gen2\\tools\\nemotron-diarization\\windows_private_dlls.cmake','-DNEMO_SPEECH_BUILD_ASR=OFF','-DNEMO_SPEECH_BUILD_TTS=OFF')"
+        ],
+        "cwd": "D:\\a\\gen2\\gen2",
+        "process_supervision": "Windows kill-on-close Job with gated worker",
+        "process_tree_reaped": true,
+        "error": "RuntimeError('owned command left live descendant processes')",
+        "elapsed_seconds": 167.82799999999997
+      }
+    ]
+  },
+  "error": "RuntimeError('owned command left live descendant processes')"
+}

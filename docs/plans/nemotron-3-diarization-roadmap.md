@@ -96,8 +96,14 @@ Remaining release work as of 2026-10-17:
   A separate [compiler comparison](../research/nemotron-windows-compiler-diagnostic.md)
   now preregisters fresh MSVC/clang-cl SDKs from identical admitted inference
   source and an MSVC/Clang/Clang/MSVC process sequence, preserving the portable
-  ISA, four-worker policy and complete-output limits. Actual execution remains
-  pending; compiler selection is a hypothesis, not a qualified optimization.
+  ISA, four-worker policy and complete-output limits. The
+  [first actual compiler job](../research/nemotron-windows-compiler-job-failure.md)
+  passes all eight compiler and five Windows Job controls but stops at the first
+  MSVC build's live-descendant condition. All13 command trees are reaped; the
+  failed command's exit code and remaining-process identities were not retained.
+  Its114-member failure receipt preserves that uncertainty. No SDK installation,
+  Clang build or model case is reached. Version process cleanup before retrying
+  the unchanged compiler experiment; no performance optimization is qualified.
   Then merge and
   push the completed feature to main; no main promotion is justified yet.
 

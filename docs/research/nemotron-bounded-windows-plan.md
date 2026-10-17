@@ -33,7 +33,14 @@ The separate [compiler comparison](nemotron-windows-compiler-diagnostic.md) now
 preregisters fresh MSVC/clang-cl SDKs with identical admitted inference source,
 the same MSVC probe source/compiler and an MSVC/Clang/Clang/MSVC process sequence.
 Actual compiler/ABI/ISA/source admission precedes any model use; original full
-output and performance criteria remain unchanged. Actual execution is pending.
+output and performance criteria remain unchanged. The
+[first actual job](nemotron-windows-compiler-job-failure.md) now passes all eight
+compiler and five Windows Job controls, then fails at the first MSVC build's
+live-descendant check. Its114-member collection retains all13 verified reaped
+command trees,12 recorded zero codes and the unknown failed-command code/process
+identities. No SDK installation, Clang build or model case is reached. A versioned
+owned-background-process cleanup correction is required before the unchanged
+experiment can complete; no compiler speed improvement is established.
 
 The new [producer](../../tools/nemotron-diarization/platform_bounded_windows_native.py),
 [composed-source verifier](../../tools/nemotron-diarization/platform_bounded_sources.py)
