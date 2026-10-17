@@ -255,6 +255,17 @@ admission. A storage question is pending; no evidence/model/VM data is deleted
 and no admission bound is weakened. Actual result replay and all original
 quality, attribution, desktop/platform and release gates remain open.
 
+The [independent A-packing replay route](../research/nemotron-windows-q8-apack-remote-replay.md)
+prepares the same full saved-artifact admission on fresh Linux CI with the
+original8GiB floor. Eleven focused controls pass, including actual relocated
+preparation, real signal/spawn cleanup and incremental Git bundle transfer.
+All8/4/3 receiver/publication/static controls and pins precede archive access.
+Only the two closed result directories can enter a bounded128MiB result bundle;
+no kernel/model is rerun and no remote branch is written by the receiver.
+Remote execution, bounded return/local import, full result replay and review
+remain pending. Neither CI success nor bundle creation substitutes for the
+original numerical, timing, observer or release gates.
+
 Remaining release work as of 2026-10-17:
 
 - Meet the original 20% DER target on every required meeting slice. The two AMI
