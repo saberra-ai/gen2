@@ -1023,6 +1023,23 @@ the failing and corrected checks are retained. All 230 tools tests pass. These
 two mixed cases remain unrun, and do not transfer the old Metal results or
 establish simultaneous inference, speech quality, GUI or release qualification.
 
+The [227-test feature matrix](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-227/qualification.json)
+at `aeb6ba8`, run 38989434879, passes all 13 jobs: all twelve OS/feature
+combinations run fmt, clippy and tests, plus the tools/Pnola checks. Linux
+reports 220 passes and seven platform skips; the corresponding local Mac suite
+passes all 227. This source predates the later 230-test mixed tooling.
+
+Fresh current-consumer Linux/Windows protocols are prepared separately as
+`current-valid-mel-linux-runtime.protocol.json` and
+`current-valid-mel-windows-runtime.protocol.json`. They preserve the historical
+SDK/package inputs and all original runtime, lifecycle, CPU-chat and central-CRT
+gates while binding the current consumer and complete vendored source tree.
+Both new workflows explicitly fetch actual SDK producer `8fbef3e` before
+local-only source admission; ordinary and ignored vendor additions are rejected.
+Saved historical receipts admit against that producer and every new source pin
+matches. Both reviews pass. Actual fresh platform runtime execution remains
+pending; these preparations establish no additional platform or release pass.
+
 The 13-job feature matrix also passed at `4974318`. Later source `cf64214`
 passed12 jobs; its macOS mixed-feature job failed before compilation when GitHub
 submodule fetch could not connect to port443. A failed-job rerun was denied by

@@ -1,0 +1,31 @@
+{
+  "schema_version": 1,
+  "source_commit": "aeb6ba813d61653ebdac7273f2a4b404c606f142",
+  "ci_url": "https://github.com/saberra-ai/gen2/actions/runs/38989434879",
+  "all_thirteen_feature_jobs_passed": true,
+  "model_free_evidence_tests_reported": 227,
+  "model_free_evidence_tests_passed": 220,
+  "model_free_evidence_tests_skipped": 7,
+  "platforms": [
+    "ubuntu-latest",
+    "windows-latest",
+    "macos-latest"
+  ],
+  "feature_sets": [
+    "",
+    "backend-diar-nemo",
+    "asr-dynamic,backend-diar-nemo",
+    "backend-llamacpp,asr-dynamic,backend-diar-nemo"
+  ],
+  "all_twelve_feature_jobs_ran_fmt_clippy_tests_successfully": true,
+  "evidence_and_pnola_python_and_desktop_asset_test_steps_passed": true,
+  "combined_log_retained_outside_git": {
+    "bytes": 10127080,
+    "sha256": "178e8ca33402655dc214a092ab334384d895b8055b927359f4585c0e9792b4c8"
+  },
+  "release_qualified": false,
+  "limits": [
+    "Source aeb6ba8, before the later mixed qualification tools. All12OS/feature combinations and evidence-tools pass. Linux227tests comprise220passes and7platformskips; the separate same-source Mac227suite has no skips.",
+    "Feature compatibility only; this workflow executes no diarization model or desktop app. It doesnot qualify accuracy, packaging, real-time/capture latency, notarization, or other real-model gates. Historical receipts remain unchanged."
+  ]
+}

@@ -742,6 +742,15 @@ Linux construction/runtime and Windows runtime consumer stages must fetch
 their actual producer `8fbef3e8a46a034b8e0ffa8f096409db683a923e` as well.
 Existing historical workflows/protocols and receipts remain unchanged.
 
+The separate `qualify_current_valid_mel_linux_runtime.py` and
+`qualify_current_valid_mel_windows_runtime.py` now freeze those current runtime
+consumers in `current-valid-mel-*-runtime.protocol.json`. Their new workflows
+fetch that exact producer before offline admission. They preserve all old
+SDK/package/case/acceptance inputs, hash the complete current vendor tree and
+reject ordinary or ignored extra sources. Saved-input admission and both
+reviews pass; actual fresh runtime execution remains pending. No historical
+receipt is relabelled or platform-release gate promoted.
+
 `qualify_macos_pooled_public.py` and `macos-pooled-public.protocol.json` freeze
 the next current Rust consumer: the exact pooled construction and successful
 M1 C ABI artifacts, one full 60s public stream, and the seven existing lifecycle
