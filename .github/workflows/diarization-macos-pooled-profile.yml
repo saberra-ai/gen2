@@ -1,0 +1,59 @@
+name: Diarization owned-pool macOS CPU profile
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/nemotron3-n0]
+    paths:
+      - .github/workflows/diarization-macos-pooled-profile.yml
+      - tools/nemotron-diarization/profile_macos_pooled_cpu.py
+      - tools/nemotron-diarization/macos-pooled-cpu-profile.protocol.json
+permissions:
+  contents: read
+  actions: read
+jobs:
+  profile:
+    runs-on: macos-26
+    timeout-minutes: 20
+    env:
+      PYTHONDONTWRITEBYTECODE: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Download immutable pooled construction and native reference
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          mkdir -p "${{ runner.temp }}/pooled-profile-delivery"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12082417995 > "${{ runner.temp }}/pooled-profile-delivery/producer.json"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12082417995/zip > "${{ runner.temp }}/pooled-profile-delivery/producer.zip"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12083481818 > "${{ runner.temp }}/pooled-profile-delivery/native-reference.json"
+          gh api repos/saberra-ai/gen2/actions/artifacts/12083481818/zip > "${{ runner.temp }}/pooled-profile-delivery/native-reference.zip"
+      - name: Require model-free sampling then profile one unchanged pooled C ABI call
+        run: |
+          python tools/nemotron-diarization/profile_macos_pooled_cpu.py \
+            --protocol tools/nemotron-diarization/macos-pooled-cpu-profile.protocol.json \
+            --producer-zip "${{ runner.temp }}/pooled-profile-delivery/producer.zip" \
+            --producer-metadata "${{ runner.temp }}/pooled-profile-delivery/producer.json" \
+            --native-reference-zip "${{ runner.temp }}/pooled-profile-delivery/native-reference.zip" \
+            --native-reference-metadata "${{ runner.temp }}/pooled-profile-delivery/native-reference.json" \
+            --output "${{ runner.temp }}/pooled-profile"
+      - name: Preserve passing or failed evidence and exact sampled executables
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nemotron-macos-pooled-profile
+          path: |
+            ${{ runner.temp }}/pooled-profile/*.json
+            ${{ runner.temp }}/pooled-profile/*.log
+            ${{ runner.temp }}/pooled-profile/*.txt
+            ${{ runner.temp }}/pooled-profile/*.sb
+            ${{ runner.temp }}/pooled-profile/*.tar.gz
+            ${{ runner.temp }}/pooled-profile/results/
+            ${{ runner.temp }}/pooled-profile/control.c
+            ${{ runner.temp }}/pooled-profile/work/control
+          include-hidden-files: true
+          retention-days: 30
