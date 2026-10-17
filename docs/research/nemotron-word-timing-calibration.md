@@ -80,4 +80,19 @@ conversion and a source-unit regression preserving multiword/crop-edge
 uncertainty without filling the human template. The NumPy-only CI environment
 can run the metadata regression; the numerical conversion test explicitly skips
 when SciPy is absent. These are preparer checks, not human annotation evidence.
-At this preregistration, audio preparation and human annotation remain unrun.
+The protocol was committed before acquisition at
+`605a194ae31c6c73d0af19c3099b2a716c0ca05e`. Actual preparation now succeeds;
+the [11-member metadata receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-hcrc-word-review-preparation/collection-qualification.json)
+rehashes the complete14-member local package and exactly replays both audio
+versions, all125 unreviewed units, notice copies and empty template. The
+canonical WAV is1,920,044bytes, SHA256
+`5e36b9f8cb1346db036cc0bf6cb3f098304129199df4043b71b8b98e49557b97`.
+The source PCM range is4,800,000bytes, SHA256
+`ed467cbc230d2cd6984b743b5b73a604f658cd4c0e95245e7e817f30af72ce90`.
+No speech-model or aligner call occurred.
+
+The [local instructions](/Users/victor/.cache/gen2-nemotron3-n0/hcrc-word-review-v1/README.txt)
+and [canonical audio](/Users/victor/.cache/gen2-nemotron3-n0/hcrc-word-review-v1/mono16k.wav)
+are ready for actual reviewers. The package still contains zero human words
+and zero annotators; annotation, acoustic channel/identity checking and
+adjudication remain unperformed. Preparation does not close N4.

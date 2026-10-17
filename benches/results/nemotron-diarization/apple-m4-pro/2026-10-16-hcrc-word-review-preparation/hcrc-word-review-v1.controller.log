@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "prepared": true,
+  "human_gold_admitted": false,
+  "source_crop_seconds": [
+    0,
+    60
+  ],
+  "model_or_aligner_calls": 0,
+  "annotation_archive": {
+    "bytes": 12206088,
+    "sha256": "e90e083179c4fcdb7292d2a38c3238401412bbb4c3706b987befdc02e4c8af30"
+  },
+  "source_pcm": {
+    "bytes": 4800000,
+    "sha256": "ed467cbc230d2cd6984b743b5b73a604f658cd4c0e95245e7e817f30af72ce90"
+  },
+  "canonical_wav": {
+    "bytes": 1920044,
+    "sha256": "5e36b9f8cb1346db036cc0bf6cb3f098304129199df4043b71b8b98e49557b97"
+  },
+  "source_units": 125,
+  "source_units_crossing_crop_edge": 1,
+  "source_multiword_units": 1,
+  "role_channel_assignment_verified": false,
+  "release_qualified": false,
+  "environment": {
+    "python": "3.12.13",
+    "numpy": "2.2.6",
+    "scipy": "1.18.1"
+  },
+  "protocol": {
+    "bytes": 4934,
+    "sha256": "b889426bc10387154fb192fda032eeed94a10a8fe5bea1b9a84e2efd9f5e7a87"
+  },
+  "limits": [
+    "Preparation does not establish human acoustic boundary correction. Original source timing provenance is unresolved. No Bark/native/aligner/model calls are authorized by this preparer.",
+    "Two distinct humans must actually inspect/review/adjudicate every lexical boundary and speaker identity before annotation freeze and later model comparison. Blank template is not a gold reference.",
+    "Preserve multiword source units; never interpolate internal word boundaries. Retain omissions, uncertainty, crop-edge partials and disagreements. Source role/channel assignment is unverified.",
+    "CC BY4 current publisher/download/audio notices and older embedded BY-NC-SA2.5 archive notices retained verbatim. Source audio and annotations stay outside Git.",
+    "Close-microphone two-person timing calibration only, not representative meeting/overlap acceptance or untouched held-out proof. Publisher training exposure unknown. Original DER/attribution/desktop/release gates unchanged."
+  ]
+}

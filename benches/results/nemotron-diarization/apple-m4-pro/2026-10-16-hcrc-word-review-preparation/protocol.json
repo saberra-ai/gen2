@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "recording": "q1ec1",
+  "crop_seconds": [
+    0,
+    60
+  ],
+  "purpose": "model-blind timing calibration preparation only; no admitted human gold",
+  "selection_rule": "first60s of the single previously researched q1ec1 recording; no selection from model outputs",
+  "environment": {
+    "python": "3.12.13",
+    "numpy": "2.2.6",
+    "scipy": "1.18.1"
+  },
+  "conversion": {
+    "source_pcm": "stereo PCM16LE, 20000 Hz",
+    "mix": "float64 equal-channel arithmetic mean divided by 32768",
+    "resample": {
+      "up": 4,
+      "down": 5,
+      "window": [
+        "kaiser",
+        5.0
+      ],
+      "padtype": "constant",
+      "cval": 0.0
+    },
+    "output": "clip [-1,32767/32768], round-to-even PCM16LE mono 16000 Hz",
+    "output_samples": 960000
+  },
+  "annotations": {
+    "url": "https://groups.inf.ed.ac.uk/maptask/hcrcmaptask.nxtformatv2-1.zip",
+    "archive": {
+      "bytes": 12206088,
+      "sha256": "e90e083179c4fcdb7292d2a38c3238401412bbb4c3706b987befdc02e4c8af30"
+    },
+    "members": {
+      "maptaskv2-1/Data/corpus-resources/maptask-corpus.xml": {
+        "bytes": 31310,
+        "sha256": "00dfe3c0d68bad6a2e3d1c13fe3674d27b15a3b36f98604837b5c158f921a88b"
+      },
+      "maptaskv2-1/Data/timed-units/q1ec1.f.timed-units.xml": {
+        "bytes": 7549,
+        "sha256": "45562fd5e901079708645c7dd17be263c0b31a84e9cf84906c3b0b749e220da2"
+      },
+      "maptaskv2-1/Data/timed-units/q1ec1.g.timed-units.xml": {
+        "bytes": 46306,
+        "sha256": "c8b3d8b9e639141bbf03e01cc6e7d82c505fc04ac77e044c97c5e50d9d68146b"
+      }
+    }
+  },
+  "audio_source": {
+    "url": "https://groups.inf.ed.ac.uk/maptask/signals/dialogues/q1ec1.mix.wav",
+    "bytes": 21207164,
+    "etag": "\"143987c-492e18fff1b00\"",
+    "header": {
+      "bytes": 64,
+      "sha256": "4516b8c03861b8d040de59016fe6477effd682743c077db4e346dd148ca70ef9"
+    },
+    "range": {
+      "header": [
+        0,
+        63
+      ],
+      "pcm": [
+        44,
+        4800043
+      ]
+    }
+  },
+  "notices": {
+    "publisher-license.html": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/research/manual-word-boundaries-2026-10-16/maptasknxt.html",
+      "identity": {
+        "bytes": 8290,
+        "sha256": "f01ab9c6b840004ea7706145d9e7e9c9026b0a345db6a3fcc1eef2715515794a"
+      }
+    },
+    "audio-license.html": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/research/manual-word-boundaries-2026-10-16/audio-license-current.html",
+      "identity": {
+        "bytes": 38223,
+        "sha256": "41762ce209fe59a9d8a850ebd89b34a84e81cea6ebacae7db8c73d0841576df5"
+      }
+    },
+    "archive-license.html": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/research/manual-word-boundaries-2026-10-16/00LICENSE.html",
+      "identity": {
+        "bytes": 17373,
+        "sha256": "a47ea209817342cd82cab27b89c09864fa5529f9d1af3374809c908835f1412d"
+      }
+    },
+    "archive-readme.txt": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/research/manual-word-boundaries-2026-10-16/00README.txt",
+      "identity": {
+        "bytes": 14035,
+        "sha256": "118cc77b72bb77a844e948a4107faef0eed83a52e5231b2371763a57b62ad461"
+      }
+    },
+    "archive-changelog.txt": {
+      "path": "/Users/victor/.cache/gen2-nemotron3-n0/research/manual-word-boundaries-2026-10-16/00CHANGELOG.txt",
+      "identity": {
+        "bytes": 332,
+        "sha256": "aa3ed06dde845013f883b6d2c88ad0fdeee0f22d2562cc0f7ee6235b2cb65078"
+      }
+    }
+  },
+  "tools": {
+    "prepare_word_timing_review.py": {
+      "bytes": 11883,
+      "sha256": "1932ede2bd66a256d92bfcdd094bc26fa105d99020843d89c3550dd51ef579d7"
+    },
+    "test_word_timing_review.py": {
+      "bytes": 4394,
+      "sha256": "d73d33d5db4ed8580c0ecd97fd34e390fe20c0c055231f9811067253771c401e"
+    },
+    "corpus.py": {
+      "bytes": 18358,
+      "sha256": "caf0aecbc041873ea9acd433c4cd68b6f257caea62dd9221512922b32cf4920e"
+    }
+  },
+  "limits": [
+    "Preparation does not establish human acoustic boundary correction. Original source timing provenance is unresolved. No Bark/native/aligner/model calls are authorized by this preparer.",
+    "Two distinct humans must actually inspect/review/adjudicate every lexical boundary and speaker identity before annotation freeze and later model comparison. Blank template is not a gold reference.",
+    "Preserve multiword source units; never interpolate internal word boundaries. Retain omissions, uncertainty, crop-edge partials and disagreements. Source role/channel assignment is unverified.",
+    "CC BY4 current publisher/download/audio notices and older embedded BY-NC-SA2.5 archive notices retained verbatim. Source audio and annotations stay outside Git.",
+    "Close-microphone two-person timing calibration only, not representative meeting/overlap acceptance or untouched held-out proof. Publisher training exposure unknown. Original DER/attribution/desktop/release gates unchanged."
+  ]
+}

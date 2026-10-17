@@ -39,8 +39,11 @@ retains the initial incorrect old-profile label and corrected result. Both
 supported profiles stage successfully; only the candidate bundle's profile field
 changes, with all other staged model/native bytes and modes identical. Five Node
 and two overlay tests pass. The two known overlay files are upgraded with hash
-guards and backups. This is model-free staging; pooled complete-app execution,
-native GUI, microphone, fresh-machine and release qualification remain open.
+guards and backups. This model-free staging is followed by the
+[pooled complete-app runtime receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-pnola-app-runtime/collection-qualification.json):
+automatic packaged CPU recording/live execution and explicit Metal rejection
+pass without artifact-path environment overrides. Native GUI, microphone,
+fresh-machine, quality and release qualification remain open.
 
 The [current-profile adapter receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-pnola-adapter/qualification.json)
 passes ten debug test/CLI cases with explicit relocated artifacts: recorded

@@ -609,9 +609,11 @@ A [model-blind timing-calibration recipe](../research/nemotron-word-timing-calib
 now freezes HCRC `q1ec1` [0,60), with exact source/member/notice identities and a
 deterministic mono16k conversion. Its preparer preserves the125 source timed
 units as unreviewed hints and emits an empty human annotation template. All240
-local tools tests pass; actual acquisition and two-person human review remain
-unrun at preregistration. This prepares calibration work, not human gold,
-representative held-out validation or an attribution-quality claim.
+local tools tests pass. The [actual preparation receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-hcrc-word-review-preparation/collection-qualification.json)
+now verifies all14 local package members and exact audio/unit/template replay,
+with no model or aligner call. Two-person human annotation/review and acoustic
+speaker-identity checking remain unperformed. This prepares calibration work,
+not human gold, representative held-out validation or an attribution-quality claim.
 
 The live capture path now tees normalized PCM into a bounded continuous native
 speaker session beside the durable eight-second ASR sections. Four adapter
