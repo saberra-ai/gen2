@@ -1,0 +1,32 @@
+{
+  "schema_version": 1,
+  "state": "failed",
+  "long_controller_pid": 69232,
+  "long_output": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-long-local-v1",
+  "mixed_protocol_sha256": "c40578e5fd6bc57003f6a556cd5838cbc5b12bede092437bb85b050bdfadf3ed",
+  "long_qualification_sha256": "35fc0cf295d468151773c32417fb3afbc44938511ab58e8e585f192675b94b29",
+  "wait_seconds": 1070.3614945419831,
+  "argv": [
+    "/opt/homebrew/opt/python@3.14/bin/python3.14",
+    "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/qualify_macos_pooled_mixed.py",
+    "--protocol",
+    "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/macos-pooled-mixed.protocol.json",
+    "--producer-zip",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-macos-construction-ci-v1/artifact.zip",
+    "--producer-metadata",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-macos-construction-ci-v1/download-identity.json",
+    "--public-helpers",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-public-local-v1/pooled-public-helpers.tar.gz",
+    "--public-helpers-manifest",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-public-local-v1/pooled-public-helpers-files.json",
+    "--public-qualification",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-public-local-v1/qualification.json",
+    "--source-models",
+    "/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work",
+    "--output",
+    "/Users/victor/.cache/gen2-nemotron3-n0/pooled-mixed-local-v1"
+  ],
+  "mixed_controller_pid": 86740,
+  "returncode": 1,
+  "error": "RuntimeError('frozen mixed controller failed; no automatic retry')"
+}

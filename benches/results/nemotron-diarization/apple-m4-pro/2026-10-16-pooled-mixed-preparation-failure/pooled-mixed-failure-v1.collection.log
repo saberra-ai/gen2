@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "/Users/victor/.cache/gen2-nemotron3-n0/collect-pooled-mixed-failure-v1.py", line 26, in <module>
+    verify_git_sources(repo, source, pins)
+    ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^
+  File "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/frozen_git_sources.py", line 31, in verify_git_sources
+    raise ValueError('frozen source size/type differs at recorded commit: ' + name)
+ValueError: frozen source size/type differs at recorded commit: vendor/llama-cpp-sys-2/llama.cpp/.clang-format

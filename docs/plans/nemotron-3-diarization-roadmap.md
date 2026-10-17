@@ -996,32 +996,33 @@ this VM does not pass real-time performance. Its initial collection-only
 source-pin assertion failure and corrected collector are retained without
 repeating model execution. Long/mixed/quality/app/release gates remain separate.
 
-The next pooled CPU long-session protocol is prepared separately in
-`macos-pooled-long.protocol.json`: exactly four fresh native/public streams
-at 30 minutes and one hour on the named physical M4 Pro. It binds 51 tools,
-266 repository files and the exact previously qualified helper payloads;
-no helper rebuild or model tuning is allowed. Every original long-session
-criterion remains unchanged, including the ten-minute retained tail, 1e-6
-probability/turn tolerance, bounded progressive revisions, peak RSS at most
-1 GiB and compute RTF strictly below 1. All 227 model-free tools tests pass.
-Pre-execution review caught a missing lifecycle-prerequisite field; the exact
-seven completed test names are now frozen before execution. The long streams
-are executing: the 30-minute pair passes all retained 62,824 rows and 753 turns
-bit-exact, with public RTF 0.17721 and native/public RSS below 248 MB. The
-one-hour runs and independent final collection remain pending, so the four-run
-long-session gate is not yet complete.
+The [pooled CPU long-session receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-long/collection-qualification.json)
+now passes all four native/public streams at 30 minutes and one hour on the
+named physical M4 Pro. The frozen protocol binds 51 tools, 266 repository files
+and the exact qualified helper payloads, without rebuilding or tuning. All
+original criteria pass: bit-exact probabilities and turns, bounded progressive
+revisions, peak RSS below 248 MB and compute RTF below 0.182. The 30-minute pair
+retains 62,824 rows/753 turns; the one-hour pair retains 63,373 rows/1,501 turns.
+Five strict 92-library audits, seven successful commands and all 317 historical
+source pins are independently verified in the 36-member receipt. This proves
+same-host long-session behavior; accuracy, M1 performance, GUI and release gates
+remain separate.
 
-`macos-pooled-mixed.protocol.json` separately freezes the next two existing
-CPU load-order tests with actual Bark, full Laya and Metal chat. It binds 54
-tools, 312 repository inputs, 3,703 vendored source files and the original 27
-model/provider files. The current generic Rust helper must compile offline
-under model-read denial; only the pinned built-in mel coefficient table is
-readable. Three actual sandbox/real-Git regressions now pass: UTF-8 paths keep
-read-only/model/output boundaries, and an ignored extra C++ source is rejected
-even when ordinary Git status is clean. Review found the ignored-source gap;
-the failing and corrected checks are retained. All 230 tools tests pass. These
-two mixed cases remain unrun, and do not transfer the old Metal results or
-establish simultaneous inference, speech quality, GUI or release qualification.
+The [first pooled mixed attempt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-mixed-preparation-failure/collection-qualification.json)
+failed before compilation: the original protocol omitted the required built-in
+`assets/bark/nemo128.f32` source pin. Only compilation sandbox controls ran;
+no compiler, native version query or neural test started. The original protocol
+and failed output remain unchanged. An initial collection-only submodule-path
+error is also retained; corrected offline collection verifies parent sources at
+`cc1c644` and 3,703 vendor files at their declared vendor revision.
+
+`macos-pooled-mixed-v2.protocol.json` separately freezes the correction: require
+the exact built-in mel source pin before preparing output, and bind the original
+failure and protocol. It retains the same two real-Laya CPU load-order tests,
+Bark/Metal chat payloads, acceptance rules and sandbox boundaries. All 231 local
+tools tests pass, including the actual missing-pin regression. The second mixed
+attempt is prepared and unrun; it establishes no mixed runtime, simultaneous
+inference, speech quality, GUI or release pass.
 
 The [227-test feature matrix](../../benches/results/nemotron-diarization/cross-platform/2026-10-16-feature-matrix-227/qualification.json)
 at `aeb6ba8`, run 38989434879, passes all 13 jobs: all twelve OS/feature

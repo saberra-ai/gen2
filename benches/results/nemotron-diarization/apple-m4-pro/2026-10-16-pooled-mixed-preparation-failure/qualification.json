@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "source_commit": "cc1c644b02520156fd8b8e6a989294acf6b77fe6",
+  "protocol": {
+    "bytes": 703727,
+    "sha256": "c40578e5fd6bc57003f6a556cd5838cbc5b12bede092437bb85b050bdfadf3ed"
+  },
+  "pooled_cpu_mixed_residency_passed": false,
+  "commands": [
+    {
+      "name": "compile-controls",
+      "argv": [
+        "/usr/bin/sandbox-exec",
+        "-f",
+        "/Users/victor/.cache/gen2-nemotron3-n0/pooled-mixed-local-v1/compile.sb",
+        "/usr/bin/python3",
+        "-c",
+        "import json, pathlib, socket, sys\ndef denied(operation):\n    try:\n        operation()\n    except PermissionError:\n        return\n    raise RuntimeError(\"sandbox operation unexpectedly permitted\")\ncases = json.loads(sys.argv[1])\nfor name in cases[\"reads\"]:\n    denied(lambda name=name: pathlib.Path(name).read_bytes())\nfor name in cases[\"writes\"]:\n    denied(lambda name=name: pathlib.Path(name).write_bytes(b\"changed\"))\ndenied(lambda: socket.create_connection((\"127.0.0.1\", 9), timeout=1))\n",
+        "{\"reads\": [\"/Users/victor/.cache/gen2-nemotron3-n0/pooled-mixed-local-v1/denied.nemo\", \"/Users/victor/.cache/gen2-nemotron3-n0/pooled-mixed-local-v1/denied.gguf\", \"/Users/victor/.cache/gen2-nemotron3-n0/pooled-mixed-local-v1/denied.safetensors\", \"/Users/victor/.cache/gen2-nemotron3-n0/pooled-mixed-local-v1/denied.onnx\", \"/Users/victor/.cache/gen2-nemotron3-n0/pooled-mixed-local-v1/denied.npy\", \"/Users/victor/.cache/gen2-nemotron3-n0/pooled-mixed-local-v1/denied.f32\", \"/Users/victor/.cache/gen2-nemotron3-n0/pooled-mixed-local-v1/work/models/laya/model.data\", \"/Users/victor/.cache/gen2-nemotron3-n0/pooled-mixed-local-v1/work/providers/libonnxruntime.dylib\", \"/Users/victor/.cache/gen2-nemotron3-n0/valid-mel-mixed-inputs-v1/work/models/laya/model.data\"], \"writes\": [\"/Users/victor/workspace/gen2-nemotron3-n0/assets/bark/nemo128.f32\"]}"
+      ],
+      "cwd": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-mixed-local-v1",
+      "environment": {
+        "PATH": "/Users/victor/.cargo/bin:/usr/bin:/bin:/usr/sbin:/sbin",
+        "HOME": "/Users/victor",
+        "TMPDIR": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-mixed-local-v1/tmp/",
+        "LC_ALL": "C",
+        "CARGO_HOME": "/Users/victor/.cargo",
+        "RUSTUP_HOME": "/Users/victor/.rustup",
+        "CARGO_TARGET_DIR": "/Users/victor/.cache/gen2-nemotron3-n0/pooled-mixed-local-v1/cargo-target",
+        "MACOSX_DEPLOYMENT_TARGET": "26.0",
+        "RUSTFLAGS": "-C target-cpu=generic -C link-arg=-mmacosx-version-min=26.0",
+        "CC": "/usr/bin/clang",
+        "CXX": "/usr/bin/clang++",
+        "CFLAGS": "-march=armv8.2-a+dotprod+fp16",
+        "CXXFLAGS": "-march=armv8.2-a+dotprod+fp16"
+      },
+      "inference_admitted": false,
+      "load_before": [
+        5.09912109375,
+        5.73974609375,
+        6.17822265625
+      ],
+      "pid": 87529,
+      "returncode": 0,
+      "load_after": [
+        5.09912109375,
+        5.73974609375,
+        6.17822265625
+      ]
+    }
+  ],
+  "loaded_images": {},
+  "cases": [],
+  "neural_commands_started": [],
+  "release_qualified": false,
+  "limits": [
+    "This is pooled CPU only; old Metal results are not transferred or rerun. Exactlytwo existing CPU load-order selectors use silent1s/20ms inputs; no real speech/wordattribution, isolatedbaselineoutput equality or simultaneousNN claim.",
+    "Old model/preset/framecontract/four-thread settings and original tests areunchanged. Chat reports publicMTLdevice placement, notper-kerneltelemetry. Modelweights andopaquehelpers remainoutsideGit with completedescriptors.",
+    "SharedM1public warmRTF2.1098284 remainsabove1. No uncontendedspeedup, physicalmicrophone/GUI/freshcompleteapp/accuracy/humantimedwordgold/signing/notary/defaultprofile/release claim; alloriginalgates unchanged."
+  ],
+  "producer_artifact": {
+    "id": 12082417995,
+    "node_id": "MDg6QXJ0aWZhY3QxMjA4MjQxNzk5NQ==",
+    "name": "nemotron-macos-pooled-construction",
+    "size_in_bytes": 17618400,
+    "url": "https://api.github.com/repos/saberra-ai/gen2/actions/artifacts/12082417995",
+    "archive_download_url": "https://api.github.com/repos/saberra-ai/gen2/actions/artifacts/12082417995/zip",
+    "expired": false,
+    "digest": "sha256:9f2833d05cbabc4d3272af67af8f5b192e3f88d418976b8ebade9f7bf9e5479c",
+    "created_at": "2026-10-17T00:01:26Z",
+    "updated_at": "2026-10-17T00:01:26Z",
+    "expires_at": "2026-11-16T00:01:23Z",
+    "workflow_run": {
+      "id": 38984207454,
+      "repository_id": 1353161693,
+      "head_repository_id": 1353161693,
+      "head_branch": "codex/nemotron3-n0",
+      "head_sha": "eeae443e18b03715c6fa1ebf577a0f69de51bedd"
+    }
+  },
+  "error": "KeyError('assets/bark/nemo128.f32')",
+  "storage": {
+    "start_minimum_bytes": 8589934592,
+    "running_minimum_bytes": 1073741824,
+    "reserve_requested_bytes": 268435456,
+    "checks": 30,
+    "released": true,
+    "minimum_observed_free_bytes": 234985619456,
+    "last_observed_free_bytes": 234985619456,
+    "reserve_reported_allocated_bytes": 268435456
+  }
+}

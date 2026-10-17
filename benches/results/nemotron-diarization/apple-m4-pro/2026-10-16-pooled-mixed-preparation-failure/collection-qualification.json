@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "source_commit": "cc1c644b02520156fd8b8e6a989294acf6b77fe6",
+  "mixed_qualification_passed": false,
+  "preparation_failure_preserved": true,
+  "declared_parent_source_pins_verified_at_original_commit": 366,
+  "declared_vendor_source_pins_verified_at_vendor_commit": 3703,
+  "vendor_revision": "847f447c310a3784d623a953e6f0bb07f04c0f27",
+  "initial_collection_failure": "Vendor Git submodule blobs were incorrectly queried in the parent repository; corrected offline collection verifies them at the declared vendor revision. No compile or model rerun.",
+  "mandatory_source_pin_omitted": "assets/bark/nemo128.f32",
+  "actual_commands": [
+    {
+      "name": "compile-controls",
+      "returncode": 0
+    }
+  ],
+  "rust_compiler_commands_started": 0,
+  "native_version_queries_started": 0,
+  "neural_commands_started": [],
+  "release_qualified": false,
+  "limits": [
+    "This is an actual pre-compilation protocol defect. Original mandatory source declaration is missing; neither source completeness nor mixed runtime success is claimed.",
+    "Only model/network/read-only compilation controls ran. No Rust compiler, native version query, mixed neural test or app execution occurred. Failure remains failed; all original outputs and source pins are retained.",
+    "Any corrected attempt requires a separate source/protocol freeze and fresh output, with the same assets, tests and acceptance rules."
+  ]
+}

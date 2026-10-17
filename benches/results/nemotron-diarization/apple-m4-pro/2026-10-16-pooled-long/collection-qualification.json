@@ -1,0 +1,92 @@
+{
+  "schema_version": 1,
+  "source_commit": "aeb6ba813d61653ebdac7273f2a4b404c606f142",
+  "pooled_30m_1h_passed": true,
+  "historical_source_pins_verified": 317,
+  "four_fresh_neural_processes": [
+    "30m-native",
+    "30m-public",
+    "60m-native",
+    "60m-public"
+  ],
+  "five_strict_private_library_audits": 92,
+  "protected_input_inventories_unchanged": true,
+  "qualified_helper_payloads_independently_restored_and_rehashed": true,
+  "comparisons": {
+    "30m": {
+      "passed": true,
+      "scope": "wrapper/reference correctness at the recorded duration; not held-out quality or full release qualification",
+      "runtime_profile": "gen2-valid-mel-pool-v1",
+      "frame_contract": "v3-streaming-valid-mel-v1",
+      "audio_duration_seconds": 1800.0,
+      "backend": "cpu",
+      "device": null,
+      "native_frame_count": 180000,
+      "retained_first_frame": 117176,
+      "retained_rows": 62824,
+      "turns": 753,
+      "maximum_turn_error_seconds": 0.0,
+      "turn_tolerance_seconds": 1e-06,
+      "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+      "retained_probabilities_match": true,
+      "maximum_probability_error": 0.0,
+      "probability_tolerance": 1e-06,
+      "gen2_rtf": 0.17720517833333332,
+      "native_rtf": 0.1813058011111111,
+      "peak_rss_bytes": {
+        "native": 247365632,
+        "public": 244940800
+      },
+      "process_rss_within_1024_mib": true,
+      "provisional_snapshots": 341,
+      "first_provisional_audio_seconds": 4.32,
+      "last_provisional_audio_seconds": 1793.52,
+      "backpressure_count": 105985,
+      "runtime_version": "nemo-speech-asr 0.2.0+gen2-valid-mel-pool-v1",
+      "probabilities_bit_exact": true
+    },
+    "60m": {
+      "passed": true,
+      "scope": "wrapper/reference correctness at the recorded duration; not held-out quality or full release qualification",
+      "runtime_profile": "gen2-valid-mel-pool-v1",
+      "frame_contract": "v3-streaming-valid-mel-v1",
+      "audio_duration_seconds": 3600.0,
+      "backend": "cpu",
+      "device": null,
+      "native_frame_count": 360000,
+      "retained_first_frame": 296627,
+      "retained_rows": 63373,
+      "turns": 1501,
+      "maximum_turn_error_seconds": 0.0,
+      "turn_tolerance_seconds": 1e-06,
+      "raw_native_and_gen2_probabilities_finite_and_bounded": true,
+      "retained_probabilities_match": true,
+      "maximum_probability_error": 0.0,
+      "probability_tolerance": 1e-06,
+      "gen2_rtf": 0.1794964488888889,
+      "native_rtf": 0.1782612511111111,
+      "peak_rss_bytes": {
+        "native": 244154368,
+        "public": 242548736
+      },
+      "process_rss_within_1024_mib": true,
+      "provisional_snapshots": 683,
+      "first_provisional_audio_seconds": 4.32,
+      "last_provisional_audio_seconds": 3593.52,
+      "backpressure_count": 215133,
+      "runtime_version": "nemo-speech-asr 0.2.0+gen2-valid-mel-pool-v1",
+      "probabilities_bit_exact": true
+    }
+  },
+  "release_qualified": false,
+  "limits": [
+    "Original30m/1h criteria are copied verbatim from valid-mel-cpu-long.protocol.json and checked at every command:1e-6, identicalpositivecompactedstart,60000..130000retainedrows,1024MiBRSS,RTFstrictlybelow1,bounded/progressiveprovisionalhistorywithactualbackpressure. No gate or oldresultisrelabeled.",
+    "Admit exact196memberconstructioneeae443/run38984207454 and33membernative618d796/run38986310483. Rehash/restore qualifiednative CABI helper archive; rehash/restore exact980946B public helper archive from successfulf72176c M4public/lifecyclereceipt. Copy exactnative-stream/public-stream/load-probe payloads flatforcorrectrpath; no compilation/modeltuning.",
+    "Native helper uses only public C ABI; private C++ diagnostic is never used with the newlayout. Both helper versions identify exact pool-v1, sameframe/model/preset/four-thread/defaultCPUtarget. The public helper is the same successfully qualified genericCPU Rustbinary.",
+    "Before neural admission require six actual weightformat/model/network denials, source/SDKdelivery/helperarchive/priorresult-read denials and readonlyWAV control, then exactversion query with strict92-librarytrace under modelread denial. Original source/caches/archives and allstagedinputs are readonly/hidden asappropriate.",
+    "Four fixed fresh neural processes in30m-native/30m-public/60m-native/60m-public order only. Neitherhelpercanreadother/prioroutputbodies; metadata/newwritesallowed. Everyretainedprobability andfinalturncomparedaftercompaction; input/repeat/PCMidentitiesexact. Preserve all logs/raw arrays/partial failures; no automatic retry.",
+    "Use physicallyallocated256MiBdiagnosticreserve,8GiBstart/1GiBrunningguard and unchanged1800spercommandtimeout with processgrouptermination. Check protectedinput inventories betweenruns andaftercompletion; record host/load andexternalwholeprocessRSS/time. Tracing is applied only to targetaftertime/env launchers.",
+    "Faster-than-realtimeandRSS checks cover ordinary-background repeatedsmokeaudio onthisnamedM4, notuncontendedspeedup orcapture/UIlatency. SharedM1 CABI RTF1.86610/2.01168 remainsabove1 and noM1longclaimfollows.",
+    "No diverse/heldoutaccuracy/wordgold/Metal/otherOS/mixedBark/Laya/chat/PnolaGUI/physicalmicrophone/freshcompleteapp/signing/notary/release qualification. No defaultprofilepromotion; originalAMI20%/Q8degradation2pp andallothergatesunchanged."
+  ]
+}

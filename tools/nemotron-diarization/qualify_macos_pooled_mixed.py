@@ -57,6 +57,14 @@ def verify_vendor_worktree(vendor, revision):
         raise ValueError('mixed vendor revision or worktree differs')
 
 
+def admit_builtin_mel_table(repo, protocol):
+    name = 'assets/bark/nemo128.f32'
+    expected = protocol['repository_files'].get(name)
+    if expected is None or descriptor(repo / name) != expected:
+        raise ValueError('required built-in mel coefficient source pin missing or changed')
+    return repo / name
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     for name in ['protocol', 'producer-zip', 'producer-metadata', 'public-helpers',
@@ -78,6 +86,7 @@ def main():
     lock_path, lock = load_profile(POOLED_PROFILE)
 
     def frozen():
+        admit_builtin_mel_table(repo, p)
         original = json.loads((tools / 'valid-mel-mixed.protocol.json').read_text())
         vendor = repo / 'vendor/llama-cpp-sys-2/llama.cpp'
         if (args.protocol.read_bytes() != protocol_bytes

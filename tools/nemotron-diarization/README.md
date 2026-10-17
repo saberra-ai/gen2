@@ -773,26 +773,27 @@ verified. Warm RTF 2.10983 still exceeds 1. An initial collection-only pin-count
 assertion failure is retained with the corrected collector; no model rerun was
 needed. Long-session, mixed-model, quality, app and release gates remain open.
 
-`qualify_macos_pooled_long.py` and `macos-pooled-long.protocol.json` prepare
-four fresh 30-minute/one-hour native/public CPU streams on the named M4 Pro.
-They reuse the exact qualified native C ABI and public Rust helper payloads
-with the same private runtime. The old long-session acceptance criteria are
-checked verbatim at every command; output payload reads are denied to both
-helpers, with actual network/model/read-only controls before inference.
-All 227 tools tests pass. Review caught and corrected a missing field binding
-the seven completed public lifecycle prerequisites before execution. The
-30-minute pair now passes 62,824 retained rows and 753 turns bit-exact.
-The one-hour runs and final independent collection remain pending; M1
-performance and all other release gates stay open.
+The [pooled long-session receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-long/collection-qualification.json)
+passes all four fresh 30-minute/one-hour native/public CPU streams under the
+original frozen criteria. Both pairs are bit-exact: 62,824 retained rows and
+753 turns at 30 minutes; 63,373 rows and 1,501 turns at one hour. RTF stays below
+0.182 and RSS below 248 MB. All seven commands, 317 historical source pins,
+helper payloads and five strict 92-library audits independently verify. This
+is named-M4 long-session evidence; quality, M1, app and release gates stay open.
 
-`qualify_macos_pooled_mixed.py` prepares the two unchanged real-Laya CPU
-load-order tests with actual Bark and Metal chat. Its separate protocol binds
-the full current source/vendor set and original model/provider payloads before
-offline generic compilation. Three model-free regressions verify UTF-8 sandbox
-paths, the exact read-only mel-table build exception and rejection of ignored
-extra vendor sources. All 230 tools tests pass. Mixed model execution remains
-unrun; the tests' tiny-silence residency scope does not prove speech quality or
-simultaneous neural execution.
+`qualify_macos_pooled_mixed.py` retains the two unchanged real-Laya CPU load-order
+tests with actual Bark and Metal chat. The [first attempt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-pooled-mixed-preparation-failure/collection-qualification.json)
+failed after compilation sandbox controls because the protocol omitted the
+built-in mel coefficient source pin. No compiler or neural command ran. The
+original failed protocol/output and an initial collection-only submodule-path
+error are retained. Corrected offline collection verifies the parent and vendor
+sources in their respective repositories.
+
+The separately frozen `macos-pooled-mixed-v2.protocol.json` adds the mandatory
+source pin and rejects missing/changed pins before output preparation, retaining
+all original assets, tests and acceptance rules. All 231 local tools tests pass,
+including the missing-pin regression. V2 remains unrun. Tiny-silence residency
+checks cannot establish speech quality or simultaneous neural execution.
 
 `qualify_macos_portable_runtime.py` and `macos-portable-runtime-v2.protocol.json`
 freeze a separate fresh M1 receiver for the exact constructed artifacts. The

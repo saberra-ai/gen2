@@ -5,11 +5,25 @@ import subprocess
 import tempfile
 import unittest
 
-from qualify_macos_pooled_mixed import compiler_policy, mixed_policy, mixed_runtime_policy, verify_vendor_worktree
+from qualify_macos_pooled_mixed import admit_builtin_mel_table, compiler_policy, mixed_policy, mixed_runtime_policy, verify_vendor_worktree
+from build_valid_mel_candidate import descriptor
 from qualify_macos_portable_runtime import CONTROL
 
 
 class PooledMixedPolicy(unittest.TestCase):
+    def test_real_mel_table_requires_a_frozen_pin_before_any_preparation(self):
+        repo = Path(__file__).resolve().parents[2]
+        name = 'assets/bark/nemo128.f32'
+        original = json.loads(Path(__file__).with_name('macos-pooled-mixed.protocol.json').read_text())
+        self.assertNotIn(name, original['repository_files'])
+        with self.assertRaisesRegex(ValueError, 'coefficient source pin'):
+            admit_builtin_mel_table(repo, original)
+        pinned = {'repository_files': {name: descriptor(repo / name)}}
+        self.assertEqual(admit_builtin_mel_table(repo, pinned), repo / name)
+        pinned['repository_files'][name] = {**pinned['repository_files'][name], 'sha256': '0' * 64}
+        with self.assertRaisesRegex(ValueError, 'coefficient source pin'):
+            admit_builtin_mel_table(repo, pinned)
+
     def test_ignored_cpp_extra_is_rejected_even_when_git_status_is_clean(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)
