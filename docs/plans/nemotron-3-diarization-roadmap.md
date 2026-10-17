@@ -114,6 +114,10 @@ Remaining release work as of 2026-10-17:
   stops at first Clang probability failure: max error0.27158 and26 versus27 turns.
   MSVC/Clang native RTF is1.036746/0.990393, but only two cases execute; neither
   numerical acceptance nor a complete timing comparison supports promotion.
+  A separate [scalar contraction probe](../research/nemotron-windows-fp-contract-probe.md)
+  now preregisters exact-compiler arithmetic controls before another SDK/model
+  run. It tests a compiler-default hypothesis only and cannot qualify a runtime
+  or establish the cause of the full model divergence. Execution is pending.
   Then merge and
   push the completed feature to main; no main promotion is justified yet.
 

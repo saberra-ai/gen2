@@ -57,6 +57,11 @@ MSVC/Clang pair; the second candidate and closing control never execute. Preserv
 the failure and investigate numerical divergence; no tolerance, performance or
 production/package requirement is relaxed and no candidate is qualified.
 
+The [scalar contraction probe](nemotron-windows-fp-contract-probe.md) next isolates
+ordinary multiply-add, forced separate rounding and explicit FMA using the exact
+two compiler binaries, before any new SDK/model execution. It is preregistered,
+not executed, and cannot establish model causality or qualify a runtime/package.
+
 The new [producer](../../tools/nemotron-diarization/platform_bounded_windows_native.py),
 [composed-source verifier](../../tools/nemotron-diarization/platform_bounded_sources.py)
 and [workflow](../../.github/workflows/diarization-bounded-windows-native.yml) use a

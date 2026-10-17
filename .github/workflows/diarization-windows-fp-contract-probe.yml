@@ -1,0 +1,44 @@
+name: Diarization Windows scalar FP contraction probe
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/nemotron3-n0]
+    paths:
+      - .github/workflows/diarization-windows-fp-contract-probe.yml
+      - tools/nemotron-diarization/windows_fp_contract_probe.py
+      - tools/nemotron-diarization/fp_contract_probe.cpp
+      - tools/nemotron-diarization/windows-fp-contract-probe.protocol.json
+permissions:
+  contents: read
+jobs:
+  arithmetic:
+    runs-on: windows-2022
+    timeout-minutes: 10
+    env:
+      GIT_CONFIG_COUNT: '2'
+      GIT_CONFIG_KEY_0: core.autocrlf
+      GIT_CONFIG_VALUE_0: 'false'
+      GIT_CONFIG_KEY_1: core.eol
+      GIT_CONFIG_VALUE_1: lf
+      GIT_LFS_SKIP_SMUDGE: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Scalar interpretation controls
+        run: python -m unittest discover -s tools/nemotron-diarization -p test_windows_fp_contract_probe.py
+      - name: Actual owned-process controls
+        run: python -m unittest discover -s tools/nemotron-diarization -p test_windows_job_v2.py
+      - name: Observe exact compilers without SDK or model
+        run: python tools/nemotron-diarization/windows_fp_contract_probe.py --output "${{ runner.temp }}/fp-contract-probe"
+      - name: Preserve successful or failed arithmetic observation
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nemotron-windows-fp-contract-probe
+          path: ${{ runner.temp }}/fp-contract-probe/
+          include-hidden-files: true
+          retention-days: 30
