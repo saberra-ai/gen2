@@ -31,6 +31,18 @@ pub struct MemoryGovernor {
     snapshot: MemorySnapshot,
 }
 
+pub(crate) struct ModelLoadConditions {
+    pub projected_process_mb: Option<u64>,
+    pub process_allows: bool,
+    pub pressure_allows: bool,
+}
+
+impl ModelLoadConditions {
+    pub fn allows(&self) -> bool {
+        self.process_allows && self.pressure_allows
+    }
+}
+
 impl MemoryGovernor {
     /// Create a governor from a pre-built snapshot.
     pub fn new(snapshot: MemorySnapshot) -> Self {
@@ -118,15 +130,19 @@ impl MemoryGovernor {
     /// Constrained, checks that the projected RSS after admission stays
     /// under the process soft limit (keeping a buffer).
     pub fn can_load_additional_model(&self, estimated_extra_mb: u64) -> bool {
-        match self.snapshot.pressure {
-            MemoryPressureLevel::Severe | MemoryPressureLevel::Emergency => false,
-            _ => {
-                let projected = self
-                    .snapshot
-                    .estimated_process_mb
-                    .saturating_add(estimated_extra_mb);
-                projected < self.snapshot.budgets.process_soft_limit_mb
-            }
+        self.model_load_conditions(estimated_extra_mb).allows()
+    }
+
+    pub(crate) fn model_load_conditions(&self, estimated_extra_mb: u64) -> ModelLoadConditions {
+        let projected = self
+            .snapshot
+            .estimated_process_mb
+            .checked_add(estimated_extra_mb);
+        ModelLoadConditions {
+            projected_process_mb: projected,
+            process_allows: projected
+                .is_some_and(|value| value < self.snapshot.budgets.process_soft_limit_mb),
+            pressure_allows: self.snapshot.pressure < MemoryPressureLevel::Severe,
         }
     }
 }

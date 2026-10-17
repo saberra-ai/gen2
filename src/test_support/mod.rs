@@ -13,3 +13,5 @@ pub(crate) mod harness;
 pub(crate) use fake_backend::{FakeBackend, Gate, Script, Step};
 #[allow(unused_imports)]
 pub(crate) use harness::{Harness, assert_valid_trace, text_of};
+
+pub(crate) mod local_gguf;

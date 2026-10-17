@@ -118,20 +118,37 @@ impl ModelMemoryPlan {
         budget_mb: u64,
         vision: bool,
     ) -> Result<Self, String> {
+        let plan = Self::candidate(info, weights_mb, requested, concurrent, budget_mb, vision);
+        if plan.total_mb <= budget_mb {
+            Ok(plan)
+        } else {
+            Err(format!(
+                "model admission denied: weights_mb={}, context_mb={}, working_mb={}, total_mb={}, available_for_model_mb={budget_mb}, context_tokens={}, sessions={concurrent}",
+                plan.weights_mb,
+                plan.context_mb,
+                plan.working_mb,
+                plan.total_mb,
+                plan.context_tokens,
+            ))
+        }
+    }
+
+    fn candidate(
+        info: &crate::api::fit::ModelInfo,
+        weights_mb: u64,
+        requested: Option<u32>,
+        concurrent: usize,
+        budget_mb: u64,
+        vision: bool,
+    ) -> Self {
         let initial = requested.unwrap_or(4096.min(info.train_context.unwrap_or(4096)));
         let mut context = initial;
         loop {
             let mut plan = Self::estimate(info, weights_mb, context, concurrent, vision);
             plan.context_reduced = context < initial;
             plan.admission_budget_mb = budget_mb;
-            if plan.total_mb <= budget_mb {
-                return Ok(plan);
-            }
-            if requested.is_some() || context <= 2048 {
-                return Err(format!(
-                    "model admission denied: weights_mb={}, context_mb={}, working_mb={}, total_mb={}, available_for_model_mb={budget_mb}, context_tokens={context}, sessions={concurrent}",
-                    plan.weights_mb, plan.context_mb, plan.working_mb, plan.total_mb,
-                ));
+            if plan.total_mb <= budget_mb || requested.is_some() || context <= 2048 {
+                return plan;
             }
             context = (context / 2).max(2048);
         }
@@ -146,6 +163,27 @@ pub(crate) fn plan_gguf(
     settings: &crate::engine::Settings,
     concurrent: usize,
     budget_mb: u64,
+) -> Result<Option<ModelMemoryPlan>, String> {
+    plan_gguf_inner(path, projector, settings, concurrent, budget_mb, false)
+}
+
+/// The same selection rules, retaining the final candidate on budget refusal.
+pub(crate) fn inspect_gguf_plan(
+    path: &std::path::Path,
+    settings: &crate::engine::Settings,
+    concurrent: usize,
+    budget_mb: u64,
+) -> Result<Option<ModelMemoryPlan>, String> {
+    plan_gguf_inner(path, None, settings, concurrent, budget_mb, true)
+}
+
+fn plan_gguf_inner(
+    path: &std::path::Path,
+    projector: Option<&std::path::Path>,
+    settings: &crate::engine::Settings,
+    concurrent: usize,
+    budget_mb: u64,
+    retain_denied: bool,
 ) -> Result<Option<ModelMemoryPlan>, String> {
     let info = match crate::api::fit::ModelInfo::read(path) {
         Ok(info) => info,
@@ -190,14 +228,25 @@ pub(crate) fn plan_gguf(
         })
         .transpose()?;
     let draft_mb = draft_plan.as_ref().map_or(0, |p| p.total_mb);
-    let mut plan = ModelMemoryPlan::select(
-        &info,
-        weights,
-        settings.system.ctx_size,
-        concurrent,
-        budget_mb.saturating_sub(draft_mb),
-        projector.is_some(),
-    )?;
+    let mut plan = if retain_denied {
+        ModelMemoryPlan::candidate(
+            &info,
+            weights,
+            settings.system.ctx_size,
+            concurrent,
+            budget_mb.saturating_sub(draft_mb),
+            projector.is_some(),
+        )
+    } else {
+        ModelMemoryPlan::select(
+            &info,
+            weights,
+            settings.system.ctx_size,
+            concurrent,
+            budget_mb.saturating_sub(draft_mb),
+            projector.is_some(),
+        )?
+    };
     if let Some(draft) = draft_plan {
         plan.weights_mb = plan.weights_mb.saturating_add(draft.weights_mb);
         plan.context_mb = plan.context_mb.saturating_add(draft.context_mb);

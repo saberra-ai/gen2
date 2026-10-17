@@ -32,7 +32,8 @@ pub mod plugin;
 /// return live here so the root stays boring.
 pub mod runtime {
     pub use crate::api::{
-        ModelResidency, ResidencySnapshot, RuntimeBuilder, RuntimeStats, WorkingMemoryReservation,
+        AdmissionChecks, AdmissionLedger, LocalAdmissionReport, ModelResidency, ResidencySnapshot,
+        RuntimeBuilder, RuntimeStats, WorkingMemoryReservation,
     };
     pub use crate::hardware::{GpuBackend, HardwareProfile};
     /// Memory governance the residency decisions are made against.

@@ -41,6 +41,10 @@ pub struct ControllerConfig {
     /// Not serialized: a plugin is a factory, not a value.
     #[serde(skip)]
     pub plugins: Vec<Arc<BackendPlugin>>,
+    /// Deterministic Runtime policy fixtures only; absent from production builds.
+    #[cfg(test)]
+    #[serde(skip)]
+    pub(crate) memory_snapshot_override: Option<crate::memory::MemorySnapshot>,
 }
 
 impl Default for ControllerConfig {
@@ -53,12 +57,19 @@ impl Default for ControllerConfig {
             event_channel_capacity: 512,
             tick_idle: Duration::from_millis(2),
             plugins: Vec::new(),
+            #[cfg(test)]
+            memory_snapshot_override: None,
         }
     }
 }
 
 impl ControllerConfig {
     pub(crate) fn memory_governor(&self) -> crate::memory::MemoryGovernor {
+        #[cfg(test)]
+        if let Some(snapshot) = &self.memory_snapshot_override {
+            return crate::memory::MemoryGovernor::new(snapshot.clone())
+                .with_inference_budget(self.resident_memory_budget_mb);
+        }
         crate::memory::MemoryGovernor::new(
             crate::memory::runtime_memory::current_memory_snapshot_with_policy(
                 self.desktop_memory_policy,

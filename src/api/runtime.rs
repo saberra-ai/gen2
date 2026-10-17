@@ -51,6 +51,8 @@
 //! ```
 
 use std::collections::HashMap;
+mod admission;
+pub use admission::{AdmissionChecks, AdmissionLedger, LocalAdmissionReport};
 use std::path::{Path, PathBuf};
 use std::sync::atomic::{AtomicBool, AtomicU64, Ordering};
 use std::sync::{Arc, Mutex};
@@ -677,13 +679,7 @@ impl Runtime {
         .map_err(Error::Load)?;
         self.make_room(ideal.as_ref().map_or(weight_mb, |p| p.total_mb), None);
         let governor = self.inner.config.memory_governor();
-        let budget = crate::residency_policy::available_for_model_mb(&governor).min(
-            governor
-                .budgets()
-                .inference_resident_mb
-                .saturating_sub(self.residency().resident_mb())
-                .saturating_sub(self.auxiliary_reserved_mb()),
-        );
+        let budget = self.admission_ledger()?.available_mb(&governor);
         let memory_plan = crate::residency_policy::plan_gguf(
             path,
             mmproj.as_deref(),
@@ -919,16 +915,9 @@ impl Runtime {
     /// Whether `extra_mb` more resident memory fits: the runtime's ledger
     /// against the budget, and the machine's memory governor.
     fn can_admit(&self, extra_mb: u64) -> bool {
-        let ledger = self
-            .residency()
-            .resident_mb()
-            .saturating_add(self.auxiliary_reserved_mb());
-        let Some(projected) = ledger.checked_add(extra_mb) else {
-            return false;
-        };
         let governor = self.inner.config.memory_governor();
-        projected <= governor.budgets().inference_resident_mb
-            && governor.can_load_additional_model(extra_mb)
+        self.admission_ledger()
+            .is_ok_and(|ledger| Self::check_admission(&ledger, extra_mb, &governor).allows())
     }
 
     /// The resident local model used longest ago, other than `keep`.

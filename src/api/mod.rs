@@ -57,8 +57,8 @@ pub use model::Model;
 pub use request_schema::RequestSchema;
 pub use response::Response;
 pub use runtime::{
-    ModelResidency, RemoteModelBuilder, ResidencySnapshot, Runtime, RuntimeBuilder, RuntimeStats,
-    WorkingMemoryReservation,
+    AdmissionChecks, AdmissionLedger, LocalAdmissionReport, ModelResidency, RemoteModelBuilder,
+    ResidencySnapshot, Runtime, RuntimeBuilder, RuntimeStats, WorkingMemoryReservation,
 };
 pub use session::Session;
 pub use tool_defs::{ToolDefinition, ToolSet};
