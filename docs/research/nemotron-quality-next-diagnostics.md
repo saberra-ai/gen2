@@ -1,5 +1,35 @@
 # Nemotron quality: next diagnostics after the AMI reference investigation
 
+## Current execution status — 2026-10-17
+
+The source investigation below records the questions open on2026-10-16.
+Several proposed controls have since executed. Use the following retained
+results before scheduling further experiments; historical future-tense passages
+are not evidence that these calls remain unperformed.
+
+| Investigation | Current evidence and limit |
+| --- | --- |
+| Error localization | [Saved-output localization](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-ami-error-localization/qualification.json) completed. Distant overlap/short-span errors remain; this diagnoses observed targets. |
+| Frontend tensors/banks | [Frontend control](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-frontend-control/qualification.json) and [streaming tails](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-tail-framing/qualification.json) completed. Same-bank residuals and terminal-row differences are retained; no blanket normalization or bank replacement was selected. |
+| Native F32-dominant control | [Construction](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-native-f32-construction/qualification.json) accounts for360 stored tensors:359F32 and oneF16 convolution. [Three native CPU calls](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-native-f32-execution/qualification.json) completed; this is neither an all-FP32 oracle nor universal HF equality. |
+| Publisher parameter identity | [Weight audit](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-hf-nemo-weight-identity/qualification.json) matches all417 HF tensors to the pinned363-tensor BF16 source mapping/casts. This closes weight identity, not arithmetic/frontend/cache equivalence. |
+| Teacher-forced calibration | [Two HF and four native graph calls](nemotron-teacher-forced-graph-control.md#subsequent-completed-v2-graph-execution) completed. The computed terminal Mel row changes this excluded calibration; valid39 and explicit-zero40 native outputs are byte-identical. This does not explain every target error. |
+| V3 valid-Mel implementation | [Current-profile corpus requalification](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-valid-mel-frozen-corpus/receiver-qualification.json) completed after the [finish correction](nemotron-v3-finish-valid-mel-patch.md). All16 native/public pairs and Q8 degradation bounds pass; both AMI channels still fail the original quality gate on CPU and Metal. |
+| Original-NeMo CPU comparison | [Both fixed AMI calls](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-16-original-nemo-ami/receiver-qualification.json) completed. Shared DER41.5071%/50.0045% also fails20%; original/HF probabilities are unequal. Later official3.1 source does not identify the checkpoint's training source. |
+| Fixed session prefix | [Actual prefix contrast below](#actual-fixed-prefix-contrast) completed. It worsens production DER on both original channels under both references; do not repeat it as an unrun remedy. |
+| Publisher large context | [Disjoint development contrast](nemotron-large-context-development.md#actual-v2-contrast) completed. Primary production DER improves but remains above20%;30.4s nominal buffering supplies no low-latency live setting. |
+| Segmentation operations | [Fixed saved-output ablations](nemotron-development-segmentation.md) completed. Padding/gap/duration/threshold changes show reference-dependent tradeoffs and no uniformly improving replacement; no policy was selected. |
+
+The original ES2004 failures, references and20% per-slice requirement remain
+unchanged. Further policy development needs separate development audio and a
+fresh frozen validation set; none of these observed-target/development results
+establishes unseen-meeting readiness. Human acoustic word-boundary annotation
+and independent review are [documented as deferred](nemotron-word-timing-calibration.md),
+as requested. That gate stays open. The [roadmap](../plans/nemotron-3-diarization-roadmap.md)
+tracks the remaining quality, attribution, desktop and release requirements.
+
+## Historical source investigation
+
 Read-only primary-source investigation, 2026-10-16. **The frozen quality gate remains failed. No new model run, scoring, protocol/reference/scorer/lock edit, audio substitution or parameter search was performed.** The existing evidence supports two separate effects: broad transcription references inflate missed speech, while the native production postprocessor adds substantial false activity against tighter published labels. Neither accounts for the entire distant-microphone error. No additional implementation defect was established by this source audit.
 
 ## Start from the completed evidence
