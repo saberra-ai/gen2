@@ -100,3 +100,28 @@ collection is retained unchanged in external cache; V2 repeats metadata/sample
 replay only, without acquisition, compilation or native calls. No large-context
 inference, performance, FP32 comparison, production selection or release gate has
 been completed by this preparation.
+
+## Frozen execution protocol
+
+The [execution protocol](../../tools/nemotron-diarization/context-development-diagnostic.protocol.json)
+now binds14 transitive tool sources plus the bounds regression,140 staged filesystem entries and seven
+preparation records. It reuses the exact earlier public low-context binary and
+verifies its258 historical Rust source blobs. After offline runtime/premodel
+denial controls, version-only and invalid-profile checks, it admits native low,
+native large and public low in that order for each channel. Every neural case
+uses a fresh process; eight strict92-image audits include the two non-neural
+native controls. All30,000 rows must be present, actual normalized PCM must match
+the acquisition hash, and low-context public/native probabilities must match
+byte-for-byte with the established1e-6 turn bound. Both native profiles reject
+turn endpoints exceeding300s by more than the established100µs rounding bound
+before scoring; a regression rejects excessive or wholly out-of-recording turns.
+
+Both primary transcriber and published MFA references are scored separately with
+unchanged shared and native production postprocessors,10ms frame and independent
+continuous scorers, a full300s UEM, included overlap and zero collar. Four scorer
+calibrations precede execution. Actual process RSS, load/push/finish timings and
+RTF are retained;30.4s large-context nominal buffering is not measured acoustic
+label delay. The5GiB start floor,1GiB running floor,256MiB reserve,600s deadlines
+and process-group cleanup remain unchanged. Inputs are read-only, child reads of
+references/scorer/provenance/prior results are denied, and any failure stops the
+trial without automatic retry. No inference receipt exists yet.
