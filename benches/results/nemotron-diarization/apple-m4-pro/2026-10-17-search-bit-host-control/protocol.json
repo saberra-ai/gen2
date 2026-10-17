@@ -1,0 +1,57 @@
+{
+  "schema_version": 1,
+  "scope": "Host-only fresh owned fixture; no guest operations or release qualification.",
+  "tools": {
+    "macos_vm_search_bit_control.py": {
+      "bytes": 7905,
+      "sha256": "4c602530fd0f3e6441d7a6c1c13d1e9f318ed0a7318f8e8dc24bb40528b0b22e"
+    },
+    "macos_vm_permissions_probe.py": {
+      "bytes": 9468,
+      "sha256": "22b1a69b124c0366200e5c293ddb42eb38b6f72f215c64454bf29ec311ba011b"
+    }
+  },
+  "external_files": {
+    "/usr/bin/python3": {
+      "bytes": 118880,
+      "sha256": "506cb2ddd061e2992c8ee7c53853340688b53d9fcec94c3aa936524cea5b40cb"
+    },
+    "/Applications/Xcode.app/Contents/Developer/usr/bin/python3": {
+      "bytes": 102352,
+      "sha256": "271143990bc83af0fb2404a255038f5faafb96df1584ed7f085e5018c0f33ffb"
+    },
+    "/usr/bin/sandbox-exec": {
+      "bytes": 102560,
+      "sha256": "2f447acfae7a954ccb5a1bcf3a1955f69b1a8549c434ddff643df98fd3cb33ba"
+    },
+    "/usr/sbin/sysctl": {
+      "bytes": 119280,
+      "sha256": "9d5d4e70c0c228d366a48149771c652962efaf2d22b96731ff653ae45194bb16"
+    }
+  },
+  "expected_host": {
+    "cpu": "Apple M4 Pro",
+    "system": "Darwin",
+    "machine": "arm64",
+    "effective_uid": 502,
+    "python_version": "3.9.6"
+  },
+  "output": "/Users/victor/.cache/gen2-nemotron3-n0/macos-search-bit-control-local-v1",
+  "argv": [
+    "/usr/bin/python3",
+    "-B",
+    "/Users/victor/workspace/gen2-nemotron3-n0/tools/nemotron-diarization/macos_vm_search_bit_control.py",
+    "--control",
+    "/Users/victor/.cache/gen2-nemotron3-n0/macos-search-bit-control-local-v1/fixture"
+  ],
+  "timeout_seconds": 60,
+  "required": {
+    "control_passed": true,
+    "restoration_confirmed": true,
+    "host_only": true,
+    "guest_access_qualified": false,
+    "acl_policy_qualified": false,
+    "directory_contents_read": false,
+    "account_content_read": false
+  }
+}

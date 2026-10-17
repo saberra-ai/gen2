@@ -209,6 +209,13 @@ Remaining release work as of 2026-10-17:
   and all326 model-free tests pass. The clone stays quarantined. DataRW access,
   stored ownership and guest provisioning remain open; canonical zero-length
   security attributes do not establish ACL absence or policy.
+  A separate [host search-bit control](../research/nemotron-macos-search-bit-control.md)
+  now passes the actual ordinary-descriptor0600/0700/0600 transition and exact
+  restoration on a fresh owned host fixture. Both sandbox children are reaped;
+  all556 model-free tests pass with seven Windows-only skips. This closes only
+  the selected-runtime operation prerequisite. Guest ACL/access, provisioning
+  and fresh-machine app checks remain open; available storage stays below the
+  unchanged VM reserve, so no guest operation was admitted.
 - Finish each advertised platform/backend's performance, deployment and public
   signing/notarization requirements before promotion. Windows CPU functional
   evidence passes but its observed live RTF remains above one; the

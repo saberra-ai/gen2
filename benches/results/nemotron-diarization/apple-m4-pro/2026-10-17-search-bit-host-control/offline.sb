@@ -1,0 +1,7 @@
+(version 1)
+(allow default)
+(deny network*)
+(deny file-write*)
+(allow file-write* (subpath "/Users/victor/.cache/gen2-nemotron3-n0/macos-search-bit-control-local-v1/fixture"))
+(deny file-read* (subpath "/Users/victor/workspace/pnola") (subpath "/Users/victor/.cache/gen2-nemotron3-n0/macos-vm-boot-local-v1"))
+(deny file-read* (regex #".*\.(nemo|gguf|safetensors|onnx|npy|f32)$"))

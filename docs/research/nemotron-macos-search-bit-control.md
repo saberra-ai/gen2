@@ -1,7 +1,7 @@
 # Host runtime control before any guest search-bit experiment
 
-Status: prepared for a separate host-only execution after source review and
-commit. This control addresses the runtime prerequisite identified by the
+Preregistered at `d5c4f4e5983404d032c30b8c97a872d77d61e708`, then executed
+successfully as recorded below. This control addresses the runtime prerequisite identified by the
 [stopped-guest inspection](nemotron-macos-vm-permissions-inspect.md). It does
 not mount, clone or modify a guest, resolve guest ACL policy or authorize a
 guest permission change.
@@ -12,8 +12,8 @@ Apple M4 Pro, macOS26.3 arm64, effective UID502. The frozen
 both interpreter entry/resolved binaries and sandbox/host-query binaries,
 expected host, exact fresh fixture
 path, command and60-second deadline. A bounded offline child must return zero
-and be reaped. No VM storage minimum is weakened: the current host has about
-9.5GiB available, below the separate120GiB initial/80GiB running VM requirement.
+and be reaped. No VM storage minimum is weakened: the earlier preflight observed
+about9.5GiB available, below the separate120GiB initial/80GiB running VM requirement.
 No VM operation is admitted by this host-only test.
 
 The control exclusively creates a fresh private host fixture and two empty
@@ -50,3 +50,32 @@ paired clone, exact mount/identity controls and sufficient storage. The prior
 failed guest clones remain quarantined. Human word annotation/review stays
 documented and deferred; original accuracy, Windows RTF, desktop and release
 gates remain unchanged.
+
+## Actual host result
+
+The [saved receipt](../../benches/results/nemotron-diarization/apple-m4-pro/2026-10-17-search-bit-host-control/collection-qualification.json)
+records two zero-exit, reaped sandbox children: negative controls for model
+reads, writes outside the fixture and network connection, followed by the
+actual descriptor operation. The control uses the pinned Xcode Python3.9.6
+runtime at effective UID502 on the Apple M4 Pro, macOS26.3 arm64.
+
+Both `users`/`groups` stat calls first fail EACCES13. Adding owner search on
+the ordinary open `Default` descriptor changes0600 to0700 and reaches both
+same-device mode0600 child directories. Restoration returns that same inode
+to0600 with the original root/path identity, flags, mtime, size, links and
+apparent ownership. Ctime changes and is retained. All three actual raw
+security responses equal the canonical12-byte12/8/0 response; this does not
+prove ACL absence or guest authorization.
+
+The model-free tool suite passes556 tests with seven Windows-only skips.
+Eleven focused filesystem tests cover the operation and failure cleanup.
+Two additional real-child controls inject SIGINT/SIGTERM after spawn but
+before `Popen` returns; both child groups are killed and reaped. The saved
+collector replays input/source identities, raw security/state transitions and
+all command records without another permission or native operation.
+
+At execution admission,17,373,478,912bytes were available, still below the
+separate VM120GiB initial/80GiB running reserve. No cache or other project
+files were deleted in this investigation. No guest clone, mount, boot or
+permission change occurred. Actual guest ACL/access, stored ownership,
+provisioning and fresh-machine complete-app operation remain unqualified.
