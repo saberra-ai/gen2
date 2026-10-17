@@ -759,6 +759,16 @@ the native reference came from a different M1 host. The fresh M1 public run
 remains pending. No long-session, mixed-model, quality, app or release gate is
 promoted.
 
+`qualify_macos_pooled_long.py` and `macos-pooled-long.protocol.json` prepare
+four fresh 30-minute/one-hour native/public CPU streams on the named M4 Pro.
+They reuse the exact qualified native C ABI and public Rust helper payloads
+with the same private runtime. The old long-session acceptance criteria are
+checked verbatim at every command; output payload reads are denied to both
+helpers, with actual network/model/read-only controls before inference.
+All 227 tools tests pass. Review caught and corrected a missing field binding
+the seven completed public lifecycle prerequisites before execution. These
+streams remain unrun; M1 performance and all other release gates stay open.
+
 `qualify_macos_portable_runtime.py` and `macos-portable-runtime-v2.protocol.json`
 freeze a separate fresh M1 receiver for the exact constructed artifacts. The
 controller verifies the API/opaque ZIP and complete member set before restoring

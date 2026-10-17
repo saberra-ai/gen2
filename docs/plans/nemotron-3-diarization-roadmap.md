@@ -989,6 +989,18 @@ records warm RTF 0.12841, external 7.82s and peak RSS 224,706,560 bytes; the
 not a matched speedup or uncontended performance gate. The fresh M1 public job
 remains pending; long/mixed/quality/app/release gates remain separate.
 
+The next pooled CPU long-session protocol is prepared separately in
+`macos-pooled-long.protocol.json`: exactly four fresh native/public streams
+at 30 minutes and one hour on the named physical M4 Pro. It binds 51 tools,
+266 repository files and the exact previously qualified helper payloads;
+no helper rebuild or model tuning is allowed. Every original long-session
+criterion remains unchanged, including the ten-minute retained tail, 1e-6
+probability/turn tolerance, bounded progressive revisions, peak RSS at most
+1 GiB and compute RTF strictly below 1. All 227 model-free tools tests pass.
+Pre-execution review caught a missing lifecycle-prerequisite field; the exact
+seven completed test names are now frozen before execution. The long streams
+remain unrun; no long-session or release gate is claimed from preparation.
+
 The 13-job feature matrix also passed at `4974318`. Later source `cf64214`
 passed12 jobs; its macOS mixed-feature job failed before compilation when GitHub
 submodule fetch could not connect to port443. A failed-job rerun was denied by
