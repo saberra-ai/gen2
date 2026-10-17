@@ -805,14 +805,7 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
                 ..Default::default()
             }) {
                 Err(e) => {
-                    emit_must_deliver(
-                        state.metrics.as_ref(),
-                        &tx,
-                        ControllerEvent::Error {
-                            code: "generation_error".into(),
-                            message: format!("{:?}", e),
-                        },
-                    );
+                    emit_must_deliver(state.metrics.as_ref(), &tx, super::backend_failure(e));
                 }
                 Ok(session) => {
                     // Every backend exposes initial_messages_dropped() via trait default 0 —
@@ -840,10 +833,7 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
                             emit_must_deliver(
                                 state.metrics.as_ref(),
                                 &tx,
-                                ControllerEvent::Error {
-                                    code: "generation_error".into(),
-                                    message: format!("{:?}", e),
-                                },
+                                super::backend_failure(e),
                             );
                         }
                         Ok(puller) => {
@@ -936,14 +926,7 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
                 let appended = new_messages.len();
                 match chat.session.append_messages(new_messages) {
                     Err(e) => {
-                        emit_must_deliver(
-                            state.metrics.as_ref(),
-                            &tx,
-                            ControllerEvent::Error {
-                                code: "generation_error".into(),
-                                message: format!("{:?}", e),
-                            },
-                        );
+                        emit_must_deliver(state.metrics.as_ref(), &tx, super::backend_failure(e));
                         return ControlFlow::Continue;
                     }
                     Ok(dropped) if dropped > 0 => {
@@ -972,14 +955,7 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
                         );
                     }
                     Err(e) => {
-                        emit_must_deliver(
-                            state.metrics.as_ref(),
-                            &tx,
-                            ControllerEvent::Error {
-                                code: "generation_error".into(),
-                                message: format!("{:?}", e),
-                            },
-                        );
+                        emit_must_deliver(state.metrics.as_ref(), &tx, super::backend_failure(e));
                     }
                 }
             } else {
@@ -1075,10 +1051,7 @@ fn handle_chat_command(state: &mut ControllerState, cmd: ControllerCmd) -> Contr
                             emit_must_deliver(
                                 state.metrics.as_ref(),
                                 &chat.tx,
-                                ControllerEvent::Error {
-                                    code: "generation_error".into(),
-                                    message: format!("failed to resume generation: {:?}", e),
-                                },
+                                super::backend_failure(e),
                             );
                         }
                     }
@@ -1343,23 +1316,18 @@ pub(super) fn tick_active_chats(state: &mut ControllerState, tick_busy: Duration
                     chat.health.poisoned_by_backend = chat.session.is_poisoned();
                     chat.health.consecutive_errors =
                         chat.health.consecutive_errors.saturating_add(1);
-                    let (code, msg, failure) = if chat.health.is_unhealthy() {
+                    let (event, failure) = if chat.health.is_unhealthy() {
                         (
-                            "session_poisoned",
-                            format!("session state lost: {:?}", e),
+                            ControllerEvent::Error {
+                                code: "session_poisoned".into(),
+                                message: format!("session state lost: {:?}", e),
+                            },
                             FailureReason::SessionPoisoned,
                         )
                     } else {
-                        (
-                            "generation_error",
-                            format!("{:?}", e),
-                            FailureReason::GenerationError,
-                        )
+                        (super::backend_failure(e), FailureReason::GenerationError)
                     };
-                    emit(ControllerEvent::Error {
-                        code: code.into(),
-                        message: msg,
-                    });
+                    emit(event);
                     chat.state = ChatRunState::Failed(failure);
                     if matches!(failure, FailureReason::SessionPoisoned) {
                         metrics_ref

@@ -143,12 +143,17 @@ pub(crate) struct StreamCore {
     settled: bool,
     /// Why the inner stream failed, when it did, for a `finish()` after the
     /// error was already yielded.
-    failed: Option<String>,
+    failed: Option<StreamFailure>,
     response: Option<Response>,
     cancel: Arc<AtomicBool>,
     /// Close the conversation once the turn is over: a per-turn prefix
     /// (system or tools override) must not be continued by the next turn.
     close_after: bool,
+}
+
+struct StreamFailure {
+    code: String,
+    message: String,
 }
 
 /// What a finished stream leaves behind for the session.
@@ -226,7 +231,13 @@ impl StreamCore {
                 Some(Ok(event)) => self.queue.extend(self.assembler.push(event)),
                 Some(Err(e)) => {
                     self.done = true;
-                    self.failed = Some(e.to_string());
+                    self.failed = Some(StreamFailure {
+                        code: e.code().unwrap_or("stream_failed").into(),
+                        message: match &e {
+                            Error::Generation { message, .. } => message.clone(),
+                            _ => e.to_string(),
+                        },
+                    });
                     return Some(Err(e));
                 }
                 None => {
@@ -292,13 +303,16 @@ impl StreamCore {
     pub(crate) fn take_response(&mut self) -> Result<Response> {
         match self.response.take() {
             Some(response) => Ok(response),
-            None => Err(Error::Generation {
-                code: "stream_failed".into(),
-                message: self
-                    .failed
-                    .take()
-                    .unwrap_or_else(|| "the stream ended without an outcome".into()),
-            }),
+            None => {
+                let failure = self.failed.take().unwrap_or_else(|| StreamFailure {
+                    code: "stream_failed".into(),
+                    message: "the stream ended without an outcome".into(),
+                });
+                Err(Error::Generation {
+                    code: failure.code,
+                    message: failure.message,
+                })
+            }
         }
     }
 

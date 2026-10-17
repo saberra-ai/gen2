@@ -212,7 +212,10 @@ impl TokenPuller {
                     let mut logits = ctx.get_logits_ith(logits_i).to_vec();
                     grammar.apply_mask(&mut logits).map_err(|error| {
                         if self.request_context.is_some() {
-                            ExecError::Generation("strict grammar mask failed".into())
+                            ExecError::Coded {
+                                code: "strict_grammar_mask_failed".into(),
+                                message: "strict grammar mask failed".into(),
+                            }
                         } else {
                             ExecError::Other(error)
                         }
@@ -237,9 +240,10 @@ impl TokenPuller {
                 if let Err(e) = grammar.observe(token.0 as u32) {
                     if self.request_context.is_some() {
                         if !(accepting && self.bundle.model.is_eog_token(token)) {
-                            return Err(ExecError::Generation(
-                                "strict grammar consumption failed".into(),
-                            ));
+                            return Err(ExecError::Coded {
+                                code: "strict_grammar_consumption_failed".into(),
+                                message: "strict grammar consumption failed".into(),
+                            });
                         }
                     } else {
                         tracing::debug!(?e, "grammar observe failed (accepting/exhausted)");

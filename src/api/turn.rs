@@ -705,6 +705,145 @@ mod tests {
     }
 
     #[test]
+    fn a_context_refusal_keeps_its_recovery_code_through_the_runtime() {
+        let model = Runtime::scripted(Script::new().failing_start_session(|| {
+            crate::engine::ExecError::ContextOverflow(
+                "exact prompt=7000 output=1400 capacity=8192; input preserved".into(),
+            )
+        }));
+        let mut session = Session::new();
+        let Err(error) = model
+            .turn(&mut session)
+            .user("Keep this request available for review.")
+            .run()
+        else {
+            panic!("an over-capacity request must fail");
+        };
+        assert_eq!(error.code(), Some("context_overflow"));
+        assert!(
+            !error.is_retryable(),
+            "unchanged capacity cannot fit on retry"
+        );
+        assert_eq!(session.len(), 1, "no fabricated assistant reply");
+        assert_eq!(
+            session.messages()[0].text(),
+            "Keep this request available for review."
+        );
+    }
+
+    #[test]
+    fn a_pull_capacity_refusal_is_not_reported_as_a_generic_generation_failure() {
+        let model = Runtime::scripted(Script::new().failing_pull(|| {
+            crate::engine::ExecError::ContextOverflow("reserved output does not fit".into())
+        }));
+        let mut session = Session::new();
+        let Err(error) = model.turn(&mut session).user("Keep the source.").run() else {
+            panic!("a refused pull must not produce a reply");
+        };
+        assert_eq!(error.code(), Some("context_overflow"));
+        assert_eq!(session.len(), 1);
+        assert_eq!(session.messages()[0].text(), "Keep the source.");
+    }
+
+    #[test]
+    fn continuation_preserves_a_capacity_error_and_prior_conversation() {
+        let script = Script::new().say(["First reply"]);
+        let model = Runtime::scripted(script.clone());
+        let mut session = Session::new();
+        model.turn(&mut session).user("First input").run().unwrap();
+        script.failing_pull(|| {
+            crate::engine::ExecError::ContextOverflow("continuation does not fit".into())
+        });
+        let Err(error) = model.turn(&mut session).user("Second input").run() else {
+            panic!("a refused continuation must not produce a reply");
+        };
+        assert_eq!(error.code(), Some("context_overflow"));
+        let text: Vec<_> = session.messages().iter().map(|m| m.text()).collect();
+        assert_eq!(text, ["First input", "First reply", "Second input"]);
+    }
+
+    #[test]
+    fn a_backend_refusal_keeps_its_explicit_error_code() {
+        let model =
+            Runtime::scripted(
+                Script::new().failing_pull(|| crate::engine::ExecError::Coded {
+                    code: "strict_grammar_construction_failed".into(),
+                    message: "required grammar could not be prepared".into(),
+                }),
+            );
+        let mut session = Session::new();
+        let Err(error) = model
+            .turn(&mut session)
+            .user("Return the required form.")
+            .run()
+        else {
+            panic!("a grammar refusal must not produce an unconstrained reply");
+        };
+        assert_eq!(error.code(), Some("strict_grammar_construction_failed"));
+        assert!(
+            !error.is_retryable(),
+            "retry cannot prepare the same invalid grammar"
+        );
+        assert_eq!(session.len(), 1);
+    }
+
+    #[test]
+    fn a_typed_midstream_failure_keeps_its_code_without_committing_a_partial_reply() {
+        let model = Runtime::scripted(Script::new().program([
+            Step::token("unfinished"),
+            Step::FailWith(|| crate::engine::ExecError::Coded {
+                code: "strict_grammar_mask_failed".into(),
+                message: "required grammar mask failed".into(),
+            }),
+        ]));
+        let mut session = Session::new();
+        let Err(error) = model
+            .turn(&mut session)
+            .user("Return the required form.")
+            .run()
+        else {
+            panic!("an interrupted strict reply must not become a result");
+        };
+        assert_eq!(error.code(), Some("strict_grammar_mask_failed"));
+        assert!(
+            !error.is_retryable(),
+            "a strict grammar failure requires investigation"
+        );
+        assert_eq!(session.len(), 1, "partial output is not a saved reply");
+    }
+
+    #[test]
+    fn finishing_an_already_failed_stream_preserves_the_failure_category() {
+        let model = Runtime::scripted(Script::new().program([
+            Step::token("unfinished"),
+            Step::FailWith(|| crate::engine::ExecError::Coded {
+                code: "strict_grammar_consumption_failed".into(),
+                message: "required grammar consumption failed".into(),
+            }),
+        ]));
+        let mut session = Session::new();
+        let mut stream = model
+            .turn(&mut session)
+            .user("Keep the required form.")
+            .stream()
+            .unwrap();
+        assert!(matches!(stream.next(), Some(Ok(Event::TextDelta(text))) if text == "unfinished"));
+        let Some(Err(error)) = stream.next() else {
+            panic!("the stream must expose its terminal error");
+        };
+        assert_eq!(error.code(), Some("strict_grammar_consumption_failed"));
+        let Err(error) = stream.finish() else {
+            panic!("draining an already failed stream must not produce a response");
+        };
+        assert_eq!(error.code(), Some("strict_grammar_consumption_failed"));
+        assert!(
+            !error.is_retryable(),
+            "a strict grammar failure requires investigation"
+        );
+        assert_eq!(session.len(), 1, "partial output must remain uncommitted");
+    }
+
+    #[test]
     fn a_turn_appends_the_user_message_and_the_reply() {
         let model = Runtime::scripted(Script::new().say(["Hel", "lo"]));
         let mut session = Session::new().with_system("Be brief.");

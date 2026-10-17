@@ -444,6 +444,19 @@ pub enum ControllerEvent {
     },
 }
 
+/// Keep request capacity refusals distinct from transient backend failures.
+fn backend_failure(error: crate::engine::ExecError) -> ControllerEvent {
+    let code = match &error {
+        crate::engine::ExecError::ContextOverflow(_) => "context_overflow",
+        crate::engine::ExecError::Coded { code, .. } => code.as_str(),
+        _ => "generation_error",
+    };
+    ControllerEvent::Error {
+        code: code.into(),
+        message: format!("{error:?}"),
+    }
+}
+
 #[derive(Clone)]
 pub struct ControllerHandle {
     tx: Sender<ControllerCmd>,

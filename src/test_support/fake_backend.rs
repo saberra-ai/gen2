@@ -53,6 +53,8 @@ pub enum Step {
     Emit(TokenEvent),
     /// Fail the pull here. The puller yields the error and then ends.
     Fail(&'static str),
+    /// Fail with a typed backend error at this point in the stream.
+    FailWith(fn() -> ExecError),
     /// Hold the stream here until the test opens the [`Gate`], so a test can
     /// act while a generation is provably mid-flight.
     Hold(Arc<Gate>),
@@ -719,6 +721,10 @@ impl TokenPullerDyn for FakePuller {
                 Step::Fail(message) => {
                     self.done = true;
                     return Some(Err(ExecError::Generation(message.to_string())));
+                }
+                Step::FailWith(error) => {
+                    self.done = true;
+                    return Some(Err(error()));
                 }
                 Step::Hold(gate) => {
                     gate.hold();

@@ -157,14 +157,23 @@ impl Error {
     }
 }
 
-/// Generation failure codes a retry cannot fix.
+/// Generation failure codes for which an unchanged retry is not appropriate.
 ///
 /// `session_poisoned` means the backend lost the session's state, so the same
 /// request against the same conversation fails the same way — the caller has
 /// to start the conversation over. The controller goes out of its way to
 /// distinguish it from an ordinary failure, and this is where that
 /// distinction has to survive.
-const NOT_WORTH_RETRYING: &[&str] = &["session_poisoned"];
+/// A context refusal needs a different request budget. Strict grammar failures
+/// need investigation rather than an implicit repeat of the same constrained
+/// request; neither grants permission to generate without that constraint.
+const NOT_WORTH_RETRYING: &[&str] = &[
+    "session_poisoned",
+    "context_overflow",
+    "strict_grammar_construction_failed",
+    "strict_grammar_mask_failed",
+    "strict_grammar_consumption_failed",
+];
 
 /// Shorthand for the crate's public results.
 pub type Result<T> = std::result::Result<T, Error>;
@@ -180,7 +189,7 @@ mod tests {
             message: "too long".into(),
         };
         assert_eq!(e.code(), Some("context_overflow"));
-        assert!(e.is_retryable());
+        assert!(!e.is_retryable());
     }
 
     #[test]

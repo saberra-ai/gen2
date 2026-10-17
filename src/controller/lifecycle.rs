@@ -174,14 +174,7 @@ pub(super) fn start_ephemeral(
         ..Default::default()
     }) {
         Err(e) => {
-            metrics::emit_must_deliver(
-                metrics.as_ref(),
-                &tx,
-                ControllerEvent::Error {
-                    code: "generation_error".into(),
-                    message: format!("{:?}", e),
-                },
-            );
+            metrics::emit_must_deliver(metrics.as_ref(), &tx, super::backend_failure(e));
         }
         Ok(session) => {
             let sid = session.id();
@@ -195,14 +188,7 @@ pub(super) fn start_ephemeral(
             );
             match session.pull(gen_spec.clone()) {
                 Err(e) => {
-                    metrics::emit_must_deliver(
-                        metrics.as_ref(),
-                        &tx,
-                        ControllerEvent::Error {
-                            code: "generation_error".into(),
-                            message: format!("{:?}", e),
-                        },
-                    );
+                    metrics::emit_must_deliver(metrics.as_ref(), &tx, super::backend_failure(e));
                     deregister_and_end_session(engine, sid);
                 }
                 Ok(puller) => {

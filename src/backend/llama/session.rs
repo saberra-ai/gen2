@@ -408,9 +408,10 @@ impl Session {
             }
             Err(e) => {
                 if gen_spec.require_full_context {
-                    return Err(ExecError::Generation(
-                        "strict grammar construction failed".into(),
-                    ));
+                    return Err(ExecError::Coded {
+                        code: "strict_grammar_construction_failed".into(),
+                        message: "strict grammar construction failed".into(),
+                    });
                 }
                 tracing::warn!(
                     ?e,
