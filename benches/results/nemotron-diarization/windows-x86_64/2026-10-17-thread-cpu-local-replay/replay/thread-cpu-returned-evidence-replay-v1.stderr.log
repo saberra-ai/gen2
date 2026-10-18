@@ -1,0 +1,15 @@
+Traceback (most recent call last):
+  File "/Users/victor/.cache/gen2-nemotron3-n0/replay-thread-cpu-returned-evidence-v1.py", line 320, in <module>
+    main()
+    ~~~~^^
+  File "/Users/victor/.cache/gen2-nemotron3-n0/replay-thread-cpu-returned-evidence-v1.py", line 124, in main
+    verify_collection(prep_root, pre['source_preparation_collection'])
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/victor/.cache/gen2-nemotron3-n0/replay-thread-cpu-returned-evidence-v1.py", line 55, in verify_collection
+    require(set(manifest) == {'schema_version', 'files'} and manifest['schema_version'] == 1,
+    ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+            'closed collection format required')
+            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/victor/.cache/gen2-nemotron3-n0/replay-thread-cpu-returned-evidence-v1.py", line 40, in require
+    raise ValueError(message)
+ValueError: closed collection format required

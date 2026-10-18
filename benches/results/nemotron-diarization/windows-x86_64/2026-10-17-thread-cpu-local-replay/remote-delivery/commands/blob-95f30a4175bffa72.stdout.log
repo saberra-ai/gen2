@@ -1,0 +1,33 @@
+{
+  "schema_version": 1,
+  "receiver_source": "74c564388a8f4a6e855ee07419e9a6fc6aed1425",
+  "run_id": 39079815299,
+  "job_id": 117534292370,
+  "conclusion": "failure",
+  "failure_artifact_id": 12117339781,
+  "failure_archive": {
+    "bytes": 132784,
+    "sha256": "fcfad7b3adab7b2b2c06cfff3490f6ba9e1690324867d74c5ed439bdf0a42b04"
+  },
+  "native_zip_download_started": false,
+  "native_artifact_or_numerical_result_admitted": false,
+  "failure_command_reaped": true,
+  "failure_group_gone": true,
+  "fresh_free_bytes": 86923927552,
+  "original_floor_bytes": 8589934592,
+  "diagnosis_cli_release": "v2.100.0",
+  "diagnosis_cli_asset_id": 542974295,
+  "diagnosis_cli_archive": {
+    "bytes": 14212224,
+    "sha256": "45f9a62da2f6e641a7fad57e2ce39656dfd7ef331372d80a2a2aed65abb01642"
+  },
+  "unflagged_exit": 1,
+  "raw_flag_exit": 0,
+  "raw_log": {
+    "bytes": 63578,
+    "sha256": "a4294fdfd20bac549f94e5cb04bbf3e22adf6c2935c97840e384ca8dd4f187e1"
+  },
+  "raw_log_equal_prior_retained_native_log": true,
+  "regression_red": "12 tests,1error; actual original get AST reached guarded CLI without opt-in",
+  "production_or_release_qualified": false
+}

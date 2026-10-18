@@ -1,0 +1,38 @@
+{
+  "schema_version": 1,
+  "positive_actual_returned_asts": [
+    "collector.py",
+    "replay-windows-thread-cpu-profile-supervision-v1.py"
+  ],
+  "rejected_ast_mutations": [
+    {
+      "script": "collector.py",
+      "mutation": "appended-statement"
+    },
+    {
+      "script": "collector.py",
+      "mutation": "changed-assertion"
+    },
+    {
+      "script": "collector.py",
+      "mutation": "wrong-path-relocation"
+    },
+    {
+      "script": "replay-windows-thread-cpu-profile-supervision-v1.py",
+      "mutation": "appended-statement"
+    },
+    {
+      "script": "replay-windows-thread-cpu-profile-supervision-v1.py",
+      "mutation": "changed-assertion"
+    },
+    {
+      "script": "replay-windows-thread-cpu-profile-supervision-v1.py",
+      "mutation": "wrong-path-relocation"
+    }
+  ],
+  "project_imports_or_returned_code_execution": 0,
+  "test_source": {
+    "bytes": 3275,
+    "sha256": "757c5551a892a84010d359d5fb02e00c07558487cb237107e768e535630d9958"
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "scope": "Pinned upstream plus explicit Windows build-only compatibility overlay; no inference or patch-payload edits",
+  "path": "cmake/llama_cpp.cmake",
+  "upstream_sha256": "22357d4a5d8a67716daa8b4e374abd63120432bd57540f97d572a525d5354c7b",
+  "updated_sha256": "0a3f2c3f3357373db799338cd5a5ed3095f900599fdc18d86f0c25be04a50bf6",
+  "overlay_sha256": "57e108f3cd4fcc42efa8d5b6e373a3663d49e2d36d96f67dfcaf59d166b7e300",
+  "upstream_patch_sha256": {
+    "gen2-thread-cpu-profile.patch": "2ea1112aac6c45436057556c603c7cd443141e05ee67d8f81a7c6b6b2a22d5dc",
+    "ggml-add-fused-attention-op-for-fastconformer-and-magpietts.patch": "58a43285e49f3ab9569bfb98a459979c062084b87da8d54cdbdc377ee1724152",
+    "ggml-cpu-f16c-scalar-fp32-fp16-and-row-split-f16-im2col.patch": "037071a6b36a1494fad43f40f61777f8a2292832a669365a7a83138ecaf1e568",
+    "ggml-cuda-bf16-depthwise-conv-and-bias-round-epilogue.patch": "57c3d7034825672d395b2c3fd8281aeb56e25f6c19ab81910a55add1a2af6025",
+    "ggml-cuda-cuda-graph-cache-keys-replay-updates-and-eviction-knobs.patch": "f6411ba27f9f95609a9fb62e2ef72e21b776926dca2dd094fcb2dc252dd66a97",
+    "ggml-cuda-expose-the-backend-stream-and-cuda-graph-controls.patch": "a0ff7b7ea2e224badeebd702b52756978f32b42bb2076148a9f63eeaaf0c03ef",
+    "ggml-cuda-flatten-pad-launches-for-large-batches.patch": "6dc7d08b28357dc18f0d6cc12bed34fd7551319e6726cd06f5284bf3e5872f36",
+    "ggml-cuda-flatten-shared-weight-cublas-gemms-fuse-silu-to-bf16.patch": "d5eca4bf276988baecb694019075884d4ed54e375b2f9291aeb942b3b6b18c81",
+    "ggml-cuda-fuse-layernorm-with-row-vector-scale-and-bias.patch": "dfa1ca84e18382c48acb9aaf2ace571fd73c10470e0b190c1b8f71625d0036c4",
+    "ggml-cuda-skinny-q8_0-gemm-with-planar-weights.patch": "d64681f5ba3295afe9e0189214f2e8d915b8ca443d15a8b51c045ebec62678c3",
+    "ggml-cuda-support-f16-weights-in-direct-depthwise-conv.patch": "4041c7a7e46b1f2a7327514e80391fc663c1fe7f3fdec198ffbb9a83cc9b773a",
+    "ggml-cuda-target-jetson-thor-sm110.patch": "faab19b99c099f92575211a83ba74a1f0be9cb3f55e3577ba3265c9f2bbe2dad",
+    "ggml-cuda-tiled-1d-im2col.patch": "b967590c58b9bd75af3d15ae9339c49cd6d778fed16b7b492f02adc94fbaadf6",
+    "ggml-cuda-two-column-mmvf-epilogue.patch": "23a0c7db1f1c5a1a2e79b3e26cc637d78f6294d6f803a3eae1c654e22a4e6b73",
+    "ggml-cuda-vectorized-contiguous-set_rows.patch": "2d596ef6ed3b3652f9ba90e65f087bc739c6db359040e7825af27b1644c26fe4",
+    "ggml-fastconformer-cuda-fusions-and-sigmoid-glu.patch": "8c6509fe4b03be406e5e082fcecb3cf2af5f09dfef85f4d751ed5ba7e44ff21c",
+    "ggml-nanocodec-convolution-kernels.patch": "0bcf7bd18c116d81afbcc491186ebbfcdf07a0fc68d1f07fc66b2260ba4b0a57",
+    "llama-enable-nvfp4-in-llama-quantize.patch": "71e50251b8e03958aa30f098b7b6ac65ccd0c38c5ee1d4eb8bc8bf34c461f44f",
+    "llama-keep-equal-length-recurrent-sequences-in-one-ubatch.patch": "297fe611e0e4eccccf6eaeb780b751ed2a8116e42b084dd7a113c0db24aac5fd",
+    "llama-read-the-gemma-3-attention-scale-from-gguf.patch": "a490a952a84e5bd3d0ff8df728d95431badef21c89d345506b522a56d3a2f9c1"
+  },
+  "guard": "Each generated LF patch must hash exactly like its normalized upstream content before git apply."
+}

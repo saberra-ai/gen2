@@ -1,0 +1,384 @@
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=65540 thread=3 tid=6568 cycles=130610 kernel_100ns=0 user_100ns=0 final_wait_cycles=686 errors=0 error_bits=0 first_error=0
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=65540 thread=3 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=49af58d9b0001634 execution=70d68729fc9a9a83 elapsed_us=53 final_wait_us=0
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=65540 thread=0 tid=5560 cycles=151262 kernel_100ns=0 user_100ns=0 final_wait_cycles=1372 errors=0 error_bits=0 first_error=0
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=65540 thread=0 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=49af58d9b0001634 execution=70d68729fc9a9a83 elapsed_us=61 final_wait_us=0
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=65540 thread=0 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=10 barrier_us=0
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=65540 thread=1 tid=5060 cycles=62989 kernel_100ns=0 user_100ns=0 final_wait_cycles=1519 errors=0 error_bits=0 first_error=0
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=65540 thread=1 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=49af58d9b0001634 execution=70d68729fc9a9a83 elapsed_us=25 final_wait_us=1
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=65540 thread=1 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=10 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=65540 thread=1 id=25 kernel_cycles=23691 barrier_cycles=637
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=65540 thread=3 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=10 barrier_us=0
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=65540 thread=1 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=11 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=65540 thread=1 id=29 kernel_cycles=27416 barrier_cycles=1225
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=65540 thread=3 id=25 kernel_cycles=24623 barrier_cycles=539
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=65540 thread=3 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=38 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=65540 thread=3 id=29 kernel_cycles=94349 barrier_cycles=1176
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=65540 thread=2 tid=552 cycles=114561 kernel_100ns=0 user_100ns=0 final_wait_cycles=1421 errors=0 error_bits=0 first_error=0
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=65540 thread=3 node=0 types=0,0,0 names=f32,f32,f32 a=64,64,1,1 b=64,32,1,1 c=64,32,1,1 sa=4,256,16384,16384 sb=4,256,8192,8192 sc=4,256,8192,8192 dot=0 route=2 first=1,1,0,37 second=0,0,0,0 conversion=0,0 inner_wait_us=0 chunks=0,0 kernel_us=38
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=65540 thread=3 node=0 first_cycles=89131 second_cycles=0 conversion_cycles=0 inner_wait_cycles=0 chunk_cycles=0 kernel_cycles=94349
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=65540 thread=1 node=0 types=0,0,0 names=f32,f32,f32 a=64,64,1,1 b=64,32,1,1 c=64,32,1,1 sa=4,256,16384,16384 sb=4,256,8192,8192 sc=4,256,8192,8192 dot=0 route=2 first=1,1,0,10 second=0,0,0,0 conversion=0,0 inner_wait_us=0 chunks=0,0 kernel_us=11
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=65540 thread=1 node=0 first_cycles=23961 second_cycles=0 conversion_cycles=0 inner_wait_cycles=0 chunk_cycles=0 kernel_cycles=27416
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=65540 thread=2 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=49af58d9b0001634 execution=70d68729fc9a9a83 elapsed_us=47 final_wait_us=1
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=65540 thread=2 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=10 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=65540 thread=0 id=25 kernel_cycles=24647 barrier_cycles=564
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=65540 thread=2 id=25 kernel_cycles=23912 barrier_cycles=588
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=65540 thread=0 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=45 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=65540 thread=0 id=29 kernel_cycles=110030 barrier_cycles=956
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=65540 thread=2 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=32 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=65540 thread=2 id=29 kernel_cycles=78816 barrier_cycles=1274
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=65540 thread=0 node=0 types=0,0,0 names=f32,f32,f32 a=64,64,1,1 b=64,32,1,1 c=64,32,1,1 sa=4,256,16384,16384 sb=4,256,8192,8192 sc=4,256,8192,8192 dot=0 route=2 first=1,1,0,38 second=0,0,0,0 conversion=0,0 inner_wait_us=0 chunks=0,0 kernel_us=45
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=65540 thread=0 node=0 first_cycles=92830 second_cycles=0 conversion_cycles=0 inner_wait_cycles=0 chunk_cycles=0 kernel_cycles=110030
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=65540 thread=2 node=0 types=0,0,0 names=f32,f32,f32 a=64,64,1,1 b=64,32,1,1 c=64,32,1,1 sa=4,256,16384,16384 sb=4,256,8192,8192 sc=4,256,8192,8192 dot=0 route=2 first=1,1,0,27 second=0,0,0,0 conversion=0,0 inner_wait_us=0 chunks=0,0 kernel_us=32
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=65540 thread=2 node=0 first_cycles=66762 second_cycles=0 conversion_cycles=0 inner_wait_cycles=0 chunk_cycles=0 kernel_cycles=78816
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=131076 thread=2 tid=552 cycles=41210 kernel_100ns=0 user_100ns=0 final_wait_cycles=1495 errors=0 error_bits=0 first_error=0
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=131076 thread=0 tid=5560 cycles=21609 kernel_100ns=0 user_100ns=0 final_wait_cycles=955 errors=0 error_bits=0 first_error=0
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=131076 thread=1 tid=5060 cycles=35035 kernel_100ns=0 user_100ns=0 final_wait_cycles=1568 errors=0 error_bits=0 first_error=0
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=131076 thread=2 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=49af58d9b0001634 execution=70d68729fc9a9a83 elapsed_us=16 final_wait_us=0
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=131076 thread=0 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=49af58d9b0001634 execution=70d68729fc9a9a83 elapsed_us=8 final_wait_us=0
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=131076 thread=2 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=1 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=131076 thread=2 id=25 kernel_cycles=3357 barrier_cycles=613
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=131076 thread=0 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=1 barrier_us=0
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=131076 thread=2 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=13 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=131076 thread=2 id=29 kernel_cycles=30233 barrier_cycles=955
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=131076 thread=0 id=25 kernel_cycles=3577 barrier_cycles=612
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=131076 thread=0 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=4 barrier_us=0
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=131076 thread=1 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=49af58d9b0001634 execution=70d68729fc9a9a83 elapsed_us=14 final_wait_us=0
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=131076 thread=2 node=0 types=0,0,0 names=f32,f32,f32 a=64,64,1,1 b=64,32,1,1 c=64,32,1,1 sa=4,256,16384,16384 sb=4,256,8192,8192 sc=4,256,8192,8192 dot=0 route=2 first=1,1,0,11 second=0,0,0,0 conversion=0,0 inner_wait_us=0 chunks=0,0 kernel_us=13
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=131076 thread=2 node=0 first_cycles=27293 second_cycles=0 conversion_cycles=0 inner_wait_cycles=0 chunk_cycles=0 kernel_cycles=30233
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=131076 thread=0 id=29 kernel_cycles=11148 barrier_cycles=1176
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=131076 thread=1 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=1 barrier_us=0
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=131076 thread=0 node=0 types=0,0,0 names=f32,f32,f32 a=64,64,1,1 b=64,32,1,1 c=64,32,1,1 sa=4,256,16384,16384 sb=4,256,8192,8192 sc=4,256,8192,8192 dot=0 route=2 first=1,1,0,3 second=0,0,0,0 conversion=0,0 inner_wait_us=0 chunks=0,0 kernel_us=4
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=131076 thread=0 node=0 first_cycles=9310 second_cycles=0 conversion_cycles=0 inner_wait_cycles=0 chunk_cycles=0 kernel_cycles=11148
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=131076 thread=1 id=25 kernel_cycles=3454 barrier_cycles=613
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=131076 thread=1 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=10 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=131076 thread=1 id=29 kernel_cycles=24917 barrier_cycles=686
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=131076 thread=3 tid=6568 cycles=25062 kernel_100ns=0 user_100ns=0 final_wait_cycles=980 errors=0 error_bits=0 first_error=0
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=131076 thread=1 node=0 types=0,0,0 names=f32,f32,f32 a=64,64,1,1 b=64,32,1,1 c=64,32,1,1 sa=4,256,16384,16384 sb=4,256,8192,8192 sc=4,256,8192,8192 dot=0 route=2 first=1,1,0,9 second=0,0,0,0 conversion=0,0 inner_wait_us=0 chunks=0,0 kernel_us=10
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=131076 thread=1 node=0 first_cycles=23055 second_cycles=0 conversion_cycles=0 inner_wait_cycles=0 chunk_cycles=0 kernel_cycles=24917
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=131076 thread=3 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=49af58d9b0001634 execution=70d68729fc9a9a83 elapsed_us=9 final_wait_us=0
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=131076 thread=3 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=1 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=131076 thread=3 id=25 kernel_cycles=3773 barrier_cycles=637
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=131076 thread=3 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=6 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=131076 thread=3 id=29 kernel_cycles=13817 barrier_cycles=1078
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=131076 thread=3 node=0 types=0,0,0 names=f32,f32,f32 a=64,64,1,1 b=64,32,1,1 c=64,32,1,1 sa=4,256,16384,16384 sb=4,256,8192,8192 sc=4,256,8192,8192 dot=0 route=2 first=1,1,0,4 second=0,0,0,0 conversion=0,0 inner_wait_us=0 chunks=0,0 kernel_us=6
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=131076 thread=3 node=0 first_cycles=10976 second_cycles=0 conversion_cycles=0 inner_wait_cycles=0 chunk_cycles=0 kernel_cycles=13817
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=196612 thread=3 tid=6568 cycles=24132 kernel_100ns=0 user_100ns=0 final_wait_cycles=710 errors=0 error_bits=0 first_error=0
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=196612 thread=1 tid=5060 cycles=38882 kernel_100ns=0 user_100ns=0 final_wait_cycles=1053 errors=0 error_bits=0 first_error=0
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=196612 thread=0 tid=5560 cycles=31066 kernel_100ns=0 user_100ns=0 final_wait_cycles=1054 errors=0 error_bits=0 first_error=0
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=196612 thread=1 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=49af58d9b0001634 execution=70d68729fc9a9a83 elapsed_us=15 final_wait_us=0
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=196612 thread=0 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=49af58d9b0001634 execution=70d68729fc9a9a83 elapsed_us=12 final_wait_us=0
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=196612 thread=2 tid=552 cycles=20605 kernel_100ns=0 user_100ns=0 final_wait_cycles=1176 errors=0 error_bits=0 first_error=0
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=196612 thread=3 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=49af58d9b0001634 execution=70d68729fc9a9a83 elapsed_us=9 final_wait_us=0
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=196612 thread=2 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=49af58d9b0001634 execution=70d68729fc9a9a83 elapsed_us=8 final_wait_us=0
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=196612 thread=1 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=1 barrier_us=0
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=196612 thread=2 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=1 barrier_us=0
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=196612 thread=3 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=1 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=196612 thread=3 id=25 kernel_cycles=3846 barrier_cycles=612
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=196612 thread=3 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=6 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=196612 thread=2 id=25 kernel_cycles=3626 barrier_cycles=588
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=196612 thread=3 id=29 kernel_cycles=13891 barrier_cycles=955
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=196612 thread=2 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=5 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=196612 thread=2 id=29 kernel_cycles=10682 barrier_cycles=1029
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=196612 thread=1 id=25 kernel_cycles=3602 barrier_cycles=588
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=196612 thread=3 node=0 types=0,0,0 names=f32,f32,f32 a=64,64,1,1 b=64,32,1,1 c=64,32,1,1 sa=4,256,16384,16384 sb=4,256,8192,8192 sc=4,256,8192,8192 dot=0 route=2 first=1,1,0,4 second=0,0,0,0 conversion=0,0 inner_wait_us=0 chunks=0,0 kernel_us=6
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=196612 thread=3 node=0 first_cycles=11956 second_cycles=0 conversion_cycles=0 inner_wait_cycles=0 chunk_cycles=0 kernel_cycles=13891
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=196612 thread=2 node=0 types=0,0,0 names=f32,f32,f32 a=64,64,1,1 b=64,32,1,1 c=64,32,1,1 sa=4,256,16384,16384 sb=4,256,8192,8192 sc=4,256,8192,8192 dot=0 route=2 first=1,1,0,3 second=0,0,0,0 conversion=0,0 inner_wait_us=0 chunks=0,0 kernel_us=5
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=196612 thread=2 node=0 first_cycles=9236 second_cycles=0 conversion_cycles=0 inner_wait_cycles=0 chunk_cycles=0 kernel_cycles=10682
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=196612 thread=1 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=12 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=196612 thread=1 id=29 kernel_cycles=28714 barrier_cycles=1127
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=196612 thread=0 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=1 barrier_us=1
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=196612 thread=1 node=0 types=0,0,0 names=f32,f32,f32 a=64,64,1,1 b=64,32,1,1 c=64,32,1,1 sa=4,256,16384,16384 sb=4,256,8192,8192 sc=4,256,8192,8192 dot=0 route=2 first=1,1,0,10 second=0,0,0,0 conversion=0,0 inner_wait_us=0 chunks=0,0 kernel_us=12
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=196612 thread=1 node=0 first_cycles=26778 second_cycles=0 conversion_cycles=0 inner_wait_cycles=0 chunk_cycles=0 kernel_cycles=28714
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=196612 thread=0 id=25 kernel_cycles=3528 barrier_cycles=637
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=196612 thread=0 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=9 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=196612 thread=0 id=29 kernel_cycles=20555 barrier_cycles=1005
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=196612 thread=0 node=0 types=0,0,0 names=f32,f32,f32 a=64,64,1,1 b=64,32,1,1 c=64,32,1,1 sa=4,256,16384,16384 sb=4,256,8192,8192 sc=4,256,8192,8192 dot=0 route=2 first=1,1,0,7 second=0,0,0,0 conversion=0,0 inner_wait_us=0 chunks=0,0 kernel_us=9
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=196612 thread=0 node=0 first_cycles=18228 second_cycles=0 conversion_cycles=0 inner_wait_cycles=0 chunk_cycles=0 kernel_cycles=20555
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=262148 thread=1 tid=5060 cycles=64361 kernel_100ns=0 user_100ns=0 final_wait_cycles=1960 errors=0 error_bits=0 first_error=0
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=262148 thread=0 tid=5560 cycles=83987 kernel_100ns=0 user_100ns=0 final_wait_cycles=784 errors=0 error_bits=0 first_error=0
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=262148 thread=1 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=49af58d9b0001634 execution=70d68729fc9a9a83 elapsed_us=26 final_wait_us=1
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=262148 thread=1 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=5 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=262148 thread=1 id=25 kernel_cycles=12912 barrier_cycles=588
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=262148 thread=1 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=18 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=262148 thread=1 id=29 kernel_cycles=44197 barrier_cycles=857
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=262148 thread=0 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=49af58d9b0001634 execution=70d68729fc9a9a83 elapsed_us=34 final_wait_us=1
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=262148 thread=3 tid=6568 cycles=69483 kernel_100ns=0 user_100ns=0 final_wait_cycles=1103 errors=0 error_bits=0 first_error=0
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=262148 thread=1 node=0 types=8,0,0 names=q8_0,f32,f32 a=64,64,1,1 b=64,32,1,1 c=64,32,1,1 sa=34,68,4352,4352 sb=4,256,8192,8192 sc=4,256,8192,8192 dot=8 route=4 first=1,0,1,0 second=1,1,0,14 conversion=1,1 inner_wait_us=1 chunks=0,0 kernel_us=18
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=262148 thread=1 node=0 first_cycles=588 second_cycles=35108 conversion_cycles=3013 inner_wait_cycles=1739 chunk_cycles=0 kernel_cycles=44197
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=262148 thread=0 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=6 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=262148 thread=0 id=25 kernel_cycles=13475 barrier_cycles=588
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=262148 thread=3 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=49af58d9b0001634 execution=70d68729fc9a9a83 elapsed_us=28 final_wait_us=1
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=262148 thread=0 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=26 barrier_us=1
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=262148 thread=2 tid=552 cycles=76170 kernel_100ns=0 user_100ns=0 final_wait_cycles=1935 errors=0 error_bits=0 first_error=0
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=262148 thread=3 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=5 barrier_us=0
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=262148 thread=2 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=49af58d9b0001634 execution=70d68729fc9a9a83 elapsed_us=31 final_wait_us=1
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=262148 thread=3 id=25 kernel_cycles=13181 barrier_cycles=637
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=262148 thread=3 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=20 barrier_us=1
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=262148 thread=3 id=29 kernel_cycles=48412 barrier_cycles=1764
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=262148 thread=2 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=5 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=262148 thread=0 id=29 kernel_cycles=62940 barrier_cycles=1666
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=262148 thread=3 node=0 types=8,0,0 names=q8_0,f32,f32 a=64,64,1,1 b=64,32,1,1 c=64,32,1,1 sa=34,68,4352,4352 sb=4,256,8192,8192 sc=4,256,8192,8192 dot=8 route=4 first=1,0,1,0 second=1,1,0,13 conversion=1,3 inner_wait_us=0 chunks=0,0 kernel_us=20
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=262148 thread=3 node=0 first_cycles=637 second_cycles=34668 conversion_cycles=8575 inner_wait_cycles=637 chunk_cycles=0 kernel_cycles=48412
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=262148 thread=2 id=25 kernel_cycles=12666 barrier_cycles=588
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=262148 thread=0 node=0 types=8,0,0 names=q8_0,f32,f32 a=64,64,1,1 b=64,32,1,1 c=64,32,1,1 sa=34,68,4352,4352 sb=4,256,8192,8192 sc=4,256,8192,8192 dot=8 route=4 first=1,0,1,0 second=1,1,0,13 conversion=1,3 inner_wait_us=6 chunks=0,0 kernel_us=26
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=262148 thread=0 node=0 first_cycles=956 second_cycles=34496 conversion_cycles=7448 inner_wait_cycles=15901 chunk_cycles=0 kernel_cycles=62940
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=262148 thread=2 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=23 barrier_us=1
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=262148 thread=2 id=29 kernel_cycles=55516 barrier_cycles=1200
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=262148 thread=2 node=0 types=8,0,0 names=q8_0,f32,f32 a=64,64,1,1 b=64,32,1,1 c=64,32,1,1 sa=34,68,4352,4352 sb=4,256,8192,8192 sc=4,256,8192,8192 dot=8 route=4 first=1,0,1,1 second=1,1,0,14 conversion=1,1 inner_wait_us=5 chunks=0,0 kernel_us=23
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=262148 thread=2 node=0 first_cycles=980 second_cycles=35157 conversion_cycles=2279 inner_wait_cycles=12226 chunk_cycles=0 kernel_cycles=55516
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=327684 thread=2 tid=552 cycles=46550 kernel_100ns=0 user_100ns=0 final_wait_cycles=1176 errors=0 error_bits=0 first_error=0
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=327684 thread=3 tid=6568 cycles=25750 kernel_100ns=0 user_100ns=0 final_wait_cycles=686 errors=0 error_bits=0 first_error=0
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=327684 thread=1 tid=5060 cycles=41700 kernel_100ns=0 user_100ns=0 final_wait_cycles=1372 errors=0 error_bits=0 first_error=0
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=327684 thread=2 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=49af58d9b0001634 execution=70d68729fc9a9a83 elapsed_us=19 final_wait_us=1
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=327684 thread=3 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=49af58d9b0001634 execution=70d68729fc9a9a83 elapsed_us=11 final_wait_us=1
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=327684 thread=2 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=1 barrier_us=0
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=327684 thread=3 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=2 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=327684 thread=2 id=25 kernel_cycles=3675 barrier_cycles=588
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=327684 thread=3 id=25 kernel_cycles=3651 barrier_cycles=588
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=327684 thread=0 tid=5560 cycles=33050 kernel_100ns=0 user_100ns=0 final_wait_cycles=1176 errors=0 error_bits=0 first_error=0
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=327684 thread=3 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=6 barrier_us=0
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=327684 thread=0 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=49af58d9b0001634 execution=70d68729fc9a9a83 elapsed_us=13 final_wait_us=1
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=327684 thread=2 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=15 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=327684 thread=2 id=29 kernel_cycles=36016 barrier_cycles=1078
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=327684 thread=1 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=49af58d9b0001634 execution=70d68729fc9a9a83 elapsed_us=17 final_wait_us=1
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=327684 thread=3 id=29 kernel_cycles=15631 barrier_cycles=1127
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=327684 thread=2 node=0 types=8,0,0 names=q8_0,f32,f32 a=64,64,1,1 b=64,32,1,1 c=64,32,1,1 sa=34,68,4352,4352 sb=4,256,8192,8192 sc=4,256,8192,8192 dot=8 route=4 first=1,0,1,0 second=1,1,0,3 conversion=1,1 inner_wait_us=8 chunks=0,0 kernel_us=15
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=327684 thread=2 node=0 first_cycles=907 second_cycles=8428 conversion_cycles=1936 inner_wait_cycles=20899 chunk_cycles=0 kernel_cycles=36016
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=327684 thread=0 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=1 barrier_us=0
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=327684 thread=3 node=0 types=8,0,0 names=q8_0,f32,f32 a=64,64,1,1 b=64,32,1,1 c=64,32,1,1 sa=34,68,4352,4352 sb=4,256,8192,8192 sc=4,256,8192,8192 dot=8 route=4 first=1,0,1,0 second=1,1,0,4 conversion=1,0 inner_wait_us=0 chunks=0,0 kernel_us=6
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=327684 thread=3 node=0 first_cycles=588 second_cycles=8624 conversion_cycles=2327 inner_wait_cycles=637 chunk_cycles=0 kernel_cycles=15631
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=327684 thread=0 id=25 kernel_cycles=3430 barrier_cycles=588
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=327684 thread=0 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=9 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=327684 thread=0 id=29 kernel_cycles=22516 barrier_cycles=1004
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=327684 thread=1 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=1 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=327684 thread=1 id=25 kernel_cycles=3234 barrier_cycles=588
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=327684 thread=0 node=0 types=8,0,0 names=q8_0,f32,f32 a=64,64,1,1 b=64,32,1,1 c=64,32,1,1 sa=34,68,4352,4352 sb=4,256,8192,8192 sc=4,256,8192,8192 dot=8 route=4 first=1,0,1,0 second=1,1,0,3 conversion=1,1 inner_wait_us=3 chunks=0,0 kernel_us=9
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=327684 thread=0 node=0 first_cycles=956 second_cycles=8649 conversion_cycles=1813 inner_wait_cycles=7179 chunk_cycles=0 kernel_cycles=22516
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=327684 thread=1 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=13 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=327684 thread=1 id=29 kernel_cycles=31778 barrier_cycles=1249
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=327684 thread=1 node=0 types=8,0,0 names=q8_0,f32,f32 a=64,64,1,1 b=64,32,1,1 c=64,32,1,1 sa=34,68,4352,4352 sb=4,256,8192,8192 sc=4,256,8192,8192 dot=8 route=4 first=1,0,1,0 second=1,1,0,3 conversion=1,1 inner_wait_us=7 chunks=0,0 kernel_us=13
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=327684 thread=1 node=0 first_cycles=637 second_cycles=8526 conversion_cycles=2254 inner_wait_cycles=17248 chunk_cycles=0 kernel_cycles=31778
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=393220 thread=1 tid=5060 cycles=44886 kernel_100ns=0 user_100ns=0 final_wait_cycles=833 errors=0 error_bits=0 first_error=0
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=393220 thread=3 tid=6568 cycles=26017 kernel_100ns=0 user_100ns=0 final_wait_cycles=1200 errors=0 error_bits=0 first_error=0
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=393220 thread=2 tid=552 cycles=33443 kernel_100ns=0 user_100ns=0 final_wait_cycles=907 errors=0 error_bits=0 first_error=0
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=393220 thread=1 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=49af58d9b0001634 execution=70d68729fc9a9a83 elapsed_us=18 final_wait_us=0
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=393220 thread=3 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=49af58d9b0001634 execution=70d68729fc9a9a83 elapsed_us=10 final_wait_us=0
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=393220 thread=2 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=49af58d9b0001634 execution=70d68729fc9a9a83 elapsed_us=13 final_wait_us=0
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=393220 thread=0 tid=5560 cycles=37706 kernel_100ns=0 user_100ns=0 final_wait_cycles=1225 errors=0 error_bits=0 first_error=0
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=393220 thread=3 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=1 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=393220 thread=3 id=25 kernel_cycles=3136 barrier_cycles=588
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=393220 thread=2 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=1 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=393220 thread=2 id=25 kernel_cycles=3455 barrier_cycles=588
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=393220 thread=1 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=1 barrier_us=0
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=393220 thread=2 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=10 barrier_us=1
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=393220 thread=0 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=49af58d9b0001634 execution=70d68729fc9a9a83 elapsed_us=15 final_wait_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=393220 thread=1 id=25 kernel_cycles=3381 barrier_cycles=588
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=393220 thread=3 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=7 barrier_us=1
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=393220 thread=1 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=14 barrier_us=1
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=393220 thread=0 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=1 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=393220 thread=0 id=25 kernel_cycles=3405 barrier_cycles=588
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=393220 thread=1 id=29 kernel_cycles=35183 barrier_cycles=1078
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=393220 thread=2 id=29 kernel_cycles=24133 barrier_cycles=1029
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=393220 thread=3 id=29 kernel_cycles=16070 barrier_cycles=1225
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=393220 thread=0 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=11 barrier_us=1
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=393220 thread=2 node=0 types=8,0,0 names=q8_0,f32,f32 a=64,64,1,1 b=64,32,1,1 c=64,32,1,1 sa=34,68,4352,4352 sb=4,256,8192,8192 sc=4,256,8192,8192 dot=8 route=4 first=1,0,1,0 second=1,1,0,4 conversion=1,0 inner_wait_us=4 chunks=0,0 kernel_us=10
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=393220 thread=2 node=0 first_cycles=784 second_cycles=9114 conversion_cycles=1323 inner_wait_cycles=10118 chunk_cycles=0 kernel_cycles=24133
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=393220 thread=0 id=29 kernel_cycles=27464 barrier_cycles=809
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=393220 thread=1 node=0 types=8,0,0 names=q8_0,f32,f32 a=64,64,1,1 b=64,32,1,1 c=64,32,1,1 sa=34,68,4352,4352 sb=4,256,8192,8192 sc=4,256,8192,8192 dot=8 route=4 first=1,0,1,0 second=1,1,0,4 conversion=1,1 inner_wait_us=8 chunks=0,0 kernel_us=14
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=393220 thread=1 node=0 first_cycles=735 second_cycles=8918 conversion_cycles=2915 inner_wait_cycles=18865 chunk_cycles=0 kernel_cycles=35183
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=393220 thread=3 node=0 types=8,0,0 names=q8_0,f32,f32 a=64,64,1,1 b=64,32,1,1 c=64,32,1,1 sa=34,68,4352,4352 sb=4,256,8192,8192 sc=4,256,8192,8192 dot=8 route=4 first=1,0,1,0 second=1,1,0,4 conversion=1,1 inner_wait_us=0 chunks=0,0 kernel_us=7
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=393220 thread=3 node=0 first_cycles=612 second_cycles=8967 conversion_cycles=2327 inner_wait_cycles=637 chunk_cycles=0 kernel_cycles=16070
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=393220 thread=0 node=0 types=8,0,0 names=q8_0,f32,f32 a=64,64,1,1 b=64,32,1,1 c=64,32,1,1 sa=34,68,4352,4352 sb=4,256,8192,8192 sc=4,256,8192,8192 dot=8 route=4 first=1,0,1,0 second=1,1,0,4 conversion=1,1 inner_wait_us=5 chunks=0,0 kernel_us=11
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=393220 thread=0 node=0 first_cycles=955 second_cycles=8796 conversion_cycles=2033 inner_wait_cycles=11564 chunk_cycles=0 kernel_cycles=27464
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=458756 thread=1 tid=5060 cycles=25505 kernel_100ns=0 user_100ns=0 final_wait_cycles=2107 errors=0 error_bits=0 first_error=0
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=458756 thread=3 tid=6568 cycles=29961 kernel_100ns=0 user_100ns=0 final_wait_cycles=1568 errors=0 error_bits=0 first_error=0
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=458756 thread=1 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=4981fd01feb3b953 execution=70d68729fc9a9a83 elapsed_us=10 final_wait_us=1
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=458756 thread=1 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=0 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=458756 thread=1 id=25 kernel_cycles=956 barrier_cycles=588
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=458756 thread=1 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=7 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=458756 thread=1 id=29 kernel_cycles=17395 barrier_cycles=784
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=458756 thread=3 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=4981fd01feb3b953 execution=70d68729fc9a9a83 elapsed_us=12 final_wait_us=0
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=458756 thread=1 node=0 types=0,0,0 names=f32,f32,f32 a=64,64,1,1 b=64,1,1,1 c=64,1,1,1 sa=4,256,16384,16384 sb=4,256,256,256 sc=4,256,256,256 dot=0 route=5 first=1,0,1,0 second=0,0,0,0 conversion=0,0 inner_wait_us=0 chunks=1,5 kernel_us=7
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=458756 thread=1 node=0 first_cycles=735 second_cycles=0 conversion_cycles=0 inner_wait_cycles=612 chunk_cycles=12813 kernel_cycles=17395
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=458756 thread=3 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=1 barrier_us=0
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=458756 thread=2 tid=552 cycles=35820 kernel_100ns=0 user_100ns=0 final_wait_cycles=2083 errors=0 error_bits=0 first_error=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=458756 thread=3 id=25 kernel_cycles=1201 barrier_cycles=637
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=458756 thread=3 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=8 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=458756 thread=3 id=29 kernel_cycles=21215 barrier_cycles=1347
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=458756 thread=2 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=4981fd01feb3b953 execution=70d68729fc9a9a83 elapsed_us=14 final_wait_us=1
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=458756 thread=0 tid=5560 cycles=42360 kernel_100ns=0 user_100ns=0 final_wait_cycles=662 errors=0 error_bits=0 first_error=0
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=458756 thread=2 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=0 barrier_us=0
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=458756 thread=0 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=4981fd01feb3b953 execution=70d68729fc9a9a83 elapsed_us=17 final_wait_us=0
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=458756 thread=0 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=1 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=458756 thread=0 id=25 kernel_cycles=1911 barrier_cycles=588
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=458756 thread=0 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=14 barrier_us=1
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=458756 thread=3 node=0 types=0,0,0 names=f32,f32,f32 a=64,64,1,1 b=64,1,1,1 c=64,1,1,1 sa=4,256,16384,16384 sb=4,256,256,256 sc=4,256,256,256 dot=0 route=5 first=1,0,1,0 second=0,0,0,0 conversion=0,0 inner_wait_us=2 chunks=1,5 kernel_us=8
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=458756 thread=3 node=0 first_cycles=612 second_cycles=0 conversion_cycles=0 inner_wait_cycles=5120 chunk_cycles=12519 kernel_cycles=21215
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=458756 thread=0 id=29 kernel_cycles=32608 barrier_cycles=2450
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=458756 thread=0 node=0 types=0,0,0 names=f32,f32,f32 a=64,64,1,1 b=64,1,1,1 c=64,1,1,1 sa=4,256,16384,16384 sb=4,256,256,256 sc=4,256,256,256 dot=0 route=5 first=1,0,1,0 second=0,0,0,0 conversion=0,0 inner_wait_us=6 chunks=1,4 kernel_us=14
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=458756 thread=0 node=0 first_cycles=735 second_cycles=0 conversion_cycles=0 inner_wait_cycles=16929 chunk_cycles=11221 kernel_cycles=32608
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=458756 thread=2 id=25 kernel_cycles=686 barrier_cycles=564
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=458756 thread=2 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=11 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=458756 thread=2 id=29 kernel_cycles=27367 barrier_cycles=1004
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=458756 thread=2 node=0 types=0,0,0 names=f32,f32,f32 a=64,64,1,1 b=64,1,1,1 c=64,1,1,1 sa=4,256,16384,16384 sb=4,256,256,256 sc=4,256,256,256 dot=0 route=5 first=1,0,1,0 second=0,0,0,0 conversion=0,0 inner_wait_us=4 chunks=1,5 kernel_us=11
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=458756 thread=2 node=0 first_cycles=711 second_cycles=0 conversion_cycles=0 inner_wait_cycles=10535 chunk_cycles=12838 kernel_cycles=27367
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=524292 thread=0 tid=5560 cycles=13964 kernel_100ns=0 user_100ns=0 final_wait_cycles=613 errors=0 error_bits=0 first_error=0
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=524292 thread=3 tid=6568 cycles=28028 kernel_100ns=0 user_100ns=0 final_wait_cycles=1323 errors=0 error_bits=0 first_error=0
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=524292 thread=0 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=4981fd01feb3b953 execution=70d68729fc9a9a83 elapsed_us=5 final_wait_us=0
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=524292 thread=3 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=4981fd01feb3b953 execution=70d68729fc9a9a83 elapsed_us=11 final_wait_us=0
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=524292 thread=3 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=0 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=524292 thread=3 id=25 kernel_cycles=980 barrier_cycles=564
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=524292 thread=3 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=9 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=524292 thread=3 id=29 kernel_cycles=20433 barrier_cycles=1078
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=524292 thread=0 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=0 barrier_us=0
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=524292 thread=3 node=0 types=0,0,0 names=f32,f32,f32 a=64,64,1,1 b=64,1,1,1 c=64,1,1,1 sa=4,256,16384,16384 sb=4,256,256,256 sc=4,256,256,256 dot=0 route=5 first=1,0,1,0 second=0,0,0,0 conversion=0,0 inner_wait_us=6 chunks=1,0 kernel_us=9
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=524292 thread=3 node=0 first_cycles=539 second_cycles=0 conversion_cycles=0 inner_wait_cycles=14822 chunk_cycles=2181 kernel_cycles=20433
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=524292 thread=2 tid=552 cycles=33639 kernel_100ns=0 user_100ns=0 final_wait_cycles=1421 errors=0 error_bits=0 first_error=0
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=524292 thread=2 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=4981fd01feb3b953 execution=70d68729fc9a9a83 elapsed_us=13 final_wait_us=0
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=524292 thread=2 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=0 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=524292 thread=2 id=25 kernel_cycles=906 barrier_cycles=563
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=524292 thread=2 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=11 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=524292 thread=2 id=29 kernel_cycles=25749 barrier_cycles=1078
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=524292 thread=1 tid=5060 cycles=18915 kernel_100ns=0 user_100ns=0 final_wait_cycles=1323 errors=0 error_bits=0 first_error=0
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=524292 thread=2 node=0 types=0,0,0 names=f32,f32,f32 a=64,64,1,1 b=64,1,1,1 c=64,1,1,1 sa=4,256,16384,16384 sb=4,256,256,256 sc=4,256,256,256 dot=0 route=5 first=1,0,1,0 second=0,0,0,0 conversion=0,0 inner_wait_us=8 chunks=1,0 kernel_us=11
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=524292 thread=2 node=0 first_cycles=735 second_cycles=0 conversion_cycles=0 inner_wait_cycles=19257 chunk_cycles=2156 kernel_cycles=25749
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=524292 thread=1 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=4981fd01feb3b953 execution=70d68729fc9a9a83 elapsed_us=7 final_wait_us=0
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=524292 thread=1 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=0 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=524292 thread=0 id=25 kernel_cycles=1593 barrier_cycles=588
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=524292 thread=1 id=25 kernel_cycles=882 barrier_cycles=637
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=524292 thread=0 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=3 barrier_us=0
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=524292 thread=1 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=5 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=524292 thread=1 id=29 kernel_cycles=10879 barrier_cycles=1078
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=524292 thread=0 id=29 kernel_cycles=6492 barrier_cycles=760
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=524292 thread=1 node=0 types=0,0,0 names=f32,f32,f32 a=64,64,1,1 b=64,1,1,1 c=64,1,1,1 sa=4,256,16384,16384 sb=4,256,256,256 sc=4,256,256,256 dot=0 route=5 first=1,0,1,0 second=0,0,0,0 conversion=0,0 inner_wait_us=1 chunks=1,0 kernel_us=5
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=524292 thread=1 node=0 first_cycles=882 second_cycles=0 conversion_cycles=0 inner_wait_cycles=3944 chunk_cycles=2377 kernel_cycles=10879
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=524292 thread=0 node=0 types=0,0,0 names=f32,f32,f32 a=64,64,1,1 b=64,1,1,1 c=64,1,1,1 sa=4,256,16384,16384 sb=4,256,256,256 sc=4,256,256,256 dot=0 route=5 first=1,0,1,0 second=0,0,0,0 conversion=0,0 inner_wait_us=0 chunks=1,1 kernel_us=3
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=524292 thread=0 node=0 first_cycles=563 second_cycles=0 conversion_cycles=0 inner_wait_cycles=637 chunk_cycles=2523 kernel_cycles=6492
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=589828 thread=0 tid=5560 cycles=18644 kernel_100ns=0 user_100ns=0 final_wait_cycles=661 errors=0 error_bits=0 first_error=0
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=589828 thread=0 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=4981fd01feb3b953 execution=70d68729fc9a9a83 elapsed_us=8 final_wait_us=0
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=589828 thread=3 tid=6568 cycles=14137 kernel_100ns=0 user_100ns=0 final_wait_cycles=1347 errors=0 error_bits=0 first_error=0
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=589828 thread=0 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=1 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=589828 thread=0 id=25 kernel_cycles=1666 barrier_cycles=613
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=589828 thread=0 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=4 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=589828 thread=0 id=29 kernel_cycles=11098 barrier_cycles=784
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=589828 thread=3 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=4981fd01feb3b953 execution=70d68729fc9a9a83 elapsed_us=6 final_wait_us=1
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=589828 thread=2 tid=552 cycles=23006 kernel_100ns=0 user_100ns=0 final_wait_cycles=1372 errors=0 error_bits=0 first_error=0
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=589828 thread=0 node=0 types=0,0,0 names=f32,f32,f32 a=64,64,1,1 b=64,1,1,1 c=64,1,1,1 sa=4,256,16384,16384 sb=4,256,256,256 sc=4,256,256,256 dot=0 route=5 first=1,0,1,0 second=0,0,0,0 conversion=0,0 inner_wait_us=2 chunks=1,1 kernel_us=4
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=589828 thread=0 node=0 first_cycles=539 second_cycles=0 conversion_cycles=0 inner_wait_cycles=5194 chunk_cycles=2401 kernel_cycles=11098
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=589828 thread=3 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=1 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=589828 thread=3 id=25 kernel_cycles=1004 barrier_cycles=637
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=589828 thread=2 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=4981fd01feb3b953 execution=70d68729fc9a9a83 elapsed_us=9 final_wait_us=1
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=589828 thread=3 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=2 barrier_us=0
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=589828 thread=2 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=1 barrier_us=0
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=589828 thread=1 tid=5060 cycles=32291 kernel_100ns=0 user_100ns=0 final_wait_cycles=1274 errors=0 error_bits=0 first_error=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=589828 thread=3 id=29 kernel_cycles=6051 barrier_cycles=1519
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=589828 thread=2 id=25 kernel_cycles=1029 barrier_cycles=588
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=589828 thread=1 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=4981fd01feb3b953 execution=70d68729fc9a9a83 elapsed_us=13 final_wait_us=1
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=589828 thread=2 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=6 barrier_us=0
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=589828 thread=1 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=1 barrier_us=0
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=589828 thread=3 node=0 types=0,0,0 names=f32,f32,f32 a=64,64,1,1 b=64,1,1,1 c=64,1,1,1 sa=4,256,16384,16384 sb=4,256,256,256 sc=4,256,256,256 dot=0 route=5 first=1,0,1,0 second=0,0,0,0 conversion=0,0 inner_wait_us=1 chunks=1,1 kernel_us=2
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=589828 thread=3 node=0 first_cycles=588 second_cycles=0 conversion_cycles=0 inner_wait_cycles=637 chunk_cycles=2279 kernel_cycles=6051
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=589828 thread=1 id=25 kernel_cycles=980 barrier_cycles=686
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=589828 thread=2 id=29 kernel_cycles=14455 barrier_cycles=1078
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=589828 thread=1 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=9 barrier_us=1
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=589828 thread=1 id=29 kernel_cycles=23495 barrier_cycles=1544
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=589828 thread=2 node=0 types=0,0,0 names=f32,f32,f32 a=64,64,1,1 b=64,1,1,1 c=64,1,1,1 sa=4,256,16384,16384 sb=4,256,256,256 sc=4,256,256,256 dot=0 route=5 first=1,0,1,0 second=0,0,0,0 conversion=0,0 inner_wait_us=3 chunks=1,1 kernel_us=6
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=589828 thread=2 node=0 first_cycles=906 second_cycles=0 conversion_cycles=0 inner_wait_cycles=7007 chunk_cycles=2426 kernel_cycles=14455
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=589828 thread=1 node=0 types=0,0,0 names=f32,f32,f32 a=64,64,1,1 b=64,1,1,1 c=64,1,1,1 sa=4,256,16384,16384 sb=4,256,256,256 sc=4,256,256,256 dot=0 route=5 first=1,0,1,0 second=0,0,0,0 conversion=0,0 inner_wait_us=7 chunks=1,1 kernel_us=9
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=589828 thread=1 node=0 first_cycles=637 second_cycles=0 conversion_cycles=0 inner_wait_cycles=17346 chunk_cycles=2058 kernel_cycles=23495
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=655364 thread=3 tid=6568 cycles=33294 kernel_100ns=0 user_100ns=0 final_wait_cycles=1886 errors=0 error_bits=0 first_error=0
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=655364 thread=1 tid=5060 cycles=26753 kernel_100ns=0 user_100ns=0 final_wait_cycles=1470 errors=0 error_bits=0 first_error=0
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=655364 thread=3 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=4981fd01feb3b953 execution=70d68729fc9a9a83 elapsed_us=14 final_wait_us=1
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=655364 thread=3 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=0 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=655364 thread=3 id=25 kernel_cycles=882 barrier_cycles=563
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=655364 thread=3 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=10 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=655364 thread=3 id=29 kernel_cycles=25699 barrier_cycles=710
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=655364 thread=1 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=4981fd01feb3b953 execution=70d68729fc9a9a83 elapsed_us=11 final_wait_us=1
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=655364 thread=3 node=0 types=8,0,0 names=q8_0,f32,f32 a=64,64,1,1 b=64,1,1,1 c=64,1,1,1 sa=34,68,4352,4352 sb=4,256,256,256 sc=4,256,256,256 dot=8 route=5 first=1,0,1,0 second=1,0,1,0 conversion=1,1 inner_wait_us=3 chunks=1,5 kernel_us=10
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=655364 thread=3 node=0 first_cycles=563 second_cycles=686 conversion_cycles=857 inner_wait_cycles=8085 chunk_cycles=11833 kernel_cycles=25699
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=655364 thread=2 tid=552 cycles=38955 kernel_100ns=0 user_100ns=0 final_wait_cycles=1862 errors=0 error_bits=0 first_error=0
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=655364 thread=1 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=0 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=655364 thread=1 id=25 kernel_cycles=1152 barrier_cycles=613
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=655364 thread=1 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=7 barrier_us=1
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=655364 thread=2 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=4981fd01feb3b953 execution=70d68729fc9a9a83 elapsed_us=16 final_wait_us=1
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=655364 thread=1 id=29 kernel_cycles=18373 barrier_cycles=1201
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=655364 thread=0 tid=5560 cycles=45548 kernel_100ns=0 user_100ns=0 final_wait_cycles=637 errors=0 error_bits=0 first_error=0
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=655364 thread=1 node=0 types=8,0,0 names=q8_0,f32,f32 a=64,64,1,1 b=64,1,1,1 c=64,1,1,1 sa=34,68,4352,4352 sb=4,256,256,256 sc=4,256,256,256 dot=8 route=5 first=1,0,1,0 second=1,0,1,0 conversion=1,1 inner_wait_us=0 chunks=1,5 kernel_us=7
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=655364 thread=1 node=0 first_cycles=539 second_cycles=613 conversion_cycles=735 inner_wait_cycles=637 chunk_cycles=11735 kernel_cycles=18373
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=655364 thread=0 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=4981fd01feb3b953 execution=70d68729fc9a9a83 elapsed_us=19 final_wait_us=0
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=655364 thread=0 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=1 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=655364 thread=0 id=25 kernel_cycles=1690 barrier_cycles=613
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=655364 thread=0 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=15 barrier_us=1
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=655364 thread=2 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=0 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=655364 thread=0 id=29 kernel_cycles=36310 barrier_cycles=1984
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=655364 thread=2 id=25 kernel_cycles=833 barrier_cycles=612
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=655364 thread=2 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=12 barrier_us=1
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=655364 thread=0 node=0 types=8,0,0 names=q8_0,f32,f32 a=64,64,1,1 b=64,1,1,1 c=64,1,1,1 sa=34,68,4352,4352 sb=4,256,256,256 sc=4,256,256,256 dot=8 route=5 first=1,0,1,0 second=1,0,1,0 conversion=1,0 inner_wait_us=7 chunks=1,4 kernel_us=15
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=655364 thread=0 node=0 first_cycles=784 second_cycles=637 conversion_cycles=931 inner_wait_cycles=19012 chunk_cycles=10413 kernel_cycles=36310
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=655364 thread=2 id=29 kernel_cycles=30429 barrier_cycles=1078
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=655364 thread=2 node=0 types=8,0,0 names=q8_0,f32,f32 a=64,64,1,1 b=64,1,1,1 c=64,1,1,1 sa=34,68,4352,4352 sb=4,256,256,256 sc=4,256,256,256 dot=8 route=5 first=1,0,1,0 second=1,0,1,0 conversion=1,1 inner_wait_us=5 chunks=1,5 kernel_us=12
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=655364 thread=2 node=0 first_cycles=686 second_cycles=588 conversion_cycles=1127 inner_wait_cycles=12128 chunk_cycles=11466 kernel_cycles=30429
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=720900 thread=2 tid=552 cycles=30526 kernel_100ns=0 user_100ns=0 final_wait_cycles=1470 errors=0 error_bits=0 first_error=0
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=720900 thread=2 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=4981fd01feb3b953 execution=70d68729fc9a9a83 elapsed_us=12 final_wait_us=0
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=720900 thread=3 tid=6568 cycles=16242 kernel_100ns=0 user_100ns=0 final_wait_cycles=1421 errors=0 error_bits=0 first_error=0
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=720900 thread=2 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=1 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=720900 thread=2 id=25 kernel_cycles=833 barrier_cycles=588
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=720900 thread=2 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=9 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=720900 thread=2 id=29 kernel_cycles=22515 barrier_cycles=1421
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=720900 thread=3 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=4981fd01feb3b953 execution=70d68729fc9a9a83 elapsed_us=6 final_wait_us=0
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=720900 thread=1 tid=5060 cycles=36997 kernel_100ns=0 user_100ns=0 final_wait_cycles=1421 errors=0 error_bits=0 first_error=0
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=720900 thread=2 node=0 types=8,0,0 names=q8_0,f32,f32 a=64,64,1,1 b=64,1,1,1 c=64,1,1,1 sa=34,68,4352,4352 sb=4,256,256,256 sc=4,256,256,256 dot=8 route=5 first=1,0,1,0 second=1,0,1,0 conversion=1,0 inner_wait_us=6 chunks=1,1 kernel_us=9
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=720900 thread=2 node=0 first_cycles=563 second_cycles=588 conversion_cycles=539 inner_wait_cycles=15558 chunk_cycles=1788 kernel_cycles=22515
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=720900 thread=3 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=0 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=720900 thread=3 id=25 kernel_cycles=980 barrier_cycles=588
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=720900 thread=1 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=4981fd01feb3b953 execution=70d68729fc9a9a83 elapsed_us=15 final_wait_us=0
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=720900 thread=3 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=3 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=720900 thread=3 id=29 kernel_cycles=8646 barrier_cycles=1078
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=720900 thread=0 tid=5560 cycles=22736 kernel_100ns=0 user_100ns=0 final_wait_cycles=661 errors=0 error_bits=0 first_error=0
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=720900 thread=1 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=1 barrier_us=0
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=720900 thread=0 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=4981fd01feb3b953 execution=70d68729fc9a9a83 elapsed_us=9 final_wait_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=720900 thread=1 id=25 kernel_cycles=809 barrier_cycles=564
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=720900 thread=0 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=1 barrier_us=0
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=720900 thread=1 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=11 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=720900 thread=1 id=29 kernel_cycles=28617 barrier_cycles=1495
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=720900 thread=0 id=25 kernel_cycles=1666 barrier_cycles=613
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=720900 thread=0 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=6 barrier_us=0
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=720900 thread=3 node=0 types=8,0,0 names=q8_0,f32,f32 a=64,64,1,1 b=64,1,1,1 c=64,1,1,1 sa=34,68,4352,4352 sb=4,256,256,256 sc=4,256,256,256 dot=8 route=5 first=1,0,1,0 second=1,0,1,0 conversion=1,0 inner_wait_us=0 chunks=1,1 kernel_us=3
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=720900 thread=3 node=0 first_cycles=612 second_cycles=637 conversion_cycles=710 inner_wait_cycles=612 chunk_cycles=2107 kernel_cycles=8646
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=720900 thread=0 id=29 kernel_cycles=14773 barrier_cycles=710
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=720900 thread=1 node=0 types=8,0,0 names=q8_0,f32,f32 a=64,64,1,1 b=64,1,1,1 c=64,1,1,1 sa=34,68,4352,4352 sb=4,256,256,256 sc=4,256,256,256 dot=8 route=5 first=1,0,1,0 second=1,0,1,0 conversion=1,1 inner_wait_us=8 chunks=1,1 kernel_us=11
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=720900 thread=1 node=0 first_cycles=662 second_cycles=637 conversion_cycles=882 inner_wait_cycles=20580 chunk_cycles=1715 kernel_cycles=28617
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=720900 thread=0 node=0 types=8,0,0 names=q8_0,f32,f32 a=64,64,1,1 b=64,1,1,1 c=64,1,1,1 sa=34,68,4352,4352 sb=4,256,256,256 sc=4,256,256,256 dot=8 route=5 first=1,0,1,0 second=1,0,1,0 conversion=1,0 inner_wait_us=2 chunks=1,1 kernel_us=6
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=720900 thread=0 node=0 first_cycles=857 second_cycles=637 conversion_cycles=882 inner_wait_cycles=5708 chunk_cycles=1960 kernel_cycles=14773
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=786436 thread=0 tid=5560 cycles=33369 kernel_100ns=0 user_100ns=0 final_wait_cycles=711 errors=0 error_bits=0 first_error=0
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=786436 thread=3 tid=6568 cycles=27833 kernel_100ns=0 user_100ns=0 final_wait_cycles=1323 errors=0 error_bits=0 first_error=0
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=786436 thread=0 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=4981fd01feb3b953 execution=70d68729fc9a9a83 elapsed_us=13 final_wait_us=0
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=786436 thread=3 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=4981fd01feb3b953 execution=70d68729fc9a9a83 elapsed_us=11 final_wait_us=1
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=786436 thread=0 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=0 barrier_us=0
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=786436 thread=3 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=0 barrier_us=0
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=786436 thread=2 tid=552 cycles=16073 kernel_100ns=0 user_100ns=0 final_wait_cycles=1519 errors=0 error_bits=0 first_error=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=786436 thread=3 id=25 kernel_cycles=857 barrier_cycles=613
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=786436 thread=2 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=4981fd01feb3b953 execution=70d68729fc9a9a83 elapsed_us=7 final_wait_us=1
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=786436 thread=3 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=8 barrier_us=1
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=786436 thread=0 id=25 kernel_cycles=1298 barrier_cycles=588
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=786436 thread=3 id=29 kernel_cycles=19477 barrier_cycles=1421
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=786436 thread=2 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=0 barrier_us=0
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=786436 thread=0 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=10 barrier_us=1
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=786436 thread=0 id=29 kernel_cycles=25358 barrier_cycles=1102
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=786436 thread=2 id=25 kernel_cycles=907 barrier_cycles=637
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=786436 thread=3 node=0 types=8,0,0 names=q8_0,f32,f32 a=64,64,1,1 b=64,1,1,1 c=64,1,1,1 sa=34,68,4352,4352 sb=4,256,256,256 sc=4,256,256,256 dot=8 route=5 first=1,0,1,0 second=1,0,1,0 conversion=1,0 inner_wait_us=4 chunks=1,1 kernel_us=8
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=786436 thread=3 node=0 first_cycles=686 second_cycles=637 conversion_cycles=882 inner_wait_cycles=11245 chunk_cycles=1691 kernel_cycles=19477
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=786436 thread=2 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=3 barrier_us=1
+[DEBUG-thread-cpu-v1] graph pool=000002063B909980 generation=786436 thread=1 tid=5060 cycles=22393 kernel_100ns=0 user_100ns=0 final_wait_cycles=1299 errors=0 error_bits=0 first_error=0
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=786436 thread=0 node=0 types=8,0,0 names=q8_0,f32,f32 a=64,64,1,1 b=64,1,1,1 c=64,1,1,1 sa=34,68,4352,4352 sb=4,256,256,256 sc=4,256,256,256 dot=8 route=5 first=1,0,1,1 second=1,0,1,0 conversion=1,0 inner_wait_us=6 chunks=1,1 kernel_us=10
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=786436 thread=0 node=0 first_cycles=760 second_cycles=613 conversion_cycles=906 inner_wait_cycles=16611 chunk_cycles=2034 kernel_cycles=25358
+[DEBUG-cpu-ops-v1] graph pool=000002063B909980 generation=786436 thread=1 threads=4 nodes=3 roots=2 fused=1 skipped=0 topology=4981fd01feb3b953 execution=70d68729fc9a9a83 elapsed_us=9 final_wait_us=1
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=786436 thread=1 id=25 name=RMS_NORM roots=1 fused=1 kernel_us=0 barrier_us=0
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=786436 thread=2 id=29 kernel_cycles=8452 barrier_cycles=931
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=786436 thread=1 id=25 kernel_cycles=808 barrier_cycles=588
+[DEBUG-cpu-ops-v1] op pool=000002063B909980 generation=786436 thread=1 id=29 name=MUL_MAT roots=1 fused=0 kernel_us=6 barrier_us=1
+[DEBUG-thread-cpu-v1] op pool=000002063B909980 generation=786436 thread=1 id=29 kernel_cycles=14479 barrier_cycles=1372
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=786436 thread=2 node=0 types=8,0,0 names=q8_0,f32,f32 a=64,64,1,1 b=64,1,1,1 c=64,1,1,1 sa=34,68,4352,4352 sb=4,256,256,256 sc=4,256,256,256 dot=8 route=5 first=1,0,1,0 second=1,0,1,0 conversion=1,1 inner_wait_us=0 chunks=1,1 kernel_us=3
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=786436 thread=2 node=0 first_cycles=563 second_cycles=613 conversion_cycles=588 inner_wait_cycles=735 chunk_cycles=2009 kernel_cycles=8452
+[DEBUG-matrix-paths-v1] matrix pool=000002063B909980 generation=786436 thread=1 node=0 types=8,0,0 names=q8_0,f32,f32 a=64,64,1,1 b=64,1,1,1 c=64,1,1,1 sa=34,68,4352,4352 sb=4,256,256,256 sc=4,256,256,256 dot=8 route=5 first=1,0,1,0 second=1,0,1,0 conversion=1,0 inner_wait_us=3 chunks=1,1 kernel_us=6
+[DEBUG-matrix-cpu-v1] matrix pool=000002063B909980 generation=786436 thread=1 node=0 first_cycles=539 second_cycles=588 conversion_cycles=637 inner_wait_cycles=7448 chunk_cycles=1789 kernel_cycles=14479

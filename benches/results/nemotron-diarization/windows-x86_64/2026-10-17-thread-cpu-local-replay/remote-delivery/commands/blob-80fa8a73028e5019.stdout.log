@@ -1,0 +1,14 @@
+{
+  "source_v2": {
+    "bytes": 4921,
+    "sha256": "a3264344c9cebcd24ff721f40aa42458a112fbbb9931c8f3ceae54de9743da54"
+  },
+  "source_v3": {
+    "bytes": 5344,
+    "sha256": "d6945eec8333e5494c8ad0a95ccf95603bae4bef5bfbd77ade92de322dc10346"
+  },
+  "reason": "Avoid nested independent sessions. Each Git/CMake child inherits the already-owned outer stage group; bounded inner I/O and leader waits are separate from outer whole-group cleanup. New helper imported only after the native closure and parent-owned remote protocol/module identities are verified.",
+  "source_preparation_invoked": false,
+  "artifact_consumed": false,
+  "new_native_calls": 0
+}

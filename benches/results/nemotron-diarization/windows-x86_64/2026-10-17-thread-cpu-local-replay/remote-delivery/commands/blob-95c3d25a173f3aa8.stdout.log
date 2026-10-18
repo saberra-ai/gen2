@@ -1,0 +1,330 @@
+replay	Set up job	﻿2026-10-17T23:38:45.7037439Z Current runner version: '2.337.0'
+replay	Set up job	2026-10-17T23:38:45.7075975Z ##[group]Runner Image Provisioner
+replay	Set up job	2026-10-17T23:38:45.7077434Z Hosted Compute Agent
+replay	Set up job	2026-10-17T23:38:45.7078733Z Version: 20261012.601
+replay	Set up job	2026-10-17T23:38:45.7079905Z Commit: f3dc54e1fb89da6852db922499a0233137369e1d
+replay	Set up job	2026-10-17T23:38:45.7081205Z Build Date: 2026-10-12T17:48:21Z
+replay	Set up job	2026-10-17T23:38:45.7082294Z Worker ID: {73a42a87-8808-4b64-867f-c817838d6633}
+replay	Set up job	2026-10-17T23:38:45.7083585Z Region: eastus
+replay	Set up job	2026-10-17T23:38:45.7084578Z Cloud: Azure
+replay	Set up job	2026-10-17T23:38:45.7085813Z ##[endgroup]
+replay	Set up job	2026-10-17T23:38:45.7088620Z ##[group]Operating System
+replay	Set up job	2026-10-17T23:38:45.7090193Z Ubuntu
+replay	Set up job	2026-10-17T23:38:45.7091262Z 24.04.5
+replay	Set up job	2026-10-17T23:38:45.7092134Z LTS
+replay	Set up job	2026-10-17T23:38:45.7093189Z ##[endgroup]
+replay	Set up job	2026-10-17T23:38:45.7094127Z ##[group]Runner Image
+replay	Set up job	2026-10-17T23:38:45.7095071Z Image: ubuntu-24.04
+replay	Set up job	2026-10-17T23:38:45.7096195Z Version: 20261012.334.1
+replay	Set up job	2026-10-17T23:38:45.7098390Z Included Software: https://github.com/actions/runner-images/blob/ubuntu24/20261012.334/images/ubuntu/Ubuntu2404-Readme.md
+replay	Set up job	2026-10-17T23:38:45.7101555Z Image Release: https://github.com/actions/runner-images/releases/tag/ubuntu24%2F20261012.334
+replay	Set up job	2026-10-17T23:38:45.7103354Z ##[endgroup]
+replay	Set up job	2026-10-17T23:38:45.7105458Z ##[group]GITHUB_TOKEN Permissions
+replay	Set up job	2026-10-17T23:38:45.7108933Z Actions: read
+replay	Set up job	2026-10-17T23:38:45.7109982Z Contents: read
+replay	Set up job	2026-10-17T23:38:45.7110909Z Metadata: read
+replay	Set up job	2026-10-17T23:38:45.7111921Z ##[endgroup]
+replay	Set up job	2026-10-17T23:38:45.7115005Z Secret source: Actions
+replay	Set up job	2026-10-17T23:38:45.7116693Z Cache mode: write
+replay	Set up job	2026-10-17T23:38:45.7118440Z Prepare workflow directory
+replay	Set up job	2026-10-17T23:38:45.7686684Z Prepare all required actions
+replay	Set up job	2026-10-17T23:38:45.7757925Z Getting action download info
+replay	Set up job	2026-10-17T23:38:45.9543692Z Download action repository 'actions/checkout@v4' (SHA:11d5960a326750d5838078e36cf38b85af677262)
+replay	Set up job	2026-10-17T23:38:46.0694504Z Download action repository 'actions/setup-python@v5' (SHA:a26af69be951a213d495a4c3e4e4022e16d87065)
+replay	Set up job	2026-10-17T23:38:46.1476541Z Download action repository 'actions/upload-artifact@v4' (SHA:ea165f8d65b6e75b540449e92b4886f43607fa02)
+replay	Set up job	2026-10-17T23:38:46.3704820Z Complete job name: replay
+replay	Run actions/checkout@v4	﻿2026-10-17T23:38:46.4476630Z ##[group]Run actions/checkout@v4
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.4477575Z with:
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.4478335Z   persist-credentials: false
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.4478885Z   fetch-depth: 0
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.4479360Z   repository: saberra-ai/gen2
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.4483441Z   token: ***
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.4483902Z   ssh-strict: true
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.4484367Z   ssh-user: git
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.4484804Z   clean: true
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.4485268Z   sparse-checkout-cone-mode: true
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.4485812Z   fetch-tags: false
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.4486287Z   show-progress: true
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.4486753Z   lfs: false
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.4487181Z   submodules: false
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.4487653Z   set-safe-directory: true
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.4488381Z   allow-unsafe-pr-checkout: false
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.4489493Z env:
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.4489964Z   GIT_LFS_SKIP_SMUDGE: 1
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.4490479Z ##[endgroup]
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.5524615Z Syncing repository: saberra-ai/gen2
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.5527570Z ##[group]Getting Git version info
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.5528980Z Working directory is '/home/runner/work/gen2/gen2'
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.5530548Z [command]/usr/bin/git version
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.5612712Z git version 2.55.0
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.5655893Z ##[endgroup]
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.5668181Z Temporarily overriding HOME='/home/runner/work/_temp/3ff217c6-3331-46c6-87c7-b0c2676722b7' before making global git config changes
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.5671587Z Adding repository directory to the temporary git global config as a safe directory
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.5674414Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/gen2/gen2
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.5740860Z Deleting the contents of '/home/runner/work/gen2/gen2'
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.5744582Z ##[group]Initializing the repository
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.5749110Z [command]/usr/bin/git init /home/runner/work/gen2/gen2
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.5878317Z hint: Using 'master' as the name for the initial branch. This default branch name
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.5880523Z hint: will change to "main" in Git 3.0. To configure the initial branch name
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.5882476Z hint: to use in all of your new repositories, which will suppress this warning,
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.5883667Z hint: call:
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.5884304Z hint:
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.5885277Z hint: 	git config --global init.defaultBranch <name>
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.5886390Z hint:
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.5887304Z hint: Names commonly chosen instead of 'master' are 'main', 'trunk' and
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.5889088Z hint: 'development'. The just-created branch can be renamed via this command:
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.5890358Z hint:
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.5891082Z hint: 	git branch -m <name>
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.5891918Z hint:
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.5892940Z hint: Disable this message with "git config set advice.defaultBranchName false"
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.5894529Z Initialized empty Git repository in /home/runner/work/gen2/gen2/.git/
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.5896829Z [command]/usr/bin/git remote add origin https://github.com/saberra-ai/gen2
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.5949159Z ##[endgroup]
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.5950039Z ##[group]Disabling automatic garbage collection
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.5954258Z [command]/usr/bin/git config --local gc.auto 0
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.5996212Z ##[endgroup]
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.5997183Z ##[group]Setting up auth
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.6005036Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.6048479Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.6449690Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.6490145Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.6735400Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.6778208Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.7048003Z [command]/usr/bin/git config --local http.https://github.com/.extraheader AUTHORIZATION: basic ***
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.7097629Z ##[endgroup]
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.7098807Z ##[group]Fetching the repository
+replay	Run actions/checkout@v4	2026-10-17T23:38:46.7114308Z [command]/usr/bin/git -c protocol.version=2 fetch --prune --no-recurse-submodules origin +refs/heads/*:refs/remotes/origin/* +refs/tags/*:refs/tags/*
+replay	Run actions/checkout@v4	2026-10-17T23:38:49.8650152Z From https://github.com/saberra-ai/gen2
+replay	Run actions/checkout@v4	2026-10-17T23:38:49.8653755Z  * [new branch]      codex/bark-onnx       -> origin/codex/bark-onnx
+replay	Run actions/checkout@v4	2026-10-17T23:38:49.8655869Z  * [new branch]      codex/nemotron3-linux -> origin/codex/nemotron3-linux
+replay	Run actions/checkout@v4	2026-10-17T23:38:49.8658398Z  * [new branch]      codex/nemotron3-n0    -> origin/codex/nemotron3-n0
+replay	Run actions/checkout@v4	2026-10-17T23:38:49.8660837Z  * [new branch]      codex/nemotron3-platforms -> origin/codex/nemotron3-platforms
+replay	Run actions/checkout@v4	2026-10-17T23:38:49.8663430Z  * [new branch]      codex/nemotron3-windows-central -> origin/codex/nemotron3-windows-central
+replay	Run actions/checkout@v4	2026-10-17T23:38:49.8666236Z  * [new branch]      codex/nemotron3-windows-probe -> origin/codex/nemotron3-windows-probe
+replay	Run actions/checkout@v4	2026-10-17T23:38:49.8669019Z  * [new branch]      codex/whistle-onnx    -> origin/codex/whistle-onnx
+replay	Run actions/checkout@v4	2026-10-17T23:38:49.8671167Z  * [new branch]      main                  -> origin/main
+replay	Run actions/checkout@v4	2026-10-17T23:38:49.8675923Z [command]/usr/bin/git branch --list --remote origin/codex/nemotron3-n0
+replay	Run actions/checkout@v4	2026-10-17T23:38:49.8678801Z   origin/codex/nemotron3-n0
+replay	Run actions/checkout@v4	2026-10-17T23:38:49.8684913Z [command]/usr/bin/git rev-parse refs/remotes/origin/codex/nemotron3-n0
+replay	Run actions/checkout@v4	2026-10-17T23:38:49.8728108Z 74c564388a8f4a6e855ee07419e9a6fc6aed1425
+replay	Run actions/checkout@v4	2026-10-17T23:38:49.8730750Z ##[endgroup]
+replay	Run actions/checkout@v4	2026-10-17T23:38:49.8731542Z ##[group]Determining the checkout info
+replay	Run actions/checkout@v4	2026-10-17T23:38:49.8732547Z ##[endgroup]
+replay	Run actions/checkout@v4	2026-10-17T23:38:49.8736693Z [command]/usr/bin/git sparse-checkout disable
+replay	Run actions/checkout@v4	2026-10-17T23:38:49.8810926Z [command]/usr/bin/git config --local --unset-all extensions.worktreeConfig
+replay	Run actions/checkout@v4	2026-10-17T23:38:49.8845333Z ##[group]Checking out the ref
+replay	Run actions/checkout@v4	2026-10-17T23:38:49.8849569Z [command]/usr/bin/git checkout --progress --force -B codex/nemotron3-n0 refs/remotes/origin/codex/nemotron3-n0
+replay	Run actions/checkout@v4	2026-10-17T23:38:50.9130048Z Updating files:  29% (7295/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:50.9372144Z Updating files:  30% (7369/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:50.9566142Z Updating files:  31% (7614/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:50.9683779Z Updating files:  32% (7860/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:50.9878117Z Updating files:  33% (8106/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:51.0113101Z Updating files:  34% (8351/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:51.0288781Z Updating files:  35% (8597/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:51.0518977Z Updating files:  36% (8842/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:51.0699406Z Updating files:  37% (9088/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:51.0914446Z Updating files:  38% (9334/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:51.1162516Z Updating files:  39% (9579/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:51.1336054Z Updating files:  40% (9825/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:51.1603232Z Updating files:  41% (10071/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:51.1759639Z Updating files:  42% (10316/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:51.1954128Z Updating files:  43% (10562/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:51.2202137Z Updating files:  44% (10807/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:51.2392815Z Updating files:  45% (11053/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:51.2738655Z Updating files:  46% (11299/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:51.2914737Z Updating files:  47% (11544/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:51.3315941Z Updating files:  48% (11790/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:51.3593299Z Updating files:  49% (12035/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:51.3835032Z Updating files:  50% (12281/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:51.4673094Z Updating files:  51% (12527/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:51.4874556Z Updating files:  52% (12772/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:51.5656073Z Updating files:  53% (13018/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:51.5872581Z Updating files:  54% (13263/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:51.6363837Z Updating files:  55% (13509/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:51.6533305Z Updating files:  56% (13755/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:51.6794183Z Updating files:  57% (14000/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:51.9138710Z Updating files:  58% (14246/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:52.1560213Z Updating files:  58% (14410/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:52.9118151Z Updating files:  59% (14491/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:53.0079061Z Updating files:  59% (14707/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:53.6778116Z Updating files:  60% (14737/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:53.9164669Z Updating files:  61% (14983/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:54.5513356Z Updating files:  61% (15025/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:54.9087219Z Updating files:  62% (15228/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:55.2176640Z Updating files:  62% (15372/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:55.3715925Z Updating files:  63% (15474/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:55.8455532Z Updating files:  64% (15720/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:55.9194196Z Updating files:  65% (15965/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:56.3069642Z Updating files:  65% (15992/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:56.4717678Z Updating files:  66% (16211/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:56.9134052Z Updating files:  67% (16456/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:57.2399581Z Updating files:  67% (16583/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:57.9153585Z Updating files:  68% (16702/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:57.9764167Z Updating files:  68% (16903/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:58.7941554Z Updating files:  69% (16948/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:58.9090913Z Updating files:  70% (17193/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:59.4794189Z Updating files:  70% (17251/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:59.9256392Z Updating files:  71% (17439/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:38:59.9441235Z Updating files:  71% (17554/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:00.2246499Z Updating files:  72% (17684/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:00.9136084Z Updating files:  73% (17930/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:00.9910210Z Updating files:  73% (18152/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:01.7581507Z Updating files:  74% (18176/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:01.9065377Z Updating files:  75% (18421/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:02.4803472Z Updating files:  75% (18497/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:02.9254841Z Updating files:  76% (18667/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:03.2435196Z Updating files:  76% (18804/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:03.5621503Z Updating files:  77% (18912/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:03.8766456Z Updating files:  78% (19158/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:03.9103525Z Updating files:  79% (19404/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:04.6102149Z Updating files:  79% (19411/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:04.9073990Z Updating files:  80% (19649/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:05.3747152Z Updating files:  80% (19746/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:05.9088798Z Updating files:  81% (19895/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:06.1143187Z Updating files:  81% (20068/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:06.8728061Z Updating files:  82% (20141/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:06.9206398Z Updating files:  83% (20386/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:07.1905957Z Updating files:  83% (20392/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:07.2085684Z Updating files:  84% (20632/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:07.2698862Z Updating files:  85% (20877/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:07.3056138Z Updating files:  86% (21123/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:07.9128219Z Updating files:  87% (21369/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:08.0284870Z Updating files:  87% (21595/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:08.7165892Z Updating files:  88% (21614/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:08.9079387Z Updating files:  89% (21860/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:09.5232094Z Updating files:  89% (21902/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:09.9081150Z Updating files:  90% (22105/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:10.3216217Z Updating files:  90% (22245/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:10.9244790Z Updating files:  91% (22351/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:10.9248897Z Updating files:  91% (22543/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:10.9500252Z Updating files:  92% (22597/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:10.9625123Z Updating files:  93% (22842/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:10.9809621Z Updating files:  94% (23088/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:11.0039396Z Updating files:  95% (23333/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:11.0270179Z Updating files:  96% (23579/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:11.0600237Z Updating files:  97% (23825/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:11.0791586Z Updating files:  98% (24070/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:11.1013053Z Updating files:  99% (24316/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:11.1014374Z Updating files: 100% (24561/24561)
+replay	Run actions/checkout@v4	2026-10-17T23:39:11.1014798Z Updating files: 100% (24561/24561), done.
+replay	Run actions/checkout@v4	2026-10-17T23:39:11.3624928Z Switched to a new branch 'codex/nemotron3-n0'
+replay	Run actions/checkout@v4	2026-10-17T23:39:11.3627463Z branch 'codex/nemotron3-n0' set up to track 'origin/codex/nemotron3-n0'.
+replay	Run actions/checkout@v4	2026-10-17T23:39:11.3709076Z ##[endgroup]
+replay	Run actions/checkout@v4	2026-10-17T23:39:11.3755424Z [command]/usr/bin/git log -1 --format=%H
+replay	Run actions/checkout@v4	2026-10-17T23:39:11.3784059Z 74c564388a8f4a6e855ee07419e9a6fc6aed1425
+replay	Run actions/checkout@v4	2026-10-17T23:39:11.3796132Z ##[group]Removing auth
+replay	Run actions/checkout@v4	2026-10-17T23:39:11.3801695Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+replay	Run actions/checkout@v4	2026-10-17T23:39:11.3844275Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+replay	Run actions/checkout@v4	2026-10-17T23:39:11.4094440Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+replay	Run actions/checkout@v4	2026-10-17T23:39:11.4124132Z http.https://github.com/.extraheader
+replay	Run actions/checkout@v4	2026-10-17T23:39:11.4131597Z [command]/usr/bin/git config --local --unset-all http.https://github.com/.extraheader
+replay	Run actions/checkout@v4	2026-10-17T23:39:11.4177886Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+replay	Run actions/checkout@v4	2026-10-17T23:39:11.4426206Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+replay	Run actions/checkout@v4	2026-10-17T23:39:11.4465110Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+replay	Run actions/checkout@v4	2026-10-17T23:39:11.4713777Z ##[endgroup]
+replay	Run actions/setup-python@v5	﻿2026-10-17T23:39:11.4970565Z ##[group]Run actions/setup-python@v5
+replay	Run actions/setup-python@v5	2026-10-17T23:39:11.4970882Z with:
+replay	Run actions/setup-python@v5	2026-10-17T23:39:11.4971278Z   python-version: 3.12
+replay	Run actions/setup-python@v5	2026-10-17T23:39:11.4971504Z   check-latest: false
+replay	Run actions/setup-python@v5	2026-10-17T23:39:11.4974033Z   token: ***
+replay	Run actions/setup-python@v5	2026-10-17T23:39:11.4974247Z   update-environment: true
+replay	Run actions/setup-python@v5	2026-10-17T23:39:11.4974492Z   allow-prereleases: false
+replay	Run actions/setup-python@v5	2026-10-17T23:39:11.4974723Z   freethreaded: false
+replay	Run actions/setup-python@v5	2026-10-17T23:39:11.4974932Z env:
+replay	Run actions/setup-python@v5	2026-10-17T23:39:11.4975115Z   GIT_LFS_SKIP_SMUDGE: 1
+replay	Run actions/setup-python@v5	2026-10-17T23:39:11.4975332Z ##[endgroup]
+replay	Run actions/setup-python@v5	2026-10-17T23:39:11.6386170Z ##[group]Installed versions
+replay	Run actions/setup-python@v5	2026-10-17T23:39:11.6493033Z (node:2463) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+replay	Run actions/setup-python@v5	2026-10-17T23:39:11.6494695Z (Use `node --trace-deprecation ...` to show where the warning was created)
+replay	Run actions/setup-python@v5	2026-10-17T23:39:11.6495421Z Successfully set up CPython (3.12.15)
+replay	Run actions/setup-python@v5	2026-10-17T23:39:11.6496383Z ##[endgroup]
+replay	Bounded process, exact API, relocation and real Git bundle controls	﻿2026-10-17T23:39:11.6683627Z ##[group]Run python -B -m unittest discover -s tools/nemotron-diarization -p test_remote_q8_apack_replay.py
+replay	Bounded process, exact API, relocation and real Git bundle controls	2026-10-17T23:39:11.6684499Z [36;1mpython -B -m unittest discover -s tools/nemotron-diarization -p test_remote_q8_apack_replay.py[0m
+replay	Bounded process, exact API, relocation and real Git bundle controls	2026-10-17T23:39:11.7059775Z shell: /usr/bin/bash -e {0}
+replay	Bounded process, exact API, relocation and real Git bundle controls	2026-10-17T23:39:11.7060184Z env:
+replay	Bounded process, exact API, relocation and real Git bundle controls	2026-10-17T23:39:11.7060469Z   GIT_LFS_SKIP_SMUDGE: 1
+replay	Bounded process, exact API, relocation and real Git bundle controls	2026-10-17T23:39:11.7060901Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+replay	Bounded process, exact API, relocation and real Git bundle controls	2026-10-17T23:39:11.7061531Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+replay	Bounded process, exact API, relocation and real Git bundle controls	2026-10-17T23:39:11.7062156Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+replay	Bounded process, exact API, relocation and real Git bundle controls	2026-10-17T23:39:11.7062710Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+replay	Bounded process, exact API, relocation and real Git bundle controls	2026-10-17T23:39:11.7063268Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+replay	Bounded process, exact API, relocation and real Git bundle controls	2026-10-17T23:39:11.7063805Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+replay	Bounded process, exact API, relocation and real Git bundle controls	2026-10-17T23:39:11.7064190Z ##[endgroup]
+replay	Bounded process, exact API, relocation and real Git bundle controls	2026-10-17T23:39:15.7655770Z ...........
+replay	Bounded process, exact API, relocation and real Git bundle controls	2026-10-17T23:39:15.7656440Z ----------------------------------------------------------------------
+replay	Bounded process, exact API, relocation and real Git bundle controls	2026-10-17T23:39:15.7657021Z Ran 11 tests in 2.754s
+replay	Bounded process, exact API, relocation and real Git bundle controls	2026-10-17T23:39:15.7657249Z 
+replay	Bounded process, exact API, relocation and real Git bundle controls	2026-10-17T23:39:15.7657374Z OK
+replay	Full saved-artifact replay without native execution	﻿2026-10-17T23:39:15.7870479Z ##[group]Run python -B tools/nemotron-diarization/remote_q8_apack_replay.py --cache "/home/runner/work/_temp/q8-apack-receiver-v1" --output "/home/runner/work/_temp/q8-apack-replay-result-v1"
+replay	Full saved-artifact replay without native execution	2026-10-17T23:39:15.7871925Z [36;1mpython -B tools/nemotron-diarization/remote_q8_apack_replay.py --cache "/home/runner/work/_temp/q8-apack-receiver-v1" --output "/home/runner/work/_temp/q8-apack-replay-result-v1"[0m
+replay	Full saved-artifact replay without native execution	2026-10-17T23:39:15.7939445Z shell: /usr/bin/bash -e {0}
+replay	Full saved-artifact replay without native execution	2026-10-17T23:39:15.7939730Z env:
+replay	Full saved-artifact replay without native execution	2026-10-17T23:39:15.7939934Z   GIT_LFS_SKIP_SMUDGE: 1
+replay	Full saved-artifact replay without native execution	2026-10-17T23:39:15.7940248Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+replay	Full saved-artifact replay without native execution	2026-10-17T23:39:15.7940715Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+replay	Full saved-artifact replay without native execution	2026-10-17T23:39:15.7941161Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+replay	Full saved-artifact replay without native execution	2026-10-17T23:39:15.7941562Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+replay	Full saved-artifact replay without native execution	2026-10-17T23:39:15.7941988Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+replay	Full saved-artifact replay without native execution	2026-10-17T23:39:15.7942439Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+replay	Full saved-artifact replay without native execution	2026-10-17T23:39:15.7945383Z   GH_TOKEN: ***
+replay	Full saved-artifact replay without native execution	2026-10-17T23:39:15.7945611Z ##[endgroup]
+replay	Full saved-artifact replay without native execution	2026-10-17T23:39:22.2552695Z Traceback (most recent call last):
+replay	Full saved-artifact replay without native execution	2026-10-17T23:39:22.2564237Z   File "/home/runner/work/gen2/gen2/tools/nemotron-diarization/remote_q8_apack_replay.py", line 316, in <module>
+replay	Full saved-artifact replay without native execution	2026-10-17T23:39:22.2565166Z     if __name__=='__main__':main()
+replay	Full saved-artifact replay without native execution	2026-10-17T23:39:22.2565565Z                             ^^^^^^
+replay	Full saved-artifact replay without native execution	2026-10-17T23:39:22.2566373Z   File "/home/runner/work/gen2/gen2/tools/nemotron-diarization/remote_q8_apack_replay.py", line 285, in main
+replay	Full saved-artifact replay without native execution	2026-10-17T23:39:22.2567168Z     run(name,python+[cache/script])
+replay	Full saved-artifact replay without native execution	2026-10-17T23:39:22.2568290Z   File "/home/runner/work/gen2/gen2/tools/nemotron-diarization/remote_q8_apack_replay.py", line 212, in run
+replay	Full saved-artifact replay without native execution	2026-10-17T23:39:22.2569385Z     row=bounded_process(list(map(str,command)),logs/(name+'.stdout.log'),logs/(name+'.stderr.log'),
+replay	Full saved-artifact replay without native execution	2026-10-17T23:39:22.2570471Z         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+replay	Full saved-artifact replay without native execution	2026-10-17T23:39:22.2571447Z   File "/home/runner/work/gen2/gen2/tools/nemotron-diarization/remote_q8_apack_replay.py", line 105, in bounded_process
+replay	Full saved-artifact replay without native execution	2026-10-17T23:39:22.2572423Z     if report['returncode']!=0: raise ValueError('receiver command failed')
+replay	Full saved-artifact replay without native execution	2026-10-17T23:39:22.2573070Z                                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+replay	Full saved-artifact replay without native execution	2026-10-17T23:39:22.2573591Z ValueError: receiver command failed
+replay	Full saved-artifact replay without native execution	2026-10-17T23:39:22.2659221Z ##[error]Process completed with exit code 1.
+replay	Preserve successful or failed replay evidence	﻿2026-10-17T23:39:22.2741101Z ##[group]Run actions/upload-artifact@v4
+replay	Preserve successful or failed replay evidence	2026-10-17T23:39:22.2741418Z with:
+replay	Preserve successful or failed replay evidence	2026-10-17T23:39:22.2741630Z   name: nemotron-q8-apack-replay
+replay	Preserve successful or failed replay evidence	2026-10-17T23:39:22.2741966Z   path: /home/runner/work/_temp/q8-apack-replay-result-v1/
+replay	Preserve successful or failed replay evidence	2026-10-17T23:39:22.2742306Z   include-hidden-files: true
+replay	Preserve successful or failed replay evidence	2026-10-17T23:39:22.2742546Z   retention-days: 30
+replay	Preserve successful or failed replay evidence	2026-10-17T23:39:22.2742770Z   if-no-files-found: warn
+replay	Preserve successful or failed replay evidence	2026-10-17T23:39:22.2742996Z   compression-level: 6
+replay	Preserve successful or failed replay evidence	2026-10-17T23:39:22.2743205Z   overwrite: false
+replay	Preserve successful or failed replay evidence	2026-10-17T23:39:22.2743397Z env:
+replay	Preserve successful or failed replay evidence	2026-10-17T23:39:22.2743579Z   GIT_LFS_SKIP_SMUDGE: 1
+replay	Preserve successful or failed replay evidence	2026-10-17T23:39:22.2743864Z   pythonLocation: /opt/hostedtoolcache/Python/3.12.15/x64
+replay	Preserve successful or failed replay evidence	2026-10-17T23:39:22.2744286Z   PKG_CONFIG_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib/pkgconfig
+replay	Preserve successful or failed replay evidence	2026-10-17T23:39:22.2744713Z   Python_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+replay	Preserve successful or failed replay evidence	2026-10-17T23:39:22.2745090Z   Python2_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+replay	Preserve successful or failed replay evidence	2026-10-17T23:39:22.2745472Z   Python3_ROOT_DIR: /opt/hostedtoolcache/Python/3.12.15/x64
+replay	Preserve successful or failed replay evidence	2026-10-17T23:39:22.2745898Z   LD_LIBRARY_PATH: /opt/hostedtoolcache/Python/3.12.15/x64/lib
+replay	Preserve successful or failed replay evidence	2026-10-17T23:39:22.2746217Z ##[endgroup]
+replay	Preserve successful or failed replay evidence	2026-10-17T23:39:22.4414192Z (node:2628) [DEP0040] DeprecationWarning: The `punycode` module is deprecated. Please use a userland alternative instead.
+replay	Preserve successful or failed replay evidence	2026-10-17T23:39:22.4415393Z (Use `node --trace-deprecation ...` to show where the warning was created)
+replay	Preserve successful or failed replay evidence	2026-10-17T23:39:22.4867335Z With the provided path, there will be 164 files uploaded
+replay	Preserve successful or failed replay evidence	2026-10-17T23:39:22.4868123Z Artifact name is valid!
+replay	Preserve successful or failed replay evidence	2026-10-17T23:39:22.4868389Z Root directory input is valid!
+replay	Preserve successful or failed replay evidence	2026-10-17T23:39:22.6897174Z Beginning upload of artifact content to blob storage
+replay	Preserve successful or failed replay evidence	2026-10-17T23:39:22.8475043Z (node:2628) [DEP0169] DeprecationWarning: `url.parse()` behavior is not standardized and prone to errors that have security implications. Use the WHATWG URL API instead. CVEs are not issued for `url.parse()` vulnerabilities.
+replay	Preserve successful or failed replay evidence	2026-10-17T23:39:22.8846640Z Uploaded bytes 132784
+replay	Preserve successful or failed replay evidence	2026-10-17T23:39:22.8983810Z Finished uploading artifact content to blob storage!
+replay	Preserve successful or failed replay evidence	2026-10-17T23:39:22.8984848Z SHA256 digest of uploaded artifact zip is fcfad7b3adab7b2b2c06cfff3490f6ba9e1690324867d74c5ed439bdf0a42b04
+replay	Preserve successful or failed replay evidence	2026-10-17T23:39:22.8987068Z Finalizing artifact upload
+replay	Preserve successful or failed replay evidence	2026-10-17T23:39:23.0834509Z Artifact nemotron-q8-apack-replay.zip successfully finalized. Artifact ID 12117339781
+replay	Preserve successful or failed replay evidence	2026-10-17T23:39:23.0835860Z Artifact nemotron-q8-apack-replay has been successfully uploaded! Final size is 132784 bytes. Artifact ID is 12117339781
+replay	Preserve successful or failed replay evidence	2026-10-17T23:39:23.0841788Z Artifact download URL: https://github.com/saberra-ai/gen2/actions/runs/39079815299/artifacts/12117339781
+replay	Post Run actions/checkout@v4	﻿2026-10-17T23:39:23.1064731Z Post job cleanup.
+replay	Post Run actions/checkout@v4	2026-10-17T23:39:23.1911021Z [command]/usr/bin/git version
+replay	Post Run actions/checkout@v4	2026-10-17T23:39:23.1960690Z git version 2.55.0
+replay	Post Run actions/checkout@v4	2026-10-17T23:39:23.2007328Z Temporarily overriding HOME='/home/runner/work/_temp/dfe45c1b-2254-4c27-afc2-9e1555340ce7' before making global git config changes
+replay	Post Run actions/checkout@v4	2026-10-17T23:39:23.2009574Z Adding repository directory to the temporary git global config as a safe directory
+replay	Post Run actions/checkout@v4	2026-10-17T23:39:23.2014599Z [command]/usr/bin/git config --global --add safe.directory /home/runner/work/gen2/gen2
+replay	Post Run actions/checkout@v4	2026-10-17T23:39:23.2059309Z [command]/usr/bin/git config --local --name-only --get-regexp core\.sshCommand
+replay	Post Run actions/checkout@v4	2026-10-17T23:39:23.2095641Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'core\.sshCommand' && git config --local --unset-all 'core.sshCommand' || :"
+replay	Post Run actions/checkout@v4	2026-10-17T23:39:23.2397250Z [command]/usr/bin/git config --local --name-only --get-regexp http\.https\:\/\/github\.com\/\.extraheader
+replay	Post Run actions/checkout@v4	2026-10-17T23:39:23.2440987Z [command]/usr/bin/git submodule foreach --recursive sh -c "git config --local --name-only --get-regexp 'http\.https\:\/\/github\.com\/\.extraheader' && git config --local --unset-all 'http.https://github.com/.extraheader' || :"
+replay	Post Run actions/checkout@v4	2026-10-17T23:39:23.2756098Z [command]/usr/bin/git config --local --name-only --get-regexp ^includeIf\.gitdir:
+replay	Post Run actions/checkout@v4	2026-10-17T23:39:23.2788150Z [command]/usr/bin/git submodule foreach --recursive git config --local --show-origin --name-only --get-regexp remote.origin.url
+replay	Complete job	﻿2026-10-17T23:39:23.3220786Z Cleaning up orphan processes
+replay	Complete job	2026-10-17T23:39:23.3672560Z ##[warning]Node.js 20 is deprecated. The following actions target Node.js 20 but are being forced to run on Node.js 24: actions/checkout@v4, actions/setup-python@v5, actions/upload-artifact@v4. For more information see: https://github.blog/changelog/2025-09-19-deprecation-of-node-20-on-github-actions-runners/

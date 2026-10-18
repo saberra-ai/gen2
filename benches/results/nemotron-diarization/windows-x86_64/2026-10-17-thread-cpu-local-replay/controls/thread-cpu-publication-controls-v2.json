@@ -1,0 +1,28 @@
+{
+  "schema_version": 1,
+  "checks": [
+    "first-bound-byte-positive",
+    "changed-first-bound-bytes",
+    "closed-tree-positive",
+    "broken-symlink",
+    "directory-symlink",
+    "regular-file-symlink",
+    "special-fifo",
+    "unlisted-empty-directory",
+    "missing-member",
+    "case-collision:('A/file', 'a/other')",
+    "case-collision:('a', 'A')",
+    "case-collision:('pre-execution.json', 'PRE-EXECUTION.JSON')",
+    "unsafe-path:.",
+    "unsafe-path:../escape",
+    "unsafe-path:/absolute",
+    "unsafe-path:a/../escape"
+  ],
+  "checks_passed": 16,
+  "publisher_sha256": "0da5c88a8c9bfe1475a1adf230452d4d46d55c7285e0a8c35efc3f5dfe98ce46",
+  "test_source": {
+    "bytes": 3131,
+    "sha256": "231413aa23f152e0ad2fa8ce69b216b17c416289acfcba3ce2a85ad7c9038a5b"
+  },
+  "project_imports_or_compiler_sdk_model_calls": 0
+}

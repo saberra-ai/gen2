@@ -304,8 +304,8 @@ including actual C adapter/error paths,256 extreme paired emission records in
 one bounded write, complete identity coverage and all97 compiler-command
 admission checks. Source-only replay admits all3,425 canonical files and only
 the declared CPU observer delta. The new protocol binds135 tools,2,880 repository
-references and45 local imports. Actual Windows clock/graph controls, the fixed
-four full-model calls, complete delivery and interpretation remain pending.
+references and45 local imports. Its frozen preparation specification predates
+the actual Windows controls, four full-model calls and saved replay below.
 CPU cycles are not converted to time; successful profiling would supply no
 speed, accuracy, public runtime, packaging or release pass.
 
@@ -315,31 +315,42 @@ clock-adapter/parser/source tests passed, while three emission methods produced
 eight assertions because Windows CRT streams emit CRLF and the harness expected
 LF. The [nine-member failed-run receipt](../../benches/results/nemotron-diarization/windows-x86_64/2026-10-17-thread-cpu-control-failure/receipt.json)
 retains terminal metadata, the complete job log and original protocol/test/workflow.
-There is no native artifact or actual Windows CPU-counter inference result.
+That failed attempt produced no native artifact or Windows CPU-counter inference result.
 Only harness newline expectations were corrected to the exact platform newline;
 native counters, numerical work, admission and performance gates stay unchanged.
-The corrected producer requires a new frozen test-source identity and actual run.
+The corrected producer used the new frozen test-source identity below.
 
 The corrected producer at `15c905d8` (run39083120058/job117544022272)
 is now terminal success. Its original24,016,727byte artifact remains on GitHub;
-only terminal API metadata and the full job log have been retained locally.
+terminal API metadata, the full job log and the bounded result below are retained locally.
 A separate [saved CPU-counter artifact replay](../research/nemotron-windows-thread-cpu-replay.md)
 preserves the original8GiB full-native admission floor on Linux and returns a
 bounded result-only bundle. Its25-member preparation retains the reviewed
 receivers, exact59-command/library/model bindings,15 mutation controls and
 terminal metadata, including all13 successful native-source feature jobs.
 Real nested-child timeout/cancellation controls also pass locally after source
-preparation was changed to inherit one outer owned group. The replay/return/local interpretation have not executed;
-successful CI alone supplies no new performance or release qualification.
+preparation was changed to inherit one outer owned group. This preparation
+predates the actual replay/return below; successful CI alone supplies no new
+performance or release qualification.
 
 The separate Linux replay at `c7bc1899` (run39084790919/job117548983776)
 is terminal success. It admitted the complete original ZIP and retained a
 449-member result collection, then returned a9,908,825byte result-only bundle.
 The [fixed bounded local return](../research/nemotron-windows-thread-cpu-bundle-receive.md)
 preserves the existing4GiB result-return floor and AST-identical quarantine
-algorithm. Return download, independent local numerical/counter/timing replay
-and interpretation remain pending; the original native ZIP has not been fetched
-or rehashed locally. No original performance or release gate closes here.
+algorithm. Local return now admits all449 result members and the42-member
+source-preparation proof in quarantine, with all470 local commands completed
+and reaped. The [independent local raw replay](../research/nemotron-windows-thread-cpu-results.md)
+checks all59 saved Windows Job records,97 compiler metadata entries,144 exact
+graph vectors and four exact full-model histories. Reviewed-original AST
+identity is enforced before replay; two actual positives and six mutation
+negatives pass. Both original observer timing predicates fail: control drift
+is22.2853001%, and overhead also exceeds the10% bound. All native RTFs exceed1
+(1.312686/1.149589/1.143014/1.020150). Counters stay retained without bounded
+resource-share or causal interpretation. The original native ZIP, SDK binaries
+and pristine archive were admitted remotely, not fetched or rehashed locally;
+the remote download sidecar was not returned. No original performance or
+release gate closes here; this unchanged protocol must not be rerun for a pass.
 
 Remaining release work as of 2026-10-17:
 

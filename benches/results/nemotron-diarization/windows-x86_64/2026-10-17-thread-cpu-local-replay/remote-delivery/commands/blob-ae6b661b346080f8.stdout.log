@@ -1,0 +1,60 @@
+{
+  "source_commit": "15c905d8815190a54f25452e7e51378c24f85914",
+  "run_id": 39083120058,
+  "job_id": 117544022272,
+  "preparer": {
+    "bytes": 11034,
+    "sha256": "0c61bc2ea9f4de54635d1b3fd4cb147514a4bd3b314693f783d4ce25c8c79f7e"
+  },
+  "complete_command_sequence_origin": {
+    "path": "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/windows-x86_64/2026-10-17-matrix-batch-profile/qualification.json",
+    "descriptor": {
+      "bytes": 734025,
+      "sha256": "ea716cf381b4f70eed9a6b97e43f028a08b8c345debd5d093caeafa4aaeb583a"
+    },
+    "commands": 59
+  },
+  "native_protocol": {
+    "bytes": 670257,
+    "sha256": "e9809ffe025bbe127c27daa5f8dfa07916cab7fe24a40d074651103b8c3cfc66"
+  },
+  "prepared": {
+    "admit-windows-thread-cpu-profile-delivery-v1.py": {
+      "origin": "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/windows-x86_64/2026-10-17-matrix-batch-profile/admit-windows-matrix-batch-profile-delivery-v1.py",
+      "original": {
+        "bytes": 6592,
+        "sha256": "33aeea8981dbefdfce0488ca65db2bd8a398547a90b9903584b82c0dd92ec2fb"
+      },
+      "prepared": {
+        "bytes": 6720,
+        "sha256": "2e66fa2eeb099214044456d4dbf367306b9f6f91934e65220fb517f699b0ede3"
+      }
+    },
+    "replay-windows-thread-cpu-profile-supervision-v1.py": {
+      "origin": "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/windows-x86_64/2026-10-17-matrix-batch-profile/replay-windows-matrix-batch-profile-supervision-v1.py",
+      "original": {
+        "bytes": 6162,
+        "sha256": "875654c0579a91b3becf339f1a8ee090cb0b18fcf11446f6dd08430a53f4f0f2"
+      },
+      "prepared": {
+        "bytes": 6156,
+        "sha256": "7e4f2aaf3c00b547314374c6018f290579ad1ea2b860a6708412b11379d9df66"
+      }
+    },
+    "collect-windows-thread-cpu-profile-v1.py": {
+      "origin": "/Users/victor/workspace/gen2-nemotron3-n0/benches/results/nemotron-diarization/windows-x86_64/2026-10-17-matrix-batch-profile/collector.py",
+      "original": {
+        "bytes": 25650,
+        "sha256": "32a137eb3c7546a92001f6119853a0b79362715a694e8d7699fe83b2346bb580"
+      },
+      "prepared": {
+        "bytes": 30461,
+        "sha256": "60f38bc5cfd875985de70c56b4e521c666532fc63787ec5ba9412120b4e26906"
+      }
+    }
+  },
+  "artifact_consumed": false,
+  "receivers_invoked": false,
+  "new_native_calls": 0,
+  "remaining": "Review all adaptations; add actual-source preparation, frozen remote API/archive identity, bounded process and result-bundle transport before invoking. Original8GiB full-native admission floor remains unchanged."
+}

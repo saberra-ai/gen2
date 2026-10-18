@@ -1,0 +1,44 @@
+name: Diarization Windows CPU-counter independent artifact replay
+on:
+  workflow_dispatch:
+  push:
+    branches: [codex/nemotron3-n0]
+    paths:
+      - .github/workflows/diarization-thread-cpu-replay.yml
+      - tools/nemotron-diarization/remote_thread_cpu_replay.py
+      - tools/nemotron-diarization/test_remote_thread_cpu_replay.py
+      - tools/nemotron-diarization/freeze_remote_thread_cpu_replay.py
+      - tools/nemotron-diarization/remote-thread-cpu-replay.protocol.json
+permissions:
+  contents: read
+  actions: read
+jobs:
+  replay:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 45
+    env:
+      GIT_LFS_SKIP_SMUDGE: '1'
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Existing owned-process, raw transport and bundle boundary controls
+        run: python -B -m unittest discover -s tools/nemotron-diarization -p test_remote_q8_apack_replay.py
+      - name: Exact native API identities and prepared AST controls
+        run: python -B -m unittest discover -s tools/nemotron-diarization -p test_remote_thread_cpu_replay.py
+      - name: Full saved-artifact replay without native execution
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python -B tools/nemotron-diarization/remote_thread_cpu_replay.py --cache "${{ runner.temp }}/thread-cpu-receiver-v1" --output "${{ runner.temp }}/thread-cpu-replay-result-v1"
+      - name: Preserve successful or failed replay evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nemotron-thread-cpu-replay
+          path: ${{ runner.temp }}/thread-cpu-replay-result-v1/
+          include-hidden-files: true
+          retention-days: 30

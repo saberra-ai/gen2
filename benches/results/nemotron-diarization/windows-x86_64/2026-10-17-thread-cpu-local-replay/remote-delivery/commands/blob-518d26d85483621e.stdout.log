@@ -1,0 +1,14 @@
+the response contains terminal escape sequences; pass --allow-escape-sequences to output it anyway
+Traceback (most recent call last):
+  File "/home/runner/work/_temp/q8-apack-receiver-v1/fetch-windows-q8-apack-artifact-v1.py", line 109, in <module>
+    save('job.log', get(f'jobs/{job_id}/logs'))
+                    ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/runner/work/_temp/q8-apack-receiver-v1/fetch-windows-q8-apack-artifact-v1.py", line 17, in get
+    return subprocess.check_output(['gh', 'api', api + endpoint], timeout=180)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/subprocess.py", line 466, in check_output
+    return run(*popenargs, stdout=PIPE, timeout=timeout, check=True,
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/opt/hostedtoolcache/Python/3.12.15/x64/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['gh', 'api', 'repos/saberra-ai/gen2/actions/jobs/117527216794/logs']' returned non-zero exit status 1.
