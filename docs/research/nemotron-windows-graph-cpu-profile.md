@@ -21,7 +21,14 @@ Private PE naming/import/ABI/state controls remain mandatory.
 The unchanged batched matrix emitter retains its checked 2,048-byte row budget;
 the detailed observer's larger per-region CPU ledger is absent.
 
-The new workflow is manual-only. Its checkout retains LF and long-path child
+The native compute job is manual-only. A separate push-only registration job
+prints one message and has no checkout, source acquisition, SDK or model step;
+the native job is skipped on that event. This resolves initial branch-only
+registration without promoting main. [GitHub's event documentation](https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#workflow_dispatch)
+states that, after a workflow has run once, the API/CLI can dispatch it against
+any branch or tag. Actual registration still requires a completed registration
+run and a matching active workflow API record before native dispatch.
+The native job's checkout retains LF and long-path child
 Git configuration. Before model acquisition, twelve fresh actual Windows graph
 processes run one/two/four workers in off/on/on/off order, preserving 144 complete
 finite nonzero vectors and all original SGEMM/conversion/fallback/fusion checks.

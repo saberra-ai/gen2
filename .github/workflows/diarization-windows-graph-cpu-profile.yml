@@ -1,10 +1,19 @@
 name: Diarization Windows graph-only CPU diagnostic
 on:
   workflow_dispatch:
+  push:
+    branches: [codex/nemotron3-n0]
+    paths: [.github/workflows/diarization-windows-graph-cpu-profile.yml]
 permissions:
   contents: read
 jobs:
+  register:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-24.04
+    steps:
+      - run: echo 'Graph CPU workflow registered. Native diagnostic requires workflow_dispatch.'
   graph-cpu:
+    if: github.event_name == 'workflow_dispatch'
     runs-on: windows-2022
     timeout-minutes: 90
     env:
