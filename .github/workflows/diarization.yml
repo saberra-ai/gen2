@@ -14,10 +14,28 @@ jobs:
         os: [ubuntu-latest, windows-latest, macos-latest]
         features: ['', 'backend-diar-nemo', 'asr-dynamic,backend-diar-nemo', 'backend-llamacpp,asr-dynamic,backend-diar-nemo']
     runs-on: ${{ matrix.os }}
+    # Evidence snapshots contain paths beyond the Windows MAX_PATH default.
+    # Runtime Git configuration reaches checkout without changing the host.
+    env:
+      GIT_CONFIG_COUNT: '1'
+      GIT_CONFIG_KEY_0: core.longpaths
+      GIT_CONFIG_VALUE_0: 'true'
     steps:
       - uses: actions/checkout@v4
         with:
           submodules: recursive
+      - name: Verify Windows long-path checkout
+        if: runner.os == 'Windows'
+        shell: python
+        run: |
+          from pathlib import Path
+          import subprocess
+          assert subprocess.check_output(['git', 'config', '--get', 'core.longpaths'], text=True).strip() == 'true'
+          paths = subprocess.check_output(['git', 'ls-files', '-z']).decode('utf-8').split('\0')
+          long_paths = [Path(name).absolute() for name in paths if name and len(str(Path(name).absolute())) >= 260]
+          for path in long_paths:
+              assert path.is_file(), f'long tracked path was not checked out: {path}'
+          print(f'Verified {len(long_paths)} tracked paths at least 260 characters long.')
       - uses: dtolnay/rust-toolchain@stable
         with:
           components: clippy, rustfmt
